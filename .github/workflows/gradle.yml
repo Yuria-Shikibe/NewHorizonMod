@@ -1,6 +1,6 @@
 name: Java CI
 
-chmod +x gradlew
+
 
 on: [push]
 
