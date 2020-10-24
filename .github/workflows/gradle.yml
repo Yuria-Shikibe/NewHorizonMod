@@ -1,5 +1,7 @@
 name: Java CI
 
+chmod +x grawdle
+
 on: [push]
 
 jobs:
