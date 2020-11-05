@@ -191,6 +191,8 @@ public class UpgraderBlock extends Block {
 				table.add("UpgradeTargetInfo->>").row();
 
 				table.add(baseData.toString()).row();
+				
+				
 			});
 			dialog.cont.row();
 			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);

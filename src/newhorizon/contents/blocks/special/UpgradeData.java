@@ -55,7 +55,7 @@ import static mindustry.Vars.*;
 
 public class UpgradeData{
 	public static final float LEN = 60f, OFFSET = 12f;
-	
+	private static final String offsetSpace = "    "
 	
 	public static abstract class UpgradeBasicData{
 		public float costTime;
@@ -145,7 +145,7 @@ public class UpgradeData{
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t.pane(table -> {
-				table.button(Icon.infoCircle, () -> showInfo(this)).size(LEN);
+				table.button(Icon.infoCircle, this::showInfo).size(LEN);
 				table.button(Icon.hammer, () -> {
 					from.upgradeAmmo(this);
 				}).size(LEN).disabled(disable);
@@ -157,8 +157,8 @@ public class UpgradeData{
 				setFillParent(true);
 				cont.margin(15f);
 				cont.image(icon).row();
-				cont.add("Description: ").color(Pal.accent).row();
-				cont.add(Core.bundle.get(description)).color(Color.lightGray).row();
+				cont.add("Description: ").color(Pal.accent).left().row();
+				cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
 				cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 				cont.row();
 				cont.button("Leave", this::hide).size(120, 50).pad(4);
@@ -199,6 +199,10 @@ public class UpgradeData{
 		public final float damageMPL;
 		public final float defenceMPL;
 		
+		public TextureRegion icon;
+		
+		public void load(){this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");}
+		
 		public boolean equals(Object obj){
 			if(obj == this)return true;
 			if(obj instanceof UpgradeBaseData){
@@ -238,28 +242,36 @@ public class UpgradeData{
 		
 		public void buildDescriptions(Table t){
 			t.add("isOnline?: " + (from!=null)).color(Color.green).row();
-			/* length = 40 * 12 + 20(offset) * 2 = 560
-			   width = 40 * 4 = 160
-			 [Icon]			 [Bs]
-			■■■■ ■■■■■■ ■■
-			■■■■ [TEXTS]	 ■■
-			■■■■			 ■■
-			■■■■			 ■■
-			*/	
+			
 			t.pane(table -> {
-				table.image(Core.atlas.find(NewHorizon.NHNAME + "upgrade2")).size(LEN);
+				table.image(icon).size(LEN);
 			}).size(LEN);
 			
 			t.pane(table -> {
-				table.add("[gray]Upgrade: [accent]Level" + plusLevel() + "[]").row();
+				table.add("[gray]Upgrade: [accent]Level" + plusLevel() + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t.pane(table -> {
+				table.button(Icon.infoCircle, this::showInfo).size(LEN);
 				table.button(Icon.hammer, () -> {
 					from.upgradeBase(this);
 				}).size(LEN).disabled(disable);
 			}).size(LEN * 2f, LEN).pad(OFFSET);
 		}
+		
+		public void showInfo(UpgradeAmmoData data){
+			new Dialog(""){{
+				setFillParent(true);
+				cont.margin(15f);
+				cont.image(icon).row();
+				cont.add("Description: ").color(Pal.accent).left().row();
+				cont.add(offsetSpace + Core.bundle.get("upgrade-discription")).color(Color.lightGray).left().row();
+				cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
+				cont.row();
+				cont.button("Leave", this::hide).size(120, 50).pad(4);
+			}}.show();
+		}
+		
 	}
 	
 }
