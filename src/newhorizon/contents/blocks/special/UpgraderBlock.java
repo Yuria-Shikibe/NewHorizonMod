@@ -46,6 +46,12 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
 import newhorizon.NewHorizon;
+
+import newhorizon.contents.data.*;
+import newhorizon.contents.data.UpgradeeData*;
+import newhorizon.contents.data.UpgradeBaseData*;
+import newhorizon.contents.data.UpgradeAmmoData*;
+
 import newhorizon.contents.interfaces.Scalablec;
 import newhorizon.contents.items.*;
 import newhorizon.contents.effects.NHFx;
@@ -57,7 +63,7 @@ import static newhorizon.contents.blocks.special.UpgradeData.*;
 import static mindustry.Vars.*;
 
 public class UpgraderBlock extends Block {
-	public static final int DEFID = -2;
+	private static final int DEFID = -2; 
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 
@@ -126,7 +132,9 @@ public class UpgraderBlock extends Block {
 	}
 
 	public class UpgraderBlockBuild extends Building implements Ranged {
-		public UpgradeBaseData baseData = initUpgradeBaseData.reset();
+		
+		public UpgradeBaseData baseData = initUpgradeBaseData.init();
+		
 		public Seq<UpgradeAmmoData> ammoDatas = initUpgradeAmmoDatas;
 
 		public int link = -1;
@@ -137,7 +145,7 @@ public class UpgraderBlock extends Block {
 
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
 		
-		protected void consumeItems(){
+		protected void consumeItems(UpgradeData data){
 			
 		}
 
@@ -145,28 +153,29 @@ public class UpgraderBlock extends Block {
 
 		protected boolean isUpgrading() {return remainTime > 0;}
 		
-		
-
-		public boolean canUpgrade() {
+		public boolean canUpgrade(UpgradeData data) {
 			return !isUpgrading()/*&& Needs */;
 		}
 
-
+		protected float needsTime(UpgradeData data) {
+			return data.costTime * (1 + data.timeCostcoefficien * data.level);
+		}
+		
 		//Data Upgrade
-		public void upgradeBase(UpgradeBaseData data) {
-			if (!canUpgrade() || data.level == maxLevel)return;
-			upgradingID = -1;
-			remainTime = needsTime();
-			consumeItems();
+		public void upgradeData(UpgradeData data){
+			if(!canUpgrade())return;
+			remainTime = needsTime(data);
+			consumeItems(data);
+			if(data instanceof UpgradeBaseData){
+				UpgradeBaseData baseDataOther = (UpgradeBaseData)data;
+				if(baseDataOther.level == maxLevel)return;
+				upgradingID = -1;
+			}else if(data instanceof UpgradeAmmoData){
+				UpgradeAmmoData ammoDataOther = (UpgradeAmmoData)data;
+				upgradingID = ammoDataOther.id;
+			}
 		}
-
-		public void upgradeAmmo(UpgradeAmmoData data) {
-			if (!canUpgrade())return;
-			upgradingID = data.id;
-			remainTime = needsTime();
-			consumeItems();
-		}
-
+		
 		//Updates
 		protected void updateUpgrading() {
 			if (isUpgrading()) {
@@ -187,8 +196,8 @@ public class UpgraderBlock extends Block {
 			} else {
 				ammoDatas.get(upgradingID).isUnlocked = true;
 				baseData.selectAmmo = ammoDatas.get(upgradingID).selectAmmo;
-				updateTarget();
 				lastestSelectID = upgradingID;
+				updateTarget();
 			}
 			
 			upgradingID = DEFID;
@@ -208,7 +217,7 @@ public class UpgraderBlock extends Block {
 		//UI
 		protected void buildUpgradeAmmoDataTable(Table t) {
 			t.pane(table -> {
-				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
+				for (UpgradeAmmoDataBuild ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
 			}).size(LEN * 10 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
 
@@ -238,7 +247,6 @@ public class UpgraderBlock extends Block {
 		}
 
 		//Targeter
-
 		protected Building target() {
 			return linkValid() ? world.build(link) : null;
 		}
@@ -293,7 +301,11 @@ public class UpgraderBlock extends Block {
 				dialog.cont.pane(t -> {
 					t.add("UpgradingID>> " + upgradingID).row();
 					t.add("SelectedID>> " + upgradingID).row();
-				
+					
+					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray)row();
+					t.image(ammoDatas.get(lastestSelectID).icon).size(LEN * 1.5f).row();
+					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray)row();
+					
 					buildUpgradeBaseDataTable(t);
 					t.row();
 					buildUpgradeAmmoDataTable(t);
@@ -302,7 +314,7 @@ public class UpgraderBlock extends Block {
 	
 					t.row();
 					
-				}).size(440f);
+				}).size(640f);
 				dialog.cont.row();
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
 				dialog.show();
@@ -391,11 +403,6 @@ public class UpgraderBlock extends Block {
 			for (UpgradeAmmoData ammoData : ammoDatas)ammoData.read(read, revision);
 		}
 
-		@Override
-		public void afterRead() {
-			
-		}
-
 		protected void setFrom() {
 			baseData.from = this;
 			for (UpgradeAmmoData ammoData : ammoDatas)ammoData.from = this;
@@ -417,9 +424,7 @@ public class UpgraderBlock extends Block {
 			if (linkValid())scalaTarget().updateUpgradeBase(baseData);
 		}
 
-		protected float needsTime() {
-			return upgradingID < 0 ? baseData.costTime * (1 + baseData.timeCostcoefficien * baseData.level) : ammoDatas.get(upgradingID).costTime;
-		}
+		
 	}
 }
 
