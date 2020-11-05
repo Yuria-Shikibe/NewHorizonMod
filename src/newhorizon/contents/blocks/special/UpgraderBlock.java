@@ -138,7 +138,7 @@ public class UpgraderBlock extends Block {
 			
 		}
 
-		public CoreBuild core() {return this.team.core();}
+		public CoreBlock.CoreBuild core() {return this.team.core();}
 
 		protected boolean isUpgrading() {return remainTime > 0;}
 
