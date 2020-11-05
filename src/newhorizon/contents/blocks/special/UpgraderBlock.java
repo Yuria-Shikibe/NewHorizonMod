@@ -59,7 +59,7 @@ import static newhorizon.contents.data.UpgradeData.*;
 import static mindustry.Vars.*;
 
 public class UpgraderBlock extends Block {
-	private static final int DEFID = -2; 
+	private static final int DFTID = -2; 
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 
@@ -135,7 +135,7 @@ public class UpgraderBlock extends Block {
 
 		public int link = -1;
 
-		public int upgradingID = DEFID;
+		public int upgradingID = DFTID;
 		public int lastestSelectID = 0;
 		public float remainTime;
 
@@ -163,7 +163,7 @@ public class UpgraderBlock extends Block {
 		
 		//Data Upgrade
 		public void upgradeData(UpgradeData data){
-			if(!canUpgrade())return;
+			if(!canUpgrade(data))return;
 			consumeItems(data);
 			if(data instanceof UpgradeBaseData){
 				UpgradeBaseData baseDataOther = (UpgradeBaseData)data;
@@ -200,7 +200,7 @@ public class UpgraderBlock extends Block {
 				updateTarget();
 			}
 			
-			upgradingID = DEFID;
+			upgradingID = DFTID;
 		}
 
 		//UI
@@ -324,7 +324,7 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void updateTile() {
-			if (upgradingID != DEFID)updateUpgrading();
+			if (upgradingID != DFTID)updateUpgrading();
 
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setFrom();

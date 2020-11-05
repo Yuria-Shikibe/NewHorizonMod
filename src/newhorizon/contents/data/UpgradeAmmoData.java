@@ -50,7 +50,7 @@ import newhorizon.contents.data.UpgradeData.*;
 
 import static mindustry.Vars.*;
 
-public class UpgradeAmmoData {
+public class UpgradeAmmoData extends UpgradeData{
 	public int unlockLevel;
 
 	public Effect
@@ -75,7 +75,7 @@ public class UpgradeAmmoData {
 
 	@Override
 	public void addText(Table table){
-		table.add("[gray]AmmoType: [accent]" + name + "[]").left().row();
+		table.add("[gray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
 	}
 	public void write(Writes write) {
 		write.bool(this.isUnlocked);

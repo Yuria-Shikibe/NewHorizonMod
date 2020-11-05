@@ -61,7 +61,6 @@ public abstract class UpgradeData {
 	public final Seq<ItemStack> requirements = new Seq<>();
 
 	public TextureRegion icon;
-	public Cons<UpgradeData> movement = from -> from.upgradeData(this);
 	public String name, description;
 	public float costTime;
 	
@@ -122,7 +121,7 @@ public abstract class UpgradeData {
 		t.pane(table -> {
 			table.button(Icon.infoCircle, () -> showInfo(this)).size(LEN);
 			table.button(Icon.hammer, () -> {
-				movement.get(from);
+				from.upgradeData(this);
 			}).size(LEN).disabled(disable);
 		}).size(LEN * 2f, LEN).pad(OFFSET);
 	}
@@ -133,6 +132,7 @@ public abstract class UpgradeData {
 				setFillParent(true);
 				cont.margin(15f);
 				cont.image(icon).row();
+				cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
 				cont.add("Description: ").color(Pal.accent).left().row();
 				cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
 				cont.image().width(300f).pad(2).height(4f).color(Pal.accent);

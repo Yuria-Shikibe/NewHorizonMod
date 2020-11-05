@@ -55,15 +55,18 @@ public class UpgradeBaseData extends UpgradeData {
 	public float speedMPL;
 	public float damageMPL;
 	public float defenceMPL;
-
+	
+	public UpgradeBaseData(){
+		super("UpgradeBuilding", "N/A", none, 460f, {});
+	}
+	
 	public UpgradeBaseData(
 		String name,
 		String description,
-		BulletType selectAmmo,
 		float costTime,
 		ItemStack... items
 	) {
-		super(name, description, selectAmmo, costTime, items);
+		super(name, description, none, costTime, items);
 	}
 
 	@Override

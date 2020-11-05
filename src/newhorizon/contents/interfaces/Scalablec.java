@@ -1,7 +1,7 @@
 package newhorizon.contents.interfaces;
 
 import newhorizon.contents.blocks.special.UpgraderBlock.UpgraderBlockBuild;
-import newhorizon.contents.blocks.special.UpgradeData.*;
+import newhorizon.contents.data..*;
 
 public interface Scalablec{
 	public void resetUpgrade();
