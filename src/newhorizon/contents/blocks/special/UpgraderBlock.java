@@ -200,7 +200,7 @@ public class UpgraderBlock extends Block {
 				table.add(baseData.toString()).row();
 				
 				baseData.buildTable(table);
-			}).size(540, 100);
+			});
 			dialog.cont.row();
 			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			dialog.cont.row();
@@ -210,7 +210,7 @@ public class UpgraderBlock extends Block {
 		protected void buildUpgradeAmmoDataTable() {
 			dialog.cont.pane(table -> {
 				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
-			}).size(540, 340);
+			});
 			dialog.cont.row();
 			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			dialog.cont.row();
@@ -232,7 +232,7 @@ public class UpgraderBlock extends Block {
 						index++;
 					}
 				}
-			}).size(540, 340);
+			});
 		}
 
 		//Target confirm
