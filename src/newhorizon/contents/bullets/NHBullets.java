@@ -21,7 +21,7 @@ import mindustry.world.*;
 
 import newhorizon.contents.bullets.special.*;
 import newhorizon.contents.colors.*;
-
+import newhorizon.contents.effects.NHFx;
 
 import static mindustry.Vars.*;
 import static arc.graphics.g2d.Draw.rect;
@@ -219,8 +219,7 @@ public class NHBullets implements ContentList {
 					}
 
 					{
-						despawnEffect = Fx.none;
-						hitEffect = Fx.sapExplosion;
+						despawnEffect = hitEffect = NHFx.darkErnExplosion;
 						knockback = 12f;
 						lifetime = 90f;
 						width = 17f;

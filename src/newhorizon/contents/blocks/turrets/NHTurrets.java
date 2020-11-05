@@ -32,6 +32,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
+import newhorizon.NewHorizon;
 import newhorizon.contents.items.*;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.bullets.*;
@@ -43,7 +44,7 @@ public class NHTurrets implements ContentList {
 
 	//Load Mod Turrets
 	public static Block
-	finalTurret, thurmix, argmot;
+	ender, thurmix, argmot;
 
 	@Override
 	public void load() {
@@ -82,8 +83,9 @@ public class NHTurrets implements ContentList {
 				};
 			}
 		};
-
-		finalTurret = new FinalTurret("end-of-era") {
+		
+		
+		ender = new ScalableTurret("end-of-era") {
 			{
 				chargeTime = 60f;
 				chargeEffects = 2;
@@ -121,15 +123,20 @@ public class NHTurrets implements ContentList {
 				shootSound = Sounds.laserbig;
 			}
 		};
-
+		
 		thurmix = new ItemTurret("thurmix") {
+			
+			@Override
+			public void load(){
+				super.load();
+				baseRegion = Core.atlas.find(NewHorizon.NHNAME + "block-" + size);
+			}
+			
 			{
 				requirements(Category.turret, with(Items.copper, 105, Items.graphite, 95, Items.titanium, 60));
 				ammo(
 					NHItems.fusionEnergy, NHBullets.curveBomb
 				);
-
-				baseRegion = Core.atlas.find("new-horizon-block-" + size);
 
 				size = 5;
 				range = 360;

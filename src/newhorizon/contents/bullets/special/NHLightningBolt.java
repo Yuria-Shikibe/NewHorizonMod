@@ -23,16 +23,17 @@ import mindustry.entities.Effect;
 import mindustry.entities.Damage;
 import mindustry.entities.Lightning;
 
-public class NHLightningBolt { //Provide some workable methods to genetic position to position lightning bolt. Powered by Yuria.
+public class NHLightningBolt { //Provide some workable methods to generate position to position lightning bolt. Powered by Yuria.
 
 	/**
 	* Main methods:
 	*
-	*	 Radius:
-	* 		generateRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width);
-	* 		generateRange( Bullet  owner,   [N/A]	float range, int hits, int boltNum, float damage, Color color, boolean chance, float width);
+	*	 Radius: Deals @boltNum PtP Lightning(s) to @hits enemies within @range, @chance to generate None Target Lightning.
+	* 		generateRange(Position owner, Team team, float range, int hits, int boltNum, 	[N/A] 	Color color,	  [N/A]	  float width, Cons<Position> movement)
+	* 		generateRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width	   	[N/A]    	 );
+	* 		generateRange( Bullet  owner,   [N/A]	float range, int hits, int boltNum, float damage, Color color, boolean chance, float width	   	[N/A]    	 );
 	*
-	* 	Single:
+	* 	Single: Deals @boltNum PtP Lightning(s) to certain Position
 	* 		generate(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width	 [N/A]		   	[N/A]    	);
 	* 		generate(Position owner, Position target, Team Team, 	[N/A] 	Color color,		  [N/A]	   	float width, int boltNum, Cons<Position> movement);
 	* 		generate( Bullet  owner, Position target,   [N/A]	float damage, Color color, boolean createLightning, float width	 [N/A]		   	[N/A]    	);
@@ -53,7 +54,7 @@ public class NHLightningBolt { //Provide some workable methods to genetic positi
 
 	//Used in find target method.
 	private static Tile furthest;
-
+	private static Rect rect = new Rect();
 
 	//METHODS
 	
@@ -64,32 +65,36 @@ public class NHLightningBolt { //Provide some workable methods to genetic positi
 
 	//Compute the proper hit position.
 	public static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
-		Tmp.v1.trns(from.angleTo(target), from.dst(target));
-
 		furthest = null;
 
 		return 
 		Vars.world.raycast(
 			toIntTile(from.getX()),
 			toIntTile(from.getY()),
-			toIntTile(from.getX() + Tmp.v1.x),
-			toIntTile(from.getY() + Tmp.v1.y),
-			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.block().absorbLasers && furthest.team() != fromTeam
+			toIntTile(target.getX()),
+			toIntTile(target.getY()),
+			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers 
 		) && furthest != null ? furthest : target;
 	}
 
-	//Set the range of lightning's color's lerp, randX.
+	//Set the range of lightning's randX.
 	public static float getBoltRandomRange() {
 		return Mathf.random(2f, 5f);
 	}
 
 	//generate lightning to the enemies in range.
-	public static void generateRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
-		Rect rect = new Rect();
+	public static void generateRange(Position owner, Team team, float range, int hits, int boltNum, Color color, float width, Cons<Position> movement) {
 		Seq<Unitc> entities = new Seq<>();
-		Units.nearbyEnemies(team, rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), unit -> {
-			whetherAdd(entities, unit, hits);
-		});
+		whetherAdd(team, rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), entities, hits);
+		for (Unitc unit : entities) {
+			generate(owner, unit, team, color, width, boltNum, movement);
+		}
+	}
+	
+	//generate lightning to the enemies in range.
+	public static void generateRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
+		Seq<Unitc> entities = new Seq<>();
+		whetherAdd(team, rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), entities, hits);
 		for (Unitc unit : entities) {
 			for (int i = 0; i < boltNum; i ++) {
 				generate(owner, unit, team, damage, color, chance, width);
@@ -99,16 +104,7 @@ public class NHLightningBolt { //Provide some workable methods to genetic positi
 
 	//A radius generate method that with a Bullet owner.
 	public static void generateRange(Bullet owner, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
-		Rect rect = new Rect();
-		Seq<Unitc> entities = new Seq<>();
-		Units.nearbyEnemies(owner.team(), rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), unit -> {
-			whetherAdd(entities, unit, hits);
-		});
-		for (Unitc unit : entities) {
-			for (int i = 0; i < boltNum; i ++) {
-				generate(owner, unit, damage, color, chance, width);
-			}
-		}
+		generateRange(owner, owner.team(), range, hits, boltNum, damage, color, chance, width);
 	}
 
 	//generate position to position lightning and deals splash damage, create none target lightning.
@@ -144,7 +140,9 @@ public class NHLightningBolt { //Provide some workable methods to genetic positi
 			for (int num = 0; num < dst / (Vars.tilesize * multBolt) + 1; num ++) {
 				randomArray.add(Mathf.range(randRange));
 			}
-			createBoltEffect(color, width, new NHLightningBoltEffectData(randomArray, sureTarget, owner));
+			createBoltEffect(color, width, 
+				new NHLightningBoltEffectData(randomArray, sureTarget, owner)
+			);
 		}
 	}
 
@@ -156,14 +154,16 @@ public class NHLightningBolt { //Provide some workable methods to genetic positi
 	//Protected methods and classes.
 
 	//Add proper unit into the to hit Seq.
-	protected static void whetherAdd(Seq<Unitc> entities, Unit unit, int hits) {
-		if (
-			entities.size <= hits &&
-			(
-				entities.isEmpty() || //Make sure add the started one.
-				unit.dst(Geometry.findClosest(unit.x, unit.y, entities)) > GENERATE_DST
-			)
-		)entities.add(unit);
+	protected static void whetherAdd(Team team, Rect selectRect, Seq<Unitc> targetGroup, int hits) {
+		Units.nearbyEnemies(team, selectRect, unit -> {
+			if (
+				targetGroup.size <= hits &&
+				(
+					targetGroup.isEmpty() || //Make sure add the started one.
+					unit.dst(Geometry.findClosest(unit.x, unit.y, targetGroup)) > GENERATE_DST
+				)
+			)targetGroup.add(unit);
+		});
 	}
 
 	//generate lightning effect.
@@ -196,7 +196,8 @@ public class NHLightningBolt { //Provide some workable methods to genetic positi
 	protected static class NHLightningBoltEffectData {
 		public Seq<Float> randomVec;
 		public Position owner, target;
-
+		
+		
 		public NHLightningBoltEffectData(Seq<Float> randomVec, Position target, Position owner) {
 			this.randomVec = randomVec;
 			this.target = target;

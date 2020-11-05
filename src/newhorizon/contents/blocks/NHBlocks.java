@@ -32,11 +32,16 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
+import newhorizon.NewHorizon;
 import newhorizon.contents.items.*;
 import newhorizon.contents.colors.*;
+import newhorizon.contents.bullets.*;
 import newhorizon.contents.blocks.drawers.*;
+import newhorizon.contents.blocks.turrets.*;
 import newhorizon.contents.blocks.special.*;
 import newhorizon.contents.effects.NHFx;
+import newhorizon.contents.blocks.special.UpgradeData.*;
+
 import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
 
@@ -45,11 +50,33 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-	chargeWall, chargeWallLarge,
+	chargeWall, chargeWallLarge, eoeUpgrader,
 	irdryonVault, blaster, unitSpawner;
 
 	@Override
 	public void load() {
+		eoeUpgrader = new UpgraderBlock("end-of-era-upgrader"){{
+			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
+			size = 3;
+			maxLevel = 6;
+			toUpgradeClass = NHTurrets.ender;
+			initUpgradeBaseData = new UpgradeBaseData();
+			addUpgrades(
+				new UpgradeAmmoData(
+					"arc-9000", "description00", 0, NHBullets.boltGene, 300f,
+					
+					new ItemStack(NHItems.irayrondPanel, 3), new ItemStack(NHItems.metalOxhydrigen, 2)
+				),
+				new UpgradeAmmoData(
+					"curve-bomb", "description01", 0, NHBullets.curveBomb, 300f,
+					
+					new ItemStack(NHItems.irayrondPanel, 3), new ItemStack(NHItems.metalOxhydrigen, 2)
+				)
+			);
+			
+            health = 1350;
+		}};
+		
 		chargeWall = new ChargeWall("charge-wall"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 1;

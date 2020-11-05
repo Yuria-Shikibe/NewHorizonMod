@@ -1,6 +1,7 @@
 package newhorizon;
 
 import arc.*;
+import arc.graphics.g2d.*;
 import arc.scene.style.TextureRegionDrawable;
 import arc.util.*;
 import mindustry.*;
@@ -20,14 +21,12 @@ import newhorizon.contents.bullets.*;
 
 public class NewHorizon extends Mod{
 	public static final String NHNAME = "new-horizon-";
-
+	
     public NewHorizon(){
-        Log.info("Loaded NewHorizonMod constructor.");
+        Log.info("Loaded NewHorizon Mod constructor.");
         Events.on(ClientLoadEvent.class, e -> {
-            //show dialog upon startup
             Time.runTask(10f, () -> {
                 BaseDialog dialog = new BaseDialog("Welcome");
-                //mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
                 dialog.cont.image(Core.atlas.find(NHNAME + "upgrade")).row();
                 dialog.cont.add("").row();
                 dialog.cont.add("<<-Powered by NewHorizonMod->>").row();

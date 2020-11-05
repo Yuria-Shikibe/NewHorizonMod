@@ -46,6 +46,7 @@ import mindustry.world.meta.*;
 
 
 import newhorizon.contents.items.*;
+import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.bullets.special.NHLightningBolt;
 
@@ -53,15 +54,17 @@ import static mindustry.Vars.*;
 
 public class ChargeWall extends Block{
 	public TextureRegion heatRegion, lightRegion;
-	public float maxEnergy = size * size * 3000;
-	public float maxHeat = size * size * 400;
-	public float healPerRise = 50f;
+	public float maxEnergy = size * size * 4000;
+	public float maxHeat = size * size * 600;
+	public float heatPerRise = 50f;
+	public float healLightStMin = 0.35f;
+	
 	public float healReloadTime = 45f, 
-				 healPerEnr = 75f, 
+				 healPerEnr = 45f, 
 				 healPercent = size * size * 1.5f;
 				
 	public float shootReloadTime = 8f,
-				 shootPerEnr = 100f,
+				 shootPerEnr = 80f,
 				 shootDamage = 100f;
 				
 	public float coolingReloadTime = 30f;
@@ -73,23 +76,25 @@ public class ChargeWall extends Block{
 	
 	public Color effectColor = NHColor.lightSky;
 	public Effect
-		chargeActEffect = Fx.none,
-		hitEffect = Fx.none,
-		shootEffect = Fx.none,
+		chargeActEffect = NHFx.circleSplash,
+		hitEffect = NHFx.circleSplash,
+		shootEffect = NHFx.circleSplash,
 		onDestroyedEffect = Fx.none;
 	
 	Cons<ChargeWallBuild> maxChargeAct = tile -> {
-		chargeActEffect.at(tile);
+		chargeActEffect.at(tile.x, tile.y, effectColor);
+		
 		NHLightningBolt.generateRange(tile, tile.team(), tile.range(), lightningActHits, 2, maxEnergy, effectColor, true, NHLightningBolt.WIDTH);
 	};
 	Cons<ChargeWallBuild> destroyAct = tile -> {
-		onDestroyedEffect.at(tile);
+		onDestroyedEffect.at(tile.x, tile.y, effectColor);
 		
 		NHLightningBolt.generateRange(tile, tile.team(), tile.range(), lightningActHits, 2, maxEnergy, effectColor, true, NHLightningBolt.WIDTH);
 	};
 	Cons<ChargeWallBuild> closestTargetAct = tile -> {
 		NHLightningBolt.generate(tile, tile.target, tile.team, effectColor, NHLightningBolt.WIDTH, 2, target ->{
 			hitEffect.at(target.getX(), target.getY(), tile.angleTo(target), effectColor);
+			shootEffect.at(tile.x, tile.y, effectColor);
 			new SapBulletType() {
 				{
 					damage = shootDamage;
@@ -97,10 +102,9 @@ public class ChargeWall extends Block{
 					sapStrength = 0.45f;
 					length = tile.range();
 					drawSize = tile.range() * 2;
-					shootEffect = shootEffect;
 					hitEffect = hitEffect;
 					hitColor = color = effectColor;
-					despawnEffect = Fx.none;
+					despawnEffect = shootEffect = Fx.none;
 					width = 0.62f;
 					lifetime = 35f;
 				}
@@ -189,6 +193,12 @@ public class ChargeWall extends Block{
 				maxChargeAct.get(this);
 				heatRise();
 			}
+			
+			if(heat > (maxHeat * healLightStMin)){
+				if(Mathf.chance(0.15f * Time.delta)){
+					Fx.reactorsmoke.at(tile.x + Mathf.range(size * tilesize / 2), tile.y + Mathf.range(size * tilesize / 2));
+				}
+			}
 		}
 		
 		@Override
@@ -203,6 +213,7 @@ public class ChargeWall extends Block{
 			if(shootReload < shootReloadTime){
 				shootReload += Time.delta;
 			}else{
+				energy -= shootPerEnr;
 				shootReload = 0f;
 				shootHeat = 1f;
 				closestTargetAct.get(this);
@@ -239,7 +250,7 @@ public class ChargeWall extends Block{
 		
 		protected void heatRise(){
 			energy = 0f;
-			if(heat < maxHeat){heat += healPerRise;}
+			if(heat < maxHeat){heat += heatPerRise;}
 			else {
 				onDestroyed();
 				kill();
@@ -254,6 +265,16 @@ public class ChargeWall extends Block{
 			Draw.alpha(energy / maxEnergy * 4);
 			Draw.rect(lightRegion, x, y);
 			Draw.reset();
+			if(heat > maxHeat * healLightStMin){
+				Draw.blend(Blending.additive);
+				float flash = 1f + ((heat - maxHeat * healLightStMin) / (1f - maxHeat * healLightStMin)) * 5.4f;
+                flash += flash * Time.delta;
+                Draw.color(Color.red, Color.yellow, Mathf.absin(flash, 9f, 1f));
+                Draw.alpha(0.6f);
+                Draw.rect(heatRegion, x, y);
+            }
+            Draw.blend();
+            Draw.reset();
 		}
 		
 		@Override

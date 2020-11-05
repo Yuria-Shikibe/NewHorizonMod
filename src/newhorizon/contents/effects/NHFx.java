@@ -31,10 +31,31 @@ import static arc.math.Angles.*;
 
 public class NHFx implements ContentList {
 	public static
-	Effect blastgenerate, blastAccept, emped, lightSkyCircleSplash;
+	Effect 
+	circleSplash, darkErnExplosion,
+	blastgenerate, blastAccept, emped, lightSkyCircleSplash;
 
 	@Override
 	public void load() {
+		darkErnExplosion = new Effect(25, e -> {
+			color(NHColor.darkEnrColor);
+			e.scaled(6, i -> {
+				stroke(3f * i.fout());
+				circle(e.x, e.y, 3f + i.fin() * 80f);
+			});
+			
+			stroke(1f * e.fout());
+			randLenVectors(e.id + 1, 8, 1f + 60f * e.finpow(), (x, y) -> {
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+			});
+			
+			color(Color.gray);
+
+			randLenVectors(e.id, 5, 2f + 70 * e.finpow(), (x, y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f);
+			});
+		});
+		
 		lightSkyCircleSplash = new Effect(26f, e -> {
 			color(NHColor.lightSky);
 			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
@@ -42,6 +63,12 @@ public class NHFx implements ContentList {
 			});
 		});
 		
+		circleSplash = new Effect(26f, e -> {
+			color(e.color);
+			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * 3f);
+			});
+		});
 		
 		blastgenerate = new Effect(40f, 600, e -> {
 			color(NHColor.darkEnrColor);
@@ -53,7 +80,7 @@ public class NHFx implements ContentList {
 				Fill.circle(e.x + x, e.y + y, e.fout() * 5f);
 			});
 		});
-
+		
 		blastAccept = new Effect(20f, e -> {
 			color(NHColor.darkEnrColor);
 			randLenVectors(e.id, 3, 5 + 30 * e.fin(), (x, y) -> {
