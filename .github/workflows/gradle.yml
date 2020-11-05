@@ -3,6 +3,7 @@
 
 name: Building
 
+on: [push]
 
 jobs:
   buildJar:
