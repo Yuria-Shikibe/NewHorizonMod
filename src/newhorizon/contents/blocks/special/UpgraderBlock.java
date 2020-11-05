@@ -56,6 +56,7 @@ import newhorizon.contents.blocks.special.UpgradeData.*;
 import static mindustry.Vars.*;
 
 public class UpgraderBlock extends Block {
+	public static final int DEFID = -2;
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 
@@ -129,7 +130,7 @@ public class UpgraderBlock extends Block {
 
 		public int link = -1;
 
-		public int upgradingID = -1;
+		public int upgradingID = DEFID;
 		public int lastestSelectID = 0;
 		public float remainTime;
 
@@ -142,6 +143,8 @@ public class UpgraderBlock extends Block {
 		public CoreBlock.CoreBuild core() {return this.team.core();}
 
 		protected boolean isUpgrading() {return remainTime > 0;}
+		
+		
 
 		public boolean canUpgrade() {
 			return !isUpgrading()/*&& Needs */;
@@ -179,12 +182,14 @@ public class UpgraderBlock extends Block {
 				baseData.plusLevel();
 				updateTarget();
 			} else if (ammoDatas.isEmpty()) {
-				return;
+				
 			} else {
 				ammoDatas.get(upgradingID).isUnlocked = true;
 				baseData.selectAmmo = ammoDatas.get(upgradingID).selectAmmo;
 				updateTarget();
 			}
+			
+			upgradingID = DEFID;
 		}
 
 		//UI
@@ -195,7 +200,7 @@ public class UpgraderBlock extends Block {
 				table.add(baseData.toString()).row();
 				
 				baseData.buildTable(table);
-			});
+			}).size(540, 100);
 			dialog.cont.row();
 			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			dialog.cont.row();
@@ -205,7 +210,7 @@ public class UpgraderBlock extends Block {
 		protected void buildUpgradeAmmoDataTable() {
 			dialog.cont.pane(table -> {
 				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
-			});
+			}).size(540, 340);
 			dialog.cont.row();
 			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			dialog.cont.row();
@@ -227,7 +232,7 @@ public class UpgraderBlock extends Block {
 						index++;
 					}
 				}
-			});
+			}).size(540, 340);
 		}
 
 		//Target confirm
@@ -305,7 +310,7 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void updateTile() {
-			if (isUpgrading())updateUpgrading();
+			if (upgradingID != DEFID)updateUpgrading();
 
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setFrom();
