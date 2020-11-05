@@ -4,4 +4,4 @@ author: "Yuria"
 main: "newhorizon.NewHorizon"
 description: "A jar mod."
 version: 1.0
-minGameVersion: 105
+minGameVersion: 110
