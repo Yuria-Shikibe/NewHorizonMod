@@ -69,9 +69,8 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 
 	@Override
-	public void reset() {
-		super.reset();
-		level = 0;
+	public void addText(Table table){
+		table.add("[gray]UpgradeTo: [accent]Level " + level + "[]").left().row();
 	}
 
 	public boolean equals(Object obj) {

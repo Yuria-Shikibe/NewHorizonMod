@@ -51,9 +51,6 @@ import newhorizon.contents.data.UpgradeData.*;
 import static mindustry.Vars.*;
 
 public class UpgradeAmmoData {
-	public Cons2<Table, UpgradeData> addText = (table, entity) -> {
-		table.add("[gray]UpgradeTo: [accent]AmmoType: " + selectAmmo + "[]").left().row();
-	};
 	public int unlockLevel;
 
 	public Effect
@@ -77,12 +74,9 @@ public class UpgradeAmmoData {
 	public boolean isUnlocked, selected;
 
 	@Override
-	public void reset() {
-		super.reset();
-		isUnlocked = false;
-		selected = false;
+	public void addText(Table table){
+		table.add("[gray]AmmoType: [accent]" + name + "[]").left().row();
 	}
-
 	public void write(Writes write) {
 		write.bool(this.isUnlocked);
 		write.bool(this.selected);

@@ -66,10 +66,11 @@ public abstract class UpgradeData {
 	public String name, description;
 	public float costTime;
 	public float timeCostcoefficien = 0f;
+	public int level;
 	public BulletType selectAmmo;
 	public UpgraderBlockBuild from;
 	public Boolf<ImageButton> disable = b -> false;
-	public int level;
+	
 
 	public UpgradeData(
 		String name,
@@ -91,16 +92,12 @@ public abstract class UpgradeData {
 
 	public abstract void read(Reads read, byte revision);
 	public abstract void write(Writes write);
-	@Override
-	public void reset() {
-		from = null;
-		selectAmmo = none;
-	}
-
+	
 	public float costTime() {
 		return costTime;
 	}
-
+	
+	public abstract void addText(Table table);
 	public void buildTable(Table t) {
 		t.row();
 		t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
@@ -120,7 +117,7 @@ public abstract class UpgradeData {
 		}).size(LEN);
 
 		t.pane(table -> {
-			addText.get(table, this);
+			addText(table);
 			table.add("[gray]NeededTime: [accent]" + costTime() + "[]").left().row();
 		}).size(LEN * 6f, LEN).pad(OFFSET);
 
