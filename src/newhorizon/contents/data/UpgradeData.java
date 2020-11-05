@@ -85,18 +85,10 @@ public abstract class UpgradeData {
 		requirements.addAll(items);
 	}
 
-	public void (ItemStack... items) {
-		requirements.addAll(items);
-	}
-
 	public void load() {
 		this.icon = Core.atlas.find(NewHorizon.NHNAME + name);
 	}
 
-
-
-
-	public abstract void set(UpgradeData);
 	public abstract void read(Reads read, byte revision);
 	public abstract void write(Writes write);
 	@Override
