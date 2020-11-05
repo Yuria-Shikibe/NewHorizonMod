@@ -94,8 +94,6 @@ public abstract class UpgradeData implements Cloneable{
 		return costTime;
 	}
 	
-	public abstract Object init();
-	
 	@Override
 	public Object clone (){
 		Object obj = null;
