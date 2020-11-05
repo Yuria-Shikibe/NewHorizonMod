@@ -175,7 +175,7 @@ public class UpgraderBlock extends Block {
 
 		protected void completeUpgrade() {
 			if (upgradingID == -1) {
-				baseData.level += 1;
+				baseData.plusLevel();
 				updateTarget();
 			} else if (ammoDatas.isEmpty()) {
 				return;

@@ -237,6 +237,8 @@ public class UpgradeData{
 			this.level = read.i();
 	    }
 		
+		public void plusLevel(){this.level ++;}
+		
 		public int plusLevel(){return level + 1;}
 		
 		public void buildTable(Table t){
@@ -249,8 +251,8 @@ public class UpgradeData{
 			}).size(LEN);
 			
 			t.pane(table -> {
-				t.add("isOnline?: " + (from!=null)).color(Color.green).row();
-				table.add("[gray]Upgrade: [accent]Level" + plusLevel() + "[]").left().row();
+				table.add("IsOnline?: " + (from!=null)).color(Color.green).row();
+				table.add("[gray]Upgrade: [accent]Level " + plusLevel() + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t.pane(table -> {
