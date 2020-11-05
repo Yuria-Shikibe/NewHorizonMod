@@ -242,7 +242,7 @@ public class ChargeWall extends Block{
 			}else{
 				energy -= healPerEnr;
 				healReload = 0f;
-				Fx.healBlockFull.at(tile.x, tile.y, size, effectColor);
+				Fx.healBlockFull.at(x, y, block.size, effectColor);
 				if(healthf() > 0.975f)this.heat -= healPercent * maxHeat;
 				this.heal(healPercent * this.maxHealth);
 			}

@@ -150,8 +150,7 @@ public class UpgraderBlock extends Block {
 
 		//Data Upgrade
 		public void upgradeBase(UpgradeBaseData data) {
-			if (!canUpgrade())return;
-			if (data.level == maxLevel)return;
+			if (!canUpgrade() || data.level == maxLevel)return;
 			upgradingID = -1;
 			remainTime = needsTime();
 			consumeItems();
@@ -174,6 +173,8 @@ public class UpgraderBlock extends Block {
 		}
 
 		protected void completeUpgrade() {
+			Fx.healBlockFull.at(x, y, block.size, baseColor);
+			
 			if (upgradingID == -1) {
 				baseData.plusLevel();
 				updateTarget();
@@ -289,7 +290,9 @@ public class UpgraderBlock extends Block {
 		public void buildConfiguration(Table table) {
 			table.button(Icon.add, () -> {
 				dialog.cont.clear();
-
+				
+				dialog.cont.add("ID>>" + upgradingID).row();
+				
 				buildUpgradeBaseDataTable();
 				buildUpgradeAmmoDataTable();
 				buildSwitchAmmoTable();

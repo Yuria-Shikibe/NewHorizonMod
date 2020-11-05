@@ -245,7 +245,16 @@ public class UpgradeData{
 			t.row();
 			t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
 			t.row();
-			
+			t.pane(table -> {
+				buildDescriptions(table);
+			}).size(LEN * 10 + OFFSET * 3, LEN * 1.8f + OFFSET);
+			t.row();
+			t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
+			t.row();
+			t.add("").row();
+		}
+		
+		public void buildDescriptions(Table t){
 			t.pane(table -> {
 				table.image(icon).size(LEN);
 			}).size(LEN);
@@ -261,10 +270,6 @@ public class UpgradeData{
 					from.upgradeBase(this);
 				}).size(LEN).disabled(disable);
 			}).size(LEN * 2f, LEN).pad(OFFSET);
-			t.row();
-			t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
-			t.row();
-			t.add("").row();
 		}
 		
 		public void showInfo(UpgradeBaseData data){
