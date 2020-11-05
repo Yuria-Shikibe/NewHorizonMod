@@ -239,7 +239,7 @@ public class UpgradeData{
 		
 		public void plusLevel(){this.level ++;}
 		
-		public int plusLevel(){return level + 1;}
+		public int level(){return level + 1;}
 		
 		public void buildTable(Table t){
 			t.row();
@@ -252,7 +252,7 @@ public class UpgradeData{
 			
 			t.pane(table -> {
 				table.add("IsOnline?: " + (from!=null)).color(Color.green).row();
-				table.add("[gray]Upgrade: [accent]Level " + plusLevel() + "[]").left().row();
+				table.add("[gray]Upgrade: [accent]Level " + level() + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t.pane(table -> {
