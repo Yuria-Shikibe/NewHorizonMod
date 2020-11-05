@@ -23,8 +23,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Build mod jar
-      run: ./gradlew deploy
+    - name: Build with Gradle
+      run: ./gradlew build
+      
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
