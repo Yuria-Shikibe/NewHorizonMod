@@ -298,9 +298,9 @@ public class UpgraderBlock extends Block {
 					t.add("UpgradingID>> " + upgradingID).row();
 					t.add("SelectedID>> " + upgradingID).row();
 					
-					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray)row();
+					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
 					t.image(ammoDatas.get(lastestSelectID).icon).size(LEN * 1.5f).row();
-					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray)row();
+					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
 					
 					buildUpgradeBaseDataTable(t);
 					t.row();
