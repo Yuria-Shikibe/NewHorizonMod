@@ -116,7 +116,7 @@ public class UpgraderBlock extends Block {
 	@Override
 	public void load() {
 		super.load();
-		for (UpgradeAmmoData data : initUpgradeAmmoDatas)data.load();
+		//for (UpgradeAmmoData data : initUpgradeAmmoDatas)data.load();
 		/*for(int i = 1; i < maxLevel; i ++){
 			levelRegions[i] = Core.atlas.find(name + "-" + i);
 		}*/
