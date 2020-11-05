@@ -55,7 +55,7 @@ import static mindustry.Vars.*;
 
 public class UpgradeData{
 	public static final float LEN = 60f, OFFSET = 12f;
-	private static final String offsetSpace = "    "
+	private static final String offsetSpace = "    ";
 	
 	public static abstract class UpgradeBasicData{
 		public float costTime;
@@ -88,7 +88,6 @@ public class UpgradeData{
 			this.costTime = costTime;
 			this.icon = icon;
 			requirements.addAll(items);
-			load();
 		}
 		
 		public void load (){
