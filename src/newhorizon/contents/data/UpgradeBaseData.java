@@ -50,9 +50,6 @@ import newhorizon.contents.items.*;
 import static mindustry.Vars.*;
 
 public class UpgradeBaseData extends UpgradeData {
-	public Cons2<Table, UpgradeData> addText = (table, ((UpgradeBaseData) entity)) -> {
-		table.add("[gray]UpgradeTo: [accent]LevelUP: " + entity.level() + "[]").left().row();
-	};
 
 	public float speedMPL;
 	public float damageMPL;
