@@ -94,10 +94,13 @@ public class UpgradeBaseData extends UpgradeData {
 		return false;
 	}
 
-	public UpgradeBaseData init() {
+	@Override
+	public Object init() {
 		this.level = 0;
 		return this;
 	}
+	
+	
 
 	public String toString() {
 		return

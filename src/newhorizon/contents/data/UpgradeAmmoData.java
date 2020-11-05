@@ -69,7 +69,11 @@ public class UpgradeAmmoData extends UpgradeData{
 		this.unlockLevel = unlockLevel;
 	}
 
-
+	@Override
+	public Object init() {
+		return this;
+	}
+	
 	public int id;
 	public boolean isUnlocked, selected;
 

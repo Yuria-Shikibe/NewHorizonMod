@@ -94,6 +94,19 @@ public abstract class UpgradeData {
 		return costTime;
 	}
 	
+	public abstract Object init();
+	
+	@Override
+	public Object clone (){
+		Object obj = null;
+		try {
+			obj = super.clone();
+		} catch (CloneNotSupportedException err){
+			ui.showErrorMessage(err);
+		}
+		return obj;
+	}
+	
 	public abstract void addText(Table table);
 	public void buildTable(Table t) {
 		t.row();

@@ -127,11 +127,17 @@ public class UpgraderBlock extends Block {
 		}*/
 	}
 
-	public class UpgraderBlockBuild extends Building implements Ranged {
+	public class UpgraderBlockBuild extends Building implements Ranged, Cloneable {
 		
-		public UpgradeBaseData baseData = initUpgradeBaseData.init();
+		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone().init();
 		
-		public Seq<UpgradeAmmoData> ammoDatas = initUpgradeAmmoDatas;
+		public Seq<UpgradeAmmoData> ammoDatas;
+		
+		protected void setAmmoDatas(Seq<UpgradeAmmoData> datas){
+			for (UpgradeAmmoData : data){
+				ammoDatas.add( (UpgradeAmmoData)data.clone().init() );
+			}
+		}
 
 		public int link = -1;
 
@@ -341,6 +347,7 @@ public class UpgraderBlock extends Block {
 				setFrom();
 				setAmmoData();
 				updateTarget();
+				setAmmoDatas(initUpgradeAmmoDatas);
 			});
 		}
 
@@ -354,6 +361,7 @@ public class UpgraderBlock extends Block {
 		public void placed() {
 			super.placed();
 			setFrom();
+			setAmmoDatas(initUpgradeAmmoDatas);
 		}
 		//Draw Methods
 
