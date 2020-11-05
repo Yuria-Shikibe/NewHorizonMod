@@ -52,6 +52,7 @@ import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.bullets.special.NHLightningBolt;
 import newhorizon.contents.blocks.special.UpgradeData.*;
+import static newhorizon.contents.blocks.special.UpgradeData.*;
 
 import static mindustry.Vars.*;
 
@@ -187,6 +188,7 @@ public class UpgraderBlock extends Block {
 				ammoDatas.get(upgradingID).isUnlocked = true;
 				baseData.selectAmmo = ammoDatas.get(upgradingID).selectAmmo;
 				updateTarget();
+				lastestSelectID = upgradingID;
 			}
 			
 			upgradingID = DEFID;
@@ -200,37 +202,29 @@ public class UpgraderBlock extends Block {
 				table.add(baseData.toString()).row();
 				
 				baseData.buildTable(table);
-			});
-			dialog.cont.row();
-			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
-			dialog.cont.row();
+			}).size(LEN * 10 + OFFSET * 3, LEN * 2.6f + OFFSET);
 		}
 
 		//UI
 		protected void buildUpgradeAmmoDataTable() {
 			dialog.cont.pane(table -> {
 				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
-			});
-			dialog.cont.row();
-			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
-			dialog.cont.row();
+			}).size(LEN * 10 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
 
 		protected void buildSwitchAmmoTable() {
 			dialog.cont.pane(table -> {
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if (ammoData.isUnlocked && !ammoData.selected) {
-						if ((index % 5) == 0)table.row();
-						table.button(new TextureRegionDrawable(ammoData.icon), () -> {
-							ammoDatas.get(lastestSelectID).selected = false;
-							baseData.selectAmmo = ammoData.selectAmmo;
-							ammoData.selected = true;
-							lastestSelectID = ammoData.id;
-							updateTarget();
-						}).size(60).disabled(b -> scalaTarget() == null);
-						index++;
-					}
+					if ((index % 5) == 0)table.row();
+					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
+						ammoDatas.get(lastestSelectID).selected = false;
+						baseData.selectAmmo = ammoData.selectAmmo;
+						ammoData.selected = true;
+						lastestSelectID = ammoData.id;
+						updateTarget();
+					}).size(60).disabled(b -> ammoDatas.get(lastestSelectID).selected || scalaTarget() == null);
+					index++;
 				}
 			}).size(60 * 8f, 70);
 		}
@@ -315,7 +309,7 @@ public class UpgraderBlock extends Block {
 
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setFrom();
-				baseData.selectAmmo = ammoDatas.get(this.lastestSelectID).selectAmmo;
+				setAmmoData();
 				updateTarget();
 			});
 		}
@@ -400,6 +394,14 @@ public class UpgraderBlock extends Block {
 			for (UpgradeAmmoData ammoData : ammoDatas)ammoData.from = this;
 		}
 
+		protected void setAmmoData() {
+			
+			if(lastestSelectID > 0 && ammoDatas.get(lastestSelectID).isUnlocked){
+				baseData.selectAmmo = ammoDatas.get(lastestSelectID).selectAmmo;
+			}else baseData.selectAmmo = UpgradeData.none;
+			
+		}
+		
 		protected int drawLevel() {
 			return baseData.level += 1;
 		}
