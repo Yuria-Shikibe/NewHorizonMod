@@ -50,7 +50,7 @@ import newhorizon.NewHorizon;
 
 import static mindustry.Vars.*;
 
-public abstract class UpgradeData {
+public abstract class UpgradeData implements Cloneable{
 	public static final String offsetSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
 	public static final BulletType none = new BasicBulletType(0, 1, "none") {
@@ -102,7 +102,7 @@ public abstract class UpgradeData {
 		try {
 			obj = super.clone();
 		} catch (CloneNotSupportedException err){
-			ui.showErrorMessage(err);
+			ui.showErrorMessage(err.toString());
 		}
 		return obj;
 	}

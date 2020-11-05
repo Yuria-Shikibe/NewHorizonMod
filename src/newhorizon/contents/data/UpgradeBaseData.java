@@ -93,12 +93,6 @@ public class UpgradeBaseData extends UpgradeData {
 		}
 		return false;
 	}
-
-	@Override
-	public Object init() {
-		this.level = 0;
-		return this;
-	}
 	
 	
 
