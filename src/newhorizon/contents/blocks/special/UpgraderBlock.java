@@ -195,8 +195,8 @@ public class UpgraderBlock extends Block {
 		}
 
 		//UI
-		protected void buildUpgradeBaseDataTable() {
-			dialog.cont.pane(table -> {
+		protected void buildUpgradeBaseDataTable(Table t) {
+			t.pane(table -> {
 				table.add("UpgradeTargetInfo->>").row();
 
 				table.add(baseData.toString()).row();
@@ -206,14 +206,14 @@ public class UpgraderBlock extends Block {
 		}
 
 		//UI
-		protected void buildUpgradeAmmoDataTable() {
-			dialog.cont.pane(table -> {
+		protected void buildUpgradeAmmoDataTable(Table t) {
+			t.pane(table -> {
 				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
 			}).size(LEN * 10 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
 
-		protected void buildSwitchAmmoTable() {
-			dialog.cont.pane(table -> {
+		protected void buildSwitchAmmoTable(Table t) {
+			t.pane(table -> {
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
 					if (ammoDatas.get(lastestSelectID).selected)continue;
@@ -289,20 +289,22 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void buildConfiguration(Table table) {
 			table.button(Icon.add, () -> {
-				dialog.cont.clear();
+				dialog.cont.pane(t -> {
+					t.add("UpgradingID>> " + upgradingID).row();
+					t.add("SelectedID>> " + upgradingID).row();
 				
-				dialog.cont.add("UpgradingID>> " + upgradingID).row();
-				dialog.cont.add("SelectedID>> " + upgradingID).row();
-				
-				buildUpgradeBaseDataTable();
-				dialog.cont.row();
-				buildUpgradeAmmoDataTable();
-				dialog.cont.row();
-				buildSwitchAmmoTable();
-
-				dialog.cont.row();
+					buildUpgradeBaseDataTable(t);
+					dialog.cont.row();
+					buildUpgradeAmmoDataTable(t);
+					dialog.cont.row();
+					buildSwitchAmmoTable(t);
+	
+					t.row();
+					
+				}).size(540f);
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
 				dialog.show();
+				
 			}).size(60f);
 		}
 
