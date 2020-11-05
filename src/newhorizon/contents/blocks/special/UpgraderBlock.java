@@ -289,19 +289,21 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void buildConfiguration(Table table) {
 			table.button(Icon.add, () -> {
+				dialog.cont.clear();
 				dialog.cont.pane(t -> {
 					t.add("UpgradingID>> " + upgradingID).row();
 					t.add("SelectedID>> " + upgradingID).row();
 				
 					buildUpgradeBaseDataTable(t);
-					dialog.cont.row();
+					t.row();
 					buildUpgradeAmmoDataTable(t);
-					dialog.cont.row();
+					t.row();
 					buildSwitchAmmoTable(t);
 	
 					t.row();
 					
-				}).size(540f);
+				}).size(440f);
+				dialog.cont.row();
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
 				dialog.show();
 				
