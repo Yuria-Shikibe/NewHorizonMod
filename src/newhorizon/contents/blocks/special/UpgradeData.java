@@ -144,7 +144,7 @@ public class UpgradeData{
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t.pane(table -> {
-				table.button(Icon.infoCircle, this::showInfo).size(LEN);
+				table.button(Icon.infoCircle, () -> showInfo(this)).size(LEN);
 				table.button(Icon.hammer, () -> {
 					from.upgradeAmmo(this);
 				}).size(LEN).disabled(disable);
@@ -251,7 +251,7 @@ public class UpgradeData{
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t.pane(table -> {
-				table.button(Icon.infoCircle, this::showInfo).size(LEN);
+				table.button(Icon.infoCircle, () -> showInfo(this)).size(LEN);
 				table.button(Icon.hammer, () -> {
 					from.upgradeBase(this);
 				}).size(LEN).disabled(disable);
