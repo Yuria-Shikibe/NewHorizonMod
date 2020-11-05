@@ -25,6 +25,8 @@ jobs:
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
-        name: NewHorizon
-        path: ./gradle/wrapper/gradle-warpper.jar
+        name: dist-without-markdown
+        path: |
+           dist
+           !dist/**/*.md
 
