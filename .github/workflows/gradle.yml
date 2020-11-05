@@ -3,14 +3,9 @@
 
 name: Building
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build:
+  buildJar:
 
     runs-on: ubuntu-latest
 
