@@ -213,11 +213,12 @@ public class UpgraderBlock extends Block {
 		protected void buildUpgradeBaseDataTable(Table t) {
 			t.pane(table -> {
 				table.add("UpgradeTargetInfo->>").row();
-
 				table.add(baseData.toString()).row();
-				
 				baseData.buildTable(table);
-			}).size(LEN * 10 + OFFSET * 3, LEN * 2.6f + OFFSET);
+			}).left().size(LEN * 10 + OFFSET * 3, LEN * 2.6f + OFFSET);
+			t.pane(table -> {
+				table.button("Back", dialog::hide).size(120f, 50f);
+			}).right().size(140f, 60f);
 		}
 
 		//UI
@@ -232,7 +233,7 @@ public class UpgraderBlock extends Block {
 				int index = 0;
 				
 				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if (ammoDatas.get(lastestSelectID).selected || ammoDatas.get(lastestSelectID).isUnlocked)continue;
+					if (ammoDatas.get(lastestSelectID).selected || !ammoDatas.get(lastestSelectID).isUnlocked)continue;
 					if ((index % 5) == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
