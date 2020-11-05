@@ -57,7 +57,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public float defenceMPL;
 	
 	public UpgradeBaseData(){
-		super("UpgradeBuilding", "N/A", none, 460f, {});
+		super("UpgradeBuilding", "N/A", none, 460f, new ItemStack());
 	}
 	
 	public UpgradeBaseData(
