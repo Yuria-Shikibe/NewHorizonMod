@@ -240,13 +240,16 @@ public class UpgradeData{
 		public int plusLevel(){return level + 1;}
 		
 		public void buildTable(Table t){
-			t.add("isOnline?: " + (from!=null)).color(Color.green).row();
+			t.row();
+			t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
+			t.row();
 			
 			t.pane(table -> {
 				table.image(icon).size(LEN);
 			}).size(LEN);
 			
 			t.pane(table -> {
+				t.add("isOnline?: " + (from!=null)).color(Color.green).row();
 				table.add("[gray]Upgrade: [accent]Level" + plusLevel() + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
@@ -256,6 +259,10 @@ public class UpgradeData{
 					from.upgradeBase(this);
 				}).size(LEN).disabled(disable);
 			}).size(LEN * 2f, LEN).pad(OFFSET);
+			t.row();
+			t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
+			t.row();
+			t.add("").row();
 		}
 		
 		public void showInfo(UpgradeBaseData data){
