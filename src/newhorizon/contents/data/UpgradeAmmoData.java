@@ -51,7 +51,7 @@ import newhorizon.contents.data.UpgradeData.*;
 import static mindustry.Vars.*;
 
 public class UpgradeAmmoData {
-	public Cons2<Table, T extends UpgradeData> addText = (table, entity) -> {
+	public Cons2<Table, UpgradeData> addText = (table, entity) -> {
 		table.add("[gray]UpgradeTo: [accent]AmmoType: " + selectAmmo + "[]").left().row();
 	};
 	public int unlockLevel;

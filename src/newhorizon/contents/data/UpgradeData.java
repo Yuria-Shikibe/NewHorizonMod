@@ -62,7 +62,7 @@ public abstract class UpgradeData {
 
 	public TextureRegion icon;
 	public Cons<UpgradeData> movement = from -> from.upgradeData(this);
-	public Cons2<Table, T extends UpgradeData> addText;
+	public Cons2<Table, UpgradeData> addText;
 	public String name, description;
 	public float costTime;
 	public float timeCostcoefficien = 0f;
