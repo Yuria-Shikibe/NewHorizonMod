@@ -131,11 +131,11 @@ public class UpgraderBlock extends Block {
 		
 		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
 		
-		public Seq<UpgradeAmmoData> ammoDatas;
+		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
 		
 		protected void setAmmoDatas(Seq<UpgradeAmmoData> datas){
 			for (UpgradeAmmoData data : datas){
-				ammoDatas.add( (UpgradeAmmoData)data.clone() );
+				ammoDatas.add( (UpgradeAmmoData)(data.clone()) );
 			}
 		}
 
