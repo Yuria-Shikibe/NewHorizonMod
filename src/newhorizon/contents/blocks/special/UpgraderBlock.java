@@ -217,7 +217,7 @@ public class UpgraderBlock extends Block {
 		//UI
 		protected void buildUpgradeAmmoDataTable(Table t) {
 			t.pane(table -> {
-				for (UpgradeAmmoDataBuild ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
+				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
 			}).size(LEN * 10 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
 
