@@ -23,9 +23,9 @@ jobs:
       run: ./gradlew build
       
     
-    - run: mkdir finish && cp target/*.jar finish
+    
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
         name: NewHorizon
-        path: finish
+        path: build/libs
