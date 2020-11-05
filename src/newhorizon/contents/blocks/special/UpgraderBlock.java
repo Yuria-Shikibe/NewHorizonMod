@@ -251,7 +251,7 @@ public class UpgraderBlock extends Block {
 						cont.row();
 						cont.button("Leave", this::hide).size(120, 50).pad(4);
 					}}.show();
-				}).size(60).disabled(b -> baseData.selectAmmo.name != "none");
+				}).size(60).disabled(b -> index == 0);
 			}).size(60 * 8f, 70);
 		}
 

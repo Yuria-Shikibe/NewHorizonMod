@@ -46,6 +46,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
 import newhorizon.contents.items.*;
+import newhorizon.NewHorizon;
 
 import static mindustry.Vars.*;
 
