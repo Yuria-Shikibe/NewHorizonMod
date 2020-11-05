@@ -48,10 +48,6 @@ import mindustry.world.meta.*;
 import newhorizon.NewHorizon;
 
 import newhorizon.contents.data.*;
-import newhorizon.contents.data.UpgradeeData*;
-import newhorizon.contents.data.UpgradeBaseData*;
-import newhorizon.contents.data.UpgradeAmmoData*;
-
 import newhorizon.contents.interfaces.Scalablec;
 import newhorizon.contents.items.*;
 import newhorizon.contents.effects.NHFx;
