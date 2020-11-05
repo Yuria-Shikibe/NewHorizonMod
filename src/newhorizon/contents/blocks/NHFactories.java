@@ -150,7 +150,7 @@ public class NHFactories implements ContentList {
 
 		irayrondPanelFactory = new GenericSmelter("irayrond-panel-factory") {
 			{
-				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.plastanium, 60, NHItems.emergencyReplace, 75, Items.graphite, 30));
+				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.plastanium, 60, Items.surgeAlloy, 75, Items.graphite, 30));
 				craftEffect = new Effect(30f, e -> {
 					Angles.randLenVectors(e.id, 6, 4f + e.fin() * 12f, (x, y) -> {
 						Draw.color(NHLiquids.irdryonFluid.color);
@@ -165,7 +165,7 @@ public class NHFactories implements ContentList {
 				hasPower = hasLiquids = hasItems = true;
 				flameColor = NHItems.fusionEnergy.color;
 				consumes.liquid(NHLiquids.xenAlpha, 0.1f);
-				consumes.items(new ItemStack(NHItems.presstanium, 4), new ItemStack(NHItems.emergencyReplace, 2));
+				consumes.items(new ItemStack(NHItems.presstanium, 4), new ItemStack(Items.surgeAlloy, 2));
 				consumes.power(2f);
 			}
 		};
@@ -186,21 +186,21 @@ public class NHFactories implements ContentList {
 
 		seniorProcessorFactory = new GenericSmelter("processor-senior-factory") {
 			{
-				requirements(Category.crafting, with(NHItems.emergencyReplace, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.thorium, 25));
+				requirements(Category.crafting, with(Items.surgeAlloy, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.thorium, 25));
 				craftEffect = Fx.none;
 				outputItem = new ItemStack(NHItems.seniorProcessor, 4);
 				craftTime = 120f;
 				size = 2;
 				hasPower = hasLiquids = hasItems = true;
 				flameColor = NHItems.fusionEnergy.color;
-				consumes.items(new ItemStack(NHItems.emergencyReplace, 2), new ItemStack(NHItems.juniorProcessor, 4));
+				consumes.items(new ItemStack(Items.surgeAlloy, 2), new ItemStack(NHItems.juniorProcessor, 4));
 				consumes.power(4f);
 			}
 		};
 
 		irdryonFluidFactory = new GenericCrafter("irdryon-fluid-factory") {
 			{
-				requirements(Category.crafting, with(NHItems.emergencyReplace, 20, NHItems.seniorProcessor, 50, NHItems.presstanium, 80, NHItems.irayrondPanel, 65));
+				requirements(Category.crafting, with(Items.surgeAlloy, 20, NHItems.seniorProcessor, 50, NHItems.presstanium, 80, NHItems.irayrondPanel, 65));
 				craftEffect = Fx.smeltsmoke;
 				outputLiquid = new LiquidStack(NHLiquids.irdryonFluid, 12f);
 				craftTime = 120f;
@@ -387,14 +387,14 @@ public class NHFactories implements ContentList {
 		}};
 		
 		multipleSurgeAlloyFactory = new GenericCrafter("multiple-surge-alloy-factory"){{
-			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, Items.plastanium, 40, NHItems.presstanium, 100, NHItems.emergencyReplace, 40));
+			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, Items.plastanium, 40, NHItems.presstanium, 100, Items.surgeAlloy, 40));
 				craftEffect = new Effect(30f, e -> {
 					Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
-						Draw.color(NHItems.emergencyReplace.color);
+						Draw.color(Items.surgeAlloy.color);
 						Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
 					});
 				});
-				outputItem = new ItemStack(NHItems.emergencyReplace, 4);
+				outputItem = new ItemStack(Items.surgeAlloy, 4);
 				craftTime = 60f;
 				itemCapacity = 24;
 				liquidCapacity = 20f;
@@ -413,7 +413,7 @@ public class NHFactories implements ContentList {
 		}};
 		
 		setonAlloyFactory = new GenericCrafter("seton-alloy-factory"){{
-			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, NHItems.presstanium, 100, NHItems.emergencyReplace, 40));
+			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, NHItems.presstanium, 100, Items.surgeAlloy, 40));
 				craftEffect = new Effect(30f, e -> {
 					Angles.randLenVectors(e.id, 6, 4f + e.fin() * 12f, (x, y) -> {
 						Draw.color(NHLiquids.irdryonFluid.color);
@@ -467,7 +467,7 @@ public class NHFactories implements ContentList {
 		}};
 		
 		xenGammaFactory = new GenericCrafter("xen-gamma-factory"){{
-			requirements(Category.crafting, with(NHItems.irayrondPanel, 70, NHItems.seniorProcessor, 60, NHItems.emergencyReplace, 20, Items.metaglass, 40));
+			requirements(Category.crafting, with(NHItems.irayrondPanel, 70, NHItems.seniorProcessor, 60, Items.surgeAlloy, 20, Items.metaglass, 40));
 				craftEffect = new Effect(30f, e -> {
 					Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
 						Draw.color(NHLiquids.xenGamma.color);

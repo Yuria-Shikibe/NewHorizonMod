@@ -258,7 +258,7 @@ public class UpgradeData{
 			}).size(LEN * 2f, LEN).pad(OFFSET);
 		}
 		
-		public void showInfo(UpgradeAmmoData data){
+		public void showInfo(UpgradeBaseData data){
 			new Dialog(""){{
 				setFillParent(true);
 				cont.margin(15f);
