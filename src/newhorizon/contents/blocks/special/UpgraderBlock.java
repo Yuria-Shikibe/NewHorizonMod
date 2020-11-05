@@ -224,8 +224,9 @@ public class UpgraderBlock extends Block {
 		protected void buildSwitchAmmoTable(Table t) {
 			t.pane(table -> {
 				int index = 0;
+				
 				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if (ammoDatas.get(lastestSelectID).selected)continue;
+					if (ammoDatas.get(lastestSelectID).selected || ammoDatas.get(lastestSelectID).isUnlocked)continue;
 					if ((index % 5) == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
@@ -236,6 +237,21 @@ public class UpgraderBlock extends Block {
 					}).size(60).disabled(b -> scalaTarget() == null);
 					index++;
 				}
+				table.button(Icon.infoCircle, () -> {
+					new Dialog("") {{
+						setFillParent(true);
+						cont.margin(15f);
+						cont.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
+						cont.image(ammoDatas.get(lastestSelectID).icon).size(LEN * 1.5f).row();
+						cont.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
+						cont.add("<< Ammo >>").color(Pal.accent).row();
+						cont.add("Description: ").color(Pal.accent).left().row();
+						cont.add(offsetSpace + Core.bundle.get(ammoDatas.get(lastestSelectID).description)).color(Color.lightGray).left().row();
+						cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
+						cont.row();
+						cont.button("Leave", this::hide).size(120, 50).pad(4);
+					}}.show();
+				}).size(60).disabled(b -> baseData.selectAmmo.name != "none");
 			}).size(60 * 8f, 70);
 		}
 
@@ -302,19 +318,14 @@ public class UpgraderBlock extends Block {
 					t.add("UpgradingID>> " + upgradingID).row();
 					t.add("SelectedID>> " + upgradingID).row();
 					
-					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
-					t.image(ammoDatas.get(lastestSelectID).icon).size(LEN * 1.5f).row();
-					t.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
-					
 					buildUpgradeBaseDataTable(t);
 					t.row();
 					buildUpgradeAmmoDataTable(t);
 					t.row();
 					buildSwitchAmmoTable(t);
-	
 					t.row();
 					
-				}).size(640f);
+				}).size(550f);
 				dialog.cont.row();
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
 				dialog.show();

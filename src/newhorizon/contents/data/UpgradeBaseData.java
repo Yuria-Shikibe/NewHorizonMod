@@ -70,6 +70,11 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 
 	@Override
+	public void load() {
+		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
+	}
+	
+	@Override
 	public void addText(Table table){
 		table.add("[gray]UpgradeTo: [accent]Level " + level + "[]").left().row();
 	}

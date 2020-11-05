@@ -51,9 +51,9 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.*;
 
 public abstract class UpgradeData {
-	protected static final String offsetSpace = "    ";
+	public static final String offsetSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
-	public static final BulletType none = new BasicBulletType(0, 1, "bullet") {
+	public static final BulletType none = new BasicBulletType(0, 1, "none") {
 		{
 			instantDisappear = true;
 		}
