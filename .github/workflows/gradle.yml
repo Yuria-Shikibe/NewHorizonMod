@@ -30,6 +30,5 @@ jobs:
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ NewHorizon }}
-        path: build/libs/${{ NewHorizon }}.jar
+        name: NewHorizon
 
