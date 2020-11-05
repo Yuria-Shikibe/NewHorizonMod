@@ -25,8 +25,5 @@ jobs:
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
-        name: dist-without-markdown
-        path: |
-           dist
-           !dist/**/*.md
-
+        name: NewHorizon
+        path: finish
