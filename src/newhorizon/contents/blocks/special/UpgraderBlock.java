@@ -144,7 +144,7 @@ public class UpgraderBlock extends Block {
 		protected boolean isUpgrading() {return remainTime > 0;}
 
 		public boolean canUpgrade() {
-			return !isUpgrading() && scalaTarget().isConnected()/*&& Needs */;
+			return !isUpgrading()/*&& Needs */;
 		}
 
 
@@ -193,7 +193,7 @@ public class UpgraderBlock extends Block {
 
 				table.add(baseData.toString()).row();
 				
-				
+				baseData.buildTable(table);
 			});
 			dialog.cont.row();
 			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
