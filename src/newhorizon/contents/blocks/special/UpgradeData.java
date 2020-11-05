@@ -61,10 +61,11 @@ public class UpgradeData{
 		public float costTime;
 		public float timeCostcoefficien = 0.125f;
 		
+		public abstract void buildDescriptions(Table t);
 		
 		public UpgraderBlockBuild from;
 		public final Seq<ItemStack> requirements = new Seq<>();
-		public Boolf<ImageButton> disable = b -> from == null;
+		public Boolf<ImageButton> disable = b -> false;
 	}
 	
 	public static class UpgradeAmmoData extends UpgradeBasicData{
@@ -112,7 +113,7 @@ public class UpgradeData{
 		
 		public void buildTable(Table t){
 			t.row();
-			t.add("isOnline?: " + (from!=null)).color(Color.green).row();
+			
 			t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
 			t.row();
 			t.pane(table -> {
@@ -236,6 +237,7 @@ public class UpgradeData{
 		public int plusLevel(){return level + 1;}
 		
 		public void buildDescriptions(Table t){
+			t.add("isOnline?: " + (from!=null)).color(Color.green).row();
 			/* length = 40 * 12 + 20(offset) * 2 = 560
 			   width = 40 * 4 = 160
 			 [Icon]			 [Bs]

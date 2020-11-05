@@ -116,7 +116,7 @@ public class UpgraderBlock extends Block {
 	@Override
 	public void load() {
 		super.load();
-		//for (UpgradeAmmoData data : initUpgradeAmmoDatas)data.load();
+		for (UpgradeAmmoData data : initUpgradeAmmoDatas)data.load();
 		/*for(int i = 1; i < maxLevel; i ++){
 			levelRegions[i] = Core.atlas.find(name + "-" + i);
 		}*/
@@ -133,10 +133,14 @@ public class UpgraderBlock extends Block {
 		public float remainTime;
 
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
-
-		protected boolean isUpgrading() {
-			return remainTime > 0;
+		
+		protected void consumeItems(){
+			
 		}
+
+		public CoreBuild core() {return this.team.core();}
+
+		protected boolean isUpgrading() {return remainTime > 0;}
 
 		public boolean canUpgrade() {
 			return !isUpgrading() && scalaTarget().isConnected()/*&& Needs */;
@@ -149,14 +153,14 @@ public class UpgraderBlock extends Block {
 			if (data.level == maxLevel)return;
 			upgradingID = -1;
 			remainTime = needsTime();
-			// consumes
+			consumeItems();
 		}
 
 		public void upgradeAmmo(UpgradeAmmoData data) {
 			if (!canUpgrade())return;
 			upgradingID = data.id;
 			remainTime = needsTime();
-			// consumes
+			consumeItems();
 		}
 
 		//Updates
@@ -376,9 +380,7 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void afterRead() {
-			setFrom();
-			baseData.selectAmmo = ammoDatas.get(this.lastestSelectID).selectAmmo;
-			updateTarget();
+			
 		}
 
 		protected void setFrom() {
