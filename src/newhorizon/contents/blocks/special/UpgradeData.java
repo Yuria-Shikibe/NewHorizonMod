@@ -61,7 +61,7 @@ public class UpgradeData{
 		public float costTime;
 		public float timeCostcoefficien = 0.125f;
 		
-		public abstract void buildDescriptions(Table t);
+		public abstract void buildTable(Table t);
 		
 		public UpgraderBlockBuild from;
 		public final Seq<ItemStack> requirements = new Seq<>();
@@ -239,7 +239,7 @@ public class UpgradeData{
 		
 		public int plusLevel(){return level + 1;}
 		
-		public void buildDescriptions(Table t){
+		public void buildTable(Table t){
 			t.add("isOnline?: " + (from!=null)).color(Color.green).row();
 			
 			t.pane(table -> {
