@@ -344,10 +344,10 @@ public class UpgraderBlock extends Block {
 			if (upgradingID != DFTID)updateUpgrading();
 
 			Events.on(EventType.WorldLoadEvent.class, e -> {
+				setAmmoDatas(initUpgradeAmmoDatas);
 				setFrom();
 				setAmmoData();
 				updateTarget();
-				setAmmoDatas(initUpgradeAmmoDatas);
 			});
 		}
 
@@ -360,8 +360,8 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void placed() {
 			super.placed();
-			setFrom();
 			setAmmoDatas(initUpgradeAmmoDatas);
+			setFrom();
 		}
 		//Draw Methods
 
