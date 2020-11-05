@@ -130,14 +130,14 @@ public abstract class UpgradeData implements Cloneable{
 		}).size(LEN * 6f, LEN).pad(OFFSET);
 
 		t.pane(table -> {
-			table.button(Icon.infoCircle, () -> showInfo(this)).size(LEN);
+			table.button(Icon.infoCircle, () -> showInfo()).size(LEN);
 			table.button(Icon.hammer, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(disable);
 		}).size(LEN * 2f, LEN).pad(OFFSET);
 	}
 
-	public void showInfo(UpgradeData data) {
+	public void showInfo() {
 		new Dialog("") {
 			{
 				setFillParent(true);

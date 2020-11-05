@@ -214,11 +214,14 @@ public class UpgraderBlock extends Block {
 			t.pane(table -> {
 				table.add("UpgradeTargetInfo->>").row();
 				table.add(baseData.toString()).row();
-				baseData.buildTable(table);
-			}).left().size(LEN * 10 + OFFSET * 3, LEN * 2.6f + OFFSET);
+			}).left().size(LEN * 10 + OFFSET * 3 - 150, 80f);
 			t.pane(table -> {
 				table.button("Back", dialog::hide).size(120f, 50f);
-			}).right().size(140f, 60f);
+			}).pad(10f).size(140f, 80f);
+			t.row();
+			t.pane(table -> {
+				baseData.buildTable(table);
+			}).left().size(LEN * 10 + OFFSET * 3, LEN * 2.6f + OFFSET);
 		}
 
 		//UI
