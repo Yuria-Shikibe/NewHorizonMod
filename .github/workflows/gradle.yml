@@ -22,8 +22,10 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       
+    - run: mvn -B package --file pom.xml
+    - run: mkdir finish && cp target/*.jar finish
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
         name: NewHorizon
-        path: finish.NewHorizon.jar
+        path: finish
