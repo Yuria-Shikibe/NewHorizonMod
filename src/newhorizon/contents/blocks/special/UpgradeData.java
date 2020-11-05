@@ -57,7 +57,7 @@ public class UpgradeData{
 	public static final float LEN = 60f, OFFSET = 12f;
 	private static final String offsetSpace = "    ";
 	
-	public static abstract class UpgradeBasicData{
+	public abstract class UpgradeBasicData{
 		public float costTime;
 		public float timeCostcoefficien = 0.125f;
 		
@@ -68,7 +68,7 @@ public class UpgradeData{
 		public Boolf<ImageButton> disable = b -> false;
 	}
 	
-	public static class UpgradeAmmoData extends UpgradeBasicData{
+	public class UpgradeAmmoData extends UpgradeBasicData{
 		public Effect 
 			chargeEffect = Fx.none, 
 			chargeBeginEffect = Fx.none;
@@ -175,7 +175,7 @@ public class UpgradeData{
 	    }
 	}
 	
-	public static class UpgradeBaseData extends UpgradeBasicData{
+	public class UpgradeBaseData extends UpgradeBasicData{
 		public int level = 0;
 		public BulletType selectAmmo;
 		
