@@ -261,10 +261,15 @@ public class UpgraderBlock extends Block {
 			} else if (!(other instanceof Scalablec)) {
 				ui.showErrorMessage("Failed to connect, target doesn't implement @Interface Scalablec");
 				return true;
-			} else if (!other.isConnected() && other.team == team && other.within(tile, range())) {
-				setLink(other.pos());
-				return false;
+			} else { 
+				Scalablec target = (Scalablec)other;
+			
+				if (!target.isConnected() && other.team == team && other.within(tile, range())) {
+					setLink(other.pos());
+					return false;
+				}
 			}
+			
 			return true;
 		}
 
@@ -292,7 +297,7 @@ public class UpgraderBlock extends Block {
 		public void updateTile() {
 			if (isUpgrading())updateUpgrading();
 
-			Events.on(EventType.WorldLoadEvent, e -> {
+			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setFrom();
 				baseData.selectAmmo = ammoDatas.get(this.lastestSelectID).selectAmmo;
 				updateTarget();
