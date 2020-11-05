@@ -228,11 +228,11 @@ public class UpgraderBlock extends Block {
 							ammoData.selected = true;
 							lastestSelectID = ammoData.id;
 							updateTarget();
-						}).size(60);
+						}).size(60).disabled(b -> scalaTarget() == null);
 						index++;
 					}
 				}
-			});
+			}).size(60 * 8f, 70);
 		}
 
 		//Target confirm
@@ -296,7 +296,8 @@ public class UpgraderBlock extends Block {
 			table.button(Icon.add, () -> {
 				dialog.cont.clear();
 				
-				dialog.cont.add("ID>>" + upgradingID).row();
+				dialog.cont.add("UpgradingID>> " + upgradingID).row();
+				dialog.cont.add("SelectedID>> " + upgradingID).row();
 				
 				buildUpgradeBaseDataTable();
 				buildUpgradeAmmoDataTable();
