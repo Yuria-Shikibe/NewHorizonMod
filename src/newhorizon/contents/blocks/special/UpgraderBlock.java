@@ -216,6 +216,7 @@ public class UpgraderBlock extends Block {
 			dialog.cont.pane(table -> {
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
+					if (ammoDatas.get(lastestSelectID).selected)continue;
 					if ((index % 5) == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
@@ -223,7 +224,7 @@ public class UpgraderBlock extends Block {
 						ammoData.selected = true;
 						lastestSelectID = ammoData.id;
 						updateTarget();
-					}).size(60).disabled(b -> ammoDatas.get(lastestSelectID).selected || scalaTarget() == null);
+					}).size(60).disabled(b -> scalaTarget() == null);
 					index++;
 				}
 			}).size(60 * 8f, 70);
@@ -294,7 +295,9 @@ public class UpgraderBlock extends Block {
 				dialog.cont.add("SelectedID>> " + upgradingID).row();
 				
 				buildUpgradeBaseDataTable();
+				dialog.cont.row();
 				buildUpgradeAmmoDataTable();
+				dialog.cont.row();
 				buildSwitchAmmoTable();
 
 				dialog.cont.row();
