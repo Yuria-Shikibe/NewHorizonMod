@@ -53,8 +53,8 @@ import newhorizon.contents.items.*;
 import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.bullets.special.NHLightningBolt;
-import newhorizon.contents.blocks.special.UpgradeData.*;
-import static newhorizon.contents.blocks.special.UpgradeData.*;
+import newhorizon.contents.data.*;
+import static newhorizon.contents.data.UpgradeData.*;
 
 import static mindustry.Vars.*;
 
@@ -110,7 +110,7 @@ public class UpgraderBlock extends Block {
 
 		bars.add("upgradeProgress",
 			(UpgraderBlockBuild entity) -> new Bar(
-				() -> "UpgradeProgress",
+				() -> "RestTime",
 				() -> Color.valueOf("#FF732A"),
 				() -> entity.remainTime / entity.needsTime()
 			)
@@ -153,14 +153,17 @@ public class UpgraderBlock extends Block {
 			return !isUpgrading()/*&& Needs */;
 		}
 
-		protected float needsTime(UpgradeData data) {
-			return data.costTime * (1 + data.timeCostcoefficien * data.level);
+		protected float needsTime() {
+			return 
+				upgradingID == DFTID ? 0 : 
+				upgradingID == -1	? baseData.costTime * (1 + baseData.timeCostcoefficien * baseData.level) :
+				upgradingID >= 0 	? ammoDatas.get(upgradingID).costTime :
+				0;
 		}
 		
 		//Data Upgrade
 		public void upgradeData(UpgradeData data){
 			if(!canUpgrade())return;
-			remainTime = needsTime(data);
 			consumeItems(data);
 			if(data instanceof UpgradeBaseData){
 				UpgradeBaseData baseDataOther = (UpgradeBaseData)data;
@@ -170,6 +173,7 @@ public class UpgraderBlock extends Block {
 				UpgradeAmmoData ammoDataOther = (UpgradeAmmoData)data;
 				upgradingID = ammoDataOther.id;
 			}
+			remainTime = needsTime();
 		}
 		
 		//Updates

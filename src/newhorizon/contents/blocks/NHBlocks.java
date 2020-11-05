@@ -40,7 +40,8 @@ import newhorizon.contents.blocks.drawers.*;
 import newhorizon.contents.blocks.turrets.*;
 import newhorizon.contents.blocks.special.*;
 import newhorizon.contents.effects.NHFx;
-import newhorizon.contents.blocks.special.UpgradeData.*;
+import newhorizon.contents.data.*;
+import static newhorizon.contents.data.UpgradeData.*;
 
 import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;

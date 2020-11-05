@@ -50,7 +50,8 @@ import newhorizon.contents.items.*;
 import static mindustry.Vars.*;
 
 public class UpgradeBaseData extends UpgradeData {
-
+	public float timeCostcoefficien = 0f;
+	public int level;
 	public float speedMPL;
 	public float damageMPL;
 	public float defenceMPL;

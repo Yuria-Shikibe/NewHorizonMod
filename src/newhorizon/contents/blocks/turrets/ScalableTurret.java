@@ -39,9 +39,10 @@ import newhorizon.contents.bullets.*;
 import newhorizon.contents.interfaces.Scalablec;
 
 import newhorizon.contents.blocks.special.UpgraderBlock.*;
-import newhorizon.contents.blocks.special.UpgradeData.*;
+import newhorizon.contents.data.*;
 import newhorizon.NewHorizon;
 
+import static newhorizon.contents.data.UpgradeData.*;
 import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
 

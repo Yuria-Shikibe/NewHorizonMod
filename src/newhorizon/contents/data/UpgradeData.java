@@ -64,8 +64,7 @@ public abstract class UpgradeData {
 	public Cons<UpgradeData> movement = from -> from.upgradeData(this);
 	public String name, description;
 	public float costTime;
-	public float timeCostcoefficien = 0f;
-	public int level;
+	
 	public BulletType selectAmmo;
 	public UpgraderBlockBuild from;
 	public Boolf<ImageButton> disable = b -> false;
