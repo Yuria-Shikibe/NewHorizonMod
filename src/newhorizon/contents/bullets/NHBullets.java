@@ -48,7 +48,7 @@ public class NHBullets implements ContentList {
 				new Effect(32f, e -> {
 					color(lightColor);
 					for(int i : Mathf.signs){
-						Drawf.tri(e.x, e.y, 5f, 58f * e.fout(), e.rotation() + 90 * i);
+						Drawf.tri(e.x, e.y, 5f, 58f * e.fout(), e.rotation + 90 * i);
 					}
 				}).at(b.x, b.y, b.rotation());
 			}
