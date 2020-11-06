@@ -224,12 +224,12 @@ public class UpgraderBlock extends Block {
 		protected void buildTable(Table t) {
 			t.pane(table -> {
 				table.button(Icon.infoCircle, () -> {
-					ammoDatas.get(lastestSelectID).showInfo();
+					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID));
 				}).size(60).disabled(baseData.selectAmmo == none);
 				
 				table.button(Icon.list, () -> {
 					new Dialog("All Info") {{
-						baseData.showInfo();
+						baseData.showInfo(baseData);
 						for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(cont);
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
