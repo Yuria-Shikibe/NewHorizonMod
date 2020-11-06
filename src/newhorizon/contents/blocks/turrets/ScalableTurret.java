@@ -69,6 +69,8 @@ public class ScalableTurret extends ChargeTurret{
 	public void load(){
 		super.load();
 		baseRegion = Core.atlas.find("new-horizon-block-" + size);
+		defaultAmmoData.load();
+		defaultBaseData.load();
 	}
 	
 	@Override
