@@ -110,7 +110,7 @@ public abstract class UpgradeData implements Cloneable{
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(table -> {
 			buildDescriptions(table);
-		}).size(LEN * 11, LEN).row();
+		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 	}
 
@@ -136,11 +136,11 @@ public abstract class UpgradeData implements Cloneable{
 		new Dialog("") {{
 			cont.margin(15f);
 			cont.image(icon).row();
-			/*cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
+			cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();
 			cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
-			cont.row();*/
+			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);
 		}}.show();
 	}
