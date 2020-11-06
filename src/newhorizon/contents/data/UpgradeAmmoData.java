@@ -83,7 +83,7 @@ public class UpgradeAmmoData extends UpgradeData{
 				table.add("[gray]IsUnlocked: [accent]" + isUnlocked + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
-			t.pane(table -> {
+			t2.pane(table -> {
 				table.button(Icon.infoCircle, () -> {showInfo();}).size(LEN);
 			}).size(LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN).row();
