@@ -145,6 +145,8 @@ public class UpgraderBlock extends Block {
 		public int lastestSelectID = 0;
 		public float remainTime;
 
+		
+		
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
 		
 		protected void consumeItems(UpgradeData data){
@@ -204,8 +206,9 @@ public class UpgraderBlock extends Block {
 				lastestSelectID = upgradingID;
 			}
 			
-			upgradingID = DFTID;
 			updateTarget();
+			upgradingID = DFTID;
+			
 		}
 
 		//UI
@@ -243,6 +246,7 @@ public class UpgraderBlock extends Block {
 		}
 
 		protected void buildSwitchAmmoTable(Table t) {
+			
 			t.pane(table -> {
 				int index = 0;
 				
@@ -251,11 +255,13 @@ public class UpgraderBlock extends Block {
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
 						ammoData.selected = true;
-						baseData.selectAmmo = ammoData.selectAmmo;
-						
 						lastestSelectID = ammoData.id;
+						
+						baseData.selectAmmo = ammoData.selectAmmo;
 						updateTarget();
-					}).size(60).left().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
+					}).size(60).left().disabled( 
+						scalaTarget() == null || (ammoData.selected || !ammoData.isUnlocked)
+					);
 					index++;
 				}
 			}).size(60 * 5, 60).left();
