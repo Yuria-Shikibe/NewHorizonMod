@@ -127,29 +127,29 @@ public abstract class UpgradeData implements Cloneable{
 		}).size(LEN * 6f, LEN).pad(OFFSET);
 
 		t.pane(table -> {
-			table.button(Icon.infoCircle, () -> {showInfo();}).size(LEN);
+			table.button(Icon.infoCircle, () -> {showInfo(this);}).size(LEN);
 			table.button(Icon.hammer, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(!from.canUpgrade(this));
 		}).size(LEN * 2f, LEN).pad(OFFSET);
 	}
 	
-	public void showInfo(){
+	public void showInfo(UpgradeData data){
 		new Dialog("") {{
 			cont.margin(15f);
 			cont.image(icon).row();
-			cont.add("<< Upgrade >>").color(Pal.accent).row();
+			cont.add("<< " + Core.bundle.get(data.name) + " >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();
-			cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
+			cont.add(offsetSpace + Core.bundle.get(data.description)).color(Color.lightGray).left().row();
 			cont.pane(table -> {
-				for(ItemStack stack : requirements){
-					int index = 0;
+				int index = 0;
+				for(ItemStack stack : data.requirements){
 					if(index % 5 == 0)table.row();
 					table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
 					index ++;
 				}
-			}).row();
-			//cont.add("[gray]CanUpgrade?: [accent]" + (from.canUpgrade(this) ? "Able" : "Disabled") + "[]").left().row();
+			}).left().row();
+			cont.add("[gray]CanUpgrade?: [accent]" + (data.from.canUpgrade(this) ? "Able" : "Disabled") + "[]").left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);
