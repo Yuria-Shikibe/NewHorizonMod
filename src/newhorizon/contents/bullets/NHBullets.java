@@ -35,14 +35,14 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		airRaid = new ArtilleryBulletType(12f, 1250, "strike"){
+		airRaid = new ArtilleryBulletType(5f, 1250, "new-horizon-strike"){
 			public float maxSpeedScl = 0.8f;
 			public float maxSpeedCoeff = 5;
 			
 			@Override
 			public void init(Bullet b){
 				Position primaryPos = b.vel().scl(b.lifetime()).add(b.x, b.y);
-				b.set(new Vec2().trns(b.rotation() - 180 + Mathf.range(65), Mathf.random(10 * tilesize) ));
+				b.set(new Vec2().trns(b.rotation() - 180 + Mathf.range(65), Mathf.random(10 * tilesize) ).add(b.x, b.y));
 				b.rotation(b.angleTo(primaryPos)); 
 				
 				new Effect(32f, e -> {
@@ -99,7 +99,7 @@ public class NHBullets implements ContentList {
 				splashDamage = damage * 0.7f;
 				height = 60f;
 				width = 18f;
-				lifetime = 150;
+				lifetime = 500;
 				backColor = lightColor = NHColor.darkEnrColor;
 				frontColor = Color.white;
 				hitEffect = new Effect(25, e -> {
