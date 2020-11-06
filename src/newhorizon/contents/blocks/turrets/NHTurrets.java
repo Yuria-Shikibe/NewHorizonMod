@@ -89,7 +89,7 @@ public class NHTurrets implements ContentList {
 			{
 				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
 				powerUse = 30;
-				addConsume(NHItems.darkEnergy, 4);
+				addConsume(new ItemStack(NHItems.darkEnergy, 4));
 				size = 8;
 				health = 15000;
 				hasItems = true;
