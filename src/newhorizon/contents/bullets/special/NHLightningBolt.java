@@ -194,8 +194,8 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 
 	//Effect data
 	protected static class NHLightningBoltEffectData {
-		public Seq<Float> randomVec;
-		public Position owner, target;
+		public final Seq<Float> randomVec;
+		public final Position owner, target;
 		
 		
 		public NHLightningBoltEffectData(Seq<Float> randomVec, Position target, Position owner) {
