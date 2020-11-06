@@ -111,6 +111,7 @@ public class NHBullets implements ContentList {
 					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
 					NHFx.lightningHit.at(target);
 				});
+			}
 				
 			{
 				shrinkX = shrinkY = 0;

@@ -49,7 +49,7 @@ public class NHFx implements ContentList {
 			randLenVectors(e.id + 1, 8, 1f + 60f * e.finpow(), (x, y) -> {
 				Fill.circle(e.x + x, e.y + y, e.fout() * 5f);
 			});
-		})
+		});
 						
 		upgrading = new Effect(30, e -> {
 			color(e.color);
