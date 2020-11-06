@@ -47,13 +47,22 @@ import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
 
 public class ScalableTurret extends ChargeTurret{
-	public UpgradeBaseData defaultBaseData = new UpgradeBaseData("Default", "Default data", 0f, new ItemStack());
-	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("Default", "Default data", UpgradeData.none, 0f, 0, new ItemStack());
+	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
+	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("Default", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
+	
+	public ItemStack ammoConsume = new ItemStack(NHItems.emergencyReplace, 0);
 	
 	public Color baseColor = NHColor.darkEnrColor;
 	//Load Mod Factories
 	public ScalableTurret(String name){
 		super(name);
+		hasPower = true;
+		hasItems = true;
+	}
+	
+	public void addConsume(ItemStack stack){
+		ammoConsume = stack;
+		consumes.item(stack.item, stack.amount);
 	}
 	
 	@Override
@@ -62,11 +71,26 @@ public class ScalableTurret extends ChargeTurret{
 		baseRegion = Core.atlas.find("new-horizon-block-" + size);
 	}
 	
+	@Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.damage, defaultAmmoData.selectAmmo.damage, StatUnit.none);
+    }
+
+    @Override
+    public void init(){
+        consumes.powerCond(powerUse, TurretBuild::isActive);
+        super.init();
+	}
 	
 	public class ScalableTurretBuild extends ChargeTurretBuild implements Scalablec{
 		public UpgradeBaseData baseData = defaultBaseData;
 		public UpgradeAmmoData ammoData = defaultAmmoData;
 		
+		public boolean shooting;
+		public float powerUse = 1f;
+		
+		@Override public boolean shouldTurn(){return !shooting;}
     
     	@Override
         public void shoot(BulletType ammo){
@@ -74,13 +98,8 @@ public class ScalableTurret extends ChargeTurret{
             useAmmo();
 
             tr.trns(rotation, size * tilesize / 2f);
-            chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
-			//chargeSound.at(x + tr.x, y + tr.y, 1);
-            
-            
-			if(!isValid()) return;
-			tr.trns(rotation, size * tilesize / 2f);
-			chargeEffect.at(x + tr.x, y + tr.y, rotation);
+			ammoData.chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
+			ammoData.chargeEffect.at(x + tr.x, y + tr.y, rotation);
             
 			if(ammoData.chargeTime > 0)shooting = true;
 
@@ -89,9 +108,9 @@ public class ScalableTurret extends ChargeTurret{
 					for(int i = 0; i < ammoData.salvos; i++){
 						Time.run(ammoData.burstSpacing * i, () -> {
 							if(!isValid())return;
-							tr.trns(rotation, size * tilesize / 2f, Mathf.range(ammoData.randX) );
+							tr.trns(rotation, 1.15f* (size * tilesize / 2f), Mathf.range(ammoData.randX) );
 							recoil = recoilAmount;
-							heat = 1f;
+							heat = 2f;
 							bullet(ammo, rotation + Mathf.range(ammoData.inaccuracy));
 							effects();
 						});
@@ -108,18 +127,30 @@ public class ScalableTurret extends ChargeTurret{
 		}
 		
 		@Override
+		public BulletType useAmmo(){
+			this.items.remove(ammoConsume);
+            return peekAmmo();
+        }
+		
+		public boolean hasAmmo(){
+			return consValid();
+		}
+		
+		@Override
 		public void drawSelect(){
 			super.drawSelect();
 			if(isConnected())drawConnected();
-			float len = block.size * tilesize / 2;
+			float len = block.size * tilesize / 2 - tilesize;
+			Draw.color();
 			Draw.rect(ammoData.icon, x - len, y + len);
 			Draw.color(baseColor);
-			Draw.rect(NewHorizon.NHNAME + "upgrade-icon.outline", x - len, y + len);
+			Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
 			Draw.color();
 		}
 				
 		@Override
 		public void updateTile(){
+			unit.ammo(power.status * unit.type().ammoCapacity);
 			consumes.powerCond(powerUse, (TurretBuild entity) -> entity.target != null || (entity.logicControlled() && entity.logicShooting));
 			if(!validateTarget()) target = null;
 

@@ -59,7 +59,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public TextureRegion iconLevel;
 	
 	public UpgradeBaseData(){
-		super("UpgradeBuilding", "N/A", 460f, new ItemStack(NHItems.emergencyReplace, 0));
+		super("UpgradeBuilding", "N/A", 0f, new ItemStack(NHItems.emergencyReplace, 0));
 	}
 	
 	public UpgradeBaseData(

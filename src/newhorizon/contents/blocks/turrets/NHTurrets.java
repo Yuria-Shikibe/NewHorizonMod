@@ -88,8 +88,8 @@ public class NHTurrets implements ContentList {
 		ender = new ScalableTurret("end-of-era") {
 			{
 				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
-				shootType = NHBullets.boltGene;
 				powerUse = 30;
+				addConsume(NHItems.darkEnergy, 4);
 				size = 8;
 				health = 15000;
 				hasItems = true;
