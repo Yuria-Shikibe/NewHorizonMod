@@ -56,6 +56,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public float speedMPL;
 	public float damageMPL;
 	public float defenceMPL;
+	public TextureRegion iconLevel;
 	
 	public UpgradeBaseData(){
 		super("UpgradeBuilding", "N/A", none, 460f, new ItemStack());
@@ -72,7 +73,27 @@ public class UpgradeBaseData extends UpgradeData {
 
 	@Override
 	public void load() {
-		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
+		super.load();
+		iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
+	}
+	
+	@Override
+	public void buildUpgradeInfoAll(Table t) {
+		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
+		t.pane(t2 -> {
+			t2.pane(table -> {
+				table.image(icon).size(LEN);
+			}).size(LEN);
+
+			t2.pane(table -> {
+				table.add("[gray]Level: [accent]" + level + "[]").left().row();
+			}).size(LEN * 6f, LEN).pad(OFFSET);
+			
+			t2.pane(table -> {
+				table.button(Icon.infoCircle, () -> {showInfo();}).size(LEN);
+			}).size(LEN).pad(OFFSET);
+		}).size(LEN * 11, LEN * 1.5f).row();
+		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 	}
 	
 	@Override

@@ -71,6 +71,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	public int id;
 	public boolean isUnlocked, selected;
 	
+	@Override
 	public void buildUpgradeInfoAll(Table t) {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(t2 -> {

@@ -56,6 +56,7 @@ public abstract class UpgradeData implements Cloneable{
 	public static final BulletType none = new BasicBulletType(0, 1, "none") {
 		{
 			instantDisappear = true;
+			trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
 		}
 	};
 	public final Seq<ItemStack> requirements = new Seq<>();
@@ -84,6 +85,8 @@ public abstract class UpgradeData implements Cloneable{
 	}
 
 	public void load() {
+		if(name == null)name = "N/A"
+		if(description == null)description = "N/A"
 		this.icon = Core.atlas.find(NewHorizon.NHNAME + name);
 	}
 
@@ -106,6 +109,7 @@ public abstract class UpgradeData implements Cloneable{
 	}
 	
 	public abstract void addText(Table table);
+	public abstract void buildUpgradeInfoAll(Table table);
 	public void buildTable(Table t) {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(table -> {
@@ -136,9 +140,9 @@ public abstract class UpgradeData implements Cloneable{
 		new Dialog("") {{
 			cont.margin(15f);
 			cont.image(icon).row();
-			cont.add("<< " + name + " >>").color(Pal.accent).row();
+			cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();
-			cont.add(offsetSpace + description).color(Color.lightGray).left().row();
+			cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);
