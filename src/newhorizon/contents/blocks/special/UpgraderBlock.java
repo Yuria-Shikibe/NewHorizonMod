@@ -153,7 +153,7 @@ public class UpgraderBlock extends Block {
 		protected void consumeItems(UpgradeData data){
 			if(state.rules.infiniteResources)return;
 			CoreBlock.CoreBuild core = core();
-			if(coreValid(core))core.items.remove(data.requirements.toArray()){
+			if(coreValid(core))core.items.remove(data.requirements.toArray());
 		}
 
 		public CoreBlock.CoreBuild core() {return this.team.core();}
