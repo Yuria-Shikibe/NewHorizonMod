@@ -270,7 +270,7 @@ public class UpgraderBlock extends Block {
 					
 					index++;
 				}
-			}).size(60 * 5, 60).left();
+			}).size(60 * 5, 60).pad(OFFSET).left();
 		}
 
 		//Target confirm
