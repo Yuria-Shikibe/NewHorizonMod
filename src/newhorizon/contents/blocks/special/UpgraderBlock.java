@@ -212,6 +212,21 @@ public class UpgraderBlock extends Block {
 		protected void buildUpgradeBaseDataTable(Table t) {
 			t.pane(table -> {
 				table.button("Back", dialog::hide).size(120f, 50f);
+				table.button(Icon.infoCircle, () -> {
+					new Dialog("") {{
+						setFillParent(true);
+						cont.margin(15f);
+						cont.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
+						cont.image(ammoDatas.get(lastestSelectID).icon).size(LEN * 1.5f).row();
+						cont.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
+						cont.add("<< Ammo >>").color(Pal.accent).row();
+						cont.add("Description: ").color(Pal.accent).left().row();
+						cont.add(offsetSpace + Core.bundle.get(ammoDatas.get(lastestSelectID).description)).color(Color.lightGray).left().row();
+						cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
+						cont.row();
+						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
+					}}.show();
+				}).size(50).disabled(b -> baseData.selectAmmo == none);
 			}).size(LEN * 120, 80f);
 			t.row();
 			t.pane(table -> {
@@ -242,23 +257,6 @@ public class UpgraderBlock extends Block {
 					}).size(60).left().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
 					index++;
 				}
-				table.row()
-				table.button(Icon.infoCircle, () -> {
-					new Dialog("") {{
-						setFillParent(true);
-						cont.margin(15f);
-						cont.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
-						cont.image(ammoDatas.get(lastestSelectID).icon).size(LEN * 1.5f).row();
-						cont.image().width(LEN * 1.5f).height(4f).color(Color.lightGray).row();
-						cont.add("<< Ammo >>").color(Pal.accent).row();
-						cont.add("Description: ").color(Pal.accent).left().row();
-						cont.add(offsetSpace + Core.bundle.get(ammoDatas.get(lastestSelectID).description)).color(Color.lightGray).left().row();
-						cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
-						cont.row();
-						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
-					}}.show();
-				}).size(60).disabled(b -> baseData.selectAmmo == none);
-				
 			}).size(60 * 8f, 70);
 		}
 
