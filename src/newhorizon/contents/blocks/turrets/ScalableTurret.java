@@ -88,7 +88,7 @@ public class ScalableTurret extends ChargeTurret{
             	if(ammoData.burstSpacing > 0.0001f){
 					for(int i = 0; i < ammoData.salvos; i++){
 						Time.run(ammoData.burstSpacing * i, () -> {
-							(!isValid()) return;
+							if(!isValid())return;
 							tr.trns(rotation, size * tilesize / 2f);
 							recoil = recoilAmount;
 							heat = 1f;
@@ -97,7 +97,7 @@ public class ScalableTurret extends ChargeTurret{
 						});
 					}
 				}
-				if(!isValid()) return;
+				if(!isValid())return;
 				shooting = false;
             });
         }

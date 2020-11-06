@@ -42,7 +42,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void init(Bullet b){
 				Position primaryPos = b.vel().scl(b.lifetime()).add(b.x, b.y);
-				b.set(new Vec2().trns(b.rotation() - 180 + Mathf.range(65), Mathf.random(10 * tilesize));
+				b.set(new Vec2().trns(b.rotation() - 180 + Mathf.range(65), Mathf.random(10 * tilesize) ));
 				b.rotation(b.angleTo(primaryPos)); 
 				
 				new Effect(32f, e -> {
