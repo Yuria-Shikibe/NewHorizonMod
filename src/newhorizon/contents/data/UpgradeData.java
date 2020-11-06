@@ -85,8 +85,8 @@ public abstract class UpgradeData implements Cloneable{
 	}
 
 	public void load() {
-		if(name == null)name = "N/A"
-		if(description == null)description = "N/A"
+		if(name == null)name = "N/A";
+		if(description == null)description = "N/A";
 		this.icon = Core.atlas.find(NewHorizon.NHNAME + name);
 	}
 
