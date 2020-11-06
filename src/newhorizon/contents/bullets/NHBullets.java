@@ -58,22 +58,34 @@ public class NHBullets implements ContentList {
 			
 			@Override
 			public void draw(Bullet b){
-				super.draw(b);
+				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
+
+				Color mix = Tmp.c1.set(mixColorFrom).lerp(mixColorTo, b.fin());
+
+				mixcol(mix, mix.a);
+
+				color(backColor);
+				rect(backRegion, b.x, b.y, width, height, b.rotation() + offset);
+				color(frontColor);
+				rect(frontRegion, b.x, b.y, width, height, b.rotation() + offset);
+				Draw.reset();
+        
 				color(lightColor);
 				for(int i : Mathf.signs){
 					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation() - 180 + 30 * i);
 				}
+				Draw.reset();
 			}
 			
 			@Override
 			public void update(Bullet b){
 				//b.vel().scl(Mathf.curve(b.finpow(), 0, maxSpeedScl) * maxSpeedCoeff + 1);
 				
-				if(b.time() > 6){
+				if(b.time() > 12){
 					new Effect(32f, e -> {
 						color(lightColor, Pal.gray, e.fin() * 0.85f);
 						stroke(e.fout() * 5);
-						lineAngleCenter(e.x, e.y, e.rotation - 180, e.fout() * 44 + 56); 
+						lineAngle(e.x, e.y, e.rotation - 180, e.fout() * 40 + 50); 
 					}).at(b.x, b.y, b.rotation());
 				}
 				
@@ -90,7 +102,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void hit(Bullet b){
 				super.hit(b);
-				NHLightningBolt.generateRange(Tmp.v1.set(b.x, b.y), b.team(), 80, 8, 2, lightColor, NHLightningBolt.WIDTH, target -> {
+				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 8, 2, lightColor, NHLightningBolt.WIDTH, target -> {
 					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
 					NHFx.lightningHit.at(target);
 				});
@@ -108,16 +120,16 @@ public class NHBullets implements ContentList {
 				hitEffect = new Effect(25, e -> {
 					color(lightColor);
 					stroke(e.fout() * 3);
-					circle(e.x, e.y, e.fin() * 60);
+					circle(e.x, e.y, e.fin() * 80);
 					stroke(e.fout() * 1.75f);
-					circle(e.x, e.y, e.fin() * 45);
+					circle(e.x, e.y, e.fin() * 60);
 					
 					randLenVectors(e.id + 1, 12, 1f + 60f * e.finpow(), (x, y) -> {
 						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 2f + e.fout() * 8f);
 					});
 			
-					Fill.circle(e.x, e.y, e.fout() * 20);
-					color(frontColor);
+					Fill.circle(e.x, e.y, e.fout() * 22);
+					color(NHColor.darkEnrColor, Color.black, 0.8f);
 					Fill.circle(e.x, e.y, e.fout() * 14);
 				});
 			}

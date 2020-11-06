@@ -83,8 +83,8 @@ public class NHBlocks implements ContentList {
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
 				){{
-					salvos = 8;
-					randX = 1.8f * tilesize;
+					salvos = 7;
+					randX = 2f * tilesize;
 				}}
 			);
 			
