@@ -34,12 +34,26 @@ import static arc.math.Angles.*;
 public class NHFx implements ContentList {
 	public static
 	Effect 
-	darkEnergyCharge, darkEnergyChargeBegin, 
+	darkEnergyCharge, darkEnergyChargeBegin, darkEnergyShoot, darkEnergySmoke, 
 	circleSplash, darkErnExplosion, upgrading, lightningHit,
 	blastgenerate, blastAccept, emped, lightSkyCircleSplash;
 
 	@Override
 	public void load() {
+		darkEnergySmoke = new Effect(25, e -> {
+			color(effectColor, effectColor2,e.fin() * 0.5);
+			randLenVectors(e.id, 4, 60 * e.fin(), e.rotation, 30, (x,y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * 4);
+			});
+		});
+		
+		darkEnergyShoot = new Effect(25, e -> {
+			color(NHColor.darkEnrColor);
+			for (int i : Mathf.signs){
+				Drawf.tri(e.x, e.y, 2 + 2 * e.fout(), 28 * e.fout(), e.rotation + 90 * i);
+			}
+		});
+		
 		darkEnergyCharge = new Effect(60f, e -> {
 			randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
 				color(NHColor.darkEnrColor);
