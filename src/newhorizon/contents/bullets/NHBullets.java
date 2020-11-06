@@ -105,7 +105,7 @@ public class NHBullets implements ContentList {
 			}
 
 			@Override
-			public void hit(b, x, y){
+			public void hit(Bullet b, float x, float y){
 				super.hit(b, x, y);
 				NHLightningBolt.generateRange(Tmp.v1.set(b.x, b.y), b.team(), 80, 8, 2, lightColor, NHLightningBolt.WIDTH, target -> {
 					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
