@@ -57,6 +57,8 @@ public class UpgradeAmmoData extends UpgradeData{
 		chargeBeginEffect = Fx.none;
 			
 	public float chargeTime;
+	public float reloadTime = 90f;
+	public float randX;
 	public int salvos = 1;
 	public float burstSpacing = 5f;
 	public BulletType selectAmmo;

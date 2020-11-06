@@ -89,7 +89,7 @@ public class ScalableTurret extends ChargeTurret{
 					for(int i = 0; i < ammoData.salvos; i++){
 						Time.run(ammoData.burstSpacing * i, () -> {
 							if(!isValid())return;
-							tr.trns(rotation, size * tilesize / 2f);
+							tr.trns(rotation, size * tilesize / 2f, Mathf.range(ammoData.randX) );
 							recoil = recoilAmount;
 							heat = 1f;
 							bullet(ammo, rotation + Mathf.range(inaccuracy));
