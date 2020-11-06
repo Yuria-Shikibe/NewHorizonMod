@@ -60,7 +60,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	public BulletType ammo;
 	public float chargeTime;
 	public int salvo;
-	public float burstSpacing
+	public float burstSpacing;
 
 	public UpgradeAmmoData(
 		String name,
