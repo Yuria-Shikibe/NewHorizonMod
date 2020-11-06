@@ -37,7 +37,7 @@ public class NHBullets implements ContentList {
 	public void load() {
 		airRaid = new BasicBulletType(1.5f, 1250, "strike"){
 			public float maxSpeedScl = 0.8f;
-			public float maxSpeedCoeff = 16;
+			public float maxSpeedCoeff = 5;
 			
 			@Override
 			public float range(){
@@ -62,8 +62,7 @@ public class NHBullets implements ContentList {
 				if(b.data == null)b.data = new Vec2().trns(b.rotation(), range()).add(b.x, b.y);
 				if(b.data instanceof Position){
 					Position target = (Position)b.data;
-					Tmp.v1.trns(b.angleTo(target) - 180 + Mathf.range(60), 8 * tilesize).add(b.x, b.y);
-					b.set(Tmp.v1);
+					b.set(new Vec2().trns(b.angleTo(target) - 180 + Mathf.range(60), Mathf.random(10 * tilesize)).add(b.x, b.y));
 					b.rotation(b.angleTo(target));
 				}else{
 					b.remove();
@@ -71,6 +70,7 @@ public class NHBullets implements ContentList {
 				}
 				
 				new Effect(28f, e -> {
+					color(lightColor);
 					for(int i : Mathf.signs){
 						Drawf.tri(e.x, e.y, 5.4f, 72 * e.fout(), e.rotation + 90 * i);
 					}
@@ -79,20 +79,22 @@ public class NHBullets implements ContentList {
 			
 			@Override
 			public void update(Bullet b){
-				if(!(b.data instanceof Position))b.remove();
+				if(!(b.data instanceof Position)){
+					b.remove();
+					return;
+				}
 				Position target = (Position)b.data;
-				super.update(b);
 				
 				if(b.timer.get(1,6) && b.within(target, splashDamageRadius / 2)){
 					b.time(lifetime);
 				}
 				
-				b.vel().setAngle(Angles.moveToward(b.vel().angle(), b.angleTo(target), 2f));
 				b.vel().scl(Mathf.curve(b.finpow(), 0, maxSpeedScl) * maxSpeedCoeff + 1);
+				/*b.vel().setAngle(Angles.moveToward(b.vel().angle(), b.angleTo(target), 2f));
 				
 				if(b.time() > 6){
 					new Effect(32f, e -> {
-						color(lightColor, Pal.gray, e.fin());
+						color(lightColor, Pal.gray, e.fin() * 0.85f);
 						stroke(e.fout() * 5);
 						lineAngleCenter(e.x, e.y, e.rotation - 180, e.fout() * 44 + 56); 
 					}).at(b.x, b.y, b.rotation());
@@ -105,12 +107,12 @@ public class NHBullets implements ContentList {
 							Fill.poly(e.x + x, e.y + y, 6, 5.5f * e.fslope() * e.fout());
 						});
 					}).at(b.x, b.y, b.rotation());
-				}
+				}*/
 			}
 
 			@Override
-			public void hit(Bullet b, float x, float y){
-				super.hit(b, x, y);
+			public void hit(Bullet b){
+				super.hit(b);
 				NHLightningBolt.generateRange(Tmp.v1.set(b.x, b.y), b.team(), 80, 8, 2, lightColor, NHLightningBolt.WIDTH, target -> {
 					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
 					NHFx.lightningHit.at(target);
