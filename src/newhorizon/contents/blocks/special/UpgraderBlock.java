@@ -209,16 +209,20 @@ public class UpgraderBlock extends Block {
 
 		//UI
 		protected void buildTable(Table t) {
-			
 			t.pane(table -> {
-				table.button(Icon.infoCircle, () -> {ammoDatas.get(lastestSelectID).showInfo();}).size(60).disabled(baseData.selectAmmo == none);
-				table.button("Back", dialog::hide).size(120f, 60f).left();
+				table.button(Icon.infoCircle, () -> {
+					ammoDatas.get(lastestSelectID).showInfo();
+				}).size(60).disabled(baseData.selectAmmo == none);
+				
 				table.button(Icon.list, () -> {
 					new Dialog("All Info") {{
+						baseData.showInfo();
 						for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(cont);
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
 				}).size(60f).left();
+				
+				table.button("Back", dialog::hide).size(120f, 60f).left();
 			}).left().size(240f, 60f);
 			t.row();
 			buildSwitchAmmoTable(t);
@@ -235,7 +239,6 @@ public class UpgraderBlock extends Block {
 		}
 
 		protected void buildSwitchAmmoTable(Table t) {
-			
 			t.pane(table -> {
 				int index = 0;
 				
