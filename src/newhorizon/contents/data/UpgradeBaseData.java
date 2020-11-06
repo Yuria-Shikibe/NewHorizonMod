@@ -80,22 +80,6 @@ public class UpgradeBaseData extends UpgradeData {
 		table.add("[gray]UpgradeTo: [accent]Level " + level + "[]").left().row();
 	}
 
-	public boolean equals(Object obj) {
-		if (obj == this)return true;
-		if (obj instanceof UpgradeBaseData) {
-			UpgradeBaseData data = (UpgradeBaseData)obj;
-			return
-				data.from.equals(from) &&
-				data.level == level &&
-				data.speedMPL == speedMPL &&
-				data.damageMPL == damageMPL &&
-				data.defenceMPL == defenceMPL;
-		}
-		return false;
-	}
-	
-	
-
 	public String toString() {
 		return
 			"    SpeedMultPerLever: " + speedMPL +

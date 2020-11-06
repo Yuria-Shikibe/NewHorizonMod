@@ -74,12 +74,7 @@ public class ScalableTurret extends ChargeTurret{
 		
 		@Override
 		public void updateUpgradeBase(UpgradeBaseData importBaseData){
-			if(importBaseData == null){
-				ui.showErrorMessage("Null Data");
-				return;
-			}
-			
-			if(baseData == null || importBaseData.equals(baseData))baseData = importBaseData;
+			this.baseData = importBaseData;
 		}
 		
 		

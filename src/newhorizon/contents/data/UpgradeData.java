@@ -100,7 +100,7 @@ public abstract class UpgradeData implements Cloneable{
 		try {
 			obj = super.clone();
 		} catch (CloneNotSupportedException err){
-			ui.showErrorMessage(err.toString());
+			
 		}
 		return obj;
 	}
