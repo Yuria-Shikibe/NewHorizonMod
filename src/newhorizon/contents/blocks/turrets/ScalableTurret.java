@@ -50,6 +50,7 @@ public class ScalableTurret extends Turret{
 	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
 	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("emergency-replace", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
 	
+	public float powerUse = 1;
 	public ItemStack ammoConsume = new ItemStack(NHItems.emergencyReplace, 0);
 	
 	public Color baseColor = NHColor.darkEnrColor;
