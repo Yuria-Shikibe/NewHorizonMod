@@ -60,7 +60,7 @@ public abstract class UpgradeData implements Cloneable{
 		}
 	};
 	public final Seq<ItemStack> requirements = new Seq<>();
-	public final Seq<ItemDisplay> itemsTables = new Seq<>()
+	public final Seq<ItemDisplay> itemsTables = new Seq<>();
 
 	public TextureRegion icon;
 	public String name, description;
@@ -84,7 +84,7 @@ public abstract class UpgradeData implements Cloneable{
 		this.costTime = costTime;
 		requirements.addAll(items);
 		for(ItemStack stack : items){
-			itemsTables.add(stack.item, stack.amount, false));
+			itemsTables.add( new ItemDisplay(stack.item, stack.amount, false));
 		}
 	}
 
