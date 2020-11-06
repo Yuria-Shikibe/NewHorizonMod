@@ -46,7 +46,7 @@ import static newhorizon.contents.data.UpgradeData.*;
 import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
 
-public class ScalableTurret extends ChargeTurret{
+public class ScalableTurret extends Turret{
 	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
 	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("emergency-replace", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
 	
@@ -76,7 +76,7 @@ public class ScalableTurret extends ChargeTurret{
 	@Override
     public void setStats(){
         super.setStats();
-		stats.add(Stat.damage, 0, StatUnit.none);
+		stats.add(Stat.damage, defaultAmmoData.selectAmmo.damage, StatUnit.none);
     }
 
     @Override
