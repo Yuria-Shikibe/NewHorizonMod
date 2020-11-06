@@ -233,7 +233,7 @@ public class UpgraderBlock extends Block {
 				table.button("Back", dialog::hide).size(120f, 60f).left();
 				table.button(Icon.list, () -> {
 					new Dialog("All Info") {{
-						for (UpgradeAmmoData ammoData : ammoDatas)buildUpgradeInfoAll(cont, ammoData);
+						for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(cont);
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
 				}).size(60f).left();
