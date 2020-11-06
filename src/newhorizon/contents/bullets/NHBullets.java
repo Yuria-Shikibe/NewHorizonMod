@@ -62,7 +62,7 @@ public class NHBullets implements ContentList {
 				
 				if(b.time() > 12){
 					new Effect(32f, e -> {
-						color(lightColor, Pal.gray, e.fin() * 0.85f);
+						color(lightColor, Pal.gray, e.fin() * 0.7f);
 						stroke(e.fout() * 5);
 						lineAngle(e.x, e.y, e.rotation - 180, e.fout() * 40 + 50); 
 					}).at(b.x, b.y, b.rotation());
@@ -70,7 +70,7 @@ public class NHBullets implements ContentList {
 				
 				if(b.timer.get(0,3)){
 					new Effect(25f, e -> {
-						color(lightColor, Pal.gray, e.fin() * 0.85f);
+						color(lightColor, Pal.gray, e.fin() * 0.7f);
 						randLenVectors(e.id, 4, 60f * e.fin(), e.rotation - 180, 20, (x, y) -> {
 							Fill.poly(e.x + x, e.y + y, 6, 5.5f * e.fslope() * e.fout());
 						});
