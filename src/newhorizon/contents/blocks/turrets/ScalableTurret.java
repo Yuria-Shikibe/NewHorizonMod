@@ -129,24 +129,6 @@ public class ScalableTurret extends ChargeTurret{
 			drawer.get(this);
 			heatDrawer.get(this);
 		}
-		
-		
-		@Override
-		protected void updateCooling(){
-			float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-			
-			Liquid liquid = liquids.current();
-
-			float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((reloadTime - reload) / coolantMultiplier) / liquid.heatCapacity)) * baseReloadSpeed();
-			reload += used * liquid.heatCapacity * coolantMultiplier;
-			liquids.remove(liquid, used);
-
-			if(Mathf.chance(0.06 * used)){
-				coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
-			}
-					
-			//heat = (reload * 1.3f) / reloadTime;
-		}
 				
 		@Override
 		public void updateTile(){
@@ -211,7 +193,37 @@ public class ScalableTurret extends ChargeTurret{
 			}
 		}
 		
+		protected float reloadTime(){
+			return ammoDatas.reloadTime <= 0 ? reloadTime : ammoDatas.reloadTime;
+		}
 		
+		@Override
+		protected void updateShooting(){
+            if(reload >= reloadTime()){
+                BulletType type = peekAmmo();
+
+                shoot(type);
+
+                reload = 0f;
+            }else{
+                reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+            }
+        }
+
+		@Override
+		protected void updateCooling(){
+			float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+			
+			Liquid liquid = liquids.current();
+
+			float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((reloadTime - reload) / coolantMultiplier) / liquid.heatCapacity)) * baseReloadSpeed();
+			reload += used * liquid.heatCapacity * coolantMultiplier;
+			liquids.remove(liquid, used);
+
+			if(Mathf.chance(0.06 * used)){
+				coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
+			}
+		}
 		
 		@Override
 		public void resetUpgrade(){

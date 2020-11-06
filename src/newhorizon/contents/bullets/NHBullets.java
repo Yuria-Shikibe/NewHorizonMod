@@ -102,6 +102,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void hit(Bullet b){
 				super.hit(b);
+				Effect.shake(4f, 5f, b);
 				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 8, 2, lightColor, NHLightningBolt.WIDTH, target -> {
 					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
 					NHFx.lightningHit.at(target);
@@ -180,7 +181,7 @@ public class NHBullets implements ContentList {
 
 			@Override
 			public void despawned(Bullet b) {
-				Effect.shake(10f, 8f, (Position)b);
+				Effect.shake(10f, 8f, b);
 				despawnEffect.at(b);
 				Sounds.explosionbig.at(b, Mathf.random(0.9f, 1.1f));
 				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), NHColor.thurmixRed, true, NHLightningBolt.WIDTH);

@@ -87,23 +87,6 @@ public class NHTurrets implements ContentList {
 		
 		ender = new ScalableTurret("end-of-era") {
 			{
-				chargeEffect = new Effect(chargeTime, e -> {
-					Angles.randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
-						Draw.color(NHColor.darkEnrColor);
-						Fill.circle(e.x + x, e.y + y, e.fin() * 13f);
-						Draw.color(NHColor.darkEnrColor, Color.black, 0.8f);
-						Fill.circle(e.x + x, e.y + y, e.fin() * 7f);
-					});
-				});
-				chargeBeginEffect = new Effect(chargeTime, e -> {
-					Draw.color(NHColor.darkEnrColor);
-					Fill.circle(e.x, e.y, e.fin() * 32);
-					Lines.stroke(e.fin() * 3.7f);
-					Lines.circle(e.x, e.y, e.fout() * 80);
-					Draw.color(NHColor.darkEnrColor, Color.black, 0.8f);
-					Fill.circle(e.x, e.y, e.fin() * 20);
-				});
-
 				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
 				shootType = NHBullets.boltGene;
 				powerUse = 30;

@@ -71,7 +71,11 @@ public class NHBlocks implements ContentList {
 					new ItemStack(NHItems.upgradeSort, 250),
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
-				){{chargeTime = 60f;}},
+				){{
+					chargeEffect = NHFx.darkEnergyCharge;
+					chargeBeginEffect = NHFx.darkEnergyChargeBegin;
+					chargeTime = 60f;
+				}},
 				new UpgradeAmmoData(
 					"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
 					new ItemStack(NHItems.irayrondPanel, 3),
@@ -83,6 +87,7 @@ public class NHBlocks implements ContentList {
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
 				){{
+					
 					salvos = 7;
 					randX = 2f * tilesize;
 				}}
