@@ -227,11 +227,13 @@ public class UpgraderBlock extends Block {
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
 				}).size(50).disabled(b -> baseData.selectAmmo == none);
-			}).size(200f, 80f);
+			}).left().size(200f, 80f);
+			t.row();
+			buildSwitchAmmoTable(t);
 			t.row();
 			t.pane(table -> {
 				baseData.buildTable(table);
-			}).left().size(LEN * 12 + OFFSET * 3, LEN * 2.6f + OFFSET);
+			}).size(LEN * 12 + OFFSET * 3, LEN * 2.6f + OFFSET);
 		}
 
 		//UI
@@ -325,15 +327,11 @@ public class UpgraderBlock extends Block {
 					
 					buildUpgradeBaseDataTable(t);
 					t.row();
-					t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
+					t.image().width(LEN * 8 + OFFSET * 3.5f).height(4f).color(Pal.accent);
 					t.row();
 					buildUpgradeAmmoDataTable(t);
 					t.row();
-					t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
-					t.row();
-					buildSwitchAmmoTable(t);
-					t.row();
-					
+					t.image().width(LEN * 8 + OFFSET * 3.5f).height(4f).color(Pal.accent);
 				}).size(550f);
 				dialog.cont.row();
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
