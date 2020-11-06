@@ -70,7 +70,7 @@ public class ScalableTurret extends ChargeTurret{
     
     	@Override
         public void shoot(BulletType ammo){
-        	if(ammo == none)return;
+        	if(ammo.compareTo(UpgradeData.none) == 0)return;
             useAmmo();
 
             tr.trns(rotation, size * tilesize / 2f);
@@ -82,7 +82,7 @@ public class ScalableTurret extends ChargeTurret{
 			tr.trns(rotation, size * tilesize / 2f);
 			chargeEffect.at(x + tr.x, y + tr.y, rotation);
             
-            shooting = true;
+			if(ammoData.chargeTime > 0)shooting = true;
 
             Time.run(ammoData.chargeTime, () -> {
             	if(ammoData.burstSpacing > 0.0001f){
@@ -111,23 +111,11 @@ public class ScalableTurret extends ChargeTurret{
 		public void drawSelect(){
 			super.drawSelect();
 			if(isConnected())drawConnected();
-		}
-		
-		@Override
-		public void draw(){
-			Draw.rect(baseRegion, x, y);
+			float len = block.size * tilesize / 2;
+			Draw.rect(ammoData.icon, x - len, y + len);
+			Draw.color(baseColor);
+			Draw.rect(NewHorizon.NHNAME + "upgrade-icon.outline", x - len, y + len);
 			Draw.color();
-
-			Draw.z(Layer.turret);
-
-			tr2.trns(rotation, -recoil);
-			
-			Draw.color(NHColor.shadow);
-			Draw.rect(region, x + tr2.x - (size / 2f), y + tr2.y - (size / 2f), rotation - 90);
-			Draw.color();
-			
-			drawer.get(this);
-			heatDrawer.get(this);
 		}
 				
 		@Override

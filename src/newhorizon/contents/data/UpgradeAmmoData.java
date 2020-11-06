@@ -52,6 +52,7 @@ import static mindustry.Vars.*;
 
 public class UpgradeAmmoData extends UpgradeData{
 	
+	
 	public Effect
 		chargeEffect = Fx.none,
 		chargeBeginEffect = Fx.none;

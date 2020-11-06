@@ -35,27 +35,7 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		airRaid = new ArtilleryBulletType(5f, 1250, "new-horizon-strike"){
-			public float maxSpeedScl = 0.8f;
-			public float maxSpeedCoeff = 5;
-			
-			/*@Override
-			public void init(Bullet b){
-				
-				Vec2 primaryPos = new Vec2().set(b);
-				Position primaryTar = b.vel().scl(b.lifetime()).add(b.x, b.y);
-				
-				b.set(new Vec2().trns(b.rotation() - 180 + Mathf.range(65), Mathf.random(10 * tilesize) ).add(primaryTar));
-				b.rotation(b.angleTo(primaryPos)); 
-				
-				new Effect(32f, e -> {
-					color(lightColor);
-					for(int i : Mathf.signs){
-						Drawf.tri(e.x, e.y, 5f, 58f * e.fout(), e.rotation + 90 * i);
-					}
-				}).at(b.x, b.y, b.rotation());
-			}*/
-			
+		airRaid = new ArtilleryBulletType(9f, 1250, "new-horizon-strike"){
 			@Override
 			public void draw(Bullet b){
 				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
@@ -79,7 +59,6 @@ public class NHBullets implements ContentList {
 			
 			@Override
 			public void update(Bullet b){
-				//b.vel().scl(Mathf.curve(b.finpow(), 0, maxSpeedScl) * maxSpeedCoeff + 1);
 				
 				if(b.time() > 12){
 					new Effect(32f, e -> {
@@ -103,7 +82,7 @@ public class NHBullets implements ContentList {
 			public void hit(Bullet b){
 				super.hit(b);
 				Effect.shake(4f, 5f, b);
-				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 8, 2, lightColor, NHLightningBolt.WIDTH, target -> {
+				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 2, 2, lightColor, NHLightningBolt.WIDTH, target -> {
 					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
 					NHFx.lightningHit.at(target);
 				});
@@ -125,8 +104,9 @@ public class NHBullets implements ContentList {
 					stroke(e.fout() * 1.75f);
 					circle(e.x, e.y, e.fin() * 60);
 					
+					stroke(e.fout() * 2.25f);
 					randLenVectors(e.id + 1, 12, 1f + 60f * e.finpow(), (x, y) -> {
-						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 2f + e.fout() * 8f);
+						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 12f);
 					});
 			
 					Fill.circle(e.x, e.y, e.fout() * 22);
