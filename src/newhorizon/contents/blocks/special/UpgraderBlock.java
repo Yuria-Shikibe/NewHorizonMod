@@ -104,7 +104,7 @@ public class UpgraderBlock extends Block {
 			(UpgraderBlockBuild entity) -> new Bar(
 				() -> "Level",
 				() -> NHColor.lightSky,
-				() -> entity.baseData.level / maxLevel
+				() -> (float)(entity.baseData.level / maxLevel)
 			)
 		);
 
@@ -285,8 +285,9 @@ public class UpgraderBlock extends Block {
 		protected void setLink(int value) {
 			if (value == -1) {
 				if (linkValid())target().resetUpgrade();
-			} else updateTarget();
+			}
 			this.link = value;
+			updateTarget();
 		}
 
 		//Overrides
@@ -306,9 +307,8 @@ public class UpgraderBlock extends Block {
 				return true;
 			} else { 
 				Scalablec target = (Scalablec)other;
-			
-				if (!target.isConnected() && other.team == team && other.within(tile, range())) {
-					setLink(other.pos());
+				if (!target.isConnected() && target.team() == team && target.within(this, range())) {
+					setLink(target.pos());
 					return false;
 				}
 			}

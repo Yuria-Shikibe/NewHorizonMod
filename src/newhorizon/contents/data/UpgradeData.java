@@ -122,7 +122,7 @@ public abstract class UpgradeData implements Cloneable{
 
 		t.pane(table -> {
 			addText(table);
-			table.add("[gray]NeededTime: [accent]" + costTime() + "[]").left().row();
+			table.add("[gray]NeededTime: [accent]" + (costTime() / 60) + "sec[]").left().row();
 		}).size(LEN * 6f, LEN).pad(OFFSET);
 
 		t.pane(table -> {

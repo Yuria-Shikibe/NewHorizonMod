@@ -115,6 +115,7 @@ public class ChargeWall extends Block{
 	public ChargeWall(String name){
 		super(name);
 		update = true;
+		solid = true;
 		buildCostMultiplier = 4;
 	}
 	
