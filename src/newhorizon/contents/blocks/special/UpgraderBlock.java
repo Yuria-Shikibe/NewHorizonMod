@@ -112,7 +112,7 @@ public class UpgraderBlock extends Block {
 			(UpgraderBlockBuild entity) -> new Bar(
 				() -> "RestTime",
 				() -> Color.valueOf("#FF732A"),
-				() -> entity.remainTime / entity.needsTime()
+				() -> entity.remainTime / entity.costTime()
 			)
 		);
 	}
@@ -130,19 +130,13 @@ public class UpgraderBlock extends Block {
 	public class UpgraderBlockBuild extends Building implements Ranged {
 		
 		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
-		
 		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
-		
-		
 
 		public int link = -1;
-
 		public int upgradingID = DFTID;
 		public int lastestSelectID = 0;
 		public float remainTime;
 
-		
-		
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
 		
 		protected boolean coreValid(CoreBlock.CoreBuild core) {
@@ -156,25 +150,27 @@ public class UpgraderBlock extends Block {
 			if(coreValid(core))core.items.remove(data.requirements.toArray());
 		}
 
-		public CoreBlock.CoreBuild core() {return this.team.core();}
+		protected CoreBlock.CoreBuild core() {return this.team.core();}
 
 		protected boolean isUpgrading() {return remainTime > 0;}
 		
 		public boolean canUpgrade(UpgradeData data) {
 			CoreBlock.CoreBuild core = core();
 			return 
-				coreValid(core) && (
+				coreValid(core) && 
+				baseData.level >= data.unlockLevel &&
+					(
 					state.rules.infiniteResources || (
 						!isUpgrading() && core.items.has(data.requirements.toArray()) 
 					)
 				);
 		}
 
-		protected float needsTime() {
+		protected float costTime() {
 			return 
 				upgradingID == DFTID ? 0 : 
-				upgradingID == -1	? baseData.costTime * (1 + baseData.timeCostcoefficien * baseData.level) :
-				upgradingID >= 0 	? ammoDatas.get(upgradingID).costTime :
+				upgradingID == -1	? baseData.costTime() :
+				upgradingID >= 0 	? ammoDatas.get(upgradingID).costTime() :
 				0;
 		}
 		
@@ -190,7 +186,7 @@ public class UpgraderBlock extends Block {
 				UpgradeAmmoData ammoDataOther = (UpgradeAmmoData)data;
 				upgradingID = ammoDataOther.id;
 			}
-			remainTime = needsTime();
+			remainTime = costTime();
 		}
 		
 		//Updates

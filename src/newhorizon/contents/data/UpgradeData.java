@@ -61,6 +61,7 @@ public abstract class UpgradeData implements Cloneable{
 	};
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	//
+	public int unlockLevel;
 	public TextureRegion icon;
 	public String name, description;
 	public float costTime;

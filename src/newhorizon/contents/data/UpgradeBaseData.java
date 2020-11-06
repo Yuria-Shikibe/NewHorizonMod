@@ -68,9 +68,15 @@ public class UpgradeBaseData extends UpgradeData {
 		float costTime,
 		ItemStack... items
 	) {
+		unlockLevel = 0;
 		super(name, description, none, costTime, items);
 	}
-
+	
+	@Override
+	public float costTime() {
+		return costTime * (1 + level * timeCostcoefficien);
+	}
+	
 	@Override
 	public void load() {
 		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
