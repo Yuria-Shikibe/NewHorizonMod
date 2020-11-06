@@ -66,7 +66,7 @@ public abstract class UpgradeData implements Cloneable{
 	
 	public BulletType selectAmmo;
 	public UpgraderBlockBuild from;
-	public boolean disable = from == null;
+	public boolean disable = false;
 	
 
 	public UpgradeData(
@@ -108,13 +108,13 @@ public abstract class UpgradeData implements Cloneable{
 	public abstract void addText(Table table);
 	public void buildTable(Table t) {
 		t.row();
-		t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
+		t.image().fillX().height(4f).color(Color.lightGray);
 		t.row();
 		t.pane(table -> {
 			buildDescriptions(table);
 		}).size(LEN * 10 + OFFSET * 3, LEN * 1.8f + OFFSET);
 		t.row();
-		t.image().width(LEN * 10 + OFFSET * 3.5f).height(4f).color(Color.lightGray);
+		t.image().fillX().height(4f).color(Color.lightGray);
 		t.row();
 		t.add("").row();
 	}

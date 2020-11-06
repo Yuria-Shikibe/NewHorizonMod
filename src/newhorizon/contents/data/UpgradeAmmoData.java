@@ -70,7 +70,24 @@ public class UpgradeAmmoData extends UpgradeData{
 	}
 	public int id;
 	public boolean isUnlocked, selected;
+	
+	public void buildUpgradeInfoAll(Table t) {
+		t.image().fillX().height(4f).color(Color.lightGray).row();
+		t.pane(t2 -> {
+			t2.pane(table -> {
+				table.image(data.icon).size(LEN);
+			}).size(LEN);
 
+			t2.pane(table -> {
+				table.add("[gray]IsSelected: [accent]" + selected + "[]").left().row();
+				table.add("[gray]IsUnlocked: [accent]" + isUnlocked + "[]").left().row();
+			}).size(LEN * 6f, LEN).pad(OFFSET);
+		}).size(LEN * 7 + OFFSET * 3, LEN * 1.8f + OFFSET).row();
+		t.image().fillX().height(4f).color(Color.lightGray).row();
+		t.add("").row();
+	}
+		
+	
 	@Override
 	public void addText(Table table){
 		table.add("[gray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
