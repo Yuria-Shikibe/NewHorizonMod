@@ -72,7 +72,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	public boolean isUnlocked, selected;
 	
 	public void buildUpgradeInfoAll(Table t) {
-		t.image().fillX().height(4f).color(Color.lightGray).row();
+		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(t2 -> {
 			t2.pane(table -> {
 				table.image(data.icon).size(LEN);
@@ -83,8 +83,7 @@ public class UpgradeAmmoData extends UpgradeData{
 				table.add("[gray]IsUnlocked: [accent]" + isUnlocked + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 		}).size(LEN * 7 + OFFSET * 3, LEN * 1.8f + OFFSET).row();
-		t.image().fillX().height(4f).color(Color.lightGray).row();
-		t.add("").row();
+		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 	}
 		
 	
