@@ -64,12 +64,12 @@ public class NHBlocks implements ContentList {
 			initUpgradeBaseData = new UpgradeBaseData();
 			addUpgrades(
 				new UpgradeAmmoData(
-					"arc9000", "description00",NHBullets.boltGene, 300f, 0,
+					"arc-9000", "description00",NHBullets.boltGene, 300f, 0,
 					new ItemStack(NHItems.irayrondPanel, 3),
 					new ItemStack(NHItems.metalOxhydrigen, 2)
 				),
 				new UpgradeAmmoData(
-					"curvebomb", "description01", NHBullets.curveBomb, 300f, 0,
+					"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
 					new ItemStack(NHItems.irayrondPanel, 3),
 					new ItemStack(NHItems.metalOxhydrigen, 2)
 				)

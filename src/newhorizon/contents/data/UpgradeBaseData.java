@@ -73,7 +73,7 @@ public class UpgradeBaseData extends UpgradeData {
 
 	@Override
 	public void load() {
-		super.load();
+		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
 		iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 	}
 	
