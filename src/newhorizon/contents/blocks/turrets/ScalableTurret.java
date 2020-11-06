@@ -229,7 +229,7 @@ public class ScalableTurret extends ChargeTurret{
 		@Override public UpgraderBlockBuild upgrader(){return baseData.from;}
 		
 	    @Override public UpgradeBaseData getBaseData(){return baseData;}
-		@Override public UpgradeAmmoData getBaseData(){return ammoData;}
+		@Override public UpgradeAmmoData getAmmoData(){return ammoData;}
     	
 		@Override public void setBaseData(UpgradeBaseData data){this.baseData = data;}
 		@Override public void setAmmoData(UpgradeAmmoData data){this.ammoData = data;}

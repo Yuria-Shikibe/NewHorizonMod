@@ -35,7 +35,7 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		airRaid = new FlakcBulletType(1.5f, 1250, "strike"){
+		airRaid = new FlakBulletType(1.5f, 1250, "strike"){
 			public float maxSpeedScl = 0.8f;
 			public float maxSpeedCoeff = 16;
 			
