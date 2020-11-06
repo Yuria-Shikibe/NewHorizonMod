@@ -77,7 +77,7 @@ public class UpgradeBaseData extends UpgradeData {
 	
 	@Override
 	public void addText(Table table){
-		table.add("[gray]UpgradeTo: [accent]Level " + level + "[]").left().row();
+		table.add("[gray]UpgradeTo: [accent]Level " + level() + "[]").left().row();
 	}
 
 	public String toString() {

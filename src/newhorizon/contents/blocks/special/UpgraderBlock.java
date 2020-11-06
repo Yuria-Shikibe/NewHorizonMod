@@ -133,11 +133,7 @@ public class UpgraderBlock extends Block {
 		
 		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
 		
-		protected void setAmmoDatas(Seq<UpgradeAmmoData> datas){
-			for (UpgradeAmmoData data : datas){
-				ammoDatas.add( (UpgradeAmmoData)(data.clone()) );
-			}
-		}
+		
 
 		public int link = -1;
 
@@ -237,7 +233,7 @@ public class UpgraderBlock extends Block {
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
 				}).size(60f).left();
-			}).left().size(180f, 60f);
+			}).left().size(240f, 60f);
 			t.row();
 			buildSwitchAmmoTable(t);
 			t.row();
@@ -352,9 +348,8 @@ public class UpgraderBlock extends Block {
 			if (upgradingID != DFTID)updateUpgrading();
 
 			Events.on(EventType.WorldLoadEvent.class, e -> {
-				setAmmoDatas(initUpgradeAmmoDatas);
-				setFrom();
-				setAmmoData();
+				setData(initUpgradeAmmoDatas);
+				setAmmo();
 				updateTarget();
 			});
 		}
@@ -362,15 +357,20 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void onDestroyed() {
 			super.onDestroyed();
-			if (linkValid())scalaTarget().resetUpgrade();
+			if(linkValid())scalaTarget().resetUpgrade();
 		}
 
 		@Override
 		public void placed() {
 			super.placed();
-			setAmmoDatas(initUpgradeAmmoDatas);
-			setFrom();
+			setData();
 		}
+		
+		@Override
+		public void onRemoved() {
+			if(linkValid())scalaTarget().resetUpgrade();
+		}
+
 		//Draw Methods
 
 		@Override
@@ -421,7 +421,7 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void read(Reads read, byte revision) {
-			setAmmoDatas(initUpgradeAmmoDatas);
+			setData(initUpgradeAmmoDatas);
 			
 			this.remainTime = read.f();
 			this.link = read.i();
@@ -430,19 +430,21 @@ public class UpgraderBlock extends Block {
 
 			baseData.read(read, revision);
 			if(!ammoDatas.isEmpty())for(UpgradeAmmoData ammoData : ammoDatas)ammoData.read(read, revision);
+			setAmmo();
 		}
 
-		protected void setFrom() {
+		protected void setData(Seq<UpgradeAmmoData> datas){
 			baseData.from = this;
-			for (UpgradeAmmoData ammoData : ammoDatas)ammoData.from = this;
+			for (UpgradeAmmoData data : datas){
+				data.from = this
+				ammoDatas.add( (UpgradeAmmoData)(data.clone()) );
+			}
 		}
-
-		protected void setAmmoData() {
-			
-			if(lastestSelectID > 0 && ammoDatas.get(lastestSelectID).isUnlocked){
+		
+		protected void setAmmo(){
+			if(lastestSelectID >= 0 && ammoDatas.get(lastestSelectID).isUnlocked){
 				baseData.selectAmmo = ammoDatas.get(lastestSelectID).selectAmmo;
-			}else baseData.selectAmmo = UpgradeData.none;
-			
+			}else baseData.selectAmmo = none;
 		}
 		
 		protected int drawLevel() {
@@ -452,7 +454,6 @@ public class UpgraderBlock extends Block {
 		protected void updateTarget() {
 			if (linkValid())scalaTarget().updateUpgradeBase(baseData);
 		}
-
 		
 	}
 }
