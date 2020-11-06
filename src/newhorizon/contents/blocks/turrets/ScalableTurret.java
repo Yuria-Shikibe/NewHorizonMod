@@ -83,7 +83,7 @@ public class ScalableTurret extends ChargeTurret{
         super.init();
 	}
 	
-	public class ScalableTurretBuild extends ChargeTurretBuild implements Scalablec{
+	public class ScalableTurretBuild extends TurretBuild implements Scalablec{
 		public UpgradeBaseData baseData = defaultBaseData;
 		public UpgradeAmmoData ammoData = defaultAmmoData;
 		
