@@ -59,7 +59,7 @@ public abstract class UpgradeData implements Cloneable{
 			trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
 		}
 	};
-	public final Seq<ItemStack> requirements = new Seq<>();
+	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	//
 	public TextureRegion icon;
 	public String name, description;
