@@ -60,7 +60,8 @@ public class UnitSpawner extends Block{
 		rotate = true;
 		update = true;
 		configurable = true;
-		solid = true;
+		solid = false;
+		targetable = false;
 	}
 	
 	@Override
