@@ -59,14 +59,18 @@ public class NHBlocks implements ContentList {
 		eoeUpgrader = new UpgraderBlock("end-of-era-upgrader"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 3;
+			baseColor = NHColor.darkEnrColor;
 			maxLevel = 6;
 			toUpgradeClass = NHTurrets.ender;
-			initUpgradeBaseData = new UpgradeBaseData();
+			initUpgradeBaseData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, new ItemStack(NHItems.upgradeSort, 100)){{
+				timeCostcoefficien = 0.225f;
+			}};
 			addUpgrades(
 				new UpgradeAmmoData(
 					"arc-9000", "description00",NHBullets.boltGene, 300f, 0,
-					new ItemStack(NHItems.irayrondPanel, 3),
-					new ItemStack(NHItems.metalOxhydrigen, 2)
+					new ItemStack(NHItems.upgradeSort, 250),
+					new ItemStack(NHItems.darkEnergy, 500),
+					new ItemStack(NHItems.thermoCoreNegative, 150)
 				),
 				new UpgradeAmmoData(
 					"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,

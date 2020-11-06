@@ -59,7 +59,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public TextureRegion iconLevel;
 	
 	public UpgradeBaseData(){
-		super("UpgradeBuilding", "N/A", none, 460f, new ItemStack());
+		super("UpgradeBuilding", "N/A", none, 460f, new ItemStack(NHItems.emergencyReplace, 0));
 	}
 	
 	public UpgradeBaseData(
@@ -74,7 +74,7 @@ public class UpgradeBaseData extends UpgradeData {
 	@Override
 	public void load() {
 		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
-		iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
+		this.iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 	}
 	
 	@Override

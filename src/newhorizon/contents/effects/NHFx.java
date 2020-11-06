@@ -41,7 +41,8 @@ public class NHFx implements ContentList {
 	public void load() {
 		upgrading = new Effect(30, e -> {
 			color(e.color);
-			rect(Core.atlas.find(NewHorizon.NHNAME + "upgrade"), e.x, e.y + e.rotation * tilesize * e.finpow(), e.rotation * 3 * e.fout(), e.rotation * 3 * e.fout());
+			float drawSize = e.rotation * 5.5f * e.fout();
+			rect(Core.atlas.find(NewHorizon.NHNAME + "upgrade"), e.x, e.y + e.rotation * tilesize * 1.5f * e.finpow(), drawSize, drawSize);
 		});
 		
 		darkErnExplosion = new Effect(25, e -> {

@@ -151,7 +151,7 @@ public class UpgraderBlock extends Block {
 		}
 		
 		protected void consumeItems(UpgradeData data){
-			//if(state.rules.infiniteResources)return;
+			if(state.rules.infiniteResources)return;
 			CoreBlock.CoreBuild core = core();
 			if(coreValid(core))core.items.remove(data.requirements.toArray());
 		}
@@ -164,7 +164,7 @@ public class UpgraderBlock extends Block {
 			CoreBlock.CoreBuild core = core();
 			return 
 				coreValid(core) && (
-					/*state.rules.infiniteResources || */(
+					state.rules.infiniteResources || (
 						!isUpgrading() && core.items.has(data.requirements.toArray()) 
 					)
 				);
@@ -257,7 +257,7 @@ public class UpgraderBlock extends Block {
 				int index = 0;
 				
 				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if ((index % 5) == 0)table.row();
+					if(index % 8 == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
 						ammoData.selected = true;
