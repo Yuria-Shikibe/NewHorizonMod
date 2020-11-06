@@ -53,9 +53,7 @@ import static mindustry.Vars.*;
 public class UpgradeAmmoData extends UpgradeData{
 	public int unlockLevel;
 
-	public Effect
-	chargeEffect = Fx.none,
-	chargeBeginEffect = Fx.none;
+	
 
 	public UpgradeAmmoData(
 		String name,
@@ -104,6 +102,15 @@ public class UpgradeAmmoData extends UpgradeData{
 	public void read(Reads read, byte revision) {
 		this.isUnlocked = read.bool();
 		this.selected = read.bool();
+	}
+	
+	
+	public static class AmmoSets{
+		public Effect
+			chargeEffect = Fx.none,
+			chargeBeginEffect = Fx.none;
+			
+		public BulletType ammo;
 	}
 
 }

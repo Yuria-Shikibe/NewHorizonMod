@@ -266,7 +266,7 @@ public class UpgraderBlock extends Block {
 						baseData.selectAmmo = ammoData.selectAmmo;
 						updateTarget();
 					}).size(60).left().disabled( 
-						scalaTarget() == null || (ammoData.selected || !ammoData.isUnlocked)
+						target() == null || (ammoData.selected || !ammoData.isUnlocked)
 					);
 					
 					index++;
@@ -282,17 +282,13 @@ public class UpgraderBlock extends Block {
 		}
 
 		//Targeter
-		protected Building target() {
-			return linkValid() ? world.build(link) : null;
-		}
-
-		protected Scalablec scalaTarget() {
+		protected Scalablec target() {
 			return linkValid() ? (Scalablec)world.build(link) : null;
 		}
 
 		protected void setLink(int value) {
 			if (value == -1) {
-				if (linkValid())scalaTarget().resetUpgrade();
+				if (linkValid())target().resetUpgrade();
 			} else updateTarget();
 			this.link = value;
 		}
@@ -350,7 +346,7 @@ public class UpgraderBlock extends Block {
 			if (upgradingID != DFTID){
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance)){
-					upgradeEffect.at(x + Mathf.range(block.size / 2 * tilesize), y + Mathf.range(block.size / 2 * tilesize), block.size / 2, baseColor);
+					for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2 * tilesize), y - Mathf.random(block.size / 2 * tilesize), block.size / 2, baseColor);
 				}
 			}
 			
@@ -364,7 +360,7 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void onDestroyed() {
 			super.onDestroyed();
-			if(linkValid())scalaTarget().resetUpgrade();
+			if(linkValid())target().resetUpgrade();
 		}
 
 		@Override
@@ -375,7 +371,7 @@ public class UpgraderBlock extends Block {
 		
 		@Override
 		public void onRemoved() {
-			if(linkValid())scalaTarget().resetUpgrade();
+			if(linkValid())target().resetUpgrade();
 		}
 
 		//Draw Methods
@@ -390,26 +386,25 @@ public class UpgraderBlock extends Block {
 			Draw.color(baseColor);
 			Lines.square(x, y, block.size * tilesize / 2);
 			if (linkValid()) {
-				Building target = target();
-				Lines.square(target.x, target.y, target.block.size * tilesize / 2);
+				Scalablec target = target();
+				Lines.square(target.getX(), target.getY(), target.block().size * tilesize / 2);
 				float
 				sin = Mathf.absin(Time.time(), 6f, 1f),
 				r1 = (block.size / 2 + 1) * tilesize + sin,
-				r2 = (target.block.size / 3 + 2) * tilesize + sin;
+				r2 = (target.block().size / 3 + 2) * tilesize + sin;
 
 				Tmp.v1.trns(angleTo(target), r1);
 				Tmp.v2.trns(target.angleTo(this), r2);
-				int sigs = (int)dst(target) / tilesize;
+				int sigs = (int)(dst(target) / tilesize);
 
 				Lines.stroke(4, Pal.gray);
-				Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, target.x + Tmp.v2.x, target.y + Tmp.v2.y, sigs);
-
+				Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, target.getX() + Tmp.v2.x, target.getY() + Tmp.v2.y, sigs);
 				Lines.stroke(2, baseColor);
-				Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, target.x + Tmp.v2.x, target.y + Tmp.v2.y, sigs);
+				Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, target.getX() + Tmp.v2.x, target.getY() + Tmp.v2.y, sigs);
 				Drawf.circles(x, y, r1, baseColor);
-				Drawf.arrow(x, y, target.x, target.y, 2 * tilesize + sin, 4 + sin, baseColor);
+				Drawf.arrow(x, y, target.getX(), target.getY(), 2 * tilesize + sin, 4 + sin, baseColor);
 
-				Drawf.circles(target.x, target.y, r2, baseColor);
+				Drawf.circles(target.getX(), target.getY(), r2, baseColor);
 				Draw.reset();
 			}
 			Draw.reset();
@@ -459,7 +454,7 @@ public class UpgraderBlock extends Block {
 		}
 
 		protected void updateTarget() {
-			if (linkValid())scalaTarget().updateUpgradeBase(baseData);
+			if (linkValid())target().updateUpgradeBase(baseData);
 		}
 		
 	}
