@@ -71,18 +71,18 @@ public class NHBlocks implements ContentList {
 					new ItemStack(NHItems.upgradeSort, 250),
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
-				),
+				){{chargeTime = 60f;}},
 				new UpgradeAmmoData(
 					"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
 					new ItemStack(NHItems.irayrondPanel, 3),
 					new ItemStack(NHItems.metalOxhydrigen, 2)
-				),
+				){{salvos = 5;}},
 				new UpgradeAmmoData(
 					"air-raid", "description02", NHBullets.airRaid, 300f, 2,
 					new ItemStack(NHItems.upgradeSort, 250),
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
-				)
+				){{salvos = 5;}}
 			);
 			
             health = 1350;

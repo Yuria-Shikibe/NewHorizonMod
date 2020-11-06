@@ -35,62 +35,36 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		airRaid = new BasicBulletType(1.5f, 1250, "strike"){
+		airRaid = new ArtilleryBulletType(12f, 1250, "strike"){
 			public float maxSpeedScl = 0.8f;
 			public float maxSpeedCoeff = 5;
 			
 			@Override
-			public float range(){
-				return (speed + speed * maxSpeedScl * maxSpeedCoeff) / 2 * lifetime;
+			public void init(Bullet b){
+				Position primaryPos = b.vel().scl(b.lifetime()).add(b.x, b.y);
+				b.set(new Vec2().trns(b.rotation() - 180 + Mathf.range(65), Mathf.random(10 * tilesize));
+				b.rotation(b.angleTo(primaryPos)); 
+				
+				new Effect(32f, e -> {
+					color(lightColor);
+					for(int i : Mathf.signs){
+						Drawf.tri(e.x, e.y, 5f, 58f * e.fout(), e.rotation() + 90 * i);
+					}
+				}).at(b.x, b.y, b.rotation());
 			}
-    
+			
 			@Override
 			public void draw(Bullet b){
 				super.draw(b);
-				Draw.color(lightColor);
+				color(lightColor);
 				for(int i : Mathf.signs){
 					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation() - 180 + 30 * i);
 				}
 			}
 			
 			@Override
-			public void init(Bullet b){
-				super.init(b);
-				
-				Healthc frontEntity = Damage.linecast(b, b.x, b.y, b.rotation(), range());
-				b.data = frontEntity;
-				if(b.data == null)b.data = new Vec2().trns(b.rotation(), range()).add(b.x, b.y);
-				if(b.data instanceof Position){
-					Position target = (Position)b.data;
-					b.set(new Vec2().trns(b.angleTo(target) - 180 + Mathf.range(60), Mathf.random(10 * tilesize)).add(b.x, b.y));
-					b.rotation(b.angleTo(target));
-				}else{
-					b.remove();
-					return;
-				}
-				
-				new Effect(28f, e -> {
-					color(lightColor);
-					for(int i : Mathf.signs){
-						Drawf.tri(e.x, e.y, 5.4f, 72 * e.fout(), e.rotation + 90 * i);
-					}
-				}).at(b.x, b.y, b.rotation());
-			}
-			
-			@Override
 			public void update(Bullet b){
-				if(!(b.data instanceof Position)){
-					b.remove();
-					return;
-				}
-				Position target = (Position)b.data;
-				
-				if(b.timer.get(1,6) && b.within(target, splashDamageRadius / 2)){
-					b.time(lifetime);
-				}
-				
-				b.vel().scl(Mathf.curve(b.finpow(), 0, maxSpeedScl) * maxSpeedCoeff + 1);
-				/*b.vel().setAngle(Angles.moveToward(b.vel().angle(), b.angleTo(target), 2f));
+				//b.vel().scl(Mathf.curve(b.finpow(), 0, maxSpeedScl) * maxSpeedCoeff + 1);
 				
 				if(b.time() > 6){
 					new Effect(32f, e -> {
@@ -107,7 +81,7 @@ public class NHBullets implements ContentList {
 							Fill.poly(e.x + x, e.y + y, 6, 5.5f * e.fslope() * e.fout());
 						});
 					}).at(b.x, b.y, b.rotation());
-				}*/
+				}
 			}
 
 			@Override

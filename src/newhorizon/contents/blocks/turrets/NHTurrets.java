@@ -87,9 +87,6 @@ public class NHTurrets implements ContentList {
 		
 		ender = new ScalableTurret("end-of-era") {
 			{
-				chargeTime = 60f;
-				chargeEffects = 2;
-				chargeMaxDelay = 0f;
 				chargeEffect = new Effect(chargeTime, e -> {
 					Angles.randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
 						Draw.color(NHColor.darkEnrColor);

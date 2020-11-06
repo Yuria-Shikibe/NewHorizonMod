@@ -145,6 +145,7 @@ public abstract class UpgradeData implements Cloneable{
 					index ++;
 				}
 			}).left().row();
+			if(data.unlockLevel > 0)cont.add("[gray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
 			cont.add("[gray]CanUpgrade?: " + (data.from.canUpgrade(data) ? "[green]Able" : "[red]Disabled") + "[]").left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
