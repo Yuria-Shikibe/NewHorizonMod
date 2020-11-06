@@ -32,7 +32,7 @@ import static arc.math.Angles.*;
 public class NHFx implements ContentList {
 	public static
 	Effect 
-	circleSplash, darkErnExplosion, upgrading
+	circleSplash, darkErnExplosion, upgrading,
 	blastgenerate, blastAccept, emped, lightSkyCircleSplash;
 
 	@Override
