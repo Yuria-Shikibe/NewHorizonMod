@@ -56,6 +56,8 @@ public class UpgradeAmmoData extends UpgradeData{
 		chargeEffect = Fx.none,
 		chargeBeginEffect = Fx.none;
 			
+	public float inaccuracy;
+	public float velocityInaccuracy;
 	public float chargeTime = 0f;
 	public float reloadTime;
 	public float randX;

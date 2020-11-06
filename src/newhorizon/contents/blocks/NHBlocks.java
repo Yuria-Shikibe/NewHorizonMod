@@ -87,7 +87,9 @@ public class NHBlocks implements ContentList {
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
 				){{
-					
+					inaccuracy = 5;
+					velocityInaccuracy = 0.04f;
+					burstSpacing = 7f;
 					salvos = 7;
 					randX = 2f * tilesize;
 				}}

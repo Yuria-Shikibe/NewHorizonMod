@@ -92,7 +92,7 @@ public class ScalableTurret extends ChargeTurret{
 							tr.trns(rotation, size * tilesize / 2f, Mathf.range(ammoData.randX) );
 							recoil = recoilAmount;
 							heat = 1f;
-							bullet(ammo, rotation + Mathf.range(inaccuracy));
+							bullet(ammo, rotation + Mathf.range(ammoData.inaccuracy));
 							effects();
 						});
 					}
@@ -224,6 +224,13 @@ public class ScalableTurret extends ChargeTurret{
 				coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
 			}
 		}
+		
+		@Override
+		protected void bullet(BulletType type, float angle){
+            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+
+            type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(ammoData.velocityInaccuracy), lifeScl);
+        }
 		
 		@Override
 		public void resetUpgrade(){
