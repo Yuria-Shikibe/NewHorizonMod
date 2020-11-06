@@ -196,39 +196,34 @@ public class UpgraderBlock extends Block {
 			
 			if (upgradingID == -1) {
 				baseData.plusLevel();
-				updateTarget();
 			} else if (ammoDatas.isEmpty()) {
 				
 			} else {
 				ammoDatas.get(upgradingID).isUnlocked = true;
 				baseData.selectAmmo = ammoDatas.get(upgradingID).selectAmmo;
 				lastestSelectID = upgradingID;
-				updateTarget();
 			}
 			
 			upgradingID = DFTID;
+			updateTarget();
 		}
 
 		//UI
 		protected void buildUpgradeBaseDataTable(Table t) {
 			t.pane(table -> {
-				table.add("UpgradeTargetInfo->>").row();
-				table.add(baseData.toString()).row();
-			}).left().size(LEN * 10 + OFFSET * 3 - 150, 80f);
-			t.pane(table -> {
 				table.button("Back", dialog::hide).size(120f, 50f);
-			}).pad(10f).size(140f, 80f);
+			}).size(LEN * 120, 80f);
 			t.row();
 			t.pane(table -> {
 				baseData.buildTable(table);
-			}).left().size(LEN * 10 + OFFSET * 3, LEN * 2.6f + OFFSET);
+			}).left().size(LEN * 12 + OFFSET * 3, LEN * 2.6f + OFFSET);
 		}
 
 		//UI
 		protected void buildUpgradeAmmoDataTable(Table t) {
 			t.pane(table -> {
 				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
-			}).size(LEN * 10 + OFFSET * 3, LEN * 4f + OFFSET);
+			}).size(LEN * 12 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
 
 		protected void buildSwitchAmmoTable(Table t) {
@@ -236,17 +231,18 @@ public class UpgraderBlock extends Block {
 				int index = 0;
 				
 				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if (ammoDatas.get(lastestSelectID).selected || !ammoDatas.get(lastestSelectID).isUnlocked)continue;
 					if ((index % 5) == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
-						baseData.selectAmmo = ammoData.selectAmmo;
 						ammoData.selected = true;
+						baseData.selectAmmo = ammoData.selectAmmo;
+						
 						lastestSelectID = ammoData.id;
 						updateTarget();
-					}).size(60).disabled(b -> scalaTarget() == null);
+					}).size(60).left().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
 					index++;
 				}
+				table.row()
 				table.button(Icon.infoCircle, () -> {
 					new Dialog("") {{
 						setFillParent(true);
@@ -259,9 +255,10 @@ public class UpgraderBlock extends Block {
 						cont.add(offsetSpace + Core.bundle.get(ammoDatas.get(lastestSelectID).description)).color(Color.lightGray).left().row();
 						cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 						cont.row();
-						cont.button("Leave", this::hide).size(120, 50).pad(4);
+						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
 				}).size(60).disabled(b -> baseData.selectAmmo == none);
+				
 			}).size(60 * 8f, 70);
 		}
 
@@ -330,7 +327,11 @@ public class UpgraderBlock extends Block {
 					
 					buildUpgradeBaseDataTable(t);
 					t.row();
+					t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
+					t.row();
 					buildUpgradeAmmoDataTable(t);
+					t.row();
+					t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
 					t.row();
 					buildSwitchAmmoTable(t);
 					t.row();
@@ -417,13 +418,15 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void read(Reads read, byte revision) {
+			setAmmoDatas(initUpgradeAmmoDatas);
+			
 			this.remainTime = read.f();
 			this.link = read.i();
 			this.upgradingID = read.i();
 			this.lastestSelectID = read.i();
 
 			baseData.read(read, revision);
-			for (UpgradeAmmoData ammoData : ammoDatas)ammoData.read(read, revision);
+			if(!ammoDatas.isEmpty())for(UpgradeAmmoData ammoData : ammoDatas)ammoData.read(read, revision);
 		}
 
 		protected void setFrom() {
