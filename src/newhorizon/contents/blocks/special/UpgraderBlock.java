@@ -229,6 +229,7 @@ public class UpgraderBlock extends Block {
 					}}.show();
 				}).size(60).disabled(b -> baseData.selectAmmo == none);
 			}).left().size(180f, 60f);
+			t.row();
 			buildSwitchAmmoTable(t);
 			t.row();
 			t.pane(table -> {
@@ -256,10 +257,10 @@ public class UpgraderBlock extends Block {
 						
 						lastestSelectID = ammoData.id;
 						updateTarget();
-					}).size(60).right().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
+					}).size(60).left().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
 					index++;
 				}
-			}).size(60 * 5, 60).right();
+			}).size(60 * 5, 60).left();
 		}
 
 		//Target confirm
@@ -331,9 +332,7 @@ public class UpgraderBlock extends Block {
 					buildUpgradeAmmoDataTable(t);
 					t.row();
 					t.image().pad(12).fillX().height(4f).color(Pal.accent).row();
-				}).size(490f);
-				dialog.cont.row();
-				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
+				});
 				dialog.show();
 				
 			}).size(60f);
