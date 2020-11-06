@@ -325,11 +325,11 @@ public class UpgraderBlock extends Block {
 					
 					buildUpgradeBaseDataTable(t);
 					t.row();
-					t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
+					//t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
 					t.row();
 					buildUpgradeAmmoDataTable(t);
 					t.row();
-					t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
+					//t.image().width(LEN * 18 + OFFSET * 3.5f).height(4f).color(Pal.accent);
 					t.row();
 					buildSwitchAmmoTable(t);
 					t.row();

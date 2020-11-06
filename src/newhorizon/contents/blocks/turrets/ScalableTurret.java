@@ -64,7 +64,7 @@ public class ScalableTurret extends ChargeTurret{
 	
 	
 	public class ScalableTurretBuild extends ChargeTurretBuild implements Scalablec{
-		public UpgradeBaseData baseData;
+		public UpgradeBaseData baseData = new UpgradeBaseData();
 		
 		
 		@Override
@@ -74,7 +74,12 @@ public class ScalableTurret extends ChargeTurret{
 		
 		@Override
 		public void updateUpgradeBase(UpgradeBaseData importBaseData){
-			if(baseData == null || !importBaseData.equals(baseData))baseData = importBaseData;
+			if(importBaseData == null){
+				ui.showErrorMessage("Null Data");
+				return;
+			}
+			
+			if(baseData == null || importBaseData.equals(baseData))baseData = importBaseData;
 		}
 		
 		
