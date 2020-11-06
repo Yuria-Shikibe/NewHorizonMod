@@ -146,7 +146,7 @@ public class UpgraderBlock extends Block {
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
 		
 		protected boolean coreValid(CoreBlock.CoreBuild core) {
-			if(core == null || core.items == null || core.items.isEmpty())return false;
+			if(core == null || core.items == null || core.items.empty())return false;
 			 return true;
 		}
 		
