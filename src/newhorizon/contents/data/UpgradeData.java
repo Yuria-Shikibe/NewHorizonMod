@@ -66,7 +66,7 @@ public abstract class UpgradeData implements Cloneable{
 	
 	public BulletType selectAmmo;
 	public UpgraderBlockBuild from;
-	public Boolf<ImageButton> disable = b -> from == null;
+	public Boolf<ImageButton> disable = b -> false;
 	
 
 	public UpgradeData(

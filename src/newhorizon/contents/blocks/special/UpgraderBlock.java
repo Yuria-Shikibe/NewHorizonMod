@@ -210,6 +210,8 @@ public class UpgraderBlock extends Block {
 
 		//UI
 		protected void buildUpgradeBaseDataTable(Table t) {
+			buildSwitchAmmoTable(t);
+			t.row();
 			t.pane(table -> {
 				table.button("Back", dialog::hide).size(120f, 50f).left();
 				table.button(Icon.infoCircle, () -> {
@@ -228,8 +230,6 @@ public class UpgraderBlock extends Block {
 					}}.show();
 				}).size(50).disabled(b -> baseData.selectAmmo == none);
 			}).left().size(200f, 80f);
-			t.row();
-			buildSwitchAmmoTable(t);
 			t.row();
 			t.pane(table -> {
 				baseData.buildTable(table);
@@ -259,7 +259,7 @@ public class UpgraderBlock extends Block {
 					}).size(60).left().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
 					index++;
 				}
-			}).size(60 * 8f, 70);
+			}).size(60 * 8f, 70).left();
 		}
 
 		//Target confirm
@@ -327,11 +327,11 @@ public class UpgraderBlock extends Block {
 					
 					buildUpgradeBaseDataTable(t);
 					t.row();
-					t.image().width(LEN * 8 + OFFSET * 3.5f).height(4f).color(Pal.accent);
+					t.image().pad(18).fillX().height(4f).color(Pal.accent);
 					t.row();
 					buildUpgradeAmmoDataTable(t);
 					t.row();
-					t.image().width(LEN * 8 + OFFSET * 3.5f).height(4f).color(Pal.accent);
+					t.image().pad(18).fillX().height(4f).color(Pal.accent);
 				}).size(550f);
 				dialog.cont.row();
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
