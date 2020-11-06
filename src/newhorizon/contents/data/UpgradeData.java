@@ -60,8 +60,7 @@ public abstract class UpgradeData implements Cloneable{
 		}
 	};
 	public final Seq<ItemStack> requirements = new Seq<>();
-	public final Seq<ItemDisplay> itemsTables = new Seq<>();
-
+	//
 	public TextureRegion icon;
 	public String name, description;
 	public float costTime;
@@ -83,9 +82,6 @@ public abstract class UpgradeData implements Cloneable{
 		this.selectAmmo = selectAmmo;
 		this.costTime = costTime;
 		requirements.addAll(items);
-		for(ItemStack stack : items){
-			itemsTables.add( new ItemDisplay(stack.item, stack.amount, false));
-		}
 	}
 
 	public void load() {
@@ -145,12 +141,14 @@ public abstract class UpgradeData implements Cloneable{
 			cont.add("<< Upgrade >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();
 			cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
-			for(ItemDisplay table : itemsTables){
-				int index = 0;
-				if(index % 5 == 0)cont.row();
-				cont.add(table);
-				index++;
-			}
+			cont.pane(table -> {
+				for(ItemStack stack : requirements){
+					int index = 0;
+					table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
+					if(index % 5 == 0)table.row();
+					index ++;
+				}
+			}).row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);
