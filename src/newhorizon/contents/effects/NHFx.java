@@ -20,6 +20,7 @@ import mindustry.world.*;
 
 import newhorizon.contents.bullets.special.*;
 import newhorizon.contents.colors.*;
+import newhorizon.NewHorizon;
 
 
 import static mindustry.Vars.*;
@@ -31,11 +32,16 @@ import static arc.math.Angles.*;
 public class NHFx implements ContentList {
 	public static
 	Effect 
-	circleSplash, darkErnExplosion,
+	circleSplash, darkErnExplosion, upgrading
 	blastgenerate, blastAccept, emped, lightSkyCircleSplash;
 
 	@Override
 	public void load() {
+		upgrading = new Effect(30, e -> {
+			color(e.color);
+			rect(Core.atlas.find(NewHorizon.NHNAME + "upgrade"), e.x, e.y + e.rotation * tilesize * e.finpow(), e.rotation * 3 * e.fout(), e.rotation * 3 * e.fout());
+		});
+		
 		darkErnExplosion = new Effect(25, e -> {
 			color(NHColor.darkEnrColor);
 			e.scaled(6, i -> {

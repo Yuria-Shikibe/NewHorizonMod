@@ -62,12 +62,12 @@ public class UpgraderBlock extends Block {
 	private static final int DFTID = -2; 
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
-
+	public float upgradeEffectChance = 0.04f;
 	//public TextureRegion[] levelRegions;
 
 	public Color baseColor = Pal.accent;
 	public Block toUpgradeClass;
-
+	public Effect upgradeEffect = NHFx.upgrading;
 	public float range = 320f;
 
 	public UpgradeBaseData initUpgradeBaseData = new UpgradeBaseData();
@@ -347,8 +347,13 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void updateTile() {
-			if (upgradingID != DFTID)updateUpgrading();
-
+			if (upgradingID != DFTID){
+				updateUpgrading();
+				if(Mathf.chanceDelta(upgradeEffectChance)){
+					upgradeEffect.at(x + Mathf.range(block.size / 2 * tilesize), y + Mathf.range(block.size / 2 * tilesize), block.size / 2, baseColor);
+				}
+			}
+			
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setData(initUpgradeAmmoDatas);
 				setAmmo();

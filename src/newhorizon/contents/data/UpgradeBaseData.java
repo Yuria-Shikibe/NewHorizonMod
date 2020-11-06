@@ -82,7 +82,7 @@ public class UpgradeBaseData extends UpgradeData {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(t2 -> {
 			t2.pane(table -> {
-				table.image(icon).size(LEN);
+				table.image(iconLevel).size(LEN);
 			}).size(LEN);
 
 			t2.pane(table -> {
