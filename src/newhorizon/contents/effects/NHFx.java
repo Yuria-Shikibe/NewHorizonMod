@@ -41,7 +41,7 @@ public class NHFx implements ContentList {
 	@Override
 	public void load() {
 		darkEnergySmoke = new Effect(25, e -> {
-			color(effectColor, effectColor2,e.fin() * 0.5);
+			color(NHColor.darkEnrColor);
 			randLenVectors(e.id, 4, 60 * e.fin(), e.rotation, 30, (x,y) -> {
 				Fill.circle(e.x + x, e.y + y, e.fout() * 4);
 			});
