@@ -436,9 +436,9 @@ public class UpgraderBlock extends Block {
 		protected void setData(Seq<UpgradeAmmoData> datas){
 			baseData.from = this;
 			for (UpgradeAmmoData data : datas){
-				data.from = this
 				ammoDatas.add( (UpgradeAmmoData)(data.clone()) );
 			}
+			for (UpgradeAmmoData data : ammoDatas)data.from = this;
 		}
 		
 		protected void setAmmo(){

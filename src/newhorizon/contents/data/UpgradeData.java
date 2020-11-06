@@ -125,7 +125,7 @@ public abstract class UpgradeData implements Cloneable{
 		}).size(LEN * 6f, LEN).pad(OFFSET);
 
 		t.pane(table -> {
-			table.button(Icon.infoCircle, () -> 
+			table.button(Icon.infoCircle, () -> {
 				new Dialog("") {{
 					cont.margin(15f);
 					/*cont.image(icon).row();
@@ -136,7 +136,7 @@ public abstract class UpgradeData implements Cloneable{
 					cont.row();*/
 					cont.button("Leave", this::hide).size(120, 50).pad(4);
 				}}.show();
-			).size(LEN);
+			}).size(LEN);
 			table.button(Icon.hammer, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(disable);
