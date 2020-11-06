@@ -363,7 +363,7 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void placed() {
 			super.placed();
-			setData();
+			setData(initUpgradeAmmoDatas);
 		}
 		
 		@Override
