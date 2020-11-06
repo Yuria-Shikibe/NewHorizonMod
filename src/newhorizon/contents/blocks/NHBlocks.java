@@ -85,6 +85,7 @@ public class NHBlocks implements ContentList {
 		chargeWall = new ChargeWall("charge-wall"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 1;
+			absorbLasers = true;
 			range = 120;
             health = 1350;
             effectColor = NHColor.lightSky;
@@ -93,6 +94,7 @@ public class NHBlocks implements ContentList {
 		chargeWallLarge = new ChargeWall("charge-wall-large"){{
 			requirements(Category.effect, with(NHItems.presstanium, 600, NHItems.metalOxhydrigen, 200, NHItems.irayrondPanel, 300));
 			size = 2;
+			absorbLasers = true;
 			range = 200;
             health = 1350 * size * size;
             effectColor = NHColor.lightSky;
