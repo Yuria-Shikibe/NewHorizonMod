@@ -76,7 +76,7 @@ public class ScalableTurret extends ChargeTurret{
 	@Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.damage, defaultAmmoData.selectAmmo.damage, StatUnit.none);
+		//stats.add(Stat.damage, defaultAmmoData.selectAmmo.damage, StatUnit.none);
     }
 
     @Override
