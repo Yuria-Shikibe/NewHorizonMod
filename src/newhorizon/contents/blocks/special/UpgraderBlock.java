@@ -210,10 +210,9 @@ public class UpgraderBlock extends Block {
 
 		//UI
 		protected void buildUpgradeBaseDataTable(Table t) {
-			buildSwitchAmmoTable(t);
-			t.row();
+			
 			t.pane(table -> {
-				table.button("Back", dialog::hide).size(120f, 50f).left();
+				table.button("Back", dialog::hide).size(120f, 60f).left();
 				table.button(Icon.infoCircle, () -> {
 					new Dialog("") {{
 						setFillParent(true);
@@ -228,12 +227,13 @@ public class UpgraderBlock extends Block {
 						cont.row();
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
-				}).size(50).disabled(b -> baseData.selectAmmo == none);
-			}).left().size(200f, 80f);
+				}).size(60).disabled(b -> baseData.selectAmmo == none);
+			}).left().size(180f, 60f);
+			buildSwitchAmmoTable(t);
 			t.row();
 			t.pane(table -> {
 				baseData.buildTable(table);
-			}).size(LEN * 12 + OFFSET * 3, LEN * 2.6f + OFFSET);
+			}).size(LEN * 12 + OFFSET * 3, LEN * 2f + OFFSET);
 		}
 
 		//UI
@@ -256,10 +256,10 @@ public class UpgraderBlock extends Block {
 						
 						lastestSelectID = ammoData.id;
 						updateTarget();
-					}).size(60).left().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
+					}).size(60).right().disabled(b -> scalaTarget() == null || ammoData.selected || !ammoData.isUnlocked);
 					index++;
 				}
-			}).size(60 * 8f, 70).left();
+			}).size(60 * 5, 60).right();
 		}
 
 		//Target confirm
@@ -327,12 +327,11 @@ public class UpgraderBlock extends Block {
 					
 					buildUpgradeBaseDataTable(t);
 					t.row();
-					t.image().pad(18).fillX().height(4f).color(Pal.accent);
-					t.row();
+					t.image().pad(12).fillX().height(4f).color(Pal.accent).row();
 					buildUpgradeAmmoDataTable(t);
 					t.row();
-					t.image().pad(18).fillX().height(4f).color(Pal.accent);
-				}).size(550f);
+					t.image().pad(12).fillX().height(4f).color(Pal.accent).row();
+				}).size(490f);
 				dialog.cont.row();
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
 				dialog.show();
