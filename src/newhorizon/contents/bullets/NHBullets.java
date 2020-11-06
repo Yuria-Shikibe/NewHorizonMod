@@ -29,13 +29,117 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 
 public class NHBullets implements ContentList {
-	public static
-	BulletType boltGene,
+	public static 
+	BulletType boltGene, airRaid,
 			   curveBomb;
 
 	@Override
 	public void load() {
+		airRaid = new FlakcBulletType(1.5f, 1250, "strike"){
+			public float maxSpeedScl = 0.8f;
+			public float maxSpeedCoeff = 16;
+			
+			@Override
+			public float range(){
+				return (speed + speed * maxSpeedScl * maxSpeedCoeff) / 2 * lifetime;
+			}
+    
+			@Override
+			public void draw(Bullet b){
+				super.draw(b);
+				Draw.color(lightColor);
+				for(int i : Mathf.signs){
+					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation - 180 + 30 * i);
+				}
+			}
+			
+			@Override
+			public void init(Bullet b){
+				super.init(b);
+				
+				Healthc frontEntity = Damage.linecast(b, b.x, b.y, b.rotation(), range());
+				b.data = frontEntity;
+				if(b.data == null)b.data = new Vec2().trns(b.rotation(), range()).add(b.x, b.y);
+				if(b.data instanceof Position){
+					Position target = (Position)b.data;
+					Tmp.v1.trns(b.angleTo(target) - 180 + Mathf.range(60), 8 * tilesize).add(b.x, b.y);
+					b.set(Tmp.v1);
+					b.rotation(b.angleTo(target));
+				}else{
+					b.remove();
+					return;
+				}
+				
+				new Effect(28f, e -> {
+					for(int i : Mathf.signs){
+						Drawf.tri(e.x, e.y, 5.4f, 72 * e.fout(), e.rotation + 90 * i);
+					}
+				}).at(b.x, b.y, b.rot());
+			}
+			
+			@Override
+			public void update(Bullet b){
+				if(!(b.data instanceof Position))b.remove();
+				Position target = (Position)b.data;
+				super.update(b);
+				
+				b.vel().setAngle(Angles.moveToward(b.vel().angle(), b.angleTo(target), 2f));
+				b.vel().scl(Mathf.curve(b.finpow(), 0, maxSpeedScl) * maxSpeedCoeff + 1);
+				
+				if(b.time() > 6){
+					new Effect(32f, e -> {
+						color(lightColor, Pal.gray, e.fin());
+						stroke(e.fout() * 5);
+						lineAngleCenter(e.x, e.y, e.rotation - 180, e.fout() * 44 + 56); 
+					}).at(b.x, b.y, b.rot());
+				}
+				
+				if(b.timer.get(0,3)){
+					new Effect(25f, e -> {
+						color(lightColor, Pal.gray, e.fin() * 0.65);
+						randLenVectors(e.id, 4, 60f * e.fin(), e.rotation - 180, 20, (x, y) -> {
+							Fill.poly(e.x + x, e.y + y, 6, 5.5 * e.fslope() * e.fout());
+						});
+					}).at(b.x, b.y, b.rot());
+				}
+			}
 
+			@Override
+			public void hit(b, x, y){
+				super.hit(b, x, y);
+				NHLightningBolt.generateRange(Tmp.v1.set(b.x, b.y), b.team(), 80, 8, 2, lightColor, NHLightningBolt.WIDTH, target -> {
+					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
+					NHFx.lightningHit.at(target);
+				});
+				
+			{
+				shrinkX = shrinkY = 0;
+				splashDamageRadius = 80f;
+				splashDamage = damage * 0.7f;
+				height = 60f;
+				width = 18f;
+				lifetime = 150;
+				backColor = lightColor = NHColor.darkEnrColor;
+				frontColor = Color.white;
+				hitEffect = new Effect(25, e -> {
+					color(lightColor);
+					stroke(e.fout() * 3);
+					circle(e.x, e.y, e.fin() * 60);
+					stroke(e.fout() * 1.75f);
+					circle(e.x, e.y, e.fin() * 45);
+					
+					randLenVectors(e.id + 1, 12, 1f + 60f * e.finpow(), (x, y) -> {
+						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 2f + e.fout() * 8f);
+					});
+			
+					Fill.circle(e.x, e.y, e.fout() * 20);
+					color(frontColor);
+					Fill.circle(e.x, e.y, e.fout() * 14);
+				});
+			}
+				
+		};
+		
 		curveBomb = new ArtilleryBulletType(4f, 0f) {
 			@Override
 			public void init(Bullet b) {
@@ -164,14 +268,7 @@ public class NHBullets implements ContentList {
 							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
 						}
 						Damage.damage(b.team(), hitPos.getX(), hitPos.getY(), 80f, this.splashDamage * b.damageMultiplier());
-						new Effect(25, e -> {
-							color(NHColor.darkEnrColor);
-							e.scaled(12, t -> {
-								stroke(3f * t.fout());
-								circle(e.x, e.y, 3f + t.fin() * 80f);
-							});
-							Fill.circle(e.x, e.y, e.fout() * 12f);
-						}).at(hitPos);
+						NHFx.lightningHit.at(hitPos);
 					});
 				}
 

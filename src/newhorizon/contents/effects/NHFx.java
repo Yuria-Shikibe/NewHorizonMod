@@ -34,11 +34,23 @@ import static arc.math.Angles.*;
 public class NHFx implements ContentList {
 	public static
 	Effect 
-	circleSplash, darkErnExplosion, upgrading,
+	circleSplash, darkErnExplosion, upgrading, lightningHit,
 	blastgenerate, blastAccept, emped, lightSkyCircleSplash;
 
 	@Override
 	public void load() {
+		lightningHit = new Effect(25, e -> {
+			color(NHColor.darkEnrColor);
+			e.scaled(12, t -> {
+				stroke(3f * t.fout());
+				circle(e.x, e.y, 3f + t.fin() * 80f);
+			});
+			Fill.circle(e.x, e.y, e.fout() * 8f);
+			randLenVectors(e.id + 1, 8, 1f + 60f * e.finpow(), (x, y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * 5f);
+			});
+		})
+						
 		upgrading = new Effect(30, e -> {
 			color(e.color);
 			float drawSize = e.rotation * tilesize * e.fout();

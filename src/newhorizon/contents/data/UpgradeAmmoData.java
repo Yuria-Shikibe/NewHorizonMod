@@ -52,16 +52,15 @@ import static mindustry.Vars.*;
 
 public class UpgradeAmmoData extends UpgradeData{
 	
-
 	public Effect
 		chargeEffect = Fx.none,
 		chargeBeginEffect = Fx.none;
 			
-	public BulletType ammo;
 	public float chargeTime;
-	public int salvo;
-	public float burstSpacing;
-
+	public int salvos = 1;
+	public float burstSpacing = 5f;
+	public BulletType selectAmmo;
+	
 	public UpgradeAmmoData(
 		String name,
 		String description,
@@ -70,8 +69,9 @@ public class UpgradeAmmoData extends UpgradeData{
 		int unlockLevel,
 		ItemStack... items
 	) {
-		super(name, description, selectAmmo, costTime, items);
+		super(name, description, costTime, items);
 		this.unlockLevel = unlockLevel;
+		this.selectAmmo = selectAmmo;
 	}
 	public int id;
 	public boolean isUnlocked, selected;

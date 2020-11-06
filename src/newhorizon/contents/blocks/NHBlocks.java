@@ -67,7 +67,7 @@ public class NHBlocks implements ContentList {
 			}};
 			addUpgrades(
 				new UpgradeAmmoData(
-					"arc-9000", "description00",NHBullets.boltGene, 300f, 0,
+					"arc-9000", "description00", NHBullets.boltGene, 300f, 0,
 					new ItemStack(NHItems.upgradeSort, 250),
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -76,6 +76,12 @@ public class NHBlocks implements ContentList {
 					"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
 					new ItemStack(NHItems.irayrondPanel, 3),
 					new ItemStack(NHItems.metalOxhydrigen, 2)
+				),
+				new UpgradeAmmoData(
+					"air-raid", "description02", NHBullets.airRaid, 300f, 2,
+					new ItemStack(NHItems.upgradeSort, 250),
+					new ItemStack(NHItems.darkEnergy, 500),
+					new ItemStack(NHItems.thermoCoreNegative, 150)
 				)
 			);
 			

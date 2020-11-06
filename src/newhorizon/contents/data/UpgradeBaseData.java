@@ -68,7 +68,7 @@ public class UpgradeBaseData extends UpgradeData {
 		float costTime,
 		ItemStack... items
 	) {
-		super(name, description, none, costTime, items);
+		super(name, description, costTime, items);
 		unlockLevel = 0;
 	}
 	

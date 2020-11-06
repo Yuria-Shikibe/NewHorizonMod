@@ -65,8 +65,7 @@ public abstract class UpgradeData implements Cloneable{
 	public TextureRegion icon;
 	public String name, description;
 	public float costTime;
-	
-	public BulletType selectAmmo;
+	BulletType selectAmmo;
 	public UpgraderBlockBuild from;
 	public boolean disable = false;
 	
@@ -74,13 +73,11 @@ public abstract class UpgradeData implements Cloneable{
 	public UpgradeData(
 		String name,
 		String description,
-		BulletType selectAmmo,
 		float costTime,
 		ItemStack... items
 	) {
 		this.name = name;
 		this.description = description;
-		this.selectAmmo = selectAmmo;
 		this.costTime = costTime;
 		requirements.addAll(items);
 	}

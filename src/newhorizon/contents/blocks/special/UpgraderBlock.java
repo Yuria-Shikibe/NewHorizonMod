@@ -207,7 +207,6 @@ public class UpgraderBlock extends Block {
 				
 			} else {
 				ammoDatas.get(upgradingID).isUnlocked = true;
-				baseData.selectAmmo = ammoDatas.get(upgradingID).selectAmmo;
 				lastestSelectID = upgradingID;
 			}
 			
@@ -221,7 +220,7 @@ public class UpgraderBlock extends Block {
 			t.pane(table -> {
 				table.button(Icon.infoCircle, () -> {
 					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID));
-				}).size(60).disabled(baseData.selectAmmo == none);
+				}).size(60).disabled(lastestSelectID < 0 || ammoDatas.isEmpty());
 				
 				table.button(Icon.list, () -> {
 					new Dialog("All Info") {{
@@ -258,8 +257,6 @@ public class UpgraderBlock extends Block {
 						ammoDatas.get(lastestSelectID).selected = false;
 						ammoData.selected = true;
 						lastestSelectID = ammoData.id;
-						
-						baseData.selectAmmo = ammoData.selectAmmo;
 						updateTarget();
 					}).size(60).left().disabled( 
 						target() == null || (ammoData.selected || !ammoData.isUnlocked)
@@ -348,7 +345,6 @@ public class UpgraderBlock extends Block {
 			
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setData(initUpgradeAmmoDatas);
-				setAmmo();
 				updateTarget();
 			});
 		}
@@ -428,7 +424,6 @@ public class UpgraderBlock extends Block {
 
 			baseData.read(read, revision);
 			if(!ammoDatas.isEmpty())for(UpgradeAmmoData ammoData : ammoDatas)ammoData.read(read, revision);
-			setAmmo();
 		}
 
 		protected void setData(Seq<UpgradeAmmoData> datas){
@@ -438,20 +433,14 @@ public class UpgraderBlock extends Block {
 			}
 			for (UpgradeAmmoData data : ammoDatas)data.from = this;
 		}
-		
-		protected void setAmmo(){
-			if(lastestSelectID >= 0 && ammoDatas.get(lastestSelectID).isUnlocked){
-				baseData.selectAmmo = ammoDatas.get(lastestSelectID).selectAmmo;
-			}else baseData.selectAmmo = none;
-		}
-		
-		protected int drawLevel() {
-			return baseData.level += 1;
-		}
 
 		protected void updateTarget() {
-			if (linkValid())target().updateUpgradeBase(baseData);
+			if (linkValid()){
+				target().setBaseData(baseData);
+				if(lastestSelectID >= 0 && ammoDatas.get(lastestSelectID).isUnlocked)target().setAmmoData(ammoDatas.get(lastestSelectID));
+			}
 		}
+		
 		
 	}
 }

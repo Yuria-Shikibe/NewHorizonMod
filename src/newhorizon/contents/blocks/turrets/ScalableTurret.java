@@ -47,8 +47,8 @@ import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
 
 public class ScalableTurret extends ChargeTurret{
-	protected BulletType none = new BasicBulletType(0.1f, 0.1f, "bullet"){public void draw (){}};
-	
+	public UpgradeBaseData defaultBaseData = new UpgradeBaseData("Default", "Default data", 0f, new ItemStack());
+	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("Default", "Default data", UpgradeData.none, 0f, 0, new ItemStack());
 	
 	public Color baseColor = NHColor.darkEnrColor;
 	//Load Mod Factories
@@ -64,49 +64,9 @@ public class ScalableTurret extends ChargeTurret{
 	
 	
 	public class ScalableTurretBuild extends ChargeTurretBuild implements Scalablec{
-		public UpgradeBaseData baseData = new UpgradeBaseData();
+		public UpgradeBaseData baseData = defaultBaseData;
+		public UpgradeAmmoData ammoData = defaultAmmoData;
 		
-		
-		@Override
-		public void resetUpgrade(){
-			baseData = new UpgradeBaseData();
-		}
-		
-		@Override
-		public void updateUpgradeBase(UpgradeBaseData importBaseData){
-			this.baseData = importBaseData;
-		}
-		
-		
-		@Override
-		public void drawConnected(){
-			float sin = Mathf.absin(Time.time(), 6f, 1f);
-			for(int i = 0; i < 4; i++){
-				float length = tilesize * block.size / 2 + 3 + sin;
-				Tmp.v1.trns(i * 90, -length);
-				Draw.color(Pal.gray);
-				Draw.rect(NewHorizon.NHNAME + "linked-arrow-back", x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
-				Draw.color(baseColor);
-				Draw.rect(NewHorizon.NHNAME + "linked-arrow", 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
-			}
-		}
-		
-		@Override
-		public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
-		
-		@Override
-	    public UpgraderBlockBuild upgrader(){return baseData.from;}
-		
-	    @Override
-	    public UpgradeBaseData getBaseData(){
-			return baseData;
-		}
-    	
-		@Override
-		public void setBaseData(UpgradeBaseData baseData){
-			this.baseData = baseData;
-		}
-    
     
     	@Override
         public void shoot(BulletType ammo){
@@ -137,7 +97,7 @@ public class ScalableTurret extends ChargeTurret{
         
         @Override
         public BulletType peekAmmo(){
-        	return getBaseData() == null ? none : getBaseData().selectAmmo == null ? none : getBaseData().selectAmmo;
+        	return getAmmoData() == null ? UpgradeData.none : getAmmoData().selectAmmo == null ? UpgradeData.none : getAmmoData().selectAmmo;
 		}
 		
 		@Override
@@ -244,6 +204,35 @@ public class ScalableTurret extends ChargeTurret{
 			}
 		}
 		
+		
+		
+		@Override
+		public void resetUpgrade(){
+			baseData = defaultBaseData;
+			ammoData = defaultAmmoData;
+		}
+		
+		@Override
+		public void drawConnected(){
+			float sin = Mathf.absin(Time.time(), 6f, 1f);
+			for(int i = 0; i < 4; i++){
+				float length = tilesize * block.size / 2 + 3 + sin;
+				Tmp.v1.trns(i * 90, -length);
+				Draw.color(Pal.gray);
+				Draw.rect(NewHorizon.NHNAME + "linked-arrow-back", x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+				Draw.color(baseColor);
+				Draw.rect(NewHorizon.NHNAME + "linked-arrow", 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+			}
+		}
+		
+		@Override public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
+		@Override public UpgraderBlockBuild upgrader(){return baseData.from;}
+		
+	    @Override public UpgradeBaseData getBaseData(){return baseData;}
+		@Override public UpgradeAmmoData getBaseData(){return ammoData;}
+    	
+		@Override public void setBaseData(UpgradeBaseData data){this.baseData = data;}
+		@Override public void setAmmoData(UpgradeAmmoData data){this.ammoData = data;}
 	}
 }
 
