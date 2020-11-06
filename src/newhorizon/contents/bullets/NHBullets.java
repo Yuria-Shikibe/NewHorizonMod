@@ -83,7 +83,7 @@ public class NHBullets implements ContentList {
 				Position target = (Position)b.data;
 				super.update(b);
 				
-				if(b.within(target, splashDamageRadius / 3){
+				if(b.timer.get(1,6) && b.within(target, splashDamageRadius / 2)){
 					b.time(lifetime);
 				}
 				
@@ -119,7 +119,7 @@ public class NHBullets implements ContentList {
 				
 			{
 				shrinkX = shrinkY = 0;
-				splashDamageRadius = 80f;
+				splashDamageRadius = 120f;
 				splashDamage = damage * 0.7f;
 				height = 60f;
 				width = 18f;
