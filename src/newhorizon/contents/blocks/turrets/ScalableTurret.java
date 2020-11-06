@@ -194,7 +194,7 @@ public class ScalableTurret extends ChargeTurret{
 		}
 		
 		protected float reloadTime(){
-			return ammoDatas.reloadTime <= 0 ? reloadTime : ammoDatas.reloadTime;
+			return ammoData.reloadTime <= 0 ? reloadTime : ammoData.reloadTime;
 		}
 		
 		@Override
