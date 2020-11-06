@@ -35,7 +35,7 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		airRaid = new FlakBulletType(1.5f, 1250, "strike"){
+		airRaid = new BasicBulletType(1.5f, 1250, "strike"){
 			public float maxSpeedScl = 0.8f;
 			public float maxSpeedCoeff = 16;
 			
@@ -49,7 +49,7 @@ public class NHBullets implements ContentList {
 				super.draw(b);
 				Draw.color(lightColor);
 				for(int i : Mathf.signs){
-					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation - 180 + 30 * i);
+					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation() - 180 + 30 * i);
 				}
 			}
 			
@@ -74,7 +74,7 @@ public class NHBullets implements ContentList {
 					for(int i : Mathf.signs){
 						Drawf.tri(e.x, e.y, 5.4f, 72 * e.fout(), e.rotation + 90 * i);
 					}
-				}).at(b.x, b.y, b.rot());
+				}).at(b.x, b.y, b.rotation());
 			}
 			
 			@Override
@@ -82,6 +82,10 @@ public class NHBullets implements ContentList {
 				if(!(b.data instanceof Position))b.remove();
 				Position target = (Position)b.data;
 				super.update(b);
+				
+				if(b.within(target, splashDamageRadius / 3){
+					b.time(lifetime);
+				}
 				
 				b.vel().setAngle(Angles.moveToward(b.vel().angle(), b.angleTo(target), 2f));
 				b.vel().scl(Mathf.curve(b.finpow(), 0, maxSpeedScl) * maxSpeedCoeff + 1);
@@ -91,16 +95,16 @@ public class NHBullets implements ContentList {
 						color(lightColor, Pal.gray, e.fin());
 						stroke(e.fout() * 5);
 						lineAngleCenter(e.x, e.y, e.rotation - 180, e.fout() * 44 + 56); 
-					}).at(b.x, b.y, b.rot());
+					}).at(b.x, b.y, b.rotation());
 				}
 				
 				if(b.timer.get(0,3)){
 					new Effect(25f, e -> {
-						color(lightColor, Pal.gray, e.fin() * 0.65);
+						color(lightColor, Pal.gray, e.fin() * 0.85f);
 						randLenVectors(e.id, 4, 60f * e.fin(), e.rotation - 180, 20, (x, y) -> {
-							Fill.poly(e.x + x, e.y + y, 6, 5.5 * e.fslope() * e.fout());
+							Fill.poly(e.x + x, e.y + y, 6, 5.5f * e.fslope() * e.fout());
 						});
-					}).at(b.x, b.y, b.rot());
+					}).at(b.x, b.y, b.rotation());
 				}
 			}
 
