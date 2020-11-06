@@ -136,9 +136,9 @@ public abstract class UpgradeData implements Cloneable{
 		new Dialog("") {{
 			cont.margin(15f);
 			cont.image(icon).row();
-			cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
+			cont.add("<< " + name + " >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();
-			cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
+			cont.add(offsetSpace + description).color(Color.lightGray).left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);

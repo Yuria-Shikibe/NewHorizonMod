@@ -316,8 +316,6 @@ public class UpgraderBlock extends Block {
 			table.button(Icon.add, () -> {
 				dialog.cont.clear();
 				dialog.cont.pane(t -> {
-					t.add("UpgradingID>> " + upgradingID).row();
-					t.add("SelectedID>> " + upgradingID).row();
 					buildTable(t);
 					t.row();
 					t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
