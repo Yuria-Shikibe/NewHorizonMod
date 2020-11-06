@@ -150,7 +150,7 @@ public class UpgraderBlock extends Block {
 			if(coreValid(core))core.items.remove(data.requirements.toArray());
 		}
 
-		protected CoreBlock.CoreBuild core() {return this.team.core();}
+		public CoreBlock.CoreBuild core() {return this.team.core();}
 
 		protected boolean isUpgrading() {return remainTime > 0;}
 		

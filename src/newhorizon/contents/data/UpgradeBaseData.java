@@ -68,8 +68,8 @@ public class UpgradeBaseData extends UpgradeData {
 		float costTime,
 		ItemStack... items
 	) {
-		unlockLevel = 0;
 		super(name, description, none, costTime, items);
+		unlockLevel = 0;
 	}
 	
 	@Override
