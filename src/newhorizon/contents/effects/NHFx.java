@@ -1,5 +1,6 @@
 package newhorizon.contents.effects;
 
+import arc.*;
 import arc.audio.*;
 import arc.math.geom.*;
 import arc.graphics.*;
@@ -24,6 +25,7 @@ import newhorizon.NewHorizon;
 
 
 import static mindustry.Vars.*;
+
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
