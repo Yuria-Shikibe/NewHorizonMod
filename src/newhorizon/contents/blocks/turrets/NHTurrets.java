@@ -149,7 +149,6 @@ public class NHTurrets implements ContentList {
 				shootShake = 1f;
 				burstSpacing = 3f;
 				shots = 4;
-				ammoUseEffect = Fx.shellEjectBig;
 				health = 300 * size * size;
 				shootSound = Sounds.laser;
 			}
