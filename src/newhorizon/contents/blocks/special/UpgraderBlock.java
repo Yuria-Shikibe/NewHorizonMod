@@ -209,10 +209,9 @@ public class UpgraderBlock extends Block {
 		}
 
 		//UI
-		protected void buildUpgradeBaseDataTable(Table t) {
+		protected void buildTable(Table t) {
 			
 			t.pane(table -> {
-				table.button("Back", dialog::hide).size(120f, 60f).left();
 				table.button(Icon.infoCircle, () -> {
 					new Dialog("") {{
 						setFillParent(true);
@@ -228,18 +227,17 @@ public class UpgraderBlock extends Block {
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
 				}).size(60).disabled(b -> baseData.selectAmmo == none);
+				table.button("Back", dialog::hide).size(120f, 60f).left();
 			}).left().size(180f, 60f);
 			t.row();
 			buildSwitchAmmoTable(t);
 			t.row();
-			t.pane(table -> {
-				baseData.buildTable(table);
-			}).size(LEN * 12 + OFFSET * 3, LEN * 2f + OFFSET);
 		}
 
 		//UI
-		protected void buildUpgradeAmmoDataTable(Table t) {
+		protected void buildUpgradeDataTable(Table t) {
 			t.pane(table -> {
+				baseData.buildTable(table);
 				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
 			}).size(LEN * 12 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
@@ -325,11 +323,10 @@ public class UpgraderBlock extends Block {
 				dialog.cont.pane(t -> {
 					t.add("UpgradingID>> " + upgradingID).row();
 					t.add("SelectedID>> " + upgradingID).row();
-					
-					buildUpgradeBaseDataTable(t);
+					buildTable(t);
 					t.row();
 					t.image().pad(12).fillX().height(4f).color(Pal.accent).row();
-					buildUpgradeAmmoDataTable(t);
+					buildUpgradeDataTable(t);
 					t.row();
 					t.image().pad(12).fillX().height(4f).color(Pal.accent).row();
 				});
