@@ -145,8 +145,15 @@ public class UpgraderBlock extends Block {
 		
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
 		
+		protected boolean coreValid(CoreBlock.CoreBuild core) {
+			if(core == null || core.items == null || core.items.isEmpty())return false;
+			 return true;
+		}
+		
 		protected void consumeItems(UpgradeData data){
-			
+			if(state.rules.infiniteResources)return;
+			CoreBlock.CoreBuild core = core();
+			if(coreValid(core))core.items.remove(data.requirements.toArray()){
 		}
 
 		public CoreBlock.CoreBuild core() {return this.team.core();}
@@ -154,7 +161,13 @@ public class UpgraderBlock extends Block {
 		protected boolean isUpgrading() {return remainTime > 0;}
 		
 		public boolean canUpgrade(UpgradeData data) {
-			return !isUpgrading()/*&& Needs */;
+			CoreBlock.CoreBuild core = core();
+			return 
+				coreValid(core) && (
+					/*state.rules.infiniteResources || */(
+						!isUpgrading() && core.items.has(data.requirements.toArray()) 
+					)
+				);
 		}
 
 		protected float needsTime() {

@@ -130,7 +130,7 @@ public abstract class UpgradeData implements Cloneable{
 			table.button(Icon.infoCircle, () -> {showInfo();}).size(LEN);
 			table.button(Icon.hammer, () -> {
 				from.upgradeData(this);
-			}).size(LEN).disabled(disable);
+			}).size(LEN).disabled(!from.canUpgrade(this));
 		}).size(LEN * 2f, LEN).pad(OFFSET);
 	}
 	
@@ -142,8 +142,14 @@ public abstract class UpgradeData implements Cloneable{
 			cont.add("Description: ").color(Pal.accent).left().row();
 			cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
 			cont.pane(table -> {
-				for(ItemStack stack : requirements)table.add(new ItemDisplay(stack.item, stack.amount, true)).padRight(5).right().row();
+				for(ItemStack stack : requirements){
+					int index = 0;
+					if(index % 5 == 0)table.row();
+					table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
+					index ++;
+				}
 			}).row();
+			cont.add("[gray]CanUpgrade?: [accent]" + (from.canUpgrade(this) ? "Able" : "Disabled") + "[]").left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);
