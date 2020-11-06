@@ -142,12 +142,7 @@ public abstract class UpgradeData implements Cloneable{
 			cont.add("Description: ").color(Pal.accent).left().row();
 			cont.add(offsetSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
 			cont.pane(table -> {
-				for(ItemStack stack : requirements){
-					int index = 0;
-					table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
-					if(index % 5 == 0)table.row();
-					index ++;
-				}
+				for(ItemStack stack : requirements)table.add(new ItemDisplay(stack.item, stack.amount, true)).padRight(5).right().row();
 			}).row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();

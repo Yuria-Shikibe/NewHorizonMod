@@ -243,6 +243,7 @@ public class UpgraderBlock extends Block {
 				int index = 0;
 				
 				for (UpgradeAmmoData ammoData : ammoDatas) {
+					if ((index % 5) == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
 						ammoData.selected = true;
@@ -253,7 +254,7 @@ public class UpgraderBlock extends Block {
 					}).size(60).left().disabled( 
 						scalaTarget() == null || (ammoData.selected || !ammoData.isUnlocked)
 					);
-					if ((index % 5) == 0)table.row();
+					
 					index++;
 				}
 			}).size(60 * 5, 60).left();
