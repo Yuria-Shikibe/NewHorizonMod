@@ -29,8 +29,21 @@ public class UpgradeDatas{
 	//UpgradeAmmoDatas ↓
 		
 	public static final UpgradeAmmoData
+		
+		decayLaser = new UpgradeAmmoData(
+			"decay-laser", "description", NHBullets.decayLaser, 300f, 1,
+			new ItemStack(Items.surgeAlloy, 250),
+			new ItemStack(NHItems.irayrondPanel, 500),
+			new ItemStack(NHItems.thermoCoreNegative, 150)
+		){{
+			burstSpacing = 12f;
+			salvos = 4;
+			randX = 2f * tilesize;
+			inaccuracy = 5;
+		}},
+		
 		arc9000 = new UpgradeAmmoData(
-			"arc-9000", "description00", NHBullets.boltGene, 300f, 0,
+			"arc-9000", "description00", NHBullets.boltGene, 900f, 4,
 			new ItemStack(NHItems.upgradeSort, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -42,8 +55,8 @@ public class UpgradeDatas{
 		
 		curveBomb = new UpgradeAmmoData(
 			"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
-			new ItemStack(NHItems.irayrondPanel, 3),
-			new ItemStack(NHItems.metalOxhydrigen, 2)
+			new ItemStack(NHItems.irayrondPanel, 300),
+			new ItemStack(NHItems.metalOxhydrigen, 200)
 		){{
 			randX = 2f * tilesize;
 			salvos = 7;
@@ -52,7 +65,7 @@ public class UpgradeDatas{
 		}},
 		
 		airRaid = new UpgradeAmmoData(
-			"air-raid", "description02", NHBullets.airRaid, 300f, 2,
+			"air-raid", "description02", NHBullets.airRaid, 500f, 2,
 			new ItemStack(NHItems.upgradeSort, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)

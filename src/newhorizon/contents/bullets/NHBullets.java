@@ -30,11 +30,25 @@ import static arc.math.Angles.*;
 
 public class NHBullets implements ContentList {
 	public static 
-	BulletType boltGene, airRaid,
+	BulletType boltGene, airRaid, decayLaser, 
 			   curveBomb;
 
 	@Override
 	public void load() {
+		decayLaser = new LaserBulletType(1350f){{
+			colors = {NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.4f), NHColor.darkEnrColor, Color.white};
+			laserEffect = NHFx.darkEnergyLaserShoot;
+			length = 880f;
+			width = 16f;
+			lengthFalloff = 0.6f;
+			sideLength = 45f;
+			sideWidth = 1f;
+			sideAngle = 60f;
+			largeHit = true;
+			shootEffect = NHFx.darkEnergyShoot;
+			smokeEffect = NHFx.darkEnergySmoke;
+		}};
+		
 		airRaid = new BasicBulletType(9f, 750, "new-horizon-strike"){
 			
 			@Override
