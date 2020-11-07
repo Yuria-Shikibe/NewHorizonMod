@@ -51,7 +51,8 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.*;
 
 public class UpgradeBaseData extends UpgradeData {
-	public float timeCostcoefficien = 0f;
+	public float timeCostCoefficien = 0f;
+	public int itemCostCoefficien = 0f;
 	public int level;
 	public float speedMPL;
 	public float damageMPL;
@@ -107,6 +108,10 @@ public class UpgradeBaseData extends UpgradeData {
 
 			t2.pane(table -> {
 				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
+				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).row().left();
+				table.add("[lightgray]ReloadUp: [accent]" + (speedMPL * 100 * level) + "%[]").left().row();
+				table.add("[lightgray]DamageUp: [accent]" + (damageMPL * 100 * level) + "%[]").left().row();
+				table.add("[lightgray]DefenceUP: [accent]" + (defenceMPL * 100 * level) + "%[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {
@@ -120,15 +125,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public void addText(Table table){
 		table.add("[lightgray]UpgradeTo: [accent]Level " + level() + "[]").left().row();
 	}
-
-	public String toString() {
-		return
-			"    SpeedMultPerLever: " + speedMPL +
-			"\n    DamageMultPerLever: " + damageMPL +
-			"\n    DefenceMultPerLever: " + defenceMPL;
-
-	}
-
+	
 	public void write(Writes write) {
 		write.i(this.level);
 	}
@@ -138,6 +135,8 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 
 	public void plusLevel() {
+		ItemStack[] adds = ItemStack.mult(requirements.toArray(), (itemCostCoefficien + 1));
+		requirements.clear().addAll(adds);
 		this.level ++;
 	}
 

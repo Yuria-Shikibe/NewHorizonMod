@@ -63,7 +63,7 @@ public class NHBlocks implements ContentList {
 			maxLevel = 6;
 			toUpgradeClass = NHTurrets.ender;
 			initUpgradeBaseData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, new ItemStack(NHItems.upgradeSort, 100)){{
-				timeCostcoefficien = 0.225f;
+				timeCostCoefficien = 0.225f;
 			}};
 			addUpgrades(
 				new UpgradeAmmoData(
