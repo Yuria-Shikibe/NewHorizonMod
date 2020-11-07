@@ -49,7 +49,9 @@ import newhorizon.NewHorizon;
 import newhorizon.contents.items.*;
 import newhorizon.contents.data.UpgradeData.*;
 
+import arc.scene.ui.ImageButton.*;
 import static mindustry.Vars.*;
+import static mindustry.gen.Tex.*;
 
 public class UpgradeAmmoData extends UpgradeData{
 	public Effect
@@ -89,7 +91,14 @@ public class UpgradeAmmoData extends UpgradeData{
 	
 	@Override
 	public void infoText(Table table){
-		table.button(new TextureRegionDrawable(ammoInfo), Styles.clearTransi, () -> {
+		table.button(new TextureRegionDrawable(ammoInfo), new ImageButtonStyle(){{
+			down = flatDown;
+			up = black6;
+			over = flatOver;
+			disabled = black9;
+			imageDisabledColor = Color.lightGray;
+			imageUpColor = Color.white;
+        }}, () -> {
 			new Dialog("") {{
 				cont.pane(t -> {
 					t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
