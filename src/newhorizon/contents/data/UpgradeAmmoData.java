@@ -99,6 +99,7 @@ public class UpgradeAmmoData extends UpgradeData{
 			}).size(LEN).left();
 
 			t2.pane(table -> {
+				table.add("[lightgray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
 				table.add("[lightgray]IsSelected: " + getJudge(selected) + "[]").left().row();
 				table.add("[lightgray]IsUnlocked: " + getJudge(isUnlocked) + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
