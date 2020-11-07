@@ -244,7 +244,7 @@ public class UpgraderBlock extends Block {
 		//UI
 		protected void buildUpgradeDataTable(Table t) {
 			t.pane(table -> {
-				if(entity.baseData.level < makeLevel)baseData.buildTable(table);
+				if(baseData.level < maxLevel)baseData.buildTable(table);
 				else baseData.buildTableComplete(table);
 				for (UpgradeAmmoData ammoData : ammoDatas) if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
 			}).size(LEN * 12 + OFFSET * 3, LEN * 4f + OFFSET);
