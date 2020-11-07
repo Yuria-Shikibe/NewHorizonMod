@@ -83,7 +83,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	
 	@Override
 	public void load() {
-		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
+		super.load();
 		this.ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
 	}
 	

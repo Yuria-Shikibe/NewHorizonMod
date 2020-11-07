@@ -252,7 +252,7 @@ public class UpgraderBlock extends Block {
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
 					if(index % buttonPerLine == 0)table.row().left();
-					table.button(new TextureRegionDrawable(ammoData.icon), Styles.clearTransi, () -> {
+					table.button(new TextureRegionDrawable(ammoData.icon), Styles.selecti, () -> {
 						for(UpgradeAmmoData ammo : ammoDatas)ammo.selected = false;
 						ammoData.selected = true;
 						lastestSelectID = ammoData.id;
