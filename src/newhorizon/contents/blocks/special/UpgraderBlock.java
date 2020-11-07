@@ -229,7 +229,7 @@ public class UpgraderBlock extends Block {
 					}}.show();
 				}).size(60f).left();
 				
-				table.button("Back", Styles.clearTransi, dialog::hide).size(120f, 60f).left();
+				table.button("Back", dialog::hide).size(120f, 60f).left();
 			}).left().size(240f, 60f).pad(OFFSET);
 			t.row();
 			buildSwitchAmmoTable(t);

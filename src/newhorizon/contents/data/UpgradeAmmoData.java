@@ -45,6 +45,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
+import newhorizon.NewHorizon;
 import newhorizon.contents.items.*;
 import newhorizon.contents.data.UpgradeData.*;
 
