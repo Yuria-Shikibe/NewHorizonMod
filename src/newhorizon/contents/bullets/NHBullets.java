@@ -42,7 +42,7 @@ public class NHBullets implements ContentList {
 			width = 22f;
 			lengthFalloff = 0.6f;
 			sideLength = 90f;
-			sideWidth = 5.5f;
+			sideWidth = 1.75f;
 			sideAngle = 35f;
 			largeHit = true;
 			shootEffect = NHFx.darkEnergyShoot;
