@@ -54,7 +54,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public static final float maxReloadReduce = 0.5f;
 	public static final float maxDamageReduce = 0.75f;
 	
-	public static int getPercent(float value, float min, float max){return (int)(Mathf.floor(Mathf.clamp(value * level, min, max) * 100));}
+	public int getPercent(float value, float min, float max){return (int)(Mathf.floor(Mathf.clamp(value * level, min, max) * 100));}
 	
 	public float timeCostCoefficien = 0f;
 	public float speedMPL;
