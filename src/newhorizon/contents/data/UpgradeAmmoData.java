@@ -88,7 +88,6 @@ public class UpgradeAmmoData extends UpgradeData{
 		table.add("[lightgray]SplashDamageRadius: " + selectAmmo.splashDamageRadius + "[]").left().row();
 		table.add("[lightgray]IsPierceUnits: " + getJudge(selectAmmo.pierce) + "[]").left().row();
 		table.add("[lightgray]IsPierceTiles: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
-		splashDamage
 	}
 	
 	@Override
