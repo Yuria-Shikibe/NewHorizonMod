@@ -75,7 +75,7 @@ public class UpgradeBaseData extends UpgradeData {
 	
 	@Override
 	public float costTime() {
-		return costTime * (1 + level * timeCostcoefficien);
+		return costTime * (1 + level * timeCostCoefficien);
 	}
 	
 	@Override
