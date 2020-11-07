@@ -79,7 +79,7 @@ public class NHFx implements ContentList {
 				circle(e.x, e.y, 3f + t.fin() * 80f);
 			});
 			Fill.circle(e.x, e.y, e.fout() * 8f);
-			randLenVectors(e.id + 1, 8, 1f + 60f * e.finpow(), (x, y) -> {
+			randLenVectors(e.id + 1, 4, 1f + 60f * e.finpow(), (x, y) -> {
 				Fill.circle(e.x + x, e.y + y, e.fout() * 5f);
 			});
 		});

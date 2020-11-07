@@ -81,27 +81,22 @@ public class NHBullets implements ContentList {
 			@Override
 			public void hit(Bullet b){
 				super.hit(b);
-				for (int i = 0; i < Mathf.random(2f, 4f); i++) {
-					Vec2 randomPos = new Vec2(Mathf.range(200), Mathf.range(200)).add(b.x, b.y);
-					
-					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1f + NHLightningBolt.WIDTH, 2, hitPos -> {
-						Damage.damage(b.team(), hitPos.getX(), hitPos.getY(), 20f, this.splashDamage * b.damageMultiplier());
-						NHFx.lightningHit.at(hitPos);
-					});
-				}
 				Effect.shake(4f, 5f, b);
 			}
 				
 			{
+				lightning = 3;
+				lightningCone = 360;
+				lightningLengthRand = lightningLength = 5;
 				shootEffect = NHFx.darkEnergyShoot;
 				smokeEffect = NHFx.darkEnergySmoke;
 				shrinkX = shrinkY = 0;
 				splashDamageRadius = 120f;
-				splashDamage = damage * 0.7f;
+				splashDamage = lightningDamage =  * 0.7f;
 				height = 60f;
 				width = 18f;
 				lifetime = 500;
-				backColor = lightColor = NHColor.darkEnrColor;
+				backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 				frontColor = Color.white;
 				hitEffect = new Effect(25, e -> {
 					color(lightColor);
