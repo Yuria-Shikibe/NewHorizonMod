@@ -36,8 +36,8 @@ public class UpgradeDatas{
 			new ItemStack(NHItems.irayrondPanel, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
-			burstSpacing = 12f;
-			salvos = 4;
+			burstSpacing = 6f;
+			salvos = 8;
 			randX = 2f * tilesize;
 			inaccuracy = 5;
 		}},

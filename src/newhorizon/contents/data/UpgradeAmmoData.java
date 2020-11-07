@@ -83,9 +83,9 @@ public class UpgradeAmmoData extends UpgradeData{
 	
 	@Override
 	public void ammoText(Table table){
-		table.add("[lightgray]Damage: " + selectAmmo.damage + "[]").left().row();
-		table.add("[lightgray]SplashDamage: " + selectAmmo.splashDamage + "[]").left().row();
-		table.add("[lightgray]SplashDamageRadius: " + selectAmmo.splashDamageRadius + "[]").left().row();
+		table.add("[lightgray]Damage: [accent]" + selectAmmo.damage + "[]").left().row();
+		table.add("[lightgray]SplashDamage: [accent]" + selectAmmo.splashDamage + "[]").left().row();
+		table.add("[lightgray]SplashDamageRadius: [accent]" + selectAmmo.splashDamageRadius + "[]").left().row();
 		table.add("[lightgray]IsPierceUnits: " + getJudge(selectAmmo.pierce) + "[]").left().row();
 		table.add("[lightgray]IsPierceTiles: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
 	}

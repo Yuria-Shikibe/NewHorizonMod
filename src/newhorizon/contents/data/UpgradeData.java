@@ -148,8 +148,7 @@ public abstract class UpgradeData implements Cloneable{
 			cont.pane(table -> {
 				table.pane( t -> {t.image(icon);}).size(icon.height + OFFSET / 2).left();
 				table.pane( t -> {ammoText(t);}).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
-				
-			}).size(icon.height + 2 * OFFSET, LEN * 10f).left().row();
+			}).row();
 			cont.add("<< " + Core.bundle.get(data.name) + " >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();
 			cont.add(offsetSpace + Core.bundle.get(data.description)).color(Color.lightGray).left().row();
