@@ -82,6 +82,16 @@ public class UpgradeAmmoData extends UpgradeData{
 	public boolean isUnlocked, selected;
 	
 	@Override
+	public void ammoText(Table table){
+		table.add("[lightgray]Damage: " + selectAmmo.damage + "[]").left().row();
+		table.add("[lightgray]SplashDamage: " + selectAmmo.splashDamage + "[]").left().row();
+		table.add("[lightgray]SplashDamageRadius: " + selectAmmo.splashDamageRadius + "[]").left().row();
+		table.add("[lightgray]IsPierceUnits: " + getJudge(selectAmmo.pierce) + "[]").left().row();
+		table.add("[lightgray]IsPierceTiles: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
+		splashDamage
+	}
+	
+	@Override
 	public void buildUpgradeInfoAll(Table t) {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(t2 -> {
