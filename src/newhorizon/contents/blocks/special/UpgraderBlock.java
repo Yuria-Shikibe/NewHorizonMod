@@ -202,8 +202,8 @@ public class UpgraderBlock extends Block {
 			if (upgradingID == -1) {
 				baseData.plusLevel();
 			} else if (!ammoDatas.isEmpty()) {
-				ammoDatas.get(upgradingID).isUnlocked = true;
 				lastestSelectID = upgradingID;
+				ammoDatas.get(upgradingID).isUnlocked = true;
 			}
 			
 			updateTarget();
@@ -253,7 +253,7 @@ public class UpgraderBlock extends Block {
 				for (UpgradeAmmoData ammoData : ammoDatas) {
 					if(index % buttonPerLine == 0)table.row().left();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
-						ammoDatas.get(lastestSelectID).selected = false;
+						for(UpgradeAmmoData ammo : ammoDatas)ammo.selected = false;
 						ammoData.selected = true;
 						lastestSelectID = ammoData.id;
 						updateTarget();

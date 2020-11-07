@@ -51,8 +51,6 @@ import newhorizon.contents.data.UpgradeData.*;
 import static mindustry.Vars.*;
 
 public class UpgradeAmmoData extends UpgradeData{
-	
-	
 	public Effect
 		chargeEffect = Fx.none,
 		chargeBeginEffect = Fx.none;
@@ -83,11 +81,34 @@ public class UpgradeAmmoData extends UpgradeData{
 	
 	@Override
 	public void infoText(Table table){
-		table.add("[lightgray]Damage: [accent]" + selectAmmo.damage + "[]").left().row();
-		table.add("[lightgray]SplashDamage: [accent]" + selectAmmo.splashDamage + "[]").left().row();
-		table.add("[lightgray]SplashDamageRadius: [accent]" + selectAmmo.splashDamageRadius + "[]").left().row();
-		table.add("[lightgray]IsPierceUnits: " + getJudge(selectAmmo.pierce) + "[]").left().row();
-		table.add("[lightgray]IsPierceTiles: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
+		table.button(Icon.menu, () -> {
+			new Dialog("") {{
+				cont.pane(t -> {
+					t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
+					if(selectAmmo.splashDamageRadius > 0){
+						t.add("[lightgray]SplashDamage: [accent]" + df.format(selectAmmo.splashDamage) + "[]").left().row();
+						t.add("[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.splashDamageRadius / tilesize) + "[]").left().row();
+					}
+					if(selectAmmo.knockback > 0)t.add("[lightgray]SplashDamageRadius: [accent]" + df.format(knockback) + "[]").left().row();
+					
+					t.add("[lightgray]IsFrag?: " + getJudge(selectAmmo.fragBullet != null) + "[]").left().row();
+					if(selectAmmo.fragBullet != null)t.add("[lightgray]Frags: [accent]" + fragBullets + "[]").left().row();
+					
+					t.add("[lightgray]IsFragLightnings?: " + getJudge(selectAmmo.lightning > 0) + "[]").left().row();
+					if(selectAmmo.lightning > 0){
+						t.add("[lightgray]MaxLightningLength: [accent]" + selectAmmo.lightningLength + lightningLengthRand + "[]").left().row();
+						t.add("[lightgray]LightningDamage: [accent]" + selectAmmo.lightningDamage + "[]").left().row();
+					}
+					
+					t.add("[lightgray]IsFragLightnings?: " + getJudge(selectAmmo.homingPower > 0) + "[]").left().row();
+					if(selectAmmo.homingPower > 0)t.add("[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + lightningLengthRand + "[]").left().row();
+					
+					t.add("[lightgray]IsPierceUnits: " + getJudge(selectAmmo.pierce) + "[]").left().row();
+					t.add("[lightgray]IsPierceTiles: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
+				}).row();
+				cont.button("Leave", this::hide).size(120, 50).pad(4);
+			}}.show();
+		}).size(icon.height + OFFSET / 2);
 	}
 	
 	@Override

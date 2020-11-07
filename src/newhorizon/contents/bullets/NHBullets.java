@@ -35,7 +35,7 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		decayLaser = new LaserBulletType(2700){{
+		decayLaser = new NHLaserBulletType(2400){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.darkEnrColor, Color.white};
 			laserEffect = NHFx.darkEnergyLaserShoot;
 			length = 880f;

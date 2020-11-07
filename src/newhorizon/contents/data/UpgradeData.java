@@ -65,7 +65,7 @@ public abstract class UpgradeData implements Cloneable{
 	};
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	
-	private static final DecimalFormat df = new DecimalFormat("######0.00");
+	protected static final DecimalFormat df = new DecimalFormat("######0.00");
 	//
 	public int unlockLevel;
 	public TextureRegion icon;
