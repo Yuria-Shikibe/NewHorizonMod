@@ -63,6 +63,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	public int salvos = 1;
 	public float burstSpacing = 5f;
 	public BulletType selectAmmo;
+	public TextureRegion ammoInfo;
 	
 	public UpgradeAmmoData(
 		String name,
@@ -80,8 +81,14 @@ public class UpgradeAmmoData extends UpgradeData{
 	public boolean isUnlocked, selected;
 	
 	@Override
+	public void load() {
+		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
+		this.ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
+	}
+	
+	@Override
 	public void infoText(Table table){
-		table.button(Icon.menu, () -> {
+		table.button(new TextureRegionDrawable(ammoInfo), Styles.clearTransi, () -> {
 			new Dialog("") {{
 				cont.pane(t -> {
 					t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
@@ -108,7 +115,7 @@ public class UpgradeAmmoData extends UpgradeData{
 				}).row();
 				cont.button("Leave", this::hide).size(120, 50).pad(4);
 			}}.show();
-		}).size(icon.height + OFFSET / 2);
+		}).size(ammoInfo.height + OFFSET / 2);
 	}
 	
 	@Override
@@ -126,7 +133,7 @@ public class UpgradeAmmoData extends UpgradeData{
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {
-				table.button(Icon.infoCircle, () -> {showInfo(this, false);}).size(LEN);
+				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN);
 			}).size(LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();

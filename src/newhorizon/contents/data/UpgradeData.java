@@ -134,8 +134,8 @@ public abstract class UpgradeData implements Cloneable{
 		}).size(LEN * 6f, LEN).left().pad(OFFSET);
 
 		t.pane(table -> {
-			table.button(Icon.infoCircle, () -> {showInfo(this, true);}).size(LEN);
-			table.button(Icon.upgrade, () -> {
+			table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, true);}).size(LEN);
+			table.button(Icon.upgrade, Styles.clearTransi, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(!from.canUpgrade(this));
 		}).size(LEN * 2f, LEN).left().pad(OFFSET);
