@@ -87,7 +87,7 @@ public class NHBullets implements ContentList {
 			{
 				lightning = 3;
 				lightningCone = 360;
-				lightningLengthRand = lightningLength = 5;
+				lightningLengthRand = lightningLength = 12;
 				shootEffect = NHFx.darkEnergyShoot;
 				smokeEffect = NHFx.darkEnergySmoke;
 				shrinkX = shrinkY = 0;

@@ -244,16 +244,18 @@ public class UpgraderBlock extends Block {
 		//UI
 		protected void buildUpgradeDataTable(Table t) {
 			t.pane(table -> {
-				baseData.buildTable(table);
-				for (UpgradeAmmoData ammoData : ammoDatas)if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
+				if(entity.baseData.level < makeLevel)baseData.buildTable(table);
+				else baseData.buildTableComplete(table);
+				for (UpgradeAmmoData ammoData : ammoDatas) if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
 			}).size(LEN * 12 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
 
 		protected void buildSwitchAmmoTable(Table t) {
+			final int buttonPerLine = 8;
 			t.pane(table -> {
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if(index % 8 == 0)table.row();
+					if(index % buttonPerLine == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
 						ammoData.selected = true;
@@ -264,7 +266,7 @@ public class UpgraderBlock extends Block {
 					);
 					index++;
 				}
-			}).size(60 * 5, 60).pad(OFFSET).left();
+			}).size(60 * buttonPerLine, 60).pad(OFFSET).left();
 		}
 
 		//Target confirm

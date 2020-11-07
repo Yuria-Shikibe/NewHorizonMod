@@ -83,6 +83,20 @@ public class UpgradeBaseData extends UpgradeData {
 		this.iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 	}
 	
+	public void buildTableComplete(Table t) {
+		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
+		t.pane(t2 -> {
+			t2.pane(table -> {
+				table.image(iconLevel).size(LEN);
+			}).size(LEN);
+
+			t2.pane(table -> {
+				table.add("[gray]Level: [accent]MaxLevel[]").left().row();
+			}).size(LEN * 6f, LEN).pad(OFFSET);
+		}).size(LEN * 11, LEN * 1.5f).row();
+		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
+	}
+	
 	@Override
 	public void buildUpgradeInfoAll(Table t) {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
