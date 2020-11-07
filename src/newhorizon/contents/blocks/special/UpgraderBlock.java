@@ -102,9 +102,9 @@ public class UpgraderBlock extends Block {
 		super.setBars();
 		bars.add("level",
 			(UpgraderBlockBuild entity) -> new Bar(
-				() -> "Level",
+				() -> "Level: " + entity.baseData.level,
 				() -> NHColor.lightSky,
-				() -> (float)(entity.baseData.level / maxLevel)
+				() -> 1
 			)
 		);
 
@@ -192,7 +192,7 @@ public class UpgraderBlock extends Block {
 		//Updates
 		protected void updateUpgrading() {
 			if (isUpgrading()) {
-				remainTime -= Time.delta * efficiency();
+				remainTime -= (state.rules.infiniteResources ? 100 : 1) * Time.delta * efficiency();
 			} else {
 				completeUpgrade();
 			}

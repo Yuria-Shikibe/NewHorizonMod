@@ -81,7 +81,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void hit(Bullet b){
 				super.hit(b);
-				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
+				for (int i = 0; i < Mathf.random(2f, 4f); i++) {
 					Vec2 randomPos = new Vec2(Mathf.range(200), Mathf.range(200)).add(b.x, b.y);
 					
 					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1f + NHLightningBolt.WIDTH, 2, hitPos -> {
@@ -90,10 +90,6 @@ public class NHBullets implements ContentList {
 					});
 				}
 				Effect.shake(4f, 5f, b);
-				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 2, 2, lightColor, NHLightningBolt.WIDTH, target -> {
-					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
-					NHFx.lightningHit.at(target);
-				});
 			}
 				
 			{
