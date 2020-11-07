@@ -118,8 +118,8 @@ public class UpgradeBaseData extends UpgradeData {
 			t2.pane(table -> {
 				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
 				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-				table.add("[lightgray]ReloadUp: [accent]" + getPercent(speedMPL, 0, maxReloadReduce) + "%[]").left().row();
-				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL, 0, maxDamageReduce) + "%[]").left().row();
+				table.add("[lightgray]ReloadUp: [accent]" + getPercent(speedMPL, 0f, maxReloadReduce) + "%[]").left().row();
+				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL, 0f, maxDamageReduce) + "%[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {
