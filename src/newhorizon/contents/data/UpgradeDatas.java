@@ -18,7 +18,7 @@ public class UpgradeDatas{
 			new ItemStack(NHItems.upgradeSort, 100),
 			new ItemStack(NHItems.darkEnergy, 50),
 			new ItemStack(NHItems.metalOxhydrigen, 300),
-			new ItemStack(Items.surgeAllpy, 300),
+			new ItemStack(Items.surgeAlloy, 125)
 		){{
 			timeCostCoefficien = 0.25f;
 			itemCostCoefficien = 2;
