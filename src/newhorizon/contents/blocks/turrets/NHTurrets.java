@@ -89,8 +89,7 @@ public class NHTurrets implements ContentList {
 			{
 				recoilAmount = 7f;
 				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
-				
-				addConsume(new ItemStack(NHItems.darkEnergy, 4));
+				consumes.items(new ItemStack(NHItems.darkEnergy, 4));
 				size = 8;
 				health = 15000;
 				hasItems = true;

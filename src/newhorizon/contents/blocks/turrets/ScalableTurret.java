@@ -53,7 +53,6 @@ public class ScalableTurret extends Turret{
 	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("emergency-replace", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
 	
 	public float powerUse;
-	public ItemStack ammoConsume = new ItemStack(NHItems.emergencyReplace, 0);
 	
 	public Color baseColor = Pal.accent;
 	//Load Mod Factories
@@ -65,10 +64,6 @@ public class ScalableTurret extends Turret{
 		hasItems = true;
 	}
 	
-	public void addConsume(ItemStack stack){
-		ammoConsume = stack;
-		consumes.item(stack.item, stack.amount);
-	}
 	
 	@Override
 	public void load(){
@@ -88,6 +83,26 @@ public class ScalableTurret extends Turret{
     public void init(){
         consumes.powerCond(powerUse, TurretBuild::isActive);
         super.init();
+	}
+	
+	@Override
+	public void setBars() {
+		super.setBars();
+		bars.add("ReloadUp",
+			(UpgraderBlockBuild entity) -> new Bar(
+				() -> "ReloadUp: " + getPercent(entity.baseData.speedMPL * entity.baseData.level, 0f, maxReloadReduce) + "%",
+				() -> Pal.ammo,
+				() -> entity.baseData.speedMPL / maxReloadReduce
+			)
+		);
+
+		bars.add("DefenceUP",
+			(UpgraderBlockBuild entity) -> new Bar(
+				() -> "DefenceUP: " + getPercent(entity.baseData.defenceMPL * entity.baseData.level, 0f, maxDamageReduce) + "%",
+				() -> NHColor.lightSky,
+				() -> entity.baseData.defenceMPL / maxDamageReduce
+			)
+		);
 	}
 	
 	public class ScalableTurretBuild extends TurretBuild implements Scalablec{
@@ -135,7 +150,7 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		public BulletType useAmmo(){
-			this.items.remove(ammoConsume);
+			this.items.remove(consumes.getItem());
             return peekAmmo();
         }
 		
@@ -155,16 +170,6 @@ public class ScalableTurret extends Turret{
 			Draw.color(baseColor);
 			Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
 			Draw.reset();
-		}
-		
-		@Override
-		public void buildConfiguration(Table t) {
-			t.pane(table -> {
-				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-				table.add("[lightgray]ReloadUp: [accent]" + getPercent(baseData.speedMPL * baseData.level, 0f, 10f) + "%[]").left().row();
-				table.add("[lightgray]DefenceUP: [accent]" + getPercent(baseData.defenceMPL * baseData.level, 0f, 0.75f) + "%[]").left().row();
-				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-			}).size(LEN * 6f, LEN);
 		}
 		
 		@Override
