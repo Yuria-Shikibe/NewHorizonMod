@@ -35,7 +35,7 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		airRaid = new BasicBulletType(9f, 1250, "new-horizon-strike"){
+		airRaid = new BasicBulletType(9f, 750, "new-horizon-strike"){
 			
 			@Override
 			public void init(Bullet b){
@@ -95,7 +95,7 @@ public class NHBullets implements ContentList {
 				smokeEffect = NHFx.darkEnergySmoke;
 				shrinkX = shrinkY = 0;
 				splashDamageRadius = 120f;
-				splashDamage = lightningDamage = 1000;
+				splashDamage = lightningDamage = 0.65f * damage;
 				height = 60f;
 				width = 18f;
 				lifetime = 500;
@@ -144,7 +144,7 @@ public class NHBullets implements ContentList {
 				vec1 = new Vec2().trns(angle, dst / 3),
 				vec2 = new Vec2().trns(angle, dst / 3 * 2);
 
-				color(NHColor.thurmixRed, NHColor.thurmixRedLight, b.fout());
+				color(lightColor, frontColor, b.fout());
 				stroke(5f * b.fout());
 
 				float len = Mathf.curve(b.fslope(), 0.1f, 0.8f) * 60 + b.fin() * 50;
@@ -169,21 +169,23 @@ public class NHBullets implements ContentList {
 				Effect.shake(10f, 8f, b);
 				despawnEffect.at(b);
 				Sounds.explosionbig.at(b, Mathf.random(0.9f, 1.1f));
-				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), NHColor.thurmixRed, true, NHLightningBolt.WIDTH);
+				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), lightColor, true, NHLightningBolt.WIDTH);
 				Damage.damage(b.team(), b.x, b.y, this.splashDamageRadius, this.splashDamage * b.damageMultiplier());
 			}
 
 			{
 				drawSize = 400;
-
+				lightColor = backColor = lightningColor = NHColor.thurmixRed;
+				frontColor = lightColorLight;
+				
 				shootEffect = new Effect(90f, 160f, e -> {
-					color(NHColor.thurmixRed, NHColor.thurmixRedLight, e.fout());
+					color(lightColor, frontColor, e.fout());
 					Drawf.tri(e.x, e.y, 5 * e.fout(), Mathf.curve(e.fout(), 0, 0.1f) * 80, e.rotation + 90);
 					Drawf.tri(e.x, e.y, 5 * e.fout(), Mathf.curve(e.fout(), 0, 0.1f) * 80, e.rotation + 270);
 				});
 
 				despawnEffect = new Effect(32f, e -> {
-					color(NHColor.thurmixRed, NHColor.thurmixRedLight, e.fout());
+					color(lightColor, frontColor, e.fout());
 					stroke(e.fout() * 2);
 					circle(e.x, e.y, e.fin() * 40);
 					Fill.circle(e.x, e.y, e.fout() * e.fout() * 10);
@@ -193,7 +195,7 @@ public class NHBullets implements ContentList {
 				});
 
 				smokeEffect = new Effect(45f, e -> {
-					color(NHColor.thurmixRed, NHColor.thurmixRedLight, e.fout());
+					color(lightColor, frontColor, e.fout());
 					Drawf.tri(e.x, e.y, 4 * e.fout(), 28, e.rotation + 90);
 					Drawf.tri(e.x, e.y, 4 * e.fout(), 28, e.rotation + 270);
 					randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> {
@@ -204,7 +206,7 @@ public class NHBullets implements ContentList {
 
 		};
 
-		boltGene = new ArtilleryBulletType(2.75f, 1000) {
+		boltGene = new ArtilleryBulletType(2.75f, 1500) {
 			@Override
 			public void update(Bullet b) {
 				Effect.shake(2, 1, b);
@@ -304,8 +306,8 @@ public class NHBullets implements ContentList {
 						height = 42f;
 						collidesTiles = false;
 						splashDamageRadius = 80f;
-						splashDamage = 150f;
-						backColor = lightningColor = NHColor.darkEnrColor;
+						splashDamage = damage;
+						backColor = lightningColor = lightColor = NHColor.darkEnrColor;
 						frontColor = Color.white;
 						lightning = 3;
 						lightningLength = 8;
