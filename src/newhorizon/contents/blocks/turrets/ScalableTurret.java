@@ -232,7 +232,7 @@ public class ScalableTurret extends Turret{
 
                 reload = 0f;
             }else{
-                reload += Mathf.clamp(baseData.speedMPL, 0.25f, 10f) * delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+                reload += Mathf.clamp(baseData.speedMPL + 1, 0.25f, 10f) * delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
             }
         }
 
@@ -278,7 +278,7 @@ public class ScalableTurret extends Turret{
 			Draw.reset();
 		}
 		
-		@Override public float handleDamage(float amount) {return amount * Mathf.clamp(baseData.defenceMPL, 0.25f, 1f);}
+		@Override public float handleDamage(float amount) {return amount * Mathf.clamp(1 - baseData.defenceMPL, 0.25f, 1f);}
 		
 		@Override public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
 		@Override public UpgraderBlockBuild upgrader(){return baseData.from;}

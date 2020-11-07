@@ -102,6 +102,8 @@ public class UpgradeBaseData extends UpgradeData {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 	}
 	
+	public int getPercent(float value){return (int)Mathf.floor(value * 100 * level);}
+	
 	@Override
 	public void buildUpgradeInfoAll(Table t) {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
@@ -113,8 +115,8 @@ public class UpgradeBaseData extends UpgradeData {
 			t2.pane(table -> {
 				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
 				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-				table.add("[lightgray]ReloadUp: [accent]" + (speedMPL * 100 * level) + "%[]").left().row();
-				table.add("[lightgray]DefenceUP: [accent]" + (defenceMPL * 100 * level) + "%[]").left().row();
+				table.add("[lightgray]ReloadUp: [accent]" + getPercent(speedMPL) + "%[]").left().row();
+				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL) + "%[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {

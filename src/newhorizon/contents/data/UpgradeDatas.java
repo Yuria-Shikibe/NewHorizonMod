@@ -22,7 +22,8 @@ public class UpgradeDatas{
 		){{
 			timeCostCoefficien = 0.25f;
 			itemCostCoefficien = 2;
-			speedMPL = defenceMPL = 0.15f;
+			speedMPL = 0.175f
+			defenceMPL = 0.05f;
 		}};
 		
 	//UpgradeAmmoDatas ↓
