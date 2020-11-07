@@ -68,7 +68,7 @@ public class UpgraderBlock extends Block {
 	public Color baseColor = Pal.accent;
 	public Block toUpgradeClass;
 	public Effect upgradeEffect = NHFx.upgrading;
-	public float range = 320f;
+	public float range = 400f;
 
 	public UpgradeBaseData initUpgradeBaseData = new UpgradeBaseData();
 	public Seq<UpgradeAmmoData> initUpgradeAmmoDatas = new Seq<>();
@@ -373,6 +373,7 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void drawConfigure() {
+			Drawf.dashCircle(x, y, range(), baseColor);
 			Draw.color(baseColor);
 			Lines.square(x, y, block.size * tilesize / 2);
 			if (linkValid()) {

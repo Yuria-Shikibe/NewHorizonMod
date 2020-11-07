@@ -87,34 +87,6 @@ public class ScalableTurret extends Turret{
         super.init();
 	}
 	
-	/*@Override
-	public void setBars() {
-		super.setBars();
-		bars.add("Ammo",
-			(ScalableTurretBuild entity) -> new Bar(
-				() -> "AmmoType: " + Core.bundle.get(entity.ammoData.name),
-				() -> Pal.ammo,
-				() -> 1f
-			)
-		);
-		
-		bars.add("ReloadUp",
-			(ScalableTurretBuild entity) -> new Bar(
-				() -> "ReloadUp: " + getPercent(entity.baseData.speedMPL * entity.baseData.level, 0f, maxReloadReduce) + "%",
-				() -> NHColor.lightSky,
-				() -> entity.baseData.speedMPL / maxReloadReduce
-			)
-		);
-
-		bars.add("DefenceUP",
-			(ScalableTurretBuild entity) -> new Bar(
-				() -> "DefenceUP: " + getPercent(entity.baseData.defenceMPL * entity.baseData.level, 0f, maxDamageReduce) + "%",
-				() -> NHColor.lightSky,
-				() -> entity.baseData.defenceMPL / maxDamageReduce
-			)
-		);
-	}*/
-	
 	public class ScalableTurretBuild extends TurretBuild implements Scalablec{
 		public UpgradeBaseData baseData = defaultBaseData;
 		public UpgradeAmmoData ammoData = defaultAmmoData;
@@ -171,7 +143,7 @@ public class ScalableTurret extends Turret{
 		@Override
 		public void drawConfigure(){
 			float len = block.size * tilesize / 2 - tilesize;
-			
+			Drawf.dashCircle(x, y, range(), baseColor);
 			Lines.stroke(1f, baseColor);
 			Lines.square(x, y, block.size * tilesize / 2.0f + 1.0f);
 			Draw.reset();
