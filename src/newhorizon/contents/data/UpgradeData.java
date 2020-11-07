@@ -47,6 +47,7 @@ import mindustry.world.meta.*;
 
 import newhorizon.contents.blocks.special.UpgraderBlock.UpgraderBlockBuild;
 import newhorizon.NewHorizon;
+import java.text.DecimalFormat;
 
 import static mindustry.Vars.*;
 
@@ -64,6 +65,7 @@ public abstract class UpgradeData implements Cloneable{
 	};
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	
+	private static final df = new DecimalFormat("######0.00");
 	//
 	public int unlockLevel;
 	public TextureRegion icon;
@@ -127,7 +129,7 @@ public abstract class UpgradeData implements Cloneable{
 
 		t.pane(table -> {
 			addText(table);
-			table.add("[lightgray]NeededTime: [accent]" + (costTime() / 60) + "sec[]").left().row();
+			table.add("[lightgray]NeededTime: [accent]" + df.format(costTime() / 60) + "sec[]").left().row();
 		}).size(LEN * 6f, LEN).pad(OFFSET);
 
 		t.pane(table -> {

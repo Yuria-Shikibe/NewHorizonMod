@@ -39,11 +39,11 @@ public class NHBullets implements ContentList {
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.4f), NHColor.darkEnrColor, Color.white};
 			laserEffect = NHFx.darkEnergyLaserShoot;
 			length = 880f;
-			width = 16f;
+			width = 22f;
 			lengthFalloff = 0.6f;
 			sideLength = 45f;
 			sideWidth = 1f;
-			sideAngle = 60f;
+			sideAngle = 25f;
 			largeHit = true;
 			shootEffect = NHFx.darkEnergyShoot;
 			smokeEffect = NHFx.darkEnergySmoke;
