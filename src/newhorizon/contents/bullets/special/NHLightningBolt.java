@@ -46,9 +46,9 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	//Default effect lifetime.
 	public static final float BOLTLIFE = 20f;
 	//Default lightning width.
-	public static final float WIDTH = 2.2f;
+	public static final float WIDTH = 3f;
 	//Default min lightning generate distance from targetA to B.
-	public static final float GENERATE_DST = 19f;
+	public static final float GENERATE_DST = 16f;
 	//Default randX mult coefficient.
 	public static final float RANDOM_RANGE_MULT_COEFFCIENT = 4f;
 

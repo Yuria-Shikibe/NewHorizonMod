@@ -54,7 +54,7 @@ public class ScalableTurret extends Turret{
 	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
 	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("emergency-replace", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
 	
-	protected float infoBarLength = size / 2 * tilesize;
+	public float infoBarLength; 
 	
 	public float powerUse;
 	
@@ -66,6 +66,7 @@ public class ScalableTurret extends Turret{
 		configurable = true;
 		hasPower = true;
 		hasItems = true;
+		infoBarLength = size / 2 * tilesize;
 	}
 	
 	
