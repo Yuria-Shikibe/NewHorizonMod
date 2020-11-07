@@ -176,7 +176,7 @@ public class NHBullets implements ContentList {
 			{
 				drawSize = 400;
 				lightColor = backColor = lightningColor = NHColor.thurmixRed;
-				frontColor = lightColorLight;
+				frontColor = NHColor.thurmixRedLight;
 				
 				shootEffect = new Effect(90f, 160f, e -> {
 					color(lightColor, frontColor, e.fout());
