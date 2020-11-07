@@ -192,10 +192,8 @@ public class UpgraderBlock extends Block {
 		//Updates
 		protected void updateUpgrading() {
 			if (isUpgrading()) {
-				remainTime -= (state.rules.infiniteResources ? 100 : 1) * Time.delta * efficiency();
-			} else {
-				completeUpgrade();
-			}
+				remainTime -= (state.rules.infiniteResources ? 100000 : 1) * Time.delta * efficiency();
+			} else completeUpgrade();
 		}
 
 		protected void completeUpgrade() {
@@ -203,9 +201,7 @@ public class UpgraderBlock extends Block {
 			
 			if (upgradingID == -1) {
 				baseData.plusLevel();
-			} else if (ammoDatas.isEmpty()) {
-				
-			} else {
+			} else if (!ammoDatas.isEmpty()) {
 				ammoDatas.get(upgradingID).isUnlocked = true;
 				lastestSelectID = upgradingID;
 			}

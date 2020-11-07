@@ -63,7 +63,7 @@ public class NHBlocks implements ContentList {
 			size = 3;
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
-			maxLevel = 6;
+			maxLevel = 10;
 			toUpgradeClass = NHTurrets.ender;
 			initUpgradeBaseData = UpgradeDatas.basicData;
 			addUpgrades(

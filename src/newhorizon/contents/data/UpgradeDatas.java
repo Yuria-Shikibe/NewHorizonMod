@@ -13,16 +13,20 @@ import newhorizon.contents.bullets.NHBullets;
 import static mindustry.Vars.*;
 
 public class UpgradeDatas{
-	public static final UpgradeBaseData
+	public static final UpgradeData
 		basicData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, 
-			new ItemStack(NHItems.upgradeSort, 100)
+			new ItemStack(NHItems.upgradeSort, 100),
+			new ItemStack(NHItems.darkEnergy, 50),
+			new ItemStack(NHItems.metalOxhydrigen, 300),
+			new ItemStack(Items.surgeAllpy, 300),
 		){{
-			timeCostCoefficien = 0.225f;
-			itemCostCoefficien = 1;
-			speedMPL = defenceMPL = 0.1f;
-		}};
+			timeCostCoefficien = 0.25f;
+			itemCostCoefficien = 2;
+			speedMPL = defenceMPL = 0.15f;
+		}},
 		
-	public static final UpgradeAmmoData
+		//UpgradeAmmoDatas ↓
+		
 		arc9000 = new UpgradeAmmoData(
 			"arc-9000", "description00", NHBullets.boltGene, 300f, 0,
 			new ItemStack(NHItems.upgradeSort, 250),
