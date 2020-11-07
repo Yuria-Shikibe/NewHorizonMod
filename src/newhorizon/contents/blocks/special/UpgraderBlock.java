@@ -147,7 +147,7 @@ public class UpgraderBlock extends Block {
 		protected void consumeItems(UpgradeData data){
 			if(state.rules.infiniteResources)return;
 			CoreBlock.CoreBuild core = core();
-			if(coreValid(core))core.items.remove(data.requirements.toArray());
+			if(coreValid(core))core.items.remove(data.requirements());
 		}
 
 		public CoreBlock.CoreBuild core() {return this.team.core();}
@@ -156,13 +156,12 @@ public class UpgraderBlock extends Block {
 		
 		public boolean canUpgrade(UpgradeData data) {
 			CoreBlock.CoreBuild core = core();
-			ItemStack[] multCons = ItemStack.mult(data.requirements.toArray(), (data.itemCostCoefficien * data.level + 1));
 			return 
 				coreValid(core) && 
 				baseData.level >= data.unlockLevel &&
 					(
 					state.rules.infiniteResources || (
-						!isUpgrading() && core.items.has(multCons) 
+						!isUpgrading() && core.items.has(data.requirements()) 
 					)
 				);
 		}

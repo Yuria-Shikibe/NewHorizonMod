@@ -77,6 +77,11 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 	
 	@Override
+	public ItemStack[] requirements() {
+		return ItemStack.mult(requirements.toArray(), (itemCostCoefficien * level + 1));
+	}
+	
+	@Override
 	public void load() {
 		this.icon = Core.atlas.find(NewHorizon.NHNAME + "upgrade2");
 		this.iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");

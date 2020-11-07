@@ -51,6 +51,10 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.*;
 
 public abstract class UpgradeData implements Cloneable{
+	public static String getJudge(boolean value){
+		return value ? "[green]Yes" : "[red]No";
+	}
+	
 	public static final String offsetSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
 	public static final BulletType none = new BasicBulletType(0, 1, "none") {
@@ -60,9 +64,6 @@ public abstract class UpgradeData implements Cloneable{
 		}
 	};
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
-	
-	public int itemCostCoefficien = 0;
-	public int level;
 	
 	//
 	public int unlockLevel;
@@ -95,6 +96,10 @@ public abstract class UpgradeData implements Cloneable{
 	
 	public float costTime() {
 		return costTime;
+	}
+	
+	public ItemStack[] requirements() {
+		return this.requirements.toArray();
 	}
 	
 	@Override
@@ -143,14 +148,14 @@ public abstract class UpgradeData implements Cloneable{
 			cont.add(offsetSpace + Core.bundle.get(data.description)).color(Color.lightGray).left().row();
 			cont.pane(table -> {
 				int index = 0;
-				for(ItemStack stack : ItemStack.mult(data.requirements.toArray(), (data.itemCostCoefficien * data.level + 1))){
+				for(ItemStack stack : requirements()){
 					if(index % 5 == 0)table.row();
 					table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
 					index ++;
 				}
 			}).left().row();
 			if(data.unlockLevel > 0)cont.add("[lightgray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
-			cont.add("[lightgray]CanUpgrade?: " + (data.from.canUpgrade(data) ? "[green]Able" : "[red]Disabled") + "[]").left().row();
+			cont.add("[lightgray]CanUpgrade?: " + getJudge(data.from.canUpgrade(data)) + "[]").left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);
