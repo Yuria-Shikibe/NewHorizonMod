@@ -225,8 +225,10 @@ public class UpgraderBlock extends Block {
 				table.button(Icon.list, () -> {
 					new Dialog("All Info") {{
 						setFillParent(true);
-						baseData.buildUpgradeInfoAll(cont);
-						for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(cont);
+						cnot.pane(infos -> {
+							baseData.buildUpgradeInfoAll(intos);
+							for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(infos);
+						}).size(LEN * 12 + OFFSET * 3, LEN * 5f + OFFSET);
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
 					}}.show();
 				}).size(60f).left();
@@ -250,7 +252,6 @@ public class UpgraderBlock extends Block {
 		protected void buildSwitchAmmoTable(Table t) {
 			t.pane(table -> {
 				int index = 0;
-				
 				for (UpgradeAmmoData ammoData : ammoDatas) {
 					if(index % 8 == 0)table.row();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
@@ -261,7 +262,6 @@ public class UpgraderBlock extends Block {
 					}).size(60).left().disabled( 
 						target() == null || (ammoData.selected || !ammoData.isUnlocked)
 					);
-					
 					index++;
 				}
 			}).size(60 * 5, 60).pad(OFFSET).left();
