@@ -154,7 +154,17 @@ public class ScalableTurret extends Turret{
 			Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
 			Draw.reset();
 		}
-				
+		
+		@Override
+		public void buildConfiguration(Table t) {
+			t.pane(table -> {
+				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
+				table.add("[lightgray]ReloadUp: [accent]" + getPercent(baseData.speedMPL, 0, 10) + "%[]").left().row();
+				table.add("[lightgray]DefenceUP: [accent]" + getPercent(baseData.defenceMPL, 0, 0.75f) + "%[]").left().row();
+				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
+			}).size(LEN * 6f, LEN);
+		}
+		
 		@Override
 		public void updateTile(){
 			unit.ammo(power.status * unit.type().ammoCapacity);
@@ -220,7 +230,8 @@ public class ScalableTurret extends Turret{
 		}
 		
 		protected float reloadTime(){
-			return ammoData.reloadTime <= 0 ? reloadTime : ammoData.reloadTime;
+			float realReload = ammoData.reloadTime <= 0 ? reloadTime : ammoData.reloadTime;
+			return realReload * (1 - Mathf.clamp(baseData.speedMPL, 0, maxReloadReduce) );
 		}
 		
 		@Override
@@ -232,7 +243,7 @@ public class ScalableTurret extends Turret{
 
                 reload = 0f;
             }else{
-                reload += Mathf.clamp(baseData.speedMPL + 1, 0.25f, 10f) * delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+                reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
             }
         }
 
@@ -278,7 +289,7 @@ public class ScalableTurret extends Turret{
 			Draw.reset();
 		}
 		
-		@Override public float handleDamage(float amount) {return amount * Mathf.clamp(1 - baseData.defenceMPL, 0.25f, 1f);}
+		@Override public float handleDamage(float amount) {return amount * (1 - Mathf.clamp(baseData.defenceMPL, 0, maxDamageReduce));}
 		
 		@Override public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
 		@Override public UpgraderBlockBuild upgrader(){return baseData.from;}

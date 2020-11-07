@@ -55,6 +55,11 @@ public abstract class UpgradeData implements Cloneable{
 		return value ? "[green]Yes" : "[red]No";
 	}
 	
+	public static int getPercent(float value, float min, float max){return (int)(Mathf.floor(Mathf.clamp(value, min, max) * 100 * level));}
+	
+	public static final float maxReloadReduce = 0.5f;
+	public static final float maxDamageReduce = 0.75f;
+	
 	public static final String offsetSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
 	public static final BulletType none = new BasicBulletType(0, 1, "none") {
