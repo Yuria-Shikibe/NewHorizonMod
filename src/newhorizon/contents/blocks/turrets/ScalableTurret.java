@@ -145,7 +145,7 @@ public class ScalableTurret extends Turret{
 		public void drawConfigure(){
 			Draw.color(baseColor);
 			Lines.stroke(1f);
-			Lines.square(x, y, block.size * tilesize) / 2.0f + 1.0f));
+			Lines.square(x, y, block.size * tilesize / 2.0f + 1.0f));
 			Draw.reset();
 			if(isConnected())drawConnected();
 			float len = block.size * tilesize / 2 - tilesize;
