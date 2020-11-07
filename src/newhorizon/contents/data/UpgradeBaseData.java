@@ -55,6 +55,8 @@ public class UpgradeBaseData extends UpgradeData {
 	public float speedMPL;
 	public float damageMPL;
 	public float defenceMPL;
+	public int level;
+	public int itemCostCoefficien;
 	public TextureRegion iconLevel;
 	
 	public UpgradeBaseData(){
