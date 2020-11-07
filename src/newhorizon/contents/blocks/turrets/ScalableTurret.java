@@ -91,7 +91,7 @@ public class ScalableTurret extends Turret{
 	public void setBars() {
 		super.setBars();
 		bars.add("Ammo",
-			(UpgraderBlockBuild entity) -> new Bar(
+			(ScalableTurretBuild entity) -> new Bar(
 				() -> "AmmoType: " + Core.bundle.get(entity.ammoData.name),
 				() -> Pal.ammo,
 				() -> 1f
@@ -99,7 +99,7 @@ public class ScalableTurret extends Turret{
 		);
 		
 		bars.add("ReloadUp",
-			(UpgraderBlockBuild entity) -> new Bar(
+			(ScalableTurretBuild entity) -> new Bar(
 				() -> "ReloadUp: " + getPercent(entity.baseData.speedMPL * entity.baseData.level, 0f, maxReloadReduce) + "%",
 				() -> NHColor.lightSky,
 				() -> entity.baseData.speedMPL / maxReloadReduce
@@ -107,7 +107,7 @@ public class ScalableTurret extends Turret{
 		);
 
 		bars.add("DefenceUP",
-			(UpgraderBlockBuild entity) -> new Bar(
+			(ScalableTurretBuild entity) -> new Bar(
 				() -> "DefenceUP: " + getPercent(entity.baseData.defenceMPL * entity.baseData.level, 0f, maxDamageReduce) + "%",
 				() -> NHColor.lightSky,
 				() -> entity.baseData.defenceMPL / maxDamageReduce
