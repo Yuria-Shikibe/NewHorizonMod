@@ -90,8 +90,8 @@ public class UpgradeAmmoData extends UpgradeData{
 			}).size(LEN);
 
 			t2.pane(table -> {
-				table.add("[lightGray]IsSelected: [accent]" + selected + "[]").left().row();
-				table.add("[lightGray]IsUnlocked: [accent]" + isUnlocked + "[]").left().row();
+				table.add("[lightgray]IsSelected: [accent]" + selected + "[]").left().row();
+				table.add("[lightgray]IsUnlocked: [accent]" + isUnlocked + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {
@@ -104,7 +104,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	
 	@Override
 	public void addText(Table table){
-		table.add("[lightGray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
+		table.add("[lightgray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
 	}
 	public void write(Writes write) {
 		write.bool(this.isUnlocked);

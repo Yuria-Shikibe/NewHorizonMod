@@ -234,7 +234,7 @@ public class UpgraderBlock extends Block {
 				}).size(60f).left();
 				
 				table.button("Back", dialog::hide).size(120f, 60f).left();
-			}).left().size(240f, 60f);
+			}).left().size(240f, 60f).pad(OFFSET);
 			t.row();
 			buildSwitchAmmoTable(t);
 			t.row();

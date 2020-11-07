@@ -119,7 +119,7 @@ public abstract class UpgradeData implements Cloneable{
 
 		t.pane(table -> {
 			addText(table);
-			table.add("[lightGray]NeededTime: [accent]" + (costTime() / 60) + "sec[]").left().row();
+			table.add("[lightgray]NeededTime: [accent]" + (costTime() / 60) + "sec[]").left().row();
 		}).size(LEN * 6f, LEN).pad(OFFSET);
 
 		t.pane(table -> {
@@ -145,8 +145,8 @@ public abstract class UpgradeData implements Cloneable{
 					index ++;
 				}
 			}).left().row();
-			if(data.unlockLevel > 0)cont.add("[lightGray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
-			cont.add("[lightGray]CanUpgrade?: " + (data.from.canUpgrade(data) ? "[green]Able" : "[red]Disabled") + "[]").left().row();
+			if(data.unlockLevel > 0)cont.add("[lightgray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
+			cont.add("[lightgray]CanUpgrade?: " + (data.from.canUpgrade(data) ? "[green]Able" : "[red]Disabled") + "[]").left().row();
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
 			cont.button("Leave", this::hide).size(120, 50).pad(4);

@@ -91,7 +91,7 @@ public class UpgradeBaseData extends UpgradeData {
 			}).size(LEN);
 
 			t2.pane(table -> {
-				table.add("[lightGray]Level: [accent]MaxLevel[]").left().row();
+				table.add("[lightgray]Level: [accent]MaxLevel[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
@@ -106,7 +106,7 @@ public class UpgradeBaseData extends UpgradeData {
 			}).size(LEN);
 
 			t2.pane(table -> {
-				table.add("[lightGray]Level: [accent]" + level + "[]").left().row();
+				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {
@@ -118,7 +118,7 @@ public class UpgradeBaseData extends UpgradeData {
 	
 	@Override
 	public void addText(Table table){
-		table.add("[lightGray]UpgradeTo: [accent]Level " + level() + "[]").left().row();
+		table.add("[lightgray]UpgradeTo: [accent]Level " + level() + "[]").left().row();
 	}
 
 	public String toString() {
