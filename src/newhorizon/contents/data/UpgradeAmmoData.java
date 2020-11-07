@@ -91,14 +91,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	
 	@Override
 	public void infoText(Table table){
-		table.button(new TextureRegionDrawable(ammoInfo), new ImageButtonStyle(){{
-			down = flatDown;
-			up = black6;
-			over = flatOver;
-			disabled = black9;
-			imageDisabledColor = Color.lightGray;
-			imageUpColor = Color.white;
-        }}, () -> {
+		table.button(new TextureRegionDrawable(ammoInfo), Styles.colori, () -> {
 			new Dialog("") {{
 				cont.pane(t -> {
 					t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
