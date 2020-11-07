@@ -1,6 +1,7 @@
 package newhorizon.contents.blocks.turrets;
 
 import mindustry.entities.*;
+import arc.scene.ui.layout.*;
 import arc.*;
 import arc.math.*;
 import arc.util.*;
@@ -43,6 +44,7 @@ import newhorizon.contents.data.*;
 import newhorizon.NewHorizon;
 
 import static newhorizon.contents.data.UpgradeData.*;
+import static newhorizon.contents.data.UpgradeBaseData.*;
 import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
 
@@ -231,7 +233,7 @@ public class ScalableTurret extends Turret{
 		
 		protected float reloadTime(){
 			float realReload = ammoData.reloadTime <= 0 ? reloadTime : ammoData.reloadTime;
-			return realReload * (1 - Mathf.clamp(baseData.speedMPL, 0, maxReloadReduce) );
+			return realReload * (1 - Mathf.clamp(baseData.speedMPL * baseData.level, 0, maxReloadReduce) );
 		}
 		
 		@Override
@@ -289,7 +291,7 @@ public class ScalableTurret extends Turret{
 			Draw.reset();
 		}
 		
-		@Override public float handleDamage(float amount) {return amount * (1 - Mathf.clamp(baseData.defenceMPL, 0, maxDamageReduce));}
+		@Override public float handleDamage(float amount) {return amount * (1 - Mathf.clamp(baseData.defenceMPL * baseData.level, 0, maxDamageReduce));}
 		
 		@Override public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
 		@Override public UpgraderBlockBuild upgrader(){return baseData.from;}
