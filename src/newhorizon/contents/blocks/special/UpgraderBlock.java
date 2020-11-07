@@ -255,15 +255,15 @@ public class UpgraderBlock extends Block {
 			t.pane(table -> {
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if(index % buttonPerLine == 0)table.row();
+					if(index % buttonPerLine == 0)table.row().left();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						ammoDatas.get(lastestSelectID).selected = false;
 						ammoData.selected = true;
 						lastestSelectID = ammoData.id;
 						updateTarget();
-					}).size(60).left().disabled( 
+					}).size(60).disabled( 
 						target() == null || !ammoData.isUnlocked
-					);
+					).left();
 					index++;
 				}
 			}).size(60 * buttonPerLine, 60).pad(OFFSET).left();
