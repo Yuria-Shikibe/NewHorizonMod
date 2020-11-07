@@ -35,7 +35,8 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load() {
-		airRaid = new ArtilleryBulletType(9f, 1250, "new-horizon-strike"){
+		airRaid = new BasicBulletType(9f, 1250, "new-horizon-strike"){
+			
 			@Override
 			public void init(Bullet b){
 				super.init(b);
@@ -85,7 +86,7 @@ public class NHBullets implements ContentList {
 			}
 
 			{
-				collidesTiles = collides = collidesAir = true;
+				scaleVelocity = true;
 				hitShake = despawnShake = 5f;
 				lightning = 3;
 				lightningCone = 360;
@@ -100,6 +101,7 @@ public class NHBullets implements ContentList {
 				lifetime = 500;
 				backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 				frontColor = Color.white;
+				despawnEffect = Fx.none;
 				hitEffect = new Effect(25, e -> {
 					color(lightColor);
 					stroke(e.fout() * 3);
