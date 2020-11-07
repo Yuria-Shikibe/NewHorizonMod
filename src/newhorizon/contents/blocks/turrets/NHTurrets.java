@@ -87,15 +87,16 @@ public class NHTurrets implements ContentList {
 		
 		ender = new ScalableTurret("end-of-era") {
 			{
+				recoilAmount = 7f;
 				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
-				powerUse = 30;
+				
 				addConsume(new ItemStack(NHItems.darkEnergy, 4));
 				size = 8;
 				health = 15000;
 				hasItems = true;
-				heatColor = NHColor.lightEnrColor;
+				heatColor = baseColor = NHColor.darkEnrColor;
+				powerUse = 30;
 				reloadTime = 180f;
-				recoilAmount = 2f;
 				range = 800f;
 				inaccuracy = 1f;
 				cooldown = 0.01f;

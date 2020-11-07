@@ -50,10 +50,10 @@ public class ScalableTurret extends Turret{
 	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
 	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("emergency-replace", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
 	
-	public float powerUse = 1;
+	public float powerUse;
 	public ItemStack ammoConsume = new ItemStack(NHItems.emergencyReplace, 0);
 	
-	public Color baseColor = NHColor.darkEnrColor;
+	public Color baseColor = Pal.accent;
 	//Load Mod Factories
 	public ScalableTurret(String name){
 		super(name);
@@ -113,7 +113,7 @@ public class ScalableTurret extends Turret{
 					for(int i = 0; i < ammoData.salvos; i++){
 						Time.run(ammoData.burstSpacing * i, () -> {
 							if(!isValid())return;
-							tr.trns(rotation, 1.15f* (size * tilesize / 2f), Mathf.range(ammoData.randX) );
+							tr.trns(rotation, (size * tilesize / 2f) - recoil, Mathf.range(ammoData.randX) );
 							recoil = recoilAmount;
 							heat = 2f;
 							bullet(ammo, rotation + Mathf.range(ammoData.inaccuracy));

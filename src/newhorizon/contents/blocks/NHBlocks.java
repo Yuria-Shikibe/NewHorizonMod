@@ -80,17 +80,22 @@ public class NHBlocks implements ContentList {
 					"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
 					new ItemStack(NHItems.irayrondPanel, 3),
 					new ItemStack(NHItems.metalOxhydrigen, 2)
-				){{salvos = 5;}},
+				){{
+					randX = 2f * tilesize;
+					salvos = 7;
+					inaccuracy = 10;
+					velocityInaccuracy = 0.08f;
+				}},
 				new UpgradeAmmoData(
 					"air-raid", "description02", NHBullets.airRaid, 300f, 2,
 					new ItemStack(NHItems.upgradeSort, 250),
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.thermoCoreNegative, 150)
 				){{
-					inaccuracy = 5;
-					velocityInaccuracy = 0.04f;
-					burstSpacing = 7f;
-					salvos = 7;
+					inaccuracy = 6;
+					velocityInaccuracy = 0.08f;
+					burstSpacing = 9f;
+					salvos = 6;
 					randX = 2f * tilesize;
 				}}
 			);

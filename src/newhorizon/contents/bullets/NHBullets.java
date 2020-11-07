@@ -43,27 +43,27 @@ public class NHBullets implements ContentList {
 				Color mix = Tmp.c1.set(mixColorFrom).lerp(mixColorTo, b.fin());
 
 				mixcol(mix, mix.a);
-
 				color(backColor);
+				
+				for(int i : Mathf.signs){
+					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation() - 180 + 30 * i);
+				}
+				
 				rect(backRegion, b.x, b.y, width, height, b.rotation() + offset);
 				color(frontColor);
 				rect(frontRegion, b.x, b.y, width, height, b.rotation() + offset);
 				Draw.reset();
         
 				color(lightColor);
-				for(int i : Mathf.signs){
-					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation() - 180 + 30 * i);
-				}
 				Draw.reset();
 			}
 			
 			@Override
 			public void update(Bullet b){
-				
-				if(b.time() > 12){
+				if(b.time() > 11){
 					new Effect(32f, e -> {
 						color(lightColor, Pal.gray, e.fin() * 0.7f);
-						stroke(e.fout() * 5);
+						stroke(e.fout() * 4.2f);
 						lineAngle(e.x, e.y, e.rotation - 180, e.fout() * 40 + 50); 
 					}).at(b.x, b.y, b.rotation());
 				}
@@ -81,6 +81,14 @@ public class NHBullets implements ContentList {
 			@Override
 			public void hit(Bullet b){
 				super.hit(b);
+				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
+					Vec2 randomPos = new Vec2(Mathf.range(200), Mathf.range(200)).add(b.x, b.y);
+					
+					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1f + NHLightningBolt.WIDTH, 2, hitPos -> {
+						Damage.damage(b.team(), hitPos.getX(), hitPos.getY(), 20f, this.splashDamage * b.damageMultiplier());
+						NHFx.lightningHit.at(hitPos);
+					});
+				}
 				Effect.shake(4f, 5f, b);
 				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 2, 2, lightColor, NHLightningBolt.WIDTH, target -> {
 					Damage.damage(b.team(), target.getX(), target.getY(), 40f, damage * b.damageMultiplier());
@@ -112,7 +120,7 @@ public class NHBullets implements ContentList {
 					});
 			
 					Fill.circle(e.x, e.y, e.fout() * 22);
-					color(NHColor.darkEnrColor, Color.black, 0.8f);
+					color(lightColor, Color.black, 0.8f);
 					Fill.circle(e.x, e.y, e.fout() * 14);
 				});
 			}
