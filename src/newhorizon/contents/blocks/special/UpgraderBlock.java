@@ -225,8 +225,8 @@ public class UpgraderBlock extends Block {
 				table.button(Icon.list, () -> {
 					new Dialog("All Info") {{
 						setFillParent(true);
-						cnot.pane(infos -> {
-							baseData.buildUpgradeInfoAll(intos);
+						cont.pane(infos -> {
+							baseData.buildUpgradeInfoAll(infos);
 							for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(infos);
 						}).size(LEN * 12 + OFFSET * 3, LEN * 5f + OFFSET);
 						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
@@ -260,7 +260,7 @@ public class UpgraderBlock extends Block {
 						lastestSelectID = ammoData.id;
 						updateTarget();
 					}).size(60).left().disabled( 
-						target() == null || (ammoData.selected || !ammoData.isUnlocked)
+						target() == null || !ammoData.isUnlocked
 					);
 					index++;
 				}
