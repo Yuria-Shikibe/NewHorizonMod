@@ -112,8 +112,7 @@ public abstract class UpgradeData implements Cloneable{
 		return obj;
 	}
 	
-	public void ammoText(Table table){}
-	
+	public abstract void infoText(Table table);
 	public abstract void addText(Table table);
 	public abstract void buildUpgradeInfoAll(Table table);
 	public void buildTable(Table t) {
@@ -147,7 +146,7 @@ public abstract class UpgradeData implements Cloneable{
 			cont.margin(15f);
 			cont.pane(table -> {
 				table.pane( t -> {t.image(icon);}).size(icon.height + OFFSET / 2).left();
-				table.pane( t -> {ammoText(t);}).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
+				table.pane( t -> {infoText(t);}).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
 			}).row();
 			cont.add("<< " + Core.bundle.get(data.name) + " >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();

@@ -82,7 +82,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	public boolean isUnlocked, selected;
 	
 	@Override
-	public void ammoText(Table table){
+	public void infoText(Table table){
 		table.add("[lightgray]Damage: [accent]" + selectAmmo.damage + "[]").left().row();
 		table.add("[lightgray]SplashDamage: [accent]" + selectAmmo.splashDamage + "[]").left().row();
 		table.add("[lightgray]SplashDamageRadius: [accent]" + selectAmmo.splashDamageRadius + "[]").left().row();

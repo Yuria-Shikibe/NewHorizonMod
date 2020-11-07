@@ -134,6 +134,11 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 	
 	@Override
+	public void infoText(Table table){
+		table.image(iconLevel);
+	}
+	
+	@Override
 	public void addText(Table table){
 		table.add("[lightgray]UpgradeTo: [accent]Level " + level() + "[]").left().row();
 	}
@@ -147,8 +152,6 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 
 	public void plusLevel() {
-		//ItemStack[] adds = ItemStack.mult(requirements.toArray(), (itemCostCoefficien + 1));
-		//requirements.clear().addAll(adds);
 		this.level ++;
 	}
 
