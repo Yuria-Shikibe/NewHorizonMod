@@ -131,14 +131,14 @@ public abstract class UpgradeData implements Cloneable{
 		t.pane(table -> {
 			addText(table);
 			table.add("[lightgray]NeededTime: [accent]" + df.format(costTime() / 60) + "sec[]").left().row();
-		}).size(LEN * 6f, LEN).pad(OFFSET);
+		}).size(LEN * 6f, LEN).left().pad(OFFSET);
 
 		t.pane(table -> {
 			table.button(Icon.infoCircle, () -> {showInfo(this, true);}).size(LEN);
 			table.button(Icon.upgrade, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(!from.canUpgrade(this));
-		}).size(LEN * 2f, LEN).pad(OFFSET);
+		}).size(LEN * 2f, LEN).left().pad(OFFSET);
 	}
 	
 	public void showInfo(UpgradeData data, boolean drawCons){
