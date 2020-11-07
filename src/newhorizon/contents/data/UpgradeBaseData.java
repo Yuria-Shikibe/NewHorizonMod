@@ -52,8 +52,6 @@ import static mindustry.Vars.*;
 
 public class UpgradeBaseData extends UpgradeData {
 	public float timeCostCoefficien = 0f;
-	public int itemCostCoefficien = 0;
-	public int level;
 	public float speedMPL;
 	public float damageMPL;
 	public float defenceMPL;
@@ -135,8 +133,8 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 
 	public void plusLevel() {
-		ItemStack[] adds = ItemStack.mult(requirements.toArray(), (itemCostCoefficien + 1));
-		requirements.clear().addAll(adds);
+		//ItemStack[] adds = ItemStack.mult(requirements.toArray(), (itemCostCoefficien + 1));
+		//requirements.clear().addAll(adds);
 		this.level ++;
 	}
 

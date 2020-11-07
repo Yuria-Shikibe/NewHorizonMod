@@ -156,12 +156,13 @@ public class UpgraderBlock extends Block {
 		
 		public boolean canUpgrade(UpgradeData data) {
 			CoreBlock.CoreBuild core = core();
+			ItemStack[] multCons = ItemStack.mult(data.requirements.toArray(), (data.itemCostCoefficien * data.level + 1));
 			return 
 				coreValid(core) && 
 				baseData.level >= data.unlockLevel &&
 					(
 					state.rules.infiniteResources || (
-						!isUpgrading() && core.items.has(data.requirements.toArray()) 
+						!isUpgrading() && core.items.has(multCons) 
 					)
 				);
 		}

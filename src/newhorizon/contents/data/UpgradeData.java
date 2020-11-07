@@ -60,6 +60,10 @@ public abstract class UpgradeData implements Cloneable{
 		}
 	};
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
+	
+	public int itemCostCoefficien = 0;
+	public int level;
+	
 	//
 	public int unlockLevel;
 	public TextureRegion icon;
@@ -139,7 +143,7 @@ public abstract class UpgradeData implements Cloneable{
 			cont.add(offsetSpace + Core.bundle.get(data.description)).color(Color.lightGray).left().row();
 			cont.pane(table -> {
 				int index = 0;
-				for(ItemStack stack : data.requirements){
+				for(ItemStack stack : ItemStack.mult(data.requirements.toArray(), (data.itemCostCoefficien * data.level + 1))){
 					if(index % 5 == 0)table.row();
 					table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
 					index ++;
