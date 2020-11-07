@@ -54,6 +54,8 @@ public class ScalableTurret extends Turret{
 	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
 	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("emergency-replace", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
 	
+	protected float infoBarLength = size / 2 * tilesize;
+	
 	public float powerUse;
 	
 	public Color baseColor = Pal.accent;
@@ -87,7 +89,7 @@ public class ScalableTurret extends Turret{
         super.init();
 	}
 	
-	@Override
+	/*@Override
 	public void setBars() {
 		super.setBars();
 		bars.add("Ammo",
@@ -113,7 +115,7 @@ public class ScalableTurret extends Turret{
 				() -> entity.baseData.defenceMPL / maxDamageReduce
 			)
 		);
-	}
+	}*/
 	
 	public class ScalableTurretBuild extends TurretBuild implements Scalablec{
 		public UpgradeBaseData baseData = defaultBaseData;
@@ -170,15 +172,27 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		public void drawConfigure(){
-			Draw.color(baseColor);
-			Lines.stroke(1f);
+			float barOffset = block.size * tilesize / 2 + tilesize;
+			float len = block.size * tilesize / 2 - tilesize;
+			
+			Lines.stroke(1f, baseColor);
 			Lines.square(x, y, block.size * tilesize / 2.0f + 1.0f);
 			Draw.reset();
 			if(isConnected())drawConnected();
-			float len = block.size * tilesize / 2 - tilesize;
+			
 			Draw.rect(ammoData.icon, x - len, y + len);
 			Draw.color(baseColor);
 			Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
+			Draw.reset();
+			
+			Lines.stroke(3f, Pal.gray);
+			Lines.lineAngle(x + barOffset, 		 y - barOffset, 90, infoBarLength);
+			Lines.lineAngle(x + barOffset * 1.125f, y - barOffset, 90, infoBarLength);
+			Lines.stroke(1.8f);
+			Draw.color(Color.lightGray);
+			Lines.lineAngle(x + barOffset, 		 y - barOffset, 90, (baseData.defenceMPL * baseData.level / maxDamageReduce) * infoBarLength);
+			Draw.color(NHColor.lightSky);
+			Lines.lineAngle(x + barOffset * 1.125f, y - barOffset, 90, (baseData.speedMPL * baseData.level / maxReloadReduce) * infoBarLength);
 			Draw.reset();
 		}
 		
@@ -295,7 +309,7 @@ public class ScalableTurret extends Turret{
 		@Override
 		public void drawConnected(){
 			float sin = Mathf.absin(Time.time(), 6f, 1f);
-			for(int i = 0; i < 4; i++){
+			for(int i = 0; i < 4; i++){ 
 				float length = tilesize * block.size / 2 + 3 + sin;
 				Tmp.v1.trns(i * 90, -length);
 				Draw.color(Pal.gray);
