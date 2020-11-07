@@ -106,6 +106,7 @@ public class UpgradeBaseData extends UpgradeData {
 			
 			t2.pane(table -> {
 				table.button(Icon.infoCircle, () -> {showInfo(this, false);}).size(LEN);
+				table.button(Icon.upgrade, () -> {}).size(LEN).disabled(true);
 			}).size(LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();

@@ -218,7 +218,7 @@ public class UpgraderBlock extends Block {
 					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID), false);
 				}).size(60).disabled(lastestSelectID < 0 || ammoDatas.isEmpty());
 				
-				table.button(Icon.list, () -> {
+				table.button(Icon.hostSmall, () -> {
 					new Dialog("All Info") {{
 						setFillParent(true);
 						cont.pane(infos -> {
@@ -318,7 +318,7 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void buildConfiguration(Table table) {
-			table.button(Icon.add, () -> {
+			table.button(Icon.logic, () -> {
 				dialog.cont.clear();
 				dialog.cont.pane(t -> {
 					buildTable(t);
