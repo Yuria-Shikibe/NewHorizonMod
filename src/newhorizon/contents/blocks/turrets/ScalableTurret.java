@@ -1,5 +1,6 @@
 package newhorizon.contents.blocks.turrets;
 
+
 import mindustry.entities.*;
 import arc.scene.ui.layout.*;
 import arc.*;
@@ -7,6 +8,7 @@ import arc.math.*;
 import arc.util.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import mindustry.ui.*;
 import mindustry.ctype.*;
 import mindustry.content.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -88,10 +90,18 @@ public class ScalableTurret extends Turret{
 	@Override
 	public void setBars() {
 		super.setBars();
+		bars.add("Ammo",
+			(UpgraderBlockBuild entity) -> new Bar(
+				() -> "AmmoType: " + Core.bundle.get(entity.ammoData.name),
+				() -> Pal.ammo,
+				() -> 1f
+			)
+		);
+		
 		bars.add("ReloadUp",
 			(UpgraderBlockBuild entity) -> new Bar(
 				() -> "ReloadUp: " + getPercent(entity.baseData.speedMPL * entity.baseData.level, 0f, maxReloadReduce) + "%",
-				() -> Pal.ammo,
+				() -> NHColor.lightSky,
 				() -> entity.baseData.speedMPL / maxReloadReduce
 			)
 		);
@@ -150,7 +160,7 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		public BulletType useAmmo(){
-			this.items.remove(consumes.getItem());
+			this.items.remove(consumes.getItem().items);
             return peekAmmo();
         }
 		
