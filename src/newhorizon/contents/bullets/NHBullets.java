@@ -37,6 +37,12 @@ public class NHBullets implements ContentList {
 	public void load() {
 		airRaid = new ArtilleryBulletType(9f, 1250, "new-horizon-strike"){
 			@Override
+			public void init(Bullet b){
+				super.init(b);
+				b.lifetime(b.lifetime() + 16f);
+			}
+			
+			@Override
 			public void draw(Bullet b){
 				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
 
@@ -78,13 +84,9 @@ public class NHBullets implements ContentList {
 				}
 			}
 
-			@Override
-			public void hit(Bullet b){
-				super.hit(b);
-				Effect.shake(4f, 5f, b);
-			}
-				
 			{
+				collidesTiles = collides = collidesAir = true;
+				hitShake = despawnShake = 5f;
 				lightning = 3;
 				lightningCone = 360;
 				lightningLengthRand = lightningLength = 12;
@@ -92,7 +94,7 @@ public class NHBullets implements ContentList {
 				smokeEffect = NHFx.darkEnergySmoke;
 				shrinkX = shrinkY = 0;
 				splashDamageRadius = 120f;
-				splashDamage = lightningDamage = damage * 0.7f;
+				splashDamage = lightningDamage = 1000;
 				height = 60f;
 				width = 18f;
 				lifetime = 500;
