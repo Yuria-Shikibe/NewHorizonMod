@@ -258,7 +258,7 @@ public class UpgraderBlock extends Block {
 						lastestSelectID = ammoData.id;
 						updateTarget();
 					}).size(60).disabled( 
-						target() == null || !ammoData.isUnlocked
+						target() == null || !ammoData.isUnlocked || ammoData.selected
 					).left();
 					index++;
 				}
