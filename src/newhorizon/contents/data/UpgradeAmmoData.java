@@ -86,8 +86,8 @@ public class UpgradeAmmoData extends UpgradeData{
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(t2 -> {
 			t2.pane(table -> {
-				table.image(icon).size(LEN);
-			}).size(LEN);
+				table.image(icon).size(LEN).left();
+			}).size(LEN).left();
 
 			t2.pane(table -> {
 				table.add("[lightgray]IsSelected: " + getJudge(selected) + "[]").left().row();
