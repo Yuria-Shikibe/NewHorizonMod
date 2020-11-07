@@ -57,6 +57,8 @@ public class ScalableTurret extends Turret{
 	//Load Mod Factories
 	public ScalableTurret(String name){
 		super(name);
+		itemCapacity = 60;
+		configurable = true;
 		hasPower = true;
 		hasItems = true;
 	}
@@ -140,15 +142,17 @@ public class ScalableTurret extends Turret{
 		}
 		
 		@Override
-		public void drawSelect(){
-			super.drawSelect();
+		public void drawConfigure(){
+			Draw.color(baseColor);
+			Lines.stroke(1f);
+			Lines.square(x, y, block.size * tilesize) / 2.0f + 1.0f));
+			Draw.reset();
 			if(isConnected())drawConnected();
 			float len = block.size * tilesize / 2 - tilesize;
-			Draw.color();
 			Draw.rect(ammoData.icon, x - len, y + len);
 			Draw.color(baseColor);
 			Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
-			Draw.color();
+			Draw.reset();
 		}
 				
 		@Override
@@ -271,6 +275,7 @@ public class ScalableTurret extends Turret{
 				Draw.color(baseColor);
 				Draw.rect(NewHorizon.NHNAME + "linked-arrow", 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
 			}
+			Draw.reset();
 		}
 		
 		@Override public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
