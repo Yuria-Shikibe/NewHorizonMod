@@ -102,19 +102,19 @@ public class UpgradeAmmoData extends UpgradeData{
 					if(selectAmmo.knockback > 0)t.add("[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.knockback) + "[]").left().row();
 					
 					t.add("[lightgray]CanFrag?: " + getJudge(selectAmmo.fragBullet != null) + "[]").left().row();
-					if(selectAmmo.fragBullet != null)t.add("[lightgray]Frags: [accent]" + selectAmmo.fragBullets + "[]").left().row();
+					if(selectAmmo.fragBullet != null)t.add("	[lightgray]Frags: [accent]" + selectAmmo.fragBullets + "[]").left().row();
 					
 					t.add("[lightgray]CanFragLightnings?: " + getJudge(selectAmmo.lightning > 0) + "[]").left().row();
 					if(selectAmmo.lightning > 0){
-						t.add("[lightgray]MaxLightningLength: [accent]" + selectAmmo.lightningLength + selectAmmo.lightningLengthRand + "[]").left().row();
-						t.add("[lightgray]LightningDamage: [accent]" + selectAmmo.lightningDamage + "[]").left().row();
+						t.add("	[lightgray]MaxLightningLength: [accent]" + df.format(selectAmmo.lightningLength + selectAmmo.lightningLengthRand) + "[]").left().row();
+						t.add("	[lightgray]LightningDamage: [accent]" + df.format(selectAmmo.lightningDamage) + "[]").left().row();
 					}
 					
 					t.add("[lightgray]CanHoming?: " + getJudge(selectAmmo.homingPower > 0) + "[]").left().row();
-					if(selectAmmo.homingPower > 0)t.add("[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
+					if(selectAmmo.homingPower > 0)t.add("	[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
 					
-					t.add("[lightgray]CanPierceUnits: " + getJudge(selectAmmo.pierce) + "[]").left().row();
-					t.add("[lightgray]CanPierceTiles: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
+					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce) + "[]").left().row();
+					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
 				}).row();
 				cont.button("Leave", this::hide).size(120, 50).pad(4);
 			}}.show();
