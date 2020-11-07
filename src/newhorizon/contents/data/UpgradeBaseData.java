@@ -53,7 +53,6 @@ import static mindustry.Vars.*;
 public class UpgradeBaseData extends UpgradeData {
 	public float timeCostCoefficien = 0f;
 	public float speedMPL;
-	public float damageMPL;
 	public float defenceMPL;
 	public int level;
 	public int itemCostCoefficien;
@@ -115,12 +114,11 @@ public class UpgradeBaseData extends UpgradeData {
 				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
 				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
 				table.add("[lightgray]ReloadUp: [accent]" + (speedMPL * 100 * level) + "%[]").left().row();
-				table.add("[lightgray]DamageUp: [accent]" + (damageMPL * 100 * level) + "%[]").left().row();
 				table.add("[lightgray]DefenceUP: [accent]" + (defenceMPL * 100 * level) + "%[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {
-				table.button(Icon.infoCircle, () -> {showInfo(this);}).size(LEN);
+				table.button(Icon.infoCircle, () -> {showInfo(this, false);}).size(LEN);
 			}).size(LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();

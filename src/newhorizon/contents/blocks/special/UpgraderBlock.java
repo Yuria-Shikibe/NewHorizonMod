@@ -219,7 +219,7 @@ public class UpgraderBlock extends Block {
 		protected void buildTable(Table t) {
 			t.pane(table -> {
 				table.button(Icon.infoCircle, () -> {
-					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID));
+					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID), false);
 				}).size(60).disabled(lastestSelectID < 0 || ammoDatas.isEmpty());
 				
 				table.button(Icon.list, () -> {

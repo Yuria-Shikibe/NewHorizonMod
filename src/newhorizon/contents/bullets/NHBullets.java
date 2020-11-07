@@ -307,7 +307,7 @@ public class NHBullets implements ContentList {
 						collidesTiles = false;
 						splashDamageRadius = 80f;
 						splashDamage = damage;
-						backColor = lightColor = NHColor.darkEnrColor;
+						backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 						frontColor = Color.white;
 						lightning = 3;
 						lightningLength = 8;

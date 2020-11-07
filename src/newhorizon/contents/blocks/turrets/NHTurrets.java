@@ -96,7 +96,7 @@ public class NHTurrets implements ContentList {
 				hasItems = true;
 				heatColor = baseColor = NHColor.darkEnrColor;
 				powerUse = 30;
-				reloadTime = 180f;
+				reloadTime = 240f;
 				range = 800f;
 				inaccuracy = 1f;
 				cooldown = 0.01f;

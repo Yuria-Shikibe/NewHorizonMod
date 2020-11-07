@@ -41,7 +41,9 @@ import newhorizon.contents.blocks.turrets.*;
 import newhorizon.contents.blocks.special.*;
 import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.data.*;
+import newhorizon.contents.data.UpgradeDatas;
 import static newhorizon.contents.data.UpgradeData.*;
+
 
 import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
@@ -59,49 +61,16 @@ public class NHBlocks implements ContentList {
 		eoeUpgrader = new UpgraderBlock("end-of-era-upgrader"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 3;
+			health = 2350;
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 6;
 			toUpgradeClass = NHTurrets.ender;
-			initUpgradeBaseData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, new ItemStack(NHItems.upgradeSort, 100)){{
-				timeCostCoefficien = 0.225f;
-				itemCostCoefficien = 1;
-			}};
+			initUpgradeBaseData = UpgradeDatas.basicData;
 			addUpgrades(
-				new UpgradeAmmoData(
-					"arc-9000", "description00", NHBullets.boltGene, 300f, 0,
-					new ItemStack(NHItems.upgradeSort, 250),
-					new ItemStack(NHItems.darkEnergy, 500),
-					new ItemStack(NHItems.thermoCoreNegative, 150)
-				){{
-					chargeEffect = NHFx.darkEnergyCharge;
-					chargeBeginEffect = NHFx.darkEnergyChargeBegin;
-					chargeTime = 60f;
-				}},
-				new UpgradeAmmoData(
-					"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
-					new ItemStack(NHItems.irayrondPanel, 3),
-					new ItemStack(NHItems.metalOxhydrigen, 2)
-				){{
-					randX = 2f * tilesize;
-					salvos = 7;
-					inaccuracy = 10;
-					velocityInaccuracy = 0.08f;
-				}},
-				new UpgradeAmmoData(
-					"air-raid", "description02", NHBullets.airRaid, 300f, 2,
-					new ItemStack(NHItems.upgradeSort, 250),
-					new ItemStack(NHItems.darkEnergy, 500),
-					new ItemStack(NHItems.thermoCoreNegative, 150)
-				){{
-					inaccuracy = 6;
-					velocityInaccuracy = 0.08f;
-					burstSpacing = 9f;
-					salvos = 6;
-					randX = 2f * tilesize;
-				}}
+				UpgradeDatas.arc9000,
+				UpgradeDatas.curveBomb,
+				UpgradeDatas.airRaid
 			);
-			
-            health = 1350;
 		}};
 		
 		chargeWall = new ChargeWall("charge-wall"){{

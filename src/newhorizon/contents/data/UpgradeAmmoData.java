@@ -95,7 +95,7 @@ public class UpgradeAmmoData extends UpgradeData{
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {
-				table.button(Icon.infoCircle, () -> {showInfo(this);}).size(LEN);
+				table.button(Icon.infoCircle, () -> {showInfo(this, false);}).size(LEN);
 			}).size(LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
