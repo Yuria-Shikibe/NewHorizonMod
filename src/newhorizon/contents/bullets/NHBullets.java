@@ -92,7 +92,7 @@ public class NHBullets implements ContentList {
 				smokeEffect = NHFx.darkEnergySmoke;
 				shrinkX = shrinkY = 0;
 				splashDamageRadius = 120f;
-				splashDamage = lightningDamage =  * 0.7f;
+				splashDamage = lightningDamage = damage * 0.7f;
 				height = 60f;
 				width = 18f;
 				lifetime = 500;
