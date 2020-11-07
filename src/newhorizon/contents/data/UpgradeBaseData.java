@@ -54,7 +54,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public static final float maxReloadReduce = 0.5f;
 	public static final float maxDamageReduce = 0.75f;
 	
-	public int getPercent(float value, float min, float max){return (int)(Mathf.floor(Mathf.clamp(value * level, min, max) * 100));}
+	public static int getPercent(float value, float min, float max){return (int)(Mathf.floor(Mathf.clamp(value, min, max) * 100));}
 	
 	public float timeCostCoefficien = 0f;
 	public float speedMPL;
@@ -118,8 +118,8 @@ public class UpgradeBaseData extends UpgradeData {
 			t2.pane(table -> {
 				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
 				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-				table.add("[lightgray]ReloadUp: [accent]" + getPercent(speedMPL, 0f, maxReloadReduce) + "%[]").left().row();
-				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL, 0f, maxDamageReduce) + "%[]").left().row();
+				table.add("[lightgray]ReloadUp: [accent]" + getPercent(speedMPL * level, 0f, maxReloadReduce) + "%[]").left().row();
+				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL * level, 0f, maxDamageReduce) + "%[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
 			t2.pane(table -> {

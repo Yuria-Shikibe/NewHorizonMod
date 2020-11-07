@@ -161,8 +161,8 @@ public class ScalableTurret extends Turret{
 		public void buildConfiguration(Table t) {
 			t.pane(table -> {
 				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-				table.add("[lightgray]ReloadUp: [accent]" + getPercent(baseData.speedMPL, 0, 10) + "%[]").left().row();
-				table.add("[lightgray]DefenceUP: [accent]" + getPercent(baseData.defenceMPL, 0, 0.75f) + "%[]").left().row();
+				table.add("[lightgray]ReloadUp: [accent]" + getPercent(baseData.speedMPL * baseData.level, 0f, 10f) + "%[]").left().row();
+				table.add("[lightgray]DefenceUP: [accent]" + getPercent(baseData.defenceMPL * baseData.level, 0f, 0.75f) + "%[]").left().row();
 				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
 			}).size(LEN * 6f, LEN);
 		}
