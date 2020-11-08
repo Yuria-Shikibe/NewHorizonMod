@@ -54,7 +54,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void init(Bullet b){
 				super.init(b);
-				b.data(new Trail(10));
+				b.data(new Trail(14));
 				Trail t = (Trail)b.data;
 				t.clear();
 				b.lifetime(b.lifetime() + 9f);
@@ -90,9 +90,8 @@ public class NHBullets implements ContentList {
 			public void update(Bullet b){
 				if(!(b.data instanceof Trail))return;
 				Trail trail = (Trail)b.data;
-				Tmp.v1.trns(b.rotation(), - height / 2.8f).add(b.x, b.y);
-				trail.length = (int)Mathf.floor(10 / Time.delta * 1.5f);
-				trail.update(Tmp.v1.x, Tmp.v1.y);
+				trail.length = (int)Mathf.floor(14 / Time.delta * 1.65f);
+				trail.update(b.x, b.y);
             
             	super.update(b);
 				
