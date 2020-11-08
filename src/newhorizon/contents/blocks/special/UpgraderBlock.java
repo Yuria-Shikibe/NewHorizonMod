@@ -210,7 +210,7 @@ public class UpgraderBlock extends Block {
 			upgradingID = DFTID;
 			
 		}
-
+		
 		//UI
 		protected void buildTable(Table t) {
 			t.pane(table -> {
@@ -246,6 +246,13 @@ public class UpgraderBlock extends Block {
 			}).size(LEN * 12 + OFFSET * 3, LEN * 4f + OFFSET);
 		}
 
+		public void switchAmmo(UpgradeAmmoData data){
+			for(UpgradeAmmoData ammo : ammoDatas)ammo.selected = false;
+			data.selected = true;
+			lastestSelectID = data.id;
+			updateTarget();
+		}
+		
 		protected void buildSwitchAmmoTable(Table t) {
 			final int buttonPerLine = 8;
 			t.pane(table -> {
@@ -253,10 +260,7 @@ public class UpgraderBlock extends Block {
 				for (UpgradeAmmoData ammoData : ammoDatas) {
 					if(index % buttonPerLine == 0)table.row().left();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
-						for(UpgradeAmmoData ammo : ammoDatas)ammo.selected = false;
-						ammoData.selected = true;
-						lastestSelectID = ammoData.id;
-						updateTarget();
+						switchAmmo(ammoData);
 					}).size(60).disabled( 
 						target() == null || !ammoData.isUnlocked || ammoData.selected
 					).left();
