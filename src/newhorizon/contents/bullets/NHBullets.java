@@ -55,14 +55,16 @@ public class NHBullets implements ContentList {
 			public void init(Bullet b){
 				super.init(b);
 				b.data(new Trail(1));
-				(Trail)b.data.clear();
+				Trail t = (Trail)b.data;
+				t.clear();
 				b.lifetime(b.lifetime() + 6f);
 			}
 			
 			@Override
 			public void draw(Bullet b){
 				if(!(b.data instanceof Trail))return;
-				(Trail)b.data.draw(backColor, 2f);
+				Trail t = (Trail)b.data;
+				t.draw(backColor, 2f);
 				
 				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
 				
