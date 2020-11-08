@@ -137,8 +137,8 @@ public class UpgradeAmmoData extends UpgradeData{
 			
 			t2.pane(table -> {
 				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN);
-				table.button(Icon.exchange, Styles.selecti, () -> {from.switchAmmo(this);}).size(LEN).disabled(!isUnlocked);
-			}).size(LEN).pad(OFFSET);
+				table.button(Icon.exchange, Styles.clearTransi, () -> {from.switchAmmo(this);}).size(LEN).disabled(!isUnlocked || selected);
+			}).size(LEN * 2, LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 	}
