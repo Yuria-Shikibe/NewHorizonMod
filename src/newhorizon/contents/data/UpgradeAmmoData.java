@@ -96,25 +96,25 @@ public class UpgradeAmmoData extends UpgradeData{
 				cont.pane(t -> {
 					t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
 					if(selectAmmo.splashDamageRadius > 0){
-						t.add("[lightgray]SplashDamage: [accent]" + df.format(selectAmmo.splashDamage) + "[]").left().row();
-						t.add("[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.splashDamageRadius / tilesize) + "[]").left().row();
+						t.add(offsetSpace + "[lightgray]SplashDamage: [accent]" + df.format(selectAmmo.splashDamage) + "[]").left().row();
+						t.add(offsetSpace + "[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.splashDamageRadius / tilesize) + "[]").left().row();
 					}
 					if(selectAmmo.knockback > 0)t.add("[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.knockback) + "[]").left().row();
 					
 					t.add("[lightgray]CanFrag?: " + getJudge(selectAmmo.fragBullet != null) + "[]").left().row();
-					if(selectAmmo.fragBullet != null)t.add("	[lightgray]Frags: [accent]" + selectAmmo.fragBullets + "[]").left().row();
+					if(selectAmmo.fragBullet != null)t.add(offsetSpace + "[lightgray]Frags: [accent]" + selectAmmo.fragBullets + "[]").left().row();
 					
 					t.add("[lightgray]CanFragLightnings?: " + getJudge(selectAmmo.lightning > 0) + "[]").left().row();
 					if(selectAmmo.lightning > 0){
-						t.add("	[lightgray]MaxLightningLength: [accent]" + df.format(selectAmmo.lightningLength + selectAmmo.lightningLengthRand) + "[]").left().row();
-						t.add("	[lightgray]LightningDamage: [accent]" + df.format(selectAmmo.lightningDamage) + "[]").left().row();
+						t.add(offsetSpace + "[lightgray]MaxLightningLength: [accent]" + df.format(selectAmmo.lightningLength + selectAmmo.lightningLengthRand) + "[]").left().row();
+						t.add(offsetSpace + "[lightgray]LightningDamage: [accent]" + df.format(selectAmmo.lightningDamage) + "[]").left().row();
 					}
 					
 					t.add("[lightgray]CanHoming?: " + getJudge(selectAmmo.homingPower > 0) + "[]").left().row();
-					if(selectAmmo.homingPower > 0)t.add("	[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
+					if(selectAmmo.homingPower > 0)t.add(offsetSpace + "[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
 					
-					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce) + "[]").left().row();
-					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding) + "[]").left().row();
+					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();
+					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding || collidesTiles) + "[]").left().row();
 				}).row();
 				cont.button("Leave", this::hide).size(120, 50).pad(4);
 			}}.show();
