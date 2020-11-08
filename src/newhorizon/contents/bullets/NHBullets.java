@@ -54,17 +54,17 @@ public class NHBullets implements ContentList {
 			@Override
 			public void init(Bullet b){
 				super.init(b);
-				b.data(new Trail(1));
+				b.data(new Trail(8));
 				Trail t = (Trail)b.data;
 				t.clear();
-				b.lifetime(b.lifetime() + 6f);
+				b.lifetime(b.lifetime() + 9f);
 			}
 			
 			@Override
 			public void draw(Bullet b){
 				if(!(b.data instanceof Trail))return;
 				Trail t = (Trail)b.data;
-				t.draw(backColor, 2f);
+				t.draw(backColor, 4.2f);
 				
 				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
 				
@@ -90,11 +90,10 @@ public class NHBullets implements ContentList {
 			public void update(Bullet b){
 				if(!(b.data instanceof Trail))return;
 				Trail trail = (Trail)b.data;
-				
-				float cx = Angles.trnsx(b.rotation() - 90.0f, 40f, 0) + b.x;
-				float cy = Angles.trnsy(b.rotation() - 90.0f, 40f, 0) + b.y;
-				trail.update(cx, cy);
+				Tmp.v1.trns(b.rotation(), - height / 2.3f).add(b.x, b.y);
+				trail.update(Tmp.v1.x, Tmp.v1.y);
             
+            	super.update(b);
 				/*if(b.time() > 11){
 					new Effect(32f, e -> {
 						color(lightColor, Pal.gray, e.fin() * 0.7f);
@@ -114,6 +113,9 @@ public class NHBullets implements ContentList {
 			}
 
 			{
+				homingPower = 0.12f;
+				homingRange = 400f
+				homingDelay = 12;
 				scaleVelocity = true;
 				hitShake = despawnShake = 5f;
 				lightning = 3;
