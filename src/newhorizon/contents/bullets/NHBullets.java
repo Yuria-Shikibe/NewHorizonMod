@@ -54,7 +54,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void init(Bullet b){
 				super.init(b);
-				b.data(new Trail(8));
+				b.data(new Trail(14));
 				Trail t = (Trail)b.data;
 				t.clear();
 				b.lifetime(b.lifetime() + 9f);
@@ -90,17 +90,10 @@ public class NHBullets implements ContentList {
 			public void update(Bullet b){
 				if(!(b.data instanceof Trail))return;
 				Trail trail = (Trail)b.data;
-				Tmp.v1.trns(b.rotation(), - height / 2.3f).add(b.x, b.y);
+				Tmp.v1.trns(b.rotation(), - height / 2.8f).add(b.x, b.y);
 				trail.update(Tmp.v1.x, Tmp.v1.y);
             
             	super.update(b);
-				/*if(b.time() > 11){
-					new Effect(32f, e -> {
-						color(lightColor, Pal.gray, e.fin() * 0.7f);
-						stroke(e.fout() * 4.2f);
-						lineAngle(e.x, e.y, e.rotation - 180, e.fout() * 40 + 50); 
-					}).at(b.x, b.y, b.rotation());
-				}*/
 				
 				if(b.timer.get(0,3)){
 					new Effect(25f, e -> {
@@ -113,6 +106,7 @@ public class NHBullets implements ContentList {
 			}
 
 			{
+				drawSize = 80f;
 				homingPower = 0.12f;
 				homingRange = 400f;
 				homingDelay = 12;
