@@ -114,7 +114,7 @@ public class NHBullets implements ContentList {
 
 			{
 				homingPower = 0.12f;
-				homingRange = 400f
+				homingRange = 400f;
 				homingDelay = 12;
 				scaleVelocity = true;
 				hitShake = despawnShake = 5f;
