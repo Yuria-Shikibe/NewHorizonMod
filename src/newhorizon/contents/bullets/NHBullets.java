@@ -54,15 +54,20 @@ public class NHBullets implements ContentList {
 			@Override
 			public void init(Bullet b){
 				super.init(b);
-				b.lifetime(b.lifetime() + 16f);
+				b.data(new Trail(1));
+				(Trail)b.data.clear();
+				b.lifetime(b.lifetime() + 6f);
 			}
 			
 			@Override
 			public void draw(Bullet b){
+				if(!(b.data instanceof Trail))return;
+				(Trail)b.data.draw(backColor, 2f);
+				
 				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
-
+				
 				Color mix = Tmp.c1.set(mixColorFrom).lerp(mixColorTo, b.fin());
-
+				
 				mixcol(mix, mix.a);
 				color(backColor);
 				
@@ -81,13 +86,20 @@ public class NHBullets implements ContentList {
 			
 			@Override
 			public void update(Bullet b){
-				if(b.time() > 11){
+				if(!(b.data instanceof Trail))return;
+				Trail trail = (Trail)b.data;
+				
+				float cx = Angles.trnsx(b.rotation() - 90.0f, 40f, 0) + b.x;
+				float cy = Angles.trnsy(b.rotation() - 90.0f, 40f, 0) + b.y;
+				trail.update(cx, cy);
+            
+				/*if(b.time() > 11){
 					new Effect(32f, e -> {
 						color(lightColor, Pal.gray, e.fin() * 0.7f);
 						stroke(e.fout() * 4.2f);
 						lineAngle(e.x, e.y, e.rotation - 180, e.fout() * 40 + 50); 
 					}).at(b.x, b.y, b.rotation());
-				}
+				}*/
 				
 				if(b.timer.get(0,3)){
 					new Effect(25f, e -> {
