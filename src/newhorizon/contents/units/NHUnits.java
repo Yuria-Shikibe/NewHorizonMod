@@ -45,7 +45,7 @@ public class NHUnits implements ContentList {
 				armor = 3f;
 				commandLimit = 4;
 
-				abilities.add(new 0(20f, 40f, 60f * 4, 60f));
+				abilities.add(new ShieldFieldAbility(20f, 40f, 60f * 4, 60f));
 				ammoType = AmmoTypes.power;
 
 				weapons.add(
