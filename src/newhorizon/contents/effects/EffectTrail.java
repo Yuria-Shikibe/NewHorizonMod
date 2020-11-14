@@ -61,7 +61,7 @@ public class EffectTrail{
 	public void disappear(Color color){
 		if(points.isEmpty())return;
 		
-		new Effect(LIFETIME, points.first().dst.(points.peek()), e -> {
+		new Effect(LIFETIME, points.first().dst(points.peek()), e -> {
 			if(e.data instanceof EffectTrailData){
 				EffectTrailData data = (EffectTrailData)e.data;
 				Draw.color(e.color);
