@@ -337,7 +337,7 @@ public class UpgraderBlock extends Block {
 					});
 					dialog.show();
 				}).size(60f).left();
-			)}.size(LEN + OFFSET).pad(OFFSET);
+			}).size(LEN + OFFSET).pad(OFFSET);
 		}
 
 		@Override
