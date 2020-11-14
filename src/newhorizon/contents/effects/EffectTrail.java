@@ -79,7 +79,7 @@ public class EffectTrail{
 		
 		Time.run(LIFETIME + 0.02f, () -> {
 			for(Vec3 vec : this.points)Pools.free(vec);
-		}
+		});
 	}
     	
 	protected static class EffectTrailData{
