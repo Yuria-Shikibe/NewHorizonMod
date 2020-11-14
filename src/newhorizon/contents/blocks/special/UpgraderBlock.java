@@ -131,7 +131,7 @@ public class UpgraderBlock extends Block {
 	public class UpgraderBlockBuild extends Building implements Ranged {
 		
 		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
-		public Seq<UpgradeAmmoData> ammoDatas = initUpgradeAmmoDatas.copy(); //new Seq<>();
+		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
 
 		public int link = -1;
 		public int upgradingID = DFTID;
@@ -322,22 +322,19 @@ public class UpgraderBlock extends Block {
 		}
 
 		@Override
-		public void buildConfiguration(Table basic) {
-			basic.pane(table -> {buildSwitchAmmoTable(table);}).size(LEN * 8 + OFFSET, LEN + OFFSET);
-			basic.pane(table -> {
-				table.button(Icon.logic, () -> {
-					dialog.cont.clear();
-					dialog.cont.pane(t -> {
-						buildTable(t);
-						t.row();
-						t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
-						buildUpgradeDataTable(t);
-						t.row();
-						t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
-					});
-					dialog.show();
-				}).size(60f).left();
-			}).size(LEN + OFFSET).pad(OFFSET);
+		public void buildConfiguration(Table table) {
+			table.button(Icon.logic, () -> {
+				dialog.cont.clear();
+				dialog.cont.pane(t -> {
+					buildTable(t);
+					t.row();
+					t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
+					buildUpgradeDataTable(t);
+					t.row();
+					t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
+				});
+				dialog.show();
+			}).size(60f).left();
 		}
 
 		@Override
@@ -435,9 +432,9 @@ public class UpgraderBlock extends Block {
 
 		protected void setData(Seq<UpgradeAmmoData> datas){
 			baseData.from = this;
-			/*for (UpgradeAmmoData data : datas){
+			for (UpgradeAmmoData data : datas){
 				ammoDatas.add( (UpgradeAmmoData)(data.clone()) );
-			}*/
+			}
 			for (UpgradeAmmoData data : ammoDatas)data.from = this;
 		}
 
