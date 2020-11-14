@@ -89,6 +89,17 @@ public class UpgradeAmmoData extends UpgradeData{
 		this.ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
 	}
 	
+	public void ammoInfoText(){
+		new Dialog("") {{
+			cont.pane(table -> {
+				Class typeClass = selectAmmo.getClass();
+				Field[] fields = typeClass.getFields();
+				for(Field field : fields)table.add("[lightgray]" + field.getName() + ": [gray]" + field.get(selectAmmo) + "[]").left().row();
+			}).row();
+			cont.button("Back", this::hide).size(120, 50).pad(4);
+		}}.show();
+	}
+	
 	@Override
 	public void infoText(Table table){
 		table.button(new TextureRegionDrawable(ammoInfo), Styles.colori, () -> {
@@ -111,12 +122,16 @@ public class UpgradeAmmoData extends UpgradeData{
 					}
 					
 					t.add("[lightgray]CanHoming?: " + getJudge(selectAmmo.homingPower > 0) + "[]").left().row();
-					if(selectAmmo.homingPower > 0)t.add(offsetSpace + "[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
+					if(selectAmmo.homingPower > 0){
+						t.add(offsetSpace + "[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
+						t.add(offsetSpace + "[lightgray]HomingPower: [accent]" + df.format(selectAmmo.homingPower) + "[]").left().row();
 					
 					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();
 					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding || selectAmmo.collidesTiles) + "[]").left().row();
+					
+					t.button("More Info", () -> ammoInfoText()).size(180, 50).pad(OFFSET);
 				}).row();
-				cont.button("Leave", this::hide).size(120, 50).pad(4);
+				cont.button("Back", this::hide).size(120, 50).pad(4);
 			}}.show();
 		}).size(ammoInfo.height + OFFSET / 2);
 	}
@@ -137,7 +152,7 @@ public class UpgradeAmmoData extends UpgradeData{
 			
 			t2.pane(table -> {
 				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN);
-				table.button(Icon.exchange, Styles.clearTransi, () -> {from.switchAmmo(this);}).size(LEN).disabled(!isUnlocked || selected);
+				table.button(Icon.upOpen, Styles.clearTransi, () -> {from.switchAmmo(this);}).size(LEN).disabled(!isUnlocked || selected);
 			}).size(LEN * 2, LEN).pad(OFFSET);
 		}).size(LEN * 11, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
@@ -157,9 +172,6 @@ public class UpgradeAmmoData extends UpgradeData{
 		this.isUnlocked = read.bool();
 		this.selected = read.bool();
 	}
-	
-	
-	
 
 }
 

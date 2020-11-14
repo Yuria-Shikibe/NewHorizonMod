@@ -1,5 +1,6 @@
 package newhorizon.contents.blocks.special;
 
+import arc.util.pooling.*;
 import arc.util.io.*;
 import arc.*;
 import arc.scene.style.*;
@@ -128,8 +129,8 @@ public class UpgraderBlock extends Block {
 	}
 
 	public class UpgraderBlockBuild extends Building implements Ranged {
-		
-		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
+		public UpgradeBaseData baseData = Pools.obtain(UpgradeBaseData.class, () -> initUpgradeBaseData);
+		//public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
 		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
 
 		public int link = -1;
