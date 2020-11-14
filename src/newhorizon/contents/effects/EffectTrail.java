@@ -10,7 +10,7 @@ import arc.util.Time;
 import arc.util.pooling.*;
 
 public class EffectTrail{
-	public static final float LIFETIME = 20f;
+	public static final float LIFETIME = 20f, SIZE = 200f;
     public int length;
 	public float width;
 	
@@ -62,7 +62,7 @@ public class EffectTrail{
 	public void disappear(Color color){
 		if(points.isEmpty())return;
 		
-		new Effect(LIFETIME, points.first().dst(points.peek()), e -> {
+		new Effect(LIFETIME, SIZE, e -> {
 			if(e.data instanceof EffectTrailData){
 				EffectTrailData data = (EffectTrailData)e.data;
 				Draw.color(e.color);
