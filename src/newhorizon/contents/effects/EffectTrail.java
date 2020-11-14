@@ -10,15 +10,16 @@ import arc.util.Time;
 import arc.util.pooling.*;
 
 public class EffectTrail{
-	public static final float LIFETIME = 20f, SIZE = 200f;
+	public static final float LIFETIME = 20f;
     public int length;
-	public float width;
+	public float width, size;
 	
 	//No fucking sucks private
     protected final Seq<Vec3> points;
     protected float lastX = -1, lastY = -1;
 
-    public EffectTrail(int length, float width){
+    public EffectTrail(int length, float width, float size){
+    	this.size = size;
     	this.width = width;
         this.length = length;
         points = new Seq<>(length);
@@ -63,33 +64,23 @@ public class EffectTrail{
 		if(points.isEmpty())return;
 		
 		new Effect(LIFETIME, SIZE, e -> {
-			if(e.data instanceof EffectTrailData){
-				EffectTrailData data = (EffectTrailData)e.data;
+			if(e.data instanceof Seq<Vec3>){
+				Seq<Vec3> data = (Seq<Vec3>)e.data;
 				Draw.color(e.color);
-				for(int i = 0; i < data.points.size - 1; i++){
-					Vec3 c = data.points.get(i);
-					Vec3 n = data.points.get(i + 1);
-					float size = data.width * e.fout() / data.length;
+				for(int i = 0; i < data.size - 1; i++){
+					Vec3 c = data.get(i);
+					Vec3 n = data.get(i + 1);
+					float size = e.x * e.fout() / e.y;
 
 					float cx = Mathf.sin(c.z) * i * size, cy = Mathf.cos(c.z) * i * size, nx = Mathf.sin(n.z) * (i + 1) * size, ny = Mathf.cos(n.z) * (i + 1) * size;
 					Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
 				}
 			}
-		}).at(points.peek().x, points.peek().y, points.first().angle(points.peek()), color, new EffectTrailData(this.points, this.length, this.width) );
+		}).at(this.width, this.length, 0, color, this.points);
 		
 		Time.run(LIFETIME + 0.02f, () -> {
 			for(Vec3 vec : this.points)Pools.free(vec);
 		});
 	}
-    	
-	protected static class EffectTrailData{
-		public Seq<Vec3> points;
-		public float width, length;
-		
-		public EffectTrailData(Seq<Vec3> points, float length, float width){
-			this.length = length;
-			this.points = points;
-			this.width = width;
-		}
-	}
+	
 }

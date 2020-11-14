@@ -14,6 +14,7 @@ import newhorizon.contents.effects.EffectTrail;
 public class NHTrailBulletType extends BasicBulletType {
 	public int trailLength = 5;
 	public float trailWidth = 3f;
+	public float trailDrawsize = 200f;
 
 	public NHTrailBulletType(float speed, float damage, String bulletSprite){
 		super(speed, damage, bulletSprite);
@@ -38,7 +39,7 @@ public class NHTrailBulletType extends BasicBulletType {
 	@Override
 	public void init(Bullet b) {
 		super.init(b);
-		b.data(new EffectTrail(14, 4.2f));
+		b.data(new EffectTrail(14, 4.2f, trailDrawsize));
 		EffectTrail t = (EffectTrail)b.data;
 		t.clear();
 	}
