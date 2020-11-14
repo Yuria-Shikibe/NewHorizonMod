@@ -56,48 +56,10 @@ public class NHBullets implements ContentList {
 				super.init(b);
 				b.lifetime(b.lifetime() + 9f);
 			}
-			
-			@Override
-			public void draw(Bullet b){
-				if(!(b.data instanceof EffectTrail))return;
-				EffectTrail t = (EffectTrail)b.data;
-				t.draw(trailColor);
-				
-				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
-				
-				Color mix = Tmp.c1.set(mixColorFrom).lerp(mixColorTo, b.fin());
-				
-				mixcol(mix, mix.a);
-				color(backColor);
-				
-				for(int i : Mathf.signs){
-					Drawf.tri(b.x, b.y, 4.3f, 55 * b.fout(), b.rotation() - 180 + 30 * i);
-				}
-				
-				rect(backRegion, b.x, b.y, width, height, b.rotation() + offset);
-				color(frontColor);
-				rect(frontRegion, b.x, b.y, width, height, b.rotation() + offset);
-				Draw.reset();
-        
-				color(lightColor);
-				Draw.reset();
-			}
-			
-			@Override
-			public void update(Bullet b){
-            	super.update(b);
-				
-				if(b.timer.get(0,3)){
-					new Effect(25f, e -> {
-						color(lightColor, Pal.gray, e.fin() * 0.7f);
-						randLenVectors(e.id, 4, 60f * e.fin(), e.rotation - 180, 20, (x, y) -> {
-							Fill.poly(e.x + x, e.y + y, 6, 5.5f * e.fslope() * e.fout());
-						});
-					}).at(b.x, b.y, b.rotation());
-				}
-			}
 
 			{
+				trailChance = 0.075f;
+				trailEffect = NHFx.polyTrail;
 				drawSize = 120f;
 				homingPower = 0.12f;
 				homingRange = 400f;

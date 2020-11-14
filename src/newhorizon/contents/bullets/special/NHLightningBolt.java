@@ -35,7 +35,7 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	*
 	* 	Single: Deals @boltNum PtP Lightning(s) to certain Position
 	* 		generate(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width	 [N/A]		   	[N/A]    	);
-	* 		generate(Position owner, Position target, Team Team, 	[N/A] 	Color color,		  [N/A]	   	float width, int boltNum, Cons<Position> movement);
+	* 		generate(Position owner, Position target, Team team, 	[N/A] 	Color color,		  [N/A]	   	float width, int boltNum, Cons<Position> movement);
 	* 		generate( Bullet  owner, Position target,   [N/A]	float damage, Color color, boolean createLightning, float width	 [N/A]		   	[N/A]    	);
 	*
 	*/
@@ -107,25 +107,6 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 		generateRange(owner, owner.team(), range, hits, boltNum, damage, color, chance, width);
 	}
 
-	//generate position to position lightning and deals splash damage, create none target lightning.
-	public static void generate(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width) {
-		Position sureTarget = findInterceptedPoint(owner, target, team);
-		float dst = owner.dst(sureTarget);
-		float multBolt = getBoltRandomRange();
-		float randRange = multBolt * RANDOM_RANGE_MULT_COEFFCIENT;
-
-		Seq<Float> randomArray = new Seq<>();
-		for (int num = 0; num < dst / (Vars.tilesize * multBolt) + 1; num ++) {
-			randomArray.add(Mathf.range(randRange));
-		}
-
-		if (createLightning)Lightning.create(team, color, damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360), Mathf.random(8, 12));
-		Damage.damage(team, sureTarget.getX(), sureTarget.getY(), 20f, damage * 1.5f);
-		createBoltEffect(color, width,
-			new NHLightningBoltEffectData(randomArray, sureTarget, owner)
-		);
-	}
-
 	//A generate method that could set lightning number and extra movements to the final target.
 	public static void generate(Position owner, Position target, Team team, Color color, float width, int boltNum, Cons<Position> movement) {
 		Position sureTarget = findInterceptedPoint(owner, target, team);
@@ -140,12 +121,18 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 			for (int num = 0; num < dst / (Vars.tilesize * multBolt) + 1; num ++) {
 				randomArray.add(Mathf.range(randRange));
 			}
-			createBoltEffect(color, width, 
-				new NHLightningBoltEffectData(randomArray, sureTarget, owner)
-			);
+			createBoltEffect(color, width, computeVecs(randomArray, owner, sureTarget) );
 		}
 	}
-
+	
+	//generate position to position lightning and deals splash damage, create none target lightning.
+	public static void generate(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width) {
+		generate(owner, target, team, color, width, 1, sureTarget ->{
+			if (createLightning)Lightning.create(team, color, damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360), Mathf.random(8, 12));
+			Damage.damage(team, sureTarget.getX(), sureTarget.getY(), 20f, damage * 1.5f);
+		});
+	}
+	
 	//A generate method that with a Bullet owner.
 	public static void generate(Bullet owner, Position target, float damage, Color color, boolean createLightning, float width) {
 		generate(owner, target, owner.team(), damage, color, createLightning, width);
@@ -167,41 +154,40 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	}
 
 	//generate lightning effect.
-	protected static void createBoltEffect(Color color, float width, NHLightningBoltEffectData createData) {
-		new Effect(BOLTLIFE, createData.owner.dst(createData.target) * 2, e -> {
-			NHLightningBoltEffectData data = (NHLightningBoltEffectData)e.data;
-			Position target = data.target, from = data.owner;
-			Seq<Float> randomVec = data.randomVec;
+	protected static void createBoltEffect(Color color, float width, Seq<Vec2> vecs) {
+		new Effect(BOLTLIFE, vecs.first().dst(vecs.peek()) * 2, e -> {
+			if(!(e.data instanceof Seq)) return;
+			Seq<Vec2> lines = e.data();
 
-			float dstFr = target.dst(e.x, e.y);
-			int sigs = randomVec.size;
+			Lines.stroke(width * e.fout(), e.color);
+			
+			Fill.circle(vecs.first().x, vecs.first().y, Lines.getStroke() * 1.1f);
 
-			Draw.color(e.color);
-			Lines.stroke(width * e.fout());
-			Vec2 last = new Vec2();
-			Fill.circle(from.getX() + last.x, from.getY() + last.y, Lines.getStroke() * 1.12f);
-			for (int i = 1; i < sigs - 1; i ++) {
-				Tmp.v2.trns(from.angleTo(target), (dstFr / sigs) * (i), randomVec.get(i));
-				Lines.line(from.getX() + last.x, from.getY() + last.y, from.getX() + Tmp.v2.x, from.getY() + Tmp.v2.y, false);
-				Fill.circle(from.getX() + Tmp.v2.x, from.getY() + Tmp.v2.y, Lines.getStroke() / 2f);
-				last.set(Tmp.v2);
+			for(int i = 0; i < lines.size - 1; i++){
+				Vec2 cur = lines.get(i);
+				Vec2 next = lines.get(i + 1);
+
+				Lines.line(cur.x, cur.y, next.x, next.y, false);
 			}
-			Lines.line(from.getX() + last.x, from.getY() + last.y, target.getX(), target.getY(), false);
-			Fill.circle(target.getX(), target.getY(), Lines.getStroke() / 2f);
-		}).at(createData.owner.getX(), createData.owner.getY(), 0, color, createData);
 
+			for(Vec2 p : lines){
+				Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
+			}
+		}).at(vecs.first().x, vecs.first().y, 0, color, vecs);
 	}
-
-	//Effect data
-	protected static class NHLightningBoltEffectData {
-		public final Seq<Float> randomVec;
-		public final Position owner, target;
+	
+	protected static Seq<Vec2> computeVecs(Seq<Float> randomVec, Position from, Position to){
+		int param = randomVec.size;
+		float dst = from.dst(to);
+		float angle = from.angleTo(to);
 		
+		Seq<Vec2> lines = new Seq<>(Vec2.class);
+		Tmp.v1.trns(angle, (dst / param));
 		
-		public NHLightningBoltEffectData(Seq<Float> randomVec, Position target, Position owner) {
-			this.randomVec = randomVec;
-			this.target = target;
-			this.owner = owner;
-		}
+		lines.add(new Vec2(from));
+		for (int i = 1; i < param - 1; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(Tmp.v1, i));
+		lines.add(new Vec2(to));
+		
+		return lines;
 	}
 }

@@ -34,13 +34,21 @@ import static arc.math.Angles.*;
 public class NHFx implements ContentList {
 	public static
 	Effect 
+	polyTrail,
 	darkEnergyCharge, darkEnergyChargeBegin, darkEnergyShoot, darkEnergySmoke, darkEnergyLaserShoot,
 	circleSplash, darkErnExplosion, upgrading, lightningHit,
 	blastgenerate, blastAccept, emped, lightSkyCircleSplash;
 
 	@Override
 	public void load() {
-		darkEnergyLaserShoot = new Effect(34f, 880, e -> {
+		polyTrail = new Effect(25f, e -> {
+			color(e.color, Pal.gray, e.fin());
+			randLenVectors(e.id, 4, 46f * e.fin(), (x, y) -> {
+				Fill.poly(e.x + x, e.y + y, 6, 5.5f * e.fslope() * e.fout());
+			});
+		});
+		
+		darkEnergyLaserShoot = new Effect(26f, 880, e -> {
 			color(Color.white, NHColor.darkEnrColor, e.fin() * 0.75f);
 			float length = !(e.data instanceof Float) ? 70f : (Float)e.data;
 			randLenVectors(e.id, 9, length, e.rotation, 0f, (x, y) -> {

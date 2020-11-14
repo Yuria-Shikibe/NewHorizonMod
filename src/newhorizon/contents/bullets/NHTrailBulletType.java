@@ -14,10 +14,11 @@ import newhorizon.contents.effects.EffectTrail;
 public class NHTrailBulletType extends BasicBulletType {
 	public int trailLength = 12;
 	public float trailWidth = 3.7f;
-	public float trailDrawsize = 200f;
+	protected float trailDrawsize = 200f;
 
 	public NHTrailBulletType(float speed, float damage, String bulletSprite){
 		super(speed, damage, bulletSprite);
+		this.trailDrawsize = 2 * trailLength * speed;
     }
     
 	public NHTrailBulletType(float speed, float damage){
