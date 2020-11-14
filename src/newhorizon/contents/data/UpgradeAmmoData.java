@@ -97,7 +97,11 @@ public class UpgradeAmmoData extends UpgradeData{
 				Class typeClass = selectAmmo.getClass();
 				Field[] fields = typeClass.getFields();
 				for(Field field : fields){
-					table.add(new StringBuilder().append("[lightgray]").append(field.getName()).append(": [gray]").append(field.get(selectAmmo)).append("[]")).left().row();
+					try{
+						table.add(new StringBuilder().append("[lightgray]").append(field.getName()).append(": [gray]").append(field.get(selectAmmo)).append("[]")).left().row();
+					}catch(IllegalAccessException err){
+						
+					}
 				}
 			}).row();
 			cont.button("Back", this::hide).size(120, 50).pad(4);
