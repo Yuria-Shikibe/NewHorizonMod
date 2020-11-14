@@ -63,8 +63,8 @@ public class EffectTrail{
 	public void disappear(Color color){
 		if(points.isEmpty())return;
 		
-		new Effect(LIFETIME, SIZE, e -> {
-			if(e.data instanceof Seq<Vec3>){
+		new Effect(LIFETIME, size, e -> {
+			if(e.data instanceof Seq){
 				Seq<Vec3> data = (Seq<Vec3>)e.data;
 				Draw.color(e.color);
 				for(int i = 0; i < data.size - 1; i++){
