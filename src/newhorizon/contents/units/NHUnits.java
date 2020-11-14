@@ -34,6 +34,7 @@ public class NHUnits implements ContentList {
 	public void load() {
 		tarlidor = new UnitType("tarlidor") {
 			{
+				constructor = MechUnit::new;
 				canBoost = true;
 				boostMultiplier = 1.5f;
 				speed = 0.35f;
