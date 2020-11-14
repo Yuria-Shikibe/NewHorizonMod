@@ -11,12 +11,13 @@ import arc.util.pooling.*;
 public class EffectTrail{
 	public static final float LIFETIME = 20f;
     public int length;
-	
 	public float width;
+	
+	//No fucking sucks private
     protected final Seq<Vec3> points;
     protected float lastX = -1, lastY = -1;
 
-    public Trail(int length, float width){
+    public EffectTrail(int length, float width){
     	this.width = width;
         this.length = length;
         points = new Seq<>(length);
