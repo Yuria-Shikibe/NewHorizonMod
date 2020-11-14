@@ -334,7 +334,8 @@ public class UpgraderBlock extends Block {
 					t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
 				});
 				dialog.show();
-			}).size(60f);
+			}).size(60f).left().row();
+			buildSwitchAmmoTable(table);
 		}
 
 		@Override
