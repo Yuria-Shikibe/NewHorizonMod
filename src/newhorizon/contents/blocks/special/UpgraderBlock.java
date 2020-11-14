@@ -323,6 +323,7 @@ public class UpgraderBlock extends Block {
 
 		@Override
 		public void buildConfiguration(Table table) {
+			buildSwitchAmmoTable(table);
 			table.button(Icon.logic, () -> {
 				dialog.cont.clear();
 				dialog.cont.pane(t -> {
@@ -334,8 +335,7 @@ public class UpgraderBlock extends Block {
 					t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
 				});
 				dialog.show();
-			}).size(60f).left().row();
-			buildSwitchAmmoTable(table);
+			}).size(60f);
 		}
 
 		@Override
