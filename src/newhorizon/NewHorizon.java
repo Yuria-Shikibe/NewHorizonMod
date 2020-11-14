@@ -11,6 +11,7 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
+import newhorizon.contents.units.*;
 import newhorizon.contents.items.*;
 import newhorizon.contents.blocks.*;
 import newhorizon.contents.blocks.special.*;
@@ -46,7 +47,7 @@ public class NewHorizon extends Mod{
 		new NHBlocks().load();
 		new NHFactories().load();
 		new NHTurrets().load();
-		
+		new NHUnits().load();
     }
 	
 }

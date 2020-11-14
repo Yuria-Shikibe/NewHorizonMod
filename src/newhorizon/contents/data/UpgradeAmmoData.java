@@ -137,9 +137,8 @@ public class UpgradeAmmoData extends UpgradeData{
 					
 					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();
 					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding || selectAmmo.collidesTiles) + "[]").left().row();
-					
-					t.button("More Info", () -> {ammoInfoText();}).size(180, 50).pad(OFFSET);
 				}).row();
+				cont.button("More Info", () -> {ammoInfoText();}).size(180, 50).pad(OFFSET);
 				cont.button("Back", this::hide).size(120, 50).pad(4);
 			}}.show();
 		}).size(ammoInfo.height + OFFSET / 2);
