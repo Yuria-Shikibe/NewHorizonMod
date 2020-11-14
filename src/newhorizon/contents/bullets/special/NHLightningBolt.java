@@ -178,15 +178,14 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	
 	protected static Seq<Vec2> computeVecs(Seq<Float> randomVec, Position from, Position to){
 		int param = randomVec.size;
-		float dst = from.dst(to);
 		float angle = from.angleTo(to);
 		
 		Seq<Vec2> lines = new Seq<>(Vec2.class);
-		Tmp.v1.trns(angle, (dst / param));
+		Tmp.v1.trns(angle, from.dst(to) / (param - 1));
 		
-		lines.add(new Vec2(from));
-		for (int i = 1; i < param - 1; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(Tmp.v1, i));
-		lines.add(new Vec2(to));
+		lines.add(new Vec2().set(from));
+		for (int i = 1; i < param - 2; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(Tmp.v1, i));
+		lines.add(new Vec2().set(to));
 		
 		return lines;
 	}

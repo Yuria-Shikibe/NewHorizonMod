@@ -10,7 +10,7 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.LaserBulletType;
+import mindustry.entities.bullet.BulletType;
 import newhorizon.contents.bullets.special.NHLightningBolt;
 
 public class NHLightningBoltBulletType extends BulletType {
