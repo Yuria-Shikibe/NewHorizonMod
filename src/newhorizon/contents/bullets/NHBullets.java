@@ -99,6 +99,7 @@ public class NHBullets implements ContentList {
 
 			{
 				trailLength = 7;
+				trailWidth = 2.7f;
 				drawSize = 120f;
 				homingPower = 0.12f;
 				homingRange = 400f;
@@ -113,8 +114,8 @@ public class NHBullets implements ContentList {
 				shrinkX = shrinkY = 0;
 				splashDamageRadius = 120f;
 				splashDamage = lightningDamage = 0.65f * damage;
-				height = 60f;
-				width = 18f;
+				height = 66f;
+				width = 20f;
 				lifetime = 500;
 				trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 				frontColor = Color.white;

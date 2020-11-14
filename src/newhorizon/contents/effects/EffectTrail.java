@@ -11,12 +11,16 @@ import arc.util.pooling.*;
 
 public class EffectTrail{
 	public static final float LIFETIME = 20f;
-    public int length;
+    public int length = 1;
 	public float width, size;
 	
 	//No fucking sucks private
     protected final Seq<Vec3> points;
     protected float lastX = -1, lastY = -1;
+
+	public EffectTrail(){
+		this(1, 1, 1);
+	}
 
     public EffectTrail(int length, float width, float size){
     	this.size = size;
@@ -64,9 +68,9 @@ public class EffectTrail{
 		if(points.isEmpty())return;
 		
 		new Effect(LIFETIME, size, e -> {
-			if(e.data instanceof Seq){
-				Seq<Vec3> data = (Seq<Vec3>)e.data;
-				for(Vec3 vec : data)Log.info(vec);
+			if(!(e.data instanceof Seq))return;
+				Seq<Vec3> data = e.data();
+				
 				Draw.color(e.color);
 				for(int i = 0; i < data.size - 1; i++){
 					Vec3 c = data.get(i);
@@ -76,10 +80,8 @@ public class EffectTrail{
 					float cx = Mathf.sin(c.z) * i * sizeP, cy = Mathf.cos(c.z) * i * sizeP, nx = Mathf.sin(n.z) * (i + 1) * sizeP, ny = Mathf.cos(n.z) * (i + 1) * sizeP;
 					Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
 				}
-			}
-		}).at(this.width, this.length, 0, color, this.points.copy());
-		
-		
+			
+		}).at(this.width, this.length - 0.001f, 0, color, this.points);
 		
 		Time.run(LIFETIME + 0.02f, () -> {
 			for(Vec3 vec : this.points)Pools.free(vec);
