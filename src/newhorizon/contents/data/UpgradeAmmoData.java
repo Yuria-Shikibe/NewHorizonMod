@@ -103,7 +103,7 @@ public class UpgradeAmmoData extends UpgradeData{
 						
 					}
 				}
-			}).row();
+			}).size(480).row();
 			cont.button("Back", this::hide).size(120, 50).pad(4);
 		}}.show();
 	}
