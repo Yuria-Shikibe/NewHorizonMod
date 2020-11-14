@@ -34,7 +34,8 @@ public class NHUnits implements ContentList {
 	public void load() {
 		tarlidor = new UnitType("tarlidor") {
 			{
-				constructor = MechUnit::new;
+				defaultController = GroundAI::new;
+				constructor = EntityMapping.map(25);
 				canBoost = true;
 				boostMultiplier = 1.5f;
 				speed = 0.35f;
@@ -44,7 +45,7 @@ public class NHUnits implements ContentList {
 				armor = 3f;
 				commandLimit = 4;
 
-				abilities.add(new ShieldRegenFieldAbility(20f, 40f, 60f * 4, 60f));
+				abilities.add(new 0(20f, 40f, 60f * 4, 60f));
 				ammoType = AmmoTypes.power;
 
 				weapons.add(
