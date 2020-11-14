@@ -12,8 +12,8 @@ import mindustry.entities.bullet.BasicBulletType;
 import newhorizon.contents.effects.EffectTrail;
 
 public class NHTrailBulletType extends BasicBulletType {
-	public int trailLength = 5;
-	public float trailWidth = 3f;
+	public int trailLength = 12;
+	public float trailWidth = 3.7f;
 	public float trailDrawsize = 200f;
 
 	public NHTrailBulletType(float speed, float damage, String bulletSprite){
@@ -39,7 +39,7 @@ public class NHTrailBulletType extends BasicBulletType {
 	@Override
 	public void init(Bullet b) {
 		super.init(b);
-		b.data(new EffectTrail(14, 4.2f, trailDrawsize));
+		b.data(new EffectTrail(trailLength, trailWidth, trailDrawsize));
 		EffectTrail t = (EffectTrail)b.data;
 		t.clear();
 	}
@@ -49,7 +49,7 @@ public class NHTrailBulletType extends BasicBulletType {
 		super.hit(b);
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail t = (EffectTrail)b.data;
-		t.disappear(trailColor);
+		t.disappear(trailColor, trailWidth);
 	}
 
 	@Override

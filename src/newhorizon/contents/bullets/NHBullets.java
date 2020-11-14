@@ -98,8 +98,6 @@ public class NHBullets implements ContentList {
 			}
 
 			{
-				trailLength = 7;
-				trailWidth = 2.7f;
 				drawSize = 120f;
 				homingPower = 0.12f;
 				homingRange = 400f;
