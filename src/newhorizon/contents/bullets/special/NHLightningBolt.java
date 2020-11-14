@@ -57,30 +57,6 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	private static Rect rect = new Rect();
 
 	//METHODS
-	
-	//Compute the proper homologous Tile.position's x and y.
-	public static int toIntTile(float pos) {
-		return Math.round(pos / Vars.tilesize);
-	}
-
-	//Compute the proper hit position.
-	public static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
-		furthest = null;
-
-		return 
-		Vars.world.raycast(
-			toIntTile(from.getX()),
-			toIntTile(from.getY()),
-			toIntTile(target.getX()),
-			toIntTile(target.getY()),
-			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers 
-		) && furthest != null ? furthest : target;
-	}
-
-	//Set the range of lightning's randX.
-	public static float getBoltRandomRange() {
-		return Mathf.random(2f, 5f);
-	}
 
 	//generate lightning to the enemies in range.
 	public static void generateRange(Position owner, Team team, float range, int hits, int boltNum, Color color, float width, Cons<Position> movement) {
@@ -138,10 +114,34 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 		generate(owner, target, owner.team(), damage, color, createLightning, width);
 	}
 
-	//Protected methods and classes.
+	//Private methods and classes.
+	
+	//Compute the proper homologous Tile.position's x and y.
+	private static int toIntTile(float pos) {
+		return Math.round(pos / Vars.tilesize);
+	}
 
+	//Compute the proper hit position.
+	private static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
+		furthest = null;
+
+		return 
+		Vars.world.raycast(
+			toIntTile(from.getX()),
+			toIntTile(from.getY()),
+			toIntTile(target.getX()),
+			toIntTile(target.getY()),
+			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers 
+		) && furthest != null ? furthest : target;
+	}
+
+	//Set the range of lightning's randX.
+	private static float getBoltRandomRange() {
+		return Mathf.random(2f, 5f);
+	}
+	
 	//Add proper unit into the to hit Seq.
-	protected static void whetherAdd(Team team, Rect selectRect, Seq<Unitc> targetGroup, int hits) {
+	private static void whetherAdd(Team team, Rect selectRect, Seq<Unitc> targetGroup, int hits) {
 		Units.nearbyEnemies(team, selectRect, unit -> {
 			if (
 				targetGroup.size <= hits &&
@@ -154,7 +154,7 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	}
 
 	//generate lightning effect.
-	protected static void createBoltEffect(Color color, float width, Seq<Vec2> vecs) {
+	private static void createBoltEffect(Color color, float width, Seq<Vec2> vecs) {
 		new Effect(BOLTLIFE, vecs.first().dst(vecs.peek()) * 2, e -> {
 			if(!(e.data instanceof Seq)) return;
 			Seq<Vec2> lines = e.data();
@@ -176,7 +176,7 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 		}).at(vecs.first().x, vecs.first().y, 0, color, vecs);
 	}
 	
-	protected static Seq<Vec2> computeVecs(Seq<Float> randomVec, Position from, Position to){
+	private static Seq<Vec2> computeVecs(Seq<Float> randomVec, Position from, Position to){
 		int param = randomVec.size;
 		float angle = from.angleTo(to);
 		
@@ -184,7 +184,7 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 		Tmp.v1.trns(angle, from.dst(to) / (param - 1));
 		
 		lines.add(new Vec2().set(from));
-		for (int i = 1; i < param - 2; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(Tmp.v1, i));
+		for (int i = 1; i < param - 2; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(Tmp.v1, i).add(from.getX(), from.getY()) );
 		lines.add(new Vec2().set(to));
 		
 		return lines;
