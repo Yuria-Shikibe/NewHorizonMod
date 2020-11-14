@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.util.*;
 import arc.struct.*;
 import mindustry.entities.*;
+import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.io.*;
 import mindustry.content.*;
@@ -42,7 +43,7 @@ public class NHUnits implements ContentList {
 				armor = 3f;
 				commandLimit = 4;
 
-				abilities.add(new RepairFieldAbility(10f, 60f * 4, 60f));
+				abilities.add(new ShieldRegenFieldAbility(20f, 40f, 60f * 4, 60f));
 				ammoType = AmmoTypes.power;
 
 				weapons.add(
