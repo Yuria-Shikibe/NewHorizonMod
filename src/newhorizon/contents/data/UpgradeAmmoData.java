@@ -1,5 +1,7 @@
 package newhorizon.contents.data;
 
+import java.lang.reflect.Field;
+
 import arc.util.pooling.*;
 import arc.util.io.*;
 import arc.*;
@@ -94,7 +96,9 @@ public class UpgradeAmmoData extends UpgradeData{
 			cont.pane(table -> {
 				Class typeClass = selectAmmo.getClass();
 				Field[] fields = typeClass.getFields();
-				for(Field field : fields)table.add("[lightgray]" + field.getName() + ": [gray]" + field.get(selectAmmo) + "[]").left().row();
+				for(Field field : fields){
+					table.add(new StringBuilder().append("[lightgray]").append(field.getName()).append(": [gray]").append(field.get(selectAmmo)).append("[]")).left().row();
+				}
 			}).row();
 			cont.button("Back", this::hide).size(120, 50).pad(4);
 		}}.show();
@@ -129,7 +133,7 @@ public class UpgradeAmmoData extends UpgradeData{
 					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();
 					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding || selectAmmo.collidesTiles) + "[]").left().row();
 					
-					t.button("More Info", () -> ammoInfoText()).size(180, 50).pad(OFFSET);
+					t.button("More Info", () -> {ammoInfoText();}).size(180, 50).pad(OFFSET);
 				}).row();
 				cont.button("Back", this::hide).size(120, 50).pad(4);
 			}}.show();
