@@ -27,7 +27,7 @@ public class NHLightningBoltBulletType extends BulletType {
 		scaleVelocity = true;
 	}
 	
-	public NHLaserBulletType(){
+	public NHLightningBoltBulletType(){
         this(1f);
     }
 
