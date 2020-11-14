@@ -6,7 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.Time;
+import arc.util.*;
 import arc.util.pooling.*;
 
 public class EffectTrail{
@@ -35,9 +35,9 @@ public class EffectTrail{
         for(int i = 0; i < points.size - 1; i++){
             Vec3 c = points.get(i);
             Vec3 n = points.get(i + 1);
-            float size = width * 1f / length;
+            float sizeP = width * 1f / length;
 
-            float cx = Mathf.sin(c.z) * i * size, cy = Mathf.cos(c.z) * i * size, nx = Mathf.sin(n.z) * (i + 1) * size, ny = Mathf.cos(n.z) * (i + 1) * size;
+            float cx = Mathf.sin(c.z) * i * sizeP, cy = Mathf.cos(c.z) * i * sizeP, nx = Mathf.sin(n.z) * (i + 1) * sizeP, ny = Mathf.cos(n.z) * (i + 1) * sizeP;
             Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
         }
 
@@ -66,17 +66,20 @@ public class EffectTrail{
 		new Effect(LIFETIME, size, e -> {
 			if(e.data instanceof Seq){
 				Seq<Vec3> data = (Seq<Vec3>)e.data;
+				for(Vec3 vec : data)Log.info(vec);
 				Draw.color(e.color);
 				for(int i = 0; i < data.size - 1; i++){
 					Vec3 c = data.get(i);
 					Vec3 n = data.get(i + 1);
-					float size = e.x * e.fout() / e.y;
+					float sizeP = e.x * e.fout() / e.y;
 
-					float cx = Mathf.sin(c.z) * i * size, cy = Mathf.cos(c.z) * i * size, nx = Mathf.sin(n.z) * (i + 1) * size, ny = Mathf.cos(n.z) * (i + 1) * size;
+					float cx = Mathf.sin(c.z) * i * sizeP, cy = Mathf.cos(c.z) * i * sizeP, nx = Mathf.sin(n.z) * (i + 1) * sizeP, ny = Mathf.cos(n.z) * (i + 1) * sizeP;
 					Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
 				}
 			}
-		}).at(this.width, this.length, 0, color, this.points);
+		}).at(this.width, this.length, 0, color, this.points.copy());
+		
+		
 		
 		Time.run(LIFETIME + 0.02f, () -> {
 			for(Vec3 vec : this.points)Pools.free(vec);
