@@ -129,6 +129,7 @@ public class UpgradeAmmoData extends UpgradeData{
 					if(selectAmmo.homingPower > 0){
 						t.add(offsetSpace + "[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
 						t.add(offsetSpace + "[lightgray]HomingPower: [accent]" + df.format(selectAmmo.homingPower) + "[]").left().row();
+					}
 					
 					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();
 					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding || selectAmmo.collidesTiles) + "[]").left().row();
