@@ -41,7 +41,7 @@ public class NHFx implements ContentList {
 	@Override
 	public void load() {
 		darkEnergyLaserShoot = new Effect(34f, 880, e -> {
-			color(NHColor.darkEnrColor, Color.white, e.fin() * 0.75f);
+			color(Color.white, NHColor.darkEnrColor, e.fin() * 0.75f);
 			float length = !(e.data instanceof Float) ? 70f : (Float)e.data;
 			randLenVectors(e.id, 9, length, e.rotation, 0f, (x, y) -> {
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * (length / 14));

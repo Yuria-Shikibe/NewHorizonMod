@@ -20,7 +20,7 @@ import mindustry.world.*;
 
 import newhorizon.contents.bullets.special.*;
 import newhorizon.contents.colors.*;
-import newhorizon.contents.effects.NHFx;
+import newhorizon.contents.effects.*;
 
 import static mindustry.Vars.*;
 import static arc.graphics.g2d.Draw.rect;
@@ -49,22 +49,19 @@ public class NHBullets implements ContentList {
 			smokeEffect = NHFx.darkEnergySmoke;
 		}};
 		
-		airRaid = new BasicBulletType(9f, 750, "new-horizon-strike"){
+		airRaid = new NHTrailBulletType(9f, 750, "new-horizon-strike"){
 			
 			@Override
 			public void init(Bullet b){
 				super.init(b);
-				b.data(new Trail(14));
-				Trail t = (Trail)b.data;
-				t.clear();
 				b.lifetime(b.lifetime() + 9f);
 			}
 			
 			@Override
 			public void draw(Bullet b){
-				if(!(b.data instanceof Trail))return;
-				Trail t = (Trail)b.data;
-				t.draw(backColor, 4.2f);
+				if(!(b.data instanceof EffectTrail))return;
+				EffectTrail t = (EffectTrail)b.data;
+				t.draw(trailColor);
 				
 				float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
 				
@@ -88,13 +85,6 @@ public class NHBullets implements ContentList {
 			
 			@Override
 			public void update(Bullet b){
-				if(!(b.data instanceof Trail))return;
-				Trail trail = (Trail)b.data;
-				
-				if( (b.lifetime() - b.time) < 14){trail.length -= 1;}
-				else trail.length = (int)Mathf.floor(14 / Time.delta * 1.65f);
-				trail.update(b.x, b.y);
-            
             	super.update(b);
 				
 				if(b.timer.get(0,3)){
@@ -108,7 +98,7 @@ public class NHBullets implements ContentList {
 			}
 
 			{
-				drawSize = 80f;
+				drawSize = 120f;
 				homingPower = 0.12f;
 				homingRange = 400f;
 				homingDelay = 12;
@@ -125,7 +115,7 @@ public class NHBullets implements ContentList {
 				height = 60f;
 				width = 18f;
 				lifetime = 500;
-				backColor = lightColor = lightningColor = NHColor.darkEnrColor;
+				trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 				frontColor = Color.white;
 				despawnEffect = Fx.none;
 				hitEffect = new Effect(25, e -> {
