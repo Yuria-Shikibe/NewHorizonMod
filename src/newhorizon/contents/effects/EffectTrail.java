@@ -1,4 +1,4 @@
-package mindustry.graphics;
+package newhorizon.contents.effects;
 
 import mindustry.entities.Effect;
 import arc.graphics.*;
@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.Time;
 import arc.util.pooling.*;
 
 public class EffectTrail{
