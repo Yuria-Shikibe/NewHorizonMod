@@ -27,16 +27,12 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.*;
 
 public class NHUnits implements ContentList {
-	
-	
-	
 	public static
 	UnitType
 	tarlidor;
 
 	@Override
 	public void load() {
-		EntityMapping.nameMap.put("new-horizon-tarlidor", EntityMapping.idMap[25]);
 		tarlidor = new UnitType("tarlidor") {
 			{
 				canBoost = true;
