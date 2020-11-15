@@ -52,6 +52,7 @@ public class NewHorizon extends Mod{
         Log.info("Loaded NewHorizon Mod constructor.");
         Events.on(ClientLoadEvent.class, e -> {
             Time.runTask(10f, () -> {
+            	if(EntityMapping.map("check") != null)new NHUnits().load();
                 BaseDialog dialog = new BaseDialog("Welcome");
                 dialog.cont.image(Core.atlas.find(NHNAME + "upgrade2")).row();
                 dialog.cont.add("").row();
