@@ -67,16 +67,15 @@ public class NewHorizon extends Mod{
         });
     }
     
-	private void loadUnitEntities(){
+	static{
 		EntityMapping.nameMap.put(NHNAME + "tarlidor", EntityMapping.idMap[25]);
+		Log.info("Unit Entities Loaded");
 	}
 	
     @Override
     public void loadContent(){
 		Log.info("Loading NewHorizon Mod Objects");
 		
-		loadUnitEntities();
-		Log.info("Unit Entities Loaded");
 		new NHItems().load();
 		new NHLiquids().load();
 		new NHFx().load();
