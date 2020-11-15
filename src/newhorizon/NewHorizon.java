@@ -77,7 +77,6 @@ public class NewHorizon extends Mod{
 		new NHBlocks().load();
 		new NHFactories().load();
 		new NHTurrets().load();
-		new NHUnitEntities().load();
 		new NHUnits().load();
     }
 	

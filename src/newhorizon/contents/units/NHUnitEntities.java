@@ -26,9 +26,8 @@ import newhorizon.NewHorizon;
 
 import static mindustry.Vars.*;
 
-public class NHUnitEntities implements ContentList {
-	@Override
-	public void load() {
+public class NHUnitEntities{
+	static{
 		EntityMapping.nameMap.put(NewHorizon.NHNAME + "tarlidor", EntityMapping.idMap[25]);
 	}
 }
