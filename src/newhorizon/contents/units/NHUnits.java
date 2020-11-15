@@ -33,7 +33,7 @@ public class NHUnits implements ContentList {
 
 	@Override
 	public void load() {
-		EntityMapping.nameMap.put("tarlidor", MechUnit::new);
+		EntityMapping.nameMap.put("tarlidor", EntityMapping.idMap[25]);
 		tarlidor = new UnitType("tarlidor") {
 			{
 				canBoost = true;
