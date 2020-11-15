@@ -27,10 +27,6 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.*;
 
 public class NHUnits implements ContentList {
-	static{
-		EntityMapping.nameMap.put(NewHorizon.NHNAME + "tarlidor", EntityMapping.idMap[25]);
-	}
-	
 	public static
 	UnitType
 	tarlidor;

@@ -66,10 +66,17 @@ public class NewHorizon extends Mod{
             });
         });
     }
+    
+	private void loadUnitEntities(){
+		EntityMapping.nameMap.put(NHNAME + "tarlidor", EntityMapping.idMap[25]);
+	}
 	
     @Override
     public void loadContent(){
 		Log.info("Loading NewHorizon Mod Objects");
+		
+		loadUnitEntities();
+		Log.info("Unit Entities Loaded");
 		new NHItems().load();
 		new NHLiquids().load();
 		new NHFx().load();
@@ -78,6 +85,7 @@ public class NewHorizon extends Mod{
 		new NHFactories().load();
 		new NHTurrets().load();
 		new NHUnits().load();
+		Log.info("Units Loaded");
     }
 	
 }
