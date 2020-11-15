@@ -32,6 +32,7 @@ public class NewHorizon extends Mod{
 		dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
 		dialog.cont.button("Yes", () -> Core.app.openURI(link)).size(120f, 50f);
 		dialog.cont.button("No", dialog::hide).size(120f, 50f);
+		dialog.show();
 	}
 	
 	private void links(){
@@ -52,10 +53,12 @@ public class NewHorizon extends Mod{
                 dialog.cont.image(Core.atlas.find(NHNAME + "upgrade2")).row();
                 dialog.cont.add("").row();
                 dialog.cont.add("<<-Powered by NewHorizonMod->>").row();
-                dialog.cont.button("Dismiss", dialog::hide).size(120f, 60f);
-                dialog.cont.button(Icon.export, () -> {
-                	links();
-				}).size(120f, 60f);
+                dialog.cont.pane(table -> {
+					table.button("Dismiss", dialog::hide).size(120f, 60f);
+					table.button(Icon.export, () -> {
+						links();
+					}).size(120f, 60f).pad(4);
+				}).size(260f, 70f);
                 dialog.show();
             });
         });
