@@ -10,6 +10,7 @@ import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.*;
 
 //import newhorizon.contents.units.*;
@@ -25,7 +26,7 @@ public class NewHorizon extends Mod{
 	public static final String NHNAME = "new-horizon-";
 	
 	private void confirm(String link){
-		Dialog dialog = new Dialog("");
+		BaseDialog dialog = new BaseDialog("");
 		dialog.cont.add("[lightgray]Are you sure jump to this link: [accent]" + link + " ?[]").row();
 		dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
 		dialog.cont.button("Yes", () -> Core.app.openURI(link)).size(120f, 50f);
