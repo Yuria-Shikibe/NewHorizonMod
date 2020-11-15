@@ -28,10 +28,13 @@ public class NewHorizon extends Mod{
 	
 	private void confirm(String link){
 		Dialog dialog = new Dialog("");
-		dialog.cont.add("[lightgray]Are you sure jump to this link: [accent]" + link + " ?[]").row();
+		dialog.cont.add("[lightgray]Are you sure jump to this link: [accent]" + link + " [lightgray]?").row();
 		dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
-		dialog.cont.button("Yes", () -> Core.app.openURI(link)).size(120f, 50f);
-		dialog.cont.button("No", dialog::hide).size(120f, 50f);
+		dialog.cont.pane(table -> {
+			table.button("Yes", () -> Core.app.openURI(link)).size(120f, 60f);
+			table.button("No", dialog::hide).size(120f, 60f).pad(4);
+		}).size(260f, 70f);
+		
 		dialog.show();
 	}
 	
