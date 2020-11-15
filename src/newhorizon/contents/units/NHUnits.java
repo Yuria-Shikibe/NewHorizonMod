@@ -36,7 +36,7 @@ public class NHUnits implements ContentList {
 
 	@Override
 	public void load() {
-		EntityMapping.nameMap.put((Object)(NewHorizon.NHNAME + "tarlidor"), (Object)EntityMapping.idMap[25]);
+		EntityMapping.nameMap.put("new-horizon-tarlidor"), (Object)EntityMapping.idMap[25]);
 		tarlidor = new UnitType("tarlidor") {
 			{
 				canBoost = true;
