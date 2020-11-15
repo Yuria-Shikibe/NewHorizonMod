@@ -22,6 +22,7 @@ import mindustry.world.*;
 import newhorizon.contents.bullets.*;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.effects.*;
+import newhorizon.NewHorizon;
 
 import static mindustry.Vars.*;
 
@@ -33,7 +34,7 @@ public class NHUnits implements ContentList {
 
 	@Override
 	public void load() {
-		EntityMapping.nameMap.put("tarlidor", EntityMapping.idMap[25]);
+		EntityMapping.nameMap.put(NewHorizon.NHNAME + "tarlidor", EntityMapping.idMap[25]);
 		tarlidor = new UnitType("tarlidor") {
 			{
 				canBoost = true;
