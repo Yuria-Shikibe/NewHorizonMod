@@ -98,7 +98,7 @@ public class UpgradeAmmoData extends UpgradeData{
 				Field[] fields = typeClass.getFields();
 				for(Field field : fields){
 					try{
-						table.add(new StringBuilder().append("[lightgray]").append(field.getName()).append(": [gray]").append(field.get(selectAmmo)).append("[]")).left().row();
+						table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [lightgray]").append(field.get(selectAmmo)).append("[]")).left().row();
 					}catch(IllegalAccessException err){
 						
 					}
@@ -138,8 +138,8 @@ public class UpgradeAmmoData extends UpgradeData{
 					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();
 					t.add("[lightgray]CanPierceTiles?: " + getJudge(selectAmmo.pierceBuilding || selectAmmo.collidesTiles) + "[]").left().row();
 				}).row();
-				cont.button("More Info", () -> {ammoInfoText();}).size(180, 50).pad(OFFSET);
-				cont.button("Back", this::hide).size(120, 50).pad(4);
+				cont.button("More Info", () -> {ammoInfoText();}).size(180, 50);
+				cont.button("Back", this::hide).size(120, 50).pad(OFFSET / 2);
 			}}.show();
 		}).size(ammoInfo.height + OFFSET / 2);
 	}

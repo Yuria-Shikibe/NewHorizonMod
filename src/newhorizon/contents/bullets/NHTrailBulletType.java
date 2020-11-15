@@ -18,7 +18,7 @@ public class NHTrailBulletType extends BasicBulletType {
 
 	public NHTrailBulletType(float speed, float damage, String bulletSprite){
 		super(speed, damage, bulletSprite);
-		this.trailDrawsize = 2 * trailLength * speed;
+		this.trailDrawsize = 2.5f * trailLength * speed;
     }
     
 	public NHTrailBulletType(float speed, float damage){
