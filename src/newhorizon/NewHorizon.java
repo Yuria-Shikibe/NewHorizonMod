@@ -68,7 +68,8 @@ public class NewHorizon extends Mod{
     }
     
 	static{
-		EntityMapping.nameMap.put(NHNAME + "tarlidor", EntityMapping.idMap[25]);
+		EntityMapping.nameMap.put(NHNAME + "tarlidor", EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put("check", EntityMapping.idMap[25]);
 		Log.info("Unit Entities Loaded");
 	}
 	
@@ -83,7 +84,7 @@ public class NewHorizon extends Mod{
 		new NHBlocks().load();
 		new NHFactories().load();
 		new NHTurrets().load();
-		new NHUnits().load();
+		if(EntityMapping.map("check") != null)new NHUnits().load();
 		Log.info("Units Loaded");
     }
 	
