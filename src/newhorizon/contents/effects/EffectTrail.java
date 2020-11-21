@@ -84,7 +84,7 @@ public class EffectTrail {
 
 		}).at(this.points.peek().x, this.points.peek().y, this.length, color, this.points);
 
-		for (Vec3 vec : this.points)Pools.free(vec);
+		//for (Vec3 vec : this.points)Pools.free(vec);
 	}
 
 }

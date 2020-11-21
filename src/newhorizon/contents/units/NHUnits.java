@@ -44,7 +44,7 @@ public class NHUnits implements ContentList {
 				
 				canBoost = true;
           	  boostMultiplier = 1.5f;
-				
+				mechSideSway = 0.26f;
 				canDrown = false;
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
@@ -56,7 +56,7 @@ public class NHUnits implements ContentList {
 					new Weapon("new-horizon-stiken") {{
 						top = false;
 						shootY = 8f;
-						reload = 20f;
+						reload = 10f;
 						x = 18f;
 						alternate = true;
 						ejectEffect = Fx.none;
