@@ -60,16 +60,10 @@ public class NHUnits implements ContentList {
 						alternate = true;
 						ejectEffect = Fx.none;
 						recoil = 2f;
-						shootSound = Sounds.lasershoot;
 
 						bullet = new SapBulletType() {
 					{
 						damage = 130f;
-						status = new StatusEffect("actted"){{
-							speedMultiplier = 0.875f;
-							damage = 0.8f;
-							reloadMultiplier = 0.75f;
-						}};
 						sapStrength = 0.45f;
 						length = 250f;
 						drawSize = 500f;
