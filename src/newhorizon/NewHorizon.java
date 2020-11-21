@@ -17,6 +17,7 @@ import mindustry.ui.dialogs.*;
 import newhorizon.contents.units.*;
 import newhorizon.contents.items.*;
 import newhorizon.contents.blocks.*;
+import newhorizon.contents.data.UpgradeDatas;
 import newhorizon.contents.blocks.special.*;
 import newhorizon.contents.blocks.turrets.*;
 import newhorizon.contents.effects.NHFx;
@@ -52,7 +53,7 @@ public class NewHorizon extends Mod{
         Log.info("Loaded NewHorizon Mod constructor.");
         Events.on(ClientLoadEvent.class, e -> {
             Time.runTask(10f, () -> {
-            	if(EntityMapping.map("check") != null)new NHUnits().load();
+				Log.info(EntityMapping.map("check").toString());
                 BaseDialog dialog = new BaseDialog("Welcome");
                 dialog.cont.image(Core.atlas.find(NHNAME + "upgrade2")).row();
                 dialog.cont.add("").row();
@@ -68,16 +69,13 @@ public class NewHorizon extends Mod{
         });
     }
     
-	static{
-		EntityMapping.nameMap.put(NHNAME + "tarlidor", EntityMapping.idMap[4]);
-		EntityMapping.nameMap.put("check", EntityMapping.idMap[25]);
-		Log.info("Unit Entities Loaded");
-	}
+	
 	
     @Override
     public void loadContent(){
 		Log.info("Loading NewHorizon Mod Objects");
 		
+		new UpgradeDatas().load();
 		new NHItems().load();
 		new NHLiquids().load();
 		new NHFx().load();
@@ -88,5 +86,6 @@ public class NewHorizon extends Mod{
 		if(EntityMapping.map("check") != null)new NHUnits().load();
 		Log.info("Units Loaded");
     }
+	
 	
 }

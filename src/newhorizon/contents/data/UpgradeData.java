@@ -52,21 +52,14 @@ import java.text.DecimalFormat;
 import static mindustry.Vars.*;
 
 public abstract class UpgradeData implements Cloneable{
-	public static String getJudge(boolean value){
-		return value ? "[green]Yes" : "[red]No";
-	}
+	public static String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
 	public static final String offsetSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
-	public static final BulletType none = new BasicBulletType(0, 1, "none") {
-		{
-			instantDisappear = true;
-			trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
-		}
-	};
+	public static final BulletType none = new BasicBulletType(0, 1, "none") {{
+		instantDisappear = true;
+		trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
+	}};
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
-	
-	protected static final DecimalFormat df = new DecimalFormat("######0.00");
-	//
 	public int unlockLevel;
 	public TextureRegion icon;
 	public String name, description;
@@ -75,7 +68,9 @@ public abstract class UpgradeData implements Cloneable{
 	public UpgraderBlockBuild from;
 	public boolean disable = false;
 	
-
+	protected static final DecimalFormat df = new DecimalFormat("######0.00");
+	//
+	
 	public UpgradeData(
 		String name,
 		String description,
@@ -86,9 +81,11 @@ public abstract class UpgradeData implements Cloneable{
 		this.description = description;
 		this.costTime = costTime;
 		requirements.addAll(items);
+		
+		UpgradeDatas.datas.add(this);
 	}
 
-	public void load() {
+	public void load(){
 		this.icon = Core.atlas.find(NewHorizon.NHNAME + name);
 	}
 

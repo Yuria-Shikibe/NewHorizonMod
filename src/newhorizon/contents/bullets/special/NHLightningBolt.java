@@ -18,6 +18,7 @@ import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.gen.Unitc;
 import mindustry.gen.Bullet;
+import mindustry.entities.Fx;
 import mindustry.entities.Units;
 import mindustry.entities.Effect;
 import mindustry.entities.Damage;
@@ -44,7 +45,7 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	//ELEMENTS
 	
 	//Default effect lifetime.
-	public static final float BOLTLIFE = 20f;
+	public static final float BOLTLIFE = Fx.lightning.lifetime;
 	//Default lightning width.
 	public static final float WIDTH = 3f;
 	//Default min lightning generate distance from targetA to B.
