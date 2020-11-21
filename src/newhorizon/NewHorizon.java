@@ -41,9 +41,9 @@ public class NewHorizon extends Mod{
 	
 	private void links(){
 		BaseDialog dialog = new BaseDialog("Links");
-		dialog.cont.button(Icon.github, () -> {
+		dialog.cont.button("Github", Icon.github, () -> {
 			confirm("https://github.com/Yuria-Shikibe/NewHorizonMod.git");
-		}).size(120f, 60f).left().row();
+		}).size(180f, 60f).left().row();
 		
 		dialog.cont.button("Back", dialog::hide).size(120f, 60f);
 		dialog.show();
@@ -59,10 +59,10 @@ public class NewHorizon extends Mod{
                 dialog.cont.add("<<-Powered by NewHorizonMod->>").row();
                 dialog.cont.pane(table -> {
 					table.button("Dismiss", dialog::hide).size(120f, 60f);
-					table.button(Icon.export, () -> {
+					table.button("Links", Icon.export, () -> {
 						links();
-					}).size(120f, 60f).pad(4);
-				}).size(260f, 70f);
+					}).size(180f, 60f).pad(4);
+				}).size(320f, 70f);
                 dialog.show();
             });
         });
