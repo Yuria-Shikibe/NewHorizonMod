@@ -49,7 +49,7 @@ public class NHBullets implements ContentList {
 			smokeEffect = NHFx.darkEnergySmoke;
 		}};
 		
-		longLaser = new NHLaserBulletType(600){{
+		longLaser = new LaserBulletType(600){{
 			colors = new Color[]{Pal.lancerLaser.cpy().mul(1f, 1f, 1f, 0.3f), Pal.lancerLaser, Color.white};
 			length = 260f;
 			width = 16f;
