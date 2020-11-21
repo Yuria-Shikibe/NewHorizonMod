@@ -70,6 +70,7 @@ public class NHBullets implements ContentList {
 			}
 
 			{
+				hitSound = Sounds.explosionbig;
 				trailChance = 0.075f;
 				trailEffect = NHFx.polyTrail;
 				drawSize = 120f;
@@ -156,14 +157,13 @@ public class NHBullets implements ContentList {
 
 			@Override
 			public void despawned(Bullet b) {
-				Effect.shake(10f, 8f, b);
-				despawnEffect.at(b);
-				//Sounds.explosionbig.at(b, Mathf.random(0.9f, 1.1f));
+				super.despawned(b);
 				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), lightColor, true, NHLightningBolt.WIDTH);
-				Damage.damage(b.team(), b.x, b.y, this.splashDamageRadius, this.splashDamage * b.damageMultiplier());
 			}
 
 			{
+				hitShake = 8;
+				hitSound = Sounds.explosionbig;
 				drawSize = 400;
 				lightColor = backColor = lightningColor = NHColor.thurmixRed;
 				frontColor = NHColor.thurmixRedLight;
@@ -246,30 +246,8 @@ public class NHBullets implements ContentList {
 					});
 				}
 
-				for (int i = 0; i < fragBullets; i++) {
-					float len = Mathf.random(1f, 7f);
-					float a = b.rotation() + Mathf.range(fragCone / 2);
-					fragBullet.create(b, b.x + trnsx(a, len), b.y + trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
-				}
-
-				Effect.shake(20f, 16f, (Position)b);
-				Damage.status(b.team, b.x, b.y, splashDamageRadius, status, statusDuration, true, true);
-				//Sounds.explosionbig.at(b);
-				Damage.damage(b.team(), b.x, b.y, this.splashDamageRadius, this.splashDamage * b.damageMultiplier());
-				new Effect(60, e -> {
-					color(NHColor.darkEnrColor);
-					Fill.circle(e.x, e.y, e.fout() * 44);
-					stroke(e.fout() * 3.7f);
-					circle(e.x, e.y, e.fin() * 80);
-					stroke(e.fout() * 2.5f);
-					circle(e.x, e.y, e.fin() * 45);
-					randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
-						stroke(e.fout() * 3.2f);
-						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
-					});
-					color(NHColor.darkEnrColor, Color.black, 0.8f);
-					Fill.circle(e.x, e.y, e.fout() * 30);
-				}).at(b);
+				super.despawned(b);
+				
 			}
 
 			{
@@ -308,7 +286,7 @@ public class NHBullets implements ContentList {
 						statusDuration = 60f * 10;
 					}
 				};
-
+				hitSound = Sounds.explosionbig;
 				drawSize = 40;
 				splashDamageRadius = 240;
 				splashDamage = 8000;
@@ -319,6 +297,21 @@ public class NHBullets implements ContentList {
 				ammoMultiplier = 1;
 				lifetime = 300;
 				hitEffect = Fx.none;
+				despawnEffect = Fx.none;
+				hitEffect = new Effect(60, e -> {
+					color(NHColor.darkEnrColor);
+					Fill.circle(e.x, e.y, e.fout() * 44);
+					stroke(e.fout() * 3.7f);
+					circle(e.x, e.y, e.fin() * 80);
+					stroke(e.fout() * 2.5f);
+					circle(e.x, e.y, e.fin() * 45);
+					randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
+						stroke(e.fout() * 3.2f);
+						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
+					});
+					color(NHColor.darkEnrColor, Color.black, 0.8f);
+					Fill.circle(e.x, e.y, e.fout() * 30);
+				});
 				shootEffect = new Effect(40f, 100, e -> {
 					color(NHColor.darkEnrColor);
 					stroke(e.fout() * 3.7f);

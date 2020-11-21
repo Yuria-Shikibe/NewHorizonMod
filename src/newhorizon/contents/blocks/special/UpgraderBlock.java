@@ -135,7 +135,7 @@ public class UpgraderBlock extends Block {
 
 		public int link = -1;
 		public int upgradingID = DFTID;
-		public int lastestSelectID = 0;
+		public int lastestSelectID = -1;
 		public float remainTime;
 
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
