@@ -44,8 +44,6 @@ public class NHUnits implements ContentList {
 				
 				canBoost = true;
           	  boostMultiplier = 1.5f;
-          
-          		
 				
 				canDrown = false;
 				mechStepParticles = true;
@@ -57,26 +55,14 @@ public class NHUnits implements ContentList {
 				weapons.add(
 					new Weapon("new-horizon-stiken") {{
 						top = false;
-						shootY = 4f;
+						shootY = 8f;
 						reload = 20f;
-						x = 13f;
+						x = 18f;
 						alternate = true;
 						ejectEffect = Fx.none;
 						recoil = 2f;
 
-						bullet = new SapBulletType() {
-					{
-						damage = 130f;
-						sapStrength = 0.45f;
-						length = 250f;
-						drawSize = 500f;
-						shootEffect = hitEffect = NHFx.lightSkyCircleSplash;
-						hitColor = color = NHColor.lightSky;
-						despawnEffect = Fx.none;
-						width = 0.62f;
-						lifetime = 35f;
-					}
-				};
+						bullet = NHBullets.longLaser;
 
 					}}
 				);
