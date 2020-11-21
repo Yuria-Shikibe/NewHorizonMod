@@ -101,8 +101,9 @@ public class UnitSpawner extends Block{
 				
 				dialog.cont.add("<<-Spawns: " + spawnNum + " ->>").row();
 				dialog.cont.pane(t -> {
-					for(int num = 0; num < unitTypes.size - 1; num++){
-						UnitType type = unitTypes.get(num);
+					int num = 0;
+					for(UnitType type : unitTypes){
+						if(type.isHidden())continue;
 						if((num % 5) == 0)t.row();
 						t.button(new TextureRegionDrawable(type.icon(Cicon.medium)), () -> {
 							Vec2 vec = new Vec2();
