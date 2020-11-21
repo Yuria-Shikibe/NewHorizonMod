@@ -2,6 +2,7 @@ package newhorizon.contents.data;
 
 import java.lang.reflect.Field;
 
+import arc.audio.*;
 import arc.util.pooling.*;
 import arc.util.io.*;
 import arc.*;

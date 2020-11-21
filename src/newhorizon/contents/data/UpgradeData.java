@@ -81,8 +81,6 @@ public abstract class UpgradeData implements Cloneable{
 		this.description = description;
 		this.costTime = costTime;
 		requirements.addAll(items);
-		
-		UpgradeDatas.datas.add(this);
 	}
 
 	public void load(){
