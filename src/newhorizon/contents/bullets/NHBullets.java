@@ -51,12 +51,12 @@ public class NHBullets implements ContentList {
 		
 		longLaser = new NHLaserBulletType(600){{
 			colors = new Color[]{Pal.lancerLaser.cpy().mul(1f, 1f, 1f, 0.3f), Pal.lancerLaser, Color.white};
-			length = 280f;
-			width = 22f;
+			length = 260f;
+			width = 16f;
 			lengthFalloff = 0.6f;
 			sideLength = 75f;
 			sideWidth = 1.05f;
-			sideAngle = 35f;
+			sideAngle = 90f;
 			largeHit = false;
 			shootEffect = smokeEffect = Fx.none;
 		}};

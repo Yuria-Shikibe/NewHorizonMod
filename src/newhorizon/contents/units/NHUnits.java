@@ -36,7 +36,7 @@ public class NHUnits implements ContentList {
 		tarlidor = new UnitType("tarlidor") {
 			{
 				constructor = EntityMapping.idMap[4];
-				speed = 0.325f;
+				speed = 0.455f;
 				hitSize = 40f;
 				health = 12000f;
 				buildSpeed = 1.8f;
@@ -59,7 +59,7 @@ public class NHUnits implements ContentList {
 						top = false;
 						shootY = 8f;
 						reload = 10f;
-						x = 18f;
+						x = 16f;
 						alternate = true;
 						ejectEffect = Fx.none;
 						recoil = 2f;
