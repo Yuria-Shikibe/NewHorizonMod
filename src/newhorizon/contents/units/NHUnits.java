@@ -42,9 +42,12 @@ public class NHUnits implements ContentList {
 				buildSpeed = 1.8f;
 				armor = 8f;
 				
+				canBoost = true;
+          	  boostMultiplier = 1.5f;
+          
+          		
+				
 				canDrown = false;
-				mechFrontSway = 0.05f;
-
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
 

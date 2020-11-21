@@ -32,7 +32,6 @@ public class NHTrailBulletType extends BasicBulletType {
     @Override
 	public void despawned(Bullet b){
 		despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
-		hitSound.at(b); 
 		Effect.shake(despawnShake, despawnShake, b);
 		hit(b);
 	}
