@@ -104,7 +104,8 @@ public class UnitSpawner extends Block{
 					int num = 0;
 					for(UnitType type : unitTypes){
 						if(type.isHidden())continue;
-						if((num % 5) == 0)t.row();
+						num++
+						if(!(num == 0) && num % 5 == 0)t.row();
 						t.button(new TextureRegionDrawable(type.icon(Cicon.medium)), () -> {
 							Vec2 vec = new Vec2();
 							vec.trns(rotation * 90 + 45, (tilesize * 4 + 4));
@@ -115,7 +116,6 @@ public class UnitSpawner extends Block{
 									unit.add();
 								});
 							}
-						num++;
 						}).size(80f);
 					}
 				}).size(5 * 80f, 4 * 80f);
