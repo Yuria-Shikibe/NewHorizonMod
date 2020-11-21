@@ -15,7 +15,7 @@ import newhorizon.contents.bullets.NHBullets;
 import static mindustry.Vars.*;
 
 public class UpgradeDatas implements ContentList{
-	public Seq<UpgradeData> datas = new Seq<>(UpgradeData.class);
+	public static Seq<UpgradeData> datas = new Seq<>(UpgradeData.class);
 	
 	public static final UpgradeBaseData
 		basicData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, 

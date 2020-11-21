@@ -18,7 +18,7 @@ import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.gen.Unitc;
 import mindustry.gen.Bullet;
-import mindustry.entities.Fx;
+import mindustry.content.Fx;
 import mindustry.entities.Units;
 import mindustry.entities.Effect;
 import mindustry.entities.Damage;
