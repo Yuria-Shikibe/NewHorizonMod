@@ -1,7 +1,7 @@
 package newhorizon.contents.data;
 
 import arc.struct.*;
-import arc.audio.*;
+import mindustry.gen.*;
 import mindustry.type.ItemStack;
 import mindustry.content.Items;
 import mindustry.content.Bullets;
