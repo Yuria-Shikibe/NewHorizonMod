@@ -43,7 +43,7 @@ public class NHUnits implements ContentList {
 				armor = 8f;
 				rotateSpeed = 3.3f;
 				hovering = true;
-				canDrawn = true;
+				canDrown = true;
             	fallSpeed = 0.016f;
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
