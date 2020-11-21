@@ -53,7 +53,6 @@ public class NewHorizon extends Mod{
         Log.info("Loaded NewHorizon Mod constructor.");
         Events.on(ClientLoadEvent.class, e -> {
             Time.runTask(10f, () -> {
-				Log.info(EntityMapping.map("check").toString());
                 BaseDialog dialog = new BaseDialog("Welcome");
                 dialog.cont.image(Core.atlas.find(NHNAME + "upgrade2")).row();
                 dialog.cont.add("").row();
@@ -83,7 +82,8 @@ public class NewHorizon extends Mod{
 		new NHBlocks().load();
 		new NHFactories().load();
 		new NHTurrets().load();
-		if(EntityMapping.map("check") != null)new NHUnits().load();
+		NHUnits units = new NHUnits();
+		if(EntityMapping.map("check") != null)units.load();
 		Log.info("Units Loaded");
     }
 	
