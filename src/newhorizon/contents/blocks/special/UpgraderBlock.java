@@ -49,7 +49,7 @@ import mindustry.world.meta.*;
 import newhorizon.NewHorizon;
 
 import newhorizon.contents.data.*;
-import newhorizon.contents.interfaces.Scalablec;
+import newhorizon.contents.interfaces.*;
 import newhorizon.contents.items.*;
 import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.colors.*;
@@ -189,7 +189,7 @@ public class UpgraderBlock extends Block {
 			}
 			remainTime = costTime();
 		}
-		//Updates
+		@Override//Updates
 		public void updateUpgrading() {
 			if (isUpgrading()) {
 				Sounds.build.at(this);
@@ -197,7 +197,7 @@ public class UpgraderBlock extends Block {
 			} else completeUpgrade();
 		}
 		
-		
+		@Override
 		public void completeUpgrade() {
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
@@ -272,14 +272,14 @@ public class UpgraderBlock extends Block {
 			}).size(60 * buttonPerLine, 60).pad(OFFSET).left();
 		}
 
-		//Target confirm
+		@Override//Target confirm
 		public boolean linkValid() {
 			if (link == -1) return false;
 			Building linkTarget = world.build(link);
 			return linkTarget instanceof Scalablec/* && linkTarget.block == toUpgradeClass*/ && linkTarget.team == team && within(linkTarget, range());
 		}
 
-		public Scalablec target() {return linkValid() ? (Scalablec)world.build(link) : null;}
+		@Override public Scalablec target() {return linkValid() ? (Scalablec)world.build(link) : null;}
 
 		protected void setLink(int value) {
 			if (value == -1) {
@@ -438,7 +438,7 @@ public class UpgraderBlock extends Block {
 			for (UpgradeAmmoData data : ammoDatas)data.from = this;
 		}
 
-		
+		@Override
 		public void updateTarget() {
 			if (linkValid()){
 				target().setBaseData(baseData);

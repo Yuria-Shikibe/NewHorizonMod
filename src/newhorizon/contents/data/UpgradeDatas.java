@@ -2,7 +2,6 @@ package newhorizon.contents.data;
 
 import arc.struct.*;
 import arc.audio.*;
-import mindustry.ctype.ContentList;
 import mindustry.type.ItemStack;
 import mindustry.content.Items;
 import mindustry.content.Bullets;
@@ -15,7 +14,7 @@ import newhorizon.contents.bullets.NHBullets;
 
 import static mindustry.Vars.*;
 
-public class UpgradeDatas implements ContentList{
+public class UpgradeDatas{
 	public static final UpgradeBaseData
 		basicData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, 
 			new ItemStack(NHItems.upgradeSort, 100),
@@ -83,11 +82,6 @@ public class UpgradeDatas implements ContentList{
 			salvos = 6;
 			randX = 2f * tilesize;
 		}};
-		
-	@Override
-	public void load(){
-		for(UpgradeData data : datas)data.load();
-	}
 }
 
 
