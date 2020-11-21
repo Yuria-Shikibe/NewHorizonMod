@@ -50,7 +50,7 @@ public class NHBullets implements ContentList {
 		}};
 		
 		longLaser = new NHLaserBulletType(600){{
-			colors = new Color[]{Pal.lancerLaser().mul(1f, 1f, 1f, 0.3f), Pal.lancerLaser, Color.white};
+			colors = new Color[]{Pal.lancerLaser.cpy().mul(1f, 1f, 1f, 0.3f), Pal.lancerLaser, Color.white};
 			length = 280f;
 			width = 22f;
 			lengthFalloff = 0.6f;
