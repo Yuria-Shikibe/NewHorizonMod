@@ -74,7 +74,6 @@ public class NewHorizon extends Mod{
     public void loadContent(){
 		Log.info("Loading NewHorizon Mod Objects");
 		
-		new UpgradeDatas().load();
 		new NHItems().load();
 		new NHLiquids().load();
 		new NHFx().load();

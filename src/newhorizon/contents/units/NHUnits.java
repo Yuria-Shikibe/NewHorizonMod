@@ -43,7 +43,7 @@ public class NHUnits implements ContentList {
 				armor = 8f;
 				
 				canDrown = false;
-				mechFrontSway = 1f;
+				mechFrontSway = 0.3f;
 
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
@@ -62,19 +62,24 @@ public class NHUnits implements ContentList {
 						recoil = 2f;
 						shootSound = Sounds.lasershoot;
 
-						bullet = new NHLightningBoltBulletType(350) {
-							{
-								splashDamage = damage * 0.7f;
-								splashDamageRadius = 40f;
-								shootEffect = hitEffect = new Effect(26f, e -> {
-									Draw.color(Pal.lancerLaser);
-									Angles.randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
-										Fill.circle(e.x + x, e.y + y, e.fout() * 3f);
-									});
-								});
-								lightningColor = Pal.lancerLaser;
-							}
-						};
+						bullet = new SapBulletType() {
+					{
+						damage = 130f;
+						status = new StatusEffect("actted"){{
+							speedMultiplier = 0.875f;
+							damage = 0.8f;
+							reloadMultiplier = 0.75f;
+						}};
+						sapStrength = 0.45f;
+						length = 250f;
+						drawSize = 500f;
+						shootEffect = hitEffect = NHFx.lightSkyCircleSplash;
+						hitColor = color = NHColor.lightSky;
+						despawnEffect = Fx.none;
+						width = 0.62f;
+						lifetime = 35f;
+					}
+				};
 
 					}}
 				);
