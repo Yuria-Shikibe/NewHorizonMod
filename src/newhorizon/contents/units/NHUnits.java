@@ -38,13 +38,13 @@ public class NHUnits implements ContentList {
 				constructor = EntityMapping.idMap[4];
 				speed = 0.455f;
 				hitSize = 20f;
-				health = 12000f;
+				health = 16000f;
 				buildSpeed = 1.8f;
 				armor = 8f;
-				rotateSpeed = 2.3f;
+				rotateSpeed = 3.3f;
 				
 				canBoost = true;
-          	  boostMultiplier = 1.5f;
+          	  boostMultiplier = 3.5f;
             	fallSpeed = 0.016f;
 				canDrown = false;
 				mechStepParticles = true;
@@ -56,13 +56,14 @@ public class NHUnits implements ContentList {
 				weapons.add(
 					new Weapon("new-horizon-stiken") {{
 						top = false;
-						shootY = 8f;
-						reload = 10f;
+						shootY = 13f;
+						reload = 30f;
 						x = 16f;
 						alternate = true;
 						ejectEffect = Fx.none;
 						recoil = 2f;
-
+						shots = 4;
+						shotDelay = 5.5f;
 						bullet = NHBullets.longLaser;
 						shootSound = Sounds.laser;
 					}}
