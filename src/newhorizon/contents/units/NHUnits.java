@@ -27,15 +27,6 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.*;
 
 public class NHUnits implements ContentList {
-	{
-		EntityMapping.nameMap.put(NewHorizon.NHNAME + "tarlidor", EntityMapping.idMap[4]);
-		EntityMapping.nameMap.put("check", EntityMapping.idMap[25]);
-	}
-	
-	static {
-		EntityMapping.nameMap.put(NewHorizon.NHNAME + "tarlidor", EntityMapping.idMap[4]);
-		EntityMapping.nameMap.put("check", EntityMapping.idMap[25]);
-	}
 	public static
 	UnitType
 	tarlidor;
@@ -44,6 +35,7 @@ public class NHUnits implements ContentList {
 	public void load() {
 		tarlidor = new UnitType("tarlidor") {
 			{
+				constructor = EntityMapping.idMap[4];
 				canBoost = true;
 				boostMultiplier = 1.5f;
 				speed = 0.35f;

@@ -82,8 +82,7 @@ public class NewHorizon extends Mod{
 		new NHBlocks().load();
 		new NHFactories().load();
 		new NHTurrets().load();
-		NHUnits units = new NHUnits();
-		if(EntityMapping.map("check") != null)units.load();
+		new NHUnits().load();
 		Log.info("Units Loaded");
     }
 	
