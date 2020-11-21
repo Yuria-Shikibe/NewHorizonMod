@@ -40,6 +40,7 @@ public class UpgradeDatas implements ContentList{
 			new ItemStack(NHItems.irayrondPanel, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
+			shootSound = Sounds.lasershoot;
 			burstSpacing = 6f;
 			salvos = 8;
 			randX = 2f * tilesize;
@@ -52,6 +53,7 @@ public class UpgradeDatas implements ContentList{
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
+			shootSound = Sounds.laserblast;
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
 			chargeTime = 60f;
@@ -62,6 +64,7 @@ public class UpgradeDatas implements ContentList{
 			new ItemStack(NHItems.irayrondPanel, 300),
 			new ItemStack(NHItems.metalOxhydrigen, 200)
 		){{
+			shootSound = Sounds.laser;
 			randX = 2f * tilesize;
 			salvos = 7;
 			inaccuracy = 10;
@@ -74,6 +77,7 @@ public class UpgradeDatas implements ContentList{
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
+			shootSound = Sounds.artillery;
 			inaccuracy = 6;
 			velocityInaccuracy = 0.08f;
 			burstSpacing = 9f;

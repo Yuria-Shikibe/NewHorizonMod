@@ -126,6 +126,23 @@ public class ScalableTurret extends Turret{
         }
         
         @Override
+        protected void effects(){
+            Effect fshootEffect = shootEffect == Fx.none ? peekAmmo().shootEffect : shootEffect;
+            Effect fsmokeEffect = smokeEffect == Fx.none ? peekAmmo().smokeEffect : smokeEffect;
+
+			fshootEffect.at(x + tr.x, y + tr.y, rotation);
+			fsmokeEffect.at(x + tr.x, y + tr.y, rotation);
+			getAmmoData().shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+
+			if(shootShake > 0){
+                Effect.shake(shootShake, shootShake, this);
+			}
+
+			recoil = recoilAmount;
+		}
+
+        
+        @Override
         public BulletType peekAmmo(){
         	return getAmmoData() == null ? UpgradeData.none : getAmmoData().selectAmmo == null ? UpgradeData.none : getAmmoData().selectAmmo;
 		}

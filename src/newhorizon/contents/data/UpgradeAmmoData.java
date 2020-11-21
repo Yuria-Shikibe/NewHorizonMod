@@ -68,6 +68,7 @@ public class UpgradeAmmoData extends UpgradeData{
 	public int salvos = 1;
 	public float burstSpacing = 5f;
 	public BulletType selectAmmo;
+	public Sound shootSound = Sounds.bigshot;
 	public TextureRegion ammoInfo;
 	
 	public UpgradeAmmoData(

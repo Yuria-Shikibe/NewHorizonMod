@@ -128,7 +128,7 @@ public class UpgraderBlock extends Block {
 		}*/
 	}
 
-	public class UpgraderBlockBuild extends Building implements Ranged {
+	public class UpgraderBlockBuild extends Building implements Ranged, Upgraderc{
 		
 		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
 		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
@@ -151,9 +151,9 @@ public class UpgraderBlock extends Block {
 			if(coreValid(core))core.items.remove(data.requirements());
 		}
 
-		public CoreBlock.CoreBuild core() {return this.team.core();}
+		public CoreBlock.CoreBuild core(){return this.team.core();}
 
-		protected boolean isUpgrading() {return remainTime > 0;}
+		protected boolean isUpgrading(){return remainTime > 0;}
 		
 		public boolean canUpgrade(UpgradeData data) {
 			CoreBlock.CoreBuild core = core();
@@ -167,7 +167,7 @@ public class UpgraderBlock extends Block {
 				);
 		}
 
-		protected float costTime() {
+		protected float costTime(){
 			return 
 				upgradingID == DFTID ? 0 : 
 				upgradingID == -1	? baseData.costTime() :
@@ -190,14 +190,17 @@ public class UpgraderBlock extends Block {
 			remainTime = costTime();
 		}
 		
-		//Updates
-		protected void updateUpgrading() {
+		@Override//Updates
+		public void updateUpgrading() {
 			if (isUpgrading()) {
+				Sounds.build.at(this);
 				remainTime -= (state.rules.infiniteResources ? 100000 : 1) * Time.delta * efficiency();
 			} else completeUpgrade();
 		}
-
-		protected void completeUpgrade() {
+		
+		@Override
+		public void completeUpgrade() {
+			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
 			
 			if (upgradingID == -1) {
@@ -270,17 +273,14 @@ public class UpgraderBlock extends Block {
 			}).size(60 * buttonPerLine, 60).pad(OFFSET).left();
 		}
 
-		//Target confirm
-		protected boolean linkValid() {
+		@Override //Target confirm
+		public boolean linkValid() {
 			if (link == -1) return false;
 			Building linkTarget = world.build(link);
 			return linkTarget instanceof Scalablec/* && linkTarget.block == toUpgradeClass*/ && linkTarget.team == team && within(linkTarget, range());
 		}
 
-		//Targeter
-		protected Scalablec target() {
-			return linkValid() ? (Scalablec)world.build(link) : null;
-		}
+		@Override public Scalablec target() {return linkValid() ? (Scalablec)world.build(link) : null;}
 
 		protected void setLink(int value) {
 			if (value == -1) {
@@ -340,6 +340,7 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void updateTile() {
 			if (upgradingID != DFTID){
+				
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance)){
 					for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2 * tilesize), y - Mathf.random(block.size / 2 * tilesize), block.size / 2, baseColor);
@@ -438,14 +439,13 @@ public class UpgraderBlock extends Block {
 			for (UpgradeAmmoData data : ammoDatas)data.from = this;
 		}
 
-		protected void updateTarget() {
+		@Override
+		public void updateTarget() {
 			if (linkValid()){
 				target().setBaseData(baseData);
 				if(lastestSelectID >= 0 && ammoDatas.get(lastestSelectID).isUnlocked)target().setAmmoData(ammoDatas.get(lastestSelectID));
 			}
 		}
-		
-		
 	}
 }
 
