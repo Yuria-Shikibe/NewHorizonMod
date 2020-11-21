@@ -36,14 +36,14 @@ public class NHUnits implements ContentList {
 		tarlidor = new UnitType("tarlidor") {
 			{
 				constructor = EntityMapping.idMap[4];
-				speed = 0.35f;
+				speed = 0.55f;
 				hitSize = 40f;
 				health = 12000f;
 				buildSpeed = 1.8f;
 				armor = 8f;
 				
 				canDrown = false;
-				mechFrontSway = 0.3f;
+				mechFrontSway = 0.05f;
 
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
@@ -52,11 +52,11 @@ public class NHUnits implements ContentList {
 				ammoType = AmmoTypes.power;
 
 				weapons.add(
-					new Weapon("stiken") {{
+					new Weapon("new-horizon-stiken") {{
 						top = false;
 						shootY = 4f;
-						reload = 60f;
-						x = 16f;
+						reload = 20f;
+						x = 13f;
 						alternate = true;
 						ejectEffect = Fx.none;
 						recoil = 2f;

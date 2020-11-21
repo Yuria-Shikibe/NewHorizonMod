@@ -146,7 +146,7 @@ public class NHBullets implements ContentList {
 			public void despawned(Bullet b) {
 				Effect.shake(10f, 8f, b);
 				despawnEffect.at(b);
-				Sounds.explosionbig.at(b, Mathf.random(0.9f, 1.1f));
+				//Sounds.explosionbig.at(b, Mathf.random(0.9f, 1.1f));
 				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), lightColor, true, NHLightningBolt.WIDTH);
 				Damage.damage(b.team(), b.x, b.y, this.splashDamageRadius, this.splashDamage * b.damageMultiplier());
 			}
@@ -242,7 +242,7 @@ public class NHBullets implements ContentList {
 
 				Effect.shake(20f, 16f, (Position)b);
 				Damage.status(b.team, b.x, b.y, splashDamageRadius, status, statusDuration, true, true);
-				Sounds.explosionbig.at(b);
+				//Sounds.explosionbig.at(b);
 				Damage.damage(b.team(), b.x, b.y, this.splashDamageRadius, this.splashDamage * b.damageMultiplier());
 				new Effect(60, e -> {
 					color(NHColor.darkEnrColor);

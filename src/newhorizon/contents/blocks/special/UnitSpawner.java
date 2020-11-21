@@ -104,6 +104,7 @@ public class UnitSpawner extends Block{
 					int num = 0;
 					for(UnitType type : unitTypes){
 						if(type.isHidden())continue;
+						num++;
 						if((num % 5) == 0)t.row();
 						t.button(new TextureRegionDrawable(type.icon(Cicon.medium)), () -> {
 							Vec2 vec = new Vec2();

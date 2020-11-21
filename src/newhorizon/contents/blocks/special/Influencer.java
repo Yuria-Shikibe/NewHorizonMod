@@ -64,7 +64,7 @@ public class Influencer extends Block {
 	public StatusEffect positiveStatus = StatusEffects.none;
 	public Effect generateEffect = Fx.none;
 	public Effect acceptEffect = Fx.none;
-	public Sound blastSound = Sounds.explosionbig;
+	//public Sound blastSound = Sounds.explosionbig;
 	//
 	public int generateLiNum = 0, generateLiLen = 10, generateLiRand = 0;
 	public float lightningDamage = 120;
@@ -172,7 +172,7 @@ public class Influencer extends Block {
 		protected void extra(){
 			Effect.shake(blastShake, blastShake, this);
 			generateEffect.at(this);
-			blastSound.at(this, Mathf.random(0.9f, 1.1f));
+			//blastSound.at(this, Mathf.random(0.9f, 1.1f));
 			for (int i = 0; i < generateLiNum; i++) {
 				Lightning.create(team, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(360f), generateLiLen + Mathf.random(generateLiRand));
 			}
