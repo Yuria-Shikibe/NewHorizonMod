@@ -45,8 +45,9 @@ public class NHUnits implements ContentList {
 				
 				canBoost = true;
           	  boostMultiplier = 1.5f;
-				mechFrontSway = 1.9f;
-          	  mechSideSway = 0.6f;
+          	mechStride = 20;
+				mechFrontSway = 20f;
+          	  mechSideSway = 10f;
 				canDrown = false;
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
