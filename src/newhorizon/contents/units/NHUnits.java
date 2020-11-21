@@ -37,7 +37,7 @@ public class NHUnits implements ContentList {
 			{
 				constructor = EntityMapping.idMap[4];
 				speed = 0.455f;
-				hitSize = 40f;
+				hitSize = 20f;
 				health = 12000f;
 				buildSpeed = 1.8f;
 				armor = 8f;
@@ -45,9 +45,7 @@ public class NHUnits implements ContentList {
 				
 				canBoost = true;
           	  boostMultiplier = 1.5f;
-          	mechStride = 20;
-				mechFrontSway = 20f;
-          	  mechSideSway = 10f;
+            	fallSpeed = 0.016f;
 				canDrown = false;
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
