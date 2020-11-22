@@ -35,9 +35,8 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load(){
-		darkEnrlaser = new NHSelfContinuousBulletType(800){{
+		darkEnrlaser = new ContinuousLaserBulletType(800){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, Color.white};
-			continuousTime = 180f;
 			width = 13f;
 			length = 880f;
 			shake = 2.2f;

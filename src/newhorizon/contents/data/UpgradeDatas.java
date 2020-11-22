@@ -38,7 +38,7 @@ public class UpgradeDatas{
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
 			shootSound = Sounds.laserblast;
-			continuousTime = NHBullets.darkEnrlaser.continuousTime;
+			continuousTime = 240f;
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
 			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
