@@ -57,7 +57,6 @@ import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
 public class UpgradeAmmoData extends UpgradeMultData{
-	
 	//Ammo Datas//
 	public Effect
 		chargeEffect = Fx.none,
@@ -73,7 +72,9 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	public BulletType selectAmmo;
 	public Sound shootSound = Sounds.bigshot;
 	//Data endl//
+	
 	public TextureRegion ammoInfo;
+	
 	public UpgradeAmmoData(
 		String name,
 		String description,
