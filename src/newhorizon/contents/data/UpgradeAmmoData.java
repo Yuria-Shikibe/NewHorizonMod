@@ -79,7 +79,7 @@ public class UpgradeAmmoData extends UpgradeMultData{
 		String description,
 		BulletType selectAmmo,
 		float costTime,
-		int 
+		int unlockLevel,
 		ItemStack... items
 	) {
 		super(name, description, costTime, unlockLevel, items);
