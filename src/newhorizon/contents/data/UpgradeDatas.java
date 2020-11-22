@@ -32,7 +32,7 @@ public class UpgradeDatas{
 		
 	public static final UpgradeAmmoData
 		darkEnrlaser = new UpgradeAmmoData(
-			"dark-enr-laser", "description", NHBullets.darkEnrlaser, 300f, 7,
+			"dark-enr-laser", "description08", NHBullets.darkEnrlaser, 300f, 7,
 			new ItemStack(Items.surgeAlloy, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)

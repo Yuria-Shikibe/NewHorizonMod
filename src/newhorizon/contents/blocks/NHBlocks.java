@@ -67,6 +67,7 @@ public class NHBlocks implements ContentList {
 			toUpgradeClass = NHTurrets.ender;
 			initUpgradeBaseData = UpgradeDatas.basicData;
 			addUpgrades(
+				UpgradeDatas.darkEnrlaser,
 				UpgradeDatas.arc9000,
 				UpgradeDatas.curveBomb,
 				UpgradeDatas.airRaid,
