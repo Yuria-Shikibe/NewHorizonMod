@@ -238,7 +238,7 @@ public class ScalableTurret extends Turret{
 		
 		protected float reloadTime(){
 			float realReload = ammoData.reloadTime <= 0 ? reloadTime : ammoData.reloadTime;
-			return realReload * (1 - Mathf.clamp(baseData.speedMPL * baseData.level, 0, maxReloadReduce) );
+			return ammoData.continuousTime + realReload * (1 - Mathf.clamp(baseData.speedMPL * baseData.level, 0, maxReloadReduce) );
 		}
 		
 		@Override

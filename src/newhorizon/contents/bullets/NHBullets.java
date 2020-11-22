@@ -250,7 +250,7 @@ public class NHBullets implements ContentList {
 			public void despawned(Bullet b) {
 				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
 					Vec2 randomPos = new Vec2(b.x + Mathf.range(200), b.y + Mathf.range(200));
-					hitSound.at(randomPos, Mathf.random(0.9f, 1.1f);
+					hitSound.at(randomPos, Mathf.random(0.9f, 1.1f) );
 					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 2 * NHLightningBolt.WIDTH, 2, hitPos -> {
 						for (int j = 0; j < 4; j++) {
 							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));

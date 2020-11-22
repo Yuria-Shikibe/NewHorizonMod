@@ -45,7 +45,7 @@ public class NHSelfContinuousBulletType extends ContinuousLaserBulletType{
 
     @Override
 	public void update(Bullet b){
-		if(!(b.data instanceof Float)return;
+		if(!(b.data instanceof Float))return;
 		Float data = (Float)b.data();
 		if(b.owner instanceof Building){
 			Building owner = b.owner;
