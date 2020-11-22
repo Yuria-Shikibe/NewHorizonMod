@@ -35,18 +35,46 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load(){
-		darkEnrlaser = new ContinuousLaserBulletType(800){{
-			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, Color.white};
-			width = 13f;
-			length = 880f;
-			shake = 2.2f;
-			fadeTime = 26f;
-			lightStroke = 50f;
-			spaceMag = 13f;
-			hitEffect = NHFx.darkEnrCircleSplash;
-			shootEffect = NHFx.darkEnergyShootBig;
-			smokeEffect = NHFx.darkEnergySmokeBig;
-		}};
+		darkEnrlaser = new ContinuousLaserBulletType(800){
+			{
+				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, Color.white};
+				width = 20f;
+				length = 880f;
+				fadeTime = 26f;
+				lightStroke = 50f;
+				spaceMag = 13f;
+				oscMag = 2.5f;
+				oscScl = 0.68f;
+				hitEffect = NHFx.darkEnrCircleSplash;
+				shootEffect = NHFx.darkEnergyShootBig;
+				smokeEffect = NHFx.darkEnergySmokeBig;
+			}
+			
+			@Override
+			public void update(Bullet b) {
+				super.update(b);
+				Effect.shake(2, 2, b);
+				if (b.timer(0, 9)) {
+					new Effect(32f, e -> {
+						randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
+							color(NHColor.darkEnrColor);
+							Fill.circle(e.x + x, e.y + y, e.fout() * 15f);
+							color(NHColor.darkEnrColor, Color.black, 0.8f);
+							Fill.circle(e.x + x, e.y + y, e.fout() * 9f);
+						});
+					}).at(b);
+				}
+			}
+			
+			@Override
+			public void draw(Bullet b) {
+				super.draw(b);
+				color(NHColor.darkEnrColor);
+				Fill.circle(b.x, b.y, 22);
+				color(NHColor.darkEnrColor, Color.black, 0.8f);
+				Fill.circle(b.x, b.y, 8f + 8f * b.fout());
+			}
+		};
 		
 		decayLaser = new NHLaserBulletType(2400){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.darkEnrColor, Color.white};
@@ -209,12 +237,11 @@ public class NHBullets implements ContentList {
 
 		};
 
-		boltGene = new ArtilleryBulletType(2.75f, 1500) {
+		boltGene = new ArtilleryBulletType(2.75f, 500) {
 			@Override
 			public void update(Bullet b) {
-				Effect.shake(2, 1, b);
-				if (b.timer(0, 9)) {
-					Effect.shake(2, 2, b);
+				Effect.shake(2, 2, b);
+				if (b.timer(0, 8)) {
 					new Effect(32f, e -> {
 						randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
 							color(NHColor.darkEnrColor);
