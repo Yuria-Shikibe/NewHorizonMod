@@ -56,11 +56,13 @@ import arc.scene.ui.ImageButton.*;
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
-public class UpgradeAmmoData extends UpgradeData{
+public class UpgradeAmmoData extends UpgradeMultData{
+	
+	//Ammo Datas//
 	public Effect
 		chargeEffect = Fx.none,
 		chargeBeginEffect = Fx.none;
-			
+	public float continuousTime = 0f;
 	public float inaccuracy;
 	public float velocityInaccuracy;
 	public float chargeTime = 0f;
@@ -70,22 +72,19 @@ public class UpgradeAmmoData extends UpgradeData{
 	public float burstSpacing = 5f;
 	public BulletType selectAmmo;
 	public Sound shootSound = Sounds.bigshot;
+	//Data endl//
 	public TextureRegion ammoInfo;
-	
 	public UpgradeAmmoData(
 		String name,
 		String description,
 		BulletType selectAmmo,
 		float costTime,
-		int unlockLevel,
+		int 
 		ItemStack... items
 	) {
-		super(name, description, costTime, items);
-		this.unlockLevel = unlockLevel;
+		super(name, description, costTime, unlockLevel, items);
 		this.selectAmmo = selectAmmo;
 	}
-	public int id;
-	public boolean isUnlocked, selected;
 	
 	@Override
 	public void load() {
@@ -172,15 +171,6 @@ public class UpgradeAmmoData extends UpgradeData{
 	@Override
 	public void addText(Table table){
 		table.add("[lightgray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
-	}
-	public void write(Writes write) {
-		write.bool(this.isUnlocked);
-		write.bool(this.selected);
-	}
-
-	public void read(Reads read, byte revision) {
-		this.isUnlocked = read.bool();
-		this.selected = read.bool();
 	}
 
 }

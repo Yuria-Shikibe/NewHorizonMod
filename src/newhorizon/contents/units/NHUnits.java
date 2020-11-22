@@ -47,9 +47,10 @@ public class NHUnits implements ContentList {
             	fallSpeed = 0.016f;
 				mechStepParticles = true;
 				mechStepShake = 0.15f;
-
+				canBoost = true;
+				boostMultiplier = 2.5f;
 				//abilities.add(new ShieldFieldAbility(20f, 40f, 60f * 4, 60f));
-				ammoType = AmmoTypes.power;
+				ammoType = AmmoTypes.powerHigh;
 
 				weapons.add(
 					new Weapon("new-horizon-stiken") {{

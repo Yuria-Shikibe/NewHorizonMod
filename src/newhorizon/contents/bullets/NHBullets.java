@@ -30,11 +30,25 @@ import static arc.math.Angles.*;
 
 public class NHBullets implements ContentList {
 	public static 
-	BulletType boltGene, airRaid, decayLaser, longLaser,
+	BulletType boltGene, airRaid, decayLaser, longLaser, darkEnrlaser,
 			   curveBomb;
 
 	@Override
-	public void load() {
+	public void load(){
+		darkEnrlaser = new NHSelfContinuousBulletType(800){{
+			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, Color.white};
+			continuousTime = 180f;
+			width = 13f;
+			length = 880f;
+			shake = 2.2f;
+			fadeTime = 26f;
+			lightStroke = 50f;
+			spaceMag = 13f;
+			hitEffect = NHFx.darkEnrCircleSplash;
+			shootEffect = NHFx.darkEnergyShootBig;
+			smokeEffect = NHFx.darkEnergySmokeBig;
+		}};
+		
 		decayLaser = new NHLaserBulletType(2400){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.darkEnrColor, Color.white};
 			laserEffect = NHFx.darkEnergyLaserShoot;
@@ -214,7 +228,7 @@ public class NHBullets implements ContentList {
 
 
 				if (b.timer(2, 8) && (b.lifetime - b.time) > NHLightningBolt.BOLTLIFE) {
-					NHLightningBolt.generateRange(b, 240, 15, 1, 300 * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), NHLightningBolt.WIDTH);
+					NHLightningBolt.generateRange(b, 240, 15, 1, splashDamage * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), 2 * NHLightningBolt.WIDTH);
 				}
 			}
 
@@ -236,8 +250,8 @@ public class NHBullets implements ContentList {
 			public void despawned(Bullet b) {
 				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
 					Vec2 randomPos = new Vec2(b.x + Mathf.range(200), b.y + Mathf.range(200));
-					
-					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1f + NHLightningBolt.WIDTH, 2, hitPos -> {
+					hitSound.at(randomPos, Mathf.random(0.9f, 1.1f);
+					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 2 * NHLightningBolt.WIDTH, 2, hitPos -> {
 						for (int j = 0; j < 4; j++) {
 							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
 						}
@@ -274,7 +288,7 @@ public class NHBullets implements ContentList {
 						height = 42f;
 						collidesTiles = false;
 						splashDamageRadius = 80f;
-						splashDamage = damage;
+						splashDamage = damage * 0.7f;
 						backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 						frontColor = Color.white;
 						lightning = 3;
@@ -312,19 +326,8 @@ public class NHBullets implements ContentList {
 					color(NHColor.darkEnrColor, Color.black, 0.8f);
 					Fill.circle(e.x, e.y, e.fout() * 30);
 				});
-				shootEffect = new Effect(40f, 100, e -> {
-					color(NHColor.darkEnrColor);
-					stroke(e.fout() * 3.7f);
-					circle(e.x, e.y, e.fin() * 100 + 15);
-					stroke(e.fout() * 2.5f);
-					circle(e.x, e.y, e.fin() * 60 + 15);
-				});
-				smokeEffect = new Effect(30f, e -> {
-					color(NHColor.darkEnrColor);
-					Fill.circle(e.x, e.y, e.fout() * 32);
-					color(NHColor.darkEnrColor, Color.black, 0.8f);
-					Fill.circle(e.x, e.y, e.fout() * 20);
-				});
+				shootEffect = NHFx.darkEnergyShootBig;
+				smokeEffect = NHFx.darkEnergySmokeBig;
 			}
 
 		};

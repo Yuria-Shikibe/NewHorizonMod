@@ -34,13 +34,28 @@ import static arc.math.Angles.*;
 public class NHFx implements ContentList {
 	public static
 	Effect 
-	polyTrail,
+	polyTrail, darkEnergyShootBig, darkEnergySmokeBig, darkEnrCircleSplash,
 	darkEnergyCharge, darkEnergyChargeBegin, darkEnergyShoot, darkEnergySmoke, darkEnergyLaserShoot,
 	circleSplash, darkErnExplosion, upgrading, lightningHit,
 	blastgenerate, blastAccept, emped, lightSkyCircleSplash;
 
 	@Override
 	public void load() {
+		darkEnergySmokeBig = new Effect(30f, e -> {
+			color(NHColor.darkEnrColor);
+			Fill.circle(e.x, e.y, e.fout() * 32);
+			color(NHColor.darkEnrColor, Color.black, 0.8f);
+			Fill.circle(e.x, e.y, e.fout() * 20);
+		});
+		
+		darkEnergyShootBig = new Effect(40f, 100, e -> {
+			color(NHColor.darkEnrColor);
+			stroke(e.fout() * 3.7f);
+			circle(e.x, e.y, e.fin() * 100 + 15);
+			stroke(e.fout() * 2.5f);
+			circle(e.x, e.y, e.fin() * 60 + 15);
+		});
+		
 		polyTrail = new Effect(25f, e -> {
 			color(e.color, Pal.gray, e.fin());
 			randLenVectors(e.id, 4, 46f * e.fin(), (x, y) -> {
@@ -127,6 +142,13 @@ public class NHFx implements ContentList {
 		
 		lightSkyCircleSplash = new Effect(26f, e -> {
 			color(NHColor.lightSky);
+			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * 3f);
+			});
+		});
+		
+		darkEnrCircleSplash = new Effect(26f, e -> {
+			color(NHColor.darkEnrColor);
 			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
 				Fill.circle(e.x + x, e.y + y, e.fout() * 3f);
 			});

@@ -324,6 +324,7 @@ public class UpgraderBlock extends Block {
 		public void buildConfiguration(Table table) {
 			table.button(Icon.logic, () -> {
 				dialog.cont.clear();
+				setFillParent(true);
 				dialog.cont.pane(t -> {
 					buildTable(t);
 					t.row();

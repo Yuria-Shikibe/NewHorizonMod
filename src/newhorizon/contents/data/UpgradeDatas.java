@@ -14,7 +14,7 @@ import newhorizon.contents.bullets.NHBullets;
 
 import static mindustry.Vars.*;
 
-public class UpgradeDatas{
+public class UpgradeDatas{ 
 	public static final UpgradeBaseData
 		basicData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, 
 			new ItemStack(NHItems.upgradeSort, 100),
@@ -31,6 +31,18 @@ public class UpgradeDatas{
 	//UpgradeAmmoDatas ↓
 		
 	public static final UpgradeAmmoData
+		darkEnrlaser = new UpgradeAmmoData(
+			"dark-enr-laser", "description", NHBullets.darkEnrlaser, 300f, 7,
+			new ItemStack(Items.surgeAlloy, 250),
+			new ItemStack(NHItems.darkEnergy, 500),
+			new ItemStack(NHItems.thermoCoreNegative, 150)
+		){{
+			shootSound = Sounds.laserblast;
+			continuousTime = NHBullets.darkEnrlaser.continuousTime;
+			chargeEffect = NHFx.darkEnergyCharge;
+			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
+			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
+		}},
 		
 		decayLaser = new UpgradeAmmoData(
 			"decay-laser", "description", NHBullets.decayLaser, 300f, 1,
@@ -54,7 +66,7 @@ public class UpgradeDatas{
 			shootSound = Sounds.laserblast;
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
-			chargeTime = 60f;
+			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
 		}},
 		
 		curveBomb = new UpgradeAmmoData(
