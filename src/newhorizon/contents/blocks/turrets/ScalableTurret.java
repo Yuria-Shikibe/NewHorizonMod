@@ -94,6 +94,9 @@ public class ScalableTurret extends Turret{
 		public boolean shooting;
 		public float powerUse = 1f;
 		
+		Bullet bullet;
+        float bulletLife;
+		
 		@Override public boolean shouldTurn(){return !shooting;}
     
     	@Override
@@ -174,75 +177,46 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		public void updateTile(){
-			unit.ammo(power.status * unit.type().ammoCapacity);
-			consumes.powerCond(powerUse, (TurretBuild entity) -> entity.target != null || (entity.logicControlled() && entity.logicShooting));
-			if(!validateTarget()) target = null;
+			super.updateTile();
+			
+			if(!isContiunous())return;
+			if(bulletLife > 0 && bullet != null){
+				tr.trns(rotation, block.size * tilesize / 2f, 0f);
+                bullet.rotation(rotation);
+                bullet.set(x + tr.x, y + tr.y);
+                bullet.time(0f);
+                heat = 1f;
+                recoil = recoilAmount;
+                bulletLife -= Time.delta / Math.max(efficiency(), 0.00001f);
+                if(bulletLife <= 0f){
+                    bullet = null;
+                }
+            }else if(reload > 0){
+                Liquid liquid = liquids.current();
+                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
 
-			recoil = Mathf.lerpDelta(recoil, 0f, restitution);
-			heat = Mathf.lerpDelta(heat, 0f, cooldown);
+                float used = (cheating() ? maxUsed * Time.delta : Math.min(liquids.get(liquid), maxUsed * Time.delta)) * liquid.heatCapacity * coolantMultiplier;
+                reload -= used;
+                liquids.remove(liquid, used);
 
-			unit.health(health);
-			unit.rotation(rotation);
-			unit.team(team);
+                if(Mathf.chance(0.06 * used)){
+                    coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
+                }
+            }
 
-			if(logicControlTime > 0){
-				logicControlTime -= Time.delta;
-			}
-
-			if(hasAmmo()){
-
-				if(timer(timerTarget, targetInterval)){
-					findTarget();
-				}
-
-				if(validateTarget()){
-					boolean canShoot = true;
-
-					if(isControlled()){
-						targetPos.set(unit.aimX(), unit.aimY());
-						canShoot = unit.isShooting();
-					}else if(logicControlled()){ //logic behavior
-						canShoot = logicShooting;
-					}else{
-						BulletType type = peekAmmo();
-						float speed = type.speed;
-                     
-						if(speed < 0.1f) speed = 9999999f;
-
-						targetPos.set(Predict.intercept(this, target, speed));
-						if(targetPos.isZero()){
-							targetPos.set(target);
-						}
-
-						if(Float.isNaN(rotation)){
-							rotation = 0;
-						}
-					}
-
-					float targetRot = angleTo(targetPos);
-
-					if(shouldTurn()){
-						turnToTarget(targetRot);
-					}
-
-					if(Angles.angleDist(rotation, targetRot) < shootCone && canShoot){
-						updateShooting();
-					}
-				}
-			}
-
-			if(acceptCoolant){
-				updateCooling();
-			}
 		}
 		
 		protected float reloadTime(){
 			float realReload = ammoData.reloadTime <= 0 ? reloadTime : ammoData.reloadTime;
-			return ammoData.continuousTime + realReload * (1 - Mathf.clamp(baseData.speedMPL * baseData.level, 0, maxReloadReduce) );
+			return realReload * (1 - Mathf.clamp(baseData.speedMPL * baseData.level, 0, maxReloadReduce) );
 		}
 		
 		@Override
 		protected void updateShooting(){
+			if(isContiunous() && bulletLife > 0 && bullet != null){
+                return;
+            }
+
             if(reload >= reloadTime()){
                 BulletType type = peekAmmo();
 
@@ -271,9 +245,12 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		protected void bullet(BulletType type, float angle){
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
-
-            type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(ammoData.velocityInaccuracy), lifeScl);
+			if(isContiunous()){
+				bullet = type.create(tile.build, team, x + tr.x, y + tr.y, angle);
+				bulletLife = ammoData.continuousTime;
+			}else{
+				super.bullet(type, angle);
+			}
         }
 		
 		@Override
@@ -296,6 +273,7 @@ public class ScalableTurret extends Turret{
 			Draw.reset();
 		}
 		
+				  protected boolean isContiunous(){return ammoData.continuousTime > 0;}
 		@Override public float handleDamage(float amount) {return amount * (1 - Mathf.clamp(baseData.defenceMPL * baseData.level, 0, maxDamageReduce));}
 		
 		@Override public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
