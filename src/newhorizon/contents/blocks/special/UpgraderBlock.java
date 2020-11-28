@@ -269,11 +269,17 @@ public class UpgraderBlock extends Block {
 					).size(buttonSize * buttonPerLine, buttonSize).row();
 				}
 				
-				table.pane(Styles.smallPane, cont -> {
+				table.pane(Styles.horizontalPane, cont -> {
 					int index = 0;
 					for (UpgradeAmmoData ammoData : ammoDatas) {
 						if(index % buttonPerLine == 0)cont.row().left();
-						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.clearToggleTransi, () -> {
+						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.clearPartiali, () -> {
+							switchAmmo(ammoData);
+						}).size(buttonSize).disabled( b ->
+							!ammoData.isUnlocked || ammoData.selected
+						).left();
+						
+						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.clearPartial2i, () -> {
 							switchAmmo(ammoData);
 						}).size(buttonSize).disabled( b ->
 							!ammoData.isUnlocked || ammoData.selected
