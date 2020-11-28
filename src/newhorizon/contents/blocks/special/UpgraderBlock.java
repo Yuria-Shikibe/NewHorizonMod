@@ -166,9 +166,15 @@ public class UpgraderBlock extends Block {
 		@Override
 		public boolean canUpgrade(UpgradeData data) {
 			if(data instanceof UpgradeBaseData){
-				UpgradeBaseData upgradeBaseData = (UpgradeBaseData)data;
-				if(upgradeBaseData.level == maxLevel)return false;
+				UpgradeBaseData upgradeData = (UpgradeBaseData)data;
+				if(upgradeData.level == maxLevel)return false;
 			}
+			
+			if(data instanceof UpgradeMultData){
+				UpgradeMultData upgradeData = (UpgradeMultData)data;
+				if(upgradeData.isUnlocked)return false;
+			}
+			
 			CoreBlock.CoreBuild core = core();
 			return 
 				coreValid(core) && (
