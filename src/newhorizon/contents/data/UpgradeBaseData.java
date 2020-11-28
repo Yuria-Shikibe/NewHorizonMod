@@ -127,7 +127,7 @@ public class UpgradeBaseData extends UpgradeData {
 				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL * level, 0f, maxDamageReduce) + "%[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
-			t2.pane(Tex.button, table -> {
+			t2.table(Tex.button, table -> {
 				table.button(Icon.infoCircle, Styles.cleart, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
 			}).size(LEN * 2, LEN).pad(OFFSET);
 		}).size(LEN * 12, LEN * 1.5f).row();

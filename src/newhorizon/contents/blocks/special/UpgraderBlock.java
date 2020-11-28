@@ -263,7 +263,7 @@ public class UpgraderBlock extends Block {
 		
 		protected void buildSwitchAmmoTable(Table t, boolean setting) {
 			
-			t.pane(Tex.button, table -> {
+			t.table(Tex.button, table -> {
 				if(setting){
 					table.pane(cont -> 
 						{cont.button("Upgrade", Icon.logic, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f).left();}

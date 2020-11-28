@@ -164,7 +164,7 @@ public class UpgradeAmmoData extends UpgradeMultData{
 				table.add("[lightgray]IsUnlocked: " + getJudge(isUnlocked) + "[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
 			
-			t2.pane(Tex.button, table -> {
+			t2.table(Tex.button, table -> {
 				table.button(Icon.infoCircle, Styles.cleart, () -> {showInfo(this, false);}).size(LEN);
 				table.button(Icon.upOpen, Styles.cleart, () -> {from.switchAmmo(this);}).size(LEN).disabled(b -> !isUnlocked || selected);
 			}).size(LEN * 2, LEN).pad(OFFSET);
