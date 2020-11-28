@@ -45,6 +45,7 @@ public class NHBullets implements ContentList {
 				strokes = new float[]{2.2f, 2.2f, 1.6f, 1f};
 				oscMag = 0f;
 				oscScl = 0f;
+				lifetime = 35f;
 				lightColor = NHColor.darkEnrColor;
 				hitEffect = NHFx.darkEnrCircleSplash;
 				shootEffect = NHFx.darkEnergyShootBig;
