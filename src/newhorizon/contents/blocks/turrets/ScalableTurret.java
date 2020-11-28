@@ -52,7 +52,7 @@ import static mindustry.Vars.*;
 
 public class ScalableTurret extends Turret{
 	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
-	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData("emergency-replace", "Default data", UpgradeData.none, 0f, 0, new ItemStack(NHItems.emergencyReplace, 0));
+	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData();
 	
 	public float powerUse;
 	

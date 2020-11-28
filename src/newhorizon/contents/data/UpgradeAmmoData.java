@@ -75,6 +75,10 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	
 	public TextureRegion ammoInfo;
 	
+	public UpgradeAmmoData(){
+		this("level-up", "default-ammo", UpgradeData.none, 0, 0, new ItemStack(NHItems.emergencyReplace, 0));
+	}
+	
 	public UpgradeAmmoData(
 		String name,
 		String description,
