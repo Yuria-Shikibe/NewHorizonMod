@@ -42,7 +42,7 @@ public class NHBullets implements ContentList {
 				length = 1200f;
 				fadeTime = 26f;
 				lightStroke = 50f;
-				spaceMag = 13f;
+				spaceMag = 3f;
 				oscMag = 5.5f;
 				oscScl = 0.8f;
 				hitEffect = NHFx.darkEnrCircleSplash;
