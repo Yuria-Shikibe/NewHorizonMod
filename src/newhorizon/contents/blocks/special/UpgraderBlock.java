@@ -63,7 +63,7 @@ import static mindustry.Vars.*;
 public class UpgraderBlock extends Block {
 	public static final int DFTID = -2; 
 	public static final Seq<UpgraderBlockBuild> upgradecGroup = new Seq<>(UpgraderBlockBuild.class);
-	
+	public static final int buttonPerLine = 8;
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
@@ -261,11 +261,12 @@ public class UpgraderBlock extends Block {
 		}
 		
 		protected void buildSwitchAmmoTable(Table t, boolean setting) {
-			final int buttonPerLine = 8;
 			t.pane(table -> {
-				if(setting)table.button("Upgrade", Icon.logic, () -> {
-					upgraderTableBuild();
-				}).size(60f * buttonPerLine, 60f).row().left();
+				if(setting){
+					table.button("Upgrade", Icon.logic, () -> {
+						upgraderTableBuild();
+					}).size(60f * buttonPerLine, 60f).left().row();
+				}
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
 					if(index % buttonPerLine == 0)table.row().left();
