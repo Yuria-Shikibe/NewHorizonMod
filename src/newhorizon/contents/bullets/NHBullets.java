@@ -41,11 +41,12 @@ public class NHBullets implements ContentList {
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
 				width = 20f;
 				length = 1200f;
+				lenscales = new float[]{1f, 1f, 1f, 1f};
 				strokes = new float[]{2.2f, 1.8f, 1.2f, 0.7f};
 				oscMag = 0f;
 				oscScl = 0f;
 				lightColor = NHColor.darkEnrColor;
-				hitEffect = NHFx.darkEnrCircleSplash;
+				hitEffect = NHFx.mediumDarkEnergyHit;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
 			}
@@ -133,22 +134,7 @@ public class NHBullets implements ContentList {
 				trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 				frontColor = Color.white;
 				despawnEffect = Fx.none;
-				hitEffect = new Effect(25, e -> {
-					color(lightColor);
-					stroke(e.fout() * 3);
-					circle(e.x, e.y, e.fin() * 80);
-					stroke(e.fout() * 1.75f);
-					circle(e.x, e.y, e.fin() * 60);
-					
-					stroke(e.fout() * 2.25f);
-					randLenVectors(e.id + 1, 12, 1f + 60f * e.finpow(), (x, y) -> {
-						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 12f);
-					});
-			
-					Fill.circle(e.x, e.y, e.fout() * 22);
-					color(lightColor, Color.black, 0.8f);
-					Fill.circle(e.x, e.y, e.fout() * 14);
-				});
+				hitEffect = NHFx.mediumDarkEnergyHit;
 			}
 				
 		};
@@ -337,20 +323,7 @@ public class NHBullets implements ContentList {
 				lifetime = 300;
 				hitEffect = Fx.none;
 				despawnEffect = Fx.none;
-				hitEffect = new Effect(60, e -> {
-					color(NHColor.darkEnrColor);
-					Fill.circle(e.x, e.y, e.fout() * 44);
-					stroke(e.fout() * 3.7f);
-					circle(e.x, e.y, e.fin() * 80);
-					stroke(e.fout() * 2.5f);
-					circle(e.x, e.y, e.fin() * 45);
-					randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
-						stroke(e.fout() * 3.2f);
-						lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
-					});
-					color(NHColor.darkEnrColor, Color.black, 0.8f);
-					Fill.circle(e.x, e.y, e.fout() * 30);
-				});
+				hitEffect = NHFx.largeDarkEnergyHit;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
 			}
