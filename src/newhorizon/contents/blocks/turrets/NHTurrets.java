@@ -53,6 +53,10 @@ public class NHTurrets implements ContentList {
 			shootType = NHBullets.darkEnrlaser;
 			powerUse = 10f;
 			size = 4;
+			health = 960;
+				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
+				
+				range = 600;
 		}};
 		
 		argmot = new SpeedupTurret("argmot") {
