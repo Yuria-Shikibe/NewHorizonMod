@@ -254,7 +254,7 @@ public class NHBullets implements ContentList {
 
 
 				if (b.timer(2, 8) && (b.lifetime - b.time) > NHLightningBolt.BOLTLIFE) {
-					NHLightningBolt.generateRange(b, 240, 15, 1, splashDamage * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), 2 * NHLightningBolt.WIDTH);
+					NHLightningBolt.generateRange(b, 240, 15, 1, splashDamage * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), 1.33f * NHLightningBolt.WIDTH);
 				}
 			}
 
@@ -277,7 +277,7 @@ public class NHBullets implements ContentList {
 				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
 					Vec2 randomPos = new Vec2(b.x + Mathf.range(200), b.y + Mathf.range(200));
 					hitSound.at(randomPos, Mathf.random(0.9f, 1.1f) );
-					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1.7 * NHLightningBolt.WIDTH, 2, hitPos -> {
+					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1.7f * NHLightningBolt.WIDTH, 2, hitPos -> {
 						for (int j = 0; j < 4; j++) {
 							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
 						}
