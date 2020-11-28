@@ -111,7 +111,10 @@ public abstract class UpgradeData implements Cloneable{
 	public abstract void buildUpgradeInfoAll(Table table);
 	
 	public void buildTable(Table t) {
-		t.update(() -> t.draw());
+		t.update(() -> {
+			t.remove();
+			t.draw();
+		});
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(table -> {
 			buildDescriptions(table);
@@ -130,8 +133,8 @@ public abstract class UpgradeData implements Cloneable{
 		}).size(LEN * 6f, LEN).left().pad(OFFSET);
 
 		t.pane(table -> {
-			table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, true);}).size(LEN);
-			table.button(Icon.upOpen, Styles.clearTransi, () -> {
+			table.button(Icon.infoCircle, () -> {showInfo(this, true);}).size(LEN);
+			table.button(Icon.upOpen, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(b -> !from.canUpgrade(this));
 		}).size(LEN * 2f, LEN).left().pad(OFFSET);
