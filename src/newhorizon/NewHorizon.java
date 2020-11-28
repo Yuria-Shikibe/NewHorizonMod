@@ -4,6 +4,7 @@ import arc.*;
 import mindustry.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.scene.style.TextureRegionDrawable;
 import arc.util.*;
 import mindustry.*;
@@ -43,7 +44,7 @@ public class NewHorizon extends Mod{
 			dialog.cont.add("[lightgray]Are you sure jump to this link: [accent]" + link + " [lightgray]?").row();
 			dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
 			dialog.cont.pane(table -> {
-				table.button("Yes", Icon.check, () -> Core.app.openURI(link)).size(120f, 60f);
+				table.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(120f, 60f);
 				table.button("No", Icon.cancel, dialog::hide).size(120f, 60f).pad(4);
 			}).size(260f, 70f);
 			dialog.show();
