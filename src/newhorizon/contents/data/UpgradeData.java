@@ -66,7 +66,7 @@ public abstract class UpgradeData implements Cloneable{
 	public float costTime;
 	public UpgraderBlockBuild from;
 	public boolean disable = false;
-	
+	public int id;
 	protected static final DecimalFormat df = new DecimalFormat("######0.00");
 	//
 	

@@ -75,6 +75,7 @@ public class UpgradeBaseData extends UpgradeData {
 	) {
 		super(name, description, costTime, items);
 		unlockLevel = 0;
+		this.id = -1;
 	}
 	
 	@Override

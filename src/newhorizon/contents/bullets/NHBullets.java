@@ -35,7 +35,7 @@ public class NHBullets implements ContentList {
 
 	@Override
 	public void load(){
-		darkEnrlaser = new ContinuousLaserBulletType(800){
+		darkEnrlaser = new ContinuousLaserBulletType(1000){
 			{
 				shake = 3;
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
@@ -43,10 +43,10 @@ public class NHBullets implements ContentList {
 				length = 1000f;
 				lenscales = new float[]{1f, 1.2f, 1.24f, 1.27f};
 				strokes = new float[]{2.2f, 2.2f, 1.6f, 1f};
-				oscMag =.55f;
-				oscScl = 0.125f;
+				oscMag = 0f;
+				oscScl = 0f;
 				lightColor = NHColor.darkEnrColor;
-				hitEffect = NHFx.darkEnergySpread;
+				hitEffect = NHFx.darkEnrCircleSplash;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
 			}
@@ -69,7 +69,7 @@ public class NHBullets implements ContentList {
 			}
 		};
 		
-		decayLaser = new NHLaserBulletType(1400){{
+		decayLaser = new NHLaserBulletType(2000){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.darkEnrColor, Color.white};
 			laserEffect = NHFx.darkEnergyLaserShoot;
 			length = 880f;
@@ -95,7 +95,7 @@ public class NHBullets implements ContentList {
 			shootEffect = smokeEffect = Fx.none;
 		}};
 		
-		airRaid = new NHTrailBulletType(9f, 750, "new-horizon-strike"){
+		airRaid = new NHTrailBulletType(9f, 800, "new-horizon-strike"){
 			
 			@Override
 			public void init(Bullet b){
@@ -215,7 +215,7 @@ public class NHBullets implements ContentList {
 
 		};
 
-		boltGene = new ArtilleryBulletType(2.75f, 500) {
+		boltGene = new ArtilleryBulletType(2.75f, 600) {
 			@Override
 			public void update(Bullet b) {
 				Effect.shake(2, 2, b);

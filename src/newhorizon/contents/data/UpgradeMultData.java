@@ -52,7 +52,6 @@ import java.text.DecimalFormat;
 import static mindustry.Vars.*;
 
 public abstract class UpgradeMultData extends UpgradeData{
-	public int id;
 	public boolean isUnlocked, selected;
 	
 	public UpgradeMultData(

@@ -164,6 +164,10 @@ public class UpgraderBlock extends Block {
 		protected boolean isUpgrading(){return remainTime > 0;}
 		
 		public boolean canUpgrade(UpgradeData data) {
+			if(data instanceof UpgradeBaseData){
+				UpgradeBaseData upgradeBaseData = (UpgradeBaseData)data;
+				if(upgradeBaseData.level == maxLevel)return false;
+			}
 			CoreBlock.CoreBuild core = core();
 			return 
 				coreValid(core) && (
@@ -185,14 +189,7 @@ public class UpgraderBlock extends Block {
 		public void upgradeData(UpgradeData data){
 			if(!canUpgrade(data))return;
 			consumeItems(data);
-			if(data instanceof UpgradeBaseData){
-				UpgradeBaseData baseDataOther = (UpgradeBaseData)data;
-				if(baseDataOther.level == maxLevel)return;
-				upgradingID = -1;
-			}else if(data instanceof UpgradeAmmoData){
-				UpgradeAmmoData ammoDataOther = (UpgradeAmmoData)data;
-				upgradingID = ammoDataOther.id;
-			}
+			upgradingID = data.id;
 			remainTime = costTime();
 		}
 		@Override//Updates
@@ -270,8 +267,8 @@ public class UpgraderBlock extends Block {
 					if(index % buttonPerLine == 0)table.row().left();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						switchAmmo(ammoData);
-					}).size(60).disabled( 
-						target() == null || !ammoData.isUnlocked || ammoData.selected
+					}).size(60).disabled( b ->
+						!ammoData.isUnlocked || ammoData.selected
 					).left();
 					index++;
 				}

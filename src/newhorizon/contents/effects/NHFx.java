@@ -193,7 +193,7 @@ public class NHFx{
 		darkEnrCircleSplash = new Effect(26f, e -> {
 			color(NHColor.darkEnrColor);
 			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
-				Fill.circle(e.x + x, e.y + y, e.fout() * 3f);
+				Fill.circle(e.x + x, e.y + y, e.fout() * 4.5f);
 			});
 		}),
 		
