@@ -42,7 +42,7 @@ public class NewHorizon extends Mod{
 			}).fillX().height(22f).row();
 			dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
 			dialog.cont.pane(t -> {
-				t.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(220f, 60f);
+				t.button("Yes", Icon.link, () -> Core.app.openURI(link)).size(220f, 60f);
 				t.button("No", Icon.cancel, dialog::hide).size(220f, 60f).pad(4);
 			}).fillX();
 			dialog.show();
@@ -59,7 +59,7 @@ public class NewHorizon extends Mod{
                 dialog.cont.add("<<-Powered by NewHorizonMod->>").row();
                 dialog.cont.pane(table -> {
 					table.button("Dismiss", dialog::hide).size(120f, 60f);
-					table.button("Links", Icon.export, () -> {
+					table.button("Links", Icon.link, () -> {
 						links();
 					}).size(180f, 60f).pad(4);
 				}).size(320f, 70f);
