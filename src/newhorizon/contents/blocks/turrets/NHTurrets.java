@@ -44,10 +44,17 @@ public class NHTurrets implements ContentList {
 
 	//Load Mod Turrets
 	public static Block
-	ender, thurmix, argmot;
+	tester, ender, thurmix, argmot;
 
 	@Override
 	public void load() {
+		tester = new LaserTurret("test"){{
+			shootDuration = 400f;
+			shootType = NHBullets.darkEnrlaser;
+			powerUse = 10f;
+			size = 4;
+		}};
+		
 		argmot = new SpeedupTurret("argmot") {
 			{
 				alternate = true;
