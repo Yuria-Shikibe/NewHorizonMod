@@ -79,9 +79,9 @@ public class NewHorizon extends Mod{
 		new NHItems().load();
 		new NHLiquids().load();
 		new NHBullets().load();
+		new NHTurrets().load();
 		new NHBlocks().load();
 		new NHFactories().load();
-		new NHTurrets().load();
 		new NHUnits().load();
 		Log.info("Units Loaded");
     }

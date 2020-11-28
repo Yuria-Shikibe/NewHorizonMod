@@ -97,8 +97,8 @@ public class UpgraderBlock extends Block {
 	
 	@Override
 	public void init(){
-		if(linkTarget == null) throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
 		super.init();
+		if(linkTarget == null) throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
 	}
 	
 	@Override
