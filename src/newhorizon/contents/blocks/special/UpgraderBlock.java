@@ -263,9 +263,9 @@ public class UpgraderBlock extends Block {
 		protected void buildSwitchAmmoTable(Table t, boolean setting) {
 			t.pane(table -> {
 				if(setting){
-					table.button("Upgrade", Icon.logic, () -> {
-						upgraderTableBuild();
-					}).size(60f * buttonPerLine, 60f).left().row();
+					table.pane(cont -> 
+						{cont.button("Upgrade", Icon.logic, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f).left();}
+					).size(60f * buttonPerLine, 60f);
 				}
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
