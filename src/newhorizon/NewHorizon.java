@@ -27,10 +27,6 @@ import newhorizon.contents.bullets.*;
 public class NewHorizon extends Mod{
 	public static final String NHNAME = "new-horizon-";
 	
-	private void confirm(String link){
-		
-	}
-	
 	private void links(){
 		BaseDialog dialog = new BaseDialog("Links");
 		addLink(dialog.cont, Icon.github, "Github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git");
@@ -48,7 +44,7 @@ public class NewHorizon extends Mod{
 			dialog.cont.pane(t -> {
 				t.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(220f, 60f);
 				t.button("No", Icon.cancel, dialog::hide).size(220f, 60f).pad(4);
-			}).size(260f, 70f);
+			}).fillX();
 			dialog.show();
 		}).size(180f, 60f).left().row();
 	}

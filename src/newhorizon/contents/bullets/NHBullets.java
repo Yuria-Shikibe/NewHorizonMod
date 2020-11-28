@@ -215,7 +215,7 @@ public class NHBullets implements ContentList {
 
 		};
 
-		boltGene = new ArtilleryBulletType(2.75f, 600) {
+		boltGene = new ArtilleryBulletType(2.75f, 200) {
 			@Override
 			public void update(Bullet b) {
 				Effect.shake(2, 2, b);
@@ -251,7 +251,7 @@ public class NHBullets implements ContentList {
 						for (int j = 0; j < 4; j++) {
 							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
 						}
-						Damage.damage(b.team(), hitPos.getX(), hitPos.getY(), 80f, this.splashDamage * b.damageMultiplier());
+						Damage.damage(b.team(), hitPos.getX(), hitPos.getY(), 80f, 8 * this.splashDamage * b.damageMultiplier());
 						NHFx.lightningHit.at(hitPos);
 					});
 				}

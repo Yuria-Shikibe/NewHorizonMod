@@ -272,7 +272,7 @@ public class UpgraderBlock extends Block {
 					).left();
 					index++;
 				}
-			}).size(60 * buttonPerLine, 60).pad(OFFSET).left();
+			}).fillX().pad(OFFSET).left();
 		}
 
 		@Override//Target confirm
