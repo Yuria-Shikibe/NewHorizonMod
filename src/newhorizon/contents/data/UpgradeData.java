@@ -113,7 +113,7 @@ public abstract class UpgradeData implements Cloneable{
 	public void buildTable(Table t) {
 		t.table(Tex.button, table -> {
 			buildDescriptions(table);
-		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
+		}).pad(OFFSET / 2).fillX().height(LEN * 1.6f).row();
 	}
 
 	public void buildDescriptions(Table t) {
@@ -131,7 +131,7 @@ public abstract class UpgradeData implements Cloneable{
 			table.button(Icon.upOpen, Styles.clearTransi, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(b -> !from.canUpgrade(this));
-		}).size(LEN * 2f, LEN).left().pad(OFFSET);
+		}).size(LEN * 2 + OFFSET / 2, LEN + OFFSET / 2).left().pad(OFFSET);
 	}
 	
 	public void showInfo(UpgradeData data, boolean drawCons){

@@ -251,7 +251,7 @@ public class UpgraderBlock extends Block {
 				if(baseData.level < maxLevel)baseData.buildTable(table);
 				else baseData.buildTableComplete(table);
 				for (UpgradeAmmoData ammoData : ammoDatas) if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
-			}).fillX().height(LEN * 2f);
+			}).fillX().height(LEN * 3.2f);
 		}
 
 		public void switchAmmo(UpgradeAmmoData data){
@@ -266,8 +266,8 @@ public class UpgraderBlock extends Block {
 			t.table(Tex.button, table -> {
 				if(setting){
 					table.pane(cont -> 
-						{cont.button("Upgrade", Icon.logic, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f).left();}
-					).size(buttonSize * buttonPerLine, buttonSize).row();
+						{cont.button("Upgrade", Icon.logic, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f);}
+					).size(buttonSize * buttonPerLine, buttonSize).pad(OFFSET).row();
 				}
 				
 				table.pane(cont -> {
@@ -281,9 +281,9 @@ public class UpgraderBlock extends Block {
 						).left();
 						index ++;
 					}
-				}).width(buttonSize * buttonPerLine);
+				}).padLeft(OFFSET).width(buttonSize * buttonPerLine);
 				if(!setting)table.left();
-			}).width(buttonSize * buttonPerLine).pad(OFFSET).left();
+			}).width(buttonSize * buttonPerLine + 2 * OFFSET).pad(OFFSET).left();
 		}
 
 		protected void setLink(int value) {
