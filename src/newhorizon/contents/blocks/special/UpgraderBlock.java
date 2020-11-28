@@ -268,8 +268,8 @@ public class UpgraderBlock extends Block {
 						{cont.button("Upgrade", Icon.logic, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f).left();}
 					).size(buttonSize * buttonPerLine, buttonSize).row();
 				}
-				int index = 0;
 				table.pane(cont -> {
+					int index = 0;
 					for (UpgradeAmmoData ammoData : ammoDatas) {
 						if(index % buttonPerLine == 0)cont.row().left();
 						cont.button(new TextureRegionDrawable(ammoData.icon), () -> {
@@ -279,7 +279,7 @@ public class UpgraderBlock extends Block {
 						).left();
 						index++;
 					}
-				}).size(buttonSize * buttonPerLine, buttonSize * (Mathf.floor(index / buttonPerLine) + 1f) );
+				}).width(buttonSize * buttonPerLine);
 			}).fillX().pad(OFFSET).left();
 		}
 
