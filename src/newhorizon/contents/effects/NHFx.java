@@ -33,13 +33,22 @@ import static arc.math.Angles.*;
 public class NHFx{
 	public static final Effect
 		//All effects
+		darkEnergySpread = new Effect(32f, e -> {
+			randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
+				color(NHColor.darkEnrColor);
+				Fill.circle(e.x + x, e.y + y, e.fout() * 15f);
+				color(NHColor.darkEnr);
+				Fill.circle(e.x + x, e.y + y, e.fout() * 9f);
+			});
+		}),
+					
 		largeDarkEnergyHitCircle = new Effect(20f, e -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x, e.y, e.fout() * 44);
 			randLenVectors(e.id, 5, 60f * e.fin(), (x,y) -> {
 				Fill.circle(e.x + x, e.y + y, e.fout() * 8);
 			});
-			color(NHColor.darkEnrColor, Color.black, 0.8f);
+			color(NHColor.darkEnr);
 			Fill.circle(e.x, e.y, e.fout() * 30);
 		}),
 		
@@ -54,7 +63,7 @@ public class NHFx{
 				stroke(e.fout() * 3.2f);
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
 			});
-			color(NHColor.darkEnrColor, Color.black, 0.8f);
+			color(NHColor.darkEnr);
 			Fill.circle(e.x, e.y, e.fout() * 30);
 		}),
 				

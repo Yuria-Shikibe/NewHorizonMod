@@ -39,14 +39,14 @@ public class NHBullets implements ContentList {
 			{
 				shake = 3;
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
-				width = 20f;
+				width = 16f;
 				length = 1000f;
 				lenscales = new float[]{1f, 1.2f, 1.24f, 1.27f};
 				strokes = new float[]{2.2f, 2.2f, 1.6f, 1f};
-				oscMag = 0f;
-				oscScl = 0f;
+				oscMag =.55f;
+				oscScl = 0.125f;
 				lightColor = NHColor.darkEnrColor;
-				hitEffect = NHFx.largeDarkEnergyHitCircle;
+				hitEffect = NHFx.darkEnergySpread;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
 			}
@@ -55,14 +55,7 @@ public class NHBullets implements ContentList {
 			public void update(Bullet b) {
 				super.update(b);
 				if (b.timer(0, 9)) {
-					new Effect(32f, e -> {
-						randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
-							color(NHColor.darkEnrColor);
-							Fill.circle(e.x + x, e.y + y, e.fout() * 15f);
-							color(NHColor.darkEnrColor, Color.black, 0.8f);
-							Fill.circle(e.x + x, e.y + y, e.fout() * 9f);
-						});
-					}).at(b);
+					NHFx.darkEnergySpread.at(b);
 				}
 			}
 			
@@ -227,16 +220,8 @@ public class NHBullets implements ContentList {
 			public void update(Bullet b) {
 				Effect.shake(2, 2, b);
 				if (b.timer(0, 8)) {
-					new Effect(32f, e -> {
-						randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
-							color(NHColor.darkEnrColor);
-							Fill.circle(e.x + x, e.y + y, e.fout() * 15f);
-							color(NHColor.darkEnr);
-							Fill.circle(e.x + x, e.y + y, e.fout() * 9f);
-						});
-					}).at(b);
+					NHFx.darkEnergySpread.at(b);
 				}
-
 
 				if (b.timer(2, 8) && (b.lifetime - b.time) > NHLightningBolt.BOLTLIFE) {
 					NHLightningBolt.generateRange(b, 240, 15, 1, splashDamage * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), 1.33f * NHLightningBolt.WIDTH);
