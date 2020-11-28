@@ -41,7 +41,7 @@ public class NHBullets implements ContentList {
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
 				width = 16f;
 				length = 1000f;
-				lenscales = new float[]{1f, 1.2f, 1.24f, 1.27f};
+				lenscales = new float[]{0.89f, 1.01f, 1.05f, 1.07f};
 				strokes = new float[]{2.2f, 2.2f, 1.6f, 1f};
 				oscMag = 0f;
 				oscScl = 0f;
