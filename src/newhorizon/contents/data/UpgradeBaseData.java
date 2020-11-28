@@ -95,8 +95,7 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 	
 	public void buildTableComplete(Table t) {
-		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
-		t.pane(t2 -> {
+		t.table(Tex.button, t2 -> {
 			t2.pane(table -> {
 				table.image(iconLevel).size(LEN).left();
 			}).size(LEN).left();
@@ -108,8 +107,7 @@ public class UpgradeBaseData extends UpgradeData {
 			t2.pane(table -> {
 				table.button(Icon.infoCircle, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
 			}).size(LEN * 2f, LEN).pad(OFFSET);
-		}).size(LEN * 11, LEN * 1.5f).row();
-		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
+		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 	
 	@Override
@@ -126,10 +124,8 @@ public class UpgradeBaseData extends UpgradeData {
 				table.add("[lightgray]ReloadReduce: [accent]" + getPercent(speedMPL * level, 0f, maxReloadReduce) + "%[]").left().row();
 				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL * level, 0f, maxDamageReduce) + "%[]").left().row();
 			}).size(LEN * 6f, LEN).pad(OFFSET);
-			t2.pane(cont -> {
-				cont.table(Tex.button, table -> {
-					table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
-				}).size(LEN * 2, LEN);
+			t2.table(Tex.button, table -> {
+				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
 			}).size(LEN * 2, LEN).pad(OFFSET);
 		}).size(LEN * 12, LEN * 1.5f).row();
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();

@@ -152,8 +152,7 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	
 	@Override
 	public void buildUpgradeInfoAll(Table t) {
-		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
-		t.pane(t2 -> {
+		t.table(Tex.button, t2 -> {
 			t2.pane(table -> {
 				table.image(icon).size(LEN).left();
 			}).size(LEN).left();
@@ -170,8 +169,7 @@ public class UpgradeAmmoData extends UpgradeMultData{
 					table.button(Icon.upOpen, Styles.clearTransi, () -> {from.switchAmmo(this);}).size(LEN).disabled(b -> !isUnlocked || selected);
 				}).size(LEN * 2, LEN);
 			}).size(LEN * 2, LEN).pad(OFFSET);
-		}).size(LEN * 11, LEN * 1.5f).row();
-		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
+		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 		
 	

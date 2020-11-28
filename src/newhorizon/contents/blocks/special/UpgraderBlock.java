@@ -221,12 +221,12 @@ public class UpgraderBlock extends Block {
 		
 		//UI
 		protected void buildTable(Table t) {
-			t.pane(table -> {
-				table.button(Icon.infoCircle, () -> {
+			t.table(Tex.button, table -> {
+				table.button(Icon.infoCircle, Styles.clearTransi, () -> {
 					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID), false);
 				}).size(60).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty());
 				
-				table.button(Icon.hostSmall, () -> {
+				table.button(Icon.hostSmall, Styles.clearTransi, () -> {
 					new Dialog("All Info") {{
 						setFillParent(true);
 						cont.pane(infos -> {
@@ -237,7 +237,7 @@ public class UpgraderBlock extends Block {
 					}}.show();
 				}).size(60f).left();
 				
-				table.button("Back", dialog::hide).size(120f, 60f).left();
+				table.button("Back", Styles.cleart, dialog::hide).size(120f, 60f).left();
 			}).left().size(240f, 60f).pad(OFFSET);
 			t.row();
 			buildSwitchAmmoTable(t, false);
@@ -251,7 +251,7 @@ public class UpgraderBlock extends Block {
 				if(baseData.level < maxLevel)baseData.buildTable(table);
 				else baseData.buildTableComplete(table);
 				for (UpgradeAmmoData ammoData : ammoDatas) if (ammoData != null && !ammoData.isUnlocked)ammoData.buildTable(table);
-			}).size(LEN * 12 + OFFSET * 3, LEN * 4f + OFFSET);
+			}).fillX().height(LEN * 2f);
 		}
 
 		public void switchAmmo(UpgradeAmmoData data){
@@ -274,7 +274,7 @@ public class UpgraderBlock extends Block {
 					int index = 0;
 					for (UpgradeAmmoData ammoData : ammoDatas) {
 						if(index % buttonPerLine == 0)cont.row().left();
-						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.cleari, () -> {
+						cont.button(new TextureRegionDrawable(ammoData.icon), () -> {
 							switchAmmo(ammoData);
 						}).size(buttonSize).disabled( b ->
 							!ammoData.isUnlocked || ammoData.selected
