@@ -274,7 +274,7 @@ public class UpgraderBlock extends Block {
 					int index = 0;
 					for (UpgradeAmmoData ammoData : ammoDatas) {
 						if(index % buttonPerLine == 0)cont.row().left();
-						cont.button(new TextureRegionDrawable(ammoData.icon), () -> {
+						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.cleari, () -> {
 							switchAmmo(ammoData);
 						}).size(buttonSize).disabled( b ->
 							!ammoData.isUnlocked || ammoData.selected
