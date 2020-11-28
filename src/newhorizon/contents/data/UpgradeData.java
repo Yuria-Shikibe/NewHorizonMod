@@ -114,26 +114,26 @@ public abstract class UpgradeData implements Cloneable{
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(table -> {
 			buildDescriptions(table);
-		}).size(LEN * 11, LEN * 1.5f).row();
+		}).size(LEN * 11, LEN * 1.5f).row().update(t -> {});
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 	}
 
 	public void buildDescriptions(Table t) {
 		t.pane(table -> {
 			table.image(icon).size(LEN).left();
-		}).left().size(LEN);
+		}).left().size(LEN).update(t -> {});
 
 		t.pane(table -> {
 			addText(table);
 			table.add("[lightgray]NeededTime: [accent]" + df.format(costTime() / 60) + "sec[]").left().row();
-		}).size(LEN * 6f, LEN).left().pad(OFFSET);
+		}).size(LEN * 6f, LEN).left().pad(OFFSET).update(t -> {});
 
 		t.pane(table -> {
 			table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, true);}).size(LEN);
 			table.button(Icon.upOpen, Styles.clearTransi, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(b -> !from.canUpgrade(this));
-		}).size(LEN * 2f, LEN).left().pad(OFFSET);
+		}).size(LEN * 2f, LEN).left().pad(OFFSET).update(t -> {});
 	}
 	
 	public void showInfo(UpgradeData data, boolean drawCons){
