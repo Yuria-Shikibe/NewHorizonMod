@@ -269,7 +269,7 @@ public class UpgraderBlock extends Block {
 					).size(buttonSize * buttonPerLine, buttonSize).row();
 				}
 				int index = 0;
-				table.pane(cont -> 
+				table.pane(cont -> {
 					for (UpgradeAmmoData ammoData : ammoDatas) {
 						if(index % buttonPerLine == 0)cont.row().left();
 						cont.button(new TextureRegionDrawable(ammoData.icon), () -> {
