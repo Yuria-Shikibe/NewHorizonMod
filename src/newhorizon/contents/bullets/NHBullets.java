@@ -38,13 +38,14 @@ public class NHBullets implements ContentList {
 		darkEnrlaser = new ContinuousLaserBulletType(1000){
 			{
 				shake = 3;
-				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
-				width = 16f;
+				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.darkEnrColor, NHColor.darkEnr};
+				width = 15f;
 				length = 1000f;
 				lenscales = new float[]{0.89f, 1.01f, 1.05f, 1.07f};
-				strokes = new float[]{2.2f, 2.2f, 1.6f, 1f};
+				strokes = new float[]{2.2f, 1.95f, 1.775f, 1.6f};
+				tscales = new float[]{1f, 1f, 1f, 1f};
 				oscScl = 0.5f;
-				oscMag = 2.5f;
+				oscMag = 5.5f;
 				lifetime = 35f;
 				lightColor = NHColor.darkEnrColor;
 				hitEffect = NHFx.darkEnrCircleSplash;
@@ -55,7 +56,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void update(Bullet b) {
 				super.update(b);
-				if (b.timer(0, 9)) {
+				if (b.timer(0, 8)) {
 					NHFx.darkEnergySpread.at(b);
 				}
 			}
@@ -64,9 +65,10 @@ public class NHBullets implements ContentList {
 			public void draw(Bullet b) {
 				super.draw(b);
 				color(NHColor.darkEnrColor);
-				Fill.circle(b.x, b.y, 22);
+				Fill.circle(b.x, b.y, 26f);
 				color(NHColor.darkEnr);
-				Fill.circle(b.x, b.y, 8f + 8f * b.fout());
+				Fill.circle(b.x, b.y, 9f + 9f * b.fout());
+				Draw.reset();
 			}
 		};
 		
