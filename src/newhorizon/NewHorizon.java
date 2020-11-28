@@ -41,11 +41,13 @@ public class NewHorizon extends Mod{
 	private void addLink(Table table, TextureRegionDrawable icon, String buttonName, String link){
 		table.button(buttonName, icon, () -> {
 			Dialog dialog = new Dialog("");
-			dialog.cont.add("[lightgray]Are you sure jump to this link: [accent]" + link + " [lightgray]?").row();
+			dialog.cont.pane(t -> {
+				t.add("[lightgray]Are you sure jump to this link: [accent]" + link + " [lightgray]?");
+			}).fillX();
 			dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
 			dialog.cont.pane(t -> {
-				t.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(120f, 60f);
-				t.button("No", Icon.cancel, dialog::hide).size(120f, 60f).pad(4);
+				t.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(220f, 60f);
+				t.button("No", Icon.cancel, dialog::hide).size(220f, 60f).pad(4);
 			}).size(260f, 70f);
 			dialog.show();
 		}).size(180f, 60f).left().row();

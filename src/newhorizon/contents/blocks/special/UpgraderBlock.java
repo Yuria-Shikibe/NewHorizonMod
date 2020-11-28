@@ -222,7 +222,7 @@ public class UpgraderBlock extends Block {
 			t.pane(table -> {
 				table.button(Icon.infoCircle, () -> {
 					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID), false);
-				}).size(60).disabled(lastestSelectID < 0 || ammoDatas.isEmpty());
+				}).size(60).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty());
 				
 				table.button(Icon.hostSmall, () -> {
 					new Dialog("All Info") {{
