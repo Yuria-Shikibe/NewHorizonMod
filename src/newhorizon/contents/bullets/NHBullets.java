@@ -37,14 +37,15 @@ public class NHBullets implements ContentList {
 	public void load(){
 		darkEnrlaser = new ContinuousLaserBulletType(800){
 			{
+				shake = 3;
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
 				width = 20f;
 				length = 1200f;
 				fadeTime = 26f;
+				strokes = new float[]{2.2f, 1.8f, 1.2f, 0.7f};
 				lightStroke = 50f;
-				spaceMag = 3f;
 				oscMag = 5.5f;
-				oscScl = 0.8f;
+				oscScl = 0.4f;
 				hitEffect = NHFx.darkEnrCircleSplash;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
@@ -53,7 +54,6 @@ public class NHBullets implements ContentList {
 			@Override
 			public void update(Bullet b) {
 				super.update(b);
-				Effect.shake(2, 2, b);
 				if (b.timer(0, 9)) {
 					new Effect(32f, e -> {
 						randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
