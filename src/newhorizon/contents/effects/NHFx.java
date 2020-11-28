@@ -36,9 +36,8 @@ public class NHFx{
 		largeDarkEnergyHitCircle = new Effect(20f, e -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x, e.y, e.fout() * 44);
-			randLenVectors(e.id, 6, 18 + 70 * e.fin(), (x, y) -> {
-				stroke(e.fout() * 3.2f);
-				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
+			randLenVectors(e.id, 5, 60f * e.fin(), (x,y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * 8);
 			});
 			color(NHColor.darkEnrColor, Color.black, 0.8f);
 			Fill.circle(e.x, e.y, e.fout() * 30);

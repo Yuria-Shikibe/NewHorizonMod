@@ -50,7 +50,7 @@ public class UpgradeDatas{
 			new ItemStack(NHItems.irayrondPanel, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
-			shootSound = Sounds.lasershoot;
+			shootSound = Sounds.laser;
 			burstSpacing = 6f;
 			salvos = 8;
 			randX = 2f * tilesize;
@@ -87,7 +87,7 @@ public class UpgradeDatas{
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
-			shootSound = Sounds.artillery;
+			shootSound = Sounds.bigshot;
 			inaccuracy = 6;
 			velocityInaccuracy = 0.08f;
 			burstSpacing = 9f;

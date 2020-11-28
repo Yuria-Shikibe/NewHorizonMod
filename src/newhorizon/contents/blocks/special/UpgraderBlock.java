@@ -65,7 +65,9 @@ public class UpgraderBlock extends Block {
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
 	//public TextureRegion[] levelRegions;
-
+	
+	//
+	public Block linkTarget;
 	public Color baseColor = Pal.accent;
 	public Block toUpgradeClass;
 	public Effect upgradeEffect = NHFx.upgrading;
@@ -92,7 +94,13 @@ public class UpgraderBlock extends Block {
 		solid = true;
 		//levelRegions = new TextureRegion[maxLevel];
 	}
-
+	
+	@Override
+	public void init(){
+		if(linkTarget == null) throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
+		super.init();
+	}
+	
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
@@ -295,12 +303,13 @@ public class UpgraderBlock extends Block {
 				setLink(-1);
 				return false;
 			}
-
+			
+			if (other.block.name != linkTarget.name)return false;
 			if (link == other.pos()) {
 				setLink(-1);
 				return false;
 			} else if (!(other instanceof Scalablec)) {
-				ui.showErrorMessage("Failed to connect, target doesn't implement @Interface Scalablec");
+				ui.showErrorMessage("Failed to connect, target '" + other.toString() + "' doesn't implement @Scalablec");
 				return true;
 			} else { 
 				Scalablec target = (Scalablec)other;

@@ -61,6 +61,7 @@ public class NHBlocks implements ContentList {
 		eoeUpgrader = new UpgraderBlock("end-of-era-upgrader"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 3;
+			linkTarget = NHTurrets.ender;
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 10;
