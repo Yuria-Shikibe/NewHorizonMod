@@ -43,9 +43,9 @@ public class NewHorizon extends Mod{
 			Dialog dialog = new Dialog("");
 			dialog.cont.add("[lightgray]Are you sure jump to this link: [accent]" + link + " [lightgray]?").row();
 			dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
-			dialog.cont.pane(table -> {
-				table.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(120f, 60f);
-				table.button("No", Icon.cancel, dialog::hide).size(120f, 60f).pad(4);
+			dialog.cont.pane(t -> {
+				t.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(120f, 60f);
+				t.button("No", Icon.cancel, dialog::hide).size(120f, 60f).pad(4);
 			}).size(260f, 70f);
 			dialog.show();
 		}).size(180f, 60f).left().row();
