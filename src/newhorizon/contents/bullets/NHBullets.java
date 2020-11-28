@@ -39,11 +39,8 @@ public class NHBullets implements ContentList {
 			{
 				shake = 3;
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.darkEnrColor, NHColor.darkEnr};
-				width = 15f;
+				width = 18f;
 				length = 1000f;
-				lenscales = new float[]{0.89f, 1.01f, 1.05f, 1.07f};
-				strokes = new float[]{2.2f, 1.95f, 1.775f, 1.6f};
-				tscales = new float[]{1f, 1f, 1f, 1f};
 				oscScl = 0.5f;
 				oscMag = 5.5f;
 				lifetime = 35f;
