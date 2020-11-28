@@ -40,12 +40,12 @@ public class NHBullets implements ContentList {
 				shake = 3;
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
 				width = 20f;
-				length = 1200f;
+				length = 880f;
 				fadeTime = 26f;
 				strokes = new float[]{2.2f, 1.8f, 1.2f, 0.7f};
 				lightStroke = 50f;
-				oscMag = 5.5f;
-				oscScl = 0.4f;
+				oscMag = 0f;
+				oscScl = 0f;
 				hitEffect = NHFx.darkEnrCircleSplash;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
