@@ -16,6 +16,7 @@ import arc.graphics.g2d.*;
 import arc.scene.style.*;
 import mindustry.game.*;
 import mindustry.ctype.*;
+import mindustry.audio.*;
 import mindustry.content.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.entities.*;
@@ -60,7 +61,9 @@ import static newhorizon.contents.data.UpgradeData.*;
 import static mindustry.Vars.*;
 
 public class UpgraderBlock extends Block {
-	private static final int DFTID = -2; 
+	public static final int DFTID = -2; 
+	public static final Seq<UpgraderBlockBuild> upgradecGroup = new Seq<>(UpgraderBlockBuild.class);
+	
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
@@ -137,7 +140,6 @@ public class UpgraderBlock extends Block {
 	}
 
 	public class UpgraderBlockBuild extends Building implements Ranged, Upgraderc{
-		
 		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
 		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
 
@@ -145,7 +147,8 @@ public class UpgraderBlock extends Block {
 		public int upgradingID = DFTID;
 		public int lastestSelectID = -1;
 		public float remainTime;
-
+		
+		protected SoundLoop upgradeSound = new SoundLoop(Sounds.build, 1.1f);
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
 		
 		protected boolean coreValid(CoreBlock.CoreBuild core) {
@@ -158,11 +161,8 @@ public class UpgraderBlock extends Block {
 			CoreBlock.CoreBuild core = core();
 			if(coreValid(core))core.items.remove(data.requirements());
 		}
-
-		public CoreBlock.CoreBuild core(){return this.team.core();}
-
-		protected boolean isUpgrading(){return remainTime > 0;}
 		
+		@Override
 		public boolean canUpgrade(UpgradeData data) {
 			if(data instanceof UpgradeBaseData){
 				UpgradeBaseData upgradeBaseData = (UpgradeBaseData)data;
@@ -177,31 +177,33 @@ public class UpgraderBlock extends Block {
 				);
 		}
 
-		protected float costTime(){
+		public float costTime(){
 			return 
 				upgradingID == DFTID ? 0 : 
-				upgradingID == -1	? baseData.costTime() :
-				upgradingID >= 0 	? ammoDatas.get(upgradingID).costTime() :
+				upgradingID == -1    ? baseData.costTime() :
+				upgradingID >= 0     ? ammoDatas.get(upgradingID).costTime() :
 				0;
 		}
 		
-		//Data Upgrade
+		@Override//Data Upgrade
 		public void upgradeData(UpgradeData data){
 			if(!canUpgrade(data))return;
 			consumeItems(data);
 			upgradingID = data.id;
 			remainTime = costTime();
 		}
+		
 		@Override//Updates
 		public void updateUpgrading() {
 			if (isUpgrading()) {
-				Sounds.build.at(this);
+				upgradeSound.update(x, y, true);
 				remainTime -= (state.rules.infiniteResources ? 100000 : 1) * Time.delta * efficiency();
 			} else completeUpgrade();
 		}
 		
 		@Override
 		public void completeUpgrade() {
+			upgradeSound.stop();
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
 			
@@ -214,7 +216,6 @@ public class UpgraderBlock extends Block {
 			
 			updateTarget();
 			upgradingID = DFTID;
-			
 		}
 		
 		//UI
@@ -238,7 +239,7 @@ public class UpgraderBlock extends Block {
 				table.button("Back", dialog::hide).size(120f, 60f).left();
 			}).left().size(240f, 60f).pad(OFFSET);
 			t.row();
-			buildSwitchAmmoTable(t);
+			buildSwitchAmmoTable(t, false);
 			t.row();
 		}
 		
@@ -259,30 +260,24 @@ public class UpgraderBlock extends Block {
 			updateTarget();
 		}
 		
-		protected void buildSwitchAmmoTable(Table t) {
+		protected void buildSwitchAmmoTable(Table t, boolean setting) {
 			final int buttonPerLine = 8;
 			t.pane(table -> {
+				if(setting)table.button("Upgrade", Icon.logic, () -> {
+					upgraderTableBuild();
+				}).size(60f * buttonPerLine, 60f).row().left();
 				int index = 0;
 				for (UpgradeAmmoData ammoData : ammoDatas) {
 					if(index % buttonPerLine == 0)table.row().left();
 					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
 						switchAmmo(ammoData);
-					}).size(60).disabled( b ->
+					}).size(60f).disabled( b ->
 						!ammoData.isUnlocked || ammoData.selected
 					).left();
 					index++;
 				}
 			}).fillX().pad(OFFSET).left();
 		}
-
-		@Override//Target confirm
-		public boolean linkValid() {
-			if (link == -1) return false;
-			Building linkTarget = world.build(link);
-			return linkTarget instanceof Scalablec/* && linkTarget.block == toUpgradeClass*/ && linkTarget.team == team && within(linkTarget, range());
-		}
-
-		@Override public Scalablec target() {return linkValid() ? (Scalablec)world.build(link) : null;}
 
 		protected void setLink(int value) {
 			if (value == -1) {
@@ -300,7 +295,6 @@ public class UpgraderBlock extends Block {
 				setLink(-1);
 				return false;
 			}
-			
 			if (other.block.name != linkTarget.name)return false;
 			if (link == other.pos()) {
 				setLink(-1);
@@ -315,45 +309,36 @@ public class UpgraderBlock extends Block {
 					return false;
 				}
 			}
-			
 			return true;
 		}
 
+		
+		
 		@Override
-		public float range() {
-			return range;
+		public void upgraderTableBuild(){
+			dialog.cont.clear();
+			dialog.cont.pane(t -> {
+				buildTable(t);
+				t.row();
+				t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
+				buildUpgradeDataTable(t);
+				t.row();
+				t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
+			});
+			dialog.show();
 		}
-
-		@Override
-		public void buildConfiguration(Table table) {
-			table.button(Icon.logic, () -> {
-				dialog.cont.clear();
-				
-				dialog.cont.pane(t -> {
-					buildTable(t);
-					t.row();
-					t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
-					buildUpgradeDataTable(t);
-					t.row();
-					t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
-				});
-				dialog.show();
-			}).size(60f).left();
-		}
-
+		
 		@Override
 		public void updateTile() {
 			if (upgradingID != DFTID){
-				
 				updateUpgrading();
-				if(Mathf.chanceDelta(upgradeEffectChance)){
-					for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2 * tilesize), y - Mathf.random(block.size / 2 * tilesize), block.size / 2, baseColor);
-				}
+				if(Mathf.chanceDelta(upgradeEffectChance))for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2 * tilesize), y - Mathf.random(block.size / 2 * tilesize), block.size / 2, baseColor);
 			}
 			
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setData(initUpgradeAmmoDatas);
 				updateTarget();
+				upgradecGroup.add(this);
 			});
 		}
 
@@ -361,26 +346,16 @@ public class UpgraderBlock extends Block {
 		public void onDestroyed() {
 			super.onDestroyed();
 			if(linkValid())target().resetUpgrade();
+			upgradecGroup.remove(this);
 		}
 
 		@Override
 		public void placed() {
 			super.placed();
+			upgradecGroup.add(this);
 			setData(initUpgradeAmmoDatas);
 		}
 		
-		@Override
-		public void onRemoved() {
-			if(linkValid())target().resetUpgrade();
-		}
-
-		//Draw Methods
-
-		@Override
-		public void draw() {
-			Draw.rect(region, x, y);
-		}
-
 		@Override
 		public void drawConfigure() {
 			Drawf.dashCircle(x, y, range(), baseColor);
@@ -450,6 +425,25 @@ public class UpgraderBlock extends Block {
 				if(lastestSelectID >= 0 && ammoDatas.get(lastestSelectID).isUnlocked)target().setAmmoData(ammoDatas.get(lastestSelectID));
 			}
 		}
+		
+		@Override//Target confirm
+		public boolean linkValid() {
+			if (link == -1) return false;
+			Building target = world.build(link);
+			return target instanceof Scalablec && linkTarget.name == target.block.name && target.team == team && within(target, range());
+		}
+		
+		public CoreBlock.CoreBuild core(){return this.team.core();}
+
+		@Override public boolean isUpgrading(){return remainTime > 0;}
+		@Override public float range() { return range; }
+		@Override public void buildConfiguration(Table table) {buildSwitchAmmoTable(table, true);}
+		@Override public void draw() {Draw.rect(region, x, y);}
+		@Override public void onRemoved() {
+			upgradecGroup.remove(this);
+			if(linkValid())target().resetUpgrade();
+		}
+		@Override public Scalablec target() {return linkValid() ? (Scalablec)world.build(link) : null;}
 	}
 }
 
