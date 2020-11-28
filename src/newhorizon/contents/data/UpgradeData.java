@@ -52,6 +52,7 @@ import java.text.DecimalFormat;
 import static mindustry.Vars.*;
 
 public abstract class UpgradeData implements Cloneable{
+	public static final DecimalFormat df = new DecimalFormat("######0.00");
 	public static final String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
 	public static final String offsetSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
@@ -67,7 +68,6 @@ public abstract class UpgradeData implements Cloneable{
 	public UpgraderBlockBuild from;
 	public boolean disable = false;
 	public int id;
-	protected static final DecimalFormat df = new DecimalFormat("######0.00");
 	//
 	
 	public UpgradeData(

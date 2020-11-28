@@ -39,7 +39,7 @@ public class NewHorizon extends Mod{
 			Dialog dialog = new Dialog("");
 			dialog.cont.pane(t -> {
 				t.add("[lightgray]Are you sure jump to this link: [accent]" + link + " [lightgray]?");
-			}).fillX();
+			}).fillX().height(8f).row();
 			dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
 			dialog.cont.pane(t -> {
 				t.button("Yes", Icon.export, () -> Core.app.openURI(link)).size(220f, 60f);

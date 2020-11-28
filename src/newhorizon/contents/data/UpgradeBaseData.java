@@ -60,7 +60,7 @@ public class UpgradeBaseData extends UpgradeData {
 	public float speedMPL;
 	public float defenceMPL;
 	public int level;
-	public int itemCostCoefficien;
+	public float itemCostCoefficien;
 	public TextureRegion iconLevel;
 	
 	public UpgradeBaseData(){
@@ -85,7 +85,7 @@ public class UpgradeBaseData extends UpgradeData {
 	
 	@Override
 	public ItemStack[] requirements() {
-		return ItemStack.mult(requirements.toArray(), (itemCostCoefficien * level + 1));
+		return ItemStack.mult(this.requirements.toArray(), (itemCostCoefficien * level + 1f));
 	}
 	
 	@Override
