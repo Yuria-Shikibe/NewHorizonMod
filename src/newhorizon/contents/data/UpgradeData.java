@@ -52,7 +52,7 @@ import java.text.DecimalFormat;
 import static mindustry.Vars.*;
 
 public abstract class UpgradeData implements Cloneable{
-	public static String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
+	public static final String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
 	public static final String offsetSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
 	public static final BulletType none = new BasicBulletType(0, 1, "none") {{
@@ -60,11 +60,10 @@ public abstract class UpgradeData implements Cloneable{
 		trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
 	}};
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
-	public int unlockLevel;
+	public int unlockLevel = 0;
 	public TextureRegion icon;
 	public String name, description;
 	public float costTime;
-	BulletType selectAmmo;
 	public UpgraderBlockBuild from;
 	public boolean disable = false;
 	
@@ -110,6 +109,7 @@ public abstract class UpgradeData implements Cloneable{
 	public abstract void infoText(Table table);
 	public abstract void addText(Table table);
 	public abstract void buildUpgradeInfoAll(Table table);
+	
 	public void buildTable(Table t) {
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
 		t.pane(table -> {
@@ -132,7 +132,7 @@ public abstract class UpgradeData implements Cloneable{
 			table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, true);}).size(LEN);
 			table.button(Icon.upOpen, Styles.clearTransi, () -> {
 				from.upgradeData(this);
-			}).size(LEN).disabled(!from.canUpgrade(this));
+			}).size(LEN).disabled(b -> !from.canUpgrade(this));
 		}).size(LEN * 2f, LEN).left().pad(OFFSET);
 	}
 	

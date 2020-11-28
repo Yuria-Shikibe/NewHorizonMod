@@ -142,7 +142,7 @@ public class UpgraderBlock extends Block {
 		
 		protected boolean coreValid(CoreBlock.CoreBuild core) {
 			if(core == null || core.items == null || core.items.empty())return false;
-			 return true;
+			return true;
 		}
 		
 		protected void consumeItems(UpgradeData data){
@@ -158,12 +158,10 @@ public class UpgraderBlock extends Block {
 		public boolean canUpgrade(UpgradeData data) {
 			CoreBlock.CoreBuild core = core();
 			return 
-				coreValid(core) && 
-				baseData.level >= data.unlockLevel &&
-					(
-					state.rules.infiniteResources || (
-						!isUpgrading() && core.items.has(data.requirements()) 
-					)
+				coreValid(core) && (
+					(baseData.level >= data.unlockLevel && !isUpgrading() && core.items.has(data.requirements()) )
+					||
+					state.rules.infiniteResources
 				);
 		}
 
