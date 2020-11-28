@@ -112,7 +112,6 @@ public abstract class UpgradeData implements Cloneable{
 	
 	public void buildTable(Table t) {
 		t.update(() -> {
-			t.remove();
 			t.draw();
 		});
 		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
