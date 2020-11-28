@@ -281,7 +281,7 @@ public class UpgraderBlock extends Block {
 						index ++;
 					}
 				}).width(buttonSize * buttonPerLine);
-				if(setting)table.left();
+				if(!setting)table.left();
 			}).fillX().pad(OFFSET).left();
 		}
 
