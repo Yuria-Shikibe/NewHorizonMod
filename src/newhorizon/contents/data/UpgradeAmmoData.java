@@ -166,7 +166,7 @@ public class UpgradeAmmoData extends UpgradeMultData{
 			t2.table(Tex.button, table -> {
 				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN);
 				table.button(Icon.upOpen, Styles.clearTransi, () -> {from.switchAmmo(this);}).size(LEN).disabled(b -> !isUnlocked || selected);
-			}).size(LEN * 2 + OFFSET / 2, LEN + OFFSET / 2).pad(OFFSET);
+			}).pad(OFFSET);
 		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 		

@@ -131,7 +131,7 @@ public abstract class UpgradeData implements Cloneable{
 			table.button(Icon.upOpen, Styles.clearTransi, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(b -> !from.canUpgrade(this));
-		}).size(LEN * 2 + OFFSET / 2, LEN + OFFSET / 2).left().pad(OFFSET);
+		}).left().pad(OFFSET);
 	}
 	
 	public void showInfo(UpgradeData data, boolean drawCons){
