@@ -261,22 +261,25 @@ public class UpgraderBlock extends Block {
 		}
 		
 		protected void buildSwitchAmmoTable(Table t, boolean setting) {
+			final float buttonSize = 60f;
 			t.pane(table -> {
 				if(setting){
 					table.pane(cont -> 
 						{cont.button("Upgrade", Icon.logic, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f).left();}
-					).size(60f * buttonPerLine, 60f);
+					).size(buttonSize * buttonPerLine, buttonSize).row();
 				}
 				int index = 0;
-				for (UpgradeAmmoData ammoData : ammoDatas) {
-					if(index % buttonPerLine == 0)table.row().left();
-					table.button(new TextureRegionDrawable(ammoData.icon), () -> {
-						switchAmmo(ammoData);
-					}).size(60f).disabled( b ->
-						!ammoData.isUnlocked || ammoData.selected
-					).left();
-					index++;
-				}
+				table.pane(cont -> 
+					for (UpgradeAmmoData ammoData : ammoDatas) {
+						if(index % buttonPerLine == 0)cont.row().left();
+						cont.button(new TextureRegionDrawable(ammoData.icon), () -> {
+							switchAmmo(ammoData);
+						}).size(buttonSize).disabled( b ->
+							!ammoData.isUnlocked || ammoData.selected
+						).left();
+						index++;
+					}
+				}).size(buttonSize * buttonPerLine, buttonSize * (Mathf.floor(index / buttonPerLine) + 1f) );
 			}).fillX().pad(OFFSET).left();
 		}
 
