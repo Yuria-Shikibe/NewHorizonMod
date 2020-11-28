@@ -128,10 +128,10 @@ public abstract class UpgradeData implements Cloneable{
 
 		t.table(Tex.button, table -> {
 			table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, true);}).size(LEN);
-			table.button(Icon.upOpen, Styles.clearTransi, () -> {
+			table.button(Icon.upOpen, Styles.clearPartiali, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(b -> !from.canUpgrade(this));
-		}).left().pad(OFFSET);
+		}).height(LEN + OFFSET).left().pad(OFFSET);
 	}
 	
 	public void showInfo(UpgradeData data, boolean drawCons){

@@ -222,7 +222,7 @@ public class UpgraderBlock extends Block {
 		//UI
 		protected void buildTable(Table t) {
 			t.table(Tex.button, table -> {
-				table.button(Icon.infoCircle, Styles.clearTransi, () -> {
+				table.button(Icon.infoCircle, Styles.clearPartiali, () -> {
 					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID), false);
 				}).size(60).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty());
 				
