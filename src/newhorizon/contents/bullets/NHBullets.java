@@ -37,14 +37,14 @@ public class NHBullets implements ContentList {
 	public void load(){
 		darkEnrlaser = new ContinuousLaserBulletType(800){
 			{
-				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, Color.white};
+				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.3f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.7f), NHColor.darkEnrColor, NHColor.darkEnr};
 				width = 20f;
-				length = 880f;
+				length = 1200f;
 				fadeTime = 26f;
 				lightStroke = 50f;
 				spaceMag = 13f;
-				oscMag = 2.5f;
-				oscScl = 0.68f;
+				oscMag = 5.5f;
+				oscScl = 0.8f;
 				hitEffect = NHFx.darkEnrCircleSplash;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
@@ -71,7 +71,7 @@ public class NHBullets implements ContentList {
 				super.draw(b);
 				color(NHColor.darkEnrColor);
 				Fill.circle(b.x, b.y, 22);
-				color(NHColor.darkEnrColor, Color.black, 0.8f);
+				color(NHColor.darkEnr);
 				Fill.circle(b.x, b.y, 8f + 8f * b.fout());
 			}
 		};
@@ -246,7 +246,7 @@ public class NHBullets implements ContentList {
 						randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
 							color(NHColor.darkEnrColor);
 							Fill.circle(e.x + x, e.y + y, e.fout() * 15f);
-							color(NHColor.darkEnrColor, Color.black, 0.8f);
+							color(NHColor.darkEnr);
 							Fill.circle(e.x + x, e.y + y, e.fout() * 9f);
 						});
 					}).at(b);
@@ -268,7 +268,7 @@ public class NHBullets implements ContentList {
 			public void draw(Bullet b) {
 				color(NHColor.darkEnrColor);
 				Fill.circle(b.x, b.y, 20);
-				color(NHColor.darkEnrColor, Color.black, 0.8f);
+				color(NHColor.darkEnr);
 				Fill.circle(b.x, b.y, 4f + 8f * Mathf.curve(b.fout(), 0.1f, 0.35f));
 			}
 
@@ -277,7 +277,7 @@ public class NHBullets implements ContentList {
 				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
 					Vec2 randomPos = new Vec2(b.x + Mathf.range(200), b.y + Mathf.range(200));
 					hitSound.at(randomPos, Mathf.random(0.9f, 1.1f) );
-					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 2 * NHLightningBolt.WIDTH, 2, hitPos -> {
+					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1.7 * NHLightningBolt.WIDTH, 2, hitPos -> {
 						for (int j = 0; j < 4; j++) {
 							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
 						}
