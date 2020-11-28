@@ -106,7 +106,7 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	public static void generate(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width) {
 		generate(owner, target, team, color, width, 1, sureTarget ->{
 			if (createLightning)Lightning.create(team, color, damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360), Mathf.random(8, 12));
-			Damage.damage(team, sureTarget.getX(), sureTarget.getY(), 20f, damage * 1.5f);
+			Damage.damage(team, sureTarget.getX(), sureTarget.getY(), 20f, damage);
 		});
 	}
 	

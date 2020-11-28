@@ -43,8 +43,8 @@ public class NHBullets implements ContentList {
 				length = 1000f;
 				lenscales = new float[]{0.89f, 1.01f, 1.05f, 1.07f};
 				strokes = new float[]{2.2f, 2.2f, 1.6f, 1f};
-				oscMag = 0f;
-				oscScl = 0f;
+				oscScl = 0.5f;
+				oscMag = 2.5f;
 				lifetime = 35f;
 				lightColor = NHColor.darkEnrColor;
 				hitEffect = NHFx.darkEnrCircleSplash;
@@ -216,7 +216,7 @@ public class NHBullets implements ContentList {
 
 		};
 
-		boltGene = new ArtilleryBulletType(2.75f, 200) {
+		boltGene = new ArtilleryBulletType(2.75f, 100) {
 			@Override
 			public void update(Bullet b) {
 				Effect.shake(2, 2, b);
@@ -285,7 +285,7 @@ public class NHBullets implements ContentList {
 						height = 42f;
 						collidesTiles = false;
 						splashDamageRadius = 80f;
-						splashDamage = damage * 0.7f;
+						splashDamage = damage * 0.6f;
 						backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 						frontColor = Color.white;
 						lightning = 3;
