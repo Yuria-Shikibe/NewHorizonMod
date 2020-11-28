@@ -112,8 +112,7 @@ public class UpgradeBaseData extends UpgradeData {
 	
 	@Override
 	public void buildUpgradeInfoAll(Table t) {
-		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
-		t.pane(t2 -> {
+		t.table(Tex.button, t2 -> {
 			t2.pane(table -> {
 				table.image(iconLevel).size(LEN).left();
 			}).size(LEN).left();
@@ -127,8 +126,7 @@ public class UpgradeBaseData extends UpgradeData {
 			t2.table(Tex.button, table -> {
 				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
 			}).height(LEN + OFFSET).pad(OFFSET);
-		}).size(LEN * 12, LEN * 1.5f).row();
-		t.image().fillX().pad(OFFSET).height(4f).color(Color.lightGray).row();
+		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 	
 	@Override
