@@ -64,7 +64,7 @@ public class NHTrailBulletType extends BasicBulletType {
 	public void update(Bullet b) {
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		if(b.timer(0, Time.delta))trail.update(b.x, b.y, false);
+		trail.update(b.x, b.y, true);
 		super.update(b);
 	}
 }

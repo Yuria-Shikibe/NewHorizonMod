@@ -12,7 +12,6 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.io.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -33,6 +32,18 @@ import static arc.math.Angles.*;
 
 public class NHFx{
 	public static final Effect
+		//All effects
+		largeDarkEnergyHitCircle = new Effect(20f, e -> {
+			color(NHColor.darkEnrColor);
+			Fill.circle(e.x, e.y, e.fout() * 44);
+			randLenVectors(e.id, 6, 18 + 70 * e.fin(), (x, y) -> {
+				stroke(e.fout() * 3.2f);
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
+			});
+			color(NHColor.darkEnrColor, Color.black, 0.8f);
+			Fill.circle(e.x, e.y, e.fout() * 30);
+		}),
+		
 		largeDarkEnergyHit = new Effect(50, e -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x, e.y, e.fout() * 44);
