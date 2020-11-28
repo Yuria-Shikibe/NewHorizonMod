@@ -20,7 +20,6 @@ import newhorizon.contents.blocks.*;
 import newhorizon.contents.data.UpgradeDatas;
 import newhorizon.contents.blocks.special.*;
 import newhorizon.contents.blocks.turrets.*;
-import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.bullets.*;
 
 
@@ -76,7 +75,6 @@ public class NewHorizon extends Mod{
 		
 		new NHItems().load();
 		new NHLiquids().load();
-		new NHFx().load();
 		new NHBullets().load();
 		new NHBlocks().load();
 		new NHFactories().load();
