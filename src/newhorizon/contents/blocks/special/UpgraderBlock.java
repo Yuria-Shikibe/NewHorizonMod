@@ -64,6 +64,7 @@ public class UpgraderBlock extends Block {
 	public static final int DFTID = -2; 
 	public static final Seq<UpgraderBlockBuild> upgradecGroup = new Seq<>(UpgraderBlockBuild.class);
 	public static final int buttonPerLine = 8;
+	public static final float buttonSize = 60f;
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
@@ -261,11 +262,11 @@ public class UpgraderBlock extends Block {
 		}
 		
 		protected void buildSwitchAmmoTable(Table t, boolean setting) {
-			final float buttonSize = 60f;
-			t.pane(table -> {
+			
+			t.pane(Tex.button, table -> {
 				if(setting){
 					table.pane(cont -> 
-						{cont.button("Upgrade", Icon.logic, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f).left();}
+						{cont.button("Upgrade", Icon.logic, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f).left();}
 					).size(buttonSize * buttonPerLine, buttonSize).row();
 				}
 				
@@ -282,7 +283,7 @@ public class UpgraderBlock extends Block {
 					}
 				}).width(buttonSize * buttonPerLine);
 				if(!setting)table.left();
-			}).fillX().pad(OFFSET).left();
+			}).width(buttonSize * buttonPerLine).pad(OFFSET).left();
 		}
 
 		protected void setLink(int value) {

@@ -128,9 +128,9 @@ public abstract class UpgradeData implements Cloneable{
 			table.add("[lightgray]NeededTime: [accent]" + df.format(costTime() / 60) + "sec[]").left().row();
 		}).size(LEN * 6f, LEN).left().pad(OFFSET);
 
-		t.pane(table -> {
-			table.button(Icon.infoCircle, () -> {showInfo(this, true);}).size(LEN);
-			table.button(Icon.upOpen, () -> {
+		t.pane(Tex.button, table -> {
+			table.button(Icon.infoCircle, Styles.cleart, () -> {showInfo(this, true);}).size(LEN);
+			table.button(Icon.upOpen, Styles.cleart, () -> {
 				from.upgradeData(this);
 			}).size(LEN).disabled(b -> !from.canUpgrade(this));
 		}).size(LEN * 2f, LEN).left().pad(OFFSET);
