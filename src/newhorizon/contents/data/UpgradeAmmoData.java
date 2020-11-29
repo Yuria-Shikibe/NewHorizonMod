@@ -90,7 +90,11 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	) {
 		super(name, description, costTime, unlockLevel, items);
 		this.selectAmmo = selectAmmo;
-		tableChild = t -> {
+	}
+	
+	@Override
+	public void buildUpgradeInfoAll(Table table) {
+		table.table(Tex.button, t -> {
 			t.pane(table -> {
 				table.image(icon).size(LEN).left();
 			}).size(LEN).left();
@@ -105,7 +109,7 @@ public class UpgradeAmmoData extends UpgradeMultData{
 				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN);
 				table.button(Icon.upOpen, Styles.clearPartiali, () -> {from.switchAmmo(this);}).size(LEN).disabled(b -> !isUnlocked || selected);
 			}).height(LEN + OFFSET).pad(OFFSET);
-		};
+		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 	
 	@Override

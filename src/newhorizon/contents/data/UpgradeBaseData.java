@@ -77,7 +77,11 @@ public class UpgradeBaseData extends UpgradeData {
 		super(name, description, costTime, items);
 		unlockLevel = 0;
 		this.id = -1;
-		tableChild = t -> {
+	}
+	
+	@Override
+	public void buildUpgradeInfoAll(Table table) {
+		table.table(Tex.button, t -> {
 			t.pane(table -> {
 				table.image(iconLevel).size(LEN).left();
 			}).size(LEN).left();
@@ -90,7 +94,7 @@ public class UpgradeBaseData extends UpgradeData {
 			t.table(Tex.button, table -> {
 				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
 			}).height(LEN + OFFSET).pad(OFFSET);
-		};
+		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 	
 	@Override

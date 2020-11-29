@@ -68,8 +68,8 @@ public abstract class UpgradeData implements Cloneable{
 	public float costTime;
 	public UpgraderBlockBuild from;
 	public int id;
-	//
-	protected Cons<Table> tableChild = table -> {};
+	
+	//protected Cons<Table> tableChild = table -> {};
 	
 	public UpgradeData(
 		String name,
@@ -102,8 +102,8 @@ public abstract class UpgradeData implements Cloneable{
 	public abstract void infoText(Table table);
 	public abstract void addText(Table table);
 	
-	public void buildUpgradeInfoAll(Table t) {
-		t.table(Tex.button, tableChild).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
+	public void buildUpgradeInfoAll(Table table) {
+		table.table(Tex.button, t -> {}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 	
 	public void buildTable(Table t) {
