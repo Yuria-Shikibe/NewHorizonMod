@@ -232,7 +232,7 @@ public class UpgraderBlock extends Block {
 			t.table(Tex.button, table -> {
 				table.button(Icon.infoCircle, Styles.clearPartiali, () -> {
 					ammoDatas.get(lastestSelectID).showInfo(ammoDatas.get(lastestSelectID), false);
-				}).size(60).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty());
+				}).size(LEN).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty());
 				
 				table.button(Icon.hostSmall, Styles.clearTransi, () -> {
 					new Dialog("All Info") {{
@@ -243,11 +243,10 @@ public class UpgraderBlock extends Block {
 							baseData.buildUpgradeInfoAll(infos);
 							for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(infos);
 						}).fillX().height(LEN * 5).row();
-						cont.button("Back", Icon.exit, Styles.cleart, this::hide).left().fillX().height(LEN).pad(4);
+						cont.button("Back", Icon.exit, this::hide).left().fillX().height(LEN).pad(4);
 					}}.show();
-				}).size(60f).left();
-				
-				table.button("Back", Styles.cleart, dialog::hide).size(120f, 60f).left();
+				}).size(LEN).left();
+				table.button("Back", Icon.exit, Styles.cleart, dialog::hide).size(160f, LEN).left();
 			}).left().pad(OFFSET);
 			t.row();
 			buildSwitchAmmoTable(t, false);
@@ -273,13 +272,11 @@ public class UpgraderBlock extends Block {
 		}
 		
 		protected void buildSwitchAmmoTable(Table t, boolean setting) {
-			
 			t.table(Tex.button, table -> {
 				if(setting){
 					table.pane(cont -> 
-						{cont.button("Upgrade", Icon.logic, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f);}
-					).size(buttonSize * buttonPerLine, buttonSize).pad(OFFSET).row();
-					table.image().pad(OFFSET / 3f).fillX().height(4f).color(Color.gray).row();
+						{cont.button("Upgrade", Icon.settings, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f);}
+					).size(buttonSize * buttonPerLine, buttonSize).row();
 				}
 				
 				table.pane(cont -> {
