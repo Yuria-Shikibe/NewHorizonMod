@@ -93,8 +93,8 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	}
 	
 	@Override
-	public void buildUpgradeInfoAll(Table table) {
-		table.table(Tex.button, t -> {
+	public void buildUpgradeInfoAll(Table t2) {
+		t2.table(Tex.button, t -> {
 			t.pane(table -> {
 				table.image(icon).size(LEN).left();
 			}).size(LEN).left();

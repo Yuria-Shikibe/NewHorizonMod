@@ -80,8 +80,8 @@ public class UpgradeBaseData extends UpgradeData {
 	}
 	
 	@Override
-	public void buildUpgradeInfoAll(Table table) {
-		table.table(Tex.button, t -> {
+	public void buildUpgradeInfoAll(Table t2) {
+		t2.table(Tex.button, t -> {
 			t.pane(table -> {
 				table.image(iconLevel).size(LEN).left();
 			}).size(LEN).left();
