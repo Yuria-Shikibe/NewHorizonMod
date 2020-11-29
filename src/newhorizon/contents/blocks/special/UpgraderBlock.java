@@ -210,7 +210,7 @@ public class UpgraderBlock extends Block {
 		
 		@Override
 		public void completeUpgrade() {
-			//upgradeSound.stop();
+			upgradeSound.update(x, y, false);
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
 			
@@ -281,7 +281,7 @@ public class UpgraderBlock extends Block {
 					int index = 0;
 					for (UpgradeAmmoData ammoData : ammoDatas) {
 						if(index % buttonPerLine == 0)cont.row().left();
-						cont.button(new TextureRegionDrawable(ammoData.icon), () -> {
+						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.clearPartiali, buttonSize, () -> {
 							switchAmmo(ammoData);
 						}).size(buttonSize).disabled( b ->
 							!ammoData.isUnlocked || ammoData.selected
@@ -340,6 +340,8 @@ public class UpgraderBlock extends Block {
 				t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
 			});
 			dialog.show();
+			dialog.keyDown(KeyCode.escape, dialog::hide);
+			dialog.keyDown(KeyCode.back, dialog::hide);
 		}
 		
 		@Override

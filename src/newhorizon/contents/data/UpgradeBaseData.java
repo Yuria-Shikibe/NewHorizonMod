@@ -98,16 +98,16 @@ public class UpgradeBaseData extends UpgradeData {
 		t.table(Tex.button, t2 -> {
 			t2.pane(table -> {
 				table.image(iconLevel).size(LEN).left();
-			}).size(LEN).left();
+			}).left().size(LEN);
 
 			t2.pane(table -> {
 				table.add("[lightgray]Level: [accent]MaxLevel[]").left().row();
-			}).size(LEN * 6f, LEN).pad(OFFSET);
+			}).size(LEN * 6f, LEN).left().pad(OFFSET);
 			
-			t2.pane(table -> {
-				table.button(Icon.infoCircle, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
-			}).size(LEN * 2f, LEN).pad(OFFSET);
-		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
+			t2.table(Tex.button, table -> {
+				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
+			}).height(LEN + OFFSET).left().pad(OFFSET);
+		}).pad(OFFSET / 2).fillX().height(LEN * 1.6f).row();
 	}
 	
 	@Override

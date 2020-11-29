@@ -127,6 +127,8 @@ public abstract class UpgradeData implements Cloneable{
 	
 	public void showInfo(UpgradeData data, boolean drawCons){
 		new Dialog("") {{
+			keyDown(KeyCode.escape, this::hide);
+			keyDown(KeyCode.back, this::hide);
 			cont.margin(15f);
 			cont.pane(table -> {
 				table.pane( t -> {t.image(icon);}).size(icon.height + OFFSET / 2).left();

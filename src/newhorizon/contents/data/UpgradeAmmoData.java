@@ -99,6 +99,8 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	
 	public void ammoInfoText(){
 		new Dialog("") {{
+			keyDown(KeyCode.escape, this::hide);
+			keyDown(KeyCode.back, this::hide);
 			cont.pane(table -> {
 				Class typeClass = selectAmmo.getClass();
 				Field[] fields = typeClass.getFields();
@@ -118,6 +120,8 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	public void infoText(Table table){
 		table.button(new TextureRegionDrawable(ammoInfo), Styles.colori, () -> {
 			new Dialog("") {{
+				keyDown(KeyCode.escape, this::hide);
+				keyDown(KeyCode.back, this::hide);
 				cont.pane(t -> {
 					t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
 					if(selectAmmo.splashDamageRadius > 0){
