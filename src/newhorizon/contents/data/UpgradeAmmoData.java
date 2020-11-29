@@ -90,6 +90,22 @@ public class UpgradeAmmoData extends UpgradeMultData{
 	) {
 		super(name, description, costTime, unlockLevel, items);
 		this.selectAmmo = selectAmmo;
+		tableChild = t -> {
+			t.pane(table -> {
+				table.image(icon).size(LEN).left();
+			}).size(LEN).left();
+
+			t.pane(table -> {
+				table.add("[lightgray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
+				table.add("[lightgray]IsSelected: " + getJudge(selected) + "[]").left().row();
+				table.add("[lightgray]IsUnlocked: " + getJudge(isUnlocked) + "[]").left().row();
+			}).size(LEN * 6f, LEN).pad(OFFSET);
+			
+			t.table(Tex.button, table -> {
+				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN);
+				table.button(Icon.upOpen, Styles.clearPartiali, () -> {from.switchAmmo(this);}).size(LEN).disabled(b -> !isUnlocked || selected);
+			}).height(LEN + OFFSET).pad(OFFSET);
+		};
 	}
 	
 	@Override
@@ -126,24 +142,24 @@ public class UpgradeAmmoData extends UpgradeMultData{
 				cont.pane(t -> {
 					t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
 					if(selectAmmo.splashDamageRadius > 0){
-						t.add(offsetSpace + "[lightgray]SplashDamage: [accent]" + df.format(selectAmmo.splashDamage) + "[]").left().row();
-						t.add(offsetSpace + "[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.splashDamageRadius / tilesize) + "[]").left().row();
+						t.add(tabSpace + "[lightgray]SplashDamage: [accent]" + df.format(selectAmmo.splashDamage) + "[]").left().row();
+						t.add(tabSpace + "[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.splashDamageRadius / tilesize) + "[]").left().row();
 					}
 					if(selectAmmo.knockback > 0)t.add("[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.knockback) + "[]").left().row();
 					
 					t.add("[lightgray]CanFrag?: " + getJudge(selectAmmo.fragBullet != null) + "[]").left().row();
-					if(selectAmmo.fragBullet != null)t.add(offsetSpace + "[lightgray]Frags: [accent]" + selectAmmo.fragBullets + "[]").left().row();
+					if(selectAmmo.fragBullet != null)t.add(tabSpace + "[lightgray]Frags: [accent]" + selectAmmo.fragBullets + "[]").left().row();
 					
 					t.add("[lightgray]CanFragLightnings?: " + getJudge(selectAmmo.lightning > 0) + "[]").left().row();
 					if(selectAmmo.lightning > 0){
-						t.add(offsetSpace + "[lightgray]MaxLightningLength: [accent]" + df.format(selectAmmo.lightningLength + selectAmmo.lightningLengthRand) + "[]").left().row();
-						t.add(offsetSpace + "[lightgray]LightningDamage: [accent]" + df.format(selectAmmo.lightningDamage) + "[]").left().row();
+						t.add(tabSpace + "[lightgray]MaxLightningLength: [accent]" + df.format(selectAmmo.lightningLength + selectAmmo.lightningLengthRand) + "[]").left().row();
+						t.add(tabSpace + "[lightgray]LightningDamage: [accent]" + df.format(selectAmmo.lightningDamage) + "[]").left().row();
 					}
 					
 					t.add("[lightgray]CanHoming?: " + getJudge(selectAmmo.homingPower > 0) + "[]").left().row();
 					if(selectAmmo.homingPower > 0){
-						t.add(offsetSpace + "[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
-						t.add(offsetSpace + "[lightgray]HomingPower: [accent]" + df.format(selectAmmo.homingPower) + "[]").left().row();
+						t.add(tabSpace + "[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
+						t.add(tabSpace + "[lightgray]HomingPower: [accent]" + df.format(selectAmmo.homingPower) + "[]").left().row();
 					}
 					
 					t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();
@@ -154,27 +170,6 @@ public class UpgradeAmmoData extends UpgradeMultData{
 			}}.show();
 		}).size(ammoInfo.height + OFFSET / 2);
 	}
-	
-	@Override
-	public void buildUpgradeInfoAll(Table t) {
-		t.table(Tex.button, t2 -> {
-			t2.pane(table -> {
-				table.image(icon).size(LEN).left();
-			}).size(LEN).left();
-
-			t2.pane(table -> {
-				table.add("[lightgray]AmmoType: [accent]" + Core.bundle.get(name) + "[]").left().row();
-				table.add("[lightgray]IsSelected: " + getJudge(selected) + "[]").left().row();
-				table.add("[lightgray]IsUnlocked: " + getJudge(isUnlocked) + "[]").left().row();
-			}).size(LEN * 6f, LEN).pad(OFFSET);
-			
-			t2.table(Tex.button, table -> {
-				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN);
-				table.button(Icon.upOpen, Styles.clearPartiali, () -> {from.switchAmmo(this);}).size(LEN).disabled(b -> !isUnlocked || selected);
-			}).height(LEN + OFFSET).pad(OFFSET);
-		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
-	}
-		
 	
 	@Override
 	public void addText(Table table){

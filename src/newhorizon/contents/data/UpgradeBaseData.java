@@ -77,6 +77,20 @@ public class UpgradeBaseData extends UpgradeData {
 		super(name, description, costTime, items);
 		unlockLevel = 0;
 		this.id = -1;
+		tableChild = t -> {
+			t.pane(table -> {
+				table.image(iconLevel).size(LEN).left();
+			}).size(LEN).left();
+			t.pane(table -> {
+				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
+				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
+				table.add("[lightgray]ReloadReduce: [accent]" + getPercent(speedMPL * level, 0f, maxReloadReduce) + "%[]").left().row();
+				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL * level, 0f, maxDamageReduce) + "%[]").left().row();
+			}).size(LEN * 6f, LEN).pad(OFFSET);
+			t.table(Tex.button, table -> {
+				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
+			}).height(LEN + OFFSET).pad(OFFSET);
+		};
 	}
 	
 	@Override
@@ -109,25 +123,6 @@ public class UpgradeBaseData extends UpgradeData {
 				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
 			}).height(LEN + OFFSET).left().pad(OFFSET);
 		}).pad(OFFSET / 2).fillX().height(LEN * 1.6f).row();
-	}
-	
-	@Override
-	public void buildUpgradeInfoAll(Table t) {
-		t.table(Tex.button, t2 -> {
-			t2.pane(table -> {
-				table.image(iconLevel).size(LEN).left();
-			}).size(LEN).left();
-
-			t2.pane(table -> {
-				table.add("[lightgray]Level: [accent]" + level + "[]").left().row();
-				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-				table.add("[lightgray]ReloadReduce: [accent]" + getPercent(speedMPL * level, 0f, maxReloadReduce) + "%[]").left().row();
-				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL * level, 0f, maxDamageReduce) + "%[]").left().row();
-			}).size(LEN * 6f, LEN).pad(OFFSET);
-			t2.table(Tex.button, table -> {
-				table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, false);}).size(LEN * 2, LEN);
-			}).height(LEN + OFFSET).pad(OFFSET);
-		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
 	}
 	
 	@Override

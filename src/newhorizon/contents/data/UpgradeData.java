@@ -55,7 +55,7 @@ import static mindustry.Vars.*;
 public abstract class UpgradeData implements Cloneable{
 	public static final DecimalFormat df = new DecimalFormat("######0.00");
 	public static final String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
-	public static final String offsetSpace = "    ";
+	public static final String tabSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
 	public static final BulletType none = new BasicBulletType(0, 1, "none") {{
 		instantDisappear = true;
@@ -69,6 +69,7 @@ public abstract class UpgradeData implements Cloneable{
 	public UpgraderBlockBuild from;
 	public int id;
 	//
+	protected Cons<Table> tableChild = table -> {};
 	
 	public UpgradeData(
 		String name,
@@ -100,7 +101,10 @@ public abstract class UpgradeData implements Cloneable{
 	
 	public abstract void infoText(Table table);
 	public abstract void addText(Table table);
-	public abstract void buildUpgradeInfoAll(Table table);
+	
+	public void buildUpgradeInfoAll(Table t) {
+		t.table(Tex.button, tableChild).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
+	}
 	
 	public void buildTable(Table t) {
 		t.table(Tex.button, table -> {
@@ -131,13 +135,13 @@ public abstract class UpgradeData implements Cloneable{
 			keyDown(KeyCode.escape, this::hide);
 			keyDown(KeyCode.back, this::hide);
 			cont.margin(15f);
-			cont.pane(table -> {
+			cont.table(Tex.button, table -> {
 				table.pane( t -> {t.image(icon);}).size(icon.height + OFFSET / 2).left();
 				table.pane( t -> {infoText(t);}).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
 			}).row();
 			cont.add("<< " + Core.bundle.get(data.name) + " >>").color(Pal.accent).row();
 			cont.add("Description: ").color(Pal.accent).left().row();
-			cont.add(offsetSpace + Core.bundle.get(data.description)).color(Color.lightGray).left().row();
+			cont.add(tabSpace + Core.bundle.get(data.description)).color(Color.lightGray).left().row();
 			if(drawCons){
 				cont.pane(table -> {
 					int index = 0;
@@ -152,7 +156,7 @@ public abstract class UpgradeData implements Cloneable{
 			}
 			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 			cont.row();
-			cont.button("Leave", this::hide).size(120, 50).pad(4);
+			cont.button("Back", this::hide).size(120, 50).pad(4);
 		}}.show();
 	}
 
