@@ -67,6 +67,8 @@ public class UpgraderBlock extends Block {
 	public static final Seq<UpgraderBlockBuild> upgradecGroup = new Seq<>(UpgraderBlockBuild.class);
 	public static final int buttonPerLine = 8;
 	public static final float buttonSize = LEN;
+	
+	protected SoundLoop upgradeSound = new SoundLoop(Sounds.build, 1.1f);
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
@@ -141,7 +143,22 @@ public class UpgraderBlock extends Block {
 			levelRegions[i] = Core.atlas.find(name + "-" + i);
 		}*/
 	}
-
+	
+	/*public void allBuilds(Team team){
+		new Dialog("All Upgrader") {{
+			keyDown(KeyCode.escape, this::hide);
+			keyDown(KeyCode.back, this::hide);
+			setFillParent(true);
+			cont.pane(infos -> {
+				for(UpgraderBlockBuild building : upgradecGroup){
+					if(building.team.id != team.id)continue;
+					building.upgraderTableBuild();
+				}
+			}).fillX().height(LEN * 5).row();
+			cont.button("Back", Icon.exit, this::hide).left().fillX().height(LEN).pad(4);
+		}}.show();
+	}*/
+	
 	public class UpgraderBlockBuild extends Building implements Ranged, Upgraderc{
 		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
 		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
@@ -151,7 +168,7 @@ public class UpgraderBlock extends Block {
 		public int lastestSelectID = -1;
 		public float remainTime;
 		
-		protected SoundLoop upgradeSound = new SoundLoop(Sounds.build, 1.1f);
+		
 		protected BaseDialog dialog = new BaseDialog("Upgrade");
 		
 		protected boolean coreValid(CoreBlock.CoreBuild core) {
@@ -213,6 +230,7 @@ public class UpgraderBlock extends Block {
 		@Override
 		public void completeUpgrade() {
 			upgradeSound.update(x, y, false);
+			upgradeSound.stop();
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
 			
