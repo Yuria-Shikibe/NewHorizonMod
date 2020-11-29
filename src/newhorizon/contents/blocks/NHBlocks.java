@@ -72,7 +72,8 @@ public class NHBlocks implements ContentList {
 				UpgradeDatas.arc9000,
 				UpgradeDatas.curveBomb,
 				UpgradeDatas.airRaid,
-				UpgradeDatas.decayLaser
+				UpgradeDatas.decayLaser,
+				UpgradeDatas.bombStorm
 			);
 		}};
 		
