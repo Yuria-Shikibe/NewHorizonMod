@@ -276,8 +276,7 @@ public class UpgraderBlock extends Block {
 				if(setting){
 					table.pane(cont -> 
 						{cont.button("Upgrade", Icon.settings, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f);}
-					).size(buttonSize * buttonPerLine, buttonSize).row();
-					table.pad(OFFSET / 3f).row();
+					).size(buttonSize * buttonPerLine, buttonSize).pad(OFFSET / 3f).row();
 				}
 				
 				table.pane(cont -> {
