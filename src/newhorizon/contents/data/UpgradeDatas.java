@@ -64,11 +64,11 @@ public class UpgradeDatas{
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
 			shootSound = Sounds.bigshot;
-			inaccuracy = 8f;
+			inaccuracy = 9f;
 			velocityInaccuracy = 0.095f;
-			burstSpacing = 3f;
-			salvos = 18;
-			randX = 2f * tilesize;
+			burstSpacing = 2f;
+			salvos = 28;
+			randX = 2.1f * tilesize;
 		}},
 		
 		arc9000 = new UpgradeAmmoData(

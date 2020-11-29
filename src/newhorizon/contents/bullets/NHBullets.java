@@ -107,12 +107,11 @@ public class NHBullets implements ContentList {
 			lightningLengthRand = lightningLength = 4;
 			splashDamageRadius = 18f;
 			splashDamage = lightningDamage = 0.35f * damage;
-			height = 30f;
-			width = 7f;
+			height = 42f;
+			width = 11f;
 			lifetime = 500;
 			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 			frontColor = Color.white;
-				
 			hitEffect = NHFx.darkEnrCircleSplash;
 		}};
 		

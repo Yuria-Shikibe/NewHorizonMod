@@ -249,7 +249,8 @@ public class ScalableTurret extends Turret{
 				bullet = type.create(tile.build, team, x + tr.x, y + tr.y, angle);
 				bulletLife = ammoData.continuousTime;
 			}else{
-				super.bullet(type, angle);
+				float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+				type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(ammoData.velocityInaccuracy), lifeScl);
 			}
         }
 		
