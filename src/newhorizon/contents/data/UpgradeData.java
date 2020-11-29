@@ -1,5 +1,6 @@
 package newhorizon.contents.data;
 
+import arc.input.*;
 import arc.util.pooling.Pool.*;
 import arc.util.io.*;
 import arc.*;

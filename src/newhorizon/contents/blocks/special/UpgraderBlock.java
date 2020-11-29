@@ -1,5 +1,6 @@
 package newhorizon.contents.blocks.special;
 
+import arc.input.*;
 import arc.util.pooling.*;
 import arc.util.io.*;
 import arc.*;
