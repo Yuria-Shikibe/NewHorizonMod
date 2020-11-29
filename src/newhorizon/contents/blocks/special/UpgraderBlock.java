@@ -261,7 +261,8 @@ public class UpgraderBlock extends Block {
 		}
 
 		public void switchAmmo(UpgradeAmmoData data){
-			for(UpgradeAmmoData ammo : ammoDatas)ammo.selected = false;
+			Sounds.click.at(this);
+			ammoDatas.each(ammo -> {ammo.selected = false;});
 			data.selected = true;
 			lastestSelectID = data.id;
 			updateTarget();
