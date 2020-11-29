@@ -210,7 +210,7 @@ public class UpgraderBlock extends Block {
 		
 		@Override
 		public void completeUpgrade() {
-			upgradeSound.stop();
+			//upgradeSound.stop();
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
 			

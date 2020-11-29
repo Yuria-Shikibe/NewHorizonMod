@@ -44,7 +44,7 @@ public class NHBullets implements ContentList {
 				width = 18f;
 				length = 1000f;
 				oscScl = 0.4f;
-				oscMag = 14.5f;
+				oscMag = 1.5f;
 				lifetime = 35f;
 				lightColor = NHColor.darkEnrColor;
 				hitEffect = NHFx.darkEnrCircleSplash;

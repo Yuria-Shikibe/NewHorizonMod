@@ -66,7 +66,6 @@ public abstract class UpgradeData implements Cloneable{
 	public String name, description;
 	public float costTime;
 	public UpgraderBlockBuild from;
-	public boolean disable = false;
 	public int id;
 	//
 	
@@ -82,20 +81,12 @@ public abstract class UpgradeData implements Cloneable{
 		requirements.addAll(items);
 	}
 
-	public void load(){
-		this.icon = Core.atlas.find(NewHorizon.NHNAME + name);
-	}
+	public void load(){this.icon = Core.atlas.find(NewHorizon.NHNAME + name);}
+	public void read(Reads read, byte revision){}
+	public void write(Writes write){}
 
-	public abstract void read(Reads read, byte revision);
-	public abstract void write(Writes write);
-	
-	public float costTime() {
-		return costTime;
-	}
-	
-	public ItemStack[] requirements() {
-		return this.requirements.toArray();
-	}
+	public float costTime() {return costTime;}
+	public ItemStack[] requirements() {return this.requirements.toArray();}
 	
 	@Override
 	public Object clone (){
