@@ -57,6 +57,7 @@ import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.bullets.special.NHLightningBolt;
 import newhorizon.contents.data.*;
+
 import static newhorizon.contents.data.UpgradeData.*;
 
 import static mindustry.Vars.*;
@@ -65,7 +66,7 @@ public class UpgraderBlock extends Block {
 	public static final int DFTID = -2; 
 	public static final Seq<UpgraderBlockBuild> upgradecGroup = new Seq<>(UpgraderBlockBuild.class);
 	public static final int buttonPerLine = 8;
-	public static final float buttonSize = 60f;
+	public static final float buttonSize = LEN;
 	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
@@ -235,12 +236,14 @@ public class UpgraderBlock extends Block {
 				
 				table.button(Icon.hostSmall, Styles.clearTransi, () -> {
 					new Dialog("All Info") {{
+						keyDown(KeyCode.escape, this::hide);
+						keyDown(KeyCode.back, this::hide);
 						setFillParent(true);
 						cont.pane(infos -> {
 							baseData.buildUpgradeInfoAll(infos);
 							for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(infos);
-						}).size(LEN * 12 + OFFSET * 3, LEN * 5f + OFFSET);
-						cont.button("Leave", this::hide).left().size(120, 50).pad(4);
+						}).fillX().height(LEN * 5).row();
+						cont.button("Back", Icon.exit, Styles.cleart, this::hide).left().fillX().height(LEN).pad(4);
 					}}.show();
 				}).size(60f).left();
 				
@@ -276,6 +279,7 @@ public class UpgraderBlock extends Block {
 					table.pane(cont -> 
 						{cont.button("Upgrade", Icon.logic, Styles.cleart, () -> {upgraderTableBuild();}).size(60f * buttonPerLine, 60f);}
 					).size(buttonSize * buttonPerLine, buttonSize).pad(OFFSET).row();
+					table.image().pad(OFFSET / 3f).fillX().height(4f).color(Color.gray).row();
 				}
 				
 				table.pane(cont -> {
