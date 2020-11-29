@@ -13,13 +13,20 @@ import newhorizon.contents.effects.EffectTrail;
 
 public class NHTrailBulletType extends BasicBulletType {
 	public int trailLength = 12;
-	public float trailWidth = 3.7f;
+	public float trailWidth = -1f;
 	public float trailDrawsize = 200f;
 
 	public NHTrailBulletType(float speed, float damage, String bulletSprite){
 		super(speed, damage, bulletSprite);
-		this.trailDrawsize = Math.max(trailDrawsize, 2.5f * trailLength * speed);
+		this.despawnEffect = Fx.none;
     }
+    
+    @Override
+	public void init(){
+		super.init();
+		trailDrawsize = Math.max(trailDrawsize, 2.5f * trailLength * speed);
+		if(trailWidth < 0)trailWidth = width / 5.35f;
+	}
     
 	public NHTrailBulletType(float speed, float damage){
 		this(speed, damage, "bullet");

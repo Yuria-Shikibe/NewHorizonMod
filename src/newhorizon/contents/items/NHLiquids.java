@@ -13,10 +13,17 @@ public class NHLiquids implements ContentList{
 	xenBeta,
 	xenGamma,
 	zateFluid,
+	infinityLiquid,
 	irdryonFluid;
 	
 	@Override
 	public void load(){
+		infinityLiquid = new Liquid("infinity-liquid", Color.valueOf("#B170FF")){{
+			heatCapacity = 10f;
+			lightColor = Color.valueOf("#B170FF");
+		}};
+		
+		
 		xenAlpha = new Liquid("xen-alpha", Color.valueOf("#AEDFFF")){{
 			heatCapacity = 0.3f;
 			explosiveness = 1f;

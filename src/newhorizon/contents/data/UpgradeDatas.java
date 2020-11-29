@@ -57,8 +57,22 @@ public class UpgradeDatas{
 			inaccuracy = 5;
 		}},
 		
+		bombStorm = new UpgradeAmmoData(
+			"bomb-storm", "description00", NHBullets.rapidBomb, 900f, 2,
+			new ItemStack(NHItems.upgradeSort, 250),
+			new ItemStack(NHItems.darkEnergy, 500),
+			new ItemStack(NHItems.thermoCoreNegative, 150)
+		){{
+			shootSound = Sounds.bigshot;
+			inaccuracy = 8f;
+			velocityInaccuracy = 0.095f;
+			burstSpacing = 3f;
+			salvos = 18;
+			randX = 2f * tilesize;
+		}},
+		
 		arc9000 = new UpgradeAmmoData(
-			"arc-9000", "description00", NHBullets.boltGene, 900f, 4,
+			"arc-9000", "description00", NHBullets.boltGene, 900f, 8,
 			new ItemStack(NHItems.upgradeSort, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -82,12 +96,12 @@ public class UpgradeDatas{
 		}},
 		
 		airRaid = new UpgradeAmmoData(
-			"air-raid", "description02", NHBullets.airRaid, 500f, 2,
+			"air-raid", "description02", NHBullets.airRaid, 500f, 6,
 			new ItemStack(NHItems.upgradeSort, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
-			shootSound = Sounds.bigshot;
+			shootSound = Sounds.railgun;
 			inaccuracy = 6;
 			velocityInaccuracy = 0.08f;
 			burstSpacing = 9f;

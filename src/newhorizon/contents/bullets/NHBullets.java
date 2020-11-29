@@ -30,7 +30,7 @@ import static arc.math.Angles.*;
 
 public class NHBullets implements ContentList {
 	public static 
-	BulletType boltGene, airRaid, decayLaser, longLaser, darkEnrlaser,
+	BulletType boltGene, rapidBomb, airRaid, decayLaser, longLaser, darkEnrlaser,
 			   curveBomb;
 
 	@Override
@@ -97,6 +97,25 @@ public class NHBullets implements ContentList {
 			shootEffect = smokeEffect = Fx.none;
 		}};
 		
+		rapidBomb = new NHTrailBulletType(9f, 200, "new-horizon-strike"){{
+			hitSound = Sounds.explosion;
+			drawSize = 120f;
+			hitShake = despawnShake = 1.3f;
+			scaleVelocity = true;
+			lightning = 2;
+			lightningCone = 360;
+			lightningLengthRand = lightningLength = 4;
+			splashDamageRadius = 18f;
+			splashDamage = lightningDamage = 0.35f * damage;
+			height = 30f;
+			width = 7f;
+			lifetime = 500;
+			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
+			frontColor = Color.white;
+				
+			hitEffect = NHFx.darkEnrCircleSplash;
+		}};
+		
 		airRaid = new NHTrailBulletType(9f, 800, "new-horizon-strike"){
 			
 			@Override
@@ -110,7 +129,7 @@ public class NHBullets implements ContentList {
 				trailChance = 0.075f;
 				trailEffect = NHFx.polyTrail;
 				drawSize = 120f;
-				homingPower = 0.12f;
+				homingPower = 0.08f;
 				homingRange = 400f;
 				homingDelay = 12;
 				scaleVelocity = true;
@@ -128,7 +147,7 @@ public class NHBullets implements ContentList {
 				lifetime = 500;
 				trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 				frontColor = Color.white;
-				despawnEffect = Fx.none;
+				
 				hitEffect = NHFx.mediumDarkEnergyHit;
 			}
 				
@@ -293,7 +312,7 @@ public class NHBullets implements ContentList {
 						lightningLength = 8;
 						smokeEffect = Fx.shootBigSmoke2;
 						hitShake = 8f;
-
+						hitSound = Sounds.plasmaboom;
 						status = StatusEffects.sapped;
 						statusDuration = 60f * 10;
 					}
