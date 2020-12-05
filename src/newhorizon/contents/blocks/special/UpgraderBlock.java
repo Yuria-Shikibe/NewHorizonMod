@@ -401,7 +401,7 @@ public class UpgraderBlock extends Block {
 				Scalablec target = target();
 				Lines.square(target.getX(), target.getY(), target.block().size * tilesize / 2);
 				float
-				sin = Mathf.absin(Time.time(), 6f, 1f),
+				sin = Mathf.absin(Time.time, 6f, 1f),
 				r1 = (block.size / 2 + 1) * tilesize + sin,
 				r2 = (target.block().size / 3 + 2) * tilesize + sin;
 

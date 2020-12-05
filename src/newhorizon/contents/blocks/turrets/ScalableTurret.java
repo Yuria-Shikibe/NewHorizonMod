@@ -262,7 +262,7 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		public void drawConnected(){
-			float sin = Mathf.absin(Time.time(), 6f, 1f);
+			float sin = Mathf.absin(Time.time, 6f, 1f);
 			for(int i = 0; i < 4; i++){ 
 				float length = tilesize * block.size / 2 + 3 + sin;
 				Tmp.v1.trns(i * 90, -length);
