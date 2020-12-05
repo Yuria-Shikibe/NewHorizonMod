@@ -33,7 +33,7 @@ public class NewHorizon extends Mod{
 		dialog.cont.button("Back", dialog::hide).size(120f, 60f);
 		dialog.show();
 	}
-	
+
 	private void addLink(Table table, TextureRegionDrawable icon, String buttonName, String link){
 		table.button(buttonName, icon, () -> {
 			Dialog dialog = new Dialog("");

@@ -113,6 +113,9 @@ public class NHBullets implements ContentList {
 			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 			frontColor = Color.white;
 			hitEffect = NHFx.darkEnrCircleSplash;
+			shootEffect = NHFx.darkEnergyShoot;
+			smokeEffect = NHFx.darkEnergySmoke;
+			shrinkX = shrinkY = 0;
 		}};
 		
 		airRaid = new NHTrailBulletType(9f, 800, "new-horizon-strike"){
