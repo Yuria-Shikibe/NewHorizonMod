@@ -1,10 +1,8 @@
 package newhorizon.contents.blocks.drawers;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import mindustry.world.*;
 import mindustry.world.blocks.production.GenericCrafter.*;
 import mindustry.world.draw.*;
 

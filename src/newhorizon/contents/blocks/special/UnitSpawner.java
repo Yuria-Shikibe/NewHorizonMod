@@ -4,52 +4,22 @@ package newhorizon.contents.blocks.special;
 import arc.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.math.*;
 import arc.util.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.style.*;
+import mindustry.entities.Units;
 import mindustry.game.*;
-import mindustry.ctype.*;
-import mindustry.content.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.entities.*;
-import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.campaign.*;
-import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.experimental.*;
-import mindustry.world.blocks.legacy.*;
-import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.sandbox.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.*;
-import mindustry.world.draw.*;
-import mindustry.world.meta.*;
+import mindustry.world.meta.BuildVisibility;
 
-
-import newhorizon.contents.items.*;
-import newhorizon.contents.colors.*;
-import newhorizon.contents.bullets.*;
-
-import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
-import static arc.Core.atlas;
+import static mindustry.type.ItemStack.with;
 
 public class UnitSpawner extends Block{
 	public TextureRegion teamRegionTop;
@@ -62,6 +32,8 @@ public class UnitSpawner extends Block{
 		configurable = true;
 		solid = false;
 		targetable = false;
+		requirements(Category.units, BuildVisibility.sandboxOnly, with());
+		health = Integer.MAX_VALUE;
 	}
 	
 	@Override
@@ -92,9 +64,7 @@ public class UnitSpawner extends Block{
 		
 		@Override
 		public void buildConfiguration(Table table){
-			table.button(Icon.zoom, () -> {
-				selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam;
-			}).size(60f);
+			table.button(Icon.zoom, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(60f);
 			
 			table.button(Icon.add, () -> {
 				BaseDialog dialog = new BaseDialog("SetUnitType");
@@ -104,8 +74,7 @@ public class UnitSpawner extends Block{
 					int num = 0;
 					for(UnitType type : unitTypes){
 						if(type.isHidden())continue;
-						num++;
-						if(!(num == 0) && num % 5 == 0)t.row();
+						if(num % 5 == 0)t.row();
 						t.button(new TextureRegionDrawable(type.icon(Cicon.medium)), () -> {
 							Vec2 vec = new Vec2();
 							vec.trns(rotation * 90 + 45, (tilesize * 4 + 4));
@@ -117,15 +86,19 @@ public class UnitSpawner extends Block{
 								});
 							}
 						}).size(80f);
+						num++;
 					}
-				}).size(5 * 80f, 4 * 80f);
-				dialog.cont.row();
-				dialog.cont.pane(t -> {
-					t.button("Spawn1", () -> {spawnNum = 1;}).size(120f, 50f);
-					t.button("Spawn10", () -> {spawnNum = 10;}).size(120f, 50f);
-					t.button("Spawn20", () -> {spawnNum = 20;}).size(120f, 50f);
-				}).size(400f, 80f);
-				dialog.cont.row();
+				}).size(5 * 80f, 4 * 80f).row();
+				dialog.cont.table(Tex.button, t -> {
+					t.pane(con -> {
+						con.button("Spawn1", Styles.cleart, () -> spawnNum = 1).size(120f, 50f);
+						con.button("Spawn10", Styles.cleart, () -> spawnNum = 10).size(120f, 50f);
+						con.button("Spawn20", Styles.cleart, () -> spawnNum = 20).size(120f, 50f);
+					}).size(360f, 50f).row();
+					t.button("Remove All", Styles.cleart, () -> {
+						Groups.unit.clear();
+					}).size(360f, 50f);
+				}).size(400f, 140f).row();
 				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
 				dialog.show();
 			}).size(60f);

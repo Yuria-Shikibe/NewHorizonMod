@@ -1,15 +1,9 @@
 package newhorizon.contents.bullets;
 
 import arc.func.Cons;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.entities.*;
 import mindustry.entities.bullet.BulletType;
 import newhorizon.contents.bullets.special.NHLightningBolt;
 
@@ -33,7 +27,7 @@ public class NHLightningBoltBulletType extends BulletType {
 
 	@Override
 	public void init(Bullet b){
-        NHLightningBolt.generate(b, new Vec2().trns(b.rotation(), speed * b.lifetime()).add(b.x, b.y), b.team(), lightningColor, lightningWidth, boltNum, hitAct);
+        NHLightningBolt.create(b, new Vec2().trns(b.rotation(), speed * b.lifetime()).add(b.x, b.y), b.team(), lightningColor, lightningWidth, boltNum, hitAct);
         super.init(b);
 	}
 	

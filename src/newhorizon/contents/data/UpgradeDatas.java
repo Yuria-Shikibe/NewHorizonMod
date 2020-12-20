@@ -1,20 +1,16 @@
 package newhorizon.contents.data;
 
-import arc.struct.*;
 import mindustry.gen.*;
 import mindustry.type.ItemStack;
 import mindustry.content.Items;
-import mindustry.content.Bullets;
-import mindustry.content.Fx;
 
-import newhorizon.contents.items.NHItems;
+import newhorizon.contents.items.*;
 import newhorizon.contents.effects.NHFx;
-import newhorizon.contents.bullets.NHBullets;
 import newhorizon.contents.bullets.NHBullets;
 
 import static mindustry.Vars.*;
 
-public class UpgradeDatas{ 
+public class UpgradeDatas{
 	public static final UpgradeBaseData
 		basicData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, 
 			new ItemStack(NHItems.upgradeSort, 100),
@@ -27,8 +23,6 @@ public class UpgradeDatas{
 			speedMPL = 0.035f;
 			defenceMPL = 0.05f;
 		}};
-		
-	//UpgradeAmmoDatas ↓
 		
 	public static final UpgradeAmmoData
 		darkEnrlaser = new UpgradeAmmoData(

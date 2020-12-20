@@ -1,66 +1,30 @@
 package newhorizon.contents.data;
 
-import arc.input.*;
-import arc.util.pooling.Pool.*;
 import arc.util.io.*;
 import arc.*;
-import arc.func.*;
-import arc.math.geom.*;
 import arc.struct.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.math.*;
-import arc.util.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.scene.style.*;
-import mindustry.game.*;
-import mindustry.ctype.*;
-import mindustry.content.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.entities.*;
-import mindustry.entities.bullet.*;
+import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.logic.*;
-import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.campaign.*;
-import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.experimental.*;
-import mindustry.world.blocks.legacy.*;
-import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.sandbox.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.*;
-import mindustry.world.draw.*;
-import mindustry.world.meta.*;
-
+import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.contents.blocks.special.UpgraderBlock.UpgraderBlockBuild;
-import newhorizon.NewHorizon;
+import newhorizon.*;
+import newhorizon.contents.items.*;
+
 import java.text.DecimalFormat;
 
-import static mindustry.Vars.*;
-
 public abstract class UpgradeData implements Cloneable{
+
 	public static final DecimalFormat df = new DecimalFormat("######0.00");
-	public static final String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
+	public static String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
 	public static final String tabSpace = "    ";
 	public static final float LEN = 60f, OFFSET = 12f;
-	public static final BulletType none = new BasicBulletType(0, 1, "none") {{
-		instantDisappear = true;
-		trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
-	}};
+
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	public int unlockLevel = 0;
 	public TextureRegion icon;
@@ -68,15 +32,17 @@ public abstract class UpgradeData implements Cloneable{
 	public float costTime;
 	public UpgraderBlockBuild from;
 	public int id;
-	
-	//protected Cons<Table> tableChild = table -> {};
-	
+
+	public UpgradeData(){
+		this("null", "null", 0, new ItemStack(NHItems.emergencyReplace, 0));
+	}
+
 	public UpgradeData(
 		String name,
 		String description,
 		float costTime,
 		ItemStack... items
-	) {
+	){
 		this.name = name;
 		this.description = description;
 		this.costTime = costTime;
@@ -88,14 +54,16 @@ public abstract class UpgradeData implements Cloneable{
 	public void write(Writes write){}
 
 	public float costTime() {return costTime;}
-	public ItemStack[] requirements() {return this.requirements.toArray();}
-	
+	public ItemStack[] requirements() {return ItemStack.mult(requirements.toArray(), 1 * Vars.state.rules.buildCostMultiplier);}
+
 	@Override
-	public Object clone (){
+	public Object clone(){
 		Object obj = null;
 		try {
 			obj = super.clone();
-		} catch (CloneNotSupportedException err){}
+		} catch (CloneNotSupportedException err){
+
+		}
 		return obj;
 	}
 	
@@ -107,57 +75,50 @@ public abstract class UpgradeData implements Cloneable{
 	}
 	
 	public void buildTable(Table t) {
-		t.table(Tex.button, table -> {
-			buildDescriptions(table);
-		}).pad(OFFSET / 2).fillX().height(LEN * 1.6f).row();
+		t.table(Tex.button, this::buildDescriptions).pad(OFFSET / 2).fillX().height(LEN * 1.6f).row();
 	}
 
 	public void buildDescriptions(Table t) {
-		t.pane(table -> {
-			table.image(icon).size(LEN).left();
-		}).left().size(LEN);
+		t.pane(table -> table.image(icon).size(LEN).left()).left().size(LEN);
 
 		t.pane(table -> {
 			addText(table);
-			table.add("[lightgray]NeededTime: [accent]" + df.format(costTime() / 60) + "sec[]").left().row();
+			table.add("[lightgray]NeededTime: [accent]" + df.format(costTime() / 60) + "[lightgray] sec[]").left().row();
 		}).size(LEN * 6f, LEN).left().pad(OFFSET);
 
 		t.table(Tex.button, table -> {
-			table.button(Icon.infoCircle, Styles.clearTransi, () -> {showInfo(this, true);}).size(LEN);
-			table.button(Icon.upOpen, Styles.clearPartiali, () -> {
-				from.upgradeData(this);
-			}).size(LEN).disabled(b -> !from.canUpgrade(this));
+			table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true)).size(LEN);
+			table.button(Icon.upOpen, Styles.clearPartiali, () -> from.upgradeData(this)).size(LEN).disabled(b -> !from.canUpgrade(this));
 		}).height(LEN + OFFSET).left().pad(OFFSET);
 	}
 	
-	public void showInfo(UpgradeData data, boolean drawCons){
-		new Dialog("") {{
-			keyDown(KeyCode.escape, this::hide);
-			keyDown(KeyCode.back, this::hide);
-			cont.margin(15f);
-			cont.table(Tex.button, table -> {
-				table.pane( t -> {t.image(icon);}).size(icon.height + OFFSET / 2).left();
-				table.pane( t -> {infoText(t);}).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
-			}).row();
-			cont.add("<< " + Core.bundle.get(data.name) + " >>").color(Pal.accent).row();
-			cont.add("Description: ").color(Pal.accent).left().row();
-			cont.add(tabSpace + Core.bundle.get(data.description)).color(Color.lightGray).left().row();
-			if(drawCons){
-				cont.pane(table -> {
-					int index = 0;
-					for(ItemStack stack : requirements()){
-						if(index % 5 == 0)table.row();
-						table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
-						index ++;
-					}
-				}).left().row();
-				if(data.unlockLevel > 0)cont.add("[lightgray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
-				cont.add("[lightgray]CanUpgrade?: " + getJudge(data.from.canUpgrade(data)) + "[]").left().row();
-			}
-			cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
-			cont.row();
-			cont.button("Back", this::hide).size(120, 50).pad(4);
-		}}.show();
+	public void showInfo(boolean drawCons){
+		BaseDialog dialog = new BaseDialog("");
+		dialog.addCloseListener();
+		dialog.cont.margin(15f);
+		dialog.cont.table(Tex.button, table -> {
+			table.pane( t -> t.image(icon)).size(icon.height + OFFSET / 2).left();
+			table.pane(this::infoText).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
+		}).row();
+		dialog.cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
+		dialog.cont.add("Description: ").color(Pal.accent).left().row();
+		dialog.cont.add(tabSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
+		if(drawCons){
+			dialog.cont.pane(table -> {
+				int index = 0;
+				for(ItemStack stack : requirements()){
+					if(index % 5 == 0)table.row();
+					table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
+					index ++;
+				}
+			}).left().row();
+			if(this.unlockLevel > 0)dialog.cont.add("[lightgray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
+				dialog.cont.add("[lightgray]CanUpgrade?: " + getJudge(this.from.canUpgrade(this)) + "[]").left().row();
+		}
+		dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
+		dialog.cont.row();
+		dialog.cont.button("@back", Icon.left, dialog::hide).size(LEN * 2.5f, LEN).pad(OFFSET / 3);
+		dialog.show();
 	}
 
 }

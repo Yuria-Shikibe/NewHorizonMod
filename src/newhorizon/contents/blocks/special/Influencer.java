@@ -2,46 +2,18 @@ package newhorizon.contents.blocks.special;
 
 
 import arc.*;
-import arc.audio.*;
 import arc.math.geom.*;
-import arc.struct.*;
-import arc.scene.ui.layout.*;
 import arc.math.*;
 import arc.util.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.scene.style.*;
 import mindustry.logic.*;
-import mindustry.game.*;
-import mindustry.ctype.*;
 import mindustry.content.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.campaign.*;
-import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.experimental.*;
-import mindustry.world.blocks.legacy.*;
-import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.sandbox.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.*;
-import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 
 import newhorizon.contents.bullets.special.*;
 import static mindustry.Vars.*;
@@ -56,7 +28,7 @@ public class Influencer extends Block {
 	public float range = 160f;
 	public float reloadTime = 90f;
 	public float damage = 10, heal = 0;
-	public float chargerOffset = tilesize * size / 4, rotateOffset = 0f;
+	public float chargerOffset = tilesize * size / 4f, rotateOffset = 0f;
 	public boolean targetHost = true;
 	public boolean targetFriendly = false;
 	public float statusDuration = 60f;
@@ -139,7 +111,6 @@ public class Influencer extends Block {
 		}
 		
 		protected void effectFriend(){
-			Rect rect = new Rect();
 			Units.nearby(team, x, y, range(), unit -> {
 				unit.apply(positiveStatus, statusDuration);
 				acceptEffect.at(unit);
@@ -149,7 +120,7 @@ public class Influencer extends Block {
 		
 		protected void blast() {
 			Rect rect = new Rect();
-			if(generateLiNum > 0)NHLightningBolt.generate(this, target, team, lightningColor, NHLightningBolt.WIDTH, 2, e ->{
+			if(generateLiNum > 0)NHLightningBolt.create(this, target, team, lightningColor, NHLightningBolt.WIDTH, 2, e ->{
 				Damage.damage(team, e.getX(), e.getY(), 40f, damage * 3f);
 				new Effect(25, eff -> {
 					Draw.color(eff.color);
@@ -162,7 +133,7 @@ public class Influencer extends Block {
 			});
 			Units.nearbyEnemies(team, rect.setSize(range * 2).setCenter(x, y), unit -> {
 				unit.apply(status, statusDuration);
-				unit.impulse(Tmp.v3.set((Position)unit).sub(x, y).nor().scl(knockback * 80.0f));
+				unit.impulse(Tmp.v3.set(unit).sub(x, y).nor().scl(knockback * 80.0f));
 				acceptEffect.at(unit);
 				unit.damage(damage * Time.delta);
 			});
@@ -176,7 +147,7 @@ public class Influencer extends Block {
 			for (int i = 0; i < generateLiNum; i++) {
 				Lightning.create(team, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(360f), generateLiLen + Mathf.random(generateLiRand));
 			}
-			NHLightningBolt.generateRange(this, team, range, gettingBoltNum, 2, lightningDamage < 0 ? damage : lightningDamage, lightningColor, true, NHLightningBolt.WIDTH);
+			NHLightningBolt.createRange(this, team, range, gettingBoltNum, 2, lightningDamage < 0 ? damage : lightningDamage, lightningColor, true, NHLightningBolt.WIDTH);
 		}
 
 		@Override

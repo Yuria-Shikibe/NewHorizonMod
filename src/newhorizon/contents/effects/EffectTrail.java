@@ -11,8 +11,7 @@ import arc.util.pooling.*;
 
 public class EffectTrail {
 	public static final float LIFETIME = 20f;
-	public int length = 1;
-	public int staticLength = 1;
+	public int length;
 	public float width, size;
 
 	//No fucking sucks private
@@ -24,9 +23,9 @@ public class EffectTrail {
 	}
 
 	public EffectTrail(int length, float width, float size) {
+		this.length = length;
 		this.size = size;
 		this.width = width;
-		this.staticLength = this.length = length;
 		points = new Seq<>(length);
 	}
 
@@ -40,7 +39,7 @@ public class EffectTrail {
 		for (int i = 0; i < points.size - 1; i++) {
 			Vec3 c = points.get(i);
 			Vec3 n = points.get(i + 1);
-			float sizeP = width * 1f / length;
+			float sizeP = width/ length;
 
 			float cx = Mathf.sin(c.z) * i * sizeP, cy = Mathf.cos(c.z) * i * sizeP, nx = Mathf.sin(n.z) * (i + 1) * sizeP, ny = Mathf.cos(n.z) * (i + 1) * sizeP;
 			Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
@@ -49,9 +48,17 @@ public class EffectTrail {
 		Draw.reset();
 	}
 
-	public void update(float x, float y, boolean updateLength) {
-		if (updateLength)length = (int)Mathf.floor(staticLength / Time.delta * 1.65f);
+	public void disappearLine(Color color, float x, float y, float length, float angle){
+		int prama = points.size;
+		float lengthSigs = length / prama;
+		for (int i = 0; i < prama; i ++){
+			Tmp.v1.trns(angle - 180, lengthSigs * (prama - i)).add(x, y);
+			update(Tmp.v1.x, Tmp.v1.y);
+		}
+		disappear(color);
+	}
 
+	public void update(float x, float y){
 		if (points.size > length) {
 			Pools.free(points.first());
 			points.remove(0);
@@ -65,7 +72,13 @@ public class EffectTrail {
 		lastY = y;
 	}
 
-	public void disappear(Color color, float disappearWidth) {
+	public void updateDelta(float x, float y){
+		for(int i = 0; i < (int)Time.delta; i ++){
+			update(x, y);
+		}
+	}
+
+	public void disappear(Color color) {
 		if (points.isEmpty())return;
 
 		new Effect(LIFETIME, size, e -> {
@@ -76,15 +89,13 @@ public class EffectTrail {
 			for (int i = 0; i < data.size - 1; i++) {
 				Vec3 c = data.get(i);
 				Vec3 n = data.get(i + 1);
-				float sizeP = disappearWidth * e.fout() / e.rotation;
+				float sizeP = width * e.fout() / e.rotation;
 
 				float cx = Mathf.sin(c.z) * i * sizeP, cy = Mathf.cos(c.z) * i * sizeP, nx = Mathf.sin(n.z) * (i + 1) * sizeP, ny = Mathf.cos(n.z) * (i + 1) * sizeP;
 				Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
 			}
 
 		}).at(this.points.peek().x, this.points.peek().y, this.length, color, this.points);
-
-		//for (Vec3 vec : this.points)Pools.free(vec);
 	}
 
 }

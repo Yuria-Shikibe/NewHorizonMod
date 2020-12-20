@@ -1,40 +1,50 @@
 package newhorizon.contents.bullets;
 
-import arc.audio.*;
 import arc.math.geom.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import arc.struct.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.io.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.*;
-
+import mindustry.type.StatusEffect;
 import newhorizon.contents.bullets.special.*;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.effects.*;
 
-import static mindustry.Vars.*;
-import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 
-public class NHBullets implements ContentList {
-	public static 
-	BulletType boltGene, rapidBomb, airRaid, decayLaser, longLaser, darkEnrlaser,
-			   curveBomb;
+public class NHBullets {
+	public static final
+	BulletType
 
-	@Override
-	public void load(){
+	none = new BasicBulletType(0, 1, "none") {{
+		instantDisappear = true;
+		trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
+	}},
+
+	supSky = new SapBulletType() {{
+			damage = 130f;
+			status = new StatusEffect("actted"){{
+				speedMultiplier = 0.875f;
+				damage = 0.8f;
+				reloadMultiplier = 0.75f;
+			}};
+			sapStrength = 0.45f;
+			length = 250f;
+			drawSize = 500f;
+			shootEffect = hitEffect = NHFx.lightSkyCircleSplash;
+			hitColor = color = NHColor.lightSky;
+			despawnEffect = Fx.none;
+			width = 0.62f;
+			lifetime = 35f;
+		}},
+
 		darkEnrlaser = new ContinuousLaserBulletType(1000){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
@@ -69,9 +79,9 @@ public class NHBullets implements ContentList {
 				Fill.circle(b.x, b.y, 9f + 9f * b.fout());
 				Draw.reset();
 			}
-		};
-		
-		decayLaser = new NHLaserBulletType(2000){{
+		},
+
+		decayLaser = new LaserBulletType(2000){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.darkEnrColor, Color.white};
 			laserEffect = NHFx.darkEnergyLaserShoot;
 			length = 880f;
@@ -83,10 +93,10 @@ public class NHBullets implements ContentList {
 			largeHit = true;
 			shootEffect = NHFx.darkEnergyShoot;
 			smokeEffect = NHFx.darkEnergySmoke;
-		}};
+		}},
 		
 		longLaser = new LaserBulletType(500){{
-			colors = new Color[]{Pal.lancerLaser.cpy().mul(1f, 1f, 1f, 0.3f), Pal.lancerLaser, Color.white};
+			colors = new Color[]{NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.lightSky, Color.white};
 			length = 360f;
 			width = 12.7f;
 			lengthFalloff = 0.6f;
@@ -95,7 +105,7 @@ public class NHBullets implements ContentList {
 			sideAngle = 90f;
 			largeHit = false;
 			shootEffect = smokeEffect = Fx.none;
-		}};
+		}},
 		
 		rapidBomb = new NHTrailBulletType(9f, 200, "new-horizon-strike"){{
 			hitSound = Sounds.explosion;
@@ -113,10 +123,7 @@ public class NHBullets implements ContentList {
 			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 			frontColor = Color.white;
 			hitEffect = NHFx.darkEnrCircleSplash;
-			shootEffect = NHFx.darkEnergyShoot;
-			smokeEffect = NHFx.darkEnergySmoke;
-			shrinkX = shrinkY = 0;
-		}};
+		}},
 		
 		airRaid = new NHTrailBulletType(9f, 800, "new-horizon-strike"){
 			
@@ -153,7 +160,7 @@ public class NHBullets implements ContentList {
 				hitEffect = NHFx.mediumDarkEnergyHit;
 			}
 				
-		};
+		},
 		
 		curveBomb = new ArtilleryBulletType(4f, 0f) {
 			@Override
@@ -181,17 +188,13 @@ public class NHBullets implements ContentList {
 				stroke(5f * b.fout());
 
 				float len = Mathf.curve(b.fslope(), 0.1f, 0.8f) * 60 + b.fin() * 50;
-				randLenVectors(b.id, 2, len, (x, y) -> {
-					randLenVectors(b.id / 2 + 12, 1, len, (x2, y2) -> {
-						curve(
-							from.x,  		 	from.y,
-							from.x + vec1.x + x,  from.y + vec1.y + y,
-							from.x + vec2.x + x2, from.y + vec2.y + y2,
-							b.x, b.y,
-							16
-						);
-					});
-				});
+				randLenVectors(b.id, 2, len, (x, y) -> randLenVectors(b.id / 2 + 12, 1, len, (x2, y2) -> curve(
+					from.x,  		 	from.y,
+					from.x + vec1.x + x,  from.y + vec1.y + y,
+					from.x + vec2.x + x2, from.y + vec2.y + y2,
+					b.x, b.y,
+					16
+				)));
 				Fill.circle(from.x, from.y, 3.5f * b.fout() * getStroke() / 2f);
 				Fill.circle(b.x, b.y, 2 * b.finpow() + 4 * b.fslope());
 				reset();
@@ -200,7 +203,7 @@ public class NHBullets implements ContentList {
 			@Override
 			public void despawned(Bullet b) {
 				super.despawned(b);
-				NHLightningBolt.generateRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), lightColor, true, NHLightningBolt.WIDTH);
+				NHLightningBolt.createRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), lightColor, true, NHLightningBolt.WIDTH);
 			}
 
 			{
@@ -221,22 +224,18 @@ public class NHBullets implements ContentList {
 					stroke(e.fout() * 2);
 					circle(e.x, e.y, e.fin() * 40);
 					Fill.circle(e.x, e.y, e.fout() * e.fout() * 10);
-					randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> {
-						Fill.circle(e.x + x, e.y + y, e.fout() * 5f);
-					});
+					randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
 				});
 
 				smokeEffect = new Effect(45f, e -> {
 					color(lightColor, frontColor, e.fout());
 					Drawf.tri(e.x, e.y, 4 * e.fout(), 28, e.rotation + 90);
 					Drawf.tri(e.x, e.y, 4 * e.fout(), 28, e.rotation + 270);
-					randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> {
-						Fill.circle(e.x + x, e.y + y, e.fout() * 3f);
-					});
+					randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
 				});
 			}
 
-		};
+		},
 
 		boltGene = new ArtilleryBulletType(2.75f, 100) {
 			@Override
@@ -246,8 +245,8 @@ public class NHBullets implements ContentList {
 					NHFx.darkEnergySpread.at(b);
 				}
 
-				if (b.timer(2, 8) && (b.lifetime - b.time) > NHLightningBolt.BOLTLIFE) {
-					NHLightningBolt.generateRange(b, 240, 15, 1, splashDamage * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), 1.33f * NHLightningBolt.WIDTH);
+				if (b.timer(2, 8) && (b.lifetime - b.time) > NHLightningBolt.lifetime) {
+					NHLightningBolt.createRange(b, 240, 15, 1, splashDamage * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), 1.33f * NHLightningBolt.WIDTH);
 				}
 			}
 
@@ -270,7 +269,7 @@ public class NHBullets implements ContentList {
 				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
 					Vec2 randomPos = new Vec2(b.x + Mathf.range(200), b.y + Mathf.range(200));
 					hitSound.at(randomPos, Mathf.random(0.9f, 1.1f) );
-					NHLightningBolt.generate(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1.7f * NHLightningBolt.WIDTH, 2, hitPos -> {
+					NHLightningBolt.create(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1.7f * NHLightningBolt.WIDTH, 2, hitPos -> {
 						for (int j = 0; j < 4; j++) {
 							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
 						}
@@ -334,11 +333,8 @@ public class NHBullets implements ContentList {
 				hitEffect = NHFx.largeDarkEnergyHit;
 				shootEffect = NHFx.darkEnergyShootBig;
 				smokeEffect = NHFx.darkEnergySmokeBig;
-			}
+			}};
 
-		};
-
-	}
 }
 
 

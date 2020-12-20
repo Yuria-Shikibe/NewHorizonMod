@@ -1,53 +1,34 @@
 package newhorizon.contents.blocks.turrets;
 
 
+import arc.scene.ui.layout.Table;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.entities.*;
-import arc.scene.ui.layout.*;
 import arc.*;
 import arc.math.*;
 import arc.util.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import mindustry.ui.*;
-import mindustry.ctype.*;
 import mindustry.content.*;
+import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.campaign.*;
-import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.experimental.*;
-import mindustry.world.blocks.legacy.*;
-import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.sandbox.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
-import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
-import newhorizon.contents.items.*;
-import newhorizon.contents.colors.*;
-import newhorizon.contents.bullets.*;
+import newhorizon.contents.bullets.NHBullets;
 import newhorizon.contents.interfaces.Scalablec;
 
-import newhorizon.contents.blocks.special.UpgraderBlock.*;
 import newhorizon.contents.data.*;
 import newhorizon.NewHorizon;
+import newhorizon.contents.interfaces.Upgraderc;
 
-import static newhorizon.contents.data.UpgradeData.*;
 import static newhorizon.contents.data.UpgradeBaseData.*;
-import static mindustry.type.ItemStack.*;
 import static mindustry.Vars.*;
 
 public class ScalableTurret extends Turret{
@@ -90,9 +71,10 @@ public class ScalableTurret extends Turret{
 	public class ScalableTurretBuild extends TurretBuild implements Scalablec{
 		public UpgradeBaseData baseData = defaultBaseData;
 		public UpgradeAmmoData ammoData = defaultAmmoData;
-		
+
+		protected int fromPos = -1;
+
 		public boolean shooting;
-		public float powerUse = 1f;
 		
 		Bullet bullet;
         float bulletLife;
@@ -101,7 +83,7 @@ public class ScalableTurret extends Turret{
     
     	@Override
         public void shoot(BulletType ammo){
-        	if(ammo.compareTo(UpgradeData.none) == 0)return;
+        	if(ammo.compareTo(NHBullets.none) == 0)return;
             useAmmo();
 
             tr.trns(rotation, size * tilesize / 2f);
@@ -147,7 +129,7 @@ public class ScalableTurret extends Turret{
         
         @Override
         public BulletType peekAmmo(){
-        	return getAmmoData() == null ? UpgradeData.none : getAmmoData().selectAmmo == null ? UpgradeData.none : getAmmoData().selectAmmo;
+        	return getAmmoData() == null ? NHBullets.none : getAmmoData().selectAmmo == null ? NHBullets.none : getAmmoData().selectAmmo;
 		}
 		
 		@Override
@@ -162,17 +144,15 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		public void drawConfigure(){
-			float len = block.size * tilesize / 2 - tilesize;
 			Drawf.dashCircle(x, y, range(), baseColor);
-			Lines.stroke(1f, baseColor);
-			Lines.square(x, y, block.size * tilesize / 2.0f + 1.0f);
+
+			Lines.stroke(1f, getColor());
+			Lines.square(x, y, block().size * tilesize / 2.0f + 1.0f);
 			Draw.reset();
-			if(isConnected())drawConnected();
-			
-			Draw.rect(ammoData.icon, x - len, y + len);
-			Draw.color(baseColor);
-			Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
-			Draw.reset();
+
+			drawConnected();
+			if(baseData != null && upgraderc() != null)upgraderc().drawLink();
+			drawMode();
 		}
 		
 		@Override
@@ -256,35 +236,62 @@ public class ScalableTurret extends Turret{
 		
 		@Override
 		public void resetUpgrade(){
+			fromPos = -1;
 			baseData = defaultBaseData;
 			ammoData = defaultAmmoData;
 		}
-		
-		@Override
-		public void drawConnected(){
-			float sin = Mathf.absin(Time.time, 6f, 1f);
-			for(int i = 0; i < 4; i++){ 
-				float length = tilesize * block.size / 2 + 3 + sin;
-				Tmp.v1.trns(i * 90, -length);
-				Draw.color(Pal.gray);
-				Draw.rect(NewHorizon.NHNAME + "linked-arrow-back", x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
-				Draw.color(baseColor);
-				Draw.rect(NewHorizon.NHNAME + "linked-arrow", 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
-			}
-			Draw.reset();
-		}
-		
-				  protected boolean isContiunous(){return ammoData.continuousTime > 0;}
+
+
+
+		@Override public Color getColor(){return baseColor;}
+
+		@Override public boolean isContiunous(){return ammoData.continuousTime > 0;}
 		@Override public float handleDamage(float amount) {return amount * (1 - Mathf.clamp(baseData.defenceMPL * baseData.level, 0, maxDamageReduce));}
 		
-		@Override public boolean isConnected(){return baseData == null ? false : upgrader() != null;}
-		@Override public UpgraderBlockBuild upgrader(){return baseData.from;}
+		@Override public boolean isConnected(){return baseData != null && upgraderc() != null;}
+		@Override public Upgraderc upgraderc(){
+			if(world.build(fromPos) == null){
+				fromPos = -1;
+				return null;
+			}
+			if(world.build(fromPos) != null && world.build(fromPos) instanceof Upgraderc)return (Upgraderc)world.build(fromPos);
+			return baseData.from;
+		}
 		
 	    @Override public UpgradeBaseData getBaseData(){return baseData;}
 		@Override public UpgradeAmmoData getAmmoData(){return ammoData;}
     	
-		@Override public void setBaseData(UpgradeBaseData data){this.baseData = data;}
+		@Override public void setBaseData(UpgradeBaseData data){
+			this.baseData = data;
+			this.fromPos = data.from.pos();
+		}
 		@Override public void setAmmoData(UpgradeAmmoData data){this.ammoData = data;}
+
+		@Override
+		public void write(Writes write) {
+			write.i(this.fromPos);
+		}
+
+		@Override
+		public void read(Reads read, byte revision) {
+			this.fromPos = read.i();
+		}
+
+		@Override
+		public void buildConfiguration(Table t) {
+			t.table(Tex.button, table -> {
+				table.table(cont -> cont.image(ammoData.icon).left()).left().growX();
+				table.table(cont -> {
+					cont.add("[lightgray]Level: [accent]" + baseData.level + "[]", Styles.techLabel).left().pad(OFFSET).row();
+					cont.image().fillX().pad(OFFSET / 2).height(OFFSET / 3).color(Color.lightGray).left().row();
+					cont.add("[lightgray]ReloadReduce: [accent]" + getPercent(baseData.speedMPL * baseData.level, 0f, maxReloadReduce) + "%[]").left().row();
+					cont.add("[lightgray]DefenceUP: [accent]" + getPercent(baseData.defenceMPL * baseData.level, 0f, maxDamageReduce) + "%[]").left().row();
+				}).growX().right().padRight(OFFSET / 3);
+			}).grow().padLeft(OFFSET).padRight(OFFSET).row();
+
+			if(baseData != null && upgraderc() != null)upgraderc().buildSwitchAmmoTable(t, true);
+
+		}
 	}
 }
 

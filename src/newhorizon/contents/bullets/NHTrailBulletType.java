@@ -1,15 +1,10 @@
 package newhorizon.contents.bullets;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
-import mindustry.content.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.entities.*;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.entities.bullet.BasicBulletType;
-import newhorizon.contents.effects.EffectTrail;
+import mindustry.gen.Bullet;
+import newhorizon.contents.effects.*;
 
 public class NHTrailBulletType extends BasicBulletType {
 	public int trailLength = 12;
@@ -24,8 +19,9 @@ public class NHTrailBulletType extends BasicBulletType {
     @Override
 	public void init(){
 		super.init();
+		drawSize = Math.max(drawSize, 2.5f * trailLength * speed);
 		trailDrawsize = Math.max(trailDrawsize, 2.5f * trailLength * speed);
-		if(trailWidth < 0)trailWidth = width / 5.35f;
+		if(trailWidth < 0)trailWidth = width / 6f;
 	}
     
 	public NHTrailBulletType(float speed, float damage){
@@ -56,7 +52,7 @@ public class NHTrailBulletType extends BasicBulletType {
 		super.hit(b);
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail t = (EffectTrail)b.data;
-		t.disappear(trailColor, trailWidth);
+		t.disappear(trailColor);
 	}
 
 	@Override
@@ -71,7 +67,7 @@ public class NHTrailBulletType extends BasicBulletType {
 	public void update(Bullet b) {
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		trail.update(b.x, b.y, true);
+		trail.updateDelta(b.x, b.y);
 		super.update(b);
 	}
 }

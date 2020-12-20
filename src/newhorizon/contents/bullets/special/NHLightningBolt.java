@@ -10,12 +10,10 @@ import arc.math.geom.Position;
 import arc.math.geom.Rect;
 import arc.graphics.Color;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import mindustry.Vars;
 import mindustry.world.Tile;
 import mindustry.game.Team;
-import mindustry.gen.Unit;
 import mindustry.gen.Unitc;
 import mindustry.gen.Bullet;
 import mindustry.content.Fx;
@@ -24,20 +22,10 @@ import mindustry.entities.Effect;
 import mindustry.entities.Damage;
 import mindustry.entities.Lightning;
 
-public class NHLightningBolt { //Provide some workable methods to generate position to position lightning bolt. Powered by Yuria.
+public class NHLightningBolt { //Provide some workable methods to create position to position lightning bolt. Powered by Yuria.
 
 	/**
 	* Main methods:
-	*
-	*	 Radius: Deals @boltNum PtP Lightning(s) to @hits enemies within @range, @chance to generate None Target Lightning.
-	* 		generateRange(Position owner, Team team, float range, int hits, int boltNum, 	[N/A] 	Color color,	  [N/A]	  float width, Cons<Position> movement)
-	* 		generateRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width	   	[N/A]    	 );
-	* 		generateRange( Bullet  owner,   [N/A]	float range, int hits, int boltNum, float damage, Color color, boolean chance, float width	   	[N/A]    	 );
-	*
-	* 	Single: Deals @boltNum PtP Lightning(s) to certain Position
-	* 		generate(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width	 [N/A]		   	[N/A]    	);
-	* 		generate(Position owner, Position target, Team team, 	[N/A] 	Color color,		  [N/A]	   	float width, int boltNum, Cons<Position> movement);
-	* 		generate( Bullet  owner, Position target,   [N/A]	float damage, Color color, boolean createLightning, float width	 [N/A]		   	[N/A]    	);
 	*
 	*/
 
@@ -45,54 +33,54 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 	//ELEMENTS
 	
 	//Default effect lifetime.
-	public static final float BOLTLIFE = Fx.lightning.lifetime;
+	public static final float lifetime = Fx.lightning.lifetime;
 	//Default lightning width.
 	public static final float WIDTH = 3f;
-	//Default min lightning generate distance from targetA to B.
+	//Default min lightning create distance from targetA to B.
 	public static final float GENERATE_DST = 16f;
-	//Default randX mult coefficient.
-	public static final float RANDOM_RANGE_MULT_COEFFCIENT = 4f;
+	//Default randX mult prama.
+	public static final float RANGE_PRAMA = 4f;
 
 	//Used in find target method.
 	private static Tile furthest;
-	private static Rect rect = new Rect();
+	private static final Rect rect = new Rect();
 
 	//METHODS
 
-	//generate lightning to the enemies in range.
-	public static void generateRange(Position owner, Team team, float range, int hits, int boltNum, Color color, float width, Cons<Position> movement) {
+	//create lightning to the enemies in range.
+	public static void createRange(Position owner, Team team, float range, int hits, int boltNum, Color color, float width, Cons<Position> movement) {
 		Seq<Unitc> entities = new Seq<>();
 		whetherAdd(team, rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), entities, hits);
 		for (Unitc unit : entities) {
-			generate(owner, unit, team, color, width, boltNum, movement);
+			create(owner, unit, team, color, width, boltNum, movement);
 		}
 	}
 	
-	//generate lightning to the enemies in range.
-	public static void generateRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
+	//create lightning to the enemies in range.
+	public static void createRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
 		Seq<Unitc> entities = new Seq<>();
 		whetherAdd(team, rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), entities, hits);
 		for (Unitc unit : entities) {
 			for (int i = 0; i < boltNum; i ++) {
-				generate(owner, unit, team, damage, color, chance, width);
+				create(owner, unit, team, damage, color, chance, width);
 			}
 		}
 	}
 
-	//A radius generate method that with a Bullet owner.
-	public static void generateRange(Bullet owner, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
-		generateRange(owner, owner.team(), range, hits, boltNum, damage, color, chance, width);
+	//A radius create method that with a Bullet owner.
+	public static void createRange(Bullet owner, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
+		createRange(owner, owner.team(), range, hits, boltNum, damage, color, chance, width);
 	}
 
-	//A generate method that could set lightning number and extra movements to the final target.
-	public static void generate(Position owner, Position target, Team team, Color color, float width, int boltNum, Cons<Position> movement) {
+	//A create method that could set lightning number and extra movements to the final target.
+	public static void create(Position owner, Position target, Team team, Color color, float width, int boltNum, Cons<Position> movement) {
 		Position sureTarget = findInterceptedPoint(owner, target, team);
 		movement.get(sureTarget);
 
 		float dst = owner.dst(sureTarget);
 		for (int i = 0; i < boltNum; i ++) {
 			float multBolt = getBoltRandomRange();
-			float randRange = multBolt * RANDOM_RANGE_MULT_COEFFCIENT;
+			float randRange = multBolt * RANGE_PRAMA;
 
 			Seq<Float> randomArray = new Seq<>();
 			for (int num = 0; num < dst / (Vars.tilesize * multBolt) + 1; num ++) {
@@ -102,17 +90,17 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 		}
 	}
 	
-	//generate position to position lightning and deals splash damage, create none target lightning.
-	public static void generate(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width) {
-		generate(owner, target, team, color, width, 1, sureTarget ->{
+	//create position to position lightning and deals splash damage, create none target lightning.
+	public static void create(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width) {
+		create(owner, target, team, color, width, 1, sureTarget ->{
 			if (createLightning)Lightning.create(team, color, damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360), Mathf.random(8, 12));
 			Damage.damage(team, sureTarget.getX(), sureTarget.getY(), 20f, damage);
 		});
 	}
 	
-	//A generate method that with a Bullet owner.
-	public static void generate(Bullet owner, Position target, float damage, Color color, boolean createLightning, float width) {
-		generate(owner, target, owner.team(), damage, color, createLightning, width);
+	//A create method that with a Bullet owner.
+	public static void create(Bullet owner, Position target, float damage, Color color, boolean createLightning, float width) {
+		create(owner, target, owner.team(), damage, color, createLightning, width);
 	}
 
 	//Private methods and classes.
@@ -154,9 +142,9 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 		});
 	}
 
-	//generate lightning effect.
+	//create lightning effect.
 	private static void createBoltEffect(Color color, float width, Seq<Vec2> vecs) {
-		new Effect(BOLTLIFE, vecs.first().dst(vecs.peek()) * 2, e -> {
+		new Effect(lifetime, vecs.first().dst(vecs.peek()) * 2, e -> {
 			if(!(e.data instanceof Seq)) return;
 			Seq<Vec2> lines = e.data();
 
@@ -181,11 +169,11 @@ public class NHLightningBolt { //Provide some workable methods to generate posit
 		int param = randomVec.size;
 		float angle = from.angleTo(to);
 		
-		Seq<Vec2> lines = new Seq<>(Vec2.class);
+		Seq<Vec2> lines = new Seq<>(param);
 		Tmp.v1.trns(angle, from.dst(to) / (param - 1));
 		
 		lines.add(new Vec2().set(from));
-		for (int i = 1; i < param - 2; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(Tmp.v1, i).add(from.getX(), from.getY()) );
+		for (int i = 1; i < param - 2; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(Tmp.v1, i).add(from.getX(), from.getY()));
 		lines.add(new Vec2().set(to));
 		
 		return lines;

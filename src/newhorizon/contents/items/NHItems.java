@@ -17,7 +17,10 @@ public class NHItems implements ContentList{
 	
 	@Override
 	public void load(){
-		emergencyReplace = new Item("emergency-replace", Color.valueOf("#BD0019"));
+		emergencyReplace = new Item("emergency-replace", Color.valueOf("#BD0019")){
+			@Override
+			public boolean isHidden(){return true;}
+		};
 		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("#C0FF53")){{
 			explosiveness = 5f;
 		}};

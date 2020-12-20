@@ -1,38 +1,12 @@
 package newhorizon.contents.blocks.drawers;
 
 import arc.*;
-import arc.math.geom.*;
 import arc.math.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import mindustry.ctype.*;
-import mindustry.content.*;
-
-import mindustry.entities.bullet.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.campaign.*;
-import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.experimental.*;
-import mindustry.world.blocks.legacy.*;
-import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.GenericCrafter.*;
-import mindustry.world.blocks.sandbox.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
-
-import static mindustry.Vars.*;
 
 public class DrawPrinter extends DrawBlock {
 	public Color printColor;
@@ -40,7 +14,7 @@ public class DrawPrinter extends DrawBlock {
 	public float moveLength = 8f;
 	//public Item toPrint;
 	public float time;
-	public TextureRegion bottom, toPrintObj, lightRegion;
+	public TextureRegion bottom, lightRegion;
 	@Override
 	public void draw(GenericCrafterBuild entity) {
 		Draw.rect(bottom, entity.x, entity.y);

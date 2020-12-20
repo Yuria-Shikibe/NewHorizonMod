@@ -64,24 +64,7 @@ public class NHTurrets implements ContentList {
 				reloadTime = 45f;
 				shootCone = 24f;
 				shootSound = Sounds.laser;
-				shootType = new SapBulletType() {
-					{
-						damage = 130f;
-						status = new StatusEffect("actted"){{
-							speedMultiplier = 0.875f;
-							damage = 0.8f;
-							reloadMultiplier = 0.75f;
-						}};
-						sapStrength = 0.45f;
-						length = 250f;
-						drawSize = 500f;
-						shootEffect = hitEffect = NHFx.lightSkyCircleSplash;
-						hitColor = color = NHColor.lightSky;
-						despawnEffect = Fx.none;
-						width = 0.62f;
-						lifetime = 35f;
-					}
-				};
+				shootType = NHBullets.supSky;
 			}
 		};
 		

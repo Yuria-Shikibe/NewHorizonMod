@@ -4,48 +4,19 @@ package newhorizon.contents.blocks.special;
 import arc.*;
 import arc.func.Cons;
 import arc.math.geom.*;
-import arc.struct.*;
-import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
 import arc.math.*;
 import arc.util.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.scene.style.*;
-import mindustry.game.*;
-import mindustry.ctype.*;
 import mindustry.content.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.logic.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.campaign.*;
-import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.experimental.*;
-import mindustry.world.blocks.legacy.*;
-import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.sandbox.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.*;
-import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 
-
-import newhorizon.contents.items.*;
 import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.bullets.special.NHLightningBolt;
@@ -84,33 +55,30 @@ public class ChargeWall extends Block{
 	Cons<ChargeWallBuild> maxChargeAct = tile -> {
 		chargeActEffect.at(tile.x, tile.y, effectColor);
 		
-		NHLightningBolt.generateRange(tile, tile.team(), tile.range(), lightningActHits, 2, maxEnergy, effectColor, true, NHLightningBolt.WIDTH);
+		NHLightningBolt.createRange(tile, tile.team(), tile.range(), lightningActHits, 2, maxEnergy, effectColor, true, NHLightningBolt.WIDTH);
 	};
 	Cons<ChargeWallBuild> destroyAct = tile -> {
 		onDestroyedEffect.at(tile.x, tile.y, effectColor);
 		
-		NHLightningBolt.generateRange(tile, tile.team(), tile.range(), lightningActHits, 2, maxEnergy, effectColor, true, NHLightningBolt.WIDTH);
+		NHLightningBolt.createRange(tile, tile.team(), tile.range(), lightningActHits, 2, maxEnergy, effectColor, true, NHLightningBolt.WIDTH);
 	};
-	Cons<ChargeWallBuild> closestTargetAct = tile -> {
-		NHLightningBolt.generate(tile, tile.target, tile.team, effectColor, NHLightningBolt.WIDTH, 2, target ->{
-			hitEffect.at(target.getX(), target.getY(), tile.angleTo(target), effectColor);
-			shootEffect.at(tile.x, tile.y, effectColor);
-			new SapBulletType() {
-				{
-					damage = shootDamage;
-					status = StatusEffects.none;
-					sapStrength = 0.45f;
-					length = tile.range();
-					drawSize = tile.range() * 2;
-					hitEffect = hitEffect;
-					hitColor = color = effectColor;
-					despawnEffect = shootEffect = Fx.none;
-					width = 0.62f;
-					lifetime = 35f;
-				}
-			}.create(tile, tile.team, tile.x, tile.y, tile.angleTo(target));
-		});
-	};
+	Cons<ChargeWallBuild> closestTargetAct = tile -> NHLightningBolt.create(tile, tile.target, tile.team, effectColor, NHLightningBolt.WIDTH, 2, target ->{
+		hitEffect.at(target.getX(), target.getY(), tile.angleTo(target), effectColor);
+		shootEffect.at(tile.x, tile.y, effectColor);
+		new SapBulletType() {
+			{
+				damage = shootDamage;
+				status = StatusEffects.none;
+				sapStrength = 0.45f;
+				length = tile.range();
+				drawSize = tile.range() * 2;
+				hitColor = color = effectColor;
+				despawnEffect = shootEffect = Fx.none;
+				width = 0.62f;
+				lifetime = 35f;
+			}
+		}.create(tile, tile.team, tile.x, tile.y, tile.angleTo(target));
+	});
 	
 	public ChargeWall(String name){
 		super(name);
@@ -161,8 +129,6 @@ public class ChargeWall extends Block{
 		public float coolingReload;
 		
 		public Posc target;
-		public Vec2 targetPos = new Vec2();
-	
 		
 		@Override
 		public float range(){return range;}
