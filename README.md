@@ -2,4 +2,4 @@
 A Java Mindustry mod that works on Android and PC.
 
 # Caution：
-For some reason, if you want to run jar mod successfully, please run the game with ".jar" file
+If you want to run this mod on PC, please install jdk 14, or you would receive an error.
