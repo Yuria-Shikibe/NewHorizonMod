@@ -1,7 +1,7 @@
 name: "new-horizon"
-displayName: "NewHorizon"
-author: "Yuria"
+displayName: "NewHorizonMod"
+author: "Yuria C."
 main: "newhorizon.NewHorizon"
-description: "A jar mod."
-version: 1.15
-minGameVersion: 110
+description: "Expanded contents, including Units, Turrets, Blocks, etc."
+version: "1.2 beta"
+minGameVersion: 122
