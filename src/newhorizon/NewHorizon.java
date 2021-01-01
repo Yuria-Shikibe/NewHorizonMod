@@ -2,7 +2,6 @@ package newhorizon;
 
 import arc.*;
 import mindustry.graphics.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.scene.style.TextureRegionDrawable;
 import arc.util.*;
@@ -11,10 +10,7 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
-import newhorizon.contents.units.*;
-import newhorizon.contents.items.*;
-import newhorizon.contents.blocks.*;
-import newhorizon.contents.blocks.turrets.*;
+import newhorizon.content.*;
 
 
 public class NewHorizon extends Mod{
@@ -66,6 +62,7 @@ public class NewHorizon extends Mod{
 		new NHLiquids().load();
 		new NHUnits().load();
 		new NHBlocks().load();
+		new NHTechTree().load();
     }
 	
 	

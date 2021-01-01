@@ -12,7 +12,7 @@ import static newhorizon.func.Functions.OFFSET;
 
 public class TextureFilterValue implements StatValue {
     public final TextureRegion region;
-    public String description = "N/A";
+    public String description;
 
     public TextureFilterValue(TextureRegion region, String description) {
         this.region = region;

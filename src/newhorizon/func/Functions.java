@@ -14,9 +14,9 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.gen.*;
 import mindustry.type.UnitType;
-import newhorizon.contents.blocks.special.JumpGate;
-import newhorizon.contents.bullets.EffectBulletType;
-import newhorizon.contents.effects.NHFx;
+import newhorizon.blocks.special.JumpGate;
+import newhorizon.bullets.EffectBulletType;
+import newhorizon.content.NHFx;
 
 import java.text.DecimalFormat;
 
@@ -30,6 +30,9 @@ public class Functions {
     public static final String tabSpace = "    ";
     public static final float LEN = 60f, OFFSET = 12f;
 
+    public static float regSize(UnitType type){
+        return type.hitSize / tilesize / tilesize / 3.25f;
+    }
 
     public static void spawnUnit(JumpGate.JumpGateBuild starter, float x, float y, int spawns, int level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
         final TextureRegion
@@ -38,7 +41,7 @@ public class Functions {
 
         ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + level + "[] fleet in coming at [" + format(x / tilesize) + ", " + format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
 
-        float angle, regSize = type.hitSize / tilesize / tilesize / 3.2f;
+        float angle, regSize = regSize(type);
 
         new Effect(60f, e -> {
             Lines.stroke(3 * e.fout(), spawnColor);
