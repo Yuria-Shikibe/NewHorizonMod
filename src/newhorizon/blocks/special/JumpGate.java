@@ -203,7 +203,7 @@ public class JumpGate extends Block {
                 Draw.color(baseColor());
                 Lines.square(target.x, target.y, target.block().size * tilesize / 2f + 1.0f);
 
-                DrawFuncs.posSquareLinkBottom(this, target, (isCalling() && !canSpawn(getSet())) ? baseColor().cpy().mul(Color.red) : baseColor(), 1.5f, 3.5f);
+                DrawFuncs.posSquareLinkBottom(this, target, (isCalling() && !hasConsume(getSet())) ? baseColor().cpy().mul(Pal.ammo) : baseColor(), 1.5f, 3.5f);
             }else Drawf.dashCircle(x, y, spawnRange, baseColor());
 
             if(coreValid()){
@@ -326,6 +326,7 @@ public class JumpGate extends Block {
         }
 
         public boolean hasConsume(UnitSet set){
+            if(!coreValid())return false;
             CoreBlock.CoreBuild core = this.team.core();
             return core.items.has(set.requirements());
         }

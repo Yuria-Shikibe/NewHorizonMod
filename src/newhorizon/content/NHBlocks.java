@@ -629,7 +629,7 @@ public class NHBlocks implements ContentList {
         }};
 
 		jumpGate = new JumpGate("jump-gate"){{
-			consumes.power(8f);
+			consumes.power(100f);
 			health = 50000;
 			spawnDelay = 20f;
 			spawnReloadTime = 300f;
