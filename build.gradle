@@ -66,6 +66,10 @@ jar{
     from("assets/"){
         include "**"
     }
+    
+    from("translates/"){
+        include "**"
+    }
 }
 
 task deploy(type: Jar){
