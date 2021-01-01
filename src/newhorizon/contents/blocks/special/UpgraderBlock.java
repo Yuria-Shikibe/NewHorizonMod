@@ -24,18 +24,24 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
 import mindustry.ui.Bar;
+import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValue;
+import newhorizon.contents.blocks.NHBlocks;
 import newhorizon.contents.colors.NHColor;
 import newhorizon.contents.data.*;
 import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.interfaces.Scalablec;
 import newhorizon.contents.interfaces.Upgraderc;
+import newhorizon.func.TextureFilterValue;
 
 import static mindustry.Vars.*;
-import static newhorizon.contents.data.UpgradeData.*;
+import static newhorizon.func.Functions.*;
 
 public class UpgraderBlock extends Block {
 	public static final int DFTID = -2; 
@@ -43,21 +49,16 @@ public class UpgraderBlock extends Block {
 	public static final int buttonPerLine = 8;
 	
 	protected SoundLoop upgradeSound = new SoundLoop(Sounds.build, 1.1f);
-	//Level from 1 - maxLevel
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
-	//public TextureRegion[] levelRegions;
-	
-	//
+
 	public Block linkTarget;
 	public Color baseColor = Pal.accent;
-	public Block toUpgradeClass;
 	public Effect upgradeEffect = NHFx.upgrading;
 	public float range = 400f;
 
 	public UpgradeBaseData initUpgradeBaseData = new UpgradeBaseData();
 	public Seq<UpgradeAmmoData> initUpgradeAmmoDatas = new Seq<>();
-
 	protected void addUpgrades(UpgradeAmmoData... datas) {
 		int index = 0;
 
@@ -86,6 +87,12 @@ public class UpgraderBlock extends Block {
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
+	}
+
+	@Override
+	public void setStats(){
+		super.setStats();
+		stats.add(Stat.output, new TextureFilterValue(linkTarget.icon(Cicon.medium), "Link Target: [accent]" + linkTarget.localizedName + "[]."));
 	}
 
 	@Override
@@ -138,6 +145,7 @@ public class UpgraderBlock extends Block {
 		
 		@Override
 		public boolean canUpgrade(UpgradeData data) {
+			if(state.rules.infiniteResources)return true;
 			if(data instanceof UpgradeLevelData){
 				UpgradeLevelData upgradeData = (UpgradeLevelData)data;
 				if(upgradeData.level == maxLevel)return false;
@@ -151,9 +159,7 @@ public class UpgraderBlock extends Block {
 			CoreBlock.CoreBuild core = core();
 			return 
 				coreValid(core) && (
-					(baseData.level >= data.unlockLevel && !isUpgrading() && core.items.has(data.requirements()) )
-					||
-					state.rules.infiniteResources
+					baseData.level >= data.unlockLevel && !isUpgrading() && core.items.has(data.requirements())
 				);
 		}
 

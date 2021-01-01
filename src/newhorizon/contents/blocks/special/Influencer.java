@@ -15,7 +15,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
-import newhorizon.contents.bullets.special.*;
+import newhorizon.func.NHLightningBolt;
+
 import static mindustry.Vars.*;
 
 public class Influencer extends Block {
@@ -120,7 +121,7 @@ public class Influencer extends Block {
 		
 		protected void blast() {
 			Rect rect = new Rect();
-			if(generateLiNum > 0)NHLightningBolt.create(this, target, team, lightningColor, NHLightningBolt.WIDTH, 2, e ->{
+			if(generateLiNum > 0) NHLightningBolt.create(this, target, team, lightningColor, NHLightningBolt.WIDTH, 2, e ->{
 				Damage.damage(team, e.getX(), e.getY(), 40f, damage * 3f);
 				new Effect(25, eff -> {
 					Draw.color(eff.color);

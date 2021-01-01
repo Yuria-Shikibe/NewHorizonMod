@@ -62,13 +62,10 @@ public class NewHorizon extends Mod{
     @Override
     public void loadContent(){
 		Log.info("Loading NewHorizon Mod Objects");
-		
 		new NHItems().load();
 		new NHLiquids().load();
-		new NHTurrets().load();
-		new NHBlocks().load();
-		new NHFactories().load();
 		new NHUnits().load();
+		new NHBlocks().load();
     }
 	
 	

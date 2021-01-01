@@ -1,8 +1,8 @@
 package newhorizon.contents.items;
 
-import arc.graphics.*;
-import mindustry.ctype.*;
-import mindustry.type.*;
+import arc.graphics.Color;
+import mindustry.ctype.ContentList;
+import mindustry.type.Item;
 
 public class NHItems implements ContentList{
 	

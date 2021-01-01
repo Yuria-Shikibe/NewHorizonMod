@@ -1,9 +1,7 @@
 package newhorizon.contents.blocks.special;
 
-
 import arc.*;
 import arc.func.Cons;
-import arc.math.geom.*;
 import arc.math.*;
 import arc.util.*;
 import arc.graphics.*;
@@ -12,6 +10,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.type.Category;
 import mindustry.ui.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -19,7 +18,7 @@ import mindustry.world.*;
 
 import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.colors.*;
-import newhorizon.contents.bullets.special.NHLightningBolt;
+import newhorizon.func.NHLightningBolt;
 
 import static mindustry.Vars.*;
 
@@ -85,6 +84,7 @@ public class ChargeWall extends Block{
 		update = true;
 		solid = true;
 		buildCostMultiplier = 4;
+		this.category = Category.defense;
 	}
 	
 	@Override
@@ -138,7 +138,7 @@ public class ChargeWall extends Block{
 		
 		@Override
 		public boolean collision(Bullet other) {
-			float dmg = other.damage() * other.type().tileDamageMultiplier;
+			float dmg = other.damage() * other.type().buildingDamageMultiplier;
 			this.damage(dmg);
 			energy += chargeCoefficient * dmg * dmgScl;
 			return true;

@@ -18,8 +18,10 @@ public class NHLiquids implements ContentList{
 	
 	@Override
 	public void load(){
-		infinityLiquid = new Liquid("infinity-liquid", Color.valueOf("#B170FF")){{
-			heatCapacity = 10f;
+		infinityLiquid = new Liquid("infinity-liquid", Color.valueOf("#B170FF")){
+			@Override public boolean isHidden(){return true;}
+		{
+			heatCapacity = Float.MAX_VALUE / 10000f;
 			lightColor = Color.valueOf("#B170FF");
 		}};
 		

@@ -11,9 +11,10 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
-import newhorizon.contents.bullets.special.*;
+import newhorizon.NewHorizon;
 import newhorizon.contents.colors.*;
 import newhorizon.contents.effects.*;
+import newhorizon.func.NHLightningBolt;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
@@ -22,6 +23,135 @@ import static arc.math.Angles.*;
 public class NHBullets {
 	public static final
 	BulletType
+		skyFrag = new BasicBulletType(3.3f, 80) {
+		@Override public float range(){return 320f;}
+
+		@Override
+			public void update(Bullet b) {
+				if (b.timer(0, 2)) {
+					new Effect(22, e -> {
+						color(NHColor.lightSky, Pal.gray, e.fin());
+						Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
+					}).at(b.x, b.y, b.rotation());
+				}
+			}
+
+			{
+				lifetime = 200f;
+				despawnEffect = hitEffect = NHFx.lightSkyCircleSplash;
+				knockback = 12f;
+				width = 15f;
+				height = 37f;
+				splashDamageRadius = 40f;
+				splashDamage = lightningDamage = damage * 0.6f;
+				backColor = lightColor = lightningColor = NHColor.lightSky;
+				frontColor = Color.white;
+				lightning = 3;
+				lightningLength = 8;
+				smokeEffect = Fx.shootBigSmoke2;
+				hitShake = 2f;
+				hitSound = Sounds.spark;
+			}
+		},
+
+		hurricaneLaser = new ContinuousLaserBulletType(680){
+			{
+				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
+				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
+				shake = 3;
+				colors = new Color[]{NHColor.lightSky.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSky, Color.white};
+				width = 7f;
+				length = 500f;
+				oscScl = 0.4f;
+				oscMag = 1.5f;
+				lifetime = 160f;
+				lightColor = NHColor.lightSky;
+				hitEffect = NHFx.lightSkyCircleSplash;
+				shootEffect = NHFx.skyLaserChargeSmall;
+				smokeEffect = NHFx.lightSkyCircleSplash;
+			}
+
+			@Override
+			public void init(Bullet b) {
+				super.init(b);
+				Sounds.laserblast.at(b);
+			}
+
+			@Override
+			public void update(Bullet b) {
+				super.update(b);
+				if (b.timer(0, 8)) {
+					NHFx.lightSkyCircleSplash.at(b);
+				}
+			}
+
+			@Override
+			public void draw(Bullet b) {
+				super.draw(b);
+				float f = Mathf.clamp(b.time > b.lifetime - this.fadeTime ? 1.0F - (b.time - (this.lifetime - this.fadeTime)) / this.fadeTime : 1.0F);
+				color(NHColor.lightSky);
+				Fill.circle(b.x, b.y, 24f * f);
+				for (int i : Mathf.signs){
+					for (int j : Mathf.signs){
+						color(NHColor.lightSky);
+						Drawf.tri(b.x, b.y, 16f * f, 86f + Mathf.absin(Time.time * j, 6f, 20f) * f, 90 + 90 * i + Time.time * j);
+				}}
+
+				for (int i : Mathf.signs){
+					for (int j : Mathf.signs) {
+						color(Color.white);
+						Drawf.tri(b.x, b.y, 7f * f, 63f + Mathf.absin(Time.time * j, 6f, 12f) * f, 90 + 90 * i + Time.time * j);
+				}}
+
+				color(Color.white);
+				Fill.circle(b.x, b.y, 17f * f);
+				Draw.reset();
+			}
+		},
+
+		huriEnergyCloud = new NHTrailBulletType(6, 60){
+			@Override public float range(){return 400f;}
+			@Override
+			public void update(Bullet b){
+				b.vel().scl(Mathf.curve(b.finpow(), 0.12f, 0.85f));
+				new Effect(40,e -> {
+					Draw.color(e.color, Pal.gray, e.fin());
+					Vec2 trnsB = new Vec2();
+					trnsB.trns(e.rotation, e.fin() * (22));
+					Fill.poly(e.x + trnsB.x, e.y + trnsB.y, 6, e.fout() * 6, e.rotation);
+				}).at(b.x, b.y, b.rotation(), NHColor.lightSky);
+				super.update(b);
+			}
+
+		{
+			width = height = 0f;
+			splashDamage = 25;
+			splashDamageRadius = 20;
+			homingDelay = 60f;
+			homingPower = 0.15f;
+			homingRange = 200f;
+			lifetime = 210;
+			pierceBuilding = pierce = true;
+
+			hitEffect = new Effect(40, e -> {
+				Draw.color(e.color);
+				Angles.randLenVectors(e.id, 2, 60 * e.fin(), 0, 360, (x, y) ->
+					Fill.poly(e.x + x, e.y + y, 6, 4 * e.fout())
+				);
+			});
+			shootEffect = new Effect(25f, e -> {
+				Draw.color(e.color, Color.white, e.fin() * 0.5f);
+				Drawf.tri(e.x, e.y, 3 * e.fout(), 40 * e.fout(), e.rotation + 90);
+				Drawf.tri(e.x, e.y, 3 * e.fout(), 40 * e.fout(), e.rotation + 270);
+			});
+			smokeEffect = new Effect(25f, e -> {
+				Draw.color(e.color, Color.white, e.fin() * 0.5f);
+				Angles.randLenVectors(e.id, 3, 40 * e.fin(), e.rotation, 55, (x, y) ->
+						Fill.circle(e.x + x, e.y + y, e.fout() * 3)
+				);
+			});
+		}
+	},
 
 	none = new BasicBulletType(0, 1, "none") {{
 		instantDisappear = true;
@@ -94,7 +224,7 @@ public class NHBullets {
 			shootEffect = NHFx.darkEnergyShoot;
 			smokeEffect = NHFx.darkEnergySmoke;
 		}},
-		
+
 		longLaser = new LaserBulletType(500){{
 			colors = new Color[]{NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.lightSky, Color.white};
 			length = 360f;
@@ -106,8 +236,8 @@ public class NHBullets {
 			largeHit = false;
 			shootEffect = smokeEffect = Fx.none;
 		}},
-		
-		rapidBomb = new NHTrailBulletType(9f, 200, "new-horizon-strike"){{
+
+		rapidBomb = new NHTrailBulletType(9f, 200, NewHorizon.NHNAME + "strike"){{
 			hitSound = Sounds.explosion;
 			drawSize = 120f;
 			hitShake = despawnShake = 1.3f;
@@ -124,7 +254,7 @@ public class NHBullets {
 			frontColor = Color.white;
 			hitEffect = NHFx.darkEnrCircleSplash;
 		}},
-		
+
 		airRaid = new NHTrailBulletType(9f, 800, "new-horizon-strike"){
 			
 			@Override
@@ -161,7 +291,7 @@ public class NHBullets {
 			}
 				
 		},
-		
+
 		curveBomb = new ArtilleryBulletType(4f, 0f) {
 			@Override
 			public void init(Bullet b) {
@@ -242,6 +372,14 @@ public class NHBullets {
 			public void update(Bullet b) {
 				Effect.shake(2, 2, b);
 				if (b.timer(0, 8)) {
+					for(int i : Mathf.signs){
+						new Effect(25, e -> {
+							Draw.color(NHColor.darkEnrColor);
+							Angles.randLenVectors(e.id, 4, 3 + 60 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 13f));
+							Lines.stroke((i < 0 ? e.fin() : e.fout()) * 3f);
+							Lines.circle(e.x, e.y, (i > 0 ? e.fin() : e.fout()) * 33f);
+						}).at(b.x + Mathf.range(8f), b.y + Mathf.range(8f), b.rotation());
+					}
 					NHFx.darkEnergySpread.at(b);
 				}
 

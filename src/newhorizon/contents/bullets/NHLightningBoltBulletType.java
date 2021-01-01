@@ -5,7 +5,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.entities.bullet.BulletType;
-import newhorizon.contents.bullets.special.NHLightningBolt;
+import newhorizon.func.NHLightningBolt;
 
 public class NHLightningBoltBulletType extends BulletType {
 	public Cons<Position> hitAct = target -> {

@@ -8,9 +8,6 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.math.geom.Vec3;
-import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -18,30 +15,40 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.entities.Effect;
+import mindustry.content.UnitTypes;
+import mindustry.entities.Units;
+import mindustry.gen.Building;
+import mindustry.gen.Tex;
+import mindustry.gen.Icon;
 import mindustry.game.Team;
-import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
+import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
+import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
-import newhorizon.NewHorizon;
-import newhorizon.contents.bullets.EffectBulletType;
-import newhorizon.contents.effects.NHFx;
+import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.blocks.units.UnitFactory;
+import mindustry.world.meta.Stat;
+import newhorizon.func.Functions;
+import newhorizon.contents.items.NHItems;
 
-import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.tilesize;
-import static newhorizon.contents.data.UpgradeBaseData.*;
+import java.util.Iterator;
+
+import static newhorizon.func.Functions.*;
+import static mindustry.Vars.*;
+import static mindustry.Vars.state;
 
 public class JumpGate extends Block {
     public float spawnDelay = 5f;
-    public float spawnReloadTime = 60f;
+    public float spawnReloadTime = 180f;
     public float spawnRange = 120f;
     public float range = 200f;
     public float inComeVelocity = 5f;
@@ -51,7 +58,7 @@ public class JumpGate extends Block {
             bottomRegion,
             armorRegion;
     public Color baseColor;
-    public final Seq<UnitsSet> calls = new Seq<>();
+    public final Seq<UnitSet> calls = new Seq<>();
 
     public float squareStroke = 2f;
 
@@ -61,15 +68,16 @@ public class JumpGate extends Block {
         configurable = true;
         solid = true;
         hasPower = true;
+        this.category = Category.units;
     }
 
-    public JumpGate(String name, UnitsSet... sets){
+    public JumpGate(String name, UnitSet... sets){
         this(name);
         addSets(sets);
     }
 
 
-    public void addSets(UnitsSet... sets){
+    public void addSets(UnitSet... sets){
         calls.addAll(sets);
     }
 
@@ -77,6 +85,63 @@ public class JumpGate extends Block {
     public void init(){
         super.init();
         if(calls.isEmpty()) throw new IllegalArgumentException("Seq @calls is [red]EMPTY[].");
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        this.stats.add(Stat.output, (t) -> {
+            t.row().add("Summon Types:", Styles.techLabel).left().pad(OFFSET).row();
+            for(UnitSet set : calls) {
+                t.table(Tex.button, t2 -> {
+                    t2.table(Tex.button, table2 -> table2.image(set.type.icon(Cicon.large)).size(LEN).center()).left().size(LEN + OFFSET * 1.5f).pad(OFFSET);
+
+                    t2.pane(table2 -> {
+                        table2.add("[lightgray]Summon: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
+                        table2.add("[lightgray]NeededTime: [accent]" + format(set.costTime() / 60) + "[lightgray] sec[]").left().row();
+                    }).size(LEN * 6f, LEN).left().pad(OFFSET);
+
+                    t2.table(table2 -> {
+                        table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[]: Summon needs building.")).size(LEN);
+                    }).height(LEN + OFFSET).growX().left().pad(OFFSET);
+                }).grow().padBottom(OFFSET / 2).row();
+            }
+        });
+    }
+
+    public void showInfo(UnitSet set, String textExtra){
+        BaseDialog dialogIn = new BaseDialog("More Info");
+        dialogIn.addCloseListener();
+        dialogIn.cont.margin(15f);
+        dialogIn.cont.table(Tex.button, t -> t.image(set.type.icon(Cicon.xlarge)).center()).grow().row();
+        dialogIn.cont.add("<<[accent] " + set.type.localizedName + " []>>").row();
+        dialogIn.cont.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().padLeft(OFFSET).row();
+        dialogIn.cont.add("[lightgray]BuildNeededTime: [accent]" + format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
+        dialogIn.cont.pane(table -> {
+            int index = 0;
+            for(ItemStack stack : set.requirements()){
+                if(index % 5 == 0)table.row();
+                table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
+                index ++;
+            }
+        }).left().padLeft(OFFSET).row();
+        if(!textExtra.equals(""))dialogIn.cont.add(textExtra).left().padLeft(OFFSET).row();
+        dialogIn.cont.image().fillX().pad(2).height(4f).color(Pal.accent);
+        dialogIn.cont.row();
+        dialogIn.cont.button("@back", Icon.left, dialogIn::hide).size(LEN * 2.5f, LEN).pad(OFFSET / 3);
+        dialogIn.show();
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+        bars.add("progress",
+                (JumpGateBuild entity) -> new Bar(
+                        () -> "Progress",
+                        () -> Pal.power,
+                        () -> entity.getSet() == null ? 0 : entity.buildReload / entity.getSet().costTime()
+                )
+        );
     }
 
     @Override
@@ -103,115 +168,32 @@ public class JumpGate extends Block {
         public Color baseColor(){
             return baseColor == null ? this.team().color : baseColor;
         }
-        public int spawnID = 0;
+        public int spawnID = -1;
         public int spawnPOS = -1;
         public int spawns = 1;
 
-        protected void generateEffect(float Sx, float Sy){
-            new Effect(60f, e -> {
-                Lines.stroke(3 * e.fout(), baseColor());
-                Lines.circle(e.x, e.y, spawnRange * e.finpow());
-            }).at(Sx, Sy);
-        }
+        public float buildReload = 0f;
 
-        protected void cautionEffect(float Sx, float Sy, float showTime){
-
-            new EffectBulletType(showTime){
-                @Override
-                public void init(Bullet b){
-                    new Effect(60f, e -> {
-                        Lines.stroke(3 * e.fout(), baseColor());
-                        Lines.circle(e.x, e.y, spawnRange  / 8f * e.finpow());
-                    }).at(b);
+        @Override
+        public void updateTile(){
+            super.updateTile();
+            if(isCalling()){
+                this.buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1);
+                if(this.buildReload >= getSet().costTime()){
+                    spawn(getSet());
                 }
-
-                @Override
-                public void draw(Bullet b){
-                    Draw.color(baseColor());
-                    for(int i = 0; i < 4; i++){
-                        float sin = Mathf.absin(Time.time, 16f, tilesize);
-                        float length = (tilesize * block().size / 3f + sin) * b.fout() + tilesize * 2f;
-                        float signSize = 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
-                        Tmp.v1.trns(i * 90, -length);
-                        Draw.rect(pointerRegion, b.x + Tmp.v1.x,b.y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
-                    }
-                    Draw.reset();
-                }
-
-                @Override
-                public void despawned(Bullet b) {
-                    new Effect(100f, e -> {
-                        Draw.color(baseColor());
-
-                        for (int j = 1; j <= 3; j ++) {
-                            for(int i = 0; i < 4; i++) {
-                            float length = tilesize * block().size * 1.5f + 4f;
-                            Tmp.v1.trns(i * 90, -length);
-                                e.scaled(30 * j, k -> {
-                                    float signSize = Draw.scl * k.fout();
-                                    Draw.rect(pointerRegion, e.x + Tmp.v1.x * k.finpow(), e.y + Tmp.v1.y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Tmp.v1.angle() - 90);
-                                });
-                            }
-                        }
-                    }).at(b);
-                }
-
-            }.create(this, Sx, Sy, 0);
-        }
-
-        protected void spawnUnit(){
-            float angle = 0;
-            if (getSpawnPos() == null) {
-                generateEffect(x, y);
-            } else {
-                Building target = getSpawnPos();
-                generateEffect(target.x, target.y);
-                angle = angleTo(target);
-            }
-
-            Seq<Vec2> vecs = new Seq<>();
-            randLenVectors((long)Time.time, spawns, spawnRange, (vx, vy) -> vecs.add(new Vec2(vx, vy)));
-
-            int i = 0;
-            for (Vec2 s : vecs) {
-                int finalI = i;
-                if (getSpawnPos() == null) {
-                    cautionEffect(x + s.x, y + s.y, spawnReloadTime + finalI * spawnDelay);
-                } else {
-                    Building target = getSpawnPos();
-                    cautionEffect(target.x + s.x, target.y + s.y, spawnReloadTime + finalI * spawnDelay);
-                }
-
-                float finalAngle = angle;
-
-                Time.run(spawnReloadTime + finalI * spawnDelay, () -> {
-                    if (!isValid()) return;
-                    UnitType type = calls.get(spawnID).type;
-                    Unit unit = calls.get(spawnID).type.create(team());
-                    if (getSpawnPos() == null) {
-                        unit.set(x + s.x, y + s.y);
-                    } else {
-                        Building target = getSpawnPos();
-                        unit.set(target.x + s.x, target.y + s.y);
-                    }
-                    unit.add();
-                    unit.rotation = finalAngle;
-                    NHFx.jumpTrail.at(unit.x, unit.y, finalAngle, baseColor(), unit);
-                    Tmp.v1.trns(finalAngle, inComeVelocity).scl(type.drag + 1);
-                    unit.vel.add(Tmp.v1.x, Tmp.v1.y);
-                    Sounds.plasmaboom.at(unit.x, unit.y);
-                });
-
-                i++;
             }
         }
+
+        public UnitType getType(){ return calls.get(spawnID).type; }
         
-        public void setSpawnPos(int pos){
-            this.spawnPOS = pos;
-        }
+        public void setSpawnPos(int pos){ this.spawnPOS = pos; }
         
-        public Building getSpawnPos(){
-            return Vars.world.build(spawnPOS);
+        public Building getSpawnPos(){ return Vars.world.build(spawnPOS); }
+
+        public UnitSet getSet(){
+            if(spawnID < 0 || spawnID >= calls.size)return null;
+            return calls.get(spawnID);
         }
 
         @Override
@@ -232,11 +214,12 @@ public class JumpGate extends Block {
                 Lines.line(x, y, target.x, target.y);
                 Fill.square(x, y, 4.5f, 45);
                 Fill.square(target.x, target.y, 4.5f, 45);
+
                 Lines.stroke(1f, baseColor());
                 Lines.line(x, y, target.x, target.y);
                 Fill.square(x, y, 3.3f, 45);
                 Fill.square(target.x, target.y, 3.3f, 45);
-            }
+            }else Drawf.dashCircle(x, y, spawnRange, baseColor());
             Draw.reset();
         }
 
@@ -259,23 +242,24 @@ public class JumpGate extends Block {
             dialog.addCloseListener();
 
             dialog.cont.table(t -> {
-                t.table(Tex.button, t2 -> {
-                    int num = 0;
-                    for(UnitsSet set : calls){
-                        if(set.type.isHidden())continue;
-                        num++;
-                        if(num % 5 == 0)t2.row().left();
-                        t2.button(new TextureRegionDrawable(set.type.icon(Cicon.medium)), Styles.clearPartiali, LEN, () -> this.spawnID = calls.indexOf(set)).left();
-                    }
-                }).fillX().growY().row();
-                t.table(Tex.button, t2 -> {
-                    t2.button("Spawn01", Styles.cleart, () -> spawns = 1).size(120f, 50f);
-                    t2.button("Spawn10", Styles.cleart, () -> spawns = 10).size(120f, 50f);
-                    t2.button("Spawn20", Styles.cleart, () -> spawns = 20).size(120f, 50f);
-                }).fillX().growY().row();
-                t.button("@back", Icon.left, dialog::hide).size(210.0F, 64.0F).row();
-                t.button("Spawn", this::spawnUnit).size(210.0F, 64.0F).row();
+                for(UnitSet set : calls) {
+                    t.table(Tex.button, t2 -> {
+                        t2.table(Tex.button, table2 -> table2.image(set.type.icon(Cicon.large)).size(LEN).center()).left().size(LEN + OFFSET * 1.5f).pad(OFFSET);
 
+                        t2.pane(table2 -> {
+                            table2.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
+                            table2.add("[lightgray]NeededTime: [accent]" + format(set.costTime() / 60) + "[lightgray] sec[]").left().row();
+                        }).size(LEN * 6f, LEN).left().pad(OFFSET);
+
+                        t2.table(Tex.button, table2 -> {
+                            table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + getJudge(canSpawn(set)) + "[]")).size(LEN);
+                            table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set));
+                        }).height(LEN + OFFSET).growX().left().pad(OFFSET);
+                    }).grow().padBottom(OFFSET / 2).row();
+                }
+
+                t.image().fillX().height(OFFSET / 2).color(Pal.accent).pad(OFFSET).row();
+                t.button("@back", Icon.left, dialog::hide).size(210.0F, 64.0F).row();
             }).fill();
 
             table.button("Spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
@@ -297,10 +281,8 @@ public class JumpGate extends Block {
                     float length = tilesize * block().size / 2f + 8f;
                     Tmp.v1.trns(i * 90 + rot, -length);
                     Draw.rect(arrowRegion,x + Tmp.v1.x,y + Tmp.v1.y,i * 90 + 90 + rot);
-                }
-                for(int i = 0; i < 4; i++){
                     float sin = Mathf.absin(Time.time, 16f, tilesize);
-                    float length = tilesize * block().size / 2f + 3 + sin;
+                    length = tilesize * block().size / 2f + 3 + sin;
                     float signSize = 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
                     Tmp.v1.trns(i * 90, -length);
                     Draw.rect(pointerRegion, x + Tmp.v1.x,y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 + 90);
@@ -315,27 +297,86 @@ public class JumpGate extends Block {
             write.i(this.spawnID);
             write.i(this.spawnPOS);
             write.i(this.spawns);
+            write.f(this.buildReload);
         }
         @Override
         public void read(Reads read, byte revision) {
             this.spawnID = read.i();
             this.spawnPOS = read.i();
             this.spawns = read.i();
+            this.buildReload = read.f();
+        }
+
+        public boolean isCalling(){ return spawnID >= 0; }
+
+        public boolean coreValid() { return this.team.core() != null && this.team.core().items != null && !this.team.core().items.empty(); }
+
+        public void consumeItems(){
+            if(state.rules.infiniteResources)return;
+            if(coreValid())this.team.core().items.remove(getSet().requirements());
+        }
+
+        public boolean canSpawn(UnitSet set) {
+            CoreBlock.CoreBuild core = this.team.core();
+            return Units.canCreate(team, set.type) && (state.rules.infiniteResources ||
+                (coreValid() && ! isCalling() && core.items.has(set.requirements() )
+            ));
+        }
+
+        public void startBuild(UnitSet set){
+            this.spawnID = calls.indexOf(set);
+            ui.showInfoPopup("[accent]<<Caution>>[]:Team : " + team.name + "[] starts summon level[accent] " + set.level + " []fleet.", 8f, 0, 20, 20, 20, 20);
+        }
+
+        public void spawn(UnitSet set){
+            if(!isValid() || !Units.canCreate(team, set.type))return;
+            consumeItems();
+            this.spawns = set.callIns;
+            this.buildReload = 0;
+            this.spawnID = -1;
+            float Sx, Sy;
+            int spawnNum = set.callIns;
+            if(team.data().countType(set.type) + spawnNum > Units.getCap(team)){
+                spawnNum = Units.getCap(team) - team.data().countType(set.type);
+            }
+
+            if(getSpawnPos() != null) {
+                Building target = getSpawnPos();
+                Sx = target.x;
+                Sy = target.y;
+            }else{
+                Sx = x;
+                Sy = y;
+            }
+
+            Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
         }
     }
 
-    public static class UnitsSet{
-        public final int level;
+    public static class UnitSet{
+        public int level;
         public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
-        public final UnitType type;
+        public UnitType type;
+        public float costTime = 60f;
+        public int callIns = 5;
 
-        public UnitsSet(int level, UnitType type){
+        public UnitSet(){ this(1, UnitTypes.alpha, 0, 5); }
+
+        public UnitSet(int level, UnitType type){
             this.type = type;
             this.level = level;
+            this.requirements.add(new ItemStack(NHItems.emergencyReplace, 0));
         }
 
-        public ItemStack[] requirements(){
-            return requirements.toArray();
+        public UnitSet(int level, UnitType type, float costTime, int callIns, ItemStack... requirements){
+            this.type = type;
+            this.level = level;
+            this.costTime = costTime;
+            this.callIns = callIns;
+            this.requirements.addAll(requirements);
         }
+
+        public float costTime(){return /*Vars.state.rules.infiniteResources ? 0f :*/ costTime * (1 + Vars.state.rules.unitBuildSpeedMultiplier);}
+        public ItemStack[] requirements(){ return requirements.toArray(); }
     }
 }

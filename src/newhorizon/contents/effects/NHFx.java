@@ -4,11 +4,14 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.Tmp;
 import mindustry.entities.*;
+import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 
 import mindustry.type.UnitType;
+import mindustry.world.Block;
 import newhorizon.contents.colors.*;
 
 import static mindustry.Vars.*;
@@ -21,6 +24,37 @@ import static arc.math.Angles.*;
 public class NHFx{
 	public static final Effect
 		//All effects
+		spawn = new Effect(100f, e -> {
+			if(!(e.data() instanceof Building))return;
+			Building starter = e.data();
+
+			final TextureRegion pointerRegion = Core.atlas.find("new-horizon-jump-gate-pointer");
+
+			Draw.color(e.color);
+
+			for (int j = 1; j <= 3; j ++) {
+				for(int i = 0; i < 4; i++) {
+					float length = tilesize * starter.block().size * 1.5f + 4f;
+					Tmp.v1.trns(i * 90, -length);
+					e.scaled(30 * j, k -> {
+						float signSize = (e.rotation / 3f + Draw.scl) * k.fout();
+						Draw.rect(pointerRegion, e.x + Tmp.v1.x * k.finpow(), e.y + Tmp.v1.y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Tmp.v1.angle() - 90);
+					});
+				}
+			}
+		}),
+
+		skyLaserChargeSmall = new Effect(60.0F, 100.0F, (e) -> {
+				Draw.color(NHColor.lightSky);
+				Lines.stroke(e.fin() * 2.0F);
+				Lines.circle(e.x, e.y, e.fout() * 70.0F);
+				randLenVectors(e.id, 6, 3 + 60 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 8f));
+				randLenVectors(e.id + 1, 6, 3 + 60 * e.fout(), e.rotation, 50f, (x, y) -> {
+					stroke(e.fslope() * 2.5f);
+					lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5);
+				});
+		}),
+
 		jumpTrail = new Effect(70f, 5000, e -> {
 			if (!(e.data instanceof Unit))return;
 			Unit unit = e.data();
@@ -92,6 +126,7 @@ public class NHFx{
 			circle(e.x, e.y, e.fin() * 100 + 15);
 			stroke(e.fout() * 2.5f);
 			circle(e.x, e.y, e.fin() * 60 + 15);
+			randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f));
 		}),
 		
 		polyTrail = new Effect(25f, e -> {

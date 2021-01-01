@@ -16,15 +16,10 @@ import newhorizon.contents.blocks.special.UpgraderBlock.UpgraderBlockBuild;
 import newhorizon.*;
 import newhorizon.contents.items.*;
 
-import java.text.DecimalFormat;
+import static newhorizon.func.Functions.*;
 
 public abstract class UpgradeData implements Cloneable{
-
-	public static final DecimalFormat df = new DecimalFormat("######0.00");
-	public static String getJudge(boolean value){return value ? "[green]Yes" : "[red]No";}
-	public static final String tabSpace = "    ";
-	public static final float LEN = 60f, OFFSET = 12f;
-
+	public Table table;
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	public int unlockLevel = 0;
 	public TextureRegion icon;
@@ -83,7 +78,7 @@ public abstract class UpgradeData implements Cloneable{
 
 		t.pane(table -> {
 			addText(table);
-			table.add("[lightgray]NeededTime: [accent]" + df.format(costTime() / 60) + "[lightgray] sec[]").left().row();
+			table.add("[lightgray]NeededTime: [accent]" + format(costTime() / 60) + "[lightgray] sec[]").left().row();
 		}).size(LEN * 6f, LEN).left().pad(OFFSET);
 
 		t.table(Tex.button, table -> {
@@ -120,5 +115,4 @@ public abstract class UpgradeData implements Cloneable{
 		dialog.cont.button("@back", Icon.left, dialog::hide).size(LEN * 2.5f, LEN).pad(OFFSET / 3);
 		dialog.show();
 	}
-
 }

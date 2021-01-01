@@ -21,6 +21,8 @@ import newhorizon.contents.items.NHItems;
 
 import java.lang.reflect.Field;
 
+import static newhorizon.func.Functions.*;
+
 import static mindustry.Vars.tilesize;
 
 public class UpgradeAmmoData extends UpgradeMultData{
@@ -109,26 +111,26 @@ public class UpgradeAmmoData extends UpgradeMultData{
 			keyDown(KeyCode.escape, this::hide);
 			keyDown(KeyCode.back, this::hide);
 			cont.pane(t -> {
-				t.add("[lightgray]Damage: [accent]" + df.format(selectAmmo.damage) + "[]").left().row();
+				t.add("[lightgray]Damage: [accent]" + format(selectAmmo.damage) + "[]").left().row();
 				if(selectAmmo.splashDamageRadius > 0){
-					t.add(tabSpace + "[lightgray]SplashDamage: [accent]" + df.format(selectAmmo.splashDamage) + "[]").left().row();
-					t.add(tabSpace + "[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.splashDamageRadius / tilesize) + "[]").left().row();
+					t.add(tabSpace + "[lightgray]SplashDamage: [accent]" + format(selectAmmo.splashDamage) + "[]").left().row();
+					t.add(tabSpace + "[lightgray]SplashDamageRadius: [accent]" + format(selectAmmo.splashDamageRadius / tilesize) + "[]").left().row();
 				}
-				if(selectAmmo.knockback > 0)t.add("[lightgray]SplashDamageRadius: [accent]" + df.format(selectAmmo.knockback) + "[]").left().row();
+				if(selectAmmo.knockback > 0)t.add("[lightgray]SplashDamageRadius: [accent]" + format(selectAmmo.knockback) + "[]").left().row();
 
 				t.add("[lightgray]CanFrag?: " + getJudge(selectAmmo.fragBullet != null) + "[]").left().row();
 				if(selectAmmo.fragBullet != null)t.add(tabSpace + "[lightgray]Frags: [accent]" + selectAmmo.fragBullets + "[]").left().row();
 
 				t.add("[lightgray]CanFragLightnings?: " + getJudge(selectAmmo.lightning > 0) + "[]").left().row();
 				if(selectAmmo.lightning > 0){
-					t.add(tabSpace + "[lightgray]MaxLightningLength: [accent]" + df.format(selectAmmo.lightningLength + selectAmmo.lightningLengthRand) + "[]").left().row();
-					t.add(tabSpace + "[lightgray]LightningDamage: [accent]" + df.format(selectAmmo.lightningDamage) + "[]").left().row();
+					t.add(tabSpace + "[lightgray]MaxLightningLength: [accent]" + format(selectAmmo.lightningLength + selectAmmo.lightningLengthRand) + "[]").left().row();
+					t.add(tabSpace + "[lightgray]LightningDamage: [accent]" + format(selectAmmo.lightningDamage) + "[]").left().row();
 				}
 
 				t.add("[lightgray]CanHoming?: " + getJudge(selectAmmo.homingPower > 0) + "[]").left().row();
 				if(selectAmmo.homingPower > 0){
-					t.add(tabSpace + "[lightgray]HomingRange: [accent]" + df.format(selectAmmo.homingRange / tilesize) + "[]").left().row();
-					t.add(tabSpace + "[lightgray]HomingPower: [accent]" + df.format(selectAmmo.homingPower) + "[]").left().row();
+					t.add(tabSpace + "[lightgray]HomingRange: [accent]" + format(selectAmmo.homingRange / tilesize) + "[]").left().row();
+					t.add(tabSpace + "[lightgray]HomingPower: [accent]" + format(selectAmmo.homingPower) + "[]").left().row();
 				}
 
 				t.add("[lightgray]CanPierceUnits?: " + getJudge(selectAmmo.pierce || (selectAmmo.collidesAir && selectAmmo.collides)) + "[]").left().row();

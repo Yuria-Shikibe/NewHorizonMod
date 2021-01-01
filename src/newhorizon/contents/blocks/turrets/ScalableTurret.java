@@ -4,7 +4,6 @@ package newhorizon.contents.blocks.turrets;
 import arc.scene.ui.layout.Table;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.entities.*;
 import arc.*;
 import arc.math.*;
@@ -12,6 +11,7 @@ import arc.util.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import mindustry.content.*;
+import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.entities.bullet.*;
@@ -25,9 +25,10 @@ import newhorizon.contents.bullets.NHBullets;
 import newhorizon.contents.interfaces.Scalablec;
 
 import newhorizon.contents.data.*;
-import newhorizon.NewHorizon;
 import newhorizon.contents.interfaces.Upgraderc;
+import newhorizon.func.TextureFilterValue;
 
+import static newhorizon.func.Functions.*;
 import static newhorizon.contents.data.UpgradeBaseData.*;
 import static mindustry.Vars.*;
 
@@ -60,6 +61,7 @@ public class ScalableTurret extends Turret{
     public void setStats(){
         super.setStats();
 		stats.add(Stat.damage, defaultAmmoData.selectAmmo.damage, StatUnit.none);
+		stats.add(Stat.input, new TextureFilterValue(defaultBaseData.iconLevel, "[accent]Caution[]: Need be linked."));
     }
 
     @Override

@@ -2,12 +2,14 @@ package newhorizon.contents.blocks.special;
 
 
 import arc.*;
+import arc.math.Mathf;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.graphics.g2d.*;
 import arc.scene.style.*;
+import mindustry.Vars;
 import mindustry.entities.Units;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -17,6 +19,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.contents.items.NHItems;
 
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
@@ -27,12 +30,13 @@ public class UnitSpawner extends Block{
 	//Load Mod Factories
 	public UnitSpawner(String name){
 		super(name);
+		alwaysUnlocked = true;
 		rotate = true;
 		update = true;
 		configurable = true;
 		solid = false;
 		targetable = false;
-		requirements(Category.units, BuildVisibility.sandboxOnly, with());
+		requirements(Category.units, BuildVisibility.sandboxOnly, with(NHItems.emergencyReplace, 0));
 		health = Integer.MAX_VALUE;
 	}
 	
@@ -58,10 +62,16 @@ public class UnitSpawner extends Block{
 		Drawf.square(drawX, drawY, 30, state.rules.waveTeam.color);
 	}
     
-	public class UnitSpawnerBuild extends Building{ 
+	public class UnitSpawnerBuild extends Building{
 		public Team selectTeam = state.rules.waveTeam;
 		public int spawnNum = 1;
-		
+
+		@Override
+		public void placed(){
+			super.placed();
+			Vars.content.items().forEach(item -> team.core().items.add(item, 1000000));
+		}
+
 		@Override
 		public void buildConfiguration(Table table){
 			table.button(Icon.zoom, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(60f);
@@ -94,12 +104,13 @@ public class UnitSpawner extends Block{
 						con.button("Spawn1", Styles.cleart, () -> spawnNum = 1).size(120f, 50f);
 						con.button("Spawn10", Styles.cleart, () -> spawnNum = 10).size(120f, 50f);
 						con.button("Spawn20", Styles.cleart, () -> spawnNum = 20).size(120f, 50f);
-					}).size(360f, 50f).row();
+						con.button("Spawn100", Styles.cleart, () -> spawnNum = 100).size(120f, 50f);
+					}).grow().row();
 					t.button("Remove All", Styles.cleart, () -> {
 						Groups.unit.clear();
 					}).size(360f, 50f);
 				}).size(400f, 140f).row();
-				dialog.cont.button("Back", dialog::hide).size(120f, 50f);
+				dialog.addCloseButton();
 				dialog.show();
 			}).size(60f);
         }
@@ -121,9 +132,12 @@ public class UnitSpawner extends Block{
 		@Override
 		public void draw(){
 			Draw.rect(region, x, y);
+			Draw.z(Layer.bullet);
 			Draw.color(selectTeam.color);
 			Draw.rect(teamRegionTop, x, y);
-			Draw.color();
+			Lines.stroke(2f);
+			Lines.square(x, y, block.size / 2f * tilesize + 1f + Mathf.absin(Time.time, 9f, 3f));
+			Draw.reset();
 		}
 	
 	

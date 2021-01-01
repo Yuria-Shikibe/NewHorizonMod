@@ -8,9 +8,12 @@ import newhorizon.contents.items.*;
 import newhorizon.contents.effects.NHFx;
 import newhorizon.contents.bullets.NHBullets;
 
+import java.text.DecimalFormat;
+
 import static mindustry.Vars.*;
 
 public class UpgradeDatas{
+
 	public static final UpgradeBaseData
 		basicData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, 
 			new ItemStack(NHItems.upgradeSort, 100),

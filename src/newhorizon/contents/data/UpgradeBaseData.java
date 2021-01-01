@@ -12,7 +12,7 @@ import mindustry.ui.*;
 import mindustry.type.*;
 
 import newhorizon.*;
-import static newhorizon.contents.data.UpgradeData.*;
+import static newhorizon.func.Functions.*;
 
 public class UpgradeBaseData extends UpgradeLevelData {
 	public static final float maxReloadReduce = 0.5f;
