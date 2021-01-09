@@ -9,7 +9,6 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.graphics.g2d.*;
 import arc.scene.style.*;
-import mindustry.Vars;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
@@ -18,10 +17,10 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.content.NHItems;
 
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
+import static newhorizon.func.TableFuncs.LEN;
 
 public class UnitSpawner extends Block{
 	public TextureRegion teamRegionTop;
@@ -66,50 +65,53 @@ public class UnitSpawner extends Block{
 		public int spawnNum = 1;
 
 		@Override
-		public void placed(){
-			super.placed();
-			Vars.content.items().forEach(item -> team.core().items.add(item, 1000000));
-		}
-
-		@Override
 		public void buildConfiguration(Table table){
-			table.button(Icon.zoom, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(60f);
+			table.button(Icon.rotate, Styles.cleari, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(60f);
 			
-			table.button(Icon.add, () -> {
+			table.button(Icon.add, Styles.cleari, () -> {
 				BaseDialog dialog = new BaseDialog("SetUnitType");
 				
 				dialog.cont.add("<<-Spawns: " + spawnNum + " ->>").row();
-				dialog.cont.pane(t -> {
-					int num = 0;
-					for(UnitType type : unitTypes){
-						if(type.isHidden())continue;
-						if(num % 5 == 0)t.row();
-						t.button(new TextureRegionDrawable(type.icon(Cicon.medium)), () -> {
-							Vec2 vec = new Vec2();
-							vec.trns(rotation * 90 + 45, (tilesize * 4 + 4));
-							for(int spawned = 0; spawned < spawnNum; spawned++){
-								Time.run(spawned * Time.delta, () -> {
-									Unit unit = type.create(selectTeam);
-									unit.set(x + vec.x, y + vec.y);
-									unit.add();
-								});
-							}
-						}).size(80f);
-						num++;
-					}
-				}).size(5 * 80f, 4 * 80f).row();
-				dialog.cont.table(Tex.button, t -> {
-					t.pane(con -> {
-						con.button("Spawn1", Styles.cleart, () -> spawnNum = 1).size(120f, 50f);
-						con.button("Spawn10", Styles.cleart, () -> spawnNum = 10).size(120f, 50f);
-						con.button("Spawn20", Styles.cleart, () -> spawnNum = 20).size(120f, 50f);
-						con.button("Spawn100", Styles.cleart, () -> spawnNum = 100).size(120f, 50f);
-					}).grow().row();
-					t.button("Remove All", Styles.cleart, () -> {
-						Groups.unit.clear();
-					}).size(360f, 50f);
-				}).size(400f, 140f).row();
 				dialog.addCloseButton();
+				dialog.cont.table(part -> {
+					part.pane(t -> {
+						int num = 0;
+						for(UnitType type : unitTypes){
+							if(type.isHidden())continue;
+							if(num % 5 == 0)t.row();
+							t.button(new TextureRegionDrawable(type.icon(Cicon.xlarge)), Styles.clearTransi, LEN, () -> {
+								Vec2 vec = new Vec2();
+								vec.trns(rotation * 90 + 45, (tilesize * 4 + 4));
+								for(int spawned = 0; spawned < spawnNum; spawned++){
+									Time.run(spawned * Time.delta, () -> {
+										Unit unit = type.create(selectTeam);
+										unit.set(x + vec.x, y + vec.y);
+										unit.add();
+									});
+								}
+							}).size(LEN);
+							num++;
+						}
+					}).growX().height(LEN * 4f).row();
+					part.table(Tex.button, t -> {
+						t.pane(con -> {
+							con.button(Icon.rotate, Styles.cleari, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(LEN * 2, LEN);
+							con.button("Spawn1", Styles.cleart, () -> spawnNum = 1).size(LEN * 2, LEN);
+							con.button("Spawn10", Styles.cleart, () -> spawnNum = 10).size(LEN * 2, LEN);
+							con.button("Spawn20", Styles.cleart, () -> spawnNum = 20).size(LEN * 2, LEN);
+							con.button("Spawn100", Styles.cleart, () -> spawnNum = 100).size(LEN * 2, LEN);
+						}).grow().row();
+						t.pane(con -> {
+							con.button("Remove Units", Styles.cleart, () -> Groups.unit.clear()).size(LEN * 2, LEN);
+							con.button("Remove Fires", Styles.cleart, () -> {
+								for (int i = 0; i < 15; i++)Time.run(i * Time.delta * 3, Groups.fire::clear);
+							}).size(LEN * 2, LEN);
+						}).grow().row();
+						t.pane(con -> {
+							con.button("Add Items", Styles.cleart, () -> content.items().forEach(item -> team.core().items.add(item, 1000000))).size(120f, 50f);
+						}).grow().row();
+					}).fillX().growY().row();
+				}).fill();
 				dialog.show();
 			}).size(60f);
         }
@@ -138,8 +140,8 @@ public class UnitSpawner extends Block{
 			Lines.square(x, y, block.size / 2f * tilesize + 1f + Mathf.absin(Time.time, 9f, 3f));
 			Draw.reset();
 		}
-	
-	
+
+
 	}
 }
 

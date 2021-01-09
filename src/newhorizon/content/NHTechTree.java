@@ -10,6 +10,8 @@ public class NHTechTree implements ContentList {
     @Override
     public void load(){
         //Blocks;
+        new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
+        new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.ender, NHBlocks.ender.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.ender), NHBlocks.eoeUpgrader, NHBlocks.eoeUpgrader.researchRequirements());
@@ -42,6 +44,7 @@ public class NHTechTree implements ContentList {
 
 
         //Units;
+        new TechNode(TechTree.get(UnitTypes.zenith), NHUnits.striker, NHUnits.striker.researchRequirements());
         new TechNode(TechTree.get(UnitTypes.scepter), NHUnits.tarlidor, NHUnits.tarlidor.researchRequirements());
         new TechNode(TechTree.get(UnitTypes.eclipse), NHUnits.hurricane, NHUnits.hurricane.researchRequirements());
 

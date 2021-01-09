@@ -146,7 +146,7 @@ public class PosLightning { //Provide some workable methods to create position t
 			if(!(e.data instanceof Seq)) return;
 			Seq<Vec2> lines = e.data();
 
-			Lines.stroke(width * e.fout(), e.color);
+			Lines.stroke(e.rotation * e.fout(), e.color);
 			
 			Fill.circle(vecs.first().x, vecs.first().y, Lines.getStroke() * 1.1f);
 
@@ -160,7 +160,7 @@ public class PosLightning { //Provide some workable methods to create position t
 			for(Vec2 p : lines){
 				Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
 			}
-		}).at(vecs.first().x, vecs.first().y, 0, color, vecs);
+		}).at(vecs.first().x, vecs.first().y, width, color, vecs);
 	}
 	
 	private static Seq<Vec2> computeVecs(Seq<Float> randomVec, Position from, Position to){

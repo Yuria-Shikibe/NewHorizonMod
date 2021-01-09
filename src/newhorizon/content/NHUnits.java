@@ -17,7 +17,9 @@ import mindustry.entities.abilities.ForceFieldAbility;
 import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.bullet.ArtilleryBulletType;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.*;
+import mindustry.graphics.Pal;
 import mindustry.type.*;
 
 import newhorizon.NewHorizon;
@@ -33,10 +35,47 @@ public class NHUnits implements ContentList {
 
 	public static
 	UnitType
-	hurricane, tarlidor;
+	hurricane, tarlidor, striker;
 	
 	@Override
 	public void load() {
+		striker = new UnitType("striker") {{
+			constructor = EntityMapping.map(3);
+			lowAltitude = true;
+			faceTarget = true;
+			isCounted = true;
+			this.health = 6500.0F;
+			this.speed = 1F;
+			this.accel = 0.04F;
+			this.drag = 0.025F;
+			this.flying = true;
+			this.hitSize = 30.0F;
+			this.armor = 4.0F;
+			this.engineOffset = 28.5F;
+			this.engineSize = 6.0F;
+			this.rotateSpeed = 1.35F;
+			buildSpeed = 0.8f;
+			weapons.add(
+				new Weapon("new-horizon-striker-weapon") {{
+					mirror = false;
+					rotate = false;
+					continuous = true;
+					alternate = false;
+					shake = 0f;
+					heatColor = Pal.accent;
+					shootY = 13f;
+					reload = 300f;
+					shots = 1;
+					x = y = 0f;
+					bullet = NHBullets.strikeLaser;
+					chargeSound = Sounds.none;
+					shootSound = Sounds.none;
+					this.shootStatus = StatusEffects.slow;
+					this.shootStatusDuration = this.bullet.lifetime + 60f;
+				}}
+			);
+		}};
+
 		hurricane = new UnitType("hurricane") {
 			{
 				constructor = EntityMapping.map(3);
@@ -55,17 +94,14 @@ public class NHUnits implements ContentList {
 							});
 						}}
 				);
-				trailLength = 30;
-				trailScl = 0.72f;
 				commandLimit = 6;
 				lowAltitude = true;
 				isCounted = true;
-				this.health = 60000.0F;
+				this.health = 30000.0F;
 				this.speed = 1.4F;
 				this.accel = 0.04F;
 				this.drag = 0.025F;
 				this.flying = true;
-				this.range = 640.0F;
 				this.hitSize = 100.0F;
 				this.armor = 12.0F;
 				this.engineOffset = 55.0F;
@@ -78,13 +114,11 @@ public class NHUnits implements ContentList {
 							rotate = false;
 							continuous = true;
 							alternate = false;
-							range = 480f;
 							shake = 5f;
 							shootY = 47f;
 							reload = 220f;
 							shots = 1;
 							x = y = 0f;
-							inaccuracy = 3.0F;
 							ejectEffect = Fx.none;
 							recoil = 4.4f;
 							bullet = NHBullets.hurricaneLaser;
@@ -92,11 +126,10 @@ public class NHUnits implements ContentList {
 							shootSound = Sounds.beam;
 							this.shootStatus = StatusEffects.slow;
 							this.shootStatusDuration = this.bullet.lifetime + this.firstShotDelay + 40f;
-							this.firstShotDelay = NHFx.skyLaserChargeSmall.lifetime - 1.0F;
+							this.firstShotDelay = NHFx.chargeEffectSmall(new Color()).lifetime - 1.0F;
 						}},
 
 						new Weapon("new-horizon-swepter") {{
-							range = 300f;
 							mirror = false;
 							top = true;
 							rotate = true;
@@ -131,7 +164,6 @@ public class NHUnits implements ContentList {
 								@Override
 								public void init(Bullet b) {
 									b.vel.scl(1 + drag * b.lifetime / b.type.speed);
-									b.lifetime(b.lifetime * 1.2f);
 								}
 
 								@Override
@@ -211,7 +243,6 @@ public class NHUnits implements ContentList {
 
 						new Weapon(NewHorizon.NHNAME + "impulse") {{
 							heatColor = NHColor.lightSky;
-							range = 440f;
 							top = true;
 							rotate = true;
 							shootY = 12f;
@@ -275,7 +306,6 @@ public class NHUnits implements ContentList {
 
 				weapons.add(
 					new Weapon("new-horizon-stiken") {{
-						range = 260f;
 						top = false;
 						shake = 3f;
 						shootY = 13f;
@@ -287,19 +317,20 @@ public class NHUnits implements ContentList {
 						alternate = true;
 						ejectEffect = Fx.none;
 						recoil = 4.4f;
-						bullet = new NHTrailBulletType(7.4f, 60) {
+						bullet = new ShieldBreaker(6.25f, 60, 150f) {
 							@Override public float range(){return 260f;}
 							{
 								hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
-								lifetime = 80f;
+								lifetime = 90f;
 								pierce = pierceBuilding = true;
-								width = 13f;
-								height = 40f;
+								width = 20f;
+								height = 44f;
 								backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
 								frontColor = Color.white;
 								lightning = 3;
-								lightningDamage = damage / 2;
-								lightningLength = lightningLengthRand = 5;
+								lightningDamage = damage / 4;
+								lightningLength = 3;
+								lightningLengthRand = 10;
 								smokeEffect = Fx.shootBigSmoke2;
 								hitShake = 4f;
 								hitSound = Sounds.plasmaboom;
@@ -311,12 +342,10 @@ public class NHUnits implements ContentList {
 
                     new Weapon("new-horizon-arc-blaster") {
 						{
-							range = 320f;
 							top = true;
 							rotate = true;
 							shootY = 12f;
 							reload = 30f;
-
 							shots = 3;
 							inaccuracy = 6.0F;
 							velocityRnd = 0.38f;

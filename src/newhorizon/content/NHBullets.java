@@ -12,7 +12,9 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
+import newhorizon.bullets.DelayLaserType;
 import newhorizon.bullets.NHTrailBulletType;
+import newhorizon.bullets.ShieldBreaker;
 import newhorizon.colors.*;
 import newhorizon.func.PosLightning;
 
@@ -23,32 +25,84 @@ import static arc.math.Angles.*;
 public class NHBullets {
 	public static final
 	BulletType
-		skyFrag = new BasicBulletType(3.3f, 80) {
-		@Override public float range(){return 320f;}
-
-		@Override
-			public void update(Bullet b) {
-				if (b.timer(0, 2)) {
-					new Effect(22, e -> {
-						color(NHColor.lightSky, Pal.gray, e.fin());
-						Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
-					}).at(b.x, b.y, b.rotation());
+		strikeLaser = new DelayLaserType(660f, 60f){
+			@Override
+			public void effectDraw(Bullet b){
+				Draw.color(Pal.accent);
+				float fin = Mathf.clamp(b.time / 60f);
+				float fout = Mathf.clamp(1f - fin);
+				float fslope = (0.5F - Math.abs(fin - 0.5F)) * 2.0F;
+				if(b.time < 60f){
+					randLenVectors(b.id, 6, 3 + 50 * fout, (x, y) -> Fill.circle(b.x + x, b.y + y, fin * fin * 5f));
+					Lines.stroke(fslope * 2.0F);
+					Lines.circle(b.x, b.y, fout * 40f);
+					randLenVectors(b.id + 1, 16, 3 + 70 * fout, (x, y) -> lineAngle(b.x + x, b.y + y, Mathf.angle(x, y), fslope * 18 + 5));
 				}
 			}
 
 			{
-				lifetime = 200f;
+				colors = new Color[]{Pal.accent.cpy().mul(1f, 1f, 1f, 0.3f), Pal.accent, Color.white};
+				length = 320f;
+				width = 25f;
+				lengthFalloff = 0.6f;
+				sideLength = 90f;
+				sideWidth = 1.35f;
+				sideAngle = 40f;
+				this.lightningSpacing = 40.0F;
+				this.lightningLength = 2;
+				this.lightningDelay = 1.1F;
+				this.lightningLengthRand = 10;
+				this.lightningDamage = 20.0F;
+				this.lightningAngleRand = 40.0F;
+				this.lightningColor = Pal.accent;
+				smokeEffect = shootEffect = Fx.none;
+				splashDamage = 42.0F;
+				splashDamageRadius = 20.0F;
+				collidesGround = true;
+				lifetime = 38.0F;
+				status = StatusEffects.blasted;
+				statusDuration = 60.0F;
+			}
+		},
+
+		tear = new ShieldBreaker(3.4f, 60f, 1500f){{
+			pierceCap = 8;
+			rotateSpeed = 2.75f;
+			width = 16f;
+			height = 37f;
+			shrinkX = shrinkY = 0.001f;
+			splashDamage = lightningDamage = damage * 0.6f;
+			backColor = lightColor = lightningColor = trailColor = Items.plastanium.color;
+			frontColor = Color.white;
+			lightning = 2;
+			lightningLengthRand = 8;
+			lightningLength = 3;
+			lifetime = 90f;
+			hitSound = Sounds.plasmaboom;
+			hitShake = 4f;
+			splashDamageRadius = 20f;
+			despawnEffect = hitEffect = Fx.plasticExplosionFlak;
+			smokeEffect = Fx.shootBigSmoke2;
+			shootEffect = Fx.plasticExplosion;
+		}},
+
+		skyFrag = new BasicBulletType(3.3f, 80) {
+		@Override public float range(){return 320f;}
+			{
+				lifetime = 170f;
 				despawnEffect = hitEffect = NHFx.lightSkyCircleSplash;
 				knockback = 12f;
 				width = 15f;
 				height = 37f;
 				splashDamageRadius = 40f;
 				splashDamage = lightningDamage = damage * 0.6f;
-				backColor = lightColor = lightningColor = NHColor.lightSky;
+				backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
 				frontColor = Color.white;
 				lightning = 3;
 				lightningLength = 8;
 				smokeEffect = Fx.shootBigSmoke2;
+				trailChance = 0.6f;
+				trailEffect = NHFx.skyTrail;
 				hitShake = 2f;
 				hitSound = Sounds.spark;
 			}
@@ -67,7 +121,7 @@ public class NHBullets {
 				lifetime = 160f;
 				lightColor = NHColor.lightSky;
 				hitEffect = NHFx.lightSkyCircleSplash;
-				shootEffect = NHFx.skyLaserChargeSmall;
+				shootEffect = NHFx.chargeEffectSmall(NHColor.lightSky);
 				smokeEffect = NHFx.lightSkyCircleSplash;
 			}
 
@@ -153,12 +207,12 @@ public class NHBullets {
 		}
 	},
 
-	none = new BasicBulletType(0, 1, "none") {{
-		instantDisappear = true;
-		trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
-	}},
+		none = new BasicBulletType(0, 1, "none") {{
+			instantDisappear = true;
+			trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
+		}},
 
-	supSky = new SapBulletType() {{
+		supSky = new SapBulletType(){{
 			damage = 130f;
 			status = new StatusEffect("actted"){{
 				speedMultiplier = 0.875f;

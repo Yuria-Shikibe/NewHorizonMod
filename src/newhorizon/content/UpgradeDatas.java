@@ -10,9 +10,8 @@ import newhorizon.data.UpgradeBaseData;
 import static mindustry.Vars.*;
 
 public class UpgradeDatas{
-
 	public static final UpgradeBaseData
-		basicData = new UpgradeBaseData("Upgrade turret", "N/A", 600f, 
+		basicData = new UpgradeBaseData("upgrade-turret", "upgrade-turret.description", 600f,
 			new ItemStack(NHItems.upgradeSort, 100),
 			new ItemStack(NHItems.darkEnergy, 50),
 			new ItemStack(NHItems.metalOxhydrigen, 300),
@@ -26,7 +25,7 @@ public class UpgradeDatas{
 		
 	public static final UpgradeAmmoData
 		darkEnrlaser = new UpgradeAmmoData(
-			"dark-enr-laser", "description08", NHBullets.darkEnrlaser, 300f, 7,
+			"dark-enr-laser", "dark-enr-laser.description", NHBullets.darkEnrlaser, 300f, 7,
 			new ItemStack(Items.surgeAlloy, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -39,7 +38,7 @@ public class UpgradeDatas{
 		}},
 		
 		decayLaser = new UpgradeAmmoData(
-			"decay-laser", "description", NHBullets.decayLaser, 300f, 1,
+			"decay-laser", "decay-laser.description", NHBullets.decayLaser, 300f, 1,
 			new ItemStack(Items.surgeAlloy, 250),
 			new ItemStack(NHItems.irayrondPanel, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -52,7 +51,7 @@ public class UpgradeDatas{
 		}},
 		
 		bombStorm = new UpgradeAmmoData(
-			"bomb-storm", "description00", NHBullets.rapidBomb, 900f, 2,
+			"bomb-storm", "bomb-storm.description", NHBullets.rapidBomb, 900f, 2,
 			new ItemStack(NHItems.upgradeSort, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -66,7 +65,7 @@ public class UpgradeDatas{
 		}},
 		
 		arc9000 = new UpgradeAmmoData(
-			"arc-9000", "description00", NHBullets.boltGene, 900f, 8,
+			"arc-9000", "arc-9000.description", NHBullets.boltGene, 900f, 8,
 			new ItemStack(NHItems.upgradeSort, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -78,7 +77,7 @@ public class UpgradeDatas{
 		}},
 		
 		curveBomb = new UpgradeAmmoData(
-			"curve-bomb", "description01", NHBullets.curveBomb, 300f, 0,
+			"curve-bomb", "curve-bomb.description", NHBullets.curveBomb, 300f, 0,
 			new ItemStack(NHItems.irayrondPanel, 300),
 			new ItemStack(NHItems.metalOxhydrigen, 200)
 		){{
@@ -90,7 +89,7 @@ public class UpgradeDatas{
 		}},
 		
 		airRaid = new UpgradeAmmoData(
-			"air-raid", "description02", NHBullets.airRaid, 500f, 6,
+			"air-raid", "air-raid.description", NHBullets.airRaid, 500f, 6,
 			new ItemStack(NHItems.upgradeSort, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)

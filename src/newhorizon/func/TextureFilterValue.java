@@ -1,14 +1,11 @@
 package newhorizon.func;
 
 import arc.graphics.g2d.TextureRegion;
-import arc.scene.style.Drawable;
 import arc.scene.ui.layout.Table;
-import mindustry.gen.Tex;
-import mindustry.ui.Links;
 import mindustry.world.meta.StatValue;
 
-import static newhorizon.func.Functions.LEN;
-import static newhorizon.func.Functions.OFFSET;
+import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFuncs.OFFSET;
 
 public class TextureFilterValue implements StatValue {
     public final TextureRegion region;

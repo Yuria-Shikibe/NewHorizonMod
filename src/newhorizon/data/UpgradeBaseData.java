@@ -12,7 +12,7 @@ import mindustry.ui.*;
 import mindustry.type.*;
 
 import newhorizon.*;
-import static newhorizon.func.Functions.*;
+import newhorizon.func.TableFuncs;
 
 public class UpgradeBaseData extends UpgradeLevelData {
 	public static final float maxReloadReduce = 0.5f;
@@ -42,15 +42,15 @@ public class UpgradeBaseData extends UpgradeLevelData {
 	@Override
 	public void buildUpgradeInfoAll(Table t2) {
 		t2.table(Tex.button, t -> {
-			t.pane(table -> table.image(iconLevel).size(LEN).left()).size(LEN).left();
+			t.pane(table -> table.image(iconLevel).size(TableFuncs.LEN).left()).size(TableFuncs.LEN).left();
 			t.pane(table -> {
-				table.add("[lightgray]Level: [accent]" + level + "[]", Styles.techLabel).left().pad(OFFSET).row();
-				table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
+				table.add("[lightgray]Level: [accent]" + level + "[]", Styles.techLabel).left().pad(TableFuncs.OFFSET).row();
+				table.image().fillX().pad(TableFuncs.OFFSET / 2).height(4f).color(Color.lightGray).left().row();
 				table.add("[lightgray]ReloadReduce: [accent]" + getPercent(speedMPL * level, 0f, maxReloadReduce) + "%[]").left().row();
 				table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceMPL * level, 0f, maxDamageReduce) + "%[]").left().row();
-			}).size(LEN * 6f, LEN).pad(OFFSET);
-			t.table(Tex.button, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(false)).size(LEN * 2, LEN)).height(LEN + OFFSET).pad(OFFSET);
-		}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
+			}).size(TableFuncs.LEN * 6f, TableFuncs.LEN).pad(TableFuncs.OFFSET);
+			t.table(Tex.button, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(false)).size(TableFuncs.LEN * 2, TableFuncs.LEN)).height(TableFuncs.LEN + TableFuncs.OFFSET).pad(TableFuncs.OFFSET);
+		}).pad(TableFuncs.OFFSET / 2).fillX().height(TableFuncs.LEN * 1.5f).row();
 	}
 	
 	@Override
@@ -72,12 +72,12 @@ public class UpgradeBaseData extends UpgradeLevelData {
 	@Override
 	public void buildTableComplete(Table t) {
 		t.table(Tex.button, t2 -> {
-			t2.pane(table -> table.image(iconLevel).size(LEN).left()).left().size(LEN);
+			t2.pane(table -> table.image(iconLevel).size(TableFuncs.LEN).left()).left().size(TableFuncs.LEN);
 
-			t2.pane(table -> table.add("[lightgray]Level: [accent]MaxLevel[]").left().row()).size(LEN * 6f, LEN).left().pad(OFFSET);
+			t2.pane(table -> table.add("[lightgray]Level: [accent]MaxLevel[]").left().row()).size(TableFuncs.LEN * 6f, TableFuncs.LEN).left().pad(TableFuncs.OFFSET);
 			
-			t2.table(Tex.button, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo( false)).size(LEN * 2, LEN)).height(LEN + OFFSET).left().pad(OFFSET);
-		}).pad(OFFSET / 2).fillX().height(LEN * 1.6f).row();
+			t2.table(Tex.button, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo( false)).size(TableFuncs.LEN * 2, TableFuncs.LEN)).height(TableFuncs.LEN + TableFuncs.OFFSET).left().pad(TableFuncs.OFFSET);
+		}).pad(TableFuncs.OFFSET / 2).fillX().height(TableFuncs.LEN * 1.6f).row();
 	}
 	
 	@Override

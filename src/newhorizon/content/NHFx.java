@@ -21,8 +21,45 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 
 public class NHFx{
+	public static Effect laserEffect(float num){
+		return new Effect(26.0F, (e) -> {
+			Draw.color(Color.white);
+			float length = !(e.data instanceof Float) ? 70.0F : (Float)e.data;
+			Angles.randLenVectors((long)e.id, (int)(length / num), length, e.rotation, 0.0F, (x, y) -> {
+				Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 9.0F);
+			});
+		});
+	}
+
+	public static Effect chargeEffectSmall(Color color){
+		return new Effect(60.0F, 100.0F, (e) -> {
+			Draw.color(color);
+			randLenVectors(e.id, 6, 3 + 50 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 5f));
+			Lines.stroke(e.fslope() * 2.0F);
+			Lines.circle(e.x, e.y, e.fout() * 40f);
+			randLenVectors(e.id + 1, 16, 3 + 70 * e.fout(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
+		});
+	}
+
 	public static final Effect
 		//All effects
+		skyTrail = new Effect(22, e -> {
+			color(NHColor.lightSky, Pal.gray, e.fin());
+			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
+		}),
+
+		shuttle = new Effect(60f, 200f, e -> {
+			if(!(e.data instanceof Float))return;
+			float len = e.data();
+			color(e.color);
+			for(int i : Mathf.signs) {
+				Drawf.tri(e.x, e.y, len * e.fout() * e.fslope() * 4f, len * 50f * e.fout(), e.rotation + 90 + i * 90);
+			}
+			Lines.stroke(e.fout() * 2.0F);
+			Lines.circle(e.x, e.y, e.fin() * len * 8f);
+			randLenVectors(e.id, 6, 3 + 60 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
+		}),
+
 		spawn = new Effect(100f, e -> {
 			if(!(e.data() instanceof Building))return;
 			Building starter = e.data();
@@ -41,17 +78,6 @@ public class NHFx{
 					});
 				}
 			}
-		}),
-
-		skyLaserChargeSmall = new Effect(60.0F, 100.0F, (e) -> {
-				Draw.color(NHColor.lightSky);
-				Lines.stroke(e.fin() * 2.0F);
-				Lines.circle(e.x, e.y, e.fout() * 70.0F);
-				randLenVectors(e.id, 6, 3 + 60 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 8f));
-				randLenVectors(e.id + 1, 6, 3 + 60 * e.fout(), e.rotation, 50f, (x, y) -> {
-					stroke(e.fslope() * 2.5f);
-					lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5);
-				});
 		}),
 
 		jumpTrail = new Effect(70f, 5000, e -> {

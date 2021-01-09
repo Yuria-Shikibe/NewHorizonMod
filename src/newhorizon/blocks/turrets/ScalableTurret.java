@@ -21,13 +21,13 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import newhorizon.content.NHBullets;
+import newhorizon.func.TableFuncs;
 import newhorizon.interfaces.Scalablec;
 
 import newhorizon.data.*;
 import newhorizon.interfaces.Upgraderc;
 import newhorizon.func.TextureFilterValue;
 
-import static newhorizon.func.Functions.*;
 import static newhorizon.data.UpgradeBaseData.*;
 import static mindustry.Vars.*;
 
@@ -283,12 +283,12 @@ public class ScalableTurret extends Turret{
 			t.table(Tex.button, table -> {
 				table.table(cont -> cont.image(ammoData.icon).left()).left().growX();
 				table.table(cont -> {
-					cont.add("[lightgray]Level: [accent]" + baseData.level + "[]", Styles.techLabel).left().pad(OFFSET).row();
-					cont.image().fillX().pad(OFFSET / 2).height(OFFSET / 3).color(Color.lightGray).left().row();
+					cont.add("[lightgray]Level: [accent]" + baseData.level + "[]", Styles.techLabel).left().pad(TableFuncs.OFFSET).row();
+					cont.image().fillX().pad(TableFuncs.OFFSET / 2).height(TableFuncs.OFFSET / 3).color(Color.lightGray).left().row();
 					cont.add("[lightgray]ReloadReduce: [accent]" + getPercent(baseData.speedMPL * baseData.level, 0f, maxReloadReduce) + "%[]").left().row();
 					cont.add("[lightgray]DefenceUP: [accent]" + getPercent(baseData.defenceMPL * baseData.level, 0f, maxDamageReduce) + "%[]").left().row();
-				}).growX().right().padRight(OFFSET / 3);
-			}).grow().padLeft(OFFSET).padRight(OFFSET).row();
+				}).growX().right().padRight(TableFuncs.OFFSET / 3);
+			}).grow().padLeft(TableFuncs.OFFSET).padRight(TableFuncs.OFFSET).row();
 
 			if(baseData != null && upgraderc() != null)upgraderc().buildSwitchAmmoTable(t, true);
 

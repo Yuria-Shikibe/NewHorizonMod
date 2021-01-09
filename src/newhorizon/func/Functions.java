@@ -18,17 +18,10 @@ import newhorizon.blocks.special.JumpGate;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 
-import java.text.DecimalFormat;
-
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
 
 public class Functions {
-    private static final DecimalFormat df = new DecimalFormat("######0.00");
-    public static String format(float value){return df.format(value);}
-    public static String getJudge(boolean value){return value ? "[green]Yes[]" : "[red]No[]";}
-    public static final String tabSpace = "    ";
-    public static final float LEN = 60f, OFFSET = 12f;
 
     public static float regSize(UnitType type){
         return type.hitSize / tilesize / tilesize / 3.25f;
@@ -39,7 +32,7 @@ public class Functions {
                 pointerRegion = Core.atlas.find("new-horizon-jump-gate-pointer"),
                 arrowRegion = Core.atlas.find("new-horizon-jump-gate-arrow");
 
-        ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + level + "[] fleet in coming at [" + format(x / tilesize) + ", " + format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
+        ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + level + "[] fleet in coming at [" + TableFuncs.format(x / tilesize) + ", " + TableFuncs.format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
 
         float angle, regSize = regSize(type);
 

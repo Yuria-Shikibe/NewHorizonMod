@@ -19,7 +19,9 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.StatusEffect;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.production.Cultivator;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericSmelter;
@@ -42,17 +44,49 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-	chargeWall, chargeWallLarge, eoeUpgrader, jumpGate,
-	irdryonVault, blaster, unitSpawner, ender, thurmix, argmot,
-	presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
-	zateFactoryLarge, zateFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
-	setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
-	thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory,
-	//Liquids factories
-	irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zateFluidFactory;
+		largeShieldGenerator, divlusion,
+		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate,
+		irdryonVault, blaster, unitSpawner, ender, thurmix, argmot,
+		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
+		zateFactoryLarge, zateFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
+		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
+		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory,
+		//Liquids factories
+		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zateFluidFactory;
 
 	@Override
 	public void load() {
+		divlusion = new PowerTurret("divlusion"){{
+			shots = 2;
+			burstSpacing = 8f;
+			health = 960;
+			range = 240;
+			shootCone = 30f;
+			shootSound = Sounds.laser;
+			size = 3;
+			reloadTime = 90f;
+			recoilAmount = 4f;
+			shootType = NHBullets.tear;
+			powerUse = 8f;
+			requirements(Category.turret, with(NHItems.juniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 20));
+		}};
+
+		largeShieldGenerator = new ForceProjector("large-shield-generator") {{
+			size = 4;
+			radius = 220f;
+			shieldHealth = 16000f;
+			cooldownNormal = 5f;
+			cooldownLiquid = 4f;
+			cooldownBrokenBase = 2.7f;
+			basePowerDraw = 2f;
+			consumes.item(NHItems.fusionEnergy).boost();
+			phaseUseTime = 180.0F;
+			phaseRadiusBoost = 100.0F;
+			phaseShieldBoost = 8000.0F;
+			consumes.power(25F);
+			requirements(Category.effect, with(NHItems.seniorProcessor, 150, Items.lead, 250, Items.graphite, 180, NHItems.presstanium, 150, NHItems.fusionEnergy, 80, NHItems.irayrondPanel, 50));
+		}};
+
 		presstaniumFactory = new GenericCrafter("presstanium-factory") {
 			{
 				requirements(Category.crafting, with(Items.silicon, 45, Items.lead, 115, Items.graphite, 25, Items.titanium, 100));
@@ -498,12 +532,12 @@ public class NHBlocks implements ContentList {
 				shots = 2;
 				health = 960;
 				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
-				maxSpeedupScl = 8f;
-				speedupPerShoot = 0.3f;
+				maxSpeedupScl = 9f;
+				speedupPerShoot = 0.4f;
 				powerUse = 8f;
 				size = 3;
 				range = 240;
-				reloadTime =85f;
+				reloadTime = 70f;
 				shootCone = 24f;
 				shootSound = Sounds.laser;
 				shootType = NHBullets.supSky;
@@ -658,16 +692,23 @@ public class NHBlocks implements ContentList {
 					new ItemStack(NHItems.upgradeSort, 1500),
 					new ItemStack(NHItems.darkEnergy, 800)
 				),
+				new UnitSet(6, NHUnits.striker, 9000f,9,
+					new ItemStack(NHItems.irayrondPanel, 600),
+					new ItemStack(NHItems.seniorProcessor, 8000),
+					new ItemStack(NHItems.presstanium, 1500),
+					new ItemStack(NHItems.zate, 800),
+					new ItemStack(Items.plastanium, 550)
+				),
 				new UnitSet(8, UnitTypes.eclipse,  9000f,6,
 					new ItemStack(Items.lead, 375),
-					new ItemStack(Items.plastanium, 150),
+					new ItemStack(Items.plastanium, 750),
 					new ItemStack(Items.copper, 500),
-					new ItemStack(NHItems.presstanium, 150)
+					new ItemStack(NHItems.presstanium, 550)
 				),
 				new UnitSet(6, UnitTypes.quad, 6000f,8,
-					new ItemStack(NHItems.irayrondPanel, 50),
-					new ItemStack(Items.plastanium, 150),
-					new ItemStack(NHItems.fusionEnergy, 120),
+					new ItemStack(NHItems.irayrondPanel, 550),
+					new ItemStack(Items.plastanium, 550),
+					new ItemStack(NHItems.fusionEnergy, 320),
 					new ItemStack(Items.titanium, 450)
 				)
 			);

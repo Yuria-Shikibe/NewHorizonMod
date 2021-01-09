@@ -32,12 +32,12 @@ import mindustry.world.meta.Stat;
 import newhorizon.colors.NHColor;
 import newhorizon.data.*;
 import newhorizon.content.NHFx;
+import newhorizon.func.TableFuncs;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
 import newhorizon.func.TextureFilterValue;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.Functions.*;
 
 public class UpgraderBlock extends Block {
 	public static final int DFTID = -2; 
@@ -224,24 +224,24 @@ public class UpgraderBlock extends Block {
 			t.table(Tex.button, table -> {
 				if(setting){
 					table.pane(cont -> 
-						cont.button("Upgrade", Icon.settings, Styles.cleart, this::upgraderTableBuild).size(LEN * buttonPerLine, LEN)
-					).fillX().height(LEN).pad(OFFSET / 3f).row();
+						cont.button("Upgrade", Icon.settings, Styles.cleart, this::upgraderTableBuild).size(TableFuncs.LEN * buttonPerLine, TableFuncs.LEN)
+					).fillX().height(TableFuncs.LEN).pad(TableFuncs.OFFSET / 3f).row();
 				}
 				
 				table.pane(cont -> {
 					int index = 0;
 					for (UpgradeAmmoData ammoData : ammoDatas) {
 						if(index % buttonPerLine == 0)cont.row().left();
-						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.clearPartiali, LEN, () ->
+						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.clearPartiali, TableFuncs.LEN, () ->
 							switchAmmo(ammoData)
-						).size(LEN).disabled( b ->
+						).size(TableFuncs.LEN).disabled(b ->
 							!ammoData.isUnlocked || ammoData.selected
 						).left();
 						index ++;
 					}
-				}).fillX().height(LEN).pad(OFFSET / 3f);
+				}).fillX().height(TableFuncs.LEN).pad(TableFuncs.OFFSET / 3f);
 				if(!setting)table.left();
-			}).grow().pad(OFFSET).row();
+			}).grow().pad(TableFuncs.OFFSET).row();
 		}
 
 		protected void setLink(int value) {
@@ -282,10 +282,12 @@ public class UpgraderBlock extends Block {
 			dialog.cont.clear();
 			dialog.addCloseListener();
 			dialog.cont.pane(t -> {
+				//
 				t.table(Tex.button, table -> {
+					table.row().left();
 					table.button(
 							Icon.infoCircle, Styles.clearPartiali, () -> ammoDatas.get(lastestSelectID).showInfo(false)
-					).size(LEN).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty());
+					).size(TableFuncs.LEN).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty()).left();
 
 					table.button(Icon.hostSmall, Styles.clearTransi, () ->
 							new BaseDialog("All Info") {{
@@ -294,18 +296,20 @@ public class UpgraderBlock extends Block {
 								cont.pane(infos -> {
 									baseData.buildUpgradeInfoAll(infos);
 									for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(infos);
-								}).fillX().height(LEN * 5).row();
-								cont.button("@back", Icon.left, this::hide).fillX().height(LEN).pad(OFFSET / 3);
+								}).fillX().height(TableFuncs.LEN * 5).row();
+								cont.button("@back", Icon.left, this::hide).fillX().height(TableFuncs.LEN).pad(TableFuncs.OFFSET / 3);
 							}}.show()
-					).size(LEN).left();
-					table.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3.5f, LEN).left().pad(OFFSET / 3);
-				}).left().pad(OFFSET).row();
+					).size(TableFuncs.LEN).left();
+					table.button("@back", Icon.left, Styles.cleart, dialog::hide).size(TableFuncs.LEN * 3.5f, TableFuncs.LEN).left().pad(TableFuncs.OFFSET / 3);
+				}).left().pad(TableFuncs.OFFSET).row();
 
 				buildSwitchAmmoTable(t, false);
 
-				t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
+				t.image().pad(TableFuncs.OFFSET).fillX().height(4f).color(Pal.accent).row();
 				buildUpgradeDataTable(t);
-				t.image().pad(OFFSET).fillX().height(4f).color(Pal.accent).row();
+				t.image().pad(TableFuncs.OFFSET).fillX().height(4f).color(Pal.accent).row();
+
+				t.fill();
 			});
 			dialog.show();
 		}

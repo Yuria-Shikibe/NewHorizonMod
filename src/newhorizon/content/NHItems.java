@@ -37,10 +37,11 @@ public class NHItems implements ContentList{
 		multipleSteel = new Item("multiple-steel", Color.valueOf("cedbe3"));
 		irayrondPanel = new Item("irayrond-panel", Color.valueOf("f7f7f7"));
 		setonAlloy = new Item("seton-alloy", Color.valueOf("#151C23")){{
-			explosiveness = 10f;
-			radioactivity = 25f;
 		}};
-		darkEnergy = new Item("dark-energy", Color.valueOf("#BE91FF"));
+		darkEnergy = new Item("dark-energy", Color.valueOf("#BE91FF")){{
+			radioactivity = 25f;
+			explosiveness = 10f;
+		}};
 		upgradeSort = new Item("upgradeSort", Color.valueOf("1D1E23"));
 		metalOxhydrigen = new Item("metal-oxhydrigen", Color.valueOf("#BFF3FF"));
 	}

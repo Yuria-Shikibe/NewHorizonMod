@@ -15,8 +15,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.blocks.special.UpgraderBlock.UpgraderBlockBuild;
 import newhorizon.*;
 import newhorizon.content.NHItems;
-
-import static newhorizon.func.Functions.*;
+import newhorizon.func.TableFuncs;
 
 public abstract class UpgradeData implements Cloneable{
 	public Table table;
@@ -66,25 +65,25 @@ public abstract class UpgradeData implements Cloneable{
 	public abstract void addText(Table table);
 	
 	public void buildUpgradeInfoAll(Table table) {
-		table.table(Tex.button, t -> {}).pad(OFFSET / 2).fillX().height(LEN * 1.5f).row();
+		table.table(Tex.button, t -> {}).pad(TableFuncs.OFFSET / 2).fillX().height(TableFuncs.LEN * 1.5f).row();
 	}
 	
 	public void buildTable(Table t) {
-		t.table(Tex.button, this::buildDescriptions).pad(OFFSET / 2).fillX().height(LEN * 1.6f).row();
+		t.table(Tex.button, this::buildDescriptions).pad(TableFuncs.OFFSET / 2).fillX().height(TableFuncs.LEN * 1.6f).row();
 	}
 
 	public void buildDescriptions(Table t) {
-		t.pane(table -> table.image(icon).size(LEN).left()).left().size(LEN);
+		t.pane(table -> table.image(icon).size(TableFuncs.LEN).left()).left().size(TableFuncs.LEN);
 
 		t.pane(table -> {
 			addText(table);
-			table.add("[lightgray]NeededTime: [accent]" + format(costTime() / 60) + "[lightgray] sec[]").left().row();
-		}).size(LEN * 6f, LEN).left().pad(OFFSET);
+			table.add("[lightgray]NeededTime: [accent]" + TableFuncs.format(costTime() / 60) + "[lightgray] sec[]").left().row();
+		}).size(TableFuncs.LEN * 6f, TableFuncs.LEN).left().pad(TableFuncs.OFFSET);
 
 		t.table(Tex.button, table -> {
-			table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true)).size(LEN);
-			table.button(Icon.upOpen, Styles.clearPartiali, () -> from.upgradeData(this)).size(LEN).disabled(b -> !from.canUpgrade(this));
-		}).height(LEN + OFFSET).left().pad(OFFSET);
+			table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true)).size(TableFuncs.LEN);
+			table.button(Icon.upOpen, Styles.clearPartiali, () -> from.upgradeData(this)).size(TableFuncs.LEN).disabled(b -> !from.canUpgrade(this));
+		}).height(TableFuncs.LEN + TableFuncs.OFFSET).left().pad(TableFuncs.OFFSET);
 	}
 	
 	public void showInfo(boolean drawCons){
@@ -92,12 +91,12 @@ public abstract class UpgradeData implements Cloneable{
 		dialog.addCloseListener();
 		dialog.cont.margin(15f);
 		dialog.cont.table(Tex.button, table -> {
-			table.pane( t -> t.image(icon)).size(icon.height + OFFSET / 2).left();
-			table.pane(this::infoText).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
+			table.pane( t -> t.image(icon)).size(icon.height + TableFuncs.OFFSET / 2).left();
+			table.pane(this::infoText).size(icon.height + TableFuncs.OFFSET / 2).pad(TableFuncs.OFFSET / 2);
 		}).row();
 		dialog.cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
 		dialog.cont.add("Description: ").color(Pal.accent).left().row();
-		dialog.cont.add(tabSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
+		dialog.cont.add(TableFuncs.tabSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
 		if(drawCons){
 			dialog.cont.pane(table -> {
 				int index = 0;
@@ -108,11 +107,11 @@ public abstract class UpgradeData implements Cloneable{
 				}
 			}).left().row();
 			if(this.unlockLevel > 0)dialog.cont.add("[lightgray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
-				dialog.cont.add("[lightgray]CanUpgrade?: " + getJudge(this.from.canUpgrade(this)) + "[]").left().row();
+				dialog.cont.add("[lightgray]CanUpgrade?: " + TableFuncs.getJudge(this.from.canUpgrade(this)) + "[]").left().row();
 		}
 		dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
 		dialog.cont.row();
-		dialog.cont.button("@back", Icon.left, dialog::hide).size(LEN * 2.5f, LEN).pad(OFFSET / 3);
+		dialog.cont.button("@back", Icon.left, dialog::hide).size(TableFuncs.LEN * 2.5f, TableFuncs.LEN).pad(TableFuncs.OFFSET / 3);
 		dialog.show();
 	}
 }
