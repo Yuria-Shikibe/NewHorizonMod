@@ -17,7 +17,6 @@ import mindustry.entities.abilities.ForceFieldAbility;
 import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.bullet.ArtilleryBulletType;
-import mindustry.entities.bullet.BulletType;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
@@ -25,7 +24,6 @@ import mindustry.type.*;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.func.PosLightning;
-import newhorizon.colors.NHColor;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;
@@ -143,101 +141,56 @@ public class NHUnits implements ContentList {
 							inaccuracy = 3.0F;
 							ejectEffect = Fx.none;
 							recoil = 4.4f;
-							bullet = new ArtilleryBulletType(2.25f, 160) {
-								@Override public float range(){return 300f;}
-								@Override
-								public void update(Bullet b) {
-									Effect.shake(2, 2, b);
-									if (b.timer(2, 8) && (b.lifetime - b.time) > PosLightning.lifetime){
-										for(int i : Mathf.signs){
-											new Effect(25, e -> {
-												Draw.color(NHColor.lightSky);
-												Angles.randLenVectors(e.id, 4, 3 + 60 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 13f));
-												Lines.stroke((i < 0 ? e.fin() : e.fout()) * 3f);
-												Lines.circle(e.x, e.y, (i > 0 ? e.fin() : e.fout()) * 33f);
-											}).at(b.x + Mathf.range(8f), b.y + Mathf.range(8f), b.rotation());
-										}
-										PosLightning.createRange(b, 240, 6, 1, splashDamage * b.damageMultiplier(), NHColor.lightSky, Mathf.chance(Time.delta * 0.13), 1.33f * PosLightning.WIDTH);
-									}
-								}
-
-								@Override
-								public void init(Bullet b) {
-									b.vel.scl(1 + drag * b.lifetime / b.type.speed);
-								}
-
-								@Override
-								public void draw(Bullet b) {
+							bullet = new LightningLinkerBulletType(2.3f, 200){{
+								range = 340f;
+								
+								outColor = NHColor.lightSky;
+								innerColor = Color.white;
+								generateDelay = 6f;
+								randomGenerateRange = 280f;
+								randomLightningNum = 5;
+								boltNum = 3;
+								linkRange = 280f;
+								
+								drag = 0.0065f;
+								fragLifeMin = 0.3f;
+								fragBullets = 11;
+								fragBullet = NHBullets.skyFrag;
+								hitSound = Sounds.explosionbig;
+								drawSize = 40;
+								splashDamageRadius = 240;
+								splashDamage = 80;
+								lifetime = 300;
+								despawnEffect = Fx.none;
+								hitEffect = new Effect(50, e -> {
 									color(NHColor.lightSky);
-									Fill.circle(b.x, b.y, 20);
-									color(Color.white);
-									Fill.circle(b.x, b.y, 12f);
-								}
-
-								@Override
-								public void despawned(Bullet b) {
-									for (int i = 0; i < Mathf.random(4f, 7f); i++) {
-										Vec2 randomPos = new Vec2(b.x + Mathf.range(200), b.y + Mathf.range(200));
-										hitSound.at(randomPos, Mathf.random(0.9f, 1.1f) );
-										PosLightning.create(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.lightSky, 1.7f * PosLightning.WIDTH, 2, hitPos -> {
-											for (int j = 0; j < 4; j++) {
-												Lightning.create(b.team(), NHColor.lightSky, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
-											}
-											Damage.damage(b.team(), hitPos.getX(), hitPos.getY(), 80f, 8 * this.splashDamage * b.damageMultiplier());
-											new Effect(25, e -> {
-												color(NHColor.lightSky);
-												e.scaled(12, t -> {
-													stroke(3f * t.fout());
-													circle(e.x, e.y, 3f + t.fin() * 80f);
-												});
-												Fill.circle(e.x, e.y, e.fout() * 8f);
-												Angles.randLenVectors(e.id + 1, 4, 1f + 60f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
-											}).at(hitPos);
-										});
-									}
-									super.despawned(b);
-								}
-
-								{
-									drag = 0.0065f;
-									fragLifeMin = 0.3f;
-									fragBullets = 11;
-									fragBullet = NHBullets.skyFrag;
-									hitSound = Sounds.explosionbig;
-									drawSize = 40;
-									splashDamageRadius = 240;
-									splashDamage = 80;
-									lifetime = 300;
-									despawnEffect = Fx.none;
-									hitEffect = new Effect(50, e -> {
-										color(NHColor.lightSky);
-										Fill.circle(e.x, e.y, e.fout() * 44);
+									Fill.circle(e.x, e.y, e.fout() * 44);
+									stroke(e.fout() * 3.2f);
+									circle(e.x, e.y, e.fin() * 80);
+									stroke(e.fout() * 2.5f);
+									circle(e.x, e.y, e.fin() * 50);
+									Angles.randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
 										stroke(e.fout() * 3.2f);
-										circle(e.x, e.y, e.fin() * 80);
-										stroke(e.fout() * 2.5f);
-										circle(e.x, e.y, e.fin() * 50);
-										Angles.randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
-											stroke(e.fout() * 3.2f);
-											lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
-										});
-										color(Color.white);
-										Fill.circle(e.x, e.y, e.fout() * 30);
+										lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
 									});
-									shootEffect = new Effect(30f, e -> {
-										color(NHColor.lightSky);
-										Fill.circle(e.x, e.y, e.fout() * 32);
-										color(Color.white);
-										Fill.circle(e.x, e.y, e.fout() * 20);
-									});
-									smokeEffect = new Effect(40f, 100, e -> {
-										color(NHColor.lightSky);
-										stroke(e.fout() * 3.7f);
-										circle(e.x, e.y, e.fin() * 100 + 15);
-										stroke(e.fout() * 2.5f);
-										circle(e.x, e.y, e.fin() * 60 + 15);
-										randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f));
-									});
-								}};
+									color(Color.white);
+									Fill.circle(e.x, e.y, e.fout() * 30);
+								});
+								shootEffect = new Effect(30f, e -> {
+									color(NHColor.lightSky);
+									Fill.circle(e.x, e.y, e.fout() * 32);
+									color(Color.white);
+									Fill.circle(e.x, e.y, e.fout() * 20);
+								});
+								smokeEffect = new Effect(40f, 100, e -> {
+									color(NHColor.lightSky);
+									stroke(e.fout() * 3.7f);
+									circle(e.x, e.y, e.fin() * 100 + 15);
+									stroke(e.fout() * 2.5f);
+									circle(e.x, e.y, e.fin() * 60 + 15);
+									randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f));
+								});
+							}};
 							shootSound = Sounds.laserblast;
 						}},
 

@@ -14,7 +14,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.gen.*;
 import mindustry.type.UnitType;
-import newhorizon.blocks.special.JumpGate;
+import newhorizon.block.special.JumpGate;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 

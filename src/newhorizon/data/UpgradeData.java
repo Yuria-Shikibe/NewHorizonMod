@@ -12,7 +12,7 @@ import mindustry.ui.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.blocks.special.UpgraderBlock.UpgraderBlockBuild;
+import newhorizon.block.special.UpgraderBlock.UpgraderBlockBuild;
 import newhorizon.*;
 import newhorizon.content.NHItems;
 import newhorizon.func.TableFuncs;

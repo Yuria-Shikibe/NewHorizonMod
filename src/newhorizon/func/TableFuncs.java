@@ -1,8 +1,13 @@
 package newhorizon.func;
 
+import arc.scene.ui.Dialog;
+import arc.struct.Seq;
+
 import java.text.DecimalFormat;
 
 public class TableFuncs {
+    public static final Seq<Dialog> debugDialogs = new Seq<>();
+    
     public static final String tabSpace = "    ";
     public static final float LEN = 60f;
     public static final float OFFSET = 12f;

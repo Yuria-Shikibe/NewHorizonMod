@@ -5,13 +5,13 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.Tmp;
+import mindustry.content.Fx;
 import mindustry.entities.*;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 
 import mindustry.type.UnitType;
-import newhorizon.colors.*;
 
 import static mindustry.Vars.*;
 
@@ -21,6 +21,37 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 
 public class NHFx{
+	public static Effect lightningHitSmall(Color color){
+		return new Effect(20, e -> {
+			color(color, Color.white, e.fout() * 0.7f);
+			randLenVectors(e.id, 9, 18 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
+		});
+	}
+	
+	public static Effect laserHit(Color color){
+		return new Effect(20, e -> {
+			color(color, Color.white, e.fout() * 0.7f);
+			randLenVectors(e.id, 9, 18 * e.fin(), e.rotation, 40f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
+		});
+	}
+	
+	public static Effect lightningHitLarge(Color color){
+		return new Effect(25, e -> {
+			color(color);
+			e.scaled(12, t -> {
+				stroke(3f * t.fout());
+				circle(e.x, e.y, 3f + t.fin() * 80f);
+			});
+			Fill.circle(e.x, e.y, e.fout() * 8f);
+			randLenVectors(e.id + 1, 4, 1f + 60f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
+			
+			color(Color.gray);
+			Angles.randLenVectors((long)e.id, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F);
+			});
+		});
+	}
+
 	public static Effect laserEffect(float num){
 		return new Effect(26.0F, (e) -> {
 			Draw.color(Color.white);
@@ -43,6 +74,9 @@ public class NHFx{
 
 	public static final Effect
 		//All effects
+		
+		boolSelector = new Effect(0, 0, e -> {}),
+	
 		skyTrail = new Effect(22, e -> {
 			color(NHColor.lightSky, Pal.gray, e.fin());
 			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
@@ -191,16 +225,6 @@ public class NHFx{
 			circle(e.x, e.y, e.fout() * 80);
 			color(NHColor.darkEnr);
 			Fill.circle(e.x, e.y, e.fin() * 20);
-		}),
-		
-		lightningHit = new Effect(25, e -> {
-			color(NHColor.darkEnrColor);
-			e.scaled(12, t -> {
-				stroke(3f * t.fout());
-				circle(e.x, e.y, 3f + t.fin() * 80f);
-			});
-			Fill.circle(e.x, e.y, e.fout() * 8f);
-			randLenVectors(e.id + 1, 4, 1f + 60f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
 		}),
 						
 		upgrading = new Effect(30, e -> {

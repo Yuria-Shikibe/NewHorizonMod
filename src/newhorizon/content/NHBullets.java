@@ -13,9 +13,9 @@ import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.DelayLaserType;
+import newhorizon.bullets.LightningLinkerBulletType;
 import newhorizon.bullets.NHTrailBulletType;
 import newhorizon.bullets.ShieldBreaker;
-import newhorizon.colors.*;
 import newhorizon.func.PosLightning;
 
 import static arc.graphics.g2d.Draw.*;
@@ -25,7 +25,7 @@ import static arc.math.Angles.*;
 public class NHBullets {
 	public static final
 	BulletType
-		strikeLaser = new DelayLaserType(660f, 60f){
+		strikeLaser = new DelayLaserType(800f, 60f){
 			@Override
 			public void effectDraw(Bullet b){
 				Draw.color(Pal.accent);
@@ -52,11 +52,12 @@ public class NHBullets {
 				this.lightningLength = 2;
 				this.lightningDelay = 1.1F;
 				this.lightningLengthRand = 10;
-				this.lightningDamage = 20.0F;
+				this.lightningDamage = 180.0F;
 				this.lightningAngleRand = 40.0F;
 				this.lightningColor = Pal.accent;
 				smokeEffect = shootEffect = Fx.none;
-				splashDamage = 42.0F;
+				hitEffect = NHFx.laserHit(Pal.accent);
+				splashDamage = 82.0F;
 				splashDamageRadius = 20.0F;
 				collidesGround = true;
 				lifetime = 38.0F;
@@ -387,7 +388,9 @@ public class NHBullets {
 			@Override
 			public void despawned(Bullet b) {
 				super.despawned(b);
-				PosLightning.createRange(new Vec2(b.x, b.y), b.team(), 80, 5, 2, 120 * b.damageMultiplier(), lightColor, true, PosLightning.WIDTH);
+				PosLightning.createRange(b, 200, 4, NHColor.thurmixRed, Mathf.chanceDelta(0.3f), PosLightning.WIDTH, 3, p -> {
+					NHFx.lightningHitLarge(NHColor.thurmixRed).at(p);
+				});
 			}
 
 			{
@@ -421,111 +424,67 @@ public class NHBullets {
 
 		},
 
-		boltGene = new ArtilleryBulletType(2.75f, 100) {
-			@Override
-			public void update(Bullet b) {
-				Effect.shake(2, 2, b);
-				if (b.timer(0, 8)) {
-					for(int i : Mathf.signs){
-						new Effect(25, e -> {
-							Draw.color(NHColor.darkEnrColor);
-							Angles.randLenVectors(e.id, 4, 3 + 60 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 13f));
-							Lines.stroke((i < 0 ? e.fin() : e.fout()) * 3f);
-							Lines.circle(e.x, e.y, (i > 0 ? e.fin() : e.fout()) * 33f);
-						}).at(b.x + Mathf.range(8f), b.y + Mathf.range(8f), b.rotation());
+		boltGene = new LightningLinkerBulletType(2.75f, 650) {{
+			outColor = NHColor.darkEnrColor;
+			innerColor = NHColor.darkEnr;
+			generateDelay = 4f;
+			randomGenerateRange = 280f;
+			randomLightningNum = 5;
+			boltNum = 3;
+			linkRange = 280f;
+			range = 800f;
+			
+			drag = 0.0065f;
+			fragLifeMin = 0.3f;
+			fragBullets = 11;
+			fragBullet = new ArtilleryBulletType(3.75f, 260) {
+				@Override
+				public void update(Bullet b) {
+					if (b.timer(0, 2)) {
+						new Effect(22, e -> {
+							color(NHColor.darkEnrColor, Color.black, e.fin());
+							Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
+						}).at(b.x, b.y, b.rotation());
 					}
-					NHFx.darkEnergySpread.at(b);
 				}
 
-				if (b.timer(2, 8) && (b.lifetime - b.time) > PosLightning.lifetime) {
-					PosLightning.createRange(b, 240, 15, 1, splashDamage * b.damageMultiplier(), NHColor.darkEnrColor, Mathf.chance(Time.delta * 0.13), 1.33f * PosLightning.WIDTH);
+				{
+					despawnEffect = hitEffect = NHFx.darkErnExplosion;
+					knockback = 12f;
+					lifetime = 90f;
+					width = 17f;
+					height = 42f;
+					collidesTiles = false;
+					splashDamageRadius = 80f;
+					splashDamage = damage * 0.6f;
+					backColor = lightColor = lightningColor = NHColor.darkEnrColor;
+					frontColor = Color.white;
+					lightning = 3;
+					lightningLength = 8;
+					smokeEffect = Fx.shootBigSmoke2;
+					hitShake = 8f;
+					hitSound = Sounds.plasmaboom;
+					status = StatusEffects.sapped;
+					statusDuration = 60f * 10;
 				}
-			}
-
-			@Override
-			public void init(Bullet b) {
-				b.vel.scl(1 + drag * b.lifetime / b.type.speed * 1.3f);
-				b.lifetime(b.lifetime * 1.2f);
-			}
-
-			@Override
-			public void draw(Bullet b) {
-				color(NHColor.darkEnrColor);
-				Fill.circle(b.x, b.y, 20);
-				color(NHColor.darkEnr);
-				Fill.circle(b.x, b.y, 4f + 8f * Mathf.curve(b.fout(), 0.1f, 0.35f));
-			}
-
-			@Override
-			public void despawned(Bullet b) {
-				for (int i = 0; i < Mathf.random(4f, 7f); i++) {
-					Vec2 randomPos = new Vec2(b.x + Mathf.range(200), b.y + Mathf.range(200));
-					hitSound.at(randomPos, Mathf.random(0.9f, 1.1f) );
-					PosLightning.create(new Vec2(b.x, b.y), randomPos, b.team(), NHColor.darkEnrColor, 1.7f * PosLightning.WIDTH, 2, hitPos -> {
-						for (int j = 0; j < 4; j++) {
-							Lightning.create(b.team(), NHColor.darkEnrColor, this.splashDamage * b.damageMultiplier(), hitPos.getX(), hitPos.getY(), Mathf.random(360), Mathf.random(8, 12));
-						}
-						Damage.damage(b.team(), hitPos.getX(), hitPos.getY(), 80f, 8 * this.splashDamage * b.damageMultiplier());
-						NHFx.lightningHit.at(hitPos);
-					});
-				}
-
-				super.despawned(b);
-				
-			}
-
-			{
-				drag = 0.0065f;
-				fragLifeMin = 0.3f;
-				fragBullets = 11;
-
-				fragBullet = new ArtilleryBulletType(3.75f, 260) {
-					@Override
-					public void update(Bullet b) {
-						if (b.timer(0, 2)) {
-							new Effect(22, e -> {
-								color(NHColor.darkEnrColor, Color.black, e.fin());
-								Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
-							}).at(b.x, b.y, b.rotation());
-						}
-					}
-
-					{
-						despawnEffect = hitEffect = NHFx.darkErnExplosion;
-						knockback = 12f;
-						lifetime = 90f;
-						width = 17f;
-						height = 42f;
-						collidesTiles = false;
-						splashDamageRadius = 80f;
-						splashDamage = damage * 0.6f;
-						backColor = lightColor = lightningColor = NHColor.darkEnrColor;
-						frontColor = Color.white;
-						lightning = 3;
-						lightningLength = 8;
-						smokeEffect = Fx.shootBigSmoke2;
-						hitShake = 8f;
-						hitSound = Sounds.plasmaboom;
-						status = StatusEffects.sapped;
-						statusDuration = 60f * 10;
-					}
-				};
-				hitSound = Sounds.explosionbig;
-				drawSize = 40;
-				splashDamageRadius = 240;
-				splashDamage = 8000;
-				collidesTiles = true;
-				pierce = false;
-				collides = false;
-				collidesAir = false;
-				ammoMultiplier = 1;
-				lifetime = 300;
-				hitEffect = Fx.none;
-				despawnEffect = Fx.none;
-				hitEffect = NHFx.largeDarkEnergyHit;
-				shootEffect = NHFx.darkEnergyShootBig;
-				smokeEffect = NHFx.darkEnergySmokeBig;
-			}};
+			};
+			hitSound = Sounds.explosionbig;
+			drawSize = 40;
+			splashDamageRadius = 240;
+			splashDamage = 5000f;
+			lightningDamage = damage * 0.75f;
+			collidesTiles = true;
+			pierce = false;
+			collides = false;
+			collidesAir = false;
+			ammoMultiplier = 1;
+			lifetime = 300;
+			hitEffect = Fx.none;
+			despawnEffect = Fx.none;
+			hitEffect = NHFx.largeDarkEnergyHit;
+			shootEffect = NHFx.darkEnergyShootBig;
+			smokeEffect = NHFx.darkEnergySmokeBig;
+		}};
 
 }
 

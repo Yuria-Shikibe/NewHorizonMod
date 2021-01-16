@@ -2,6 +2,7 @@ package newhorizon.func;
 
 import arc.struct.Seq;
 import arc.func.Cons;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
@@ -12,6 +13,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import mindustry.Vars;
+import mindustry.gen.Healthc;
 import mindustry.world.Tile;
 import mindustry.game.Team;
 import mindustry.gen.Unitc;
@@ -19,8 +21,8 @@ import mindustry.gen.Bullet;
 import mindustry.content.Fx;
 import mindustry.entities.Units;
 import mindustry.entities.Effect;
-import mindustry.entities.Damage;
 import mindustry.entities.Lightning;
+import org.jetbrains.annotations.NotNull;
 
 public class PosLightning { //Provide some workable methods to create position to position lightning bolt. Powered by Yuria.
 
@@ -46,63 +48,87 @@ public class PosLightning { //Provide some workable methods to create position t
 	//Used in find target method.
 	private static Tile furthest;
 	private static final Rect rect = new Rect();
+	
 
 	//METHODS
 
 	//create lightning to the enemies in range.
-	public static void createRange(Position owner, Team team, float range, int hits, int boltNum, Color color, float width, Cons<Position> movement) {
+	
+	//A radius create method that with a Bullet owner.
+	public static void createRange(@NotNull Bullet owner, float range, int hits, Color color, boolean createLightning, float width, int boltNum, Cons<Position> movement) {
+		createRange(owner, owner, owner.team, range, hits, color, createLightning, 0, 0, width, boltNum, movement);
+	}
+	
+	public static void createRange(@Nullable Bullet owner, boolean hitAir, boolean hitGround, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
 		Seq<Unitc> entities = new Seq<>();
-		whetherAdd(team, rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), entities, hits);
-		for (Unitc unit : entities) {
-			create(owner, unit, team, color, width, boltNum, movement);
-		}
+		whetherAdd(entities, team, rect.setSize(range * 2f).setCenter(from.getX(), from.getY()), hits, hitGround, hitAir);
+		for (Position p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
+	}
+	
+	
+	public static void createRange(@Nullable Bullet owner, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+		createRange(owner, owner == null || owner.type.collidesAir, owner == null || owner.type.collidesGround, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, movement);
+	}
+	
+	public static void createRange(Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+		createRange(null, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
 	//create lightning to the enemies in range.
-	public static void createRange(Position owner, Team team, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
-		Seq<Unitc> entities = new Seq<>();
-		whetherAdd(team, rect.setSize(range * 2).setCenter(owner.getX(), owner.getY()), entities, hits);
-		for (Unitc unit : entities) {
-			for (int i = 0; i < boltNum; i ++) {
-				create(owner, unit, team, damage, color, chance, width);
-			}
-		}
-	}
-
-	//A radius create method that with a Bullet owner.
-	public static void createRange(Bullet owner, float range, int hits, int boltNum, float damage, Color color, boolean chance, float width) {
-		createRange(owner, owner.team(), range, hits, boltNum, damage, color, chance, width);
-	}
-
-	//A create method that could set lightning number and extra movements to the final target.
-	public static void create(Position owner, Position target, Team team, Color color, float width, int boltNum, Cons<Position> movement) {
-		Position sureTarget = findInterceptedPoint(owner, target, team);
-		movement.get(sureTarget);
-
-		float dst = owner.dst(sureTarget);
-		for (int i = 0; i < boltNum; i ++) {
-			float multBolt = getBoltRandomRange();
-			float randRange = multBolt * RANGE_RAND;
-
-			Seq<Float> randomArray = new Seq<>();
-			for (int num = 0; num < dst / (ROT_DST * multBolt) + 1; num ++) {
-				randomArray.add(Mathf.range(randRange));
-			}
-			createBoltEffect(color, width, computeVecs(randomArray, owner, sureTarget) );
-		}
+	public static void createRange(Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum) {
+		createRange(null, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, position -> {});
 	}
 	
-	//create position to position lightning and deals splash damage, create none target lightning.
-	public static void create(Position owner, Position target, Team team, float damage, Color color, boolean createLightning, float width) {
-		create(owner, target, team, color, width, 1, sureTarget ->{
-			if (createLightning)Lightning.create(team, color, damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360), Mathf.random(8, 12));
-			Damage.damage(team, sureTarget.getX(), sureTarget.getY(), 20f, damage);
-		});
+	//A create method that could set lightning number and extra movements to the final target.
+	public static void create(Position from, Position target, Team team, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+		create(null, team, from, target, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
 	//A create method that with a Bullet owner.
-	public static void create(Bullet owner, Position target, float damage, Color color, boolean createLightning, float width) {
-		create(owner, target, owner.team(), damage, color, createLightning, width);
+	public static void create(@Nullable Bullet owner, Team team, Position from, Position target, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+		Position sureTarget = findInterceptedPoint(from, target, team);
+		movement.get(sureTarget);
+		
+		if(createLightning){
+			if(owner != null)for(int i = 0; i < owner.type.lightning; i++)Lightning.create(owner, color, owner.type.lightningDamage < 0.0F ? owner.damage : owner.type.lightningDamage, sureTarget.getX(), sureTarget.getY(), owner.rotation() + Mathf.range(owner.type.lightningCone / 2.0F) + owner.type.lightningAngle, owner.type.lightningLength + Mathf.random(owner.type.lightningLengthRand));
+			else for(int i = 0; i < 3; i++)Lightning.create(team, color, damage <= 0 ? 1f : damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360f), boltLen);
+		}
+		
+		if(target instanceof Healthc){
+			Healthc h = (Healthc)target;
+			if(owner == null)h.damage(damage <= 0 ? 1f : damage);
+			else h.damage(owner.damage);
+		}
+		
+		float dst = from.dst(sureTarget);
+		for (int i = 0; i < boltNum; i ++) {
+			float len = getBoltRandomRange();
+			float randRange = len * RANGE_RAND;
+			
+			Seq<Float> randomArray = new Seq<>();
+			for (int num = 0; num < dst / (ROT_DST * len) + 1; num ++) {
+				randomArray.add(Mathf.range(randRange));
+			}
+			createBoltEffect(color, width, computeVectors(randomArray, from, sureTarget) );
+		}
+	}
+
+	public static void createRandom(Bullet owner, Team team, Position from, float rand, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement){
+		create(owner, team, from, new Vec2().rnd(rand).scl(Mathf.random(1f)).add(from), color, createLightning, damage, boltLen, width, boltNum, movement);
+	}
+	
+	public static void createRandom(Team team, Position from, float rand, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement){
+		createRandom(null, team, from, rand, color, createLightning, damage, boltLen, width, boltNum, movement);
+	}
+	
+	public static void createRandomRange(Team team, Position from, float rand, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, int generateNum, Cons<Position> movement){
+		createRandomRange(null, team, from, rand, color, createLightning, damage, boltLen, width, boltNum, generateNum, movement);
+	}
+	
+	public static void createRandomRange(Bullet owner, Team team, Position from, float rand, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, int generateNum, Cons<Position> movement){
+		for (int i = 0; i < generateNum; i++) {
+			createRandom(owner, team, from, rand, color, createLightning, damage, boltLen, width, boltNum, movement);
+		}
 	}
 
 	//Private methods and classes.
@@ -128,15 +154,14 @@ public class PosLightning { //Provide some workable methods to create position t
 	private static float getBoltRandomRange() {return Mathf.random(2f, 5f); }
 	
 	//Add proper unit into the to hit Seq.
-	private static void whetherAdd(Team team, Rect selectRect, Seq<Unitc> targetGroup, int hits) {
+	private static void whetherAdd(Seq<Unitc> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
+		points.clear();
 		Units.nearbyEnemies(team, selectRect, unit -> {
-			if (
-				targetGroup.size <= hits &&
-				(
-					targetGroup.isEmpty() || //Make sure add the started one.
-					unit.dst(Geometry.findClosest(unit.x, unit.y, targetGroup)) > GENERATE_DST
+			if(
+				points.size <= hits && unit.checkTarget(targetAir, targetGround) && (
+					points.isEmpty() || unit.dst(Geometry.findClosest(unit.x, unit.y, points)) > GENERATE_DST//Make sure add the started one.
 				)
-			)targetGroup.add(unit);
+			) points.add(unit);
 		});
 	}
 
@@ -163,7 +188,7 @@ public class PosLightning { //Provide some workable methods to create position t
 		}).at(vecs.first().x, vecs.first().y, width, color, vecs);
 	}
 	
-	private static Seq<Vec2> computeVecs(Seq<Float> randomVec, Position from, Position to){
+	private static Seq<Vec2> computeVectors(Seq<Float> randomVec, Position from, Position to){
 		int param = randomVec.size;
 		float angle = from.angleTo(to);
 		

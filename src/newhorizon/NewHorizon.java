@@ -55,7 +55,7 @@ public class NewHorizon extends Mod{
 				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
 				table.image().width(LEN * 5).height(OFFSET / 2.5f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("").row();
-			}).fill().center().row();
+			}).grow().center().row();
 			dialog.cont.table(Tex.clear, table -> {
 				table.button("@back", Icon.left, Styles.transt, dialog::hide).size(LEN * 3, LEN);
 				table.button("@links", Icon.link, Styles.transt, this::links).size(LEN * 3, LEN).pad(OFFSET / 3f);

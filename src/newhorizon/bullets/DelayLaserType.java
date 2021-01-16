@@ -31,7 +31,12 @@ public class DelayLaserType extends LaserBulletType {
         super(damage);
         this.effectTime = effectTime;
     }
-
+    
+    @Override
+    public void despawned(Bullet b){
+    
+    }
+    
     @Override
     public void init() {
         super.init();

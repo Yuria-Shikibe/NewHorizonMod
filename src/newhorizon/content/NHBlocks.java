@@ -30,12 +30,11 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
-import newhorizon.blocks.drawers.DrawFactories;
-import newhorizon.blocks.drawers.DrawPrinter;
-import newhorizon.blocks.drawers.NHDrawAnimation;
-import newhorizon.colors.*;
-import newhorizon.blocks.turrets.*;
-import newhorizon.blocks.special.*;
+import newhorizon.block.drawer.DrawFactories;
+import newhorizon.block.drawer.DrawPrinter;
+import newhorizon.block.drawer.NHDrawAnimation;
+import newhorizon.block.turrets.*;
+import newhorizon.block.special.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -601,14 +600,14 @@ public class NHBlocks implements ContentList {
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 10;
-			initUpgradeBaseData = UpgradeDatas.basicData;
+			initUpgradeBaseData = NHUpgradeDatas.basicData;
 			addUpgrades(
-				UpgradeDatas.darkEnrlaser,
-				UpgradeDatas.arc9000,
-				UpgradeDatas.curveBomb,
-				UpgradeDatas.airRaid,
-				UpgradeDatas.decayLaser,
-				UpgradeDatas.bombStorm
+				NHUpgradeDatas.darkEnrlaser,
+				NHUpgradeDatas.arc9000,
+				NHUpgradeDatas.curveBomb,
+				NHUpgradeDatas.airRaid,
+				NHUpgradeDatas.decayLaser,
+				NHUpgradeDatas.bombStorm
 			);
 		}};
 		
@@ -637,7 +636,7 @@ public class NHBlocks implements ContentList {
             itemCapacity = 2500;
         }};
         
-        blaster = new Influencer("blaster"){{
+        blaster = new StaticChargeBlaster("blaster"){{
             requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
             size = 3;
             chargerOffset = 5.65f;
@@ -714,7 +713,7 @@ public class NHBlocks implements ContentList {
 			);
 		}};
 
-        unitSpawner = new UnitSpawner("unit-spawner"){{
+        unitSpawner = new Debuger("unit-spawner"){{
 			size = 2;
 		}};
 	}
