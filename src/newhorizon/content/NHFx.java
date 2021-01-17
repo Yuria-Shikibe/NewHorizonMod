@@ -24,7 +24,7 @@ public class NHFx{
 	public static Effect lightningHitSmall(Color color){
 		return new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
-			randLenVectors(e.id, 9, 18 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
+			randLenVectors(e.id, 5, 18 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
 		});
 	}
 	

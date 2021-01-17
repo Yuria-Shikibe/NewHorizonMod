@@ -6,10 +6,13 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Circle;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.graphics.Pal;
 
@@ -20,8 +23,82 @@ public class DrawFuncs {
         vec21 = new Vec2(),
         vec22 = new Vec2(),
         vec23 = new Vec2();
-
+    
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
+    
+    
+    /**
+     * @draw sin(@scale * x + @offset);
+     * */
+    public static void drawSine(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant){
+        float dstTotal = Mathf.dst(x, y, x2, y2);
+        int dst = (int)(dstTotal / distant);
+    
+        if(dst < 1)return;
+    
+        Vec2 vec = new Vec2().trns(Angles.angle(x, y, x2, y2), distant);
+    
+        //for(int sign = 0; sign < 1; sign++){
+        for(int p = 0; p < phase; p++){
+            Fill.circle(x, y, Lines.getStroke());
+        
+            for(int i = 0; i < dst; i++){
+                vec21.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
+                        (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
+                        1 * scale,
+                        mag
+                ) - scale / 2);
+            
+                vec22.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
+                        (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i + 1),
+                        1 * scale,
+                        mag
+                ) - scale / 2);
+            
+                Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
+            
+                Lines.line(from.x, from.y, to.x, to.y, false);
+                Fill.circle(from.x, from.y, Lines.getStroke() / 2f);
+                Fill.circle(to.x, to.y, Lines.getStroke() / 2f);
+            }
+        }
+        //}
+    }
+    
+    public static void drawSineLerp(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant){
+        float dstTotal = Mathf.dst(x, y, x2, y2);
+        int dst = (int)(dstTotal / distant);
+        
+        if(dst < 1)return;
+        
+        Vec2 vec = new Vec2().trns(Angles.angle(x, y, x2, y2), distant);
+        
+        //for(int sign = 0; sign < 1; sign++){
+            for(int p = 0; p < phase; p++){
+                Fill.circle(x, y, Lines.getStroke());
+                
+                for(int i = 0; i < dst; i++){
+                    vec21.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag),
+                            1 * scale,
+                            mag
+                    ) - scale / 2);
+    
+                    vec22.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
+                            1 * scale,
+                            mag
+                    ) - scale / 2);
+                    
+                    Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
+                    
+                    Lines.line(from.x, from.y, to.x, to.y, false);
+                    Fill.circle(from.x, from.y, Lines.getStroke() / 2f);
+                    Fill.circle(to.x, to.y, Lines.getStroke() / 2f);
+                }
+            }
+        //}
+    }
 
     public static void arrow(TextureRegion arrow, float x, float y, float sizeScl, float angle, Color color){
         Draw.color(color);

@@ -141,7 +141,6 @@ public class UpgraderBlock extends Block {
 		
 		@Override
 		public boolean canUpgrade(UpgradeData data) {
-			if(state.rules.infiniteResources)return true;
 			if(data instanceof UpgradeLevelData){
 				UpgradeLevelData upgradeData = (UpgradeLevelData)data;
 				if(upgradeData.level == maxLevel)return false;
@@ -151,6 +150,8 @@ public class UpgraderBlock extends Block {
 				UpgradeMultData upgradeData = (UpgradeMultData)data;
 				if(upgradeData.isUnlocked)return false;
 			}
+			
+			if(state.rules.infiniteResources)return true;
 			
 			CoreBlock.CoreBuild core = core();
 			return 

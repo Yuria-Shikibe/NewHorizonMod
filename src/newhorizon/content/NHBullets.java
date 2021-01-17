@@ -429,10 +429,12 @@ public class NHBullets {
 			innerColor = NHColor.darkEnr;
 			generateDelay = 4f;
 			randomGenerateRange = 280f;
-			randomLightningNum = 5;
+			randomLightningNum = 6;
 			boltNum = 3;
 			linkRange = 280f;
 			range = 800f;
+			
+			lightningColor = NHColor.darkEnrColor;
 			
 			drag = 0.0065f;
 			fragLifeMin = 0.3f;

@@ -36,7 +36,6 @@ public class TableTexDebugDialog extends BaseDialog{
 	}
 	
 	public BaseDialog init(){
-		clear();
 		addCloseButton();
 		
 		cont.button("Icons", () -> {
@@ -49,7 +48,7 @@ public class TableTexDebugDialog extends BaseDialog{
 					int index = 0;
 					for(Field f : fields){
 						try{
-							if(f.getGenericType().toString().equals("class arc.scene.style.TextureRegionDrawable")){
+							if(f.getType().getSimpleName().equals("TextureRegionDrawable")){
 								if(index % 6 == 0) t.row();
 								t.table(inner -> {
 									try{
@@ -81,7 +80,7 @@ public class TableTexDebugDialog extends BaseDialog{
 					int index = 0;
 					for(Field f : fields){
 						try{
-							if(f.getGenericType().toString().equals("class arc.scene.style.TextureRegionDrawable") || f.getGenericType().toString().equals("class arc.scene.style.NinePatchDrawable")){
+							if(f.getType().getSimpleName().equals("TextureRegionDrawable") || f.getType().getSimpleName().equals("NinePatchDrawable")){
 								if(index % 6 == 0) t.row();
 								t.table(inner -> {
 									try{
@@ -112,7 +111,7 @@ public class TableTexDebugDialog extends BaseDialog{
 					int index = 0;
 					for(Field f : fields){
 						try{
-							if(f.getGenericType().toString().equals("class arc.scene.ui.TextButton$TextButtonStyle")){
+							if(f.getType().getSimpleName().equals("TextButtonStyle")){
 								if(index % 6 == 0) t.row();
 								t.table(inner -> {
 									try{
@@ -136,6 +135,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("ButtonImages", () -> {
 			buttonImage = new BaseDialog("ButtonImages"){{
+				
 				Object obj = new Styles();
 				Class<?> c = obj.getClass();
 				
@@ -144,7 +144,7 @@ public class TableTexDebugDialog extends BaseDialog{
 					int index = 0;
 					for(Field f : fields){
 						try{
-							if(f.getGenericType().toString().equals("class arc.scene.ui.ImageButton$ImageButtonStyle")){
+							if(f.getType().getSimpleName().equals("ImageButtonStyle")){
 								if(index % 6 == 0) t.row();
 								t.table(inner -> {
 									inner.table(de ->{

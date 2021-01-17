@@ -91,7 +91,7 @@ public class LightningLinkerBulletType extends BulletType{
 			color(innerColor);
 			Fill.circle(e.x + x, e.y + y, e.fout() * (size / 3f - 1f));
 		}));
-		if(this.liHitEffect == NHFx.boolSelector)this.spreadEffect = NHFx.lightningHitSmall(outColor);
+		if(this.liHitEffect == NHFx.boolSelector)this.liHitEffect = NHFx.lightningHitSmall(outColor);
 	}
 	
 	@Override
@@ -113,8 +113,9 @@ public class LightningLinkerBulletType extends BulletType{
 	@Override
 	public void init(Bullet b) {
 		//super.init(b);
-		b.vel.scl(1 + drag * b.lifetime / speed * 1.1f);
-		b.lifetime(b.lifetime * speed);
+		
+		//b.vel.scl((speed * b.lifetime - speed * drag * Mathf.pow(b.lifetime, 2) / 2) / b.lifetime / speed + 1);
+		b.vel.scl(1 + b.lifetime / lifetime);
 	}
 	
 	@Override

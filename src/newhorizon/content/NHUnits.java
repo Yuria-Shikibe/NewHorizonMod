@@ -95,6 +95,7 @@ public class NHUnits implements ContentList {
 				commandLimit = 6;
 				lowAltitude = true;
 				isCounted = true;
+				faceTarget = true;
 				this.health = 30000.0F;
 				this.speed = 1.4F;
 				this.accel = 0.04F;

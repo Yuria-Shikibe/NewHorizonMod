@@ -6,10 +6,13 @@ import arc.graphics.g2d.TextureRegion;
 import arc.input.KeyCode;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
+import arc.scene.ui.ImageButton;
 import arc.scene.ui.layout.Table;
+import arc.util.Log;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
+import mindustry.gen.Bullet;
 import mindustry.gen.Icon;
 import mindustry.gen.Sounds;
 import mindustry.gen.Tex;
@@ -18,6 +21,7 @@ import mindustry.ui.Styles;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHItems;
+import newhorizon.func.TableFuncs;
 
 import static newhorizon.func.TableFuncs.*;
 
@@ -88,20 +92,7 @@ public class UpgradeAmmoData extends UpgradeMultData{
 		new Dialog("") {{
 			keyDown(KeyCode.escape, this::hide);
 			keyDown(KeyCode.back, this::hide);
-			cont.pane(table -> {
-				Class<?> typeClass = selectAmmo.getClass();
-				Field[] fields = typeClass.getFields();
-				for(Field field : fields){
-					try{
-						//table.add(field.getGenericType().toString()).row();
-						if(field.getGenericType().toString().equals("boolean"))table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": ").append(getJudge(field.getBoolean(selectAmmo))).append("[]")).left().row();
-						if(field.getGenericType().toString().equals("float") && field.getFloat(selectAmmo) > 0)table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getFloat(selectAmmo)).append("[]")).left().row();
-						if(field.getGenericType().toString().equals("int") && field.getInt(selectAmmo) > 0)table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getInt(selectAmmo)).append("[]")).left().row();
-					}catch(IllegalAccessException err){
-						throw new IllegalArgumentException(err);
-					}
-				}
-			}).size(460).row();
+			cont.pane(table -> buildBulletTypeInfo(table, selectAmmo, true)).size(460).row();
 			cont.button("@back", Icon.left, this::hide).size(120, 50).pad(4);
 		}}.show();
 	}

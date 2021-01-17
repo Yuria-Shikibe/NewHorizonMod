@@ -18,6 +18,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.func.DrawFuncs;
 import newhorizon.func.TableTexDebugDialog;
 
 import static mindustry.Vars.*;
@@ -68,7 +69,7 @@ public class Debuger extends Block{
 
 		@Override
 		public void buildConfiguration(Table table){
-			table.button(Icon.rotate, Styles.cleari, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(60f);
+			table.button(Icon.refresh, Styles.cleari, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(60f);
 			
 			table.button(Icon.add, Styles.cleari, () -> {
 				BaseDialog dialog = new BaseDialog("SetUnitType");
@@ -97,7 +98,7 @@ public class Debuger extends Block{
 					}).growX().height(LEN * 4f).row();
 					part.table(Tex.button, t -> {
 						t.pane(con -> {
-							con.button(Icon.rotate, Styles.clearTransi, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(LEN * 2, LEN);
+							con.button(Icon.refresh, Styles.clearTransi, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? team() : state.rules.waveTeam).size(LEN * 2, LEN);
 							con.button("Spawn1", Styles.cleart, () -> spawnNum = 1).size(LEN * 2, LEN);
 							con.button("Spawn10", Styles.cleart, () -> spawnNum = 10).size(LEN * 2, LEN);
 							con.button("Spawn20", Styles.cleart, () -> spawnNum = 20).size(LEN * 2, LEN);
@@ -109,16 +110,12 @@ public class Debuger extends Block{
 								for (int i = 0; i < 15; i++)Time.run(i * Time.delta * 3, Groups.fire::clear);
 							}).size(LEN * 2, LEN);
 						}).grow().row();
-						t.pane(con -> {
-							con.button("Add Items", Styles.cleart, () -> content.items().forEach(item -> team.core().items.add(item, 1000000))).size(120f, 50f);
-						}).grow().row();
-						t.pane(con -> {
-							con.button("Debug", Styles.cleart, () -> {
-								TableTexDebugDialog d = new TableTexDebugDialog("debug");
-								d.init();
-								d.show();
-							}).size(120f, 50f);
-						}).grow().row();
+						t.pane(con -> con.button("Add Items", Styles.cleart, () -> content.items().forEach(item -> team.core().items.add(item, 1000000))).size(120f, 50f)).grow().row();
+						t.pane(con -> con.button("Debug", Styles.cleart, () -> {
+							TableTexDebugDialog d = new TableTexDebugDialog("debug");
+							d.init();
+							d.show();
+						}).size(120f, 50f)).grow().row();
 					}).fillX().growY().row();
 				}).fill();
 				dialog.show();
@@ -147,6 +144,10 @@ public class Debuger extends Block{
 			Draw.rect(teamRegionTop, x, y);
 			Lines.stroke(2f);
 			Lines.square(x, y, block.size / 2f * tilesize + 1f + Mathf.absin(Time.time, 9f, 3f));
+			
+			DrawFuncs.drawSine(x, y , x + 1000, y, 3, 20, 15, 5 + Time.time / 30, 5);
+			DrawFuncs.drawSineLerp(x, y , x /- 1000, y, 1, 20, 15, 5 + Time.time / 30, 5);
+			
 			Draw.reset();
 		}
 
