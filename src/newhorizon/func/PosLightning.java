@@ -22,6 +22,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Units;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
+import newhorizon.content.NHFx;
 import org.jetbrains.annotations.NotNull;
 
 public class PosLightning { //Provide some workable methods to create position to position lightning bolt. Powered by Yuria.
@@ -167,25 +168,7 @@ public class PosLightning { //Provide some workable methods to create position t
 
 	//create lightning effect.
 	private static void createBoltEffect(Color color, float width, Seq<Vec2> vecs) {
-		new Effect(lifetime, vecs.first().dst(vecs.peek()) * 2, e -> {
-			if(!(e.data instanceof Seq)) return;
-			Seq<Vec2> lines = e.data();
-
-			Lines.stroke(e.rotation * e.fout(), e.color);
-			
-			Fill.circle(vecs.first().x, vecs.first().y, Lines.getStroke() * 1.1f);
-
-			for(int i = 0; i < lines.size - 1; i++){
-				Vec2 cur = lines.get(i);
-				Vec2 next = lines.get(i + 1);
-
-				Lines.line(cur.x, cur.y, next.x, next.y, false);
-			}
-
-			for(Vec2 p : lines){
-				Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
-			}
-		}).at(vecs.first().x, vecs.first().y, width, color, vecs);
+		NHFx.posLightning.at(vecs.first().x, vecs.first().y, width, color, vecs);
 	}
 	
 	private static Seq<Vec2> computeVectors(Seq<Float> randomVec, Position from, Position to){

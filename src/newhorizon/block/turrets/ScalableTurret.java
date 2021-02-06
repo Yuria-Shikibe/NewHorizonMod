@@ -21,19 +21,18 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import newhorizon.content.NHBullets;
+import newhorizon.content.NHUpgradeDatas;
 import newhorizon.func.TableFuncs;
 import newhorizon.interfaces.Scalablec;
 
-import newhorizon.data.*;
+import static newhorizon.func.TableFuncs.*;
+import newhorizon.feature.*;
 import newhorizon.interfaces.Upgraderc;
-import newhorizon.func.TextureFilterValue;
-
-import static newhorizon.data.UpgradeBaseData.*;
 import static mindustry.Vars.*;
+import newhorizon.feature.UpgradeData.DataEntity;
 
 public class ScalableTurret extends Turret{
-	public UpgradeBaseData defaultBaseData = new UpgradeBaseData();
-	public UpgradeAmmoData defaultAmmoData = new UpgradeAmmoData();
+	public UpgradeData defaultData = NHUpgradeDatas.none;
 	
 	public float powerUse;
 	
@@ -52,15 +51,13 @@ public class ScalableTurret extends Turret{
 	public void load(){
 		super.load();
 		baseRegion = Core.atlas.find("new-horizon-block-" + size);
-		defaultAmmoData.load();
-		defaultBaseData.load();
 	}
 	
 	@Override
     public void setStats(){
         super.setStats();
-		stats.add(Stat.damage, defaultAmmoData.selectAmmo.damage, StatUnit.none);
-		stats.add(Stat.input, new TextureFilterValue(defaultBaseData.iconLevel, "[accent]Caution[]: Need be linked."));
+		stats.add(Stat.damage, defaultData.selectAmmo.damage, StatUnit.none);
+		//stats.add(Stat.input, new TextureFilterValue(defaultBaseData.iconLevel, "[accent]Caution[]: Need be linked."));
     }
 
     @Override
@@ -70,9 +67,7 @@ public class ScalableTurret extends Turret{
 	}
 	
 	public class ScalableTurretBuild extends TurretBuild implements Scalablec{
-		public UpgradeBaseData baseData = defaultBaseData;
-		public UpgradeAmmoData ammoData = defaultAmmoData;
-
+		protected DataEntity data = NHUpgradeDatas.none.newSubEntity();
 		protected int fromPos = -1;
 
 		public boolean shooting;
@@ -81,27 +76,27 @@ public class ScalableTurret extends Turret{
         float bulletLife;
 		
 		@Override public boolean shouldTurn(){return !shooting;}
-    
-    	@Override
+		
+		@Override
         public void shoot(BulletType ammo){
         	if(ammo.compareTo(NHBullets.none) == 0)return;
             useAmmo();
 
             tr.trns(rotation, size * tilesize / 2f);
-			ammoData.chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
-			ammoData.chargeEffect.at(x + tr.x, y + tr.y, rotation);
-            
-			if(ammoData.chargeTime > 0)shooting = true;
+		    getData().type().chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
+		    getData().type().chargeEffect.at(x + tr.x, y + tr.y, rotation);
+   
+			if(getData().type().chargeTime > 0)shooting = true;
 
-            Time.run(ammoData.chargeTime, () -> {
-            	if(ammoData.burstSpacing > 0.0001f){
-					for(int i = 0; i < ammoData.salvos; i++){
-						Time.run(ammoData.burstSpacing * i, () -> {
+            Time.run(getData().type().chargeTime, () -> {
+            	if(getData().type().burstSpacing > 0.0001f){
+					for(int i = 0; i < getData().type().salvos; i++){
+						Time.run(getData().type().burstSpacing * i, () -> {
 							if(!isValid())return;
-							tr.trns(rotation, (size * tilesize / 2f) - recoil, Mathf.range(ammoData.randX) );
+							tr.trns(rotation, (size * tilesize / 2f) - recoil, Mathf.range(getData().type().randX) );
 							recoil = recoilAmount;
 							heat = 2f;
-							bullet(ammo, rotation + Mathf.range(ammoData.inaccuracy));
+							bullet(ammo, rotation + Mathf.range(getData().type().inaccuracy));
 							effects();
 						});
 					}
@@ -118,7 +113,7 @@ public class ScalableTurret extends Turret{
 
 			fshootEffect.at(x + tr.x, y + tr.y, rotation);
 			fsmokeEffect.at(x + tr.x, y + tr.y, rotation);
-			getAmmoData().shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
+			getData().type().shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
 
 			if(shootShake > 0){
                 Effect.shake(shootShake, shootShake, this);
@@ -130,7 +125,7 @@ public class ScalableTurret extends Turret{
         
         @Override
         public BulletType peekAmmo(){
-        	return getAmmoData() == null ? NHBullets.none : getAmmoData().selectAmmo == null ? NHBullets.none : getAmmoData().selectAmmo;
+        	return getData() == null ? NHBullets.none : getData().type().selectAmmo == null ? NHBullets.none : getData().type().selectAmmo;
 		}
 		
 		@Override
@@ -152,7 +147,7 @@ public class ScalableTurret extends Turret{
 			Draw.reset();
 
 			drawConnected();
-			if(baseData != null && upgraderc() != null)upgraderc().drawLink();
+			if(upgraderc() != null)upgraderc().drawLink();
 			drawMode();
 		}
 		
@@ -188,8 +183,8 @@ public class ScalableTurret extends Turret{
 		}
 		
 		protected float reloadTime(){
-			float realReload = ammoData.reloadTime <= 0 ? reloadTime : ammoData.reloadTime;
-			return realReload * (1 - Mathf.clamp(baseData.speedMPL * baseData.level, 0, maxReloadReduce) );
+			float realReload = getData().type().reloadTime <= 0 ? reloadTime : getData().type().reloadTime;
+			return realReload * (1 + data.speedUP());
 		}
 		
 		@Override
@@ -228,69 +223,56 @@ public class ScalableTurret extends Turret{
 		protected void bullet(BulletType type, float angle){
 			if(isContiunous()){
 				bullet = type.create(tile.build, team, x + tr.x, y + tr.y, angle);
-				bulletLife = ammoData.continuousTime;
+				bulletLife = getData().type().continuousTime;
 			}else{
 				float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
-				type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(ammoData.velocityInaccuracy), lifeScl);
+				type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(getData().type().velocityInaccuracy), lifeScl);
 			}
         }
 		
-		@Override
-		public void resetUpgrade(){
+		@Override public void resetUpgrade(){
 			fromPos = -1;
-			baseData = defaultBaseData;
-			ammoData = defaultAmmoData;
+			setData(NHUpgradeDatas.none.newSubEntity());
 		}
-
-
-
 		@Override public Color getColor(){return baseColor;}
-
-		@Override public boolean isContiunous(){return ammoData.continuousTime > 0;}
-		@Override public float handleDamage(float amount) {return amount * (1 - Mathf.clamp(baseData.defenceMPL * baseData.level, 0, maxDamageReduce));}
-		
-		@Override public boolean isConnected(){return baseData != null && upgraderc() != null;}
+		@Override public boolean isContiunous(){return getData().type().continuousTime > 0;}
+		@Override public float handleDamage(float amount) {return amount * Mathf.clamp(1 - data.defenceUP());}
+		@Override public boolean isConnected(){return upgraderc() != null;}
 		@Override public Upgraderc upgraderc(){
 			if(world.build(fromPos) == null){
 				fromPos = -1;
 				return null;
 			}
 			if(world.build(fromPos) != null && world.build(fromPos) instanceof Upgraderc)return (Upgraderc)world.build(fromPos);
-			return baseData.from;
+			return null;
 		}
-		
-	    @Override public UpgradeBaseData getBaseData(){return baseData;}
-		@Override public UpgradeAmmoData getAmmoData(){return ammoData;}
-    	
-		@Override public void setBaseData(UpgradeBaseData data){
-			this.baseData = data;
-			this.fromPos = data.from.pos();
+	    @Override public DataEntity getData(){return data;}
+		@Override public void setData(DataEntity data){
+			this.data = data;
 		}
-		@Override public void setAmmoData(UpgradeAmmoData data){this.ammoData = data;}
-
-		@Override
-		public void write(Writes write) {
+		@Override public void setLinkPos(int i){
+			this.fromPos = i;
+		}
+		@Override public void write(Writes write) {
 			write.i(this.fromPos);
 		}
-
-		@Override
-		public void read(Reads read, byte revision) {
+		@Override public void read(Reads read, byte revision) {
 			this.fromPos = read.i();
 		}
 
 		@Override
 		public void buildConfiguration(Table t) {
 			t.table(Tex.button, table -> {
-				table.table(cont -> cont.image(ammoData.icon).left()).left().growX();
+				table.table(cont -> cont.image(getData().type().icon).left()).left().growX();
 				table.table(cont -> {
-					cont.add("[lightgray]Level: [accent]" + baseData.level + "[]", Styles.techLabel).left().pad(TableFuncs.OFFSET).row();
+					cont.add("[lightgray]Level: [accent]" + getData().level + "[]", Styles.techLabel).left().pad(TableFuncs.OFFSET).row();
 					cont.image().fillX().pad(TableFuncs.OFFSET / 2).height(TableFuncs.OFFSET / 3).color(Color.lightGray).left().row();
-					cont.add("[lightgray]ReloadReduce: [accent]" + getPercent(baseData.speedMPL * baseData.level, 0f, maxReloadReduce) + "%[]").left().row();
-					cont.add("[lightgray]DefenceUP: [accent]" + getPercent(baseData.defenceMPL * baseData.level, 0f, maxDamageReduce) + "%[]").left().row();
+					cont.add("[lightgray]ReloadSpeedUp: [accent]" + getPercent(data.speedUP())).left().row();
+					cont.add("[lightgray]DefenceUP: [accent]" + getPercent(data.defenceUP())).left().row();
 				}).growX().right().padRight(TableFuncs.OFFSET / 3);
 			}).grow().padLeft(TableFuncs.OFFSET).padRight(TableFuncs.OFFSET).row();
 
-			if(baseData != null && upgraderc() != null)upgraderc().buildSwitchAmmoTable(t, true);
+			if(getData() != null && upgraderc() != null)upgraderc().buildSwitchAmmoTable(t, true);
 
 		}
 	}

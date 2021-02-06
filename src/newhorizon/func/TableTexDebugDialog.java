@@ -2,17 +2,22 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.scene.style.Drawable;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.TextButton;
-import arc.util.Log;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
+import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import newhorizon.content.NHBlocks;
+import newhorizon.content.NHLoader;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static mindustry.Vars.content;
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
 
@@ -171,6 +176,55 @@ public class TableTexDebugDialog extends BaseDialog{
 						}
 					}
 				}).grow();
+			}};
+			buttonImage.addCloseListener();
+			buttonImage.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("Images", () -> {
+			buttonImage = new BaseDialog("Images"){{
+				cont.table(table -> {
+					AtomicInteger index = new AtomicInteger();
+					NHLoader.outlineTex.each( (arg, tex) -> {
+						if(tex != null && tex.found()){
+							if(index.get() % 8 == 0)table.row();
+							table.table(t -> {
+								t.image(tex).size(LEN * 3).row();
+								t.add(arg).size(LEN * 3, LEN / 2);
+							});
+							index.getAndIncrement();
+						}
+					});
+				}).fill();
+			}};
+			buttonImage.addCloseListener();
+			buttonImage.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.row();
+		
+		cont.button("Units", () -> {
+			buttonImage = new BaseDialog("Units"){{
+				cont.table(table -> {
+					AtomicInteger index = new AtomicInteger();
+					
+					content.units().forEach( (unit) -> {
+						if(!unit.isHidden()){
+							if(index.get() % 8 == 0) table.row();
+							table.table(t -> {
+								t.button(new TextureRegionDrawable(unit.icon(Cicon.xlarge)), LEN * 3,() -> {
+									BaseDialog d = new BaseDialog("info"){{
+										cont.image(unit.shadowRegion);
+									}};
+									d.addCloseListener();
+									d.show();
+								}).grow().row();
+								t.add(unit.localizedName);
+							});
+							index.getAndIncrement();
+						}
+					});
+				}).fill();
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();

@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -29,18 +30,18 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
-import newhorizon.content.NHColor;
-import newhorizon.data.*;
+import newhorizon.feature.*;
 import newhorizon.content.NHFx;
 import newhorizon.func.TableFuncs;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
 import newhorizon.func.TextureFilterValue;
+import newhorizon.feature.UpgradeData.DataEntity;
 
 import static mindustry.Vars.*;
 
-public class UpgraderBlock extends Block {
-	public static final int DFTID = -2; 
+public class UpgradeBlock extends Block {
+	public static final int defaultID = -1;
 	public static final Seq<UpgraderBlockBuild> upgradecGroup = new Seq<>(UpgraderBlockBuild.class);
 	public static final int buttonPerLine = 8;
 	
@@ -52,20 +53,18 @@ public class UpgraderBlock extends Block {
 	public Color baseColor = Pal.accent;
 	public Effect upgradeEffect = NHFx.upgrading;
 	public float range = 400f;
-
-	public UpgradeBaseData initUpgradeBaseData = new UpgradeBaseData();
-	public Seq<UpgradeAmmoData> initUpgradeAmmoDatas = new Seq<>();
-	protected void addUpgrades(UpgradeAmmoData... datas) {
-		int index = 0;
-
-		for (UpgradeAmmoData data : datas) {
-			data.id = index;
-			initUpgradeAmmoDatas.add(data);
-			index++;
+	
+	public final Seq<UpgradeData> upgradeDatas = new Seq<>();
+	protected void addUpgrades(UpgradeData... inputs) {
+		//upgradeDatas.addAll(inputs);
+		for(UpgradeData data : inputs){
+			upgradeDatas.add(data);
+			Log.info(data.toString());
 		}
+		Log.info("All added");
 	}
 
-	public UpgraderBlock(String name) {
+	public UpgradeBlock(String name) {
 		super(name);
 		update = true;
 		buildCostMultiplier = 2;
@@ -77,7 +76,8 @@ public class UpgraderBlock extends Block {
 	@Override
 	public void init(){
 		super.init();
-		if(linkTarget == null) throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
+		if(linkTarget == null)throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
+		if(upgradeDatas.isEmpty() || !upgradeDatas.first().isLeveled)throw new IllegalArgumentException("The boolean parma [accent]@isLeveled of the first added data must be [ammo]@true");
 	}
 	
 	@Override
@@ -94,13 +94,6 @@ public class UpgraderBlock extends Block {
 	@Override
 	public void setBars() {
 		super.setBars();
-		bars.add("level",
-			(UpgraderBlockBuild entity) -> new Bar(
-				() -> "Level: " + entity.baseData.level,
-				() -> NHColor.lightSky,
-				() -> 1
-			)
-		);
 
 		bars.add("upgradeProgress",
 			(UpgraderBlockBuild entity) -> new Bar(
@@ -114,16 +107,13 @@ public class UpgraderBlock extends Block {
 	@Override
 	public void load() {
 		super.load();
-		for (UpgradeAmmoData data : initUpgradeAmmoDatas)data.load();
-		initUpgradeBaseData.load();
 	}
 	
 	public class UpgraderBlockBuild extends Building implements Ranged, Upgraderc{
-		public UpgradeBaseData baseData = (UpgradeBaseData)initUpgradeBaseData.clone();
-		public Seq<UpgradeAmmoData> ammoDatas = new Seq<>();
+		public Seq<DataEntity> datas = new Seq<>();
 
 		public int link = -1;
-		public int upgradingID = DFTID;
+		public int upgradingID = defaultID;
 		public int lastestSelectID = -1;
 		public float remainTime;
 
@@ -133,46 +123,34 @@ public class UpgraderBlock extends Block {
 			return core != null && core.items != null && !core.items.empty();
 		}
 		
-		protected void consumeItems(UpgradeData data){
+		@Override
+		public void consumeItems(DataEntity data){
 			if(state.rules.infiniteResources)return;
 			CoreBlock.CoreBuild core = core();
 			if(coreValid(core))core.items.remove(data.requirements());
 		}
 		
 		@Override
-		public boolean canUpgrade(UpgradeData data) {
-			if(data instanceof UpgradeLevelData){
-				UpgradeLevelData upgradeData = (UpgradeLevelData)data;
-				if(upgradeData.level == maxLevel)return false;
-			}
-			
-			if(data instanceof UpgradeMultData){
-				UpgradeMultData upgradeData = (UpgradeMultData)data;
-				if(upgradeData.isUnlocked)return false;
-			}
+		public boolean canUpgrade(DataEntity data) {
+			if(data.level == maxLevel || (data.available() && !data.type().isLeveled))return false;
 			
 			if(state.rules.infiniteResources)return true;
 			
 			CoreBlock.CoreBuild core = core();
 			return 
 				coreValid(core) && (
-					baseData.level >= data.unlockLevel && !isUpgrading() && core.items.has(data.requirements())
-				);
+					data.isMaxLevel() && !isUpgrading() && core.items.has(data.requirements())
+				) && data.type().unlockLevel <= datas.first().level;
 		}
 
 		public float costTime(){
-			return 
-				upgradingID == DFTID ? 0 : 
-				upgradingID == -1    ? baseData.costTime() :
-				upgradingID >= 0     ? ammoDatas.get(upgradingID).costTime() :
-				0;
+			return (upgradingID >= datas.size || upgradingID < 0) ? 0 : datas.get(upgradingID).costTime();
 		}
 		
 		@Override//Data Upgrade
-		public void upgradeData(UpgradeData data){
+		public void upgradeData(DataEntity data){
 			if(!canUpgrade(data))return;
 			consumeItems(data);
-			upgradingID = data.id;
 			remainTime = costTime();
 		}
 		
@@ -186,38 +164,29 @@ public class UpgraderBlock extends Block {
 		
 		@Override
 		public void completeUpgrade() {
+			if(upgradingID < 0 || upgradingID >= datas.size)return;
 			upgradeSound.update(x, y, false);
 			upgradeSound.stop();
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
 			
-			if (upgradingID == -1) {
-				baseData.plusLevel();
-			} else if (!ammoDatas.isEmpty()) {
-				lastestSelectID = upgradingID;
-				ammoDatas.get(upgradingID).isUnlocked = true;
-				switchAmmo(ammoDatas.get(upgradingID));
-			}
+			datas.get(upgradingID).upgrade();
+			switchAmmo(datas.get(upgradingID));
 			
 			updateTarget();
-			upgradingID = DFTID;
+			upgradingID = defaultID;
 		}
 		
 		//UI
 		protected void buildUpgradeDataTable(Table t) {
-			t.pane(table -> {
-				if(baseData.level < maxLevel)baseData.buildTable(table);
-				else baseData.buildTableComplete(table);
-
-				ammoDatas.each(ammo -> !ammo.isUnlocked, ammo -> ammo.buildTable(table));
-			}).fillX().growY().row();
+			t.pane(table -> datas.each(data -> !data.isUnlocked || (data.type().isLeveled && !data.isMaxLevel()), data -> data.buildTable(table, this))).fillX().growY().row();
 		}
 
-		public void switchAmmo(UpgradeAmmoData data){
+		public void switchAmmo(DataEntity data){
 			Sounds.click.at(this);
-			ammoDatas.each(ammo -> ammo.selected = false);
+			datas.each(ammo -> ammo.selected = false);
 			data.selected = true;
-			lastestSelectID = data.id;
+			lastestSelectID = datas.indexOf(data);
 			updateTarget();
 		}
 		
@@ -231,12 +200,12 @@ public class UpgraderBlock extends Block {
 				
 				table.pane(cont -> {
 					int index = 0;
-					for (UpgradeAmmoData ammoData : ammoDatas) {
+					for (DataEntity data : datas) {
 						if(index % buttonPerLine == 0)cont.row().left();
-						cont.button(new TextureRegionDrawable(ammoData.icon), Styles.clearPartiali, TableFuncs.LEN, () ->
-							switchAmmo(ammoData)
+						cont.button(new TextureRegionDrawable(data.type().icon), Styles.clearPartiali, TableFuncs.LEN, () ->
+							switchAmmo(data)
 						).size(TableFuncs.LEN).disabled(b ->
-							!ammoData.isUnlocked || ammoData.selected
+							!data.isUnlocked || data.selected
 						).left();
 						index ++;
 					}
@@ -285,17 +254,14 @@ public class UpgraderBlock extends Block {
 				t.table(Tex.button, table -> {
 					table.row().left();
 					table.button(
-							Icon.infoCircle, Styles.clearPartiali, () -> ammoDatas.get(lastestSelectID).showInfo(false)
-					).size(TableFuncs.LEN).disabled(b -> lastestSelectID < 0 || ammoDatas.isEmpty()).left();
+							Icon.infoCircle, Styles.clearPartiali, () -> datas.get(lastestSelectID).showInfo(false, this)
+					).size(TableFuncs.LEN).disabled(b -> lastestSelectID < 0 || datas.isEmpty()).left();
 
 					table.button(Icon.hostSmall, Styles.clearTransi, () ->
 							new BaseDialog("All Info") {{
 								this.addCloseListener();
 								setFillParent(true);
-								cont.pane(infos -> {
-									baseData.buildUpgradeInfoAll(infos);
-									for (UpgradeAmmoData ammoData : ammoDatas)ammoData.buildUpgradeInfoAll(infos);
-								}).fillX().height(TableFuncs.LEN * 5).row();
+								cont.pane(infos -> datas.each(data -> data.buildTable(infos, UpgraderBlockBuild.this))).fillX().height(TableFuncs.LEN * 5).row();
 								cont.button("@back", Icon.left, this::hide).fillX().height(TableFuncs.LEN).pad(TableFuncs.OFFSET / 3);
 							}}.show()
 					).size(TableFuncs.LEN).left();
@@ -315,7 +281,7 @@ public class UpgraderBlock extends Block {
 		
 		@Override
 		public void updateTile() {
-			if (upgradingID != DFTID){
+			if (upgradingID != defaultID){
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance))for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2f * tilesize), y - Mathf.random(block.size / 2f * tilesize), block.size / 2f, baseColor);
 			}
@@ -362,10 +328,9 @@ public class UpgraderBlock extends Block {
 			write.i(this.link);
 			write.i(this.lastestSelectID);
 			write.i(this.upgradingID);
-
-			baseData.write(write);
+			
 			//for (UpgradeAmmoData ammoData : ammoDatas)ammoData.write(write);
-			ammoDatas.each(ammo -> ammo.write(write));
+			datas.each(data -> data.write(write));
 		}
 
 		@Override
@@ -377,26 +342,20 @@ public class UpgraderBlock extends Block {
 			this.upgradingID = read.i();
 			this.lastestSelectID = read.i();
 
-			baseData.read(read, revision);
-
-			ammoDatas.each(ammo -> ammo.read(read, revision));
+			datas.each(data -> data.read(read, revision));
 			//if(!ammoDatas.isEmpty())for(UpgradeAmmoData ammoData : ammoDatas)ammoData.read(read, revision);
-		}
-
-		protected void setData(){
-			baseData.from = this;
-			for (UpgradeAmmoData data : initUpgradeAmmoDatas){
-				data.from = this;
-				ammoDatas.add( (UpgradeAmmoData)(data.clone()) );
-			}
 		}
 
 		@Override
 		public void updateTarget() {
 			if (linkValid()){
-				target().setBaseData(baseData);
-				if(lastestSelectID >= 0 && ammoDatas.get(lastestSelectID).isUnlocked)target().setAmmoData(ammoDatas.get(lastestSelectID));
+				if(lastestSelectID >= 0 && datas.get(lastestSelectID).isUnlocked)target().setData(datas.get(lastestSelectID));
+				target().setLinkPos(pos());
 			}
+		}
+		
+		public void setData(){
+			upgradeDatas.forEach(data -> datas.add(data.newSubEntity()));
 		}
 		
 		@Override//Target confirm

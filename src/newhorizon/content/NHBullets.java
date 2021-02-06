@@ -12,10 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
-import newhorizon.bullets.DelayLaserType;
-import newhorizon.bullets.LightningLinkerBulletType;
-import newhorizon.bullets.NHTrailBulletType;
-import newhorizon.bullets.ShieldBreaker;
+import newhorizon.bullets.*;
 import newhorizon.func.PosLightning;
 
 import static arc.graphics.g2d.Draw.*;
@@ -105,7 +102,7 @@ public class NHBullets {
 				trailChance = 0.6f;
 				trailEffect = NHFx.skyTrail;
 				hitShake = 2f;
-				hitSound = Sounds.spark;
+				hitSound = Sounds.explosion;
 			}
 		},
 
@@ -347,7 +344,7 @@ public class NHBullets {
 				
 		},
 
-		curveBomb = new ArtilleryBulletType(4f, 0f) {
+		curveBomb = new BasicBulletType(4f, 250f) {
 			@Override
 			public void init(Bullet b) {
 				if (b == null)return;
@@ -390,10 +387,16 @@ public class NHBullets {
 				super.despawned(b);
 				PosLightning.createRange(b, 200, 4, NHColor.thurmixRed, Mathf.chanceDelta(0.3f), PosLightning.WIDTH, 3, p -> {
 					NHFx.lightningHitLarge(NHColor.thurmixRed).at(p);
+					Damage.damage(b.team, p.getX(), p.getY(), this.splashDamageRadius / 6, this.splashDamage * b.damageMultiplier() / 6, this.collidesAir, this.collidesGround);
 				});
 			}
 
 			{
+				collidesAir = false;
+				scaleVelocity = true;
+				splashDamage = 80f;
+				splashDamageRadius = 40f;
+				
 				hitShake = 8;
 				hitSound = Sounds.explosionbig;
 				drawSize = 400;
@@ -407,23 +410,123 @@ public class NHBullets {
 				});
 
 				despawnEffect = new Effect(32f, e -> {
+					color(Color.gray);
+					Angles.randLenVectors(e.id + 1, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
+					
 					color(lightColor, frontColor, e.fout());
 					stroke(e.fout() * 2);
-					circle(e.x, e.y, e.fin() * 40);
-					Fill.circle(e.x, e.y, e.fout() * e.fout() * 10);
-					randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
+					circle(e.x, e.y, e.fin() * 50);
+					Fill.circle(e.x, e.y, e.fout() * e.fout() * 13);
+					randLenVectors(e.id, 4, 7 + 40 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
 				});
 
 				smokeEffect = new Effect(45f, e -> {
 					color(lightColor, frontColor, e.fout());
-					Drawf.tri(e.x, e.y, 4 * e.fout(), 28, e.rotation + 90);
-					Drawf.tri(e.x, e.y, 4 * e.fout(), 28, e.rotation + 270);
-					randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
+					randLenVectors(e.id, 10, 5 + 55 * e.fin(), e.rotation, 45, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
 				});
 			}
 
 		},
-
+		
+		strikeRocket = new TextureMissileType(9, 400, "rocket-atlas@@404049"){{
+			trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.darkEnrColor;
+			lightning = 2;
+			lightningCone = 360;
+			lightningLengthRand = lightningLength = 6;
+			homingPower = 0;
+			lifetime = 100f;
+			
+			this.weaveMag = 1.50F;
+			this.weaveScale = 4.0F;
+			
+			splashDamage = lightningDamage = damage * 0.7f;
+			splashDamageRadius = 40f;
+			
+			width = height = 1.2f;
+			
+			hitEffect = NHFx.darkErnExplosion;
+			
+			smokeEffect = new Effect(45f, e -> {
+				color(lightColor, Color.white, e.fout() * 0.7f);
+				randLenVectors(e.id, 8, 5 + 55 * e.fin(), e.rotation, 45, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
+			});
+			
+			shootEffect = NHFx.hugeSmoke;
+			
+			despawnEffect = new Effect(32f, e -> {
+				color(Color.gray);
+				Angles.randLenVectors(e.id + 1, 4, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
+				color(lightColor, Color.white, e.fin());
+				stroke(e.fout() * 2);
+				circle(e.x, e.y, e.fin() * 40);
+				Fill.circle(e.x, e.y, e.fout() * e.fout() * 13);
+				randLenVectors(e.id, 4, 7 + 30 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
+			});
+		}},
+		
+		annMissile = new TextureMissileType(6.6f, 300f, "ann-missile-atlas@@404049"){{
+			trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSky;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = lightningLength = 9;
+			splashDamageRadius = 60;
+			splashDamage = damage * 0.7f;
+			
+			width = height = 1.25f;
+			
+			trailParam = 1.4f;
+			trailChance = 0.35f;
+			lifetime = 100f;
+			
+			hitEffect = NHFx.lightningHitLarge(NHColor.lightSky);
+			
+			shootEffect = NHFx.hugeSmoke;
+			smokeEffect = new Effect(45f, e -> {
+				color(lightColor, Color.white, e.fout() * 0.7f);
+				randLenVectors(e.id, 8, 5 + 55 * e.fin(), e.rotation, 45, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
+			});
+			despawnEffect = new Effect(32f, e -> {
+				color(Color.gray);
+				Angles.randLenVectors(e.id + 1, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
+				color(lightColor, Color.white, e.fin());
+				stroke(e.fout() * 2);
+				Fill.circle(e.x, e.y, e.fout() * e.fout() * 13);
+				randLenVectors(e.id, 4, 7 + 40 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
+			});
+			
+		}},
+	
+		strikeMissile = new TextureMissileType(5, 200, "missile-atlas@@404049"){{
+			trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.thurmixRedLight;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = lightningLength = 9;
+			splashDamageRadius = 60;
+			splashDamage = lightningDamage = damage * 0.7f;
+			lifetime = 180f;
+			
+			collidesAir = false;
+			hitEffect = NHFx.thurmixHit;
+			width = height = 1.32f;
+			
+			smokeEffect = new Effect(45f, e -> {
+				color(lightColor, Color.white, e.fout() * 0.7f);
+				randLenVectors(e.id, 8, 5 + 55 * e.fin(), e.rotation, 45, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
+			});
+			
+			shootEffect = NHFx.hugeSmoke;
+			
+			despawnEffect = new Effect(32f, e -> {
+				color(Color.gray);
+				Angles.randLenVectors(e.id + 1, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
+				color(lightColor, Color.white, e.fin());
+				stroke(e.fout() * 2);
+				circle(e.x, e.y, e.fin() * 50);
+				Fill.circle(e.x, e.y, e.fout() * e.fout() * 13);
+				randLenVectors(e.id, 4, 7 + 40 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
+			});
+		}},
+	
 		boltGene = new LightningLinkerBulletType(2.75f, 650) {{
 			outColor = NHColor.darkEnrColor;
 			innerColor = NHColor.darkEnr;
@@ -487,7 +590,8 @@ public class NHBullets {
 			shootEffect = NHFx.darkEnergyShootBig;
 			smokeEffect = NHFx.darkEnergySmokeBig;
 		}};
-
+		
+		
 }
 
 

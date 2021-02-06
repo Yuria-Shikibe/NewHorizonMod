@@ -3,18 +3,20 @@ package newhorizon.content;
 import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
-import mindustry.type.UnitType;
 
 
 public class NHTechTree implements ContentList {
     @Override
     public void load(){
         //Blocks;
+    
+        new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
+        new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.ender, NHBlocks.ender.researchRequirements());
-        new TechNode(TechTree.get(NHBlocks.ender), NHBlocks.eoeUpgrader, NHBlocks.eoeUpgrader.researchRequirements());
+        new TechNode(TechTree.get(NHBlocks.ender), NHBlocks.nemesisUpgrader, NHBlocks.nemesisUpgrader.researchRequirements());
         new TechNode(TechTree.get(Blocks.interplanetaryAccelerator), NHBlocks.jumpGate, NHBlocks.jumpGate.researchRequirements());
         new TechNode(TechTree.get(Blocks.phaseWall), NHBlocks.chargeWall, NHBlocks.chargeWall.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.chargeWall), NHBlocks.chargeWallLarge, NHBlocks.chargeWallLarge.researchRequirements());
@@ -47,7 +49,7 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(UnitTypes.zenith), NHUnits.striker, NHUnits.striker.researchRequirements());
         new TechNode(TechTree.get(UnitTypes.scepter), NHUnits.tarlidor, NHUnits.tarlidor.researchRequirements());
         new TechNode(TechTree.get(UnitTypes.eclipse), NHUnits.hurricane, NHUnits.hurricane.researchRequirements());
-
+        new TechNode(TechTree.get(NHUnits.tarlidor), NHUnits.annihilation, NHUnits.annihilation.researchRequirements());
 
         //Items / liquids;
         new TechNode(TechTree.get(Items.titanium), NHItems.metalOxhydrigen, NHItems.metalOxhydrigen.researchRequirements());

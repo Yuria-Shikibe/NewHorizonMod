@@ -1,6 +1,5 @@
 package newhorizon.content;
 
-import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -20,31 +19,32 @@ import mindustry.type.LiquidStack;
 import mindustry.type.StatusEffect;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ForceProjector;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.production.Cultivator;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericSmelter;
 import mindustry.world.blocks.storage.StorageBlock;
-
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.meta.Attribute;
-import newhorizon.NewHorizon;
+import mindustry.world.meta.BuildVisibility;
 import newhorizon.block.drawer.DrawFactories;
 import newhorizon.block.drawer.DrawPrinter;
 import newhorizon.block.drawer.NHDrawAnimation;
-import newhorizon.block.turrets.*;
 import newhorizon.block.special.*;
+import newhorizon.block.turrets.ScalableTurret;
+import newhorizon.block.turrets.SpeedupTurret;
+import newhorizon.block.turrets.StaticShootTurret;
 
-import static mindustry.type.ItemStack.*;
+import static mindustry.type.ItemStack.with;
 
 public class NHBlocks implements ContentList {
 
 	//Load Mod Factories
 
 	public static Block
+		finalCore, delivery,
 		largeShieldGenerator, divlusion,
-		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate,
+		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
 		irdryonVault, blaster, unitSpawner, ender, thurmix, argmot,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zateFactoryLarge, zateFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
@@ -55,6 +55,21 @@ public class NHBlocks implements ContentList {
 
 	@Override
 	public void load() {
+		delivery = new Delivery("mass-deliver"){{
+			size = 3;
+			shake = 3f;
+			minDistribute = 60;
+			itemCapacity = 300;
+			consumes.power(5f);
+			requirements(Category.distribution, with(NHItems.seniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 120));
+			
+		}};
+		finalCore = new DefenceCoreBlock("final-core"){{
+			size = 8;
+			health = 100000;
+			requirements(Category.units, BuildVisibility.hidden, with());
+			//requirements(Category.effect, with(NHItems.juniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 20));
+		}};
 		divlusion = new PowerTurret("divlusion"){{
 			shots = 2;
 			burstSpacing = 8f;
@@ -563,20 +578,14 @@ public class NHBlocks implements ContentList {
 			}
 		};
 
-		thurmix = new ItemTurret("thurmix") {
-
-			@Override
-			public void load(){
-				super.load();
-				baseRegion = Core.atlas.find(NewHorizon.NHNAME + "block-" + size);
-			}
-
+		thurmix = new StaticShootTurret("thurmix") {
 			{
 				requirements(Category.turret, with(Items.copper, 105, Items.graphite, 95, Items.titanium, 60));
 				ammo(
-						NHItems.fusionEnergy, NHBullets.curveBomb
+						NHItems.fusionEnergy, NHBullets.curveBomb, NHItems.thermoCorePositive, NHBullets.strikeMissile
 				);
-
+				
+				targetAir = false;
 				size = 5;
 				range = 360;
 				reloadTime = 75f;
@@ -593,20 +602,21 @@ public class NHBlocks implements ContentList {
 			}
 		};
 
-		eoeUpgrader = new UpgraderBlock("end-of-era-upgrader"){{
+		nemesisUpgrader = new UpgradeBlock("end-of-era-upgrader"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 3;
 			linkTarget = ender;
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 10;
-			initUpgradeBaseData = NHUpgradeDatas.basicData;
 			addUpgrades(
+				NHUpgradeDatas.basicData,
 				NHUpgradeDatas.darkEnrlaser,
 				NHUpgradeDatas.arc9000,
 				NHUpgradeDatas.curveBomb,
 				NHUpgradeDatas.airRaid,
 				NHUpgradeDatas.decayLaser,
+				NHUpgradeDatas.strikeRocket,
 				NHUpgradeDatas.bombStorm
 			);
 		}};

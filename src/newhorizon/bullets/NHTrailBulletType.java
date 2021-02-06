@@ -7,7 +7,7 @@ import mindustry.gen.Bullet;
 import newhorizon.effects.*;
 
 public class NHTrailBulletType extends BasicBulletType {
-	public int trailLength = 12;
+	public int trailLength = -1;
 	public float trailWidth = -1f;
 	public float trailDrawsize = 200f;
 
@@ -22,7 +22,8 @@ public class NHTrailBulletType extends BasicBulletType {
 		drawSize = Math.max(drawSize, 2.5f * trailLength * speed);
 		trailDrawsize = Math.max(trailDrawsize, 2.5f * trailLength * speed);
 		if(trailWidth < 0)trailWidth = width / 6f;
-	}
+	    if(trailLength < 0)trailLength = 12;
+    }
     
 	public NHTrailBulletType(float speed, float damage){
 		this(speed, damage, "bullet");

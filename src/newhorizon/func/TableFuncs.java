@@ -1,9 +1,16 @@
 package newhorizon.func;
 
+import arc.Core;
+import arc.graphics.Color;
+import arc.graphics.Pixmap;
+import arc.graphics.g2d.PixmapRegion;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Structs;
 import mindustry.entities.bullet.BulletType;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,10 +26,10 @@ public class TableFuncs {
     private static final DecimalFormat df = new DecimalFormat("######0.00");
 
     public static String format(float value){return df.format(value);}
-
     public static String getJudge(boolean value){return value ? "[green]Yes[]" : "[red]No[]";}
+    public static String getPercent(float value){return Mathf.floor(value * 100) + "%";}
     
-    public static void buildBulletTypeInfo(Table t, BulletType type, boolean cont){
+    public static void buildBulletTypeInfo(Table t, BulletType type){
         t.table(table -> {
             if(type == null)return;
             Class<?> typeClass = type.getClass();
@@ -35,14 +42,14 @@ public class TableFuncs {
                     if(field.getGenericType().toString().equals("float") && field.getFloat(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getFloat(type)).append("[]")).left().row();
                     if(field.getGenericType().toString().equals("int") && field.getInt(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getInt(type)).append("[]")).left().row();
     
-                    if(field.getType().getSimpleName().equals("BulletType") && cont){
+                    if(field.getType().getSimpleName().equals("BulletType")){
                         BulletType inner = (BulletType)field.get(type);
-                        if(inner == null)continue;
+                        if(inner == null || inner.toString().equals("bullet#0") || inner.toString().equals("bullet#1"))continue;
                         
                         Log.info(inner);
                         table.add("[gray]" + field.getName() + "{ ").left().row();
                         table.table(in -> {
-                            buildBulletTypeInfo(in, inner, false);
+                            buildBulletTypeInfo(in, inner);
                         }).padLeft(LEN).row();
                         table.add("[gray]}").left().row();
                     }

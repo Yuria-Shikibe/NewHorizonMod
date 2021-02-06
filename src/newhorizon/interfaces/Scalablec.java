@@ -9,12 +9,12 @@ import mindustry.gen.Buildingc;
 
 import mindustry.graphics.Pal;
 import newhorizon.NewHorizon;
-import newhorizon.data.*;
-
 import static mindustry.Vars.tilesize;
+import newhorizon.feature.UpgradeData.DataEntity;
 
 public interface Scalablec extends Buildingc{
     void resetUpgrade();
+    void setLinkPos(int i);
     boolean isContiunous();
     boolean isConnected();
 
@@ -25,7 +25,7 @@ public interface Scalablec extends Buildingc{
                 x = getX(),
                 y = getY();
 
-        Draw.rect(getAmmoData().icon, x - len, y + len);
+        Draw.rect(getData().type().icon, x - len, y + len);
         Draw.color(getColor());
         Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
         Draw.reset();
@@ -51,11 +51,10 @@ public interface Scalablec extends Buildingc{
 
     Upgraderc upgraderc();
     
-    void setBaseData(UpgradeBaseData baseData);
-    void setAmmoData(UpgradeAmmoData baseData);
+    void setData(DataEntity baseData);
     
-    UpgradeBaseData getBaseData();
-    UpgradeAmmoData getAmmoData();
+    DataEntity getData();
+    
     Color getColor();
 
 }

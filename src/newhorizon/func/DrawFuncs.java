@@ -2,23 +2,21 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.Pixmap;
+import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Circle;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
-import arc.util.Tmp;
+import arc.util.Structs;
 import mindustry.Vars;
 import mindustry.graphics.Pal;
+import mindustry.type.Weapon;
 
 public class DrawFuncs {
     public static final Color bottomColor = Pal.gray;
-
+    public static final Color outlineColor = Color.valueOf("565666");
     private static final Vec2
         vec21 = new Vec2(),
         vec22 = new Vec2(),
@@ -26,11 +24,98 @@ public class DrawFuncs {
     
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
     
+    public static Pixmap getOutline(Pixmap base, Color outlineColor){
+        PixmapRegion region = new PixmapRegion(base);
+        Pixmap out = new Pixmap(region.width, region.height);
+        Color color = new Color();
+        
+        for(int x = 0; x < region.width; ++x){
+            for(int y = 0; y < region.height; ++y){
+                region.getPixel(x, y, color);
+                out.draw(x, y, color);
+                if(color.a < 1.0F){
+                    boolean found = false;
+                    
+                    label72:
+                    for(int rx = -4; rx <= 4; ++rx){
+                        for(int ry = -4; ry <= 4; ++ry){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within((float)rx, (float)ry, 4.0F) && color.set(region.getPixel(rx + x, ry + y)).a > 0.01F){
+                                found = true;
+                                break label72;
+                            }
+                        }
+                    }
+                    
+                    if(found){
+                        out.draw(x, y, outlineColor);
+                    }
+                }
+            }
+        }
+        return out;
+    }
+    
+    public static Pixmap getOutline(TextureAtlas.AtlasRegion t, Color outlineColor){
+        if(t.found()){
+            return getOutline(Core.atlas.getPixmap(t).crop(), outlineColor);
+        }else return new Pixmap(256, 256);
+    }
+    
+    
+    public static void drawWeaponPixmap(Pixmap base, Weapon w, boolean outline){
+        TextureAtlas.AtlasRegion t = Core.atlas.find(w.name);
+        if(!t.found())return;
+        Pixmap wRegion = outline ? getOutline(t, outlineColor) : Core.atlas.getPixmap(t).crop();
+        
+        int startX = getCenter(base, wRegion, true, outline), startY = getCenter(base, wRegion, false, outline);
+    
+        if(w.mirror){
+            PixmapRegion t2 = Core.atlas.getPixmap(t);
+            Pixmap wRegion2 = outline ? getOutline(flipX(t2), outlineColor) : flipX(t2);
+            base.drawPixmap(wRegion, startX + (int)w.x * 4, startY - (int)w.y * 4, 0, 0, wRegion.getWidth(), wRegion.getHeight());
+            base.drawPixmap(wRegion2, getCenter(base, wRegion2, true, outline) - (int)w.x * 4, getCenter(base, wRegion2, false, outline) - (int)w.y * 4, 0, 0, -wRegion2.getWidth(), wRegion2.getHeight());
+        }else{
+            base.drawPixmap(wRegion, startX + (int)(w.x) * 4, startY - (int)(w.y) * 4);
+        }
+    }
+    
+    public static int getCenter(Pixmap base, Pixmap above, boolean WorH, boolean outline){
+        return (WorH ? (base.getWidth() - above.getWidth()) / 2 : (base.getHeight() - above.getHeight()) / 2);
+    }
+    
+    public static Pixmap flipX(PixmapRegion pixmap){
+        Pixmap base = new Pixmap(pixmap.width, pixmap.height);
+        Color color = new Color();
+        
+        if(color.a < 1.0F){
+            for(int y = 0; y < pixmap.height; ++y){
+                for(int x = 0; x < pixmap.width; ++x){
+                    pixmap.getPixel(x, y, color);
+                    base.draw(pixmap.width - x, y, color);
+                }
+            }
+        }
+        return base;
+    }
+    
+    public static Pixmap fillColor(PixmapRegion pixmap, Color replaceColor){
+        Pixmap base = new Pixmap(pixmap.width, pixmap.height);
+        Color color = new Color();
+        if(color.a < 1.0F){
+            for(int y = 0; y < pixmap.height; ++y){
+                for(int x = 0; x < pixmap.width; ++x){
+                    pixmap.getPixel(x, y, color);
+                    base.draw(pixmap.width - x, y, color.mul(replaceColor));
+                }
+            }
+        }
+        return base;
+    }
     
     /**
      * @draw sin(@scale * x + @offset);
      * */
-    public static void drawSine(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant){
+    public static void drawSine(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant, boolean flip){
         float dstTotal = Mathf.dst(x, y, x2, y2);
         int dst = (int)(dstTotal / distant);
     
@@ -38,31 +123,31 @@ public class DrawFuncs {
     
         Vec2 vec = new Vec2().trns(Angles.angle(x, y, x2, y2), distant);
     
-        //for(int sign = 0; sign < 1; sign++){
-        for(int p = 0; p < phase; p++){
-            Fill.circle(x, y, Lines.getStroke());
-        
-            for(int i = 0; i < dst; i++){
-                vec21.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
-                        (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
-                        1 * scale,
-                        mag
-                ) - scale / 2);
+        for(int sign : flip ? Mathf.signs : Mathf.one){
+            for(int p = 0; p < phase; p++){
+                Fill.circle(x, y, Lines.getStroke());
             
-                vec22.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
-                        (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i + 1),
-                        1 * scale,
-                        mag
-                ) - scale / 2);
-            
-                Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
-            
-                Lines.line(from.x, from.y, to.x, to.y, false);
-                Fill.circle(from.x, from.y, Lines.getStroke() / 2f);
-                Fill.circle(to.x, to.y, Lines.getStroke() / 2f);
+                for(int i = 0; i < dst; i++){
+                    vec21.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
+                            1 * scale,
+                            mag
+                    ) - scale / 2) * i);
+                
+                    vec22.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i + 1),
+                            1 * scale,
+                            mag
+                    ) - scale / 2) * i);
+                
+                    Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
+                
+                    Lines.line(from.x, from.y, to.x, to.y, false);
+                    Fill.circle(from.x, from.y, Lines.getStroke() / 2f);
+                    Fill.circle(to.x, to.y, Lines.getStroke() / 2f);
+                }
             }
         }
-        //}
     }
     
     public static void drawSineLerp(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant){

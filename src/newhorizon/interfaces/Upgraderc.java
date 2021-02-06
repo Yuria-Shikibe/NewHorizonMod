@@ -9,10 +9,10 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import newhorizon.data.*;
 import mindustry.gen.Buildingc;
 
 import static mindustry.Vars.tilesize;
+import newhorizon.feature.UpgradeData.DataEntity;
 
 public interface Upgraderc extends Buildingc{
 	default void drawLink(){
@@ -50,13 +50,13 @@ public interface Upgraderc extends Buildingc{
 	Color getColor();
 	boolean linkValid();
 	boolean isUpgrading();
-	boolean canUpgrade(UpgradeData data);
-	
+	boolean canUpgrade(DataEntity data);
+	void consumeItems(DataEntity data);
 	void updateTarget();
 	void upgraderTableBuild();
 	void updateUpgrading();
 	void completeUpgrade();
-	void upgradeData(UpgradeData data);
+	void upgradeData(DataEntity data);
 	
 }
 

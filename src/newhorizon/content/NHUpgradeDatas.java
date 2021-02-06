@@ -1,30 +1,57 @@
 package newhorizon.content;
 
+import arc.struct.Seq;
+import mindustry.content.Bullets;
+import mindustry.ctype.ContentList;
 import mindustry.gen.*;
 import mindustry.type.ItemStack;
 import mindustry.content.Items;
 
-import newhorizon.data.UpgradeAmmoData;
-import newhorizon.data.UpgradeBaseData;
+import newhorizon.feature.UpgradeData;
 
 import static mindustry.Vars.*;
 
-public class NHUpgradeDatas{
-	public static final UpgradeBaseData
-		basicData = new UpgradeBaseData("upgrade-turret", "upgrade-turret.description", 600f,
-			new ItemStack(NHItems.upgradeSort, 100),
-			new ItemStack(NHItems.darkEnergy, 50),
-			new ItemStack(NHItems.metalOxhydrigen, 300),
-			new ItemStack(Items.surgeAlloy, 125)
+public class NHUpgradeDatas implements ContentList{
+	public static final Seq<UpgradeData> all = new Seq<>();
+	
+	public static UpgradeData none, basicData, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket;
+	
+	@Override
+	public void load(){
+		none = new UpgradeData();
+		
+		strikeRocket = new UpgradeData("rocket-strike", "rocket-strike.description", NHBullets.strikeRocket, 500f, 5,
+				new ItemStack(NHItems.seniorProcessor, 100),
+				new ItemStack(NHItems.darkEnergy, 50),
+				new ItemStack(NHItems.irayrondPanel, 1000),
+				new ItemStack(Items.graphite, 125)
 		){{
-			timeCostCoefficien = 0.25f;
-			itemCostCoefficien = 2;
-			speedMPL = 0.035f;
-			defenceMPL = 0.05f;
+			shootSound = Sounds.railgun;
+			burstSpacing = 5f;
+			salvos = 11;
+			randX = 3f * tilesize;
+			
+			reloadTime = 120f;
+			
+			isLeveled = true;
+			reloadSpeedUp = 0.03f;
+			defenceUp = 0.01f;
+			maxLevel = 8;
 		}};
 		
-	public static final UpgradeAmmoData
-		darkEnrlaser = new UpgradeAmmoData(
+		basicData = new UpgradeData("upgrade2", "upgrade2.description", Bullets.artilleryDense, 450f, 0,
+				new ItemStack(NHItems.upgradeSort, 100),
+				new ItemStack(NHItems.darkEnergy, 50),
+				new ItemStack(NHItems.metalOxhydrigen, 300),
+				new ItemStack(Items.surgeAlloy, 125)
+		){{
+			isLeveled = true;
+			reloadSpeedUp = 0.05f;
+			defenceUp = 0.0125f;
+			maxLevel = 8;
+		}};
+		
+		darkEnrlaser = new UpgradeData(
 			"dark-enr-laser", "dark-enr-laser.description", NHBullets.darkEnrlaser, 300f, 7,
 			new ItemStack(Items.surgeAlloy, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
@@ -35,26 +62,31 @@ public class NHUpgradeDatas{
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
 			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
-		}},
+			
+			isLeveled = true;
+			reloadSpeedUp = 0.03f;
+			defenceUp = 0.01f;
+			maxLevel = 4;
+		}};
 		
-		decayLaser = new UpgradeAmmoData(
-			"decay-laser", "decay-laser.description", NHBullets.decayLaser, 300f, 1,
-			new ItemStack(Items.surgeAlloy, 250),
-			new ItemStack(NHItems.irayrondPanel, 500),
-			new ItemStack(NHItems.thermoCoreNegative, 150)
+		decayLaser = new UpgradeData(
+				"decay-laser", "decay-laser.description", NHBullets.decayLaser, 300f, 1,
+				new ItemStack(Items.surgeAlloy, 250),
+				new ItemStack(NHItems.irayrondPanel, 500),
+				new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
 			shootSound = Sounds.laser;
 			burstSpacing = 6f;
 			salvos = 8;
 			randX = 2f * tilesize;
 			inaccuracy = 5;
-		}},
+		}};
 		
-		bombStorm = new UpgradeAmmoData(
-			"bomb-storm", "bomb-storm.description", NHBullets.rapidBomb, 900f, 2,
-			new ItemStack(NHItems.upgradeSort, 250),
-			new ItemStack(NHItems.darkEnergy, 500),
-			new ItemStack(NHItems.thermoCoreNegative, 150)
+		bombStorm = new UpgradeData(
+				"bomb-storm", "bomb-storm.description", NHBullets.rapidBomb, 900f, 2,
+				new ItemStack(NHItems.upgradeSort, 250),
+				new ItemStack(NHItems.darkEnergy, 500),
+				new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
 			shootSound = Sounds.bigshot;
 			inaccuracy = 9f;
@@ -62,37 +94,37 @@ public class NHUpgradeDatas{
 			burstSpacing = 2f;
 			salvos = 28;
 			randX = 2.1f * tilesize;
-		}},
+		}};
 		
-		arc9000 = new UpgradeAmmoData(
-			"arc-9000", "arc-9000.description", NHBullets.boltGene, 900f, 8,
-			new ItemStack(NHItems.upgradeSort, 250),
-			new ItemStack(NHItems.darkEnergy, 500),
-			new ItemStack(NHItems.thermoCoreNegative, 150)
+		arc9000 = new UpgradeData(
+				"arc-9000", "arc-9000.description", NHBullets.boltGene, 900f, 8,
+				new ItemStack(NHItems.upgradeSort, 250),
+				new ItemStack(NHItems.darkEnergy, 500),
+				new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
 			shootSound = Sounds.laserblast;
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
 			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
-		}},
+		}};
 		
-		curveBomb = new UpgradeAmmoData(
-			"curve-bomb", "curve-bomb.description", NHBullets.curveBomb, 300f, 0,
-			new ItemStack(NHItems.irayrondPanel, 300),
-			new ItemStack(NHItems.metalOxhydrigen, 200)
+		curveBomb = new UpgradeData(
+				"curve-bomb", "curve-bomb.description", NHBullets.curveBomb, 300f, 0,
+				new ItemStack(NHItems.irayrondPanel, 300),
+				new ItemStack(NHItems.metalOxhydrigen, 200)
 		){{
 			shootSound = Sounds.laser;
 			randX = 2f * tilesize;
 			salvos = 7;
 			inaccuracy = 10;
 			velocityInaccuracy = 0.08f;
-		}},
+		}};
 		
-		airRaid = new UpgradeAmmoData(
-			"air-raid", "air-raid.description", NHBullets.airRaid, 500f, 6,
-			new ItemStack(NHItems.upgradeSort, 250),
-			new ItemStack(NHItems.darkEnergy, 500),
-			new ItemStack(NHItems.thermoCoreNegative, 150)
+		airRaid = new UpgradeData(
+				"air-raid", "air-raid.description", NHBullets.airRaid, 500f, 6,
+				new ItemStack(NHItems.upgradeSort, 250),
+				new ItemStack(NHItems.darkEnergy, 500),
+				new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
 			shootSound = Sounds.railgun;
 			inaccuracy = 6;
@@ -101,6 +133,9 @@ public class NHUpgradeDatas{
 			salvos = 6;
 			randX = 2f * tilesize;
 		}};
+	}
+	
+	
 }
 
 

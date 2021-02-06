@@ -1,24 +1,29 @@
 package newhorizon.block.special;
 
 
-import arc.*;
+import arc.Core;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.*;
-import arc.scene.ui.Dialog;
-import arc.struct.*;
-import arc.scene.ui.layout.*;
-import arc.util.*;
-import arc.graphics.g2d.*;
-import arc.scene.style.*;
-import mindustry.game.*;
+import arc.math.geom.Vec2;
+import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
+import arc.util.Time;
+import mindustry.game.Team;
 import mindustry.gen.*;
-import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.*;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.type.Category;
+import mindustry.type.UnitType;
+import mindustry.ui.Cicon;
+import mindustry.ui.Styles;
+import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.func.DrawFuncs;
 import newhorizon.func.TableTexDebugDialog;
 
 import static mindustry.Vars.*;
@@ -37,7 +42,7 @@ public class Debuger extends Block{
 		configurable = true;
 		solid = false;
 		targetable = false;
-		requirements(Category.units, BuildVisibility.shown, with());
+		requirements(Category.units, BuildVisibility.sandboxOnly, with());
 		health = Integer.MAX_VALUE;
 	}
 	
@@ -144,10 +149,6 @@ public class Debuger extends Block{
 			Draw.rect(teamRegionTop, x, y);
 			Lines.stroke(2f);
 			Lines.square(x, y, block.size / 2f * tilesize + 1f + Mathf.absin(Time.time, 9f, 3f));
-			
-			DrawFuncs.drawSine(x, y , x + 1000, y, 3, 20, 15, 5 + Time.time / 30, 5);
-			DrawFuncs.drawSineLerp(x, y , x /- 1000, y, 1, 20, 15, 5 + Time.time / 30, 5);
-			
 			Draw.reset();
 		}
 

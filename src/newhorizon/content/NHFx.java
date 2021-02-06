@@ -1,24 +1,29 @@
 package newhorizon.content;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
+import arc.Core;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Angles;
+import arc.math.Mathf;
+import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Tmp;
-import mindustry.content.Fx;
-import mindustry.entities.*;
+import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
-import mindustry.graphics.*;
-
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-
-import static mindustry.Vars.*;
+import newhorizon.func.PosLightning;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.*;
+import static arc.math.Angles.randLenVectors;
+import static mindustry.Vars.tilesize;
 
 public class NHFx{
 	public static Effect lightningHitSmall(Color color){
@@ -46,9 +51,7 @@ public class NHFx{
 			randLenVectors(e.id + 1, 4, 1f + 60f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
 			
 			color(Color.gray);
-			Angles.randLenVectors((long)e.id, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> {
-				Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F);
-			});
+			Angles.randLenVectors(e.id, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
 		});
 	}
 
@@ -56,9 +59,7 @@ public class NHFx{
 		return new Effect(26.0F, (e) -> {
 			Draw.color(Color.white);
 			float length = !(e.data instanceof Float) ? 70.0F : (Float)e.data;
-			Angles.randLenVectors((long)e.id, (int)(length / num), length, e.rotation, 0.0F, (x, y) -> {
-				Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 9.0F);
-			});
+			Angles.randLenVectors(e.id, (int)(length / num), length, e.rotation, 0.0F, (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 9.0F));
 		});
 	}
 
@@ -74,14 +75,41 @@ public class NHFx{
 
 	public static final Effect
 		//All effects
-		
+		trail = new Effect(50.0F, (e) -> {
+			Draw.color(e.color, Color.gray, e.fin());
+			randLenVectors(e.id, 2, tilesize * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.rotation * e.fout()));
+			
+		}),
+	
 		boolSelector = new Effect(0, 0, e -> {}),
 	
 		skyTrail = new Effect(22, e -> {
 			color(NHColor.lightSky, Pal.gray, e.fin());
 			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
 		}),
-
+		
+		posLightning = new Effect(PosLightning.lifetime, 800.0f, e -> {
+			if(!(e.data instanceof Seq)) return;
+			Seq<Vec2> lines = e.data();
+			
+			color(e.color, Color.white, e.fin());
+			
+			Lines.stroke(e.rotation * e.fout());
+			
+			Fill.circle(lines.first().x, lines.first().y, Lines.getStroke() * 1.1f);
+			
+			for(int i = 0; i < lines.size - 1; i++){
+				Vec2 cur = lines.get(i);
+				Vec2 next = lines.get(i + 1);
+				
+				Lines.line(cur.x, cur.y, next.x, next.y, false);
+			}
+			
+			for(Vec2 p : lines){
+				Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
+			}
+		}),
+	
 		shuttle = new Effect(60f, 200f, e -> {
 			if(!(e.data instanceof Float))return;
 			float len = e.data();
@@ -218,6 +246,12 @@ public class NHFx{
 			Fill.circle(e.x + x, e.y + y, e.fin() * 7f);
 		})),
 		
+		hugeSmoke = new Effect(40f, e -> {
+			Draw.color(Color.gray);
+			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
+			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
+		}),
+	
 		darkEnergyChargeBegin = new Effect(60f, e -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x, e.y, e.fin() * 32);
@@ -233,9 +267,9 @@ public class NHFx{
 			rect(Core.atlas.find("new-horizon-upgrade"), e.x, e.y + e.rotation * tilesize * 1.35f * e.finpow(), drawSize, drawSize);
 		}),
 		
-		darkErnExplosion = new Effect(25, e -> {
+		darkErnExplosion = new Effect(40, e -> {
 			color(NHColor.darkEnrColor);
-			e.scaled(6, i -> {
+			e.scaled(20, i -> {
 				stroke(3f * i.fout());
 				circle(e.x, e.y, 3f + i.fin() * 80f);
 			});
@@ -275,6 +309,18 @@ public class NHFx{
 		blastAccept = new Effect(20f, e -> {
 			color(NHColor.darkEnrColor);
 			randLenVectors(e.id, 3, 5 + 30 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f));
+		}),
+	
+		thurmixHit = new Effect(35f, 80f, e -> {
+			color(NHColor.thurmixRedLight, Color.white, e.fin());
+			stroke(3 * e.fout());
+			circle(e.x, e.y, 75f * e.fin());
+			
+			stroke(1.3f * e.fslope());
+			e.scaled(20f, i-> randLenVectors(e.id, 11, 1f + 60f * i.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 5f + i.fslope() * 8f)));
+			
+			color(Color.gray);
+			randLenVectors(e.id + 1, 7, 8f + 70 * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 6f + 0.5f));
 		}),
 		
 		emped = new Effect(20f, e -> {
