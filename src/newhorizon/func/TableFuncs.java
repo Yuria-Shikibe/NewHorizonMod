@@ -1,18 +1,11 @@
 package newhorizon.func;
 
-import arc.Core;
-import arc.graphics.Color;
-import arc.graphics.Pixmap;
-import arc.graphics.g2d.PixmapRegion;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
-import arc.util.Structs;
 import mindustry.entities.bullet.BulletType;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;

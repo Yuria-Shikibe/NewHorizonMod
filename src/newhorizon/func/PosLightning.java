@@ -1,29 +1,25 @@
 package newhorizon.func;
 
-import arc.struct.Seq;
 import arc.func.Cons;
-import arc.util.Nullable;
-import arc.util.Tmp;
+import arc.graphics.Color;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
 import arc.math.geom.Geometry;
 import arc.math.geom.Position;
 import arc.math.geom.Rect;
-import arc.graphics.Color;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
+import arc.math.geom.Vec2;
+import arc.struct.Seq;
+import arc.util.Nullable;
+import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.gen.Healthc;
-import mindustry.world.Tile;
-import mindustry.game.Team;
-import mindustry.gen.Unitc;
-import mindustry.gen.Bullet;
 import mindustry.content.Fx;
-import mindustry.entities.Units;
-import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
+import mindustry.entities.Units;
+import mindustry.game.Team;
+import mindustry.gen.Bullet;
+import mindustry.gen.Healthc;
+import mindustry.gen.Unitc;
+import mindustry.world.Tile;
 import newhorizon.content.NHFx;
-import org.jetbrains.annotations.NotNull;
 
 public class PosLightning { //Provide some workable methods to create position to position lightning bolt. Powered by Yuria.
 
@@ -56,7 +52,7 @@ public class PosLightning { //Provide some workable methods to create position t
 	//create lightning to the enemies in range.
 	
 	//A radius create method that with a Bullet owner.
-	public static void createRange(@NotNull Bullet owner, float range, int hits, Color color, boolean createLightning, float width, int boltNum, Cons<Position> movement) {
+	public static void createRange(Bullet owner, float range, int hits, Color color, boolean createLightning, float width, int boltNum, Cons<Position> movement) {
 		createRange(owner, owner, owner.team, range, hits, color, createLightning, 0, 0, width, boltNum, movement);
 	}
 	
