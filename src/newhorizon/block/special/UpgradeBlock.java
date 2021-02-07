@@ -30,13 +30,13 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
-import newhorizon.feature.*;
 import newhorizon.content.NHFx;
+import newhorizon.feature.UpgradeData;
+import newhorizon.feature.UpgradeData.DataEntity;
 import newhorizon.func.TableFuncs;
+import newhorizon.func.TextureFilterValue;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
-import newhorizon.func.TextureFilterValue;
-import newhorizon.feature.UpgradeData.DataEntity;
 
 import static mindustry.Vars.*;
 
@@ -175,6 +175,7 @@ public class UpgradeBlock extends Block {
 			
 			updateTarget();
 			upgradingID = defaultID;
+			dialog.cont.update(() -> {});
 		}
 		
 		//UI
@@ -355,7 +356,7 @@ public class UpgradeBlock extends Block {
 		}
 		
 		public void setData(){
-			upgradeDatas.forEach(data -> datas.add(data.newSubEntity()));
+			for(UpgradeData d : upgradeDatas)datas.add(d.newSubEntity());
 		}
 		
 		@Override//Target confirm

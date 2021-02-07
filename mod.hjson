@@ -3,5 +3,5 @@ displayName: "NewHorizonMod"
 author: "Yuria"
 main: "newhorizon.NewHorizon"
 description: "Expanded contents, including Units, Turrets, Blocks, etc."
-version: "1.4.5 beta"
+version: "1.5 beta"
 minGameVersion: 122

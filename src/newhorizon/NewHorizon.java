@@ -1,18 +1,21 @@
 package newhorizon;
 
-import arc.*;
+import arc.Core;
+import arc.Events;
 import arc.graphics.Color;
-import mindustry.graphics.*;
-import arc.scene.ui.layout.*;
 import arc.scene.style.TextureRegionDrawable;
-import arc.util.*;
-import mindustry.game.EventType.*;
-import mindustry.gen.*;
-import mindustry.mod.*;
+import arc.scene.ui.layout.Table;
+import arc.util.Log;
+import arc.util.Time;
+import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.gen.Icon;
+import mindustry.gen.Tex;
+import mindustry.graphics.Pal;
+import mindustry.mod.Mod;
 import mindustry.ui.Styles;
-import mindustry.ui.dialogs.*;
-
+import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
+import newhorizon.func.TableFuncs;
 
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
@@ -61,7 +64,10 @@ public class NewHorizon extends Mod{
 				table.button("@links", Icon.link, Styles.transt, this::links).size(LEN * 3, LEN).pad(OFFSET / 3f);
 			}).fillX().height(LEN + OFFSET);
 			dialog.show();
-		}));
+	        TableFuncs.tableMain();
+        }));
+	   
+    
     }
 
     @Override
@@ -76,10 +82,8 @@ public class NewHorizon extends Mod{
 		new NHUnits().load();
 		new NHBlocks().load();
 		new NHPlanets().load();
-		
 	    new NHTechTree().load();
 	    loader.loadLast();
-	    
     }
 	
 	

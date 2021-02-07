@@ -9,7 +9,8 @@ public class NHTechTree implements ContentList {
     @Override
     public void load(){
         //Blocks;
-    
+        
+        new TechNode(TechTree.get(NHBlocks.zateFactorySmall), NHBlocks.xenMelter, NHBlocks.xenMelter.researchRequirements());
         new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
@@ -64,7 +65,7 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(NHItems.fusionEnergy), NHItems.thermoCorePositive, NHItems.thermoCorePositive.researchRequirements());
         new TechNode(TechTree.get(NHItems.thermoCorePositive), NHItems.thermoCoreNegative, NHItems.thermoCoreNegative.researchRequirements());
         new TechNode(TechTree.get(NHItems.upgradeSort), NHItems.darkEnergy, NHItems.darkEnergy.researchRequirements());
-
+        new TechNode(TechTree.get(Items.thorium), NHItems.zate, NHItems.zate.researchRequirements());
         new TechNode(TechTree.get(NHItems.irayrondPanel), NHLiquids.irdryonFluid, NHLiquids.irdryonFluid.researchRequirements());
         new TechNode(TechTree.get(NHItems.zate), NHLiquids.zateFluid, NHLiquids.zateFluid.researchRequirements());
         new TechNode(TechTree.get(Liquids.water), NHLiquids.xenAlpha, NHLiquids.xenAlpha.researchRequirements());

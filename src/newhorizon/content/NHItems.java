@@ -30,7 +30,9 @@ public class NHItems implements ContentList{
 		presstanium = new Item("presstanium", Color.valueOf("6495ED"));
 		seniorProcessor = new Item("processor-senior", Color.valueOf("6495ED"));
 		juniorProcessor = new Item("processor-junior", Color.valueOf("808080"));
-		zate = new Item("zate", Color.valueOf("#FFAE87"));
+		zate = new Item("zate", Color.valueOf("#FFAE87")){{
+			hardness = 4;
+		}};
 		fusionEnergy = new Item("fusion-core-energy", Color.valueOf("ffe4b5")){{
 			explosiveness = 3f;
 		}};

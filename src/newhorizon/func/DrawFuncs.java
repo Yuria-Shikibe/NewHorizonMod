@@ -58,7 +58,7 @@ public class DrawFuncs {
     public static Pixmap getOutline(TextureAtlas.AtlasRegion t, Color outlineColor){
         if(t.found()){
             return getOutline(Core.atlas.getPixmap(t).crop(), outlineColor);
-        }else return new Pixmap(256, 256);
+        }else return new Pixmap(255, 255);
     }
     
     

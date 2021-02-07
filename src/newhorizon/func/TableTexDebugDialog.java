@@ -1,6 +1,8 @@
 package newhorizon.func;
 
 import arc.Core;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
@@ -11,7 +13,6 @@ import mindustry.gen.Tex;
 import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.content.NHBlocks;
 import newhorizon.content.NHLoader;
 
 import java.lang.reflect.Field;
@@ -28,9 +29,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		iconDialog,
 		tableDialog;
 	
-	static{
-		TableFuncs.debugDialogs.add(new TableTexDebugDialog("default"));
-	}
+	
 	
 	public TableTexDebugDialog(String title){
 		this(title, Core.scene.getStyle(Dialog.DialogStyle.class));
@@ -189,7 +188,20 @@ public class TableTexDebugDialog extends BaseDialog{
 						if(tex != null && tex.found()){
 							if(index.get() % 8 == 0)table.row();
 							table.table(t -> {
-								t.image(tex).size(LEN * 3).row();
+								float width = Mathf.clamp(tex.width, 0, LEN * 3);
+								t.table(in -> in.image(tex).size(width, tex.height * width / tex.width)).size(LEN * 3).row();
+								t.add(arg).size(LEN * 3, LEN / 2);
+							});
+							index.getAndIncrement();
+						}
+					});
+					NHLoader.fullIconNeeds.each( (arg, iconSet) -> {
+						TextureRegion tex = Core.atlas.find(arg + "-icon");
+						if(tex != null && tex.found()){
+							if(index.get() % 8 == 0)table.row();
+							table.table(t -> {
+								float width = Mathf.clamp(tex.width, 0, LEN * 3);
+								t.table(in -> in.image(tex).size(width, tex.height * width / tex.width)).size(LEN * 3).row();
 								t.add(arg).size(LEN * 3, LEN / 2);
 							});
 							index.getAndIncrement();

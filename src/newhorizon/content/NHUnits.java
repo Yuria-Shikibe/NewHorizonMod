@@ -15,6 +15,7 @@ import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.bullet.SapBulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
@@ -44,44 +45,50 @@ public class NHUnits implements ContentList {
 			new AutoOutlineWeapon("large-launcher"){{
 				top = false;
 				rotate = false;
+				alternate = true;
 				shake = 3.5f;
-				shootY = 8f;
-				shootX = -0.35f;
-				reload = 60f;
-				shots = 4;
-				shotDelay = 8f;
+				shootY = 16f;
 				x = 20f;
-				inaccuracy = 5.0F;
-				alternate = true;
-				ejectEffect = Fx.none;
 				recoil = 5.4f;
-				bullet = NHBullets.annMissile;
-				shootSound = Sounds.artillery;
-			}},
-			new AutoOutlineWeapon("launcher"){{
-				mirror = false;
-				top = true;
-				rotate = true;
-				rotateSpeed = 25f;
-				shootY = 7f;
-				reload = 30f;
-				shots = 3;
-				inaccuracy = 5.0F;
-				x = 0;
-				y = -8f;
-				alternate = true;
+				
+				shootCone = 30f;
+				reload = 10f;
+				shots = 4;
+				inaccuracy = 4.0F;
 				ejectEffect = Fx.none;
-				recoil = 2.7f;
 				bullet = new ShrapnelBulletType() {{
-					this.length = 90;
-					this.damage = 105.0F;
-					this.ammoMultiplier = 5.0F;
+					this.length = 300;
+					this.damage = 325.0F;
+					this.status = StatusEffects.shocked;
+					this.statusDuration = 60f;
 					this.fromColor = NHColor.lightSky.cpy().lerp(Color.white, 0.3f);
 					this.toColor = NHColor.lightSky;
 					this.shootEffect = NHFx.lightningHitSmall(NHColor.lightSky);
-					this.smokeEffect = NHFx.lightSkyCircleSplash;
+					this.smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
+						Draw.color(fromColor, toColor, e.fin());
+						Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
+					}));
 				}};
 				shootSound = Sounds.shotgun;
+			}},
+			new AutoOutlineWeapon(""){{
+				mirror = false;
+				rotate = true;
+				alternate = true;
+				rotateSpeed = 25f;
+				x = 0;
+				y = 8f;
+				recoil = 2.7f;
+				shootY = 7f;
+				
+				shootCone = 40f;
+				reload = 60f;
+				shots = 2;
+				shotDelay = 8f;
+				inaccuracy = 5.0F;
+				ejectEffect = Fx.none;
+				bullet = NHBullets.annMissile;
+				shootSound = Sounds.artillery;
 			}}
 		){{
 			constructor = EntityMapping.map(32);
@@ -89,10 +96,11 @@ public class NHUnits implements ContentList {
 					new ShieldRegenFieldAbility(50.0F, 50F, 600.0F, 800.0F),
 					new ForceFieldAbility(64.0F, 80F, 8000.0F, 900.0F)
 			);
+			range = 320f;
 			engineOffset = 15.0F;
 			engineSize = 6.5F;
 			speed = 0.3f;
-			hitSize = 26f;
+			hitSize = 29f;
 			health = 28800f;
 			buildSpeed = 2.8f;
 			armor = 15f;
@@ -339,8 +347,8 @@ public class NHUnits implements ContentList {
 				alternate = true;
 				ejectEffect = Fx.none;
 				recoil = 4.4f;
-				bullet = new ShieldBreaker(6.25f, 60, 150f) {
-					@Override public float range(){return 260f;}
+				bullet = new ShieldBreaker(6.25f, 40, 650f) {
+					@Override public float range(){return 280f;}
 					{
 						hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
 						lifetime = 90f;

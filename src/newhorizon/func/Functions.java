@@ -8,10 +8,12 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.type.UnitType;
 import newhorizon.block.special.JumpGate;
@@ -22,7 +24,17 @@ import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
 
 public class Functions {
-
+    public static void spawnUnit(UnitType type, Team team, int spawnNum, float x, float y){
+        for(int spawned = 0; spawned < spawnNum; spawned++){
+            Time.run(spawned * Time.delta, () -> {
+                Unit unit = type.create(team);
+                if(unit != null){
+                    unit.set(x, y);
+                    unit.add();
+                }else Log.info("Unit == null");
+            });
+        }
+    }
     public static float regSize(UnitType type){
         return type.hitSize / tilesize / tilesize / 3.25f;
     }

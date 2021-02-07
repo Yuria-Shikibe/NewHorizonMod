@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
+import arc.util.Log;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -20,11 +21,13 @@ import mindustry.type.StatusEffect;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.Cultivator;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericSmelter;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawMixer;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.block.drawer.DrawFactories;
@@ -42,7 +45,7 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-		finalCore, delivery,
+		finalCore, delivery, zateOre, xenMelter,
 		largeShieldGenerator, divlusion,
 		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
 		irdryonVault, blaster, unitSpawner, ender, thurmix, argmot,
@@ -55,6 +58,33 @@ public class NHBlocks implements ContentList {
 
 	@Override
 	public void load() {
+		xenMelter = new GenericCrafter("xen-melter"){{
+			size = 2;
+			hasPower = hasLiquids = hasItems = true;
+			itemCapacity = 12;
+			liquidCapacity = 24;
+			craftTime = 15f;
+			drawer = new DrawMixer();
+			
+			craftEffect = NHFx.lightSkyCircleSplash;
+			updateEffect = Fx.smeltsmoke;
+			requirements(Category.crafting, with(NHItems.juniorProcessor, 35, NHItems.metalOxhydrigen, 50, Items.thorium, 30, NHItems.presstanium, 25));
+			consumes.power(3f);
+			consumes.items(new ItemStack(NHItems.metalOxhydrigen, 2), new ItemStack(NHItems.zate, 1));
+			outputLiquid = new LiquidStack(NHLiquids.xenAlpha, 3f);
+		}};
+		
+		zateOre = new OreBlock("ore-zate"){{
+			this.oreDefault = true;
+			Log.info(this.name);
+			variants = 3;
+			this.oreThreshold = 0.95F;
+			this.oreScale = 20.380953F;
+			this.itemDrop = NHItems.zate;
+			this.localizedName = itemDrop.localizedName;
+			this.mapColor.set(itemDrop.color);
+			this.useColor = true;
+		}};
 		delivery = new Delivery("mass-deliver"){{
 			size = 3;
 			shake = 3f;
@@ -721,10 +751,6 @@ public class NHBlocks implements ContentList {
 					new ItemStack(Items.titanium, 450)
 				)
 			);
-		}};
-
-        unitSpawner = new Debuger("unit-spawner"){{
-			size = 2;
 		}};
 	}
 }

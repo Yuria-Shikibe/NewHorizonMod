@@ -39,7 +39,7 @@ public class NHBullets {
 
 			{
 				colors = new Color[]{Pal.accent.cpy().mul(1f, 1f, 1f, 0.3f), Pal.accent, Color.white};
-				length = 320f;
+				length = 300f;
 				width = 25f;
 				lengthFalloff = 0.6f;
 				sideLength = 90f;
@@ -84,8 +84,8 @@ public class NHBullets {
 			shootEffect = Fx.plasticExplosion;
 		}},
 
-		skyFrag = new BasicBulletType(3.3f, 80) {
-		@Override public float range(){return 320f;}
+		skyFrag = new BasicBulletType(3.3f, 50) {
+		@Override public float range(){return 280f;}
 			{
 				lifetime = 170f;
 				despawnEffect = hitEffect = NHFx.lightSkyCircleSplash;
@@ -464,7 +464,9 @@ public class NHBullets {
 			});
 		}},
 		
-		annMissile = new TextureMissileType(6.6f, 300f, "ann-missile-atlas@@404049"){{
+		annMissile = new TextureMissileType(6.6f, 50f, "ann-missile-atlas@@404049"){
+			@Override public float range(){return 370f;}
+		{
 			trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSky;
 			lightning = 3;
 			lightningCone = 360;
@@ -476,7 +478,7 @@ public class NHBullets {
 			
 			trailParam = 1.4f;
 			trailChance = 0.35f;
-			lifetime = 100f;
+			lifetime = 85f;
 			
 			hitEffect = NHFx.lightningHitLarge(NHColor.lightSky);
 			
