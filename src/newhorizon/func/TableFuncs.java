@@ -137,6 +137,7 @@ public class TableFuncs {
     public static String getPercent(float value){return Mathf.floor(value * 100) + "%";}
     
     public static void tableMain(){
+        if(mobile)return;
         Table starter = new Table(Tex.button);
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
