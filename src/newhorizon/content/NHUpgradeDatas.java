@@ -1,20 +1,18 @@
 package newhorizon.content;
 
 import arc.struct.Seq;
-import mindustry.content.Bullets;
-import mindustry.ctype.ContentList;
-import mindustry.gen.*;
-import mindustry.type.ItemStack;
 import mindustry.content.Items;
-
+import mindustry.ctype.ContentList;
+import mindustry.gen.Sounds;
+import mindustry.type.ItemStack;
 import newhorizon.feature.UpgradeData;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 
 public class NHUpgradeDatas implements ContentList{
 	public static final Seq<UpgradeData> all = new Seq<>();
 	
-	public static UpgradeData none, basicData, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket;
+	public static UpgradeData none, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket;
 	
 	@Override
 	public void load(){
@@ -39,16 +37,24 @@ public class NHUpgradeDatas implements ContentList{
 			maxLevel = 8;
 		}};
 		
-		basicData = new UpgradeData("upgrade2", "upgrade2.description", Bullets.artilleryDense, 450f, 0,
-				new ItemStack(NHItems.upgradeSort, 100),
-				new ItemStack(NHItems.darkEnergy, 50),
-				new ItemStack(NHItems.metalOxhydrigen, 300),
-				new ItemStack(Items.surgeAlloy, 125)
+		bombStorm = new UpgradeData(
+				"bomb-storm", "bomb-storm.description", NHBullets.rapidBomb, 900f, 2,
+				new ItemStack(NHItems.upgradeSort, 250),
+				new ItemStack(NHItems.darkEnergy, 500),
+				new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
+			shootSound = Sounds.bigshot;
+			inaccuracy = 9f;
+			velocityInaccuracy = 0.095f;
+			burstSpacing = 2f;
+			salvos = 28;
+			randX = 2.1f * tilesize;
+			
 			isLeveled = true;
 			reloadSpeedUp = 0.05f;
 			defenceUp = 0.0125f;
 			maxLevel = 8;
+			defaultLevel = 1;
 		}};
 		
 		darkEnrlaser = new UpgradeData(
@@ -80,20 +86,6 @@ public class NHUpgradeDatas implements ContentList{
 			salvos = 8;
 			randX = 2f * tilesize;
 			inaccuracy = 5;
-		}};
-		
-		bombStorm = new UpgradeData(
-				"bomb-storm", "bomb-storm.description", NHBullets.rapidBomb, 900f, 2,
-				new ItemStack(NHItems.upgradeSort, 250),
-				new ItemStack(NHItems.darkEnergy, 500),
-				new ItemStack(NHItems.thermoCoreNegative, 150)
-		){{
-			shootSound = Sounds.bigshot;
-			inaccuracy = 9f;
-			velocityInaccuracy = 0.095f;
-			burstSpacing = 2f;
-			salvos = 28;
-			randX = 2.1f * tilesize;
 		}};
 		
 		arc9000 = new UpgradeData(

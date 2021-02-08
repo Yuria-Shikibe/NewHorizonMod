@@ -93,8 +93,8 @@ public class JumpGate extends Block {
                         t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
 
                         t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
-                    }).grow().padBottom(TableFuncs.OFFSET / 2).row();
-                }else {
+                    }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
+                }else{
                     t.table(Tex.button, t2 -> {
                         t2.table(Tex.button, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
 
@@ -104,7 +104,7 @@ public class JumpGate extends Block {
                         }).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
 
                         t2.table(table2 -> table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[]: Summon needs building.")).size(LEN)).height(LEN + TableFuncs.OFFSET).growX().left().pad(TableFuncs.OFFSET);
-                    }).grow().padBottom(TableFuncs.OFFSET / 2).row();
+                    }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
                 }
             }
         });
@@ -246,20 +246,20 @@ public class JumpGate extends Block {
             dialog.addCloseListener();
 
             dialog.cont.table(t -> {
+                t.button("@back", Icon.left, dialog::hide).fillX().height(LEN).row();
                 t.table(inner -> {
-                    inner.button("@back", Icon.left, dialog::hide).size(210.0F, 64.0F).row();
                     for(UnitSet set : calls) {
                         if(set.type.locked() && !state.rules.infiniteResources){
                             inner.table(Tex.buttonSquareDown, t2 -> {
-                                t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN * 3).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
+                                t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
 
                                 t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
 
                                 t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
-                            }).grow().padBottom(TableFuncs.OFFSET / 2).row();
+                            }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
                         }else {
                             inner.table(Tex.button, t2 -> {
-                                t2.table(Tex.clear, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN * 3).center()).left().grow().pad(TableFuncs.OFFSET);
+                                t2.table(Tex.clear, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().grow().pad(TableFuncs.OFFSET);
 
                                 t2.pane(table2 -> {
                                     table2.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
@@ -270,10 +270,10 @@ public class JumpGate extends Block {
                                     table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
                                     table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set));
                                 }).height(LEN + TableFuncs.OFFSET).growX().left().pad(TableFuncs.OFFSET);
-                            }).grow().padBottom(TableFuncs.OFFSET / 2).row();
+                            }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
                         }
                     }
-                }).fill().row();
+                }).fillX().height(Core.graphics.getHeight() - LEN * 3).row();
             }).fill();
 
             table.button("Spawn", Icon.add, dialog::show).size(LEN * 5, LEN);

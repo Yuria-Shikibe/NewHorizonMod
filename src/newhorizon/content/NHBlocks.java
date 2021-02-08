@@ -19,7 +19,9 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.StatusEffect;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Door;
 import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.Cultivator;
@@ -48,16 +50,71 @@ public class NHBlocks implements ContentList {
 		finalCore, delivery, zateOre, xenMelter,
 		largeShieldGenerator, divlusion,
 		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
-		irdryonVault, blaster, unitSpawner, ender, thurmix, argmot,
+		irdryonVault, blaster, ender, thurmix, argmot,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zateFactoryLarge, zateFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
 		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory,
 		//Liquids factories
-		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zateFluidFactory;
+		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zateFluidFactory,
+		//walls
+		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge;
 
 	@Override
 	public void load() {
+		final int healthMult = 4;
+		
+		insulatedWall = new Wall("insulated-wall"){{
+			size = 1;
+			health = 550;
+			requirements(Category.defense, with(Items.thorium, 10, Items.copper, 5));
+			insulated = true;
+		}};
+		
+		setonWall = new Wall("seton-wall"){{
+			size = 1;
+			health = 1250;
+			this.chanceDeflect = 10.0F;
+			this.flashHit = true;
+			requirements(Category.defense, with(NHItems.setonAlloy, 5, NHItems.irayrondPanel, 10, Items.silicon, 15, NHItems.presstanium, 15));
+		}};
+		
+		setonWallLarge = new Wall("seton-wall-large"){{
+			size = 2;
+			health = 1250 * healthMult;
+			this.chanceDeflect = 10.0F;
+			this.flashHit = true;
+			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult, NHItems.irayrondPanel, 10 * healthMult, Items.silicon, 15 * healthMult, NHItems.presstanium, 15 * healthMult));
+		}};
+		
+		heavyDefenceWall = new Wall("heavy-defence-wall"){{
+			size = 1;
+			health = 1750;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20));
+		}};
+		
+		heavyDefenceWallLarge = new Wall("heavy-defence-wall-large"){{
+			size = 4;
+			health = 1750 * healthMult;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult, NHItems.presstanium, 20 * healthMult));
+		}};
+		
+		heavyDefenceDoor = new Door("heavy-defence-door"){{
+			size = 1;
+			health = 1750;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20, NHItems.juniorProcessor, 5));
+		}};
+		
+		heavyDefenceDoorLarge = new Door("heavy-defence-door-large"){{
+			size = 1;
+			health = 1750 * healthMult;
+			openfx = Fx.dooropenlarge;
+			closefx = Fx.doorcloselarge;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult, NHItems.presstanium, 20 * healthMult, NHItems.juniorProcessor, 5 * healthMult));
+		}};
+		
+		
+		
 		xenMelter = new GenericCrafter("xen-melter"){{
 			size = 2;
 			hasPower = hasLiquids = hasItems = true;
@@ -640,7 +697,6 @@ public class NHBlocks implements ContentList {
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 10;
 			addUpgrades(
-				NHUpgradeDatas.basicData,
 				NHUpgradeDatas.darkEnrlaser,
 				NHUpgradeDatas.arc9000,
 				NHUpgradeDatas.curveBomb,

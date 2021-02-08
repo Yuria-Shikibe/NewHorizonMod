@@ -56,7 +56,7 @@ public class DeliveryBulletType extends BulletType{
 		
 		Draw.color(trailColor);
 		
-		Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (data.t.width * 1.5f + sin / 2f) * f);
+		Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (data.t.width * 1.2f + sin / 2f) * f);
 		for(int i : Mathf.signs){
 			Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, 4.5f * Mathf.curve(b.fout(), 0f, 0.1f), 23 * (1.6f + sin / 3.2f) * f, (1 + i) * 90);
 		}

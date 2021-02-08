@@ -2,25 +2,16 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.Pixmap;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import arc.struct.ObjectMap;
-import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Structs;
+import mindustry.Vars;
 import mindustry.graphics.MultiPacker;
-import mindustry.type.UnitType;
-import mindustry.type.Weapon;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.feature.UpgradeData;
 import newhorizon.func.DrawFuncs;
-
-import java.util.Arrays;
 
 public class NHContent extends Block{
 	public TextureRegion
@@ -37,6 +28,7 @@ public class NHContent extends Block{
 	@Override
 	public void createIcons(MultiPacker packer){
 		super.createIcons(packer);
+		if(Vars.mobile)return;
 		packer.add(MultiPacker.PageType.editor, this.name + "-icon-editor", Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full)));
 		if (!this.synthetic()) {
 			PixmapRegion image = Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full));
@@ -57,8 +49,9 @@ public class NHContent extends Block{
 	
 	@Override
 	public void load(){
+		
 		ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
-		iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
+		iconLevel = region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 		
 		NHLoader.outlineTex.each((arg, tex) -> {
 			String[] s;

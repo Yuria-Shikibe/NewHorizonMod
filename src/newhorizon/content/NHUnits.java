@@ -52,13 +52,13 @@ public class NHUnits implements ContentList {
 				recoil = 5.4f;
 				
 				shootCone = 30f;
-				reload = 10f;
+				reload = 12f;
 				shots = 4;
 				inaccuracy = 4.0F;
 				ejectEffect = Fx.none;
 				bullet = new ShrapnelBulletType() {{
 					this.length = 300;
-					this.damage = 325.0F;
+					this.damage = 275.0F;
 					this.status = StatusEffects.shocked;
 					this.statusDuration = 60f;
 					this.fromColor = NHColor.lightSky.cpy().lerp(Color.white, 0.3f);

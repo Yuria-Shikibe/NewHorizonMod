@@ -77,7 +77,7 @@ public class UpgradeBlock extends Block {
 	public void init(){
 		super.init();
 		if(linkTarget == null)throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
-		if(upgradeDatas.isEmpty() || !upgradeDatas.first().isLeveled)throw new IllegalArgumentException("The boolean parma [accent]@isLeveled of the first added data must be [ammo]@true");
+		if(upgradeDatas.isEmpty())throw new IllegalArgumentException("");
 	}
 	
 	@Override

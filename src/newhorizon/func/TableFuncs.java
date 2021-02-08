@@ -67,7 +67,9 @@ public class TableFuncs {
                 if(Vars.state.isMenu()){
                     remove();
                     isInner = false;
+                    setStr();
                 }
+                
                 setPosition(0, (Core.graphics.getHeight() - getHeight()) / 2f);
             });
             
@@ -137,7 +139,7 @@ public class TableFuncs {
     public static String getPercent(float value){return Mathf.floor(value * 100) + "%";}
     
     public static void tableMain(){
-        if(mobile)return;
+        //if(mobile)return;
         Table starter = new Table(Tex.button);
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
@@ -174,7 +176,7 @@ public class TableFuncs {
                 Label p = new Label("");
                 cont.update(() -> {
                     image.setColor(selectTeam.color);
-                    label.setText(new StringBuilder().append("<<-Spawns: ").append(spawnNum).append(" ->>"));
+                    label.setText(new StringBuilder().append("<<-Spawns: [accent]").append(spawnNum).append("[] ->>"));
                     p.setText(new StringBuilder().append("At: ").append(point.x).append(", ").append(point.y).append(" ->>"));
                 });
                 cont.add(label).row();
@@ -234,6 +236,7 @@ public class TableFuncs {
                         point.set(-1, -1);
                         setStr();
                         pTable.remove();
+                        autoMove = false;
                         setText();
                     }).disabled(b -> !pointValid()).size(LEN * 2, LEN).padLeft(LEN * 1.5f).right().padBottom(OFFSET * 5f);
                 }).height(LEN).padTop(OFFSET).row();

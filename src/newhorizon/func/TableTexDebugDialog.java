@@ -8,6 +8,7 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.TextButton;
+import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Cicon;
@@ -240,6 +241,24 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("Unlock", () -> {
+			for(UnlockableContent content : content.items()){
+				content.unlock();
+			}
+			for(UnlockableContent content : content.liquids()){
+				content.unlock();
+			}
+			for(UnlockableContent content : content.units()){
+				content.unlock();
+			}
+			for(UnlockableContent content : content.blocks()){
+				content.unlock();
+			}
+			for(UnlockableContent content : content.sectors()){
+				content.unlock();
+			}
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		return this;

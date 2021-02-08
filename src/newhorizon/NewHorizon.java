@@ -81,7 +81,7 @@ public class NewHorizon extends Mod{
 		new NHUpgradeDatas().load();
 		new NHUnits().load();
 		new NHBlocks().load();
-		new NHPlanets().load();
+		//new NHPlanets().load();
 	    new NHTechTree().load();
 	    loader.loadLast();
     }

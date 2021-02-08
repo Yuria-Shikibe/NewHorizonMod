@@ -1,26 +1,32 @@
 package newhorizon.feature;
 
+import arc.Core;
 import arc.audio.Sound;
+import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
-import arc.util.io.*;
-import arc.*;
-import arc.struct.*;
-import arc.scene.ui.layout.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
+import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.*;
-import mindustry.ui.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
+import mindustry.gen.Icon;
+import mindustry.gen.Sounds;
+import mindustry.gen.Tex;
+import mindustry.graphics.Pal;
+import mindustry.type.ItemStack;
+import mindustry.ui.ItemDisplay;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.*;
-import newhorizon.content.*;
-import newhorizon.func.TableFuncs;
+import newhorizon.NewHorizon;
+import newhorizon.content.NHBullets;
+import newhorizon.content.NHItems;
+import newhorizon.content.NHLoader;
+import newhorizon.content.NHUpgradeDatas;
 import newhorizon.interfaces.Upgraderc;
 
 import static newhorizon.func.TableFuncs.*;
@@ -33,6 +39,7 @@ public class UpgradeData{
 	public float costTime;
 	public int maxLevel;
 	public boolean isLeveled;
+	public int defaultLevel = 0;
 	
 	public float itemCostParma = 1;
 	public float timeCostParma = 1;
@@ -83,7 +90,7 @@ public class UpgradeData{
 	}
 	
 	public DataEntity newSubEntity(){
-		return new DataEntity();
+		return new DataEntity(){{init(defaultLevel);}};
 	}
 	
 	public class DataEntity{
@@ -102,6 +109,11 @@ public class UpgradeData{
 			isUnlocked = true;
 			if(isLeveled)level ++;
 			else level = 1;
+		}
+		
+		public void init(int level){
+			this.level = level;
+			if(level > 0)isUnlocked = true;
 		}
 		
 		public float speedUP(){

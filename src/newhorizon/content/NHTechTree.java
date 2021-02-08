@@ -3,21 +3,33 @@ package newhorizon.content;
 import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
+import mindustry.ctype.UnlockableContent;
+import mindustry.type.ItemStack;
 
 
 public class NHTechTree implements ContentList {
+    private static void add(UnlockableContent root, UnlockableContent content){
+        new TechNode(TechTree.get(root), content, content.researchRequirements());
+    }
+    
     @Override
     public void load(){
         //Blocks;
-        
-        new TechNode(TechTree.get(NHBlocks.zateFactorySmall), NHBlocks.xenMelter, NHBlocks.xenMelter.researchRequirements());
+        add(Blocks.powerNode, NHBlocks.insulatedWall);
+        add(Blocks.surgeWall, NHBlocks.heavyDefenceWall);
+        add(NHBlocks.heavyDefenceWall, NHBlocks.heavyDefenceWallLarge);
+        add(NHBlocks.heavyDefenceWall, NHBlocks.setonWall);
+        add(NHBlocks.heavyDefenceWall, NHBlocks.heavyDefenceDoor);
+        add(NHBlocks.setonWall, NHBlocks.setonWallLarge);
+        add(NHBlocks.heavyDefenceDoor, NHBlocks.heavyDefenceDoorLarge);
+        add(NHBlocks.zateFactorySmall, NHBlocks.xenMelter);
         new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.ender, NHBlocks.ender.researchRequirements());
-        new TechNode(TechTree.get(NHBlocks.ender), NHBlocks.nemesisUpgrader, NHBlocks.nemesisUpgrader.researchRequirements());
+        new TechNode(TechTree.get(NHBlocks.ender), NHBlocks.nemesisUpgrader, ItemStack.with());
         new TechNode(TechTree.get(Blocks.interplanetaryAccelerator), NHBlocks.jumpGate, NHBlocks.jumpGate.researchRequirements());
         new TechNode(TechTree.get(Blocks.phaseWall), NHBlocks.chargeWall, NHBlocks.chargeWall.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.chargeWall), NHBlocks.chargeWallLarge, NHBlocks.chargeWallLarge.researchRequirements());
