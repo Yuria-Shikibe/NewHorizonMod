@@ -22,7 +22,7 @@ public class SettingDialog extends Dialog{
 				if(!key.startsWith("@"))continue;
 				table.table(t -> {
 					t.button(key, Styles.clearTogglet, () -> {
-						if(key.endsWith("*"))setting(key, Core.bundle.get(key.replaceAll("@", "")), Core.bundle.get(key + ".extra", "null"));
+						if(key.endsWith("*"))setting(key, Core.bundle.get(key.replaceAll("@", "")), Core.bundle.get(key + ".extra", "@null"));
 						NHSetting.setBoolOnce(key, !NHSetting.getBool(key));
 					}).size(LEN * 4, LEN).update(b -> b.setChecked(NHSetting.getBool(key)));
 				}).row();
