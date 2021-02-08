@@ -66,7 +66,8 @@ public class NHSetting{
 	}
 	
 	private static void updateProperty(String version) throws IOException{
-		setting.delete();
+		settingList.clear();
+		loaded = !setting.file().delete();
 		
 		Properties pro = new Properties();
 		
@@ -75,8 +76,8 @@ public class NHSetting{
 			else pro.setProperty(key, name);
 		});
 		
-		settingFile();
-		
+		Log.info(pro);
+
 		FileOutputStream fos;
 		try{
 			fos = new FileOutputStream(path);
@@ -85,7 +86,6 @@ public class NHSetting{
 		}
 		pro.store(fos, version);
 		settingList.load(new FileInputStream(setting.file()));
-		
 	}
 	
 	public static void updateSettingFi() throws IOException{

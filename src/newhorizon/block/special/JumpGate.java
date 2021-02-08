@@ -247,8 +247,8 @@ public class JumpGate extends Block {
             dialog.addCloseListener();
 
             dialog.cont.table(t -> {
-                t.button("@back", Icon.left, dialog::hide).fillX().height(LEN).row();
                 t.table(inner -> {
+                    inner.button("@back", Icon.left, dialog::hide).fillX().height(LEN).row();
                     for(UnitSet set : calls) {
                         if(set.type.locked() && !state.rules.infiniteResources){
                             inner.table(Tex.buttonSquareDown, t2 -> {
