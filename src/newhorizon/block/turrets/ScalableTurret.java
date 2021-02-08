@@ -1,35 +1,40 @@
 package newhorizon.block.turrets;
 
 
+import arc.Core;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.entities.*;
-import arc.*;
-import arc.math.*;
-import arc.util.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import mindustry.content.*;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
+import mindustry.entities.bullet.BulletType;
+import mindustry.gen.Bullet;
+import mindustry.gen.Tex;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
+import mindustry.type.Liquid;
 import mindustry.ui.Styles;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.entities.bullet.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.consumers.*;
-import mindustry.world.meta.*;
-
+import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.consumers.ConsumeLiquidBase;
+import mindustry.world.consumers.ConsumeType;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHUpgradeDatas;
+import newhorizon.feature.UpgradeData;
+import newhorizon.feature.UpgradeData.DataEntity;
 import newhorizon.func.TableFuncs;
 import newhorizon.interfaces.Scalablec;
-
-import static newhorizon.func.TableFuncs.*;
-import newhorizon.feature.*;
 import newhorizon.interfaces.Upgraderc;
-import static mindustry.Vars.*;
-import newhorizon.feature.UpgradeData.DataEntity;
+
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
+import static newhorizon.func.TableFuncs.getPercent;
 
 public class ScalableTurret extends Turret{
 	public UpgradeData defaultData = NHUpgradeDatas.none;
@@ -92,7 +97,7 @@ public class ScalableTurret extends Turret{
             	if(getData().type().burstSpacing > 0.0001f){
 					for(int i = 0; i < getData().type().salvos; i++){
 						Time.run(getData().type().burstSpacing * i, () -> {
-							if(!isValid())return;
+							if(!isValid() || ammo.compareTo(getData().type().selectAmmo) != 0)return;
 							tr.trns(rotation, (size * tilesize / 2f) - recoil, Mathf.range(getData().type().randX) );
 							recoil = recoilAmount;
 							heat = 2f;
