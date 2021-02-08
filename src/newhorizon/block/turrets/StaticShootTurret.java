@@ -10,7 +10,7 @@ public class StaticShootTurret extends ItemTurret{
 	public class StaticShootTurretBuild extends ItemTurretBuild{
 		@Override
 		public boolean shouldTurn() {
-			return !this.charging || !this.wasShooting || !(this.recoil > 0);
+			return !this.charging && !this.isShooting();
 		}
 	}
 }

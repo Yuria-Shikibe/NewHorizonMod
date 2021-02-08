@@ -51,7 +51,7 @@ public class NHContent extends Block{
 	public void load(){
 		
 		ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
-		iconLevel = region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
+		region = iconLevel = region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 		
 		NHLoader.outlineTex.each((arg, tex) -> {
 			String[] s;

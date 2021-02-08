@@ -84,7 +84,7 @@ public class NHBullets {
 			shootEffect = Fx.plasticExplosion;
 		}},
 
-		skyFrag = new BasicBulletType(3.3f, 50) {
+		skyFrag = new BasicBulletType(3.3f, 240) {
 		@Override public float range(){return 280f;}
 			{
 				lifetime = 170f;
@@ -93,7 +93,7 @@ public class NHBullets {
 				width = 15f;
 				height = 37f;
 				splashDamageRadius = 40f;
-				splashDamage = lightningDamage = damage * 0.6f;
+				splashDamage = lightningDamage = damage * 0.75f;
 				backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
 				frontColor = Color.white;
 				lightning = 3;
@@ -465,7 +465,7 @@ public class NHBullets {
 		}},
 		
 		annMissile = new TextureMissileType(6.6f, 50f, "ann-missile-atlas@@404049"){
-			@Override public float range(){return 370f;}
+			@Override public float range(){return 280f;}
 		{
 			trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSky;
 			lightning = 3;

@@ -347,7 +347,7 @@ public class NHUnits implements ContentList {
 				alternate = true;
 				ejectEffect = Fx.none;
 				recoil = 4.4f;
-				bullet = new ShieldBreaker(6.25f, 40, 650f) {
+				bullet = new ShieldBreaker(6.25f, 50, 650f) {
 					@Override public float range(){return 280f;}
 					{
 						hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;

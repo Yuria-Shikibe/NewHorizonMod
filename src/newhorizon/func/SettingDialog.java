@@ -4,7 +4,6 @@ package newhorizon.func;
 import arc.Core;
 import arc.graphics.Color;
 import arc.input.KeyCode;
-import arc.scene.ui.Dialog;
 import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
@@ -14,7 +13,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
 
-public class SettingDialog extends Dialog{
+public class SettingDialog extends BaseDialog{
 	public SettingDialog(){
 		super("@nh-setting");
 		cont.table(table -> {
