@@ -17,7 +17,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import newhorizon.func.PosLightning;
+import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;

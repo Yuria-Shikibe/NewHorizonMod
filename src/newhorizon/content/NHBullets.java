@@ -13,7 +13,7 @@ import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
-import newhorizon.func.PosLightning;
+import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;

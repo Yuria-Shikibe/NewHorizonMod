@@ -44,6 +44,7 @@ import static newhorizon.func.Functions.*;
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
 import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFuncs.OFFSET;
 
 public class JumpGate extends Block {
     public float spawnDelay = 5f;
@@ -256,7 +257,7 @@ public class JumpGate extends Block {
                                 t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
 
                                 t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
-                            }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
+                            }).fillX().height(LEN).padBottom(TableFuncs.OFFSET / 2).row();
                         }else {
                             inner.table(Tex.button, t2 -> {
                                 t2.table(Tex.clear, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().grow().pad(TableFuncs.OFFSET);
@@ -269,8 +270,8 @@ public class JumpGate extends Block {
                                 t2.table(Tex.clear, table2 -> {
                                     table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
                                     table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set));
-                                }).height(LEN + TableFuncs.OFFSET).growX().left().pad(TableFuncs.OFFSET);
-                            }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
+                                }).height(LEN).growX().left().pad(TableFuncs.OFFSET);
+                            }).fillX().height(LEN + OFFSET).padBottom(TableFuncs.OFFSET / 2).row();
                         }
                     }
                 }).fillX().height(Core.graphics.getHeight() - LEN * 3).row();

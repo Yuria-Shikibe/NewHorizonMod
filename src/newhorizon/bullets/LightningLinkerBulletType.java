@@ -16,7 +16,7 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import newhorizon.content.NHFx;
-import newhorizon.func.PosLightning;
+import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
