@@ -2,6 +2,6 @@ name: "new-horizon"
 displayName: "NewHorizonMod"
 author: "Yuria"
 main: "newhorizon.NewHorizon"
-description: "Expanded contents, including Units, Turrets, Blocks, etc.\n\n\t[lightgray]I am sorry to all phone players because I actually have some HARDWARE problem, which causes  stuck problem when load content on phones. I can't solve this problem, so in order to save the phone players, the only thing I can do is cut the load code off when the mod is run on phone. And that lead to some sprite problem: [accent]no unit outline textures and full unit icons[]. Again, sorry about that."
-version: "1.5.3 beta"
+description: "Expanded contents, including Units, Turrets, Blocks, etc.\n\n      Here, I add three setting on the start menu and two of them are available, where you can set to use the Advanced Load and Debug Panel"
+version: "1.5.5 beta"
 minGameVersion: 122

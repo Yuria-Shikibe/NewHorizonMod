@@ -6,7 +6,6 @@ import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
 import arc.struct.Seq;
 import arc.util.Log;
-import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
@@ -14,6 +13,7 @@ import mindustry.type.Weapon;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHSetting;
 
 public class NHIconGenerator extends Block{
 	public NHIconGenerator(){
@@ -27,7 +27,7 @@ public class NHIconGenerator extends Block{
 	
 	@Override
 	public void createIcons(MultiPacker packer){
-		if(Vars.mobile)return;
+		if(!NHSetting.getBool("@active.advance-load*"))return;
 		NHLoader.fullIconNeeds.each( (name, iconSet) -> {
 			TextureAtlas.AtlasRegion t = Core.atlas.find(iconSet.type.name);
 			if(t.found()){
@@ -58,7 +58,11 @@ public class NHIconGenerator extends Block{
 	public void load(){
 		super.load();
 		region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
-		NHLoader.fullIconNeeds.each( (name, iconSet) -> iconSet.type.shadowRegion = Core.atlas.find(iconSet.type.name + "-icon", iconSet.type.name));
+		
+		/*NHLoader.fullIconNeeds.each( (name, iconSet) -> {
+			Log.info(iconSet.type.name);
+			iconSet.type.shadowRegion = Core.atlas.find(iconSet.type.name + "-icon", Core.atlas.find(iconSet.type.name));
+		});*/
 		
 		NHLoader.needBeLoad.each( (arg, tex) -> tex = Core.atlas.find(arg));
 	}

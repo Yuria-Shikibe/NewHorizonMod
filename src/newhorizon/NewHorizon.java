@@ -7,7 +7,6 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Time;
-import mindustry.Vars;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
@@ -17,6 +16,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
 import newhorizon.func.NHSetting;
+import newhorizon.func.SettingDialog;
 
 import java.io.IOException;
 
@@ -49,49 +49,6 @@ public class NewHorizon extends Mod{
 		}).size(LEN * 3, LEN).left().row();
 	}
 	
-	private void tableSet(){
-		String key = "@active.tool-panel";
-		if(!NHSetting.getBool(key)){
-			BaseDialog dialog = new BaseDialog("Caution");
-			dialog.addCloseListener();
-			if(Vars.mobile){
-				dialog.cont.pane(t -> {
-					t.add("[gray]The tool panel [lightgray]IS NOT SUITABLE[gray] for [lightgray]PHONES[gray].").row();
-					t.add("ARE YOU SURE YOU WANT TO ACTIVE IT?").color(Pal.ammo).padTop(OFFSET / 4);
-				}).fillX().height(LEN).row();
-				dialog.cont.image().fillX().height(OFFSET / 3).color(Pal.ammo).row();
-			}else{
-				dialog.cont.pane(t -> {
-					t.add("Are you sure you want to active tool panel?").color(Color.gray).padTop(OFFSET / 4);
-				}).fillX().height(LEN).row();
-				dialog.cont.image().fillX().height(OFFSET / 3).color(Color.gray).row();
-			}
-			dialog.cont.pane(t -> {
-				t.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN);
-				t.button("@yes", Icon.play, Styles.cleart, () -> {
-					NHSetting.setBoolOnce(key, true);
-					dialog.hide();
-				}).size(LEN * 3, LEN).padLeft(OFFSET / 2);
-			}).padTop(OFFSET / 2).fillX();
-			dialog.show();
-		}else{
-			BaseDialog dialog = new BaseDialog("Caution");
-			dialog.addCloseListener();
-			dialog.cont.pane(t -> {
-				t.add("Are you sure you want to disable tool panel?").color(Color.gray).padTop(OFFSET / 4);
-			}).fillX().height(LEN).row();
-			dialog.cont.image().fillX().height(OFFSET / 3).color(Color.gray).row();
-			dialog.cont.pane(t -> {
-				t.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN);
-				t.button("@yes", Icon.play, Styles.cleart, () -> {
-					NHSetting.setBoolOnce(key, false);
-					dialog.hide();
-				}).size(LEN * 3, LEN).padLeft(OFFSET / 2);
-			}).padTop(OFFSET / 2).fillX();
-			dialog.show();
-		}
-	}
-	
     public NewHorizon(){
         Log.info("Loaded NewHorizon Mod constructor.");
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
@@ -110,7 +67,7 @@ public class NewHorizon extends Mod{
 					NHSetting.settingApply();
 				}).size(LEN * 3, LEN);
 				table.button("@links", Icon.link, Styles.transt, this::links).size(LEN * 3, LEN).padLeft(OFFSET / 2);
-				table.button("@tool", Icon.book, Styles.transt, this::tableSet).size(LEN * 3, LEN).padLeft(OFFSET / 2);
+				table.button("@settings", Icon.book, Styles.transt, () -> new SettingDialog().show()).size(LEN * 3, LEN).padLeft(OFFSET / 2);
 			}).fillX().height(LEN + OFFSET);
 			dialog.show();
 			tableMain();

@@ -5,13 +5,13 @@ import arc.graphics.Color;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
-import mindustry.Vars;
 import mindustry.graphics.MultiPacker;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.feature.UpgradeData;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHSetting;
 
 public class NHContent extends Block{
 	public TextureRegion
@@ -28,7 +28,7 @@ public class NHContent extends Block{
 	@Override
 	public void createIcons(MultiPacker packer){
 		super.createIcons(packer);
-		if(Vars.mobile)return;
+		if(!NHSetting.getBool("@active.advance-load*"))return;
 		packer.add(MultiPacker.PageType.editor, this.name + "-icon-editor", Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full)));
 		if (!this.synthetic()) {
 			PixmapRegion image = Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full));

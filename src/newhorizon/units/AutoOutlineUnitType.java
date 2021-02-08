@@ -6,8 +6,6 @@ import arc.util.Log;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.ui.Cicon;
-import newhorizon.NewHorizon;
-import newhorizon.content.NHBlocks;
 import newhorizon.content.NHIconGenerator;
 import newhorizon.content.NHLoader;
 
@@ -34,7 +32,7 @@ public class AutoOutlineUnitType extends UnitType{
 	@Override
 	public void load(){
 		super.load();
-		shadowRegion = Core.atlas.find(name + "-icon");
+		shadowRegion = Core.atlas.find(name + "-icon", name);
 		Log.info(name + "put");
 	}
 	

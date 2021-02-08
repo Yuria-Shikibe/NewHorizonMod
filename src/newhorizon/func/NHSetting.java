@@ -23,8 +23,9 @@ public class NHSetting{
 	
 	static{
 		defaultKeys.put("initialized", "null version");
-		defaultKeys.put("@active.tool-panel", String.valueOf(false));
+		defaultKeys.put("@active.tool-panel*", String.valueOf(false));
 		defaultKeys.put("@active.admin-panel", String.valueOf(false));
+		defaultKeys.put("@active.advance-load*", String.valueOf(false));
 	}
 	
 	public static void settingFile() throws IOException{
@@ -113,7 +114,7 @@ public class NHSetting{
 	
 	public static void settingApply(){
 		TableFuncs.disableTable();
-		if(NHSetting.getBool("@active.tool-panel"))TableFuncs.showTable();
+		if(NHSetting.getBool("@active.tool-panel*"))TableFuncs.showTable();
 	}
 	
 }
