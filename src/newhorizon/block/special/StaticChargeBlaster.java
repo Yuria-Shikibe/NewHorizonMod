@@ -8,8 +8,6 @@ import arc.math.*;
 import arc.util.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import mindustry.entities.bullet.SapBulletType;
-import mindustry.game.Team;
 import mindustry.logic.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -19,7 +17,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 
 import newhorizon.content.NHFx;
-import newhorizon.func.PosLightning;
+import newhorizon.feature.PosLightning;
 
 import static mindustry.Vars.*;
 

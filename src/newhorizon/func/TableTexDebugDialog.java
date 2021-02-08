@@ -261,6 +261,10 @@ public class TableTexDebugDialog extends BaseDialog{
 			}
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
+		cont.button("Settings", () -> {
+			new SettingDialog().show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
 		return this;
 	}
 }

@@ -51,7 +51,7 @@ public class TableFuncs {
         yArea.setText(sy);
     }
     private static boolean pointValid(){
-        return point.x >= 0 && point.y >= 0;
+        return point.x >= 0 && point.y >= 0 && point.x <= world.width() * tilesize && point.y <= world.height() * tilesize;
     }
     private static class Inner extends Table{
         Inner(){
@@ -120,7 +120,7 @@ public class TableFuncs {
             floatTable = true;
         }
     }
-    
+    private static final Table starter = new Table(Tex.button);
     public static final TextButton.TextButtonStyle toggletAccent = new TextButton.TextButtonStyle() {{
         this.font = Fonts.def;
         this.fontColor = Color.white;
@@ -138,9 +138,14 @@ public class TableFuncs {
     public static String getJudge(boolean value){return value ? "[green]Yes[]" : "[red]No[]";}
     public static String getPercent(float value){return Mathf.floor(value * 100) + "%";}
     
+    public static void disableTable(){
+        Core.scene.root.removeChild(starter);
+    }
+    public static void showTable(){
+        Core.scene.root.addChildAt(1, starter);
+    }
+    
     public static void tableMain(){
-        //if(mobile)return;
-        Table starter = new Table(Tex.button);
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
             if(Vars.state.isMenu())starter.color.a = 0;
@@ -199,8 +204,8 @@ public class TableFuncs {
                             con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).fill().height(LEN).row();
                         }).fillX().height(LEN).row();
                         t.pane(con -> {
-                            con.button("Spawn", Icon.link, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).size(LEN * 2, LEN);
-                            con.button("Spawn", Icon.add, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
+                            con.button("SpawnP", Icon.link, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
+                            con.button("SpawnC", Icon.add, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
                         }).fillX().height(LEN).row();
                         t.pane(con -> {
                             con.button("Remove Units", Styles.cleart, Groups.unit::clear).size(LEN * 2, LEN);

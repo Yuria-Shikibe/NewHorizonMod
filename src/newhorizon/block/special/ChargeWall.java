@@ -18,7 +18,7 @@ import mindustry.world.*;
 
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
-import newhorizon.func.PosLightning;
+import newhorizon.feature.PosLightning;
 
 import static mindustry.Vars.*;
 

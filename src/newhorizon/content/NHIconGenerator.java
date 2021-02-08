@@ -58,7 +58,7 @@ public class NHIconGenerator extends Block{
 	public void load(){
 		super.load();
 		region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
-		NHLoader.fullIconNeeds.each( (name, iconSet) -> iconSet.type.shadowRegion = Core.atlas.find(iconSet.type.name + "-icon"));
+		NHLoader.fullIconNeeds.each( (name, iconSet) -> iconSet.type.shadowRegion = Core.atlas.find(iconSet.type.name + "-icon", iconSet.type.name));
 		
 		NHLoader.needBeLoad.each( (arg, tex) -> tex = Core.atlas.find(arg));
 	}
