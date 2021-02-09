@@ -27,12 +27,12 @@ public class SettingDialog extends BaseDialog{
 					}).size(LEN * 4, LEN).update(b -> b.setChecked(NHSetting.getBool(key)));
 				}).row();
 			}
-		});
+		}).width(Core.graphics.getWidth() / 2f).fillY();
 		
 		cont.row().button("@back", Icon.left, Styles.cleart, () -> {
 			this.hide();
 			NHSetting.settingApply();
-		}).fillX().height(TableFuncs.LEN).pad(TableFuncs.OFFSET / 3);
+		}).fillX().height(TableFuncs.LEN).bottom();
 		this.keyDown((key) -> {
 			if (key == KeyCode.escape || key == KeyCode.back) {
 				Core.app.post(this::hide);
