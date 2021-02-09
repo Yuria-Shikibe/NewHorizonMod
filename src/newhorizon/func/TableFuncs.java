@@ -58,7 +58,7 @@ public class TableFuncs {
             background(Tex.button);
             isInner = true;
             setSize(LEN * 7.5f, (LEN + OFFSET) * 3);
-            button(Icon.cancel, Styles.clearTransi, () -> {
+            button(Icon.cancel, Styles.clearTransi, LEN, () -> {
                 isInner = false;
                 setStr();
                 remove();
@@ -172,7 +172,7 @@ public class TableFuncs {
     
         Player player = Vars.player;
         
-        starter.table(table -> table.button(Icon.admin, Styles.clearTransi, () -> {
+        starter.table(table -> table.button(Icon.admin, Styles.clearTransi, LEN, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, cont -> {
                 Label label = new Label("<<-Spawns: [accent]" + spawnNum + "[] ->>");
@@ -221,10 +221,10 @@ public class TableFuncs {
                             d.show();
                         }).size(LEN * 2, LEN)).fillX().height(LEN).disabled(b -> mobile).row();
                     }).fillX().growY().padTop(OFFSET).row();
-                }).fill();
+                }).fillY().growX();
             }).row();
         }).size(LEN).disabled(b -> isInner || !state.rules.infiniteResources).row()).top().padTop(OFFSET).size(LEN).row();
-        starter.table(table -> table.button(Icon.move, Styles.clearTransi, () -> {
+        starter.table(table -> table.button(Icon.move, Styles.clearTransi, LEN, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, t -> {
                 t.table(bt -> {
