@@ -93,7 +93,6 @@ public class NHUnits implements ContentList {
 		){{
 			constructor = EntityMapping.map(32);
 			abilities.add(
-					new ShieldRegenFieldAbility(50.0F, 50F, 600.0F, 800.0F),
 					new ForceFieldAbility(64.0F, 80F, 8000.0F, 900.0F)
 			);
 			range = 320f;

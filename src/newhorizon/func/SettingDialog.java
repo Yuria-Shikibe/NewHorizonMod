@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.input.KeyCode;
 import mindustry.Vars;
 import mindustry.gen.Icon;
+import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
@@ -16,7 +17,7 @@ import static newhorizon.func.TableFuncs.OFFSET;
 public class SettingDialog extends BaseDialog{
 	public SettingDialog(){
 		super("@nh-setting");
-		cont.table(table -> {
+		cont.table(Tex.button, table -> {
 			for(String key : NHSetting.defaultKeys.keys()){
 				if(!key.startsWith("@"))continue;
 				table.table(t -> {

@@ -86,6 +86,7 @@ public class EffectTrail {
 			Seq<Vec3> data = e.data();
 
 			Draw.color(e.color);
+			Fill.circle(e.x, e.y, width * 1.1f * e.fout());
 			for (int i = 0; i < data.size - 1; i++) {
 				Vec3 c = data.get(i);
 				Vec3 n = data.get(i + 1);

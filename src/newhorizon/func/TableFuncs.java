@@ -69,8 +69,7 @@ public class TableFuncs {
                     isInner = false;
                     setStr();
                 }
-                
-                setPosition(0, (Core.graphics.getHeight() - getHeight()) / 2f);
+                setPosition(starter.getWidth(), (Core.graphics.getHeight() - getHeight()) / 2f);
             });
             
             new Table(Tex.clear){{
@@ -173,7 +172,7 @@ public class TableFuncs {
     
         Player player = Vars.player;
         
-        starter.table(table -> table.button(Icon.admin, Styles.cleari, () -> {
+        starter.table(table -> table.button(Icon.admin, Styles.clearTransi, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, cont -> {
                 Label label = new Label("<<-Spawns: [accent]" + spawnNum + "[] ->>");
@@ -204,19 +203,19 @@ public class TableFuncs {
                             con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).fill().height(LEN).row();
                         }).fillX().height(LEN).row();
                         t.pane(con -> {
-                            con.button("SpawnP", Icon.link, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
-                            con.button("SpawnC", Icon.add, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
+                            con.button("SpawnP", Icon.link, Styles.clearTogglet, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
+                            con.button("SpawnC", Icon.add, Styles.clearTogglet, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
                         }).fillX().height(LEN).row();
                         t.pane(con -> {
-                            con.button("Remove Units", Styles.cleart, Groups.unit::clear).size(LEN * 2, LEN);
-                            con.button("Remove Fires", Styles.cleart, () -> {
+                            con.button("Remove Units", Styles.clearTogglet, Groups.unit::clear).size(LEN * 2, LEN);
+                            con.button("Remove Fires", Styles.clearTogglet, () -> {
                                 for(int i = 0; i < 20; i++) Time.run(i * Time.delta * 3, Groups.fire::clear);
                             }).size(LEN * 2, LEN);
                         }).fillX().height(LEN).row();
-                        t.pane(con -> con.button("Add Items", Styles.cleart, () -> {
+                        t.pane(con -> con.button("Add Items", Styles.clearTogglet, () -> {
                             for(Item item : content.items())player.team().core().items.add(item, 1000000);
                         }).size(LEN * 2, LEN)).fillX().height(LEN).row();
-                        t.pane(con -> con.button("Debug", Styles.cleart, () -> {
+                        t.pane(con -> con.button("Debug", Styles.clearTogglet, () -> {
                             TableTexDebugDialog d = new TableTexDebugDialog("debug");
                             d.init();
                             d.show();
@@ -224,8 +223,8 @@ public class TableFuncs {
                     }).fillX().growY().padTop(OFFSET).row();
                 }).fill();
             }).row();
-        }).size(LEN).disabled(b -> isInner || !state.rules.infiniteResources).row()).top().padTop(OFFSET).row();
-        starter.table(table -> table.button(Icon.move, Styles.cleari, () -> {
+        }).size(LEN).disabled(b -> isInner || !state.rules.infiniteResources).row()).top().padTop(OFFSET).size(LEN).row();
+        starter.table(table -> table.button(Icon.move, Styles.clearTransi, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, t -> {
                 t.table(bt -> {
@@ -267,7 +266,7 @@ public class TableFuncs {
                 }).height(LEN).padTop(OFFSET);
                 
             }).growY().width(LEN * 5.5f).right();
-        }).size(LEN).disabled(b -> isInner).row()).top().padTop(OFFSET);
+        }).size(LEN).disabled(b -> isInner).row()).top().padTop(OFFSET).size(LEN);
         Core.scene.root.addChildAt(1, starter);
     }
     

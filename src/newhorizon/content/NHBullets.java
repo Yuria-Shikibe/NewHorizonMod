@@ -84,10 +84,10 @@ public class NHBullets {
 			shootEffect = Fx.plasticExplosion;
 		}},
 
-		skyFrag = new BasicBulletType(3.3f, 240) {
-		@Override public float range(){return 280f;}
+		skyFrag = new BasicBulletType(3.3f, 200) {
+		@Override public float range(){return 180f;}
 			{
-				lifetime = 170f;
+				lifetime = 60;
 				despawnEffect = hitEffect = NHFx.lightSkyCircleSplash;
 				knockback = 12f;
 				width = 15f;
