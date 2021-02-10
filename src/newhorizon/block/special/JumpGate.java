@@ -255,8 +255,8 @@ public class JumpGate extends Block {
             BaseDialog dialog = new BaseDialog("Call");
             dialog.addCloseListener();
 
-            dialog.cont.table(Tex.button, t -> {
-                t.table(Tex.button, inner -> {
+            dialog.cont.table(t -> {
+                t.table(inner -> {
                     inner.button("@back", Icon.left, dialog::hide).padBottom(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
                     inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null ||success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
                     inner.pane(callTable -> {
