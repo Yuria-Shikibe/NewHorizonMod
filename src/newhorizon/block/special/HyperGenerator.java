@@ -64,7 +64,7 @@ public class HyperGenerator extends PowerGenerator{
 	public float maxVelScl = 1.25f, minVelScl = 0.75f;
 	public float maxTimeScl = 1.25f, minTimeScl = 0.75f;
 	
-	public float plasmaScl = 0.9f;
+	public float plasmaScl = 0.975f;
 	public float gateSize = 5f;
 	public float effectCircleSize = -1;
 	public float triWidth = 6f;
@@ -88,7 +88,6 @@ public class HyperGenerator extends PowerGenerator{
 		this.hasItems = true;
 		this.outputsPower = this.consumesPower = true;
 		expanded = true;
-		configurable = true;
 		this.explosionRadius = 220f;
 		this.explosionDamage = 14000f;
 	}
@@ -181,14 +180,14 @@ public class HyperGenerator extends PowerGenerator{
 		@Override
 		public void draw(){
 			super.draw();
-			Color drawColor = Tmp.c1.set(getColor()).mul(1.0F + Mathf.absin(Time.time * 1.3f, 1.0F, 0.08F)).lerp(Color.white, Mathf.absin(Time.time * 1.3f, 1.0F, 0.07F));
+			Color drawColor = Tmp.c1.set(getColor()).lerp(Color.white, Mathf.absin(Time.time * 1.3f, 1.0F, 0.08F));
 			
 			Draw.rect(bottomRegion, x, y);
 			
 			for(int i = 0; i < plasmaRegions.length; ++i) {
 				float r = (size * Vars.tilesize - 3.0F + Mathf.absin(Time.time, 2.0F + i, 5.0F - i * 0.5F)) * plasmaScl;
 				Draw.color(getColor(), drawColor, (float)(i / plasmaRegions.length));
-				Draw.alpha((0.3F + Mathf.absin(Time.time, 2.0F + i * 2.0F, 0.3F + i * 0.05F)) * warmup);
+				Draw.alpha((0.25F + Mathf.absin(Time.time, 2.0F + i * 2.0F, 0.3F + i * 0.05F)) * warmup);
 				Draw.blend(Blending.additive);
 				Draw.rect(plasmaRegions[i], x, y, r, r, Time.time * (12.0F + i * 6.0F) * warmup);
 				Draw.blend();

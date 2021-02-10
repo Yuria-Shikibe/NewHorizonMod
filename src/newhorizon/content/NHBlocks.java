@@ -66,7 +66,7 @@ public class NHBlocks implements ContentList {
 		hyperGenerator = new HyperGenerator("hyper-generator"){{
 			size = 8;
 			health = 12500;
-			powerProduction = 350f;
+			powerProduction = 700f;
 			updateLightning = updateLightningRand = 3;
 			effectColor = NHItems.thermoCorePositive.color;
 			itemCapacity = 40;
@@ -74,7 +74,7 @@ public class NHBlocks implements ContentList {
 			this.ambientSound = Sounds.pulse;
 			this.ambientSoundVolume = 0.07F;
 			this.consumes.power(25.0F);
-			this.consumes.items(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 2));
+			this.consumes.items(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
 			this.consumes.liquid(NHLiquids.xenGamma, 0.15F);
 			NHTechTree.add(Blocks.impactReactor, this);
 			this.requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
