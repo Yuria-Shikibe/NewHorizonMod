@@ -118,22 +118,24 @@ public class JumpGate extends Block {
         BaseDialog dialogIn = new BaseDialog("More Info");
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
-        dialogIn.cont.pane(t -> t.image(set.type.icon(Cicon.full)).center()).growX().height(Core.graphics.getHeight() / 1.7f).row();
-        dialogIn.cont.add("<<[accent] " + set.type.localizedName + " []>>").row();
-        dialogIn.cont.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(TableFuncs.OFFSET).row();
-        dialogIn.cont.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(TableFuncs.OFFSET).row();
-        dialogIn.cont.pane(table -> {
-            int index = 0;
-            for(ItemStack stack : set.requirements()){
-                if(index % 5 == 0)table.row();
-                table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
-                index ++;
-            }
-        }).fillY().left().padLeft(TableFuncs.OFFSET).row();
-        if(!textExtra.equals(""))dialogIn.cont.add(textExtra).left().padLeft(TableFuncs.OFFSET).row();
-        dialogIn.cont.image().fillX().pad(2).height(4f).color(Pal.accent);
-        dialogIn.cont.row();
-        dialogIn.cont.button("@back", Icon.left, dialogIn::hide).size(LEN * 2.5f, LEN).pad(TableFuncs.OFFSET / 3);
+        dialogIn.cont.pane(t -> {
+            t.image(set.type.icon(Cicon.full)).center().row();
+            t.add("<<[accent] " + set.type.localizedName + " []>>").row();
+            t.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(TableFuncs.OFFSET).row();
+            t.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(TableFuncs.OFFSET).row();
+            t.table(table -> {
+                int index = 0;
+                for(ItemStack stack : set.requirements()){
+                    if(index % 5 == 0)table.row();
+                    table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
+                    index ++;
+                }
+            }).fillY().left().padLeft(TableFuncs.OFFSET).row();
+            if(!textExtra.equals(""))t.add(textExtra).left().padLeft(TableFuncs.OFFSET).row();
+            t.image().fillX().pad(2).height(4f).color(Pal.accent);
+            t.row();
+            t.button("@back", Icon.left, dialogIn::hide).size(LEN * 2.5f, LEN).pad(TableFuncs.OFFSET / 3);
+        }).growX().height(Core.graphics.getHeight() / 1.7f).row();
         dialogIn.show();
     }
 
