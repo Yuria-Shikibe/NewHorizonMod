@@ -150,7 +150,7 @@ public class HyperGenerator extends PowerGenerator{
 					workSound.at(this, Mathf.random(0.9f, 1.1f));
 					NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f, getColor());
 					Effect.shake(workShake, workShake, this);
-					PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
+					if(warmup > destroyedExplodeLimit)PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
 						NHFx.lightningHitLarge(getColor()).at(point);
 					});
 				}
