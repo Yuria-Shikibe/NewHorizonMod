@@ -11,10 +11,14 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Building;
+import mindustry.gen.Bullet;
+import mindustry.gen.Sounds;
+import mindustry.gen.Unit;
 import mindustry.type.UnitType;
 import newhorizon.block.special.JumpGate;
 import newhorizon.bullets.EffectBulletType;
@@ -24,6 +28,8 @@ import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
 
 public class Functions {
+    
+    
     public static void spawnUnit(UnitType type, Team team, int spawnNum, float x, float y){
         for(int spawned = 0; spawned < spawnNum; spawned++){
             Time.run(spawned * Time.delta, () -> {
@@ -39,25 +45,37 @@ public class Functions {
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
 
-    public static void spawnUnit(JumpGate.JumpGateBuild starter, float x, float y, int spawns, int level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
-        final TextureRegion
-                pointerRegion = Core.atlas.find("new-horizon-jump-gate-pointer"),
-                arrowRegion = Core.atlas.find("new-horizon-jump-gate-arrow");
-
-        ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + level + "[] fleet in coming at [" + TableFuncs.format(x / tilesize) + ", " + TableFuncs.format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
-
+    public static boolean spawnUnit(JumpGate.JumpGateBuild starter, float x, float y, int spawns, int level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
+        Seq<Vec2> vecs = new Seq<>();
+        
+        int steps = 0;
+        
+        if(!type.flying){
+            while(vecs.size < spawns){
+                if(steps > 10)return false;
+                Vec2 p = new Vec2().rnd(spawnRange).scl(Mathf.random(1f));
+                Building building = world.build((int)(p.x + x) / 8 , (int)(p.y + y) / 8);
+                if(building != null && building.block().solid){
+                    steps++;
+                    continue;
+                }
+                vecs.add(p);
+            }
+        }else{
+            randLenVectors((long)Time.time, spawns, spawnRange, (sx, sy) -> vecs.add(new Vec2(sx, sy)));
+        }
+        
         float angle, regSize = regSize(type);
-
+        final TextureRegion pointerRegion = Core.atlas.find("new-horizon-jump-gate-pointer"), arrowRegion = Core.atlas.find("new-horizon-jump-gate-arrow");
+        angle = starter.angleTo(x, y);
+    
+        ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + level + "[] fleet in coming at [" + TableFuncs.format(x / tilesize) + ", " + TableFuncs.format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
+        
         new Effect(60f, e -> {
             Lines.stroke(3 * e.fout(), spawnColor);
             Lines.circle(e.x, e.y, spawnRange * e.finpow());
         }).at(x, y);
-
-        angle = starter.angleTo(x, y);
-
-        Seq<Vec2> vecs = new Seq<>();
-        randLenVectors((long)Time.time, spawns, spawnRange, (vx, vy) -> vecs.add(new Vec2(vx, vy)));
-
+        
         int i = 0;
         for (Vec2 s : vecs) {
             int finalI = i;
@@ -106,13 +124,20 @@ public class Functions {
                     unit.set(x + s.x, y + s.y);
                 unit.add();
                 unit.rotation = angle;
-                NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);
-                Tmp.v1.trns(angle, inComeVelocity).scl(type.drag + 1);
-                unit.vel.add(Tmp.v1.x, Tmp.v1.y);
+                if(type.flying){
+                    NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);
+                    Tmp.v1.trns(angle, inComeVelocity).scl(type.drag + 1);
+                    unit.vel.add(Tmp.v1.x, Tmp.v1.y);
+                }else{
+                    for(int j = 0; j < 3; j++){
+                        Time.run(j * 4, () -> Fx.spawn.at(unit));
+                    }
+                }
                 Sounds.plasmaboom.at(unit.x, unit.y);
             });
 
             i++;
         }
+        return true;
     }
 }

@@ -203,19 +203,19 @@ public class TableFuncs {
                             con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).fill().height(LEN).row();
                         }).fillX().height(LEN).row();
                         t.pane(con -> {
-                            con.button("SpawnP", Icon.link, Styles.clearTogglet, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
-                            con.button("SpawnC", Icon.add, Styles.clearTogglet, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
+                            con.button("SpawnP", Icon.link, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
+                            con.button("SpawnC", Icon.add, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
                         }).fillX().height(LEN).row();
                         t.pane(con -> {
-                            con.button("Remove Units", Styles.clearTogglet, Groups.unit::clear).size(LEN * 2, LEN);
-                            con.button("Remove Fires", Styles.clearTogglet, () -> {
+                            con.button("Remove Units", Styles.cleart, Groups.unit::clear).size(LEN * 2, LEN);
+                            con.button("Remove Fires", Styles.cleart, () -> {
                                 for(int i = 0; i < 20; i++) Time.run(i * Time.delta * 3, Groups.fire::clear);
                             }).size(LEN * 2, LEN);
                         }).fillX().height(LEN).row();
-                        t.pane(con -> con.button("Add Items", Styles.clearTogglet, () -> {
+                        t.pane(con -> con.button("Add Items", Styles.cleart, () -> {
                             for(Item item : content.items())player.team().core().items.add(item, 1000000);
                         }).size(LEN * 2, LEN)).fillX().height(LEN).row();
-                        t.pane(con -> con.button("Debug", Styles.clearTogglet, () -> {
+                        t.pane(con -> con.button("Debug", Styles.cleart, () -> {
                             TableTexDebugDialog d = new TableTexDebugDialog("debug");
                             d.init();
                             d.show();

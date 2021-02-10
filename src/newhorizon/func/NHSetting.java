@@ -38,8 +38,6 @@ public class NHSetting{
 		path = fi.path();
 		setting = fi;
 		settingList.load(new FileInputStream(fi.file()));
-		Log.info(setting);
-		Log.info(settingList);
 	}
 	
 	public static void initSetting() throws IOException{
@@ -61,20 +59,28 @@ public class NHSetting{
 				break;
 			}
 		}
-		Log.info(meta);
 		if(!meta.version.equals(settingList.getProperty(initKey)))updateProperty(meta.version);
 	}
 	
 	private static void updateProperty(String version) throws IOException{
+		Log.info(settingList);
+		Properties pro = new Properties();
+		
+		defaultKeys.each((key, value) -> {
+			if(!key.equals(initKey) && settingList.containsKey(key)){
+				defaultKeys.put(key, settingList.getProperty(key));
+			}
+		});
+		Log.info("[MAP]" + defaultKeys);
+		
 		settingList.clear();
 		loaded = !setting.file().delete();
-		
-		Properties pro = new Properties();
 		
 		defaultKeys.each( (key, name) -> {
 			if(key.equals(initKey))pro.setProperty(initKey, version);
 			else pro.setProperty(key, name);
 		});
+		
 		
 		Log.info(pro);
 

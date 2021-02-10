@@ -9,16 +9,19 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
+import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Units;
-import mindustry.gen.Building;
-import mindustry.gen.Tex;
-import mindustry.gen.Icon;
 import mindustry.game.Team;
+import mindustry.gen.Building;
+import mindustry.gen.Icon;
+import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -34,15 +37,15 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHItems;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.Functions;
-import newhorizon.content.NHItems;
 import newhorizon.func.TableFuncs;
 
-import static newhorizon.func.Functions.*;
 import static mindustry.Vars.*;
-import static mindustry.Vars.state;
+import static newhorizon.func.Functions.regSize;
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
 
@@ -177,6 +180,8 @@ public class JumpGate extends Block {
         public float buildReload = 0f;
 
         public float progress;
+        
+        protected boolean success, error;
 
         @Override
         public void updateTile(){
@@ -184,7 +189,7 @@ public class JumpGate extends Block {
             if(hasConsume(getSet()))progress += efficiency();
             if(isCalling()){
                 this.buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1);
-                if(this.buildReload >= getSet().costTime() && hasConsume(getSet())){
+                if(this.buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
                     spawn(getSet());
                 }
             }
@@ -203,7 +208,7 @@ public class JumpGate extends Block {
 
         public Color getColor(UnitSet set){
             if(set == null)return baseColor();
-            return (isCalling() && !hasConsume(set)) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
+            return (isCalling() && (!hasConsume(set) || !success)) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
         }
 
         @Override
@@ -224,7 +229,11 @@ public class JumpGate extends Block {
                 Drawf.arrow(x, y, target.x, target.y, 15f, 6f, getColor(getSet()));
 
             }else Drawf.dashCircle(x, y, spawnRange, baseColor());
-
+            
+            if(error){
+                DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, getColor(getSet()));
+            }
+            
             Draw.reset();
         }
 
@@ -248,7 +257,8 @@ public class JumpGate extends Block {
 
             dialog.cont.table(t -> {
                 t.table(inner -> {
-                    inner.button("@back", Icon.left, dialog::hide).fillX().height(LEN).row();
+                    inner.button("@back", Icon.left, dialog::hide).padBottom(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
+                    inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null ||success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
                     for(UnitSet set : calls) {
                         if(set.type.locked() && !state.rules.infiniteResources){
                             inner.table(Tex.buttonSquareDown, t2 -> {
@@ -318,7 +328,7 @@ public class JumpGate extends Block {
                     }
                 }
 
-                if(!hasConsume(getSet())){
+                if(!success || !hasConsume(getSet())){
                     Draw.color(getColor(getSet()));
                     float signSize = 0.75f + Mathf.absin(progress + 8f, 8f, 0.15f);
                     for (int i = 0; i < 4; i++) {
@@ -347,8 +357,21 @@ public class JumpGate extends Block {
         public boolean coreValid() { return this.team.core() != null && this.team.core().items != null && !this.team.core().items.empty(); }
 
         public void consumeItems(){
-            if(state.rules.infiniteResources)return;
-            if(coreValid())this.team.core().items.remove(getSet().requirements());
+            if(coreValid()){
+                int i = 0;
+                for(ItemStack stack : getSet().requirements()){
+                    Delivery.DeliveryData data = Pools.obtain(Delivery.DeliveryData.class, Delivery.DeliveryData::new);
+                    Log.info(stack);
+                    data.items[Vars.content.items().indexOf(stack.item)] = stack.amount;
+                    i ++;
+                    Time.run(i * spawnDelay, () -> {
+                        Tmp.v1.rnd(block().size * tilesize / 2f).add(this);
+                        if(isValid())NHContent.deliveryBullet.create(this, team, Tmp.v1.x, Tmp.v1.y, angleTo(core()), 1f, 1f, 10000f, data);
+                    });
+                }
+                
+                if(!state.rules.infiniteResources)this.team.core().items.remove(getSet().requirements());
+            }
         }
 
         public boolean hasConsume(UnitSet set){
@@ -371,10 +394,7 @@ public class JumpGate extends Block {
 
         public void spawn(UnitSet set){
             if(!isValid() || !Units.canCreate(team, set.type))return;
-            consumeItems();
-            this.spawns = set.callIns;
-            this.buildReload = 0;
-            this.spawnID = -1;
+            
             float Sx, Sy;
             int spawnNum = set.callIns;
             if(team.data().countType(set.type) + spawnNum > Units.getCap(team)){
@@ -391,7 +411,15 @@ public class JumpGate extends Block {
             }
 
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
-            Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
+            success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
+            if(success){
+                consumeItems();
+                this.spawns = set.callIns;
+                this.buildReload = 0;
+                this.spawnID = -1;
+                success = false;
+                error = false;
+            }else error = true;
         }
     }
 

@@ -27,6 +27,7 @@ public class NHIconGenerator extends Block{
 	
 	@Override
 	public void createIcons(MultiPacker packer){
+		super.createIcons(packer);
 		if(!NHSetting.getBool("@active.advance-load*"))return;
 		NHLoader.fullIconNeeds.each( (name, iconSet) -> {
 			TextureAtlas.AtlasRegion t = Core.atlas.find(iconSet.type.name);
@@ -59,12 +60,8 @@ public class NHIconGenerator extends Block{
 		super.load();
 		region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 		
-		/*NHLoader.fullIconNeeds.each( (name, iconSet) -> {
-			Log.info(iconSet.type.name);
-			iconSet.type.shadowRegion = Core.atlas.find(iconSet.type.name + "-icon", Core.atlas.find(iconSet.type.name));
-		});*/
-		
 		NHLoader.needBeLoad.each( (arg, tex) -> tex = Core.atlas.find(arg));
+		//Vars.content.blocks().remove(NHLoader.iconGenerator);
 	}
 	
 	public static class IconSet{

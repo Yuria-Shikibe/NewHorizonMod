@@ -60,7 +60,7 @@ public class NewHorizon extends Mod{
 				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
 				table.image().width(LEN * 5).height(OFFSET / 2.5f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("").row();
-			}).grow().center().row();
+			}).width(Core.graphics.getWidth() - LEN).growY().center().row();
 			dialog.cont.table(Tex.clear, table -> {
 				table.button("@back", Icon.left, Styles.transt, () -> {
 					dialog.hide();

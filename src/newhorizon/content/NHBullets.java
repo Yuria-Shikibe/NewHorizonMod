@@ -105,6 +105,27 @@ public class NHBullets {
 				hitSound = Sounds.explosion;
 			}
 		},
+	
+		hyperBlast = new NHTrailBulletType(3.3f, 200) {
+			{
+				lifetime = 60;
+				despawnEffect = hitEffect = NHFx.lightningHitLarge(NHItems.thermoCorePositive.color);
+				knockback = 12f;
+				width = 15f;
+				height = 37f;
+				splashDamageRadius = 40f;
+				splashDamage = lightningDamage = damage * 0.75f;
+				backColor = lightColor = lightningColor = trailColor = NHItems.thermoCorePositive.color;
+				frontColor = Color.white;
+				lightning = 3;
+				lightningLength = 8;
+				smokeEffect = Fx.shootBigSmoke2;
+				trailChance = 0.6f;
+				trailEffect = NHFx.trail;
+				hitShake = 3f;
+				hitSound = Sounds.plasmaboom;
+			}
+		},
 
 		hurricaneLaser = new ContinuousLaserBulletType(680){
 			{

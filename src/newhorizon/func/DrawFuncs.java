@@ -8,11 +8,14 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
+import arc.scene.ui.layout.Scl;
 import arc.struct.Seq;
 import arc.util.Structs;
+import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.graphics.Pal;
 import mindustry.type.Weapon;
+import mindustry.ui.Fonts;
 
 public class DrawFuncs {
     public static final Color bottomColor = Pal.gray;
@@ -23,6 +26,28 @@ public class DrawFuncs {
         vec23 = new Vec2();
     
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
+    
+    public static void overlayText(String text, float x, float y, float offset, Color color){
+        Font font = Fonts.outline;
+        GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
+        boolean ints = font.usesIntegerPositions();
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(0.25F / Scl.scl(1.0F));
+        layout.setText(font, Core.bundle.get("spawn-error"));
+        font.setColor(color);
+        float dy = y + offset + 3.0F;
+        font.draw(Core.bundle.get("spawn-error"), x, dy + layout.height + 1.0F, 1);
+        --dy;
+        Lines.stroke(2.0F, Color.darkGray);
+        Lines.line(x - layout.width / 2.0F - 2.0F, dy, x + layout.width / 2.0F + 1.5F, dy);
+        Lines.stroke(1.0F, color);
+        Lines.line(x - layout.width / 2.0F - 2.0F, dy, x + layout.width / 2.0F + 1.5F, dy);
+        font.setUseIntegerPositions(ints);
+        font.setColor(Color.white);
+        font.getData().setScale(1.0F);
+        Draw.reset();
+        Pools.free(layout);
+    }
     
     public static Pixmap getOutline(Pixmap base, Color outlineColor){
         PixmapRegion region = new PixmapRegion(base);

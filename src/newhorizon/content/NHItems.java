@@ -21,7 +21,7 @@ public class NHItems implements ContentList{
 			@Override
 			public boolean isHidden(){return true;}
 		};
-		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("#C0FF53")){{
+		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("CFFF87")){{
 			explosiveness = 5f;
 		}};
 		thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("#7D95B2")){{

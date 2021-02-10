@@ -5,11 +5,9 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
+import arc.math.Mathf;
 import arc.util.Log;
-import mindustry.content.Fx;
-import mindustry.content.Items;
-import mindustry.content.Liquids;
-import mindustry.content.UnitTypes;
+import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.gen.Sounds;
@@ -22,6 +20,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.Door;
 import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.Cultivator;
@@ -38,7 +37,7 @@ import newhorizon.block.drawer.NHDrawAnimation;
 import newhorizon.block.special.*;
 import newhorizon.block.turrets.ScalableTurret;
 import newhorizon.block.turrets.SpeedupTurret;
-import newhorizon.block.turrets.StaticShootTurret;
+import newhorizon.bullets.NHTrailBulletType;
 
 import static mindustry.type.ItemStack.with;
 
@@ -47,10 +46,10 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-		finalCore, delivery, zateOre, xenMelter,
+		 delivery, zateOre, xenMelter, hyperGenerator,
 		largeShieldGenerator, divlusion,
 		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
-		irdryonVault, blaster, ender, thurmix, argmot,
+		irdryonVault, blaster, ender, thurmix, argmot, thermoTurret,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zateFactoryLarge, zateFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
@@ -64,11 +63,72 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult = 4;
 		
+		hyperGenerator = new HyperGenerator("hyper-generator"){{
+			size = 8;
+			health = 12500;
+			powerProduction = 350f;
+			updateLightning = updateLightningRand = 3;
+			effectColor = NHItems.thermoCorePositive.color;
+			itemCapacity = 40;
+			itemDuration = 180f;
+			this.ambientSound = Sounds.pulse;
+			this.ambientSoundVolume = 0.07F;
+			this.consumes.power(25.0F);
+			this.consumes.items(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 2));
+			this.consumes.liquid(NHLiquids.xenGamma, 0.15F);
+			NHTechTree.add(Blocks.impactReactor, this);
+			this.requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
+		}};
+		
+		thermoTurret = new PowerTurret("thermo-turret"){{
+			NHTechTree.add(Blocks.arc, this);
+			size = 1;
+			health = 320;
+			this.requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.copper, 50, Items.silicon, 25));
+			shootType = new NHTrailBulletType(6.5f, 15f){{
+				hitEffect = new Effect(12.0F, (e) -> {
+					Draw.color(Pal.lancerLaser, Color.white, e.fout() * 0.75f);
+					Lines.stroke(e.fout() * 1.5F);
+					Angles.randLenVectors(e.id, 3, e.finpow() * 17.0F, e.rotation, 360.0F, (x, y) -> {
+						float ang = Mathf.angle(x, y);
+						Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 4.0F + 1.0F);
+					});
+				});
+				knockback = 0.5f;
+				trailColor = backColor = hitColor = Pal.lancerLaser;
+				frontColor = Color.white;
+				lifetime = 130f;
+				homingDelay = 1f;
+				homingPower = 0.2f;
+				homingRange = 120f;
+				status = StatusEffects.shocked;
+				statusDuration = 30f;
+				width = 5f;
+				drawSize = 120f;
+				height = 22f;
+			}};
+			powerUse = 4;
+			shots = 5;
+			inaccuracy = 3f;
+			burstSpacing = 6f;
+			this.reloadTime = 75f;
+			this.shootCone = 50.0F;
+			this.rotateSpeed = 8.0F;
+			this.targetGround = false;
+			this.range = 200.0F;
+			this.shootEffect = Fx.lightningShoot;
+			this.smokeEffect = Fx.shootSmallSmoke;
+			this.heatColor = Color.red;
+			this.recoilAmount = 1.0F;
+			this.shootSound = Sounds.laser;
+		}};
+		
 		insulatedWall = new Wall("insulated-wall"){{
 			size = 1;
 			health = 550;
-			requirements(Category.defense, with(Items.thorium, 10, Items.copper, 5));
-			insulated = true;
+			requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
+			this.insulated = true;
+			this.absorbLasers = true;
 		}};
 		
 		setonWall = new Wall("seton-wall"){{
@@ -90,12 +150,14 @@ public class NHBlocks implements ContentList {
 		heavyDefenceWall = new Wall("heavy-defence-wall"){{
 			size = 1;
 			health = 1750;
+			this.absorbLasers = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20));
 		}};
 		
 		heavyDefenceWallLarge = new Wall("heavy-defence-wall-large"){{
 			size = 4;
 			health = 1750 * healthMult;
+			this.absorbLasers = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult, NHItems.presstanium, 20 * healthMult));
 		}};
 		
@@ -125,7 +187,7 @@ public class NHBlocks implements ContentList {
 			
 			craftEffect = NHFx.lightSkyCircleSplash;
 			updateEffect = Fx.smeltsmoke;
-			requirements(Category.crafting, with(NHItems.juniorProcessor, 35, NHItems.metalOxhydrigen, 50, Items.thorium, 30, NHItems.presstanium, 25));
+			requirements(Category.crafting, BuildVisibility.shown, with(NHItems.juniorProcessor, 35, NHItems.metalOxhydrigen, 50, Items.thorium, 30, NHItems.presstanium, 25));
 			consumes.power(3f);
 			consumes.items(new ItemStack(NHItems.metalOxhydrigen, 2), new ItemStack(NHItems.zate, 1));
 			outputLiquid = new LiquidStack(NHLiquids.xenAlpha, 3f);
@@ -151,12 +213,8 @@ public class NHBlocks implements ContentList {
 			requirements(Category.distribution, with(NHItems.seniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 120));
 			
 		}};
-		finalCore = new DefenceCoreBlock("final-core"){{
-			size = 8;
-			health = 100000;
-			requirements(Category.units, BuildVisibility.hidden, with());
-			//requirements(Category.effect, with(NHItems.juniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 20));
-		}};
+		
+		
 		divlusion = new PowerTurret("divlusion"){{
 			shots = 2;
 			burstSpacing = 8f;
@@ -665,7 +723,7 @@ public class NHBlocks implements ContentList {
 			}
 		};
 
-		thurmix = new StaticShootTurret("thurmix") {
+		thurmix = new ItemTurret("thurmix") {
 			{
 				requirements(Category.turret, with(Items.copper, 105, Items.graphite, 95, Items.titanium, 60));
 				ammo(
@@ -780,7 +838,18 @@ public class NHBlocks implements ContentList {
 			));
 			size = 8;
 			addSets(
-				new UnitSet(10, NHUnits.hurricane, 15000f,4,
+				new UnitSet(9, NHUnits.annihilation, 15000f, 4,
+						new ItemStack(NHItems.upgradeSort, 1400),
+						new ItemStack(NHItems.seniorProcessor, 800),
+						new ItemStack(NHItems.darkEnergy, 800)
+				),
+				new UnitSet(7, NHUnits.tarlidor, 12000f,4,
+						new ItemStack(NHItems.irayrondPanel, 400),
+						new ItemStack(NHItems.setonAlloy, 1200),
+						new ItemStack(NHItems.seniorProcessor, 800),
+						new ItemStack(NHItems.thermoCoreNegative, 400)
+				),
+				new UnitSet(10, NHUnits.hurricane, 20000f,4,
 					new ItemStack(NHItems.irayrondPanel, 800),
 					new ItemStack(NHItems.setonAlloy, 1200),
 					new ItemStack(NHItems.seniorProcessor, 1000),

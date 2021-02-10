@@ -93,7 +93,7 @@ public class NHUnits implements ContentList {
 		){{
 			constructor = EntityMapping.map(32);
 			abilities.add(
-					new ForceFieldAbility(64.0F, 80F, 8000.0F, 900.0F)
+					new ForceFieldAbility(64.0F, 3F, 5000.0F, 900.0F)
 			);
 			range = 320f;
 			engineOffset = 15.0F;
@@ -149,7 +149,7 @@ public class NHUnits implements ContentList {
 				shake = 0f;
 				heatColor = Pal.accent;
 				shootY = 13f;
-				reload = 300f;
+				reload = 330f;
 				shots = 1;
 				x = y = 0f;
 				bullet = NHBullets.strikeLaser;
@@ -163,8 +163,8 @@ public class NHUnits implements ContentList {
 			lowAltitude = true;
 			faceTarget = true;
 			isCounted = true;
-			this.health = 6500.0F;
-			this.speed = 1F;
+			this.health = 6000.0F;
+			this.speed = 0.75F;
 			this.accel = 0.04F;
 			this.drag = 0.025F;
 			this.flying = true;
@@ -301,8 +301,8 @@ public class NHUnits implements ContentList {
 			){{
 				constructor = EntityMapping.map(3);
 				abilities.add(
-						new ForceFieldAbility(120.0F, 200F, 20000.0F, 900.0F),
-						new RepairFieldAbility(1000f, 160f, 240f){{
+						new ForceFieldAbility(120.0F, 6F, 20000.0F, 1200.0F),
+						new RepairFieldAbility(800f, 160f, 240f){{
 							this.healEffect = new Effect(11.0F, (e) -> {
 								Draw.color(NHColor.lightSky);
 								Lines.stroke(e.fout() * 2.0F);

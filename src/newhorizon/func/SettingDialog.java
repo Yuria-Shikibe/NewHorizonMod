@@ -23,7 +23,7 @@ public class SettingDialog extends BaseDialog{
 				table.table(t -> {
 					t.button(key, Styles.clearTogglet, () -> {
 						if(key.endsWith("*"))setting(key, Core.bundle.get(key.replaceAll("@", "")), Core.bundle.get(key + ".extra", "@null"));
-						NHSetting.setBoolOnce(key, !NHSetting.getBool(key));
+						else NHSetting.setBoolOnce(key, !NHSetting.getBool(key));
 					}).height(LEN).width(Core.graphics.getWidth() / 2f).update(b -> b.setChecked(NHSetting.getBool(key)));
 				}).row();
 			}

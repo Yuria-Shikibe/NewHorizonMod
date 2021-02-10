@@ -16,7 +16,6 @@ import arc.util.pooling.Pool;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
@@ -26,9 +25,8 @@ import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
 import mindustry.world.meta.BlockGroup;
-import newhorizon.bullets.DeliveryBulletType;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
-import newhorizon.content.NHLoader;
 import newhorizon.effects.EffectTrail;
 import newhorizon.func.DrawFuncs;
 
@@ -47,8 +45,6 @@ public class Delivery extends Block{
 	
 	public Effect shootEffect = NHFx.boolSelector, smokeEffect = NHFx.boolSelector;
 	
-	protected BulletType packageBullet;
-	
 	public Delivery(String name) {
 		super(name);
 		this.acceptsItems = true;
@@ -60,7 +56,6 @@ public class Delivery extends Block{
 		this.group = BlockGroup.storage;
 		outlineIcon = true;
 		expanded = true;
-		NHLoader.put(name + "-pack@@404049");
 	}
 	
 	@Override
@@ -82,7 +77,6 @@ public class Delivery extends Block{
 	@Override
 	public void init(){
 		super.init();
-		packageBullet = new DeliveryBulletType(Core.atlas.find(name + "-pack"));
 	}
 	
 	public class DeliveryBuild extends Building{
@@ -129,9 +123,6 @@ public class Delivery extends Block{
 			DeliveryData data = Pools.obtain(DeliveryData.class, DeliveryData::new);
 			data.to = core;
 			
-			data.t = new EffectTrail(region.height / 6, (region.width / 40f), 40f);
-			data.t.clear();
-			
 			for(int i = 0; i < Vars.content.items().size; ++i) {
 				int maxTransfer = Math.min(this.items.get(Vars.content.item(i)), itemCapacity - totalUsed);
 				data.items[i] = maxTransfer;
@@ -139,8 +130,8 @@ public class Delivery extends Block{
 				this.items.remove(Vars.content.item(i), maxTransfer);
 			}
 			
-			float lifeScl = Mathf.clamp(dst(core) / packageBullet.range(), 0, range / packageBullet.range());
-			packageBullet.create(this, team, x, y, rotation, 1, 1, lifeScl, data);
+			float lifeScl = Mathf.clamp(dst(core) / NHContent.deliveryBullet.range(), 0, range / NHContent.deliveryBullet.range());
+			NHContent.deliveryBullet.create(this, team, x, y, rotation, 1, 1, lifeScl, data);
 			Effect.shake(shake, shake, this);
 			shootSound.at(this.tile, Mathf.random(0.9F, 1.1F));
 		}

@@ -9,15 +9,20 @@ import mindustry.graphics.MultiPacker;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
+import newhorizon.bullets.DeliveryBulletType;
 import newhorizon.feature.UpgradeData;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 
 public class NHContent extends Block{
-	public TextureRegion
+	public static TextureRegion
 			iconLevel, ammoInfo;
 	
+	public static DeliveryBulletType deliveryBullet;
 	
+	static{
+		NHLoader.put("mass-deliver-pack@@404049");
+	}
 	
 	public NHContent(){
 		super("specific-content-loader");
@@ -51,7 +56,7 @@ public class NHContent extends Block{
 	public void load(){
 		
 		ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
-		region = iconLevel = region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
+		iconLevel = region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 		
 		NHLoader.outlineTex.each((arg, tex) -> {
 			String[] s;
@@ -66,6 +71,13 @@ public class NHContent extends Block{
 		}
 		
 		super.load();
+		//Vars.content.blocks().remove(NHLoader.content);
+	}
+	
+	@Override
+	public void init(){
+		super.init();
+		deliveryBullet = new DeliveryBulletType(Core.atlas.find(NewHorizon.NHNAME + "mass-deliver-pack"));
 	}
 	
 	@Override

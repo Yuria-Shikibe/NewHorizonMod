@@ -121,7 +121,19 @@ public class NHFx{
 			Lines.circle(e.x, e.y, e.fin() * len * 8f);
 			randLenVectors(e.id, 6, 3 + 60 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
 		}),
-
+		
+		line = new Effect(30f, e -> {
+			color(e.color, Color.white, e.fout() * 0.75f);
+			stroke(2 * e.fout());
+			randLenVectors(e.id, 6, 3 + e.rotation * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 4));
+		}),
+		
+		circle = new Effect(25f, e -> {
+			color(e.color, Color.white, e.fout() * 0.75f);
+			stroke(2 * e.fout());
+			circle(e.x, e.y, e.rotation * e.fin());
+		}),
+		
 		spawn = new Effect(100f, e -> {
 			if(!(e.data() instanceof Building))return;
 			Building starter = e.data();
@@ -322,7 +334,35 @@ public class NHFx{
 			color(Color.gray);
 			randLenVectors(e.id + 1, 7, 8f + 70 * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 6f + 0.5f));
 		}),
-		
+	
+		hyperCloud = new Effect(140.0F, 400.0F, (e) -> {
+			randLenVectors(e.id, 20, e.finpow() * 160.0F, (x, y) -> {
+				float size = e.fout() * 15.0F;
+				Draw.color(e.color, Color.lightGray, e.fin());
+				Fill.circle(e.x + x, e.y + y, size / 2.0F);
+			});
+		}),
+	
+		hyperExplode = new Effect(30f, e -> {
+			color(e.color, Color.white, e.fout() * 0.75f);
+			stroke(1.3f * e.fslope());
+			circle(e.x, e.y, 45f * e.fin());
+			randLenVectors(e.id + 1, 5, 8f + 60 * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 7f));
+		}),
+	
+		hyperInstall = new Effect(30f, e -> {
+			color(e.color, Color.white, e.fout() * 0.75f);
+			stroke(2.5f * e.fout());
+			circle(e.x, e.y, 75f * e.fin());
+			
+			stroke(1.3f * e.fslope());
+			circle(e.x, e.y, 45f * e.fin());
+			
+			for(int i = 0; i < 4; i++){
+				Drawf.tri(e.x, e.y, e.rotation * (e.fout() + 1) / 2, e.rotation * 30f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
+			}
+		}),
+	
 		emped = new Effect(20f, e -> {
 			color(Color.valueOf("#F7B080"), Color.valueOf("#915923"), e.fin());
 			randLenVectors(e.id, 4, 7 + 50 * e.fin(), (x, y) -> {

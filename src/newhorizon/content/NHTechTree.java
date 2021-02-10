@@ -8,7 +8,8 @@ import mindustry.type.ItemStack;
 
 
 public class NHTechTree implements ContentList {
-    private static void add(UnlockableContent root, UnlockableContent content){
+    
+    public static void add(UnlockableContent root, UnlockableContent content){
         new TechNode(TechTree.get(root), content, content.researchRequirements());
     }
     
@@ -22,7 +23,6 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.heavyDefenceWall, NHBlocks.heavyDefenceDoor);
         add(NHBlocks.setonWall, NHBlocks.setonWallLarge);
         add(NHBlocks.heavyDefenceDoor, NHBlocks.heavyDefenceDoorLarge);
-        add(NHBlocks.zateFactorySmall, NHBlocks.xenMelter);
         new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
@@ -56,7 +56,7 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(NHBlocks.irayrondPanelFactory), NHBlocks.irdryonFluidFactory, NHBlocks.irdryonFluidFactory.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.zateFactorySmall), NHBlocks.xenBetaFactory, NHBlocks.xenBetaFactory.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.xenBetaFactory), NHBlocks.xenGammaFactory, NHBlocks.xenGammaFactory.researchRequirements());
-
+        add(NHBlocks.zateFactorySmall, NHBlocks.xenMelter);
 
         //Units;
         new TechNode(TechTree.get(UnitTypes.zenith), NHUnits.striker, NHUnits.striker.researchRequirements());

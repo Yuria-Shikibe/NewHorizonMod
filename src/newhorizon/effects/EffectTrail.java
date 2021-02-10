@@ -29,8 +29,9 @@ public class EffectTrail {
 		points = new Seq<>(length);
 	}
 
-	public void clear() {
+	public EffectTrail clear() {
 		points.clear();
+		return this;
 	}
 
 	public void draw(Color color) {
