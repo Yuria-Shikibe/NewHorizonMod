@@ -255,37 +255,39 @@ public class JumpGate extends Block {
             BaseDialog dialog = new BaseDialog("Call");
             dialog.addCloseListener();
 
-            dialog.cont.table(Tex.clear, t -> {
-                t.table(Tex.clear, inner -> {
+            dialog.cont.table(Tex.button, t -> {
+                t.table(Tex.button, inner -> {
                     inner.button("@back", Icon.left, dialog::hide).padBottom(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
                     inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null ||success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
-                    for(UnitSet set : calls) {
-                        if(set.type.locked() && !state.rules.infiniteResources){
-                            inner.table(Tex.buttonSquareDown, t2 -> {
-                                t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
-
-                                t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
-
-                                t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
-                            }).fillX().height(LEN).padBottom(TableFuncs.OFFSET / 2).row();
-                        }else {
-                            inner.table(Tex.button, t2 -> {
-                                t2.table(Tex.clear, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().grow().pad(TableFuncs.OFFSET);
-
-                                t2.pane(table2 -> {
-                                    table2.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
-                                    table2.add("[lightgray]NeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().row();
-                                }).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
-
-                                t2.table(Tex.clear, table2 -> {
-                                    table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
-                                    table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set));
-                                }).height(LEN).growX().left().pad(TableFuncs.OFFSET);
-                            }).fillX().height(LEN + OFFSET).padBottom(TableFuncs.OFFSET / 2).row();
+                    inner.pane(callTable -> {
+                        for(UnitSet set : calls) {
+                            if(set.type.locked() && !state.rules.infiniteResources){
+                                callTable.table(Tex.buttonSquareDown, t2 -> {
+                                    t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
+                
+                                    t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
+                
+                                    t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
+                                }).fillX().height(LEN).padBottom(TableFuncs.OFFSET / 2).row();
+                            }else{
+                                callTable.table(Tex.button, t2 -> {
+                                    t2.table(Tex.clear, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().grow().pad(TableFuncs.OFFSET);
+                
+                                    t2.pane(table2 -> {
+                                        table2.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
+                                        table2.add("[lightgray]NeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().row();
+                                    }).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
+                
+                                    t2.table(Tex.clear, table2 -> {
+                                        table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
+                                        table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set));
+                                    }).height(LEN).growX().left().pad(TableFuncs.OFFSET);
+                                }).fillX().height(LEN + OFFSET).padBottom(TableFuncs.OFFSET / 2).row();
+                            }
                         }
-                    }
-                }).growX().height(t.getHeight()).row();
-            }).fillX();
+                    }).fill();
+                }).fill();
+            }).fill();
 
             table.button("Spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
