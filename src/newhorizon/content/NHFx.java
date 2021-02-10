@@ -359,7 +359,7 @@ public class NHFx{
 			circle(e.x, e.y, 45f * e.fin());
 			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, e.rotation * (e.fout() + 1) / 2, e.rotation * 30f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
+				Drawf.tri(e.x, e.y, e.rotation * (e.fout() + 1) / 2, e.rotation * 27f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
 			}
 		}),
 	

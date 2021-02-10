@@ -148,18 +148,18 @@ public class HyperGenerator extends PowerGenerator{
 				if (this.timer(0, itemDuration / timeScale)) {
 					this.consume();
 					workSound.at(this, Mathf.random(0.9f, 1.1f));
-					NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f, getColor());
+					NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f * (warmup + 0.3f), getColor());
 					Effect.shake(workShake, workShake, this);
 					if(warmup > destroyedExplodeLimit)PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
 						NHFx.lightningHitLarge(getColor()).at(point);
 					});
 				}
 				progress += efficiency() * Time.delta;
-				if(Mathf.equal(warmup, 1.0F, 0.015F)){
+				if(Mathf.equal(warmup, 1.0F, 0.0015F)){
 					warmup = 1.0F;
 				}else warmup = Mathf.lerpDelta(warmup, 1, warmupSpeed);
 			}else{
-				if(Mathf.equal(warmup, 0F, 0.015F)){
+				if(Mathf.equal(warmup, 0F, 0.0015F)){
 					warmup = 0F;
 				}else warmup = Mathf.lerpDelta(warmup, 0, disabledSpeed);
 			}
