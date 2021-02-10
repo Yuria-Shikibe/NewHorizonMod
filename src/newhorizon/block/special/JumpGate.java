@@ -118,11 +118,7 @@ public class JumpGate extends Block {
         BaseDialog dialogIn = new BaseDialog("More Info");
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
-        dialogIn.cont.table(Tex.button, t -> {
-            TextureRegion tex = set.type.icon(Cicon.full);
-            float height = Mathf.clamp(tex.height, 0, t.getHeight());
-            t.image(tex).size(tex.width * height / tex.height, tex.height).center();
-        }).grow().row();
+        dialogIn.cont.pane(t -> t.image(set.type.icon(Cicon.full)).center()).growX().height(Core.graphics.getHeight() / 1.7f).row();
         dialogIn.cont.add("<<[accent] " + set.type.localizedName + " []>>").row();
         dialogIn.cont.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(TableFuncs.OFFSET).row();
         dialogIn.cont.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(TableFuncs.OFFSET).row();
