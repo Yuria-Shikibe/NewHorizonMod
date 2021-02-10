@@ -64,6 +64,7 @@ public class HyperGenerator extends PowerGenerator{
 	public float maxVelScl = 1.25f, minVelScl = 0.75f;
 	public float maxTimeScl = 1.25f, minTimeScl = 0.75f;
 	
+	public float plasmaScl = 0.9f;
 	public float gateSize = 5f;
 	public float effectCircleSize = -1;
 	public float triWidth = 6f;
@@ -150,7 +151,7 @@ public class HyperGenerator extends PowerGenerator{
 					workSound.at(this, Mathf.random(0.9f, 1.1f));
 					NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f * (warmup + 0.3f), getColor());
 					Effect.shake(workShake, workShake, this);
-					if(warmup > destroyedExplodeLimit)PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
+					if(warmup > destroyedExplodeLimit && Mathf.chanceDelta(warmup / 2))PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
 						NHFx.lightningHitLarge(getColor()).at(point);
 					});
 				}
@@ -185,7 +186,7 @@ public class HyperGenerator extends PowerGenerator{
 			Draw.rect(bottomRegion, x, y);
 			
 			for(int i = 0; i < plasmaRegions.length; ++i) {
-				float r = size * Vars.tilesize - 3.0F + Mathf.absin(Time.time, 2.0F + i, 5.0F - i * 0.5F);
+				float r = (size * Vars.tilesize - 3.0F + Mathf.absin(Time.time, 2.0F + i, 5.0F - i * 0.5F)) * plasmaScl;
 				Draw.color(getColor(), drawColor, (float)(i / plasmaRegions.length));
 				Draw.alpha((0.3F + Mathf.absin(Time.time, 2.0F + i * 2.0F, 0.3F + i * 0.05F)) * warmup);
 				Draw.blend(Blending.additive);

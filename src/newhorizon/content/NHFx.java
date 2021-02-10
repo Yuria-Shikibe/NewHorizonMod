@@ -351,7 +351,7 @@ public class NHFx{
 		}),
 	
 		hyperInstall = new Effect(30f, e -> {
-			color(e.color, Color.white, e.fout() * 0.75f);
+			color(e.color, Color.white, e.fout() * 0.55f);
 			stroke(2.5f * e.fout());
 			circle(e.x, e.y, 75f * e.fin());
 			
