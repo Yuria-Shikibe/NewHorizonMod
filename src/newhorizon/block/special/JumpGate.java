@@ -285,7 +285,7 @@ public class JumpGate extends Block {
                         }
                     }
                 }).fillX().height(Core.graphics.getHeight() - LEN * 3).row();
-            }).fill();
+            }).height(Core.graphics.getHeight() - LEN * 2).fillX();
 
             table.button("Spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
