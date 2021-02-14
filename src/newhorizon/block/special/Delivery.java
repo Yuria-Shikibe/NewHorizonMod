@@ -3,11 +3,11 @@ package newhorizon.block.special;
 import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -21,9 +21,12 @@ import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.logic.Ranged;
 import mindustry.type.Item;
 import mindustry.world.Block;
-import mindustry.world.blocks.storage.CoreBlock.CoreBuild;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
@@ -41,7 +44,6 @@ public class Delivery extends Block{
 	public float shake;
 	public float recoilAmount = 5f;
 	public TextureRegion baseRegion;
-	public int minDistribute = 10;
 	
 	public Effect shootEffect = NHFx.boolSelector, smokeEffect = NHFx.boolSelector;
 	
@@ -79,19 +81,60 @@ public class Delivery extends Block{
 		super.init();
 	}
 	
-	public class DeliveryBuild extends Building{
+	public class DeliveryBuild extends Building implements Ranged{
+		public int link = -1;
 		public float rotation = 90;
 		public float reload;
 		public float heat;
 		public float recoil;
-		public CoreBuild core;
 		
-		public boolean coreValid() {
-			return core != null && core.items != null && !core.items.empty();
+		@Override public boolean acceptItem(Building source, Item item) {
+			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
+			if(link().block() instanceof StorageBlock)return link().acceptItem(source, item);
+			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
 		
-		public void setCore(){
-			core = this.team.core();
+		@Override
+		public float range(){
+			return range;
+		}
+		
+		public Building link(){
+			return Vars.world.build(link);
+		}
+		
+		@Override
+		public boolean onConfigureTileTapped(Building other){
+			if (this == other || this.link == other.pos()){
+				configure(-1);
+				return true;
+			}
+			if (other.team == team && other.block.hasItems && within(other, range())) {
+				configure(other.pos());
+				Log.info("Link" + other.pos());
+				return false;
+			}
+			return true;
+		}
+		
+		@Override
+		public void configure(Object value){
+			super.configure(value);
+			if(value instanceof Integer){
+				link = (int)value;
+				items.clear();
+				for(int i = 0; i < 4; i++){
+					Time.run(4 * i, () -> {
+						if(!isValid())return;
+						Tmp.v1.trns(rotation, -(recoil + size * Vars.tilesize / 2f));
+						NHFx.trail.at(x + Tmp.v1.x, y + Tmp.v2.y, 3f, team.color);
+					});
+				}
+			}
+		}
+		
+		public boolean linkValid() {
+			return link() != null && link().items != null;
 		}
 		
 		@Override
@@ -99,29 +142,48 @@ public class Delivery extends Block{
 			heat = Mathf.lerp(heat, 0, coolDown);
 			recoil = Mathf.lerp(recoil, 0, coolDown);
 			
-			if(!coreValid() && timer.get(20))setCore();
-			if(coreValid()){
-				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(core), rotateSpeed * this.efficiency());
+			if(linkValid()){
+				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(link()), rotateSpeed * this.efficiency());
 			}
 			
-			if(coreValid() && Angles.angleDist(rotation, angleTo(core)) < 10){
-				if(this.items.total() >= minDistribute){
-					reload += efficiency() * Time.delta;
-					if(reload >= reloadTime){
-						deliver();
-						reload = 0;
-					}
+			if(linkValid() && Angles.angleDist(rotation, angleTo(link())) < 10){
+				reload += efficiency() * Time.delta;
+				if(reload >= reloadTime){
+					if(shouldDeliver())deliver();
+					reload = 0;
 				}
 			}
 		}
 		
+		protected boolean shouldDeliver(){
+			boolean shouldDeliver = true;
+			if(linkValid()){
+				if(link() instanceof ItemTurret.ItemTurretBuild){
+					ItemTurret.ItemTurretBuild turret = (ItemTurret.ItemTurretBuild)link();
+					ItemTurret out = (ItemTurret)link().block;
+					if(turret.totalAmmo > out.maxAmmo / 2)return false;
+				}
+				for(Item item : Vars.content.items()){
+					if(items.get(item) <= 0)continue;
+					if(link().items.get(item) + items.get(item) > link().getMaximumAccepted(item)){
+						shouldDeliver = false;
+						break;
+					}
+				}
+			}
+			else shouldDeliver = false;
+			return shouldDeliver;
+		}
+		
 		protected void deliver(){
+			if(!linkValid())return;
+			
 			int totalUsed = 0;
 			this.heat = 1;
 			this.recoil = recoilAmount;
 			
 			DeliveryData data = Pools.obtain(DeliveryData.class, DeliveryData::new);
-			data.to = core;
+			data.to = link();
 			
 			for(int i = 0; i < Vars.content.items().size; ++i) {
 				int maxTransfer = Math.min(this.items.get(Vars.content.item(i)), itemCapacity - totalUsed);
@@ -130,16 +192,10 @@ public class Delivery extends Block{
 				this.items.remove(Vars.content.item(i), maxTransfer);
 			}
 			
-			float lifeScl = Mathf.clamp(dst(core) / NHContent.deliveryBullet.range(), 0, range / NHContent.deliveryBullet.range());
+			float lifeScl = Mathf.clamp(dst(link()) / NHContent.deliveryBullet.range(), 0, range / NHContent.deliveryBullet.range());
 			NHContent.deliveryBullet.create(this, team, x, y, rotation, 1, 1, lifeScl, data);
 			Effect.shake(shake, shake, this);
-			shootSound.at(this.tile, Mathf.random(0.9F, 1.1F));
-		}
-		
-		@Override
-		public void placed(){
-			super.placed();
-			setCore();
+			shootSound.at(this, Mathf.random(0.9F, 1.1F));
 		}
 		
 		@Override
@@ -153,27 +209,28 @@ public class Delivery extends Block{
 		}
 		
 		@Override
-		public boolean acceptItem(Building source, Item item){
-			return this.items.total() < itemCapacity ;
-		}
-		
-		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
-			if(coreValid()){
-				Draw.color(team.color);
-				Lines.stroke(heat * strokeScl);
-				Fill.circle(x, y, Lines.getStroke() * Vars.tilesize);
-				Fill.circle(core.x, core.y, Lines.getStroke() * Vars.tilesize);
-				DrawFuncs.posSquareLink(team.color, 2f, 4f, true, this, core);
+			
+			Drawf.dashCircle(x, y, range(), team.color);
+			
+			if(linkValid()){
+				Draw.color(Pal.accent);
+				Lines.stroke(1.0F);
+				Lines.square(link().x, link().y, link().block.size * Vars.tilesize / 2.0F + 1.0F);
+				Draw.reset();
+				DrawFuncs.posSquareLink(team.color, 2f, 4f, true, this, link());
+				Drawf.arrow(x, y, link().x, link().y, 15f, 6f, team.color);
 			}
 		}
 		
 		@Override public void write(Writes write) {
 			write.f(this.rotation);
+			write.i(this.link);
 		}
 		@Override public void read(Reads read, byte revision) {
 			this.rotation = read.f();
+			this.link = read.i();
 		}
 	}
 	

@@ -314,7 +314,6 @@ public class NHBullets {
 			hitSound = Sounds.explosion;
 			drawSize = 120f;
 			hitShake = despawnShake = 1.3f;
-			scaleVelocity = true;
 			lightning = 2;
 			lightningCone = 360;
 			lightningLengthRand = lightningLength = 4;
@@ -322,7 +321,7 @@ public class NHBullets {
 			splashDamage = lightningDamage = 0.35f * damage;
 			height = 42f;
 			width = 11f;
-			lifetime = 500;
+			lifetime = 100;
 			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 			frontColor = Color.white;
 			hitEffect = NHFx.darkEnrCircleSplash;

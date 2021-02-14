@@ -25,10 +25,12 @@ import mindustry.world.consumers.ConsumeType;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHBullets;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
 import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
 import newhorizon.func.TableFuncs;
+import newhorizon.func.TextureFilterValue;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
 
@@ -62,7 +64,7 @@ public class ScalableTurret extends Turret{
     public void setStats(){
         super.setStats();
 		stats.add(Stat.damage, defaultData.selectAmmo.damage, StatUnit.none);
-		//stats.add(Stat.input, new TextureFilterValue(defaultBaseData.iconLevel, "[accent]Caution[]: Need be linked."));
+		stats.add(Stat.input, new TextureFilterValue(NHContent.iconLevel, "[accent]Caution[]: Need be linked."));
     }
 
     @Override

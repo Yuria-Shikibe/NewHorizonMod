@@ -9,7 +9,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -135,7 +134,7 @@ public class JumpGate extends Block {
             t.image().fillX().pad(2).height(4f).color(Pal.accent);
             t.row();
             t.button("@back", Icon.left, dialogIn::hide).size(LEN * 2.5f, LEN).pad(TableFuncs.OFFSET / 3);
-        }).growX().height(Core.graphics.getHeight() / 1.7f).row();
+        }).fill().row();
         dialogIn.show();
     }
 
@@ -365,7 +364,6 @@ public class JumpGate extends Block {
                 int i = 0;
                 for(ItemStack stack : getSet().requirements()){
                     Delivery.DeliveryData data = Pools.obtain(Delivery.DeliveryData.class, Delivery.DeliveryData::new);
-                    Log.info(stack);
                     data.items[Vars.content.items().indexOf(stack.item)] = stack.amount;
                     i ++;
                     Time.run(i * spawnDelay, () -> {

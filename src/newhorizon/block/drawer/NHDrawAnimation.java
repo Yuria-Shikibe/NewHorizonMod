@@ -3,6 +3,7 @@ package newhorizon.block.drawer;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericCrafter.*;
 import mindustry.world.draw.*;
 
@@ -11,7 +12,7 @@ public class NHDrawAnimation extends DrawAnimation{
     @Override
     public void draw(GenericCrafterBuild entity){
 		Draw.rect(entity.block.region, entity.x, entity.y);
-		Draw.color(Color.clear, liquidColor, entity.liquids.total() / entity.block.liquidCapacity);
+		Draw.color(Color.clear, liquidColor, entity.liquids.get(((GenericCrafter)entity.block).outputLiquid.liquid) / entity.block.liquidCapacity);
 		Draw.rect(liquid, entity.x, entity.y);
 		Draw.color();
 		Draw.rect(top, entity.x, entity.y);

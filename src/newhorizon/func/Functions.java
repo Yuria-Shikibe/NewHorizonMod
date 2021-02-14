@@ -20,15 +20,17 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
-import newhorizon.block.special.JumpGate;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.ui;
 
 public class Functions {
-    
+    public static Color getColor(Color defaultColor, Team team){
+        return defaultColor == null ? team.color : defaultColor;
+    }
     
     public static void spawnUnit(UnitType type, Team team, int spawnNum, float x, float y){
         for(int spawned = 0; spawned < spawnNum; spawned++){
@@ -41,11 +43,12 @@ public class Functions {
             });
         }
     }
+    
     public static float regSize(UnitType type){
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
 
-    public static boolean spawnUnit(JumpGate.JumpGateBuild starter, float x, float y, int spawns, int level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
+    public static boolean spawnUnit(Building starter, float x, float y, int spawns, int level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
         Seq<Vec2> vecs = new Seq<>();
         
         int steps = 0;
@@ -54,8 +57,9 @@ public class Functions {
             while(vecs.size < spawns){
                 if(steps > 10)return false;
                 Vec2 p = new Vec2().rnd(spawnRange).scl(Mathf.random(1f));
-                Building building = world.build((int)(p.x + x) / 8 , (int)(p.y + y) / 8);
-                if(building != null && building.block().solid){
+                Building building = Units.findAllyTile(starter.team, p.x + x, p.y + y, type.hitSize * 2f, b -> b.block().solid);
+                Log.info(building);
+                if(building != null){
                     steps++;
                     continue;
                 }
@@ -130,8 +134,9 @@ public class Functions {
                     unit.vel.add(Tmp.v1.x, Tmp.v1.y);
                 }else{
                     for(int j = 0; j < 3; j++){
-                        Time.run(j * 4, () -> Fx.spawn.at(unit));
+                        Time.run(j * 8, () -> Fx.spawn.at(unit));
                     }
+                    NHFx.circle.at(unit.x, unit.y, type.hitSize * 2, spawnColor);
                 }
                 Sounds.plasmaboom.at(unit.x, unit.y);
             });

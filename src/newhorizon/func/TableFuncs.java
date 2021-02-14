@@ -53,16 +53,17 @@ public class TableFuncs {
     private static boolean pointValid(){
         return point.x >= 0 && point.y >= 0 && point.x <= world.width() * tilesize && point.y <= world.height() * tilesize;
     }
+    
     private static class Inner extends Table{
         Inner(){
             background(Tex.button);
             isInner = true;
-            setSize(LEN * 7.5f, (LEN + OFFSET) * 3);
-            button(Icon.cancel, Styles.clearTransi, LEN, () -> {
+            setSize(LEN * 8.5f, (LEN + OFFSET) * 3);
+            button(Icon.cancel, Styles.clearTransi, () -> {
                 isInner = false;
                 setStr();
                 remove();
-            }).padRight(OFFSET).size(LEN, LEN * 3).left();
+            }).padRight(OFFSET).size(LEN, getHeight() - OFFSET * 3).left();
             update(() -> {
                 if(Vars.state.isMenu()){
                     remove();
@@ -93,6 +94,59 @@ public class TableFuncs {
             Core.scene.add(this);
         }
     }
+    private static class UnitSpawnTable extends Table{
+        UnitSpawnTable(){
+            Table in = new Table(out -> {
+                out.pane(table -> {
+                    int num = 0;
+                    for(UnitType type : content.units()){
+                        if(type.isHidden()) continue;
+                        if(num % 5 == 0) table.row();
+                        table.button(new TextureRegionDrawable(type.icon(Cicon.xlarge)), Styles.clearTogglei, LEN, () -> selected = type).update(b -> b.setChecked(selected == type)).size(LEN);
+                        num++;
+                    }
+                }).fillX().height(LEN * 5f).row();
+                Table t = new Table(tin -> {
+                    tin.pane(con -> {
+                        con.button("Switch Team", Icon.refresh, () -> {
+                            player.team(player.team().id == Team.sharded.id ? state.rules.waveTeam : Team.sharded);
+                        }).size(LEN * 4, LEN).update(b -> b.setColor(player.team().color));
+                    }).fillX().height(LEN).row();
+                    tin.pane(con -> {
+                        con.button(Icon.refresh, Styles.clearTransi, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? Team.sharded : state.rules.waveTeam).size(LEN);
+                        con.button(Icon.cancel, Styles.clearTransi, () -> point.set(-1, -1)).size(LEN);
+                        con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).fill().height(LEN).row();
+                    }).fillX().height(LEN).row();
+                    tin.pane(con -> {
+                        con.button("SpawnP", Icon.link, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
+                        con.button("SpawnC", Icon.add, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
+                    }).fillX().height(LEN).row();
+                    tin.pane(con -> {
+                        con.button("Remove Units", Styles.cleart, Groups.unit::clear).size(LEN * 2, LEN);
+                        con.button("Remove Fires", Styles.cleart, () -> {
+                            for(int i = 0; i < 20; i++) Time.run(i * Time.delta * 3, Groups.fire::clear);
+                        }).size(LEN * 2, LEN);
+                    }).fillX().height(LEN).row();
+                    tin.pane(con -> {
+                        con.button("Add Items", Styles.cleart, () -> {
+                            for(Item item : content.items()) player.team().core().items.add(item, 1000000);
+                        }).size(LEN * 2, LEN);
+                    }).fillX().height(LEN).row();
+                    tin.pane(con -> {
+                        con.button("Debug", Styles.cleart, () -> {
+                            TableTexDebugDialog d = new TableTexDebugDialog("debug");
+                            d.init();
+                            d.show();
+                        }).size(LEN * 2, LEN);
+                    }).disabled(b -> mobile).fillX().height(LEN).row();
+                });
+                out.pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
+            });
+            if(mobile)pane(in).grow();
+            else pane(in).fillX().height(in.getHeight());
+        }
+    }
+    
     private static final Table pTable = new Table(Tex.clear){{
         update(() -> {
             if(Vars.state.isMenu()){
@@ -172,61 +226,35 @@ public class TableFuncs {
     
         Player player = Vars.player;
         
-        starter.table(table -> table.button(Icon.admin, Styles.clearTransi, LEN, () -> {
+        starter.table(table -> table.button(Icon.admin, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
             Table inner = new Inner();
-            inner.table(Tex.button, cont -> {
+            Table unitTable = new UnitSpawnTable();
+            Table uT = new Table(){{
                 Label label = new Label("<<-Spawns: [accent]" + spawnNum + "[] ->>");
                 Image image = new Image();
                 Label p = new Label("");
-                cont.update(() -> {
+                update(() -> {
                     image.setColor(selectTeam.color);
                     label.setText(new StringBuilder().append("<<-Spawns: [accent]").append(spawnNum).append("[] ->>"));
                     p.setText(new StringBuilder().append("At: ").append(point.x).append(", ").append(point.y).append(" ->>"));
                 });
-                cont.add(label).row();
-                cont.add(p).row();
-                cont.add(image).fillX().height(OFFSET / 3).pad(OFFSET / 2).row();
-                cont.table(part -> {
-                    part.pane(t -> {
-                        int num = 0;
-                        for(UnitType type : content.units()){
-                            if(type.isHidden()) continue;
-                            if(num % 5 == 0) t.row();
-                            t.button(new TextureRegionDrawable(type.icon(Cicon.xlarge)), Styles.clearTogglei, LEN, () -> selected = type).update(b -> b.setChecked(selected == type)).size(LEN);
-                            num++;
-                        }
-                    }).growX().height(LEN * 5f).row();
-                    part.table(Tex.button, t -> {
-                        t.pane(con -> {
-                            con.button(Icon.refresh, Styles.clearTransi, () -> selectTeam = selectTeam.id == state.rules.waveTeam.id ? player.team() : state.rules.waveTeam).size(LEN);
-                            con.button(Icon.cancel, Styles.clearTransi, () -> point.set(-1, -1)).size(LEN);
-                            con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).fill().height(LEN).row();
-                        }).fillX().height(LEN).row();
-                        t.pane(con -> {
-                            con.button("SpawnP", Icon.link, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
-                            con.button("SpawnC", Icon.add, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
-                        }).fillX().height(LEN).row();
-                        t.pane(con -> {
-                            con.button("Remove Units", Styles.cleart, Groups.unit::clear).size(LEN * 2, LEN);
-                            con.button("Remove Fires", Styles.cleart, () -> {
-                                for(int i = 0; i < 20; i++) Time.run(i * Time.delta * 3, Groups.fire::clear);
-                            }).size(LEN * 2, LEN);
-                        }).fillX().height(LEN).row();
-                        t.pane(con -> con.button("Add Items", Styles.cleart, () -> {
-                            for(Item item : content.items())player.team().core().items.add(item, 1000000);
-                        }).size(LEN * 2, LEN)).fillX().height(LEN).row();
-                        t.pane(con -> con.button("Debug", Styles.cleart, () -> {
-                            TableTexDebugDialog d = new TableTexDebugDialog("debug");
-                            d.init();
-                            d.show();
-                        }).size(LEN * 2, LEN)).fillX().height(LEN).disabled(b -> mobile).row();
-                    }).fillX().growY().padTop(OFFSET).row();
-                }).fillY().growX();
-            }).row();
+                table(table1 -> {
+                    add(image).growX().height(OFFSET / 3).growY().pad(OFFSET / 2).row();
+                    table1.table(t -> {
+                        t.add(label).row();
+                        t.add(p).row();
+                    }).grow().row();
+                }).fillX().growY();
+            }};
+            inner.table(Tex.button, cont -> {
+                cont.table(t -> t.add(uT) ).growX().fillY().row();
+                cont.table(t -> t.add(unitTable) ).height(mobile ? inner.getHeight() : unitTable.getHeight()).growX();
+            }).growX().height(mobile ? inner.getHeight() : Core.graphics.getHeight() / 1.3f);
         }).size(LEN).disabled(b -> isInner || !state.rules.infiniteResources).row()).top().padTop(OFFSET).size(LEN).row();
-        starter.table(table -> table.button(Icon.move, Styles.clearTransi, LEN, () -> {
+        starter.table(table -> table.button(Icon.move, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, t -> {
+                final float WIDTH = LEN * 2;
                 t.table(bt -> {
                     bt.button("@confirm", Icon.export, () -> {
                         try{
@@ -235,14 +263,14 @@ public class TableFuncs {
                         }catch(NumberFormatException err){
                             point.set(player.x, player.y);
                         }
-                    }).size(LEN * 2, LEN).left().padBottom(OFFSET * 5f);
+                    }).size(WIDTH, LEN).left().padBottom(OFFSET * 5f);
                     bt.button("@cancel", Icon.cancel, () -> {
                         point.set(-1, -1);
                         setStr();
                         pTable.remove();
                         autoMove = false;
                         setText();
-                    }).disabled(b -> !pointValid()).size(LEN * 2, LEN).padLeft(LEN * 1.5f).right().padBottom(OFFSET * 5f);
+                    }).disabled(b -> !pointValid()).size(WIDTH, LEN).padLeft(WIDTH).right().padBottom(OFFSET * 5f);
                 }).height(LEN).padTop(OFFSET).row();
     
                 t.add("Set Move Target").row();
@@ -261,11 +289,11 @@ public class TableFuncs {
                     bt.button("@move", Icon.rightOpen, toggletAccent, () -> {
                         autoMove = !autoMove;
                         if(player.unit() != null)player.unit().lookAt(point);
-                    }).disabled(b -> !pointValid()).update(b -> b.setChecked(autoMove)).size(LEN * 2, LEN).left().padTop(OFFSET * 2.75f);
-                    bt.button("@boost", Icon.up, toggletAccent, () -> onBoost = !onBoost).disabled(b -> !autoMove || !Vars.player.unit().type.canBoost).update(b -> b.setChecked(onBoost)).size(LEN * 2, LEN).padLeft(LEN * 1.5f).right().padTop(OFFSET * 2.75f);
+                    }).disabled(b -> !pointValid()).update(b -> b.setChecked(autoMove)).size(WIDTH, LEN).left().padTop(OFFSET * 2.75f);
+                    bt.button("@boost", Icon.up, toggletAccent, () -> onBoost = !onBoost).disabled(b -> !autoMove || !Vars.player.unit().type.canBoost).update(b -> b.setChecked(onBoost)).size(WIDTH, LEN).padLeft(WIDTH).right().padTop(OFFSET * 2.75f);
                 }).height(LEN).padTop(OFFSET);
                 
-            }).growY().width(LEN * 5.5f).right();
+            }).grow().right();
         }).size(LEN).disabled(b -> isInner).row()).top().padTop(OFFSET).size(LEN);
         Core.scene.root.addChildAt(1, starter);
     }

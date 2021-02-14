@@ -39,7 +39,7 @@ public class NewHorizon extends Mod{
 		table.button(buttonName, icon, Styles.cleart, () -> {
 			BaseDialog dialog = new BaseDialog("@link");
 			dialog.addCloseListener();
-			dialog.cont.pane(t -> t.add("[gray]Are you sure jump to this link: [accent]" + link + " [gray]?")).fillX().height(LEN / 2f).row();
+			dialog.cont.pane(t -> t.add("[gray]" + Core.bundle.get("confirm.link") + ": [accent]" + link + " [gray]?")).fillX().height(LEN / 2f).row();
 			dialog.cont.image().fillX().pad(8).height(4f).color(Pal.accent).row();
 			dialog.cont.pane(t -> {
 				t.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN);

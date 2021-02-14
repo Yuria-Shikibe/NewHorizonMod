@@ -23,15 +23,15 @@ import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
-import mindustry.world.blocks.production.Cultivator;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericSmelter;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMixer;
-import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.drawer.DrawFactories;
+import newhorizon.block.drawer.DrawHoldLiquid;
 import newhorizon.block.drawer.DrawPrinter;
 import newhorizon.block.drawer.NHDrawAnimation;
 import newhorizon.block.special.*;
@@ -46,7 +46,7 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-		 delivery, zateOre, xenMelter, hyperGenerator,
+		delivery, zateOre, xenMelter, hyperGenerator, fusionCollapser,
 		largeShieldGenerator, divlusion,
 		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
 		irdryonVault, blaster, ender, thurmix, argmot, thermoTurret,
@@ -62,21 +62,36 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult = 4;
+		fusionCollapser = new AdaptImpactReactor("fusion-collapser"){{
+			this.ambientSound = Sounds.pulse;
+			this.ambientSoundVolume = 0.09F;
+			size = 5;
+			itemCapacity = 20;
+			liquidCapacity = 40;
+			health = 2400;
+			powerProduction = 250f;
+			itemDuration = 90f;
+			NHTechTree.add(Blocks.impactReactor, this);
+			this.consumes.power(30.0F);
+			this.consumes.items(new ItemStack(NHItems.fusionEnergy, 2));
+			this.consumes.liquid(NHLiquids.xenBeta, 0.1F);
+			this.requirements(Category.power, BuildVisibility.shown, with(Items.thorium, 600, NHItems.irayrondPanel, 350, NHItems.seniorProcessor, 200, NHItems.presstanium, 850, Items.surgeAlloy, 250, Items.metaglass, 250));
+		}};
 		
 		hyperGenerator = new HyperGenerator("hyper-generator"){{
 			size = 8;
 			health = 12500;
-			powerProduction = 700f;
+			powerProduction = 1250f;
 			updateLightning = updateLightningRand = 3;
 			effectColor = NHItems.thermoCorePositive.color;
 			itemCapacity = 40;
 			itemDuration = 180f;
 			this.ambientSound = Sounds.pulse;
-			this.ambientSoundVolume = 0.07F;
-			this.consumes.power(25.0F);
+			this.ambientSoundVolume = 0.1F;
+			this.consumes.power(50.0F);
 			this.consumes.items(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
 			this.consumes.liquid(NHLiquids.xenGamma, 0.15F);
-			NHTechTree.add(Blocks.impactReactor, this);
+			NHTechTree.add(fusionCollapser, this);
 			this.requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
 		}};
 		
@@ -102,6 +117,7 @@ public class NHBlocks implements ContentList {
 				homingPower = 0.2f;
 				homingRange = 120f;
 				status = StatusEffects.shocked;
+				collidesGround = false;
 				statusDuration = 30f;
 				width = 5f;
 				drawSize = 120f;
@@ -155,7 +171,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		heavyDefenceWallLarge = new Wall("heavy-defence-wall-large"){{
-			size = 4;
+			size = 2;
 			health = 1750 * healthMult;
 			this.absorbLasers = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult, NHItems.presstanium, 20 * healthMult));
@@ -168,7 +184,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		heavyDefenceDoorLarge = new Door("heavy-defence-door-large"){{
-			size = 1;
+			size = 2;
 			health = 1750 * healthMult;
 			openfx = Fx.dooropenlarge;
 			closefx = Fx.doorcloselarge;
@@ -207,11 +223,9 @@ public class NHBlocks implements ContentList {
 		delivery = new Delivery("mass-deliver"){{
 			size = 3;
 			shake = 3f;
-			minDistribute = 60;
 			itemCapacity = 300;
 			consumes.power(5f);
 			requirements(Category.distribution, with(NHItems.seniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 120));
-			
 		}};
 		
 		
@@ -328,7 +342,7 @@ public class NHBlocks implements ContentList {
 			{
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.thorium, 60, Items.graphite, 30));
 				craftEffect = Fx.smeltsmoke;
-				outputItem = new ItemStack(NHItems.fusionEnergy, 2);
+				outputItem = new ItemStack(NHItems.fusionEnergy, 3);
 				craftTime = 90f;
 				size = 3;
 				itemCapacity = 20;
@@ -345,9 +359,9 @@ public class NHBlocks implements ContentList {
 			{
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.plastanium, 60, Items.surgeAlloy, 75, Items.graphite, 30));
 				craftEffect = new Effect(30f, e -> {
-					Angles.randLenVectors(e.id, 6, 4f + e.fin() * 12f, (x, y) -> {
-						Draw.color(NHLiquids.irdryonFluid.color);
-						Fill.square(e.x + x, e.y + y, e.fout() * 2.5f, 45);
+					Angles.randLenVectors(e.id, 7, 4f + e.fin() * 18f, (x, y) -> {
+						Draw.color(NHItems.irayrondPanel.color);
+						Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
 					});
 				});
 				outputItem = new ItemStack(NHItems.irayrondPanel, 3);
@@ -356,7 +370,7 @@ public class NHBlocks implements ContentList {
 				size = 4;
 				flameColor = NHItems.irayrondPanel.color;
 				hasPower = hasLiquids = hasItems = true;
-				flameColor = NHItems.fusionEnergy.color;
+				flameColor = NHItems.irayrondPanel.color;
 				consumes.liquid(NHLiquids.xenAlpha, 0.1f);
 				consumes.items(new ItemStack(NHItems.presstanium, 4), new ItemStack(Items.surgeAlloy, 2));
 				consumes.power(2f);
@@ -372,7 +386,7 @@ public class NHBlocks implements ContentList {
 				size = 2;
 				hasPower = hasLiquids = hasItems = true;
 				flameColor = NHItems.fusionEnergy.color;
-				consumes.items(new ItemStack(Items.silicon, 4), new ItemStack(Items.copper, 2));
+				consumes.items(new ItemStack(Items.silicon, 2), new ItemStack(Items.copper, 4));
 				consumes.power(2f);
 			}
 		};
@@ -473,7 +487,7 @@ public class NHBlocks implements ContentList {
 					}
 				};
 				consumes.liquid(NHLiquids.zateFluid, 0.2f);
-				consumes.items(new ItemStack(NHItems.irayrondPanel, 2), new ItemStack(NHItems.fusionEnergy, 10));
+				consumes.items(new ItemStack(NHItems.irayrondPanel, 2), new ItemStack(NHItems.fusionEnergy, 6));
 				consumes.power(5f);
 			}
 		};
@@ -513,18 +527,19 @@ public class NHBlocks implements ContentList {
 			}
 		};
 
-		zateFactoryLarge = new Cultivator("large-zate-factory") {
+		zateFactoryLarge = new GenericCrafter("large-zate-factory") {
 			{
 				requirements(Category.crafting, with(Items.plastanium, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25));
 				outputItem = new ItemStack(NHItems.zate, 2);
 				craftTime = 70f;
 				size = 2;
-				hasPower = hasItems = true;
-				plantColor = plantColorLight = NHItems.zate.color;
-				bottomColor = Color.valueOf("ff846b");
-				attribute = Attribute.water;
+				craftEffect = Fx.formsmoke;
+				updateEffect = NHFx.trail;
+				hasPower = hasItems = hasLiquids = true;
+				drawer = new DrawHoldLiquid();
 				consumes.item(Items.thorium, 3);
-				consumes.power(6f);
+				consumes.power(5f);
+				consumes.liquid(Liquids.water, 0.1f);
 			}
 		};
 
@@ -538,7 +553,7 @@ public class NHBlocks implements ContentList {
 				itemCapacity = 20;
 				health = 600;
 				size = 3;
-				hasPower = hasLiquids = hasItems = true;
+				hasPower = hasItems = true;
 				drawer = new DrawFactories() {
 					{
 						liquidColor = NHLiquids.xenAlpha.color;
@@ -629,7 +644,7 @@ public class NHBlocks implements ContentList {
 				}
 			};
 			consumes.liquid(NHLiquids.irdryonFluid, 0.12f);
-			consumes.items(new ItemStack(NHItems.irayrondPanel, 3), new ItemStack(NHItems.metalOxhydrigen, 2));
+			consumes.items(new ItemStack(Items.plastanium, 4), new ItemStack(Items.graphite, 6));
 			consumes.power(12f);
 		}};
 
@@ -667,7 +682,7 @@ public class NHBlocks implements ContentList {
 					Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
 				});
 			});
-			outputLiquid = new LiquidStack(NHLiquids.xenGamma, 6f);
+			outputLiquid = new LiquidStack(NHLiquids.xenGamma, 8f);
 			craftTime = 60f;
 			itemCapacity = 12;
 			liquidCapacity = 20f;
@@ -680,7 +695,7 @@ public class NHBlocks implements ContentList {
 				}
 			};
 			consumes.liquid(NHLiquids.xenBeta, 0.1f);
-			consumes.item(NHItems.fusionEnergy, 1);
+			consumes.items(new ItemStack(NHItems.juniorProcessor, 1), new ItemStack(Items.titanium, 3));
 			consumes.power(6f);
 		}};
 

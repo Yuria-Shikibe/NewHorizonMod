@@ -18,7 +18,10 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
+import mindustry.entities.Units;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
+import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -27,11 +30,12 @@ import mindustry.ui.Bar;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.tilesize;
 
 
 public class HyperGenerator extends PowerGenerator{
@@ -75,10 +79,13 @@ public class HyperGenerator extends PowerGenerator{
 	public float updateEffectSize = 20f;
 	public float effectSinScl = 0.75f;
 	public float effectSinMag = 0.11f;
-	public Color effectColor;
+	public Color effectColor = Color.white;
 	
 	public float workShake = 8f;
 	public Sound workSound = Sounds.plasmaboom;
+	
+	protected BulletType destroyed;
+	public float attract = 8f;
 	
 	public HyperGenerator(String name){
 		super(name);
@@ -117,6 +124,61 @@ public class HyperGenerator extends PowerGenerator{
 	public void init(){
 		super.init();
 		if(effectCircleSize < 0)effectCircleSize = size * Vars.tilesize / 6f;
+		destroyed = new EffectBulletType(600f){
+			{
+				speed = 0;
+				lightningLen = lightningLenRand = 4;
+				lightningDamage = HyperGenerator.this.lightningDamage / 2;
+				lightning = 3;
+				splashDamage = lightningDamage /1.5f;
+				splashDamageRadius = 38f;
+			}
+			
+			@Override
+			public void init(Bullet b){
+				super.init(b);
+				Units.nearby(Tmp.r1.setCenter(b.x, b.y).setSize(lightningRange * 4), unit -> {
+					unit.impulse(Tmp.v3.set(unit).sub(b.x, b.y).nor().scl(b.dst(unit) * unit.mass() / 160f));
+				});
+			}
+			
+			@Override
+			public void draw(Bullet b){
+				super.draw(b);
+				float f = Mathf.curve(b.fout(), 0, 0.15f);
+				float f2 = Mathf.curve(b.fin(), 0, 0.1f);
+				Draw.color(effectColor);
+				Fill.circle(b.x, b.y, size * tilesize / 3f * f);
+				
+				for(int i : Mathf.signs){
+					Drawf.tri(b.x, b.y, triWidth * f2 * f, triLength * 1.3f * f2 * f, (i + 1) * 90 + Time.time * 2);
+					Drawf.tri(b.x, b.y, triWidth * f2 * f, triLength * 1.3f * f2 * f, (i + 1) * 90 - Time.time * 2 + 90);
+				}
+				
+				Draw.color(effectColor.cpy().lerp(Color.black, 0.8f));
+				Fill.circle(b.x, b.y, size * tilesize / 5f * f);
+			}
+			
+			@Override
+			public void update(Bullet b){
+				super.update(b);
+				Units.nearby(Tmp.r1.setCenter(b.x, b.y).setSize(lightningRange * 4), unit -> {
+					unit.impulse(Tmp.v3.set(unit).sub(b.x, b.y).nor().scl(-attract * 100.0f));
+				});
+				
+				if(b.timer(3, 8))PosLightning.createRange(b, Team.derelict, lightningRange * 2f, 255, effectColor, true, lightningDamage, subNum + Mathf.random(subNumRand), PosLightning.WIDTH,updateLightning + Mathf.random(updateLightningRand), point -> {
+					NHFx.lightningHitSmall(effectColor).at(point);
+					Damage.damage(point.getX(), point.getY(), splashDamageRadius, splashDamage);
+				});
+				
+				if(b.timer(4, 14)){
+					float range = size * Vars.tilesize / 1.5f;
+					NHFx.hyperExplode.at(b.x + Mathf.range(range), b.y + Mathf.range(range), effectColor);
+					Sounds.explosionbig.at(b);
+					NHBullets.hyperBlast.create(b, Team.derelict, b.x, b.y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
+				}
+			}
+		};
 	}
 	
 	
@@ -137,9 +199,6 @@ public class HyperGenerator extends PowerGenerator{
 		public float progress;
 		public float warmup;
 		
-		public Color getColor(){
-			return effectColor == null ? team.color : effectColor;
-		}
 		
 		@Override
 		public void updateTile(){
@@ -147,12 +206,14 @@ public class HyperGenerator extends PowerGenerator{
 			if(consValid()){
 				if (this.timer(0, itemDuration / timeScale)) {
 					this.consume();
-					workSound.at(this, Mathf.random(0.9f, 1.1f));
-					NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f * (warmup + 0.3f), getColor());
-					Effect.shake(workShake, workShake, this);
-					if(warmup > destroyedExplodeLimit && Mathf.chanceDelta(warmup / 2))PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
-						NHFx.lightningHitLarge(getColor()).at(point);
-					});
+					if(warmup > destroyedExplodeLimit){
+						workSound.at(this, Mathf.random(0.9f, 1.1f));
+						NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f * (warmup + 0.3f), effectColor);
+						Effect.shake(workShake, workShake, this);
+						if(Mathf.chanceDelta(warmup / 2))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
+							NHFx.lightningHitLarge(effectColor).at(point);
+						});
+					}
 				}
 				progress += efficiency() * Time.delta;
 				if(Mathf.equal(warmup, 1.0F, 0.0015F)){
@@ -168,25 +229,25 @@ public class HyperGenerator extends PowerGenerator{
 			if(warmup > minWarmup){
 				for(int i : Mathf.signs){
 					Drawf.tri(x, y, triWidth * warmup, triLength, (i + 1) * 90);
-					if(Mathf.chance(warmup / updateEffectDiv)) updateEffect.at(x + i * Mathf.random(effectCircleSize), y + i * Mathf.random(effectCircleSize), updateEffectSize * warmup, getColor());
+					if(Mathf.chance(warmup / updateEffectDiv)) updateEffect.at(x + i * Mathf.random(effectCircleSize), y + i * Mathf.random(effectCircleSize), updateEffectSize * warmup, effectColor);
 				}
-				if(Mathf.chance( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f))PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
-					NHFx.lightningHitLarge(getColor()).at(point);
+				if(Mathf.chance( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
+					NHFx.lightningHitLarge(effectColor).at(point);
 				});
-				if(Mathf.chance(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, getColor());
+				if(Mathf.chance(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, effectColor);
 			}
 		}
 		
 		@Override
 		public void draw(){
 			super.draw();
-			Color drawColor = Tmp.c1.set(getColor()).lerp(Color.white, Mathf.absin(Time.time * 1.3f, 1.0F, 0.08F));
+			Color drawColor = Tmp.c1.set(effectColor).lerp(Color.white, Mathf.absin(Time.time * 1.3f, 1.0F, 0.08F));
 			
 			Draw.rect(bottomRegion, x, y);
 			
 			for(int i = 0; i < plasmaRegions.length; ++i) {
 				float r = (size * Vars.tilesize - 3.0F + Mathf.absin(Time.time, 2.0F + i, 5.0F - i * 0.5F)) * plasmaScl;
-				Draw.color(getColor(), drawColor, (float)(i / plasmaRegions.length));
+				Draw.color(effectColor, drawColor, (float)(i / plasmaRegions.length));
 				Draw.alpha((0.25F + Mathf.absin(Time.time, 2.0F + i * 2.0F, 0.3F + i * 0.05F)) * warmup);
 				Draw.blend(Blending.additive);
 				Draw.rect(plasmaRegions[i], x, y, r, r, Time.time * (12.0F + i * 6.0F) * warmup);
@@ -231,21 +292,23 @@ public class HyperGenerator extends PowerGenerator{
 			explodeAction.get(this);
 			int i;
 			
+			destroyed.create(this, x, y, 0);
+			
 			for(i = 0; i < 30; i++){
 				Time.run(Mathf.random(80f), () -> {
 					explodeSub.get(this);
 					Sounds.bang.at(this);
 					Sounds.explosionbig.at(this);
-					NHBullets.hyperBlast.create(this, state.rules.waveTeam, x, y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
+					NHBullets.hyperBlast.create(this, Team.derelict, x, y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
 				});
 			}
 			
 			for(i = 0; i < 10; i++){
-				Time.run(i * (2 + Mathf.random(2f)), () -> {
+				Time.run(i * (3 + Mathf.random(2f)), () -> {
 					explodeSub.get(this);
 					Sounds.explosionbig.at(this);
-					PosLightning.createRandomRange(state.rules.waveTeam, this, lightningRange, getColor(), true, lightningDamage, lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
-						NHFx.lightningHitLarge(getColor()).at(point);
+					PosLightning.createRandomRange(Team.derelict, this, lightningRange * 3f, effectColor, true, lightningDamage, lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
+						NHFx.lightningHitLarge(effectColor).at(point);
 					});
 				});
 			}
@@ -255,9 +318,9 @@ public class HyperGenerator extends PowerGenerator{
 			
 			for(i = 0; i < 7; ++i) {
 				Time.run((float)Mathf.random(80), () -> {
-					NHFx.hyperExplode.at(x + Mathf.range(size * Vars.tilesize), y + Mathf.range(size * Vars.tilesize), getColor());
-					NHFx.hyperCloud.at(x + Mathf.range(size * Vars.tilesize), y + Mathf.range(size * Vars.tilesize), getColor());
-					NHFx.circle.at(x + Mathf.range(size * Vars.tilesize), y + Mathf.range(size * Vars.tilesize), explosionRadius, getColor());
+					NHFx.hyperExplode.at(x + Mathf.range(size * Vars.tilesize), y + Mathf.range(size * Vars.tilesize), effectColor);
+					NHFx.hyperCloud.at(x + Mathf.range(size * Vars.tilesize), y + Mathf.range(size * Vars.tilesize), effectColor);
+					NHFx.circle.at(x + Mathf.range(size * Vars.tilesize), y + Mathf.range(size * Vars.tilesize), explosionRadius, effectColor);
 				});
 			}
 			
@@ -270,7 +333,7 @@ public class HyperGenerator extends PowerGenerator{
 		
 		@Override
 		public void drawLight(){
-			Drawf.light(this.team, this.x, this.y, (110.0F + Mathf.absin(5.0F, 5.0F)) * this.warmup, getColor(), 0.8F * this.warmup);
+			Drawf.light(this.team, this.x, this.y, (110.0F + Mathf.absin(5.0F, 5.0F)) * this.warmup, effectColor, 0.8F * this.warmup);
 		}
 		
 		@Override

@@ -4,20 +4,32 @@ import arc.Core;
 import arc.graphics.Pixmap;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
+import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
 import arc.util.Log;
+import mindustry.ctype.ContentType;
+import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.world.Block;
-import newhorizon.NewHorizon;
+import mindustry.ui.Cicon;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 
-public class NHIconGenerator extends Block{
+public class NHIconGenerator extends UnlockableContent{
 	public NHIconGenerator(){
 		super("specific-icon-generator");
+	}
+	
+	@Override
+	public ContentType getContentType(){
+		return ContentType.error;
+	}
+	
+	@Override
+	public TextureRegion icon(Cicon icon){
+		return NHContent.iconLevel;
 	}
 	
 	@Override
@@ -58,7 +70,6 @@ public class NHIconGenerator extends Block{
 	@Override
 	public void load(){
 		super.load();
-		region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 		
 		NHLoader.needBeLoad.each( (arg, tex) -> tex = Core.atlas.find(arg));
 		//Vars.content.blocks().remove(NHLoader.iconGenerator);

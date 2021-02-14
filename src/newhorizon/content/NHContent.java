@@ -2,21 +2,23 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
+import mindustry.ctype.ContentType;
+import mindustry.ctype.UnlockableContent;
 import mindustry.graphics.MultiPacker;
 import mindustry.ui.Cicon;
-import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.DeliveryBulletType;
 import newhorizon.feature.UpgradeData;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 
-public class NHContent extends Block{
+public class NHContent extends UnlockableContent{
 	public static TextureRegion
 			iconLevel, ammoInfo;
+	
+	public static Color outlineColor = DrawFuncs.outlineColor;
 	
 	public static DeliveryBulletType deliveryBullet;
 	
@@ -26,8 +28,16 @@ public class NHContent extends Block{
 	
 	public NHContent(){
 		super("specific-content-loader");
-		this.outlineIcon = true;
-		this.outlineColor = DrawFuncs.outlineColor;
+	}
+	
+	@Override
+	public TextureRegion icon(Cicon icon){
+		return iconLevel;
+	}
+	
+	@Override
+	public ContentType getContentType(){
+		return ContentType.error;
 	}
 	
 	@Override
@@ -35,12 +45,6 @@ public class NHContent extends Block{
 		super.createIcons(packer);
 		if(!NHSetting.getBool("@active.advance-load*"))return;
 		packer.add(MultiPacker.PageType.editor, this.name + "-icon-editor", Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full)));
-		if (!this.synthetic()) {
-			PixmapRegion image = Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full));
-			this.mapColor.set(image.getPixel(image.width / 2, image.height / 2));
-		}
-		
-		this.getGeneratedIcons();
 		
 		NHLoader.outlineTex.each( (arg, tex) -> {
 			String[] s;
@@ -56,7 +60,7 @@ public class NHContent extends Block{
 	public void load(){
 		
 		ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
-		iconLevel = region = Core.atlas.find(NewHorizon.NHNAME + "level-up");
+		iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
 		
 		NHLoader.outlineTex.each((arg, tex) -> {
 			String[] s;
