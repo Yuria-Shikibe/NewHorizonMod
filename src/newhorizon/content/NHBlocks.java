@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Log;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
@@ -29,8 +30,10 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMixer;
 import mindustry.world.meta.BuildVisibility;
+
 import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.drawer.DrawFactories;
+
 import newhorizon.block.drawer.DrawHoldLiquid;
 import newhorizon.block.drawer.DrawPrinter;
 import newhorizon.block.drawer.NHDrawAnimation;
@@ -46,10 +49,10 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-		delivery, zateOre, xenMelter, hyperGenerator, fusionCollapser,
+		delivery, zateOre, xenMelter, hyperGenerator, fusionCollapser, blastTurret,
 		largeShieldGenerator, divlusion,
 		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
-		irdryonVault, blaster, ender, thurmix, argmot, thermoTurret,
+		irdryonVault, blaster, nemesis, thurmix, argmot, thermoTurret,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zateFactoryLarge, zateFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
@@ -93,6 +96,25 @@ public class NHBlocks implements ContentList {
 			this.consumes.liquid(NHLiquids.xenGamma, 0.15F);
 			NHTechTree.add(fusionCollapser, this);
 			this.requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
+		}};
+		
+		blastTurret = new ItemTurret("blast-turret"){{
+			size = 6;
+			health = 10200;
+			this.requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 450, NHItems.irayrondPanel, 650, NHItems.thermoCorePositive, 250, NHItems.seniorProcessor, 150, NHItems.setonAlloy, 200));
+			ammo(
+					NHItems.thermoCorePositive, NHBullets.blastEnergyPst, NHItems.thermoCoreNegative, NHBullets.blastEnergyNgt
+			);
+			shots = 8;
+			burstSpacing = 4f;
+			xRand = Vars.tilesize * (size - 2.125f) / 2;
+			this.reloadTime = 120f;
+			this.shootCone = 50.0F;
+			this.rotateSpeed = 1.5F;
+			this.range = 600.0F;
+			this.heatColor = NHBullets.blastEnergyPst.lightColor;
+			this.recoilAmount = 4.0F;
+			this.shootSound = NHSounds.rapidLaser;
 		}};
 		
 		thermoTurret = new PowerTurret("thermo-turret"){{
@@ -358,17 +380,14 @@ public class NHBlocks implements ContentList {
 		irayrondPanelFactory = new GenericSmelter("irayrond-panel-factory") {
 			{
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.plastanium, 60, Items.surgeAlloy, 75, Items.graphite, 30));
-				craftEffect = new Effect(30f, e -> {
-					Angles.randLenVectors(e.id, 7, 4f + e.fin() * 18f, (x, y) -> {
-						Draw.color(NHItems.irayrondPanel.color);
-						Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
-					});
-				});
+				craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 7, 4f + e.fin() * 18f, (x, y) -> {
+					Draw.color(NHItems.irayrondPanel.color);
+					Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
+				}));
 				outputItem = new ItemStack(NHItems.irayrondPanel, 3);
 				craftTime = 120f;
 				health = 800;
 				size = 4;
-				flameColor = NHItems.irayrondPanel.color;
 				hasPower = hasLiquids = hasItems = true;
 				flameColor = NHItems.irayrondPanel.color;
 				consumes.liquid(NHLiquids.xenAlpha, 0.1f);
@@ -495,12 +514,10 @@ public class NHBlocks implements ContentList {
 		upgradeSortFactory = new GenericCrafter("upgradeSort-factory") {
 			{
 				requirements(Category.crafting, with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.thorium, 200));
-				craftEffect = new Effect(30f, e -> {
-					Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
-						Draw.color(NHColor.darkEnrColor, Pal.gray, e.fin());
-						Fill.square(e.x + x, e.y + y, 0.3f + e.fout() * 2.6f, 45);
-					});
-				});
+				craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
+					Draw.color(NHColor.darkEnrColor, Pal.gray, e.fin());
+					Fill.square(e.x + x, e.y + y, 0.3f + e.fout() * 2.6f, 45);
+				}));
 				updateEffect = new Effect(25f, e -> {
 					Draw.color(NHColor.darkEnrColor);
 					Angles.randLenVectors(e.id, 2, 24 * e.fout() * e.fout(), (x, y) -> {
@@ -569,12 +586,10 @@ public class NHBlocks implements ContentList {
 
 		irayrondPanelFactorySmall = new GenericCrafter("small-irayrond-panel-factory"){{
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 55, NHItems.seniorProcessor, 35, NHItems.presstanium, 100, Items.plastanium, 40));
-			craftEffect = new Effect(30f, e -> {
-				Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
-					Draw.color(NHLiquids.xenBeta.color);
-					Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
-				});
-			});
+			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
+				Draw.color(NHLiquids.xenBeta.color);
+				Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
+			}));
 			outputItem = new ItemStack(NHItems.irayrondPanel, 2);
 			craftTime = 180f;
 			itemCapacity = 24;
@@ -596,12 +611,10 @@ public class NHBlocks implements ContentList {
 
 		multipleSurgeAlloyFactory = new GenericCrafter("multiple-surge-alloy-factory"){{
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, Items.plastanium, 40, NHItems.presstanium, 100, Items.surgeAlloy, 40));
-			craftEffect = new Effect(30f, e -> {
-				Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
-					Draw.color(Items.surgeAlloy.color);
-					Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
-				});
-			});
+			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
+				Draw.color(Items.surgeAlloy.color);
+				Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
+			}));
 			outputItem = new ItemStack(Items.surgeAlloy, 4);
 			craftTime = 60f;
 			itemCapacity = 24;
@@ -622,12 +635,10 @@ public class NHBlocks implements ContentList {
 
 		setonAlloyFactory = new GenericCrafter("seton-alloy-factory"){{
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, NHItems.presstanium, 100, Items.surgeAlloy, 40));
-			craftEffect = new Effect(30f, e -> {
-				Angles.randLenVectors(e.id, 6, 4f + e.fin() * 12f, (x, y) -> {
-					Draw.color(NHLiquids.irdryonFluid.color);
-					Fill.square(e.x + x, e.y + y, e.fout() * 3f);
-				});
-			});
+			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 4f + e.fin() * 12f, (x, y) -> {
+				Draw.color(NHLiquids.irdryonFluid.color);
+				Fill.square(e.x + x, e.y + y, e.fout() * 3f);
+			}));
 			outputItem = new ItemStack(NHItems.setonAlloy, 2);
 			craftTime = 60f;
 			itemCapacity = 24;
@@ -650,12 +661,10 @@ public class NHBlocks implements ContentList {
 
 		xenBetaFactory = new GenericCrafter("xen-beta-factory"){{
 			requirements(Category.crafting, with(NHItems.metalOxhydrigen, 35, NHItems.juniorProcessor, 60, Items.plastanium, 20, NHItems.presstanium, 80, Items.metaglass, 40));
-			craftEffect = new Effect(30f, e -> {
-				Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
-					Draw.color(NHLiquids.xenBeta.color);
-					Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
-				});
-			});
+			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
+				Draw.color(NHLiquids.xenBeta.color);
+				Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
+			}));
 			outputLiquid = new LiquidStack(NHLiquids.xenBeta, 6f);
 			craftTime = 60f;
 			itemCapacity = 12;
@@ -676,12 +685,10 @@ public class NHBlocks implements ContentList {
 
 		xenGammaFactory = new GenericCrafter("xen-gamma-factory"){{
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 70, NHItems.seniorProcessor, 60, Items.surgeAlloy, 20, Items.metaglass, 40));
-			craftEffect = new Effect(30f, e -> {
-				Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
-					Draw.color(NHLiquids.xenGamma.color);
-					Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
-				});
-			});
+			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
+				Draw.color(NHLiquids.xenGamma.color);
+				Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
+			}));
 			outputLiquid = new LiquidStack(NHLiquids.xenGamma, 8f);
 			craftTime = 60f;
 			itemCapacity = 12;
@@ -705,7 +712,7 @@ public class NHBlocks implements ContentList {
 				spread = 6f;
 				shots = 2;
 				health = 960;
-				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
+				requirements(Category.turret, with(NHItems.multipleSteel, 120, NHItems.juniorProcessor, 80, Items.plastanium, 120));
 				maxSpeedupScl = 9f;
 				speedupPerShoot = 0.4f;
 				powerUse = 8f;
@@ -719,10 +726,10 @@ public class NHBlocks implements ContentList {
 		};
 
 
-		ender = new ScalableTurret("end-of-era") {
+		nemesis = new ScalableTurret("end-of-era") {
 			{
 				recoilAmount = 7f;
-				requirements(Category.turret, with(NHItems.upgradeSort, 400, NHItems.seniorProcessor, 280));
+				requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 2000));
 				consumes.items(new ItemStack(NHItems.darkEnergy, 4));
 				size = 8;
 				health = 15000;
@@ -740,7 +747,7 @@ public class NHBlocks implements ContentList {
 
 		thurmix = new ItemTurret("thurmix") {
 			{
-				requirements(Category.turret, with(Items.copper, 105, Items.graphite, 95, Items.titanium, 60));
+				requirements(Category.turret, with(Items.phaseFabric, 170, Items.graphite, 355, Items.titanium, 560, NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 300));
 				ammo(
 						NHItems.fusionEnergy, NHBullets.curveBomb, NHItems.thermoCorePositive, NHBullets.strikeMissile
 				);
@@ -765,7 +772,7 @@ public class NHBlocks implements ContentList {
 		nemesisUpgrader = new UpgradeBlock("end-of-era-upgrader"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 3;
-			linkTarget = ender;
+			linkTarget = nemesis;
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 10;

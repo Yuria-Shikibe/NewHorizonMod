@@ -63,7 +63,7 @@ public class NHBullets {
 			}
 		},
 
-		tear = new ShieldBreaker(3.4f, 60f, 1500f){{
+		tear = new ShieldBreaker(3.4f, 60f, 2500f){{
 			pierceCap = 8;
 			rotateSpeed = 2.75f;
 			width = 16f;
@@ -84,7 +84,7 @@ public class NHBullets {
 			shootEffect = Fx.plasticExplosion;
 		}},
 
-		skyFrag = new BasicBulletType(3.3f, 200) {
+		skyFrag = new BasicBulletType(3.3f, 220) {
 		@Override public float range(){return 180f;}
 			{
 				lifetime = 60;
@@ -106,7 +106,7 @@ public class NHBullets {
 			}
 		},
 	
-		hyperBlast = new NHTrailBulletType(3.3f, 200) {
+		hyperBlast = new NHTrailBulletType(3.3f, 400) {
 			{
 				lifetime = 60;
 				despawnEffect = hitEffect = NHFx.lightningHitLarge(NHItems.thermoCorePositive.color);
@@ -127,7 +127,7 @@ public class NHBullets {
 			}
 		},
 
-		hurricaneLaser = new ContinuousLaserBulletType(680){
+		hurricaneLaser = new ContinuousLaserBulletType(640){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
@@ -248,7 +248,7 @@ public class NHBullets {
 			lifetime = 35f;
 		}},
 
-		darkEnrlaser = new ContinuousLaserBulletType(1000){
+		darkEnrlaser = new ContinuousLaserBulletType(1600){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
@@ -284,7 +284,7 @@ public class NHBullets {
 			}
 		},
 
-		decayLaser = new LaserBulletType(2000){{
+		decayLaser = new LaserBulletType(1700){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.darkEnrColor, Color.white};
 			laserEffect = NHFx.darkEnergyLaserShoot;
 			length = 880f;
@@ -310,7 +310,7 @@ public class NHBullets {
 			shootEffect = smokeEffect = Fx.none;
 		}},
 
-		rapidBomb = new NHTrailBulletType(9f, 200, NewHorizon.NHNAME + "strike"){{
+		rapidBomb = new NHTrailBulletType(9f, 280, NewHorizon.NHNAME + "strike"){{
 			hitSound = Sounds.explosion;
 			drawSize = 120f;
 			hitShake = despawnShake = 1.3f;
@@ -327,7 +327,7 @@ public class NHBullets {
 			hitEffect = NHFx.darkEnrCircleSplash;
 		}},
 
-		airRaid = new NHTrailBulletType(9f, 800, "new-horizon-strike"){
+		airRaid = new NHTrailBulletType(9f, 700, "new-horizon-strike"){
 			
 			@Override
 			public void init(Bullet b){
@@ -363,8 +363,61 @@ public class NHBullets {
 			}
 				
 		},
-
-		curveBomb = new BasicBulletType(4f, 250f) {
+		
+		blastEnergyPst = new NHTrailBulletType(0.85f, 85f, NewHorizon.NHNAME + "circle-bolt"){{
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.025f);
+			lifetime = 90f;
+			accelerateBegin = 0.1f;
+			accelerateEnd = 0.85f;
+			velocityEnd = 14f;
+			hitShake = despawnShake = 2f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = 12;
+			lightningLength = 4;
+			homingPower = 0.195f;
+			homingRange = 600f;
+			homingDelay = 12;
+			width = height = 16f;
+			splashDamageRadius = 30f;
+			lightningDamage = damage * 0.65f;
+			splashDamage = 0.65f * damage;
+			shrinkX = shrinkY = 0;
+			hitEffect = NHFx.crossBlast(backColor);
+			despawnEffect = NHFx.hyperBlast(backColor);
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootBigSmoke;
+			trailEffect = NHFx.trail;
+			trailChance = 0.23f;
+			trailParam = 2.7f;
+		}},
+	
+		blastEnergyNgt = new NHTrailBulletType(3.85f, 120f){{
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
+			lifetime = 48f;
+			accelerateBegin = 0.1f;
+			accelerateEnd = 0.85f;
+			velocityEnd = 18f;
+			hitShake = despawnShake = 5f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = 12;
+			lightningLength = 4;
+			width = 14f;
+			height = 46f;
+			pierceCap = 4;
+			shrinkX = shrinkY = 0;
+			splashDamageRadius = 120f;
+			lightningDamage = damage * 0.85f;
+			splashDamage = 0.85f * damage;
+			hitEffect = NHFx.lightningHitLarge(backColor);
+			despawnEffect = NHFx.crossBlast(backColor);
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootBigSmoke;
+			trailEffect = NHFx.trail;
+		}},
+	
+		curveBomb = new BasicBulletType(4f, 350f) {
 			@Override
 			public void init(Bullet b) {
 				if (b == null)return;
@@ -448,7 +501,7 @@ public class NHBullets {
 
 		},
 		
-		strikeRocket = new TextureMissileType(9, 400, "rocket-atlas@@404049"){{
+		strikeRocket = new TextureMissileType(9, 330, "rocket-atlas@@404049"){{
 			trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.darkEnrColor;
 			lightning = 2;
 			lightningCone = 360;
@@ -518,7 +571,7 @@ public class NHBullets {
 			
 		}},
 	
-		strikeMissile = new TextureMissileType(5, 200, "missile-atlas@@404049"){{
+		strikeMissile = new TextureMissileType(5, 80, "missile-atlas@@404049"){{
 			trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.thurmixRedLight;
 			lightning = 3;
 			lightningCone = 360;
@@ -549,7 +602,7 @@ public class NHBullets {
 			});
 		}},
 	
-		boltGene = new LightningLinkerBulletType(2.75f, 650) {{
+		boltGene = new LightningLinkerBulletType(2.75f, 550) {{
 			outColor = NHColor.darkEnrColor;
 			innerColor = NHColor.darkEnr;
 			generateDelay = 4f;

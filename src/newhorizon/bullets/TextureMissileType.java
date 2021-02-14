@@ -70,14 +70,11 @@ public class TextureMissileType extends NHTrailBulletType{
 			this.lightningType = !this.collidesAir ? Bullets.damageLightningGround : Bullets.damageLightning;
 		}
 		
-		drawSize = Math.max(drawSize, 2.5f * trailLength * speed);
-		trailDrawsize = Math.max(trailDrawsize, 2.5f * trailLength * speed);
 		region = Core.atlas.find(name);
 		if(trailLength < 0)trailLength = (int)(region.height * height / 5.2f);
 		if(trailWidth < 0)trailWidth = region.width * width / 38f;
-		
 		drawSize = Math.max(drawSize, 2.5f * trailLength * speed);
-		trailDrawsize = Math.max(trailDrawsize, 2.5f * trailLength * speed);
+		
 	}
 	
 	

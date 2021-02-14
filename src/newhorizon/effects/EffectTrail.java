@@ -73,12 +73,6 @@ public class EffectTrail {
 		lastY = y;
 	}
 
-	public void updateDelta(float x, float y){
-		for(int i = 0; i < (int)Time.delta; i ++){
-			update(x, y);
-		}
-	}
-
 	public void disappear(Color color) {
 		if (points.isEmpty())return;
 

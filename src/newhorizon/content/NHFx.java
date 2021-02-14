@@ -33,6 +33,20 @@ public class NHFx{
 		});
 	}
 	
+	public static Effect shootCircleSmall(Color color){
+		return new Effect(30, e -> {
+			color(color, Color.white, e.fout() * 0.75f);
+			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3.22f));
+		});
+	}
+	
+	public static Effect shootLineSmall(Color color){
+		return new Effect(20, e -> {
+			color(color, Color.white, e.fout() * 0.7f);
+			randLenVectors(e.id, 5, 18 * e.fin(), e.rotation, 34f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
+		});
+	}
+	
 	public static Effect laserHit(Color color){
 		return new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
@@ -72,7 +86,28 @@ public class NHFx{
 			randLenVectors(e.id + 1, 16, 3 + 70 * e.fout(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
 		});
 	}
-
+	
+	public static Effect crossBlast(Color color){
+		return new Effect(36f, e -> {
+			color(color, Color.white, e.fout() * 0.55f);
+			stroke(2f * e.fout());
+			e.scaled(16f, i -> circle(e.x, e.y, 45f * i.fin()));
+			
+			for(int i = 0; i < 4; i++){
+				Drawf.tri(e.x, e.y, 7 * (e.fout() + 1) / 2, 117f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
+			}
+		});
+	}
+	
+	public static Effect hyperBlast(Color color){
+		return new Effect(30f, e -> {
+			color(NHItems.thermoCorePositive.color, Color.white, e.fout() * 0.75f);
+			stroke(1.3f * e.fslope());
+			circle(e.x, e.y, 45f * e.fin());
+			randLenVectors(e.id + 1, 5, 8f + 50 * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 7f));
+		});
+	}
+	
 	public static final Effect
 		//All effects
 		trail = new Effect(50.0F, (e) -> {
@@ -362,7 +397,7 @@ public class NHFx{
 				Drawf.tri(e.x, e.y, e.rotation * (e.fout() + 1) / 2, e.rotation * 27f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
 			}
 		}),
-	
+
 		emped = new Effect(20f, e -> {
 			color(Color.valueOf("#F7B080"), Color.valueOf("#915923"), e.fin());
 			randLenVectors(e.id, 4, 7 + 50 * e.fin(), (x, y) -> {

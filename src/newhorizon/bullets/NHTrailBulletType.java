@@ -1,15 +1,15 @@
 package newhorizon.bullets;
 
+import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import newhorizon.effects.*;
 
-public class NHTrailBulletType extends BasicBulletType {
+public class NHTrailBulletType extends SpeedUpBulletType {
 	public int trailLength = -1;
 	public float trailWidth = -1f;
-	public float trailDrawsize = 200f;
 
 	public NHTrailBulletType(float speed, float damage, String bulletSprite){
 		super(speed, damage, bulletSprite);
@@ -19,10 +19,9 @@ public class NHTrailBulletType extends BasicBulletType {
     @Override
 	public void init(){
 		super.init();
-		drawSize = Math.max(drawSize, 2.5f * trailLength * speed);
-		trailDrawsize = Math.max(trailDrawsize, 2.5f * trailLength * speed);
-		if(trailWidth < 0)trailWidth = width / 6f;
 	    if(trailLength < 0)trailLength = 12;
+	    drawSize = Math.max(drawSize, 1.5f * trailLength * (speed + velocityEnd));
+		if(trailWidth < 0)trailWidth = width / 6f;
     }
     
 	public NHTrailBulletType(float speed, float damage){
@@ -43,7 +42,7 @@ public class NHTrailBulletType extends BasicBulletType {
 	@Override
 	public void init(Bullet b) {
 		super.init(b);
-		b.data(new EffectTrail(trailLength, trailWidth, trailDrawsize));
+		b.data(new EffectTrail(trailLength, trailWidth, drawSize));
 		EffectTrail t = (EffectTrail)b.data;
 		t.clear();
 	}
@@ -68,7 +67,9 @@ public class NHTrailBulletType extends BasicBulletType {
 	public void update(Bullet b) {
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		trail.updateDelta(b.x, b.y);
+		if(b.timer(3, Time.delta)){
+			trail.update(b.x + b.vel.x / 2, b.y + b.vel.y / 2);
+		}
 		super.update(b);
 	}
 }

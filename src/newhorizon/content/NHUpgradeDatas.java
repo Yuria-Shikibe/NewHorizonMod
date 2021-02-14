@@ -118,7 +118,7 @@ public class NHUpgradeDatas implements ContentList{
 				new ItemStack(NHItems.darkEnergy, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
-			shootSound = Sounds.railgun;
+			shootSound = NHSounds.launch;
 			inaccuracy = 6;
 			velocityInaccuracy = 0.08f;
 			burstSpacing = 9f;

@@ -26,8 +26,6 @@ import static newhorizon.func.TableFuncs.*;
 public class NewHorizon extends Mod{
 	public static final String NHNAME = "new-horizon-";
 	
-	
-	
 	private void links(){
 		BaseDialog dialog = new BaseDialog("@links");
 		addLink(dialog.cont, Icon.github, "Github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git");
@@ -36,6 +34,7 @@ public class NewHorizon extends Mod{
 	}
 	
 	private void addLink(Table table, TextureRegionDrawable icon, String buttonName, String link){
+		
 		table.button(buttonName, icon, Styles.cleart, () -> {
 			BaseDialog dialog = new BaseDialog("@link");
 			dialog.addCloseListener();
@@ -84,7 +83,7 @@ public class NewHorizon extends Mod{
 		    throw new RuntimeException(e);
 	    }
 	    Log.info("Loading NewHorizon Mod Objects");
-		NHSounds.load();
+	    NHSounds.load();
 		NHLoader loader = new NHLoader();
 		loader.load();
 	    new NHItems().load();
