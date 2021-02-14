@@ -53,7 +53,7 @@ public class NHSetting{
 	public static void initSettingList() throws IOException{
 		Mods.ModMeta meta = new Mods.ModMeta();
 		for(Mods.LoadedMod mod : Vars.mods.list()){
-			Log.info(mod.name);
+			if(mod == null || mod.main == null)continue;
 			if(mod.main.getClass() == NewHorizon.class){
 				meta = mod.meta;
 				break;
