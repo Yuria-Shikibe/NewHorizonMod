@@ -367,6 +367,7 @@ public class NHBullets {
 		blastEnergyPst = new NHTrailBulletType(0.85f, 85f, NewHorizon.NHNAME + "circle-bolt"){{
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.025f);
 			lifetime = 90f;
+			ammoMultiplier = 8f;
 			accelerateBegin = 0.1f;
 			accelerateEnd = 0.85f;
 			velocityEnd = 14f;
@@ -395,6 +396,7 @@ public class NHBullets {
 		blastEnergyNgt = new NHTrailBulletType(3.85f, 120f){{
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
 			lifetime = 48f;
+			ammoMultiplier = 8f;
 			accelerateBegin = 0.1f;
 			accelerateEnd = 0.85f;
 			velocityEnd = 18f;

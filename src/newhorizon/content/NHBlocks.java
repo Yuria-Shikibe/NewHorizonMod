@@ -101,13 +101,15 @@ public class NHBlocks implements ContentList {
 		blastTurret = new ItemTurret("blast-turret"){{
 			size = 6;
 			health = 10200;
-			this.requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 450, NHItems.irayrondPanel, 650, NHItems.thermoCorePositive, 250, NHItems.seniorProcessor, 150, NHItems.setonAlloy, 200));
+			this.requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 250, NHItems.irayrondPanel, 650, Items.plastanium, 375, NHItems.seniorProcessor, 150, NHItems.setonAlloy, 400));
 			ammo(
 					NHItems.thermoCorePositive, NHBullets.blastEnergyPst, NHItems.thermoCoreNegative, NHBullets.blastEnergyNgt
 			);
 			shots = 8;
 			burstSpacing = 4f;
-			xRand = Vars.tilesize * (size - 2.125f) / 2;
+			maxAmmo = 80;
+			ammoPerShot = 8;
+			xRand = Vars.tilesize * (size - 2.225f) / 2;
 			this.reloadTime = 120f;
 			this.shootCone = 50.0F;
 			this.rotateSpeed = 1.5F;
