@@ -76,13 +76,13 @@ public class NewHorizon extends Mod{
 				table.add("").row();
 			}).width(Core.graphics.getWidth() - LEN).growY().center().row();
 			dialog.cont.table(Tex.clear, table -> {
-				table.button("@back", Icon.left, Styles.transt, () -> {
+				table.button("@back", Icon.left, Styles.cleart, () -> {
 					dialog.hide();
 					NHSetting.settingApply();
 				}).size(LEN * 2f, LEN);
-				table.button("@links", Icon.link, Styles.transt, this::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-				table.button("@settings", Icon.settings, Styles.transt, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-				table.button("@log", Icon.book, Styles.transt, this::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@links", Icon.link, Styles.cleart, this::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@log", Icon.book, Styles.cleart, this::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 			}).fillX().height(LEN + OFFSET);
 			dialog.show();
 			tableMain();

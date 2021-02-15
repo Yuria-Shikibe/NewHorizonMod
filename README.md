@@ -1,8 +1,10 @@
 # NEWHORIZON MOD
 
+![Logo](assets/sprites-override/ui/logo.png)
+
 ****A Java Mindustry mod that works on Android and PC.****
 
-**Powered by** ***Yuria.***
+**Powered by *Yuria*.**
 
 ## Cautions
 **DOES NOT SUPPORT _IOS_**

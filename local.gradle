@@ -10,22 +10,6 @@ repositories{
     maven{ url 'https://www.jitpack.io' }
 }
 
-ext{
-    doExec = { cmd ->
-        def proc = cmd.execute(null, new File("$buildDir/libs"))
-        proc.waitForProcessOutput(System.out, System.err)
-    }
-}
-
-//java 8 backwards compatibility flag
-allprojects{
-    tasks.withType(JavaCompile){
-        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-            options.compilerArgs.addAll(['--release', '8'])
-        }
-    }
-}
-
 dependencies{
     implementation 'org.jetbrains:annotations:20.1.0'
     compileOnly fileTree(dir:'libs',include:['*.jar'])

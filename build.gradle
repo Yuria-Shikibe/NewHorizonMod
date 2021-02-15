@@ -40,14 +40,13 @@ dependencies{
 
 task jarAndroid{
     dependsOn "jar"
-
     doLast{
         //collect dependencies needed for desugaring
         def files = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File("$sdkRoot/platforms/android-$sdkVersion/android.jar")])
         def dependencies = files.collect{ "--classpath $it.path" }.join(" ")
 
         //dex and desugar files - this requires d8 in your PATH
-        doExec("d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar")
+        doExec("$sdkRoot/d8.bat $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar")
     }
 }
 
@@ -79,8 +78,8 @@ task deploy(type: Jar){
 
     from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
 
-    doLast{
+    /*doLast{
         delete{ delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar" }
         delete{ delete "$buildDir/libs/${project.archivesBaseName}Android.jar" }
-    }
+    }*/
 }
