@@ -1,26 +1,33 @@
 package newhorizon.block.special;
 
-import arc.*;
+import arc.Core;
 import arc.func.Cons;
-import arc.math.*;
-import arc.util.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.bullet.*;
-import mindustry.gen.*;
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.util.Time;
+import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
+import mindustry.entities.Effect;
+import mindustry.entities.Units;
+import mindustry.entities.bullet.SapBulletType;
+import mindustry.gen.Building;
+import mindustry.gen.Bullet;
+import mindustry.gen.Posc;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.logic.Ranged;
 import mindustry.type.Category;
-import mindustry.ui.*;
-import mindustry.graphics.*;
-import mindustry.logic.*;
-import mindustry.world.*;
-
+import mindustry.ui.Bar;
+import mindustry.world.Block;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 
 public class ChargeWall extends Block{
 	public TextureRegion heatRegion, lightRegion;

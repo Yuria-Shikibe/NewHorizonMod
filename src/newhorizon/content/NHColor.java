@@ -1,7 +1,7 @@
 package newhorizon.content;
 
-import arc.graphics.*;
-import mindustry.graphics.*;
+import arc.graphics.Color;
+import mindustry.graphics.Pal;
 
 public class NHColor{
 	public static Color 

@@ -3,7 +3,6 @@ package newhorizon.content;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Structs;
 import mindustry.content.Blocks;
 import mindustry.content.Items;

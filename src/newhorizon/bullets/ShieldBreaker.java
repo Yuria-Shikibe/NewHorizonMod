@@ -9,8 +9,6 @@ import mindustry.entities.Lightning;
 import mindustry.gen.Bullet;
 import newhorizon.effects.EffectTrail;
 
-import java.util.Random;
-
 public class ShieldBreaker extends NHTrailBulletType{
     public float maxShieldDamage;
     public float rotateSpeed = 1.75f;

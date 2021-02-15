@@ -1,11 +1,10 @@
 package newhorizon.block.turrets;
 
-import arc.math.*;
-import arc.util.*;
-import mindustry.ui.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.entities.bullet.*;
-
+import arc.math.Mathf;
+import arc.util.Time;
+import mindustry.entities.bullet.BulletType;
+import mindustry.ui.Bar;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import newhorizon.content.NHColor;
 
 public class SpeedupTurret extends PowerTurret{

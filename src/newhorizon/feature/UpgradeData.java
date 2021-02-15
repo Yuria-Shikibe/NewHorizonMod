@@ -35,7 +35,7 @@ public class UpgradeData{
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	public int unlockLevel;
 	public TextureRegion icon;
-	public String name, description;
+	public String name;
 	public float costTime;
 	public int maxLevel;
 	public boolean isLeveled;
@@ -64,19 +64,17 @@ public class UpgradeData{
 	public float maxDamageReduce = 0.65f;
 	
 	public UpgradeData(){
-		this("level-up", "default-ammo", NHBullets.none, 0, 0, new ItemStack(NHItems.emergencyReplace, 0));
+		this("level-up", NHBullets.none, 0, 0, new ItemStack(NHItems.emergencyReplace, 0));
 	}
 	
 	public UpgradeData(
 			String name,
-			String description,
 			BulletType selectAmmo,
 			float costTime,
 			int unlockLevel,
 			ItemStack... items
 	) {
 		this.name = name;
-		this.description = description;
 		this.costTime = costTime;
 		this.unlockLevel = unlockLevel;
 		requirements.addAll(items);
@@ -150,7 +148,7 @@ public class UpgradeData{
 			}).row();
 			dialog.cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
 			dialog.cont.add("Description: ").color(Pal.accent).left().row();
-			dialog.cont.add(tabSpace + Core.bundle.get(description)).color(Color.lightGray).left().row();
+			dialog.cont.add(tabSpace + Core.bundle.get(name + ".description")).color(Color.lightGray).left().row();
 			if(drawCons){
 				dialog.cont.pane(table -> {
 					int index = 0;

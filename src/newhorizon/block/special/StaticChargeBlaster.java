@@ -1,25 +1,35 @@
 package newhorizon.block.special;
 
 
-import arc.*;
+import arc.Core;
 import arc.audio.Sound;
-import arc.math.geom.*;
-import arc.math.*;
-import arc.util.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import mindustry.logic.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.*;
-
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
+import arc.util.Time;
+import arc.util.Tmp;
+import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
+import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
+import mindustry.entities.Units;
+import mindustry.gen.Building;
+import mindustry.gen.Posc;
+import mindustry.gen.Sounds;
+import mindustry.gen.Unitc;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
+import mindustry.logic.Ranged;
+import mindustry.type.StatusEffect;
+import mindustry.world.Block;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 
 public class StaticChargeBlaster extends Block {
 	public TextureRegion heatRegion;

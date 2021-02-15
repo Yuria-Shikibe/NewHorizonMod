@@ -1,9 +1,7 @@
 package newhorizon.block.special;
 
-import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.entities.bullet.BulletType;
-import mindustry.game.Team;
 import mindustry.world.blocks.storage.CoreBlock;
 
 public class DefenceCoreBlock extends CoreBlock{

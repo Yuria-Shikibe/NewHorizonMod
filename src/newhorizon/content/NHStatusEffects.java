@@ -1,7 +1,5 @@
 package newhorizon.content;
 
-import arc.math.geom.Vec2;
-import mindustry.ctype.ContentList;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
@@ -19,5 +17,31 @@ public class NHStatusEffects{
             this.color = Pal.gray;
             this.speedMultiplier = 0.00001F;
         }
-    };
+    },
+        emp1 = new StatusEffect("emp1"){{
+            damage = 0.5f;
+            effect = NHFx.emped;
+            effectChance = 0.2f;
+            speedMultiplier = 0.45f;
+            reloadMultiplier = 0.65f;
+            damageMultiplier = 0.75f;
+        }},
+    
+        emp2 = new StatusEffect("emp2"){{
+            damage = 1f;
+            effect = NHFx.emped;
+            effectChance = 0.4f;
+            speedMultiplier = 0.25f;
+            reloadMultiplier = 0.35f;
+            damageMultiplier = 0.55f;
+        }},
+        
+        emp3 = new StatusEffect("emp3"){{
+            damage = 1.5f;
+            effect = NHFx.emped;
+            effectChance = 0.6f;
+            speedMultiplier = 0.05f;
+            reloadMultiplier = 0.05f;
+            damageMultiplier = 0.35f;
+        }};
 }

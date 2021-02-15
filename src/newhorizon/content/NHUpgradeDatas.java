@@ -18,7 +18,7 @@ public class NHUpgradeDatas implements ContentList{
 	public void load(){
 		none = new UpgradeData();
 		
-		strikeRocket = new UpgradeData("rocket-strike", "rocket-strike.description", NHBullets.strikeRocket, 500f, 5,
+		strikeRocket = new UpgradeData("rocket-strike", NHBullets.strikeRocket, 500f, 5,
 				new ItemStack(NHItems.seniorProcessor, 100),
 				new ItemStack(NHItems.darkEnergy, 50),
 				new ItemStack(NHItems.irayrondPanel, 1000),
@@ -38,7 +38,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		bombStorm = new UpgradeData(
-				"bomb-storm", "bomb-storm.description", NHBullets.rapidBomb, 900f, 2,
+				"bomb-storm", NHBullets.rapidBomb, 900f, 2,
 				new ItemStack(NHItems.upgradeSort, 250),
 				new ItemStack(NHItems.darkEnergy, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -58,7 +58,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		darkEnrlaser = new UpgradeData(
-			"dark-enr-laser", "dark-enr-laser.description", NHBullets.darkEnrlaser, 300f, 7,
+			"dark-enr-laser", NHBullets.darkEnrlaser, 300f, 7,
 			new ItemStack(Items.surgeAlloy, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -76,7 +76,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		decayLaser = new UpgradeData(
-				"decay-laser", "decay-laser.description", NHBullets.decayLaser, 300f, 1,
+				"decay-laser", NHBullets.decayLaser, 300f, 1,
 				new ItemStack(Items.surgeAlloy, 250),
 				new ItemStack(NHItems.irayrondPanel, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -89,7 +89,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		arc9000 = new UpgradeData(
-				"arc-9000", "arc-9000.description", NHBullets.boltGene, 900f, 8,
+				"arc-9000", NHBullets.boltGene, 900f, 8,
 				new ItemStack(NHItems.upgradeSort, 250),
 				new ItemStack(NHItems.darkEnergy, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -101,7 +101,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		curveBomb = new UpgradeData(
-				"curve-bomb", "curve-bomb.description", NHBullets.curveBomb, 300f, 0,
+				"curve-bomb", NHBullets.curveBomb, 300f, 0,
 				new ItemStack(NHItems.irayrondPanel, 300),
 				new ItemStack(NHItems.metalOxhydrigen, 200)
 		){{
@@ -113,7 +113,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		airRaid = new UpgradeData(
-				"air-raid", "air-raid.description", NHBullets.airRaid, 500f, 6,
+				"air-raid", NHBullets.airRaid, 500f, 6,
 				new ItemStack(NHItems.upgradeSort, 250),
 				new ItemStack(NHItems.darkEnergy, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)

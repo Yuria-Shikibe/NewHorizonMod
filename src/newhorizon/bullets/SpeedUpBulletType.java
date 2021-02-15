@@ -1,10 +1,8 @@
 package newhorizon.bullets;
 
-import arc.graphics.Color;
 import arc.math.Mathf;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
-import mindustry.graphics.Pal;
 
 public class SpeedUpBulletType extends BasicBulletType{
 	public float velocityEnd = -1;

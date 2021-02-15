@@ -2,6 +2,7 @@ package newhorizon.func;
 
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import mindustry.gen.Tex;
 import mindustry.world.meta.StatValue;
 
 import static newhorizon.func.TableFuncs.LEN;
@@ -22,6 +23,6 @@ public class TextureFilterValue implements StatValue {
             t2.left();
             t2.table(t -> t.image(region).size(LEN * 1.5f).left()).size(LEN * 1.5f + OFFSET / 2f).pad(OFFSET / 2f).left();
             t2.table(t -> t.add(description).left()).pad(OFFSET / 2f).left();
-        }).left().grow();
+        }).left().grow().row();
     }
 }

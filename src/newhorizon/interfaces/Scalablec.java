@@ -6,11 +6,11 @@ import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.gen.Buildingc;
-
 import mindustry.graphics.Pal;
 import newhorizon.NewHorizon;
-import static mindustry.Vars.tilesize;
 import newhorizon.feature.UpgradeData.DataEntity;
+
+import static mindustry.Vars.tilesize;
 
 public interface Scalablec extends Buildingc{
     void resetUpgrade();

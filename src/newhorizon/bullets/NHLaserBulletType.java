@@ -1,12 +1,14 @@
 package newhorizon.bullets;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
+import arc.util.Tmp;
 import mindustry.entities.bullet.LaserBulletType;
+import mindustry.gen.Bullet;
+import mindustry.graphics.Drawf;
 
 public class NHLaserBulletType extends LaserBulletType {
 	public NHLaserBulletType(float damage){

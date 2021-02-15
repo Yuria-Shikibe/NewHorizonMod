@@ -35,6 +35,7 @@ import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
 import newhorizon.func.TableFuncs;
 import newhorizon.func.TextureFilterValue;
+import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
 
@@ -76,7 +77,10 @@ public class UpgradeBlock extends Block {
 	@Override
 	public void init(){
 		super.init();
-		if(linkTarget == null)throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
+		if(linkTarget == null || !(linkTarget instanceof ScalableBlockc) || !(linkTarget.buildType.get() instanceof Scalablec))throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
+		if(linkTarget instanceof ScalableBlockc){
+			((ScalableBlockc)linkTarget).setLink(this);
+		}
 		if(upgradeDatas.isEmpty())throw new IllegalArgumentException("");
 	}
 	

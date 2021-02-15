@@ -3,9 +3,8 @@ package newhorizon.bullets;
 import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
-import newhorizon.effects.*;
+import newhorizon.effects.EffectTrail;
 
 public class NHTrailBulletType extends SpeedUpBulletType {
 	public int trailLength = -1;

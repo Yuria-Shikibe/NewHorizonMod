@@ -38,7 +38,7 @@ public class PosLightning { //Provide some workable methods to create position t
 	//Default min lightning create distance from targetA to B.
 	public static final float GENERATE_DST = 16f;
 	//Default randX mult prama.
-	public static final float RANGE_RAND = 4f;
+	public static final float RANGE_RAND = 4.7f;
 	//ROT_DST
 	public static final float ROT_DST = Vars.tilesize * 0.75f;
 
@@ -104,7 +104,7 @@ public class PosLightning { //Provide some workable methods to create position t
 			
 			Seq<Float> randomArray = new Seq<>();
 			for (int num = 0; num < dst / (ROT_DST * len) + 1; num ++) {
-				randomArray.add(Mathf.range(randRange));
+				randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
 			}
 			createBoltEffect(color, width, computeVectors(randomArray, from, sureTarget) );
 		}
@@ -148,7 +148,7 @@ public class PosLightning { //Provide some workable methods to create position t
 	}
 
 	//Set the range of lightning's randX.
-	private static float getBoltRandomRange() {return Mathf.random(2f, 5f); }
+	private static float getBoltRandomRange() {return Mathf.random(2f, 7f); }
 	
 	//Add proper unit into the to hit Seq.
 	private static void whetherAdd(Seq<Unitc> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {

@@ -1,12 +1,5 @@
 package newhorizon.feature;
 
-import arc.Core;
-import arc.graphics.g2d.TextureRegion;
-import mindustry.gen.Drawc;
-import mindustry.gen.Posc;
-import mindustry.gen.Timedc;
-import newhorizon.NewHorizon;
-
 
 /*
 public class Missile{

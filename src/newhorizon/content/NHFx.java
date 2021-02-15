@@ -400,13 +400,14 @@ public class NHFx{
 
 		emped = new Effect(20f, e -> {
 			color(Color.valueOf("#F7B080"), Color.valueOf("#915923"), e.fin());
+			
+			stroke(e.fout() * 2.4f);
 			randLenVectors(e.id, 4, 7 + 50 * e.fin(), (x, y) -> {
-				stroke(e.fout() * 2.4f);
-				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3);
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 5 + 1);
 			});
 			
 			color(Color.gray, Color.darkGray, e.fin());
-			randLenVectors(e.id, 3, 5 + 30 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f));
+			randLenVectors(e.id, 3, 3 + 28 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f));
 		});
 }
 

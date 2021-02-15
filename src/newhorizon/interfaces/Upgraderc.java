@@ -7,12 +7,12 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.gen.Buildingc;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import mindustry.gen.Buildingc;
+import newhorizon.feature.UpgradeData.DataEntity;
 
 import static mindustry.Vars.tilesize;
-import newhorizon.feature.UpgradeData.DataEntity;
 
 public interface Upgraderc extends Buildingc{
 	default void drawLink(){

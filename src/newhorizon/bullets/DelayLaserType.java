@@ -1,7 +1,6 @@
 package newhorizon.bullets;
 
 import arc.audio.Sound;
-import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -10,15 +9,12 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
-import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.LaserBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
-import mindustry.gen.Velc;
 import mindustry.graphics.Drawf;
 import newhorizon.content.NHFx;
 

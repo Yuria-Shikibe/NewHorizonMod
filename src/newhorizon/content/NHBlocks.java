@@ -30,10 +30,8 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMixer;
 import mindustry.world.meta.BuildVisibility;
-
 import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.drawer.DrawFactories;
-
 import newhorizon.block.drawer.DrawHoldLiquid;
 import newhorizon.block.drawer.DrawPrinter;
 import newhorizon.block.drawer.NHDrawAnimation;
@@ -49,7 +47,7 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-		delivery, zateOre, xenMelter, hyperGenerator, fusionCollapser, blastTurret,
+		delivery, zateOre, xenMelter, hyperGenerator, fusionCollapser, blastTurret, empTurret,
 		largeShieldGenerator, divlusion,
 		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
 		irdryonVault, blaster, nemesis, thurmix, argmot, thermoTurret,
@@ -65,6 +63,23 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult = 4;
+		empTurret = new ItemTurret("emp-turret"){{
+			size = 3;
+			health = 1060;
+			maxAmmo = 30;
+			shots = 3;
+			spread = 24f;
+			burstSpacing = 6f;
+			inaccuracy = 6f;
+			shootCone = 50f;
+			reloadTime = 100f;
+			this.shootSound = Sounds.plasmadrop;
+			NHTechTree.add(Blocks.cyclone, this);
+			ammo(NHItems.juniorProcessor, NHBullets.empBlot2, NHItems.seniorProcessor, NHBullets.empBlot3);
+			this.requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 250, NHItems.irayrondPanel, 650, Items.plastanium, 375, NHItems.seniorProcessor, 150, NHItems.setonAlloy, 400));
+			range = 500f;
+		}};
+		
 		fusionCollapser = new AdaptImpactReactor("fusion-collapser"){{
 			this.ambientSound = Sounds.pulse;
 			this.ambientSoundVolume = 0.09F;
@@ -165,7 +180,7 @@ public class NHBlocks implements ContentList {
 		
 		insulatedWall = new Wall("insulated-wall"){{
 			size = 1;
-			health = 550;
+			health = 300;
 			requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
 			this.insulated = true;
 			this.absorbLasers = true;
@@ -827,12 +842,7 @@ public class NHBlocks implements ContentList {
             lightningColor = heatColor = NHColor.darkEnrColor;
             generateEffect = NHFx.blastgenerate;
             acceptEffect = NHFx.blastAccept;
-            status = new StatusEffect("emp"){{
-            	reloadMultiplier = 0.01f;
-            	damage = 12f;
-          	  effect = NHFx.emped;
-				speedMultiplier = 0.24f;
-            }};
+            status = NHStatusEffects.emp2;
             range = 280;
             health = 5000;
             knockback = 80f;         
@@ -848,17 +858,15 @@ public class NHBlocks implements ContentList {
 			range = 600f;
 			squareStroke = 2.35f;
 
-			requirements(Category.units, with(
+			requirements(Category.units, BuildVisibility.shown, with(
 				NHItems.presstanium, 3000,
 				NHItems.metalOxhydrigen, 5000,
 				NHItems.seniorProcessor, 2000,
-				NHItems.darkEnergy, 1000,
-				NHItems.irayrondPanel, 3000,
-				NHItems.upgradeSort, 1300,
 				Items.thorium, 3500,
 				Items.titanium, 6000,
 				Items.surgeAlloy, 1000,
-				Items.phaseFabric, 800
+				Items.phaseFabric, 1800,
+				NHItems.irayrondPanel, 800
 			));
 			size = 8;
 			addSets(

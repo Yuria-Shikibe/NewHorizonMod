@@ -17,6 +17,7 @@ public class EffectBulletType extends BasicBulletType{
     }
 
     @Override public void draw(Bullet b){}
+	@Override public void drawLight(Bullet b){}
 }
 
 

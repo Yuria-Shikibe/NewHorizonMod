@@ -1,13 +1,14 @@
 package newhorizon.block.drawer;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.math.geom.*;
-import mindustry.world.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.draw.*;
+import arc.Core;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.math.geom.Vec2;
+import mindustry.world.Block;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.draw.DrawBlock;
 
 
 public class DrawFactories extends DrawBlock{

@@ -7,19 +7,35 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
+import arc.util.Log;
+import arc.util.Reflect;
+import arc.util.Time;
 import arc.util.pooling.Pools;
+import mindustry.content.Fx;
 import mindustry.entities.Effect;
 
+import java.lang.reflect.Field;
+
 public class EffectTrail {
+	//public static Seq<Effect> all;
 	public static final float LIFETIME = 20f;
 	public int length;
 	public float width, size;
-
-	//No fucking sucks private
 	protected final Seq<Vec3> points;
 	protected float lastX = -1, lastY = -1;
 	
 	private final Effect disappearEffect;
+	
+	/*public static void load(){
+		try{
+			Field f = Effect.class.getDeclaredField("all");
+			Log.info(f.get(new Effect()));
+			all = (Seq<Effect>)f.get(new Effect());
+		}catch(NoSuchFieldException | IllegalAccessException e){
+			e.printStackTrace();
+		}
+	}*/
+	
 
 	public EffectTrail() {
 		this(1, 1, 1);
@@ -86,6 +102,7 @@ public class EffectTrail {
 		if (points.isEmpty())return;
 		
 		disappearEffect.at(this.points.peek().x, this.points.peek().y, this.length, color, this.points);
+		//Log.info(all);
 	}
 
 }

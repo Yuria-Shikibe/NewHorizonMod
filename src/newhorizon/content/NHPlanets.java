@@ -4,7 +4,6 @@ import arc.graphics.Color;
 import mindustry.content.Planets;
 import mindustry.ctype.ContentList;
 import mindustry.graphics.g3d.HexMesh;
-import mindustry.maps.planet.SerpuloPlanetGenerator;
 import mindustry.maps.planet.TantrosPlanetGenerator;
 import mindustry.type.Planet;
 

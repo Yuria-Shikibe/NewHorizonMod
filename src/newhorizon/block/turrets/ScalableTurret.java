@@ -18,7 +18,9 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
+import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
+import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.consumers.ConsumeLiquidBase;
 import mindustry.world.consumers.ConsumeType;
@@ -31,6 +33,7 @@ import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
 import newhorizon.func.TableFuncs;
 import newhorizon.func.TextureFilterValue;
+import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
 
@@ -38,9 +41,9 @@ import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 import static newhorizon.func.TableFuncs.getPercent;
 
-public class ScalableTurret extends Turret{
+public class ScalableTurret extends Turret implements ScalableBlockc{
 	public UpgradeData defaultData = NHUpgradeDatas.none;
-	
+	public Block upgraderBlock = null;
 	public float powerUse;
 	
 	public Color baseColor = Pal.accent;
@@ -53,7 +56,6 @@ public class ScalableTurret extends Turret{
 		hasItems = true;
 	}
 	
-	
 	@Override
 	public void load(){
 		super.load();
@@ -62,15 +64,22 @@ public class ScalableTurret extends Turret{
 	
 	@Override
     public void setStats(){
-        super.setStats();
-		stats.add(Stat.damage, defaultData.selectAmmo.damage, StatUnit.none);
-		stats.add(Stat.input, new TextureFilterValue(NHContent.iconLevel, "[accent]Caution[]: Need be linked."));
+		stats.add(Stat.abilities, new TextureFilterValue(
+				upgraderBlock != null && upgraderBlock.icon(Cicon.xlarge).found() ? upgraderBlock.icon(Cicon.xlarge) : NHContent.iconLevel,
+				"[accent]Caution[gray]: Need be linked by [lightgray]<" + (upgraderBlock == null ? "UPGRADE BLOCK" : upgraderBlock.localizedName) + ">[gray] to function."
+		));
+		super.setStats();
     }
 
     @Override
     public void init(){
         consumes.powerCond(powerUse, TurretBuild::isActive);
         super.init();
+	}
+	
+	@Override
+	public void setLink(Block block){
+		upgraderBlock = block;
 	}
 	
 	public class ScalableTurretBuild extends TurretBuild implements Scalablec{

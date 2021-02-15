@@ -1,8 +1,8 @@
 package newhorizon.content;
 
-import arc.graphics.*;
-import mindustry.ctype.*;
-import mindustry.type.*;
+import arc.graphics.Color;
+import mindustry.ctype.ContentList;
+import mindustry.type.Liquid;
 
 public class NHLiquids implements ContentList{
 	

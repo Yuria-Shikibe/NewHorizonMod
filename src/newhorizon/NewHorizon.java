@@ -15,6 +15,7 @@ import mindustry.mod.Mod;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
+import newhorizon.effects.EffectTrail;
 import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
 
@@ -34,7 +35,6 @@ public class NewHorizon extends Mod{
 	}
 	
 	private void addLink(Table table, TextureRegionDrawable icon, String buttonName, String link){
-		
 		table.button(buttonName, icon, Styles.cleart, () -> {
 			BaseDialog dialog = new BaseDialog("@link");
 			dialog.addCloseListener();
@@ -46,6 +46,21 @@ public class NewHorizon extends Mod{
 			}).fillX();
 			dialog.show();
 		}).size(LEN * 3, LEN).left().row();
+	}
+	
+	private void logShow(){
+		new BaseDialog("@log"){{
+			cont.table(Tex.buttonEdge3, table -> {
+				table.button("@back", Icon.left, this::hide).fillX().height(LEN).row();
+				table.image().fillX().height(OFFSET / 3).pad(OFFSET / 2).row();
+				this.addCloseListener();
+				table.pane(t -> {
+					t.add(
+						"Fixed crash problems.\n\nAdd two turrets.\n\nFixed some UI problems.\n\n(I really don't want to write this garbage.)"
+					);
+				}).fill();
+			}).fill();
+		}}.show();
 	}
 	
     public NewHorizon(){
@@ -64,9 +79,10 @@ public class NewHorizon extends Mod{
 				table.button("@back", Icon.left, Styles.transt, () -> {
 					dialog.hide();
 					NHSetting.settingApply();
-				}).size(LEN * 3, LEN);
-				table.button("@links", Icon.link, Styles.transt, this::links).size(LEN * 3, LEN).padLeft(OFFSET / 2);
-				table.button("@settings", Icon.book, Styles.transt, () -> new SettingDialog().show()).size(LEN * 3, LEN).padLeft(OFFSET / 2);
+				}).size(LEN * 2f, LEN);
+				table.button("@links", Icon.link, Styles.transt, this::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@settings", Icon.settings, Styles.transt, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@log", Icon.book, Styles.transt, this::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 			}).fillX().height(LEN + OFFSET);
 			dialog.show();
 			tableMain();
@@ -80,7 +96,7 @@ public class NewHorizon extends Mod{
 		    NHSetting.initSetting();
 		    NHSetting.initSettingList();
 	    }catch(IOException e){
-		    throw new RuntimeException(e);
+		    throw new IllegalArgumentException(e);
 	    }
 	    Log.info("Loading NewHorizon Mod Objects");
 	    NHSounds.load();
@@ -88,6 +104,7 @@ public class NewHorizon extends Mod{
 		loader.load();
 	    new NHItems().load();
 	    new NHLiquids().load();
+	    new NHBullets().load();
 		new NHUpgradeDatas().load();
 		new NHUnits().load();
 		new NHBlocks().load();

@@ -213,7 +213,7 @@ public class NHUnits implements ContentList {
 				bullet = new LightningLinkerBulletType(2.3f, 200){{
 					range = 340f;
 					
-					outColor = NHColor.lightSky;
+					outColor = lightColor = lightningColor = NHColor.lightSky;
 					innerColor = Color.white;
 					generateDelay = 6f;
 					randomGenerateRange = 280f;

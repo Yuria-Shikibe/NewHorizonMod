@@ -1,11 +1,11 @@
 package newhorizon.block.drawer;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.math.Mathf;
 import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.production.GenericCrafter.*;
-import mindustry.world.draw.*;
+import mindustry.world.blocks.production.GenericCrafter.GenericCrafterBuild;
+import mindustry.world.draw.DrawAnimation;
 
 public class NHDrawAnimation extends DrawAnimation{
 	public Color liquidColor;
