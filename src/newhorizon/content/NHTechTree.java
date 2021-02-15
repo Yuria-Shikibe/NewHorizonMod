@@ -29,8 +29,8 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
-        new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.nemesis, NHBlocks.nemesis.researchRequirements());
-        new TechNode(TechTree.get(NHBlocks.nemesis), NHBlocks.nemesisUpgrader, ItemStack.with());
+        new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.endOfEra, NHBlocks.endOfEra.researchRequirements());
+        new TechNode(TechTree.get(NHBlocks.endOfEra), NHBlocks.eoeUpgrader, ItemStack.with());
         new TechNode(TechTree.get(Blocks.interplanetaryAccelerator), NHBlocks.jumpGate, NHBlocks.jumpGate.researchRequirements());
         new TechNode(TechTree.get(Blocks.phaseWall), NHBlocks.chargeWall, NHBlocks.chargeWall.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.chargeWall), NHBlocks.chargeWallLarge, NHBlocks.chargeWallLarge.researchRequirements());

@@ -4,15 +4,24 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
+import arc.scene.ui.layout.Table;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
+import mindustry.gen.Icon;
 import mindustry.graphics.MultiPacker;
 import mindustry.ui.Cicon;
+import mindustry.ui.Styles;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatValue;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.DeliveryBulletType;
 import newhorizon.feature.UpgradeData;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
+
+import javax.swing.*;
+
+import static newhorizon.func.TableFuncs.LEN;
 
 public class NHContent extends UnlockableContent{
 	public static TextureRegion
@@ -28,6 +37,17 @@ public class NHContent extends UnlockableContent{
 	
 	public NHContent(){
 		super("specific-content-loader");
+		localizedName = "NewHorizon-StartLog";
+	}
+	
+	@Override
+	public void setStats(){
+		stats.add(Stat.abilities, new StatValue(){
+			@Override
+			public void display(Table table){
+				table.button("StartLog", Icon.info, Styles.cleart, NewHorizon::startLog).size(LEN * 3, LEN);
+			}
+		});
 	}
 	
 	@Override

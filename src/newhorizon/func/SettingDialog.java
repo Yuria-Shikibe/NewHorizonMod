@@ -17,7 +17,13 @@ public class SettingDialog extends BaseDialog{
 	public SettingDialog(){
 		super("@nh-setting");
 		setFillParent(true);
-		cont.table(table -> {
+		cont.pane(table -> {
+			table.pane(t -> {
+				t.add("[gray]You can get back to here by ");
+				t.add("@settings").color(Pal.lancerLaser);
+				t.add("[gray] in [accent]<View Content>[gray] in the [accent]<ModDialog>[gray].").row();
+			}).width(Core.graphics.getWidth() / 2f).fillY().row();
+			table.image().color(Pal.accent).growX().height(OFFSET / 4).pad(OFFSET / 2).row();
 			for(String key : NHSetting.defaultKeys.keys()){
 				if(!key.startsWith("@"))continue;
 				table.table(t -> {

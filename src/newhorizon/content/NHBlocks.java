@@ -16,7 +16,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
-import mindustry.type.StatusEffect;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Door;
 import mindustry.world.blocks.defense.ForceProjector;
@@ -49,8 +48,8 @@ public class NHBlocks implements ContentList {
 	public static Block
 		delivery, zateOre, xenMelter, hyperGenerator, fusionCollapser, blastTurret, empTurret,
 		largeShieldGenerator, divlusion,
-		chargeWall, chargeWallLarge, nemesisUpgrader, jumpGate,
-		irdryonVault, blaster, nemesis, thurmix, argmot, thermoTurret,
+		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate,
+		irdryonVault, blaster, endOfEra, thurmix, argmot, thermoTurret,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zateFactoryLarge, zateFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
@@ -743,7 +742,7 @@ public class NHBlocks implements ContentList {
 		};
 
 
-		nemesis = new ScalableTurret("end-of-era") {
+		endOfEra = new ScalableTurret("end-of-era") {
 			{
 				recoilAmount = 7f;
 				requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 2000));
@@ -786,10 +785,10 @@ public class NHBlocks implements ContentList {
 			}
 		};
 
-		nemesisUpgrader = new UpgradeBlock("end-of-era-upgrader"){{
+		eoeUpgrader = new UpgradeBlock("end-of-era-upgrader"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 3;
-			linkTarget = nemesis;
+			linkTarget = endOfEra;
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 10;

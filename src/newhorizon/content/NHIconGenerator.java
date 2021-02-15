@@ -1,25 +1,36 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.Settings;
 import arc.graphics.Pixmap;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
+import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
+import mindustry.gen.Icon;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.ui.Cicon;
+import mindustry.ui.Styles;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatValue;
+import newhorizon.NewHorizon;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
+import newhorizon.func.SettingDialog;
+
+import static newhorizon.func.TableFuncs.LEN;
 
 public class NHIconGenerator extends UnlockableContent{
 	public NHIconGenerator(){
 		super("specific-icon-generator");
+		localizedName = Core.bundle.get("settings");
 	}
 	
 	@Override
@@ -29,7 +40,17 @@ public class NHIconGenerator extends UnlockableContent{
 	
 	@Override
 	public TextureRegion icon(Cicon icon){
-		return NHContent.iconLevel;
+		return NHContent.ammoInfo;
+	}
+	
+	@Override
+	public void setStats(){
+		stats.add(Stat.abilities, new StatValue(){
+			@Override
+			public void display(Table table){
+				table.button("@settings", Icon.info, Styles.cleart, () -> new SettingDialog().show()).size(LEN * 3, LEN);
+			}
+		});
 	}
 	
 	@Override
