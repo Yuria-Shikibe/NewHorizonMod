@@ -43,6 +43,7 @@ public class NHBullets {
 			public float range(){return 180f;}
 			
 			{
+				buildingDamageMultiplier = 1.5f;
 				keepVelocity = true;
 				velocityEnd = 14f;
 				accelerateBegin = 0.01f;
