@@ -28,10 +28,13 @@ import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericSmelter;
+import mindustry.world.blocks.production.Pump;
+import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.blocks.storage.Unloader;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMixer;
+import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -66,13 +69,27 @@ public class NHBlocks implements ContentList {
 		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory,
 		//walls
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
-		//Distribtions
-		towardGate, rapidUnloader
+		//Distributions
+		towardGate, rapidUnloader,
+		//Drills
+		largeWaterExtractor
 		;
 
 	@Override
 	public void load() {
 		final int healthMult = 4;
+		largeWaterExtractor = new SolidPump("large-water-extractor"){{
+			NHTechTree.add(Blocks.waterExtractor, this);
+			size = 3;
+			pumpAmount = 0.3f;
+			requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.thorium, 60, Items.metaglass, 30));
+			result = Liquids.water;
+			liquidCapacity = 60.0F;
+			rotateSpeed = 1.4F;
+			attribute = null;
+			consumes.power(4f);
+		}};
+		
 		railGun = new ItemTurret("rail-gun"){{
 			size = 4;
 			health = 4550;
@@ -84,6 +101,7 @@ public class NHBlocks implements ContentList {
 			chargeSound = NHSounds.railGunCharge;
 			chargeEffects = 1;
 			chargeEffect = NHFx.chargeEffectSmall(NHItems.irayrondPanel.color, 132f);
+			chargeBeginEffect = NHFx.chargeBeginEffect(NHItems.irayrondPanel.color, 10, chargeEffect.lifetime);
 			chargeTime = chargeEffect.lifetime;
 			NHTechTree.add(Blocks.foreshadow, this);
 			ammo(

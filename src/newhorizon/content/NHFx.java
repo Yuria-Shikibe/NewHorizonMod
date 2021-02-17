@@ -80,10 +80,17 @@ public class NHFx{
 	public static Effect chargeEffectSmall(Color color, float lifetime){
 		return new Effect(lifetime, 100.0F, (e) -> {
 			Draw.color(color);
-			randLenVectors(e.id, 8, 3 + 50 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 5f));
-			Lines.stroke(e.fslope() * 2.0F);
+			randLenVectors(e.id, 7, 3 + 50 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 3f));
+			Lines.stroke(e.fin() * 1.75f);
 			Lines.circle(e.x, e.y, e.fout() * 40f);
-			randLenVectors(e.id + 1, 16, 3 + 70 * e.fout(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
+			randLenVectors(e.id + 1, 16, 3 + 70 * e.fout(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 7 + 3));
+		});
+	}
+	
+	public static Effect chargeBeginEffect(Color color, float size, float lifetime){
+		return new Effect(lifetime, (e) -> {
+			Draw.color(color);
+			Fill.circle(e.x, e.y, size * e.fin());
 		});
 	}
 	

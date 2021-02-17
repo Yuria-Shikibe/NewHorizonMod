@@ -15,6 +15,7 @@ import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
+import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
@@ -24,6 +25,7 @@ import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
+import mindustry.world.blocks.environment.Floor;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 
@@ -33,6 +35,7 @@ import static mindustry.core.World.toTile;
 
 public class Functions {
     private static Tile tileParma;
+    private static Floor floorParma;
     
     public static Color getColor(Color defaultColor, Team team){
         return defaultColor == null ? team.color : defaultColor;
@@ -68,10 +71,14 @@ public class Functions {
     
             Geometry.circle(toTile(x), toTile(y), toTile(spawnRange) , (x1, y1) -> {
                 tileParma = null;
+                floorParma = null;
                 if((tileParma = world.tile(x1, y1)) != null && tileParma.build != null &&! buildingSeq.contains(tileParma.build.id) && tileParma.build.block().solid){
                     buildingSeq.add(tileParma.build.id);
                     rectSeq.add(new Rect().setSize(tileParma.build.block().size * tilesize + type.hitSize).setCenter(tileParma.build.x, tileParma.build.y));
+                    tileParma = null;
                 }
+                
+                if((tileParma = world.tile(x1, y1)) != null && tileParma.build == null && (tileParma.block().solid))rectSeq.add(new Rect().setSize(tilesize + type.hitSize).setCenter(World.unconv(x1), World.unconv(y1)));
             });
             
             loop1: while(vecs.size < spawns){
