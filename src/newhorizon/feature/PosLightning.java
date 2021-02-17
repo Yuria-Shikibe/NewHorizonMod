@@ -20,39 +20,45 @@ import mindustry.gen.Healthc;
 import mindustry.gen.Unitc;
 import mindustry.world.Tile;
 import newhorizon.content.NHFx;
+import org.jetbrains.annotations.NotNull;
 
-public class PosLightning { //Provide some workable methods to create position to position lightning bolt. Powered by Yuria.
-
-	/**
-	* Main methods:
-	*
-	*/
-
-
-	//ELEMENTS
+public class PosLightning {
 	
-	//Default effect lifetime.
-	public static final float lifetime = Fx.lightning.lifetime;
-	//Default lightning width.
-	public static final float WIDTH = 3f;
-	//Default min lightning create distance from targetA to B.
-	public static final float GENERATE_DST = 16f;
-	//Default randX mult prama.
-	public static final float RANGE_RAND = 4.7f;
-	//ROT_DST
-	public static final float ROT_DST = Vars.tilesize * 0.75f;
+	/**
+	 * Provide methods that can generate Position to Position Lightning.<p>
+	 *
+	 * @implNote The method implements the generation of random lightning effect <b>from point to point</b> and complete certain action at <b>target point</b> through {@link Cons}.<p>
+	 * @apiNote
+	 * <li> {@code movement} {@link Cons} used to run specific action at the target point.
+	 * <li> {@code WIDTH}: {@value WIDTH} used to control the stroke of the lightning.
+	 * <li> {@code GENERATE_DST}: {@value GENERATE_DST} used to control the min distant between {@code target} point.
+	 * <li> {@code RANGE_RAND}: {@value RANGE_RAND} used to control the base xRand range of every part of the lightning.
+	 * <li> {@code ROT_DST}: {@value ROT_DST} used to control the length of every part of the lightning.<p>
+	 *
+	 * @see Position
+	 * @see Vec2
+	 * @see NHFx
+	 * @see Geometry
+	 * @see Cons
+	 *
+	 * @author Yuria
+	 */
 
-	//Used in find target method.
+	
+	public static final float lifetime = Fx.lightning.lifetime;
+	public static final float WIDTH = 3f;
+	public static final float GENERATE_DST = 16f;
+	public static final float RANGE_RAND = 4.7f;
+	public static final float ROT_DST = Vars.tilesize * 0.75f;
+	
 	private static Tile furthest;
 	private static final Rect rect = new Rect();
-	
-
 	//METHODS
 
 	//create lightning to the enemies in range.
 	
 	//A radius create method that with a Bullet owner.
-	public static void createRange(Bullet owner, float range, int hits, Color color, boolean createLightning, float width, int boltNum, Cons<Position> movement) {
+	public static void createRange(@NotNull Bullet owner, float range, int hits, Color color, boolean createLightning, float width, int boltNum, Cons<Position> movement) {
 		createRange(owner, owner, owner.team, range, hits, color, createLightning, 0, 0, width, boltNum, movement);
 	}
 	
@@ -136,14 +142,12 @@ public class PosLightning { //Provide some workable methods to create position t
 	//Compute the proper hit position.
 	private static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
 		furthest = null;
-
-		return 
-		Vars.world.raycast(
-			toIntTile(from.getX()),
-			toIntTile(from.getY()),
-			toIntTile(target.getX()),
-			toIntTile(target.getY()),
-			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers 
+		return Geometry.raycast(
+				toIntTile(from.getX()),
+				toIntTile(from.getY()),
+				toIntTile(target.getX()),
+				toIntTile(target.getY()),
+				(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers
 		) && furthest != null ? furthest : target;
 	}
 
@@ -163,8 +167,8 @@ public class PosLightning { //Provide some workable methods to create position t
 	}
 
 	//create lightning effect.
-	private static void createBoltEffect(Color color, float width, Seq<Vec2> vecs) {
-		NHFx.posLightning.at(vecs.first().x, vecs.first().y, width, color, vecs);
+	private static void createBoltEffect(Color color, float width, Seq<Vec2> vets) {
+		NHFx.posLightning.at(vets.first().x, vets.first().y, width, color, vets);
 	}
 	
 	private static Seq<Vec2> computeVectors(Seq<Float> randomVec, Position from, Position to){

@@ -10,7 +10,7 @@ public class NHItems implements ContentList{
 	
 	public static Item 
 	presstanium, seniorProcessor, juniorProcessor,
-	zate, fusionEnergy, multipleSteel, irayrondPanel,
+	zeta, fusionEnergy, multipleSteel, irayrondPanel,
 	setonAlloy, darkEnergy, upgradeSort, metalOxhydrigen,
 	thermoCorePositive, thermoCoreNegative,
 	emergencyReplace;
@@ -28,9 +28,9 @@ public class NHItems implements ContentList{
 			explosiveness = 2f;
 		}};
 		presstanium = new Item("presstanium", Color.valueOf("6495ED"));
-		seniorProcessor = new Item("processor-senior", Color.valueOf("6495ED"));
+		seniorProcessor = new Item("processor-senior", Color.valueOf("FFFACD"));
 		juniorProcessor = new Item("processor-junior", Color.valueOf("808080"));
-		zate = new Item("zate", Color.valueOf("#FFAE87")){{
+		zeta = new Item("zeta", Color.valueOf("#FFAE87")){{
 			hardness = 4;
 		}};
 		fusionEnergy = new Item("fusion-core-energy", Color.valueOf("ffe4b5")){{

@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.content;
+import static mindustry.Vars.mobile;
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
 
@@ -29,8 +30,6 @@ public class TableTexDebugDialog extends BaseDialog{
 		buttonText,
 		iconDialog,
 		tableDialog;
-	
-	
 	
 	public TableTexDebugDialog(String title){
 		this(title, Core.scene.getStyle(Dialog.DialogStyle.class));
@@ -73,7 +72,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			iconDialog.addCloseListener();
 			iconDialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 			
 		cont.button("TableTexes", () -> {
 			tableDialog = new BaseDialog("ICONS"){{
@@ -104,7 +103,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			tableDialog.addCloseListener();
 			tableDialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.button("ButtonTexts", () -> {
 			buttonText = new BaseDialog("ButtonTexts"){{
@@ -136,7 +135,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonText.addCloseListener();
 			buttonText.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.button("ButtonImages", () -> {
 			buttonImage = new BaseDialog("ButtonImages"){{
@@ -179,7 +178,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.button("Images", () -> {
 			buttonImage = new BaseDialog("Images"){{
@@ -212,7 +211,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.row();
 		
@@ -241,7 +240,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.button("Unlock", () -> {
 			for(UnlockableContent content : content.items()){
@@ -263,7 +262,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("Settings", () -> {
 			new SettingDialog().show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		return this;
 	}

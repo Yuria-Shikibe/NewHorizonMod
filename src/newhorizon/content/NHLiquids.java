@@ -12,7 +12,7 @@ public class NHLiquids implements ContentList{
 	xenAlpha, 
 	xenBeta,
 	xenGamma,
-	zateFluid,
+	zetaFluid,
 	infinityLiquid,
 	irdryonFluid;
 	
@@ -42,14 +42,15 @@ public class NHLiquids implements ContentList{
 		}};
 
 		xenGamma = new Liquid("xen-gamma", Color.valueOf("#CAEEFF")){{
-			heatCapacity = 1.5f;
+			heatCapacity = 1.65f;
 			explosiveness = 100f;
 			viscosity = 0.5f;
 			temperature = 0f;
 			lightColor = Color.valueOf("#CAEEFF");
+			effect = NHStatusEffects.emp2;
 		}};
 
-		zateFluid = new Liquid("zate-fluid", Color.valueOf("#f0ffba")){{
+		zetaFluid = new Liquid("zeta-fluid", Color.valueOf("#f0ffba")){{
 			heatCapacity = 0.3f;
 			explosiveness = 3f;
 			viscosity = 0.1f;

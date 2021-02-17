@@ -15,6 +15,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Units;
 import mindustry.game.Team;
@@ -34,8 +35,13 @@ import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.modules.ItemModule;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
@@ -49,16 +55,17 @@ import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
 
 public class JumpGate extends Block {
+    public boolean primary;
     public float spawnDelay = 5f;
     public float spawnReloadTime = 180f;
     public float spawnRange = 120f;
     public float range = 200f;
     public float inComeVelocity = 5f;
+    public float atlasSizeScl = 1;
+    public float basePowerDraw = 3f;
     public TextureRegion
             pointerRegion,
-            arrowRegion,
-            bottomRegion,
-            armorRegion;
+            arrowRegion;
     public Color baseColor;
     public final Seq<UnitSet> calls = new Seq<>();
 
@@ -72,7 +79,48 @@ public class JumpGate extends Block {
         hasPower = true;
         this.category = Category.units;
     }
-
+    
+    public boolean canReplace(Block other) {
+        return super.canReplace(other) || other instanceof JumpGate && this.size > other.size;
+    }
+    
+    public boolean canPlaceOn(Tile tile, Team team) {
+        if(primary)return true;
+        if (tile == null) {
+            return false;
+        } else {
+            return tile.block() instanceof JumpGate && this.size > tile.block().size;
+        }
+    }
+    
+    public void placeBegan(Tile tile, Block previous) {
+        if (previous instanceof JumpGate) {
+            tile.setBlock(this, tile.team());
+            Fx.placeBlock.at(tile, (float)tile.block().size);
+            Fx.upgradeCore.at(tile, (float)tile.block().size);
+        }
+        
+    }
+    
+    public void beforePlaceBegan(Tile tile, Block previous) {
+        if(tile == null || tile.build == null || tile.build.core() == null)return;
+        ItemModule items = tile.build.core().items();
+        if (!Vars.state.rules.infiniteResources && items != null) {
+            items.remove(ItemStack.mult(this.requirements, Vars.state.rules.buildCostMultiplier));
+        }
+    }
+    
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        Color color = baseColor == null ? Pal.accent : baseColor;
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, color);
+        if (Vars.world.tile(x, y) != null) {
+            if (!this.canPlaceOn(Vars.world.tile(x, y), Vars.player.team())) {
+                this.drawPlaceText(Core.bundle.get((Vars.player.team().core() == null || !Vars.player.team().core().items.has(this.requirements, Vars.state.rules.buildCostMultiplier)) && !Vars.state.rules.infiniteResources ? "bar.noresources" : "nh-need-base"), x, y, valid);
+            }
+        }
+    }
+    
+    
     public void addSets(UnitSet... sets){
         calls.addAll(sets);
     }
@@ -86,20 +134,23 @@ public class JumpGate extends Block {
     @Override
     public void setStats() {
         super.setStats();
+        this.stats.add(Stat.powerUse, this.basePowerDraw * 60F, StatUnit.powerSecond);
         this.stats.add(Stat.output, (t) -> {
             t.row().add("[gray]Summon Types:").left().pad(TableFuncs.OFFSET).row();
             for(UnitSet set : calls) {
                 if(set.type.locked() && !state.rules.infiniteResources){
-                    t.table(Tex.button, t2 -> {
-                        t2.table(Tex.button, table2 -> table2.image(Icon.lock).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
+                    t.table(Tex.clear, t2 -> {
+                        t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
 
                         t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
 
                         t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
                     }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
                 }else{
-                    t.table(Tex.button, t2 -> {
-                        t2.table(Tex.button, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
+                    t.table(Tex.clear, t2 -> {
+                        t2.table(Tex.clear, table2 -> {
+                            TableFuncs.tableImageShrink(set.type.icon(Cicon.xlarge), LEN, table2);
+                        }).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
 
                         t2.pane(table2 -> {
                             table2.add("[lightgray]Summon: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
@@ -153,21 +204,8 @@ public class JumpGate extends Block {
     @Override
     public void load(){
         super.load();
-        pointerRegion = Core.atlas.find(this.name + "-pointer");
-        arrowRegion = Core.atlas.find(this.name + "-arrow");
-        bottomRegion = Core.atlas.find(this.name + "-bottom");
-        armorRegion = Core.atlas.find(this.name + "-armor");
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        Color color = baseColor == null ? Pal.accent : baseColor;
-        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, color);
-    }
-
-    @Override
-    protected TextureRegion[] icons() {
-        return this.teamRegion.found() && this.minfo.mod == null ? new TextureRegion[]{this.bottomRegion, this.region, this.teamRegions[Team.sharded.id], armorRegion} : new TextureRegion[]{this.bottomRegion, this.region, armorRegion};
+        pointerRegion = Core.atlas.find(NewHorizon.NHNAME + "jump-gate-pointer");
+        arrowRegion = Core.atlas.find(NewHorizon.NHNAME + "jump-gate-arrow");
     }
 
     public class JumpGateBuild extends Building implements Ranged {
@@ -193,7 +231,8 @@ public class JumpGate extends Block {
                 if(this.buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
                     spawn(getSet());
                 }
-            }
+                consumes.powerCond(consumes.getPower().usage, b -> true);
+            }else consumes.powerCond(basePowerDraw, b -> true);
         }
 
         public UnitType getType(){ return calls.get(spawnID).type; }
@@ -209,7 +248,7 @@ public class JumpGate extends Block {
 
         public Color getColor(UnitSet set){
             if(set == null)return baseColor();
-            return (isCalling() && (!hasConsume(set) || !success)) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
+            return (error || !hasConsume(getSet())) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
         }
 
         @Override
@@ -259,7 +298,7 @@ public class JumpGate extends Block {
             dialog.cont.table(t -> {
                 t.table(inner -> {
                     inner.button("@back", Icon.left, dialog::hide).padBottom(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
-                    inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null ||success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
+                    inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
                     inner.pane(callTable -> {
                         for(UnitSet set : calls) {
                             if(set.type.locked() && !state.rules.infiniteResources){
@@ -271,7 +310,7 @@ public class JumpGate extends Block {
                                     t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
                                 }).fillX().height(LEN).padBottom(TableFuncs.OFFSET / 2).row();
                             }else{
-                                callTable.table(Tex.button, t2 -> {
+                                callTable.table(Tex.clear, t2 -> {
                                     t2.table(Tex.clear, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().grow().pad(TableFuncs.OFFSET);
                 
                                     t2.pane(table2 -> {
@@ -281,7 +320,7 @@ public class JumpGate extends Block {
                 
                                     t2.table(Tex.clear, table2 -> {
                                         table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
-                                        table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set));
+                                        table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
                                     }).height(LEN).growX().left().pad(TableFuncs.OFFSET);
                                 }).fillX().height(LEN + OFFSET).padBottom(TableFuncs.OFFSET / 2).row();
                             }
@@ -295,9 +334,7 @@ public class JumpGate extends Block {
 
         @Override
         public void draw(){
-            Draw.rect(bottomRegion, x, y);
             super.draw();
-            Draw.rect(armorRegion, x, y);
             Draw.reset();
             Draw.z(Layer.bullet);
             if(efficiency() > 0){
@@ -308,12 +345,12 @@ public class JumpGate extends Block {
                 for(int i = 0; i < 4; i++){
                     float length = tilesize * block().size / 2f + 8f;
                     Tmp.v1.trns(i * 90 + rot, -length);
-                    Draw.rect(arrowRegion,x + Tmp.v1.x,y + Tmp.v1.y,i * 90 + 90 + rot);
+                    Draw.rect(arrowRegion,x + Tmp.v1.x,y + Tmp.v1.y, arrowRegion.width * Draw.scl * atlasSizeScl, arrowRegion.height * Draw.scl * atlasSizeScl, i * 90 + 90 + rot);
                     float sin = Mathf.absin(progress, 16f, tilesize);
                     length = tilesize * block().size / 2f + 3 + sin;
                     float signSize = 0.75f + Mathf.absin(progress + 8f, 8f, 0.15f);
                     Tmp.v1.trns(i * 90, -length);
-                    Draw.rect(pointerRegion, x + Tmp.v1.x,y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 + 90);
+                    Draw.rect(pointerRegion, x + Tmp.v1.x,y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize * atlasSizeScl, pointerRegion.height * Draw.scl * signSize * atlasSizeScl, i * 90 + 90);
                 }
                 Draw.color();
             }
@@ -327,15 +364,15 @@ public class JumpGate extends Block {
                     for (int i = 0; i < 4; i++) {
                         Tmp.v1.trns(angle, (i - 4) * tilesize * 2);
                         float f = (100 - (progress - 25 * i) % 100) / 100;
-                        Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * regSize * f, pointerRegion.height * regSize * f, angle - 90);
+                        Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * regSize * f * atlasSizeScl, pointerRegion.height * regSize * f * atlasSizeScl, angle - 90);
                     }
                 }
 
-                if(!success || !hasConsume(getSet())){
+                if(error || !hasConsume(getSet())){
                     Draw.color(getColor(getSet()));
                     float signSize = 0.75f + Mathf.absin(progress + 8f, 8f, 0.15f);
                     for (int i = 0; i < 4; i++) {
-                        Draw.rect(arrowRegion, x , y, arrowRegion.width * Draw.scl * signSize, arrowRegion.height * Draw.scl * signSize, 90 * i);
+                        Draw.rect(arrowRegion, x , y, arrowRegion.width * Draw.scl * signSize * atlasSizeScl, arrowRegion.height * Draw.scl * signSize * atlasSizeScl, 90 * i);
                     }
                 }
             }
@@ -396,7 +433,7 @@ public class JumpGate extends Block {
 
         public void spawn(UnitSet set){
             if(!isValid() || !Units.canCreate(team, set.type))return;
-            
+            success = false;
             float Sx, Sy;
             int spawnNum = set.callIns;
             if(team.data().countType(set.type) + spawnNum > Units.getCap(team)){
@@ -419,14 +456,13 @@ public class JumpGate extends Block {
                 this.spawns = set.callIns;
                 this.buildReload = 0;
                 this.spawnID = -1;
-                success = false;
                 error = false;
             }else error = true;
         }
     }
 
     public static class UnitSet{
-        public int level;
+        public float level;
         public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
         public UnitType type;
         public float costTime = 60f;
@@ -434,13 +470,13 @@ public class JumpGate extends Block {
 
         public UnitSet(){this(0, UnitTypes.alpha, 0, 5); }
 
-        public UnitSet(int level, UnitType type){
+        public UnitSet(float level, UnitType type){
             this.type = type;
             this.level = level;
             this.requirements.add(new ItemStack(NHItems.emergencyReplace, 0));
         }
 
-        public UnitSet(int level, UnitType type, float costTime, int callIns, ItemStack... requirements){
+        public UnitSet(float level, UnitType type, float costTime, int callIns, ItemStack... requirements){
             this.type = type;
             this.level = level;
             this.costTime = costTime;

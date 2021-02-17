@@ -176,7 +176,7 @@ public class Delivery extends Block{
 		}
 		
 		protected void deliver(){
-			if(!linkValid())return;
+			if(!linkValid() || items.total() <= 0)return;
 			
 			int totalUsed = 0;
 			this.heat = 1;
@@ -186,9 +186,8 @@ public class Delivery extends Block{
 			data.to = link();
 			
 			for(int i = 0; i < Vars.content.items().size; ++i) {
-				int maxTransfer = Math.min(this.items.get(Vars.content.item(i)), itemCapacity - totalUsed);
+				int maxTransfer = this.items.get(Vars.content.item(i));
 				data.items[i] = maxTransfer;
-				totalUsed += maxTransfer;
 				this.items.remove(Vars.content.item(i), maxTransfer);
 			}
 			

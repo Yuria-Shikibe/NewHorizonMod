@@ -9,11 +9,15 @@ import mindustry.Vars;
 public class NHSounds{
 	public static Sound
 		launch = new Sound(),
-		rapidLaser = new Sound();
+		rapidLaser = new Sound(),
+		railGunCharge = new Sound(),
+		railGunBlast = new Sound();
 	
 	public static synchronized void load(){
 		rapidLaser = loadSound("rapidLaser");
 		launch = loadSound("launch");
+		railGunBlast = loadSound("railGunBlast");
+		railGunCharge = loadSound("railGunCharge");
 	}
 	
 	

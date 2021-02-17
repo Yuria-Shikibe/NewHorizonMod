@@ -13,7 +13,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v124'
+    mindustryVersion = 'v125'
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
@@ -34,6 +34,7 @@ allprojects{
 }
 
 dependencies{
+    implementation 'org.jetbrains:annotations:20.1.0'
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }

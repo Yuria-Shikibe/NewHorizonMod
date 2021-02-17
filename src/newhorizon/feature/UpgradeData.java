@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.io.Reads;
@@ -96,7 +97,7 @@ public class UpgradeData{
 		public boolean isUnlocked, selected;
 		
 		public float costTime() {
-			return costTime * (1 + level * timeCostParma) * Vars.state.rules.buildSpeedMultiplier;
+			return costTime * (1 + (isLeveled ? level * timeCostParma : 0)) * Vars.state.rules.buildSpeedMultiplier;
 		}
 		
 		public boolean isMaxLevel(){ return !isLeveled || level >= UpgradeData.this.maxLevel; }
@@ -168,17 +169,33 @@ public class UpgradeData{
 		}
 		
 		public void buildTable(Table cont, Upgraderc from) {
-			cont.table(Tex.button, t -> {
+			Table info = new Table(Tex.button, t -> {
+				Label label = new Label("");
+				t.update(() -> {
+					label.setText(new StringBuilder().append("[lightgray]NeededTime: [accent]").append(format(costTime() / 60)).append("[lightgray] sec[]"));
+					if(!isLeveled && available())t.remove();
+					if(isLeveled && isMaxLevel())t.remove();
+				});
+				
 				t.pane(table -> table.image(icon).size(LEN).left()).left().padLeft(OFFSET / 2f).size(LEN);
 				
 				t.pane(table -> {
 					table.add(Core.bundle.get(name)).color(Pal.accent).left().row();
-					table.add("[lightgray]NeededTime: [accent]" + format(costTime() / 60) + "[lightgray] sec[]").left().row();
+					
+					table.add(label).left().row();
 					if(UpgradeData.this.isLeveled){
 						table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
-						table.add("[lightgray]Level: [accent]" + level).left().row();
-						table.add("[lightgray]ReloadSpeedUp: [accent]" + getPercent(speedUP())).left().row();
-						table.add("[lightgray]DefenceUP: [accent]" + getPercent(defenceUP())).left().row();
+						Label labelL = new Label(""), labelR = new Label(""), lableD = new Label("");
+						
+						table.update(() -> {
+							labelL.setText(new StringBuilder().append("[lightgray]Level: [accent]").append(level));
+							labelR.setText(new StringBuilder().append("[lightgray]ReloadSpeedUp: [accent]").append(getPercent(speedUP())));
+							lableD.setText(new StringBuilder().append("[lightgray]DefenceUP: [accent]").append(getPercent(defenceUP())));
+						});
+						
+						table.add(labelL).left().row();
+						table.add(labelR).left().row();
+						table.add(lableD).left().row();
 					}
 				}).size(LEN * 6f, LEN * 1.5f).left().pad(OFFSET);
 				
@@ -186,7 +203,8 @@ public class UpgradeData{
 					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from)).size(LEN);
 					table.button(Icon.upOpen, Styles.clearPartiali, this::upgrade).size(LEN).disabled(b -> !from.canUpgrade(this));
 				}).height(LEN + OFFSET).left().pad(OFFSET);
-			}).pad(OFFSET / 2).fillX().height(LEN * 2f).row();
+			});
+			cont.add(info).pad(OFFSET / 2).fillX().height(LEN * 2f).row();
 		}
 		
 		public void infoText(Table table){

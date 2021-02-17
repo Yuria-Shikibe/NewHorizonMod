@@ -77,10 +77,10 @@ public class NHFx{
 		});
 	}
 
-	public static Effect chargeEffectSmall(Color color){
-		return new Effect(60.0F, 100.0F, (e) -> {
+	public static Effect chargeEffectSmall(Color color, float lifetime){
+		return new Effect(lifetime, 100.0F, (e) -> {
 			Draw.color(color);
-			randLenVectors(e.id, 6, 3 + 50 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 5f));
+			randLenVectors(e.id, 8, 3 + 50 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 5f));
 			Lines.stroke(e.fslope() * 2.0F);
 			Lines.circle(e.x, e.y, e.fout() * 40f);
 			randLenVectors(e.id + 1, 16, 3 + 70 * e.fout(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
@@ -108,12 +108,99 @@ public class NHFx{
 		});
 	}
 	
+	public static Effect instShoot(Color color){
+		return new Effect(24.0F, (e) -> {
+			e.scaled(10.0F, (b) -> {
+				Draw.color(Color.white, color, b.fin());
+				Lines.stroke(b.fout() * 3.0F + 0.2F);
+				Lines.circle(b.x, b.y, b.fin() * 50.0F);
+			});
+			Draw.color(color);
+			
+			for(int i : Mathf.signs){
+				Drawf.tri(e.x, e.y, 13.0F * e.fout(), 85.0F, e.rotation + 90.0F * i);
+				Drawf.tri(e.x, e.y, 13.0F * e.fout(), 50.0F, e.rotation + 20.0F * i);
+			}
+			
+		});
+	}
+	
+	public static Effect instBomb(Color color){
+		return new Effect(15.0F, 100.0F, (e) -> {
+			Draw.color(color);
+			Lines.stroke(e.fout() * 4.0F);
+			Lines.circle(e.x, e.y, 4.0F + e.finpow() * 20.0F);
+			
+			int i;
+			for(i = 0; i < 4; ++i) {
+				Drawf.tri(e.x, e.y, 6.0F, 80.0F * e.fout(), (float)(i * 90 + 45));
+			}
+			
+			Draw.color();
+			
+			for(i = 0; i < 4; ++i) {
+				Drawf.tri(e.x, e.y, 3.0F, 30.0F * e.fout(), (float)(i * 90 + 45));
+			}
+		});
+	}
+	
+	public static Effect instHit(Color color){
+		return new Effect(20.0F, 200.0F, (e) -> {
+			Draw.color(Pal.bulletYellowBack);
+			
+			for(int i = 0; i < 2; ++i) {
+				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.25f));
+				float m = i == 0 ? 1.0F : 0.5F;
+				
+				for(int j = 0; j < 5; ++j) {
+					float rot = e.rotation + Mathf.randomSeedRange((long)(e.id + j), 50.0F);
+					float w = 23.0F * e.fout() * m;
+					Drawf.tri(e.x, e.y, w, (80.0F + Mathf.randomSeedRange((long)(e.id + j), 40.0F)) * m, rot);
+					Drawf.tri(e.x, e.y, w, 20.0F * m, rot + 180.0F);
+				}
+			}
+			
+			e.scaled(10.0F, (c) -> {
+				Draw.color(color.cpy().lerp(Color.white, 0.25f));
+				Lines.stroke(c.fout() * 2.0F + 0.2F);
+				Lines.circle(e.x, e.y, c.fin() * 30.0F);
+			});
+			e.scaled(12.0F, (c) -> {
+				Draw.color(color);
+				Angles.randLenVectors((long)e.id, 25, 5.0F + e.fin() * 80.0F, e.rotation, 60.0F, (x, y) -> {
+					Fill.square(e.x + x, e.y + y, c.fout() * 3.0F, 45.0F);
+				});
+			});
+		});
+	}
+	
+	public static Effect instTrail(Color color){
+		return new Effect(30.0F, (e) -> {
+			for(int i = 0; i < 2; ++i) {
+				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
+				float m = i == 0 ? 1.0F : 0.5F;
+				float rot = e.rotation + 180.0F;
+				float w = 15.0F * e.fout() * m;
+				Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange((long)e.id, 15.0F)) * m, rot);
+				Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F);
+			}
+		});
+	}
+	
 	public static final Effect
+		spawnGround = new Effect(60f, e -> {
+			Draw.color(e.color, Pal.gray, e.fin());
+			randLenVectors(e.id, (int)(e.rotation * 1.35f), e.rotation * tilesize / 1.125f * e.fin(), (x, y) -> Fill.square(e.x + x, e.y + y, e.rotation * e.fout(), 45));
+		}),
+		
+		spawnWave = new Effect(60f, e -> {
+			stroke(3 * e.fout(), e.color);
+			circle(e.x, e.y, e.rotation  / tilesize * e.finpow());
+		}),
 		//All effects
 		trail = new Effect(50.0F, (e) -> {
 			Draw.color(e.color, Color.gray, e.fin());
 			randLenVectors(e.id, 2, tilesize * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.rotation * e.fout()));
-			
 		}),
 	
 		boolSelector = new Effect(0, 0, e -> {}),
@@ -168,7 +255,14 @@ public class NHFx{
 			stroke(2 * e.fout());
 			circle(e.x, e.y, e.rotation * e.fin());
 		}),
-		
+	
+		 unitLandSize = (new Effect(30.0F, (e) -> {
+			 Draw.color(Pal.lightishGray);
+			 Angles.randLenVectors((long)e.id, 9, 3.0F + 20.0F * e.finpow(), (x, y) -> {
+				 Fill.circle(e.x + x, e.y + y, e.fout() * e.rotation + 0.4F);
+			 });
+		})).layer(20.0F),
+	
 		spawn = new Effect(100f, e -> {
 			if(!(e.data() instanceof Building))return;
 			Building starter = e.data();

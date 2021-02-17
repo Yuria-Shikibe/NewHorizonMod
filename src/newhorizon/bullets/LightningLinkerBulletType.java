@@ -37,10 +37,6 @@ public class LightningLinkerBulletType extends BulletType{
 	public int randomLightningNum = 4;
 	public Sound randomGenerateSound = Sounds.plasmaboom;
 	
-	public boolean
-			lightningHitAir = true,
-			lightningHitGround = true;
-	
 	public float range = -1;
 	
 	public int maxHit = 20;
@@ -50,9 +46,7 @@ public class LightningLinkerBulletType extends BulletType{
 	
 	public LightningLinkerBulletType(float speed, float damage) {
 		super(speed, damage);
-		this.collidesTiles = false;
 		this.collides = false;
-		this.collidesAir = false;
 		this.scaleVelocity = true;
 		this.hitShake = 3.0F;
 		this.hitSound = Sounds.explosion;
@@ -100,7 +94,7 @@ public class LightningLinkerBulletType extends BulletType{
 		if (b.timer(0, generateDelay)) {
 			for(int i : Mathf.signs)slopeEffect.at(b.x + Mathf.range(size / 4f), b.y + Mathf.range(size / 4f), b.rotation(), i);
 			spreadEffect.at(b);
-			PosLightning.createRange(b, lightningHitAir, lightningHitGround, b, b.team, linkRange, maxHit, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, PosLightning.WIDTH, boltNum, p -> liHitEffect.at(p));
+			PosLightning.createRange(b, collidesAir, collidesGround, b, b.team, linkRange, maxHit, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, PosLightning.WIDTH, boltNum, p -> liHitEffect.at(p));
 		}
 		
 		if(randomGenerateRange > 0f && Mathf.chance(Time.delta * randomGenerateChance))PosLightning.createRandomRange(b, b.team, b, randomGenerateRange, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, boltWidth, boltNum, randomLightningNum, hitPos -> {

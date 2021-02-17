@@ -2,6 +2,7 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
@@ -138,7 +139,7 @@ public class TableFuncs {
                             d.init();
                             d.show();
                         }).size(LEN * 2, LEN);
-                    }).disabled(b -> mobile).fillX().height(LEN).row();
+                    }).fillX().height(LEN).row();
                 });
                 out.pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
             });
@@ -250,7 +251,7 @@ public class TableFuncs {
                 cont.table(t -> t.add(uT) ).growX().fillY().row();
                 cont.table(t -> t.add(unitTable) ).height(mobile ? inner.getHeight() : unitTable.getHeight()).growX();
             }).growX().height(mobile ? inner.getHeight() : Core.graphics.getHeight() / 1.3f);
-        }).size(LEN).disabled(b -> isInner || !state.rules.infiniteResources).row()).top().padTop(OFFSET).size(LEN).row();
+        }).size(LEN).disabled(b -> isInner || !NHSetting.getBool("@active.admin-panel")).row()).top().padTop(OFFSET).size(LEN).row();
         starter.table(table -> table.button(Icon.move, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, t -> {
@@ -325,5 +326,11 @@ public class TableFuncs {
                 }
             }
         }).row();
+    }
+    
+    public static void tableImageShrink(TextureRegion tex, float size, Table table){
+        float parma = Math.max(tex.height, tex.width);
+        float f = Math.min(size, parma);
+        table.image(tex).size(tex.width * f / parma, tex.height * f / parma);
     }
 }

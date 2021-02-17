@@ -11,6 +11,7 @@ import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ForceFieldAbility;
+import mindustry.entities.abilities.MoveLightningAbility;
 import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.bullet.SapBulletType;
@@ -36,10 +37,52 @@ public class NHUnits implements ContentList {
 
 	public static
 	UnitType
-	hurricane, tarlidor, striker, annihilation;
+	hurricane, tarlidor, striker, annihilation, warper;
 	
 	@Override
 	public void load() {
+		warper = new AutoOutlineUnitType("warper"){{
+			constructor = EntityMapping.map(3);
+			weapons.add(new AutoOutlineWeapon("warper-weapon"){{
+				minShootVelocity = 0.01F;
+				top = true;
+				rotate = true;
+				alternate = true;
+				mirror = false;
+				shootY = 5f;
+				x = 0f;
+				y = -10f;
+				recoil = 2.4f;
+				shootCone = 45f;
+				reload = 10f;
+				shots = 1;
+				inaccuracy = 6f;
+				ejectEffect = Fx.none;
+				bullet = NHBullets.warperBullet;
+				shootSound = NHSounds.launch;
+			}});
+			abilities.add(
+					new MoveLightningAbility(10, 16, 0.1f, 12, 4, 6, NHColor.lightSky)
+			);
+			maxRange = 200;
+			engineOffset = 14.0F;
+			engineSize = 4f;
+			speed = 5f;
+			accel = 0.95f;
+			drag = 0.05f;
+			faceTarget = true;
+			circleTarget = true;
+			hitSize = 14f;
+			health = 600f;
+			buildSpeed = 0.8f;
+			baseRotateSpeed = 7f;
+			rotateSpeed = 10f;
+			armor = 3.5f;
+			flying = true;
+			hovering = false;
+			canDrown = false;
+			ammoType = AmmoTypes.thorium;
+		}};
 		
 		annihilation = new AutoOutlineUnitType("annihilation",
 			new AutoOutlineWeapon("large-launcher"){{
@@ -52,19 +95,19 @@ public class NHUnits implements ContentList {
 				recoil = 5.4f;
 				
 				shootCone = 30f;
-				reload = 12f;
+				reload = 30f;
 				shots = 4;
 				inaccuracy = 4.0F;
 				ejectEffect = Fx.none;
 				bullet = new ShrapnelBulletType() {{
-					this.length = 300;
-					this.damage = 275.0F;
-					this.status = StatusEffects.shocked;
-					this.statusDuration = 60f;
-					this.fromColor = NHColor.lightSky.cpy().lerp(Color.white, 0.3f);
-					this.toColor = NHColor.lightSky;
-					this.shootEffect = NHFx.lightningHitSmall(NHColor.lightSky);
-					this.smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
+					length = 280;
+					damage = 160.0F;
+					status = StatusEffects.shocked;
+					statusDuration = 60f;
+					fromColor = NHColor.lightSky.cpy().lerp(Color.white, 0.3f);
+					toColor = NHColor.lightSky;
+					shootEffect = NHFx.lightningHitSmall(NHColor.lightSky);
+					smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
 						Draw.color(fromColor, toColor, e.fin());
 						Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
 					}));
@@ -80,7 +123,6 @@ public class NHUnits implements ContentList {
 				y = 8f;
 				recoil = 2.7f;
 				shootY = 7f;
-				
 				shootCone = 40f;
 				reload = 60f;
 				shots = 2;
@@ -88,22 +130,22 @@ public class NHUnits implements ContentList {
 				inaccuracy = 5.0F;
 				ejectEffect = Fx.none;
 				bullet = NHBullets.annMissile;
-				shootSound = Sounds.artillery;
+				shootSound = NHSounds.launch;
 			}}
 		){{
 			constructor = EntityMapping.map(32);
 			abilities.add(
-					new ForceFieldAbility(64.0F, 3F, 5000.0F, 900.0F)
+					new ForceFieldAbility(64.0F, 5F, 5000.0F, 900.0F)
 			);
 			range = 320f;
 			engineOffset = 15.0F;
 			engineSize = 6.5F;
 			speed = 0.3f;
 			hitSize = 29f;
-			health = 28800f;
+			health = 25000f;
 			buildSpeed = 2.8f;
-			armor = 15f;
-			rotateSpeed = 2.3f;
+			armor = 11f;
+			rotateSpeed = 1.8f;
 			hovering = true;
 			canDrown = true;
 			fallSpeed = 0.016f;
@@ -129,50 +171,52 @@ public class NHUnits implements ContentList {
 				y = -7f;
 				reload = 30f;
 				bullet = new SapBulletType(){{
-					this.keepVelocity = false;
-					this.sapStrength = 0.4F;
-					this.length = 90.0F;
-					this.damage = 35.0F;
-					this.shootEffect = Fx.shootSmall;
-					this.hitColor = this.color = Pal.accent;
-					this.despawnEffect = Fx.none;
-					this.width = 0.48F;
-					this.lifetime = 20.0F;
-					this.knockback = -1.24F;
+					keepVelocity = false;
+					sapStrength = 0.4F;
+					length = 90.0F;
+					damage = 35.0F;
+					shootEffect = Fx.shootSmall;
+					hitColor = color = Pal.accent;
+					despawnEffect = Fx.none;
+					width = 0.48F;
+					lifetime = 20.0F;
+					knockback = -1.24F;
 				}};
-			}},
-			new AutoOutlineWeapon("striker-weapon") {{
-				mirror = false;
-				rotate = false;
-				continuous = true;
-				alternate = false;
-				shake = 0f;
-				heatColor = Pal.accent;
-				shootY = 13f;
-				reload = 330f;
-				shots = 1;
-				x = y = 0f;
-				bullet = NHBullets.strikeLaser;
-				chargeSound = Sounds.none;
-				shootSound = Sounds.none;
-				this.shootStatus = StatusEffects.slow;
-				this.shootStatusDuration = this.bullet.lifetime + 60f;
 			}}
 		){{
+			weapons.add(
+				new AutoOutlineWeapon("striker-weapon") {{
+					mirror = false;
+					rotate = false;
+					continuous = true;
+					alternate = false;
+					shake = 4f;
+					heatColor = Pal.accent;
+					shootY = 13f;
+					reload = 420f;
+					shots = 1;
+					x = y = 0f;
+					bullet = NHBullets.strikeLaser;
+					chargeSound = Sounds.none;
+					shootSound = Sounds.none;
+					shootStatus = StatusEffects.slow;
+					shootStatusDuration = bullet.lifetime + 60f;
+				}}
+			);
 			constructor = EntityMapping.map(3);
 			lowAltitude = true;
 			faceTarget = true;
 			isCounted = true;
-			this.health = 6000.0F;
-			this.speed = 0.75F;
-			this.accel = 0.04F;
-			this.drag = 0.025F;
-			this.flying = true;
-			this.hitSize = 30.0F;
-			this.armor = 4.0F;
-			this.engineOffset = 28.5F;
-			this.engineSize = 6.0F;
-			this.rotateSpeed = 1.35F;
+			health = 5500.0F;
+			speed = 0.6F;
+			accel = 0.02F;
+			drag = 0.025F;
+			flying = true;
+			hitSize = 30.0F;
+			armor = 4.0F;
+			engineOffset = 28.5F;
+			engineSize = 6.0F;
+			rotateSpeed = 1.35F;
 			buildSpeed = 0.8f;
 		}};
 
@@ -192,9 +236,9 @@ public class NHUnits implements ContentList {
 				bullet = NHBullets.hurricaneLaser;
 				chargeSound = Sounds.lasercharge2;
 				shootSound = Sounds.beam;
-				this.shootStatus = StatusEffects.slow;
-				this.shootStatusDuration = this.bullet.lifetime + this.firstShotDelay + 40f;
-				this.firstShotDelay = NHFx.chargeEffectSmall(new Color()).lifetime - 1.0F;
+				shootStatus = StatusEffects.slow;
+				shootStatusDuration = bullet.lifetime + firstShotDelay + 40f;
+				firstShotDelay = NHFx.chargeEffectSmall(new Color(), 60f).lifetime - 1.0F;
 			}},
 			new AutoOutlineWeapon("swepter") {{
 				mirror = false;
@@ -303,12 +347,12 @@ public class NHUnits implements ContentList {
 				abilities.add(
 						new ForceFieldAbility(120.0F, 6F, 20000.0F, 1200.0F),
 						new RepairFieldAbility(800f, 160f, 240f){{
-							this.healEffect = new Effect(11.0F, (e) -> {
+							healEffect = new Effect(11.0F, (e) -> {
 								Draw.color(NHColor.lightSky);
 								Lines.stroke(e.fout() * 2.0F);
 								Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * 79.0F);
 							});
-							this.activeEffect = new Effect(22.0F, (e) -> {
+							activeEffect = new Effect(22.0F, (e) -> {
 								Draw.color(NHColor.lightSky);
 								Lines.stroke(e.fout() * 3.0F);
 								Lines.poly(e.x, e.y, 6,4.0F + e.finpow() * e.rotation);
@@ -319,16 +363,17 @@ public class NHUnits implements ContentList {
 				lowAltitude = true;
 				isCounted = true;
 				faceTarget = true;
-				this.health = 30000.0F;
-				this.speed = 1.4F;
-				this.accel = 0.04F;
-				this.drag = 0.025F;
-				this.flying = true;
-				this.hitSize = 100.0F;
-				this.armor = 12.0F;
-				this.engineOffset = 55.0F;
-				this.engineSize = 20.0F;
-				this.rotateSpeed = 1.15F;
+				itemCapacity = 500;
+				health = 30000.0F;
+				speed = 1.4F;
+				accel = 0.04F;
+				drag = 0.025F;
+				flying = true;
+				hitSize = 100.0F;
+				armor = 12.0F;
+				engineOffset = 55.0F;
+				engineSize = 20.0F;
+				rotateSpeed = 1.15F;
 				buildSpeed = 2.8f;
 			}
 		};
@@ -372,8 +417,9 @@ public class NHUnits implements ContentList {
 				top = true;
 				rotate = true;
 				shootY = 12f;
-				reload = 30f;
-				shots = 3;
+				reload = 45f;
+				shots = 2;
+				rotateSpeed = 5f;
 				inaccuracy = 6.0F;
 				velocityRnd = 0.38f;
 				x = 8f;
@@ -389,9 +435,9 @@ public class NHUnits implements ContentList {
 				engineSize = 6.5F;
 				speed = 0.4f;
 				hitSize = 20f;
-				health = 12500f;
+				health = 9000f;
 				buildSpeed = 1.8f;
-				armor = 7f;
+				armor = 8f;
 				rotateSpeed = 3.3f;
 				hovering = true;
 				canDrown = true;

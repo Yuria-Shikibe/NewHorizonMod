@@ -10,6 +10,8 @@ import mindustry.ctype.ContentList;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.LaserTurret;
+import mindustry.world.blocks.production.GenericCrafter;
 import newhorizon.NewHorizon;
 
 import java.util.Arrays;
@@ -61,6 +63,8 @@ public class NHLoader implements ContentList{
 				new ItemStack(NHItems.juniorProcessor, 30),
 				new ItemStack(NHItems.metalOxhydrigen, 45)
 		);
+		
+		((GenericCrafter) Blocks.surgeSmelter).craftTime += 30f;
 		removeReq(Blocks.surgeSmelter, Items.silicon);
 		addReq(Blocks.swarmer,
 				new ItemStack(NHItems.juniorProcessor, 25),
@@ -72,17 +76,20 @@ public class NHLoader implements ContentList{
 		addReq(Blocks.disassembler, new ItemStack(NHItems.multipleSteel, 65), new ItemStack(NHItems.juniorProcessor, 30));
 		removeReq(Blocks.disassembler, Items.silicon);
 		addReq(Blocks.spectre,
-				new ItemStack(NHItems.zate, 220),
+				new ItemStack(NHItems.zeta, 220),
 				new ItemStack(NHItems.seniorProcessor, 100),
 				new ItemStack(NHItems.multipleSteel, 150)
 		);
 		removeReq(Blocks.spectre, Items.silicon);
+		
 		addReq(Blocks.meltdown,
 				new ItemStack(NHItems.presstanium, 250),
-				new ItemStack(NHItems.irayrondPanel, 175),
+				new ItemStack(NHItems.metalOxhydrigen, 175),
 				new ItemStack(NHItems.seniorProcessor, 120)
 		);
+		((LaserTurret) Blocks.meltdown).shootType.damage += 35;
 		removeReq(Blocks.meltdown, Items.silicon);
+		
 		addReq(Blocks.foreshadow,
 				new ItemStack(NHItems.seniorProcessor, 220),
 				new ItemStack(NHItems.multipleSteel, 180)

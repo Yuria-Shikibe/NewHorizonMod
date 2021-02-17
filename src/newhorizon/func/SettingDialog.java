@@ -9,6 +9,7 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import newhorizon.content.NHLoader;
 
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
@@ -19,10 +20,9 @@ public class SettingDialog extends BaseDialog{
 		setFillParent(true);
 		cont.pane(table -> {
 			table.pane(t -> {
-				t.add("[gray]You can get back to here by ");
-				t.add("@settings").color(Pal.lancerLaser);
-				t.add("[gray] in [accent]<View Content>[gray] in the [accent]<ModDialog>[gray].").row();
-			}).width(Core.graphics.getWidth() / 2f).fillY().row();
+				t.add("[gray]You can get back to here by [accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ");
+				t.add("@settings").color(Pal.lancerLaser).row();
+			}).width(Core.graphics.getWidth() / 2f).height(LEN).row();
 			table.image().color(Pal.accent).growX().height(OFFSET / 4).pad(OFFSET / 2).row();
 			for(String key : NHSetting.defaultKeys.keys()){
 				if(!key.startsWith("@"))continue;

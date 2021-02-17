@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -32,6 +33,8 @@ public class Functions {
         return defaultColor == null ? team.color : defaultColor;
     }
     
+    
+    
     public static void spawnUnit(UnitType type, Team team, int spawnNum, float x, float y){
         for(int spawned = 0; spawned < spawnNum; spawned++){
             Time.run(spawned * Time.delta, () -> {
@@ -48,25 +51,31 @@ public class Functions {
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
 
-    public static boolean spawnUnit(Building starter, float x, float y, int spawns, int level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
+    public static boolean spawnUnit(Building starter, float x, float y, int spawns, float level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
         Seq<Vec2> vecs = new Seq<>();
         
+        final int maxCompute = 12;
         int steps = 0;
         
         if(!type.flying){
-            while(vecs.size < spawns){
-                if(steps > 10)return false;
-                Vec2 p = new Vec2().rnd(spawnRange).scl(Mathf.random(1f));
-                Building building = Units.findAllyTile(starter.team, p.x + x, p.y + y, type.hitSize * 2f, b -> b.block().solid);
-                Log.info(building);
+            Seq<Rect> rectSeq = new Seq<>(maxCompute);
+            loop1: while(vecs.size < spawns){
+                if(steps > maxCompute)return false;
+                Vec2 p = new Vec2().rnd(spawnRange).scl(Mathf.range(1f)).add(x, y);
+                
+                for(Rect rect : rectSeq)if(rect.contains(p))continue loop1;
+                
+                Building building = Units.findAllyTile(starter.team, x, y, spawnRange * 1.1f, b -> b.block().solid && b.within(p, b.block().size * tilesize / Mathf.sqrt2 + type.hitSize * 1.1f));
+                
                 if(building != null){
                     steps++;
+                    rectSeq.add(new Rect().setSize(building.block().size * tilesize + type.hitSize).setCenter(building.x, building.y));
                     continue;
                 }
                 vecs.add(p);
             }
         }else{
-            randLenVectors((long)Time.time, spawns, spawnRange, (sx, sy) -> vecs.add(new Vec2(sx, sy)));
+            randLenVectors((long)Time.time, spawns, spawnRange, (sx, sy) -> vecs.add(new Vec2(sx, sy).add(x, y)));
         }
         
         float angle, regSize = regSize(type);
@@ -87,10 +96,7 @@ public class Functions {
             new EffectBulletType(spawnReloadTime + finalI * spawnDelay){
                 @Override
                 public void init(Bullet b){
-                    new Effect(60f, e -> {
-                        Lines.stroke(3 * e.fout(), spawnColor);
-                        Lines.circle(e.x, e.y, spawnRange  / 8f * e.finpow());
-                    }).at(b);
+                    NHFx.spawnWave.at(b.x, b.y, spawnRange, spawnColor);
                 }
 
                 @Override
@@ -119,24 +125,30 @@ public class Functions {
                     NHFx.spawn.at(b.x, b.y, regSize, spawnColor, starter);
                 }
 
-            }.create(starter, x + s.x, y + s.y, angle);
+            }.create(starter, s.x, s.y, angle);
 
             Time.run(spawnReloadTime + finalI * spawnDelay, () -> {
                 if(!Units.canCreate(starter.team(), type))return;
                 if (!starter.isValid()) return;
                 Unit unit = type.create(starter.team());
-                    unit.set(x + s.x, y + s.y);
-                unit.add();
+                    unit.set(s.x, s.y);
                 unit.rotation = angle;
                 if(type.flying){
                     NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);
                     Tmp.v1.trns(angle, inComeVelocity).scl(type.drag + 1);
                     unit.vel.add(Tmp.v1.x, Tmp.v1.y);
+                    unit.add();
                 }else{
-                    for(int j = 0; j < 3; j++){
-                        Time.run(j * 8, () -> Fx.spawn.at(unit));
-                    }
-                    NHFx.circle.at(unit.x, unit.y, type.hitSize * 2, spawnColor);
+                    Fx.unitSpawn.at(unit.x, unit.y, angle, type);
+                    Time.run(Fx.unitSpawn.lifetime, () -> {
+                        unit.add();
+                        for(int j = 0; j < 3; j++){
+                            Time.run(j * 8, () -> Fx.spawn.at(unit));
+                        }
+                        Effect.shake(type.hitSize / 2.4f, spawnDelay * 4, unit);
+                        NHFx.spawnGround.at(unit.x, unit.y, type.hitSize / tilesize * 3, spawnColor);
+                        NHFx.circle.at(unit.x, unit.y, type.hitSize * 4, spawnColor);
+                    });
                 }
                 Sounds.plasmaboom.at(unit.x, unit.y);
             });

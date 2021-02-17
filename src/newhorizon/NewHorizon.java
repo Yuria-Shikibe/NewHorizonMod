@@ -4,6 +4,7 @@ import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Time;
@@ -22,17 +23,23 @@ import newhorizon.func.SettingDialog;
 import newhorizon.func.TableFuncs;
 
 import java.io.IOException;
+import java.net.URL;
 
 import static newhorizon.func.TableFuncs.*;
 
 
 public class NewHorizon extends Mod{
-	public static final String NHNAME = "new-horizon-";
+	public static String NHNAME;
+	
+	public static String configName(String name){
+		return NHNAME + name;
+	}
 	
 	private static void links(){
 		BaseDialog dialog = new BaseDialog("@links");
 		addLink(dialog.cont, Icon.github, "Github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git");
 		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN).padLeft(OFFSET / 2);
+		dialog.addCloseListener();
 		dialog.show();
 	}
 	
@@ -54,7 +61,7 @@ public class NewHorizon extends Mod{
 		new BaseDialog("@log"){{
 			cont.table(Tex.buttonEdge3, table -> {
 				table.add("[accent]" + NHSetting.modMeta.version + " [gray]Update Log:").center().row();
-				this.addCloseListener();
+				addCloseListener();
 				table.pane(t -> {
 					t.add("@fix").color(Pal.accent).left().row();
 					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
@@ -72,38 +79,39 @@ public class NewHorizon extends Mod{
 					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
 					t.add(TableFuncs.tabSpace + Core.bundle.get("update.other")).row();
 				}).growX().height((Core.graphics.getHeight() - LEN * 2) / (Vars.mobile ? 1.1f : 2.2f));
-			}).growX().fillY();
-			cont.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-			cont.button("@back", Icon.left, this::hide).fillX().height(LEN).row();
+			}).growX().fillY().row();
+			cont.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).bottom().row();
+			cont.button("@back", Icon.left, Styles.cleart, this::hide).fillX().height(LEN).row();
 		}}.show();
 	}
 	
 	public static void startLog(){
-		BaseDialog dialog = new BaseDialog("Welcome");
-		dialog.addCloseListener();
-		dialog.cont.pane(table -> {
-			table.image(Core.atlas.find(NHNAME + "upgrade")).row();
-			table.image().width(LEN * 5).height(OFFSET / 2.5f).pad(OFFSET / 3f).color(Color.white).row();
-			table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
-			table.image().width(LEN * 5).height(OFFSET / 2.5f).pad(OFFSET / 3f).color(Color.white).row();
-			table.add("").row();
-		}).width(Core.graphics.getWidth() - LEN).growY().center().row();
-		
-		dialog.cont.pane(t -> {
-			t.add("[gray]You can get back to here by ");
-			t.add(NHLoader.content.localizedName).color(Pal.lancerLaser);
-			t.add("[gray] in [accent]<View Content>[gray] in the [accent]<ModDialog>[gray].").row();
-		}).width(Core.graphics.getWidth() / 2f).fillY().bottom().row();
-		
-		dialog.cont.table(Tex.clear, table -> {
-			table.button("@back", Icon.left, Styles.cleart, () -> {
-				dialog.hide();
-				NHSetting.settingApply();
-			}).size(LEN * 2f, LEN);
-			table.button("@links", Icon.link, Styles.cleart, NewHorizon::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-			table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-			table.button("@log", Icon.book, Styles.cleart, NewHorizon::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-		}).fillX().height(LEN + OFFSET);
+		Dialog dialog = new BaseDialog("", Styles.fullDialog);
+		dialog.closeOnBack();
+		dialog.cont.pane(inner -> {
+			inner.pane(table -> {
+				table.table(t -> t.image(Core.atlas.find(NHNAME + "upgrade"))).center().growX().fillY().row();
+				table.image().growX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
+				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
+				table.image().growX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
+				table.add("").row();
+			}).grow().center().row();
+			
+			inner.pane(t -> {
+				t.add("[gray]You can get back to here by [accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ");
+				t.add(NHLoader.content.localizedName).color(Pal.lancerLaser).row();
+			}).fillX().height(LEN).bottom().row();
+			
+			inner.table(Tex.clear, table -> {
+				table.button("@back", Icon.left, Styles.cleart, () -> {
+					dialog.hide();
+					NHSetting.settingApply();
+				}).size(LEN * 2f, LEN);
+				table.button("@links", Icon.link, Styles.cleart, NewHorizon::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@log", Icon.book, Styles.cleart, NewHorizon::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+			}).fillX().height(LEN + OFFSET);
+		}).grow();
 		dialog.show();
 	}
 	
@@ -114,16 +122,22 @@ public class NewHorizon extends Mod{
 	        tableMain();
         }));
     }
-    
-    @Override
+	
+	@Override
+	public void init(){
+	
+	}
+	
+	@Override
     public void loadContent(){
-	    try{
-		    NHSetting.settingFile();
-		    NHSetting.initSetting();
-		    NHSetting.initSettingList();
-	    }catch(IOException e){
-		    throw new IllegalArgumentException(e);
-	    }
+		try{
+			NHSetting.settingFile();
+			NHSetting.initSetting();
+			NHSetting.initSettingList();
+		}catch(IOException e){
+			throw new IllegalArgumentException(e);
+		}
+		NHNAME = NHSetting.modMeta.name + "-";
 	    Log.info("Loading NewHorizon Mod Objects");
 	    NHSounds.load();
 		NHLoader loader = new NHLoader();

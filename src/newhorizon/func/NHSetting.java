@@ -3,6 +3,7 @@ package newhorizon.func;
 import arc.files.Fi;
 import arc.struct.ObjectMap;
 import arc.util.Log;
+import arc.util.serialization.Json;
 import mindustry.Vars;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
@@ -59,6 +60,9 @@ public class NHSetting{
 				break;
 			}
 		}
+		
+		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
+		Log.info(modMeta.name);
 		if(!modMeta.version.equals(settingList.getProperty(initKey)))updateProperty(modMeta.version);
 	}
 	

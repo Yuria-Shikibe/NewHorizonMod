@@ -22,7 +22,8 @@ public class NHStatusEffects{
             damage = 0.5f;
             effect = NHFx.emped;
             effectChance = 0.2f;
-            speedMultiplier = 0.45f;
+            reactive = false;
+            speedMultiplier = 0.65f;
             reloadMultiplier = 0.65f;
             damageMultiplier = 0.75f;
         }},
@@ -31,7 +32,8 @@ public class NHStatusEffects{
             damage = 1f;
             effect = NHFx.emped;
             effectChance = 0.4f;
-            speedMultiplier = 0.25f;
+            reactive = false;
+            speedMultiplier = 0.5f;
             reloadMultiplier = 0.35f;
             damageMultiplier = 0.55f;
         }},
@@ -40,7 +42,8 @@ public class NHStatusEffects{
             damage = 1.5f;
             effect = NHFx.emped;
             effectChance = 0.6f;
-            speedMultiplier = 0.05f;
+            reactive = false;
+            speedMultiplier = 0.35f;
             reloadMultiplier = 0.05f;
             damageMultiplier = 0.35f;
         }};

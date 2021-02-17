@@ -29,6 +29,21 @@ public class AutoOutlineUnitType extends UnitType{
 		NHLoader.put(this.name, new NHIconGenerator.IconSet(this, weapons));
 	}
 	
+	public AutoOutlineUnitType(String name){
+		super(name);
+		
+		NHLoader.put(
+				name + "-leg",
+				name + "-joint",
+				name + "-joint-base",
+				name + "-foot",
+				name + "-leg-base",
+				name + "-leg",
+				name + "-base",
+				name + "@-outline"
+		);
+	}
+	
 	@Override
 	public void load(){
 		super.load();

@@ -62,6 +62,10 @@ public class TextureMissileType extends NHTrailBulletType{
 	
 	@Override
 	public void init(){
+		if(!(velocityEnd <= speed)){
+			speed = (speed + velocityEnd) / 2f;
+		}
+		
 		if (this.pierceCap >= 1) {
 			this.pierce = true;
 		}
@@ -111,7 +115,10 @@ public class TextureMissileType extends NHTrailBulletType{
 		Tmp.v1.trns(b.rotation(), -region.height * height / div);
 		
 		if(b.time > effectDelay){
-			trail.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
+			if(b.timer(3, Mathf.clamp(1 / Time.delta, 0, 1))){
+				trail.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
+			}
+			
 			if (this.trailChance > 0.0F && Mathf.chanceDelta(trailChance)) {
 				this.trailEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, this.trailParam, this.trailColor);
 			}
@@ -127,6 +134,8 @@ public class TextureMissileType extends NHTrailBulletType{
 		if (this.weaveMag > 0.0F) {
 			b.vel.rotate(Mathf.sin(b.time + 3.1415927F * this.weaveScale / 2.0F, this.weaveScale, this.weaveMag * (float)(Mathf.randomSeed(b.id, 0, 1) == 1 ? -1 : 1)) * Time.delta);
 		}
+		
+		if(!(velocityEnd <= speed))b.vel.setLength(2 * speed - velocityEnd + (Mathf.curve(b.fin(), accelerateBegin, accelerateEnd) * velocityEnd));
 	}
 	
 	@Override

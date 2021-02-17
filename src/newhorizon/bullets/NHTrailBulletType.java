@@ -1,5 +1,6 @@
 package newhorizon.bullets;
 
+import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -66,10 +67,12 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public void update(Bullet b) {
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		if(b.timer(3, Time.delta)){
+		if(b.timer(3, Mathf.clamp(1 / Time.delta, 0, 1))){
 			trail.update(b.x + b.vel.x / 2, b.y + b.vel.y / 2);
 		}
 		super.update(b);
+		
+		
 	}
 }
 

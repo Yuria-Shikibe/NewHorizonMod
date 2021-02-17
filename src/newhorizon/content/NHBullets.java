@@ -31,14 +31,41 @@ import static arc.math.Angles.randLenVectors;
 public class NHBullets {
 	public static
 	BulletType
-		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud,
+		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile,
 		strikeMissile, boltGene, empFrag, empBlot2, empBlot3;
 		
 	
 	public void load(){
-		strikeLaser = new DelayLaserType(800f, 60f){
+		warperBullet = new TextureMissileType(2.5f, 20f, "ann-missile-atlas@@404049"){
+			@Override
+			public float range(){return 180f;}
+			
+			{
+				keepVelocity = true;
+				velocityEnd = 14f;
+				accelerateBegin = 0.01f;
+				accelerateEnd = 0.9f;
+				
+				homingPower = 0;
+				trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSky;
+				splashDamageRadius = 20;
+				splashDamage = damage * 0.3f;
+				
+				width = height = 1f;
+				trailChance = 0;
+				lifetime = 30f;
+				
+				hitSound = Sounds.explosion;
+				hitEffect = NHFx.lightningHitLarge(NHColor.lightSky);
+				shootEffect = NHFx.hugeSmoke;
+				smokeEffect = Fx.shootBigSmoke2;
+				despawnEffect = NHFx.crossBlast(trailColor);
+			}
+		};
+		
+		strikeLaser = new DelayLaserType(400f, 60f){
 			@Override
 			public void effectDraw(Bullet b){
 				Draw.color(Pal.accent);
@@ -55,7 +82,7 @@ public class NHBullets {
 			
 			{
 				colors = new Color[]{Pal.accent.cpy().mul(1f, 1f, 1f, 0.3f), Pal.accent, Color.white};
-				length = 300f;
+				length = 340f;
 				width = 25f;
 				lengthFalloff = 0.6f;
 				sideLength = 90f;
@@ -100,7 +127,7 @@ public class NHBullets {
 					shootEffect = Fx.plasticExplosion;
 				}};
 				
-				skyFrag = new BasicBulletType(3.3f, 220){
+				skyFrag = new BasicBulletType(3.3f, 85){
 					@Override
 					public float range(){return 180f;}
 					
@@ -110,7 +137,7 @@ public class NHBullets {
 						knockback = 12f;
 						width = 15f;
 						height = 37f;
-						splashDamageRadius = 40f;
+						splashDamageRadius = 30f;
 						splashDamage = lightningDamage = damage * 0.75f;
 						backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
 						frontColor = Color.white;
@@ -158,7 +185,7 @@ public class NHBullets {
 						lifetime = 160f;
 						lightColor = NHColor.lightSky;
 						hitEffect = NHFx.lightSkyCircleSplash;
-						shootEffect = NHFx.chargeEffectSmall(NHColor.lightSky);
+						shootEffect = NHFx.chargeEffectSmall(NHColor.lightSky, 60f);
 						smokeEffect = NHFx.lightSkyCircleSplash;
 					}
 					
@@ -382,10 +409,10 @@ public class NHBullets {
 					
 				};
 				
-				blastEnergyPst = new NHTrailBulletType(0.85f, 85f, NewHorizon.NHNAME + "circle-bolt"){{
+				blastEnergyPst = new NHTrailBulletType(0.85f, 65f, NewHorizon.NHNAME + "circle-bolt"){{
 					backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.025f);
 					lifetime = 90f;
-					ammoMultiplier = 8f;
+					ammoMultiplier = 4f;
 					accelerateBegin = 0.1f;
 					accelerateEnd = 0.85f;
 					velocityEnd = 14f;
@@ -411,9 +438,10 @@ public class NHBullets {
 					trailParam = 2.7f;
 				}};
 				
-				blastEnergyNgt = new NHTrailBulletType(3.85f, 120f){{
+				blastEnergyNgt = new NHTrailBulletType(3.85f, 40f){{
 					backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
 					lifetime = 48f;
+					knockback = 4f;
 					ammoMultiplier = 8f;
 					accelerateBegin = 0.1f;
 					accelerateEnd = 0.85f;
@@ -527,8 +555,6 @@ public class NHBullets {
 					splashDamage = lightningDamage = damage * 0.7f;
 					splashDamageRadius = 40f;
 					
-					width = height = 1.2f;
-					
 					hitEffect = NHFx.darkErnExplosion;
 					
 					smokeEffect = new Effect(45f, e -> {
@@ -559,7 +585,7 @@ public class NHBullets {
 						lightningCone = 360;
 						lightningLengthRand = lightningLength = 9;
 						splashDamageRadius = 60;
-						splashDamage = damage * 0.7f;
+						splashDamage = lightningDamage = damage * 0.7f;
 						
 						width = height = 1.25f;
 						
