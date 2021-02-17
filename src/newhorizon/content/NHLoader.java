@@ -13,6 +13,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.production.GenericCrafter;
 import newhorizon.NewHorizon;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -27,7 +28,7 @@ public class NHLoader implements ContentList{
 		needBeLoad.put(name, textureRegion);
 	}
 	
-	public static void put(String name, NHIconGenerator.IconSet set){
+	public static void put(String name, @NotNull NHIconGenerator.IconSet set){
 		NHLoader.fullIconNeeds.put(name, set);
 	}
 	
@@ -95,6 +96,12 @@ public class NHLoader implements ContentList{
 				new ItemStack(NHItems.multipleSteel, 180)
 		);
 		removeReq(Blocks.foreshadow, Items.silicon);
+		
+		addReq(Blocks.rtgGenerator,
+				new ItemStack(NHItems.juniorProcessor, 65),
+				new ItemStack(NHItems.multipleSteel, 45)
+		);
+		removeReq(Blocks.rtgGenerator, Items.silicon);
 	}
 	
 	private static void addReq(Block target, ItemStack... items){

@@ -138,7 +138,7 @@ public class TableFuncs {
                             TableTexDebugDialog d = new TableTexDebugDialog("debug");
                             d.init();
                             d.show();
-                        }).size(LEN * 2, LEN);
+                        }).disabled(b -> !NHSetting.getBool("@active.debug")).size(LEN * 2, LEN);
                     }).fillX().height(LEN).row();
                 });
                 out.pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
@@ -147,7 +147,6 @@ public class TableFuncs {
             else pane(in).fillX().height(in.getHeight());
         }
     }
-    
     private static final Table pTable = new Table(Tex.clear){{
         update(() -> {
             if(Vars.state.isMenu()){
@@ -168,6 +167,7 @@ public class TableFuncs {
             floatTable = false;
         }).center();
     }};
+    
     private static void setFloatP(){
         if(!floatTable){
             Core.scene.root.addChildAt(0, pTable);
@@ -306,8 +306,6 @@ public class TableFuncs {
             Field[] fields = typeClass.getFields();
             for(Field field : fields){
                 try{
-                    //table.add(field.getGenericType().toString()).row();
-                    
                     if(field.getGenericType().toString().equals("boolean")) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": ").append(getJudge(field.getBoolean(type))).append("[]")).left().row();
                     if(field.getGenericType().toString().equals("float") && field.getFloat(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getFloat(type)).append("[]")).left().row();
                     if(field.getGenericType().toString().equals("int") && field.getInt(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getInt(type)).append("[]")).left().row();
@@ -322,7 +320,7 @@ public class TableFuncs {
                         table.add("[gray]}").left().row();
                     }
                 }catch(IllegalAccessException err){
-                    throw new IllegalArgumentException(err);
+                    throw new RuntimeException(err);
                 }
             }
         }).row();

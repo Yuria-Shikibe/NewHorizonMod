@@ -300,7 +300,7 @@ public class NHFx{
 
 			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 60));
 			mixcol(e.color, e.fout());
-			rect(type.region, unit.x, unit.y, unit.rotation - 90f);
+			rect(type.shadowRegion, unit.x, unit.y, unit.rotation - 90f);
 		}),
 
 		darkEnergySpread = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {

@@ -12,6 +12,7 @@ import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
+import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.SapBulletType;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
@@ -31,8 +32,8 @@ import static mindustry.Vars.tilesize;
 
 public class ChargeWall extends Block{
 	public TextureRegion heatRegion, lightRegion;
-	public float maxEnergy = size * size * 4000;
-	public float maxHeat = size * size * 600;
+	public float maxEnergy = size * size * 3000;
+	public float maxHeat = size * size * 400;
 	public float heatPerRise = 50f;
 	public float healLightStMin = 0.35f;
 	
@@ -58,6 +59,20 @@ public class ChargeWall extends Block{
 		shootEffect = NHFx.circleSplash,
 		onDestroyedEffect = Fx.none;
 	
+	public BulletType releaseType = new SapBulletType() {
+		{
+			damage = shootDamage;
+			status = StatusEffects.none;
+			sapStrength = 0.45f;
+			length = range;
+			drawSize = range * 2;
+			hitColor = color = effectColor;
+			despawnEffect = shootEffect = Fx.none;
+			width = 0.62f;
+			lifetime = 35f;
+		}
+	};
+	
 	Cons<ChargeWallBuild> maxChargeAct = tile -> {
 		chargeActEffect.at(tile.x, tile.y, effectColor);
 		
@@ -75,19 +90,7 @@ public class ChargeWall extends Block{
 	Cons<ChargeWallBuild> closestTargetAct = tile -> PosLightning.create(tile, tile.target, tile.team, effectColor, true, shootDamage, 4, PosLightning.WIDTH, 2, target ->{
 		hitEffect.at(target.getX(), target.getY(), tile.angleTo(target), effectColor);
 		shootEffect.at(tile.x, tile.y, effectColor);
-		new SapBulletType() {
-			{
-				damage = shootDamage;
-				status = StatusEffects.none;
-				sapStrength = 0.45f;
-				length = tile.range();
-				drawSize = tile.range() * 2;
-				hitColor = color = effectColor;
-				despawnEffect = shootEffect = Fx.none;
-				width = 0.62f;
-				lifetime = 35f;
-			}
-		}.create(tile, tile.team, tile.x, tile.y, tile.angleTo(target));
+		releaseType.create(tile, tile.team, tile.x, tile.y, tile.angleTo(target));
 	});
 	
 	public ChargeWall(String name){

@@ -16,7 +16,7 @@ import java.util.Properties;
 
 public class NHSetting{
 	private static Fi setting;
-	private static Properties settingList = new Properties();
+	private static final Properties settingList = new Properties();
 	private static String path = "";
 	private static boolean loaded;
 	public static final ObjectMap<String, String> defaultKeys = new ObjectMap<>();
@@ -28,6 +28,7 @@ public class NHSetting{
 		defaultKeys.put("@active.tool-panel*", String.valueOf(false));
 		defaultKeys.put("@active.admin-panel", String.valueOf(false));
 		defaultKeys.put("@active.advance-load*", String.valueOf(false));
+		defaultKeys.put("@active.debug", String.valueOf(false));
 	}
 	
 	public static void settingFile() throws IOException{

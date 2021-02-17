@@ -20,7 +20,6 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import mindustry.world.blocks.defense.turrets.Turret;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
@@ -98,6 +97,8 @@ public class NHBullets {
 				width = height = 1f;
 				trailChance = 0;
 				lifetime = 30f;
+				
+				collidesAir = false;
 				
 				hitSound = Sounds.explosion;
 				hitEffect = NHFx.lightningHitLarge(NHColor.lightSky);

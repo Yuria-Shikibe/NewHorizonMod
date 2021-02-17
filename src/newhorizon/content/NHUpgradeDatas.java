@@ -68,11 +68,6 @@ public class NHUpgradeDatas implements ContentList{
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
 			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
-			
-			isLeveled = true;
-			reloadSpeedUp = 0.03f;
-			defenceUp = 0.01f;
-			maxLevel = 4;
 		}};
 		
 		decayLaser = new UpgradeData(

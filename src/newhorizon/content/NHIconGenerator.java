@@ -1,7 +1,6 @@
 package newhorizon.content;
 
 import arc.Core;
-import arc.Settings;
 import arc.graphics.Pixmap;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
@@ -9,6 +8,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Nullable;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
@@ -20,10 +20,10 @@ import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValue;
-import newhorizon.NewHorizon;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
+import org.jetbrains.annotations.NotNull;
 
 import static newhorizon.func.TableFuncs.LEN;
 
@@ -100,9 +100,9 @@ public class NHIconGenerator extends UnlockableContent{
 		public final Seq<Weapon> weapons = new Seq<>();
 		public final UnitType type;
 		
-		public IconSet(UnitType type, Weapon[] weapons){
+		public IconSet(@NotNull UnitType type, @Nullable Weapon[] weapons){
 			this.type = type;
-			this.weapons.addAll(weapons);
+			if(weapons != null)this.weapons.addAll(weapons);
 		}
 	}
 }

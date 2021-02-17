@@ -1,19 +1,15 @@
 package newhorizon.content;
 
-import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.PointBulletType;
-import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -26,21 +22,21 @@ import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.power.Battery;
+import mindustry.world.blocks.power.DecayGenerator;
+import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericSmelter;
-import mindustry.world.blocks.production.Pump;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.storage.StorageBlock;
-import mindustry.world.blocks.storage.Unloader;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMixer;
-import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.values.AmmoListValue;
 import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.adapt.AdaptUnloader;
+import newhorizon.block.adapt.DisposableBattery;
 import newhorizon.block.drawer.DrawFactories;
 import newhorizon.block.drawer.DrawHoldLiquid;
 import newhorizon.block.drawer.DrawPrinter;
@@ -72,17 +68,51 @@ public class NHBlocks implements ContentList {
 		//Distributions
 		towardGate, rapidUnloader,
 		//Drills
-		largeWaterExtractor
+		largeWaterExtractor,
+		//Powers
+		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator
 		;
 
 	@Override
 	public void load() {
-		final int healthMult = 4;
+		final int healthMult2 = 4, healthMult3 = 9;
+		radiationGenerator = new DecayGenerator("radiation-generator"){{
+			requirements(Category.power, ItemStack.with(Items.metaglass, 35, NHItems.juniorProcessor, 15, Items.lead, 80, NHItems.presstanium, 45));
+			NHTechTree.add(Blocks.rtgGenerator, this);
+			size = 2;
+			powerProduction = 2.65F;
+			heatColor = NHColor.lightSky.mul(1.1f);
+			itemDuration = 480.0F;
+		}};
+		
+		disposableBattery = new DisposableBattery("disposable-battery"){{
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.fusionEnergy, 15, NHItems.juniorProcessor, 10, NHItems.presstanium, 40));
+			NHTechTree.add(Blocks.battery, this);
+			size = 2;
+			consumption = 8;
+			consumes.powerBuffered(45000f);
+		}};
+		
+		armorBatteryLarge = new Battery("large-armor-battery"){{
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10, Items.lead, 40));
+			size = 3;
+			consumes.powerBuffered(45000.0F);
+		}};
+		
+		armorPowerNode = new PowerNode("armor-power-node"){{
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 25, NHItems.juniorProcessor, 5, Items.lead, 25));
+			NHTechTree.add(Blocks.powerNodeLarge, this);
+			size = 2;
+			maxNodes = 12;
+			laserRange = 8.5F;
+			health = 1750;
+		}};
+		
 		largeWaterExtractor = new SolidPump("large-water-extractor"){{
-			NHTechTree.add(Blocks.waterExtractor, this);
 			size = 3;
 			pumpAmount = 0.3f;
 			requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.thorium, 60, Items.metaglass, 30));
+			NHTechTree.add(Blocks.waterExtractor, this);
 			result = Liquids.water;
 			liquidCapacity = 60.0F;
 			rotateSpeed = 1.4F;
@@ -103,14 +133,15 @@ public class NHBlocks implements ContentList {
 			chargeEffect = NHFx.chargeEffectSmall(NHItems.irayrondPanel.color, 132f);
 			chargeBeginEffect = NHFx.chargeBeginEffect(NHItems.irayrondPanel.color, 10, chargeEffect.lifetime);
 			chargeTime = chargeEffect.lifetime;
-			NHTechTree.add(Blocks.foreshadow, this);
 			ammo(
 					NHItems.irayrondPanel, NHBullets.railGun1,
-					NHItems.setonAlloy, NHBullets.railGun2);
+					NHItems.setonAlloy, NHBullets.railGun2
+			);
 			maxAmmo = 20;
 			minRange = 180f;
 			rotateSpeed = 0.75f;
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500));
+			NHTechTree.add(Blocks.foreshadow, this);
 		}
 			@Override
 			public void setStats(){
@@ -121,14 +152,14 @@ public class NHBlocks implements ContentList {
 		
 		rapidUnloader = new AdaptUnloader("rapid-unloader"){{
 			speed = 5f;
-			NHTechTree.add(Blocks.unloader, this);
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.presstanium, 20, Items.lead, 15, NHItems.juniorProcessor, 25));
+			NHTechTree.add(Blocks.unloader, this);
 		}};
 		
 		towardGate = new TowardGate("toward-gate"){{
 			speed = 12;
-			NHTechTree.add(Blocks.sorter, this);
 			requirements(Category.distribution, BuildVisibility.shown, with(Items.titanium, 5, Items.copper, 10, Items.silicon, 5));
+			NHTechTree.add(Blocks.sorter, this);
 		}};
 		
 		jumpGateJunior = new JumpGate("jump-gate-junior"){{
@@ -142,7 +173,7 @@ public class NHBlocks implements ContentList {
 			spawnRange = 160f;
 			range = 300f;
 			
-			NHTechTree.add(Blocks.commandCenter, this);
+			
 			
 			consumes.power(25f);
 			
@@ -154,26 +185,26 @@ public class NHBlocks implements ContentList {
 					Items.metaglass, 300,
 					Items.thorium, 1000
 			));
-			
+			NHTechTree.add(Blocks.commandCenter, this);
 			addSets(
-					new UnitSet(3, UnitTypes.nova, 3000f, 4,
+					new UnitSet(3, UnitTypes.quasar, 3600f, 4,
 							new ItemStack(Items.plastanium, 400),
 							new ItemStack(Items.thorium, 500),
 							new ItemStack(NHItems.multipleSteel, 300),
 							new ItemStack(NHItems.juniorProcessor, 150)
 					),
-					new UnitSet(4, UnitTypes.scepter, 5000f, 4,
+					new UnitSet(4, UnitTypes.scepter, 5800f, 4,
 							new ItemStack(Items.plastanium, 400),
 							new ItemStack(NHItems.presstanium, 600),
-							new ItemStack(NHItems.metalOxhydrigen, 300),
+							new ItemStack(NHItems.multipleSteel, 300),
 							new ItemStack(NHItems.juniorProcessor, 350)
 					),
-					new UnitSet(3.5f, NHUnits.warper, 4000f, 4,
-							new ItemStack(Items.thorium, 800),
-							new ItemStack(Items.graphite, 300),
-							new ItemStack(NHItems.presstanium, 500),
-							new ItemStack(NHItems.multipleSteel, 400),
-							new ItemStack(NHItems.juniorProcessor, 400)
+					new UnitSet(3.5f, NHUnits.warper, 6000f, 9,
+							new ItemStack(Items.thorium, 1600),
+							new ItemStack(Items.graphite, 700),
+							new ItemStack(NHItems.presstanium, 1000),
+							new ItemStack(NHItems.multipleSteel, 900),
+							new ItemStack(NHItems.juniorProcessor, 900)
 					)
 			);
 		}};
@@ -189,9 +220,10 @@ public class NHBlocks implements ContentList {
 			shootCone = 50f;
 			reloadTime = 100f;
 			shootSound = Sounds.plasmadrop;
-			NHTechTree.add(Blocks.cyclone, this);
+			
 			ammo(NHItems.juniorProcessor, NHBullets.empBlot2, NHItems.seniorProcessor, NHBullets.empBlot3);
 			requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 250, NHItems.irayrondPanel, 650, Items.plastanium, 375, NHItems.seniorProcessor, 150, NHItems.setonAlloy, 400));
+			NHTechTree.add(Blocks.cyclone, this);
 			range = 500f;
 		}};
 		
@@ -204,11 +236,12 @@ public class NHBlocks implements ContentList {
 			health = 2400;
 			powerProduction = 250f;
 			itemDuration = 90f;
-			NHTechTree.add(Blocks.impactReactor, this);
+			
 			consumes.power(30.0F);
 			consumes.items(new ItemStack(NHItems.fusionEnergy, 2));
 			consumes.liquid(NHLiquids.xenBeta, 0.1F);
 			requirements(Category.power, BuildVisibility.shown, with(Items.thorium, 600, NHItems.irayrondPanel, 350, NHItems.seniorProcessor, 200, NHItems.presstanium, 850, Items.surgeAlloy, 250, Items.metaglass, 250));
+			NHTechTree.add(Blocks.impactReactor, this);
 		}};
 		
 		hyperGenerator = new HyperGenerator("hyper-generator"){{
@@ -224,8 +257,8 @@ public class NHBlocks implements ContentList {
 			consumes.power(50.0F);
 			consumes.items(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
 			consumes.liquid(NHLiquids.zetaFluid, 0.25F);
-			NHTechTree.add(fusionCollapser, this);
 			requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
+			NHTechTree.add(fusionCollapser, this);
 		}};
 		
 		blastTurret = new ItemTurret("blast-turret"){{
@@ -250,10 +283,10 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		thermoTurret = new PowerTurret("thermo-turret"){{
-			NHTechTree.add(Blocks.arc, this);
 			size = 1;
 			health = 320;
 			requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.copper, 50, Items.silicon, 25));
+			NHTechTree.add(Blocks.arc, this);
 			shootType = new NHTrailBulletType(6.5f, 15f){{
 				hitEffect = new Effect(12.0F, (e) -> {
 					Draw.color(Pal.lancerLaser, Color.white, e.fout() * 0.75f);
@@ -311,10 +344,10 @@ public class NHBlocks implements ContentList {
 		
 		setonWallLarge = new Wall("seton-wall-large"){{
 			size = 2;
-			health = 1250 * healthMult;
+			health = 1250 * healthMult2;
 			chanceDeflect = 10.0F;
 			flashHit = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult, NHItems.irayrondPanel, 10 * healthMult, Items.silicon, 15 * healthMult, NHItems.presstanium, 15 * healthMult));
+			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult2, NHItems.irayrondPanel, 10 * healthMult2, Items.silicon, 15 * healthMult2, NHItems.presstanium, 15 * healthMult2));
 		}};
 		
 		heavyDefenceWall = new Wall("heavy-defence-wall"){{
@@ -326,9 +359,9 @@ public class NHBlocks implements ContentList {
 		
 		heavyDefenceWallLarge = new Wall("heavy-defence-wall-large"){{
 			size = 2;
-			health = 1750 * healthMult;
+			health = 1750 * healthMult2;
 			absorbLasers = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult, NHItems.presstanium, 20 * healthMult));
+			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2));
 		}};
 		
 		heavyDefenceDoor = new Door("heavy-defence-door"){{
@@ -339,10 +372,10 @@ public class NHBlocks implements ContentList {
 		
 		heavyDefenceDoorLarge = new Door("heavy-defence-door-large"){{
 			size = 2;
-			health = 1750 * healthMult;
+			health = 1750 * healthMult2;
 			openfx = Fx.dooropenlarge;
 			closefx = Fx.doorcloselarge;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult, NHItems.presstanium, 20 * healthMult, NHItems.juniorProcessor, 5 * healthMult));
+			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2, NHItems.juniorProcessor, 5 * healthMult2));
 		}};
 		
 		
@@ -559,8 +592,8 @@ public class NHBlocks implements ContentList {
 			{
 				requirements(Category.crafting, with(Items.surgeAlloy, 20, NHItems.seniorProcessor, 50, NHItems.presstanium, 80, NHItems.irayrondPanel, 65));
 				craftEffect = Fx.smeltsmoke;
-				outputLiquid = new LiquidStack(NHLiquids.irdryonFluid, 12f);
-				craftTime = 120f;
+				outputLiquid = new LiquidStack(NHLiquids.irdryonFluid, 8f);
+				craftTime = 60;
 				size = 2;
 				drawer = new NHDrawAnimation() {
 					{
@@ -572,8 +605,8 @@ public class NHBlocks implements ContentList {
 				};
 				itemCapacity = 20;
 				hasPower = hasLiquids = hasItems = true;
-				consumes.liquid(NHLiquids.xenBeta, 0.1f);
-				consumes.items(new ItemStack(NHItems.irayrondPanel, 2), new ItemStack(NHItems.metalOxhydrigen, 8));
+				consumes.liquid(NHLiquids.xenBeta, 0.075f);
+				consumes.items(new ItemStack(NHItems.irayrondPanel, 2), new ItemStack(NHItems.metalOxhydrigen, 4));
 				consumes.power(4f);
 			}
 		};
@@ -612,7 +645,7 @@ public class NHBlocks implements ContentList {
 					}
 				};
 				consumes.liquid(Liquids.water, 0.1f);
-				consumes.item(Items.titanium, 2);
+				consumes.item(Items.lead, 2);
 				consumes.power(2f);
 			}
 		};
@@ -661,7 +694,7 @@ public class NHBlocks implements ContentList {
 				craftTime = 150f;
 				size = 3;
 				hasPower = hasItems = true;
-				drawer = new DrawPrinter() {
+				drawer = new DrawPrinter(outputItem.item) {
 					{
 						printColor = NHColor.darkEnrColor;
 						lightColor = Color.valueOf("#E1BAFF");
@@ -759,8 +792,8 @@ public class NHBlocks implements ContentList {
 					drawTop = true;
 				}
 			};
-			consumes.liquid(NHLiquids.irdryonFluid, 0.1f);
-			consumes.items(new ItemStack(NHItems.presstanium, 6), new ItemStack(NHItems.fusionEnergy, 1));
+			consumes.liquid(NHLiquids.irdryonFluid, 0.05f);
+			consumes.items(new ItemStack(Items.scrap, 6), new ItemStack(Items.thorium, 3), new ItemStack(NHItems.fusionEnergy, 1));
 			consumes.power(12f);
 		}};
 
@@ -972,7 +1005,9 @@ public class NHBlocks implements ContentList {
 			spawnRange = 220f;
 			range = 600f;
 			squareStroke = 2.35f;
-
+			size = 8;
+			adaptable = true;
+			
 			requirements(Category.units, BuildVisibility.shown, with(
 				NHItems.presstanium, 2500,
 				NHItems.metalOxhydrigen, 2000,
@@ -984,7 +1019,6 @@ public class NHBlocks implements ContentList {
 				Items.phaseFabric, 1800,
 				NHItems.irayrondPanel, 800
 			));
-			size = 8;
 			addSets(
 				new UnitSet(9, NHUnits.annihilation, 15000f, 4,
 						new ItemStack(NHItems.upgradeSort, 1400),

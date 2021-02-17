@@ -7,15 +7,29 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import mindustry.graphics.Drawf;
+import mindustry.type.Item;
+import mindustry.ui.Cicon;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericCrafter.GenericCrafterBuild;
 import mindustry.world.draw.DrawBlock;
+import newhorizon.content.NHItems;
+import org.jetbrains.annotations.NotNull;
 
 public class DrawPrinter extends DrawBlock {
+	public DrawPrinter(@NotNull Item item){
+		this.toPrint = item;
+	}
+	
+	public DrawPrinter(){
+		this.toPrint = NHItems.emergencyReplace;
+	}
+	
 	public Color printColor;
 	public Color lightColor;
 	public float moveLength = 8f;
-	//public Item toPrint;
+	@NotNull public Item toPrint;
 	public float time;
 	public TextureRegion bottom, lightRegion;
 	@Override
@@ -31,19 +45,10 @@ public class DrawPrinter extends DrawBlock {
 		Draw.reset();
 
 		Draw.rect(entity.block.region, entity.x, entity.y);
-
-
-		/*
-		Shaders.build.region = toPrintObj;
-		Shaders.build.progress = entity.progress / 1;
-		Shaders.build.color.a = entity.warmup;
-		Shaders.build.color.set(lightColor);
-		Shaders.build.time = 12f;
-
-		Draw.shader(Shaders.build);
-		Draw.rect(Core.atlas.find(toPrint.name), entity.x, entity.y);
-		Draw.shader();
-		*/
+		
+		Draw.draw(Draw.z(), () -> Drawf.construct(entity.x, entity.y, toPrint.icon(Cicon.xlarge), lightColor, 0, entity.progress, ((GenericCrafter)entity.block()).craftTime / time, time));
+		
+		
 		if (lightColor.a > 0.001f) {
 			Draw.color(lightColor, entity.warmup);
 			Draw.blend(Blending.additive);

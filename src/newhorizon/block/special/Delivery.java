@@ -39,7 +39,7 @@ public class Delivery extends Block{
 	public float coolDown = 0.1f;
 	public float lerpSpeedScl = 2f;
 	public float strokeScl = 2f;
-	public float range = 1600f;
+	public float range = 1200f;
 	public Sound shootSound = Sounds.shootBig;
 	public float shake;
 	public float recoilAmount = 5f;
@@ -73,7 +73,7 @@ public class Delivery extends Block{
 	
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		super.drawPlace(x, y, rotation, valid);
+		Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, Pal.accent);
 	}
 	
 	@Override

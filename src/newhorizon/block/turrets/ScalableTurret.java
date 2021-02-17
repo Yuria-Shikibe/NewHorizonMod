@@ -18,6 +18,7 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
+import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
@@ -25,7 +26,6 @@ import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.consumers.ConsumeLiquidBase;
 import mindustry.world.consumers.ConsumeType;
 import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
@@ -70,8 +70,20 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		));
 		super.setStats();
     }
-
-    @Override
+	
+	@Override
+	public void setBars(){
+		super.setBars();
+		bars.add("progress",
+				(ScalableTurretBuild entity) -> new Bar(
+						() -> Core.bundle.get("bar.progress"),
+						() -> Pal.power,
+						() -> entity.getData() == null ? 0 : entity.reload / entity.reloadTime()
+				)
+		);
+	}
+	
+	@Override
     public void init(){
         consumes.powerCond(powerUse, TurretBuild::isActive);
         super.init();
@@ -83,29 +95,27 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 	}
 	
 	public class ScalableTurretBuild extends TurretBuild implements Scalablec{
-		protected DataEntity data = NHUpgradeDatas.none.newSubEntity();
+		protected DataEntity data = defaultData.newSubEntity();
 		protected int fromPos = -1;
-
-		public boolean shooting;
 		
 		Bullet bullet;
         float bulletLife;
-		
-		@Override public boolean shouldTurn(){return !shooting;}
-		
+        
 		@Override
         public void shoot(BulletType ammo){
-        	if(ammo.compareTo(NHBullets.none) == 0)return;
+        	if(getData().type().selectAmmo == NHBullets.none)return;
             useAmmo();
 
             tr.trns(rotation, size * tilesize / 2f);
 		    getData().type().chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
 		    getData().type().chargeEffect.at(x + tr.x, y + tr.y, rotation);
-   
-			if(getData().type().chargeTime > 0)shooting = true;
-
+		    
+		    charging = true;
+		    
             Time.run(getData().type().chargeTime, () -> {
-            	if(getData().type().burstSpacing > 0.0001f){
+	            if(!isValid())return;
+	            charging = false;
+	            if(getData().type().burstSpacing > 0.0001f){
 					for(int i = 0; i < getData().type().salvos; i++){
 						Time.run(getData().type().burstSpacing * i, () -> {
 							if(!isValid() || ammo.compareTo(getData().type().selectAmmo) != 0)return;
@@ -117,8 +127,6 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 						});
 					}
 				}
-				if(!isValid())return;
-				shooting = false;
             });
         }
         
@@ -170,9 +178,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		@Override
 		public void updateTile(){
 			super.updateTile();
-			
-			if(!isContiunous())return;
-			if(bulletLife > 0 && bullet != null){
+			if(isContiunous() && bulletLife > 0 && bullet != null){
 				tr.trns(rotation, block.size * tilesize / 2f, 0f);
                 bullet.rotation(rotation);
                 bullet.set(x + tr.x, y + tr.y);
@@ -183,24 +189,12 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
                 if(bulletLife <= 0f){
                     bullet = null;
                 }
-            }else if(reload > 0){
-                Liquid liquid = liquids.current();
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-
-                float used = (cheating() ? maxUsed * Time.delta : Math.min(liquids.get(liquid), maxUsed * Time.delta)) * liquid.heatCapacity * coolantMultiplier;
-                reload -= used;
-                liquids.remove(liquid, used);
-
-                if(Mathf.chance(0.06 * used)){
-                    coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
-                }
             }
-
 		}
 		
 		protected float reloadTime(){
 			float realReload = getData().type().reloadTime <= 0 ? reloadTime : getData().type().reloadTime;
-			return realReload * (1 + data.speedUP());
+			return realReload * 1 / (1 + data.speedUP());
 		}
 		
 		@Override
@@ -210,9 +204,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
             }
 
             if(reload >= reloadTime()){
-                BulletType type = peekAmmo();
-
-                shoot(type);
+                shoot(peekAmmo());
 
                 reload = 0f;
             }else{

@@ -42,6 +42,7 @@ public class AutoOutlineUnitType extends UnitType{
 				name + "-base",
 				name + "@-outline"
 		);
+		NHLoader.put(this.name, new NHIconGenerator.IconSet(this, null));
 	}
 	
 	@Override

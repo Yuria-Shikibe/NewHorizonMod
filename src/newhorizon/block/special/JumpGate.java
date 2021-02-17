@@ -21,7 +21,6 @@ import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
-import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -37,7 +36,6 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
-import mindustry.world.consumers.*;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.modules.ItemModule;
@@ -48,13 +46,16 @@ import newhorizon.content.NHItems;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.Functions;
 import newhorizon.func.TableFuncs;
+import newhorizon.func.Tables;
 
 import static mindustry.Vars.*;
 import static newhorizon.func.Functions.regSize;
 import static newhorizon.func.TableFuncs.LEN;
-import static newhorizon.func.TableFuncs.OFFSET;
 
 public class JumpGate extends Block {
+    protected static final Seq<JumpGate> all = new Seq<>();
+    
+    public boolean adaptable = false;
     public boolean primary;
     public float spawnDelay = 5f;
     public float spawnReloadTime = 180f;
@@ -77,11 +78,13 @@ public class JumpGate extends Block {
         configurable = true;
         solid = true;
         hasPower = true;
-        this.category = Category.units;
+        category = Category.units;
+        
+        all.add(this);
     }
     
     public boolean canReplace(Block other) {
-        return super.canReplace(other) || other instanceof JumpGate && this.size > other.size;
+        return super.canReplace(other) || other instanceof JumpGate && size > other.size;
     }
     
     public boolean canPlaceOn(Tile tile, Team team) {
@@ -89,7 +92,7 @@ public class JumpGate extends Block {
         if (tile == null) {
             return false;
         } else {
-            return tile.block() instanceof JumpGate && this.size > tile.block().size;
+            return tile.block() instanceof JumpGate && size > tile.block().size;
         }
     }
     
@@ -99,14 +102,13 @@ public class JumpGate extends Block {
             Fx.placeBlock.at(tile, (float)tile.block().size);
             Fx.upgradeCore.at(tile, (float)tile.block().size);
         }
-        
     }
     
     public void beforePlaceBegan(Tile tile, Block previous) {
         if(tile == null || tile.build == null || tile.build.core() == null)return;
         ItemModule items = tile.build.core().items();
         if (!Vars.state.rules.infiniteResources && items != null) {
-            items.remove(ItemStack.mult(this.requirements, Vars.state.rules.buildCostMultiplier));
+            items.remove(ItemStack.mult(requirements, Vars.state.rules.buildCostMultiplier));
         }
     }
     
@@ -114,8 +116,8 @@ public class JumpGate extends Block {
         Color color = baseColor == null ? Pal.accent : baseColor;
         Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, color);
         if (Vars.world.tile(x, y) != null) {
-            if (!this.canPlaceOn(Vars.world.tile(x, y), Vars.player.team())) {
-                this.drawPlaceText(Core.bundle.get((Vars.player.team().core() == null || !Vars.player.team().core().items.has(this.requirements, Vars.state.rules.buildCostMultiplier)) && !Vars.state.rules.infiniteResources ? "bar.noresources" : "nh-need-base"), x, y, valid);
+            if (!canPlaceOn(Vars.world.tile(x, y), Vars.player.team())) {
+                drawPlaceText(Core.bundle.get((Vars.player.team().core() == null || !Vars.player.team().core().items.has(requirements, Vars.state.rules.buildCostMultiplier)) && !Vars.state.rules.infiniteResources ? "bar.noresources" : "nh-need-base"), x, y, valid);
             }
         }
     }
@@ -129,37 +131,20 @@ public class JumpGate extends Block {
     public void init(){
         super.init();
         if(calls.isEmpty()) throw new IllegalArgumentException("Seq @calls is [red]EMPTY[].");
+        if(adaptable)for(JumpGate gate : all){
+            if(gate.size >= size)continue;
+            calls.addAll(gate.calls);
+        }
     }
 
     @Override
     public void setStats() {
         super.setStats();
-        this.stats.add(Stat.powerUse, this.basePowerDraw * 60F, StatUnit.powerSecond);
-        this.stats.add(Stat.output, (t) -> {
+        stats.add(Stat.powerUse, basePowerDraw * 60F, StatUnit.powerSecond);
+        stats.add(Stat.output, (t) -> {
             t.row().add("[gray]Summon Types:").left().pad(TableFuncs.OFFSET).row();
             for(UnitSet set : calls) {
-                if(set.type.locked() && !state.rules.infiniteResources){
-                    t.table(Tex.clear, t2 -> {
-                        t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
-
-                        t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
-
-                        t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
-                    }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
-                }else{
-                    t.table(Tex.clear, t2 -> {
-                        t2.table(Tex.clear, table2 -> {
-                            TableFuncs.tableImageShrink(set.type.icon(Cicon.xlarge), LEN, table2);
-                        }).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
-
-                        t2.pane(table2 -> {
-                            table2.add("[lightgray]Summon: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
-                            table2.add("[lightgray]NeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().row();
-                        }).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
-
-                        t2.table(table2 -> table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[]: Summon needs building.")).size(LEN)).height(LEN + TableFuncs.OFFSET).growX().left().pad(TableFuncs.OFFSET);
-                    }).fillX().growY().padBottom(TableFuncs.OFFSET / 2).row();
-                }
+                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[]: Summon needs building.")).size(LEN))).fill().row();
             }
         });
     }
@@ -193,11 +178,11 @@ public class JumpGate extends Block {
     public void setBars() {
         super.setBars();
         bars.add("progress",
-                (JumpGateBuild entity) -> new Bar(
-                        () -> "Progress",
-                        () -> Pal.power,
-                        () -> entity.getSet() == null ? 0 : entity.buildReload / entity.getSet().costTime()
-                )
+            (JumpGateBuild entity) -> new Bar(
+                    () -> Core.bundle.get("bar.progress"),
+                    () -> Pal.power,
+                    () -> entity.getSet() == null ? 0 : entity.buildReload / entity.getSet().costTime()
+            )
         );
     }
 
@@ -210,7 +195,7 @@ public class JumpGate extends Block {
 
     public class JumpGateBuild extends Building implements Ranged {
         public Color baseColor(){
-            return baseColor == null ? this.team().color : baseColor;
+            return baseColor == null ? team().color : baseColor;
         }
         public int spawnID = -1;
         public int spawnPOS = -1;
@@ -227,8 +212,8 @@ public class JumpGate extends Block {
             super.updateTile();
             if(hasConsume(getSet()))progress += efficiency();
             if(isCalling()){
-                this.buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1);
-                if(this.buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
+                buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1);
+                if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
                     spawn(getSet());
                 }
                 consumes.powerCond(consumes.getPower().usage, b -> true);
@@ -237,7 +222,7 @@ public class JumpGate extends Block {
 
         public UnitType getType(){ return calls.get(spawnID).type; }
         
-        public void setTarget(int pos){ this.spawnPOS = pos; }
+        public void setTarget(int pos){ spawnPOS = pos; }
         
         public Building target(){ return Vars.world.build(spawnPOS); }
 
@@ -279,7 +264,7 @@ public class JumpGate extends Block {
 
         @Override
         public boolean onConfigureTileTapped(Building other) {
-            if (this == other || this.spawnPOS == other.pos()) {
+            if (this == other || spawnPOS == other.pos()) {
                 setTarget(-1);
                 return false;
             }
@@ -295,39 +280,18 @@ public class JumpGate extends Block {
             BaseDialog dialog = new BaseDialog("Call");
             dialog.addCloseListener();
 
-            dialog.cont.table(t -> {
-                t.table(inner -> {
-                    inner.button("@back", Icon.left, dialog::hide).padBottom(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
-                    inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
-                    inner.pane(callTable -> {
-                        for(UnitSet set : calls) {
-                            if(set.type.locked() && !state.rules.infiniteResources){
-                                callTable.table(Tex.buttonSquareDown, t2 -> {
-                                    t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN).center()).left().size(LEN + TableFuncs.OFFSET * 1.5f).pad(TableFuncs.OFFSET);
-                
-                                    t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
-                
-                                    t2.table(table2 -> table2.image(Icon.lock).size(LEN).center()).height(LEN + TableFuncs.OFFSET).disabled(b -> true).growX().left().pad(TableFuncs.OFFSET);
-                                }).fillX().height(LEN).padBottom(TableFuncs.OFFSET / 2).row();
-                            }else{
-                                callTable.table(Tex.clear, t2 -> {
-                                    t2.table(Tex.clear, table2 -> table2.image(set.type.icon(Cicon.full)).size(LEN).center()).left().grow().pad(TableFuncs.OFFSET);
-                
-                                    t2.pane(table2 -> {
-                                        table2.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[].").left().row();
-                                        table2.add("[lightgray]NeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().row();
-                                    }).size(LEN * 6f, LEN).left().pad(TableFuncs.OFFSET);
-                
-                                    t2.table(Tex.clear, table2 -> {
-                                        table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
-                                        table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
-                                    }).height(LEN).growX().left().pad(TableFuncs.OFFSET);
-                                }).fillX().height(LEN + OFFSET).padBottom(TableFuncs.OFFSET / 2).row();
-                            }
-                        }
-                    }).fill();
+            dialog.cont.table(t -> t.table(inner -> {
+                inner.button("@back", Icon.left, dialog::hide).padBottom(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
+                inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
+                inner.pane(callTable -> {
+                    for(UnitSet set : calls) {
+                        inner.add(new Tables.UnitSetTable(set, table2 -> {
+                            table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
+                            table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
+                        })).fill().row();
+                    }
                 }).fill();
-            }).fill();
+            }).fill()).fill();
 
             table.button("Spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
@@ -335,7 +299,6 @@ public class JumpGate extends Block {
         @Override
         public void draw(){
             super.draw();
-            Draw.reset();
             Draw.z(Layer.bullet);
             if(efficiency() > 0){
                 Lines.stroke(squareStroke, getColor(getSet()));
@@ -380,21 +343,21 @@ public class JumpGate extends Block {
         }
         @Override public float range(){return range;}
         @Override public void write(Writes write) {
-            write.i(this.spawnID);
-            write.i(this.spawnPOS);
-            write.i(this.spawns);
-            write.f(this.buildReload);
+            write.i(spawnID);
+            write.i(spawnPOS);
+            write.i(spawns);
+            write.f(buildReload);
         }
         @Override public void read(Reads read, byte revision) {
-            this.spawnID = read.i();
-            this.spawnPOS = read.i();
-            this.spawns = read.i();
-            this.buildReload = read.f();
+            spawnID = read.i();
+            spawnPOS = read.i();
+            spawns = read.i();
+            buildReload = read.f();
         }
 
         public boolean isCalling(){ return spawnID >= 0; }
 
-        public boolean coreValid() { return this.team.core() != null && this.team.core().items != null && !this.team.core().items.empty(); }
+        public boolean coreValid() { return team.core() != null && team.core().items != null && !team.core().items.empty(); }
 
         public void consumeItems(){
             if(coreValid()){
@@ -409,14 +372,14 @@ public class JumpGate extends Block {
                     });
                 }
                 
-                if(!state.rules.infiniteResources)this.team.core().items.remove(getSet().requirements());
+                if(!state.rules.infiniteResources)team.core().items.remove(getSet().requirements());
             }
         }
 
         public boolean hasConsume(UnitSet set){
             if(set == null || state.rules.infiniteResources)return true;
             if(!coreValid())return false;
-            CoreBlock.CoreBuild core = this.team.core();
+            CoreBlock.CoreBuild core = team.core();
             return core.items.has(set.requirements());
         }
 
@@ -427,7 +390,7 @@ public class JumpGate extends Block {
         }
 
         public void startBuild(UnitSet set){
-            this.spawnID = calls.indexOf(set);
+            spawnID = calls.indexOf(set);
             ui.showInfoPopup("[accent]<<Caution>>[]:Team : " + team.name + "[] starts summon level[accent] " + set.level + " []fleet.", 8f, 0, 20, 20, 20, 20);
         }
 
@@ -453,9 +416,9 @@ public class JumpGate extends Block {
             success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
             if(success){
                 consumeItems();
-                this.spawns = set.callIns;
-                this.buildReload = 0;
-                this.spawnID = -1;
+                spawns = set.callIns;
+                buildReload = 0;
+                spawnID = -1;
                 error = false;
             }else error = true;
         }
@@ -473,7 +436,7 @@ public class JumpGate extends Block {
         public UnitSet(float level, UnitType type){
             this.type = type;
             this.level = level;
-            this.requirements.add(new ItemStack(NHItems.emergencyReplace, 0));
+            requirements.add(new ItemStack(NHItems.emergencyReplace, 0));
         }
 
         public UnitSet(float level, UnitType type, float costTime, int callIns, ItemStack... requirements){
@@ -484,7 +447,7 @@ public class JumpGate extends Block {
             this.requirements.addAll(requirements);
         }
 
-        public float costTime(){return /*Vars.state.rules.infiniteResources ? 0f :*/ costTime * (1 + Vars.state.rules.unitBuildSpeedMultiplier);}
+        public float costTime(){return costTime * (1 + Vars.state.rules.unitBuildSpeedMultiplier);}
         public ItemStack[] requirements(){ return requirements.toArray(); }
     }
 }

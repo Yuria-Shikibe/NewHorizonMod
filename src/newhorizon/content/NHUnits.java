@@ -22,6 +22,7 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.LightningLinkerBulletType;
 import newhorizon.bullets.NHTrailBulletType;
@@ -43,40 +44,40 @@ public class NHUnits implements ContentList {
 	public void load() {
 		warper = new AutoOutlineUnitType("warper"){{
 			constructor = EntityMapping.map(3);
-			weapons.add(new AutoOutlineWeapon("warper-weapon"){{
+			weapons.add(new Weapon(){{
 				minShootVelocity = 0.01F;
 				top = true;
-				rotate = true;
+				rotate = false;
 				alternate = true;
 				mirror = false;
-				shootY = 5f;
 				x = 0f;
 				y = -10f;
-				recoil = 2.4f;
-				shootCone = 45f;
-				reload = 10f;
-				shots = 1;
+				shootCone = 30f;
+				reload = 60f;
+				shots = 5;
+				shotDelay = 7f;
 				inaccuracy = 6f;
 				ejectEffect = Fx.none;
 				bullet = NHBullets.warperBullet;
 				shootSound = NHSounds.launch;
 			}});
 			abilities.add(
-					new MoveLightningAbility(10, 16, 0.1f, 12, 4, 6, NHColor.lightSky)
+					new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSky)
 			);
+			targetAir = false;
 			maxRange = 200;
 			engineOffset = 14.0F;
 			engineSize = 4f;
 			speed = 5f;
-			accel = 0.95f;
-			drag = 0.05f;
 			faceTarget = true;
+			accel = 0.04F;
+			drag = 0.0075F;
 			circleTarget = true;
 			hitSize = 14f;
 			health = 1000f;
 			buildSpeed = 0.8f;
-			baseRotateSpeed = 7f;
-			rotateSpeed = 10f;
+			baseRotateSpeed = 1.5f;
+			rotateSpeed = 2.5f;
 			armor = 3.5f;
 			flying = true;
 			hovering = false;
