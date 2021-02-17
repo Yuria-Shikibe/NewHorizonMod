@@ -6,8 +6,10 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
+import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
@@ -21,14 +23,17 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
+import mindustry.world.Tile;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
+import static mindustry.core.World.toTile;
 
 public class Functions {
+    private static Tile tileParma;
+    
     public static Color getColor(Color defaultColor, Team team){
         return defaultColor == null ? team.color : defaultColor;
     }
@@ -58,20 +63,35 @@ public class Functions {
         int steps = 0;
         
         if(!type.flying){
-            Seq<Rect> rectSeq = new Seq<>(maxCompute);
+            Seq<Rect> rectSeq = new Seq<>();
+            IntSeq buildingSeq = new IntSeq();
+    
+            Geometry.circle(toTile(x), toTile(y), toTile(spawnRange) , (x1, y1) -> {
+                tileParma = null;
+                if((tileParma = world.tile(x1, y1)) != null && tileParma.build != null &&! buildingSeq.contains(tileParma.build.id) && tileParma.build.block().solid){
+                    buildingSeq.add(tileParma.build.id);
+                    rectSeq.add(new Rect().setSize(tileParma.build.block().size * tilesize + type.hitSize).setCenter(tileParma.build.x, tileParma.build.y));
+                }
+            });
+            
             loop1: while(vecs.size < spawns){
                 if(steps > maxCompute)return false;
                 Vec2 p = new Vec2().rnd(spawnRange).scl(Mathf.range(1f)).add(x, y);
                 
-                for(Rect rect : rectSeq)if(rect.contains(p))continue loop1;
+                boolean canAdd;
                 
-                Building building = Units.findAllyTile(starter.team, x, y, spawnRange * 1.1f, b -> b.block().solid && b.within(p, b.block().size * tilesize / Mathf.sqrt2 + type.hitSize * 1.1f));
+                for(Rect rect : rectSeq)if(rect.contains(p)){
+                    steps++;
+                    continue loop1;
+                }
                 
+                //Building building = Units.findAllyTile(starter.team, x, y, spawnRange * 1.1f, b -> b.block().solid && b.within(p, b.block().size * tilesize / Mathf.sqrt2 + type.hitSize * 1.1f));
+          /*
                 if(building != null){
                     steps++;
                     rectSeq.add(new Rect().setSize(building.block().size * tilesize + type.hitSize).setCenter(building.x, building.y));
                     continue;
-                }
+                }*/
                 vecs.add(p);
             }
         }else{

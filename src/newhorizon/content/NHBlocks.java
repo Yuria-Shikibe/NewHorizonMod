@@ -76,7 +76,7 @@ public class NHBlocks implements ContentList {
 		railGun = new ItemTurret("rail-gun"){{
 			size = 4;
 			health = 4550;
-			reloadTime = 120f;
+			reloadTime = 200f;
 			recoilAmount = 6f;
 			shootShake = 6f;
 			range = 620.0F;
@@ -86,45 +86,10 @@ public class NHBlocks implements ContentList {
 			chargeEffect = NHFx.chargeEffectSmall(NHItems.irayrondPanel.color, 132f);
 			chargeTime = chargeEffect.lifetime;
 			NHTechTree.add(Blocks.foreshadow, this);
-			ammo(NHItems.irayrondPanel, new PointBulletType() {{
-					lightningColor = NHItems.irayrondPanel.color;
-					lightning = 4;
-					lightningLength = 6;
-					lightningLengthRand = 10;
-					shootEffect = NHFx.instShoot(lightningColor);
-					hitEffect = NHFx.instHit(lightningColor);
-					smokeEffect = Fx.smokeCloud;
-					trailEffect = NHFx.instTrail(lightningColor);
-					despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
-					trailSpacing = 22.0F;
-					damage = 1750.0F;
-					lightningDamage = damage / 7;
-					buildingDamageMultiplier = 0.5F;
-					hitShake = 8.0F;
-					speed = range;
-					ammoMultiplier = 2.0F;
-				}}, NHItems.setonAlloy, new PointBulletType() {{
-					lightningColor = Pal.ammo.cpy().lerp(Color.white, 0.2f);
-					lightning = 3;
-					lightningLength = 4;
-					lightningLengthRand = 20;
-					shootEffect = NHFx.instShoot(lightningColor);
-					hitEffect = NHFx.instHit(lightningColor);
-					smokeEffect = Fx.smokeCloud;
-					trailEffect = NHFx.instTrail(lightningColor);
-					despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
-					trailSpacing = 30.0F;
-					damage = 2250.0F;
-					lightningDamage = damage / 7;
-					splashDamage = damage / 30;
-					splashDamageRadius = 16f;
-					buildingDamageMultiplier = 0.7F;
-					hitShake = 10.0F;
-					speed = range;
-					ammoMultiplier = 1.0F;
-			}});
-			maxAmmo = 40;
-			ammoPerShot = 4;
+			ammo(
+					NHItems.irayrondPanel, NHBullets.railGun1,
+					NHItems.setonAlloy, NHBullets.railGun2);
+			maxAmmo = 20;
 			minRange = 180f;
 			rotateSpeed = 0.75f;
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500));

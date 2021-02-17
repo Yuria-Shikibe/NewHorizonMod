@@ -22,6 +22,8 @@ import mindustry.world.Tile;
 import newhorizon.content.NHFx;
 import org.jetbrains.annotations.NotNull;
 
+import static mindustry.core.World.toTile;
+
 public class PosLightning {
 	
 	/**
@@ -135,18 +137,15 @@ public class PosLightning {
 	}
 
 	//Private methods and classes.
-	
-	//Compute the proper homologous Tile.position's x and y.
-	private static int toIntTile(float pos) {return Math.round(pos / Vars.tilesize); }
 
 	//Compute the proper hit position.
 	private static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
 		furthest = null;
 		return Geometry.raycast(
-				toIntTile(from.getX()),
-				toIntTile(from.getY()),
-				toIntTile(target.getX()),
-				toIntTile(target.getY()),
+				toTile(from.getX()),
+				toTile(from.getY()),
+				toTile(target.getX()),
+				toTile(target.getY()),
 				(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers
 		) && furthest != null ? furthest : target;
 	}

@@ -73,7 +73,7 @@ public class NHUnits implements ContentList {
 			faceTarget = true;
 			circleTarget = true;
 			hitSize = 14f;
-			health = 600f;
+			health = 1000f;
 			buildSpeed = 0.8f;
 			baseRotateSpeed = 7f;
 			rotateSpeed = 10f;

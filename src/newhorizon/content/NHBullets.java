@@ -14,11 +14,13 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
+import mindustry.world.blocks.defense.turrets.Turret;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
@@ -31,6 +33,7 @@ import static arc.math.Angles.randLenVectors;
 public class NHBullets {
 	public static
 	BulletType
+		railGun1, railGun2,
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile,
@@ -38,12 +41,50 @@ public class NHBullets {
 		
 	
 	public void load(){
+		railGun1 = new PointBulletType() {{
+			lightningColor = NHItems.irayrondPanel.color;
+			lightning = 4;
+			lightningLength = 6;
+			lightningLengthRand = 10;
+			shootEffect = NHFx.instShoot(lightningColor);
+			hitEffect = NHFx.instHit(lightningColor);
+			smokeEffect = Fx.smokeCloud;
+			trailEffect = NHFx.instTrail(lightningColor);
+			despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
+			trailSpacing = 22.0F;
+			damage = 1750.0F;
+			lightningDamage = damage / 7;
+			buildingDamageMultiplier = 0.5F;
+			hitShake = 8.0F;
+			speed = 620;
+		}};
+		
+		railGun2 = new PointBulletType() {{
+			lightningColor = Pal.ammo.cpy().lerp(Color.white, 0.2f);
+			lightning = 3;
+			lightningLength = 4;
+			lightningLengthRand = 20;
+			shootEffect = NHFx.instShoot(lightningColor);
+			hitEffect = NHFx.instHit(lightningColor);
+			smokeEffect = Fx.smokeCloud;
+			trailEffect = NHFx.instTrail(lightningColor);
+			despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
+			trailSpacing = 30.0F;
+			damage = 2250.0F;
+			lightningDamage = damage / 7;
+			splashDamage = damage / 30;
+			splashDamageRadius = 16f;
+			buildingDamageMultiplier = 0.7F;
+			hitShake = 10.0F;
+			speed = 620;
+		}};
+		
 		warperBullet = new TextureMissileType(2.5f, 20f, "ann-missile-atlas@@404049"){
 			@Override
 			public float range(){return 180f;}
 			
 			{
-				buildingDamageMultiplier = 1.5f;
+				buildingDamageMultiplier = 3.5f;
 				keepVelocity = true;
 				velocityEnd = 14f;
 				accelerateBegin = 0.01f;
