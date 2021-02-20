@@ -3,9 +3,6 @@ package newhorizon.content;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import arc.math.Angles;
-import arc.math.Mathf;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
@@ -19,29 +16,108 @@ import mindustry.entities.bullet.ShrapnelBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Sounds;
-import mindustry.graphics.Pal;
 import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
-import newhorizon.bullets.LightningLinkerBulletType;
 import newhorizon.bullets.NHTrailBulletType;
 import newhorizon.bullets.ShieldBreaker;
 import newhorizon.units.AutoOutlineUnitType;
 import newhorizon.units.AutoOutlineWeapon;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.randLenVectors;
-
 public class NHUnits implements ContentList {
-
+	public static Weapon
+	
+	closeAATurret = new AutoOutlineWeapon("anti-air-pulse-laser"){{
+		shake = 0f;
+		shots = 3;
+		shotDelay = 6f;
+		rotate = top = true;
+		heatColor = NHColor.lightSky;
+		shootSound = Sounds.missile;
+		shootY = 3f;
+		x = 11f;
+		y = -7f;
+		reload = 30f;
+		bullet = new SapBulletType(){{
+			keepVelocity = false;
+			sapStrength = 0.4F;
+			length = 100.0F;
+			damage = 35.0F;
+			shootEffect = Fx.shootSmall;
+			hitColor = color = NHColor.lightSky;
+			despawnEffect = Fx.none;
+			width = 0.48F;
+			lifetime = 20.0F;
+			knockback = -1.24F;
+		}};
+	}};
+	
+	
 	public static
 	UnitType
-	hurricane, tarlidor, striker, annihilation, warper;
+	hurricane, tarlidor, striker, annihilation, warper, destruction;
 	
 	@Override
 	public void load() {
+		destruction = new AutoOutlineUnitType("destruction",
+			((AutoOutlineWeapon)closeAATurret.copy()).setPos(37, -18),
+			((AutoOutlineWeapon)closeAATurret.copy()).setPos(26, -8),
+			new AutoOutlineWeapon(){{
+				alternate = mirror = false;
+				top = rotate = true;
+				x = 0;
+				y = 0f;
+				reload = 300f;
+				shots = 1;
+				ejectEffect = Fx.none;
+				bullet = NHBullets.polyCloud;
+				shootSound = Sounds.plasmadrop;
+			}},
+			new AutoOutlineWeapon("arc-blaster"){{
+				alternate = mirror = top = rotate = true;
+				x = 10f;
+				y = 4f;
+				recoil = 3f;
+				shootCone = 20f;
+				reload = 120f;
+				shots = 1;
+				inaccuracy = 6f;
+				shake = 5f;
+				shootY = 5f;
+				ejectEffect = Fx.none;
+				bullet = NHBullets.longLaser;
+				shootSound = Sounds.laser;
+			}}
+		){{
+			constructor = EntityMapping.map(3);
+			armor = 25.0F;
+			health = 25000.0F;
+			speed = 0.65F;
+			rotateSpeed = 1.0F;
+			accel = 0.04F;
+			drag = 0.018F;
+			flying = true;
+			engineOffset = 16F;
+			engineSize = 6F;
+			hitSize = 30.0F;
+			buildSpeed = 1.25F;
+			drawShields = false;
+			commandLimit = 8;
+			lowAltitude = true;
+			singleTarget = false;
+			buildBeamOffset = 33.0F;
+			ammoCapacity = 800;
+			ammoResupplyAmount = 60;
+			abilities.add(
+				new ForceFieldAbility(100.0F, 4.0F, 4000.0F, 360.0F),
+				new RepairFieldAbility(500f, 160f, 240f){{
+					healEffect = NHFx.healEffect;
+					activeEffect = NHFx.activeEffect;
+				}}
+			);
+		}};
+		
 		warper = new AutoOutlineUnitType("warper"){{
 			constructor = EntityMapping.map(3);
 			weapons.add(new Weapon(){{
@@ -52,7 +128,7 @@ public class NHUnits implements ContentList {
 				mirror = false;
 				x = 0f;
 				y = -10f;
-				shootCone = 30f;
+				shootCone = 60f;
 				reload = 60f;
 				shots = 5;
 				shotDelay = 7f;
@@ -115,7 +191,7 @@ public class NHUnits implements ContentList {
 				}};
 				shootSound = Sounds.shotgun;
 			}},
-			new AutoOutlineWeapon(""){{
+			new AutoOutlineWeapon(){{
 				mirror = false;
 				rotate = true;
 				alternate = true;
@@ -149,6 +225,7 @@ public class NHUnits implements ContentList {
 			rotateSpeed = 1.8f;
 			hovering = true;
 			canDrown = true;
+			singleTarget = false;
 			fallSpeed = 0.016f;
 			mechStepParticles = true;
 			mechStepShake = 0.15f;
@@ -159,40 +236,14 @@ public class NHUnits implements ContentList {
 		}};
 
 		
-		striker = new AutoOutlineUnitType("striker",
-			new AutoOutlineWeapon("anti-air-pulse-laser"){{
-				shake = 0f;
-				shots = 3;
-				shotDelay = 6f;
-				rotate = top = true;
-				heatColor = Pal.accent;
-				shootSound = Sounds.missile;
-				shootY = 3f;
-				x = 11f;
-				y = -7f;
-				reload = 30f;
-				bullet = new SapBulletType(){{
-					keepVelocity = false;
-					sapStrength = 0.4F;
-					length = 90.0F;
-					damage = 35.0F;
-					shootEffect = Fx.shootSmall;
-					hitColor = color = Pal.accent;
-					despawnEffect = Fx.none;
-					width = 0.48F;
-					lifetime = 20.0F;
-					knockback = -1.24F;
-				}};
-			}}
-		){{
-			weapons.add(
-				new AutoOutlineWeapon("striker-weapon") {{
+		striker = new AutoOutlineUnitType("striker", closeAATurret){{
+			weapons.add(new AutoOutlineWeapon("striker-weapon") {{
 					mirror = false;
 					rotate = false;
 					continuous = true;
 					alternate = false;
 					shake = 4f;
-					heatColor = Pal.accent;
+					heatColor = NHColor.lightSky;
 					shootY = 13f;
 					reload = 420f;
 					shots = 1;
@@ -202,8 +253,7 @@ public class NHUnits implements ContentList {
 					shootSound = Sounds.none;
 					shootStatus = StatusEffects.slow;
 					shootStatusDuration = bullet.lifetime + 60f;
-				}}
-			);
+				}});
 			constructor = EntityMapping.map(3);
 			lowAltitude = true;
 			faceTarget = true;
@@ -255,56 +305,7 @@ public class NHUnits implements ContentList {
 				inaccuracy = 3.0F;
 				ejectEffect = Fx.none;
 				recoil = 4.4f;
-				bullet = new LightningLinkerBulletType(2.3f, 200){{
-					range = 340f;
-					
-					outColor = lightColor = lightningColor = NHColor.lightSky;
-					innerColor = Color.white;
-					generateDelay = 6f;
-					randomGenerateRange = 280f;
-					randomLightningNum = 5;
-					boltNum = 3;
-					linkRange = 280f;
-					
-					drag = 0.0065f;
-					fragLifeMin = 0.3f;
-					fragBullets = 11;
-					fragBullet = NHBullets.skyFrag;
-					hitSound = Sounds.explosionbig;
-					drawSize = 40;
-					splashDamageRadius = 240;
-					splashDamage = 80;
-					lifetime = 300;
-					despawnEffect = Fx.none;
-					hitEffect = new Effect(50, e -> {
-						color(NHColor.lightSky);
-						Fill.circle(e.x, e.y, e.fout() * 44);
-						stroke(e.fout() * 3.2f);
-						circle(e.x, e.y, e.fin() * 80);
-						stroke(e.fout() * 2.5f);
-						circle(e.x, e.y, e.fin() * 50);
-						Angles.randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
-							stroke(e.fout() * 3.2f);
-							lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
-						});
-						color(Color.white);
-						Fill.circle(e.x, e.y, e.fout() * 30);
-					});
-					shootEffect = new Effect(30f, e -> {
-						color(NHColor.lightSky);
-						Fill.circle(e.x, e.y, e.fout() * 32);
-						color(Color.white);
-						Fill.circle(e.x, e.y, e.fout() * 20);
-					});
-					smokeEffect = new Effect(40f, 100, e -> {
-						color(NHColor.lightSky);
-						stroke(e.fout() * 3.7f);
-						circle(e.x, e.y, e.fin() * 100 + 15);
-						stroke(e.fout() * 2.5f);
-						circle(e.x, e.y, e.fin() * 60 + 15);
-						randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f));
-					});
-				}};
+				bullet = NHBullets.hurricaneType;
 				shootSound = Sounds.laserblast;
 			}},
 			new AutoOutlineWeapon("impulse") {{
@@ -323,7 +324,7 @@ public class NHUnits implements ContentList {
 				ejectEffect = Fx.none;
 				recoil = 1.7f;
 				shootSound = Sounds.plasmaboom;
-				bullet = new NHTrailBulletType(7.4f, 60, NewHorizon.NHNAME + "strike") {
+				bullet = new NHTrailBulletType(7.4f, 60, NewHorizon.MOD_NAME + "strike") {
 					@Override public float range(){return 440f;}
 					{
 						hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
@@ -348,16 +349,8 @@ public class NHUnits implements ContentList {
 				abilities.add(
 						new ForceFieldAbility(120.0F, 6F, 20000.0F, 1200.0F),
 						new RepairFieldAbility(800f, 160f, 240f){{
-							healEffect = new Effect(11.0F, (e) -> {
-								Draw.color(NHColor.lightSky);
-								Lines.stroke(e.fout() * 2.0F);
-								Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * 79.0F);
-							});
-							activeEffect = new Effect(22.0F, (e) -> {
-								Draw.color(NHColor.lightSky);
-								Lines.stroke(e.fout() * 3.0F);
-								Lines.poly(e.x, e.y, 6,4.0F + e.finpow() * e.rotation);
-							});
+							healEffect = NHFx.healEffect;
+							activeEffect = NHFx.activeEffect;
 						}}
 				);
 				commandLimit = 6;

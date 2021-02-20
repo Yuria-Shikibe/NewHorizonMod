@@ -144,7 +144,7 @@ public class JumpGate extends Block {
         stats.add(Stat.output, (t) -> {
             t.row().add("[gray]Summon Types:").left().pad(TableFuncs.OFFSET).row();
             for(UnitSet set : calls) {
-                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[]: Summon needs building.")).size(LEN))).fill().row();
+                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[gray]: Summon needs building.")).size(LEN))).fill().row();
             }
         });
     }
@@ -189,8 +189,8 @@ public class JumpGate extends Block {
     @Override
     public void load(){
         super.load();
-        pointerRegion = Core.atlas.find(NewHorizon.NHNAME + "jump-gate-pointer");
-        arrowRegion = Core.atlas.find(NewHorizon.NHNAME + "jump-gate-arrow");
+        pointerRegion = Core.atlas.find(NewHorizon.MOD_NAME + "jump-gate-pointer");
+        arrowRegion = Core.atlas.find(NewHorizon.MOD_NAME + "jump-gate-arrow");
     }
 
     public class JumpGateBuild extends Building implements Ranged {
@@ -280,19 +280,19 @@ public class JumpGate extends Block {
             BaseDialog dialog = new BaseDialog("Call");
             dialog.addCloseListener();
 
-            dialog.cont.pane(t -> t.table(inner -> {
-                inner.button("@back", Icon.left, dialog::hide).padBottom(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
-                inner.button("@release", Icon.add, () -> spawn(getSet())).padBottom(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
+            dialog.cont.pane(inner ->
                 inner.table(callTable -> {
                     for(UnitSet set : calls) {
-                        inner.add(new Tables.UnitSetTable(set, table2 -> {
+                        callTable.add(new Tables.UnitSetTable(set, table2 -> {
                             table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
                             table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
                         })).fill().row();
                     }
-                }).fill();
-            }).fill()).fill();
-
+                }).grow()
+            ).fill().row();
+            dialog.cont.button("@release", Icon.add, Styles.cleart, () -> spawn(getSet())).padTop(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
+            dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
+            
             table.button("Spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
 

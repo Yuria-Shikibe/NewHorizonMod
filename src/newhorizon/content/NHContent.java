@@ -19,8 +19,6 @@ import newhorizon.feature.UpgradeData;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 
-import javax.swing.*;
-
 import static newhorizon.func.TableFuncs.LEN;
 
 public class NHContent extends UnlockableContent{
@@ -79,8 +77,8 @@ public class NHContent extends UnlockableContent{
 	@Override
 	public void load(){
 		
-		ammoInfo = Core.atlas.find(NewHorizon.NHNAME + "upgrade-info");
-		iconLevel = Core.atlas.find(NewHorizon.NHNAME + "level-up");
+		ammoInfo = Core.atlas.find(NewHorizon.MOD_NAME + "upgrade-info");
+		iconLevel = Core.atlas.find(NewHorizon.MOD_NAME + "level-up");
 		
 		NHLoader.outlineTex.each((arg, tex) -> {
 			String[] s;
@@ -101,7 +99,7 @@ public class NHContent extends UnlockableContent{
 	@Override
 	public void init(){
 		super.init();
-		deliveryBullet = new DeliveryBulletType(Core.atlas.find(NewHorizon.NHNAME + "mass-deliver-pack"));
+		deliveryBullet = new DeliveryBulletType(Core.atlas.find(NewHorizon.MOD_NAME + "mass-deliver-pack"));
 	}
 	
 	@Override

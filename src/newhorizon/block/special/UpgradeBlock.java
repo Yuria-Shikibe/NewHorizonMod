@@ -43,7 +43,7 @@ import static mindustry.Vars.*;
 
 public class UpgradeBlock extends Block {
 	public static final int defaultID = -1;
-	public static final Seq<UpgraderBlockBuild> upgradecGroup = new Seq<>(UpgraderBlockBuild.class);
+	public static final Seq<UpgradeBlockBuild> upgradecGroup = new Seq<>(UpgradeBlockBuild.class);
 	public static final int buttonPerLine = 8;
 	
 	protected SoundLoop upgradeSound = new SoundLoop(Sounds.build, 1.1f);
@@ -57,7 +57,6 @@ public class UpgradeBlock extends Block {
 	
 	public final Seq<UpgradeData> upgradeDatas = new Seq<>();
 	protected void addUpgrades(UpgradeData... inputs) {
-		//upgradeDatas.addAll(inputs);
 		for(UpgradeData data : inputs){
 			upgradeDatas.add(data);
 			Log.info(data.toString());
@@ -71,7 +70,6 @@ public class UpgradeBlock extends Block {
 		buildCostMultiplier = 2;
 		configurable = true;
 		solid = true;
-		//levelRegions = new TextureRegion[maxLevel];
 	}
 	
 	@Override
@@ -100,7 +98,7 @@ public class UpgradeBlock extends Block {
 		super.setBars();
 
 		bars.add("upgradeProgress",
-			(UpgraderBlockBuild entity) -> new Bar(
+			(UpgradeBlockBuild entity) -> new Bar(
 				() -> "RestTime",
 				() -> Color.valueOf("#FF732A"),
 				() -> entity.remainTime / entity.costTime()
@@ -113,7 +111,7 @@ public class UpgradeBlock extends Block {
 		super.load();
 	}
 	
-	public class UpgraderBlockBuild extends Building implements Ranged, Upgraderc{
+	public class UpgradeBlockBuild extends Building implements Ranged, Upgraderc{
 		public Seq<DataEntity> datas = new Seq<>();
 
 		public int link = -1;
@@ -266,7 +264,7 @@ public class UpgradeBlock extends Block {
 							new BaseDialog("All Info") {{
 								this.addCloseListener();
 								setFillParent(true);
-								cont.pane(infos -> datas.each(data -> data.buildTable(infos, UpgraderBlockBuild.this))).fillX().height(TableFuncs.LEN * 5).row();
+								cont.pane(infos -> datas.each(data -> data.buildTable(infos, UpgradeBlockBuild.this))).fillX().height(TableFuncs.LEN * 5).row();
 								cont.button("@back", Icon.left, this::hide).fillX().height(TableFuncs.LEN).pad(TableFuncs.OFFSET / 3);
 							}}.show()
 					).size(TableFuncs.LEN).left();

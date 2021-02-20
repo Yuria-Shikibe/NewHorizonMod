@@ -54,6 +54,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		configurable = true;
 		hasPower = true;
 		hasItems = true;
+		
 	}
 	
 	@Override

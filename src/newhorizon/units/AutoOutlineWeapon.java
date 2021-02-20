@@ -14,7 +14,7 @@ public class AutoOutlineWeapon extends Weapon{
 		super(name);
 		
 		NHLoader.put(name + "@-outline");
-		this.name = NewHorizon.NHNAME + name;
+		this.name = NewHorizon.MOD_NAME + name;
 	}
 	
 	@Override
@@ -22,5 +22,11 @@ public class AutoOutlineWeapon extends Weapon{
 		this.region = Core.atlas.find(this.name, Core.atlas.find("clear"));
 		this.heatRegion = Core.atlas.find(this.name + "-heat");
 		this.outlineRegion = Core.atlas.find(this.name + "-outline");
+	}
+	
+	public AutoOutlineWeapon setPos(float x, float y){
+		this.x = x;
+		this.y = y;
+		return this;
 	}
 }

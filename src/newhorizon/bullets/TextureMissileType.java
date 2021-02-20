@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Bullets;
@@ -37,7 +38,7 @@ public class TextureMissileType extends NHTrailBulletType{
 		super(speed, damage, name);
 		NHLoader.put(name);
 		String[] s = name.split("@");
-		this.name = NewHorizon.NHNAME + s[0];
+		this.name = NewHorizon.configName(s[0]);
 		homingPower = 0.08f;
 		homingRange = 400f;
 		homingDelay = 8;
@@ -54,6 +55,12 @@ public class TextureMissileType extends NHTrailBulletType{
 		hitSound = Sounds.explosionbig;
 		hitEffect = Fx.flakExplosionBig;
 		drawSize = 60f;
+	}
+	
+	@Override
+	public void load(){
+		region = Core.atlas.find(name);
+		Log.info("[LOAD]" + name);
 	}
 	
 	public TextureMissileType(String name){
@@ -78,7 +85,6 @@ public class TextureMissileType extends NHTrailBulletType{
 		if(trailLength < 0)trailLength = (int)(region.height * height / 5.2f);
 		if(trailWidth < 0)trailWidth = region.width * width / 38f;
 		drawSize = Math.max(drawSize, 2.5f * trailLength * speed);
-		
 	}
 	
 	

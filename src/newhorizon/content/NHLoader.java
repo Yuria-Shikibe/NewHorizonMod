@@ -4,9 +4,11 @@ import arc.graphics.g2d.TextureRegion;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Structs;
+import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
+import mindustry.entities.bullet.ContinuousLaserBulletType;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
@@ -33,7 +35,7 @@ public class NHLoader implements ContentList{
 	}
 	
 	public static void put(String name){
-		NHLoader.outlineTex.put(NewHorizon.NHNAME + name, null);
+		NHLoader.outlineTex.put(NewHorizon.MOD_NAME + name, null);
 	}
 	
 	public static void put(String... args){
@@ -48,11 +50,20 @@ public class NHLoader implements ContentList{
 	public void loadLast(){
 		iconGenerator = new NHIconGenerator();
 		
+		Blocks.coreFoundation.health *= 5;
+		Blocks.coreNucleus.health *= 5;
+		Blocks.coreShard.health *= 5;
+		
+		for(Block block : Vars.content.blocks()){
+			block.health *= 1.5;
+		}
+		
 		addReq(Blocks.coreFoundation,
 				new ItemStack(NHItems.presstanium, 1500),
 				new ItemStack(NHItems.metalOxhydrigen, 800),
 				new ItemStack(NHItems.juniorProcessor, 600)
 		);
+		
 		addReq(Blocks.coreNucleus,
 				new ItemStack(NHItems.irayrondPanel, 1500),
 				new ItemStack(NHItems.multipleSteel, 800),
@@ -88,7 +99,14 @@ public class NHLoader implements ContentList{
 				new ItemStack(NHItems.metalOxhydrigen, 175),
 				new ItemStack(NHItems.seniorProcessor, 120)
 		);
-		((LaserTurret) Blocks.meltdown).shootType.damage += 35;
+		ContinuousLaserBulletType meltDownType = ((ContinuousLaserBulletType) ((LaserTurret) Blocks.meltdown).shootType);
+		meltDownType.length += 120;
+		meltDownType.damage += 55f;
+		meltDownType.splashDamage += 10f;
+		meltDownType.splashDamageRadius += 14f;
+		((LaserTurret) Blocks.meltdown).range += 120;
+		((LaserTurret) Blocks.meltdown).shootDuration += 30;
+		
 		removeReq(Blocks.meltdown, Items.silicon);
 		
 		addReq(Blocks.foreshadow,

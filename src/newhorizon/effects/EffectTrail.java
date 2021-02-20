@@ -7,14 +7,8 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Reflect;
-import arc.util.Time;
 import arc.util.pooling.Pools;
-import mindustry.content.Fx;
 import mindustry.entities.Effect;
-
-import java.lang.reflect.Field;
 
 public class EffectTrail {
 	//public static Seq<Effect> all;
@@ -24,43 +18,32 @@ public class EffectTrail {
 	protected final Seq<Vec3> points;
 	protected float lastX = -1, lastY = -1;
 	
-	private final Effect disappearEffect;
-	
-	/*public static void load(){
-		try{
-			Field f = Effect.class.getDeclaredField("all");
-			Log.info(f.get(new Effect()));
-			all = (Seq<Effect>)f.get(new Effect());
-		}catch(NoSuchFieldException | IllegalAccessException e){
-			e.printStackTrace();
+	private final Effect disappearEffect = new Effect(LIFETIME, 500, e -> {
+		if (!(e.data instanceof Seq))return;
+		Seq<Vec3> data = e.data();
+		
+		Draw.color(e.color);
+		Fill.circle(e.x, e.y, width * 1.1f * e.fout());
+		for (int i = 0; i < data.size - 1; i++) {
+			Vec3 c = data.get(i);
+			Vec3 n = data.get(i + 1);
+			float sizeP = width * e.fout() / e.rotation;
+			
+			float cx = Mathf.sin(c.z) * i * sizeP, cy = Mathf.cos(c.z) * i * sizeP, nx = Mathf.sin(n.z) * (i + 1) * sizeP, ny = Mathf.cos(n.z) * (i + 1) * sizeP;
+			Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
 		}
-	}*/
-	
+	});
 
 	public EffectTrail() {
-		this(1, 1, 1);
+		this(1, 1);
 	}
 
-	public EffectTrail(int length, float width, float size) {
+	public EffectTrail(int length, float width) {
 		this.length = length;
 		this.size = size;
 		this.width = width;
 		points = new Seq<>(length);
-		disappearEffect = new Effect(LIFETIME, size, e -> {
-			if (!(e.data instanceof Seq))return;
-			Seq<Vec3> data = e.data();
-			
-			Draw.color(e.color);
-			Fill.circle(e.x, e.y, width * 1.1f * e.fout());
-			for (int i = 0; i < data.size - 1; i++) {
-				Vec3 c = data.get(i);
-				Vec3 n = data.get(i + 1);
-				float sizeP = width * e.fout() / e.rotation;
-				
-				float cx = Mathf.sin(c.z) * i * sizeP, cy = Mathf.cos(c.z) * i * sizeP, nx = Mathf.sin(n.z) * (i + 1) * sizeP, ny = Mathf.cos(n.z) * (i + 1) * sizeP;
-				Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
-			}
-		});
+		
 	}
 
 	public EffectTrail clear() {

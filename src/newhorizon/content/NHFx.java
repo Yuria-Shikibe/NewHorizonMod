@@ -15,6 +15,7 @@ import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import newhorizon.feature.PosLightning;
@@ -194,7 +195,31 @@ public class NHFx{
 		});
 	}
 	
+	public static Effect polyCloud(Color color, float lifetime, float size, float range, int num){
+		return (new Effect(lifetime, (e) -> {
+			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
+				Draw.color(color, Pal.gray, e.fin());
+				Fill.poly(e.x + x, e.y + y, 6, size * e.fout(), e.rotation);
+				Draw.color(Color.white, Pal.gray, e.fin());
+				Fill.poly(e.x + x, e.y + y, 6, size * e.fout() / 2, e.rotation);
+			});
+		})).layer(Layer.bullet);
+	}
+	
+	
 	public static final Effect
+		healEffect = new Effect(11.0F, (e) -> {
+			Draw.color(NHColor.lightSky);
+			Lines.stroke(e.fout() * 2.0F);
+			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * 79.0F);
+		}),
+	
+		activeEffect = new Effect(22.0F, (e) -> {
+			Draw.color(NHColor.lightSky);
+			Lines.stroke(e.fout() * 3.0F);
+			Lines.poly(e.x, e.y, 6,4.0F + e.finpow() * e.rotation);
+		}),
+	
 		spawnGround = new Effect(60f, e -> {
 			Draw.color(e.color, Pal.gray, e.fin());
 			randLenVectors(e.id, (int)(e.rotation * 1.35f), e.rotation * tilesize / 1.125f * e.fin(), (x, y) -> Fill.square(e.x + x, e.y + y, e.rotation * e.fout(), 45));

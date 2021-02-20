@@ -42,7 +42,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	@Override
 	public void init(Bullet b) {
 		super.init(b);
-		b.data(new EffectTrail(trailLength, trailWidth, drawSize));
+		b.data(new EffectTrail(trailLength, trailWidth));
 		EffectTrail t = (EffectTrail)b.data;
 		t.clear();
 	}

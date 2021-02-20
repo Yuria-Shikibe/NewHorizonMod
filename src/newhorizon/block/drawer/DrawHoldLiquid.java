@@ -11,8 +11,7 @@ public class DrawHoldLiquid extends DrawMixer{
 		float rotation = entity.block.rotate ? entity.rotdeg() : 0.0F;
 		Draw.rect(this.bottom, entity.x, entity.y, rotation);
 		if (entity.liquids.total() > 0.001F) {
-			Draw.color(entity.block.consumes.<ConsumeLiquid>get(ConsumeType.liquid).liquid.color);
-			Draw.alpha(entity.liquids.get(entity.block.consumes.<ConsumeLiquid>get(ConsumeType.liquid).liquid) / entity.block.liquidCapacity);
+			Draw.color(entity.block.consumes.<ConsumeLiquid>get(ConsumeType.liquid).liquid.color, entity.liquids.get(entity.block.consumes.<ConsumeLiquid>get(ConsumeType.liquid).liquid) / entity.block.liquidCapacity);
 			Draw.rect(this.liquid, entity.x, entity.y, rotation);
 			Draw.color();
 		}

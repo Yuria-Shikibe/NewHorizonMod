@@ -25,8 +25,8 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHItems;
-import newhorizon.content.NHLoader;
 import newhorizon.content.NHUpgradeDatas;
 import newhorizon.interfaces.Upgraderc;
 
@@ -36,7 +36,7 @@ public class UpgradeData{
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	public int unlockLevel;
 	public TextureRegion icon;
-	public String name;
+	public String name, localizedName, description;
 	public float costTime;
 	public int maxLevel;
 	public boolean isLeveled;
@@ -75,7 +75,6 @@ public class UpgradeData{
 			int unlockLevel,
 			ItemStack... items
 	) {
-		this.name = name;
 		this.costTime = costTime;
 		this.unlockLevel = unlockLevel;
 		requirements.addAll(items);
@@ -85,7 +84,21 @@ public class UpgradeData{
 	}
 	
 	public void init(){
+		name = "upgrade-data." + name;
+		localizedName = Core.bundle.get(name, "null");
+		description = Core.bundle.get(name + ".description", "null");
+		
 		if(maxDamageReduce >= 1)maxDamageReduce %= 1;
+	}
+	
+	
+	public void load(){
+		this.icon = Core.atlas.find(NewHorizon.MOD_NAME + name);
+	}
+	
+	@Override
+	public String toString(){
+		return "[UpgradeData]: " + name;
 	}
 	
 	public DataEntity newSubEntity(){
@@ -147,9 +160,9 @@ public class UpgradeData{
 				table.pane( t -> t.image(icon)).size(icon.height + OFFSET / 2).left();
 				table.pane(this::infoText).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
 			}).row();
-			dialog.cont.add("<< " + Core.bundle.get(name) + " >>").color(Pal.accent).row();
+			dialog.cont.add("<< " + localizedName + " >>").color(Pal.accent).row();
 			dialog.cont.add("Description: ").color(Pal.accent).left().row();
-			dialog.cont.add(tabSpace + Core.bundle.get(name + ".description")).color(Color.lightGray).left().row();
+			dialog.cont.add(tabSpace + description).color(Color.lightGray).left().row();
 			if(drawCons){
 				dialog.cont.pane(table -> {
 					int index = 0;
@@ -180,7 +193,7 @@ public class UpgradeData{
 				t.pane(table -> table.image(icon).size(LEN).left()).left().padLeft(OFFSET / 2f).size(LEN);
 				
 				t.pane(table -> {
-					table.add(Core.bundle.get(name)).color(Pal.accent).left().row();
+					table.add(localizedName).color(Pal.accent).left().row();
 					
 					table.add(label).left().row();
 					if(UpgradeData.this.isLeveled){
@@ -208,24 +221,16 @@ public class UpgradeData{
 		}
 		
 		public void infoText(Table table){
-			table.button(new TextureRegionDrawable(NHLoader.content.ammoInfo), Styles.colori, () -> new BaseDialog("@Info") {{
+			table.button(new TextureRegionDrawable(NHContent.ammoInfo), Styles.colori, () -> new BaseDialog("@Info") {{
 				addCloseListener();
 				cont.pane(t -> cont.pane(table -> buildBulletTypeInfo(table, selectAmmo)).size(460).row()).row();
 				cont.button("@back", Icon.left, Styles.cleart, this::hide).size(LEN * 3, LEN).pad(OFFSET / 2);
-			}}.show()).size(NHLoader.content.ammoInfo.height + OFFSET / 2);
+			}}.show()).size(NHContent.ammoInfo.height + OFFSET / 2);
 		}
 		
 		public ItemStack[] requirements() {
 			return ItemStack.mult(requirements.toArray(), (itemCostParma * level + 1f) * Vars.state.rules.buildCostMultiplier);
 		}
 	}
-	
-	public void load(){
-		this.icon = Core.atlas.find(NewHorizon.NHNAME + name);
-	}
-	
-	@Override
-	public String toString(){
-		return "[UpgradeData]: " + name;
-	}
+
 }

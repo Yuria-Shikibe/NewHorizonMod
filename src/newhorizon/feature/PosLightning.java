@@ -12,17 +12,16 @@ import arc.util.Nullable;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.core.World;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Healthc;
-import mindustry.gen.Unitc;
+import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import newhorizon.content.NHFx;
 import org.jetbrains.annotations.NotNull;
-
-import static mindustry.core.World.toTile;
 
 public class PosLightning {
 	
@@ -65,7 +64,7 @@ public class PosLightning {
 	}
 	
 	public static void createRange(@Nullable Bullet owner, boolean hitAir, boolean hitGround, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
-		Seq<Unitc> entities = new Seq<>();
+		Seq<Unit> entities = new Seq<>();
 		whetherAdd(entities, team, rect.setSize(range * 2f).setCenter(from.getX(), from.getY()), hits, hitGround, hitAir);
 		for (Position p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
@@ -142,10 +141,10 @@ public class PosLightning {
 	private static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
 		furthest = null;
 		return Geometry.raycast(
-				toTile(from.getX()),
-				toTile(from.getY()),
-				toTile(target.getX()),
-				toTile(target.getY()),
+				World.toTile(from.getX()),
+				World.toTile(from.getY()),
+				World.toTile(target.getX()),
+				World.toTile(target.getY()),
 				(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers
 		) && furthest != null ? furthest : target;
 	}
@@ -154,7 +153,7 @@ public class PosLightning {
 	private static float getBoltRandomRange() {return Mathf.random(2f, 7f); }
 	
 	//Add proper unit into the to hit Seq.
-	private static void whetherAdd(Seq<Unitc> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
+	private static void whetherAdd(Seq<Unit> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
 		points.clear();
 		Units.nearbyEnemies(team, selectRect, unit -> {
 			if(

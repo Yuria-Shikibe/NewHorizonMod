@@ -55,7 +55,7 @@ public class DeliveryBulletType extends BulletType{
 		super.init(b);
 		if(!(b.data instanceof Delivery.DeliveryData))b.remove();
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
-		data.t = new EffectTrail(region.height / 6, (region.width / 40f), 40f).clear();
+		data.t = new EffectTrail(region.height / 6, (region.width / 40f)).clear();
 		if(data.to == null)despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
 	}
 	
@@ -111,7 +111,7 @@ public class DeliveryBulletType extends BulletType{
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
 		if(data.to != null && b.dst(data.to) < Vars.tilesize * 2){
 			for(int i = 0; i < Vars.content.items().size; ++i){
-				Call.transferItemTo(null, Vars.content.item(i), Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i))) , b.x, b.y, data.to);
+				Call.transferItemTo(null, Vars.content.item(i), Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i))) - data.to.items.get(i), b.x, b.y, data.to);
 			}
 		}
 		Tmp.v1.trns(b.rotation(), -region.height / div);

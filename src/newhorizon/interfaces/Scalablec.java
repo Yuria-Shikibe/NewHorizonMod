@@ -27,7 +27,7 @@ public interface Scalablec extends Buildingc{
 
         Draw.rect(getData().type().icon, x - len, y + len);
         Draw.color(getColor());
-        Draw.rect(NewHorizon.NHNAME + "upgrade-icon-outline", x - len, y + len);
+        Draw.rect(NewHorizon.MOD_NAME + "upgrade-icon-outline", x - len, y + len);
         Draw.reset();
     }
     default void drawConnected(){
@@ -42,9 +42,9 @@ public interface Scalablec extends Buildingc{
             float length = tilesize * block().size / 2f + 3 + sin;
             Tmp.v1.trns(i * 90, -length);
             Draw.color(Pal.gray);
-            Draw.rect(NewHorizon.NHNAME + "linked-arrow-back", x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+            Draw.rect(NewHorizon.MOD_NAME + "linked-arrow-back", x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
             Draw.color(getColor());
-            Draw.rect(NewHorizon.NHNAME + "linked-arrow", 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+            Draw.rect(NewHorizon.MOD_NAME + "linked-arrow", 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
         }
         Draw.reset();
     }

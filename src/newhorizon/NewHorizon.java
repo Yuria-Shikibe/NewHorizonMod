@@ -17,22 +17,20 @@ import mindustry.mod.Mod;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
-import newhorizon.effects.EffectTrail;
 import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
 import newhorizon.func.TableFuncs;
 
 import java.io.IOException;
-import java.net.URL;
 
 import static newhorizon.func.TableFuncs.*;
 
 
 public class NewHorizon extends Mod{
-	public static String NHNAME;
+	public static String MOD_NAME;
 	
 	public static String configName(String name){
-		return NHNAME + name;
+		return MOD_NAME + name;
 	}
 	
 	private static void links(){
@@ -90,7 +88,7 @@ public class NewHorizon extends Mod{
 		dialog.closeOnBack();
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
-				table.table(t -> t.image(Core.atlas.find(NHNAME + "upgrade"))).center().growX().fillY().row();
+				table.table(t -> t.image(Core.atlas.find(MOD_NAME + "upgrade"))).center().growX().fillY().row();
 				table.image().growX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
 				table.image().growX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
@@ -137,7 +135,7 @@ public class NewHorizon extends Mod{
 		}catch(IOException e){
 			throw new IllegalArgumentException(e);
 		}
-		NHNAME = NHSetting.modMeta.name + "-";
+		MOD_NAME = NHSetting.modMeta.name + "-";
 	    Log.info("Loading NewHorizon Mod Objects");
 	    NHSounds.load();
 		NHLoader loader = new NHLoader();

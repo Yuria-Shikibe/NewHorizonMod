@@ -11,7 +11,6 @@ import arc.scene.ui.TextButton;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
-import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHLoader;
@@ -182,7 +181,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("Images", () -> {
 			buttonImage = new BaseDialog("Images"){{
-				cont.table(table -> {
+				cont.pane(table -> {
 					AtomicInteger index = new AtomicInteger();
 					NHLoader.outlineTex.each( (arg, tex) -> {
 						if(tex != null && tex.found()){
@@ -217,21 +216,21 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("Units", () -> {
 			buttonImage = new BaseDialog("Units"){{
-				cont.table(table -> {
+				cont.pane(table -> {
 					AtomicInteger index = new AtomicInteger();
 					
 					content.units().forEach( (unit) -> {
 						if(!unit.isHidden()){
 							if(index.get() % 8 == 0) table.row();
-							table.table(t -> {
-								t.button(new TextureRegionDrawable(unit.icon(Cicon.xlarge)), LEN * 3,() -> {
+							table.table(Tex.buttonEdge3, t -> {
+								t.button(new TextureRegionDrawable(unit.shadowRegion), Styles.cleari,LEN * 3,() -> {
 									BaseDialog d = new BaseDialog("info"){{
 										cont.image(unit.shadowRegion);
 									}};
 									d.addCloseListener();
 									d.show();
 								}).grow().row();
-								t.add(unit.localizedName);
+								t.pane(in -> in.add(unit.localizedName).height(LEN).fillX()).height(LEN).growX();
 							});
 							index.getAndIncrement();
 						}

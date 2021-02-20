@@ -66,6 +66,7 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(UnitTypes.eclipse), NHUnits.hurricane, NHUnits.hurricane.researchRequirements());
         new TechNode(TechTree.get(NHUnits.tarlidor), NHUnits.annihilation, NHUnits.annihilation.researchRequirements());
         add(UnitTypes.horizon, NHUnits.warper);
+        add(NHUnits.warper, NHUnits.destruction);
         //Items / liquids;
         new TechNode(TechTree.get(Items.titanium), NHItems.metalOxhydrigen, NHItems.metalOxhydrigen.researchRequirements());
         new TechNode(TechTree.get(Items.metaglass), NHItems.multipleSteel, NHItems.multipleSteel.researchRequirements());

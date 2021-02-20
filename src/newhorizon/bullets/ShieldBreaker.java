@@ -5,13 +5,16 @@ import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.entities.Lightning;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import newhorizon.effects.EffectTrail;
 
 public class ShieldBreaker extends NHTrailBulletType{
     public float maxShieldDamage;
     public float rotateSpeed = 1.75f;
+    
+    protected BulletType breakType;
+    
     public ShieldBreaker(float speed, float damage, String bulletSprite, float shieldDamage) {
         super(speed, damage, bulletSprite);
         this.splashDamage = this.splashDamageRadius = -1f;
@@ -29,6 +32,10 @@ public class ShieldBreaker extends NHTrailBulletType{
 
     @Override
     public void init(){
+        if(breakType == null)breakType = new EffectBulletType(1f){{
+            this.absorbable = true;
+            this.damage = maxShieldDamage;
+        }};
         super.init();
     }
 
@@ -54,15 +61,7 @@ public class ShieldBreaker extends NHTrailBulletType{
     public void update(Bullet b) {
         super.update(b);
         float offset = -90.0F + (this.spin != 0.0F ? Mathf.randomSeed(b.id, 360.0F) + b.time * this.spin : 0.0F);
-        new EffectBulletType(1f){{
-            this.absorbable = true;
-            this.damage = maxShieldDamage;
-        }}.create(b, b.x, b.y, 0);
-        if(b.timer(3, 6f)) {
-            for (int i : Mathf.signs) {
-                Lightning.create(b, lightColor, lightningDamage, b.x, b.y, rotOffset(b) + b.rotation() + offset + Time.time * rotateSpeed + i * 90, lightningLength + Mathf.random(lightningLengthRand));
-            }
-        }
+        breakType.create(b, b.x, b.y, 0);
     }
 
     public float rotOffset(Bullet b){

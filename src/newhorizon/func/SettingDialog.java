@@ -9,7 +9,6 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.content.NHLoader;
 
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
@@ -28,7 +27,7 @@ public class SettingDialog extends BaseDialog{
 				if(!key.startsWith("@"))continue;
 				table.table(t -> {
 					t.button(key, Styles.clearTogglet, () -> {
-						if(key.endsWith("*"))setting(key, Core.bundle.get(key.replaceAll("@", "")), Core.bundle.get(key + ".extra", "@null"));
+						if(key.endsWith("*"))setting(key, Core.bundle.get(key.replaceAll("@", "")), Core.bundle.get((key + ".extra").replaceFirst("@", ""), "@null"));
 						else NHSetting.setBoolOnce(key, !NHSetting.getBool(key));
 					}).height(LEN).width(Core.graphics.getWidth() / 2f).update(b -> b.setChecked(NHSetting.getBool(key)));
 				}).row();

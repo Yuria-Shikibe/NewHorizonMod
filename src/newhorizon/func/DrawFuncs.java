@@ -86,7 +86,6 @@ public class DrawFuncs {
         }else return new Pixmap(255, 255);
     }
     
-    
     public static void drawWeaponPixmap(Pixmap base, Weapon w, boolean outline){
         TextureAtlas.AtlasRegion t = Core.atlas.find(w.name);
         if(!t.found())return;
@@ -138,8 +137,9 @@ public class DrawFuncs {
     }
     
     /**
-     * @draw sin(@scale * x + @offset);
-     * */
+     *
+     *
+     */
     public static void drawSine(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant, boolean flip){
         float dstTotal = Mathf.dst(x, y, x2, y2);
         int dst = (int)(dstTotal / distant);
@@ -155,15 +155,15 @@ public class DrawFuncs {
                 for(int i = 0; i < dst; i++){
                     vec21.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
                             (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
-                            1 * scale,
+                            scale,
                             mag
-                    ) - scale / 2) * i);
+                    ) - mag / 2) * i);
                 
                     vec22.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
                             (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i + 1),
                             1 * scale,
                             mag
-                    ) - scale / 2) * i);
+                    ) - mag / 2) * i);
                 
                     Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
                 
@@ -190,15 +190,15 @@ public class DrawFuncs {
                 for(int i = 0; i < dst; i++){
                     vec21.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
                             (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag),
-                            1 * scale,
+                            scale,
                             mag
-                    ) - scale / 2);
+                    ) - mag / 2);
     
                     vec22.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
                             (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
-                            1 * scale,
+                            scale,
                             mag
-                    ) - scale / 2);
+                    ) - mag / 2);
                     
                     Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
                     
