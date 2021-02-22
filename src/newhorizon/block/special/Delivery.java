@@ -214,13 +214,18 @@ public class Delivery extends Block{
 			Drawf.dashCircle(x, y, range(), team.color);
 			
 			if(linkValid()){
-				Draw.color(Pal.accent);
-				Lines.stroke(1.0F);
-				Lines.square(link().x, link().y, link().block.size * Vars.tilesize / 2.0F + 1.0F);
-				Draw.reset();
-				DrawFuncs.posSquareLink(team.color, 2f, 4f, true, this, link());
-				Drawf.arrow(x, y, link().x, link().y, 15f, 6f, team.color);
+				drawLinkArrow();
+				if(link() instanceof DeliveryBuild d && d.linkValid()) d.drawLinkArrow();
 			}
+		}
+		
+		private void drawLinkArrow() {
+		    Draw.color(Pal.accent);
+			Lines.stroke(1.0F);
+			Lines.square(link().x, link().y, link().block.size * Vars.tilesize / 2.0F + 1.0F);
+			Draw.reset();
+			DrawFuncs.posSquareLink(team.color, 2f, 4f, true, this, link());
+			Drawf.arrow(x, y, link().x, link().y, 15f, 6f, team.color);
 		}
 		
 		@Override public void write(Writes write) {

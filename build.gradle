@@ -2,7 +2,8 @@ apply plugin: "java"
 
 version '1.0'
 
-sourceCompatibility = 1.8
+targetCompatibility = 8
+sourceCompatibility = 14
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -28,7 +29,7 @@ ext{
 allprojects{
     tasks.withType(JavaCompile){
         if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-            options.compilerArgs.addAll(['--release', '8'])
+            options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
         }
     }
 }
