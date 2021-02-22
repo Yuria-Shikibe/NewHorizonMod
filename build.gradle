@@ -3,7 +3,7 @@ apply plugin: "java"
 version '1.0'
 
 targetCompatibility = 8
-sourceCompatibility = 8
+sourceCompatibility = 14
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -26,7 +26,7 @@ ext{
 }
 
 //java 8 backwards compatibility flag
-allprojects{
+//allprojects{
     tasks.withType(JavaCompile){
         if(JavaVersion.current() != JavaVersion.VERSION_1_8){
             options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
@@ -36,7 +36,7 @@ allprojects{
             options.compilerArgs = options.compilerArgs.findAll{it != '--enable-preview' }
         }
     }
-}
+//}
 
 dependencies{
     implementation 'org.jetbrains:annotations:20.1.0'
