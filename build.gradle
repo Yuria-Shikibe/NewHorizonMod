@@ -36,6 +36,14 @@ allprojects{
             options.compilerArgs = options.compilerArgs.findAll{it != '--enable-preview' }
         }
     }
+    
+    tasks.withType(Javadoc){
+        options{
+            addStringOption('Xdoclint:none', '-quiet')
+            addBooleanOption('-enable-preview', true)
+            addStringOption('-release', '14')
+        }
+    }
 }
 
 dependencies{
