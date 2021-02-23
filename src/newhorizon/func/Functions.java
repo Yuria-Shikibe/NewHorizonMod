@@ -19,17 +19,22 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Sounds;
+import mindustry.gen.Teamc;
+import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
+import newhorizon.NewHorizon;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 import static mindustry.core.World.toTile;
 
 public class Functions {
@@ -37,19 +42,7 @@ public class Functions {
     private static Floor floorParma;
     private static final Seq<Tile> tiles = new Seq<>();
     private static final IntSeq buildingIDSeq = new IntSeq();
-    private final int maxCompute = 32;
-    
-    
-    public static Seq<Tile> getAcceptableTiles(int x, int y, int range, Boolf<Tile> bool){
-        Seq<Tile> tiles = new Seq<>(true, (int)(Mathf.pow(range, 2) * Mathf.pi), Tile.class);
-        Geometry.circle(x, y, range, (x1, y1) -> {
-            if((tileParma = world.tile(x1, y1)) != null && bool.get(tileParma)){
-                tiles.add(world.tile(x1, y1));
-            }
-        });
-        return tiles;
-    }
-    
+    private static final int maxCompute = 32;
     private static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;
         Seq<Rect> data = e.data();
@@ -60,6 +53,26 @@ public class Functions {
             Fill.square(Tmp.v1.x, Tmp.v1.y, tilesize / 2f);
         }
     });
+    
+    /**
+     * @implNote Get all the {@link Tile} {@code tile} within a certain range at certain position.
+     * @param x the abscissa of search center.
+     * @param y the ordinate of search center.
+     * @param range the search range.
+     * @param bool {@link Boolf} {@code lambda} to determine whether the condition is true.
+     * @return {@link Seq}{@code <Tile>} - which contains eligible {@link Tile} {@code tile}.
+     */
+    public static Seq<Tile> getAcceptableTiles(int x, int y, int range, Boolf<Tile> bool){
+        Seq<Tile> tiles = new Seq<>(true, (int)(Mathf.pow(range, 2) * Mathf.pi), Tile.class);
+        Geometry.circle(x, y, range, (x1, y1) -> {
+            if((tileParma = world.tile(x1, y1)) != null && bool.get(tileParma)){
+                tiles.add(world.tile(x1, y1));
+            }
+        });
+        return tiles;
+    }
+    
+    
     
     private static void clearTmp(){
         tileParma = null;
@@ -90,15 +103,16 @@ public class Functions {
     
     public static boolean spawnUnit(Teamc starter, float x, float y, int spawns, float level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
         clearTmp();
-        Seq<Vec2> vectorSeq = new Seq<>();
-        
-        Seq<Tile> tSeq = new Seq<>(Tile.class);
-
-        tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
-            tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
-        ).shuffle();
-        
+        final Seq<Vec2> vectorSeq = new Seq<>();
+        final Seq<Tile> tSeq = new Seq<>(Tile.class);
+        float angle, regSize = regSize(type);
+        final TextureRegion
+                pointerRegion = Core.atlas.find(NewHorizon.configName("jump-gate-pointer")),
+                arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
         if(!type.flying){
+            tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
+                    tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
+            ).shuffle();
             for(int i = 0; i < spawns; i++){
                 Tile[] positions = tSeq.shrink();
                 if(positions.length < spawns)return false;
@@ -108,11 +122,8 @@ public class Functions {
             randLenVectors((long)Time.time, spawns, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(x, y)));
         }
         
-        float angle, regSize = regSize(type);
-        final TextureRegion pointerRegion = Core.atlas.find("new-horizon-jump-gate-pointer"), arrowRegion = Core.atlas.find("new-horizon-jump-gate-arrow");
         angle = starter.angleTo(x, y);
     
-        ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + level + "[] fleet in coming at [" + TableFuncs.format(x / tilesize) + ", " + TableFuncs.format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
         if(NHSetting.getBool("@active.debug")){
             Seq<Rect> debugSeq = new Seq<>();
             for(Tile tile : tSeq){

@@ -12,15 +12,10 @@ public class NHItems implements ContentList{
 	presstanium, seniorProcessor, juniorProcessor,
 	zeta, fusionEnergy, multipleSteel, irayrondPanel,
 	setonAlloy, darkEnergy, upgradeSort, metalOxhydrigen,
-	thermoCorePositive, thermoCoreNegative,
-	emergencyReplace;
+	thermoCorePositive, thermoCoreNegative;
 	
 	@Override
 	public void load(){
-		emergencyReplace = new Item("emergency-replace", Color.valueOf("#BD0019")){
-			@Override
-			public boolean isHidden(){return true;}
-		};
 		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("CFFF87")){{
 			radioactivity = 5f;
 			explosiveness = 15f;

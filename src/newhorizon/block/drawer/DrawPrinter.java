@@ -7,6 +7,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import mindustry.content.Items;
 import mindustry.graphics.Drawf;
 import mindustry.type.Item;
 import mindustry.ui.Cicon;
@@ -14,7 +15,6 @@ import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.GenericCrafter.GenericCrafterBuild;
 import mindustry.world.draw.DrawBlock;
-import newhorizon.content.NHItems;
 import org.jetbrains.annotations.NotNull;
 
 public class DrawPrinter extends DrawBlock {
@@ -23,7 +23,7 @@ public class DrawPrinter extends DrawBlock {
 	}
 	
 	public DrawPrinter(){
-		this.toPrint = NHItems.emergencyReplace;
+		this.toPrint = Items.copper;
 	}
 	
 	public Color printColor;

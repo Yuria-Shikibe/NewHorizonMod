@@ -11,21 +11,40 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.struct.Seq;
 import arc.util.Structs;
+import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.graphics.Pal;
 import mindustry.type.Weapon;
 import mindustry.ui.Fonts;
+import newhorizon.NewHorizon;
 
 public class DrawFuncs {
     public static final Color bottomColor = Pal.gray;
     public static final Color outlineColor = Color.valueOf("565666");
+    public static final float sinScl = 1f;
     private static final Vec2
         vec21 = new Vec2(),
         vec22 = new Vec2(),
         vec23 = new Vec2();
     
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
+    
+    public static void drawConnected(float x, float y, float size, Color color){
+        Draw.reset();
+        float sin = Mathf.absin(Time.time * sinScl, 8f, 1.25f);
+        
+        for(int i = 0; i < 4; i++){
+            float length = size / 2f + 3 + sin;
+            Tmp.v1.trns(i * 90, -length);
+            Draw.color(Pal.gray);
+            Draw.rect(NewHorizon.configName("linked-arrow-back"), x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+            Draw.color(color);
+            Draw.rect(NewHorizon.configName("linked-arrow"), 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+        }
+        Draw.reset();
+    }
     
     public static void overlayText(String text, float x, float y, float offset, Color color){
         Font font = Fonts.outline;
@@ -136,10 +155,6 @@ public class DrawFuncs {
         return base;
     }
     
-    /**
-     *
-     *
-     */
     public static void drawSine(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant, boolean flip){
         float dstTotal = Mathf.dst(x, y, x2, y2);
         int dst = (int)(dstTotal / distant);
@@ -154,13 +169,13 @@ public class DrawFuncs {
             
                 for(int i = 0; i < dst; i++){
                     vec21.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
-                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i) * sinScl,
                             scale,
                             mag
                     ) - mag / 2) * i);
                 
                     vec22.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
-                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i + 1),
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i + 1) * sinScl,
                             1 * scale,
                             mag
                     ) - mag / 2) * i);
@@ -189,13 +204,13 @@ public class DrawFuncs {
                 
                 for(int i = 0; i < dst; i++){
                     vec21.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
-                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag),
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag) * sinScl,
                             scale,
                             mag
                     ) - mag / 2);
     
                     vec22.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
-                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i),
+                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i) * sinScl,
                             scale,
                             mag
                     ) - mag / 2);

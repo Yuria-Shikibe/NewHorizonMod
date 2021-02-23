@@ -3,6 +3,7 @@ package newhorizon.content;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
@@ -56,10 +57,29 @@ public class NHUnits implements ContentList {
 	
 	public static
 	UnitType
-	hurricane, tarlidor, striker, annihilation, warper, destruction;
+	hurricane, tarlidor, striker, annihilation, warper, destruction, gather;
 	
 	@Override
 	public void load() {
+		gather = new AutoOutlineUnitType("gather"){{
+			defaultController = MinerAI::new;
+			constructor = EntityMapping.map(3);
+			hitSize = 10f;
+			flying = true;
+			drag = 0.06F;
+			accel = 0.12F;
+			itemCapacity = 120;
+			speed = 1.2F;
+			health = 1200.0F;
+			engineSize = 3.4F;
+			engineOffset = 9.2F;
+			range = 80.0F;
+			isCounted = false;
+			ammoType = AmmoTypes.powerLow;
+			mineTier = 5;
+			mineSpeed = 10F;
+		}};
+		
 		destruction = new AutoOutlineUnitType("destruction",
 			((AutoOutlineWeapon)closeAATurret.copy()).setPos(37, -18),
 			((AutoOutlineWeapon)closeAATurret.copy()).setPos(26, -8),
@@ -106,7 +126,7 @@ public class NHUnits implements ContentList {
 			commandLimit = 8;
 			lowAltitude = true;
 			singleTarget = false;
-			buildBeamOffset = 33.0F;
+			buildBeamOffset = 15F;
 			ammoCapacity = 800;
 			ammoResupplyAmount = 60;
 			abilities.add(
@@ -137,9 +157,7 @@ public class NHUnits implements ContentList {
 				bullet = NHBullets.warperBullet;
 				shootSound = NHSounds.launch;
 			}});
-			abilities.add(
-					new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSky)
-			);
+			abilities.add(new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSky));
 			targetAir = false;
 			maxRange = 200;
 			engineOffset = 14.0F;

@@ -25,6 +25,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.consumers.ConsumeLiquidBase;
 import mindustry.world.consumers.ConsumeType;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
@@ -54,7 +55,6 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		configurable = true;
 		hasPower = true;
 		hasItems = true;
-		
 	}
 	
 	@Override
@@ -76,11 +76,11 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 	public void setBars(){
 		super.setBars();
 		bars.add("progress",
-				(ScalableTurretBuild entity) -> new Bar(
-						() -> Core.bundle.get("bar.progress"),
-						() -> Pal.power,
-						() -> entity.getData() == null ? 0 : entity.reload / entity.reloadTime()
-				)
+			(ScalableTurretBuild entity) -> new Bar(
+					() -> Core.bundle.get("bar.progress"),
+					() -> Pal.power,
+					() -> entity.getData() == null ? 0 : entity.reload / entity.reloadTime()
+			)
 		);
 	}
 	
@@ -160,7 +160,14 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
         }
 		
 		public boolean hasAmmo(){
-			return consValid();
+			return consValid() && cons.optionalValid();
+		}
+		
+		@Override
+		public BlockStatus status(){
+			if(hasAmmo())return BlockStatus.active;
+			else if(!validateTarget())return BlockStatus.noInput;
+			else return BlockStatus.noOutput;
 		}
 		
 		@Override
@@ -245,7 +252,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		}
 		@Override public Color getColor(){return baseColor;}
 		@Override public boolean isContiunous(){return getData().type().continuousTime > 0;}
-		@Override public float handleDamage(float amount) {return amount * Mathf.clamp(1 - data.defenceUP());}
+		@Override public float handleDamage(float amount) {return amount * Mathf.clamp(1 - data.defenceUP(), amount * 2, amount / 100f);}
 		@Override public boolean isConnected(){return upgraderc() != null;}
 		@Override public Upgraderc upgraderc(){
 			if(world.build(fromPos) == null){

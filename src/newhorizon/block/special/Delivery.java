@@ -2,8 +2,8 @@ package newhorizon.block.special;
 
 import arc.Core;
 import arc.audio.Sound;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -34,6 +34,7 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
 import newhorizon.func.DrawFuncs;
+import newhorizon.interfaces.Linkablec;
 
 public class Delivery extends Block{
 	public float rotateSpeed = 0.04f;
@@ -75,7 +76,7 @@ public class Delivery extends Block{
 	
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, Pal.accent);
+		Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, Pal.place);
 	}
 	
 	@Override
@@ -83,7 +84,7 @@ public class Delivery extends Block{
 		super.init();
 	}
 	
-	public class DeliveryBuild extends Building implements Ranged{
+	public class DeliveryBuild extends Building implements Ranged, Linkablec{
 		public int link = -1;
 		public float rotation = 90;
 		public float reload;
@@ -105,8 +106,14 @@ public class Delivery extends Block{
 			return range;
 		}
 		
-		public Building link(){
-			return Vars.world.build(link);
+		@Override
+		public int linkPos(){
+			return link;
+		}
+		
+		@Override
+		public void linkPos(int value){
+			link = value;
 		}
 		
 		@Override
@@ -161,14 +168,17 @@ public class Delivery extends Block{
 			    }
 		    }
 		    else closure = false;
-		    set.each(ent -> {
-		        ent.closure = closure;
-		    });
+		    set.each(ent -> ent.closure = closure);
             return true;
         }
 		
 		public boolean linkValid() {
-			return link() != null && link().items != null;
+			return link() != null && link() instanceof DeliveryBuild && link().team == team && link().items != null && link().isValid();
+		}
+		
+		@Override
+		public Color getLinkColor(){
+			return team.color;
 		}
 		
 		@Override
@@ -245,16 +255,20 @@ public class Delivery extends Block{
 		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
+			drawLinkConfigure(true, id);
+			if(!closure)
+				drawLinkConfigure(false, id, true);
+			
+			if(linkValid()){
+				Drawf.square(link().x, link().y, link().block().size * Vars.tilesize / 2f + Vars.tilesize / 2f, Pal.place);
+				DrawFuncs.drawConnected(link().x, link().y, link().block().size * Vars.tilesize / 2f + Vars.tilesize * 2f, Pal.place);
+			}
 			
 			Drawf.dashCircle(x, y, range(), team.color);
 			
-			drawLinkConfigure(true, id);
-			if(!closure) 
-			    drawLinkConfigure(false, id, true);
+			
 		}
 		
-		// false 向前绘制， true 向后绘制
-		//闭合时， 不向后绘制主方块的link()
 		public void drawLinkConfigure(boolean accept, int configId) {
 		    drawLinkConfigure(accept, configId, false);
 		}
@@ -268,12 +282,7 @@ public class Delivery extends Block{
 		}
 		
 		protected void drawLinkArrow() {
-		    Draw.color(Pal.accent);
-			Lines.stroke(1.0F);
-			Lines.square(link().x, link().y, link().block.size * Vars.tilesize / 2.0F + 1.0F);
-			Draw.reset();
-			DrawFuncs.posSquareLink(team.color, 2f, 4f, true, this, link());
-			Drawf.arrow(x, y, link().x, link().y, 15f, 6f, team.color);
+		    drawLink();
 		}
 		
 		@Override public void write(Writes write) {

@@ -53,8 +53,7 @@ public class NHBullets {
 				knockback = 12f;
 				width = 15f;
 				height = 37f;
-				splashDamageRadius = 30f;
-				splashDamage = lightningDamage = damage * 0.75f;
+				lightningDamage = damage * 0.75f;
 				backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
 				frontColor = Color.white;
 				lightning = 3;

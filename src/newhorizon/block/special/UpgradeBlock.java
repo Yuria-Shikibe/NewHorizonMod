@@ -216,8 +216,14 @@ public class UpgradeBlock extends Block {
 				if(!setting)table.left();
 			}).grow().pad(TableFuncs.OFFSET).row();
 		}
-
-		protected void setLink(int value) {
+		
+		@Override
+		public int linkPos(){
+			return link;
+		}
+		
+		@Override
+		public void linkPos(int value) {
 			if (linkValid())target().resetUpgrade();
 			this.link = value;
 			updateTarget();
@@ -228,12 +234,12 @@ public class UpgradeBlock extends Block {
 		@Override
 		public boolean onConfigureTileTapped(Building other) {
 			if (this == other) {
-				setLink(-1);
+				linkPos(-1);
 				return false;
 			}
 			if (!other.block.name.equals(linkTarget.name))return false;
 			if (link == other.pos()) {
-				setLink(-1);
+				linkPos(-1);
 				return false;
 			} else if (!(other instanceof Scalablec)) {
 				ui.showErrorMessage("Failed to connect, target '" + other.toString() + "' doesn't implement @Scalablec");
@@ -241,7 +247,7 @@ public class UpgradeBlock extends Block {
 			} else { 
 				Scalablec target = (Scalablec)other;
 				if (!target.isConnected() && target.team() == team && target.within(this, range())) {
-					setLink(target.pos());
+					linkPos(target.pos());
 					return false;
 				}
 			}
@@ -314,7 +320,7 @@ public class UpgradeBlock extends Block {
 		public void drawConfigure() {
 			Drawf.dashCircle(x, y, range(), baseColor);
 
-			Draw.color(getColor());
+			Draw.color(getLinkColor());
 			Lines.square(x, y, block().size * tilesize / 2f + 1.0f);
 
 			drawLink();
@@ -370,7 +376,7 @@ public class UpgradeBlock extends Block {
 		
 		public CoreBlock.CoreBuild core(){return this.team.core();}
 
-		@Override public Color getColor(){return baseColor;}
+		@Override public Color getLinkColor(){return baseColor;}
 		@Override public boolean isUpgrading(){return remainTime > 0;}
 		@Override public float range() { return range; }
 		@Override public void buildConfiguration(Table table) {buildSwitchAmmoTable(table, true);}
@@ -379,7 +385,7 @@ public class UpgradeBlock extends Block {
 			upgradecGroup.remove(this);
 			if(linkValid())target().resetUpgrade();
 		}
-		@Override public Scalablec target() {return linkValid() ? (Scalablec)world.build(link) : null;}
+		public Scalablec target() {return linkValid() ? (Scalablec)link() : null;}
 	}
 }
 

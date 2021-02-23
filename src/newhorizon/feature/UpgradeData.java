@@ -13,6 +13,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
@@ -26,7 +27,6 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHItems;
 import newhorizon.content.NHUpgradeDatas;
 import newhorizon.interfaces.Upgraderc;
 
@@ -65,7 +65,7 @@ public class UpgradeData{
 	public float maxDamageReduce = 0.65f;
 	
 	public UpgradeData(){
-		this("level-up", NHBullets.none, 0, 0, new ItemStack(NHItems.emergencyReplace, 0));
+		this("level-up", NHBullets.none, 0, 0, new ItemStack(Items.copper, 0));
 	}
 	
 	public UpgradeData(
@@ -189,7 +189,7 @@ public class UpgradeData{
 					if(isLeveled && isMaxLevel())t.remove();
 				});
 				
-				t.pane(table -> table.image(icon).size(LEN).left()).left().padLeft(OFFSET / 2f).size(LEN);
+				t.pane(table -> table.image(icon).size(LEN).left()).left().size(LEN).padLeft(OFFSET);
 				
 				t.pane(table -> {
 					table.add(localizedName).color(Pal.accent).left().row();
@@ -209,14 +209,14 @@ public class UpgradeData{
 						table.add(labelR).left().row();
 						table.add(lableD).left().row();
 					}
-				}).size(LEN * 6f, LEN * 1.5f).left().pad(OFFSET);
+				}).size(LEN * 6f, LEN * 1.5f).center().growX();
 				
 				t.table(Tex.button, table -> {
 					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from)).size(LEN);
 					table.button(Icon.upOpen, Styles.clearPartiali, this::upgrade).size(LEN).disabled(b -> !from.canUpgrade(this));
-				}).height(LEN + OFFSET).left().pad(OFFSET);
+				}).height(LEN + OFFSET).right().padRight(OFFSET);
 			});
-			cont.add(info).pad(OFFSET / 2).fillX().height(LEN * 2f).row();
+			cont.add(info).pad(OFFSET / 2).growX().height(LEN * 2f).row();
 		}
 		
 		public void infoText(Table table){

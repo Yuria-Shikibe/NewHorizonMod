@@ -55,15 +55,15 @@ public class NHBlocks implements ContentList {
 
 	public static Block
 		delivery, zetaOre, xenMelter, hyperGenerator, fusionCollapser, blastTurret, empTurret, gravity,
-		largeShieldGenerator, divlusion,
+		largeShieldGenerator,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior,
-		irdryonVault, blaster, endOfEra, thurmix, argmot, thermoTurret, railGun,
+		irdryonVault, blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
 		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory,
 		//Liquids factories
-		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory,
+		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory, oilRefiner,
 		//walls
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
 		//Distributions
@@ -77,6 +77,21 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		oilRefiner = new GenericCrafter("oil-refiner"){{
+			size = 2;
+			requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
+			NHTechTree.add(Blocks.oilExtractor, this);
+			health = 200;
+			craftTime = 90f;
+			liquidCapacity = 60f;
+			itemCapacity = 20;
+			hasPower = hasLiquids = hasItems = true;
+			drawer = new DrawMixer();
+			consumes.power(5f);
+			consumes.items(new ItemStack(Items.sand, 6));
+			outputLiquid = new LiquidStack(Liquids.oil, 15f);
+		}};
+		
 		gravity = new MultTractorBeamTurret("gravity"){{
 			size = 3;
 			requirements(Category.turret, ItemStack.with(Items.metaglass, 35, NHItems.juniorProcessor, 15, Items.lead, 80, NHItems.presstanium, 45));
@@ -176,7 +191,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		towardGate = new TowardGate("toward-gate"){{
-			speed = 12;
+			speed = 20;
 			requirements(Category.distribution, BuildVisibility.shown, with(Items.titanium, 5, Items.copper, 10, Items.silicon, 5));
 			NHTechTree.add(Blocks.sorter, this);
 		}};
@@ -1049,13 +1064,19 @@ public class NHBlocks implements ContentList {
 							new ItemStack(NHItems.multipleSteel, 200),
 							new ItemStack(NHItems.juniorProcessor, 150)
 					),
-					new UnitSet(4, UnitTypes.scepter, 5800f, 4,
+					new UnitSet(4, UnitTypes.scepter, 6400f, 4,
 							new ItemStack(Items.plastanium, 400),
 							new ItemStack(NHItems.presstanium, 600),
 							new ItemStack(NHItems.multipleSteel, 300),
 							new ItemStack(NHItems.juniorProcessor, 350)
 					),
-					new UnitSet(3.5f, NHUnits.warper, 6000f, 9,
+					new UnitSet(3, NHUnits.gather, 5800f, 3, false,
+							new ItemStack(Items.thorium, 300),
+							new ItemStack(NHItems.presstanium, 180),
+							new ItemStack(NHItems.zeta, 210),
+							new ItemStack(NHItems.juniorProcessor, 150)
+					),
+					new UnitSet(3.5f, NHUnits.warper, 7200f, 9,
 							new ItemStack(Items.thorium, 1500),
 							new ItemStack(Items.graphite, 500),
 							new ItemStack(NHItems.presstanium, 400),
