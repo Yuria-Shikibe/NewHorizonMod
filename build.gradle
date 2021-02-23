@@ -41,11 +41,7 @@ tasks.withType(JavaCompile){
 
 tasks.withType(JavaCompile){
     if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-        options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
-    }
-        
-    doFirst{
-        options.compilerArgs = options.compilerArgs.findAll{it != '--enable-preview' }
+        options.compilerArgs.addAll(['--release', '14', '--enable-preview'])
     }
 }
 
