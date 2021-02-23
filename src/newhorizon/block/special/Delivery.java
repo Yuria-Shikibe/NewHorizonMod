@@ -137,7 +137,7 @@ public class Delivery extends Block{
 			super.configure(value);
 			if(value instanceof Integer){
 			    if(link() != null && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = null;
-				link = (int)value;
+			    linkPos((int)value);
 				items.clear();
 				for(int i = 0; i < 4; i++){
 					Time.run(4 * i, () -> {
@@ -173,7 +173,7 @@ public class Delivery extends Block{
         }
 		
 		public boolean linkValid() {
-			return link() != null && link() instanceof DeliveryBuild && link().team == team && link().items != null && link().isValid();
+			return link() != null && link().team == team && link().items != null && link().isValid();
 		}
 		
 		@Override
@@ -198,6 +198,22 @@ public class Delivery extends Block{
 					reload = 0;
 				}
 			}
+		}
+		
+		public void setNull(){
+			if(linkValid() && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = null;
+		}
+		
+		@Override
+		public void remove(){
+			super.remove();
+			setNull();
+		}
+		
+		@Override
+		public void onDestroyed(){
+			super.onDestroyed();
+			setNull();
 		}
 		
 		protected boolean shouldDeliver(){
