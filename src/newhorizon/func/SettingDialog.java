@@ -27,7 +27,7 @@ public class SettingDialog extends BaseDialog{
 				if(!key.startsWith("@"))continue;
 				table.table(t -> {
 					t.button(key, Styles.clearTogglet, () -> {
-						if(key.endsWith("*"))setting(key, Core.bundle.get(key.replaceAll("@", "")), Core.bundle.get((key + ".extra").replaceFirst("@", ""), "@null"));
+						if(key.endsWith("*"))setting(key, Core.bundle.get(key.replaceAll("@", "")), Core.bundle.get((key.replaceFirst("@", "") + ".extra"), "@null"));
 						else NHSetting.setBoolOnce(key, !NHSetting.getBool(key));
 					}).height(LEN).width(Core.graphics.getWidth() / 2f).update(b -> b.setChecked(NHSetting.getBool(key)));
 				}).row();
@@ -35,10 +35,10 @@ public class SettingDialog extends BaseDialog{
 		}).width(Core.graphics.getWidth() / 2f).fillY();
 		
 		cont.row().button("@back", Icon.left, Styles.cleart, () -> {
-			this.hide();
+			hide();
 			NHSetting.settingApply();
 		}).fillX().height(TableFuncs.LEN).bottom();
-		this.keyDown((key) -> {
+		keyDown((key) -> {
 			if (key == KeyCode.escape || key == KeyCode.back) {
 				Core.app.post(this::hide);
 				NHSetting.settingApply();

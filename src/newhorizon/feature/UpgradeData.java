@@ -79,21 +79,20 @@ public class UpgradeData{
 		this.unlockLevel = unlockLevel;
 		requirements.addAll(items);
 		this.selectAmmo = selectAmmo;
-		
+		this.name = name;
 		NHUpgradeDatas.all.add(this);
 	}
 	
 	public void init(){
-		name = "upgrade-data." + name;
-		localizedName = Core.bundle.get(name, "null");
-		description = Core.bundle.get(name + ".description", "null");
+		localizedName = Core.bundle.get("upgrade-data." + name, "null");
+		description = Core.bundle.get("upgrade-data." + name + ".description", "null");
 		
 		if(maxDamageReduce >= 1)maxDamageReduce %= 1;
 	}
 	
 	
 	public void load(){
-		this.icon = Core.atlas.find(NewHorizon.MOD_NAME + name);
+		this.icon = Core.atlas.find(NewHorizon.configName(name));
 	}
 	
 	@Override
@@ -221,7 +220,7 @@ public class UpgradeData{
 		}
 		
 		public void infoText(Table table){
-			table.button(new TextureRegionDrawable(NHContent.ammoInfo), Styles.colori, () -> new BaseDialog("@Info") {{
+			table.button(new TextureRegionDrawable(NHContent.ammoInfo), Styles.colori, () -> new BaseDialog("@info") {{
 				addCloseListener();
 				cont.pane(t -> cont.pane(table -> buildBulletTypeInfo(table, selectAmmo)).size(460).row()).row();
 				cont.button("@back", Icon.left, Styles.cleart, this::hide).size(LEN * 3, LEN).pad(OFFSET / 2);

@@ -81,6 +81,9 @@ public class JumpGate extends Block {
         category = Category.units;
         
         all.add(this);
+    
+        consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
+        consumes.powerCond(consumes.getPower().usage, JumpGateBuild::isCalling);
     }
     
     public boolean canReplace(Block other) {
@@ -199,7 +202,6 @@ public class JumpGate extends Block {
         }
         public int spawnID = -1;
         public int spawnPOS = -1;
-        public int spawns = 1;
 
         public float buildReload = 0f;
 
@@ -216,16 +218,16 @@ public class JumpGate extends Block {
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
                     spawn(getSet());
                 }
-                consumes.powerCond(consumes.getPower().usage, b -> true);
-            }else consumes.powerCond(basePowerDraw, b -> true);
+            }
         }
 
         public UnitType getType(){ return calls.get(spawnID).type; }
         
-        public void setTarget(int pos){ spawnPOS = pos; }
+        public void setTarget(Integer pos){ spawnPOS = pos; }
         
         public Building target(){ return Vars.world.build(spawnPOS); }
-
+        
+        
         public UnitSet getSet(){
             if(spawnID < 0 || spawnID >= calls.size)return null;
             return calls.get(spawnID);
@@ -235,7 +237,17 @@ public class JumpGate extends Block {
             if(set == null)return baseColor();
             return (error || !hasConsume(getSet())) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
         }
-
+    
+        @Override
+        public void configure(Object value){
+            super.configure(value);
+            if(value instanceof Integer){
+                setTarget((Integer)value);
+            }else if(value instanceof UnitSet){
+                startBuild((UnitSet)value);
+            }
+        }
+    
         @Override
         public void drawConfigure() {
             Drawf.dashCircle(x, y, range(), baseColor());
@@ -258,18 +270,17 @@ public class JumpGate extends Block {
             if(error){
                 DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, getColor(getSet()));
             }
-            
             Draw.reset();
         }
 
         @Override
         public boolean onConfigureTileTapped(Building other) {
             if (this == other || spawnPOS == other.pos()) {
-                setTarget(-1);
+                configure(-1);
                 return false;
             }
             if (other.within(this, range())) {
-                setTarget(other.pos());
+                configure(other.pos());
                 return false;
             }
             return true;
@@ -277,7 +288,7 @@ public class JumpGate extends Block {
         
         @Override
         public void buildConfiguration(Table table) {
-            BaseDialog dialog = new BaseDialog("Call");
+            BaseDialog dialog = new BaseDialog("@spawn");
             dialog.addCloseListener();
 
             dialog.cont.pane(inner ->
@@ -285,7 +296,7 @@ public class JumpGate extends Block {
                     for(UnitSet set : calls) {
                         callTable.add(new Tables.UnitSetTable(set, table2 -> {
                             table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
-                            table2.button(Icon.add, Styles.clearPartiali, () -> startBuild(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
+                            table2.button(Icon.add, Styles.clearPartiali, () -> configure(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
                         })).fill().row();
                     }
                 }).grow()
@@ -293,7 +304,7 @@ public class JumpGate extends Block {
             dialog.cont.button("@release", Icon.add, Styles.cleart, () -> spawn(getSet())).padTop(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
             dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
             
-            table.button("Spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
+            table.button("@spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
 
         @Override
@@ -345,13 +356,11 @@ public class JumpGate extends Block {
         @Override public void write(Writes write) {
             write.i(spawnID);
             write.i(spawnPOS);
-            write.i(spawns);
             write.f(buildReload);
         }
         @Override public void read(Reads read, byte revision) {
             spawnID = read.i();
             spawnPOS = read.i();
-            spawns = read.i();
             buildReload = read.f();
         }
 
@@ -416,7 +425,6 @@ public class JumpGate extends Block {
             success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
             if(success){
                 consumeItems();
-                spawns = set.callIns;
                 buildReload = 0;
                 spawnID = -1;
                 error = false;

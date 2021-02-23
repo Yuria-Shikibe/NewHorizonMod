@@ -189,7 +189,7 @@ public class NHFx{
 				float m = i == 0 ? 1.0F : 0.5F;
 				float rot = e.rotation + 180.0F;
 				float w = 15.0F * e.fout() * m;
-				Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange((long)e.id, 15.0F)) * m, rot);
+				Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange(e.id, 15.0F)) * m, rot);
 				Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F);
 			}
 		});
@@ -200,6 +200,7 @@ public class NHFx{
 			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
 				Draw.color(color, Pal.gray, e.fin());
 				Fill.poly(e.x + x, e.y + y, 6, size * e.fout(), e.rotation);
+				Drawf.light(e.x + x, e.y + y, size * e.fout() * 2.5f, color, e.fout() * 0.65f);
 				Draw.color(Color.white, Pal.gray, e.fin());
 				Fill.poly(e.x + x, e.y + y, 6, size * e.fout() / 2, e.rotation);
 			});

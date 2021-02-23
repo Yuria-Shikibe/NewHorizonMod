@@ -143,8 +143,7 @@ public class TableFuncs {
                 });
                 out.pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
             });
-            if(mobile)pane(in).grow();
-            else pane(in).fillX().height(in.getHeight());
+            pane(in).fillX().height(in.getHeight());
         }
     }
     private static final Table pTable = new Table(Tex.clear){{
