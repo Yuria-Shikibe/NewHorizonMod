@@ -11,10 +11,9 @@ import arc.util.pooling.Pools;
 import mindustry.entities.Effect;
 
 public class EffectTrail {
-	//public static Seq<Effect> all;
 	public static final float LIFETIME = 20f;
 	public int length;
-	public float width, size;
+	public float width;
 	protected final Seq<Vec3> points;
 	protected float lastX = -1, lastY = -1;
 	
@@ -40,7 +39,6 @@ public class EffectTrail {
 
 	public EffectTrail(int length, float width) {
 		this.length = length;
-		this.size = size;
 		this.width = width;
 		points = new Seq<>(length);
 		
@@ -83,9 +81,7 @@ public class EffectTrail {
 
 	public void disappear(Color color) {
 		if (points.isEmpty())return;
-		
 		disappearEffect.at(this.points.peek().x, this.points.peek().y, this.length, color, this.points);
-		//Log.info(all);
 	}
 
 }

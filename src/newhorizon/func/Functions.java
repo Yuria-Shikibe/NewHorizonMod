@@ -1,6 +1,7 @@
 package newhorizon.func;
 
 import arc.Core;
+import arc.func.Boolf;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -18,10 +19,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Bullet;
-import mindustry.gen.Sounds;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -39,6 +37,18 @@ public class Functions {
     private static Floor floorParma;
     private static final Seq<Tile> tiles = new Seq<>();
     private static final IntSeq buildingIDSeq = new IntSeq();
+    private final int maxCompute = 32;
+    
+    
+    public static Seq<Tile> getAcceptableTiles(int x, int y, int range, Boolf<Tile> bool){
+        Seq<Tile> tiles = new Seq<>(true, (int)(Mathf.pow(range, 2) * Mathf.pi), Tile.class);
+        Geometry.circle(x, y, range, (x1, y1) -> {
+            if((tileParma = world.tile(x1, y1)) != null && bool.get(tileParma)){
+                tiles.add(world.tile(x1, y1));
+            }
+        });
+        return tiles;
+    }
     
     private static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;
@@ -78,30 +88,21 @@ public class Functions {
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     
-    public static boolean spawnUnit(Building starter, float x, float y, int spawns, float level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
+    public static boolean spawnUnit(Teamc starter, float x, float y, int spawns, float level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
-        Seq<Rect> debugSeq = new Seq<>();
+        
         Seq<Tile> tSeq = new Seq<>(Tile.class);
-        
-        final int maxCompute = 32;
-        int steps = 0;
-    
-        Geometry.circle(toTile(x), toTile(y), toTile(spawnRange), (x1, y1) -> {
-            if((tileParma = world.tile(x1, y1)) != null && !tileParma.floor().isDeep() && !tileParma.cblock().solid && !tileParma.floor().solid && !tileParma.overlay().solid && !tileParma.block().solidifes){
-                tSeq.add(world.tile(x1, y1));
-                Vec2 p = new Vec2().set(tileParma);
-                debugSeq.add(new Rect().setSize(tilesize).setCenter(p));
-            }
-        });
-        
-        tSeq.shuffle();
+
+        tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
+            tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
+        ).shuffle();
         
         if(!type.flying){
             for(int i = 0; i < spawns; i++){
                 Tile[] positions = tSeq.shrink();
                 if(positions.length < spawns)return false;
-                vectorSeq.add(new Vec2().set(positions[Mathf.random(positions.length - 1)]));
+                vectorSeq.add(new Vec2().set(positions[i]));
             }
         }else{
             randLenVectors((long)Time.time, spawns, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(x, y)));
@@ -112,7 +113,13 @@ public class Functions {
         angle = starter.angleTo(x, y);
     
         ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + level + "[] fleet in coming at [" + TableFuncs.format(x / tilesize) + ", " + TableFuncs.format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
-        if(NHSetting.getBool("@active.debug"))debugEffect.at(x, y, 0, debugSeq);
+        if(NHSetting.getBool("@active.debug")){
+            Seq<Rect> debugSeq = new Seq<>();
+            for(Tile tile : tSeq){
+                debugSeq.add(tile.getBounds(new Rect()));
+            }
+            debugEffect.at(x, y, 0, debugSeq);
+        }
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
@@ -127,7 +134,7 @@ public class Functions {
                     Draw.color(spawnColor);
                     for(int i = 0; i < 4; i++){
                         float sin = Mathf.absin(Time.time, 16f, tilesize);
-                        float length = (tilesize * starter.block().size / 3f + sin) * b.fout() + tilesize * 2f;
+                        float length = (tilesize * level + sin) * b.fout() + tilesize * 2f;
                         float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
                         Tmp.v1.trns(i * 90, -length);
                         Draw.rect(pointerRegion, b.x + Tmp.v1.x,b.y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
@@ -151,7 +158,6 @@ public class Functions {
 
             Time.run(spawnReloadTime + i * spawnDelay, () -> {
                 if(!Units.canCreate(starter.team(), type))return;
-                if (!starter.isValid()) return;
                 Unit unit = type.create(starter.team());
                     unit.set(s.x, s.y);
                 unit.rotation = angle;

@@ -16,7 +16,9 @@ import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.gen.Buildingc;
 import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -68,9 +70,10 @@ public class NHBullets {
 	
 	public void load(){
 		loadFragType();
-		polyCloud = new NHTrailBulletType(1, 40){
+		polyCloud = new NHTrailBulletType(0.05f, 40){
 			@Override public float range(){return 360f;}
 		{
+			buildingDamageMultiplier = 0.2f;
 			width = height = 0;
 			trailLength = 0;
 			trailWidth = 0;
@@ -87,10 +90,10 @@ public class NHBullets {
 			trailEffect = NHFx.polyCloud(backColor, 45, 10, 32, 4);
 			trailChance = 0;
 			pierce = pierceBuilding = true;
-			velocityEnd = 10;
+			velocityEnd = 8;
 			accelerateBegin = 0.05f;
-			accelerateEnd = 0.65f;
-			lifetime = 160f;
+			accelerateEnd = 0.95f;
+			lifetime = 140f;
 			hitShake = 2;
 			hitSound = Sounds.plasmaboom;
 			hitEffect = NHFx.lightningHitLarge(backColor);
@@ -118,6 +121,14 @@ public class NHBullets {
 					}
 					hitSound.at(hitPos, Mathf.random(0.9f, 1.1f));
 				});
+			}
+			
+			@Override
+			public void hitEntity(Bullet b, Hitboxc other, float initialHealth){
+				super.hitEntity(b, other, initialHealth);
+				if(other instanceof Buildingc){
+					b.time += b.lifetime() / 100f;
+				}
 			}
 		};
 		

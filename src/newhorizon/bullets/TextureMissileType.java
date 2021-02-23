@@ -8,7 +8,6 @@ import arc.math.Mathf;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -68,19 +67,7 @@ public class TextureMissileType extends NHTrailBulletType{
 	}
 	
 	@Override
-	public void init(){
-		if(!(velocityEnd <= speed)){
-			speed = (speed + velocityEnd) / 2f;
-		}
-		
-		if (this.pierceCap >= 1) {
-			this.pierce = true;
-		}
-		
-		if (this.lightningType == null) {
-			this.lightningType = !this.collidesAir ? Bullets.damageLightningGround : Bullets.damageLightning;
-		}
-		
+	public void initTrail(){
 		region = Core.atlas.find(name);
 		if(trailLength < 0)trailLength = (int)(region.height * height / 5.2f);
 		if(trailWidth < 0)trailWidth = region.width * width / 38f;

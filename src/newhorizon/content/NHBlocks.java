@@ -920,7 +920,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		chargeWall = new ChargeWall("charge-wall"){{
-			requirements(Category.defense, with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 50, NHItems.upgradeSort, 75));
+			requirements(Category.defense, with(NHItems.irayrondPanel, 10, NHItems.seniorProcessor, 5, NHItems.upgradeSort, 15));
 			size = 1;
 			absorbLasers = true;
 			range = 120;
@@ -929,7 +929,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		chargeWallLarge = new ChargeWall("charge-wall-large"){{
-			requirements(Category.defense, ItemStack.mult(with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 50, NHItems.upgradeSort, 75), healthMult2));
+			requirements(Category.defense, ItemStack.mult(chargeWall.requirements, healthMult2));
 			size = 2;
 			absorbLasers = true;
 			range = 200;

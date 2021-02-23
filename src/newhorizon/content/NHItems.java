@@ -36,10 +36,13 @@ public class NHItems implements ContentList{
 		juniorProcessor = new Item("processor-junior", Color.valueOf("808080"));
 		zeta = new Item("zeta", Color.valueOf("#FFAE87")){{
 			hardness = 4;
-			radioactivity = 1.1f;
+			radioactivity = 1.5f;
+			charge = 1f;
 		}};
 		fusionEnergy = new Item("fusion-core-energy", Color.valueOf("ffe4b5")){{
 			explosiveness = 3f;
+			charge = 1.25f;
+			radioactivity = 1f;
 		}};
 		multipleSteel = new Item("multiple-steel", Color.valueOf("cedbe3"));
 		irayrondPanel = new Item("irayrond-panel", Color.valueOf("E4F0FF"));

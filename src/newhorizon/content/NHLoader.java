@@ -58,6 +58,12 @@ public class NHLoader implements ContentList{
 			block.health *= 1.5;
 		}
 		
+		addReq(Blocks.blastDrill,
+				new ItemStack(NHItems.presstanium, 50),
+				new ItemStack(NHItems.juniorProcessor, 40)
+		);
+		removeReq(Blocks.blastDrill, Items.silicon);
+		
 		addReq(Blocks.coreFoundation,
 				new ItemStack(NHItems.presstanium, 1500),
 				new ItemStack(NHItems.metalOxhydrigen, 800),
@@ -93,20 +99,16 @@ public class NHLoader implements ContentList{
 				new ItemStack(NHItems.multipleSteel, 150)
 		);
 		removeReq(Blocks.spectre, Items.silicon);
-		
-		addReq(Blocks.meltdown,
-				new ItemStack(NHItems.presstanium, 250),
-				new ItemStack(NHItems.metalOxhydrigen, 175),
-				new ItemStack(NHItems.seniorProcessor, 120)
-		);
-		ContinuousLaserBulletType meltDownType = ((ContinuousLaserBulletType) ((LaserTurret) Blocks.meltdown).shootType);
-		meltDownType.length += 120;
-		meltDownType.damage += 55f;
-		meltDownType.splashDamage += 10f;
-		meltDownType.splashDamageRadius += 14f;
-		((LaserTurret) Blocks.meltdown).range += 120;
-		((LaserTurret) Blocks.meltdown).shootDuration += 30;
-		
+		meltdown: {
+			addReq(Blocks.meltdown, new ItemStack(NHItems.presstanium, 250), new ItemStack(NHItems.metalOxhydrigen, 175), new ItemStack(NHItems.seniorProcessor, 120));
+			ContinuousLaserBulletType meltDownType = ((ContinuousLaserBulletType)((LaserTurret)Blocks.meltdown).shootType);
+			meltDownType.length += 120;
+			meltDownType.damage += 55f;
+			meltDownType.splashDamage += 10f;
+			meltDownType.splashDamageRadius += 14f;
+			((LaserTurret)Blocks.meltdown).range += 120;
+			((LaserTurret)Blocks.meltdown).shootDuration += 30;
+		}
 		removeReq(Blocks.meltdown, Items.silicon);
 		
 		addReq(Blocks.foreshadow,

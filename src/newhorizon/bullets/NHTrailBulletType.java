@@ -19,9 +19,13 @@ public class NHTrailBulletType extends SpeedUpBulletType {
     @Override
 	public void init(){
 		super.init();
+		initTrail();
+    }
+    
+    public void initTrail(){
 	    if(trailLength < 0)trailLength = 12;
 	    drawSize = Math.max(drawSize, 1.5f * trailLength * (speed + velocityEnd));
-		if(trailWidth < 0)trailWidth = width / 6f;
+	    if(trailWidth < 0)trailWidth = width / 6f;
     }
     
 	public NHTrailBulletType(float speed, float damage){
