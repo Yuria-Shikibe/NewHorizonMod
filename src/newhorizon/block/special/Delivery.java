@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.struct.ObjectSet;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
