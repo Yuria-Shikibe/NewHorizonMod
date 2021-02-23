@@ -93,7 +93,6 @@ public class Delivery extends Block{
 		
 		@Override public boolean acceptItem(Building source, Item item) {
 			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
-			if(acceptDelivery != null && link().id == acceptDelivery.id) return link().items.get(item) < link().getMaximumAccepted(item);
 			if(link().block() instanceof StorageBlock || link() instanceof DeliveryBuild || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
@@ -114,6 +113,7 @@ public class Delivery extends Block{
 				return true;
 			}
 			if (other.team == team && other.block.hasItems && within(other, range())) {
+			    if(acceptDelivery != null && acceptDelivery.pos() == other.poc()) return false;
 				configure(other.pos());
 				Log.info("Link" + other.pos());
 				return false;
@@ -235,19 +235,21 @@ public class Delivery extends Block{
 			}
 			
 			drawLinkConfigure(true, id);
-			if(check) 
-			    drawLinkArrow();
-			else 
-			    drawLinkConfigure(false, id);
+			if(!check) 
+			    drawLinkConfigure(false, id, true);
 		}
 		
 		// false 向前绘制， true 向后绘制
 		//闭合时， 不向后绘制主方块的link()
 		public void drawLinkConfigure(boolean accept, int configId) {
+		    drawLinkConfigure(accept, configId, false);
+		}
+		
+		public void drawLinkConfigure(boolean accept, int configId, boolean drawed) {
 		    if(acceptDelivery != null && accept && acceptDelivery.id != configId) acceptDelivery.drawLinkConfigure(accept, configId);
-		    if(linkValid() && !accept) {
-		        drawLinkArrow();
-		        if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).drawLinkConfigure(false, configId);
+		    if(linkValid()) {
+		        if(!drawed) drawLinkArrow();
+		        if(link() instanceof DeliveryBuild && !accept) ((DeliveryBuild)link()).drawLinkConfigure(false, configId);
 		    }
 		}
 		
