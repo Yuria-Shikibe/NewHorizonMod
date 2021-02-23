@@ -117,6 +117,7 @@ public class Delivery extends Block{
 			}
 			if (other.team == team && other.block.hasItems && within(other, range())) {
 			    if(acceptDelivery != null && acceptDelivery.pos() == other.pos()) return false;
+			    if(other instanceof DeliveryBuild && ((DeliveryBuild)other)).acceptDelivery != null) return false;
 				configure(other.pos());
 				Log.info("Link" + other.pos());
 				return false;
@@ -148,12 +149,12 @@ public class Delivery extends Block{
 			    DeliveryBuild build = (DeliveryBuild)link();
 			    while(true) {
 			        if(build.link() != null && build.link() instanceof DeliveryBuild) {
+			            set.add(build);
 			            if(build.link().id == id) {
 			                closure = true;
 			                break;
 			            }
 			            
-			            set.add(build);
 			            build = (DeliveryBuild)build.link();
 			        }
 			        else break;
