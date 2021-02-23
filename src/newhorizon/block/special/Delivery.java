@@ -113,7 +113,7 @@ public class Delivery extends Block{
 				return true;
 			}
 			if (other.team == team && other.block.hasItems && within(other, range())) {
-			    if(acceptDelivery != null && acceptDelivery.pos() == other.poc()) return false;
+			    if(acceptDelivery != null && acceptDelivery.pos() == other.pos()) return false;
 				configure(other.pos());
 				Log.info("Link" + other.pos());
 				return false;
