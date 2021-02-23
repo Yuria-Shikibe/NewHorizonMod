@@ -117,7 +117,7 @@ public class Delivery extends Block{
 			}
 			if (other.team == team && other.block.hasItems && within(other, range())) {
 			    if(acceptDelivery != null && acceptDelivery.pos() == other.pos()) return false;
-			    if(other instanceof DeliveryBuild && ((DeliveryBuild)other)).acceptDelivery != null) return false;
+			    if(other instanceof DeliveryBuild && ((DeliveryBuild)other).acceptDelivery != null) return false;
 				configure(other.pos());
 				Log.info("Link" + other.pos());
 				return false;
