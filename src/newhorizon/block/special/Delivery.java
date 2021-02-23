@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.struct.ObjectSet;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -26,6 +27,7 @@ import mindustry.logic.Ranged;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.distribution.MassDriver;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHContent;
@@ -87,10 +89,14 @@ public class Delivery extends Block{
 		public float reload;
 		public float heat;
 		public float recoil;
+		public boolean closure = false;
+		
+		public transient DeliveryBuild acceptDelivery;
 		
 		@Override public boolean acceptItem(Building source, Item item) {
+		    if(closure) return items.get(item) < getMaximumAccepted(item);
 			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
-			if(link().block() instanceof StorageBlock)return link().acceptItem(source, item);
+			if(link().block() instanceof StorageBlock || link() instanceof DeliveryBuild || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
 		
@@ -110,6 +116,8 @@ public class Delivery extends Block{
 				return true;
 			}
 			if (other.team == team && other.block.hasItems && within(other, range())) {
+			    if(acceptDelivery != null && acceptDelivery.pos() == other.pos()) return false;
+			    if(other instanceof DeliveryBuild && ((DeliveryBuild)other).acceptDelivery != null) return false;
 				configure(other.pos());
 				Log.info("Link" + other.pos());
 				return false;
@@ -121,6 +129,7 @@ public class Delivery extends Block{
 		public void configure(Object value){
 			super.configure(value);
 			if(value instanceof Integer){
+			    if(link() != null && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = null;
 				link = (int)value;
 				items.clear();
 				for(int i = 0; i < 4; i++){
@@ -130,8 +139,33 @@ public class Delivery extends Block{
 						NHFx.trail.at(x + Tmp.v1.x, y + Tmp.v2.y, 3f, team.color);
 					});
 				}
+				flushLink();
 			}
 		}
+		
+		public boolean flushLink(){
+		    ObjectSet<DeliveryBuild> set = new ObjectSet<>();
+		    if(linkValid() && link() instanceof DeliveryBuild) {
+			    DeliveryBuild build = (DeliveryBuild)link();
+			    while(true) {
+			        if(build.link() != null && build.link() instanceof DeliveryBuild) {
+			            set.add(build);
+			            if(build.link().id == id) {
+			                closure = true;
+			                break;
+			            }
+			            
+			            build = (DeliveryBuild)build.link();
+			        }
+			        else break;
+			    }
+		    }
+		    else closure = false;
+		    set.each(ent -> {
+		        ent.closure = closure;
+		    });
+            return true;
+        }
 		
 		public boolean linkValid() {
 			return link() != null && link().items != null;
@@ -144,6 +178,7 @@ public class Delivery extends Block{
 			
 			if(linkValid()){
 				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(link()), rotateSpeed * this.efficiency());
+				if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = this;
 			}
 			
 			if(linkValid() && Angles.angleDist(rotation, angleTo(link())) < 10){
@@ -213,23 +248,43 @@ public class Delivery extends Block{
 			
 			Drawf.dashCircle(x, y, range(), team.color);
 			
-			if(linkValid()){
-				Draw.color(Pal.accent);
-				Lines.stroke(1.0F);
-				Lines.square(link().x, link().y, link().block.size * Vars.tilesize / 2.0F + 1.0F);
-				Draw.reset();
-				DrawFuncs.posSquareLink(team.color, 2f, 4f, true, this, link());
-				Drawf.arrow(x, y, link().x, link().y, 15f, 6f, team.color);
-			}
+			drawLinkConfigure(true, id);
+			if(!closure) 
+			    drawLinkConfigure(false, id, true);
+		}
+		
+		// false 向前绘制， true 向后绘制
+		//闭合时， 不向后绘制主方块的link()
+		public void drawLinkConfigure(boolean accept, int configId) {
+		    drawLinkConfigure(accept, configId, false);
+		}
+		
+		public void drawLinkConfigure(boolean accept, int configId, boolean drawed) {
+		    if(acceptDelivery != null && accept && acceptDelivery.id != configId) acceptDelivery.drawLinkConfigure(accept, configId);
+		    if(linkValid()) {
+		        if(!drawed) drawLinkArrow();
+		        if(link() instanceof DeliveryBuild && !accept) ((DeliveryBuild)link()).drawLinkConfigure(false, configId);
+		    }
+		}
+		
+		protected void drawLinkArrow() {
+		    Draw.color(Pal.accent);
+			Lines.stroke(1.0F);
+			Lines.square(link().x, link().y, link().block.size * Vars.tilesize / 2.0F + 1.0F);
+			Draw.reset();
+			DrawFuncs.posSquareLink(team.color, 2f, 4f, true, this, link());
+			Drawf.arrow(x, y, link().x, link().y, 15f, 6f, team.color);
 		}
 		
 		@Override public void write(Writes write) {
 			write.f(this.rotation);
 			write.i(this.link);
+			write.bool(closure);
 		}
 		@Override public void read(Reads read, byte revision) {
 			this.rotation = read.f();
 			this.link = read.i();
+			closure = read.bool();
 		}
 	}
 	
