@@ -267,12 +267,12 @@ public class Delivery extends Block{
 		@Override public void write(Writes write) {
 			write.f(this.rotation);
 			write.i(this.link);
-			write.b(closure);
+			write.bool(closure);
 		}
 		@Override public void read(Reads read, byte revision) {
 			this.rotation = read.f();
 			this.link = read.i();
-			closure = read.b();
+			closure = read.bool();
 		}
 	}
 	
