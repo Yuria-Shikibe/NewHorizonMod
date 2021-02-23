@@ -88,10 +88,12 @@ public class Delivery extends Block{
 		public float reload;
 		public float heat;
 		public float recoil;
+		public boolean closure = false;
 		
 		public transient DeliveryBuild acceptDelivery;
 		
 		@Override public boolean acceptItem(Building source, Item item) {
+		    if(closure) return items.get(item) < getMaximumAccepted(item);
 			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
 			if(link().block() instanceof StorageBlock || link() instanceof DeliveryBuild || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
@@ -135,6 +137,21 @@ public class Delivery extends Block{
 						NHFx.trail.at(x + Tmp.v1.x, y + Tmp.v2.y, 3f, team.color);
 					});
 				}
+				if(link() instanceof DeliveryBuild) {
+			        DeliveryBuild build = (DeliveryBuild)link();
+			        while(true) {
+			            if(build.link() != null && build.link() instanceof DeliveryBuild) {
+			                if(build.link().id == id) {
+			                    closure = true;
+			                    break;
+			                }
+			            
+			                build = (DeliveryBuild)build.link();
+			            }
+			            else break;
+			        }
+		    	}
+		    	else closure = false;
 			}
 		}
 		
@@ -218,24 +235,9 @@ public class Delivery extends Block{
 			super.drawConfigure();
 			
 			Drawf.dashCircle(x, y, range(), team.color);
-			boolean check = false;
-			if(link() instanceof DeliveryBuild) {
-			    DeliveryBuild build = (DeliveryBuild)link();
-			    while(true) {
-			        if(build.link() != null && build.link() instanceof DeliveryBuild) {
-			            if(build.link().id == id) {
-			                check = true;
-			                break;
-			            }
-			            
-			            build = (DeliveryBuild)build.link();
-			        }
-			        else break;
-			    }
-			}
 			
 			drawLinkConfigure(true, id);
-			if(!check) 
+			if(!closure) 
 			    drawLinkConfigure(false, id, true);
 		}
 		
@@ -265,10 +267,12 @@ public class Delivery extends Block{
 		@Override public void write(Writes write) {
 			write.f(this.rotation);
 			write.i(this.link);
+			write.b(closure);
 		}
 		@Override public void read(Reads read, byte revision) {
 			this.rotation = read.f();
 			this.link = read.i();
+			closure = read.b();
 		}
 	}
 	
