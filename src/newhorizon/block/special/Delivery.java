@@ -213,10 +213,15 @@ public class Delivery extends Block{
 			
 			Drawf.dashCircle(x, y, range(), team.color);
 			
-			if(linkValid()){
-				drawLinkArrow();
-				if(link() instanceof DeliveryBuild d && d.linkValid()) d.drawLinkArrow();
-			}
+			drawLinkConfigure();
+		}
+		
+		private void drawLinkConfigure() {
+		    if(linkValid()) {
+		        drawLinkArrow();
+		        
+		        if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).drawLinkConfigure();
+		    }
 		}
 		
 		private void drawLinkArrow() {

@@ -27,21 +27,9 @@ ext{
 //java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
-        targetCompatibility = 8
-        sourceCompatibility = 14
-        options.encoding = "UTF-8"
-        options.compilerArgs += ["-Xlint:deprecation"]
-    }
-}
-
-tasks.withType(JavaCompile){
-    targetCompatibility = 8
-    sourceCompatibility = 8
-}
-
-tasks.withType(JavaCompile){
-    if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-        options.compilerArgs.addAll(['--release', '14', '--enable-preview'])
+        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+            options.compilerArgs.addAll(['--release', '8'])
+        }
     }
 }
 
@@ -85,8 +73,6 @@ jar{
 }
 
 task deploy(type: Jar){
-    compileJava.options.fork = true
-    
     dependsOn jarAndroid
     dependsOn jar
     archiveFileName = "${project.archivesBaseName}.jar"
