@@ -89,6 +89,8 @@ jar{
 }
 
 task deploy(type: Jar){
+    compileJava.options.fork = true
+    
     dependsOn jarAndroid
     dependsOn jar
     archiveFileName = "${project.archivesBaseName}.jar"
