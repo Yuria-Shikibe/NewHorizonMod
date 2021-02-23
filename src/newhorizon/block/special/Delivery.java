@@ -26,6 +26,7 @@ import mindustry.logic.Ranged;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.distribution.MassDriver;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHContent;
@@ -88,9 +89,11 @@ public class Delivery extends Block{
 		public float heat;
 		public float recoil;
 		
+		public transient DeliveryBuild acceptDelivery;
+		
 		@Override public boolean acceptItem(Building source, Item item) {
 			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
-			if(link().block() instanceof StorageBlock)return link().acceptItem(source, item);
+			if(link().block() instanceof StorageBlock || link() instanceof Delivery || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
 		
@@ -121,6 +124,7 @@ public class Delivery extends Block{
 		public void configure(Object value){
 			super.configure(value);
 			if(value instanceof Integer){
+			    if(link() != null && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = null;
 				link = (int)value;
 				items.clear();
 				for(int i = 0; i < 4; i++){
@@ -144,6 +148,7 @@ public class Delivery extends Block{
 			
 			if(linkValid()){
 				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(link()), rotateSpeed * this.efficiency());
+				if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = this;
 			}
 			
 			if(linkValid() && Angles.angleDist(rotation, angleTo(link())) < 10){
@@ -216,15 +221,15 @@ public class Delivery extends Block{
 			drawLinkConfigure();
 		}
 		
-		private void drawLinkConfigure() {
+		public void drawLinkConfigure() {
 		    if(linkValid()) {
 		        drawLinkArrow();
-		        
+		        if(acceptDelivery != null) acceptDelivery.drawLinkArrow();
 		        if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).drawLinkConfigure();
 		    }
 		}
 		
-		private void drawLinkArrow() {
+		protected void drawLinkArrow() {
 		    Draw.color(Pal.accent);
 			Lines.stroke(1.0F);
 			Lines.square(link().x, link().y, link().block.size * Vars.tilesize / 2.0F + 1.0F);
