@@ -137,23 +137,33 @@ public class Delivery extends Block{
 						NHFx.trail.at(x + Tmp.v1.x, y + Tmp.v2.y, 3f, team.color);
 					});
 				}
-				if(link() instanceof DeliveryBuild) {
-			        DeliveryBuild build = (DeliveryBuild)link();
-			        while(true) {
-			            if(build.link() != null && build.link() instanceof DeliveryBuild) {
-			                if(build.link().id == id) {
-			                    closure = true;
-			                    break;
-			                }
-			            
-			                build = (DeliveryBuild)build.link();
-			            }
-			            else break;
-			        }
-		    	}
-		    	else closure = false;
+				flushLink();
 			}
 		}
+		
+		public boolean flushLink(){
+		    ObjectSet<DeliveryBuild> set = new ObjectSet<>();
+		    if(linkValid() && link() instanceof DeliveryBuild) {
+			    DeliveryBuild build = (DeliveryBuild)link();
+			    while(true) {
+			        if(build.link() != null && build.link() instanceof DeliveryBuild) {
+			            if(build.link().id == id) {
+			                closure = true;
+			                break;
+			            }
+			            
+			            set.add(build);
+			            build = (DeliveryBuild)build.link();
+			        }
+			        else break;
+			    }
+		    }
+		    else closure = false;
+		    set.each(ent -> {
+		        ent.closure = closure;
+		    });
+            return true;
+        }
 		
 		public boolean linkValid() {
 			return link() != null && link().items != null;
