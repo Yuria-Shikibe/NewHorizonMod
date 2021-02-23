@@ -93,6 +93,7 @@ public class Delivery extends Block{
 		
 		@Override public boolean acceptItem(Building source, Item item) {
 			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
+			if(acceptDelivery != null && link().id == acceptDelivery.id) return link().items.get(item) < link().getMaximumAccepted(item);
 			if(link().block() instanceof StorageBlock || link() instanceof DeliveryBuild || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
@@ -217,15 +218,36 @@ public class Delivery extends Block{
 			super.drawConfigure();
 			
 			Drawf.dashCircle(x, y, range(), team.color);
+			boolean check = false;
+			if(link() instanceof DeliveryBuild) {
+			    DeliveryBuild build = (DeliveryBuild)link();
+			    while(true) {
+			        if(build.link() != null && build.link() instanceof DeliveryBuild) {
+			            if(build.link().id == id) {
+			                check = true;
+			                break;
+			            }
+			            
+			            build = (DeliveryBuild)build.link();
+			        }
+			        else break;
+			    }
+			}
 			
-			drawLinkConfigure();
+			drawLinkConfigure(true, id);
+			if(check) 
+			    drawLinkArrow();
+			else 
+			    drawLinkConfigure(false, id);
 		}
 		
-		public void drawLinkConfigure() {
-		    if(linkValid()) {
+		// false 向前绘制， true 向后绘制
+		//闭合时， 不向后绘制主方块的link()
+		public void drawLinkConfigure(boolean accept, int configId) {
+		    if(acceptDelivery != null && accept && acceptDelivery.id != configId) acceptDelivery.drawLinkConfigure(accept, configId);
+		    if(linkValid() && !accept) {
 		        drawLinkArrow();
-		        if(acceptDelivery != null) acceptDelivery.drawLinkArrow();
-		        if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).drawLinkConfigure();
+		        if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).drawLinkConfigure(false, configId);
 		    }
 		}
 		
