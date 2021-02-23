@@ -93,7 +93,7 @@ public class Delivery extends Block{
 		
 		@Override public boolean acceptItem(Building source, Item item) {
 			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
-			if(link().block() instanceof StorageBlock || link() instanceof Delivery || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
+			if(link().block() instanceof StorageBlock || link() instanceof DeliveryBuild || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
 		
