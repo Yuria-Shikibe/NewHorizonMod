@@ -4,7 +4,10 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Position;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -57,6 +60,14 @@ public class DeliveryBulletType extends BulletType{
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
 		data.t = new EffectTrail(region.height / 6, (region.width / 40f)).clear();
 		if(data.to == null)despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
+		if(data.needRotate){
+			b.lifetime += 180 / (0.85f * 50f);
+			b.vel.setLength(0.001f);
+		}
+	}
+	
+	public void rotateBullet(Bullet b, Position target, boolean addLife){
+		b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), 0.85f * Time.delta * 50f));
 	}
 	
 	@Override
@@ -90,16 +101,23 @@ public class DeliveryBulletType extends BulletType{
 			b.remove();
 			return;
 		}
-		if(b.x < 0 || b.x > Vars.world.unitWidth() || b.y < 0 || b.y > Vars.world.unitHeight())b.time(b.lifetime());
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
-		Tmp.v1.trns(b.rotation(), -region.height / div);
-		
-		if(b.time > homingDelay){
-			data.t.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
-			if (this.trailChance > 0.0F && Mathf.chanceDelta(trailChance)) {
-				this.trailEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, this.trailParam, getTrailColor(b));
+		if(!data.needRotate || Angles.angleDist(b.rotation(), data.from.angleTo(data.to)) < 5f){
+			b.vel.setLength(speed * (Mathf.curve(b.fin(), 0f, 0.05f) + 0.001f));
+			rotateBullet(b, data.to, false);
+			if(b.x < 0 || b.x > Vars.world.unitWidth() || b.y < 0 || b.y > Vars.world.unitHeight() || (b.dst(data.to) < Vars.tilesize * 1.25f && data.needRotate)){
+				b.time(b.lifetime());
 			}
-		}
+			
+			Tmp.v1.trns(b.rotation(), -region.height / div);
+			
+			if(b.time > homingDelay){
+				data.t.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
+				if(trailChance > 0.0F && Mathf.chanceDelta(trailChance)){
+					trailEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, trailParam, getTrailColor(b));
+				}
+			}
+		}else rotateBullet(b, data.to, true);
 	}
 	
 	@Override
@@ -110,12 +128,29 @@ public class DeliveryBulletType extends BulletType{
 		}
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
 		if(data.to != null && b.dst(data.to) < Vars.tilesize * 2){
-			for(int i = 0; i < Vars.content.items().size; ++i){
-				Call.transferItemTo(null, Vars.content.item(i), Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i)) - data.to.items.get(i)), b.x, b.y, data.to);
+			if(!data.transportBack){
+				for(int i = 0; i < Vars.content.items().size; ++i){
+					Call.transferItemTo(null, Vars.content.item(i), Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i)) - data.to.items.get(i)), b.x, b.y, data.to);
+				}
+			}else{
+				for(int i = 0; i < Vars.content.items().size; ++i){
+					if(data.items[i] > 0){
+						int num = Mathf.clamp(data.to.items.get(i), 0, data.from.getMaximumAccepted(Vars.content.item(i)) );
+						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, b);
+						data.to.items.remove(Vars.content.item(i), num);
+						data.items[i] = num;
+					}
+				}
 			}
 		}
 		Tmp.v1.trns(b.rotation(), -region.height / div);
-		despawnEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), b.team.color);
+		if(!data.transportBack)despawnEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), b.team.color);
+		else{
+			float lifeScl = data.to.dst(data.from) / range();
+			Delivery.DeliveryData dataAdapt = new Delivery.DeliveryData(data, true);
+			Log.info(dataAdapt);
+			create(b, b.team, b.x, b.y, b.rotation(), 1, 1, lifeScl, dataAdapt);
+		}
 		data.t.disappear(getTrailColor(b));
 		Fx.artilleryTrail.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, data.t.width * 1.2f, getTrailColor(b));
 	}

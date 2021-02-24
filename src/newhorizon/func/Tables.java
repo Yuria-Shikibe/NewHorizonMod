@@ -46,15 +46,16 @@ public class Tables{
 	public static class ItemSelectTable extends Table{
 		public boolean[] selects = new boolean[Vars.content.items().size];
 		public ItemSelectTable(){
+			background(Tex.button);
 			pane(table -> {
 				int i = 0;
 				for(Item item : Vars.content.items()){
 					if(i % 8 == 0)table.row();
-					table.table(Tex.pane, t -> {
-						t.button(new TextureRegionDrawable(item.icon(Cicon.xlarge)), Styles.clearTogglei, LEN, () -> {
+					table.table(Tex.clear, t -> {
+						t.button(new TextureRegionDrawable(item.icon(Cicon.xlarge)), Styles.clearTogglei, LEN - OFFSET, () -> {
 							selects[Vars.content.items().indexOf(item)] = !selects[Vars.content.items().indexOf(item)];
 						}).update(b -> b.setChecked(selects[Vars.content.items().indexOf(item)])).size(LEN);
-					}).growX().fillY().row();
+					}).growX().fillY();
 					i++;
 				}
 			}).grow();
@@ -66,6 +67,15 @@ public class Tables{
 			}
 			return items;
 		}
+		
+		public Seq<Item> getItems(){
+			Seq<Item> items = new Seq<>(Item.class);
+			for(Item item : Vars.content.items()){
+				if(selects[Vars.content.items().indexOf(item)])items.add(item);
+			}
+			return items;
+		}
+		
 		
 		public void write(Writes write){
 			for(boolean b : selects){

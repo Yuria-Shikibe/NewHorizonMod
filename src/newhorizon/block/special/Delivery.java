@@ -7,6 +7,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectSet;
 import arc.util.Log;
@@ -22,11 +23,13 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Sounds;
+import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
 import mindustry.type.Item;
+import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.distribution.MassDriver;
@@ -38,6 +41,8 @@ import newhorizon.effects.EffectTrail;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.Tables;
 import newhorizon.interfaces.Linkablec;
+
+import java.util.Arrays;
 
 import static newhorizon.func.TableFuncs.LEN;
 
@@ -103,8 +108,12 @@ public class Delivery extends Block{
 		public transient DeliveryBuild acceptDelivery;
 		
 		@Override public boolean acceptItem(Building source, Item item) {
-		    if(closure) return items.get(item) < getMaximumAccepted(item);
+			if(transportBack){
+				if(source != link())return false;
+				else return items.get(item) < getMaximumAccepted(item);
+			}
 			if(items.get(item) >= getMaximumAccepted(item) || !linkValid())return false;
+		    if(closure) return items.get(item) < getMaximumAccepted(item);
 			if(link().block() instanceof StorageBlock || link() instanceof DeliveryBuild || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
@@ -195,12 +204,17 @@ public class Delivery extends Block{
 				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(link()), rotateSpeed * this.efficiency());
 			}
 			
+			
+			Log.info(reload + " | " + shouldDeliver());
 			if(linkValid() && Angles.angleDist(rotation, angleTo(link())) < 10){
-				reload += efficiency() * Time.delta;
 				if(reload >= reloadTime){
 					if(shouldDeliver())deliver();
 					reload = 0;
-				}
+				}else reload += efficiency() * Time.delta;
+			}
+			
+			if(transportBack){
+				dump();
 			}
 		}
 		
@@ -222,25 +236,34 @@ public class Delivery extends Block{
 		protected boolean shouldDeliver(){
 			boolean shouldDeliver = true;
 			if(linkValid()){
-				if(link() instanceof ItemTurret.ItemTurretBuild){
-					ItemTurret.ItemTurretBuild turret = (ItemTurret.ItemTurretBuild)link();
-					ItemTurret out = (ItemTurret)link().block;
-					if(turret.totalAmmo > out.maxAmmo / 2)return false;
-				}
-				for(Item item : Vars.content.items()){
-					if(items.get(item) <= 0)continue;
-					if(link().items.get(item) + items.get(item) > link().getMaximumAccepted(item)){
-						shouldDeliver = false;
-						break;
+				if(!transportBack){
+					if(link() instanceof ItemTurret.ItemTurretBuild){
+						ItemTurret.ItemTurretBuild turret = (ItemTurret.ItemTurretBuild)link();
+						ItemTurret out = (ItemTurret)link().block;
+						if(turret.totalAmmo > out.maxAmmo / 2) return false;
+					}
+					for(Item item : Vars.content.items()){
+						if(items.get(item) <= 0) continue;
+						if(link().items.get(item) + items.get(item) > link().getMaximumAccepted(item)){
+							shouldDeliver = false;
+							break;
+						}
+					}
+				}else{
+					shouldDeliver = false;
+					for(Item item : itemTable.getItems()){
+						if(link().items().get(item) > 0 && acceptItem(link(), item)){
+							shouldDeliver = true;
+							break;
+						}
 					}
 				}
-			}
-			else shouldDeliver = false;
+			}else shouldDeliver = false;
 			return shouldDeliver;
 		}
 		
 		protected void deliver(){
-			if(!linkValid() || items.total() <= 0)return;
+			if(!linkValid() || (items.total() <= 0 && !transportBack))return;
 			
 			int totalUsed = 0;
 			this.heat = 1;
@@ -248,11 +271,19 @@ public class Delivery extends Block{
 			
 			DeliveryData data = Pools.obtain(DeliveryData.class, DeliveryData::new);
 			data.to = link();
+			data.from = this;
+			data.transportBack = transportBack;
 			
-			for(int i = 0; i < Vars.content.items().size; ++i) {
-				int maxTransfer = this.items.get(Vars.content.item(i));
-				data.items[i] = maxTransfer;
-				this.items.remove(Vars.content.item(i), maxTransfer);
+			if(!transportBack){
+				for(int i = 0; i < Vars.content.items().size; ++i) {
+					int maxTransfer = this.items.get(Vars.content.item(i));
+					data.items[i] = maxTransfer;
+					this.items.remove(Vars.content.item(i), maxTransfer);
+				}
+			}else{
+				for(Item item : itemTable.getItems()) {
+					data.items[Vars.content.items().indexOf(item)] = getMaximumAccepted(item);
+				}
 			}
 			
 			float lifeScl = Mathf.clamp(dst(link()) / NHContent.deliveryBullet.range(), 0, range / NHContent.deliveryBullet.range());
@@ -273,13 +304,22 @@ public class Delivery extends Block{
 		
 		@Override
 		public void buildConfiguration(Table table){
-			table.button(Icon.upOpen, LEN, () -> {
-				transportBack = !transportBack;
-			}).update(b -> b.getStyle().imageUp = transportBack ? Icon.downOpen : Icon.upOpen).row();
-			table.update(() -> {
-				if(transportBack)itemTable.color.a = 1;
-				else itemTable.color.a = 0;
-			});
+			Label l = new Label("@default");
+			table.table(Tex.button, t -> {
+				t.update(() -> {
+					if(transportBack){
+						l.setText("@stat.input");
+						itemTable.color.a = 1;
+					}else{
+						l.setText("@stat.output");
+						itemTable.color.a = 0;
+					}
+				});
+				t.add(l).growX().height(LEN).row();
+				t.button(Icon.upOpen, Styles.cleari, LEN, () -> {
+					transportBack = !transportBack;
+				}).update(b -> b.getStyle().imageUp = transportBack ? Icon.downOpen : Icon.upOpen).growX().fillY().row();
+			}).growX().fillY().row();
 			table.add(itemTable);
 		}
 		
@@ -318,12 +358,14 @@ public class Delivery extends Block{
 			write.f(this.rotation);
 			write.i(this.link);
 			write.bool(closure);
+			write.bool(transportBack);
 			itemTable.write(write);
 		}
 		@Override public void read(Reads read, byte revision) {
 			this.rotation = read.f();
 			this.link = read.i();
 			closure = read.bool();
+			transportBack = read.bool();
 			itemTable.read(read, revision);
 		}
 	}
@@ -331,17 +373,30 @@ public class Delivery extends Block{
 	public static class DeliveryData implements Pool.Poolable{
 		public EffectTrail t;
 		public Building to;
-		public DeliveryBuild from;
+		public Building from;
 		public boolean transportBack = false;
+		public boolean needRotate = false;
 		public int[] items;
 		
 		public DeliveryData() {
 			this.items = new int[Vars.content.items().size];
 		}
 		
+		public DeliveryData(DeliveryData data, boolean rotate){
+			this.needRotate = rotate;
+			items = data.items.clone();
+			to = data.from;
+			from = data.to;
+		}
+		
 		public void reset() {
 			t = null;
 			this.to = null;
+		}
+		
+		@Override
+		public String toString(){
+			return "DeliveryData{" + "t=" + t + ", to=" + to + ", from=" + from + ", transportBack=" + transportBack + ", needRotate=" + needRotate + ", items=" + Arrays.toString(items) + '}';
 		}
 	}
 }
