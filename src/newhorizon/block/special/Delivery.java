@@ -136,11 +136,7 @@ public class Delivery extends Block{
 		public void configure(Object value){
 			super.configure(value);
 			if(value instanceof Integer){
-			    if(link() != null && link() instanceof DeliveryBuild){
-			        DeliveryBuild build = (DeliveryBuild)link();
-			        build.acceptDelivery = null;
-			        build.closure = false;
-			    }
+			    setNull();
 			    linkPos((int)value);
 				items.clear();
 				for(int i = 0; i < 4; i++){
@@ -209,19 +205,18 @@ public class Delivery extends Block{
 		}
 		
 		public void setNull(){
-			if(linkValid() && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = null;
+			if(linkValid() && link() instanceof DeliveryBuild){
+			    DeliveryBuild build = (DeliveryBuild)link();
+			    build.acceptDelivery = null;
+			    build.closure = false;
+		    }
 		}
 		
 		@Override
 		public void remove(){
 			super.remove();
 			setNull();
-		}
-		
-		@Override
-		public void onDestroyed(){
-			super.onDestroyed();
-			setNull();
+			flushLink();
 		}
 		
 		protected boolean shouldDeliver(){
