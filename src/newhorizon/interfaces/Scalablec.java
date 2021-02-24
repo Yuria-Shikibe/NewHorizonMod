@@ -17,7 +17,7 @@ public interface Scalablec extends Buildingc{
     
     default void drawConnected(){
         if(!isConnected())return;
-        DrawFuncs.drawConnected(getX(), getY(), block().size * tilesize / 2f, getColor());
+        DrawFuncs.drawConnected(getX(), getY(), block().size * tilesize, getColor());
     }
     default void drawMode(){
         Draw.reset();

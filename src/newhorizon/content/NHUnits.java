@@ -64,7 +64,7 @@ public class NHUnits implements ContentList {
 		gather = new AutoOutlineUnitType("gather"){{
 			defaultController = MinerAI::new;
 			constructor = EntityMapping.map(3);
-			hitSize = 10f;
+			hitSize = 16f;
 			flying = true;
 			drag = 0.06F;
 			accel = 0.12F;

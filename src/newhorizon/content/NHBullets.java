@@ -11,6 +11,7 @@ import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.StatusEffects;
+import mindustry.ctype.ContentList;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
@@ -32,7 +33,7 @@ import static arc.graphics.g2d.Draw.reset;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 
-public class NHBullets {
+public class NHBullets implements ContentList{
 	public static
 	BulletType
 		railGun1, railGun2, hurricaneType, polyCloud,

@@ -9,6 +9,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.ctype.ContentList;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
@@ -32,6 +33,17 @@ public class NewHorizon extends Mod{
 	public static String configName(String name){
 		return MOD_NAME + name;
 	}
+	
+	private final ContentList[] content = {
+		new NHItems(),
+	    new NHLiquids(),
+	    new NHBullets(),
+		new NHUpgradeDatas(),
+		new NHUnits(),
+		new NHBlocks(),
+		//new NHPlanets(),
+	    new NHTechTree(),
+	};
 	
 	private static void links(){
 		BaseDialog dialog = new BaseDialog("@links");
@@ -140,14 +152,9 @@ public class NewHorizon extends Mod{
 	    NHSounds.load();
 		NHLoader loader = new NHLoader();
 		loader.load();
-	    new NHItems().load();
-	    new NHLiquids().load();
-	    new NHBullets().load();
-		new NHUpgradeDatas().load();
-		new NHUnits().load();
-		new NHBlocks().load();
-		//new NHPlanets().load();
-	    new NHTechTree().load();
+		for(ContentList c : content){
+			c.load();
+		}
 	    loader.loadLast();
     }
 	

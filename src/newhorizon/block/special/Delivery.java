@@ -7,6 +7,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.scene.ui.layout.Table;
 import arc.struct.ObjectSet;
 import arc.util.Log;
 import arc.util.Time;
@@ -19,6 +20,7 @@ import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Icon;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -34,7 +36,10 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.Tables;
 import newhorizon.interfaces.Linkablec;
+
+import static newhorizon.func.TableFuncs.LEN;
 
 public class Delivery extends Block{
 	public float rotateSpeed = 0.04f;
@@ -91,7 +96,8 @@ public class Delivery extends Block{
 		public float heat;
 		public float recoil;
 		public boolean closure = false;
-		
+		public boolean transportBack = false;
+		public Tables.ItemSelectTable itemTable = new Tables.ItemSelectTable();
 		public transient DeliveryBuild acceptDelivery;
 		
 		@Override public boolean acceptItem(Building source, Item item) {
@@ -100,19 +106,13 @@ public class Delivery extends Block{
 			if(link().block() instanceof StorageBlock || link() instanceof DeliveryBuild || link() instanceof MassDriver.MassDriverBuild) return link().acceptItem(source, item);
 			return link().block().consumes.itemFilters.get(item.id) && this.items.get(item) < Math.min(this.getMaximumAccepted(item), link().getMaximumAccepted(item) / 2);
 		}
-		
-		@Override
-		public float range(){
+		@Override public float range(){
 			return range;
 		}
-		
-		@Override
-		public int linkPos(){
+		@Override public int linkPos(){
 			return link;
 		}
-		
-		@Override
-		public void linkPos(int value){
+		@Override public void linkPos(int value){
 			link = value;
 		}
 		
@@ -172,9 +172,7 @@ public class Delivery extends Block{
             return true;
         }
 		
-		public boolean linkValid() {
-			return link() != null && link().team == team && link().items != null && link().isValid();
-		}
+		public boolean linkValid() { return link() != null && link().team == team && link().items != null && link().isValid(); }
 		
 		@Override
 		public Color getLinkColor(){
@@ -269,6 +267,18 @@ public class Delivery extends Block{
 		}
 		
 		@Override
+		public void buildConfiguration(Table table){
+			table.button(Icon.upOpen, LEN, () -> {
+				transportBack = !transportBack;
+			}).update(b -> b.getStyle().imageUp = transportBack ? Icon.downOpen : Icon.upOpen).row();
+			table.update(() -> {
+				if(transportBack)itemTable.color.a = 1;
+				else itemTable.color.a = 0;
+			});
+			table.add(itemTable);
+		}
+		
+		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
 			drawLinkConfigure(true, id);
@@ -281,8 +291,6 @@ public class Delivery extends Block{
 			}
 			
 			Drawf.dashCircle(x, y, range(), team.color);
-			
-			
 		}
 		
 		public void drawLinkConfigure(boolean accept, int configId) {
@@ -305,17 +313,21 @@ public class Delivery extends Block{
 			write.f(this.rotation);
 			write.i(this.link);
 			write.bool(closure);
+			itemTable.write(write);
 		}
 		@Override public void read(Reads read, byte revision) {
 			this.rotation = read.f();
 			this.link = read.i();
 			closure = read.bool();
+			itemTable.read(read, revision);
 		}
 	}
 	
 	public static class DeliveryData implements Pool.Poolable{
 		public EffectTrail t;
 		public Building to;
+		public DeliveryBuild from;
+		public boolean transportBack = false;
 		public int[] items;
 		
 		public DeliveryData() {
