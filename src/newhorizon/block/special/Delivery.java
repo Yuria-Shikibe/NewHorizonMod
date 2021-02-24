@@ -146,7 +146,11 @@ public class Delivery extends Block{
 						NHFx.trail.at(x + Tmp.v1.x, y + Tmp.v2.y, 3f, team.color);
 					});
 				}
-				if(link() != null && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = this;
+				if(link() instanceof DeliveryBuild) {
+				    DeliveryBuild build = (DeliveryBuild)link();
+				    build.acceptDelivery = this;
+				    build.closure = false;
+				}
 				flushLink();
 			}
 		}
