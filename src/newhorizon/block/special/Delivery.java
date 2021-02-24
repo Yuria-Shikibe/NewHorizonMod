@@ -163,8 +163,12 @@ public class Delivery extends Block{
 			            }
 			            
 			            build = build.acceptDelivery;
+			        } else {
+			            closure = false;
+			            break;
 			        }
-			        else break;
+			        
+			        Log.info("Number of attempts: @", set.size);
 			    }
 		    }
 		    else closure = false;
