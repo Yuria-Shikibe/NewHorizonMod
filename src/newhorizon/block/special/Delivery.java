@@ -66,6 +66,8 @@ public class Delivery extends Block{
 		this.group = BlockGroup.storage;
 		outlineIcon = true;
 		expanded = true;
+		
+		config(Integer.class, (DeliveryBuild tile, Integer point) -> tile.link = point);
 	}
 	
 	@Override
