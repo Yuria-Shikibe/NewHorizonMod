@@ -136,7 +136,11 @@ public class Delivery extends Block{
 		public void configure(Object value){
 			super.configure(value);
 			if(value instanceof Integer){
-			    if(link() != null && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = null;
+			    if(link() != null && link() instanceof DeliveryBuild){
+			        DeliveryBuild build = (DeliveryBuild)link();
+			        build.acceptDelivery = null;
+			        build.closure = false;
+			    }
 			    linkPos((int)value);
 				items.clear();
 				for(int i = 0; i < 4; i++){
@@ -146,10 +150,7 @@ public class Delivery extends Block{
 						NHFx.trail.at(x + Tmp.v1.x, y + Tmp.v2.y, 3f, team.color);
 					});
 				}
-				if(link() instanceof DeliveryBuild) {
-				    DeliveryBuild build = (DeliveryBuild)link();
-				    build.acceptDelivery = this;
-				    build.closure = false;
+				if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = this;
 				}
 				flushLink();
 			}
