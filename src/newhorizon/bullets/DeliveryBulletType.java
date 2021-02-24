@@ -21,10 +21,12 @@ import mindustry.graphics.Layer;
 import newhorizon.block.special.Delivery;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
+import newhorizon.func.NHSetting;
 
 public class DeliveryBulletType extends BulletType{
 	private static final float div = 8f;
 	
+	public static float rotateSpeed = 0.15f;
 	protected TextureRegion region;
 	public DeliveryBulletType(TextureRegion region){
 		super();
@@ -58,16 +60,16 @@ public class DeliveryBulletType extends BulletType{
 		super.init(b);
 		if(!(b.data instanceof Delivery.DeliveryData))b.remove();
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
-		data.t = new EffectTrail(region.height / 6, (region.width / 40f)).clear();
+		if(data.t == null)data.t = new EffectTrail(region.height / 6, (region.width / 40f)).clear();
 		if(data.to == null)despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
 		if(data.needRotate){
-			b.lifetime += 180 / (0.85f * 50f);
+			b.lifetime += 180 / (rotateSpeed * 50f);
 			b.vel.setLength(0.001f);
 		}
 	}
 	
 	public void rotateBullet(Bullet b, Position target, boolean addLife){
-		b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), 0.85f * Time.delta * 50f));
+		b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), rotateSpeed * Time.delta * 50f));
 	}
 	
 	@Override
@@ -108,16 +110,15 @@ public class DeliveryBulletType extends BulletType{
 			if(b.x < 0 || b.x > Vars.world.unitWidth() || b.y < 0 || b.y > Vars.world.unitHeight() || (b.dst(data.to) < Vars.tilesize * 1.25f && data.needRotate)){
 				b.time(b.lifetime());
 			}
-			
-			Tmp.v1.trns(b.rotation(), -region.height / div);
-			
-			if(b.time > homingDelay){
-				data.t.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
-				if(trailChance > 0.0F && Mathf.chanceDelta(trailChance)){
-					trailEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, trailParam, getTrailColor(b));
-				}
-			}
 		}else rotateBullet(b, data.to, true);
+		
+		if(data.needRotate || b.time > homingDelay){
+			Tmp.v1.trns(b.rotation(), -region.height / div);
+			data.t.update(b.x + Tmp.v1.x, b.y + Tmp.v1.y);
+			if(trailChance > 0.0F && Mathf.chanceDelta(trailChance)){
+				trailEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, trailParam, getTrailColor(b));
+			}
+		}
 	}
 	
 	@Override
@@ -144,14 +145,15 @@ public class DeliveryBulletType extends BulletType{
 			}
 		}
 		Tmp.v1.trns(b.rotation(), -region.height / div);
-		if(!data.transportBack)despawnEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), b.team.color);
-		else{
+		if(data.needRotate || !data.transportBack){
+			despawnEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), b.team.color);
+			data.t.disappear(getTrailColor(b));
+		}else{
 			float lifeScl = data.to.dst(data.from) / range();
 			Delivery.DeliveryData dataAdapt = new Delivery.DeliveryData(data, true);
-			Log.info(dataAdapt);
+			dataAdapt.t = data.t;
+			NHSetting.debug(() -> Log.info(dataAdapt));
 			create(b, b.team, b.x, b.y, b.rotation(), 1, 1, lifeScl, dataAdapt);
 		}
-		data.t.disappear(getTrailColor(b));
-		Fx.artilleryTrail.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, data.t.width * 1.2f, getTrailColor(b));
 	}
 }

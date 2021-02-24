@@ -39,6 +39,7 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHSetting;
 import newhorizon.func.Tables;
 import newhorizon.interfaces.Linkablec;
 
@@ -179,12 +180,11 @@ public class Delivery extends Block{
 			            closure = false;
 			            break;
 			        }
-			        
-			        Log.info("Number of attempts: @", set.size);
+				    NHSetting.debug(() -> Log.info("Number of attempts: @", set.size));
 			    }
 		    }
 		    else closure = false;
-		    Log.info("closure: @", closure);
+			NHSetting.debug(() -> Log.info("closure: @", closure));
 		    set.each(ent -> ent.closure = closure);
         }
 		
@@ -214,7 +214,9 @@ public class Delivery extends Block{
 			}
 			
 			if(transportBack){
-				dump();
+				for(Item item : Vars.content.items()){
+					dump(item);
+				}
 			}
 		}
 		

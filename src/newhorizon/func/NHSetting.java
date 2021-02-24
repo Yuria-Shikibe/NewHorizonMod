@@ -3,7 +3,6 @@ package newhorizon.func;
 import arc.files.Fi;
 import arc.struct.ObjectMap;
 import arc.util.Log;
-import arc.util.serialization.Json;
 import mindustry.Vars;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
@@ -111,6 +110,10 @@ public class NHSetting{
 	
 	public static boolean getBool(String key){
 		return Boolean.parseBoolean(settingList.getProperty(key));
+	}
+	
+	public static void debug(Runnable run){
+		if(getBool("@active.debug"))run.run();
 	}
 	
 	public static void setBoolOnce(String key, boolean bool){
