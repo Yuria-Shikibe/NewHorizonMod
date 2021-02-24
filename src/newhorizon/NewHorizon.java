@@ -8,8 +8,8 @@ import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Time;
-import mindustry.Vars;
 import mindustry.ctype.ContentList;
+import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
@@ -20,7 +20,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
 import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
-import newhorizon.func.TableFuncs;
+import newhorizon.func.Tables;
 
 import java.io.IOException;
 
@@ -68,31 +68,7 @@ public class NewHorizon extends Mod{
 	}
 	
 	private static void logShow(){
-		new BaseDialog("@log"){{
-			cont.table(Tex.buttonEdge3, table -> {
-				table.add("[accent]" + NHSetting.modMeta.version + " [gray]Update Log:").center().row();
-				addCloseListener();
-				table.pane(t -> {
-					t.add("@fix").color(Pal.accent).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFuncs.tabSpace + Core.bundle.get("update.fix")).row();
-					
-					t.add("@add").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFuncs.tabSpace + Core.bundle.get("update.add")).row();
-					
-					t.add("@remove").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFuncs.tabSpace + Core.bundle.get("update.remove")).row();
-					
-					t.add("@other").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFuncs.tabSpace + Core.bundle.get("update.other")).row();
-				}).growX().height((Core.graphics.getHeight() - LEN * 2) / (Vars.mobile ? 1.1f : 2.2f));
-			}).growX().fillY().row();
-			cont.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).bottom().row();
-			cont.button("@back", Icon.left, Styles.cleart, this::hide).fillX().height(LEN).row();
-		}}.show();
+		new Tables.LogDialog(new UnlockableContent[]{NHBlocks.delivery}).show();
 	}
 	
 	public static void startLog(){
@@ -101,9 +77,9 @@ public class NewHorizon extends Mod{
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
 				table.table(t -> t.image(Core.atlas.find(MOD_NAME + "upgrade"))).center().growX().fillY().row();
-				table.image().growX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
+				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
-				table.image().growX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
+				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("").row();
 			}).grow().center().row();
 			

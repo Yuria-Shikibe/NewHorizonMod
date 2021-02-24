@@ -1,5 +1,6 @@
 package newhorizon.func;
 
+import arc.Core;
 import arc.func.Cons;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
@@ -7,11 +8,14 @@ import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
+import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
+import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.block.special.JumpGate;
 
 import static mindustry.Vars.state;
@@ -55,7 +59,7 @@ public class Tables{
 						t.button(new TextureRegionDrawable(item.icon(Cicon.xlarge)), Styles.clearTogglei, LEN - OFFSET, () -> {
 							selects[Vars.content.items().indexOf(item)] = !selects[Vars.content.items().indexOf(item)];
 						}).update(b -> b.setChecked(selects[Vars.content.items().indexOf(item)])).size(LEN);
-					}).growX().fillY();
+					}).fill();
 					i++;
 				}
 			}).grow();
@@ -87,6 +91,45 @@ public class Tables{
 			for(int i = 0; i < selects.length; i++){
 				selects[i] = read.bool();
 			}
+		}
+	}
+	
+	public static class LogDialog extends BaseDialog{
+		public LogDialog(UnlockableContent[] contents){
+			super("@log");
+			cont.table(Tex.buttonEdge3, table -> {
+				table.add("[accent]" + NHSetting.modMeta.version + " [gray]Update Log:").center().row();
+				addCloseListener();
+				table.pane(t -> {
+					t.add("@fix").color(Pal.accent).left().row();
+					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+					t.add(TableFuncs.tabSpace + Core.bundle.get("update.fix")).row();
+					
+					t.add("@add").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
+					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+					t.add(TableFuncs.tabSpace + Core.bundle.get("update.add")).row();
+					contentLog(t, contents);
+					
+					t.add("@remove").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
+					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+					t.add(TableFuncs.tabSpace + Core.bundle.get("update.remove")).row();
+					
+					t.add("@other").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
+					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+					t.add(TableFuncs.tabSpace + Core.bundle.get("update.other")).row();
+				}).growX().height((Core.graphics.getHeight() - LEN * 2) / (Vars.mobile ? 1.1f : 2.2f));
+			}).growX().fillY().row();
+			cont.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).bottom().row();
+			cont.button("@back", Icon.left, Styles.cleart, this::hide).fillX().height(LEN).row();
+		}
+		
+		public void contentLog(Table table, UnlockableContent[] contents){
+			table.pane(t -> {
+				for(UnlockableContent c : contents){
+					c.display(t);
+					t.row();
+				}
+			}).grow().row();
 		}
 	}
 }

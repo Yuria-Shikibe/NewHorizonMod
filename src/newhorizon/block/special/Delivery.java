@@ -317,10 +317,12 @@ public class Delivery extends Block{
 						itemTable.color.a = 0;
 					}
 				});
-				t.add(l).center().growX().height(LEN).row();
-				t.button(Icon.upOpen, Styles.cleari, LEN, () -> {
-					transportBack = !transportBack;
-				}).update(b -> b.getStyle().imageUp = transportBack ? Icon.downOpen : Icon.upOpen).growX().fillY().row();
+				t.table(text -> {
+					text.add("@ui.mode");
+					text.add(": ");
+					text.add(l).color(Pal.accent);
+				}).growX().fillY().center().row();
+				t.button(Icon.upOpen, Styles.cleari, LEN, () -> transportBack = !transportBack).update(b -> b.getStyle().imageUp = transportBack ? Icon.downOpen : Icon.upOpen).growX().fillY().row();
 			}).growX().fillY().row();
 			table.add(itemTable);
 		}
