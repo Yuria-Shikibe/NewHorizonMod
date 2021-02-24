@@ -152,17 +152,17 @@ public class Delivery extends Block{
 		
 		public boolean flushLink(){
 		    ObjectSet<DeliveryBuild> set = new ObjectSet<>();
-		    if(linkValid() && link() instanceof DeliveryBuild) {
-			    DeliveryBuild build = (DeliveryBuild)link();
+		    if(acceptDelivery != null) {
+			    DeliveryBuild build = acceptDelivery;
 			    while(true) {
-			        if(build.link() != null && build.link() instanceof DeliveryBuild) {
+			        if(build.acceptDelivery != null) {
 			            set.add(build);
-			            if(build.link().id == id) {
+			            if(build.acceptDelivery.id == id) {
 			                closure = true;
 			                break;
 			            }
 			            
-			            build = (DeliveryBuild)build.link();
+			            build = build.acceptDelivery;
 			        }
 			        else break;
 			    }
