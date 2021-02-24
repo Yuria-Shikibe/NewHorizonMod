@@ -146,6 +146,7 @@ public class Delivery extends Block{
 						NHFx.trail.at(x + Tmp.v1.x, y + Tmp.v2.y, 3f, team.color);
 					});
 				}
+				if(link() != null && link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = this;
 				flushLink();
 			}
 		}
@@ -190,7 +191,6 @@ public class Delivery extends Block{
 			
 			if(linkValid()){
 				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(link()), rotateSpeed * this.efficiency());
-				if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = this;
 			}
 			
 			if(linkValid() && Angles.angleDist(rotation, angleTo(link())) < 10){
