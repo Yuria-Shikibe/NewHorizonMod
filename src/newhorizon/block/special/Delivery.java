@@ -317,7 +317,7 @@ public class Delivery extends Block{
 						itemTable.color.a = 0;
 					}
 				});
-				t.add(l).growX().height(LEN).row();
+				t.add(l).center().growX().height(LEN).row();
 				t.button(Icon.upOpen, Styles.cleari, LEN, () -> {
 					transportBack = !transportBack;
 				}).update(b -> b.getStyle().imageUp = transportBack ? Icon.downOpen : Icon.upOpen).growX().fillY().row();
