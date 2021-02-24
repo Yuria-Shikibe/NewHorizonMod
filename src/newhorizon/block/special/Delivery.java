@@ -151,7 +151,6 @@ public class Delivery extends Block{
 					});
 				}
 				if(link() instanceof DeliveryBuild) ((DeliveryBuild)link()).acceptDelivery = this;
-				}
 				flushLink();
 			}
 		}
