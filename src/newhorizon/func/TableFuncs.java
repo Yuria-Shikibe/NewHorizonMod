@@ -310,9 +310,9 @@ public class TableFuncs {
     
                     if(field.getType().getSimpleName().equals("BulletType")){
                         BulletType inner = (BulletType)field.get(type);
-                        if(inner == null || inner.toString().equals("bullet#0") || inner.toString().equals("bullet#1"))continue;
+                        if(inner == null || inner.toString().equals("bullet#0") || inner.toString().equals("bullet#1") || inner.toString().equals("bullet#2"))continue;
                         
-                        Log.info(inner);
+                        NHSetting.debug(() -> Log.info(inner));
                         table.add("[gray]" + field.getName() + "{ ").left().row();
                         table.table(in -> buildBulletTypeInfo(in, inner)).padLeft(LEN).row();
                         table.add("[gray]}").left().row();

@@ -191,7 +191,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		towardGate = new TowardGate("toward-gate"){{
-			speed = 20;
+			speed = 80;
 			requirements(Category.distribution, BuildVisibility.shown, with(Items.titanium, 5, Items.copper, 10, Items.silicon, 5));
 			NHTechTree.add(Blocks.sorter, this);
 		}};

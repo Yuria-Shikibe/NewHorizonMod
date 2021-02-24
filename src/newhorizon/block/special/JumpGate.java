@@ -9,11 +9,9 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
@@ -21,7 +19,6 @@ import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -39,7 +36,6 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
-import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
 import newhorizon.func.DrawFuncs;
@@ -287,14 +283,13 @@ public class JumpGate extends Block {
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
-                                    () -> set.type == null ? "[lightgray]" + Iconc.cancel :
-                                            Core.bundle.format("bar.unitcap",
+                                    () -> Core.bundle.format("bar.unitcap",
                                                     Fonts.getUnicodeStr(set.type.name),
                                                     team.data().countType(set.type),
                                                     Units.getCap(team)
                                             ),
                                     () -> Units.getCap(team) - team.data().countType(set.type) - set.callIns <= 0 ? Pal.redderDust : Pal.power,
-                                    () -> set.type == null ? 0f : (float)team.data().countType(set.type) / Units.getCap(team)
+                                    () ->  (float)team.data().countType(set.type) / Units.getCap(team)
                             );
                             info.add(unitCurrent).growX().height(LEN - OFFSET);
                         }).fillY().growX().padTop(OFFSET).row();
@@ -356,15 +351,15 @@ public class JumpGate extends Block {
         public void consumeItems(){
             if(coreValid()){
                 int i = 0;
-                for(ItemStack stack : getSet().requirements()){
-                    Delivery.DeliveryData data = Pools.obtain(Delivery.DeliveryData.class, Delivery.DeliveryData::new);
-                    data.items[Vars.content.items().indexOf(stack.item)] = stack.amount;
-                    i ++;
-                    Time.run(i * spawnDelay, () -> {
-                        Tmp.v1.rnd(block().size * tilesize / 2f).add(this);
-                        if(isValid())NHContent.deliveryBullet.create(this, team, Tmp.v1.x, Tmp.v1.y, angleTo(core()), 1f, 1f, 10000f, data);
-                    });
-                }
+//                for(ItemStack stack : getSet().requirements()){
+//                    Delivery.DeliveryData data = Pools.obtain(Delivery.DeliveryData.class, Delivery.DeliveryData::new);
+//                    data.items[Vars.content.items().indexOf(stack.item)] = stack.amount;
+//                    i ++;
+//                    Time.run(i * spawnDelay, () -> {
+//                        Tmp.v1.rnd(block().size * tilesize / 2f).add(this);
+//                        if(isValid())NHContent.deliveryBullet.create(this, team, Tmp.v1.x, Tmp.v1.y, angleTo(core()), 1f, 1f, 10000f, data);
+//                    });
+//                }
                 
                 if(!state.rules.infiniteResources)team.core().items.remove(getSet().requirements());
             }

@@ -36,7 +36,7 @@ public class SpeedupTurret extends PowerTurret{
 		@Override
 		public void updateTile(){
 			super.updateTile();
-			if(!isActive() && slowDownReload >= 1f){
+			if(slowDownReload >= 1f){
 				slowDownReload -= Time.delta;
 			}else speedupScl = Mathf.lerpDelta(speedupScl, 0f, 0.05f);
 		}

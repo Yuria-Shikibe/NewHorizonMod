@@ -8,6 +8,7 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.util.Log;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -68,8 +69,8 @@ public class DeliveryBulletType extends BulletType{
 		}
 	}
 	
-	public void rotateBullet(Bullet b, Position target, boolean addLife){
-		b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), rotateSpeed * Time.delta * 50f));
+	public void rotateBullet(Bullet b, @Nullable Position target, boolean addLife){
+		if(target != null)b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), rotateSpeed * Time.delta * 50f));
 	}
 	
 	@Override
@@ -107,7 +108,7 @@ public class DeliveryBulletType extends BulletType{
 		if(!data.needRotate || Angles.angleDist(b.rotation(), data.from.angleTo(data.to)) < 5f){
 			b.vel.setLength(speed * (Mathf.curve(b.fin(), 0f, 0.05f) + 0.001f));
 			rotateBullet(b, data.to, false);
-			if(b.x < 0 || b.x > Vars.world.unitWidth() || b.y < 0 || b.y > Vars.world.unitHeight() || (b.dst(data.to) < Vars.tilesize * 1.25f && data.needRotate)){
+			if(b.x < 0 || b.x > Vars.world.unitWidth() || b.y < 0 || b.y > Vars.world.unitHeight() || (data.to == null || (b.dst(data.to) < Vars.tilesize * 1.25f && data.needRotate))){
 				b.time(b.lifetime());
 			}
 		}else rotateBullet(b, data.to, true);
