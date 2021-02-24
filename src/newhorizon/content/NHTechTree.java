@@ -5,12 +5,20 @@ import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
 import mindustry.type.ItemStack;
+import mindustry.type.UnitType;
 
 
 public class NHTechTree implements ContentList {
     
     public static void add(UnlockableContent root, UnlockableContent content){
         new TechNode(TechTree.get(root), content, content.researchRequirements());
+    }
+    
+    private static void addUnit(UnlockableContent root, UnitType type){
+        ItemStack[] requirement;
+        if((requirement = NHLoader.unitBuildCost.get(type)) != null){
+            new TechNode(TechTree.get(root), type, requirement);
+        }else new TechNode(TechTree.get(root), type, ItemStack.with());
     }
     
     @Override
@@ -26,7 +34,6 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.heavyDefenceDoor, NHBlocks.heavyDefenceDoorLarge);
         add(Blocks.batteryLarge, NHBlocks.armorBatteryLarge);
         new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
-        new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
@@ -61,12 +68,16 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.zetaFactorySmall, NHBlocks.xenMelter);
 
         //Units;
-        new TechNode(TechTree.get(UnitTypes.zenith), NHUnits.striker, NHUnits.striker.researchRequirements());
-        new TechNode(TechTree.get(UnitTypes.scepter), NHUnits.tarlidor, NHUnits.tarlidor.researchRequirements());
-        new TechNode(TechTree.get(UnitTypes.eclipse), NHUnits.hurricane, NHUnits.hurricane.researchRequirements());
-        new TechNode(TechTree.get(NHUnits.tarlidor), NHUnits.annihilation, NHUnits.annihilation.researchRequirements());
-        add(UnitTypes.horizon, NHUnits.warper);
-        add(NHUnits.warper, NHUnits.destruction);
+        addUnit(UnitTypes.mono, NHUnits.gather);
+        
+        addUnit(UnitTypes.horizon, NHUnits.warper);
+        addUnit(NHUnits.warper, NHUnits.striker);
+        addUnit(NHUnits.striker, NHUnits.destruction);
+        addUnit(NHUnits.destruction, NHUnits.hurricane);
+        
+        addUnit(UnitTypes.scepter, NHUnits.tarlidor);
+        addUnit(NHUnits.tarlidor, NHUnits.annihilation);
+        
         //Items / liquids;
         new TechNode(TechTree.get(Items.titanium), NHItems.metalOxhydrigen, NHItems.metalOxhydrigen.researchRequirements());
         new TechNode(TechTree.get(Items.metaglass), NHItems.multipleSteel, NHItems.multipleSteel.researchRequirements());

@@ -11,6 +11,7 @@ import mindustry.ctype.ContentList;
 import mindustry.entities.bullet.ContinuousLaserBulletType;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
+import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -23,6 +24,7 @@ public class NHLoader implements ContentList{
 	public static final ObjectMap<String, NHIconGenerator.IconSet> fullIconNeeds = new ObjectMap<>();
 	public static final ObjectMap<String, TextureRegion> outlineTex = new ObjectMap<>();
 	public static final ObjectMap<String, TextureRegion> needBeLoad = new ObjectMap<>();
+	public static final ObjectMap<UnitType, ItemStack[]> unitBuildCost = new ObjectMap<>();
 	public static NHContent content;
 	public static NHIconGenerator iconGenerator;
 	

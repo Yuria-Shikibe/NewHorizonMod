@@ -21,6 +21,8 @@ import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
+import mindustry.gen.Iconc;
+import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -28,10 +30,7 @@ import mindustry.logic.Ranged;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
-import mindustry.ui.Bar;
-import mindustry.ui.Cicon;
-import mindustry.ui.ItemDisplay;
-import mindustry.ui.Styles;
+import mindustry.ui.*;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -42,15 +41,17 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
-import newhorizon.content.NHItems;
+import newhorizon.content.NHLoader;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.Functions;
 import newhorizon.func.TableFuncs;
 import newhorizon.func.Tables;
+import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.*;
 import static newhorizon.func.Functions.regSize;
 import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFuncs.OFFSET;
 
 public class JumpGate extends Block {
     protected static final Seq<JumpGate> all = new Seq<>();
@@ -202,13 +203,11 @@ public class JumpGate extends Block {
         }
         public int spawnID = -1;
         public int spawnPOS = -1;
-
         public float buildReload = 0f;
-
         public float progress;
-        
         protected boolean success, error;
 
+        
         @Override
         public void updateTile(){
             super.updateTile();
@@ -219,18 +218,6 @@ public class JumpGate extends Block {
                     spawn(getSet());
                 }
             }
-        }
-
-        public UnitType getType(){ return calls.get(spawnID).type; }
-        
-        public void setTarget(Integer pos){ spawnPOS = pos; }
-        
-        public Building target(){ return Vars.world.build(spawnPOS); }
-        
-        
-        public UnitSet getSet(){
-            if(spawnID < 0 || spawnID >= calls.size)return null;
-            return calls.get(spawnID);
         }
 
         public Color getColor(UnitSet set){
@@ -294,13 +281,26 @@ public class JumpGate extends Block {
             dialog.cont.pane(inner ->
                 inner.table(callTable -> {
                     for(UnitSet set : calls) {
-                        callTable.add(new Tables.UnitSetTable(set, table2 -> {
-                            table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
-                            table2.button(Icon.add, Styles.clearPartiali, () -> configure(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
-                        })).fill().row();
+                        callTable.table(Tex.pane, info -> {
+                            info.add(new Tables.UnitSetTable(set, table2 -> {
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
+                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
+                            })).fillY().growX().row();
+                            Bar unitCurrent = new Bar(
+                                    () -> set.type == null ? "[lightgray]" + Iconc.cancel :
+                                            Core.bundle.format("bar.unitcap",
+                                                    Fonts.getUnicodeStr(set.type.name),
+                                                    team.data().countType(set.type),
+                                                    Units.getCap(team)
+                                            ),
+                                    () -> Units.getCap(team) - team.data().countType(set.type) - set.callIns <= 0 ? Pal.redderDust : Pal.power,
+                                    () -> set.type == null ? 0f : (float)team.data().countType(set.type) / Units.getCap(team)
+                            );
+                            info.add(unitCurrent).growX().height(LEN - OFFSET);
+                        }).fillY().growX().padTop(OFFSET).row();
                     }
                 }).grow()
-            ).fill().row();
+            ).grow().row();
             dialog.cont.button("@release", Icon.add, Styles.cleart, () -> spawn(getSet())).padTop(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
             dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
             
@@ -352,21 +352,6 @@ public class JumpGate extends Block {
             }
             Draw.reset();
         }
-        @Override public float range(){return range;}
-        @Override public void write(Writes write) {
-            write.i(spawnID);
-            write.i(spawnPOS);
-            write.f(buildReload);
-        }
-        @Override public void read(Reads read, byte revision) {
-            spawnID = read.i();
-            spawnPOS = read.i();
-            buildReload = read.f();
-        }
-
-        public boolean isCalling(){ return spawnID >= 0; }
-
-        public boolean coreValid() { return team.core() != null && team.core().items != null && !team.core().items.empty(); }
 
         public void consumeItems(){
             if(coreValid()){
@@ -400,7 +385,7 @@ public class JumpGate extends Block {
 
         public void startBuild(UnitSet set){
             spawnID = calls.indexOf(set);
-            ui.showInfoPopup("[accent]<<Caution>>[]:Team : " + team.name + "[] starts summon level[accent] " + set.level + " []fleet.", 8f, 0, 20, 20, 20, 20);
+            if(getSet().showText)ui.showInfoPopup("[accent]<<Caution>>[]:Team : " + team.name + "[] starts summon level[accent] " + set.level + " []fleet.", 8f, 0, 20, 20, 20, 20);
         }
 
         public void spawn(UnitSet set){
@@ -424,35 +409,58 @@ public class JumpGate extends Block {
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
             success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
             if(success){
+                if(getSet().showText)ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + getSet().level + "[] fleet in coming at [" + TableFuncs.format(x / tilesize) + ", " + TableFuncs.format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
                 consumeItems();
                 buildReload = 0;
                 spawnID = -1;
                 error = false;
             }else error = true;
         }
+    
+        @Override public float range(){return range;}
+        @Override public void write(Writes write) {
+            write.i(spawnID);
+            write.i(spawnPOS);
+            write.f(buildReload);
+        }
+        @Override public void read(Reads read, byte revision) {
+            spawnID = read.i();
+            spawnPOS = read.i();
+            buildReload = read.f();
+        }
+        public boolean isCalling(){ return spawnID >= 0; }
+        public boolean coreValid() { return team.core() != null && team.core().items != null && !team.core().items.empty(); }
+        public UnitType getType(){ return calls.get(spawnID).type; }
+        public void setTarget(Integer pos){ spawnPOS = pos; }
+        public Building target(){ return Vars.world.build(spawnPOS); }
+        public UnitSet getSet(){
+            if(spawnID < 0 || spawnID >= calls.size)return null;
+            return calls.get(spawnID);
+        }
     }
 
     public static class UnitSet{
         public float level;
         public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
-        public UnitType type;
-        public float costTime = 60f;
-        public int callIns = 5;
-
+        public @NotNull UnitType type;
+        public float costTime;
+        public int callIns;
+        public boolean showText ;
+        
         public UnitSet(){this(0, UnitTypes.alpha, 0, 5); }
 
-        public UnitSet(float level, UnitType type){
-            this.type = type;
-            this.level = level;
-            requirements.add(new ItemStack(NHItems.emergencyReplace, 0));
+        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, ItemStack... requirements){
+            this(level, type, costTime, callIns, true, requirements);
         }
-
-        public UnitSet(float level, UnitType type, float costTime, int callIns, ItemStack... requirements){
+    
+        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, boolean showText, ItemStack... requirements){
+            this.showText = showText;
             this.type = type;
             this.level = level;
             this.costTime = costTime;
             this.callIns = callIns;
             this.requirements.addAll(requirements);
+            if(!NHLoader.unitBuildCost.containsKey(type))NHLoader.unitBuildCost.put(type, ItemStack.mult(requirements, 1f / callIns * 20));
         }
 
         public float costTime(){return costTime * (1 + Vars.state.rules.unitBuildSpeedMultiplier);}
