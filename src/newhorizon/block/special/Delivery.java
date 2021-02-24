@@ -150,7 +150,7 @@ public class Delivery extends Block{
 			}
 		}
 		
-		public boolean flushLink(){
+		public void flushLink(){
 		    ObjectSet<DeliveryBuild> set = new ObjectSet<>();
 		    if(acceptDelivery != null) {
 			    DeliveryBuild build = acceptDelivery;
@@ -168,8 +168,8 @@ public class Delivery extends Block{
 			    }
 		    }
 		    else closure = false;
+		    Log.info("closure: @", closure);
 		    set.each(ent -> ent.closure = closure);
-            return true;
         }
 		
 		public boolean linkValid() {
