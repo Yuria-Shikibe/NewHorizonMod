@@ -130,7 +130,7 @@ public class DeliveryBulletType extends BulletType{
 			return;
 		}
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
-		if(data.to != null && b.dst(data.to) < Vars.tilesize * 2){
+		if(data.to != null){
 			if(!data.transportBack){
 				for(int i = 0; i < Vars.content.items().size; ++i){
 					Call.transferItemTo(null, Vars.content.item(i), Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i)) - data.to.items.get(i)), b.x, b.y, data.to);
