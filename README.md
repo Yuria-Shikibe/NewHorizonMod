@@ -79,7 +79,7 @@ If you find your device cannot afford it, open the mod file folder and find the 
 ---
 ![jump-gate](assets/sprites/blocks/special/jump-gate.png)
 ![jump-gate-junior](assets/sprites/blocks/special/jump-gate-junior.png)
-- **_JumpGate:_** Jump Gate; Junior Jump Gate
+- **_JumpGate:_** Senior Jump Gate; Junior Jump Gate
 
 ###### Use Steps:
 1. Click the building.
@@ -89,3 +89,4 @@ If you find your device cannot afford it, open the mod file folder and find the 
 3. Select the spawn gangplank just like doing it on the `Mass Driver`.
    
 - Spawn units needs resource, and the jump gate can take the resource directly from the `Core`.
+- While placing the `Senior Jump Gate`, the `Junior Jump Gate` is required as a base.
