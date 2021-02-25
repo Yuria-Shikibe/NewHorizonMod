@@ -71,7 +71,7 @@ public class NewHorizon extends Mod{
 	}
 	
 	private static void logShow(){
-		new Tables.LogDialog(new UnlockableContent[]{NHBlocks.delivery}).show();
+		new Tables.LogDialog(new UnlockableContent[]{NHBlocks.pulseLaserTurret, NHBlocks.multipleLauncher}).show();
 	}
 	
 	public static void startLog(){

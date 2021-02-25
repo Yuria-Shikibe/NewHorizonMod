@@ -9,6 +9,7 @@ import arc.math.Mathf;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
+import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -33,6 +34,7 @@ import mindustry.world.draw.DrawMixer;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import newhorizon.NewHorizon;
 import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.adapt.AdaptUnloader;
 import newhorizon.block.adapt.DisposableBattery;
@@ -54,14 +56,15 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-		delivery, zetaOre, xenMelter, hyperGenerator, fusionCollapser, blastTurret, empTurret, gravity,
+		delivery, zetaOre, xenMelter, hyperGenerator, fusionCollapser,
 		largeShieldGenerator,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior,
-		irdryonVault, blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion,
+		//Turrets
+		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
-		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory,
+		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory, irdryonVault,
 		//Liquids factories
 		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory, oilRefiner,
 		//walls
@@ -77,6 +80,79 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		pulseLaserTurret = new SpeedupTurret("pulse-laser-turret"){{
+			size = 3;
+			health = 1350;
+			requirements(Category.turret, ItemStack.with(Items.titanium, 60, NHItems.presstanium, 45, NHItems.zeta, 90, NHItems.juniorProcessor, 40));
+			NHTechTree.add(Blocks.lancer, this);
+			powerUse = 7.5f;
+			shootType = new BasicBulletType(7f, 50f, NewHorizon.configName("circle-bolt")){{
+				drag = 0.01f;
+				trailColor = backColor = lightColor = lightningColor = NHColor.lightSky;
+				frontColor = Color.white;
+				lightning = 3;
+				lightningLengthRand = 8;
+				lightningLength = 2;
+				lightningDamage = damage / 2;
+				splashDamage = damage / 4;
+				splashDamageRadius = 12f;
+				hitEffect = NHFx.lightningHitLarge(backColor);
+				despawnEffect = NHFx.instHitSize(backColor, 3, 22f);
+				trailChance = 0.35f;
+				trailEffect = NHFx.trail;
+				trailParam = 4f;
+				height = 35f;
+				width = 10f;
+				knockback = 3f;
+				lifetime = 57f;
+				shootEffect = NHFx.shootLineSmall(backColor);
+				smokeEffect = Fx.shootBigSmoke;
+			}};
+			inaccuracy = 3f;
+			inaccuracyUp = 7f;
+			shots = 1;
+			shootShake = 2f;
+			shootSound = Sounds.laser;
+			heatColor = Pal.place;
+			recoilAmount = 4f;
+			reloadTime = 30f;
+			slowDownReloadTime = 120f;
+			maxSpeedupScl = 4f;
+			speedupPerShoot = 0.25f;
+			chargeEffect = NHFx.genericCharge(NHColor.lightSky, 4, 120, 28f);
+			chargeEffects = 3;
+			chargeBeginEffect = NHFx.genericChargeBegin(NHColor.lightSky, 5f, 60f);
+			chargeTime = chargeBeginEffect.lifetime;
+			range = 280f;
+		}};
+		
+		multipleLauncher = new ItemTurret("multiple-launcher"){{
+			size = 3;
+			health = 1250;
+			requirements(Category.turret, ItemStack.with(Items.graphite, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
+			NHTechTree.add(Blocks.swarmer, this);
+			ammo(
+				Items.titanium, NHBullets.missileTitanium,
+				Items.thorium, NHBullets.missileThorium,
+				NHItems.zeta, NHBullets.missileZeta,
+				Items.graphite, NHBullets.missile,
+				NHItems.presstanium, NHBullets.missileStrike
+			);
+			smokeEffect = Fx.shootSmallFlame;
+			shootEffect = Fx.shootBig2;
+			recoilAmount = 3f;
+			range = 320f;
+			reloadTime = 75f;
+			shots = 20;
+			maxAmmo = 160;
+			ammoPerShot = 1;
+			ammoEjectBack = 6f;
+			burstSpacing = 2f;
+			inaccuracy = 7f;
+			xRand = tilesize * size / 3.5f;
+			shootSound = Sounds.missile;
+		}};
+		
 		oilRefiner = new GenericCrafter("oil-refiner"){{
 			size = 2;
 			requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
@@ -274,7 +350,7 @@ public class NHBlocks implements ContentList {
 			health = 320;
 			requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.copper, 50, Items.silicon, 25));
 			NHTechTree.add(Blocks.arc, this);
-			shootType = new NHTrailBulletType(6.5f, 15f){{
+			shootType = new NHTrailBulletType(6.5f, 18f){{
 				hitEffect = new Effect(12.0F, (e) -> {
 					Draw.color(Pal.lancerLaser, Color.white, e.fout() * 0.75f);
 					Lines.stroke(e.fout() * 1.5F);
@@ -297,7 +373,7 @@ public class NHBlocks implements ContentList {
 				drawSize = 120f;
 				height = 22f;
 			}};
-			powerUse = 4;
+			powerUse = 3.5f;
 			shots = 5;
 			inaccuracy = 3f;
 			burstSpacing = 6f;
