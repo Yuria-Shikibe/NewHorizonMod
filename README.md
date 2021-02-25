@@ -53,8 +53,8 @@ If you find your device cannot afford it, open the mod file folder and find the 
    if all things go right, you can see the table of all the upgrade options.
 5. Select the option which you want to upgrade.
    ![guide-upgrade](github-pictures/guide/ui-upgrade.png)
-
-   Upgrade needs resource, and the upgrader can take the resource directly from the `Core`. ~~Nice and simple, right?~~
+   
+- Upgrade needs resource, and the upgrader can take the resource directly from the `Core`. ~~Nice and simple, right?~~
 6. Make the turret function correctly just likes other turrets.
 ---
 #### Mass Deliver
@@ -66,7 +66,10 @@ If you find your device cannot afford it, open the mod file folder and find the 
 ###### Use Steps:
 1. Click the building.
 2. Select the mod, `input` or `output`.
-   If `input`, choose the item you want to take in the table. You can choose multiple item at the same time.
+   If `input`, choose the item you want to take in the table.
+   
+   You can choose multiple item at the same time.
+   
    ![guide-mass-deliver](github-pictures/guide/ui-deliver.png)
 3. Select the target just like doing it on the `Mass Driver`.
 
@@ -84,4 +87,5 @@ If you find your device cannot afford it, open the mod file folder and find the 
    Then you will see the spawn dialog.
    ![guide-jump-gate](github-pictures/guide/ui-jump-gate.png)
 3. Select the spawn gangplank just like doing it on the `Mass Driver`.
-   Spawn units needs resource, and the jump gate can take the resource directly from the `Core`.
+   
+- Spawn units needs resource, and the jump gate can take the resource directly from the `Core`.
