@@ -125,9 +125,14 @@ public class Tables{
 		
 		public void contentLog(Table table, UnlockableContent[] contents){
 			table.pane(t -> {
+				int index = 0;
 				for(UnlockableContent c : contents){
-					c.display(t);
-					t.row();
+					if(index % 8 == 0)t.row();
+					t.button(new TextureRegionDrawable(c.icon(Cicon.xlarge)), Styles.cleari, LEN, () -> new BaseDialog(c.localizedName){{
+						cont.pane(c::display).grow().row();
+						addCloseButton();
+					}}.show()).size(LEN);
+					index++;
 				}
 			}).grow().row();
 		}

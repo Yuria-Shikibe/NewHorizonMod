@@ -7,6 +7,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
@@ -138,9 +139,10 @@ public class DeliveryBulletType extends BulletType{
 				for(int i = 0; i < Vars.content.items().size; ++i){
 					if(data.items[i] > 0){
 						int num = Mathf.clamp(data.to.items.get(i), 0, data.from.getMaximumAccepted(Vars.content.item(i)) );
-						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, b);
+						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, new Vec2().set(b));
 						data.to.items.remove(Vars.content.item(i), num);
 						data.items[i] = num;
+						NHSetting.debug(() -> Log.info(data.to + " | " + num));
 					}
 				}
 			}

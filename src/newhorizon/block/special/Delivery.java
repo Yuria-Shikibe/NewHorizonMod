@@ -4,6 +4,7 @@ import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -45,6 +46,8 @@ import newhorizon.interfaces.Linkablec;
 
 import java.util.Arrays;
 
+import static mindustry.Vars.tilesize;
+import static newhorizon.func.DrawFuncs.sinScl;
 import static newhorizon.func.TableFuncs.LEN;
 
 public class Delivery extends Block{
@@ -138,7 +141,7 @@ public class Delivery extends Block{
 			    if(acceptDelivery != null && acceptDelivery.pos() == other.pos()) return false;
 			    if(other instanceof DeliveryBuild && ((DeliveryBuild)other).acceptDelivery != null) return false;
 				configure(other.pos());
-				Log.info("Link" + other.pos());
+				NHSetting.debug(() -> Log.info("Link" + other.pos()));
 				return false;
 			}
 			return true;
@@ -204,8 +207,6 @@ public class Delivery extends Block{
 				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(link()), rotateSpeed * this.efficiency());
 			}
 			
-			
-			Log.info(reload + " | " + shouldDeliver());
 			if(linkValid() && Angles.angleDist(rotation, angleTo(link())) < 10){
 				if(reload >= reloadTime){
 					if(shouldDeliver())deliver();
@@ -356,6 +357,33 @@ public class Delivery extends Block{
 		
 		protected void drawLinkArrow() {
 		    drawLink();
+		}
+		
+		@Override
+		public void drawLink(){
+			if(!linkValid())return;
+			float
+					sin = Mathf.absin(Time.time * sinScl, 6f, 1f),
+					r1 = block().size / 2f * tilesize + sin,
+					r2 = link().block().size / 2f * tilesize + sin;
+			
+			Draw.color(getLinkColor());
+			
+			Lines.square(link().getX(), link().getY(), link().block().size * tilesize / 2f + 1.0f);
+			
+			Tmp.v1.trns(angleTo(link()), r1);
+			Tmp.v2.trns(link().angleTo(this), r2);
+			int sigs = (int)(dst(link()) / tilesize);
+			
+			Lines.stroke(4, Pal.gray);
+			Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, link().getX() + Tmp.v2.x, link().getY() + Tmp.v2.y, sigs);
+			Lines.stroke(2, getLinkColor());
+			Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, link().getX() + Tmp.v2.x, link().getY() + Tmp.v2.y, sigs);
+			Drawf.circles(x, y, r1, getLinkColor());
+			if(!transportBack)Drawf.arrow(x, y, link().getX(), link().getY(), 2 * tilesize + sin, 4 + sin, getLinkColor());
+			else Drawf.arrow(link().getX(), link().getY(), x, y, 2 * tilesize + sin, 4 + sin, getLinkColor());
+			Drawf.circles(link().getX(), link().getY(), r2, getLinkColor());
+			Draw.reset();
 		}
 		
 		@Override public void write(Writes write) {
