@@ -47,8 +47,11 @@ public class NewHorizon extends Mod{
 	
 	private static void links(){
 		BaseDialog dialog = new BaseDialog("@links");
-		addLink(dialog.cont, Icon.github, "Github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git");
-		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN).padLeft(OFFSET / 2);
+		dialog.cont.pane(table -> {
+			addLink(table, Icon.github, "Github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git");
+			addLink(table, Icon.bookOpen, "Help/Guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide");
+		}).grow();
+		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN).padLeft(OFFSET / 2);
 		dialog.addCloseListener();
 		dialog.show();
 	}
