@@ -6,7 +6,8 @@
 
 **Powered by *Yuria*.**
 
-**_Server:_** mindustry.xyz:10704
+## Server
+mindustry.xyz:10704
 
 ## Cautions
 **DOES NOT SUPPORT _IOS_**
