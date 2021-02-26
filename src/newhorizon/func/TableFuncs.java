@@ -198,11 +198,12 @@ public class TableFuncs {
     }
     
     public static void tableMain(){
+        if(headless || net.server())return;
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
-            if(Vars.net.server() || Vars.headless || Vars.state.isMenu())starter.color.a = 0;
-            else {
-                if(starter.color.a < 1)starter.color.a = 1;
+            if(Vars.state.isMenu())starter.color.a = 0;
+            else{
+                starter.color.a = 1;
                 starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f);
                 
                 Unit u = player.unit();
@@ -222,7 +223,6 @@ public class TableFuncs {
                 }
             }
         });
-    
         Player player = Vars.player;
         
         starter.table(table -> table.button(Icon.admin, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
@@ -249,11 +249,11 @@ public class TableFuncs {
                 cont.table(t -> t.add(uT) ).growX().fillY().row();
                 cont.table(t -> t.add(unitTable) ).height(mobile ? inner.getHeight() : unitTable.getHeight()).growX();
             }).growX().height(mobile ? inner.getHeight() : Core.graphics.getHeight() / 1.3f);
-        }).size(LEN).disabled(b -> Vars.net.server() || Vars.headless || isInner || !NHSetting.getBool("@active.admin-panel")).row()).right().padTop(OFFSET).size(LEN).row();
+        }).size(LEN).disabled(b -> isInner || !NHSetting.getBool("@active.admin-panel") || Vars.net.active() || net.client()).row()).right().padTop(OFFSET).size(LEN).row();
         starter.table(table -> table.button(Icon.move, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, t -> {
-                final float WIDTH = LEN * 2;
+                final float WIDTH = LEN * 2.5f;
                 t.table(bt -> {
                     bt.button("@confirm", Icon.export, () -> {
                         try{
@@ -293,7 +293,7 @@ public class TableFuncs {
                 }).height(LEN).padTop(OFFSET);
                 
             }).grow().right();
-        }).size(LEN).disabled(b -> Vars.net.server() || Vars.headless || isInner).row()).right().padTop(OFFSET).size(LEN);
+        }).size(LEN).disabled(b -> isInner).row()).right().padTop(OFFSET).size(LEN);
         Core.scene.root.addChildAt(1, starter);
     }
     
