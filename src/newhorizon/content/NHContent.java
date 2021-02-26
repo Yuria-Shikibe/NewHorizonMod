@@ -62,7 +62,7 @@ public class NHContent extends UnlockableContent{
 	@Override
 	public void createIcons(MultiPacker packer){
 		super.createIcons(packer);
-		if(!NHSetting.getBool("@active.advance-load*"))return;
+		if(!NHSetting.getBool("@active.advance-load*") || Vars.headless)return;
 		packer.add(MultiPacker.PageType.editor, this.name + "-icon-editor", Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full)));
 		
 		NHLoader.outlineTex.each( (arg, tex) -> {
@@ -77,7 +77,6 @@ public class NHContent extends UnlockableContent{
 	
 	@Override
 	public void load(){
-		
 		ammoInfo = Core.atlas.find(NewHorizon.MOD_NAME + "upgrade-info");
 		iconLevel = Core.atlas.find(NewHorizon.MOD_NAME + "level-up");
 		
@@ -94,7 +93,6 @@ public class NHContent extends UnlockableContent{
 		}
 		
 		super.load();
-		//Vars.content.blocks().remove(NHLoader.content);
 	}
 	
 	@Override

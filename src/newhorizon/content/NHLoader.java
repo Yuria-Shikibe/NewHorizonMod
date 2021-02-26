@@ -37,7 +37,7 @@ public class NHLoader implements ContentList{
 	}
 	
 	public static void put(String name){
-		NHLoader.outlineTex.put(NewHorizon.MOD_NAME + name, null);
+		NHLoader.outlineTex.put(NewHorizon.configName(name), null);
 	}
 	
 	public static void put(String... args){

@@ -32,6 +32,7 @@ import mindustry.logic.Ranged;
 import mindustry.type.Item;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.distribution.MassDriver;
 import mindustry.world.blocks.storage.StorageBlock;
@@ -79,6 +80,17 @@ public class Delivery extends Block{
 		config(Integer.class, (DeliveryBuild tile, Integer point) -> tile.link = point);
 	}
 	
+	public boolean canPlaceOn(Tile tile, Team team) {return !Vars.net.client();}
+	
+	public void drawPlace(int x, int y, int rotation, boolean valid){
+		Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, Pal.place);
+		if (Vars.world.tile(x, y) != null) {
+			if (!canPlaceOn(null, null)) {
+				drawPlaceText("Cannot place in server, it is broken", x, y, valid);
+			}
+		}
+	}
+	
 	@Override
 	protected TextureRegion[] icons() {
 		return this.teamRegion.found() && this.minfo.mod == null ? new TextureRegion[]{baseRegion, teamRegions[Team.sharded.id], region} : new TextureRegion[]{baseRegion, region};
@@ -88,11 +100,6 @@ public class Delivery extends Block{
 	public void load(){
 		super.load();
 		baseRegion = Core.atlas.find(name + "-base");
-	}
-	
-	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, Pal.place);
 	}
 	
 	@Override
@@ -108,7 +115,7 @@ public class Delivery extends Block{
 		public float recoil;
 		public boolean closure = false;
 		public boolean transportBack = false;
-		public Tables.ItemSelectTable itemTable = new Tables.ItemSelectTable();
+		public Tables.ItemSelectTable itemTable;
 		public transient DeliveryBuild acceptDelivery;
 		
 		@Override public boolean acceptItem(Building source, Item item) {
@@ -329,6 +336,12 @@ public class Delivery extends Block{
 		}
 		
 		@Override
+		public void placed(){
+			super.placed();
+			if(itemTable == null)itemTable = new Tables.ItemSelectTable();
+		}
+		
+		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
 			drawLinkConfigure(true, id);
@@ -394,6 +407,7 @@ public class Delivery extends Block{
 			itemTable.write(write);
 		}
 		@Override public void read(Reads read, byte revision) {
+			if(itemTable == null)itemTable = new Tables.ItemSelectTable();
 			this.rotation = read.f();
 			this.link = read.i();
 			closure = read.bool();

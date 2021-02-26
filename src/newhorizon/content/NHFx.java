@@ -10,7 +10,6 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
-import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
@@ -332,10 +331,10 @@ public class NHFx{
 			for (int j = 1; j <= 3; j ++) {
 				for(int i = 0; i < 4; i++) {
 					float length = tilesize * starter.block().size * 1.5f + 4f;
-					Tmp.v1.trns(i * 90, -length);
+					float x = Angles.trnsx(i * 90, -length), y = Angles.trnsy(i * 90, -length);
 					e.scaled(30 * j, k -> {
 						float signSize = (e.rotation / 3f + Draw.scl) * k.fout();
-						Draw.rect(pointerRegion, e.x + Tmp.v1.x * k.finpow(), e.y + Tmp.v1.y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Tmp.v1.angle() - 90);
+						Draw.rect(pointerRegion, e.x + x * k.finpow(), e.y + y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Angles.angle(x, y) - 90);
 					});
 				}
 			}

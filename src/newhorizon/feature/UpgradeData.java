@@ -216,7 +216,7 @@ public class UpgradeData{
 				
 				t.table(Tex.button, table -> {
 					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from)).size(LEN);
-					table.button(Icon.upOpen, Styles.clearPartiali, this::upgrade).size(LEN).disabled(b -> !from.canUpgrade(this));
+					table.button(Icon.upOpen, Styles.clearPartiali, () -> from.configure((long)from.all().indexOf(this))).size(LEN).disabled(b -> !from.canUpgrade(this));
 				}).height(LEN + OFFSET).right().padRight(OFFSET);
 			});
 			cont.add(info).pad(OFFSET / 2).growX().height(LEN * 2f).row();

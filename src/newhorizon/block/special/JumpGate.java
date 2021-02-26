@@ -9,6 +9,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -45,7 +46,8 @@ import newhorizon.func.Tables;
 import newhorizon.interfaces.Linkablec;
 import org.jetbrains.annotations.NotNull;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
+import static mindustry.Vars.tilesize;
 import static newhorizon.func.Functions.regSize;
 import static newhorizon.func.TableFuncs.LEN;
 import static newhorizon.func.TableFuncs.OFFSET;
@@ -77,11 +79,15 @@ public class JumpGate extends Block {
         solid = true;
         hasPower = true;
         category = Category.units;
-        
         all.add(this);
-    
         consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
         consumes.powerCond(consumes.getPower().usage, JumpGateBuild::isCalling);
+    
+        config(Long.class, (JumpGateBuild tile, Long b) -> tile.link = b.intValue());
+        config(Integer.class, (JumpGateBuild tile, Integer i) -> {
+            if(!tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
+            else tile.spawn(calls.get(i));
+        });
     }
     
     public boolean canReplace(Block other) {
@@ -122,7 +128,6 @@ public class JumpGate extends Block {
             }
         }
     }
-    
     
     public void addSets(UnitSet... sets){
         calls.addAll(sets);
@@ -203,16 +208,15 @@ public class JumpGate extends Block {
         public float buildReload = 0f;
         public float progress;
         protected boolean success, error;
-
         
         @Override
         public void updateTile(){
-            super.updateTile();
             if(hasConsume(getSet()))progress += efficiency();
             if(isCalling()){
                 buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1);
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
-                    spawn(getSet());
+                    Log.info("start spawn");
+                    configure(spawnID);
                 }
             }
         }
@@ -222,15 +226,13 @@ public class JumpGate extends Block {
             return (error || !hasConsume(getSet())) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
         }
     
-        @Override
-        public void configure(Object value){
-            super.configure(value);
-            if(value instanceof Integer){
-                setTarget((Integer)value);
-            }else if(value instanceof UnitSet){
-                startBuild((UnitSet)value);
-            }
-        }
+//        @Override
+//        public void configure(Object value){
+//            super.configure(value);
+//            if(value instanceof Integer){
+//                setTarget((Integer)value);
+//            }
+//        }
     
         @Override
         public void drawConfigure() {
@@ -259,11 +261,11 @@ public class JumpGate extends Block {
         @Override
         public boolean onConfigureTileTapped(Building other) {
             if (this == other || link == other.pos()) {
-                configure(-1);
+                configure(-1L);
                 return false;
             }
             if (other.within(this, range())) {
-                configure(other.pos());
+                configure((long)other.pos());
                 return false;
             }
             return true;
@@ -280,7 +282,7 @@ public class JumpGate extends Block {
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
-                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(set)).size(LEN).disabled(b -> !canSpawn(set) || error);
+                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(calls.indexOf(set))).size(LEN).disabled(b -> !canSpawn(set) || error);
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
                                     () -> Core.bundle.format("bar.unitcap",
@@ -296,9 +298,8 @@ public class JumpGate extends Block {
                     }
                 }).grow()
             ).grow().row();
-            dialog.cont.button("@release", Icon.add, Styles.cleart, () -> spawn(getSet())).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
+            dialog.cont.button("@release", Icon.add, Styles.cleart, () -> configure(spawnID)).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
             dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).fillX().height(LEN).row();
-            
             table.button("@spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
 
@@ -377,10 +378,13 @@ public class JumpGate extends Block {
                 (coreValid() && ! isCalling() && hasConsume(set)
             ));
         }
-
+        
+        public void startBuild(int set){
+            spawnID = set;
+        }
+        
         public void startBuild(UnitSet set){
             spawnID = calls.indexOf(set);
-            if(getSet().showText)ui.showInfoPopup("[accent]<<Caution>>[]:Team : " + team.name + "[] starts summon level[accent] " + set.level + " []fleet.", 8f, 0, 20, 20, 20, 20);
         }
 
         public void spawn(UnitSet set){
@@ -404,7 +408,6 @@ public class JumpGate extends Block {
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
             success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
             if(success){
-                if(getSet().showText)ui.showInfoPopup("[accent]<<Caution>>[]: Level [accent]" + getSet().level + "[] fleet in coming at [" + TableFuncs.format(x / tilesize) + ", " + TableFuncs.format(y / tilesize) + "].", spawnReloadTime / 60f, 0, 20, 20, 20, 20);
                 consumeItems();
                 buildReload = 0;
                 spawnID = -1;
@@ -431,7 +434,6 @@ public class JumpGate extends Block {
             if(spawnID < 0 || spawnID >= calls.size)return null;
             return calls.get(spawnID);
         }
-        
         @Override public int linkPos(){ return link; }
         @Override public void linkPos(int value){ link = value; }
         @Override public Color getLinkColor(){ return getColor(getSet()); }

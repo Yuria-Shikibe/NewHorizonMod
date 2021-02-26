@@ -59,7 +59,7 @@ public class TableFuncs {
         Inner(){
             background(Tex.button);
             isInner = true;
-            setSize(LEN * 8.5f, (LEN + OFFSET) * 3);
+            setSize(LEN * 12f, (LEN + OFFSET) * 3);
             button(Icon.cancel, Styles.clearTransi, () -> {
                 isInner = false;
                 setStr();

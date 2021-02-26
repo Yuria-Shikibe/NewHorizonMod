@@ -69,8 +69,6 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 			trail.update(b.x + b.vel.x / 2, b.y + b.vel.y / 2);
 		}
 		super.update(b);
-		
-		
 	}
 }
 

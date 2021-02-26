@@ -70,6 +70,9 @@ public class UpgradeBlock extends Block {
 		buildCostMultiplier = 2;
 		configurable = true;
 		solid = true;
+		
+		config(Integer.class, (UpgradeBlockBuild tile, Integer i) -> tile.linkPos(i));
+		config(Long.class, (UpgradeBlockBuild tile, Long i) -> tile.upgradeData(i.intValue()));
 	}
 	
 	@Override
@@ -118,8 +121,6 @@ public class UpgradeBlock extends Block {
 		public int upgradingID = defaultID;
 		public int lastestSelectID = -1;
 		public float remainTime;
-
-		protected BaseDialog dialog = new BaseDialog("Upgrade", Styles.fullDialog);
 		
 		protected boolean coreValid(CoreBlock.CoreBuild core) {
 			return core != null && core.items != null && !core.items.empty();
@@ -156,6 +157,12 @@ public class UpgradeBlock extends Block {
 			remainTime = costTime();
 		}
 		
+		//Data Upgrade
+		public void upgradeData(int data){
+			upgradeData(all().get(data));
+			upgradingID = data;
+		}
+		
 		@Override//Updates
 		public void updateUpgrading() {
 			if (isUpgrading()) {
@@ -177,7 +184,6 @@ public class UpgradeBlock extends Block {
 			
 			updateTarget();
 			upgradingID = defaultID;
-			dialog.cont.update(() -> {});
 		}
 		
 		//UI
@@ -225,7 +231,7 @@ public class UpgradeBlock extends Block {
 		@Override
 		public void linkPos(int value) {
 			if (linkValid())target().resetUpgrade();
-			this.link = value;
+			configure(value);
 			updateTarget();
 		}
 
@@ -256,6 +262,7 @@ public class UpgradeBlock extends Block {
 
 		@Override
 		public void upgraderTableBuild(){
+			BaseDialog dialog = new BaseDialog("Upgrade", Styles.fullDialog);
 			dialog.cont.clear();
 			dialog.addCloseListener();
 			dialog.cont.pane(t -> {
@@ -290,6 +297,7 @@ public class UpgradeBlock extends Block {
 		
 		@Override
 		public void updateTile() {
+			if(datas == null || datas.isEmpty())setData();
 			if (upgradingID != defaultID){
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance))for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2f * tilesize), y - Mathf.random(block.size / 2f * tilesize), block.size / 2f, baseColor);
@@ -386,6 +394,11 @@ public class UpgradeBlock extends Block {
 			if(linkValid())target().resetUpgrade();
 		}
 		public Scalablec target() {return linkValid() ? (Scalablec)link() : null;}
+		
+		@Override
+		public Seq<DataEntity> all(){
+			return datas;
+		}
 	}
 }
 

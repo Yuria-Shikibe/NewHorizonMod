@@ -1,6 +1,7 @@
 package newhorizon.interfaces;
 
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import mindustry.gen.Buildingc;
 import newhorizon.feature.UpgradeData.DataEntity;
 
@@ -14,5 +15,6 @@ public interface Upgraderc extends Buildingc, Linkablec{
 	void updateUpgrading();
 	void completeUpgrade();
 	void upgradeData(DataEntity data);
+	Seq<DataEntity> all();
 }
 

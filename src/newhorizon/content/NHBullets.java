@@ -103,13 +103,13 @@ public class NHBullets implements ContentList{
 			}
 		};
 		
-		missile = new MissileBulletType(4.2f, 20){{
+		missile = new MissileBulletType(4.2f, 16){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
 			drag = -0.01f;
 			splashDamageRadius = 8f;
-			splashDamage = damage;
+			splashDamage = damage * 0.75f;
 			ammoMultiplier = 8f;
 			hitEffect = Fx.flakExplosionBig;
 			despawnEffect = Fx.flakExplosion;

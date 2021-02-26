@@ -9,6 +9,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Nullable;
+import mindustry.Vars;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
@@ -61,7 +62,7 @@ public class NHIconGenerator extends UnlockableContent{
 	@Override
 	public void createIcons(MultiPacker packer){
 		super.createIcons(packer);
-		if(!NHSetting.getBool("@active.advance-load*"))return;
+		if(!NHSetting.getBool("@active.advance-load*") || Vars.headless)return;
 		NHLoader.fullIconNeeds.each( (name, iconSet) -> {
 			TextureAtlas.AtlasRegion t = Core.atlas.find(iconSet.type.name);
 			if(t.found()){
