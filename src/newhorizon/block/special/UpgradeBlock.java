@@ -1,6 +1,7 @@
 package newhorizon.block.special;
 
 import arc.Events;
+import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -71,7 +72,7 @@ public class UpgradeBlock extends Block {
 		configurable = true;
 		solid = true;
 		
-		config(Integer.class, (UpgradeBlockBuild tile, Integer i) -> tile.linkPos(i));
+		config(Integer.class, (Cons2<UpgradeBlockBuild, Integer>)UpgradeBlockBuild::linkPos);
 		config(Long.class, (UpgradeBlockBuild tile, Long i) -> tile.upgradeData(i.intValue()));
 	}
 	
@@ -231,7 +232,7 @@ public class UpgradeBlock extends Block {
 		@Override
 		public void linkPos(int value) {
 			if (linkValid())target().resetUpgrade();
-			configure(value);
+			link = value;
 			updateTarget();
 		}
 
@@ -240,12 +241,12 @@ public class UpgradeBlock extends Block {
 		@Override
 		public boolean onConfigureTileTapped(Building other) {
 			if (this == other) {
-				linkPos(-1);
+				configure(-1);
 				return false;
 			}
 			if (!other.block.name.equals(linkTarget.name))return false;
 			if (link == other.pos()) {
-				linkPos(-1);
+				configure(-1);
 				return false;
 			} else if (!(other instanceof Scalablec)) {
 				ui.showErrorMessage("Failed to connect, target '" + other.toString() + "' doesn't implement @Scalablec");
