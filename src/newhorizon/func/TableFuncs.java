@@ -249,7 +249,7 @@ public class TableFuncs {
                 cont.table(t -> t.add(uT) ).growX().fillY().row();
                 cont.table(t -> t.add(unitTable) ).height(mobile ? inner.getHeight() : unitTable.getHeight()).growX();
             }).growX().height(mobile ? inner.getHeight() : Core.graphics.getHeight() / 1.3f);
-        }).size(LEN).disabled(b -> isInner || !NHSetting.getBool("@active.admin-panel")).row()).right().padTop(OFFSET).size(LEN).row();
+        }).size(LEN).disabled(b -> Vars.net.server() || Vars.headless || isInner || !NHSetting.getBool("@active.admin-panel")).row()).right().padTop(OFFSET).size(LEN).row();
         starter.table(table -> table.button(Icon.move, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, t -> {
@@ -293,7 +293,7 @@ public class TableFuncs {
                 }).height(LEN).padTop(OFFSET);
                 
             }).grow().right();
-        }).size(LEN).disabled(b -> isInner).row()).right().padTop(OFFSET).size(LEN);
+        }).size(LEN).disabled(b -> Vars.net.server() || Vars.headless || isInner).row()).right().padTop(OFFSET).size(LEN);
         Core.scene.root.addChildAt(1, starter);
     }
     

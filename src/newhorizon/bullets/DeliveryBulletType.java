@@ -1,5 +1,6 @@
 package newhorizon.bullets;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -20,6 +21,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Call;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import newhorizon.NewHorizon;
 import newhorizon.block.special.Delivery;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
@@ -27,7 +29,6 @@ import newhorizon.func.NHSetting;
 
 public class DeliveryBulletType extends BulletType{
 	private static final float div = 8f;
-	
 	public static float rotateSpeed = 0.15f;
 	protected TextureRegion region;
 	public DeliveryBulletType(TextureRegion region){
@@ -44,14 +45,33 @@ public class DeliveryBulletType extends BulletType{
 		collides = collidesGround = collidesTeam = collidesTiles = absorbable = false;
 	}
 	
+	public DeliveryBulletType(){
+		this(null);
+		this.speed = 4.6f;
+		this.lifetime = 60f;
+		this.despawnEffect = NHFx.boolSelector;
+		trailColor = null;
+		trailEffect = NHFx.trail;
+		trailChance = 0.7f;
+		trailParam = 2.1f;
+		homingDelay = 3f;
+		collides = collidesGround = collidesTeam = collidesTiles = absorbable = false;
+	}
+	
 	private Color getTrailColor(Bullet b){
 		return trailColor == null ? b.team.color : trailColor;
 	}
 	
 	@Override
+	public void load(){
+		if(region == null)this.region = Core.atlas.find(NewHorizon.configName("mass-deliver-pack"));
+		super.load();
+	}
+	
+	@Override
 	public void init(){
 		super.init();
-		if(despawnEffect == NHFx.boolSelector)despawnEffect = new Effect(35f, e -> {
+		if(despawnEffect == NHFx.boolSelector && region != null)despawnEffect = new Effect(35f, e -> {
 			Draw.mixcol(e.color, 1);
 			Draw.rect(region, e.x, e.y, region.width * Draw.scl * e.fout(), region.height * Draw.scl * e.fout(), e.rotation - 90);
 		});

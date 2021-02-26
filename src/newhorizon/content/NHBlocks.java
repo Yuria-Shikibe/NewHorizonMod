@@ -148,7 +148,7 @@ public class NHBlocks implements ContentList {
 			ammoPerShot = 1;
 			ammoEjectBack = 6f;
 			burstSpacing = 2f;
-			inaccuracy = 7f;
+			inaccuracy = 13f;
 			xRand = tilesize * size / 3.5f;
 			shootSound = Sounds.missile;
 		}};
@@ -244,12 +244,17 @@ public class NHBlocks implements ContentList {
 			chargeBeginEffect = NHFx.chargeBeginEffect(NHItems.irayrondPanel.color, 10, chargeEffect.lifetime);
 			chargeTime = chargeEffect.lifetime;
 			ammo(
-					NHItems.irayrondPanel, NHBullets.railGun1,
-					NHItems.setonAlloy, NHBullets.railGun2
+				NHItems.irayrondPanel, NHBullets.railGun1,
+				NHItems.setonAlloy, NHBullets.railGun2
 			);
 			maxAmmo = 20;
 			minRange = 180f;
 			rotateSpeed = 0.75f;
+			coolantMultiplier = 0.55f;
+			restitution = 0.009f;
+			cooldown = 0.009f;
+			ammoUseEffect = Fx.casing3Double;
+			consumes.powerCond(12f, TurretBuild::isActive);
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500));
 			NHTechTree.add(Blocks.foreshadow, this);
 		}
@@ -469,6 +474,7 @@ public class NHBlocks implements ContentList {
 			mapColor.set(itemDrop.color);
 			useColor = true;
 		}};
+		
 		delivery = new Delivery("mass-deliver"){{
 			size = 3;
 			shake = 3f;
@@ -476,7 +482,6 @@ public class NHBlocks implements ContentList {
 			consumes.power(5f);
 			requirements(Category.distribution, with(NHItems.seniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 120));
 		}};
-		
 		
 		divlusion = new PowerTurret("divlusion"){{
 			shots = 2;

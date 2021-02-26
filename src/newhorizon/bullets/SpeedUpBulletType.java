@@ -15,7 +15,6 @@ public class SpeedUpBulletType extends BasicBulletType{
 	
 	public SpeedUpBulletType(float speed, float damage, String bulletSprite) {
 		super(speed, damage, bulletSprite);
-		
 	}
 	
 	public SpeedUpBulletType(float speed, float damage) {

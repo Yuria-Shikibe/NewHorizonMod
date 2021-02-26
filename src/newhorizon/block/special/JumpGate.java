@@ -42,6 +42,7 @@ import newhorizon.func.DrawFuncs;
 import newhorizon.func.Functions;
 import newhorizon.func.TableFuncs;
 import newhorizon.func.Tables;
+import newhorizon.interfaces.Linkablec;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.*;
@@ -142,7 +143,7 @@ public class JumpGate extends Block {
         super.setStats();
         stats.add(Stat.powerUse, basePowerDraw * 60F, StatUnit.powerSecond);
         stats.add(Stat.output, (t) -> {
-            t.row().add("[gray]Summon Types:").left().pad(TableFuncs.OFFSET).row();
+            t.row().add("[gray]Summon Types:").left().pad(OFFSET).row();
             for(UnitSet set : calls) {
                 t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[gray]: Summon needs building.")).size(LEN))).fill().row();
             }
@@ -156,8 +157,8 @@ public class JumpGate extends Block {
         dialogIn.cont.pane(t -> {
             t.image(set.type.icon(Cicon.full)).center().row();
             t.add("<<[accent] " + set.type.localizedName + " []>>").row();
-            t.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(TableFuncs.OFFSET).row();
-            t.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(TableFuncs.OFFSET).row();
+            t.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
+            t.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
             t.table(table -> {
                 int index = 0;
                 for(ItemStack stack : set.requirements()){
@@ -165,11 +166,11 @@ public class JumpGate extends Block {
                     table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
                     index ++;
                 }
-            }).fillY().left().padLeft(TableFuncs.OFFSET).row();
-            if(!textExtra.equals(""))t.add(textExtra).left().padLeft(TableFuncs.OFFSET).row();
+            }).fillY().left().padLeft(OFFSET).row();
+            if(!textExtra.equals(""))t.add(textExtra).left().padLeft(OFFSET).row();
             t.image().fillX().pad(2).height(4f).color(Pal.accent);
             t.row();
-            t.button("@back", Icon.left, dialogIn::hide).size(LEN * 2.5f, LEN).pad(TableFuncs.OFFSET / 3);
+            t.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
         }).fill().row();
         dialogIn.show();
     }
@@ -193,12 +194,12 @@ public class JumpGate extends Block {
         arrowRegion = Core.atlas.find(NewHorizon.MOD_NAME + "jump-gate-arrow");
     }
 
-    public class JumpGateBuild extends Building implements Ranged {
+    public class JumpGateBuild extends Building implements Ranged, Linkablec{
         public Color baseColor(){
             return baseColor == null ? team().color : baseColor;
         }
         public int spawnID = -1;
-        public int spawnPOS = -1;
+        public int link = -1;
         public float buildReload = 0f;
         public float progress;
         protected boolean success, error;
@@ -233,32 +234,31 @@ public class JumpGate extends Block {
     
         @Override
         public void drawConfigure() {
-            Drawf.dashCircle(x, y, range(), baseColor());
-            Draw.color(baseColor());
+            Color color = getColor(getSet());
+            Drawf.dashCircle(x, y, range(), color);
+            Draw.color(color);
             Lines.square(x, y, block().size * tilesize / 2f + 1.0f);
-            if(target() != null) {
-                Building target = target();
+            drawLink();
+            if(link() != null) {
+                Building target = link();
                 Draw.alpha(0.3f);
                 Fill.square(target.x, target.y, target.block.size / 2f * tilesize);
                 Draw.alpha(1f);
-                Drawf.dashCircle(target.x, target.y, spawnRange, baseColor());
-                Draw.color(baseColor());
+                Drawf.dashCircle(target.x, target.y, spawnRange, color);
+                Draw.color(color);
                 Lines.square(target.x, target.y, target.block().size * tilesize / 2f + 1.0f);
-
-                DrawFuncs.posSquareLinkArr(getColor(getSet()), 1.5f, 3.5f, true, false, this, target, core());
-                Drawf.arrow(x, y, target.x, target.y, 15f, 6f, getColor(getSet()));
-
-            }else Drawf.dashCircle(x, y, spawnRange, baseColor());
+            }else Drawf.dashCircle(x, y, spawnRange, color);
             
-            if(error){
-                DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, getColor(getSet()));
-            }
+            if(core() != null)DrawFuncs.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
+            
+            if(error)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color);
+            
             Draw.reset();
         }
 
         @Override
         public boolean onConfigureTileTapped(Building other) {
-            if (this == other || spawnPOS == other.pos()) {
+            if (this == other || link == other.pos()) {
                 configure(-1);
                 return false;
             }
@@ -296,8 +296,8 @@ public class JumpGate extends Block {
                     }
                 }).grow()
             ).grow().row();
-            dialog.cont.button("@release", Icon.add, Styles.cleart, () -> spawn(getSet())).padTop(TableFuncs.OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
-            dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(TableFuncs.OFFSET / 2).fillX().height(LEN).row();
+            dialog.cont.button("@release", Icon.add, Styles.cleart, () -> spawn(getSet())).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
+            dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).fillX().height(LEN).row();
             
             table.button("@spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
@@ -392,8 +392,8 @@ public class JumpGate extends Block {
                 spawnNum = Units.getCap(team) - team.data().countType(set.type);
             }
 
-            if(target() != null) {
-                Building target = target();
+            if(link() != null) {
+                Building target = link();
                 Sx = target.x;
                 Sy = target.y;
             }else{
@@ -415,23 +415,26 @@ public class JumpGate extends Block {
         @Override public float range(){return range;}
         @Override public void write(Writes write) {
             write.i(spawnID);
-            write.i(spawnPOS);
+            write.i(link);
             write.f(buildReload);
         }
         @Override public void read(Reads read, byte revision) {
             spawnID = read.i();
-            spawnPOS = read.i();
+            link = read.i();
             buildReload = read.f();
         }
         public boolean isCalling(){ return spawnID >= 0; }
         public boolean coreValid() { return team.core() != null && team.core().items != null && !team.core().items.empty(); }
         public UnitType getType(){ return calls.get(spawnID).type; }
-        public void setTarget(Integer pos){ spawnPOS = pos; }
-        public Building target(){ return Vars.world.build(spawnPOS); }
+        public void setTarget(Integer pos){ link = pos; }
         public UnitSet getSet(){
             if(spawnID < 0 || spawnID >= calls.size)return null;
             return calls.get(spawnID);
         }
+        
+        @Override public int linkPos(){ return link; }
+        @Override public void linkPos(int value){ link = value; }
+        @Override public Color getLinkColor(){ return getColor(getSet()); }
     }
 
     public static class UnitSet{

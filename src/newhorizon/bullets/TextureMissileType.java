@@ -3,11 +3,10 @@ package newhorizon.bullets;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -24,8 +23,6 @@ import newhorizon.effects.EffectTrail;
 
 public class TextureMissileType extends NHTrailBulletType{
 	public float div = 7f;
-	public TextureRegion region;
-	protected String name;
 	public float effectDelay = 5f;
 	public boolean drawLightTrail;
 	
@@ -37,7 +34,7 @@ public class TextureMissileType extends NHTrailBulletType{
 		super(speed, damage, name);
 		NHLoader.put(name);
 		String[] s = name.split("@");
-		this.name = NewHorizon.configName(s[0]);
+		sprite = NewHorizon.configName(s[0]);
 		homingPower = 0.08f;
 		homingRange = 400f;
 		homingDelay = 8;
@@ -48,7 +45,7 @@ public class TextureMissileType extends NHTrailBulletType{
 		height = width = 1;
 		despawnEffect = new Effect(35f, e -> {
 			Draw.mixcol(trailColor, 1);
-			Draw.rect(region, e.x, e.y, region.width * Draw.scl * e.fout(), region.height * Draw.scl * e.fout(), e.rotation - 90);
+			Draw.rect(backRegion, e.x, e.y, backRegion.width * Draw.scl * e.fout(), backRegion.height * Draw.scl * e.fout(), e.rotation - 90);
 		});
 		hitShake = 4f;
 		hitSound = Sounds.explosionbig;
@@ -56,31 +53,27 @@ public class TextureMissileType extends NHTrailBulletType{
 		drawSize = 60f;
 	}
 	
-	@Override
-	public void load(){
-		region = Core.atlas.find(name);
-		Log.info("[LOAD]" + name);
-	}
-	
 	public TextureMissileType(String name){
 		this(1, 1, name);
 	}
 	
 	@Override
-	public void initTrail(){
-		region = Core.atlas.find(name);
-		if(trailLength < 0)trailLength = (int)(region.height * height / 5.2f);
-		if(trailWidth < 0)trailWidth = region.width * width / 38f;
+	public void init(){
+		if(!Vars.headless){
+			backRegion = Core.atlas.find(sprite);
+			if(trailLength < 0) trailLength = (int)(backRegion.height * height / 5.2f);
+			if(trailWidth < 0) trailWidth = backRegion.width * width / 38f;
+		}
 		drawSize = Math.max(drawSize, 2.5f * trailLength * speed);
+		super.init();
 	}
-	
 	
 	@Override
 	public void draw(Bullet b){
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
 		
-		Tmp.v1.trns(b.rotation(), -region.height * height / div);
+		Tmp.v1.trns(b.rotation(), -backRegion.height * height / div);
 		float sin = Mathf.absin(Time.time, 1f, 3f);
 		float f = Mathf.curve(b.fin(), 0.05f, 0.1f);
 		float h = b.fslope() * Layer.block / 2f + 5;
@@ -94,9 +87,9 @@ public class TextureMissileType extends NHTrailBulletType{
 		trail.draw(trailColor);
 		Draw.z(Layer.blockOver - 1f);
 		Draw.color(Pal.shadow);
-		Draw.rect(region, b.x - h, b.y - h, region.width * Draw.scl * width, region.height * Draw.scl * height, b.rotation() - 90.0F);
+		Draw.rect(backRegion, b.x - h, b.y - h, backRegion.width * Draw.scl * width, backRegion.height * Draw.scl * height, b.rotation() - 90.0F);
 		Draw.color();
-		Draw.rect(region, b.x, b.y, region.width * Draw.scl * width, region.height * Draw.scl * height, b.rotation() - 90.0F);
+		Draw.rect(backRegion, b.x, b.y, backRegion.width * Draw.scl * width, backRegion.height * Draw.scl * height, b.rotation() - 90.0F);
 		Draw.reset();
 		
 	}
@@ -105,7 +98,7 @@ public class TextureMissileType extends NHTrailBulletType{
 	public void update(Bullet b){
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		Tmp.v1.trns(b.rotation(), -region.height * height / div);
+		Tmp.v1.trns(b.rotation(), -backRegion.height * height / div);
 		
 		if(b.time > effectDelay){
 			if(b.timer(3, Mathf.clamp(1 / Time.delta, 0, 1))){
@@ -137,7 +130,7 @@ public class TextureMissileType extends NHTrailBulletType{
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
 		
-		Tmp.v1.trns(b.rotation(), -region.height / div);
+		Tmp.v1.trns(b.rotation(), -backRegion.height / div);
 		trail.disappear(trailColor);
 		Fx.artilleryTrail.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, trail.width * 1.2f, trailColor);
 	}

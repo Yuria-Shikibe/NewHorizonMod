@@ -73,7 +73,7 @@ public class NHBullets implements ContentList{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
-			pierceCap = 6;
+			pierceCap = 5;
 			drag = -0.01f;
 			homingPower = 0.125f;
 			homingRange = range();
@@ -137,13 +137,14 @@ public class NHBullets implements ContentList{
 			height = 8f;
 			shrinkY = 0f;
 			pierceCap = 2;
+			knockback = 10f;
 			drag = -0.01f;
 			ammoMultiplier = 6f;
 			backColor = trailColor = lightColor = Items.thorium.color.cpy().lerp(Color.white, 0.2f);
 			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
 			homingPower = 0.08f;
 			lifetime = 100f;
-			hitEffect = NHFx.instHitSize(backColor, 2, 27f);
+			hitEffect = NHFx.instHitSize(backColor, 2, 30f);
 			despawnEffect = NHFx.shootCircleSmall(backColor);
 		}};
 		

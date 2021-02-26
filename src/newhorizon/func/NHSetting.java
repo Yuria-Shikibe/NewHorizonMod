@@ -113,7 +113,7 @@ public class NHSetting{
 	}
 	
 	public static void debug(Runnable run){
-		if(getBool("@active.debug"))run.run();
+		if(Vars.headless || getBool("@active.debug"))run.run();
 	}
 	
 	public static void setBoolOnce(String key, boolean bool){

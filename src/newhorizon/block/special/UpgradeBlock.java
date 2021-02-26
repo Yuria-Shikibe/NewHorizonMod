@@ -142,7 +142,7 @@ public class UpgradeBlock extends Block {
 			return 
 				coreValid(core) && (
 					data.isMaxLevel() && !isUpgrading() && core.items.has(data.requirements())
-				) && data.type().unlockLevel <= datas.first().level;
+				);
 		}
 
 		public float costTime(){

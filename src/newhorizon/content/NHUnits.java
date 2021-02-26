@@ -78,6 +78,7 @@ public class NHUnits implements ContentList {
 			ammoType = AmmoTypes.powerLow;
 			mineTier = 5;
 			mineSpeed = 10F;
+			lowAltitude = true;
 		}};
 		
 		destruction = new AutoOutlineUnitType("destruction",

@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import mindustry.Vars;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
@@ -99,7 +100,7 @@ public class NHContent extends UnlockableContent{
 	@Override
 	public void init(){
 		super.init();
-		deliveryBullet = new DeliveryBulletType(Core.atlas.find(NewHorizon.MOD_NAME + "mass-deliver-pack"));
+		if(Vars.headless)deliveryBullet = new DeliveryBulletType();
 	}
 	
 	@Override
