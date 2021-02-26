@@ -200,7 +200,7 @@ public class TableFuncs {
     public static void tableMain(){
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
-            if(Vars.state.isMenu())starter.color.a = 0;
+            if(Vars.net.server() || Vars.headless || Vars.state.isMenu())starter.color.a = 0;
             else {
                 if(starter.color.a < 1)starter.color.a = 1;
                 starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f);
