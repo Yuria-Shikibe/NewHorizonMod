@@ -9,7 +9,7 @@
 ## Server
 `mindustry.xyz:10704`
 
-######For foreigners (foreign countries relative to China)
+######For foreigners(foreign countries relative to China)
 Most of the players in the server may Chinese when you log in it.
 
 Well, you would feel it is impossible to communicate with them because as I know many of the player in the Chinese game community of Mindustry (especially in my place) do not use English often or not fluent in it ~~just likes me~~. However, I believe there must exist players who are good at English and willing to translate what you say to others then replied you.
