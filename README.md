@@ -8,6 +8,7 @@
 
 ## Server
 `mindustry.xyz:10704`
+
 ######For foreigners (foreign countries relative to China)
 Most of the players in the server may Chinese when you log in it.
 
