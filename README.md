@@ -110,7 +110,7 @@ If you find your device cannot afford it, open the mod file folder and find the 
 
 ---
 ![player-jump-gate](assets/sprites/blocks/special/player-jump-gate.png)
-- **_JumpGate:_** Senior Jump Gate; Junior Jump Gate
+- **_PlayerJumpGate:_** Transport a player from a position to another fastly.
 
 ###### Use Steps:
 1. Click the building.
