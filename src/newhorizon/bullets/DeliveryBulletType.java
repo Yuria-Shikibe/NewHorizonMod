@@ -30,7 +30,7 @@ import newhorizon.func.NHSetting;
 public class DeliveryBulletType extends BulletType{
 	private static final float div = 8f;
 	public static float rotateSpeed = 0.15f;
-	protected TextureRegion region;
+	public TextureRegion region;
 	public DeliveryBulletType(TextureRegion region){
 		super();
 		this.speed = 4.6f;
@@ -159,7 +159,7 @@ public class DeliveryBulletType extends BulletType{
 				for(int i = 0; i < Vars.content.items().size; ++i){
 					if(data.items[i] > 0){
 						int num = Mathf.clamp(data.to.items.get(i), 0, data.from.getMaximumAccepted(Vars.content.item(i)) );
-						Call.takeItems(data.to, Vars.content.item(i), num, null);
+						data.to.items.remove(Vars.content.item(i), num);
 						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, new Vec2().set(b));
 						data.items[i] = num;
 						NHSetting.debug(() -> Log.info(data.to + " | " + num));

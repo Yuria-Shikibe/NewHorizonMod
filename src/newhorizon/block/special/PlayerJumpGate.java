@@ -52,7 +52,7 @@ public class PlayerJumpGate extends Block{
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
 		if (Vars.world.tile(x, y) != null) {
 			if (!canPlaceOn(null, null)) {
-				drawPlaceText("Broken in server.\nWhy? Because the anti teleport plugin fucked up everything.", x, y, valid);
+				drawPlaceText("Broken in server.\nWhy? Because the fucking anti teleport plugin fucked up everything.", x, y, valid);
 			}
 		}
 	}

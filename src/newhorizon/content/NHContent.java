@@ -98,7 +98,8 @@ public class NHContent extends UnlockableContent{
 	@Override
 	public void init(){
 		super.init();
-		if(Vars.headless)deliveryBullet = new DeliveryBulletType();
+		deliveryBullet = new DeliveryBulletType();
+		if(!Vars.headless)deliveryBullet.region = Core.atlas.find(NewHorizon.configName("mass-deliver-pack"));
 	}
 	
 	@Override

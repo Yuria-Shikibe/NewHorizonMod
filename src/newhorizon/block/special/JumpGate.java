@@ -337,7 +337,6 @@ public class JumpGate extends Block {
                 Draw.rect(pointerRegion, x + Tmp.v1.x,y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize * scl, pointerRegion.height * Draw.scl * signSize * scl, i * 90 + 90);
             }
             Draw.color();
-            
 
             if(isCalling() && hasConsume(getSet())){
                 Draw.z(Layer.bullet);
@@ -396,10 +395,7 @@ public class JumpGate extends Block {
             success = false;
             float Sx, Sy;
             int spawnNum = set.callIns;
-            if(team.data().countType(set.type) + spawnNum > Units.getCap(team)){
-                spawnNum = Units.getCap(team) - team.data().countType(set.type);
-            }
-
+    
             if(link() != null) {
                 Building target = link();
                 Sx = target.x;
@@ -408,9 +404,12 @@ public class JumpGate extends Block {
                 Sx = x;
                 Sy = y;
             }
-
+            
+            
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
-            success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, set.type, baseColor());
+    
+            success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, (long)progress, set.type, baseColor());
+            
             if(success){
                 consumeItems();
                 buildReload = 0;
