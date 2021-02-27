@@ -24,10 +24,12 @@ import mindustry.type.ItemStack;
 import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
+import newhorizon.func.TableFuncs;
 import newhorizon.interfaces.Upgraderc;
 
 import static newhorizon.func.TableFuncs.*;
@@ -86,6 +88,7 @@ public class UpgradeData{
 		description = Core.bundle.get("upgrade-data." + name + ".description", "null");
 		
 		if(maxDamageReduce >= 1)maxDamageReduce %= 1;
+		if(!isLeveled)maxLevel = 1;
 	}
 	
 	
@@ -149,7 +152,7 @@ public class UpgradeData{
 			this.level = read.i();
 		}
 		
-		public void showInfo(boolean drawCons, Upgraderc from){
+		public void showInfo(boolean drawCons, Upgraderc from, ItemModule module){
 			BaseDialog dialog = new BaseDialog("@consume");
 			dialog.addCloseListener();
 			dialog.cont.pane(table -> {
@@ -170,8 +173,10 @@ public class UpgradeData{
 					table.pane(t -> {
 						int index = 0;
 						for(ItemStack stack : requirements()){
-							if(index % 5 == 0)t.row();
-							t.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
+							if(module != null || index % 7 == 0)table.row();
+							if(module != null){
+								TableFuncs.add(table, stack, module);
+							}else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
 							index ++;
 						}
 					}).left().row();
@@ -215,7 +220,7 @@ public class UpgradeData{
 				}).size(LEN * 6f, LEN * 1.5f).center().growX();
 				
 				t.table(Tex.button, table -> {
-					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from)).size(LEN);
+					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from, from.core().items)).size(LEN);
 					table.button(Icon.upOpen, Styles.clearPartiali, () -> from.configure((long)from.all().indexOf(this))).size(LEN).disabled(b -> !from.canUpgrade(this));
 				}).height(LEN + OFFSET).right().padRight(OFFSET);
 			});

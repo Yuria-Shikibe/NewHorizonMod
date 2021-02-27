@@ -74,12 +74,21 @@ public class NHBlocks implements ContentList {
 		//Drills
 		largeWaterExtractor,
 		//Powers
-		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator
+		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
+		//Special
+		playerJumpGate
 		;
 
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		playerJumpGate = new PlayerJumpGate("player-jump-gate"){{
+			requirements(Category.effect, ItemStack.with(Items.titanium, 60, NHItems.presstanium, 45, NHItems.zeta, 120, NHItems.juniorProcessor, 50));
+			NHTechTree.add(Blocks.massDriver, this);
+			size = 3;
+			consumes.power(5f);
+		}};
+		
 		pulseLaserTurret = new SpeedupTurret("pulse-laser-turret"){{
 			size = 3;
 			health = 1350;
@@ -1083,12 +1092,12 @@ public class NHBlocks implements ContentList {
 				NHItems.irayrondPanel, 800
 			));
 			addSets(
-				new UnitSet(5.5f, NHUnits.annihilation, 7200f, 4,
+				new UnitSet(5.5f, NHUnits.annihilation, 6600f, 4,
 					new ItemStack(NHItems.setonAlloy, 800),
 					new ItemStack(NHItems.seniorProcessor, 800),
 					new ItemStack(NHItems.thermoCoreNegative, 800)
 				),
-				new UnitSet(4.5f, NHUnits.tarlidor, 5800f,4,
+				new UnitSet(4.5f, NHUnits.tarlidor, 5400f,4,
 					new ItemStack(NHItems.irayrondPanel, 800),
 					new ItemStack(NHItems.multipleSteel, 1600),
 					new ItemStack(NHItems.seniorProcessor, 1000),
@@ -1106,12 +1115,12 @@ public class NHBlocks implements ContentList {
 					new ItemStack(NHItems.zeta, 1800),
 					new ItemStack(Items.plastanium, 1200)
 				),
-				new UnitSet(5.5f, NHUnits.destruction, 6500f,3,
-						new ItemStack(NHItems.setonAlloy, 600),
-						new ItemStack(NHItems.seniorProcessor, 600),
-						new ItemStack(NHItems.multipleSteel, 500),
-						new ItemStack(Items.phaseFabric, 600),
-						new ItemStack(Items.graphite, 450)
+				new UnitSet(5.5f, NHUnits.destruction, 6200f,3,
+					new ItemStack(NHItems.setonAlloy, 600),
+					new ItemStack(NHItems.seniorProcessor, 600),
+					new ItemStack(NHItems.multipleSteel, 500),
+					new ItemStack(Items.phaseFabric, 600),
+					new ItemStack(Items.graphite, 450)
 				)
 			);
 		}};
@@ -1139,25 +1148,25 @@ public class NHBlocks implements ContentList {
 			));
 			NHTechTree.add(Blocks.commandCenter, this);
 			addSets(
-					new UnitSet(3, UnitTypes.quasar, 3600f, 4,
+					new UnitSet(3, UnitTypes.quasar, 3000f, 4,
 							new ItemStack(Items.titanium, 300),
 							new ItemStack(Items.thorium, 300),
 							new ItemStack(NHItems.multipleSteel, 200),
 							new ItemStack(NHItems.juniorProcessor, 150)
 					),
-					new UnitSet(4, UnitTypes.scepter, 6400f, 4,
+					new UnitSet(4, UnitTypes.scepter, 5800f, 4,
 							new ItemStack(Items.plastanium, 400),
 							new ItemStack(NHItems.presstanium, 600),
 							new ItemStack(NHItems.multipleSteel, 300),
 							new ItemStack(NHItems.juniorProcessor, 350)
 					),
-					new UnitSet(3, NHUnits.gather, 5800f, 3, false,
+					new UnitSet(3, NHUnits.gather, 5200f, 3, false,
 							new ItemStack(Items.thorium, 300),
 							new ItemStack(NHItems.presstanium, 180),
 							new ItemStack(NHItems.zeta, 210),
 							new ItemStack(NHItems.juniorProcessor, 150)
 					),
-					new UnitSet(3.5f, NHUnits.warper, 7200f, 9,
+					new UnitSet(3.5f, NHUnits.warper, 6600f, 9,
 							new ItemStack(Items.thorium, 1500),
 							new ItemStack(Items.graphite, 500),
 							new ItemStack(NHItems.presstanium, 400),

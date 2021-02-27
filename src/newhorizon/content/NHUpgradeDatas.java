@@ -18,7 +18,7 @@ public class NHUpgradeDatas implements ContentList{
 	public void load(){
 		none = new UpgradeData();
 		
-		strikeRocket = new UpgradeData("rocket-strike", NHBullets.strikeRocket, 500f,
+		strikeRocket = new UpgradeData("rocket-strike", NHBullets.strikeRocket, 600f,
 				new ItemStack(NHItems.seniorProcessor, 100),
 				new ItemStack(NHItems.darkEnergy, 50),
 				new ItemStack(NHItems.irayrondPanel, 1000),
@@ -38,7 +38,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		bombStorm = new UpgradeData(
-				"bomb-storm", NHBullets.rapidBomb, 900f,
+				"bomb-storm", NHBullets.rapidBomb, 300f,
 				new ItemStack(NHItems.upgradeSort, 250),
 				new ItemStack(NHItems.darkEnergy, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -58,7 +58,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		darkEnrlaser = new UpgradeData(
-			"dark-enr-laser", NHBullets.darkEnrlaser, 300f,
+			"dark-enr-laser", NHBullets.darkEnrlaser, 900f,
 			new ItemStack(Items.surgeAlloy, 250),
 			new ItemStack(NHItems.darkEnergy, 500),
 			new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -71,7 +71,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		decayLaser = new UpgradeData(
-				"decay-laser", NHBullets.decayLaser, 300f,
+				"decay-laser", NHBullets.decayLaser, 700f,
 				new ItemStack(Items.surgeAlloy, 250),
 				new ItemStack(NHItems.irayrondPanel, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)
@@ -84,7 +84,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		arc9000 = new UpgradeData(
-				"arc-9000", NHBullets.boltGene, 900f,
+				"arc-9000", NHBullets.boltGene, 2700f,
 				new ItemStack(NHItems.upgradeSort, 1200),
 				new ItemStack(NHItems.darkEnergy, 1000),
 				new ItemStack(NHItems.thermoCoreNegative, 800),
@@ -109,7 +109,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		airRaid = new UpgradeData(
-				"air-raid", NHBullets.airRaid, 500f,
+				"air-raid", NHBullets.airRaid, 1200f,
 				new ItemStack(NHItems.upgradeSort, 250),
 				new ItemStack(NHItems.darkEnergy, 500),
 				new ItemStack(NHItems.thermoCoreNegative, 150)

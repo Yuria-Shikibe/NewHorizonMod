@@ -228,8 +228,7 @@ public class HyperGenerator extends PowerGenerator{
 			
 			if(warmup > minWarmup){
 				for(int i : Mathf.signs){
-					Drawf.tri(x, y, triWidth * warmup, triLength, (i + 1) * 90);
-					if(Mathf.chance(warmup / updateEffectDiv)) updateEffect.at(x + i * Mathf.random(effectCircleSize), y + i * Mathf.random(effectCircleSize), updateEffectSize * warmup, effectColor);
+					if(Mathf.chance(warmup / updateEffectDiv))updateEffect.at(x + i * Mathf.random(effectCircleSize), y + i * Mathf.random(effectCircleSize), updateEffectSize * warmup, effectColor);
 				}
 				if(Mathf.chance( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
 					NHFx.lightningHitLarge(effectColor).at(point);

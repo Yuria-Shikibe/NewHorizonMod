@@ -233,6 +233,11 @@ public class NHFx{
 	
 	
 	public static final Effect
+		poly = new Effect(25f, e -> {
+			Draw.color(e.color);
+			Lines.stroke(e.fout() * 2.0F);
+			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * e.rotation);
+		}),
 		healEffect = new Effect(11.0F, (e) -> {
 			Draw.color(NHColor.lightSky);
 			Lines.stroke(e.fout() * 2.0F);

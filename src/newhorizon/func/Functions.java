@@ -34,8 +34,7 @@ import newhorizon.content.NHBlocks;
 import newhorizon.content.NHFx;
 
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 import static mindustry.core.World.toTile;
 
 public class Functions {
@@ -134,7 +133,7 @@ public class Functions {
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
-            if(!Vars.net.client()){
+            if(!Vars.net.client() || headless){
                 final TextureRegion
                     pointerRegion = ((JumpGate)NHBlocks.jumpGate).pointerRegion,
                     arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
@@ -177,7 +176,7 @@ public class Functions {
                 Unit unit = type.create(starter.team());
                 unit.set(s.x, s.y);
                 unit.rotation = angle;
-                if(!Vars.net.client()){
+                if(!Vars.net.client() || headless){
                     unit.add();
                     if(type.flying){
                         NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);

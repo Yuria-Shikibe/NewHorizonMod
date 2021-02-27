@@ -10,6 +10,7 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -20,6 +21,7 @@ import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
+import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -150,33 +152,37 @@ public class JumpGate extends Block {
         stats.add(Stat.output, (t) -> {
             t.row().add("[gray]Summon Types:").left().pad(OFFSET).row();
             for(UnitSet set : calls) {
-                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[gray]: Summon needs building.")).size(LEN))).fill().row();
+                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[gray]: Summon needs building.", null)).size(LEN))).fill().row();
             }
         });
     }
 
-    public void showInfo(UnitSet set, String textExtra){
+    public void showInfo(UnitSet set, String textExtra, @Nullable ItemModule module){
         BaseDialog dialogIn = new BaseDialog("More Info");
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
         dialogIn.cont.pane(t -> {
-            t.image(set.type.icon(Cicon.full)).center().row();
-            t.add("<<[accent] " + set.type.localizedName + " []>>").row();
-            t.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
-            t.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
-            t.table(table -> {
-                int index = 0;
-                for(ItemStack stack : set.requirements()){
-                    if(index % 5 == 0)table.row();
-                    table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
-                    index ++;
-                }
-            }).fillY().left().padLeft(OFFSET).row();
-            if(!textExtra.equals(""))t.add(textExtra).left().padLeft(OFFSET).row();
-            t.image().fillX().pad(2).height(4f).color(Pal.accent);
-            t.row();
-            t.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
-        }).fill().row();
+            t.table(inner -> {
+                inner.image(set.type.icon(Cicon.full)).center().row();
+                inner.add("<<[accent] " + set.type.localizedName + " []>>").row();
+                inner.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
+                inner.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
+                inner.table(table -> {
+                    int index = 0;
+                    for(ItemStack stack : set.requirements()){
+                        if(module != null || index % 7 == 0)table.row();
+                        if(module != null){
+                            TableFuncs.add(table, stack, module);
+                        }else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
+                        index ++;
+                    }
+                }).growX().fillY().left().padLeft(OFFSET).row();
+                if(!textExtra.equals(""))inner.add(textExtra).left().padLeft(OFFSET).row();
+                inner.image().fillX().pad(2).height(4f).color(Pal.accent);
+                inner.row();
+                inner.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
+            }).grow();
+        }).grow().row();
         dialogIn.show();
     }
 
@@ -185,9 +191,10 @@ public class JumpGate extends Block {
         super.setBars();
         bars.add("progress",
             (JumpGateBuild entity) -> new Bar(
-                    () -> Core.bundle.get("bar.progress"),
-                    () -> Pal.power,
-                    () -> entity.getSet() == null ? 0 : entity.buildReload / entity.getSet().costTime()
+                () -> entity.isCalling() ?
+                        Core.bundle.get("bar.progress") : "[lightgray]" + Iconc.cancel,
+                () -> entity.isCalling() && entity.hasConsume(entity.getSet()) ? Pal.power : Pal.redderDust,
+                () -> entity.isCalling() ? entity.buildReload / entity.getSet().costTime() : 0
             )
         );
     }
@@ -208,31 +215,32 @@ public class JumpGate extends Block {
         public float buildReload = 0f;
         public float progress;
         protected boolean success, error;
+        protected float warmup;
         
         @Override
         public void updateTile(){
-            if(hasConsume(getSet()))progress += efficiency();
+            if(hasConsume(getSet()))progress += efficiency() + warmup;
             if(isCalling()){
-                buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1);
+                buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1) * Vars.state.rules.unitBuildSpeedMultiplier;
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
                     Log.info("start spawn");
                     configure(spawnID);
                 }
             }
+            if(efficiency() > 0){
+                if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
+                else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
+            }else{
+                if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
+                else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
+            }
+            
         }
 
         public Color getColor(UnitSet set){
             if(set == null)return baseColor();
             return (error || !hasConsume(getSet())) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
         }
-    
-//        @Override
-//        public void configure(Object value){
-//            super.configure(value);
-//            if(value instanceof Integer){
-//                setTarget((Integer)value);
-//            }
-//        }
     
         @Override
         public void drawConfigure() {
@@ -281,7 +289,7 @@ public class JumpGate extends Block {
                     for(UnitSet set : calls) {
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
-                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]")).size(LEN);
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]", core().items)).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(calls.indexOf(set))).size(LEN).disabled(b -> !canSpawn(set) || error);
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
@@ -298,6 +306,12 @@ public class JumpGate extends Block {
                     }
                 }).grow()
             ).grow().row();
+            dialog.cont.add(new Bar(
+                    () -> isCalling() ? Core.bundle.format("ui.remain-time") + ": [accent]" + TableFuncs.format((getSet().costTime() - progress) / 60f) + " Sec[gray]."
+                            : "[lightgray]" + Iconc.cancel,
+                    () -> isCalling() && hasConsume(getSet()) ? Pal.power : Pal.redderDust,
+                    () -> isCalling() ? buildReload / getSet().costTime() : 0
+            )).fillX().height(LEN).padTop(OFFSET / 2).row();
             dialog.cont.button("@release", Icon.add, Styles.cleart, () -> configure(spawnID)).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
             dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).fillX().height(LEN).row();
             table.button("@spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
@@ -307,25 +321,25 @@ public class JumpGate extends Block {
         public void draw(){
             super.draw();
             Draw.z(Layer.bullet);
-            if(efficiency() > 0){
-                Lines.stroke(squareStroke, getColor(getSet()));
-                float rot = progress;
-                Lines.square(x, y, block.size * tilesize / 2.5f, -rot);
-                Lines.square(x, y, block.size * tilesize / 2f, rot);
-                for(int i = 0; i < 4; i++){
-                    float length = tilesize * block().size / 2f + 8f;
-                    Tmp.v1.trns(i * 90 + rot, -length);
-                    Draw.rect(arrowRegion,x + Tmp.v1.x,y + Tmp.v1.y, arrowRegion.width * Draw.scl * atlasSizeScl, arrowRegion.height * Draw.scl * atlasSizeScl, i * 90 + 90 + rot);
-                    float sin = Mathf.absin(progress, 16f, tilesize);
-                    length = tilesize * block().size / 2f + 3 + sin;
-                    float signSize = 0.75f + Mathf.absin(progress + 8f, 8f, 0.15f);
-                    Tmp.v1.trns(i * 90, -length);
-                    Draw.rect(pointerRegion, x + Tmp.v1.x,y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize * atlasSizeScl, pointerRegion.height * Draw.scl * signSize * atlasSizeScl, i * 90 + 90);
-                }
-                Draw.color();
+            float scl = warmup * atlasSizeScl;
+            Lines.stroke(squareStroke * warmup, getColor(getSet()));
+            float rot = progress;
+            Lines.square(x, y, block.size * tilesize / 2.5f, -rot);
+            Lines.square(x, y, block.size * tilesize / 2f, rot);
+            for(int i = 0; i < 4; i++){
+                float length = tilesize * block().size / 2f + 8f;
+                Tmp.v1.trns(i * 90 + rot, -length);
+                Draw.rect(arrowRegion,x + Tmp.v1.x,y + Tmp.v1.y, arrowRegion.width * Draw.scl * scl, arrowRegion.height * Draw.scl * scl, i * 90 + 90 + rot);
+                float sin = Mathf.absin(progress, 16f, tilesize);
+                length = tilesize * block().size / 2f + 3 + sin;
+                float signSize = 0.75f + Mathf.absin(progress + 8f, 8f, 0.15f);
+                Tmp.v1.trns(i * 90, -length);
+                Draw.rect(pointerRegion, x + Tmp.v1.x,y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize * scl, pointerRegion.height * Draw.scl * signSize * scl, i * 90 + 90);
             }
+            Draw.color();
+            
 
-            if(isCalling() && efficiency() > 0.1f && hasConsume(getSet())){
+            if(isCalling() && hasConsume(getSet())){
                 Draw.z(Layer.bullet);
                 Draw.color(getColor(getSet()));
                 for (int l = 0; l < 4; l++) {
@@ -334,7 +348,7 @@ public class JumpGate extends Block {
                     for (int i = 0; i < 4; i++) {
                         Tmp.v1.trns(angle, (i - 4) * tilesize * 2);
                         float f = (100 - (progress - 25 * i) % 100) / 100;
-                        Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * regSize * f * atlasSizeScl, pointerRegion.height * regSize * f * atlasSizeScl, angle - 90);
+                        Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * regSize * f * scl, pointerRegion.height * regSize * f * scl, angle - 90);
                     }
                 }
 
@@ -342,7 +356,7 @@ public class JumpGate extends Block {
                     Draw.color(getColor(getSet()));
                     float signSize = 0.75f + Mathf.absin(progress + 8f, 8f, 0.15f);
                     for (int i = 0; i < 4; i++) {
-                        Draw.rect(arrowRegion, x , y, arrowRegion.width * Draw.scl * signSize * atlasSizeScl, arrowRegion.height * Draw.scl * signSize * atlasSizeScl, 90 * i);
+                        Draw.rect(arrowRegion, x , y, arrowRegion.width * Draw.scl * signSize * scl, arrowRegion.height * Draw.scl * signSize * scl, 90 * i);
                     }
                 }
             }
@@ -352,16 +366,6 @@ public class JumpGate extends Block {
         public void consumeItems(){
             if(coreValid()){
                 int i = 0;
-//                for(ItemStack stack : getSet().requirements()){
-//                    Delivery.DeliveryData data = Pools.obtain(Delivery.DeliveryData.class, Delivery.DeliveryData::new);
-//                    data.items[Vars.content.items().indexOf(stack.item)] = stack.amount;
-//                    i ++;
-//                    Time.run(i * spawnDelay, () -> {
-//                        Tmp.v1.rnd(block().size * tilesize / 2f).add(this);
-//                        if(isValid())NHContent.deliveryBullet.create(this, team, Tmp.v1.x, Tmp.v1.y, angleTo(core()), 1f, 1f, 10000f, data);
-//                    });
-//                }
-                
                 if(!state.rules.infiniteResources)team.core().items.remove(getSet().requirements());
             }
         }
@@ -420,11 +424,13 @@ public class JumpGate extends Block {
             write.i(spawnID);
             write.i(link);
             write.f(buildReload);
+            write.f(warmup);
         }
         @Override public void read(Reads read, byte revision) {
             spawnID = read.i();
             link = read.i();
             buildReload = read.f();
+            warmup = read.f();
         }
         public boolean isCalling(){ return spawnID >= 0; }
         public boolean coreValid() { return team.core() != null && team.core().items != null && !team.core().items.empty(); }
@@ -463,7 +469,7 @@ public class JumpGate extends Block {
             if(!NHLoader.unitBuildCost.containsKey(type))NHLoader.unitBuildCost.put(type, ItemStack.mult(requirements, 1f / callIns * 20));
         }
 
-        public float costTime(){return costTime * (1 + Vars.state.rules.unitBuildSpeedMultiplier);}
+        public float costTime(){return costTime;}
         public ItemStack[] requirements(){ return requirements.toArray(); }
     }
 }

@@ -103,7 +103,7 @@ public class NHBullets implements ContentList{
 			}
 		};
 		
-		missile = new MissileBulletType(4.2f, 16){{
+		missile = new MissileBulletType(4.2f, 12){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
@@ -132,12 +132,12 @@ public class NHBullets implements ContentList{
 			lifetime = 100f;
 		}};
 		
-		missileThorium = new MissileBulletType(4.2f, 32){{
+		missileThorium = new MissileBulletType(4.2f, 40){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
 			pierceCap = 2;
-			knockback = 10f;
+			knockback = 16f;
 			drag = -0.01f;
 			ammoMultiplier = 6f;
 			backColor = trailColor = lightColor = Items.thorium.color.cpy().lerp(Color.white, 0.2f);
