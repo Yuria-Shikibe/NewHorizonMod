@@ -114,7 +114,6 @@ If you find your device cannot afford it, open the mod file folder and find the 
 
 ###### Use Steps:
 1. Click the building.
-   
 2. Make sure the building isn't locked(You can get and switch the mode through the left button), then tap another `Player Jump Gate` to link.
 2. Make sure you are using a flyable unit and get close enough to the building, then click the button `Teleport` to teleport to the link building.
 
