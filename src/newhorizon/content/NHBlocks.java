@@ -138,7 +138,7 @@ public class NHBlocks implements ContentList {
 		multipleLauncher = new ItemTurret("multiple-launcher"){{
 			size = 3;
 			health = 1250;
-			requirements(Category.turret, ItemStack.with(Items.graphite, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
+			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
 			NHTechTree.add(Blocks.swarmer, this);
 			ammo(
 				Items.titanium, NHBullets.missileTitanium,
@@ -150,7 +150,7 @@ public class NHBlocks implements ContentList {
 			smokeEffect = Fx.shootSmallFlame;
 			shootEffect = Fx.shootBig2;
 			recoilAmount = 3f;
-			range = 320f;
+			range = 280f;
 			reloadTime = 75f;
 			shots = 20;
 			maxAmmo = 160;

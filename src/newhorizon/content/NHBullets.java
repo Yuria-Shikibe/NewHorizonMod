@@ -84,7 +84,7 @@ public class NHBullets implements ContentList{
 			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
 			hitEffect = NHFx.lightningHitSmall(backColor);
 			despawnEffect = NHFx.shootCircleSmall(backColor);
-			lifetime = 100f;
+			lifetime = 75f;
 		}
 			@Override
 			public void update(Bullet b){
@@ -109,14 +109,14 @@ public class NHBullets implements ContentList{
 			shrinkY = 0f;
 			drag = -0.01f;
 			splashDamageRadius = 8f;
-			splashDamage = damage * 0.75f;
+			splashDamage = damage / 2;
 			ammoMultiplier = 8f;
 			hitEffect = Fx.flakExplosionBig;
 			despawnEffect = Fx.flakExplosion;
-			lifetime = 100f;
+			lifetime = 75f;
 		}};
 		
-		missileTitanium = new MissileBulletType(4.2f, 24){{
+		missileTitanium = new MissileBulletType(4.2f, 22){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
@@ -129,10 +129,10 @@ public class NHBullets implements ContentList{
 			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
 			hitEffect = NHFx.lightningHitSmall(backColor);
 			despawnEffect = NHFx.shootCircleSmall(backColor);
-			lifetime = 100f;
+			lifetime = 75f;
 		}};
 		
-		missileThorium = new MissileBulletType(4.2f, 40){{
+		missileThorium = new MissileBulletType(4.2f, 38){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
@@ -143,12 +143,12 @@ public class NHBullets implements ContentList{
 			backColor = trailColor = lightColor = Items.thorium.color.cpy().lerp(Color.white, 0.2f);
 			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
 			homingPower = 0.08f;
-			lifetime = 100f;
+			lifetime = 75f;
 			hitEffect = NHFx.instHitSize(backColor, 2, 30f);
 			despawnEffect = NHFx.shootCircleSmall(backColor);
 		}};
 		
-		missileZeta = new MissileBulletType(4.2f, 20){{
+		missileZeta = new MissileBulletType(4.2f, 18){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
@@ -160,7 +160,7 @@ public class NHBullets implements ContentList{
 			splashDamage = damage / 3;
 			hitEffect = Fx.smoke;
 			despawnEffect = NHFx.lightningHitLarge(backColor);
-			lifetime = 100f;
+			lifetime = 75f;
 			lightningDamage = damage;
 			lightning = 2;
 			lightningLength = 10;
