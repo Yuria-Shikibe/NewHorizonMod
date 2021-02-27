@@ -172,7 +172,7 @@ public class DeliveryBulletType extends BulletType{
 			}
 		}
 		Tmp.v1.trns(b.rotation(), -region.height / div);
-		if(data.needRotate || !data.transportBack || !needEject){
+		if(data.needRotate || !data.transportBack){
 			despawnEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), b.team.color);
 			data.t.disappear(getTrailColor(b));
 		}else{
