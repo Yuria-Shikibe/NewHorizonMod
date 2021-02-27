@@ -7,18 +7,28 @@
 **Powered by *Yuria*.**
 
 ## Server
-mindustry.xyz:10704
+`mindustry.xyz:10704`
+######For foreigners (foreign countries relative to China)
+Most of the players in the server may Chinese when you log in it.
+
+Well, you would feel it is impossible to communicate with them because as I know many of the player in the Chinese game community of Mindustry (especially in my place) do not use English often or not fluent in it ~~just likes me~~. However, I believe there must exist players who are good at English and willing to translate what you say to others then replied you.
+
+But if that doesn't happen, making everything function all right and don't demolish buildings at will are enough. I believe every player can get on well with each other ~~in the case of someone wouldn't blow up a reactor or break other's blueprint~~.
+
+Don't remember to invite your friends to try this mod, because you guys can use the amount of non-Chinese speaking players to turn the situation. ~~Also if Chinese players don't quit, this may be a fantastic chance for them to learn English~~(~~Maaaaaaaybeeeeeee~~). 
+
+Have a nice day.
 
 ## Cautions
-**DOES NOT SUPPORT _IOS_**
+**MOD DOES NOT SUPPORT _IOS_**
 
-Require install `jdk 14` or maybe jdk in other versions(at least 8).
+**If you are using a PC**, mod require install `jdk 14` or maybe jdk in other versions(**_at least 8_**).
 
-Unzip the Mod.zip file first or download from _Release_, then install the mod in game;
+If you download from `Action`, unzip the Mod.zip file first, then install the mod in game;
 
-Mod is ***unstable***(mainly for phones, which are some UI and load problems) and ***WIP***.
+Mod is ***unstable***(mainly for phones, which are some UI and load problems) and is ***WORK IN PROGRESS***.
 
-All codes are here, and no *safety* problems.
+All codes are here, complete open source, ~~and so no code that has *safety* problems could be hid~~.
 
 ## In Game Settings
 This mod adds a new setting dialog when start the game.
@@ -93,3 +103,21 @@ If you find your device cannot afford it, open the mod file folder and find the 
    
 - Spawn units needs resource, and the jump gate can take the resource directly from the `Core`.
 - While placing the `Senior Jump Gate`, the `Junior Jump Gate` is required as a base.
+
+---
+#### Player Jump Gate
+
+---
+![player-jump-gate](assets/sprites/blocks/special/player-jump-gate.png)
+- **_JumpGate:_** Senior Jump Gate; Junior Jump Gate
+
+###### Use Steps:
+1. Click the building.
+   
+2. Make sure the building isn't locked(You can get and switch the mode through the left button), then tap another `Player Jump Gate` to link.
+2. Make sure you are using a flyable unit and get close enough to the building, then click the button `Teleport` to teleport to the link building.
+
+- Has reloaded time.
+- Requires power to function.
+- Cannot be placed in the server, ~~as you can see that text while placing~~.
+

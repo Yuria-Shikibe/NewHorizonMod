@@ -7,6 +7,8 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.scene.Element;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -152,12 +154,12 @@ public class JumpGate extends Block {
         stats.add(Stat.output, (t) -> {
             t.row().add("[gray]Summon Types:").left().pad(OFFSET).row();
             for(UnitSet set : calls) {
-                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[accent]Caution[gray]: Summon needs building.", null)).size(LEN))).fill().row();
+                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
             }
         });
     }
 
-    public void showInfo(UnitSet set, String textExtra, @Nullable ItemModule module){
+    public void showInfo(UnitSet set, Element extra, @Nullable ItemModule module){
         BaseDialog dialogIn = new BaseDialog("More Info");
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
@@ -177,7 +179,7 @@ public class JumpGate extends Block {
                         index ++;
                     }
                 }).growX().fillY().left().padLeft(OFFSET).row();
-                if(!textExtra.equals(""))inner.add(textExtra).left().padLeft(OFFSET).row();
+                inner.add(extra).left().padLeft(OFFSET).row();
                 inner.image().fillX().pad(2).height(4f).color(Pal.accent);
                 inner.row();
                 inner.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
@@ -289,7 +291,9 @@ public class JumpGate extends Block {
                     for(UnitSet set : calls) {
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
-                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, "[lightgray]CanCall?: " + TableFuncs.getJudge(canSpawn(set)) + "[]", core().items)).size(LEN);
+                                Label can = new Label("");
+                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFuncs.getJudge(canSpawn(set))));
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core().items)).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(calls.indexOf(set))).size(LEN).disabled(b -> !canSpawn(set) || error);
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
