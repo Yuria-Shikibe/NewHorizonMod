@@ -104,13 +104,13 @@ public class PlayerJumpGate extends Block{
 		public void teleport(Player player){
 			if(!canFunction())return;
 			
-			Tmp.v3.set(link()).sub(player).scl((1 + player.unit().type.drag) / tilesize * 1.575f / (net.client() ? 1 : tilesize));
+			Tmp.v3.set(link()).sub(player).scl((1 + player.unit().type.drag) / tilesize * 1.575f);
 			
 			player.unit().lookAt(link());
 			player.unit().vel().set(Tmp.v3);
 			
 			float time = dst(link()) / (Tmp.v3.len() * (1f - player.unit().type.drag));
-			for(int i = 0; i < 15; i++)Time.run(time * 2 / 15 * i, () -> {
+			for(int i = 0; i < 30; i++)Time.run(time * 2 / 30 * i, () -> {
 				NHFx.poly.at(player.unit().x, player.unit().y, player.unit().hitSize * 1.1f, player.team().color);
 				NHSetting.debug(() -> Log.info(player.x + " | " + player.y));
 				NHSetting.debug(() -> Log.info("[U]" + player.unit().x + " | " + player.unit().y));
