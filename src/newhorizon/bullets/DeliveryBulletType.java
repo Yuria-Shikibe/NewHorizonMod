@@ -149,11 +149,15 @@ public class DeliveryBulletType extends BulletType{
 			b.remove();
 			return;
 		}
+		boolean needEject = false;
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
 		if(data.to != null){
 			if(!data.transportBack){
 				for(int i = 0; i < Vars.content.items().size; ++i){
-					Call.transferItemTo(null, Vars.content.item(i), Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i)) - data.to.items.get(i)), b.x, b.y, data.to);
+					int num = Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i)) - data.to.items.get(i));
+					Call.transferItemTo(null, Vars.content.item(i), num, b.x, b.y, data.to);
+					data.items[i] -= num;
+					if(data.items[i] > 0)needEject = true;
 				}
 			}else{
 				for(int i = 0; i < Vars.content.items().size; ++i){
@@ -168,7 +172,7 @@ public class DeliveryBulletType extends BulletType{
 			}
 		}
 		Tmp.v1.trns(b.rotation(), -region.height / div);
-		if(data.needRotate || !data.transportBack){
+		if(data.needRotate || !data.transportBack || !needEject){
 			despawnEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), b.team.color);
 			data.t.disappear(getTrailColor(b));
 		}else{
