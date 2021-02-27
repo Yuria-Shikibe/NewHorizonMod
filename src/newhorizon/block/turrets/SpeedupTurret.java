@@ -79,7 +79,7 @@ public class SpeedupTurret extends PowerTurret{
 		
 		@Override
 		protected void bullet(BulletType type, float angle){
-			super.bullet(type, angle + Mathf.range(speedupScl * speedupScl));
+			super.bullet(type, angle + Mathf.range(speedupScl * inaccuracyUp));
 		}
 	}
 }

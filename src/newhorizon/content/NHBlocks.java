@@ -118,7 +118,7 @@ public class NHBlocks implements ContentList {
 				smokeEffect = Fx.shootBigSmoke;
 			}};
 			inaccuracy = 3f;
-			inaccuracyUp = 7f;
+			inaccuracyUp = 5f;
 			shots = 1;
 			shootShake = 2f;
 			shootSound = Sounds.laser;
@@ -151,8 +151,8 @@ public class NHBlocks implements ContentList {
 			shootEffect = Fx.shootBig2;
 			recoilAmount = 3f;
 			range = 280f;
-			reloadTime = 75f;
-			shots = 20;
+			reloadTime = 90f;
+			shots = 16;
 			maxAmmo = 160;
 			ammoPerShot = 1;
 			ammoEjectBack = 6f;
@@ -160,6 +160,7 @@ public class NHBlocks implements ContentList {
 			inaccuracy = 13f;
 			xRand = tilesize * size / 3.5f;
 			shootSound = Sounds.missile;
+			coolantMultiplier = 0.85f;
 		}};
 		
 		oilRefiner = new GenericCrafter("oil-refiner"){{

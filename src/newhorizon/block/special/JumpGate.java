@@ -311,7 +311,7 @@ public class JumpGate extends Block {
                 }).grow()
             ).grow().row();
             dialog.cont.add(new Bar(
-                    () -> isCalling() ? "[gray]" + Core.bundle.get("build") + ": [accent]" + getSet().type.localizedName + " | [gray]" + Core.bundle.get("ui.remain-time") + ": [accent]" + TableFuncs.format((getSet().costTime() - progress) / 60f) + " Sec[gray]."
+                    () -> isCalling() ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]."
                             : "[lightgray]" + Iconc.cancel,
                     () -> isCalling() && hasConsume(getSet()) ? Pal.power : Pal.redderDust,
                     () -> isCalling() ? buildReload / getSet().costTime() : 0

@@ -110,7 +110,7 @@ public class NHBullets implements ContentList{
 			drag = -0.01f;
 			splashDamageRadius = 8f;
 			splashDamage = damage / 2;
-			ammoMultiplier = 8f;
+			ammoMultiplier = 3f;
 			hitEffect = Fx.flakExplosionBig;
 			despawnEffect = Fx.flakExplosion;
 			lifetime = 75f;
@@ -124,7 +124,7 @@ public class NHBullets implements ContentList{
 			drag = -0.01f;
 			splashDamageRadius = 6f;
 			splashDamage = damage / 4;
-			ammoMultiplier = 10f;
+			ammoMultiplier = 3f;
 			backColor = trailColor = lightColor = Items.titanium.color.cpy().lerp(Color.white, 0.2f);
 			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
 			hitEffect = NHFx.lightningHitSmall(backColor);
@@ -139,7 +139,7 @@ public class NHBullets implements ContentList{
 			pierceCap = 2;
 			knockback = 16f;
 			drag = -0.01f;
-			ammoMultiplier = 6f;
+			ammoMultiplier = 3f;
 			backColor = trailColor = lightColor = Items.thorium.color.cpy().lerp(Color.white, 0.2f);
 			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
 			homingPower = 0.08f;
@@ -153,15 +153,15 @@ public class NHBullets implements ContentList{
 			height = 8f;
 			shrinkY = 0f;
 			drag = -0.01f;
-			ammoMultiplier = 6f;
+			ammoMultiplier = 3f;
 			backColor = trailColor = lightColor = lightningColor =  NHItems.zeta.color.cpy().lerp(Color.white, 0.2f);
 			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
-			splashDamageRadius = 8f;
+			splashDamageRadius = 4f;
 			splashDamage = damage / 3;
 			hitEffect = Fx.smoke;
 			despawnEffect = NHFx.lightningHitLarge(backColor);
 			lifetime = 75f;
-			lightningDamage = damage;
+			lightningDamage = damage / 4;
 			lightning = 2;
 			lightningLength = 10;
 		}};
