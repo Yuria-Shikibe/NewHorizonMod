@@ -105,7 +105,7 @@ public class NHBlocks implements ContentList {
 				Items.phaseFabric, NHBullets.artilleryPhase,
 				NHItems.juniorProcessor, NHBullets.artilleryMissile
 			);
-			consumes.powerCond(8f, TurretBuild::isActive);
+			//consumes.powerCond(8f, TurretBuild::isActive);
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 250, Items.surgeAlloy, 100, NHItems.seniorProcessor, 150, Items.plastanium, 300, Items.phaseFabric, 150));
 			NHTechTree.add(Blocks.ripple, this);
 		}
@@ -275,6 +275,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		railGun = new ItemTurret("rail-gun"){{
+			unitSort = (u, x, y) -> -u.maxHealth;
 			size = 4;
 			health = 4550;
 			reloadTime = 200f;
@@ -298,7 +299,7 @@ public class NHBlocks implements ContentList {
 			cooldown = 0.009f;
 			ammoUseEffect = Fx.casing3Double;
 			consumes.powerCond(12f, TurretBuild::isActive);
-			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500));
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
 			NHTechTree.add(Blocks.foreshadow, this);
 		}
 			@Override
