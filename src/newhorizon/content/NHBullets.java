@@ -48,7 +48,7 @@ public class NHBullets implements ContentList{
 	public void loadFragType(){
 		artilleryIrd = new ArtilleryBulletType(5f, 150f, "large-bomb"){{
 			reloadMultiplier = 1.25f;
-			shrinkX = shrinkY = 0.7F;
+			shrinkX = shrinkY = 0;
 			hitShake = 4f;
 			width = height = 27.0F;
 			splashDamage = damage;
@@ -90,13 +90,13 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.hugeSmoke;
 			fragBullets = 6;
 			fragBullet = Bullets.fragPlastic;
-			fragVelocityMin = fragLifeMin = 0.055f;
-			fragVelocityMax = fragLifeMax = 1.05f;
+			fragVelocityMin = fragLifeMin = 0.035f;
+			fragVelocityMax = fragLifeMax = 0.065f;
 		}};
 		
 		artilleryThermo = new ArtilleryBulletType(2f, 180f, "large-bomb"){{
 			reloadMultiplier = 0.95f;
-			shrinkX = shrinkY = 0.7F;
+			shrinkX = shrinkY = 0;
 			hitShake = 8f;
 			width = height = 40.0F;
 			splashDamage = damage;

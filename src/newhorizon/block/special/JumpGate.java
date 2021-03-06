@@ -90,7 +90,7 @@ public class JumpGate extends Block {
     
         config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
         config(Integer.class, (JumpGateBuild tile, Integer i) -> {
-            if(!tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
+            if(i < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
             else tile.spawn(calls.get(i));
         });
     }
@@ -392,8 +392,7 @@ public class JumpGate extends Block {
         public void startBuild(int set){
             if(set < 0 || set >= calls.size){
                 spawnID = -1;
-            }
-            spawnID = set;
+            }else spawnID = set;
         }
         
         public void startBuild(UnitSet set){
