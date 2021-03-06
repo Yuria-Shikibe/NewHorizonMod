@@ -67,10 +67,6 @@ jar{
     from("assets/"){
         include "**"
     }
-    
-    from("resource/"){
-        include "**"
-    }
 }
 
 task deploy(type: Jar){
