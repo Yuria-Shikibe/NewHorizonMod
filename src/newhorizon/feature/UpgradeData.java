@@ -24,17 +24,19 @@ import mindustry.type.ItemStack;
 import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
+import newhorizon.func.TableFuncs;
 import newhorizon.interfaces.Upgraderc;
 
 import static newhorizon.func.TableFuncs.*;
 
 public class UpgradeData{
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
-	public int unlockLevel;
+	
 	public TextureRegion icon;
 	public String name, localizedName, description;
 	public float costTime;
@@ -65,18 +67,16 @@ public class UpgradeData{
 	public float maxDamageReduce = 0.65f;
 	
 	public UpgradeData(){
-		this("level-up", NHBullets.none, 0, 0, new ItemStack(Items.copper, 0));
+		this("level-up", NHBullets.none, 0, new ItemStack(Items.copper, 0));
 	}
 	
 	public UpgradeData(
 			String name,
 			BulletType selectAmmo,
 			float costTime,
-			int unlockLevel,
 			ItemStack... items
 	) {
 		this.costTime = costTime;
-		this.unlockLevel = unlockLevel;
 		requirements.addAll(items);
 		this.selectAmmo = selectAmmo;
 		this.name = name;
@@ -88,6 +88,7 @@ public class UpgradeData{
 		description = Core.bundle.get("upgrade-data." + name + ".description", "null");
 		
 		if(maxDamageReduce >= 1)maxDamageReduce %= 1;
+		if(!isLeveled)maxLevel = 1;
 	}
 	
 	
@@ -151,32 +152,39 @@ public class UpgradeData{
 			this.level = read.i();
 		}
 		
-		public void showInfo(boolean drawCons, Upgraderc from){
+		public void showInfo(boolean drawCons, Upgraderc from, ItemModule module){
 			BaseDialog dialog = new BaseDialog("@consume");
 			dialog.addCloseListener();
-			dialog.cont.margin(15f);
-			dialog.cont.table(Tex.button, table -> {
-				table.pane( t -> t.image(icon)).size(icon.height + OFFSET / 2).left();
-				table.pane(this::infoText).size(icon.height + OFFSET / 2).pad(OFFSET / 2);
-			}).row();
-			dialog.cont.add("<< " + localizedName + " >>").color(Pal.accent).row();
-			dialog.cont.add("Description: ").color(Pal.accent).left().row();
-			dialog.cont.add(tabSpace + description).color(Color.lightGray).left().row();
-			if(drawCons){
-				dialog.cont.pane(table -> {
-					int index = 0;
-					for(ItemStack stack : requirements()){
-						if(index % 5 == 0)table.row();
-						table.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5).left();
-						index ++;
-					}
-				}).left().row();
-				if(UpgradeData.this.unlockLevel > 0)dialog.cont.add("[lightgray]Requires Level: [accent]" + unlockLevel + "[]").left().row();
-				dialog.cont.add("[lightgray]CanUpgrade?: " + getJudge(from.canUpgrade(this)) + "[]").left().row();
-			}
-			dialog.cont.image().width(300f).pad(2).height(4f).color(Pal.accent);
-			dialog.cont.row();
-			dialog.cont.button("@back", Icon.left, dialog::hide).size(LEN * 2.5f, LEN).pad(OFFSET / 3);
+			dialog.cont.pane(table -> {
+				table.margin(15f);
+				table.table(Tex.clear, t -> {
+					t.image(icon).fill();
+					t.button(new TextureRegionDrawable(NHContent.ammoInfo), Styles.colori, () -> new BaseDialog("@info") {{
+						addCloseListener();
+						cont.pane(t -> cont.pane(table -> buildBulletTypeInfo(table, selectAmmo)).size(460).row()).row();
+						cont.button("@back", Icon.left, Styles.cleart, this::hide).size(LEN * 3, LEN).pad(OFFSET / 2);
+					}}.show()).fill().padLeft(OFFSET);
+				}).growX().row();
+				table.add("<< " + localizedName + " >>").color(Pal.accent).padTop(OFFSET).row();
+				table.add("Description: ").color(Pal.accent).left().padTop(OFFSET).row();
+				table.add(tabSpace + description).color(Color.lightGray).left().row();
+				table.image().fillX().pad(OFFSET / 3).height(OFFSET / 3).color(Pal.accent).row();
+				if(drawCons){
+					table.pane(t -> {
+						int index = 0;
+						for(ItemStack stack : requirements()){
+							if(module != null || index % 7 == 0)table.row();
+							if(module != null){
+								TableFuncs.add(table, stack, module);
+							}else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
+							index ++;
+						}
+					}).left().row();
+					table.add("[lightgray]CanUpgrade?: " + getJudge(from.canUpgrade(this)) + "[]").left().row();
+				}
+				table.row();
+			}).grow().row();
+			dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).growX().height(LEN);
 			dialog.show();
 		}
 		
@@ -212,19 +220,11 @@ public class UpgradeData{
 				}).size(LEN * 6f, LEN * 1.5f).center().growX();
 				
 				t.table(Tex.button, table -> {
-					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from)).size(LEN);
-					table.button(Icon.upOpen, Styles.clearPartiali, this::upgrade).size(LEN).disabled(b -> !from.canUpgrade(this));
+					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from, from.core().items)).size(LEN);
+					table.button(Icon.upOpen, Styles.clearPartiali, () -> from.configure((long)from.all().indexOf(this))).size(LEN).disabled(b -> !from.canUpgrade(this));
 				}).height(LEN + OFFSET).right().padRight(OFFSET);
 			});
 			cont.add(info).pad(OFFSET / 2).growX().height(LEN * 2f).row();
-		}
-		
-		public void infoText(Table table){
-			table.button(new TextureRegionDrawable(NHContent.ammoInfo), Styles.colori, () -> new BaseDialog("@info") {{
-				addCloseListener();
-				cont.pane(t -> cont.pane(table -> buildBulletTypeInfo(table, selectAmmo)).size(460).row()).row();
-				cont.button("@back", Icon.left, Styles.cleart, this::hide).size(LEN * 3, LEN).pad(OFFSET / 2);
-			}}.show()).size(NHContent.ammoInfo.height + OFFSET / 2);
 		}
 		
 		public ItemStack[] requirements() {

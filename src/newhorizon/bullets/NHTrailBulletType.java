@@ -15,25 +15,21 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 		super(speed, damage, bulletSprite);
 		this.despawnEffect = Fx.none;
     }
+	
+	public NHTrailBulletType(float speed, float damage){
+		this(speed, damage, "bullet");
+	}
+	
+	public NHTrailBulletType(){
+		this(1f, 1f, "bullet");
+	}
     
     @Override
 	public void init(){
 		super.init();
-		initTrail();
-    }
-    
-    public void initTrail(){
 	    if(trailLength < 0)trailLength = 12;
 	    drawSize = Math.max(drawSize, 1.5f * trailLength * (speed + velocityEnd));
 	    if(trailWidth < 0)trailWidth = width / 6f;
-    }
-    
-	public NHTrailBulletType(float speed, float damage){
-		this(speed, damage, "bullet");
-    }
-
-	public NHTrailBulletType(){
-		this(1f, 1f, "bullet");
     }
     
     @Override
@@ -47,8 +43,6 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public void init(Bullet b) {
 		super.init(b);
 		b.data(new EffectTrail(trailLength, trailWidth));
-		EffectTrail t = (EffectTrail)b.data;
-		t.clear();
 	}
 
 	@Override
@@ -75,8 +69,6 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 			trail.update(b.x + b.vel.x / 2, b.y + b.vel.y / 2);
 		}
 		super.update(b);
-		
-		
 	}
 }
 

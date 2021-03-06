@@ -8,6 +8,7 @@ import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType.ClientLoadEvent;
@@ -28,7 +29,7 @@ import static newhorizon.func.TableFuncs.*;
 
 
 public class NewHorizon extends Mod{
-	public static String MOD_NAME;
+	public static final String MOD_NAME = "new-horizon-";
 	
 	public static String configName(String name){
 		return MOD_NAME + name;
@@ -47,8 +48,11 @@ public class NewHorizon extends Mod{
 	
 	private static void links(){
 		BaseDialog dialog = new BaseDialog("@links");
-		addLink(dialog.cont, Icon.github, "Github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git");
-		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN).padLeft(OFFSET / 2);
+		dialog.cont.pane(table -> {
+			addLink(table, Icon.github, "Github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git");
+			addLink(table, Icon.bookOpen, "Help/Guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide");
+		}).grow().row();
+		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN);
 		dialog.addCloseListener();
 		dialog.show();
 	}
@@ -68,7 +72,7 @@ public class NewHorizon extends Mod{
 	}
 	
 	private static void logShow(){
-		new Tables.LogDialog(new UnlockableContent[]{NHBlocks.delivery}).show();
+		new Tables.LogDialog(new UnlockableContent[]{NHBlocks.playerJumpGate}).show();
 	}
 	
 	public static void startLog(){
@@ -102,7 +106,8 @@ public class NewHorizon extends Mod{
 	}
 	
     public NewHorizon(){
-        Log.info("Loaded NewHorizon Mod constructor.");
+        NHSetting.debug(() ->Log.info("Loaded NewHorizon Mod constructor."));
+        
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
         	startLog();
 	        tableMain();
@@ -116,15 +121,16 @@ public class NewHorizon extends Mod{
 	
 	@Override
     public void loadContent(){
-		try{
-			NHSetting.settingFile();
-			NHSetting.initSetting();
-			NHSetting.initSettingList();
-		}catch(IOException e){
-			throw new IllegalArgumentException(e);
+		if(!Vars.headless){
+			try{
+				NHSetting.settingFile();
+				NHSetting.initSetting();
+				NHSetting.initSettingList();
+			}catch(IOException e){
+				throw new IllegalArgumentException(e);
+			}
 		}
-		MOD_NAME = NHSetting.modMeta.name + "-";
-	    Log.info("Loading NewHorizon Mod Objects");
+		NHSetting.debug(() -> Log.info("Loading NewHorizon Mod Objects"));
 	    NHSounds.load();
 		NHLoader loader = new NHLoader();
 		loader.load();

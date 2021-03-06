@@ -10,7 +10,6 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
-import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
@@ -27,6 +26,26 @@ import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
 
 public class NHFx{
+	public static Effect genericCharge(Color color, float size, float range, float lifetime){
+		return new Effect(lifetime, e -> {
+			color(color);
+			
+			randLenVectors(e.id, 2, 1f + 20f * e.fout(), e.rotation, range, (x, y) -> {
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * size + size / 4f);
+			});
+		});
+	}
+	
+	public static Effect genericChargeBegin(Color color, float size, float lifetime){
+		return new Effect(lifetime, e -> {
+			color(color);
+			Fill.circle(e.x, e.y, e.fin() * size);
+			
+			color();
+			Fill.circle(e.x, e.y, e.fin() * size / 2f);
+		});
+	}
+	
 	public static Effect lightningHitSmall(Color color){
 		return new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
@@ -134,48 +153,53 @@ public class NHFx{
 	}
 	
 	public static Effect instBomb(Color color){
-		return new Effect(15.0F, 100.0F, (e) -> {
+		return instBombSize(color, 4, 80f);
+	}
+	
+	public static Effect instBombSize(Color color, int num, float size){
+		return new Effect(15.0F, size * 1.5f, (e) -> {
 			Draw.color(color);
 			Lines.stroke(e.fout() * 4.0F);
-			Lines.circle(e.x, e.y, 4.0F + e.finpow() * 20.0F);
+			Lines.circle(e.x, e.y, 4.0F + e.finpow() * size / 4f);
 			
 			int i;
-			for(i = 0; i < 4; ++i) {
-				Drawf.tri(e.x, e.y, 6.0F, 80.0F * e.fout(), (float)(i * 90 + 45));
+			for(i = 0; i < num; ++i) {
+				Drawf.tri(e.x, e.y, size / 12f, size * e.fout(), (float)(i * 90 + 45));
 			}
 			
 			Draw.color();
 			
-			for(i = 0; i < 4; ++i) {
-				Drawf.tri(e.x, e.y, 3.0F, 30.0F * e.fout(), (float)(i * 90 + 45));
+			for(i = 0; i < num; ++i) {
+				Drawf.tri(e.x, e.y, size / 26f, size / 2.5f * e.fout(), (float)(i * 90 + 45));
 			}
 		});
 	}
 	
-	public static Effect instHit(Color color){
-		return new Effect(20.0F, 200.0F, (e) -> {
-			Draw.color(Pal.bulletYellowBack);
-			
+	public static Effect instHit(Color color){return instHitSize(color, 5, 50); }
+	
+	public static Effect instHitSize(Color color, int num, float size){
+		return new Effect(20.0F, size * 1.5f, (e) -> {
 			for(int i = 0; i < 2; ++i) {
 				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.25f));
 				float m = i == 0 ? 1.0F : 0.5F;
 				
-				for(int j = 0; j < 5; ++j) {
-					float rot = e.rotation + Mathf.randomSeedRange((long)(e.id + j), 50.0F);
+				for(int j = 0; j < num; ++j) {
+					float rot = e.rotation + Mathf.randomSeedRange((e.id + j), size);
 					float w = 23.0F * e.fout() * m;
-					Drawf.tri(e.x, e.y, w, (80.0F + Mathf.randomSeedRange((long)(e.id + j), 40.0F)) * m, rot);
-					Drawf.tri(e.x, e.y, w, 20.0F * m, rot + 180.0F);
+					Drawf.tri(e.x, e.y, w, (size + Mathf.randomSeedRange((e.id + j), size * 0.8f)) * m, rot);
+					Drawf.tri(e.x, e.y, w, size * 0.4f * m, rot + 180.0F);
 				}
 			}
 			
 			e.scaled(10.0F, (c) -> {
 				Draw.color(color.cpy().lerp(Color.white, 0.25f));
 				Lines.stroke(c.fout() * 2.0F + 0.2F);
-				Lines.circle(e.x, e.y, c.fin() * 30.0F);
+				Lines.circle(e.x, e.y, c.fin() * size * 0.7f);
 			});
+			
 			e.scaled(12.0F, (c) -> {
 				Draw.color(color);
-				Angles.randLenVectors((long)e.id, 25, 5.0F + e.fin() * 80.0F, e.rotation, 60.0F, (x, y) -> {
+				Angles.randLenVectors(e.id, 25, 5.0F + e.fin() * size * 1.25f, e.rotation, 60.0F, (x, y) -> {
 					Fill.square(e.x + x, e.y + y, c.fout() * 3.0F, 45.0F);
 				});
 			});
@@ -209,6 +233,11 @@ public class NHFx{
 	
 	
 	public static final Effect
+		poly = new Effect(25f, e -> {
+			Draw.color(e.color);
+			Lines.stroke(e.fout() * 2.0F);
+			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * e.rotation);
+		}),
 		healEffect = new Effect(11.0F, (e) -> {
 			Draw.color(NHColor.lightSky);
 			Lines.stroke(e.fout() * 2.0F);
@@ -307,10 +336,10 @@ public class NHFx{
 			for (int j = 1; j <= 3; j ++) {
 				for(int i = 0; i < 4; i++) {
 					float length = tilesize * starter.block().size * 1.5f + 4f;
-					Tmp.v1.trns(i * 90, -length);
+					float x = Angles.trnsx(i * 90, -length), y = Angles.trnsy(i * 90, -length);
 					e.scaled(30 * j, k -> {
 						float signSize = (e.rotation / 3f + Draw.scl) * k.fout();
-						Draw.rect(pointerRegion, e.x + Tmp.v1.x * k.finpow(), e.y + Tmp.v1.y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Tmp.v1.angle() - 90);
+						Draw.rect(pointerRegion, e.x + x * k.finpow(), e.y + y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Angles.angle(x, y) - 90);
 					});
 				}
 			}

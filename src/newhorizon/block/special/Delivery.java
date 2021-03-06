@@ -4,6 +4,7 @@ import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -31,6 +32,7 @@ import mindustry.logic.Ranged;
 import mindustry.type.Item;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.distribution.MassDriver;
 import mindustry.world.blocks.storage.StorageBlock;
@@ -45,6 +47,8 @@ import newhorizon.interfaces.Linkablec;
 
 import java.util.Arrays;
 
+import static mindustry.Vars.tilesize;
+import static newhorizon.func.DrawFuncs.sinScl;
 import static newhorizon.func.TableFuncs.LEN;
 
 public class Delivery extends Block{
@@ -76,6 +80,17 @@ public class Delivery extends Block{
 		config(Integer.class, (DeliveryBuild tile, Integer point) -> tile.link = point);
 	}
 	
+	public boolean canPlaceOn(Tile tile, Team team) {return !Vars.net.client();}
+	
+	public void drawPlace(int x, int y, int rotation, boolean valid){
+		Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, Pal.place);
+		if (Vars.world.tile(x, y) != null) {
+			if (!canPlaceOn(null, null)) {
+				drawPlaceText("Cannot place in server, it is broken", x, y, valid);
+			}
+		}
+	}
+	
 	@Override
 	protected TextureRegion[] icons() {
 		return this.teamRegion.found() && this.minfo.mod == null ? new TextureRegion[]{baseRegion, teamRegions[Team.sharded.id], region} : new TextureRegion[]{baseRegion, region};
@@ -85,11 +100,6 @@ public class Delivery extends Block{
 	public void load(){
 		super.load();
 		baseRegion = Core.atlas.find(name + "-base");
-	}
-	
-	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		Drawf.dashCircle(x * Vars.tilesize + offset, y * Vars.tilesize + offset, range, Pal.place);
 	}
 	
 	@Override
@@ -105,7 +115,7 @@ public class Delivery extends Block{
 		public float recoil;
 		public boolean closure = false;
 		public boolean transportBack = false;
-		public Tables.ItemSelectTable itemTable = new Tables.ItemSelectTable();
+		public Tables.ItemSelectTable itemTable;
 		public transient DeliveryBuild acceptDelivery;
 		
 		@Override public boolean acceptItem(Building source, Item item) {
@@ -138,7 +148,7 @@ public class Delivery extends Block{
 			    if(acceptDelivery != null && acceptDelivery.pos() == other.pos()) return false;
 			    if(other instanceof DeliveryBuild && ((DeliveryBuild)other).acceptDelivery != null) return false;
 				configure(other.pos());
-				Log.info("Link" + other.pos());
+				NHSetting.debug(() -> Log.info("Link" + other.pos()));
 				return false;
 			}
 			return true;
@@ -204,8 +214,6 @@ public class Delivery extends Block{
 				this.rotation = Mathf.slerpDelta(this.rotation, this.angleTo(link()), rotateSpeed * this.efficiency());
 			}
 			
-			
-			Log.info(reload + " | " + shouldDeliver());
 			if(linkValid() && Angles.angleDist(rotation, angleTo(link())) < 10){
 				if(reload >= reloadTime){
 					if(shouldDeliver())deliver();
@@ -328,6 +336,12 @@ public class Delivery extends Block{
 		}
 		
 		@Override
+		public void placed(){
+			super.placed();
+			if(itemTable == null)itemTable = new Tables.ItemSelectTable();
+		}
+		
+		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
 			drawLinkConfigure(true, id);
@@ -358,6 +372,33 @@ public class Delivery extends Block{
 		    drawLink();
 		}
 		
+		@Override
+		public void drawLink(){
+			if(!linkValid())return;
+			float
+					sin = Mathf.absin(Time.time * sinScl, 6f, 1f),
+					r1 = block().size / 2f * tilesize + sin,
+					r2 = link().block().size / 2f * tilesize + sin;
+			
+			Draw.color(getLinkColor());
+			
+			Lines.square(link().getX(), link().getY(), link().block().size * tilesize / 2f + 1.0f);
+			
+			Tmp.v1.trns(angleTo(link()), r1);
+			Tmp.v2.trns(link().angleTo(this), r2);
+			int sigs = (int)(dst(link()) / tilesize);
+			
+			Lines.stroke(4, Pal.gray);
+			Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, link().getX() + Tmp.v2.x, link().getY() + Tmp.v2.y, sigs);
+			Lines.stroke(2, getLinkColor());
+			Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, link().getX() + Tmp.v2.x, link().getY() + Tmp.v2.y, sigs);
+			Drawf.circles(x, y, r1, getLinkColor());
+			if(!transportBack)Drawf.arrow(x, y, link().getX(), link().getY(), 2 * tilesize + sin, 4 + sin, getLinkColor());
+			else Drawf.arrow(link().getX(), link().getY(), x, y, 2 * tilesize + sin, 4 + sin, getLinkColor());
+			Drawf.circles(link().getX(), link().getY(), r2, getLinkColor());
+			Draw.reset();
+		}
+		
 		@Override public void write(Writes write) {
 			write.f(this.rotation);
 			write.i(this.link);
@@ -366,6 +407,7 @@ public class Delivery extends Block{
 			itemTable.write(write);
 		}
 		@Override public void read(Reads read, byte revision) {
+			if(itemTable == null)itemTable = new Tables.ItemSelectTable();
 			this.rotation = read.f();
 			this.link = read.i();
 			closure = read.bool();

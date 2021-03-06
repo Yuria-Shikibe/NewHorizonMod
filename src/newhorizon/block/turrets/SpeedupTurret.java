@@ -5,12 +5,15 @@ import arc.util.Time;
 import mindustry.entities.bullet.BulletType;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHColor;
 
 public class SpeedupTurret extends PowerTurret{
 	public float maxSpeedupScl = 0.5f;
 	public float speedupPerShoot = 0.075f;
 	public float slowDownReloadTime = 45f;
+	public float inaccuracyUp = 0f;
 	
 	public SpeedupTurret(String name){
 		super(name);
@@ -28,10 +31,20 @@ public class SpeedupTurret extends PowerTurret{
 		);
 	}
 	
+	@Override
+	public void setStats(){
+		super.setStats();
+		stats.add(Stat.inaccuracy, inaccuracyUp, StatUnit.degrees);
+	}
+	
+	@Override
+	public void init(){
+		super.init();
+	}
+	
 	public class SpeedupTurretBuild extends PowerTurretBuild{
 		public float speedupScl = 0f;
 		public float slowDownReload = 0f;
-		
 		
 		@Override
 		public void updateTile(){
@@ -64,6 +77,10 @@ public class SpeedupTurret extends PowerTurret{
 			}else speedupScl = maxSpeedupScl;
 		}
 		
+		@Override
+		protected void bullet(BulletType type, float angle){
+			super.bullet(type, angle + Mathf.range(speedupScl * inaccuracyUp));
+		}
 	}
 }
 

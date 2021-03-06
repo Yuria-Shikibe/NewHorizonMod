@@ -1,5 +1,6 @@
 package newhorizon.bullets;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -7,6 +8,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
@@ -19,6 +21,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Call;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import newhorizon.NewHorizon;
 import newhorizon.block.special.Delivery;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
@@ -26,13 +29,25 @@ import newhorizon.func.NHSetting;
 
 public class DeliveryBulletType extends BulletType{
 	private static final float div = 8f;
-	
 	public static float rotateSpeed = 0.15f;
-	protected TextureRegion region;
+	public TextureRegion region;
 	public DeliveryBulletType(TextureRegion region){
 		super();
 		this.speed = 4.6f;
 		this.region = region;
+		this.lifetime = 60f;
+		this.despawnEffect = NHFx.boolSelector;
+		trailColor = null;
+		trailEffect = NHFx.trail;
+		trailChance = 0.7f;
+		trailParam = 2.1f;
+		homingDelay = 3f;
+		collides = collidesGround = collidesTeam = collidesTiles = absorbable = false;
+	}
+	
+	public DeliveryBulletType(){
+		this(null);
+		this.speed = 4.6f;
 		this.lifetime = 60f;
 		this.despawnEffect = NHFx.boolSelector;
 		trailColor = null;
@@ -48,9 +63,15 @@ public class DeliveryBulletType extends BulletType{
 	}
 	
 	@Override
+	public void load(){
+		if(region == null)this.region = Core.atlas.find(NewHorizon.configName("mass-deliver-pack"));
+		super.load();
+	}
+	
+	@Override
 	public void init(){
 		super.init();
-		if(despawnEffect == NHFx.boolSelector)despawnEffect = new Effect(35f, e -> {
+		if(despawnEffect == NHFx.boolSelector && region != null)despawnEffect = new Effect(35f, e -> {
 			Draw.mixcol(e.color, 1);
 			Draw.rect(region, e.x, e.y, region.width * Draw.scl * e.fout(), region.height * Draw.scl * e.fout(), e.rotation - 90);
 		});
@@ -128,19 +149,24 @@ public class DeliveryBulletType extends BulletType{
 			b.remove();
 			return;
 		}
+		boolean needEject = false;
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
-		if(data.to != null && b.dst(data.to) < Vars.tilesize * 2){
+		if(data.to != null){
 			if(!data.transportBack){
 				for(int i = 0; i < Vars.content.items().size; ++i){
-					Call.transferItemTo(null, Vars.content.item(i), Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i)) - data.to.items.get(i)), b.x, b.y, data.to);
+					int num = Mathf.clamp(data.items[i], 0, data.to.getMaximumAccepted(Vars.content.item(i)) - data.to.items.get(i));
+					Call.transferItemTo(null, Vars.content.item(i), num, b.x, b.y, data.to);
+					data.items[i] -= num;
+					if(data.items[i] > 0)needEject = true;
 				}
 			}else{
 				for(int i = 0; i < Vars.content.items().size; ++i){
 					if(data.items[i] > 0){
 						int num = Mathf.clamp(data.to.items.get(i), 0, data.from.getMaximumAccepted(Vars.content.item(i)) );
-						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, b);
 						data.to.items.remove(Vars.content.item(i), num);
+						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, new Vec2().set(b));
 						data.items[i] = num;
+						NHSetting.debug(() -> Log.info(data.to + " | " + num));
 					}
 				}
 			}

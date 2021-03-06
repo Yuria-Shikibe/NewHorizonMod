@@ -15,12 +15,10 @@ import mindustry.ctype.ContentList;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.gen.Buildingc;
-import mindustry.gen.Bullet;
-import mindustry.gen.Hitboxc;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
@@ -36,7 +34,7 @@ import static arc.math.Angles.randLenVectors;
 public class NHBullets implements ContentList{
 	public static
 	BulletType
-		railGun1, railGun2, hurricaneType, polyCloud,
+		railGun1, railGun2, hurricaneType, polyCloud, missileTitanium, missileThorium, missileZeta, missile, missileStrike,
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile,
@@ -70,6 +68,104 @@ public class NHBullets implements ContentList{
 	
 	public void load(){
 		loadFragType();
+		
+		missileStrike = new MissileBulletType(4.2f, 18){{
+			width = 8f;
+			height = 8f;
+			shrinkY = 0f;
+			pierceCap = 5;
+			drag = -0.01f;
+			homingPower = 0.125f;
+			homingRange = range();
+			splashDamageRadius = 6f;
+			splashDamage = damage / 8;
+			ammoMultiplier = 10f;
+			backColor = trailColor = lightColor = NHItems.presstanium.color.cpy().lerp(Color.white, 0.3f);
+			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
+			hitEffect = NHFx.lightningHitSmall(backColor);
+			despawnEffect = NHFx.shootCircleSmall(backColor);
+			lifetime = 75f;
+		}
+			@Override
+			public void update(Bullet b){
+				if(homingPower > 0.0001f && b.time >= homingDelay){
+					Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> !b.collided.contains(e.id), t -> collidesGround);
+					if(target != null){
+						b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
+					}
+				}
+				
+				if(trailChance > 0){
+					if(Mathf.chanceDelta(trailChance)){
+						trailEffect.at(b.x, b.y, trailParam, trailColor);
+					}
+				}
+			}
+		};
+		
+		missile = new MissileBulletType(4.2f, 12){{
+			width = 8f;
+			height = 8f;
+			shrinkY = 0f;
+			drag = -0.01f;
+			splashDamageRadius = 8f;
+			splashDamage = damage / 2;
+			ammoMultiplier = 3f;
+			hitEffect = Fx.flakExplosionBig;
+			despawnEffect = Fx.flakExplosion;
+			lifetime = 75f;
+		}};
+		
+		missileTitanium = new MissileBulletType(4.2f, 22){{
+			width = 8f;
+			height = 8f;
+			shrinkY = 0f;
+			pierceCap = 1;
+			drag = -0.01f;
+			splashDamageRadius = 6f;
+			splashDamage = damage / 4;
+			ammoMultiplier = 3f;
+			backColor = trailColor = lightColor = Items.titanium.color.cpy().lerp(Color.white, 0.2f);
+			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
+			hitEffect = NHFx.lightningHitSmall(backColor);
+			despawnEffect = NHFx.shootCircleSmall(backColor);
+			lifetime = 75f;
+		}};
+		
+		missileThorium = new MissileBulletType(4.2f, 38){{
+			width = 8f;
+			height = 8f;
+			shrinkY = 0f;
+			pierceCap = 2;
+			knockback = 16f;
+			drag = -0.01f;
+			ammoMultiplier = 3f;
+			backColor = trailColor = lightColor = Items.thorium.color.cpy().lerp(Color.white, 0.2f);
+			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
+			homingPower = 0.08f;
+			lifetime = 75f;
+			hitEffect = NHFx.instHitSize(backColor, 2, 30f);
+			despawnEffect = NHFx.shootCircleSmall(backColor);
+		}};
+		
+		missileZeta = new MissileBulletType(4.2f, 18){{
+			width = 8f;
+			height = 8f;
+			shrinkY = 0f;
+			drag = -0.01f;
+			ammoMultiplier = 3f;
+			backColor = trailColor = lightColor = lightningColor =  NHItems.zeta.color.cpy().lerp(Color.white, 0.2f);
+			frontColor = backColor.cpy().lerp(Color.white, 0.7f);
+			splashDamageRadius = 4f;
+			splashDamage = damage / 3;
+			hitEffect = Fx.smoke;
+			despawnEffect = NHFx.lightningHitLarge(backColor);
+			lifetime = 75f;
+			lightningDamage = damage / 4;
+			lightning = 2;
+			lightningLength = 10;
+		}};
+		
 		polyCloud = new NHTrailBulletType(0.05f, 40){
 			@Override public float range(){return 360f;}
 		{

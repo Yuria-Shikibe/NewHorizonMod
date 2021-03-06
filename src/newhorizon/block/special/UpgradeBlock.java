@@ -1,6 +1,9 @@
 package newhorizon.block.special;
 
+import arc.Core;
 import arc.Events;
+import arc.audio.Sound;
+import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -33,6 +36,7 @@ import mindustry.world.meta.Stat;
 import newhorizon.content.NHFx;
 import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
+import newhorizon.func.NHSetting;
 import newhorizon.func.TableFuncs;
 import newhorizon.func.TextureFilterValue;
 import newhorizon.interfaces.ScalableBlockc;
@@ -46,7 +50,7 @@ public class UpgradeBlock extends Block {
 	public static final Seq<UpgradeBlockBuild> upgradecGroup = new Seq<>(UpgradeBlockBuild.class);
 	public static final int buttonPerLine = 8;
 	
-	protected SoundLoop upgradeSound = new SoundLoop(Sounds.build, 1.1f);
+	protected Sound upgradeSound = Sounds.build;
 	public int   maxLevel = 9;
 	public float upgradeEffectChance = 0.04f;
 
@@ -70,6 +74,9 @@ public class UpgradeBlock extends Block {
 		buildCostMultiplier = 2;
 		configurable = true;
 		solid = true;
+		
+		config(Integer.class, (Cons2<UpgradeBlockBuild, Integer>)UpgradeBlockBuild::linkPos);
+		config(Long.class, (UpgradeBlockBuild tile, Long i) -> tile.upgradeData(i.intValue()));
 	}
 	
 	@Override
@@ -99,7 +106,7 @@ public class UpgradeBlock extends Block {
 
 		bars.add("upgradeProgress",
 			(UpgradeBlockBuild entity) -> new Bar(
-				() -> "RestTime",
+				() -> Core.bundle.get("ui.remain-time"),
 				() -> Color.valueOf("#FF732A"),
 				() -> entity.remainTime / entity.costTime()
 			)
@@ -118,11 +125,15 @@ public class UpgradeBlock extends Block {
 		public int upgradingID = defaultID;
 		public int lastestSelectID = -1;
 		public float remainTime;
-
-		protected BaseDialog dialog = new BaseDialog("Upgrade", Styles.fullDialog);
+		
+		protected transient SoundLoop upgradeSoundLoop = new SoundLoop(upgradeSound, 1f);;
 		
 		protected boolean coreValid(CoreBlock.CoreBuild core) {
 			return core != null && core.items != null && !core.items.empty();
+		}
+		
+		protected boolean coreValid() {
+			return core() != null && core().items != null && !core().items.empty();
 		}
 		
 		@Override
@@ -134,15 +145,12 @@ public class UpgradeBlock extends Block {
 		
 		@Override
 		public boolean canUpgrade(DataEntity data) {
-			if(data.level == maxLevel || (data.available() && !data.type().isLeveled))return false;
+			if(data.level >= maxLevel)return false;
 			
 			if(state.rules.infiniteResources)return true;
 			
 			CoreBlock.CoreBuild core = core();
-			return 
-				coreValid(core) && (
-					data.isMaxLevel() && !isUpgrading() && core.items.has(data.requirements())
-				) && data.type().unlockLevel <= datas.first().level;
+			return coreValid() && !isUpgrading() && core.items.has(data.requirements());
 		}
 
 		public float costTime(){
@@ -153,22 +161,31 @@ public class UpgradeBlock extends Block {
 		public void upgradeData(DataEntity data){
 			if(!canUpgrade(data))return;
 			consumeItems(data);
-			remainTime = costTime();
+			remainTime = data.costTime();
+		}
+		
+		//Data Upgrade
+		public void upgradeData(int data){
+			NHSetting.debug(() -> Log.info("START" + data + " | " + costTime()));
+			upgradeData(all().get(data));
+			upgradingID = data;
 		}
 		
 		@Override//Updates
 		public void updateUpgrading() {
-			if (isUpgrading()) {
-				upgradeSound.update(x, y, true);
-				remainTime -= (state.rules.infiniteResources ? Float.MAX_VALUE : 1) * Time.delta * efficiency();
-			} else completeUpgrade();
+			upgradeSoundLoop = new SoundLoop(upgradeSound, 1f);
+			upgradeSoundLoop.update(x, y, true);
+			NHSetting.debug(() -> Log.info("UPDATE" + upgradingID + " | " + remainTime + state.rules.infiniteResources));
+			if(state.rules.infiniteResources)remainTime = -1;
+			remainTime -= Time.delta * efficiency();
 		}
 		
 		@Override
 		public void completeUpgrade() {
 			if(upgradingID < 0 || upgradingID >= datas.size)return;
-			upgradeSound.update(x, y, false);
-			upgradeSound.stop();
+			NHSetting.debug(() -> Log.info("FINISH" + upgradingID));
+			upgradeSoundLoop.update(x, y, false);
+			upgradeSoundLoop.stop();
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColor);
 			
@@ -177,7 +194,6 @@ public class UpgradeBlock extends Block {
 			
 			updateTarget();
 			upgradingID = defaultID;
-			dialog.cont.update(() -> {});
 		}
 		
 		//UI
@@ -225,7 +241,7 @@ public class UpgradeBlock extends Block {
 		@Override
 		public void linkPos(int value) {
 			if (linkValid())target().resetUpgrade();
-			this.link = value;
+			link = value;
 			updateTarget();
 		}
 
@@ -234,12 +250,12 @@ public class UpgradeBlock extends Block {
 		@Override
 		public boolean onConfigureTileTapped(Building other) {
 			if (this == other) {
-				linkPos(-1);
+				configure(-1);
 				return false;
 			}
 			if (!other.block.name.equals(linkTarget.name))return false;
 			if (link == other.pos()) {
-				linkPos(-1);
+				configure(-1);
 				return false;
 			} else if (!(other instanceof Scalablec)) {
 				ui.showErrorMessage("Failed to connect, target '" + other.toString() + "' doesn't implement @Scalablec");
@@ -256,6 +272,7 @@ public class UpgradeBlock extends Block {
 
 		@Override
 		public void upgraderTableBuild(){
+			BaseDialog dialog = new BaseDialog("Upgrade", Styles.fullDialog);
 			dialog.cont.clear();
 			dialog.addCloseListener();
 			dialog.cont.pane(t -> {
@@ -263,7 +280,7 @@ public class UpgradeBlock extends Block {
 				t.table(Tex.button, table -> {
 					table.row().left();
 					table.button(
-							Icon.infoCircle, Styles.clearPartiali, () -> datas.get(lastestSelectID).showInfo(false, this)
+							Icon.infoCircle, Styles.clearPartiali, () -> datas.get(lastestSelectID).showInfo(false, this, core().items)
 					).size(TableFuncs.LEN).disabled(b -> lastestSelectID < 0 || datas.isEmpty()).left();
 
 					table.button(Icon.hostSmall, Styles.clearTransi, () ->
@@ -290,10 +307,12 @@ public class UpgradeBlock extends Block {
 		
 		@Override
 		public void updateTile() {
-			if (upgradingID != defaultID){
+			if(datas == null || datas.isEmpty())setData();
+			
+			if(remainTime >= 0){
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance))for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2f * tilesize), y - Mathf.random(block.size / 2f * tilesize), block.size / 2f, baseColor);
-			}
+			}else if(isUpgrading())completeUpgrade();
 			
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setData();
@@ -338,7 +357,6 @@ public class UpgradeBlock extends Block {
 			write.i(this.lastestSelectID);
 			write.i(this.upgradingID);
 			
-			//for (UpgradeAmmoData ammoData : ammoDatas)ammoData.write(write);
 			datas.each(data -> data.write(write));
 		}
 
@@ -352,7 +370,6 @@ public class UpgradeBlock extends Block {
 			this.lastestSelectID = read.i();
 
 			datas.each(data -> data.read(read, revision));
-			//if(!ammoDatas.isEmpty())for(UpgradeAmmoData ammoData : ammoDatas)ammoData.read(read, revision);
 		}
 
 		@Override
@@ -377,7 +394,7 @@ public class UpgradeBlock extends Block {
 		public CoreBlock.CoreBuild core(){return this.team.core();}
 
 		@Override public Color getLinkColor(){return baseColor;}
-		@Override public boolean isUpgrading(){return remainTime > 0;}
+		@Override public boolean isUpgrading(){return upgradingID != defaultID || remainTime >= 0;}
 		@Override public float range() { return range; }
 		@Override public void buildConfiguration(Table table) {buildSwitchAmmoTable(table, true);}
 		@Override public void draw() {Draw.rect(region, x, y);}
@@ -386,6 +403,11 @@ public class UpgradeBlock extends Block {
 			if(linkValid())target().resetUpgrade();
 		}
 		public Scalablec target() {return linkValid() ? (Scalablec)link() : null;}
+		
+		@Override
+		public Seq<DataEntity> all(){
+			return datas;
+		}
 	}
 }
 

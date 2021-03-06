@@ -11,14 +11,17 @@ import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.world.Tile;
 import mindustry.world.blocks.power.PowerDistributor;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import newhorizon.func.NHSetting;
 
 import static mindustry.Vars.tilesize;
 
@@ -35,6 +38,13 @@ public class DisposableBattery extends PowerDistributor{
 		insulated = true;
 		rebuildable = false;
 		consumesPower = true;
+		breakable = false;
+		details = "Cannot be broken after placed. It can only be destroyed after power run out or be damaged";
+	}
+	
+	@Override
+	public boolean canBreak(Tile tile){
+		return false;
 	}
 	
 	@Override
@@ -79,7 +89,7 @@ public class DisposableBattery extends PowerDistributor{
 		public void updateTile(){
 			if(timer(0, Time.delta))progress += Math.max(0, (consumption + power.graph.getLastScaledPowerOut()) / consumes.getPower().capacity);
 			power.status = power.graph.getLastScaledPowerOut() / consumes.getPower().capacity * 1.125f;
-			Log.info(power.graph.getPowerNeeded() + " | " + power.graph.getSatisfaction());
+			if(!Vars.headless)NHSetting.debug(() -> Log.info(power.graph.getPowerNeeded() + " | " + power.graph.getSatisfaction()));
 			if(progress > 1)kill();
 		}
 		

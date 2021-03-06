@@ -1,6 +1,5 @@
 package newhorizon.func;
 
-import arc.Core;
 import arc.func.Boolf;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -15,6 +14,7 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -28,9 +28,12 @@ import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-import newhorizon.NewHorizon;
+import newhorizon.block.special.JumpGate;
 import newhorizon.bullets.EffectBulletType;
+import newhorizon.content.NHBlocks;
 import newhorizon.content.NHFx;
+
+import java.util.Random;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
@@ -43,7 +46,7 @@ public class Functions {
     private static final Seq<Tile> tiles = new Seq<>();
     private static final IntSeq buildingIDSeq = new IntSeq();
     private static final int maxCompute = 32;
-    private static final Effect debugEffect = new Effect(120f, 300f, e -> {
+    public static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;
         Seq<Rect> data = e.data();
         Draw.color(Pal.lancerLaser);
@@ -53,6 +56,7 @@ public class Functions {
             Fill.square(Tmp.v1.x, Tmp.v1.y, tilesize / 2f);
         }
     });
+    private static final Vec2 point = new Vec2();
     
     /**
      * @implNote Get all the {@link Tile} {@code tile} within a certain range at certain position.
@@ -101,25 +105,80 @@ public class Functions {
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     
-    public static boolean spawnUnit(Teamc starter, float x, float y, int spawns, float level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, UnitType type, Color spawnColor){
+    public static void spawnUnit(Teamc starter, float x, float y, float angle, float inComeVelocity, float delay, UnitType type, Color spawnColor){
+        Unit unit = type.create(starter.team());
+        unit.set(x, y);
+        unit.rotation = angle;
+        final TextureRegion
+                pointerRegion = ((JumpGate)NHBlocks.jumpGate).pointerRegion,
+                arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
+        float regSize = regSize(type);
+        new EffectBulletType(delay){
+            @Override
+            public void draw(Bullet b){
+                Draw.color(spawnColor);
+                for(int i = 0; i < 4; i++){
+                    float sin = Mathf.absin(Time.time, 16f, tilesize);
+                    float length = (tilesize * 5f + sin) * b.fout() + tilesize * 2f;
+                    float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
+                    Tmp.v1.trns(i * 90, -length);
+                    Draw.rect(pointerRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
+                }
+            
+                for(int i = 0; i <= 8; i++){
+                    Tmp.v1.trns(angle, (i - 4) * tilesize * 2);
+                    float f = (100 - (Time.time - 12.5f * i) % 100) / 100;
+                    Draw.rect(arrowRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, angle - 90);
+                }
+            
+                Draw.reset();
+            }
+        
+            @Override
+            public void despawned(Bullet b){
+                NHFx.spawn.at(b.x, b.y, regSize, spawnColor, starter);
+            }
+        }.create(starter, unit.x, unit.y, angle);
+    
+        Time.run(delay, () -> {
+            if(!Units.canCreate(starter.team(), type))return;
+            if(!Vars.net.client())unit.add();
+            if(type.flying){
+                if(!Vars.net.client())NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);
+                unit.vel.add(point.trns(angle, inComeVelocity).scl(type.drag + 2));
+            }else{
+                Fx.unitSpawn.at(unit.x, unit.y, angle, type);
+                Time.run(Fx.unitSpawn.lifetime, () -> {
+                    for(int j = 0; j < 3; j++){
+                        Time.run(j * 8, () -> Fx.spawn.at(unit));
+                    }
+                    Effect.shake(type.hitSize / 2.4f, type.hitSize / 4f, unit);
+                    NHFx.spawnGround.at(unit.x, unit.y, type.hitSize / tilesize * 3, spawnColor);
+                    NHFx.circle.at(unit.x, unit.y, type.hitSize * 4, spawnColor);
+                });
+            }
+            Sounds.plasmaboom.at(unit.x, unit.y);
+        });
+    }
+    
+    public static boolean spawnUnit(Teamc starter, float x, float y, int spawns, float level, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, long seed, UnitType type, Color spawnColor){
+        Log.info("Spawn" + starter + type);
         clearTmp();
         final Seq<Vec2> vectorSeq = new Seq<>();
         final Seq<Tile> tSeq = new Seq<>(Tile.class);
         float angle, regSize = regSize(type);
-        final TextureRegion
-                pointerRegion = Core.atlas.find(NewHorizon.configName("jump-gate-pointer")),
-                arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
         if(!type.flying){
             tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
                     tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
-            ).shuffle();
+            );
+            Random r = new Random(seed);
             for(int i = 0; i < spawns; i++){
                 Tile[] positions = tSeq.shrink();
                 if(positions.length < spawns)return false;
-                vectorSeq.add(new Vec2().set(positions[i]));
+                vectorSeq.add(new Vec2().set(positions[r.nextInt(positions.length)]));
             }
         }else{
-            randLenVectors((long)Time.time, spawns, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(x, y)));
+            randLenVectors(seed, spawns, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(x, y)));
         }
         
         angle = starter.angleTo(x, y);
@@ -134,12 +193,19 @@ public class Functions {
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
+            Unit unit = type.create(starter.team());
+            unit.set(s.x, s.y);
+            unit.rotation = angle;
+            final TextureRegion
+                pointerRegion = ((JumpGate)NHBlocks.jumpGate).pointerRegion,
+                arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
+                
             new EffectBulletType(spawnReloadTime + i * spawnDelay){
                 @Override
                 public void init(Bullet b){
                     NHFx.spawnWave.at(b.x, b.y, spawnRange, spawnColor);
                 }
-
+    
                 @Override
                 public void draw(Bullet b){
                     Draw.color(spawnColor);
@@ -148,39 +214,33 @@ public class Functions {
                         float length = (tilesize * level + sin) * b.fout() + tilesize * 2f;
                         float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
                         Tmp.v1.trns(i * 90, -length);
-                        Draw.rect(pointerRegion, b.x + Tmp.v1.x,b.y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
+                        Draw.rect(pointerRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
                     }
-
-                    for (int i = 0; i <= 8; i++) {
+        
+                    for(int i = 0; i <= 8; i++){
                         Tmp.v1.trns(angle, (i - 4) * tilesize * 2);
                         float f = (100 - (Time.time - 12.5f * i) % 100) / 100;
-                        Draw.rect(arrowRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, pointerRegion.width * (regSize / 2f + Draw.scl) * f, pointerRegion.height * (regSize / 2f + Draw.scl) * f, angle - 90);
+                        Draw.rect(arrowRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, angle - 90);
                     }
-
+        
                     Draw.reset();
                 }
-
+    
                 @Override
-                public void despawned(Bullet b) {
+                public void despawned(Bullet b){
                     NHFx.spawn.at(b.x, b.y, regSize, spawnColor, starter);
                 }
-
-            }.create(starter, s.x, s.y, angle);
-
+            }.create(starter, unit.x, unit.y, angle);
+            
             Time.run(spawnReloadTime + i * spawnDelay, () -> {
                 if(!Units.canCreate(starter.team(), type))return;
-                Unit unit = type.create(starter.team());
-                    unit.set(s.x, s.y);
-                unit.rotation = angle;
+                if(!Vars.net.client())unit.add();
                 if(type.flying){
                     NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);
-                    Tmp.v1.trns(angle, inComeVelocity).scl(type.drag + 2);
-                    unit.vel.add(Tmp.v1.x, Tmp.v1.y);
-                    unit.add();
+                    unit.vel.add(point.trns(angle, inComeVelocity).scl(type.drag + 2));
                 }else{
                     Fx.unitSpawn.at(unit.x, unit.y, angle, type);
                     Time.run(Fx.unitSpawn.lifetime, () -> {
-                        unit.add();
                         for(int j = 0; j < 3; j++){
                             Time.run(j * 8, () -> Fx.spawn.at(unit));
                         }

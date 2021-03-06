@@ -22,11 +22,14 @@ import mindustry.content.UnitTypes;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.graphics.Pal;
 import mindustry.type.Item;
+import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Cicon;
 import mindustry.ui.Fonts;
 import mindustry.ui.Styles;
+import mindustry.world.modules.ItemModule;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -59,7 +62,7 @@ public class TableFuncs {
         Inner(){
             background(Tex.button);
             isInner = true;
-            setSize(LEN * 8.5f, (LEN + OFFSET) * 3);
+            setSize(LEN * 12f, (LEN + OFFSET) * 3);
             button(Icon.cancel, Styles.clearTransi, () -> {
                 isInner = false;
                 setStr();
@@ -198,11 +201,12 @@ public class TableFuncs {
     }
     
     public static void tableMain(){
+        if(headless || net.server())return;
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
-            if(Vars.state.isMenu())starter.color.a = 0;
-            else {
-                if(starter.color.a < 1)starter.color.a = 1;
+            if(Vars.state.isMenu() || net.active() || net.client())starter.color.a = 0;
+            else{
+                starter.color.a = 1;
                 starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f);
                 
                 Unit u = player.unit();
@@ -222,7 +226,6 @@ public class TableFuncs {
                 }
             }
         });
-    
         Player player = Vars.player;
         
         starter.table(table -> table.button(Icon.admin, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
@@ -253,7 +256,7 @@ public class TableFuncs {
         starter.table(table -> table.button(Icon.move, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
             Table inner = new Inner();
             inner.table(Tex.button, t -> {
-                final float WIDTH = LEN * 2;
+                final float WIDTH = LEN * 2.5f;
                 t.table(bt -> {
                     bt.button("@confirm", Icon.export, () -> {
                         try{
@@ -328,5 +331,23 @@ public class TableFuncs {
         float parma = Math.max(tex.height, tex.width);
         float f = Math.min(size, parma);
         table.image(tex).size(tex.width * f / parma, tex.height * f / parma);
+    }
+    
+    public static void add(Table parent, ItemStack stack, ItemModule itemModule){
+        float size = LEN - OFFSET;
+        parent.table(t -> {
+            t.image(stack.item.icon(Cicon.xlarge)).size(size).left();
+            t.table(n -> {
+                Label l = new Label("");
+                n.add(stack.item.localizedName + " ").left();
+                n.add(l).left();
+                n.add("/" + stack.amount).left().growX();
+                n.update(() -> {
+                    int amount = itemModule == null ? 0 : itemModule.get(stack.item);
+                    l.setText(String.valueOf(amount));
+                    l.setColor(amount < stack.amount ? Pal.redderDust : Color.white);
+                });
+            }).growX().height(size).padLeft(OFFSET / 2).left();
+        }).growX().height(size).left().row();
     }
 }

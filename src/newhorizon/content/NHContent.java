@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import mindustry.Vars;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
@@ -61,7 +62,7 @@ public class NHContent extends UnlockableContent{
 	@Override
 	public void createIcons(MultiPacker packer){
 		super.createIcons(packer);
-		if(!NHSetting.getBool("@active.advance-load*"))return;
+		if(!NHSetting.getBool("@active.advance-load*") || Vars.headless)return;
 		packer.add(MultiPacker.PageType.editor, this.name + "-icon-editor", Core.atlas.getPixmap((TextureAtlas.AtlasRegion)this.icon(Cicon.full)));
 		
 		NHLoader.outlineTex.each( (arg, tex) -> {
@@ -76,7 +77,6 @@ public class NHContent extends UnlockableContent{
 	
 	@Override
 	public void load(){
-		
 		ammoInfo = Core.atlas.find(NewHorizon.MOD_NAME + "upgrade-info");
 		iconLevel = Core.atlas.find(NewHorizon.MOD_NAME + "level-up");
 		
@@ -93,13 +93,13 @@ public class NHContent extends UnlockableContent{
 		}
 		
 		super.load();
-		//Vars.content.blocks().remove(NHLoader.content);
 	}
 	
 	@Override
 	public void init(){
 		super.init();
-		deliveryBullet = new DeliveryBulletType(Core.atlas.find(NewHorizon.MOD_NAME + "mass-deliver-pack"));
+		deliveryBullet = new DeliveryBulletType();
+		if(!Vars.headless)deliveryBullet.region = Core.atlas.find(NewHorizon.configName("mass-deliver-pack"));
 	}
 	
 	@Override

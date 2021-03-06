@@ -2,9 +2,12 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.func.Cons;
+import arc.graphics.Color;
 import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -13,9 +16,11 @@ import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
+import mindustry.type.ItemStack;
 import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.modules.ItemModule;
 import newhorizon.block.special.JumpGate;
 
 import static mindustry.Vars.state;
@@ -44,6 +49,34 @@ public class Tables{
 					t2.table(stat).fillX().height(LEN + OFFSET).right().padRight(OFFSET);
 				}).growX().fillY().padBottom(OFFSET / 2).row();
 			}
+		}
+	}
+	
+	public static class ItemConsumeTable extends Table{
+		public final @Nullable
+		ItemModule itemModule;
+		
+		public ItemConsumeTable(@Nullable ItemModule itemModule){
+			this.itemModule = itemModule;
+			this.left();
+		}
+		
+		public void add(ItemStack stack){
+			float size = LEN - OFFSET;
+			table(t -> {
+				t.image(stack.item.icon(Cicon.xlarge)).size(size).left();
+				t.table(n -> {
+					Label l = new Label("");
+					n.update(() -> {
+						int amount = itemModule == null ? 0 : itemModule.get(stack.item);
+						l.setText(String.valueOf(amount));
+						l.setColor(amount < stack.amount ? Pal.redderDust : Color.white);
+					});
+					n.add(stack.item.localizedName + " ");
+					n.add(l);
+					n.add("/" + stack.amount);
+				}).height(size).fillX().padLeft(OFFSET / 2).left();
+			}).growX().height(size).left().row();
 		}
 	}
 	
@@ -125,9 +158,14 @@ public class Tables{
 		
 		public void contentLog(Table table, UnlockableContent[] contents){
 			table.pane(t -> {
+				int index = 0;
 				for(UnlockableContent c : contents){
-					c.display(t);
-					t.row();
+					if(index % 8 == 0)t.row();
+					t.button(new TextureRegionDrawable(c.icon(Cicon.xlarge)), Styles.cleari, LEN, () -> new BaseDialog(c.localizedName){{
+						cont.pane(c::display).grow().row();
+						addCloseButton();
+					}}.show()).size(LEN);
+					index++;
 				}
 			}).grow().row();
 		}
