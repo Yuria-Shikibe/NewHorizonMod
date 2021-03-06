@@ -52,6 +52,10 @@ task jarAndroid{
 }
 
 jar{
+    new File("$rootDir/mod.hjson").withWriter("UTF-8") { writer ->
+        writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
+    }
+    
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
     from{
@@ -61,9 +65,6 @@ jar{
     from(rootDir){
         include "mod.hjson"
         include "icon.png"
-        new File("mod.hjson").withWriter("UTF-8") { writer ->
-            writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
-        }
     }
 
     from("assets/"){
