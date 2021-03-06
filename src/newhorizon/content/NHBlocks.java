@@ -87,15 +87,16 @@ public class NHBlocks implements ContentList {
 			health = 4000;
 			range = 600f;
 			targetAir = false;
-			inaccuracy = 10f;
-			spread = 18f;
-			minRange = 200f;
-			maxAmmo = 30;
-			shots = 6;
-			ammoPerShot = 3;
+			inaccuracy = 5f;
+			spread = 3f;
+			velocityInaccuracy = 0.15f;
+			minRange = 160f;
+			shots = 8;
 			reloadTime = 90f;
-			coolantMultiplier = 0.85f;
+			coolantMultiplier = 0.95f;
 			recoilAmount = 5f;
+			shootShake = 6f;
+			shootSound = Sounds.explosionbig;
 			ammo(
 				NHItems.irayrondPanel, NHBullets.artilleryIrd,
 				NHItems.fusionEnergy, NHBullets.artilleryFusion,

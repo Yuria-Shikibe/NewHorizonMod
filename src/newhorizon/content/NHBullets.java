@@ -46,9 +46,11 @@ public class NHBullets implements ContentList{
 		
 	
 	public void loadFragType(){
-		artilleryIrd = new ArtilleryBulletType(5f, 125f, "large-bomb"){{
+		artilleryIrd = new ArtilleryBulletType(5f, 175f, "large-bomb"){{
+			reloadMultiplier = 1.25f;
+			shrinkX = shrinkY = 0.7F;
+			hitShake = 4f;
 			width = height = 27.0F;
-			spin = 4.0F;
 			splashDamage = damage;
 			splashDamageRadius = 8f;
 			incendSpread = -4f;
@@ -59,10 +61,11 @@ public class NHBullets implements ContentList{
 			shootEffect = NHFx.shootLineSmall(backColor);
 		}};
 		
-		artilleryFusion = new ArtilleryBulletType(4f, 90f, CIRCLE_BOLT){{
+		artilleryFusion = new ArtilleryBulletType(4f, 125f, CIRCLE_BOLT){{
 			width = height = 32.0F;
+			hitShake = 6f;
 			splashDamage = damage;
-			splashDamageRadius = 22f;
+			splashDamageRadius = 24f;
 			incendSpread = 6f;
 			frontColor = Color.white;
 			backColor = trailColor = lightColor = lightningColor = NHItems.fusionEnergy.color.cpy().lerp(frontColor, 0.15f);
@@ -72,7 +75,9 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.hugeSmoke;
 		}};
 		
-		artilleryPlast = new ArtilleryBulletType(4f, 75f){{
+		artilleryPlast = new ArtilleryBulletType(4f, 115f){{
+			reloadMultiplier = 0.95f;
+			hitShake = 4f;
 			width = 18f;
 			height = 36f;
 			splashDamage = damage / 4;
@@ -85,20 +90,21 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.hugeSmoke;
 			fragBullets = 6;
 			fragBullet = Bullets.fragPlastic;
-			fragVelocityMin = fragLifeMin = 0.95f;
+			fragVelocityMin = fragLifeMin = 0.055f;
 			fragVelocityMax = fragLifeMax = 1.05f;
 		}};
 		
-		artilleryThermo = new ArtilleryBulletType(2f, 135f, "large-bomb"){{
+		artilleryThermo = new ArtilleryBulletType(2f, 200f, "large-bomb"){{
+			reloadMultiplier = 0.95f;
+			shrinkX = shrinkY = 0.7F;
+			hitShake = 8f;
 			width = height = 40.0F;
-			spin = 2.0F;
 			splashDamage = damage;
 			splashDamageRadius = 16f;
 			lightning = 3;
 			lightningDamage = damage / 4;
 			lightningLength = lightningLengthRand = 10;
 			frontColor = Color.white;
-			ammoMultiplier = 1.5f;
 			backColor = trailColor = lightColor = lightningColor = NHItems.thermoCorePositive.color;
 			hitEffect = NHFx.lightningHitLarge(backColor);
 			despawnEffect = NHFx.crossBlast(backColor, 100);
@@ -106,7 +112,8 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.hugeSmoke;
 		}};
 		
-		artilleryPhase = new ArtilleryBulletType(8f, 110f){{
+		artilleryPhase = new ArtilleryBulletType(8f, 160f){{
+			hitShake = 2f;
 			width = 14f;
 			height = 35f;
 			collides = true;
@@ -122,7 +129,8 @@ public class NHBullets implements ContentList{
 			statusDuration = 60f;
 		}};
 		
-		artilleryMissile = new ArtilleryBulletType(5f, 80f){{
+		artilleryMissile = new ArtilleryBulletType(5f, 140f){{
+			hitShake = 2f;
 			width = 14f;
 			height = 35f;
 			splashDamage = damage;
