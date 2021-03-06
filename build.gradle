@@ -75,9 +75,7 @@ jar{
 task deploy(type: Jar){
     def fi = new File("$rootDir/mod.hjson")
     if(fi.exists()) {
-        fi.withWriter("UTF-8") { writer ->
-            writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
-        }
+        fi.append("\nminGameVersion: ${mindustryVersion.split("v")[1]}")
     }
     dependsOn jarAndroid
     dependsOn jar
