@@ -60,7 +60,7 @@ public class NHBlocks implements ContentList {
 		largeShieldGenerator,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior,
 		//Turrets
-		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret,
+		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret, multipleArtillery,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
@@ -82,6 +82,39 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		multipleArtillery = new ItemTurret("multiple-artillery"){{
+			size = 4;
+			health = 4000;
+			range = 600f;
+			targetAir = false;
+			inaccuracy = 10f;
+			spread = 18f;
+			minRange = 200f;
+			maxAmmo = 30;
+			shots = 6;
+			ammoPerShot = 3;
+			reloadTime = 90f;
+			coolantMultiplier = 0.85f;
+			recoilAmount = 5f;
+			ammo(
+				NHItems.irayrondPanel, NHBullets.artilleryIrd,
+				NHItems.fusionEnergy, NHBullets.artilleryFusion,
+				NHItems.thermoCorePositive, NHBullets.artilleryThermo,
+				Items.plastanium, NHBullets.artilleryPlast,
+				Items.phaseFabric, NHBullets.artilleryPhase,
+				NHItems.juniorProcessor, NHBullets.artilleryMissile
+			);
+			consumes.powerCond(8f, TurretBuild::isActive);
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 250, Items.surgeAlloy, 100, NHItems.seniorProcessor, 150, Items.plastanium, 300, Items.phaseFabric, 150));
+			NHTechTree.add(Blocks.ripple, this);
+		}
+			@Override
+			public void setStats(){
+				super.setStats();
+				stats.add(Stat.shootRange, minRange / tilesize, StatUnit.blocks);
+			}
+		};
+		
 		playerJumpGate = new PlayerJumpGate("player-jump-gate"){{
 			requirements(Category.effect, ItemStack.with(Items.titanium, 60, NHItems.presstanium, 45, NHItems.zeta, 120, NHItems.juniorProcessor, 50));
 			NHTechTree.add(Blocks.massDriver, this);
@@ -106,7 +139,7 @@ public class NHBlocks implements ContentList {
 				splashDamage = damage / 4;
 				splashDamageRadius = 12f;
 				hitEffect = NHFx.lightningHitLarge(backColor);
-				despawnEffect = NHFx.instHitSize(backColor, 3, 22f);
+				despawnEffect = NHFx.instHit(backColor, 3, 22f);
 				trailChance = 0.35f;
 				trailEffect = NHFx.trail;
 				trailParam = 4f;
@@ -257,7 +290,6 @@ public class NHBlocks implements ContentList {
 				NHItems.irayrondPanel, NHBullets.railGun1,
 				NHItems.setonAlloy, NHBullets.railGun2
 			);
-			maxAmmo = 20;
 			minRange = 180f;
 			rotateSpeed = 0.75f;
 			coolantMultiplier = 0.55f;

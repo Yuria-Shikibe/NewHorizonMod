@@ -115,13 +115,17 @@ public class NHFx{
 	}
 	
 	public static Effect crossBlast(Color color){
-		return new Effect(36f, e -> {
+		return crossBlast(color, 117);
+	}
+	
+	public static Effect crossBlast(Color color, float size){
+		return new Effect(36f, size * 2, e -> {
 			color(color, Color.white, e.fout() * 0.55f);
 			stroke(2f * e.fout());
 			e.scaled(16f, i -> circle(e.x, e.y, 45f * i.fin()));
 			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, 7 * (e.fout() + 1) / 2, 117f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
+				Drawf.tri(e.x, e.y, size / 16 * (e.fout() + 1) / 2, size * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
 			}
 		});
 	}
@@ -175,9 +179,9 @@ public class NHFx{
 		});
 	}
 	
-	public static Effect instHit(Color color){return instHitSize(color, 5, 50); }
+	public static Effect instHit(Color color){return instHit(color, 5, 50); }
 	
-	public static Effect instHitSize(Color color, int num, float size){
+	public static Effect instHit(Color color, int num, float size){
 		return new Effect(20.0F, size * 1.5f, (e) -> {
 			for(int i = 0; i < 2; ++i) {
 				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.25f));
