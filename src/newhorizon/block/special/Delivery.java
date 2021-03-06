@@ -73,7 +73,7 @@ public class Delivery extends Block{
 		this.hasPower = true;
 		this.solid = true;
 		this.update = true;
-		this.group = BlockGroup.storage;
+		this.group = BlockGroup.transportation;
 		outlineIcon = true;
 		expanded = true;
 		

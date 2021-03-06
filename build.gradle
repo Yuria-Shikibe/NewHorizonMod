@@ -13,7 +13,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v125'
+    mindustryVersion = 'v126'
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
@@ -59,6 +59,10 @@ jar{
     }
 
     from(rootDir){
+        new File("mod.hjson").withWriter("UTF-8") { writer ->
+            writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
+        }
+        
         include "mod.hjson"
         include "icon.png"
     }
