@@ -53,7 +53,7 @@ task jarAndroid{
 
 jar{
     new File("$rootDir/mod.hjson").withWriter("UTF-8") { writer ->
-        writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
+        //writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
     }
     
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
