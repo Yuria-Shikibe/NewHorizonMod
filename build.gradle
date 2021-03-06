@@ -15,7 +15,6 @@ ext{
     //the build number that this mod is made for
     mindustryVersion = 'v126'
     //version of SDK you will be using
-    hjson = "\$mod.hjson"
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
 
@@ -60,7 +59,7 @@ jar{
     }
 
     from(rootDir){
-        include hjson
+        include "mod.hjson"
         include "icon.png"
     }
 
@@ -70,18 +69,15 @@ jar{
 }
 
 task deploy(type: Jar){
-    def base = new File("$rootDir/mod.hjson")
-    def fi = new File("$rootDir/$hjson")
-    if(!fi.exists()) {
-        fi.createNewFile()
-    }
-    base.withReader { reader ->
+    def fi = new File("$rootDir/mod.hjson")
+    fi.withReader { reader ->
         def lines = reader.readLines()
         fi.withWriter { writer ->
             lines.each { line ->
-                writer.append("$line\r\n")
-                writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
+                def check = line.split(":")[0].equals("minGameVersion")
+                if(!check) writer.append("$line\r\n")
             }
+            writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
         }
     }
     dependsOn jarAndroid
@@ -93,6 +89,5 @@ task deploy(type: Jar){
     doLast{
         delete{ delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar" }
         delete{ delete "$buildDir/libs/${project.archivesBaseName}Android.jar" }
-        delete{ delete "$rootDir/$hjson" }
     }
 }
