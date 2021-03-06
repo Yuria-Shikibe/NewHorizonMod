@@ -134,10 +134,7 @@ public class Delivery extends Block{
 		@Override public int linkPos(){
 			return link;
 		}
-		@Override public void linkPos(int value){
-			link = value;
-		}
-		
+		@Override public void linkPos(int value){ link = value; }
 		@Override
 		public boolean onConfigureTileTapped(Building other){
 			if (this == other || this.link == other.pos()){

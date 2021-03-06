@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.gen.Building;
@@ -48,6 +49,7 @@ public interface Linkablec extends Buildingc, Ranged{
 	}
 	default Building link(){return world.build(linkPos()); }
 	default boolean linkValid(){ return link() != null; }
+	default void linkPos(Point2 point2){linkPos(point2.pack());}
 	int linkPos();
 	void linkPos(int value);
 	Color getLinkColor();

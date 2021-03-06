@@ -73,7 +73,7 @@ public class NHBullets implements ContentList{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
-			pierceCap = 5;
+			pierceCap = 6;
 			drag = -0.01f;
 			homingPower = 0.125f;
 			homingRange = range();
@@ -116,7 +116,7 @@ public class NHBullets implements ContentList{
 			lifetime = 75f;
 		}};
 		
-		missileTitanium = new MissileBulletType(4.2f, 22){{
+		missileTitanium = new MissileBulletType(4.2f, 20){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
@@ -132,12 +132,12 @@ public class NHBullets implements ContentList{
 			lifetime = 75f;
 		}};
 		
-		missileThorium = new MissileBulletType(4.2f, 38){{
+		missileThorium = new MissileBulletType(4.2f, 34){{
 			width = 8f;
 			height = 8f;
 			shrinkY = 0f;
 			pierceCap = 2;
-			knockback = 16f;
+			knockback = 8;
 			drag = -0.01f;
 			ammoMultiplier = 3f;
 			backColor = trailColor = lightColor = Items.thorium.color.cpy().lerp(Color.white, 0.2f);
@@ -322,6 +322,7 @@ public class NHBullets implements ContentList{
 			public float range(){return 180f;}
 			
 			{
+				trailLength = 5;
 				buildingDamageMultiplier = 3.5f;
 				keepVelocity = true;
 				velocityEnd = 14f;

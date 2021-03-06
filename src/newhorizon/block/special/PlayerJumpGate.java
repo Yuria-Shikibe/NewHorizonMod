@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Time;
@@ -41,8 +42,8 @@ public class PlayerJumpGate extends Block{
 		update = true;
 		configurable = true;
 		solid = true;
-		config(Integer.class, (Cons2<PlayerJumpGateBuild, Integer>)PlayerJumpGateBuild::linkPos);
-		config(Long.class, (PlayerJumpGateBuild tile, Long id) -> tile.teleport(Groups.player.getByID(id.intValue())));
+		config(Point2.class, (Cons2<PlayerJumpGateBuild, Point2>)PlayerJumpGateBuild::linkPos);
+		config(Integer.class, (PlayerJumpGateBuild tile, Integer id) -> tile.teleport(Groups.player.getByID(id)));
 		config(Boolean.class, (PlayerJumpGateBuild tile, Boolean value) -> tile.locked = value);
 	}
 	
@@ -148,11 +149,11 @@ public class PlayerJumpGate extends Block{
 		@Override
 		public boolean onConfigureTileTapped(Building other){
 			if (this == other || link == other.pos()) {
-				configure(-1);
+				configure(Tmp.p1.set(-1, -1));
 				return false;
 			}
 			if (other.within(this, range()) && other.team == team && other instanceof PlayerJumpGateBuild) {
-				configure(other.pos());
+				configure(Point2.unpack(other.pos()));
 				return false;
 			}
 			return true;
@@ -196,7 +197,7 @@ public class PlayerJumpGate extends Block{
 		public void buildConfiguration(Table table){
 			final float dstMax = size * tilesize / 2.5f;
 			table.button(Icon.lock, LEN, () -> configure(!locked)).size(LEN).update(b -> b.getStyle().imageUp = locked ? Icon.lock : Icon.lockOpen);
-			table.button("Teleport", Icon.upOpen, LEN, () -> configure((long)Vars.player.id)).size(LEN * 4, LEN).disabled(b -> !playerValid() || !canFunction() || dst(Vars.player) > dstMax);
+			table.button("Teleport", Icon.upOpen, LEN, () -> configure(Vars.player.id)).size(LEN * 4, LEN).disabled(b -> !playerValid() || !canFunction() || dst(Vars.player) > dstMax);
 		}
 		
 		public boolean canFunction(){

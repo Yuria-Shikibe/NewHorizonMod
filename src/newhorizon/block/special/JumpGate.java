@@ -1,12 +1,14 @@
 package newhorizon.block.special;
 
 import arc.Core;
+import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.scene.Element;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
@@ -73,7 +75,6 @@ public class JumpGate extends Block {
             arrowRegion;
     public Color baseColor;
     public final Seq<UnitSet> calls = new Seq<>();
-
     public float squareStroke = 2f;
 
     public JumpGate(String name){
@@ -87,7 +88,7 @@ public class JumpGate extends Block {
         consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
         consumes.powerCond(consumes.getPower().usage, JumpGateBuild::isCalling);
     
-        config(Long.class, (JumpGateBuild tile, Long b) -> tile.link = b.intValue());
+        config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
         config(Integer.class, (JumpGateBuild tile, Integer i) -> {
             if(!tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
             else tile.spawn(calls.get(i));
@@ -222,7 +223,7 @@ public class JumpGate extends Block {
         @Override
         public void updateTile(){
             if(hasConsume(getSet()))progress += efficiency() + warmup;
-            if(isCalling()){
+            if(isCalling() && hasConsume(getSet())){
                 buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1) * Vars.state.rules.unitBuildSpeedMultiplier;
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
                     Log.info("start spawn");
@@ -270,12 +271,13 @@ public class JumpGate extends Block {
 
         @Override
         public boolean onConfigureTileTapped(Building other) {
+            
             if (this == other || link == other.pos()) {
-                configure(-1L);
+                configure(Tmp.p1.set(-1, -1));
                 return false;
             }
             if (other.within(this, range())) {
-                configure((long)other.pos());
+                configure(Point2.unpack(other.pos()));
                 return false;
             }
             return true;
@@ -311,11 +313,12 @@ public class JumpGate extends Block {
                 }).grow()
             ).grow().row();
             dialog.cont.add(new Bar(
-                    () -> isCalling() ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]."
+                    () -> isCalling() ? hasConsume(getSet()) ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]." : "[red]Call Jammed."
                         : "[lightgray]" + Iconc.cancel,
                     () -> isCalling() && hasConsume(getSet()) ? Pal.power : Pal.redderDust,
                     () -> isCalling() ? buildReload / getSet().costTime() : 0
             )).fillX().height(LEN).padTop(OFFSET / 2).row();
+            dialog.cont.button("@cancel", Icon.cancel, Styles.cleart, () -> configure(-1)).padTop(OFFSET / 2).disabled(b -> !isCalling()).fillX().height(LEN).row();
             dialog.cont.button("@release", Icon.add, Styles.cleart, () -> configure(spawnID)).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
             dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).fillX().height(LEN).row();
             table.button("@spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
@@ -387,6 +390,9 @@ public class JumpGate extends Block {
         }
         
         public void startBuild(int set){
+            if(set < 0 || set >= calls.size){
+                spawnID = -1;
+            }
             spawnID = set;
         }
         
@@ -443,6 +449,7 @@ public class JumpGate extends Block {
             if(spawnID < 0 || spawnID >= calls.size)return null;
             return calls.get(spawnID);
         }
+        
         @Override public int linkPos(){ return link; }
         @Override public void linkPos(int value){ link = value; }
         @Override public Color getLinkColor(){ return getColor(getSet()); }
