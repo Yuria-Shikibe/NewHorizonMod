@@ -59,7 +59,7 @@ jar{
     }
 
     from(rootDir){
-        include hjson
+        include "mod.hjson"
         include "icon.png"
     }
 
