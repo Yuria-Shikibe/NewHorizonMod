@@ -46,7 +46,7 @@ public class NHBullets implements ContentList{
 		
 	
 	public void loadFragType(){
-		artilleryIrd = new ArtilleryBulletType(5f, 175f, "large-bomb"){{
+		artilleryIrd = new ArtilleryBulletType(5f, 150f, "large-bomb"){{
 			reloadMultiplier = 1.25f;
 			shrinkX = shrinkY = 0.7F;
 			hitShake = 4f;
@@ -61,7 +61,7 @@ public class NHBullets implements ContentList{
 			shootEffect = NHFx.shootLineSmall(backColor);
 		}};
 		
-		artilleryFusion = new ArtilleryBulletType(4f, 125f, CIRCLE_BOLT){{
+		artilleryFusion = new ArtilleryBulletType(4f, 100f, CIRCLE_BOLT){{
 			width = height = 32.0F;
 			hitShake = 6f;
 			splashDamage = damage;
@@ -75,7 +75,7 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.hugeSmoke;
 		}};
 		
-		artilleryPlast = new ArtilleryBulletType(4f, 115f){{
+		artilleryPlast = new ArtilleryBulletType(4f, 90f){{
 			reloadMultiplier = 0.95f;
 			hitShake = 4f;
 			width = 18f;
@@ -94,7 +94,7 @@ public class NHBullets implements ContentList{
 			fragVelocityMax = fragLifeMax = 1.05f;
 		}};
 		
-		artilleryThermo = new ArtilleryBulletType(2f, 200f, "large-bomb"){{
+		artilleryThermo = new ArtilleryBulletType(2f, 180f, "large-bomb"){{
 			reloadMultiplier = 0.95f;
 			shrinkX = shrinkY = 0.7F;
 			hitShake = 8f;
@@ -112,7 +112,7 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.hugeSmoke;
 		}};
 		
-		artilleryPhase = new ArtilleryBulletType(8f, 160f){{
+		artilleryPhase = new ArtilleryBulletType(8f, 110f){{
 			hitShake = 2f;
 			width = 14f;
 			height = 35f;
@@ -129,7 +129,7 @@ public class NHBullets implements ContentList{
 			statusDuration = 60f;
 		}};
 		
-		artilleryMissile = new ArtilleryBulletType(5f, 140f){{
+		artilleryMissile = new ArtilleryBulletType(5f, 100f){{
 			hitShake = 2f;
 			width = 14f;
 			height = 35f;
