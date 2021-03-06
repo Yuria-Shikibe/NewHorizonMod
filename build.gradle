@@ -59,12 +59,11 @@ jar{
     }
 
     from(rootDir){
+        include "mod.hjson"
+        include "icon.png"
         new File("mod.hjson").withWriter("UTF-8") { writer ->
             writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
         }
-        
-        include "mod.hjson"
-        include "icon.png"
     }
 
     from("assets/"){
