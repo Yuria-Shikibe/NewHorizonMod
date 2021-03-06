@@ -133,6 +133,7 @@ public class PlayerJumpGate extends Block{
 			write.f(warmup);
 			write.f(reload);
 			write.i(link);
+			write.bool(locked);
 		}
 		
 		@Override
@@ -141,6 +142,7 @@ public class PlayerJumpGate extends Block{
 			warmup = read.f();
 			reload = read.f();
 			link = read.i();
+			locked = read.bool();
 		}
 		
 		@Override
