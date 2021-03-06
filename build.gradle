@@ -52,10 +52,6 @@ task jarAndroid{
 }
 
 jar{
-    new File("$rootDir/mod.hjson").withWriter("UTF-8") { writer ->
-        //writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
-    }
-    
     archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
     from{
@@ -77,6 +73,12 @@ jar{
 }
 
 task deploy(type: Jar){
+    def fi = new File("$rootDir/mod.hjson")
+    if(fi.exists()) {
+        fi.withWriter("UTF-8") { writer ->
+            writer.write("minGameVersion: ${mindustryVersion.split("v")[1]}")
+        }
+    }
     dependsOn jarAndroid
     dependsOn jar
     archiveFileName = "${project.archivesBaseName}.jar"
