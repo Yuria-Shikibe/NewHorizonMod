@@ -138,7 +138,7 @@ public class NHBlocks implements ContentList {
 		multipleLauncher = new ItemTurret("multiple-launcher"){{
 			size = 3;
 			health = 1250;
-			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
+			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30, Items.phaseFabric, 50));
 			NHTechTree.add(Blocks.swarmer, this);
 			ammo(
 				Items.titanium, NHBullets.missileTitanium,
