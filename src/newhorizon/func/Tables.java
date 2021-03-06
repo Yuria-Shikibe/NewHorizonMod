@@ -43,7 +43,7 @@ public class Tables{
 					
 					t2.pane(table2 -> {
 						table2.add("[gray]Summon: [accent]" + set.type.localizedName + "[gray]; Level: [accent]" + set.level + "[gray].").left().row();
-						table2.add("[gray]NeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + " sec[gray].").row();
+						table2.add("[gray]NeededTime: [accent]" + TableFuncs.format(set.costTimeVar() / 60) + " sec[gray].").row();
 					}).growX().height(LEN).center();
 					
 					t2.table(stat).fillX().height(LEN + OFFSET).right().padRight(OFFSET);

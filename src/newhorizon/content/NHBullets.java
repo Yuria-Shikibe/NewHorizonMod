@@ -161,7 +161,7 @@ public class NHBullets implements ContentList{
 			hitEffect = Fx.smoke;
 			despawnEffect = NHFx.lightningHitLarge(backColor);
 			lifetime = 75f;
-			lightningDamage = damage / 4;
+			lightningDamage = damage / 2;
 			lightning = 2;
 			lightningLength = 10;
 		}};

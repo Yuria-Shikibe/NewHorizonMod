@@ -168,7 +168,7 @@ public class JumpGate extends Block {
                 inner.image(set.type.icon(Cicon.full)).center().row();
                 inner.add("<<[accent] " + set.type.localizedName + " []>>").row();
                 inner.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
-                inner.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTime() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
+                inner.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTimeVar() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
                 inner.table(table -> {
                     int index = 0;
                     for(ItemStack stack : set.requirements()){
@@ -298,10 +298,10 @@ public class JumpGate extends Block {
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
                                     () -> Core.bundle.format("bar.unitcap",
-                                                    Fonts.getUnicodeStr(set.type.name),
-                                                    team.data().countType(set.type),
-                                                    Units.getCap(team)
-                                            ),
+                                            Fonts.getUnicodeStr(set.type.name),
+                                            team.data().countType(set.type),
+                                            Units.getCap(team)
+                                        ),
                                     () -> Units.getCap(team) - team.data().countType(set.type) - set.callIns <= 0 ? Pal.redderDust : Pal.power,
                                     () ->  (float)team.data().countType(set.type) / Units.getCap(team)
                             );
@@ -312,7 +312,7 @@ public class JumpGate extends Block {
             ).grow().row();
             dialog.cont.add(new Bar(
                     () -> isCalling() ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]."
-                            : "[lightgray]" + Iconc.cancel,
+                        : "[lightgray]" + Iconc.cancel,
                     () -> isCalling() && hasConsume(getSet()) ? Pal.power : Pal.redderDust,
                     () -> isCalling() ? buildReload / getSet().costTime() : 0
             )).fillX().height(LEN).padTop(OFFSET / 2).row();
@@ -473,6 +473,7 @@ public class JumpGate extends Block {
         }
 
         public float costTime(){return costTime;}
+        public float costTimeVar(){return costTime / state.rules.unitBuildSpeedMultiplier;}
         public ItemStack[] requirements(){ return requirements.toArray(); }
     }
 }
