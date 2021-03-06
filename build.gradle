@@ -78,7 +78,7 @@ task deploy(type: Jar){
         def lines = reader.readLines()
         fi.withWriter { writer ->
             lines.each { line ->
-                def check = line ==~ "minGameVersion"
+                def check = line ==~ /minGameVersion*/
                 if(!check) writer.append("$line\r\n")
             }
             writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
