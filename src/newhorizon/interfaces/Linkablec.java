@@ -42,7 +42,7 @@ public interface Linkablec extends Buildingc, Ranged{
 		Lines.stroke(2, getLinkColor());
 		Lines.dashLine(x + Tmp.v1.x, y + Tmp.v1.y, link().getX() + Tmp.v2.x, link().getY() + Tmp.v2.y, sigs);
 		Drawf.circles(x, y, r1, getLinkColor());
-		Drawf.arrow(x, y, link().getX(), link().getY(), 2 * tilesize + sin, 4 + sin, getLinkColor());
+		Drawf.arrow(x, y, link().getX(), link().getY(), block().size * tilesize / 2f + sin, 4 + sin, getLinkColor());
 		
 		Drawf.circles(link().getX(), link().getY(), r2, getLinkColor());
 		Draw.reset();

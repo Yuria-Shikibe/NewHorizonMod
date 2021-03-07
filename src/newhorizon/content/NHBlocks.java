@@ -47,6 +47,7 @@ import newhorizon.block.turrets.MultTractorBeamTurret;
 import newhorizon.block.turrets.ScalableTurret;
 import newhorizon.block.turrets.SpeedupTurret;
 import newhorizon.bullets.NHTrailBulletType;
+import newhorizon.func.NHSetting;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
@@ -76,16 +77,17 @@ public class NHBlocks implements ContentList {
 		//Powers
 		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
 		//Special
-		playerJumpGate
+		playerJumpGate, debuger
 		;
 
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		NHSetting.debug(() -> debuger = new Debuger());
 		multipleArtillery = new ItemTurret("multiple-artillery"){{
 			size = 4;
 			health = 4000;
-			range = 600f;
+			range = 400f;
 			targetAir = false;
 			inaccuracy = 5f;
 			spread = 3f;

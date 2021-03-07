@@ -7,7 +7,9 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Position;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
+import arc.struct.FloatSeq;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -21,6 +23,7 @@ import mindustry.gen.Healthc;
 import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import newhorizon.content.NHFx;
+import newhorizon.func.NHSetting;
 import org.jetbrains.annotations.NotNull;
 
 public class PosLightning {
@@ -66,7 +69,8 @@ public class PosLightning {
 	public static void createRange(@Nullable Bullet owner, boolean hitAir, boolean hitGround, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
 		Seq<Unit> entities = new Seq<>();
 		whetherAdd(entities, team, rect.setSize(range * 2f).setCenter(from.getX(), from.getY()), hits, hitGround, hitAir);
-		for (Position p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
+		for (Unit p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
+		NHSetting.debug(() -> Log.info("Created " + entities.size + " | " + hits + " | " + range));
 	}
 	
 	
@@ -109,7 +113,7 @@ public class PosLightning {
 			float len = getBoltRandomRange();
 			float randRange = len * RANGE_RAND;
 			
-			Seq<Float> randomArray = new Seq<>();
+			FloatSeq randomArray = new FloatSeq();
 			for (int num = 0; num < dst / (ROT_DST * len) + 1; num ++) {
 				randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
 			}
@@ -154,14 +158,16 @@ public class PosLightning {
 	
 	//Add proper unit into the to hit Seq.
 	private static void whetherAdd(Seq<Unit> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
-		points.clear();
 		Units.nearbyEnemies(team, selectRect, unit -> {
+			NHSetting.debug(() -> Log.info(unit.checkTarget(targetAir, targetGround) + " | " + (points.isEmpty() || unit.dst(Geometry.findClosest(unit.x, unit.y, points)) > GENERATE_DST)));
 			if(
 				points.size <= hits && unit.checkTarget(targetAir, targetGround) && (
 					points.isEmpty() || unit.dst(Geometry.findClosest(unit.x, unit.y, points)) > GENERATE_DST//Make sure add the started one.
 				)
 			) points.add(unit);
 		});
+		
+		
 	}
 
 	//create lightning effect.
@@ -169,7 +175,7 @@ public class PosLightning {
 		NHFx.posLightning.at(vets.first().x, vets.first().y, width, color, vets);
 	}
 	
-	private static Seq<Vec2> computeVectors(Seq<Float> randomVec, Position from, Position to){
+	private static Seq<Vec2> computeVectors(FloatSeq randomVec, Position from, Position to){
 		int param = randomVec.size;
 		float angle = from.angleTo(to);
 		

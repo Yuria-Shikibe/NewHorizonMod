@@ -346,6 +346,11 @@ public class NHUnits implements ContentList {
 				bullet = new NHTrailBulletType(7.4f, 60, NewHorizon.MOD_NAME + "strike") {
 					@Override public float range(){return 440f;}
 					{
+						trailWeaveMag = 4f;
+						trailWeaveScale = 2f;
+						flip = true;
+						trails = 2;
+						trailOffset = 10f;
 						hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
 						lifetime = 140f;
 						pierce = pierceBuilding = true;
@@ -366,11 +371,11 @@ public class NHUnits implements ContentList {
 			){{
 				constructor = EntityMapping.map(3);
 				abilities.add(
-						new ForceFieldAbility(120.0F, 6F, 20000.0F, 1200.0F),
-						new RepairFieldAbility(800f, 160f, 240f){{
-							healEffect = NHFx.healEffect;
-							activeEffect = NHFx.activeEffect;
-						}}
+					new ForceFieldAbility(120.0F, 6F, 20000.0F, 1200.0F),
+					new RepairFieldAbility(800f, 160f, 240f){{
+						healEffect = NHFx.healEffect;
+						activeEffect = NHFx.activeEffect;
+					}}
 				);
 				commandLimit = 6;
 				lowAltitude = true;
@@ -407,6 +412,7 @@ public class NHUnits implements ContentList {
 				bullet = new ShieldBreaker(6.25f, 50, 650f) {
 					@Override public float range(){return 280f;}
 					{
+						spin = 2.75f;
 						hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
 						lifetime = 90f;
 						pierceCap = 8;

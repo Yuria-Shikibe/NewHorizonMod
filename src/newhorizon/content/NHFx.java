@@ -9,6 +9,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.math.geom.Vec3;
 import arc.struct.Seq;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
@@ -17,6 +18,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
+import newhorizon.effects.EffectTrail;
 import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.rect;
@@ -26,6 +28,13 @@ import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
 
 public class NHFx{
+	public static Effect polyTrail(Color fromColor, Color toColor, float size, float lifetime){
+		return new Effect(lifetime, size * 2, e -> {
+			color(fromColor, toColor, e.fin());
+			Fill.poly(e.x, e.y, 6, size * e.fout(), e.rotation);
+		});
+	}
+	
 	public static Effect genericCharge(Color color, float size, float range, float lifetime){
 		return new Effect(lifetime, e -> {
 			color(color);
@@ -568,6 +577,30 @@ public class NHFx{
 			
 			color(Color.gray, Color.darkGray, e.fin());
 			randLenVectors(e.id, 3, 3 + 28 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f));
+		}),
+	
+		disappearEffect = new Effect(EffectTrail.LIFETIME, EffectTrail.DRAW_SIZE, e -> {
+			if (!(e.data instanceof EffectTrail.EffectTrailData))return;
+			EffectTrail.EffectTrailData data = e.data();
+			
+			Draw.color(e.color);
+			Fill.circle(e.x, e.y, data.width * 1.1f * e.fout());
+			Draw.reset();
+			for (int i = 0; i < data.points.size - 1; i++) {
+				
+				Vec3 c = data.points.get(i);
+				Vec3 n = data.points.get(i + 1);
+				float sizeP = data.width * e.fout() / e.rotation;
+				
+				float
+						cx = Mathf.sin(c.z) * i * sizeP,
+						cy = Mathf.cos(c.z) * i * sizeP,
+						nx = Mathf.sin(n.z) * (i + 1) * sizeP,
+						ny = Mathf.cos(n.z) * (i + 1) * sizeP;
+				
+				Draw.color(e.color, data.toColor, (float)(i / data.points.size));
+				Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
+			}
 		});
 }
 

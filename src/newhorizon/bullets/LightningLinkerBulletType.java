@@ -12,16 +12,16 @@ import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
-import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import newhorizon.content.NHFx;
+import newhorizon.effects.EffectTrail;
 import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
 
-public class LightningLinkerBulletType extends BulletType{
+public class LightningLinkerBulletType extends NHTrailBulletType{
 	public Color
 			outColor = Color.white,
 			innerColor = Color.white;
@@ -46,14 +46,15 @@ public class LightningLinkerBulletType extends BulletType{
 	
 	public LightningLinkerBulletType(float speed, float damage) {
 		super(speed, damage);
-		this.collides = false;
-		this.scaleVelocity = true;
-		this.hitShake = 3.0F;
-		this.hitSound = Sounds.explosion;
-		this.shootEffect = Fx.shootBig;
-		this.trailEffect = Fx.artilleryTrail;
-		this.lightning = 4;
-		
+		collidesGround = collidesAir = true;
+		collides = false;
+		scaleVelocity = true;
+		hitShake = 3.0F;
+		hitSound = Sounds.explosion;
+		shootEffect = Fx.shootBig;
+		trailEffect = Fx.artilleryTrail;
+		lightning = 4;
+		trails = 0;
 		lightningLength = 3;
 		lightningLengthRand = 12;
 		lightningCone = 360f;
@@ -91,7 +92,7 @@ public class LightningLinkerBulletType extends BulletType{
 	@Override
 	public void update(Bullet b) {
 		Effect.shake(hitShake, hitShake, b);
-		if (b.timer(0, generateDelay)) {
+		if (b.timer(5, generateDelay)) {
 			for(int i : Mathf.signs)slopeEffect.at(b.x + Mathf.range(size / 4f), b.y + Mathf.range(size / 4f), b.rotation(), i);
 			spreadEffect.at(b);
 			PosLightning.createRange(b, collidesAir, collidesGround, b, b.team, linkRange, maxHit, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, PosLightning.WIDTH, boltNum, p -> liHitEffect.at(p));
@@ -102,13 +103,16 @@ public class LightningLinkerBulletType extends BulletType{
 			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), this.splashDamageRadius, this.splashDamage * b.damageMultiplier(), this.collidesAir, this.collidesGround);
 			NHFx.lightningHitLarge(outColor).at(hitPos);
 		});
+		
+		if(!(b.data instanceof EffectTrail[]))return;
+		super.updateTrail(b, (EffectTrail[])b.data());
+		//super.update(b);
 	}
 	
 	@Override
 	public void init(Bullet b) {
-		//super.init(b);
+		super.init(b);
 		
-		//b.vel.scl((speed * b.lifetime - speed * drag * Mathf.pow(b.lifetime, 2) / 2) / b.lifetime / speed + 1);
 		b.vel.scl(1 + b.lifetime / lifetime);
 	}
 	
@@ -118,6 +122,7 @@ public class LightningLinkerBulletType extends BulletType{
 		Fill.circle(b.x, b.y, size);
 		color(innerColor);
 		Fill.circle(b.x, b.y, size / 7f + size / 3 * Mathf.curve(b.fout(), 0.1f, 0.35f));
+		drawTrail(b);
 	}
 	
 	@Override
