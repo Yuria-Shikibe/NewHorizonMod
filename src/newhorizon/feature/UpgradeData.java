@@ -102,6 +102,9 @@ public class UpgradeData{
 	}
 	
 	public DataEntity newSubEntity(){
+//		DataEntity data = Pools.obtain(DataEntity.class, DataEntity::new);
+//		data.init(defaultLevel);
+//		return data;
 		return new DataEntity(){{init(defaultLevel);}};
 	}
 	
@@ -221,7 +224,7 @@ public class UpgradeData{
 				
 				t.table(Tex.button, table -> {
 					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from, from.core().items)).size(LEN);
-					table.button(Icon.upOpen, Styles.clearPartiali, () -> from.configure((long)from.all().indexOf(this))).size(LEN).disabled(b -> !from.canUpgrade(this));
+					table.button(Icon.upOpen, Styles.clearPartiali, () -> from.configure(from.all().indexOf(this))).size(LEN).disabled(b -> !from.canUpgrade(this));
 				}).height(LEN + OFFSET).right().padRight(OFFSET);
 			});
 			cont.add(info).pad(OFFSET / 2).growX().height(LEN * 2f).row();

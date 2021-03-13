@@ -8,11 +8,13 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.audio.SoundLoop;
@@ -24,8 +26,8 @@ import mindustry.gen.Icon;
 import mindustry.gen.Sounds;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.logic.Ranged;
 import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
@@ -34,6 +36,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import newhorizon.content.NHFx;
+import newhorizon.feature.Cube;
 import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
 import newhorizon.func.NHSetting;
@@ -75,8 +78,8 @@ public class UpgradeBlock extends Block {
 		configurable = true;
 		solid = true;
 		
-		config(Integer.class, (Cons2<UpgradeBlockBuild, Integer>)UpgradeBlockBuild::linkPos);
-		config(Long.class, (UpgradeBlockBuild tile, Long i) -> tile.upgradeData(i.intValue()));
+		config(Point2.class, (Cons2<UpgradeBlockBuild, Point2>)UpgradeBlockBuild::linkPos);
+		config(Integer.class, (Cons2<UpgradeBlockBuild, Integer>)UpgradeBlockBuild::upgradeData);
 	}
 	
 	@Override
@@ -118,13 +121,14 @@ public class UpgradeBlock extends Block {
 		super.load();
 	}
 	
-	public class UpgradeBlockBuild extends Building implements Ranged, Upgraderc{
+	public class UpgradeBlockBuild extends Building implements Upgraderc{
 		public Seq<DataEntity> datas = new Seq<>();
 
 		public int link = -1;
 		public int upgradingID = defaultID;
 		public int lastestSelectID = -1;
 		public float remainTime;
+		public float warmup;
 		
 		protected transient SoundLoop upgradeSoundLoop = new SoundLoop(upgradeSound, 1f);;
 		
@@ -166,7 +170,6 @@ public class UpgradeBlock extends Block {
 		
 		//Data Upgrade
 		public void upgradeData(int data){
-			NHSetting.debug(() -> Log.info("START" + data + " | " + costTime()));
 			upgradeData(all().get(data));
 			upgradingID = data;
 		}
@@ -175,15 +178,13 @@ public class UpgradeBlock extends Block {
 		public void updateUpgrading() {
 			upgradeSoundLoop = new SoundLoop(upgradeSound, 1f);
 			upgradeSoundLoop.update(x, y, true);
-			NHSetting.debug(() -> Log.info("UPDATE" + upgradingID + " | " + remainTime + state.rules.infiniteResources));
-			if(state.rules.infiniteResources)remainTime = -1;
+			NHSetting.debug(() -> remainTime = -1);
 			remainTime -= Time.delta * efficiency();
 		}
 		
 		@Override
 		public void completeUpgrade() {
 			if(upgradingID < 0 || upgradingID >= datas.size)return;
-			NHSetting.debug(() -> Log.info("FINISH" + upgradingID));
 			upgradeSoundLoop.update(x, y, false);
 			upgradeSoundLoop.stop();
 			Sounds.unlock.at(this);
@@ -250,12 +251,12 @@ public class UpgradeBlock extends Block {
 		@Override
 		public boolean onConfigureTileTapped(Building other) {
 			if (this == other) {
-				configure(-1);
+				configure(Tmp.p1.set(-1, -1));
 				return false;
 			}
-			if (!other.block.name.equals(linkTarget.name))return false;
+			if (other.block != linkTarget)return false;
 			if (link == other.pos()) {
-				configure(-1);
+				configure(Tmp.p1.set(-1, -1));
 				return false;
 			} else if (!(other instanceof Scalablec)) {
 				ui.showErrorMessage("Failed to connect, target '" + other.toString() + "' doesn't implement @Scalablec");
@@ -263,7 +264,7 @@ public class UpgradeBlock extends Block {
 			} else { 
 				Scalablec target = (Scalablec)other;
 				if (!target.isConnected() && target.team() == team && target.within(this, range())) {
-					linkPos(target.pos());
+					configure(Point2.unpack(other.pos()));
 					return false;
 				}
 			}
@@ -313,6 +314,14 @@ public class UpgradeBlock extends Block {
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance))for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2f * tilesize), y - Mathf.random(block.size / 2f * tilesize), block.size / 2f, baseColor);
 			}else if(isUpgrading())completeUpgrade();
+			
+			if(efficiency() > 0 && isUpgrading()){
+				if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
+				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
+			}else{
+				if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
+				else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
+			}
 			
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				setData();
@@ -397,7 +406,11 @@ public class UpgradeBlock extends Block {
 		@Override public boolean isUpgrading(){return upgradingID != defaultID || remainTime >= 0;}
 		@Override public float range() { return range; }
 		@Override public void buildConfiguration(Table table) {buildSwitchAmmoTable(table, true);}
-		@Override public void draw() {Draw.rect(region, x, y);}
+		@Override public void draw() {
+			Draw.rect(region, x, y);
+			Draw.z(Layer.bullet);
+			new Cube(getLinkColor(), warmup * size / 2.2f, size / 10f).draw(x, y, Mathf.absin(Time.time, 30f, 60f));
+		}
 		@Override public void onRemoved() {
 			upgradecGroup.remove(this);
 			if(linkValid())target().resetUpgrade();

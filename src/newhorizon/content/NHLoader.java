@@ -4,7 +4,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Structs;
-import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
@@ -56,9 +55,9 @@ public class NHLoader implements ContentList{
 		Blocks.coreNucleus.health *= 5;
 		Blocks.coreShard.health *= 5;
 		
-		for(Block block : Vars.content.blocks()){
-			block.health *= 1.5;
-		}
+//		for(Block block : Vars.content.blocks()){
+//			block.health *= 1.5;
+//		}
 		
 		addReq(Blocks.blastDrill,
 				new ItemStack(NHItems.presstanium, 50),

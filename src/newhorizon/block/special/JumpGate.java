@@ -13,7 +13,6 @@ import arc.scene.Element;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -45,10 +44,7 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.Functions;
-import newhorizon.func.TableFuncs;
-import newhorizon.func.Tables;
+import newhorizon.func.*;
 import newhorizon.interfaces.Linkablec;
 import org.jetbrains.annotations.NotNull;
 
@@ -224,12 +220,13 @@ public class JumpGate extends Block {
         public void updateTile(){
             if(hasConsume(getSet()))progress += efficiency() + warmup;
             if(isCalling() && hasConsume(getSet())){
-                buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1) * Vars.state.rules.unitBuildSpeedMultiplier;
+                NHSetting.debug(() -> buildReload = Float.MAX_VALUE);
+                buildReload += efficiency() * Vars.state.rules.unitBuildSpeedMultiplier;
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
-                    Log.info("start spawn");
                     configure(spawnID);
                 }
             }
+            
             if(efficiency() > 0){
                 if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
                 else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
@@ -264,7 +261,7 @@ public class JumpGate extends Block {
             
             if(core() != null)DrawFuncs.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
             
-            if(error)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color);
+            if(error)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
             
             Draw.reset();
         }
@@ -313,9 +310,9 @@ public class JumpGate extends Block {
                 }).grow()
             ).grow().row();
             dialog.cont.add(new Bar(
-                    () -> isCalling() ? hasConsume(getSet()) ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]." : "[red]Call Jammed."
+                    () -> isCalling() ? hasConsume(getSet()) && !error ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]." : "[red]Call Jammed."
                         : "[lightgray]" + Iconc.cancel,
-                    () -> isCalling() && hasConsume(getSet()) ? Pal.power : Pal.redderDust,
+                    () -> isCalling() && hasConsume(getSet()) && !error ? Pal.power : Pal.redderDust,
                     () -> isCalling() ? buildReload / getSet().costTime() : 0
             )).fillX().height(LEN).padTop(OFFSET / 2).row();
             dialog.cont.button("@cancel", Icon.cancel, Styles.cleart, () -> configure(-1)).padTop(OFFSET / 2).disabled(b -> !isCalling()).fillX().height(LEN).row();

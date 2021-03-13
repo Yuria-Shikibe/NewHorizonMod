@@ -26,6 +26,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
+import mindustry.ui.Fonts;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.block.special.JumpGate;
@@ -75,8 +76,6 @@ public class Functions {
         });
         return tiles;
     }
-    
-    
     
     private static void clearTmp(){
         tileParma = null;
@@ -182,20 +181,18 @@ public class Functions {
         }
         
         angle = starter.angleTo(x, y);
-    
-        if(NHSetting.getBool("@active.debug")){
+        
+        NHSetting.debug(() -> {
             Seq<Rect> debugSeq = new Seq<>();
             for(Tile tile : tSeq){
                 debugSeq.add(tile.getBounds(new Rect()));
             }
             debugEffect.at(x, y, 0, debugSeq);
-        }
+        });
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
-            Unit unit = type.create(starter.team());
-            unit.set(s.x, s.y);
-            unit.rotation = angle;
+            
             final TextureRegion
                 pointerRegion = ((JumpGate)NHBlocks.jumpGate).pointerRegion,
                 arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
@@ -211,47 +208,49 @@ public class Functions {
                     Draw.color(spawnColor);
                     for(int i = 0; i < 4; i++){
                         float sin = Mathf.absin(Time.time, 16f, tilesize);
-                        float length = (tilesize * level + sin) * b.fout() + tilesize * 2f;
+                        float length = (tilesize * level + sin) * b.fout() + tilesize;
                         float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
                         Tmp.v1.trns(i * 90, -length);
                         Draw.rect(pointerRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
                     }
         
-                    for(int i = 0; i <= 8; i++){
-                        Tmp.v1.trns(angle, (i - 4) * tilesize * 2);
+                    for(int i = -4; i <= 4; i++){
+                        if(i == 0)continue;
+                        Tmp.v1.trns(b.rotation(), i * tilesize * 2);
                         float f = (100 - (Time.time - 12.5f * i) % 100) / 100;
-                        Draw.rect(arrowRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, angle - 90);
+                        Draw.rect(arrowRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, b.rotation() - 90);
                     }
-        
+                    DrawFuncs.overlayText(Fonts.tech, String.valueOf(Mathf.ceil((b.lifetime - b.time) / 60f)), b.x, b.y, 0, 0,0.25f, spawnColor, false, true);
                     Draw.reset();
                 }
     
                 @Override
                 public void despawned(Bullet b){
                     NHFx.spawn.at(b.x, b.y, regSize, spawnColor, starter);
+                    
+                    Unit unit = type.create(starter.team());
+                    unit.set(b.x, b.y);
+                    unit.rotation = b.rotation();
+                    
+                    if(!Units.canCreate(starter.team(), type))return;
+                    if(!Vars.net.client())unit.add();
+                    if(type.flying){
+                        NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);
+                        unit.vel.add(point.trns(angle, inComeVelocity).scl(type.drag + 2));
+                    }else{
+                        Fx.unitSpawn.at(unit.x, unit.y, angle, type);
+                        Time.run(Fx.unitSpawn.lifetime, () -> {
+                            for(int j = 0; j < 3; j++){
+                                Time.run(j * 8, () -> Fx.spawn.at(unit));
+                            }
+                            Effect.shake(type.hitSize / 2.4f, spawnDelay * 4, unit);
+                            NHFx.spawnGround.at(unit.x, unit.y, type.hitSize / tilesize * 3, spawnColor);
+                            NHFx.circle.at(unit.x, unit.y, type.hitSize * 4, spawnColor);
+                        });
+                    }
+                    Sounds.plasmaboom.at(unit.x, unit.y);
                 }
-            }.create(starter, unit.x, unit.y, angle);
-            
-            Time.run(spawnReloadTime + i * spawnDelay, () -> {
-                if(!Units.canCreate(starter.team(), type))return;
-                if(!Vars.net.client())unit.add();
-                if(type.flying){
-                    NHFx.jumpTrail.at(unit.x, unit.y, angle, spawnColor, unit);
-                    unit.vel.add(point.trns(angle, inComeVelocity).scl(type.drag + 2));
-                }else{
-                    Fx.unitSpawn.at(unit.x, unit.y, angle, type);
-                    Time.run(Fx.unitSpawn.lifetime, () -> {
-                        for(int j = 0; j < 3; j++){
-                            Time.run(j * 8, () -> Fx.spawn.at(unit));
-                        }
-                        Effect.shake(type.hitSize / 2.4f, spawnDelay * 4, unit);
-                        NHFx.spawnGround.at(unit.x, unit.y, type.hitSize / tilesize * 3, spawnColor);
-                        NHFx.circle.at(unit.x, unit.y, type.hitSize * 4, spawnColor);
-                    });
-                }
-                Sounds.plasmaboom.at(unit.x, unit.y);
-            });
-
+            }.create(starter, s.x, s.y, angle);
             i++;
         }
         return true;

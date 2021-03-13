@@ -46,26 +46,35 @@ public class DrawFuncs {
         Draw.reset();
     }
     
-    public static void overlayText(String text, float x, float y, float offset, Color color){
-        Font font = Fonts.outline;
+    
+    public static void overlayText(Font font, String text, float x, float y, float offset, float offsetScl, float size, Color color, boolean underline, boolean align){
         GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
         boolean ints = font.usesIntegerPositions();
         font.setUseIntegerPositions(false);
-        font.getData().setScale(0.25F / Scl.scl(1.0F));
-        layout.setText(font, Core.bundle.get("spawn-error"));
+        font.getData().setScale(size / Scl.scl(1.0f));
+        layout.setText(font, text);
         font.setColor(color);
-        float dy = y + offset + 3.0F;
-        font.draw(Core.bundle.get("spawn-error"), x, dy + layout.height + 1.0F, 1);
+        
+        float dy = offset + 3.0F;
+        font.draw(text, x, y + layout.height / (align ? 2 : 1) + (dy + 1.0F) * offsetScl, 1);
         --dy;
-        Lines.stroke(2.0F, Color.darkGray);
-        Lines.line(x - layout.width / 2.0F - 2.0F, dy, x + layout.width / 2.0F + 1.5F, dy);
-        Lines.stroke(1.0F, color);
-        Lines.line(x - layout.width / 2.0F - 2.0F, dy, x + layout.width / 2.0F + 1.5F, dy);
+    
+        if(underline){
+            Lines.stroke(2.0F, Color.darkGray);
+            Lines.line(x - layout.width / 2.0F - 2.0F, dy + y, x + layout.width / 2.0F + 1.5F, dy + y);
+            Lines.stroke(1.0F, color);
+            Lines.line(x - layout.width / 2.0F - 2.0F, dy + y, x + layout.width / 2.0F + 1.5F, dy + y);
+        }
+    
         font.setUseIntegerPositions(ints);
         font.setColor(Color.white);
         font.getData().setScale(1.0F);
         Draw.reset();
         Pools.free(layout);
+    }
+    
+    public static void overlayText(String text, float x, float y, float offset, Color color, boolean underline){
+        overlayText(Fonts.outline, text, x, y, offset, 1, 0.25f, color, underline, false);
     }
     
     public static Pixmap getOutline(Pixmap base, Color outlineColor){

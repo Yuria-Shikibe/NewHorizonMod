@@ -15,7 +15,6 @@ import arc.scene.ui.Label;
 import arc.scene.ui.TextArea;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.UnitTypes;
@@ -315,7 +314,6 @@ public class TableFuncs {
                         BulletType inner = (BulletType)field.get(type);
                         if(inner == null || inner.toString().equals("bullet#0") || inner.toString().equals("bullet#1") || inner.toString().equals("bullet#2"))continue;
                         
-                        NHSetting.debug(() -> Log.info(inner));
                         table.add("[gray]" + field.getName() + "{ ").left().row();
                         table.table(in -> buildBulletTypeInfo(in, inner)).padLeft(LEN).row();
                         table.add("[gray]}").left().row();

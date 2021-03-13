@@ -145,7 +145,6 @@ public class Delivery extends Block{
 			    if(acceptDelivery != null && acceptDelivery.pos() == other.pos()) return false;
 			    if(other instanceof DeliveryBuild && ((DeliveryBuild)other).acceptDelivery != null) return false;
 				configure(other.pos());
-				NHSetting.debug(() -> Log.info("Link" + other.pos()));
 				return false;
 			}
 			return true;
@@ -187,7 +186,6 @@ public class Delivery extends Block{
 			            closure = false;
 			            break;
 			        }
-				    NHSetting.debug(() -> Log.info("Number of attempts: @", set.size));
 			    }
 		    }
 		    else closure = false;

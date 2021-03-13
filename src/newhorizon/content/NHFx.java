@@ -12,6 +12,7 @@ import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
 import mindustry.entities.Effect;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
@@ -300,6 +301,7 @@ public class NHFx{
 				Vec2 next = lines.get(i + 1);
 				
 				Lines.line(cur.x, cur.y, next.x, next.y, false);
+				Drawf.light(Team.derelict, cur.x, cur.y, next.x, next.y, Lines.getStroke() * 2f * e.fout(), e.color, e.fout());
 			}
 			
 			for(Vec2 p : lines){

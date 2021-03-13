@@ -12,17 +12,34 @@ import static mindustry.Vars.tilesize;
 public class NHUpgradeDatas implements ContentList{
 	public static final Seq<UpgradeData> all = new Seq<>();
 	
-	public static UpgradeData none, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket;
+	public static UpgradeData none, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket, posLightning;
 	
 	@Override
 	public void load(){
 		none = new UpgradeData();
 		
+		posLightning = new UpgradeData("lightning", NHBullets.darkEnrLightning, 150f,
+			new ItemStack(NHItems.seniorProcessor, 150),
+			new ItemStack(NHItems.multipleSteel, 120)
+		){{
+			shootSound = NHSounds.rapidLaser;
+			defaultLevel = 1;
+			burstSpacing = 7f;
+			salvos = 8;
+			randX = 3f * tilesize;
+			reloadTime = 150f;
+			
+			isLeveled = true;
+			reloadSpeedUp = 0.03f;
+			defenceUp = 0.01f;
+			maxLevel = 4;
+		}};
+		
 		strikeRocket = new UpgradeData("rocket-strike", NHBullets.strikeRocket, 600f,
-				new ItemStack(NHItems.seniorProcessor, 100),
-				new ItemStack(NHItems.darkEnergy, 50),
-				new ItemStack(NHItems.irayrondPanel, 1000),
-				new ItemStack(Items.graphite, 125)
+			new ItemStack(NHItems.seniorProcessor, 100),
+			new ItemStack(NHItems.darkEnergy, 50),
+			new ItemStack(NHItems.irayrondPanel, 100),
+			new ItemStack(Items.graphite, 125)
 		){{
 			shootSound = Sounds.railgun;
 			burstSpacing = 5f;

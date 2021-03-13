@@ -8,7 +8,6 @@ import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -24,7 +23,6 @@ import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import newhorizon.content.NHFx;
-import newhorizon.func.NHSetting;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.*;
@@ -113,8 +111,6 @@ public class PlayerJumpGate extends Block{
 			float time = dst(link()) / (Tmp.v3.len() * (1f - player.unit().type.drag));
 			for(int i = 0; i < 30; i++)Time.run(time * 2 / 30 * i, () -> {
 				NHFx.poly.at(player.unit().x, player.unit().y, player.unit().hitSize * 1.1f, player.team().color);
-				NHSetting.debug(() -> Log.info(player.x + " | " + player.y));
-				NHSetting.debug(() -> Log.info("[U]" + player.unit().x + " | " + player.unit().y));
 			});
 			Time.run(time, () -> player.unit().vel.trns(angleTo(link()), player.unit().type.speed));
 			

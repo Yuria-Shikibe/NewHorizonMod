@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -23,7 +22,6 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
 import newhorizon.effects.EffectTrail;
-import newhorizon.func.NHSetting;
 
 public class TextureMissileType extends NHTrailBulletType{
 	public float div = 7f;
@@ -63,7 +61,6 @@ public class TextureMissileType extends NHTrailBulletType{
 	
 	@Override
 	public void load(){
-		NHSetting.debug(() -> Log.info(sprite + Core.atlas.find(sprite)));
 		if(Vars.headless)super.load();
 	}
 	

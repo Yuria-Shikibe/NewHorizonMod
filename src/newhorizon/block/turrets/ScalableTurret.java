@@ -248,7 +248,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		
 		@Override public void resetUpgrade(){
 			fromPos = -1;
-			setData(NHUpgradeDatas.none.newSubEntity());
+			setData(defaultData.newSubEntity());
 		}
 		@Override public Color getColor(){return baseColor;}
 		@Override public boolean isContiunous(){return getData().type().continuousTime > 0;}

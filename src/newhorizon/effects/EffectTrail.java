@@ -194,7 +194,6 @@ public class EffectTrail implements Cloneable{
 			Groups.all.remove(this);
 			Groups.queueFree(this);
 			added = false;
-			NHSetting.debug(() -> Log.info("Removed: " + this));
 		}
 		
 		@Override

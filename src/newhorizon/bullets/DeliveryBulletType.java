@@ -9,7 +9,6 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -26,7 +25,6 @@ import newhorizon.NewHorizon;
 import newhorizon.block.special.Delivery;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
-import newhorizon.func.NHSetting;
 
 public class DeliveryBulletType extends BulletType{
 	private static final float div = 8f;
@@ -167,7 +165,6 @@ public class DeliveryBulletType extends BulletType{
 						data.to.items.remove(Vars.content.item(i), num);
 						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, new Vec2().set(b));
 						data.items[i] = num;
-						NHSetting.debug(() -> Log.info(data.to + " | " + num));
 					}
 				}
 			}
@@ -180,7 +177,6 @@ public class DeliveryBulletType extends BulletType{
 			float lifeScl = data.to.dst(data.from) / range();
 			Delivery.DeliveryData dataAdapt = new Delivery.DeliveryData(data, true);
 			dataAdapt.t = data.t;
-			NHSetting.debug(() -> Log.info(dataAdapt));
 			create(b, b.team, b.x, b.y, b.rotation(), 1, 1, lifeScl, dataAdapt);
 		}
 	}

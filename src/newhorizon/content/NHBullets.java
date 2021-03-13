@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.util.Log;
 import arc.util.Time;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
@@ -22,10 +23,10 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
+import newhorizon.func.NHSetting;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Draw.reset;
@@ -40,7 +41,7 @@ public class NHBullets implements ContentList{
 		artilleryIrd, artilleryFusion, artilleryPlast, artilleryThermo, artilleryPhase, artilleryMissile,
 		railGun1, railGun2, hurricaneType, polyCloud, missileTitanium, missileThorium, missileZeta, missile, missileStrike,
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
-		none, supSky, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
+		none, supSky, darkEnrLightning, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile,
 		strikeMissile, boltGene, empFrag, empBlot2, empBlot3;
 		
@@ -407,9 +408,9 @@ public class NHBullets implements ContentList{
 			trailEffect = NHFx.instTrail(lightningColor);
 			despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
 			trailSpacing = 22.0F;
-			damage = 1750.0F;
+			damage = 2000.0F;
 			lightningDamage = damage / 7;
-			buildingDamageMultiplier = 0.5F;
+			buildingDamageMultiplier = 1.25f;
 			hitShake = 8.0F;
 			speed = 620;
 		}};
@@ -425,11 +426,11 @@ public class NHBullets implements ContentList{
 			trailEffect = NHFx.instTrail(lightningColor);
 			despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
 			trailSpacing = 30.0F;
-			damage = 2250.0F;
+			damage = 2750.0F;
 			lightningDamage = damage / 7;
 			splashDamage = damage / 30;
 			splashDamageRadius = 16f;
-			buildingDamageMultiplier = 0.7F;
+			buildingDamageMultiplier = 1.25f;
 			hitShake = 10.0F;
 			speed = 620;
 		}};
@@ -652,21 +653,16 @@ public class NHBullets implements ContentList{
 			trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
 		}};
 		
-		supSky = new SapBulletType(){{
-			damage = 130f;
-			status = new StatusEffect("actted"){{
-				speedMultiplier = 0.875f;
-				damage = 0.8f;
-				reloadMultiplier = 0.75f;
-			}};
-			sapStrength = 0.45f;
-			length = 250f;
-			drawSize = 500f;
-			shootEffect = hitEffect = NHFx.lightSkyCircleSplash;
-			hitColor = color = NHColor.lightSky;
-			despawnEffect = Fx.none;
-			width = 0.62f;
-			lifetime = 35f;
+		darkEnrLightning = new PosLightningType(150){{
+			NHSetting.debug(() -> Log.info("Consted"));
+			lightningColor = NHColor.darkEnrColor;
+			maxRange = 800f;
+		}};
+		
+		supSky = new PosLightningType(135f){{
+			NHSetting.debug(() -> Log.info("Consted"));
+			lightningColor = NHColor.lightSky;
+			maxRange = 250f;
 		}};
 		
 		darkEnrlaser = new ContinuousLaserBulletType(1600){

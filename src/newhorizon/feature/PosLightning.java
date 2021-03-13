@@ -9,7 +9,6 @@ import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -23,7 +22,6 @@ import mindustry.gen.Healthc;
 import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import newhorizon.content.NHFx;
-import newhorizon.func.NHSetting;
 import org.jetbrains.annotations.NotNull;
 
 public class PosLightning {
@@ -70,7 +68,6 @@ public class PosLightning {
 		Seq<Unit> entities = new Seq<>();
 		whetherAdd(entities, team, rect.setSize(range * 2f).setCenter(from.getX(), from.getY()), hits, hitGround, hitAir);
 		for (Unit p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
-		NHSetting.debug(() -> Log.info("Created " + entities.size + " | " + hits + " | " + range));
 	}
 	
 	
@@ -159,7 +156,6 @@ public class PosLightning {
 	//Add proper unit into the to hit Seq.
 	private static void whetherAdd(Seq<Unit> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
 		Units.nearbyEnemies(team, selectRect, unit -> {
-			NHSetting.debug(() -> Log.info(unit.checkTarget(targetAir, targetGround) + " | " + (points.isEmpty() || unit.dst(Geometry.findClosest(unit.x, unit.y, points)) > GENERATE_DST)));
 			if(
 				points.size <= hits && unit.checkTarget(targetAir, targetGround) && (
 					points.isEmpty() || unit.dst(Geometry.findClosest(unit.x, unit.y, points)) > GENERATE_DST//Make sure add the started one.

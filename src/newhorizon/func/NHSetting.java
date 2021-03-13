@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class NHSetting{
+	private static boolean debug = false;
 	private static Fi setting;
 	private static final Properties settingList = new Properties();
 	private static String path = "";
@@ -60,7 +61,7 @@ public class NHSetting{
 				break;
 			}
 		}
-		
+		debug = getBool("@active.debug");
 		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
 		Log.info(modMeta.name);
 		if(!modMeta.version.equals(settingList.getProperty(initKey)))updateProperty(modMeta.version);
@@ -113,7 +114,7 @@ public class NHSetting{
 	}
 	
 	public static void debug(Runnable run){
-		if(Vars.headless || getBool("@active.debug"))run.run();
+		if(debug || Vars.headless)run.run();
 	}
 	
 	public static void setBoolOnce(String key, boolean bool){
@@ -128,6 +129,7 @@ public class NHSetting{
 	
 	public static void settingApply(){
 		TableFuncs.disableTable();
+		debug = getBool("@active.debug");
 		if(NHSetting.getBool("@active.tool-panel*"))TableFuncs.showTable();
 	}
 	

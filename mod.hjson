@@ -3,5 +3,5 @@ displayName: "NewHorizonMod"
 author: "Yuria"
 main: "newhorizon.NewHorizon"
 description: "Expanded contents, including Units, Turrets, Blocks, etc.\n\n[sky]You can get the Mod Guide in the GitHub-README-MOD Guide. You can get to there by [accent]<link> [gray]in the [accent]<Start Dialog>\n\n[accent]This mod adds a new setting dialog when start the game.[] [gray]By choose the available setting, you can activate in-game debug panel and advance load, which creates outline icons and unit full icons automatically. However, the advance load now causes stuck problem when the game is loaded on a phone. So for your gaming experience, I made it defaults false. If you are confident with your device, active it. If you find your device cannot afford it, open the mod file folder and find the 'new-horizon' folder then open the properties file in it, and then rewrite the ''@active.advance-load*' to false, then open the game again."
-version: "1.6.9.1 beta"
+version: "1.7.0 beta"
 minGameVersion: 126

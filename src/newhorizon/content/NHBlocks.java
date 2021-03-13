@@ -18,6 +18,7 @@ import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Door;
 import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.blocks.defense.MendProjector;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
@@ -47,7 +48,6 @@ import newhorizon.block.turrets.MultTractorBeamTurret;
 import newhorizon.block.turrets.ScalableTurret;
 import newhorizon.block.turrets.SpeedupTurret;
 import newhorizon.bullets.NHTrailBulletType;
-import newhorizon.func.NHSetting;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
@@ -76,6 +76,8 @@ public class NHBlocks implements ContentList {
 		largeWaterExtractor,
 		//Powers
 		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
+		//Defence
+		largeMendProjector,
 		//Special
 		playerJumpGate, debuger
 		;
@@ -83,7 +85,23 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
-		NHSetting.debug(() -> debuger = new Debuger());
+		
+		largeMendProjector = new MendProjector("large-mend-projector"){{
+			size = 3;
+			reload = 180f;
+			useTime = 600f;
+			healPercent = 15;
+			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
+			NHTechTree.add(Blocks.mendProjector, this);
+			consumes.power(2F);
+			range = 160.0F;
+			phaseBoost = 12f;
+			phaseRangeBoost = 60.0F;
+			health = 980;
+			consumes.item(NHItems.juniorProcessor).boost();
+		}};
+		
+		
 		multipleArtillery = new ItemTurret("multiple-artillery"){{
 			size = 4;
 			health = 4000;
@@ -108,7 +126,7 @@ public class NHBlocks implements ContentList {
 				NHItems.juniorProcessor, NHBullets.artilleryMissile
 			);
 			//consumes.powerCond(8f, TurretBuild::isActive);
-			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 250, Items.surgeAlloy, 100, NHItems.seniorProcessor, 150, Items.plastanium, 300, Items.phaseFabric, 150));
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.metalOxhydrigen, 250, Items.thorium, 400, NHItems.seniorProcessor, 150, Items.plastanium, 300, Items.phaseFabric, 150));
 			NHTechTree.add(Blocks.ripple, this);
 		}
 			@Override
@@ -287,21 +305,23 @@ public class NHBlocks implements ContentList {
 			shootSound = NHSounds.railGunBlast;
 			chargeSound = NHSounds.railGunCharge;
 			chargeEffects = 1;
-			chargeEffect = NHFx.chargeEffectSmall(NHItems.irayrondPanel.color, 132f);
-			chargeBeginEffect = NHFx.chargeBeginEffect(NHItems.irayrondPanel.color, 10, chargeEffect.lifetime);
+			heatColor = NHItems.irayrondPanel.color;
+			chargeEffect = NHFx.chargeEffectSmall(heatColor, 132f);
+			chargeBeginEffect = NHFx.chargeBeginEffect(heatColor, 10, chargeEffect.lifetime);
 			chargeTime = chargeEffect.lifetime;
 			ammo(
 				NHItems.irayrondPanel, NHBullets.railGun1,
 				NHItems.setonAlloy, NHBullets.railGun2
 			);
-			minRange = 180f;
-			rotateSpeed = 0.75f;
+			minRange = 120f;
+			rotateSpeed = 1f;
+			shootCone = 8f;
 			coolantMultiplier = 0.55f;
 			restitution = 0.009f;
 			cooldown = 0.009f;
 			ammoUseEffect = Fx.casing3Double;
 			consumes.powerCond(12f, TurretBuild::isActive);
-			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.setonAlloy, 150, NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
 			NHTechTree.add(Blocks.foreshadow, this);
 		}
 			@Override
@@ -1001,6 +1021,7 @@ public class NHBlocks implements ContentList {
 
 		endOfEra = new ScalableTurret("end-of-era") {
 			{
+				defaultData = NHUpgradeDatas.posLightning;
 				recoilAmount = 7f;
 				requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 2000));
 				consumes.items(new ItemStack(NHItems.darkEnergy, 4));
@@ -1051,6 +1072,7 @@ public class NHBlocks implements ContentList {
 			baseColor = NHColor.darkEnrColor;
 			maxLevel = 10;
 			addUpgrades(
+				NHUpgradeDatas.posLightning,
 				NHUpgradeDatas.darkEnrlaser,
 				NHUpgradeDatas.arc9000,
 				NHUpgradeDatas.curveBomb,

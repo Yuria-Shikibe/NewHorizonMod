@@ -15,7 +15,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public int trailLength = -1;
 	public float trailWidth = -1f;
 	
-	public float trailWeaveScale = 1f;
+	public float trailWeaveScale = 0f;
 	public float trailWeaveMag = -1f;
 	public float trailWeaveScaleOffset = 0;
 	public float trailOffset = 0f;
