@@ -54,10 +54,10 @@ If you find your device cannot afford it, open the mod file folder and find the 
 
 ###### Example:
 
-![end-of-era](assets/sprites/blocks/turrets/end-of-era.png)  
+![end-of-era](assets/sprites/block/turret/end-of-era.png)  
 - **_Turret:_** End of Era
 
-![eoe-upgrader](assets/sprites/blocks/special/EOE/end-of-era-upgrader.png)  
+![eoe-upgrader](assets/sprites/block/special/EOE/end-of-era-upgrader.png)  
 - **_Upgrader:_** End of Era Upgrader
 
 ###### Use Steps:
@@ -78,7 +78,7 @@ If you find your device cannot afford it, open the mod file folder and find the 
 #### Mass Deliver
 
 ---
-![mass-deliver](assets/sprites/blocks/special/mass-deliver.png)
+![mass-deliver](assets/sprites/block/special/mass-deliver.png)
 - **_Deliver:_** Mass Deliver
 
 ###### Use Steps:
@@ -95,8 +95,8 @@ If you find your device cannot afford it, open the mod file folder and find the 
 #### Jump Gate
 
 ---
-![jump-gate](assets/sprites/blocks/special/jump-gate.png)
-![jump-gate-junior](assets/sprites/blocks/special/jump-gate-junior.png)
+![jump-gate](assets/sprites/block/special/jump-gate.png)
+![jump-gate-junior](assets/sprites/block/special/jump-gate-junior.png)
 - **_JumpGate:_** Senior Jump Gate; Junior Jump Gate
 
 ###### Use Steps:
@@ -113,7 +113,7 @@ If you find your device cannot afford it, open the mod file folder and find the 
 #### Player Jump Gate
 
 ---
-![player-jump-gate](assets/sprites/blocks/special/player-jump-gate.png)
+![player-jump-gate](assets/sprites/block/special/player-jump-gate.png)
 - **_PlayerJumpGate:_** Transport a player from a position to another fastly.
 
 ###### Use Steps:
