@@ -22,45 +22,93 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.NHTrailBulletType;
+import newhorizon.bullets.PosLightningType;
 import newhorizon.bullets.ShieldBreaker;
 import newhorizon.units.AutoOutlineUnitType;
 import newhorizon.units.AutoOutlineWeapon;
 
 public class NHUnits implements ContentList {
-	public static Weapon
-	
-	closeAATurret = new AutoOutlineWeapon("anti-air-pulse-laser"){{
-		shake = 0f;
-		shots = 3;
-		shotDelay = 6f;
-		rotate = top = true;
-		heatColor = NHColor.lightSky;
-		shootSound = Sounds.missile;
-		shootY = 3f;
-		x = 11f;
-		y = -7f;
-		reload = 30f;
-		bullet = new SapBulletType(){{
-			keepVelocity = false;
-			sapStrength = 0.4F;
-			length = 100.0F;
-			damage = 35.0F;
-			shootEffect = Fx.shootSmall;
-			hitColor = color = NHColor.lightSky;
-			despawnEffect = Fx.none;
-			width = 0.48F;
-			lifetime = 20.0F;
-			knockback = -1.24F;
-		}};
-	}};
-	
+	public static
+	Weapon
+	posLiTurret, closeAATurret;
 	
 	public static
 	UnitType
-	hurricane, tarlidor, striker, annihilation, warper, destruction, gather;
+	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat;
+	
+	public void loadWeapon(){
+		posLiTurret = new AutoOutlineWeapon("pos-li-blaster"){{
+			shake = 1f;
+			shots = 1;
+			rotate = top = alternate = true;
+			reload = 30f;
+			shootY = 4f;
+			shootSound = Sounds.spark;
+			heatColor = NHColor.lightSky;
+			bullet = new PosLightningType(20f){{
+				lightningColor = NHColor.lightSky;
+				maxRange = 160f;
+				hitEffect = NHFx.lightningHitSmall(lightningColor);
+				lightningLength = 1;
+				lightningLengthRand = 4;
+			}};
+		}};
+		
+		closeAATurret = new AutoOutlineWeapon("anti-air-pulse-laser"){{
+			shake = 0f;
+			shots = 3;
+			shotDelay = 6f;
+			rotate = top = true;
+			heatColor = NHColor.lightSky;
+			shootSound = Sounds.missile;
+			shootY = 3f;
+			recoil = 2f;
+			x = 11f;
+			y = -7f;
+			reload = 30f;
+			bullet = new SapBulletType(){{
+				keepVelocity = false;
+				sapStrength = 0.4F;
+				length = 100.0F;
+				damage = 35.0F;
+				shootEffect = Fx.shootSmall;
+				hitColor = color = NHColor.lightSky;
+				despawnEffect = Fx.none;
+				width = 0.48F;
+				lifetime = 20.0F;
+				knockback = -1.24F;
+			}};
+		}};
+	}
 	
 	@Override
 	public void load() {
+		loadWeapon();
+		aliotiat = new AutoOutlineUnitType("aliotiat",
+			((AutoOutlineWeapon)posLiTurret.copy()).setPos(10f, 3f).setDelay(closeAATurret.reload / 2f),
+			((AutoOutlineWeapon)posLiTurret.copy()).setPos(6f, -2f)
+		){{
+			constructor = EntityMapping.map(32);
+			engineOffset = 10.0F;
+			engineSize = 4.5F;
+			speed = 0.35f;
+			hitSize = 17f;
+			health = 2500f;
+			buildSpeed = 1.2f;
+			armor = 5f;
+			rotateSpeed = 2.8f;
+			hovering = true;
+			canDrown = true;
+			singleTarget = false;
+			fallSpeed = 0.016f;
+			mechStepParticles = true;
+			mechStepShake = 0.15f;
+			canBoost = true;
+			landShake = 6f;
+			boostMultiplier = 3.5f;
+			ammoType = AmmoTypes.power;
+		}};
+		
 		gather = new AutoOutlineUnitType("gather"){{
 			defaultController = MinerAI::new;
 			constructor = EntityMapping.map(3);
@@ -231,7 +279,7 @@ public class NHUnits implements ContentList {
 		){{
 			constructor = EntityMapping.map(32);
 			abilities.add(
-					new ForceFieldAbility(64.0F, 5F, 5000.0F, 900.0F)
+				new ForceFieldAbility(64.0F, 5F, 5000.0F, 900.0F)
 			);
 			range = 320f;
 			engineOffset = 15.0F;
@@ -348,7 +396,7 @@ public class NHUnits implements ContentList {
 					{
 						trailWeaveMag = 4f;
 						trailWeaveScale = 2f;
-						flip = true;
+						flip = combine = true;
 						trails = 2;
 						trailOffset = 10f;
 						hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;

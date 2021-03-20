@@ -10,8 +10,8 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
-import static newhorizon.func.TableFuncs.LEN;
-import static newhorizon.func.TableFuncs.OFFSET;
+import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFs.OFFSET;
 
 public class SettingDialog extends BaseDialog{
 	public SettingDialog(){
@@ -37,7 +37,7 @@ public class SettingDialog extends BaseDialog{
 		cont.row().button("@back", Icon.left, Styles.cleart, () -> {
 			hide();
 			NHSetting.settingApply();
-		}).fillX().height(TableFuncs.LEN).bottom();
+		}).fillX().height(TableFs.LEN).bottom();
 		keyDown((key) -> {
 			if (key == KeyCode.escape || key == KeyCode.back) {
 				Core.app.post(this::hide);

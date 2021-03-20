@@ -24,28 +24,26 @@ import mindustry.world.Tile;
 import newhorizon.content.NHFx;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Provide methods that can generate Position to Position Lightning.<p>
+ *
+ * @implNote The method implements the generation of random lightning effect <b>from point to point</b> and complete certain action at <b>target point</b> through {@link Cons}.<p>
+ * @apiNote
+ * <li> {@code movement} {@link Cons} used to run specific action at the target point.
+ * <li> {@code WIDTH}: {@value WIDTH} used to control the stroke of the lightning.
+ * <li> {@code GENERATE_DST}: {@value GENERATE_DST} used to control the min distant between {@code target} point.
+ * <li> {@code RANGE_RAND}: {@value RANGE_RAND} used to control the base xRand range of every part of the lightning.
+ * <li> {@code ROT_DST}: {@value ROT_DST} used to control the length of every part of the lightning.<p>
+ *
+ * @see Position
+ * @see Vec2
+ * @see NHFx
+ * @see Geometry
+ * @see Cons
+ *
+ * @author Yuria
+ */
 public class PosLightning {
-	
-	/**
-	 * Provide methods that can generate Position to Position Lightning.<p>
-	 *
-	 * @implNote The method implements the generation of random lightning effect <b>from point to point</b> and complete certain action at <b>target point</b> through {@link Cons}.<p>
-	 * @apiNote
-	 * <li> {@code movement} {@link Cons} used to run specific action at the target point.
-	 * <li> {@code WIDTH}: {@value WIDTH} used to control the stroke of the lightning.
-	 * <li> {@code GENERATE_DST}: {@value GENERATE_DST} used to control the min distant between {@code target} point.
-	 * <li> {@code RANGE_RAND}: {@value RANGE_RAND} used to control the base xRand range of every part of the lightning.
-	 * <li> {@code ROT_DST}: {@value ROT_DST} used to control the length of every part of the lightning.<p>
-	 *
-	 * @see Position
-	 * @see Vec2
-	 * @see NHFx
-	 * @see Geometry
-	 * @see Cons
-	 *
-	 * @author Yuria
-	 */
-
 	
 	public static final float lifetime = Fx.lightning.lifetime;
 	public static final float WIDTH = 3f;
@@ -114,6 +112,7 @@ public class PosLightning {
 			for (int num = 0; num < dst / (ROT_DST * len) + 1; num ++) {
 				randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
 			}
+			
 			createBoltEffect(color, width, computeVectors(randomArray, from, sureTarget) );
 		}
 	}

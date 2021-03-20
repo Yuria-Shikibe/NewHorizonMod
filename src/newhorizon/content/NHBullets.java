@@ -7,7 +7,6 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
@@ -26,7 +25,6 @@ import mindustry.graphics.Pal;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
-import newhorizon.func.NHSetting;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Draw.reset;
@@ -654,13 +652,11 @@ public class NHBullets implements ContentList{
 		}};
 		
 		darkEnrLightning = new PosLightningType(150){{
-			NHSetting.debug(() -> Log.info("Consted"));
 			lightningColor = NHColor.darkEnrColor;
 			maxRange = 800f;
 		}};
 		
 		supSky = new PosLightningType(135f){{
-			NHSetting.debug(() -> Log.info("Consted"));
 			lightningColor = NHColor.lightSky;
 			maxRange = 250f;
 		}};
@@ -745,42 +741,38 @@ public class NHBullets implements ContentList{
 			hitEffect = NHFx.darkEnrCircleSplash;
 		}};
 		
-		airRaid = new NHTrailBulletType(9f, 700, "new-horizon-strike"){
+		airRaid = new NHTrailBulletType(9f, 700, "new-horizon-strike"){{
+			trails = 2;
+			flip = combine = true;
+			trailWeaveMag = 4f;
+			trailWeaveScale = 0.5f;
+			trailOffset = 6f;
 			
-			@Override
-			public void init(Bullet b){
-				super.init(b);
-				b.lifetime(b.lifetime() + 9f);
-			}
+			hitSound = Sounds.explosionbig;
+			trailChance = 0.075f;
+			trailEffect = NHFx.polyTrail;
+			drawSize = 120f;
+			homingPower = 0.08f;
+			homingRange = 400f;
+			homingDelay = 12;
+			scaleVelocity = true;
+			hitShake = despawnShake = 5f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = lightningLength = 12;
+			shootEffect = NHFx.darkEnergyShoot;
+			smokeEffect = NHFx.darkEnergySmoke;
+			shrinkX = shrinkY = 0;
+			splashDamageRadius = 120f;
+			splashDamage = lightningDamage = 0.65f * damage;
+			height = 66f;
+			width = 20f;
+			lifetime = 500;
+			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
+			frontColor = Color.white;
 			
-			{
-				hitSound = Sounds.explosionbig;
-				trailChance = 0.075f;
-				trailEffect = NHFx.polyTrail;
-				drawSize = 120f;
-				homingPower = 0.08f;
-				homingRange = 400f;
-				homingDelay = 12;
-				scaleVelocity = true;
-				hitShake = despawnShake = 5f;
-				lightning = 3;
-				lightningCone = 360;
-				lightningLengthRand = lightningLength = 12;
-				shootEffect = NHFx.darkEnergyShoot;
-				smokeEffect = NHFx.darkEnergySmoke;
-				shrinkX = shrinkY = 0;
-				splashDamageRadius = 120f;
-				splashDamage = lightningDamage = 0.65f * damage;
-				height = 66f;
-				width = 20f;
-				lifetime = 500;
-				trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
-				frontColor = Color.white;
-				
-				hitEffect = NHFx.mediumDarkEnergyHit;
-			}
-			
-		};
+			hitEffect = NHFx.mediumDarkEnergyHit;
+		}};
 		
 		blastEnergyPst = new NHTrailBulletType(0.85f, 65f, CIRCLE_BOLT){{
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.025f);

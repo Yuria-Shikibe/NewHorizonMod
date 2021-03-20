@@ -27,6 +27,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Cicon;
 import mindustry.ui.Fonts;
+import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.modules.ItemModule;
 
@@ -35,7 +36,7 @@ import java.text.DecimalFormat;
 
 import static mindustry.Vars.*;
 
-public class TableFuncs {
+public class TableFs{
     private static final int tableZ = 2;
     private static final DecimalFormat df = new DecimalFormat("######0.00");
     private static String sx = "", sy = "";
@@ -331,7 +332,7 @@ public class TableFuncs {
         table.image(tex).size(tex.width * f / parma, tex.height * f / parma);
     }
     
-    public static void add(Table parent, ItemStack stack, ItemModule itemModule){
+    public static void itemStack(Table parent, ItemStack stack, ItemModule itemModule){
         float size = LEN - OFFSET;
         parent.table(t -> {
             t.image(stack.item.icon(Cicon.xlarge)).size(size).left();
@@ -347,5 +348,9 @@ public class TableFuncs {
                 });
             }).growX().height(size).padLeft(OFFSET / 2).left();
         }).growX().height(size).left().row();
+    }
+    
+    public static void link(Table father, Links.LinkEntry link){
+        father.add(new Tables.LinkTable(link)).size(Tables.LinkTable.w + OFFSET * 2f, Tables.LinkTable.h).padTop(OFFSET / 2f).row();
     }
 }

@@ -20,8 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.mobile;
-import static newhorizon.func.TableFuncs.LEN;
-import static newhorizon.func.TableFuncs.OFFSET;
+import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFs.OFFSET;
 
 public class TableTexDebugDialog extends BaseDialog{
 	private BaseDialog

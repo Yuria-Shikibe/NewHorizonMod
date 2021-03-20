@@ -24,7 +24,6 @@ public class AutoOutlineUnitType extends UnitType{
 				name + "@-outline"
 		);
 		
-		
 		this.weapons.addAll(weapons);
 		NHLoader.put(this.name, new NHIconGenerator.IconSet(this, weapons));
 	}

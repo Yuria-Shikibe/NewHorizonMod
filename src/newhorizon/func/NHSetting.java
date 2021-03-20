@@ -14,14 +14,16 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class NHSetting{
+	//private static final Json json = new Json();
+	private static final String initKey = "initialized";
 	private static boolean debug = false;
 	private static Fi setting;
 	private static final Properties settingList = new Properties();
 	private static String path = "";
 	private static boolean loaded;
+	
 	public static final ObjectMap<String, String> defaultKeys = new ObjectMap<>();
 	public static Mods.ModMeta modMeta = new Mods.ModMeta();
-	private static final String initKey = "initialized";
 	
 	static{
 		defaultKeys.put("initialized", "null version");
@@ -30,6 +32,10 @@ public class NHSetting{
 		defaultKeys.put("@active.advance-load*", String.valueOf(false));
 		defaultKeys.put("@active.debug", String.valueOf(false));
 	}
+	
+//	public static void initJson(){
+//		json = Jval.read()
+//	}
 	
 	public static void settingFile() throws IOException{
 		Fi fi = new Fi(Vars.modDirectory + "/new-horizon/NHSettings.properties");
@@ -61,14 +67,13 @@ public class NHSetting{
 				break;
 			}
 		}
-		debug = getBool("@active.debug");
+		debug = !Vars.headless && getBool("@active.debug");
 		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
-		Log.info(modMeta.name);
+		
 		if(!modMeta.version.equals(settingList.getProperty(initKey)))updateProperty(modMeta.version);
 	}
 	
 	private static void updateProperty(String version) throws IOException{
-		Log.info(settingList);
 		Properties pro = new Properties();
 		
 		defaultKeys.each((key, value) -> {
@@ -76,7 +81,7 @@ public class NHSetting{
 				defaultKeys.put(key, settingList.getProperty(key));
 			}
 		});
-		Log.info("[MAP]" + defaultKeys);
+		
 		
 		settingList.clear();
 		loaded = !setting.file().delete();
@@ -85,9 +90,6 @@ public class NHSetting{
 			if(key.equals(initKey))pro.setProperty(initKey, version);
 			else pro.setProperty(key, name);
 		});
-		
-		
-		Log.info(pro);
 
 		FileOutputStream fos;
 		try{
@@ -114,12 +116,12 @@ public class NHSetting{
 	}
 	
 	public static void debug(Runnable run){
-		if(debug && !Vars.headless && !Vars.net.client())run.run();
+		if((Vars.headless && Vars.state.rules.infiniteResources) || debug)run.run();
 	}
 	
 	public static void setBoolOnce(String key, boolean bool){
 		if(key.startsWith("@"))settingList.setProperty(key, String.valueOf(bool));
-		else Log.info("Pro target key is not a Boolean");
+		else debug(() -> Log.info("Target key is not a Boolean"));
 		try{
 			updateSettingFi();
 		}catch(IOException e){
@@ -128,9 +130,9 @@ public class NHSetting{
 	}
 	
 	public static void settingApply(){
-		TableFuncs.disableTable();
+		TableFs.disableTable();
 		debug = getBool("@active.debug");
-		if(NHSetting.getBool("@active.tool-panel*"))TableFuncs.showTable();
+		if(NHSetting.getBool("@active.tool-panel*"))TableFs.showTable();
 	}
 	
 }

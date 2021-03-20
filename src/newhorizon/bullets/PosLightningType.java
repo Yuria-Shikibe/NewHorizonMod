@@ -17,7 +17,7 @@ public class PosLightningType extends BulletType{
 		scaleVelocity = true;
 		hitShake = 2f;
 		hitSound = Sounds.spark;
-		absorbable = false;
+		absorbable = keepVelocity = false;
 		instantDisappear = true;
 		collides = false;
 		collidesAir = collidesGround = true;
@@ -45,7 +45,7 @@ public class PosLightningType extends BulletType{
 	public void init(Bullet b){
 		float length = b.lifetime * range() / lifetime;
 		
-		Healthc target = Damage.linecast(b, b.x, b.y, b.rotation(), length);
+		Healthc target = Damage.linecast(b, b.x, b.y, b.rotation(), length + 4f);
 		b.data = target;
 		
 		if(target instanceof Hitboxc){
@@ -60,7 +60,7 @@ public class PosLightningType extends BulletType{
 			}
 		}
 		
-		PosLightning.create(b, b.team, new Vec2().set(b), new Vec2().trns(b.rotation(), length).add(b.x, b.y), lightningColor, true, 0, 0, PosLightning.WIDTH, boltNum, p -> {
+		PosLightning.create(b, b.team, b, new Vec2().trns(b.rotation(), length).add(b.x, b.y), lightningColor, true, 0, 0, PosLightning.WIDTH, boltNum, p -> {
 			hitEffect.at(p);
 			Effect.shake(hitShake, hitShake, p);
 		});

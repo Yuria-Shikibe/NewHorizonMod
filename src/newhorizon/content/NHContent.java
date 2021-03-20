@@ -20,7 +20,7 @@ import newhorizon.feature.UpgradeData;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 
-import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFs.LEN;
 
 public class NHContent extends UnlockableContent{
 	public static TextureRegion

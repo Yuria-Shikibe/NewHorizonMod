@@ -13,7 +13,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHColor;
 import newhorizon.feature.Cube;
 
-import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFs.LEN;
 
 public class Debuger extends Block{
 	public Debuger(){

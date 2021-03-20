@@ -29,10 +29,10 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
-import newhorizon.func.TableFuncs;
+import newhorizon.func.TableFs;
 import newhorizon.interfaces.Upgraderc;
 
-import static newhorizon.func.TableFuncs.*;
+import static newhorizon.func.TableFs.*;
 
 public class UpgradeData{
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
@@ -178,7 +178,7 @@ public class UpgradeData{
 						for(ItemStack stack : requirements()){
 							if(module != null || index % 7 == 0)table.row();
 							if(module != null){
-								TableFuncs.add(table, stack, module);
+								TableFs.itemStack(table, stack, module);
 							}else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
 							index ++;
 						}

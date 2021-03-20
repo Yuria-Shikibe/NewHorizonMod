@@ -22,10 +22,7 @@ import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
-import mindustry.gen.Tex;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -51,8 +48,8 @@ import org.jetbrains.annotations.NotNull;
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 import static newhorizon.func.Functions.regSize;
-import static newhorizon.func.TableFuncs.LEN;
-import static newhorizon.func.TableFuncs.OFFSET;
+import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFs.OFFSET;
 
 public class JumpGate extends Block {
     protected static final Seq<JumpGate> all = new Seq<>();
@@ -165,13 +162,13 @@ public class JumpGate extends Block {
                 inner.image(set.type.icon(Cicon.full)).center().row();
                 inner.add("<<[accent] " + set.type.localizedName + " []>>").row();
                 inner.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
-                inner.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTimeVar() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
+                inner.add("[lightgray]BuildNeededTime: [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
                 inner.table(table -> {
                     int index = 0;
                     for(ItemStack stack : set.requirements()){
                         if(module != null || index % 7 == 0)table.row();
                         if(module != null){
-                            TableFuncs.add(table, stack, module);
+                            TableFs.itemStack(table, stack, module);
                         }else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
                         index ++;
                     }
@@ -291,7 +288,7 @@ public class JumpGate extends Block {
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 Label can = new Label("");
-                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFuncs.getJudge(canSpawn(set))));
+                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(set))));
                                 table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core().items)).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(calls.indexOf(set))).size(LEN).disabled(b -> !canSpawn(set) || error);
                             })).fillY().growX().row();
@@ -414,7 +411,7 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
     
-            success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, (long)progress, set.type, baseColor());
+            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, Groups.unit.size(), set, baseColor());
             
             if(success){
                 consumeItems();
@@ -457,16 +454,10 @@ public class JumpGate extends Block {
         public @NotNull UnitType type;
         public float costTime;
         public int callIns;
-        public boolean showText ;
         
         public UnitSet(){this(0, UnitTypes.alpha, 0, 5); }
-
-        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, ItemStack... requirements){
-            this(level, type, costTime, callIns, true, requirements);
-        }
     
-        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, boolean showText, ItemStack... requirements){
-            this.showText = showText;
+        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, ItemStack... requirements){
             this.type = type;
             this.level = level;
             this.costTime = costTime;

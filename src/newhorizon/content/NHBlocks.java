@@ -77,7 +77,7 @@ public class NHBlocks implements ContentList {
 		//Powers
 		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
 		//Defence
-		largeMendProjector,
+		largeMendProjector, shapedWall,
 		//Special
 		playerJumpGate, debuger
 		;
@@ -85,6 +85,10 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		shapedWall = new ShapedWall("debug"){{
+			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
+			
+		}};
 		
 		largeMendProjector = new MendProjector("large-mend-projector"){{
 			size = 3;
@@ -358,7 +362,7 @@ public class NHBlocks implements ContentList {
 			ammo(NHItems.juniorProcessor, NHBullets.empBlot2, NHItems.seniorProcessor, NHBullets.empBlot3);
 			requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 75, NHItems.irayrondPanel, 100, Items.plastanium, 175, NHItems.seniorProcessor, 150, NHItems.zeta, 250));
 			NHTechTree.add(Blocks.cyclone, this);
-			range = 500f;
+			range = 280f;
 		}};
 		
 		fusionCollapser = new AdaptImpactReactor("fusion-collapser"){{
@@ -1207,31 +1211,37 @@ public class NHBlocks implements ContentList {
 			));
 			NHTechTree.add(Blocks.commandCenter, this);
 			addSets(
-					new UnitSet(3, UnitTypes.quasar, 3000f, 4,
-							new ItemStack(Items.titanium, 300),
-							new ItemStack(Items.thorium, 300),
-							new ItemStack(NHItems.multipleSteel, 200),
-							new ItemStack(NHItems.juniorProcessor, 150)
-					),
-					new UnitSet(4, UnitTypes.scepter, 5800f, 4,
-							new ItemStack(Items.plastanium, 400),
-							new ItemStack(NHItems.presstanium, 600),
-							new ItemStack(NHItems.multipleSteel, 300),
-							new ItemStack(NHItems.juniorProcessor, 350)
-					),
-					new UnitSet(3, NHUnits.gather, 5200f, 3, false,
-							new ItemStack(Items.thorium, 300),
-							new ItemStack(NHItems.presstanium, 180),
-							new ItemStack(NHItems.zeta, 210),
-							new ItemStack(NHItems.juniorProcessor, 150)
-					),
-					new UnitSet(3.5f, NHUnits.warper, 6600f, 9,
-							new ItemStack(Items.thorium, 1500),
-							new ItemStack(Items.graphite, 500),
-							new ItemStack(NHItems.presstanium, 400),
-							new ItemStack(NHItems.multipleSteel, 400),
-							new ItemStack(NHItems.juniorProcessor, 300)
-					)
+				new UnitSet(3, UnitTypes.quasar, 3000f, 4,
+						new ItemStack(Items.titanium, 300),
+						new ItemStack(Items.thorium, 300),
+						new ItemStack(NHItems.multipleSteel, 200),
+						new ItemStack(NHItems.juniorProcessor, 150)
+				),
+				new UnitSet(4, UnitTypes.scepter, 5800f, 4,
+						new ItemStack(Items.plastanium, 400),
+						new ItemStack(NHItems.presstanium, 600),
+						new ItemStack(NHItems.multipleSteel, 300),
+						new ItemStack(NHItems.juniorProcessor, 350)
+				),
+				new UnitSet(3, NHUnits.gather, 4200f, 3,
+						new ItemStack(Items.thorium, 300),
+						new ItemStack(NHItems.presstanium, 180),
+						new ItemStack(NHItems.zeta, 210),
+						new ItemStack(NHItems.juniorProcessor, 150)
+				),
+				new UnitSet(3.5f, NHUnits.aliotiat, 5200f, 6,
+						new ItemStack(Items.titanium, 350),
+						new ItemStack(NHItems.multipleSteel, 200),
+						new ItemStack(NHItems.presstanium, 250),
+						new ItemStack(NHItems.juniorProcessor, 150)
+				),
+				new UnitSet(3.5f, NHUnits.warper, 6600f, 9,
+						new ItemStack(Items.thorium, 1500),
+						new ItemStack(Items.graphite, 500),
+						new ItemStack(NHItems.presstanium, 400),
+						new ItemStack(NHItems.multipleSteel, 400),
+						new ItemStack(NHItems.juniorProcessor, 300)
+				)
 			);
 		}};
 	}

@@ -26,7 +26,7 @@ import newhorizon.content.NHFx;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFs.LEN;
 
 public class PlayerJumpGate extends Block{
 	public float reloadTime = 60f;

@@ -18,7 +18,6 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
-import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
@@ -27,12 +26,13 @@ import mindustry.world.consumers.ConsumeLiquidBase;
 import mindustry.world.consumers.ConsumeType;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
 import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
-import newhorizon.func.TableFuncs;
+import newhorizon.func.TableFs;
 import newhorizon.func.TextureFilterValue;
 import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
@@ -40,7 +40,7 @@ import newhorizon.interfaces.Upgraderc;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFuncs.getPercent;
+import static newhorizon.func.TableFs.getPercent;
 
 public class ScalableTurret extends Turret implements ScalableBlockc{
 	public UpgradeData defaultData = NHUpgradeDatas.none;
@@ -60,7 +60,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 	@Override
 	public void load(){
 		super.load();
-		baseRegion = Core.atlas.find("new-horizon-block-" + size);
+		baseRegion = Core.atlas.find(NewHorizon.configName("block-" + size));
 	}
 	
 	@Override
@@ -71,19 +71,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		));
 		super.setStats();
     }
-	
-	@Override
-	public void setBars(){
-		super.setBars();
-		bars.add("progress",
-			(ScalableTurretBuild entity) -> new Bar(
-					() -> Core.bundle.get("bar.progress"),
-					() -> Pal.power,
-					() -> entity.getData() == null ? 0 : entity.reload / entity.reloadTime()
-			)
-		);
-	}
-	
+
 	@Override
     public void init(){
         consumes.powerCond(powerUse, TurretBuild::isActive);
@@ -281,12 +269,12 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 			t.table(Tex.button, table -> {
 				table.table(cont -> cont.image(getData().type().icon).left()).left().growX();
 				table.table(cont -> {
-					cont.add("[lightgray]Level: [accent]" + getData().level + "[]", Styles.techLabel).left().pad(TableFuncs.OFFSET).row();
-					cont.image().fillX().pad(TableFuncs.OFFSET / 2).height(TableFuncs.OFFSET / 3).color(Color.lightGray).left().row();
+					cont.add("[lightgray]Level: [accent]" + getData().level + "[]", Styles.techLabel).left().pad(TableFs.OFFSET).row();
+					cont.image().fillX().pad(TableFs.OFFSET / 2).height(TableFs.OFFSET / 3).color(Color.lightGray).left().row();
 					cont.add("[lightgray]ReloadSpeedUp: [accent]" + getPercent(data.speedUP())).left().row();
 					cont.add("[lightgray]DefenceUP: [accent]" + getPercent(data.defenceUP())).left().row();
-				}).growX().right().padRight(TableFuncs.OFFSET / 3);
-			}).grow().padLeft(TableFuncs.OFFSET).padRight(TableFuncs.OFFSET).row();
+				}).growX().right().padRight(TableFs.OFFSET / 3);
+			}).grow().padLeft(TableFs.OFFSET).padRight(TableFs.OFFSET).row();
 
 			if(getData() != null && upgraderc() != null)upgraderc().buildSwitchAmmoTable(t, true);
 

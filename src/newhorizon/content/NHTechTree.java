@@ -75,7 +75,8 @@ public class NHTechTree implements ContentList {
         addUnit(NHUnits.striker, NHUnits.destruction);
         addUnit(NHUnits.destruction, NHUnits.hurricane);
         
-        addUnit(UnitTypes.scepter, NHUnits.tarlidor);
+        addUnit(UnitTypes.fortress, NHUnits.aliotiat);
+        addUnit(NHUnits.aliotiat, NHUnits.tarlidor);
         addUnit(NHUnits.tarlidor, NHUnits.annihilation);
         
         //Items / liquids;

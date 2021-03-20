@@ -103,13 +103,10 @@ public class EffectTrail implements Cloneable{
 		lastX = x;
 		lastY = y;
 	}
-
+	
 	public void disappear() {
 		if (points.isEmpty())return;
 		NHFx.disappearEffect.at(points.peek().x, points.peek().y, length, fromColor, new EffectTrailData(points, width, toColor));
-		//NHSetting.debug(() -> Log.info("RUN ED"));
-		//TrailDrawer drawer = Pools.obtain(TrailDrawer.class, TrailDrawer::new);
-		//drawer.add();
 	}
 	
 	public static class EffectTrailData{

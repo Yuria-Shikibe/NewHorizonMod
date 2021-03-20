@@ -22,6 +22,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public int trails = 1;
 	public float sideOffset = 0f;
 	public boolean flip;
+	public boolean combine = false;
 	public boolean flipWhileTwin = true;
 	
 	public Color trailToColor = Pal.gray;
@@ -68,12 +69,13 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 
 	@Override
 	public void hit(Bullet b) {
-		super.hit(b);
 		if (!(b.data instanceof EffectTrail[]))return;
 		EffectTrail[] t = (EffectTrail[])b.data();
 		for(EffectTrail trail : t){
+			if(combine)trail.update(b.x, b.y);
 			trail.disappear();
 		}
+		super.hit(b);
 	}
 
 	@Override
@@ -85,6 +87,8 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public void drawTrail(Bullet b){
 		if (!(b.data instanceof EffectTrail[]))return;
 		EffectTrail[] t = (EffectTrail[])b.data();
+		
+		
 		for(EffectTrail trail : t){
 			trail.draw();
 		}

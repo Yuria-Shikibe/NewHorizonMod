@@ -49,7 +49,7 @@ import java.util.Arrays;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.func.DrawFuncs.sinScl;
-import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFs.LEN;
 
 public class Delivery extends Block{
 	public float rotateSpeed = 0.04f;

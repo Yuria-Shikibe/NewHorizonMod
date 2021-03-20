@@ -26,7 +26,7 @@ import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
 import org.jetbrains.annotations.NotNull;
 
-import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFs.LEN;
 
 public class NHIconGenerator extends UnlockableContent{
 	public NHIconGenerator(){
