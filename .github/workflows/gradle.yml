@@ -27,4 +27,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.REPOSITORY_NAME }}
-        path: build/libs/${{ env.REPOSITORY_NAME }}.jar
+        path: build/libs/
