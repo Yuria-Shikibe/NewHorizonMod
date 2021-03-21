@@ -1,4 +1,4 @@
-package newhorizon.block.special;
+package newhorizon.block.distribution;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;

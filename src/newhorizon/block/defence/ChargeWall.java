@@ -1,4 +1,4 @@
-package newhorizon.block.special;
+package newhorizon.block.defence;
 
 import arc.Core;
 import arc.func.Cons;

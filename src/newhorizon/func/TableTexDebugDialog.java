@@ -8,9 +8,14 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.TextButton;
+import mindustry.ctype.Content;
+import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
+import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
+import mindustry.graphics.Pal;
+import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHLoader;
@@ -263,6 +268,57 @@ public class TableTexDebugDialog extends BaseDialog{
 			new SettingDialog().show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
+		cont.button("Weathers", () -> {
+			BaseDialog dialog = new BaseDialog("");
+			dialog.cont.pane(t -> {
+				t.add("Add").row();
+				t.image().growX().height(OFFSET / 4).pad(OFFSET / 2).color(Pal.accent).row();
+				t.pane(table -> {
+					for(Content content : content.getBy(ContentType.weather)){
+						Weather c = (Weather)content;
+						table.button(c.localizedName, () -> {
+							Groups.weather.add(c.create(5f));
+						}).growX().fillY().row();
+					}
+				}).grow().row();
+				t.image().growX().height(OFFSET / 4).pad(OFFSET / 2).color(Pal.accent).row();
+				t.button("Remove", () -> Groups.weather.clear()).growX().height(LEN);
+			}).grow();
+			dialog.addCloseButton();
+			dialog.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
 		return this;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

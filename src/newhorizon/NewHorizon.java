@@ -46,6 +46,7 @@ public class NewHorizon extends Mod{
 		new NHBlocks(),
 		//new NHPlanets(),
 	    new NHTechTree(),
+		new NHWeathers()
 	};
 	
 	private static void links(){
@@ -96,7 +97,7 @@ public class NewHorizon extends Mod{
 				table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 				table.button("@log", Icon.book, Styles.cleart, NewHorizon::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 			}).fillX().height(LEN + OFFSET);
-		}).fill();
+		}).grow();
 		dialog.show();
 	}
 	

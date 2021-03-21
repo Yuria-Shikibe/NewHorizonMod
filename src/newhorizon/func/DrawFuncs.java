@@ -15,10 +15,14 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
+import mindustry.gen.Buildingc;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Weapon;
 import mindustry.ui.Fonts;
 import newhorizon.NewHorizon;
+
+import static mindustry.Vars.tilesize;
 
 public class DrawFuncs {
     public static final Color bottomColor = Pal.gray;
@@ -233,7 +237,32 @@ public class DrawFuncs {
             }
         //}
     }
-
+    
+    public static void link(Buildingc from, Buildingc to, Color color){
+        float
+                sin = Mathf.absin(Time.time * sinScl, 6f, 1f),
+                r1 = from.block().size / 2f * tilesize + sin,
+                x1 = from.getX(), x2 = to.getX(), y1 = from.getY(), y2 = to.getY(),
+                r2 = to.block().size / 2f * tilesize + sin;
+        
+        Draw.color(color);
+    
+        Lines.square(x2, y2, to.block().size * tilesize / 2f + 1.0f);
+    
+        Tmp.v1.trns(from.angleTo(to), r1);
+        Tmp.v2.trns(to.angleTo(from), r2);
+        int signs = (int)(from.dst(to) / tilesize);
+    
+        Lines.stroke(4, Pal.gray);
+        Lines.dashLine(x1 + Tmp.v1.x, y1 + Tmp.v1.y, x2 + Tmp.v2.x, y2 + Tmp.v2.y, signs);
+        Lines.stroke(2, color);
+        Lines.dashLine(x1 + Tmp.v1.x, y1 + Tmp.v1.y, x2 + Tmp.v2.x, y2 + Tmp.v2.y, signs);
+    
+        Drawf.arrow(x1, y1, x2, y2, from.block().size * tilesize / 2f + sin, 4 + sin, color);
+    
+        Drawf.circles(x2, y2, r2, color);
+    }
+    
     public static void arrow(TextureRegion arrow, float x, float y, float sizeScl, float angle, Color color){
         Draw.color(color);
         Draw.rect(arrow, x, y, arrow.width * sizeScl * Draw.scl, arrow.height * sizeScl * Draw.scl, angle);

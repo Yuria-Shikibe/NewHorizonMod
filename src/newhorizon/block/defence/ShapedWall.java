@@ -1,4 +1,4 @@
-package newhorizon.block.special;
+package newhorizon.block.defence;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;

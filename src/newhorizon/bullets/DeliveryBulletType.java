@@ -22,7 +22,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import newhorizon.NewHorizon;
-import newhorizon.block.special.Delivery;
+import newhorizon.block.distribution.Delivery;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
 

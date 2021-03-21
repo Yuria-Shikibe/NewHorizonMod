@@ -39,6 +39,10 @@ import newhorizon.NewHorizon;
 import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.adapt.AdaptUnloader;
 import newhorizon.block.adapt.DisposableBattery;
+import newhorizon.block.defence.AssignOverdrive;
+import newhorizon.block.defence.ChargeWall;
+import newhorizon.block.distribution.Delivery;
+import newhorizon.block.distribution.TowardGate;
 import newhorizon.block.drawer.DrawFactories;
 import newhorizon.block.drawer.DrawHoldLiquid;
 import newhorizon.block.drawer.DrawPrinter;
@@ -77,7 +81,7 @@ public class NHBlocks implements ContentList {
 		//Powers
 		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
 		//Defence
-		largeMendProjector, shapedWall,
+		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
 		playerJumpGate, debuger
 		;
@@ -85,11 +89,24 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
-		shapedWall = new ShapedWall("debug"){{
-			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
-			
+		assignOverdrive = new AssignOverdrive("assign-overdrive"){{
+			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
+			NHTechTree.add(Blocks.overdriveProjector, this);
+			consumes.power(14.0F);
+			size = 3;
+			range = 240.0F;
+			speedBoost = 4f;
+			useTime = 300.0F;
+			hasBoost = true;
+			this.consumes.item(Items.phaseFabric).boost();
+			consumes.liquid(NHLiquids.xenBeta, 0.1f);
 		}};
 		
+//		shapedWall = new ShapedWall("debug"){{
+//			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
+//
+//		}};
+//
 		largeMendProjector = new MendProjector("large-mend-projector"){{
 			size = 3;
 			reload = 180f;
