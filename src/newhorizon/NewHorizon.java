@@ -37,7 +37,7 @@ public class NewHorizon extends Mod{
 		return MOD_NAME + name;
 	}
 	
-	private final ContentList[] content = {
+	private static final ContentList[] content = {
 		new NHItems(),
 	    new NHLiquids(),
 	    new NHBullets(),
@@ -46,8 +46,16 @@ public class NewHorizon extends Mod{
 		new NHBlocks(),
 		//new NHPlanets(),
 	    new NHTechTree(),
-		new NHWeathers()
+		//new NHWeathers()
 	};
+	
+	private static void logShow(){
+		new Tables.LogDialog(new UnlockableContent[]{
+			NHBlocks.bloodStar,
+			NHBlocks.shockWaveTurret,
+			NHBlocks.usualUpgrader
+		}).show();
+	}
 	
 	private static void links(){
 		if(links == null)links = new Links.LinkEntry[]{
@@ -66,11 +74,7 @@ public class NewHorizon extends Mod{
 		dialog.addCloseListener();
 		dialog.show();
 	}
-	
-	private static void logShow(){
-		new Tables.LogDialog(new UnlockableContent[]{NHUnits.gather}).show();
-	}
-	
+
 	public static void startLog(){
 		Dialog dialog = new BaseDialog("", Styles.fullDialog);
 		dialog.closeOnBack();

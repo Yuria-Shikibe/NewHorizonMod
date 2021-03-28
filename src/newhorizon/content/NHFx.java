@@ -220,15 +220,18 @@ public class NHFx{
 		});
 	}
 	
-	public static Effect instTrail(Color color){
+	public static Effect instTrail(Color color, float angle){
 		return new Effect(30.0F, (e) -> {
-			for(int i = 0; i < 2; ++i) {
-				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
-				float m = i == 0 ? 1.0F : 0.5F;
-				float rot = e.rotation + 180.0F;
-				float w = 15.0F * e.fout() * m;
-				Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange(e.id, 15.0F)) * m, rot);
-				Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F);
+			for(int j : angle == 0 ? Mathf.one: Mathf.signs){
+				for(int i = 0; i < 2; ++i) {
+					Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
+					float m = i == 0 ? 1.0F : 0.5F;
+					float rot = e.rotation + 180.0F;
+					float w = 15.0F * e.fout() * m;
+					Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange(e.id, 15.0F)) * m, rot + j * angle);
+					if(angle == 0)Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F + j * angle);
+					else  Fill.circle(e.x, e.y, w / 2.8f);
+				}
 			}
 		});
 	}
@@ -457,7 +460,7 @@ public class NHFx{
 			}
 		}),
 		
-		darkEnergyCharge = new Effect(60f, e -> randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
+		darkEnergyCharge = new Effect(130f, e -> randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x + x, e.y + y, e.fin() * 13f);
 			color(NHColor.darkEnr);
@@ -470,7 +473,7 @@ public class NHFx{
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
 		}),
 	
-		darkEnergyChargeBegin = new Effect(60f, e -> {
+		darkEnergyChargeBegin = new Effect(130f, e -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x, e.y, e.fin() * 32);
 			stroke(e.fin() * 3.7f);

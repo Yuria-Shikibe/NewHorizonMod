@@ -148,7 +148,7 @@ public class JumpGate extends Block {
         stats.add(Stat.output, (t) -> {
             t.row().add("[gray]Summon Types:").left().pad(OFFSET).row();
             for(UnitSet set : calls) {
-                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
+                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearPartiali, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
             }
         });
     }
@@ -157,27 +157,25 @@ public class JumpGate extends Block {
         BaseDialog dialogIn = new BaseDialog("More Info");
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
-        dialogIn.cont.pane(t -> {
-            t.table(inner -> {
-                inner.image(set.type.icon(Cicon.full)).center().row();
-                inner.add("<<[accent] " + set.type.localizedName + " []>>").row();
-                inner.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
-                inner.add("[lightgray]BuildNeededTime: [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
-                inner.table(table -> {
-                    int index = 0;
-                    for(ItemStack stack : set.requirements()){
-                        if(module != null || index % 7 == 0)table.row();
-                        if(module != null){
-                            TableFs.itemStack(table, stack, module);
-                        }else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
-                        index ++;
-                    }
-                }).growX().fillY().left().padLeft(OFFSET).row();
-                inner.add(extra).left().padLeft(OFFSET).row();
-                inner.image().fillX().pad(2).height(4f).color(Pal.accent);
-                inner.row();
-                inner.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
-            }).grow();
+        dialogIn.cont.pane(inner -> {
+            inner.image(set.type.icon(Cicon.full)).center().row();
+            inner.add("<<[accent] " + set.type.localizedName + " []>>").row();
+            inner.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
+            inner.add("[lightgray]BuildNeededTime: [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
+            inner.table(table -> {
+                int index = 0;
+                for(ItemStack stack : set.requirements()){
+                    if(module != null || index % 7 == 0)table.row();
+                    if(module != null){
+                        TableFs.itemStack(table, stack, module);
+                    }else table.add(new ItemDisplay(stack.item, stack.amount, false).left()).padLeft(OFFSET / 2).left();
+                    index ++;
+                }
+            }).growX().fillY().left().padLeft(OFFSET).row();
+            inner.add(extra).left().padLeft(OFFSET).row();
+            inner.image().fillX().pad(2).height(4f).color(Pal.accent);
+            inner.row();
+            inner.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
         }).grow().row();
         dialogIn.show();
     }
@@ -411,7 +409,7 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
     
-            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, Groups.unit.size(), set, baseColor());
+            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, (long)Groups.unit.size() + Groups.build.size() << 8, set, baseColor());
             
             if(success){
                 consumeItems();

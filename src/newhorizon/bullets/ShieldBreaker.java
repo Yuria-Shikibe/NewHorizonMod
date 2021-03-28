@@ -6,7 +6,10 @@ import mindustry.gen.Bullet;
 public class ShieldBreaker extends NHTrailBulletType{
     public float maxShieldDamage;
     
-    protected BulletType breakType;
+    protected BulletType breakType = new EffectBulletType(1f){{
+        this.absorbable = true;
+        this.damage = 1;
+    }};
     
     public ShieldBreaker(float speed, float damage, String bulletSprite, float shieldDamage) {
         super(speed, damage, bulletSprite);
@@ -25,16 +28,12 @@ public class ShieldBreaker extends NHTrailBulletType{
 
     @Override
     public void init(){
-        if(breakType == null)breakType = new EffectBulletType(1f){{
-            this.absorbable = true;
-            this.damage = maxShieldDamage;
-        }};
         super.init();
     }
 
     @Override
     public void update(Bullet b) {
         super.update(b);
-        breakType.create(b, b.x, b.y, 0);
+        breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, new Object());
     }
 }

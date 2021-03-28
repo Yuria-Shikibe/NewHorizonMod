@@ -204,8 +204,10 @@ public class TableFs{
         if(headless || net.server())return;
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
-            if(Vars.state.isMenu() || net.active() || net.client())starter.color.a = 0;
-            else{
+            if(Vars.state.isMenu() || net.client()){
+                starter.color.a = 0;
+                starter.setPosition(-starter.getWidth(), 0);
+            }else{
                 starter.color.a = 1;
                 starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f);
                 

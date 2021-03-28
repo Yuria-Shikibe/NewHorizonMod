@@ -19,6 +19,8 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.OverdriveProjector;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.interfaces.LinkGroupc;
 
 import static mindustry.Vars.tilesize;
@@ -30,6 +32,12 @@ public class AssignOverdrive extends OverdriveProjector{
 		super(name);
 		configurable = true;
 		config(Point2.class, (Cons2<AssignOverdriveBuild, Point2>)AssignOverdriveBuild::linkPos);
+	}
+	
+	@Override
+	public void setStats(){
+		super.setStats();
+		stats.add(Stat.powerConnections, maxLink, StatUnit.none);
 	}
 	
 	@Override
@@ -118,13 +126,12 @@ public class AssignOverdrive extends OverdriveProjector{
 		public void drawConfigure(){
 			float realRange = range + phaseHeat * phaseRangeBoost;
 			
+			Draw.color(baseColor);
+			Lines.square(x, y, block.size * tilesize / 2f + 1.0f);
+			
 			Drawf.dashCircle(x, y, realRange, baseColor);
 			
-//			updatePos();
-			
 			drawLink();
-			
-		
 		}
 		
 		@Override

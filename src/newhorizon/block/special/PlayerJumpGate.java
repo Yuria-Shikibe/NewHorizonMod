@@ -29,6 +29,8 @@ import static mindustry.Vars.*;
 import static newhorizon.func.TableFs.LEN;
 
 public class PlayerJumpGate extends Block{
+	protected float dstMax;
+	
 	public float reloadTime = 60f;
 	public float range = 1200f;
 	public float polyStroke = 2f;
@@ -43,6 +45,12 @@ public class PlayerJumpGate extends Block{
 		config(Point2.class, (Cons2<PlayerJumpGateBuild, Point2>)PlayerJumpGateBuild::linkPos);
 		config(Integer.class, (PlayerJumpGateBuild tile, Integer id) -> tile.teleport(Groups.player.getByID(id)));
 		config(Boolean.class, (PlayerJumpGateBuild tile, Boolean value) -> tile.locked = value);
+	}
+	
+	@Override
+	public void init(){
+		dstMax = size * tilesize / 2.5f;
+		super.init();
 	}
 	
 	public boolean canPlaceOn(Tile tile, Team team) {return !Vars.net.client();}
@@ -159,6 +167,10 @@ public class PlayerJumpGate extends Block{
 		public void drawConfigure(){
 			Drawf.dashCircle(x, y, range, getLinkColor());
 			drawLink();
+			
+			if(player == null)return;
+			
+			Drawf.square(player.x, player.y, player.unit().hitSize, 45, dst(Vars.player) > dstMax ? Pal.redderDust : Color.green);
 		}
 		
 		@Override
@@ -191,7 +203,6 @@ public class PlayerJumpGate extends Block{
 		
 		@Override
 		public void buildConfiguration(Table table){
-			final float dstMax = size * tilesize / 2.5f;
 			table.button(Icon.lock, LEN, () -> configure(!locked)).size(LEN).update(b -> b.getStyle().imageUp = locked ? Icon.lock : Icon.lockOpen);
 			table.button("Teleport", Icon.upOpen, LEN, () -> configure(Vars.player.id)).size(LEN * 4, LEN).disabled(b -> !playerValid() || !canFunction() || dst(Vars.player) > dstMax);
 		}

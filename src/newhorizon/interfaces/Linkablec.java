@@ -21,7 +21,7 @@ import static newhorizon.func.DrawFuncs.sinScl;
 public interface Linkablec extends Buildingc, Ranged{
 	Seq<Building> tmpSeq = new Seq<>(1);
 	
-	default boolean onConfigureTileTapped(Building other){
+	@Override default boolean onConfigureTileTapped(Building other){
 		if (this == other || linkPos() == other.pos()) {
 			configure(Tmp.p1.set(-1, -1));
 			return false;
@@ -40,7 +40,6 @@ public interface Linkablec extends Buildingc, Ranged{
 			if(linkValid(link())){
 				Draw.color(getLinkColor());
 				Drawf.circles(getX(), getY(), block().size / 2f * tilesize + Mathf.absin(Time.time * sinScl, 6f, 1f), getLinkColor());
-				
 				DrawFuncs.link(this, link(), getLinkColor());
 			}
 		}else if(builds.size > 0){

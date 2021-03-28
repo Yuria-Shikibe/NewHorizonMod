@@ -1,7 +1,7 @@
 package newhorizon.block.turrets;
 
 
-import arc.Core;
+import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -12,21 +12,18 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import mindustry.type.Liquid;
 import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.Turret;
-import mindustry.world.consumers.ConsumeLiquidBase;
-import mindustry.world.consumers.ConsumeType;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
-import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
@@ -55,12 +52,6 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		configurable = true;
 		hasPower = true;
 		hasItems = true;
-	}
-	
-	@Override
-	public void load(){
-		super.load();
-		baseRegion = Core.atlas.find(NewHorizon.configName("block-" + size));
 	}
 	
 	@Override
@@ -100,6 +91,11 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		    getData().type().chargeEffect.at(x + tr.x, y + tr.y, rotation);
 		    
 		    charging = true;
+		    
+		    if(getData().type().chargeTime > 0){
+		    	Sound sound = getData().type().chargeSound == null ? chargeSound : getData().type().chargeSound;
+			    sound.at(x + tr.x, y + tr.y, 1);
+		    }
 		    
             Time.run(getData().type().chargeTime, () -> {
 	            if(!isValid())return;
@@ -172,6 +168,21 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		}
 		
 		@Override
+		public float range(){
+			return data.type().range < 0 ? range : data.type().range;
+		}
+		
+		@Override
+		protected void findTarget(){
+			if(targetAir && !targetGround){
+				target = Units.bestEnemy(team, x, y, range(), e -> !e.dead() && !e.isGrounded(), unitSort);
+			}else{
+				target = Units.bestTarget(team, x, y, range(), e -> !e.dead() && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> true, unitSort);
+			}
+		}
+		
+		
+		@Override
 		public void updateTile(){
 			super.updateTile();
 			if(isContiunous() && bulletLife > 0 && bullet != null){
@@ -207,21 +218,6 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
                 reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
             }
         }
-
-		@Override
-		protected void updateCooling(){
-			float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
-			
-			Liquid liquid = liquids.current();
-
-			float used = Math.min(Math.min(liquids.get(liquid), maxUsed * Time.delta), Math.max(0, ((reloadTime - reload) / coolantMultiplier) / liquid.heatCapacity)) * baseReloadSpeed();
-			reload += used * liquid.heatCapacity * coolantMultiplier;
-			liquids.remove(liquid, used);
-
-			if(Mathf.chance(0.06 * used)){
-				coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
-			}
-		}
 		
 		@Override
 		protected void bullet(BulletType type, float angle){
@@ -229,7 +225,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 				bullet = type.create(tile.build, team, x + tr.x, y + tr.y, angle);
 				bulletLife = getData().type().continuousTime;
 			}else{
-				float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
+				float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range() / type.range()) : 1f;
 				type.create(this, team, x + tr.x, y + tr.y, angle, 1f + Mathf.range(getData().type().velocityInaccuracy), lifeScl);
 			}
         }
@@ -240,7 +236,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		}
 		@Override public Color getColor(){return baseColor;}
 		@Override public boolean isContiunous(){return getData().type().continuousTime > 0;}
-		@Override public float handleDamage(float amount) {return amount * Mathf.clamp(1 - data.defenceUP(), amount * 2, amount / 100f);}
+		@Override public float handleDamage(float amount) {return Mathf.clamp(amount * (1 - data.defenceUP()), amount * data.type().maxDamageReduce, amount);}
 		@Override public boolean isConnected(){return upgraderc() != null;}
 		@Override public Upgraderc upgraderc(){
 			if(world.build(fromPos) == null){
@@ -266,7 +262,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 
 		@Override
 		public void buildConfiguration(Table t) {
-			t.table(Tex.button, table -> {
+			t.table(Tex.paneSolid, table -> {
 				table.table(cont -> cont.image(getData().type().icon).left()).left().growX();
 				table.table(cont -> {
 					cont.add("[lightgray]Level: [accent]" + getData().level + "[]", Styles.techLabel).left().pad(TableFs.OFFSET).row();
@@ -274,7 +270,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 					cont.add("[lightgray]ReloadSpeedUp: [accent]" + getPercent(data.speedUP())).left().row();
 					cont.add("[lightgray]DefenceUP: [accent]" + getPercent(data.defenceUP())).left().row();
 				}).growX().right().padRight(TableFs.OFFSET / 3);
-			}).grow().padLeft(TableFs.OFFSET).padRight(TableFs.OFFSET).row();
+			}).grow().row();
 
 			if(getData() != null && upgraderc() != null)upgraderc().buildSwitchAmmoTable(t, true);
 

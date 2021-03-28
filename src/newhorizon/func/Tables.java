@@ -21,6 +21,7 @@ import mindustry.ui.Cicon;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.block.special.JumpGate;
 
@@ -170,7 +171,7 @@ public class Tables{
 	public static class LogDialog extends BaseDialog{
 		public LogDialog(UnlockableContent[] contents){
 			super("@log");
-			cont.table(Tex.buttonEdge3, table -> {
+			cont.pane(table -> {
 				table.add("[accent]" + NHSetting.modMeta.version + " [gray]Update Log:").center().row();
 				addCloseListener();
 				table.pane(t -> {
@@ -191,7 +192,7 @@ public class Tables{
 					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
 					t.add(TableFs.tabSpace + Core.bundle.get("update.other")).row();
 				}).growX().height((Core.graphics.getHeight() - LEN * 2) / (Vars.mobile ? 1.1f : 2.2f));
-			}).growX().fillY().row();
+			}).grow().row();
 			cont.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).bottom().row();
 			cont.button("@back", Icon.left, Styles.cleart, this::hide).fillX().height(LEN).row();
 		}
@@ -201,10 +202,10 @@ public class Tables{
 				int index = 0;
 				for(UnlockableContent c : contents){
 					if(index % 8 == 0)t.row();
-					t.button(new TextureRegionDrawable(c.icon(Cicon.xlarge)), Styles.cleari, LEN, () -> new BaseDialog(c.localizedName){{
-						cont.pane(c::display).grow().row();
-						addCloseButton();
-					}}.show()).size(LEN);
+					t.button(new TextureRegionDrawable(c.icon(Cicon.xlarge)), Styles.cleari, LEN, () -> {
+						ContentInfoDialog dialog = new ContentInfoDialog();
+						dialog.show(c);
+					}).size(LEN);
 					index++;
 				}
 			}).grow().row();

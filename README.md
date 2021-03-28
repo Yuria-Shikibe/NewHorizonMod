@@ -57,7 +57,7 @@ If you find your device cannot afford it, open the mod file folder and find the 
 ![end-of-era](assets/sprites/block/turret/end-of-era.png)  
 - **_Turret:_** End of Era
 
-![eoe-upgrader](assets/sprites/block/special/EOE/end-of-era-upgrader.png)  
+![eoe-upgrader](assets/sprites/block/upgrade/end-of-era-upgrader.png)  
 - **_Upgrader:_** End of Era Upgrader
 
 ###### Use Steps:

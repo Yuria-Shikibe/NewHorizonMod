@@ -116,7 +116,7 @@ public class NHSetting{
 	}
 	
 	public static void debug(Runnable run){
-		if((Vars.headless && Vars.state.rules.infiniteResources) || debug)run.run();
+		if((Vars.headless && Vars.state.rules.infiniteResources) || (debug || (Vars.net.client() && Vars.state.rules.infiniteResources)))run.run();
 	}
 	
 	public static void setBoolOnce(String key, boolean bool){

@@ -37,7 +37,7 @@ import static newhorizon.func.TableFs.*;
 public class UpgradeData{
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	
-	public TextureRegion icon;
+	public TextureRegion icon, turretRegion;
 	public String name, localizedName, description;
 	public float costTime;
 	public int maxLevel;
@@ -56,13 +56,17 @@ public class UpgradeData{
 	public float chargeTime = 0f;
 	public float reloadTime;
 	public float randX;
+	public float range = -1;
 	public int salvos = 1;
 	public float burstSpacing = 5f;
 	public BulletType selectAmmo;
-	public Sound shootSound = Sounds.bigshot;
+	public Sound shootSound = Sounds.bigshot, chargeSound;
 	
+	public float reloadDamageUp;
 	public float reloadSpeedUp;
 	public float defenceUp;
+	
+	public float maxDamageScl = 2f;
 	public float maxReloadReduce = 0.65f;
 	public float maxDamageReduce = 0.65f;
 	
@@ -98,7 +102,7 @@ public class UpgradeData{
 	
 	@Override
 	public String toString(){
-		return "[UpgradeData]: " + name;
+		return "#UpgradeData: " + name;
 	}
 	
 	public DataEntity newSubEntity(){
@@ -192,7 +196,7 @@ public class UpgradeData{
 		}
 		
 		public void buildTable(Table cont, Upgraderc from) {
-			Table info = new Table(Tex.button, t -> {
+			Table info = new Table(Tex.pane, t -> {
 				Label label = new Label("");
 				t.update(() -> {
 					label.setText(new StringBuilder().append("[lightgray]NeededTime: [accent]").append(format(costTime() / 60)).append("[lightgray] sec[]"));
@@ -200,13 +204,13 @@ public class UpgradeData{
 					if(isLeveled && isMaxLevel())t.remove();
 				});
 				
-				t.pane(table -> table.image(icon).size(LEN).left()).left().size(LEN).padLeft(OFFSET);
+				t.pane(table -> table.image(icon).size(LEN).left()).left().fill().padLeft(OFFSET);
 				
 				t.pane(table -> {
-					table.add(localizedName).color(Pal.accent).left().row();
+					table.add(localizedName).color(Pal.accent).growX().left().row();
 					
 					table.add(label).left().row();
-					if(UpgradeData.this.isLeveled){
+					if(type().isLeveled){
 						table.image().fillX().pad(OFFSET / 2).height(4f).color(Color.lightGray).left().row();
 						Label labelL = new Label(""), labelR = new Label(""), lableD = new Label("");
 						
@@ -220,14 +224,14 @@ public class UpgradeData{
 						table.add(labelR).left().row();
 						table.add(lableD).left().row();
 					}
-				}).size(LEN * 6f, LEN * 1.5f).center().growX();
+				}).growX().height(LEN).padLeft(OFFSET / 2).padRight(OFFSET / 2);
 				
-				t.table(Tex.button, table -> {
+				t.table(Tex.clear, table -> {
 					table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(true, from, from.core().items)).size(LEN);
-					table.button(Icon.upOpen, Styles.clearPartiali, () -> from.configure(from.all().indexOf(this))).size(LEN).disabled(b -> !from.canUpgrade(this));
-				}).height(LEN + OFFSET).right().padRight(OFFSET);
+					table.button(Icon.upOpen, Styles.clearPartiali, () -> from.configure(from.all().indexOf(this))).size(LEN).disabled(b -> !from.canUpgrade(this) || from.isUpgrading());
+				}).fillX().height(LEN).right().padRight(OFFSET);
 			});
-			cont.add(info).pad(OFFSET / 2).growX().height(LEN * 2f).row();
+			cont.add(info).padTop(OFFSET / 2).padBottom(OFFSET / 2).growX().fillY().row();
 		}
 		
 		public ItemStack[] requirements() {

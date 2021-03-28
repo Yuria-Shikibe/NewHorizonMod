@@ -12,11 +12,37 @@ import static mindustry.Vars.tilesize;
 public class NHUpgradeDatas implements ContentList{
 	public static final Seq<UpgradeData> all = new Seq<>();
 	
-	public static UpgradeData none, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket, posLightning;
+	public static UpgradeData
+			longRangeShoot, longRangeShootRapid, longRangeShootSplash, mineShoot,
+			none, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket, posLightning;
 	
 	@Override
 	public void load(){
 		none = new UpgradeData();
+		
+		longRangeShoot = new UpgradeData("long-range-shoot-0", NHBullets.longRangeShoot, 150f,
+			new ItemStack(NHItems.presstanium, 80), new ItemStack(NHItems.juniorProcessor, 80)
+		){{
+			defaultLevel = 1;
+			shootSound = Sounds.plasmaboom;
+		}};
+		
+		longRangeShootRapid = new UpgradeData("long-range-shoot-2", NHBullets.longRangeShootRapid, 250f,
+			new ItemStack(Items.plastanium, 80), new ItemStack(NHItems.juniorProcessor, 80), new ItemStack(NHItems.zeta, 120)
+		){{shootSound = Sounds.plasmaboom;}};
+		
+		longRangeShootSplash = new UpgradeData("long-range-shoot-1", NHBullets.longRangeShootSplash, 250f,
+			new ItemStack(Items.graphite, 120), new ItemStack(NHItems.juniorProcessor, 80), new ItemStack(NHItems.zeta, 120)
+		){{shootSound = Sounds.plasmaboom;}};
+		
+		mineShoot = new UpgradeData("mine-shoot", NHBullets.mineShoot, 250f,
+			new ItemStack(Items.blastCompound, 60), new ItemStack(NHItems.juniorProcessor, 80)
+		){{
+			burstSpacing = 3f;
+			salvos = 12;
+			inaccuracy = 8f;
+			shootSound = Sounds.plasmaboom;
+		}};
 		
 		posLightning = new UpgradeData("lightning", NHBullets.darkEnrLightning, 150f,
 			new ItemStack(NHItems.seniorProcessor, 150),
@@ -107,10 +133,12 @@ public class NHUpgradeDatas implements ContentList{
 				new ItemStack(NHItems.thermoCoreNegative, 800),
 				new ItemStack(NHItems.seniorProcessor, 800)
 		){{
+			reloadTime = 180f;
 			shootSound = Sounds.laserblast;
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
 			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
+			chargeSound = NHSounds.railGunCharge;
 		}};
 		
 		curveBomb = new UpgradeData(

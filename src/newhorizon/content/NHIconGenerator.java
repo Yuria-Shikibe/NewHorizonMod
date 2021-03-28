@@ -21,7 +21,6 @@ import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValue;
-import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
 import org.jetbrains.annotations.NotNull;
@@ -72,17 +71,17 @@ public class NHIconGenerator extends UnlockableContent{
 				Pixmap base = new Pixmap(r.width, r.height);
 				base.drawPixmap(region);
 				TextureAtlas.AtlasRegion cell = Core.atlas.find(iconSet.type.name + "-cell");
-				if(cell != null && cell.found())base.drawPixmap(DrawFuncs.fillColor(Core.atlas.getPixmap(cell), Team.sharded.color), - 1, 0);
+				if(cell != null && cell.found())base.drawPixmap(NHLoader.fillColor(Core.atlas.getPixmap(cell), Team.sharded.color), - 1, 0);
 				
 				for(Weapon w : iconSet.weapons){
 					if(w.top)continue;
-					DrawFuncs.drawWeaponPixmap(base, w, false);
+					NHLoader.drawWeaponPixmap(base, w, false);
 				}
 				
-				base = DrawFuncs.getOutline(base, DrawFuncs.outlineColor);
+				base = NHLoader.getOutline(base, NHLoader.outlineColor);
 				for(Weapon w : iconSet.weapons){
 					if(!w.top)continue;
-					DrawFuncs.drawWeaponPixmap(base, w, true);
+					NHLoader.drawWeaponPixmap(base, w, true);
 				}
 				packer.add(MultiPacker.PageType.main, name + "-icon", base);
 			}else Log.info("[Create Fail]" + name);

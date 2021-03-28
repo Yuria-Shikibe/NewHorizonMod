@@ -6,11 +6,15 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Time;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.effect.MultiEffect;
+import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -23,6 +27,7 @@ import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.DecayGenerator;
 import mindustry.world.blocks.power.PowerNode;
@@ -41,7 +46,9 @@ import newhorizon.block.adapt.AdaptUnloader;
 import newhorizon.block.adapt.DisposableBattery;
 import newhorizon.block.defence.AssignOverdrive;
 import newhorizon.block.defence.ChargeWall;
+import newhorizon.block.defence.ShapedWall;
 import newhorizon.block.distribution.Delivery;
+import newhorizon.block.distribution.LiquidAndItemBridge;
 import newhorizon.block.distribution.TowardGate;
 import newhorizon.block.drawer.DrawFactories;
 import newhorizon.block.drawer.DrawHoldLiquid;
@@ -53,6 +60,7 @@ import newhorizon.block.turrets.ScalableTurret;
 import newhorizon.block.turrets.SpeedupTurret;
 import newhorizon.bullets.NHTrailBulletType;
 
+import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
@@ -65,17 +73,20 @@ public class NHBlocks implements ContentList {
 		largeShieldGenerator,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior,
 		//Turrets
+		shockWaveTurret, usualUpgrader, bloodStar,
 		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret, multipleArtillery,
 		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
 		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory, irdryonVault,
+		//Liquids
+		irdryonTank,
 		//Liquids factories
 		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory, oilRefiner,
 		//walls
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
 		//Distributions
-		towardGate, rapidUnloader,
+		towardGate, rapidUnloader, liquidAndItemBridge,
 		//Drills
 		largeWaterExtractor,
 		//Powers
@@ -83,14 +94,156 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
-		playerJumpGate, debuger
+		playerJumpGate, debuger, payloadEntrance
 		;
 
+	private void loadExperimental(){
+		payloadEntrance = new PayloadEntrance("payload-entrance"){{
+			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
+			size = 7;
+		}};
+
+		liquidAndItemBridge = new LiquidAndItemBridge("debug"){{
+			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
+			range = 12;
+		}};
+		shapedWall = new ShapedWall("debug"){{
+			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
+
+		}};
+	}
+	
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		bloodStar = new ItemTurret("blood-star"){{
+			size = 5;
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 230, NHItems.setonAlloy, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 300, Items.thorium, 600));
+			NHTechTree.add(Blocks.spectre, this);
+			recoilAmount = 5f;
+			reloadTime = 120f;
+			range = 550f;
+			unitSort = (u, x, y) -> -u.hitSize();
+			shootSound = Sounds.laserblast;
+			inaccuracy = 0f;
+			cooldown = 0.01f;
+			shootCone = 15f;
+			heatColor = Items.surgeAlloy.color.cpy().lerp(Color.white, 0.2f);
+			consumes.powerCond(12f, TurretBuild::isActive);
+			
+			ammo(NHItems.thermoCorePositive,
+				new NHTrailBulletType(4, 1200, "large-bomb"){{
+					lightning = 6;
+					lightningCone = 360;
+					lightningLengthRand = lightningLength = 12;
+					splashDamageRadius = 60f;
+					splashDamage = lightningDamage = 0.5f * damage;
+					
+					trailColor = backColor = lightColor = lightningColor = heatColor;
+					frontColor = Color.white;
+					
+					status = NHStatusEffects.emp1;
+					statusDuration = 30f;
+					
+					spin = 3f;
+					trails = 1;
+					trailLength = 30;
+					trailWidth = 2.5f;
+					scaleVelocity = true;
+					combine = true;
+					shrinkX = shrinkY = 0;
+					hitSound = Sounds.explosionbig;
+					drawSize = 60f;
+					hitShake = despawnShake = 6f;
+					shootEffect = NHFx.instShoot(backColor);
+					smokeEffect = Fx.shootBigSmoke2;
+					hitEffect = new Effect(50, e -> {
+						Draw.color(backColor);
+						Fill.circle(e.x, e.y, e.fout() * height / 1.5f);
+						Lines.stroke(e.fout() * 3f);
+						Lines.circle(e.x, e.y, e.fin() * 80);
+						Lines.stroke(e.fout() * 2f);
+						Lines.circle(e.x, e.y, e.fin() * 50);
+						Angles.randLenVectors(e.id, 35, 18 + 100 * e.fin(), (x, y) -> {
+							lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 12 + 4);
+						});
+						
+						Draw.color(frontColor);
+						Fill.circle(e.x, e.y, e.fout() * height / 2f);
+					});
+					despawnEffect = new MultiEffect(NHFx.crossBlast(backColor, 120f), NHFx.instHit(backColor, 3, 80f));
+					height = width = 40;
+				}
+					
+					@Override
+					public void draw(Bullet b){
+						super.draw(b);
+						
+						float f = Mathf.curve(b.fout(), 0, 0.05f);
+						float f2 = Mathf.curve(b.fin(), 0, 0.1f);
+						Draw.color(backColor);
+						
+						float fi = Mathf.randomSeed(b.id, 360f);
+						
+						for(int i : Mathf.signs){
+							Drawf.tri(b.x, b.y, 6 * f2 * f, 80 * f2 * f, fi + (i + 1) * 90 + Time.time * 2);
+							Drawf.tri(b.x, b.y, 6 * f2 * f, 65 * f2 * f, fi + (i + 1) * 90 - Time.time * 2 + 90);
+						}
+					}
+				}
+			);
+		}};
+		
+		shockWaveTurret = new ScalableTurret("shock-wave"){{
+			defaultData = NHUpgradeDatas.longRangeShoot;
+			recoilAmount = 5f;
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.metalOxhydrigen, 180, NHItems.multipleSteel, 200, NHItems.seniorProcessor, 150, NHItems.presstanium, 120));
+			NHTechTree.add(Blocks.foreshadow, this);
+			consumes.items(new ItemStack(NHItems.fusionEnergy, 2));
+			size = 4;
+			health = 3650;
+			hasItems = true;
+			heatColor = NHColor.lightSky;
+			baseColor = NHColor.lightSky.cpy().lerp(Color.white, 0.35f);
+			powerUse = 8;
+			reloadTime = 300f;
+			range = 460f;
+			inaccuracy = 0f;
+			cooldown = 0.01f;
+			shootCone = 15f;
+			shootSound = Sounds.laser;
+			unitSort = (u, x, y) -> u.speed();
+		}};
+		
+		usualUpgrader = new UpgradeBlock("upgrader-usual"){{
+			requirements(Category.effect, BuildVisibility.shown, with(Items.graphite, 180, Items.thorium, 200, NHItems.seniorProcessor, 150, NHItems.presstanium, 120));
+			NHTechTree.add(Blocks.commandCenter, this);
+			
+			linkTarget.add(shockWaveTurret);
+			addUpgrades(
+					NHUpgradeDatas.longRangeShoot,
+					NHUpgradeDatas.longRangeShootRapid,
+					NHUpgradeDatas.longRangeShootSplash,
+					NHUpgradeDatas.mineShoot
+			);
+			
+			baseColor = NHColor.lightSky.cpy().lerp(Color.white, 0.35f);
+			size = 3;
+			range = 120f;
+			health = 1250;
+		}};
+		
+		irdryonTank = new LiquidRouter("irdryon-tank"){{
+			requirements(Category.liquid, with(NHItems.metalOxhydrigen, 25, NHItems.multipleSteel, 40, Items.metaglass, 25));
+			NHTechTree.add(Blocks.liquidTank, this);
+			size = 3;
+			liquidCapacity = 2500.0F;
+			health = 2500;
+		}};
+		
 		assignOverdrive = new AssignOverdrive("assign-overdrive"){{
-			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
+			requirements(Category.effect, with(NHItems.irayrondPanel, 120, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
 			NHTechTree.add(Blocks.overdriveProjector, this);
 			consumes.power(14.0F);
 			size = 3;
@@ -98,15 +251,10 @@ public class NHBlocks implements ContentList {
 			speedBoost = 4f;
 			useTime = 300.0F;
 			hasBoost = true;
-			this.consumes.item(Items.phaseFabric).boost();
+			consumes.item(Items.phaseFabric).boost();
 			consumes.liquid(NHLiquids.xenBeta, 0.1f);
 		}};
 		
-//		shapedWall = new ShapedWall("debug"){{
-//			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
-//
-//		}};
-//
 		largeMendProjector = new MendProjector("large-mend-projector"){{
 			size = 3;
 			reload = 180f;
@@ -126,7 +274,7 @@ public class NHBlocks implements ContentList {
 		multipleArtillery = new ItemTurret("multiple-artillery"){{
 			size = 4;
 			health = 4000;
-			range = 400f;
+			range = 360f;
 			targetAir = false;
 			inaccuracy = 5f;
 			spread = 3f;
@@ -146,7 +294,6 @@ public class NHBlocks implements ContentList {
 				Items.phaseFabric, NHBullets.artilleryPhase,
 				NHItems.juniorProcessor, NHBullets.artilleryMissile
 			);
-			//consumes.powerCond(8f, TurretBuild::isActive);
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.metalOxhydrigen, 250, Items.thorium, 400, NHItems.seniorProcessor, 150, Items.plastanium, 300, Items.phaseFabric, 150));
 			NHTechTree.add(Blocks.ripple, this);
 		}
@@ -207,7 +354,7 @@ public class NHBlocks implements ContentList {
 			chargeEffects = 3;
 			chargeBeginEffect = NHFx.genericChargeBegin(NHColor.lightSky, 5f, 60f);
 			chargeTime = chargeBeginEffect.lifetime;
-			range = 280f;
+			range = 240f;
 		}};
 		
 		multipleLauncher = new ItemTurret("multiple-launcher"){{
@@ -316,7 +463,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		railGun = new ItemTurret("rail-gun"){{
-			unitSort = (u, x, y) -> -u.maxHealth;
+			unitSort = (u, x, y) -> - u.maxHealth / u.speed() * Mathf.dst(x, y);
 			size = 4;
 			health = 4550;
 			reloadTime = 200f;
@@ -1088,10 +1235,9 @@ public class NHBlocks implements ContentList {
 		eoeUpgrader = new UpgradeBlock("end-of-era-upgrader"){{
 			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
 			size = 3;
-			linkTarget = endOfEra;
+			linkTarget.add(endOfEra);
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
-			maxLevel = 10;
 			addUpgrades(
 				NHUpgradeDatas.posLightning,
 				NHUpgradeDatas.darkEnrlaser,

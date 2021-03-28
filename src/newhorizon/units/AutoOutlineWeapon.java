@@ -18,6 +18,11 @@ public class AutoOutlineWeapon extends Weapon{
 	}
 	
 	@Override
+	public AutoOutlineWeapon copy(){
+		return (AutoOutlineWeapon)super.copy();
+	}
+	
+	@Override
 	public void load(){
 		this.region = Core.atlas.find(this.name, Core.atlas.find("clear"));
 		this.heatRegion = Core.atlas.find(this.name + "-heat");

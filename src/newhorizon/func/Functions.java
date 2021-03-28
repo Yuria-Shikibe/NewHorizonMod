@@ -79,6 +79,7 @@ public class Functions {
         return defaultColor == null ? team.color : defaultColor;
     }
     
+    //not support server
     public static void spawnUnit(UnitType type, Team team, int spawnNum, float x, float y){
         for(int spawned = 0; spawned < spawnNum; spawned++){
             Time.run(spawned * Time.delta, () -> {
@@ -104,12 +105,12 @@ public class Functions {
         if(!type.flying){
             Random r = new Random(seed);
             tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
-                    tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
-            ).shuffle();
+                tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
+            );
             for(int i = 0; i < set.callIns; i++){
                 Tile[] positions = tSeq.shrink();
                 if(positions.length < set.callIns)return false;
-                vectorSeq.add(new Vec2().set(positions[r.nextInt(set.callIns)]));
+                vectorSeq.add(new Vec2().set(positions[r.nextInt(positions.length)]));
             }
         }else{
             randLenVectors(seed, set.callIns, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(x, y)));
