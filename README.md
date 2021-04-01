@@ -7,33 +7,33 @@
 **Powered by *Yuria*.**
 
 ## Update Frequency
-During this term(from March to June) I can only update this mod on every weekends.
+During this term (from March to June) I can only update this mod on weekends.
 
 ## Server
 `mindustry.xyz:10704`
 
 ###### For foreigners (foreign countries relative to China)
 
-Most of the players in the server may Chinese when you log in it.
+Most of the players in the server may speak Chinese when you log in.
 
-Well, you would feel it is impossible to communicate with them because as I know many of the player in the Chinese game community of Mindustry (especially in my place) do not use English often or not fluent in it ~~just likes me~~. However, I believe there must exist players who are good at English and willing to translate what you say to others then replied you.
+Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not use English often or are not fluent in it ~~just like me; in fact, someone else helped me with this~~. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.
 
-But if that doesn't happen, making everything function all right and don't demolish buildings at will are enough. I believe every player can get on well with each other ~~in the case of someone wouldn't blow up a reactor or break other's blueprint~~.
+But if that doesn't happen, making everything function right and not demolishing buildings at will are enough. I believe every player can get along well with each other ~~as long as no one blows up a reactor or breaks someone else's blueprint~~.
 
-Don't remember to invite your friends to try this mod, because you guys can use the amount of non-Chinese speaking players to turn the situation. ~~Also if Chinese players don't quit, this may be a fantastic chance for them to learn English~~(~~Maaaaaaaybeeeeeee~~). 
+Don't forget to invite your friends to try this mod, because you guys can use the amount of non-Chinese speaking players to turn the situation. ~~Also if Chinese players don't quit, this may be a fantastic chance for them to learn English~~(~~Maaaaaaaybeeeeeee~~). 
 
 Have a nice day.
 
-## Cautions
+## Caution
 **MOD DOES NOT SUPPORT _IOS_**
 
-**If you are using a PC**, mod require install `jdk 14` or maybe jdk in other versions(**_at least 8_**).
+**If you are using a PC**, mod requires `jdk 14` installed, or maybe jdk in other versions(**_at least 8_**).
 
-If you download from `Action`, unzip the Mod.zip file first, then install the mod in game;
+If you download from `Action`, unzip the Mod.zip file first, then install the mod in-game;
 
-Mod is ***unstable***(mainly for phones, which are some UI and load problems) and is ***WORK IN PROGRESS***.
+Mod is ***unstable***(mainly for phones, which have some UI and load problems) and is ***WORK IN PROGRESS***.
 
-All codes are here, complete open source, ~~and so no code that has *safety* problems could be hid~~.
+All code is here, completely open source, ~~and so no code that has *safety* problems could be hidden~~.
 
 ## In Game Settings
 This mod adds a new setting dialog when start the game.
