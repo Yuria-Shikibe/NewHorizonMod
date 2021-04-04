@@ -208,7 +208,7 @@ public class Tables{
 					}).size(LEN);
 					index++;
 				}
-			}).grow().row();
+			}).fillY().growX().row();
 		}
 	}
 }

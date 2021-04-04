@@ -181,26 +181,14 @@ public class AssignOverdrive extends OverdriveProjector{
 			targets = (IntSeq)mindustry.io.TypeIO.readObject(read);
 		}
 		
-//		@Override
-//		public void placed(){
-//			super.placed();
-//			for(int i = 0; i < maxLink; i++){
-//				targets.add(-1);
-//			}
-//		}
-		
 		@Override
 		public void linkPos(int value){
 			Building other = Vars.world.build(value);
-			
-//			updatePos();
 			
 			boolean contains = targets.removeValue(value);
 			Log.info(value + " | " + targets.size + contains);
 			if(!contains && targets.size < maxLink - 1)targets.add(value);
 			
-//			updatePos();
-//			Log.info(targets + " | " + linkBuilds().size);
 		}
 		
 		public void updatePos(){

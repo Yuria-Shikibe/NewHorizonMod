@@ -8,9 +8,11 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
+import arc.util.Time;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -250,6 +252,52 @@ public class NHFx{
 	
 	
 	public static final Effect
+		hyperSpaceEntrance = new Effect(540f, e -> {
+			if(!(e.data instanceof Unit))return;
+			Unit unit = e.data();
+			float height = Mathf.curve(e.fslope() * e.fslope(), 0f, 0.3f) * 2.5f;
+			float width = Mathf.curve(e.fslope() * e.fslope(), 0.35f, 0.75f) * 2.5f;
+			
+			if((e.color.equals(Pal.place) && e.time < e.lifetime / 2) || (!e.color.equals(Pal.place) && e.time > e.lifetime / 2)){
+				float z = unit.elevation > 0.5f ? Layer.flyingUnitLow : unit.type.groundLayer + Mathf.clamp(unit.type.hitSize / 4000f, 0, 0.01f);
+				Draw.z(Math.min(Layer.darkness, z - 1f));
+				Draw.color(Pal.shadow);
+				float eva = Math.max(unit.elevation, unit.type.visualElevation);
+				Draw.rect(unit.type.shadowRegion, unit.x + UnitType.shadowTX * eva, unit.y + UnitType.shadowTY * eva, e.rotation - 90);
+				Draw.color();
+				
+				Draw.z(Math.min(z - 0.01f, Layer.bullet - 1f));
+				Draw.color(0, 0, 0, 0.4f);
+				float rad = 1.6f;
+				float size = Math.max(unit.type.region.width, unit.type.region.height) * Draw.scl;
+				Draw.rect(unit.type.softShadowRegion, unit, size * rad, size * rad);
+				Draw.color();
+				
+				Draw.z(z);
+				if(unit.type.flying){
+					float scale = unit.elevation;
+					float offset = unit.type.engineOffset / 2f + unit.type.engineOffset / 2f * scale;
+					
+					Draw.color(unit.team.color);
+					Fill.circle(e.x + Angles.trnsx(unit.rotation + 180, offset), e.y + Angles.trnsy(e.rotation + 180, offset), (unit.type.engineSize + Mathf.absin(Time.time, 2f, unit.type.engineSize / 4f)) * scale);
+					Draw.color(Color.white);
+					Fill.circle(e.x + Angles.trnsx(unit.rotation + 180, offset - 1f), e.y + Angles.trnsy(e.rotation + 180, offset - 1f), (unit.type.engineSize + Mathf.absin(Time.time, 2f, unit.type.engineSize / 4f)) / 2f * scale);
+					Draw.color();
+				}
+				
+				Draw.z(Layer.effect - 0.1f);
+				Draw.mixcol(unit.team.color, e.fslope());
+				
+				Draw.rect(unit.type.shadowRegion, e.x, e.y, e.rotation - 90f);
+			}
+			
+			Draw.reset();
+			Draw.z(Layer.effect);
+			Draw.color(unit.team.color.cpy().mul(1.25f), Pal.gray, (1 - unit.elevation + new Rand(e.id).random(-0.25f, 0.25f)) / 4f);
+			
+			Fill.rect(e.x, e.y, width * unit.hitSize + 1f, height * unit.hitSize, e.rotation);
+		}),
+	
 		poly = new Effect(25f, e -> {
 			Draw.color(e.color);
 			Lines.stroke(e.fout() * 2.0F);
