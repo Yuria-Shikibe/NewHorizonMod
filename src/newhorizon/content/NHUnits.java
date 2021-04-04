@@ -63,7 +63,7 @@ public class NHUnits implements ContentList {
 			shootSound = Sounds.missile;
 			shootY = 3f;
 			recoil = 2f;
-			x = 11f;
+			x = 9.5f;
 			y = -7f;
 			reload = 30f;
 			bullet = new SapBulletType(){{
@@ -339,7 +339,6 @@ public class NHUnits implements ContentList {
 			constructor = EntityMapping.map(3);
 			lowAltitude = true;
 			faceTarget = true;
-			isCounted = true;
 			health = 5500.0F;
 			speed = 0.6F;
 			accel = 0.02F;
@@ -393,7 +392,7 @@ public class NHUnits implements ContentList {
 			flying = true;
 			engineOffset = 16F;
 			engineSize = 6F;
-			hitSize = 30.0F;
+			hitSize = 36.0F;
 			buildSpeed = 1.25F;
 			drawShields = false;
 			commandLimit = 8;
@@ -500,7 +499,6 @@ public class NHUnits implements ContentList {
 				);
 				commandLimit = 6;
 				lowAltitude = true;
-				isCounted = true;
 				faceTarget = true;
 				itemCapacity = 500;
 				health = 30000.0F;

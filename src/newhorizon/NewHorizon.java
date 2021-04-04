@@ -23,6 +23,7 @@ import newhorizon.func.SettingDialog;
 import newhorizon.func.TableFs;
 import newhorizon.func.Tables;
 import newhorizon.func.Tables.LinkTable;
+import newhorizon.vars.EventTriggers;
 
 import java.io.IOException;
 
@@ -38,6 +39,7 @@ public class NewHorizon extends Mod{
 	}
 	
 	private static final ContentList[] content = {
+		new NHStatusEffects(),
 		new NHItems(),
 	    new NHLiquids(),
 	    new NHBullets(),
@@ -51,16 +53,17 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHBlocks.bloodStar,
-			NHBlocks.shockWaveTurret,
-			NHBlocks.usualUpgrader
+			NHBlocks.hyperspaceWarper,
+			NHBlocks.gravityGully,
+			NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.staticVel
 		}).show();
 	}
 	
 	private static void links(){
 		if(links == null)links = new Links.LinkEntry[]{
-				new Links.LinkEntry("mod.github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git", Icon.github, Color.valueOf("24292e")),
-				new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/MOD-GUIDE", Icon.bookOpen, Pal.accent)
+			new Links.LinkEntry("mod.discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
+			new Links.LinkEntry("mod.github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git", Icon.github, Color.valueOf("24292e")),
+			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/MOD-GUIDE", Icon.bookOpen, Pal.accent)
 		};
 		
 		BaseDialog dialog = new BaseDialog("@links");
@@ -106,7 +109,7 @@ public class NewHorizon extends Mod{
 	}
 	
     public NewHorizon(){
-        NHSetting.debug(() -> Log.info("Loaded NewHorizon Mod constructor."));
+		Log.info("Loaded NewHorizon Mod constructor.");
         
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
         	startLog();
@@ -130,7 +133,6 @@ public class NewHorizon extends Mod{
 				throw new IllegalArgumentException(e);
 			}
 		}
-		NHSetting.debug(() -> Log.info("Loading NewHorizon Mod Objects"));
 	    NHSounds.load();
 		NHLoader loader = new NHLoader();
 		loader.load();
@@ -138,7 +140,9 @@ public class NewHorizon extends Mod{
 			c.load();
 		}
 	    loader.loadLast();
+		
+		EventTriggers.load();
+		
+		Log.info("Loaded Complete.");
     }
-	
-	
 }

@@ -1,10 +1,12 @@
 package newhorizon.func;
 
 import arc.func.Boolf;
+import arc.func.Intc2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Geometry;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
@@ -24,8 +26,6 @@ import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.block.special.JumpGate;
-
-import java.util.Random;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
@@ -49,6 +49,14 @@ public class Functions {
         }
     });
     private static final Vec2 point = new Vec2();
+    
+    public static void square(int x, int y, int radius, Intc2 cons) {
+        for(int dx = -radius; dx <= radius; ++dx) {
+            for(int dy = -radius; dy <= radius; ++dy) {
+                cons.get(dx + x, dy + y);
+            }
+        }
+    }
     
     /**
      * @implNote Get all the {@link Tile} {@code tile} within a certain range at certain position.
@@ -102,8 +110,9 @@ public class Functions {
         final Seq<Vec2> vectorSeq = new Seq<>();
         final Seq<Tile> tSeq = new Seq<>(Tile.class);
         float angle, regSize = regSize(type);
+        
         if(!type.flying){
-            Random r = new Random(seed);
+            Rand r = new Rand(seed);
             tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
                 tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
             );
@@ -117,14 +126,6 @@ public class Functions {
         }
         
         angle = starter.angleTo(x, y);
-        
-        NHSetting.debug(() -> {
-            Seq<Rect> debugSeq = new Seq<>();
-            for(Tile tile : tSeq){
-                debugSeq.add(tile.getBounds(new Rect()));
-            }
-            debugEffect.at(x, y, 0, debugSeq);
-        });
         
         int i = 0;
         for (Vec2 s : vectorSeq) {

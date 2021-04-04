@@ -141,11 +141,11 @@ public class PosLightning {
 	private static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
 		furthest = null;
 		return Geometry.raycast(
-				World.toTile(from.getX()),
-				World.toTile(from.getY()),
-				World.toTile(target.getX()),
-				World.toTile(target.getY()),
-				(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers
+			World.toTile(from.getX()),
+			World.toTile(from.getY()),
+			World.toTile(target.getX()),
+			World.toTile(target.getY()),
+			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers
 		) && furthest != null ? furthest : target;
 	}
 

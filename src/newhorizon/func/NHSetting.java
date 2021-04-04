@@ -67,6 +67,7 @@ public class NHSetting{
 				break;
 			}
 		}
+		
 		debug = !Vars.headless && getBool("@active.debug");
 		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
 		

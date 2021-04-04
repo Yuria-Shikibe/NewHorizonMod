@@ -35,6 +35,7 @@ import newhorizon.func.NHSetting;
 import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
+import newhorizon.vars.NHWorldVars;
 
 import static mindustry.Vars.*;
 import static newhorizon.func.TableFs.LEN;
@@ -42,7 +43,6 @@ import static newhorizon.func.TableFs.OFFSET;
 
 public class UpgradeBlock extends Block {
 	public static final int defaultID = -1;
-	public static final Seq<UpgradeBlockBuild> upgradecGroup = new Seq<>(UpgradeBlockBuild.class);
 	public static final int buttonPerLine = 8;
 	
 	protected Sound upgradeSound = Sounds.build;
@@ -311,14 +311,14 @@ public class UpgradeBlock extends Block {
 		public void onDestroyed() {
 			super.onDestroyed();
 			if(linkValid())target().resetUpgrade();
-			upgradecGroup.remove(this);
+			NHWorldVars.upgraderGroup.remove(this);
 		}
 
 		@Override
 		public void placed() {
 			super.placed();
 			baseColorTst = getLinkColor();
-			upgradecGroup.add(this);
+			NHWorldVars.upgraderGroup.add(this);
 			setData();
 		}
 		
@@ -364,7 +364,7 @@ public class UpgradeBlock extends Block {
 		public void afterRead(){
 			setData();
 			updateTarget();
-			upgradecGroup.add(this);
+			NHWorldVars.upgraderGroup.add(this);
 		}
 		
 		@Override
@@ -406,7 +406,7 @@ public class UpgradeBlock extends Block {
 			}
 		}
 		@Override public void onRemoved() {
-			upgradecGroup.remove(this);
+			NHWorldVars.upgraderGroup.remove(this);
 			if(linkValid())target().resetUpgrade();
 		}
 		public Scalablec target(){return linkValid() ? (Scalablec)link() : null;}

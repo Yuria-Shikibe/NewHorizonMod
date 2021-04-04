@@ -24,6 +24,10 @@ public class NHTechTree implements ContentList {
     @Override
     public void load(){
         //Blocks;
+        add(Blocks.commandCenter, NHBlocks.jumpGateJunior);
+        add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
+        add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
+        add(NHBlocks.hyperspaceWarper, NHBlocks.gravityGully);
         add(NHBlocks.thurmix, NHBlocks.blastTurret);
         add(Blocks.powerNode, NHBlocks.insulatedWall);
         add(Blocks.surgeWall, NHBlocks.heavyDefenceWall);
@@ -39,7 +43,6 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.endOfEra, NHBlocks.endOfEra.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.endOfEra), NHBlocks.eoeUpgrader, ItemStack.with());
-        new TechNode(TechTree.get(NHBlocks.jumpGateJunior), NHBlocks.jumpGate, NHBlocks.jumpGate.researchRequirements());
         new TechNode(TechTree.get(Blocks.phaseWall), NHBlocks.chargeWall, NHBlocks.chargeWall.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.chargeWall), NHBlocks.chargeWallLarge, NHBlocks.chargeWallLarge.researchRequirements());
         new TechNode(TechTree.get(Blocks.vault), NHBlocks.irdryonVault, NHBlocks.irdryonVault.researchRequirements());

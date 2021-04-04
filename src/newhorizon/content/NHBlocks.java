@@ -94,7 +94,7 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
-		playerJumpGate, debuger, payloadEntrance
+		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper
 		;
 
 	private void loadExperimental(){
@@ -116,6 +116,28 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		hyperspaceWarper = new HyperSpaceWarper("hyper-space-warper"){{
+			size = 4;
+			health = 2250;
+			
+			hasPower = hasItems = true;
+			itemCapacity = 20;
+			consumes.item(NHItems.fusionEnergy, 5);
+			consumes.power(12f);
+			
+			requirements(Category.units, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.setonAlloy, 200, NHItems.seniorProcessor, 150));
+			
+		}};
+		
+		gravityGully = new GravityGully("gravity-gully"){{
+			size = 3;
+			health = 1250;
+			
+			consumes.power(8f);
+			requirements(Category.units, BuildVisibility.shown, with(Items.plastanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 80, NHItems.presstanium, 200, Items.thorium, 200));
+			NHTechTree.add(hyperspaceWarper, this);
+		}};
 		
 		bloodStar = new ItemTurret("blood-star"){{
 			size = 5;
@@ -471,12 +493,7 @@ public class NHBlocks implements ContentList {
 			shootShake = 6f;
 			range = 620.0F;
 			shootSound = NHSounds.railGunBlast;
-			chargeSound = NHSounds.railGunCharge;
-			chargeEffects = 1;
 			heatColor = NHItems.irayrondPanel.color;
-			chargeEffect = NHFx.chargeEffectSmall(heatColor, 132f);
-			chargeBeginEffect = NHFx.chargeBeginEffect(heatColor, 10, chargeEffect.lifetime);
-			chargeTime = chargeEffect.lifetime;
 			ammo(
 				NHItems.irayrondPanel, NHBullets.railGun1,
 				NHItems.setonAlloy, NHBullets.railGun2
@@ -500,7 +517,7 @@ public class NHBlocks implements ContentList {
 		};
 		
 		rapidUnloader = new AdaptUnloader("rapid-unloader"){{
-			speed = 5f;
+			speed = 10f;
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.presstanium, 20, Items.lead, 15, NHItems.juniorProcessor, 25));
 			NHTechTree.add(Blocks.unloader, this);
 		}};
@@ -1307,16 +1324,16 @@ public class NHBlocks implements ContentList {
 			adaptable = true;
 			
 			requirements(Category.units, BuildVisibility.shown, with(
-				NHItems.presstanium, 2500,
-				NHItems.metalOxhydrigen, 2000,
-				NHItems.seniorProcessor, 2000,
+				NHItems.presstanium, 1800,
+				NHItems.metalOxhydrigen, 800,
+				NHItems.seniorProcessor, 800,
 				NHItems.multipleSteel, 1000,
-				Items.thorium, 3500,
-				Items.titanium, 6000,
-				Items.surgeAlloy, 1000,
-				Items.phaseFabric, 1800,
-				NHItems.irayrondPanel, 800
+				Items.thorium, 2000,
+				Items.titanium, 1500,
+				Items.phaseFabric, 600,
+				NHItems.irayrondPanel, 400
 			));
+			
 			addSets(
 				new UnitSet(5.5f, NHUnits.annihilation, 6600f, 4,
 					new ItemStack(NHItems.setonAlloy, 800),
@@ -1372,7 +1389,7 @@ public class NHBlocks implements ContentList {
 					Items.metaglass, 300,
 					Items.thorium, 1000
 			));
-			NHTechTree.add(Blocks.commandCenter, this);
+			
 			addSets(
 				new UnitSet(3, UnitTypes.quasar, 3000f, 4,
 						new ItemStack(Items.titanium, 300),
