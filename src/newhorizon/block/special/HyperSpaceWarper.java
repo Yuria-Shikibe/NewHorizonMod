@@ -106,6 +106,7 @@ public class HyperSpaceWarper extends Block{
 		public IntSeq selects = new IntSeq();
 		
 		public transient Vec2 targetV = new Vec2(), selectVFrom = new Vec2(), selectVTo = new Vec2();
+		public transient boolean loaded = false;
 		public transient boolean isSelect = false, isJammed = false;
 		public transient Vec2 interceptedPos = new Vec2(x, y);
 		
@@ -177,6 +178,8 @@ public class HyperSpaceWarper extends Block{
 				if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
 				else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
 			}
+			
+			if(!loaded)beforeLoad();
 		}
 		
 		@Override
@@ -508,6 +511,7 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public void beforeLoad(){
+			loaded = true;
 			teamIndex = allTeamSeq.indexOf(team);
 			selects.clear();
 		}

@@ -7,7 +7,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -140,7 +139,6 @@ public class GravityGully extends Block{
 		@Override
 		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
 			NHWorldVars.advancedLoad.add(this);
-			Log.info(NHWorldVars.worldLoaded);
 			return super.init(tile, team, shouldAdd, rotation);
 		}
 		

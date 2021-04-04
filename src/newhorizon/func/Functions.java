@@ -110,6 +110,7 @@ public class Functions {
         final Seq<Vec2> vectorSeq = new Seq<>();
         final Seq<Tile> tSeq = new Seq<>(Tile.class);
         float angle, regSize = regSize(type);
+        
         if(!type.flying){
             Rand r = new Rand(seed);
             tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
