@@ -18,14 +18,18 @@ public class EventTriggers{
 			
 			for(Tile tile : Vars.world.tiles)NHWorldVars.intercepted.put(tile, new IntSeq(new int[Team.all.length]));
 			
-			NHWorldVars.advancedLoad.forEach(BeforeLoadc::beforeLoad);
+			for(BeforeLoadc c : NHWorldVars.advancedLoad){
+				c.beforeLoad();
+			}
 			
 			NHWorldVars.clearLast();
 			
 		});
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
-			NHWorldVars.serverLoad.forEach(ServerInitc::loadAfterConnect);
+			for(ServerInitc c : NHWorldVars.serverLoad){
+				c.loadAfterConnect();
+			}
 		});
 		
 		Events.on(EventType.StateChangeEvent.class, e -> {

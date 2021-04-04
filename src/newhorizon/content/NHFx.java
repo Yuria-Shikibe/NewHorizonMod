@@ -252,7 +252,7 @@ public class NHFx{
 	
 	
 	public static final Effect
-		hyperSpaceEntrance = new Effect(540f, e -> {
+		hyperSpaceEntrance = new Effect(540f, 10000f, e -> {
 			if(!(e.data instanceof Unit))return;
 			Unit unit = e.data();
 			float height = Mathf.curve(e.fslope() * e.fslope(), 0f, 0.3f) * 2.5f;
