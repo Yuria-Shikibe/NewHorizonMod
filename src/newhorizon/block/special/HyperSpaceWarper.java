@@ -16,6 +16,7 @@ import arc.math.geom.Vec2;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.TextArea;
 import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
@@ -32,6 +33,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -46,8 +48,7 @@ import newhorizon.vars.NHCtrlVars;
 import newhorizon.vars.NHWorldVars;
 
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 import static mindustry.core.World.toTile;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
@@ -209,133 +210,168 @@ public class HyperSpaceWarper extends Block{
 		@Override
 		public void buildConfiguration(Table table){
 			super.buildConfiguration(table);
-			table.table(Tex.paneSolid, t -> {
-				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> {
-					isSelect = true;
-					
-					Table floatTable = new Table(Tex.clear){{
-						update(() -> {
-							if(Vars.state.isMenu())remove();
-						});
-						touchable = Touchable.enabled;
-						setFillParent(true);
+			table.table(p -> {
+				p.table(Tex.paneSolid, t -> {
+					t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> {
+						isSelect = true;
 						
-						addListener(new InputListener(){
-							public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-								targetV.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-								return true;
-							}
-						});
-					}};
-					
-					Table pTable = new Table(Tex.clear){{
-						update(() -> {
-							if(Vars.state.isMenu()){
-								remove();
-							}else{
-								Vec2 v = Core.camera.project(World.toTile(targetV.x) * tilesize, World.toTile(targetV.y) * tilesize);
-								setPosition(v.x, v.y, 0);
-							}
-						});
-						button(Icon.cancel, Styles.emptyi, () -> {
-							configure(Tmp.p1.set(World.toTile(targetV.x), World.toTile(targetV.y)));
-							remove();
-							floatTable.remove();
-							isSelect = isJammed = false;
-						}).center();
-					}};
-					
-					Core.scene.root.addChildAt(Math.max(table.getZIndex() - 1, 0), pTable);
-					Core.scene.root.addChildAt(Math.max(table.getZIndex() - 2, 0), floatTable);
-				}).size(LEN * 4, LEN).disabled(b -> isSelect).row();
-				
-				t.button("@mod.ui.select-unit", Icon.filter, Styles.cleart, () -> {
-					isSelect = true;
-					
-					Table pTable = new Table(Tex.pane){{
-						Rect r = selectedRect();
-						
-						update(() -> {
-							if(Vars.state.isMenu())remove();
-							else{
-								Vec2 v = Core.camera.project(r.x + r.width / 2, r.y - OFFSET);
-								setPosition(v.x, v.y, 0);
-							}
+						Table floatTable = new Table(Tex.clear){{
+							update(() -> {
+								if(Vars.state.isMenu())remove();
+							});
+							touchable = Touchable.enabled;
+							setFillParent(true);
 							
-							if(NHCtrlVars.pressDown){
-								touchable = Touchable.disabled;
-							}else touchable = Touchable.enabled;
-						});
-						table(Tex.paneSolid, t -> {
-							t.button(Icon.upOpen, Styles.clearFulli, () -> {
-								configure(selectedUnit());
-								remove();
-								isSelect = false;
-							}).size(LEN * 4, LEN).disabled(b -> NHCtrlVars.pressDown);
-						}).size(LEN * 4, LEN);
-					}};
-					
-					Table floatTable = new Table(Tex.clear){{
-						update(() -> {
-							if(Vars.state.isMenu() || !isSelect){
-								selectVFrom.set(0, 0);
-								selectVTo.set(0, 0);
-								remove();
-							}
-						});
-						touchable = Touchable.enabled;
-						setFillParent(true);
+							addListener(new InputListener(){
+								public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+									targetV.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+									return true;
+								}
+							});
+						}};
 						
-						addListener(new InputListener(){
-							public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-								NHCtrlVars.pressDown = !NHCtrlVars.pressDown;
-								if(NHCtrlVars.pressDown)selectVFrom.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-								return false;
-							}
+						Table pTable = new Table(Tex.clear){{
+							update(() -> {
+								if(Vars.state.isMenu()){
+									remove();
+								}else{
+									Vec2 v = Core.camera.project(World.toTile(targetV.x) * tilesize, World.toTile(targetV.y) * tilesize);
+									setPosition(v.x, v.y, 0);
+								}
+							});
+							button(Icon.cancel, Styles.emptyi, () -> {
+								configure(Tmp.p1.set(World.toTile(targetV.x), World.toTile(targetV.y)));
+								remove();
+								floatTable.remove();
+								isSelect = isJammed = false;
+							}).center();
+						}};
+						
+						Core.scene.root.addChildAt(Math.max(table.getZIndex() - 1, 0), pTable);
+						Core.scene.root.addChildAt(Math.max(table.getZIndex() - 2, 0), floatTable);
+					}).size(LEN * 4, LEN).disabled(b -> isSelect).row();
+					
+					t.button("@mod.ui.select-unit", Icon.filter, Styles.cleart, () -> {
+						isSelect = true;
+						
+						NHCtrlVars.pressDown = false;
+						
+						Table pTable = new Table(Tex.pane){{
+							Rect r = selectedRect();
 							
-							public boolean mouseMoved(InputEvent event, float x, float y){
+							update(() -> {
+								if(Vars.state.isMenu())remove();
+								else{
+									Vec2 v = Core.camera.project(r.x + r.width / 2, r.y - OFFSET);
+									setPosition(v.x, v.y, 0);
+								}
+								
 								if(NHCtrlVars.pressDown){
-									selectVTo.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+									touchable = Touchable.disabled;
+								}else touchable = Touchable.enabled;
+							});
+							table(Tex.paneSolid, t -> {
+								t.button(Icon.upOpen, Styles.clearFulli, () -> {
+									configure(selectedUnit());
+									remove();
+									isSelect = false;
+								}).size(LEN * 4, LEN).disabled(b -> NHCtrlVars.pressDown);
+							}).size(LEN * 4, LEN);
+						}};
+						
+						Table floatTable = new Table(Tex.clear){{
+							update(() -> {
+								if(Vars.state.isMenu() || !isSelect){
+									selectVFrom.set(0, 0);
+									selectVTo.set(0, 0);
+									remove();
+								}
+							});
+							touchable = Touchable.enabled;
+							setFillParent(true);
+							if(mobile){
+								addListener(new InputListener(){
+									public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+										if(!NHCtrlVars.pressDown){
+											selectVFrom.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+											selectVTo.set(selectVFrom);
+										}
+										else selectVTo.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+										NHCtrlVars.pressDown = !NHCtrlVars.pressDown;
+										return false;
+									}
+								});
+							}else addListener(new InputListener(){
+								public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+									NHCtrlVars.pressDown = !NHCtrlVars.pressDown;
+									if(NHCtrlVars.pressDown)selectVFrom.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
 									return false;
 								}
-								return true;
-							}
-						});
+								
+								public boolean mouseMoved(InputEvent event, float x, float y){
+									if(NHCtrlVars.pressDown){
+										selectVTo.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+										return false;
+									}
+									return true;
+								}
+							});
+							
+							Core.scene.root.addChildAt(Math.max(table.getZIndex() - 2, 0), pTable);
+							Core.scene.root.addChildAt(Math.max(table.getZIndex() - 1, 0), this);
+						}};
 						
-						Core.scene.root.addChildAt(Math.max(table.getZIndex() - 2, 0), pTable);
-						Core.scene.root.addChildAt(Math.max(table.getZIndex() - 1, 0), this);
-					}};
+					}).size(LEN * 4, LEN).disabled(b -> isSelect).row();
 					
-				}).size(LEN * 4, LEN).disabled(b -> isSelect).row();
-				
-				t.button("@mod.ui.transport-unit", Icon.download, Styles.cleart, () -> {
-					configure(80);
-				}).size(LEN * 4, LEN).disabled(b -> isSelect || !canTeleport() || !targetValid(World.toTile(targetV.x), World.toTile(targetV.y))).row();
-			}).fill();
+					t.button("@mod.ui.transport-unit", Icon.download, Styles.cleart, () -> {
+						configure(80);
+					}).size(LEN * 4, LEN).disabled(b -> isSelect || !canTeleport() || !targetValid(World.toTile(targetV.x), World.toTile(targetV.y))).row();
+				}).fill();
+				p.table(Tex.paneSolid, t -> {
+					TextArea xArea = new TextArea("");
+					TextArea yArea = new TextArea("");
+					t.table(Tex.clear, t2 -> {
+						t2.add("[accent]X: ").left();
+						t2.add(xArea).left();
+					}).size(LEN * 4, LEN).row();
+					t.table(Tex.clear, t2 -> {
+						t2.add("[accent]Y: ").left();
+						t2.add(yArea).left();
+					}).size(LEN * 4, LEN).row();
+					t.button("@confirm", Icon.upOpen, Styles.cleart, () -> {
+						try{
+							int ix = Mathf.clamp((int)Float.parseFloat(xArea.getText()), 0, world.width());
+							int iy = Mathf.clamp((int)Float.parseFloat(yArea.getText()), 0, world.height());
+							configure(Tmp.p1.set(ix, iy));
+							targetValid(ix, iy);
+						}catch(NumberFormatException e){
+							xArea.clear();
+							yArea.clear();
+							Vars.ui.showErrorMessage(e.toString());
+						}
+					}).size(LEN * 4, LEN);
+				}).fill();
+			}).fill().row();
 			table.table(Tex.paneSolid, t -> {
-				TextArea xArea = new TextArea("");
-				TextArea yArea = new TextArea("");
-				t.table(Tex.clear, t2 -> {
-					t2.add("[accent]X: ").left();
-					t2.add(xArea).left();
-				}).size(LEN * 4, LEN).row();
-				t.table(Tex.clear, t2 -> {
-					t2.add("[accent]Y: ").left();
-					t2.add(yArea).left();
-				}).size(LEN * 4, LEN).row();
-				t.button("@confirm", Icon.upOpen, Styles.cleart, () -> {
-					try{
-						int ix = Mathf.clamp((int)Float.parseFloat(xArea.getText()), 0, world.width());
-						int iy = Mathf.clamp((int)Float.parseFloat(yArea.getText()), 0, world.height());
-						configure(Tmp.p1.set(ix, iy));
-						targetValid(ix, iy);
-					}catch(NumberFormatException e){
-						xArea.clear();
-						yArea.clear();
-						Vars.ui.showErrorMessage(e.toString());
+				t.pane(p -> {
+					int index = 0;
+					for(Unit u : Groups.unit){
+						if(u.team != team || !u.type.isCounted || selects.contains(u.id))continue;
+						if(index % 6 == 0)p.row();
+						p.button(new TextureRegionDrawable(u.type.icon(Cicon.full)), Styles.cleari, LEN, () -> {
+							selects.add(u.id);
+						}).size(LEN).update(b -> {
+							if(selects.contains(u.id))b.remove();
+						});
+						index++;
 					}
-				}).size(LEN * 4, LEN);
-			}).fill();
+				}).row();
+			}).grow().row();
+			table.table(Tex.paneSolid, t -> {
+				t.button("@cancel", Icon.cancel, Styles.cleart, () -> {
+					selects.clear();
+				}).growX().height(LEN);
+			}).growX().height(LEN + OFFSET);
 		}
 		
 		public void teleport(int spawnRange){
@@ -347,24 +383,24 @@ public class HyperSpaceWarper extends Block{
 			final Seq<Unit> selectUnits = new Seq<>();
 			Rand r = new Rand(seed);
 			
-			int grounds = 0;
+			int grounds = 0, air = 0;
 			
 			for(int id : selects.items){
 				Unit u = Groups.unit.getByID(id);
 				if(u != null){
 					if(!u.type.flying)grounds++;
+					else air++;
 					selectUnits.add(u);
 				}
 			}
 			
 			tileSeq.addAll(Functions.getAcceptableTiles(Tmp.p1.x, Tmp.p1.y, toTile(spawnRange), tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes));
+			randLenVectors(seed, selects.size, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize)));
 			
-			if(tileSeq.size < grounds - 1){
+			if(tileSeq.size < grounds - 1 || vectorSeq.size < air - 1){
 				isJammed = true;
 				return;
 			}
-			
-			randLenVectors(seed, selects.size, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize)));
 			
 			float angle = angleTo(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize);
 			
