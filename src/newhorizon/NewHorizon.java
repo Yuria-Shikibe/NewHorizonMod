@@ -61,6 +61,7 @@ public class NewHorizon extends Mod{
 	
 	private static void links(){
 		if(links == null)links = new Links.LinkEntry[]{
+			new Links.LinkEntry("discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
 			new Links.LinkEntry("mod.github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git", Icon.github, Color.valueOf("24292e")),
 			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/MOD-GUIDE", Icon.bookOpen, Pal.accent)
 		};
