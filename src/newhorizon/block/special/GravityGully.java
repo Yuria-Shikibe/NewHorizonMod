@@ -200,7 +200,7 @@ public class GravityGully extends Block{
 				if(tmpTile != null)effectedArea.add(NHWorldVars.intercepted.get(tmpTile));
 			});
 			
-			setIntercept(true);
+			if(power.status >= 0.75f && !active)setIntercept(true);
 			loaded = true;
 		}
 	
