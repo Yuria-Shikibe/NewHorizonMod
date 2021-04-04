@@ -119,9 +119,28 @@ If you find your device cannot afford it, open the mod file folder and find the 
 ###### Use Steps:
 1. Click the building.
 2. Make sure the building isn't locked(You can get and switch the mode through the left button), then tap another `Player Jump Gate` to link.
-2. Make sure you are using a flyable unit and get close enough to the building, then click the button `Teleport` to teleport to the link building.
+3. Make sure you are using a flyable unit and get close enough to the building, then click the button `Teleport` to teleport to the link building.
 
 - Has reloaded time.
 - Requires power to function.
 - Cannot be placed in the server, ~~as you can see that text while placing~~.
+
+---
+#### Hyperspace Folding Gate & Gravity Gully
+
+---
+![player-jump-gate](assets/sprites/block/defence/hyper-space-warper.png)
+![player-jump-gate](assets/sprites/block/defence/gravity-gully.png)
+
+- **_Hyperspace Folding Gate:_** Transport a group of unit from on side to another.
+
+###### Use Steps:
+1. Click the Hyperspace Folding Gate.
+2. Click button `Select Destination` then click the screen, you will find a cross appears on the position you clicked. Tap the cross, then you can set the destination.
+3. Click button `Select Units` then click the screen, drag the mouse or click the other diagonal point to select all friendly units within a rectangle. Don't forget to click the confirm button below the select rect.
+4. Click button `Transport Units` .
+
+- Has reloaded time.
+- Requires power and other items to function.
+- Available in the server.
 

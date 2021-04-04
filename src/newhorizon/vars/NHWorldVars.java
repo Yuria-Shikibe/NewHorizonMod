@@ -51,7 +51,7 @@ public class NHWorldVars{
 		NHVars.rect.setSize(c.width + tilesize * 2, c.height + tilesize * 2).setCenter(c.position);
 		
 		for(Tile t : NHWorldVars.intercepted.keys()){
-			if(!NHVars.rect.contains(t.getBounds(Tmp.r2)))continue;
+			if(!NHVars.rect.contains(t.drawx(), t.drawy()))continue;
 			IntSeq teams = NHWorldVars.intercepted.get(t);
 			
 			boolean anyOther = false;

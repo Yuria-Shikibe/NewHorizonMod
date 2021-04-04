@@ -293,7 +293,7 @@ public class NHFx{
 			
 			Draw.reset();
 			Draw.z(Layer.effect);
-			Draw.color(unit.team.color.cpy().mul(1.25f), Pal.gray, (1 - unit.elevation + new Rand(e.id).random(-0.25f, 0.25f)) / 4f);
+			Draw.color(unit.team.color.cpy().mul(1.15f), Pal.gray, (1 - unit.elevation + new Rand(e.id).random(-0.25f, 0.25f)) / 4f);
 			
 			Fill.rect(e.x, e.y, width * unit.hitSize + 1f, height * unit.hitSize, e.rotation);
 		}),
