@@ -12,7 +12,6 @@ During this term(from March to June) I can only update this mod on every weekend
 ## Community
 [![Discord](https://img.shields.io/discord/825801593466388520.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord&color=17cf48)](https://discord.gg/yNmbMcuwyW)
 
-<iframe src="https://discord.com/widget?id=825801593466388520&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 ## Server
 `mindustry.xyz:10704`
 
