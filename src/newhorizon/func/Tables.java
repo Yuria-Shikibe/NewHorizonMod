@@ -170,28 +170,25 @@ public class Tables{
 	
 	public static class LogDialog extends BaseDialog{
 		public LogDialog(UnlockableContent[] contents){
-			super("@log");
+			super("v" + NHSetting.modMeta.version + " Update Log:");
+			addCloseListener();
 			cont.pane(table -> {
-				table.add("[accent]" + NHSetting.modMeta.version + " [gray]Update Log:").center().row();
-				addCloseListener();
-				table.pane(t -> {
-					t.add("@fix").color(Pal.accent).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFs.tabSpace + Core.bundle.get("update.fix")).row();
-					
-					t.add("@add").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFs.tabSpace + Core.bundle.get("update.add")).row();
-					contentLog(t, contents);
-					
-					t.add("@remove").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFs.tabSpace + Core.bundle.get("update.remove")).row();
-					
-					t.add("@other").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-					t.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-					t.add(TableFs.tabSpace + Core.bundle.get("update.other")).row();
-				}).growX().height((Core.graphics.getHeight() - LEN * 2) / (Vars.mobile ? 1.1f : 2.2f));
+				table.add("@fix").color(Pal.accent).left().row();
+				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+				table.add(TableFs.tabSpace + Core.bundle.get("update.fix")).row();
+				
+				table.add("@add").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
+				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+				table.add(TableFs.tabSpace + Core.bundle.get("update.add")).row();
+				contentLog(table, contents);
+				
+				table.add("@remove").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
+				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+				table.add(TableFs.tabSpace + Core.bundle.get("update.remove")).row();
+				
+				table.add("@other").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
+				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
+				table.add(TableFs.tabSpace + Core.bundle.get("update.other")).row();
 			}).grow().row();
 			cont.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).bottom().row();
 			cont.button("@back", Icon.left, Styles.cleart, this::hide).fillX().height(LEN).row();

@@ -14,15 +14,13 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.Tile;
-import newhorizon.content.NHFx;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.*;
@@ -36,12 +34,10 @@ public class PlayerJumpGate extends Block{
 	public float polyStroke = 2f;
 	public float polyLerpSpeedScl = 0.8f;
 	
-	
 	public PlayerJumpGate(String name){
 		super(name);
 		update = true;
 		configurable = true;
-		solid = true;
 		config(Point2.class, (Cons2<PlayerJumpGateBuild, Point2>)PlayerJumpGateBuild::linkPos);
 		config(Integer.class, (PlayerJumpGateBuild tile, Integer id) -> tile.teleport(Groups.player.getByID(id)));
 		config(Boolean.class, (PlayerJumpGateBuild tile, Boolean value) -> tile.locked = value);
@@ -53,15 +49,8 @@ public class PlayerJumpGate extends Block{
 		super.init();
 	}
 	
-	public boolean canPlaceOn(Tile tile, Team team) {return !Vars.net.client();}
-	
 	public void drawPlace(int x, int y, int rotation, boolean valid){
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
-		if (Vars.world.tile(x, y) != null) {
-			if (!canPlaceOn(null, null)) {
-				drawPlaceText("Broken in server.\nWhy? Because the fucking anti teleport plugin fucked up everything.", x, y, valid);
-			}
-		}
 	}
 	
 	@Override
@@ -110,24 +99,26 @@ public class PlayerJumpGate extends Block{
 		
 		public void teleport(Player player){
 			if(!canFunction())return;
+			Building target = link();
+			boolean spawnedByCore = player.unit().spawnedByCore;
+			UnitType type = player.unit().type;
+			Unit unit = type.create(player.team());
+			unit.set(target);
+			unit.spawnedByCore(spawnedByCore);
+			unit.rotation = angleTo(target);
+			player.unit().remove();
+			if(!net.client())unit.add();
+			player.unit(unit);
 			
-			Tmp.v3.set(link()).sub(player).scl((1 + player.unit().type.drag) / tilesize * 1.575f);
-			
-			player.unit().lookAt(link());
-			player.unit().vel().set(Tmp.v3);
-			
-			float time = dst(link()) / (Tmp.v3.len() * (1f - player.unit().type.drag));
-			for(int i = 0; i < 30; i++)Time.run(time * 2 / 30 * i, () -> {
-				NHFx.poly.at(player.unit().x, player.unit().y, player.unit().hitSize * 1.1f, player.team().color);
-			});
-			Time.run(time, () -> player.unit().vel.trns(angleTo(link()), player.unit().type.speed));
-			
-			if(mobile)Core.camera.position.set(link());
+			if(mobile)Core.camera.position.set(target);
 			reload = 0;
-			Sounds.plasmaboom.at(this, Mathf.random(0.9f, 1.1f));
+			
+			Sounds.respawn.at(this, Mathf.random(0.9f, 1.1f));
+			Sounds.respawn.at(target, Mathf.random(0.9f, 1.1f));
 			for(int i = 0; i < 3; i++){
 				Time.run(8 * i, () -> {
 					Fx.spawn.at(this);
+					Fx.spawn.at(target);
 				});
 			}
 		}
@@ -196,7 +187,7 @@ public class PlayerJumpGate extends Block{
 					float f = (progress - 25 * i) % 100 / 100;
 					Tmp.v1.trns(angleTo(link()), f * tilesize * size * 4);
 					Lines.stroke(warmup * polyStroke * (1 - f));
-					Lines.poly(x + Tmp.v1.x, y + Tmp.v1.y, 6, (1 - f) * size * tilesize / 1.25f);
+					Lines.square(x + Tmp.v1.x, y + Tmp.v1.y, (1 - f) * size * tilesize / 2f + 1);
 				}
 			}
 		}
@@ -212,7 +203,7 @@ public class PlayerJumpGate extends Block{
 		}
 		
 		public boolean playerValid(){
-			return player != null && player.unit() != null && player.unit().type != null && player.unit().type.flying && player.unit().isValid();
+			return player != null && player.unit() != null && player.unit().type != null && player.unit().isValid();
 		}
 	}
 }

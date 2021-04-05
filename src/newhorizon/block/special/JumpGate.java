@@ -196,8 +196,8 @@ public class JumpGate extends Block {
     @Override
     public void load(){
         super.load();
-        pointerRegion = Core.atlas.find(NewHorizon.MOD_NAME + "jump-gate-pointer");
-        arrowRegion = Core.atlas.find(NewHorizon.MOD_NAME + "jump-gate-arrow");
+        pointerRegion = Core.atlas.find(NewHorizon.configName("jump-gate-pointer"));
+        arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
     }
 
     public class JumpGateBuild extends Building implements Ranged, Linkablec{
