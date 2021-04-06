@@ -19,7 +19,7 @@ During this term (from March to June) I can only update this mod on weekends.
 
 Most of the players in the server may speak Chinese when you log in.
 
-Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not use English often or are not fluent in it ~~just like me; in fact, someone else helped me with this~~. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.
+Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not use English often or are not fluent in it ~~just like me~~. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.
 
 But if that doesn't happen, making everything function right and not demolishing buildings at will are enough. I believe every player can get along well with each other ~~as long as no one blows up a reactor or breaks someone else's blueprint~~.
 
