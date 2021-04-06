@@ -7,6 +7,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -157,6 +158,8 @@ public class GravityGully extends Block{
 		
 		@Override
 		public void remove(){
+			Log.info("Run");
+			NHWorldVars.advancedLoad.remove(this);
 			setIntercept(false);
 		}
 		

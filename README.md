@@ -9,6 +9,9 @@
 ## Update Frequency
 During this term (from March to June) I can only update this mod on weekends.
 
+## Community
+[![Discord](https://img.shields.io/discord/825801593466388520.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord&color=17cf48)](https://discord.gg/yNmbMcuwyW)
+
 ## Server
 `mindustry.xyz:10704`
 
@@ -122,9 +125,8 @@ If you find your device cannot afford it, open the mod file folder and find the 
 3. Make sure you are using a flyable unit and get close enough to the building, then click the button `Teleport` to teleport to the link building.
 
 - Has reloaded time.
-- Requires power to function.
-- Cannot be placed in the server, ~~as you can see that text while placing~~.
-
+- Requires power to function. 
+- Available in the server.
 ---
 #### Hyperspace Folding Gate & Gravity Gully
 

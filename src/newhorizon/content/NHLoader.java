@@ -166,6 +166,43 @@ public class NHLoader implements ContentList{
 				new ItemStack(NHItems.metalOxhydrigen, 800),
 				new ItemStack(NHItems.juniorProcessor, 600)
 		);
+		addReq(Blocks.plastaniumCompressor,
+				new ItemStack(NHItems.presstanium, 50),
+				new ItemStack(NHItems.juniorProcessor, 30)
+		);
+		removeReq(Blocks.plastaniumCompressor, Items.silicon);
+		
+		addReq(Blocks.commandCenter,
+				new ItemStack(NHItems.presstanium, 80),
+				new ItemStack(NHItems.juniorProcessor, 200)
+		);
+		removeReq(Blocks.commandCenter, Items.silicon);
+		
+		addReq(Blocks.multiplicativeReconstructor,
+				new ItemStack(NHItems.presstanium, 80)
+		);
+		
+		addReq(Blocks.exponentialReconstructor,
+				new ItemStack(NHItems.presstanium, 400),
+				new ItemStack(NHItems.metalOxhydrigen, 400),
+				new ItemStack(NHItems.juniorProcessor, 600)
+		);
+		removeReq(Blocks.exponentialReconstructor, Items.silicon);
+		
+		addReq(Blocks.tetrativeReconstructor,
+				new ItemStack(NHItems.irayrondPanel, 200),
+				new ItemStack(NHItems.multipleSteel, 400),
+				new ItemStack(NHItems.seniorProcessor, 600)
+		);
+		removeReq(Blocks.tetrativeReconstructor, Items.silicon);
+		
+		addReq(Blocks.ripple,
+				new ItemStack(NHItems.metalOxhydrigen, 50)
+		);
+		
+		addReq(Blocks.fuse,
+				new ItemStack(NHItems.zeta, 80)
+		);
 		
 		addReq(Blocks.coreNucleus,
 				new ItemStack(NHItems.irayrondPanel, 1500),

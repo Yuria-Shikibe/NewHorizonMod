@@ -8,6 +8,7 @@ import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Tmp;
+import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import newhorizon.block.special.GravityGully;
@@ -54,19 +55,12 @@ public class NHWorldVars{
 			if(!NHVars.rect.contains(t.drawx(), t.drawy()))continue;
 			IntSeq teams = NHWorldVars.intercepted.get(t);
 			
-			boolean anyOther = false;
-			for(int i = 0; i < teams.size; i++){
-				if(i == teamIndex)continue;
-				if(teams.items[i] > 0){
-					anyOther = true;
-					break;
-				}
-			}
+			int anyOther = teams.count(0);
 			
 			if(teams.get(teamIndex) > 0){
-				if(anyOther) Draw.color(Pal.accent);
+				if(anyOther < Team.all.length - 1) Draw.color(Pal.accent);
 				else Draw.color(Pal.lancerLaser);
-			}else if(anyOther)Draw.color(Pal.ammo);
+			}else if(anyOther < Team.all.length)Draw.color(Pal.ammo);
 			else continue;
 			
 			Draw.alpha(0.45f);
@@ -74,5 +68,4 @@ public class NHWorldVars{
 			Fill.square(Tmp.v1.x, Tmp.v1.y, tilesize / 2f);
 		}
 	}
-	
 }
