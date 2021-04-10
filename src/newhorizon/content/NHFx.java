@@ -306,7 +306,7 @@ public class NHFx{
 			Draw.z(Layer.effect);
 			Draw.color(unit.team.color.cpy().mul(1.15f), Pal.gray, (1 - unit.elevation + new Rand(e.id).random(-0.25f, 0.25f)) / 4f);
 			
-			Fill.rect(e.x, e.y, Draw.scl * unit.type.shadowRegion.width * width + 1f, Draw.scl * unit.type.shadowRegion.height * height, e.rotation);
+			Fill.rect(e.x, e.y, Draw.scl * unit.type.shadowRegion.height * width + 1f, Draw.scl * unit.type.shadowRegion.width * height, e.rotation);
 		}),
 	
 		poly = new Effect(25f, e -> {
@@ -314,6 +314,7 @@ public class NHFx{
 			Lines.stroke(e.fout() * 2.0F);
 			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * e.rotation);
 		}),
+	
 		healEffect = new Effect(11.0F, (e) -> {
 			Draw.color(NHColor.lightSky);
 			Lines.stroke(e.fout() * 2.0F);

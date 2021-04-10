@@ -541,15 +541,16 @@ public class NHBullets implements ContentList{
 			speed = 620;
 		}};
 		
-		warperBullet = new TextureMissileType(2.5f, 20f, "ann-missile-atlas@@404049"){
+		warperBullet = new SpeedUpBulletType(0.35f, 10f, CIRCLE_BOLT){
 			@Override
 			public float range(){return 180f;}
 			
 			{
-				trailLength = 5;
+				shrinkX = shrinkY = 0.35f;
 				buildingDamageMultiplier = 3.5f;
 				keepVelocity = true;
-				velocityEnd = 14f;
+				
+				velocityEnd = 4f;
 				accelerateBegin = 0.01f;
 				accelerateEnd = 0.9f;
 				
@@ -558,9 +559,11 @@ public class NHBullets implements ContentList{
 				splashDamageRadius = 20;
 				splashDamage = damage * 0.3f;
 				
-				width = height = 1f;
-				trailChance = 0;
-				lifetime = 30f;
+				width = height = 8f;
+				trailChance = 0.2f;
+				trailParam = 1.75f;
+				trailEffect = NHFx.trail;
+				lifetime = 60f;
 				
 				collidesAir = false;
 				

@@ -21,7 +21,6 @@ import arc.scene.ui.TextArea;
 import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -392,8 +391,8 @@ public class HyperSpaceWarper extends Block{
 			for(int id : selects.items){
 				Unit u = Groups.unit.getByID(id);
 				if(u != null){
-					if(!u.type.flying)grounds++;
-					else air++;
+					if(!u.type.flying){grounds++;}
+					else {air++;}
 					selectUnits.add(u);
 				}
 			}
@@ -470,8 +469,6 @@ public class HyperSpaceWarper extends Block{
 		}
 		
 		public void transport(Unit u, float tx, float ty, float angle){
-			Log.info(tx + " | " + ty);
-			
 			Unit unit = u.type.create(team);
 			unit.set(tx, ty);
 			unit.rotation = angle;

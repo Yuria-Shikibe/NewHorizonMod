@@ -139,6 +139,7 @@ public class NHBlocks implements ContentList {
 			inaccuracy = 6f;
 			maxAmmo = 40;
 			smokeEffect = Fx.shootBigSmoke2;
+			consumes.powerCond(3f, TurretBuild::isActive);
 			ammo(
 				Items.silicon, new LaserBulletType(80){{
 					colors = new Color[]{Pal.bulletYellowBack.cpy().mul(1f, 1f, 1f, 0.45f), Pal.bulletYellowBack, Color.white};
@@ -1126,8 +1127,8 @@ public class NHBlocks implements ContentList {
 				hasPower = hasItems = true;
 				flameColor = NHItems.darkEnergy.color;
 
-				consumes.items(new ItemStack(NHItems.upgradeSort, 2), new ItemStack(NHItems.thermoCoreNegative, 1), new ItemStack(NHItems.thermoCorePositive, 1));
-				consumes.power(15f);
+				consumes.items(new ItemStack(NHItems.thermoCoreNegative, 1), new ItemStack(NHItems.thermoCorePositive, 1));
+				consumes.power(20f);
 			}
 		};
 
