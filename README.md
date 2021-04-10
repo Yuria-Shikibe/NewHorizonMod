@@ -131,8 +131,8 @@ If you find your device cannot afford it, open the mod file folder and find the 
 #### Hyperspace Folding Gate & Gravity Gully
 
 ---
-![player-jump-gate](assets/sprites/block/defence/hyper-space-warper.png)
-![player-jump-gate](assets/sprites/block/defence/gravity-gully.png)
+![hyper-space-warper](assets/sprites/block/defence/hyper-space-warper.png)
+![gravity-gully](assets/sprites/block/defence/gravity-gully.png)
 
 - **_Hyperspace Folding Gate:_** Transport a group of unit from on side to another.
 

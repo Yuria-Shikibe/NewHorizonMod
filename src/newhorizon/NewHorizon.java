@@ -53,9 +53,9 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHBlocks.hyperspaceWarper,
-			NHBlocks.gravityGully,
-			NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.staticVel
+			NHBlocks.atomSeparator,
+			NHBlocks.pulseLaserTurret,
+			NHBlocks.beamLaserTurret
 		}).show();
 	}
 	

@@ -109,8 +109,7 @@ public class PlayerJumpGate extends Block{
 			player.unit().remove();
 			if(!net.client())unit.add();
 			player.unit(unit);
-			
-			if(mobile)Core.camera.position.set(target);
+			if(mobile && player == Vars.player)Core.camera.position.set(target);
 			reload = 0;
 			
 			Sounds.respawn.at(this, Mathf.random(0.9f, 1.1f));

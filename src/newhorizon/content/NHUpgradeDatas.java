@@ -31,7 +31,7 @@ public class NHUpgradeDatas implements ContentList{
 			new ItemStack(Items.plastanium, 80), new ItemStack(NHItems.juniorProcessor, 80), new ItemStack(NHItems.zeta, 120)
 		){{shootSound = Sounds.plasmaboom;}};
 		
-		longRangeShootSplash = new UpgradeData("long-range-shoot-1", NHBullets.longRangeShootSplash, 250f,
+		longRangeShootSplash = new UpgradeData("long-range-shoot-1", NHBullets.longRangeShootRapid, 250f,
 			new ItemStack(Items.graphite, 120), new ItemStack(NHItems.juniorProcessor, 80), new ItemStack(NHItems.zeta, 120)
 		){{shootSound = Sounds.plasmaboom;}};
 		

@@ -35,7 +35,6 @@ public interface Linkablec extends Buildingc, Ranged{
 	
 	default void drawLink(@Nullable Seq<Building> builds){
 		Draw.reset();
-		
 		if(builds == null){
 			if(linkValid(link())){
 				Draw.color(getLinkColor());

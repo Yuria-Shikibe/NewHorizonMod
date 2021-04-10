@@ -204,53 +204,53 @@ public class NHUnits implements ContentList {
 }};
 		
 		annihilation = new AutoOutlineUnitType("annihilation",
-				new AutoOutlineWeapon("large-launcher"){{
-					top = false;
-					rotate = false;
-					alternate = true;
-					shake = 3.5f;
-					shootY = 16f;
-					x = 20f;
-					recoil = 5.4f;
-					
-					shootCone = 30f;
-					reload = 30f;
-					shots = 4;
-					inaccuracy = 4.0F;
-					ejectEffect = Fx.none;
-					bullet = new ShrapnelBulletType() {{
-						length = 280;
-						damage = 160.0F;
-						status = StatusEffects.shocked;
-						statusDuration = 60f;
-						fromColor = NHColor.lightSky.cpy().lerp(Color.white, 0.3f);
-						toColor = NHColor.lightSky;
-						shootEffect = NHFx.lightningHitSmall(NHColor.lightSky);
-						smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
-							Draw.color(fromColor, toColor, e.fin());
-							Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
-						}));
-					}};
-					shootSound = Sounds.shotgun;
-				}},
-				new AutoOutlineWeapon(){{
-					mirror = false;
-					rotate = true;
-					alternate = true;
-					rotateSpeed = 25f;
-					x = 0;
-					y = 8f;
-					recoil = 2.7f;
-					shootY = 7f;
-					shootCone = 40f;
-					reload = 60f;
-					shots = 2;
-					shotDelay = 8f;
-					inaccuracy = 5.0F;
-					ejectEffect = Fx.none;
-					bullet = NHBullets.annMissile;
-					shootSound = NHSounds.launch;
-				}}
+			new AutoOutlineWeapon("large-launcher"){{
+				top = false;
+				rotate = false;
+				alternate = true;
+				shake = 3.5f;
+				shootY = 16f;
+				x = 20f;
+				recoil = 5.4f;
+				
+				shootCone = 30f;
+				reload = 30f;
+				shots = 4;
+				inaccuracy = 4.0F;
+				ejectEffect = Fx.none;
+				bullet = new ShrapnelBulletType() {{
+					length = 280;
+					damage = 160.0F;
+					status = StatusEffects.shocked;
+					statusDuration = 60f;
+					fromColor = NHColor.lightSky.cpy().lerp(Color.white, 0.3f);
+					toColor = NHColor.lightSky;
+					shootEffect = NHFx.lightningHitSmall(NHColor.lightSky);
+					smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
+						Draw.color(fromColor, toColor, e.fin());
+						Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
+					}));
+				}};
+				shootSound = Sounds.shotgun;
+			}},
+			new AutoOutlineWeapon(){{
+				mirror = false;
+				rotate = true;
+				alternate = true;
+				rotateSpeed = 25f;
+				x = 0;
+				y = 8f;
+				recoil = 2.7f;
+				shootY = 7f;
+				shootCone = 40f;
+				reload = 60f;
+				shots = 2;
+				shotDelay = 8f;
+				inaccuracy = 5.0F;
+				ejectEffect = Fx.none;
+				bullet = NHBullets.annMissile;
+				shootSound = NHSounds.launch;
+			}}
 		){{
 			constructor = EntityMapping.map(32);
 			abilities.add(
@@ -280,18 +280,14 @@ public class NHUnits implements ContentList {
 		warper = new AutoOutlineUnitType("warper"){{
 			constructor = EntityMapping.map(3);
 			weapons.add(new Weapon(){{
-				minShootVelocity = 0.01F;
 				top = true;
-				rotate = false;
+				rotate = true;
 				alternate = true;
 				mirror = false;
 				x = 0f;
 				y = -10f;
-				shootCone = 60f;
-				reload = 60f;
-				shots = 5;
-				shotDelay = 7f;
-				inaccuracy = 6f;
+				reload = 6f;
+				inaccuracy = 3f;
 				ejectEffect = Fx.none;
 				bullet = NHBullets.warperBullet;
 				shootSound = NHSounds.launch;

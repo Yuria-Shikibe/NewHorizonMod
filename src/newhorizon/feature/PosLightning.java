@@ -9,7 +9,6 @@ import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.struct.Seq;
-import arc.util.Nullable;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -23,6 +22,7 @@ import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import newhorizon.content.NHFx;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Provide methods that can generate Position to Position Lightning.<p>
@@ -44,6 +44,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Yuria
  */
 public class PosLightning {
+	
+	public static final Cons<Position> none = p -> {};
 	
 	public static final float lifetime = Fx.lightning.lifetime;
 	public static final float WIDTH = 3f;
@@ -80,6 +82,10 @@ public class PosLightning {
 	//create lightning to the enemies in range.
 	public static void createRange(Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum) {
 		createRange(null, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, position -> {});
+	}
+	
+	public static void createLength(@Nullable Bullet owner, Team team, Position from, float length, float angle, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement){
+		create(owner, team, from, new Vec2().trns(angle, length).add(from), color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
 	//A create method that could set lightning number and extra movements to the final target.
@@ -134,7 +140,27 @@ public class PosLightning {
 			createRandom(owner, team, from, rand, color, createLightning, damage, boltLen, width, boltNum, movement);
 		}
 	}
-
+	
+	public static void createEffect(Position from, float length, float angle, Team fromTeam, Color color, int boltNum, float width){
+		createEffect(from, new Vec2().trns(angle, length).add(from), fromTeam, color, boltNum, width);
+	}
+	
+	public static void createEffect(Position from, Position to, Team fromTeam, Color color, int boltNum, float width){
+		Position sureTarget = findInterceptedPoint(from, to, fromTeam);
+		float dst = from.dst(sureTarget);
+		for (int i = 0; i < boltNum; i ++) {
+			float len = getBoltRandomRange();
+			float randRange = len * RANGE_RAND;
+			
+			FloatSeq randomArray = new FloatSeq();
+			for (int num = 0; num < dst / (ROT_DST * len) + 1; num ++) {
+				randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
+			}
+			
+			createBoltEffect(color, width, computeVectors(randomArray, from, sureTarget));
+		}
+	}
+	
 	//Private methods and classes.
 
 	//Compute the proper hit position.

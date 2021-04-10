@@ -1,4 +1,4 @@
-package newhorizon.block.special;
+package newhorizon.block.defence;
 
 import arc.Core;
 import arc.graphics.Color;
@@ -38,6 +38,7 @@ import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
+import newhorizon.block.special.JumpGate;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
@@ -105,6 +106,8 @@ public class HyperSpaceWarper extends Block{
 		public int teamIndex;
 		public int target;
 		public IntSeq selects = new IntSeq();
+		
+		public transient boolean isTransport = false;
 		
 		public transient Vec2 targetV = new Vec2(), selectVFrom = new Vec2(), selectVTo = new Vec2();
 		public transient boolean loaded = false;
@@ -249,7 +252,7 @@ public class HyperSpaceWarper extends Block{
 						
 						Core.scene.root.addChildAt(Math.max(table.getZIndex() - 1, 0), pTable);
 						Core.scene.root.addChildAt(Math.max(table.getZIndex() - 2, 0), floatTable);
-					}).size(LEN * 4, LEN).disabled(b -> isSelect).row();
+					}).size(LEN * 4, LEN).disabled(b -> isSelect || isTransport).row();
 					
 					t.button("@mod.ui.select-unit", Icon.filter, Styles.cleart, () -> {
 						isSelect = true;
@@ -321,7 +324,7 @@ public class HyperSpaceWarper extends Block{
 							Core.scene.root.addChildAt(Math.max(table.getZIndex() - 1, 0), this);
 						}};
 						
-					}).size(LEN * 4, LEN).disabled(b -> isSelect).row();
+					}).size(LEN * 4, LEN).disabled(b -> isSelect || isTransport).row();
 					
 					t.button("@mod.ui.transport-unit", Icon.download, Styles.cleart, () -> {
 						configure(80);
@@ -368,9 +371,9 @@ public class HyperSpaceWarper extends Block{
 				}).row();
 			}).grow().row();
 			table.table(Tex.paneSolid, t -> {
-				t.button("@cancel", Icon.cancel, Styles.cleart, () -> {
+				t.button("@remove", Icon.cancel, Styles.cleart, () -> {
 					selects.clear();
-				}).growX().height(LEN);
+				}).disabled(b -> isSelect || isTransport).growX().height(LEN);
 			}).growX().height(LEN + OFFSET);
 		}
 		
@@ -388,8 +391,8 @@ public class HyperSpaceWarper extends Block{
 			for(int id : selects.items){
 				Unit u = Groups.unit.getByID(id);
 				if(u != null){
-					if(!u.type.flying)grounds++;
-					else air++;
+					if(!u.type.flying){grounds++;}
+					else {air++;}
 					selectUnits.add(u);
 				}
 			}
@@ -413,10 +416,11 @@ public class HyperSpaceWarper extends Block{
 					transport(u, to.x, to.y, angle);
 				}else{
 					Tile to = tileSeq.get(r.random(tileSeq.size - 1));
-					transport(u, to.x * tilesize, to.y * tilesize, angle);
+					transport(u, to.drawx(), to.drawy(), angle);
 				}
 			}
 			
+			isTransport = true;
 			selects.clear();
 			consume();
 			reload = 0f;
@@ -474,7 +478,7 @@ public class HyperSpaceWarper extends Block{
 				NHFx.hyperSpaceEntrance.at(tx, ty, angle, Pal.accent, unit);
 				Time.run(NHFx.hyperSpaceEntrance.lifetime, () -> {
 					if(!Vars.net.client())unit.add();
-					selects.add(unit.id);
+					isTransport = false;
 				});
 			});
 		}

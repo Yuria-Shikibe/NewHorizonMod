@@ -11,7 +11,7 @@ import arc.util.Tmp;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
-import newhorizon.block.special.GravityGully;
+import newhorizon.block.defence.GravityGully;
 import newhorizon.block.special.UpgradeBlock;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
@@ -49,10 +49,10 @@ public class NHWorldVars{
 		float height = Core.graphics.getHeight();
 		
 		Camera c = Core.camera;
-		NHVars.rect.setSize(c.width + tilesize * 2, c.height + tilesize * 2).setCenter(c.position);
+		Tmp.r3.setSize(c.width + tilesize * 2, c.height + tilesize * 2).setCenter(c.position);
 		
 		for(Tile t : NHWorldVars.intercepted.keys()){
-			if(!NHVars.rect.contains(t.drawx(), t.drawy()))continue;
+			if(!Tmp.r3.contains(t.drawx(), t.drawy()))continue;
 			IntSeq teams = NHWorldVars.intercepted.get(t);
 			
 			int anyOther = teams.count(0);
