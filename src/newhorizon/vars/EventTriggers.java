@@ -6,6 +6,7 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.world.Tile;
+import newhorizon.func.NHSetting;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
 
@@ -23,17 +24,23 @@ public class EventTriggers{
 			}
 			
 			NHWorldVars.clearLast();
-			
+			NHWorldVars.worldLoaded = true;
 		});
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
+			NHSetting.log("Server Preload Run");
 			for(ServerInitc c : NHWorldVars.serverLoad){
 				c.loadAfterConnect();
 			}
 		});
 		
-		Events.on(EventType.StateChangeEvent.class, e -> {
-		
-		});
+//		Events.on(EventType.StateChangeEvent.class, e -> {
+//			NHSetting.log("Event", "Server Preload Run");
+//
+//			if(NHWorldVars.worldLoaded){
+//				NHSetting.log("Event", "Leaving World");
+//				NHWorldVars.worldLoaded= false;
+//			}
+//		});
 	}
 }

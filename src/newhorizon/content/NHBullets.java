@@ -767,7 +767,7 @@ public class NHBullets implements ContentList{
 			maxRange = 250f;
 		}};
 		
-		darkEnrlaser = new ContinuousLaserBulletType(1600){
+		darkEnrlaser = new ContinuousLaserBulletType(1300){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};

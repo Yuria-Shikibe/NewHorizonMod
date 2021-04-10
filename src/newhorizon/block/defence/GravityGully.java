@@ -1,4 +1,4 @@
-package newhorizon.block.special;
+package newhorizon.block.defence;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
@@ -7,7 +7,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -26,6 +25,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.func.Functions;
+import newhorizon.func.NHSetting;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHWorldVars;
 
@@ -102,7 +102,7 @@ public class GravityGully extends Block{
 		public void setIntercept(boolean add){
 			if(add)NHWorldVars.gravGullyGroup.add(this);
 			else NHWorldVars.gravGullyGroup.remove(this);
-			for(IntSeq t : effectedArea)t.incr(teamIndex, Mathf.sign(add));
+			if((active || add) && isValid())for(IntSeq t : effectedArea)t.incr(teamIndex, Mathf.sign(add));
 			active = add;
 		}
 		
@@ -147,20 +147,19 @@ public class GravityGully extends Block{
 		public void placed(){
 			super.placed();
 			beforeLoad();
-			setIntercept(true);
 		}
 		
 		@Override
 		public void onDestroyed(){
 			super.onDestroyed();
-			setIntercept(false);
 		}
 		
 		@Override
 		public void remove(){
-			Log.info("Run");
-			NHWorldVars.advancedLoad.remove(this);
-			setIntercept(false);
+			if(active){
+				setIntercept(false);
+				active = true;
+			}
 		}
 		
 		@Override
@@ -201,6 +200,7 @@ public class GravityGully extends Block{
 			Functions.square(World.toTile(x), World.toTile(y), range, (x1, y1) -> {
 				tmpTile = world.tile(x1, y1);
 				if(tmpTile != null)effectedArea.add(NHWorldVars.intercepted.get(tmpTile));
+				NHSetting.log("Added");
 			});
 			
 			if(power.status >= 0.75f && !active)setIntercept(true);

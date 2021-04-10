@@ -120,6 +120,10 @@ public class NHSetting{
 		if((Vars.headless && Vars.state.rules.infiniteResources) || (debug || (Vars.net.client() && Vars.state.rules.infiniteResources)))run.run();
 	}
 	
+	public static void log(String message){
+		debug(() -> Log.info(message));
+	}
+	
 	public static void setBoolOnce(String key, boolean bool){
 		if(key.startsWith("@"))settingList.setProperty(key, String.valueOf(bool));
 		else debug(() -> Log.info("Target key is not a Boolean"));

@@ -25,10 +25,10 @@ ext{
 //java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
-        if(JavaVersion.current() != JavaVersion.VERSION_1_4){
+        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
             options.compilerArgs.addAll(['--release', '8'])
         }
-
+//
 //        doFirst {
 //            options.compilerArgs.addAll(['--release', '14', "--enable-preview"])
 //        }
@@ -37,6 +37,7 @@ allprojects{
 
 dependencies{
     implementation 'org.jetbrains:annotations:20.1.0'
+    //implementation "com.github.Anuken.Mindustry:annotations:$mindustryVersion"
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }

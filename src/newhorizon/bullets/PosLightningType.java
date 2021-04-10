@@ -1,6 +1,5 @@
 package newhorizon.bullets;
 
-import arc.math.geom.Vec2;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -60,7 +59,7 @@ public class PosLightningType extends BulletType{
 			}
 		}
 		
-		PosLightning.create(b, b.team, b, new Vec2().trns(b.rotation(), length).add(b.x, b.y), lightningColor, true, 0, 0, PosLightning.WIDTH, boltNum, p -> {
+		PosLightning.createLength(b, b.team, b, length, b.rotation(), lightningColor, true, 0, 0, PosLightning.WIDTH, boltNum, p -> {
 			hitEffect.at(p);
 			Effect.shake(hitShake, hitShake, p);
 		});

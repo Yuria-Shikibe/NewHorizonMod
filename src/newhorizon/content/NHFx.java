@@ -75,7 +75,7 @@ public class NHFx{
 	public static Effect shootLineSmall(Color color){
 		return new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
-			randLenVectors(e.id, 5, 18 * e.fin(), e.rotation, 34f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
+			randLenVectors(e.id, 4, 2 + 18 * e.fin(), e.rotation, 30f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
 		});
 	}
 	
@@ -133,8 +133,8 @@ public class NHFx{
 	public static Effect crossBlast(Color color, float size){
 		return new Effect(36f, size * 2, e -> {
 			color(color, Color.white, e.fout() * 0.55f);
-			stroke(2f * e.fout());
-			e.scaled(16f, i -> circle(e.x, e.y, 45f * i.fin()));
+			stroke(1.35f * e.fout());
+			e.scaled(10f, i -> circle(e.x, e.y, size * 0.5f * i.fin()));
 			
 			for(int i = 0; i < 4; i++){
 				Drawf.tri(e.x, e.y, size / 16 * (e.fout() + 1) / 2, size * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
@@ -250,13 +250,24 @@ public class NHFx{
 		})).layer(Layer.bullet);
 	}
 	
+	public static Effect square(Color color, float lifetime, int num, float range, float size){
+		return new Effect(lifetime, (e) -> {
+			Draw.color(color);
+			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> Fill.square(e.x + x, e.y + y, size * e.fout(), 45));
+		});
+	}
 	
 	public static final Effect
+		square45_4_45 = new Effect(45f, e-> {
+			Draw.color(e.color);
+			randLenVectors(e.id, 4, 20f * e.finpow(), (x, y) -> Fill.square(e.x + x, e.y + y, 4f * e.fout(), 45));
+		}),
+	
 		hyperSpaceEntrance = new Effect(540f, 10000f, e -> {
 			if(!(e.data instanceof Unit))return;
 			Unit unit = e.data();
-			float height = Mathf.curve(e.fslope() * e.fslope(), 0f, 0.3f) * 2.5f;
-			float width = Mathf.curve(e.fslope() * e.fslope(), 0.35f, 0.75f) * 2.5f;
+			float height = Mathf.curve(e.fslope() * e.fslope(), 0f, 0.3f) * 1.1f;
+			float width = Mathf.curve(e.fslope() * e.fslope(), 0.35f, 0.75f) * 1.1f;
 			
 			if((e.color.equals(Pal.place) && e.time < e.lifetime / 2) || (!e.color.equals(Pal.place) && e.time > e.lifetime / 2)){
 				float z = unit.elevation > 0.5f ? Layer.flyingUnitLow : unit.type.groundLayer + Mathf.clamp(unit.type.hitSize / 4000f, 0, 0.01f);
@@ -295,7 +306,7 @@ public class NHFx{
 			Draw.z(Layer.effect);
 			Draw.color(unit.team.color.cpy().mul(1.15f), Pal.gray, (1 - unit.elevation + new Rand(e.id).random(-0.25f, 0.25f)) / 4f);
 			
-			Fill.rect(e.x, e.y, width * unit.hitSize + 1f, height * unit.hitSize, e.rotation);
+			Fill.rect(e.x, e.y, Draw.scl * unit.type.shadowRegion.width * width + 1f, Draw.scl * unit.type.shadowRegion.height * height, e.rotation);
 		}),
 	
 		poly = new Effect(25f, e -> {
@@ -342,6 +353,8 @@ public class NHFx{
 			Seq<Vec2> lines = e.data();
 			
 			color(e.color, Color.white, e.fin());
+			
+			Draw.z(Layer.effect - 1f);
 			
 			Lines.stroke(e.rotation * e.fout());
 			
