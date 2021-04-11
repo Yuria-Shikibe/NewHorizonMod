@@ -21,7 +21,7 @@ Most of the players in the server may speak Chinese when you log in.
 
 Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not use English often or are not fluent in it ~~just like me~~. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.
 
-But if that doesn't happen, making everything function right and not demolishing buildings at will are enough. I believe every player can get along well with each other ~~as long as no one blows up a reactor or breaks someone else's blueprint~~.
+But if that doesn't happen, making everything function right and not demolishing buildings at will are enough. I believe every player can get along well with one another ~~as long as no one blows up a reactor or breaks someone else's blueprint~~.
 
 Don't forget to invite your friends to try this mod, because you guys can use the amount of non-Chinese speaking players to turn the situation. ~~Also if Chinese players don't quit, this may be a fantastic chance for them to learn English~~(~~Maaaaaaaybeeeeeee~~). 
 
@@ -30,7 +30,7 @@ Have a nice day.
 ## Caution
 **MOD DOES NOT SUPPORT _IOS_**
 
-**If you are using a PC**, mod requires `jdk 14` installed, or maybe other versions or jdk (**_at least 8_**).
+**If you are using a PC**, mod requires `jdk 14` installed, or maybe other versions of jdk (**_at least 8_**).
 
 If you downloaded from `Action`, unzip the Mod.zip file first, then install the mod in-game;
 
@@ -42,7 +42,7 @@ All code is here and completely open source ~~so no code that has *safety* probl
 This mod adds a new setting dialog when starting the game.
 By choose the available setting, you can activate the in-game debug panel and advance load, which creates outline icons and unit full icons automatically.
 However, the advance load now causes a stuck problem when the game is loaded on a phone. So, for your gaming experience, I made it false by default. If you are confident with your device, activate it.
-If you find that your device cannot afford it, open the mod file folder and find the "new-horizon" folder. Then, open the properties file in it, change the "@active.advance-load*" to false, then open the game again.
+If you find that your device cannot afford it, open the mod file folder and find the "new-horizon" folder. Then, open the properties file in it, change the "@active.advance-load*" to false, and open the game again.
 
 **However, when the mod is deleted, the setting file will not be deleted automatically, so before I solve this problem, you may have to delete it yourself.**
 
@@ -78,11 +78,11 @@ If you find that your device cannot afford it, open the mod file folder and find
 - Upgrades needs resources. The upgrader can take resources directly from the `Core`. ~~Nice and simple, right?~~
 6. Make the turret function correctly just like other turrets.
 ---
-#### Mass Deliver
+#### Mass Deliverer
 
 ---
 ![mass-deliver](assets/sprites/block/special/mass-deliver.png)
-- **_Deliver:_** Mass Deliverer
+- **_Deliverer:_** Mass Deliverer
 
 ###### Use Steps:
 1. Click the building.
