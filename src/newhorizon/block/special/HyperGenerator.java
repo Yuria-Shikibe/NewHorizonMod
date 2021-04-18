@@ -178,6 +178,23 @@ public class HyperGenerator extends PowerGenerator{
 					NHBullets.hyperBlast.create(b, Team.derelict, b.x, b.y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
 				}
 			}
+			
+			@Override
+			public void despawned(Bullet b){
+				super.despawned(b);
+				Units.nearby(Tmp.r1.setCenter(b.x, b.y).setSize(lightningRange * 4), unit -> {
+					unit.vel.set(Tmp.v1.set(unit).sub(b).nor().scl(6));
+					unit.kill();
+				});
+				
+				for(int i = 0; i < 7; ++i) {
+					Time.run((float)Mathf.random(80), () -> {
+						NHFx.hyperExplode.at(b.x + Mathf.range(size * Vars.tilesize), b.y + Mathf.range(size * Vars.tilesize), effectColor);
+						NHFx.hyperCloud.at(b.x + Mathf.range(size * Vars.tilesize), b.y + Mathf.range(size * Vars.tilesize), effectColor);
+						NHFx.circle.at(b.x + Mathf.range(size * Vars.tilesize), b.y + Mathf.range(size * Vars.tilesize), explosionRadius, effectColor);
+					});
+				}
+			}
 		};
 	}
 	
@@ -230,9 +247,11 @@ public class HyperGenerator extends PowerGenerator{
 				for(int i : Mathf.signs){
 					if(Mathf.chance(warmup / updateEffectDiv))updateEffect.at(x + i * Mathf.random(effectCircleSize), y + i * Mathf.random(effectCircleSize), updateEffectSize * warmup, effectColor);
 				}
-				if(Mathf.chance( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
-					NHFx.lightningHitLarge(effectColor).at(point);
-				});
+				if(Mathf.chance( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f)){
+					PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
+						NHFx.lightningHitLarge(effectColor).at(point);
+					});
+				}
 				if(Mathf.chance(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, effectColor);
 			}
 		}

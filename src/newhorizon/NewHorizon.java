@@ -53,9 +53,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHBlocks.atomSeparator,
-			NHBlocks.pulseLaserTurret,
-			NHBlocks.beamLaserTurret
+			NHBlocks.bombLauncher
 		}).show();
 	}
 	
@@ -63,7 +61,7 @@ public class NewHorizon extends Mod{
 		if(links == null)links = new Links.LinkEntry[]{
 			new Links.LinkEntry("mod.discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
 			new Links.LinkEntry("mod.github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git", Icon.github, Color.valueOf("24292e")),
-			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/MOD-GUIDE", Icon.bookOpen, Pal.accent)
+			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent)
 		};
 		
 		BaseDialog dialog = new BaseDialog("@links");
@@ -112,7 +110,7 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
         
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
-        	startLog();
+        	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
 	        tableMain();
         }));
     }

@@ -1,15 +1,25 @@
 package newhorizon.bullets;
 
+import arc.graphics.Color;
+import arc.math.Mathf;
+import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
+import newhorizon.content.NHFx;
+
 
 public class ShieldBreaker extends NHTrailBulletType{
     public float maxShieldDamage;
     
-    protected BulletType breakType = new EffectBulletType(1f){{
+    protected static BulletType breakType = new EffectBulletType(1f){{
         this.absorbable = true;
         this.damage = 1;
-    }};
+    }
+        @Override
+        public void despawned(Bullet b){
+            if(b.absorbed && b.data instanceof Color)NHFx.shuttle.at(b.x, b.y, Mathf.random(360f), (Color)b.data, b.damage / Vars.tilesize / 2f);
+        }
+    };
     
     public ShieldBreaker(float speed, float damage, String bulletSprite, float shieldDamage) {
         super(speed, damage, bulletSprite);
@@ -34,6 +44,6 @@ public class ShieldBreaker extends NHTrailBulletType{
     @Override
     public void update(Bullet b) {
         super.update(b);
-        breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, new Object());
+        breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
     }
 }

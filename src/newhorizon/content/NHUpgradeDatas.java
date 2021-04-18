@@ -27,7 +27,7 @@ public class NHUpgradeDatas implements ContentList{
 			shootSound = Sounds.plasmaboom;
 		}};
 		
-		longRangeShootRapid = new UpgradeData("long-range-shoot-2", NHBullets.longRangeShootRapid, 250f,
+		longRangeShootRapid = new UpgradeData("long-range-shoot-2", NHBullets.longRangeShootSplash, 250f,
 			new ItemStack(Items.plastanium, 80), new ItemStack(NHItems.juniorProcessor, 80), new ItemStack(NHItems.zeta, 120)
 		){{shootSound = Sounds.plasmaboom;}};
 		

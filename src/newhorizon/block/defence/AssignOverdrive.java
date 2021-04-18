@@ -55,6 +55,15 @@ public class AssignOverdrive extends OverdriveProjector{
 		protected IntSeq targets = new IntSeq(maxLink);
 		
 		@Override
+		public Point2[] config(){
+			Point2[] out = new Point2[targets.size];
+			for(int i = 0; i < out.length; i++){
+				out[i] = Point2.unpack(targets.get(i)).sub(tile.x, tile.y);
+			}
+			return out;
+		}
+		
+		@Override
 		public void draw(){
 			super.draw();
 			

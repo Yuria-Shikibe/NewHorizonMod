@@ -9,17 +9,12 @@ import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
-import mindustry.entities.Damage;
 import mindustry.entities.Effect;
-import mindustry.entities.Lightning;
 import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.ContinuousLaserBulletType;
-import mindustry.entities.bullet.LaserBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -53,7 +48,6 @@ import newhorizon.block.adapt.AdaptUnloader;
 import newhorizon.block.adapt.DisposableBattery;
 import newhorizon.block.defence.*;
 import newhorizon.block.distribution.Delivery;
-import newhorizon.block.distribution.LiquidAndItemBridge;
 import newhorizon.block.distribution.TowardGate;
 import newhorizon.block.drawer.DrawFactories;
 import newhorizon.block.drawer.DrawHoldLiquid;
@@ -63,8 +57,9 @@ import newhorizon.block.special.*;
 import newhorizon.block.turrets.MultTractorBeamTurret;
 import newhorizon.block.turrets.ScalableTurret;
 import newhorizon.block.turrets.SpeedupTurret;
+import newhorizon.bullets.AdaptedContinuousLaserBulletType;
+import newhorizon.bullets.AdaptedLaserBulletType;
 import newhorizon.bullets.NHTrailBulletType;
-import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -105,23 +100,24 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
-		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper
+		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher;
 		;
 	
 	private static void loadExperiments(){
-		payloadEntrance = new PayloadEntrance("payload-entrance"){{
-			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
-			size = 7;
-		}};
-
-		liquidAndItemBridge = new LiquidAndItemBridge("debug"){{
-			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
-			range = 12;
-		}};
-		shapedWall = new ShapedWall("debug"){{
-			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
-
-		}};
+		
+//		payloadEntrance = new PayloadEntrance("payload-entrance"){{
+//			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
+//			size = 7;
+//		}};
+//
+//		liquidAndItemBridge = new LiquidAndItemBridge("debug"){{
+//			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
+//			range = 12;
+//		}};
+//
+//		shapedWall = new ShapedWall("debug"){{
+//			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
+//		}};
 	}
 	
 	private static void loadTurrets(){
@@ -130,7 +126,7 @@ public class NHBlocks implements ContentList {
 			requirements(Category.turret, BuildVisibility.shown, with(Items.thorium, 60, NHItems.juniorProcessor, 60, NHItems.presstanium, 60));
 			NHTechTree.add(Blocks.lancer, this);
 			recoilAmount = 2f;
-			reloadTime = 6f;
+			reloadTime = 12f;
 			alternate = true;
 			spread = 8f;
 			shootSound = Sounds.laser;
@@ -141,7 +137,7 @@ public class NHBlocks implements ContentList {
 			smokeEffect = Fx.shootBigSmoke2;
 			consumes.powerCond(3f, TurretBuild::isActive);
 			ammo(
-				Items.silicon, new LaserBulletType(80){{
+				Items.silicon, new AdaptedLaserBulletType(70){{
 					colors = new Color[]{Pal.bulletYellowBack.cpy().mul(1f, 1f, 1f, 0.45f), Pal.bulletYellowBack, Color.white};
 					hitColor = Pal.bulletYellow;
 					length = range + 10f;
@@ -153,13 +149,7 @@ public class NHBlocks implements ContentList {
 					sideAngle = 30f;
 					largeHit = false;
 					shootEffect = NHFx.square(hitColor, 15f, 2, 8f, 2f);
-				}
-					@Override
-					public void init(Bullet b){
-						super.init(b);
-						PosLightning.createEffect(b, b.fdata * 0.95f, b.rotation(), b.team, hitColor, 2, PosLightning.WIDTH - 1f);
-					}
-				}
+				}}
 			);
 		}};
 		
@@ -268,7 +258,7 @@ public class NHBlocks implements ContentList {
 			shootSound = Sounds.laserbig;
 			loopSound = Sounds.beam;
 			loopSoundVolume = 2.0F;
-			shootType = new ContinuousLaserBulletType(300){{
+			shootType = new AdaptedContinuousLaserBulletType(300){{
 				strokes = new float[]{1f, 0.9f, 0.75f, 0.55f};
 				tscales = new float[]{1f, 0.9f, 0.75f, 0.5f};
 				shake = 3;
@@ -279,35 +269,14 @@ public class NHBlocks implements ContentList {
 				oscScl = 0.4f;
 				oscMag = 1.5f;
 				lifetime = 35f;
-				lightColor = NHColor.lightSky;
+				lightning = 2;
+				lightningLength = 2;
+				lightningLengthRand = 8;
+				lightColor = lightningColor =  NHColor.lightSky;
 				hitEffect = NHFx.shootCircleSmall(NHColor.lightSky);
 				shootEffect = NHFx.lightningHitLarge(NHColor.lightSky);
 				lightningDamage = damage / 6f;
-			}
-				@Override
-				public void draw(Bullet b){
-					super.draw(b);
-					float i = 2f;
-					Draw.z(Layer.effect);
-					for(Color c : colors){
-						Draw.color(c);
-						Fill.circle(b.x, b.y, width * i / 2f * Mathf.clamp(b.time > b.lifetime - fadeTime ? 1f - (b.time - (lifetime - fadeTime)) / fadeTime : 1f));
-						i -= 0.25f;
-					}
-				}
-				
-				@Override
-				public void update(Bullet b){
-					super.update(b);
-					if(b.timer(2, 4))PosLightning.createEffect(b, Damage.findLaserLength(b, length) * Mathf.clamp(b.time > b.lifetime - fadeTime ? 1f - (b.time - (lifetime - fadeTime)) / fadeTime : 1f) * lenscales[2], b.rotation(), b.team, hitColor, 2, PosLightning.WIDTH);
-				}
-				
-				@Override
-				public void hit(Bullet b, float x, float y){
-					super.hit(b, x, y);
-					Lightning.create(b, hitColor, lightningDamage, x, y, b.angleTo(x, y), Mathf.random(4, 8));
-				}
-			};
+			}};
 			consumes.add(
 				new ConsumeLiquidFilter((liquid) -> {
 			return liquid.temperature <= 0.5F && liquid.flammability < 0.1F;
@@ -500,7 +469,7 @@ public class NHBlocks implements ContentList {
 		multipleLauncher = new ItemTurret("multiple-launcher"){{
 			size = 3;
 			health = 1250;
-			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30, Items.phaseFabric, 50));
+			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
 			NHTechTree.add(Blocks.swarmer, this);
 			ammo(
 					Items.titanium, NHBullets.missileTitanium,
@@ -587,7 +556,7 @@ public class NHBlocks implements ContentList {
 			shootSound = Sounds.plasmadrop;
 			
 			ammo(NHItems.juniorProcessor, NHBullets.empBlot2, NHItems.seniorProcessor, NHBullets.empBlot3);
-			requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 75, NHItems.irayrondPanel, 100, Items.plastanium, 175, NHItems.seniorProcessor, 150, NHItems.zeta, 250));
+			requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 35, NHItems.multipleSteel, 80, Items.plastanium, 65, NHItems.seniorProcessor, 50, NHItems.zeta, 120));
 			NHTechTree.add(Blocks.cyclone, this);
 			range = 280f;
 		}};
@@ -757,14 +726,14 @@ public class NHBlocks implements ContentList {
 			health = 2350;
 			baseColor = NHColor.darkEnrColor;
 			addUpgrades(
-					NHUpgradeDatas.posLightning,
-					NHUpgradeDatas.darkEnrlaser,
-					NHUpgradeDatas.arc9000,
-					NHUpgradeDatas.curveBomb,
-					NHUpgradeDatas.airRaid,
-					NHUpgradeDatas.decayLaser,
-					NHUpgradeDatas.strikeRocket,
-					NHUpgradeDatas.bombStorm
+				NHUpgradeDatas.posLightning,
+				NHUpgradeDatas.darkEnrlaser,
+				NHUpgradeDatas.arc9000,
+				NHUpgradeDatas.curveBomb,
+				NHUpgradeDatas.airRaid,
+				NHUpgradeDatas.decayLaser,
+				NHUpgradeDatas.strikeRocket,
+				NHUpgradeDatas.bombStorm
 			);
 		}};
 	}
@@ -777,6 +746,16 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		bombLauncher = new BombLauncher("bomb-launcher"){{
+			requirements(Category.effect, with(Items.phaseFabric, 100, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.thorium, 100, Items.surgeAlloy, 75));
+			NHTechTree.add(Blocks.massDriver, this);
+			size = 3;
+			consumes.powerCond(6f, BombLauncherBuild::isCharging);
+			consumes.item(NHItems.fusionEnergy, 6);
+			itemCapacity = 30;
+			health = 900;
+		}};
 		
 		hyperspaceWarper = new HyperSpaceWarper("hyper-space-warper"){{
 			size = 4;

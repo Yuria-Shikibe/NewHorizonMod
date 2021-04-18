@@ -9,12 +9,9 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
-import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.entities.Effect;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
@@ -22,7 +19,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import newhorizon.effects.EffectTrail;
-import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
@@ -133,8 +129,11 @@ public class NHFx{
 	public static Effect crossBlast(Color color, float size){
 		return new Effect(36f, size * 2, e -> {
 			color(color, Color.white, e.fout() * 0.55f);
-			stroke(1.35f * e.fout());
-			e.scaled(10f, i -> circle(e.x, e.y, size * 0.5f * i.fin()));
+			
+			e.scaled(10f, i -> {
+				stroke(1.35f * i.fout());
+				circle(e.x, e.y, size * 0.5f * i.finpow());
+			});
 			
 			for(int i = 0; i < 4; i++){
 				Drawf.tri(e.x, e.y, size / 16 * (e.fout() + 1) / 2, size * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
@@ -258,6 +257,16 @@ public class NHFx{
 	}
 	
 	public static final Effect
+		attackWarning = new Effect(180f, 1000f, e -> {
+			Draw.color(e.color);
+			Lines.stroke(2 * e.fout());
+			Lines.circle(e.x, e.y, e.rotation);
+			for(float i = 0.75f; i < 1.5f; i += 0.25f){
+				Lines.square(e.x, e.y, e.rotation / i, e.time);
+				Lines.square(e.x, e.y, e.rotation / i, -e.time);
+			}
+		}),
+	
 		square45_4_45 = new Effect(45f, e-> {
 			Draw.color(e.color);
 			randLenVectors(e.id, 4, 20f * e.finpow(), (x, y) -> Fill.square(e.x + x, e.y + y, 4f * e.fout(), 45));
@@ -347,31 +356,6 @@ public class NHFx{
 		skyTrail = new Effect(22, e -> {
 			color(NHColor.lightSky, Pal.gray, e.fin());
 			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
-		}),
-		
-		posLightning = new Effect(PosLightning.lifetime, 800.0f, e -> {
-			if(!(e.data instanceof Seq)) return;
-			Seq<Vec2> lines = e.data();
-			
-			color(e.color, Color.white, e.fin());
-			
-			Draw.z(Layer.effect - 1f);
-			
-			Lines.stroke(e.rotation * e.fout());
-			
-			Fill.circle(lines.first().x, lines.first().y, Lines.getStroke() * 1.1f);
-			
-			for(int i = 0; i < lines.size - 1; i++){
-				Vec2 cur = lines.get(i);
-				Vec2 next = lines.get(i + 1);
-				
-				Lines.line(cur.x, cur.y, next.x, next.y, false);
-				Drawf.light(Team.derelict, cur.x, cur.y, next.x, next.y, Lines.getStroke() * 2f * e.fout(), e.color, e.fout());
-			}
-			
-			for(Vec2 p : lines){
-				Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
-			}
 		}),
 	
 		shuttle = new Effect(60f, 200f, e -> {

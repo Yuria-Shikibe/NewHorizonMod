@@ -46,7 +46,7 @@ public class DrawPrinter extends DrawBlock {
 
 		Draw.rect(entity.block.region, entity.x, entity.y);
 		
-		Draw.draw(Draw.z(), () -> Drawf.construct(entity.x, entity.y, toPrint.icon(Cicon.xlarge), lightColor, 0, entity.progress, ((GenericCrafter)entity.block()).craftTime / time, time));
+		Draw.draw(Draw.z(), () -> Drawf.construct(entity.x, entity.y, toPrint.icon(Cicon.full), lightColor, 0, entity.progress, ((GenericCrafter)entity.block()).craftTime / time, time));
 		
 		
 		if (lightColor.a > 0.001f) {

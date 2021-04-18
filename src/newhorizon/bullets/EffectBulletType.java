@@ -1,10 +1,10 @@
 package newhorizon.bullets;
 
 import mindustry.content.Fx;
-import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 
-public class EffectBulletType extends BasicBulletType{
+public class EffectBulletType extends BulletType{
 	public EffectBulletType(float lifetime){
 		super();
 		this.lifetime = lifetime;

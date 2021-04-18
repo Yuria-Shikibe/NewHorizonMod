@@ -203,7 +203,7 @@ public class DrawFuncs {
 
     public static void posSquareLinkArr(Color color, float stroke, float size, boolean drawBottom, boolean linkLine, Position... pos){
         if(pos.length < 2 || (!linkLine && pos[0] == null))return;
-
+        
         for (int c : drawBottom ? Mathf.signs : Mathf.one) {
             for (int i = 1; i < pos.length; i++) {
                 if (pos[i] == null)continue;
