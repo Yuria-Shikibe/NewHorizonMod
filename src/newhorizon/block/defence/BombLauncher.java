@@ -10,6 +10,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Point2;
+import arc.math.geom.Point3;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
@@ -22,7 +23,10 @@ import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.core.UI;
 import mindustry.core.World;
+import mindustry.entities.Damage;
 import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
@@ -35,13 +39,13 @@ import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.block.special.CommandableBlock;
+import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.effects.EffectTrail;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.TableFs;
 import newhorizon.vars.NHCtrlVars;
-import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,10 +71,16 @@ public class BombLauncher extends CommandableBlock{
 	public float bombLifetime = 120f;
 	public float shake = 20f;
 	public float range = 800f;
-	public float spread = 100f;
+	public float spread = 160f;
 	public float bombDamage = 600f, bombRadius = 120f;
-	public float bombVelPerTile = 3f;
+	public float bombVelPerTile = 2f;
 	public Sound hitSound = Sounds.explosionbig;
+	
+	public int lightning = 3;
+	public int lightningLength = 5;
+	public int lightningLengthRand = 10;
+	
+	protected EffectBulletType groundHitter;
 	
 	public BombLauncher(String name){
 		super(name);
@@ -78,7 +88,7 @@ public class BombLauncher extends CommandableBlock{
 		trailEffect = NHFx.trail;
 		
 		config(Point2.class, BombLauncherBuild::setTarget);
-		config(Integer.class, BombLauncherBuild::commandAll);
+		config(Integer.class, BombLauncherBuild::triggered);
 	}
 	
 	@Override
@@ -91,13 +101,26 @@ public class BombLauncher extends CommandableBlock{
 	public void setStats() {
 		super.setStats();
 		stats.add(Stat.range, range / tilesize, StatUnit.blocks);
+		stats.add(Stat.damage, bombDamage, StatUnit.none);
 	}
 	
 	@Override
 	public void init(){
 		super.init();
-		if(hitEffect == NHFx.boolSelector)hitEffect = NHFx.lightningHitLarge(baseColor);
-		if(shootEffect == NHFx.boolSelector)shootEffect = NHFx.square(baseColor, 50f, 6, size * tilesize, size / 1.5f);
+		groundHitter = new EffectBulletType(3f){
+			{damage = 1f; collidesGround = absorbable = true; hitSize = 0;}
+			
+			@Override
+			public void despawned(Bullet b){
+				if(!b.absorbed) Damage.damage(b.team, b.x, b.y, b.fdata, b.damage, collidesAir, collidesGround);
+				if(b.data instanceof Point3)for(int i = 0; i < lightning; i++){
+					Lightning.create(b, baseColor, damage, b.x, b.y, Mathf.random(360f), lightningLength + Mathf.range(lightningLengthRand));
+				}
+			}
+		};
+		
+		if(hitEffect == NHFx.boolSelector)hitEffect = new MultiEffect(NHFx.lightningHitLarge(baseColor), NHFx.crossBlast(baseColor, bombRadius * 1.25f));
+		if(shootEffect == NHFx.boolSelector)shootEffect = NHFx.square(baseColor, 50f, 6, size * tilesize * 2f, size);
 	}
 	
 	@Override
@@ -240,10 +263,12 @@ public class BombLauncher extends CommandableBlock{
 				Tmp.p1.set(Point2.unpack(target));
 				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.accent);
+				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, Pal.accent);
 			}else if(NHWorldVars.commandPos > 0){
 				Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
 				DrawFuncs.posSquareLink(Pal.place, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.place);
+				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, Pal.place);
 			}
 			
 			if(isValid())builds.add(this);
@@ -261,7 +286,7 @@ public class BombLauncher extends CommandableBlock{
 			int num = 0;
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
 				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand() && !build.isPreparing()){
-					build.triggered(pos);
+					build.configure(pos);
 					num++;
 				}
 			}
@@ -300,7 +325,7 @@ public class BombLauncher extends CommandableBlock{
 			super.buildConfiguration(table);
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.upOpen, Styles.clearPartial2i, () -> {
-					configure(target < 0 ? NHWorldVars.commandPos : target);
+					commandAll(target < 0 ? NHWorldVars.commandPos : target);
 				}).size(LEN).disabled(b -> isPreparing());
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);
@@ -409,7 +434,7 @@ public class BombLauncher extends CommandableBlock{
 			hitEffect.at(x, y);
 			Effect.shake(shake, shake, x, y);
 			hitSound.at(x, y, Mathf.random(0.9f, 1.1f));
-			Bullet b = NHVars.groundHitter.create(this, team, x, y, 0, damage, 1, 1, null);
+			Bullet b = groundHitter.create(this, team, x, y, 0, damage, 1, 1, new Point3(lightning, lightningLength, lightningLengthRand));
 			b.fdata = radius;
 		}
 		

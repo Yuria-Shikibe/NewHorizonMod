@@ -111,10 +111,10 @@ public class PlayerJumpGate extends Block{
 			unit.rotation = angleTo(target);
 			player.team(Team.derelict);
 			if(!net.client())unit.add();
-			while(player.unit() != unit){
+			while(player.unit() != unit && !player.within(target, tilesize * 2f)){
 				player.unit(unit);
 			}
-			if(player.within(target, tilesize * 2f))player.team(t);
+			player.team(t);
 			before.remove();
 
 			if(mobile && player == Vars.player)Core.camera.position.set(target);
