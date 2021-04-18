@@ -212,11 +212,9 @@ public class BombLauncher extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build != this && build != null){
-					if(build.getType() == CommandableBlockType.attacker && build.canCommand()){
-						builds.add(build);
-						DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
-					}
+				if(build != this && build != null && build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand()){
+					builds.add(build);
+					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 				}
 			}
 			
@@ -252,7 +250,7 @@ public class BombLauncher extends CommandableBlock{
 				NHSounds.alarm.at(p);
 			}
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build.getType() == CommandableBlockType.attacker && build.canCommand()){
+				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand()){
 					build.triggered(pos);
 				}
 			}
