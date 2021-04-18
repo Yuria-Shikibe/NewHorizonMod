@@ -257,16 +257,21 @@ public class BombLauncher extends CommandableBlock{
 		
 		public void commandAll(Integer pos){
 			Tmp.p1.set(Point2.unpack(pos));
+			
+			int num = 0;
+			for(CommandableBlockBuild build : NHWorldVars.commandables){
+				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand()){
+					build.triggered(pos);
+					num++;
+				}
+			}
+			
+			if(num < 1)return;
 			Vars.ui.announce(Iconc.warning  + " Caution: Raid " +  Tmp.p1.x + ", " + Tmp.p1.y, 4f);
 			NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, team.color);
 			NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, team.color);
 			for(Player p : Groups.player){
 				NHSounds.alarm.at(p);
-			}
-			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand()){
-					build.triggered(pos);
-				}
 			}
 		}
 		
