@@ -295,9 +295,9 @@ public class BombLauncher extends CommandableBlock{
 		public void buildConfiguration(Table table){
 			super.buildConfiguration(table);
 			table.table(Tex.paneSolid, t -> {
-				t.button(Icon.upOpen, Styles.cleari, () -> {
+				t.button(Icon.upOpen, Styles.clearPartial2i, () -> {
 					configure(target < 0 ? NHWorldVars.commandPos : target);
-				}).size(LEN).disabled(b -> isPreparing() || !canCommand());
+				}).size(LEN).disabled(b -> isPreparing());
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);
 				}).size(LEN * 4, LEN).disabled(b -> NHCtrlVars.isSelecting).row();
