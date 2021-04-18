@@ -260,7 +260,7 @@ public class BombLauncher extends CommandableBlock{
 			
 			int num = 0;
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand()){
+				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand() && !build.isPreparing()){
 					build.triggered(pos);
 					num++;
 				}
@@ -277,7 +277,6 @@ public class BombLauncher extends CommandableBlock{
 		
 		@Override
 		public void triggered(Integer pos){
-			if(isPreparing())return;
 			setPreparing();
 			lastTarget = pos;
 		}
