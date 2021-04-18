@@ -32,6 +32,8 @@ import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockStatus;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
@@ -77,6 +79,18 @@ public class BombLauncher extends CommandableBlock{
 		
 		config(Point2.class, BombLauncherBuild::setTarget);
 		config(Integer.class, BombLauncherBuild::commandAll);
+	}
+	
+	@Override
+	public void drawPlace(int x, int y, int rotation, boolean valid){
+		super.drawPlace(x, y, rotation, valid);
+		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, baseColor);
+	}
+	
+	@Override
+	public void setStats() {
+		super.setStats();
+		stats.add(Stat.range, range / tilesize, StatUnit.blocks);
 	}
 	
 	@Override
