@@ -12,6 +12,7 @@ import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import newhorizon.block.defence.GravityGully;
+import newhorizon.block.special.CommandableBlock;
 import newhorizon.block.special.UpgradeBlock;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
@@ -19,24 +20,30 @@ import newhorizon.interfaces.ServerInitc;
 import static mindustry.Vars.tilesize;
 
 public class NHWorldVars{
-	public static boolean serverLoaded = true;
-	public static boolean worldLoaded = false;
-	public static boolean load = false;
+	public transient static boolean serverLoaded = true;
+	public transient static boolean worldLoaded = false;
+	public transient static boolean load = false;
 	
-	public static final Seq<ServerInitc> serverLoad = new Seq<>();
-	public static final Seq<BeforeLoadc> advancedLoad = new Seq<>();
-	public static final Seq<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new Seq<>();
-	public static final Seq<GravityGully.GravityGullyBuild> gravGullyGroup = new Seq<>();
-	public static final ObjectMap<Tile, IntSeq> intercepted = new ObjectMap<>();
+	public transient static final Seq<ServerInitc> serverLoad = new Seq<>();
+	public transient static final Seq<BeforeLoadc> advancedLoad = new Seq<>();
+	public transient static final Seq<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new Seq<>();
+	public transient static final Seq<GravityGully.GravityGullyBuild> gravGullyGroup = new Seq<>();
+	public transient static final ObjectMap<Tile, IntSeq> intercepted = new ObjectMap<>();
 	
-	public static int ix, iy;
+	public transient static final Seq<CommandableBlock.CommandableBlockBuild> commandables = new Seq<>();
+	
+	public transient static int ix, iy;
+	public transient static int commandPos = -1;
+	
 	
 	public static void clear(){
 		intercepted.clear();
 		upgraderGroup.clear();
 		gravGullyGroup.clear();
+		commandables.clear();
 		
 		ix = iy = 0;
+		commandPos = -1;
 	}
 	
 	public static void clearLast(){

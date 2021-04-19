@@ -363,6 +363,7 @@ public class HyperSpaceWarper extends Block{
 						if(index % 6 == 0)p.row();
 						p.button(new TextureRegionDrawable(u.type.icon(Cicon.full)), Styles.cleari, LEN, () -> {
 							selects.add(u.id);
+							configure(selects);
 						}).size(LEN).update(b -> {
 							if(selects.contains(u.id))b.remove();
 						});

@@ -14,6 +14,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -101,14 +102,21 @@ public class PlayerJumpGate extends Block{
 			if(!canFunction())return;
 			Building target = link();
 			boolean spawnedByCore = player.unit().spawnedByCore;
-			UnitType type = player.unit().type;
-			Unit unit = type.create(player.team());
+			Team t = player.team();
+			Unit before = player.unit();
+			UnitType type = before.type;
+			Unit unit = type.create(t);
 			unit.set(target);
 			unit.spawnedByCore(spawnedByCore);
 			unit.rotation = angleTo(target);
-			player.unit().remove();
+			player.team(Team.derelict);
 			if(!net.client())unit.add();
-			player.unit(unit);
+			while(player.unit() != unit && !player.within(target, tilesize * 2f)){
+				player.unit(unit);
+			}
+			player.team(t);
+			before.remove();
+
 			if(mobile && player == Vars.player)Core.camera.position.set(target);
 			reload = 0;
 			
@@ -160,7 +168,7 @@ public class PlayerJumpGate extends Block{
 			
 			if(player == null)return;
 			
-			Drawf.square(player.x, player.y, player.unit().hitSize, 45, dst(Vars.player) > dstMax ? Pal.redderDust : Color.green);
+			Drawf.square(player.x, player.y, player.unit().hitSize, 45, dst(Vars.player) > dstMax ? Pal.redderDust : Pal.heal);
 		}
 		
 		@Override

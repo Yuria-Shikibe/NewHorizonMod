@@ -1,10 +1,12 @@
 package newhorizon.func;
 
 import arc.Core;
+import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.input.KeyCode;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
@@ -16,8 +18,11 @@ import arc.scene.ui.TextArea;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.UnitTypes;
+import mindustry.core.UI;
+import mindustry.core.World;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -30,6 +35,7 @@ import mindustry.ui.Fonts;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.modules.ItemModule;
+import newhorizon.vars.NHCtrlVars;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -342,10 +348,10 @@ public class TableFs{
                 Label l = new Label("");
                 n.add(stack.item.localizedName + " ").left();
                 n.add(l).left();
-                n.add("/" + stack.amount).left().growX();
+                n.add("/" + UI.formatAmount(stack.amount)).left().growX();
                 n.update(() -> {
                     int amount = itemModule == null ? 0 : itemModule.get(stack.item);
-                    l.setText(String.valueOf(amount));
+                    l.setText(UI.formatAmount(amount));
                     l.setColor(amount < stack.amount ? Pal.redderDust : Color.white);
                 });
             }).growX().height(size).padLeft(OFFSET / 2).left();
@@ -354,5 +360,45 @@ public class TableFs{
     
     public static void link(Table father, Links.LinkEntry link){
         father.add(new Tables.LinkTable(link)).size(Tables.LinkTable.w + OFFSET * 2f, Tables.LinkTable.h).padTop(OFFSET / 2f).row();
+    }
+    
+    public static void pointSelectTable(Table parent, Cons<Point2> cons){
+        NHCtrlVars.reset();
+        NHCtrlVars.isSelecting = true;
+        
+        Table floatTable = new Table(Tex.clear){{
+            update(() -> {
+                if(Vars.state.isMenu())remove();
+            });
+            touchable = Touchable.enabled;
+            setFillParent(true);
+            
+            addListener(new InputListener(){
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                NHCtrlVars.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                return true;
+                }
+            });
+        }};
+        
+        Table pTable = new Table(Tex.clear){{
+            update(() -> {
+                if(Vars.state.isMenu()){
+                    remove();
+                }else{
+                    Vec2 v = Core.camera.project(World.toTile(NHCtrlVars.ctrlVec2.x) * tilesize, World.toTile(NHCtrlVars.ctrlVec2.y) * tilesize);
+                    setPosition(v.x, v.y, 0);
+                }
+            });
+            button(Icon.cancel, Styles.emptyi, () -> {
+                cons.get(Tmp.p1.set(World.toTile(NHCtrlVars.ctrlVec2.x), World.toTile(NHCtrlVars.ctrlVec2.y)));
+                NHCtrlVars.isSelecting = false;
+                remove();
+                floatTable.remove();
+            }).center();
+        }};
+        
+        Core.scene.root.addChildAt(Math.max(parent.getZIndex() - 1, 0), pTable);
+        Core.scene.root.addChildAt(Math.max(parent.getZIndex() - 2, 0), floatTable);
     }
 }

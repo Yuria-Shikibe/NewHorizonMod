@@ -1,8 +1,11 @@
 package newhorizon.func;
 
+import arc.Core;
 import arc.files.Fi;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.io.PropertiesUtils;
 import mindustry.Vars;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
@@ -21,21 +24,37 @@ public class NHSetting{
 	private static final Properties settingList = new Properties();
 	private static String path = "";
 	private static boolean loaded;
+	private static final ObjectMap<String, String> all = new ObjectMap<>();
 	
+	public static final Seq<SettingEntry> entries = new Seq<>();
 	public static final ObjectMap<String, String> defaultKeys = new ObjectMap<>();
 	public static Mods.ModMeta modMeta = new Mods.ModMeta();
 	
 	static{
 		defaultKeys.put("initialized", "null version");
+		defaultKeys.put("@active.hid-start-log", String.valueOf(false));
 		defaultKeys.put("@active.tool-panel*", String.valueOf(false));
 		defaultKeys.put("@active.admin-panel", String.valueOf(false));
 		defaultKeys.put("@active.advance-load*", String.valueOf(false));
 		defaultKeys.put("@active.debug", String.valueOf(false));
 	}
-	
-//	public static void initJson(){
-//		json = Jval.read()
-//	}
+ 
+	public static class SettingEntry{
+		public final String key;
+		public String description;
+		public String warning;
+		public final boolean typeOfBool;
+		
+		public SettingEntry(String key){
+			this.key = key;
+			if(key.endsWith("*"))warning = Core.bundle.get(key.replaceFirst("@", "") + ".warning", "null");
+			description = Core.bundle.get(key.replaceFirst("@", "") + ".description");
+			typeOfBool = key.contains("active");
+		}
+		
+		public boolean bool(){return typeOfBool;}
+		public boolean warn(){return key.endsWith("*");}
+	}
 	
 	public static void settingFile() throws IOException{
 		Fi fi = new Fi(Vars.modDirectory + "/new-horizon/NHSettings.properties");
@@ -72,6 +91,14 @@ public class NHSetting{
 		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
 		
 		if(!modMeta.version.equals(settingList.getProperty(initKey)))updateProperty(modMeta.version);
+		PropertiesUtils.load(all, setting.reader());
+		
+		for(String key : all.keys()){
+			if(key.startsWith("@")){
+				SettingEntry entry = new SettingEntry(key);
+				entries.add(entry);
+			}
+		}
 	}
 	
 	private static void updateProperty(String version) throws IOException{

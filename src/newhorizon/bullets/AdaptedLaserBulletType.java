@@ -9,16 +9,27 @@ import arc.util.Tmp;
 import mindustry.entities.bullet.LaserBulletType;
 import mindustry.gen.Bullet;
 import mindustry.graphics.Drawf;
+import newhorizon.feature.PosLightning;
 
-public class NHLaserBulletType extends LaserBulletType {
-	public NHLaserBulletType(float damage){
+public class AdaptedLaserBulletType extends LaserBulletType {
+	public boolean drawLine = false;
+	public int boltNum = 2;
+	public float liWidth = PosLightning.WIDTH - 1f;
+	
+	public AdaptedLaserBulletType(float damage){
 		super(damage);
 	}
 	
-	public NHLaserBulletType(){
+	public AdaptedLaserBulletType(){
         this(1f);
     }
-
+	
+	@Override
+	public void init(Bullet b){
+		super.init(b);
+		PosLightning.createEffect(b, b.fdata * 0.95f, b.rotation(), hitColor, boltNum, liWidth);
+	}
+ 
 	@Override
     public void draw(Bullet b){
 		float realLength = b.fdata;
@@ -28,6 +39,7 @@ public class NHLaserBulletType extends LaserBulletType {
 		float cwidth = width;
 		float compound = 1f;
 
+		if(drawLine)Lines.lineAngle(b.x, b.y, b.rotation(), baseLen);
 		for(Color color : colors){
 			Draw.color(color);
             Lines.stroke((cwidth *= lengthFalloff) * b.fout());
