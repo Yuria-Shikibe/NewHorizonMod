@@ -2,7 +2,7 @@
 
 ![Logo](github-pictures/ui/logo.png)
 
-****A Java Mindustry mod that works on Android and PC.****
+****A Java Mindustry mod for Android and PC.****
 
 **Powered by *Yuria*.**
 
@@ -23,7 +23,7 @@ Well, you may feel it is impossible to communicate with them because as I know, 
 
 But if that doesn't happen, making everything function right and not demolishing buildings at will are enough. I believe every player can get along well with one another ~~as long as no one blows up a reactor or breaks someone else's blueprint~~.
 
-Don't forget to invite your friends to try this mod, because you guys can use the amount of non-Chinese speaking players to turn the situation. ~~Also if Chinese players don't quit, this may be a fantastic chance for them to learn English~~(~~Maaaaaaaybeeeeeee~~). 
+Don't forget to invite your friends to try this mod, because you guys can use the amount of non-Chinese speaking players to turn the situation. ~~Also if Chinese players don't quit, this may be a fantastic chance for them to learn English~~ (~~Maaaaaaaybeeeeeee~~). 
 
 Have a nice day.
 
@@ -34,7 +34,7 @@ Have a nice day.
 
 If you downloaded from `Action`, unzip the Mod.zip file first, then install the mod in-game;
 
-Mod is ***unstable*** (mainly for phones, which have some UI and load problems) and is ***WORK IN PROGRESS***.
+Mod is ***unstable*** (mainly for phones, which have some UI and loading problems) and is ***WORK IN PROGRESS***.
 
 All code is here and completely open source ~~so no code that has *safety* problems could be hidden~~.
 
