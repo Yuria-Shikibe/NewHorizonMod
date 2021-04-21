@@ -17,7 +17,7 @@ public class SettingDialog extends BaseDialog{
 		setFillParent(true);
 		cont.pane(table -> {
 			table.pane(t -> {
-				t.add("[gray]You can get back to here by [accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ");
+				t.add("[gray]You can get back here through [accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ");
 				t.add("@settings").color(Pal.lancerLaser).row();
 			}).growX().height(LEN).row();
 			table.image().color(Pal.accent).growX().height(OFFSET / 4).pad(OFFSET / 2).row();
@@ -54,14 +54,14 @@ public class SettingDialog extends BaseDialog{
 			dialog.addCloseListener();
 			if(Vars.mobile){
 				dialog.cont.pane(t -> {
-					t.add("[gray]The " + key.description + " [lightgray]IS NOT SUITABLE[gray] for [lightgray]PHONES[gray].").row();
-					t.add("ARE YOU SURE YOU WANT TO ACTIVE IT?").color(Pal.ammo).padTop(OFFSET / 4).row();
+					t.add("[gray]The " + key.description + " [lightgray]NOT SUITABLE[gray] for [lightgray]PHONES[gray].").row();
+					t.add("ARE YOU SURE YOU WANT TO ACTIVATE IT?").color(Pal.ammo).padTop(OFFSET / 4).row();
 					t.add(key.warning).color(Pal.ammo).padTop(OFFSET / 4);
 				}).fill().row();
 				dialog.cont.image().fillX().height(OFFSET / 3).color(Pal.ammo).row();
 			}else{
 				dialog.cont.pane(t -> {
-					t.add("Are you sure you want to active it ?").color(Color.gray).padTop(OFFSET / 4);
+					t.add("Are you sure you want to activate it?").color(Color.gray).padTop(OFFSET / 4);
 				}).fill().row();
 				dialog.cont.image().fillX().height(OFFSET / 3).color(Color.gray).row();
 			}
@@ -77,7 +77,7 @@ public class SettingDialog extends BaseDialog{
 			BaseDialog dialog = new BaseDialog("Caution");
 			dialog.addCloseListener();
 			dialog.cont.pane(t -> {
-				t.add("Are you sure you want to disable it ?").color(Color.gray).padTop(OFFSET / 4);
+				t.add("Are you sure you want to disable it?").color(Color.gray).padTop(OFFSET / 4);
 			}).fill().row();
 			dialog.cont.image().fillX().height(OFFSET / 3).color(Color.gray).row();
 			dialog.cont.pane(t -> {
