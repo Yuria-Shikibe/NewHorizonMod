@@ -71,7 +71,7 @@ If you find that your device cannot afford it, open the mod file folder and find
    ![guide-link](github-pictures/guide/link-upgrade.png)
 3. Click the `Upgrader`.
 4. Click button `Upgrade`.
-   if if everything goes correctly, you will see the table of all the upgrade options.
+   if everything goes correctly, you will see the table of all the upgrade options.
 5. Select the option you want to upgrade.
    ![guide-upgrade](github-pictures/guide/ui-upgrade.png)
    
