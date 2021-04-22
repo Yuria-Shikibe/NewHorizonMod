@@ -102,7 +102,7 @@ public class PlayerJumpGate extends Block{
 			if(!canFunction())return;
 			Building target = link();
 			boolean spawnedByCore = player.unit().spawnedByCore;
-			int tid = player.team().id;
+			Team t = Team.all[player.team().id];
 			Unit before = player.unit();
 			UnitType type = before.type;
 			Unit unit = type.create(t);
@@ -114,7 +114,7 @@ public class PlayerJumpGate extends Block{
 			while(player.unit() != unit && !player.within(target, tilesize * 2f)){
 				player.unit(unit);
 			}
-			player.team(Team.all[tid]);
+			player.team(t);
 			before.remove();
 
 			if(mobile && player == Vars.player)Core.camera.position.set(target);
