@@ -1,17 +1,18 @@
 package newhorizon.block.special;
 
 import arc.Core;
+import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.scene.Element;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -21,10 +22,7 @@ import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
-import mindustry.gen.Tex;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -43,18 +41,15 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.Functions;
-import newhorizon.func.TableFuncs;
-import newhorizon.func.Tables;
+import newhorizon.func.*;
 import newhorizon.interfaces.Linkablec;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 import static newhorizon.func.Functions.regSize;
-import static newhorizon.func.TableFuncs.LEN;
-import static newhorizon.func.TableFuncs.OFFSET;
+import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFs.OFFSET;
 
 public class JumpGate extends Block {
     protected static final Seq<JumpGate> all = new Seq<>();
@@ -73,7 +68,6 @@ public class JumpGate extends Block {
             arrowRegion;
     public Color baseColor;
     public final Seq<UnitSet> calls = new Seq<>();
-
     public float squareStroke = 2f;
 
     public JumpGate(String name){
@@ -87,9 +81,9 @@ public class JumpGate extends Block {
         consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
         consumes.powerCond(consumes.getPower().usage, JumpGateBuild::isCalling);
     
-        config(Long.class, (JumpGateBuild tile, Long b) -> tile.link = b.intValue());
+        config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
         config(Integer.class, (JumpGateBuild tile, Integer i) -> {
-            if(!tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
+            if(i < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
             else tile.spawn(calls.get(i));
         });
     }
@@ -154,7 +148,7 @@ public class JumpGate extends Block {
         stats.add(Stat.output, (t) -> {
             t.row().add("[gray]Summon Types:").left().pad(OFFSET).row();
             for(UnitSet set : calls) {
-                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
+                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearPartiali, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
             }
         });
     }
@@ -163,27 +157,25 @@ public class JumpGate extends Block {
         BaseDialog dialogIn = new BaseDialog("More Info");
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
-        dialogIn.cont.pane(t -> {
-            t.table(inner -> {
-                inner.image(set.type.icon(Cicon.full)).center().row();
-                inner.add("<<[accent] " + set.type.localizedName + " []>>").row();
-                inner.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
-                inner.add("[lightgray]BuildNeededTime: [accent]" + TableFuncs.format(set.costTimeVar() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
-                inner.table(table -> {
-                    int index = 0;
-                    for(ItemStack stack : set.requirements()){
-                        if(module != null || index % 7 == 0)table.row();
-                        if(module != null){
-                            TableFuncs.add(table, stack, module);
-                        }else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
-                        index ++;
-                    }
-                }).growX().fillY().left().padLeft(OFFSET).row();
-                inner.add(extra).left().padLeft(OFFSET).row();
-                inner.image().fillX().pad(2).height(4f).color(Pal.accent);
-                inner.row();
-                inner.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
-            }).grow();
+        dialogIn.cont.pane(inner -> {
+            inner.image(set.type.icon(Cicon.full)).center().row();
+            inner.add("<<[accent] " + set.type.localizedName + " []>>").row();
+            inner.add("[lightgray]Call: [accent]" + set.type.localizedName + "[lightgray]; Level: [accent]" + set.level + "[]; Call num: [accent]" + set.callIns + "[].").left().padLeft(OFFSET).row();
+            inner.add("[lightgray]BuildNeededTime: [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] sec[]").left().padLeft(OFFSET).row();
+            inner.table(table -> {
+                int index = 0;
+                for(ItemStack stack : set.requirements()){
+                    if(module != null || index % 7 == 0)table.row();
+                    if(module != null){
+                        TableFs.itemStack(table, stack, module);
+                    }else table.add(new ItemDisplay(stack.item, stack.amount, false).left()).padLeft(OFFSET / 2).left();
+                    index ++;
+                }
+            }).growX().fillY().left().padLeft(OFFSET).row();
+            inner.add(extra).left().padLeft(OFFSET).row();
+            inner.image().fillX().pad(2).height(4f).color(Pal.accent);
+            inner.row();
+            inner.button("@back", Icon.left, Styles.cleart, dialogIn::hide).size(LEN * 3f, LEN).pad(OFFSET);
         }).grow().row();
         dialogIn.show();
     }
@@ -204,8 +196,8 @@ public class JumpGate extends Block {
     @Override
     public void load(){
         super.load();
-        pointerRegion = Core.atlas.find(NewHorizon.MOD_NAME + "jump-gate-pointer");
-        arrowRegion = Core.atlas.find(NewHorizon.MOD_NAME + "jump-gate-arrow");
+        pointerRegion = Core.atlas.find(NewHorizon.configName("jump-gate-pointer"));
+        arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
     }
 
     public class JumpGateBuild extends Building implements Ranged, Linkablec{
@@ -222,13 +214,14 @@ public class JumpGate extends Block {
         @Override
         public void updateTile(){
             if(hasConsume(getSet()))progress += efficiency() + warmup;
-            if(isCalling()){
-                buildReload += efficiency() * (state.rules.infiniteResources ? Float.MAX_VALUE : 1) * Vars.state.rules.unitBuildSpeedMultiplier;
+            if(isCalling() && hasConsume(getSet())){
+                NHSetting.debug(() -> buildReload = Float.MAX_VALUE);
+                buildReload += efficiency() * Vars.state.rules.unitBuildSpeedMultiplier;
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
-                    Log.info("start spawn");
                     configure(spawnID);
                 }
             }
+            
             if(efficiency() > 0){
                 if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
                 else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
@@ -263,19 +256,20 @@ public class JumpGate extends Block {
             
             if(core() != null)DrawFuncs.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
             
-            if(error)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color);
+            if(error)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
             
             Draw.reset();
         }
 
         @Override
         public boolean onConfigureTileTapped(Building other) {
+            
             if (this == other || link == other.pos()) {
-                configure(-1L);
+                configure(Tmp.p1.set(-1, -1));
                 return false;
             }
             if (other.within(this, range())) {
-                configure((long)other.pos());
+                configure(Point2.unpack(other.pos()));
                 return false;
             }
             return true;
@@ -292,7 +286,7 @@ public class JumpGate extends Block {
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 Label can = new Label("");
-                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFuncs.getJudge(canSpawn(set))));
+                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(set))));
                                 table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core().items)).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(calls.indexOf(set))).size(LEN).disabled(b -> !canSpawn(set) || error);
                             })).fillY().growX().row();
@@ -311,13 +305,16 @@ public class JumpGate extends Block {
                 }).grow()
             ).grow().row();
             dialog.cont.add(new Bar(
-                    () -> isCalling() ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]."
+                    () -> isCalling() ? hasConsume(getSet()) && !error ? "[gray]Build: [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / 60f) / state.rules.unitBuildSpeedMultiplier) + " Sec[gray]." : "[red]Call Jammed."
                         : "[lightgray]" + Iconc.cancel,
-                    () -> isCalling() && hasConsume(getSet()) ? Pal.power : Pal.redderDust,
+                    () -> isCalling() && hasConsume(getSet()) && !error ? Pal.power : Pal.redderDust,
                     () -> isCalling() ? buildReload / getSet().costTime() : 0
             )).fillX().height(LEN).padTop(OFFSET / 2).row();
-            dialog.cont.button("@release", Icon.add, Styles.cleart, () -> configure(spawnID)).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).fillX().height(LEN).row();
-            dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).fillX().height(LEN).row();
+            dialog.cont.table(t -> {
+                t.button("@cancel", Icon.cancel, Styles.cleart, () -> configure(-1)).padTop(OFFSET / 2).disabled(b -> !isCalling()).growX().height(LEN);
+                t.button("@release", Icon.add, Styles.cleart, () -> configure(spawnID)).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).growX().height(LEN);
+                t.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).growX().height(LEN);
+            }).growX().height(LEN);
             table.button("@spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
         }
 
@@ -387,7 +384,9 @@ public class JumpGate extends Block {
         }
         
         public void startBuild(int set){
-            spawnID = set;
+            if(set < 0 || set >= calls.size){
+                spawnID = -1;
+            }else spawnID = set;
         }
         
         public void startBuild(UnitSet set){
@@ -412,7 +411,7 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
     
-            success = Functions.spawnUnit(this, Sx, Sy, spawnNum, set.level, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, (long)progress, set.type, baseColor());
+            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, (long)Groups.unit.size() + Groups.build.size() << 8, set, baseColor());
             
             if(success){
                 consumeItems();
@@ -443,6 +442,7 @@ public class JumpGate extends Block {
             if(spawnID < 0 || spawnID >= calls.size)return null;
             return calls.get(spawnID);
         }
+        
         @Override public int linkPos(){ return link; }
         @Override public void linkPos(int value){ link = value; }
         @Override public Color getLinkColor(){ return getColor(getSet()); }
@@ -454,16 +454,10 @@ public class JumpGate extends Block {
         public @NotNull UnitType type;
         public float costTime;
         public int callIns;
-        public boolean showText ;
         
         public UnitSet(){this(0, UnitTypes.alpha, 0, 5); }
-
-        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, ItemStack... requirements){
-            this(level, type, costTime, callIns, true, requirements);
-        }
     
-        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, boolean showText, ItemStack... requirements){
-            this.showText = showText;
+        public UnitSet(float level, @NotNull UnitType type, float costTime, int callIns, ItemStack... requirements){
             this.type = type;
             this.level = level;
             this.costTime = costTime;

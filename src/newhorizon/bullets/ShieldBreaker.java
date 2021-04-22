@@ -1,19 +1,25 @@
 package newhorizon.bullets;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
-import arc.util.Time;
-import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
-import newhorizon.effects.EffectTrail;
+import newhorizon.content.NHFx;
+
 
 public class ShieldBreaker extends NHTrailBulletType{
     public float maxShieldDamage;
-    public float rotateSpeed = 1.75f;
     
-    protected BulletType breakType;
+    protected static BulletType breakType = new EffectBulletType(1f){{
+        this.absorbable = true;
+        this.damage = 1;
+    }
+        @Override
+        public void despawned(Bullet b){
+            if(b.absorbed && b.data instanceof Color)NHFx.shuttle.at(b.x, b.y, Mathf.random(360f), (Color)b.data, b.damage / Vars.tilesize / 2f);
+        }
+    };
     
     public ShieldBreaker(float speed, float damage, String bulletSprite, float shieldDamage) {
         super(speed, damage, bulletSprite);
@@ -32,39 +38,12 @@ public class ShieldBreaker extends NHTrailBulletType{
 
     @Override
     public void init(){
-        if(breakType == null)breakType = new EffectBulletType(1f){{
-            this.absorbable = true;
-            this.damage = maxShieldDamage;
-        }};
         super.init();
-    }
-
-    @Override
-    public void draw(Bullet b){
-        if (!(b.data instanceof EffectTrail))return;
-        EffectTrail t = (EffectTrail)b.data;
-        t.draw(trailColor);
-
-        float height = this.height * (1.0F - this.shrinkY + this.shrinkY * b.fout());
-        float width = this.width * (1.0F - this.shrinkX + this.shrinkX * b.fout());
-        float offset = -90.0F + (this.spin != 0.0F ? Mathf.randomSeed(b.id, 360.0F) + b.time * this.spin : 0.0F);
-        Color mix = Tmp.c1.set(this.mixColorFrom).lerp(this.mixColorTo, b.fin());
-        Draw.mixcol(mix, mix.a);
-        Draw.color(this.backColor);
-        Draw.rect(this.backRegion, b.x, b.y, width, height, rotOffset(b) + b.rotation() + offset + Time.time * rotateSpeed);
-        Draw.color(this.frontColor);
-        Draw.rect(this.frontRegion, b.x, b.y, width, height, rotOffset(b) + b.rotation() + offset + Time.time * rotateSpeed);
-        Draw.reset();
     }
 
     @Override
     public void update(Bullet b) {
         super.update(b);
-        float offset = -90.0F + (this.spin != 0.0F ? Mathf.randomSeed(b.id, 360.0F) + b.time * this.spin : 0.0F);
-        breakType.create(b, b.x, b.y, 0);
-    }
-
-    public float rotOffset(Bullet b){
-        return (b.id % 360);
+        breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
     }
 }

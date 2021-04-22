@@ -2,7 +2,6 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.Pixmap;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -10,19 +9,20 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.struct.Seq;
-import arc.util.Structs;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
+import mindustry.gen.Buildingc;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import mindustry.type.Weapon;
 import mindustry.ui.Fonts;
 import newhorizon.NewHorizon;
 
+import static mindustry.Vars.tilesize;
+
 public class DrawFuncs {
     public static final Color bottomColor = Pal.gray;
-    public static final Color outlineColor = Color.valueOf("565666");
     public static final float sinScl = 1f;
     private static final Vec2
         vec21 = new Vec2(),
@@ -46,21 +46,25 @@ public class DrawFuncs {
         Draw.reset();
     }
     
-    public static void overlayText(String text, float x, float y, float offset, Color color){
-        Font font = Fonts.outline;
+    public static void overlayText(Font font, String text, float x, float y, float offset, float offsetScl, float size, Color color, boolean underline, boolean align){
         GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
         boolean ints = font.usesIntegerPositions();
         font.setUseIntegerPositions(false);
-        font.getData().setScale(0.25F / Scl.scl(1.0F));
-        layout.setText(font, Core.bundle.get("spawn-error"));
+        font.getData().setScale(size / Scl.scl(1.0f));
+        layout.setText(font, text);
         font.setColor(color);
-        float dy = y + offset + 3.0F;
-        font.draw(Core.bundle.get("spawn-error"), x, dy + layout.height + 1.0F, 1);
+        
+        float dy = offset + 3.0F;
+        font.draw(text, x, y + layout.height / (align ? 2 : 1) + (dy + 1.0F) * offsetScl, 1);
         --dy;
-        Lines.stroke(2.0F, Color.darkGray);
-        Lines.line(x - layout.width / 2.0F - 2.0F, dy, x + layout.width / 2.0F + 1.5F, dy);
-        Lines.stroke(1.0F, color);
-        Lines.line(x - layout.width / 2.0F - 2.0F, dy, x + layout.width / 2.0F + 1.5F, dy);
+    
+        if(underline){
+            Lines.stroke(2.0F, Color.darkGray);
+            Lines.line(x - layout.width / 2.0F - 2.0F, dy + y, x + layout.width / 2.0F + 1.5F, dy + y);
+            Lines.stroke(1.0F, color);
+            Lines.line(x - layout.width / 2.0F - 2.0F, dy + y, x + layout.width / 2.0F + 1.5F, dy + y);
+        }
+    
         font.setUseIntegerPositions(ints);
         font.setColor(Color.white);
         font.getData().setScale(1.0F);
@@ -68,91 +72,8 @@ public class DrawFuncs {
         Pools.free(layout);
     }
     
-    public static Pixmap getOutline(Pixmap base, Color outlineColor){
-        PixmapRegion region = new PixmapRegion(base);
-        Pixmap out = new Pixmap(region.width, region.height);
-        Color color = new Color();
-        
-        for(int x = 0; x < region.width; ++x){
-            for(int y = 0; y < region.height; ++y){
-                region.getPixel(x, y, color);
-                out.draw(x, y, color);
-                if(color.a < 1.0F){
-                    boolean found = false;
-                    
-                    label72:
-                    for(int rx = -4; rx <= 4; ++rx){
-                        for(int ry = -4; ry <= 4; ++ry){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within((float)rx, (float)ry, 4.0F) && color.set(region.getPixel(rx + x, ry + y)).a > 0.01F){
-                                found = true;
-                                break label72;
-                            }
-                        }
-                    }
-                    
-                    if(found){
-                        out.draw(x, y, outlineColor);
-                    }
-                }
-            }
-        }
-        return out;
-    }
-    
-    public static Pixmap getOutline(TextureAtlas.AtlasRegion t, Color outlineColor){
-        if(t.found()){
-            return getOutline(Core.atlas.getPixmap(t).crop(), outlineColor);
-        }else return new Pixmap(255, 255);
-    }
-    
-    public static void drawWeaponPixmap(Pixmap base, Weapon w, boolean outline){
-        TextureAtlas.AtlasRegion t = Core.atlas.find(w.name);
-        if(!t.found())return;
-        Pixmap wRegion = outline ? getOutline(t, outlineColor) : Core.atlas.getPixmap(t).crop();
-        
-        int startX = getCenter(base, wRegion, true, outline), startY = getCenter(base, wRegion, false, outline);
-    
-        if(w.mirror){
-            PixmapRegion t2 = Core.atlas.getPixmap(t);
-            Pixmap wRegion2 = outline ? getOutline(flipX(t2), outlineColor) : flipX(t2);
-            base.drawPixmap(wRegion, startX + (int)w.x * 4, startY - (int)w.y * 4, 0, 0, wRegion.getWidth(), wRegion.getHeight());
-            base.drawPixmap(wRegion2, getCenter(base, wRegion2, true, outline) - (int)w.x * 4, getCenter(base, wRegion2, false, outline) - (int)w.y * 4, 0, 0, -wRegion2.getWidth(), wRegion2.getHeight());
-        }else{
-            base.drawPixmap(wRegion, startX + (int)(w.x) * 4, startY - (int)(w.y) * 4);
-        }
-    }
-    
-    public static int getCenter(Pixmap base, Pixmap above, boolean WorH, boolean outline){
-        return (WorH ? (base.getWidth() - above.getWidth()) / 2 : (base.getHeight() - above.getHeight()) / 2);
-    }
-    
-    public static Pixmap flipX(PixmapRegion pixmap){
-        Pixmap base = new Pixmap(pixmap.width, pixmap.height);
-        Color color = new Color();
-        
-        if(color.a < 1.0F){
-            for(int y = 0; y < pixmap.height; ++y){
-                for(int x = 0; x < pixmap.width; ++x){
-                    pixmap.getPixel(x, y, color);
-                    base.draw(pixmap.width - x, y, color);
-                }
-            }
-        }
-        return base;
-    }
-    
-    public static Pixmap fillColor(PixmapRegion pixmap, Color replaceColor){
-        Pixmap base = new Pixmap(pixmap.width, pixmap.height);
-        Color color = new Color();
-        if(color.a < 1.0F){
-            for(int y = 0; y < pixmap.height; ++y){
-                for(int x = 0; x < pixmap.width; ++x){
-                    pixmap.getPixel(x, y, color);
-                    base.draw(pixmap.width - x, y, color.mul(replaceColor));
-                }
-            }
-        }
-        return base;
+    public static void overlayText(String text, float x, float y, float offset, Color color, boolean underline){
+        overlayText(Fonts.outline, text, x, y, offset, 1, 0.25f, color, underline, false);
     }
     
     public static void drawSine(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant, boolean flip){
@@ -224,7 +145,32 @@ public class DrawFuncs {
             }
         //}
     }
-
+    
+    public static void link(Buildingc from, Buildingc to, Color color){
+        float
+                sin = Mathf.absin(Time.time * sinScl, 6f, 1f),
+                r1 = from.block().size / 2f * tilesize + sin,
+                x1 = from.getX(), x2 = to.getX(), y1 = from.getY(), y2 = to.getY(),
+                r2 = to.block().size / 2f * tilesize + sin;
+        
+        Draw.color(color);
+    
+        Lines.square(x2, y2, to.block().size * tilesize / 2f + 1.0f);
+    
+        Tmp.v1.trns(from.angleTo(to), r1);
+        Tmp.v2.trns(to.angleTo(from), r2);
+        int signs = (int)(from.dst(to) / tilesize);
+    
+        Lines.stroke(4, Pal.gray);
+        Lines.dashLine(x1 + Tmp.v1.x, y1 + Tmp.v1.y, x2 + Tmp.v2.x, y2 + Tmp.v2.y, signs);
+        Lines.stroke(2, color);
+        Lines.dashLine(x1 + Tmp.v1.x, y1 + Tmp.v1.y, x2 + Tmp.v2.x, y2 + Tmp.v2.y, signs);
+    
+        Drawf.arrow(x1, y1, x2, y2, from.block().size * tilesize / 2f + sin, 4 + sin, color);
+    
+        Drawf.circles(x2, y2, r2, color);
+    }
+    
     public static void arrow(TextureRegion arrow, float x, float y, float sizeScl, float angle, Color color){
         Draw.color(color);
         Draw.rect(arrow, x, y, arrow.width * sizeScl * Draw.scl, arrow.height * sizeScl * Draw.scl, angle);
@@ -257,7 +203,7 @@ public class DrawFuncs {
 
     public static void posSquareLinkArr(Color color, float stroke, float size, boolean drawBottom, boolean linkLine, Position... pos){
         if(pos.length < 2 || (!linkLine && pos[0] == null))return;
-
+        
         for (int c : drawBottom ? Mathf.signs : Mathf.one) {
             for (int i = 1; i < pos.length; i++) {
                 if (pos[i] == null)continue;

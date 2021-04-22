@@ -7,11 +7,9 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
@@ -21,7 +19,6 @@ import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.func.NHSetting;
 
 import static mindustry.Vars.tilesize;
 
@@ -89,7 +86,6 @@ public class DisposableBattery extends PowerDistributor{
 		public void updateTile(){
 			if(timer(0, Time.delta))progress += Math.max(0, (consumption + power.graph.getLastScaledPowerOut()) / consumes.getPower().capacity);
 			power.status = power.graph.getLastScaledPowerOut() / consumes.getPower().capacity * 1.125f;
-			if(!Vars.headless)NHSetting.debug(() -> Log.info(power.graph.getPowerNeeded() + " | " + power.graph.getSatisfaction()));
 			if(progress > 1)kill();
 		}
 		

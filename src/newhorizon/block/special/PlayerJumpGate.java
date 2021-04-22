@@ -6,8 +6,8 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -19,42 +19,39 @@ import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.Tile;
-import newhorizon.content.NHFx;
-import newhorizon.func.NHSetting;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFs.LEN;
 
 public class PlayerJumpGate extends Block{
+	protected float dstMax;
+	
 	public float reloadTime = 60f;
 	public float range = 1200f;
 	public float polyStroke = 2f;
 	public float polyLerpSpeedScl = 0.8f;
 	
-	
 	public PlayerJumpGate(String name){
 		super(name);
 		update = true;
 		configurable = true;
-		solid = true;
-		config(Integer.class, (Cons2<PlayerJumpGateBuild, Integer>)PlayerJumpGateBuild::linkPos);
-		config(Long.class, (PlayerJumpGateBuild tile, Long id) -> tile.teleport(Groups.player.getByID(id.intValue())));
+		config(Point2.class, (Cons2<PlayerJumpGateBuild, Point2>)PlayerJumpGateBuild::linkPos);
+		config(Integer.class, (PlayerJumpGateBuild tile, Integer id) -> tile.teleport(Groups.player.getByID(id)));
 		config(Boolean.class, (PlayerJumpGateBuild tile, Boolean value) -> tile.locked = value);
 	}
 	
-	public boolean canPlaceOn(Tile tile, Team team) {return !Vars.net.client();}
+	@Override
+	public void init(){
+		dstMax = size * tilesize / 2.5f;
+		super.init();
+	}
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid){
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
-		if (Vars.world.tile(x, y) != null) {
-			if (!canPlaceOn(null, null)) {
-				drawPlaceText("Broken in server.\nWhy? Because the fucking anti teleport plugin fucked up everything.", x, y, valid);
-			}
-		}
 	}
 	
 	@Override
@@ -103,26 +100,32 @@ public class PlayerJumpGate extends Block{
 		
 		public void teleport(Player player){
 			if(!canFunction())return;
-			
-			Tmp.v3.set(link()).sub(player).scl((1 + player.unit().type.drag) / tilesize * 1.575f);
-			
-			player.unit().lookAt(link());
-			player.unit().vel().set(Tmp.v3);
-			
-			float time = dst(link()) / (Tmp.v3.len() * (1f - player.unit().type.drag));
-			for(int i = 0; i < 30; i++)Time.run(time * 2 / 30 * i, () -> {
-				NHFx.poly.at(player.unit().x, player.unit().y, player.unit().hitSize * 1.1f, player.team().color);
-				NHSetting.debug(() -> Log.info(player.x + " | " + player.y));
-				NHSetting.debug(() -> Log.info("[U]" + player.unit().x + " | " + player.unit().y));
-			});
-			Time.run(time, () -> player.unit().vel.trns(angleTo(link()), player.unit().type.speed));
-			
-			if(mobile)Core.camera.position.set(link());
+			Building target = link();
+			boolean spawnedByCore = player.unit().spawnedByCore;
+			Team t = player.team();
+			Unit before = player.unit();
+			UnitType type = before.type;
+			Unit unit = type.create(t);
+			unit.set(target);
+			unit.spawnedByCore(spawnedByCore);
+			unit.rotation = angleTo(target);
+			player.team(Team.derelict);
+			if(!net.client())unit.add();
+			while(player.unit() != unit && !player.within(target, tilesize * 2f)){
+				player.unit(unit);
+			}
+			player.team(t);
+			before.remove();
+
+			if(mobile && player == Vars.player)Core.camera.position.set(target);
 			reload = 0;
-			Sounds.plasmaboom.at(this, Mathf.random(0.9f, 1.1f));
+			
+			Sounds.respawn.at(this, Mathf.random(0.9f, 1.1f));
+			Sounds.respawn.at(target, Mathf.random(0.9f, 1.1f));
 			for(int i = 0; i < 3; i++){
 				Time.run(8 * i, () -> {
 					Fx.spawn.at(this);
+					Fx.spawn.at(target);
 				});
 			}
 		}
@@ -148,11 +151,11 @@ public class PlayerJumpGate extends Block{
 		@Override
 		public boolean onConfigureTileTapped(Building other){
 			if (this == other || link == other.pos()) {
-				configure(-1);
+				configure(Tmp.p1.set(-1, -1));
 				return false;
 			}
 			if (other.within(this, range()) && other.team == team && other instanceof PlayerJumpGateBuild) {
-				configure(other.pos());
+				configure(Point2.unpack(other.pos()));
 				return false;
 			}
 			return true;
@@ -162,6 +165,10 @@ public class PlayerJumpGate extends Block{
 		public void drawConfigure(){
 			Drawf.dashCircle(x, y, range, getLinkColor());
 			drawLink();
+			
+			if(player == null)return;
+			
+			Drawf.square(player.x, player.y, player.unit().hitSize, 45, dst(Vars.player) > dstMax ? Pal.redderDust : Pal.heal);
 		}
 		
 		@Override
@@ -187,16 +194,15 @@ public class PlayerJumpGate extends Block{
 					float f = (progress - 25 * i) % 100 / 100;
 					Tmp.v1.trns(angleTo(link()), f * tilesize * size * 4);
 					Lines.stroke(warmup * polyStroke * (1 - f));
-					Lines.poly(x + Tmp.v1.x, y + Tmp.v1.y, 6, (1 - f) * size * tilesize / 1.25f);
+					Lines.square(x + Tmp.v1.x, y + Tmp.v1.y, (1 - f) * size * tilesize / 2f + 1);
 				}
 			}
 		}
 		
 		@Override
 		public void buildConfiguration(Table table){
-			final float dstMax = size * tilesize / 2.5f;
 			table.button(Icon.lock, LEN, () -> configure(!locked)).size(LEN).update(b -> b.getStyle().imageUp = locked ? Icon.lock : Icon.lockOpen);
-			table.button("Teleport", Icon.upOpen, LEN, () -> configure((long)Vars.player.id)).size(LEN * 4, LEN).disabled(b -> !playerValid() || !canFunction() || dst(Vars.player) > dstMax);
+			table.button("Teleport", Icon.upOpen, LEN, () -> configure(Vars.player.id)).size(LEN * 4, LEN).disabled(b -> !playerValid() || !canFunction() || dst(Vars.player) > dstMax);
 		}
 		
 		public boolean canFunction(){
@@ -204,7 +210,7 @@ public class PlayerJumpGate extends Block{
 		}
 		
 		public boolean playerValid(){
-			return player != null && player.unit() != null && player.unit().type != null && player.unit().type.flying && player.unit().isValid();
+			return player != null && player.unit() != null && player.unit().type != null && player.unit().isValid();
 		}
 	}
 }

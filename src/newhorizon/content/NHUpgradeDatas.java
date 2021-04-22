@@ -12,17 +12,60 @@ import static mindustry.Vars.tilesize;
 public class NHUpgradeDatas implements ContentList{
 	public static final Seq<UpgradeData> all = new Seq<>();
 	
-	public static UpgradeData none, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket;
+	public static UpgradeData
+			longRangeShoot, longRangeShootRapid, longRangeShootSplash, mineShoot,
+			none, darkEnrlaser, decayLaser, bombStorm, arc9000, curveBomb, airRaid, strikeRocket, posLightning;
 	
 	@Override
 	public void load(){
 		none = new UpgradeData();
 		
+		longRangeShoot = new UpgradeData("long-range-shoot-0", NHBullets.longRangeShoot, 150f,
+			new ItemStack(NHItems.presstanium, 80), new ItemStack(NHItems.juniorProcessor, 80)
+		){{
+			defaultLevel = 1;
+			shootSound = Sounds.plasmaboom;
+		}};
+		
+		longRangeShootRapid = new UpgradeData("long-range-shoot-2", NHBullets.longRangeShootSplash, 250f,
+			new ItemStack(Items.plastanium, 80), new ItemStack(NHItems.juniorProcessor, 80), new ItemStack(NHItems.zeta, 120)
+		){{shootSound = Sounds.plasmaboom;}};
+		
+		longRangeShootSplash = new UpgradeData("long-range-shoot-1", NHBullets.longRangeShootRapid, 250f,
+			new ItemStack(Items.graphite, 120), new ItemStack(NHItems.juniorProcessor, 80), new ItemStack(NHItems.zeta, 120)
+		){{shootSound = Sounds.plasmaboom;}};
+		
+		mineShoot = new UpgradeData("mine-shoot", NHBullets.mineShoot, 250f,
+			new ItemStack(Items.blastCompound, 60), new ItemStack(NHItems.juniorProcessor, 80)
+		){{
+			burstSpacing = 3f;
+			salvos = 12;
+			inaccuracy = 8f;
+			shootSound = Sounds.plasmaboom;
+		}};
+		
+		posLightning = new UpgradeData("lightning", NHBullets.darkEnrLightning, 150f,
+			new ItemStack(NHItems.seniorProcessor, 150),
+			new ItemStack(NHItems.multipleSteel, 120)
+		){{
+			shootSound = NHSounds.rapidLaser;
+			defaultLevel = 1;
+			burstSpacing = 7f;
+			salvos = 8;
+			randX = 3f * tilesize;
+			reloadTime = 150f;
+			
+			isLeveled = true;
+			reloadSpeedUp = 0.03f;
+			defenceUp = 0.01f;
+			maxLevel = 4;
+		}};
+		
 		strikeRocket = new UpgradeData("rocket-strike", NHBullets.strikeRocket, 600f,
-				new ItemStack(NHItems.seniorProcessor, 100),
-				new ItemStack(NHItems.darkEnergy, 50),
-				new ItemStack(NHItems.irayrondPanel, 1000),
-				new ItemStack(Items.graphite, 125)
+			new ItemStack(NHItems.seniorProcessor, 100),
+			new ItemStack(NHItems.darkEnergy, 50),
+			new ItemStack(NHItems.irayrondPanel, 100),
+			new ItemStack(Items.graphite, 125)
 		){{
 			shootSound = Sounds.railgun;
 			burstSpacing = 5f;
@@ -90,10 +133,12 @@ public class NHUpgradeDatas implements ContentList{
 				new ItemStack(NHItems.thermoCoreNegative, 800),
 				new ItemStack(NHItems.seniorProcessor, 800)
 		){{
+			reloadTime = 180f;
 			shootSound = Sounds.laserblast;
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
 			chargeTime = NHFx.darkEnergyChargeBegin.lifetime;
+			chargeSound = NHSounds.railGunCharge;
 		}};
 		
 		curveBomb = new UpgradeData(

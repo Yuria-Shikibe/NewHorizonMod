@@ -1,8 +1,11 @@
 package newhorizon.func;
 
+import arc.Core;
 import arc.files.Fi;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.io.PropertiesUtils;
 import mindustry.Vars;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
@@ -14,20 +17,43 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class NHSetting{
+	//private static final Json json = new Json();
+	private static final String initKey = "initialized";
+	private static boolean debug = false;
 	private static Fi setting;
 	private static final Properties settingList = new Properties();
 	private static String path = "";
 	private static boolean loaded;
+	private static final ObjectMap<String, String> all = new ObjectMap<>();
+	
+	public static final Seq<SettingEntry> entries = new Seq<>();
 	public static final ObjectMap<String, String> defaultKeys = new ObjectMap<>();
 	public static Mods.ModMeta modMeta = new Mods.ModMeta();
-	private static final String initKey = "initialized";
 	
 	static{
 		defaultKeys.put("initialized", "null version");
+		defaultKeys.put("@active.hid-start-log", String.valueOf(false));
 		defaultKeys.put("@active.tool-panel*", String.valueOf(false));
 		defaultKeys.put("@active.admin-panel", String.valueOf(false));
 		defaultKeys.put("@active.advance-load*", String.valueOf(false));
 		defaultKeys.put("@active.debug", String.valueOf(false));
+	}
+ 
+	public static class SettingEntry{
+		public final String key;
+		public String description;
+		public String warning;
+		public final boolean typeOfBool;
+		
+		public SettingEntry(String key){
+			this.key = key;
+			if(key.endsWith("*"))warning = Core.bundle.get(key.replaceFirst("@", "") + ".warning", "null");
+			description = Core.bundle.get(key.replaceFirst("@", "") + ".description");
+			typeOfBool = key.contains("active");
+		}
+		
+		public boolean bool(){return typeOfBool;}
+		public boolean warn(){return key.endsWith("*");}
 	}
 	
 	public static void settingFile() throws IOException{
@@ -61,13 +87,21 @@ public class NHSetting{
 			}
 		}
 		
+		debug = !Vars.headless && getBool("@active.debug");
 		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
-		Log.info(modMeta.name);
+		
 		if(!modMeta.version.equals(settingList.getProperty(initKey)))updateProperty(modMeta.version);
+		PropertiesUtils.load(all, setting.reader());
+		
+		for(String key : all.keys()){
+			if(key.startsWith("@")){
+				SettingEntry entry = new SettingEntry(key);
+				entries.add(entry);
+			}
+		}
 	}
 	
 	private static void updateProperty(String version) throws IOException{
-		Log.info(settingList);
 		Properties pro = new Properties();
 		
 		defaultKeys.each((key, value) -> {
@@ -75,7 +109,7 @@ public class NHSetting{
 				defaultKeys.put(key, settingList.getProperty(key));
 			}
 		});
-		Log.info("[MAP]" + defaultKeys);
+		
 		
 		settingList.clear();
 		loaded = !setting.file().delete();
@@ -84,9 +118,6 @@ public class NHSetting{
 			if(key.equals(initKey))pro.setProperty(initKey, version);
 			else pro.setProperty(key, name);
 		});
-		
-		
-		Log.info(pro);
 
 		FileOutputStream fos;
 		try{
@@ -113,12 +144,16 @@ public class NHSetting{
 	}
 	
 	public static void debug(Runnable run){
-		if(Vars.headless || getBool("@active.debug"))run.run();
+		if((Vars.headless && Vars.state.rules.infiniteResources) || (debug || (Vars.net.client() && Vars.state.rules.infiniteResources)))run.run();
+	}
+	
+	public static void log(String message){
+		debug(() -> Log.info(message));
 	}
 	
 	public static void setBoolOnce(String key, boolean bool){
 		if(key.startsWith("@"))settingList.setProperty(key, String.valueOf(bool));
-		else Log.info("Pro target key is not a Boolean");
+		else debug(() -> Log.info("Target key is not a Boolean"));
 		try{
 			updateSettingFi();
 		}catch(IOException e){
@@ -127,8 +162,9 @@ public class NHSetting{
 	}
 	
 	public static void settingApply(){
-		TableFuncs.disableTable();
-		if(NHSetting.getBool("@active.tool-panel*"))TableFuncs.showTable();
+		TableFs.disableTable();
+		debug = getBool("@active.debug");
+		if(NHSetting.getBool("@active.tool-panel*"))TableFs.showTable();
 	}
 	
 }

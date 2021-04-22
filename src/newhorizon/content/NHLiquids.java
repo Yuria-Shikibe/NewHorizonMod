@@ -28,7 +28,7 @@ public class NHLiquids implements ContentList{
 		
 		xenAlpha = new Liquid("xen-alpha", Color.valueOf("#AEDFFF")){{
 			heatCapacity = 0.3f;
-			explosiveness = 1f;
+			explosiveness = 0.25f;
 			viscosity = 0.8f;
 			temperature = 2f;
 		}};
@@ -36,14 +36,14 @@ public class NHLiquids implements ContentList{
 		
 		xenBeta = new Liquid("xen-beta", Color.valueOf("#CAEEFF")){{
 			heatCapacity = 1.1f;
-			explosiveness = 10f;
+			explosiveness = 0.5f;
 			viscosity = 0.5f;
 			lightColor = Color.valueOf("#CAEEFF");
 		}};
 
 		xenGamma = new Liquid("xen-gamma", Color.valueOf("#CAEEFF")){{
 			heatCapacity = 1.65f;
-			explosiveness = 100f;
+			explosiveness = 1f;
 			viscosity = 0.5f;
 			temperature = 0f;
 			lightColor = Color.valueOf("#CAEEFF");
@@ -52,7 +52,7 @@ public class NHLiquids implements ContentList{
 
 		zetaFluid = new Liquid("zeta-fluid", Color.valueOf("#f0ffba")){{
 			heatCapacity = 0.3f;
-			explosiveness = 3f;
+			explosiveness = 0.75f;
 			viscosity = 0.1f;
 			lightColor = Color.valueOf("#f0ffba");
 		}};

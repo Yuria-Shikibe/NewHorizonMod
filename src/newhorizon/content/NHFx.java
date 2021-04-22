@@ -8,8 +8,9 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.struct.Seq;
+import arc.math.Rand;
+import arc.math.geom.Vec3;
+import arc.util.Time;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
@@ -17,7 +18,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import newhorizon.feature.PosLightning;
+import newhorizon.effects.EffectTrail;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
@@ -26,6 +27,13 @@ import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
 
 public class NHFx{
+	public static Effect polyTrail(Color fromColor, Color toColor, float size, float lifetime){
+		return new Effect(lifetime, size * 2, e -> {
+			color(fromColor, toColor, e.fin());
+			Fill.poly(e.x, e.y, 6, size * e.fout(), e.rotation);
+		});
+	}
+	
 	public static Effect genericCharge(Color color, float size, float range, float lifetime){
 		return new Effect(lifetime, e -> {
 			color(color);
@@ -63,7 +71,7 @@ public class NHFx{
 	public static Effect shootLineSmall(Color color){
 		return new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
-			randLenVectors(e.id, 5, 18 * e.fin(), e.rotation, 34f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
+			randLenVectors(e.id, 4, 2 + 18 * e.fin(), e.rotation, 30f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
 		});
 	}
 	
@@ -115,13 +123,20 @@ public class NHFx{
 	}
 	
 	public static Effect crossBlast(Color color){
-		return new Effect(36f, e -> {
+		return crossBlast(color, 117);
+	}
+	
+	public static Effect crossBlast(Color color, float size){
+		return new Effect(36f, size * 2, e -> {
 			color(color, Color.white, e.fout() * 0.55f);
-			stroke(2f * e.fout());
-			e.scaled(16f, i -> circle(e.x, e.y, 45f * i.fin()));
+			
+			e.scaled(10f, i -> {
+				stroke(1.35f * i.fout());
+				circle(e.x, e.y, size * 0.5f * i.finpow());
+			});
 			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, 7 * (e.fout() + 1) / 2, 117f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
+				Drawf.tri(e.x, e.y, size / 16 * (e.fout() + 1) / 2, size * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
 			}
 		});
 	}
@@ -175,9 +190,9 @@ public class NHFx{
 		});
 	}
 	
-	public static Effect instHit(Color color){return instHitSize(color, 5, 50); }
+	public static Effect instHit(Color color){return instHit(color, 5, 50); }
 	
-	public static Effect instHitSize(Color color, int num, float size){
+	public static Effect instHit(Color color, int num, float size){
 		return new Effect(20.0F, size * 1.5f, (e) -> {
 			for(int i = 0; i < 2; ++i) {
 				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.25f));
@@ -206,15 +221,18 @@ public class NHFx{
 		});
 	}
 	
-	public static Effect instTrail(Color color){
+	public static Effect instTrail(Color color, float angle){
 		return new Effect(30.0F, (e) -> {
-			for(int i = 0; i < 2; ++i) {
-				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
-				float m = i == 0 ? 1.0F : 0.5F;
-				float rot = e.rotation + 180.0F;
-				float w = 15.0F * e.fout() * m;
-				Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange(e.id, 15.0F)) * m, rot);
-				Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F);
+			for(int j : angle == 0 ? Mathf.one: Mathf.signs){
+				for(int i = 0; i < 2; ++i) {
+					Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
+					float m = i == 0 ? 1.0F : 0.5F;
+					float rot = e.rotation + 180.0F;
+					float w = 15.0F * e.fout() * m;
+					Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange(e.id, 15.0F)) * m, rot + j * angle);
+					if(angle == 0)Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F + j * angle);
+					else  Fill.circle(e.x, e.y, w / 2.8f);
+				}
 			}
 		});
 	}
@@ -231,13 +249,81 @@ public class NHFx{
 		})).layer(Layer.bullet);
 	}
 	
+	public static Effect square(Color color, float lifetime, int num, float range, float size){
+		return new Effect(lifetime, (e) -> {
+			Draw.color(color);
+			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> Fill.square(e.x + x, e.y + y, size * e.fout(), 45));
+		});
+	}
 	
 	public static final Effect
+		attackWarning = new Effect(180f, 1000f, e -> {
+			Draw.color(e.color);
+			Lines.stroke(2 * e.fout());
+			Lines.circle(e.x, e.y, e.rotation);
+			for(float i = 0.75f; i < 1.5f; i += 0.25f){
+				Lines.square(e.x, e.y, e.rotation / i, e.time);
+				Lines.square(e.x, e.y, e.rotation / i, -e.time);
+			}
+		}),
+	
+		square45_4_45 = new Effect(45f, e-> {
+			Draw.color(e.color);
+			randLenVectors(e.id, 4, 20f * e.finpow(), (x, y) -> Fill.square(e.x + x, e.y + y, 4f * e.fout(), 45));
+		}),
+	
+		hyperSpaceEntrance = new Effect(540f, 10000f, e -> {
+			if(!(e.data instanceof Unit))return;
+			Unit unit = e.data();
+			float height = Mathf.curve(e.fslope() * e.fslope(), 0f, 0.3f) * 1.1f;
+			float width = Mathf.curve(e.fslope() * e.fslope(), 0.35f, 0.75f) * 1.1f;
+			
+			if((e.color.equals(Pal.place) && e.time < e.lifetime / 2) || (!e.color.equals(Pal.place) && e.time > e.lifetime / 2)){
+				float z = unit.elevation > 0.5f ? Layer.flyingUnitLow : unit.type.groundLayer + Mathf.clamp(unit.type.hitSize / 4000f, 0, 0.01f);
+				Draw.z(Math.min(Layer.darkness, z - 1f));
+				Draw.color(Pal.shadow);
+				float eva = Math.max(unit.elevation, unit.type.visualElevation);
+				Draw.rect(unit.type.shadowRegion, unit.x + UnitType.shadowTX * eva, unit.y + UnitType.shadowTY * eva, e.rotation - 90);
+				Draw.color();
+				
+				Draw.z(Math.min(z - 0.01f, Layer.bullet - 1f));
+				Draw.color(0, 0, 0, 0.4f);
+				float rad = 1.6f;
+				float size = Math.max(unit.type.region.width, unit.type.region.height) * Draw.scl;
+				Draw.rect(unit.type.softShadowRegion, unit, size * rad, size * rad);
+				Draw.color();
+				
+				Draw.z(z);
+				if(unit.type.flying){
+					float scale = unit.elevation;
+					float offset = unit.type.engineOffset / 2f + unit.type.engineOffset / 2f * scale;
+					
+					Draw.color(unit.team.color);
+					Fill.circle(e.x + Angles.trnsx(unit.rotation + 180, offset), e.y + Angles.trnsy(e.rotation + 180, offset), (unit.type.engineSize + Mathf.absin(Time.time, 2f, unit.type.engineSize / 4f)) * scale);
+					Draw.color(Color.white);
+					Fill.circle(e.x + Angles.trnsx(unit.rotation + 180, offset - 1f), e.y + Angles.trnsy(e.rotation + 180, offset - 1f), (unit.type.engineSize + Mathf.absin(Time.time, 2f, unit.type.engineSize / 4f)) / 2f * scale);
+					Draw.color();
+				}
+				
+				Draw.z(Layer.effect - 0.1f);
+				Draw.mixcol(unit.team.color, e.fslope());
+				
+				Draw.rect(unit.type.shadowRegion, e.x, e.y, e.rotation - 90f);
+			}
+			
+			Draw.reset();
+			Draw.z(Layer.effect);
+			Draw.color(unit.team.color.cpy().mul(1.15f), Pal.gray, (1 - unit.elevation + new Rand(e.id).random(-0.25f, 0.25f)) / 4f);
+			
+			Fill.rect(e.x, e.y, Draw.scl * unit.type.shadowRegion.height * width + 1f, Draw.scl * unit.type.shadowRegion.width * height, e.rotation);
+		}),
+	
 		poly = new Effect(25f, e -> {
 			Draw.color(e.color);
 			Lines.stroke(e.fout() * 2.0F);
 			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * e.rotation);
 		}),
+	
 		healEffect = new Effect(11.0F, (e) -> {
 			Draw.color(NHColor.lightSky);
 			Lines.stroke(e.fout() * 2.0F);
@@ -270,28 +356,6 @@ public class NHFx{
 		skyTrail = new Effect(22, e -> {
 			color(NHColor.lightSky, Pal.gray, e.fin());
 			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
-		}),
-		
-		posLightning = new Effect(PosLightning.lifetime, 800.0f, e -> {
-			if(!(e.data instanceof Seq)) return;
-			Seq<Vec2> lines = e.data();
-			
-			color(e.color, Color.white, e.fin());
-			
-			Lines.stroke(e.rotation * e.fout());
-			
-			Fill.circle(lines.first().x, lines.first().y, Lines.getStroke() * 1.1f);
-			
-			for(int i = 0; i < lines.size - 1; i++){
-				Vec2 cur = lines.get(i);
-				Vec2 next = lines.get(i + 1);
-				
-				Lines.line(cur.x, cur.y, next.x, next.y, false);
-			}
-			
-			for(Vec2 p : lines){
-				Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
-			}
 		}),
 	
 		shuttle = new Effect(60f, 200f, e -> {
@@ -442,7 +506,7 @@ public class NHFx{
 			}
 		}),
 		
-		darkEnergyCharge = new Effect(60f, e -> randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
+		darkEnergyCharge = new Effect(130f, e -> randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x + x, e.y + y, e.fin() * 13f);
 			color(NHColor.darkEnr);
@@ -455,7 +519,7 @@ public class NHFx{
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
 		}),
 	
-		darkEnergyChargeBegin = new Effect(60f, e -> {
+		darkEnergyChargeBegin = new Effect(130f, e -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x, e.y, e.fin() * 32);
 			stroke(e.fin() * 3.7f);
@@ -564,6 +628,30 @@ public class NHFx{
 			
 			color(Color.gray, Color.darkGray, e.fin());
 			randLenVectors(e.id, 3, 3 + 28 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f));
+		}),
+	
+		disappearEffect = new Effect(EffectTrail.LIFETIME, EffectTrail.DRAW_SIZE, e -> {
+			if (!(e.data instanceof EffectTrail.EffectTrailData))return;
+			EffectTrail.EffectTrailData data = e.data();
+			
+			Draw.color(e.color);
+			Fill.circle(e.x, e.y, data.width * 1.1f * e.fout());
+			Draw.reset();
+			for (int i = 0; i < data.points.size - 1; i++) {
+				
+				Vec3 c = data.points.get(i);
+				Vec3 n = data.points.get(i + 1);
+				float sizeP = data.width * e.fout() / e.rotation;
+				
+				float
+						cx = Mathf.sin(c.z) * i * sizeP,
+						cy = Mathf.cos(c.z) * i * sizeP,
+						nx = Mathf.sin(n.z) * (i + 1) * sizeP,
+						ny = Mathf.cos(n.z) * (i + 1) * sizeP;
+				
+				Draw.color(e.color, data.toColor, (float)(i / data.points.size));
+				Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
+			}
 		});
 }
 

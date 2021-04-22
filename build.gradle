@@ -2,8 +2,6 @@ apply plugin: "java"
 
 version '1.0'
 
-sourceCompatibility = 1.8
-
 sourceSets.main.java.srcDirs = ["src"]
 
 repositories{
@@ -13,9 +11,8 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v126'
+    mindustryVersion = 'v126.2'
     //version of SDK you will be using
-    hjson = "\$mod.hjson"
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
 
@@ -31,11 +28,16 @@ allprojects{
         if(JavaVersion.current() != JavaVersion.VERSION_1_8){
             options.compilerArgs.addAll(['--release', '8'])
         }
+//
+//        doFirst {
+//            options.compilerArgs.addAll(['--release', '14', "--enable-preview"])
+//        }
     }
 }
 
 dependencies{
     implementation 'org.jetbrains:annotations:20.1.0'
+    //implementation "com.github.Anuken.Mindustry:annotations:$mindustryVersion"
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }
@@ -60,32 +62,25 @@ jar{
     }
 
     from(rootDir){
-        include hjson
+        include "mod.hjson"
         include "icon.png"
     }
 
     from("assets/"){
         include "**"
     }
-    
-    from("resource/"){
-        include "**"
-    }
 }
 
 task deploy(type: Jar){
-    def base = new File("$rootDir/mod.hjson")
-    def fi = new File("$rootDir/$hjson")
-    if(!fi.exists()) {
-        fi.createNewFile()
-    }
-    base.withReader { reader ->
+    def fi = new File("$rootDir/mod.hjson")
+    fi.withReader { reader ->
         def lines = reader.readLines()
         fi.withWriter { writer ->
             lines.each { line ->
-                writer.append("$line\r\n")
-                writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
+                def check = line.split(":")[0].equals("minGameVersion")
+                if(!check) writer.append("$line\r\n")
             }
+            writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
         }
     }
     dependsOn jarAndroid
@@ -97,6 +92,5 @@ task deploy(type: Jar){
     doLast{
         delete{ delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar" }
         delete{ delete "$buildDir/libs/${project.archivesBaseName}Android.jar" }
-        delete{ delete "$rootDir/$hjson" }
     }
 }

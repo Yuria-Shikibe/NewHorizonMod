@@ -17,16 +17,15 @@ import mindustry.world.meta.StatValue;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.DeliveryBulletType;
 import newhorizon.feature.UpgradeData;
-import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHSetting;
 
-import static newhorizon.func.TableFuncs.LEN;
+import static newhorizon.func.TableFs.LEN;
 
 public class NHContent extends UnlockableContent{
 	public static TextureRegion
 			iconLevel, ammoInfo;
 	
-	public static Color outlineColor = DrawFuncs.outlineColor;
+	public static Color outlineColor = NHLoader.outlineColor;
 	
 	public static DeliveryBulletType deliveryBullet;
 	
@@ -71,7 +70,7 @@ public class NHContent extends UnlockableContent{
 			else s = new String[]{arg, ""};
 			
 			TextureAtlas.AtlasRegion t = Core.atlas.find(s[0]);
-			if(t.found())packer.add(MultiPacker.PageType.main, s[0] + s[1], DrawFuncs.getOutline(t, s.length > 2 ? Color.valueOf(s[2]) : outlineColor));
+			if(t.found())packer.add(MultiPacker.PageType.main, s[0] + s[1], NHLoader.getOutline(t, s.length > 2 ? Color.valueOf(s[2]) : outlineColor));
 		});
 	}
 	

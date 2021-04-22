@@ -14,7 +14,12 @@ public class AutoOutlineWeapon extends Weapon{
 		super(name);
 		
 		NHLoader.put(name + "@-outline");
-		this.name = NewHorizon.MOD_NAME + name;
+		this.name = NewHorizon.configName(name);
+	}
+	
+	@Override
+	public AutoOutlineWeapon copy(){
+		return (AutoOutlineWeapon)super.copy();
 	}
 	
 	@Override
@@ -27,6 +32,11 @@ public class AutoOutlineWeapon extends Weapon{
 	public AutoOutlineWeapon setPos(float x, float y){
 		this.x = x;
 		this.y = y;
+		return this;
+	}
+	
+	public AutoOutlineWeapon setDelay(float delay){
+		this.firstShotDelay = delay;
 		return this;
 	}
 }

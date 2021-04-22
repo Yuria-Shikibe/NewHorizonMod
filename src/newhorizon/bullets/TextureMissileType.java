@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -13,6 +12,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.gen.Bullet;
+import mindustry.gen.Healthc;
 import mindustry.gen.Sounds;
 import mindustry.gen.Teamc;
 import mindustry.graphics.Drawf;
@@ -22,7 +22,6 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
 import newhorizon.effects.EffectTrail;
-import newhorizon.func.NHSetting;
 
 public class TextureMissileType extends NHTrailBulletType{
 	public float div = 7f;
@@ -62,7 +61,6 @@ public class TextureMissileType extends NHTrailBulletType{
 	
 	@Override
 	public void load(){
-		NHSetting.debug(() -> Log.info(sprite + Core.atlas.find(sprite)));
 		if(Vars.headless)super.load();
 	}
 	
@@ -78,10 +76,23 @@ public class TextureMissileType extends NHTrailBulletType{
 	}
 	
 	@Override
+	public void init(Bullet b){
+		if(killShooter && b.owner() instanceof Healthc){
+			Healthc h = (Healthc)b.owner;
+			h.kill();
+		}
+		
+		if(instantDisappear){
+			b.time = lifetime;
+		}
+		
+		b.data(new EffectTrail(trailLength, trailWidth, trailColor, trailToColor));
+	}
+	
+	@Override
 	public void draw(Bullet b){
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		
 		Tmp.v1.trns(b.rotation(), -backRegion.height * height / div);
 		float sin = Mathf.absin(Time.time, 1f, 3f);
 		float f = Mathf.curve(b.fin(), 0.05f, 0.1f);
@@ -93,7 +104,7 @@ public class TextureMissileType extends NHTrailBulletType{
 		
 		if(drawLightTrail)for(int i : Mathf.signs)Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, 4.5f * Mathf.curve(b.fout(), 0f, 0.1f), 23 * (1.6f + sin / 3.2f) * f, (1 + i) * 90);
 		
-		trail.draw(trailColor);
+		trail.draw();
 		Draw.z(Layer.blockOver - 1f);
 		Draw.color(Pal.shadow);
 		Draw.rect(backRegion, b.x - h, b.y - h, backRegion.width * Draw.scl * width, backRegion.height * Draw.scl * height, b.rotation() - 90.0F);
@@ -107,7 +118,6 @@ public class TextureMissileType extends NHTrailBulletType{
 	public void update(Bullet b){
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		
 		if(!Vars.headless && b.time > effectDelay){
 			float x = Angles.trnsx(b.rotation(), -backRegion.height / div), y = Angles.trnsy(b.rotation(), -backRegion.height / div);
 			if(b.timer(3, Mathf.clamp(1 / Time.delta, 0, 1))){
@@ -139,9 +149,8 @@ public class TextureMissileType extends NHTrailBulletType{
 		if(Vars.headless)return;
 		if (!(b.data instanceof EffectTrail))return;
 		EffectTrail trail = (EffectTrail)b.data;
-		
 		float x = Angles.trnsx(b.rotation(), -backRegion.height / div), y = Angles.trnsy(b.rotation(), -backRegion.height / div);
-		trail.disappear(trailColor);
+		trail.disappear();
 		Fx.artilleryTrail.at(b.x + x, b.y + y, trail.width * 1.2f, trailColor);
 	}
 }

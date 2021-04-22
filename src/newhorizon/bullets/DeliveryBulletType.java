@@ -9,7 +9,6 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -21,11 +20,11 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Call;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import newhorizon.NewHorizon;
-import newhorizon.block.special.Delivery;
+import newhorizon.block.distribution.Delivery;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
-import newhorizon.func.NHSetting;
 
 public class DeliveryBulletType extends BulletType{
 	private static final float div = 8f;
@@ -82,7 +81,7 @@ public class DeliveryBulletType extends BulletType{
 		super.init(b);
 		if(!(b.data instanceof Delivery.DeliveryData))b.remove();
 		Delivery.DeliveryData data = (Delivery.DeliveryData)b.data();
-		if(data.t == null)data.t = new EffectTrail(region.height / 6, (region.width / 40f)).clear();
+		if(data.t == null)data.t = new EffectTrail(region.height / 6, (region.width / 40f), b.team.color, Pal.gray).clear();
 		if(data.to == null)despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
 		if(data.needRotate){
 			b.lifetime += 180 / (rotateSpeed * 50f);
@@ -111,7 +110,7 @@ public class DeliveryBulletType extends BulletType{
 		for(int i : Mathf.signs){
 			Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, 4.5f * Mathf.curve(b.fout(), 0f, 0.1f), 23 * (1.6f + sin / 3.2f) * f, (1 + i) * 90);
 		}
-		data.t.draw(getTrailColor(b));
+		data.t.draw();
 		Draw.z(Layer.blockOver);
 		Draw.rect(region, b.x, b.y, region.width * Draw.scl * scl, region.height * Draw.scl * scl, b.rotation() - 90.0F);
 		Draw.reset();
@@ -166,7 +165,6 @@ public class DeliveryBulletType extends BulletType{
 						data.to.items.remove(Vars.content.item(i), num);
 						Fx.itemTransfer.at(data.to.x, data.to.y, num, Vars.content.item(i).color, new Vec2().set(b));
 						data.items[i] = num;
-						NHSetting.debug(() -> Log.info(data.to + " | " + num));
 					}
 				}
 			}
@@ -174,12 +172,11 @@ public class DeliveryBulletType extends BulletType{
 		Tmp.v1.trns(b.rotation(), -region.height / div);
 		if(data.needRotate || !data.transportBack){
 			despawnEffect.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, b.rotation(), b.team.color);
-			data.t.disappear(getTrailColor(b));
+			data.t.disappear();
 		}else{
 			float lifeScl = data.to.dst(data.from) / range();
 			Delivery.DeliveryData dataAdapt = new Delivery.DeliveryData(data, true);
 			dataAdapt.t = data.t;
-			NHSetting.debug(() -> Log.info(dataAdapt));
 			create(b, b.team, b.x, b.y, b.rotation(), 1, 1, lifeScl, dataAdapt);
 		}
 	}
