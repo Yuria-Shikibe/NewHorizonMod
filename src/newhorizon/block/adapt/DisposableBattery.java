@@ -36,7 +36,7 @@ public class DisposableBattery extends PowerDistributor{
 		rebuildable = false;
 		consumesPower = true;
 		breakable = false;
-		details = "Cannot be broken after placed. It can only be destroyed after power run out or be damaged";
+		details = "Cannot be demolished after being placed. Can only be destroyed after running out of power or being damaged.";
 	}
 	
 	@Override
