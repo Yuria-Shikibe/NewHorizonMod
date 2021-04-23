@@ -102,7 +102,7 @@ public class PlayerJumpGate extends Block{
 			if(!canFunction())return;
 			Building target = link();
 			boolean spawnedByCore = player.unit().spawnedByCore;
-			Team t = player.team();
+			Team t = Team.all[player.team().id];
 			Unit before = player.unit();
 			UnitType type = before.type;
 			Unit unit = type.create(t);
