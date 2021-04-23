@@ -127,6 +127,7 @@ If you find that your device cannot afford it, open the mod file folder and find
 - Has cooldown time.
 - Requires power to function. 
 - Available in the server.
+
 ---
 #### Hyperspace Folding Gate & Gravity Gully
 
@@ -141,6 +142,26 @@ If you find that your device cannot afford it, open the mod file folder and find
 2. Click the `Select Destination` button, then click the screen. A cross will appear on the position you clicked. Click the cross again to set the destination.
 3. Click the `Select Units` button, then click the screen. Drag the mouse or click the other diagonal point to select all friendly units within a rectangle. Click the button with the arrow icon below the select rectangle to confirm.
 4. Click the `Transport Units` button.
+
+- Has cooldown time.
+- Requires power and other items to function.
+- Available in the server.
+
+---
+#### Commandable Block
+
+---
+![air-raider](assets/sprites/block/defence/air-raider.png)
+
+- **_Commandable Block:_** Active Defence Blocks.
+
+![select-pos](github-pictures/guide/select-pos.gif)
+![attack](github-pictures/guide/attack.gif)
+
+###### Use Steps:
+1. Click the Commandable Block.
+2. Click the `Select Destination` button, then click the screen. A cross will appear on the position you clicked. Click the cross again to set the destination.
+3. Click the `Up Open` button, Corresponding blocks of the same kind will make feedback actions.
 
 - Has cooldown time.
 - Requires power and other items to function.

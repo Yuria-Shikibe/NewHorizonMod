@@ -64,7 +64,7 @@ public class HyperSpaceWarper extends Block{
 	public HyperSpaceWarper(String name){
 		super(name);
 		update = configurable = true;
-		canOverdrive = false;
+		canOverdrive = true;
 		solid = true;
 		
 		config(Point2.class, HyperSpaceWarperBuild::setTarget);
@@ -171,7 +171,7 @@ public class HyperSpaceWarper extends Block{
 		public void updateTile(){
 			if(consValid()){
 				if(!chargeCons()){
-					reload += efficiency() * Time.delta;
+					reload += efficiency() * delta();
 				}
 			}
 			
@@ -369,8 +369,8 @@ public class HyperSpaceWarper extends Block{
 						});
 						index++;
 					}
-				}).row();
-			}).grow().row();
+				}).grow().row();
+			}).growX().height(LEN * 5f).row();
 			table.table(Tex.paneSolid, t -> {
 				t.button("@remove", Icon.cancel, Styles.cleart, () -> {
 					selects.clear();
@@ -474,10 +474,12 @@ public class HyperSpaceWarper extends Block{
 			unit.set(tx, ty);
 			unit.rotation = angle;
 			u.remove();
+			unit.team.data().updateCount(unit.type, 1);
 			Time.run(NHFx.hyperSpaceEntrance.lifetime, () -> {
 				NHSounds.hyperspace.at(tx, ty);
 				NHFx.hyperSpaceEntrance.at(tx, ty, angle, Pal.accent, unit);
 				Time.run(NHFx.hyperSpaceEntrance.lifetime, () -> {
+					unit.team.data().updateCount(unit.type, -1);
 					if(!Vars.net.client())unit.add();
 					isTransport = false;
 				});

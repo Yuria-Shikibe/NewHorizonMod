@@ -48,7 +48,7 @@ public class NHUpgradeDatas implements ContentList{
 			new ItemStack(NHItems.seniorProcessor, 150),
 			new ItemStack(NHItems.multipleSteel, 120)
 		){{
-			shootSound = NHSounds.rapidLaser;
+			shootSound = NHSounds.gauss;
 			defaultLevel = 1;
 			burstSpacing = 7f;
 			salvos = 8;

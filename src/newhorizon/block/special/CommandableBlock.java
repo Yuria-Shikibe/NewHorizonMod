@@ -36,6 +36,8 @@ public abstract class CommandableBlock extends Block{
 		public abstract boolean isCharging();
 		public abstract boolean isPreparing();
 		public abstract void setPreparing();
+		public abstract float delayTime();
+		public abstract float spread();
 		
 		@Override
 		public void remove(){

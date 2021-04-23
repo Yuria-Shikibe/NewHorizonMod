@@ -189,6 +189,8 @@ public class NHBullets implements ContentList{
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSky.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
+			velocityBegin = velocityEnd = 1f;
+			
 			trails = 1;
 			trailLength = 30;
 			lifetime = 650f;
@@ -208,6 +210,8 @@ public class NHBullets implements ContentList{
 		longRangeShootRapid = new ShieldBreaker(6, 800, "bullet", 2000){{
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSky.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
+			
+			velocityBegin = velocityEnd = 6f;
 			
 			trails = 1;
 			trailLength = 10;
@@ -233,7 +237,7 @@ public class NHBullets implements ContentList{
 			lightningLengthRand = lightningLength = 8;
 			splashDamageRadius = 60f;
 			splashDamage = lightningDamage = 0.5f * damage;
-			
+			velocityBegin = velocityEnd = 1f;
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSky.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
@@ -400,6 +404,7 @@ public class NHBullets implements ContentList{
 			trailEffect = NHFx.polyCloud(backColor, 45, 10, 32, 4);
 			trailChance = 0;
 			pierce = pierceBuilding = true;
+			velocityBegin = 0.25f;
 			velocityEnd = 8;
 			accelerateBegin = 0.05f;
 			accelerateEnd = 0.95f;
@@ -883,7 +888,7 @@ public class NHBullets implements ContentList{
 			hitEffect = NHFx.mediumDarkEnergyHit;
 		}};
 		
-		blastEnergyPst = new NHTrailBulletType(0.85f, 65f, CIRCLE_BOLT){{
+		blastEnergyPst = new NHTrailBulletType(0.85f, 100f, CIRCLE_BOLT){{
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.025f);
 			lifetime = 90f;
 			ammoMultiplier = 4f;
@@ -912,7 +917,7 @@ public class NHBullets implements ContentList{
 			trailParam = 2.7f;
 		}};
 		
-		blastEnergyNgt = new NHTrailBulletType(3.85f, 40f){{
+		blastEnergyNgt = new NHTrailBulletType(3.85f, 80f){{
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
 			lifetime = 48f;
 			knockback = 4f;

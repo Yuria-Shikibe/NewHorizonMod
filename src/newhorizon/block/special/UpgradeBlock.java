@@ -69,6 +69,11 @@ public class UpgradeBlock extends Block {
 		
 		config(Point2.class, (Cons2<UpgradeBlockBuild, Point2>)UpgradeBlockBuild::linkPos);
 		config(Integer.class, (Cons2<UpgradeBlockBuild, Integer>)UpgradeBlockBuild::upgradeData);
+		config(Point2[].class, (UpgradeBlockBuild entity, Point2[] point2s) -> {
+			for(Point2 p : point2s){
+				entity.linkPos(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
+			}
+		});
 	}
 	
 	@Override
@@ -137,6 +142,11 @@ public class UpgradeBlock extends Block {
 		
 		protected boolean coreValid() {
 			return core() != null && core().items != null && !core().items.empty();
+		}
+		
+		@Override
+		public Point2[] config(){
+			return new Point2[]{Point2.unpack(link).sub(tile.x, tile.y)};
 		}
 		
 		@Override

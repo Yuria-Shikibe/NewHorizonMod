@@ -26,6 +26,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.block.special.JumpGate;
+import newhorizon.vars.NHVars;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
@@ -82,6 +83,8 @@ public class Functions {
         buildingIDSeq.clear();
         tiles.clear();
     }
+    
+    public static int getTeamIndex(Team team){return NHVars.allTeamSeq.indexOf(team);}
     
     public static Color getColor(Color defaultColor, Team team){
         return defaultColor == null ? team.color : defaultColor;

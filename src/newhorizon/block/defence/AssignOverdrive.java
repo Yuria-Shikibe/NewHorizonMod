@@ -31,7 +31,14 @@ public class AssignOverdrive extends OverdriveProjector{
 	public AssignOverdrive(String name){
 		super(name);
 		configurable = true;
+		config(Integer.class, (Cons2<AssignOverdriveBuild, Integer>)AssignOverdriveBuild::linkPos);
 		config(Point2.class, (Cons2<AssignOverdriveBuild, Point2>)AssignOverdriveBuild::linkPos);
+		config(Point2[].class, (entity, point2s) -> {
+			for(Point2 p : point2s){
+				entity.configure(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
+			}
+		});
+		
 	}
 	
 	@Override
@@ -89,7 +96,7 @@ public class AssignOverdrive extends OverdriveProjector{
 		@Override
 		public boolean onConfigureTileTapped(Building other){
 			if(other != null && within(other, range())){
-				configure(Point2.unpack(other.pos()));
+				configure(other.pos());
 				return false;
 			}
 			return true;

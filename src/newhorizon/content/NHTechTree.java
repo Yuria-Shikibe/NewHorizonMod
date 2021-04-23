@@ -24,6 +24,7 @@ public class NHTechTree implements ContentList {
     @Override
     public void load(){
         //Blocks;
+        add(NHBlocks.bombLauncher, NHBlocks.airRaider);
         add(Blocks.commandCenter, NHBlocks.jumpGateJunior);
         add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);

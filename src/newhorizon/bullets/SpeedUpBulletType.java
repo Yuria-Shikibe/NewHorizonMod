@@ -6,6 +6,7 @@ import mindustry.gen.Bullet;
 import newhorizon.interfaces.Curve;
 
 public class SpeedUpBulletType extends BasicBulletType{
+	public float velocityBegin = -1;
 	public float velocityEnd = -1;
 	public float accelerateBegin = 0.1f;
 	public float accelerateEnd = 0.6f;
@@ -27,15 +28,15 @@ public class SpeedUpBulletType extends BasicBulletType{
 	@Override
 	public void init(){
 		super.init();
+		if(velocityBegin < 0)velocityBegin = speed;
+		if(velocityEnd < 0)velocityEnd = speed;
 		if(accelCurve == null)accelCurve = b -> Mathf.curve(b.fin(), accelerateBegin, accelerateEnd);
-		if(!(velocityEnd <= speed)){
-			speed = (speed + velocityEnd) / 2f;
-		}
+		speed = (velocityBegin * lifetime * accelerateBegin + (velocityBegin + velocityEnd) / 2f * lifetime * Mathf.clamp(accelerateEnd - accelerateBegin) + velocityEnd * lifetime * (1 - accelerateEnd)) / lifetime;
 	}
 	
 	@Override
 	public void update(Bullet b){
-		if(!(velocityEnd <= speed))b.vel.setLength(2 * speed - velocityEnd + accelCurve.get(b) * velocityEnd);
+		b.vel.setLength(velocityBegin + accelCurve.get(b) * velocityEnd);
 		super.update(b);
 	}
 }

@@ -290,7 +290,7 @@ public class NHUnits implements ContentList {
 				inaccuracy = 3f;
 				ejectEffect = Fx.none;
 				bullet = NHBullets.warperBullet;
-				shootSound = NHSounds.launch;
+				shootSound = NHSounds.blaster;
 			}});
 			abilities.add(new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSky));
 			targetAir = false;

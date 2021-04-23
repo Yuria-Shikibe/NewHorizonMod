@@ -90,13 +90,13 @@ public class TableFs{
                 touchable = Touchable.enabled;
                 setFillParent(true);
                 addListener(new InputListener(){
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
                         point.set(Core.camera.unproject(x, y));
                         sx = String.valueOf(format(point.x / tilesize));
                         sy = String.valueOf(format(point.y / tilesize));
                         setText();
                         setFloatP();
-                        return true;
                     }
                 });
                 Core.scene.add(this);

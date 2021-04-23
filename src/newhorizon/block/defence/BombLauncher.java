@@ -13,12 +13,8 @@ import arc.math.geom.Point2;
 import arc.math.geom.Point3;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
-import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.core.UI;
@@ -28,32 +24,25 @@ import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Groups;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
-import mindustry.ui.Styles;
 import mindustry.world.Tile;
-import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.block.special.CommandableBlock;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
-import newhorizon.content.NHSounds;
 import newhorizon.effects.EffectTrail;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.TableFs;
-import newhorizon.vars.NHCtrlVars;
 import newhorizon.vars.NHWorldVars;
-import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFs.LEN;
 
-public class BombLauncher extends CommandableBlock{
+public class BombLauncher extends CommandableAttackerBlock{
 	public TextureRegion bombRegion;
 	public TextureRegion[] gunBarrelRegion = new TextureRegion[4];
 	
@@ -66,12 +55,8 @@ public class BombLauncher extends CommandableBlock{
 	public Color baseColor = Pal.redderDust;
 	
 	public int storage = 4;
-	public float prepareDelay = 30f;
-	public float reloadTime = 240f;
 	public float bombLifetime = 120f;
 	public float shake = 20f;
-	public float range = 800f;
-	public float spread = 160f;
 	public float bombDamage = 600f, bombRadius = 120f;
 	public float bombVelPerTile = 2f;
 	public Sound hitSound = Sounds.explosionbig;
@@ -80,15 +65,14 @@ public class BombLauncher extends CommandableBlock{
 	public int lightningLength = 5;
 	public int lightningLengthRand = 10;
 	
-	protected EffectBulletType groundHitter;
-	
 	public BombLauncher(String name){
 		super(name);
 		smokeEffect = NHFx.hugeSmoke;
 		trailEffect = NHFx.trail;
 		
-		config(Point2.class, BombLauncherBuild::setTarget);
-		config(Integer.class, BombLauncherBuild::triggered);
+		range = 800f;
+		spread = 160f;
+		prepareDelay = 30f;
 	}
 	
 	@Override
@@ -107,14 +91,14 @@ public class BombLauncher extends CommandableBlock{
 	@Override
 	public void init(){
 		super.init();
-		groundHitter = new EffectBulletType(3f){
+		bulletHitter = new EffectBulletType(3f){
 			{damage = 1f; collidesGround = absorbable = true; hitSize = 0;}
 			
 			@Override
 			public void despawned(Bullet b){
 				if(!b.absorbed) Damage.damage(b.team, b.x, b.y, b.fdata, b.damage, collidesAir, collidesGround);
 				if(b.data instanceof Point3)for(int i = 0; i < lightning; i++){
-					Lightning.create(b, baseColor, damage, b.x, b.y, Mathf.random(360f), lightningLength + Mathf.range(lightningLengthRand));
+					Lightning.create(b, baseColor, b.damage, b.x, b.y, Mathf.random(360f), lightningLength + Mathf.range(lightningLengthRand));
 				}
 			}
 		};
@@ -143,46 +127,14 @@ public class BombLauncher extends CommandableBlock{
 			(BombLauncherBuild entity) -> new Bar(
 				() -> Core.bundle.format("bar.capacity", UI.formatAmount(entity.storaged())),
 				() -> Pal.ammo,
-				() -> entity.reload / reloadTime * storage
+				() -> (float)entity.storaged() / storage
 			)
 		);
 	}
 	
-	public class BombLauncherBuild extends CommandableBlockBuild{
-		public transient int lastTarget = -1;
-		public int target;
-		public float reload;
-		public float countBack = prepareDelay;
-		public boolean preparing = false;
-		
-		@Override
-		@NotNull
-		public CommandableBlockType getType(){
-			return CommandableBlockType.attacker;
-		}
-		
-		public void setTarget(Point2 p){
-			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build != null && build.getType() == CommandableBlockType.attacker){
-					build.overlap();
-				}
-			}
-			NHWorldVars.commandPos = target = p.pack();
-		}
-		
+	public class BombLauncherBuild extends CommandableAttackerBlockBuild{
 		@Override
 		public boolean isCharging(){return consValid() && reload < reloadTime * storage;}
-		
-		@Override
-		public boolean isPreparing(){
-			return preparing && countBack > 0;
-		}
-		
-		@Override
-		public void setPreparing(){
-			preparing = true;
-			countBack = prepareDelay;
-		}
 		
 		public int storaged(){return (int)(reload / reloadTime);}
 		
@@ -195,11 +147,11 @@ public class BombLauncher extends CommandableBlock{
 		@Override
 		public void updateTile(){
 			if(reload < reloadTime * storage && consValid()){
-				reload += efficiency() * Time.delta;
+				reload += efficiency() * delta();
 			}
 			
 			if(isPreparing()){
-				countBack -= Time.delta * efficiency();
+				countBack -= efficiency() * delta();
 			}else if(preparing){
 				countBack = prepareDelay;
 				preparing = false;
@@ -208,104 +160,18 @@ public class BombLauncher extends CommandableBlock{
 		}
 		
 		@Override
-		public BlockStatus status(){
-			return canCommand() ? BlockStatus.active : isCharging() ? BlockStatus.noOutput : BlockStatus.noInput;
-		}
-		
-		@Override
 		public boolean canCommand(){
 			Tile tile = world.tile(NHWorldVars.commandPos);
 			return tile != null && consValid() && storaged() > 0 && NHWorldVars.commandPos > 0 && within(tile, range);
 		}
-		
+
 		@Override
-		public boolean overlap(){
-			target = -1;
-			return false;
-		}
-		
-		@Override
-		public void read(Reads read, byte revision){
-			super.read(read, revision);
-			target = read.i();
-			reload = read.f();
-			preparing = read.bool();
-			countBack = read.f();
-		}
-		
-		@Override
-		public void write(Writes write){
-			super.write(write);
-			write.i(target);
-			write.f(reload);
-			write.bool(preparing);
-			write.f(countBack);
-		}
-		
-		@Override
-		public void drawConfigure(){
-			super.drawConfigure();
+		public float delayTime(){
 			Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
-			
-			Seq<CommandableBlockBuild> builds = new Seq<>();
-			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build != this && build != null && build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand()){
-					builds.add(build);
-					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
-				}
-			}
-			
-			for(CommandableBlockBuild build : builds){
-				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
-			}
-			
-			if(target > 0){
-				Tmp.p1.set(Point2.unpack(target));
-				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
-				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.accent);
-				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, Pal.accent);
-			}else if(NHWorldVars.commandPos > 0){
-				Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
-				DrawFuncs.posSquareLink(Pal.place, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
-				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.place);
-				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, Pal.place);
-			}
-			
-			if(isValid())builds.add(this);
-			for(CommandableBlockBuild build : builds){
-				float time = (build.dst(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y)) / tilesize * bombVelPerTile + bombLifetime * (1 + 2/3f)) / Time.toSeconds;
-				DrawFuncs.overlayText("Delay: " + TableFs.format(time) + " Sec.", build.x, build.y, build.block.size * tilesize / 2f, time > 4.5f ? Pal.accent : Pal.lancerLaser, true);
-			}
-			
-			DrawFuncs.overlayText("Participants: " + builds.size, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), tilesize * 2f, Pal.accent, true);
-		}
-		
-		public void commandAll(Integer pos){
-			Tmp.p1.set(Point2.unpack(pos));
-			
-			int num = 0;
-			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand() && !build.isPreparing()){
-					build.configure(pos);
-					num++;
-				}
-			}
-			
-			if(num < 1)return;
-			Vars.ui.announce(Iconc.warning  + " Caution: Raid " +  Tmp.p1.x + ", " + Tmp.p1.y, 4f);
-			NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, team.color);
-			NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), spread, team.color);
-			for(Player p : Groups.player){
-				NHSounds.alarm.at(p);
-			}
+			return (dst(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y)) / tilesize * bombVelPerTile + bombLifetime * (1 + 2/3f)) / Time.toSeconds;
 		}
 		
 		@Override
-		public void triggered(Integer pos){
-			setPreparing();
-			lastTarget = pos;
-		}
-		
 		public void shoot(Integer pos){
 			Tile target = Vars.world.tile(pos);
 			if(target == null || !within(target, range) || !consValid())return;
@@ -319,28 +185,9 @@ public class BombLauncher extends CommandableBlock{
 			bomb.init(team, bombLifetime, this, target.drawx() + rand.range(spread), target.drawy() + rand.range(spread), true).setDamage(bombDamage, bombRadius);
 			if(!Vars.net.client())bomb.add();
 		}
-		
-		@Override
-		public void buildConfiguration(Table table){
-			super.buildConfiguration(table);
-			table.table(Tex.paneSolid, t -> {
-				t.button(Icon.upOpen, Styles.clearPartial2i, () -> {
-					commandAll(target < 0 ? NHWorldVars.commandPos : target);
-				}).size(LEN).disabled(b -> isPreparing());
-				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
-					TableFs.pointSelectTable(t, this::configure);
-				}).size(LEN * 4, LEN).disabled(b -> NHCtrlVars.isSelecting).row();
-			}).fill();
-			
-		}
-		
-		@Override
-		public float range(){
-			return range;
-		}
 	}
 	
-	public class BombEntity extends CommandEntity implements Damagec{
+	public class BombEntity extends AttackerEntity{
 		public static final float width = 3.3f;
 		public static final float floatX = 10f;
 		public static final float floatY = 30f;
@@ -434,7 +281,7 @@ public class BombLauncher extends CommandableBlock{
 			hitEffect.at(x, y);
 			Effect.shake(shake, shake, x, y);
 			hitSound.at(x, y, Mathf.random(0.9f, 1.1f));
-			Bullet b = groundHitter.create(this, team, x, y, 0, damage, 1, 1, new Point3(lightning, lightningLength, lightningLengthRand));
+			Bullet b = bulletHitter.create(this, team, x, y, 0, damage, 1, 1, new Point3(lightning, lightningLength, lightningLengthRand));
 			b.fdata = radius;
 		}
 		

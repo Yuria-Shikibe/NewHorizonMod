@@ -58,13 +58,11 @@ public class PosLightning {
 	
 	private static final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 	
-	private static final Effect posLightning = new Effect(PosLightning.lifetime, 800.0f, e -> {
+	private static final Effect posLightning = (new Effect(PosLightning.lifetime, 800.0f, e -> {
 		if(!(e.data instanceof Seq)) return;
 		Seq<Vec2> lines = e.data();
 		
 		Draw.color(e.color, Color.white, e.fin());
-		
-		Draw.z(Layer.effect - 1f);
 		
 		Lines.stroke(e.rotation * e.fout());
 		
@@ -75,13 +73,13 @@ public class PosLightning {
 			Vec2 next = lines.get(i + 1);
 			
 			Lines.line(cur.x, cur.y, next.x, next.y, false);
-			Drawf.light(Team.derelict, cur.x, cur.y, next.x, next.y, Lines.getStroke() * 2f * e.fout(), e.color, e.fout());
+			Drawf.light(Team.derelict, cur.x, cur.y, next.x, next.y, Lines.getStroke() * 6f * e.fout(), e.color, e.fout());
 		}
 		
 		for(Vec2 p : lines){
 			Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
 		}
-	});
+	})).layer(Layer.effect - 1f);
 	
 	private static Tile furthest;
 	private static final Rect rect = new Rect();
@@ -152,6 +150,10 @@ public class PosLightning {
 	
 	public static void createRandomRange(Team team, Position from, float rand, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, int generateNum, Cons<Position> movement){
 		createRandomRange(null, team, from, rand, color, createLightning, damage, boltLen, width, boltNum, generateNum, movement);
+	}
+	
+	public static void createRandomRange(@NotNull Bullet owner, float rand, Color color, boolean createLightning, float damage, float width, int boltNum, int generateNum, Cons<Position> movement){
+		createRandomRange(owner, owner.team, owner, rand, color, createLightning, damage, owner.type.lightningLength + Mathf.random(owner.type.lightningLengthRand), width, boltNum, generateNum, movement);
 	}
 	
 	public static void createRandomRange(Bullet owner, Team team, Position from, float rand, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, int generateNum, Cons<Position> movement){

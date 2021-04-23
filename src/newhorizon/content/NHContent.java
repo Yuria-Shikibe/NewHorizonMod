@@ -23,7 +23,7 @@ import static newhorizon.func.TableFs.LEN;
 
 public class NHContent extends UnlockableContent{
 	public static TextureRegion
-			iconLevel, ammoInfo;
+			iconLevel, ammoInfo, arrowRegion;
 	
 	public static Color outlineColor = NHLoader.outlineColor;
 	
@@ -76,6 +76,7 @@ public class NHContent extends UnlockableContent{
 	
 	@Override
 	public void load(){
+		arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.MOD_NAME + "upgrade-info");
 		iconLevel = Core.atlas.find(NewHorizon.MOD_NAME + "level-up");
 		

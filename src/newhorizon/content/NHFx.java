@@ -10,7 +10,9 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec3;
+import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
@@ -18,6 +20,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
+import newhorizon.block.special.CommandableBlock;
 import newhorizon.effects.EffectTrail;
 
 import static arc.graphics.g2d.Draw.rect;
@@ -257,7 +260,9 @@ public class NHFx{
 	}
 	
 	public static final Effect
-		attackWarning = new Effect(180f, 1000f, e -> {
+		attackWarning = new Effect(120f, 2000f, e -> {
+			if(!(e.data instanceof Seq))return;
+			Seq<CommandableBlock.CommandableBlockBuild> participants = e.data();
 			Draw.color(e.color);
 			Lines.stroke(2 * e.fout());
 			Lines.circle(e.x, e.y, e.rotation);
@@ -265,6 +270,29 @@ public class NHFx{
 				Lines.square(e.x, e.y, e.rotation / i, e.time);
 				Lines.square(e.x, e.y, e.rotation / i, -e.time);
 			}
+			
+			TextureRegion arrowRegion = NHContent.arrowRegion;
+			float scl =	Mathf.curve(e.fout(), 0f, 0.1f);
+			Lines.stroke(2 * scl);
+			for(CommandableBlock.CommandableBlockBuild build : participants){
+				Lines.line(build.x, build.y, e.x, e.y);
+				Fill.circle(build.x, build.y, Lines.getStroke());
+				Fill.circle(e.x, e.y, Lines.getStroke());
+				Tmp.v1.set(build).sub(e.x, e.y).scl(e.fout()).add(e.x, e.y);
+				Draw.rect(arrowRegion,  Tmp.v1.x,  Tmp.v1.y, arrowRegion.width * scl * Draw.scl, arrowRegion.height * scl * Draw.scl, build.angleTo(e.x, e.y) - 90f);
+			}
+			
+			for (int l = 0; l < 4; l++) {
+				float angle = 90 * l;
+				float regSize = e.rotation / 120f;
+				for (int i = 0; i < 4; i++) {
+					Tmp.v1.trns(angle, (i - 4) * tilesize * e.rotation / tilesize / 4);
+					float f = (100 - (Time.time - 25 * i) % 100) / 100;
+					
+					Draw.rect(arrowRegion, e.x + Tmp.v1.x, e.y + Tmp.v1.y, arrowRegion.width * regSize * f * scl, arrowRegion.height * regSize * f * scl, angle - 90);
+				}
+			}
+			
 		}),
 	
 		square45_4_45 = new Effect(45f, e-> {
