@@ -750,7 +750,7 @@ public class NHBlocks implements ContentList {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
 		airRaider = new AirRaider("air-raider"){{
-			requirements(Category.effect, with(Items.phaseFabric, 100, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.thorium, 100, Items.surgeAlloy, 75));
+			requirements(Category.effect, with(NHItems.upgradeSort, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
 			
 			size = 3;
 			consumes.powerCond(6f, AirRaiderBuild::isCharging);
@@ -801,11 +801,11 @@ public class NHBlocks implements ContentList {
 			}};
 		}};
 		
-		
 		bombLauncher = new BombLauncher("bomb-launcher"){{
 			requirements(Category.effect, with(Items.phaseFabric, 100, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.thorium, 100, Items.surgeAlloy, 75));
 			NHTechTree.add(Blocks.massDriver, this);
 			size = 3;
+			bombDamage = 750f;
 			consumes.powerCond(6f, BombLauncherBuild::isCharging);
 			consumes.item(NHItems.fusionEnergy, 2);
 			itemCapacity = 16;
