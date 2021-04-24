@@ -1,16 +1,19 @@
 package newhorizon.block.defence;
 
+import arc.Core;
 import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.core.World;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.*;
+import mindustry.gen.Damagec;
+import mindustry.gen.Icon;
+import mindustry.gen.Iconc;
+import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
@@ -43,7 +46,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		replaceable = true;
 		canOverdrive = false;
 		
-		config(Integer.class, CommandableAttackerBlockBuild::triggered);
+		config(Integer.class, CommandableAttackerBlockBuild::commandAll);
 		config(Point2.class, CommandableAttackerBlockBuild::setTarget);
 	}
 	
@@ -54,7 +57,6 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	}
 	
 	public abstract class CommandableAttackerBlockBuild extends CommandableBlockBuild{
-		public transient int lastTarget = -1;
 		public int target = -1;
 		public float reload;
 		public float countBack = prepareDelay;
@@ -100,7 +102,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		@Override
 		public boolean canCommand(){
 			Tile tile = world.tile(NHWorldVars.commandPos);
-			return tile != null && consValid() && NHWorldVars.commandPos > 0 && within(tile, range);
+			return tile != null && consValid() && within(tile, range);
 		}
 		
 		@Override
@@ -174,31 +176,28 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		public void commandAll(Integer pos){
 			Tmp.p1.set(Point2.unpack(pos));
-			
 			float realSpread = 0f;
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
 				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand() && !build.isPreparing()){
-					build.configure(pos);
+					build.triggered(pos);
 					participants.add(build);
+					build.lastAccessed(Iconc.modeAttack + "");
 					realSpread = Math.max(realSpread, build.spread());
 				}
 			}
-			
-			if(participants.size < 1)return;
-			Vars.ui.announce(Iconc.warning  + " Caution: Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, 4f);
-			NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color, participants);
-			NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color);
-			for(Player p : Groups.player){
-				NHSounds.alarm.at(p);
+			if(!Vars.headless && participants.size > 0){
+				NHSounds.alarm.at(Core.camera.position);
+				Vars.ui.announce(Iconc.warning  + " Caution: Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, 4f);
+				NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color, participants);
+				NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color);
 			}
 		}
 		
 		@Override
 		public void triggered(Integer pos){
 			setPreparing();
-			Log.info("Trigged");
 			lastTarget = pos;
 		}
 		
@@ -207,9 +206,9 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		@Override
 		public void buildConfiguration(Table table){
 			table.table(Tex.paneSolid, t -> {
-				t.button(Icon.upOpen, Styles.clearPartiali, () -> {
-					commandAll(target < 0 ? NHWorldVars.commandPos : target);
-				}).size(LEN).disabled(b -> isPreparing());
+				t.button(Icon.modeAttack, Styles.clearPartiali, () -> {
+					configure(target < 0 ? NHWorldVars.commandPos : target);
+				}).size(LEN).disabled(b -> NHWorldVars.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);
 				}).size(LEN * 4, LEN).disabled(b -> NHCtrlVars.isSelecting).row();

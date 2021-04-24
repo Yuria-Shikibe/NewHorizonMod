@@ -91,12 +91,13 @@ public class TableFs{
                 setFillParent(true);
                 addListener(new InputListener(){
                     @Override
-                    public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                         point.set(Core.camera.unproject(x, y));
                         sx = String.valueOf(format(point.x / tilesize));
                         sy = String.valueOf(format(point.y / tilesize));
                         setText();
                         setFloatP();
+                        return false;
                     }
                 });
                 Core.scene.add(this);
@@ -374,9 +375,10 @@ public class TableFs{
             setFillParent(true);
             
             addListener(new InputListener(){
+                @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                NHCtrlVars.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-                return true;
+                    NHCtrlVars.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                    return false;
                 }
             });
         }};

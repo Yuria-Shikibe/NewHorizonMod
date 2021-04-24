@@ -183,7 +183,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			Rand rand = new Rand((long)Groups.all.size() << 8);
 			BombEntity bomb = Pools.obtain(BombEntity.class, BombEntity::new);
 			bomb.init(team, bombLifetime, this, target.drawx() + rand.range(spread), target.drawy() + rand.range(spread), true).setDamage(bombDamage, bombRadius);
-			if(!Vars.net.client())bomb.add();
+			bomb.add();
 		}
 	}
 	
@@ -304,7 +304,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			if(parent){
 				BombEntity next = Pools.obtain(BombEntity.class, BombEntity::new);
 				next.init(team, lifetime / 1.5f, target, target.x, target.y, false).setDamage(bombDamage, bombRadius);
-				if(!Vars.net.client())Time.run(dst(target) / tilesize * bombVelPerTile, next::add);
+				Time.run(dst(target) / tilesize * bombVelPerTile, next::add);
 			}else hit();
 			
 			Groups.draw.remove(this);

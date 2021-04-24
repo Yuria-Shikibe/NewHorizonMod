@@ -228,7 +228,7 @@ public class HyperSpaceWarper extends Block{
 							addListener(new InputListener(){
 								public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
 									targetV.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-									return true;
+									return false;
 								}
 							});
 						}};

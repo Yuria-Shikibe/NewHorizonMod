@@ -114,7 +114,7 @@ public class PlayerJumpGate extends Block{
 			while(player.unit() != unit && !player.within(target, tilesize * 2f)){
 				player.unit(unit);
 			}
-			player.team(t);
+			Time.run(1f, () -> player.team(t));
 			before.remove();
 
 			if(mobile && player == Vars.player)Core.camera.position.set(target);

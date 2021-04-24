@@ -38,7 +38,6 @@ public class NHSounds{
 		thermoShoot = loadSound("thermoShoot");
 	}
 	
-	
 	private static Sound loadSound(String soundName){
 		if(!Vars.headless){
 			String name = "sounds/" + soundName;
@@ -49,8 +48,6 @@ public class NHSounds{
 			AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
 			desc.errored = Throwable::printStackTrace;
 			return sound;
-		}else{
-			throw new IllegalArgumentException("Load Failed" + soundName);
-		}
+		}else return new Sound();
 	}
 }

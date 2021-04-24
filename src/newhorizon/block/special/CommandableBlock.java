@@ -27,6 +27,8 @@ public abstract class CommandableBlock extends Block{
 	}
 	
 	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged, ServerInitc{
+		public transient int lastTarget = -1;
+		
 		@NotNull public abstract CommandableBlockType getType();
 		
 		public abstract void triggered(Integer point2);
@@ -40,15 +42,15 @@ public abstract class CommandableBlock extends Block{
 		public abstract float spread();
 		
 		@Override
-		public void remove(){
-			super.remove();
-			NHWorldVars.commandables.remove(this);
+		public void add(){
+			super.add();
+			NHWorldVars.commandables.add(this);
 		}
 		
 		@Override
-		public void placed(){
-			super.placed();
-			beforeLoad();
+		public void remove(){
+			super.remove();
+			NHWorldVars.commandables.remove(this);
 		}
 		
 		@Override
@@ -58,7 +60,9 @@ public abstract class CommandableBlock extends Block{
 		}
 		
 		@Override
-		public void loadAfterConnect(){NHWorldVars.commandables.add(this); }
+		public void loadAfterConnect(){
+			NHWorldVars.commandables.add(this);
+		}
 		
 		@Override
 		public void beforeLoad(){ NHWorldVars.commandables.add(this); }

@@ -25,7 +25,6 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.func.Functions;
-import newhorizon.func.NHSetting;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHWorldVars;
 
@@ -200,7 +199,6 @@ public class GravityGully extends Block{
 			Functions.square(World.toTile(x), World.toTile(y), range, (x1, y1) -> {
 				tmpTile = world.tile(x1, y1);
 				if(tmpTile != null)effectedArea.add(NHWorldVars.intercepted.get(tmpTile));
-				NHSetting.log("Added");
 			});
 			
 			if(power.status >= 0.75f && !active)setIntercept(true);

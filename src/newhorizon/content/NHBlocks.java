@@ -764,7 +764,7 @@ public class NHBlocks implements ContentList {
 				Lines.square(e.x, e.y, size * tilesize / 2f + tilesize * 1.5f * e.fin(Interp.pow2In));
 			});
 			
-			bulletHitter = new NHTrailBulletType(2f, 400, NHBullets.STRIKE){{
+			bulletHitter = new NHTrailBulletType(2f, 500, NHBullets.STRIKE){{
 				trails = 1;
 				trailLength = 14;
 				trailOffset = 6f;
@@ -791,7 +791,7 @@ public class NHBlocks implements ContentList {
 				smokeEffect = NHFx.square(NHColor.darkEnrColor, 50f, 3, 80f, 5f);
 				shrinkX = shrinkY = 0;
 				splashDamageRadius = 120f;
-				splashDamage = lightningDamage = 0.65f * damage;
+				splashDamage = lightningDamage = 0.75f * damage;
 				height = 66f;
 				width = 20f;
 				lifetime = 120f;
