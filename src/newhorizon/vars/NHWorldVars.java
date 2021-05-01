@@ -34,6 +34,7 @@ public class NHWorldVars{
 	
 	public transient static int ix, iy;
 	public transient static int commandPos = -1;
+	public transient static boolean floatTableAdded = false;
 	
 	
 	public static void clear(){

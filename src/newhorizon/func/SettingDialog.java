@@ -1,6 +1,7 @@
 package newhorizon.func;
 
 
+import arc.Core;
 import arc.graphics.Color;
 import mindustry.Vars;
 import mindustry.gen.Icon;
@@ -16,10 +17,15 @@ public class SettingDialog extends BaseDialog{
 		super("@nh-setting");
 		setFillParent(true);
 		cont.pane(table -> {
+			table.top();
 			table.pane(t -> {
-				t.add("[gray]You can get back here through [accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ");
-				t.add("@settings").color(Pal.lancerLaser).row();
-			}).growX().height(LEN).row();
+				t.left();
+				t.marginLeft(OFFSET);
+				t.add("[gray]You can get back here through: ").left().row();
+				t.add("[accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ").left().padLeft(LEN).row();
+				t.add("[accent]<VanillaSettings>[gray] -> [accent]" + Core.bundle.get("settings.game") + "[gray] -> [accent]NEW HORIZON[gray] -> ").left().padLeft(LEN).row();
+				t.add("@settings").color(Pal.lancerLaser).left().padLeft(LEN * 2f).row();
+			}).growX().height(LEN * 2f).row();
 			table.image().color(Pal.accent).growX().height(OFFSET / 4).pad(OFFSET / 2).row();
 			for(NHSetting.SettingEntry key : NHSetting.entries){
 				table.table(t -> {

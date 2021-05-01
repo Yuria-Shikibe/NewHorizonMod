@@ -81,10 +81,10 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		bombStorm = new UpgradeData(
-				"bomb-storm", NHBullets.rapidBomb, 300f,
-				new ItemStack(NHItems.upgradeSort, 250),
-				new ItemStack(NHItems.darkEnergy, 500),
-				new ItemStack(NHItems.thermoCoreNegative, 150)
+			"bomb-storm", NHBullets.rapidBomb, 300f,
+			new ItemStack(NHItems.upgradeSort, 250),
+			new ItemStack(NHItems.darkEnergy, 500),
+			new ItemStack(NHItems.thermoCoreNegative, 150)
 		){{
 			shootSound = Sounds.bigshot;
 			inaccuracy = 9f;

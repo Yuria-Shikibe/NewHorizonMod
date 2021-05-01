@@ -21,7 +21,7 @@ public class NHLiquids implements ContentList{
 		infinityLiquid = new Liquid("infinity-liquid", Color.valueOf("#B170FF")){
 			@Override public boolean isHidden(){return true;}
 		{
-			heatCapacity = Float.MAX_VALUE / 10000f;
+			heatCapacity = 100000;
 			lightColor = Color.valueOf("#B170FF");
 		}};
 		

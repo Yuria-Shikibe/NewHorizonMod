@@ -7,7 +7,9 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.io.PropertiesUtils;
 import mindustry.Vars;
+import mindustry.gen.Icon;
 import mindustry.mod.Mods;
+import mindustry.ui.dialogs.SettingsMenuDialog;
 import newhorizon.NewHorizon;
 
 import java.io.FileInputStream;
@@ -15,6 +17,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+
+import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFs.OFFSET;
 
 public class NHSetting{
 	//private static final Json json = new Json();
@@ -44,16 +49,19 @@ public class NHSetting{
 		public String description;
 		public String warning;
 		public final boolean typeOfBool;
+		public final boolean typeOfGraphics;
 		
 		public SettingEntry(String key){
 			this.key = key;
 			if(key.endsWith("*"))warning = Core.bundle.get(key.replaceFirst("@", "") + ".warning", "null");
 			description = Core.bundle.get(key.replaceFirst("@", "") + ".description");
 			typeOfBool = key.contains("active");
+			typeOfGraphics = key.contains("graphics");
 		}
 		
 		public boolean bool(){return typeOfBool;}
 		public boolean warn(){return key.endsWith("*");}
+		public Object get(){return all.get(key);}
 	}
 	
 	public static void settingFile() throws IOException{
@@ -99,6 +107,21 @@ public class NHSetting{
 				entries.add(entry);
 			}
 		}
+	}
+	
+	public static void updateSettingMenu(){
+		SettingsMenuDialog settingTable = Vars.ui.settings;
+		settingTable.game.row();
+		settingTable.game.button("MOD: [sky]" + modMeta.displayName, Icon.settings, () -> {
+			new SettingDialog().show();
+		}).size(LEN * 6f, LEN - OFFSET);
+//		for(SettingEntry entry : entries){
+//			if(entry.typeOfBool){
+//				if(entry.typeOfGraphics)settingTable.graphics.checkPref();
+//				else settingTable.game.checkPref();
+//			}
+//		}
+//
 	}
 	
 	private static void updateProperty(String version) throws IOException{

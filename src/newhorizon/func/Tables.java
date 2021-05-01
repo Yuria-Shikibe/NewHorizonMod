@@ -83,8 +83,8 @@ public class Tables{
 					t2.table(Tex.clear, table2 -> TableFs.tableImageShrink(set.type.icon(Cicon.xlarge), LEN, table2)).size(LEN + OFFSET * 1.5f).left().padLeft(OFFSET);
 					
 					t2.pane(table2 -> {
-						table2.add("[gray]Summon: [accent]" + set.type.localizedName + "[gray]; Level: [accent]" + set.level + "[gray].").left().row();
-						table2.add("[gray]NeededTime: [accent]" + TableFs.format(set.costTimeVar() / 60) + " sec[gray].").row();
+						table2.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().row();
+						table2.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).row();
 					}).growX().height(LEN).center();
 					t2.table(stat).fillX().height(LEN + OFFSET).right().padRight(OFFSET);
 				}).growX().fillY().padBottom(OFFSET / 2).row();

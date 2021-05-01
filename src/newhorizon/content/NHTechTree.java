@@ -14,18 +14,19 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(root), content, content.researchRequirements());
     }
     
-    private static void addUnit(UnlockableContent root, UnitType type){
+    public static void addUnit(UnlockableContent root, UnitType type){
         ItemStack[] requirement;
         if((requirement = NHLoader.unitBuildCost.get(type)) != null){
             new TechNode(TechTree.get(root), type, requirement);
-        }else new TechNode(TechTree.get(root), type, ItemStack.with());
+        }else new TechNode(TechTree.get(root), type, ItemStack.with(NHItems.juniorProcessor, 500));
     }
     
     @Override
     public void load(){
         //Blocks;
         add(NHBlocks.bombLauncher, NHBlocks.airRaider);
-        add(Blocks.commandCenter, NHBlocks.jumpGateJunior);
+        add(Blocks.commandCenter, NHBlocks.jumpGatePrimary);
+        add(NHBlocks.jumpGatePrimary, NHBlocks.jumpGateJunior);
         add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
         add(NHBlocks.hyperspaceWarper, NHBlocks.gravityGully);
@@ -73,13 +74,16 @@ public class NHTechTree implements ContentList {
 
         //Units;
         addUnit(UnitTypes.mono, NHUnits.gather);
-        
-        addUnit(UnitTypes.horizon, NHUnits.warper);
+    
+        addUnit(Blocks.airFactory, NHUnits.sharp);
+        addUnit(NHUnits.sharp, NHUnits.warper);
         addUnit(NHUnits.warper, NHUnits.striker);
         addUnit(NHUnits.striker, NHUnits.destruction);
         addUnit(NHUnits.destruction, NHUnits.hurricane);
         
-        addUnit(UnitTypes.fortress, NHUnits.aliotiat);
+        addUnit(Blocks.groundFactory, NHUnits.origin);
+        addUnit(NHUnits.origin, NHUnits.thynomo);
+        addUnit(NHUnits.thynomo, NHUnits.aliotiat);
         addUnit(NHUnits.aliotiat, NHUnits.tarlidor);
         addUnit(NHUnits.tarlidor, NHUnits.annihilation);
         

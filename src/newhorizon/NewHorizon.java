@@ -53,7 +53,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHBlocks.airRaider
+			NHBlocks.jumpGatePrimary, NHUnits.origin, NHUnits.sharp, NHUnits.thynomo
 		}).show();
 	}
 	
@@ -112,7 +112,10 @@ public class NewHorizon extends Mod{
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
         	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
 	        if(NHSetting.getBool("@active.tool-panel*"))tableMain();
+	        NHSetting.updateSettingMenu();
         }));
+        
+        //Vars.defaultServers.add();
     }
 	
 	@Override

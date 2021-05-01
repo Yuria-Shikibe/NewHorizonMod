@@ -55,16 +55,16 @@ public class FContents{
 			}
 			SpawnerData data = (SpawnerData)b.data;
 			
-			final Color spawnColor = data.spawnColor;
-			final TextureRegion
-					pointerRegion = ((JumpGate)NHBlocks.jumpGate).pointerRegion,
-					arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
+			Color spawnColor = data.spawnColor;
+			TextureRegion
+				pointerRegion = ((JumpGate)NHBlocks.jumpGate).pointerRegion,
+				arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
 			
 			float regSize = Functions.regSize(data.set.type);
 			Draw.color(spawnColor);
 			for(int i = 0; i < 4; i++){
 				float sin = Mathf.absin(Time.time, 16f, tilesize);
-				float length = (tilesize * data.set.level + sin) * b.fout() + tilesize;
+				float length = (tilesize * 5 + sin) * b.fout() + tilesize;
 				float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
 				Tmp.v1.trns(i * 90, -length);
 				Draw.rect(pointerRegion, b.x + Tmp.v1.x, b.y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);

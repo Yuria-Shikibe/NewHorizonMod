@@ -12,14 +12,16 @@ import mindustry.entities.abilities.ForceFieldAbility;
 import mindustry.entities.abilities.MoveLightningAbility;
 import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
+import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.ContinuousLaserBulletType;
 import mindustry.entities.bullet.SapBulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Sounds;
+import mindustry.gen.Tex;
 import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
-import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.NHTrailBulletType;
 import newhorizon.bullets.PosLightningType;
@@ -28,13 +30,19 @@ import newhorizon.units.AutoOutlineUnitType;
 import newhorizon.units.AutoOutlineWeapon;
 
 public class NHUnits implements ContentList {
+	public static final byte
+		OTHERS = Byte.MIN_VALUE,
+		GROUND_LINE_1 = 0,
+		AIR_LINE_1 = 10,
+		NAVY_LINE_1 = 20;
+	
 	public static
 	AutoOutlineWeapon
 	posLiTurret, closeAATurret;
 	
 	public static
 	UnitType
-	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat;
+	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, thynomo, origin;
 	
 	public void loadWeapon(){
 		posLiTurret = new AutoOutlineWeapon("pos-li-blaster"){{
@@ -104,6 +112,91 @@ public class NHUnits implements ContentList {
 			lowAltitude = true;
 		}};
 		
+		origin = new AutoOutlineUnitType("origin",
+			new AutoOutlineWeapon("primary-weapon"){{
+				mirror = true;
+				top = false;
+				x = 5f;
+				y = -1f;
+				reload = 30f;
+				shots = 3;
+				spacing = 4f;
+				inaccuracy = 4f;
+				velocityRnd = 0.15f;
+				shootSound = NHSounds.scatter;
+				shake = 0.75f;
+				bullet = new BasicBulletType(4f, 8f){{
+					width = 5f;
+					height = 25f;
+					backColor = lightningColor = lightColor = hitColor = NHColor.lightSky;
+					frontColor = backColor.cpy().lerp(Color.white, 0.45f);
+					shootEffect = NHFx.shootLineSmall(backColor);
+					despawnEffect = NHFx.square(hitColor, 16f, 2, 12, 2f);
+					hitEffect = NHFx.lightningHitSmall(backColor);
+					smokeEffect = Fx.shootBigSmoke2;
+					lifetime = 45f;
+				}};
+			}}
+		){{
+			constructor = EntityMapping.map(19);
+			speed = 0.6F;
+			hitSize = 8.0F;
+			health = 160.0F;
+		}};
+		
+		thynomo = new AutoOutlineUnitType("thynomo",
+			new AutoOutlineWeapon("thynomo-weapon"){{
+				mirror = true;
+				top = false;
+				x = 8f;
+				y = 1f;
+				shootY = 9.5f;
+				reload = 90f;
+				shootCone = 25f;
+				shootStatus = StatusEffects.slow;
+				shootStatusDuration = 90f;
+				continuous = true;
+				shootSound = Sounds.beam;
+				bullet = new ContinuousLaserBulletType(7.5f){{
+					length = 120f;
+					width = 2.55f;
+					
+					incendChance = 0.025F;
+					incendSpread = 5.0F;
+					incendAmount = 1;
+					
+					strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
+					tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
+					shake = 3;
+					colors = new Color[]{NHColor.lightSky.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSky, Color.white};
+					oscScl = 0.4f;
+					oscMag = 1.5f;
+					lifetime = 90f;
+					lightColor = hitColor = NHColor.lightSky;
+					hitEffect = NHFx.lightSkyCircleSplash;
+					shootEffect = NHFx.square(hitColor, 22f, 4, 16, 3f);
+					smokeEffect = Fx.shootBigSmoke;
+				}};
+			}}
+		){{
+			constructor = EntityMapping.map(19);
+			boostMultiplier = 2.0F;
+			health = 650.0F;
+			buildSpeed = 0.75F;
+			rotateSpeed = 1.6f;
+			hovering = true;
+			canBoost = true;
+			armor = 9.0F;
+			landShake = 2.0F;
+			riseSpeed = 0.05F;
+			mechFrontSway = 0.55F;
+			ammoType = AmmoTypes.power;
+			speed = 0.4F;
+			hitSize = 15f;
+			engineOffset = 7.4F;
+			engineSize = 4.25F;
+		}};
+		
 		aliotiat = new AutoOutlineUnitType("aliotiat",
 			posLiTurret.copy().setPos(10f, 3f).setDelay(closeAATurret.reload / 2f),
 			posLiTurret.copy().setPos(6f, -2f)
@@ -112,12 +205,11 @@ public class NHUnits implements ContentList {
 			engineOffset = 10.0F;
 			engineSize = 4.5F;
 			speed = 0.35f;
-			hitSize = 17f;
+			hitSize = 22f;
 			health = 1200f;
 			buildSpeed = 1.2f;
 			armor = 5f;
 			rotateSpeed = 2.8f;
-			hovering = true;
 			canDrown = true;
 			singleTarget = false;
 			fallSpeed = 0.016f;
@@ -182,26 +274,26 @@ public class NHUnits implements ContentList {
 				shootSound = Sounds.plasmaboom;
 			}}
 		){{
-	constructor = EntityMapping.map(32);
-	abilities.add(new ShieldRegenFieldAbility(50.0F, 50F, 600.0F, 800.0F));
-	engineOffset = 13.0F;
-	engineSize = 6.5F;
-	speed = 0.4f;
-	hitSize = 20f;
-	health = 9000f;
-	buildSpeed = 1.8f;
-	armor = 8f;
-	rotateSpeed = 3.3f;
-	hovering = true;
-	canDrown = true;
-	fallSpeed = 0.016f;
-	mechStepParticles = true;
-	mechStepShake = 0.15f;
-	canBoost = true;
-	landShake = 6f;
-	boostMultiplier = 3.5f;
-	ammoType = AmmoTypes.powerHigh;
-}};
+			constructor = EntityMapping.map(32);
+			abilities.add(new ShieldRegenFieldAbility(50.0F, 50F, 600.0F, 800.0F));
+			engineOffset = 13.0F;
+			engineSize = 6.5F;
+			speed = 0.4f;
+			hitSize = 20f;
+			health = 9000f;
+			buildSpeed = 1.8f;
+			armor = 8f;
+			rotateSpeed = 3.3f;
+			hovering = true;
+			canDrown = true;
+			fallSpeed = 0.016f;
+			mechStepParticles = true;
+			mechStepShake = 0.15f;
+			canBoost = true;
+			landShake = 6f;
+			boostMultiplier = 3.5f;
+			ammoType = AmmoTypes.powerHigh;
+		}};
 		
 		annihilation = new AutoOutlineUnitType("annihilation",
 			new AutoOutlineWeapon("large-launcher"){{
@@ -270,17 +362,82 @@ public class NHUnits implements ContentList {
 			singleTarget = false;
 			fallSpeed = 0.016f;
 			mechStepParticles = true;
-			mechStepShake = 0.15f;
+			mechStepShake = 0.5f;
 			canBoost = true;
 			landShake = 6f;
 			boostMultiplier = 3.5f;
 			ammoType = AmmoTypes.powerHigh;
 		}};
 		
+		sharp = new AutoOutlineUnitType("sharp"){{
+			constructor = EntityMapping.map(3);
+			
+			itemCapacity = 15;
+			commandLimit = 4;
+			health = 220;
+			armor = 1;
+			engineOffset = 10F;
+			engineSize = 2.8f;
+			speed = 1.5f;
+			faceTarget = true;
+			flying = true;
+			canDrown = false;
+			accel = 0.08F;
+			drag = 0.02f;
+			baseRotateSpeed = 1.5f;
+			rotateSpeed = 2.5f;
+			hitSize = 10f;
+			hovering = true;
+			singleTarget = true;
+			
+			weapons.add(new AutoOutlineWeapon(){{
+				top = false;
+				rotate = false;
+				alternate = false;
+				mirror = false;
+				x = 0f;
+				y = 0f;
+				reload = 30f;
+				shots = 4;
+				inaccuracy = 5f;
+				ejectEffect = Fx.none;
+				velocityRnd = 0.125f;
+				spacing = 4f;
+				shotDelay = 2.5f;
+				shake = 2f;
+				maxRange = 140f;
+				bullet = new NHTrailBulletType(3.5f, 5f){{
+					homingPower = 0.1f;
+					homingRange = 120f;
+					width = 5f;
+					height = 25f;
+					keepVelocity = true;
+					knockback = 0.75f;
+					trailColor = backColor = lightColor = lightningColor = hitColor = NHColor.lightSky;
+					frontColor = backColor.cpy().lerp(Color.white, 0.45f);
+					trailChance = 0.1f;
+					trailParam = 1f;
+					trailEffect = NHFx.trail;
+					despawnEffect = NHFx.square(backColor, 18f, 2, 12f, 2);
+					hitEffect = NHFx.lightningHitSmall(backColor);
+					shootEffect = NHFx.shootLineSmall(backColor);
+					smokeEffect = Fx.shootBigSmoke2;
+				}};
+				shootSound = NHSounds.thermoShoot;
+			}});
+		}
+			
+			@Override
+			public void load(){
+				super.load();
+				softShadowRegion = Tex.clear.getRegion();
+			}
+		};
+		
 		warper = new AutoOutlineUnitType("warper"){{
 			constructor = EntityMapping.map(3);
-			weapons.add(new Weapon(){{
-				top = true;
+			weapons.add(new AutoOutlineWeapon(){{
+				top = false;
 				rotate = true;
 				alternate = true;
 				mirror = false;

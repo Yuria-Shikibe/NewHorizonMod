@@ -36,7 +36,7 @@ public class MultTractorBeamTurret extends TractorBeamTurret{
 	}
 	
 	public class MultTractorBeamBuild extends TractorBeamBuild{
-		/** {@link ObjectMap} {@code targets} Uses a {@code Float[3]} to contain:
+		/** {@link ObjectMap} {@code targets} Uses a {@link Vec3} to contain:
 		 * <li>.x -> {@code lastX}
 		 * <li>.y -> {@code lastY}
 		 * <li>.z -> {@code strength}
@@ -57,7 +57,9 @@ public class MultTractorBeamTurret extends TractorBeamTurret{
 						unit.impulseNet(Tmp.v1.set(this).sub(unit).limit((force + (1f - unit.dst(this) / range) * scaledForce) * edelta() * timeScale));
 					}
 				}else{
-					targets.get(unit).z = Mathf.lerpDelta(targets.get(unit).z, 0, 0.1f);
+					Vec3 v = targets.get(unit);
+					if(v == null)continue;
+					v.z = Mathf.lerpDelta(v.z, 0, 0.1f);
 					if(Mathf.equal(targets.get(unit).z, 0, 0.001f))targets.remove(unit);
 				}
 			}

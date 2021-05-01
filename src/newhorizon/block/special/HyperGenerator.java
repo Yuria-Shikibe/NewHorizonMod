@@ -126,6 +126,7 @@ public class HyperGenerator extends PowerGenerator{
 		if(effectCircleSize < 0)effectCircleSize = size * Vars.tilesize / 6f;
 		destroyed = new EffectBulletType(600f){
 			{
+				absorbable = hittable = false;
 				speed = 0;
 				lightningLen = lightningLenRand = 4;
 				lightningDamage = HyperGenerator.this.lightningDamage / 2;

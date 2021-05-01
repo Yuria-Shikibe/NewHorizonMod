@@ -17,7 +17,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
-import mindustry.core.UI;
 import mindustry.core.World;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -30,7 +29,6 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -40,7 +38,6 @@ import newhorizon.effects.EffectTrail;
 import newhorizon.vars.NHWorldVars;
 
 import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
 
 public class BombLauncher extends CommandableAttackerBlock{
 	public TextureRegion bombRegion;
@@ -54,7 +51,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 	
 	public Color baseColor = Pal.redderDust;
 	
-	public int storage = 4;
+	
 	public float bombLifetime = 120f;
 	public float shake = 20f;
 	public float bombDamage = 600f, bombRadius = 120f;
@@ -69,7 +66,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 		super(name);
 		smokeEffect = NHFx.hugeSmoke;
 		trailEffect = NHFx.trail;
-		
+		storage = 4;
 		range = 800f;
 		spread = 160f;
 		prepareDelay = 30f;
@@ -113,56 +110,11 @@ public class BombLauncher extends CommandableAttackerBlock{
 		bombRegion = Core.atlas.find(name + "-bomb", Core.atlas.find("launchpod"));
 	}
 	
-	@Override
-	public void setBars() {
-		super.setBars();
-		bars.add("progress",
-			(BombLauncherBuild entity) -> new Bar(
-				() -> Core.bundle.get("bar.progress"),
-				() -> Pal.power,
-				() -> (entity.reload % reloadTime) / reloadTime
-			)
-		);
-		bars.add("storage",
-			(BombLauncherBuild entity) -> new Bar(
-				() -> Core.bundle.format("bar.capacity", UI.formatAmount(entity.storaged())),
-				() -> Pal.ammo,
-				() -> (float)entity.storaged() / storage
-			)
-		);
-	}
-	
 	public class BombLauncherBuild extends CommandableAttackerBlockBuild{
-		@Override
-		public boolean isCharging(){return consValid() && reload < reloadTime * storage;}
-		
-		public int storaged(){return (int)(reload / reloadTime);}
-		
 		@Override
 		public void draw(){
 			super.draw();
 			Draw.draw(Draw.z(), () -> Drawf.construct(x, y, bombRegion, baseColor, 0, (prepareDelay - countBack) / prepareDelay, efficiency(), countBack * 2f));
-		}
-		
-		@Override
-		public void updateTile(){
-			if(reload < reloadTime * storage && consValid()){
-				reload += efficiency() * delta();
-			}
-			
-			if(isPreparing()){
-				countBack -= efficiency() * delta();
-			}else if(preparing){
-				countBack = prepareDelay;
-				preparing = false;
-				shoot(lastTarget);
-			}
-		}
-		
-		@Override
-		public boolean canCommand(){
-			Tile tile = world.tile(NHWorldVars.commandPos);
-			return tile != null && consValid() && storaged() > 0 && NHWorldVars.commandPos > 0 && within(tile, range);
 		}
 
 		@Override

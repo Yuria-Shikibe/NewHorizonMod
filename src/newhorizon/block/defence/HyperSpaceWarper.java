@@ -370,7 +370,7 @@ public class HyperSpaceWarper extends Block{
 						index++;
 					}
 				}).grow().row();
-			}).growX().height(LEN * 5f).row();
+			}).growX().height(LEN * 3f).row();
 			table.table(Tex.paneSolid, t -> {
 				t.button("@remove", Icon.cancel, Styles.cleart, () -> {
 					selects.clear();
@@ -381,10 +381,10 @@ public class HyperSpaceWarper extends Block{
 		public void teleport(int spawnRange){
 			Tmp.p1.set(Point2.unpack(target));
 			if(selects.isEmpty() || world.tile(target) == null || !targetValid(Tmp.p1.x, Tmp.p1.y))return;
-			final long seed = (long)Groups.unit.size() + Groups.build.size() << 8;
-			final Seq<Tile> tileSeq = new Seq<>();
-			final Seq<Vec2> vectorSeq = new Seq<>();
-			final Seq<Unit> selectUnits = new Seq<>();
+			long seed = (long)Groups.unit.size() + Groups.build.size() << 8;
+			Seq<Tile> tileSeq = new Seq<>();
+			Seq<Vec2> vectorSeq = new Seq<>();
+			Seq<Unit> selectUnits = new Seq<>();
 			Rand r = new Rand(seed);
 			
 			int grounds = 0, air = 0;

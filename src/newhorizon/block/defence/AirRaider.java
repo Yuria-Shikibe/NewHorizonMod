@@ -1,6 +1,5 @@
 package newhorizon.block.defence;
 
-import arc.Core;
 import arc.audio.Sound;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -14,16 +13,12 @@ import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Sounds;
-import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.values.AmmoListValue;
 import newhorizon.vars.NHWorldVars;
 
 import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
 
 public class AirRaider extends CommandableAttackerBlock{
 	public int salvos = 3;
@@ -55,18 +50,6 @@ public class AirRaider extends CommandableAttackerBlock{
 		stats.add(Stat.ammo, new AmmoListValue<>(map));
 	}
 	
-	@Override
-	public void setBars() {
-		super.setBars();
-		bars.add("progress",
-			(AirRaiderBuild entity) -> new Bar(
-				() -> Core.bundle.get("bar.progress"),
-				() -> Pal.power,
-				() -> entity.reload / reloadTime
-			)
-		);
-	}
-	
 	public class AirRaiderBuild extends CommandableAttackerBlockBuild{
 		public void effects(float rotation){
 			Effect fshootEffect = shootEffect == Fx.none ? bulletHitter.shootEffect : shootEffect;
@@ -82,29 +65,8 @@ public class AirRaider extends CommandableAttackerBlock{
 		}
 		
 		@Override
-		public void updateTile(){
-			if(isCharging()){
-				reload = Mathf.clamp(reload + efficiency() * delta(), 0, reloadTime);
-			}
-			
-			if(isPreparing()){
-				countBack -= efficiency() * delta();
-			}else if(preparing){
-				countBack = prepareDelay;
-				preparing = false;
-				shoot(lastTarget);
-			}
-		}
-		
-		@Override
-		public boolean canCommand(){
-			Tile tile = world.tile(NHWorldVars.commandPos);
-			return tile != null && consValid() && reload >= reloadTime && NHWorldVars.commandPos > 0 && within(tile, range);
-		}
-		
-		@Override
 		public void shoot(Integer pos){
-			Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
+			Tmp.p1.set(Point2.unpack(pos));
 			
 			for(int i = 0; i < salvos; i++){
 				Time.run(burstSpacing * i, () -> {
@@ -126,11 +88,6 @@ public class AirRaider extends CommandableAttackerBlock{
 			
 			reload = 0f;
 			consume();
-		}
-		
-		@Override
-		public boolean isCharging(){
-			return consValid() && reload < reloadTime;
 		}
 		
 		@Override

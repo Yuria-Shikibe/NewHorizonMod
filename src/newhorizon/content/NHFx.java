@@ -391,11 +391,10 @@ public class NHFx{
 			float len = e.data();
 			color(e.color);
 			for(int i : Mathf.signs) {
-				Drawf.tri(e.x, e.y, len * e.fout() * e.fslope() * 4f, len * 50f * e.fout(), e.rotation + 90 + i * 90);
+				Drawf.tri(e.x, e.y, 13f * e.fout() * e.fslope(), len * 4f * e.fout(), e.rotation + 90 + i * 90);
 			}
 			Lines.stroke(e.fout() * 2.0F);
-			Lines.circle(e.x, e.y, e.fin() * len * 8f);
-			randLenVectors(e.id, 6, 3 + 60 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
+			randLenVectors(e.id, 6, 3 + len * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
 		}),
 		
 		line = new Effect(30f, e -> {

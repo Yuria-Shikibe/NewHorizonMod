@@ -23,7 +23,7 @@ import static mindustry.Vars.state;
 public abstract class CommandableBlock extends Block{
 	public CommandableBlock(String name){
 		super(name);
-		update = configurable = true;
+		update = configurable = solid = true;
 	}
 	
 	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged, ServerInitc{

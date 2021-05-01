@@ -8,6 +8,7 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.core.UI;
 import mindustry.core.World;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Damagec;
@@ -16,6 +17,7 @@ import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
+import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockStatus;
@@ -37,6 +39,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	public float spread = 120f;
 	public float prepareDelay = 60f;
 	public float reloadTime = 240f;
+	public int storage = 1;
 	
 	@NotNull protected BulletType bulletHitter;
 	
@@ -56,11 +59,37 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
 	}
 	
+	@Override
+	public void setBars() {
+		super.setBars();
+		bars.add("progress",
+			(CommandableAttackerBlockBuild entity) -> new Bar(
+				() -> Core.bundle.get("bar.progress"),
+				() -> Pal.power,
+				() -> (entity.reload % reloadTime) / reloadTime
+			)
+		);
+		bars.add("storage",
+			(CommandableAttackerBlockBuild entity) -> new Bar(
+				() -> Core.bundle.format("bar.capacity", UI.formatAmount(entity.storaged())),
+				() -> Pal.ammo,
+				() -> (float)entity.storaged() / storage
+			)
+		);
+	}
+	
 	public abstract class CommandableAttackerBlockBuild extends CommandableBlockBuild{
 		public int target = -1;
 		public float reload;
 		public float countBack = prepareDelay;
 		public boolean preparing = false;
+		
+		protected boolean attackGround = true;
+		
+		@Override
+		public boolean isCharging(){return consValid() && reload < reloadTime * storage;}
+		
+		public int storaged(){return (int)(reload / reloadTime);}
 		
 		@Override
 		@NotNull
@@ -100,9 +129,24 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		}
 		
 		@Override
+		public void updateTile(){
+			if(reload < reloadTime * storage && consValid()){
+				reload += efficiency() * delta();
+			}
+			
+			if(isPreparing()){
+				countBack -= efficiency() * delta();
+			}else if(preparing){
+				countBack = prepareDelay;
+				preparing = false;
+				shoot(lastTarget);
+			}
+		}
+		
+		@Override
 		public boolean canCommand(){
 			Tile tile = world.tile(NHWorldVars.commandPos);
-			return tile != null && consValid() && within(tile, range);
+			return tile != null && consValid() && storaged() > 0 && within(tile, range);
 		}
 		
 		@Override
@@ -188,8 +232,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				}
 			}
 			if(!Vars.headless && participants.size > 0){
-				NHSounds.alarm.at(Core.camera.position);
-				Vars.ui.announce(Iconc.warning  + " Caution: Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, 4f);
+				TableFs.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, NHSounds.alarm);
 				NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color, participants);
 				NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color);
 			}
@@ -205,6 +248,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public void buildConfiguration(Table table){
+			NHWorldVars.floatTableAdded = false;
+			
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.modeAttack, Styles.clearPartiali, () -> {
 					configure(target < 0 ? NHWorldVars.commandPos : target);

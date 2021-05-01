@@ -11,6 +11,7 @@ import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Structs;
 import mindustry.content.Blocks;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
 import mindustry.entities.bullet.BulletType;
@@ -37,6 +38,13 @@ public class NHLoader implements ContentList{
 	public static final Color outlineColor = Color.valueOf("565666");
 	public static NHContent content;
 	public static NHIconGenerator iconGenerator;
+	
+	public static void free(){
+		fullIconNeeds.clear();
+		outlineTex.clear();
+		needBeLoad.clear();
+		unitBuildCost.clear();
+	}
 	
 	public static void putNeedLoad(String name, TextureRegion textureRegion){
 		needBeLoad.put(name, textureRegion);
@@ -149,6 +157,14 @@ public class NHLoader implements ContentList{
 	public void loadLast(){
 		iconGenerator = new NHIconGenerator();
 		
+//		unitFactory: {
+//			if(!(Blocks.airFactory instanceof UnitFactory))break unitFactory;
+//			UnitFactory factory = (UnitFactory)Blocks.airFactory;
+//			factory.plans.add(new UnitFactory.UnitPlan(NHUnits.sharp, 20 * 60f,
+//				ItemStack.with(Items.titanium, 10, Items.silicon, 5)
+//			));
+//		}
+		
 		Blocks.coreFoundation.health *= 5;
 		Blocks.coreNucleus.health *= 5;
 		Blocks.coreShard.health *= 5;
@@ -156,6 +172,8 @@ public class NHLoader implements ContentList{
 //		for(Block block : Vars.content.blocks()){
 //			block.health *= 1.5;
 //		}
+		
+		Fx.lightning.layer(Fx.lightning.layer - 0.1f);
 		
 		addReq(Blocks.blastDrill,
 				new ItemStack(NHItems.presstanium, 50),

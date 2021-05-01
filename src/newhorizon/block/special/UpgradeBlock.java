@@ -11,7 +11,6 @@ import arc.math.geom.Point2;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -31,7 +30,6 @@ import mindustry.world.meta.Stat;
 import newhorizon.content.NHFx;
 import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
-import newhorizon.func.NHSetting;
 import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
@@ -185,8 +183,7 @@ public class UpgradeBlock extends Block {
 		public void updateUpgrading() {
 			upgradeSoundLoop = new SoundLoop(upgradeSound, 1f);
 			upgradeSoundLoop.update(x, y, true);
-			NHSetting.debug(() -> remainTime = -1);
-			remainTime -= Time.delta * efficiency();
+			remainTime -= delta() * efficiency();
 		}
 		
 		@Override

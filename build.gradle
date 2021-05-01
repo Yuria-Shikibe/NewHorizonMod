@@ -71,7 +71,7 @@ jar{
     }
 }
 
-task deploy(type: Jar){
+task deploy(type : Jar){
     def fi = new File("$rootDir/mod.hjson")
     fi.withReader { reader ->
         def lines = reader.readLines()

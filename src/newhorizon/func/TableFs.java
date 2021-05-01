@@ -1,22 +1,27 @@
 package newhorizon.func;
 
 import arc.Core;
+import arc.audio.Sound;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.input.KeyCode;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
+import arc.scene.actions.Actions;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
+import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.TextArea;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
+import arc.util.Align;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -52,6 +57,7 @@ public class TableFs{
     private static int spawnNum = 1;
     private static Team selectTeam = Team.sharded;
     private static UnitType selected = UnitTypes.alpha;
+    private static long lastToast;
     
     private static void setStr(){
         sx = sy = "";
@@ -402,5 +408,44 @@ public class TableFs{
         
         Core.scene.root.addChildAt(Math.max(parent.getZIndex() - 1, 0), pTable);
         Core.scene.root.addChildAt(Math.max(parent.getZIndex() - 2, 0), floatTable);
+    }
+    
+    private static void scheduleToast(Runnable run){
+        long duration = (int)(3.5 * 1000);
+        long since = Time.timeSinceMillis(lastToast);
+        if(since > duration){
+            lastToast = Time.millis();
+            run.run();
+        }else{
+            Time.runTask((duration - since) / 1000f * 60f, run);
+            lastToast += duration;
+        }
+    }
+    
+    public static void showToast(Drawable icon, String text, Sound sound){
+        if(state.isMenu()) return;
+        
+        scheduleToast(() -> {
+            sound.play();
+            
+            Table table = new Table(Tex.button);
+            table.update(() -> {
+                if(state.isMenu() || !ui.hudfrag.shown){
+                    table.remove();
+                }
+            });
+            table.margin(12);
+            table.image(icon).pad(3);
+            table.add(text).wrap().width(280f).get().setAlignment(Align.center, Align.center);
+            table.pack();
+            
+            //create container table which will align and move
+            Table container = Core.scene.table();
+            container.top().add(table);
+            container.setTranslation(0, table.getPrefHeight());
+            container.actions(Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
+                    //nesting actions() calls is necessary so the right prefHeight() is used
+                    Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove())));
+        });
     }
 }
