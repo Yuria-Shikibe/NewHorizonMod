@@ -11,8 +11,7 @@ public class EffectBulletType extends BulletType{
 		despawnEffect = hitEffect = shootEffect = smokeEffect = trailEffect = Fx.none;
 		absorbable = collides = collidesAir = collidesGround = collidesTeam = collidesTiles = false;
 		hitSize = 0;
-		speed = 0.01f;
-		drag = 1f;
+		speed = 0.0001f;
 		drawSize = 120f;
     }
 

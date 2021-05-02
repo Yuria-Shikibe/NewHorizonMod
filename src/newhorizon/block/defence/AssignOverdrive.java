@@ -9,7 +9,6 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -202,7 +201,6 @@ public class AssignOverdrive extends OverdriveProjector{
 			Building other = Vars.world.build(value);
 			
 			boolean contains = targets.removeValue(value);
-			Log.info(value + " | " + targets.size + contains);
 			if(!contains && targets.size < maxLink - 1)targets.add(value);
 			
 		}

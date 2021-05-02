@@ -111,6 +111,7 @@ If you find that your device cannot afford it, open the mod file folder and find
    
 - Spawning units requires resource, which the jump gate can take the resource directly from the `Core`.
 - To place the `Senior Jump Gate`, the `Junior Jump Gate` is required as a base.
+- A new auto-spawn system has been added since 1.7.8, which allows you to spawn specific unit when wave passed by. This also works for enemies, so you guys can use it to make some interesting maps. 
 
 ---
 #### Player Jump Gate

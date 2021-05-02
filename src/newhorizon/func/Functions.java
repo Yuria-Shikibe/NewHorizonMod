@@ -107,11 +107,11 @@ public class Functions {
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     
-    public static boolean spawnUnit(Teamc starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, float inComeVelocity, long seed, JumpGate.UnitSet set, Color spawnColor){
+    public static boolean spawnUnit(Teamc starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, long seed, JumpGate.UnitSet set, Color spawnColor){
         UnitType type = set.type;
         clearTmp();
-        final Seq<Vec2> vectorSeq = new Seq<>();
-        final Seq<Tile> tSeq = new Seq<>(Tile.class);
+        Seq<Vec2> vectorSeq = new Seq<>();
+        Seq<Tile> tSeq = new Seq<>(Tile.class);
         float angle, regSize = regSize(type);
         
         if(!type.flying){

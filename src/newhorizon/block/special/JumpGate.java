@@ -11,7 +11,9 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.scene.Element;
 import arc.scene.ui.Label;
+import arc.scene.ui.TextArea;
 import arc.scene.ui.layout.Table;
+import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
@@ -36,19 +38,22 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
-import newhorizon.func.*;
+import newhorizon.func.DrawFuncs;
+import newhorizon.func.Functions;
+import newhorizon.func.TableFs;
+import newhorizon.func.Tables;
 import newhorizon.interfaces.Linkablec;
 import org.jetbrains.annotations.NotNull;
 
-import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static mindustry.Vars.*;
 import static newhorizon.func.Functions.regSize;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
@@ -63,9 +68,8 @@ public class JumpGate extends Block {
     public float spawnReloadTime = 180f;
     public float spawnRange = 120f;
     public float range = 200f;
-    public float inComeVelocity = 5f;
     public float atlasSizeScl = 1;
-    public float basePowerDraw = 3f;
+    public float basePowerDraw = 2f;
     public TextureRegion
             pointerRegion,
             arrowRegion;
@@ -79,10 +83,12 @@ public class JumpGate extends Block {
         configurable = true;
         solid = true;
         hasPower = true;
+        timers = 3;
         category = Category.units;
         consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
         consumes.powerCond(consumes.getPower().usage, JumpGateBuild::isCalling);
     
+        config(IntSeq.class, JumpGateBuild::parsing);
         config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
         config(Integer.class, (JumpGateBuild tile, Integer i) -> {
             if(i < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
@@ -95,7 +101,7 @@ public class JumpGate extends Block {
     }
     
     public boolean canPlaceOn(Tile tile, Team team) {
-        if(adaptBase == null)return true;
+        if(adaptBase == null || state.rules.infiniteResources)return true;
         if (tile == null) {
             return false;
         } else {
@@ -221,9 +227,26 @@ public class JumpGate extends Block {
         public int link = -1;
         public float buildReload = 0f;
         public float progress;
+        
+        protected int performPlanIndex = -1;
         protected boolean success = true, error;
         protected float warmup;
         
+        protected ObjectMap<Integer, Integer> spawnPlan = new ObjectMap<>();
+    
+        @Override
+        public boolean onConfigureTileTapped(Building other){
+            if (this == other || linkPos() == other.pos()) {
+                configure(Tmp.p1.set(-1, -1));
+                return false;
+            }
+            if (other.within(this, range()) && other.team == team()) {
+                configure(Point2.unpack(other.pos()));
+                return false;
+            }
+            return true;
+        }
+    
         @Override
         public void updateTile(){
             if(hasConsume(getSet()))progress += efficiency() + warmup;
@@ -241,7 +264,23 @@ public class JumpGate extends Block {
                 if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
                 else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
             }
-            
+    
+            if(timer(2, 20))for(int boolf : spawnPlan.keys()){
+                if(boolf <= state.wave){
+                    int index = spawnPlan.get(boolf);
+                    UnitSet set = calls.get(index);
+                    if(canSpawn(set) && !isCalling() && !error){
+                        IntSeq newSeq = config();
+                        int i = spawnPlan.keys().toSeq().indexOf(boolf);
+                        newSeq.removeRange(i * 2, i * 2 + 1);
+                        spawnPlan.clear();
+                        parsing(newSeq);
+                        startBuild(index);
+                        performPlanIndex = boolf;
+                        break;
+                    }
+                }
+            }
         }
 
         public Color getColor(UnitSet set){
@@ -249,6 +288,26 @@ public class JumpGate extends Block {
             return (error || !hasConsume(getSet())) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
         }
     
+        public void parsing(IntSeq input){
+            ObjectMap<Integer, Integer> cpy = spawnPlan.copy();
+            for(int i = 0; i < input.size; i += 2){
+                int j = input.get(i + 1);
+                if(j >= calls.size){
+                    ui.showErrorMessage("Not applicable to this box.");
+                    spawnPlan = cpy;
+                    break;
+                }
+                spawnPlan.put(input.get(i), j);
+            }
+            
+            Seq<Integer> sorted = spawnPlan.keys().toSeq().sort(Integer::intValue);
+            cpy.clear();
+            for(int i : sorted){
+                cpy.put(i, spawnPlan.get(i));
+            }
+            spawnPlan = cpy;
+        }
+        
         @Override
         public void drawConfigure() {
             Color color = getColor(getSet());
@@ -274,19 +333,6 @@ public class JumpGate extends Block {
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other) {
-            if (this == other || link == other.pos()) {
-                configure(Tmp.p1.set(-1, -1));
-                return false;
-            }
-            if (other.within(this, range())) {
-                configure(Point2.unpack(other.pos()));
-                return false;
-            }
-            return true;
-        }
-        
-        @Override
         public void buildConfiguration(Table table) {
             BaseDialog dialog = new BaseDialog("@spawn");
             dialog.addCloseListener();
@@ -298,7 +344,7 @@ public class JumpGate extends Block {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 Label can = new Label("");
                                 table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(set))));
-                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core().items)).size(LEN);
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, coreValid() ? core().items : null)).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(calls.indexOf(set))).size(LEN).disabled(b -> !canSpawn(set) || error || isCalling());
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
@@ -317,7 +363,7 @@ public class JumpGate extends Block {
             ).grow().row();
             
             dialog.cont.add(new Bar(
-                    () -> isCalling() ? hasConsume(getSet()) && !error ? "[gray]" + Core.bundle.get("editor.spawn") + ": [accent]" + getSet().type.localizedName + "[gray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / Time.toSeconds) / state.rules.unitBuildSpeedMultiplier) + "[lightgray] " + Core.bundle.get("unit.seconds") : "[red]Call Jammed"
+                    () -> isCalling() ? hasConsume(getSet()) && !error ? "[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + getSet().type.localizedName + "[lightgray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / Time.toSeconds) / state.rules.unitBuildSpeedMultiplier) + "[lightgray] " + Core.bundle.get("unit.seconds") : "[red]Call Jammed"
                         : "[lightgray]" + Iconc.cancel,
                     () -> isCalling() && hasConsume(getSet()) && !error ? Pal.power : Pal.redderDust,
                     () -> isCalling() ? buildReload / getSet().costTime() : 0
@@ -327,9 +373,112 @@ public class JumpGate extends Block {
                 t.button("@release", Icon.add, Styles.cleart, () -> configure(spawnID)).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).growX().height(LEN);
                 t.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).growX().height(LEN);
             }).growX().height(LEN);
-            table.button("@spawn", Icon.add, dialog::show).size(LEN * 5, LEN);
+            
+            table.table(Tex.paneSolid, t -> {
+                t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
+                t.button(Core.bundle.get("spawn") + Core.bundle.get("settings"), Icon.settings, Styles.cleart, () -> new BaseDialog("Planning"){{
+                    addCloseListener();
+                    Table plan = new Table();
+                    updateInfoTable(plan);
+        
+                    cont.pane(inner -> {
+                        inner.table(t -> {
+                            t.top();
+                            AtomicInteger wave = new AtomicInteger(state.wave);
+                            Label l = new Label("");
+                            t.update(() -> l.setText("Target Wave: " + wave.get()));
+                            t.table(lable -> {
+                                lable.add(l).left();
+                                lable.button(Icon.leftOpen, Styles.clearPartiali, () -> wave.set(Math.max(wave.get() - 1, state.wave))).size(LEN).padLeft(OFFSET / 3);
+                                lable.button(Icon.rightOpen, Styles.clearPartiali, () -> wave.set(wave.get() + 1)).size(LEN).padLeft(OFFSET / 3);
+                                TextArea ta = new TextArea("");
+                                lable.add(ta).size(LEN * 2f, LEN).padLeft(OFFSET / 3);
+                                lable.button(Icon.ok, Styles.clearPartiali, () -> {
+                                    try{
+                                        wave.set(Math.max(Integer.parseInt(ta.getText()), state.wave));
+                                    }catch(NumberFormatException e){
+                                        ta.clear();
+                                        ui.showErrorMessage(e.getMessage());
+                                    }
+                                }).size(LEN).padLeft(OFFSET / 3);
+                                lable.button("@delete", Icon.cancel, Styles.cleart, () -> {
+                                    configure(IntSeq.with());
+                                    updateInfoTable(plan);
+                                }).size(LEN * 3, LEN).padLeft(OFFSET / 3);
+                            }).row();
+                
+                            t.slider(state.wave,  state.wave + 300, 1, 0, false, f -> wave.set((int)f)).update(s -> s.setValue(wave.get())).growX().height(LEN).row();
+                
+                            for(UnitSet set : calls) {
+                                t.table(Tex.pane, info -> info.add(new Tables.UnitSetTable(set, table2 -> {
+                                    Label can = new Label("");
+                                    table2.button(Icon.add, Styles.clearPartiali, () -> {
+                                        configure(IntSeq.with(wave.get(), calls.indexOf(set)));
+                            
+                                        updateInfoTable(plan);
+                                    }).disabled(b -> spawnPlan.keys().toSeq().contains(wave.get())).size(LEN);
+                                })).fillY().growX().row()).fillY().growX().padTop(OFFSET).row();
+                            }
+                        }).growX().fillY();
+                        inner.image().growY().width(OFFSET / 4).pad(OFFSET / 3).color(Color.gray);
+                        inner.pane(plan.top()).growX().fillY();
+                    }).grow().row();
+        
+                    cont.table(t -> {
+                        t.button("@back", Icon.left, Styles.cleart, this::hide).padTop(OFFSET / 2).growX().height(LEN);
+                        t.button("@waves.copy", Icon.export, Styles.cleart, () -> {
+                            StringBuilder builder = new StringBuilder();
+                            for(int i : spawnPlan.keys()){
+                                builder.append("-").append(i).append("-").append(spawnPlan.get(i));
+                            }
+                            Core.app.setClipboardText(builder.toString().replaceFirst("-", ""));
+                        }).padTop(OFFSET / 2).growX().height(LEN);
+                        t.button("@waves.load", Icon.copy, Styles.cleart, () -> {
+                            String[] text = Core.app.getClipboardText().split("-");
+                            IntSeq seq = new IntSeq(text.length);
+                            try{
+                                for(String s : text){
+                                    seq.add(Integer.parseInt(s));
+                                }
+                            }catch(NumberFormatException e){ui.showErrorMessage(e.getMessage());}
+                            configure(seq);
+                            updateInfoTable(plan);
+                        }).padTop(OFFSET / 2).growX().height(LEN);
+                    }).growX().height(LEN);
+        
+                }}.show()).size(LEN * 5, LEN);
+            }).fill();
         }
 
+        protected void updateInfoTable(Table table){
+            table.clear();
+            for(int i : spawnPlan.keys()){
+                UnitSet unitSet = calls.get(spawnPlan.get(i));
+                table.table(setTable -> {
+                    setTable.background(Tex.paneSolid);
+            
+                    TableFs.tableImageShrink(unitSet.type.icon(Cicon.full), LEN, setTable.left());
+                    setTable.add("Wave: " + i).growX();
+                    setTable.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(unitSet, new Label("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(unitSet))), core().items)).size(LEN).padLeft(LEN);
+                    setTable.button(Icon.cancel, Styles.clearPartiali, () -> {
+                        spawnPlan.remove(i);
+                        setTable.remove();
+                    }).size(LEN);
+            
+                }).fillY().growX().padTop(OFFSET).row();
+            }
+        }
+    
+        @Override
+        public IntSeq config(){
+            IntSeq data = new IntSeq(spawnPlan.size * 2);
+            for(int i : spawnPlan.keys()){
+                data.add(i);
+                data.add(spawnPlan.get(i));
+            }
+            return data;
+        }
+    
         @Override
         public void draw(){
             super.draw();
@@ -378,15 +527,14 @@ public class JumpGate extends Block {
         public void consumeItems(){
             if(coreValid()){
                 int i = 0;
-                if(!state.rules.infiniteResources)team.core().items.remove(getSet().requirements());
+                if(!cheating())team.core().items.remove(getSet().requirements());
             }
         }
 
         public boolean hasConsume(UnitSet set){
-            if(set == null || state.rules.infiniteResources)return true;
+            if(set == null || cheating())return true;
             if(!coreValid())return false;
-            CoreBlock.CoreBuild core = team.core();
-            return core.items.has(set.requirements());
+            return core().items.has(set.requirements());
         }
 
         public boolean canSpawn(UnitSet set) {
@@ -424,7 +572,8 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
     
-            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, inComeVelocity, (long)Groups.unit.size() + Groups.build.size() << 8, set, baseColor());
+            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, (long)Groups.unit.size() + Groups.build.size() << 8, set, baseColor());
+            performPlanIndex = -1;
             
             if(success){
                 consumeItems();
@@ -440,12 +589,23 @@ public class JumpGate extends Block {
             write.i(link);
             write.f(buildReload);
             write.f(warmup);
+            write.i(performPlanIndex);
+            write.i(spawnPlan.size);
+            for(int boolf : spawnPlan.keys()){
+                write.i(boolf);
+                write.i(spawnPlan.get(boolf));
+            }
         }
         @Override public void read(Reads read, byte revision) {
             spawnID = read.i();
             link = read.i();
             buildReload = read.f();
             warmup = read.f();
+            performPlanIndex = read.i();
+            int size = read.i();
+            for(int i = 0; i < size; i++){
+                spawnPlan.put(read.i(), read.i());
+            }
         }
         public boolean isCalling(){ return spawnID >= 0; }
         public boolean coreValid() { return team.core() != null && team.core().items != null && !team.core().items.empty(); }
@@ -459,6 +619,11 @@ public class JumpGate extends Block {
         @Override public int linkPos(){ return link; }
         @Override public void linkPos(int value){ link = value; }
         @Override public Color getLinkColor(){ return getColor(getSet()); }
+    
+        @Override
+        public boolean cheating(){
+            return super.cheating() || team == state.rules.waveTeam;
+        }
     }
 
     public static class UnitSet{

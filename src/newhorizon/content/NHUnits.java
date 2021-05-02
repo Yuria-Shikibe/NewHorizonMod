@@ -157,7 +157,7 @@ public class NHUnits implements ContentList {
 				shootStatusDuration = 90f;
 				continuous = true;
 				shootSound = Sounds.beam;
-				bullet = new ContinuousLaserBulletType(7.5f){{
+				bullet = new ContinuousLaserBulletType(10f){{
 					length = 120f;
 					width = 2.55f;
 					
@@ -374,7 +374,7 @@ public class NHUnits implements ContentList {
 			
 			itemCapacity = 15;
 			commandLimit = 4;
-			health = 220;
+			health = 140;
 			armor = 1;
 			engineOffset = 10F;
 			engineSize = 2.8f;

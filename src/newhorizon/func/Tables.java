@@ -86,6 +86,7 @@ public class Tables{
 						table2.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().row();
 						table2.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).row();
 					}).growX().height(LEN).center();
+					
 					t2.table(stat).fillX().height(LEN + OFFSET).right().padRight(OFFSET);
 				}).growX().fillY().padBottom(OFFSET / 2).row();
 			}
