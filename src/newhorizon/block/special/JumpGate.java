@@ -291,6 +291,7 @@ public class JumpGate extends Block {
         public void parsing(IntSeq input){
             ObjectMap<Integer, Integer> cpy = spawnPlan.copy();
             for(int i = 0; i < input.size; i += 2){
+                
                 int j = input.get(i + 1);
                 if(j >= calls.size){
                     ui.showErrorMessage("Not applicable to this box.");
