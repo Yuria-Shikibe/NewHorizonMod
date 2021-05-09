@@ -55,6 +55,7 @@ public class EventTriggers{
 		});
 		
 		Events.on(EventType.TapEvent.class, e -> {
+			if(Vars.headless)return;
 			Building selecting = Vars.control.input.frag.config.getSelectedTile();
 			if(selecting != null)for(Class<?> type : onTapActor.keys()){
 				if(type == selecting.getClass()){

@@ -49,7 +49,6 @@ import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.adapt.AdaptUnloader;
 import newhorizon.block.adapt.DisposableBattery;
 import newhorizon.block.defence.*;
-import newhorizon.block.distribution.Delivery;
 import newhorizon.block.distribution.TowardGate;
 import newhorizon.block.drawer.DrawFactories;
 import newhorizon.block.drawer.DrawHoldLiquid;
@@ -72,7 +71,8 @@ public class NHBlocks implements ContentList {
 	//Load Mod Factories
 
 	public static Block
-		delivery, zetaOre, xenMelter, hyperGenerator, fusionCollapser,
+		//delivery,
+		zetaOre, xenMelter, hyperGenerator, fusionCollapser,
 		largeShieldGenerator,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior, jumpGatePrimary,
 	
@@ -1069,13 +1069,13 @@ public class NHBlocks implements ContentList {
 			useColor = true;
 		}};
 		
-		delivery = new Delivery("mass-deliver"){{
-			size = 3;
-			shake = 3f;
-			itemCapacity = 300;
-			consumes.power(5f);
-			requirements(Category.distribution, with(NHItems.seniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 120));
-		}};
+//		delivery = new Delivery("mass-deliver"){{
+//			size = 3;
+//			shake = 3f;
+//			itemCapacity = 300;
+//			consumes.power(5f);
+//			requirements(Category.distribution, with(NHItems.seniorProcessor, 80, Items.plastanium, 120, Items.thorium, 150, NHItems.presstanium, 50, NHItems.metalOxhydrigen, 120));
+//		}};
 		
 		largeShieldGenerator = new ForceProjector("large-shield-generator") {{
 			size = 4;

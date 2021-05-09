@@ -129,7 +129,7 @@ public class NHUnits implements ContentList {
 				x = y = shootX = shootY = 0;
 				reload = 120f;
 				shootSound = NHSounds.blaster;
-				bullet = new NHTrailBulletType(0.25f, 120){
+				bullet = new NHTrailBulletType(0.25f, 160){
 					{
 						width = 22f;
 						height = 40f;

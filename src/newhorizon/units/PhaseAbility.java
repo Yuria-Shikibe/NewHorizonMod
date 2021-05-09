@@ -11,11 +11,10 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.entities.Effect;
+import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
-import mindustry.gen.Groups;
-import mindustry.gen.Sounds;
-import mindustry.gen.Unit;
-import newhorizon.func.Functions;
+import mindustry.gen.*;
+import newhorizon.func.NHFunc;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;
@@ -73,25 +72,31 @@ public class PhaseAbility extends Ability{
 	
 	@Override
 	public void update(Unit unit){
-		reloadValue += Time.delta;
-		reloadValue += Math.max(lastHealth - unit.health, 0) / 2f;
-		lastHealth = unit.health;
+		if(unit.controller() instanceof Player)return;
+		reloadValue += Time.delta * (Vars.net.active() ? 10 : 1);
 		
+		Teamc target = Units.closestEnemy(unit.team, unit.x, unit.y, teleportRange, b -> true);
 		int[] num = {0};
 		float[] damage = {0};
-		Groups.bullet.intersect(unit.x - teleportRange, unit.y - teleportRange, teleportRange * 2f, teleportRange * 2f, bullet -> {
-			if(bullet.team != unit.team){
-				num[0]++;
-				damage[0] += bullet.damage();
-			}
-		});
 		
-		if(reloadValue > reload && (unit.hitTime > 0 || num[0] > 4 || damage[0] > reload / 2)){
+		if(!Vars.net.active()){
+			reloadValue += Math.max(lastHealth - unit.health, 0) / 2f;
+			lastHealth = unit.health;
+			
+			Groups.bullet.intersect(unit.x - teleportRange, unit.y - teleportRange, teleportRange * 2f, teleportRange * 2f, bullet -> {
+				if(!Vars.net.active() && !Vars.headless && bullet.team != unit.team){
+					num[0]++;
+					damage[0] += bullet.damage();
+				}
+			});
+		}
+		
+		if(reloadValue > reload && (target != null || ((unit.hitTime > 0 || num[0] > 4 || damage[0] > reload / 2) && !Vars.net.active()))){
 			Tmp.v1.set(unit);
 			Tmp.c1.set(unit.team.color);
 			Sounds.plasmaboom.at(unit);
 			teleport.at(unit.x, unit.y, unit.hitSize, Tmp.c1);
-			Unit latter = Functions.teleportUnitNet(unit, Mathf.clamp(unit.x + Mathf.range(teleportMinRange, teleportRange), 0, Vars.world.unitWidth()), Mathf.clamp(unit.y + Mathf.range(teleportMinRange, teleportRange), 0, Vars.world.unitHeight()), unit.rotation);
+			Unit latter = NHFunc.teleportUnitNet(unit, Mathf.clamp(unit.x + Mathf.randomSeed(NHFunc.seedNet(), teleportMinRange, teleportRange), 0, Vars.world.unitWidth()), Mathf.clamp(unit.y + Mathf.randomSeed(NHFunc.seedNet() - 1, teleportMinRange, teleportRange), 0, Vars.world.unitHeight()), unit.rotation);
 			reloadValue = 0;
 			teleport.at(latter.x, latter.y, latter.hitSize, Tmp.c1);
 			teleportTrans.at(Tmp.v1.x, Tmp.v1.y, latter.hitSize, Tmp.c1, new Vec2().set(latter));

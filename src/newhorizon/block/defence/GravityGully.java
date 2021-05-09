@@ -24,7 +24,7 @@ import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
-import newhorizon.func.Functions;
+import newhorizon.func.NHFunc;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHWorldVars;
 
@@ -79,7 +79,7 @@ public class GravityGully extends Block{
 		
 		Draw.color(Pal.place);
 		
-		Functions.square(x, y, range, (x1, y1) -> {
+		NHFunc.square(x, y, range, (x1, y1) -> {
 			tmpTile = world.tile(x1, y1);
 			if(tmpTile != null){
 				tmpTile.getBounds(Tmp.r1).getCenter(Tmp.v1);
@@ -196,7 +196,7 @@ public class GravityGully extends Block{
 		public void beforeLoad(){
 			teamIndex = allTeamSeq.indexOf(team);
 			
-			Functions.square(World.toTile(x), World.toTile(y), range, (x1, y1) -> {
+			NHFunc.square(World.toTile(x), World.toTile(y), range, (x1, y1) -> {
 				tmpTile = world.tile(x1, y1);
 				if(tmpTile != null)effectedArea.add(NHWorldVars.intercepted.get(tmpTile));
 			});

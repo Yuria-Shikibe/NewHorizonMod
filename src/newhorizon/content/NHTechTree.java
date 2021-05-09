@@ -39,7 +39,7 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.setonWall, NHBlocks.setonWallLarge);
         add(NHBlocks.heavyDefenceDoor, NHBlocks.heavyDefenceDoorLarge);
         add(Blocks.batteryLarge, NHBlocks.armorBatteryLarge);
-        new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
+        //new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
         new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());

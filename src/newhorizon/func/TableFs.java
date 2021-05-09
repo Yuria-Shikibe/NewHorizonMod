@@ -135,8 +135,8 @@ public class TableFs{
                         con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).fill().height(LEN).row();
                     }).fillX().height(LEN).row();
                     tin.pane(con -> {
-                        con.button("SpawnP", Icon.link, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
-                        con.button("SpawnC", Icon.add, Styles.cleart, () -> Functions.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
+                        con.button("SpawnP", Icon.link, Styles.cleart, () -> NHFunc.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).size(LEN * 2, LEN);
+                        con.button("SpawnC", Icon.add, Styles.cleart, () -> NHFunc.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).size(LEN * 2, LEN);
                     }).fillX().height(LEN).row();
                     tin.pane(con -> {
                         con.button("Remove Units", Styles.cleart, Groups.unit::clear).size(LEN * 2, LEN);

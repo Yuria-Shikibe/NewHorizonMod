@@ -70,7 +70,7 @@ public class FContents{
 				pointerRegion = ((JumpGate)NHBlocks.jumpGate).pointerRegion,
 				arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
 			
-			float regSize = Functions.regSize(data.set.type);
+			float regSize = NHFunc.regSize(data.set.type);
 			Draw.color(spawnColor);
 			for(int i = 0; i < 4; i++){
 				float sin = Mathf.absin(Time.time, 16f, tilesize);
@@ -108,7 +108,7 @@ public class FContents{
 			SpawnerData data = (SpawnerData)b.data;
 			
 			UnitType type = data.set.type;
-			float regSize = Functions.regSize(type);
+			float regSize = NHFunc.regSize(type);
 			Color spawnColor = data.spawnColor;
 			
 			NHFx.spawn.at(b.x, b.y, regSize, spawnColor, b);

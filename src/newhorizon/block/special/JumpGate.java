@@ -48,7 +48,7 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
 import newhorizon.func.DrawFuncs;
-import newhorizon.func.Functions;
+import newhorizon.func.NHFunc;
 import newhorizon.func.TableFs;
 import newhorizon.func.Tables;
 import newhorizon.vars.NHCtrlVars;
@@ -60,7 +60,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.Functions.regSize;
+import static newhorizon.func.NHFunc.regSize;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
 
@@ -612,7 +612,7 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
     
-            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, (long)Groups.unit.size() + Groups.build.size() << 8 + id << 2, set, baseColor());
+            success = NHFunc.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, (long)Groups.unit.size() + Groups.build.size() << 8 + id << 2, set, baseColor());
             performPlanIndex = -1;
             
             if(success){

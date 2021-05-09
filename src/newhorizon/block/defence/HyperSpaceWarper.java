@@ -43,7 +43,7 @@ import newhorizon.content.NHBlocks;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.func.DrawFuncs;
-import newhorizon.func.Functions;
+import newhorizon.func.NHFunc;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHCtrlVars;
 import newhorizon.vars.NHWorldVars;
@@ -398,7 +398,7 @@ public class HyperSpaceWarper extends Block{
 				}
 			}
 			
-			tileSeq.addAll(Functions.getAcceptableTiles(Tmp.p1.x, Tmp.p1.y, toTile(spawnRange), tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes));
+			tileSeq.addAll(NHFunc.getAcceptableTiles(Tmp.p1.x, Tmp.p1.y, toTile(spawnRange), tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes));
 			randLenVectors(seed, selects.size, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize)));
 			
 			if(tileSeq.size < grounds - 1 || vectorSeq.size < air - 1){

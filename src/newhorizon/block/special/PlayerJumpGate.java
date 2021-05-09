@@ -20,7 +20,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import newhorizon.func.Functions;
+import newhorizon.func.NHFunc;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.player;
@@ -39,6 +39,9 @@ public class PlayerJumpGate extends Block{
 		super(name);
 		update = true;
 		configurable = true;
+		
+		details = "If something wrong take place in the server, please type \"/sync\".";
+		
 		config(Point2.class, (Cons2<PlayerJumpGateBuild, Point2>)PlayerJumpGateBuild::linkPos);
 		config(Integer.class, (PlayerJumpGateBuild tile, Integer id) -> tile.teleport(Groups.player.getByID(id)));
 		config(Boolean.class, (PlayerJumpGateBuild tile, Boolean value) -> tile.locked = value);
@@ -102,7 +105,7 @@ public class PlayerJumpGate extends Block{
 			if(!canFunction())return;
 			Building target = link();
 			
-			Functions.teleportUnitNet(player.unit(), target.x, target.y, angleTo(target));
+			NHFunc.teleportUnitNet(player.unit(), target.x, target.y, angleTo(target));
 			reload = 0;
 			
 			Sounds.respawn.at(this, Mathf.random(0.9f, 1.1f));
