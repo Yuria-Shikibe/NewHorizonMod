@@ -1581,6 +1581,12 @@ public class NHBlocks implements ContentList {
 							new ItemStack(Items.titanium, 30),
 							new ItemStack(Items.silicon, 15)
 					),
+					new UnitSet(NHUnits.branch, new byte[]{NHUnits.AIR_LINE_1, 2}, 2700f, 3,
+							new ItemStack(Items.titanium, 60),
+							new ItemStack(Items.silicon, 45),
+							new ItemStack(Items.copper, 90),
+							new ItemStack(Items.graphite, 30)
+					),
 					new UnitSet(NHUnits.origin, new byte[]{NHUnits.GROUND_LINE_1, 1}, 2400f, 4,
 							new ItemStack(Items.lead, 40),
 							new ItemStack(Items.silicon, 20)
@@ -1664,6 +1670,9 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(NHUnits.guardian, new byte[]{NHUnits.OTHERS, 5}, 9999f, 3,
+					new ItemStack(NHItems.darkEnergy, 300)
+				),
 				new UnitSet(NHUnits.annihilation, new byte[]{NHUnits.GROUND_LINE_1, 5}, 6600f, 4,
 					new ItemStack(NHItems.setonAlloy, 800),
 					new ItemStack(NHItems.seniorProcessor, 800),

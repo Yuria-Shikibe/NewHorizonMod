@@ -53,7 +53,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHBlocks.jumpGatePrimary, NHUnits.origin, NHUnits.sharp, NHUnits.thynomo
+			NHUnits.branch, NHUnits.guardian
 		}).show();
 	}
 	

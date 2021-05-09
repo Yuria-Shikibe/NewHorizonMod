@@ -27,7 +27,6 @@ import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Draw.reset;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 
@@ -46,6 +45,26 @@ public class NHBullets implements ContentList{
 		
 	
 	public void loadFragType(){
+		empFrag = new NHTrailBulletType(3.3f, 3){{
+			lifetime = 13;
+			drag = 0.01f;
+			pierceCap = 4;
+			width = 12f;
+			height = 28f;
+			splashDamageRadius = 20f;
+			splashDamage = lightningDamage = damage * 0.75f;
+			backColor = lightningColor = trailColor = lightColor = NHColor.lightSky;
+			despawnEffect = hitEffect = NHFx.shootCircleSmall(backColor);
+			frontColor = Color.white;
+			lightning = 3;
+			lightningLengthRand = 8;
+			smokeEffect = Fx.shootBigSmoke2;
+			trailChance = 0.6f;
+			trailEffect = NHFx.trail;
+			hitShake = 3f;
+			hitSound = Sounds.plasmaboom;
+		}};
+		
 		skyFrag = new BasicBulletType(3.3f, 85){
 			@Override
 			public float range(){return 180f;}
@@ -944,36 +963,7 @@ public class NHBullets implements ContentList{
 			trailEffect = NHFx.trail;
 		}};
 		
-		curveBomb = new BasicBulletType(4f, 350f){
-			@Override
-			public void init(Bullet b){
-				if(b == null) return;
-				b.data(new Vec2(b.x, b.y));
-			}
-			
-			@Override
-			public void update(Bullet b){
-			
-			}
-			
-			@Override
-			public void draw(Bullet b){
-				Vec2 from = (Vec2)b.data();
-				float angle = b.angleTo(from.x, from.y) - 180;
-				float dst = b.dst(from.x, from.y);
-				
-				Vec2 vec1 = new Vec2().trns(angle, dst / 3), vec2 = new Vec2().trns(angle, dst / 3 * 2);
-				
-				color(lightColor, frontColor, b.fout());
-				stroke(5f * b.fout());
-				
-				float len = Mathf.curve(b.fslope(), 0.1f, 0.8f) * 60 + b.fin() * 50;
-				randLenVectors(b.id, 2, len, (x, y) -> randLenVectors(b.id / 2 + 12, 1, len, (x2, y2) -> curve(from.x, from.y, from.x + vec1.x + x, from.y + vec1.y + y, from.x + vec2.x + x2, from.y + vec2.y + y2, b.x, b.y, 16)));
-				Fill.circle(from.x, from.y, 3.5f * b.fout() * getStroke() / 2f);
-				Fill.circle(b.x, b.y, 2 * b.finpow() + 4 * b.fslope());
-				reset();
-			}
-			
+		curveBomb = new CurveBulletType(4f, 350f){
 			@Override
 			public void despawned(Bullet b){
 				super.despawned(b);
@@ -992,11 +982,10 @@ public class NHBullets implements ContentList{
 				hitShake = 8;
 				hitSound = Sounds.explosionbig;
 				drawSize = 400;
-				lightColor = backColor = lightningColor = NHColor.thurmixRed;
-				frontColor = NHColor.thurmixRedLight;
+				lightColor = lightningColor = NHColor.thurmixRed;
 				
 				shootEffect = new Effect(90f, 160f, e -> {
-					color(lightColor, frontColor, e.fout());
+					color(lightColor, NHColor.thurmixRedLight, e.fout());
 					Drawf.tri(e.x, e.y, 5 * e.fout(), Mathf.curve(e.fout(), 0, 0.1f) * 80, e.rotation + 90);
 					Drawf.tri(e.x, e.y, 5 * e.fout(), Mathf.curve(e.fout(), 0, 0.1f) * 80, e.rotation + 270);
 				});
@@ -1005,7 +994,7 @@ public class NHBullets implements ContentList{
 					color(Color.gray);
 					Angles.randLenVectors(e.id + 1, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
 					
-					color(lightColor, frontColor, e.fout());
+					color(lightColor, NHColor.thurmixRedLight, e.fout());
 					stroke(e.fout() * 2);
 					circle(e.x, e.y, e.fin() * 50);
 					Fill.circle(e.x, e.y, e.fout() * e.fout() * 13);
@@ -1013,7 +1002,7 @@ public class NHBullets implements ContentList{
 				});
 				
 				smokeEffect = new Effect(45f, e -> {
-					color(lightColor, frontColor, e.fout());
+					color(lightColor, NHColor.thurmixRedLight, e.fout());
 					randLenVectors(e.id, 10, 5 + 55 * e.fin(), e.rotation, 45, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
 				});
 			}
@@ -1195,26 +1184,6 @@ public class NHBullets implements ContentList{
 			hitEffect = NHFx.largeDarkEnergyHit;
 			shootEffect = NHFx.darkEnergyShootBig;
 			smokeEffect = NHFx.darkEnergySmokeBig;
-		}};
-		
-		empFrag = new NHTrailBulletType(3.3f, 3){{
-			lifetime = 13;
-			drag = 0.01f;
-			pierceCap = 4;
-			width = 12f;
-			height = 28f;
-			splashDamageRadius = 20f;
-			splashDamage = lightningDamage = damage * 0.75f;
-			backColor = lightningColor = trailColor = lightColor = NHColor.lightSky;
-			despawnEffect = hitEffect = NHFx.shootCircleSmall(backColor);
-			frontColor = Color.white;
-			lightning = 3;
-			lightningLengthRand = 8;
-			smokeEffect = Fx.shootBigSmoke2;
-			trailChance = 0.6f;
-			trailEffect = NHFx.trail;
-			hitShake = 3f;
-			hitSound = Sounds.plasmaboom;
 		}};
 		
 		empBlot2 = new ArtilleryBulletType(4f, 10f, NewHorizon.MOD_NAME + "circle-bolt"){{

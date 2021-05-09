@@ -31,19 +31,19 @@ import java.util.Arrays;
 
 public class NHLoader implements ContentList{
 	public static final int outlineStroke = 4;
-	public static final ObjectMap<String, NHIconGenerator.IconSet> fullIconNeeds = new ObjectMap<>();
-	public static final ObjectMap<String, TextureRegion> outlineTex = new ObjectMap<>();
-	public static final ObjectMap<String, TextureRegion> needBeLoad = new ObjectMap<>();
-	public static final ObjectMap<UnitType, ItemStack[]> unitBuildCost = new ObjectMap<>();
+	public static ObjectMap<String, NHIconGenerator.IconSet> fullIconNeeds = new ObjectMap<>();
+	public static ObjectMap<String, TextureRegion> outlineTex = new ObjectMap<>();
+	public static ObjectMap<String, TextureRegion> needBeLoad = new ObjectMap<>();
+	public static ObjectMap<UnitType, ItemStack[]> unitBuildCost = new ObjectMap<>();
 	public static final Color outlineColor = Color.valueOf("565666");
 	public static NHContent content;
 	public static NHIconGenerator iconGenerator;
 	
 	public static void free(){
-		fullIconNeeds.clear();
-		outlineTex.clear();
-		needBeLoad.clear();
-		unitBuildCost.clear();
+		fullIconNeeds = null;
+		outlineTex = null;
+		needBeLoad = null;
+		unitBuildCost = null;
 	}
 	
 	public static void putNeedLoad(String name, TextureRegion textureRegion){

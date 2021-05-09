@@ -1,19 +1,14 @@
 package newhorizon.units;
 
-import arc.Events;
-import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.util.Interval;
-import arc.util.Time;
+import arc.util.Log;
 import arc.util.Tmp;
-import mindustry.game.EventType;
 import mindustry.gen.Trailc;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Trail;
+import mindustry.type.UnitType;
 
-public class UnitBoostEntity extends UnitEntity implements Trailc {
-    public Interval timer = new Interval(4);
-    public Trail trail = new Trail(30);
+public class UnitBoostEntity extends UnitEntity implements Trailc{
+    public Trail trail = new Trail(10);
     public String toString() {
         return "UnitBoostEntity#" + this.id;
     }
@@ -31,21 +26,25 @@ public class UnitBoostEntity extends UnitEntity implements Trailc {
     }
     
     @Override
+    public void add(){
+        super.add();
+        trail = new Trail(type.trailLength);
+        Log.info("added" + this + " | " + id);
+    }
+    
+    @Override
+    public void setType(UnitType type){
+        super.setType(type);
+    }
+    
+    @Override
     public void update(){
         super.update();
         
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            trail = new Trail(25);
-            trail.clear();
-        });
+        float scale = elevation;
+        float offset = type.engineOffset / 2.0F + type.engineOffset / 2.0F * scale;
+        Tmp.v1.trns(rotation - 180, offset).add(x, y);
         
-        if(timer.get(0, 4 / type().speed)) {
-            trail.length = type.trailLength;
-            float scale = elevation;
-            float offset = type.engineOffset / 2.0F + type.engineOffset / 2.0F * scale;
-            Tmp.v1.trns(rotation - 180, offset).add(x, y);
-
-            trail.update(Tmp.v1.x, Tmp.v1.y);
-        }
+        trail.update(Tmp.v1.x, Tmp.v1.y);
     }
 }

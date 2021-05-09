@@ -1,5 +1,6 @@
 package newhorizon.func;
 
+import arc.Core;
 import arc.func.Boolf;
 import arc.func.Intc2;
 import arc.graphics.Color;
@@ -15,9 +16,11 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
+import mindustry.gen.Player;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
@@ -27,10 +30,11 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.block.special.JumpGate;
 import newhorizon.vars.NHVars;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 import static mindustry.core.World.toTile;
 
 public class Functions {
@@ -50,6 +54,34 @@ public class Functions {
         }
     });
     private static final Vec2 point = new Vec2();
+    
+    public static Unit teleportUnitNet(Unit before, float x, float y, float angle){
+        Team t = Team.all[before.team.id];
+        UnitType type = before.type;
+        Unit unit = type.create(t);
+        unit.set(x, y);
+        unit.spawnedByCore(before.spawnedByCore);
+        unit.rotation = angle;
+        unit.addItem(before.item(), before.stack.amount);
+        unit.health(before.health);
+        unit.ammo = before.ammo;
+        if(!net.client())unit.add();
+        
+        if(before.controller() instanceof Player){
+            Player player = (Player)before.controller();
+            player.team(Team.derelict);
+            
+            while(player.unit() != unit && !player.within(x, y, tilesize * 2f)){
+                player.unit(unit);
+                unit.controller(player);
+            }
+            if(mobile && !Vars.headless && player == Vars.player)Core.camera.position.set(x, y);
+            Time.run(0.01f, () -> player.team(t));
+        }
+        
+        before.remove();
+        return unit;
+    }
     
     public static void square(int x, int y, int radius, Intc2 cons) {
         for(int dx = -radius; dx <= radius; ++dx) {
@@ -86,6 +118,7 @@ public class Functions {
     
     public static int getTeamIndex(Team team){return NHVars.allTeamSeq.indexOf(team);}
     
+    @Contract(value = "!null, _ -> param1", pure = true)
     public static Color getColor(Color defaultColor, Team team){
         return defaultColor == null ? team.color : defaultColor;
     }
@@ -103,7 +136,8 @@ public class Functions {
         }
     }
     
-    public static float regSize(UnitType type){
+    @Contract(pure = true)
+    public static float regSize(@NotNull UnitType type){
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     

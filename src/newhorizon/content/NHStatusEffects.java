@@ -1,17 +1,41 @@
 package newhorizon.content;
 
+import arc.Core;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Unit;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
+import newhorizon.NewHorizon;
 import newhorizon.feature.NHStatusEffect;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect
-            staticVel, emp1, emp2, emp3;
+            staticVel, emp1, emp2, emp3, invincible;
     
     @Override
     public void load(){
+        invincible = new NHStatusEffect("invincible"){{
+            healthMultiplier = 1000000;
+        }
+            @Override
+            public void update(Unit unit, float time){
+                if(!unit.spawnedByCore)unit.unapply(this);
+            }
+    
+            @Override
+            public void draw(Unit unit){
+                if(!unit.spawnedByCore)return;
+                Draw.z(Layer.effect);
+                Draw.color(NHColor.lightSky);
+                TextureRegion area = Core.atlas.find(NewHorizon.configName("upgrade"));
+                Draw.rect(area, unit.x + unit.hitSize * 1.25f, unit.y, -90);
+                Draw.rect(area, unit.x - unit.hitSize * 1.25f, unit.y, 90);
+            }
+        };
+        
         staticVel = new NHStatusEffect("static-vel") {
             @Override
             public void update(Unit unit, float time){

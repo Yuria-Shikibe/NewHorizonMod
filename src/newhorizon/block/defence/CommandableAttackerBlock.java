@@ -197,16 +197,11 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 			}
 			
-			if(target > 0){
-				Tmp.p1.set(Point2.unpack(target));
+			if(NHWorldVars.commandPos > 0){
+				Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
 				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.accent);
 				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, Pal.accent);
-			}else if(NHWorldVars.commandPos > 0){
-				Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
-				DrawFuncs.posSquareLink(Pal.place, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
-				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.place);
-				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, Pal.place);
 			}
 			
 			if(isValid())builds.add(this);
@@ -214,7 +209,6 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				float time = build.delayTime();
 				DrawFuncs.overlayText("Delay: " + TableFs.format(time) + " Sec.", build.x, build.y, build.block.size * tilesize / 2f, time > 4.5f ? Pal.accent : Pal.lancerLaser, true);
 			}
-			
 			DrawFuncs.overlayText("Participants: " + builds.size, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), tilesize * 2f, Pal.accent, true);
 		}
 		
@@ -252,7 +246,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.modeAttack, Styles.clearPartiali, () -> {
-					configure(target < 0 ? NHWorldVars.commandPos : target);
+					configure(NHWorldVars.commandPos);
 				}).size(LEN).disabled(b -> NHWorldVars.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);

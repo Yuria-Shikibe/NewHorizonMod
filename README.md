@@ -75,7 +75,7 @@ If you find that your device cannot afford it, open the mod file folder and find
 5. Select the option you want to upgrade.
    ![guide-upgrade](github-pictures/guide/ui-upgrade.png)
    
-- Upgrades needs resources. The upgrader can take resources directly from the `Core`. ~~Nice and simple, right?~~
+- Upgrade needs resources. The upgrader can take resources directly from the `Core`. ~~Nice and simple, right?~~
 6. Make the turret function correctly just like other turrets.
 ---
 #### Mass Deliverer

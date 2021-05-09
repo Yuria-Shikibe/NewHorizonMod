@@ -4,11 +4,12 @@ import arc.Core;
 import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
+import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
+import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.ui.Label;
 import arc.scene.ui.TextArea;
@@ -16,6 +17,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -24,6 +26,7 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
+import mindustry.core.World;
 import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -48,9 +51,12 @@ import newhorizon.func.DrawFuncs;
 import newhorizon.func.Functions;
 import newhorizon.func.TableFs;
 import newhorizon.func.Tables;
-import newhorizon.interfaces.Linkablec;
+import newhorizon.vars.NHCtrlVars;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.*;
@@ -76,6 +82,14 @@ public class JumpGate extends Block {
     public Color baseColor;
     public final Seq<UnitSet> calls = new Seq<>();
     public float squareStroke = 2f;
+    
+    protected final Vec2 linkP = new Vec2();
+    
+//    static{
+//        EventTriggers.addActor(JumpGate.JumpGateBuild.class, (JumpGate.JumpGateBuild tile, Tile i) -> {
+//            tile.configure(Tmp.p1.set(i.x, i.y));
+//        });
+//    }
     
     public JumpGate(String name){
         super(name);
@@ -219,7 +233,7 @@ public class JumpGate extends Block {
         arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
     }
 
-    public class JumpGateBuild extends Building implements Ranged, Linkablec{
+    public class JumpGateBuild extends Building implements Ranged{
         public Color baseColor(){
             return baseColor == null ? team().color : baseColor;
         }
@@ -238,18 +252,13 @@ public class JumpGate extends Block {
         public boolean onConfigureTileTapped(Building other){
             if (this == other || linkPos() == other.pos()) {
                 configure(Tmp.p1.set(-1, -1));
-                return false;
             }
-            if (other.within(this, range()) && other.team == team()) {
-                configure(Point2.unpack(other.pos()));
-                return false;
-            }
-            return true;
+            return false;
         }
     
         @Override
         public void updateTile(){
-            if(hasConsume(getSet()))progress += efficiency() + warmup;
+            if(hasConsume(getSet()))progress += (efficiency() + warmup) * delta() * Mathf.clamp(Time.delta, 0.5f, 0.75f);
             if(isCalling() && hasConsume(getSet())){
                 buildReload += efficiency() * Vars.state.rules.unitBuildSpeedMultiplier * delta();
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
@@ -289,24 +298,33 @@ public class JumpGate extends Block {
         }
     
         public void parsing(IntSeq input){
+            if(input.size == 0 || input.size % 2 == 1){
+                spawnPlan.clear();
+                return;
+            }
             ObjectMap<Integer, Integer> cpy = spawnPlan.copy();
             for(int i = 0; i < input.size; i += 2){
-                
+                if(i + 1 > input.size){
+                    ui.showErrorMessage("Not applicable to this build.");
+                    spawnPlan = cpy;
+                    break;
+                }
                 int j = input.get(i + 1);
-                if(j >= calls.size){
-                    ui.showErrorMessage("Not applicable to this box.");
+                if(j < 0 || j >= calls.size){
+                    ui.showErrorMessage("Not applicable to this build.");
                     spawnPlan = cpy;
                     break;
                 }
                 spawnPlan.put(input.get(i), j);
             }
-            
-            Seq<Integer> sorted = spawnPlan.keys().toSeq().sort(Integer::intValue);
-            cpy.clear();
-            for(int i : sorted){
-                cpy.put(i, spawnPlan.get(i));
-            }
-            spawnPlan = cpy;
+//
+//            Seq<Integer> sorted = spawnPlan.keys().toSeq().sort(Comparator.comparingInt(Integer::intValue));
+//            Log.info(sorted);
+//            cpy.clear();
+//            for(int i : sorted){
+//                cpy.put(i, spawnPlan.get(i));
+//            }
+//            spawnPlan = cpy;
         }
         
         @Override
@@ -315,16 +333,16 @@ public class JumpGate extends Block {
             Drawf.dashCircle(x, y, range(), color);
             Draw.color(color);
             Lines.square(x, y, block().size * tilesize / 2f + 1.0f);
-            drawLink();
-            if(link() != null) {
-                Building target = link();
-                Draw.alpha(0.3f);
-                Fill.square(target.x, target.y, target.block.size / 2f * tilesize);
-                Draw.alpha(1f);
-                Drawf.dashCircle(target.x, target.y, spawnRange, color);
-                Draw.color(color);
-                Lines.square(target.x, target.y, target.block().size * tilesize / 2f + 1.0f);
-            }else Drawf.dashCircle(x, y, spawnRange, color);
+   
+            Vec2 target = link();
+            Draw.alpha(1f);
+            Drawf.dashCircle(target.x, target.y, spawnRange, color);
+
+            float angle = Tmp.v1.angle();
+            
+            Draw.color(Pal.gray);
+            DrawFuncs.posSquareLink(color, 1.5f, 3.5f, true, this, target);
+            Draw.color();
             
             if(core() != null)DrawFuncs.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
             
@@ -377,35 +395,46 @@ public class JumpGate extends Block {
             
             table.table(Tex.paneSolid, t -> {
                 t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
-                t.button(Core.bundle.get("spawn") + Core.bundle.get("settings"), Icon.settings, Styles.cleart, () -> new BaseDialog("Planning"){{
+                t.button(Core.bundle.get("spawn") + " " + Core.bundle.get("settings"), Icon.settings, Styles.cleart, () -> new BaseDialog("Planning"){{
                     addCloseListener();
                     Table plan = new Table();
                     updateInfoTable(plan);
-        
-                    cont.pane(inner -> {
-                        inner.table(t -> {
+                    
+                    cont.add().growX().expandX().height(1f).row();
+                    
+                    cont.table(inner -> {
+                        inner.pane(t -> {
                             t.top();
                             AtomicInteger wave = new AtomicInteger(state.wave);
                             Label l = new Label("");
+                            
+                            keyDown((key) -> {
+                                if(key == KeyCode.left)wave.set(Math.max(wave.get() - 1, state.wave));
+                                if(key == KeyCode.right)wave.set(wave.get() + 1);
+                            });
+                            
                             t.update(() -> l.setText("Target Wave: " + wave.get()));
                             t.table(lable -> {
-                                lable.add(l).left();
-                                lable.button(Icon.leftOpen, Styles.clearPartiali, () -> wave.set(Math.max(wave.get() - 1, state.wave))).size(LEN).padLeft(OFFSET / 3);
-                                lable.button(Icon.rightOpen, Styles.clearPartiali, () -> wave.set(wave.get() + 1)).size(LEN).padLeft(OFFSET / 3);
-                                TextArea ta = new TextArea("");
-                                lable.add(ta).size(LEN * 2f, LEN).padLeft(OFFSET / 3);
-                                lable.button(Icon.ok, Styles.clearPartiali, () -> {
-                                    try{
-                                        wave.set(Math.max(Integer.parseInt(ta.getText()), state.wave));
-                                    }catch(NumberFormatException e){
-                                        ta.clear();
-                                        ui.showErrorMessage(e.getMessage());
-                                    }
-                                }).size(LEN).padLeft(OFFSET / 3);
-                                lable.button("@delete", Icon.cancel, Styles.cleart, () -> {
-                                    configure(IntSeq.with());
-                                    updateInfoTable(plan);
-                                }).size(LEN * 3, LEN).padLeft(OFFSET / 3);
+                                lable.table(lable2 -> {
+                                    lable2.button(Icon.leftOpen, Styles.clearPartiali, () -> wave.set(Math.max(wave.get() - 1, state.wave))).size(LEN).padLeft(OFFSET / 3);
+                                    lable2.button(Icon.rightOpen, Styles.clearPartiali, () -> wave.set(wave.get() + 1)).size(LEN).padLeft(OFFSET / 3);
+                                    TextArea ta = new TextArea("");
+                                    lable2.add(ta).size(LEN * 2f, LEN).padLeft(OFFSET / 3);
+                                    lable2.button(Icon.ok, Styles.clearPartiali, () -> {
+                                        try{
+                                            wave.set(Math.max(Integer.parseInt(ta.getText()), state.wave));
+                                        }catch(NumberFormatException e){
+                                            ta.clear();
+                                            ui.showErrorMessage(e.getMessage());
+                                        }
+                                    }).size(LEN).padLeft(OFFSET / 3);
+    
+                                    lable2.button("@delete", Icon.cancel, Styles.transt, () -> {
+                                        configure(IntSeq.with());
+                                        updateInfoTable(plan);
+                                    }).size(LEN * 3, LEN).padLeft(OFFSET / 3);
+                                }).growX().row();
+                                lable.add(l).left().row();
                             }).row();
                 
                             t.slider(state.wave,  state.wave + 300, 1, 0, false, f -> wave.set((int)f)).update(s -> s.setValue(wave.get())).growX().height(LEN).row();
@@ -420,9 +449,9 @@ public class JumpGate extends Block {
                                     }).disabled(b -> spawnPlan.keys().toSeq().contains(wave.get())).size(LEN);
                                 })).fillY().growX().row()).fillY().growX().padTop(OFFSET).row();
                             }
-                        }).growX().fillY();
-                        inner.image().growY().width(OFFSET / 4).pad(OFFSET / 3).color(Color.gray);
-                        inner.pane(plan.top()).growX().fillY();
+                        }).growX().left().growY();
+                        inner.image().growY().width(OFFSET / 3).pad(OFFSET / 3).center().color(Color.gray);
+                        inner.pane(plan.top()).growX().right().growY();
                     }).grow().row();
         
                     cont.table(t -> {
@@ -430,7 +459,7 @@ public class JumpGate extends Block {
                         t.button("@waves.copy", Icon.export, Styles.cleart, () -> {
                             StringBuilder builder = new StringBuilder();
                             for(int i : spawnPlan.keys()){
-                                builder.append("-").append(i).append("-").append(spawnPlan.get(i));
+                                builder.append("-").append(i).append("-").append(calls.get(spawnPlan.get(i)).hashCode());
                             }
                             Core.app.setClipboardText(builder.toString().replaceFirst("-", ""));
                         }).padTop(OFFSET / 2).growX().height(LEN);
@@ -438,22 +467,40 @@ public class JumpGate extends Block {
                             String[] text = Core.app.getClipboardText().split("-");
                             IntSeq seq = new IntSeq(text.length);
                             try{
+                                int index = 0;
                                 for(String s : text){
-                                    seq.add(Integer.parseInt(s));
+                                    if(s.equals(""))continue;
+                                    int num = Integer.parseInt(s);
+                                    if(index % 2 == 0){
+                                        seq.add(num);
+                                    }else{
+                                        addLoop:{
+                                            for(int i = 0; i < calls.size; i++){
+                                                if(calls.get(i).hashCode() == num){
+                                                    seq.add(i);
+                                                    break addLoop;
+                                                }
+                                            }
+                                            seq.add(-1);
+                                        }
+                                    }
+                                    index ++;
                                 }
                             }catch(NumberFormatException e){ui.showErrorMessage(e.getMessage());}
+                            Log.info(seq);
                             configure(seq);
                             updateInfoTable(plan);
                         }).padTop(OFFSET / 2).growX().height(LEN);
                     }).growX().height(LEN);
         
-                }}.show()).size(LEN * 5, LEN);
+                }}.show()).size(LEN * 5, LEN).row();
+                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHCtrlVars.isSelecting).size(LEN * 5, LEN);
             }).fill();
         }
 
         protected void updateInfoTable(Table table){
             table.clear();
-            for(int i : spawnPlan.keys()){
+            for(int i : spawnPlan.keys().toSeq().sort(Comparator.comparingInt(Integer::intValue))){
                 UnitSet unitSet = calls.get(spawnPlan.get(i));
                 table.table(setTable -> {
                     setTable.background(Tex.paneSolid);
@@ -465,7 +512,7 @@ public class JumpGate extends Block {
                         spawnPlan.remove(i);
                         setTable.remove();
                     }).size(LEN);
-            
+                
                 }).fillY().growX().padTop(OFFSET).row();
             }
         }
@@ -558,22 +605,14 @@ public class JumpGate extends Block {
         public void spawn(UnitSet set){
             if(!isValid() || !Units.canCreate(team, set.type))return;
             success = false;
-            float Sx, Sy;
             int spawnNum = set.callIns;
-    
-            if(link() != null) {
-                Building target = link();
-                Sx = target.x;
-                Sy = target.y;
-            }else{
-                Sx = x;
-                Sy = y;
-            }
-            
+            Vec2 target = link();
+            float Sx = target.x;
+            float Sy = target.y;
             
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
     
-            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, (long)Groups.unit.size() + Groups.build.size() << 8, set, baseColor());
+            success = Functions.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, (long)Groups.unit.size() + Groups.build.size() << 8 + id << 2, set, baseColor());
             performPlanIndex = -1;
             
             if(success){
@@ -617,9 +656,20 @@ public class JumpGate extends Block {
             return calls.get(spawnID);
         }
         
-        @Override public int linkPos(){ return link; }
-        @Override public void linkPos(int value){ link = value; }
-        @Override public Color getLinkColor(){ return getColor(getSet()); }
+        public Vec2 link(){
+            Tile t = world.tile(linkPos());
+            if(t == null)return linkP.set(this);
+            else return linkP.set(t);
+        }
+        public int linkPos(){return link; }
+        public void linkPos(Point2 point2){
+            Tile tile = world.tile(point2.x, point2.y);
+            if(tile != null && tile.within(this, range()))link = point2.pack();
+            else if(tile != null){
+                Tmp.v1.set(tile).sub(this).nor().scl(range());
+                link = Tmp.p1.set((int)World.conv(x + Tmp.v1.x), (int)World.conv(y + Tmp.v1.y)).pack();
+            }else link = pos();
+        }
     
         @Override
         public boolean cheating(){
@@ -646,7 +696,22 @@ public class JumpGate extends Block {
             this.requirements.addAll(requirements);
             if(!NHLoader.unitBuildCost.containsKey(type))NHLoader.unitBuildCost.put(type, ItemStack.mult(requirements, 1f / callIns * 20));
         }
-
+    
+        @Override
+        public boolean equals(Object o){
+            if(this == o) return true;
+            if(!(o instanceof UnitSet)) return false;
+            UnitSet set = (UnitSet)o;
+            return callIns == set.callIns && type.equals(set.type) && Arrays.equals(sortIndex, set.sortIndex);
+        }
+    
+        @Override
+        public int hashCode(){
+            int result = Objects.hash(type.name.hashCode(), callIns);
+            result = 31 * result + Arrays.hashCode(sortIndex);
+            return result;
+        }
+    
         public float costTime(){return costTime;}
         public float costTimeVar(){return costTime / state.rules.unitBuildSpeedMultiplier;}
         public ItemStack[] requirements(){ return requirements.toArray(); }

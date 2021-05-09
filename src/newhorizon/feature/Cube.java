@@ -41,6 +41,11 @@ public class Cube{
 		this.sizeRand = sizeRand;
 	}
 	
+	public Cube setColor(Color color){
+		this.color = color;
+		return this;
+	}
+	
 	public Cube setSize(float size){
 		this.size = size;
 		return this;
@@ -87,7 +92,7 @@ public class Cube{
 	protected void fillQuadByArray(ObjectMap<Integer, float[]> coord, int index1, int index2, int index3, int index4){
 		float z = coord.get(index1)[2] + coord.get(index2)[2] + coord.get(index3)[2] + coord.get(index4)[2];
 		float mul = z / size / shade;
-		Draw.color(color.cpy().mul(mul * color.r, mul * color.g, mul * color.b, Mathf.num(z > 0)));
+		Draw.color(color.cpy().lerp(Color.white, mul % 1f).a(Mathf.num(z > 0)));
 		Fill.quad(
 			coord.get(index1)[0], coord.get(index1)[1],
 			coord.get(index2)[0], coord.get(index2)[1],

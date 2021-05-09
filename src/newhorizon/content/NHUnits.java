@@ -3,6 +3,9 @@ package newhorizon.content;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.math.Angles;
+import arc.math.Interp;
+import arc.util.Tmp;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
@@ -17,24 +20,30 @@ import mindustry.entities.bullet.ContinuousLaserBulletType;
 import mindustry.entities.bullet.SapBulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.gen.EntityMapping;
-import mindustry.gen.Sounds;
-import mindustry.gen.Tex;
+import mindustry.gen.*;
 import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.NHTrailBulletType;
 import newhorizon.bullets.PosLightningType;
 import newhorizon.bullets.ShieldBreaker;
+import newhorizon.feature.PosLightning;
 import newhorizon.units.AutoOutlineUnitType;
 import newhorizon.units.AutoOutlineWeapon;
+import newhorizon.units.EnergyUnitType;
+import newhorizon.units.PhaseAbility;
+
+import static arc.graphics.g2d.Draw.color;
+import static arc.math.Angles.randLenVectors;
 
 public class NHUnits implements ContentList {
 	public static final byte
 		OTHERS = Byte.MIN_VALUE,
 		GROUND_LINE_1 = 0,
-		AIR_LINE_1 = 10,
-		NAVY_LINE_1 = 20;
+		AIR_LINE_1 = 1,
+		ENERGY_LINE_1 = 3,
+		NAVY_LINE_1 = 6;
 	
 	public static
 	AutoOutlineWeapon
@@ -42,9 +51,11 @@ public class NHUnits implements ContentList {
 	
 	public static
 	UnitType
-	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, thynomo, origin;
+	guardian,
+	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, branch, thynomo, origin;
 	
 	public void loadWeapon(){
+		
 		posLiTurret = new AutoOutlineWeapon("pos-li-blaster"){{
 			shake = 1f;
 			shots = 1;
@@ -92,6 +103,96 @@ public class NHUnits implements ContentList {
 	@Override
 	public void load() {
 		loadWeapon();
+		
+		guardian = new EnergyUnitType("guardian"){{
+			constructor = EntityMapping.map(3);
+			hitSize = 20f;
+			speed = 1.5f;
+			accel = 0.07F;
+			drag = 0.075F;
+			health = 22000;
+			commandLimit = 4;
+			itemCapacity = 0;
+			rotateSpeed = 100;
+			engineSize = 8f;
+			hovering = false;
+			abilities.add(new PhaseAbility(600f, 320f, 160f));
+			weapons.add(new Weapon(){{
+				shootCone = 360;
+				rotate = false;
+				mirror = false;
+				alternate = false;
+				top = false;
+				shots = 12;
+				shotDelay = 6f;
+				velocityRnd = 0.15f;
+				x = y = shootX = shootY = 0;
+				reload = 120f;
+				shootSound = NHSounds.blaster;
+				bullet = new NHTrailBulletType(0.25f, 120){
+					{
+						width = 22f;
+						height = 40f;
+						
+						func = Interp.pow2In;
+						
+						homingHit = false;
+						pierceCap = 3;
+						splashDamage = damage / 4;
+						splashDamageRadius = 24f;
+						
+						trailLength = 20;
+						
+						accelerateBegin = 0.4f;
+						accelerateEnd = 0.75f;
+						
+						velocityBegin = 1.85f;
+						velocityEnd = 12f;
+						
+						lifetime = 180f;
+						
+						trailEffect = NHFx.trail;
+						trailChance = 0.35f;
+						trailParam = 5f;
+						
+						initRotationRand = 360;
+						homingRange = 640F;
+						homingPower = 0.125f;
+						homingDelay = 30f;
+						
+						lightning = 3;
+						lightningLengthRand = 10;
+						lightningLength = 5;
+						lightningDamage = damage / 4;
+						
+						useTeamColor = true;
+						
+						shootEffect = smokeEffect = Fx.none;
+						hitEffect = Fx.hitBeam;
+						despawnEffect = new Effect(20f, e -> {
+							Draw.color(e.color);
+							Angles.randLenVectors(e.id, 4, 30 * e.fin() + 5, (x, y) -> {
+								Fill.circle(e.x + x, e.y + y, 4 * e.fout(Interp.pow2Out));
+							});
+						});
+					}
+					@Override public float range(){
+						return 320f;
+					}
+					@Override public void hit(Bullet b, float x, float y){
+						super.hit(b, x, y);
+						if(!(b.owner instanceof Healthc))return;
+						Healthc from = (Healthc)b.owner;
+						if(!from.isAdded())return;
+						PosLightning.createEffect(Tmp.v1.set(x, y), from, b.team.color, 2, PosLightning.WIDTH);
+						for(int i = 0; i < 2; i++)NHFx.transport.at(x, y, 3.2f, b.team.color, from);
+						from.heal(damage / 8);
+					}
+					@Override public void despawned(Bullet b){despawnedEffect(b);}
+				};
+			}});
+		}};
+		
 		gather = new AutoOutlineUnitType("gather"){{
 			defaultController = MinerAI::new;
 			constructor = EntityMapping.map(3);
@@ -434,9 +535,60 @@ public class NHUnits implements ContentList {
 			}
 		};
 		
+		branch = new AutoOutlineUnitType("branch"){{
+			constructor = EntityMapping.map(3);
+			weapons.add(new Weapon(){{
+				top = false;
+				rotate = true;
+				alternate = true;
+				mirror = false;
+				shotDelay = 3f;
+				shots = 5;
+				x = 0f;
+				y = -10f;
+				reload = 30f;
+				inaccuracy = 3f;
+				ejectEffect = Fx.none;
+				bullet = new BasicBulletType(2.55f, 15, NHBullets.CIRCLE_BOLT){{
+					weaveMag = 4f;
+					weaveScale = 4f;
+					lifetime = 60f;
+					shrinkX = shrinkY = 0;
+					backColor = lightningColor = hitColor = lightColor = trailColor = NHColor.lightSky;
+					frontColor = backColor.cpy().lerp(Color.white, 0.55f);
+					trailEffect = Fx.artilleryTrail;
+					trailParam = 3f;
+					trailChance = 0.85f;
+					width = height = 8f;
+					smokeEffect = Fx.shootBigSmoke;
+					shootEffect = NHFx.shootCircleSmall(backColor);
+					hitEffect = NHFx.lightningHitSmall(backColor);
+					despawnEffect = new Effect(20, e -> {
+						color(e.color, Color.white, e.fout() * 0.7f);
+						randLenVectors(e.id, 2, 12 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, 3 * e.fout()));
+					});
+				}};
+				shootSound = NHSounds.blaster;
+			}});
+			engineOffset = 9.0F;
+			engineSize = 3f;
+			speed = 2.4f;
+			faceTarget = true;
+			accel = 0.06F;
+			drag = 0.035F;
+			hitSize = 14f;
+			health = 460f;
+			buildSpeed = 0.5f;
+			baseRotateSpeed = 1.5f;
+			rotateSpeed = 2.5f;
+			armor = 3.5f;
+			flying = true;
+			hovering = true;
+		}};
+		
 		warper = new AutoOutlineUnitType("warper"){{
 			constructor = EntityMapping.map(3);
-			weapons.add(new AutoOutlineWeapon(){{
+			weapons.add(new Weapon(){{
 				top = false;
 				rotate = true;
 				alternate = true;

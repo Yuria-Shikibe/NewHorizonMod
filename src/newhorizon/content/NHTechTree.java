@@ -76,7 +76,8 @@ public class NHTechTree implements ContentList {
         addUnit(UnitTypes.mono, NHUnits.gather);
     
         addUnit(Blocks.airFactory, NHUnits.sharp);
-        addUnit(NHUnits.sharp, NHUnits.warper);
+        addUnit(NHUnits.sharp, NHUnits.branch);
+        addUnit(NHUnits.branch, NHUnits.warper);
         addUnit(NHUnits.warper, NHUnits.striker);
         addUnit(NHUnits.striker, NHUnits.destruction);
         addUnit(NHUnits.destruction, NHUnits.hurricane);
@@ -86,6 +87,8 @@ public class NHTechTree implements ContentList {
         addUnit(NHUnits.thynomo, NHUnits.aliotiat);
         addUnit(NHUnits.aliotiat, NHUnits.tarlidor);
         addUnit(NHUnits.tarlidor, NHUnits.annihilation);
+        
+        addUnit(NHBlocks.darkEnergyFactory, NHUnits.guardian);
         
         //Items / liquids;
         new TechNode(TechTree.get(Items.titanium), NHItems.metalOxhydrigen, NHItems.metalOxhydrigen.researchRequirements());

@@ -7,8 +7,10 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Position;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -260,6 +262,18 @@ public class NHFx{
 	}
 	
 	public static final Effect
+		transport = new Effect(22f, 400, e -> {
+			if(!(e.data instanceof Position))return;
+			Position to = e.data();
+			Tmp.v1.set(e.x, e.y).interpolate(Tmp.v2.set(to), e.fin(), Interp.pow3)
+					.add(Tmp.v2.sub(e.x, e.y).nor().rotate90(1).scl(Mathf.randomSeedRange(e.id, 1f) * e.fslope() * 10f));
+			float x = Tmp.v1.x, y = Tmp.v1.y;
+			float size = 1f;
+			
+			color(e.color, Color.white, e.fout() * 0.75f);
+			Fill.circle(x, y, e.fslope() * e.rotation * size);
+		}),
+	
 		attackWarning = new Effect(120f, 2000f, e -> {
 			if(!(e.data instanceof Seq))return;
 			Seq<CommandableBlock.CommandableBlockBuild> participants = e.data();
@@ -445,8 +459,6 @@ public class NHFx{
 			e.scaled(38, i -> Drawf.tri(e.x, e.y, type.hitSize / 2.5f * i.fout(), 2500, e.rotation - 180));
 
 			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 60));
-			mixcol(e.color, e.fout());
-			rect(type.shadowRegion, unit.x, unit.y, unit.rotation - 90f);
 		}),
 
 		darkEnergySpread = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {

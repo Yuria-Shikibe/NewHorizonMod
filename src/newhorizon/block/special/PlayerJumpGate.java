@@ -14,17 +14,17 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import newhorizon.func.Functions;
 import newhorizon.interfaces.Linkablec;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.player;
+import static mindustry.Vars.tilesize;
 import static newhorizon.func.TableFs.LEN;
 
 public class PlayerJumpGate extends Block{
@@ -101,23 +101,8 @@ public class PlayerJumpGate extends Block{
 		public void teleport(Player player){
 			if(!canFunction())return;
 			Building target = link();
-			boolean spawnedByCore = player.unit().spawnedByCore;
-			Team t = Team.all[player.team().id];
-			Unit before = player.unit();
-			UnitType type = before.type;
-			Unit unit = type.create(t);
-			unit.set(target);
-			unit.spawnedByCore(spawnedByCore);
-			unit.rotation = angleTo(target);
-			player.team(Team.derelict);
-			if(!net.client())unit.add();
-			while(player.unit() != unit && !player.within(target, tilesize * 2f)){
-				player.unit(unit);
-			}
-			Time.run(1f, () -> player.team(t));
-			before.remove();
-
-			if(mobile && player == Vars.player)Core.camera.position.set(target);
+			
+			Functions.teleportUnitNet(player.unit(), target.x, target.y, angleTo(target));
 			reload = 0;
 			
 			Sounds.respawn.at(this, Mathf.random(0.9f, 1.1f));

@@ -1,5 +1,6 @@
 package newhorizon.bullets;
 
+import arc.math.Interp;
 import arc.math.Mathf;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
@@ -11,6 +12,7 @@ public class SpeedUpBulletType extends BasicBulletType{
 	public float accelerateBegin = 0.1f;
 	public float accelerateEnd = 0.6f;
 	
+	public Interp func = Interp.linear;
 	public Curve<Bullet> accelCurve;
 	
 	public SpeedUpBulletType(){
@@ -30,8 +32,9 @@ public class SpeedUpBulletType extends BasicBulletType{
 		super.init();
 		if(velocityBegin < 0)velocityBegin = speed;
 		if(velocityEnd < 0)velocityEnd = speed;
-		if(accelCurve == null)accelCurve = b -> Mathf.curve(b.fin(), accelerateBegin, accelerateEnd);
-		speed = (velocityBegin * lifetime * accelerateBegin + (velocityBegin + velocityEnd) / 2f * lifetime * Mathf.clamp(accelerateEnd - accelerateBegin) + velocityEnd * lifetime * (1 - accelerateEnd)) / lifetime;
+		
+		if(accelCurve == null)accelCurve = b -> Mathf.curve(b.fin(func), accelerateBegin, accelerateEnd);
+		speed = (velocityBegin * accelerateBegin + (velocityBegin + velocityEnd) / 2f * Mathf.clamp(accelerateEnd - accelerateBegin) + velocityEnd * (1 - accelerateEnd));
 	}
 	
 	@Override
