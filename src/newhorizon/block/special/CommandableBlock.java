@@ -15,6 +15,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
+import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,28 +54,28 @@ public abstract class CommandableBlock extends Block{
 		@Override
 		public void add(){
 			super.add();
-			NHWorldVars.commandables.add(this);
+			NHVars.world.commandables.add(this);
 		}
 		
 		@Override
 		public void remove(){
 			super.remove();
-			NHWorldVars.commandables.remove(this);
+			NHVars.world.commandables.remove(this);
 		}
 		
 		@Override
 		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
-			NHWorldVars.advancedLoad.add(this);
+			NHVars.world.advancedLoad.add(this);
 			return super.init(tile, team, shouldAdd, rotation);
 		}
 		
 		@Override
 		public void loadAfterConnect(){
-			NHWorldVars.commandables.add(this);
+			NHVars.world.commandables.add(this);
 		}
 		
 		@Override
-		public void beforeLoad(){ NHWorldVars.commandables.add(this); }
+		public void beforeLoad(){ NHVars.world.commandables.add(this); }
 	}
 	
 	public enum CommandableBlockType{

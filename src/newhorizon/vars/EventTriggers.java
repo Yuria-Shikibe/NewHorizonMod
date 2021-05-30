@@ -1,5 +1,6 @@
 package newhorizon.vars;
 
+import arc.Core;
 import arc.Events;
 import arc.func.Cons2;
 import arc.struct.IntSeq;
@@ -15,6 +16,7 @@ import mindustry.gen.Unit;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.func.NHSetting;
 import newhorizon.interfaces.BeforeLoadc;
@@ -55,17 +57,16 @@ public class EventTriggers{
 		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-			NHWorldVars.clear();
-			NHCtrlVars.reset();
+			NHVars.reset();
 			
-			for(Tile tile : Vars.world.tiles)NHWorldVars.intercepted.put(tile, new IntSeq(new int[Team.all.length]));
+			for(Tile tile : Vars.world.tiles)NHVars.world.intercepted.put(tile, new IntSeq(new int[Team.all.length]));
 			
-			for(BeforeLoadc c : NHWorldVars.advancedLoad){
+			for(BeforeLoadc c : NHVars.world.advancedLoad){
 				c.beforeLoad();
 			}
 			
-			NHWorldVars.clearLast();
-			NHWorldVars.worldLoaded = true;
+			NHVars.world.clearLast();
+			NHVars.world.worldLoaded = true;
 			
 			if(Vars.player.admin){
 				for(Block c : contents){
@@ -80,7 +81,15 @@ public class EventTriggers{
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
 			NHSetting.log("Server Preload Run");
-			for(ServerInitc c : NHWorldVars.serverLoad){
+			
+			if(!NHSetting.getBool("@active.override") && e.host.address.equals(NewHorizon.SERVER_ADDRESS
+			)){
+				Vars.net.disconnect();
+				Vars.ui.showStartupInfo(Core.bundle.get("mod.ui.requite.need-override"));
+				return;
+			}
+			
+			for(ServerInitc c : NHVars.world.serverLoad){
 				c.loadAfterConnect();
 			}
 		});

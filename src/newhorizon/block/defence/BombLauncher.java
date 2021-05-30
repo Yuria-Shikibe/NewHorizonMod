@@ -35,7 +35,7 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
 import newhorizon.effects.EffectTrail;
-import newhorizon.vars.NHWorldVars;
+import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.tilesize;
 
@@ -119,7 +119,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 
 		@Override
 		public float delayTime(){
-			Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
+			Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
 			return (dst(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y)) / tilesize * bombVelPerTile + bombLifetime * (1 + 2/3f)) / Time.toSeconds;
 		}
 		

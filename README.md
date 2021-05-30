@@ -38,6 +38,40 @@ Mod is ***unstable*** (mainly for phones, which have some UI and loading problem
 
 All code is here and completely open source ~~so no code that has *safety* problems could be hidden~~.
 
+Here are the `Requirements` override code, which I believe it wouldn't cause conflict between multiple mods. Still, I give a setting to disable the override.
+
+```java
+public class NHOverride{
+    /*Override detail code...*/
+   private static void addReq(Block target, ItemStack... items){
+      ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];
+   
+      int i;
+   
+      for(i = 0; i < target.requirements.length; i++){
+         newReq[i] = target.requirements[i];
+      }
+   
+      for(i = 0; i < items.length; i++){
+         newReq[i + target.requirements.length] = items[i];
+      }
+   
+      target.requirements = newReq;
+      Arrays.sort(target.requirements, Structs.comparingInt((j) -> j.item.id));
+   }
+   
+   private static void removeReq(Block target, Item... items){
+      Seq<ItemStack> req = new Seq<>(ItemStack.class);
+      req.addAll(target.requirements);
+   
+      for(Item item : items){
+         req.each(itemReq -> itemReq.item == item, req::remove);
+      }
+      target.requirements = req.shrink();
+   }
+}
+```
+
 ## In Game Settings
 This mod adds a new setting dialog when starting the game.
 By choose the available setting, you can activate the in-game debug panel and advance load, which creates outline icons and unit full icons automatically.

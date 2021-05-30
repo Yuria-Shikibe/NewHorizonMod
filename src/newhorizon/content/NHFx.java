@@ -718,7 +718,7 @@ public class NHFx{
 				Draw.color(e.color, data.toColor, (float)(i / data.points.size));
 				Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
 			}
-		}).layer(Layer.effect - 1f);
+		}).layer(Layer.bullet - 0.001f);
 }
 
 

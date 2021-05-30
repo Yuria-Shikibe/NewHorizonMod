@@ -29,7 +29,10 @@ import mindustry.content.UnitTypes;
 import mindustry.core.World;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Building;
+import mindustry.gen.Icon;
+import mindustry.gen.Iconc;
+import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -47,8 +50,11 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
-import newhorizon.func.*;
-import newhorizon.vars.NHCtrlVars;
+import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHFunc;
+import newhorizon.func.TableFs;
+import newhorizon.func.Tables;
+import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -484,7 +490,7 @@ public class JumpGate extends Block {
                     }).growX().height(LEN);
         
                 }}.show()).disabled(b -> mobile).size(LEN * 5, LEN).row();
-                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHCtrlVars.isSelecting).size(LEN * 5, LEN);
+                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN);
             }).fill();
         }
 

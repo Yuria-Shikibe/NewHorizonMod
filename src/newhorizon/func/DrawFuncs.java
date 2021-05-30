@@ -81,19 +81,26 @@ public class DrawFuncs {
         float r1 = rad - hstep;
         float r2 = rad + hstep;
         
-        for(int i = 0; i < sides * percent; ++i){
+        int i;
+        
+        for(i = 0; i < sides * percent - 1; ++i){
             float a = space * (float)i + angle;
             float cos = Mathf.cosDeg(a);
             float sin = Mathf.sinDeg(a);
             float cos2 = Mathf.cosDeg(a + space);
             float sin2 = Mathf.sinDeg(a + space);
-            float f = (sides * percent - i < 1) ? (sides * percent - i) : 1;
-            vec21.trns(a, 0, len * (f - 1));
-
-            Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2 + vec21.x, y + r1 * sin2 + vec21.y, x + r2 * cos2 + vec21.x, y + r2 * sin2 + vec21.y, x + r2 * cos, y + r2 * sin);
-            
+            Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2, y + r1 * sin2, x + r2 * cos2, y + r2 * sin2, x + r2 * cos, y + r2 * sin);
         }
-        
+    
+        float a = space * i + angle;
+        float cos = Mathf.cosDeg(a);
+        float sin = Mathf.sinDeg(a);
+        float cos2 = Mathf.cosDeg(a + space);
+        float sin2 = Mathf.sinDeg(a + space);
+        float f = sides * percent - i;
+        vec21.trns(a, 0, len * (f - 1));
+    
+        Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2 + vec21.x, y + r1 * sin2 + vec21.y, x + r2 * cos2 + vec21.x, y + r2 * sin2 + vec21.y, x + r2 * cos, y + r2 * sin);
     }
     
     public static void overlayText(String text, float x, float y, float offset, Color color, boolean underline){

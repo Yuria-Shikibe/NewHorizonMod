@@ -26,6 +26,7 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.func.NHFunc;
 import newhorizon.interfaces.BeforeLoadc;
+import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
 
 import static mindustry.Vars.tilesize;
@@ -75,7 +76,7 @@ public class GravityGully extends Block{
 	public void drawPlace(int x, int y, int rotation, boolean valid){
 		int teamIndex = allTeamSeq.indexOf(Vars.player.team());
 		
-		NHWorldVars.drawGully(teamIndex);
+		NHVars.world.drawGully(teamIndex);
 		
 		Draw.color(Pal.place);
 		
@@ -99,8 +100,8 @@ public class GravityGully extends Block{
 		public float warmup;
 		
 		public void setIntercept(boolean add){
-			if(add)NHWorldVars.gravGullyGroup.add(this);
-			else NHWorldVars.gravGullyGroup.remove(this);
+			if(add)NHVars.world.gravGullyGroup.add(this);
+			else NHVars.world.gravGullyGroup.remove(this);
 			if((active || add) && isValid())for(IntSeq t : effectedArea)t.incr(teamIndex, Mathf.sign(add));
 			active = add;
 		}
@@ -138,7 +139,7 @@ public class GravityGully extends Block{
 		
 		@Override
 		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
-			NHWorldVars.advancedLoad.add(this);
+			NHVars.world.advancedLoad.add(this);
 			return super.init(tile, team, shouldAdd, rotation);
 		}
 		
@@ -164,7 +165,7 @@ public class GravityGully extends Block{
 		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
-			NHWorldVars.drawGully(teamIndex);
+			NHVars.world.drawGully(teamIndex);
 		}
 		
 		@Override
@@ -198,7 +199,7 @@ public class GravityGully extends Block{
 			
 			NHFunc.square(World.toTile(x), World.toTile(y), range, (x1, y1) -> {
 				tmpTile = world.tile(x1, y1);
-				if(tmpTile != null)effectedArea.add(NHWorldVars.intercepted.get(tmpTile));
+				if(tmpTile != null)effectedArea.add(NHVars.world.intercepted.get(tmpTile));
 			});
 			
 			if(power.status >= 0.75f && !active)setIntercept(true);

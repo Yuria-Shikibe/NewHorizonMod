@@ -31,11 +31,12 @@ import static newhorizon.func.TableFs.*;
 
 
 public class NewHorizon extends Mod{
-	public static final String MOD_NAME = "new-horizon-";
+	public static final String MOD_NAME = "new-horizon";
+	public static final String SERVER_ADDRESS = "";
 	public static Links.LinkEntry[] links;
 	
 	public static String configName(String name){
-		return MOD_NAME + name;
+		return MOD_NAME + "-" + name;
 	}
 	
 	private static final ContentList[] content = {
@@ -135,6 +136,7 @@ public class NewHorizon extends Mod{
 			}
 		}
 		
+		
 	    NHSounds.load();
 		NHLoader loader = new NHLoader();
 		loader.load();
@@ -144,6 +146,8 @@ public class NewHorizon extends Mod{
 	    loader.loadLast();
 		
 		EventTriggers.load();
+		
+		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		
 		Log.info("Loaded Complete.");
     }

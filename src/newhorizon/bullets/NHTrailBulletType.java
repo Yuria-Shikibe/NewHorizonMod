@@ -43,7 +43,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public NHTrailBulletType(float speed, float damage, String bulletSprite){
 		super(speed, damage, bulletSprite);
 		this.despawnEffect = Fx.none;
-    }
+	}
 	
 	public NHTrailBulletType(float speed, float damage){
 		this(speed, damage, "bullet");
@@ -52,27 +52,27 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public NHTrailBulletType(){
 		this(1f, 1f, "bullet");
 	}
-    
-    @Override
+	
+	@Override
 	public void init(){
 		super.init();
-	    if(trailLength < 0)trailLength = 12;
-	    drawSize = Math.max(EffectTrail.DRAW_SIZE, Math.max(drawSize, 1.5f * trailLength * (speed + velocityEnd)));
-	    if(trailWidth < 0)trailWidth = width / 6f;
-    }
-    
-    public void despawnedEffect(Bullet b){
-	    despawnEffect.at(b.x, b.y, b.rotation(), useTeamColor ? b.team.color : hitColor);
-	    Effect.shake(despawnShake, despawnShake, b);
-	    if (!(b.data instanceof EffectTrail[]))return;
-	    EffectTrail[] t = (EffectTrail[])b.data();
-	    for(EffectTrail trail : t){
-		    if(combine)trail.update(b.x, b.y);
-		    trail.disappear();
-	    }
-    }
-    
-    @Override
+		if(trailLength < 0)trailLength = 12;
+		drawSize = Math.max(EffectTrail.DRAW_SIZE, Math.max(drawSize, 1.5f * trailLength * (speed + velocityEnd)));
+		if(trailWidth < 0)trailWidth = width / 6f;
+	}
+	
+	public void despawnedEffect(Bullet b){
+		despawnEffect.at(b.x, b.y, b.rotation(), useTeamColor ? b.team.color : hitColor);
+		Effect.shake(despawnShake, despawnShake, b);
+		if (!(b.data instanceof EffectTrail[]))return;
+		EffectTrail[] t = (EffectTrail[])b.data();
+		for(EffectTrail trail : t){
+			if(combine)trail.update(b.x, b.y);
+			trail.disappear();
+		}
+	}
+	
+	@Override
 	public void despawned(Bullet b){
 		despawnedEffect(b);
 		hit(b);
@@ -144,7 +144,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 			Lightning.create(b, useTeamColor ? b.team.color : lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
 		}
 	}
-
+	
 	@Override
 	public void draw(Bullet b) {
 		drawTrail(b);
@@ -173,7 +173,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 			trail.draw();
 		}
 	}
-
+	
 	public void homing(Bullet b){
 		if(homingPower > 0.0001f && b.time >= homingDelay){
 			Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> ((e.isGrounded() && collidesGround) || (e.isFlying() && collidesAir)) && (homingHit || !b.collided.contains(e.id)), t -> collidesGround);
@@ -214,17 +214,3 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,113 +1,127 @@
 package newhorizon.feature;
 
-import arc.func.Cons;
 import arc.graphics.Color;
-import arc.math.geom.Position;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
+import arc.graphics.g2d.Draw;
+import arc.math.Mathf;
+import arc.math.geom.Vec3;
+import arc.struct.Seq;
+import arc.util.Interval;
+import arc.util.Tmp;
+import arc.util.pooling.Pools;
 import mindustry.Vars;
-import mindustry.entities.EntityGroup;
-import mindustry.gen.*;
-import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.blocks.environment.Floor;
+import mindustry.gen.Bullet;
+import mindustry.gen.Nulls;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import newhorizon.effects.EffectTrail;
 
-public class TrailTracker implements Drawc, Posc{
-	public EffectTrail trail = new EffectTrail(10);
-	public float x, y;
-	public transient float lastX, lastY;
-	public transient int stopped = 0;
-	public Teamc trackTarget = Nulls.team;
-	public boolean added;
-	public transient int id = EntityGroup.nextId();
+public class TrailTracker{
+	public int trailLength;
+	public float trailWidth;
 	
-	@Override public float clipSize(){return 500f;}
+	public float trailWeaveScale = 0f;
+	public float trailWeaveMag = -1f;
+	public float trailWeaveScaleOffset = 0;
+	public float trailOffset = 0f;
+	public int trails = 1;
+	public float sideOffset = 0f;
+	public boolean flip;
+	public boolean combine = false;
+	public boolean flipWhileTwin = true;
+	public boolean useTeamColor = false;
 	
-	@Override public void draw(){
-		trail.draw(fout());
+	public Color trailToColor = Pal.gray;
+	
+	public TrailTracker(){
+	
+	}
+	public TrailTracker(int trailLength, float trailWidth, float trailWeaveScale, float trailWeaveMag, float trailWeaveScaleOffset, float trailOffset, int trails, float sideOffset, boolean flip, boolean combine, boolean flipWhileTwin, boolean useTeamColor, Color trailToColor){
+		this.trailLength = trailLength;
+		this.trailWidth = trailWidth;
+		this.trailWeaveScale = trailWeaveScale;
+		this.trailWeaveMag = trailWeaveMag;
+		this.trailWeaveScaleOffset = trailWeaveScaleOffset;
+		this.trailOffset = trailOffset;
+		this.trails = trails;
+		this.sideOffset = sideOffset;
+		this.flip = flip;
+		this.combine = combine;
+		this.flipWhileTwin = flipWhileTwin;
+		this.useTeamColor = useTeamColor;
+		this.trailToColor = trailToColor;
 	}
 	
-	@Override public void update(){
-		if(trackTarget == null || stopped == trail.length){
-			remove();
-			return;
-		}
-		if(lastX == x && lastY == y)stopped ++;
+	
+	
+	public void create(Bullet b){
+		if(Vars.headless)return;
+		TrailTrackerEntity entity = Pools.obtain(TrailTrackerEntity.class, TrailTrackerEntity::new);
+		entity.trails = new EffectTrail[trails];
+		entity.bullet = b;
 		
-		lastX = x;
-		lastY = y;
-		set(trackTarget);
-		trail.update(x, y);
+		for(int i = 0; i < entity.trails.length; i++){
+			EffectTrail t = new EffectTrail();
+			t.fromColor = useTeamColor ? b.team.color : b.type.trailColor;
+			t.toColor = useTeamColor ? b.team.color : trailToColor;
+			t.width = trailWidth;
+			t.length = trailLength;
+			entity.trails[i] = t;
+		}
+		
+		entity.set(b);
+		entity.add();
 	}
 	
-	public float fout(){
-		if(trail == null)return 1;
-		return (trail.length - stopped) / (float)trail.length;
-	}
-	
-	public void setTrail(Teamc owner, int length, float width, Color fromColor, Color toColor){
-		trail = new EffectTrail(length, width, fromColor, toColor);
-		trackTarget = owner;
-	}
-	
-	@Override
-	public void remove(){
-		Groups.draw.remove(this);
-		Groups.all.remove(this);
-		added = false;
-	}
-	
-	@Override
-	public void add(){
-		if(added)return;
-		Groups.all.add(this);
-		Groups.draw.add(this);
-		added = true;
-	}
-	
-	@Override public boolean isLocal(){
-		return this instanceof Unitc && ((Unitc)this).controller() == Vars.player;
-	}
-	@Override public boolean isRemote(){
-		return this instanceof Unitc && ((Unitc)this).isPlayer() && !isLocal();
-	}
-	
-	@Override public boolean isNull(){ return false; }
-	@Override public <T extends Entityc> T self(){ return (T)this; }
-	@Override public <T> T as(){ return (T)this; }
-	@Override public void set(float x, float y){
-		this.x = x;
-		this.y = y;
-	}
-	@Override public void set(Position pos){set(pos.getX(), pos.getY());}
-	@Override public void trns(float x, float y){set(this.x + x, this.y + y);}
-	@Override public void trns(Position pos){trns(pos.getX(), pos.getY());}
-	@Override public int tileX(){return 0;}
-	@Override public int tileY(){return 0; }
-	@Override public Floor floorOn(){ return null; }
-	@Override public Block blockOn(){ return null; }
-	@Override public boolean onSolid(){ return false; }
-	@Override public Tile tileOn(){ return null; }
-	@Override public float getX(){ return 0; }
-	@Override public float getY(){ return y; }
-	@Override public float x(){ return x; }
-	@Override public void x(float x){ this.x = x; }
-	@Override public float y(){ return y; }
-	@Override public void y(float y){ this.y = y; }
-	@Override public boolean isAdded(){ return added; }
-	@Override public <T> T with(Cons<T> cons) {
-		cons.get((T)this);
-		return (T)this;
-	}
-	@Override public int classId(){ return 1001; }
-	@Override public boolean serialize(){ return false; }
-	@Override public void read(Reads read){ }
-	@Override public void write(Writes write){ }
-	@Override public void afterRead(){ }
-	@Override public int id(){return id; }
-	@Override public void id(int id){ this.id = id; }
-	@Override public String toString(){
-		return "CommandEntity{" + "added=" + added + ", id=" + id + ", x=" + x + ", y=" + y + '}';
+	public class TrailTrackerEntity extends NHBaseEntity{
+		public EffectTrail[] trails = new EffectTrail[1];
+		public transient float lastX, lastY;
+		public transient int stopped = 0;
+		public transient Bullet bullet = Nulls.bullet;
+		
+		public transient Interval timer = new Interval(1);
+		
+		@Override
+		public float clipSize(){
+			Seq<Vec3> p = trails[0].points;
+			return Mathf.dst(p.first().x, p.first().y, p.peek().x, p.peek().y) * 2f;
+		}
+		
+		@Override
+		public void draw(){
+			Draw.z(Layer.bullet - 0.001f);
+			for(EffectTrail trail : trails){
+				trail.draw();
+			}
+		}
+		
+		@Override
+		public void update(){
+			if(bullet == null || bullet.isNull() || bullet.type == null || !bullet.added || !bullet.moving() || bullet.time > bullet.lifetime){
+				for(EffectTrail trail : trails){
+					trail.disappear();
+				}
+				return;
+			}else{
+				set(bullet);
+			}
+			
+			if(timer.get(1f)){
+				for(int i = 0; i < trails.length; i++){
+					int offsetParma = (i - (flipWhileTwin ? i % 2 : 0));
+					Tmp.v1.trns(
+							bullet.rotation(),
+							-bullet.vel.len() / 2 - trailOffset - sideOffset * offsetParma,
+							(flip ? Mathf.sign(i % 2 == 0) : 1) * Mathf.absin(bullet.time, trailWeaveScale + offsetParma * trailWeaveScaleOffset, trailWeaveMag)
+					).add(bullet);
+					trails[i].update(Tmp.v1.x, Tmp.v1.y);
+					if(useTeamColor)trails[i].fromColor = bullet.team.color;
+				}
+			}
+		}
+		
+		@Override
+		public int classId(){
+			return -1;
+		}
 	}
 }

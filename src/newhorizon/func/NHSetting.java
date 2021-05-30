@@ -5,7 +5,6 @@ import arc.files.Fi;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
-import arc.util.io.PropertiesUtils;
 import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.mod.Mods;
@@ -29,7 +28,6 @@ public class NHSetting{
 	private static final Properties settingList = new Properties();
 	private static String path = "";
 	private static boolean loaded;
-	private static final ObjectMap<String, String> all = new ObjectMap<>();
 	
 	public static final Seq<SettingEntry> entries = new Seq<>();
 	public static final ObjectMap<String, String> defaultKeys = new ObjectMap<>();
@@ -38,13 +36,27 @@ public class NHSetting{
 	static{
 		defaultKeys.put("initialized", "null version");
 		defaultKeys.put("@active.hid-start-log", String.valueOf(false));
-		defaultKeys.put("@active.tool-panel*", String.valueOf(false));
 		defaultKeys.put("@active.admin-panel", String.valueOf(false));
-		defaultKeys.put("@active.advance-load*", String.valueOf(false));
 		defaultKeys.put("@active.debug", String.valueOf(false));
+		
+		for(String key : defaultKeys.keys()){
+			if(key.startsWith("@")){
+				SettingEntry entry = new SettingEntry(key);
+				entries.add(entry);
+			}
+		}
+		
+		SettingEntry.add("@active.override", String.valueOf(true), true);
+		SettingEntry.add("@active.advance-load*", String.valueOf(false), true);
+		SettingEntry.add("@active.tool-panel*", String.valueOf(false), true);
 	}
  
 	public static class SettingEntry{
+		public static void add(String key, String value, boolean needReload){
+			entries.add(new SettingEntry(key).setNeedReload(needReload));
+			defaultKeys.put(key, value);
+		}
+		
 		public final String key;
 		public String description;
 		public String warning;
@@ -59,9 +71,13 @@ public class NHSetting{
 			typeOfGraphics = key.contains("graphics");
 		}
 		
+		public boolean needReload = false;
 		public boolean bool(){return typeOfBool;}
 		public boolean warn(){return key.endsWith("*");}
-		public Object get(){return all.get(key);}
+		public SettingEntry setNeedReload(boolean b){
+			needReload = b;
+			return this;
+		}
 	}
 	
 	public static void settingFile() throws IOException{
@@ -99,14 +115,7 @@ public class NHSetting{
 		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
 		
 		if(!modMeta.version.equals(settingList.getProperty(initKey)))updateProperty(modMeta.version);
-		PropertiesUtils.load(all, setting.reader());
 		
-		for(String key : all.keys()){
-			if(key.startsWith("@")){
-				SettingEntry entry = new SettingEntry(key);
-				entries.add(entry);
-			}
-		}
 	}
 	
 	public static void updateSettingMenu(){

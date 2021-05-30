@@ -20,24 +20,24 @@ import newhorizon.interfaces.ServerInitc;
 import static mindustry.Vars.tilesize;
 
 public class NHWorldVars{
-	public transient static boolean serverLoaded = true;
-	public transient static boolean worldLoaded = false;
-	public transient static boolean load = false;
+	public transient boolean serverLoaded = true;
+	public transient boolean worldLoaded = false;
+	public transient boolean load = false;
 	
-	public transient static final Seq<ServerInitc> serverLoad = new Seq<>();
-	public transient static final Seq<BeforeLoadc> advancedLoad = new Seq<>();
-	public transient static final Seq<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new Seq<>();
-	public transient static final Seq<GravityGully.GravityGullyBuild> gravGullyGroup = new Seq<>();
-	public transient static final ObjectMap<Tile, IntSeq> intercepted = new ObjectMap<>();
+	public transient final Seq<ServerInitc> serverLoad = new Seq<>();
+	public transient final Seq<BeforeLoadc> advancedLoad = new Seq<>();
+	public transient final Seq<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new Seq<>();
+	public transient final Seq<GravityGully.GravityGullyBuild> gravGullyGroup = new Seq<>();
+	public transient final ObjectMap<Tile, IntSeq> intercepted = new ObjectMap<>();
 	
-	public transient static final Seq<CommandableBlock.CommandableBlockBuild> commandables = new Seq<>();
+	public transient final Seq<CommandableBlock.CommandableBlockBuild> commandables = new Seq<>();
 	
-	public transient static int ix, iy;
-	public transient static int commandPos = -1;
-	public transient static boolean floatTableAdded = false;
+	public transient int ix, iy;
+	public transient int commandPos = -1;
+	public transient boolean floatTableAdded = false;
 	
 	
-	public static void clear(){
+	public void clear(){
 		intercepted.clear();
 		upgraderGroup.clear();
 		gravGullyGroup.clear();
@@ -47,21 +47,21 @@ public class NHWorldVars{
 		commandPos = -1;
 	}
 	
-	public static void clearLast(){
+	public void clearLast(){
 		advancedLoad.clear();
 		serverLoad.clear();
 	}
 	
-	public static void drawGully(int teamIndex){
+	public void drawGully(int teamIndex){
 		float width = Core.graphics.getWidth();
 		float height = Core.graphics.getHeight();
 		
 		Camera c = Core.camera;
 		Tmp.r3.setSize(c.width + tilesize * 2, c.height + tilesize * 2).setCenter(c.position);
 		
-		for(Tile t : NHWorldVars.intercepted.keys()){
+		for(Tile t : intercepted.keys()){
 			if(!Tmp.r3.contains(t.drawx(), t.drawy()))continue;
-			IntSeq teams = NHWorldVars.intercepted.get(t);
+			IntSeq teams = intercepted.get(t);
 			
 			int anyOther = teams.count(0);
 			

@@ -898,7 +898,7 @@ public class NHUnits implements ContentList {
 				ejectEffect = Fx.none;
 				recoil = 1.7f;
 				shootSound = Sounds.plasmaboom;
-				bullet = new NHTrailBulletType(7.4f, 60, NewHorizon.MOD_NAME + "strike") {
+				bullet = new NHTrailBulletType(7.4f, 60, NewHorizon.configName("strike")) {
 					@Override public float range(){return 440f;}
 					{
 						trailWeaveMag = 4f;

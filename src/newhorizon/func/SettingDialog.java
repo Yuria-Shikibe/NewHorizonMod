@@ -3,16 +3,20 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.input.KeyCode;
 import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
+import static mindustry.Vars.ui;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
 
 public class SettingDialog extends BaseDialog{
+	private static boolean changed = false;
+	
 	public SettingDialog(){
 		super("@nh-setting");
 		setFillParent(true);
@@ -30,8 +34,11 @@ public class SettingDialog extends BaseDialog{
 			for(NHSetting.SettingEntry key : NHSetting.entries){
 				table.table(t -> {
 					t.button(key.key, Styles.clearTogglet, () -> {
-						if(key.warn())setting(key);
-						else NHSetting.setBoolOnce(key.key, !NHSetting.getBool(key.key));
+						if(key.warn() && !NHSetting.getBool(key.key))setting(key);
+						else {
+							setChanged(key);
+							NHSetting.setBoolOnce(key.key, !NHSetting.getBool(key.key));
+						}
 					}).height(LEN).growX().update(b -> b.setChecked(key.bool() && NHSetting.getBool(key.key)));
 					t.button(Icon.info, Styles.cleari, LEN, () -> {
 						new BaseDialog("@info"){{
@@ -50,9 +57,20 @@ public class SettingDialog extends BaseDialog{
 			}
 		}).grow();
 		
-		addCloseButton();
+		buttons.defaults().size(210f, 64f);
+		buttons.button("@back", Icon.left, this::close).size(210f, 64f);
+		
+		this.keyDown((key) -> {
+			if (key == KeyCode.escape || key == KeyCode.back) {
+				close();
+			}
+		});
 	}
 	
+	public void close(){
+		if(changed)ui.showInfoOnHidden(Core.bundle.get("mod.ui.require.reload"), () -> Core.app.exit());
+		else Core.app.post(this::hide);
+	}
 	
 	private static void setting(NHSetting.SettingEntry key){
 		if(!NHSetting.getBool(key.key)){
@@ -75,6 +93,7 @@ public class SettingDialog extends BaseDialog{
 				t.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN);
 				t.button("@yes", Icon.play, Styles.cleart, () -> {
 					NHSetting.setBoolOnce(key.key, true);
+					setChanged(key);
 					dialog.hide();
 				}).size(LEN * 3, LEN).padLeft(OFFSET / 2);
 			}).padTop(OFFSET / 2).fillX();
@@ -90,10 +109,15 @@ public class SettingDialog extends BaseDialog{
 				t.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 3, LEN);
 				t.button("@yes", Icon.play, Styles.cleart, () -> {
 					NHSetting.setBoolOnce(key.key, false);
+					setChanged(key);
 					dialog.hide();
 				}).size(LEN * 3, LEN).padLeft(OFFSET / 2);
 			}).padTop(OFFSET / 2).fillX();
 			dialog.show();
 		}
+	}
+	
+	private static void setChanged(NHSetting.SettingEntry key){
+		if(key.needReload)changed = true;
 	}
 }

@@ -102,7 +102,7 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
-		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider;
+		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer;
 		;
 	
 	private static void loadExperiments(){
@@ -123,6 +123,12 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadTurrets(){
+		configurer = new Configurer("configurer"){{
+			size = 1;
+			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
+			NHTechTree.add(Blocks.logicProcessor, this);
+		}};
+		
 		beamLaserTurret = new ItemTurret("beam-laser-turret"){{
 			size = 2;
 			requirements(Category.turret, BuildVisibility.shown, with(Items.copper, 60, NHItems.juniorProcessor, 60, NHItems.presstanium, 60));

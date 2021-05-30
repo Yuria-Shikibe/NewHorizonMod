@@ -14,7 +14,7 @@ public class EffectTrail{
 	public static final float LIFETIME = 50f, DRAW_SIZE = 500f;
 	public int length;
 	public float width;
-	protected final Seq<Vec3> points;
+	public final Seq<Vec3> points;
 	protected float lastX = -1, lastY = -1;
 	
 	public Color fromColor, toColor;
@@ -47,7 +47,18 @@ public class EffectTrail{
 	public void draw(float f) {
 		if(points.isEmpty())return;
 		Draw.color(fromColor);
-		Fill.circle(points.peek().x, points.peek().y, width * 1.1f);
+		
+		if(points.size >= 1){
+			Vec3 c = points.peek();
+			float sizeP = width * f / length;
+			
+			float
+					cx = Mathf.sin(c.z) * points.size * sizeP,
+					cy = Mathf.cos(c.z) * points.size * sizeP;
+
+			Fill.circle(points.peek().x, points.peek().y, Mathf.dst(c.x - cx, c.y - cy, c.x, c.y));
+		}
+		
 		
 		Draw.reset();
 		for (int i = 0; i < points.size - 1; i++) {

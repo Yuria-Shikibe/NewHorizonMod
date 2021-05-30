@@ -16,7 +16,7 @@ import mindustry.gen.Sounds;
 import mindustry.world.Block;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.values.AmmoListValue;
-import newhorizon.vars.NHWorldVars;
+import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.tilesize;
 
@@ -92,7 +92,7 @@ public class AirRaider extends CommandableAttackerBlock{
 		
 		@Override
 		public float delayTime(){
-			Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
+			Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
 			return (dst(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y)) / tilesize * (tilesize / bulletHitter.speed) ) / Time.toSeconds;
 		}
 	}

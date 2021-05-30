@@ -98,7 +98,7 @@ public class NHBullets implements ContentList{
 				trails = 1;
 				flip = true;
 				trailWidth = 8f;
-				trailLength = 40;
+				trailLength = 50;
 				
 				generateDelay = 6f;
 				boltNum = 3;
@@ -284,7 +284,7 @@ public class NHBullets implements ContentList{
 			velocityBegin = velocityEnd = 1f;
 			
 			trails = 1;
-			trailLength = 30;
+			trailLength = 40;
 			lifetime = 650f;
 			combine = true;
 			shrinkX = shrinkY = 0;
@@ -930,7 +930,7 @@ public class NHBullets implements ContentList{
 			shootEffect = Fx.none;
 		}};
 		
-		rapidBomb = new NHTrailBulletType(9f, 280, NewHorizon.MOD_NAME + "strike"){{
+		rapidBomb = new NHTrailBulletType(9f, 280, NewHorizon.configName("strike")){{
 			hitSound = Sounds.explosion;
 			drawSize = 120f;
 			hitShake = despawnShake = 1.3f;
@@ -1259,7 +1259,7 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.darkEnergySmokeBig;
 		}};
 		
-		empBlot2 = new ArtilleryBulletType(4f, 10f, NewHorizon.MOD_NAME + "circle-bolt"){{
+		empBlot2 = new ArtilleryBulletType(4f, 10f, NewHorizon.configName("circle-bolt")){{
 			status = NHStatusEffects.emp2;
 			ammoMultiplier = 3;
 			statusDuration = 45f;
@@ -1288,7 +1288,7 @@ public class NHBullets implements ContentList{
 			fragVelocityMax = fragLifeMax = 1.05f;
 		}};
 		
-		empBlot3 = new ArtilleryBulletType(4f, 15f, NewHorizon.MOD_NAME + "circle-bolt"){{
+		empBlot3 = new ArtilleryBulletType(4f, 15f, NewHorizon.configName("circle-bolt")){{
 			status = NHStatusEffects.emp3;
 			ammoMultiplier = 3;
 			statusDuration = 60f;

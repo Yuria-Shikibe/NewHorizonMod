@@ -40,7 +40,7 @@ import mindustry.ui.Fonts;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.modules.ItemModule;
-import newhorizon.vars.NHCtrlVars;
+import newhorizon.vars.NHVars;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -370,8 +370,8 @@ public class TableFs{
     }
     
     public static void pointSelectTable(Table parent, Cons<Point2> cons){
-        NHCtrlVars.reset();
-        NHCtrlVars.isSelecting = true;
+        NHVars.resetCtrl();
+        NHVars.ctrl.isSelecting = true;
         
         Table floatTable = new Table(Tex.clear){{
             update(() -> {
@@ -383,7 +383,7 @@ public class TableFs{
             addListener(new InputListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    NHCtrlVars.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                    NHVars.ctrl.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
                     return false;
                 }
             });
@@ -394,13 +394,13 @@ public class TableFs{
                 if(Vars.state.isMenu()){
                     remove();
                 }else{
-                    Vec2 v = Core.camera.project(World.toTile(NHCtrlVars.ctrlVec2.x) * tilesize, World.toTile(NHCtrlVars.ctrlVec2.y) * tilesize);
+                    Vec2 v = Core.camera.project(World.toTile(NHVars.ctrl.ctrlVec2.x) * tilesize, World.toTile(NHVars.ctrl.ctrlVec2.y) * tilesize);
                     setPosition(v.x, v.y, 0);
                 }
             });
             button(Icon.cancel, Styles.emptyi, () -> {
-                cons.get(Tmp.p1.set(World.toTile(NHCtrlVars.ctrlVec2.x), World.toTile(NHCtrlVars.ctrlVec2.y)));
-                NHCtrlVars.isSelecting = false;
+                cons.get(Tmp.p1.set(World.toTile(NHVars.ctrl.ctrlVec2.x), World.toTile(NHVars.ctrl.ctrlVec2.y)));
+                NHVars.ctrl.isSelecting = false;
                 remove();
                 floatTable.remove();
             }).center();

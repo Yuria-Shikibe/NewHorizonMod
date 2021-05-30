@@ -26,8 +26,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.TableFs;
-import newhorizon.vars.NHCtrlVars;
-import newhorizon.vars.NHWorldVars;
+import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;
@@ -104,12 +103,12 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		}
 		
 		public void setTarget(Point2 p){
-			for(CommandableBlockBuild build : NHWorldVars.commandables){
+			for(CommandableBlockBuild build : NHVars.world.commandables){
 				if(build != null && groupBoolf.get(build)){
 					build.overlap();
 				}
 			}
-			NHWorldVars.commandPos = target = p.pack();
+			NHVars.world.commandPos = target = p.pack();
 		}
 		
 		
@@ -146,7 +145,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public boolean canCommand(){
-			Tile tile = world.tile(NHWorldVars.commandPos);
+			Tile tile = world.tile(NHVars.world.commandPos);
 			return tile != null && consValid() && storaged() > 0 && within(tile, range);
 		}
 		
@@ -177,16 +176,16 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
-			Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
+			Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
 			
 			float realSpread = spread();
 			
 			Drawf.dashCircle(x, y, range, team.color);
 			
-			if(target < 0 && NHWorldVars.commandPos < 0)return;
+			if(target < 0 && NHVars.world.commandPos < 0)return;
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
-			for(CommandableBlockBuild build : NHWorldVars.commandables){
+			for(CommandableBlockBuild build : NHVars.world.commandables){
 				if(build != this && build != null && build.team == team && groupBoolf.get(build) && build.canCommand()){
 					builds.add(build);
 					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
@@ -198,8 +197,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 			}
 			
-			if(NHWorldVars.commandPos > 0){
-				Tmp.p1.set(Point2.unpack(NHWorldVars.commandPos));
+			if(NHVars.world.commandPos > 0){
+				Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
 				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.accent);
 				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, Pal.accent);
@@ -218,7 +217,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			float realSpread = 0f;
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
-			for(CommandableBlockBuild build : NHWorldVars.commandables){
+			for(CommandableBlockBuild build : NHVars.world.commandables){
 				if(build.team == team && groupBoolf.get(build) && build.canCommand() && !build.isPreparing()){
 					build.triggered(pos);
 					participants.add(build);
@@ -243,15 +242,15 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public void buildConfiguration(Table table){
-			NHWorldVars.floatTableAdded = false;
+			NHVars.world.floatTableAdded = false;
 			
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.modeAttack, Styles.clearPartiali, () -> {
-					configure(NHWorldVars.commandPos);
-				}).size(LEN).disabled(b -> NHWorldVars.commandPos < 0);
+					configure(NHVars.world.commandPos);
+				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);
-				}).size(LEN * 4, LEN).disabled(b -> NHCtrlVars.isSelecting).row();
+				}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
 			}).fill();
 		}
 		

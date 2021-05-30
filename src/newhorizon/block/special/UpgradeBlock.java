@@ -33,7 +33,7 @@ import newhorizon.feature.UpgradeData.DataEntity;
 import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
-import newhorizon.vars.NHWorldVars;
+import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.*;
 import static newhorizon.func.TableFs.LEN;
@@ -318,14 +318,14 @@ public class UpgradeBlock extends Block {
 		public void onDestroyed() {
 			super.onDestroyed();
 			if(linkValid())target().resetUpgrade();
-			NHWorldVars.upgraderGroup.remove(this);
+			NHVars.world.upgraderGroup.remove(this);
 		}
 
 		@Override
 		public void placed() {
 			super.placed();
 			baseColorTst = getLinkColor();
-			NHWorldVars.upgraderGroup.add(this);
+			NHVars.world.upgraderGroup.add(this);
 			setData();
 		}
 		
@@ -371,7 +371,7 @@ public class UpgradeBlock extends Block {
 		public void afterRead(){
 			setData();
 			updateTarget();
-			NHWorldVars.upgraderGroup.add(this);
+			NHVars.world.upgraderGroup.add(this);
 		}
 		
 		@Override
@@ -413,7 +413,7 @@ public class UpgradeBlock extends Block {
 			}
 		}
 		@Override public void onRemoved() {
-			NHWorldVars.upgraderGroup.remove(this);
+			NHVars.world.upgraderGroup.remove(this);
 			if(linkValid())target().resetUpgrade();
 		}
 		public Scalablec target(){return linkValid() ? (Scalablec)link() : null;}
