@@ -73,33 +73,36 @@ public class PhaseAbility extends Ability{
 	@Override
 	public void update(Unit unit){
 		if(unit.controller() instanceof Player)return;
-		reloadValue += Time.delta * (Vars.net.active() ? 10 : 1);
+		reloadValue += Time.delta;
 		
-		Teamc target = Units.closestEnemy(unit.team, unit.x, unit.y, teleportRange, b -> true);
+		Teamc target = Units.closestEnemy(unit.team, unit.x, unit.y, teleportRange * 2f, b -> true);
 		int[] num = {0};
 		float[] damage = {0};
 		
-		if(!Vars.net.active()){
-			reloadValue += Math.max(lastHealth - unit.health, 0) / 2f;
-			lastHealth = unit.health;
-			
-			Groups.bullet.intersect(unit.x - teleportRange, unit.y - teleportRange, teleportRange * 2f, teleportRange * 2f, bullet -> {
-				if(!Vars.net.active() && !Vars.headless && bullet.team != unit.team){
-					num[0]++;
-					damage[0] += bullet.damage();
-				}
-			});
-		}
+		reloadValue += Math.max(lastHealth - unit.health, 0) / 2f;
+		lastHealth = unit.health;
 		
-		if(reloadValue > reload && (target != null || ((unit.hitTime > 0 || num[0] > 4 || damage[0] > reload / 2) && !Vars.net.active()))){
+		Groups.bullet.intersect(unit.x - teleportRange, unit.y - teleportRange, teleportRange * 2f, teleportRange * 2f, bullet -> {
+			if(bullet.team == unit.team)return;
+			num[0]++;
+			damage[0] += bullet.damage();
+		});
+		
+		
+		if(reloadValue > reload && (target != null || ((unit.hitTime > 0 || num[0] > 4 || damage[0] > reload / 2)))){
+			float dst = target == null ? teleportRange + teleportMinRange : unit.dst(target) / 2f;
+			float angle = target == null ? unit.rotation : unit.angleTo(target);
 			Tmp.v1.set(unit);
+			Tmp.v2.trns(angle + Mathf.sign(Mathf.randomSeedRange(NHFunc.seedNet() - 1, 1)) * 90,dst / 2f, Mathf.randomSeedRange(NHFunc.seedNet(), 0.15f) * dst).clamp(teleportMinRange, teleportRange).add(Tmp.v1).clamp(0, 0, Vars.world.unitWidth(), Vars.world.unitHeight());
 			Tmp.c1.set(unit.team.color);
 			Sounds.plasmaboom.at(unit);
+			Sounds.plasmaboom.at(Tmp.v2);
+			
 			teleport.at(unit.x, unit.y, unit.hitSize, Tmp.c1);
-			Unit latter = NHFunc.teleportUnitNet(unit, Mathf.clamp(unit.x + Mathf.randomSeed(NHFunc.seedNet(), teleportMinRange, teleportRange), 0, Vars.world.unitWidth()), Mathf.clamp(unit.y + Mathf.randomSeed(NHFunc.seedNet() - 1, teleportMinRange, teleportRange), 0, Vars.world.unitHeight()), unit.rotation);
+			NHFunc.teleportUnitNet(unit, Tmp.v2.x, Tmp.v2.y, unit.angleTo(Tmp.v2.x, Tmp.v2.y), null);
 			reloadValue = 0;
-			teleport.at(latter.x, latter.y, latter.hitSize, Tmp.c1);
-			teleportTrans.at(Tmp.v1.x, Tmp.v1.y, latter.hitSize, Tmp.c1, new Vec2().set(latter));
+			teleport.at(Tmp.v2.x, Tmp.v2.y, unit.hitSize, Tmp.c1);
+			teleportTrans.at(Tmp.v1.x, Tmp.v1.y, unit.hitSize, Tmp.c1, new Vec2().set(Tmp.v2));
 		}
 	}
 }

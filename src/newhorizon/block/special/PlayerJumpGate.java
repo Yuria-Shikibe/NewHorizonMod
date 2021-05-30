@@ -23,8 +23,7 @@ import mindustry.world.Block;
 import newhorizon.func.NHFunc;
 import newhorizon.interfaces.Linkablec;
 
-import static mindustry.Vars.player;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 import static newhorizon.func.TableFs.LEN;
 
 public class PlayerJumpGate extends Block{
@@ -55,6 +54,33 @@ public class PlayerJumpGate extends Block{
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid){
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
+		
+		if(!control.input.frag.config.isShown()) return;
+		Building selected = control.input.frag.config.getSelectedTile();
+		if(selected == null || !(selected.block instanceof PlayerJumpGate) || !(selected.within(x * tilesize, y * tilesize, range))) return;
+		
+		//if so, draw a dotted line towards it while it is in range
+		float sin = Mathf.absin(Time.time, 6f, 1f);
+		Tmp.v1.set(x * tilesize + offset, y * tilesize + offset).sub(selected.x, selected.y).limit((size / 2f + 1) * tilesize + sin + 0.5f);
+		float x2 = x * tilesize - Tmp.v1.x, y2 = y * tilesize - Tmp.v1.y,
+				x1 = selected.x + Tmp.v1.x, y1 = selected.y + Tmp.v1.y;
+		int segs = (int)(selected.dst(x * tilesize, y * tilesize) / tilesize);
+		
+		Lines.stroke(4f, Pal.gray);
+		
+		Lines.dashLine(x1, y1, x2, y2, segs);
+		Lines.stroke(2f, Pal.placing);
+		Lines.dashLine(x1, y1, x2, y2, segs);
+		
+		x1 = selected.x;
+		y1 = selected.y;
+		x2 = x * tilesize + offset;
+		y2 = y * tilesize + offset;
+		
+		Drawf.circles(x1, y1, size * tilesize / 2f + sin * 2f, Pal.placing);
+		Drawf.circles(x2, y2, selected.block.size * tilesize / 2f + sin * 2f, Pal.placing);
+		Drawf.arrow(x1, y1, x2, y2, size * tilesize / 2f + sin, 4 + sin, Pal.placing);
+		Draw.reset();
 	}
 	
 	@Override
@@ -105,7 +131,7 @@ public class PlayerJumpGate extends Block{
 			if(!canFunction())return;
 			Building target = link();
 			
-			NHFunc.teleportUnitNet(player.unit(), target.x, target.y, angleTo(target));
+			NHFunc.teleportUnitNet(player.unit(), target.x, target.y, angleTo(target), player);
 			reload = 0;
 			
 			Sounds.respawn.at(this, Mathf.random(0.9f, 1.1f));
@@ -134,6 +160,11 @@ public class PlayerJumpGate extends Block{
 			reload = read.f();
 			link = read.i();
 			locked = read.bool();
+		}
+		
+		@Override
+		public boolean shouldHideConfigure(Player player){
+			return player.dst(this) > tilesize * 15;
 		}
 		
 		@Override
@@ -190,7 +221,10 @@ public class PlayerJumpGate extends Block{
 		@Override
 		public void buildConfiguration(Table table){
 			table.button(Icon.lock, LEN, () -> configure(!locked)).size(LEN).update(b -> b.getStyle().imageUp = locked ? Icon.lock : Icon.lockOpen);
-			table.button("Teleport", Icon.upOpen, LEN, () -> configure(Vars.player.id)).size(LEN * 4, LEN).disabled(b -> !playerValid() || !canFunction() || dst(Vars.player) > dstMax);
+			table.button("Teleport", Icon.upOpen, LEN, () -> {
+				configure(Vars.player.id);
+				Vars.control.input.frag.config.showConfig(link());
+			}).size(LEN * 4, LEN).disabled(b -> !playerValid() || !canFunction() || dst(Vars.player) > dstMax);
 		}
 		
 		public boolean canFunction(){

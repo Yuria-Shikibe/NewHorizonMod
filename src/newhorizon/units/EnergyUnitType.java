@@ -17,6 +17,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
+import mindustry.type.AmmoTypes;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Cicon;
@@ -41,7 +42,7 @@ public class EnergyUnitType extends UnitType{
 		crashDamageMultiplier = Mathf.clamp(hitSize / 10f, 1, 10);
 		payloadCapacity = Float.MAX_VALUE;
 		buildBeamOffset = 0;
-		
+		ammoType = AmmoTypes.powerHigh;
 		flying = true;
 		for(StatusEffect effect : Vars.content.statusEffects()){
 			immunities.add(effect);
@@ -79,7 +80,7 @@ public class EnergyUnitType extends UnitType{
 	public void drawBody(Unit unit){
 		Draw.z(Layer.effect + 0.001f);
 		float sizeF = 1 + Mathf.absin(4f, 0.1f);
-		Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) +  Mathf.clamp(unit.hitTime) / 5f);
+		Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) + Mathf.clamp(unit.hitTime) / 5f * 3f);
 		Draw.alpha(0.65f);
 		Fill.circle(unit.x, unit.y, hitSize * sizeF * 1.1f);
 		Draw.alpha(1f);

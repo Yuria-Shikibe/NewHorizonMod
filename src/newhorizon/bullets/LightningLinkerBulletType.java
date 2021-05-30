@@ -52,7 +52,6 @@ public class LightningLinkerBulletType extends NHTrailBulletType{
 		hitShake = 3.0F;
 		hitSound = Sounds.explosion;
 		shootEffect = Fx.shootBig;
-		trailEffect = Fx.artilleryTrail;
 		lightning = 4;
 		trails = 0;
 		lightningLength = 3;
@@ -76,7 +75,7 @@ public class LightningLinkerBulletType extends NHTrailBulletType{
 			if(!(e.data instanceof Integer))return;
 			int i = e.data();
 			Draw.color(outColor);
-			Angles.randLenVectors(e.id, (int)(size / 8f), size / 4f + size * 2f * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 13f));
+			Angles.randLenVectors(e.id, (int)(size / 8f), size / 4f + size * 2f * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * size / 1.65f));
 			Lines.stroke((i < 0 ? e.fin() : e.fout()) * 3f);
 			Lines.circle(e.x, e.y, (i > 0 ? e.fin() : e.fout()) * size * 1.1f);
 		});
@@ -106,7 +105,6 @@ public class LightningLinkerBulletType extends NHTrailBulletType{
 		
 		if(!(b.data instanceof EffectTrail[]))return;
 		super.updateTrail(b, (EffectTrail[])b.data());
-		//super.update(b);
 	}
 	
 	@Override

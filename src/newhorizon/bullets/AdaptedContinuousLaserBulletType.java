@@ -37,7 +37,7 @@ public class AdaptedContinuousLaserBulletType extends ContinuousLaserBulletType{
 	@Override
 	public void update(Bullet b){
 		super.update(b);
-		if(b.timer(2, lightningEffectDelta)) PosLightning.createEffect(b, Damage.findLaserLength(b, length) * Mathf.clamp(b.time > b.lifetime - fadeTime ? 1f - (b.time - (lifetime - fadeTime)) / fadeTime : 1f) * lenscales[2], b.rotation(), hitColor, 2, PosLightning.WIDTH);
+		if(b.timer(2, lightningEffectDelta)) PosLightning.createEffect(b, Damage.findLaserLength(b, length) * Mathf.clamp(b.time > b.lifetime - fadeTime ? 1f - (b.time - (lifetime - fadeTime)) / fadeTime : 1f) * lenscales[2] * 0.9f, b.rotation(), hitColor, 2, PosLightning.WIDTH);
 	}
 	
 	@Override

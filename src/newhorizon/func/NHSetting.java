@@ -170,7 +170,7 @@ public class NHSetting{
 		if((Vars.headless && Vars.state.rules.infiniteResources) || (debug || (Vars.net.client() && Vars.state.rules.infiniteResources)))run.run();
 	}
 	
-	public static void log(String message){
+	public static void log(Object message){
 		debug(() -> Log.info(message));
 	}
 	

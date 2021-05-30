@@ -29,9 +29,19 @@ public class AutoOutlineWeapon extends Weapon{
 		this.outlineRegion = Core.atlas.find(this.name + "-outline");
 	}
 	
+	public AutoOutlineWeapon setAlternate(boolean b){
+		alternate = b;
+		return this;
+	}
+	
 	public AutoOutlineWeapon setPos(float x, float y){
 		this.x = x;
 		this.y = y;
+		return this;
+	}
+	
+	public AutoOutlineWeapon salvoDelay(int total, int id){
+		this.firstShotDelay = reload/ total * id;
 		return this;
 	}
 	

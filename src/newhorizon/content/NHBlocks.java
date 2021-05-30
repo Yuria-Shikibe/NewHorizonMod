@@ -1670,6 +1670,10 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(NHUnits.collapser, new byte[]{NHUnits.OTHERS, 6}, 12000f, 1,
+					new ItemStack(NHItems.darkEnergy, 1000),
+					new ItemStack(NHItems.upgradeSort, 1000)
+				),
 				new UnitSet(NHUnits.guardian, new byte[]{NHUnits.OTHERS, 5}, 9999f, 3,
 					new ItemStack(NHItems.darkEnergy, 300)
 				),

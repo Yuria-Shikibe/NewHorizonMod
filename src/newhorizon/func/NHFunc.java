@@ -1,6 +1,5 @@
 package newhorizon.func;
 
-import arc.Core;
 import arc.func.Boolf;
 import arc.func.Intc2;
 import arc.graphics.Color;
@@ -16,7 +15,6 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
@@ -33,17 +31,20 @@ import newhorizon.block.special.JumpGate;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
 import static mindustry.core.World.toTile;
 
 public class NHFunc{
+    private static final float MAX_TELEPORT_DST_NET = tilesize / 2f;
     private static Tile tileParma;
     private static Floor floorParma;
     private static final Seq<Tile> tiles = new Seq<>();
     private static final IntSeq buildingIDSeq = new IntSeq();
     private static final int maxCompute = 32;
+    private static final Rand rand = new Rand(0);
     public static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;
         Seq<Rect> data = e.data();
@@ -54,44 +55,40 @@ public class NHFunc{
             Fill.square(Tmp.v1.x, Tmp.v1.y, tilesize / 2f);
         }
     });
-    private static final Vec2 point = new Vec2();
+    private static final Vec2 point1 = new Vec2(), point2 = new Vec2(), point3 = new Vec2(), point4 = new Vec2();
     
     public static long seedNet(){
-        return (long)Groups.build.size() << 4 + Groups.all.size();
+        return (long)Groups.bullet.size() << 4 + Groups.all.size() + state.wave + state.stats.timeLasted;
     }
     
-    public static Unit teleportUnitNet(Unit before, float x, float y, float angle){
-        if(!net.client()){
-            before.set(x, y);
-            before.rotation = angle;
-            return before;
-        }else{
-            Team t = Team.all[before.team.id];
-            UnitType type = before.type;
-            Unit unit = type.create(t);
-            unit.set(x, y);
-            unit.spawnedByCore(before.spawnedByCore);
-            unit.rotation = angle;
-            unit.addItem(before.item(), before.stack.amount);
-            unit.health(before.health);
-            unit.ammo = before.ammo;
-    
-            if(before.controller() instanceof Player){
-                Player player = (Player)before.controller();
-                player.team(Team.derelict);
-                if(!net.client()) unit.add();
-        
-                while(player.unit() != unit && !player.within(x, y, tilesize * 2f)){
-                    player.unit(unit);
-                }
-                if(mobile && !Vars.headless && player == Vars.player) Core.camera.position.set(x, y);
-                Time.run(1f, () -> player.team(t));
+    public static Unit teleportUnitNet(Unit before, float x, float y, float angle, @Nullable Player player){
+        if(net.active() || headless){
+            float dst = before.dst(x, y);
+            int sigs = Mathf.ceil(dst / MAX_TELEPORT_DST_NET);
+            point1.set(before);
+            point2.trns(angle, dst / sigs);
+            
+            for(int i = 1; i < sigs; i++){
+                point3.set(point2).scl(i).add(point1);
+                Time.runTask(0.00075f * (i - 1), () -> {
+                    if(player != null){
+                        player.set(point3);
+                        player.snapInterpolation();
+                        player.snapSync();
+                        player.lastUpdated = player.updateSpacing = 0;
+                    }
+                    before.set(point3);
+                    before.snapInterpolation();
+                    before.snapSync();
+                    before.updateSpacing = 0;
+                    before.lastUpdated = 0;
+                });
             }
-    
-            if(!net.client()) unit.add();
-            before.remove();
-            return unit;
+        }else{
+            before.set(x, y);
         }
+        before.rotation = angle;
+        return before;
     }
     
     public static void square(int x, int y, int radius, Intc2 cons) {

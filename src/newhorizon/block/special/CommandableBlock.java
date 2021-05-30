@@ -1,5 +1,6 @@
 package newhorizon.block.special;
 
+import arc.func.Boolf;
 import arc.func.Cons;
 import arc.math.geom.Position;
 import arc.util.Time;
@@ -21,9 +22,17 @@ import static mindustry.Vars.player;
 import static mindustry.Vars.state;
 
 public abstract class CommandableBlock extends Block{
+	public Boolf<CommandableBlockBuild> groupBoolf = null;
+	
 	public CommandableBlock(String name){
 		super(name);
 		update = configurable = solid = true;
+	}
+	
+	@Override
+	public void init(){
+		super.init();
+		if(groupBoolf == null)groupBoolf = b -> b.block.getClass() == this.getClass();
 	}
 	
 	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged, ServerInitc{

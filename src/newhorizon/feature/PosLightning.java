@@ -21,8 +21,6 @@ import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Healthc;
-import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 import org.jetbrains.annotations.NotNull;
@@ -51,14 +49,14 @@ public class PosLightning {
 	
 	public static final Cons<Position> none = p -> {};
 	
-	public static final float lifetime = Fx.lightning.lifetime;
+	public static final float lifetime = Fx.lightning.lifetime * 1.5f;
 	public static final float WIDTH = 3f;
 	public static final float RANGE_RAND = 4.7f;
 	public static final float ROT_DST = Vars.tilesize * 0.75f;
 	
 	private static final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 	
-	private static final Effect posLightning = (new Effect(PosLightning.lifetime, 800.0f, e -> {
+	private static final Effect posLightning = (new Effect(lifetime, 800.0f, e -> {
 		if(!(e.data instanceof Seq)) return;
 		Seq<Vec2> lines = e.data();
 		
@@ -66,14 +64,13 @@ public class PosLightning {
 		
 		Lines.stroke(e.rotation * e.fout());
 		
-		Fill.circle(lines.first().x, lines.first().y, Lines.getStroke() * 1.1f);
+		Fill.circle(lines.first().x, lines.first().y, Lines.getStroke() / 2f);
 		
 		for(int i = 0; i < lines.size - 1; i++){
 			Vec2 cur = lines.get(i);
 			Vec2 next = lines.get(i + 1);
 			
 			Lines.line(cur.x, cur.y, next.x, next.y, false);
-			Drawf.light(Team.derelict, cur.x, cur.y, next.x, next.y, Lines.getStroke() * 6f * e.fout(), e.color, e.fout());
 		}
 		
 		for(Vec2 p : lines){
@@ -93,9 +90,9 @@ public class PosLightning {
 	}
 	
 	public static void createRange(@Nullable Bullet owner, boolean hitAir, boolean hitGround, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
-		Seq<Unit> entities = new Seq<>();
+		Seq<Healthc> entities = new Seq<>();
 		whetherAdd(entities, team, rect.setSize(range * 2f).setCenter(from.getX(), from.getY()), hits, hitGround, hitAir);
-		for (Unit p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
+		for (Healthc p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
 	
@@ -131,8 +128,8 @@ public class PosLightning {
 			else for(int i = 0; i < 3; i++)Lightning.create(team, color, damage <= 0 ? 1f : damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360f), boltLen);
 		}
 		
-		if(target instanceof Healthc){
-			Healthc h = (Healthc)target;
+		if(sureTarget instanceof Healthc){
+			Healthc h = (Healthc)sureTarget;
 			if(owner == null)h.damage(damage <= 0 ? 1f : damage);
 			else h.damage(owner.damage);
 		}
@@ -199,10 +196,18 @@ public class PosLightning {
 	private static float getBoltRandomRange() {return Mathf.random(2f, 7f); }
 	
 	//Add proper unit into the to hit Seq.
-	private static void whetherAdd(Seq<Unit> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
+	private static void whetherAdd(Seq<Healthc> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
 		Units.nearbyEnemies(team, selectRect, unit -> {
-			if(points.size <= hits && unit.checkTarget(targetAir, targetGround))points.add(unit);
+			if(unit.checkTarget(targetAir, targetGround))points.add(unit);
 		});
+		
+		if(targetGround){
+			selectRect.getCenter(tmp3);
+			Vars.indexer.eachBlock(null, tmp3.x, tmp3.y, selectRect.getHeight() / 4, b -> b.team != team && b.isValid(), points::add);
+		}
+		
+		points.shuffle();
+		points.truncate(hits);
 	}
 
 	//create lightning effect.

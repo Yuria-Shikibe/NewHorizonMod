@@ -41,6 +41,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	public float reloadTime = 240f;
 	public int storage = 1;
 	
+	
 	@NotNull protected BulletType bulletHitter;
 	
 	public CommandableAttackerBlock(String name){
@@ -104,7 +105,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		public void setTarget(Point2 p){
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build != null && build.getType() == CommandableBlockType.attacker){
+				if(build != null && groupBoolf.get(build)){
 					build.overlap();
 				}
 			}
@@ -186,7 +187,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build != this && build != null && build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand()){
+				if(build != this && build != null && build.team == team && groupBoolf.get(build) && build.canCommand()){
 					builds.add(build);
 					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 					realSpread = Math.max(realSpread, build.spread());
@@ -218,7 +219,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
 			for(CommandableBlockBuild build : NHWorldVars.commandables){
-				if(build.team == team && build.getType() == CommandableBlockType.attacker && build.canCommand() && !build.isPreparing()){
+				if(build.team == team && groupBoolf.get(build) && build.canCommand() && !build.isPreparing()){
 					build.triggered(pos);
 					participants.add(build);
 					build.lastAccessed(Iconc.modeAttack + "");

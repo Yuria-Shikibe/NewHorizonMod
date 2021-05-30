@@ -47,10 +47,7 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.NHFunc;
-import newhorizon.func.TableFs;
-import newhorizon.func.Tables;
+import newhorizon.func.*;
 import newhorizon.vars.NHCtrlVars;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,13 +98,14 @@ public class JumpGate extends Block {
         category = Category.units;
         consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
         consumes.powerCond(consumes.getPower().usage, JumpGateBuild::isCalling);
-    
+        logicConfigurable = true;
         config(IntSeq.class, JumpGateBuild::parsing);
         config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
         config(Integer.class, (JumpGateBuild tile, Integer i) -> {
             if(i < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
-            else tile.spawn(calls.get(i));
+            else if(tile.buildReload >= tile.getSet().costTime() && tile.hasConsume(tile.getSet()))tile.spawn(calls.get(i));
         });
+        configClear((JumpGateBuild tile) -> tile.startBuild(-1));
     }
     
     public boolean canReplace(Block other) {
@@ -317,14 +315,6 @@ public class JumpGate extends Block {
                 }
                 spawnPlan.put(input.get(i), j);
             }
-//
-//            Seq<Integer> sorted = spawnPlan.keys().toSeq().sort(Comparator.comparingInt(Integer::intValue));
-//            Log.info(sorted);
-//            cpy.clear();
-//            for(int i : sorted){
-//                cpy.put(i, spawnPlan.get(i));
-//            }
-//            spawnPlan = cpy;
         }
         
         @Override
@@ -493,7 +483,7 @@ public class JumpGate extends Block {
                         }).padTop(OFFSET / 2).growX().height(LEN);
                     }).growX().height(LEN);
         
-                }}.show()).size(LEN * 5, LEN).row();
+                }}.show()).disabled(b -> mobile).size(LEN * 5, LEN).row();
                 t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHCtrlVars.isSelecting).size(LEN * 5, LEN);
             }).fill();
         }
@@ -612,7 +602,7 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
     
-            success = NHFunc.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, (long)Groups.unit.size() + Groups.build.size() << 8 + id << 2, set, baseColor());
+            success = NHFunc.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, NHFunc.seedNet(), set, baseColor());
             performPlanIndex = -1;
             
             if(success){

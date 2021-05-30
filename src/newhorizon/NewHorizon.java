@@ -53,7 +53,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHUnits.branch, NHUnits.guardian
+			NHUnits.collapser
 		}).show();
 	}
 	

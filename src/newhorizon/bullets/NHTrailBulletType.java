@@ -187,9 +187,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	public void update(Bullet b) {
 		if (!(b.data instanceof EffectTrail[]))return;
 		EffectTrail[] trail = (EffectTrail[])b.data;
-		if(!Vars.headless && b.timer(3, Mathf.clamp(1 / Time.delta, 0, 1))){
-			updateTrail(b, trail);
-		}
+		updateTrail(b, trail);
 		
 		superFunc: {
 			b.vel.setLength(velocityBegin + accelCurve.get(b) * velocityEnd);
@@ -209,7 +207,7 @@ public class NHTrailBulletType extends SpeedUpBulletType {
 	}
 	
 	public void updateTrail(Bullet b, EffectTrail[] t){
-		for(int i = 0; i < t.length; i++){
+		if(!Vars.headless && b.timer(3, Mathf.clamp(1 / Time.delta, 0, 1)))for(int i = 0; i < t.length; i++){
 			int offsetParma = (i - (flipWhileTwin ? i % 2 : 0));
 			Tmp.v1.trns(b.rotation(), -b.vel.len() / 2 - trailOffset - sideOffset * offsetParma, (flip ? Mathf.sign(i % 2 == 0) : 1) * Mathf.absin(b.time, trailWeaveScale + offsetParma * trailWeaveScaleOffset, trailWeaveMag)).add(b);
 			t[i].update(Tmp.v1.x, Tmp.v1.y);

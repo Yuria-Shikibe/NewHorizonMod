@@ -1,10 +1,14 @@
 package newhorizon.content;
 
+import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
+import arc.math.Mathf;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
@@ -15,27 +19,20 @@ import mindustry.entities.abilities.ForceFieldAbility;
 import mindustry.entities.abilities.MoveLightningAbility;
 import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.ContinuousLaserBulletType;
-import mindustry.entities.bullet.SapBulletType;
-import mindustry.entities.bullet.ShrapnelBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.graphics.Layer;
 import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
-import newhorizon.bullets.NHTrailBulletType;
-import newhorizon.bullets.PosLightningType;
-import newhorizon.bullets.ShieldBreaker;
+import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
-import newhorizon.units.AutoOutlineUnitType;
-import newhorizon.units.AutoOutlineWeapon;
-import newhorizon.units.EnergyUnitType;
-import newhorizon.units.PhaseAbility;
-
-import static arc.graphics.g2d.Draw.color;
-import static arc.math.Angles.randLenVectors;
+import newhorizon.func.DrawFuncs;
+import newhorizon.units.*;
+import newhorizon.vars.EventTriggers;
 
 public class NHUnits implements ContentList {
 	public static final byte
@@ -47,14 +44,55 @@ public class NHUnits implements ContentList {
 	
 	public static
 	AutoOutlineWeapon
-	posLiTurret, closeAATurret;
+	posLiTurret, closeAATurret, collapserCannon, collapserLaser;
 	
 	public static
 	UnitType
 	guardian,
-	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, branch, thynomo, origin;
+	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, branch, thynomo, origin, collapser;
 	
 	public void loadWeapon(){
+		collapserLaser = new AutoOutlineWeapon(){{
+			reload = 480f;
+			rotateSpeed = 1.5f;
+			rotate = true;
+			continuous = top = true;
+			mirror = true;
+			shootCone = 90f;
+			alternate = false;
+			shootSound = Sounds.beam;
+			bullet = NHBullets.collapserLaserSmall;
+		}};
+		
+		collapserCannon = new AutoOutlineWeapon("collapser-cannon"){{
+			top = rotate = alternate = mirror = true;
+			reload = 60f;
+			shake = 4f;
+			heatColor = NHColor.thurmixRed;
+			shootSound = NHSounds.coil;
+			shootY = 6f;
+			inaccuracy = 0;
+			shots = 3;
+			shotDelay = 6f;
+			rotateSpeed = 2f;
+			ejectEffect = NHFx.hugeSmoke;
+			shootCone = 20f;
+			bullet = new AdaptedLaserBulletType(800f){{
+				hitColor = NHColor.thurmixRed;
+				colors = new Color[]{hitColor.cpy().mul(1f, 1f, 1f, 0.45f), hitColor, NHColor.thurmixRedLight, Color.white};
+				length = 600f;
+				width = 14f;
+				lifetime = PosLightning.lifetime + 5f;
+				ammoMultiplier = 4;
+				lengthFalloff = 0.8f;
+				sideLength = 40f;
+				sideWidth = 0.5f;
+				sideAngle = 30f;
+				largeHit = true;
+				hitEffect = NHFx.instHit(hitColor, 2, 36f);
+				shootEffect = NHFx.square(hitColor, 15f, 2, 8f, 2f);
+			}};
+		}};
 		
 		posLiTurret = new AutoOutlineWeapon("pos-li-blaster"){{
 			shake = 1f;
@@ -104,6 +142,78 @@ public class NHUnits implements ContentList {
 	public void load() {
 		loadWeapon();
 		
+		collapser = new AutoOutlineUnitType("collapser",
+			collapserCannon.copy().setPos(60, -50),
+			collapserCannon.copy().setPos(40, -20),
+			collapserCannon.copy().setPos(32, 60),
+			new AutoOutlineWeapon("collapser-laser"){{
+				y = -42;
+				x = 0;
+				shootY = 25f;
+				shots = 3;
+				shotDelay = 15;
+				spacing = 3f;
+				inaccuracy = 3f;
+				reload = 150f;
+				rotateSpeed = 1.5f;
+				rotate = true;
+				top = true;
+				shootSound = NHSounds.flak;
+				mirror = alternate = false;
+				bullet = NHBullets.collapserBullet;
+			}}
+		){
+			{
+				rotateShooting = false;
+				abilities.add(
+					new AimAlarmAbility(),
+					new ForceFieldAbility(180f, 20, 60000, 600)
+				);
+				constructor = EntityMapping.map(3);
+				hitSize = 120f;
+				
+				commandLimit = 3;
+				speed = 0.5f;
+				health = 100000;
+				rotateSpeed = 0.65f;
+				//hovering = true;
+				engineSize = 30f;
+				buildSpeed = 10f;
+				engineOffset = 50f;
+				itemCapacity = 300;
+				armor = 180;
+				lowAltitude = true;
+				flying = true;
+			}
+			
+			@Override
+			public Unit create(Team team){
+				Unit u = super.create(team);
+				Events.fire(EventTriggers.BossGeneratedEvent.class, new EventTriggers.BossGeneratedEvent(u));
+				return u;
+			}
+			
+			@Override
+			public void drawCell(Unit unit){
+				super.drawCell(unit);
+				
+				Draw.z(Layer.effect + 0.001f);
+				
+				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f));
+				Lines.stroke(3f + Mathf.absin(10f, 0.55f));
+				DrawFuncs.circlePercent(unit.x, unit.y, unit.hitSize, unit.healthf(), 0);
+				
+				for(int i = 0; i < 4; i++){
+					float rotation = Time.time * 1.5f + i * 90;
+					Tmp.v1.trns(rotation, hitSize * 1.1f).add(unit);
+					Draw.rect(NHContent.arrowRegion, Tmp.v1.x, Tmp.v1.y, rotation + 90);
+				}
+				
+				Draw.z(Layer.flyingUnitLow);
+				Draw.reset();
+			}
+		};
+		
 		guardian = new EnergyUnitType("guardian"){{
 			constructor = EntityMapping.map(3);
 			hitSize = 20f;
@@ -115,7 +225,9 @@ public class NHUnits implements ContentList {
 			itemCapacity = 0;
 			rotateSpeed = 100;
 			engineSize = 8f;
+			flying = true;
 			hovering = false;
+			isCounted = false;
 			abilities.add(new PhaseAbility(600f, 320f, 160f));
 			weapons.add(new Weapon(){{
 				shootCone = 360;
@@ -177,13 +289,13 @@ public class NHUnits implements ContentList {
 						});
 					}
 					@Override public float range(){
-						return 320f;
+						return 400f;
 					}
 					@Override public void hit(Bullet b, float x, float y){
 						super.hit(b, x, y);
 						if(!(b.owner instanceof Healthc))return;
 						Healthc from = (Healthc)b.owner;
-						if(!from.isAdded())return;
+						if(!from.isAdded() || from.healthf() > 0.99f)return;
 						PosLightning.createEffect(Tmp.v1.set(x, y), from, b.team.color, 2, PosLightning.WIDTH);
 						for(int i = 0; i < 2; i++)NHFx.transport.at(x, y, 3.2f, b.team.color, from);
 						from.heal(damage / 8);
@@ -547,11 +659,23 @@ public class NHUnits implements ContentList {
 				x = 0f;
 				y = -10f;
 				reload = 30f;
-				inaccuracy = 3f;
+				inaccuracy = 4f;
 				ejectEffect = Fx.none;
-				bullet = new BasicBulletType(2.55f, 15, NHBullets.CIRCLE_BOLT){{
+				bullet = new FlakBulletType(2.55f, 15){{
+					collidesGround = true;
+					sprite = NHBullets.CIRCLE_BOLT;
+
 					weaveMag = 4f;
 					weaveScale = 4f;
+
+					splashDamageRadius = 20f;
+					explodeRange = splashDamageRadius / 1.5f;
+					splashDamage = damage;
+
+					homingDelay = 5f;
+					homingPower = 0.005f;
+					homingRange = 80f;
+
 					lifetime = 60f;
 					shrinkX = shrinkY = 0;
 					backColor = lightningColor = hitColor = lightColor = trailColor = NHColor.lightSky;
@@ -564,8 +688,8 @@ public class NHUnits implements ContentList {
 					shootEffect = NHFx.shootCircleSmall(backColor);
 					hitEffect = NHFx.lightningHitSmall(backColor);
 					despawnEffect = new Effect(20, e -> {
-						color(e.color, Color.white, e.fout() * 0.7f);
-						randLenVectors(e.id, 2, 12 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, 3 * e.fout()));
+						Draw.color(e.color, Color.white, e.fout() * 0.7f);
+						Angles.randLenVectors(e.id, 2, 12 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, 3 * e.fout()));
 					});
 				}};
 				shootSound = NHSounds.blaster;
@@ -683,7 +807,13 @@ public class NHUnits implements ContentList {
 					shake = 5f;
 					shootY = 5f;
 					ejectEffect = Fx.none;
-					bullet = NHBullets.longLaser;
+					bullet = new ChainBulletType(100){{
+						hitColor = NHColor.lightSky;
+						hitEffect = NHFx.square(hitColor, 20f, 2, 16f, 3f);
+						smokeEffect = Fx.shootBigSmoke;
+						shootEffect = NHFx.shootLineSmall(hitColor);
+					}};
+					//bullet = NHBullets.longLaser;
 					shootSound = Sounds.laser;
 				}}
 		){{
@@ -742,7 +872,7 @@ public class NHUnits implements ContentList {
 				alternate = false;
 				shake = 5f;
 				shootY = 17f;
-				reload = 180f;
+				reload = 300f;
 				shots = 1;
 				y = - 40f;
 				x = 0f;

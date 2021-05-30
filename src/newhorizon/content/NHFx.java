@@ -1,6 +1,7 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -12,10 +13,13 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Vec3;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
+import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
@@ -24,15 +28,39 @@ import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.effects.EffectTrail;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
+import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Draw.rect;
-import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
 
 public class NHFx{
-	public static Effect polyTrail(Color fromColor, Color toColor, float size, float lifetime){
+	public static final ObjectMap<Integer, Effect> same = new ObjectMap<>();
+	
+	static{
+		Events.on(EventType.ClientLoadEvent.class, e -> {
+			Log.info(same.size);
+		});
+	}
+	
+	public static int hash(String m, Color c){
+		return Arrays.hashCode(new int[]{m.hashCode(), c.hashCode()});
+	}
+	
+	public static Effect get(String m, Color c, Effect effect){
+		int hash = hash(m, c);
+		Effect or = same.get(hash);
+		if(or == null)same.put(hash, effect);
+		return or == null ? effect : or;
+	}
+	
+	@Contract("_, _, _, _ -> new")
+	public static @NotNull Effect polyTrail(Color fromColor, Color toColor, float size, float lifetime){
 		return new Effect(lifetime, size * 2, e -> {
 			color(fromColor, toColor, e.fin());
 			Fill.poly(e.x, e.y, 6, size * e.fout(), e.rotation);
@@ -60,35 +88,35 @@ public class NHFx{
 	}
 	
 	public static Effect lightningHitSmall(Color color){
-		return new Effect(20, e -> {
+		return get("lightningHitSmall", color, new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
 			randLenVectors(e.id, 5, 18 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
-		});
+		}));
 	}
 	
 	public static Effect shootCircleSmall(Color color){
-		return new Effect(30, e -> {
+		return get("shootCircleSmall", color, new Effect(30, e -> {
 			color(color, Color.white, e.fout() * 0.75f);
 			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3.22f));
-		});
+		}));
 	}
 	
 	public static Effect shootLineSmall(Color color){
-		return new Effect(20, e -> {
+		return get("shootLineSmall", color,new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
 			randLenVectors(e.id, 4, 2 + 18 * e.fin(), e.rotation, 30f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
-		});
+		}));
 	}
 	
 	public static Effect laserHit(Color color){
-		return new Effect(20, e -> {
+		return get("laserHit", color, new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
 			randLenVectors(e.id, 9, 18 * e.fin(), e.rotation, 40f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2));
-		});
+		}));
 	}
 	
 	public static Effect lightningHitLarge(Color color){
-		return new Effect(25, e -> {
+		return get("lightningHitLarge", color, new Effect(25, e -> {
 			color(color);
 			e.scaled(12, t -> {
 				stroke(3f * t.fout());
@@ -99,7 +127,7 @@ public class NHFx{
 			
 			color(Color.gray);
 			Angles.randLenVectors(e.id, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
-		});
+		}));
 	}
 
 	public static Effect laserEffect(float num){
@@ -128,7 +156,7 @@ public class NHFx{
 	}
 	
 	public static Effect crossBlast(Color color){
-		return crossBlast(color, 117);
+		return get("crossBlast", color, crossBlast(color, 117));
 	}
 	
 	public static Effect crossBlast(Color color, float size){
@@ -147,16 +175,16 @@ public class NHFx{
 	}
 	
 	public static Effect hyperBlast(Color color){
-		return new Effect(30f, e -> {
+		return get("hyperBlast", color, new Effect(30f, e -> {
 			color(NHItems.thermoCorePositive.color, Color.white, e.fout() * 0.75f);
 			stroke(1.3f * e.fslope());
 			circle(e.x, e.y, 45f * e.fin());
 			randLenVectors(e.id + 1, 5, 8f + 50 * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 7f));
-		});
+		}));
 	}
 	
 	public static Effect instShoot(Color color){
-		return new Effect(24.0F, (e) -> {
+		return get("instShoot", color, new Effect(24.0F, (e) -> {
 			e.scaled(10.0F, (b) -> {
 				Draw.color(Color.white, color, b.fin());
 				Lines.stroke(b.fout() * 3.0F + 0.2F);
@@ -168,12 +196,11 @@ public class NHFx{
 				Drawf.tri(e.x, e.y, 13.0F * e.fout(), 85.0F, e.rotation + 90.0F * i);
 				Drawf.tri(e.x, e.y, 13.0F * e.fout(), 50.0F, e.rotation + 20.0F * i);
 			}
-			
-		});
+		}));
 	}
 	
 	public static Effect instBomb(Color color){
-		return instBombSize(color, 4, 80f);
+		return get("instBomb", color, instBombSize(color, 4, 80f));
 	}
 	
 	public static Effect instBombSize(Color color, int num, float size){
@@ -195,7 +222,7 @@ public class NHFx{
 		});
 	}
 	
-	public static Effect instHit(Color color){return instHit(color, 5, 50); }
+	public static Effect instHit(Color color){return get("instHit", color, instHit(color, 5, 50)); }
 	
 	public static Effect instHit(Color color, int num, float size){
 		return new Effect(20.0F, size * 1.5f, (e) -> {
@@ -691,7 +718,7 @@ public class NHFx{
 				Draw.color(e.color, data.toColor, (float)(i / data.points.size));
 				Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
 			}
-		});
+		}).layer(Layer.effect - 1f);
 }
 
 

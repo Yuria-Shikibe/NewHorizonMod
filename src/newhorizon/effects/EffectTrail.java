@@ -1,46 +1,28 @@
 package newhorizon.effects;
 
-import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Position;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Time;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import arc.util.pooling.Pool;
 import arc.util.pooling.Pools;
-import mindustry.entities.EntityGroup;
-import mindustry.gen.*;
-import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHFx;
-import newhorizon.func.NHSetting;
 
-import static mindustry.Vars.player;
-
-public class EffectTrail implements Cloneable{
-	public static final float LIFETIME = 20f, DRAW_SIZE = 500f;
+public class EffectTrail{
+	public static final float LIFETIME = 50f, DRAW_SIZE = 500f;
 	public int length;
 	public float width;
 	protected final Seq<Vec3> points;
 	protected float lastX = -1, lastY = -1;
 	
 	public Color fromColor, toColor;
-	
-//	public float trailWeaveScale = 1f;
-//	public float trailWeaveMag = -1f;
-//	public float trailOffset = 0f;
-//	public int trails = 1;
-//	public float sideOffset = 0f;
-//	public boolean flip;
 
+	public EffectTrail(int length){
+		this(length, 1, Color.white, Color.white);
+	}
+	
 	public EffectTrail() {
 		this(1, 1, Color.white, Color.white);
 	}
@@ -58,7 +40,11 @@ public class EffectTrail implements Cloneable{
 		return this;
 	}
 
-	public void draw() {
+	public void draw(){
+		draw(1.0f);
+	}
+	
+	public void draw(float f) {
 		if(points.isEmpty())return;
 		Draw.color(fromColor);
 		Fill.circle(points.peek().x, points.peek().y, width * 1.1f);
@@ -67,7 +53,7 @@ public class EffectTrail implements Cloneable{
 		for (int i = 0; i < points.size - 1; i++) {
 			Vec3 c = points.get(i);
 			Vec3 n = points.get(i + 1);
-			float sizeP = width / length;
+			float sizeP = width * f / length;
 
 			float
 				cx = Mathf.sin(c.z) * i * sizeP,
@@ -80,14 +66,6 @@ public class EffectTrail implements Cloneable{
 		}
 
 		Draw.reset();
-	}
-	
-	public EffectTrail cpy(){
-		try{
-			return (EffectTrail)super.clone();
-		}catch(CloneNotSupportedException e){
-			throw new RuntimeException(e);
-		}
 	}
 	
 	public void update(float x, float y){
@@ -118,132 +96,6 @@ public class EffectTrail implements Cloneable{
 			this.points = points;
 			this.width = width;
 			this.toColor = toColor;
-		}
-	}
-	
-	public class TrailDrawer implements Drawc, Pool.Poolable, Timedc{
-		public boolean added;
-		public transient int id = EntityGroup.nextId();
-		public transient float drawSize = 500f;
-		public transient float time, lifetime, initWidth;
-		public transient float x, y;
-		public transient EffectTrail trail;
-		
-		public TrailDrawer(){this(35f, width, DRAW_SIZE, EffectTrail.this.cpy());}
-		
-		public TrailDrawer(float lifetime, float initWidth, float drawSize, EffectTrail trail){
-			//NHSetting.debug(() -> Log.info("NEW ED"));
-			this.lifetime = lifetime;
-			this.initWidth = initWidth;
-			this.drawSize = drawSize;
-			this.trail = trail;
-			try{
-				x = trail.points.peek().x;
-				y = trail.points.peek().y;
-			}catch(ArrayIndexOutOfBoundsException e){
-				x = 0;
-				y = 0;
-			}
-		}
-		
-		@Override public float clipSize(){return drawSize;}
-		@Override public void draw(){trail.draw();}
-		@Override public void set(float x, float y){
-			this.x = x;
-			this.y = y;
-		}
-		@Override public void set(Position pos){set(pos.getX(), pos.getY());}
-		@Override public void trns(float x, float y){set(this.x + x, this.y + y);}
-		@Override public void trns(Position pos){trns(pos.getX(), pos.getY());}
-		@Override public int tileX(){return 0;}
-		@Override public int tileY(){return 0; }
-		@Override public Floor floorOn(){ return null; }
-		@Override public Block blockOn(){ return null; }
-		@Override public boolean onSolid(){ return false; }
-		@Override public Tile tileOn(){ return null; }
-		@Override public float getX(){ return 0; }
-		@Override public float getY(){ return y; }
-		@Override public float x(){ return x; }
-		@Override public void x(float x){ this.x = x; }
-		@Override public float y(){ return y; }
-		@Override public void y(float y){ this.y = y; }
-		@Override public boolean isAdded(){ return added; }
-		
-		@Override public void update(){
-			//EffectTrail.this.update(x(), y());
-			time = Math.min(time + Time.delta, lifetime);
-			if (time >= lifetime) {
-				remove();
-			}
-			Log.info("UPDATED" + time);
-			trail.width = initWidth * (1 - fin());
-		}
-		
-		@Override public float fin(){return time / LIFETIME;}
-		@Override public float time(){return time;}
-		@Override public void time(float time){this.time = time;}
-		@Override public float lifetime(){return lifetime;}
-		@Override public void lifetime(float lifetime){this.lifetime = lifetime;}
-		
-		@Override
-		public void remove(){
-			Groups.draw.remove(this);
-			Groups.all.remove(this);
-			Groups.queueFree(this);
-			added = false;
-		}
-		
-		@Override
-		public void add(){
-			if(added) return;
-			Groups.all.add(this);
-			Groups.draw.add(this);
-			added = true;
-			NHSetting.debug(() -> Log.info(this));
-		}
-		
-		@Override
-		public boolean isLocal(){
-			return this instanceof Unitc && ((Unitc)this).controller() == player;
-		}
-		
-		@Override
-		public boolean isRemote(){
-			return this instanceof Unitc && ((Unitc)this).isPlayer() && !isLocal();
-		}
-		
-		@Override public boolean isNull(){ return false; }
-		@Override public <T extends Entityc> T self(){ return (T)this; }
-		@Override public <T> T as(){ return (T)this; }
-		
-		@Override
-		public <T> T with(Cons<T> cons) {
-			cons.get((T)this);
-			return (T)this;
-		}
-		
-		@Override public int classId(){ return 1001; }
-		@Override public boolean serialize(){ return false; }
-		@Override public void read(Reads read){ }
-		@Override public void write(Writes write){ }
-		@Override public void afterRead(){ }
-		@Override public int id(){return id; }
-		@Override public void id(int id){ this.id = id; }
-		@Override public void reset(){
-			//drawSize = 0;
-			//trail = null;
-			//lifetime = 0;
-			//initWidth = 0;
-			//trail.clear();
-			trail.width = initWidth;
-			time = 0;
-			added = false;
-			id = EntityGroup.nextId();
-		}
-		
-		@Override
-		public String toString(){
-			return "TrailDrawer{" + "added=" + added + ", id=" + id + ", x=" + x + ", y=" + y + ", lifetime=" + lifetime + ", initWidth=" + initWidth + '}';
 		}
 	}
 }

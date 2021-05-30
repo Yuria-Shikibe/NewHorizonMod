@@ -40,11 +40,84 @@ public class NHBullets implements ContentList{
 		railGun1, railGun2, hurricaneType, polyCloud, missileTitanium, missileThorium, missileZeta, missile, missileStrike,
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrLightning, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
-		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile,
+		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile, collapserBullet, collapserLaserSmall,
 		strikeMissile, boltGene, empFrag, empBlot2, empBlot3;
 		
 	
 	public void loadFragType(){
+		collapserLaserSmall = new AdaptedContinuousLaserBulletType(200){
+			{
+				lightColor = hitColor = NHColor.thurmixRed;
+				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
+				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
+				shake = 3;
+				colors = new Color[]{hitColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), hitColor.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.thurmixRedLight, Color.white};
+				width = 5f;
+				length = 650f;
+				oscScl = 0.4f;
+				oscMag = 1.5f;
+				lifetime = 160f;
+				hitEffect = NHFx.instHit(hitColor, 2, 60f);
+				shootEffect = Fx.none;
+				smokeEffect = NHFx.hugeSmoke;
+			}
+			
+			@Override
+			public void draw(Bullet b){
+				super.draw(b);
+				float f = Mathf.clamp(b.time > b.lifetime - fadeTime ? 1.0F - (b.time - (lifetime - fadeTime)) / fadeTime : 1.0F);
+				color(hitColor);
+				Fill.circle(b.x, b.y, (width + 2f) * f);
+				for(int i : Mathf.signs){
+					for(int j : Mathf.signs){
+						color(hitColor);
+						Drawf.tri(b.x, b.y, (width * 1.25f) * f, 86f + Mathf.absin(Time.time * j, 6f, 20f) * f, 90 + 90 * i + Time.time * j);
+					}
+				}
+				
+				for(int i : Mathf.signs){
+					for(int j : Mathf.signs){
+						color(Color.white);
+						Drawf.tri(b.x, b.y, (width / 2f) * f, 63f + Mathf.absin(Time.time * j, 6f, 12f) * f, 90 + 90 * i + Time.time * j);
+					}
+				}
+				
+				color(Color.white);
+				Fill.circle(b.x, b.y, (width - 2f) * f);
+				Draw.reset();
+			}
+		};
+		
+		collapserBullet = new LightningLinkerBulletType(){{
+				damage = 200;
+				outColor = trailColor = lightColor = lightningColor = hitColor = NHColor.thurmixRed;
+				size = 10f;
+				innerColor = NHColor.thurmixRedLight;
+				range = 600f;
+				spreadEffect = Fx.none;
+				trails = 1;
+				flip = true;
+				trailWidth = 8f;
+				trailLength = 40;
+				
+				generateDelay = 6f;
+				boltNum = 3;
+				linkRange = 280f;
+				
+				maxHit = 8;
+				drag = 0.0065f;
+				hitSound = Sounds.explosionbig;
+				drawSize = 40;
+				splashDamageRadius = 240;
+				splashDamage = lightningDamage = damage / 3f;
+				speed = 4f;
+				lifetime = 160f;
+				despawnEffect = NHFx.lightningHitLarge(hitColor);
+				hitEffect = NHFx.instHit(hitColor, 4, 80f);
+				shootEffect = Fx.none;
+				smokeEffect = NHFx.hugeSmoke;
+		}};
+		
 		empFrag = new NHTrailBulletType(3.3f, 3){{
 			lifetime = 13;
 			drag = 0.01f;
