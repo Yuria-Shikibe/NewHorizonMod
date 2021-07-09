@@ -32,7 +32,7 @@ import static newhorizon.func.TableFs.*;
 
 public class NewHorizon extends Mod{
 	public static final String MOD_NAME = "new-horizon";
-	public static final String SERVER_ADDRESS = "";
+	public static final String SERVER_ADDRESS = "n2.yd.gameworldmc.cn:20074", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static Links.LinkEntry[] links;
 	
 	public static String configName(String name){
@@ -54,7 +54,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHUnits.collapser
+			NHUnits.zarkov
 		}).show();
 	}
 	
@@ -82,7 +82,7 @@ public class NewHorizon extends Mod{
 		dialog.closeOnBack();
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
-				table.table(t -> t.image(Core.atlas.find(MOD_NAME + "upgrade"))).center().growX().fillY().row();
+				table.table(t -> t.image(Core.atlas.find(configName("upgrade")))).center().growX().fillY().row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
@@ -102,6 +102,7 @@ public class NewHorizon extends Mod{
 				table.button("@links", Icon.link, Styles.cleart, NewHorizon::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 				table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 				table.button("@log", Icon.book, Styles.cleart, NewHorizon::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.cleart, () -> Core.app.setClipboardText(SERVER_ADDRESS)).size(LEN * 4f, LEN).padLeft(OFFSET / 2);
 			}).fillX().height(LEN + OFFSET);
 		}).grow();
 		dialog.show();
@@ -111,7 +112,24 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
         
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
-        	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
+        	if(NHSetting.versionChange){
+        		new BaseDialog("Updated"){{
+        			addCloseListener();
+        			
+        			cont.table(table -> {
+        				table.add(NHSetting.modMeta.version + ": ").row();
+        				table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
+        				table.add(Core.bundle.get("mod.ui.update-log"));
+			        }).grow().row();
+        			cont.table(table -> {
+				        table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).growX().height(LEN);
+				        table.button("@log", Icon.add, Styles.cleart, NewHorizon::logShow).growX().height(LEN);
+				        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
+			        }).bottom().growX().height(LEN).padTop(OFFSET);
+		        }}.show();
+	        }
+        	
+        	if(!NHSetting.getBool("@active.hid-start-log") || NHSetting.versionChange)startLog();
 	        if(NHSetting.getBool("@active.tool-panel*"))tableMain();
 	        NHSetting.updateSettingMenu();
         }));

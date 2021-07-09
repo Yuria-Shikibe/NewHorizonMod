@@ -1,21 +1,17 @@
 package newhorizon.block.defence;
 
 import arc.Core;
+import arc.func.Cons2;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.struct.IntSeq;
-import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
-import mindustry.core.World;
 import mindustry.game.Team;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
@@ -24,23 +20,27 @@ import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
-import newhorizon.func.NHFunc;
+import newhorizon.content.NHColor;
+import newhorizon.feature.PosLightning;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
 
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
-import static newhorizon.vars.NHVars.allTeamSeq;
 
-public class GravityGully extends Block{
+public class GravityTrap extends Block{
+	protected Cons2<HyperSpaceWarper.Carrier, GravityTrapBuild> act = (c, b) -> {
+		c.intercepted = true;
+		PosLightning.createEffect(c, b , NHColor.darkEnrColor, 2, PosLightning.WIDTH * 1.5f);
+	};
+	
 	private static Tile tmpTile;
 	
 	public int range = 24;
 	
-	public GravityGully(String name){
+	public GravityTrap(String name){
 		super(name);
 		solid = true;
 		configurable = true;
@@ -74,37 +74,18 @@ public class GravityGully extends Block{
 	
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid){
-		int teamIndex = allTeamSeq.indexOf(Vars.player.team());
+		if(headless)return;
 		
-		NHVars.world.drawGully(teamIndex);
+		NHVars.world.drawGully(player.team());
 		
 		Draw.color(Pal.place);
 		
-		NHFunc.square(x, y, range, (x1, y1) -> {
-			tmpTile = world.tile(x1, y1);
-			if(tmpTile != null){
-				tmpTile.getBounds(Tmp.r1).getCenter(Tmp.v1);
-				Draw.alpha(0.45f);
-				Fill.square(Tmp.v1.x, Tmp.v1.y, tilesize / 2f);
-			}
-		});
-		
-		Drawf.square(x * tilesize + offset, y * tilesize + offset, range * tilesize * Mathf.sqrt2 + 4f, 0, Pal.place);
+		Draw.alpha(0.1f);
+		Fill.circle(x * tilesize + offset, y * tilesize + offset, range * tilesize);
 	}
 	
-	public class GravityGullyBuild extends Building implements Ranged, BeforeLoadc{
-		public int teamIndex;
-		public transient boolean loaded = false;
-		public transient boolean active = false;
-		public transient final Seq<IntSeq> effectedArea = new Seq<>();
+	public class GravityTrapBuild extends Building implements Ranged, BeforeLoadc{
 		public float warmup;
-		
-		public void setIntercept(boolean add){
-			if(add)NHVars.world.gravGullyGroup.add(this);
-			else NHVars.world.gravGullyGroup.remove(this);
-			if((active || add) && isValid())for(IntSeq t : effectedArea)t.incr(teamIndex, Mathf.sign(add));
-			active = add;
-		}
 		
 		@Override
 		public void write(Writes write){
@@ -120,12 +101,6 @@ public class GravityGully extends Block{
 		
 		@Override
 		public void updateTile(){
-			if(power.status < 0.75f && active){
-				setIntercept(false);
-			}else if(power.status >= 0.75f && !active){
-				setIntercept(true);
-			}
-			
 			if(efficiency() > 0){
 				if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
@@ -133,39 +108,16 @@ public class GravityGully extends Block{
 				if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
 				else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
 			}
-			
-			if(!loaded)beforeLoad();
-		}
-		
-		@Override
-		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
-			NHVars.world.advancedLoad.add(this);
-			return super.init(tile, team, shouldAdd, rotation);
-		}
-		
-		@Override
-		public void placed(){
-			super.placed();
-			beforeLoad();
-		}
-		
-		@Override
-		public void onDestroyed(){
-			super.onDestroyed();
-		}
-		
-		@Override
-		public void remove(){
-			if(active){
-				setIntercept(false);
-				active = true;
-			}
 		}
 		
 		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
-			NHVars.world.drawGully(teamIndex);
+			NHVars.world.drawGully(team);
+		}
+		
+		public boolean active(){
+			return warmup > 0.5f && power.status > 0.75f;
 		}
 		
 		@Override
@@ -194,17 +146,26 @@ public class GravityGully extends Block{
 		}
 		
 		@Override
-		public void beforeLoad(){
-			teamIndex = allTeamSeq.indexOf(team);
-			
-			NHFunc.square(World.toTile(x), World.toTile(y), range, (x1, y1) -> {
-				tmpTile = world.tile(x1, y1);
-				if(tmpTile != null)effectedArea.add(NHVars.world.intercepted.get(tmpTile));
-			});
-			
-			if(power.status >= 0.75f && !active)setIntercept(true);
-			loaded = true;
+		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
+			NHWorldVars.advancedLoad.add(this);
+			return super.init(tile, team, shouldAdd, rotation);
 		}
-	
+		
+		@Override
+		public void remove(){
+			super.remove();
+			NHVars.world.gravityTraps.remove(this);
+		}
+		
+		@Override
+		public void placed(){
+			super.placed();
+			beforeLoad();
+		}
+		
+		@Override
+		public void beforeLoad(){
+			NHVars.world.gravityTraps.add(this);
+		}
 	}
 }

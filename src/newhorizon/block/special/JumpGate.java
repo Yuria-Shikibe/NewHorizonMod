@@ -237,13 +237,17 @@ public class JumpGate extends Block {
         arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
     }
 
-    public class JumpGateBuild extends Building implements Ranged{
+    public class JumpGateBuild extends Building implements Ranged/*, Syncc*/{
+        protected transient long lastUpdated, updateSpacing;
+        
         public Color baseColor(){
             return baseColor == null ? team().color : baseColor;
         }
         public int spawnID = -1;
         public int link = -1;
         public float buildReload = 0f;
+    
+        public transient float progress_LAST_, progress_TARGET_;
         public float progress;
         
         protected int performPlanIndex = -1;
@@ -262,7 +266,7 @@ public class JumpGate extends Block {
     
         @Override
         public void updateTile(){
-            if(hasConsume(getSet()))progress += (efficiency() + warmup) * delta() * Mathf.clamp(Time.delta, 0.5f, 0.75f);
+            if(hasConsume(getSet()))progress += (efficiency() + warmup) * delta() * Time.delta;
             if(isCalling() && hasConsume(getSet())){
                 buildReload += efficiency() * Vars.state.rules.unitBuildSpeedMultiplier * delta();
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
@@ -671,6 +675,113 @@ public class JumpGate extends Block {
         public boolean cheating(){
             return super.cheating() || team == state.rules.waveTeam;
         }
+    
+//        @Override
+//        public void snapSync(){
+//            updateSpacing = 16;
+//            lastUpdated = Time.millis();
+//            progress_LAST_ = progress_TARGET_;
+//            progress = progress_TARGET_;
+//        }
+//
+//        @Override
+//        public void snapInterpolation(){
+//            updateSpacing = 16;
+//            lastUpdated = Time.millis();
+//            progress_LAST_ = progress;
+//            progress_TARGET_ = progress;
+//        }
+//
+//        @Override
+//        public void readSync(Reads read){
+//            if(lastUpdated != 0) updateSpacing = Time.timeSinceMillis(lastUpdated);
+//            lastUpdated = Time.millis();
+//            if(!isLocal()) {
+//                progress_LAST_ = progress;
+//                progress_TARGET_ = read.f();
+//            } else {
+//                read.f();
+//                progress_LAST_ = progress;
+//                progress_TARGET_ = progress;
+//            }
+//        }
+//
+//        @Override
+//        public void writeSync(Writes write){
+//            write.f(progress);
+//        }
+//
+//        @Override
+//        public void readSyncManual(FloatBuffer buffer){
+//            if(lastUpdated != 0) updateSpacing = Time.timeSinceMillis(lastUpdated);
+//            lastUpdated = Time.millis();
+//            progress_LAST_ = progress;
+//            progress_TARGET_ = buffer.get();
+//        }
+//
+//        @Override
+//        public void writeSyncManual(FloatBuffer buffer){
+//            buffer.put(progress);
+//        }
+//
+//        @Override
+//        public void afterSync(){
+//
+//        }
+//
+//        @Override
+//        public void interpolate(){
+//            if(lastUpdated != 0 && updateSpacing != 0) {
+//                float timeSinceUpdate = Time.timeSinceMillis(lastUpdated);
+//                float alpha = Math.min(timeSinceUpdate / updateSpacing, 2f);
+//                progress = (Mathf.slerp(progress_LAST_, progress_TARGET_, alpha));
+//            } else if(lastUpdated != 0) {
+//                progress = progress_TARGET_;
+//            }
+//        }
+//
+//        @Override
+//        public void update(){
+//            super.update();
+//            if((Vars.net.client() && !isLocal()) || isRemote()){
+//                interpolate();
+//            }
+//        }
+//
+//        @Override
+//        public void remove(){
+//            super.remove();
+//            Groups.sync.remove(this);
+//            if(Vars.net.client()){
+//                Vars.netClient.addRemovedEntity(id());
+//            }
+//        }
+//
+//        @Override
+//        public long lastUpdated(){
+//            return lastUpdated;
+//        }
+//
+//        @Override
+//        public void lastUpdated(long lastUpdated){
+//            this.lastUpdated = lastUpdated;
+//        }
+//
+//        @Override
+//        public long updateSpacing(){
+//            return updateSpacing;
+//        }
+//
+//        @Override
+//        public void updateSpacing(long updateSpacing){
+//            this.updateSpacing = updateSpacing;
+//        }
+//
+//        @Override
+//        public void add(){
+//            super.add();
+//            Groups.sync.add(this);
+//        }
     }
 
     public static class UnitSet{

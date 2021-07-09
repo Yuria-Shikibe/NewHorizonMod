@@ -9,7 +9,9 @@ import arc.input.KeyCode;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
+import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
+import arc.scene.Element;
 import arc.scene.actions.Actions;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
@@ -367,6 +369,98 @@ public class TableFs{
     
     public static void link(Table father, Links.LinkEntry link){
         father.add(new Tables.LinkTable(link)).size(Tables.LinkTable.w + OFFSET * 2f, Tables.LinkTable.h).padTop(OFFSET / 2f).row();
+    }
+    
+    
+    public static void rectSelectTable(Table parentT, Runnable run){
+        NHVars.resetCtrl();
+    
+        Rect r = NHVars.ctrl.rect;
+        
+        NHVars.ctrl.isSelecting = true;
+    
+        NHVars.ctrl.pressDown = false;
+    
+        Table pTable = new Table(Tex.pane){{
+            update(() -> {
+                if(Vars.state.isMenu())remove();
+                else{
+                    Vec2 v = Core.camera.project(r.x + r.width / 2, r.y - OFFSET);
+                    setPosition(v.x, v.y, 0);
+                }
+            
+                if(NHVars.ctrl.pressDown){
+                    touchable = Touchable.disabled;
+                }else touchable = Touchable.enabled;
+            });
+            table(Tex.paneSolid, t -> {
+                t.button(Icon.upOpen, Styles.clearFulli, () -> {
+                    run.run();
+                    remove();
+                    NHVars.ctrl.isSelecting = false;
+                }).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.pressDown);
+            }).size(LEN * 4, LEN);
+        }};
+    
+        Table floatTable = new Table(Tex.clear){{
+            parentT.color.a = 0.3f;
+            
+            update(() -> {
+                r.setSize(Math.abs(NHVars.ctrl.to.x - NHVars.ctrl.from.x), Math.abs(NHVars.ctrl.to.y - NHVars.ctrl.from.y)).setCenter((NHVars.ctrl.from.x + NHVars.ctrl.to.x) / 2f, (NHVars.ctrl.from.y + NHVars.ctrl.to.y) / 2f);
+    
+                if(Vars.state.isMenu() || !NHVars.ctrl.isSelecting){
+                    NHVars.ctrl.from.set(0, 0);
+                    NHVars.ctrl.to.set(0, 0);
+                    remove();
+                }
+                
+                if(!mobile && NHVars.ctrl.pressDown){
+                    NHVars.ctrl.to.set(Core.camera.unproject(Core.input.mouse())).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                }
+            });
+            
+            touchable = Touchable.enabled;
+            setFillParent(true);
+            if(mobile){
+                addListener(new InputListener(){
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                    if(!NHVars.ctrl.pressDown){
+                        NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                        NHVars.ctrl.to.set(NHVars.ctrl.from);
+                    }
+                    else NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                    NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
+                    return false;
+                    }
+                });
+            }else addListener(new InputListener(){
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                    parentT.touchable = Touchable.childrenOnly;
+                    NHVars.ctrl.pressDown = true;
+                    NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                    NHVars.ctrl.to.set(NHVars.ctrl.from);
+                    return false;
+                }
+    
+                public void exit(InputEvent event, float x, float y, int pointer, Element toActor) {
+                    if(remove()){
+                        parentT.touchable = Touchable.enabled;
+                        run.run();
+                        NHVars.reset();
+                    }
+                }
+            });
+        }
+    
+            @Override
+            public boolean remove(){
+                parentT.color.a = 1f;
+                return super.remove();
+            }
+        };
+    
+        if(mobile)Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 1, 0), pTable);
+        Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 2, 0), floatTable);
     }
     
     public static void pointSelectTable(Table parent, Cons<Point2> cons){

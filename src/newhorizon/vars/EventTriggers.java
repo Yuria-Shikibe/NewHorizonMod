@@ -3,13 +3,12 @@ package newhorizon.vars;
 import arc.Core;
 import arc.Events;
 import arc.func.Cons2;
-import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.game.EventType;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
@@ -19,6 +18,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.func.NHSetting;
+import newhorizon.func.SettingDialog;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
 
@@ -32,9 +32,12 @@ public class EventTriggers{
 		}
 	}
 	
+	private static String kickWarn;
+	
 	public static Block[] contents;
 	
 	private static boolean server = false;
+	private static boolean caution = false;
 	
 	public static final ObjectMap<Class<?>, Seq<Cons2<? extends Building, Tile>>> onTapActor = new ObjectMap<>();
 	
@@ -48,23 +51,24 @@ public class EventTriggers{
 	}
 	
 	public static void load(){
+		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
 		contents = new Block[]{
 			Blocks.itemSource, Blocks.liquidSource, Blocks.powerSource
 		};
 		
 		Events.on(BossGeneratedEvent.class, e -> {
+			if(Vars.headless)return;
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");
 		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHVars.reset();
 			
-			for(Tile tile : Vars.world.tiles)NHVars.world.intercepted.put(tile, new IntSeq(new int[Team.all.length]));
-			
-			for(BeforeLoadc c : NHVars.world.advancedLoad){
+			Log.info(NHWorldVars.advancedLoad);
+			for(BeforeLoadc c : NHWorldVars.advancedLoad){
 				c.beforeLoad();
 			}
-			
+			NHWorldVars.advancedLoad.clear();
 			NHVars.world.clearLast();
 			NHVars.world.worldLoaded = true;
 			
@@ -77,19 +81,22 @@ public class EventTriggers{
 					c.buildVisibility = BuildVisibility.sandboxOnly;
 				}
 			}
+			
+			if(caution){
+				caution = false;
+				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new SettingDialog().show(), () -> {});
+				Vars.player.con.kick(kickWarn, 1);
+			}
 		});
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
-			NHSetting.log("Server Preload Run");
+			if(Vars.headless)return;
 			
-			if(!NHSetting.getBool("@active.override") && e.host.address.equals(NewHorizon.SERVER_ADDRESS
-			)){
-				Vars.net.disconnect();
-				Vars.ui.showStartupInfo(Core.bundle.get("mod.ui.requite.need-override"));
-				return;
+			if(!NHSetting.getBool("@active.override") && e.host.name.equals(NewHorizon.SERVER_AUZ_NAME)){
+				caution = true;
 			}
 			
-			for(ServerInitc c : NHVars.world.serverLoad){
+			for(ServerInitc c : NHWorldVars.serverLoad){
 				c.loadAfterConnect();
 			}
 		});

@@ -98,7 +98,7 @@ public class NHBullets implements ContentList{
 				trails = 1;
 				flip = true;
 				trailWidth = 8f;
-				trailLength = 50;
+				trailLength = 40;
 				
 				generateDelay = 6f;
 				boltNum = 3;
@@ -126,7 +126,7 @@ public class NHBullets implements ContentList{
 			height = 28f;
 			splashDamageRadius = 20f;
 			splashDamage = lightningDamage = damage * 0.75f;
-			backColor = lightningColor = trailColor = lightColor = NHColor.lightSky;
+			backColor = lightningColor = trailColor = lightColor = NHColor.lightSkyBack;
 			despawnEffect = hitEffect = NHFx.shootCircleSmall(backColor);
 			frontColor = Color.white;
 			lightning = 3;
@@ -149,7 +149,7 @@ public class NHBullets implements ContentList{
 				width = 15f;
 				height = 37f;
 				lightningDamage = damage * 0.75f;
-				backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
+				backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
 				frontColor = Color.white;
 				lightning = 3;
 				lightningLength = 8;
@@ -178,7 +178,7 @@ public class NHBullets implements ContentList{
 			splashDamage = damage;
 			splashDamageRadius = 12f;
 			frontColor = Color.white;
-			backColor = trailColor = lightColor = lightningColor = NHColor.lightSky.cpy().lerp(frontColor, 0.55f);
+			backColor = trailColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(frontColor, 0.55f);
 			hitEffect = NHFx.instHit(backColor, 2, 40f);
 			despawnEffect = NHFx.crossBlast(backColor, 80f);
 			shootEffect = NHFx.shootLineSmall(backColor);
@@ -278,13 +278,13 @@ public class NHBullets implements ContentList{
 		}};
 		
 		longRangeShoot = new ShieldBreaker(1, 800, "bullet", 2000){{
-			trailColor = backColor = lightColor = lightningColor = NHColor.lightSky.cpy().lerp(Color.blue, 0.15f);
+			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
 			velocityBegin = velocityEnd = 1f;
 			
 			trails = 1;
-			trailLength = 40;
+			trailLength = 30;
 			lifetime = 650f;
 			combine = true;
 			shrinkX = shrinkY = 0;
@@ -300,7 +300,7 @@ public class NHBullets implements ContentList{
 		}};
 		
 		longRangeShootRapid = new ShieldBreaker(6, 800, "bullet", 2000){{
-			trailColor = backColor = lightColor = lightningColor = NHColor.lightSky.cpy().lerp(Color.blue, 0.15f);
+			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
 			velocityBegin = velocityEnd = 6f;
@@ -330,7 +330,7 @@ public class NHBullets implements ContentList{
 			splashDamageRadius = 60f;
 			splashDamage = lightningDamage = 0.5f * damage;
 			velocityBegin = velocityEnd = 1f;
-			trailColor = backColor = lightColor = lightningColor = NHColor.lightSky.cpy().lerp(Color.blue, 0.15f);
+			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
 			trails = 1;
@@ -491,7 +491,7 @@ public class NHBullets implements ContentList{
 			homingRange = 320f;
 			splashDamage = lightningDamage = damage / 2;
 			splashDamageRadius = 12f;
-			backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
+			backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
 			frontColor = Color.white;
 			trailEffect = NHFx.polyCloud(backColor, 45, 10, 32, 4);
 			trailChance = 0;
@@ -550,7 +550,7 @@ public class NHBullets implements ContentList{
 			trailWidth = 8f;
 			trailLength = 40;
 			
-			outColor = trailColor = lightColor = lightningColor = NHColor.lightSky;
+			outColor = trailColor = lightColor = lightningColor = NHColor.lightSkyBack;
 			innerColor = Color.white;
 			generateDelay = 6f;
 			randomGenerateRange = 280f;
@@ -569,7 +569,7 @@ public class NHBullets implements ContentList{
 			lifetime = 300;
 			despawnEffect = Fx.none;
 			hitEffect = new Effect(50, e -> {
-				color(NHColor.lightSky);
+				color(NHColor.lightSkyBack);
 				Fill.circle(e.x, e.y, e.fout() * 44);
 				stroke(e.fout() * 3.2f);
 				circle(e.x, e.y, e.fin() * 80);
@@ -583,13 +583,13 @@ public class NHBullets implements ContentList{
 				Fill.circle(e.x, e.y, e.fout() * 30);
 			});
 			shootEffect = new Effect(30f, e -> {
-				color(NHColor.lightSky);
+				color(NHColor.lightSkyBack);
 				Fill.circle(e.x, e.y, e.fout() * 32);
 				color(Color.white);
 				Fill.circle(e.x, e.y, e.fout() * 20);
 			});
 			smokeEffect = new Effect(40f, 100, e -> {
-				color(NHColor.lightSky);
+				color(NHColor.lightSkyBack);
 				stroke(e.fout() * 3.7f);
 				circle(e.x, e.y, e.fin() * 100 + 15);
 				stroke(e.fout() * 2.5f);
@@ -650,7 +650,7 @@ public class NHBullets implements ContentList{
 				accelerateEnd = 0.9f;
 				
 				homingPower = 0;
-				hitColor = trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSky;
+				hitColor = trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSkyBack;
 				splashDamageRadius = 20;
 				splashDamage = damage * 0.3f;
 				
@@ -673,7 +673,7 @@ public class NHBullets implements ContentList{
 		strikeLaser = new DelayLaserType(400f, 60f){
 			@Override
 			public void effectDraw(Bullet b){
-				Draw.color(NHColor.lightSky);
+				Draw.color(NHColor.lightSkyBack);
 				float fin = Mathf.clamp(b.time / 60f);
 				float fout = Mathf.clamp(1f - fin);
 				float fslope = (0.5F - Math.abs(fin - 0.5F)) * 2.0F;
@@ -686,7 +686,7 @@ public class NHBullets implements ContentList{
 			}
 			
 			{
-				colors = new Color[]{NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.lightSky, Color.white};
+				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.lightSkyBack, Color.white};
 				length = 340f;
 				width = 25f;
 				lengthFalloff = 0.6f;
@@ -699,9 +699,9 @@ public class NHBullets implements ContentList{
 				lightningLengthRand = 10;
 				lightningDamage = 180.0F;
 				lightningAngleRand = 40.0F;
-				lightningColor = NHColor.lightSky;
+				lightningColor = NHColor.lightSkyBack;
 				smokeEffect = shootEffect = Fx.none;
-				hitEffect = NHFx.laserHit(NHColor.lightSky);
+				hitEffect = NHFx.laserHit(NHColor.lightSkyBack);
 				splashDamage = 82.0F;
 				splashDamageRadius = 20.0F;
 				collidesGround = true;
@@ -756,15 +756,15 @@ public class NHBullets implements ContentList{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
 				shake = 3;
-				colors = new Color[]{NHColor.lightSky.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSky, Color.white};
+				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSkyBack, Color.white};
 				width = 7f;
 				length = 500f;
 				oscScl = 0.4f;
 				oscMag = 1.5f;
 				lifetime = 160f;
-				lightColor = hitColor = NHColor.lightSky;
+				lightColor = hitColor = NHColor.lightSkyBack;
 				hitEffect = NHFx.lightSkyCircleSplash;
-				shootEffect = NHFx.chargeEffectSmall(NHColor.lightSky, 60f);
+				shootEffect = NHFx.chargeEffectSmall(NHColor.lightSkyBack, 60f);
 				smokeEffect = NHFx.lightSkyCircleSplash;
 			}
 			
@@ -786,11 +786,11 @@ public class NHBullets implements ContentList{
 			public void draw(Bullet b){
 				super.draw(b);
 				float f = Mathf.clamp(b.time > b.lifetime - fadeTime ? 1.0F - (b.time - (lifetime - fadeTime)) / fadeTime : 1.0F);
-				color(NHColor.lightSky);
+				color(NHColor.lightSkyBack);
 				Fill.circle(b.x, b.y, 24f * f);
 				for(int i : Mathf.signs){
 					for(int j : Mathf.signs){
-						color(NHColor.lightSky);
+						color(NHColor.lightSkyBack);
 						Drawf.tri(b.x, b.y, 16f * f, 86f + Mathf.absin(Time.time * j, 6f, 20f) * f, 90 + 90 * i + Time.time * j);
 					}
 				}
@@ -820,7 +820,7 @@ public class NHBullets implements ContentList{
 					Vec2 trnsB = new Vec2();
 					trnsB.trns(e.rotation, e.fin() * (22));
 					Fill.poly(e.x + trnsB.x, e.y + trnsB.y, 6, e.fout() * 6, e.rotation);
-				}).at(b.x, b.y, b.rotation(), NHColor.lightSky);
+				}).at(b.x, b.y, b.rotation(), NHColor.lightSkyBack);
 				super.update(b);
 			}
 			
@@ -861,7 +861,7 @@ public class NHBullets implements ContentList{
 		}};
 		
 		supSky = new PosLightningType(135f){{
-			lightningColor = NHColor.lightSky;
+			lightningColor = NHColor.lightSkyBack;
 			maxRange = 250f;
 		}};
 		
@@ -917,7 +917,7 @@ public class NHBullets implements ContentList{
 		}};
 		
 		longLaser = new AdaptedLaserBulletType(350){{
-			colors = new Color[]{NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.lightSky, Color.white};
+			colors = new Color[]{NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.lightSkyBack, Color.white};
 			length = 360f;
 			width = 30f;
 			lengthFalloff = 0.6f;
@@ -925,7 +925,7 @@ public class NHBullets implements ContentList{
 			sideWidth = 0.9f;
 			sideAngle = 40f;
 			largeHit = false;
-			hitColor = NHColor.lightSky;
+			hitColor = NHColor.lightSkyBack;
 			smokeEffect = Fx.shootBigSmoke2;
 			shootEffect = Fx.none;
 		}};
@@ -1123,7 +1123,7 @@ public class NHBullets implements ContentList{
 			public float range(){return 280f;}
 			
 			{
-				trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSky;
+				trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSkyBack;
 				lightning = 3;
 				lightningCone = 360;
 				lightningLengthRand = lightningLength = 9;
@@ -1136,7 +1136,7 @@ public class NHBullets implements ContentList{
 				trailChance = 0.35f;
 				lifetime = 85f;
 				
-				hitEffect = NHFx.lightningHitLarge(NHColor.lightSky);
+				hitEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
 				
 				shootEffect = NHFx.hugeSmoke;
 				smokeEffect = new Effect(45f, e -> {
@@ -1263,7 +1263,7 @@ public class NHBullets implements ContentList{
 			status = NHStatusEffects.emp2;
 			ammoMultiplier = 3;
 			statusDuration = 45f;
-			backColor = lightningColor = trailColor = lightColor = NHColor.lightSky.cpy().lerp(Color.white, 0.025f);
+			backColor = lightningColor = trailColor = lightColor = NHColor.lightSkyBack.cpy().lerp(Color.white, 0.025f);
 			width = height = 14f;
 			shrinkX = shrinkY = 0;
 			splashDamageRadius = 80f;
@@ -1292,7 +1292,7 @@ public class NHBullets implements ContentList{
 			status = NHStatusEffects.emp3;
 			ammoMultiplier = 3;
 			statusDuration = 60f;
-			backColor = lightningColor = trailColor = lightColor = NHColor.lightSky.cpy().lerp(Color.white, 0.05f);
+			backColor = lightningColor = trailColor = lightColor = NHColor.lightSkyBack.cpy().lerp(Color.white, 0.05f);
 			width = height = 14f;
 			shrinkX = shrinkY = 0;
 			splashDamageRadius = 120f;

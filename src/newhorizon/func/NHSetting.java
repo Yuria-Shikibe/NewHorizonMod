@@ -29,6 +29,7 @@ public class NHSetting{
 	private static String path = "";
 	private static boolean loaded;
 	
+	public static boolean versionChange = false;
 	public static final Seq<SettingEntry> entries = new Seq<>();
 	public static final ObjectMap<String, String> defaultKeys = new ObjectMap<>();
 	public static Mods.ModMeta modMeta = new Mods.ModMeta();
@@ -103,18 +104,13 @@ public class NHSetting{
 	}
 	
 	public static void initSettingList() throws IOException{
-		for(Mods.LoadedMod mod : Vars.mods.list()){
-			if(mod == null || mod.main == null)continue;
-			if(mod.main.getClass() == NewHorizon.class){
-				modMeta = mod.meta;
-				break;
-			}
-		}
-		
 		debug = !Vars.headless && getBool("@active.debug");
-		//modMeta = Vars.mods.locateMod(NewHorizon.NHNAME.substring(0, NewHorizon.NHNAME.length() - 1)).meta;
+		modMeta = Vars.mods.locateMod(NewHorizon.MOD_NAME).meta;
 		
-		if(!modMeta.version.equals(settingList.getProperty(initKey)))updateProperty(modMeta.version);
+		if(!modMeta.version.equals(settingList.getProperty(initKey))){
+			versionChange = true;
+			updateProperty(modMeta.version);
+		}
 		
 	}
 	

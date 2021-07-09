@@ -1,35 +1,25 @@
 package newhorizon.vars;
 
-import arc.Core;
-import arc.graphics.Camera;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.struct.IntSeq;
-import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Tmp;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
-import mindustry.world.Tile;
-import newhorizon.block.defence.GravityGully;
+import newhorizon.block.defence.GravityTrap;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.block.special.UpgradeBlock;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
-
-import static mindustry.Vars.tilesize;
 
 public class NHWorldVars{
 	public transient boolean serverLoaded = true;
 	public transient boolean worldLoaded = false;
 	public transient boolean load = false;
 	
-	public transient final Seq<ServerInitc> serverLoad = new Seq<>();
-	public transient final Seq<BeforeLoadc> advancedLoad = new Seq<>();
+	public static final Seq<ServerInitc> serverLoad = new Seq<>();
+	public static final Seq<BeforeLoadc> advancedLoad = new Seq<>();
 	public transient final Seq<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new Seq<>();
-	public transient final Seq<GravityGully.GravityGullyBuild> gravGullyGroup = new Seq<>();
-	public transient final ObjectMap<Tile, IntSeq> intercepted = new ObjectMap<>();
-	
+	public transient final Seq<GravityTrap.GravityTrapBuild> gravityTraps = new Seq<>();
 	public transient final Seq<CommandableBlock.CommandableBlockBuild> commandables = new Seq<>();
 	
 	public transient int ix, iy;
@@ -38,9 +28,7 @@ public class NHWorldVars{
 	
 	
 	public void clear(){
-		intercepted.clear();
 		upgraderGroup.clear();
-		gravGullyGroup.clear();
 		commandables.clear();
 		
 		ix = iy = 0;
@@ -52,28 +40,16 @@ public class NHWorldVars{
 		serverLoad.clear();
 	}
 	
-	public void drawGully(int teamIndex){
-		float width = Core.graphics.getWidth();
-		float height = Core.graphics.getHeight();
-		
-		Camera c = Core.camera;
-		Tmp.r3.setSize(c.width + tilesize * 2, c.height + tilesize * 2).setCenter(c.position);
-		
-		for(Tile t : intercepted.keys()){
-			if(!Tmp.r3.contains(t.drawx(), t.drawy()))continue;
-			IntSeq teams = intercepted.get(t);
-			
-			int anyOther = teams.count(0);
-			
-			if(teams.get(teamIndex) > 0){
-				if(anyOther < Team.all.length - 1) Draw.color(Pal.accent);
-				else Draw.color(Pal.lancerLaser);
-			}else if(anyOther < Team.all.length)Draw.color(Pal.ammo);
-			else continue;
-			
-			Draw.alpha(0.45f);
-			t.getBounds(Tmp.r1).getCenter(Tmp.v1);
-			Fill.square(Tmp.v1.x, Tmp.v1.y, tilesize / 2f);
+	public void drawGully(Team team){
+		for(GravityTrap.GravityTrapBuild b : gravityTraps){
+			if(!b.active())continue;
+			if(b.team == team){
+				Draw.color(Pal.lancerLaser);
+			}else{
+				Draw.color(Pal.ammo);
+			}
+			Draw.alpha(b.warmup / 15f);
+			Fill.circle(b.x, b.y, b.range());
 		}
 	}
 }

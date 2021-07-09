@@ -129,6 +129,23 @@ public class NHFx{
 			Angles.randLenVectors(e.id, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
 		}));
 	}
+	
+	public static Effect blast(Color color, float range){
+		return new Effect(25, e -> {
+			color(color);
+			
+			e.scaled(12, t -> {
+				stroke(3f * t.fout());
+				circle(e.x, e.y, 3f + t.fin() * range);
+			});
+			
+			Fill.circle(e.x, e.y, e.fout() * 8f);
+			randLenVectors(e.id + 1, (int)(range / 6), 4f + range * 0.8f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout(Interp.pow2Out) * 5f));
+			
+			color(Color.gray);
+			Angles.randLenVectors(e.id, (int)(range / 9), 2.0F + range * 0.56f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
+		});
+	}
 
 	public static Effect laserEffect(float num){
 		return new Effect(26.0F, (e) -> {
@@ -394,13 +411,13 @@ public class NHFx{
 		}),
 	
 		healEffect = new Effect(11.0F, (e) -> {
-			Draw.color(NHColor.lightSky);
+			Draw.color(NHColor.lightSkyBack);
 			Lines.stroke(e.fout() * 2.0F);
 			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * 79.0F);
 		}),
 	
 		activeEffect = new Effect(22.0F, (e) -> {
-			Draw.color(NHColor.lightSky);
+			Draw.color(NHColor.lightSkyBack);
 			Lines.stroke(e.fout() * 3.0F);
 			Lines.poly(e.x, e.y, 6,4.0F + e.finpow() * e.rotation);
 		}),
@@ -423,7 +440,7 @@ public class NHFx{
 		boolSelector = new Effect(0, 0, e -> {}),
 	
 		skyTrail = new Effect(22, e -> {
-			color(NHColor.lightSky, Pal.gray, e.fin());
+			color(NHColor.lightSkyBack, Pal.gray, e.fin());
 			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
 		}),
 	
@@ -616,7 +633,7 @@ public class NHFx{
 		}),
 		
 		lightSkyCircleSplash = new Effect(26f, e -> {
-			color(NHColor.lightSky);
+			color(NHColor.lightSkyBack);
 			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
 		}),
 		

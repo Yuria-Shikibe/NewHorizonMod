@@ -18,10 +18,7 @@ import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.Groups;
-import mindustry.gen.Player;
-import mindustry.gen.Teamc;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -33,7 +30,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
 import static mindustry.core.World.toTile;
 
@@ -56,6 +52,7 @@ public class NHFunc{
         }
     });
     private static final Vec2 point1 = new Vec2(), point2 = new Vec2(), point3 = new Vec2(), point4 = new Vec2();
+    private static final Rect r1 = new Rect(), r2 = new Rect();
     
     public static long seedNet(){
         return (long)Groups.bullet.size() << 4 + Groups.all.size() + state.wave + state.stats.timeLasted;
@@ -149,26 +146,60 @@ public class NHFunc{
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     
+    public static Seq<Boolf<Tile>> formats(){
+        Seq<Boolf<Tile>> seq = new Seq<>(3);
+        
+        seq.add(tile -> world.getQuadBounds(Tmp.r1).contains(tile.getBounds(Tmp.r2)),
+                tile -> tile.floor().isLiquid,
+                tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes
+        );
+        
+        return seq;
+    }
+    
+    public static Boolf<Tile> ableToSpawn(UnitType type){
+        Boolf<Tile> boolf;
+    
+        if(type.flying){
+            boolf = tile -> world.getQuadBounds(r1).contains(tile.getBounds(r2));
+        }else if(WaterMovec.class.isAssignableFrom(type.constructor.get().getClass())){
+            boolf = tile -> tile.floor().isLiquid;
+        }else{
+            boolf = tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes;
+        }
+        
+        return boolf;
+    }
+    
+    public static Seq<Tile> ableToSpawn(UnitType type, float x, float y, float range){
+        Seq<Tile> tSeq = new Seq<>(Tile.class);
+    
+        Boolf<Tile> boolf = ableToSpawn(type);
+        
+        return tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(range), boolf));
+    }
+    
+    public static boolean ableToSpawnPoints(Seq<Vec2> spawnPoints, UnitType type, float x, float y, float range, int num, long seed){
+        Seq<Tile> tSeq = ableToSpawn(type, x, y, range);
+    
+        rand.setSeed(seed);
+        for(int i = 0; i < num; i++){
+            Tile[] positions = tSeq.shrink();
+            if(positions.length < num)return false;
+            spawnPoints.add(new Vec2().set(positions[rand.nextInt(positions.length)]));
+        }
+        
+        return true;
+    }
+    
     public static boolean spawnUnit(Teamc starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, long seed, JumpGate.UnitSet set, Color spawnColor){
         UnitType type = set.type;
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
-        Seq<Tile> tSeq = new Seq<>(Tile.class);
+        
         float angle, regSize = regSize(type);
         
-        if(!type.flying){
-            Rand r = new Rand(seed);
-            tSeq.addAll(getAcceptableTiles(toTile(x), toTile(y), toTile(spawnRange),
-                tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes)
-            );
-            for(int i = 0; i < set.callIns; i++){
-                Tile[] positions = tSeq.shrink();
-                if(positions.length < set.callIns)return false;
-                vectorSeq.add(new Vec2().set(positions[r.nextInt(positions.length)]));
-            }
-        }else{
-            randLenVectors(seed, set.callIns, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(x, y)));
-        }
+        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, set.callIns, seed))return false;
         
         angle = starter.angleTo(x, y);
         

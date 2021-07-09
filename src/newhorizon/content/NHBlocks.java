@@ -123,11 +123,11 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadTurrets(){
-		configurer = new Configurer("configurer"){{
-			size = 1;
-			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
-			NHTechTree.add(Blocks.logicProcessor, this);
-		}};
+//		configurer = new Configurer("configurer"){{
+//			size = 1;
+//			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
+//			NHTechTree.add(Blocks.logicProcessor, this);
+//		}};
 		
 		beamLaserTurret = new ItemTurret("beam-laser-turret"){{
 			size = 2;
@@ -270,8 +270,8 @@ public class NHBlocks implements ContentList {
 				strokes = new float[]{1f, 0.9f, 0.75f, 0.55f};
 				tscales = new float[]{1f, 0.9f, 0.75f, 0.5f};
 				shake = 3;
-				hitColor = NHColor.lightSky;
-				colors = new Color[]{NHColor.lightSky.cpy().mul(0.75f, 0.85f, 1f, 0.65f), NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.65f), NHColor.lightSky, Color.white};
+				hitColor = NHColor.lightSkyBack;
+				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.75f, 0.85f, 1f, 0.65f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.65f), NHColor.lightSkyBack, Color.white};
 				width = 16f;
 				length = range + 20f;
 				oscScl = 0.4f;
@@ -280,9 +280,9 @@ public class NHBlocks implements ContentList {
 				lightning = 2;
 				lightningLength = 2;
 				lightningLengthRand = 8;
-				lightColor = lightningColor =  NHColor.lightSky;
-				hitEffect = NHFx.shootCircleSmall(NHColor.lightSky);
-				shootEffect = NHFx.lightningHitLarge(NHColor.lightSky);
+				lightColor = lightningColor =  NHColor.lightSkyBack;
+				hitEffect = NHFx.shootCircleSmall(NHColor.lightSkyBack);
+				shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
 				lightningDamage = damage / 6f;
 			}};
 			consumes.add(
@@ -383,8 +383,8 @@ public class NHBlocks implements ContentList {
 			size = 4;
 			health = 3650;
 			hasItems = true;
-			heatColor = NHColor.lightSky;
-			baseColor = NHColor.lightSky.cpy().lerp(Color.white, 0.35f);
+			heatColor = NHColor.lightSkyBack;
+			baseColor = NHColor.lightSkyBack.cpy().lerp(Color.white, 0.35f);
 			powerUse = 8;
 			reloadTime = 300f;
 			range = 460f;
@@ -436,7 +436,7 @@ public class NHBlocks implements ContentList {
 			powerUse = 7.5f;
 			shootType = new BasicBulletType(7f, 50f, NewHorizon.configName("circle-bolt")){{
 				drag = 0.01f;
-				trailColor = backColor = lightColor = lightningColor = NHColor.lightSky;
+				trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack;
 				frontColor = Color.white;
 				lightning = 3;
 				lightningLengthRand = 8;
@@ -467,9 +467,9 @@ public class NHBlocks implements ContentList {
 			slowDownReloadTime = 120f;
 			maxSpeedupScl = 4f;
 			speedupPerShoot = 0.25f;
-			chargeEffect = NHFx.genericCharge(NHColor.lightSky, 4, 120, 28f);
+			chargeEffect = NHFx.genericCharge(NHColor.lightSkyBack, 4, 120, 28f);
 			chargeEffects = 3;
-			chargeBeginEffect = NHFx.genericChargeBegin(NHColor.lightSky, 5f, 60f);
+			chargeBeginEffect = NHFx.genericChargeBegin(NHColor.lightSkyBack, 5f, 60f);
 			chargeTime = chargeBeginEffect.lifetime;
 			range = 240f;
 		}};
@@ -722,7 +722,7 @@ public class NHBlocks implements ContentList {
 					NHUpgradeDatas.mineShoot
 			);
 			
-			baseColor = NHColor.lightSky.cpy().lerp(Color.white, 0.35f);
+			baseColor = NHColor.lightSkyBack.cpy().lerp(Color.white, 0.35f);
 			size = 3;
 			range = 120f;
 			health = 1250;
@@ -836,7 +836,7 @@ public class NHBlocks implements ContentList {
 			
 		}};
 		
-		gravityGully = new GravityGully("gravity-gully"){{
+		gravityGully = new GravityTrap("gravity-gully"){{
 			size = 3;
 			health = 1250;
 			
@@ -908,7 +908,7 @@ public class NHBlocks implements ContentList {
 			NHTechTree.add(Blocks.rtgGenerator, this);
 			size = 2;
 			powerProduction = 2.65F;
-			heatColor = NHColor.lightSky.mul(1.1f);
+			heatColor = NHColor.lightSkyBack.mul(1.1f);
 			itemDuration = 480.0F;
 		}};
 		
@@ -1524,7 +1524,7 @@ public class NHBlocks implements ContentList {
 			absorbLasers = true;
 			range = 120;
             health = 1350;
-            effectColor = NHColor.lightSky;
+            effectColor = NHColor.lightSkyBack;
 		}};
 		
 		chargeWallLarge = new ChargeWall("charge-wall-large"){{
@@ -1533,7 +1533,7 @@ public class NHBlocks implements ContentList {
 			absorbLasers = true;
 			range = 200;
             health = 1350 * healthMult2;
-            effectColor = NHColor.lightSky;
+            effectColor = NHColor.lightSkyBack;
 		}};
 		
 		irdryonVault = new StorageBlock("irdryon-vault"){{
@@ -1676,6 +1676,9 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(NHUnits.zarkov, new byte[]{NHUnits.NAVY_LINE_1, 4}, 2800f, 2,
+					ItemStack.with(NHItems.irayrondPanel, 350, NHItems.seniorProcessor, 500, NHItems.multipleSteel, 400)
+				),
 				new UnitSet(NHUnits.collapser, new byte[]{NHUnits.OTHERS, 6}, 12000f, 1,
 					new ItemStack(NHItems.darkEnergy, 1000),
 					new ItemStack(NHItems.upgradeSort, 1000)

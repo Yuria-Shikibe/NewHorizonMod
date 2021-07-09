@@ -52,7 +52,7 @@ public class ChargeWall extends Block{
 	public float range = 200f;
 	public int lightningActHits = size * size * 4;
 	
-	public Color effectColor = NHColor.lightSky;
+	public Color effectColor = NHColor.lightSkyBack;
 	public Effect
 		chargeActEffect = NHFx.circleSplash,
 		hitEffect = NHFx.circleSplash,
@@ -112,7 +112,7 @@ public class ChargeWall extends Block{
 		bars.add("Energy", 
 			(ChargeWallBuild entity) -> new Bar(
 				() -> "Energy",
-				() -> NHColor.lightSky,
+				() -> NHColor.lightSkyBack,
 				() -> entity.energy / maxEnergy
 			)
 		);

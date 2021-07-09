@@ -9,4 +9,6 @@ public class NHCtrlVars{
 	public final Vec2 ctrlVec2 = new Vec2();
 	
 	public final Rect rect = new Rect();
+	
+	public final Vec2 from = new Vec2(), to = new Vec2();
 }

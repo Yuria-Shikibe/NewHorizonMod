@@ -16,7 +16,6 @@ import mindustry.world.blocks.environment.Floor;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
 import newhorizon.vars.NHVars;
-import newhorizon.vars.NHWorldVars;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.player;
@@ -75,7 +74,7 @@ public abstract class CommandableBlock extends Block{
 		}
 		
 		@Override
-		public void beforeLoad(){ NHVars.world.commandables.add(this); }
+		public void beforeLoad(){NHVars.world.commandables.add(this); }
 	}
 	
 	public enum CommandableBlockType{

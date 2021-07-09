@@ -25,7 +25,7 @@ public class SpeedupTurret extends PowerTurret{
 		bars.add("liquid", 
 			(SpeedupTurretBuild entity) -> new Bar(
 				() -> "Speed Up:",
-				() -> NHColor.lightSky,
+				() -> NHColor.lightSkyBack,
 				() -> entity.speedupScl / maxSpeedupScl
 			)
 		);

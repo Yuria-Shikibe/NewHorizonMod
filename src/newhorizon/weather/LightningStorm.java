@@ -21,7 +21,7 @@ public class LightningStorm extends ParticleWeather{
 	public int lightningLength = 6;
 	public int lightningLengthRand = 14;
 	public float angleRand = 30f;
-	public Color lightningColor = NHColor.lightSky.cpy().lerp(arc.graphics.Color.white, 0.025f);
+	public Color lightningColor = NHColor.lightSkyBack.cpy().lerp(arc.graphics.Color.white, 0.025f);
 	
 	public LightningStorm(String name){
 		super(name);

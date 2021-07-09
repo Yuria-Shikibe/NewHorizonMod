@@ -59,7 +59,7 @@ public abstract class NHBaseEntity implements Posc, Drawc{
 	@Override public Block blockOn(){ return null; }
 	@Override public boolean onSolid(){ return false; }
 	@Override public Tile tileOn(){ return null; }
-	@Override public float getX(){ return 0; }
+	@Override public float getX(){ return x; }
 	@Override public float getY(){ return y; }
 	@Override public float x(){ return x; }
 	@Override public void x(float x){ this.x = x; }
@@ -79,6 +79,9 @@ public abstract class NHBaseEntity implements Posc, Drawc{
 		write.f(x);
 		write.f(y);
 	}
+	
+	@Override
+	public int classId(){return 0;}
 	@Override public void afterRead(){ }
 	@Override public int id(){return id; }
 	@Override public void id(int id){ this.id = id; }

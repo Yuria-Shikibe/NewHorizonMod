@@ -77,8 +77,8 @@ public class NHContent extends UnlockableContent{
 	@Override
 	public void load(){
 		arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
-		ammoInfo = Core.atlas.find(NewHorizon.MOD_NAME + "upgrade-info");
-		iconLevel = Core.atlas.find(NewHorizon.MOD_NAME + "level-up");
+		ammoInfo = Core.atlas.find(NewHorizon.configName("upgrade-info"));
+		iconLevel = Core.atlas.find(NewHorizon.configName("level-up"));
 		pointerRegion = Core.atlas.find(NewHorizon.configName("jump-gate-pointer"));
 		NHLoader.outlineTex.each((arg, tex) -> {
 			String[] s;

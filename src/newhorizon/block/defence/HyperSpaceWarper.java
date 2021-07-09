@@ -1,27 +1,24 @@
 package newhorizon.block.defence;
 
 import arc.Core;
+import arc.func.Boolf;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
-import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.Scaled;
-import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
-import arc.scene.event.InputEvent;
-import arc.scene.event.InputListener;
-import arc.scene.event.Touchable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.TextArea;
 import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -45,22 +42,18 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.meta.Stat;
 import newhorizon.block.special.JumpGate;
-import newhorizon.content.NHBlocks;
-import newhorizon.content.NHContent;
-import newhorizon.content.NHSounds;
+import newhorizon.content.*;
+import newhorizon.effects.EffectTrail;
 import newhorizon.feature.NHBaseEntity;
+import newhorizon.feature.PosLightning;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHFunc;
 import newhorizon.func.TableFs;
-import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHVars;
 
-import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
-import static mindustry.core.World.toTile;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
-import static newhorizon.vars.NHVars.allTeamSeq;
 
 public class HyperSpaceWarper extends Block{
 	public static final int classID = 127;
@@ -69,7 +62,6 @@ public class HyperSpaceWarper extends Block{
 		EntityMapping.idMap[classID] = Carrier::new;
 	}
 	
-	private static final Rect tmpRect = new Rect();
 	private static Tile furthest;
 	
 	public float reloadTime = 1200f;
@@ -112,7 +104,7 @@ public class HyperSpaceWarper extends Block{
 		});
 	}
 	
-	public class HyperSpaceWarperBuild extends Building implements BeforeLoadc{
+	public class HyperSpaceWarperBuild extends Building{
 		public float reload;
 		public float warmup;
 		
@@ -120,27 +112,23 @@ public class HyperSpaceWarper extends Block{
 		public int target;
 		public IntSeq selects = new IntSeq();
 		
-		public transient boolean isTransport = false;
-		
-		public transient Vec2 targetV = new Vec2(), selectVFrom = new Vec2(), selectVTo = new Vec2();
-		public transient boolean loaded = false;
+		public Vec2 targetV = new Vec2().set(this);
 		public transient boolean isJammed = false;
 		public transient Vec2 interceptedPos = new Vec2(x, y);
 		
 		@Override
 		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
-			NHVars.world.advancedLoad.add(this);
 			return super.init(tile, team, shouldAdd, rotation);
 		}
 		
 		@Override
 		public void placed(){
 			super.placed();
-			beforeLoad();
 		}
 		
 		public void setTarget(Point2 p){
 			target = p.pack();
+			targetV.set(World.unconv(p.x), World.unconv(p.y));
 		}
 		
 		public void setSelects(IntSeq seq){
@@ -153,6 +141,7 @@ public class HyperSpaceWarper extends Block{
 			target = read.i();
 			warmup = read.f();
 			reload = read.f();
+			targetV = TypeIO.readVec2(read);
 		}
 		
 		@Override
@@ -161,12 +150,9 @@ public class HyperSpaceWarper extends Block{
 			write.i(target);
 			write.f(warmup);
 			write.f(reload);
+			TypeIO.writeVec2(write, targetV);
 		}
 		
-		@Override
-		public void remove(){
-			super.remove();
-		}
 		
 		@Override
 		public boolean onConfigureTileTapped(Building other){
@@ -195,8 +181,6 @@ public class HyperSpaceWarper extends Block{
 				if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
 				else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
 			}
-			
-			if(!loaded)beforeLoad();
 		}
 		
 		@Override
@@ -225,90 +209,21 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public void buildConfiguration(Table table){
-			super.buildConfiguration(table);
 			table.table(p -> {
 				p.table(Tex.paneSolid, t -> {
 					t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> {
 						TableFs.pointSelectTable(table, this::configure);
-					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting || isTransport).row();
+					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
 					
 					t.button("@mod.ui.select-unit", Icon.filter, Styles.cleart, () -> {
-						NHVars.ctrl.isSelecting = true;
-						
-						NHVars.ctrl.pressDown = false;
-						
-						Table pTable = new Table(Tex.pane){{
-							Rect r = selectedRect();
-							
-							update(() -> {
-								if(Vars.state.isMenu())remove();
-								else{
-									Vec2 v = Core.camera.project(r.x + r.width / 2, r.y - OFFSET);
-									setPosition(v.x, v.y, 0);
-								}
-								
-								if(NHVars.ctrl.pressDown){
-									touchable = Touchable.disabled;
-								}else touchable = Touchable.enabled;
-							});
-							table(Tex.paneSolid, t -> {
-								t.button(Icon.upOpen, Styles.clearFulli, () -> {
-									configure(selectedUnit());
-									remove();
-									NHVars.ctrl.isSelecting = false;
-								}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.pressDown);
-							}).size(LEN * 4, LEN);
-						}};
-						
-						Table floatTable = new Table(Tex.clear){{
-							update(() -> {
-								if(Vars.state.isMenu() || !NHVars.ctrl.isSelecting){
-									selectVFrom.set(0, 0);
-									selectVTo.set(0, 0);
-									remove();
-								}
-							});
-							touchable = Touchable.enabled;
-							setFillParent(true);
-							if(mobile){
-								addListener(new InputListener(){
-									public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-										if(!NHVars.ctrl.pressDown){
-											selectVFrom.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-											selectVTo.set(selectVFrom);
-										}
-										else selectVTo.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-										NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
-										return false;
-									}
-								});
-							}else addListener(new InputListener(){
-								public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-									NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
-									if(NHVars.ctrl.pressDown)selectVFrom.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-									return false;
-								}
-								
-								public boolean mouseMoved(InputEvent event, float x, float y){
-									if(NHVars.ctrl.pressDown){
-										selectVTo.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-										return false;
-									}
-									return true;
-								}
-							});
-							
-							Core.scene.root.addChildAt(Math.max(table.getZIndex() - 2, 0), pTable);
-							Core.scene.root.addChildAt(Math.max(table.getZIndex() - 1, 0), this);
-						}};
-						
-					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting || isTransport).row();
+						TableFs.rectSelectTable(table, () -> configure(selectedUnit()));
+					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
 					
 					t.button("@mod.ui.transport-unit", Icon.download, Styles.cleart, () -> {
-						configure(80);
-					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting || !canTeleport() || !targetValid(World.toTile(targetV.x), World.toTile(targetV.y))).row();
+						configure(Math.max(4, (int)Mathf.sqrt(selects.size / Mathf.pi)));
+					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting || !canTeleport()).row();
 				}).fill();
-				p.table(Tex.paneSolid, t -> {
+				if(mobile)p.table(Tex.paneSolid, t -> {
 					TextArea xArea = new TextArea("");
 					TextArea yArea = new TextArea("");
 					t.table(Tex.clear, t2 -> {
@@ -324,7 +239,6 @@ public class HyperSpaceWarper extends Block{
 							int ix = Mathf.clamp((int)Float.parseFloat(xArea.getText()), 0, world.width());
 							int iy = Mathf.clamp((int)Float.parseFloat(yArea.getText()), 0, world.height());
 							configure(Tmp.p1.set(ix, iy));
-							targetValid(ix, iy);
 						}catch(NumberFormatException e){
 							xArea.clear();
 							yArea.clear();
@@ -333,6 +247,9 @@ public class HyperSpaceWarper extends Block{
 					}).size(LEN * 4, LEN);
 				}).fill();
 			}).fill().row();
+			
+			if(!mobile)return;
+			
 			table.table(Tex.paneSolid, t -> {
 				t.pane(p -> {
 					int index = 0;
@@ -352,56 +269,59 @@ public class HyperSpaceWarper extends Block{
 			table.table(Tex.paneSolid, t -> {
 				t.button("@remove", Icon.cancel, Styles.cleart, () -> {
 					selects.clear();
-				}).disabled(b -> NHVars.ctrl.isSelecting || isTransport).growX().height(LEN);
+				}).disabled(b -> NHVars.ctrl.isSelecting).growX().height(LEN);
 			}).growX().height(LEN + OFFSET);
 		}
 		
 		public void teleport(int spawnRange){
 			Tmp.p1.set(Point2.unpack(target));
-			if(selects.isEmpty() || world.tile(target) == null || !targetValid(Tmp.p1.x, Tmp.p1.y))return;
-			long seed = (long)Groups.unit.size() + Groups.build.size() << 8;
-			Seq<Tile> tileSeq = new Seq<>();
-			Seq<Vec2> vectorSeq = new Seq<>();
-			Seq<Unit> selectUnits = new Seq<>();
-			Rand r = new Rand(seed);
+			if(selects.isEmpty() || world.tile(target) == null)return;
 			
-			int grounds = 0, air = 0;
+			Rand rand = new Rand(NHFunc.seedNet());
+			
+			ObjectMap<Unit, Vec2> spawnPos = new ObjectMap<>(selects.size + 1);
+
+			Seq<Tile> air = new Seq<>(), ground = new Seq<>(), navy = new Seq<>();
+			
+			Seq<Boolf<Tile>> request = NHFunc.formats();
+			
+			air.addAll(NHFunc.getAcceptableTiles(Tmp.p1.x, Tmp.p1.y, spawnRange, request.get(0)));
+			navy.addAll(NHFunc.getAcceptableTiles(Tmp.p1.x, Tmp.p1.y, spawnRange, request.get(1)));
+			ground.addAll(NHFunc.getAcceptableTiles(Tmp.p1.x, Tmp.p1.y, spawnRange, request.get(2)));
+			
+			isJammed = false;
 			
 			for(int id : selects.items){
 				Unit u = Groups.unit.getByID(id);
 				if(u != null){
-					if(!u.type.flying){grounds++;}
-					else {air++;}
-					selectUnits.add(u);
+					if(u.type.flying){
+						if(air.isEmpty()){
+							isJammed = true;
+							return;
+						}else spawnPos.put(u, new Vec2().set(air.remove(rand.nextInt(air.size))));
+					}else if(WaterMovec.class.isAssignableFrom(u.type.constructor.get().getClass())){
+						if(navy.isEmpty()){
+							isJammed = true;
+							return;
+						}else spawnPos.put(u, new Vec2().set(navy.remove(rand.nextInt(navy.size))));
+					}else{
+						if(ground.isEmpty()){
+							isJammed = true;
+							return;
+						}else spawnPos.put(u, new Vec2().set(ground.remove(rand.nextInt(ground.size))));
+					}
 				}
-			}
-			
-			tileSeq.addAll(NHFunc.getAcceptableTiles(Tmp.p1.x, Tmp.p1.y, toTile(spawnRange), tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes));
-			randLenVectors(seed, selects.size, spawnRange, (sx, sy) -> vectorSeq.add(new Vec2(sx, sy).add(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize)));
-			
-			if(tileSeq.size < grounds - 1 || vectorSeq.size < air - 1){
-				isJammed = true;
-				return;
 			}
 			
 			float angle = angleTo(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize);
 			
-			for(Unit u : selectUnits){
-				Vec2 to = new Vec2();
-				
-				if(u.type.flying){
-					to.set(vectorSeq.pop());
-				}else{
-					to.set(tileSeq.get(r.random(tileSeq.size - 1)));
-				}
-				
+			for(Unit u : spawnPos.keys()){
 				Carrier c = Pools.obtain(Carrier.class, Carrier::new);
-				c.init(u, to, angle);
+				c.init(u, spawnPos.get(u), angle);
 				c.set(u);
 				c.add();
 			}
 			
-			isTransport = true;
 			selects.clear();
 			consume();
 			reload = 0f;
@@ -422,40 +342,9 @@ public class HyperSpaceWarper extends Block{
 			return vec2.set(avgX, avgY);
 		}
 		
-		public boolean targetValid(int tx, int ty){
-			onAveragePos(Tmp.v6);
-			boolean valid = !Geometry.raycast(
-				World.toTile(Tmp.v6.x),
-				World.toTile(Tmp.v6.y),
-				tx,
-				ty,
-				(x, y) -> {
-					Tile t = world.tile(x, y);
-					if(t == null)return false;
-					IntSeq teams = NHVars.world.intercepted.get(t);
-					boolean anyOther = false;
-					for(int i = 0; i < teams.size; i++){
-						if(i == teamIndex)continue;
-						if(teams.items[i] > 0){
-							interceptedPos.set(x * tilesize, y * tilesize);
-							anyOther = true;
-							break;
-						}
-					}
-					return anyOther;
-				}
-			);
-			if(valid)interceptedPos.set(tx * tilesize, ty * tilesize);
-			return valid;
-		}
-		
-		public Rect selectedRect(){
-			return tmpRect.setSize(Math.abs(selectVTo.x - selectVFrom.x), Math.abs(selectVTo.y - selectVFrom.y)).setCenter((selectVFrom.x + selectVTo.x) / 2f, (selectVFrom.y + selectVTo.y) / 2f);
-		}
-		
 		public IntSeq selectedUnit(){
 			IntSeq units = new IntSeq();
-			Groups.unit.each(unit -> unit != null && unit.team == team && unit.type.isCounted && selectedRect().contains(Tmp.r2.setSize(unit.hitSize).setCenter(unit.x, unit.y)), unit -> {
+			Groups.unit.each(unit -> unit != null && unit.team == team && unit.type.isCounted && NHVars.ctrl.rect.contains(Tmp.r2.setSize(unit.hitSize).setCenter(unit.x, unit.y)), unit -> {
 				units.add(unit.id);
 			});
 			return units;
@@ -465,19 +354,19 @@ public class HyperSpaceWarper extends Block{
 		public void drawConfigure(){
 			super.drawConfigure();
 			
-			NHVars.world.drawGully(teamIndex);
+			NHVars.world.drawGully(team);
 			
-			if(Tmp.v5.set(selectVTo).sub(selectVFrom).len2() > 1){
+			if(NHVars.ctrl.isSelecting){
 				Draw.color(Pal.accent);
 				Lines.stroke(1.75f);
-				Lines.rect(selectedRect());
+				Lines.rect(NHVars.ctrl.rect);
 				
 				Draw.alpha(0.35f);
 				Fill.quad(
-					selectVTo.x, selectVFrom.y,
-					selectVFrom.x, selectVFrom.y,
-					selectVFrom.x, selectVTo.y,
-					selectVTo.x, selectVTo.y
+					NHVars.ctrl.to.x, NHVars.ctrl.from.y,
+					NHVars.ctrl.from.x, NHVars.ctrl.from.y,
+					NHVars.ctrl.from.x, NHVars.ctrl.to.y,
+					NHVars.ctrl.to.x, NHVars.ctrl.to.y
 				);
 			}
 			
@@ -498,15 +387,15 @@ public class HyperSpaceWarper extends Block{
 				}
 			}}
 			
+			Draw.reset();
+			Color color = Pal.accent;
+			Drawf.square(targetV.x, targetV.y, tilesize * 1.5f, 45, color);
+			
 			if(!selects.isEmpty()){
-				Draw.reset();
-				boolean valid = targetValid(Tmp.p1.x, Tmp.p1.y);
-				Color color = valid ? Pal.accent : Pal.redderDust;
-				Drawf.square(interceptedPos.x, interceptedPos.y, tilesize * 1.5f, 45, color);
 				onAveragePos(Tmp.v6);
 				Drawf.square(Tmp.v6.x, Tmp.v6.y, tilesize * 1.5f, 45, color);
-				DrawFuncs.posSquareLink(color, 3f, tilesize / 2f, true, Tmp.v6.x, Tmp.v6.y, interceptedPos.x, interceptedPos.y);
-				Drawf.arrow(Tmp.v6.x, Tmp.v6.y, interceptedPos.x, interceptedPos.y, tilesize * 2, tilesize, color);
+				DrawFuncs.posSquareLink(color, 3f, tilesize / 2f, true, Tmp.v6.x, Tmp.v6.y, targetV.x, targetV.y);
+				Drawf.arrow(Tmp.v6.x, Tmp.v6.y, targetV.x, targetV.y, tilesize * 2, tilesize, color);
 				Draw.reset();
 			}
 			
@@ -514,17 +403,10 @@ public class HyperSpaceWarper extends Block{
 				DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, Pal.redderDust, true);
 			}
 		}
-		
-		@Override
-		public void beforeLoad(){
-			loaded = true;
-			teamIndex = allTeamSeq.indexOf(team);
-			selects.clear();
-		}
 	}
 	
 	public static class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
-		protected static final float dstPerMove = tilesize * 2.5f;
+		protected static final float dstPerMove = tilesize * 1.5f;
 		
 		public float rotation = 0;
 		public float finalRot = 0;
@@ -532,9 +414,13 @@ public class HyperSpaceWarper extends Block{
 		public UnitPayload toCarry;
 		public Team team;
 		public Vec2 to;
-		public int teamIndex = -1;
+		
+		public transient Vec2 vel = new Vec2();
+		
+		public EffectTrail trail = new EffectTrail();
+		
 		protected boolean dumped = false, onMove = false, contained, adjusted, intercepted = false, complete = false;
-		protected float time = 0, lifetime = 540f;
+		protected float time = 0, lifetime = 540f,surviveTime = 0, surviveLifetime = 6000;
 		
 		public void init(Unit unit, Vec2 to, float rotation){
 			finalRot = rotation;
@@ -543,11 +429,20 @@ public class HyperSpaceWarper extends Block{
 			this.to = to;
 			team(unit.team());
 			contained = toCarry != null;
+			trail = new EffectTrail(60, 2.5f, team.color, team.color);
+		}
+		
+		@Override
+		public void add(){
+			super.add();
 			NHSounds.hyperspace.at(this);
 		}
 		
 		@Override
 		public void draw(){
+			Draw.z(Layer.effect);
+			if((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2))trail.draw();
+			
 			if(!onMove && unit != null && !unit.isNull()){
 				float height = Mathf.curve(fslope() * fslope(), 0f, 0.3f) * 1.1f;
 				float width = Mathf.curve(fslope() * fslope(), 0.35f, 0.75f) * 1.1f;
@@ -561,10 +456,11 @@ public class HyperSpaceWarper extends Block{
 					Draw.color(Pal.ammo);
 					Draw.z(Layer.bullet - 0.1f);
 					float size = this.size / 3;
-					Draw.rect(Icon.warning.getRegion(), this.unit.x, this.unit.y, 16f, 16f);
+					Draw.rect(Icon.warning.getRegion(), x, y, 16f, 16f);
 					
 					float sin = Mathf.absin(Time.time * DrawFuncs.sinScl, 8f, 2f);
 					
+					Draw.alpha(surviveTime / surviveLifetime);
 					for(int i = 0; i < 4; i++){
 						float length = size / 1.5f + sin;
 						Tmp.v1.trns(i * 90, -length);
@@ -598,18 +494,29 @@ public class HyperSpaceWarper extends Block{
 		public void update(){
 			boolean onGoing = true;
 			
+			trail.update(x, y);
+			
 			if(!contained && unit != null && unit.isValid() && !complete){
 				set(unit);
 				rotation(unit.rotation);
 			}
+			
 			if(time > lifetime / 2 && !adjusted){
 				if(!contained && unit != null && unit.isValid()){
-					pickup();
 					contained = true;
 					adjusted = true;
+					pickup();
 				}else if(toCarry != null && !dumped){
 					onGoing = dumped = drop();
 					contained = !dumped;
+					if(surviveTime > surviveLifetime){
+						if(!net.client()){
+							toCarry.set(x, y, rotation);
+							toCarry.unit.add();
+							dumped = true;
+							contained = false;
+						}
+					}
 				}
 			}
 			
@@ -625,8 +532,10 @@ public class HyperSpaceWarper extends Block{
 			
 			
 			if(!onMove && onGoing)time += Time.delta;
+			else if(!onMove)surviveTime += Time.delta;
 			
-			if(onMove && contained && Mathf.equal(x, to.getX(), 1f) && Mathf.equal(y, to.getY(), 1f)){
+			if(onMove && contained && (intercepted || (Mathf.equal(x, to.getX(), 12f) && Mathf.equal(y, to.getY(), 12f)))){
+				if(!intercepted)set(to);
 				time = 0;
 				onMove = false;
 				adjusted = false;
@@ -635,15 +544,21 @@ public class HyperSpaceWarper extends Block{
 			}
 			
 			if(onMove && contained){
-				trns(Tmp.v1.set(to).sub(x, y).nor().scl(dstPerMove * Time.delta).clamp(to.getX() - x, to.getY() - y, 100, 100));
-				if(NHVars.world.intercepted.get(world.tile(World.toTile(x), World.toTile(y))).count(0) < Team.all.length){
-					time = 0;
-					onMove = false;
-					adjusted = false;
-					toCarry.unit.health(toCarry.unit.health() * 0.75f);
-					onMove = false;
-					rotation = finalRot;
-					NHSounds.hyperspace.at(this);
+				trail.update(x, y);
+				
+				vel.set(to).sub(x, y).nor().scl(dstPerMove * Time.delta);
+				
+				x += vel.x;
+				y += vel.y;
+				
+				for(GravityTrap.GravityTrapBuild build : NHVars.world.gravityTraps){
+					if(build.team != team && build.active() && within(build, build.range())){
+						intercepted = true;
+						Log.info("Triggered");
+						toCarry.unit.damage(toCarry.unit.health * 0.3f);
+						PosLightning.createEffect(build, this, build.team.color, 2, PosLightning.WIDTH * 1.25f);
+						break;
+					}
 				}
 			}
 		}
@@ -660,6 +575,7 @@ public class HyperSpaceWarper extends Block{
 			write.bool(complete);
 			TypeIO.writeVec2(write, to);
 			write.f(time);
+			write.f(surviveTime);
 			write.f(rotation);
 			write.f(finalRot);
 			write.bool(onMove);
@@ -676,6 +592,7 @@ public class HyperSpaceWarper extends Block{
 			complete = read.bool();
 			to = TypeIO.readVec2(read);
 			time = read.f();
+			surviveTime = read.f();
 			rotation = read.f();
 			finalRot = read.f();
 			onMove = read.bool();
@@ -726,7 +643,6 @@ public class HyperSpaceWarper extends Block{
 		@Override
 		public void team(Team team){
 			this.team = team;
-			teamIndex = NHFunc.getTeamIndex(team);
 		}
 		
 		@Override
@@ -746,7 +662,7 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public String toString(){
-			return "Carrier{" + "rotation=" + rotation + ", unit=" + unit + ", toCarry=" + toCarry + ", team=" + team + ", to=" + to + ", teamIndex=" + teamIndex + ", intercepted=" + intercepted + ", complete=" + complete + ", onMove=" + onMove + ", contained=" + contained + ", adjusted=" + adjusted + ", time=" + time + ", lifetime=" + lifetime + '}';
+			return "Carrier{" + "rotation=" + rotation + ", unit=" + unit + ", toCarry=" + toCarry + ", team=" + team + ", to=" + to + ", intercepted=" + intercepted + ", complete=" + complete + ", onMove=" + onMove + ", contained=" + contained + ", adjusted=" + adjusted + ", time=" + time + ", lifetime=" + lifetime + '}';
 		}
 	}
 }

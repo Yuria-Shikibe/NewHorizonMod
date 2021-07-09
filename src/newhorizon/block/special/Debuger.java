@@ -42,7 +42,7 @@ public class Debuger extends Block{
 			super.draw();
 			//new Cube().draw2(x + 80, y + 80, rotationB, rotationC);
 			Draw.z(Layer.bullet);
-			new Cube(NHColor.lightSky, 4f, 1f).draw(x - 80, y + 80, rotationB);
+			new Cube(NHColor.lightSkyBack, 4f, 1f).draw(x - 80, y + 80, rotationB);
 			Draw.reset();
 		}
 	}

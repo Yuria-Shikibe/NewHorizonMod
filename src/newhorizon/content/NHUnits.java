@@ -15,10 +15,7 @@ import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
-import mindustry.entities.abilities.ForceFieldAbility;
-import mindustry.entities.abilities.MoveLightningAbility;
-import mindustry.entities.abilities.RepairFieldAbility;
-import mindustry.entities.abilities.ShieldRegenFieldAbility;
+import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.game.Team;
@@ -44,14 +41,59 @@ public class NHUnits implements ContentList {
 	
 	public static
 	AutoOutlineWeapon
-	posLiTurret, closeAATurret, collapserCannon, collapserLaser;
+	posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher;
 	
 	public static
 	UnitType
 	guardian,
-	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, branch, thynomo, origin, collapser;
+	hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, branch, thynomo, origin, collapser,
+	zarkov
+	;
+	
+	static {
+		EntityMapping.nameMap.put(NewHorizon.configName("zarkov"), EntityMapping.idMap[20]);
+	}
 	
 	public void loadWeapon(){
+		multipleLauncher = new AutoOutlineWeapon("mult-launcher"){{
+			reload = 60f;
+			shots = 3;
+			shake = 3f;
+			shotDelay = 8f;
+			mirror = true;
+			rotateSpeed = 2.5f;
+			alternate = true;
+			shootSound = NHSounds.launch;
+			shootCone = 75f;
+			shootY = 5f;
+			top = true;
+			rotate = true;
+			bullet = new NHTrailBulletType(5.25f, 60f, NHBullets.STRIKE){{
+				lifetime = 50;
+				despawnEffect = hitEffect = NHFx.lightningHitLarge(NHItems.thermoCorePositive.color);
+				knockback = 12f;
+				width = 11f;
+				height = 28f;
+				
+				homingDelay = 5f;
+				homingPower = 0.0075f;
+				homingRange = 140f;
+				
+				splashDamageRadius = 16f;
+				splashDamage = damage * 0.75f;
+				backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
+				frontColor = NHColor.lightSkyFront;
+				shootEffect = NHFx.shootCircleSmall(backColor);
+				smokeEffect = Fx.shootBigSmoke2;
+				trailChance = 0.6f;
+				trailEffect = NHFx.trail;
+				hitShake = 3f;
+				hitSound = Sounds.plasmaboom;
+				despawnEffect = NHFx.square45_4_45;
+				hitEffect = NHFx.blast(backColor, 50f);
+			}};
+		}};
+		
 		collapserLaser = new AutoOutlineWeapon(){{
 			reload = 480f;
 			rotateSpeed = 1.5f;
@@ -67,7 +109,7 @@ public class NHUnits implements ContentList {
 		collapserCannon = new AutoOutlineWeapon("collapser-cannon"){{
 			top = rotate = alternate = mirror = true;
 			reload = 60f;
-			shake = 4f;
+			shake = 12f;
 			heatColor = NHColor.thurmixRed;
 			shootSound = NHSounds.coil;
 			shootY = 6f;
@@ -101,9 +143,9 @@ public class NHUnits implements ContentList {
 			reload = 30f;
 			shootY = 4f;
 			shootSound = Sounds.spark;
-			heatColor = NHColor.lightSky;
+			heatColor = NHColor.lightSkyBack;
 			bullet = new PosLightningType(20f){{
-				lightningColor = NHColor.lightSky;
+				lightningColor = NHColor.lightSkyBack;
 				maxRange = 160f;
 				hitEffect = NHFx.lightningHitSmall(lightningColor);
 				lightningLength = 1;
@@ -116,7 +158,7 @@ public class NHUnits implements ContentList {
 			shots = 3;
 			shotDelay = 6f;
 			rotate = top = true;
-			heatColor = NHColor.lightSky;
+			heatColor = NHColor.lightSkyBack;
 			shootSound = Sounds.missile;
 			shootY = 3f;
 			recoil = 2f;
@@ -129,7 +171,7 @@ public class NHUnits implements ContentList {
 				length = 100.0F;
 				damage = 35.0F;
 				shootEffect = Fx.shootSmall;
-				hitColor = color = NHColor.lightSky;
+				hitColor = color = NHColor.lightSkyBack;
 				despawnEffect = Fx.none;
 				width = 0.48F;
 				lifetime = 20.0F;
@@ -141,6 +183,26 @@ public class NHUnits implements ContentList {
 	@Override
 	public void load() {
 		loadWeapon();
+		
+		zarkov = new AutoOutlineUnitType("zarkov",
+			multipleLauncher.copy().setPos(8, -22),
+			multipleLauncher.copy().setPos(16, -8)
+		){{
+			constructor = EntityMapping.idMap[20];
+			health = 12000;
+			speed = 1f;
+			drag = 0.18f;
+			hitSize = 50f;
+			armor = 16f;
+			accel = 0.1f;
+			rotateSpeed = 1.2f;
+			rotateShooting = true;
+			
+			trailLength = 70;
+			trailX = 7f;
+			trailY = -25f;
+			trailScl = 2.6f;
+		}};
 		
 		collapser = new AutoOutlineUnitType("collapser",
 			collapserCannon.copy().setPos(60, -50),
@@ -331,17 +393,17 @@ public class NHUnits implements ContentList {
 				top = false;
 				x = 5f;
 				y = -1f;
-				reload = 30f;
+				reload = 15f;
 				shots = 3;
 				spacing = 4f;
 				inaccuracy = 4f;
 				velocityRnd = 0.15f;
 				shootSound = NHSounds.scatter;
 				shake = 0.75f;
-				bullet = new BasicBulletType(4f, 8f){{
+				bullet = new BasicBulletType(4f, 10f){{
 					width = 5f;
 					height = 25f;
-					backColor = lightningColor = lightColor = hitColor = NHColor.lightSky;
+					backColor = lightningColor = lightColor = hitColor = NHColor.lightSkyBack;
 					frontColor = backColor.cpy().lerp(Color.white, 0.45f);
 					shootEffect = NHFx.shootLineSmall(backColor);
 					despawnEffect = NHFx.square(hitColor, 16f, 2, 12, 2f);
@@ -381,11 +443,11 @@ public class NHUnits implements ContentList {
 					strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 					tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
 					shake = 3;
-					colors = new Color[]{NHColor.lightSky.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSky.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSky, Color.white};
+					colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSkyBack, Color.white};
 					oscScl = 0.4f;
 					oscMag = 1.5f;
 					lifetime = 90f;
-					lightColor = hitColor = NHColor.lightSky;
+					lightColor = hitColor = NHColor.lightSkyBack;
 					hitEffect = NHFx.lightSkyCircleSplash;
 					shootEffect = NHFx.square(hitColor, 22f, 4, 16, 3f);
 					smokeEffect = Fx.shootBigSmoke;
@@ -456,7 +518,7 @@ public class NHUnits implements ContentList {
 						pierceCap = 8;
 						width = 20f;
 						height = 44f;
-						backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
+						backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
 						frontColor = Color.white;
 						lightning = 3;
 						lightningDamage = damage / 4;
@@ -528,9 +590,9 @@ public class NHUnits implements ContentList {
 					damage = 160.0F;
 					status = StatusEffects.shocked;
 					statusDuration = 60f;
-					fromColor = NHColor.lightSky.cpy().lerp(Color.white, 0.3f);
-					toColor = NHColor.lightSky;
-					shootEffect = NHFx.lightningHitSmall(NHColor.lightSky);
+					fromColor = NHColor.lightSkyBack.cpy().lerp(Color.white, 0.3f);
+					toColor = NHColor.lightSkyBack;
+					shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
 					smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
 						Draw.color(fromColor, toColor, e.fin());
 						Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
@@ -626,7 +688,7 @@ public class NHUnits implements ContentList {
 					height = 25f;
 					keepVelocity = true;
 					knockback = 0.75f;
-					trailColor = backColor = lightColor = lightningColor = hitColor = NHColor.lightSky;
+					trailColor = backColor = lightColor = lightningColor = hitColor = NHColor.lightSkyBack;
 					frontColor = backColor.cpy().lerp(Color.white, 0.45f);
 					trailChance = 0.1f;
 					trailParam = 1f;
@@ -678,7 +740,7 @@ public class NHUnits implements ContentList {
 
 					lifetime = 60f;
 					shrinkX = shrinkY = 0;
-					backColor = lightningColor = hitColor = lightColor = trailColor = NHColor.lightSky;
+					backColor = lightningColor = hitColor = lightColor = trailColor = NHColor.lightSkyBack;
 					frontColor = backColor.cpy().lerp(Color.white, 0.55f);
 					trailEffect = Fx.artilleryTrail;
 					trailParam = 3f;
@@ -725,7 +787,7 @@ public class NHUnits implements ContentList {
 				bullet = NHBullets.warperBullet;
 				shootSound = NHSounds.blaster;
 			}});
-			abilities.add(new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSky));
+			abilities.add(new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSkyBack));
 			targetAir = false;
 			maxRange = 200;
 			engineOffset = 14.0F;
@@ -754,7 +816,7 @@ public class NHUnits implements ContentList {
 					continuous = true;
 					alternate = false;
 					shake = 4f;
-					heatColor = NHColor.lightSky;
+					heatColor = NHColor.lightSkyBack;
 					shootY = 13f;
 					reload = 420f;
 					shots = 1;
@@ -808,7 +870,7 @@ public class NHUnits implements ContentList {
 					shootY = 5f;
 					ejectEffect = Fx.none;
 					bullet = new ChainBulletType(100){{
-						hitColor = NHColor.lightSky;
+						hitColor = NHColor.lightSkyBack;
 						hitEffect = NHFx.square(hitColor, 20f, 2, 16f, 3f);
 						smokeEffect = Fx.shootBigSmoke;
 						shootEffect = NHFx.shootLineSmall(hitColor);
@@ -883,7 +945,7 @@ public class NHUnits implements ContentList {
 				shootSound = Sounds.laserblast;
 			}},
 			new AutoOutlineWeapon("impulse") {{
-				heatColor = NHColor.lightSky;
+				heatColor = NHColor.lightSkyBack;
 				top = true;
 				rotate = true;
 				shootY = 12f;
@@ -911,7 +973,7 @@ public class NHUnits implements ContentList {
 						pierce = pierceBuilding = true;
 						width = 16f;
 						height = 50f;
-						backColor = lightColor = lightningColor = trailColor = NHColor.lightSky;
+						backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
 						frontColor = Color.white;
 						lightning = 3;
 						lightningDamage = damage / 2;
