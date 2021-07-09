@@ -72,15 +72,8 @@ public class EventTriggers{
 			NHVars.world.clearLast();
 			NHVars.world.worldLoaded = true;
 			
-			if(Vars.player.admin){
-				for(Block c : contents){
-					c.buildVisibility = BuildVisibility.shown;
-				}
-			}else{
-				for(Block c : contents){
-					c.buildVisibility = BuildVisibility.sandboxOnly;
-				}
-			}
+			if(Vars.player.admin)for(Block c : contents)c.buildVisibility = BuildVisibility.shown;
+			else for(Block c : contents)c.buildVisibility = BuildVisibility.sandboxOnly;
 			
 			if(caution){
 				caution = false;

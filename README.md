@@ -2,7 +2,7 @@
 
 ![Logo](github-pictures/ui/logo.png)
 
-****A Java Mindustry mod for Android and PC.****
+****A Java Mindustry<V6.0> mod for Android and PC.****
 
 **Powered by *Yuria*.**
 
@@ -13,7 +13,7 @@ During this term (from March to June) I can only update this mod on weekends.
 [![Discord](https://img.shields.io/discord/825801593466388520.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord&color=17cf48)](https://discord.gg/yNmbMcuwyW)
 
 ## Server
-`mindustry.xyz:10704`
+`n2.yd.gameworldmc.cn:20074`
 
 ###### For foreigners (foreign countries relative to China)
 
