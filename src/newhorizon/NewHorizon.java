@@ -54,7 +54,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHUnits.zarkov
+			NHBlocks.shieldProjector
 		}).show();
 	}
 	

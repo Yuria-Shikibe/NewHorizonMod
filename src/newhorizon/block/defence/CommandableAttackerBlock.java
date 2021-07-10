@@ -92,6 +92,11 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		public int storaged(){return (int)(reload / reloadTime);}
 		
 		@Override
+		public int getTarget(){
+			return target;
+		}
+		
+		@Override
 		@NotNull
 		public CommandableBlockType getType(){
 			return CommandableBlockType.attacker;
@@ -103,12 +108,12 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		}
 		
 		public void setTarget(Point2 p){
+			NHVars.world.commandPos = target = p.pack();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build != null && groupBoolf.get(build)){
+				if(build != null && build.team == team && groupBoolf.get(build)){
 					build.overlap();
 				}
 			}
-			NHVars.world.commandPos = target = p.pack();
 		}
 		
 		
@@ -151,7 +156,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public boolean overlap(){
-			target = -1;
+			target = NHVars.world.commandPos;
 			return false;
 		}
 		
@@ -197,8 +202,9 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 			}
 			
+			Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
+			
 			if(NHVars.world.commandPos > 0){
-				Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
 				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.accent);
 				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, Pal.accent);
@@ -209,7 +215,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				float time = build.delayTime();
 				DrawFuncs.overlayText("Delay: " + TableFs.format(time) + " Sec.", build.x, build.y, build.block.size * tilesize / 2f, time > 4.5f ? Pal.accent : Pal.lancerLaser, true);
 			}
-			DrawFuncs.overlayText("Participants: " + builds.size, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), tilesize * 2f, Pal.accent, true);
+			DrawFuncs.overlayText(Core.bundle.format("mod.ui.participants", builds.size), World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), tilesize * 2f, Pal.accent, true);
 		}
 		
 		public void commandAll(Integer pos){
@@ -219,7 +225,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			Seq<CommandableBlockBuild> participants = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
 				if(build.team == team && groupBoolf.get(build) && build.canCommand() && !build.isPreparing()){
-					build.triggered(pos);
+					build.command(pos);
 					participants.add(build);
 					build.lastAccessed(Iconc.modeAttack + "");
 					realSpread = Math.max(realSpread, build.spread());
@@ -233,7 +239,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		}
 		
 		@Override
-		public void triggered(Integer pos){
+		public void command(Integer pos){
 			setPreparing();
 			lastTarget = pos;
 		}
@@ -242,8 +248,6 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public void buildConfiguration(Table table){
-			NHVars.world.floatTableAdded = false;
-			
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.modeAttack, Styles.clearPartiali, () -> {
 					configure(NHVars.world.commandPos);

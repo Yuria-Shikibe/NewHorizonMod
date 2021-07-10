@@ -446,7 +446,7 @@ public class TableFs{
                     if(remove()){
                         parentT.touchable = Touchable.enabled;
                         run.run();
-                        NHVars.reset();
+                        NHVars.resetCtrl();
                     }
                 }
             });
@@ -459,7 +459,7 @@ public class TableFs{
             }
         };
     
-        if(mobile)Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 1, 0), pTable);
+        if(mobile)Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 3, 0), pTable);
         Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 2, 0), floatTable);
     }
     
@@ -477,7 +477,7 @@ public class TableFs{
             addListener(new InputListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    NHVars.ctrl.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                    NHVars.ctrl.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, world.unitHeight() + Vars.finalWorldBounds, world.unitWidth() + Vars.finalWorldBounds);
                     return false;
                 }
             });

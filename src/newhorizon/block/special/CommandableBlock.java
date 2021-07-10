@@ -2,7 +2,9 @@ package newhorizon.block.special;
 
 import arc.func.Boolf;
 import arc.func.Cons;
+import arc.math.geom.Point2;
 import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -16,13 +18,15 @@ import mindustry.world.blocks.environment.Floor;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
 import newhorizon.vars.NHVars;
+import newhorizon.vars.NHWorldVars;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import static mindustry.Vars.player;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public abstract class CommandableBlock extends Block{
 	public Boolf<CommandableBlockBuild> groupBoolf = null;
+	protected static final Vec2 tmpVec = new Vec2();
 	
 	public CommandableBlock(String name){
 		super(name);
@@ -40,7 +44,11 @@ public abstract class CommandableBlock extends Block{
 		
 		@NotNull public abstract CommandableBlockType getType();
 		
-		public abstract void triggered(Integer point2);
+		public abstract void setTarget(Point2 point2);
+		public abstract int getTarget();
+		
+		public abstract void command(Integer point2);
+		public abstract void commandAll(Integer pos);
 		
 		public abstract boolean canCommand();
 		public abstract boolean overlap();
@@ -49,6 +57,12 @@ public abstract class CommandableBlock extends Block{
 		public abstract void setPreparing();
 		public abstract float delayTime();
 		public abstract float spread();
+		
+		public  @Nullable Vec2 target(){
+			Tile t = world.tile(getTarget());
+			if(t != null || getTarget() >= 0) return tmpVec.set(t);
+			else return null;
+		}
 		
 		@Override
 		public void add(){
@@ -64,7 +78,7 @@ public abstract class CommandableBlock extends Block{
 		
 		@Override
 		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
-			NHVars.world.advancedLoad.add(this);
+			NHWorldVars.advancedLoad.add(this);
 			return super.init(tile, team, shouldAdd, rotation);
 		}
 		
@@ -85,7 +99,6 @@ public abstract class CommandableBlock extends Block{
 		public Cons<Teamc> act;
 		
 		public boolean added;
-		public float damage, radius;
 		public transient int id = EntityGroup.nextId();
 		public transient float time, lifetime;
 		public transient float x, y;

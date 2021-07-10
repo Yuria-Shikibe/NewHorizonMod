@@ -11,7 +11,7 @@ import newhorizon.content.NHFx;
 public class ShieldBreaker extends NHTrailBulletType{
     public float maxShieldDamage;
     
-    protected static BulletType breakType = new EffectBulletType(1f){{
+    protected static BulletType breakType = new EffectBulletType(3f){{
         this.absorbable = true;
         this.damage = 1;
     }

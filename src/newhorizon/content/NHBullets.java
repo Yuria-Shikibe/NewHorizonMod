@@ -349,17 +349,18 @@ public class NHBullets implements ContentList{
 			width = 14f;
 		}};
 		
-		mineShoot = new FlakBulletType(0.75f, 350){{
+		mineShoot = new FlakBulletType(0.75f, 250){{
 			sprite = "large-bomb";
 			collidesGround = true;
 			trailColor = backColor = lightColor = lightningColor = Pal.ammo;
 			frontColor = Color.white;
 			
-			lightning = 5;
+			lightning = 3;
 			lightningCone = 360;
 			lightningLengthRand = lightningLength = 12;
-			splashDamageRadius = 120f;
-			splashDamage = lightningDamage = damage;
+			splashDamageRadius = 80f;
+			splashDamage = damage;
+			lightningDamage = damage / 8;
 			
 			spin = 4f;
 			

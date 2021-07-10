@@ -15,7 +15,7 @@ public class NHVars{
 	
 	public static void reset(){
 		ctrl = new NHCtrlVars();
-		
+		world.clear();
 //		for(Teams.TeamData data : Vars.state.teams.present){
 //			allTeamSeq.add(data.team);
 //		}

@@ -37,13 +37,13 @@ public class ChargeWall extends Block{
 	public float heatPerRise = 50f;
 	public float healLightStMin = 0.35f;
 	
-	public float healReloadTime = 45f, 
+	public float healReloadTime = 90f,
 				 healPerEnr = 45f, 
-				 healPercent = size * size * 1.5f;
+				 healPercent = size;
 				
-	public float shootReloadTime = 8f,
+	public float shootReloadTime = 20f,
 				 shootPerEnr = 80f,
-				 shootDamage = 100f;
+				 shootDamage = 40f;
 				
 	public float coolingReloadTime = 30f;
 	

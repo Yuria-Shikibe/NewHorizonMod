@@ -102,7 +102,7 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
-		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer;
+		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer, shieldProjector;
 		;
 	
 	private static void loadExperiments(){
@@ -128,6 +128,17 @@ public class NHBlocks implements ContentList {
 //			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
 //			NHTechTree.add(Blocks.logicProcessor, this);
 //		}};
+		
+		shieldProjector = new ShieldProjector("shield-projector"){{
+			consumes.power(1f);
+			consumes.powerCond(8f, ShieldProjectorBuild::isCharging);
+			size = 3;
+			itemCapacity = 20;
+			consumes.item(NHItems.fusionEnergy, 5);
+			provideHealth = 2200f;
+			requirements(Category.defense, BuildVisibility.shown, with(Items.copper, 300, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.plastanium, 75, NHItems.multipleSteel, 120));
+			NHTechTree.add(Blocks.forceProjector, this);
+		}};
 		
 		beamLaserTurret = new ItemTurret("beam-laser-turret"){{
 			size = 2;
@@ -832,7 +843,7 @@ public class NHBlocks implements ContentList {
 			consumes.item(NHItems.fusionEnergy, 5);
 			consumes.power(12f);
 			
-			requirements(Category.units, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.setonAlloy, 200, NHItems.seniorProcessor, 150));
+			requirements(Category.units, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
 			
 		}};
 		

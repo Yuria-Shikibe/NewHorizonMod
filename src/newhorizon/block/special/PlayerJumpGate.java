@@ -20,6 +20,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHFunc;
 import newhorizon.interfaces.Linkablec;
 
@@ -163,11 +164,6 @@ public class PlayerJumpGate extends Block{
 		}
 		
 		@Override
-		public boolean shouldHideConfigure(Player player){
-			return player.dst(this) > tilesize * 15;
-		}
-		
-		@Override
 		public boolean onConfigureTileTapped(Building other){
 			if (this == other || link == other.pos()) {
 				configure(Tmp.p1.set(-1, -1));
@@ -187,7 +183,9 @@ public class PlayerJumpGate extends Block{
 			
 			if(player == null)return;
 			
-			Drawf.square(player.x, player.y, player.unit().hitSize, 45, dst(Vars.player) > dstMax ? Pal.redderDust : Pal.heal);
+			boolean tooFar = dst(Vars.player) > dstMax;
+			Drawf.square(player.x, player.y, player.unit().hitSize, 45, tooFar ? Pal.redderDust : Pal.heal);
+			if(tooFar) DrawFuncs.overlayText("KEEP CLOSER", player.x, player.y, player.unit().type.hitSize / 2.0F, Pal.redderDust, true);
 		}
 		
 		@Override

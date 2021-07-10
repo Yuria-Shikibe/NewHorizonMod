@@ -58,11 +58,9 @@ public class GravityTrap extends Block{
 		stats.add(Stat.output, (t) -> {
 			t.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
 			t.image().size(LEN).color(Pal.lancerLaser).padTop(OFFSET);
-			t.add("[lightgray]Friendly Force Field").fill().padLeft(OFFSET / 2).row();
-			t.image().size(LEN).color(Pal.accent).padTop(OFFSET);
-			t.add("[lightgray]Hostile & Friendly Mixed Force Field").fill().padLeft(OFFSET / 2).row();
+			t.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).fill().padLeft(OFFSET / 2).row();
 			t.image().size(LEN).color(Pal.redderDust).padTop(OFFSET);
-			t.add("[lightgray]Hostile Force Field").fill().padLeft(OFFSET / 2).row();
+			t.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).fill().padLeft(OFFSET / 2).row();
 		});
 		
 	}

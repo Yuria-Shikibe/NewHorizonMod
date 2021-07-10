@@ -143,6 +143,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 		public static final float width = 3.3f;
 		public static final float floatX = 10f;
 		public static final float floatY = 30f;
+		
 		public boolean added;
 		public boolean parent;
 		public Vec2 target;

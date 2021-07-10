@@ -96,11 +96,9 @@ public class HyperSpaceWarper extends Block{
 		stats.add(Stat.output, (t) -> {
 			t.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
 			t.image().size(LEN).color(Pal.lancerLaser).padTop(OFFSET);
-			t.add("[lightgray]Friendly Force Field").fill().padLeft(OFFSET / 2).row();
-			t.image().size(LEN).color(Pal.accent).padTop(OFFSET);
-			t.add("[lightgray]Hostile & Friendly Mixed Force Field").fill().padLeft(OFFSET / 2).row();
+			t.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).fill().padLeft(OFFSET / 2).row();
 			t.image().size(LEN).color(Pal.redderDust).padTop(OFFSET);
-			t.add("[lightgray]Hostile Force Field").fill().padLeft(OFFSET / 2).row();
+			t.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).fill().padLeft(OFFSET / 2).row();
 		});
 	}
 	
@@ -220,7 +218,7 @@ public class HyperSpaceWarper extends Block{
 					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
 					
 					t.button("@mod.ui.transport-unit", Icon.download, Styles.cleart, () -> {
-						configure(Math.max(4, (int)Mathf.sqrt(selects.size / Mathf.pi)));
+						configure(Math.max(4, (int)Mathf.sqrt(selects.size / Mathf.pi) + 2));
 					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting || !canTeleport()).row();
 				}).fill();
 				if(mobile)p.table(Tex.paneSolid, t -> {
@@ -556,7 +554,8 @@ public class HyperSpaceWarper extends Block{
 						intercepted = true;
 						Log.info("Triggered");
 						toCarry.unit.damage(toCarry.unit.health * 0.3f);
-						PosLightning.createEffect(build, this, build.team.color, 2, PosLightning.WIDTH * 1.25f);
+						PosLightning.createEffect(build, this, build.team.color, 2, PosLightning.WIDTH);
+						NHFx.square45_4_45.at(x, y, team.color);
 						break;
 					}
 				}

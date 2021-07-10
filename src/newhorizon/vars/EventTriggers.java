@@ -50,14 +50,16 @@ public class EventTriggers{
 		}else actions.add(act);
 	}
 	
+	
 	public static void load(){
+		if(Vars.headless)return;
 		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
+		
 		contents = new Block[]{
 			Blocks.itemSource, Blocks.liquidSource, Blocks.powerSource
 		};
 		
 		Events.on(BossGeneratedEvent.class, e -> {
-			if(Vars.headless)return;
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");
 		});
 		
@@ -83,8 +85,6 @@ public class EventTriggers{
 		});
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
-			if(Vars.headless)return;
-			
 			if(!NHSetting.getBool("@active.override") && e.host.name.equals(NewHorizon.SERVER_AUZ_NAME)){
 				caution = true;
 			}
@@ -97,7 +97,6 @@ public class EventTriggers{
 		Events.on(EventType.UnitChangeEvent.class, e -> e.unit.apply(NHStatusEffects.invincible, 180f));
 		
 		Events.on(EventType.TapEvent.class, e -> {
-			if(Vars.headless)return;
 			Building selecting = Vars.control.input.frag.config.getSelectedTile();
 			if(selecting != null)for(Class<?> type : onTapActor.keys()){
 				if(type == selecting.getClass()){

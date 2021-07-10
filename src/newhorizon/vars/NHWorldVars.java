@@ -18,18 +18,19 @@ public class NHWorldVars{
 	
 	public static final Seq<ServerInitc> serverLoad = new Seq<>();
 	public static final Seq<BeforeLoadc> advancedLoad = new Seq<>();
+	
 	public transient final Seq<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new Seq<>();
 	public transient final Seq<GravityTrap.GravityTrapBuild> gravityTraps = new Seq<>();
 	public transient final Seq<CommandableBlock.CommandableBlockBuild> commandables = new Seq<>();
 	
 	public transient int ix, iy;
 	public transient int commandPos = -1;
-	public transient boolean floatTableAdded = false;
 	
 	
 	public void clear(){
 		upgraderGroup.clear();
 		commandables.clear();
+		gravityTraps.clear();
 		
 		ix = iy = 0;
 		commandPos = -1;
@@ -48,7 +49,7 @@ public class NHWorldVars{
 			}else{
 				Draw.color(Pal.ammo);
 			}
-			Draw.alpha(b.warmup / 15f);
+			Draw.alpha(b.warmup / 10f);
 			Fill.circle(b.x, b.y, b.range());
 		}
 	}

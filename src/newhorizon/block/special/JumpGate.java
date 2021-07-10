@@ -266,7 +266,7 @@ public class JumpGate extends Block {
     
         @Override
         public void updateTile(){
-            if(hasConsume(getSet()))progress += (efficiency() + warmup) * delta() * Time.delta;
+            if(hasConsume(getSet()))progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 1f);
             if(isCalling() && hasConsume(getSet())){
                 buildReload += efficiency() * Vars.state.rules.unitBuildSpeedMultiplier * delta();
                 if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
@@ -282,7 +282,7 @@ public class JumpGate extends Block {
                 else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
             }
     
-            if(timer(2, 20))for(int boolf : spawnPlan.keys()){
+            if(!Vars.headless && timer(2, 20))for(int boolf : spawnPlan.keys()){
                 if(boolf <= state.wave){
                     int index = spawnPlan.get(boolf);
                     UnitSet set = calls.get(index);
@@ -493,7 +493,7 @@ public class JumpGate extends Block {
                         }).padTop(OFFSET / 2).growX().height(LEN);
                     }).growX().height(LEN);
         
-                }}.show()).disabled(b -> mobile).size(LEN * 5, LEN).row();
+                }}.show()).disabled(b -> mobile || Vars.headless).size(LEN * 5, LEN).row();
                 t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN);
             }).fill();
         }

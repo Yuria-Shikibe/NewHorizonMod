@@ -306,6 +306,23 @@ public class NHFx{
 	}
 	
 	public static final Effect
+		absorb = new Effect(20f, e -> {
+			color(e.color);
+			stroke(e.rotation * e.fout());
+			Lines.poly(e.x, e.y, 6, (e.rotation + e.rotation * e.fin(Interp.pow2In) * 1.75f) / 2f);
+		}),
+	
+		project = new Effect(60f, 1600f, e -> {
+			if(!(e.data instanceof Position))return;
+			Position data = e.data();
+			color(e.color);
+			
+			Lines.stroke(e.rotation * e.fout(0.5f));
+			Lines.line(e.x, e.y, data.getX(), data.getY(), false);
+			Fill.circle(e.x, e.y, Lines.getStroke() * 1.25f);
+			Fill.circle(data.getX(), data.getY(), Lines.getStroke() * 2f);
+		}),
+	
 		transport = new Effect(22f, 400, e -> {
 			if(!(e.data instanceof Position))return;
 			Position to = e.data();
