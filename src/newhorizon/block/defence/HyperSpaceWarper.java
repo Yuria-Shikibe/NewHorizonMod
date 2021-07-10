@@ -46,6 +46,7 @@ import newhorizon.content.*;
 import newhorizon.effects.EffectTrail;
 import newhorizon.feature.NHBaseEntity;
 import newhorizon.feature.PosLightning;
+import newhorizon.func.ClassIDIniter;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHFunc;
 import newhorizon.func.TableFs;
@@ -56,10 +57,9 @@ import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
 
 public class HyperSpaceWarper extends Block{
-	public static final int classID = 127;
 	
 	static{
-		EntityMapping.idMap[classID] = Carrier::new;
+		ClassIDIniter.needIdClasses.put(Carrier.class, Carrier::new);
 	}
 	
 	private static Tile furthest;
@@ -564,7 +564,8 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public int classId(){
-			return classID;
+			Log.info(ClassIDIniter.getID(getClass()));
+			return ClassIDIniter.getID(getClass());
 		}
 		
 		@Override

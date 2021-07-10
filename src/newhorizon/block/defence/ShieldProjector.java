@@ -19,28 +19,39 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pools;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.io.TypeIO;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
+import newhorizon.func.ClassIDIniter;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.TableFs;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
+
+import java.nio.FloatBuffer;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 import static newhorizon.func.TableFs.LEN;
 
 public class ShieldProjector extends CommandableBlock{
+	public static final int CLASS_ID = 101;
+	
+	static{
+		ClassIDIniter.needIdClasses.put(Projector.class, Projector::new);
+	}
+	
 	public TextureRegion baseRegion, heatRegion;
 	
 	public Color heatColor = Pal.ammo;
@@ -56,7 +67,7 @@ public class ShieldProjector extends CommandableBlock{
 	
 	public float provideHealth = 2000f;
 	public float provideRange = 240f;
-	public float provideLifetime = 3600f;
+	public float provideLifetime = 4800f;
 	
 	public float shootCone = 12f;
 	
@@ -221,14 +232,14 @@ public class ShieldProjector extends CommandableBlock{
 			
 			Projector p = Pools.obtain(Projector.class, Projector::new);
 			p.init(health, range, provideLifetime, team, world.tile(pos));
-			p.add();
+			if(!Vars.net.client())p.add();
 		}
 		
 		@Override
 		public void buildConfiguration(Table table){
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.effect, Styles.clearPartiali, () -> {
-					configure(NHVars.world.commandPos);
+					configure(target);
 				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);
@@ -313,12 +324,19 @@ public class ShieldProjector extends CommandableBlock{
 		}
 	}
 	
-	public class Projector extends CommandEntity{
-		public transient float realRadius = 1, range;
+	public static class Projector extends CommandEntity implements Syncc{
+		public transient float realRadius = 1, range = 500f;
 		public transient float health = 0;
 		public transient float hit = 0f;
 		
 		public transient boolean broken = false;
+		
+		public transient long lastUpdated, updateSpacing;
+		public transient float health_LAST_, health_TARGET_;
+		
+		public Projector(){
+		
+		}
 		
 		@Override
 		public float clipSize(){
@@ -353,7 +371,6 @@ public class ShieldProjector extends CommandableBlock{
 				Fx.shieldBreak.at(x, y, realRadius, team.color);
 			}
 			
-			
 			if(!broken){
 				Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, trait -> {
 					if(trait.team != team && trait.type.absorbable && Intersector.isInsideHexagon(x, y, realRadius * 2f, trait.x(), trait.y())){
@@ -363,6 +380,10 @@ public class ShieldProjector extends CommandableBlock{
 						health -= trait.damage();
 					}
 				});
+			}
+			
+			if((Vars.net.client() && !isLocal()) || isRemote()){
+				interpolate();
 			}
 		}
 		
@@ -386,6 +407,170 @@ public class ShieldProjector extends CommandableBlock{
 			}
 			
 			Draw.reset();
+		}
+		
+        @Override
+        public void snapSync(){
+            updateSpacing = 16;
+            lastUpdated = Time.millis();
+	        health_LAST_ = health_TARGET_;
+	        health = health_TARGET_;
+        }
+
+        @Override
+        public void snapInterpolation(){
+            updateSpacing = 16;
+            lastUpdated = Time.millis();
+	        health_LAST_ = health;
+	        health_TARGET_ = health;
+        }
+
+        @Override
+        public void readSync(Reads read){
+            if(lastUpdated != 0) updateSpacing = Time.timeSinceMillis(lastUpdated);
+            lastUpdated = Time.millis();
+            
+	        boolean islocal = isLocal();
+	
+	        time = read.f();
+	        
+            if(!islocal){
+	            health_LAST_ = health;
+	            health_TARGET_ = read.f();
+            }else{
+                read.f();
+	            health_LAST_ = health;
+	            health_TARGET_ = health;
+            }
+            
+	        x = read.f();
+            y = read.f();
+	        lifetime = read.f();
+	        realRadius = read.f();
+	        range = read.f();
+            team = TypeIO.readTeam(read);
+	        
+            afterSync();
+        }
+
+        @Override
+        public void writeSync(Writes write){
+            write.f(time);
+	        write.f(health);
+	        write.f(x);
+	        write.f(y);
+	        write.f(lifetime);
+	        write.f(realRadius);
+	        write.f(range);
+	        TypeIO.writeTeam(write, team);
+        }
+		
+		@Override
+        public void readSyncManual(FloatBuffer buffer){
+            if(lastUpdated != 0) updateSpacing = Time.timeSinceMillis(lastUpdated);
+            lastUpdated = Time.millis();
+			health_LAST_ = health;
+			health_TARGET_ = buffer.get();
+        }
+
+        @Override
+        public void writeSyncManual(FloatBuffer buffer){
+            buffer.put(health);
+        }
+
+        @Override
+        public void afterSync(){}
+
+        @Override
+        public void interpolate(){
+            if(lastUpdated != 0 && updateSpacing != 0) {
+                float timeSinceUpdate = Time.timeSinceMillis(lastUpdated);
+                float alpha = Math.min(timeSinceUpdate / updateSpacing, 2f);
+	            health = (Mathf.slerp(health_LAST_, health_TARGET_, alpha));
+            } else if(lastUpdated != 0) {
+                health = health_TARGET_;
+            }
+        }
+		
+		@Override
+		public void write(Writes write){
+			write.f(time);
+			write.f(health);
+			write.f(range);
+			write.f(realRadius);
+			write.f(lifetime);
+			
+			TypeIO.writeVec2(write, new Vec2().set(this));
+			TypeIO.writeTeam(write, team);
+		}
+		
+		@Override
+		public void read(Reads read){
+			time = read.f();
+			health = read.f();
+			range = read.f();
+			realRadius = read.f();
+			lifetime = read.f();
+			
+			set(TypeIO.readVec2(read));
+			team(TypeIO.readTeam(read));
+			
+			afterRead();
+		}
+		
+		@Override
+		public void afterRead(){
+			add();
+		}
+		
+		@Override
+        public void remove(){
+            super.remove();
+            Groups.sync.remove(this);
+            if(Vars.net.client()){
+                Vars.netClient.addRemovedEntity(id());
+            }
+        }
+
+        @Override
+        public long lastUpdated(){
+            return lastUpdated;
+        }
+
+        @Override
+        public void lastUpdated(long lastUpdated){
+            this.lastUpdated = lastUpdated;
+        }
+
+        @Override
+        public long updateSpacing(){
+            return updateSpacing;
+        }
+
+        @Override
+        public void updateSpacing(long updateSpacing){
+            this.updateSpacing = updateSpacing;
+        }
+
+        @Override
+        public void add(){
+            super.add();
+            Groups.sync.add(this);
+        }
+		
+		@Override
+		public int classId(){
+			return ClassIDIniter.getID(getClass());
+		}
+		
+		@Override
+		public boolean serialize(){
+			return true;
+		}
+		
+		@Override
+		public String toString(){
+			return "Projector{" + "realRadius=" + realRadius + ", range=" + range + ", health=" + health + ", broken=" + broken + ", added=" + added + ", time=" + time + ", lifetime=" + lifetime + ", team=" + team + '}';
 		}
 	}
 }

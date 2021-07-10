@@ -95,7 +95,7 @@ public abstract class CommandableBlock extends Block{
 		defender, attacker
 	}
 	
-	public class CommandEntity implements Drawc, Timedc, Teamc{
+	public static class CommandEntity implements Drawc, Timedc, Teamc{
 		public Cons<Teamc> act;
 		
 		public boolean added;

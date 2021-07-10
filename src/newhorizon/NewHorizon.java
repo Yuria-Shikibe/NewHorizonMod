@@ -18,10 +18,7 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
-import newhorizon.func.NHSetting;
-import newhorizon.func.SettingDialog;
-import newhorizon.func.TableFs;
-import newhorizon.func.Tables;
+import newhorizon.func.*;
 import newhorizon.func.Tables.LinkTable;
 import newhorizon.vars.EventTriggers;
 
@@ -158,11 +155,11 @@ public class NewHorizon extends Mod{
 	    NHSounds.load();
 		NHLoader loader = new NHLoader();
 		loader.load();
-		for(ContentList c : content){
-			c.load();
-		}
+		for(ContentList c : content)c.load();
 	    loader.loadLast();
 		
+		ClassIDIniter.load();
+		if(!ClassIDIniter.safe)Log.info("Detected id map conflict");
 		EventTriggers.load();
 		
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();

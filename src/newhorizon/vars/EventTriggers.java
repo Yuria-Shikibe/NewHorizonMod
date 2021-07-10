@@ -5,7 +5,6 @@ import arc.Events;
 import arc.func.Cons2;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.game.EventType;
@@ -66,7 +65,6 @@ public class EventTriggers{
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHVars.reset();
 			
-			Log.info(NHWorldVars.advancedLoad);
 			for(BeforeLoadc c : NHWorldVars.advancedLoad){
 				c.beforeLoad();
 			}
