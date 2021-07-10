@@ -122,9 +122,9 @@ public class NewHorizon extends Mod{
         				table.add(Core.bundle.get("mod.ui.update-log"));
 			        }).grow().row();
         			cont.table(table -> {
+				        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
 				        table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).growX().height(LEN);
 				        table.button("@log", Icon.add, Styles.cleart, NewHorizon::logShow).growX().height(LEN);
-				        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
 			        }).bottom().growX().height(LEN).padTop(OFFSET);
 		        }}.show();
 	        }
