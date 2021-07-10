@@ -6,7 +6,6 @@ import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.gen.EntityMapping;
 
-import java.lang.reflect.Array;
 import java.util.Comparator;
 
 public class ClassIDIniter{
@@ -31,27 +30,8 @@ public class ClassIDIniter{
 		
 		Prov<?>[] map = EntityMapping.idMap;
 		
-		for(int i = 0; i < needIdClasses.size; i++){
-			if(map[i + startFrom] == null){
-				Class<?> c = key.get(i);
-				classIdMap.put(c, i + startFrom);
-				map[i + startFrom] = needIdClasses.get(c);
-			}else{
-				safe = false;
-				break;
-			}
-		}
-		
-		if(!safe){
-			classIdMap.clear();
-			
-			map = (Prov<?>[])Array.newInstance(Prov.class, map.length + needIdClasses.size);
-			
-			for(int i = 0; i < needIdClasses.size; i++){
-				Class<?> c = key.get(i);
-				classIdMap.put(c, map.length - needIdClasses.size + i);
-				map[map.length - needIdClasses.size + i] = needIdClasses.get(c);
-			}
+		for(Class<?> c : key){
+			classIdMap.put(c, EntityMapping.register(c.toString(), needIdClasses.get(c)));
 		}
 		
 		for(Class<?> c : needIdClasses.keys()){

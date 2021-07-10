@@ -4,7 +4,6 @@ import arc.graphics.Color;
 import mindustry.content.Planets;
 import mindustry.ctype.ContentList;
 import mindustry.graphics.g3d.HexMesh;
-import mindustry.maps.planet.TantrosPlanetGenerator;
 import mindustry.type.Planet;
 
 public class NHPlanets implements ContentList {
@@ -16,7 +15,6 @@ public class NHPlanets implements ContentList {
         Planets.serpulo.orbitRadius += 22f;
         eolutch = new Planet("serpulo", Planets.sun, 3, 4.0F) {
             {
-                this.generator = new TantrosPlanetGenerator();
                 this.meshLoader = () -> {
                     return new HexMesh(this, 9);
                 };

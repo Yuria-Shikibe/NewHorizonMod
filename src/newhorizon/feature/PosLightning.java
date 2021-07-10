@@ -49,7 +49,7 @@ public class PosLightning {
 	
 	public static final Cons<Position> none = p -> {};
 	
-	public static final float lifetime = Fx.lightning.lifetime * 1.5f;
+	public static final float lifetime = Fx.chainLightning.lifetime;
 	public static final float WIDTH = 3f;
 	public static final float RANGE_RAND = 4.7f;
 	public static final float ROT_DST = Vars.tilesize * 0.75f;
@@ -60,7 +60,7 @@ public class PosLightning {
 		if(!(e.data instanceof Seq)) return;
 		Seq<Vec2> lines = e.data();
 		
-		Draw.color(e.color, Color.white, e.fin());
+		Draw.color(Color.white, e.color, e.fin());
 		
 		Lines.stroke(e.rotation * e.fout());
 		
@@ -164,7 +164,12 @@ public class PosLightning {
 	}
 	
 	public static void createEffect(Position from, Position to, Color color, int boltNum, float width){
+		if(boltNum < 1)return;
+		
 		float dst = from.dst(to);
+		
+		Seq<Vec2> p = null;
+		
 		for (int i = 0; i < boltNum; i ++) {
 			float len = getBoltRandomRange();
 			float randRange = len * RANGE_RAND;
@@ -173,9 +178,10 @@ public class PosLightning {
 			for (int num = 0; num < dst / (ROT_DST * len) + 1; num ++) {
 				randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
 			}
-			
-			createBoltEffect(color, width, computeVectors(randomArray, from, to));
+			createBoltEffect(color, width, p = computeVectors(randomArray, from, to));
 		}
+		
+		Fx.chainLightning.at(p.first().x, p.first().y, 0, color, p.peek());
 	}
 	
 	//Private methods and classes.

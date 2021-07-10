@@ -46,7 +46,6 @@ import static mindustry.Vars.world;
 import static newhorizon.func.TableFs.LEN;
 
 public class ShieldProjector extends CommandableBlock{
-	public static final int CLASS_ID = 101;
 	
 	static{
 		ClassIDIniter.needIdClasses.put(Projector.class, Projector::new);
@@ -406,6 +405,7 @@ public class ShieldProjector extends CommandableBlock{
 				}
 			}
 			
+			Drawf.light(team, x, y, realRadius, team.color, 0.7f);
 			Draw.reset();
 		}
 		

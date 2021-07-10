@@ -8,6 +8,7 @@ import arc.struct.ObjectMap;
 import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.world.blocks.storage.CoreBlock;
 
 public class DamageConnector {
 	public Color color;
@@ -56,17 +57,17 @@ public class DamageConnector {
 		}
 		
 		@Override
-		public Building core(){
+		public CoreBlock.CoreBuild core(){
 			return unit.core();
 		}
 		
 		@Override
-		public Building closestCore(){
+		public CoreBlock.CoreBuild closestCore(){
 			return unit.closestCore();
 		}
 		
 		@Override
-		public Building closestEnemyCore(){
+		public CoreBlock.CoreBuild closestEnemyCore(){
 			return unit.closestEnemyCore();
 		}
 		

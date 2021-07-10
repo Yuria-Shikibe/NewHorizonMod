@@ -3,23 +3,19 @@ package newhorizon.units;
 import arc.Core;
 import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
-import newhorizon.content.NHLoader;
 
-public class AutoOutlineWeapon extends Weapon{
-	public AutoOutlineWeapon(){
+public class NHWeapon extends Weapon{
+	public NHWeapon(){
 		this("");
 	}
 	
-	public AutoOutlineWeapon(String name){
-		super(name);
-		
-		NHLoader.put(name + "@-outline");
-		this.name = NewHorizon.configName(name);
+	public NHWeapon(String name){
+		super(NewHorizon.configName(name));
 	}
 	
 	@Override
-	public AutoOutlineWeapon copy(){
-		return (AutoOutlineWeapon)super.copy();
+	public NHWeapon copy(){
+		return (NHWeapon)super.copy();
 	}
 	
 	@Override
@@ -29,23 +25,23 @@ public class AutoOutlineWeapon extends Weapon{
 		this.outlineRegion = Core.atlas.find(this.name + "-outline");
 	}
 	
-	public AutoOutlineWeapon setAlternate(boolean b){
+	public NHWeapon setAlternate(boolean b){
 		alternate = b;
 		return this;
 	}
 	
-	public AutoOutlineWeapon setPos(float x, float y){
+	public NHWeapon setPos(float x, float y){
 		this.x = x;
 		this.y = y;
 		return this;
 	}
 	
-	public AutoOutlineWeapon salvoDelay(int total, int id){
+	public NHWeapon salvoDelay(int total, int id){
 		this.firstShotDelay = reload/ total * id;
 		return this;
 	}
 	
-	public AutoOutlineWeapon setDelay(float delay){
+	public NHWeapon setDelay(float delay){
 		this.firstShotDelay = delay;
 		return this;
 	}

@@ -256,6 +256,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 					TableFs.pointSelectTable(t, this::configure);
 				}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
 			}).fill();
+			
 		}
 		
 		@Override

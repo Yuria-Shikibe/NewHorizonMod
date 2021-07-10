@@ -29,6 +29,8 @@ public class DrawFuncs {
         vec22 = new Vec2(),
         vec23 = new Vec2();
     
+    public static final int[] oneArr = {1};
+    
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
     
     public static void drawConnected(float x, float y, float size, Color color){
@@ -72,7 +74,15 @@ public class DrawFuncs {
         Pools.free(layout);
     }
     
+    public static void circlePercentFlip(float x, float y, float rad, float in, float scl){
+        boolean monoIncr = in % (scl * 4) < scl * 2;
+        float f = Mathf.cos(in % (scl * 3f), scl, 1.1f);
+        circlePercent(x, y, rad, f > 0 ? f : -f, in + -90 * Mathf.sign(f));
+    }
+    
     public static void circlePercent(float x, float y, float rad, float percent, float angle) {
+        float p = Mathf.clamp(percent);
+        
         int sides = Lines.circleVertices(rad);
         
         float space = 360.0F / (float)sides;
@@ -83,7 +93,7 @@ public class DrawFuncs {
         
         int i;
         
-        for(i = 0; i < sides * percent - 1; ++i){
+        for(i = 0; i < sides * p - 1; ++i){
             float a = space * (float)i + angle;
             float cos = Mathf.cosDeg(a);
             float sin = Mathf.sinDeg(a);
@@ -97,7 +107,7 @@ public class DrawFuncs {
         float sin = Mathf.sinDeg(a);
         float cos2 = Mathf.cosDeg(a + space);
         float sin2 = Mathf.sinDeg(a + space);
-        float f = sides * percent - i;
+        float f = sides * p - i;
         vec21.trns(a, 0, len * (f - 1));
     
         Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2 + vec21.x, y + r1 * sin2 + vec21.y, x + r2 * cos2 + vec21.x, y + r2 * sin2 + vec21.y, x + r2 * cos, y + r2 * sin);
@@ -115,7 +125,7 @@ public class DrawFuncs {
     
         Vec2 vec = new Vec2().trns(Angles.angle(x, y, x2, y2), distant);
     
-        for(int sign : flip ? Mathf.signs : Mathf.one){
+        for(int sign : flip ? Mathf.signs : oneArr){
             for(int p = 0; p < phase; p++){
                 Fill.circle(x, y, Lines.getStroke());
             
@@ -235,7 +245,7 @@ public class DrawFuncs {
     public static void posSquareLinkArr(Color color, float stroke, float size, boolean drawBottom, boolean linkLine, Position... pos){
         if(pos.length < 2 || (!linkLine && pos[0] == null))return;
         
-        for (int c : drawBottom ? Mathf.signs : Mathf.one) {
+        for (int c : drawBottom ? Mathf.signs : oneArr) {
             for (int i = 1; i < pos.length; i++) {
                 if (pos[i] == null)continue;
                 Position p1 = pos[i - 1], p2 = pos[i];

@@ -194,5 +194,4 @@ public class NHSetting{
 		debug = getBool("@active.debug");
 		if(NHSetting.getBool("@active.tool-panel*"))TableFs.showTable();
 	}
-	
 }

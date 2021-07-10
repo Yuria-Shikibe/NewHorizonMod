@@ -1,6 +1,5 @@
 package newhorizon.feature;
 
-import arc.func.Cons;
 import arc.math.geom.Position;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -66,10 +65,6 @@ public abstract class NHBaseEntity implements Posc, Drawc{
 	@Override public float y(){ return y; }
 	@Override public void y(float y){ this.y = y; }
 	@Override public boolean isAdded(){ return added; }
-	@Override public <T> T with(Cons<T> cons) {
-		cons.get((T)this);
-		return (T)this;
-	}
 	@Override public boolean serialize(){ return true; }
 	@Override public void read(Reads read){
 		x = read.f();

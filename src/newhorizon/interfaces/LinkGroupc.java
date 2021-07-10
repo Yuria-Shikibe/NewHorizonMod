@@ -4,7 +4,6 @@ import arc.struct.IntSeq;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Building;
-import mindustry.gen.Nulls;
 
 public interface LinkGroupc extends Linkablec{
 	default Seq<Building> linkBuilds(){
@@ -32,6 +31,6 @@ public interface LinkGroupc extends Linkablec{
 	}
 	
 	@Override default int linkPos(){return pos();}
-	@Override default Building link(){return Nulls.building;}
+	@Override default Building link(){return as();}
 	
 }

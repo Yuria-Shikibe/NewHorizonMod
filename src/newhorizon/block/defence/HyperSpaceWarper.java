@@ -40,6 +40,7 @@ import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.UnitPayload;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import newhorizon.block.special.JumpGate;
 import newhorizon.content.*;
@@ -199,6 +200,7 @@ public class HyperSpaceWarper extends Block{
 				}
 			}
 			
+			Drawf.light(team, tile, size * tilesize * 3 * warmup, team.color, 0.85f);
 		}
 		
 		public boolean canTeleport(){
@@ -420,6 +422,8 @@ public class HyperSpaceWarper extends Block{
 		protected boolean dumped = false, onMove = false, contained, adjusted, intercepted = false, complete = false;
 		protected float time = 0, lifetime = 540f,surviveTime = 0, surviveLifetime = 6000;
 		
+		protected transient boolean onGoing = true;
+		
 		public void init(Unit unit, Vec2 to, float rotation){
 			finalRot = rotation;
 			size = unit.hitSize * 2f;
@@ -439,8 +443,12 @@ public class HyperSpaceWarper extends Block{
 		@Override
 		public void draw(){
 			Draw.z(Layer.effect);
-			if((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2))trail.draw();
+			if(((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2)) && onGoing && trail.points.any()){
+				Drawf.light(team, x, y, trail.points.first().x, trail.points.first().y, trail.width * 2.5f, team.color, 0.6f);
+				trail.draw();
+			}
 			
+			if(!onMove && team != null)Drawf.light(team, this, size * fslope(), team.color, 0.8f);
 			if(!onMove && unit != null && !unit.isNull()){
 				float height = Mathf.curve(fslope() * fslope(), 0f, 0.3f) * 1.1f;
 				float width = Mathf.curve(fslope() * fslope(), 0.35f, 0.75f) * 1.1f;
@@ -454,20 +462,21 @@ public class HyperSpaceWarper extends Block{
 					Draw.color(Pal.ammo);
 					Draw.z(Layer.bullet - 0.1f);
 					float size = this.size / 3;
-					Draw.rect(Icon.warning.getRegion(), x, y, 16f, 16f);
-					
 					float sin = Mathf.absin(Time.time * DrawFuncs.sinScl, 8f, 2f);
+					float length = size / 1.5f + sin;
+					
+					Draw.rect(Icon.warning.getRegion(), x, y, size / 1.5f, size / 1.5f);
 					
 					Draw.alpha(surviveTime / surviveLifetime);
 					for(int i = 0; i < 4; i++){
-						float length = size / 1.5f + sin;
+						
 						Tmp.v1.trns(i * 90, -length);
 						Draw.rect(NHContent.pointerRegion,x + Tmp.v1.x, y + Tmp.v1.y, size, size, i * 90 - 90f);
 					}
+					
 					Draw.reset();
 				}else{
 					Draw.z(Layer.effect);
-					
 					Draw.color(team.color.cpy().mul(1.15f), Pal.gray, new Rand(id).random(-0.25f, 0.25f) / 4f);
 					Fill.rect(x, y, Draw.scl * unit.type.shadowRegion.height * width + 1f, Draw.scl * unit.type.shadowRegion.width * height, rotation);
 				}
@@ -490,7 +499,7 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public void update(){
-			boolean onGoing = true;
+			onGoing = true;
 			
 			trail.update(x, y);
 			
@@ -564,7 +573,6 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public int classId(){
-			Log.info(ClassIDIniter.getID(getClass()));
 			return ClassIDIniter.getID(getClass());
 		}
 		
@@ -621,17 +629,17 @@ public class HyperSpaceWarper extends Block{
 		}
 		
 		@Override
-		public Building core(){
+		public CoreBlock.CoreBuild core(){
 			return team.core();
 		}
 		
 		@Override
-		public Building closestCore(){
+		public CoreBlock.CoreBuild closestCore(){
 			return state.teams.closestCore(x, y, team);
 		}
 		
 		@Override
-		public Building closestEnemyCore(){
+		public CoreBlock.CoreBuild closestEnemyCore(){
 			return state.teams.closestEnemyCore(x, y, team);
 		}
 		

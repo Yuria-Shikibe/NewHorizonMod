@@ -1,10 +1,10 @@
 package newhorizon.units;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -20,7 +20,7 @@ import mindustry.graphics.Trail;
 import mindustry.type.AmmoTypes;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
-import mindustry.ui.Cicon;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 
@@ -50,8 +50,9 @@ public class EnergyUnitType extends UnitType{
 	}
 	
 	@Override
-	public TextureRegion icon(Cicon icon){
-		return Icon.power.getRegion();
+	public void load(){
+		super.load();
+		uiIcon = fullIcon = Core.atlas.find(NewHorizon.configName("jump-gate-pointer"));
 	}
 	
 	@Override
@@ -177,7 +178,7 @@ public class EnergyUnitType extends UnitType{
 	public void drawShield(Unit unit){
 		float alpha = unit.shieldAlpha();
 		float radius = unit.hitSize() * 1.3f;
-		Fill.light(unit.x, unit.y, Lines.circleVertices(radius), radius, Tmp.c1.set(Pal.shieldIn), Tmp.c2.set(unit.team.color).a(0.7f).lerp(Color.white, Mathf.clamp(unit.hitTime() / 2f)).a(Pal.shield.a * alpha));
+		Fill.light(unit.x, unit.y, Lines.circleVertices(radius), radius, Tmp.c1.set(Pal.shield), Tmp.c2.set(unit.team.color).a(0.7f).lerp(Color.white, Mathf.clamp(unit.hitTime() / 2f)).a(Pal.shield.a * alpha));
 	}
 	
 	@Override

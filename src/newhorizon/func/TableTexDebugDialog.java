@@ -2,7 +2,6 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
@@ -18,7 +17,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.content.NHLoader;
+import newhorizon.units.NHUnitType;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,14 +36,6 @@ public class TableTexDebugDialog extends BaseDialog{
 	
 	public TableTexDebugDialog(String title){
 		this(title, Core.scene.getStyle(Dialog.DialogStyle.class));
-	}
-	
-	public TableTexDebugDialog(String title, Dialog.DialogStyle style) {
-		super(title, style);
-	}
-	
-	public BaseDialog init(){
-		addCloseButton();
 		
 		cont.button("Icons", () -> {
 			iconDialog = new BaseDialog("ICONS"){{
@@ -77,7 +68,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			iconDialog.addCloseListener();
 			iconDialog.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
-			
+		
 		cont.button("TableTexes", () -> {
 			tableDialog = new BaseDialog("ICONS"){{
 				Object obj = new Tex();
@@ -184,39 +175,6 @@ public class TableTexDebugDialog extends BaseDialog{
 			buttonImage.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
-		cont.button("Images", () -> {
-			buttonImage = new BaseDialog("Images"){{
-				cont.pane(table -> {
-					AtomicInteger index = new AtomicInteger();
-					NHLoader.outlineTex.each( (arg, tex) -> {
-						if(tex != null && tex.found()){
-							if(index.get() % 8 == 0)table.row();
-							table.table(t -> {
-								float width = Mathf.clamp(tex.width, 0, LEN * 3);
-								t.table(in -> in.image(tex).size(width, tex.height * width / tex.width)).size(LEN * 3).row();
-								t.add(arg).size(LEN * 3, LEN / 2);
-							});
-							index.getAndIncrement();
-						}
-					});
-					NHLoader.fullIconNeeds.each( (arg, iconSet) -> {
-						TextureRegion tex = Core.atlas.find(arg + "-icon");
-						if(tex != null && tex.found()){
-							if(index.get() % 8 == 0)table.row();
-							table.table(t -> {
-								float width = Mathf.clamp(tex.width, 0, LEN * 3);
-								t.table(in -> in.image(tex).size(width, tex.height * width / tex.width)).size(LEN * 3).row();
-								t.add(arg).size(LEN * 3, LEN / 2);
-							});
-							index.getAndIncrement();
-						}
-					});
-				}).fill();
-			}};
-			buttonImage.addCloseListener();
-			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
-		
 		cont.row();
 		
 		cont.button("Units", () -> {
@@ -240,6 +198,23 @@ public class TableTexDebugDialog extends BaseDialog{
 							index.getAndIncrement();
 						}
 					});
+				}).fill();
+			}};
+			buttonImage.addCloseListener();
+			buttonImage.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+		
+		cont.button("Test", () -> {
+			buttonImage = new BaseDialog("Test"){{
+				cont.pane(table -> {
+					int index = 0;
+					for(TextureRegion tex : NHUnitType.test){
+						if(index % 8 == 0) table.row();
+						table.table(Tex.buttonEdge3, t -> {
+							t.image(new TextureRegionDrawable(tex)).grow().row();
+						});
+						index++;
+					}
 				}).fill();
 			}};
 			buttonImage.addCloseListener();
@@ -288,7 +263,11 @@ public class TableTexDebugDialog extends BaseDialog{
 			dialog.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
-		return this;
+		addCloseButton();
+	}
+	
+	public TableTexDebugDialog(String title, Dialog.DialogStyle style) {
+		super(title, style);
 	}
 }
 

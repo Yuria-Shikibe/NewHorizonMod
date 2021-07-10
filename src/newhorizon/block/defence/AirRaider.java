@@ -5,17 +5,12 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
-import arc.struct.ObjectMap;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.core.World;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Sounds;
-import mindustry.world.Block;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.values.AmmoListValue;
 import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.tilesize;
@@ -45,9 +40,6 @@ public class AirRaider extends CommandableAttackerBlock{
 	@Override
 	public void setStats(){
 		super.setStats();
-		ObjectMap<Block, BulletType> map = new ObjectMap<>();
-		map.put(this, bulletHitter);
-		stats.add(Stat.ammo, new AmmoListValue<>(map));
 	}
 	
 	public class AirRaiderBuild extends CommandableAttackerBlockBuild{

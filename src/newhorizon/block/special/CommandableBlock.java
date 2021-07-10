@@ -15,6 +15,7 @@ import mindustry.logic.Ranged;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
 import newhorizon.vars.NHVars;
@@ -157,17 +158,13 @@ public abstract class CommandableBlock extends Block{
 		@Override public Block blockOn(){ return null; }
 		@Override public boolean onSolid(){ return false; }
 		@Override public Tile tileOn(){ return null; }
-		@Override public float getX(){ return 0; }
+		@Override public float getX(){ return x; }
 		@Override public float getY(){ return y; }
 		@Override public float x(){ return x; }
 		@Override public void x(float x){ this.x = x; }
 		@Override public float y(){ return y; }
 		@Override public void y(float y){ this.y = y; }
 		@Override public boolean isAdded(){ return added; }
-		@Override public <T> T with(Cons<T> cons) {
-			cons.get((T)this);
-			return (T)this;
-		}
 		@Override public int classId(){ return 1001; }
 		@Override public boolean serialize(){ return false; }
 		@Override public void read(Reads read){ }
@@ -181,13 +178,13 @@ public abstract class CommandableBlock extends Block{
 		@Override public boolean cheating(){
 			return team.rules().cheat;
 		}
-		@Override public Building core(){
+		@Override public CoreBlock.CoreBuild core(){
 			return team.core();
 		}
-		@Override public Building closestCore(){
+		@Override public CoreBlock.CoreBuild closestCore(){
 			return team.core();
 		}
-		@Override public Building closestEnemyCore(){
+		@Override public CoreBlock.CoreBuild closestEnemyCore(){
 			return state.teams.closestEnemyCore(x, y, team);
 		}
 		@Override public Team team(){

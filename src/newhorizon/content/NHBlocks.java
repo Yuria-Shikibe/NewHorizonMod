@@ -34,12 +34,12 @@ import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.DecayGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.production.GenericSmelter;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMixer;
+import mindustry.world.draw.DrawSmelter;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
@@ -60,7 +60,7 @@ import newhorizon.block.turrets.ScalableTurret;
 import newhorizon.block.turrets.SpeedupTurret;
 import newhorizon.bullets.AdaptedContinuousLaserBulletType;
 import newhorizon.bullets.AdaptedLaserBulletType;
-import newhorizon.bullets.NHTrailBulletType;
+import newhorizon.bullets.SpeedUpBulletType;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -323,7 +323,7 @@ public class NHBlocks implements ContentList {
 			consumes.powerCond(12f, TurretBuild::isActive);
 			
 			ammo(NHItems.thermoCorePositive,
-					new NHTrailBulletType(4, 500, "large-bomb"){{
+					new BasicBulletType(4, 500, "large-bomb"){{
 						lightning = 6;
 						lightningCone = 360;
 						lightningLengthRand = lightningLength = 12;
@@ -337,11 +337,9 @@ public class NHBlocks implements ContentList {
 						statusDuration = 30f;
 						
 						spin = 3f;
-						trails = 1;
 						trailLength = 40;
 						trailWidth = 2.5f;
 						lifetime = 140f;
-						combine = true;
 						shrinkX = shrinkY = 0;
 						hitSound = Sounds.explosionbig;
 						drawSize = 60f;
@@ -606,7 +604,7 @@ public class NHBlocks implements ContentList {
 			health = 320;
 			requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.copper, 50, Items.silicon, 25));
 			NHTechTree.add(Blocks.arc, this);
-			shootType = new NHTrailBulletType(6.5f, 18f){{
+			shootType = new BasicBulletType(6.5f, 18f){{
 				hitEffect = new Effect(12.0F, (e) -> {
 					Draw.color(Pal.lancerLaser, Color.white, e.fout() * 0.75f);
 					Lines.stroke(e.fout() * 1.5F);
@@ -615,6 +613,10 @@ public class NHBlocks implements ContentList {
 						Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 4.0F + 1.0F);
 					});
 				});
+				trailWidth = 1.25f;
+				trailLength = 15;
+				drawSize = 180f;
+				
 				knockback = 0.5f;
 				trailColor = backColor = hitColor = Pal.lancerLaser;
 				frontColor = Color.white;
@@ -785,10 +787,8 @@ public class NHBlocks implements ContentList {
 				Lines.square(e.x, e.y, size * tilesize / 2f + tilesize * 1.5f * e.fin(Interp.pow2In));
 			});
 			
-			bulletHitter = new NHTrailBulletType(2f, 500, NHBullets.STRIKE){{
-				trails = 1;
+			bulletHitter = new SpeedUpBulletType(2f, 500, NHBullets.STRIKE){{
 				trailLength = 14;
-				trailOffset = 6f;
 				
 				trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 				frontColor = Color.white;
@@ -1101,12 +1101,11 @@ public class NHBlocks implements ContentList {
 			cooldownNormal = 5f;
 			cooldownLiquid = 4f;
 			cooldownBrokenBase = 2.7f;
-			basePowerDraw = 2f;
 			consumes.item(NHItems.fusionEnergy).boost();
 			phaseUseTime = 180.0F;
 			phaseRadiusBoost = 100.0F;
 			phaseShieldBoost = 8000.0F;
-			consumes.power(25F);
+			consumes.power(12F);
 			requirements(Category.effect, with(NHItems.seniorProcessor, 150, Items.lead, 250, Items.graphite, 180, NHItems.presstanium, 150, NHItems.fusionEnergy, 80, NHItems.irayrondPanel, 50));
 		}};
 
@@ -1173,7 +1172,7 @@ public class NHBlocks implements ContentList {
 
 		//Smelters
 
-		darkEnergyFactory = new GenericSmelter("dark-energy-factory") {
+		darkEnergyFactory = new GenericCrafter("dark-energy-factory") {
 			{
 				requirements(Category.crafting, with(NHItems.irayrondPanel, 60, NHItems.setonAlloy, 30, NHItems.seniorProcessor, 60));
 				craftEffect = Fx.smeltsmoke;
@@ -1181,14 +1180,14 @@ public class NHBlocks implements ContentList {
 				craftTime = 90f;
 				size = 2;
 				hasPower = hasItems = true;
-				flameColor = NHItems.darkEnergy.color;
+				drawer = new DrawSmelter(NHItems.darkEnergy.color);
 
 				consumes.items(new ItemStack(NHItems.thermoCoreNegative, 1), new ItemStack(NHItems.thermoCorePositive, 1));
 				consumes.power(20f);
 			}
 		};
 
-		fusionEnergyFactory = new GenericSmelter("fusion-core-energy-factory") {
+		fusionEnergyFactory = new GenericCrafter("fusion-core-energy-factory") {
 			{
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.thorium, 60, Items.graphite, 30));
 				craftEffect = Fx.smeltsmoke;
@@ -1198,14 +1197,14 @@ public class NHBlocks implements ContentList {
 				itemCapacity = 20;
 				liquidCapacity = 60f;
 				hasPower = hasLiquids = hasItems = true;
-				flameColor = NHItems.fusionEnergy.color;
+				drawer = new DrawSmelter(NHItems.fusionEnergy.color);
 				consumes.liquid(Liquids.water, 0.3f);
 				consumes.items(new ItemStack(NHItems.presstanium, 2), new ItemStack(NHItems.zeta, 6));
 				consumes.power(6f);
 			}
 		};
 
-		irayrondPanelFactory = new GenericSmelter("irayrond-panel-factory") {
+		irayrondPanelFactory = new GenericCrafter("irayrond-panel-factory") {
 			{
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.plastanium, 60, Items.surgeAlloy, 75, Items.graphite, 30));
 				craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 7, 4f + e.fin() * 18f, (x, y) -> {
@@ -1217,14 +1216,14 @@ public class NHBlocks implements ContentList {
 				health = 800;
 				size = 4;
 				hasPower = hasLiquids = hasItems = true;
-				flameColor = NHItems.irayrondPanel.color;
+				drawer = new DrawSmelter(NHItems.irayrondPanel.color);
 				consumes.liquid(NHLiquids.xenAlpha, 0.1f);
 				consumes.items(new ItemStack(NHItems.presstanium, 4), new ItemStack(Items.surgeAlloy, 2));
 				consumes.power(2f);
 			}
 		};
 
-		juniorProcessorFactory = new GenericSmelter("processor-junior-factory") {
+		juniorProcessorFactory = new GenericCrafter("processor-junior-factory") {
 			{
 				requirements(Category.crafting, with(Items.silicon, 40, NHItems.presstanium, 30, Items.copper, 25, Items.lead, 25));
 				craftEffect = Fx.none;
@@ -1232,13 +1231,13 @@ public class NHBlocks implements ContentList {
 				craftTime = 120f;
 				size = 2;
 				hasPower = hasLiquids = hasItems = true;
-				flameColor = NHItems.fusionEnergy.color;
+				drawer = new DrawSmelter(NHItems.fusionEnergy.color);
 				consumes.items(new ItemStack(Items.silicon, 2), new ItemStack(Items.copper, 4));
 				consumes.power(2f);
 			}
 		};
 
-		seniorProcessorFactory = new GenericSmelter("processor-senior-factory") {
+		seniorProcessorFactory = new GenericCrafter("processor-senior-factory") {
 			{
 				requirements(Category.crafting, with(Items.surgeAlloy, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.thorium, 25));
 				craftEffect = Fx.none;
@@ -1246,7 +1245,7 @@ public class NHBlocks implements ContentList {
 				craftTime = 120f;
 				size = 2;
 				hasPower = hasLiquids = hasItems = true;
-				flameColor = NHItems.fusionEnergy.color;
+				drawer = new DrawSmelter(NHItems.fusionEnergy.color);
 				consumes.items(new ItemStack(Items.surgeAlloy, 2), new ItemStack(NHItems.juniorProcessor, 4));
 				consumes.power(4f);
 			}
@@ -1275,14 +1274,14 @@ public class NHBlocks implements ContentList {
 			}
 		};
 
-		zetaFluidFactory = new GenericSmelter("zeta-fluid-factory") {
+		zetaFluidFactory = new GenericCrafter("zeta-fluid-factory") {
 			{
 				requirements(Category.crafting, with(Items.plastanium, 50, NHItems.juniorProcessor, 35, NHItems.presstanium, 80, Items.graphite, 65));
 				craftEffect = Fx.smeltsmoke;
 				outputLiquid = new LiquidStack(NHLiquids.zetaFluid, 15f);
 				craftTime = 60f;
 				health = 550;
-				flameColor = NHLiquids.zetaFluid.color;
+				drawer = new DrawSmelter(NHLiquids.zetaFluid.color);
 				size = 3;
 				itemCapacity = 20;
 				liquidCapacity = 60f;

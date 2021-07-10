@@ -7,6 +7,7 @@ import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Position;
@@ -16,6 +17,7 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -34,6 +36,7 @@ import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
+import newhorizon.func.DrawFuncs;
 
 import static mindustry.Vars.tilesize;
 
@@ -57,7 +60,7 @@ public class HyperGenerator extends PowerGenerator{
 	public int lightningLen = 4;
 	public int lightningLenRand = 8;
 	public float lightningDamage = 120f;
-	public int subNum = 2;
+	public int subNum = 1;
 	public int subNumRand = 1;
 	
 	public Cons<HyperGeneratorBuild> explodeAction = entity -> {};
@@ -72,7 +75,7 @@ public class HyperGenerator extends PowerGenerator{
 	public float gateSize = 5f;
 	public float effectCircleSize = -1;
 	public float triWidth = 6f;
-	public float triLength = 83f;
+	public float triLength = 100f;
 	public Effect updateEffect = NHFx.circle;
 	public Effect workEffect = NHFx.line;
 	public float updateEffectDiv = 20f;
@@ -124,6 +127,7 @@ public class HyperGenerator extends PowerGenerator{
 	public void init(){
 		super.init();
 		if(effectCircleSize < 0)effectCircleSize = size * Vars.tilesize / 6f;
+		clipSize = Math.max(clipSize, tilesize * size * 8f);
 		destroyed = new EffectBulletType(600f){
 			{
 				absorbable = hittable = false;
@@ -254,6 +258,14 @@ public class HyperGenerator extends PowerGenerator{
 					});
 				}
 				if(Mathf.chance(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, effectColor);
+				if(Mathf.chance(warmup / updateEffectDiv * 3f)){
+					Tmp.v1.rnd(size * tilesize * warmup * 0.9f).add(tile);
+					Fx.chainLightning.at(x, y, 0, effectColor, Tmp.v1.cpy());
+				}
+				if(Mathf.chance(warmup / updateEffectDiv * 2f)){
+					Tmp.v1.rnd(size * tilesize * warmup * 1.5f).add(tile);
+					Fx.chainLightning.at(x, y, 0, effectColor, Tmp.v1.cpy());
+				}
 			}
 		}
 		
@@ -295,13 +307,23 @@ public class HyperGenerator extends PowerGenerator{
 				Draw.z(Layer.effect - 1f);
 				Draw.color(drawColor);
 				
+				
+				
 				Fill.circle(x, y, effectCircleSize * drawSin);
 				for(int i : Mathf.signs){
 					Drawf.tri(x, y, triWidth * warmup, triLength * drawSin2, (i + 1) * 90 + progress);
-					Drawf.tri(x, y, triWidth * warmup, triLength * drawSin3, (i + 1) * 90 - progress + 90);
+					Drawf.tri(x, y, triWidth * warmup * 0.8f, triLength * drawSin3 * 0.8f, (i + 1) * 90 - progress * 1.1f + 90);
 				}
+				
+				Lines.stroke(warmup * triWidth * 0.75f);
+				DrawFuncs.circlePercentFlip(x, y, size * tilesize * 0.85f * (1 + Mathf.absin(progress * 2f, 24f, 0.125f)) * warmup, progress * 0.85f, 30f);
+				
+				Lines.stroke(warmup * triWidth * 0.55f);
+				DrawFuncs.circlePercentFlip(x, y, size * tilesize * 1.1f * (1 + Mathf.absin(progress * 1.25f, 24f, 0.125f)) * warmup, progress * 0.95f + 5f, 45f);
 			}
 			Draw.reset();
+			
+			Drawf.light(team, tile, size * tilesize * 4 * warmup, effectColor, 0.95f);
 		}
 		
 		@Override

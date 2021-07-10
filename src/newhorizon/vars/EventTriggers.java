@@ -55,7 +55,7 @@ public class EventTriggers{
 		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
 		
 		contents = new Block[]{
-			Blocks.itemSource, Blocks.liquidSource, Blocks.powerSource
+			Blocks.itemSource, Blocks.liquidSource, Blocks.powerSource, Blocks.payloadSource
 		};
 		
 		Events.on(BossGeneratedEvent.class, e -> {

@@ -11,7 +11,6 @@ import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
-import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.ui.Links;
@@ -24,7 +23,8 @@ import newhorizon.vars.EventTriggers;
 
 import java.io.IOException;
 
-import static newhorizon.func.TableFs.*;
+import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFs.OFFSET;
 
 
 public class NewHorizon extends Mod{
@@ -51,7 +51,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-			NHBlocks.shieldProjector
+		
 		}).show();
 	}
 	
@@ -86,12 +86,7 @@ public class NewHorizon extends Mod{
 				table.add("").row();
 			}).grow().center().row();
 			
-			inner.pane(t -> {
-				t.add("[gray]You can get back to here by [accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ");
-				t.add(NHLoader.content.localizedName).color(Pal.lancerLaser).row();
-			}).fillX().height(LEN).bottom().row();
-			
-			inner.table(Tex.clear, table -> {
+			inner.table(table -> {
 				table.button("@back", Icon.left, Styles.cleart, () -> {
 					dialog.hide();
 					NHSetting.settingApply();
@@ -127,7 +122,7 @@ public class NewHorizon extends Mod{
 	        }
         	
         	if(!NHSetting.getBool("@active.hid-start-log") || NHSetting.versionChange)startLog();
-	        if(NHSetting.getBool("@active.tool-panel*"))tableMain();
+	        if(NHSetting.getBool("@active.tool-panel*"))TableFs.tableMain();
 	        NHSetting.updateSettingMenu();
         }));
         
@@ -151,16 +146,16 @@ public class NewHorizon extends Mod{
 			}
 		}
 		
-		
-	    NHSounds.load();
-		NHLoader loader = new NHLoader();
-		loader.load();
-		for(ContentList c : content)c.load();
-	    loader.loadLast();
-		
 		ClassIDIniter.load();
 		if(!ClassIDIniter.safe)Log.info("Detected id map conflict");
 		EventTriggers.load();
+	    NHSounds.load();
+		NHContent.initLoad();
+		
+		for(ContentList contentList : content){
+			contentList.load();
+		}
+		
 		
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		

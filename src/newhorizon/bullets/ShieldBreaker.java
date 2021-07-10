@@ -8,7 +8,7 @@ import mindustry.gen.Bullet;
 import newhorizon.content.NHFx;
 
 
-public class ShieldBreaker extends NHTrailBulletType{
+public class ShieldBreaker extends SpeedUpBulletType{
     public float maxShieldDamage;
     
     protected static BulletType breakType = new EffectBulletType(3f){{

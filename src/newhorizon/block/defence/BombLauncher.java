@@ -220,6 +220,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			Draw.alpha(alpha);
 			Draw.z(Layer.weather - 1);
 			Draw.rect(bombRegion, cx, cy, rw, rh, rotation);
+			Drawf.light(team, cx, cy, 50f * (parent ? fout() : fin()), baseColor, 0.7f);
 			
 			Tmp.v1.trns(225, (parent ? fin(Interp.pow2In) * 1.25f : fout(Interp.pow5Out)) * (floatY + Mathf.randomSeedRange(id() + 2, floatY)));
 			

@@ -14,14 +14,14 @@ import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Drawf;
 import newhorizon.content.NHFx;
-import newhorizon.effects.EffectTrail;
 import newhorizon.feature.PosLightning;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
 
-public class LightningLinkerBulletType extends NHTrailBulletType{
+public class LightningLinkerBulletType extends SpeedUpBulletType{
 	public Color
 			outColor = Color.white,
 			innerColor = Color.white;
@@ -53,10 +53,11 @@ public class LightningLinkerBulletType extends NHTrailBulletType{
 		hitSound = Sounds.explosion;
 		shootEffect = Fx.shootBig;
 		lightning = 4;
-		trails = 0;
 		lightningLength = 3;
 		lightningLengthRand = 12;
 		lightningCone = 360f;
+		
+		trailWidth = -1;
 	}
 	
 	public LightningLinkerBulletType(){
@@ -86,10 +87,15 @@ public class LightningLinkerBulletType extends NHTrailBulletType{
 			Fill.circle(e.x + x, e.y + y, e.fout() * (size / 3f - 1f));
 		}));
 		if(this.liHitEffect == NHFx.boolSelector)this.liHitEffect = NHFx.lightningHitSmall(outColor);
+		
+		if(trailWidth < 0)trailWidth = size * 0.75f;
+		if(trailLength < 0)trailLength = 12;
 	}
 	
 	@Override
 	public void update(Bullet b) {
+		super.update(b);
+		
 		Effect.shake(hitShake, hitShake, b);
 		if (b.timer(5, generateDelay)) {
 			for(int i : Mathf.signs)slopeEffect.at(b.x + Mathf.range(size / 4f), b.y + Mathf.range(size / 4f), b.rotation(), i);
@@ -99,12 +105,9 @@ public class LightningLinkerBulletType extends NHTrailBulletType{
 		
 		if(randomGenerateRange > 0f && Mathf.chance(Time.delta * randomGenerateChance))PosLightning.createRandomRange(b, b.team, b, randomGenerateRange, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, boltWidth, boltNum, randomLightningNum, hitPos -> {
 			randomGenerateSound.at(hitPos, Mathf.random(0.9f, 1.1f));
-			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), this.splashDamageRadius, this.splashDamage * b.damageMultiplier(), this.collidesAir, this.collidesGround);
+			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius / 8, splashDamage * b.damageMultiplier() / 8, collidesAir, collidesGround);
 			NHFx.lightningHitLarge(outColor).at(hitPos);
 		});
-		
-		if(!(b.data instanceof EffectTrail[]))return;
-		super.updateTrail(b, (EffectTrail[])b.data());
 	}
 	
 	@Override
@@ -116,11 +119,14 @@ public class LightningLinkerBulletType extends NHTrailBulletType{
 	
 	@Override
 	public void draw(Bullet b) {
+		drawTrail(b);
+		
 		color(outColor);
 		Fill.circle(b.x, b.y, size);
 		color(innerColor);
 		Fill.circle(b.x, b.y, size / 7f + size / 3 * Mathf.curve(b.fout(), 0.1f, 0.35f));
-		drawTrail(b);
+		
+		Drawf.light(b.x, b.y, size * 1.85f, outColor, 0.7f);
 	}
 	
 	@Override

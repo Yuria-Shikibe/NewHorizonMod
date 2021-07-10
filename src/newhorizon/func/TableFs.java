@@ -153,9 +153,7 @@ public class TableFs{
                     }).fillX().height(LEN).row();
                     tin.pane(con -> {
                         con.button("Debug", Styles.cleart, () -> {
-                            TableTexDebugDialog d = new TableTexDebugDialog("debug");
-                            d.init();
-                            d.show();
+                            new TableTexDebugDialog("debug").show();
                         }).disabled(b -> !state.rules.infiniteResources && !NHSetting.getBool("@active.debug")).size(LEN * 2, LEN);
                     }).fillX().height(LEN).row();
                 });
@@ -291,7 +289,7 @@ public class TableFs{
                         setText();
                     }).disabled(b -> !pointValid()).size(WIDTH, LEN).padLeft(WIDTH).right().padBottom(OFFSET * 5f);
                 }).height(LEN).padTop(OFFSET).row();
-    
+                
                 t.add("Set Move Target").row();
                 t.table(Tex.clear, t2 -> {
                     t2.add("[accent]X: ").left();
@@ -327,7 +325,7 @@ public class TableFs{
                     if(field.getGenericType().toString().equals("boolean")) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": ").append(getJudge(field.getBoolean(type))).append("[]")).left().row();
                     if(field.getGenericType().toString().equals("float") && field.getFloat(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getFloat(type)).append("[]")).left().row();
                     if(field.getGenericType().toString().equals("int") && field.getInt(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getInt(type)).append("[]")).left().row();
-    
+                    
                     if(field.getType().getSimpleName().equals("BulletType")){
                         BulletType inner = (BulletType)field.get(type);
                         if(inner == null || inner.toString().equals("bullet#0") || inner.toString().equals("bullet#1") || inner.toString().equals("bullet#2"))continue;
@@ -374,13 +372,13 @@ public class TableFs{
     
     public static void rectSelectTable(Table parentT, Runnable run){
         NHVars.resetCtrl();
-    
+        
         Rect r = NHVars.ctrl.rect;
         
         NHVars.ctrl.isSelecting = true;
-    
+        
         NHVars.ctrl.pressDown = false;
-    
+        
         Table pTable = new Table(Tex.pane){{
             update(() -> {
                 if(Vars.state.isMenu())remove();
@@ -388,7 +386,7 @@ public class TableFs{
                     Vec2 v = Core.camera.project(r.x + r.width / 2, r.y - OFFSET);
                     setPosition(v.x, v.y, 0);
                 }
-            
+                
                 if(NHVars.ctrl.pressDown){
                     touchable = Touchable.disabled;
                 }else touchable = Touchable.enabled;
@@ -401,13 +399,13 @@ public class TableFs{
                 }).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.pressDown);
             }).size(LEN * 4, LEN);
         }};
-    
+        
         Table floatTable = new Table(Tex.clear){{
             parentT.color.a = 0.3f;
             
             update(() -> {
                 r.setSize(Math.abs(NHVars.ctrl.to.x - NHVars.ctrl.from.x), Math.abs(NHVars.ctrl.to.y - NHVars.ctrl.from.y)).setCenter((NHVars.ctrl.from.x + NHVars.ctrl.to.x) / 2f, (NHVars.ctrl.from.y + NHVars.ctrl.to.y) / 2f);
-    
+                
                 if(Vars.state.isMenu() || !NHVars.ctrl.isSelecting){
                     NHVars.ctrl.from.set(0, 0);
                     NHVars.ctrl.to.set(0, 0);
@@ -424,13 +422,13 @@ public class TableFs{
             if(mobile){
                 addListener(new InputListener(){
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    if(!NHVars.ctrl.pressDown){
-                        NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-                        NHVars.ctrl.to.set(NHVars.ctrl.from);
-                    }
-                    else NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
-                    NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
-                    return false;
+                        if(!NHVars.ctrl.pressDown){
+                            NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                            NHVars.ctrl.to.set(NHVars.ctrl.from);
+                        }
+                        else NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                        NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
+                        return false;
                     }
                 });
             }else addListener(new InputListener(){
@@ -441,7 +439,7 @@ public class TableFs{
                     NHVars.ctrl.to.set(NHVars.ctrl.from);
                     return false;
                 }
-    
+                
                 public void exit(InputEvent event, float x, float y, int pointer, Element toActor) {
                     if(remove()){
                         parentT.touchable = Touchable.enabled;
@@ -451,14 +449,14 @@ public class TableFs{
                 }
             });
         }
-    
+            
             @Override
             public boolean remove(){
                 parentT.color.a = 1f;
                 return super.remove();
             }
         };
-    
+        
         if(mobile)Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 3, 0), pTable);
         Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 2, 0), floatTable);
     }

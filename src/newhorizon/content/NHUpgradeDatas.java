@@ -38,9 +38,9 @@ public class NHUpgradeDatas implements ContentList{
 		mineShoot = new UpgradeData("mine-shoot", NHBullets.mineShoot, 250f,
 			new ItemStack(Items.blastCompound, 60), new ItemStack(NHItems.juniorProcessor, 80)
 		){{
-			burstSpacing = 3f;
-			salvos = 12;
-			inaccuracy = 8f;
+			burstSpacing = 6f;
+			salvos = 6;
+			inaccuracy = 12f;
 			shootSound = Sounds.plasmaboom;
 		}};
 		
