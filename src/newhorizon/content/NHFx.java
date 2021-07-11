@@ -19,7 +19,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.game.EventType;
-import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -479,19 +478,16 @@ public class NHFx{
 		})).layer(20.0F),
 	
 		spawn = new Effect(100f, e -> {
-			if(!(e.data() instanceof Building))return;
-			Building starter = e.data();
-
 			TextureRegion pointerRegion = NHContent.pointerRegion;
 
 			Draw.color(e.color);
 
 			for (int j = 1; j <= 3; j ++) {
 				for(int i = 0; i < 4; i++) {
-					float length = tilesize * starter.block().size * 1.5f + 4f;
+					float length = e.rotation * 3f + tilesize;
 					float x = Angles.trnsx(i * 90, -length), y = Angles.trnsy(i * 90, -length);
 					e.scaled(30 * j, k -> {
-						float signSize = (e.rotation / 3f + Draw.scl) * k.fout();
+						float signSize = e.rotation / tilesize / 2f * Draw.scl * k.fout();
 						Draw.rect(pointerRegion, e.x + x * k.finpow(), e.y + y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Angles.angle(x, y) - 90);
 						Drawf.light(e.x + x, e.y + y, e.fout() * signSize * pointerRegion.height, e.color, 0.7f);
 					});
@@ -503,8 +499,9 @@ public class NHFx{
 			if (!(e.data instanceof Unit))return;
 			Unit unit = e.data();
 			UnitType type = unit.type;
-			color(e.color);
+			color(unit.team.color);
 
+			Draw.z((type.engineSize < 0 ? Layer.effect - 0.01f : type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.1f);
 			e.scaled(38, i -> Drawf.tri(e.x, e.y, type.hitSize / 2.5f * i.fout(), 2500, e.rotation - 180));
 
 			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 60));

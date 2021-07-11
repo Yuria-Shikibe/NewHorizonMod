@@ -543,6 +543,8 @@ public class NHBullets implements ContentList{
 		};
 		
 		hurricaneType = new LightningLinkerBulletType(2.3f, 200){{
+			setDisableAccel();
+			
 			range = 340f;
 			
 			trailWidth = 8f;
@@ -553,7 +555,7 @@ public class NHBullets implements ContentList{
 			generateDelay = 6f;
 			randomGenerateRange = 280f;
 			randomLightningNum = 5;
-			boltNum = 3;
+			boltNum = 1;
 			linkRange = 280f;
 			
 			drag = 0.0065f;
@@ -860,6 +862,7 @@ public class NHBullets implements ContentList{
 		darkEnrLightning = new PosLightningType(150){{
 			lightningColor = NHColor.darkEnrColor;
 			maxRange = 800f;
+			boltNum = 1;
 		}};
 		
 		supSky = new PosLightningType(135f){{
@@ -1228,7 +1231,7 @@ public class NHBullets implements ContentList{
 			generateDelay = 4f;
 			randomGenerateRange = 280f;
 			randomLightningNum = 6;
-			boltNum = 3;
+			boltNum = 1;
 			linkRange = 280f;
 			range = 800f;
 			

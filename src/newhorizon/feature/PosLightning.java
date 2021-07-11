@@ -50,9 +50,12 @@ public class PosLightning {
 	public static final Cons<Position> none = p -> {};
 	
 	public static final float lifetime = Fx.chainLightning.lifetime;
-	public static final float WIDTH = 3f;
-	public static final float RANGE_RAND = 4.7f;
-	public static final float ROT_DST = Vars.tilesize * 0.75f;
+	public static final float WIDTH = 2.5f;
+	public static final float RANGE_RAND = 5f;
+	public static final float ROT_DST = Vars.tilesize * 0.6f;
+	
+	//Set the range of lightning's randX.
+	private static float getBoltRandomRange() {return Mathf.random(1f, 7f); }
 	
 	private static final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 	
@@ -76,7 +79,7 @@ public class PosLightning {
 		for(Vec2 p : lines){
 			Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
 		}
-	})).layer(Layer.effect - 1f);
+	})).layer(Layer.effect - 0.001f);
 	
 	private static Tile furthest;
 	private static final Rect rect = new Rect();
@@ -164,24 +167,27 @@ public class PosLightning {
 	}
 	
 	public static void createEffect(Position from, Position to, Color color, int boltNum, float width){
-		if(boltNum < 1)return;
-		
-		float dst = from.dst(to);
-		
-		Seq<Vec2> p = null;
-		
-		for (int i = 0; i < boltNum; i ++) {
-			float len = getBoltRandomRange();
-			float randRange = len * RANGE_RAND;
+		if(boltNum < 1){
+			Vec2 f = new Vec2().set(from);
+			Fx.chainLightning.at(f.x, f.y, 0, color, new Vec2().set(to));
+		}else{
+			float dst = from.dst(to);
 			
-			FloatSeq randomArray = new FloatSeq();
-			for (int num = 0; num < dst / (ROT_DST * len) + 1; num ++) {
-				randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
+			Seq<Vec2> p = null;
+			
+			for(int i = 0; i < boltNum; i++){
+				float len = getBoltRandomRange();
+				float randRange = len * RANGE_RAND;
+				
+				FloatSeq randomArray = new FloatSeq();
+				for(int num = 0; num < dst / (ROT_DST * len) + 1; num++){
+					randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
+				}
+				createBoltEffect(color, width, p = computeVectors(randomArray, from, to));
 			}
-			createBoltEffect(color, width, p = computeVectors(randomArray, from, to));
+			
+			Fx.chainLightning.at(p.first().x, p.first().y, 0, color, p.peek());
 		}
-		
-		Fx.chainLightning.at(p.first().x, p.first().y, 0, color, p.peek());
 	}
 	
 	//Private methods and classes.
@@ -197,9 +203,6 @@ public class PosLightning {
 			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers
 		) && furthest != null ? furthest : target;
 	}
-
-	//Set the range of lightning's randX.
-	private static float getBoltRandomRange() {return Mathf.random(2f, 7f); }
 	
 	//Add proper unit into the to hit Seq.
 	private static void whetherAdd(Seq<Healthc> points, Team team, Rect selectRect, int hits, boolean targetGround, boolean targetAir) {
@@ -209,7 +212,7 @@ public class PosLightning {
 		
 		if(targetGround){
 			selectRect.getCenter(tmp3);
-			Vars.indexer.eachBlock(null, tmp3.x, tmp3.y, selectRect.getHeight() / 4, b -> b.team != team && b.isValid(), points::add);
+			Vars.indexer.eachBlock(null, tmp3.x, tmp3.y, selectRect.getHeight() / 2, b -> b.team != team && b.isValid(), points::add);
 		}
 		
 		points.shuffle();

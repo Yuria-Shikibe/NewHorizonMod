@@ -50,7 +50,7 @@ task jarAndroid{
         def dependencies = files.collect{ "--classpath $it.path" }.join(" ")
 
         //dex and desugar files - this requires d8 in your PATH
-        doExec("d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar")
+        doExec("d8 $dependencies --min-api 14 --classpath <compile-classpaths...> --classpath <runtime-classpaths...> --output Dexed.jar <mod>.jar")
     }
 }
 

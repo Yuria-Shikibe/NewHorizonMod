@@ -15,8 +15,8 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import arc.util.pooling.Pools;
 import mindustry.entities.Effect;
-import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
@@ -55,7 +55,7 @@ public class NHFunc{
     private static final Rect r1 = new Rect(), r2 = new Rect();
     
     public static long seedNet(){
-        return (long)Groups.bullet.size() << 4 + Groups.all.size() + state.wave + state.stats.timeLasted;
+        return Groups.sync.size() + state.wave + state.stats.timeLasted;
     }
     
     public static Unit teleportUnitNet(Unit before, float x, float y, float angle, @Nullable Player player){
@@ -192,21 +192,21 @@ public class NHFunc{
         return true;
     }
     
-    public static boolean spawnUnit(Teamc starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, long seed, JumpGate.UnitSet set, Color spawnColor){
-        UnitType type = set.type;
+    public static boolean spawnUnit(Teamc starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, long seed, UnitType type, int spawnNum){
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
         
         float angle, regSize = regSize(type);
         
-        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, set.callIns, seed))return false;
+        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, seed))return false;
         
         angle = starter.angleTo(x, y);
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
-            if(!Units.canCreate(starter.team(), type))break;
-            FContents.spawnUnitDrawer.create(starter, starter.team(), s.x, s.y, angle, 1f, 1f, 1f, new FContents.SpawnerData(set, spawnRange, spawnDelay, spawnColor)).lifetime(spawnReloadTime + i * spawnDelay);
+            JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
+            spawner.init(type, spawnNum, starter.team(), s, angle, spawnReloadTime + i * spawnDelay);
+            if(!net.client())spawner.add();
             i++;
         }
         return true;

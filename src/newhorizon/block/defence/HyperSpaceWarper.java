@@ -487,7 +487,7 @@ public class HyperSpaceWarper extends Block{
 			unit.remove();
 			toCarry = new UnitPayload(unit);
 			Fx.unitPickup.at(unit);
-			if (Vars.net.client()) {
+			if(Vars.net.client()) {
 				Vars.netClient.clearRemovedEntity(unit.id);
 			}
 		}

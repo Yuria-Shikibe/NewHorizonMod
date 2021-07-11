@@ -22,6 +22,7 @@ public class Configurer extends Block{
 		logicConfigurable = true;
 		rotate = true;
 		noUpdateDisabled = true;
+		saveConfig = true;
 		
 		config(Integer.class, (ConfigurerBuild tile, Integer i) -> {
 			Log.info("Configured");
@@ -33,6 +34,12 @@ public class Configurer extends Block{
 	}
 	
 	public class ConfigurerBuild extends Building{
+		
+		@Override
+		public Integer config(){
+			return 1;
+		}
+		
 		Building target = null;
 		
 		public void target(){
