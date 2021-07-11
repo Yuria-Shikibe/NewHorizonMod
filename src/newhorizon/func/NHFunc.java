@@ -146,11 +146,12 @@ public class NHFunc{
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     
+    /**[1]For flying, [2] for navy, [3] for ground */
     public static Seq<Boolf<Tile>> formats(){
         Seq<Boolf<Tile>> seq = new Seq<>(3);
         
         seq.add(tile -> world.getQuadBounds(Tmp.r1).contains(tile.getBounds(Tmp.r2)),
-                tile -> tile.floor().isLiquid,
+                tile -> tile.floor().isLiquid && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes,
                 tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes
         );
         
@@ -159,13 +160,15 @@ public class NHFunc{
     
     public static Boolf<Tile> ableToSpawn(UnitType type){
         Boolf<Tile> boolf;
-    
+        
+        Seq<Boolf<Tile>> boolves = formats();
+        
         if(type.flying){
-            boolf = tile -> world.getQuadBounds(r1).contains(tile.getBounds(r2));
+            boolf = boolves.get(0);
         }else if(WaterMovec.class.isAssignableFrom(type.constructor.get().getClass())){
-            boolf = tile -> tile.floor().isLiquid;
+            boolf = boolves.get(1);
         }else{
-            boolf = tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes;
+            boolf = boolves.get(2);
         }
         
         return boolf;
