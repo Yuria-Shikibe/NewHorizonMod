@@ -475,8 +475,8 @@ public class TableFs{
             addListener(new InputListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    NHVars.ctrl.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, world.unitHeight() + Vars.finalWorldBounds, world.unitWidth() + Vars.finalWorldBounds);
-                    return false;
+                NHVars.ctrl.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, world.unitHeight() + Vars.finalWorldBounds, world.unitWidth() + Vars.finalWorldBounds);
+                return false;
                 }
             });
         }};

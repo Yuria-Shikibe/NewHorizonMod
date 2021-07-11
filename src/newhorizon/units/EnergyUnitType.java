@@ -69,6 +69,7 @@ public class EnergyUnitType extends UnitType{
 		}).layer(Layer.bullet);
 		
 		engineSize = hitSize / 4;
+		engineSize *= -1;
 	}
 	
 	@Override

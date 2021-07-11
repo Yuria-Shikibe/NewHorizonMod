@@ -20,6 +20,7 @@ public class NHSounds{
 		pulse = new Sound(),
 		scatter = new Sound(),
 		thermoShoot = new Sound(),
+		jumpIn = new Sound(),
 		railGunBlast = new Sound();
 	
 	public static void load(){
@@ -35,6 +36,7 @@ public class NHSounds{
 		gauss = loadSound("gauss");
 		pulse = loadSound("pulse");
 		scatter = loadSound("scatter");
+		jumpIn = loadSound("jumpIn");
 		thermoShoot = loadSound("thermoShoot");
 	}
 	

@@ -500,7 +500,6 @@ public class ShieldProjector extends CommandableBlock{
 			write.f(realRadius);
 			write.f(lifetime);
 			
-			TypeIO.writeVec2(write, new Vec2().set(this));
 			TypeIO.writeTeam(write, team);
 		}
 		
@@ -512,7 +511,6 @@ public class ShieldProjector extends CommandableBlock{
 			realRadius = read.f();
 			lifetime = read.f();
 			
-			set(TypeIO.readVec2(read));
 			team(TypeIO.readTeam(read));
 			
 			afterRead();

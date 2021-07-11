@@ -6,11 +6,15 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
+import arc.input.KeyCode;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
+import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.ui.Label;
+import arc.scene.ui.Slider;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
@@ -21,22 +25,25 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
 import mindustry.content.UnitTypes;
 import mindustry.core.World;
+import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
-import mindustry.gen.Tex;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.io.TypeIO;
 import mindustry.logic.Ranged;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
-import mindustry.ui.*;
+import mindustry.ui.Bar;
+import mindustry.ui.Fonts;
+import mindustry.ui.ItemDisplay;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -44,15 +51,16 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.NHFunc;
-import newhorizon.func.TableFs;
-import newhorizon.func.Tables;
+import newhorizon.content.NHSounds;
+import newhorizon.feature.NHBaseEntity;
+import newhorizon.func.*;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -65,6 +73,11 @@ public class JumpGate extends Block {
     protected static final ObjectMap<UnitSet, Integer> allSets = new ObjectMap<>();
     protected static final Seq<UnitSet> all = new Seq<>();
     
+    static{
+        ClassIDIniter.put(Spawner.class, new ClassIDIniter.Set(Spawner::new));
+    }
+    
+    public int maxSpawnPerOne = 15;
     public boolean adaptable = false;
     @Nullable public Block adaptBase = null;
     public float spawnDelay = 5f;
@@ -80,13 +93,8 @@ public class JumpGate extends Block {
     public final Seq<UnitSet> calls = new Seq<>();
     public float squareStroke = 2f;
     
-    protected final Vec2 linkP = new Vec2();
-    
-//    static{
-//        EventTriggers.addActor(JumpGate.JumpGateBuild.class, (JumpGate.JumpGateBuild tile, Tile i) -> {
-//            tile.configure(Tmp.p1.set(i.x, i.y));
-//        });
-//    }
+    protected static final Vec2 linkVec = new Vec2();
+    protected static final Point2 point = new Point2();
     
     public JumpGate(String name){
         super(name);
@@ -99,12 +107,15 @@ public class JumpGate extends Block {
         consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
         consumes.powerCond(consumes.getPower().usage, JumpGateBuild::isCalling);
         logicConfigurable = true;
-        config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
-        config(Integer.class, (JumpGateBuild tile, Integer i) -> {
-            if(i < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(i);
-            else if(tile.buildReload >= tile.getSet().costTime() && tile.hasConsume(tile.getSet()))tile.spawn(calls.get(i));
+        config(Boolean.class, (JumpGateBuild tile, Boolean i) -> {
+            tile.spawn(tile.getSet());
         });
-        configClear((JumpGateBuild tile) -> tile.startBuild(-1));
+        config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
+        config(Integer.class, (JumpGateBuild tile, Integer data) -> {
+            point.set(Point2.unpack(data));
+            if(point.x < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(point.x, point.y);
+        });
+        configClear((JumpGateBuild tile) -> tile.startBuild(-1, 0));
     }
     
     public boolean canReplace(Block other) {
@@ -163,6 +174,8 @@ public class JumpGate extends Block {
             calls.add(set);
         }
         
+        spawnRange /= 2.5f;
+        
         calls.sort((set1, set2) -> set1.sortIndex[0] - set2.sortIndex[0] == 0 ? set1.sortIndex[1] - set2.sortIndex[1] : set1.sortIndex[0] - set2.sortIndex[0]);
     }
 
@@ -172,7 +185,7 @@ public class JumpGate extends Block {
         stats.add(Stat.powerUse, basePowerDraw * 60F, StatUnit.powerSecond);
         if(adaptBase != null)stats.add(Stat.abilities, t -> {
             t.row().add(Core.bundle.get("toolmode.replace") + ":").left().pad(OFFSET).row();
-            t.image(adaptBase.icon(Cicon.full)).size(LEN).padLeft(OFFSET).row();
+            t.image(adaptBase.fullIcon).size(LEN).padLeft(OFFSET).row();
         });
         stats.add(Stat.output, (t) -> {
             t.row().add(Core.bundle.get("editor.spawn") + ":").left().pad(OFFSET).row();
@@ -187,10 +200,9 @@ public class JumpGate extends Block {
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
         dialogIn.cont.pane(inner -> {
-            inner.image(set.type.icon(Cicon.full)).center().row();
+            inner.image(set.type.fullIcon).center().row();
             inner.image().growX().height(OFFSET / 4).pad(OFFSET / 4f).color(Pal.accent).row();
             inner.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().padLeft(OFFSET).row();
-            inner.add("[lightgray]" + Core.bundle.get("waves.perspawn") + ": [accent]" + set.callIns).left().padLeft(OFFSET).row();
             inner.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).left().padLeft(OFFSET).row();
             inner.image().growX().height(OFFSET / 4).pad(OFFSET / 4f).color(Pal.accent).row();
             inner.table(table -> {
@@ -218,7 +230,7 @@ public class JumpGate extends Block {
                 () -> entity.isCalling() ?
                         Core.bundle.get("bar.progress") : "[lightgray]" + Iconc.cancel,
                 () -> entity.isCalling() && entity.hasConsume(entity.getSet()) ? Pal.power : Pal.redderDust,
-                () -> entity.isCalling() ? entity.buildReload / entity.getSet().costTime() : 0
+                () -> entity.isCalling() ? entity.buildProgress / entity.costTime(entity.getSet(), true) : 0
             )
         );
     }
@@ -230,38 +242,31 @@ public class JumpGate extends Block {
         arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
     }
 
-    public class JumpGateBuild extends Building implements Ranged/*, Syncc*/{
-        protected transient long lastUpdated, updateSpacing;
-        
-        public Color baseColor(){
-            return baseColor == null ? team().color : baseColor;
-        }
+    public class JumpGateBuild extends Building implements Ranged{
         public int spawnID = -1;
         public int link = -1;
-        public float buildReload = 0f;
-    
-        public transient float progress_LAST_, progress_TARGET_;
+        public float buildProgress = 0f;
         public float progress;
+        public float warmup;
+        public boolean jammed;
         
-        protected int performPlanIndex = -1;
-        protected boolean success = true, error;
-        protected float warmup;
+        //Local var
+        public transient int spawnNum = 1;
+        public int buildingSpawnNum = -1;
         
         @Override
         public boolean onConfigureTileTapped(Building other){
-            if (this == other || linkPos() == other.pos()) {
-                configure(Tmp.p1.set(-1, -1));
-            }
+            if(this == other)configure(Tmp.p1.set(-1, -1));
             return false;
         }
     
         @Override
         public void updateTile(){
             if(hasConsume(getSet()))progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 1f);
-            if(isCalling() && hasConsume(getSet())){
-                buildReload += efficiency() * Vars.state.rules.unitBuildSpeedMultiplier * delta();
-                if(buildReload >= getSet().costTime() && hasConsume(getSet()) && !error){
-                    configure(spawnID);
+            if(isCalling()){
+                buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta();
+                if(state.rules.infiniteResources || (buildProgress >= costTime(getSet(), true) && !jammed)){
+                    spawn(getSet());
                 }
             }
             
@@ -275,8 +280,8 @@ public class JumpGate extends Block {
         }
 
         public Color getColor(UnitSet set){
-            if(set == null)return baseColor();
-            return (error || !hasConsume(getSet())) ? baseColor().cpy().lerp(Pal.ammo, 1 / Mathf.clamp((efficiency() + 1), 0, 2)) : baseColor();
+            if(jammed || (set != null && !canSpawn(set)))return Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(10f, 0.3f) + 0.1f);
+            else return team.color;
         }
         
         @Override
@@ -298,7 +303,7 @@ public class JumpGate extends Block {
             
             if(core() != null)DrawFuncs.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
             
-            if(error)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
+            if(jammed)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
             
             Draw.reset();
         }
@@ -307,7 +312,7 @@ public class JumpGate extends Block {
         public void buildConfiguration(Table table) {
             BaseDialog dialog = new BaseDialog("@spawn");
             dialog.addCloseListener();
-
+            
             dialog.cont.pane(inner ->
                 inner.table(callTable -> {
                     for(UnitSet set : calls) {
@@ -315,35 +320,51 @@ public class JumpGate extends Block {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 Label can = new Label("");
                                 table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(set))));
-                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, coreValid() ? core().items : null)).size(LEN);
-                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(calls.indexOf(set))).size(LEN).disabled(b -> !canSpawn(set) || error || isCalling());
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core() != null ? core().items : null)).size(LEN);
+                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(Tmp.p1.set(calls.indexOf(set), spawnNum).pack())).size(LEN).disabled(b -> !canSpawn(set) || jammed || isCalling() || !hasConsume(set));
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
-                                    () -> Core.bundle.format("bar.unitcap",
-                                            Fonts.getUnicodeStr(set.type.name),
-                                            team.data().countType(set.type),
-                                            Units.getCap(team)
-                                        ),
-                                    () -> Units.getCap(team) - team.data().countType(set.type) - set.callIns <= 0 ? Pal.redderDust : Pal.power,
-                                    () -> (float)team.data().countType(set.type) / Units.getCap(team)
+                                () -> Core.bundle.format("bar.unitcap",
+                                        Fonts.getUnicodeStr(set.type.name),
+                                        team.data().countType(set.type),
+                                        Units.getCap(team)),
+                                () -> canSpawn(set) ? Pal.accent : Units.canCreate(team, set.type) ? Pal.ammo : Pal.redderDust,
+                                () -> (float)team.data().countType(set.type) / Units.getCap(team)
                             );
                             info.add(unitCurrent).growX().height(LEN - OFFSET);
                         }).fillY().growX().padTop(OFFSET).row();
                     }
                 }).grow()
             ).grow().row();
-            
-            dialog.cont.add(new Bar(
-                    () -> isCalling() ? hasConsume(getSet()) && !error ? "[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + getSet().type.localizedName + "[lightgray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)(((getSet().costTime() - buildReload) / Time.toSeconds) / state.rules.unitBuildSpeedMultiplier) + "[lightgray] " + Core.bundle.get("unit.seconds") : "[red]Call Jammed"
-                        : "[lightgray]" + Iconc.cancel,
-                    () -> isCalling() && hasConsume(getSet()) && !error ? Pal.power : Pal.redderDust,
-                    () -> isCalling() ? buildReload / getSet().costTime() : 0
-            )).fillX().height(LEN).padTop(OFFSET / 2).row();
             dialog.cont.table(t -> {
-                t.button("@cancel", Icon.cancel, Styles.cleart, () -> configure(-1)).padTop(OFFSET / 2).disabled(b -> !isCalling()).growX().height(LEN);
-                t.button("@release", Icon.add, Styles.cleart, () -> configure(spawnID)).padTop(OFFSET / 2).disabled(b -> getSet() == null || success || !hasConsume(getSet()) || !canSpawn(getSet())).growX().height(LEN);
+                Label l = new Label("");
+                Slider s = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne), 1, false);
+                s.moved((i) -> spawnNum = (int)i);
+                t.update(() -> {
+                    l.setText("[gray]<" + Core.bundle.get("filter.option.amount") + ": [lightgray]" + spawnNum + "[]>");
+                    s.setValue(spawnNum);
+                });
+                
+                t.add(s).growX().height(LEN);
+                t.add(l).fillX().height(LEN).padRight(OFFSET).padLeft(OFFSET);
+                t.add(new Bar(
+                        () ->
+                            !isCalling() ? "[lightgray]" + Iconc.cancel :
+                            hasConsume(getSet()) && !jammed ? "[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + getSet().type.localizedName + "[lightgray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)Math.max( (costTime(getSet(), true) - buildProgress) / Time.toSeconds / state.rules.unitBuildSpeedMultiplier, 0) + "[lightgray] " + Core.bundle.get("unit.seconds") :
+                            "[red]Call Jammed",
+                        () -> isCalling() && canSpawn(getSet()) && !jammed ? Pal.power : Pal.redderDust,
+                        () -> isCalling() ? buildProgress / costTime(getSet(), true) : 0
+                )).growX().height(LEN);
+            }).growX().height(LEN).row();
+            dialog.cont.table(t -> {
                 t.button("@back", Icon.left, Styles.cleart, dialog::hide).padTop(OFFSET / 2).growX().height(LEN);
-            }).growX().height(LEN);
+                t.button("@cancel", Icon.cancel, Styles.cleart, () -> configure(-1)).padTop(OFFSET / 2).disabled(b -> !isCalling()).growX().height(LEN);
+                t.button("@release", Icon.add, Styles.cleart, () -> configure(true)).padTop(OFFSET / 2).disabled(b -> getSet() == null || !jammed).growX().height(LEN);
+            }).growX().height(LEN).bottom();
+            dialog.keyDown(c -> {
+                if(c == KeyCode.left)spawnNum = Mathf.clamp(--spawnNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
+                if(c == KeyCode.right)spawnNum = Mathf.clamp(++spawnNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
+            });
             
             table.table(Tex.paneSolid, t -> {
                 t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
@@ -385,7 +406,7 @@ public class JumpGate extends Block {
                     }
                 }
 
-                if(error || !hasConsume(getSet())){
+                if(jammed || !hasConsume(getSet())){
                     Draw.color(getColor(getSet()));
                     float signSize = 0.75f + Mathf.absin(progress + 8f, 8f, 0.15f);
                     for (int i = 0; i < 4; i++) {
@@ -399,28 +420,30 @@ public class JumpGate extends Block {
         }
 
         public void consumeItems(){
-            if(coreValid()){
-                int i = 0;
-                if(!cheating())team.core().items.remove(getSet().requirements());
-            }
+            int i = 0;
+            if(!cheating() && core() != null)core().items.remove(ItemStack.mult(getSet().requirements(), spawnNum));
         }
 
         public boolean hasConsume(UnitSet set){
             if(set == null || cheating())return true;
-            if(!coreValid())return false;
-            return core().items.has(set.requirements());
+            if(core() == null)return false;
+            return core().items.has(ItemStack.mult(set.requirements(), spawnNum));
         }
 
-        public boolean canSpawn(UnitSet set) {
-            return Units.canCreate(team, set.type) && (cheating() ||
-                (coreValid() && ! isCalling() && hasConsume(set)
-            ));
+        public float costTime(UnitSet set, boolean buildingParma){
+            return (buildingParma ? buildingSpawnNum : spawnNum) * set.costTime();
         }
         
-        public void startBuild(int set){
+        public boolean canSpawn(UnitSet set) {
+            return team.data().countType(set.type) + buildingSpawnNum <= Units.getCap(team);
+        }
+        
+        public void startBuild(int set, int spawnNum){
             if(set < 0 || set >= calls.size){
                 spawnID = -1;
-                buildReload = 0;
+                buildProgress = 0;
+                buildingSpawnNum = spawnNum;
+                jammed = false;
             }else spawnID = set;
         }
         
@@ -429,45 +452,41 @@ public class JumpGate extends Block {
         }
 
         public void spawn(UnitSet set){
-            if(!isValid() || !Units.canCreate(team, set.type))return;
-            success = false;
-            int spawnNum = set.callIns;
-            Vec2 target = link();
-            float Sx = target.x;
-            float Sy = target.y;
+            if(!isValid())return;
+            boolean success;
             
-            NHFx.spawn.at(x, y, regSize(set.type), baseColor(), this);
+            Vec2 target = link();
+            
+            NHFx.spawn.at(x, y, regSize(set.type), team.color, this);
     
-            success = NHFunc.spawnUnit(this, Sx, Sy, spawnRange, spawnReloadTime, spawnDelay, NHFunc.seedNet(), set, baseColor());
-            performPlanIndex = -1;
+            success = NHFunc.spawnUnit(this, target.x, target.y, spawnRange, spawnReloadTime, spawnDelay, NHFunc.seedNet(), getType(), spawnNum);
             
             if(success){
-                consumeItems();
-                buildReload = 0;
+                buildProgress = 0;
                 spawnID = -1;
-                error = false;
-            }else error = true;
+                buildingSpawnNum = spawnNum;
+                jammed = false;
+            }else jammed = true;
         }
     
         @Override public float range(){return range;}
         @Override public void write(Writes write) {
             write.i(spawnID);
             write.i(link);
-            write.f(buildReload);
+            write.f(buildProgress);
             write.f(warmup);
-            write.i(performPlanIndex);
+            write.i(buildingSpawnNum);
         }
         @Override public void read(Reads read, byte revision) {
             spawnID = read.i();
             link = read.i();
-            buildReload = read.f();
+            buildProgress = read.f();
             warmup = read.f();
-            performPlanIndex = read.i();
+            buildingSpawnNum = read.i();
         }
+        
         public boolean isCalling(){ return spawnID >= 0; }
-        public boolean coreValid() { return team.core() != null && team.core().items != null && !team.core().items.empty(); }
-        public UnitType getType(){ return calls.get(spawnID).type; }
-        public void setTarget(Integer pos){ link = pos; }
+        public UnitType getType(){ return calls.get(spawnID).type;}
         public UnitSet getSet(){
             if(spawnID < 0 || spawnID >= calls.size)return null;
             return calls.get(spawnID);
@@ -475,8 +494,8 @@ public class JumpGate extends Block {
         
         public Vec2 link(){
             Tile t = world.tile(linkPos());
-            if(t == null)return linkP.set(this);
-            else return linkP.set(t);
+            if(t == null)return linkVec.set(this);
+            else return linkVec.set(t);
         }
         public int linkPos(){return link; }
         public void linkPos(Point2 point2){
@@ -490,135 +509,26 @@ public class JumpGate extends Block {
     
         @Override
         public boolean cheating(){
-            return super.cheating() || team == state.rules.waveTeam;
+            return super.cheating() || team == state.rules.waveTeam || state.rules.infiniteResources;
         }
-    
-//        @Override
-//        public void snapSync(){
-//            updateSpacing = 16;
-//            lastUpdated = Time.millis();
-//            progress_LAST_ = progress_TARGET_;
-//            progress = progress_TARGET_;
-//        }
-//
-//        @Override
-//        public void snapInterpolation(){
-//            updateSpacing = 16;
-//            lastUpdated = Time.millis();
-//            progress_LAST_ = progress;
-//            progress_TARGET_ = progress;
-//        }
-//
-//        @Override
-//        public void readSync(Reads read){
-//            if(lastUpdated != 0) updateSpacing = Time.timeSinceMillis(lastUpdated);
-//            lastUpdated = Time.millis();
-//            if(!isLocal()) {
-//                progress_LAST_ = progress;
-//                progress_TARGET_ = read.f();
-//            } else {
-//                read.f();
-//                progress_LAST_ = progress;
-//                progress_TARGET_ = progress;
-//            }
-//        }
-//
-//        @Override
-//        public void writeSync(Writes write){
-//            write.f(progress);
-//        }
-//
-//        @Override
-//        public void readSyncManual(FloatBuffer buffer){
-//            if(lastUpdated != 0) updateSpacing = Time.timeSinceMillis(lastUpdated);
-//            lastUpdated = Time.millis();
-//            progress_LAST_ = progress;
-//            progress_TARGET_ = buffer.get();
-//        }
-//
-//        @Override
-//        public void writeSyncManual(FloatBuffer buffer){
-//            buffer.put(progress);
-//        }
-//
-//        @Override
-//        public void afterSync(){
-//
-//        }
-//
-//        @Override
-//        public void interpolate(){
-//            if(lastUpdated != 0 && updateSpacing != 0) {
-//                float timeSinceUpdate = Time.timeSinceMillis(lastUpdated);
-//                float alpha = Math.min(timeSinceUpdate / updateSpacing, 2f);
-//                progress = (Mathf.slerp(progress_LAST_, progress_TARGET_, alpha));
-//            } else if(lastUpdated != 0) {
-//                progress = progress_TARGET_;
-//            }
-//        }
-//
-//        @Override
-//        public void update(){
-//            super.update();
-//            if((Vars.net.client() && !isLocal()) || isRemote()){
-//                interpolate();
-//            }
-//        }
-//
-//        @Override
-//        public void remove(){
-//            super.remove();
-//            Groups.sync.remove(this);
-//            if(Vars.net.client()){
-//                Vars.netClient.addRemovedEntity(id());
-//            }
-//        }
-//
-//        @Override
-//        public long lastUpdated(){
-//            return lastUpdated;
-//        }
-//
-//        @Override
-//        public void lastUpdated(long lastUpdated){
-//            this.lastUpdated = lastUpdated;
-//        }
-//
-//        @Override
-//        public long updateSpacing(){
-//            return updateSpacing;
-//        }
-//
-//        @Override
-//        public void updateSpacing(long updateSpacing){
-//            this.updateSpacing = updateSpacing;
-//        }
-//
-//        @Override
-//        public void add(){
-//            super.add();
-//            Groups.sync.add(this);
-//        }
     }
 
     public static class UnitSet{
         public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
         public @NotNull UnitType type;
         public float costTime;
-        public int callIns;
         
         //[0] -> Line or Type; [1] -> Tier.
         public final byte[] sortIndex;
         
-        public UnitSet(){this(UnitTypes.alpha, new byte[]{-1, -1}, 0, 5); }
+        public UnitSet(){this(UnitTypes.alpha, new byte[]{-1, -1}, 0); }
     
-        public UnitSet(@NotNull UnitType type, byte[] sortIndex, float costTime, int callIns, ItemStack... requirements){
+        public UnitSet(@NotNull UnitType type, byte[] sortIndex, float costTime, ItemStack... requirements){
             this.type = type;
             this.sortIndex = sortIndex;
             this.costTime = costTime;
-            this.callIns = callIns;
             this.requirements.addAll(requirements);
-            if(!NHLoader.unitBuildCost.containsKey(type))NHLoader.unitBuildCost.put(type, ItemStack.mult(requirements, 1f / callIns * 20));
+            if(!NHLoader.unitBuildCost.containsKey(type))NHLoader.unitBuildCost.put(type, ItemStack.mult(requirements, 20));
         }
     
         @Override
@@ -626,12 +536,12 @@ public class JumpGate extends Block {
             if(this == o) return true;
             if(!(o instanceof UnitSet)) return false;
             UnitSet set = (UnitSet)o;
-            return callIns == set.callIns && type.equals(set.type) && Arrays.equals(sortIndex, set.sortIndex);
+            return type.equals(set.type) && Arrays.equals(sortIndex, set.sortIndex);
         }
     
         @Override
         public int hashCode(){
-            int result = Objects.hash(type.name.hashCode(), callIns);
+            int result = Objects.hash(type.name.hashCode());
             result = 31 * result + Arrays.hashCode(sortIndex);
             return result;
         }
@@ -639,5 +549,229 @@ public class JumpGate extends Block {
         public float costTime(){return costTime;}
         public float costTimeVar(){return costTime / state.rules.unitBuildSpeedMultiplier;}
         public ItemStack[] requirements(){ return requirements.toArray(); }
+    }
+    
+    public static class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
+        public Team team = Team.derelict;
+        public UnitType type = UnitTypes.alpha;
+        public int spawnNum = 0;
+        public float time = 0, lifetime;
+        public float rotation;
+        
+        public boolean dumpped;
+        public transient long lastUpdated, updateSpacing;
+    
+        public transient Unit addUnit = Nulls.unit;
+    
+        @Override
+        public float clipSize(){
+            return 500;
+        }
+    
+        public void init(UnitType type, int spawnNum, Team team, Position pos, float rotation, float lifetime){
+            this.type = type;
+            this.spawnNum = spawnNum;
+            this.lifetime = lifetime;
+            this.rotation = rotation;
+            this.team = team;
+            set(pos);
+            NHFx.spawnWave.at(x, y, size, team.color);
+        }
+    
+        @Override
+        public void add(){
+            super.add();
+            Groups.sync.add(this);
+        }
+    
+        @Override
+        public void remove(){
+            super.remove();
+            Groups.sync.remove(this);
+    
+            if(Vars.net.client()){
+                Vars.netClient.addRemovedEntity(id());
+            }
+        }
+    
+        @Override
+        public void update(){
+            if(Units.canCreate(team, type))time += Time.delta;
+            
+            if(time > lifetime)dump();
+            
+            if(addUnit != null && !addUnit.isNull() && addUnit.isAdded()){
+                effect();
+                remove();
+            }
+        }
+        
+        public void effect(){
+            Effect.shake(type.hitSize / 3f, type.hitSize / 4f, addUnit);
+            NHSounds.jumpIn.at(addUnit.x, addUnit.y);
+            if(type.flying){
+                Tmp.v1.trns(addUnit.rotation, -type.engineOffset);
+                NHFx.jumpTrail.at(addUnit.x + Tmp.v1.x, addUnit.y + Tmp.v1.y, rotation(), team.color, addUnit);
+                addUnit.apply(StatusEffects.slow, NHFx.jumpTrail.lifetime);
+            }else{
+                NHFx.spawn.at(x, y, type.hitSize, team.color);
+                Fx.unitSpawn.at(addUnit.x, addUnit.y, rotation(), type);
+                Time.run(Fx.unitSpawn.lifetime, () -> {
+                    for(int j = 0; j < 3; j++){
+                        Time.run(j * 8, () -> Fx.spawn.at(addUnit));
+                    }
+                    NHFx.spawnGround.at(addUnit.x, addUnit.y, type.hitSize / tilesize * 3, team.color);
+                    NHFx.circle.at(addUnit.x, addUnit.y, type.hitSize * 4, team.color);
+                });
+            }
+        }
+        
+        public void dump(){
+            addUnit = type.create(team);
+            addUnit.set(x, y);
+            addUnit.rotation = rotation();
+            if(!Vars.net.client())addUnit.add();
+            addUnit.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
+        }
+    
+        @Override
+        public void draw(){
+            TextureRegion pointerRegion = NHContent.pointerRegion, arrowRegion = NHContent.arrowRegion;
+            
+            Draw.z(Layer.effect - 1f);
+            
+            boolean can = Units.canCreate(team, type);
+    
+            float regSize = NHFunc.regSize(type);
+            Draw.color(can ? team.color : Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(Time.time * DrawFuncs.sinScl, 8f, 0.3f) + 0.1f));
+            
+            for(int i = 0; i < 4; i++){
+                float sin = Mathf.absin(Time.time, 16f, tilesize);
+                float length = (tilesize * 5 + sin) * fout() + tilesize;
+                float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
+                Tmp.v1.trns(i * 90, -length);
+                Draw.rect(pointerRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
+            }
+    
+            for(int i = -4; i <= 4; i++){
+                if(i == 0)continue;
+                Tmp.v1.trns(rotation, i * tilesize * 2);
+                float f = (100 - (Time.time - 12.5f * i) % 100) / 100;
+                Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, rotation() - 90);
+            }
+    
+            float railF = Mathf.curve(fin(Interp.circleIn), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
+            Tmp.v1.trns(rotation, 0f, (2 - railF) * tilesize * 1.4f);
+    
+            Lines.stroke(railF * 2f);
+            for(int i : Mathf.signs){
+                Lines.lineAngleCenter(x + Tmp.v1.x * i, y + Tmp.v1.y * i, rotation(), tilesize * (3f + railF) * tilesize * Mathf.curve(fout(Interp.pow5Out), 0f, 0.1f));
+            }
+    
+            if(can)DrawFuncs.overlayText(Fonts.tech, String.valueOf(Mathf.ceil((lifetime - time) / 60f)), x, y, 0, 0,0.25f, team.color, false, true);
+            else{
+                Draw.z(Layer.effect);
+                Draw.color(Pal.ammo);
+    
+                float s = Mathf.clamp(size / 4f, 12f, 20f);
+                Draw.rect(Icon.warning.getRegion(), x, y, s, s);
+            }
+            Draw.reset();
+        }
+    
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.f(lifetime);
+            write.f(time);
+            write.f(rotation);
+            write.i(spawnNum);
+            
+            TypeIO.writeUnitType(write, type);
+            TypeIO.writeTeam(write, team);
+        }
+    
+        @Override
+        public void read(Reads read){
+            super.read(read);
+            lifetime = read.f();
+            time = read.f();
+            rotation = read.f();
+            spawnNum = read.i();
+            
+            type = TypeIO.readUnitType(read);
+            team = TypeIO.readTeam(read);
+            
+            afterRead();
+        }
+    
+        @Override public boolean serialize(){return true;}
+        @Override public int classId(){return ClassIDIniter.getID(getClass());}
+    
+        @Override
+        public void snapSync(){}
+    
+        @Override
+        public void snapInterpolation(){}
+    
+        @Override
+        public void readSync(Reads read){
+            x = read.f();
+            y = read.f();
+            lifetime = read.f();
+            time = read.f();
+            rotation = read.f();
+            spawnNum = read.i();
+    
+            type = TypeIO.readUnitType(read);
+            team = TypeIO.readTeam(read);
+    
+            afterSync();
+        }
+    
+        @Override
+        public void writeSync(Writes write){
+            write.f(x);
+            write.f(y);
+            write.f(lifetime);
+            write.f(time);
+            write.f(rotation);
+            write.i(spawnNum);
+    
+            TypeIO.writeUnitType(write, type);
+            TypeIO.writeTeam(write, team);
+        }
+    
+        @Override
+        public void readSyncManual(FloatBuffer floatBuffer){
+        
+        }
+    
+        @Override
+        public void writeSyncManual(FloatBuffer floatBuffer){
+        
+        }
+    
+        @Override
+        public void afterSync(){
+        
+        }
+    
+        @Override
+        public void interpolate(){
+        
+        }
+    
+        @Override public long lastUpdated(){return lastUpdated;}
+        @Override public void lastUpdated(long l){lastUpdated = l;}
+        @Override public long updateSpacing(){return updateSpacing;}
+        @Override public void updateSpacing(long l){updateSpacing = l;}
+        @Override public float fin(){return time / lifetime;}
+        @Override public float time(){return time;}
+        @Override public void time(float v){time = v;}
+        @Override public float lifetime(){return lifetime;}
+        @Override public void lifetime(float v){lifetime = v;}
+        @Override public float rotation(){return rotation;}
+        @Override public void rotation(float v){rotation = v;}
     }
 }

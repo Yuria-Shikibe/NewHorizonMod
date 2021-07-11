@@ -72,6 +72,11 @@ public class NHUnits implements ContentList{
 				width = 11f;
 				height = 28f;
 				
+				trailWidth = 2.2f;
+				trailLength = 20;
+				drawSize = 300f;
+				
+				
 				homingDelay = 5f;
 				homingPower = 0.0075f;
 				homingRange = 140f;
