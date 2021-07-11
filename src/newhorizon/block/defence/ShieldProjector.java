@@ -16,6 +16,7 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pools;
@@ -33,6 +34,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
+import newhorizon.feature.PosLightning;
 import newhorizon.func.ClassIDIniter;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.TableFs;
@@ -206,11 +208,13 @@ public class ShieldProjector extends CommandableBlock{
 			recoil = recoilAmount;
 			reload = 0;
 			
-			tr2.trns(rotation, -recoil);
+			tr2.trns(rotation, -recoil + tilesize * size / 2f);
 			
 			Sounds.lasercharge2.at(this);
-			NHFx.square45_4_45.at(x + tr2.x, y + tr2.y, 0, team.color, world.tile(point2));
-			NHFx.project.at(x + tr2.x, y + tr2.y, size * 0.8f, team.color, world.tile(point2));
+			Position to = world.tile(point2);
+			NHFx.square45_4_45.at(x + tr2.x, y + tr2.y, 0, team.color, to);
+			NHFx.project.at(x + tr2.x, y + tr2.y, size * 1.6f, team.color, to);
+			PosLightning.createEffect(Tmp.v2.set(this).add(tr2), to, team.color,1, PosLightning.WIDTH);
 		}
 		
 		@Override
