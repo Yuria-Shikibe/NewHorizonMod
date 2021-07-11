@@ -37,7 +37,7 @@ allprojects{
 
 dependencies{
     implementation 'org.jetbrains:annotations:20.1.0'
-    //implementation "com.github.Anuken.Mindustry:annotations:$mindustryVersion"
+    implementation "com.github.Anuken.Mindustry:annotations:$mindustryVersion"
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }
