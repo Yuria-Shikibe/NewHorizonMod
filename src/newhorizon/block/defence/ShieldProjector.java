@@ -48,7 +48,7 @@ import static newhorizon.func.TableFs.LEN;
 public class ShieldProjector extends CommandableBlock{
 	
 	static{
-		ClassIDIniter.needIdClasses.put(Projector.class, Projector::new);
+		ClassIDIniter.put(Projector.class, new ClassIDIniter.Set(Projector::new));
 	}
 	
 	public TextureRegion baseRegion, heatRegion;

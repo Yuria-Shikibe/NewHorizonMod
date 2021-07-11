@@ -60,7 +60,7 @@ import static newhorizon.func.TableFs.OFFSET;
 public class HyperSpaceWarper extends Block{
 	
 	static{
-		ClassIDIniter.needIdClasses.put(Carrier.class, Carrier::new);
+		ClassIDIniter.put(Carrier.class, new ClassIDIniter.Set(Carrier::new));
 	}
 	
 	private static Tile furthest;

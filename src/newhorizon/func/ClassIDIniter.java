@@ -6,20 +6,22 @@ import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.gen.EntityMapping;
 
-import java.util.Comparator;
-
 public class ClassIDIniter{
 	public static boolean safe = true;
 	private static final int startFrom = 100;
 	
-	public static final ObjectMap<Class<?>, Prov<?>> needIdClasses = new ObjectMap<>();
+	public static final ObjectMap<Class<?>, Set> needIdClasses = new ObjectMap<>();
 	private static final ObjectMap<Class<?>, Integer> classIdMap = new ObjectMap<>();
+	
+	public static void put(Class<?> c, Set p){
+		needIdClasses.put(c, p);
+	}
 	
 	public static int getID(Class<?> c){return classIdMap.get(c);}
 	
 	public static void load(){
-		Seq<Class<?>> key = needIdClasses.keys().toSeq().sort(Comparator.comparingInt(c -> c.toString().hashCode()));
-		ObjectMap<Class<?>, Prov<?>> copy = needIdClasses.copy();
+		Seq<Class<?>> key = needIdClasses.keys().toSeq().sortComparing(c -> c.toString().hashCode());
+		ObjectMap<Class<?>, Set> copy = needIdClasses.copy();
 		
 		Log.info(key);
 		
@@ -28,16 +30,26 @@ public class ClassIDIniter{
 			needIdClasses.put(k, copy.get(k));
 		}
 		
-		Prov<?>[] map = EntityMapping.idMap;
 		
 		for(Class<?> c : key){
-			classIdMap.put(c, EntityMapping.register(c.toString(), needIdClasses.get(c)));
-		}
-		
-		for(Class<?> c : needIdClasses.keys()){
-			Log.info(c + " | " + needIdClasses.get(c).equals(map[classIdMap.get(c)]) + " | " + classIdMap.get(c));
+			classIdMap.put(c, EntityMapping.register(c.toString(), needIdClasses.get(c).prov));
 		}
 		
 		needIdClasses.clear();
+	}
+	
+	public static class Set{
+		public final String name;
+		public final Prov<?> prov;
+		
+		public Set(String name, Prov<?> prov){
+			this.name = name;
+			this.prov = prov;
+		}
+		
+		public Set(Prov<?> prov){
+			this.name = prov.get().getClass().toString();
+			this.prov = prov;
+		}
 	}
 }

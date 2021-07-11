@@ -62,6 +62,7 @@ public class AssignOverdrive extends OverdriveProjector{
 		
 		@Override
 		public Point2[] config(){
+			if(Vars.net.active())return new Point2[]{};
 			Point2[] out = new Point2[targets.size];
 			for(int i = 0; i < out.length; i++){
 				out[i] = Point2.unpack(targets.get(i)).sub(tile.x, tile.y);

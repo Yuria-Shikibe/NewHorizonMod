@@ -146,16 +146,16 @@ public class NewHorizon extends Mod{
 			}
 		}
 		
-		ClassIDIniter.load();
-		if(!ClassIDIniter.safe)Log.info("Detected id map conflict");
 		EventTriggers.load();
 	    NHSounds.load();
-		NHContent.initLoad();
+		if(!Vars.headless)NHContent.initLoad();
 		
 		for(ContentList contentList : content){
 			contentList.load();
 		}
 		
+		ClassIDIniter.load();
+		if(!ClassIDIniter.safe)Log.info("Detected id map conflict");
 		
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		
