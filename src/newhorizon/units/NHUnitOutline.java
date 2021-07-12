@@ -6,8 +6,6 @@ import arc.graphics.Pixmap;
 import arc.graphics.Pixmaps;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
-import arc.graphics.g2d.TextureRegion;
-import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.graphics.MultiPacker;
@@ -15,62 +13,37 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import newhorizon.func.NHSetting;
 
-public class NHUnitType extends UnitType{
-	public static final Seq<TextureRegion> test = new Seq<>();
-	
-	public NHUnitType(String name){
-		super(name);
-	}
-	
-	public NHUnitType(String name, Weapon... weapons){
-		this(name);
-		this.weapons.addAll(weapons);
-	}
-	
-	@Override
-	public void createIcons(MultiPacker packer){
-		if(!NHSetting.getBool("@active.advance-load*"))super.createIcons(packer);
-		else if(!Vars.headless && region != null && region.found() && region instanceof TextureAtlas.AtlasRegion){
-			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)region;
+public class NHUnitOutline{
+	public static void createIcons(MultiPacker packer, UnitType type){
+		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless && type.region != null && type.region.found() && type.region instanceof TextureAtlas.AtlasRegion){
+			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)type.region;
 			
-			test.add(region);
-			PixmapRegion r = Core.atlas.getPixmap(Core.atlas.find(name));
-
-			makeOutline(packer, t);
-
-			Pixmap base = new Pixmap(region.width, region.height);
+			PixmapRegion r = Core.atlas.getPixmap(Core.atlas.find(type.name));
+			
+			Pixmap base = new Pixmap(type.region.width, type.region.height);
 			base.draw(r.crop(), true);
 			
-			TextureAtlas.AtlasRegion tC = Core.atlas.find(name + "-cell");
-			test.add(tC);
+			TextureAtlas.AtlasRegion tC = Core.atlas.find(type.name + "-cell");
 			base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), true);
 
-			for(Weapon w : weapons){
-				makeOutline(packer, w.region);
+			for(Weapon w : type.weapons){
 				if(w.top)continue;
-				drawWeaponPixmap(base, w, false, outlineColor, outlineRadius);
+				drawWeaponPixmap(base, w, false, type.outlineColor, type.outlineRadius);
 			}
 
-			base = Pixmaps.outline(new PixmapRegion(base), outlineColor, outlineRadius);
+			base = Pixmaps.outline(new PixmapRegion(base), type.outlineColor, type.outlineRadius);
 
-			for(Weapon w : weapons){
-				makeOutline(packer, w.region);
+			for(Weapon w : type.weapons){
 				if(!w.top)continue;
-				drawWeaponPixmap(base, w, true, outlineColor, outlineRadius);
+				drawWeaponPixmap(base, w, true, type.outlineColor, type.outlineRadius);
 			}
 
 			if(Core.settings.getBool("linear")){
 				Pixmaps.bleed(base);
 			}
 
-			packer.add(MultiPacker.PageType.main, name + "-full", base);
+			packer.add(MultiPacker.PageType.main, type.name + "-full", base);
 		}
-	}
-	
-	@Override
-	public void load(){
-		super.load();
-		test.add(outlineRegion);
 	}
 	
 	public static Pixmap fillColor(PixmapRegion pixmap, Color replaceColor){
@@ -100,20 +73,6 @@ public class NHUnitType extends UnitType{
 				base.draw(wRegion2, getCenter(base, wRegion2, true, outline) - (int)(w.x * 4), getCenter(base, wRegion2, false, outline) - (int)(w.y * 4), true);
 			}else{
 				base.draw(wRegion, getCenter(base, wRegion, true, outline) + (int)(w.x * 4), getCenter(base, wRegion, false, outline) - (int)(w.y * 4), true);
-			}
-		}
-	}
-	
-	private void makeOutline(MultiPacker packer, TextureRegion region){
-		if(region instanceof TextureAtlas.AtlasRegion && region.found()){
-			String name = ((TextureAtlas.AtlasRegion)region).name;
-			if(!packer.has(name + "-outline")){
-				PixmapRegion base = Core.atlas.getPixmap(region);
-				Pixmap result = Pixmaps.outline(base, outlineColor, outlineRadius);
-				if(Core.settings.getBool("linear")){
-					Pixmaps.bleed(result);
-				}
-				packer.add(MultiPacker.PageType.main, name + "-outline", result);
 			}
 		}
 	}

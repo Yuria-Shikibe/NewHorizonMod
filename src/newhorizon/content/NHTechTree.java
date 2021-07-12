@@ -73,22 +73,25 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.zetaFactorySmall, NHBlocks.xenMelter);
 
         //Units;
-        addUnit(UnitTypes.mono, NHUnits.gather);
+        addUnit(UnitTypes.mono, NHUnitTypes.gather);
     
-        addUnit(Blocks.airFactory, NHUnits.sharp);
-        addUnit(NHUnits.sharp, NHUnits.branch);
-        addUnit(NHUnits.branch, NHUnits.warper);
-        addUnit(NHUnits.warper, NHUnits.striker);
-        addUnit(NHUnits.striker, NHUnits.destruction);
-        addUnit(NHUnits.destruction, NHUnits.hurricane);
+        addUnit(Blocks.airFactory, NHUnitTypes.sharp);
+        addUnit(NHUnitTypes.sharp, NHUnitTypes.branch);
+        addUnit(NHUnitTypes.branch, NHUnitTypes.warper);
+        addUnit(NHUnitTypes.warper, NHUnitTypes.striker);
+        addUnit(NHUnitTypes.striker, NHUnitTypes.destruction);
+        addUnit(NHUnitTypes.destruction, NHUnitTypes.hurricane);
         
-        addUnit(Blocks.groundFactory, NHUnits.origin);
-        addUnit(NHUnits.origin, NHUnits.thynomo);
-        addUnit(NHUnits.thynomo, NHUnits.aliotiat);
-        addUnit(NHUnits.aliotiat, NHUnits.tarlidor);
-        addUnit(NHUnits.tarlidor, NHUnits.annihilation);
+        addUnit(Blocks.groundFactory, NHUnitTypes.origin);
+        addUnit(NHUnitTypes.origin, NHUnitTypes.thynomo);
+        addUnit(NHUnitTypes.thynomo, NHUnitTypes.aliotiat);
+        addUnit(NHUnitTypes.aliotiat, NHUnitTypes.tarlidor);
+        addUnit(NHUnitTypes.tarlidor, NHUnitTypes.annihilation);
         
-        addUnit(NHBlocks.darkEnergyFactory, NHUnits.guardian);
+        addUnit(Blocks.navalFactory, NHUnitTypes.ghost);
+        addUnit(NHUnitTypes.ghost, NHUnitTypes.zarkov);
+        
+        addUnit(NHBlocks.darkEnergyFactory, NHUnitTypes.guardian);
         
         //Items / liquids;
         new TechNode(TechTree.get(Items.titanium), NHItems.metalOxhydrigen, NHItems.metalOxhydrigen.researchRequirements());

@@ -212,7 +212,9 @@ public class PosLightning {
 		
 		if(targetGround){
 			selectRect.getCenter(tmp3);
-			Vars.indexer.eachBlock(null, tmp3.x, tmp3.y, selectRect.getHeight() / 2, b -> b.team != team && b.isValid(), points::add);
+			Units.nearbyBuildings(tmp3.x, tmp3.y, selectRect.getHeight() / 2, b -> {
+				if(b.team != team && b.isValid())points.add(b);
+			});
 		}
 		
 		points.shuffle();

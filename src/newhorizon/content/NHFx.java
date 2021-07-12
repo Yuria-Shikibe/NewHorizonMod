@@ -19,7 +19,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.game.EventType;
-import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -130,12 +129,12 @@ public class NHFx{
 	}
 	
 	public static Effect lightningHitLarge(Color color){
-		return get("lightningHitLarge", color, new Effect(25, e -> {
+		return get("lightningHitLarge", color, new Effect(50f, 180f, e -> {
 			color(color);
 			Drawf.light(e.x, e.y, e.fout() * 90f, color, 0.7f);
-			e.scaled(12, t -> {
+			e.scaled(25f, t -> {
 				stroke(3f * t.fout());
-				circle(e.x, e.y, 3f + t.fin() * 80f);
+				circle(e.x, e.y, 3f + t.fin(Interp.pow3Out) * 80f);
 			});
 			Fill.circle(e.x, e.y, e.fout() * 8f);
 			randLenVectors(e.id + 1, 4, 1f + 60f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
@@ -146,20 +145,20 @@ public class NHFx{
 	}
 	
 	public static Effect blast(Color color, float range){
-		return new Effect(25, e -> {
+		return new Effect(45f, range * 2.5f, e -> {
 			color(color);
-			Drawf.light(e.x, e.y, e.fout() * 18f, color, 0.7f);
+			Drawf.light(e.x, e.y, e.fout() * range, color, 0.7f);
 			
-			e.scaled(12, t -> {
+			e.scaled(21, t -> {
 				stroke(3f * t.fout());
 				circle(e.x, e.y, 3f + t.fin() * range);
 			});
 			
 			Fill.circle(e.x, e.y, e.fout() * 8f);
-			randLenVectors(e.id + 1, (int)(range / 6), 4f + range * 0.8f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout(Interp.pow2Out) * 5f));
+			randLenVectors(e.id + 1, (int)(range / 10), 2 + range * 0.75f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout(Interp.pow2Out) * range / 12f));
 			
 			color(Color.gray);
-			Angles.randLenVectors(e.id, (int)(range / 9), 2.0F + range * 0.56f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
+			Angles.randLenVectors(e.id, (int)(range / 8), 2 + range * 1.2f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * range / 10f));
 		});
 	}
 
@@ -329,7 +328,7 @@ public class NHFx{
 			Draw.color(color);
 			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
 				Fill.square(e.x + x, e.y + y, size * e.fout(), 45);
-				Drawf.light(e.x + x, e.y + y, e.fout() * size, color, 0.7f);
+				Drawf.light(e.x + x, e.y + y, e.fout(Interp.pow3Out) * size, color, 0.7f);
 			});
 		});
 	}
@@ -496,15 +495,25 @@ public class NHFx{
 		}),
 
 		jumpTrail = new Effect(70f, 5000, e -> {
-			if (!(e.data instanceof Unit))return;
-			Unit unit = e.data();
-			UnitType type = unit.type;
-			color(unit.team.color);
+			if (!(e.data instanceof UnitType))return;
+			UnitType type = e.data();
+			color(e.color);
 
-			Draw.z((type.engineSize < 0 ? Layer.effect - 0.01f : type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.1f);
-			e.scaled(38, i -> Drawf.tri(e.x, e.y, type.hitSize / 2.5f * i.fout(), 2500, e.rotation - 180));
+			Draw.z((type.engineSize < 0 ? Layer.effect - 0.001f : type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.001f);
+			
+			Tmp.v1.trns(e.rotation, -type.engineOffset);
+			
+			e.scaled(38, i -> {
+				Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, type.engineSize * 0.9f * e.fout(), 2500, e.rotation - 180);
+				Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, type.engineSize * 0.45f * e.fout());
+			});
 
-			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 60));
+			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
+			
+			Draw.color();
+			Draw.mixcol(e.color, 1);
+			Draw.rect(type.fullIcon, e.x, e.y, type.fullIcon.width * e.fout(Interp.pow2Out) * Draw.scl * 1.2f, type.fullIcon.height * e.fout(Interp.pow2Out) * Draw.scl * 1.2f, e.rotation - 90f);
+			Draw.reset();
 		}),
 
 		darkEnergySpread = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
@@ -670,7 +679,7 @@ public class NHFx{
 		}),
 		
 		circleSplash = new Effect(26f, e -> {
-			color(e.color);
+			color(Color.white, e.color, e.fin() + 0.15f);
 			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
 				Fill.circle(e.x + x, e.y + y, e.fout() * 3f);
 				Drawf.light(e.x + x, e.y + y, e.fout() * 3.5f, e.color, 0.7f);

@@ -13,7 +13,6 @@ import mindustry.gen.Icon;
 import mindustry.gen.Unit;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.meta.BuildVisibility;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.func.NHSetting;
@@ -35,12 +34,11 @@ public class EventTriggers{
 	
 	public static Block[] contents;
 	
-	private static boolean server = false;
 	private static boolean caution = false;
 	
 	public static final ObjectMap<Class<?>, Seq<Cons2<? extends Building, Tile>>> onTapActor = new ObjectMap<>();
 	
-	public static <E extends Building> void addActor(Class<E> type, Cons2<E, Tile> act){
+	public static <T extends Building> void addActor(Class<T> type, Cons2<T, Tile> act){
 		Seq<Cons2<? extends Building, Tile>> actions = onTapActor.get(type);
 		if(actions == null){
 			actions = new Seq<>();
@@ -72,8 +70,10 @@ public class EventTriggers{
 			NHVars.world.clearLast();
 			NHVars.world.worldLoaded = true;
 			
-			if(Vars.player.admin)for(Block c : contents)c.buildVisibility = BuildVisibility.shown;
-			else for(Block c : contents)c.buildVisibility = BuildVisibility.sandboxOnly;
+//
+//			if(Vars.player.admin)for(Block c : contents)c.buildVisibility = BuildVisibility.shown;
+//			else for(Block c : contents)c.buildVisibility = BuildVisibility.sandboxOnly;
+//
 			
 			if(caution){
 				caution = false;

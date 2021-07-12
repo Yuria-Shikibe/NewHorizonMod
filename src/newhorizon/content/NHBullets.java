@@ -479,7 +479,7 @@ public class NHBullets implements ContentList{
 			lightningLength = 10;
 		}};
 		
-		polyCloud = new SpeedUpBulletType(0.05f, 40){
+		polyCloud = new SpeedUpBulletType(0.05f, 70){
 			@Override public float range(){return 360f;}
 		{
 			buildingDamageMultiplier = 0.2f;
@@ -650,7 +650,8 @@ public class NHBullets implements ContentList{
 				accelerateEnd = 0.9f;
 				
 				homingPower = 0;
-				hitColor = trailColor = lightningColor = frontColor = backColor = lightColor = NHColor.lightSkyBack;
+				hitColor = trailColor = lightningColor = backColor = lightColor = NHColor.lightSkyBack;
+				frontColor = NHColor.lightSkyFront;
 				splashDamageRadius = 20;
 				splashDamage = damage * 0.3f;
 				
@@ -664,8 +665,8 @@ public class NHBullets implements ContentList{
 				
 				hitSound = Sounds.explosion;
 				hitEffect = NHFx.square45_4_45;
-				shootEffect = NHFx.shootLineSmall(hitColor);
-				smokeEffect = Fx.shootBigSmoke2;
+				shootEffect = NHFx.circleSplash;
+				smokeEffect = Fx.shootBigSmoke;
 				despawnEffect = NHFx.crossBlast(hitColor, 50);
 			}
 		};

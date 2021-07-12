@@ -423,10 +423,10 @@ public class TableFs{
                 addListener(new InputListener(){
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                         if(!NHVars.ctrl.pressDown){
-                            NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                            NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
                             NHVars.ctrl.to.set(NHVars.ctrl.from);
                         }
-                        else NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                        else NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
                         NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
                         return false;
                     }
@@ -457,8 +457,8 @@ public class TableFs{
             }
         };
         
-        if(mobile)Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 3, 0), pTable);
-        Core.scene.root.addChildAt(Math.max(parentT.getZIndex() + 2, 0), floatTable);
+        if(mobile)Core.scene.root.addChildAt(10, pTable);
+        Core.scene.root.addChildAt(9, floatTable);
     }
     
     public static void pointSelectTable(Table parent, Cons<Point2> cons){

@@ -16,6 +16,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.emergency.TimedcE;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
 import newhorizon.vars.NHVars;
@@ -96,7 +97,7 @@ public abstract class CommandableBlock extends Block{
 		defender, attacker
 	}
 	
-	public static class CommandEntity implements Drawc, Timedc, Teamc{
+	public static class CommandEntity implements Drawc, TimedcE, Teamc{
 		public Cons<Teamc> act;
 		
 		public boolean added;

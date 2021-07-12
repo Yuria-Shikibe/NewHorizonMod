@@ -9,6 +9,7 @@ import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.emergency.TimedcE;
 
 public class DamageConnector {
 	public Color color;
@@ -18,7 +19,7 @@ public class DamageConnector {
 	
 	private static final Rect rect = new Rect();
 	
-	public class DamageConnectorEntity extends NHBaseEntity implements Teamc, Timedc{
+	public class DamageConnectorEntity extends NHBaseEntity implements Teamc, TimedcE{
 		public Unit unit = Nulls.unit;
 		public Team team = Team.derelict;
 		public float time, lifetime;

@@ -150,9 +150,10 @@ public class NHFunc{
     public static Seq<Boolf<Tile>> formats(){
         Seq<Boolf<Tile>> seq = new Seq<>(3);
         
-        seq.add(tile -> world.getQuadBounds(Tmp.r1).contains(tile.getBounds(Tmp.r2)),
-                tile -> tile.floor().isLiquid && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes,
-                tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes
+        seq.add(
+            tile -> world.getQuadBounds(Tmp.r1).contains(tile.getBounds(Tmp.r2)),
+            tile -> tile.floor().isLiquid && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes,
+            tile -> !tile.floor().isDeep() && !tile.cblock().solid && !tile.floor().solid && !tile.overlay().solid && !tile.block().solidifes
         );
         
         return seq;
@@ -195,20 +196,20 @@ public class NHFunc{
         return true;
     }
     
-    public static boolean spawnUnit(Teamc starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, long seed, UnitType type, int spawnNum){
+    public static boolean spawnUnit(Building starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
         
         float angle, regSize = regSize(type);
         
-        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, seed))return false;
+        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, Mathf.random(-100, 100)))return false;
         
         angle = starter.angleTo(x, y);
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
             JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
-            spawner.init(type, spawnNum, starter.team(), s, angle, spawnReloadTime + i * spawnDelay);
+            spawner.init(type, spawnNum, starter.team(), s, angle, spawnReloadTime + i * spawnDelay, starter.pos());
             if(!net.client())spawner.add();
             i++;
         }

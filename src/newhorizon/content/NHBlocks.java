@@ -123,11 +123,11 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadTurrets(){
-		configurer = new Configurer("configurer"){{
-			size = 1;
-			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
-			NHTechTree.add(Blocks.logicProcessor, this);
-		}};
+//		configurer = new Configurer("configurer"){{
+//			size = 1;
+//			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
+//			NHTechTree.add(Blocks.logicProcessor, this);
+//		}};
 		
 		shieldProjector = new ShieldProjector("shield-projector"){{
 			consumes.power(1f);
@@ -1580,7 +1580,6 @@ public class NHBlocks implements ContentList {
 			health = 1800;
 			spawnDelay = 90f;
 			spawnReloadTime = 750f;
-			spawnRange = tilesize * 6;
 			range = 160f;
 			
 			consumes.power(8f);
@@ -1593,26 +1592,18 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
-					new UnitSet(NHUnits.sharp, new byte[]{NHUnits.AIR_LINE_1, 1}, 1800f,
-							new ItemStack(Items.titanium, 30),
-							new ItemStack(Items.silicon, 15)
-					),
-					new UnitSet(NHUnits.branch, new byte[]{NHUnits.AIR_LINE_1, 2}, 2700f,
-							new ItemStack(Items.titanium, 60),
-							new ItemStack(Items.silicon, 45),
-							new ItemStack(Items.copper, 90),
-							new ItemStack(Items.graphite, 30)
-					),
-					new UnitSet(NHUnits.origin, new byte[]{NHUnits.GROUND_LINE_1, 1}, 2400f,
-							new ItemStack(Items.lead, 40),
-							new ItemStack(Items.silicon, 20)
-					),
-					new UnitSet(NHUnits.thynomo, new byte[]{NHUnits.GROUND_LINE_1, 2}, 2700f,
-							new ItemStack(Items.lead, 30),
-							new ItemStack(Items.titanium, 60),
-							new ItemStack(Items.graphite, 45),
-							new ItemStack(Items.silicon, 30)
-					)
+				new UnitSet(NHUnitTypes.sharp, new byte[]{NHUnitTypes.AIR_LINE_1, 1}, 15 * 60f,
+					with(Items.titanium, 30, Items.silicon, 15)
+				),
+				new UnitSet(NHUnitTypes.branch, new byte[]{NHUnitTypes.AIR_LINE_1, 2}, 30 * 60f,
+					with(Items.titanium, 60, Items.silicon, 45, Items.graphite, 30)
+				),
+				new UnitSet(NHUnitTypes.origin, new byte[]{NHUnitTypes.GROUND_LINE_1, 1}, 20 * 60f,
+					with(Items.lead, 15, Items.silicon, 10 ,Items.copper, 10)
+				),
+				new UnitSet(NHUnitTypes.thynomo, new byte[]{NHUnitTypes.GROUND_LINE_1, 2}, 35 * 60f,
+					with(Items.lead, 30, Items.titanium, 60, Items.graphite, 45, Items.silicon, 30)
+				)
 			);
 		}};
 		
@@ -1623,7 +1614,6 @@ public class NHBlocks implements ContentList {
 			health = 6000;
 			spawnDelay = 60f;
 			spawnReloadTime = 600f;
-			spawnRange = tilesize * 4;
 			range = 300f;
 			
 			adaptBase = jumpGatePrimary;
@@ -1640,25 +1630,27 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
-					new UnitSet(NHUnits.gather, new byte[]{NHUnits.OTHERS, 3}, 4200f,
-							new ItemStack(Items.thorium, 300),
-							new ItemStack(NHItems.presstanium, 180),
-							new ItemStack(NHItems.zeta, 210),
-							new ItemStack(NHItems.juniorProcessor, 150)
-					),
-					new UnitSet(NHUnits.aliotiat, new byte[]{NHUnits.GROUND_LINE_1, 3}, 5200f,
-							new ItemStack(Items.titanium, 350),
-							new ItemStack(NHItems.multipleSteel, 200),
-							new ItemStack(NHItems.presstanium, 250),
-							new ItemStack(NHItems.juniorProcessor, 150)
-					),
-					new UnitSet(NHUnits.warper, new byte[]{NHUnits.AIR_LINE_1, 3}, 6600f,
-							new ItemStack(Items.thorium, 1500),
-							new ItemStack(Items.graphite, 500),
-							new ItemStack(NHItems.presstanium, 400),
-							new ItemStack(NHItems.multipleSteel, 400),
-							new ItemStack(NHItems.juniorProcessor, 300)
-					)
+				new UnitSet(NHUnitTypes.gather, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
+					with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, NHItems.zeta, 60, NHItems.juniorProcessor, 60)
+				),
+				new UnitSet(NHUnitTypes.aliotiat, new byte[]{NHUnitTypes.GROUND_LINE_1, 3}, 55 * 60f,
+					with(Items.copper, 120, NHItems.multipleSteel, 50, NHItems.presstanium, 60, NHItems.juniorProcessor, 45)
+				),
+				new UnitSet(NHUnitTypes.warper, new byte[]{NHUnitTypes.AIR_LINE_1, 3}, 65 * 60f,
+					with(Items.thorium, 90, Items.graphite, 50, NHItems.multipleSteel, 60, NHItems.juniorProcessor, 50)
+				),
+				new UnitSet(NHUnitTypes.zarkov, new byte[]{NHUnitTypes.NAVY_LINE_1, 4}, 140 * 60f,
+						ItemStack.with(NHItems.multipleSteel, 500, NHItems.juniorProcessor, 300, NHItems.presstanium, 400, NHItems.metalOxhydrigen, 200)
+				),
+				new UnitSet(NHUnitTypes.tarlidor, new byte[]{NHUnitTypes.GROUND_LINE_1, 4}, 130 * 60f,
+						ItemStack.with(Items.plastanium, 300, NHItems.juniorProcessor, 250, NHItems.presstanium, 500, NHItems.zeta, 250)
+				),
+				new UnitSet(NHUnitTypes.striker, new byte[]{NHUnitTypes.AIR_LINE_1, 4}, 150 * 60f,
+						ItemStack.with(Items.phaseFabric, 200, NHItems.juniorProcessor, 300, NHItems.presstanium, 350, NHItems.seniorProcessor, 75)
+				),
+				new UnitSet(NHUnitTypes.ghost, new byte[]{NHUnitTypes.NAVY_LINE_1, 3}, 60 * 60f,
+						ItemStack.with(NHItems.presstanium, 60, NHItems.multipleSteel, 50, NHItems.juniorProcessor, 50)
+				)
 			);
 		}};
 		
@@ -1667,7 +1659,6 @@ public class NHBlocks implements ContentList {
 			health = 50000;
 			spawnDelay = 30f;
 			spawnReloadTime = 300f;
-			spawnRange = 220f;
 			range = 600f;
 			squareStroke = 2.35f;
 			size = 8;
@@ -1686,45 +1677,21 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
-				new UnitSet(NHUnits.zarkov, new byte[]{NHUnits.NAVY_LINE_1, 4}, 2800f,
-					ItemStack.with(NHItems.irayrondPanel, 350, NHItems.seniorProcessor, 500, NHItems.multipleSteel, 400)
-				),
-				new UnitSet(NHUnits.collapser, new byte[]{NHUnits.OTHERS, 7}, 16000f,
+				new UnitSet(NHUnitTypes.collapser, new byte[]{NHUnitTypes.OTHERS, 7}, 600 * 60f,
 					new ItemStack(NHItems.darkEnergy, 2000),
 					new ItemStack(NHItems.upgradeSort, 2000)
 				),
-				new UnitSet(NHUnits.guardian, new byte[]{NHUnits.OTHERS, 5}, 9999f,
-					new ItemStack(NHItems.darkEnergy, 300)
+				new UnitSet(NHUnitTypes.guardian, new byte[]{NHUnitTypes.OTHERS, 5}, 9600f,
+					new ItemStack(NHItems.darkEnergy, 800)
 				),
-				new UnitSet(NHUnits.annihilation, new byte[]{NHUnits.GROUND_LINE_1, 5}, 6600f,
-					new ItemStack(NHItems.setonAlloy, 800),
-					new ItemStack(NHItems.seniorProcessor, 800),
-					new ItemStack(NHItems.thermoCoreNegative, 800)
+				new UnitSet(NHUnitTypes.annihilation, new byte[]{NHUnitTypes.GROUND_LINE_1, 5}, 320 * 60f,
+					with(NHItems.setonAlloy, 200, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 100)
 				),
-				new UnitSet(NHUnits.tarlidor, new byte[]{NHUnits.GROUND_LINE_1, 4}, 5400f,
-					new ItemStack(NHItems.irayrondPanel, 800),
-					new ItemStack(NHItems.multipleSteel, 1600),
-					new ItemStack(NHItems.seniorProcessor, 1000),
-					new ItemStack(NHItems.thermoCoreNegative, 600)
+				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
+					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 300, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 500)
 				),
-				new UnitSet(NHUnits.hurricane, new byte[]{NHUnits.AIR_LINE_1, 6}, 10800f,
-					new ItemStack(NHItems.seniorProcessor, 3000),
-					new ItemStack(NHItems.upgradeSort, 1500),
-					new ItemStack(NHItems.darkEnergy, 1000)
-				),
-				new UnitSet(NHUnits.striker, new byte[]{NHUnits.AIR_LINE_1, 4}, 3600f,
-					new ItemStack(NHItems.irayrondPanel, 600),
-					new ItemStack(NHItems.seniorProcessor, 900),
-					new ItemStack(NHItems.presstanium, 900),
-					new ItemStack(NHItems.zeta, 1200),
-					new ItemStack(Items.plastanium, 750)
-				),
-				new UnitSet(NHUnits.destruction, new byte[]{NHUnits.AIR_LINE_1, 5}, 6200f,
-					new ItemStack(NHItems.setonAlloy, 600),
-					new ItemStack(NHItems.seniorProcessor, 600),
-					new ItemStack(NHItems.multipleSteel, 600),
-					new ItemStack(Items.phaseFabric, 600),
-					new ItemStack(Items.graphite, 900)
+				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
+					with(NHItems.setonAlloy, 300, NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 500, NHItems.fusionEnergy, 150)
 				)
 			);
 		}};

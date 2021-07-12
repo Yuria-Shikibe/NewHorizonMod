@@ -1,7 +1,6 @@
 package newhorizon.func;
 
 import arc.Core;
-import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
@@ -17,7 +16,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.units.NHUnitType;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -203,23 +201,23 @@ public class TableTexDebugDialog extends BaseDialog{
 			buttonImage.addCloseListener();
 			buttonImage.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
-		
-		cont.button("Test", () -> {
-			buttonImage = new BaseDialog("Test"){{
-				cont.pane(table -> {
-					int index = 0;
-					for(TextureRegion tex : NHUnitType.test){
-						if(index % 8 == 0) table.row();
-						table.table(Tex.buttonEdge3, t -> {
-							t.image(new TextureRegionDrawable(tex)).grow().row();
-						});
-						index++;
-					}
-				}).fill();
-			}};
-			buttonImage.addCloseListener();
-			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+//
+//		cont.button("Test", () -> {
+//			buttonImage = new BaseDialog("Test"){{
+//				cont.pane(table -> {
+//					int index = 0;
+//					for(TextureRegion tex : NHUnitOutline.test){
+//						if(index % 8 == 0) table.row();
+//						table.table(Tex.buttonEdge3, t -> {
+//							t.image(new TextureRegionDrawable(tex)).grow().row();
+//						});
+//						index++;
+//					}
+//				}).fill();
+//			}};
+//			buttonImage.addCloseListener();
+//			buttonImage.show();
+//		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.button("Unlock", () -> {
 			for(UnlockableContent content : content.items()){

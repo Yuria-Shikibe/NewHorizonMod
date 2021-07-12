@@ -42,7 +42,7 @@ public class NewHorizon extends Mod{
 	    new NHLiquids(),
 	    new NHBullets(),
 		new NHUpgradeDatas(),
-		new NHUnits(),
+		new NHUnitTypes(),
 		new NHBlocks(),
 		//new NHPlanets(),
 	    new NHTechTree(),
@@ -51,7 +51,7 @@ public class NewHorizon extends Mod{
 	
 	private static void logShow(){
 		new Tables.LogDialog(new UnlockableContent[]{
-		
+			NHUnitTypes.ghost
 		}).show();
 	}
 	
@@ -146,6 +146,7 @@ public class NewHorizon extends Mod{
 			}
 		}
 		
+		NHReflections.load();
 		EventTriggers.load();
 	    NHSounds.load();
 		if(!Vars.headless)NHContent.initLoad();
