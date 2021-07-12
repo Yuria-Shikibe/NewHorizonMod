@@ -506,8 +506,8 @@ public class NHBullets implements ContentList{
 			lifetime = 140f;
 			hitShake = 2;
 			hitSound = Sounds.plasmaboom;
-			hitEffect = NHFx.lightningHitLarge(backColor);
-			despawnEffect = NHFx.crossBlast(backColor);
+			hitEffect = NHFx.shootCircleSmall(backColor);
+			despawnEffect = NHFx.lightningHitLarge(backColor);
 			
 			status = NHStatusEffects.emp1;
 			statusDuration = 30f;
