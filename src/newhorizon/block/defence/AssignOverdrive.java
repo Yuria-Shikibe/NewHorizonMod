@@ -30,6 +30,8 @@ public class AssignOverdrive extends OverdriveProjector{
 	public AssignOverdrive(String name){
 		super(name);
 		configurable = true;
+		saveConfig = saveData = update = true;
+		sync = true;
 		config(Integer.class, (Cons2<AssignOverdriveBuild, Integer>)AssignOverdriveBuild::linkPos);
 		config(Point2.class, (Cons2<AssignOverdriveBuild, Point2>)AssignOverdriveBuild::linkPos);
 		config(Point2[].class, (entity, point2s) -> {
