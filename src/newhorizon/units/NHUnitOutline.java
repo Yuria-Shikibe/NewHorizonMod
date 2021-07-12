@@ -24,7 +24,8 @@ public class NHUnitOutline{
 			base.draw(r.crop(), true);
 			
 			TextureAtlas.AtlasRegion tC = Core.atlas.find(type.name + "-cell");
-			base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), true);
+			//base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), 0, 0, true);
+			base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), -1, 0, true);
 
 			for(Weapon w : type.weapons){
 				if(w.top)continue;

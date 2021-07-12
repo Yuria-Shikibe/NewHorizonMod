@@ -47,6 +47,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.Tile;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.modules.ItemModule;
@@ -122,16 +123,20 @@ public class JumpGate extends Block {
         configClear((JumpGateBuild tile) -> tile.startBuild(-1, 0));
     }
     
-    public boolean canReplace(Block other) {
-        return super.canReplace(other) || other instanceof JumpGate && size > other.size;
+    @Override
+    public boolean canReplace(Block other){
+        return super.canReplace(other) || (other instanceof JumpGate && size > other.size);
     }
     
     public boolean canPlaceOn(Tile tile, Team team) {
         if(adaptBase == null || state.rules.infiniteResources)return true;
-        if (tile == null) {
+        CoreBlock.CoreBuild core = team.core();
+        if(core == null || (!state.rules.infiniteResources && !core.items.has(requirements, state.rules.buildCostMultiplier))) return false;
+    
+        if(tile == null) {
             return false;
-        } else {
-            return tile.block() instanceof JumpGate && adaptBase == tile.block();
+        }else{
+            return adaptBase == tile.block();
         }
     }
     
@@ -274,7 +279,7 @@ public class JumpGate extends Block {
     
         @Override
         public void updateTile(){
-            if(hasConsume(getSet()))progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 1f);
+            progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 1f);
             if(isCalling() && Units.canCreate(team, getType())){
                 buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta();
                 if(state.rules.infiniteResources || (buildProgress >= costTime(getSet(), true) && !jammed)){

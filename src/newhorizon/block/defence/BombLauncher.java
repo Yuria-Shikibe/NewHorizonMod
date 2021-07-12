@@ -258,7 +258,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			if(parent){
 				BombEntity next = Pools.obtain(BombEntity.class, BombEntity::new);
 				next.init(team, lifetime / 1.5f, target, target.x, target.y, false).setDamage(bombDamage, bombRadius);
-				Time.run(dst(target) / tilesize * bombVelPerTile, next::add);
+				Time.run(target.dst(this) / tilesize * bombVelPerTile, next::add);
 			}else hit();
 			
 			Groups.draw.remove(this);
