@@ -457,7 +457,7 @@ public class TableFs{
             }
         };
         
-        if(mobile)Core.scene.root.addChildAt(10, pTable);
+        if(mobile)Core.scene.root.addChildAt(11, pTable);
         Core.scene.root.addChildAt(9, floatTable);
     }
     
