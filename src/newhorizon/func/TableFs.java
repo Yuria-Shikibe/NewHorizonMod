@@ -386,10 +386,6 @@ public class TableFs{
                     Vec2 v = Core.camera.project(r.x + r.width / 2, r.y - OFFSET);
                     setPosition(v.x, v.y, 0);
                 }
-                
-                if(NHVars.ctrl.pressDown){
-                    touchable = Touchable.disabled;
-                }else touchable = Touchable.enabled;
             });
             table(Tex.paneSolid, t -> {
                 t.button(Icon.upOpen, Styles.clearFulli, () -> {
@@ -422,13 +418,15 @@ public class TableFs{
             if(mobile){
                 addListener(new InputListener(){
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                        if(!NHVars.ctrl.pressDown){
-                            NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
-                            NHVars.ctrl.to.set(NHVars.ctrl.from);
-                        }
-                        else NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
-                        NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
-                        return false;
+                    if(!NHVars.ctrl.pressDown){
+                        touchable = Touchable.enabled;
+                        NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
+                        NHVars.ctrl.to.set(NHVars.ctrl.from);
+                    }else{
+                        NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
+                    }
+                    NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
+                    return false;
                     }
                 });
             }else addListener(new InputListener(){
@@ -457,8 +455,8 @@ public class TableFs{
             }
         };
         
-        if(mobile)Core.scene.root.addChildAt(10, pTable);
         Core.scene.root.addChildAt(9, floatTable);
+        if(mobile)Core.scene.root.addChildAt(10, pTable);
     }
     
     public static void pointSelectTable(Table parent, Cons<Point2> cons){
