@@ -9,6 +9,7 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.Scaled;
 import arc.math.geom.Intersector;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
@@ -48,7 +49,6 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.effects.EffectTrail;
-import newhorizon.emergency.ScaledE;
 import newhorizon.feature.NHBaseEntity;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.ClassIDIniter;
@@ -413,7 +413,7 @@ public class HyperSpaceWarper extends Block{
 		}
 	}
 	
-	public static class Carrier extends NHBaseEntity implements Teamc, Rotc, ScaledE{
+	public static class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 		protected static final float dstPerMove = tilesize * 1.5f;
 		
 		public float rotation = 0;

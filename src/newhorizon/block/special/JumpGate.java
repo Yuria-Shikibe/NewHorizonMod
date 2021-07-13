@@ -56,7 +56,6 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
 import newhorizon.content.NHSounds;
-import newhorizon.emergency.TimedcE;
 import newhorizon.feature.NHBaseEntity;
 import newhorizon.func.*;
 import newhorizon.vars.NHVars;
@@ -592,7 +591,7 @@ public class JumpGate extends Block {
         public ItemStack[] requirements(){ return requirements.toArray(); }
     }
     
-    public static class Spawner extends NHBaseEntity implements Syncc, TimedcE, Rotc{
+    public static class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
         public Team team = Team.derelict;
         public UnitType type = UnitTypes.alpha;
         public int spawnNum = 0;
