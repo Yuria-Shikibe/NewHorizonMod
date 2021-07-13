@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
+import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import newhorizon.NewHorizon;
@@ -25,6 +26,7 @@ public class NHContent extends Content{
 	}
 	
 	public void load(){
+		if(Vars.headless)return;
 		arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.configName("upgrade-info"));
 		iconLevel = Core.atlas.find(NewHorizon.configName("level-up"));

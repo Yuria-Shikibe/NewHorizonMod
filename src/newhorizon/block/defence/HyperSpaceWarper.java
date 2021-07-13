@@ -461,7 +461,7 @@ public class HyperSpaceWarper extends Block{
 				float height = Mathf.curve(fslope() * fslope(), 0f, 0.3f) * 1.1f;
 				float width = Mathf.curve(fslope() * fslope(), 0.35f, 0.75f) * 1.1f;
 				
-				if(contained && !Units.canCreate(team, unit.type)){
+				if((contained && !Units.canCreate(team, unit.type)) || (surviveTime > 0)){
 					Draw.z(Layer.bullet - 0.2f);
 					Draw.color(team.color.cpy().mul(1.15f), Pal.gray, new Rand(id).random(-0.25f, 0.25f) / 4f);
 					Draw.alpha(0.2f);
@@ -528,9 +528,9 @@ public class HyperSpaceWarper extends Block{
 						if(!net.client()){
 							toCarry.set(x, y, rotation);
 							toCarry.unit.add();
-							dumped = true;
-							contained = false;
 						}
+						dumped = true;
+						contained = false;
 					}
 				}
 			}

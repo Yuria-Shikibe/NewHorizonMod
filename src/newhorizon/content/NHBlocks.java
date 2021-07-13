@@ -544,7 +544,7 @@ public class NHBlocks implements ContentList {
 			);
 			chargeBeginEffect = NHFx.railShoot(heatColor, range + 40f, tilesize * 1.5f, 45f, 14f);
 			chargeTime = chargeBeginEffect.lifetime;
-			chargeBeginEffect = NHFx.genericCharge(heatColor, 13f, 50f, chargeBeginEffect.lifetime);
+			chargeEffect = NHFx.genericCharge(heatColor, 13f, 50f, chargeBeginEffect.lifetime);
 			minRange = 120f;
 			rotateSpeed = 1.5f;
 			shootCone = 8f;
