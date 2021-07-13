@@ -529,12 +529,12 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		railGun = new ItemTurret("rail-gun"){{
-			unitSort = (u, x, y) -> - u.maxHealth / u.speed() * Mathf.dst(x, y);
+			unitSort = (u, x, y) -> -u.speed();
 			size = 4;
 			health = 4550;
 			reloadTime = 200f;
 			recoilAmount = 6f;
-			shootShake = 6f;
+			shootShake = 5f;
 			range = 620.0F;
 			shootSound = NHSounds.railGunBlast;
 			heatColor = NHItems.irayrondPanel.color;
@@ -542,8 +542,11 @@ public class NHBlocks implements ContentList {
 					NHItems.irayrondPanel, NHBullets.railGun1,
 					NHItems.setonAlloy, NHBullets.railGun2
 			);
+			chargeBeginEffect = NHFx.railShoot(heatColor, range + 40f, tilesize * 1.5f, 45f, 14f);
+			chargeTime = chargeBeginEffect.lifetime;
+			chargeBeginEffect = NHFx.genericCharge(heatColor, 13f, 50f, chargeBeginEffect.lifetime);
 			minRange = 120f;
-			rotateSpeed = 1f;
+			rotateSpeed = 1.5f;
 			shootCone = 8f;
 			coolantMultiplier = 0.55f;
 			restitution = 0.009f;
@@ -844,7 +847,6 @@ public class NHBlocks implements ContentList {
 			consumes.power(12f);
 			
 			requirements(Category.units, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
-			
 		}};
 		
 		gravityGully = new GravityTrap("gravity-gully"){{
@@ -852,7 +854,7 @@ public class NHBlocks implements ContentList {
 			health = 1250;
 			
 			consumes.power(8f);
-			requirements(Category.units, BuildVisibility.shown, with(Items.plastanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 80, NHItems.presstanium, 200, Items.thorium, 200));
+			requirements(Category.units, BuildVisibility.shown, with(Items.plastanium, 80, NHItems.multipleSteel, 80, NHItems.juniorProcessor, 80, Items.copper, 200));
 			NHTechTree.add(hyperspaceWarper, this);
 		}};
 		
@@ -1032,14 +1034,14 @@ public class NHBlocks implements ContentList {
 		heavyDefenceWall = new Wall("heavy-defence-wall"){{
 			size = 1;
 			health = 1750;
-			absorbLasers = true;
+			absorbLasers = insulated = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20));
 		}};
 		
 		heavyDefenceWallLarge = new Wall("heavy-defence-wall-large"){{
 			size = 2;
 			health = 1750 * healthMult2;
-			absorbLasers = true;
+			absorbLasers = insulated = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2));
 		}};
 		

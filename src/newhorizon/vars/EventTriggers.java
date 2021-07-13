@@ -3,17 +3,28 @@ package newhorizon.vars;
 import arc.Core;
 import arc.Events;
 import arc.func.Cons2;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
+import newhorizon.block.defence.GravityTrap;
+import newhorizon.block.defence.HyperSpaceWarper;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
@@ -58,6 +69,25 @@ public class EventTriggers{
 		
 		Events.on(BossGeneratedEvent.class, e -> {
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");
+		});
+		
+		Events.run(EventType.Trigger.draw, () -> {
+			float scl = 20;
+			Building building = Vars.control.input.frag.config.getSelectedTile();
+			
+			float z = Draw.z();
+			
+			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
+				for(GravityTrap.GravityTrapBuild b : NHVars.world.gravityTraps){
+					if(!b.active())return;
+					Draw.z(Layer.buildBeam + Mathf.num(b.team != Vars.player.team() ^ ((Time.time % (scl * 8 * Mathf.pi)) > scl * Mathf.pi && (Time.time % (scl * 8 * Mathf.pi)) < scl * Mathf.pi * 5)));
+					Color c = b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust;
+					Tmp.c1.set(c).lerp(Color.white, Mathf.absin(scl, 1f));
+					Draw.color(Tmp.c1);
+					Fill.poly(b.x, b.y,6, b.range());
+					Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
+				}
+			}
 		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {

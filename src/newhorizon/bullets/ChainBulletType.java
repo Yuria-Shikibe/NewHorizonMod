@@ -1,6 +1,7 @@
 package newhorizon.bullets;
 
 import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Tmp;
@@ -9,7 +10,7 @@ import mindustry.entities.Damage;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
-import mindustry.gen.Healthc;
+import mindustry.gen.Unit;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.NHFunc;
 import newhorizon.vars.NHVars;
@@ -23,8 +24,8 @@ public class ChainBulletType extends BulletType{
 	public int boltNum = 2;
 	
 	protected final IntSeq tmpSeqU = new IntSeq(maxHit), tmpSeqB = new IntSeq(maxHit);
-	protected final Seq<Healthc> tmpTeamcSeq = new Seq<>();
-	protected final Seq<Position> points = new Seq<>();
+	protected static final Seq<Position> points = new Seq<>();
+	protected static final Vec2 tmpVec = new Vec2();
 	
 	@Override
 	public void init(){
@@ -38,47 +39,38 @@ public class ChainBulletType extends BulletType{
 	
 	@Override
 	public void init(Bullet b){
-		Healthc target = Damage.linecast(b, b.x, b.y, b.rotation(), length);
-		if(target == null)return;
+		Position target = Damage.linecast(b, b.x, b.y, b.rotation(), length);
+		if(target == null)target = tmpVec.trns(b.rotation(), length).add(b);
 		
-		Units.nearbyEnemies(b.team, Tmp.r1.setSize(chainRange).setCenter(target.getX(), target.getY()), u -> {
+		Position confirm = target;
+		
+		Units.nearbyEnemies(b.team, Tmp.r1.setSize(chainRange).setCenter(confirm.getX(), confirm.getY()), u -> {
 			if(!u.checkTarget(collidesAir, collidesGround))return;
-			tmpTeamcSeq.add(u);
-			
-			u.apply(status, statusDuration);
-			
+			points.add(u);
 		});
 		
 		if(collidesGround){
-			Vars.indexer.eachBlock(null, target.getX(), target.getY(), chainRange, t -> t.team != b.team, u -> {
-				tmpTeamcSeq.add(u);
-				u.damage(damage);
-				hitEffect.at(u.x, u.y, hitColor);
-			});
+			Vars.indexer.eachBlock(null, confirm.getX(), confirm.getY(), chainRange, t -> t.team != b.team, points::add);
 		}
 		
 		NHVars.rand.setSeed(NHFunc.seedNet());
-		tmpTeamcSeq.shuffle();
-		tmpTeamcSeq.truncate(maxHit);
-		//Teamc closest = Geometry.findClosest(b.x, b.y, tmpTeamcSeq);
-		tmpTeamcSeq.sort(e -> - target.dst(e) + target.angleTo(e) / 32f);
-		
-		for(Healthc t : tmpTeamcSeq){
-			if(t != null){
-				t.damage(damage);
-				hitEffect.at(t.getX(), t.getY(), hitColor);
-			}
-		}
-		
-		points.add(b);
-		points.addAll(tmpTeamcSeq);
+		points.shuffle();
+		points.truncate(maxHit);
+		points.sort(e -> - confirm.dst(e) + confirm.angleTo(e) / 32f);
+		points.insert(0, b);
 		
 		for(int i = 1; i < points.size; i++){
 			Position from = points.get(i - 1), to = points.get(i);
-			PosLightning.createEffect(from, to, hitColor, boltNum, thick);
+			Position sureTarget = PosLightning.findInterceptedPoint(from, to, b.team);
+			PosLightning.createEffect(from, sureTarget, hitColor, boltNum, thick);
+			hitEffect.at(sureTarget.getX(), sureTarget.getY(), hitColor);
+			lightningType.create(b, sureTarget.getX(), sureTarget.getY(), 0).damage(damage);
+			
+			if(sureTarget instanceof Unit)((Unit)sureTarget).apply(status, statusDuration);
+			
+			if(sureTarget != to)break;
 		}
 		
-		tmpTeamcSeq.clear();
 		points.clear();
 	}
 	

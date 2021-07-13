@@ -73,8 +73,7 @@ public abstract class CommandableBlock extends Block{
 		}
 		
 		@Override
-		public void remove(){
-			super.remove();
+		public void onRemoved(){
 			NHVars.world.commandables.remove(this);
 		}
 		

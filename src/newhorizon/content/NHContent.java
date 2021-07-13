@@ -15,6 +15,10 @@ public class NHContent extends Content{
 		new NHContent().load();
 	}
 	
+	public static TextureRegion getArrowRegion(){return Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));}
+	public static TextureRegion getPointerRegion(){return Core.atlas.find(NewHorizon.configName("jump-gate-pointer"));}
+	
+	
 	@Override
 	public ContentType getContentType(){
 		return ContentType.error;

@@ -12,7 +12,7 @@ public class NHColor{
 		thurmixRed = Color.valueOf("#FF9492"),
 		thurmixRedLight = Color.valueOf("#FFCED0"),
 		darkEnr = darkEnrColor.cpy().lerp(Color.black, 0.85f),
-		darkEnrFront = darkEnrColor.cpy().lerp(Color.white, 0.35f);
+		darkEnrFront = darkEnrColor.cpy().lerp(Color.white, 0.3f);
 }
 
 

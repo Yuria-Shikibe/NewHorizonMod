@@ -236,7 +236,7 @@ public class JumpGate extends Block {
             (JumpGateBuild entity) -> new Bar(
                 () -> entity.isCalling() ?
                         Core.bundle.get("bar.progress") : "[lightgray]" + Iconc.cancel,
-                () -> entity.isCalling() && entity.hasConsume(entity.getSet()) ? Pal.power : Pal.redderDust,
+                () -> entity.isCalling() && Units.canCreate(entity.team, entity.getType()) ? Pal.power : Pal.redderDust,
                 () -> entity.isCalling() ? entity.buildProgress / entity.costTime(entity.getSet(), true) : 0
             )
         );
@@ -282,7 +282,7 @@ public class JumpGate extends Block {
             progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 1f);
             if(isCalling() && Units.canCreate(team, getType())){
                 buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta();
-                if(state.rules.infiniteResources || (buildProgress >= costTime(getSet(), true) && !jammed)){
+                if(buildProgress >= costTime(getSet(), true) && !jammed){
                     spawn(getSet());
                 }
             }
@@ -293,7 +293,7 @@ public class JumpGate extends Block {
                     Fx.shootSmallSmoke.at(x, y, i * 90);
                 }
                 
-                cooldown += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 1f);
+                cooldown += warmup * delta();
                 if(cooldown > cooldownTime){
                     cooling = false;
                     cooldown = 0;
@@ -382,12 +382,12 @@ public class JumpGate extends Block {
                 t.add(s).growX().height(LEN);
                 t.add(l).fillX().height(LEN).padRight(OFFSET).padLeft(OFFSET);
                 t.add(new Bar(
-                        () ->
-                            !isCalling() ? "[lightgray]" + Iconc.cancel :
-                            Units.canCreate(team, getType()) && !jammed ? "[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + getSet().type.localizedName + "[lightgray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)Math.max( (costTime(getSet(), true) - buildProgress) / Time.toSeconds / state.rules.unitBuildSpeedMultiplier, 0) + "[lightgray] " + Core.bundle.get("unit.seconds") :
-                            "[red]Call Jammed",
-                        () -> isCalling() && canSpawn(getSet(), true) && !jammed ? Pal.power : Pal.redderDust,
-                        () -> isCalling() ? buildProgress / costTime(getSet(), true) : 0
+                    () ->
+                        !isCalling() ? "[lightgray]" + Iconc.cancel :
+                        Units.canCreate(team, getType()) && !jammed ? "[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + buildingSpawnNum + "[]* [accent]" + getSet().type.localizedName + "[lightgray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)Math.max( (costTime(getSet(), true) - buildProgress) / Time.toSeconds / state.rules.unitBuildSpeedMultiplier, 0) + "[lightgray] " + Core.bundle.get("unit.seconds") :
+                        "[red]Call Jammed",
+                    () -> isCalling() && canSpawn(getSet(), true) && !jammed ? Pal.power : Pal.redderDust,
+                    () -> isCalling() ? buildProgress / costTime(getSet(), true) : 0
                 )).growX().height(LEN);
             }).growX().height(LEN).row();
             dialog.cont.table(t -> {
@@ -446,6 +446,7 @@ public class JumpGate extends Block {
                         Draw.rect(arrowRegion, x , y, arrowRegion.width * Draw.scl * signSize * scl, arrowRegion.height * Draw.scl * signSize * scl, 90 * i);
                     }
                 }
+                DrawFuncs.circlePercent(x, y, size * tilesize / 1.5f, buildProgress / costTime(getSet(), true), 0);
             }
             Draw.reset();
             
@@ -709,7 +710,7 @@ public class JumpGate extends Block {
                     Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, rotation() - 90);
                 }
     
-                float railF = Mathf.curve(fin(Interp.circleIn), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
+                float railF = Mathf.curve(fin(Interp.pow2Out), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
                 Tmp.v1.trns(rotation, 0f, (2 - railF) * tilesize * 1.4f);
     
                 Lines.stroke(railF * 2f);

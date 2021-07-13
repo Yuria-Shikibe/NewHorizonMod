@@ -105,7 +105,7 @@ public class NHSetting{
 	
 	public static void initSettingList() throws IOException{
 		debug = !Vars.headless && getBool("@active.debug");
-		modMeta = Vars.mods.locateMod(NewHorizon.MOD_NAME).meta;
+		modMeta = Vars.mods.getMod(NewHorizon.class).meta;
 		
 		if(!modMeta.version.equals(settingList.getProperty(initKey))){
 			versionChange = true;

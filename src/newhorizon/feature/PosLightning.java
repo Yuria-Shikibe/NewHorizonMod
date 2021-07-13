@@ -14,12 +14,15 @@ import arc.struct.FloatSeq;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
 import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
+import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.graphics.Layer;
 import mindustry.world.Tile;
@@ -46,6 +49,14 @@ import org.jetbrains.annotations.Nullable;
  * @author Yuria
  */
 public class PosLightning {
+	public static final BulletType hitter = new BulletType(0.0001f, 0f){{
+		absorbable = true;
+		collides = collidesAir = collidesGround = true;
+		speed = 0;
+		status = StatusEffects.shocked;
+		statusDuration = 10f;
+		hittable = false;
+	}};
 	
 	public static final Cons<Position> none = p -> {};
 	
@@ -133,8 +144,15 @@ public class PosLightning {
 		
 		if(sureTarget instanceof Healthc){
 			Healthc h = (Healthc)sureTarget;
-			if(owner == null)h.damage(damage <= 0 ? 1f : damage);
-			else h.damage(owner.damage);
+			Entityc ownerE = null;
+			
+			if(owner != null){
+				ownerE = owner;
+			}else if(team != null && team.core() != null)ownerE = team.core();
+			if(ownerE != null){
+				Bullet bullet = hitter.create(ownerE, team, sureTarget.getX(), sureTarget.getY(), 0);
+				bullet.damage(damage <= 0 ? 1f : damage);
+			}
 		}
 		
 		createEffect(from, sureTarget, color, boltNum, width);
@@ -193,14 +211,14 @@ public class PosLightning {
 	//Private methods and classes.
 
 	//Compute the proper hit position.
-	private static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
+	public static Position findInterceptedPoint(Position from, Position target, Team fromTeam) {
 		furthest = null;
 		return Geometry.raycast(
 			World.toTile(from.getX()),
 			World.toTile(from.getY()),
 			World.toTile(target.getX()),
 			World.toTile(target.getY()),
-			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().absorbLasers
+			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().insulated
 		) && furthest != null ? furthest : target;
 	}
 	

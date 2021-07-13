@@ -25,6 +25,12 @@ public class NHWeapon extends Weapon{
 		this.outlineRegion = Core.atlas.find(this.name + "-outline");
 	}
 	
+	public NHWeapon setAutoTarget(boolean active){
+		autoTarget = active;
+		controllable = !active;
+		return this;
+	}
+	
 	public NHWeapon setAlternate(boolean b){
 		alternate = b;
 		return this;

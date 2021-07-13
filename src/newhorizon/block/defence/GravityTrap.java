@@ -4,12 +4,14 @@ import arc.Core;
 import arc.func.Cons2;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
@@ -26,7 +28,7 @@ import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
 
@@ -38,7 +40,7 @@ public class GravityTrap extends Block{
 	
 	private static Tile tmpTile;
 	
-	public int range = 24;
+	public int range = 35;
 	
 	public GravityTrap(String name){
 		super(name);
@@ -52,34 +54,46 @@ public class GravityTrap extends Block{
 	}
 	
 	@Override
+	public void drawPlace(int x, int y, int rotation, boolean valid){
+		for(GravityTrapBuild b : NHVars.world.gravityTraps){
+			Draw.color(Pal.gray);
+			Lines.stroke(3);
+			Lines.poly(b.x, b.y, 6, b.range());
+		}
+		
+		for(GravityTrapBuild b : NHVars.world.gravityTraps){
+			Draw.color(b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust);
+			Lines.stroke(1);
+			Fill.poly(b.x, b.y, 6, b.range());
+			Lines.poly(b.x, b.y, 6, b.range());
+		}
+		
+		Draw.color(Pal.gray);
+		Lines.stroke(3);
+		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
+		Draw.color(Pal.place);
+		Lines.stroke(1);
+		Fill.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
+		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
+	}
+	
+	@Override
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.range, range, StatUnit.blocks);
 		stats.add(Stat.output, (t) -> {
-			t.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
-			t.image().size(LEN).color(Pal.lancerLaser).padTop(OFFSET);
-			t.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).fill().padLeft(OFFSET / 2).row();
-			t.image().size(LEN).color(Pal.redderDust).padTop(OFFSET);
-			t.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).fill().padLeft(OFFSET / 2).row();
+			t.table(i -> {
+				i.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
+			}).growX().fillY().row();
+			t.table(i -> {
+				i.image().size(LEN).color(Pal.lancerLaser).left();
+				i.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).growX().padLeft(OFFSET / 2).row();
+			}).padTop(OFFSET).growX().fillY().row();
+			t.table(i -> {
+				i.image().size(LEN).color(Pal.redderDust).left();
+				i.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).growX().padLeft(OFFSET / 2).row();
+			}).padTop(OFFSET).growX().fillY().row();
 		});
-		
-	}
-	
-	@Override
-	public void init(){
-		super.init();
-	}
-	
-	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid){
-		if(headless)return;
-		
-		NHVars.world.drawGully(player.team());
-		
-		Draw.color(Pal.place);
-		
-		Draw.alpha(0.1f);
-		Fill.circle(x * tilesize + offset, y * tilesize + offset, range * tilesize);
 	}
 	
 	public class GravityTrapBuild extends Building implements Ranged, BeforeLoadc{
@@ -111,7 +125,6 @@ public class GravityTrap extends Block{
 		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
-			NHVars.world.drawGully(team);
 		}
 		
 		public boolean active(){
@@ -150,14 +163,13 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
-		public void remove(){
-			super.remove();
+		public void onRemoved(){
 			NHVars.world.gravityTraps.remove(this);
 		}
 		
 		@Override
-		public void placed(){
-			super.placed();
+		public void add(){
+			super.add();
 			beforeLoad();
 		}
 		

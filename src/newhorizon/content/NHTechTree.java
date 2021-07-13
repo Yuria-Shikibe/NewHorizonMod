@@ -25,10 +25,12 @@ public class NHTechTree implements ContentList {
     public void load(){
         //Blocks;
         add(NHBlocks.bombLauncher, NHBlocks.airRaider);
+        
         add(Blocks.commandCenter, NHBlocks.jumpGatePrimary);
         add(NHBlocks.jumpGatePrimary, NHBlocks.jumpGateJunior);
         add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
+        
         add(NHBlocks.hyperspaceWarper, NHBlocks.gravityGully);
         add(NHBlocks.thurmix, NHBlocks.blastTurret);
         add(Blocks.powerNode, NHBlocks.insulatedWall);

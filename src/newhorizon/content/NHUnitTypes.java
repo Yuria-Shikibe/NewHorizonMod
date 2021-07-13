@@ -163,7 +163,7 @@ public class NHUnitTypes implements ContentList{
 		
 		closeAATurret = new NHWeapon("anti-air-pulse-laser"){{
 			shake = 0f;
-			shots = 3;
+			shots = 1;
 			shotDelay = 6f;
 			rotate = top = true;
 			heatColor = NHColor.lightSkyBack;
@@ -172,13 +172,13 @@ public class NHUnitTypes implements ContentList{
 			recoil = 2f;
 			x = 9.5f;
 			y = -7f;
-			reload = 30f;
+			reload = 10f;
 			autoTarget = true;
-			predictTarget = false;
+			controllable = predictTarget = false;
 			bullet = new SapBulletType(){{
 				keepVelocity = false;
 				sapStrength = 0.4F;
-				length = 100.0F;
+				length = 120.0F;
 				damage = 35.0F;
 				shootEffect = Fx.shootSmall;
 				hitColor = color = NHColor.lightSkyBack;
@@ -196,7 +196,8 @@ public class NHUnitTypes implements ContentList{
 			
 			shots = 3;
 			shotDelay = 8f;
-			
+			controllable = false;
+			autoTarget = true;
 			shake = 3f;
 			inaccuracy = 4f;
 			rotateSpeed = 2.5f;
@@ -231,7 +232,7 @@ public class NHUnitTypes implements ContentList{
 			drag = 0.18f;
 			hitSize = 20f;
 			armor = 6;
-			accel = 0.025f;
+			accel = 0.1f;
 			rotateSpeed = 1.7f;
 			rotateShooting = false;
 			buildSpeed = 3f;
@@ -308,7 +309,7 @@ public class NHUnitTypes implements ContentList{
 		};
 		
 		zarkov = new UnitType("zarkov"){{
-			weapons.add(multipleLauncher.copy().setPos(8, -22), multipleLauncher.copy().setPos(16, -8));
+			weapons.add(multipleLauncher.copy().setPos(8, -22), multipleLauncher.copy().setPos(16, -8), smallCannon.copy().setAutoTarget(true).setPos(8, 8.5f));
 			health = 12000;
 			speed = 1f;
 			drag = 0.18f;

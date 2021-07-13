@@ -14,6 +14,8 @@ import mindustry.type.Weapon;
 import newhorizon.func.NHSetting;
 
 public class NHUnitOutline{
+	private static final Color cellColor = Team.sharded.color;
+	
 	public static void createIcons(MultiPacker packer, UnitType type){
 		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless && type.region != null && type.region.found() && type.region instanceof TextureAtlas.AtlasRegion){
 			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)type.region;
@@ -25,7 +27,7 @@ public class NHUnitOutline{
 			
 			TextureAtlas.AtlasRegion tC = Core.atlas.find(type.name + "-cell");
 			//base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), 0, 0, true);
-			base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), -1, 0, true);
+			base.draw(fillColor(Core.atlas.getPixmap(tC), cellColor), -1, 0, true);
 
 			for(Weapon w : type.weapons){
 				if(w.top)continue;

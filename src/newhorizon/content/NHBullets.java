@@ -598,42 +598,58 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
-		railGun1 = new PointBulletType() {{
-			lightningColor = NHItems.irayrondPanel.color;
+		railGun1 = new BasicBulletType(35f, 2200, STRIKE) {{
+			width = 12f;
+			height = 36f;
+			
+			trailLength = 20;
+			trailWidth = 2;
+			trailInterval = 1f;
+			trailRotation = true;
+			
+			pierce = pierceBuilding = true;
+			
+			lifetime = 25f;
+			lightningColor = frontColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color;
 			lightning = 4;
 			lightningLength = 6;
 			lightningLengthRand = 10;
 			shootEffect = NHFx.instShoot(lightningColor);
 			hitEffect = NHFx.instHit(lightningColor);
 			smokeEffect = Fx.smokeCloud;
-			trailEffect = NHFx.instTrail(lightningColor, 60);
-			despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
-			trailSpacing = 22.0F;
-			damage = 2000.0F;
-			lightningDamage = damage / 7;
+			trailEffect = NHFx.instTrail(lightningColor, 40, true);
+			despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));lightningDamage = damage / 7;
 			buildingDamageMultiplier = 1.25f;
-			hitShake = 8.0F;
-			speed = 620;
+			hitShake = 8f;
+			knockback = 14f;
 		}};
 		
-		railGun2 = new PointBulletType() {{
-			lightningColor = Pal.ammo.cpy().lerp(Color.white, 0.2f);
-			lightning = 3;
-			lightningLength = 4;
-			lightningLengthRand = 20;
+		railGun2 = new BasicBulletType(40f, 3000, STRIKE) {{
+			width = 16f;
+			height = 50f;
+			
+			trailLength = 18;
+			trailWidth = 2;
+			trailInterval = 1f;
+			trailChance = 0.4f;
+			trailRotation = true;
+			
+			pierce = pierceBuilding = true;
+			
+			lifetime = 20f;
+			lightningColor = frontColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color;
+			lightning = 4;
+			lightningLength = 6;
+			lightningLengthRand = 10;
 			shootEffect = NHFx.instShoot(lightningColor);
-			hitEffect = NHFx.instHit(lightningColor);
+			hitEffect = NHFx.instHit(lightningColor, 6, 120);
 			smokeEffect = Fx.smokeCloud;
-			trailEffect = NHFx.instTrail(lightningColor, 0);
+			trailEffect = NHFx.instTrail(lightningColor, 60, true);
 			despawnEffect = new MultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
-			trailSpacing = 30.0F;
-			damage = 2750.0F;
 			lightningDamage = damage / 7;
-			splashDamage = damage / 30;
-			splashDamageRadius = 16f;
 			buildingDamageMultiplier = 1.25f;
-			hitShake = 10.0F;
-			speed = 620;
+			hitShake = 12f;
+			knockback = 22f;
 		}};
 		
 		warperBullet = new SpeedUpBulletType(0.35f, 20f, CIRCLE_BOLT){
@@ -956,7 +972,7 @@ public class NHBullets implements ContentList{
 			hitEffect = NHFx.darkEnrCircleSplash;
 		}};
 		
-		airRaid = new SpeedUpBulletType(9f, 700, STRIKE){{
+		airRaid = new SpeedUpBulletType(9f, 450, STRIKE){{
 			hitSound = Sounds.explosionbig;
 			trailChance = 0.075f;
 			trailEffect = NHFx.polyTrail;
@@ -964,7 +980,6 @@ public class NHBullets implements ContentList{
 			trailLength = 23;
 			drawSize = 500f;
 			
-			drawSize = 120f;
 			homingPower = 0.08f;
 			homingRange = 400f;
 			homingDelay = 12;

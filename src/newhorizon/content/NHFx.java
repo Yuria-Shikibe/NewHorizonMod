@@ -57,6 +57,31 @@ public class NHFx{
 		return or == null ? effect : or;
 	}
 	
+	public static Effect railShoot(Color color, float length, float width, float lifetime, float spacing){
+		
+		
+		return new Effect(lifetime, length * 2f, e -> {
+			TextureRegion arrowRegion = NHContent.arrowRegion;
+			
+			Draw.color(color);
+			
+			float railF = Mathf.curve(e.fin(Interp.pow2Out), 0f, 0.25f) * Mathf.curve(e.fout(Interp.pow4Out), 0f, 0.3f) * e.fin();
+			
+			for(int i = 0; i <= length / spacing; i++){
+				Tmp.v1.trns(e.rotation, i * spacing);
+				float f = Interp.pow3Out.apply(Mathf.clamp((e.fin() * length - i * spacing) / spacing)) * (0.6f + railF * 0.4f);
+				Draw.rect(arrowRegion, e.x + Tmp.v1.x, e.y + Tmp.v1.y, arrowRegion.width * Draw.scl * f, arrowRegion.height * Draw.scl * f, e.rotation - 90);
+			}
+			
+			Tmp.v1.trns(e.rotation, 0f, (2 - railF) * tilesize * 1.4f);
+			
+			Lines.stroke(railF * 2f);
+			for(int i : Mathf.signs){
+				Lines.lineAngle(e.x + Tmp.v1.x * i, e.y + Tmp.v1.y * i, e.rotation, length * (0.75f + railF / 4f) * Mathf.curve(e.fout(Interp.pow5Out), 0f, 0.1f));
+			}
+		});
+	}
+	
 	@Contract("_, _, _, _ -> new")
 	public static @NotNull Effect polyTrail(Color fromColor, Color toColor, float size, float lifetime){
 		return new Effect(lifetime, size * 2, e -> {
@@ -70,7 +95,7 @@ public class NHFx{
 		return new Effect(lifetime, e -> {
 			color(color);
 			
-			randLenVectors(e.id, 2, 1f + 20f * e.fout(), e.rotation, range, (x, y) -> {
+			randLenVectors(e.id, 12, 1f + 20f * e.fout(), e.rotation, range, (x, y) -> {
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * size + size / 4f);
 				Drawf.light(e.x + x, e.y + y, e.fout(0.25f) * size, color, 0.7f);
 			});
@@ -295,7 +320,7 @@ public class NHFx{
 		});
 	}
 	
-	public static Effect instTrail(Color color, float angle){
+	public static Effect instTrail(Color color, float angle, boolean random){
 		return new Effect(30.0F, (e) -> {
 			for(int j : angle == 0 ? DrawFuncs.oneArr: Mathf.signs){
 				for(int i = 0; i < 2; ++i) {
@@ -303,9 +328,9 @@ public class NHFx{
 					float m = i == 0 ? 1.0F : 0.5F;
 					float rot = e.rotation + 180.0F;
 					float w = 15.0F * e.fout() * m;
-					Drawf.tri(e.x, e.y, w, (30.0F + Mathf.randomSeedRange(e.id, 15.0F)) * m, rot + j * angle);
+					Drawf.tri(e.x, e.y, w, 30.0F + (random ? Mathf.randomSeedRange(e.id, 15.0F) : 8) * m, rot + j * angle);
 					if(angle == 0)Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F + j * angle);
-					else  Fill.circle(e.x, e.y, w / 2.8f);
+					else  Fill.circle(e.x, e.y, w / 2.3f);
 				}
 			}
 		});

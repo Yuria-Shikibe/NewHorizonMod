@@ -4,4 +4,4 @@ author: "Yuria"
 main: "newhorizon.NewHorizon"
 description: "Adds new content, including units, turrets, blocks, etc. Mod content are presented with pretty textures and amazing effects.\n\n [sky]You can get the Mod Guide in the GitHub-README-MOD Guide."
 version: "1.8.4 beta"
-minGameVersion: 127.2
+minGameVersion: 128

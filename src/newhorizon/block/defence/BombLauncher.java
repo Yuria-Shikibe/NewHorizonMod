@@ -218,13 +218,13 @@ public class BombLauncher extends CommandableAttackerBlock{
 			float rw = bombRegion.width * Draw.scl * scale, rh = bombRegion.height * Draw.scl * scale;
 			
 			Draw.alpha(alpha);
-			Draw.z(Layer.weather - 1);
+			Draw.z(Layer.flyingUnit + 1);
 			Draw.rect(bombRegion, cx, cy, rw, rh, rotation);
 			Drawf.light(team, cx, cy, 50f * (parent ? fout() : fin()), baseColor, 0.7f);
 			
 			Tmp.v1.trns(225, (parent ? fin(Interp.pow2In) * 1.25f : fout(Interp.pow5Out)) * (floatY + Mathf.randomSeedRange(id() + 2, floatY)));
 			
-			Draw.z(Layer.flyingUnit + 1);
+			Draw.z(Layer.legUnit + 1);
 			Draw.color(0, 0, 0, 0.22f * alpha);
 			Draw.rect(bombRegion, cx + Tmp.v1.x, y + Tmp.v1.y, rw, rh, rotation);
 			

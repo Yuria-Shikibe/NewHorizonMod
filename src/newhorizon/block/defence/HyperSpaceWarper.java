@@ -9,6 +9,7 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Intersector;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.scene.style.TextureRegionDrawable;
@@ -98,11 +99,17 @@ public class HyperSpaceWarper extends Block{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.output, (t) -> {
-			t.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
-			t.image().size(LEN).color(Pal.lancerLaser).padTop(OFFSET);
-			t.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).fill().padLeft(OFFSET / 2).row();
-			t.image().size(LEN).color(Pal.redderDust).padTop(OFFSET);
-			t.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).fill().padLeft(OFFSET / 2).row();
+			t.table(i -> {
+				i.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
+			}).growX().fillY().row();
+			t.table(i -> {
+				i.image().size(LEN).color(Pal.lancerLaser).left();
+				i.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).growX().padLeft(OFFSET / 2).row();
+			}).padTop(OFFSET).growX().fillY().row();
+			t.table(i -> {
+				i.image().size(LEN).color(Pal.redderDust).left();
+				i.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).growX().padLeft(OFFSET / 2).row();
+			}).padTop(OFFSET).growX().fillY().row();
 		});
 	}
 	
@@ -357,8 +364,6 @@ public class HyperSpaceWarper extends Block{
 		public void drawConfigure(){
 			super.drawConfigure();
 			
-			NHVars.world.drawGully(team);
-			
 			if(NHVars.ctrl.isSelecting){
 				Draw.color(Pal.accent);
 				Lines.stroke(1.75f);
@@ -562,7 +567,7 @@ public class HyperSpaceWarper extends Block{
 				y += vel.y;
 				
 				for(GravityTrap.GravityTrapBuild build : NHVars.world.gravityTraps){
-					if(build.team != team && build.active() && within(build, build.range())){
+					if(build.team != team && build.active() && Intersector.isInsideHexagon(x, y, build.range() * 2f, build.x, build.y)){
 						intercepted = true;
 						Log.info("Triggered");
 						toCarry.unit.damage(toCarry.unit.health * 0.3f);

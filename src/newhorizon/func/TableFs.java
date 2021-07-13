@@ -88,12 +88,14 @@ public class TableFs{
                     isInner = false;
                     setStr();
                 }
+                if(disableUI)remove();
                 setPosition(starter.getWidth(), (Core.graphics.getHeight() - getHeight()) / 2f);
             });
             
             new Table(Tex.clear){{
                 update(() -> {
                     if(Vars.state.isMenu() || !isInner)remove();
+                    if(disableUI)remove();
                 });
                 touchable = Touchable.enabled;
                 setFillParent(true);
@@ -164,6 +166,7 @@ public class TableFs{
     }
     private static final Table pTable = new Table(Tex.clear){{
         update(() -> {
+            if(disableUI)remove();
             if(Vars.state.isMenu()){
                 remove();
                 floatTable = false;
@@ -209,6 +212,7 @@ public class TableFs{
     public static void disableTable(){
         Core.scene.root.removeChild(starter);
     }
+    
     public static void showTable(){
         Core.scene.root.addChildAt(1, starter);
     }
@@ -217,6 +221,9 @@ public class TableFs{
         if(headless || net.server())return;
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
         starter.update(() -> {
+            if(disableUI)starter.color.a = 0;
+            else starter.color.a = 1;
+            
             if(Vars.state.isMenu() || net.client()){
                 starter.color.a = 0;
                 starter.setPosition(-starter.getWidth(), 0);
@@ -433,7 +440,7 @@ public class TableFs{
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                     parentT.touchable = Touchable.childrenOnly;
                     NHVars.ctrl.pressDown = true;
-                    NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(0, 0, world.unitHeight(), world.unitWidth());
+                    NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
                     NHVars.ctrl.to.set(NHVars.ctrl.from);
                     return false;
                 }

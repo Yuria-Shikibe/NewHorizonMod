@@ -1,10 +1,6 @@
 package newhorizon.vars;
 
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.struct.Seq;
-import mindustry.game.Team;
-import mindustry.graphics.Pal;
 import newhorizon.block.defence.GravityTrap;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.block.special.UpgradeBlock;
@@ -41,16 +37,4 @@ public class NHWorldVars{
 		serverLoad.clear();
 	}
 	
-	public void drawGully(Team team){
-		for(GravityTrap.GravityTrapBuild b : gravityTraps){
-			if(!b.active())continue;
-			if(b.team == team){
-				Draw.color(Pal.lancerLaser);
-			}else{
-				Draw.color(Pal.ammo);
-			}
-			Draw.alpha(b.warmup / 10f);
-			Fill.circle(b.x, b.y, b.range());
-		}
-	}
 }
