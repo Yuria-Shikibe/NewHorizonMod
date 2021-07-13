@@ -107,7 +107,7 @@ public class NewHorizon extends Mod{
         
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
         	if(NHSetting.versionChange){
-        		new BaseDialog("Updated"){{
+        		new BaseDialog("Detected Update"){{
         			addCloseListener();
         			
         			cont.table(table -> {
@@ -123,7 +123,7 @@ public class NewHorizon extends Mod{
 		        }}.show();
 	        }
         	
-        	if(!NHSetting.getBool("@active.hid-start-log") || NHSetting.versionChange)startLog();
+        	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
 	        if(NHSetting.getBool("@active.tool-panel*"))TableFs.tableMain();
 	        NHSetting.updateSettingMenu();
         }));
