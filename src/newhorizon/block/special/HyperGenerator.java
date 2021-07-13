@@ -97,7 +97,7 @@ public class HyperGenerator extends PowerGenerator{
 		this.liquidCapacity = 30.0F;
 		this.hasItems = true;
 		this.outputsPower = this.consumesPower = true;
-		expanded = true;
+		baseExplosiveness = 1000;
 		this.explosionRadius = 220f;
 		this.explosionDamage = 14000f;
 	}
@@ -135,7 +135,7 @@ public class HyperGenerator extends PowerGenerator{
 				lightningLen = lightningLenRand = 4;
 				lightningDamage = HyperGenerator.this.lightningDamage / 2;
 				lightning = 3;
-				splashDamage = lightningDamage /1.5f;
+				damage = splashDamage = lightningDamage / 1.5f;
 				splashDamageRadius = 38f;
 			}
 			
@@ -232,7 +232,7 @@ public class HyperGenerator extends PowerGenerator{
 						workSound.at(this, Mathf.random(0.9f, 1.1f));
 						NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f * (warmup + 0.3f), effectColor);
 						Effect.shake(workShake, workShake, this);
-						if(Mathf.chanceDelta(warmup / 2))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
+						if(Mathf.chanceDelta(warmup / 2))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * Math.max(Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl, 0.001f), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
 							NHFx.lightningHitLarge(effectColor).at(point);
 						});
 					}
@@ -333,7 +333,7 @@ public class HyperGenerator extends PowerGenerator{
 			explodeAction.get(this);
 			int i;
 			
-			destroyed.create(this, x, y, 0);
+			destroyed.create(this, Team.derelict, x, y, 0);
 			
 			for(i = 0; i < 30; i++){
 				Time.run(Mathf.random(80f), () -> {

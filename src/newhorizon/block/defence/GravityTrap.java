@@ -63,8 +63,10 @@ public class GravityTrap extends Block{
 		
 		for(GravityTrapBuild b : NHVars.world.gravityTraps){
 			Draw.color(b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust);
+			Draw.alpha(b.warmup / 12f);
 			Lines.stroke(1);
 			Fill.poly(b.x, b.y, 6, b.range());
+			Draw.alpha(1);
 			Lines.poly(b.x, b.y, 6, b.range());
 		}
 		
@@ -72,8 +74,10 @@ public class GravityTrap extends Block{
 		Lines.stroke(3);
 		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
 		Draw.color(Pal.place);
+		Draw.alpha(0.125f);
 		Lines.stroke(1);
 		Fill.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
+		Draw.alpha(1f);
 		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
 	}
 	

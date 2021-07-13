@@ -962,7 +962,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		rapidUnloader = new AdaptUnloader("rapid-unloader"){{
-			speed = 1f;
+			speed = 0.5f;
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.presstanium, 20, Items.lead, 15, NHItems.juniorProcessor, 25));
 			NHTechTree.add(Blocks.unloader, this);
 		}};

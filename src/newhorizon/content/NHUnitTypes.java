@@ -309,7 +309,7 @@ public class NHUnitTypes implements ContentList{
 		};
 		
 		zarkov = new UnitType("zarkov"){{
-			weapons.add(multipleLauncher.copy().setPos(8, -22), multipleLauncher.copy().setPos(16, -8), smallCannon.copy().setAutoTarget(true).setPos(8, 8.5f));
+			weapons.add(multipleLauncher.copy().setPos(8, -22), multipleLauncher.copy().setPos(16, -8), smallCannon.copy().setAutoTarget(true).setPos(8.5f, 5.75f));
 			health = 12000;
 			speed = 1f;
 			drag = 0.18f;
@@ -1211,7 +1211,7 @@ public class NHUnitTypes implements ContentList{
 			constructor = EntityMapping.map(3);
 			lowAltitude = true;
 			health = 5500.0F;
-			speed = 0.6F;
+			speed = 0.8F;
 			accel = 0.02F;
 			drag = 0.025F;
 			flying = true;

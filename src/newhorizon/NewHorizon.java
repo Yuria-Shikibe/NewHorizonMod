@@ -54,9 +54,7 @@ public class NewHorizon extends Mod{
 	};
 	
 	private static void logShow(){
-		new Tables.LogDialog(new UnlockableContent[]{
-			NHUnitTypes.ghost
-		}).show();
+		new Tables.LogDialog(new UnlockableContent[]{}).show();
 	}
 	
 	private static void links(){
@@ -154,7 +152,7 @@ public class NewHorizon extends Mod{
 		EventTriggers.load();
 	    NHSounds.load();
 		NHContent.initLoad();
-		NHShaders.init();
+		//NHShaders.init();
 		
 		for(ContentList contentList : content){
 			contentList.load();
