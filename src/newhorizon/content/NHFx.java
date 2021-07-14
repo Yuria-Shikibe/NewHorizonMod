@@ -57,6 +57,18 @@ public class NHFx{
 		return or == null ? effect : or;
 	}
 	
+	public static Effect squareRand(Color color, float sizeMin, float sizeMax){
+		return new Effect(20f, sizeMax * 2f, e -> {
+			Draw.color(Color.white, color, e.fin() + 0.15f);
+			if(e.id % 2 == 0){
+				Lines.stroke(1.5f * e.fout(Interp.pow3Out));
+				Lines.square(e.x, e.y, Mathf.randomSeed(e.id, sizeMin, sizeMax) * e.fin(Interp.pow2Out) + 3, 45);
+			}else{
+				Fill.square(e.x, e.y, Mathf.randomSeed(e.id, sizeMin * 0.5f, sizeMin * 0.8f) * e.fout(Interp.pow2Out), 45);
+			}
+		});
+	}
+	
 	public static Effect railShoot(Color color, float length, float width, float lifetime, float spacing){
 		
 		

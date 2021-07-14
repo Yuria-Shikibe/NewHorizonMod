@@ -12,17 +12,15 @@ public class NHLiquids implements ContentList{
 	xenAlpha, 
 	xenBeta,
 	xenGamma,
-	zetaFluid,
-	infinityLiquid,
+	zetaFluid, quantumLiquid,
 	irdryonFluid;
 	
 	@Override
 	public void load(){
-		infinityLiquid = new Liquid("infinity-liquid", Color.valueOf("#B170FF")){
-			@Override public boolean isHidden(){return true;}
-		{
-			heatCapacity = 100000;
-			lightColor = Color.valueOf("#B170FF");
+		quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor){{
+			heatCapacity = 2;
+			lightColor = NHColor.darkEnrColor;
+			effect = NHStatusEffects.quantization;
 		}};
 		
 		

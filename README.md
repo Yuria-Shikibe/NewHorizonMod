@@ -91,10 +91,10 @@ If you find that your device cannot afford it, open the mod file folder and find
 
 ###### Example:
 
-![end-of-era](assets/sprites/block/turret/end-of-era.png)  
+![end-of-era](assets/sprites/blocks/turret/end-of-era.png)  
 - **_Turret:_** End of Era
 
-![eoe-upgrader](assets/sprites/block/upgrade/end-of-era-upgrader.png)  
+![eoe-upgrader](assets/sprites/blocks/upgrade/end-of-era-upgrader.png)  
 - **_Upgrader:_** End of Era Upgrader
 
 ###### Use Steps:
@@ -115,7 +115,7 @@ If you find that your device cannot afford it, open the mod file folder and find
 #### Mass Deliverer
 
 ---
-![mass-deliver](assets/sprites/block/special/mass-deliver.png)
+![mass-deliver](assets/sprites/blocks/special/mass-deliver.png)
 - **_Deliverer:_** Mass Deliverer
 
 ###### Use Steps:
@@ -132,8 +132,8 @@ If you find that your device cannot afford it, open the mod file folder and find
 #### Jump Gate
 
 ---
-![jump-gate](assets/sprites/block/special/jump-gate.png)
-![jump-gate-junior](assets/sprites/block/special/jump-gate-junior.png)
+![jump-gate](assets/sprites/blocks/special/jump-gate.png)
+![jump-gate-junior](assets/sprites/blocks/special/jump-gate-junior.png)
 - **_JumpGate:_** Senior Jump Gate; Junior Jump Gate
 
 ###### Use Steps:
@@ -151,7 +151,7 @@ If you find that your device cannot afford it, open the mod file folder and find
 #### Player Jump Gate
 
 ---
-![player-jump-gate](assets/sprites/block/special/player-jump-gate.png)
+![player-jump-gate](assets/sprites/blocks/special/player-jump-gate.png)
 - **_PlayerJumpGate:_** Quickly transports a player from one position to another.
 
 ###### Use Steps:
@@ -167,8 +167,8 @@ If you find that your device cannot afford it, open the mod file folder and find
 #### Hyperspace Folding Gate & Gravity Gully
 
 ---
-![hyper-space-warper](assets/sprites/block/defence/hyper-space-warper.png)
-![gravity-gully](assets/sprites/block/defence/gravity-gully.png)
+![hyper-space-warper](assets/sprites/blocks/defence/hyper-space-warper.png)
+![gravity-gully](assets/sprites/blocks/defence/gravity-gully.png)
 
 - **_Hyperspace Folding Gate:_** Transports a group of units from one side to another.
 
@@ -186,7 +186,7 @@ If you find that your device cannot afford it, open the mod file folder and find
 #### Commandable Block
 
 ---
-![air-raider](assets/sprites/block/defence/air-raider.png)
+![air-raider](assets/sprites/blocks/defence/air-raider.png)
 
 - **_Commandable Block:_** Active Defence Blocks.
 

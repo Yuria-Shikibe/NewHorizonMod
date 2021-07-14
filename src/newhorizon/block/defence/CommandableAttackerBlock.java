@@ -231,7 +231,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 					realSpread = Math.max(realSpread, build.spread());
 				}
 			}
-			if(!Vars.headless && participants.size > 0){
+			if(!Vars.headless && participants.size > 0 && team != Vars.player.team()){
 				TableFs.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, NHSounds.alarm);
 				NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color, participants);
 				NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color);

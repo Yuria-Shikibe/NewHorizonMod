@@ -872,7 +872,7 @@ public class NHUnitTypes implements ContentList{
 		};
 		
 		tarlidor = new UnitType("tarlidor"){{
-			constructor = EntityMapping.map(32);
+			constructor = EntityMapping.map(3);
 			abilities.add(new ShieldRegenFieldAbility(50.0F, 50F, 600.0F, 800.0F));
 			weapons.add(
 				new NHWeapon("stiken"){{
@@ -939,8 +939,6 @@ public class NHUnitTypes implements ContentList{
 			buildSpeed = 1.8f;
 			armor = 8f;
 			rotateSpeed = 3.3f;
-			hovering = true;
-			
 			fallSpeed = 0.016f;
 			mechStepParticles = true;
 			mechStepShake = 0.15f;

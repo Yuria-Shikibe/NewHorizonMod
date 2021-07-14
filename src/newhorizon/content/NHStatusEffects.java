@@ -6,17 +6,25 @@ import arc.graphics.g2d.TextureRegion;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
 import newhorizon.feature.NHStatusEffect;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect
-            staticVel, emp1, emp2, emp3, invincible;
+            staticVel, emp1, emp2, emp3, invincible, quantization;
     
     @Override
     public void load(){
+        quantization = new NHStatusEffect("quantization"){{
+            textureColor = color = NHColor.darkEnrColor;
+            damage = 5f;
+            effectChance = 0.1f;
+            effect = NHFx.squareRand(color, 5f, 13f);
+            buildSpeedMultiplier = speedMultiplier = damageMultiplier = reloadMultiplier = 1.25f;
+            healthMultiplier = 0.75f;
+        }};
+        
         invincible = new NHStatusEffect("invincible"){{
             healthMultiplier = 1000000;
         }
@@ -36,18 +44,18 @@ public class NHStatusEffects implements ContentList{
             }
         };
         
-        staticVel = new NHStatusEffect("static-vel") {
-            @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
-                unit.vel = unit.vel.scl(0.65f);
-            }
-    
-            {
-                this.color = Pal.gray;
-                this.speedMultiplier = 0.00001F;
-            }
-        };
+//        staticVel = new NHStatusEffect("static-vel") {
+//            @Override
+//            public void update(Unit unit, float time){
+//                super.update(unit, time);
+//                unit.vel = unit.vel.scl(0.65f);
+//            }
+//
+//            {
+//                this.color = Pal.gray;
+//                this.speedMultiplier = 0.00001F;
+//            }
+//        };
         
         emp1 = new NHStatusEffect("emp-1"){{
             damage = 0.05f;

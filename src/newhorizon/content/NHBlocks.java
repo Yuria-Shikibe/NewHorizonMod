@@ -15,6 +15,7 @@ import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
+import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -28,7 +29,9 @@ import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.DecayGenerator;
@@ -102,8 +105,36 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
-		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer, shieldProjector;
+		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer, shieldProjector,
+	
+		//Env
+		quantumField, metalUnit, metalTower
 		;
+	
+	private static void loadEnv(){
+		quantumField = new Floor("quantum-field", 8){{
+			drownTime = 180f;
+			status = NHStatusEffects.quantization;
+			statusDuration = 240f;
+			speedMultiplier = 0.19f;
+			liquidDrop = NHLiquids.quantumLiquid;
+			isLiquid = true;
+			cacheLayer = CacheLayer.water;
+			attributes.set(Attribute.light, 2f);
+			updateEffect = status.effect;
+			emitLight = true;
+			lightRadius = 40f;
+			lightColor = NHColor.darkEnrColor;
+		}};
+		
+		metalUnit = new StaticWall("metal-unit"){{
+			variants = 3;
+		}};
+		
+		metalTower = new StaticWall("metal-tower"){{
+			variants = 3;
+		}};
+	}
 	
 	private static void loadExperiments(){
 		
@@ -544,7 +575,7 @@ public class NHBlocks implements ContentList {
 			);
 			chargeBeginEffect = NHFx.railShoot(heatColor, range + 40f, tilesize * 1.5f, 45f, 14f);
 			chargeTime = chargeBeginEffect.lifetime;
-			chargeEffect = NHFx.genericCharge(heatColor, 13f, 50f, chargeBeginEffect.lifetime);
+			//chargeEffect = NHFx.genericCharge(heatColor, 13f, 50f, chargeBeginEffect.lifetime);
 			minRange = 120f;
 			rotateSpeed = 1.5f;
 			shootCone = 8f;
@@ -1699,6 +1730,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		loadTurrets();
+		loadEnv();
 	}
 }
 

@@ -21,11 +21,11 @@ import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
+import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.graphics.Layer;
-import mindustry.world.Tile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,10 +49,9 @@ import org.jetbrains.annotations.Nullable;
  * @author Yuria
  */
 public class PosLightning {
-	public static final BulletType hitter = new BulletType(0.0001f, 0f){{
+	public static final BulletType hitter = new BulletType(0.0001f, 1f){{
 		absorbable = true;
-		collides = collidesAir = collidesGround = true;
-		speed = 0;
+		collides = collidesAir = collidesGround = collidesTiles = true;
 		status = StatusEffects.shocked;
 		statusDuration = 10f;
 		hittable = false;
@@ -92,7 +91,7 @@ public class PosLightning {
 		}
 	})).layer(Layer.effect - 0.001f);
 	
-	private static Tile furthest;
+	private static Building furthest;
 	private static final Rect rect = new Rect();
 	//METHODS
 
@@ -141,18 +140,19 @@ public class PosLightning {
 			if(owner != null)for(int i = 0; i < owner.type.lightning; i++)Lightning.create(owner, color, owner.type.lightningDamage < 0.0F ? owner.damage : owner.type.lightningDamage, sureTarget.getX(), sureTarget.getY(), owner.rotation() + Mathf.range(owner.type.lightningCone / 2.0F) + owner.type.lightningAngle, owner.type.lightningLength + Mathf.random(owner.type.lightningLengthRand));
 			else for(int i = 0; i < 3; i++)Lightning.create(team, color, damage <= 0 ? 1f : damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360f), boltLen);
 		}
+	
+		Entityc ownerE = null;
+		float realDamage = damage;
 		
-		if(sureTarget instanceof Healthc){
-			Healthc h = (Healthc)sureTarget;
-			Entityc ownerE = null;
-			
-			if(owner != null){
-				ownerE = owner;
-			}else if(team != null && team.core() != null)ownerE = team.core();
-			if(ownerE != null){
-				Bullet bullet = hitter.create(ownerE, team, sureTarget.getX(), sureTarget.getY(), 0);
-				bullet.damage(damage <= 0 ? 1f : damage);
-			}
+		if(owner != null){
+			ownerE = owner;
+			if(realDamage <= 0)realDamage = owner.damage > 0 ? owner.damage : 1;
+		}else if(team != null && team.core() != null){
+			ownerE = team.core();
+			if(realDamage <= 0)realDamage = 1;
+		}
+		if(ownerE != null){
+			hitter.create(ownerE, team, sureTarget.getX(), sureTarget.getY(), 0).damage(realDamage);
 		}
 		
 		createEffect(from, sureTarget, color, boltNum, width);
@@ -218,7 +218,7 @@ public class PosLightning {
 			World.toTile(from.getY()),
 			World.toTile(target.getX()),
 			World.toTile(target.getY()),
-			(x, y) -> (furthest = Vars.world.tile(x, y)) != null && furthest.team() != fromTeam && furthest.block().insulated
+			(x, y) -> (furthest = Vars.world.build(x, y)) != null && furthest.team() != fromTeam && furthest.block().insulated
 		) && furthest != null ? furthest : target;
 	}
 	
