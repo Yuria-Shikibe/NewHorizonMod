@@ -18,8 +18,8 @@ public class NHStatusEffects implements ContentList{
     public void load(){
         quantization = new NHStatusEffect("quantization"){{
             textureColor = color = NHColor.darkEnrColor;
-            damage = 5f;
             effectChance = 0.1f;
+            damage = -2f;
             effect = NHFx.squareRand(color, 5f, 13f);
             buildSpeedMultiplier = speedMultiplier = damageMultiplier = reloadMultiplier = 1.25f;
             healthMultiplier = 0.75f;
@@ -38,7 +38,7 @@ public class NHStatusEffects implements ContentList{
                 if(!unit.spawnedByCore)return;
                 Draw.z(Layer.effect);
                 Draw.color(NHColor.lightSkyBack);
-                TextureRegion area = Core.atlas.find(NewHorizon.configName("upgrade"));
+                TextureRegion area = Core.atlas.find(NewHorizon.contentName("upgrade"));
                 Draw.rect(area, unit.x + unit.hitSize * 1.25f, unit.y, -90);
                 Draw.rect(area, unit.x - unit.hitSize * 1.25f, unit.y, 90);
             }

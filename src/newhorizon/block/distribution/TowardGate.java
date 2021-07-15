@@ -16,6 +16,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.Router;
+import mindustry.world.meta.BlockGroup;
 
 public class TowardGate extends Router{
 	public TextureRegion topRegion;
@@ -23,6 +24,7 @@ public class TowardGate extends Router{
 	public TowardGate(String name){
 		super(name);
 		rotate = true;
+		group = BlockGroup.transportation;
 	}
 	
 	@Override

@@ -9,6 +9,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -96,10 +97,9 @@ public class EventTriggers{
 			for(BeforeLoadc c : NHWorldVars.advancedLoad){
 				c.beforeLoad();
 			}
-			NHWorldVars.advancedLoad.clear();
+			
 			NHVars.world.clearLast();
 			NHVars.world.worldLoaded = true;
-			
 //
 //			if(Vars.player.admin)for(Block c : contents)c.buildVisibility = BuildVisibility.shown;
 //			else for(Block c : contents)c.buildVisibility = BuildVisibility.sandboxOnly;

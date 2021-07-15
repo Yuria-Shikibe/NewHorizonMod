@@ -31,6 +31,7 @@ import mindustry.graphics.*;
 import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.type.weapons.RepairBeamWeapon;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
@@ -48,11 +49,15 @@ public class NHUnitTypes implements ContentList{
 	
 	public static NHWeapon posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon;
 	
-	public static UnitType guardian, hurricane, tarlidor, striker, annihilation, warper, destruction, gather, aliotiat, sharp, branch, thynomo, origin, collapser, zarkov, ghost;
+	public static UnitType
+			guardian, gather,
+			sharp, branch, warper, striker, annihilation, hurricane, collapser,
+			origin, thynomo, aliotiat, tarlidor, destruction,
+			ghost, zarkov;
 	
 	static{
-		EntityMapping.nameMap.put(NewHorizon.configName("zarkov"), EntityMapping.idMap[20]);
-		EntityMapping.nameMap.put(NewHorizon.configName("ghost"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.contentName("zarkov"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.contentName("ghost"), EntityMapping.idMap[20]);
 	}
 	
 	public void loadWeapon(){
@@ -226,6 +231,7 @@ public class NHUnitTypes implements ContentList{
 	public void load(){
 		loadWeapon();
 		
+		
 		ghost = new UnitType("ghost"){{
 			health = 1200;
 			speed = 1.75f;
@@ -238,64 +244,64 @@ public class NHUnitTypes implements ContentList{
 			buildSpeed = 3f;
 			
 			weapons.add(
-				smallCannon.copy().setPos(12,-7),
-				smallCannon.copy().setPos(5,-1),
-				new NHWeapon("laser-cannon"){{
-					top = rotate = true;
-					rotateSpeed = 3f;
-					x = 0;
-					y = -11;
-					
-					recoil = 2f;
-					mirror = false;
-					reload = 60f;
-					shootY = 5f;
-					shootCone = 12f;
-					shake = 8f;
-					inaccuracy = 3f;
-					shots = 1;
-					predictTarget = false;
-					
-					shootSound = Sounds.laser;
-					
-					bullet = new BasicBulletType(2f, 90, "mine-bullet"){{
-						scaleVelocity = true;
-						keepVelocity = false;
+					smallCannon.copy().setPos(12,-7),
+					smallCannon.copy().setPos(5,-1),
+					new NHWeapon("laser-cannon"){{
+						top = rotate = true;
+						rotateSpeed = 3f;
+						x = 0;
+						y = -11;
 						
-						trailLength = 22;
-						trailWidth = 4f;
-						drawSize = 120f;
-						recoil = 1.5f;
+						recoil = 2f;
+						mirror = false;
+						reload = 60f;
+						shootY = 5f;
+						shootCone = 12f;
+						shake = 8f;
+						inaccuracy = 3f;
+						shots = 1;
+						predictTarget = true;
 						
-						trailChance = 0.1f;
-						trailParam = 4f;
-						trailEffect = NHFx.trail;
+						shootSound = Sounds.laser;
 						
-						spin = 3f;
-						shrinkX = shrinkY = 0.15f;
-						height = width = 25f;
-						lifetime = 160f;
-						
-						status = StatusEffects.blasted;
-						
-						backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.lightSkyBack;
-						frontColor = NHColor.lightSkyFront;
-						
-						splashDamage = damage / 3;
-						splashDamageRadius = 24f;
-						
-						lightningLength = 2;
-						lightningLengthRand = 4;
-						lightningDamage = 10;
-						
-						hitSound = Sounds.explosion;
-						hitShake = 8f;
-						shootEffect = NHFx.shootCircleSmall(backColor);
-						smokeEffect = Fx.shootSmallSmoke;
-						despawnEffect = NHFx.lightningHitLarge(backColor);
-						hitEffect = NHFx.hugeSmoke;
-					}};
-				}}
+						bullet = new BasicBulletType(2f, 90, "mine-bullet"){{
+							scaleVelocity = true;
+							keepVelocity = false;
+							
+							trailLength = 22;
+							trailWidth = 4f;
+							drawSize = 120f;
+							recoil = 1.5f;
+							
+							trailChance = 0.1f;
+							trailParam = 4f;
+							trailEffect = NHFx.trail;
+							
+							spin = 3f;
+							shrinkX = shrinkY = 0.15f;
+							height = width = 25f;
+							lifetime = 160f;
+							
+							status = StatusEffects.blasted;
+							
+							backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.lightSkyBack;
+							frontColor = NHColor.lightSkyFront;
+							
+							splashDamage = damage / 3;
+							splashDamageRadius = 24f;
+							
+							lightningLength = 2;
+							lightningLengthRand = 4;
+							lightningDamage = 10;
+							
+							hitSound = Sounds.explosion;
+							hitShake = 8f;
+							shootEffect = NHFx.shootCircleSmall(backColor);
+							smokeEffect = Fx.shootSmallSmoke;
+							despawnEffect = NHFx.lightningHitLarge(backColor);
+							hitEffect = NHFx.hugeSmoke;
+						}};
+					}}
 			);
 			
 			commandLimit = 10;
@@ -361,7 +367,6 @@ public class NHUnitTypes implements ContentList{
 				speed = 0.5f;
 				health = 100000;
 				rotateSpeed = 0.65f;
-				//hovering = true;
 				engineSize = 30f;
 				buildSpeed = 10f;
 				engineOffset = 50f;
@@ -412,13 +417,13 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 100;
 			engineSize = 8f;
 			flying = true;
-			hovering = false;
 			abilities.add(new PhaseAbility(600f, 320f, 160f));
 			weapons.add(new Weapon(){{
 				shootCone = 360;
 				rotate = false;
 				mirror = false;
 				alternate = false;
+				predictTarget = false;
 				top = false;
 				shots = 12;
 				shotDelay = 6f;
@@ -595,7 +600,7 @@ public class NHUnitTypes implements ContentList{
 			@Override
 			public void load(){
 				super.load();
-				shadowRegion = uiIcon = fullIcon = Core.atlas.find(NewHorizon.configName("jump-gate-pointer"));
+				shadowRegion = uiIcon = fullIcon = Core.atlas.find(NewHorizon.contentName("jump-gate-pointer"));
 			}
 			
 			@Override
@@ -620,9 +625,9 @@ public class NHUnitTypes implements ContentList{
 				super.draw(unit);
 			}
 			
-			
 			@Override
 			public void drawBody(Unit unit){
+				Drawf.light(unit.team, unit.x, unit.y, unit.hitSize * 4f, unit.team.color, 0.68f);
 				Draw.z(Layer.effect + 0.001f);
 				float sizeF = 1 + Mathf.absin(4f, 0.1f);
 				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) + Mathf.clamp(unit.hitTime) / 5f * 3f);
@@ -664,6 +669,11 @@ public class NHUnitTypes implements ContentList{
 			
 			@Override
 			public void drawCell(Unit unit){
+//				Draw.z(Layer.effect + 0.001f);
+//				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) +  Mathf.clamp(unit.hitTime) / 5f);
+//				Lines.stroke(5);
+//
+//				DrawFuncs.circlePercent(unit.x, unit.y, hitSize * 2 * (1 + Mathf.absin(8, 0.15f)), unit.healthf(), 0);
 			}
 			
 			@Override
@@ -676,15 +686,6 @@ public class NHUnitTypes implements ContentList{
 					Draw.rect(NHContent.arrowRegion, Tmp.v1.x, Tmp.v1.y, rotation + 90);
 				}
 				Draw.reset();
-			}
-			
-			@Override
-			public void drawEngine(Unit unit){
-				//		Draw.z(Layer.effect + 0.001f);
-				//		Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) +  Mathf.clamp(unit.hitTime) / 5f);
-				//		Tmp.v1.trns(unit.rotation - 180, hitSize);
-				//		Fill.circle(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, engineSize * (Mathf.absin(Time.time, 2f, engineSize / 4f) + 1));
-				//		Draw.reset();
 			}
 			
 			@Override
@@ -737,6 +738,18 @@ public class NHUnitTypes implements ContentList{
 		gather = new UnitType("gather"){{
 			defaultController = MinerAI::new;
 			constructor = EntityMapping.map(3);
+			weapons.add(new RepairBeamWeapon("repair-beam-weapon-center"){{
+				y = -6.5f;
+				x = 0;
+				shootY = 6f;
+				mirror = false;
+				beamWidth = 0.7f;
+				repairSpeed = 0.6f;
+				
+				bullet = new BulletType(){{
+					maxRange = 120f;
+				}};
+			}});
 			hitSize = 16f;
 			flying = true;
 			drag = 0.06F;
@@ -831,8 +844,7 @@ public class NHUnitTypes implements ContentList{
 			boostMultiplier = 2.0F;
 			health = 650.0F;
 			buildSpeed = 0.75F;
-			rotateSpeed = 1.6f;
-			hovering = true;
+			rotateSpeed = 2.5f;
 			canBoost = true;
 			armor = 9.0F;
 			landShake = 2.0F;
@@ -1010,8 +1022,6 @@ public class NHUnitTypes implements ContentList{
 			buildSpeed = 2.8f;
 			armor = 11f;
 			rotateSpeed = 1.8f;
-			hovering = true;
-			
 			singleTarget = false;
 			fallSpeed = 0.016f;
 			mechStepParticles = true;
@@ -1040,7 +1050,6 @@ public class NHUnitTypes implements ContentList{
 			baseRotateSpeed = 1.5f;
 			rotateSpeed = 2.5f;
 			hitSize = 10f;
-			hovering = true;
 			singleTarget = true;
 			
 			weapons.add(new NHWeapon(){{
@@ -1051,7 +1060,7 @@ public class NHUnitTypes implements ContentList{
 				x = 0f;
 				y = 0f;
 				reload = 30f;
-				shots = 4;
+				shots = 6;
 				inaccuracy = 5f;
 				ejectEffect = Fx.none;
 				velocityRnd = 0.125f;
@@ -1059,7 +1068,7 @@ public class NHUnitTypes implements ContentList{
 				shotDelay = 2.5f;
 				shake = 2f;
 				maxRange = 140f;
-				bullet = new BasicBulletType(3.5f, 5f){{
+				bullet = new BasicBulletType(3.5f, 6f){{
 					trailWidth = 1f;
 					trailLength = 10;
 					drawSize = 200f;
@@ -1104,6 +1113,9 @@ public class NHUnitTypes implements ContentList{
 					collidesGround = true;
 					sprite = NHBullets.CIRCLE_BOLT;
 					
+					trailLength = 15;
+					trailWidth = 4f;
+					
 					weaveMag = 4f;
 					weaveScale = 4f;
 					
@@ -1119,17 +1131,11 @@ public class NHUnitTypes implements ContentList{
 					shrinkX = shrinkY = 0;
 					backColor = lightningColor = hitColor = lightColor = trailColor = NHColor.lightSkyBack;
 					frontColor = backColor.cpy().lerp(Color.white, 0.55f);
-					trailEffect = Fx.artilleryTrail;
-					trailParam = 3f;
-					trailChance = 0.85f;
 					width = height = 8f;
 					smokeEffect = Fx.shootBigSmoke;
 					shootEffect = NHFx.shootCircleSmall(backColor);
 					hitEffect = NHFx.lightningHitSmall(backColor);
-					despawnEffect = new Effect(20, e -> {
-						Draw.color(e.color, Color.white, e.fout() * 0.7f);
-						Angles.randLenVectors(e.id, 2, 12 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, 3 * e.fout()));
-					});
+					despawnEffect = NHFx.shootCircleSmall(backColor);
 				}};
 				shootSound = NHSounds.blaster;
 			}});
@@ -1145,7 +1151,6 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 2.5f;
 			armor = 3.5f;
 			flying = true;
-			hovering = true;
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
 		};
@@ -1181,7 +1186,6 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 2.5f;
 			armor = 3.5f;
 			flying = true;
-			hovering = false;
 			ammoType = AmmoTypes.thorium;
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}

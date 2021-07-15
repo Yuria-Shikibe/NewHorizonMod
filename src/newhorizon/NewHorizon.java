@@ -3,6 +3,7 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
 import arc.util.Log;
 import arc.util.Time;
@@ -16,6 +17,7 @@ import mindustry.mod.Mod;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
 import newhorizon.func.*;
 import newhorizon.func.Tables.LinkTable;
@@ -36,7 +38,7 @@ public class NewHorizon extends Mod{
 		Vars.testMobile = true;
 	}
 	
-	public static String configName(String name){
+	public static String contentName(String name){
 		return MOD_NAME + "-" + name;
 	}
 	
@@ -50,11 +52,22 @@ public class NewHorizon extends Mod{
 		new NHBlocks(),
 		new NHPlanets(),
 	    new NHTechTree(),
+		new NHSectorPreset()
 		//new NHWeathers()
 	};
 	
+	private static UnlockableContent[] getUpdateContent(){
+		return new UnlockableContent[]{
+				NHBlocks.unitIniter, NHBlocks.disposePowerVoid, NHBlocks.remoteStorage,
+				NHBlocks.metalGround, NHBlocks.metalGroundQuantum, NHBlocks.metalTower, NHBlocks.metalUnit, NHBlocks.quantumField, NHBlocks.quantumFieldDeep,
+				NHLiquids.quantumLiquid,
+				NHSectorPreset.outpost,
+				NHPlanets.midantha
+		};
+	}
+	
 	private static void logShow(){
-		new Tables.LogDialog(new UnlockableContent[]{}).show();
+		new Tables.LogDialog(getUpdateContent()).show();
 	}
 	
 	private static void links(){
@@ -81,7 +94,7 @@ public class NewHorizon extends Mod{
 		dialog.closeOnBack();
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
-				table.table(t -> t.image(Core.atlas.find(configName("upgrade")))).center().growX().fillY().row();
+				table.table(t -> t.image(Core.atlas.find(contentName("upgrade")))).center().growX().fillY().row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
@@ -110,11 +123,22 @@ public class NewHorizon extends Mod{
         		new BaseDialog("Detected Update"){{
         			addCloseListener();
         			
-        			cont.table(table -> {
+        			cont.pane(table -> {
         				table.add(NHSetting.modMeta.version + ": ").row();
         				table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
         				table.add(Core.bundle.get("mod.ui.update-log"));
 			        }).grow().row();
+			        cont.pane(t -> {
+				        int index = 0;
+				        for(UnlockableContent c : getUpdateContent()){
+					        if(index % 8 == 0)t.row();
+					        t.button(new TextureRegionDrawable(c.fullIcon), Styles.clearTransi, LEN, () -> {
+						        ContentInfoDialog dialog = new ContentInfoDialog();
+						        dialog.show(c);
+					        }).size(LEN);
+					        index++;
+				        }
+			        }).growX().top().row();
         			cont.table(table -> {
 				        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
 				        table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).growX().height(LEN);
@@ -126,6 +150,7 @@ public class NewHorizon extends Mod{
         	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
 	        if(NHSetting.getBool("@active.tool-panel*"))TableFs.tableMain();
 	        NHSetting.updateSettingMenu();
+	        NHSetting.loadSettings();
         }));
 	}
 	
@@ -137,6 +162,7 @@ public class NewHorizon extends Mod{
 	@Override
     public void loadContent(){
 		if(!Vars.headless){
+			
 			try{
 				NHSetting.settingFile();
 				NHSetting.initSetting();

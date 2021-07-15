@@ -58,6 +58,7 @@ public class ChainBulletType extends BulletType{
 		points.truncate(maxHit);
 		points.sort(e -> - confirm.dst(e) + confirm.angleTo(e) / 32f);
 		points.insert(0, b);
+		points.insert(1, target);
 		
 		for(int i = 1; i < points.size; i++){
 			Position from = points.get(i - 1), to = points.get(i);

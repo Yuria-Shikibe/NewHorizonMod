@@ -127,6 +127,11 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
+		public boolean configTapped(){
+			return super.configTapped();
+		}
+		
+		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
 		}
@@ -146,7 +151,7 @@ public class GravityTrap extends Block{
 			Draw.color(team.color);
 			float length = tilesize * size / 4f + sin;
 			
-			TextureRegion region = Core.atlas.find(NewHorizon.configName("linked-arrow"));
+			TextureRegion region = Core.atlas.find(NewHorizon.contentName("linked-arrow"));
 			for(int i = 0; i < 4; i++){
 				Tmp.v1.trns(i * 90, -length);
 				
@@ -167,13 +172,7 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
-		public void onRemoved(){
-			NHVars.world.gravityTraps.remove(this);
-		}
-		
-		@Override
-		public void add(){
-			super.add();
+		public void created(){
 			beforeLoad();
 		}
 		

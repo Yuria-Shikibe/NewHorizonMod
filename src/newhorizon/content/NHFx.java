@@ -523,7 +523,7 @@ public class NHFx{
 					float length = e.rotation * 3f + tilesize;
 					float x = Angles.trnsx(i * 90, -length), y = Angles.trnsy(i * 90, -length);
 					e.scaled(30 * j, k -> {
-						float signSize = e.rotation / tilesize / 2f * Draw.scl * k.fout();
+						float signSize = e.rotation / tilesize / 3f * Draw.scl * k.fout();
 						Draw.rect(pointerRegion, e.x + x * k.finpow(), e.y + y * k.finpow(), pointerRegion.width * signSize, pointerRegion.height * signSize, Angles.angle(x, y) - 90);
 						Drawf.light(e.x + x, e.y + y, e.fout() * signSize * pointerRegion.height, e.color, 0.7f);
 					});

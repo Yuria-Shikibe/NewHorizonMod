@@ -44,7 +44,7 @@ public class NHPlanets implements ContentList {
             atmosphereColor = Color.valueOf("3c1b8f");
             atmosphereRadIn = 0.02f;
             atmosphereRadOut = 0.3f;
-            startSector = 15;
+            startSector = 0;
         }};
     }
     

@@ -21,6 +21,8 @@ import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockStatus;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
@@ -57,6 +59,12 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	public void drawPlace(int x, int y, int rotation, boolean valid){
 		super.drawPlace(x, y, rotation, valid);
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
+	}
+	
+	@Override
+	public void setStats(){
+		super.setStats();
+		stats.add(Stat.range, range / tilesize, StatUnit.blocks);
 	}
 	
 	@Override
@@ -231,8 +239,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 					realSpread = Math.max(realSpread, build.spread());
 				}
 			}
-			if(!Vars.headless && participants.size > 0 && team != Vars.player.team()){
-				TableFs.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, NHSounds.alarm);
+			if(!Vars.headless && participants.size > 0){
+				if(team != Vars.player.team())TableFs.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, NHSounds.alarm);
 				NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color, participants);
 				NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color);
 			}

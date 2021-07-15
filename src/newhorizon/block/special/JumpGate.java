@@ -13,6 +13,7 @@ import arc.math.geom.Point2;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.Element;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.Slider;
 import arc.scene.ui.layout.Table;
@@ -96,6 +97,7 @@ public class JumpGate extends Block {
     
     public float cooldownTime = 300f;
     
+    protected static int selectID = -1, selectNum = 0;
     protected static final Vec2 linkVec = new Vec2();
     protected static final Point2 point = new Point2();
     
@@ -115,6 +117,11 @@ public class JumpGate extends Block {
             else tile.startBuild(-1, 0);
         });
         config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
+        config(Long.class, (JumpGateBuild tile, Long data) -> {
+            point.set(Point2.unpack(Math.toIntExact(data)));
+            tile.planSpawnID = point.x;
+            tile.planSpawnNum = point.y;
+        });
         config(Integer.class, (JumpGateBuild tile, Integer data) -> {
             point.set(Point2.unpack(data));
             if(point.x < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(point.x, point.y);
@@ -177,6 +184,7 @@ public class JumpGate extends Block {
             allSets.put(set, size);
         }
         
+        clipSize = size * tilesize * 4;
         if(adaptable)for(UnitSet set : allSets.keys()){
             if(allSets.get(set) >= size)continue;
             calls.add(set);
@@ -251,8 +259,8 @@ public class JumpGate extends Block {
     @Override
     public void load(){
         super.load();
-        pointerRegion = Core.atlas.find(NewHorizon.configName("jump-gate-pointer"));
-        arrowRegion = Core.atlas.find(NewHorizon.configName("jump-gate-arrow"));
+        pointerRegion = Core.atlas.find(NewHorizon.contentName("jump-gate-pointer"));
+        arrowRegion = Core.atlas.find(NewHorizon.contentName("jump-gate-arrow"));
     }
 
     public class JumpGateBuild extends Building implements Ranged{
@@ -270,16 +278,19 @@ public class JumpGate extends Block {
         public transient int spawnNum = 1;
         public int buildingSpawnNum = -1;
         
+        public int planSpawnID = -1;
+        public int planSpawnNum = 0;
+        
         @Override
         public boolean onConfigureTileTapped(Building other){
-            if(this == other)configure(Tmp.p1.set(-1, -1));
+            if(this == other)configure(point.set(-1, -1));
             return false;
         }
     
         @Override
         public void updateTile(){
-            progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 1f);
-            if(isCalling() && Units.canCreate(team, getType())){
+            progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 0.5f);
+            if(isCalling() && Units.canCreate(team, getType()) && power.status > 0.5f){
                 buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta();
                 if(buildProgress >= costTime(getSet(), true) && !jammed){
                     spawn(getSet());
@@ -299,13 +310,30 @@ public class JumpGate extends Block {
                 }
             }
             
-            if(efficiency() > 0){
+            if(efficiency() > 0 && power.status > 0.5f){
                 if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
                 else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
             }else{
                 if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
                 else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
             }
+            
+            if(planSpawnID >= 0 && planSpawnNum > 0 && power.status > 0.5f){
+                if(!isCalling() && !cooling){
+                    startBuild(planSpawnID, planSpawnNum);
+                }
+                
+                if(jammed){
+                    Tile t = null;
+                    while(t == null){
+                        Tmp.v1.set(1, 1).rnd(range()).add(this).clamp(0, 0, world.unitWidth(), world.unitHeight());
+                        t = world.tile(World.toTile(Tmp.v1.x), World.toTile(Tmp.v1.y));
+                    }
+                    link = t.pos();
+                    spawn(getSet());
+                }
+            }
+            
         }
 
         public Color getColor(UnitSet set){
@@ -351,7 +379,7 @@ public class JumpGate extends Block {
                                 Label can = new Label("");
                                 table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(set, false))));
                                 table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core() != null ? core().items : null)).size(LEN);
-                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(Tmp.p1.set(calls.indexOf(set), spawnNum).pack())).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set) || cooling);
+                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(point.set(calls.indexOf(set), spawnNum).pack())).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set) || cooling);
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
                                 () -> Core.bundle.format("bar.unitcap",
@@ -383,7 +411,7 @@ public class JumpGate extends Block {
                 t.add(new Bar(
                     () ->
                         !isCalling() ? "[lightgray]" + Iconc.cancel :
-                        Units.canCreate(team, getType()) && !jammed ? "[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + buildingSpawnNum + "[]* [accent]" + getSet().type.localizedName + "[lightgray] | " + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)Math.max( (costTime(getSet(), true) - buildProgress) / Time.toSeconds / state.rules.unitBuildSpeedMultiplier, 0) + "[lightgray] " + Core.bundle.get("unit.seconds") :
+                        Units.canCreate(team, getType()) && !jammed ? "[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + buildingSpawnNum + "[]* [accent]" + getSet().type.localizedName + "[lightgray]" + (mobile ? "\n" : " | ") + Core.bundle.get("ui.remain-time") + ": [accent]" + (int)Math.max( (costTime(getSet(), true) - buildProgress) / Time.toSeconds / state.rules.unitBuildSpeedMultiplier, 0) + "[lightgray] " + Core.bundle.get("unit.seconds") :
                         "[red]Call Jammed",
                     () -> isCalling() && canSpawn(getSet(), true) && !jammed ? Pal.power : Pal.redderDust,
                     () -> isCalling() ? buildProgress / costTime(getSet(), true) : 0
@@ -401,7 +429,44 @@ public class JumpGate extends Block {
             
             table.table(Tex.paneSolid, t -> {
                 t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
-                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN);
+                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN).row();
+                t.button("@settings", Icon.settings, Styles.cleart, () -> new BaseDialog("@settings"){{
+                    Label l = new Label(""), currentPlan = new Label("");
+                    Slider s = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne), 1, false);
+                    s.moved((i) -> selectNum = (int)i);
+                    cont.update(() -> {
+                        currentPlan.setText(Core.bundle.get("editor.spawn") + ": [accent]" + planSpawnNum + "[]* [accent]" + (planSpawnID < 0 ? "None" : calls.get(planSpawnID).type.localizedName));
+                        l.setText("[gray]<" + Core.bundle.get("filter.option.amount") + ": [lightgray]" + selectNum + "[]>");
+                        s.setValue(selectNum);
+                    });
+                    cont.table(t -> {
+                        t.pane(table -> {
+                            for(int i = 0; i < calls.size; i++){
+                                int finalI = i;
+                                table.button(new TextureRegionDrawable(calls.get(i).type.fullIcon), Styles.clearTogglePartiali, LEN, () -> selectID = finalI).update(b -> b.setChecked(finalI == selectID));
+                                if(i % 5 == 0) table.row();
+                            }
+                        }).grow().row();
+                        t.table(in -> {
+                            in.image().height(OFFSET / 3).growX();
+                            in.add(l).fillX().height(LEN).padLeft(OFFSET).padRight(OFFSET);
+                            in.image().height(OFFSET / 3).growX().row();
+                        }).growX().height(LEN).row();
+                        t.add(s).growX().height(LEN).padRight(OFFSET).padLeft(OFFSET).row();
+                        t.add(currentPlan).growX().fillY();
+                    }).grow().row();
+                    cont.table(t -> {
+                        t.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
+                        t.button("@cancel", Icon.cancel, Styles.cleart, () -> configure((long)point.set(-1, 0).pack())).growX().height(LEN);
+                        t.button("@confirm", Icon.cancel, Styles.cleart, () -> configure((long)point.set(selectID, selectNum).pack())).growX().height(LEN);
+                    }).growX().fillY();
+                    addCloseListener();
+
+                    keyDown(c -> {
+                        if(c == KeyCode.left) spawnNum = Mathf.clamp(--spawnNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
+                        if(c == KeyCode.right) spawnNum = Mathf.clamp(++spawnNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
+                    });
+                }}.show()).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN);
             }).fill();
         }
     
@@ -492,7 +557,7 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), team.color, this);
     
-            success = NHFunc.spawnUnit(this, target.x, target.y, spawnRange, spawnReloadTime, spawnDelay, getType(), buildingSpawnNum);
+            success = NHFunc.spawnUnit(this, target.x, target.y, angleTo(target), spawnRange, spawnReloadTime, spawnDelay, getType(), buildingSpawnNum);
             
             if(success){
                 buildProgress = 0;
@@ -513,6 +578,9 @@ public class JumpGate extends Block {
             
             write.bool(cooling);
             write.f(cooldown);
+    
+            write.i(planSpawnID);
+            write.i(planSpawnNum);
         }
         @Override public void read(Reads read, byte revision) {
             spawnID = read.i();
@@ -523,6 +591,9 @@ public class JumpGate extends Block {
             
             cooling = read.bool();
             cooldown = read.f();
+            
+            planSpawnID = read.i();
+            planSpawnNum = read.i();
         }
         
         public boolean isCalling(){ return spawnID >= 0; }
@@ -543,7 +614,7 @@ public class JumpGate extends Block {
             if(tile != null && tile.within(this, range()))link = point2.pack();
             else if(tile != null){
                 Tmp.v1.set(tile).sub(this).nor().scl(range());
-                link = Tmp.p1.set((int)World.conv(x + Tmp.v1.x), (int)World.conv(y + Tmp.v1.y)).pack();
+                link = point.set((int)World.conv(x + Tmp.v1.x), (int)World.conv(y + Tmp.v1.y)).pack();
             }else link = pos();
         }
     
@@ -596,6 +667,7 @@ public class JumpGate extends Block {
         public UnitType type = UnitTypes.alpha;
         public int spawnNum = 0;
         public float time = 0, lifetime;
+        public float surviveTime, surviveLifeime = 3000f;
         public float rotation;
         
         public int ownerPos = -1;
@@ -639,7 +711,12 @@ public class JumpGate extends Block {
     
         @Override
         public void update(){
-            if(Units.canCreate(team, type))time += Time.delta;
+            if(Units.canCreate(team, type)){
+                time += Time.delta;
+                surviveTime = 0;
+            }else surviveTime += Time.delta;
+            
+            if(surviveTime > surviveLifeime)remove();
             
             if(time > lifetime){
                 dump();
@@ -658,7 +735,6 @@ public class JumpGate extends Block {
             Effect.shake(type.hitSize / 3f, type.hitSize / 4f, addUnit);
             NHSounds.jumpIn.at(addUnit.x, addUnit.y);
             if(type.flying){
-                
                 NHFx.jumpTrail.at(addUnit.x, addUnit.y, rotation(), team.color, type);
                 addUnit.apply(StatusEffects.slow, NHFx.jumpTrail.lifetime);
             }else{
@@ -686,27 +762,28 @@ public class JumpGate extends Block {
         public void draw(){
             TextureRegion pointerRegion = NHContent.pointerRegion, arrowRegion = NHContent.arrowRegion;
             
+            Drawf.light(team, x, y, clipSize() * fout(), team.color, 0.7f);
             Draw.z(Layer.effect - 1f);
             
             boolean can = Units.canCreate(team, type);
     
             float regSize = NHFunc.regSize(type);
             Draw.color(can ? team.color : Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(Time.time * DrawFuncs.sinScl, 8f, 0.3f) + 0.1f));
-            
-            for(int i = 0; i < 4; i++){
-                float sin = Mathf.absin(Time.time, 16f, tilesize);
-                float length = (tilesize * 5 + sin) * fout() + tilesize;
-                float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
-                Tmp.v1.trns(i * 90, -length);
-                Draw.rect(pointerRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
+    
+            for(int i = -4; i <= 4; i++){
+                if(i == 0)continue;
+                Tmp.v1.trns(rotation, i * tilesize * 2);
+                float f = (100 - (Time.time - 12.5f * i) % 100) / 100;
+                Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, rotation() - 90);
             }
     
-            if(can){
-                for(int i = -4; i <= 4; i++){
-                    if(i == 0)continue;
-                    Tmp.v1.trns(rotation, i * tilesize * 2);
-                    float f = (100 - (Time.time - 12.5f * i) % 100) / 100;
-                    Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, rotation() - 90);
+            if(can && Core.settings.getBool("enablejumpgatedetails")){
+                for(int i = 0; i < 4; i++){
+                    float sin = Mathf.absin(Time.time, 16f, tilesize);
+                    float length = (tilesize * 5 + sin) * fout() + tilesize;
+                    float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
+                    Tmp.v1.trns(i * 90, -length);
+                    Draw.rect(pointerRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
                 }
     
                 float railF = Mathf.curve(fin(Interp.pow2Out), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
@@ -726,6 +803,7 @@ public class JumpGate extends Block {
                 float s = Mathf.clamp(size / 4f, 12f, 20f);
                 Draw.rect(Icon.warning.getRegion(), x, y, s, s);
             }
+            
             Draw.reset();
         }
     
@@ -736,7 +814,7 @@ public class JumpGate extends Block {
             write.f(time);
             write.f(rotation);
             write.i(spawnNum);
-            
+            write.f(surviveTime);
             TypeIO.writeUnitType(write, type);
             TypeIO.writeTeam(write, team);
         }
@@ -748,7 +826,7 @@ public class JumpGate extends Block {
             time = read.f();
             rotation = read.f();
             spawnNum = read.i();
-            
+            surviveTime = read.f();
             
             type = TypeIO.readUnitType(read);
             team = TypeIO.readTeam(read);
@@ -775,6 +853,7 @@ public class JumpGate extends Block {
             spawnNum = read.i();
             ownerPos = read.i();
             checked = read.bool();
+            surviveTime = read.f();
             
             type = TypeIO.readUnitType(read);
             team = TypeIO.readTeam(read);
@@ -792,6 +871,7 @@ public class JumpGate extends Block {
             write.i(spawnNum);
             write.i(ownerPos);
             write.bool(checked);
+            write.f(surviveTime);
             
             TypeIO.writeUnitType(write, type);
             TypeIO.writeTeam(write, team);

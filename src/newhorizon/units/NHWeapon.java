@@ -10,7 +10,7 @@ public class NHWeapon extends Weapon{
 	}
 	
 	public NHWeapon(String name){
-		super(NewHorizon.configName(name));
+		super(NewHorizon.contentName(name));
 	}
 	
 	@Override

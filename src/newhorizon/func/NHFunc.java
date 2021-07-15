@@ -196,20 +196,17 @@ public class NHFunc{
         return true;
     }
     
-    public static boolean spawnUnit(Building starter, float x, float y, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
+    public static boolean spawnUnit(Building starter, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
+        if(type == null)return false;
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
         
-        float angle, regSize = regSize(type);
-        
         if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, Mathf.random(-100, 100)))return false;
-        
-        angle = starter.angleTo(x, y);
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
             JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
-            spawner.init(type, spawnNum, starter.team(), s, angle, spawnReloadTime + i * spawnDelay, starter.pos());
+            spawner.init(type, spawnNum, starter.team(), s, angle, spawnReloadTime + (i + 1) * spawnDelay, starter.pos());
             if(!net.client())spawner.add();
             i++;
         }

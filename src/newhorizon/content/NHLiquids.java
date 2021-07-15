@@ -18,7 +18,7 @@ public class NHLiquids implements ContentList{
 	@Override
 	public void load(){
 		quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor){{
-			heatCapacity = 2;
+			heatCapacity = 1.25f;
 			lightColor = NHColor.darkEnrColor;
 			effect = NHStatusEffects.quantization;
 		}};

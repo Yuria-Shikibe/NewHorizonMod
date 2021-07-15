@@ -1,5 +1,6 @@
 package newhorizon.content;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -38,6 +39,7 @@ import mindustry.world.blocks.power.DecayGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.SolidPump;
+import mindustry.world.blocks.sandbox.PowerVoid;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.draw.DrawBlock;
@@ -93,7 +95,7 @@ public class NHBlocks implements ContentList {
 		//Liquids
 		irdryonTank,
 		//Liquids factories
-		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory, oilRefiner,
+		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory, oilRefiner, waterInstancer,
 		//walls
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
 		//Distributions
@@ -105,35 +107,92 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
-		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer, shieldProjector,
+		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
+		disposePowerVoid,
 	
 		//Env
-		quantumField, metalUnit, metalTower
+		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum
 		;
 	
 	private static void loadEnv(){
 		quantumField = new Floor("quantum-field", 8){{
-			drownTime = 180f;
 			status = NHStatusEffects.quantization;
-			statusDuration = 240f;
-			speedMultiplier = 0.19f;
+			statusDuration = 60f;
+			speedMultiplier = 1.15f;
 			liquidDrop = NHLiquids.quantumLiquid;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			attributes.set(Attribute.light, 2f);
 			updateEffect = status.effect;
 			emitLight = true;
+			lightRadius = 32f;
+			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
+			
+			attributes.set(Attribute.water, -1f);
+			attributes.set(Attribute.oil, -1f);
+			attributes.set(Attribute.spores, -1f);
+		}};
+		
+		quantumFieldDeep = new Floor("quantum-field-deep", 0){{
+			drownTime = 180f;
+			status = NHStatusEffects.quantization;
+			statusDuration = 240f;
+			speedMultiplier = 1.3f;
+			liquidDrop = NHLiquids.quantumLiquid;
+			isLiquid = true;
+			cacheLayer = CacheLayer.water;
+			attributes.set(Attribute.light, 3f);
+			updateEffect = status.effect;
+			emitLight = true;
 			lightRadius = 40f;
-			lightColor = NHColor.darkEnrColor;
+			liquidMultiplier = 2f;
+			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
+			
+			attributes.set(Attribute.water, -1f);
+			attributes.set(Attribute.oil, -1f);
+			attributes.set(Attribute.spores, -1f);
 		}};
 		
 		metalUnit = new StaticWall("metal-unit"){{
-			variants = 3;
+			variants = 6;
 		}};
 		
 		metalTower = new StaticWall("metal-tower"){{
 			variants = 3;
 		}};
+		
+		metalGround = new Floor("metal-ground", 6){{
+			mapColor = Pal.darkerGray;
+			wall = metalUnit;
+			attributes.set(Attribute.water, -1f);
+			attributes.set(Attribute.oil, -1f);
+			attributes.set(Attribute.heat, 0);
+			attributes.set(Attribute.light, 0);
+			attributes.set(Attribute.spores, -1f);
+			walkSound = NHSounds.metalWalk;
+			walkSoundVolume = 0.05f;
+			speedMultiplier = 1.25f;
+		}};
+		
+		metalGroundQuantum = new Floor("metal-ground-quantum", 2){{
+			mapColor = Pal.gray;
+			wall = metalUnit;
+			blendGroup = metalGround;
+			attributes.set(Attribute.water, -1f);
+			attributes.set(Attribute.oil, -1f);
+			attributes.set(Attribute.heat, 0.1f);
+			attributes.set(Attribute.light, 0);
+			attributes.set(Attribute.spores, -1f);
+			walkSound = NHSounds.metalWalk;
+			walkSoundVolume = 0.05f;
+			speedMultiplier = 1.25f;
+		}
+			@Override
+			public void load(){
+				super.load();
+				region = Core.atlas.find(NewHorizon.contentName("metal-ground1"));
+			}
+		};
 	}
 	
 	private static void loadExperiments(){
@@ -159,17 +218,6 @@ public class NHBlocks implements ContentList {
 //			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
 //			NHTechTree.add(Blocks.logicProcessor, this);
 //		}};
-		
-		shieldProjector = new ShieldProjector("shield-projector"){{
-			consumes.power(1f);
-			consumes.powerCond(8f, ShieldProjectorBuild::isCharging);
-			size = 3;
-			itemCapacity = 20;
-			consumes.item(NHItems.fusionEnergy, 5);
-			provideHealth = 2200f;
-			requirements(Category.defense, BuildVisibility.shown, with(Items.copper, 300, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.plastanium, 75, NHItems.multipleSteel, 120));
-			NHTechTree.add(Blocks.forceProjector, this);
-		}};
 		
 		beamLaserTurret = new ItemTurret("beam-laser-turret"){{
 			size = 2;
@@ -328,9 +376,7 @@ public class NHBlocks implements ContentList {
 				lightningDamage = damage / 6f;
 			}};
 			consumes.add(
-				new ConsumeLiquidFilter((liquid) -> {
-			return liquid.temperature <= 0.5F && liquid.flammability < 0.1F;
-				}, 0.5F)
+				new ConsumeLiquidFilter((liquid) -> liquid.temperature <= 0.5F && liquid.flammability < 0.1F, 0.5F)
 			).update(false);
 			powerUse = 30f;
 			unitSort = (u, x, y) -> u.speed();
@@ -384,9 +430,7 @@ public class NHBlocks implements ContentList {
 							Lines.circle(e.x, e.y, e.fin() * 80);
 							Lines.stroke(e.fout() * 2f);
 							Lines.circle(e.x, e.y, e.fin() * 50);
-							Angles.randLenVectors(e.id, 35, 18 + 100 * e.fin(), (x, y) -> {
-								lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 12 + 4);
-							});
+							Angles.randLenVectors(e.id, 35, 18 + 100 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 12 + 4));
 							
 							Draw.color(frontColor);
 							Fill.circle(e.x, e.y, e.fout() * height / 2f);
@@ -474,7 +518,7 @@ public class NHBlocks implements ContentList {
 			requirements(Category.turret, ItemStack.with(Items.titanium, 60, NHItems.presstanium, 45, NHItems.zeta, 90, NHItems.juniorProcessor, 40));
 			NHTechTree.add(Blocks.lancer, this);
 			powerUse = 7.5f;
-			shootType = new BasicBulletType(7f, 50f, NewHorizon.configName("circle-bolt")){{
+			shootType = new BasicBulletType(7f, 50f, NewHorizon.contentName("circle-bolt")){{
 				drag = 0.01f;
 				trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack;
 				frontColor = Color.white;
@@ -802,6 +846,27 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
+		remoteStorage = new RemoteCoreStorage("remote-vault"){{
+			size = 3;
+			health = 960;
+			consumes.power(10);
+			requirements(Category.effect, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 150, NHItems.multipleSteel, 120));
+			NHTechTree.add(Blocks.coreShard, this);
+		}};
+		
+		unitIniter = new UnitIniter("unit-initer");
+		
+		shieldProjector = new ShieldProjector("shield-projector"){{
+			consumes.power(1f);
+			consumes.powerCond(8f, ShieldProjectorBuild::isCharging);
+			size = 3;
+			itemCapacity = 20;
+			consumes.item(NHItems.fusionEnergy, 5);
+			provideHealth = 2200f;
+			requirements(Category.defense, BuildVisibility.shown, with(Items.copper, 300, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.plastanium, 75, NHItems.multipleSteel, 120));
+			NHTechTree.add(Blocks.forceProjector, this);
+		}};
+		
 		airRaider = new AirRaider("air-raider"){{
 			requirements(Category.effect, with(NHItems.upgradeSort, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
 			
@@ -1090,7 +1155,16 @@ public class NHBlocks implements ContentList {
 			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2, NHItems.juniorProcessor, 5 * healthMult2));
 		}};
 		
-		
+		waterInstancer = new GenericCrafter("water-instancer"){{
+			size = 1;
+			updateEffect = Fx.smeltsmoke;
+			consumes.power(0.5f);
+			consumes.liquid(NHLiquids.quantumLiquid, 0.1f);
+			outputLiquid = new LiquidStack(Liquids.water, 12f);
+			craftTime = 30f;
+			requirements(Category.crafting, BuildVisibility.shown, with(Items.metaglass, 15, Items.copper, 30, NHItems.presstanium, 20));
+			NHTechTree.add(Blocks.mechanicalPump, this);
+		}};
 		
 		xenMelter = new GenericCrafter("xen-melter"){{
 			size = 2;
@@ -1374,13 +1448,10 @@ public class NHBlocks implements ContentList {
 		upgradeSortFactory = new GenericCrafter("upgradeSort-factory") {
 			{
 				requirements(Category.crafting, with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.thorium, 200));
-				craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
-					Draw.color(NHColor.darkEnrColor, Pal.gray, e.fin());
-					Fill.square(e.x + x, e.y + y, 0.3f + e.fout() * 2.6f, 45);
-				}));
-				updateEffect = new Effect(25f, e -> {
+				updateEffect = NHStatusEffects.quantization.effect;
+				craftEffect = new Effect(25f, e -> {
 					Draw.color(NHColor.darkEnrColor);
-					Angles.randLenVectors(e.id, 2, 24 * e.fout() * e.fout(), (x, y) -> {
+					Angles.randLenVectors(e.id, 4, 24 * e.fout() * e.fout(), (x, y) -> {
 						Lines.stroke(e.fout() * 1.7f);
 						Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
 					});
@@ -1390,15 +1461,13 @@ public class NHBlocks implements ContentList {
 				craftTime = 150f;
 				size = 3;
 				hasPower = hasItems = true;
-				drawer = new DrawPrinter(outputItem.item) {
-					{
+				drawer = new DrawPrinter(outputItem.item) {{
 						printColor = NHColor.darkEnrColor;
 						lightColor = Color.valueOf("#E1BAFF");
 						moveLength = 4.2f;
 						time = 25f;
-						//toPrint = NHItems.upgradeSort;
-					}
-				};
+				}};
+				clipSize = size * tilesize * 2f;
 				consumes.items(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
 				consumes.power(10f);
 			}
@@ -1625,6 +1694,9 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(UnitTypes.poly, new byte[]{NHUnitTypes.OTHERS, 2}, 45 * 60f,
+					with(Items.lead, 30, Items.copper, 60, Items.graphite, 45, Items.silicon, 30)
+				),
 				new UnitSet(NHUnitTypes.sharp, new byte[]{NHUnitTypes.AIR_LINE_1, 1}, 15 * 60f,
 					with(Items.titanium, 30, Items.silicon, 15)
 				),
@@ -1663,6 +1735,9 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(UnitTypes.mega, new byte[]{NHUnitTypes.OTHERS, 2}, 45 * 60f,
+						with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, Items.graphite, 40, NHItems.juniorProcessor, 35)
+				),
 				new UnitSet(NHUnitTypes.gather, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
 					with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, NHItems.zeta, 60, NHItems.juniorProcessor, 60)
 				),
@@ -1731,17 +1806,12 @@ public class NHBlocks implements ContentList {
 		
 		loadTurrets();
 		loadEnv();
+		
+		disposePowerVoid = new PowerVoid("dispose-power-void"){{
+			size = 1;
+			rebuildable = false;
+			requirements(Category.power, BuildVisibility.sandboxOnly, with());
+			alwaysUnlocked = true;
+		}};
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-

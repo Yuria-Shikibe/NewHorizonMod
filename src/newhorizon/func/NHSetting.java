@@ -52,6 +52,10 @@ public class NHSetting{
 		SettingEntry.add("@active.tool-panel*", String.valueOf(false), true);
 	}
  
+	public static void loadSettings(){
+		Vars.ui.settings.graphics.checkPref("enablejumpgatedetails", true);
+	}
+	
 	public static class SettingEntry{
 		public static void add(String key, String value, boolean needReload){
 			entries.add(new SettingEntry(key).setNeedReload(needReload));
@@ -120,13 +124,6 @@ public class NHSetting{
 		settingTable.game.button("MOD: [sky]" + modMeta.displayName, Icon.settings, () -> {
 			new SettingDialog().show();
 		}).size(LEN * 6f, LEN - OFFSET);
-//		for(SettingEntry entry : entries){
-//			if(entry.typeOfBool){
-//				if(entry.typeOfGraphics)settingTable.graphics.checkPref();
-//				else settingTable.game.checkPref();
-//			}
-//		}
-//
 	}
 	
 	private static void updateProperty(String version) throws IOException{

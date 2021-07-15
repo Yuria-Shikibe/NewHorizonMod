@@ -22,7 +22,6 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
-import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
@@ -97,7 +96,7 @@ public class UpgradeBlock extends Block {
 			for(Block block : linkTarget){
 				t.table(t2 -> {
 					t2.left();
-					t2.table(table -> table.image(block.icon(Cicon.xlarge)).size(LEN * 1.5f).left()).size(LEN * 1.5f + OFFSET / 2f).pad(OFFSET / 2f).left();
+					t2.table(table -> table.image(block.fullIcon).size(LEN * 1.5f).left()).size(LEN * 1.5f + OFFSET / 2f).pad(OFFSET / 2f).left();
 					t2.table(table -> table.add(block.localizedName).left()).pad(OFFSET / 2f).left();
 				}).left().grow().row();
 			}
@@ -149,14 +148,14 @@ public class UpgradeBlock extends Block {
 		
 		@Override
 		public void consumeItems(DataEntity data){
-			if(state.rules.infiniteResources)return;
+			if(state.rules.infiniteResources || cheating())return;
 			Building core = core();
 			if(coreValid(core))core.items.remove(data.requirements());
 		}
 		
 		@Override
 		public boolean canUpgrade(DataEntity data) {
-			if(state.rules.infiniteResources)return true;
+			if(state.rules.infiniteResources || state.rules.editor)return true;
 			
 			Building core = core();
 			return coreValid() && !isUpgrading() && core.items.has(data.requirements());
@@ -177,6 +176,7 @@ public class UpgradeBlock extends Block {
 		public void upgradeData(int data){
 			upgradeData(all().get(data));
 			upgradingID = data;
+			if(state.rules.editor)completeUpgrade();
 		}
 		
 		@Override//Updates
@@ -300,10 +300,12 @@ public class UpgradeBlock extends Block {
 		public void updateTile() {
 			if(datas == null || datas.isEmpty())setData();
 			
+			
 			if(remainTime >= 0){
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance))for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2f * tilesize), y - Mathf.random(block.size / 2f * tilesize), block.size / 2f, baseColorTst);
 			}else if(isUpgrading())completeUpgrade();
+			
 			
 			if(efficiency() > 0 && isUpgrading()){
 				if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
@@ -394,7 +396,7 @@ public class UpgradeBlock extends Block {
 		}
 		
 		@Override public Color getLinkColor(){return baseColor == null ? team.color : baseColor;}
-		@Override public boolean isUpgrading(){return upgradingID != defaultID || remainTime >= 0;}
+		@Override public boolean isUpgrading(){return (upgradingID != defaultID || remainTime >= 0) && !state.rules.editor;}
 		@Override public float range() { return range; }
 		@Override public void buildConfiguration(Table table) {buildSwitchAmmoTable(table, true);}
 		@Override public void draw() {

@@ -54,7 +54,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 	
 	public float bombLifetime = 120f;
 	public float shake = 20f;
-	public float bombDamage = 800f, bombRadius = 120f;
+	public float bombDamage = 800f, bombRadius = 160f;
 	public float bombVelPerTile = 2f;
 	public Sound hitSound = Sounds.explosionbig;
 	

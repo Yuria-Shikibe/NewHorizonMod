@@ -32,7 +32,7 @@ public class AirRaider extends CommandableAttackerBlock{
 		super(name);
 		
 		reloadTime = 600f;
-		range = 600f;
+		range = 1000f;
 		spread = 40f;
 		prepareDelay = 90f;
 	}

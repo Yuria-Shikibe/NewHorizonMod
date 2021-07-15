@@ -5,6 +5,7 @@ import arc.func.Cons;
 import arc.math.geom.Point2;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
+import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -17,7 +18,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.interfaces.BeforeLoadc;
-import newhorizon.interfaces.ServerInitc;
 import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public abstract class CommandableBlock extends Block{
 		if(groupBoolf == null)groupBoolf = b -> b.block.getClass() == this.getClass();
 	}
 	
-	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged, ServerInitc{
+	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged{
 		public transient int lastTarget = -1;
 		
 		@NotNull public abstract CommandableBlockType getType();
@@ -59,6 +59,8 @@ public abstract class CommandableBlock extends Block{
 		public abstract float delayTime();
 		public abstract float spread();
 		
+		public Table actionTable(){return new Table();}
+		
 		public  @Nullable Vec2 target(){
 			Tile t = world.tile(getTarget());
 			if(t != null || getTarget() >= 0) return tmpVec.set(t);
@@ -66,8 +68,7 @@ public abstract class CommandableBlock extends Block{
 		}
 		
 		@Override
-		public void add(){
-			super.add();
+		public void created(){
 			NHVars.world.commandables.add(this);
 		}
 		
@@ -80,11 +81,6 @@ public abstract class CommandableBlock extends Block{
 		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
 			NHWorldVars.advancedLoad.add(this);
 			return super.init(tile, team, shouldAdd, rotation);
-		}
-		
-		@Override
-		public void loadAfterConnect(){
-			NHVars.world.commandables.add(this);
 		}
 		
 		@Override

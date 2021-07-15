@@ -25,6 +25,7 @@ public class SettingDialog extends BaseDialog{
 			table.pane(t -> {
 				t.left();
 				t.marginLeft(OFFSET);
+				t.add("@mod.ui.setting-dialog");
 				t.add("[gray]You can get back here through: ").left().row();
 				t.add("[accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ").left().padLeft(LEN).row();
 				t.add("[accent]<VanillaSettings>[gray] -> [accent]" + Core.bundle.get("settings.game") + "[gray] -> [accent]NEW HORIZON[gray] -> ").left().padLeft(LEN).row();

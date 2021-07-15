@@ -7,6 +7,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.graphics.Drawf;
 import mindustry.type.Item;
@@ -52,13 +53,18 @@ public class DrawPrinter extends DrawBlock {
 		if (lightColor.a > 0.001f) {
 			Draw.color(lightColor, entity.warmup);
 			Draw.blend(Blending.additive);
+			Draw.alpha(entity.warmup * 0.85f);
 			Draw.rect(lightRegion, entity.x, entity.y);
 			Draw.blend();
 			Draw.reset();
 		}
 	}
-
-
+	
+	@Override
+	public void drawLight(GenericCrafterBuild build){
+		Drawf.light(build.team, build.x, build.y, build.warmup * build.block.size * Vars.tilesize, lightColor, 0.7f);
+	}
+	
 	@Override
 	public void load(Block block) {
 		bottom = Core.atlas.find(block.name + "-bottom");

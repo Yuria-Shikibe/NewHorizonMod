@@ -167,8 +167,8 @@ public class NHBullets implements ContentList{
 	}
 	
 	public void load(){
-		CIRCLE_BOLT = NewHorizon.configName("circle-bolt");
-		STRIKE = NewHorizon.configName("strike");
+		CIRCLE_BOLT = NewHorizon.contentName("circle-bolt");
+		STRIKE = NewHorizon.contentName("strike");
 		
 		loadFragType();
 		
@@ -281,7 +281,7 @@ public class NHBullets implements ContentList{
 			smokeEffect = Fx.shootBigSmoke2;
 		}};
 		
-		longRangeShoot = new ShieldBreaker(1, 800, "bullet", 2000){{
+		longRangeShoot = new ShieldBreaker(1, 1200, "bullet", 2000){{
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
@@ -302,7 +302,7 @@ public class NHBullets implements ContentList{
 			width = 14f;
 		}};
 		
-		longRangeShootRapid = new ShieldBreaker(6, 800, "bullet", 2000){{
+		longRangeShootRapid = new ShieldBreaker(6, 1200, "bullet", 2000){{
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
@@ -325,7 +325,7 @@ public class NHBullets implements ContentList{
 			width = 14f;
 		}};
 		
-		longRangeShootSplash = new ShieldBreaker(1, 800, "bullet", 2000){{
+		longRangeShootSplash = new ShieldBreaker(1, 1200, "bullet", 2000){{
 			lightning = 3;
 			lightningCone = 360;
 			lightningLengthRand = lightningLength = 8;
@@ -952,7 +952,7 @@ public class NHBullets implements ContentList{
 			shootEffect = Fx.none;
 		}};
 		
-		rapidBomb = new SpeedUpBulletType(9f, 280, NewHorizon.configName("strike")){{
+		rapidBomb = new SpeedUpBulletType(9f, 280, NewHorizon.contentName("strike")){{
 			trailLength = 8;
 			trailWidth = 1.75f;
 			
@@ -1306,7 +1306,7 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.darkEnergySmokeBig;
 		}};
 		
-		empBlot2 = new ArtilleryBulletType(4f, 10f, NewHorizon.configName("circle-bolt")){{
+		empBlot2 = new ArtilleryBulletType(4f, 10f, NewHorizon.contentName("circle-bolt")){{
 			status = NHStatusEffects.emp2;
 			ammoMultiplier = 3;
 			statusDuration = 45f;
@@ -1335,7 +1335,7 @@ public class NHBullets implements ContentList{
 			fragVelocityMax = fragLifeMax = 1.05f;
 		}};
 		
-		empBlot3 = new ArtilleryBulletType(4f, 15f, NewHorizon.configName("circle-bolt")){{
+		empBlot3 = new ArtilleryBulletType(4f, 15f, NewHorizon.contentName("circle-bolt")){{
 			status = NHStatusEffects.emp3;
 			ammoMultiplier = 3;
 			statusDuration = 60f;

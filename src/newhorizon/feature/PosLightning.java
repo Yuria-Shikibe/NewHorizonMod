@@ -26,6 +26,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.graphics.Layer;
+import newhorizon.bullets.EffectBulletType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Yuria
  */
 public class PosLightning {
-	public static final BulletType hitter = new BulletType(0.0001f, 1f){{
+	public static final BulletType hitter = new EffectBulletType(1f){{
 		absorbable = true;
 		collides = collidesAir = collidesGround = collidesTiles = true;
 		status = StatusEffects.shocked;

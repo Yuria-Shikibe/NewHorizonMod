@@ -199,7 +199,7 @@ public class Tables{
 				int index = 0;
 				for(UnlockableContent c : contents){
 					if(index % 8 == 0)t.row();
-					t.button(new TextureRegionDrawable(c.icon(Cicon.xlarge)), Styles.cleari, LEN, () -> {
+					t.button(new TextureRegionDrawable(c.fullIcon), Styles.cleari, LEN, () -> {
 						ContentInfoDialog dialog = new ContentInfoDialog();
 						dialog.show(c);
 					}).size(LEN);

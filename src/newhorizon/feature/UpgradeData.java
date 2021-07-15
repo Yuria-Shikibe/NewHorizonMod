@@ -97,7 +97,7 @@ public class UpgradeData{
 	
 	
 	public void load(){
-		this.icon = Core.atlas.find(NewHorizon.configName(name));
+		this.icon = Core.atlas.find(NewHorizon.contentName(name));
 	}
 	
 	@Override
