@@ -9,7 +9,6 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -77,6 +76,7 @@ public class EventTriggers{
 			Building building = Vars.control.input.frag.config.getSelectedTile();
 			
 			float z = Draw.z();
+			
 			
 			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
 				for(GravityTrap.GravityTrapBuild b : NHVars.world.gravityTraps){

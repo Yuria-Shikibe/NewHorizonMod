@@ -7,12 +7,12 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -128,6 +128,7 @@ public class GravityTrap extends Block{
 		
 		@Override
 		public boolean configTapped(){
+			Log.info(NHVars.world.gravityTraps);
 			return super.configTapped();
 		}
 		
@@ -137,7 +138,14 @@ public class GravityTrap extends Block{
 		}
 		
 		public boolean active(){
-			return warmup > 0.5f && power.status > 0.75f;
+			return warmup > 0.5f;
+		}
+		
+		@Override
+		public void remove(){
+			super.remove();
+			NHVars.world.gravityTraps.remove(this);
+			NHWorldVars.advancedLoad.remove(this);
 		}
 		
 		@Override
@@ -166,13 +174,9 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
-		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
+		public void add(){
+			super.add();
 			NHWorldVars.advancedLoad.add(this);
-			return super.init(tile, team, shouldAdd, rotation);
-		}
-		
-		@Override
-		public void created(){
 			beforeLoad();
 		}
 		

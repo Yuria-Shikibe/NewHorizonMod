@@ -103,6 +103,7 @@ public class JumpGate extends Block {
     
     public JumpGate(String name){
         super(name);
+        copyConfig = saveConfig = true;
         update = true;
         configurable = true;
         solid = true;
@@ -287,6 +288,11 @@ public class JumpGate extends Block {
             return false;
         }
     
+        @Override
+        public Long config(){
+            return (long)point.set(planSpawnID, planSpawnNum).pack();
+        }
+        
         @Override
         public void updateTile(){
             progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 0.5f);

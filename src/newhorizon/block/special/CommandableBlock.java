@@ -73,14 +73,17 @@ public abstract class CommandableBlock extends Block{
 		}
 		
 		@Override
-		public void onRemoved(){
+		public void remove(){
+			super.remove();
+			NHWorldVars.advancedLoad.remove(this);
 			NHVars.world.commandables.remove(this);
 		}
 		
 		@Override
-		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
+		public void add(){
+			super.add();
 			NHWorldVars.advancedLoad.add(this);
-			return super.init(tile, team, shouldAdd, rotation);
+			beforeLoad();
 		}
 		
 		@Override
