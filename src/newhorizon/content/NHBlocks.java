@@ -1514,7 +1514,7 @@ public class NHBlocks implements ContentList {
 		};
 
 		irayrondPanelFactorySmall = new GenericCrafter("small-irayrond-panel-factory"){{
-			requirements(Category.crafting, with(NHItems.irayrondPanel, 55, NHItems.seniorProcessor, 35, NHItems.presstanium, 100, Items.plastanium, 40));
+			requirements(Category.crafting, with(NHItems.multipleSteel, 55, NHItems.juniorProcessor, 35, NHItems.presstanium, 60, Items.plastanium, 40, NHItems.zeta, 40));
 			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
 				Draw.color(NHLiquids.xenBeta.color);
 				Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
@@ -1534,7 +1534,7 @@ public class NHBlocks implements ContentList {
 				}
 			};
 			consumes.liquid(NHLiquids.xenBeta, 0.1f);
-			consumes.items(new ItemStack(NHItems.presstanium, 6), new ItemStack(NHItems.metalOxhydrigen, 2));
+			consumes.items(new ItemStack(NHItems.presstanium, 8), new ItemStack(NHItems.metalOxhydrigen, 2));
 			consumes.power(12f);
 		}};
 
