@@ -141,6 +141,11 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
+		public void onRemoved(){
+			NHVars.world.gravityTraps.remove(this);
+		}
+		
+		@Override
 		public void draw(){
 			super.draw();
 			
