@@ -18,11 +18,11 @@ public class NHItems implements ContentList{
 	public void load(){
 		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("CFFF87")){{
 			radioactivity = 5f;
-			explosiveness = 15f;
+			explosiveness = 3f;
 			charge = 15f;
 		}};
 		thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("#7D95B2")){{
-			explosiveness = 2f;
+			explosiveness = 1f;
 		}};
 		presstanium = new Item("presstanium", Color.valueOf("6495ED")){{
 			flammability = 0.35f;
@@ -35,7 +35,7 @@ public class NHItems implements ContentList{
 			charge = 1f;
 		}};
 		fusionEnergy = new Item("fusion-core-energy", Color.valueOf("ffe4b5")){{
-			explosiveness = 3f;
+			explosiveness = 0.7f;
 			charge = 1.25f;
 			radioactivity = 1f;
 		}};
@@ -45,7 +45,7 @@ public class NHItems implements ContentList{
 		}};
 		darkEnergy = new Item("dark-energy", Color.valueOf("#BE91FF")){{
 			radioactivity = 15f;
-			explosiveness = 10f;
+			explosiveness = 5f;
 			charge = 25f;
 		}};
 		upgradeSort = new Item("upgradeSort", Color.valueOf("1D1E23"));

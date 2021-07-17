@@ -1,6 +1,6 @@
 package newhorizon.block.special;
 
-import arc.func.Boolf;
+import arc.func.Boolf2;
 import arc.func.Cons;
 import arc.math.geom.Point2;
 import arc.math.geom.Position;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import static mindustry.Vars.*;
 
 public abstract class CommandableBlock extends Block{
-	public Boolf<CommandableBlockBuild> groupBoolf = null;
+	public Boolf2<CommandableBlockBuild, CommandableBlockBuild> groupBoolf = null;
 	protected static final Vec2 tmpVec = new Vec2();
 	
 	public CommandableBlock(String name){
@@ -37,7 +37,7 @@ public abstract class CommandableBlock extends Block{
 	@Override
 	public void init(){
 		super.init();
-		if(groupBoolf == null)groupBoolf = b -> b.block.getClass() == this.getClass();
+		if(groupBoolf == null)groupBoolf = (b1, b2) -> b1.block == b2.block;
 	}
 	
 	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged{

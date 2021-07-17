@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -25,21 +26,20 @@ import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.DrawFuncs;
-import newhorizon.units.AimAlarmAbility;
-import newhorizon.units.NHUnitOutline;
-import newhorizon.units.NHWeapon;
-import newhorizon.units.PhaseAbility;
+import newhorizon.units.*;
 import newhorizon.vars.EventTriggers;
 
 import static mindustry.Vars.headless;
@@ -47,20 +47,133 @@ import static mindustry.Vars.headless;
 public class NHUnitTypes implements ContentList{
 	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
 	
-	public static NHWeapon posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon;
+	public static NHWeapon
+			posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon,
+			mainCannon
+			
+			;
 	
 	public static UnitType
 			guardian, gather,
 			sharp, branch, warper, striker, annihilation, hurricane, collapser,
 			origin, thynomo, aliotiat, tarlidor, destruction,
-			ghost, zarkov;
+			ghost, zarkov, declining;
 	
 	static{
+		EntityMapping.nameMap.put(NewHorizon.contentName("declining"), EntityMapping.idMap[20]);
 		EntityMapping.nameMap.put(NewHorizon.contentName("zarkov"), EntityMapping.idMap[20]);
 		EntityMapping.nameMap.put(NewHorizon.contentName("ghost"), EntityMapping.idMap[20]);
 	}
 	
 	public void loadWeapon(){
+		mainCannon = new NHWeapon("main-cannon"){{
+			top = rotate = true;
+			mirror = false;
+			alternate = false;
+			cooldownTime = 240f;
+			recoil = 7f;
+			shots = 3;
+			rotateSpeed = 1f;
+			shootSound = NHSounds.flak;
+			shootCone = 5f;
+			shootY = 15f;
+			reload = 300f;
+			shake = 7f;
+			ejectEffect = Fx.blastsmoke;
+			bullet = new SpeedUpBulletType(5.25f, 180f, "large-bomb"){{
+				lifetime = 22f;
+				knockback = 12f;
+				
+				width = height = 25f;
+				
+				spin = 4f;
+				
+				trailWidth = 2.2f;
+				trailLength = 20;
+				
+				velocityBegin = 12f;
+				velocityIncrease = 22f;
+				func = Interp.pow3Out;
+				accelerateBegin = 0f;
+				accelerateEnd = 0.8f;
+				
+				homingDelay = 5f;
+				homingPower = 0.0075f;
+				homingRange = 140f;
+				
+				pierce = pierceBuilding = true;
+				
+				lightning = 2;
+				lightningDamage = damage / 4f;
+				lightningLength = 4;
+				lightningLengthRand = 12;
+				
+				splashDamageRadius = 16f;
+				splashDamage = damage * 0.75f;
+				backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
+				
+				knockback = 20f;
+				
+				frontColor = NHColor.lightSkyFront;
+				shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
+				smokeEffect = NHFx.hugeSmoke;
+				trailChance = 0.6f;
+				trailEffect = NHFx.trail;
+				hitShake = 8f;
+				hitSound = Sounds.explosionbig;
+				hitEffect = NHFx.instHit(backColor, 3, 85f);
+				
+				fragBullets = 3;
+				fragBullet = NHBullets.skyFrag;
+				fragLifeMax = 0.5f;
+				fragLifeMin = 0.25f;
+				fragVelocityMax = 1.2f;
+				fragVelocityMin = 0.75f;
+			}};
+		}
+			@Override
+			public void draw(Unit unit, WeaponMount mount){
+				super.draw(unit, mount);
+				
+				if(!unit.isPlayer() && !Core.settings.getBool("enableeffectdetails"))return;
+				
+				float
+					z = Draw.z(),
+					rotation = unit.rotation - 90f,
+					weaponRotation  = rotation + (rotate ? mount.rotation : 0),
+					fin = Mathf.clamp(1 - (mount.reload - 10f) / reload),
+					wx = unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, recoil),
+					wy = unit.y + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, recoil);
+				
+				if(fin == 1f)return;
+				
+				TextureRegion arrowRegion = NHContent.arrowRegion;
+				
+				Draw.z(Layer.bullet);
+				Draw.color(bullet.hitColor);
+				
+				float railF = Mathf.curve(Interp.pow2Out.apply(fin), 0f, 0.25f) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f) * fin;
+				
+				float length = bullet.range();
+				float spacing = 25f;
+				for(int i = 0; i <= length / spacing; i++){
+					Tmp.v1.trns(weaponRotation + 90f, i * spacing * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f) + shootY);
+					float f = Interp.pow3Out.apply(Mathf.clamp((fin * length - i * spacing) / spacing)) * (0.6f + railF * 0.4f) * 0.8f;
+					Draw.rect(arrowRegion, wx + Tmp.v1.x, wy + Tmp.v1.y, arrowRegion.width * Draw.scl * f, arrowRegion.height * Draw.scl * f, weaponRotation);
+				}
+				
+				Tmp.v1.trns(weaponRotation + 90f, 0f, (2 - railF) * 5f);
+				Tmp.v2.trns(weaponRotation + 90f, shootY);
+				Lines.stroke(railF * 2f);
+				for(int i : Mathf.signs){
+					Lines.lineAngle(wx + Tmp.v1.x * i + Tmp.v2.x, wy + Tmp.v1.y * i + Tmp.v2.y, weaponRotation + 90f, length * (0.75f + railF / 4f) * Mathf.curve(Interp.pow5Out.apply(1 - fin) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f), 0f, 0.1f));
+				}
+				
+				Draw.reset();
+				Draw.z(z);
+			}
+		};
+		
 		multipleLauncher = new NHWeapon("mult-launcher"){{
 			reload = 60f;
 			shots = 3;
@@ -70,13 +183,13 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 2.5f;
 			alternate = true;
 			shootSound = NHSounds.launch;
-			shootCone = 75f;
+			shootCone = 30f;
 			shootY = 5f;
 			top = true;
 			rotate = true;
 			bullet = new SpeedUpBulletType(5.25f, 100f, NHBullets.STRIKE){{
 				lifetime = 50;
-				despawnEffect = hitEffect = NHFx.lightningHitLarge(NHItems.thermoCorePositive.color);
+
 				knockback = 12f;
 				width = 11f;
 				height = 28f;
@@ -93,6 +206,8 @@ public class NHUnitTypes implements ContentList{
 				splashDamageRadius = 16f;
 				splashDamage = damage * 0.75f;
 				backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
+				hitEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
+				despawnEffect = NHFx.lightningHitLarge(backColor);
 				frontColor = NHColor.lightSkyFront;
 				shootEffect = NHFx.shootCircleSmall(backColor);
 				smokeEffect = Fx.shootBigSmoke2;
@@ -100,8 +215,6 @@ public class NHUnitTypes implements ContentList{
 				trailEffect = NHFx.trail;
 				hitShake = 3f;
 				hitSound = Sounds.plasmaboom;
-				despawnEffect = NHFx.square45_4_45;
-				hitEffect = NHFx.blast(backColor, 50f);
 			}};
 		}};
 		
@@ -180,18 +293,7 @@ public class NHUnitTypes implements ContentList{
 			reload = 10f;
 			autoTarget = true;
 			controllable = predictTarget = false;
-			bullet = new SapBulletType(){{
-				keepVelocity = false;
-				sapStrength = 0.4F;
-				length = 120.0F;
-				damage = 35.0F;
-				shootEffect = Fx.shootSmall;
-				hitColor = color = NHColor.lightSkyBack;
-				despawnEffect = Fx.none;
-				width = 0.48F;
-				lifetime = 20.0F;
-				knockback = -1.24F;
-			}};
+			bullet = NHBullets.antiAirSap;
 		}};
 		
 		smallCannon = new NHWeapon("cannon"){{
@@ -231,6 +333,82 @@ public class NHUnitTypes implements ContentList{
 	public void load(){
 		loadWeapon();
 		
+		declining = new UnitType("declining"){{
+			weapons.add(mainCannon.copy().setPos(0, -17));
+			weapons.add(mainCannon.copy().setPos(0, 25));
+			weapons.add(mainCannon.copy().setPos(0, -56));
+			
+			Weapon w = new PointDefenseWeapon(NewHorizon.contentName("cannon")){{
+				color = NHColor.lightSkyBack;
+				beamEffect = Fx.chainLightning;
+				reload = 60f;
+				mirror = top = alternate = true;
+				reload = 9.0F;
+				targetInterval = 10.0F;
+				targetSwitchInterval = 15.0F;
+				bullet = new BulletType() {
+					{
+						shootEffect = NHFx.lightningHitSmall(color);
+						hitEffect = NHFx.square45_4_45;
+						maxRange = 120.0F;
+						damage = 300f;
+					}
+				};
+			}};
+			
+			weapons.add(NHWeapon.setPos(w.copy(), 30, -30));
+			weapons.add(NHWeapon.setPos(w.copy(), 36, -35));
+			weapons.add(NHWeapon.setPos(w.copy(), 24, -35));
+			
+			weapons.add(new NHWeapon("laser-cannon"){{
+				mirror = top = alternate = autoTarget = rotate = true;
+				predictTarget = controllable = false;
+				x = 22;
+				y = -50;
+				reload = 12f;
+				recoil = 3f;
+				inaccuracy = 0;
+				shots = 1;
+				rotateSpeed = 25f;
+				shootSound = NHSounds.gauss;
+				bullet = new ShrapnelBulletType(){{
+					lifetime = 45f;
+					length = 200f;
+					damage = 300.0F;
+					status = StatusEffects.shocked;
+					statusDuration = 60f;
+					fromColor = NHColor.lightSkyFront;
+					toColor = NHColor.lightSkyBack;
+					serrationSpaceOffset = 40f;
+					width = 8f;
+					shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
+					smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
+						Draw.color(fromColor, toColor, e.fin());
+						Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
+					}));
+				}};
+			}});
+			
+			abilities.add(new TowardShield(160f, 200f, 20000f, 2000f, 120f, 0.025f, 0, 58));
+			health = 30000;
+			speed = 0.75f;
+			drag = 0.18f;
+			hitSize = 60f;
+			commandRadius = 240f;
+			armor = 30;
+			commandLimit = 3;
+			accel = 0.1f;
+			rotateSpeed = 0.9f;
+			rotateShooting = false;
+			buildSpeed = 6f;
+			
+			trailLength = 70;
+			trailX = 20f;
+			trailY = -40f;
+			trailScl = 4f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+		};
 		
 		ghost = new UnitType("ghost"){{
 			health = 1200;
@@ -239,7 +417,7 @@ public class NHUnitTypes implements ContentList{
 			hitSize = 20f;
 			armor = 6;
 			accel = 0.1f;
-			rotateSpeed = 1.7f;
+			rotateSpeed = 2f;
 			rotateShooting = false;
 			buildSpeed = 3f;
 			
@@ -322,7 +500,7 @@ public class NHUnitTypes implements ContentList{
 			hitSize = 42f;
 			armor = 16f;
 			accel = 0.1f;
-			rotateSpeed = 1.2f;
+			rotateSpeed = 1.6f;
 			rotateShooting = false;
 			buildSpeed = 3f;
 			
@@ -336,7 +514,8 @@ public class NHUnitTypes implements ContentList{
 		
 		collapser = new UnitType("collapser"){{
 				rotateShooting = false;
-				abilities.add(new AimAlarmAbility(), new ForceFieldAbility(180f, 20, 60000, 600));
+				commandRadius = 240f;
+				abilities.add(new AimAlarmAbility(), new ForceFieldAbility(180f, 200, 80000, 900));
 				constructor = EntityMapping.map(3);
 				rotateShooting = false;
 				weapons.add(
@@ -448,7 +627,7 @@ public class NHUnitTypes implements ContentList{
 						accelerateEnd = 0.75f;
 						
 						velocityBegin = 1.85f;
-						velocityEnd = 12f;
+						velocityIncrease = 12f;
 						
 						lifetime = 180f;
 						
@@ -565,7 +744,7 @@ public class NHUnitTypes implements ContentList{
 							b.trail.update(b.x, b.y, trailInterp.apply(b.fin()));
 						}
 						
-						b.vel.setLength(velocityBegin + accelCurve.get(b) * velocityEnd);
+						b.vel.setLength(velocityBegin + func.apply(b.fin()) * velocityIncrease);
 						
 						if(homingPower > 0.0001f && b.time >= homingDelay){
 							Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> ((e.isGrounded() && collidesGround) || (e.isFlying() && collidesAir)) && !b.collided.contains(e.id), t -> collidesGround);
@@ -607,7 +786,7 @@ public class NHUnitTypes implements ContentList{
 			public void init(){
 				super.init();
 				if(trailLength < 0)trailLength = (int)hitSize * 4;
-				if(this.slopeEffect == NHFx.boolSelector)this.slopeEffect = new Effect(30, e -> {
+				if(slopeEffect == NHFx.boolSelector)slopeEffect = new Effect(30, e -> {
 					if(!(e.data instanceof Integer))return;
 					int i = e.data();
 					Draw.color(e.color);
@@ -669,11 +848,6 @@ public class NHUnitTypes implements ContentList{
 			
 			@Override
 			public void drawCell(Unit unit){
-//				Draw.z(Layer.effect + 0.001f);
-//				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) +  Mathf.clamp(unit.hitTime) / 5f);
-//				Lines.stroke(5);
-//
-//				DrawFuncs.circlePercent(unit.x, unit.y, hitSize * 2 * (1 + Mathf.absin(8, 0.15f)), unit.healthf(), 0);
 			}
 			
 			@Override
@@ -1291,6 +1465,7 @@ public class NHUnitTypes implements ContentList{
 		};
 		
 		hurricane = new UnitType("hurricane"){{
+				commandRadius = 240f;
 				constructor = EntityMapping.map(3);
 				weapons.add(
 					new NHWeapon(){{
@@ -1350,7 +1525,7 @@ public class NHUnitTypes implements ContentList{
 							
 							{
 								drawSize = 200;
-								trailLength = 12;
+								trailLength = 20;
 								trailWidth = 3f;
 								hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
 								lifetime = 140f;

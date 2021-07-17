@@ -17,6 +17,7 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.Slider;
 import arc.scene.ui.layout.Table;
+import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
@@ -73,7 +74,6 @@ import static newhorizon.func.TableFs.OFFSET;
 
 public class JumpGate extends Block {
     protected static final ObjectMap<UnitSet, Integer> allSets = new ObjectMap<>();
-    protected static final Seq<UnitSet> all = new Seq<>();
     
     static{
         ClassIDIniter.put(Spawner.class, new ClassIDIniter.Set(Spawner::new));
@@ -92,12 +92,13 @@ public class JumpGate extends Block {
             pointerRegion,
             arrowRegion;
     public Color baseColor;
-    public final Seq<UnitSet> calls = new Seq<>();
+    public final ObjectMap<Integer, UnitSet> calls = new ObjectMap<>();
     public float squareStroke = 2f;
     
     public float cooldownTime = 300f;
     
-    protected static int selectID = -1, selectNum = 0;
+    protected static UnitSet tmpSet;
+    protected static int selectID = 0, selectNum = 0;
     protected static final Vec2 linkVec = new Vec2();
     protected static final Point2 point = new Point2();
     
@@ -115,19 +116,28 @@ public class JumpGate extends Block {
         logicConfigurable = true;
         config(Boolean.class, (JumpGateBuild tile, Boolean i) -> {
             if(i)tile.spawn(tile.getSet());
-            else tile.startBuild(-1, 0);
+            else tile.startBuild(0, 0);
         });
+        
         config(Point2.class, (Cons2<JumpGateBuild, Point2>)JumpGateBuild::linkPos);
-        config(Long.class, (JumpGateBuild tile, Long data) -> {
-            point.set(Point2.unpack(Math.toIntExact(data)));
-            tile.planSpawnID = point.x;
-            tile.planSpawnNum = point.y;
+    
+        /*[0]for command type;[1]for spawn Hash ID;[2]for spawn num */
+        /*
+            [0] -> 0 General Start Spawn
+            [0] -> 1 Setting Building Plan
+            [0] -> ...
+         */
+        config(IntSeq.class, (JumpGateBuild tile, IntSeq seq) -> {
+            if(seq.size < 3)return;
+            switch(seq.get(0)){
+                case 0 : tile.startBuild(seq.get(1), seq.get(2));
+                case 1 : {
+                    tile.planSpawnID = seq.get(1);
+                    tile.planSpawnNum = seq.get(2);
+                }
+            }
         });
-        config(Integer.class, (JumpGateBuild tile, Integer data) -> {
-            point.set(Point2.unpack(data));
-            if(point.x < 0 || !tile.isCalling() || tile.getSet() == null)tile.startBuild(point.x, point.y);
-        });
-        configClear((JumpGateBuild tile) -> tile.startBuild(-1, 0));
+        configClear((JumpGateBuild tile) -> tile.startBuild(0, 0));
     }
     
     @Override
@@ -174,24 +184,38 @@ public class JumpGate extends Block {
     }
     
     public void addSets(UnitSet... sets){
-        calls.addAll(sets);
+        for(UnitSet set : sets){
+            calls.put(set.hashCode(), set);
+        }
     }
 
     @Override
     public void init(){
         super.init();
         if(calls.isEmpty()) throw new IllegalArgumentException("Seq @calls is [red]EMPTY[].");
-        for(UnitSet set : calls){
+        for(UnitSet set : calls.values()){
             allSets.put(set, size);
         }
         
         clipSize = size * tilesize * 4;
         if(adaptable)for(UnitSet set : allSets.keys()){
             if(allSets.get(set) >= size)continue;
-            calls.add(set);
+            calls.put(set.hashCode(), set);
         }
         
-        calls.sort((set1, set2) -> set1.sortIndex[0] - set2.sortIndex[0] == 0 ? set1.sortIndex[1] - set2.sortIndex[1] : set1.sortIndex[0] - set2.sortIndex[0]);
+        Seq<UnitSet> keys = calls.values().toSeq();
+        calls.clear();
+        keys.sort((set1, set2) -> set1.sortIndex[0] - set2.sortIndex[0] == 0 ? set1.sortIndex[1] - set2.sortIndex[1] : set1.sortIndex[0] - set2.sortIndex[0]);
+        for(UnitSet set : keys)calls.put(set.hashCode(), set);
+    }
+    
+    public Seq<Integer> getSortedKeys(){
+        Seq<UnitSet> keys = calls.values().toSeq().sort((set1, set2) -> set1.sortIndex[0] - set2.sortIndex[0] == 0 ? set1.sortIndex[1] - set2.sortIndex[1] : set1.sortIndex[0] - set2.sortIndex[0]);
+        Seq<Integer> hashs = new Seq<>();
+        for(UnitSet set : keys){
+            hashs.add(set.hashCode());
+        }
+        return hashs;
     }
 
     @Override
@@ -204,7 +228,7 @@ public class JumpGate extends Block {
         });
         stats.add(Stat.output, (t) -> {
             t.row().add(Core.bundle.get("editor.spawn") + ":").left().pad(OFFSET).row();
-            for(UnitSet set : calls) {
+            for(UnitSet set : calls.values()) {
                 t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearPartiali, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
             }
         });
@@ -265,9 +289,9 @@ public class JumpGate extends Block {
     }
 
     public class JumpGateBuild extends Building implements Ranged{
-        public int spawnID = -1;
+        public int spawnID = 0;
         public int link = -1;
-        public float buildProgress = 0f;
+        public float buildProgress = 0;
         public float progress;
         public float warmup;
         public boolean jammed;
@@ -277,9 +301,9 @@ public class JumpGate extends Block {
         
         //Local var
         public transient int spawnNum = 1;
-        public int buildingSpawnNum = -1;
+        public int buildingSpawnNum = 0;
         
-        public int planSpawnID = -1;
+        public int planSpawnID = 0;
         public int planSpawnNum = 0;
         
         @Override
@@ -289,15 +313,15 @@ public class JumpGate extends Block {
         }
     
         @Override
-        public Long config(){
-            return (long)point.set(planSpawnID, planSpawnNum).pack();
+        public IntSeq config(){
+            return IntSeq.with(1, planSpawnID, planSpawnNum);
         }
         
         @Override
         public void updateTile(){
             progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 0.5f);
-            if(isCalling() && Units.canCreate(team, getType()) && power.status > 0.5f){
-                buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta();
+            if(!cooling && isCalling() && Units.canCreate(team, getType())){
+                buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta() * warmup;
                 if(buildProgress >= costTime(getSet(), true) && !jammed){
                     spawn(getSet());
                 }
@@ -324,7 +348,7 @@ public class JumpGate extends Block {
                 else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
             }
             
-            if(planSpawnID >= 0 && planSpawnNum > 0 && power.status > 0.5f){
+            if(timer(1, 20) && calls.containsKey(planSpawnID) && planSpawnNum > 0 && power.status > 0.5f && hasConsume(calls.get(planSpawnID), planSpawnNum)){
                 if(!isCalling() && !cooling){
                     startBuild(planSpawnID, planSpawnNum);
                 }
@@ -379,13 +403,14 @@ public class JumpGate extends Block {
             
             dialog.cont.pane(inner ->
                 inner.table(callTable -> {
-                    for(UnitSet set : calls) {
+                    for(Integer hashcode : getSortedKeys()) {
+                        UnitSet set = calls.get(hashcode);
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 Label can = new Label("");
                                 table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(set, false))));
                                 table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core() != null ? core().items : null)).size(LEN);
-                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(point.set(calls.indexOf(set), spawnNum).pack())).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set) || cooling);
+                                table2.button(Icon.add, Styles.clearPartiali, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();
                             Bar unitCurrent = new Bar(
                                 () -> Core.bundle.format("bar.unitcap",
@@ -441,16 +466,16 @@ public class JumpGate extends Block {
                     Slider s = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne), 1, false);
                     s.moved((i) -> selectNum = (int)i);
                     cont.update(() -> {
-                        currentPlan.setText(Core.bundle.get("editor.spawn") + ": [accent]" + planSpawnNum + "[]* [accent]" + (planSpawnID < 0 ? "None" : calls.get(planSpawnID).type.localizedName));
+                        currentPlan.setText(Core.bundle.get("editor.spawn") + ": [accent]" + planSpawnNum + "[]* [accent]" + ((tmpSet = calls.get(planSpawnID)) == null ? "None" : tmpSet.type.localizedName));
                         l.setText("[gray]<" + Core.bundle.get("filter.option.amount") + ": [lightgray]" + selectNum + "[]>");
                         s.setValue(selectNum);
                     });
                     cont.table(t -> {
                         t.pane(table -> {
-                            for(int i = 0; i < calls.size; i++){
-                                int finalI = i;
-                                table.button(new TextureRegionDrawable(calls.get(i).type.fullIcon), Styles.clearTogglePartiali, LEN, () -> selectID = finalI).update(b -> b.setChecked(finalI == selectID));
-                                if(i % 5 == 0) table.row();
+                            int i = 0;
+                            for(int hash : calls.keys()){
+                                table.button(new TextureRegionDrawable(calls.get(hash).type.fullIcon), Styles.clearTogglePartiali, LEN, () -> selectID = hash).update(b -> b.setChecked(hash == selectID));
+                                if(++i % 5 == 0) table.row();
                             }
                         }).grow().row();
                         t.table(in -> {
@@ -463,14 +488,16 @@ public class JumpGate extends Block {
                     }).grow().row();
                     cont.table(t -> {
                         t.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
-                        t.button("@cancel", Icon.cancel, Styles.cleart, () -> configure((long)point.set(-1, 0).pack())).growX().height(LEN);
-                        t.button("@confirm", Icon.cancel, Styles.cleart, () -> configure((long)point.set(selectID, selectNum).pack())).growX().height(LEN);
+                        t.button("@cancel", Icon.cancel, Styles.cleart, () -> configure(IntSeq.with(1, 0, 0))).growX().height(LEN);
+                        t.button("@confirm", Icon.cancel, Styles.cleart, () -> configure(IntSeq.with(1, selectID, selectNum))).growX().height(LEN);
                     }).growX().fillY();
                     addCloseListener();
 
                     keyDown(c -> {
-                        if(c == KeyCode.left) spawnNum = Mathf.clamp(--spawnNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
-                        if(c == KeyCode.right) spawnNum = Mathf.clamp(++spawnNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
+                        if(c == KeyCode.backspace)configure(IntSeq.with(1, 0, 0));
+                        if(c == KeyCode.enter)configure(IntSeq.with(1, selectID, selectNum));
+                        if(c == KeyCode.left)selectNum = Mathf.clamp(--selectNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
+                        if(c == KeyCode.right)selectNum = Mathf.clamp(++selectNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
                     });
                 }}.show()).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN);
             }).fill();
@@ -527,10 +554,10 @@ public class JumpGate extends Block {
             if(!cheating() && core() != null)core().items.remove(ItemStack.mult(getSet().requirements(), buildingSpawnNum));
         }
 
-        public boolean hasConsume(UnitSet set){
+        public boolean hasConsume(UnitSet set, int num){
             if(set == null || cheating())return true;
             if(core() == null)return false;
-            return core().items.has(ItemStack.mult(set.requirements(), spawnNum));
+            return core().items.has(ItemStack.mult(set.requirements(), num));
         }
 
         public float costTime(UnitSet set, boolean buildingParma){
@@ -543,13 +570,22 @@ public class JumpGate extends Block {
         
         public void startBuild(int set, int spawnNum){
             jammed = false;
-            buildProgress = 0;
+            
             if(isCalling())cooling = true;
             
-            if(set < 0 || set >= calls.size){
-                spawnID = -1;
+            if(!calls.keys().toSeq().contains(set, false)){
+                if(isCalling()){
+                    if(core() != null && getSet() != null){
+                        for(ItemStack stack : ItemStack.mult(getSet().requirements(), buildingSpawnNum * (costTime(getSet(), true) - buildProgress) / costTime(getSet(), true))){
+                            core().items.add(stack.item, Math.min(stack.amount, core().getMaximumAccepted(stack.item) - core().items.get(stack.item)));
+                        }
+                    }
+                }
+                spawnID = 0;
+                buildProgress = 0;
             }else{
                 spawnID = set;
+                buildProgress = 1;
                 buildingSpawnNum = spawnNum;
                 consumeItems();
             }
@@ -567,7 +603,7 @@ public class JumpGate extends Block {
             
             if(success){
                 buildProgress = 0;
-                spawnID = -1;
+                spawnID = 0;
                 buildingSpawnNum = spawnNum;
                 jammed = false;
                 cooling = true;
@@ -602,10 +638,12 @@ public class JumpGate extends Block {
             planSpawnNum = read.i();
         }
         
-        public boolean isCalling(){ return spawnID >= 0; }
-        public UnitType getType(){ return calls.get(spawnID).type;}
+        public boolean isCalling(){return calls.containsKey(spawnID);}
+        public UnitType getType(){
+            UnitSet set = calls.get(spawnID);
+            return set == null ? null : set.type;
+        }
         public UnitSet getSet(){
-            if(spawnID < 0 || spawnID >= calls.size)return null;
             return calls.get(spawnID);
         }
         
@@ -783,7 +821,7 @@ public class JumpGate extends Block {
                 Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, rotation() - 90);
             }
     
-            if(can && Core.settings.getBool("enablejumpgatedetails")){
+            if(can && Core.settings.getBool("enableeffectdetails")){
                 for(int i = 0; i < 4; i++){
                     float sin = Mathf.absin(Time.time, 16f, tilesize);
                     float length = (tilesize * 5 + sin) * fout() + tilesize;

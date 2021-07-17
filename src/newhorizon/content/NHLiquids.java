@@ -34,14 +34,14 @@ public class NHLiquids implements ContentList{
 		
 		xenBeta = new Liquid("xen-beta", Color.valueOf("#CAEEFF")){{
 			heatCapacity = 1.1f;
-			explosiveness = 0.5f;
+			explosiveness = 0.3f;
 			viscosity = 0.5f;
 			lightColor = Color.valueOf("#CAEEFF");
 		}};
 
 		xenGamma = new Liquid("xen-gamma", Color.valueOf("#CAEEFF")){{
 			heatCapacity = 1.65f;
-			explosiveness = 1f;
+			explosiveness = 0.6f;
 			viscosity = 0.5f;
 			temperature = 0f;
 			lightColor = Color.valueOf("#CAEEFF");

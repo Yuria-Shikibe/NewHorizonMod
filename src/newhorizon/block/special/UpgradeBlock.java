@@ -14,6 +14,7 @@ import arc.struct.Seq;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.audio.SoundLoop;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -183,7 +184,7 @@ public class UpgradeBlock extends Block {
 		public void updateUpgrading() {
 			upgradeSoundLoop = new SoundLoop(upgradeSound, 1f);
 			upgradeSoundLoop.update(x, y, true);
-			remainTime -= delta() * efficiency();
+			remainTime -= delta() * efficiency() * Vars.state.rules.buildSpeedMultiplier;
 		}
 		
 		@Override

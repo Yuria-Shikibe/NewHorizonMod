@@ -219,35 +219,16 @@ public class TableFs{
     
     public static void tableMain(){
         if(headless || net.server())return;
+        
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
+        starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f);
+    
         starter.update(() -> {
-            if(disableUI)starter.color.a = 0;
-            else starter.color.a = 1;
-            
-            if(Vars.state.isMenu() || net.client()){
-                starter.color.a = 0;
-                starter.setPosition(-starter.getWidth(), 0);
-            }else{
-                starter.color.a = 1;
-                starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f);
-                
-                Unit u = player.unit();
-                if(autoMove && u != null){
-                    if(u.dst(point) > tilesize){
-                        u.moveAt(u.vel().trns(u.angleTo(point),Mathf.lerp(1.0F, (u.type.canBoost && onBoost) ? u.type.boostMultiplier : 1.0F, u.elevation) * u.speed()));
-                        if(u.type.canBoost && onBoost)u.elevation = 1.0F;
-                    }else{
-                        point.set(-1, -1);
-                        setStr();
-                        pTable.remove();
-                        floatTable = false;
-                        setText();
-                        autoMove = false;
-                        onBoost = false;
-                    }
-                }
-            }
+            starter.top().visible(() -> !state.isMenu() && ui.hudfrag.shown && !net.active());
+            if(!state.isMenu() && ui.hudfrag.shown && !net.active())starter.touchable = Touchable.enabled;
+            else starter.touchable = Touchable.disabled;
         });
+        
         Player player = Vars.player;
         
         starter.table(table -> table.button(Icon.admin, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
@@ -274,51 +255,7 @@ public class TableFs{
                 cont.table(t -> t.add(uT) ).growX().fillY().row();
                 cont.table(t -> t.add(unitTable) ).height(mobile ? inner.getHeight() : unitTable.getHeight()).growX();
             }).growX().height(mobile ? inner.getHeight() : Core.graphics.getHeight() / 1.3f);
-        }).size(LEN).disabled(b -> Vars.net.client() || isInner || !NHSetting.getBool("@active.admin-panel")).row()).right().padTop(OFFSET).size(LEN).row();
-        starter.table(table -> table.button(Icon.move, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
-            Table inner = new Inner();
-            inner.table(Tex.button, t -> {
-                final float WIDTH = LEN * 2.5f;
-                t.table(bt -> {
-                    bt.button("@confirm", Icon.export, () -> {
-                        try{
-                            point.set(Float.parseFloat(sx) * tilesize, Float.parseFloat(sy) * tilesize);
-                            setFloatP();
-                        }catch(NumberFormatException err){
-                            point.set(player.x, player.y);
-                        }
-                    }).size(WIDTH, LEN).left().padBottom(OFFSET * 5f);
-                    bt.button("@cancel", Icon.cancel, () -> {
-                        point.set(-1, -1);
-                        setStr();
-                        pTable.remove();
-                        autoMove = false;
-                        setText();
-                    }).disabled(b -> !pointValid()).size(WIDTH, LEN).padLeft(WIDTH).right().padBottom(OFFSET * 5f);
-                }).height(LEN).padTop(OFFSET).row();
-                
-                t.add("Set Move Target").row();
-                t.table(Tex.clear, t2 -> {
-                    t2.add("[accent]X: ").left();
-                    t2.add(xArea).left();
-                    t2.update(() -> sx = xArea.getText());
-                }).row();
-                t.table(Tex.clear, t2 -> {
-                    t2.add("[accent]Y: ").left();
-                    t2.add(yArea).left();
-                    t2.update(() -> sy = yArea.getText());
-                }).row();
-                
-                t.table(bt -> {
-                    bt.button("@move", Icon.rightOpen, toggletAccent, () -> {
-                        autoMove = !autoMove;
-                        if(player.unit() != null)player.unit().lookAt(point);
-                    }).disabled(b -> !pointValid()).update(b -> b.setChecked(autoMove)).size(WIDTH, LEN).left().padTop(OFFSET * 2.75f);
-                    bt.button("@boost", Icon.up, toggletAccent, () -> onBoost = !onBoost).disabled(b -> !autoMove || !Vars.player.unit().type.canBoost).update(b -> b.setChecked(onBoost)).size(WIDTH, LEN).padLeft(WIDTH).right().padTop(OFFSET * 2.75f);
-                }).height(LEN).padTop(OFFSET);
-                
-            }).grow().right();
-        }).size(LEN).disabled(b -> Vars.net.client() || isInner).row()).right().padTop(OFFSET).size(LEN);
+        }).size(LEN).disabled(b -> isInner || !NHSetting.getBool("@active.admin-panel")).row()).right().padTop(OFFSET).size(LEN).row();
         Core.scene.root.addChildAt(1, starter);
     }
     

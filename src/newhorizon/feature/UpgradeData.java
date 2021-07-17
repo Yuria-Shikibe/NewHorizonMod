@@ -117,7 +117,7 @@ public class UpgradeData{
 		public boolean isUnlocked, selected;
 		
 		public float costTime() {
-			return costTime * (1 + (isLeveled ? level * timeCostParma : 0)) * Vars.state.rules.buildSpeedMultiplier;
+			return costTime * (1 + (isLeveled ? level * timeCostParma : 0));
 		}
 		
 		public boolean isMaxLevel(){ return !isLeveled || level >= UpgradeData.this.maxLevel; }

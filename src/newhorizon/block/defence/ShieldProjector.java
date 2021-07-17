@@ -153,7 +153,7 @@ public class ShieldProjector extends CommandableBlock{
 		public void setTarget(Point2 point2){
 			NHVars.world.commandPos = target = point2.pack();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build != null && build.team == team && groupBoolf.get(build)){
+				if(build != null && build.team == team && groupBoolf.get(this, build)){
 					build.overlap();
 				}
 			}
@@ -224,7 +224,7 @@ public class ShieldProjector extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build.team == team && groupBoolf.get(build) && build.canCommand() && !build.isPreparing()){
+				if(build.team == team && groupBoolf.get(this, build) && build.canCommand() && !build.isPreparing()){
 					build.command(pos);
 					participants.add(build);
 					build.lastAccessed(Iconc.modeAttack + "");
@@ -264,7 +264,7 @@ public class ShieldProjector extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build != this && build != null && build.team == team && groupBoolf.get(build) && build.canCommand()){
+				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand()){
 					builds.add(build);
 					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, t.x, t.y);
 					range = Math.max(range, build.spread());

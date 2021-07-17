@@ -134,6 +134,8 @@ If you find that your device cannot afford it, open the mod file folder and find
 ---
 ![jump-gate](assets/sprites/blocks/special/jump-gate.png)
 ![jump-gate-junior](assets/sprites/blocks/special/jump-gate-junior.png)
+![jump-gate-primary](assets/sprites/blocks/special/jump-gate-primary.png)
+
 - **_JumpGate:_** Senior Jump Gate; Junior Jump Gate
 
 ###### Use Steps:

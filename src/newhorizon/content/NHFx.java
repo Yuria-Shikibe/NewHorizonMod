@@ -11,7 +11,6 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Position;
-import arc.math.geom.Vec3;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -24,7 +23,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import newhorizon.block.special.CommandableBlock;
-import newhorizon.effects.EffectTrail;
 import newhorizon.func.DrawFuncs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -70,8 +68,6 @@ public class NHFx{
 	}
 	
 	public static Effect railShoot(Color color, float length, float width, float lifetime, float spacing){
-		
-		
 		return new Effect(lifetime, length * 2f, e -> {
 			TextureRegion arrowRegion = NHContent.arrowRegion;
 			
@@ -91,7 +87,7 @@ public class NHFx{
 			for(int i : Mathf.signs){
 				Lines.lineAngle(e.x + Tmp.v1.x * i, e.y + Tmp.v1.y * i, e.rotation, length * (0.75f + railF / 4f) * Mathf.curve(e.fout(Interp.pow5Out), 0f, 0.1f));
 			}
-		});
+		}).followParent(true);
 	}
 	
 	@Contract("_, _, _, _ -> new")
@@ -129,7 +125,7 @@ public class NHFx{
 		return get("lightningHitSmall", color, new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
 			randLenVectors(e.id, 5, 18 * e.fin(), (x, y) -> {
-				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 2);
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 6 + 2);
 				Drawf.light(e.x + x, e.y + y, e.fin() * 12 * e.fout(0.25f), color, 0.7f);
 			});
 		}));
@@ -636,6 +632,12 @@ public class NHFx{
 				Drawf.light(e.x + x, e.y + y, e.fout() * (length / 12), NHColor.darkEnrColor, 0.7f);
 			});
 		}),
+	
+		circleShieldBreak = new Effect(30f, 600f, e -> {
+			color(e.color);
+			stroke(3f * e.fout());
+			Lines.circle(e.x, e.y, e.rotation + e.fin() * 5f);
+		}).followParent(true),
 		
 		darkEnergySmoke = new Effect(25, e -> {
 			color(NHColor.darkEnrColor);
@@ -792,31 +794,7 @@ public class NHFx{
 			
 			color(Color.gray, Color.darkGray, e.fin());
 			randLenVectors(e.id, 3, 3 + 28 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f));
-		}),
-	
-		disappearEffect = new Effect(EffectTrail.LIFETIME, EffectTrail.DRAW_SIZE, e -> {
-			if (!(e.data instanceof EffectTrail.EffectTrailData))return;
-			EffectTrail.EffectTrailData data = e.data();
-			
-			Draw.color(e.color);
-			Fill.circle(e.x, e.y, data.width * 1.1f * e.fout());
-			Draw.reset();
-			for (int i = 0; i < data.points.size - 1; i++) {
-				
-				Vec3 c = data.points.get(i);
-				Vec3 n = data.points.get(i + 1);
-				float sizeP = data.width * e.fout() / e.rotation;
-				
-				float
-						cx = Mathf.sin(c.z) * i * sizeP,
-						cy = Mathf.cos(c.z) * i * sizeP,
-						nx = Mathf.sin(n.z) * (i + 1) * sizeP,
-						ny = Mathf.cos(n.z) * (i + 1) * sizeP;
-				
-				Draw.color(e.color, data.toColor, (float)(i / data.points.size));
-				Fill.quad(c.x - cx, c.y - cy, c.x + cx, c.y + cy, n.x + nx, n.y + ny, n.x - nx, n.y - ny);
-			}
-		}).layer(Layer.bullet - 0.001f);
+		});
 }
 
 

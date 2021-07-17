@@ -17,6 +17,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.core.World;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -29,12 +30,12 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.graphics.Trail;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
-import newhorizon.effects.EffectTrail;
 import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.tilesize;
@@ -149,7 +150,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 		public Vec2 target;
 		public float damage, radius;
 		public transient float size;
-		public EffectTrail trail;
+		public Trail trail;
 		
 		public BombEntity(){this(Team.derelict, 50f, Vec2.ZERO, -1, -1, false);}
 		
@@ -160,7 +161,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			this.x = from.getX();
 			this.y = from.getY();
 			target = new Vec2(x, y);
-			trail = new EffectTrail(16, width, baseColor, Pal.gray);
+			trail = new Trail(16);
 		}
 		
 		public BombEntity init(Team team, float lifetime, Position from, float x, float y, boolean parent){
@@ -170,7 +171,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			this.x = from.getX();
 			this.y = from.getY();
 			target = new Vec2(x, y);
-			trail = new EffectTrail(16, width, baseColor, Pal.gray);
+			trail = new Trail(16);
 			return this;
 		}
 		
@@ -207,7 +208,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			}
 			
 			Draw.alpha(alpha);
-			trail.draw();
+			trail.draw(baseColor, width);
 			Draw.color(baseColor);
 			if(parent) for(int i = 0; i < 4; i++){
 				Drawf.tri(cx, cy, 6f, 40f * (rad + scale - 1f) * Mathf.curve(fout(), 0, 0.5f), i * 90f + rotation);
@@ -244,8 +245,6 @@ public class BombLauncher extends CommandableAttackerBlock{
 			time = Math.min(time + Time.delta, lifetime);
 			trail.update(cx(), cy());
 			if(Mathf.chance(0.2))trailEffect.at(cx(), cy(), size, baseColor);
-			if(!parent) trail.width = width * Mathf.curve(fin(Interp.pow2In), 0.35f, 0.75f);
-			else trail.width = width * Mathf.curve(fout(Interp.pow2In), 0, 0.35f);
 			if(time >= lifetime){
 				remove();
 			}
@@ -253,7 +252,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 		
 		@Override
 		public void remove(){
-			trail.disappear();
+			Fx.trailFade.at(x, y, width, baseColor, trail.copy());
 			
 			if(parent){
 				BombEntity next = Pools.obtain(BombEntity.class, BombEntity::new);

@@ -53,6 +53,7 @@ import newhorizon.NewHorizon;
 import newhorizon.block.adapt.AdaptImpactReactor;
 import newhorizon.block.adapt.AdaptUnloader;
 import newhorizon.block.adapt.DisposableBattery;
+import newhorizon.block.adapt.DisposePowerNode;
 import newhorizon.block.defence.*;
 import newhorizon.block.distribution.TowardGate;
 import newhorizon.block.drawer.DrawFactories;
@@ -108,7 +109,7 @@ public class NHBlocks implements ContentList {
 		largeMendProjector, shapedWall, assignOverdrive,
 		//Special
 		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
-		disposePowerVoid,
+		disposePowerVoid, disposePowerNode,
 	
 		//Env
 		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum
@@ -128,6 +129,7 @@ public class NHBlocks implements ContentList {
 			lightRadius = 32f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
 			
+			attributes.set(Attribute.heat, 0.3f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -148,6 +150,7 @@ public class NHBlocks implements ContentList {
 			liquidMultiplier = 2f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
 			
+			attributes.set(Attribute.heat, 0.4f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -180,7 +183,7 @@ public class NHBlocks implements ContentList {
 			blendGroup = metalGround;
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
-			attributes.set(Attribute.heat, 0.1f);
+			attributes.set(Attribute.heat, 0.2f);
 			attributes.set(Attribute.light, 0);
 			attributes.set(Attribute.spores, -1f);
 			walkSound = NHSounds.metalWalk;
@@ -897,7 +900,7 @@ public class NHBlocks implements ContentList {
 				trailEffect = NHFx.polyTrail;
 				drawSize = 120f;
 				
-				velocityEnd = 25f;
+				velocityIncrease = 25f;
 				accelerateBegin = 0f;
 				accelerateEnd = 0.65f;
 				
@@ -1798,6 +1801,9 @@ public class NHBlocks implements ContentList {
 				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
 					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 300, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 500)
 				),
+				new UnitSet(NHUnitTypes.declining, new byte[]{NHUnitTypes.NAVY_LINE_1, 5}, 420 * 60f,
+						with(NHItems.setonAlloy, 500, NHItems.irayrondPanel, 300, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300)
+				),
 				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
 					with(NHItems.setonAlloy, 300, NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 500, NHItems.fusionEnergy, 150)
 				)
@@ -1812,6 +1818,18 @@ public class NHBlocks implements ContentList {
 			rebuildable = false;
 			requirements(Category.power, BuildVisibility.sandboxOnly, with());
 			alwaysUnlocked = true;
+		}};
+		
+		disposePowerNode = new DisposePowerNode("dispose-power-node"){{
+			size = 1;
+			rebuildable = false;
+			requirements(Category.power, BuildVisibility.sandboxOnly, with());
+			alwaysUnlocked = true;
+			laserRange = 800f;
+			clipSize = 1700f;
+			maxNodes = 5;
+			laserColor1 = NHColor.lightSkyFront;
+			laserColor2 = NHColor.lightSkyBack;
 		}};
 	}
 }

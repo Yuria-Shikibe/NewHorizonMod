@@ -32,14 +32,16 @@ public class AssignOverdrive extends OverdriveProjector{
 		configurable = true;
 		saveConfig = saveData = update = true;
 		sync = true;
+		solid = true;
+		hasItems = true;
+		hasPower = true;
 		config(Integer.class, (Cons2<AssignOverdriveBuild, Integer>)AssignOverdriveBuild::linkPos);
 		config(Point2.class, (Cons2<AssignOverdriveBuild, Point2>)AssignOverdriveBuild::linkPos);
-//		config(Point2[].class, (entity, point2s) -> {
-//			for(Point2 p : point2s){
-//				entity.configure(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
-//			}
-//		});
-//
+		config(Point2[].class, (AssignOverdriveBuild entity, Point2[] point2s) -> {
+			for(Point2 p : point2s){
+				entity.configure(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
+			}
+		});
 	}
 	
 	@Override
@@ -62,14 +64,14 @@ public class AssignOverdrive extends OverdriveProjector{
 		protected float smoothEfficiency;
 		protected IntSeq targets = new IntSeq(maxLink);
 		
-//		@Override
-//		public Point2[] config(){
-//			Point2[] out = new Point2[targets.size];
-//			for(int i = 0; i < out.length; i++){
-//				out[i] = Point2.unpack(targets.get(i)).sub(tile.x, tile.y);
-//			}
-//			return out;
-//		}
+		@Override
+		public Point2[] config(){
+			Point2[] out = new Point2[targets.size];
+			for(int i = 0; i < out.length; i++){
+				out[i] = Point2.unpack(targets.get(i)).sub(tile.x, tile.y);
+			}
+			return out;
+		}
 		
 		@Override
 		public void draw(){

@@ -1,6 +1,7 @@
 package newhorizon.units;
 
 import arc.Core;
+import mindustry.entities.bullet.BulletType;
 import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
 
@@ -23,6 +24,11 @@ public class NHWeapon extends Weapon{
 		this.region = Core.atlas.find(this.name, Core.atlas.find("clear"));
 		this.heatRegion = Core.atlas.find(this.name + "-heat");
 		this.outlineRegion = Core.atlas.find(this.name + "-outline");
+	}
+	
+	public NHWeapon setInaccuracy(float inaccuracy){
+		this.inaccuracy = inaccuracy;
+		return this;
 	}
 	
 	public NHWeapon setAutoTarget(boolean active){
@@ -50,5 +56,16 @@ public class NHWeapon extends Weapon{
 	public NHWeapon setDelay(float delay){
 		this.firstShotDelay = delay;
 		return this;
+	}
+	
+	public NHWeapon setType(BulletType type){
+		bullet = type;
+		return this;
+	}
+	
+	public static Weapon setPos(Weapon weapon, float x, float y){
+		weapon.x = x;
+		weapon.y = y;
+		return weapon;
 	}
 }

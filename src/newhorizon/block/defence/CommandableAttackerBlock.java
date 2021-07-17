@@ -118,7 +118,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		public void setTarget(Point2 p){
 			NHVars.world.commandPos = target = p.pack();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build != null && build.team == team && groupBoolf.get(build)){
+				if(build != null && build.team == team && groupBoolf.get(this, build)){
 					build.overlap();
 				}
 			}
@@ -199,7 +199,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build != this && build != null && build.team == team && groupBoolf.get(build) && build.canCommand()){
+				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand()){
 					builds.add(build);
 					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
 					realSpread = Math.max(realSpread, build.spread());
@@ -232,7 +232,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build.team == team && groupBoolf.get(build) && build.canCommand() && !build.isPreparing()){
+				if(build.team == team && groupBoolf.get(this, build) && build.canCommand() && !build.isPreparing()){
 					build.command(pos);
 					participants.add(build);
 					build.lastAccessed(Iconc.modeAttack + "");

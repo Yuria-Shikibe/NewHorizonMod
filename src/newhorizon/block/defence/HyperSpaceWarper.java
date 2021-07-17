@@ -34,6 +34,7 @@ import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.graphics.Trail;
 import mindustry.io.TypeIO;
 import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
@@ -48,7 +49,6 @@ import newhorizon.content.NHBlocks;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
-import newhorizon.effects.EffectTrail;
 import newhorizon.feature.NHBaseEntity;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.ClassIDIniter;
@@ -425,7 +425,7 @@ public class HyperSpaceWarper extends Block{
 		
 		public transient Vec2 vel = new Vec2();
 		
-		public EffectTrail trail = new EffectTrail();
+		public Trail trail = new Trail(1);
 		
 		protected boolean dumped = false, onMove = false, contained, adjusted, intercepted = false, complete = false;
 		protected float time = 0, lifetime = 540f,surviveTime = 0, surviveLifetime = 6000;
@@ -439,7 +439,7 @@ public class HyperSpaceWarper extends Block{
 			this.to = to;
 			team(unit.team());
 			contained = toCarry != null;
-			trail = new EffectTrail(60, 2.5f, team.color, team.color);
+			trail = new Trail(60);
 		}
 		
 		@Override
@@ -451,9 +451,8 @@ public class HyperSpaceWarper extends Block{
 		@Override
 		public void draw(){
 			Draw.z(Layer.effect);
-			if(((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2)) && onGoing && trail.points.any()){
-				Drawf.light(team, x, y, trail.points.first().x, trail.points.first().y, trail.width * 2.5f, team.color, 0.6f);
-				trail.draw();
+			if(((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2)) && onGoing){
+				trail.draw(team.color, 4f);
 			}
 			
 			if(!onMove && team != null)Drawf.light(team, this, size * fslope(), team.color, 0.8f);
@@ -495,7 +494,7 @@ public class HyperSpaceWarper extends Block{
 			unit.remove();
 			toCarry = new UnitPayload(unit);
 			Fx.unitPickup.at(unit);
-			if(Vars.net.client()) {
+			if(Vars.net.client()){
 				Vars.netClient.clearRemovedEntity(unit.id);
 			}
 		}

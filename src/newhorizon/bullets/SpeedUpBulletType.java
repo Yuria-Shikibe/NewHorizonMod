@@ -1,19 +1,17 @@
 package newhorizon.bullets;
 
 import arc.math.Interp;
-import arc.math.Mathf;
+import arc.struct.FloatSeq;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
-import newhorizon.interfaces.Curve;
 
 public class SpeedUpBulletType extends BasicBulletType{
 	public float velocityBegin = -1;
-	public float velocityEnd = -1;
+	public float velocityIncrease = -1;
 	public float accelerateBegin = 0.1f;
 	public float accelerateEnd = 0.6f;
 	
 	public Interp func = Interp.linear;
-	public Curve<Bullet> accelCurve;
 	
 	public void setDisableAccel(){
 		accelerateBegin = 10;
@@ -33,20 +31,23 @@ public class SpeedUpBulletType extends BasicBulletType{
 	
 	@Override
 	public void init(){
-		super.init();
-		
 		if(accelerateBegin > 1)return;
 		
 		if(velocityBegin < 0)velocityBegin = speed;
-		if(velocityEnd < 0)velocityEnd = speed;
+		if(velocityIncrease < 0) velocityIncrease = speed;
 		
-		if(accelCurve == null)accelCurve = b -> Mathf.curve(b.fin(func), accelerateBegin, accelerateEnd);
-		speed = (velocityBegin * accelerateBegin + (velocityBegin + velocityEnd) / 2f * Mathf.clamp(accelerateEnd - accelerateBegin) + velocityEnd * (1 - accelerateEnd));
+		FloatSeq speeds = new FloatSeq();
+		for(float i = 0; i < 1; i += 0.05f){
+			speeds.add(velocityBegin + func.apply(i) * velocityIncrease);
+		}
+		speed = speeds.sum() / speeds.size;
+		
+		super.init();
 	}
 	
 	@Override
 	public void update(Bullet b){
-		if(accelerateBegin < 1)b.vel.setLength(velocityBegin + accelCurve.get(b) * velocityEnd);
+		if(accelerateBegin < 1)b.vel.setLength(velocityBegin + func.apply(b.fin()) * velocityIncrease);
 		super.update(b);
 	}
 }

@@ -18,6 +18,8 @@ import java.util.Arrays;
 
 public class NHOverride{
 	public static void load(){
+		Fx.trailFade.clip = 2000;
+		
 		Blocks.coreFoundation.health *= 5;
 		Blocks.coreNucleus.health *= 5;
 		Blocks.coreShard.health *= 5;

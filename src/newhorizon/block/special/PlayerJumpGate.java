@@ -143,6 +143,8 @@ public class PlayerJumpGate extends Block{
 					Fx.spawn.at(target);
 				});
 			}
+			
+			if(mobile && Vars.player == player)Core.camera.position.set(target);
 		}
 		
 		@Override

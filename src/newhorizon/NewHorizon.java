@@ -58,11 +58,8 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-				NHBlocks.unitIniter, NHBlocks.disposePowerVoid, NHBlocks.remoteStorage,
-				NHBlocks.metalGround, NHBlocks.metalGroundQuantum, NHBlocks.metalTower, NHBlocks.metalUnit, NHBlocks.quantumField, NHBlocks.quantumFieldDeep,
-				NHLiquids.quantumLiquid,
-				NHSectorPreset.outpost,
-				NHPlanets.midantha
+			NHBlocks.disposePowerNode,
+			NHUnitTypes.declining
 		};
 	}
 	

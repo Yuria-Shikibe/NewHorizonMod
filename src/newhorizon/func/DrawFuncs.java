@@ -65,6 +65,7 @@ public class DrawFuncs {
             Lines.line(x - layout.width / 2.0F - 2.0F, dy + y, x + layout.width / 2.0F + 1.5F, dy + y);
             Lines.stroke(1.0F, color);
             Lines.line(x - layout.width / 2.0F - 2.0F, dy + y, x + layout.width / 2.0F + 1.5F, dy + y);
+            Draw.color();
         }
     
         font.setUseIntegerPositions(ints);
@@ -93,6 +94,9 @@ public class DrawFuncs {
         
         int i;
         
+        vec21.trns(angle, rad);
+        Fill.circle(x + vec21.x, y + vec21.y, Lines.getStroke() / 2f);
+        
         for(i = 0; i < sides * p - 1; ++i){
             float a = space * (float)i + angle;
             float cos = Mathf.cosDeg(a);
@@ -109,7 +113,7 @@ public class DrawFuncs {
         float sin2 = Mathf.sinDeg(a + space);
         float f = sides * p - i;
         vec21.trns(a, 0, len * (f - 1));
-    
+        Fill.circle(x + rad * cos2 + vec21.x, y + rad * sin2 + vec21.y, Lines.getStroke() / 2f);
         Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2 + vec21.x, y + r1 * sin2 + vec21.y, x + r2 * cos2 + vec21.x, y + r2 * sin2 + vec21.y, x + r2 * cos, y + r2 * sin);
     }
     

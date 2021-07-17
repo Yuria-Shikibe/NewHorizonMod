@@ -92,6 +92,7 @@ public class NHTechTree implements ContentList {
         
         addUnit(Blocks.navalFactory, NHUnitTypes.ghost);
         addUnit(NHUnitTypes.ghost, NHUnitTypes.zarkov);
+        addUnit(NHUnitTypes.zarkov, NHUnitTypes.declining);
         
         addUnit(NHBlocks.darkEnergyFactory, NHUnitTypes.guardian);
         

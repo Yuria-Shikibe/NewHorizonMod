@@ -47,13 +47,13 @@ public class NHSetting{
 			}
 		}
 		
-		SettingEntry.add("@active.override", String.valueOf(true), true);
+		SettingEntry.add("@active.override", String.valueOf(false), true);
 		SettingEntry.add("@active.advance-load*", String.valueOf(false), true);
 		SettingEntry.add("@active.tool-panel*", String.valueOf(false), true);
 	}
  
 	public static void loadSettings(){
-		Vars.ui.settings.graphics.checkPref("enablejumpgatedetails", true);
+		Vars.ui.settings.graphics.checkPref("enableeffectdetails", true);
 	}
 	
 	public static class SettingEntry{

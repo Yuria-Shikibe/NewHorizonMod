@@ -41,54 +41,10 @@ public class NHBullets implements ContentList{
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrLightning, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile, collapserBullet, collapserLaserSmall,
-		strikeMissile, boltGene, empFrag, empBlot2, empBlot3;
+		strikeMissile, boltGene, empFrag, empBlot2, empBlot3, antiAirSap;
 		
 	
 	public void loadFragType(){
-		BulletType
-		collapserLaserSmall = new AdaptedContinuousLaserBulletType(200){
-			{
-				lightColor = hitColor = NHColor.thurmixRed;
-				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
-				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
-				shake = 3;
-				colors = new Color[]{hitColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), hitColor.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.thurmixRedLight, Color.white};
-				width = 5f;
-				length = 650f;
-				oscScl = 0.4f;
-				oscMag = 1.5f;
-				lifetime = 160f;
-				hitEffect = NHFx.instHit(hitColor, 2, 60f);
-				shootEffect = Fx.none;
-				smokeEffect = NHFx.hugeSmoke;
-			}
-			
-			@Override
-			public void draw(Bullet b){
-				super.draw(b);
-				float f = Mathf.clamp(b.time > b.lifetime - fadeTime ? 1.0F - (b.time - (lifetime - fadeTime)) / fadeTime : 1.0F);
-				color(hitColor);
-				Fill.circle(b.x, b.y, (width + 2f) * f);
-				for(int i : Mathf.signs){
-					for(int j : Mathf.signs){
-						color(hitColor);
-						Drawf.tri(b.x, b.y, (width * 1.25f) * f, 86f + Mathf.absin(Time.time * j, 6f, 20f) * f, 90 + 90 * i + Time.time * j);
-					}
-				}
-				
-				for(int i : Mathf.signs){
-					for(int j : Mathf.signs){
-						color(Color.white);
-						Drawf.tri(b.x, b.y, (width / 2f) * f, 63f + Mathf.absin(Time.time * j, 6f, 12f) * f, 90 + 90 * i + Time.time * j);
-					}
-				}
-				
-				color(Color.white);
-				Fill.circle(b.x, b.y, (width - 2f) * f);
-				Draw.reset();
-			}
-		};
-		
 		collapserBullet = new LightningLinkerBulletType(){{
 			range = 500f;
 			drawSize = 300f;
@@ -171,6 +127,20 @@ public class NHBullets implements ContentList{
 		STRIKE = NewHorizon.contentName("strike");
 		
 		loadFragType();
+		
+		antiAirSap = new SapBulletType(){{
+			keepVelocity = false;
+			sapStrength = 0.4F;
+			length = 120.0F;
+			damage = 35.0F;
+			shootEffect = Fx.shootSmall;
+			hitColor = color = NHColor.lightSkyBack;
+			despawnEffect = Fx.none;
+			width = 0.48F;
+			lifetime = 20.0F;
+			knockback = -1.24F;
+			status = StatusEffects.slow;
+		}};
 		
 		artilleryIrd = new AdaptedArtilleryBulletType(5f, 200f, "large-bomb"){{
 			collidesTiles = collidesGround = true;
@@ -285,7 +255,7 @@ public class NHBullets implements ContentList{
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
-			velocityBegin = velocityEnd = 1f;
+			velocityBegin = velocityIncrease = 1f;
 			trailInterval = 5f;
 			trailWidth = 3f;
 			trailLength = 50;
@@ -306,7 +276,7 @@ public class NHBullets implements ContentList{
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
-			velocityBegin = velocityEnd = 6f;
+			velocityBegin = velocityIncrease = 6f;
 			
 			trailWidth = 3f;
 			trailLength = 15;
@@ -331,7 +301,7 @@ public class NHBullets implements ContentList{
 			lightningLengthRand = lightningLength = 8;
 			splashDamageRadius = 60f;
 			splashDamage = lightningDamage = 0.5f * damage;
-			velocityBegin = velocityEnd = 1f;
+			velocityBegin = velocityIncrease = 1f;
 			trailColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.blue, 0.15f);
 			frontColor = Color.white;
 			
@@ -361,7 +331,7 @@ public class NHBullets implements ContentList{
 			lightningCone = 360;
 			lightningLengthRand = lightningLength = 12;
 			splashDamageRadius = 80f;
-			splashDamage = damage / 2;
+			splashDamage = damage;
 			lightningDamage = damage / 8;
 			
 			spin = 4f;
@@ -500,7 +470,7 @@ public class NHBullets implements ContentList{
 			trailChance = 0;
 			pierce = pierceBuilding = true;
 			velocityBegin = 0.25f;
-			velocityEnd = 8;
+			velocityIncrease = 8;
 			accelerateBegin = 0.05f;
 			accelerateEnd = 0.95f;
 			lifetime = 140f;
@@ -661,7 +631,7 @@ public class NHBullets implements ContentList{
 				buildingDamageMultiplier = 3.5f;
 				keepVelocity = false;
 				
-				velocityEnd = 4f;
+				velocityIncrease = 4f;
 				accelerateBegin = 0.01f;
 				accelerateEnd = 0.9f;
 				
@@ -882,8 +852,8 @@ public class NHBullets implements ContentList{
 			boltNum = 1;
 		}};
 		
-		supSky = new PosLightningType(135f){{
-			lightningColor = NHColor.lightSkyBack;
+		supSky = new PosLightningType(65f){{
+			lightningColor = hitColor = NHColor.lightSkyBack;
 			maxRange = 250f;
 		}};
 		
@@ -1008,7 +978,7 @@ public class NHBullets implements ContentList{
 			ammoMultiplier = 4f;
 			accelerateBegin = 0.1f;
 			accelerateEnd = 0.85f;
-			velocityEnd = 14f;
+			velocityIncrease = 14f;
 			hitShake = despawnShake = 2f;
 			lightning = 3;
 			lightningCone = 360;
@@ -1042,7 +1012,7 @@ public class NHBullets implements ContentList{
 			ammoMultiplier = 8f;
 			accelerateBegin = 0.1f;
 			accelerateEnd = 0.85f;
-			velocityEnd = 18f;
+			velocityIncrease = 18f;
 			hitShake = despawnShake = 5f;
 			lightning = 3;
 			lightningCone = 360;
