@@ -39,7 +39,7 @@ public class AssignOverdrive extends OverdriveProjector{
 		config(Point2.class, (Cons2<AssignOverdriveBuild, Point2>)AssignOverdriveBuild::linkPos);
 		config(Point2[].class, (AssignOverdriveBuild entity, Point2[] point2s) -> {
 			for(Point2 p : point2s){
-				entity.configure(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
+				entity.linkPos(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
 			}
 		});
 	}
