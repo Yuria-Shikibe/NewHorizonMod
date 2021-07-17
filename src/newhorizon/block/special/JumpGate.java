@@ -129,12 +129,11 @@ public class JumpGate extends Block {
          */
         config(IntSeq.class, (JumpGateBuild tile, IntSeq seq) -> {
             if(seq.size < 3)return;
-            switch(seq.get(0)){
-                case 0 : tile.startBuild(seq.get(1), seq.get(2));
-                case 1 : {
-                    tile.planSpawnID = seq.get(1);
-                    tile.planSpawnNum = seq.get(2);
-                }
+            if(seq.get(0) == 0){
+                tile.startBuild(seq.get(1), seq.get(2));
+            }else{
+                tile.planSpawnID = seq.get(1);
+                tile.planSpawnNum = seq.get(2);
             }
         });
         configClear((JumpGateBuild tile) -> tile.startBuild(0, 0));
