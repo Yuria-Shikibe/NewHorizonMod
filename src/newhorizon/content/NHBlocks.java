@@ -124,7 +124,6 @@ public class NHBlocks implements ContentList {
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			attributes.set(Attribute.light, 2f);
-			updateEffect = status.effect;
 			emitLight = true;
 			lightRadius = 32f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
@@ -144,7 +143,6 @@ public class NHBlocks implements ContentList {
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			attributes.set(Attribute.light, 3f);
-			updateEffect = status.effect;
 			emitLight = true;
 			lightRadius = 40f;
 			liquidMultiplier = 2f;
