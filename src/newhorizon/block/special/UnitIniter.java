@@ -55,7 +55,7 @@ public class UnitIniter extends Block{
 			String[] s = unit.split(divKey);
 			if(s.length < 3)return;
 			build.angle = Float.parseFloat(s[1]);
-			build.delay = Float.parseFloat(s[3]);
+			build.delay = Float.parseFloat(s[2]);
 			build.toSpawnType = content.getByName(ContentType.unit, s[0]);
 		});
 	}

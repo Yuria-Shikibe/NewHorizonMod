@@ -26,7 +26,7 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 			outColor = Color.white,
 			innerColor = Color.white;
 	
-	public float generateDelay = 6f;
+	public float generateDelay = 10f;
 	public float size = 30f;
 	public float linkRange = 240f;
 	public float boltWidth = PosLightning.WIDTH;
@@ -40,7 +40,7 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 	public float range = -1;
 	
 	public int maxHit = 20;
-	public int boltNum = 2;
+	public int boltNum = 1;
 	
 	public Effect slopeEffect = NHFx.boolSelector, liHitEffect = NHFx.boolSelector, spreadEffect = NHFx.boolSelector;
 	
@@ -90,6 +90,8 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 		
 		if(trailWidth < 0)trailWidth = size * 0.75f;
 		if(trailLength < 0)trailLength = 12;
+		
+		drawSize = Math.max(drawSize, size * 2f);
 	}
 	
 	@Override

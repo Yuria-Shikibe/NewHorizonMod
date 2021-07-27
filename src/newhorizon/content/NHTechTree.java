@@ -1,14 +1,59 @@
 package newhorizon.content;
 
+import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
+import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 
 public class NHTechTree implements ContentList {
+    public static Method node1 = null, node2 = null, nodeObjectives = null;
+    
+    static{
+        try{
+            node1 = TechTree.class.getDeclaredMethod("node", UnlockableContent.class, Runnable.class);
+            node1.setAccessible(true);
+    
+            node2 = TechTree.class.getDeclaredMethod("node", UnlockableContent.class, Seq.class, Runnable.class);
+            node2.setAccessible(true);
+            
+            nodeObjectives = TechTree.class.getDeclaredMethod("nodeProduce", UnlockableContent.class, Seq.class, Runnable.class);
+            nodeObjectives.setAccessible(true);
+        }catch(NoSuchMethodException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void node(UnlockableContent root, Seq<Objectives.Objective> objectives, Runnable children){
+        try{
+            node2.invoke(null, root, objectives, children);
+        }catch(IllegalAccessException | InvocationTargetException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void node(UnlockableContent root, Runnable children){
+        try{
+            node1.invoke(null, root, children);
+        }catch(IllegalAccessException | InvocationTargetException e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void nodeProduce(UnlockableContent root, Seq<Objectives.Objective> objectives, Runnable children){
+        try{
+            nodeObjectives.invoke(null, root, objectives, children);
+        }catch(IllegalAccessException | InvocationTargetException e){
+            e.printStackTrace();
+        }
+    }
     
     public static void add(UnlockableContent root, UnlockableContent content){
         new TechNode(TechTree.get(root), content, content.researchRequirements());
@@ -115,5 +160,19 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(Liquids.water), NHLiquids.xenAlpha, NHLiquids.xenAlpha.researchRequirements());
         new TechNode(TechTree.get(NHLiquids.xenAlpha), NHLiquids.xenBeta, NHLiquids.xenBeta.researchRequirements());
         new TechNode(TechTree.get(NHLiquids.xenBeta), NHLiquids.xenGamma, NHLiquids.xenGamma.researchRequirements());
+        
+        node(NHBlocks.jumpGateJunior, () -> {
+            node(NHSectorPreset.downpour, Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
+                node(NHSectorPreset.quantumCraters, Seq.with(new Objectives.SectorComplete(NHSectorPreset.downpour)), () -> {
+                    node(NHSectorPreset.luminariOutpost, Seq.with(new Objectives.SectorComplete(NHSectorPreset.quantumCraters)), () -> {
+                        node(NHSectorPreset.deltaOutpost, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
+                            node(NHSectorPreset.hostileHQ, Seq.with(new Objectives.SectorComplete(NHSectorPreset.deltaOutpost)), () -> {
+                    
+                            });
+                        });
+                    });
+                });
+            });
+        });
     }
 }

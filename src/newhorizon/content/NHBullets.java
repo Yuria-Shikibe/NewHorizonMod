@@ -41,7 +41,7 @@ public class NHBullets implements ContentList{
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrLightning, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile, collapserBullet, collapserLaserSmall,
-		strikeMissile, boltGene, empFrag, empBlot2, empBlot3, antiAirSap;
+		strikeMissile, arc_9000, empFrag, empBlot2, empBlot3, antiAirSap;
 		
 	
 	public void loadFragType(){
@@ -62,8 +62,6 @@ public class NHBullets implements ContentList{
 			
 			setDisableAccel();
 			
-			generateDelay = 6f;
-			boltNum = 3;
 			linkRange = 280f;
 			
 			maxHit = 8;
@@ -522,10 +520,8 @@ public class NHBullets implements ContentList{
 			
 			outColor = trailColor = lightColor = lightningColor = NHColor.lightSkyBack;
 			innerColor = Color.white;
-			generateDelay = 6f;
 			randomGenerateRange = 280f;
 			randomLightningNum = 5;
-			boltNum = 1;
 			linkRange = 280f;
 			
 			drag = 0.0065f;
@@ -846,7 +842,7 @@ public class NHBullets implements ContentList{
 			trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
 		}};
 		
-		darkEnrLightning = new PosLightningType(150){{
+		darkEnrLightning = new PosLightningType(130){{
 			lightningColor = NHColor.darkEnrColor;
 			maxRange = 800f;
 			boltNum = 1;
@@ -857,7 +853,7 @@ public class NHBullets implements ContentList{
 			maxRange = 250f;
 		}};
 		
-		darkEnrlaser = new ContinuousLaserBulletType(1300){
+		darkEnrlaser = new ContinuousLaserBulletType(1400){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
@@ -922,7 +918,7 @@ public class NHBullets implements ContentList{
 			shootEffect = Fx.none;
 		}};
 		
-		rapidBomb = new SpeedUpBulletType(9f, 280, NewHorizon.contentName("strike")){{
+		rapidBomb = new SpeedUpBulletType(9f, 100, NewHorizon.contentName("strike")){{
 			trailLength = 8;
 			trailWidth = 1.75f;
 			
@@ -1082,7 +1078,7 @@ public class NHBullets implements ContentList{
 			
 		};
 		
-		strikeRocket = new BasicBulletType(9, 330, STRIKE){{
+		strikeRocket = new BasicBulletType(9, 260, STRIKE){{
 			trailColor = lightningColor = backColor = lightColor = NHColor.darkEnrColor;
 			frontColor = NHColor.darkEnrFront;
 			lightning = 2;
@@ -1206,7 +1202,7 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
-		boltGene = new LightningLinkerBulletType(2.75f, 550){{
+		arc_9000 = new LightningLinkerBulletType(2.75f, 550){{
 			trailWidth = 4.5f;
 			trailLength = 66;
 			
@@ -1214,10 +1210,8 @@ public class NHBullets implements ContentList{
 			
 			outColor = trailColor = NHColor.darkEnrColor;
 			innerColor = NHColor.darkEnr;
-			generateDelay = 4f;
 			randomGenerateRange = 280f;
 			randomLightningNum = 6;
-			boltNum = 1;
 			linkRange = 280f;
 			range = 800f;
 			
@@ -1227,7 +1221,10 @@ public class NHBullets implements ContentList{
 			
 			drag = 0.0065f;
 			fragLifeMin = 0.3f;
-			fragBullets = 11;
+			fragLifeMax = 1.3f;
+			fragVelocityMin = 0.5f;
+			fragVelocityMax = 1.25f;
+			fragBullets = 12;
 			fragBullet = new ArtilleryBulletType(3.75f, 200){
 				@Override
 				public void update(Bullet b){
@@ -1260,13 +1257,14 @@ public class NHBullets implements ContentList{
 				}
 			};
 			hitSound = Sounds.explosionbig;
-			drawSize = 40;
 			splashDamageRadius = 120f;
 			splashDamage = 300;
 			lightningDamage = damage * 0.75f;
+			
 			collidesTiles = true;
 			pierce = false;
 			collides = false;
+			
 			ammoMultiplier = 1;
 			lifetime = 300;
 			hitEffect = Fx.none;

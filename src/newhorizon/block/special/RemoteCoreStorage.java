@@ -1,8 +1,10 @@
 package newhorizon.block.special;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -10,6 +12,7 @@ import arc.util.io.Writes;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.ui.Bar;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.func.DrawFuncs;
@@ -30,9 +33,24 @@ public class RemoteCoreStorage extends StorageBlock{
 		return true;
 	}
 	
+	@Override
+	public void setBars(){
+		super.setBars();
+		bars.remove("items");
+	}
+	
 	public class RemoteCoreStorageBuild extends StorageBuild{
 		public float warmup = 0;
 		public float progress = 0;
+		
+		@Override
+		public void displayBars(Table table){
+			super.displayBars(table);
+			Building b = core();
+			if(b != null){
+				table.add(new Bar(() -> Core.bundle.format("bar.items", b.items.total()), () -> Pal.items, () -> (float)b.items.total() / itemCapacity)).growX().row();
+			}
+		}
 		
 		@Override
 		public void updateTile(){

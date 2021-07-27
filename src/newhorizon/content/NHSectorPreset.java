@@ -5,15 +5,41 @@ import mindustry.type.SectorPreset;
 
 public class NHSectorPreset implements ContentList{
 	public static SectorPreset
-		outpost;
+		hostileHQ, deltaOutpost, downpour, luminariOutpost, quantumCraters;
 	
 	@Override
 	public void load(){
-		outpost = new SectorPreset("outpost", NHPlanets.midantha, 0){{
-			alwaysUnlocked = true;
+		hostileHQ = new SectorPreset("hostile-HQ", NHPlanets.midantha, 0){{
 			addStartingItems = true;
-			difficulty = 10;
+			difficulty = 20;
 			startWaveTimeMultiplier = 2.5f;
 		}};
+		
+		deltaOutpost = new SectorPreset("delta-outpost", NHPlanets.midantha, 14){{
+			addStartingItems = true;
+			difficulty = 8;
+			startWaveTimeMultiplier = 2.5f;
+		}};
+		
+		downpour = new SectorPreset("downpour", NHPlanets.midantha, 55){{
+			addStartingItems = true;
+			captureWave = 80;
+			difficulty = 5;
+			startWaveTimeMultiplier = 2.5f;
+		}};
+		
+		luminariOutpost = new SectorPreset("luminari-outpost", NHPlanets.midantha, 102){{
+			addStartingItems = true;
+			difficulty = 8;
+			startWaveTimeMultiplier = 2.5f;
+		}};
+		
+		quantumCraters = new SectorPreset("quantum-craters", NHPlanets.midantha, 86){{
+			addStartingItems = true;
+			captureWave = 150;
+			difficulty = 8;
+			startWaveTimeMultiplier = 2.5f;
+		}};
+		
 	}
 }

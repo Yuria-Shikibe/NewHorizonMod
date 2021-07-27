@@ -51,15 +51,19 @@ public class NewHorizon extends Mod{
 		new NHUnitTypes(),
 		new NHBlocks(),
 		new NHPlanets(),
-	    new NHTechTree(),
-		new NHSectorPreset()
-		//new NHWeathers()
+		new NHSectorPreset(),
+		new NHWeathers(),
+		new NHTechTree(),
 	};
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.disposePowerNode,
-			NHUnitTypes.declining
+			NHBlocks.sandCracker,
+			NHSectorPreset.downpour,
+			NHSectorPreset.deltaOutpost,
+			NHSectorPreset.hostileHQ,
+			NHSectorPreset.luminariOutpost,
+			NHSectorPreset.quantumCraters
 		};
 	}
 	

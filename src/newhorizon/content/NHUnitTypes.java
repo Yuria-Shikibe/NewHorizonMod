@@ -622,6 +622,7 @@ public class NHUnitTypes implements ContentList{
 						splashDamageRadius = 24f;
 						
 						trailLength = 20;
+						trailWidth = 3f;
 						
 						accelerateBegin = 0.4f;
 						accelerateEnd = 0.75f;
@@ -629,7 +630,7 @@ public class NHUnitTypes implements ContentList{
 						velocityBegin = 1.85f;
 						velocityIncrease = 12f;
 						
-						lifetime = 180f;
+						lifetime = 160f;
 						
 						trailEffect = NHFx.trail;
 						trailChance = 0.35f;
@@ -648,7 +649,7 @@ public class NHUnitTypes implements ContentList{
 						hitEffect = Fx.hitBeam;
 						despawnEffect = new Effect(20f, e -> {
 							Draw.color(e.color);
-							Angles.randLenVectors(e.id, 4, 30 * e.fin() + 5, (x, y) -> Fill.circle(e.x + x, e.y + y, 4 * e.fout(Interp.pow2Out)));
+							Angles.randLenVectors(e.id, 4, 35 * e.fin() + 5, (x, y) -> Fill.circle(e.x + x, e.y + y, 4 * e.fout(Interp.pow2Out)));
 						});
 					}
 					
@@ -1288,7 +1289,7 @@ public class NHUnitTypes implements ContentList{
 					sprite = NHBullets.CIRCLE_BOLT;
 					
 					trailLength = 15;
-					trailWidth = 4f;
+					trailWidth = 3f;
 					
 					weaveMag = 4f;
 					weaveScale = 4f;

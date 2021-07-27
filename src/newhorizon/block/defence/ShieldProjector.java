@@ -30,6 +30,7 @@ import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
+import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.block.special.CommandableBlock;
@@ -219,6 +220,8 @@ public class ShieldProjector extends CommandableBlock{
 		
 		@Override
 		public void commandAll(Integer pos){
+			Tile t = world.tile(pos);
+			if(t == null)return;
 			float range = 0;
 			float health = 0;
 			
@@ -234,7 +237,7 @@ public class ShieldProjector extends CommandableBlock{
 			}
 			
 			Projector p = Pools.obtain(Projector.class, Projector::new);
-			p.init(health, range, provideLifetime, team, world.tile(pos));
+			p.init(health, range, provideLifetime, team, t);
 			if(!Vars.net.client())p.add();
 		}
 		

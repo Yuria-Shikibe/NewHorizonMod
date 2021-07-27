@@ -1,5 +1,6 @@
 package newhorizon.units;
 
+import arc.Core;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -102,8 +103,7 @@ public class TowardShield extends Ability{
 	public void update(Unit unit){
 		Teamc target = Units.bestTarget(unit.team, unit.x, unit.y, radius * 5, u -> true, t -> t instanceof Turret.TurretBuild, (u, x, y) -> -unit.dst(u));
 		
-		if(target == null)angle = Mathf.slerpDelta(angle, unit.rotation, rotateSpeed);
-		else angle = Mathf.slerpDelta(angle, unit.angleTo(target), rotateSpeed);
+		angle = Mathf.slerpDelta(angle, unit.angleTo(unit.aimX, unit.aimY), rotateSpeed);
 		
 		if(unit.shield < max){
 			unit.shield += Time.delta * regen;
@@ -120,10 +120,6 @@ public class TowardShield extends Ability{
 			Groups.bullet.intersect(unit.x - realRad, unit.y - realRad, realRad * 1.85f, realRad * 1.85f, shieldConsumer);
 			this.left.trns(angle - angleDst / 2f, realRad).add(unit);
 			this.right.trns(angle + angleDst / 2f, realRad).add(unit);
-			Tmp.v2.trns(unit.rotation, 0, x);
-			Tmp.v1.trns(unit.rotation, y);
-			if(Mathf.chanceDelta(0.2))Fx.chainLightning.at(unit.x + Tmp.v1.x + Tmp.v2.x, unit.y + Tmp.v1.y + Tmp.v2.y, unit.rotation, unit.team.color, right);
-			if(Mathf.chanceDelta(0.2))Fx.chainLightning.at(unit.x + Tmp.v1.x - Tmp.v2.x, unit.y + Tmp.v1.y - Tmp.v2.y, unit.rotation, unit.team.color, left);
 		}else{
 			radiusScale = 0f;
 		}
@@ -134,21 +130,32 @@ public class TowardShield extends Ability{
 		checkRadius(unit);
 		
 		if(unit.shield > 0){
-			Draw.z(Layer.effect);
-			
-			Draw.color(unit.team.color, Color.white, Mathf.clamp(alpha));
-			
 			float f = realRad / radius;
-			Lines.stroke(f * 3f);
-			DrawFuncs.circlePercent(unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 			
-			Lines.stroke(f * 0.82f);
 			Tmp.v2.trns(unit.rotation, 0, x);
 			Tmp.v1.trns(unit.rotation, y);
 			for(int i : x == 0 ? DrawFuncs.oneArr : Mathf.signs){
+				Draw.color(unit.team.color, Color.white, Mathf.clamp(alpha));
+				Draw.z(Layer.shields);
+				if(Core.settings.getBool("animatedshields")){
+					DrawFuncs.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+				}else{
+					Lines.stroke(f * 1.5f);
+					Draw.alpha(0.09f);
+					DrawFuncs.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+					Draw.alpha(1f);
+					DrawFuncs.circlePercent(unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, left.x, left.y);
+					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, right.x, right.y);
+				}
+				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 2f);
+				Draw.z(Layer.effect);
+				Lines.stroke(f * 0.82f);
 				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 4.2f);
 				DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 6.5f, Time.time, 20f);
 				DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 8f, -Time.time * 1.25f, 30f);
+				Draw.color(Color.white);
+				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 1.8f);
 			}
 		}
 	}

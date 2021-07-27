@@ -127,7 +127,7 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		arc9000 = new UpgradeData(
-				"arc-9000", NHBullets.boltGene, 2700f,
+				"arc-9000", NHBullets.arc_9000, 2700f,
 				new ItemStack(NHItems.upgradeSort, 1200),
 				new ItemStack(NHItems.darkEnergy, 1000),
 				new ItemStack(NHItems.thermoCoreNegative, 800),

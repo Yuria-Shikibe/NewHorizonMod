@@ -45,7 +45,7 @@ public class NHPlanets implements ContentList {
 
     @Override
     public void load(){
-        midantha = new Planet("midantha", Planets.sun, 3, 1.2f) {{
+        midantha = new Planet("midantha", Planets.sun, 3, 0.95f) {{
             generator = new NHModPlanetGenerator();
             
             bloom = true;
@@ -70,7 +70,7 @@ public class NHPlanets implements ContentList {
             atmosphereColor = Color.valueOf("3c1b8f");
             atmosphereRadIn = 0.02f;
             atmosphereRadOut = 0.3f;
-            startSector = 0;
+            startSector = 55;
         }};
     }
     
