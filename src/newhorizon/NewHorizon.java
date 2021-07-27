@@ -190,6 +190,6 @@ public class NewHorizon extends Mod{
 		
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		
-		Log.info("Loaded Complete.");
+		Log.info("Loaded Complete." + NHSetting.modMeta.version);
     }
 }
