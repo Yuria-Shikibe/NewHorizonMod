@@ -13,6 +13,7 @@ import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.func.DrawFuncs;
@@ -36,6 +37,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	@Override
 	public void setBars(){
 		super.setBars();
+		bars.add("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
 		bars.remove("items");
 	}
 	
@@ -46,9 +48,9 @@ public class RemoteCoreStorage extends StorageBlock{
 		@Override
 		public void displayBars(Table table){
 			super.displayBars(table);
-			Building b = core();
+			CoreBlock.CoreBuild b = core();
 			if(b != null){
-				table.add(new Bar(() -> Core.bundle.format("bar.items", b.items.total()), () -> Pal.items, () -> (float)b.items.total() / itemCapacity)).growX().row();
+				table.add(new Bar(() -> Core.bundle.format("bar.items", b.items.total()), () -> Pal.items, () -> (float)(b.items.total() / b.storageCapacity))).growX().row();
 			}
 		}
 		
@@ -106,7 +108,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void drawConfigure(){
-			if(core() != null)DrawFuncs.posSquareLink(Pal.accent, 1, 4, true, tile, core());
+			if(core() != null)DrawFuncs.posSquareLink(Mathf.equal(warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, 1, 4, true, tile, core());
 		}
 	}
 }

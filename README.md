@@ -19,7 +19,7 @@ During this term (from March to June) I can only update this mod on weekends.
 
 Most of the players in the server may speak Chinese when you log in.
 
-Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not use English often or are not fluent in it ~~just like me~~. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.
+Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not speak English fluently. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.
 
 But if that doesn't happen, making everything function right and not demolishing buildings at will are enough. I believe every player can get along well with one another ~~as long as no one blows up a reactor or breaks someone else's blueprint~~.
 
@@ -30,7 +30,7 @@ Have a nice day.
 ## Caution
 **MOD DOES NOT SUPPORT _IOS_**
 
-**If you are using a PC**, mod requires `jdk 14` installed, or maybe other versions of jdk (**_at least 8_**).
+**If you are using a PC**, mod requires `JDK/JVM` installed, or maybe other versions (**_at least 8_**).
 
 If you downloaded from `Action`, unzip the Mod.zip file first, then install the mod in-game;
 
@@ -75,10 +75,10 @@ public class NHOverride{
 ## In Game Settings
 This mod adds a new setting dialog when starting the game.
 By choose the available setting, you can activate the in-game debug panel and advance load, which creates outline icons and unit full icons automatically.
-However, the advance load now causes a stuck problem when the game is loaded on a phone. So, for your gaming experience, I made it false by default. If you are confident with your device, activate it.
+However, the advance load now causes a stuck problem when the game loaded on a phone. So, for your gaming experience, I made it false by default. If you are confident with your device, activate it.
 If you find that your device cannot afford it, open the mod file folder and find the "new-horizon" folder. Then, open the properties file in it, change the "@active.advance-load*" to false, and open the game again.
 
-**However, when the mod is deleted, the setting file will not be deleted automatically, so before I solve this problem, you may have to delete it yourself.**
+**However, when the mod deleted, the setting file will not be deleted automatically, so before I solve this problem, you may have to delete it yourself.**
 
 ## MOD Guide
 
@@ -112,23 +112,7 @@ If you find that your device cannot afford it, open the mod file folder and find
 - Upgrade needs resources. The upgrader can take resources directly from the `Core`. ~~Nice and simple, right?~~
 6. Make the turret function correctly just like other turrets.
 ---
-#### Mass Deliverer
 
----
-![mass-deliver](assets/sprites/blocks/special/mass-deliver.png)
-- **_Deliverer:_** Mass Deliverer
-
-###### Use Steps:
-1. Click the building.
-2. Select the mode `input` or `output`.
-   If `input`, choose the item you want to take on the table.
-   
-   You can choose multiple items at the same time.
-   
-   ![guide-mass-deliver](github-pictures/guide/ui-deliver.png)
-3. Select the target just like with a `Mass Driver`.
-
----
 #### Jump Gate
 
 ---
@@ -180,6 +164,8 @@ If you find that your device cannot afford it, open the mod file folder and find
 3. Click the `Select Units` button, then click the screen. Drag the mouse or click the other diagonal point to select all friendly units within a rectangle. Click the button with the arrow icon below the select rectangle to confirm.
 4. Click the `Transport Units` button.
 
+
+- The jump could be intercepted by a `Gravity Trap Field` on it's **WAY TO THE DESTINATION(Not only the destination position will be affected)**, and the intercepted unit will receeive percentage damage. 
 - Has cooldown time.
 - Requires power and other items to function.
 - Available in the server.

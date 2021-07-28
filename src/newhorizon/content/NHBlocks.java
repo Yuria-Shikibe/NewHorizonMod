@@ -98,7 +98,7 @@ public class NHBlocks implements ContentList {
 		//Distributions
 		towardGate, rapidUnloader, liquidAndItemBridge,
 		//Drills
-		largeWaterExtractor,
+		largeWaterExtractor, beamDrill,
 		//Powers
 		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
 		//Defence
@@ -108,10 +108,30 @@ public class NHBlocks implements ContentList {
 		disposePowerVoid, disposePowerNode,
 	
 		//Env
-		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum
+		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum,
+		metalGroundHeat
 		;
 	
 	private static void loadEnv(){
+		metalGroundHeat = new Floor("metal-ground-heat", 3){{
+			mapColor = Pal.darkerGray.cpy().lerp(NHColor.darkEnr, 0.5f);
+			wall = metalUnit;
+			attributes.set(Attribute.water, -1f);
+			attributes.set(Attribute.oil, -1f);
+			attributes.set(Attribute.heat, 1.25f);
+			attributes.set(Attribute.light, 1f);
+			attributes.set(Attribute.spores, -1f);
+			walkSound = NHSounds.metalWalk;
+			walkSoundVolume = 0.05f;
+			speedMultiplier = 1.25f;
+			
+			liquidMultiplier = 0.8f;
+			liquidDrop = NHLiquids.quantumLiquid;
+			lightColor = NHColor.darkEnrColor;
+			emitLight = true;
+			lightRadius = 35f;
+		}};
+		
 		quantumField = new Floor("quantum-field", 8){{
 			status = NHStatusEffects.quantization;
 			statusDuration = 60f;
@@ -124,7 +144,7 @@ public class NHBlocks implements ContentList {
 			lightRadius = 32f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
 			
-			attributes.set(Attribute.heat, 0.3f);
+			attributes.set(Attribute.heat, 1.25f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -144,7 +164,7 @@ public class NHBlocks implements ContentList {
 			liquidMultiplier = 2f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
 			
-			attributes.set(Attribute.heat, 0.4f);
+			attributes.set(Attribute.heat, 1.5f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -172,7 +192,7 @@ public class NHBlocks implements ContentList {
 		}};
 		
 		metalGroundQuantum = new Floor("metal-ground-quantum", 2){{
-			mapColor = Pal.gray;
+			mapColor = Pal.darkerMetal;
 			wall = metalUnit;
 			blendGroup = metalGround;
 			attributes.set(Attribute.water, -1f);
@@ -1312,13 +1332,25 @@ public class NHBlocks implements ContentList {
 			consumes.items(new ItemStack(Items.phaseFabric, 2));
 			consumes.power(8f);
 		}};
-		
 	}
 	
 	
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		beamDrill = new BeamDrill("beam-drill"){{
+			size = 4;
+			health = 960;
+			tier = 6;
+			drillTime = 180f;
+			liquidBoostIntensity = 1.65f;
+			warmupSpeed = 0.001f;
+			consumes.power(6);
+			consumes.liquid(Liquids.water, 0.1f).optional(true, true);
+			requirements(Category.production, BuildVisibility.shown, with(NHItems.juniorProcessor, 60, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, Items.lead, 80));
+			NHTechTree.add(Blocks.blastDrill, this);
+		}};
 		
 		remoteStorage = new RemoteCoreStorage("remote-vault"){{
 			size = 3;
@@ -1336,7 +1368,6 @@ public class NHBlocks implements ContentList {
 			size = 3;
 			itemCapacity = 20;
 			consumes.item(NHItems.fusionEnergy, 5);
-			provideHealth = 2200f;
 			requirements(Category.defense, BuildVisibility.shown, with(Items.copper, 300, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.plastanium, 75, NHItems.multipleSteel, 120));
 			NHTechTree.add(Blocks.forceProjector, this);
 		}};
@@ -1350,9 +1381,7 @@ public class NHBlocks implements ContentList {
 			itemCapacity = 16;
 			burstSpacing = 15f;
 			salvos = 4;
-			health = 1500;
-			
-			range = 800f;
+			health = 4500;
 			
 			triggeredEffect = new Effect(45f, e -> {
 				Draw.color(NHColor.darkEnrColor);
@@ -1734,11 +1763,14 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(NHUnitTypes.rhino, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
+					with(Items.lead, 80, Items.graphite, 60, NHItems.presstanium, 60, NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 60)
+				),
 				new UnitSet(UnitTypes.mega, new byte[]{NHUnitTypes.OTHERS, 2}, 45 * 60f,
-						with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, Items.graphite, 40, NHItems.juniorProcessor, 35)
+					with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, Items.graphite, 40, NHItems.juniorProcessor, 35)
 				),
 				new UnitSet(NHUnitTypes.gather, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
-					with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, NHItems.zeta, 60, NHItems.juniorProcessor, 60)
+					with(Items.thorium, 80, Items.metaglass, 30, NHItems.presstanium, 80, NHItems.zeta, 120, NHItems.juniorProcessor, 80)
 				),
 				new UnitSet(NHUnitTypes.aliotiat, new byte[]{NHUnitTypes.GROUND_LINE_1, 3}, 55 * 60f,
 					with(Items.copper, 120, NHItems.multipleSteel, 50, NHItems.presstanium, 60, NHItems.juniorProcessor, 45)

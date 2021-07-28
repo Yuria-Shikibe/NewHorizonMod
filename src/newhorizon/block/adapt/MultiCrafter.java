@@ -3,7 +3,6 @@ package newhorizon.block.adapt;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
-import arc.struct.Seq;
 import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
@@ -51,19 +50,14 @@ public class MultiCrafter extends GenericCrafter{
 	@Override
 	public void setStats(){
 		super.setStats();
+		
 		stats.remove(Stat.output);
 		stats.add(Stat.output, t -> t.add(exchangeTable(null)));
 	}
 	
 	@Override
 	public void init(){
-		Seq<ItemStack> stacks = new Seq<>(exchangeMap.size);
-		for(ItemStack stack : exchangeMap.keys())stacks.add(stack);
-		consumes.items(stacks.toArray(ItemStack.class));
-//		for(ItemStack stack : consumes.getItem().items){
-//			Log.info(stack);
-//		}
-		
+		consumes.items(exchangeMap.keys().toSeq().toArray(ItemStack.class)).optional(true, false);
 		consumes.init();
 		super.init();
 	}
@@ -78,7 +72,7 @@ public class MultiCrafter extends GenericCrafter{
 				return BlockStatus.noOutput;
 			}
 			
-			if(!isValid() || !productionValid() || count() < 1){
+			if(!isValid() || !productionValid() || !consValid()){
 				return BlockStatus.noInput;
 			}
 			
@@ -144,7 +138,7 @@ public class MultiCrafter extends GenericCrafter{
 		
 		@Override
 		public boolean consValid(){
-			return enabled && count() > 0 && shouldConsume();
+			return enabled && count() > 0 && shouldConsume() && cons.valid();
 		}
 		
 		@Override

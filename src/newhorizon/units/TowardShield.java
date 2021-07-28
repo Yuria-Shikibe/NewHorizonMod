@@ -145,8 +145,8 @@ public class TowardShield extends Ability{
 					DrawFuncs.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 					Draw.alpha(1f);
 					DrawFuncs.circlePercent(unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
-					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, left.x, left.y);
-					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, right.x, right.y);
+					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, left.x, left.y, false);
+					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, right.x, right.y, false);
 				}
 				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 2f);
 				Draw.z(Layer.effect);

@@ -82,7 +82,6 @@ public class BombLauncher extends CommandableAttackerBlock{
 	@Override
 	public void setStats() {
 		super.setStats();
-		stats.add(Stat.range, range / tilesize, StatUnit.blocks);
 		stats.add(Stat.damage, bombDamage, StatUnit.none);
 	}
 	

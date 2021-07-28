@@ -24,6 +24,7 @@ import mindustry.logic.Ranged;
 import mindustry.type.Category;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
@@ -96,9 +97,14 @@ public class ChargeWall extends Block{
 	public ChargeWall(String name){
 		super(name);
 		update = true;
-		solid = true;
 		buildCostMultiplier = 4;
-		this.category = Category.defense;
+		category = Category.defense;
+		
+		solid = true;
+		destructible = true;
+		group = BlockGroup.walls;
+		buildCostMultiplier = 3f;
+		canOverdrive = false;
 	}
 	
 	@Override

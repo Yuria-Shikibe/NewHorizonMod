@@ -4,12 +4,15 @@ import arc.Core;
 import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
+import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -145,12 +148,72 @@ public class AssignOverdrive extends OverdriveProjector{
 		public void drawConfigure(){
 			float realRange = range + phaseHeat * phaseRangeBoost;
 			
-			Draw.color(baseColor);
-			Lines.square(x, y, block.size * tilesize / 2f + 1.0f);
+			float offset = size * tilesize / 2f + 1f;
 			
-			Drawf.dashCircle(x, y, realRange, baseColor);
+			Lines.stroke(3f, Pal.gray);
+			Lines.square(x, y, offset + 1f);
 			
-			drawLink();
+			Seq<Building> buildings = linkBuilds();
+			
+			//I just cant use Draw.z() in this shitty method<<<<<
+			for(Building b : buildings){
+				float targetOffset = b.block.size * tilesize / 2f + 1f;
+				float angle = angleTo(b);
+				
+				boolean right = Mathf.equal(angle, 0, 90);
+				boolean up = Mathf.equal(angle, 90, 90);
+				boolean horizontal = Mathf.equal(angle, 0, 45) || Mathf.equal(angle, 180, 45);
+				
+				float
+					fromX = x + Mathf.num(horizontal) * Mathf.sign(right) * offset, toX = b.x + Mathf.num(!horizontal) * Mathf.sign(!right) * targetOffset,
+					fromY = y + Mathf.num(!horizontal) * Mathf.sign(up) * offset, toY = b.y + Mathf.num(horizontal) * Mathf.sign(!up) * targetOffset;
+				
+				Tmp.v1.set(horizontal ? toX : fromX, !horizontal ? toY : fromY);
+				
+				Draw.color(Pal.gray);
+				Lines.stroke(3);
+				Lines.line(fromX, fromY, Tmp.v1.x, Tmp.v1.y, false);
+				Lines.line(Tmp.v1.x, Tmp.v1.y, toX, toY, false);
+				Fill.square(Tmp.v1.x, Tmp.v1.y, 1.5f);
+				Lines.square(b.x, b.y, b.block().size * tilesize / 2f + 2.0f);
+			}
+			
+			for(Building b : buildings){
+				float targetOffset = b.block.size * tilesize / 2f + 1f;
+				float angle = angleTo(b);
+				
+				boolean right = Mathf.equal(angle, 0, 90);
+				boolean up = Mathf.equal(angle, 90, 90);
+				
+				boolean horizontal = Mathf.equal(angle, 0, 45) || Mathf.equal(angle, 180, 45);
+				float
+						fromX = x + Mathf.num(horizontal) * Mathf.sign(right) * offset, toX = b.x + Mathf.num(!horizontal) * Mathf.sign(!right) * targetOffset,
+						fromY = y + Mathf.num(!horizontal) * Mathf.sign(up) * offset, toY = b.y + Mathf.num(horizontal) * Mathf.sign(!up) * targetOffset;
+				
+				Tmp.v1.set(horizontal ? toX : fromX, !horizontal ? toY : fromY);
+
+				Draw.color(baseColor);
+				Lines.stroke(1);
+				Lines.line(fromX, fromY, Tmp.v1.x, Tmp.v1.y, false);
+				Lines.line(Tmp.v1.x, Tmp.v1.y,toX, toY, false);
+				Fill.square(Tmp.v1.x, Tmp.v1.y, 0.5f);
+				Draw.alpha(0.35f);
+				Draw.mixcol(Color.white, Mathf.absin(4f, 0.45f));
+				Fill.square(b.x, b.y, targetOffset);
+				Draw.color(baseColor);
+				Draw.alpha(1f);
+				Lines.square(b.x, b.y, b.block().size * tilesize / 2f + 1.0f);
+			}
+			
+			Lines.stroke(1f, baseColor);
+			Lines.square(x, y, offset);
+			
+			Drawf.dashCircle(x, y, range(), baseColor);
+		}
+		
+		@Override
+		public void drawLink(){
+			LinkGroupc.super.drawLink();
 		}
 		
 		@Override
@@ -204,9 +267,7 @@ public class AssignOverdrive extends OverdriveProjector{
 		public void linkPos(int value){
 			Building other = Vars.world.build(value);
 			
-			boolean contains = targets.removeValue(value);
-			if(!contains && targets.size < maxLink - 1)targets.add(value);
-			
+			if(other != null && !targets.removeValue(value) && targets.size < maxLink - 1 && within(other, range()))targets.add(value);
 		}
 		
 		public void updatePos(){

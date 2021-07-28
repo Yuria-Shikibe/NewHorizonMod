@@ -77,7 +77,6 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
         
         add(NHBlocks.hyperspaceWarper, NHBlocks.gravityGully);
-        add(NHBlocks.thurmix, NHBlocks.blastTurret);
         add(Blocks.powerNode, NHBlocks.insulatedWall);
         add(Blocks.surgeWall, NHBlocks.heavyDefenceWall);
         add(NHBlocks.heavyDefenceWall, NHBlocks.heavyDefenceWallLarge);
@@ -88,6 +87,7 @@ public class NHTechTree implements ContentList {
         add(Blocks.batteryLarge, NHBlocks.armorBatteryLarge);
         //new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
+        add(NHBlocks.divlusion, NHBlocks.blastTurret);
         new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.endOfEra, NHBlocks.endOfEra.researchRequirements());
@@ -121,6 +121,7 @@ public class NHTechTree implements ContentList {
 
         //Units;
         addUnit(UnitTypes.mono, NHUnitTypes.gather);
+        addUnit(UnitTypes.poly, NHUnitTypes.rhino);
     
         addUnit(Blocks.airFactory, NHUnitTypes.sharp);
         addUnit(NHUnitTypes.sharp, NHUnitTypes.branch);

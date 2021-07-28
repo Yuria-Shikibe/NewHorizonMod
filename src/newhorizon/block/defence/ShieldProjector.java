@@ -67,7 +67,7 @@ public class ShieldProjector extends CommandableBlock{
 	public float reloadTime = 1800f;
 	public float rotateSpeed = 0.015f;
 	
-	public float provideHealth = 2000f;
+	public float provideHealth = 3500f;
 	public float provideRange = 240f;
 	public float provideLifetime = 4800f;
 	

@@ -12,6 +12,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
@@ -57,7 +58,7 @@ public class NHUnitTypes implements ContentList{
 			guardian, gather,
 			sharp, branch, warper, striker, annihilation, hurricane, collapser,
 			origin, thynomo, aliotiat, tarlidor, destruction,
-			ghost, zarkov, declining;
+			ghost, zarkov, declining, rhino;
 	
 	static{
 		EntityMapping.nameMap.put(NewHorizon.contentName("declining"), EntityMapping.idMap[20]);
@@ -333,6 +334,40 @@ public class NHUnitTypes implements ContentList{
 	public void load(){
 		loadWeapon();
 		
+		rhino = new UnitType("rhino"){{
+			defaultController = BuilderAI::new;
+			constructor = EntityMapping.map(3);
+			abilities.add(new BoostAbility());
+			weapons.add(new RepairBeamWeapon("point-defense-mount"){{
+				y = -8.5f;
+				x = 0;
+				shootY = 6f;
+				mirror = false;
+				beamWidth = 0.7f;
+				repairSpeed = 1f;
+				
+				bullet = new BulletType(){{
+					maxRange = 120f;
+				}};
+			}});
+			armor = 12;
+			buildBeamOffset = 6f;
+			buildSpeed = 5f;
+			hitSize = 20f;
+			flying = true;
+			drag = 0.06F;
+			accel = 0.12F;
+			itemCapacity = 200;
+			speed = 1F;
+			health = 3000.0F;
+			engineSize = 3.4F;
+			engineOffset = 9.2F;
+			isCounted = false;
+			lowAltitude = true;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+		};
+		
 		declining = new UnitType("declining"){{
 			weapons.add(mainCannon.copy().setPos(0, -17));
 			weapons.add(mainCannon.copy().setPos(0, 25));
@@ -415,7 +450,7 @@ public class NHUnitTypes implements ContentList{
 			speed = 1.75f;
 			drag = 0.18f;
 			hitSize = 20f;
-			armor = 6;
+			armor = 12;
 			accel = 0.1f;
 			rotateSpeed = 2f;
 			rotateShooting = false;
@@ -925,6 +960,7 @@ public class NHUnitTypes implements ContentList{
 					maxRange = 120f;
 				}};
 			}});
+			armor = 12;
 			hitSize = 16f;
 			flying = true;
 			drag = 0.06F;
@@ -937,7 +973,7 @@ public class NHUnitTypes implements ContentList{
 			range = 80.0F;
 			isCounted = false;
 			ammoType = AmmoTypes.powerLow;
-			mineTier = 5;
+			mineTier = 6;
 			mineSpeed = 10F;
 			lowAltitude = true;
 		}

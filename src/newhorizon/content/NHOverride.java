@@ -67,8 +67,9 @@ public class NHOverride{
 		);
 		removeReq(Blocks.tetrativeReconstructor, Items.silicon);
 		
+		removeReq(Blocks.ripple, Items.titanium);
 		addReq(Blocks.ripple,
-				new ItemStack(NHItems.metalOxhydrigen, 50)
+			new ItemStack(NHItems.presstanium, 50)
 		);
 		
 		addReq(Blocks.fuse,

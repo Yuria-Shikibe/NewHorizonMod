@@ -58,12 +58,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.sandCracker,
-			NHSectorPreset.downpour,
-			NHSectorPreset.deltaOutpost,
-			NHSectorPreset.hostileHQ,
-			NHSectorPreset.luminariOutpost,
-			NHSectorPreset.quantumCraters
+			NHBlocks.beamDrill, NHBlocks.metalGroundHeat, NHUnitTypes.rhino
 		};
 	}
 	
