@@ -361,7 +361,7 @@ public class NHUnitTypes implements ContentList{
 			speed = 1F;
 			health = 3000.0F;
 			engineSize = 3.4F;
-			engineOffset = 9.2F;
+			engineOffset = 10.5f;
 			isCounted = false;
 			lowAltitude = true;
 		}
