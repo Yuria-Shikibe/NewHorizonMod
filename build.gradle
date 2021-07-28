@@ -25,8 +25,8 @@ ext{
 //java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
-        if(JavaVersion.current() != JavaVersion.VERSION_14){
-            options.compilerArgs.addAll(['--release', '14'])
+        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+            options.compilerArgs.addAll(['--release', '8'])
         }
 //
 //        doFirst {
