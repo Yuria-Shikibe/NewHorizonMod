@@ -31,7 +31,6 @@ import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.AmmoTypes;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.weapons.PointDefenseWeapon;
@@ -803,7 +802,6 @@ public class NHUnitTypes implements ContentList{
 			crashDamageMultiplier = Mathf.clamp(hitSize / 10f, 1, 10);
 			payloadCapacity = Float.MAX_VALUE;
 			buildBeamOffset = 0;
-			ammoType = AmmoTypes.powerHigh;
 		}
 			public Effect slopeEffect = NHFx.boolSelector;
 			
@@ -972,7 +970,6 @@ public class NHUnitTypes implements ContentList{
 			engineOffset = 9.2F;
 			range = 80.0F;
 			isCounted = false;
-			ammoType = AmmoTypes.powerLow;
 			mineTier = 6;
 			mineSpeed = 10F;
 			lowAltitude = true;
@@ -1061,7 +1058,6 @@ public class NHUnitTypes implements ContentList{
 			landShake = 2.0F;
 			riseSpeed = 0.05F;
 			mechFrontSway = 0.55F;
-			ammoType = AmmoTypes.power;
 			speed = 0.4F;
 			hitSize = 15f;
 			engineOffset = 7.4F;
@@ -1089,7 +1085,6 @@ public class NHUnitTypes implements ContentList{
 			canBoost = true;
 			landShake = 6f;
 			boostMultiplier = 3.5f;
-			ammoType = AmmoTypes.power;
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
 		};
@@ -1168,7 +1163,6 @@ public class NHUnitTypes implements ContentList{
 			canBoost = true;
 			landShake = 6f;
 			boostMultiplier = 3.5f;
-			ammoType = AmmoTypes.powerHigh;
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
 		};
@@ -1240,7 +1234,6 @@ public class NHUnitTypes implements ContentList{
 			canBoost = true;
 			landShake = 6f;
 			boostMultiplier = 3.5f;
-			ammoType = AmmoTypes.powerHigh;
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
 		};
@@ -1397,7 +1390,6 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 2.5f;
 			armor = 3.5f;
 			flying = true;
-			ammoType = AmmoTypes.thorium;
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
 		};
@@ -1492,7 +1484,6 @@ public class NHUnitTypes implements ContentList{
 			singleTarget = false;
 			buildBeamOffset = 15F;
 			ammoCapacity = 800;
-			ammoResupplyAmount = 60;
 			abilities.add(new ForceFieldAbility(100.0F, 4.0F, 4000.0F, 360.0F), new RepairFieldAbility(500f, 160f, 240f){{
 				healEffect = NHFx.healEffect;
 				activeEffect = NHFx.activeEffect;

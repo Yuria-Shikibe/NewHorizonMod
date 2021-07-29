@@ -58,7 +58,6 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.beamDrill, NHBlocks.metalGroundHeat, NHUnitTypes.rhino
 		};
 	}
 	
