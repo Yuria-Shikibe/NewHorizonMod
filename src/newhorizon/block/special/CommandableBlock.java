@@ -1,5 +1,6 @@
 package newhorizon.block.special;
 
+import arc.Core;
 import arc.func.Boolf2;
 import arc.func.Cons;
 import arc.math.geom.Point2;
@@ -7,16 +8,21 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.core.World;
 import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.logic.LAccess;
 import mindustry.logic.Ranged;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
@@ -28,10 +34,21 @@ import static mindustry.Vars.*;
 public abstract class CommandableBlock extends Block{
 	public Boolf2<CommandableBlockBuild, CommandableBlockBuild> groupBoolf = null;
 	protected static final Vec2 tmpVec = new Vec2();
+	protected static final Point2 tmpPoint = new Point2();
+	
+	public float reloadTime = 240f;
 	
 	public CommandableBlock(String name){
 		super(name);
-		update = configurable = solid = true;
+		timers += 3;
+		update = configurable = solid = logicConfigurable = true;
+	}
+	
+	@Override
+	public void setStats(){
+		super.setStats();
+		stats.add(Stat.reload, reloadTime / Time.toSeconds, StatUnit.seconds);
+		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shoot", "\n 1 -> Control All\n 2 -> Control Single")));
 	}
 	
 	@Override
@@ -42,6 +59,9 @@ public abstract class CommandableBlock extends Block{
 	
 	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged{
 		public transient int lastTarget = -1;
+		public float reload;
+		public int target = -1;
+		public float logicControlTime = -1;
 		
 		@NotNull public abstract CommandableBlockType getType();
 		
@@ -51,12 +71,13 @@ public abstract class CommandableBlock extends Block{
 		public abstract void command(Integer point2);
 		public abstract void commandAll(Integer pos);
 		
-		public abstract boolean canCommand();
+		public abstract boolean canCommand(int target);
+		//public boolean canCommand(){return canCommand(target);}
 		public abstract boolean overlap();
 		public abstract boolean isCharging();
 		public abstract boolean isPreparing();
 		public abstract void setPreparing();
-		public abstract float delayTime();
+		public abstract float delayTime(int target);
 		public abstract float spread();
 		
 		public Table actionTable(){return new Table();}
@@ -65,6 +86,17 @@ public abstract class CommandableBlock extends Block{
 			Tile t = world.tile(getTarget());
 			if(t != null || getTarget() >= 0) return tmpVec.set(t);
 			else return null;
+		}
+		
+		@Override
+		public void control(LAccess type, double p1, double p2, double p3, double p4){
+			if(type == LAccess.shoot && timer.get(1, 10f)){
+				int pos = Tmp.p1.set(World.toTile((float)p1), World.toTile((float)p2)).pack();
+				if(p2 == 1)commandAll(pos);
+				if(p2 == 2 && canCommand(pos) && !isPreparing())command(pos);
+			}
+			
+			super.control(type, p1, p2, p3, p4);
 		}
 		
 		@Override

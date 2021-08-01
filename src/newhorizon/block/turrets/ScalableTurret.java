@@ -184,6 +184,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 		
 		@Override
 		public void updateTile(){
+			if(charging)return;
 			super.updateTile();
 			if(isContiunous() && bulletLife > 0 && bullet != null){
 				tr.trns(rotation, block.size * tilesize / 2f, 0f);

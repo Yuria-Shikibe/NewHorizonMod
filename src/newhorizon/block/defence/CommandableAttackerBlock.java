@@ -2,27 +2,28 @@ package newhorizon.block.defence;
 
 import arc.Core;
 import arc.math.geom.Point2;
+import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Tmp;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.core.UI;
 import mindustry.core.World;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.Damagec;
-import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
-import mindustry.gen.Tex;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
+import mindustry.logic.LAccess;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
@@ -39,9 +40,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	public float range = 100f;
 	public float spread = 120f;
 	public float prepareDelay = 60f;
-	public float reloadTime = 240f;
 	public int storage = 1;
-	
 	
 	@NotNull protected BulletType bulletHitter;
 	
@@ -64,7 +63,9 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	@Override
 	public void setStats(){
 		super.setStats();
+		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shootp", "\n 1 -> Control All\n 2 -> Control Single")));
 		stats.add(Stat.range, range / tilesize, StatUnit.blocks);
+		stats.add(Stat.damage, StatValues.ammo(ObjectMap.of(this, bulletHitter)));
 	}
 	
 	@Override
@@ -87,8 +88,6 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	}
 	
 	public abstract class CommandableAttackerBlockBuild extends CommandableBlockBuild{
-		public int target = -1;
-		public float reload;
 		public float countBack = prepareDelay;
 		public boolean preparing = false;
 		
@@ -124,6 +123,23 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			}
 		}
 		
+		@Override
+		public void control(LAccess type, Object p1, double p2, double p3, double p4){
+			if(type == LAccess.shootp && timer.get(2, 10f)){
+				if(p1 instanceof Posc){
+					Posc target = (Posc)p1;
+					Vec2 velocity;
+					if(target instanceof Velc)velocity = ((Velc)target).vel().cpy();
+					else velocity = Vec2.ZERO;
+					velocity.scl((delayTime(tmpPoint.set(World.toTile(velocity.x), World.toTile(velocity.y)).pack()) * Time.toSeconds + prepareDelay) / 1.5f).add(target);
+					int pos = tmpPoint.set(World.toTile(velocity.x), World.toTile(velocity.y)).pack();
+					if(p2 == 1)commandAll(pos);
+					if(p2 == 2 && canCommand(pos) && !isPreparing())command(pos);
+				}
+			}
+			
+			super.control(type, p1, p2, p3, p4);
+		}
 		
 		@Override
 		public boolean isPreparing(){
@@ -138,7 +154,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public BlockStatus status(){
-			return canCommand() ? BlockStatus.active : isCharging() ? BlockStatus.noOutput : BlockStatus.noInput;
+			return canCommand(target) ? BlockStatus.active : isCharging() ? BlockStatus.noOutput : BlockStatus.noInput;
 		}
 		
 		@Override
@@ -148,8 +164,10 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			}
 			
 			if(isPreparing()){
-				countBack -= efficiency() * delta();
-			}else if(preparing){
+				countBack -= edelta();
+			}
+			
+			if(preparing && countBack < 0){
 				countBack = prepareDelay;
 				preparing = false;
 				shoot(lastTarget);
@@ -157,8 +175,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		}
 		
 		@Override
-		public boolean canCommand(){
-			Tile tile = world.tile(NHVars.world.commandPos);
+		public boolean canCommand(int target){
+			Tile tile = world.tile(target);
 			return tile != null && consValid() && storaged() > 0 && within(tile, range);
 		}
 		
@@ -189,7 +207,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
-			Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
+			tmpPoint.set(Point2.unpack(NHVars.world.commandPos));
 			
 			float realSpread = spread();
 			
@@ -199,56 +217,58 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand()){
+				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand(build.target)){
 					builds.add(build);
-					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
+					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
 					realSpread = Math.max(realSpread, build.spread());
 				}
 			}
 			
 			for(CommandableBlockBuild build : builds){
-				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
+				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
 			}
 			
-			Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
+			tmpPoint.set(Point2.unpack(NHVars.world.commandPos));
 			
 			if(NHVars.world.commandPos > 0){
-				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y));
-				DrawFuncs.drawConnected(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), 10f, Pal.accent);
-				Drawf.circles(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, Pal.accent);
+				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
+				DrawFuncs.drawConnected(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), 10f, Pal.accent);
+				Drawf.circles(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), realSpread, Pal.accent);
 			}
 			
 			if(isValid())builds.add(this);
 			for(CommandableBlockBuild build : builds){
-				float time = build.delayTime();
+				float time = build.delayTime(NHVars.world.commandPos);
 				DrawFuncs.overlayText("Delay: " + TableFs.format(time) + " Sec.", build.x, build.y, build.block.size * tilesize / 2f, time > 4.5f ? Pal.accent : Pal.lancerLaser, true);
 			}
-			DrawFuncs.overlayText(Core.bundle.format("mod.ui.participants", builds.size), World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), tilesize * 2f, Pal.accent, true);
+			DrawFuncs.overlayText(Core.bundle.format("mod.ui.participants", builds.size), World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), tilesize * 2f, Pal.accent, true);
 		}
 		
 		public void commandAll(Integer pos){
-			Tmp.p1.set(Point2.unpack(pos));
+			tmpPoint.set(Point2.unpack(pos));
 			float realSpread = 0f;
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build.team == team && groupBoolf.get(this, build) && build.canCommand() && !build.isPreparing()){
+				if(build.team == team && groupBoolf.get(this, build) && build.canCommand(pos) && !build.isPreparing()){
 					build.command(pos);
 					participants.add(build);
 					build.lastAccessed(Iconc.modeAttack + "");
 					realSpread = Math.max(realSpread, build.spread());
 				}
 			}
+			
 			if(!Vars.headless && participants.size > 0){
-				if(team != Vars.player.team())TableFs.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  Tmp.p1.x + ", " + Tmp.p1.y, NHSounds.alarm);
-				NHFx.attackWarning.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color, participants);
-				NHFx.spawn.at(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y), realSpread, team.color);
+				if(team != Vars.player.team())TableFs.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  tmpPoint.x + ", " + tmpPoint.y, NHSounds.alarm);
+				NHFx.attackWarningRange.at(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), realSpread, team.color);
+				NHFx.spawn.at(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), realSpread, team.color);
 			}
 		}
 		
 		@Override
 		public void command(Integer pos){
 			setPreparing();
+			NHFx.attackWarningPos.at(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), 0, team.color, tile);
 			lastTarget = pos;
 		}
 		

@@ -12,10 +12,15 @@ import newhorizon.feature.NHStatusEffect;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect
-            staticVel, emp1, emp2, emp3, invincible, quantization;
+            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3;
     
     @Override
     public void load(){
+        accel_3 = new StatusEffect("accel_3"){{
+            speedMultiplier = 3;
+            show = false;
+        }};
+        
         quantization = new NHStatusEffect("quantization"){{
             textureColor = color = NHColor.darkEnrColor;
             effectChance = 0.1f;

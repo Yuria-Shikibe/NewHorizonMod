@@ -10,7 +10,6 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Point2;
-import arc.math.geom.Point3;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Time;
@@ -19,24 +18,17 @@ import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.core.World;
-import mindustry.entities.Damage;
 import mindustry.entities.Effect;
-import mindustry.entities.Lightning;
-import mindustry.entities.effect.MultiEffect;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Groups;
-import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
 import mindustry.world.Tile;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
-import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHFx;
-import newhorizon.vars.NHVars;
+import newhorizon.content.NHSounds;
 
 import static mindustry.Vars.tilesize;
 
@@ -44,29 +36,13 @@ public class BombLauncher extends CommandableAttackerBlock{
 	public TextureRegion bombRegion;
 	public TextureRegion[] gunBarrelRegion = new TextureRegion[4];
 	
-	public Effect
-		hitEffect = NHFx.boolSelector,
-		shootEffect = NHFx.boolSelector,
-		smokeEffect,
-		trailEffect;
-	
+	public Sound shootSound = NHSounds.launch;
 	public Color baseColor = Pal.redderDust;
 	
-	
-	public float bombLifetime = 120f;
-	public float shake = 20f;
-	public float bombDamage = 800f, bombRadius = 160f;
 	public float bombVelPerTile = 2f;
-	public Sound hitSound = Sounds.explosionbig;
-	
-	public int lightning = 3;
-	public int lightningLength = 5;
-	public int lightningLengthRand = 10;
 	
 	public BombLauncher(String name){
 		super(name);
-		smokeEffect = NHFx.hugeSmoke;
-		trailEffect = NHFx.trail;
 		storage = 4;
 		range = 800f;
 		spread = 80f;
@@ -82,26 +58,12 @@ public class BombLauncher extends CommandableAttackerBlock{
 	@Override
 	public void setStats() {
 		super.setStats();
-		stats.add(Stat.damage, bombDamage, StatUnit.none);
 	}
 	
 	@Override
 	public void init(){
 		super.init();
-		bulletHitter = new EffectBulletType(3f){
-			{damage = 1f; collidesGround = absorbable = true; hitSize = 0;}
-			
-			@Override
-			public void despawned(Bullet b){
-				if(!b.absorbed) Damage.damage(b.team, b.x, b.y, b.fdata, b.damage, collidesAir, collidesGround);
-				if(b.data instanceof Point3)for(int i = 0; i < lightning; i++){
-					Lightning.create(b, baseColor, b.damage, b.x, b.y, Mathf.random(360f), lightningLength + Mathf.range(lightningLengthRand));
-				}
-			}
-		};
-		
-		if(hitEffect == NHFx.boolSelector)hitEffect = new MultiEffect(NHFx.lightningHitLarge(baseColor), NHFx.crossBlast(baseColor, bombRadius * 1.25f));
-		if(shootEffect == NHFx.boolSelector)shootEffect = NHFx.square(baseColor, 50f, 6, size * tilesize * 2f, size);
+		if(bulletHitter.shootEffect == NHFx.boolSelector)bulletHitter.shootEffect = NHFx.square(baseColor, 50f, 6, size * tilesize * 2f, size);
 	}
 	
 	@Override
@@ -118,9 +80,9 @@ public class BombLauncher extends CommandableAttackerBlock{
 		}
 
 		@Override
-		public float delayTime(){
-			Tmp.p1.set(Point2.unpack(NHVars.world.commandPos));
-			return (dst(World.unconv(Tmp.p1.x), World.unconv(Tmp.p1.y)) / tilesize * bombVelPerTile + bombLifetime * (1 + 2/3f)) / Time.toSeconds;
+		public float delayTime(int target){
+			tmpPoint.set(Point2.unpack(target));
+			return (dst(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y)) / tilesize * bombVelPerTile + bulletHitter.lifetime * (1 + 2f/3f) ) / Time.toSeconds;
 		}
 		
 		@Override
@@ -129,12 +91,13 @@ public class BombLauncher extends CommandableAttackerBlock{
 			if(target == null || !within(target, range) || !consValid())return;
 			reload = Math.max(0, reload - reloadTime);
 			consume();
-			Effect.shake(shake / 2, shake, this);
-			shootEffect.at(this);
-			smokeEffect.at(this);
+			Effect.shake(bulletHitter.despawnShake / 2, bulletHitter.despawnShake, this);
+			bulletHitter.shootEffect.at(this);
+			bulletHitter.smokeEffect.at(this);
+			shootSound.at(this);
 			Rand rand = new Rand((long)Groups.all.size() << 8);
 			BombEntity bomb = Pools.obtain(BombEntity.class, BombEntity::new);
-			bomb.init(team, bombLifetime, this, target.drawx() + rand.range(spread), target.drawy() + rand.range(spread), true).setDamage(bombDamage, bombRadius);
+			bomb.init(team, bulletHitter.lifetime, this, target.drawx() + rand.range(spread), target.drawy() + rand.range(spread), true);
 			bomb.add();
 		}
 	}
@@ -232,18 +195,14 @@ public class BombLauncher extends CommandableAttackerBlock{
 		}
 		
 		public void hit(){
-			hitEffect.at(x, y);
-			Effect.shake(shake, shake, x, y);
-			hitSound.at(x, y, Mathf.random(0.9f, 1.1f));
-			Bullet b = bulletHitter.create(this, team, x, y, 0, damage, 1, 1, new Point3(lightning, lightningLength, lightningLengthRand));
-			b.fdata = radius;
+			Bullet b = bulletHitter.create(this, team, x, y, 0, 0, 0.001f);
 		}
 		
 		@Override
 		public void update(){
 			time = Math.min(time + Time.delta, lifetime);
 			trail.update(cx(), cy());
-			if(Mathf.chance(0.2))trailEffect.at(cx(), cy(), size, baseColor);
+			if(Mathf.chance(bulletHitter.trailChance))bulletHitter.trailEffect.at(cx(), cy(), bulletHitter.trailParam, baseColor);
 			if(time >= lifetime){
 				remove();
 			}
@@ -255,7 +214,7 @@ public class BombLauncher extends CommandableAttackerBlock{
 			
 			if(parent){
 				BombEntity next = Pools.obtain(BombEntity.class, BombEntity::new);
-				next.init(team, lifetime / 1.5f, target, target.x, target.y, false).setDamage(bombDamage, bombRadius);
+				next.init(team, lifetime / 1.5f, target, target.x, target.y, false);
 				Time.run(target.dst(this) / tilesize * bombVelPerTile, next::add);
 			}else hit();
 			

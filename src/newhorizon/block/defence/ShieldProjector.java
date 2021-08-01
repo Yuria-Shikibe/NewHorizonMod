@@ -64,7 +64,6 @@ public class ShieldProjector extends CommandableBlock{
 	public float cooldown = 0.02f;
 	
 	public float assistRange = 600f;
-	public float reloadTime = 1800f;
 	public float rotateSpeed = 0.015f;
 	
 	public float provideHealth = 3500f;
@@ -84,6 +83,8 @@ public class ShieldProjector extends CommandableBlock{
 		config(Point2.class, ShieldProjectorBuild::setTarget);
 		
 		details = Core.bundle.get("mod.ui.cautions.shield-multable");
+		
+		reloadTime = 1800f;
 	}
 	
 	@Override
@@ -126,8 +127,6 @@ public class ShieldProjector extends CommandableBlock{
 	
 	public class ShieldProjectorBuild extends CommandableBlockBuild{
 		public float rotation = 90;
-		public float reload;
-		public int target = -1;
 		
 		public transient float heat, recoil;
 		
@@ -227,12 +226,12 @@ public class ShieldProjector extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build.team == team && groupBoolf.get(this, build) && build.canCommand() && !build.isPreparing()){
+				if(build.team == team && groupBoolf.get(this, build) && build.canCommand(pos) && !build.isPreparing()){
 					build.command(pos);
 					participants.add(build);
 					build.lastAccessed(Iconc.modeAttack + "");
 					range = Math.max(range, build.spread());
-					health += build.delayTime();
+					health += build.delayTime(0);
 				}
 			}
 			
@@ -267,11 +266,11 @@ public class ShieldProjector extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
-				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand()){
+				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand(target)){
 					builds.add(build);
 					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, t.x, t.y);
 					range = Math.max(range, build.spread());
-					health += build.delayTime();
+					health += build.delayTime(0);
 				}
 			}
 			
@@ -292,7 +291,7 @@ public class ShieldProjector extends CommandableBlock{
 		}
 		
 		@Override
-		public boolean canCommand(){
+		public boolean canCommand(int target){
 			Vec2 v;
 			return consValid() && power.status > 0 && reload >= reloadTime && (v = target()) != null && within(v, range()) && Angles.angleDist(angleTo(v), rotation) < shootCone;
 		}
@@ -319,7 +318,7 @@ public class ShieldProjector extends CommandableBlock{
 		public void setPreparing(){}
 		
 		@Override
-		public float delayTime(){return provideHealth; /*Here used this method for shield health*/}
+		public float delayTime(int target){return provideHealth; /*Here used this method for shield health*/}
 		
 		@Override
 		public float spread(){return provideRange;}

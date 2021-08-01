@@ -9,6 +9,7 @@ import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
+import newhorizon.content.NHStatusEffects;
 
 public class BoostAbility extends Ability{
 	public static final int maxSize = 8;
@@ -56,8 +57,8 @@ public class BoostAbility extends Ability{
 		Tmp.v1.trns(unit.rotation, -unit.type.engineOffset);
 		trail.update(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, same ? 1 : 0);
 		
-		if(same && speed > 0.1f){
-			unit.speedMultiplier(Math.max(velocityMultiple, unit.speedMultiplier()));
+		if(same){
+			unit.apply(NHStatusEffects.accel_3, 20f);
 		}
 	}
 	

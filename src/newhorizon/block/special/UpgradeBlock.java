@@ -10,6 +10,7 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.Table;
+import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -39,7 +40,7 @@ import static mindustry.Vars.*;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
 
-public class UpgradeBlock extends Block {
+public class UpgradeBlock extends Block{
 	public static final int defaultID = -1;
 	public static final int buttonPerLine = 8;
 	
@@ -51,10 +52,10 @@ public class UpgradeBlock extends Block {
 	public Effect upgradeEffect = NHFx.upgrading;
 	public float range = 400f;
 	
-	public final Seq<UpgradeData> upgradeData = new Seq<>();
+	public final Seq<UpgradeData> upgradeDatas = new Seq<>();
 	protected void addUpgrades(UpgradeData... inputs) {
 		for(UpgradeData data : inputs){
-			upgradeData.add(data);
+			upgradeDatas.add(data);
 		}
 	}
 
@@ -64,13 +65,14 @@ public class UpgradeBlock extends Block {
 		buildCostMultiplier = 2;
 		configurable = true;
 		solid = true;
+		copyConfig = saveConfig = true;
 		
 		config(Point2.class, (Cons2<UpgradeBlockBuild, Point2>)UpgradeBlockBuild::linkPos);
 		config(Integer.class, (Cons2<UpgradeBlockBuild, Integer>)UpgradeBlockBuild::upgradeData);
-		config(Point2[].class, (UpgradeBlockBuild entity, Point2[] point2s) -> {
-			for(Point2 p : point2s){
-				entity.linkPos(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
-			}
+		config(IntSeq.class, (UpgradeBlockBuild entity, IntSeq seq) -> {
+			entity.linkPos(Point2.pack(seq.get(0) + entity.tileX(), seq.get(1) + entity.tileY()));
+			int index = seq.get(2);
+			if(index >= 0 && index < entity.datas.size && entity.canUpgrade(entity.datas.get(index)))entity.upgradeData(index);
 		});
 	}
 	
@@ -81,7 +83,7 @@ public class UpgradeBlock extends Block {
 			if(!(block instanceof ScalableBlockc) || !(block.buildType.get() instanceof Scalablec))throw new IllegalArgumentException("null @linkTarget :[red]'" + name + "'[]");
 			((ScalableBlockc)block).setLink(this);
 		}
-		if(upgradeData.isEmpty())throw new IllegalArgumentException("");
+		if(upgradeDatas.isEmpty())throw new IllegalArgumentException("");
 	}
 	
 	@Override
@@ -102,6 +104,8 @@ public class UpgradeBlock extends Block {
 				}).left().grow().row();
 			}
 		});
+		
+		stats.add(Stat.ammo, UpgradeData.ammo(upgradeDatas, 0));
 	}
 
 	@Override
@@ -124,7 +128,11 @@ public class UpgradeBlock extends Block {
 	
 	public class UpgradeBlockBuild extends Building implements Upgraderc{
 		public Seq<DataEntity> datas = new Seq<>();
-
+		
+		{
+			setData();
+		}
+		
 		public int link = -1;
 		public int upgradingID = defaultID;
 		public int latestSelectID = -1;
@@ -143,8 +151,13 @@ public class UpgradeBlock extends Block {
 		}
 		
 		@Override
-		public Point2[] config(){
-			return new Point2[]{Point2.unpack(link).sub(tile.x, tile.y)};
+		public IntSeq config(){
+			IntSeq seq = new IntSeq(3);
+			
+			 Tmp.p1.set(Point2.unpack(link).sub(tile.x, tile.y));
+			 
+			 seq.addAll(Tmp.p1.x, Tmp.p1.y, latestSelectID);
+			 return seq;
 		}
 		
 		@Override
@@ -284,6 +297,12 @@ public class UpgradeBlock extends Block {
 					table.button(
 						Icon.infoCircle, Styles.clearPartiali, () -> datas.get(latestSelectID).showInfo(false, this, core().items)
 					).size(LEN).disabled(b -> latestSelectID < 0 || datas.isEmpty()).left();
+					table.button(
+						Icon.menu, Styles.clearPartiali, () -> new BaseDialog(""){{
+							addCloseButton();
+							cont.pane(t -> UpgradeData.ammo(upgradeDatas, 0).display(t));
+						}}.show()
+					).size(LEN).padLeft(OFFSET / 3 * 2);
 				}).left().growX().fillY().row();
 
 				buildSwitchAmmoTable(t, false);
@@ -299,9 +318,6 @@ public class UpgradeBlock extends Block {
 		
 		@Override
 		public void updateTile() {
-			if(datas == null || datas.isEmpty())setData();
-			
-			
 			if(remainTime >= 0){
 				updateUpgrading();
 				if(Mathf.chanceDelta(upgradeEffectChance))for(int i : Mathf.signs)upgradeEffect.at(x + i * Mathf.random(block.size / 2f * tilesize), y - Mathf.random(block.size / 2f * tilesize), block.size / 2f, baseColorTst);
@@ -329,7 +345,6 @@ public class UpgradeBlock extends Block {
 			super.placed();
 			baseColorTst = getLinkColor();
 			NHVars.world.upgraderGroup.add(this);
-			setData();
 		}
 		
 		@Override
@@ -360,8 +375,6 @@ public class UpgradeBlock extends Block {
 
 		@Override
 		public void read(Reads read, byte revision) {
-			setData();
-			
 			this.remainTime = read.f();
 			this.link = read.i();
 			this.upgradingID = read.i();
@@ -372,7 +385,6 @@ public class UpgradeBlock extends Block {
 		
 		@Override
 		public void afterRead(){
-			setData();
 			updateTarget();
 			NHVars.world.upgraderGroup.add(this);
 		}
@@ -386,7 +398,7 @@ public class UpgradeBlock extends Block {
 		}
 		
 		public void setData(){
-			for(UpgradeData d : upgradeData)datas.add(d.newSubEntity());
+			for(UpgradeData d : upgradeDatas)datas.add(d.newSubEntity());
 		}
 		
 		@Override//Target confirm

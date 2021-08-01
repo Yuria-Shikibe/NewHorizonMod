@@ -1,5 +1,6 @@
 package newhorizon.bullets;
 
+import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -7,7 +8,9 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -42,7 +45,14 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 	public int maxHit = 20;
 	public int boltNum = 1;
 	
+	public int   effectLingtning = 2;
+	public float effectLightningChance = 0.35f;
+	public float effectLightningLength = -1;
+	public float effectLightningLengthRand = -1;
+	
 	public Effect slopeEffect = NHFx.boolSelector, liHitEffect = NHFx.boolSelector, spreadEffect = NHFx.boolSelector;
+	
+	public static final Vec2 randVec = new Vec2();
 	
 	public LightningLinkerBulletType(float speed, float damage) {
 		super(speed, damage);
@@ -92,6 +102,9 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 		if(trailLength < 0)trailLength = 12;
 		
 		drawSize = Math.max(drawSize, size * 2f);
+		
+		if(effectLightningLength < 0)effectLightningLength = size * 1.5f;
+		if(effectLightningLengthRand < 0)effectLightningLengthRand = size * 2f;
 	}
 	
 	@Override
@@ -110,6 +123,14 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius / 8, splashDamage * b.damageMultiplier() / 8, collidesAir, collidesGround);
 			NHFx.lightningHitLarge(outColor).at(hitPos);
 		});
+		
+		if(Mathf.chanceDelta(effectLightningChance) && b.lifetime - b.time > Fx.chainLightning.lifetime && Core.settings.getBool("enableeffectdetails")){
+			for(int i = 0; i < effectLingtning; i++){
+				Vec2 v = randVec.rnd(effectLightningLength + Mathf.random(effectLightningLengthRand)).add(b).add(Tmp.v1.set(b.vel).scl(Fx.chainLightning.lifetime / 2)).cpy();
+				Fx.chainLightning.at(v.x, v.y, 12f, outColor, b);
+				NHFx.lightningHitSmall.at(v.x, v.y, 20f, outColor);
+			}
+		}
 	}
 	
 	@Override

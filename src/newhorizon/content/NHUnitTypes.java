@@ -57,12 +57,13 @@ public class NHUnitTypes implements ContentList{
 			guardian, gather,
 			sharp, branch, warper, striker, annihilation, hurricane, collapser,
 			origin, thynomo, aliotiat, tarlidor, destruction,
-			ghost, zarkov, declining, rhino;
+			relay, ghost, zarkov, declining, rhino;
 	
 	static{
 		EntityMapping.nameMap.put(NewHorizon.contentName("declining"), EntityMapping.idMap[20]);
 		EntityMapping.nameMap.put(NewHorizon.contentName("zarkov"), EntityMapping.idMap[20]);
 		EntityMapping.nameMap.put(NewHorizon.contentName("ghost"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.contentName("relay"), EntityMapping.idMap[20]);
 	}
 	
 	public void loadWeapon(){
@@ -332,6 +333,72 @@ public class NHUnitTypes implements ContentList{
 	@Override
 	public void load(){
 		loadWeapon();
+		
+		relay = new UnitType("relay"){{
+			armor = 6;
+			buildBeamOffset = 6f;
+			hitSize = 20f;
+			drag = 0.06F;
+			itemCapacity = 20;
+			speed = 1.2F;
+			health = 800.0F;
+			accel = 0.12f;
+			rotateSpeed = 5f;
+
+			buildSpeed = 1.125f;
+			
+			trailLength = 70;
+			trailX = 4f;
+			trailY = -9;
+			trailScl = 1.65f;
+			
+			rotateShooting = true;
+			faceTarget = true;
+			
+			weapons.add(new NHWeapon("primary-weapon"){{
+				mirror = top = rotate = alternate = true;
+				reload = 60f;
+				shotDelay = 6f;
+				shots = 4;
+				x = 5f;
+				rotateSpeed = 12f;
+				y = -6f;
+				shootY = 18f;
+				velocityRnd = 0.075f;
+				inaccuracy = 5f;
+				spacing = 2f;
+				shootSound = Sounds.missile;
+				bullet = new SpeedUpBulletType(5f, 25f, "missile-large"){{
+					velocityBegin = 1f;
+					velocityIncrease = 7f;
+					accelerateBegin = 0f;
+					accelerateEnd = 0.65f;
+					lifetime = 65f;
+					backColor = hitColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
+					frontColor = NHColor.lightSkyFront;
+					
+					splashDamage = damage / 4f;
+					splashDamageRadius = 24f;
+					
+					hitEffect = NHFx.blast(backColor, splashDamageRadius);
+					despawnEffect = NHFx.crossBlast(backColor, 40f);
+					shootEffect = NHFx.shootCircleSmall(backColor);
+					smokeEffect = Fx.shootBigSmoke;
+					
+					trailLength = 12;
+					trailWidth = 1.75f;
+					
+					width = 7f;
+					height = 30f;
+					
+					homingDelay = 5f;
+					homingPower = 0.02f;
+					homingRange = 200f;
+				}};
+			}});
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+		};
 		
 		rhino = new UnitType("rhino"){{
 			defaultController = BuilderAI::new;

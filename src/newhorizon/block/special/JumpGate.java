@@ -211,12 +211,12 @@ public class JumpGate extends Block {
         
         Seq<UnitSet> keys = calls.values().toSeq();
         calls.clear();
-        keys.sort((set1, set2) -> set1.sortIndex[0] - set2.sortIndex[0] == 0 ? set1.sortIndex[1] - set2.sortIndex[1] : set1.sortIndex[0] - set2.sortIndex[0]);
+        keys.sort();
         for(UnitSet set : keys)calls.put(set.hashCode(), set);
     }
     
     public Seq<Integer> getSortedKeys(){
-        Seq<UnitSet> keys = calls.values().toSeq().sort((set1, set2) -> set1.sortIndex[0] - set2.sortIndex[0] == 0 ? set1.sortIndex[1] - set2.sortIndex[1] : set1.sortIndex[0] - set2.sortIndex[0]);
+        Seq<UnitSet> keys = calls.values().toSeq().sort();
         Seq<Integer> hashs = new Seq<>();
         for(UnitSet set : keys){
             hashs.add(set.hashCode());
@@ -234,7 +234,8 @@ public class JumpGate extends Block {
         });
         stats.add(Stat.output, (t) -> {
             t.row().add(Core.bundle.get("editor.spawn") + ":").left().pad(OFFSET).row();
-            for(UnitSet set : calls.values()) {
+            for(Integer i : getSortedKeys()) {
+                UnitSet set = calls.get(i);
                 t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearPartiali, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
             }
         });
@@ -674,7 +675,7 @@ public class JumpGate extends Block {
         }
     }
 
-    public static class UnitSet{
+    public static class UnitSet implements Comparable<UnitSet>{
         public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
         public @NotNull UnitType type;
         public float costTime;
@@ -710,6 +711,11 @@ public class JumpGate extends Block {
         public float costTime(){return costTime;}
         public float costTimeVar(){return costTime / state.rules.unitBuildSpeedMultiplier;}
         public ItemStack[] requirements(){ return requirements.toArray(); }
+    
+        @Override
+        public int compareTo(@NotNull UnitSet set2){
+            return sortIndex[0] - set2.sortIndex[0] == 0 ? sortIndex[1] - set2.sortIndex[1] : sortIndex[0] - set2.sortIndex[0];
+        }
     }
     
     public static class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{

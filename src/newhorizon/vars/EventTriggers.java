@@ -12,7 +12,6 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.content.Blocks;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
@@ -41,9 +40,9 @@ public class EventTriggers{
 		}
 	}
 	
-	private static String kickWarn;
+	public static Seq<Block> banned = new Seq<>();
 	
-	public static Block[] contents;
+	private static String kickWarn;
 	
 	private static boolean caution = false;
 	
@@ -60,12 +59,30 @@ public class EventTriggers{
 	
 	
 	public static void load(){
+//		banned.addAll(Blocks.itemSource, Blocks.powerSource, Blocks.liquidSource, Blocks.payloadSource, Blocks.router);
+//
+//		Events.on(EventType.BlockBuildEndEvent.class, e -> {
+//			Building b = e.tile.build;
+//			if(b == null || e.breaking || e.unit == null || !e.unit.isPlayer() || Vars.state.rules.infiniteResources || !banned.contains(b.block))return;
+//			Player player = (Player)e.unit.controller();
+//			if(player.admin)return;
+//			Log.info("Triggered Cheat");
+//			Call.kick(player.con, "You Just Cheated!");
+//			b.kill();
+//			b.remove();
+//			if(Vars.net.client()){
+//				try{
+//					Method method = NetClient.class.getDeclaredMethod("sync");
+//					method.setAccessible(true);
+//					method.invoke(Vars.netClient);
+//				}catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException ex){
+//					ex.printStackTrace();
+//				}
+//			}
+//		});
+//
 		if(Vars.headless)return;
 		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
-		
-		contents = new Block[]{
-			Blocks.itemSource, Blocks.liquidSource, Blocks.powerSource, Blocks.payloadSource
-		};
 		
 		Events.on(BossGeneratedEvent.class, e -> {
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");

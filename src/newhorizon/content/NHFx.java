@@ -1,7 +1,6 @@
 package newhorizon.content;
 
 import arc.Core;
-import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -10,19 +9,18 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
-import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.game.EventType;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import newhorizon.block.special.CommandableBlock;
 import newhorizon.func.DrawFuncs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -37,12 +35,8 @@ import static mindustry.Vars.tilesize;
 
 public class NHFx{
 	public static final ObjectMap<Integer, Effect> same = new ObjectMap<>();
-	
-	static{
-		Events.on(EventType.ClientLoadEvent.class, e -> {
-			Log.info(same.size);
-		});
-	}
+	private static final Rand rand = new Rand();
+	private static final Vec2 v = new Vec2();
 	
 	public static int hash(String m, Color c){
 		return Arrays.hashCode(new int[]{m.hashCode(), c.hashCode()});
@@ -188,10 +182,10 @@ public class NHFx{
 			});
 			
 			Fill.circle(e.x, e.y, e.fout() * 8f);
-			randLenVectors(e.id + 1, (int)(range / 10), 2 + range * 0.75f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout(Interp.pow2Out) * range / 12f));
+			randLenVectors(e.id + 1, (int)(range / 10), 2 + range * 0.75f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout(Interp.pow2Out) * Mathf.clamp(range / 15f, 3f, 14f)));
 			
 			color(Color.gray);
-			Angles.randLenVectors(e.id, (int)(range / 8), 2 + range * 1.2f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * range / 10f));
+			Angles.randLenVectors(e.id, (int)(range / 8), 2 + range * 1.1f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * Mathf.clamp(range / 8f, 4f, 18f)));
 		});
 	}
 
@@ -366,7 +360,118 @@ public class NHFx{
 		});
 	}
 	
+	public static final float lightningAlign = 0.5f;
+	
 	public static final Effect
+		chainLightningFade = new Effect(45f, 500f, e -> {
+			if(!(e.data instanceof Position)) return;
+			Position p = e.data();
+			float tx = p.getX(), ty = p.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
+			Tmp.v1.set(p).sub(e.x, e.y).nor();
+			
+			float normx = Tmp.v1.x, normy = Tmp.v1.y;
+			float range = e.rotation;
+			int links = Mathf.ceil(dst / range);
+			float spacing = dst / links;
+			
+			Lines.stroke(2.5f * Mathf.curve(e.fout(), 0, 0.7f));
+			Draw.color(Color.white, e.color, e.fin());
+			
+			Lines.beginLine();
+		
+			Fill.circle(e.x, e.y, Lines.getStroke() / 2);
+			Lines.linePoint(e.x, e.y);
+			
+			rand.setSeed(e.id);
+		
+			float fin = Mathf.curve(e.fin(), 0, lightningAlign);
+			float i;
+			for(i = 0; i < links * fin; i++){
+				float nx, ny;
+				if(i == links - 1){
+					nx = tx;
+					ny = ty;
+				}else{
+					float len = (i + 1) * spacing;
+					Tmp.v1.setToRandomDirection(rand).scl(range/2f);
+					nx = e.x + normx * len + Tmp.v1.x;
+					ny = e.y + normy * len + Tmp.v1.y;
+				}
+				
+				Lines.linePoint(nx, ny);
+			}
+		
+			float f = (fin - i / links);
+			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
+			float len = (i + 1) * spacing;
+			Lines.linePoint(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y);
+			Fill.circle(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
+			
+			Lines.endLine();
+		}).followParent(false),
+	
+		chainLightningFadeReversed = new Effect(45f, 500f, e -> {
+			if(!(e.data instanceof Position))return;
+			Position p = e.data();
+			float tx = e.x, ty = e.y, dst = Mathf.dst(p.getX(), p.getY(), tx, ty);
+			Tmp.v1.set(e.x, e.y).sub(p).nor();
+			
+			float normx = Tmp.v1.x, normy = Tmp.v1.y;
+			float range = e.rotation;
+			int links = Mathf.ceil(dst / range);
+			float spacing = dst / links;
+			
+			Lines.stroke(2.5f * Mathf.curve(e.fout(), 0, 0.7f));
+			Draw.color(Color.white, e.color, e.fin());
+			
+			Lines.beginLine();
+			
+			Fill.circle(p.getX(), p.getY(), Lines.getStroke() / 2);
+			Lines.linePoint(p);
+			
+			rand.setSeed(e.id);
+			
+			float fin = Mathf.curve(e.fin(), 0, lightningAlign);
+			float i;
+			for(i = 0; i < links *fin; i++){
+				float nx, ny;
+				if(i == links - 1){
+					nx = tx;
+					ny = ty;
+				}else{
+					float len = (i + 1) * spacing;
+					Tmp.v1.setToRandomDirection(rand).scl(range / 2f);
+					nx = p.getX() + normx * len + Tmp.v1.x;
+					ny = p.getY() + normy * len + Tmp.v1.y;
+				}
+				
+				Lines.linePoint(nx, ny);
+			}
+			
+			float f = (fin - i / links);
+			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
+			float len = (i + 1) * spacing;
+			Lines.linePoint(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y);
+			Fill.circle(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
+			
+			Lines.endLine();
+		}).followParent(false),
+		
+		lightningHitSmall = new Effect(Fx.chainLightning.lifetime, e -> {
+			color(Color.white, e.color, e.fin() + 0.25f);
+			
+			e.scaled(7f, s -> {
+				stroke(0.5f + s.fout());
+				Lines.circle(e.x, e.y, s.fin() * e.rotation);
+			});
+			
+			stroke(0.75f + e.fout());
+			
+			randLenVectors(e.id, 6, e.fin() * e.rotation + 5f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 2f));
+		
+			Fill.circle(e.x, e.y, 2.5f * e.fout());
+		}),
+	
 		absorb = new Effect(20f, e -> {
 			color(e.color);
 			stroke(e.rotation * e.fout());
@@ -395,10 +500,23 @@ public class NHFx{
 			color(e.color, Color.white, e.fout() * 0.75f);
 			Fill.circle(x, y, e.fslope() * e.rotation * size);
 		}),
+		
+		attackWarningPos = new Effect(120f, 2000f, e -> {
+			if(!(e.data instanceof Position))return;
+			Position pos = e.data();
+			
+			Draw.color(e.color);
+			TextureRegion arrowRegion = NHContent.arrowRegion;
+			float scl =	Mathf.curve(e.fout(), 0f, 0.1f);
+			Lines.stroke(2 * scl);
+			Lines.line(pos.getX(), pos.getY(), e.x, e.y);
+			Fill.circle(pos.getX(), pos.getY(), Lines.getStroke());
+			Fill.circle(e.x, e.y, Lines.getStroke());
+			Tmp.v1.set(e.x, e.y).sub(pos).scl(e.fin(Interp.pow2In)).add(pos);
+			Draw.rect(arrowRegion,  Tmp.v1.x,  Tmp.v1.y, arrowRegion.width * scl * Draw.scl, arrowRegion.height * scl * Draw.scl, pos.angleTo(e.x, e.y) - 90f);
+		}),
 	
-		attackWarning = new Effect(120f, 2000f, e -> {
-			if(!(e.data instanceof Seq))return;
-			Seq<CommandableBlock.CommandableBlockBuild> participants = e.data();
+		attackWarningRange = new Effect(120f, 2000f, e -> {
 			Draw.color(e.color);
 			Lines.stroke(2 * e.fout());
 			Lines.circle(e.x, e.y, e.rotation);
@@ -409,14 +527,6 @@ public class NHFx{
 			
 			TextureRegion arrowRegion = NHContent.arrowRegion;
 			float scl =	Mathf.curve(e.fout(), 0f, 0.1f);
-			Lines.stroke(2 * scl);
-			for(CommandableBlock.CommandableBlockBuild build : participants){
-				Lines.line(build.x, build.y, e.x, e.y);
-				Fill.circle(build.x, build.y, Lines.getStroke());
-				Fill.circle(e.x, e.y, Lines.getStroke());
-				Tmp.v1.set(build).sub(e.x, e.y).scl(e.fout()).add(e.x, e.y);
-				Draw.rect(arrowRegion,  Tmp.v1.x,  Tmp.v1.y, arrowRegion.width * scl * Draw.scl, arrowRegion.height * scl * Draw.scl, build.angleTo(e.x, e.y) - 90f);
-			}
 			
 			for (int l = 0; l < 4; l++) {
 				float angle = 90 * l;

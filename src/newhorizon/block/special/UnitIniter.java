@@ -61,6 +61,11 @@ public class UnitIniter extends Block{
 	}
 	
 	@Override
+	public boolean isHidden(){
+		return !Vars.state.rules.editor;
+	}
+	
+	@Override
 	public boolean canBeBuilt(){
 		return Vars.state.rules.editor;
 	}

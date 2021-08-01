@@ -65,7 +65,7 @@ public class NHUpgradeDatas implements ContentList{
 			new ItemStack(NHItems.seniorProcessor, 100),
 			new ItemStack(NHItems.darkEnergy, 50),
 			new ItemStack(NHItems.irayrondPanel, 100),
-			new ItemStack(Items.graphite, 125)
+			new ItemStack(NHItems.upgradeSort, 400)
 		){{
 			shootSound = Sounds.railgun;
 			burstSpacing = 5f;
@@ -127,13 +127,13 @@ public class NHUpgradeDatas implements ContentList{
 		}};
 		
 		arc9000 = new UpgradeData(
-				"arc-9000", NHBullets.arc_9000, 2700f,
+				"arc-9000", NHBullets.arc_9000, 3600f,
 				new ItemStack(NHItems.upgradeSort, 1200),
 				new ItemStack(NHItems.darkEnergy, 1000),
 				new ItemStack(NHItems.thermoCoreNegative, 800),
 				new ItemStack(NHItems.seniorProcessor, 800)
 		){{
-			reloadTime = 180f;
+			reloadTime = 360f;
 			shootSound = Sounds.laserblast;
 			chargeEffect = NHFx.darkEnergyCharge;
 			chargeBeginEffect = NHFx.darkEnergyChargeBegin;
@@ -148,16 +148,18 @@ public class NHUpgradeDatas implements ContentList{
 		){{
 			shootSound = Sounds.laser;
 			randX = 2f * tilesize;
-			salvos = 7;
+			salvos = 8;
+			burstSpacing = 8;
+			reloadTime = 180f;
 			inaccuracy = 10;
 			velocityInaccuracy = 0.08f;
 		}};
 		
 		airRaid = new UpgradeData(
 				"air-raid", NHBullets.airRaid, 1200f,
-				new ItemStack(NHItems.upgradeSort, 250),
+				new ItemStack(NHItems.upgradeSort, 1000),
 				new ItemStack(NHItems.darkEnergy, 500),
-				new ItemStack(NHItems.thermoCoreNegative, 150)
+				new ItemStack(NHItems.thermoCoreNegative, 550)
 		){{
 			shootSound = NHSounds.launch;
 			inaccuracy = 6;
@@ -167,8 +169,6 @@ public class NHUpgradeDatas implements ContentList{
 			randX = 2f * tilesize;
 		}};
 	}
-	
-	
 }
 
 

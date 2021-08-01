@@ -9,6 +9,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.util.Strings;
@@ -17,7 +18,6 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -160,14 +160,16 @@ public class HyperGenerator extends PowerGenerator{
 					Drawf.tri(b.x, b.y, triWidth * f2 * f, triLength * 1.3f * f2 * f, (i + 1) * 90 - Time.time * 2 + 90);
 				}
 				
-				Draw.color(effectColor.cpy().lerp(Color.black, 0.8f));
+				Draw.color(Tmp.c1.set(effectColor).lerp(Color.black, 0.8f));
 				Fill.circle(b.x, b.y, size * tilesize / 5f * f);
+				
+				Drawf.light(b.team, b, lightningRange * 4f * b.fout(Interp.pow2Out), effectColor, 0.75f);
 			}
 			
 			@Override
 			public void update(Bullet b){
 				super.update(b);
-				Units.nearby(Tmp.r1.setCenter(b.x, b.y).setSize(lightningRange * 4), unit -> {
+				Units.nearby(Tmp.r1.setCenter(b.x, b.y).setSize(lightningRange * 3f), unit -> {
 					unit.impulse(Tmp.v3.set(unit).sub(b.x, b.y).nor().scl(-attract * 100.0f));
 				});
 				
@@ -260,11 +262,11 @@ public class HyperGenerator extends PowerGenerator{
 				if(Mathf.chance(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, effectColor);
 				if(Mathf.chance(warmup / updateEffectDiv * 3f)){
 					Tmp.v1.rnd(size * tilesize * warmup * 0.9f).add(tile);
-					Fx.chainLightning.at(x, y, 0, effectColor, Tmp.v1.cpy());
+					NHFx.chainLightningFade.at(x, y, 12f, effectColor, Tmp.v1.cpy());
 				}
 				if(Mathf.chance(warmup / updateEffectDiv * 2f)){
 					Tmp.v1.rnd(size * tilesize * warmup * 1.5f).add(tile);
-					Fx.chainLightning.at(x, y, 0, effectColor, Tmp.v1.cpy());
+					NHFx.chainLightningFadeReversed.at(x, y, 12f, effectColor, Tmp.v1.cpy());
 				}
 			}
 		}
@@ -315,10 +317,10 @@ public class HyperGenerator extends PowerGenerator{
 					Drawf.tri(x, y, triWidth * warmup * 0.8f, triLength * drawSin3 * 0.8f, (i + 1) * 90 - progress * 1.1f + 90);
 				}
 				
-				Lines.stroke(warmup * triWidth * 0.75f);
+				Lines.stroke(warmup * triWidth * 0.55f);
 				DrawFuncs.circlePercentFlip(x, y, size * tilesize * 0.85f * (1 + Mathf.absin(progress * 2f, 24f, 0.125f)) * warmup, progress * 0.85f, 30f);
 				
-				Lines.stroke(warmup * triWidth * 0.55f);
+				Lines.stroke(warmup * triWidth * 0.35f);
 				DrawFuncs.circlePercentFlip(x, y, size * tilesize * 1.1f * (1 + Mathf.absin(progress * 1.25f, 24f, 0.125f)) * warmup, progress * 0.95f + 5f, 45f);
 			}
 			Draw.reset();

@@ -34,10 +34,6 @@ public class NewHorizon extends Mod{
 	public static final String SERVER_ADDRESS = "n2.yd.gameworldmc.cn:20074", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static Links.LinkEntry[] links;
 	
-	static{
-		Vars.testMobile = true;
-	}
-	
 	public static String contentName(String name){
 		return MOD_NAME + "-" + name;
 	}
@@ -58,6 +54,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
+			NHUnitTypes.relay
 		};
 	}
 	

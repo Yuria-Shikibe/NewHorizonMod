@@ -8,12 +8,16 @@ import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Strings;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.content.StatusEffects;
+import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
@@ -24,6 +28,9 @@ import mindustry.type.ItemStack;
 import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValue;
+import mindustry.world.meta.StatValues;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
@@ -31,10 +38,14 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
 import newhorizon.func.TableFs;
 import newhorizon.interfaces.Upgraderc;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
+import static mindustry.Vars.tilesize;
 import static newhorizon.func.TableFs.*;
 
-public class UpgradeData{
+public class UpgradeData implements Comparable<UpgradeData>{
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
 	
 	public TextureRegion icon, turretRegion;
@@ -110,6 +121,109 @@ public class UpgradeData{
 //		data.init(defaultLevel);
 //		return data;
 		return new DataEntity(){{init(defaultLevel);}};
+	}
+	
+	@Override
+	public int compareTo(@NotNull UpgradeData o){
+		return Integer.compare(hashCode(), o.hashCode());
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(this == o) return true;
+		if(!(o instanceof UpgradeData)) return false;
+		UpgradeData that = (UpgradeData)o;
+		return Objects.equals(name, that.name) && Objects.equals(selectAmmo.id, that.selectAmmo.id);
+	}
+	
+	@Override
+	public int hashCode(){
+		return Objects.hash(name, selectAmmo.id);
+	}
+	
+	protected static void sep(Table table, String text){
+		table.row();
+		table.add(text);
+	}
+	
+	public static StatValue ammo(Seq<UpgradeData> datas, int indent){
+		return table -> {
+			
+			table.row();
+			
+			Seq<UpgradeData> seq = datas.copy().sort();
+			
+			for(UpgradeData data : seq){
+				BulletType type = data.selectAmmo;
+				
+				//no point in displaying unit icon twice
+				
+				table.table().padTop(OFFSET);
+				table.image(data.icon).size(3 * 8).padRight(4).right().top();
+				table.add(data.localizedName).padRight(10).left().top();
+				
+				table.table(bt -> {
+					bt.left().defaults().padRight(3).left();
+					
+					if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
+						if(type.continuousDamage() > 0){
+							bt.add(Core.bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
+						}else{
+							bt.add(Core.bundle.format("bullet.damage", type.damage));
+						}
+					}
+					
+					if(type.buildingDamageMultiplier != 1){
+						sep(bt, Core.bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
+					}
+					
+					if(type.splashDamage > 0){
+						sep(bt, Core.bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
+					}
+					
+					if(!Mathf.equal(type.reloadMultiplier, 1f)){
+						sep(bt, Core.bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
+					}
+					
+					if(type.knockback > 0){
+						sep(bt, Core.bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
+					}
+					
+					if(type.healPercent > 0f){
+						sep(bt, Core.bundle.format("bullet.healpercent", Strings.autoFixed(type.healPercent, 2)));
+					}
+					
+					if(type.pierce || type.pierceCap != -1){
+						sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
+					}
+					
+					if(type.incendAmount > 0){
+						sep(bt, "@bullet.incendiary");
+					}
+					
+					if(type.homingPower > 0.01f){
+						sep(bt, "@bullet.homing");
+					}
+					
+					if(type.lightning > 0){
+						sep(bt, Core.bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
+					}
+					
+					if(type.status != StatusEffects.none){
+						sep(bt, (type.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
+					}
+					
+					if(type.fragBullet != null){
+						sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
+						bt.row();
+						
+						StatValues.ammo(ObjectMap.of(UnitTypes.block, type.fragBullet), indent + 1).display(bt);
+					}
+				}).padTop(-9).padLeft(indent * 8).left().get().background(Tex.underline);
+				
+				table.row();
+			}
+		};
 	}
 	
 	public class DataEntity{

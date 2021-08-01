@@ -1,6 +1,7 @@
 package newhorizon.content;
 
 import mindustry.ctype.ContentList;
+import mindustry.gen.Icon;
 import mindustry.type.SectorPreset;
 
 public class NHSectorPreset implements ContentList{
@@ -11,9 +12,15 @@ public class NHSectorPreset implements ContentList{
 	public void load(){
 		hostileHQ = new SectorPreset("hostile-HQ", NHPlanets.midantha, 0){{
 			addStartingItems = true;
+			useAI = false;
 			difficulty = 20;
 			startWaveTimeMultiplier = 2.5f;
-		}};
+		}
+			@Override
+			public void loadIcon(){
+				if(Icon.layers != null)uiIcon = fullIcon = Icon.layers.getRegion();
+			}
+		};
 		
 		deltaOutpost = new SectorPreset("delta-outpost", NHPlanets.midantha, 14){{
 			addStartingItems = true;
