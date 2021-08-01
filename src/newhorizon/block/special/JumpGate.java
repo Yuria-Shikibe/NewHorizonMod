@@ -36,6 +36,7 @@ import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
 import mindustry.logic.Ranged;
@@ -223,7 +224,13 @@ public class JumpGate extends Block {
         }
         return hashs;
     }
-
+    
+    @Override
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+        NHUnitOutline.createTeamIcon(packer, this);
+    }
+    
     @Override
     public void setStats() {
         super.setStats();

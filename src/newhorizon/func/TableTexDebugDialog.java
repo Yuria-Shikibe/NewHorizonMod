@@ -261,6 +261,8 @@ public class TableTexDebugDialog extends BaseDialog{
 			dialog.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
+		cont.row();
+		
 		addCloseButton();
 	}
 	

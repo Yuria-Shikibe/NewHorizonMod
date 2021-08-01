@@ -92,6 +92,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		@Override
 		public void draw(){
 			super.draw();
+			
 			Draw.z(Layer.effect - 1f);
 			Draw.color(team.color);
 			Building b = core();

@@ -39,6 +39,7 @@ import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHUnitOutline;
 import newhorizon.units.*;
 import newhorizon.vars.EventTriggers;
 
@@ -353,7 +354,6 @@ public class NHUnitTypes implements ContentList{
 			trailScl = 1.65f;
 			
 			rotateShooting = true;
-			faceTarget = true;
 			
 			weapons.add(new NHWeapon("primary-weapon"){{
 				mirror = top = rotate = alternate = true;

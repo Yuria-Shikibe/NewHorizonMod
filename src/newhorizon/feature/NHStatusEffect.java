@@ -6,7 +6,7 @@ import arc.graphics.Pixmaps;
 import arc.graphics.g2d.TextureAtlas;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.StatusEffect;
-import newhorizon.units.NHUnitOutline;
+import newhorizon.func.NHUnitOutline;
 
 public class NHStatusEffect extends StatusEffect{
 	public Color textureColor = null;

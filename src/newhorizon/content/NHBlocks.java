@@ -18,6 +18,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -42,7 +43,10 @@ import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.sandbox.PowerVoid;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumeLiquidFilter;
-import mindustry.world.draw.*;
+import mindustry.world.draw.DrawArcSmelter;
+import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawMixer;
+import mindustry.world.draw.DrawSmelter;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
@@ -63,6 +67,7 @@ import newhorizon.bullets.AdaptedContinuousLaserBulletType;
 import newhorizon.bullets.AdaptedLaserBulletType;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.bullets.SpeedUpBulletType;
+import newhorizon.func.NHUnitOutline;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -1362,7 +1367,9 @@ public class NHBlocks implements ContentList {
 			consumes.power(10);
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 150, NHItems.multipleSteel, 120));
 			NHTechTree.add(Blocks.coreShard, this);
-		}};
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createTeamIcon(packer, this);}
+		};
 		
 		unitIniter = new UnitIniter("unit-initer");
 		
@@ -1703,7 +1710,9 @@ public class NHBlocks implements ContentList {
             size = 3;
             health = 3500;
             itemCapacity = 2500;
-        }};
+        }
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createTeamIcon(packer, this);}
+		};
         
         blaster = new StaticChargeBlaster("blaster"){{
             requirements(Category.effect, BuildVisibility.hidden, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
