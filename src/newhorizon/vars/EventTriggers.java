@@ -82,6 +82,7 @@ public class EventTriggers{
 //		});
 //
 		if(Vars.headless)return;
+		
 		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
 		
 		Events.on(BossGeneratedEvent.class, e -> {

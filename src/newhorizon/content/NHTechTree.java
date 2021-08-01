@@ -136,7 +136,8 @@ public class NHTechTree implements ContentList {
         addUnit(NHUnitTypes.aliotiat, NHUnitTypes.tarlidor);
         addUnit(NHUnitTypes.tarlidor, NHUnitTypes.annihilation);
         
-        addUnit(Blocks.navalFactory, NHUnitTypes.ghost);
+        addUnit(Blocks.navalFactory, NHUnitTypes.relay);
+        addUnit(NHUnitTypes.relay, NHUnitTypes.ghost);
         addUnit(NHUnitTypes.ghost, NHUnitTypes.zarkov);
         addUnit(NHUnitTypes.zarkov, NHUnitTypes.declining);
         
