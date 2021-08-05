@@ -1,11 +1,17 @@
 package newhorizon.func;
 
 import arc.Core;
+import arc.Events;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
+import arc.math.Interp;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.TextButton;
+import arc.scene.ui.layout.Table;
+import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
@@ -16,6 +22,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import newhorizon.feature.ScreenHack;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,19 +76,18 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("TableTexes", () -> {
 			tableDialog = new BaseDialog("ICONS"){{
-				Object obj = new Tex();
-				Class<?> c = obj.getClass();
+				Class<?> c = Tex.class;
 				
 				Field[] fields = c.getFields();
 				cont.pane(t -> {
 					int index = 0;
 					for(Field f : fields){
 						try{
-							if(f.getType().getSimpleName().equals("TextureRegionDrawable") || f.getType().getSimpleName().equals("NinePatchDrawable")){
+							if(Drawable.class.isAssignableFrom(f.getType())){
 								if(index % 6 == 0) t.row();
 								t.table(inner -> {
 									try{
-										inner.table((Drawable)f.get(obj), de -> de.add(f.getName())).size(LEN * 3, LEN).pad(OFFSET / 3);
+										inner.table((Drawable)f.get(null), de -> de.add(f.getName())).size(LEN * 3, LEN).pad(OFFSET / 3);
 									}catch(IllegalAccessException err){
 										throw new IllegalArgumentException(err);
 									}
@@ -241,10 +247,60 @@ public class TableTexDebugDialog extends BaseDialog{
 			new SettingDialog().show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
+		cont.button("Interp", () -> {
+			BaseDialog dialog = new BaseDialog("Interp");
+			dialog.cont.pane(t -> {
+				float unitLength = 2;
+				float offset = 20 * unitLength;
+				float len = 100;
+				float sigs = 100;
+				Class<?> c = Interp.class;
+				Field[] fields = c.getFields();
+				int i = 0;
+				for(Field field : fields){
+					if(c.isAssignableFrom(field.getType())){
+						if(i++ % 5 == 0)t.row();
+						try{
+							Interp interp = (Interp)field.get(null);
+							
+							Table table = new Table(Tex.paneSolid){
+								@Override
+								public void draw(){
+									super.draw();
+									
+									Draw.color(Pal.accent);
+									Lines.stroke(unitLength);
+									Lines.beginLine();
+									
+									for(float i = 0; i < len; i += len / sigs){
+										Lines.linePoint(x + i * unitLength + offset, y + interp.apply(i / sigs) * len * unitLength + offset);
+									}
+									
+									Lines.endLine(false);
+								}
+							};
+							
+							t.table(table1 -> {
+								table1.add(table).size(len * unitLength + offset * 2).pad(OFFSET / 2).row();
+								table1.pane(in -> in.add(field.getName()).fill()).growX().height(LEN / 2 + OFFSET);
+							});
+						}catch(IllegalAccessException ignored){}
+					}
+				}
+			}).grow();
+			dialog.addCloseButton();
+			dialog.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.row();
+		
+		cont.button("Hack", () -> {
+			Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent(Vars.player, 600f));
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
 		cont.button("Weathers", () -> {
 			BaseDialog dialog = new BaseDialog("");
 			dialog.cont.pane(t -> {
-				t.add("Add").row();
 				t.image().growX().height(OFFSET / 4).pad(OFFSET / 2).color(Pal.accent).row();
 				t.pane(table -> {
 					for(Content content : content.getBy(ContentType.weather)){
@@ -260,8 +316,6 @@ public class TableTexDebugDialog extends BaseDialog{
 			dialog.addCloseButton();
 			dialog.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
-		
-		cont.row();
 		
 		addCloseButton();
 	}

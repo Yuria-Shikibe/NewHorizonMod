@@ -1,6 +1,5 @@
 package newhorizon.units;
 
-import arc.Core;
 import mindustry.entities.bullet.BulletType;
 import mindustry.type.Weapon;
 import newhorizon.NewHorizon;
@@ -19,12 +18,12 @@ public class NHWeapon extends Weapon{
 		return (NHWeapon)super.copy();
 	}
 	
-	@Override
-	public void load(){
-		this.region = Core.atlas.find(this.name, Core.atlas.find("clear"));
-		this.heatRegion = Core.atlas.find(this.name + "-heat");
-		this.outlineRegion = Core.atlas.find(this.name + "-outline");
-	}
+//	@Override
+//	public void load(){
+//		this.region = Core.atlas.find(name, Core.atlas.find("clear"));
+//		this.heatRegion = Core.atlas.find(name + "-heat");
+//		this.outlineRegion = Core.atlas.find(name + "-outline");
+//	}
 	
 	public NHWeapon setInaccuracy(float inaccuracy){
 		this.inaccuracy = inaccuracy;

@@ -13,6 +13,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
 import mindustry.type.Category;
@@ -128,6 +129,7 @@ public class UnitIniter extends Block{
 			if(toSpawnType == null)return;
 			
 			Drawf.light(team, x, y, tilesize * size * 3f, team.color, 0.8f);
+			Draw.z(Layer.overlayUI);
 			Draw.rect(toSpawnType.fullIcon, x, y, size * tilesize, size * tilesize);
 			DrawFuncs.overlayText(delay / 60 + "s", x - Tmp.v1.x, y - Tmp.v1.y, -4f, Pal.accent, true);
 		}

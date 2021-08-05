@@ -248,7 +248,7 @@ public class ShieldProjector extends CommandableBlock{
 				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);
-				}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
+				}).size(LEN * 4, LEN).row();
 			}).fill();
 		}
 		

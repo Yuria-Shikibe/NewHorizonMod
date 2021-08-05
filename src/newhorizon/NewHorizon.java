@@ -19,6 +19,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
+import newhorizon.feature.ScreenHack;
 import newhorizon.func.*;
 import newhorizon.func.Tables.LinkTable;
 import newhorizon.vars.EventTriggers;
@@ -54,7 +55,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHUnitTypes.relay
+			NHBlocks.scrambler, NHBlocks.temporaryPowerSource, NHSectorPreset.shatteredRavine, NHSectorPreset.ruinedWarehouse
 		};
 	}
 	
@@ -143,6 +144,8 @@ public class NewHorizon extends Mod{
 	        if(NHSetting.getBool("@active.tool-panel*"))TableFs.tableMain();
 	        NHSetting.updateSettingMenu();
 	        NHSetting.loadSettings();
+	        ScreenHack.load();
+	        
         }));
 	}
 	

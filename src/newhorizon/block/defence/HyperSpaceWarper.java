@@ -44,8 +44,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
-import newhorizon.block.special.JumpGate;
-import newhorizon.content.NHBlocks;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
@@ -199,13 +197,14 @@ public class HyperSpaceWarper extends Block{
 			Draw.z(Layer.bullet + 2f);
 			Draw.color(team.color);
 			
+			TextureRegion arrowRegion = NHContent.arrowRegion;
+			
 			for (int l = 0; l < 4; l++) {
 				float angle = 45 + 90 * l;
 				float regSize = size / 12f;
 				for (int i = 0; i < 4; i++) {
 					Tmp.v1.trns(angle, (i - 4) * tilesize);
 					float f = (100 - (Time.time - 25 * i) % 100) / 100;
-					TextureRegion arrowRegion = ((JumpGate)NHBlocks.jumpGate).arrowRegion;
 					Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * regSize * f * warmup, arrowRegion.height * regSize * f * warmup, angle - 90);
 				}
 			}
@@ -223,7 +222,7 @@ public class HyperSpaceWarper extends Block{
 				p.table(Tex.paneSolid, t -> {
 					t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> {
 						TableFs.pointSelectTable(table, this::configure);
-					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
+					}).size(LEN * 4, LEN).row();
 					
 					t.button("@mod.ui.select-unit", Icon.filter, Styles.cleart, () -> {
 						TableFs.rectSelectTable(table, () -> configure(selectedUnit()));

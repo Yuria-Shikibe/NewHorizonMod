@@ -20,6 +20,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -474,7 +475,7 @@ public class JumpGate extends Block {
             
             table.table(Tex.paneSolid, t -> {
                 t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
-                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN).row();
+                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).size(LEN * 5, LEN).row();
                 t.button("@settings", Icon.settings, Styles.cleart, () -> new BaseDialog("@settings"){{
                     Label l = new Label(""), currentPlan = new Label("");
                     Slider s = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne), 1, false);
@@ -789,7 +790,11 @@ public class JumpGate extends Block {
             
             if(!checked){
                 Building b = world.build(ownerPos);
-                if(b != null && b.team == team && b.isValid() && b instanceof JumpGateBuild)b.configure(false);
+                try{
+                    if(b != null && b.team == team && b.isValid() && b instanceof JumpGateBuild)b.configure(false);
+                }catch(Exception e){
+                    Log.info(e);
+                }
                 checked = true;
             }
         }

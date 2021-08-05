@@ -363,6 +363,12 @@ public class NHFx{
 	public static final float lightningAlign = 0.5f;
 	
 	public static final Effect
+		absorbFix = new Effect(12, e -> {
+			color(e.color);
+			stroke(2f * e.fout());
+			Lines.circle(e.x, e.y, 5f * e.fout());
+		}),
+	
 		chainLightningFade = new Effect(45f, 500f, e -> {
 			if(!(e.data instanceof Position)) return;
 			Position p = e.data();
@@ -456,7 +462,21 @@ public class NHFx{
 			
 			Lines.endLine();
 		}).followParent(false),
-		
+	
+		lightningHitLarge = new Effect(50f, 180f, e -> {
+			color(e.color);
+			Drawf.light(e.x, e.y, e.fout() * 90f, e.color, 0.7f);
+			e.scaled(25f, t -> {
+				stroke(3f * t.fout());
+				circle(e.x, e.y, 3f + t.fin(Interp.pow3Out) * 80f);
+			});
+			Fill.circle(e.x, e.y, e.fout() * 8f);
+			randLenVectors(e.id + 1, 4, 1f + 60f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
+			
+			color(Color.gray);
+			Angles.randLenVectors(e.id, 8, 2.0F + 30.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4.0F + 0.5F));
+		}),
+	
 		lightningHitSmall = new Effect(Fx.chainLightning.lifetime, e -> {
 			color(Color.white, e.color, e.fin() + 0.25f);
 			
@@ -589,7 +609,7 @@ public class NHFx{
 			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
 		}),
 	
-		shuttle = new Effect(60f, 200f, e -> {
+		shuttle = new Effect(60f, 800f, e -> {
 			if(!(e.data instanceof Float))return;
 			float len = e.data();
 			color(e.color);
@@ -598,6 +618,16 @@ public class NHFx{
 			}
 			Lines.stroke(e.fout() * 2.0F);
 			randLenVectors(e.id, 6, 3 + len * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
+		}),
+	
+		shuttleLerp = new Effect(180f, 800f, e -> {
+			if(!(e.data instanceof Float))return;
+			float f = Mathf.curve(e.fin(Interp.pow5In), 0f, 0.07f) * Mathf.curve(e.fout(), 0f, 0.4f);
+			float len = e.data();
+			
+			color(e.color);
+			v.trns(e.rotation - 90, (len + Mathf.randomSeed(e.id, 0, len)) * e.fin(Interp.circleOut));
+			for(int i : Mathf.signs)Drawf.tri(e.x + v.x, e.y + v.y, Mathf.clamp(len / 8, 8, 25) * (f + e.fout(0.2f) * 2f) / 3, len * 2f * e.fin(Interp.circleOut), e.rotation + 90 + i * 90);
 		}),
 		
 		line = new Effect(30f, e -> {
@@ -683,8 +713,8 @@ public class NHFx{
 			circle(e.x, e.y, e.fin() * 80);
 			stroke(e.fout() * 2.5f);
 			circle(e.x, e.y, e.fin() * 50);
+			stroke(e.fout() * 3.2f);
 			randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
-				stroke(e.fout() * 3.2f);
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
 			});
 			color(NHColor.darkEnr);

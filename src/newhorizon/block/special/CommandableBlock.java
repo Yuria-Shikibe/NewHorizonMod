@@ -8,9 +8,9 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
-import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.content.UnitTypes;
 import mindustry.core.World;
 import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
@@ -19,6 +19,7 @@ import mindustry.logic.LAccess;
 import mindustry.logic.Ranged;
 import mindustry.world.Block;
 import mindustry.world.Tile;
+import mindustry.world.blocks.ControlBlock;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
@@ -40,7 +41,7 @@ public abstract class CommandableBlock extends Block{
 	
 	public CommandableBlock(String name){
 		super(name);
-		timers += 3;
+		timers += 4;
 		update = configurable = solid = logicConfigurable = true;
 	}
 	
@@ -57,11 +58,26 @@ public abstract class CommandableBlock extends Block{
 		if(groupBoolf == null)groupBoolf = (b1, b2) -> b1.block == b2.block;
 	}
 	
-	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged{
+	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged, ControlBlock{
 		public transient int lastTarget = -1;
 		public float reload;
 		public int target = -1;
 		public float logicControlTime = -1;
+		public @arc.util.Nullable BlockUnitc unit;
+		
+		@Override
+		public void created(){
+			NHVars.world.commandables.add(this);
+		}
+		
+		@Override
+		public Unit unit(){
+			if(unit == null){
+				unit = (BlockUnitc)UnitTypes.block.create(team);
+				unit.tile(this);
+			}
+			return (Unit)unit;
+		}
 		
 		@NotNull public abstract CommandableBlockType getType();
 		
@@ -89,19 +105,29 @@ public abstract class CommandableBlock extends Block{
 		}
 		
 		@Override
+		public void updateTile(){
+			if(unit != null){
+				unit.health(health);
+				unit.rotation(rotation);
+				unit.team(team);
+				unit.set(x, y);
+			}
+			
+			if(isControlled() && timer.get(3, 10f)){ //player behavior
+				target = tmpPoint.set(World.toTile(unit.aimX()), World.toTile(unit.aimY())).pack();
+				commandAll(target);
+			}
+		}
+		
+		@Override
 		public void control(LAccess type, double p1, double p2, double p3, double p4){
-			if(type == LAccess.shoot && timer.get(1, 10f)){
-				int pos = Tmp.p1.set(World.toTile((float)p1), World.toTile((float)p2)).pack();
+			if(type == LAccess.shoot && timer.get(1, 10f) && (unit == null || !unit.isPlayer())){
+				int pos = tmpPoint.set(World.toTile((float)p1), World.toTile((float)p2)).pack();
 				if(p2 == 1)commandAll(pos);
 				if(p2 == 2 && canCommand(pos) && !isPreparing())command(pos);
 			}
 			
 			super.control(type, p1, p2, p3, p4);
-		}
-		
-		@Override
-		public void created(){
-			NHVars.world.commandables.add(this);
 		}
 		
 		@Override

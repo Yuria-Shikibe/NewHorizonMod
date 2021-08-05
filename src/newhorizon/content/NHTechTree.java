@@ -106,8 +106,13 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(Blocks.blastDrill), NHBlocks.fusionEnergyFactory, NHBlocks.fusionEnergyFactory.researchRequirements());
         new TechNode(TechTree.get(Blocks.kiln), NHBlocks.multipleSteelFactory, NHBlocks.multipleSteelFactory.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.presstaniumFactory), NHBlocks.irayrondPanelFactory, NHBlocks.irayrondPanelFactory.researchRequirements());
+        
+        add(NHBlocks.presstaniumFactory, NHBlocks.irayrondPanelFactorySmall);
+        add(NHBlocks.irayrondPanelFactorySmall, NHBlocks.irayrondPanelFactory);
+        add(NHBlocks.irayrondPanelFactory, NHBlocks.setonAlloyFactory);
+        add(NHBlocks.irayrondPanelFactory, NHBlocks.multipleSurgeAlloyFactory);
+        
         new TechNode(TechTree.get(NHBlocks.irayrondPanelFactory), NHBlocks.irayrondPanelFactorySmall, NHBlocks.irayrondPanelFactorySmall.researchRequirements());
-        new TechNode(TechTree.get(NHBlocks.irayrondPanelFactory), NHBlocks.setonAlloyFactory, NHBlocks.setonAlloyFactory.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.setonAlloyFactory), NHBlocks.upgradeSortFactory, NHBlocks.upgradeSortFactory.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.upgradeSortFactory), NHBlocks.darkEnergyFactory, NHBlocks.darkEnergyFactory.researchRequirements());
         new TechNode(TechTree.get(Blocks.pneumaticDrill), NHBlocks.metalOxhydrigenFactory, NHBlocks.metalOxhydrigenFactory.researchRequirements());
@@ -119,6 +124,7 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(NHBlocks.xenBetaFactory), NHBlocks.xenGammaFactory, NHBlocks.xenGammaFactory.researchRequirements());
         add(NHBlocks.zetaFactorySmall, NHBlocks.xenMelter);
 
+        add(NHBlocks.empTurret, NHBlocks.scrambler);
         //Units;
         addUnit(UnitTypes.mono, NHUnitTypes.gather);
         addUnit(UnitTypes.poly, NHUnitTypes.rhino);
@@ -164,17 +170,28 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(NHLiquids.xenBeta), NHLiquids.xenGamma, NHLiquids.xenGamma.researchRequirements());
         
         node(NHBlocks.jumpGateJunior, () -> {
-            node(NHSectorPreset.downpour, Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
-                node(NHSectorPreset.quantumCraters, Seq.with(new Objectives.SectorComplete(NHSectorPreset.downpour)), () -> {
+            node(NHSectorPreset.ruinedWarehouse, Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
+                node(NHSectorPreset.quantumCraters, Seq.with(new Objectives.SectorComplete(NHSectorPreset.ruinedWarehouse)), () -> {
                     node(NHSectorPreset.luminariOutpost, Seq.with(new Objectives.SectorComplete(NHSectorPreset.quantumCraters)), () -> {
-                        node(NHSectorPreset.deltaOutpost, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
-                            node(NHSectorPreset.hostileHQ, Seq.with(new Objectives.SectorComplete(NHSectorPreset.deltaOutpost)), () -> {
-                    
+                        node(NHSectorPreset.downpour, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
+                            node(NHSectorPreset.shatteredRavine, Seq.with(new Objectives.SectorComplete(NHSectorPreset.downpour)), () -> {
+        
                             });
+                        });
+                        node(NHSectorPreset.hostileHQ, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
+                
+                        });
+                        node(NHSectorPreset.deltaHQ, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
+    
                         });
                     });
                 });
             });
         });
+        
+        node(Liquids.water, () -> {
+            nodeProduce(NHLiquids.quantumLiquid, Seq.with(), () -> {});
+        });
+        
     }
 }

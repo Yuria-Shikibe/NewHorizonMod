@@ -1,6 +1,7 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -8,14 +9,17 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.EmpBulletType;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.gen.Bullet;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.MultiPacker;
@@ -30,6 +34,7 @@ import mindustry.world.blocks.defense.MendProjector;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
+import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
@@ -67,6 +72,7 @@ import newhorizon.bullets.AdaptedContinuousLaserBulletType;
 import newhorizon.bullets.AdaptedLaserBulletType;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.bullets.SpeedUpBulletType;
+import newhorizon.feature.ScreenHack;
 import newhorizon.func.NHUnitOutline;
 
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -108,10 +114,10 @@ public class NHBlocks implements ContentList {
 		//Powers
 		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
 		//Defence
-		largeMendProjector, shapedWall, assignOverdrive,
+		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret,
 		//Special
-		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
-		disposePowerVoid, disposePowerNode,
+		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
+		disposePowerVoid, disposePowerNode, temporaryPowerSource,
 	
 		//Env
 		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum,
@@ -245,6 +251,29 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadTurrets(){
+		antiBulletTurret = new PointDefenseTurret("anti-bullet-turret"){{
+			health = 1080;
+			size = 3;
+			
+			color = lightColor = NHColor.lightSkyBack;
+			beamEffect = Fx.chainLightning;
+			hitEffect = NHFx.square45_4_45;
+			shootEffect = NHFx.shootLineSmall(color);
+			shootSound = NHSounds.gauss;
+			
+			range = 280f;
+			
+			hasPower = true;
+			consumes.powerCond(8f, (PointDefenseBuild b) -> b.target != null);
+			
+			shootLength = 5f;
+			bulletDamage = 120f;
+			reloadTime = 12f;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 90, NHItems.juniorProcessor, 60, NHItems.presstanium, 120, NHItems.zeta, 120, Items.graphite, 80));
+			NHTechTree.add(Blocks.segment, this);
+		}};
+		
 		beamLaserTurret = new ItemTurret("beam-laser-turret"){{
 			size = 2;
 			requirements(Category.turret, BuildVisibility.shown, with(Items.copper, 60, NHItems.juniorProcessor, 60, NHItems.presstanium, 60));
@@ -258,6 +287,7 @@ public class NHBlocks implements ContentList {
 			shootCone = 30f;
 			inaccuracy = 6f;
 			maxAmmo = 40;
+			health = 600;
 			smokeEffect = Fx.shootBigSmoke2;
 			consumes.powerCond(3f, TurretBuild::isActive);
 			ammo(
@@ -810,7 +840,6 @@ public class NHBlocks implements ContentList {
 			ammo(
 					NHItems.fusionEnergy, NHBullets.curveBomb, NHItems.thermoCorePositive, NHBullets.strikeMissile
 			);
-			limitRange();
 			targetAir = false;
 			size = 5;
 			range = 360;
@@ -1348,6 +1377,8 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
+		
+		
 		beamDrill = new BeamDrill("beam-drill"){{
 			size = 4;
 			health = 960;
@@ -1381,6 +1412,113 @@ public class NHBlocks implements ContentList {
 			consumes.item(NHItems.fusionEnergy, 5);
 			requirements(Category.defense, BuildVisibility.shown, with(Items.copper, 300, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.plastanium, 75, NHItems.multipleSteel, 120));
 			NHTechTree.add(Blocks.forceProjector, this);
+		}};
+		
+		scrambler = new AirRaider("scrambler"){{
+			requirements(Category.effect, with(NHItems.multipleSteel, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 100, Items.plastanium, 100, Items.phaseFabric, 150));
+			
+			range =  720f;
+			
+			size = 3;
+			consumes.powerCond(8f, AirRaiderBuild::isCharging);
+			consumes.items(with(NHItems.juniorProcessor, 2, Items.phaseFabric, 1, NHItems.metalOxhydrigen, 1));
+			itemCapacity = 12;
+			burstSpacing = 30f;
+			salvos = 2;
+			health = 2500;
+			
+			lightColor = NHColor.thermoPst;
+			
+			triggeredEffect = new Effect(45f, e -> {
+				Draw.color(lightColor);
+				Lines.stroke(e.fout() * 2f);
+				Lines.square(e.x, e.y, size * tilesize / 2f + tilesize * 1.5f * e.fin(Interp.pow2In));
+			});
+			
+			bulletHitter = new EmpBulletType(){{
+				speed = 6f;
+				damage = 200f;
+				sprite = "missile-large";
+				
+				status = NHStatusEffects.scrambler;
+				statusDuration = 480f;
+				
+				trailLength = 14;
+				trailWidth = 1.5f;
+				
+				hitColor = trailColor = backColor = lightColor = lightningColor = NHColor.thermoPst;
+				frontColor = Color.white;
+				
+				homingRange = 300f;
+				homingDelay = 6f;
+				homingPower = 0f; //Custome Homing
+				
+				hitSound = Sounds.explosionbig;
+				trailChance = 0.075f;
+				trailEffect = NHFx.polyTrail;
+				drawSize = 120f;
+				
+				hitPowerEffect = applyEffect = NHFx.lightningHitSmall(hitColor);
+				
+				collides = false;
+				scaleVelocity = true;
+				hitShake = despawnShake = 16f;
+				lightning = 3;
+				lightningCone = 360;
+				lightningLengthRand = lightningLength = 20;
+				shootEffect = NHFx.instShoot(backColor);
+				smokeEffect = NHFx.square(NHColor.darkEnrColor, 50f, 3, 80f, 5f);
+				shrinkX = shrinkY = 0;
+				radius = 100f;
+				splashDamageRadius = 60f;
+				splashDamage = lightningDamage = damage;
+				height = 22f;
+				width = 8f;
+				lifetime = 120f;
+				
+				despawnEffect = new Effect(60f, 150f, e -> {
+					Draw.color(Color.white, hitColor, 0.3f + e.fin());
+					Lines.stroke(2f * e.fout());
+					
+					float rad = radius * 1.25f * e.fin(Interp.pow4Out);
+					Lines.circle(e.x, e.y, rad);
+					
+					Fill.circle(e.x, e.y, radius / 5f * e.fout());
+					Drawf.light(e.x, e.y, rad * 1.2f, hitColor, 0.7f);
+				});
+				
+				hitEffect = new MultiEffect(NHFx.blast(hitColor, radius), NHFx.square(hitColor, 100f, 3, 80f, 8f));
+			}
+				
+				@Override
+				public void update(Bullet b){
+					super.update(b);
+					
+					Teamc target = Units.closestEnemy(b.team, b.x, b.y, homingRange * 2f, Unitc::isPlayer);
+					
+					if(target != null){
+						if(b.within(target, radius / 4))b.time(b.lifetime());
+						b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), Time.delta * 7));
+					}
+				}
+				
+				@Override
+				public void despawned(Bullet b){
+					super.despawned(b);
+					
+					Units.nearbyEnemies(b.team, b.x, b.y, radius, u -> {
+						if(u.isPlayer())Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent((Player)u.controller(), 600f));
+					});
+					
+					for(int i = 0; i < 6; i++){
+						Vec2 v = Tmp.v6.rnd(radius + Mathf.random(radius)).add(b).cpy();
+						NHFx.chainLightningFade.at(b.x, b.y, 12f, hitColor, v);
+						Time.run(NHFx.chainLightningFade.lifetime * NHFx.lightningAlign, () -> {
+							NHFx.lightningHitSmall.at(v.x, v.y, 20f, hitColor);
+						});
+					}
+				}
+			};
 		}};
 		
 		airRaider = new AirRaider("air-raider"){{
@@ -1893,6 +2031,12 @@ public class NHBlocks implements ContentList {
 			maxNodes = 5;
 			laserColor1 = NHColor.lightSkyFront;
 			laserColor2 = NHColor.lightSkyBack;
+		}};
+		
+		temporaryPowerSource = new TemporaryPowerSource("temporary-power-source"){{
+			requirements(Category.power, BuildVisibility.sandboxOnly, with());
+			size = 1;
+			alwaysUnlocked = true;
 		}};
 	}
 }

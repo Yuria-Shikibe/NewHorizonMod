@@ -4,6 +4,8 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.ctype.ContentList;
+import mindustry.entities.Effect;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
@@ -12,10 +14,22 @@ import newhorizon.feature.NHStatusEffect;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect
-            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3;
+            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler;
     
     @Override
     public void load(){
+        scrambler = new NHStatusEffect("scrambler-status"){{
+            disarm = true;
+            damage = 2;
+            textureColor = color = NHColor.thermoPst;
+            effectChance = 0.1f;
+            effect = new MultiEffect(new Effect(30, e -> {
+                Draw.color(color);
+                float drawSize = 24f * e.fout();
+                Draw.rect(NHContent.pointerRegion, e.x, e.y - e.rotation * 24f * e.finpow(), drawSize, drawSize, -180);
+            }), NHFx.lightningHitSmall(color));
+        }};
+        
         accel_3 = new StatusEffect("accel_3"){{
             speedMultiplier = 3;
             show = false;

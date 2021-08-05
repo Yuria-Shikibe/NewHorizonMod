@@ -187,8 +187,7 @@ public class PosLightning {
 	
 	public static void createEffect(Position from, Position to, Color color, int boltNum, float width){
 		if(boltNum < 1){
-			Vec2 f = new Vec2().set(from);
-			Fx.chainLightning.at(f.x, f.y, 0, color, new Vec2().set(to));
+			Fx.chainLightning.at(from.getX(), from.getY(), 0, color, new Vec2().set(to));
 		}else{
 			float dst = from.dst(to);
 			

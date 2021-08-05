@@ -15,7 +15,7 @@ public class EffectBulletType extends BulletType{
 		drawSize = 120f;
     }
 
-    @Override public void draw(Bullet b){}
+	@Override public void draw(Bullet b){}
 	@Override public void drawLight(Bullet b){}
 }
 

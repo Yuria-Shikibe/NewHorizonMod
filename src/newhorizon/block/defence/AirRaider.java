@@ -5,7 +5,6 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
@@ -59,7 +58,6 @@ public class AirRaider extends CommandableAttackerBlock{
 		@Override
 		public void shoot(Integer pos){
 			Point2 p = Point2.unpack(pos);
-			Log.info("Shoot " + Tmp.p1);
 			
 			for(int i = 0; i < salvos; i++){
 				Time.run(burstSpacing * i, () -> {

@@ -12,7 +12,6 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.content.Fx;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Bullet;
@@ -51,12 +50,8 @@ public class TowardShield extends Ability{
 	private static final Cons<Bullet> shieldConsumer = trait -> {
 		if(trait.team != paramUnit.team && trait.type.absorbable && Angles.within(paramUnit.angleTo(trait), paramField.angle, paramField.angleDst / 2) && paramUnit.shield > 0){
 			trait.absorb();
-			Fx.absorb.at(trait);
 			
-			Tmp.v2.trns(paramUnit.rotation, 0, paramField.x);
-			Tmp.v1.trns(paramUnit.rotation, paramField.y).add(paramUnit);
-			Fx.chainLightning.at(trait.x, trait.y, 0, paramUnit.team.color, Tmp.v1.cpy().add(Tmp.v2));
-			if(paramField.x != 0)Fx.chainLightning.at(trait.x, trait.y, 0, paramUnit.team.color, Tmp.v1.cpy().add(Tmp.v2.inv()));
+			NHFx.absorbFix.at(trait.x, trait.y, 0, paramUnit.team.color);
 			//break shield
 			if(paramUnit.shield <= trait.damage()){
 				paramUnit.shield -= paramField.cooldown * paramField.regen;
@@ -155,7 +150,7 @@ public class TowardShield extends Ability{
 				DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 6.5f, Time.time, 20f);
 				DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 8f, -Time.time * 1.25f, 30f);
 				Draw.color(Color.white);
-				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 1.8f);
+				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 2.8f);
 			}
 		}
 	}

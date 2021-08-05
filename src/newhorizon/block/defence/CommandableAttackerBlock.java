@@ -125,7 +125,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public void control(LAccess type, Object p1, double p2, double p3, double p4){
-			if(type == LAccess.shootp && timer.get(2, 10f)){
+			if(type == LAccess.shootp && timer.get(2, 10f) && (unit == null || !unit.isPlayer())){
 				if(p1 instanceof Posc){
 					Posc target = (Posc)p1;
 					Vec2 velocity;
@@ -282,7 +282,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFs.pointSelectTable(t, this::configure);
-				}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
+				}).size(LEN * 4, LEN).row();
 			}).fill();
 			
 		}

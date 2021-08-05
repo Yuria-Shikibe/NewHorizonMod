@@ -25,6 +25,7 @@ import newhorizon.NewHorizon;
 import newhorizon.block.defence.GravityTrap;
 import newhorizon.block.defence.HyperSpaceWarper;
 import newhorizon.content.NHStatusEffects;
+import newhorizon.feature.ScreenHack;
 import newhorizon.func.NHSetting;
 import newhorizon.func.SettingDialog;
 import newhorizon.interfaces.BeforeLoadc;
@@ -82,6 +83,12 @@ public class EventTriggers{
 //		});
 //
 		if(Vars.headless)return;
+
+		Events.run(EventType.Trigger.update, ScreenHack::update);
+		
+		Events.on(ScreenHack.ScreenHackEvent.class, e -> {
+			ScreenHack.generate(e.target, e.time);
+		});
 		
 		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
 		

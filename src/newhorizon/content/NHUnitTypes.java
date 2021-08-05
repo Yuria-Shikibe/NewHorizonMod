@@ -10,6 +10,9 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
+import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.ai.types.BuilderAI;
@@ -38,12 +41,19 @@ import mindustry.type.weapons.RepairBeamWeapon;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
+import newhorizon.feature.ScreenHack;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHSetting;
 import newhorizon.func.NHUnitOutline;
-import newhorizon.units.*;
+import newhorizon.units.BoostAbility;
+import newhorizon.units.NHWeapon;
+import newhorizon.units.PhaseAbility;
+import newhorizon.units.TowardShield;
 import newhorizon.vars.EventTriggers;
 
+import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.headless;
+import static mindustry.Vars.tilesize;
 
 public class NHUnitTypes implements ContentList{
 	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
@@ -84,7 +94,6 @@ public class NHUnitTypes implements ContentList{
 			ejectEffect = Fx.blastsmoke;
 			bullet = new SpeedUpBulletType(5.25f, 180f, "large-bomb"){{
 				lifetime = 22f;
-				knockback = 12f;
 				
 				width = height = 25f;
 				
@@ -266,8 +275,8 @@ public class NHUnitTypes implements ContentList{
 		posLiTurret = new NHWeapon("pos-li-blaster"){{
 			shake = 1f;
 			shots = 1;
-			predictTarget = false;
-			rotate = top = alternate = true;
+			predictTarget = rotate = false;
+			top = alternate = true;
 			reload = 30f;
 			shootY = 4f;
 			shootSound = Sounds.spark;
@@ -300,7 +309,6 @@ public class NHUnitTypes implements ContentList{
 		
 		smallCannon = new NHWeapon("cannon"){{
 			top = mirror = rotate = true;
-			rotateSpeed = 4f;
 			reload = 45f;
 			
 			shots = 3;
@@ -353,7 +361,7 @@ public class NHUnitTypes implements ContentList{
 			trailY = -9;
 			trailScl = 1.65f;
 			
-			rotateShooting = true;
+			rotateShooting = false;
 			
 			weapons.add(new NHWeapon("primary-weapon"){{
 				mirror = top = rotate = alternate = true;
@@ -407,7 +415,7 @@ public class NHUnitTypes implements ContentList{
 			weapons.add(new RepairBeamWeapon("point-defense-mount"){{
 				y = -8.5f;
 				x = 0;
-				shootY = 6f;
+				shootY = 4f;
 				mirror = false;
 				beamWidth = 0.7f;
 				repairSpeed = 1f;
@@ -442,9 +450,8 @@ public class NHUnitTypes implements ContentList{
 			Weapon w = new PointDefenseWeapon(NewHorizon.contentName("cannon")){{
 				color = NHColor.lightSkyBack;
 				beamEffect = Fx.chainLightning;
-				reload = 60f;
 				mirror = top = alternate = true;
-				reload = 9.0F;
+				reload = 15.0F;
 				targetInterval = 10.0F;
 				targetSwitchInterval = 15.0F;
 				bullet = new BulletType() {
@@ -452,7 +459,7 @@ public class NHUnitTypes implements ContentList{
 						shootEffect = NHFx.lightningHitSmall(color);
 						hitEffect = NHFx.square45_4_45;
 						maxRange = 120.0F;
-						damage = 300f;
+						damage = 150f;
 					}
 				};
 			}};
@@ -483,9 +490,9 @@ public class NHUnitTypes implements ContentList{
 					serrationSpaceOffset = 40f;
 					width = 8f;
 					shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
-					smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
-						Draw.color(fromColor, toColor, e.fin());
-						Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
+					smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
+						Draw.color(fromColor, toColor, b.fin());
+						Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
 					}));
 				}};
 			}});
@@ -616,10 +623,12 @@ public class NHUnitTypes implements ContentList{
 		collapser = new UnitType("collapser"){{
 				rotateShooting = false;
 				commandRadius = 240f;
-				abilities.add(new AimAlarmAbility(), new ForceFieldAbility(180f, 200, 80000, 900));
+				abilities.add(new ForceFieldAbility(180f, 200, 80000, 900));
 				constructor = EntityMapping.map(3);
 				rotateShooting = false;
-				weapons.add(
+				
+				targetAir = targetGround = true;
+				weapons.addAll(
 					collapserCannon.copy().setPos(60, -50),
 					collapserCannon.copy().setPos(40, -20),
 					collapserCannon.copy().setPos(32, 60),
@@ -638,7 +647,291 @@ public class NHUnitTypes implements ContentList{
 						shootSound = NHSounds.flak;
 						mirror = alternate = false;
 						bullet = NHBullets.collapserBullet;
-					}}
+					}},
+					new NHWeapon(){
+						float rangeWeapon = 520f;
+						
+						@Override
+						public void draw(Unit unit, WeaponMount mount){
+							float z = Draw.z();
+							
+							Tmp.v1.trns(unit.rotation, y);
+							float f = 1 - mount.reload / reload;
+							float rad = 12f;
+							
+							float f1 = Mathf.curve(f,  0.4f, 1f);
+							Draw.z(Layer.bullet);
+							Draw.color(heatColor);
+							for(int i : Mathf.signs){
+								for(int j : Mathf.signs){
+									Drawf.tri(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f1 * rad / 1.75f + Mathf.num(j > 0) * 2f * (f1 + 1) / 2, (rad * 3f + Mathf.num(j > 0) * 20f) * f1, j * Time.time + 90 * i);
+								}
+							}
+							
+							TextureRegion arrowRegion = NHContent.arrowRegion;
+							
+							Tmp.v6.set(mount.aimX, mount.aimY).sub(unit);
+							Tmp.v2.set(mount.aimX, mount.aimY).sub(unit).nor().scl(Math.min(Tmp.v6.len(), rangeWeapon)).add(unit);
+							
+							for (int l = 0; l < 4; l++) {
+								float angle = 45 + 90 * l;
+								for (int i = 0; i < 4; i++) {
+									Tmp.v3.trns(angle, (i - 4) * tilesize + tilesize).add(Tmp.v2);
+									float fS = (100 - (Time.time + 25 * i) % 100) / 100 * f1 / 4;
+									Draw.rect(arrowRegion, Tmp.v3.x, Tmp.v3.y, arrowRegion.width * fS, arrowRegion.height * fS, angle + 90);
+								}
+							}
+							
+							Lines.stroke((1.5f + Mathf.absin( Time.time + 4, 8f, 1.5f)) * f1, heatColor);
+							Lines.square(Tmp.v2.x, Tmp.v2.y, 4 + Mathf.absin(8f, 4f), 45);
+							
+							Lines.stroke(rad / 2.5f * mount.heat, heatColor);
+							Lines.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, rad * 2 * (1 - mount.heat));
+							
+							Draw.color(heatColor);
+							Fill.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad);
+							Lines.stroke(f * 1.5f);
+							DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad + 5, Time.time, 20f);
+							Draw.color(Color.white);
+							Fill.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad * 0.7f);
+							
+							Draw.z(z);
+						}
+						
+						@Override
+						protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float aimX, float aimY, float mountX, float mountY, float rotation, int side){
+							shootSound.at(shootX, shootY, Mathf.random(soundPitchMin, soundPitchMax));
+
+							BulletType ammo = bullet;
+							float lifeScl = ammo.scaleVelocity ? Mathf.clamp(Mathf.dst(shootX, shootY, aimX, aimY) / ammo.range()) : 1f;
+							
+							Tmp.v6.set(mount.aimX, mount.aimY).sub(unit);
+							Tmp.v1.set(mount.aimX, mount.aimY).sub(unit).nor().scl(Math.min(Tmp.v6.len(), rangeWeapon)).add(unit);
+							
+							Bullet b = bullet.create(unit, unit.team, Tmp.v1.x, Tmp.v1.y, 0);
+							b.vel.setZero();
+							b.set(Tmp.v1);
+							
+							ejectEffect.at(mountX, mountY, rotation * side);
+							ammo.shootEffect.at(shootX, shootY, rotation);
+							ammo.smokeEffect.at(shootX, shootY, rotation);
+							unit.apply(shootStatus, shootStatusDuration);
+						}
+						
+						{
+							y = 50;
+							x = 0;
+							shootY = 25f;
+							shots = 1;
+							reload = 1200f;
+							rotateSpeed = 100f;
+							rotate = true;
+							top = false;
+							mirror = alternate = predictTarget = false;
+							heatColor = NHColor.thurmixRed;
+							shootSound = NHSounds.hugeShoot;
+							bullet = new EffectBulletType(480f){
+								@Override
+								public float range(){
+									return rangeWeapon;
+								}
+								
+								@Override
+								public void despawned(Bullet b){
+									super.despawned(b);
+									
+									Vec2 vec = new Vec2().set(b);
+									
+									float damageMulti = b.damageMultiplier();
+									Team team = b.team;
+									for(int i = 0; i < splashDamageRadius / (tilesize * 2); i++){
+										int finalI = i;
+										Time.run(i * despawnEffect.lifetime / (splashDamageRadius / (tilesize * 2)), () -> {
+											Damage.damage(team, vec.x, vec.y, tilesize * (finalI + 6), splashDamage * damageMulti, true, true);
+										});
+									}
+									
+									Units.nearby(team, vec.x, vec.y, splashDamageRadius * 2, u -> {
+										u.heal((1 - u.healthf()) / 3 * u.maxHealth());
+										u.apply(StatusEffects.overclock, 360f);
+									});
+									
+									Units.nearbyEnemies(team, vec.x, vec.y, splashDamageRadius * 2, u -> {
+										if(u.isPlayer())Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent((Player)u.controller(), 360f));
+									});
+									
+									if(!NHSetting.enableDetails())return;
+									float rad = 120;
+									float spacing = 2.5f;
+									
+									for(int k = 0; k < (despawnEffect.lifetime - NHFx.chainLightningFadeReversed.lifetime) / spacing; k++){
+										Time.run(k * spacing, () -> {
+											for(int j : Mathf.signs){
+												Vec2 v = Tmp.v6.rnd(rad * 2 + Mathf.random(rad * 4)).add(vec);
+												(j > 0 ? NHFx.chainLightningFade : NHFx.chainLightningFadeReversed).at(v.x, v.y, 12f, hitColor, vec);
+											}
+										});
+									}
+								}
+								
+								@Override
+								public void update(Bullet b){
+									float rad = 120;
+									
+									Effect.shake(8 * b.fin(), 6, b);
+									
+									if(b.timer(1, 12)){
+										Seq<Teamc> entites = new Seq<>();
+										
+										Units.nearbyEnemies(b.team, b.x, b.y, rad * 2.5f * (1 + b.fin()) / 2, entites::add);
+										
+										Units.nearbyBuildings(b.x, b.y, rad * 2.5f * (1 + b.fin()) / 2, e -> {
+											if(e.team != b.team)entites.add(e);
+										});
+										
+										entites.shuffle();
+										entites.truncate(15);
+										
+										for(Teamc e : entites){
+											PosLightning.create(b, b.team, b, e, lightningColor, false, lightningDamage, 5 + Mathf.random(5), PosLightning.WIDTH, 1, p -> {
+												NHFx.lightningHitSmall.at(p.getX(), p.getY(), 0, lightningColor);
+											});
+										}
+									}
+									
+									if(NHSetting.enableDetails() && b.lifetime() - b.time() > NHFx.chainLightningFadeReversed.lifetime)for(int i = 0; i < 2; i++){
+										if(Mathf.chanceDelta(0.2 * Mathf.curve(b.fin(), 0, 0.8f))){
+											for(int j : Mathf.signs){
+												Sounds.spark.at(b.x, b.y, 1f, 0.3f);
+												Vec2 v = Tmp.v6.rnd(rad / 2 + Mathf.random(rad * 2) * (1 + Mathf.curve(b.fin(), 0, 0.9f)) / 1.5f).add(b);
+												(j > 0 ? NHFx.chainLightningFade : NHFx.chainLightningFadeReversed).at(v.x, v.y, 12f, hitColor, b);
+											}
+										}
+									}
+									
+									if(b.fin() > 0.05f && Mathf.chanceDelta(b.fin() * 0.3f + 0.02f)){
+										NHSounds.blaster.at(b.x, b.y, 1f, 0.3f);
+										Tmp.v1.rnd(rad / 4 * b.fin());
+										NHFx.shuttleLerp.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v1.angle(), hitColor, Mathf.random(rad, rad * 3f) * (Mathf.curve(b.fin(Interp.pow2In), 0, 0.7f) + 2) / 3);
+									}
+								}
+								
+								@Override
+								public void draw(Bullet b){
+									float fin = Mathf.curve(b.fin(), 0, 0.02f);
+									float f = fin * Mathf.curve(b.fout(), 0f, 0.1f);
+									float rad = 120;
+									
+									float circleF = (b.fout(Interp.pow2In) + 1) / 2;
+									
+									Draw.color(hitColor);
+									Lines.stroke(rad / 20 * b.fin());
+									Lines.circle(b.x, b.y, rad * b.fout(Interp.pow3In));
+									Lines.circle(b.x, b.y, b.fin(Interp.circleOut) * rad * 3f * Mathf.curve(b.fout(), 0, 0.05f));
+									
+									Rand rand = new Rand(b.id);
+									for(int i = 0; i < (int)(rad / 4); i++){
+										Tmp.v1.trns(rand.random(360f) + rand.range(1f) * rad / 5 * b.fin(Interp.pow2Out), rad / 4 * circleF + rand.random(rad * (1 + b.fin(Interp.circleOut)) / 2f));
+										float angle = Tmp.v1.angle();
+										Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 28 + rand.random(0, 8), rad / 16 * b.fout(), angle);
+										Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 12 + rand.random(0, 2), rad / 12 * b.fout(), angle - 180);
+									}
+									
+									Angles.randLenVectors(b.id + 1, (int)(rad / 3), rad / 4 * circleF, rad * (1 + b.fout(Interp.pow3In)) / 3, (x, y) -> {
+										float angle = Mathf.angle(x, y);
+										Drawf.tri(b.x + x, b.y + y, rad / 6 * b.fout(), (b.fin() * 3 + 1) / 3 * 43 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
+										Drawf.tri(b.x + x, b.y + y, rad / 6 * b.fout(), (b.fin() * 3 + 1) / 3 * 12 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
+									});
+									
+									Drawf.light(b.x, b.y, rad * f * (b.fin() + 1) * 2, Draw.getColor(), 0.7f);
+									
+									Draw.z(Layer.effect + 0.001f);
+									Draw.color(hitColor);
+									Fill.circle(b.x, b.y, rad * fin * circleF / 2f);
+									Draw.color(NHColor.thurmixRedDark);
+									Fill.circle(b.x, b.y, rad * fin * circleF * 0.75f / 2f);
+								
+								}
+								
+								{
+									collidesTiles = collidesAir = collidesGround = true;
+									speed = 100;
+									
+									keepVelocity = false;
+									
+									splashDamageRadius = 800f;
+									splashDamage = 800f;
+									
+									lightningDamage = 200f;
+									lightning = 22;
+									lightningLength = 60;
+									lightningLengthRand = 60;
+									
+									rangeWeapon = 400f;
+									hitShake = despawnShake = 40f;
+									drawSize = clipSize = 800f;
+									hitColor = lightColor = trailColor = lightningColor = NHColor.thurmixRed;
+									
+									fragBullets = 6;
+									fragBullet = NHBullets.collapserBullet;
+									hitSound = NHSounds.hugeBlast;
+									hitSoundVolume = 4f;
+									
+									fragLifeMax = 1.1f;
+									fragLifeMin = 0.7f;
+									fragVelocityMax = 0.6f;
+									fragVelocityMin = 0.2f;
+									
+									shootEffect = NHFx.lightningHitLarge(hitColor);
+									
+									despawnEffect = new Effect(150f, 1600f, e -> {
+										float rad = 150f;
+										Rand rand = new Rand(e.id + 1);
+										
+										Draw.color(Color.white, hitColor, e.fin() + 0.3f);
+										float circleRad = rad * e.fout();
+										Fill.circle(e.x, e.y, circleRad);
+										
+										circleRad = e.fin(Interp.circleOut) * rad * 4f;
+										Lines.stroke(12 * e.fout());
+										Lines.circle(e.x, e.y, circleRad);
+										for(int i = 0; i < 16; i++){
+											Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
+											Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+										}
+										
+										Lines.stroke(18 * e.fout());
+										Lines.circle(e.x, e.y, e.fin(Interp.circleOut) * rad * 1.2f);
+										Angles.randLenVectors(e.id, 40, rad / 3, rad * e.fin(Interp.pow2Out), (x, y) -> {
+											lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 25 + 10);
+										});
+										
+										Angles.randLenVectors(e.id, (int)(rad / 4), rad / 6, rad * (1 + e.fout(Interp.circleOut)) / 1.5f, (x, y) -> {
+											float angle = Mathf.angle(x, y);
+											float width = e.foutpowdown() * rand.random(rad / 6, rad / 3);
+											float length = rand.random(rad / 2, rad * 5) * e.fout(Interp.circleOut);
+											
+											Draw.color(hitColor);
+											Drawf.tri(e.x + x, e.y + y, width, rad / 3 * e.fout(Interp.circleOut), angle - 180);
+											Drawf.tri(e.x + x, e.y + y, width, length, angle);
+											
+											Draw.color(NHColor.thurmixRedDark);
+											
+											width *= e.fout();
+											
+											Drawf.tri(e.x + x, e.y + y, width / 2, rad / 3 * e.fout(Interp.circleOut) * 0.9f * e.fout(), angle - 180);
+											Drawf.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
+										});
+										
+										Draw.color(Tmp.c1.set(hitColor).lerp(Color.black, 0.7f));
+										Fill.circle(e.x, e.y, rad * e.fout() * 0.75f);
+										
+										Drawf.light(e.x, e.y, rad * e.fslope() * 4f, hitColor, 0.7f);
+									}).layer(Layer.effect + 0.001f);
+								}
+							};
+						}
+					}
 				);
 				
 				hitSize = 120f;
@@ -649,7 +942,7 @@ public class NHUnitTypes implements ContentList{
 				rotateSpeed = 0.65f;
 				engineSize = 30f;
 				buildSpeed = 10f;
-				engineOffset = 50f;
+				engineOffset = 62f;
 				itemCapacity = 300;
 				armor = 180;
 				lowAltitude = true;
@@ -660,6 +953,9 @@ public class NHUnitTypes implements ContentList{
 			@Override
 			public Unit create(Team team){
 				Unit u = super.create(team);
+				for(WeaponMount mount : u.mounts){
+					mount.reload = mount.weapon.reload;
+				}
 				Events.fire(EventTriggers.BossGeneratedEvent.class, new EventTriggers.BossGeneratedEvent(u));
 				return u;
 			}
@@ -748,9 +1044,9 @@ public class NHUnitTypes implements ContentList{
 						
 						shootEffect = smokeEffect = Fx.none;
 						hitEffect = Fx.hitBeam;
-						despawnEffect = new Effect(20f, e -> {
-							Draw.color(e.color);
-							Angles.randLenVectors(e.id, 4, 35 * e.fin() + 5, (x, y) -> Fill.circle(e.x + x, e.y + y, 4 * e.fout(Interp.pow2Out)));
+						despawnEffect = new Effect(20f, b -> {
+							Draw.color(b.color);
+							Angles.randLenVectors(b.id, 4, 35 * b.fin() + 5, (x, y) -> Fill.circle(b.x + x, b.y + y, 4 * b.fout(Interp.pow2Out)));
 						});
 					}
 					
@@ -887,13 +1183,13 @@ public class NHUnitTypes implements ContentList{
 			public void init(){
 				super.init();
 				if(trailLength < 0)trailLength = (int)hitSize * 4;
-				if(slopeEffect == NHFx.boolSelector)slopeEffect = new Effect(30, e -> {
-					if(!(e.data instanceof Integer))return;
-					int i = e.data();
-					Draw.color(e.color);
-					Angles.randLenVectors(e.id, (int)(e.rotation / 8f), e.rotation / 4f + e.rotation * 2f * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * e.rotation / 2.25f));
-					Lines.stroke((i < 0 ? e.fin(Interp.pow2InInverse) : e.fout(Interp.pow2Out)) * 2f);
-					Lines.circle(e.x, e.y, (i > 0 ? (e.fin(Interp.pow2InInverse) + 0.5f) : e.fout(Interp.pow2Out)) * e.rotation);
+				if(slopeEffect == NHFx.boolSelector)slopeEffect = new Effect(30, b -> {
+					if(!(b.data instanceof Integer))return;
+					int i = b.data();
+					Draw.color(b.color);
+					Angles.randLenVectors(b.id, (int)(b.rotation / 8f), b.rotation / 4f + b.rotation * 2f * b.fin(), (x, y) -> Fill.circle(b.x + x, b.y + y, b.fout() * b.rotation / 2.25f));
+					Lines.stroke((i < 0 ? b.fin(Interp.pow2InInverse) : b.fout(Interp.pow2Out)) * 2f);
+					Lines.circle(b.x, b.y, (i > 0 ? (b.fin(Interp.pow2InInverse) + 0.5f) : b.fout(Interp.pow2Out)) * b.rotation);
 				}).layer(Layer.bullet);
 				
 				engineSize = hitSize / 4;
@@ -1259,9 +1555,9 @@ public class NHUnitTypes implements ContentList{
 						fromColor = NHColor.lightSkyFront;
 						toColor = NHColor.lightSkyBack;
 						shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
-						smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, e -> {
-							Draw.color(fromColor, toColor, e.fin());
-							Fill.circle(e.x, e.y, (width / 1.75f) * e.fout());
+						smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
+							Draw.color(fromColor, toColor, b.fin());
+							Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
 						}));
 					}};
 					shootSound = Sounds.shotgun;

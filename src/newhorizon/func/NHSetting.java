@@ -191,4 +191,7 @@ public class NHSetting{
 		debug = getBool("@active.debug");
 		if(NHSetting.getBool("@active.tool-panel*"))TableFs.showTable();
 	}
+	
+	
+	public static boolean enableDetails(){return Core.settings.getBool("enableeffectdetails");}
 }

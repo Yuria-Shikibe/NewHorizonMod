@@ -17,6 +17,8 @@ During this term (from March to June) I can only update this mod on weekends.
 
 ###### For foreigners (foreign countries relative to China)
 
+First, you may need a __VPN Service__ to have a better play experience, ~~since that big fucking gaint net wall stands there, around China.~~
+
 Most of the players in the server may speak Chinese when you log in.
 
 Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not speak English fluently. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.

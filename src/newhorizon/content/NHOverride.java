@@ -106,28 +106,27 @@ public class NHOverride{
 			block.health *= 1.5f;
 			addReq(Blocks.spectre,
 					new ItemStack(NHItems.zeta, 220),
-					new ItemStack(NHItems.seniorProcessor, 100),
-					new ItemStack(NHItems.multipleSteel, 150)
+					new ItemStack(NHItems.seniorProcessor, 100)
 			);
-			removeReq(Blocks.spectre, Items.silicon);
+			removeReq(Blocks.spectre, Items.silicon, Items.surgeAlloy, Items.graphite);
 			for(Item item : block.ammoTypes.keys()){
 				BulletType type = block.ammoTypes.get(item);
-				type.damage *= 1.5f;
-				type.splashDamage *= 1.5f;
-				type.lifetime += 10f;
+				type.damage *= 2f;
+				type.pierceCap *= 1.5f;
 			}
 		}
 		meltdown: {
 			if(!(Blocks.meltdown instanceof LaserTurret))break meltdown;
 			LaserTurret block = (LaserTurret)Blocks.meltdown;
-			addReq(Blocks.meltdown, new ItemStack(NHItems.presstanium, 250), new ItemStack(NHItems.metalOxhydrigen, 175), new ItemStack(NHItems.seniorProcessor, 120));
+			addReq(Blocks.meltdown, new ItemStack(NHItems.presstanium, 350), new ItemStack(NHItems.metalOxhydrigen, 175), new ItemStack(NHItems.seniorProcessor, 120));
+			removeReq(Blocks.meltdown, Items.surgeAlloy, Items.lead);
 			ContinuousLaserBulletType meltDownType = ((ContinuousLaserBulletType)block.shootType);
 			meltDownType.length += 120;
-			meltDownType.damage += 55f;
+			meltDownType.damage += 60f;
 			meltDownType.splashDamage += 10f;
 			meltDownType.splashDamageRadius += 14f;
 			block.range += 120;
-			block.shootDuration += 30;
+			block.shootDuration += 60;
 		}
 		
 		

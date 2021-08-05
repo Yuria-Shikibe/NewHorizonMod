@@ -46,6 +46,8 @@ public class NHBullets implements ContentList{
 	
 	public void loadFragType(){
 		collapserBullet = new LightningLinkerBulletType(){{
+			effectLightningChance = 0;
+			
 			effectLightningChance = 0.15f;
 			drawSize = 300f;
 			damage = 200;
@@ -931,7 +933,7 @@ public class NHBullets implements ContentList{
 		}};
 		
 		blastEnergyPst = new SpeedUpBulletType(0.85f, 100f, CIRCLE_BOLT){{
-			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.025f);
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
 			lifetime = 82f;
 			ammoMultiplier = 4f;
 			accelerateBegin = 0.1f;
@@ -1115,7 +1117,7 @@ public class NHBullets implements ContentList{
 			}
 		};
 		
-		strikeMissile = new BasicBulletType(5, 80, STRIKE){{
+		strikeMissile = new SpeedUpBulletType(5, 80, STRIKE){{
 			trailColor = lightningColor = backColor = lightColor = NHColor.thurmixRedLight;
 			frontColor = NHColor.thurmixRedLight;
 			lightning = 3;
@@ -1123,7 +1125,15 @@ public class NHBullets implements ContentList{
 			lightningLengthRand = lightningLength = 9;
 			splashDamageRadius = 60;
 			splashDamage = lightningDamage = damage * 0.7f;
-			lifetime = 180f;
+			lifetime = 70f;
+			
+			velocityBegin = 3f;
+			velocityIncrease = 8f;
+			
+			accelerateBegin = 0.05f;
+			accelerateEnd = 0.8f;
+			
+			func = Interp.pow2In;
 			
 			collidesAir = false;
 			hitEffect = NHFx.thurmixHit;
@@ -1222,7 +1232,10 @@ public class NHBullets implements ContentList{
 			smokeEffect = NHFx.darkEnergySmokeBig;
 		}};
 		
-		empBlot2 = new ArtilleryBulletType(4f, 10f, NewHorizon.contentName("circle-bolt")){{
+		empBlot2 = new EmpBulletType(){{
+			sprite = CIRCLE_BOLT;
+			speed = 4f;
+			damage = 10f;
 			status = NHStatusEffects.emp2;
 			ammoMultiplier = 3;
 			statusDuration = 45f;
@@ -1251,7 +1264,11 @@ public class NHBullets implements ContentList{
 			fragVelocityMax = fragLifeMax = 1.05f;
 		}};
 		
-		empBlot3 = new ArtilleryBulletType(4f, 15f, NewHorizon.contentName("circle-bolt")){{
+		empBlot3 = new EmpBulletType(){{
+			sprite = CIRCLE_BOLT;
+			speed = 4f;
+			damage = 15f;
+			
 			status = NHStatusEffects.emp3;
 			ammoMultiplier = 3;
 			statusDuration = 60f;
