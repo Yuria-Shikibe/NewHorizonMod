@@ -55,7 +55,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.scrambler, NHBlocks.temporaryPowerSource, NHSectorPreset.shatteredRavine, NHSectorPreset.ruinedWarehouse
+			NHBlocks.scrambler, NHBlocks.antiBulletTurret, NHBlocks.temporaryPowerSource, NHSectorPreset.shatteredRavine, NHSectorPreset.ruinedWarehouse
 		};
 	}
 	
