@@ -3,6 +3,7 @@ package newhorizon.block.special;
 import arc.Core;
 import arc.func.Boolf2;
 import arc.func.Cons;
+import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
@@ -49,7 +50,7 @@ public abstract class CommandableBlock extends Block{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.reload, reloadTime / Time.toSeconds, StatUnit.seconds);
-		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shoot", "\n 1 -> Control All\n 2 -> Control Single")));
+		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shoot", "\n 1 -> Control All\n 2 -> Control Single \n X, Y are both [accent]<tilesize>[] format")));
 	}
 	
 	@Override
@@ -64,11 +65,6 @@ public abstract class CommandableBlock extends Block{
 		public int target = -1;
 		public float logicControlTime = -1;
 		public @arc.util.Nullable BlockUnitc unit;
-		
-		@Override
-		public void created(){
-			NHVars.world.commandables.add(this);
-		}
 		
 		@Override
 		public Unit unit(){
@@ -105,6 +101,23 @@ public abstract class CommandableBlock extends Block{
 		}
 		
 		@Override
+		public void created(){
+			NHVars.world.commandables.add(this);
+			
+			unit = (BlockUnitc)UnitTypes.block.create(team);
+			unit.tile(this);
+		}
+		
+		public void updateControl(){
+		
+		}
+		
+		public void controlShoot(){
+			target = tmpPoint.set(World.toTile(unit.aimX()), World.toTile(unit.aimY())).pack();
+			commandAll(target);
+		}
+		
+		@Override
 		public void updateTile(){
 			if(unit != null){
 				unit.health(health);
@@ -113,18 +126,19 @@ public abstract class CommandableBlock extends Block{
 				unit.set(x, y);
 			}
 			
-			if(isControlled() && timer.get(3, 10f)){ //player behavior
-				target = tmpPoint.set(World.toTile(unit.aimX()), World.toTile(unit.aimY())).pack();
-				commandAll(target);
+			if(isControlled() && timer.get(4, 10)){ //player behavior
+				if(unit.isShooting())controlShoot();
+				updateControl();
 			}
 		}
 		
 		@Override
 		public void control(LAccess type, double p1, double p2, double p3, double p4){
-			if(type == LAccess.shoot && timer.get(1, 10f) && (unit == null || !unit.isPlayer())){
+			if(type == LAccess.shoot && timer.get(1, 10) && (unit == null || !unit.isPlayer())){
 				int pos = tmpPoint.set(World.toTile((float)p1), World.toTile((float)p2)).pack();
-				if(p2 == 1)commandAll(pos);
-				if(p2 == 2 && canCommand(pos) && !isPreparing())command(pos);
+				
+				if(Mathf.equal((float)p3,1))commandAll(pos);
+				if(Mathf.equal((float)p3,2) && canCommand(pos) && !isPreparing())command(pos);
 			}
 			
 			super.control(type, p1, p2, p3, p4);
@@ -133,6 +147,13 @@ public abstract class CommandableBlock extends Block{
 		@Override
 		public void remove(){
 			super.remove();
+			NHWorldVars.advancedLoad.remove(this);
+			NHVars.world.commandables.remove(this);
+		}
+		
+		@Override
+		public void onRemoved(){
+			super.onRemoved();
 			NHWorldVars.advancedLoad.remove(this);
 			NHVars.world.commandables.remove(this);
 		}

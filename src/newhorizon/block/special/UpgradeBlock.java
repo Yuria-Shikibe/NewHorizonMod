@@ -66,6 +66,7 @@ public class UpgradeBlock extends Block{
 		configurable = true;
 		solid = true;
 		copyConfig = saveConfig = true;
+		sync = true;
 		
 		config(Point2.class, (Cons2<UpgradeBlockBuild, Point2>)UpgradeBlockBuild::linkPos);
 		config(Integer.class, (Cons2<UpgradeBlockBuild, Integer>)UpgradeBlockBuild::upgradeData);

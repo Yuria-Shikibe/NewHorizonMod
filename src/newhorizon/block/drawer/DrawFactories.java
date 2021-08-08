@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.DrawBlock;
@@ -57,7 +58,13 @@ public class DrawFactories extends DrawBlock{
 
     @Override
     public TextureRegion[] icons(Block block){
-        return new TextureRegion[]{bottom, block.region}; 
+	    Seq<TextureRegion> seq = new Seq<>(TextureRegion.class);
+	    seq.add(bottom);
+//	    if(rotator != null && rotator.found())seq.add(rotator);
+//	    if(rotator2 != null && rotator2.found())seq.add(rotator2);
+	    seq.add(block.region);
+//	    if(top != null && top.found())seq.add(top);
+        return seq.shrink();
     }
 }
 

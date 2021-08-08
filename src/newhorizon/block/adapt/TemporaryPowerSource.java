@@ -25,7 +25,7 @@ public class TemporaryPowerSource extends PowerSource{
 	}
 	
 	public class TemporaryPowerSourceBuild extends PowerSourceBuild{
-		public float delay = 300;
+		public float delay = 1200;
 		
 		@Override
 		public void draw(){
@@ -48,7 +48,7 @@ public class TemporaryPowerSource extends PowerSource{
 		
 		@Override
 		public void buildConfiguration(Table table){
-			table.slider(5, 10, 0.5f, 0, f -> delay = f * 60f).growX().row();
+			table.slider(15, 25, 0.5f, 0, f -> delay = f * 60f).growX().row();
 		}
 		
 		@Override

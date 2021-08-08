@@ -157,7 +157,6 @@ public class ShieldProjector extends CommandableBlock{
 					build.overlap();
 				}
 			}
-			
 		}
 		
 		@Override
@@ -167,6 +166,8 @@ public class ShieldProjector extends CommandableBlock{
 		
 		@Override
 		public void updateTile(){
+			super.updateTile();
+			
 			if(reload < reloadTime && consValid()){
 				reload = Mathf.clamp(reload + efficiency() * delta(), 0, reloadTime);
 			}
@@ -176,6 +177,15 @@ public class ShieldProjector extends CommandableBlock{
 			
 			Vec2 v;
 			if((v = target()) != null)rotation = Mathf.slerpDelta(rotation, angleTo(v), rotateSpeed * efficiency());
+		}
+		
+		@Override
+		public void updateControl(){
+			for(CommandableBlockBuild build : NHVars.world.commandables){
+				if(build != null && build.team == team && groupBoolf.get(this, build)){
+					build.target = target;
+				}
+			}
 		}
 		
 		@Override

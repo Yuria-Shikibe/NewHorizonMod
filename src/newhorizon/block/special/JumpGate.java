@@ -20,7 +20,6 @@ import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -108,6 +107,7 @@ public class JumpGate extends Block {
         super(name);
         copyConfig = saveConfig = true;
         update = true;
+        sync = true;
         configurable = true;
         solid = true;
         hasPower = true;
@@ -229,7 +229,6 @@ public class JumpGate extends Block {
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
-        NHUnitOutline.createTeamIcon(packer, this);
     }
     
     @Override
@@ -734,9 +733,6 @@ public class JumpGate extends Block {
         public float surviveTime, surviveLifeime = 3000f;
         public float rotation;
         
-        public int ownerPos = -1;
-        public boolean checked = false;
-        
         public transient long lastUpdated, updateSpacing;
     
         public transient Unit addUnit = Nulls.unit;
@@ -746,13 +742,12 @@ public class JumpGate extends Block {
             return 500;
         }
     
-        public void init(UnitType type, int spawnNum, Team team, Position pos, float rotation, float lifetime, int ownerPos){
+        public void init(UnitType type, int spawnNum, Team team, Position pos, float rotation, float lifetime){
             this.type = type;
             this.spawnNum = spawnNum;
             this.lifetime = lifetime;
             this.rotation = rotation;
             this.team = team;
-            this.ownerPos = ownerPos;
             set(pos);
             NHFx.spawnWave.at(x, y, size, team.color);
         }
@@ -786,16 +781,6 @@ public class JumpGate extends Block {
                 dump();
                 effect();
                 remove();
-            }
-            
-            if(!checked){
-                Building b = world.build(ownerPos);
-                try{
-                    if(b != null && b.team == team && b.isValid() && b instanceof JumpGateBuild)b.configure(false);
-                }catch(Exception e){
-                    Log.info(e);
-                }
-                checked = true;
             }
         }
         
@@ -919,8 +904,6 @@ public class JumpGate extends Block {
             time = read.f();
             rotation = read.f();
             spawnNum = read.i();
-            ownerPos = read.i();
-            checked = read.bool();
             surviveTime = read.f();
             
             type = TypeIO.readUnitType(read);
@@ -937,8 +920,6 @@ public class JumpGate extends Block {
             write.f(time);
             write.f(rotation);
             write.i(spawnNum);
-            write.i(ownerPos);
-            write.bool(checked);
             write.f(surviveTime);
             
             TypeIO.writeUnitType(write, type);

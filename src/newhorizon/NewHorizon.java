@@ -55,7 +55,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.scrambler, NHBlocks.antiBulletTurret, NHBlocks.temporaryPowerSource, NHSectorPreset.shatteredRavine, NHSectorPreset.ruinedWarehouse
+			NHBlocks.multiplePresstaniumFactory, NHBlocks.remoteRouter
 		};
 	}
 	
@@ -100,7 +100,7 @@ public class NewHorizon extends Mod{
 					NHSetting.settingApply();
 				}).size(LEN * 2f, LEN);
 				table.button("@links", Icon.link, Styles.cleart, NewHorizon::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-				table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
+				table.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 				table.button("@log", Icon.book, Styles.cleart, NewHorizon::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
 				table.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.cleart, () -> Core.app.setClipboardText(SERVER_ADDRESS)).size(LEN * 4f, LEN).padLeft(OFFSET / 2);
 			}).fillX().height(LEN + OFFSET);
@@ -134,7 +134,7 @@ public class NewHorizon extends Mod{
 			        }).growX().top().row();
         			cont.table(table -> {
 				        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
-				        table.button("@settings", Icon.settings, Styles.cleart, () -> new SettingDialog().show()).growX().height(LEN);
+				        table.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).growX().height(LEN);
 				        table.button("@log", Icon.add, Styles.cleart, NewHorizon::logShow).growX().height(LEN);
 			        }).bottom().growX().height(LEN).padTop(OFFSET);
 		        }}.show();

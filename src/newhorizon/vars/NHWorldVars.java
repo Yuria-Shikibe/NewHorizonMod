@@ -1,6 +1,6 @@
 package newhorizon.vars;
 
-import arc.struct.Seq;
+import arc.struct.OrderedSet;
 import newhorizon.block.defence.GravityTrap;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.block.special.UpgradeBlock;
@@ -12,18 +12,19 @@ public class NHWorldVars{
 	public transient boolean worldLoaded = false;
 	public transient boolean load = false;
 	
-	public static final Seq<ServerInitc> serverLoad = new Seq<>();
-	public static final Seq<BeforeLoadc> advancedLoad = new Seq<>();
+	public static final OrderedSet<ServerInitc> serverLoad = new OrderedSet<>();
+	public static final OrderedSet<BeforeLoadc> advancedLoad = new OrderedSet<>();
 	
-	public transient final Seq<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new Seq<>();
-	public transient final Seq<GravityTrap.GravityTrapBuild> gravityTraps = new Seq<>();
-	public transient final Seq<CommandableBlock.CommandableBlockBuild> commandables = new Seq<>();
+	public transient final OrderedSet<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new OrderedSet<>();
+	public transient final OrderedSet<GravityTrap.GravityTrapBuild> gravityTraps = new OrderedSet<>();
+	public transient final OrderedSet<CommandableBlock.CommandableBlockBuild> commandables = new OrderedSet<>();
 	
 	public transient int ix, iy;
 	public transient int commandPos = -1;
 	
 	
 	public void clear(){
+		
 		upgraderGroup.clear();
 		commandables.clear();
 		gravityTraps.clear();

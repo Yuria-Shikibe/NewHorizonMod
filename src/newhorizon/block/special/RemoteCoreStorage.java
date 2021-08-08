@@ -5,28 +5,49 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.func.DrawFuncs;
+import newhorizon.interfaces.BeforeLoadc;
+import newhorizon.vars.EventTriggers;
+import newhorizon.vars.NHWorldVars;
 
 import static mindustry.Vars.tilesize;
 
 public class RemoteCoreStorage extends StorageBlock{
+	public static final ObjectMap<Integer, Integer> placedMap = new ObjectMap<>(Team.all.length);
+	
+	static{
+		for(int i = 0; i < Team.all.length; i++){
+			placedMap.put(i, 0);
+		}
+		
+		EventTriggers.actBeforeLoad.add(() -> placedMap.each((id, i) -> placedMap.put(id, 0)));
+	}
+	
 	public RemoteCoreStorage(String name){
 		super(name);
 		update = true;
 		hasItems = true;
 		itemCapacity = 0;
 		configurable = true;
+	}
+	
+	public static int maxPlaceNum(){
+		return Vars.world.width() * Vars.world.height() / 2500;
 	}
 	
 	@Override
@@ -37,13 +58,62 @@ public class RemoteCoreStorage extends StorageBlock{
 	@Override
 	public void setBars(){
 		super.setBars();
+		bars.add("maxPlace", (RemoteCoreStorageBuild entity) ->
+			new Bar(
+				() -> "Max Place | " + placedMap.get(entity.team.id) / maxPlaceNum(),
+				() -> placedMap.get(entity.team.id) <= maxPlaceNum() ? Pal.heal : Pal.redderDust,
+				() -> (float)placedMap.get(entity.team.id) / maxPlaceNum()
+			)
+		);
 		bars.add("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
 		bars.remove("items");
 	}
 	
-	public class RemoteCoreStorageBuild extends StorageBuild{
+	@Override
+	public boolean canPlaceOn(Tile tile, Team team){
+		return super.canPlaceOn(tile, team) && placedMap.get(team.id) < maxPlaceNum();
+	}
+	
+	public class RemoteCoreStorageBuild extends StorageBuild implements BeforeLoadc{
 		public float warmup = 0;
 		public float progress = 0;
+		
+		
+		@Override
+		public void remove(){
+			super.remove();
+			NHWorldVars.advancedLoad.remove(this);
+		}
+		
+		
+		@Override
+		public void add(){
+			super.add();
+			NHWorldVars.advancedLoad.add(this);
+			beforeLoad();
+		}
+		
+		@Override
+		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
+			super.init(tile, team, shouldAdd, rotation);
+			
+			placedMap.put(team.id, placedMap.get(team.id) + 1);
+//			Log.info("ADD" + placedMap.get(team.id) + " | ID: " + team.id);
+			
+			return this;
+		}
+		
+		//		@Override
+//		public void afterRead(){
+//			super.afterRead();
+//			placedMap.put(team.id, placedMap.get(team.id) + 1);
+//		}
+		
+		@Override
+		public void onRemoved(){
+			placedMap.put(team.id, placedMap.get(team.id) - 1);
+		}
+		
 		
 		@Override
 		public void displayBars(Table table){
@@ -56,7 +126,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0 && core() != null){
+			if(efficiency() > 0 && core() != null && placedMap.get(team.id) <= maxPlaceNum()){
 				if(Mathf.equal(warmup, 1, 0.015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{
@@ -112,6 +182,11 @@ public class RemoteCoreStorage extends StorageBlock{
 		@Override
 		public void drawConfigure(){
 			if(core() != null)DrawFuncs.posSquareLink(Mathf.equal(warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, 1, 4, true, tile, core());
+		}
+		
+		@Override
+		public void beforeLoad(){
+			placedMap.put(team.id, placedMap.get(team.id) + 1);
 		}
 	}
 }

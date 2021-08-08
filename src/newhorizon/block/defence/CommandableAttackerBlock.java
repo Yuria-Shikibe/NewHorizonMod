@@ -1,11 +1,13 @@
 package newhorizon.block.defence;
 
 import arc.Core;
+import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -114,6 +116,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			return spread;
 		}
 		
+		@Override
 		public void setTarget(Point2 p){
 			NHVars.world.commandPos = target = p.pack();
 			for(CommandableBlockBuild build : NHVars.world.commandables){
@@ -133,8 +136,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 					else velocity = Vec2.ZERO;
 					velocity.scl((delayTime(tmpPoint.set(World.toTile(velocity.x), World.toTile(velocity.y)).pack()) * Time.toSeconds + prepareDelay) / 1.5f).add(target);
 					int pos = tmpPoint.set(World.toTile(velocity.x), World.toTile(velocity.y)).pack();
-					if(p2 == 1)commandAll(pos);
-					if(p2 == 2 && canCommand(pos) && !isPreparing())command(pos);
+					if(Mathf.equal((float)p2,1))commandAll(pos);
+					if(Mathf.equal((float)p2,2) && canCommand(pos) && !isPreparing())command(pos);
 				}
 			}
 			
@@ -159,6 +162,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public void updateTile(){
+			super.updateTile();
+			
 			if(reload < reloadTime * storage && consValid()){
 				reload += efficiency() * delta();
 			}
@@ -246,6 +251,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		public void commandAll(Integer pos){
 			tmpPoint.set(Point2.unpack(pos));
+			Log.info(tmpPoint);
 			float realSpread = 0f;
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();

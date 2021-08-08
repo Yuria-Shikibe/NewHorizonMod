@@ -224,6 +224,10 @@ public class TableFs{
         children.fill().pack();
         children.setTransform(true);
         inner.addChildAt(parent.getZIndex() + 1, children);
+        inner.setScale(parent.scaleX, parent.scaleY);
+        children.setScale(parent.scaleX, parent.scaleY);
+        
+        
         children.setPosition(inner.getWidth() - children.getWidth(), inner.y + (inner.getHeight() - children.getHeight()) / 2);
         
         inner.actions(Actions.moveTo(0, inner.y, 1f, Interp.fade));
@@ -248,6 +252,7 @@ public class TableFs{
         }).grow().row();
         
         Core.scene.root.addChildAt(1, starter);
+        starter.setScale(Core.scene.table().scaleX, Core.scene.table().scaleY);
     }
     
     public static void buildBulletTypeInfo(Table t, BulletType type){

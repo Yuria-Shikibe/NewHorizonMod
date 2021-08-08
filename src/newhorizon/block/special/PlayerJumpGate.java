@@ -17,13 +17,11 @@ import mindustry.content.Fx;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import newhorizon.func.DrawFuncs;
 import newhorizon.func.NHFunc;
-import newhorizon.func.NHUnitOutline;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.*;
@@ -48,8 +46,6 @@ public class PlayerJumpGate extends Block{
 		config(Integer.class, (PlayerJumpGateBuild tile, Integer id) -> tile.teleport(Groups.player.getByID(id)));
 		config(Boolean.class, (PlayerJumpGateBuild tile, Boolean value) -> tile.locked = value);
 	}
-	
-	@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createTeamIcon(packer, this);}
 	
 	@Override
 	public void init(){

@@ -11,7 +11,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v129.1'
+    mindustryVersion = 'v129.2'
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")

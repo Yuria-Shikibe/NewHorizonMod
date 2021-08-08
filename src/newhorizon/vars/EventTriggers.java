@@ -27,7 +27,6 @@ import newhorizon.block.defence.HyperSpaceWarper;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.feature.ScreenHack;
 import newhorizon.func.NHSetting;
-import newhorizon.func.SettingDialog;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.interfaces.ServerInitc;
 
@@ -41,6 +40,7 @@ public class EventTriggers{
 		}
 	}
 	
+	public static final Seq<Runnable> actBeforeLoad = new Seq<>();
 	public static Seq<Block> banned = new Seq<>();
 	
 	private static String kickWarn;
@@ -119,6 +119,8 @@ public class EventTriggers{
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHVars.reset();
 			
+			actBeforeLoad.forEach(Runnable::run);
+			
 			for(BeforeLoadc c : NHWorldVars.advancedLoad){
 				c.beforeLoad();
 			}
@@ -132,7 +134,7 @@ public class EventTriggers{
 			
 			if(caution){
 				caution = false;
-				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new SettingDialog().show(), () -> {});
+				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new NHSetting.SettingDialog().show(), () -> {});
 				Vars.player.con.kick(kickWarn, 1);
 			}
 		});

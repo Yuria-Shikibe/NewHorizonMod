@@ -113,6 +113,7 @@ public class NHOverride{
 				BulletType type = block.ammoTypes.get(item);
 				type.damage *= 2f;
 				type.pierceCap *= 1.5f;
+				type.lifetime += 20f;
 			}
 		}
 		meltdown: {
@@ -143,6 +144,12 @@ public class NHOverride{
 				new ItemStack(NHItems.multipleSteel, 45)
 		);
 		removeReq(Blocks.rtgGenerator, Items.silicon);
+		
+		addReq(Blocks.logicProcessor, ItemStack.with(NHItems.juniorProcessor, 80));
+		removeReq(Blocks.logicProcessor, Items.silicon);
+		
+		addReq(Blocks.hyperProcessor, ItemStack.with(NHItems.seniorProcessor, 80));
+		removeReq(Blocks.hyperProcessor, Items.silicon);
 	}
 	
 	

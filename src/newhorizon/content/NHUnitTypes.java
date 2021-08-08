@@ -839,8 +839,8 @@ public class NHUnitTypes implements ContentList{
 									
 									Angles.randLenVectors(b.id + 1, (int)(rad / 3), rad / 4 * circleF, rad * (1 + b.fout(Interp.pow3In)) / 3, (x, y) -> {
 										float angle = Mathf.angle(x, y);
-										Drawf.tri(b.x + x, b.y + y, rad / 6 * b.fout(), (b.fin() * 3 + 1) / 3 * 43 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
-										Drawf.tri(b.x + x, b.y + y, rad / 6 * b.fout(), (b.fin() * 3 + 1) / 3 * 12 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
+										Drawf.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 43 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
+										Drawf.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 12 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
 									});
 									
 									Drawf.light(b.x, b.y, rad * f * (b.fin() + 1) * 2, Draw.getColor(), 0.7f);
@@ -854,6 +854,7 @@ public class NHUnitTypes implements ContentList{
 								}
 								
 								{
+									collides = false;
 									collidesTiles = collidesAir = collidesGround = true;
 									speed = 100;
 									
@@ -923,7 +924,7 @@ public class NHUnitTypes implements ContentList{
 											Drawf.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
 										});
 										
-										Draw.color(Tmp.c1.set(hitColor).lerp(Color.black, 0.7f));
+										Draw.color(NHColor.thurmixRedDark);
 										Fill.circle(e.x, e.y, rad * e.fout() * 0.75f);
 										
 										Drawf.light(e.x, e.y, rad * e.fslope() * 4f, hitColor, 0.7f);
@@ -1878,7 +1879,8 @@ public class NHUnitTypes implements ContentList{
 						shootStatus = StatusEffects.slow;
 						shootStatusDuration = bullet.lifetime + firstShotDelay + 40f;
 						firstShotDelay = NHFx.chargeEffectSmall(new Color(), 60f).lifetime - 1.0F;
-					}}, new NHWeapon("swepter"){{
+					}},
+					new NHWeapon("swepter"){{
 						mirror = false;
 						top = true;
 						rotate = true;
@@ -1894,7 +1896,8 @@ public class NHUnitTypes implements ContentList{
 						recoil = 4.4f;
 						bullet = NHBullets.hurricaneType;
 						shootSound = Sounds.laserblast;
-					}}, new NHWeapon("impulse"){{
+					}},
+					new NHWeapon("impulse"){{
 						heatColor = NHColor.lightSkyBack;
 						top = true;
 						rotate = true;
@@ -1944,7 +1947,7 @@ public class NHUnitTypes implements ContentList{
 				lowAltitude = true;
 				itemCapacity = 500;
 				health = 30000.0F;
-				speed = 1.4F;
+				speed = 1F;
 				accel = 0.04F;
 				drag = 0.025F;
 				flying = true;

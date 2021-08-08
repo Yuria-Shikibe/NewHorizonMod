@@ -22,7 +22,7 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.*;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
-import mindustry.graphics.MultiPacker;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -47,7 +47,9 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.sandbox.PowerVoid;
 import mindustry.world.blocks.storage.StorageBlock;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumeLiquidFilter;
+import mindustry.world.consumers.ConsumeType;
 import mindustry.world.draw.DrawArcSmelter;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawMixer;
@@ -59,6 +61,7 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.block.adapt.*;
 import newhorizon.block.defence.*;
+import newhorizon.block.distribution.RemoteRouter;
 import newhorizon.block.distribution.TowardGate;
 import newhorizon.block.drawer.DrawFactories;
 import newhorizon.block.drawer.DrawHoldLiquid;
@@ -73,7 +76,6 @@ import newhorizon.bullets.AdaptedLaserBulletType;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.bullets.SpeedUpBulletType;
 import newhorizon.feature.ScreenHack;
-import newhorizon.func.NHUnitOutline;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -89,7 +91,7 @@ public class NHBlocks implements ContentList {
 		largeShieldGenerator,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior, jumpGatePrimary,
 	
-		presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
+		multiplePresstaniumFactory, presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
 		sandCracker,
@@ -108,7 +110,7 @@ public class NHBlocks implements ContentList {
 		//walls
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
 		//Distributions
-		towardGate, rapidUnloader, liquidAndItemBridge,
+		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter,
 		//Drills
 		largeWaterExtractor, beamDrill,
 		//Powers
@@ -267,8 +269,8 @@ public class NHBlocks implements ContentList {
 			consumes.powerCond(8f, (PointDefenseBuild b) -> b.target != null);
 			
 			shootLength = 5f;
-			bulletDamage = 120f;
-			reloadTime = 12f;
+			bulletDamage = 80f;
+			reloadTime = 6f;
 			
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 90, NHItems.juniorProcessor, 60, NHItems.presstanium, 120, NHItems.zeta, 120, Items.graphite, 80));
 			NHTechTree.add(Blocks.segment, this);
@@ -898,12 +900,57 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadFactories(){
+		multiplePresstaniumFactory = new GenericCrafter("multiple-presstanium-factory"){{
+			size = 3;
+			health = 540;
+			requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 80, NHItems.juniorProcessor, 60, Items.thorium, 80));
+			craftTime = 60f;
+			consumes.power(5);
+			consumes.items(with(Items.titanium, 6, Items.graphite, 2));
+			consumes.liquid(NHLiquids.zetaFluid, 0.125f);
+			outputItems = with(NHItems.presstanium, 8, Items.scrap, 1);
+			
+			itemCapacity = 30;
+			liquidCapacity = 30;
+			
+			drawer = new DrawFactories(){{
+				drawRotator = 3f;
+				liquidColor = consumes.<ConsumeLiquid>get(ConsumeType.liquid).liquid.color;
+			}
+				
+				@Override
+				public void draw(GenericCrafterBuild entity){
+					super.draw(entity);
+					if(entity.warmup > 0f){
+						Color flameColor = Color.valueOf("ffc999");
+						float lightRadius = 60f, lightAlpha = 0.65f, lightSinScl = 10f, lightSinMag = 5;
+						float flameRadius = 3f, flameRadiusIn = 1.9f, flameRadiusScl = 5f, flameRadiusMag = 2f, flameRadiusInMag = 1f;
+						
+						float g = 0.3f;
+						float r = 0.06f;
+						float cr = Mathf.random(0.1f);
+						
+						Draw.z(Layer.block + 0.01f);
+						
+						Draw.alpha(((1f - g) + Mathf.absin(Time.time, 8f, g) + Mathf.random(r) - r) * entity.warmup);
+						
+						Draw.tint(flameColor);
+						Fill.circle(entity.x, entity.y, flameRadius + Mathf.absin(Time.time, flameRadiusScl, flameRadiusMag) + cr);
+						Draw.color(1f, 1f, 1f, entity.warmup);
+						Fill.circle(entity.x, entity.y, flameRadiusIn + Mathf.absin(Time.time, flameRadiusScl, flameRadiusInMag) + cr);
+						
+						Draw.color();
+					}
+				}
+			};
+		}};
+		
 		sandCracker = new MultiCrafter("sand-cracker"){{
 			size = 2;
 			requirements(Category.crafting, ItemStack.with(Items.lead, 40, Items.copper, 60, Items.graphite, 45));
 			NHTechTree.add(Blocks.pulverizer, this);
 			health = 320;
-			craftTime = 90f;
+			craftTime = 45f;
 			itemCapacity = 20;
 			hasPower = hasItems = true;
 			drawer = new DrawArcSmelter();
@@ -1084,7 +1131,7 @@ public class NHBlocks implements ContentList {
 				outputItem = new ItemStack(NHItems.juniorProcessor, 3);
 				craftTime = 120f;
 				size = 2;
-				hasPower = hasLiquids = hasItems = true;
+				hasPower = hasItems = true;
 				drawer = new DrawSmelter(NHItems.fusionEnergy.color);
 				consumes.items(new ItemStack(Items.silicon, 2), new ItemStack(Items.copper, 4));
 				consumes.power(2f);
@@ -1377,7 +1424,13 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
-		
+		remoteRouter = new RemoteRouter("remote-router"){{
+			size = 3;
+			consumes.power(10);
+			requirements(Category.distribution, BuildVisibility.shown, with(NHItems.seniorProcessor, 80, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, Items.surgeAlloy, 80));
+			health = 450;
+			NHTechTree.add(Blocks.router, this);
+		}};
 		
 		beamDrill = new BeamDrill("beam-drill"){{
 			size = 4;
@@ -1398,9 +1451,7 @@ public class NHBlocks implements ContentList {
 			consumes.power(10);
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 150, NHItems.multipleSteel, 120));
 			NHTechTree.add(Blocks.coreShard, this);
-		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createTeamIcon(packer, this);}
-		};
+		}};
 		
 		unitIniter = new UnitIniter("unit-initer");
 		
@@ -1437,7 +1488,7 @@ public class NHBlocks implements ContentList {
 			
 			bulletHitter = new EmpBulletType(){{
 				speed = 6f;
-				damage = 200f;
+				damage = 100f;
 				sprite = "missile-large";
 				
 				status = NHStatusEffects.scrambler;
@@ -1467,7 +1518,7 @@ public class NHBlocks implements ContentList {
 				lightningCone = 360;
 				lightningLengthRand = lightningLength = 20;
 				shootEffect = NHFx.instShoot(backColor);
-				smokeEffect = NHFx.square(NHColor.darkEnrColor, 50f, 3, 80f, 5f);
+				smokeEffect = NHFx.square(backColor, 50f, 3, 80f, 5f);
 				shrinkX = shrinkY = 0;
 				radius = 100f;
 				splashDamageRadius = 60f;
@@ -1593,9 +1644,9 @@ public class NHBlocks implements ContentList {
 				lightningLength = 8;
 				lightningLengthRand = 16;
 				splashDamageRadius = 120f;
-				despawnShake = 20f;
+				hitShake = despawnShake = 20f;
 				hitSound = despawnSound = Sounds.explosionbig;
-				despawnEffect = new MultiEffect(NHFx.blast(hitColor, splashDamageRadius * 1.5f), NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f));
+				hitEffect = despawnEffect = new MultiEffect(NHFx.blast(hitColor, splashDamageRadius * 1.5f), NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f));
 			}};
 			consumes.powerCond(6f, BombLauncherBuild::isCharging);
 			consumes.item(NHItems.fusionEnergy, 2);
@@ -1848,9 +1899,7 @@ public class NHBlocks implements ContentList {
             size = 3;
             health = 3500;
             itemCapacity = 2500;
-        }
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createTeamIcon(packer, this);}
-		};
+        }};
         
         blaster = new StaticChargeBlaster("blaster"){{
             requirements(Category.effect, BuildVisibility.hidden, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
