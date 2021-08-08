@@ -119,11 +119,8 @@ public class EventTriggers{
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHVars.reset();
 			
-			actBeforeLoad.forEach(Runnable::run);
-			
-			for(BeforeLoadc c : NHWorldVars.advancedLoad){
-				c.beforeLoad();
-			}
+			for(Runnable run : actBeforeLoad)run.run();
+			for(BeforeLoadc c : NHWorldVars.advancedLoad)c.beforeLoad();
 			
 			NHVars.world.clearLast();
 			NHVars.world.worldLoaded = true;
