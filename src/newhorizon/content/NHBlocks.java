@@ -36,12 +36,15 @@ import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.distribution.Conveyor;
+import mindustry.world.blocks.distribution.StackConveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.DecayGenerator;
+import mindustry.world.blocks.power.NuclearReactor;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.SolidPump;
@@ -110,11 +113,11 @@ public class NHBlocks implements ContentList {
 		//walls
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
 		//Distributions
-		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter,
+		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter,denseTitaniumConveyor,multiConveyor,
 		//Drills
 		largeWaterExtractor, beamDrill,
 		//Powers
-		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,
+		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator,zetaGenerator,
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret,
 		//Special
@@ -1726,6 +1729,23 @@ public class NHBlocks implements ContentList {
 			heatColor = NHColor.lightSkyBack.mul(1.1f);
 			itemDuration = 480.0F;
 		}};
+
+		zetaGenerator = new NuclearReactor("zeta-reactor"){{
+			requirements(Category.power,ItemStack.with(NHItems.metalOxhydrigen,300,NHItems.juniorProcessor,50,Items.metaglass,50,NHItems.zeta,100));
+			NHTechTree.add(Blocks.thoriumReactor,this);
+			size = 3;
+			powerProduction = 25.0F;
+			ambientSound = Sounds.hum;
+			ambientSoundVolume = 0.24F;
+			consumes.item(NHItems.zeta);
+			consumes.liquid(Liquids.cryofluid,heating/coolantPower).update(false);
+			heating = 0.005F;
+			coolantPower = 0.025F;
+			lightColor = Color.valueOf("ffc299");
+			explodeEffect = Fx.impactReactorExplosion;
+			explosionDamage = 4000;
+			explosionRadius = 25;
+		}};
 		
 		disposableBattery = new DisposableBattery("disposable-battery"){{
 			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.fusionEnergy, 15, NHItems.juniorProcessor, 10, NHItems.presstanium, 40));
@@ -1773,6 +1793,21 @@ public class NHBlocks implements ContentList {
 			speed = 80;
 			requirements(Category.distribution, BuildVisibility.shown, with(Items.titanium, 5, Items.copper, 10, Items.silicon, 5));
 			NHTechTree.add(Blocks.sorter, this);
+		}};
+
+		denseTitaniumConveyor = new Conveyor("dense-titanium-conveyor"){{
+			requirements(Category.distribution,with(Items.metaglass,4,NHItems.presstanium,1));
+			speed = 0.12f;
+			displayedSpeed = 16f;
+			health =  100;
+		}};
+
+		multiConveyor = new StackConveyor("multi-conveyor"){{
+			requirements(Category.distribution,with(NHItems.zeta,1,NHItems.multipleSteel,1));
+			speed = 6f / 80f;
+			health = 100;
+			itemCapacity = 15;
+			recharge = 1.2f;
 		}};
 		
 		fusionCollapser = new AdaptImpactReactor("fusion-collapser"){{
