@@ -1726,7 +1726,7 @@ public class NHBlocks implements ContentList {
 			itemDuration = 480.0F;
 		}};
 
-		zetaGenerator = new ItemLiquidGenerator("zeta-generator"){{
+		zetaGenerator = new SingleTypeGenerator("zeta-generator"){{
 			requirements(Category.power,ItemStack.with(NHItems.metalOxhydrigen, 120, NHItems.juniorProcessor, 80, Items.plastanium, 80, NHItems.zeta,100, Items.copper, 150));
 			NHTechTree.add(Blocks.thoriumReactor,this);
 			size = 3;
@@ -1738,7 +1738,7 @@ public class NHBlocks implements ContentList {
 			itemDuration = 150f;
 			consumes.item(NHItems.zeta, 3);
 			consumes.liquid(Liquids.cryofluid,0.1f).update(false);
-			defaults = false;
+			
 			lightColor = heatColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
 			generateEffect = NHFx.square(heatColor, 30f, 5, 20f, 4);
 			explodeEffect = NHFx.lightningHitLarge(heatColor);
