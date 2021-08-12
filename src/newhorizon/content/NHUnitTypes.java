@@ -71,10 +71,10 @@ public class NHUnitTypes implements ContentList{
 			relay, ghost, zarkov, declining, rhino;
 	
 	static{
-		EntityMapping.nameMap.put(NewHorizon.contentName("declining"), EntityMapping.idMap[20]);
-		EntityMapping.nameMap.put(NewHorizon.contentName("zarkov"), EntityMapping.idMap[20]);
-		EntityMapping.nameMap.put(NewHorizon.contentName("ghost"), EntityMapping.idMap[20]);
-		EntityMapping.nameMap.put(NewHorizon.contentName("relay"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("declining"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("zarkov"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("ghost"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("relay"), EntityMapping.idMap[20]);
 	}
 	
 	public void loadWeapon(){
@@ -447,7 +447,7 @@ public class NHUnitTypes implements ContentList{
 			weapons.add(mainCannon.copy().setPos(0, 25));
 			weapons.add(mainCannon.copy().setPos(0, -56));
 			
-			Weapon w = new PointDefenseWeapon(NewHorizon.contentName("cannon")){{
+			Weapon w = new PointDefenseWeapon(NewHorizon.name("cannon")){{
 				color = NHColor.lightSkyBack;
 				beamEffect = Fx.chainLightning;
 				mirror = top = alternate = true;
@@ -1177,7 +1177,7 @@ public class NHUnitTypes implements ContentList{
 			@Override
 			public void load(){
 				super.load();
-				shadowRegion = uiIcon = fullIcon = Core.atlas.find(NewHorizon.contentName("jump-gate-pointer"));
+				shadowRegion = uiIcon = fullIcon = Core.atlas.find(NewHorizon.name("jump-gate-pointer"));
 			}
 			
 			@Override

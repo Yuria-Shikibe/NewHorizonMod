@@ -152,7 +152,7 @@ If you find that your device cannot afford it, open the mod file folder and find
 - Available in the server.
 
 ---
-#### Hyperspace Folding Gate & Gravity Gully
+#### Hyperspace Folding Gate & Gravity Trap
 
 ---
 ![hyper-space-warper](assets/sprites/blocks/defence/hyper-space-warper.png)

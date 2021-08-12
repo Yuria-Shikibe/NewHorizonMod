@@ -1,9 +1,12 @@
 package newhorizon.block.adapt;
 
+import arc.Events;
 import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.util.Time;
+import mindustry.Vars;
+import mindustry.game.EventType;
 import mindustry.world.blocks.power.ImpactReactor;
 
 public class AdaptImpactReactor extends ImpactReactor{
@@ -14,6 +17,30 @@ public class AdaptImpactReactor extends ImpactReactor{
 	}
 	
 	public class AdaptImpactReactorBuild extends ImpactReactorBuild{
+		@Override
+		public void updateTile(){
+			if(consValid() && power.status >= 0.99f){
+				boolean prevOut = getPowerProduction() <= consumes.getPower().requestedPower(this);
+				
+				warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed * timeScale);
+				if(Mathf.equal(warmup, 1f, 0.001f) || Vars.net.active()){
+					warmup = 1f;
+				}
+				
+				if(!prevOut && (getPowerProduction() > consumes.getPower().requestedPower(this))){
+					Events.fire(EventType.Trigger.impactPower);
+				}
+				
+				if(timer(timerUse, itemDuration / timeScale)){
+					consume();
+				}
+			}else{
+				warmup = Mathf.lerpDelta(warmup, 0f, 0.01f);
+			}
+			
+			productionEfficiency = Mathf.pow(warmup, 5f);
+		}
+		
 		@Override
 		public void draw(){
 			Draw.rect(bottomRegion, x, y);

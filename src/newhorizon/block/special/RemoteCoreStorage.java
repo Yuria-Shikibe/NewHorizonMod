@@ -6,6 +6,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
+import arc.struct.ObjectSet;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -28,14 +29,14 @@ import newhorizon.vars.NHWorldVars;
 import static mindustry.Vars.tilesize;
 
 public class RemoteCoreStorage extends StorageBlock{
-	public static final ObjectMap<Integer, Integer> placedMap = new ObjectMap<>(Team.all.length);
+	public static final ObjectMap<Integer, ObjectSet<RemoteCoreStorageBuild>> placedMap = new ObjectMap<>(Team.all.length);
 	
 	static{
 		for(int i = 0; i < Team.all.length; i++){
-			placedMap.put(i, 0);
+			placedMap.put(i, ObjectSet.with());
 		}
 		
-		EventTriggers.actBeforeLoad.add(() -> placedMap.each((id, i) -> placedMap.put(id, 0)));
+		EventTriggers.actBeforeLoad.add(() -> placedMap.each((id, i) -> placedMap.put(id, ObjectSet.with())));
 	}
 	
 	public RemoteCoreStorage(String name){
@@ -47,7 +48,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	}
 	
 	public static int maxPlaceNum(){
-		return Vars.world.width() * Vars.world.height() / 2500;
+		return Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 15);
 	}
 	
 	@Override
@@ -60,9 +61,9 @@ public class RemoteCoreStorage extends StorageBlock{
 		super.setBars();
 		bars.add("maxPlace", (RemoteCoreStorageBuild entity) ->
 			new Bar(
-				() -> "Max Place | " + placedMap.get(entity.team.id) / maxPlaceNum(),
-				() -> placedMap.get(entity.team.id) <= maxPlaceNum() ? Pal.heal : Pal.redderDust,
-				() -> (float)placedMap.get(entity.team.id) / maxPlaceNum()
+				() -> "Max Place | " + placedMap.get(entity.team.id).size + " / " + maxPlaceNum(),
+				() -> placedMap.get(entity.team.id).size <= maxPlaceNum() ? Pal.heal : Pal.redderDust,
+				() -> (float)placedMap.get(entity.team.id).size / maxPlaceNum()
 			)
 		);
 		bars.add("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
@@ -71,7 +72,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team){
-		return super.canPlaceOn(tile, team) && placedMap.get(team.id) < maxPlaceNum();
+		return super.canPlaceOn(tile, team) && placedMap.get(team.id).size < maxPlaceNum();
 	}
 	
 	public class RemoteCoreStorageBuild extends StorageBuild implements BeforeLoadc{
@@ -97,7 +98,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
 			super.init(tile, team, shouldAdd, rotation);
 			
-			placedMap.put(team.id, placedMap.get(team.id) + 1);
+			placedMap.get(team.id).add(this);
 //			Log.info("ADD" + placedMap.get(team.id) + " | ID: " + team.id);
 			
 			return this;
@@ -111,7 +112,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void onRemoved(){
-			placedMap.put(team.id, placedMap.get(team.id) - 1);
+			placedMap.get(team.id).remove(this);
 		}
 		
 		
@@ -126,7 +127,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0 && core() != null && placedMap.get(team.id) <= maxPlaceNum()){
+			if(efficiency() > 0 && core() != null && placedMap.get(team.id).size <= maxPlaceNum()){
 				if(Mathf.equal(warmup, 1, 0.015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{
@@ -186,7 +187,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void beforeLoad(){
-			placedMap.put(team.id, placedMap.get(team.id) + 1);
+			placedMap.get(team.id).add(this);
 		}
 	}
 }

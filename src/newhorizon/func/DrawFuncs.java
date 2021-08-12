@@ -41,9 +41,9 @@ public class DrawFuncs {
             float length = size / 2f + 3 + sin;
             Tmp.v1.trns(i * 90, -length);
             Draw.color(Pal.gray);
-            Draw.rect(NewHorizon.contentName("linked-arrow-back"), x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+            Draw.rect(NewHorizon.name("linked-arrow-back"), x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
             Draw.color(color);
-            Draw.rect(NewHorizon.contentName("linked-arrow"), 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+            Draw.rect(NewHorizon.name("linked-arrow"), 	 x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
         }
         Draw.reset();
     }

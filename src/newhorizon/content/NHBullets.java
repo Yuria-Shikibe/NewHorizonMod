@@ -123,8 +123,8 @@ public class NHBullets implements ContentList{
 	}
 	
 	public void load(){
-		CIRCLE_BOLT = NewHorizon.contentName("circle-bolt");
-		STRIKE = NewHorizon.contentName("strike");
+		CIRCLE_BOLT = NewHorizon.name("circle-bolt");
+		STRIKE = NewHorizon.name("strike");
 		
 		loadFragType();
 		
@@ -882,7 +882,7 @@ public class NHBullets implements ContentList{
 			shootEffect = Fx.none;
 		}};
 		
-		rapidBomb = new SpeedUpBulletType(9f, 100, NewHorizon.contentName("strike")){{
+		rapidBomb = new SpeedUpBulletType(9f, 100, NewHorizon.name("strike")){{
 			trailLength = 8;
 			trailWidth = 1.75f;
 			

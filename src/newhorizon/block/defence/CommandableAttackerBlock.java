@@ -7,7 +7,6 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -251,7 +250,6 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		public void commandAll(Integer pos){
 			tmpPoint.set(Point2.unpack(pos));
-			Log.info(tmpPoint);
 			float realSpread = 0f;
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();

@@ -50,7 +50,7 @@ public abstract class CommandableBlock extends Block{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.reload, reloadTime / Time.toSeconds, StatUnit.seconds);
-		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shoot", "\n 1 -> Control All\n 2 -> Control Single \n X, Y are both [accent]<tilesize>[] format")));
+		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shoot", "\n 1 -> Control All\n 2 -> Control Single \n X, Y are both [accent]<tilesize>(8x)[] format")));
 	}
 	
 	@Override

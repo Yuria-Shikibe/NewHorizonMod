@@ -298,8 +298,8 @@ public class JumpGate extends Block {
     @Override
     public void load(){
         super.load();
-        pointerRegion = Core.atlas.find(NewHorizon.contentName("jump-gate-pointer"));
-        arrowRegion = Core.atlas.find(NewHorizon.contentName("jump-gate-arrow"));
+        pointerRegion = Core.atlas.find(NewHorizon.name("jump-gate-pointer"));
+        arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
     }
 
     public class JumpGateBuild extends Building implements Ranged{
@@ -830,15 +830,7 @@ public class JumpGate extends Block {
                 Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, rotation() - 90);
             }
     
-            if(can && Core.settings.getBool("enableeffectdetails")){
-                for(int i = 0; i < 4; i++){
-                    float sin = Mathf.absin(Time.time, 16f, tilesize);
-                    float length = (tilesize * 5 + sin) * fout() + tilesize;
-                    float signSize = regSize + 0.75f + Mathf.absin(Time.time + 8f, 8f, 0.15f);
-                    Tmp.v1.trns(i * 90, -length);
-                    Draw.rect(pointerRegion, x + Tmp.v1.x, y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize, pointerRegion.height * Draw.scl * signSize, i * 90 - 90);
-                }
-    
+            if(can && NHSetting.enableDetails()){
                 float railF = Mathf.curve(fin(Interp.pow2Out), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
                 Tmp.v1.trns(rotation, 0f, (2 - railF) * tilesize * 1.4f);
     

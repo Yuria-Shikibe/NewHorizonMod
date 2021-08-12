@@ -57,7 +57,7 @@ public class NHStatusEffects implements ContentList{
                 if(!unit.spawnedByCore)return;
                 Draw.z(Layer.effect);
                 Draw.color(NHColor.lightSkyBack);
-                TextureRegion area = Core.atlas.find(NewHorizon.contentName("upgrade"));
+                TextureRegion area = Core.atlas.find(NewHorizon.name("upgrade"));
                 Draw.rect(area, unit.x + unit.hitSize * 1.25f, unit.y, -90);
                 Draw.rect(area, unit.x - unit.hitSize * 1.25f, unit.y, 90);
             }

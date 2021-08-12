@@ -108,7 +108,7 @@ public class UpgradeData implements Comparable<UpgradeData>{
 	
 	
 	public void load(){
-		this.icon = Core.atlas.find(NewHorizon.contentName(name));
+		this.icon = Core.atlas.find(NewHorizon.name(name));
 	}
 	
 	@Override

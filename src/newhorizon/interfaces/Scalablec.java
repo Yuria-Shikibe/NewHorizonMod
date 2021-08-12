@@ -28,7 +28,7 @@ public interface Scalablec extends Buildingc{
 
         Draw.rect(getData().type().icon, x - len, y + len);
         Draw.color(getColor());
-        Draw.rect(NewHorizon.contentName("upgrade-icon-outline"), x - len, y + len);
+        Draw.rect(NewHorizon.name("upgrade-icon-outline"), x - len, y + len);
         Draw.reset();
     }
     Upgraderc upgraderc();

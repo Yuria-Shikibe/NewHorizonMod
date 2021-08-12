@@ -164,7 +164,7 @@ public class GravityTrap extends Block{
 			Draw.color(team.color);
 			float length = tilesize * size / 4f + sin;
 			
-			TextureRegion region = Core.atlas.find(NewHorizon.contentName("linked-arrow"));
+			TextureRegion region = Core.atlas.find(NewHorizon.name("linked-arrow"));
 			for(int i = 0; i < 4; i++){
 				Tmp.v1.trns(i * 90, -length);
 				

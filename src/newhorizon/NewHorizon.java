@@ -4,7 +4,6 @@ import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Dialog;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
@@ -20,7 +19,10 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
 import newhorizon.feature.ScreenHack;
-import newhorizon.func.*;
+import newhorizon.func.ClassIDIniter;
+import newhorizon.func.NHSetting;
+import newhorizon.func.TableFs;
+import newhorizon.func.Tables;
 import newhorizon.func.Tables.LinkTable;
 import newhorizon.vars.EventTriggers;
 
@@ -35,7 +37,7 @@ public class NewHorizon extends Mod{
 	public static final String SERVER_ADDRESS = "n2.yd.gameworldmc.cn:20074", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static Links.LinkEntry[] links;
 	
-	public static String contentName(String name){
+	public static String name(String name){
 		return MOD_NAME + "-" + name;
 	}
 	
@@ -55,7 +57,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.multiplePresstaniumFactory, NHBlocks.remoteRouter
+			NHBlocks.zetaGenerator, NHBlocks.multiArmorConveyor, NHBlocks.multiConveyor, NHBlocks.multiEfficientConveyor
 		};
 	}
 	
@@ -83,27 +85,28 @@ public class NewHorizon extends Mod{
 	}
 
 	public static void startLog(){
-		Dialog dialog = new BaseDialog("", Styles.fullDialog);
+		BaseDialog dialog = new BaseDialog("");
 		dialog.closeOnBack();
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
-				table.table(t -> t.image(Core.atlas.find(contentName("upgrade")))).center().growX().fillY().row();
+				table.table(t -> t.image(NHContent.icon).fill()).center().growX().fillY().row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
-				table.add("[white]<< Powered by NewHorizonMod >>", Styles.techLabel).row();
+				table.add("[white]<< Powered by New Horizon Mod >>", Styles.techLabel).row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("").row();
-			}).grow().center().row();
+			}).growX().center().row();
 			
 			inner.table(table -> {
-				table.button("@back", Icon.left, Styles.cleart, () -> {
+				float width = inner.getPrefWidth() / 2;
+				table.button("@back", Icon.left, Styles.transt, () -> {
 					dialog.hide();
 					NHSetting.settingApply();
-				}).size(LEN * 2f, LEN);
-				table.button("@links", Icon.link, Styles.cleart, NewHorizon::links).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-				table.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-				table.button("@log", Icon.book, Styles.cleart, NewHorizon::logShow).size(LEN * 2f, LEN).padLeft(OFFSET / 2);
-				table.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.cleart, () -> Core.app.setClipboardText(SERVER_ADDRESS)).size(LEN * 4f, LEN).padLeft(OFFSET / 2);
-			}).fillX().height(LEN + OFFSET);
+				}).growX().height(LEN).marginLeft(width).marginRight(width).row();
+				table.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).marginLeft(width).marginRight(width).row();
+				table.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).marginLeft(width).marginRight(width).row();
+				table.button("@log", Icon.book, Styles.transt, NewHorizon::logShow).growX().height(LEN).marginLeft(width).marginRight(width).row();
+				table.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).marginLeft(width).marginRight(width).row();
+			}).fill();
 		}).grow();
 		dialog.show();
 	}
@@ -139,13 +142,11 @@ public class NewHorizon extends Mod{
 			        }).bottom().growX().height(LEN).padTop(OFFSET);
 		        }}.show();
 	        }
-        	
         	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
 	        if(NHSetting.getBool("@active.tool-panel*"))TableFs.tableMain();
 	        NHSetting.updateSettingMenu();
 	        NHSetting.loadSettings();
 	        ScreenHack.load();
-	        
         }));
 	}
 	

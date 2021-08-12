@@ -17,7 +17,7 @@ public class NHItems implements ContentList{
 	@Override
 	public void load(){
 		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("CFFF87")){{
-			radioactivity = 5f;
+			radioactivity = 2.5f;
 			explosiveness = 3f;
 			charge = 15f;
 		}};
@@ -44,7 +44,7 @@ public class NHItems implements ContentList{
 		setonAlloy = new Item("seton-alloy", Color.valueOf("#151C23")){{
 		}};
 		darkEnergy = new Item("dark-energy", Color.valueOf("#BE91FF")){{
-			radioactivity = 15f;
+			radioactivity = 5f;
 			explosiveness = 5f;
 			charge = 25f;
 		}};

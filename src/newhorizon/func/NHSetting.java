@@ -208,27 +208,27 @@ public class NHSetting{
 			super("@nh-setting");
 			setFillParent(true);
 			cont.pane(table -> {
-				table.top();
-				table.pane(t -> {
-					t.left();
-					t.marginLeft(OFFSET);
-					t.add("@mod.ui.setting-dialog");
-					t.add("[gray]You can get back here through: ").left().row();
-					t.add("[accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ").left().padLeft(LEN).row();
-					t.add("[accent]<VanillaSettings>[gray] -> [accent]" + Core.bundle.get("settings.game") + "[gray] -> [accent]NEW HORIZON[gray] -> ").left().padLeft(LEN).row();
-					t.add("@settings").color(Pal.lancerLaser).left().padLeft(LEN * 2f).row();
-				}).growX().height(LEN * 2f).row();
-				table.image().color(Pal.accent).growX().height(OFFSET / 4).pad(OFFSET / 2).row();
+				table.center();
+//				table.pane(t -> {
+//					t.left();
+//					t.marginLeft(OFFSET);
+//					t.add("@mod.ui.setting-dialog");
+//					t.add("[gray]You can get back here through: ").left().row();
+//					t.add("[accent]<ModDialog>[gray] -> [accent]NewHorizonMod[gray] -> [accent]<View Content>[gray] -> ").left().padLeft(LEN).row();
+//					t.add("[accent]<VanillaSettings>[gray] -> [accent]" + Core.bundle.get("settings.game") + "[gray] -> [accent]NEW HORIZON[gray] -> ").left().padLeft(LEN).row();
+//					t.add("@settings").color(Pal.lancerLaser).left().padLeft(LEN * 2f).row();
+//				}).growX().height(LEN * 2f).row();
+				table.image().color(Pal.accent).growX().height(OFFSET / 3).pad(OFFSET / 2).row();
 				for(SettingEntry key : entries){
 					table.table(t -> {
-						t.button(key.key, Styles.clearTogglet, () -> {
+						t.button(key.key, Styles.clearToggleMenut, () -> {
 							if(key.warn() && !getBool(key.key))setting(key);
 							else {
 								setChanged(key);
 								setBoolOnce(key.key, !getBool(key.key));
 							}
 						}).height(LEN).growX().update(b -> b.setChecked(key.bool() && getBool(key.key)));
-						t.button(Icon.info, Styles.cleari, LEN, () -> {
+						t.button(Icon.info, Styles.clearPartiali, LEN, () -> {
 							new BaseDialog("@info"){{
 								addCloseButton();
 								cont.table(t -> {
@@ -240,7 +240,7 @@ public class NHSetting{
 									t.add(key.description).color(Color.lightGray);
 								}).growX().fillY();
 							}}.show();
-						}).size(LEN);
+						}).size(LEN * 3, LEN);
 					}).growX().fillY().padLeft(LEN).padRight(LEN).row();
 				}
 			}).grow();

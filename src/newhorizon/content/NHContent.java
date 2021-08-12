@@ -10,14 +10,14 @@ import newhorizon.feature.UpgradeData;
 
 public class NHContent extends Content{
 	public static TextureRegion
-			iconLevel, ammoInfo, arrowRegion, pointerRegion;
+			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon;
 	
 	public static void initLoad(){
 		new NHContent().load();
 	}
 	
-	public static TextureRegion getArrowRegion(){return Core.atlas.find(NewHorizon.contentName("jump-gate-arrow"));}
-	public static TextureRegion getPointerRegion(){return Core.atlas.find(NewHorizon.contentName("jump-gate-pointer"));}
+	public static TextureRegion getArrowRegion(){return Core.atlas.find(NewHorizon.name("jump-gate-arrow"));}
+	public static TextureRegion getPointerRegion(){return Core.atlas.find(NewHorizon.name("jump-gate-pointer"));}
 	
 	
 	@Override
@@ -27,10 +27,11 @@ public class NHContent extends Content{
 	
 	public void load(){
 		if(Vars.headless)return;
-		arrowRegion = Core.atlas.find(NewHorizon.contentName("jump-gate-arrow"));
-		ammoInfo = Core.atlas.find(NewHorizon.contentName("upgrade-info"));
-		iconLevel = Core.atlas.find(NewHorizon.contentName("level-up"));
-		pointerRegion = Core.atlas.find(NewHorizon.contentName("jump-gate-pointer"));
+		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
+		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));
+		iconLevel = Core.atlas.find(NewHorizon.name("level-up"));
+		pointerRegion = Core.atlas.find(NewHorizon.name("jump-gate-pointer"));
+		icon = Core.atlas.find(NewHorizon.name("icon-white"));
 		
 		for(UpgradeData data : NHUpgradeDatas.all){
 			data.load();
