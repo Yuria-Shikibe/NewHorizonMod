@@ -1737,7 +1737,7 @@ public class NHBlocks implements ContentList {
 			liquidCapacity = 30;
 			itemDuration = 150f;
 			consumes.item(NHItems.zeta, 3);
-			consumes.liquid(Liquids.cryofluid,0.1f).update(false);
+			consumes.liquid(Liquids.cryofluid,0.1f);
 			
 			lightColor = heatColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
 			generateEffect = NHFx.square(heatColor, 30f, 5, 20f, 4);
