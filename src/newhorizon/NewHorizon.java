@@ -97,7 +97,7 @@ public class NewHorizon extends Mod{
 			}).growX().center().row();
 			
 			inner.table(table -> {
-				float width = inner.getPrefWidth() / 2;
+				float width = Vars.mobile ? 0 : inner.getPrefWidth() / 2;
 				table.button("@back", Icon.left, Styles.transt, () -> {
 					dialog.hide();
 					NHSetting.settingApply();
