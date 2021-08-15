@@ -779,24 +779,24 @@ public class NHBullets implements ContentList{
 			public void draw(Bullet b){
 				super.draw(b);
 				float f = Mathf.clamp(b.time > b.lifetime - fadeTime ? 1.0F - (b.time - (lifetime - fadeTime)) / fadeTime : 1.0F);
-				color(NHColor.lightSkyBack);
-				Fill.circle(b.x, b.y, 24f * f);
+				Draw.color(NHColor.lightSkyBack);
+				Fill.circle(b.x, b.y, 18 * f);
 				for(int i : Mathf.signs){
 					for(int j : Mathf.signs){
-						color(NHColor.lightSkyBack);
+						Draw.color(NHColor.lightSkyBack);
 						Drawf.tri(b.x, b.y, 16f * f, 86f + Mathf.absin(Time.time * j, 6f, 20f) * f, 90 + 90 * i + Time.time * j);
 					}
 				}
 				
 				for(int i : Mathf.signs){
 					for(int j : Mathf.signs){
-						color(Color.white);
+						Draw.color(Color.white);
 						Drawf.tri(b.x, b.y, 7f * f, 63f + Mathf.absin(Time.time * j, 6f, 12f) * f, 90 + 90 * i + Time.time * j);
 					}
 				}
 				
 				color(Color.white);
-				Fill.circle(b.x, b.y, 17f * f);
+				Fill.circle(b.x, b.y, 13 * f);
 				Draw.reset();
 			}
 		};
@@ -1075,8 +1075,6 @@ public class NHBullets implements ContentList{
 			public float range(){return 280f;}
 			
 			{
-				trailLength = 12;
-				
 				trailColor = lightningColor = backColor = lightColor = NHColor.lightSkyBack;
 				frontColor = NHColor.lightSkyFront;
 				lightning = 3;
@@ -1092,7 +1090,7 @@ public class NHBullets implements ContentList{
 				
 				trailParam = 1.4f;
 				trailChance = 0.35f;
-				lifetime = 85f;
+				lifetime = 60f;
 				
 				homingDelay = 10f;
 				homingPower = 0.05f;

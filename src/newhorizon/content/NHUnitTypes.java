@@ -146,7 +146,7 @@ public class NHUnitTypes implements ContentList{
 			public void draw(Unit unit, WeaponMount mount){
 				super.draw(unit, mount);
 				
-				if(!unit.isPlayer() && !Core.settings.getBool("enableeffectdetails"))return;
+				if(!unit.isPlayer() && !NHSetting.enableDetails())return;
 				
 				float
 					z = Draw.z(),
@@ -1469,17 +1469,13 @@ public class NHUnitTypes implements ContentList{
 					alternate = true;
 					ejectEffect = Fx.none;
 					recoil = 4.4f;
-					bullet = new ShieldBreaker(6.25f, 50, 650f){
-						@Override
-						public float range(){return 280f;}
-						
-						{
+					bullet = new ShieldBreaker(6.25f, 50, 650f){{
 							drawSize = 500f;
 							trailLength = 18;
 							trailWidth = 3.5f;
 							spin = 2.75f;
 							hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
-							lifetime = 90f;
+							lifetime = 40f;
 							pierceCap = 8;
 							width = 20f;
 							height = 44f;
@@ -1493,8 +1489,7 @@ public class NHUnitTypes implements ContentList{
 							hitShake = 4f;
 							hitSound = Sounds.plasmaboom;
 							shrinkX = shrinkY = 0f;
-						}
-					};
+					}};
 					shootSound = Sounds.laser;
 				}}, new NHWeapon("arc-blaster"){{
 					top = true;
@@ -1544,7 +1539,7 @@ public class NHUnitTypes implements ContentList{
 					recoil = 5.4f;
 					predictTarget = false;
 					shootCone = 30f;
-					reload = 30f;
+					reload = 20f;
 					shots = 4;
 					inaccuracy = 4.0F;
 					ejectEffect = Fx.none;
@@ -1573,7 +1568,7 @@ public class NHUnitTypes implements ContentList{
 					shootY = 7f;
 					shootCone = 40f;
 					reload = 60f;
-					shots = 2;
+					shots = 5;
 					shotDelay = 8f;
 					inaccuracy = 5.0F;
 					ejectEffect = Fx.none;
@@ -1874,11 +1869,9 @@ public class NHUnitTypes implements ContentList{
 						ejectEffect = Fx.none;
 						recoil = 4.4f;
 						bullet = NHBullets.hurricaneLaser;
-						chargeSound = Sounds.lasercharge2;
 						shootSound = Sounds.beam;
 						shootStatus = StatusEffects.slow;
-						shootStatusDuration = bullet.lifetime + firstShotDelay + 40f;
-						firstShotDelay = NHFx.chargeEffectSmall(new Color(), 60f).lifetime - 1.0F;
+						shootStatusDuration = bullet.lifetime + 40f;
 					}},
 					new NHWeapon("swepter"){{
 						mirror = false;

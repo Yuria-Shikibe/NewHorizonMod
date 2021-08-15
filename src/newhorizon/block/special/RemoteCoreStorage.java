@@ -47,8 +47,14 @@ public class RemoteCoreStorage extends StorageBlock{
 		configurable = true;
 	}
 	
+	public void drawPlace(int x, int y, int rotation, boolean valid) {
+		if(!valid) {
+			drawPlaceText("Maximum Placement Quantity Reached", x, y, false);
+		}
+	}
+	
 	public static int maxPlaceNum(){
-		return Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 15);
+		return Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 10);
 	}
 	
 	@Override
@@ -62,7 +68,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		bars.add("maxPlace", (RemoteCoreStorageBuild entity) ->
 			new Bar(
 				() -> "Max Place | " + placedMap.get(entity.team.id).size + " / " + maxPlaceNum(),
-				() -> placedMap.get(entity.team.id).size <= maxPlaceNum() ? Pal.heal : Pal.redderDust,
+				() -> placedMap.get(entity.team.id).size >= maxPlaceNum() ? Pal.redderDust : Pal.accent,
 				() -> (float)placedMap.get(entity.team.id).size / maxPlaceNum()
 			)
 		);

@@ -43,7 +43,10 @@ import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.liquid.LiquidRouter;
-import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.power.Battery;
+import mindustry.world.blocks.power.DecayGenerator;
+import mindustry.world.blocks.power.PowerNode;
+import mindustry.world.blocks.power.SingleTypeGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.sandbox.PowerVoid;
@@ -69,6 +72,7 @@ import newhorizon.block.drawer.DrawHoldLiquid;
 import newhorizon.block.drawer.DrawPrinter;
 import newhorizon.block.drawer.NHDrawAnimation;
 import newhorizon.block.special.*;
+import newhorizon.block.turrets.FinalTurret;
 import newhorizon.block.turrets.MultTractorBeamTurret;
 import newhorizon.block.turrets.ScalableTurret;
 import newhorizon.block.turrets.SpeedupTurret;
@@ -100,7 +104,7 @@ public class NHBlocks implements ContentList {
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
 		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion,
 		blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret, multipleArtillery,
-		antiMatterTurret, atomSeparator,
+		antiMatterTurret, atomSeparator, finalTurret,
 
 		//Liquids
 		irdryonTank,
@@ -252,6 +256,49 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadTurrets(){
+		finalTurret = new FinalTurret("eternity"){{
+			size = 16;
+			outlineRadius = 7;
+			range = 800;
+			powerUse = 100;
+			heatColor = NHColor.thurmixRed;
+			shootLength = 9 * tilesize;
+			
+			shootEffect = new Effect(120f, 2000f, e -> {
+				Draw.color(heatColor, Color.white, e.fout() * 0.25f);
+				
+				float rand = Mathf.randomSeed(e.id, 60f);
+				float extend = Mathf.curve(e.fin(Interp.pow10Out), 0.075f, 1f);
+				
+				for(int i : Mathf.signs){
+					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown(),300 + 700 * extend, e.rotation + (90 + rand) * extend + 90 * i - 45);
+				}
+				
+				for(int i : Mathf.signs){
+					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown(),300 + 700 * extend, e.rotation + (90 + rand) * extend + 90 * i + 45);
+				}
+			});
+			
+			smokeEffect = new Effect(50, e -> {
+				Draw.color(heatColor);
+				Lines.stroke(e.fout() * 5f);
+				Lines.circle(e.x, e.y, e.fin() * 300);
+				Lines.stroke(e.fout() * 3f);
+				Lines.circle(e.x, e.y, e.fin() * 180);
+				Lines.stroke(e.fout() * 3.2f);
+				Angles.randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
+					lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
+				});
+				Draw.color(Color.white);
+				Drawf.light(e.x, e.y, e.fout() * 120, heatColor, 0.7f);
+			});
+			
+			shootType = NHBullets.collapserBullet.copy();
+			reloadTime = 180f;
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 90, NHItems.juniorProcessor, 60, NHItems.presstanium, 120, NHItems.zeta, 120, Items.graphite, 80));
+			NHTechTree.add(Blocks.segment, this);
+		}};
+		
 		antiBulletTurret = new PointDefenseTurret("anti-bullet-turret"){{
 			health = 1080;
 			size = 3;
