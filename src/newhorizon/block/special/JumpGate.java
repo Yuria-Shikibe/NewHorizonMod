@@ -328,7 +328,8 @@ public class JumpGate extends Block {
         public void created(){
             super.created();
             
-            if(!cheating() && hideSet(calls.get(planSpawnID).type))spawnID = 0;
+            UnitSet set;
+            if(!cheating() && (set = calls.get(planSpawnID)) != null && hideSet(set.type))spawnID = 0;
         }
     
         @Override

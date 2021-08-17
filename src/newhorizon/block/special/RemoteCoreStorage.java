@@ -48,7 +48,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	}
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		if(!valid) {
+		if(maxPlaceNum(Vars.player.team()) <= placedMap.size){
 			drawPlaceText("Maximum Placement Quantity Reached", x, y, false);
 		}
 	}
