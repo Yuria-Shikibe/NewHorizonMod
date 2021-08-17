@@ -21,14 +21,13 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import newhorizon.func.DrawFuncs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Draw.rect;
+import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
@@ -37,6 +36,7 @@ public class NHFx{
 	public static final ObjectMap<Integer, Effect> same = new ObjectMap<>();
 	private static final Rand rand = new Rand();
 	private static final Vec2 v = new Vec2();
+	private static final int[] oneArr = {1};
 	
 	public static int hash(String m, Color c){
 		return Arrays.hashCode(new int[]{m.hashCode(), c.hashCode()});
@@ -172,20 +172,39 @@ public class NHFx{
 	}
 	
 	public static Effect blast(Color color, float range){
-		return new Effect(45f, range * 2.5f, e -> {
+		float lifetime = Mathf.clamp(range * 1.5f, 90f, 600f);
+		return new Effect(lifetime, range * 2.5f, e -> {
 			color(color);
 			Drawf.light(e.x, e.y, e.fout() * range, color, 0.7f);
 			
-			e.scaled(21, t -> {
+			e.scaled(lifetime / 3, t -> {
 				stroke(3f * t.fout());
 				circle(e.x, e.y, 3f + t.fin() * range);
 			});
 			
-			Fill.circle(e.x, e.y, e.fout() * 8f);
-			randLenVectors(e.id + 1, (int)(range / 10), 2 + range * 0.75f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout(Interp.pow2Out) * Mathf.clamp(range / 15f, 3f, 14f)));
+			e.scaled(lifetime / 2, t -> {
+				Fill.circle(t.x, t.y, t.fout() * 8f);
+				Angles.randLenVectors(t.id + 1, (int)(range / 10), 2 + range * 0.75f * t.finpow(), (x, y) -> {
+					Fill.circle(t.x + x, t.y + y, t.fout(Interp.pow2Out) * Mathf.clamp(range / 15f, 3f, 14f));
+					Drawf.light(t.x + x, t.y + y, t.fout(Interp.pow2Out) * Mathf.clamp(range / 15f, 3f, 14f), color, 0.5f);
+				});
+			});
 			
+			Draw.z(Layer.bullet - 0.001f);
 			color(Color.gray);
-			Angles.randLenVectors(e.id, (int)(range / 8), 2 + range * 1.1f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * Mathf.clamp(range / 8f, 4f, 18f)));
+			alpha(0.85f);
+			float intensity = Mathf.clamp(range / 10f, 5f, 25f);
+			for(int i = 0; i < 4; i++){
+				rand.setSeed(((long)e.id << 1) + i);
+				float lenScl = rand.random(0.4f, 1f);
+				int fi = i;
+				e.scaled(e.lifetime * lenScl, eIn -> {
+					randLenVectors(eIn.id + fi - 1, eIn.fin(Interp.pow10Out), (int)(intensity / 2.5f), 8f * intensity, (x, y, in, out) -> {
+						float fout = eIn.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+						Fill.circle(eIn.x + x, eIn.y + y, fout * ((2f + intensity) * 1.8f));
+					});
+				});
+			}
 		});
 	}
 
@@ -224,7 +243,7 @@ public class NHFx{
 	}
 	
 	public static Effect crossBlast(Color color, float size){
-		return new Effect(36f, size * 2, e -> {
+		return new Effect(Mathf.clamp(size / 3f, 35f, 240f), size * 2, e -> {
 			color(color, Color.white, e.fout() * 0.55f);
 			Drawf.light(e.x, e.y, e.fout() * size, color, 0.7f);
 			
@@ -234,7 +253,7 @@ public class NHFx{
 			});
 			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, size / 16 * (e.fout() + 1) / 2, size * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
+				Drawf.tri(e.x, e.y, size / 16 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, size * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90);
 			}
 		});
 	}
@@ -324,7 +343,7 @@ public class NHFx{
 	
 	public static Effect instTrail(Color color, float angle, boolean random){
 		return new Effect(30.0F, (e) -> {
-			for(int j : angle == 0 ? DrawFuncs.oneArr: Mathf.signs){
+			for(int j : angle == 0 ? oneArr: Mathf.signs){
 				for(int i = 0; i < 2; ++i) {
 					Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
 					float m = i == 0 ? 1.0F : 0.5F;
@@ -360,9 +379,70 @@ public class NHFx{
 		});
 	}
 	
+	public static Effect circleOut(Color color, float range){
+		return new Effect(Mathf.clamp(range / 2, 45f, 360f), range * 1.5f, e -> {
+			rand.setSeed(e.id);
+			
+			Draw.color(Color.white, e.color, e.fin() + 0.6f);
+			float circleRad = e.fin(Interp.circleOut) * range;
+			Lines.stroke(Mathf.clamp(range / 24, 4, 20) * e.fout());
+			Lines.circle(e.x, e.y, circleRad);
+			for(int i = 0; i < Mathf.clamp(range / 16, 8, 28); i++){
+				Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
+				Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+			}
+		});
+	}
+	
 	public static final float lightningAlign = 0.5f;
 	
 	public static final Effect
+		collapserBulletExplode = new Effect(300F, 1600f, e -> {
+			float rad = 150f;
+			rand.setSeed(e.id);
+		
+			Draw.color(Color.white, e.color, e.fin() + 0.6f);
+			float circleRad = e.fin(Interp.circleOut) * rad * 4f;
+			Lines.stroke(12 * e.fout());
+			Lines.circle(e.x, e.y, circleRad);
+			for(int i = 0; i < 16; i++){
+				Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
+				Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+			}
+			
+			e.scaled(120f, i -> {
+				Draw.color(Color.white, i.color, i.fin() + 0.4f);
+				Fill.circle(i.x, i.y, rad * i.fout());
+				Lines.stroke(18 * i.fout());
+				Lines.circle(i.x, i.y, i.fin(Interp.circleOut) * rad * 1.2f);
+				Angles.randLenVectors(i.id, 40, rad / 3, rad * i.fin(Interp.pow2Out), (x, y) -> {
+					lineAngle(i.x + x, i.y + y, Mathf.angle(x, y), i.fslope() * 25 + 10);
+				});
+				
+				Angles.randLenVectors(i.id, (int)(rad / 4), rad / 6, rad * (1 + i.fout(Interp.circleOut)) / 1.5f, (x, y) -> {
+					float angle = Mathf.angle(x, y);
+					float width = i.foutpowdown() * rand.random(rad / 6, rad / 3);
+					float length = rand.random(rad / 2, rad * 5) * i.fout(Interp.circleOut);
+					
+					Draw.color(i.color);
+					Drawf.tri(i.x + x, i.y + y, width, rad / 3 * i.fout(Interp.circleOut), angle - 180);
+					Drawf.tri(i.x + x, i.y + y, width, length, angle);
+					
+					Draw.color(Color.black);
+					
+					width *= i.fout();
+					
+					Drawf.tri(i.x + x, i.y + y, width / 2, rad / 3 * i.fout(Interp.circleOut) * 0.9f * i.fout(), angle - 180);
+					Drawf.tri(i.x + x, i.y + y, width / 2, length / 1.5f * i.fout(), angle);
+				});
+				
+				Draw.color(Color.black);
+				Fill.circle(i.x, i.y, rad * i.fout() * 0.75f);
+			});
+			
+			Drawf.light(e.x, e.y, rad * e.fslope() * 4f, e.color, 0.7f);
+		}).layer(Layer.effect + 0.001f),
+		
 		absorbFix = new Effect(12, e -> {
 			color(e.color);
 			stroke(2f * e.fout());
@@ -406,12 +486,12 @@ public class NHFx{
 				
 				Lines.linePoint(nx, ny);
 			}
-		
-			float f = (fin - i / links);
-			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
-			float len = (i + 1) * spacing;
-			Lines.linePoint(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y);
-			Fill.circle(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
+//
+//			float f = (fin - i / links);
+//			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
+//			float len = (i + 1) * spacing;
+//			Lines.linePoint(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y);
+//			Fill.circle(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
 			
 			Lines.endLine();
 		}).followParent(false),
@@ -454,11 +534,11 @@ public class NHFx{
 				Lines.linePoint(nx, ny);
 			}
 			
-			float f = (fin - i / links);
-			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
-			float len = (i + 1) * spacing;
-			Lines.linePoint(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y);
-			Fill.circle(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
+//			float f = (fin - i / links);
+//			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
+//			float len = (i + 1) * spacing;
+//			Lines.linePoint(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y);
+//			Fill.circle(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
 			
 			Lines.endLine();
 		}).followParent(false),

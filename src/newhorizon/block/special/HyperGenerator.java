@@ -254,17 +254,17 @@ public class HyperGenerator extends PowerGenerator{
 				for(int i : Mathf.signs){
 					if(Mathf.chance(warmup / updateEffectDiv))updateEffect.at(x + i * Mathf.random(effectCircleSize), y + i * Mathf.random(effectCircleSize), updateEffectSize * warmup, effectColor);
 				}
-				if(Mathf.chance( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f)){
+				if(Mathf.chanceDelta( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f)){
 					PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
 						NHFx.lightningHitLarge(effectColor).at(point);
 					});
 				}
-				if(Mathf.chance(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, effectColor);
-				if(Mathf.chance(warmup / updateEffectDiv * 3f)){
+				if(Mathf.chanceDelta(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, effectColor);
+				if(Mathf.chanceDelta(warmup / updateEffectDiv * 3f)){
 					Tmp.v1.rnd(size * tilesize * warmup * 0.9f).add(tile);
 					NHFx.chainLightningFade.at(x, y, 12f, effectColor, Tmp.v1.cpy());
 				}
-				if(Mathf.chance(warmup / updateEffectDiv * 2f)){
+				if(Mathf.chanceDelta(warmup / updateEffectDiv * 2f)){
 					Tmp.v1.rnd(size * tilesize * warmup * 1.5f).add(tile);
 					NHFx.chainLightningFadeReversed.at(x, y, 12f, effectColor, Tmp.v1.cpy());
 				}

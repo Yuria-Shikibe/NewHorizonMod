@@ -57,7 +57,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.zetaGenerator, NHBlocks.multiArmorConveyor, NHBlocks.multiConveyor, NHBlocks.multiEfficientConveyor
+			NHBlocks.eternity, NHBlocks.multiJunction
 		};
 	}
 	
@@ -89,23 +89,32 @@ public class NewHorizon extends Mod{
 		dialog.closeOnBack();
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
-				table.table(t -> t.image(NHContent.icon).fill()).center().growX().fillY().row();
+				table.table(t -> t.image(NHContent.icon2).fill()).center().growX().fillY().row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
-				table.add("[white]<< Powered by New Horizon Mod >>", Styles.techLabel).row();
+				table.pane(p -> {
+					p.add("[white]<< Powered by New Horizon Mod >>", Styles.techLabel).row();
+				}).fillY().growX().row();
 				table.image().fillX().height(OFFSET / 2.75f).pad(OFFSET / 3f).color(Color.white).row();
 				table.add("").row();
 			}).growX().center().row();
 			
 			inner.table(table -> {
-				float width = Vars.mobile ? 0 : inner.getPrefWidth() / 2;
-				table.button("@back", Icon.left, Styles.transt, () -> {
-					dialog.hide();
-					NHSetting.settingApply();
-				}).growX().height(LEN).marginLeft(width).marginRight(width).row();
-				table.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).marginLeft(width).marginRight(width).row();
-				table.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).marginLeft(width).marginRight(width).row();
-				table.button("@log", Icon.book, Styles.transt, NewHorizon::logShow).growX().height(LEN).marginLeft(width).marginRight(width).row();
-				table.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).marginLeft(width).marginRight(width).row();
+				if(!Vars.mobile)table.table(t -> {
+				
+				}).grow();
+				table.table(t -> {
+					t.button("@back", Icon.left, Styles.transt, () -> {
+						dialog.hide();
+						NHSetting.settingApply();
+					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@log", Icon.book, Styles.transt, NewHorizon::logShow).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+				}).grow();
+				if(!Vars.mobile)table.table(t -> {
+				
+				}).grow();
 			}).fill();
 		}).grow();
 		dialog.show();

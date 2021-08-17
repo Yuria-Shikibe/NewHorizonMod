@@ -197,6 +197,10 @@ public class JumpGate extends Block {
         }
     }
 
+    public static boolean hideSet(UnitType type){
+        return state.rules.bannedUnits.contains(type) || type.locked() && !state.rules.infiniteResources && state.isCampaign();
+    }
+    
     @Override
     public void init(){
         super.init();
@@ -319,7 +323,14 @@ public class JumpGate extends Block {
         
         public int planSpawnID = 0;
         public int planSpawnNum = 0;
-        
+    
+        @Override
+        public void created(){
+            super.created();
+            
+            if(!cheating() && hideSet(calls.get(planSpawnID).type))spawnID = 0;
+        }
+    
         @Override
         public boolean onConfigureTileTapped(Building other){
             if(this == other)configure(point.set(-1, -1));
@@ -426,15 +437,10 @@ public class JumpGate extends Block {
                                 table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core() != null ? core().items : null)).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();
-                            Bar unitCurrent = new Bar(
-                                () -> Core.bundle.format("bar.unitcap",
-                                        Fonts.getUnicodeStr(set.type.name),
-                                        team.data().countType(set.type),
-                                        Units.getCap(team)),
-                                () -> canSpawn(set, false) ? Pal.accent : Units.canCreate(team, set.type) ? Pal.ammo : Pal.redderDust,
-                                () -> (float)team.data().countType(set.type) / Units.getCap(team)
-                            );
-                            info.add(unitCurrent).growX().height(LEN - OFFSET);
+                            if(!hideSet(set.type)){
+                                Bar unitCurrent = new Bar(() -> Core.bundle.format("bar.unitcap", Fonts.getUnicodeStr(set.type.name), team.data().countType(set.type), Units.getCap(team)), () -> canSpawn(set, false) ? Pal.accent : Units.canCreate(team, set.type) ? Pal.ammo : Pal.redderDust, () -> (float)team.data().countType(set.type) / Units.getCap(team));
+                                info.add(unitCurrent).growX().height(LEN - OFFSET);
+                            }
                         }).fillY().growX().padTop(OFFSET).row();
                     }
                 }).grow()
@@ -488,7 +494,9 @@ public class JumpGate extends Block {
                         t.pane(table -> {
                             int i = 0;
                             for(int hash : calls.keys()){
-                                table.button(new TextureRegionDrawable(calls.get(hash).type.fullIcon), Styles.clearTogglePartiali, LEN, () -> selectID = hash).update(b -> b.setChecked(hash == selectID));
+                                UnitSet set = calls.get(hash);
+                                if(hideSet(set.type))continue;
+                                table.button(new TextureRegionDrawable(set.type.fullIcon), Styles.clearTogglePartiali, LEN, () -> selectID = hash).update(b -> b.setChecked(hash == selectID));
                                 if(++i % 5 == 0) table.row();
                             }
                         }).grow().row();

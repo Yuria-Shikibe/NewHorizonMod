@@ -7,7 +7,7 @@ import mindustry.gen.Bullet;
 
 public class SpeedUpBulletType extends BasicBulletType{
 	public float velocityBegin = -1;
-	public float velocityIncrease = -1;
+	public float velocityIncrease = 0;
 	public float accelerateBegin = 0.1f;
 	public float accelerateEnd = 0.6f;
 	
@@ -34,7 +34,6 @@ public class SpeedUpBulletType extends BasicBulletType{
 		if(accelerateBegin > 1)return;
 		
 		if(velocityBegin < 0)velocityBegin = speed;
-		if(velocityIncrease < 0) velocityIncrease = speed;
 		
 		FloatSeq speeds = new FloatSeq();
 		for(float i = 0; i < 1; i += 0.05f){

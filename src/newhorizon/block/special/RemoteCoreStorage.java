@@ -53,8 +53,8 @@ public class RemoteCoreStorage extends StorageBlock{
 		}
 	}
 	
-	public static int maxPlaceNum(){
-		return Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 10);
+	public static int maxPlaceNum(Team team){
+		return team == Vars.state.rules.waveTeam || team.rules().cheat ? Integer.MAX_VALUE : Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 10);
 	}
 	
 	@Override
@@ -67,9 +67,9 @@ public class RemoteCoreStorage extends StorageBlock{
 		super.setBars();
 		bars.add("maxPlace", (RemoteCoreStorageBuild entity) ->
 			new Bar(
-				() -> "Max Place | " + placedMap.get(entity.team.id).size + " / " + maxPlaceNum(),
-				() -> placedMap.get(entity.team.id).size >= maxPlaceNum() ? Pal.redderDust : Pal.accent,
-				() -> (float)placedMap.get(entity.team.id).size / maxPlaceNum()
+				() -> "Max Place | " + placedMap.get(entity.team.id).size + " / " + maxPlaceNum(entity.team),
+				() -> placedMap.get(entity.team.id).size >= maxPlaceNum(entity.team) ? Pal.redderDust : Pal.accent,
+				() -> (float)placedMap.get(entity.team.id).size / maxPlaceNum(entity.team)
 			)
 		);
 		bars.add("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
@@ -78,13 +78,12 @@ public class RemoteCoreStorage extends StorageBlock{
 	
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team){
-		return super.canPlaceOn(tile, team) && placedMap.get(team.id).size < maxPlaceNum();
+		return super.canPlaceOn(tile, team) && placedMap.get(team.id).size < maxPlaceNum(team);
 	}
 	
 	public class RemoteCoreStorageBuild extends StorageBuild implements BeforeLoadc{
 		public float warmup = 0;
 		public float progress = 0;
-		
 		
 		@Override
 		public void remove(){
@@ -133,7 +132,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0 && core() != null && placedMap.get(team.id).size <= maxPlaceNum()){
+			if(efficiency() > 0 && core() != null && placedMap.get(team.id).size <= maxPlaceNum(team)){
 				if(Mathf.equal(warmup, 1, 0.015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{

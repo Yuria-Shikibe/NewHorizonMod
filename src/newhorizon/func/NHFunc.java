@@ -40,7 +40,7 @@ public class NHFunc{
     private static final Seq<Tile> tiles = new Seq<>();
     private static final IntSeq buildingIDSeq = new IntSeq();
     private static final int maxCompute = 32;
-    private static final Rand rand = new Rand(0);
+    public static final Rand rand = new Rand(0);
     public static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;
         Seq<Rect> data = e.data();

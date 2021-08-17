@@ -1158,7 +1158,7 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
-		arc_9000 = new LightningLinkerBulletType(2.75f, 900){{
+		arc_9000 = new LightningLinkerBulletType(2.75f, 1500){{
 			trailWidth = 4.5f;
 			trailLength = 66;
 			

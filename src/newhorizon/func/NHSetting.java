@@ -4,6 +4,7 @@ import arc.Core;
 import arc.files.Fi;
 import arc.graphics.Color;
 import arc.input.KeyCode;
+import arc.scene.style.TextureRegionDrawable;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -15,6 +16,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHContent;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -127,9 +129,9 @@ public class NHSetting{
 	public static void updateSettingMenu(){
 		SettingsMenuDialog settingTable = Vars.ui.settings;
 		settingTable.game.row();
-		settingTable.game.button("MOD: [sky]" + modMeta.displayName, Icon.settings, () -> {
+		settingTable.game.button("MOD: [sky]" + modMeta.displayName, new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
 			new SettingDialog().show();
-		}).size(LEN * 6f, LEN - OFFSET);
+		}).size(LEN * 6f, LEN + OFFSET);
 	}
 	
 	private static void updateProperty(String version) throws IOException{

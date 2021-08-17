@@ -17,7 +17,6 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
-import mindustry.ui.Cicon;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
@@ -72,15 +71,25 @@ public class Tables{
 	public static class UnitSetTable extends Table{
 		public UnitSetTable(JumpGate.UnitSet set, Cons<Table> stat){
 			super();
-			if(set.type.locked() && !state.rules.infiniteResources && state.isCampaign()){
+			if(state.rules.bannedUnits.contains(set.type)){
 				table(Tex.clear, t2 -> {
-					t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN).center()).left().fill().padLeft(OFFSET);
+					t2.left();
+					t2.table(Tex.clear, table2 -> {
+						TableFs.tableImageShrink(set.type.fullIcon, LEN, table2, i -> i.color.set(Pal.gray));
+						table2.image(Icon.cancel).size(LEN + OFFSET * 1.5f).color(Color.scarlet).padLeft(OFFSET);
+					}).left().padLeft(OFFSET * 2f);
 					
-					t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).size(LEN * 6f, LEN).center();
+					t2.pane(table2 -> table2.add(Core.bundle.get("banned")));
+				}).growX().fillY().padBottom(OFFSET / 2).row();
+			}else if(set.type.locked() && !state.rules.infiniteResources && state.isCampaign()){
+				table(Tex.clear, t2 -> {
+					t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN + OFFSET * 1.5f)).left().padLeft(OFFSET);
+					
+					t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).grow();
 				}).growX().fillY().padBottom(OFFSET / 2).row();
 			}else{
 				table(Tex.clear, t2 -> {
-					t2.table(Tex.clear, table2 -> TableFs.tableImageShrink(set.type.icon(Cicon.xlarge), LEN, table2)).size(LEN + OFFSET * 1.5f).left().padLeft(OFFSET);
+					t2.table(Tex.clear, table2 -> TableFs.tableImageShrink(set.type.fullIcon, LEN, table2)).size(LEN + OFFSET * 1.5f).left().padLeft(OFFSET);
 					
 					t2.pane(table2 -> {
 						table2.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().row();
@@ -105,7 +114,7 @@ public class Tables{
 		public void add(ItemStack stack){
 			float size = LEN - OFFSET;
 			table(t -> {
-				t.image(stack.item.icon(Cicon.xlarge)).size(size).left();
+				t.image(stack.item.fullIcon).size(size).left();
 				t.table(n -> {
 					Label l = new Label("");
 					n.update(() -> {
@@ -130,7 +139,7 @@ public class Tables{
 				for(Item item : Vars.content.items()){
 					if(i % 8 == 0)table.row();
 					table.table(Tex.clear, t -> {
-						t.button(new TextureRegionDrawable(item.icon(Cicon.xlarge)), Styles.clearTogglei, LEN - OFFSET, () -> {
+						t.button(new TextureRegionDrawable(item.fullIcon), Styles.clearTogglei, LEN - OFFSET, () -> {
 							selects[Vars.content.items().indexOf(item)] = !selects[Vars.content.items().indexOf(item)];
 						}).update(b -> b.setChecked(selects[Vars.content.items().indexOf(item)])).size(LEN);
 					}).fill();

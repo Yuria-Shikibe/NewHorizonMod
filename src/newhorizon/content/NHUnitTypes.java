@@ -51,7 +51,6 @@ import newhorizon.units.PhaseAbility;
 import newhorizon.units.TowardShield;
 import newhorizon.vars.EventTriggers;
 
-import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.headless;
 import static mindustry.Vars.tilesize;
 
@@ -885,50 +884,7 @@ public class NHUnitTypes implements ContentList{
 									
 									shootEffect = NHFx.lightningHitLarge(hitColor);
 									
-									despawnEffect = new Effect(150f, 1600f, e -> {
-										float rad = 150f;
-										Rand rand = new Rand(e.id + 1);
-										
-										Draw.color(Color.white, hitColor, e.fin() + 0.3f);
-										float circleRad = rad * e.fout();
-										Fill.circle(e.x, e.y, circleRad);
-										
-										circleRad = e.fin(Interp.circleOut) * rad * 4f;
-										Lines.stroke(12 * e.fout());
-										Lines.circle(e.x, e.y, circleRad);
-										for(int i = 0; i < 16; i++){
-											Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
-											Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
-										}
-										
-										Lines.stroke(18 * e.fout());
-										Lines.circle(e.x, e.y, e.fin(Interp.circleOut) * rad * 1.2f);
-										Angles.randLenVectors(e.id, 40, rad / 3, rad * e.fin(Interp.pow2Out), (x, y) -> {
-											lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 25 + 10);
-										});
-										
-										Angles.randLenVectors(e.id, (int)(rad / 4), rad / 6, rad * (1 + e.fout(Interp.circleOut)) / 1.5f, (x, y) -> {
-											float angle = Mathf.angle(x, y);
-											float width = e.foutpowdown() * rand.random(rad / 6, rad / 3);
-											float length = rand.random(rad / 2, rad * 5) * e.fout(Interp.circleOut);
-											
-											Draw.color(hitColor);
-											Drawf.tri(e.x + x, e.y + y, width, rad / 3 * e.fout(Interp.circleOut), angle - 180);
-											Drawf.tri(e.x + x, e.y + y, width, length, angle);
-											
-											Draw.color(NHColor.thurmixRedDark);
-											
-											width *= e.fout();
-											
-											Drawf.tri(e.x + x, e.y + y, width / 2, rad / 3 * e.fout(Interp.circleOut) * 0.9f * e.fout(), angle - 180);
-											Drawf.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
-										});
-										
-										Draw.color(NHColor.thurmixRedDark);
-										Fill.circle(e.x, e.y, rad * e.fout() * 0.75f);
-										
-										Drawf.light(e.x, e.y, rad * e.fslope() * 4f, hitColor, 0.7f);
-									}).layer(Layer.effect + 0.001f);
+									despawnEffect = NHFx.collapserBulletExplode;
 								}
 							};
 						}

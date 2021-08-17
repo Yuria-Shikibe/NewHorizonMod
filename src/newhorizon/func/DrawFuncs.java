@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
@@ -24,6 +25,8 @@ import static mindustry.Vars.tilesize;
 public class DrawFuncs {
     public static final Color bottomColor = Pal.gray;
     public static final float sinScl = 1f;
+    public static float NOR_DISTANCE = 600f;
+    
     private static final Vec2
         vec21 = new Vec2(),
         vec22 = new Vec2(),
@@ -32,6 +35,17 @@ public class DrawFuncs {
     public static final int[] oneArr = {1};
     
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
+    
+    public static float cameraDstScl(float x, float y, float norDst){
+        vec21.set(Core.camera.position);
+        float dst = Mathf.dst(x, y, vec21.x, vec21.y);
+        return 1 - Mathf.clamp(dst / norDst);
+    }
+    
+    public static float cameraDstScl(float x, float y){
+        return cameraDstScl(x, y, NOR_DISTANCE);
+    }
+    
     
     public static void drawConnected(float x, float y, float size, Color color){
         Draw.reset();
@@ -73,6 +87,23 @@ public class DrawFuncs {
         font.getData().setScale(1.0F);
         Draw.reset();
         Pools.free(layout);
+    }
+    
+    public static void drawRail(float x, float y, float rotation, float shootY, float fin, float length, float width, float spacing, float scl, TextureRegion arrowRegion){
+        float railF = Mathf.curve(Interp.pow2Out.apply(fin), 0f, 0.25f) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f) * fin;
+    
+        for(int i = 0; i <= length / spacing; i++){
+            Tmp.v1.trns(rotation, i * spacing * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f) + shootY);
+            float f = Interp.pow3Out.apply(Mathf.clamp((fin * length - i * spacing) / spacing)) * (0.6f + railF * 0.4f) * 0.8f * scl;
+            Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * Draw.scl * f, arrowRegion.height * Draw.scl * f, rotation - 90f);
+        }
+    
+        Tmp.v1.trns(rotation, 0f, (2 - railF) * width);
+        Tmp.v2.trns(rotation, shootY);
+        Lines.stroke(railF * 2f * scl);
+        for(int i : Mathf.signs){
+            Lines.lineAngle(x + Tmp.v1.x * i + Tmp.v2.x, y + Tmp.v1.y * i + Tmp.v2.y, rotation, length * (0.75f + railF / 4f) * Mathf.curve(Interp.pow5Out.apply(1 - fin) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f), 0f, 0.1f));
+        }
     }
     
     public static void circlePercentFlip(float x, float y, float rad, float in, float scl){

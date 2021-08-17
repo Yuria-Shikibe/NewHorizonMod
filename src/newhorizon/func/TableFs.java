@@ -23,6 +23,7 @@ import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
@@ -281,10 +282,18 @@ public class TableFs{
         }).row();
     }
     
-    public static void tableImageShrink(TextureRegion tex, float size, Table table){
+    public static Table tableImageShrink(TextureRegion tex, float size, Table table){
+        return tableImageShrink(tex, size, table, c -> {});
+    }
+    
+    public static Table tableImageShrink(TextureRegion tex, float size, Table table, Cons<Image> modifier){
         float parma = Math.max(tex.height, tex.width);
         float f = Math.min(size, parma);
-        table.image(tex).size(tex.width * f / parma, tex.height * f / parma);
+        Image image = new Image(tex);
+        modifier.get(image);
+        table.add(image).size(tex.width * f / parma, tex.height * f / parma);
+        
+        return table;
     }
     
     public static void itemStack(Table parent, ItemStack stack, ItemModule itemModule){

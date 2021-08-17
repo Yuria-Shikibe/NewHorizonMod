@@ -89,6 +89,7 @@ public class MultiCrafter extends GenericCrafter{
 			for(ItemStack stack : consumes.getItem().items){
 				if(items.has(stack.item, stack.amount))out += exchangeMap.get(stack);
 			}
+			
 			return out;
 		}
 		
@@ -107,8 +108,8 @@ public class MultiCrafter extends GenericCrafter{
 			}
 			
 			if(progress >= 1f){
-				consume();
 				int out = count();
+				consume();
 				for(int i = 0; i < out; i++){
 					offload(outputItem.item);
 				}
@@ -120,20 +121,6 @@ public class MultiCrafter extends GenericCrafter{
 					dump(output.item);
 				}
 			}
-		}
-		
-//		@Override
-//		public void consume(){
-//			for(ItemStack stack : exchangeMap.keys()){
-//				items.remove(stack);
-//			}
-//		}
-		
-		@Override
-		public void displayBars(Table table){
-			super.displayBars(table);
-//			table.add(exchangeTable(this)).growX().fillY().padTop(OFFSET * 2).padBottom(OFFSET * 2).row();
-//			table.table(t -> consumes.getItem().build(this, t.left())).left().grow();
 		}
 		
 		@Override

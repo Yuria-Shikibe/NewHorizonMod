@@ -12,13 +12,16 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.EmpBulletType;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
@@ -38,6 +41,7 @@ import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.ArmoredConveyor;
 import mindustry.world.blocks.distribution.Conveyor;
+import mindustry.world.blocks.distribution.Junction;
 import mindustry.world.blocks.distribution.StackConveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
@@ -81,6 +85,8 @@ import newhorizon.bullets.AdaptedLaserBulletType;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.bullets.SpeedUpBulletType;
 import newhorizon.feature.ScreenHack;
+import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHSetting;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -104,7 +110,7 @@ public class NHBlocks implements ContentList {
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
 		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion,
 		blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret, multipleArtillery,
-		antiMatterTurret, atomSeparator, finalTurret,
+		antiMatterTurret, atomSeparator, eternity,
 
 		//Liquids
 		irdryonTank,
@@ -114,6 +120,7 @@ public class NHBlocks implements ContentList {
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
 		//Distributions
 		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter, multiArmorConveyor, multiConveyor, multiEfficientConveyor,
+		multiJunction,
 		//Drills
 		largeWaterExtractor, beamDrill,
 		//Powers
@@ -256,26 +263,35 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadTurrets(){
-		finalTurret = new FinalTurret("eternity"){{
+		eternity = new FinalTurret("eternity"){{
 			size = 16;
 			outlineRadius = 7;
 			range = 800;
-			powerUse = 100;
-			heatColor = NHColor.thurmixRed;
+			heatColor = NHColor.darkEnrColor;
 			shootLength = 9 * tilesize;
+			unitSort = (unit, x, y) -> -unit.health;
+			
+			ammoPerShot = 10;
+			coolantMultiplier = 0.8f;
+			canOverdrive = false;
+			rotateSpeed = 0.25f;
+			restitution = 0.0125f;
 			
 			shootEffect = new Effect(120f, 2000f, e -> {
+				float scl = 1f;
+				if(e.data instanceof Float)scl *= (float)e.data;
 				Draw.color(heatColor, Color.white, e.fout() * 0.25f);
 				
 				float rand = Mathf.randomSeed(e.id, 60f);
-				float extend = Mathf.curve(e.fin(Interp.pow10Out), 0.075f, 1f);
+				float extend = Mathf.curve(e.fin(Interp.pow10Out), 0.075f, 1f) * scl;
+				float rot = e.fout(Interp.pow10In);
 				
 				for(int i : Mathf.signs){
-					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown(),300 + 700 * extend, e.rotation + (90 + rand) * extend + 90 * i - 45);
+					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i - 45);
 				}
 				
 				for(int i : Mathf.signs){
-					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown(),300 + 700 * extend, e.rotation + (90 + rand) * extend + 90 * i + 45);
+					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i + 45);
 				}
 			});
 			
@@ -293,9 +309,171 @@ public class NHBlocks implements ContentList {
 				Drawf.light(e.x, e.y, e.fout() * 120, heatColor, 0.7f);
 			});
 			
-			shootType = NHBullets.collapserBullet.copy();
-			reloadTime = 180f;
-			requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 90, NHItems.juniorProcessor, 60, NHItems.presstanium, 120, NHItems.zeta, 120, Items.graphite, 80));
+			recoilAmount = 18f;
+			shootShake = 80f;
+			shootSound = Sounds.laserblast;
+			health = 800000;
+			shootCone = 10f;
+			maxAmmo = 50;
+			consumes.powerCond(800f, FinalTurretBuild::isActive);
+			reloadTime = 1800f;
+			
+			ammo(NHItems.darkEnergy, new SpeedUpBulletType(10f, 1000f){
+				@Override
+				public void draw(Bullet b){
+					super.draw(b);
+					
+					Draw.color(heatColor, Color.white, b.fout() * 0.25f);
+	
+					float rand = Mathf.randomSeed(b.id, 60f);
+					float extend = Mathf.curve(b.fin(Interp.pow10Out), 0.075f, 1f);
+					float rot = b.fout(Interp.pow10In);
+	
+					float width = chargeCircleFrontRad * 2;
+					Fill.circle(b.x, b.y, width * (b.fout() + 4) / 7f);
+					
+					for(int i : Mathf.signs){
+						Drawf.tri(b.x, b.y, width * b.foutpowdown(),300 + 700 * extend, b.fdata + 90 * i - 45);
+					}
+	
+					for(int i : Mathf.signs){
+						Drawf.tri(b.x, b.y, width * b.foutpowdown(),300 + 700 * extend, b.fdata + 90 * i + 45);
+					}
+					
+					if(NHSetting.enableDetails()){
+						float cameraFin = (1 + 2 * DrawFuncs.cameraDstScl(b.x, b.y, Vars.mobile ? 200 : 320)) / 3f;
+						float triWidth = b.fout() * chargeCircleFrontRad * cameraFin;
+						
+						for(int i : Mathf.signs){
+							Fill.tri(b.x, b.y + triWidth, b.x, b.y - triWidth, b.x + i * cameraFin * chargeCircleFrontRad * (23 + Mathf.absin(10f, 0.75f)) * (b.fout() * 1.25f + 1f), b.y);
+						}
+					}
+					
+					float rad = splashDamageRadius * b.fin(Interp.pow5Out) * Interp.circleOut.apply(b.fout(0.15f));
+					Lines.stroke(8f * b.fin(Interp.pow2Out));
+					Lines.circle(b.x, b.y, rad);
+					
+					Draw.color(Color.white);
+					Fill.circle(b.x, b.y, width * (b.fout() + 4) / 9f);
+					
+					Drawf.light(b.team, b.x, b.y, rad, hitColor, 0.5f);
+				}
+				
+				@Override
+				public void init(Bullet b){
+					super.init(b);
+					b.fdata = Mathf.randomSeed(b.id, 90);
+				}
+				
+				@Override
+				public void update(Bullet b){
+					super.update(b);
+					b.fdata += b.vel.len() / 3f;
+				}
+				
+				@Override
+				public void despawned(Bullet b){
+					super.despawned(b);
+					
+					float rad = 120;
+					float spacing = 3f;
+					
+					
+					Angles.randLenVectors(b.id, 7, splashDamageRadius / 1.5f, ((x, y) -> {
+						float nowX = b.x + x;
+						float nowY = b.y + y;
+						
+						hitEffect.at(nowX, nowY, 0, hitColor);
+						hit(b, nowX, nowY);
+						
+						Vec2 vec2 = new Vec2(nowX, nowY);
+						Team team = b.team;
+						for(int k = 0; k < 7; k++){
+							Time.run(Mathf.random(6f, 12f) * k, () -> {
+								if(Mathf.chanceDelta(0.4f))hitSound.at(vec2.x, vec2.y, hitSoundPitch, hitSoundVolume);
+								despawnSound.at(vec2);
+								Effect.shake(hitShake, hitShake, vec2);
+								
+								for(int i = 0; i < lightning / 2; i++){
+									Lightning.create(team, lightningColor, lightningDamage, vec2.x, vec2.y, Mathf.random(360f), lightningLength + Mathf.random(lightningLengthRand));
+								}
+							});
+						}
+					}));
+				}
+				
+				{
+					drawSize = 1200f;
+					width = height = shrinkX = shrinkY = 0;
+					collides = false;
+					collidesAir = collidesGround = collidesTiles = true;
+					splashDamage = 2000f;
+					
+					velocityBegin = 6f;
+					velocityIncrease = -5.9f;
+					
+					accelerateEnd = 0.75f;
+					accelerateBegin = 0.1f;
+					
+					func = Interp.pow2;
+					trailInterp = Interp.pow10Out;
+					
+					despawnSound = Sounds.plasmaboom;
+					hitSound = Sounds.explosionbig;
+					hitShake = 60;
+					despawnShake = 100;
+					lightning = 18;
+					lightningDamage = 2000f;
+					lightningLength = 30;
+					lightningLengthRand = 50;
+					
+					status = NHStatusEffects.end;
+					
+//					ammoMultiplier = 0.1f;
+					
+					fragBullets = 1;
+					fragBullet = NHBullets.arc_9000;
+					fragVelocityMin = 0.4f;
+					fragVelocityMax = 0.6f;
+					fragLifeMin = 0.5f;
+					fragLifeMax = 0.7f;
+					
+					trailWidth = 12F;
+					trailLength = 120;
+					
+					drag = 0.01f;
+					speed = 8f;
+					scaleVelocity = true;
+					splashDamageRadius = 400f;
+					hitColor = lightColor = lightningColor = trailColor = heatColor;
+					Effect effect = NHFx.crossBlast(hitColor, 720f);
+					effect.lifetime += 180;
+					despawnEffect = NHFx.circleOut(hitColor, splashDamageRadius);
+					hitEffect = new MultiEffect(new Effect(180F, 600f, e -> {
+						float rad = 120f;
+						
+						float f = (e.fin(Interp.pow10Out) + 8) / 9 * Mathf.curve(Interp.slowFast.apply(e.fout(0.75f)), 0f, 0.85f);
+						
+						Draw.alpha(0.9f * e.foutpowdown());
+						Draw.color(Color.white, e.color, e.fin() + 0.6f);
+						Fill.circle(e.x, e.y, rad * f);
+						
+						e.scaled(45f, i -> {
+							Lines.stroke(7f * i.fout());
+							Lines.circle(i.x, i.y, rad * 3f * i.finpowdown());
+							Lines.circle(i.x, i.y, rad * 2f * i.finpowdown());
+						});
+						
+						
+						Draw.color(Color.white);
+						Fill.circle(e.x, e.y, rad * f * 0.75f);
+						
+						Drawf.light(e.x, e.y, rad * f * 2f, Draw.getColor(), 0.7f);
+					}).layer(Layer.effect + 0.001f), effect, NHFx.blast(hitColor, 200f));
+				}
+			});
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 5000, NHItems.darkEnergy, 2000));
 			NHTechTree.add(Blocks.segment, this);
 		}};
 		
@@ -357,11 +535,11 @@ public class NHBlocks implements ContentList {
 		
 		pulseShotgun = new ItemTurret("pulse-shotgun"){{
 			health = 960;
-			range = 160;
+			range = 200;
 			smokeEffect = Fx.shootBigSmoke;
-			shots = 4;
-			burstSpacing = 12f;
-			reloadTime = 120f;
+			shots = 6;
+			burstSpacing = 8f;
+			reloadTime = 90f;
 			recoilAmount = 3f;
 			shootCone = 30f;
 			inaccuracy = 4f;
@@ -369,28 +547,29 @@ public class NHBlocks implements ContentList {
 			shootSound = Sounds.shootSnap;
 			shootShake = 3f;
 			ammo(
-				Items.titanium, new BasicBulletType(5, 18){{
+				Items.titanium, new BasicBulletType(5, 24){{
 					width = 8f;
 					height = 25f;
 					hitColor = backColor = lightColor = trailColor = Items.titanium.color.cpy().lerp(Color.white, 0.1f);
 					frontColor = backColor.cpy().lerp(Color.white, 0.35f);
 					hitEffect = NHFx.crossBlast(hitColor, height + width);
 					shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 12f, 2f);
+					ammoMultiplier = 4;
 				}},
 				
-				Items.plastanium, new BasicBulletType(5, 22){{
+				Items.plastanium, new BasicBulletType(5, 26){{
 					width = 8f;
 					height = 25f;
 					fragBullets = 4;
 					fragBullet = Bullets.fragPlasticFrag;
-					ammoMultiplier = 4;
+					ammoMultiplier = 8;
 					hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
 					frontColor = backColor.cpy().lerp(Color.white, 0.35f);
 					hitEffect = NHFx.crossBlast(hitColor, height + width);
 					shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
 				}},
 				
-				NHItems.zeta, new BasicBulletType(5, 14){{
+				NHItems.zeta, new BasicBulletType(5, 18){{
 					width = 8f;
 					height = 25f;
 					lightning = 2;
@@ -399,14 +578,14 @@ public class NHBlocks implements ContentList {
 					lightningDamage = damage;
 					status = StatusEffects.shocked;
 					statusDuration = 15f;
-					ammoMultiplier = 4;
+					ammoMultiplier = 8;
 					lightningColor = hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
 					frontColor = backColor.cpy().lerp(Color.white, 0.35f);
 					hitEffect = NHFx.crossBlast(hitColor, height + width);
 					shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
 				}},
 				
-				Items.pyratite, new BasicBulletType(5, 16){{
+				Items.pyratite, new BasicBulletType(5, 18){{
 					width = 8f;
 					height = 25f;
 					incendAmount = 4;
@@ -414,7 +593,7 @@ public class NHBlocks implements ContentList {
 					incendSpread = 12f;
 					status = StatusEffects.burning;
 					statusDuration = 15f;
-					ammoMultiplier = 4;
+					ammoMultiplier = 8;
 					hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
 					frontColor = backColor.cpy().lerp(Color.white, 0.35f);
 					hitEffect = NHFx.crossBlast(hitColor, height + width);
@@ -422,14 +601,14 @@ public class NHBlocks implements ContentList {
 					shootEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
 				}},
 				
-				Items.blastCompound, new BasicBulletType(5, 18){{
+				Items.blastCompound, new BasicBulletType(5, 22){{
 					width = 8f;
 					height = 25f;
 					status = StatusEffects.blasted;
 					statusDuration = 15f;
 					splashDamageRadius = 12f;
 					splashDamage = damage;
-					ammoMultiplier = 4;
+					ammoMultiplier = 8;
 					hitColor = backColor = lightColor = trailColor = Items.blastCompound.color.cpy().lerp(Color.white, 0.1f);
 					frontColor = backColor.cpy().lerp(Color.white, 0.35f);
 					hitEffect = NHFx.crossBlast(hitColor, height + width);
@@ -440,7 +619,7 @@ public class NHBlocks implements ContentList {
 			
 			limitRange();
 			maxAmmo = 30;
-			ammoPerShot = 4;
+			ammoPerShot = 6;
 			
 			requirements(Category.turret, with(Items.copper, 30, Items.graphite, 40, NHItems.presstanium, 50, Items.lead, 60));
 			NHTechTree.add(Blocks.salvo, this);
@@ -1469,6 +1648,16 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		multiJunction = new Junction("multi-junction"){{
+			size = 1;
+			health = 420;
+			speed = 6f;
+			capacity = 12;
+			
+			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
+			NHTechTree.add(Blocks.junction, this);
+		}};
 		
 		remoteRouter = new RemoteRouter("remote-router"){{
 			size = 3;

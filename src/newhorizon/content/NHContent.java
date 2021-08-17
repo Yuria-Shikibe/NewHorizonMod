@@ -10,15 +10,11 @@ import newhorizon.feature.UpgradeData;
 
 public class NHContent extends Content{
 	public static TextureRegion
-			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon;
+			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2;
 	
 	public static void initLoad(){
 		new NHContent().load();
 	}
-	
-	public static TextureRegion getArrowRegion(){return Core.atlas.find(NewHorizon.name("jump-gate-arrow"));}
-	public static TextureRegion getPointerRegion(){return Core.atlas.find(NewHorizon.name("jump-gate-pointer"));}
-	
 	
 	@Override
 	public ContentType getContentType(){
@@ -27,11 +23,13 @@ public class NHContent extends Content{
 	
 	public void load(){
 		if(Vars.headless)return;
+		
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));
 		iconLevel = Core.atlas.find(NewHorizon.name("level-up"));
 		pointerRegion = Core.atlas.find(NewHorizon.name("jump-gate-pointer"));
 		icon = Core.atlas.find(NewHorizon.name("icon-white"));
+		icon2 = Core.atlas.find(NewHorizon.name("icon-2"));
 		
 		for(UpgradeData data : NHUpgradeDatas.all){
 			data.load();
