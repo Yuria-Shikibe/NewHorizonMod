@@ -4,9 +4,6 @@ version '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
-targetCompatibility = 8
-sourceCompatibility = JavaVersion.VERSION_16
-
 repositories{
     mavenCentral()
     maven{ url 'https://www.jitpack.io' }
