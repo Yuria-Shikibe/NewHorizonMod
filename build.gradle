@@ -4,6 +4,9 @@ version '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
+targetCompatibility = 8
+sourceCompatibility = JavaVersion.VERSION_16
+
 repositories{
     mavenCentral()
     maven{ url 'https://www.jitpack.io' }
@@ -11,7 +14,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v130'
+    mindustryVersion = 'v130.1'
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
@@ -36,7 +39,7 @@ allprojects{
 }
 
 dependencies{
-    implementation 'org.jetbrains:annotations:21.0.1'
+    implementation 'org.jetbrains:annotations:22.0.0'
     //implementation "com.github.Anuken.Mindustry:annotations:$mindustryVersion"
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"

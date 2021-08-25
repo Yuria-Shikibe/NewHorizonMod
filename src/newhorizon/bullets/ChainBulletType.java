@@ -12,8 +12,6 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
 import newhorizon.feature.PosLightning;
-import newhorizon.func.NHFunc;
-import newhorizon.vars.NHVars;
 
 public class ChainBulletType extends BulletType{
 	public int maxHit = 20;
@@ -53,7 +51,6 @@ public class ChainBulletType extends BulletType{
 			Vars.indexer.eachBlock(null, confirm.getX(), confirm.getY(), chainRange, t -> t.team != b.team, points::add);
 		}
 		
-		NHVars.rand.setSeed(NHFunc.seedNet());
 		points.shuffle();
 		points.truncate(maxHit);
 		points.sort(e -> - confirm.dst(e) + confirm.angleTo(e) / 32f);

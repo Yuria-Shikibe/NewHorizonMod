@@ -58,7 +58,7 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 		super(speed, damage);
 		collidesGround = collidesAir = true;
 		collides = false;
-		scaleVelocity = true;
+		scaleVelocity = despawnHit = true;
 		hitShake = 3.0F;
 		hitSound = Sounds.explosion;
 		shootEffect = Fx.shootBig;
@@ -82,7 +82,7 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 	@Override
 	public void init(){
 		super.init();
-		if(this.slopeEffect == NHFx.boolSelector)this.slopeEffect = new Effect(25, e -> {
+		if(slopeEffect == NHFx.boolSelector)slopeEffect = new Effect(25, e -> {
 			if(!(e.data instanceof Integer))return;
 			int i = e.data();
 			Draw.color(outColor);
@@ -90,13 +90,13 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 			Lines.stroke((i < 0 ? e.fin() : e.fout()) * 3f);
 			Lines.circle(e.x, e.y, (i > 0 ? e.fin() : e.fout()) * size * 1.1f);
 		});
-		if(this.spreadEffect == NHFx.boolSelector)this.spreadEffect = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
+		if(spreadEffect == NHFx.boolSelector)spreadEffect = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
 			color(outColor);
 			Fill.circle(e.x + x, e.y + y, e.fout() * size / 2f);
 			color(innerColor);
 			Fill.circle(e.x + x, e.y + y, e.fout() * (size / 3f - 1f));
 		}));
-		if(this.liHitEffect == NHFx.boolSelector)this.liHitEffect = NHFx.lightningHitSmall(outColor);
+		if(liHitEffect == NHFx.boolSelector)liHitEffect = NHFx.lightningHitSmall(outColor);
 		
 		if(trailWidth < 0)trailWidth = size * 0.75f;
 		if(trailLength < 0)trailLength = 12;
@@ -118,10 +118,10 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 			PosLightning.createRange(b, collidesAir, collidesGround, b, b.team, linkRange, maxHit, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, PosLightning.WIDTH, boltNum, p -> liHitEffect.at(p));
 		}
 		
-		if(randomGenerateRange > 0f && Mathf.chance(Time.delta * randomGenerateChance))PosLightning.createRandomRange(b, b.team, b, randomGenerateRange, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, boltWidth, boltNum, randomLightningNum, hitPos -> {
+		if(randomGenerateRange > 0f && Mathf.chance(Time.delta * randomGenerateChance) && b.lifetime - b.time > PosLightning.lifetime)PosLightning.createRandomRange(b, b.team, b, randomGenerateRange, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, boltWidth, boltNum, randomLightningNum, hitPos -> {
 			randomGenerateSound.at(hitPos, Mathf.random(0.9f, 1.1f));
 			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius / 8, splashDamage * b.damageMultiplier() / 8, collidesAir, collidesGround);
-			NHFx.lightningHitLarge(outColor).at(hitPos);
+			NHFx.lightningHitLarge.at(hitPos.getX(), hitPos.getY(), lightningColor);
 		});
 		
 		if(Mathf.chanceDelta(effectLightningChance) && b.lifetime - b.time > Fx.chainLightning.lifetime && Core.settings.getBool("enableeffectdetails")){
@@ -155,14 +155,15 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 	@Override
 	public void despawned(Bullet b) {
 		PosLightning.createRandomRange(b, b.team, b, randomGenerateRange, outColor, Mathf.chanceDelta(randomLightningChance), 0, 0, boltWidth, boltNum, randomLightningNum, hitPos -> {
-			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), this.splashDamageRadius, this.splashDamage * b.damageMultiplier(), this.collidesAir, this.collidesGround);
-			NHFx.lightningHitLarge(outColor).at(hitPos);
+			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
+			NHFx.lightningHitLarge.at(hitPos.getX(), hitPos.getY(), lightningColor);
 			liHitEffect.at(hitPos);
 			for (int j = 0; j < lightning; j++) {
-				Lightning.create(b, this.lightningColor, this.lightningDamage < 0.0F ? this.damage : this.lightningDamage, b.x, b.y, b.rotation() + Mathf.range(this.lightningCone / 2.0F) + this.lightningAngle, this.lightningLength + Mathf.random(this.lightningLengthRand));
+				Lightning.create(b, lightningColor, lightningDamage < 0.0F ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2.0F) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
 			}
 			hitSound.at(hitPos, Mathf.random(0.9f, 1.1f));
 		});
+		
 		super.despawned(b);
 	}
 }

@@ -39,13 +39,11 @@ import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
-import mindustry.world.blocks.distribution.ArmoredConveyor;
-import mindustry.world.blocks.distribution.Conveyor;
-import mindustry.world.blocks.distribution.Junction;
-import mindustry.world.blocks.distribution.StackConveyor;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.DecayGenerator;
@@ -120,7 +118,7 @@ public class NHBlocks implements ContentList {
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
 		//Distributions
 		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter, multiArmorConveyor, multiConveyor, multiEfficientConveyor,
-		multiJunction,
+		multiJunction, multiRouter, multiConduit,
 		//Drills
 		largeWaterExtractor, beamDrill,
 		//Powers
@@ -133,10 +131,14 @@ public class NHBlocks implements ContentList {
 	
 		//Env
 		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum,
-		metalGroundHeat
+		metalGroundHeat, onglomerateRock
 		;
 	
 	private static void loadEnv(){
+		onglomerateRock = new Floor("onglomerate-rock", 3){{
+			mapColor = Color.valueOf("565557");
+		}};
+		
 		metalGroundHeat = new Floor("metal-ground-heat", 3){{
 			mapColor = Pal.darkerGray.cpy().lerp(NHColor.darkEnr, 0.5f);
 			wall = metalUnit;
@@ -271,6 +273,11 @@ public class NHBlocks implements ContentList {
 			shootLength = 9 * tilesize;
 			unitSort = (unit, x, y) -> -unit.health;
 			
+			shots = 1;
+			burstSpacing = 0;
+			velocityInaccuracy = 0;
+			inaccuracy = 0;
+			
 			ammoPerShot = 10;
 			coolantMultiplier = 0.8f;
 			canOverdrive = false;
@@ -332,12 +339,14 @@ public class NHBlocks implements ContentList {
 					float width = chargeCircleFrontRad * 2;
 					Fill.circle(b.x, b.y, width * (b.fout() + 4) / 7f);
 					
+					float rotAngle = b.fdata;
+					
 					for(int i : Mathf.signs){
-						Drawf.tri(b.x, b.y, width * b.foutpowdown(),300 + 700 * extend, b.fdata + 90 * i - 45);
+						Drawf.tri(b.x, b.y, width * b.foutpowdown(),300 + 700 * extend, rotAngle + 90 * i - 45);
 					}
 	
 					for(int i : Mathf.signs){
-						Drawf.tri(b.x, b.y, width * b.foutpowdown(),300 + 700 * extend, b.fdata + 90 * i + 45);
+						Drawf.tri(b.x, b.y, width * b.foutpowdown(),300 + 700 * extend, rotAngle + 90 * i + 45);
 					}
 					
 					if(NHSetting.enableDetails()){
@@ -517,7 +526,7 @@ public class NHBlocks implements ContentList {
 			smokeEffect = Fx.shootBigSmoke2;
 			consumes.powerCond(3f, TurretBuild::isActive);
 			ammo(
-				Items.silicon, new AdaptedLaserBulletType(60){{
+				Items.silicon, new AdaptedLaserBulletType(140){{
 					colors = new Color[]{Pal.bulletYellowBack.cpy().mul(1f, 1f, 1f, 0.45f), Pal.bulletYellowBack, Color.white};
 					hitColor = Pal.bulletYellow;
 					length = range + 10f;
@@ -618,7 +627,7 @@ public class NHBlocks implements ContentList {
 			);
 			
 			limitRange();
-			maxAmmo = 30;
+			maxAmmo = 60;
 			ammoPerShot = 6;
 			
 			requirements(Category.turret, with(Items.copper, 30, Items.graphite, 40, NHItems.presstanium, 50, Items.lead, 60));
@@ -1649,10 +1658,30 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
+		multiConduit = new Conduit("multi-conduit"){{
+			size = 1;
+			health = 420;
+			liquidCapacity = 20.0F;
+			liquidPressure = 1.1f;
+			leaks = false;
+			
+			requirements(Category.liquid, with(NHItems.multipleSteel, 1, Items.copper, 2, Items.metaglass, 1));
+			NHTechTree.add(Blocks.pulseConduit, this);
+		}};
+		
+		multiRouter = new Router("multi-router"){{
+			size = 1;
+			health = 420;
+			speed = 2f;
+			
+			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.lead, 5));
+			NHTechTree.add(Blocks.router, this);
+		}};
+		
 		multiJunction = new Junction("multi-junction"){{
 			size = 1;
 			health = 420;
-			speed = 6f;
+			speed = 12f;
 			capacity = 12;
 			
 			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
@@ -2185,23 +2214,28 @@ public class NHBlocks implements ContentList {
         }};
         
         blaster = new StaticChargeBlaster("blaster"){{
-            requirements(Category.effect, BuildVisibility.hidden, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
+            requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+            
             size = 3;
             chargerOffset = 5.65f;
             rotateOffset = -45f;
-            damage = 40;
-            lightningDamage = 150;
+            damage = 150;
+            lightningDamage = 200;
+            generateLiNum = 3;
             generateLiLen = 12;
-            generateLiRand = 4;
-            gettingBoltNum = 8;
+            generateLenRand = 20;
+            gettingBoltNum = 1;
             lightningColor = heatColor = NHColor.darkEnrColor;
             generateEffect = NHFx.blastgenerate;
             acceptEffect = NHFx.blastAccept;
+            blastSound = Sounds.explosionbig;
             status = NHStatusEffects.emp2;
-            range = 280;
-            health = 5000;
-            knockback = 80f;         
-            consumes.power(10f);
+            range = 240;
+            health = 1200;
+            knockback = 10f;
+            consumes.power(8f);
+            itemCapacity = 30;
+            consumes.item(NHItems.zeta, 3);
         }};
 		
 		jumpGatePrimary = new JumpGate("jump-gate-primary"){{

@@ -25,6 +25,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.block.special.JumpGate;
+import newhorizon.content.NHFx;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +41,12 @@ public class NHFunc{
     private static final Seq<Tile> tiles = new Seq<>();
     private static final IntSeq buildingIDSeq = new IntSeq();
     private static final int maxCompute = 32;
+    
+    private static final Vec2
+            vec21 = new Vec2(),
+            vec22 = new Vec2(),
+            vec23 = new Vec2();
+    
     public static final Rand rand = new Rand(0);
     public static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;
@@ -54,8 +61,9 @@ public class NHFunc{
     private static final Vec2 point1 = new Vec2(), point2 = new Vec2(), point3 = new Vec2(), point4 = new Vec2();
     private static final Rect r1 = new Rect(), r2 = new Rect();
     
-    public static long seedNet(){
-        return Groups.sync.size() + state.wave + state.stats.timeLasted;
+    public static void randFadeLightningEffect(float x, float y, float range, float lightningLength, Color color, boolean in){
+        vec21.rnd(range).add(x, y);
+        (in ? NHFx.chainLightningFadeReversed : NHFx.chainLightningFade).at(x, y, 12f, color, vec21.cpy());
     }
     
     public static Unit teleportUnitNet(Unit before, float x, float y, float angle, @Nullable Player player){

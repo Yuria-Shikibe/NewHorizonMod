@@ -49,7 +49,7 @@ public class FinalTurret extends ItemTurret{
 	public float lightningCircleInScl = 0.85f, lightningCircleOutScl = 1.1f;
 	public Interp lightningCircleCurve = Interp.pow3Out;
 	
-	public float shootEffectSpreadX = 5 * tilesize, shootEffectSpreadY = 48 * tilesize;
+	public float shootEffectSpreadX = 5 * tilesize, shootEffectSpreadY = 28 * tilesize;
 	public float shootEffectMin = 6, shootEffectMax = 10;
 	
 	protected static final Vec2 trSide = new Vec2(), trFront = new Vec2(), trFrontSide = new Vec2();
@@ -320,10 +320,6 @@ public class FinalTurret extends ItemTurret{
 			}
 			
 			recoil = recoilAmount;
-			for(int i = 0; i < Mathf.random(shootEffectMin, shootEffectMax); i++){
-				Tmp.v1.trns(rotation, Mathf.range(shootEffectSpreadX), Mathf.range(shootEffectSpreadY));
-				shootEffect.at(x + tr.x + Tmp.v1.x, y + tr.y + Tmp.v1.y, rotation, heatColor, Mathf.range(0.6f, 0.75f));
-			}
 		}
 		
 		@Override
@@ -363,7 +359,7 @@ public class FinalTurret extends ItemTurret{
 					findTarget();
 				}
 				
-				if(cooled){
+				if(cooled && !charging){
 					wasShooting = isExtending = true;
 					updateShooting();
 				}
@@ -432,6 +428,11 @@ public class FinalTurret extends ItemTurret{
 		protected void shoot(BulletType type){
 			super.shoot(type);
 			isExtending = false;
+			
+			for(int i = 0; i < Mathf.random(shootEffectMin, shootEffectMax); i++){
+				Tmp.v1.trns(rotation, Mathf.range(shootEffectSpreadX), Mathf.range(shootEffectSpreadY));
+				shootEffect.at(x + tr.x + Tmp.v1.x, y + tr.y + Tmp.v1.y, rotation, heatColor, Mathf.range(0.6f, 0.75f));
+			}
 		}
 	}
 }

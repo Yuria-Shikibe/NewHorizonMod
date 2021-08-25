@@ -23,7 +23,7 @@ public class NHStatusEffects implements ContentList{
     @Override
     public void load(){
         end = new NHStatusEffect("end"){{
-            damage = 100;
+            damage = 1000;
             permanent = true;
             textureColor = color = NHColor.darkEnrColor;
             effectChance = 0.1f;

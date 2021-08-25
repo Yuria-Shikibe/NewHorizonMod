@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.util.Time;
@@ -29,6 +28,8 @@ import newhorizon.vars.NHWorldVars;
 import static mindustry.Vars.tilesize;
 
 public class RemoteCoreStorage extends StorageBlock{
+	private static CoreBlock.CoreBuild tmpCoreBuild;
+	
 	public static final ObjectMap<Integer, ObjectSet<RemoteCoreStorageBuild>> placedMap = new ObjectMap<>(Team.all.length);
 	
 	static{
@@ -48,7 +49,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	}
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		if(maxPlaceNum(Vars.player.team()) <= placedMap.size){
+		if(maxPlaceNum(Vars.player.team()) <= placedMap.get(Vars.player.team().id).size){
 			drawPlaceText("Maximum Placement Quantity Reached", x, y, false);
 		}
 	}
@@ -68,12 +69,17 @@ public class RemoteCoreStorage extends StorageBlock{
 		bars.add("maxPlace", (RemoteCoreStorageBuild entity) ->
 			new Bar(
 				() -> "Max Place | " + placedMap.get(entity.team.id).size + " / " + maxPlaceNum(entity.team),
-				() -> placedMap.get(entity.team.id).size >= maxPlaceNum(entity.team) ? Pal.redderDust : Pal.accent,
+				() -> placedMap.get(entity.team.id).size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
 				() -> (float)placedMap.get(entity.team.id).size / maxPlaceNum(entity.team)
 			)
 		);
 		bars.add("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
 		bars.remove("items");
+		bars.add("items", (RemoteCoreStorageBuild entity) -> new Bar(
+			() -> Core.bundle.format("bar.items", entity.items.total()),
+			() -> Pal.items,
+			() -> (float)(entity.items.total() / ((tmpCoreBuild = entity.core()) == null ? Integer.MAX_VALUE : tmpCoreBuild.storageCapacity)))
+		);
 	}
 	
 	@Override
@@ -104,30 +110,12 @@ public class RemoteCoreStorage extends StorageBlock{
 			super.init(tile, team, shouldAdd, rotation);
 			
 			placedMap.get(team.id).add(this);
-//			Log.info("ADD" + placedMap.get(team.id) + " | ID: " + team.id);
-			
 			return this;
 		}
-		
-		//		@Override
-//		public void afterRead(){
-//			super.afterRead();
-//			placedMap.put(team.id, placedMap.get(team.id) + 1);
-//		}
 		
 		@Override
 		public void onRemoved(){
 			placedMap.get(team.id).remove(this);
-		}
-		
-		
-		@Override
-		public void displayBars(Table table){
-			super.displayBars(table);
-			CoreBlock.CoreBuild b = core();
-			if(b != null){
-				table.add(new Bar(() -> Core.bundle.format("bar.items", b.items.total()), () -> Pal.items, () -> (float)(b.items.total() / b.storageCapacity))).growX().row();
-			}
 		}
 		
 		@Override

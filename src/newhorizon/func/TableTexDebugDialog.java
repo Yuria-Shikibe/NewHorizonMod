@@ -11,6 +11,7 @@ import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
@@ -225,7 +226,7 @@ public class TableTexDebugDialog extends BaseDialog{
 //			buttonImage.show();
 //		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
-		cont.button("Unlock", () -> {
+		cont.button("UnlockALL", () -> {
 			for(UnlockableContent content : content.items()){
 				content.unlock();
 			}
@@ -293,6 +294,33 @@ public class TableTexDebugDialog extends BaseDialog{
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.row();
+		
+		cont.button("UnlockSingle", () -> {
+			new BaseDialog("UNLOCK"){{
+				Seq<UnlockableContent> all = new Seq<>().addAll(content.units().select(c -> !c.isHidden())).addAll(content.blocks().select(c -> !c.isHidden())).addAll(content.items().select(c -> !c.isHidden())).addAll(content.liquids()).addAll(content.statusEffects().select(c -> !c.isHidden())).addAll(content.sectors().select(c -> !c.isHidden())).addAll(content.planets().select(c -> !c.isHidden())).as();
+				
+				cont.pane(t -> {
+					for(int i = 0; i < all.size; i++){
+						if(i % 5 == 0)t.row();
+						
+						UnlockableContent c = all.get(i);
+						t.table(Tex.pane, table -> {
+							table.image(c.fullIcon).size(LEN);
+							table.add(c.localizedName).padLeft(OFFSET / 2);
+							table.button(Icon.lock, Styles.clearPartiali, () -> {
+								if(c.unlocked())c.clearUnlock();
+								else c.unlock();
+							}).size(LEN).update(b -> {
+								if(c.unlocked())b.getStyle().imageUp = Icon.lockOpen;
+								else b.getStyle().imageUp = Icon.lock;
+							});
+						}).fill().pad(OFFSET / 2);
+					}
+				}).grow();
+				
+				addCloseButton();
+			}}.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("Hack", () -> {
 			Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent(Vars.player, 600f));

@@ -78,17 +78,17 @@ public class ChargeWall extends Block{
 		chargeActEffect.at(tile.x, tile.y, effectColor);
 		
 		PosLightning.createRandom(tile.team, tile, tile.range(), effectColor, true, shootDamage, 8, PosLightning.WIDTH, 3, p -> {
-			NHFx.lightningHitSmall(effectColor).at(tile);
+			NHFx.lightningHitSmall.at(tile.x, tile.y, effectColor);
 		});
 	};
 	Cons<ChargeWallBuild> destroyAct = tile -> {
 		onDestroyedEffect.at(tile.x, tile.y, effectColor);
 		
 		PosLightning.createRandomRange(tile.team, tile, tile.range(), effectColor, true, shootDamage * 3, 10, PosLightning.WIDTH, 3, 8, p -> {
-			NHFx.lightningHitLarge(effectColor).at(tile);
+			NHFx.lightningHitLarge.at(tile.x, tile.y, effectColor);
 		});
 	};
-	Cons<ChargeWallBuild> closestTargetAct = tile -> PosLightning.create(tile, tile.target, tile.team, effectColor, true, shootDamage, 4, PosLightning.WIDTH, 2, target ->{
+	Cons<ChargeWallBuild> closestTargetAct = tile -> PosLightning.create(tile, tile, tile.target, tile.team, effectColor, true, shootDamage, 4, PosLightning.WIDTH, 2, target ->{
 		hitEffect.at(target.getX(), target.getY(), tile.angleTo(target), effectColor);
 		shootEffect.at(tile.x, tile.y, effectColor);
 		releaseType.create(tile, tile.team, tile.x, tile.y, tile.angleTo(target));

@@ -35,8 +35,10 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHSounds;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHFunc;
 
 import static mindustry.Vars.tilesize;
 
@@ -129,6 +131,8 @@ public class HyperGenerator extends PowerGenerator{
 		if(effectCircleSize < 0)effectCircleSize = size * Vars.tilesize / 6f;
 		clipSize = Math.max(clipSize, tilesize * size * 8f);
 		destroyed = new EffectBulletType(600f){
+			private final Effect updateEffect1, updateEffect2;
+			
 			{
 				absorbable = hittable = false;
 				speed = 0;
@@ -137,6 +141,16 @@ public class HyperGenerator extends PowerGenerator{
 				lightning = 3;
 				damage = splashDamage = lightningDamage / 1.5f;
 				splashDamageRadius = 38f;
+				
+				hitColor = lightColor = lightningColor = effectColor;
+				
+				despawnEffect = NHFx.circleOut(hitColor, lightningRange * 1.5f);
+				hitEffect = NHFx.collapserBulletExplode;
+				updateEffect2 = NHFx.blast(hitColor, lightningRange / 2f);
+				updateEffect1 = NHFx.circleOut(effectColor, lightningRange * 0.75f);
+				
+				hitShake = despawnShake = 80f;
+				despawnSound = NHSounds.hugeBlast;
 			}
 			
 			@Override
@@ -173,8 +187,22 @@ public class HyperGenerator extends PowerGenerator{
 					unit.impulse(Tmp.v3.set(unit).sub(b.x, b.y).nor().scl(-attract * 100.0f));
 				});
 				
-				if(b.timer(3, 8))PosLightning.createRange(b, Team.derelict, lightningRange * 2f, 255, effectColor, true, lightningDamage, subNum + Mathf.random(subNumRand), PosLightning.WIDTH,updateLightning + Mathf.random(updateLightningRand), point -> {
-					NHFx.lightningHitSmall(effectColor).at(point);
+				if(Mathf.chanceDelta((b.fin() * 3 + 1) / 4f * 0.65f)){
+					NHFunc.randFadeLightningEffect(b.x, b.y, lightningRange * 1.5f, Mathf.random(12f, 20f), lightningColor, Mathf.chance(0.5));
+				}
+				
+				if(Mathf.chanceDelta(0.2)){
+					updateEffect2.at(b.x + Mathf.range(size * tilesize * 0.75f), b.y + Mathf.range(size * tilesize * 0.75f));
+				}
+				
+				if(Mathf.chanceDelta(0.075)){
+					updateEffect1.at(b.x + Mathf.range(size * tilesize), b.y + Mathf.range(size * tilesize));
+				}
+				
+				Effect.shake(10f, 30f, b);
+				
+				if(b.timer(3, 8))PosLightning.createRange(b, b, Team.derelict, lightningRange * 2f, 255, effectColor, true, lightningDamage, subNum + Mathf.random(subNumRand), PosLightning.WIDTH,updateLightning + Mathf.random(updateLightningRand), point -> {
+					NHFx.lightningHitSmall.at(point);
 					Damage.damage(point.getX(), point.getY(), splashDamageRadius, splashDamage);
 				});
 				
@@ -235,7 +263,7 @@ public class HyperGenerator extends PowerGenerator{
 						NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f * (warmup + 0.3f), effectColor);
 						Effect.shake(workShake, workShake, this);
 						if(Mathf.chanceDelta(warmup / 2))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * Math.max(Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl, 0.001f), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
-							NHFx.lightningHitLarge(effectColor).at(point);
+							NHFx.lightningHitLarge.at(point.getX(), point.getY(), effectColor);
 						});
 					}
 				}
@@ -256,7 +284,7 @@ public class HyperGenerator extends PowerGenerator{
 				}
 				if(Mathf.chanceDelta( Mathf.curve(1 - health / maxHealth(), structureLim, 1f) / 25f)){
 					PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * (Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
-						NHFx.lightningHitLarge(effectColor).at(point);
+						NHFx.lightningHitLarge.at(point.getX(), point.getY(), effectColor);
 					});
 				}
 				if(Mathf.chanceDelta(warmup / updateEffectDiv * 1.5f)) workEffect.at(x, y, updateEffectSize * 3f * warmup, effectColor);
@@ -351,7 +379,7 @@ public class HyperGenerator extends PowerGenerator{
 					explodeSub.get(this);
 					Sounds.explosionbig.at(this);
 					PosLightning.createRandomRange(Team.derelict, this, lightningRange * 3f, effectColor, true, lightningDamage, lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
-						NHFx.lightningHitLarge(effectColor).at(point);
+						NHFx.lightningHitLarge.at(point.getX(), point.getY(), effectColor);
 					});
 				});
 			}

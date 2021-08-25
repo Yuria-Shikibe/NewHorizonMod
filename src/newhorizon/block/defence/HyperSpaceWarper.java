@@ -49,10 +49,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.feature.NHBaseEntity;
 import newhorizon.feature.PosLightning;
-import newhorizon.func.ClassIDIniter;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.NHFunc;
-import newhorizon.func.TableFs;
+import newhorizon.func.*;
 import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.*;
@@ -286,7 +283,8 @@ public class HyperSpaceWarper extends Block{
 			Tmp.p1.set(Point2.unpack(target));
 			if(selects.isEmpty() || world.tile(target) == null)return;
 			
-			Rand rand = new Rand(NHFunc.seedNet());
+			Rand rand = NHFunc.rand;
+			rand.setSeed(core().items.total());
 			
 			ObjectMap<Unit, Vec2> spawnPos = new ObjectMap<>(selects.size + 1);
 
@@ -450,7 +448,7 @@ public class HyperSpaceWarper extends Block{
 		@Override
 		public void draw(){
 			Draw.z(Layer.effect);
-			if(((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2)) && onGoing){
+			if(NHSetting.enableDetails() && ((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2)) && onGoing){
 				trail.draw(team.color, 4f);
 			}
 			
@@ -557,7 +555,7 @@ public class HyperSpaceWarper extends Block{
 			}
 			
 			if(onMove && contained){
-				trail.update(x, y);
+				if(NHSetting.enableDetails())trail.update(x, y);
 				
 				vel.set(to).sub(x, y).nor().scl(dstPerMove * Time.delta);
 				

@@ -50,14 +50,14 @@ public class NewHorizon extends Mod{
 		new NHUnitTypes(),
 		new NHBlocks(),
 		new NHPlanets(),
-		new NHSectorPreset(),
+		new NHSectorPresets(),
 		new NHWeathers(),
 		new NHTechTree(),
 	};
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.eternity, NHBlocks.multiJunction
+			NHBlocks.multiRouter, NHBlocks.blaster, NHBlocks.multiConduit, NHBlocks.onglomerateRock
 		};
 	}
 	
@@ -105,7 +105,7 @@ public class NewHorizon extends Mod{
 				table.table(t -> {
 					t.button("@back", Icon.left, Styles.transt, () -> {
 						dialog.hide();
-						NHSetting.settingApply();
+						NHSetting.applySettings();
 					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
@@ -152,7 +152,7 @@ public class NewHorizon extends Mod{
 		        }}.show();
 	        }
         	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
-	        if(NHSetting.getBool("@active.tool-panel*"))TableFs.tableMain();
+	        TableFs.tableMain();
 	        NHSetting.updateSettingMenu();
 	        NHSetting.loadSettings();
 	        ScreenHack.load();
@@ -178,8 +178,6 @@ public class NewHorizon extends Mod{
 		}
 		
 		if(NHSetting.getBool("@active.debug-mobile*"))Vars.testMobile = true;
-		
-		NHReflections.load();
 		EventTriggers.load();
 	    NHSounds.load();
 		NHContent.initLoad();

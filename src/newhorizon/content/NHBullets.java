@@ -494,7 +494,7 @@ public class NHBullets implements ContentList{
 				super.despawned(b);
 				PosLightning.createRandomRange(b, b.team, b, splashDamageRadius * 30, lightColor, Mathf.chanceDelta(lightning / 10f), 0, 0, PosLightning.WIDTH, 2 + Mathf.random(1), lightning, hitPos -> {
 					Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
-					NHFx.lightningHitLarge(lightColor).at(hitPos);
+					NHFx.lightningHitLarge.at(hitPos.getX(), hitPos.getY(), lightningColor);
 					NHFx.crossBlast(lightColor).at(hitPos);
 					for (int j = 0; j < lightning; j++) {
 						Lightning.create(b, lightningColor, lightningDamage < 0.0F ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2.0F) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
@@ -621,12 +621,9 @@ public class NHBullets implements ContentList{
 		}};
 		
 		warperBullet = new SpeedUpBulletType(0.35f, 20f, CIRCLE_BOLT){
-			@Override
-			public float range(){return 220f;}
-			
 			{
 				shrinkX = shrinkY = 0.35f;
-				buildingDamageMultiplier = 3.5f;
+				buildingDamageMultiplier = 1.5f;
 				keepVelocity = false;
 				
 				velocityIncrease = 4f;
@@ -1164,7 +1161,7 @@ public class NHBullets implements ContentList{
 			
 			setDisableAccel();
 			
-			outColor = trailColor = NHColor.darkEnrColor;
+			outColor = trailColor = hitColor = lightColor = lightningColor = NHColor.darkEnrColor;
 			innerColor = NHColor.darkEnr;
 			randomGenerateRange = 280f;
 			randomLightningNum = 6;
@@ -1172,8 +1169,6 @@ public class NHBullets implements ContentList{
 			range = 800f;
 			
 			drawSize = 500f;
-			
-			lightningColor = NHColor.darkEnrColor;
 			
 			drag = 0.0065f;
 			fragLifeMin = 0.1f;
@@ -1209,6 +1204,7 @@ public class NHBullets implements ContentList{
 					hitShake = 8f;
 					hitSound = Sounds.plasmaboom;
 					status = StatusEffects.sapped;
+					
 					statusDuration = 60f * 10;
 				}
 			};
@@ -1224,7 +1220,7 @@ public class NHBullets implements ContentList{
 			ammoMultiplier = 1;
 			lifetime = 300;
 			hitEffect = Fx.none;
-			despawnEffect = Fx.none;
+			despawnEffect = NHFx.circleOut(hitColor, splashDamageRadius * 1.5f);
 			hitEffect = NHFx.largeDarkEnergyHit;
 			shootEffect = NHFx.darkEnergyShootBig;
 			smokeEffect = NHFx.darkEnergySmokeBig;

@@ -59,6 +59,11 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(root), content, content.researchRequirements());
     }
     
+    public static void add(UnlockableContent root, UnlockableContent content, Objectives.Objective... objectives){
+        TechNode node = new TechNode(TechTree.get(root), content, content.researchRequirements());
+        node.objectives.addAll(objectives);
+    }
+    
     public static void addUnit(UnlockableContent root, UnitType type){
         ItemStack[] requirement;
         if((requirement = NHLoader.unitBuildCost.get(type)) != null){
@@ -107,14 +112,12 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(NHBlocks.zetaFactorySmall), NHBlocks.zetaFluidFactory, NHBlocks.zetaFluidFactory.researchRequirements());
         new TechNode(TechTree.get(Blocks.blastDrill), NHBlocks.fusionEnergyFactory, NHBlocks.fusionEnergyFactory.researchRequirements());
         new TechNode(TechTree.get(Blocks.kiln), NHBlocks.multipleSteelFactory, NHBlocks.multipleSteelFactory.researchRequirements());
-        new TechNode(TechTree.get(NHBlocks.presstaniumFactory), NHBlocks.irayrondPanelFactory, NHBlocks.irayrondPanelFactory.researchRequirements());
         
         add(NHBlocks.presstaniumFactory, NHBlocks.irayrondPanelFactorySmall);
         add(NHBlocks.irayrondPanelFactorySmall, NHBlocks.irayrondPanelFactory);
         add(NHBlocks.irayrondPanelFactory, NHBlocks.setonAlloyFactory);
         add(NHBlocks.irayrondPanelFactory, NHBlocks.multipleSurgeAlloyFactory);
         
-        new TechNode(TechTree.get(NHBlocks.irayrondPanelFactory), NHBlocks.irayrondPanelFactorySmall, NHBlocks.irayrondPanelFactorySmall.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.setonAlloyFactory), NHBlocks.upgradeSortFactory, NHBlocks.upgradeSortFactory.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.upgradeSortFactory), NHBlocks.darkEnergyFactory, NHBlocks.darkEnergyFactory.researchRequirements());
         new TechNode(TechTree.get(Blocks.pneumaticDrill), NHBlocks.metalOxhydrigenFactory, NHBlocks.metalOxhydrigenFactory.researchRequirements());
@@ -171,29 +174,15 @@ public class NHTechTree implements ContentList {
         new TechNode(TechTree.get(NHLiquids.xenAlpha), NHLiquids.xenBeta, NHLiquids.xenBeta.researchRequirements());
         new TechNode(TechTree.get(NHLiquids.xenBeta), NHLiquids.xenGamma, NHLiquids.xenGamma.researchRequirements());
         
-        node(NHBlocks.jumpGateJunior, () -> {
-            node(NHSectorPreset.ruinedWarehouse, Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
-                node(NHSectorPreset.quantumCraters, Seq.with(new Objectives.SectorComplete(NHSectorPreset.ruinedWarehouse)), () -> {
-                    node(NHSectorPreset.luminariOutpost, Seq.with(new Objectives.SectorComplete(NHSectorPreset.quantumCraters)), () -> {
-                        node(NHSectorPreset.downpour, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
-                            node(NHSectorPreset.shatteredRavine, Seq.with(new Objectives.SectorComplete(NHSectorPreset.downpour)), () -> {
-        
-                            });
-                        });
-                        node(NHSectorPreset.hostileHQ, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
-                
-                        });
-                        node(NHSectorPreset.deltaHQ, Seq.with(new Objectives.SectorComplete(NHSectorPreset.luminariOutpost)), () -> {
-    
-                        });
-                    });
-                });
-            });
-        });
-        
-        node(Liquids.water, () -> {
-            nodeProduce(NHLiquids.quantumLiquid, Seq.with(), () -> {});
-        });
-        
+        add(SectorPresets.planetaryTerminal, NHSectorPresets.ruinedWarehouse, new Objectives.SectorComplete(SectorPresets.planetaryTerminal));
+        add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.shatteredRavine, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
+        add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.quantumCraters, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
+        add(NHSectorPresets.quantumCraters, NHSectorPresets.luminariOutpost, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
+        add(NHSectorPresets.luminariOutpost, NHSectorPresets.downpour, new Objectives.SectorComplete(NHSectorPresets.luminariOutpost));
+        add(NHSectorPresets.downpour, NHSectorPresets.quantumCraters, new Objectives.SectorComplete(NHSectorPresets.downpour));
+        add(NHSectorPresets.downpour, NHSectorPresets.hostileHQ, new Objectives.SectorComplete(NHSectorPresets.downpour));
+        add(NHSectorPresets.quantumCraters, NHSectorPresets.deltaHQ, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
+       
+        add(Liquids.water, NHLiquids.quantumLiquid, new Objectives.Produce(NHLiquids.quantumLiquid));
     }
 }

@@ -50,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Yuria
  */
 public class PosLightning {
-	public static final BulletType hitter = new EffectBulletType(1f){{
+	public static final BulletType hitter = new EffectBulletType(10f){{
 		absorbable = true;
 		collides = collidesAir = collidesGround = collidesTiles = true;
 		status = StatusEffects.shocked;
@@ -99,28 +99,28 @@ public class PosLightning {
 	//create lightning to the enemies in range.
 	
 	//A radius create method that with a Bullet owner.
-	public static void createRange(@NotNull Bullet owner, float range, int hits, Color color, boolean createLightning, float width, int boltNum, Cons<Position> movement) {
+	public static void createRange(Bullet owner, float range, int hits, Color color, boolean createLightning, float width, int boltNum, Cons<Position> movement) {
 		createRange(owner, owner, owner.team, range, hits, color, createLightning, 0, 0, width, boltNum, movement);
 	}
 	
-	public static void createRange(@Nullable Bullet owner, boolean hitAir, boolean hitGround, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+	public static void createRange(Bullet owner, boolean hitAir, boolean hitGround, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
 		Seq<Healthc> entities = new Seq<>();
 		whetherAdd(entities, team, rect.setSize(range * 2f).setCenter(from.getX(), from.getY()), hits, hitGround, hitAir);
 		for (Healthc p : entities)create(owner, team, from, p, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
 	
-	public static void createRange(@Nullable Bullet owner, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+	public static void createRange(Bullet owner, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
 		createRange(owner, owner == null || owner.type.collidesAir, owner == null || owner.type.collidesGround, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
-	public static void createRange(Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
-		createRange(null, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, movement);
+	public static void createRange(Entityc owner, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+		createRange(owner, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
 	//create lightning to the enemies in range.
-	public static void createRange(Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum) {
-		createRange(null, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, position -> {});
+	public static void createRange(Entityc owner, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum) {
+		createRange(owner, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, position -> {});
 	}
 	
 	public static void createLength(@Nullable Bullet owner, Team team, Position from, float length, float angle, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement){
@@ -128,33 +128,33 @@ public class PosLightning {
 	}
 	
 	//A create method that could set lightning number and extra movements to the final target.
-	public static void create(Position from, Position target, Team team, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
-		create(null, team, from, target, color, createLightning, damage, boltLen, width, boltNum, movement);
+	public static void create(Entityc owner, Position from, Position target, Team team, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+		create(owner, team, from, target, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
 	//A create method that with a Bullet owner.
-	public static void create(@Nullable Bullet owner, Team team, Position from, Position target, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+	public static void create(Entityc owner, Team team, Position from, Position target, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
 		Position sureTarget = findInterceptedPoint(from, target, team);
 		movement.get(sureTarget);
 		
 		if(createLightning){
-			if(owner != null)for(int i = 0; i < owner.type.lightning; i++)Lightning.create(owner, color, owner.type.lightningDamage < 0.0F ? owner.damage : owner.type.lightningDamage, sureTarget.getX(), sureTarget.getY(), owner.rotation() + Mathf.range(owner.type.lightningCone / 2.0F) + owner.type.lightningAngle, owner.type.lightningLength + Mathf.random(owner.type.lightningLengthRand));
+			if(owner instanceof Bullet){
+				Bullet b = (Bullet)owner;
+				for(int i = 0; i < b.type.lightning; i++)Lightning.create(b, color, b.type.lightningDamage < 0.0F ? b.damage : b.type.lightningDamage, sureTarget.getX(), sureTarget.getY(), b.rotation() + Mathf.range(b.type.lightningCone / 2.0F) + b.type.lightningAngle, b.type.lightningLength + Mathf.random(b.type.lightningLengthRand));
+			}
 			else for(int i = 0; i < 3; i++)Lightning.create(team, color, damage <= 0 ? 1f : damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360f), boltLen);
 		}
 	
-		Entityc ownerE = null;
 		float realDamage = damage;
 		
-		if(owner != null){
-			ownerE = owner;
-			if(realDamage <= 0)realDamage = owner.damage > 0 ? owner.damage : 1;
-		}else if(team != null && team.core() != null){
-			ownerE = team.core();
-			if(realDamage <= 0)realDamage = 1;
+		if(realDamage <= 0){
+			if(owner instanceof Bullet){
+				Bullet b = (Bullet)owner;
+				realDamage = b.damage > 0 ? b.damage : 1;
+			}else realDamage = 1;
 		}
-		if(ownerE != null){
-			hitter.create(ownerE, team, sureTarget.getX(), sureTarget.getY(), 0).damage(realDamage);
-		}
+		
+		hitter.create(owner, team, sureTarget.getX(), sureTarget.getY(), 1).damage(realDamage);
 		
 		createEffect(from, sureTarget, color, boltNum, width);
 	}

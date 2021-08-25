@@ -42,6 +42,8 @@ public class NHSetting{
 	public static final ObjectMap<String, String> defaultKeys = new ObjectMap<>();
 	public static Mods.ModMeta modMeta = new Mods.ModMeta();
 	
+	private static float originalZoomMin = 0.5f, originalZoomMax = 5f;
+	
 	static{
 		defaultKeys.put("initialized", "null version");
 		defaultKeys.put("@active.hid-start-log", String.valueOf(false));
@@ -58,10 +60,24 @@ public class NHSetting{
 		SettingEntry.add("@active.override", String.valueOf(false), true);
 		SettingEntry.add("@active.advance-load*", String.valueOf(false), true);
 		SettingEntry.add("@active.tool-panel*", String.valueOf(false), true);
+		SettingEntry.add("@active.double-zoom*", String.valueOf(false), true);
 	}
  
 	public static void loadSettings(){
 		Vars.ui.settings.graphics.checkPref("enableeffectdetails", true);
+		
+		originalZoomMin = Vars.renderer.minZoom;
+		originalZoomMax = Vars.renderer.maxZoom;
+		
+		if(NHSetting.getBool("@active.double-zoom")){
+			Vars.renderer.maxZoom = originalZoomMax * 4;
+			Vars.renderer.minZoom = 0.6f;
+		}else{
+			Vars.renderer.maxZoom = originalZoomMax;
+			Vars.renderer.minZoom = originalZoomMin;
+		}
+		
+		applySettings();
 	}
 	
 	public static class SettingEntry{
@@ -123,7 +139,6 @@ public class NHSetting{
 			versionChange = true;
 			updateProperty(modMeta.version);
 		}
-		
 	}
 	
 	public static void updateSettingMenu(){
@@ -194,7 +209,7 @@ public class NHSetting{
 		}
 	}
 	
-	public static void settingApply(){
+	public static void applySettings(){
 		TableFs.disableTable();
 		debug = getBool("@active.debug");
 		if(NHSetting.getBool("@active.tool-panel*"))TableFs.showTable();

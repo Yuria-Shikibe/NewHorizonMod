@@ -88,12 +88,11 @@ public class PhaseAbility extends Ability{
 			damage[0] += bullet.damage();
 		});
 		
-		
 		if(reloadValue > reload && (target != null || ((unit.hitTime > 0 || num[0] > 4 || damage[0] > reload / 2)))){
 			float dst = target == null ? teleportRange + teleportMinRange : unit.dst(target) / 2f;
 			float angle = target == null ? unit.rotation : unit.angleTo(target);
 			Tmp.v1.set(unit);
-			Tmp.v2.trns(angle + Mathf.sign(Mathf.randomSeedRange(NHFunc.seedNet() - 1, 1)) * 90,dst / 2f, Mathf.randomSeedRange(NHFunc.seedNet(), 0.15f) * dst).clamp(teleportMinRange, teleportRange).add(Tmp.v1).clamp(0, 0, Vars.world.unitWidth(), Vars.world.unitHeight());
+			Tmp.v2.trns(angle + Mathf.sign(Mathf.randomSeedRange((long)Float.floatToIntBits(unit.lastX) + Float.floatToIntBits(unit.lastY) << 8, 1)) * 90,dst / 2f, Mathf.randomSeedRange((long)Float.floatToIntBits(unit.lastX) << 8 + Float.floatToIntBits(unit.lastY), 0.15f) * dst).clamp(teleportMinRange, teleportRange).add(Tmp.v1).clamp(0, 0, Vars.world.unitWidth(), Vars.world.unitHeight());
 			Tmp.c1.set(unit.team.color);
 			Sounds.plasmaboom.at(unit);
 			Sounds.plasmaboom.at(Tmp.v2);

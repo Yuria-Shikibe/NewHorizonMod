@@ -17,12 +17,12 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import newhorizon.func.NHSetting;
 
 import java.util.Arrays;
 
@@ -84,8 +84,7 @@ public class NHFx{
 		}).followParent(true);
 	}
 	
-	@Contract("_, _, _, _ -> new")
-	public static @NotNull Effect polyTrail(Color fromColor, Color toColor, float size, float lifetime){
+	public static Effect polyTrail(Color fromColor, Color toColor, float size, float lifetime){
 		return new Effect(lifetime, size * 2, e -> {
 			color(fromColor, toColor, e.fin());
 			Fill.poly(e.x, e.y, 6, size * e.fout(), e.rotation);
@@ -190,6 +189,7 @@ public class NHFx{
 				});
 			});
 			
+			if(!NHSetting.enableDetails())return;
 			Draw.z(Layer.bullet - 0.001f);
 			color(Color.gray);
 			alpha(0.85f);
@@ -252,8 +252,12 @@ public class NHFx{
 				circle(e.x, e.y, size * 0.5f * i.finpow());
 			});
 			
+			rand.setSeed(e.id);
+			float sizeDiv = size / 1.5f;
+			float randL = rand.random(sizeDiv);
+			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, size / 16 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, size * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90);
+				Drawf.tri(e.x, e.y, size / 16 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90);
 			}
 		});
 	}
@@ -383,7 +387,7 @@ public class NHFx{
 		return new Effect(Mathf.clamp(range / 2, 45f, 360f), range * 1.5f, e -> {
 			rand.setSeed(e.id);
 			
-			Draw.color(Color.white, e.color, e.fin() + 0.6f);
+			Draw.color(Color.white, color, e.fin() + 0.6f);
 			float circleRad = e.fin(Interp.circleOut) * range;
 			Lines.stroke(Mathf.clamp(range / 24, 4, 20) * e.fout());
 			Lines.circle(e.x, e.y, circleRad);
@@ -419,7 +423,7 @@ public class NHFx{
 					lineAngle(i.x + x, i.y + y, Mathf.angle(x, y), i.fslope() * 25 + 10);
 				});
 				
-				Angles.randLenVectors(i.id, (int)(rad / 4), rad / 6, rad * (1 + i.fout(Interp.circleOut)) / 1.5f, (x, y) -> {
+				if(NHSetting.enableDetails())Angles.randLenVectors(i.id, (int)(rad / 4), rad / 6, rad * (1 + i.fout(Interp.circleOut)) / 1.5f, (x, y) -> {
 					float angle = Mathf.angle(x, y);
 					float width = i.foutpowdown() * rand.random(rad / 6, rad / 3);
 					float length = rand.random(rad / 2, rad * 5) * i.fout(Interp.circleOut);
@@ -945,15 +949,14 @@ public class NHFx{
 			});
 		}),
 		
-		blastgenerate = new Effect(40f, 600, e -> {
+		blastgenerate = new MultiEffect(new Effect(40f, 600,e -> {
 			color(NHColor.darkEnrColor);
 			stroke(e.fout() * 3.7f);
-			circle(e.x, e.y, e.fin() * 300 + 15);
-			stroke(e.fout() * 2.5f);
-			circle(e.x, e.y, e.fin() * 200 + 15);
-			randLenVectors(e.id, 10, 5 + 55 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
+			circle(e.x, e.y, e.fin(Interp.pow3Out) * 240 + 15);
+			rand.setSeed(e.id);
+			randLenVectors(e.id, 12, 8 + 60 * e.fin(Interp.pow5Out), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout(Interp.circleIn) * (6f + rand.random(6f))));
 			Drawf.light(e.x, e.y, e.fout() * 320f, NHColor.darkEnrColor, 0.7f);
-		}),
+		}), circleOut(NHColor.darkEnrColor, 120f)),
 		
 		blastAccept = new Effect(20f, e -> {
 			color(NHColor.darkEnrColor);

@@ -8,7 +8,6 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -26,6 +25,8 @@ import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
 import mindustry.type.StatusEffect;
 import mindustry.world.Block;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
 
@@ -51,7 +52,7 @@ public class StaticChargeBlaster extends Block {
 	public Effect acceptEffect = Fx.none;
 	public Sound blastSound = Sounds.explosionbig;
 	//
-	public int generateLiNum = 0, generateLiLen = 10, generateLiRand = 0;
+	public int generateLiNum = 3, generateLiLen = 10, generateLenRand = 0;
 	public float lightningDamage = 120;
 	public Color lightningColor = Color.valueOf("#FFBDAD");
 	//^Lightning generate settings;
@@ -64,7 +65,14 @@ public class StaticChargeBlaster extends Block {
 		//configurable = true;
 		solid = true;
 	}
-
+	
+	@Override
+	public void setStats(){
+		super.setStats();
+		stats.add(Stat.range, range / tilesize, StatUnit.blocks);
+		stats.add(Stat.damage, damage);
+	}
+	
 	@Override
 	public void load() {
 		super.load();
@@ -106,7 +114,7 @@ public class StaticChargeBlaster extends Block {
 			if (timer(0, 20)) {
 				findTarget();
 			}
-			if (validateTarget()) {
+			if(validateTarget()) {
 				updateCharging();
 			}
 		}
@@ -120,6 +128,7 @@ public class StaticChargeBlaster extends Block {
 				reload = 0f;
 			} else {
 				reload += Time.delta * efficiency();
+				cons();
 			}
 		}
 		
@@ -127,22 +136,19 @@ public class StaticChargeBlaster extends Block {
 			Units.nearby(team, x, y, range(), unit -> {
 				unit.apply(positiveStatus, statusDuration);
 				acceptEffect.at(unit);
-				unit.heal(heal * Time.delta);
+				unit.heal(heal);
 			});
 		}
 		
 		protected void blast() {
-			Rect rect = new Rect();
-			if(generateLiNum > 0)PosLightning.create(this, target, team, lightningColor, true, damage, 4, PosLightning.WIDTH, 2, p ->{
-				NHFx.lightningHitSmall(lightningColor).at(p);
-			});
-			Units.nearbyEnemies(team, rect.setSize(range * 2).setCenter(x, y), unit -> {
+			Units.nearbyEnemies(team, x, y, range, unit -> {
 				unit.apply(status, statusDuration);
-				unit.impulse(Tmp.v3.set(unit).sub(x, y).nor().scl(knockback * 80.0f));
+				unit.impulse(Tmp.v3.set(unit).sub(x, y).nor().scl(knockback * 40.0f));
 				acceptEffect.at(unit);
-				unit.damage(damage * Time.delta);
+				PosLightning.create(this, team, this, unit, lightningColor, false, damage, 0, PosLightning.WIDTH, gettingBoltNum, p -> {
+					NHFx.lightningHitSmall.at(p.getX(), p.getY(), lightningColor);
+				});
 			});
-			
 		}
 		
 		protected void extra(){
@@ -150,9 +156,8 @@ public class StaticChargeBlaster extends Block {
 			generateEffect.at(this);
 			blastSound.at(this, Mathf.random(0.9f, 1.1f));
 			for (int i = 0; i < generateLiNum; i++) {
-				Lightning.create(team, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(360f), generateLiLen + Mathf.random(generateLiRand));
+				Lightning.create(team, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(360f), generateLiLen + Mathf.random(generateLenRand));
 			}
-			PosLightning.createRange(this, team, range, gettingBoltNum, lightningColor, false, 0, 0, PosLightning.WIDTH, 3, p -> NHFx.lightningHitLarge(lightningColor).at(p));
 		}
 
 		@Override
