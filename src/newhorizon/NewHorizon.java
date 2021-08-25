@@ -57,7 +57,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.multiRouter, NHBlocks.blaster, NHBlocks.multiConduit, NHBlocks.onglomerateRock
+			NHBlocks.multiRouter, NHBlocks.blaster, NHBlocks.multiConduit, NHBlocks.conglomerateRock
 		};
 	}
 	
