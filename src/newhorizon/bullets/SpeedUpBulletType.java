@@ -13,7 +13,7 @@ public class SpeedUpBulletType extends BasicBulletType{
 	
 	public Interp func = Interp.linear;
 	
-	public void setDisableAccel(){
+	public void disableAccel(){
 		accelerateBegin = 10;
 	}
 	
@@ -31,6 +31,8 @@ public class SpeedUpBulletType extends BasicBulletType{
 	
 	@Override
 	public void init(){
+		super.init();
+		
 		if(accelerateBegin > 1)return;
 		
 		if(velocityBegin < 0)velocityBegin = speed;
@@ -40,8 +42,6 @@ public class SpeedUpBulletType extends BasicBulletType{
 			speeds.add(velocityBegin + func.apply(i) * velocityIncrease);
 		}
 		speed = speeds.sum() / speeds.size;
-		
-		super.init();
 	}
 	
 	@Override

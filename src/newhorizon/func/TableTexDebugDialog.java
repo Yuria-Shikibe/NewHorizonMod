@@ -213,7 +213,7 @@ public class TableTexDebugDialog extends BaseDialog{
 //			buttonImage = new BaseDialog("Test"){{
 //				cont.pane(table -> {
 //					int index = 0;
-//					for(TextureRegion tex : NHUnitOutline.test){
+//					for(TextureRegion tex : NHPixmap.test){
 //						if(index % 8 == 0) table.row();
 //						table.table(Tex.buttonEdge3, t -> {
 //							t.image(new TextureRegionDrawable(tex)).grow().row();

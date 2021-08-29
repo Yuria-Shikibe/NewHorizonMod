@@ -483,7 +483,6 @@ public class NHBlocks implements ContentList {
 			});
 			
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 5000, NHItems.darkEnergy, 2000));
-			NHTechTree.add(Blocks.segment, this);
 		}};
 		
 		antiBulletTurret = new PointDefenseTurret("anti-bullet-turret"){{
@@ -2062,7 +2061,8 @@ public class NHBlocks implements ContentList {
 			NHTechTree.add(Blocks.titaniumConveyor, this);
 			speed = 0.16f;
 			displayedSpeed = 18f;
-			health =  120;
+			health = 120;
+			junctionReplacement = multiJunction;
 		}};
 		
 		multiArmorConveyor = new ArmoredConveyor("multi-armor-conveyor"){{
@@ -2071,6 +2071,7 @@ public class NHBlocks implements ContentList {
 			speed = 0.16f;
 			displayedSpeed = 18f;
 			health =  320;
+			junctionReplacement = multiJunction;
 		}};
 
 		multiConveyor = new StackConveyor("multi-conveyor"){{
@@ -2301,6 +2302,9 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(NHUnitTypes.naxos, new byte[]{NHUnitTypes.AIR_LINE_1, 4}, 120 * 60f,
+					with(Items.plastanium, 300, NHItems.juniorProcessor, 250, NHItems.presstanium, 500, Items.surgeAlloy, 50, NHItems.metalOxhydrigen, 120)
+				),
 				new UnitSet(NHUnitTypes.rhino, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
 					with(Items.lead, 80, Items.graphite, 60, NHItems.presstanium, 60, NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 60)
 				),
@@ -2364,11 +2368,14 @@ public class NHBlocks implements ContentList {
 				new UnitSet(NHUnitTypes.annihilation, new byte[]{NHUnitTypes.GROUND_LINE_1, 5}, 320 * 60f,
 					with(NHItems.setonAlloy, 200, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 100)
 				),
+				new UnitSet(NHUnitTypes.longinus, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 400 * 60f,
+					with(NHItems.setonAlloy, 300, Items.surgeAlloy, 150, NHItems.seniorProcessor, 400, NHItems.thermoCoreNegative, 200)
+				),
 				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
 					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 300, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 500)
 				),
 				new UnitSet(NHUnitTypes.declining, new byte[]{NHUnitTypes.NAVY_LINE_1, 5}, 420 * 60f,
-						with(NHItems.setonAlloy, 500, NHItems.irayrondPanel, 300, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300)
+					with(NHItems.setonAlloy, 500, NHItems.irayrondPanel, 300, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300)
 				),
 				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
 					with(NHItems.setonAlloy, 300, NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 500, NHItems.fusionEnergy, 150)

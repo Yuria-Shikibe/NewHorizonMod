@@ -378,7 +378,7 @@ public class NHFx{
 			Draw.color(color);
 			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
 				Fill.square(e.x + x, e.y + y, size * e.fout(), 45);
-				Drawf.light(e.x + x, e.y + y, e.fout(Interp.pow3Out) * size, color, 0.7f);
+				Drawf.light(e.x + x, e.y + y, e.fout(Interp.pow3Out) * (size + Mathf.range(size / 2f)), color, 0.7f);
 			});
 		});
 	}

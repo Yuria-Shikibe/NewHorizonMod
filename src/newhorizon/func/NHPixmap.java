@@ -15,7 +15,7 @@ import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 
-public class NHUnitOutline{
+public class NHPixmap{
 	public static void createIcons(MultiPacker packer, UnitType type){
 		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless && type.region != null && type.region.found() && type.region instanceof TextureAtlas.AtlasRegion){
 			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)type.region;
@@ -46,7 +46,6 @@ public class NHUnitOutline{
 			}
 
 			packer.add(MultiPacker.PageType.main, type.name + "-full", base);
-			
 		}
 	}
 	

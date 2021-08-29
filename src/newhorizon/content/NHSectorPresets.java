@@ -1,11 +1,19 @@
 package newhorizon.content;
 
+import arc.Events;
+import arc.func.Cons;
+import arc.struct.ObjectMap;
+import mindustry.Vars;
 import mindustry.ctype.ContentList;
+import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.type.Planet;
+import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
 
 public class NHSectorPresets implements ContentList{
+	public static ObjectMap<SectorPreset, Cons<Sector>> captureMap = new ObjectMap<>(), loseMap = new ObjectMap<>();
+	
 	public static SectorPreset
 		hostileHQ, downpour, luminariOutpost, quantumCraters, ruinedWarehouse, shatteredRavine, deltaHQ;
 	
@@ -39,6 +47,8 @@ public class NHSectorPresets implements ContentList{
 			useAI = false;
 			difficulty = 20;
 			startWaveTimeMultiplier = 2.5f;
+			
+			loseMap.put(this, NHSectorPresets::resetSector);
 		}
 			@Override
 			public void loadIcon(){
@@ -66,6 +76,37 @@ public class NHSectorPresets implements ContentList{
 			startWaveTimeMultiplier = 2.5f;
 		}};
 		
+		Events.on(EventType.SectorCaptureEvent.class, e -> {
+			if(captureMap.containsKey(e.sector.preset)){
+				captureMap.get(e.sector.preset).get(e.sector);
+			}
+		});
+		
+		if(Vars.headless)return;
+		
+//		Events.on(EventType.SectorInvasionEvent.class, e -> {
+//
+//		});
+//
+		Events.on(EventType.SectorLoseEvent.class, e -> {
+			Sector sector = e.sector;
+			if(loseMap.containsKey(sector.preset)){
+				loseMap.get(sector.preset).get(sector);
+			}
+		});
+		
+		Events.on(EventType.LoseEvent.class, e -> {
+			if(!Vars.state.isGame() || !Vars.state.isCampaign())return;
+			Sector sector = Vars.state.getSector();
+			if(loseMap.containsKey(sector.preset)){
+				loseMap.get(sector.preset).get(sector);
+			}
+		});
+	}
+	
+	public static void resetSector(Sector sector){
+		sector.save.delete();
+		sector.save = null;
 	}
 	
 	public static class NHSectorPreset extends mindustry.type.SectorPreset{

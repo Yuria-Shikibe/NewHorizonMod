@@ -126,9 +126,9 @@ public class StaticChargeBlaster extends Block {
 				extra();
 				heat = 1.8f;
 				reload = 0f;
+				consume();
 			} else {
 				reload += Time.delta * efficiency();
-				cons();
 			}
 		}
 		

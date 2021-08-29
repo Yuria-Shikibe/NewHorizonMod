@@ -62,7 +62,7 @@ public class NHBullets implements ContentList{
 			
 			speed = 4f;
 			
-			setDisableAccel();
+			disableAccel();
 			
 			linkRange = 280f;
 			
@@ -513,7 +513,7 @@ public class NHBullets implements ContentList{
 		};
 		
 		hurricaneType = new LightningLinkerBulletType(2.3f, 200){{
-			setDisableAccel();
+			disableAccel();
 			
 			range = 340f;
 			
@@ -746,7 +746,7 @@ public class NHBullets implements ContentList{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
 				shake = 3;
-				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSkyBack, Color.white};
+				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.6f), NHColor.lightSkyFront, Color.white};
 				width = 7f;
 				length = 500f;
 				oscScl = 0.4f;
@@ -1159,7 +1159,7 @@ public class NHBullets implements ContentList{
 			trailWidth = 4.5f;
 			trailLength = 66;
 			
-			setDisableAccel();
+			disableAccel();
 			
 			outColor = trailColor = hitColor = lightColor = lightningColor = NHColor.darkEnrColor;
 			innerColor = NHColor.darkEnr;

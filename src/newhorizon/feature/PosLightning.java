@@ -70,7 +70,7 @@ public class PosLightning {
 	
 	private static final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 	
-	private static final Effect posLightning = (new Effect(lifetime, 1200.0f, e -> {
+	public static final Effect posLightning = (new Effect(lifetime, 1200.0f, e -> {
 		if(!(e.data instanceof Seq)) return;
 		Seq<Vec2> lines = e.data();
 		
@@ -240,7 +240,7 @@ public class PosLightning {
 	}
 
 	//create lightning effect.
-	private static void createBoltEffect(Color color, float width, Seq<Vec2> vets) {
+	public static void createBoltEffect(Color color, float width, Seq<Vec2> vets) {
 		posLightning.at((vets.first().x + vets.peek().x) / 2f, (vets.first().y + vets.peek().y) / 2f, width, color, vets);
 	}
 	

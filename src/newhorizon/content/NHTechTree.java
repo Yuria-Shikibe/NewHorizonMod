@@ -138,6 +138,8 @@ public class NHTechTree implements ContentList {
         addUnit(NHUnitTypes.sharp, NHUnitTypes.branch);
         addUnit(NHUnitTypes.branch, NHUnitTypes.warper);
         addUnit(NHUnitTypes.warper, NHUnitTypes.striker);
+        addUnit(NHUnitTypes.warper, NHUnitTypes.naxos);
+        addUnit(NHUnitTypes.striker, NHUnitTypes.longinus);
         addUnit(NHUnitTypes.striker, NHUnitTypes.destruction);
         addUnit(NHUnitTypes.destruction, NHUnitTypes.hurricane);
         

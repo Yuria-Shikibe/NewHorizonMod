@@ -2,11 +2,11 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.Blending;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.Pixmap;
+import arc.graphics.Pixmaps;
+import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -15,6 +15,7 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
@@ -38,17 +39,15 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
+import mindustry.world.meta.BlockFlag;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
 import newhorizon.feature.ScreenHack;
 import newhorizon.func.DrawFuncs;
+import newhorizon.func.NHPixmap;
 import newhorizon.func.NHSetting;
-import newhorizon.func.NHUnitOutline;
-import newhorizon.units.BoostAbility;
-import newhorizon.units.NHWeapon;
-import newhorizon.units.PhaseAbility;
-import newhorizon.units.TowardShield;
+import newhorizon.units.*;
 import newhorizon.vars.EventTriggers;
 
 import static mindustry.Vars.headless;
@@ -65,8 +64,8 @@ public class NHUnitTypes implements ContentList{
 	
 	public static UnitType
 			guardian, gather,
-			sharp, branch, warper, striker, annihilation, hurricane, collapser,
-			origin, thynomo, aliotiat, tarlidor, destruction,
+			sharp, branch, warper, striker, annihilation, hurricane, collapser, longinus,
+			origin, thynomo, aliotiat, tarlidor, destruction, naxos,
 			relay, ghost, zarkov, declining, rhino;
 	
 	static{
@@ -342,6 +341,343 @@ public class NHUnitTypes implements ContentList{
 	public void load(){
 		loadWeapon();
 		
+		naxos = new UnitType("naxos"){{
+			constructor = EntityMapping.map(3);
+			health = 6000.0F;
+			speed = 3f;
+			accel = 0.075F;
+			drag = 0.015F;
+			flying = true;
+			circleTarget = true;
+			hitSize = 16.0F;
+			armor = 10.0F;
+			engineOffset = 12.5f;
+			engineSize = 5.0F;
+			rotateSpeed = 2.75f;
+			buildSpeed = 1.25f;
+			lowAltitude = false;
+			
+			
+			defaultController = InterceptorAI::new;
+			targetGround = false;
+			
+			abilities.add(new BoostAbility(2f, 30f), new ForceFieldAbility(80f, 20f, 3000f, 900f));
+			
+			weapons.add(
+				new NHWeapon("impulse-side"){{
+					mirror = alternate = true;
+					top = rotate = false;
+					reload = 45f;
+					
+					inaccuracy = 5f;
+					
+					x = -10.5f;
+					y = -2f;
+					shootY = 6f;
+					shootX = 1;
+					
+					shootCone = 30f;
+					
+					shots = 3;
+					shotDelay = 8f;
+					
+					shootSound = NHSounds.thermoShoot;
+					
+					bullet = new BasicBulletType(7f, 100f, "missile-large"){{
+						trailLength = 20;
+						trailWidth = 2.5f;
+						trailColor = lightColor = lightningColor = backColor = hitColor = NHColor.lightSkyBack;
+						frontColor = NHColor.lightSkyFront;
+						
+						width = 10f;
+						height = 30f;
+						
+						weaveScale = 7f;
+						weaveMag = 0.8f;
+						
+						homingDelay = 8f;
+						homingPower = 0.1f;
+						homingRange = 200f;
+						
+						splashDamageRadius = 60f;
+						splashDamage = damage / 2;
+						
+						shootEffect = NHFx.shootCircleSmall(backColor);
+						smokeEffect = Fx.shootBigSmoke;
+						hitEffect = NHFx.blast(backColor, splashDamageRadius);
+						despawnEffect = NHFx.circleOut(backColor, splashDamageRadius * 1.25f);
+						despawnShake = hitShake = 5f;
+						
+						collidesAir = collides = true;
+						collidesGround = collidesTiles = false;
+					}};
+				}},
+				new Weapon(""){{
+					reload = 180f;
+					x = 0;
+					continuous = true;
+					top = alternate = rotate = mirror = false;
+					minShootVelocity = 3f;
+					bullet = new BulletType(){{
+						impact = true;
+						keepVelocity = false;
+						collides = false;
+						pierce = true;
+						hittable = false;
+						absorbable = false;
+						
+						collidesAir = true;
+						collidesGround = collidesTiles = false;
+						
+						damage = 80f;
+						lightning = 1;
+						lightningDamage = damage / 4f;
+						lightningLength = 10;
+						lightningLengthRand = 15;
+						
+						knockback = 30f;
+						
+						lifetime = 360f;
+						
+						status = StatusEffects.melting;
+						statusDuration = 60f;
+						maxRange = 80f;
+						speed = 0.0001f;
+						
+						lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
+						hitEffect = NHFx.square(hitColor, 30f, 3, 80f, 5f);
+						despawnEffect = Fx.none;
+						shootEffect = NHFx.instShoot(hitColor);
+						smokeEffect = NHFx.square(hitColor, 45f, 5, 60f, 5f);
+					}
+					
+						@Override
+						public float continuousDamage(){
+							return damage / 5f * 60f;
+						}
+						
+						@Override
+						public float estimateDPS(){
+							//assume firing duration is about 100 by default, may not be accurate there's no way of knowing in this method
+							//assume it pierces 3 blocks/units
+							return damage * 100f / 5f * 3f;
+						}
+						
+						@Override
+						public void update(Bullet b){
+							
+							//damage every 5 ticks
+							if(b.timer(1, 5f)){
+								Damage.collideLine(b, b.team, hitEffect, b.x, b.y, b.rotation(), maxRange, true, false);
+							}
+							
+							if(shake > 0){
+								Effect.shake(shake, shake, b);
+							}
+						}
+						
+						@Override
+						public void draw(Bullet b){
+							float f = Mathf.curve(b.fin(), 0, 0.015f) * Mathf.curve(b.fout(), 0, 0.025f);
+							float sine = 1 + Mathf.absin(0.7f, 0.075f);
+							float stroke = 6f;
+							float offset = 8f;
+							float rot = b.rotation();
+							Draw.color(hitColor);
+							Tmp.v1.trns(rot, 0, stroke).scl(f * sine);
+							Tmp.v2.trns(rot, 0, stroke + stroke).scl(f * sine);
+							Tmp.v3.trns(rot, maxRange).scl(f);
+							for(int i : Mathf.signs){
+								Fill.tri(
+									b.x + Tmp.v1.x * i, b.y + Tmp.v1.y * i,
+									b.x + Tmp.v2.x * i, b.y + Tmp.v2.y * i,
+									b.x + Tmp.v3.x, b.y + Tmp.v3.y
+								);
+							}
+							Draw.reset();
+						}
+					};
+				}}
+			);
+			
+			targetFlags = playerTargetFlags = new BlockFlag[]{null};
+			
+			buildBeamOffset = 15f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
+		longinus = new UnitType("longinus"){{
+			constructor = EntityMapping.map(3);
+			lowAltitude = true;
+			health = 12000.0F;
+			speed = 0.5F;
+			accel = 0.02F;
+			drag = 0.025F;
+			flying = true;
+			circleTarget = false;
+			hitSize = 50.0F;
+			armor = 15.0F;
+			engineOffset = 46f;
+			engineSize = 12.0F;
+			rotateSpeed = 0.65f;
+			buildSpeed = 3f;
+			commandLimit = 6;
+			commandRadius = 220f;
+			
+			defaultController = SniperAI::new;
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.core, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
+			
+			buildBeamOffset = 15f;
+			
+			range = maxRange = aimDst = 800f;
+			
+			weapons.add(
+				closeAATurret.copy().setPos(13f, -23f),
+				closeAATurret.copy().setPos(19f, -28f),
+				new NHWeapon("longinus-weapon"){{
+				shootY = 20;
+				shots = 1;
+				x = 0;
+				y = 12.75f;
+				recoil = 10;
+				reload = 180f;
+				cooldownTime = 150f;
+				shake = 12f;
+				
+				
+				top = true;
+				mirror = rotate = autoTarget = false;
+				shootSound = NHSounds.railGunBlast;
+				soundPitchMax = 1.1f;
+				soundPitchMin = 0.9f;
+				
+				bullet = new TrailFadeBulletType(20f, 2000f){{
+					recoil = 0.345f;
+					lifetime = 40f;
+					trailLength = 200;
+					trailWidth = 2F;
+					keepVelocity = false;
+					
+					disableAccel();
+					
+					trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack;
+					frontColor = NHColor.lightSkyFront;
+					width = 10f;
+					height = 40f;
+					
+					hitSound = Sounds.explosionbig;
+					despawnShake = hitShake = 18f;
+					
+					lightning = 5;
+					lightningLength = 14;
+					lightningLengthRand = 22;
+					lightningDamage = 600;
+					
+					smokeEffect = NHFx.square(hitColor, 80f, 8, 48f, 6f);
+					shootEffect = NHFx.instShoot(backColor);
+					despawnEffect = NHFx.lightningHitLarge;
+					hitEffect = NHFx.instHit(hitColor, 5, 80f);
+					despawnHit = true;
+				}};
+				
+				shootStatus = StatusEffects.slow;
+				shootStatusDuration = bullet.lifetime * 1.5f;
+			}
+				@Override
+				public void draw(Unit unit, WeaponMount mount){
+					float z = Draw.z();
+					Draw.z(z - 0.1f);
+					float
+							rotation = unit.rotation - 90,
+							weaponRotation  = rotation + (rotate ? mount.rotation : 0),
+							recoil = -((mount.reload) / reload * this.recoil),
+							wx = unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, recoil),
+							wy = unit.y + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, recoil);
+					
+					if(shadow > 0){
+						Drawf.shadow(wx, wy, shadow);
+					}
+					
+					if(outlineRegion.found() && top){
+						Draw.rect(outlineRegion,
+								wx, wy,
+								outlineRegion.width * Draw.scl * -Mathf.sign(flipSprite),
+								region.height * Draw.scl,
+								weaponRotation);
+					}
+					
+					Draw.rect(region,
+							wx, wy,
+							region.width * Draw.scl * -Mathf.sign(flipSprite),
+							region.height * Draw.scl,
+							weaponRotation);
+					
+					Draw.z(z);
+					if(heatRegion.found() && mount.heat > 0){
+						Draw.color(heatColor, mount.heat);
+						Draw.blend(Blending.additive);
+						Draw.rect(heatRegion,
+								wx, wy,
+								heatRegion.width * Draw.scl * -Mathf.sign(flipSprite),
+								heatRegion.height * Draw.scl,
+								weaponRotation);
+						Draw.blend();
+						Draw.color();
+					}
+				}
+			});
+		}
+			@Override
+			public void drawSoftShadow(Unit unit){
+				float z = Draw.z();
+				Draw.z(z - 0.1f);
+				super.drawSoftShadow(unit);
+				Draw.z(z);
+			}
+			
+			@Override public void createIcons(MultiPacker packer){
+				super.createIcons(packer);
+				if(!Vars.headless && region != null && region.found() && region instanceof TextureAtlas.AtlasRegion){
+					TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)region;
+					
+					PixmapRegion r = Core.atlas.getPixmap(Core.atlas.find(name));
+					
+					Pixmap base = new Pixmap(region.width, region.height);
+					for(Weapon w : weapons){
+						if(w.name.equals(NewHorizon.name("longinus-weapon"))){
+							NHPixmap.drawWeaponPixmap(base, w, false, outlineColor, outlineRadius);
+							break;
+						}
+					}
+					
+					base.draw(r.crop(), true);
+					
+					TextureAtlas.AtlasRegion tC = Core.atlas.find(name + "-cell");
+					//base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), 0, 0, true);
+					base.draw(NHPixmap.fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), -1, 0, true);
+					
+					for(Weapon w : weapons){
+						if(w.top || w.name.equals(NewHorizon.name("longinus-weapon")))continue;
+						NHPixmap.drawWeaponPixmap(base, w, false, outlineColor, outlineRadius);
+					}
+					
+					base = Pixmaps.outline(new PixmapRegion(base), outlineColor, outlineRadius);
+					
+					for(Weapon w : weapons){
+						if(!w.top || w.name.equals(NewHorizon.name("longinus-weapon")))continue;
+						NHPixmap.drawWeaponPixmap(base, w, true, outlineColor, outlineRadius);
+					}
+					
+					if(Core.settings.getBool("linear")){
+						Pixmaps.bleed(base);
+					}
+					
+					packer.add(MultiPacker.PageType.main, name + "-full", base);
+				}
+			}
+		};
+		
 		relay = new UnitType("relay"){{
 			armor = 6;
 			buildBeamOffset = 6f;
@@ -404,7 +740,7 @@ public class NHUnitTypes implements ContentList{
 				}};
 			}});
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		rhino = new UnitType("rhino"){{
@@ -438,7 +774,7 @@ public class NHUnitTypes implements ContentList{
 			isCounted = false;
 			lowAltitude = true;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		declining = new UnitType("declining"){{
@@ -514,7 +850,7 @@ public class NHUnitTypes implements ContentList{
 			trailY = -40f;
 			trailScl = 4f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		ghost = new UnitType("ghost"){{
@@ -596,7 +932,7 @@ public class NHUnitTypes implements ContentList{
 			trailY = -13;
 			trailScl = 1.65f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		zarkov = new UnitType("zarkov"){{
@@ -616,7 +952,7 @@ public class NHUnitTypes implements ContentList{
 			trailY = -25f;
 			trailScl = 2.6f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		collapser = new UnitType("collapser"){{
@@ -905,7 +1241,7 @@ public class NHUnitTypes implements ContentList{
 				lowAltitude = true;
 				flying = true;
 			}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 			
 			@Override
 			public Unit create(Team team){
@@ -940,6 +1276,9 @@ public class NHUnitTypes implements ContentList{
 		
 		guardian = new UnitType("guardian"){{
 			constructor = EntityMapping.map(3);
+			
+			aimDst = 320f;
+			
 			hitSize = 20f;
 			speed = 1.5f;
 			accel = 0.07F;
@@ -1294,7 +1633,7 @@ public class NHUnitTypes implements ContentList{
 			mineSpeed = 10F;
 			lowAltitude = true;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		origin = new UnitType("origin"){{
@@ -1329,7 +1668,7 @@ public class NHUnitTypes implements ContentList{
 			hitSize = 8.0F;
 			health = 160.0F;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		thynomo = new UnitType("thynomo"){{
@@ -1383,7 +1722,7 @@ public class NHUnitTypes implements ContentList{
 			engineOffset = 7.4F;
 			engineSize = 4.25F;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		aliotiat = new UnitType("aliotiat"){{
@@ -1406,7 +1745,7 @@ public class NHUnitTypes implements ContentList{
 			landShake = 6f;
 			boostMultiplier = 3.5f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		tarlidor = new UnitType("tarlidor"){{
@@ -1479,7 +1818,7 @@ public class NHUnitTypes implements ContentList{
 			landShake = 6f;
 			boostMultiplier = 3.5f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		annihilation = new UnitType("annihilation"){{
@@ -1550,7 +1889,7 @@ public class NHUnitTypes implements ContentList{
 			landShake = 6f;
 			boostMultiplier = 3.5f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		sharp = new UnitType("sharp"){{
@@ -1611,7 +1950,7 @@ public class NHUnitTypes implements ContentList{
 				shootSound = NHSounds.thermoShoot;
 			}});
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		branch = new UnitType("branch"){{
@@ -1671,7 +2010,7 @@ public class NHUnitTypes implements ContentList{
 			armor = 3.5f;
 			flying = true;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		warper = new UnitType("warper"){{
@@ -1706,7 +2045,7 @@ public class NHUnitTypes implements ContentList{
 			armor = 3.5f;
 			flying = true;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		striker = new UnitType("striker"){{
@@ -1742,7 +2081,7 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 1.35F;
 			buildSpeed = 0.8f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		destruction = new UnitType("destruction"){{
@@ -1804,7 +2143,7 @@ public class NHUnitTypes implements ContentList{
 				activeEffect = NHFx.activeEffect;
 			}});
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		hurricane = new UnitType("hurricane"){{
@@ -1907,7 +2246,7 @@ public class NHUnitTypes implements ContentList{
 				rotateSpeed = 1.15F;
 				buildSpeed = 2.8f;
 			}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHUnitOutline.createIcons(packer, this);}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 	}
 }

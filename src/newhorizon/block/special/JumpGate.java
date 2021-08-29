@@ -687,7 +687,7 @@ public class JumpGate extends Block {
     
         @Override
         public boolean cheating(){
-            return super.cheating() || team == state.rules.waveTeam || state.rules.infiniteResources;
+            return super.cheating() || (team == state.rules.waveTeam && !state.rules.pvp) || state.rules.infiniteResources;
         }
     }
 

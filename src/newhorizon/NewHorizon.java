@@ -57,7 +57,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-			NHBlocks.multiRouter, NHBlocks.blaster, NHBlocks.multiConduit, NHBlocks.conglomerateRock
+			NHUnitTypes.naxos, NHUnitTypes.longinus
 		};
 	}
 	
@@ -122,7 +122,7 @@ public class NewHorizon extends Mod{
 	
     public NewHorizon(){
 		Log.info("Loaded NewHorizon Mod constructor.");
-        
+		
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
         	if(NHSetting.versionChange){
         		new BaseDialog("Detected Update"){{
@@ -154,7 +154,7 @@ public class NewHorizon extends Mod{
         	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
 	        TableFs.tableMain();
 	        NHSetting.updateSettingMenu();
-	        NHSetting.loadSettings();
+	        NHSetting.applySettings();
 	        ScreenHack.load();
         }));
 	}
@@ -172,12 +172,12 @@ public class NewHorizon extends Mod{
 				NHSetting.settingFile();
 				NHSetting.initSetting();
 				NHSetting.initSettingList();
+				NHSetting.loadSettings();
 			}catch(IOException e){
 				throw new IllegalArgumentException(e);
 			}
-		}
+		}else NHSetting.modMeta = Vars.mods.getMod(getClass()).meta;
 		
-		if(NHSetting.getBool("@active.debug-mobile*"))Vars.testMobile = true;
 		EventTriggers.load();
 	    NHSounds.load();
 		NHContent.initLoad();
@@ -186,6 +186,8 @@ public class NewHorizon extends Mod{
 		for(ContentList contentList : content){
 			contentList.load();
 		}
+		
+		
 		
 		ClassIDIniter.load();
 		if(!ClassIDIniter.safe)Log.info("Detected id map conflict");

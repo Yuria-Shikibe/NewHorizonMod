@@ -64,20 +64,16 @@ public class NHSetting{
 	}
  
 	public static void loadSettings(){
-		Vars.ui.settings.graphics.checkPref("enableeffectdetails", true);
-		
 		originalZoomMin = Vars.renderer.minZoom;
 		originalZoomMax = Vars.renderer.maxZoom;
 		
-		if(NHSetting.getBool("@active.double-zoom")){
+		if(NHSetting.getBool("@active.double-zoom*")){
 			Vars.renderer.maxZoom = originalZoomMax * 4;
 			Vars.renderer.minZoom = 0.6f;
 		}else{
 			Vars.renderer.maxZoom = originalZoomMax;
 			Vars.renderer.minZoom = originalZoomMin;
 		}
-		
-		applySettings();
 	}
 	
 	public static class SettingEntry{
@@ -147,6 +143,7 @@ public class NHSetting{
 		settingTable.game.button("MOD: [sky]" + modMeta.displayName, new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
 			new SettingDialog().show();
 		}).size(LEN * 6f, LEN + OFFSET);
+		settingTable.graphics.checkPref("enableeffectdetails", true);
 	}
 	
 	private static void updateProperty(String version) throws IOException{
