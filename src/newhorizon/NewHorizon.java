@@ -44,8 +44,8 @@ public class NewHorizon extends Mod{
 	private static final ContentList[] content = {
 		new NHStatusEffects(),
 		new NHItems(),
-	    new NHLiquids(),
-	    new NHBullets(),
+	        new NHLiquids(),
+	        new NHBullets(),
 		new NHUpgradeDatas(),
 		new NHUnitTypes(),
 		new NHBlocks(),
