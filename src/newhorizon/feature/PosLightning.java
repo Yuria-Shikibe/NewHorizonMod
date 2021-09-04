@@ -21,10 +21,7 @@ import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Bullet;
-import mindustry.gen.Entityc;
-import mindustry.gen.Healthc;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import newhorizon.bullets.EffectBulletType;
 import org.jetbrains.annotations.NotNull;
@@ -182,10 +179,13 @@ public class PosLightning {
 	}
 	
 	public static void createEffect(Position from, float length, float angle, Color color, int boltNum, float width){
+		if(Vars.headless)return;
 		createEffect(from, tmp2.trns(angle, length).add(from), color, boltNum, width);
 	}
 	
 	public static void createEffect(Position from, Position to, Color color, int boltNum, float width){
+		if(Vars.headless)return;
+		
 		if(boltNum < 1){
 			Fx.chainLightning.at(from.getX(), from.getY(), 0, color, new Vec2().set(to));
 		}else{

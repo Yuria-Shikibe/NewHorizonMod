@@ -55,6 +55,11 @@ public class NHTechTree implements ContentList {
         }
     }
     
+    public static void addProduce(UnlockableContent root, UnlockableContent content){
+        TechNode node = new TechNode(TechTree.get(root), content, ItemStack.with());
+        node.objectives.add(new Objectives.Produce(content));
+    }
+    
     public static void add(UnlockableContent root, UnlockableContent content){
         new TechNode(TechTree.get(root), content, content.researchRequirements());
     }
@@ -77,7 +82,7 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.bombLauncher, NHBlocks.airRaider);
         
         add(Blocks.commandCenter, NHBlocks.jumpGatePrimary);
-        add(NHBlocks.jumpGatePrimary, NHBlocks.jumpGateJunior);
+        add(NHBlocks.jumpGatePrimary, NHBlocks.jumpGateJunior, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
         add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
         
@@ -100,6 +105,9 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.endOfEra, NHBlocks.eternity);
         new TechNode(TechTree.get(Blocks.phaseWall), NHBlocks.chargeWall, NHBlocks.chargeWall.researchRequirements());
         new TechNode(TechTree.get(NHBlocks.chargeWall), NHBlocks.chargeWallLarge, NHBlocks.chargeWallLarge.researchRequirements());
+    
+        add(NHBlocks.chargeWall, NHBlocks.shapedWall, new Objectives.SectorComplete(NHSectorPresets.downpour));
+        
         new TechNode(TechTree.get(Blocks.vault), NHBlocks.irdryonVault, NHBlocks.irdryonVault.researchRequirements());
         new TechNode(TechTree.get(Blocks.lancer), NHBlocks.argmot, NHBlocks.argmot.researchRequirements());
         new TechNode(TechTree.get(Blocks.shockMine), NHBlocks.blaster, NHBlocks.blaster.researchRequirements());
@@ -157,24 +165,24 @@ public class NHTechTree implements ContentList {
         addUnit(NHBlocks.darkEnergyFactory, NHUnitTypes.guardian);
         
         //Items / liquids;
-        new TechNode(TechTree.get(Items.titanium), NHItems.metalOxhydrigen, NHItems.metalOxhydrigen.researchRequirements());
-        new TechNode(TechTree.get(Items.metaglass), NHItems.multipleSteel, NHItems.multipleSteel.researchRequirements());
-        new TechNode(TechTree.get(Items.plastanium), NHItems.presstanium, NHItems.presstanium.researchRequirements());
-        new TechNode(TechTree.get(Items.silicon), NHItems.juniorProcessor, NHItems.juniorProcessor.researchRequirements());
-        new TechNode(TechTree.get(NHItems.juniorProcessor), NHItems.seniorProcessor, NHItems.seniorProcessor.researchRequirements());
-        new TechNode(TechTree.get(Items.surgeAlloy), NHItems.irayrondPanel, NHItems.irayrondPanel.researchRequirements());
-        new TechNode(TechTree.get(NHItems.irayrondPanel), NHItems.setonAlloy, NHItems.setonAlloy.researchRequirements());
-        new TechNode(TechTree.get(NHItems.setonAlloy), NHItems.upgradeSort, NHItems.upgradeSort.researchRequirements());
-        new TechNode(TechTree.get(Items.phaseFabric), NHItems.fusionEnergy, NHItems.fusionEnergy.researchRequirements());
-        new TechNode(TechTree.get(NHItems.fusionEnergy), NHItems.thermoCorePositive, NHItems.thermoCorePositive.researchRequirements());
-        new TechNode(TechTree.get(NHItems.thermoCorePositive), NHItems.thermoCoreNegative, NHItems.thermoCoreNegative.researchRequirements());
-        new TechNode(TechTree.get(NHItems.upgradeSort), NHItems.darkEnergy, NHItems.darkEnergy.researchRequirements());
-        new TechNode(TechTree.get(Items.thorium), NHItems.zeta, NHItems.zeta.researchRequirements());
-        new TechNode(TechTree.get(NHItems.irayrondPanel), NHLiquids.irdryonFluid, NHLiquids.irdryonFluid.researchRequirements());
-        new TechNode(TechTree.get(NHItems.zeta), NHLiquids.zetaFluid, NHLiquids.zetaFluid.researchRequirements());
-        new TechNode(TechTree.get(Liquids.water), NHLiquids.xenAlpha, NHLiquids.xenAlpha.researchRequirements());
-        new TechNode(TechTree.get(NHLiquids.xenAlpha), NHLiquids.xenBeta, NHLiquids.xenBeta.researchRequirements());
-        new TechNode(TechTree.get(NHLiquids.xenBeta), NHLiquids.xenGamma, NHLiquids.xenGamma.researchRequirements());
+        addProduce(Items.titanium, NHItems.metalOxhydrigen);
+        addProduce(Items.metaglass, NHItems.multipleSteel);
+        addProduce(Items.plastanium, NHItems.presstanium);
+        addProduce(Items.silicon, NHItems.juniorProcessor);
+        addProduce(NHItems.juniorProcessor, NHItems.seniorProcessor);
+        addProduce(Items.surgeAlloy, NHItems.irayrondPanel);
+        addProduce(NHItems.irayrondPanel, NHItems.setonAlloy);
+        addProduce(NHItems.setonAlloy, NHItems.upgradeSort);
+        addProduce(Items.phaseFabric, NHItems.fusionEnergy);
+        addProduce(NHItems.fusionEnergy, NHItems.thermoCorePositive);
+        addProduce(NHItems.thermoCorePositive, NHItems.thermoCoreNegative);
+        addProduce(NHItems.upgradeSort, NHItems.darkEnergy);
+        addProduce(Items.thorium, NHItems.zeta);
+        addProduce(NHItems.irayrondPanel, NHLiquids.irdryonFluid);
+        addProduce(NHItems.zeta, NHLiquids.zetaFluid);
+        addProduce(Liquids.water, NHLiquids.xenAlpha);
+        addProduce(NHLiquids.xenAlpha, NHLiquids.xenBeta);
+        addProduce(NHLiquids.xenBeta, NHLiquids.xenGamma);
         
         add(SectorPresets.planetaryTerminal, NHSectorPresets.ruinedWarehouse, new Objectives.SectorComplete(SectorPresets.planetaryTerminal));
         add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.shatteredRavine, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));

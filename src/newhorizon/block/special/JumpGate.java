@@ -690,7 +690,7 @@ public class JumpGate extends Block {
             return super.cheating() || (team == state.rules.waveTeam && !state.rules.pvp) || state.rules.infiniteResources;
         }
     }
-
+    
     public static class UnitSet implements Comparable<UnitSet>{
         public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
         public @NotNull UnitType type;

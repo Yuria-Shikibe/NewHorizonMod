@@ -814,7 +814,7 @@ public class NHBullets implements ContentList{
 			maxRange = 250f;
 		}};
 		
-		darkEnrlaser = new ContinuousLaserBulletType(1400){
+		darkEnrlaser = new ContinuousLaserBulletType(1000){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
@@ -1155,7 +1155,7 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
-		arc_9000 = new LightningLinkerBulletType(2.75f, 1500){{
+		arc_9000 = new LightningLinkerBulletType(2.75f, 750){{
 			trailWidth = 4.5f;
 			trailLength = 66;
 			
@@ -1211,7 +1211,7 @@ public class NHBullets implements ContentList{
 			hitSound = Sounds.explosionbig;
 			splashDamageRadius = 120f;
 			splashDamage = 300;
-			lightningDamage = damage;
+			lightningDamage = damage * 0.75f;
 			
 			collidesTiles = true;
 			pierce = false;

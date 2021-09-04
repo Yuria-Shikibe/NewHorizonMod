@@ -10,6 +10,11 @@ public class SniperAI extends FlyingAI{
 	protected static final float APPROACHING_DST = 64f;
 	
 	@Override
+	public void updateWeapons(){
+		super.updateWeapons();
+	}
+	
+	@Override
 	public void updateMovement(){
 		unloadPayloads();
 		

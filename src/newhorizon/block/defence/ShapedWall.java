@@ -1,75 +1,104 @@
 package newhorizon.block.defence;
 
-import arc.graphics.Color;
+import arc.Core;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import arc.scene.ui.layout.Table;
 import arc.struct.BoolSeq;
-import arc.struct.ObjectMap;
-import arc.util.Log;
+import arc.struct.IntMap;
+import arc.struct.OrderedSet;
+import arc.struct.Seq;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.gen.Building;
-import mindustry.graphics.Pal;
+import mindustry.gen.Bullet;
 import mindustry.world.blocks.defense.Wall;
+import newhorizon.NewHorizon;
+import newhorizon.content.NHFx;
 
-import static newhorizon.func.TableFs.LEN;
+import static mindustry.Vars.tilesize;
 
 public class ShapedWall extends Wall{
-	protected static int[][] tileKey = {
+	protected static final int defaultKey = "00000000".hashCode();
+	
+	protected static final int[] needCheckPoint = {4, 5, 6, 7};
+	
+	protected static final int[][] tileKey = {
 		{5, 1, 4},
 		{2,    0},
 		{6, 3, 7}
 	};
 	
-	protected static int[][] traverseKey = {
-		{1, 0}, {0, 1},
-		{1, 1}, {-1, -1},
-		{-1, 0}, {0, -1},
-		{1, -1}, {-1, 1}
+	//DO NOT USE Geometry.d8. This array is designed to make the load and match method more brief.
+	protected static final Point2[] traverseKey = {
+		new Point2(1, 0),
+		new Point2(0, 1),
+		new Point2(-1, 0),
+		new Point2(0, -1),
+		
+		//Edge Points Needed To Be Checked. Index from 4 to 7.
+		
+		new Point2(1, 1),
+		new Point2(-1, 1),
+		new Point2(-1, -1),
+		new Point2(1, -1)
 	};
+
+	public int linkMaxIteration = 1;
+	public float linkAlphaLerpDst = 32f;
+	public float linkAlphaScl = 0.75f;
+	public float minShareDamage = 70;
 	
-	public final ObjectMap<String, TextureRegion> sprites = new ObjectMap<>();
+	public final IntMap<TextureRegion> sprites = new IntMap<>();
 	
 	public ShapedWall(String name){
 		super(name);
-		configurable = true;
 		size = 1;
-		update = true;
-		config(Point2.class, ShapeWallBuild::computePoint);
 	}
 	
-//	@Override
-//	public void load(){
-//		super.load();
-//		sprites.put("00000000", Core.atlas.find(name));
-//		for(int i = 0; i < 256; i ++){
-//			String key = Integer.toBinaryString(i);
-//			StringBuilder builder = new StringBuilder();
-//			builder.append("0".repeat(8 - key.length()));
-//			key = builder.append(key).toString();
-//			if(key.startsWith("0000"))continue;
-//			Log.info(key);
-//			sprites.put(key, Core.atlas.find(name + "-" + key));
-//		}
-//	}
+	@Override
+	public void load(){
+		super.load();
+		sprites.put(defaultKey, Core.atlas.find(name));
+		loop: for(int i = 0; i < 256; i ++){
+			String key = Integer.toBinaryString(i);
+			StringBuilder builder = new StringBuilder();
+			for(int j = 0; j < 8 - key.length(); j++)builder.append(0);
+			builder.append(key);
+			for(int j : needCheckPoint){
+				if(builder.charAt(j) == '0')continue;
+				if(builder.charAt((j - 3) % 4) != '1' || builder.charAt(j - 4) != '1')continue loop;
+			}
+			key = builder.toString();
+			if(key.startsWith("0000"))continue;
+			sprites.put(key.hashCode(), Core.atlas.find(name + "-" + key));
+		}
+	}
 	
 	public class ShapeWallBuild extends Building{
-		public BoolSeq drawid = new BoolSeq(8);
-		protected String key = "";
+		public Seq<ShapeWallBuild> connectedWalls = new Seq<>();
+		public BoolSeq factID = new BoolSeq(8);
+		protected int drawKey = defaultKey;
 		
 		public void updateKey(){
 			StringBuilder builder = new StringBuilder();
-			for(boolean bool : drawid.items){
-				Log.info(bool);
-				builder.append(Mathf.num(bool));
+			
+			for(int i = 0; i < 8; i++){
+				builder.append(Mathf.num(factID.get(i)));
 			}
-			key = builder.toString();
-			if(key.startsWith("0000"))key = "00000000";
-			Log.info(key);
+			
+			for(int i : needCheckPoint){
+				if(builder.charAt((i - 3) % 4) != '1' || builder.charAt((i - 4) % 4) != '1')builder.setCharAt(i, '0');
+			}
+			
+			String key = builder.toString();
+			drawKey = key.hashCode();
+			
+			if(key.startsWith("0000"))drawKey = defaultKey;
 		}
 		
 		public void computePoint(Point2 point){
@@ -78,113 +107,163 @@ public class ShapedWall extends Wall{
 				2 x 0
 				6 3 7
 			 */
-			int x = point.x, y = point.y, index;
-			if(x == 1 && y == 0){
-				index = 0;
-			}else if(x == 0 && y == 1){
-				index = 1;
-			}else if(x == -1 && y == 0){
-				index = 2;
-			}else if(x == 0 && y == -1){
-				index = 3;
-			}else if(x == 1 && y == 1){
-				index = 4;
-			}else if(x == -1 && y == 1){
-				index = 5;
-			}else if(x == -1 && y == -1){
-				index = 6;
-			}else if(x == 1 && y == -1){
-				index = 7;
-			}else index = -1;
+			int x = point.x, y = point.y;
 			
-			if(index != -1)drawid.set(index, !drawid.get(index));
-			updateKey();
-		}
-	
-		public void updateDraw(){
-			//Log.info(proximity);
-			//updateProximity();
-			//Log.info(proximity);
-			for(int[] index : traverseKey){
-				Building build = Vars.world.build(tileX() + index[0], tileY() + index[1]);
-				if(build instanceof ShapeWallBuild){
-					computePoint(Tmp.p1.set(build.tileX() - tileX(), build.tileY() - tileY()));
-					build.configure(Tmp.p1.set(tileX() - build.tileX(), tileY() - build.tileY()));
+			for(int i = 0; i < traverseKey.length; i++){
+				if(point.equals(traverseKey[i])){
+					factID.set(i, !factID.get(i));
+					break;
 				}
 			}
 			
+			updateKey();
+		}
+	
+		public void updateIndexKey(boolean add){
+			for(Point2 index : traverseKey){
+				Building build = Vars.world.build(tileX() + index.x, tileY() + index.y);
+				if(build instanceof ShapeWallBuild){
+					computePoint(Tmp.p1.set(build.tileX() - tileX(), build.tileY() - tileY()));
+					((ShapeWallBuild)build).computePoint(Tmp.p1.set(tileX() - build.tileX(), tileY() - build.tileY()));
+				}
+			}
+			
+			updateConnection(add);
+		}
+		
+		public OrderedSet<ShapeWallBuild> getConnections(int iteration){
+			OrderedSet<ShapeWallBuild> builds = new OrderedSet<>();
+			builds.addAll(connectedWalls);
+			
+			if(iteration > 0){
+				for(ShapeWallBuild build : connectedWalls){
+					builds.addAll(build.getConnections(iteration - 1));
+				}
+			}
+			
+			return builds;
+		}
+		
+		public void updateConnection(boolean add){
+			for(Point2 index : traverseKey){
+				Building build = Vars.world.build(tileX() + index.x, tileY() + index.y);
+				if(build instanceof ShapeWallBuild){
+					ShapeWallBuild b = (ShapeWallBuild)build;
+					
+					if(add)b.connectedWalls.add(this);
+					else b.connectedWalls.remove(this);
+					
+					connectedWalls.add(b);
+				}
+			}
+		}
+		
+		public void drawTeam() {
+			Draw.color(this.team.color);
+			Draw.rect(NewHorizon.name("block-team-center"), x, y);
+			Draw.color();
+		}
+		
+		@Override
+		public boolean collision(Bullet other){
+			other.absorb();
+			return super.collision(other);
+		}
+		
+		@Override
+		public float handleDamage(float amount){
+			if(amount > minShareDamage && hitTime <= 0){
+				float maxHandOut = amount / 9;
+				float haveHandOut = 0;
+				
+				for(ShapeWallBuild b : connectedWalls){
+					float damageP = Math.max(maxHandOut, Mathf.curve(b.healthf(), 0.25f, 0.75f) * maxHandOut);
+					haveHandOut += damageP;
+					b.damage(team, damageP);
+					if(damageP > 0.5f) NHFx.shareDamage.at(b.x, b.y, b.block.size * tilesize / 2f, team.color, damageP / Math.max(maxHandOut, minShareDamage));
+				}
+				
+				NHFx.shareDamage.at(x, y, block.size * tilesize / 2f, team.color, 1f);
+				hitTime = Math.max(1.5f, hitTime);
+				return amount - haveHandOut;
+			}else return super.handleDamage(amount);
 		}
 		
 		@Override
 		public void draw(){
-			/*
-				5 1 4
-				2 x 0
-				6 3 7
-			 */
+			TextureRegion t = sprites.get(drawKey);
+			if(t != null)Draw.rect(t, x, y);
+		}
+		
+		@Override
+		public void afterDestroyed(){
+			super.afterDestroyed();
+			updateConnection(false);
+		}
+		
+		@Override
+		public void drawSelect(){
+			super.drawSelect();
+			Draw.color(team.color);
+			for(Building b : connectedWalls){
+				Draw.alpha((1 - b.dst(this) / linkAlphaLerpDst) * linkAlphaScl);
+				Fill.square(b.x, b.y, b.block.size * tilesize / 2f);
+			}
 			
-			
-			
-			super.draw();
+			Draw.alpha(linkAlphaScl);
+			Fill.square(x, y, size * tilesize / 2f);
+		}
+		
+		@Override
+		public void created(){
+			super.created();
+			updateConnection(true);
+			if(Vars.net.active() && !Vars.headless){
+				initSeq();
+				updateIndexKey(true);
+			}
 		}
 		
 		@Override
 		public void placed(){
 			super.placed();
 			
-			for(int i = 0; i < 8; i++){
-				drawid.add(false);
-			}
+			initSeq();
 			
-			updateDraw();
+			updateIndexKey(true);
 		}
 		
-		@Override
-		public void remove(){
-			super.remove();
-			updateDraw();
-		}
-		
-		@Override
-		public void onDestroyed(){
-			super.onDestroyed();
-			updateDraw();
-		}
-		
-		@Override
-		public void buildConfiguration(Table table){
-			super.buildConfiguration(table);
-			
-			table.table(t -> {
-				for(int[] i : tileKey){
-					for(int j : i){
-						t.image().size(LEN).color(drawid.get(j) ? Color.green : Pal.redderDust);
-						if(j == 2)t.image().size(LEN).color(Pal.gray);
-					}
-					t.row();
+		public void initSeq(){
+			if(factID.size < 8){
+				factID.clear();
+				for(int i = 0; i < 8; i++){
+					factID.add(false);
 				}
-			}).fill().row();
-			
-			table.add(key).color(Pal.redderDust);
-
+			}
+		}
+		
+		@Override
+		public void onRemoved(){
+			super.onRemoved();
+			updateIndexKey(false);
 		}
 		
 		@Override
 		public void write(Writes write){
 			super.write(write);
-			for(boolean bool : drawid.items){
-				write.bool(bool);
+			write.i(drawKey);
+			for(int i = 0; i < 8; i++){
+				write.bool(factID.get(i));
 			}
 		}
 		
 		@Override
 		public void read(Reads read, byte revision){
 			super.read(read, revision);
-			for(boolean bool : drawid.items){
-				drawid.add(read.bool());
+			drawKey = read.i();
+			for(int i = 0; i < 8; i++){
+				factID.add(read.bool());
 			}
-			
-			updateKey();
 		}
 	}
 }

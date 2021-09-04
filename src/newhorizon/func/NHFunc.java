@@ -18,7 +18,10 @@ import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Building;
+import mindustry.gen.Player;
+import mindustry.gen.Unit;
+import mindustry.gen.WaterMovec;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -26,7 +29,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.block.special.JumpGate;
 import newhorizon.content.NHFx;
-import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,27 +70,17 @@ public class NHFunc{
     
     public static Unit teleportUnitNet(Unit before, float x, float y, float angle, @Nullable Player player){
         if(net.active() || headless){
-            float dst = before.dst(x, y);
-            int sigs = Mathf.ceil(dst / MAX_TELEPORT_DST_NET);
-            point1.set(before);
-            point2.trns(angle, dst / sigs);
-            
-            for(int i = 1; i < sigs; i++){
-                point3.set(point2).scl(i).add(point1);
-                Time.runTask(0.00075f * (i - 1), () -> {
-                    if(player != null){
-                        player.set(point3);
-                        player.snapInterpolation();
-                        player.snapSync();
-                        player.lastUpdated = player.updateSpacing = 0;
-                    }
-                    before.set(point3);
-                    before.snapInterpolation();
-                    before.snapSync();
-                    before.updateSpacing = 0;
-                    before.lastUpdated = 0;
-                });
+            if(player != null){
+                player.set(x, y);
+                player.snapInterpolation();
+                player.snapSync();
+                player.lastUpdated = player.updateSpacing = 0;
             }
+            before.set(x, y);
+            before.snapInterpolation();
+            before.snapSync();
+            before.updateSpacing = 0;
+            before.lastUpdated = 0;
         }else{
             before.set(x, y);
         }
@@ -128,8 +120,6 @@ public class NHFunc{
         buildingIDSeq.clear();
         tiles.clear();
     }
-    
-    public static int getTeamIndex(Team team){return NHVars.allTeamSeq.indexOf(team);}
     
     @Contract(value = "!null, _ -> param1", pure = true)
     public static Color getColor(Color defaultColor, Team team){

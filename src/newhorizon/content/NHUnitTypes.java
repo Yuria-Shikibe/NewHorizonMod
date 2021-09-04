@@ -343,7 +343,7 @@ public class NHUnitTypes implements ContentList{
 		
 		naxos = new UnitType("naxos"){{
 			constructor = EntityMapping.map(3);
-			health = 6000.0F;
+			health = 7500.0F;
 			speed = 3f;
 			accel = 0.075F;
 			drag = 0.015F;
@@ -361,7 +361,7 @@ public class NHUnitTypes implements ContentList{
 			defaultController = InterceptorAI::new;
 			targetGround = false;
 			
-			abilities.add(new BoostAbility(2f, 30f), new ForceFieldAbility(80f, 20f, 3000f, 900f));
+			abilities.add(new BoostAbility(2f, 30f));
 			
 			weapons.add(
 				new NHWeapon("impulse-side"){{
@@ -510,7 +510,7 @@ public class NHUnitTypes implements ContentList{
 		longinus = new UnitType("longinus"){{
 			constructor = EntityMapping.map(3);
 			lowAltitude = true;
-			health = 12000.0F;
+			health = 10000.0F;
 			speed = 0.5F;
 			accel = 0.02F;
 			drag = 0.025F;
@@ -526,7 +526,7 @@ public class NHUnitTypes implements ContentList{
 			commandRadius = 220f;
 			
 			defaultController = SniperAI::new;
-			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.core, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
 			
 			buildBeamOffset = 15f;
 			
@@ -541,7 +541,7 @@ public class NHUnitTypes implements ContentList{
 				x = 0;
 				y = 12.75f;
 				recoil = 10;
-				reload = 180f;
+				reload = 300f;
 				cooldownTime = 150f;
 				shake = 12f;
 				

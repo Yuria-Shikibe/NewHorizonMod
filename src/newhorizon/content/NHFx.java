@@ -645,6 +645,13 @@ public class NHFx{
 			
 		}),
 	
+		shareDamage = new Effect(45f, e-> {
+			if(!(e.data instanceof Number))return;
+			Draw.color(e.color);
+			Draw.alpha(((Number)e.data()).floatValue() * e.fout());
+			Fill.square(e.x, e.y, e.rotation);
+		}),
+	
 		square45_4_45 = new Effect(45f, e-> {
 			Draw.color(e.color);
 			randLenVectors(e.id, 4, 20f * e.finpow(), (x, y) -> {

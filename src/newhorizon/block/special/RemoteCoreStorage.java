@@ -25,6 +25,7 @@ import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.EventTriggers;
 import newhorizon.vars.NHWorldVars;
 
+import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 
 public class RemoteCoreStorage extends StorageBlock{
@@ -55,7 +56,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	}
 	
 	public static int maxPlaceNum(Team team){
-		return team == Vars.state.rules.waveTeam || team.rules().cheat ? Integer.MAX_VALUE : Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 10);
+		return (team == Vars.state.rules.waveTeam && !state.rules.pvp) || team.rules().cheat ? Integer.MAX_VALUE : Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 10);
 	}
 	
 	@Override

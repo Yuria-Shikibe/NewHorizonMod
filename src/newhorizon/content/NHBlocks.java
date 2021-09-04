@@ -131,10 +131,15 @@ public class NHBlocks implements ContentList {
 	
 		//Env
 		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum,
-		metalGroundHeat, conglomerateRock
+		metalGroundHeat, conglomerateRock, conglomerateWall
 		;
 	
 	private static void loadEnv(){
+		conglomerateWall = new StaticWall("conglomerate-wall"){{
+			variants = 4;
+			mapColor = Color.valueOf("858585");
+		}};
+		
 		conglomerateRock = new Floor("conglomerate-rock", 3){{
 			mapColor = Color.valueOf("565557");
 		}};
@@ -254,9 +259,7 @@ public class NHBlocks implements ContentList {
 //			range = 12;
 //		}};
 //
-//		shapedWall = new ShapedWall("debug"){{
-//			requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
-//		}};
+
 //		configurer = new Configurer("configurer"){{
 //			size = 1;
 //			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
@@ -1657,6 +1660,13 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
+		shapedWall = new ShapedWall("shaped-wall"){{
+			health = 6000;
+			insulated = absorbLasers = true;
+			
+			requirements(Category.defense, with(NHItems.upgradeSort, 5, NHItems.juniorProcessor, 2, NHItems.setonAlloy, 10));
+		}};
+		
 		multiConduit = new Conduit("multi-conduit"){{
 			size = 1;
 			health = 420;
@@ -2386,6 +2396,7 @@ public class NHBlocks implements ContentList {
 		loadFactories();
 		loadTurrets();
 		loadEnv();
+		loadExperiments();
 		
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

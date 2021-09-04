@@ -82,7 +82,30 @@ public class EventTriggers{
 //			}
 //		});
 //
+		
+		Events.on(EventType.WorldLoadEvent.class, e -> {
+			NHVars.reset();
+			
+			for(Runnable run : actBeforeLoad)run.run();
+			for(BeforeLoadc c : NHWorldVars.advancedLoad)c.beforeLoad();
+			
+			NHVars.world.clearLast();
+			NHVars.world.worldLoaded = true;
+			//
+			//			if(Vars.player.admin)for(Block c : contents)c.buildVisibility = BuildVisibility.shown;
+			//			else for(Block c : contents)c.buildVisibility = BuildVisibility.sandboxOnly;
+			//
+		});
+		
 		if(Vars.headless)return;
+		
+		Events.on(EventType.WorldLoadEvent.class, e -> {
+			if(caution){
+				caution = false;
+				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new NHSetting.SettingDialog().show(), () -> {});
+				Vars.player.con.kick(kickWarn, 1);
+			}
+		});
 
 		Events.run(EventType.Trigger.update, ScreenHack::update);
 		
@@ -113,26 +136,6 @@ public class EventTriggers{
 					Fill.poly(b.x, b.y,6, b.range());
 					Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
 				}
-			}
-		});
-		
-		Events.on(EventType.WorldLoadEvent.class, e -> {
-			NHVars.reset();
-			
-			for(Runnable run : actBeforeLoad)run.run();
-			for(BeforeLoadc c : NHWorldVars.advancedLoad)c.beforeLoad();
-			
-			NHVars.world.clearLast();
-			NHVars.world.worldLoaded = true;
-//
-//			if(Vars.player.admin)for(Block c : contents)c.buildVisibility = BuildVisibility.shown;
-//			else for(Block c : contents)c.buildVisibility = BuildVisibility.sandboxOnly;
-//
-			
-			if(caution){
-				caution = false;
-				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new NHSetting.SettingDialog().show(), () -> {});
-				Vars.player.con.kick(kickWarn, 1);
 			}
 		});
 		
