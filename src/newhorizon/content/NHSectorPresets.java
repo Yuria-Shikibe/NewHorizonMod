@@ -77,7 +77,7 @@ public class NHSectorPresets implements ContentList{
 		}};
 		
 		Events.on(EventType.SectorCaptureEvent.class, e -> {
-			if(captureMap.containsKey(e.sector.preset)){
+			if(e.sector.preset!=null && captureMap.containsKey(e.sector.preset)){
 				captureMap.get(e.sector.preset).get(e.sector);
 			}
 		});
@@ -90,7 +90,7 @@ public class NHSectorPresets implements ContentList{
 //
 		Events.on(EventType.SectorLoseEvent.class, e -> {
 			Sector sector = e.sector;
-			if(loseMap.containsKey(sector.preset)){
+			if(sector.preset!=null && loseMap.containsKey(sector.preset)){
 				loseMap.get(sector.preset).get(sector);
 			}
 		});
@@ -98,7 +98,7 @@ public class NHSectorPresets implements ContentList{
 		Events.on(EventType.LoseEvent.class, e -> {
 			if(!Vars.state.isGame() || !Vars.state.isCampaign())return;
 			Sector sector = Vars.state.getSector();
-			if(loseMap.containsKey(sector.preset)){
+			if(sector.preset!=null && loseMap.containsKey(sector.preset)){
 				loseMap.get(sector.preset).get(sector);
 			}
 		});
