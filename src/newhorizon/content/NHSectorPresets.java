@@ -75,8 +75,8 @@ public class NHSectorPresets implements ContentList{
 						SectorScript.UIActions.screenHold(2f, 16f, 1f, Interp.fastSlow, Interp.slowFast, 0);
 						
 						SectorScript.UIActions.actionSeq(
-							Actions.run(SectorScript.UIActions::pauseCamera),
 							Actions.delay(2f),
+							Actions.run(SectorScript.UIActions::pauseCamera),
 							SectorScript.CameraMoveAction.moveTo(316, 612, 1f, Interp.pow3Out),
 							SectorScript.LabelAction.labelAct(
 								"[accent]Objective[]: @@@Use the limited resources and these gates to defeat enemies."
@@ -168,7 +168,7 @@ public class NHSectorPresets implements ContentList{
 						Seq<CoreBlock.CoreBuild> cores = state.teams.cores(state.rules.waveTeam);
 						Seq<Action> actions = new Seq<>(cores.size * 2);
 						
-						actions.add(Actions.run(SectorScript.UIActions::pauseCamera), Actions.delay(2f));
+						actions.add(Actions.delay(2f), Actions.run(SectorScript.UIActions::pauseCamera));
 						
 						actions.addAll(
 							SectorScript.CameraMoveAction.moveTo(1512, 1968, 2f, Interp.pow3Out),

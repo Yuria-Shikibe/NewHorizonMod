@@ -129,7 +129,7 @@ public class SectorScript{
 		public static void pauseCamera(){
 			if(Vars.mobile && Vars.control.input instanceof MobileInput){
 				MobileInput input = (MobileInput)Vars.control.input;
-				Vars.player.unit().apply(NHStatusEffects.staticVel);
+				Vars.player.unit().apply(NHStatusEffects.staticVel, 100000);
 			}else if(Vars.control.input instanceof DesktopInput){
 				DesktopInput input = (DesktopInput)Vars.control.input;
 				input.panning = true;
@@ -140,6 +140,7 @@ public class SectorScript{
 			if(Vars.mobile && Vars.control.input instanceof MobileInput){
 				MobileInput input = (MobileInput)Vars.control.input;
 				Vars.player.unit().unapply(NHStatusEffects.staticVel);
+				Core.camera.position.set(Vars.player);
 			}else if(Vars.control.input instanceof DesktopInput){
 				DesktopInput input = (DesktopInput)Vars.control.input;
 				input.panning = false;

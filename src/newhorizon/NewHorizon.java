@@ -33,6 +33,10 @@ import static newhorizon.func.TableFs.OFFSET;
 
 
 public class NewHorizon extends Mod{
+//	static{
+//		Vars.testMobile = Vars.mobile = true;
+//	}
+	
 	public static final String MOD_NAME = "new-horizon";
 	public static final String SERVER_ADDRESS = "n2.yd.gameworldmc.cn:20074", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static Links.LinkEntry[] links;
