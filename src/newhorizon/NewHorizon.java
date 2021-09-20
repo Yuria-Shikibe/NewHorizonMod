@@ -56,8 +56,7 @@ public class NewHorizon extends Mod{
 	};
 	
 	private static UnlockableContent[] getUpdateContent(){
-		return new UnlockableContent[]{
-			NHBlocks.conglomerateWall, NHBlocks.shapedWall
+		return new UnlockableContent[]{NHSectorPresets.mainPath
 		};
 	}
 	
@@ -110,7 +109,7 @@ public class NewHorizon extends Mod{
 					t.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@log", Icon.book, Styles.transt, NewHorizon::logShow).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 				}).grow();
 				if(!Vars.mobile)table.table(t -> {
 				

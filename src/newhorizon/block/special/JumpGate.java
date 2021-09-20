@@ -737,7 +737,6 @@ public class JumpGate extends Block {
     public static class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
         public Team team = Team.derelict;
         public UnitType type = UnitTypes.alpha;
-        public int spawnNum = 0;
         public float time = 0, lifetime;
         public float surviveTime, surviveLifeime = 3000f;
         public float rotation;
@@ -751,9 +750,8 @@ public class JumpGate extends Block {
             return 500;
         }
     
-        public void init(UnitType type, int spawnNum, Team team, Position pos, float rotation, float lifetime){
+        public void init(UnitType type, Team team, Position pos, float rotation, float lifetime){
             this.type = type;
-            this.spawnNum = spawnNum;
             this.lifetime = lifetime;
             this.rotation = rotation;
             this.team = team;
@@ -867,7 +865,6 @@ public class JumpGate extends Block {
             write.f(lifetime);
             write.f(time);
             write.f(rotation);
-            write.i(spawnNum);
             write.f(surviveTime);
             TypeIO.writeUnitType(write, type);
             TypeIO.writeTeam(write, team);
@@ -879,7 +876,6 @@ public class JumpGate extends Block {
             lifetime = read.f();
             time = read.f();
             rotation = read.f();
-            spawnNum = read.i();
             surviveTime = read.f();
             
             type = TypeIO.readUnitType(read);
@@ -904,7 +900,6 @@ public class JumpGate extends Block {
             lifetime = read.f();
             time = read.f();
             rotation = read.f();
-            spawnNum = read.i();
             surviveTime = read.f();
             
             type = TypeIO.readUnitType(read);
@@ -920,7 +915,6 @@ public class JumpGate extends Block {
             write.f(lifetime);
             write.f(time);
             write.f(rotation);
-            write.i(spawnNum);
             write.f(surviveTime);
             
             TypeIO.writeUnitType(write, type);

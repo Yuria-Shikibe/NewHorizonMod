@@ -401,6 +401,12 @@ public class NHFx{
 	public static final float lightningAlign = 0.5f;
 	
 	public static final Effect
+		cautionOutline = new Effect(60f, e -> {
+			Draw.color(e.color);
+			Lines.stroke(e.fout() * 2f);
+			Lines.square(e.x, e.y, e.rotation + e.rotation / 8 * e.fin(Interp.circleOut) + 1);
+		}),
+	
 		collapserBulletExplode = new Effect(300F, 1600f, e -> {
 			float rad = 150f;
 			rand.setSeed(e.id);

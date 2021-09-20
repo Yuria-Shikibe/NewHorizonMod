@@ -12,6 +12,7 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.core.GameState;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
@@ -98,6 +99,13 @@ public class EventTriggers{
 		});
 		
 		if(Vars.headless)return;
+		
+		Events.on(EventType.StateChangeEvent.class, e -> {
+			if(e.from == GameState.State.playing && e.to == GameState.State.menu){
+				NHVars.reset();
+				NHVars.world.worldLoaded = false;
+			}
+		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			if(caution){

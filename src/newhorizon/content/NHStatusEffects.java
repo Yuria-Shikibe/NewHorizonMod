@@ -3,7 +3,10 @@ package newhorizon.content;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.Pixmaps;
-import arc.graphics.g2d.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureAtlas;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import mindustry.ctype.ContentList;
@@ -12,6 +15,7 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.MultiPacker;
+import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
 import newhorizon.func.NHPixmap;
@@ -79,18 +83,19 @@ public class NHStatusEffects implements ContentList{
             }
         };
         
-//        staticVel = new NHStatusEffect("static-vel") {
-//            @Override
-//            public void update(Unit unit, float time){
-//                super.update(unit, time);
-//                unit.vel = unit.vel.scl(0.65f);
-//            }
-//
-//            {
-//                this.color = Pal.gray;
-//                this.speedMultiplier = 0.00001F;
-//            }
-//        };
+        staticVel = new NHStatusEffect("static-vel") {
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+                unit.vel = unit.vel.scl(0.05f);
+            }
+
+            {
+                permanent = true;
+                this.color = Pal.gray;
+                this.speedMultiplier = 0.00001F;
+            }
+        };
         
         emp1 = new NHStatusEffect("emp-1"){{
             damage = 0.05f;

@@ -230,6 +230,11 @@ public class UpgradeData implements Comparable<UpgradeData>{
 		public int level;
 		public boolean isUnlocked, selected;
 		
+		@Override
+		public String toString(){
+			return "DataEntity{" + type().toString() + " | level:" + level + '}';
+		}
+		
 		public float costTime() {
 			return costTime * (1 + (isLeveled ? level * timeCostParma : 0));
 		}

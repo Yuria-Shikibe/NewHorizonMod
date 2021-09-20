@@ -204,10 +204,16 @@ public class NHFunc{
         int i = 0;
         for (Vec2 s : vectorSeq) {
             JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
-            spawner.init(type, spawnNum, starter.team(), s, angle, spawnReloadTime + i * spawnDelay);
+            spawner.init(type, starter.team(), s, angle, spawnReloadTime + i * spawnDelay);
             if(!net.client())spawner.add();
             i++;
         }
         return true;
+    }
+    
+    public static void spawnUnit(Team team, UnitType type, float x, float y, float angle, float delay){
+        JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
+        spawner.init(type, team, vec21.set(x, y), angle, delay);
+        if(!net.client())spawner.add();
     }
 }

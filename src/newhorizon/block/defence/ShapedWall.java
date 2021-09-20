@@ -49,7 +49,7 @@ public class ShapedWall extends Wall{
 	};
 
 	public int linkMaxIteration = 1;
-	public float linkAlphaLerpDst = 32f;
+	public float linkAlphaLerpDst = 24f;
 	public float linkAlphaScl = 0.75f;
 	public float minShareDamage = 70;
 	
@@ -166,7 +166,7 @@ public class ShapedWall extends Wall{
 		
 		@Override
 		public boolean collision(Bullet other){
-			other.absorb();
+			if(other.type.absorbable)other.absorb();
 			return super.collision(other);
 		}
 		
@@ -252,8 +252,10 @@ public class ShapedWall extends Wall{
 		public void write(Writes write){
 			super.write(write);
 			write.i(drawKey);
-			for(int i = 0; i < 8; i++){
+			if(factID.size > 8)for(int i = 0; i < 8; i++){
 				write.bool(factID.get(i));
+			}else for(int i = 0; i < 8; i++){
+				write.bool(false);
 			}
 		}
 		

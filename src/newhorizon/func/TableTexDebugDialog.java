@@ -5,6 +5,9 @@ import arc.Events;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
+import arc.math.Mathf;
+import arc.scene.Action;
+import arc.scene.actions.Actions;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
@@ -23,13 +26,14 @@ import mindustry.graphics.Pal;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.feature.ScreenHack;
+import newhorizon.feature.SectorScript;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static mindustry.Vars.content;
-import static mindustry.Vars.mobile;
+import static mindustry.Vars.*;
 import static newhorizon.func.TableFs.LEN;
 import static newhorizon.func.TableFs.OFFSET;
 
@@ -255,11 +259,12 @@ public class TableTexDebugDialog extends BaseDialog{
 				float offset = 20 * unitLength;
 				float len = 100;
 				float sigs = 100;
-				Class<?> c = Interp.class;
-				Field[] fields = c.getFields();
+				Seq<Field> fields = new Seq<>();
+				fields.addAll(Interp.class.getFields());
+				fields.addAll(NHInterp.class.getFields());
 				int i = 0;
 				for(Field field : fields){
-					if(c.isAssignableFrom(field.getType())){
+					if(Interp.class.isAssignableFrom(field.getType())){
 						if(i++ % 5 == 0)t.row();
 						try{
 							Interp interp = (Interp)field.get(null);
@@ -343,6 +348,59 @@ public class TableTexDebugDialog extends BaseDialog{
 			}).grow();
 			dialog.addCloseButton();
 			dialog.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("hold", () -> {
+			SectorScript.UIActions.screenHold(0.45f, 3f, 1f, Interp.fastSlow, Interp.slowFast);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.row();
+		
+		cont.button("move", () -> {
+			float randX = Mathf.random(world.unitWidth()), randY = Mathf.random(world.unitHeight());
+			SectorScript.UIActions.screenHold(2f, 8f, 1f, Interp.fastSlow, Interp.slowFast, 0);
+			SectorScript.UIActions.actionSeq(
+					Actions.run(SectorScript.UIActions::pauseCamera),
+					Actions.delay(2f),
+					SectorScript.CameraMoveAction.moveTo(randX, randY, 4f, Interp.circleOut),
+					Actions.delay(1),
+					SectorScript.CameraMoveAction.moveTo(player.core().x, player.core().y, 1f, Interp.circleOut),
+					Actions.delay(1),
+					SectorScript.CameraMoveAction.moveTo(player.x, player.y, 1f, Interp.pow3Out),
+					Actions.run(SectorScript.UIActions::resumeCamera)
+			);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("cores iterate", () -> {
+			Seq<CoreBlock.CoreBuild> cores = state.teams.cores(state.rules.waveTeam);
+			Seq<Action> actions = new Seq<>(cores.size * 2);
+			
+			for(int i = 0; i < cores.size; i++){
+				CoreBlock.CoreBuild core = cores.get(i);
+				actions.add(SectorScript.CameraMoveAction.moveTo(core.x, core.y, 2f, Interp.circleOut));
+				actions.add(Actions.parallel(
+					SectorScript.LabelAction.labelAct(
+						"Team<[#" + core.team.color +  "]" + core.team.name.toUpperCase() +
+							"[]>: @@@" +
+							core.block.localizedName + " [[" + core.tileX() + ", " + core.tileY() + "]", 0.5f, 1.5f, false, Interp.linear, t -> {
+								if(!core.team.emoji.isEmpty()){
+									t.add(core.team.emoji).padRight(OFFSET);
+								}
+							}
+					)
+				));
+			}
+			
+			Seq<Action> acts = new Seq<>();
+			
+			SectorScript.UIActions.screenHold(2f, actions.size * 2, 1f, Interp.fastSlow, Interp.slowFast, 0);
+			acts.addAll(Actions.run(() -> control.pause()), Actions.delay(2f)).addAll(actions).add(Actions.run(() -> control.resume()));
+			
+			SectorScript.UIActions.actionSeq(acts.toArray(Action.class));
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("moveRandom", () -> {
+			SectorScript.UIActions.cameraMove(Mathf.random(world.unitHeight()), Mathf.random(world.unitHeight()), 2f, Interp.pow3Out);
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		addCloseButton();

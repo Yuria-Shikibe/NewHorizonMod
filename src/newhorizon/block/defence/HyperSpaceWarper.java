@@ -505,7 +505,7 @@ public class HyperSpaceWarper extends Block{
 		public void update(){
 			onGoing = true;
 			
-			trail.update(x, y);
+			if(!Vars.headless)trail.update(x, y, 1);
 			
 			if(!contained && unit != null && unit.isValid() && !complete){
 				set(unit);

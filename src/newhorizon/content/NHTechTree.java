@@ -1,6 +1,5 @@
 package newhorizon.content;
 
-import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
@@ -9,52 +8,8 @@ import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 
 public class NHTechTree implements ContentList {
-    public static Method node1 = null, node2 = null, nodeObjectives = null;
-    
-    static{
-        try{
-            node1 = TechTree.class.getDeclaredMethod("node", UnlockableContent.class, Runnable.class);
-            node1.setAccessible(true);
-    
-            node2 = TechTree.class.getDeclaredMethod("node", UnlockableContent.class, Seq.class, Runnable.class);
-            node2.setAccessible(true);
-            
-            nodeObjectives = TechTree.class.getDeclaredMethod("nodeProduce", UnlockableContent.class, Seq.class, Runnable.class);
-            nodeObjectives.setAccessible(true);
-        }catch(NoSuchMethodException e){
-            e.printStackTrace();
-        }
-    }
-    
-    public static void node(UnlockableContent root, Seq<Objectives.Objective> objectives, Runnable children){
-        try{
-            node2.invoke(null, root, objectives, children);
-        }catch(IllegalAccessException | InvocationTargetException e){
-            e.printStackTrace();
-        }
-    }
-    
-    public static void node(UnlockableContent root, Runnable children){
-        try{
-            node1.invoke(null, root, children);
-        }catch(IllegalAccessException | InvocationTargetException e){
-            e.printStackTrace();
-        }
-    }
-    
-    public static void nodeProduce(UnlockableContent root, Seq<Objectives.Objective> objectives, Runnable children){
-        try{
-            nodeObjectives.invoke(null, root, objectives, children);
-        }catch(IllegalAccessException | InvocationTargetException e){
-            e.printStackTrace();
-        }
-    }
-    
     public static void addProduce(UnlockableContent root, UnlockableContent content){
         TechNode node = new TechNode(TechTree.get(root), content, ItemStack.with());
         node.objectives.add(new Objectives.Produce(content));
@@ -97,10 +52,10 @@ public class NHTechTree implements ContentList {
         add(Blocks.batteryLarge, NHBlocks.armorBatteryLarge);
         //new TechNode(TechTree.get(Blocks.massDriver), NHBlocks.delivery, NHBlocks.delivery.researchRequirements());
         new TechNode(TechTree.get(Blocks.parallax), NHBlocks.divlusion, NHBlocks.divlusion.researchRequirements());
-        add(NHBlocks.divlusion, NHBlocks.blastTurret);
+        add(NHBlocks.divlusion, NHBlocks.blastTurret, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
         new TechNode(TechTree.get(Blocks.forceProjector), NHBlocks.largeShieldGenerator, NHBlocks.largeShieldGenerator.researchRequirements());
         new TechNode(TechTree.get(Blocks.spectre), NHBlocks.thurmix, NHBlocks.thurmix.researchRequirements());
-        new TechNode(TechTree.get(NHBlocks.thurmix), NHBlocks.endOfEra, NHBlocks.endOfEra.researchRequirements());
+        add(NHBlocks.blastTurret, NHBlocks.endOfEra, new Objectives.SectorComplete(NHSectorPresets.downpour));
         new TechNode(TechTree.get(NHBlocks.endOfEra), NHBlocks.eoeUpgrader, ItemStack.with());
         add(NHBlocks.endOfEra, NHBlocks.eternity);
         new TechNode(TechTree.get(Blocks.phaseWall), NHBlocks.chargeWall, NHBlocks.chargeWall.researchRequirements());
@@ -190,7 +145,9 @@ public class NHTechTree implements ContentList {
         add(NHSectorPresets.quantumCraters, NHSectorPresets.luminariOutpost, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
         add(NHSectorPresets.luminariOutpost, NHSectorPresets.downpour, new Objectives.SectorComplete(NHSectorPresets.luminariOutpost));
         add(NHSectorPresets.downpour, NHSectorPresets.quantumCraters, new Objectives.SectorComplete(NHSectorPresets.downpour));
-        add(NHSectorPresets.downpour, NHSectorPresets.hostileHQ, new Objectives.SectorComplete(NHSectorPresets.downpour));
+        add(NHSectorPresets.downpour, NHSectorPresets.ancientBattefield, new Objectives.SectorComplete(NHSectorPresets.downpour));
+        add(NHSectorPresets.downpour, NHSectorPresets.mainPath, new Objectives.SectorComplete(NHSectorPresets.downpour));
+        add(NHSectorPresets.mainPath, NHSectorPresets.hostileHQ, new Objectives.SectorComplete(NHSectorPresets.mainPath));
         add(NHSectorPresets.quantumCraters, NHSectorPresets.deltaHQ, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
        
         add(Liquids.water, NHLiquids.quantumLiquid, new Objectives.Produce(NHLiquids.quantumLiquid));

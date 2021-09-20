@@ -65,7 +65,7 @@ public class UpgradeBlock extends Block{
 		buildCostMultiplier = 2;
 		configurable = true;
 		solid = true;
-		copyConfig = saveConfig = true;
+		copyConfig = true;
 		sync = true;
 		
 		config(Point2.class, (Cons2<UpgradeBlockBuild, Point2>)UpgradeBlockBuild::linkPos);
@@ -189,9 +189,13 @@ public class UpgradeBlock extends Block{
 		
 		//Data Upgrade
 		public void upgradeData(int data){
-			upgradeData(all().get(data));
 			upgradingID = data;
-			if(state.rules.editor)completeUpgrade();
+			if(state.rules.editor){
+				completeUpgrade();
+				return;
+			}
+			
+			upgradeData(all().get(data));
 		}
 		
 		@Override//Updates
@@ -209,10 +213,10 @@ public class UpgradeBlock extends Block{
 			Sounds.unlock.at(this);
 			Fx.healBlockFull.at(x, y, block.size, baseColorTst);
 			
+			latestSelectID = upgradingID;
+			
 			datas.get(upgradingID).upgrade();
 			switchAmmo(datas.get(upgradingID));
-			
-			updateTarget();
 			upgradingID = defaultID;
 		}
 		
@@ -274,7 +278,7 @@ public class UpgradeBlock extends Block{
 				configure(Tmp.p1.set(-1, -1));
 				return false;
 			} else if (!(other instanceof Scalablec)) {
-				ui.showErrorMessage("Failed to connect, target " + other.toString() + " doesn't implement @Scalablec");
+				ui.showErrorMessage("Failed to connect, target " + other + " doesn't implement @Scalablec");
 				return true;
 			} else { 
 				Scalablec target = (Scalablec)other;
@@ -335,8 +339,8 @@ public class UpgradeBlock extends Block{
 		}
 
 		@Override
-		public void onDestroyed() {
-			super.onDestroyed();
+		public void afterDestroyed() {
+			super.afterDestroyed();
 			if(linkValid())target().resetUpgrade();
 			NHVars.world.upgraderGroup.remove(this);
 		}
