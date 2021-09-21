@@ -60,7 +60,7 @@ public class NewHorizon extends Mod{
 	};
 	
 	private static UnlockableContent[] getUpdateContent(){
-		return new UnlockableContent[]{NHSectorPresets.mainPath
+		return new UnlockableContent[]{
 		};
 	}
 	
