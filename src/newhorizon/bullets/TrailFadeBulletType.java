@@ -4,9 +4,9 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
-import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.gen.Bullet;
 import newhorizon.content.NHFx;
@@ -35,6 +35,9 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 		this(speed, damage, "bullet");
 	}
 	
+	protected static final Vec2 v1 = new Vec2(), v2 = new Vec2();
+	protected static final Rand rand = new Rand();
+	
 	@Override
 	public void hit(Bullet b){
 		super.hit(b);
@@ -55,7 +58,6 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 		Seq<Vec2>[] points = new Seq[boltNum];
 		for(int i = 0; i < boltNum; i++){
 			Seq<Vec2> p = new Seq<>();
-//			p.add(new Vec2(b.x, b.y));
 			points[i] = p;
 		}
 		b.data = points;
@@ -68,9 +70,9 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 			if(!(b.data instanceof Seq[]))return;
 			Seq<Vec2>[] points = (Seq<Vec2>[])b.data();
 			for(Seq<Vec2> seq : points){
-				Tmp.v2.trns(b.rotation(), 0, Mathf.range(randX));
-				Tmp.v1.set(Vec2.X).setToRandomDirection().scl(spacing);
-				seq.add(new Vec2(b.x, b.y).add(Tmp.v1).add(Tmp.v2));
+				v2.trns(b.rotation(), 0, rand.range(randX));
+				v1.set(1, 0).setToRandomDirection(rand).scl(spacing);
+				seq.add(new Vec2(b.x, b.y).add(v1).add(v2));
 			}
 		}
 	}

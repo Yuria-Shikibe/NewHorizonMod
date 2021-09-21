@@ -33,7 +33,23 @@ import newhorizon.content.NHStatusEffects;
 import newhorizon.func.NHInterp;
 
 public class SectorScript{
-	public static long lastToast = 0;
+	private static long lastToast = 0;
+	
+	/**
+	 * Each {@link SectorPreset} can has multiple actor.
+	 * <p></p>
+	 * {@code updaters} Maps the actions during playing.<p>
+	 * {@code initer} Maps the actions after the world is loaded.<p>
+	 * {@code ender} Maps the actions after the game is over.<p>
+	 * <p></p>
+	 * {@code curSectorPreset} useless now.
+	 * <p></p>
+	 * {@code initHasRun} Used to avoid repeating loading.
+	 *
+	 *
+	 * @author Yuria / Martix
+	 */
+	
 	public static final ObjectMap<SectorPreset, Seq<Runnable>> updaters = new ObjectMap<>(6);
 	public static final ObjectMap<SectorPreset, Seq<Runnable>> initer = new ObjectMap<>(6);
 	public static final ObjectMap<SectorPreset, Seq<Cons<Boolean>>> ender = new ObjectMap<>(6); // true -> win, false -> lose
@@ -126,6 +142,7 @@ public class SectorScript{
 			return time;
 		}
 		
+		/** Prevent the camera following player during the script.*/
 		public static void pauseCamera(){
 			if(Vars.mobile && Vars.control.input instanceof MobileInput){
 				MobileInput input = (MobileInput)Vars.control.input;
@@ -136,6 +153,7 @@ public class SectorScript{
 			}
 		}
 		
+		/** Release the camera.*/
 		public static void resumeCamera(){
 			if(Vars.mobile && Vars.control.input instanceof MobileInput){
 				MobileInput input = (MobileInput)Vars.control.input;
@@ -172,6 +190,7 @@ public class SectorScript{
 			}
 		}
 		
+		/** Generate a table that fill the screen.*/
 		public static Table filler(Runnable update, boolean removeShowUI){
 			return new Table(Tex.clear){{
 				Core.scene.root.addChild(this);
@@ -202,6 +221,7 @@ public class SectorScript{
 			return filler(() -> {}, false);
 		}
 		
+		/** Add ordered scripts.*/
 		public static Table actionSeq(Action... actions){
 			Table filler = filler();
 			
@@ -216,6 +236,7 @@ public class SectorScript{
 			return filler;
 		}
 		
+		/** Move the camera once.*/
 		public static Table cameraMove(float toX, float toY, float time, Interp interp){
 			Table filler = filler();
 			
@@ -227,6 +248,7 @@ public class SectorScript{
 			return filler;
 		}
 		
+		/** Used to create black frame protruding inward. Just like the effect in Game:Homeworld*/
 		public static Table screenHold(float riseTime, float hangTime, float fallTime, Interp rise, Interp fall){
 			return screenHold(riseTime, hangTime, fallTime, rise, fall, riseTime + fallTime + hangTime);
 		}
@@ -274,20 +296,23 @@ public class SectorScript{
 		}
 	}
 	
+	/**
+	 * Used to make a pop-up dialog with texts extending out.
+	 */
 	public static class LabelAction extends TemporalAction{
-		public static LabelAction labelAct(String text, float duration, float hold, boolean hasNext){
+		
+		public static LabelAction labelAct(String text, float duration, float holdDuration, boolean hasNext){
 			LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
-			action.setDuration(duration + hold);
+			action.setDuration(duration + holdDuration);
 			action.margin = Mathf.clamp(duration / (action.getDuration()));
 			action.hasNext = hasNext;
 			action.text = text;
 			return action;
 		}
 		
-		
-		public static LabelAction labelAct(String text, float duration, float hold, boolean hasNext, Interp interpolation, Cons<Table> modifier){
+		public static LabelAction labelAct(String text, float duration, float holdDuration, boolean hasNext, Interp interpolation, Cons<Table> modifier){
 			LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
-			action.setDuration(duration + hold);
+			action.setDuration(duration + holdDuration);
 			action.margin = Mathf.clamp(duration / (action.getDuration()));
 			action.setInterpolation(interpolation);
 			action.hasNext = hasNext;
@@ -346,28 +371,6 @@ public class SectorScript{
 		}
 	}
 	
-//	public static class CameraZoomAction extends TemporalAction{
-//		public Rect originalZoomRect;
-//		public Rect toZoom;
-//
-//		public static CameraZoomAction moveTo(float scl, float duration, Interp interpolation){
-//			CameraZoomAction action = Actions.action(CameraZoomAction.class, CameraZoomAction::new);
-//			Vars.renderer.resize();
-//			action.originalZoomRect = new Rect().setSize(Core.camera.width, Core.camera.height).setCenter(Core.camera.position);
-//			action.toZoom = new Rect().setSize(Core.camera.width * scl, Core.camera.height * scl).setCenter(Core.camera.position);
-//
-//			action.setDuration(duration);
-//			action.setInterpolation(interpolation);
-//			return action;
-//		}
-//
-//
-//		@Override
-//		protected void update(float percent){
-//			Core.camera.mat.idt().scl(currentZoom + (toZoom - currentZoom) * percent);
-//		}
-//	}
-	
 	public static class CautionAction extends TemporalAction{
 		public static CautionAction at(float x, float y, float size, float duration, Color color){
 			CautionAction action = Actions.action(CautionAction.class, CautionAction::new);
@@ -391,7 +394,7 @@ public class SectorScript{
 		@Override
 		protected void begin(){
 			drawer = new Table(Tex.pane){{
-				Core.scene.root.addChild(this);
+				Core.scene.root.addChildAt(1, this);
 				
 				update(() -> {
 					if(Vars.state.isMenu())remove();
@@ -401,9 +404,11 @@ public class SectorScript{
 			}
 				@Override
 				public void draw(){
-					Vec2 screenVec = Core.camera.project(Tmp.v1.set(CautionAction.this.x, CautionAction.this.y));
+					float width = Core.graphics.getWidth(), height = Core.graphics.getHeight();
 					
-					Tmp.c1.set(CautionAction.this.color).lerp(Color.white, Mathf.absin(getTime() * 60f, 3f, 0.1f)).a(color.a);
+					Vec2 screenVec = Core.camera.project(Tmp.v1.set(CautionAction.this.x, CautionAction.this.y)).clamp(width * 0.05f, height * 0.05f, height * 0.95f, width * 0.95f);
+					
+					Tmp.c1.set(CautionAction.this.color).lerp(Color.white, Mathf.absin(getTime() * 60f, 5f, 0.4f)).a(color.a);
 					Tmp.c2.set(Pal.gray).a(color.a);
 					
 					float rotationS = 45 + 90 * NHInterp.pow10.apply((getTime() * 4 / getDuration()) % 1);
@@ -411,8 +416,6 @@ public class SectorScript{
 					Lines.square(screenVec.x, screenVec.y, size + 3f, rotationS);
 					Lines.stroke(3f, Tmp.c1);
 					Lines.square(screenVec.x, screenVec.y, size + 3f, rotationS);
-					
-					float width = Core.graphics.getWidth(), height = Core.graphics.getHeight();
 					
 					Lines.stroke(9f, Tmp.c2);
 					for(int i : Mathf.signs){

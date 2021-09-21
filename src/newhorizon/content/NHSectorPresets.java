@@ -253,7 +253,7 @@ public class NHSectorPresets implements ContentList{
 		}};
 		
 		Events.on(EventType.SectorCaptureEvent.class, e -> {
-			if(e.sector != null && captureMap.containsKey(e.sector.preset)){
+			if(e.sector != null && e.sector.preset != null && captureMap.containsKey(e.sector.preset)){
 				captureMap.get(e.sector.preset).get(e.sector);
 			}
 		});

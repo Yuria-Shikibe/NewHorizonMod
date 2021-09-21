@@ -81,14 +81,14 @@ public class ShapedWall extends Wall{
 	
 	public class ShapeWallBuild extends Building{
 		public Seq<ShapeWallBuild> connectedWalls = new Seq<>();
-		public BoolSeq factID = new BoolSeq(8);
+		public BoolSeq proximityWalls = new BoolSeq(8);
 		protected int drawKey = defaultKey;
 		
 		public void updateKey(){
 			StringBuilder builder = new StringBuilder();
 			
 			for(int i = 0; i < 8; i++){
-				builder.append(Mathf.num(factID.get(i)));
+				builder.append(Mathf.num(proximityWalls.get(i)));
 			}
 			
 			for(int i : needCheckPoint){
@@ -111,7 +111,7 @@ public class ShapedWall extends Wall{
 			
 			for(int i = 0; i < traverseKey.length; i++){
 				if(point.equals(traverseKey[i])){
-					factID.set(i, !factID.get(i));
+					proximityWalls.set(i, !proximityWalls.get(i));
 					break;
 				}
 			}
@@ -234,10 +234,10 @@ public class ShapedWall extends Wall{
 		}
 		
 		public void initSeq(){
-			if(factID.size < 8){
-				factID.clear();
+			if(proximityWalls.size < 8){
+				proximityWalls.clear();
 				for(int i = 0; i < 8; i++){
-					factID.add(false);
+					proximityWalls.add(false);
 				}
 			}
 		}
@@ -252,8 +252,8 @@ public class ShapedWall extends Wall{
 		public void write(Writes write){
 			super.write(write);
 			write.i(drawKey);
-			if(factID.size > 8)for(int i = 0; i < 8; i++){
-				write.bool(factID.get(i));
+			if(proximityWalls.size == 8)for(int i = 0; i < 8; i++){
+				write.bool(proximityWalls.get(i));
 			}else for(int i = 0; i < 8; i++){
 				write.bool(false);
 			}
@@ -264,7 +264,7 @@ public class ShapedWall extends Wall{
 			super.read(read, revision);
 			drawKey = read.i();
 			for(int i = 0; i < 8; i++){
-				factID.add(read.bool());
+				proximityWalls.add(read.bool());
 			}
 		}
 	}
