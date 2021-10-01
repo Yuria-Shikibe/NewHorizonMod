@@ -222,6 +222,7 @@ public class CutsceneScript{
 	}
 	
 	public static String getScript(Map map){
+		Log.info(map.tags);
 		if(map.tags.containsKey(CUTSCENE_KEY)){
 			return map.tag(CUTSCENE_KEY);
 		}else if(map.name().contains("(@HC)")){
@@ -249,26 +250,24 @@ public class CutsceneScript{
 	}
 	
 	public static void runJs(String js){
-		Core.app.post(() -> {
-			if(js == null || js.isEmpty())return;
+		if(js == null || js.isEmpty())return;
+		
+		try{
+			Class<? extends Scripts> scriptsClass = scripts.getClass();
 			
-			try{
-				Class<? extends Scripts> scriptsClass = scripts.getClass();
-				
-				Method method = scriptsClass.getDeclaredMethod("run", String.class, String.class, boolean.class);
-				Field field = scriptsClass.getDeclaredField("currentMod");
-				
-				method.setAccessible(true);
-				field.setAccessible(true);
-				
-				field.set(scripts, mod);
-				method.invoke(scripts, mod.root.child("scripts").child("cutsceneLoader.js").readString() + js, state.map.name(), true);
-				
-				curIniter.each(Runnable::run);
-			}catch(Exception e){
-				Vars.ui.showErrorMessage(e.toString());
-			}
-		});
+			Method method = scriptsClass.getDeclaredMethod("run", String.class, String.class, boolean.class);
+			Field field = scriptsClass.getDeclaredField("currentMod");
+			
+			method.setAccessible(true);
+			field.setAccessible(true);
+			
+			field.set(scripts, mod);
+			method.invoke(scripts, mod.root.child("scripts").child("cutsceneLoader.js").readString() + js, state.map.name(), true);
+			
+			curIniter.each(Runnable::run);
+		}catch(Exception e){
+			Vars.ui.showErrorMessage(e.toString());
+		}
 	}
 	
 	public static void init(SectorPreset sector){
@@ -279,8 +278,7 @@ public class CutsceneScript{
 		curSectorPreset = sector;
 		
 		if(sector == null){
-			runJs(getScript(Vars.state.map));
-			//			scripts.run(Vars.mods.getMod(NewHorizon.class), js);
+			Core.app.post(() -> runJs(getScript(Vars.state.map)));
 		}else{
 			if(updaters.containsKey(sector)){
 				curUpdaters.addAll(updaters.get(sector));

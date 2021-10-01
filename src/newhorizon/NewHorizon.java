@@ -142,7 +142,7 @@ public class NewHorizon extends Mod{
 			        "[accent]Description: \n[]" + body
 			        , "@mods.github.open", "@back", () -> Core.app.openURI(MOD_RELEASES), () -> {});
 		        }
-		        Core.settings.put(MOD_NAME + "-last-gh-release-tag", "tag");
+		        Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
 	        }, ex -> Log.err(ex.toString()));
         	
         	if(NHSetting.versionChange){
