@@ -36,14 +36,14 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
-import newhorizon.func.TableFs;
+import newhorizon.func.TableFunc;
 import newhorizon.interfaces.Upgraderc;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 import static mindustry.Vars.tilesize;
-import static newhorizon.func.TableFs.*;
+import static newhorizon.func.TableFunc.*;
 
 public class UpgradeData implements Comparable<UpgradeData>{
 	public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
@@ -301,7 +301,7 @@ public class UpgradeData implements Comparable<UpgradeData>{
 						for(ItemStack stack : requirements()){
 							if(module != null || index % 7 == 0)table.row();
 							if(module != null){
-								TableFs.itemStack(table, stack, module);
+								TableFunc.itemStack(table, stack, module);
 							}else table.add(new ItemDisplay(stack.item, stack.amount, false)).padLeft(OFFSET / 2).left();
 							index ++;
 						}

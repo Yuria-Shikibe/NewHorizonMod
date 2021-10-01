@@ -22,7 +22,7 @@ import mindustry.graphics.MultiPacker;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 import newhorizon.func.NHSetting;
 
 import static mindustry.Vars.tilesize;
@@ -213,7 +213,7 @@ public class FinalTurret extends ItemTurret{
 			Draw.color(heatColor);
 			
 			float shootY = shootLength * curve.apply(fin);
-			if(isLocal())DrawFuncs.drawRail(x, y, rotation, shootY + curve.apply(fin) * extendY + extendYMin + size * tilesize / 4f, reload / reloadTime, range(), size * tilesize / 4f, range() / size, Mathf.clamp(size / 6f, 1f, 4f), NHContent.arrowRegion);
+			if(isLocal()) DrawFunc.drawRail(x, y, rotation, shootY + curve.apply(fin) * extendY + extendYMin + size * tilesize / 4f, reload / reloadTime, range(), size * tilesize / 4f, range() / size, Mathf.clamp(size / 6f, 1f, 4f), NHContent.arrowRegion);
 			
 			Lines.stroke(3f * Mathf.curve(fin, 0.1f, 0.2f));
 			tr2.trns(rotation, chargeY);
@@ -222,7 +222,7 @@ public class FinalTurret extends ItemTurret{
 			float length = Tmp.v2.len();
 			Tmp.v2.set(tr).add(tr2);
 			
-			DrawFuncs.circlePercent(x + Tmp.v2.x / 2, y + Tmp.v2.y / 2, length / 2f, Mathf.curve(fin, 0.1f, 1f), rotation - Mathf.curve(fin, 0.1f, 1f) * 180f - 180f);
+			DrawFunc.circlePercent(x + Tmp.v2.x / 2, y + Tmp.v2.y / 2, length / 2f, Mathf.curve(fin, 0.1f, 1f), rotation - Mathf.curve(fin, 0.1f, 1f) * 180f - 180f);
 			
 			boolean enableDetials = NHSetting.enableDetails();
 			
@@ -272,12 +272,12 @@ public class FinalTurret extends ItemTurret{
 				if(fin < 0.01f) return;
 				Fill.circle(x + tr2.x, y + tr2.y, fin * chargeCircleBackRad);
 				Lines.stroke(fin * 3f - 1f);
-				DrawFuncs.circlePercentFlip(x + tr2.x, y + tr2.y, fin * (chargeCircleBackRad + 5), Time.time, 20f);
+				DrawFunc.circlePercentFlip(x + tr2.x, y + tr2.y, fin * (chargeCircleBackRad + 5), Time.time, 20f);
 				Draw.color(Color.white);
 				Fill.circle(x + tr2.x, y + tr2.y, fin * chargeCircleBackRad * 0.7f);
 			}
 			
-			float cameraFin = (1 + 2 * DrawFuncs.cameraDstScl(x + tr.x, y + tr.y, Vars.mobile ? 200 : 320)) / 3f;
+			float cameraFin = (1 + 2 * DrawFunc.cameraDstScl(x + tr.x, y + tr.y, Vars.mobile ? 200 : 320)) / 3f;
 			if(fin < 0.01f)return;
 			float triWidth = fin * chargeCircleFrontRad / 3.5f * cameraFin;
 			
@@ -289,7 +289,7 @@ public class FinalTurret extends ItemTurret{
 			}
 			
 			Fill.circle(x + tr.x, y + tr.y, fin * chargeCircleFrontRad);
-			DrawFuncs.circlePercentFlip(x + tr.x, y + tr.y, fin * (chargeCircleFrontRad + 5), Time.time, 20f);
+			DrawFunc.circlePercentFlip(x + tr.x, y + tr.y, fin * (chargeCircleFrontRad + 5), Time.time, 20f);
 			Draw.color(Color.white);
 			Fill.circle(x + tr.x, y + tr.y, fin * chargeCircleFrontRad * 0.7f);
 			

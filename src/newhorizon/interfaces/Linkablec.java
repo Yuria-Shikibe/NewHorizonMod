@@ -12,11 +12,11 @@ import mindustry.gen.Building;
 import mindustry.gen.Buildingc;
 import mindustry.graphics.Drawf;
 import mindustry.logic.Ranged;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.DrawFuncs.sinScl;
+import static newhorizon.func.DrawFunc.sinScl;
 
 public interface Linkablec extends Buildingc, Ranged{
 	Seq<Building> tmpSeq = new Seq<>(1);
@@ -39,7 +39,7 @@ public interface Linkablec extends Buildingc, Ranged{
 			if(linkValid(link())){
 				Draw.color(getLinkColor());
 				Drawf.circles(getX(), getY(), block().size / 2f * tilesize + Mathf.absin(Time.time * sinScl, 6f, 1f), getLinkColor());
-				DrawFuncs.link(this, link(), getLinkColor());
+				DrawFunc.link(this, link(), getLinkColor());
 			}
 		}else if(builds.size > 0){
 			Draw.color(getLinkColor());
@@ -47,7 +47,7 @@ public interface Linkablec extends Buildingc, Ranged{
 			
 			for(Building b : builds){
 				if(!linkValid(b))continue;
-				DrawFuncs.link(this, b, getLinkColor());
+				DrawFunc.link(this, b, getLinkColor());
 			}
 		}
 		

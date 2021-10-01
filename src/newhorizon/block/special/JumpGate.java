@@ -70,8 +70,8 @@ import java.util.Objects;
 
 import static mindustry.Vars.*;
 import static newhorizon.func.NHFunc.regSize;
-import static newhorizon.func.TableFs.LEN;
-import static newhorizon.func.TableFs.OFFSET;
+import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.func.TableFunc.OFFSET;
 
 public class JumpGate extends Block {
     protected static final ObjectMap<UnitSet, Integer> allSets = new ObjectMap<>();
@@ -260,14 +260,14 @@ public class JumpGate extends Block {
             inner.image(set.type.fullIcon).center().row();
             inner.image().growX().height(OFFSET / 4).pad(OFFSET / 4f).color(Pal.accent).row();
             inner.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().padLeft(OFFSET).row();
-            inner.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFs.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).left().padLeft(OFFSET).row();
+            inner.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFunc.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).left().padLeft(OFFSET).row();
             inner.image().growX().height(OFFSET / 4).pad(OFFSET / 4f).color(Pal.accent).row();
             inner.table(table -> {
                 int index = 0;
                 for(ItemStack stack : set.requirements()){
                     if(module != null || index % 7 == 0)table.row();
                     if(module != null){
-                        TableFs.itemStack(table, stack, module);
+                        TableFunc.itemStack(table, stack, module);
                     }else table.add(new ItemDisplay(stack.item, stack.amount, false).left()).padLeft(OFFSET / 2).left();
                     index ++;
                 }
@@ -412,12 +412,12 @@ public class JumpGate extends Block {
             float angle = Tmp.v1.angle();
             
             Draw.color(Pal.gray);
-            DrawFuncs.posSquareLink(color, 1.5f, 3.5f, true, this, target);
+            DrawFunc.posSquareLink(color, 1.5f, 3.5f, true, this, target);
             Draw.color();
             
-            if(core() != null)DrawFuncs.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
+            if(core() != null) DrawFunc.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
             
-            if(jammed)DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
+            if(jammed) DrawFunc.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
             
             Draw.reset();
         }
@@ -434,7 +434,7 @@ public class JumpGate extends Block {
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 Label can = new Label("");
-                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFs.getJudge(canSpawn(set, false))));
+                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFunc.getJudge(canSpawn(set, false))));
                                 table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core() != null ? core().items : null)).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();
@@ -481,7 +481,7 @@ public class JumpGate extends Block {
             
             table.table(Tex.paneSolid, t -> {
                 t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
-                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFs.pointSelectTable(table, this::configure)).size(LEN * 5, LEN).row();
+                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFunc.pointSelectTable(table, this::configure)).size(LEN * 5, LEN).row();
                 t.button("@settings", Icon.settings, Styles.cleart, () -> new BaseDialog("@settings"){{
                     Label l = new Label(""), currentPlan = new Label("");
                     Slider s = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne), 1, false);
@@ -566,7 +566,7 @@ public class JumpGate extends Block {
                         Draw.rect(arrowRegion, x , y, arrowRegion.width * Draw.scl * signSize * scl, arrowRegion.height * Draw.scl * signSize * scl, 90 * i);
                     }
                 }
-                DrawFuncs.circlePercent(x, y, size * tilesize / 1.5f, buildProgress / costTime(getSet(), true), 0);
+                DrawFunc.circlePercent(x, y, size * tilesize / 1.5f, buildProgress / costTime(getSet(), true), 0);
             }
             Draw.reset();
             
@@ -622,7 +622,7 @@ public class JumpGate extends Block {
             
             NHFx.spawn.at(x, y, regSize(set.type), team.color, this);
     
-            success = NHFunc.spawnUnit(this, target.x, target.y, angleTo(target), spawnRange, spawnReloadTime, spawnDelay, getType(), buildingSpawnNum);
+            success = NHFunc.spawnUnit(team, target.x, target.y, angleTo(target), spawnRange, spawnReloadTime, spawnDelay, getType(), buildingSpawnNum);
             
             if(success){
                 buildProgress = 0;
@@ -828,7 +828,7 @@ public class JumpGate extends Block {
             boolean can = Units.canCreate(team, type);
     
             float regSize = NHFunc.regSize(type);
-            Draw.color(can ? team.color : Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(Time.time * DrawFuncs.sinScl, 8f, 0.3f) + 0.1f));
+            Draw.color(can ? team.color : Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(Time.time * DrawFunc.sinScl, 8f, 0.3f) + 0.1f));
     
             for(int i = -4; i <= 4; i++){
                 if(i == 0)continue;
@@ -847,7 +847,7 @@ public class JumpGate extends Block {
                 }
             }
             
-            if(can)DrawFuncs.overlayText(Fonts.tech, String.valueOf(Mathf.ceil((lifetime - time) / 60f)), x, y, 0, 0,0.25f, team.color, false, true);
+            if(can) DrawFunc.overlayText(Fonts.tech, String.valueOf(Mathf.ceil((lifetime - time) / 60f)), x, y, 0, 0,0.25f, team.color, false, true);
             else{
                 Draw.z(Layer.effect);
                 Draw.color(Pal.ammo);

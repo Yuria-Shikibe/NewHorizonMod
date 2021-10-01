@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static mindustry.Vars.ui;
-import static newhorizon.func.TableFs.LEN;
-import static newhorizon.func.TableFs.OFFSET;
+import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.func.TableFunc.OFFSET;
 
 public class NHSetting{
 	//private static final Json json = new Json();
@@ -46,6 +46,7 @@ public class NHSetting{
 	
 	static{
 		defaultKeys.put("initialized", "null version");
+		defaultKeys.put("last-gh-release-tag", "null version");
 		defaultKeys.put("@active.hid-start-log", String.valueOf(false));
 		defaultKeys.put("@active.admin-panel", String.valueOf(false));
 		defaultKeys.put("@active.debug", String.valueOf(false));
@@ -155,11 +156,10 @@ public class NHSetting{
 			}
 		});
 		
-		
 		settingList.clear();
 		loaded = !setting.file().delete();
 		
-		defaultKeys.each( (key, name) -> {
+		defaultKeys.each((key, name) -> {
 			if(key.equals(initKey))pro.setProperty(initKey, version);
 			else pro.setProperty(key, name);
 		});
@@ -206,10 +206,24 @@ public class NHSetting{
 		}
 	}
 	
+	public static String get(String key){
+		return settingList.getProperty(key);
+	}
+	
+	public static void set(String key, String value){
+		if(!settingList.containsKey(key))throw new RuntimeException("Doesn't Contains Key: " + key);
+		settingList.setProperty(key, value);
+		try{
+			updateSettingFi();
+		}catch(IOException e){
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public static void applySettings(){
-		TableFs.disableTable();
+		TableFunc.disableTable();
 		debug = getBool("@active.debug");
-		if(NHSetting.getBool("@active.tool-panel*"))TableFs.showTable();
+		if(NHSetting.getBool("@active.tool-panel*")) TableFunc.showTable();
 	}
 	
 	

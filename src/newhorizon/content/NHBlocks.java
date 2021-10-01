@@ -83,7 +83,7 @@ import newhorizon.bullets.AdaptedLaserBulletType;
 import newhorizon.bullets.EffectBulletType;
 import newhorizon.bullets.SpeedUpBulletType;
 import newhorizon.feature.ScreenHack;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 import newhorizon.func.NHSetting;
 
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -353,7 +353,7 @@ public class NHBlocks implements ContentList {
 					}
 					
 					if(NHSetting.enableDetails()){
-						float cameraFin = (1 + 2 * DrawFuncs.cameraDstScl(b.x, b.y, Vars.mobile ? 200 : 320)) / 3f;
+						float cameraFin = (1 + 2 * DrawFunc.cameraDstScl(b.x, b.y, Vars.mobile ? 200 : 320)) / 3f;
 						float triWidth = b.fout() * chargeCircleFrontRad * cameraFin;
 						
 						for(int i : Mathf.signs){

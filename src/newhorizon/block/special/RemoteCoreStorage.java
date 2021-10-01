@@ -20,7 +20,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 import newhorizon.interfaces.BeforeLoadc;
 import newhorizon.vars.EventTriggers;
 import newhorizon.vars.NHWorldVars;
@@ -176,7 +176,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void drawConfigure(){
-			if(core() != null)DrawFuncs.posSquareLink(Mathf.equal(warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, 1, 4, true, tile, core());
+			if(core() != null) DrawFunc.posSquareLink(Mathf.equal(warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, 1, 4, true, tile, core());
 		}
 		
 		@Override

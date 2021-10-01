@@ -20,12 +20,12 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 import newhorizon.func.NHFunc;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFunc.LEN;
 
 public class PlayerJumpGate extends Block{
 	protected float dstMax;
@@ -187,7 +187,7 @@ public class PlayerJumpGate extends Block{
 			
 			boolean tooFar = dst(Vars.player) > dstMax;
 			Drawf.square(player.x, player.y, player.unit().hitSize, 45, tooFar ? Pal.redderDust : Pal.heal);
-			if(tooFar) DrawFuncs.overlayText("KEEP CLOSER", player.x, player.y, player.unit().type.hitSize / 2.0F, Pal.redderDust, true);
+			if(tooFar) DrawFunc.overlayText("KEEP CLOSER", player.x, player.y, player.unit().type.hitSize / 2.0F, Pal.redderDust, true);
 		}
 		
 		@Override

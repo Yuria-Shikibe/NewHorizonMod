@@ -44,7 +44,7 @@ import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
 import newhorizon.feature.ScreenHack;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 import newhorizon.func.NHPixmap;
 import newhorizon.func.NHSetting;
 import newhorizon.units.*;
@@ -144,7 +144,7 @@ public class NHUnitTypes implements ContentList{
 			public void draw(Unit unit, WeaponMount mount){
 				super.draw(unit, mount);
 				
-				if(!unit.isPlayer() && !NHSetting.enableDetails())return;
+				if(!unit.isLocal())return;
 				
 				float
 					z = Draw.z(),
@@ -1026,7 +1026,7 @@ public class NHUnitTypes implements ContentList{
 							Draw.color(heatColor);
 							Fill.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad);
 							Lines.stroke(f * 1.5f);
-							DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad + 5, Time.time, 20f);
+							DrawFunc.circlePercentFlip(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad + 5, Time.time, 20f);
 							Draw.color(Color.white);
 							Fill.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad * 0.7f);
 							
@@ -1261,7 +1261,7 @@ public class NHUnitTypes implements ContentList{
 				
 				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f));
 				Lines.stroke(3f + Mathf.absin(10f, 0.55f));
-				DrawFuncs.circlePercent(unit.x, unit.y, unit.hitSize, unit.healthf(), 0);
+				DrawFunc.circlePercent(unit.x, unit.y, unit.hitSize, unit.healthf(), 0);
 				
 				for(int i = 0; i < 4; i++){
 					float rotation = Time.time * 1.5f + i * 90;

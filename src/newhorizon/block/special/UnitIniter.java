@@ -23,7 +23,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 import newhorizon.func.NHFunc;
 
 import static mindustry.Vars.content;
@@ -131,7 +131,7 @@ public class UnitIniter extends Block{
 			Drawf.light(team, x, y, tilesize * size * 3f, team.color, 0.8f);
 			Draw.z(Layer.overlayUI);
 			Draw.rect(toSpawnType.fullIcon, x, y, size * tilesize, size * tilesize);
-			DrawFuncs.overlayText(delay / 60 + "s", x - Tmp.v1.x, y - Tmp.v1.y, -4f, Pal.accent, true);
+			DrawFunc.overlayText(delay / 60 + "s", x - Tmp.v1.x, y - Tmp.v1.y, -4f, Pal.accent, true);
 		}
 		
 		@Override
@@ -151,7 +151,7 @@ public class UnitIniter extends Block{
 		}
 		
 		public void addUnit(){
-			NHFunc.spawnUnit(this, x, y, angle, spawnRange, delay, 0, toSpawnType, 1);
+			NHFunc.spawnUnit(team, x, y, angle, spawnRange, delay, 0, toSpawnType, 1);
 			kill();
 			addUnit = true;
 		}

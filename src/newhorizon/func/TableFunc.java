@@ -54,7 +54,7 @@ import java.text.DecimalFormat;
 import static mindustry.Vars.*;
 
 
-public class TableFs{
+public class TableFunc{
     private static final int tableZ = 2;
     private static final DecimalFormat df = new DecimalFormat("######0.00");
     private static final Vec2 point = new Vec2(-1, -1);
@@ -148,8 +148,8 @@ public class TableFs{
                         }
                     }).growX().height(LEN).row();
                     tin.pane(con -> {
-                        con.button("SpawnPos", Icon.link, Styles.cleart, () -> NHFunc.spawnUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).grow();
-                        con.button("SpawnCur", Icon.add, Styles.cleart, () -> NHFunc.spawnUnit(selected, selectTeam, spawnNum, player.x, player.y)).grow();
+                        con.button("SpawnPos", Icon.link, Styles.cleart, () -> NHFunc.spawnSingleUnit(selected, selectTeam, spawnNum, point.x, point.y)).disabled(b -> !pointValid()).grow();
+                        con.button("SpawnCur", Icon.add, Styles.cleart, () -> NHFunc.spawnSingleUnit(selected, selectTeam, spawnNum, player.x, player.y)).grow();
                     }).growX().height(LEN).row();
                     tin.pane(con -> {
                         con.button("Remove Units", Styles.cleart, Groups.unit::clear).grow();

@@ -4,8 +4,10 @@ import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.scene.style.TextureRegionDrawable;
+import arc.util.Http;
 import arc.util.Log;
 import arc.util.Time;
+import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
@@ -18,25 +20,29 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
+import newhorizon.feature.CutsceneScript;
 import newhorizon.feature.ScreenHack;
 import newhorizon.func.ClassIDIniter;
 import newhorizon.func.NHSetting;
-import newhorizon.func.TableFs;
+import newhorizon.func.TableFunc;
 import newhorizon.func.Tables;
 import newhorizon.func.Tables.LinkTable;
 import newhorizon.vars.EventTriggers;
 
 import java.io.IOException;
 
-import static newhorizon.func.TableFs.LEN;
-import static newhorizon.func.TableFs.OFFSET;
+import static mindustry.Vars.ghApi;
+import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.func.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
 //	static{
 //		Vars.testMobile = Vars.mobile = true;
 //	}
-	
+	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
+	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
+	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
 	public static final String SERVER_ADDRESS = "n2.yd.gameworldmc.cn:20074", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static Links.LinkEntry[] links;
@@ -48,8 +54,8 @@ public class NewHorizon extends Mod{
 	private static final ContentList[] content = {
 		new NHStatusEffects(),
 		new NHItems(),
-	        new NHLiquids(),
-	        new NHBullets(),
+        new NHLiquids(),
+        new NHBullets(),
 		new NHUpgradeDatas(),
 		new NHUnitTypes(),
 		new NHBlocks(),
@@ -71,7 +77,7 @@ public class NewHorizon extends Mod{
 	private static void links(){
 		if(links == null)links = new Links.LinkEntry[]{
 			new Links.LinkEntry("mod.discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
-			new Links.LinkEntry("mod.github", "https://github.com/Yuria-Shikibe/NewHorizonMod.git", Icon.github, Color.valueOf("24292e")),
+			new Links.LinkEntry("mod.github", MOD_GITHUB_URL, Icon.github, Color.valueOf("24292e")),
 			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent)
 		};
 		
@@ -79,7 +85,7 @@ public class NewHorizon extends Mod{
 		dialog.cont.pane(table -> {
 			LinkTable.sync();
 			for(Links.LinkEntry entry : links){
-				TableFs.link(table, entry);
+				TableFunc.link(table, entry);
 			}
 		}).grow().row();
 		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN);
@@ -127,6 +133,18 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
+	        Http.get(ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
+		        Jval json = Jval.read(res.getResultAsString());
+		        String tag = json.get("tag_name").asString();
+		        String body = json.get("body").asString();
+		        if(!tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
+		            Vars.ui.showCustomConfirm(Core.bundle.get("mod.ui.has-new-update") + ": " + tag,
+			        "[accent]Description: \n[]" + body
+			        , "@mods.github.open", "@back", () -> Core.app.openURI(MOD_RELEASES), () -> {});
+		        }
+		        Core.settings.put(MOD_NAME + "-last-gh-release-tag", "tag");
+	        }, ex -> Log.err(ex.toString()));
+        	
         	if(NHSetting.versionChange){
         		new BaseDialog("Detected Update"){{
         			addCloseListener();
@@ -155,7 +173,7 @@ public class NewHorizon extends Mod{
 		        }}.show();
 	        }
         	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
-	        TableFs.tableMain();
+	        TableFunc.tableMain();
 	        NHSetting.updateSettingMenu();
 	        NHSetting.applySettings();
 	        ScreenHack.load();
@@ -170,7 +188,7 @@ public class NewHorizon extends Mod{
 	@Override
     public void loadContent(){
 		if(!Vars.headless){
-			
+			CutsceneScript.load();
 			try{
 				NHSetting.settingFile();
 				NHSetting.initSetting();

@@ -158,13 +158,8 @@ public class NHOverride{
 		
 		int i;
 		
-		for(i = 0; i < target.requirements.length; i++){
-			newReq[i] = target.requirements[i];
-		}
-		
-		for(i = 0; i < items.length; i++){
-			newReq[i + target.requirements.length] = items[i];
-		}
+		System.arraycopy(target.requirements, 0, newReq, 0, target.requirements.length);
+		System.arraycopy(items, 0, newReq, target.requirements.length, items.length);
 		
 		target.requirements = newReq;
 		Arrays.sort(target.requirements, Structs.comparingInt((j) -> j.item.id));

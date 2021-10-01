@@ -37,7 +37,7 @@ import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.feature.PosLightning;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 import newhorizon.func.NHFunc;
 
 import static mindustry.Vars.tilesize;
@@ -346,10 +346,10 @@ public class HyperGenerator extends PowerGenerator{
 				}
 				
 				Lines.stroke(warmup * triWidth * 0.55f);
-				DrawFuncs.circlePercentFlip(x, y, size * tilesize * 0.85f * (1 + Mathf.absin(progress * 2f, 24f, 0.125f)) * warmup, progress * 0.85f, 30f);
+				DrawFunc.circlePercentFlip(x, y, size * tilesize * 0.85f * (1 + Mathf.absin(progress * 2f, 24f, 0.125f)) * warmup, progress * 0.85f, 30f);
 				
 				Lines.stroke(warmup * triWidth * 0.35f);
-				DrawFuncs.circlePercentFlip(x, y, size * tilesize * 1.1f * (1 + Mathf.absin(progress * 1.25f, 24f, 0.125f)) * warmup, progress * 0.95f + 5f, 45f);
+				DrawFunc.circlePercentFlip(x, y, size * tilesize * 1.1f * (1 + Mathf.absin(progress * 1.25f, 24f, 0.125f)) * warmup, progress * 0.95f + 5f, 45f);
 			}
 			Draw.reset();
 			

@@ -4,8 +4,8 @@ import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
 import mindustry.world.meta.StatValue;
 
-import static newhorizon.func.TableFs.LEN;
-import static newhorizon.func.TableFs.OFFSET;
+import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.func.TableFunc.OFFSET;
 
 public class TextureFilterValue implements StatValue {
     public final TextureRegion region;

@@ -53,8 +53,8 @@ import newhorizon.func.*;
 import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFs.LEN;
-import static newhorizon.func.TableFs.OFFSET;
+import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.func.TableFunc.OFFSET;
 
 public class HyperSpaceWarper extends Block{
 	
@@ -218,11 +218,11 @@ public class HyperSpaceWarper extends Block{
 			table.table(p -> {
 				p.table(Tex.paneSolid, t -> {
 					t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> {
-						TableFs.pointSelectTable(table, this::configure);
+						TableFunc.pointSelectTable(table, this::configure);
 					}).size(LEN * 4, LEN).row();
 					
 					t.button("@mod.ui.select-unit", Icon.filter, Styles.cleart, () -> {
-						TableFs.rectSelectTable(table, () -> configure(selectedUnit()));
+						TableFunc.rectSelectTable(table, () -> configure(selectedUnit()));
 					}).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.isSelecting).row();
 					
 					t.button("@mod.ui.transport-unit", Icon.download, Styles.cleart, () -> {
@@ -399,13 +399,13 @@ public class HyperSpaceWarper extends Block{
 			if(!selects.isEmpty()){
 				onAveragePos(Tmp.v6);
 				Drawf.square(Tmp.v6.x, Tmp.v6.y, tilesize * 1.5f, 45, color);
-				DrawFuncs.posSquareLink(color, 3f, tilesize / 2f, true, Tmp.v6.x, Tmp.v6.y, targetV.x, targetV.y);
+				DrawFunc.posSquareLink(color, 3f, tilesize / 2f, true, Tmp.v6.x, Tmp.v6.y, targetV.x, targetV.y);
 				Drawf.arrow(Tmp.v6.x, Tmp.v6.y, targetV.x, targetV.y, tilesize * 2, tilesize, color);
 				Draw.reset();
 			}
 			
 			if(isJammed){
-				DrawFuncs.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, Pal.redderDust, true);
+				DrawFunc.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, Pal.redderDust, true);
 			}
 		}
 	}
@@ -466,7 +466,7 @@ public class HyperSpaceWarper extends Block{
 					Draw.color(Pal.ammo);
 					Draw.z(Layer.bullet - 0.1f);
 					float size = this.size / 3;
-					float sin = Mathf.absin(Time.time * DrawFuncs.sinScl, 8f, 2f);
+					float sin = Mathf.absin(Time.time * DrawFunc.sinScl, 8f, 2f);
 					float length = size / 1.5f + sin;
 					
 					Draw.rect(Icon.warning.getRegion(), x, y, size / 1.5f, size / 1.5f);

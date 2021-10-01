@@ -37,8 +37,8 @@ import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.ClassIDIniter;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.TableFs;
+import newhorizon.func.DrawFunc;
+import newhorizon.func.TableFunc;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +46,7 @@ import java.nio.FloatBuffer;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFunc.LEN;
 
 public class ShieldProjector extends CommandableBlock{
 	
@@ -257,7 +257,7 @@ public class ShieldProjector extends CommandableBlock{
 					configure(target);
 				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
-					TableFs.pointSelectTable(t, this::configure);
+					TableFunc.pointSelectTable(t, this::configure);
 				}).size(LEN * 4, LEN).row();
 			}).fill();
 		}
@@ -278,18 +278,18 @@ public class ShieldProjector extends CommandableBlock{
 			for(CommandableBlockBuild build : NHVars.world.commandables){
 				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand(target)){
 					builds.add(build);
-					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, t.x, t.y);
+					DrawFunc.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, t.x, t.y);
 					range = Math.max(range, build.spread());
 					health += build.delayTime(0);
 				}
 			}
 			
 			for(CommandableBlockBuild build : builds){
-				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, t.x, t.y);
+				DrawFunc.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, t.x, t.y);
 			}
 			
-			DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, t.x, t.y);
-			DrawFuncs.drawConnected(t.x, t.y, 10f, Pal.accent);
+			DrawFunc.posSquareLink(Pal.accent, 1, 2, true, x, y, t.x, t.y);
+			DrawFunc.drawConnected(t.x, t.y, 10f, Pal.accent);
 			Draw.color(Pal.gray);
 			Lines.stroke(3f);
 			Lines.poly(t.x ,t.y, 6, range);
@@ -297,7 +297,7 @@ public class ShieldProjector extends CommandableBlock{
 			Lines.stroke(1f);
 			Lines.poly(t.x ,t.y, 6, range);
 			
-			DrawFuncs.overlayText(Core.bundle.format("mod.ui.participants", builds.size) + "\n" + Core.bundle.format("mod.ui.shield-health", health), t.x ,t.y, tilesize * 2f, Pal.accent, true);
+			DrawFunc.overlayText(Core.bundle.format("mod.ui.participants", builds.size) + "\n" + Core.bundle.format("mod.ui.shield-health", health), t.x ,t.y, tilesize * 2f, Pal.accent, true);
 		}
 		
 		@Override

@@ -18,7 +18,6 @@ import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
-import mindustry.gen.Building;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.gen.WaterMovec;
@@ -65,7 +64,7 @@ public class NHFunc{
     
     public static void randFadeLightningEffect(float x, float y, float range, float lightningLength, Color color, boolean in){
         vec21.rnd(range).add(x, y);
-        (in ? NHFx.chainLightningFadeReversed : NHFx.chainLightningFade).at(x, y, 12f, color, vec21.cpy());
+        (in ? NHFx.chainLightningFadeReversed : NHFx.chainLightningFade).at(x, y, lightningLength, color, vec21.cpy());
     }
     
     public static Unit teleportUnitNet(Unit before, float x, float y, float angle, @Nullable Player player){
@@ -127,7 +126,7 @@ public class NHFunc{
     }
     
     //not support server
-    public static void spawnUnit(UnitType type, Team team, int spawnNum, float x, float y){
+    public static void spawnSingleUnit(UnitType type, Team team, int spawnNum, float x, float y){
         for(int spawned = 0; spawned < spawnNum; spawned++){
             Time.run(spawned * Time.delta, () -> {
                 Unit unit = type.create(team);
@@ -194,7 +193,7 @@ public class NHFunc{
         return true;
     }
     
-    public static boolean spawnUnit(Building starter, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
         if(type == null)return false;
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
@@ -204,14 +203,14 @@ public class NHFunc{
         int i = 0;
         for (Vec2 s : vectorSeq) {
             JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
-            spawner.init(type, starter.team(), s, angle, spawnReloadTime + i * spawnDelay);
+            spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay);
             if(!net.client())spawner.add();
             i++;
         }
         return true;
     }
     
-    public static void spawnUnit(Team team, UnitType type, float x, float y, float angle, float delay){
+    public static void spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type){
         JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
         spawner.init(type, team, vec21.set(x, y), angle, delay);
         if(!net.client())spawner.add();

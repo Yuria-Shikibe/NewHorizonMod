@@ -23,7 +23,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.Turret;
 import newhorizon.content.NHFx;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 
 @SuppressWarnings("SuspiciousNameCombination")
 public class TowardShield extends Ability{
@@ -129,17 +129,17 @@ public class TowardShield extends Ability{
 			
 			Tmp.v2.trns(unit.rotation, 0, x);
 			Tmp.v1.trns(unit.rotation, y);
-			for(int i : x == 0 ? DrawFuncs.oneArr : Mathf.signs){
+			for(int i : x == 0 ? DrawFunc.oneArr : Mathf.signs){
 				Draw.color(unit.team.color, Color.white, Mathf.clamp(alpha));
 				Draw.z(Layer.shields);
 				if(Core.settings.getBool("animatedshields")){
-					DrawFuncs.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+					DrawFunc.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 				}else{
 					Lines.stroke(f * 1.5f);
 					Draw.alpha(0.09f);
-					DrawFuncs.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+					DrawFunc.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 					Draw.alpha(1f);
-					DrawFuncs.circlePercent(unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+					DrawFunc.circlePercent(unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, left.x, left.y, false);
 					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, right.x, right.y, false);
 				}
@@ -147,8 +147,8 @@ public class TowardShield extends Ability{
 				Draw.z(Layer.effect);
 				Lines.stroke(f * 0.82f);
 				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 4.2f);
-				DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 6.5f, Time.time, 20f);
-				DrawFuncs.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 8f, -Time.time * 1.25f, 30f);
+				DrawFunc.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 6.5f, Time.time, 20f);
+				DrawFunc.circlePercentFlip(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 8f, -Time.time * 1.25f, 30f);
 				Draw.color(Color.white);
 				Fill.circle(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, f * 2.8f);
 			}

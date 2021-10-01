@@ -28,14 +28,14 @@ import mindustry.world.meta.StatValues;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
-import newhorizon.func.DrawFuncs;
-import newhorizon.func.TableFs;
+import newhorizon.func.DrawFunc;
+import newhorizon.func.TableFunc;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFs.LEN;
+import static newhorizon.func.TableFunc.LEN;
 
 public abstract class CommandableAttackerBlock extends CommandableBlock{
 	public float range = 100f;
@@ -223,29 +223,29 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			for(CommandableBlockBuild build : NHVars.world.commandables){
 				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand(build.target)){
 					builds.add(build);
-					DrawFuncs.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
+					DrawFunc.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
 					realSpread = Math.max(realSpread, build.spread());
 				}
 			}
 			
 			for(CommandableBlockBuild build : builds){
-				DrawFuncs.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
+				DrawFunc.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
 			}
 			
 			tmpPoint.set(Point2.unpack(NHVars.world.commandPos));
 			
 			if(NHVars.world.commandPos > 0){
-				DrawFuncs.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
-				DrawFuncs.drawConnected(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), 10f, Pal.accent);
+				DrawFunc.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
+				DrawFunc.drawConnected(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), 10f, Pal.accent);
 				Drawf.circles(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), realSpread, Pal.accent);
 			}
 			
 			if(isValid())builds.add(this);
 			for(CommandableBlockBuild build : builds){
 				float time = build.delayTime(NHVars.world.commandPos);
-				DrawFuncs.overlayText("Delay: " + TableFs.format(time) + " Sec.", build.x, build.y, build.block.size * tilesize / 2f, time > 4.5f ? Pal.accent : Pal.lancerLaser, true);
+				DrawFunc.overlayText("Delay: " + TableFunc.format(time) + " Sec.", build.x, build.y, build.block.size * tilesize / 2f, time > 4.5f ? Pal.accent : Pal.lancerLaser, true);
 			}
-			DrawFuncs.overlayText(Core.bundle.format("mod.ui.participants", builds.size), World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), tilesize * 2f, Pal.accent, true);
+			DrawFunc.overlayText(Core.bundle.format("mod.ui.participants", builds.size), World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), tilesize * 2f, Pal.accent, true);
 		}
 		
 		public void commandAll(Integer pos){
@@ -263,7 +263,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			}
 			
 			if(!Vars.headless && participants.size > 0){
-				if(team != Vars.player.team())TableFs.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  tmpPoint.x + ", " + tmpPoint.y, NHSounds.alarm);
+				if(team != Vars.player.team()) TableFunc.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  tmpPoint.x + ", " + tmpPoint.y, NHSounds.alarm);
 				NHFx.attackWarningRange.at(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), realSpread, team.color);
 				NHFx.spawn.at(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), realSpread, team.color);
 			}
@@ -285,7 +285,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 					configure(NHVars.world.commandPos);
 				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
-					TableFs.pointSelectTable(t, this::configure);
+					TableFunc.pointSelectTable(t, this::configure);
 				}).size(LEN * 4, LEN).row();
 			}).fill();
 			

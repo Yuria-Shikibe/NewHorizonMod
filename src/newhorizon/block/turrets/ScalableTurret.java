@@ -29,7 +29,7 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
 import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
-import newhorizon.func.TableFs;
+import newhorizon.func.TableFunc;
 import newhorizon.func.TextureFilterValue;
 import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
@@ -37,7 +37,7 @@ import newhorizon.interfaces.Upgraderc;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFs.getPercent;
+import static newhorizon.func.TableFunc.getPercent;
 
 public class ScalableTurret extends Turret implements ScalableBlockc{
 	public UpgradeData defaultData = NHUpgradeDatas.none;
@@ -266,11 +266,11 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 			t.table(Tex.paneSolid, table -> {
 				table.table(cont -> cont.image(getData().type().icon).left()).left().growX();
 				table.table(cont -> {
-					cont.add("[lightgray]Level: [accent]" + getData().level + "[]", Styles.techLabel).left().pad(TableFs.OFFSET).row();
-					cont.image().fillX().pad(TableFs.OFFSET / 2).height(TableFs.OFFSET / 3).color(Color.lightGray).left().row();
+					cont.add("[lightgray]Level: [accent]" + getData().level + "[]", Styles.techLabel).left().pad(TableFunc.OFFSET).row();
+					cont.image().fillX().pad(TableFunc.OFFSET / 2).height(TableFunc.OFFSET / 3).color(Color.lightGray).left().row();
 					cont.add("[lightgray]ReloadSpeedUp: [accent]" + getPercent(data.speedUP())).left().row();
 					cont.add("[lightgray]DefenceUP: [accent]" + getPercent(data.defenceUP())).left().row();
-				}).growX().right().padRight(TableFs.OFFSET / 3);
+				}).growX().right().padRight(TableFunc.OFFSET / 3);
 			}).grow().row();
 
 			if(getData() != null && upgraderc() != null)upgraderc().buildSwitchAmmoTable(t, true);

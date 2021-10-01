@@ -9,7 +9,7 @@ import mindustry.Vars;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.blocks.sandbox.PowerSource;
-import newhorizon.func.DrawFuncs;
+import newhorizon.func.DrawFunc;
 
 public class TemporaryPowerSource extends PowerSource{
 	public TemporaryPowerSource(String name){
@@ -35,7 +35,7 @@ public class TemporaryPowerSource extends PowerSource{
 			if(isHidden())return;
 			
 			Draw.z(Layer.overlayUI);
-			DrawFuncs.overlayText(delay / 60 + "s", x, y + size * Vars.tilesize / 2f, 0, Pal.accent, true);
+			DrawFunc.overlayText(delay / 60 + "s", x, y + size * Vars.tilesize / 2f, 0, Pal.accent, true);
 		}
 		
 		@Override

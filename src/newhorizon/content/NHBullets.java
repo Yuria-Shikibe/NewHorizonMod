@@ -46,8 +46,6 @@ public class NHBullets implements ContentList{
 	
 	public void loadFragType(){
 		collapserBullet = new LightningLinkerBulletType(){{
-			effectLightningChance = 0;
-			
 			effectLightningChance = 0.15f;
 			drawSize = 300f;
 			damage = 200;
