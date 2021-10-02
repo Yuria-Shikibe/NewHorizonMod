@@ -7,7 +7,9 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.content.Items;
@@ -19,12 +21,16 @@ import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import newhorizon.NewHorizon;
 import newhorizon.bullets.*;
 import newhorizon.feature.PosLightning;
+import newhorizon.func.DrawFunc;
+import newhorizon.func.NHSetting;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;
@@ -41,7 +47,7 @@ public class NHBullets implements ContentList{
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrLightning, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile, collapserBullet, collapserLaserSmall,
-		strikeMissile, arc_9000, empFrag, empBlot2, empBlot3, antiAirSap;
+		strikeMissile, arc_9000, empFrag, empBlot2, empBlot3, antiAirSap, eternity, airRaidMissile;
 		
 	
 	public void loadFragType(){
@@ -125,6 +131,40 @@ public class NHBullets implements ContentList{
 		STRIKE = NewHorizon.name("strike");
 		
 		loadFragType();
+		
+		airRaidMissile = new SpeedUpBulletType(2f, 800f, NHBullets.STRIKE){{
+			trailLength = 14;
+			
+			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
+			frontColor = Color.white;
+			
+			hitSound = Sounds.explosionbig;
+			trailChance = 0.075f;
+			trailEffect = NHFx.polyTrail;
+			drawSize = 120f;
+			
+			velocityIncrease = 25f;
+			accelerateBegin = 0f;
+			accelerateEnd = 0.65f;
+			
+			collides = false;
+			scaleVelocity = true;
+			hitShake = despawnShake = 16f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = lightningLength = 20;
+			shootEffect = NHFx.instShoot(backColor);
+			smokeEffect = NHFx.square(NHColor.darkEnrColor, 50f, 3, 80f, 5f);
+			shrinkX = shrinkY = 0;
+			splashDamageRadius = 100f;
+			splashDamage = lightningDamage = damage;
+			height = 66f;
+			width = 20f;
+			lifetime = 120f;
+			
+			despawnEffect = NHFx.instHit(backColor, 4, 180f);
+			hitEffect = new MultiEffect(NHFx.largeDarkEnergyHit, NHFx.square(NHColor.darkEnrColor, 100f, 3, 80f, 8f), NHFx.largeDarkEnergyHitCircle);
+		}};
 		
 		antiAirSap = new SapBulletType(){{
 			keepVelocity = false;
@@ -1288,6 +1328,164 @@ public class NHBullets implements ContentList{
 			fragVelocityMin = fragLifeMin = 0.95f;
 			fragVelocityMax = fragLifeMax = 1.05f;
 		}};
+		
+		eternity = new SpeedUpBulletType(10f, 1000f){
+			@Override
+			public void draw(Bullet b){
+				super.draw(b);
+				
+				Draw.color(NHColor.darkEnrColor, Color.white, b.fout() * 0.25f);
+				
+				float rand = Mathf.randomSeed(b.id, 60f);
+				float extend = Mathf.curve(b.fin(Interp.pow10Out), 0.075f, 1f);
+				float rot = b.fout(Interp.pow10In);
+				
+				float chargeCircleFrontRad = 20;
+				float width = chargeCircleFrontRad * 2;
+				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 7f);
+				
+				float rotAngle = b.fdata;
+				
+				for(int i : Mathf.signs){
+					Drawf.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i - 45);
+				}
+				
+				for(int i : Mathf.signs){
+					Drawf.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i + 45);
+				}
+				
+				if(NHSetting.enableDetails()){
+					float cameraFin = (1 + 2 * DrawFunc.cameraDstScl(b.x, b.y, Vars.mobile ? 200 : 320)) / 3f;
+					float triWidth = b.fout() * chargeCircleFrontRad * cameraFin;
+					
+					for(int i : Mathf.signs){
+						Fill.tri(b.x, b.y + triWidth, b.x, b.y - triWidth, b.x + i * cameraFin * chargeCircleFrontRad * (23 + Mathf.absin(10f, 0.75f)) * (b.fout() * 1.25f + 1f), b.y);
+					}
+				}
+				
+				float rad = splashDamageRadius * b.fin(Interp.pow5Out) * Interp.circleOut.apply(b.fout(0.15f));
+				Lines.stroke(8f * b.fin(Interp.pow2Out));
+				Lines.circle(b.x, b.y, rad);
+				
+				Draw.color(Color.white);
+				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 9f);
+				
+				Drawf.light(b.team, b.x, b.y, rad, hitColor, 0.5f);
+			}
+			
+			@Override
+			public void init(Bullet b){
+				super.init(b);
+				b.fdata = Mathf.randomSeed(b.id, 90);
+			}
+			
+			@Override
+			public void update(Bullet b){
+				super.update(b);
+				b.fdata += b.vel.len() / 3f;
+			}
+			
+			@Override
+			public void despawned(Bullet b){
+				super.despawned(b);
+				
+				float rad = 120;
+				float spacing = 3f;
+				
+				
+				Angles.randLenVectors(b.id, 7, splashDamageRadius / 1.5f, ((x, y) -> {
+					float nowX = b.x + x;
+					float nowY = b.y + y;
+					
+					hitEffect.at(nowX, nowY, 0, hitColor);
+					hit(b, nowX, nowY);
+					
+					Vec2 vec2 = new Vec2(nowX, nowY);
+					Team team = b.team;
+					for(int k = 0; k < 7; k++){
+						Time.run(Mathf.random(6f, 12f) * k, () -> {
+							if(Mathf.chanceDelta(0.4f)) hitSound.at(vec2.x, vec2.y, hitSoundPitch, hitSoundVolume);
+							despawnSound.at(vec2);
+							Effect.shake(hitShake, hitShake, vec2);
+							
+							for(int i = 0; i < lightning / 2; i++){
+								Lightning.create(team, lightningColor, lightningDamage, vec2.x, vec2.y, Mathf.random(360f), lightningLength + Mathf.random(lightningLengthRand));
+							}
+						});
+					}
+				}));
+			}
+			
+			{
+				drawSize = 1200f;
+				width = height = shrinkX = shrinkY = 0;
+				collides = false;
+				collidesAir = collidesGround = collidesTiles = true;
+				splashDamage = 2000f;
+				
+				velocityBegin = 6f;
+				velocityIncrease = -5.9f;
+				
+				accelerateEnd = 0.75f;
+				accelerateBegin = 0.1f;
+				
+				func = Interp.pow2;
+				trailInterp = Interp.pow10Out;
+				
+				despawnSound = Sounds.plasmaboom;
+				hitSound = Sounds.explosionbig;
+				hitShake = 60;
+				despawnShake = 100;
+				lightning = 18;
+				lightningDamage = 2000f;
+				lightningLength = 30;
+				lightningLengthRand = 50;
+				
+				status = NHStatusEffects.end;
+				
+				//					ammoMultiplier = 0.1f;
+				
+				fragBullets = 1;
+				fragBullet = NHBullets.arc_9000;
+				fragVelocityMin = 0.4f;
+				fragVelocityMax = 0.6f;
+				fragLifeMin = 0.5f;
+				fragLifeMax = 0.7f;
+				
+				trailWidth = 12F;
+				trailLength = 120;
+				
+				drag = 0.01f;
+				speed = 8f;
+				scaleVelocity = true;
+				splashDamageRadius = 400f;
+				hitColor = lightColor = lightningColor = trailColor = NHColor.darkEnrColor;
+				Effect effect = NHFx.crossBlast(hitColor, 720f);
+				effect.lifetime += 180;
+				despawnEffect = NHFx.circleOut(hitColor, splashDamageRadius);
+				hitEffect = new MultiEffect(new Effect(180F, 600f, e -> {
+					float rad = 120f;
+					
+					float f = (e.fin(Interp.pow10Out) + 8) / 9 * Mathf.curve(Interp.slowFast.apply(e.fout(0.75f)), 0f, 0.85f);
+					
+					Draw.alpha(0.9f * e.foutpowdown());
+					Draw.color(Color.white, e.color, e.fin() + 0.6f);
+					Fill.circle(e.x, e.y, rad * f);
+					
+					e.scaled(45f, i -> {
+						Lines.stroke(7f * i.fout());
+						Lines.circle(i.x, i.y, rad * 3f * i.finpowdown());
+						Lines.circle(i.x, i.y, rad * 2f * i.finpowdown());
+					});
+					
+					
+					Draw.color(Color.white);
+					Fill.circle(e.x, e.y, rad * f * 0.75f);
+					
+					Drawf.light(e.x, e.y, rad * f * 2f, Draw.getColor(), 0.7f);
+				}).layer(Layer.effect + 0.001f), effect, NHFx.blast(hitColor, 200f));
+			}
+		};
 	}
 	
 }

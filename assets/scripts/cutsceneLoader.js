@@ -2,12 +2,12 @@ Log.info("Loaded Cutscene Vault");
 
 const loader = Vars.mods.getMod(modName).loader;
 
-//Garbage things
-const loadClass = (fullName) => loader.loadClass(fullName).newInstance();
+const loadClass = (fullName) => loader.loadClass(fullName).newInstance(); //Garbage things
 
 const CutsceneScript = loadClass("newhorizon.feature.CutsceneScript");
 const UIActions = loadClass("newhorizon.feature.CutsceneScript$UIActions");
-const CommonEventNames = loadClass("newhorizon.feature.CutsceneScript$CommonEventNames");
+const KeyFormat = loadClass("newhorizon.feature.CutsceneScript$KeyFormat");
+const WorldActions = loadClass("newhorizon.feature.CutsceneScript$WorldActions");
 
 const NHBlocks = loadClass("newhorizon.content.NHBlocks");
 const NHBullets = loadClass("newhorizon.content.NHBullets");
@@ -27,3 +27,9 @@ const Tables = loadClass("newhorizon.func.Tables");
 const TableFunc = loadClass("newhorizon.func.TableFunc");
 const NHInterp = loadClass("newhorizon.func.NHInterp");
 const PosLightning = loadClass("newhorizon.feature.PosLightning");
+
+const OFFSET = 12, LEN = 60;
+
+const state = Vars.state;
+const tilesize = Vars.tilesize;
+const world = Vars.world;

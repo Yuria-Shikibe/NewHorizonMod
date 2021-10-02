@@ -40,6 +40,8 @@ public class NewHorizon extends Mod{
 //	static{
 //		Vars.testMobile = Vars.mobile = true;
 //	}
+	
+	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
@@ -188,7 +190,6 @@ public class NewHorizon extends Mod{
 	@Override
     public void loadContent(){
 		if(!Vars.headless){
-			CutsceneScript.load();
 			try{
 				NHSetting.settingFile();
 				NHSetting.initSetting();
@@ -208,12 +209,12 @@ public class NewHorizon extends Mod{
 			contentList.load();
 		}
 		
-		
-		
 		ClassIDIniter.load();
 		if(!ClassIDIniter.safe)Log.info("Detected id map conflict");
 		
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
+		
+		CutsceneScript.load();
 		
 		Log.info("Loaded Complete." + NHSetting.modMeta.version);
     }

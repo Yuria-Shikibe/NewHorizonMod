@@ -5,6 +5,7 @@ import arc.Events;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.func.Cons;
+import arc.func.Prov;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -15,36 +16,47 @@ import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.Action;
+import arc.scene.Element;
 import arc.scene.actions.Actions;
+import arc.scene.actions.RunnableAction;
 import arc.scene.actions.TemporalAction;
 import arc.scene.ui.Label;
+import arc.scene.ui.ScrollPane;
+import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.struct.StringMap;
 import arc.util.*;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.editor.MapEditorDialog;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
-import mindustry.gen.Building;
-import mindustry.gen.Icon;
-import mindustry.gen.Sounds;
-import mindustry.gen.Tex;
+import mindustry.game.Team;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.input.DesktopInput;
 import mindustry.input.MobileInput;
+import mindustry.io.TypeIO;
 import mindustry.maps.Map;
 import mindustry.mod.Mods;
 import mindustry.mod.Scripts;
-import mindustry.type.Sector;
+import mindustry.net.Net;
+import mindustry.net.Packet;
 import mindustry.type.SectorPreset;
+import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHStatusEffects;
+import newhorizon.func.NHFunc;
 import newhorizon.func.NHInterp;
+import newhorizon.func.TableFunc;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -70,6 +82,8 @@ public class CutsceneScript{
 	 * @author Yuria / Martix
 	 */
 	protected static Fi scriptDirectory;
+	public static Fi currentScriptFile;
+	
 	
 	public static Mods.LoadedMod mod;
 	
@@ -101,9 +115,22 @@ public class CutsceneScript{
 	
 	public static boolean initHasRun = false;
 	
+	
+	private static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2();
+	
 	static{
 //		Events.on(EventType.UnitDestroyEvent.class, e -> {
 //
+//		});
+		
+//		Events.on(EventType.PlayerJoin.class, e -> {
+//			Log.info("EventType.PlayerJoin");
+//			handleTagData();
+//		});
+		
+//		Events.on(EventType.ConnectionEvent.class, e -> {
+//			Log.info("EventType.ConnectionEvent");
+//			handleTagData();
 //		});
 		
 		Events.on(EventType.BlockDestroyEvent.class, e -> {
@@ -115,6 +142,7 @@ public class CutsceneScript{
 		Events.on(EventType.StateChangeEvent.class, e -> {
 			if((e.from == GameState.State.playing && e.to == GameState.State.menu)){
 				reset();
+				UIActions.reset();
 			}
 		});
 		
@@ -125,6 +153,7 @@ public class CutsceneScript{
 		
 		Events.run(EventType.Trigger.update, () -> {
 			if(!Vars.state.isPlaying())return;
+			if(timer.get(0, 900))handleTagData();
 			if(curUpdaters.any())curUpdaters.each(Runnable::run);
 		});
 		
@@ -212,6 +241,8 @@ public class CutsceneScript{
 		initDirectory();
 		scripts = platform.createScripts();
 		mod = mods.getMod(NewHorizon.class);
+		
+		Net.registerPacket(TagPacket::new);
 	}
 	
 	public static void initDirectory(){
@@ -222,24 +253,28 @@ public class CutsceneScript{
 	}
 	
 	public static String getScript(Map map){
-		Log.info(map.tags);
 		if(map.tags.containsKey(CUTSCENE_KEY)){
 			return map.tag(CUTSCENE_KEY);
 		}else if(map.name().contains("(@HC)")){
-			Fi js = scriptDirectory.child(map.name() + "-cutscene.js");
-			if(!js.exists()){
-				try{
-					Log.info("Tried Create Script File: " + js.file().createNewFile() + " | " + js.file().getAbsolutePath());
+			currentScriptFile = scriptDirectory.child(map.name() + "-cutscene.js");
+			if(!currentScriptFile.exists()){
+				if(map.tags.containsKey(CUTSCENE_KEY)){
+					return map.tag(CUTSCENE_KEY);
+				}else try{
+					Log.info("Tried Create Script File: " + currentScriptFile.file().createNewFile() + " | " + currentScriptFile.file().getAbsolutePath());
 				}catch(IOException e){
 					Vars.ui.showErrorMessage(e.toString());
 				}
 			}
-			return js.readString();
+			String code = currentScriptFile.readString();
+			TableFunc.textArea.setText(code);
+			return code;
 		}else return null;
 	}
 	
 	public static void reset(){
 		curSectorPreset = null;
+		currentScriptFile = null;
 		initHasRun = false;
 		curEnder.clear();
 		curIniter.clear();
@@ -247,9 +282,19 @@ public class CutsceneScript{
 		timer.clear();
 		blockDestroyListener.clear();
 		UIActions.waitingPool.clear();
+		
+		TableFunc.textArea.clearText();
 	}
 	
-	public static void runJs(String js){
+	public static Fi getModGlobalJS(){
+		return mod.root.child("scripts").child("cutsceneLoader.js");
+	}
+	
+	public static String getModGlobalJSCode(){
+		return getModGlobalJS().readString();
+	}
+	
+	public static void runJS(String js){
 		if(js == null || js.isEmpty())return;
 		
 		try{
@@ -263,8 +308,6 @@ public class CutsceneScript{
 			
 			field.set(scripts, mod);
 			method.invoke(scripts, mod.root.child("scripts").child("cutsceneLoader.js").readString() + js, state.map.name(), true);
-			
-			curIniter.each(Runnable::run);
 		}catch(Exception e){
 			Vars.ui.showErrorMessage(e.toString());
 		}
@@ -273,12 +316,15 @@ public class CutsceneScript{
 	public static void init(SectorPreset sector){
 		reset();
 		
-		if(Vars.net.active())return;
+		UIActions.init();
 		
 		curSectorPreset = sector;
 		
 		if(sector == null){
-			Core.app.post(() -> runJs(getScript(Vars.state.map)));
+			Core.app.post(() -> {
+				runJS(getScript(Vars.state.map));
+				curIniter.each(Runnable::run);
+			});
 		}else{
 			if(updaters.containsKey(sector)){
 				curUpdaters.addAll(updaters.get(sector));
@@ -296,17 +342,15 @@ public class CutsceneScript{
 		}
 	}
 	
-	public static boolean canInit(Sector sector){
-		boolean b = !initHasRun && sector.save == null;
-		initHasRun = true;
-		return b;
-	}
-	
 	public static boolean canInit(){
 		boolean b = !state.rules.tags.containsKey("inited") || !Boolean.parseBoolean(state.rules.tags.get("inited"));
 		state.rules.tags.put("inited", "true");
 		initHasRun = true;
 		return b;
+	}
+	
+	public static boolean eventHasData(String key){
+		return state.rules.tags.containsKey(key);
 	}
 	
 	public static void run(String key, Boolf<String> boolf, Runnable run){
@@ -315,46 +359,90 @@ public class CutsceneScript{
 		}
 	}
 	
-	public static void runEventOnce(String eventName, Runnable run){
+	public static boolean getBool(String key){
+		return state.rules.tags.containsKey(key) && Boolean.parseBoolean(state.rules.tags.get(key));
+	}
+	
+	public static float getFloat(String key){
+		return Float.parseFloat(state.rules.tags.get(key));
+	}
+	
+	public static boolean runEventOnce(String eventName, Runnable run){
+		boolean hasRun = false;
 		if(!state.rules.tags.containsKey(eventName) || !Boolean.parseBoolean(state.rules.tags.get(eventName))){
 			run.run();
+			hasRun = true;
 		}
 		
 		state.rules.tags.put(eventName, "true");
+		
+		return hasRun;
 	}
 	
-	public static void runEventMulti(String eventName, int times, Runnable run){
+	public static boolean runEventMulti(String eventName, int times, Runnable run){
 		int num = 0;
+		
+		boolean hasRun = false;
 		
 		if(state.rules.tags.containsKey(eventName)){
 			num = Integer.parseInt(state.rules.tags.get(eventName));
-			if(num < times)run.run();
+			if(num < times){
+				run.run();
+				hasRun = true;
+			}
 		}
 		
 		state.rules.tags.put(eventName, String.valueOf(++num));
 		Log.info(state.rules.tags.get(eventName));
+		
+		return hasRun;
 	}
 	
 	public static void setReload(String eventName, float time){
 		state.rules.tags.put(eventName, String.valueOf(time));
 	}
 	
-	public static void reload(String eventName, float speed, float reloadTime, Runnable run){
-		if(state.rules.tags.containsKey(eventName)){
-			float time = Float.parseFloat(state.rules.tags.get(eventName));
-			time += speed;
-			if(time > reloadTime){
-				setReload(eventName, 0);
-				run.run();
-			}else setReload(eventName, time);
-		}else setReload(eventName, 0);
+	public static void reload(String eventName, float speed, float reloadTime, Prov<Boolean> exist, Prov<Boolean> canContinue, Runnable run){
+		if(exist.get()){
+			if(canContinue.get()){
+				if(state.rules.tags.containsKey(eventName)){
+					float time = Float.parseFloat(state.rules.tags.get(eventName));
+					time += speed;
+					if(time > reloadTime){
+						setReload(eventName, 0);
+						run.run();
+					}else setReload(eventName, time);
+				}else setReload(eventName, 0);
+			}
+		}else state.rules.tags.remove(eventName);
+	}
+	
+	public static class WorldActions{
+		public static Runnable raidPos(Entityc owner, Team team, BulletType type, float x, float y, float toX, float toY, Cons<Bullet> modifier){
+			float scl = NHFunc.scaleBulletLifetime(type, x, y, toX, toY);
+			
+			return () -> {
+				modifier.get(type.create(owner, team, x, y, Angles.angle(x, y, toX, toY), 1, scl));
+			};
+		}
+		
+		public static Runnable raidPos(Entityc owner, Team team, BulletType type, float x, float y, Position target, Cons<Bullet> modifier){
+			float scl = NHFunc.scaleBulletLifetime(type, x, y, target.getX(), target.getY());
+			
+			return () -> {
+				modifier.get(type.create(owner, team, x, y, Angles.angle(x, y, target.getX(), target.getY()), 1, scl));
+			};
+		}
+		
+		public static Runnable raidDirection(Entityc owner, Team team, BulletType type, float x, float y, float angle, float distance, Cons<Bullet> modifier){
+			return raidPos(owner, team, type, x, y, v1.trns(angle, distance).add(x, y), modifier);
+		}
 	}
 	
 	/**
 	 * Used to make a pop-up dialog with texts extending out.
 	 */
 	public static class LabelAction extends TemporalAction{
-		public boolean hasNext = false;
 		public float margin = 0;
 		public String text;
 		public Label label;
@@ -376,7 +464,7 @@ public class CutsceneScript{
 				
 				if(Vars.mobile){
 					setSize(Core.graphics.getWidth() / 1.25f, Core.graphics.getHeight() / 3f);
-					setPosition(0, UIActions.yAxis());
+					setPosition(0, 0);
 				}else{
 					setSize(Core.graphics.getWidth() / 2f, UIActions.yAxis() / 2);
 					x = (Core.graphics.getWidth() - width) / 2f;
@@ -387,7 +475,7 @@ public class CutsceneScript{
 					if(state.isMenu())remove();
 					if(Vars.mobile){
 						setSize(Core.graphics.getWidth() / 1.25f, Core.graphics.getHeight() / 3f);
-						setPosition(0, UIActions.yAxis());
+						setPosition(0, 0);
 					}else{
 						setSize(Core.graphics.getWidth() / 2f, UIActions.yAxis() / 2);
 						x = (Core.graphics.getWidth() - width) / 2f;
@@ -417,8 +505,7 @@ public class CutsceneScript{
 		
 		@Override
 		protected void end(){
-			if(!hasNext)table.actions(Actions.fadeOut(0.45f), Actions.remove());
-			else table.addAction(Actions.remove());
+			table.actions(Actions.fadeOut(0.45f), Actions.remove());
 		}
 		
 		@Override
@@ -552,11 +639,89 @@ public class CutsceneScript{
 		}
 	}
 	
+	public static class ImportantRunnableAction extends RunnableAction implements ImportantAction{
+		
+		@Override
+		public void accept(){
+			run();
+		}
+	}
+	
 	public static class UIActions{
 		public static Seq<Action[]> waitingPool = new Seq<>();
+		public static Action[] currentActions;
 		
+		public static void init(){
+			if(Core.scene.root.find("CutsceneHUD") == null){
+				reloadBarTable = new HUDTable();
+				
+				Core.scene.root.addChildAt(1, reloadBarTable);
+			}
+			
+			state.rules.tags.each((k, v) -> {
+				if(k.startsWith(KeyFormat.SHOW_PREFIX)){
+					try{
+						String[] s = k.split(KeyFormat.SPLITTER);
+						float time = Float.parseFloat(s[s.length - 1]);
+						reloadBar(k, KeyFormat.getEventTotalTime(k), () -> KeyFormat.getEventName(k), () -> KeyFormat.getEventColor(k));
+					}catch(Exception e){
+						ui.showException(e);
+					}
+				}
+			});
+		}
+		
+		public static void reset(){
+			Log.info("Run Reset");
+			
+			if(reloadBarTable == null)return;
+			reloadBarTable.reset();
+			reloadBarTable.remove();
+			reloadBarTable = null;
+		}
+		
+		protected static Table actor;
 		protected static Table defaultFiller = filler();
 		protected static Table up = new Table(), down = new Table();
+		protected static HUDTable reloadBarTable = null;
+		
+		protected static class HUDTable extends Table{
+			public Table paneTable = new Table();
+			public ScrollPane pane;
+			
+			public HUDTable(){
+				name = "CutsceneHUD";
+				
+				update(() -> {
+					if(state.isMenu())remove();
+					visible(() -> ui.hudfrag.shown);
+					
+					setSize(Core.graphics.getWidth() / 4f, Core.graphics.getHeight() / 4.45f);
+					setPosition(0, 0);
+				});
+				
+				background(Tex.buttonEdge3);
+				
+				pane = pane(t -> {
+					paneTable = t;
+					t.top();
+				}).grow().pad(OFFSET).get();
+			}
+			
+			public void updateChildren(){
+//				childrenChanged();
+			}
+			
+			public void addElement(Element element){
+				paneTable.add(element);
+			}
+		}
+		
+		public static ImportantRunnableAction necessaryRun(Runnable runnable){
+			ImportantRunnableAction action = Actions.action(ImportantRunnableAction.class, ImportantRunnableAction::new);
+			action.setRunnable(runnable);
+			return action;
+		}
 		
 		public static CautionAction cautionAt(float x, float y, float size, float duration, Color color){
 			CautionAction action = Actions.action(CautionAction.class, CautionAction::new);
@@ -590,54 +755,48 @@ public class CutsceneScript{
 			action.setDuration(duration);
 			return action;
 		}
-		public static LabelAction labelAct(String text, float duration, float holdDuration, boolean hasNext){
+		public static LabelAction labelAct(String text, float duration, float holdDuration){
 			LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
 			action.setDuration(duration + holdDuration);
 			action.margin = Mathf.clamp(duration / (action.getDuration()));
-			action.hasNext = hasNext;
 			action.text = text;
 			return action;
 		}
 		
-		public static LabelAction labelAct(String text, float duration, float holdDuration, boolean hasNext, Interp outFunc, Interp inFunc, Cons<Table> modifier){
+		public static LabelAction labelActFull(String text, float duration, float holdDuration, Interp outFunc, Interp inFunc, Cons<Table> modifier){
 			LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
 			action.setDuration(duration + holdDuration);
 			action.margin = Mathf.clamp(duration / (action.getDuration()));
 			action.setInterpolation(outFunc);
 			action.inFunc = inFunc;
-			action.hasNext = hasNext;
 			action.text = text;
 			action.modifier = modifier;
 			return action;
 		}
 		
-		public static LabelAction labelAct(String text, float duration, float holdDuration, boolean hasNext, Interp interpolation, Cons<Table> modifier){
+		public static LabelAction labelAct(String text, float duration, float holdDuration, Interp interpolation, Cons<Table> modifier){
 			LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
 			action.setDuration(duration + holdDuration);
 			action.margin = Mathf.clamp(duration / (action.getDuration()));
 			action.setInterpolation(interpolation);
-			action.hasNext = hasNext;
 			action.text = text;
 			action.modifier = modifier;
 			return action;
 		}
 		
-		public static float countTime(Action[] actions){
-			float time = 0;
-			
-			for(Action action : actions){
-				if(!(action instanceof TemporalAction)) continue;
-				time += ((TemporalAction)action).getDuration();
-			}
-			
-			return time;
-		}
-		
 		/** Prevent the camera following player during the script. */
 		public static void pauseCamera(){
+			if(headless)return;
 			if(Vars.mobile && Vars.control.input instanceof MobileInput){
 				MobileInput input = (MobileInput)Vars.control.input;
-				Vars.player.unit().apply(NHStatusEffects.staticVel, 100000);
+				actor = new Table(Tex.clear){{
+					setSize(1, 1);
+					update(() -> {
+						if(state.isMenu())remove();
+						player.unit().vel.setZero();
+					});
+					Core.scene.root.addChild(this);
+				}};
 			}else if(Vars.control.input instanceof DesktopInput){
 				DesktopInput input = (DesktopInput)Vars.control.input;
 				input.panning = true;
@@ -646,10 +805,13 @@ public class CutsceneScript{
 		
 		/** Release the camera. */
 		public static void resumeCamera(){
+			if(headless)return;
 			if(Vars.mobile && Vars.control.input instanceof MobileInput){
 				MobileInput input = (MobileInput)Vars.control.input;
 				Vars.player.unit().unapply(NHStatusEffects.staticVel);
 				Core.camera.position.set(Vars.player);
+				
+				if(actor != null)Core.scene.root.removeChild(actor);
 			}else if(Vars.control.input instanceof DesktopInput){
 				DesktopInput input = (DesktopInput)Vars.control.input;
 				input.panning = false;
@@ -698,10 +860,11 @@ public class CutsceneScript{
 			
 			Action[] acts = new Action[actions.length + 1];
 			System.arraycopy(actions, 0, acts, 0, actions.length);
-			acts[acts.length - 1] = Actions.remove();
+			acts[acts.length - 1] = Actions.parallel(Actions.remove(), Actions.run(() -> currentActions = null));
 			
 			if(!isPlaying){
 				isPlayingCutscene = true;
+				currentActions = acts;
 				Table filler = new Table(Tex.clear){
 					{
 						Core.scene.root.addChild(this);
@@ -734,6 +897,7 @@ public class CutsceneScript{
 						return super.remove();
 					}
 				};
+				
 				filler.actions(acts);
 			}else{
 				waitingPool.add(acts);
@@ -761,7 +925,20 @@ public class CutsceneScript{
 							setPosition(0, 0);
 						});
 					}));
-				}};
+				}
+					
+					@Override
+					public boolean remove(){
+						
+						return super.remove();
+					}
+					
+					@Override
+					public void act(float delta){
+						super.act(delta);
+						if(state.isMenu())remove();
+					}
+				};
 				
 				up = new Table(Styles.black){{
 					Core.scene.root.addChild(this);
@@ -778,7 +955,13 @@ public class CutsceneScript{
 							setPosition(0, Core.graphics.getHeight() - yAxis());
 						});
 					}));
-				}};
+				}
+					@Override
+					public void act(float delta){
+						super.act(delta);
+						if(state.isMenu())remove();
+					}
+				};
 			});
 		}
 		
@@ -844,10 +1027,145 @@ public class CutsceneScript{
 		public static void enableVanillaUI(){
 			Vars.ui.hudfrag.shown = true;
 		}
+		
+		public static void reloadBarDelay(String eventName, float totalTime, Color color){
+			reloadBarDelay(KeyFormat.generateName(eventName, color, totalTime),totalTime, () -> eventName, () -> color);
+		}
+		
+		public static void reloadBarDelay(String eventFullName, float totalTime, Prov<CharSequence> showName, Prov<Color> showColor){
+			Time.runTask(15f, () -> reloadBar(eventFullName, totalTime, showName, showColor));
+		}
+		
+		public static void reloadBar(String eventName, float totalTime, Prov<CharSequence> showName, Prov<Color> showColor){
+			if(!state.rules.tags.containsKey(eventName))return;
+			
+			Table t = new Table(Tex.clear){{
+				add(new Bar(
+					showName, showColor, () -> Float.parseFloat(state.rules.tags.get(eventName)) / totalTime
+				)).growX().height(LEN - OFFSET).padBottom(OFFSET);
+				update(() -> {
+					if(!state.rules.tags.containsKey(eventName)){
+						actions(Actions.sizeTo(0, height, 0.4f, Interp.pow3In), Actions.remove());
+						update(() -> {});
+					}
+				});
+				
+				addListener(new Tooltip(t -> {
+					t.background(Tex.buttonEdge3).add("Remain Time: 00:00").update(l -> {
+						float remain = totalTime - Float.parseFloat(state.rules.tags.get(eventName));
+						l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + Mathf.floor(remain / Time.toMinutes) + ":" + Mathf.floor((remain % Time.toMinutes) / Time.toSeconds));
+					}).fill();
+				}));
+			}
+				
+				@Override
+				public boolean remove(){
+					reloadBarTable.updateChildren();
+					return super.remove();
+				}
+			};
+			
+			reloadBarTable.paneTable.row();
+			reloadBarTable.paneTable.add(t).growX().fillY().padRight(OFFSET);
+		}
 	}
 	
-	public static class CommonEventNames{
+	public static class KeyFormat{
+		public static final String SHOW_PREFIX = "<@Show>";
+		public static final String SPLITTER = "<@Param>";
+		
+		public static String generateName(String name, Color color, float time){
+			return SHOW_PREFIX + name + SPLITTER + color + SPLITTER + time;
+		}
+		
+		public static String getEventName(String key){
+			String[] s = key.split(SPLITTER);
+			return s[0].replaceFirst(SHOW_PREFIX, "");
+		}
+		
+		public static Color getEventColor(String key){
+			String[] s = key.split(SPLITTER);
+			return s.length < 2 ? Color.white : Color.valueOf(s[1]);
+		}
+		
+		public static String getEventColorHex(String key){
+			String[] s = key.split(SPLITTER);
+			return s.length < 2 ? Color.white.toString() : s[1];
+		}
+		
+		public static float getEventTotalTime(String key){
+			try{
+				String[] s = key.split(SPLITTER);
+				return Float.parseFloat(s[s.length - 1]);
+			}catch(Exception e){
+				return 0;
+			}
+		}
+		
 		public static final String
-				ENEMY_CORE_DESTROYED_EVENT = "EnemyCoreDestroyedEvent";
+			ENEMY_CORE_DESTROYED_EVENT = "EnemyCoreDestroyedEvent",
+			FLEET_RAID_EVENT_00 = "FleetRaidEvent00",
+			FLEET_RAID_EVENT_01 = "FleetRaidEvent01",
+			FLEET_RAID_EVENT_02 = "FleetRaidEvent02",
+			FLEET_RAID_EVENT_03 = "FleetRaidEvent03";
+	}
+	
+	public static void handleTagData(){
+		if(state.rules.tags == null || state.rules.tags.isEmpty())return;
+		
+		if(net.server()){
+			TagPacket packet = new TagPacket();
+			packet.tags = state.rules.tags;
+			Vars.net.send(packet, true);
+		}
+	}
+	
+	public static class TagPacket extends Packet{
+		private byte[] DATA;
+		public StringMap tags;
+		
+		public TagPacket() {
+			this.DATA = NODATA;
+		}
+		
+		public void write(Writes WRITE) {
+			String[][] strings = new String[tags.size][2];
+			
+			int i = 0;
+			for(ObjectMap.Entry<String, String> entry : tags.entries()){
+				strings[i][0] = entry.key;
+				strings[i][1] = entry.value;
+				i++;
+			}
+			
+			TypeIO.writeStrings(WRITE, strings);
+		}
+		
+		public void read(Reads READ, int LENGTH) {
+			this.DATA = READ.b(LENGTH);
+		}
+		
+		public void handled() {
+			BAIS.setBytes(this.DATA);
+			
+			String[][] strings = TypeIO.readStrings(READ);
+
+			tags = new StringMap();
+			for(String[] kv : strings){
+				tags.put(kv[0], kv[1]);
+			}
+		}
+		
+		public int getPriority(){
+			return priorityLow;
+		}
+		
+		public void handleClient(){
+			state.rules.tags = tags;
+		}
+	}
+	
+	public interface ImportantAction{
+		void accept();
 	}
 }

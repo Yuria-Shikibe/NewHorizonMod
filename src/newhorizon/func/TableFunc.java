@@ -25,6 +25,8 @@ import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Image;
 import arc.scene.ui.Label;
+import arc.scene.ui.ScrollPane;
+import arc.scene.ui.TextArea;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
 import arc.util.Time;
@@ -46,6 +48,7 @@ import mindustry.type.UnitType;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.modules.ItemModule;
+import newhorizon.feature.CutsceneScript;
 import newhorizon.vars.NHVars;
 
 import java.lang.reflect.Field;
@@ -171,7 +174,7 @@ public class TableFunc{
                 out.pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
             });
             add(in).fillX();
-            setSize(getPrefWidth(), getPrefHeight());
+            setSize(Core.graphics.getWidth() / 4f, Core.graphics.getHeight() * 0.75f);
         }
     
         @Override
@@ -208,6 +211,25 @@ public class TableFunc{
     
     private static final Table starter = new Table(Tex.paneSolid);
     
+    public static final TextAreaMod textArea = new TextAreaMod("");
+    
+    public static class TextAreaMod extends TextArea{
+        public TextAreaMod(String text){
+            super(text);
+        }
+    
+        @Override
+        public void sizeChanged(){
+            super.sizeChanged();
+        }
+    }
+    
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static int getLineNum(String string){
+        string.replaceAll("\r", "\n");
+        return string.split("\n").length;
+    }
+    
     public static void disableTable(){
         Core.scene.root.removeChild(starter);
     }
@@ -238,7 +260,6 @@ public class TableFunc{
         if(headless)return;
         
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
-        
 
         starter.update(() -> starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f));
         starter.visible(() -> !state.isMenu() && ui.hudfrag.shown && !net.active());
@@ -250,6 +271,70 @@ public class TableFunc{
             table.button(Icon.settings, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
                 showInner(starter, new ToolTable());
             }).grow().disabled(b -> !NHSetting.getBool("@active.admin-panel") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();
+            table.button(Icon.logic, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
+                showInner(starter, new Table(Tex.button){{
+                    setSize(Core.graphics.getWidth() / 3f, Core.graphics.getHeight() * 0.75f);
+                    Label label = new Label("");
+                    label.setWrap(false);
+                    label.setText(textArea.getText());
+                    
+                    Label liner = new Label("");
+                    liner.setWrap(false);
+                
+                    update(() -> {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        int linesGlobal = getLineNum(CutsceneScript.getModGlobalJS().readString());
+                        int lines = textArea.getLinesShowing();
+    
+                        for(int i = 0; i < lines; i++)stringBuilder.append(i + linesGlobal + 1).append("\n");
+                        liner.setText(stringBuilder.toString());
+                    });
+                    
+                    ScrollPane sp = pane(Styles.horizontalPane, t -> {
+                        t.touchable(() -> Touchable.enabled);
+                        
+                        t.table(cont -> {
+                            cont.top();
+                            cont.add(liner).fillX().height(label.getPrefHeight()).color(Color.gray);
+                            cont.add(textArea).size(label.getPrefWidth(), label.getPrefHeight());
+                        }).pad(LEN / 2);
+                    }).grow().pad(OFFSET).get();
+                    
+                    sp.setForceScroll(true, true);
+                    
+                    row();
+                    table(t -> {
+                        t.defaults().height(LEN);
+                        t.button("@save", Styles.cleart, () -> {
+                            if(CutsceneScript.currentScriptFile != null){
+                                int hash = CutsceneScript.currentScriptFile.readString().hashCode();
+                                CutsceneScript.currentScriptFile.writeString(textArea.getText(), false);
+                                ui.showText("Save successfully", hash + " -> " + textArea.getText().hashCode());
+                            }else{
+                                ui.showCustomConfirm("Script File Missing", "Copy to clipboard?", "Accept", "@back",
+                                    () -> {
+                                        Core.app.setClipboardText(textArea.getText());
+                                    }, () -> {
+                                    
+                                    }
+                                );
+                            }
+                        }).growX().padRight(OFFSET);
+                        t.button("Run Selection", Styles.cleart, () -> {
+                            CutsceneScript.runJS(textArea.getSelection());
+                        }).growX();
+                        t.row();
+                        t.button("Refresh", Styles.cleart, () -> {
+                            textArea.setText(CutsceneScript.currentScriptFile.readString());
+                        }).growX().disabled(b -> CutsceneScript.currentScriptFile == null).padTop(OFFSET).padRight(OFFSET);
+                        t.button("Read", Styles.cleart, () -> {
+                            platform.showMultiFileChooser(file -> {
+                                textArea.setText(file.readString());
+                            }, "js");
+                        }).growX();
+                    }).growX().fillY();
+                }});
+            }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();
         }).grow().row();
         
         Core.scene.root.addChildAt(1, starter);
@@ -314,8 +399,8 @@ public class TableFunc{
         }).growX().height(size).left().row();
     }
     
-    public static void link(Table father, Links.LinkEntry link){
-        father.add(new Tables.LinkTable(link)).size(Tables.LinkTable.w + OFFSET * 2f, Tables.LinkTable.h).padTop(OFFSET / 2f).row();
+    public static void link(Table parent, Links.LinkEntry link){
+        parent.add(new Tables.LinkTable(link)).size(Tables.LinkTable.w + OFFSET * 2f, Tables.LinkTable.h).padTop(OFFSET / 2f).row();
     }
     
     
@@ -408,11 +493,11 @@ public class TableFunc{
         if(mobile)Core.scene.root.addChildAt(10, pTable);
     }
     
-    public static void pointSelectTable(Table parent, Cons<Point2> cons){
-        Prov<Touchable> original = parent.touchablility;
-        Touchable parentTouchable = parent.touchable;
+    public static void pointSelectTable(Table parentT, Cons<Point2> cons){
+        Prov<Touchable> original = parentT.touchablility;
+        Touchable parentTouchable = parentT.touchable;
         
-        parent.touchablility = () -> Touchable.disabled;
+        parentT.touchablility = () -> Touchable.disabled;
         
         NHVars.resetCtrl();
     
@@ -445,14 +530,14 @@ public class TableFunc{
         
         pTable.button(Icon.cancel, Styles.emptyi, () -> {
             cons.get(Tmp.p1.set(World.toTile(NHVars.ctrl.ctrlVec2.x), World.toTile(NHVars.ctrl.ctrlVec2.y)));
-            parent.touchablility = original;
-            parent.touchable = parentTouchable;
+            parentT.touchablility = original;
+            parentT.touchable = parentTouchable;
             pTable.remove();
             floatTable.remove();
         }).center();
         
-        Core.scene.root.addChildAt(Math.max(parent.getZIndex() - 1, 0), pTable);
-        Core.scene.root.addChildAt(Math.max(parent.getZIndex() - 2, 0), floatTable);
+        Core.scene.root.addChildAt(Math.max(parentT.getZIndex() - 1, 0), pTable);
+        Core.scene.root.addChildAt(Math.max(parentT.getZIndex() - 2, 0), floatTable);
     }
     
     private static void scheduleToast(Runnable run){

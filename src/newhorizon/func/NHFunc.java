@@ -17,6 +17,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.entities.Effect;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
@@ -136,6 +137,10 @@ public class NHFunc{
                 }else Log.info("Unit == null");
             });
         }
+    }
+    
+    public static float scaleBulletLifetime(BulletType type, float x, float y, float toX, float toY){
+        return Mathf.dst(x, y, toX, toY) / type.range();
     }
     
     @Contract(pure = true)

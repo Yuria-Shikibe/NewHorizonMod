@@ -80,6 +80,8 @@ public class ScreenHack{
 					if(state.isMenu()){
 						hackWarmup = hackRemainTime = 0;
 						remove();
+						setPosition(0, 0);
+						setSize(Core.graphics.getWidth(), Core.graphics.getHeight());
 					}
 					if(!state.isPaused() && !state.isMenu())hackRemainTime = Mathf.approachDelta(hackRemainTime, 0, 1);
 					

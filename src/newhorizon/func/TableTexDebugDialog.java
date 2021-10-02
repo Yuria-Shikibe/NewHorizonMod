@@ -15,6 +15,7 @@ import arc.scene.ui.ImageButton;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
@@ -380,13 +381,13 @@ public class TableTexDebugDialog extends BaseDialog{
 				actions.add(CutsceneScript.UIActions.moveTo(core.x, core.y, 2f, Interp.circleOut));
 				actions.add(Actions.parallel(
 					CutsceneScript.UIActions.labelAct(
-						"Team<[#" + core.team.color +  "]" + core.team.name.toUpperCase() +
-							"[]>: @@@" +
-							core.block.localizedName + " [[" + core.tileX() + ", " + core.tileY() + "]", 0.5f, 1.5f, false, Interp.linear, t -> {
-								if(!core.team.emoji.isEmpty()){
-									t.add(core.team.emoji).padRight(OFFSET);
-								}
+					"Team<[#" + core.team.color +  "]" + core.team.name.toUpperCase() +
+						"[]>: @@@" +
+						core.block.localizedName + " [[" + core.tileX() + ", " + core.tileY() + "]", 0.5f, 1.5f, Interp.linear, t -> {
+							if(!core.team.emoji.isEmpty()){
+								t.add(core.team.emoji).padRight(OFFSET);
 							}
+						}
 					)
 				));
 			}
@@ -399,6 +400,23 @@ public class TableTexDebugDialog extends BaseDialog{
 			CutsceneScript.UIActions.actionSeq(acts.toArray(Action.class));
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 
+		cont.button("Add Rand Progress Bar", () -> {
+			float time = Mathf.random(240f, 600f);
+			String name = String.valueOf(Time.millis());
+			
+			CutsceneScript.curUpdaters.add(() -> {
+				CutsceneScript.reload(name, Time.delta, time, () -> true, () -> true, () -> state.rules.tags.remove(name));
+			});
+			
+			Time.runTask(30f, () -> {
+				CutsceneScript.UIActions.reloadBar(
+						name,
+						time, () -> String.valueOf(time), () -> Pal.heal
+				);
+			});
+			
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
 		addCloseButton();
 	}
 	
