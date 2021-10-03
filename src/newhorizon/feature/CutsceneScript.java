@@ -681,8 +681,8 @@ public class CutsceneScript{
 		 * @implNote Set an identifier for the target point on the HUD.
 		 *
 		 * @param duration Use second format.
-		 * @param x Use 8* format.
-		 * @param y Use 8* format.
+		 * @param x Use *8 format.
+		 * @param y Use *8 format.
 		 * */
 		public static CautionAction cautionAt(float x, float y, float size, float duration, Color color){
 			CautionAction action = Actions.action(CautionAction.class, CautionAction::new);
@@ -710,8 +710,8 @@ public class CutsceneScript{
 		 * @implNote Make the camera slide to a certain position.
 		 *
 		 * @param duration Use second format.
-		 * @param x Use 8* format.
-		 * @param y Use 8* format.
+		 * @param x Use *8 format.
+		 * @param y Use *8 format.
 		 * @param interpolation Move animation curve.
 		 * */
 		public static CameraMoveAction moveTo(float x, float y, float duration, Interp interpolation){
@@ -726,8 +726,8 @@ public class CutsceneScript{
 		 * @implNote Make the camera fixed on a certain position.
 		 *
 		 * @param duration Use second format.
-		 * @param x Use 8* format.
-		 * @param y Use 8* format.
+		 * @param x Use *8 format.
+		 * @param y Use *8 format.
 		 * */
 		public static CameraMoveAction holdCamera(float x, float y, float duration){
 			CameraMoveAction action = Actions.action(CameraMoveAction.class, CameraMoveAction::new);

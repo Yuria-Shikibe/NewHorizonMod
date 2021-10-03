@@ -1,7 +1,8 @@
 # Custom Cutscene Guide
 
+**Used to make map animation script.**
 
-##FOREWORD
+## FOREWORD
 
 - Though the cutscene script has to do with javascript, it isn't so hard.
 - Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can maje cutscenes.
@@ -92,7 +93,8 @@ This importer has imported most of the MOD Classes that you will need. If you ne
 8. If you want to confirm, Click button `Read Scripts` to see whether the map has your script installed or not.
 9. Save the map and the open the world, test your script.
 10. If something wrong that didn't ever appear happens, try to repackage the script.
-11. Publish your map.
+11. The tag `(@HC)` can be deleted after you finishing debug works, or you can keep it as a sign that tells others this map has a cutscene.
+12. Publish your map.
 
 ### Core Method
 ```java
@@ -310,5 +312,5 @@ public static float getFloatOrNaN(String key){
 ```
 - Used for getting a `float` if an event's data if the string does not contain a parsable `float`, or it will return `Float.NaN`.
 
-~~Sorry I'm too tired, I may finish these in the future. Read `newhorizon.feature.CutsceneScript.java` first~~
+~~Sorry I'm too tired, I may finish these in the future. Read [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) first~~
 
