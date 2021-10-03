@@ -7,6 +7,7 @@
 - Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can maje cutscenes.
 - So relax. **_You Can Do It_**
 - Example: [Script For Map (@HC)Hostile HQ](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/assets/custom-cutscene/(%40HC)Hostile%20HQ-cutscene.js)
+- Main Codes: [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java)
 
 ---
 
@@ -15,6 +16,9 @@
 - Powered by **JavaScript**.
 - Could be stored into the map file after you finish it, making it available without *external files*.
 - Available for multiple-player games and servers.
+- Has in-game debugger. You have to activate these mod settings to access it.
+  - `Debug Mode`
+  - `Tool Panel`
 
 ### Caution
 

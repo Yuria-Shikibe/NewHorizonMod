@@ -83,7 +83,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			iconDialog.addCloseListener();
 			iconDialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("TableTexes", () -> {
 			tableDialog = new BaseDialog("ICONS"){{
@@ -113,7 +113,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			tableDialog.addCloseListener();
 			tableDialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("ButtonTexts", () -> {
 			buttonText = new BaseDialog("ButtonTexts"){{
@@ -145,7 +145,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonText.addCloseListener();
 			buttonText.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("ButtonImages", () -> {
 			buttonImage = new BaseDialog("ButtonImages"){{
@@ -188,7 +188,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.row();
 		
@@ -197,7 +197,7 @@ public class TableTexDebugDialog extends BaseDialog{
 				cont.pane(table -> {
 					AtomicInteger index = new AtomicInteger();
 					
-					content.units().forEach( (unit) -> {
+					content.units().each( (unit) -> {
 						if(!unit.isHidden()){
 							if(index.get() % 8 == 0) table.row();
 							table.table(Tex.buttonEdge3, t -> {
@@ -217,7 +217,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 //
 //		cont.button("Test", () -> {
 //			buttonImage = new BaseDialog("Test"){{
@@ -256,7 +256,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("Settings", () -> {
 			new NHSetting.SettingDialog().show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("Interp", () -> {
 			BaseDialog dialog = new BaseDialog("Interpolation", Styles.fullDialog);

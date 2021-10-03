@@ -141,10 +141,13 @@ public class NHSetting{
 	public static void updateSettingMenu(){
 		SettingsMenuDialog settingTable = Vars.ui.settings;
 		settingTable.game.row();
-		settingTable.game.button("MOD: [sky]" + modMeta.displayName, new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
+		settingTable.graphics.checkPref("enableeffectdetails", true);
+		settingTable.game.sliderPref("eventbarsoffsetx", 0, 0, 1200, 100, i -> i + "");
+		settingTable.game.sliderPref("eventbarsoffsety", 0, 0, 1200, 100, i -> i + "");
+		
+		settingTable.game.row().button("MOD: [sky]" + modMeta.displayName, new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
 			new SettingDialog().show();
 		}).size(LEN * 6f, LEN + OFFSET);
-		settingTable.graphics.checkPref("enableeffectdetails", true);
 	}
 	
 	private static void updateProperty(String version) throws IOException{

@@ -166,11 +166,6 @@ public class TableFunc{
                             for(Item item : content.items()) player.team().core().items.add(item, 1000000);
                         }).size(LEN * 2, LEN);
                     }).grow().row();
-                    tin.pane(con -> {
-                        con.button("Debug", Styles.cleart, () -> {
-                            new TableTexDebugDialog("debug").show();
-                        }).disabled(b -> !state.rules.infiniteResources && !NHSetting.getBool("@active.debug")).grow();
-                    }).growX().height(LEN).row();
                 });
                 out.pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
             });
@@ -337,6 +332,7 @@ public class TableFunc{
                             Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
                         }).growX();
                         t.row();
+                        
                         t.button("Reload From Matched File", Styles.cleart, () -> {
                             ui.showConfirm(
                                 "Are you sure you want reload the script from matched file: " + CutsceneScript.currentScriptFile.name() + "?",
@@ -352,6 +348,11 @@ public class TableFunc{
                                 textArea.setText(file.readString());
                             }, "js");
                         }).growX();
+                        t.row();
+                        
+                        t.button("Debug", Styles.cleart, () -> {
+                            new TableTexDebugDialog("debug").show();
+                        }).disabled(b -> !NHSetting.getBool("@active.debug")).padTop(OFFSET).grow();
                     }).growX().fillY();
                 }});
             }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();

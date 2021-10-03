@@ -615,6 +615,7 @@ public class CutsceneScript{
 			eventBarTable = null;
 		}
 		
+		
 		protected static Table actor;
 		protected static Table defaultFiller = filler();
 		protected static Table up = new Table(), down = new Table();
@@ -634,7 +635,7 @@ public class CutsceneScript{
 					visible(() -> ui.hudfrag.shown);
 					
 					setSize(Core.graphics.getWidth() / 4f, Core.graphics.getHeight() / 4.45f);
-					setPosition(0, 0);
+					setPosition(Core.settings.getInt("eventbarsoffsetx", 0), Core.settings.getInt("eventbarsoffsety", 0));
 				});
 				
 				background(Tex.buttonEdge3);
