@@ -1,5 +1,6 @@
 # Custom Cutscene Guide
 
+
 ##FOREWORD
 
 - Though the cutscene script has to do with javascript, it isn't so hard.
