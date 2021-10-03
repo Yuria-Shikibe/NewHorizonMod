@@ -27,6 +27,7 @@ import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextArea;
+import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
 import arc.util.Time;
@@ -78,7 +79,7 @@ public class TableFunc{
             left();
             table(table -> {
                 button(Icon.cancel, Styles.clearTransi, () -> {
-                    actions(Actions.touchable(Touchable.disabled), Actions.moveTo(-width, y, 0.7f, Interp.pow4In), Actions.remove());
+                    actions(Actions.touchable(Touchable.disabled), Actions.moveBy(-width, 0, 0.4f, Interp.pow3In), Actions.remove());
                 }).width(LEN).growY();
             }).growY().fillX().padRight(OFFSET);
         }
@@ -218,6 +219,11 @@ public class TableFunc{
             super(text);
         }
     
+        public void setSizeQuiet(float width, float height){
+            this.width = width;
+            this.height = height;
+        }
+        
         @Override
         public void sizeChanged(){
             super.sizeChanged();
@@ -253,7 +259,7 @@ public class TableFunc{
         
         children.setPosition(inner.getWidth() - children.getWidth(), inner.y + (inner.getHeight() - children.getHeight()) / 2);
         
-        inner.actions(Actions.moveTo(0, inner.y, 1f, Interp.fade));
+        inner.actions(Actions.moveTo(0, inner.y, 0.35f, Interp.pow3Out));
     }
     
     public static void tableMain(){
@@ -273,61 +279,75 @@ public class TableFunc{
             }).grow().disabled(b -> !NHSetting.getBool("@active.admin-panel") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();
             table.button(Icon.logic, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
                 showInner(starter, new Table(Tex.button){{
-                    setSize(Core.graphics.getWidth() / 3f, Core.graphics.getHeight() * 0.75f);
+                    setSize(Core.graphics.getWidth() / 1.5f, Core.graphics.getHeight() * 0.75f);
                     Label label = new Label("");
                     label.setWrap(false);
                     label.setText(textArea.getText());
-                    
+
                     Label liner = new Label("");
                     liner.setWrap(false);
-                
-                    update(() -> {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        int linesGlobal = getLineNum(CutsceneScript.getModGlobalJS().readString());
-                        int lines = textArea.getLinesShowing();
-    
-                        for(int i = 0; i < lines; i++)stringBuilder.append(i + linesGlobal + 1).append("\n");
-                        liner.setText(stringBuilder.toString());
-                    });
                     
+
                     ScrollPane sp = pane(Styles.horizontalPane, t -> {
-                        t.touchable(() -> Touchable.enabled);
-                        
-                        t.table(cont -> {
-                            cont.top();
-                            cont.add(liner).fillX().height(label.getPrefHeight()).color(Color.gray);
-                            cont.add(textArea).size(label.getPrefWidth(), label.getPrefHeight());
-                        }).pad(LEN / 2);
+                        t.align(Align.topLeft);
+                        Cell<Label> l = t.add(liner).color(Color.gray).padTop(13.5f).fill();
+                        Cell<TextAreaMod> textAreaMod = t.add(textArea).fill();
+                        t.update(() -> {
+                            label.setText(textArea.getText());
+                            StringBuilder stringBuilder = new StringBuilder();
+                            int linesGlobal = getLineNum(CutsceneScript.getModGlobalJS().readString());
+                            int lines = textArea.getLinesShowing();
+    
+                            for(int i = 0; i < lines; i++)stringBuilder.append(i + linesGlobal + 1).append("\n");
+                            liner.setText(stringBuilder.toString());
+//
+                            l.fillX().height(label.getPrefHeight() + LEN * 4);
+                            textAreaMod.size(label.getPrefWidth() + LEN * 4, label.getPrefHeight() + LEN * 4);
+                            t.table().fill();
+                        });
                     }).grow().pad(OFFSET).get();
                     
-                    sp.setForceScroll(true, true);
                     
+                    sp.setForceScroll(true, true);
+//
                     row();
                     table(t -> {
                         t.defaults().height(LEN);
                         t.button("@save", Styles.cleart, () -> {
-                            if(CutsceneScript.currentScriptFile != null){
-                                int hash = CutsceneScript.currentScriptFile.readString().hashCode();
-                                CutsceneScript.currentScriptFile.writeString(textArea.getText(), false);
-                                ui.showText("Save successfully", hash + " -> " + textArea.getText().hashCode());
-                            }else{
-                                ui.showCustomConfirm("Script File Missing", "Copy to clipboard?", "Accept", "@back",
-                                    () -> {
-                                        Core.app.setClipboardText(textArea.getText());
-                                    }, () -> {
-                                    
-                                    }
-                                );
-                            }
+                            ui.showConfirm("Are you sure you want save the script?", () -> {
+                                if(CutsceneScript.currentScriptFile != null){
+                                    int hash = CutsceneScript.currentScriptFile.readString().hashCode();
+                                    CutsceneScript.currentScriptFile.writeString(textArea.getText(), false);
+                                    ui.showText("Save successfully", hash + " -> " + textArea.getText().hashCode());
+                                }else{
+                                    ui.showCustomConfirm("Script File Missing", "Copy to clipboard?", "Accept", "@back",
+                                        () -> {
+                                            Core.app.setClipboardText(textArea.getText());
+                                        }, () -> {
+                
+                                        }
+                                    );
+                                }
+                            });
                         }).growX().padRight(OFFSET);
+                        t.button("Try Run Selection", Styles.cleart, () -> {
+                            Core.app.post(() -> CutsceneScript.tryRunJS(textArea.getSelection()));
+                        }).growX();
                         t.button("Run Selection", Styles.cleart, () -> {
-                            CutsceneScript.runJS(textArea.getSelection());
+                            Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
                         }).growX();
                         t.row();
-                        t.button("Refresh", Styles.cleart, () -> {
-                            textArea.setText(CutsceneScript.currentScriptFile.readString());
+                        t.button("Reload From Matched File", Styles.cleart, () -> {
+                            ui.showConfirm(
+                                "Are you sure you want reload the script from matched file: " + CutsceneScript.currentScriptFile.name() + "?",
+                                "This will overwrite the script here",
+                                () -> textArea.setText(CutsceneScript.currentScriptFile.readString())
+                            );
                         }).growX().disabled(b -> CutsceneScript.currentScriptFile == null).padTop(OFFSET).padRight(OFFSET);
-                        t.button("Read", Styles.cleart, () -> {
+                        t.button("Check World Data", Styles.cleart, () -> {
+                            ui.showText("Vars.state.rules.tags", state.rules.tags.toString(), Align.left);
+                        }).growX().padRight(OFFSET);
+                        t.button("@load", Styles.cleart, () -> {
                             platform.showMultiFileChooser(file -> {
                                 textArea.setText(file.readString());
                             }, "js");

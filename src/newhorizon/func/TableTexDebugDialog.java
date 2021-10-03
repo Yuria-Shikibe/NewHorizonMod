@@ -2,7 +2,9 @@ package newhorizon.func;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -12,9 +14,11 @@ import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.ImageButton;
+import arc.scene.ui.Label;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Align;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ctype.Content;
@@ -23,6 +27,7 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
@@ -254,10 +259,12 @@ public class TableTexDebugDialog extends BaseDialog{
 		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.button("Interp", () -> {
-			BaseDialog dialog = new BaseDialog("Interp");
+			BaseDialog dialog = new BaseDialog("Interpolation", Styles.fullDialog);
+			dialog.setFillParent(true);
 			dialog.cont.pane(t -> {
-				float unitLength = 2;
-				float offset = 20 * unitLength;
+				setFillParent(true);
+				float unitLength = 1.5f;
+				float offset = 70 * unitLength;
 				float len = 100;
 				float sigs = 100;
 				Seq<Field> fields = new Seq<>();
@@ -270,13 +277,31 @@ public class TableTexDebugDialog extends BaseDialog{
 						try{
 							Interp interp = (Interp)field.get(null);
 							
-							Table table = new Table(Tex.paneSolid){
+							Table table = new Table(Tex.pane){{
+								fill(Tex.clear, inner -> {
+									Label l = inner.add(field.getName()).color(Color.white).align(Align.topLeft).get();
+									l.getStyle().background = Styles.black3;
+								});
+							}
 								@Override
 								public void draw(){
+									background(Tex.pane);
 									super.draw();
 									
-									Draw.color(Pal.accent);
 									Lines.stroke(unitLength);
+									Draw.color(Color.gray);
+									Lines.line(x, y + offset, x + width, y + offset, false);
+									Lines.line(x + offset, y, x + offset, y + height, false);
+									Drawf.arrow(x, y + offset, x + width, y + offset, width - unitLength * 5.75f, unitLength * 5, Pal.gray);
+									Drawf.arrow(x + offset, y, x + offset, y + height, height - unitLength * 5.75f, unitLength * 5, Pal.gray);
+									
+									Draw.color(Color.gray);
+									Lines.line(x + offset, y + offset + unitLength * len, x + offset + unitLength * len, y + offset + unitLength * len, false);
+									Lines.line(x + offset + unitLength * len, y + offset, x + offset + unitLength * len, y + offset + unitLength * len, false);
+									
+									Fill.square(x + offset + unitLength * len, y + offset + unitLength * len, unitLength * 3, 45);
+									Draw.color(Pal.accent);
+									
 									Lines.beginLine();
 									
 									for(float i = 0; i < len; i += len / sigs){
@@ -284,12 +309,16 @@ public class TableTexDebugDialog extends BaseDialog{
 									}
 									
 									Lines.endLine(false);
+									Draw.reset();
+									
+									background(Tex.clear);
+									super.draw();
 								}
 							};
 							
 							t.table(table1 -> {
 								table1.add(table).size(len * unitLength + offset * 2).pad(OFFSET / 2).row();
-								table1.pane(in -> in.add(field.getName()).fill()).growX().height(LEN / 2 + OFFSET);
+//								table1.pane(in -> in.add(field.getName()).fill()).growX().height(LEN / 2 + OFFSET);
 							});
 						}catch(IllegalAccessException ignored){}
 					}
@@ -351,26 +380,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			dialog.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
-		cont.button("hold", () -> {
-			CutsceneScript.UIActions.screenHold(0.45f, 3f, 1f, Interp.fastSlow, Interp.slowFast);
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
-		
 		cont.row();
-		
-		cont.button("move", () -> {
-			float randX = Mathf.random(world.unitWidth()), randY = Mathf.random(world.unitHeight());
-			CutsceneScript.UIActions.screenHold(2f, 8f, 1f, Interp.fastSlow, Interp.slowFast, 0);
-			CutsceneScript.UIActions.actionSeq(
-					Actions.run(CutsceneScript.UIActions::pauseCamera),
-					Actions.delay(2f),
-					CutsceneScript.UIActions.moveTo(randX, randY, 4f, Interp.circleOut),
-					Actions.delay(1),
-					CutsceneScript.UIActions.moveTo(player.core().x, player.core().y, 1f, Interp.circleOut),
-					Actions.delay(1),
-					CutsceneScript.UIActions.moveTo(player.x, player.y, 1f, Interp.pow3Out),
-					Actions.run(CutsceneScript.UIActions::resumeCamera)
-			);
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("cores iterate", () -> {
 			Seq<CoreBlock.CoreBuild> cores = state.teams.cores(state.rules.waveTeam);
@@ -394,7 +404,6 @@ public class TableTexDebugDialog extends BaseDialog{
 			
 			Seq<Action> acts = new Seq<>();
 			
-			CutsceneScript.UIActions.screenHold(2f, actions.size * 2, 1f, Interp.fastSlow, Interp.slowFast, 0);
 			acts.addAll(Actions.run(() -> control.pause()), Actions.delay(2f)).addAll(actions).add(Actions.run(() -> control.resume()));
 			
 			CutsceneScript.UIActions.actionSeq(acts.toArray(Action.class));
@@ -404,7 +413,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			float time = Mathf.random(240f, 600f);
 			String name = String.valueOf(Time.millis());
 			
-			CutsceneScript.curUpdaters.add(() -> {
+			CutsceneScript.curUpdater.add(() -> {
 				CutsceneScript.reload(name, Time.delta, time, () -> true, () -> true, () -> state.rules.tags.remove(name));
 			});
 			

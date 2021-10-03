@@ -79,7 +79,7 @@ public class NHSectorPresets implements ContentList{
 				if(CutsceneScript.canInit()){
 					Time.run(30f, () -> {
 						UIActions.actionSeq(
-							Actions.delay(2f), UIActions.curtainIn(2f, Interp.pow2Out), Actions.run(UIActions::pauseCamera),
+							UIActions.startCutsceneDefault(),
 							UIActions.moveTo(316, 612, 1f, Interp.pow3Out),
 							UIActions.labelAct(
 								"[accent]Objective[]: @@@Use the limited resources and these gates to defeat enemies."
@@ -96,7 +96,7 @@ public class NHSectorPresets implements ContentList{
 									t.image(Icon.warning).padRight(OFFSET);
 								}
 							),
-							Actions.run(UIActions::resumeCamera), UIActions.curtainOut(1f, Interp.pow2In)
+							UIActions.endCutsceneDefault()
 						);
 					});
 				}
@@ -143,28 +143,28 @@ public class NHSectorPresets implements ContentList{
 			
 			CutsceneScript.updaters.put(this, Seq.with(() -> {
 				if(sector != null && sector.info.wasCaptured)return;
-				CutsceneScript.reload(generateName("Hostile Reinforcements Arriving", Pal.ammo, 60 * 60 * 5), Time.delta, 60 * 60 * 5, () -> true, () -> state.rules.waveTeam.cores().size == 1, () -> {
-					CoreBlock.CoreBuild core = state.rules.waveTeam.core();
-					UIActions.actionSeq(
-						Actions.parallel(
-							UIActions.cautionAt(core.x, core.y, core.block.size * tilesize / 2f, 6f, core.team.color),
-							Actions.run(() -> {
-								NHSounds.alarm.play();
-								NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 300f, 30f, NHUnitTypes.destruction, 4);
-								NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 240f, 15f, NHUnitTypes.striker, 6);
-								NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 300f, 60f, NHUnitTypes.hurricane, 2);
-							}),
-							UIActions.labelAct(
-								"[accent]Caution[]: @@@Hostile Fleet Incoming."
-								, 0.75f, 3.26f, Interp.linear, t -> {
-									t.image(Icon.warning).padRight(OFFSET);
-								}
-							)
-						)
-					);
-				});
 				
 				if(CutsceneScript.eventHasData(ENEMY_CORE_DESTROYED_EVENT)){
+					CutsceneScript.reload(generateName("Hostile Reinforcements Arriving", Pal.ammo, 60 * 60 * 5), Time.delta, 60 * 60 * 5, () -> true, () -> state.rules.waveTeam.cores().size == 1, () -> {
+						CoreBlock.CoreBuild core = state.rules.waveTeam.core();
+						UIActions.actionSeq(
+								Actions.parallel(
+										UIActions.cautionAt(core.x, core.y, core.block.size * tilesize / 2f, 6f, core.team.color),
+										Actions.run(() -> {
+											NHSounds.alarm.play();
+											NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 300f, 30f, NHUnitTypes.destruction, 4);
+											NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 240f, 15f, NHUnitTypes.striker, 6);
+											NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 300f, 60f, NHUnitTypes.hurricane, 2);
+										}),
+										UIActions.labelAct(
+												"[accent]Caution[]: @@@Hostile Fleet Incoming."
+												, 0.75f, 3.26f, Interp.linear, t -> {
+													t.image(Icon.warning).padRight(OFFSET);
+												}
+										)
+								)
+						);
+					});
 					CutsceneScript.reload(generateName("Air Raid", NHColor.darkEnrColor, 60 * 60 * 8), Time.delta, 60 * 60 * 8, () -> true, () -> state.rules.defaultTeam.cores().size > 1 && state.rules.waveTeam.cores().any(), () -> {
 						CoreBlock.CoreBuild core = state.teams.closestCore(world.unitWidth(), world.unitHeight(), state.rules.defaultTeam);
 						CoreBlock.CoreBuild coreE = state.rules.waveTeam.cores().firstOpt();
@@ -289,7 +289,7 @@ public class NHSectorPresets implements ContentList{
 						Seq<CoreBlock.CoreBuild> cores = state.teams.cores(state.rules.waveTeam);
 						Seq<Action> actions = new Seq<>(cores.size * 2);
 						
-						actions.add(Actions.delay(2f), UIActions.curtainIn(2f, Interp.pow2Out), Actions.run(UIActions::pauseCamera));
+						actions.add(UIActions.startCutsceneDefault());
 						
 						actions.addAll(
 							UIActions.moveTo(1512, 1968, 2f, Interp.pow3),
@@ -340,7 +340,7 @@ public class NHSectorPresets implements ContentList{
 							));
 						}
 						
-						actions.add(Actions.run(UIActions::resumeCamera), UIActions.curtainOut(1f, Interp.pow2In));
+						actions.add(UIActions.endCutsceneDefault());
 						
 						
 						UIActions.actionSeq(actions.toArray(Action.class));

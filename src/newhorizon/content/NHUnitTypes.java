@@ -64,6 +64,7 @@ public class NHUnitTypes implements ContentList{
 	
 	public static UnitType
 			guardian, gather,
+			saviour, 
 			sharp, branch, warper, striker, annihilation, hurricane, collapser, longinus,
 			origin, thynomo, aliotiat, tarlidor, destruction, naxos,
 			relay, ghost, zarkov, declining, rhino;
@@ -340,6 +341,32 @@ public class NHUnitTypes implements ContentList{
 	@Override
 	public void load(){
 		loadWeapon();
+		
+		/*saviour = new UnitType("saviour"){{
+			constructor = EntityMapping.map(3);
+			armor = 16.0F;
+			health = 24000.0F;
+			speed = 0.8F;
+			rotateSpeed = 1.0F;
+			accel = 0.04F;
+			drag = 0.018F;
+			flying = true;
+			engineOffset = 18.0F;
+			engineSize = 12;
+			rotateShooting = false;
+			hitSize = 66.0F;
+			payloadCapacity = 1797.7601F;
+			buildSpeed = 4.0F;
+			drawShields = false;
+			commandLimit = 6;
+			lowAltitude = true;
+			buildBeamOffset = 43.0F;
+			ammoCapacity = 1;
+			
+			abilities.add(new BulletRemoverAbility(Pal.heal, 180f, 800f, 1));
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};*/
 		
 		naxos = new UnitType("naxos"){{
 			constructor = EntityMapping.map(3);

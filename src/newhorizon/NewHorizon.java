@@ -31,7 +31,6 @@ import newhorizon.vars.EventTriggers;
 
 import java.io.IOException;
 
-import static mindustry.Vars.ghApi;
 import static newhorizon.func.TableFunc.LEN;
 import static newhorizon.func.TableFunc.OFFSET;
 
@@ -135,14 +134,17 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
-	        Http.get(ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
+	        Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
 		        Jval json = Jval.read(res.getResultAsString());
 		        String tag = json.get("tag_name").asString();
 		        String body = json.get("body").asString();
 		        if(!tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
-		            Vars.ui.showCustomConfirm(Core.bundle.get("mod.ui.has-new-update") + ": " + tag,
-			        "[accent]Description: \n[]" + body
-			        , "@mods.github.open", "@back", () -> Core.app.openURI(MOD_RELEASES), () -> {});
+			        Vars.ui.showCustomConfirm(
+	                Core.bundle.get("mod.ui.has-new-update") + ": " + tag,
+			        "[accent]Description: \n[]" + body,
+			        "@mods.github.open",
+			        "@back",
+			        () -> Core.app.openURI(MOD_RELEASES), () -> {});
 		        }
 		        Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
 	        }, ex -> Log.err(ex.toString()));
@@ -174,6 +176,7 @@ public class NewHorizon extends Mod{
 			        }).bottom().growX().height(LEN).padTop(OFFSET);
 		        }}.show();
 	        }
+        	
         	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
 	        TableFunc.tableMain();
 	        NHSetting.updateSettingMenu();

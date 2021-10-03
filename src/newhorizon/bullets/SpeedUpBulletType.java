@@ -46,7 +46,7 @@ public class SpeedUpBulletType extends BasicBulletType{
 	
 	@Override
 	public void update(Bullet b){
-		if(accelerateBegin < 1)b.vel.setLength(velocityBegin + func.apply(b.fin()) * velocityIncrease);
+		if(accelerateBegin < 1 && b.drag == 0)b.vel.setLength(velocityBegin + func.apply(b.fin()) * velocityIncrease);
 		super.update(b);
 	}
 }

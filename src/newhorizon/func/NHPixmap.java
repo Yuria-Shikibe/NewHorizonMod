@@ -16,6 +16,18 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 
 public class NHPixmap{
+	public static void outlineLegs(MultiPacker packer, UnitType type){
+		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless){
+			Color color = Color.valueOf("565666");
+			if(type.legRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-leg", Pixmaps.outline(Core.atlas.getPixmap(type.legRegion), color, type.outlineRadius));
+			if(type.jointRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-joint", Pixmaps.outline(Core.atlas.getPixmap(type.jointRegion), color, type.outlineRadius));
+			if(type.baseJointRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-joint-base", Pixmaps.outline(Core.atlas.getPixmap(type.baseJointRegion), color, type.outlineRadius));
+			if(type.footRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-foot", Pixmaps.outline(Core.atlas.getPixmap(type.footRegion), color, type.outlineRadius));
+			if(type.legBaseRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-leg-base", Pixmaps.outline(Core.atlas.getPixmap(type.legBaseRegion), color, type.outlineRadius));
+			if(type.baseRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-base", Pixmaps.outline(Core.atlas.getPixmap(type.baseRegion), color, type.outlineRadius));
+		}
+	}
+	
 	public static void createIcons(MultiPacker packer, UnitType type){
 		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless && type.region != null && type.region.found() && type.region instanceof TextureAtlas.AtlasRegion){
 			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)type.region;

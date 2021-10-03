@@ -339,17 +339,9 @@ public class UpgradeBlock extends Block{
 		}
 
 		@Override
-		public void afterDestroyed() {
-			super.afterDestroyed();
-			if(linkValid())target().resetUpgrade();
-			NHVars.world.upgraderGroup.remove(this);
-		}
-
-		@Override
 		public void placed() {
 			super.placed();
 			baseColorTst = getLinkColor();
-			NHVars.world.upgraderGroup.add(this);
 		}
 		
 		@Override
@@ -386,12 +378,6 @@ public class UpgradeBlock extends Block{
 			this.latestSelectID = read.i();
 
 			datas.each(data -> data.read(read, revision));
-		}
-		
-		@Override
-		public void afterRead(){
-			updateTarget();
-			NHVars.world.upgraderGroup.add(this);
 		}
 		
 		@Override
