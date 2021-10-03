@@ -210,7 +210,7 @@ public static final Seq<Cons<Boolean>> curEnder = new Seq<>();
 
 - `curUpdater` Used to storage movements that is acted every update(Do not run during pause).
 - `curIniter` Used to storage movements that is acted when the world is loaded.
-- `curEnder` Used to stroage movements that is acted when game over. Param `Boolean`: true -> win; false -> lose.
+- `curEnder` Used to storage movements that is acted when game over. Param `Boolean`: true -> win; false -> lose.
 
 ---
 
