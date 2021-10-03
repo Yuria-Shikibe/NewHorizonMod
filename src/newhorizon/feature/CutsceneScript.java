@@ -65,6 +65,7 @@ import static newhorizon.func.TableFunc.LEN;
 import static newhorizon.func.TableFunc.OFFSET;
 
 public class CutsceneScript{
+	public static final String CCS_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide";
 	/**
 	 * Each {@link SectorPreset} can has multiple actor.
 	 * <p></p>
@@ -179,6 +180,9 @@ public class CutsceneScript{
 						cont.table(t -> {
 							t.defaults().size(LEN * 6, LEN).padBottom(OFFSET);
 							
+							t.button("Guide", Icon.info, () -> {
+								Core.app.openURI(CCS_URL);
+							}).row();
 							t.button("Package Scripts", Icon.download, () -> {
 								platform.showMultiFileChooser(file -> {
 									editor.tags.put(CUTSCENE_KEY,

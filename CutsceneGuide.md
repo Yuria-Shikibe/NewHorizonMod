@@ -6,6 +6,7 @@
 - Though the cutscene script has to do with javascript, it isn't so hard.
 - Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can maje cutscenes.
 - So relax. **_You Can Do It_**
+- Example: [Script For Map (@HC)Hostile HQ](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/assets/custom-cutscene/(%40HC)Hostile%20HQ-cutscene.js)
 
 ---
 
@@ -305,5 +306,5 @@ public static float getFloatOrNaN(String key){
 ```
 - Used for getting a `float` if an event's data if the string does not contain a parsable `float`, or it will return `Float.NaN`.
 
-~~Sorry I'm too tired, I may finish these in the future. Read `newhorizon.feature.CutsceneScript.java` instead~~
+~~Sorry I'm too tired, I may finish these in the future. Read `newhorizon.feature.CutsceneScript.java` first~~
 
