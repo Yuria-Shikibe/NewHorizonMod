@@ -207,7 +207,7 @@ public class NewHorizon extends Mod{
 		EventTriggers.load();
 	    NHSounds.load();
 		NHContent.initLoad();
-		NHShaders.init();
+//		NHShaders.init();
 		
 		for(ContentList contentList : content){
 			contentList.load();
