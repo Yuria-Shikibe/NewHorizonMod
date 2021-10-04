@@ -2,7 +2,7 @@
 
 ![Logo](github-pictures/logo.png)
 
-****A Java Mindustry<V.0> mod for Android and PC.****
+****A Java Mindustry<V7> mod for Android and PC.****
 
 **Powered by *Yuria*.**
 
