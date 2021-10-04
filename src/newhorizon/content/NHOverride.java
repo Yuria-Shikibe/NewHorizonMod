@@ -156,7 +156,6 @@ public class NHOverride{
 	private static void addReq(Block target, ItemStack... items){
 		ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];
 		
-		int i;
 		
 		System.arraycopy(target.requirements, 0, newReq, 0, target.requirements.length);
 		System.arraycopy(items, 0, newReq, target.requirements.length, items.length);
@@ -169,9 +168,8 @@ public class NHOverride{
 		Seq<ItemStack> req = new Seq<>(ItemStack.class);
 		req.addAll(target.requirements);
 		
-		for(Item item : items){
-			req.each(itemReq -> itemReq.item == item, req::remove);
-		}
+		for(Item item : items)req.each(itemReq -> itemReq.item == item, req::remove);
+		
 		target.requirements = req.shrink();
 	}
 }

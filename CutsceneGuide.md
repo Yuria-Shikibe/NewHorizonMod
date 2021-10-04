@@ -98,21 +98,6 @@ This importer has imported most of the MOD Classes that you will need. If you ne
 
 ### Core Method
 ```java
-
-/**
- * Add ordered scripts. 
- *
- * @see DelayAction
- * @see ParallelAction
- * @see SequenceAction
- * @see RunnableAction
- * @see ImportantRunnableAction
- * @see LabelAction
- * @see CameraMoveAction
- * @see CameraTrackerAction
- * @see CautionAction
- *
- */
 public static boolean actionSeq(Action... actions){
     boolean isPlaying = isPlayingCutscene;
     
@@ -165,7 +150,7 @@ public static boolean actionSeq(Action... actions){
 }
 ```
 
-- Fill the method with `Action` one by on, follow time order.
+- Fill the method with `Action` one by one, follow time order.
 - Cutscene is powered by `arc.scene.Action`.
 - If you quit the world while a cutscene is playing, It won't be saved, which may causing some saving problems.
 - If multiple actions are called overlapped, they will be acted one by one.
@@ -191,7 +176,7 @@ public static boolean actionSeq(Action... actions){
   - `ParallelAction`
   - `SequenceAction`
   - `RunnableAction`
-  - `ImportantRunnableActi`
+  - `ImportantRunnableAction`
   - `LabelAction`
   - `CameraMoveAction`
   - `CameraTrackerAction`

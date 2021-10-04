@@ -1,19 +1,16 @@
 # NEWHORIZON MOD
 
-![Logo](github-pictures/ui/logo.png)
+![Logo](github-pictures/logo.png)
 
-****A Java Mindustry<V6.0> mod for Android and PC.****
+****A Java Mindustry<V.0> mod for Android and PC.****
 
 **Powered by *Yuria*.**
-
-## Update Frequency
-During this term (from March to June) I can only update this mod on weekends.
 
 ## Community
 [![Discord](https://img.shields.io/discord/825801593466388520.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord&color=17cf48)](https://discord.gg/yNmbMcuwyW)
 
 ## Server
-`n2.yd.gameworldmc.cn:20074`
+Currently, shutting down.
 
 ###### For foreigners (foreign countries relative to China)
 
@@ -36,51 +33,34 @@ Have a nice day.
 
 If you downloaded from `Action`, unzip the Mod.zip file first, then install the mod in-game;
 
-Mod is ***unstable*** (mainly for phones, which have some UI and loading problems) and is ***WORK IN PROGRESS***.
-
-All code is here and completely open source ~~so no code that has *safety* problems could be hidden~~.
-
 Here are the `Requirements` override code, which I believe it wouldn't cause conflict between multiple mods. Still, I give a setting to disable the override.
 
 ```java
 public class NHOverride{
     /*Override detail code...*/
-   private static void addReq(Block target, ItemStack... items){
-      ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];
-   
-      int i;
-   
-      for(i = 0; i < target.requirements.length; i++){
-         newReq[i] = target.requirements[i];
-      }
-   
-      for(i = 0; i < items.length; i++){
-         newReq[i + target.requirements.length] = items[i];
-      }
-   
-      target.requirements = newReq;
-      Arrays.sort(target.requirements, Structs.comparingInt((j) -> j.item.id));
-   }
-   
+    private static void addReq(Block target, ItemStack... items){
+       ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];
+       
+       System.arraycopy(target.requirements, 0, newReq, 0, target.requirements.length);
+       System.arraycopy(items, 0, newReq, target.requirements.length, items.length);
+
+       target.requirements = newReq;
+       Arrays.sort(target.requirements, Structs.comparingInt((j) -> j.item.id));
+    }
+
    private static void removeReq(Block target, Item... items){
       Seq<ItemStack> req = new Seq<>(ItemStack.class);
       req.addAll(target.requirements);
-   
-      for(Item item : items){
-         req.each(itemReq -> itemReq.item == item, req::remove);
-      }
+
+      for(Item item : items)req.each(itemReq -> itemReq.item == item, req::remove);
+
       target.requirements = req.shrink();
    }
 }
 ```
 
-## In Game Settings
-This mod adds a new setting dialog when starting the game.
-By choose the available setting, you can activate the in-game debug panel and advance load, which creates outline icons and unit full icons automatically.
-However, the advance load now causes a stuck problem when the game loaded on a phone. So, for your gaming experience, I made it false by default. If you are confident with your device, activate it.
-If you find that your device cannot afford it, open the mod file folder and find the "new-horizon" folder. Then, open the properties file in it, change the "@active.advance-load*" to false, and open the game again.
-
-**However, when the mod deleted, the setting file will not be deleted automatically, so before I solve this problem, you may have to delete it yourself.**
+## Custom Cutscene Script
+[Get the information](https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide)
 
 ## MOD Guide
 

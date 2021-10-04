@@ -9,7 +9,6 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.core.GameState;
@@ -17,7 +16,6 @@ import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
@@ -25,6 +23,7 @@ import mindustry.world.Tile;
 import newhorizon.NewHorizon;
 import newhorizon.block.defence.GravityTrap;
 import newhorizon.block.defence.HyperSpaceWarper;
+import newhorizon.content.NHShaders;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.feature.ScreenHack;
 import newhorizon.func.NHSetting;
@@ -127,7 +126,7 @@ public class EventTriggers{
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");
 		});
 		
-		Events.run(EventType.Trigger.draw, () -> {
+		Events.run(EventType.Trigger.preDraw, () -> {
 			float scl = 20;
 			Building building = Vars.control.input.frag.config.getSelectedTile();
 			
@@ -137,15 +136,79 @@ public class EventTriggers{
 			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
 				for(GravityTrap.GravityTrapBuild b : NHVars.world.gravityTraps){
 					if(!b.active())return;
-					Draw.z(Layer.buildBeam + Mathf.num(b.team != Vars.player.team() ^ ((Time.time % (scl * 8 * Mathf.pi)) > scl * Mathf.pi && (Time.time % (scl * 8 * Mathf.pi)) < scl * Mathf.pi * 5)));
-					Color c = b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust;
-					Tmp.c1.set(c).lerp(Color.white, Mathf.absin(scl, 1f));
-					Draw.color(Tmp.c1);
-					Fill.poly(b.x, b.y,6, b.range());
-					Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
+					Draw.draw(Layer.overlayUI, () -> {
+						NHShaders.gravityTrapShader.apply();
+						NHShaders.gravityTrapShader.bind();
+						Draw.shader(NHShaders.gravityTrapShader);
+						
+						
+						Color c = b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust;
+						Tmp.c1.set(c).lerp(Color.white, Mathf.absin(scl, 1f));
+						Draw.color(Tmp.c1);
+						Fill.poly(b.x, b.y,6, b.range());
+						//						Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
+						Draw.shader();
+						
+						Draw.reset();
+					});
+					
+					
 				}
 			}
 		});
+		
+		Events.run(EventType.Trigger.postDraw, () -> {
+					Draw.drawRange(Layer.overlayUI, 1f, () -> Vars.renderer.effectBuffer.begin(Color.clear), () -> {
+						Vars.renderer.effectBuffer.end();
+						Vars.renderer.effectBuffer.blit(NHShaders.gravityTrapShader);
+					});
+		});
+		
+		/*Events.run(EventType.Trigger.draw, () -> {
+			float scl = 20;
+			Building building = Vars.control.input.frag.config.getSelectedTile();
+			
+			float z = Draw.z();
+			
+			
+			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
+				for(GravityTrap.GravityTrapBuild b : NHVars.world.gravityTraps){
+					if(!b.active())return;
+//					Draw.z(Layer.buildBeam + Mathf.num(b.team != Vars.player.team() ^ ((Time.time % (scl * 8 * Mathf.pi)) > scl * Mathf.pi && (Time.time % (scl * 8 * Mathf.pi)) < scl * Mathf.pi * 5)));
+//
+//					NHShaders.build.region = region;
+//					Shaders.build.progress = progress;
+//					Shaders.build.color.set(color);
+//					Shaders.build.color.a = speed;
+//					Shaders.build.time = -time / 20f;
+//
+
+//					Floor
+					
+					Draw.draw(Layer.overlayUI, () -> {
+						NHShaders.gravityTrapShader.apply();
+						NHShaders.gravityTrapShader.bind();
+						Draw.shader(NHShaders.gravityTrapShader);
+						
+						
+						Color c = b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust;
+						Tmp.c1.set(c).lerp(Color.white, Mathf.absin(scl, 1f));
+						Draw.color(Tmp.c1);
+						Fill.poly(b.x, b.y,6, b.range());
+//						Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
+						Draw.shader();
+						
+						Draw.reset();
+					});
+					
+					Draw.drawRange(Layer.overlayUI, 1f, () -> Vars.renderer.effectBuffer.begin(Color.clear), () -> {
+						Vars.renderer.effectBuffer.end();
+						Vars.renderer.effectBuffer.blit(NHShaders.gravityTrapShader);
+					});
+					
+				}
+			}
+		});*/
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
 			if(!NHSetting.getBool("@active.override") && e.host.name.equals(NewHorizon.SERVER_AUZ_NAME)){

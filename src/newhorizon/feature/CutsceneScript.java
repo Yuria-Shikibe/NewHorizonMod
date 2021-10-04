@@ -797,6 +797,7 @@ public class CutsceneScript{
 		/** Make camera follow player on desktop; make player follow camera on phones. */
 		public static void resumeCamera(){
 			if(Vars.mobile)Core.camera.position.set(Vars.player);
+			else if(Vars.control.input instanceof DesktopInput)((DesktopInput)Vars.control.input).panning = false;
 			cameraActor = null;
 		}
 		

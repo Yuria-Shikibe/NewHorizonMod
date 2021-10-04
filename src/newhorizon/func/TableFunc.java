@@ -92,29 +92,30 @@ public class TableFunc{
     
     private static class ToolTable extends Table{
         ToolTable(){
+            setSize(Core.graphics.getWidth() / (Vars.mobile ? 2f : 4f), Core.graphics.getHeight() * 0.75f);
             background(Tex.button);
-            Table in = new Table(out -> {
+            Table in = new Table(){{
                 Label label = new Label("Spawn");
-                out.update(() -> {
+                update(() -> {
                     label.setText(Core.bundle.get("waves.perspawn") + ": [accent]" + spawnNum + "[]* | At: " + (int)point.x + ", " + (int)point.y);
-                    label.setWidth(out.getWidth());
+                    label.setWidth(getWidth());
                 });
-                out.add(label).growX().fillY().pad(OFFSET).row();
+                add(label).growX().fillY().pad(OFFSET).row();
     
-                out.pane(con -> {
+                pane(con -> {
                     con.button(Icon.leftOpen, Styles.clearPartiali, () -> spawnNum = Mathf.clamp(--spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
                     con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).growX().height(LEN - OFFSET * 1.5f).padLeft(OFFSET / 2).padRight(OFFSET / 2);
                     con.button(Icon.rightOpen, Styles.clearPartiali, () -> spawnNum = Mathf.clamp(++spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
                 }).growX().height(LEN).row();
     
-                out.table(con -> {
+                table(con -> {
                     con.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
                         pointSelectTable(starter, p -> point.set(World.unconv(p.x), World.unconv(p.y)));
                     }).grow();
                     con.button(Icon.cancel, Styles.clearTransi, () -> point.set(-1, -1)).size(LEN);
                 }).growX().height(LEN).row();
     
-                out.pane(table -> {
+                ScrollPane p = pane(table -> {
                     int num = 0;
                     for(UnitType type : content.units()){
                         if(type.isHidden()) continue;
@@ -122,16 +123,21 @@ public class TableFunc{
                         table.button(new TextureRegionDrawable(type.fullIcon), Styles.clearTogglei, LEN, () -> selected = type).update(b -> b.setChecked(selected == type)).size(LEN);
                         num++;
                     }
-                }).fillX().height(LEN * 3f).row();
+                }).fillX().height(LEN * 3f).get();
+                
+                row();
+                
+                p.setFadeScrollBars(true);
+                p.setupFadeScrollBars(0.35f, 0.45f);
     
-                out.keyDown(c -> {
+                keyDown(c -> {
                     if(c == KeyCode.left)spawnNum = Mathf.clamp(--spawnNum, 1, 100);
                     if(c == KeyCode.right)spawnNum = Mathf.clamp(++spawnNum, 1, 100);
                 });
                 
                 Table t = new Table(tin -> {
                     tin.table(con -> {
-                        float size = out.getPrefWidth() / 8;
+                        float size = getPrefWidth() / 8;
                         con.image(Icon.players).size(size).padRight(size);
                         for(Team team : Team.baseTeams){
                             con.button(Tex.whiteui, Styles.clearTogglei, size - 8f, () -> player.team(team)).update(b -> {
@@ -142,7 +148,7 @@ public class TableFunc{
                     }).growX().height(LEN).row();
                     tin.image().color(Pal.gray).height(OFFSET / 3).growX().row();
                     tin.table(con -> {
-                        float size = out.getPrefWidth() / 8;
+                        float size = getPrefWidth() / 8;
                         con.image(Icon.units).size(size).padRight(size);
                         for(Team team : Team.baseTeams){
                             con.button(Tex.whiteui, Styles.clearTogglei, size - 8f, () -> selectTeam = team).update(b -> {
@@ -167,10 +173,15 @@ public class TableFunc{
                         }).size(LEN * 2, LEN);
                     }).grow().row();
                 });
-                out.pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
-            });
-            add(in).fillX();
-            setSize(Core.graphics.getWidth() / 4f, Core.graphics.getHeight() * 0.75f);
+                pane(t).fillX().height(t.getHeight()).padTop(OFFSET).row();
+                
+                table().fill();
+            }};
+            ScrollPane p = pane(in).grow().get();
+            
+            p.setStyle(Styles.horizontalPane);
+            p.setFadeScrollBars(true);
+            p.setupFadeScrollBars(0.35f, 0.45f);
         }
     
         @Override
@@ -207,23 +218,7 @@ public class TableFunc{
     
     private static final Table starter = new Table(Tex.paneSolid);
     
-    public static final TextAreaMod textArea = new TextAreaMod("");
-    
-    public static class TextAreaMod extends TextArea{
-        public TextAreaMod(String text){
-            super(text);
-        }
-    
-        public void setSizeQuiet(float width, float height){
-            this.width = width;
-            this.height = height;
-        }
-        
-        @Override
-        public void sizeChanged(){
-            super.sizeChanged();
-        }
-    }
+    public static final TextArea textArea = new TextArea("");
     
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static int getLineNum(String string){
@@ -236,7 +231,7 @@ public class TableFunc{
     }
     
     public static void showTable(){
-        Core.scene.root.addChildAt(1, starter);
+        Core.scene.root.addChild(starter);
     }
     
     public static void showInner(Table parent, Table children){
@@ -247,7 +242,7 @@ public class TableFunc{
     
         children.fill().pack();
         children.setTransform(true);
-        inner.addChildAt(parent.getZIndex() + 1, children);
+        inner.addChildAt(parent.getZIndex() + 2, children);
         inner.setScale(parent.scaleX, parent.scaleY);
         children.setScale(parent.scaleX, parent.scaleY);
         
@@ -286,7 +281,7 @@ public class TableFunc{
                     ScrollPane sp = pane(Styles.horizontalPane, t -> {
                         t.align(Align.topLeft);
                         Cell<Label> l = t.add(liner).color(Color.gray).padTop(13.5f).fill();
-                        Cell<TextAreaMod> textAreaMod = t.add(textArea).fill();
+                        Cell<TextArea> textAreaMod = t.add(textArea).fill();
                         t.update(() -> {
                             label.setText(textArea.getText());
                             StringBuilder stringBuilder = new StringBuilder();
