@@ -5,7 +5,7 @@
 ## FOREWORD
 
 - Though the cutscene script has to do with javascript, it isn't so hard.
-- Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can maje cutscenes.
+- Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can make cutscenes.
 - So relax. **_You Can Do It_**
 - Example: [Script For Map (@HC)Hostile HQ](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/assets/custom-cutscene/(%40HC)Hostile%20HQ-cutscene.js)
 - Main Codes: [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java)
