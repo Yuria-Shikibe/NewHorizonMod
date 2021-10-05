@@ -2175,6 +2175,9 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(NHUnitTypes.saviour, new byte[]{NHUnitTypes.OTHERS, 5}, 400 * 60f,
+					with(NHItems.setonAlloy, 200, Items.surgeAlloy, 150, NHItems.juniorProcessor, 200, NHItems.thermoCoreNegative, 100, Items.plastanium, 200)
+				),
 				new UnitSet(NHUnitTypes.collapser, new byte[]{NHUnitTypes.OTHERS, 7}, 600 * 60f,
 					new ItemStack(NHItems.darkEnergy, 2000),
 					new ItemStack(NHItems.upgradeSort, 2000)

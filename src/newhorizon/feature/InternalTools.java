@@ -63,7 +63,7 @@ public class InternalTools{
 								}else{
 									preview.put(k + " = " + v, Pal.heal);
 									original.put(k + " = " + v, new Color().set(Color.lightGray).a(0));
-									toStorage.add(k + " = " + v);
+									toStorage.add(k + " = <TODO>" + v);
 								}
 							});
 							
@@ -78,12 +78,14 @@ public class InternalTools{
 							
 							Cons2<ObjectMap<String, Color>, Table> func = (kvs, table) -> {
 								table.clearChildren();
+								int[] missing = new int[1];
 								kvs.keys().toSeq().sort(Comparator.comparing(s -> s.split(" = ")[0])).each(k -> {
 									Color v = kvs.get(k);
 									float[] h = new float[1];
 									table.table(v.equals(Color.white) ? Tex.clear : ((TextureRegionDrawable)Tex.whiteui).tint(v.r, v.g, v.b, 0.35f), c -> {
+										if(v.a == 0)missing[0]++;
 										c.align(Align.topLeft);
-										Label ln = c.add(table.getRows() + 1 + "").top().width(LEN).get();
+										Label ln = c.add(v.a == 0 ? "" : (table.getRows() - missing[0] + 1 + "")).top().width(LEN).get();
 										ln.setFontScale(0.825f);
 										ln.setColor(v.r, v.g, v.b, 1);
 										c.image().growY().get().setColor(v.r, v.g, v.b, 1);

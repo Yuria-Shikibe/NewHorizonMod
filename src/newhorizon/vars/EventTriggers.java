@@ -25,7 +25,6 @@ import mindustry.world.Tile;
 import newhorizon.NewHorizon;
 import newhorizon.block.defence.GravityTrap;
 import newhorizon.block.defence.HyperSpaceWarper;
-import newhorizon.content.NHShaders;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.feature.ScreenHack;
 import newhorizon.func.NHSetting;
@@ -177,17 +176,11 @@ public class EventTriggers{
 					if(!b.active())return;
 					Draw.z(Layer.buildBeam + Mathf.num(b.team != Vars.player.team() ^ ((Time.time % (scl * 8 * Mathf.pi)) > scl * Mathf.pi && (Time.time % (scl * 8 * Mathf.pi)) < scl * Mathf.pi * 5)));
 					
-					NHShaders.gravityTrapShader.apply();
-					NHShaders.gravityTrapShader.bind();
-					Draw.shader(NHShaders.gravityTrapShader);
-					
-					
 					Color c = b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust;
 					Tmp.c1.set(c).lerp(Color.white, Mathf.absin(scl, 1f));
 					Draw.color(Tmp.c1);
 					Fill.poly(b.x, b.y,6, b.range());
 					Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
-					Draw.shader();
 					
 					Draw.reset();
 				}

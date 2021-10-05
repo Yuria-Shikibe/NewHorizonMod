@@ -202,9 +202,9 @@ public class TableTexDebugDialog extends BaseDialog{
 						if(!unit.isHidden()){
 							if(index.get() % 8 == 0) table.row();
 							table.table(Tex.buttonEdge3, t -> {
-								t.button(new TextureRegionDrawable(unit.shadowRegion), Styles.cleari,LEN * 3,() -> {
+								t.button(new TextureRegionDrawable(unit.fullIcon), Styles.cleari,LEN * 3,() -> {
 									BaseDialog d = new BaseDialog("info"){{
-										cont.image(unit.shadowRegion);
+										cont.image(unit.fullIcon);
 									}};
 									d.addCloseListener();
 									d.show();

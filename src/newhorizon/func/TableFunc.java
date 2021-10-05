@@ -231,7 +231,7 @@ public class TableFunc{
     }
     
     public static void showTable(){
-        Core.scene.root.addChild(starter);
+        Core.scene.root.addChildAt(3, starter);
     }
     
     public static void showInner(Table parent, Table children){

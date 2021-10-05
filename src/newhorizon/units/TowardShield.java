@@ -133,11 +133,11 @@ public class TowardShield extends Ability{
 				Draw.color(unit.team.color, Color.white, Mathf.clamp(alpha));
 				Draw.z(Layer.shields);
 				if(Core.settings.getBool("animatedshields")){
-					DrawFunc.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+					DrawFunc.fillCirclePercent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 				}else{
 					Lines.stroke(f * 1.5f);
 					Draw.alpha(0.09f);
-					DrawFunc.fillCirclePrecent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
+					DrawFunc.fillCirclePercent(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 					Draw.alpha(1f);
 					DrawFunc.circlePercent(unit.x, unit.y, realRad, angleDst / 360f, angle - angleDst / 2f);
 					Lines.line(unit.x + Tmp.v1.x + Tmp.v2.x * i, unit.y + Tmp.v1.y + Tmp.v2.y * i, left.x, left.y, false);

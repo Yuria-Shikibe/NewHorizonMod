@@ -178,7 +178,7 @@ public class NHFx{
 			
 			e.scaled(lifetime / 3, t -> {
 				stroke(3f * t.fout());
-				circle(e.x, e.y, 3f + t.fin() * range);
+				circle(e.x, e.y, 3f + t.fin(Interp.circleOut) * range);
 			});
 			
 			e.scaled(lifetime / 2, t -> {
@@ -243,6 +243,10 @@ public class NHFx{
 	}
 	
 	public static Effect crossBlast(Color color, float size){
+		return crossBlast(color, size, 0);
+	}
+	
+	public static Effect crossBlast(Color color, float size, float rotate){
 		return new Effect(Mathf.clamp(size / 3f, 35f, 240f), size * 2, e -> {
 			color(color, Color.white, e.fout() * 0.55f);
 			Drawf.light(e.x, e.y, e.fout() * size, color, 0.7f);
@@ -257,7 +261,7 @@ public class NHFx{
 			float randL = rand.random(sizeDiv);
 			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, size / 16 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90);
+				Drawf.tri(e.x, e.y, size / 16 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + rotate);
 			}
 		});
 	}
