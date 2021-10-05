@@ -778,8 +778,8 @@ public class NHFx{
 			Tmp.v1.trns(e.rotation, -type.engineOffset);
 			
 			e.scaled(45, i -> {
-				Drawf.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.9f * i.fout(Interp.sineIn), 2500, i.rotation - 180);
-				Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.45f * i.fout(Interp.sineIn));
+				Drawf.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 1.5f * i.fout(Interp.sineIn), 2500, i.rotation - 180);
+				Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.75f * i.fout(Interp.sineIn));
 			});
 
 			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));

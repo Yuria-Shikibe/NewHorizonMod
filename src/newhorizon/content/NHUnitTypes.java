@@ -347,8 +347,8 @@ public class NHUnitTypes implements ContentList{
 		saviour = new UnitType("saviour"){{
 			constructor = EntityMapping.map(5);
 			hitSize = 40f;
-			armor = 16.0F;
-			health = 24000.0F;
+			armor = 36.0F;
+			health = 34000.0F;
 			speed = 0.9F;
 			rotateSpeed = 0.75f;
 			accel = 0.04F;
@@ -419,7 +419,7 @@ public class NHUnitTypes implements ContentList{
 						timeIncrease = 3f;
 						timeDuration = 60f * 20f;
 						powerDamageScl = 3f;
-						damage = 160;
+						damage = 220;
 						hitColor = lightColor = Pal.heal;
 						lightRadius = 70f;
 						clipSize = 250f;

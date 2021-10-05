@@ -37,7 +37,7 @@ public class HealFieldAbility extends Ability{
 	protected float curStroke;
 	
 	public float layer = Layer.bullet - 0.001f, blinkScl = 20f;
-	public float effectRadius = 5f, sectorRad = 0.14f, rotateSpeed = 0.5f;
+	public float effectRadius = 6f, sectorRad = 0.08f, rotateSpeed = 0.5f;
 	public int sectors = 5;
 	
 	public HealFieldAbility(Color scanColor, float reloadTime, float spawnX, float spawnY, float range, float healMount){
@@ -160,7 +160,7 @@ public class HealFieldAbility extends Ability{
 		Lines.square(rx, ry, orbRadius * 1.8f, Time.time * 1.5f);
 		Lines.square(rx, ry, orbRadius * 2.4f, -Time.time);
 		Lines.spikes(rx, ry, orbRadius * 2.6f, orbRadius, 4, Time.time * 1.25f);
-		Lines.stroke(Mathf.clamp(range / 80, 3, 8) * curStroke);
+		Lines.stroke(Mathf.clamp(range / 80, 3, 8) * curStroke * reload / reloadTime / 2);
 		
 		if(curStroke > 0){
 			for(int i = 0; i < sectors; i++){
