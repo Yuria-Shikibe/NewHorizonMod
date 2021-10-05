@@ -18,7 +18,6 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
-import mindustry.ai.types.RepairAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
@@ -53,8 +52,7 @@ import newhorizon.units.*;
 import newhorizon.vars.EventTriggers;
 
 import static arc.graphics.g2d.Draw.color;
-import static mindustry.Vars.headless;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class NHUnitTypes implements ContentList{
 	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
@@ -347,8 +345,7 @@ public class NHUnitTypes implements ContentList{
 		loadWeapon();
 		
 		saviour = new UnitType("saviour"){{
-			defaultController = RepairAI::new;
-			constructor = EntityMapping.map(3);
+			constructor = EntityMapping.map(5);
 			hitSize = 40f;
 			armor = 16.0F;
 			health = 24000.0F;
@@ -364,6 +361,7 @@ public class NHUnitTypes implements ContentList{
 			commandLimit = 6;
 			lowAltitude = true;
 			buildBeamOffset = 43.0F;
+			payloadCapacity = (5 * 5) * tilePayload;
 			
 			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.generator, BlockFlag.battery, null};
 			
@@ -1600,7 +1598,7 @@ public class NHUnitTypes implements ContentList{
 				continuous = true;
 				rotateSpeed = 1;
 				reload = 180f;
-				bullet = new BulletType(0, 500f){{
+				bullet = new BulletType(0, 350f){{
 					shake = 3;
 					lifetime = 210f;
 					shootSound = Sounds.none;
