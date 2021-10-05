@@ -51,7 +51,7 @@ public class NHUpgradeDatas implements ContentList{
 			shootSound = NHSounds.gauss;
 			defaultLevel = 1;
 			burstSpacing = 7f;
-			salvos = 8;
+			salvos = 7;
 			randX = 3f * tilesize;
 			reloadTime = 150f;
 			
@@ -68,8 +68,8 @@ public class NHUpgradeDatas implements ContentList{
 			new ItemStack(NHItems.upgradeSort, 400)
 		){{
 			shootSound = Sounds.railgun;
-			burstSpacing = 5f;
-			salvos = 11;
+			burstSpacing = 5.5f;
+			salvos = 9;
 			randX = 3f * tilesize;
 			
 			reloadTime = 120f;

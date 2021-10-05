@@ -16,9 +16,11 @@ import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
+import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
+import mindustry.gen.Bullet;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.gen.WaterMovec;
@@ -62,6 +64,17 @@ public class NHFunc{
     });
     private static final Vec2 point1 = new Vec2(), point2 = new Vec2(), point3 = new Vec2(), point4 = new Vec2();
     private static final Rect r1 = new Rect(), r2 = new Rect();
+    
+    public static float findLaserLength(Bullet b, float angle, float length){
+        Tmp.v1.trnsExact(angle, length);
+    
+        tileParma = null;
+        
+        boolean found = world.raycast(b.tileX(), b.tileY(), World.toTile(b.x + Tmp.v1.x), World.toTile(b.y + Tmp.v1.y),
+                (x, y) -> (tileParma = world.tile(x, y)) != null && tileParma.team() != b.team && tileParma.block().absorbLasers);
+        
+        return found && tileParma != null ? Math.max(6f, b.dst(tileParma.worldx(), tileParma.worldy())) : length;
+    }
     
     public static void randFadeLightningEffect(float x, float y, float range, float lightningLength, Color color, boolean in){
         vec21.rnd(range).add(x, y);

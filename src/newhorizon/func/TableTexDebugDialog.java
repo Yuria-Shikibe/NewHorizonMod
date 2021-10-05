@@ -34,6 +34,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.feature.CutsceneScript;
+import newhorizon.feature.InternalTools;
 import newhorizon.feature.ScreenHack;
 
 import java.lang.reflect.Field;
@@ -201,9 +202,9 @@ public class TableTexDebugDialog extends BaseDialog{
 						if(!unit.isHidden()){
 							if(index.get() % 8 == 0) table.row();
 							table.table(Tex.buttonEdge3, t -> {
-								t.button(new TextureRegionDrawable(unit.shadowRegion), Styles.cleari,LEN * 3,() -> {
+								t.button(new TextureRegionDrawable(unit.fullIcon), Styles.cleari,LEN * 3,() -> {
 									BaseDialog d = new BaseDialog("info"){{
-										cont.image(unit.shadowRegion);
+										cont.image(unit.fullIcon);
 									}};
 									d.addCloseListener();
 									d.show();
@@ -425,6 +426,8 @@ public class TableTexDebugDialog extends BaseDialog{
 			});
 			
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("Bundle Tool", InternalTools::patchBundle).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		addCloseButton();
 	}

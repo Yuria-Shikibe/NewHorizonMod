@@ -127,7 +127,7 @@ public class EventTriggers{
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");
 		});
 		
-		Events.run(EventType.Trigger.draw, () -> {
+		/*Events.run(EventType.Trigger.preDraw, () -> {
 			float scl = 20;
 			Building building = Vars.control.input.frag.config.getSelectedTile();
 			
@@ -137,12 +137,52 @@ public class EventTriggers{
 			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
 				for(GravityTrap.GravityTrapBuild b : NHVars.world.gravityTraps){
 					if(!b.active())return;
+					Draw.draw(Layer.overlayUI, () -> {
+						NHShaders.gravityTrapShader.apply();
+						NHShaders.gravityTrapShader.bind();
+						Draw.shader(NHShaders.gravityTrapShader);
+						
+						
+						Color c = b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust;
+						Tmp.c1.set(c).lerp(Color.white, Mathf.absin(scl, 1f));
+						Draw.color(Tmp.c1);
+						Fill.poly(b.x, b.y,6, b.range());
+						//						Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
+						Draw.shader();
+						
+						Draw.reset();
+					});
+					
+					
+				}
+			}
+		});
+		
+		Events.run(EventType.Trigger.postDraw, () -> {
+					Draw.drawRange(Layer.overlayUI, 1f, () -> Vars.renderer.effectBuffer.begin(Color.clear), () -> {
+						Vars.renderer.effectBuffer.end();
+						Vars.renderer.effectBuffer.blit(NHShaders.gravityTrapShader);
+					});
+		});*/
+		
+		Events.run(EventType.Trigger.draw, () -> {
+			float scl = 20;
+			Building building = Vars.control.input.frag.config.getSelectedTile();
+			
+			float z = Draw.z();
+			
+			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
+				for(GravityTrap.GravityTrapBuild b : NHVars.world.gravityTraps){
+					if(!b.active())return;
 					Draw.z(Layer.buildBeam + Mathf.num(b.team != Vars.player.team() ^ ((Time.time % (scl * 8 * Mathf.pi)) > scl * Mathf.pi && (Time.time % (scl * 8 * Mathf.pi)) < scl * Mathf.pi * 5)));
+					
 					Color c = b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust;
 					Tmp.c1.set(c).lerp(Color.white, Mathf.absin(scl, 1f));
 					Draw.color(Tmp.c1);
 					Fill.poly(b.x, b.y,6, b.range());
 					Drawf.light(b.x, b.y, b.range() * 1.25f, c, 0.8f);
+					
+					Draw.reset();
 				}
 			}
 		});

@@ -27,12 +27,9 @@ void main(){
         gl_FragColor = vec4(maxed.rgb, maxed.a * 100.0);
     }else{
         if(color.a > 0.0){
-            if(color.r > 0.0f)color.r = 1f;
-            if(color.b > 0.0f)color.b = 1f;
-
             color.a = ALPHA;
-        }else
-
-        gl_FragColor = color;
+        }else{
+            gl_FragColor = color;
+        }
     }
 }

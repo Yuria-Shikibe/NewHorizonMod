@@ -13,6 +13,7 @@ import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
+import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import newhorizon.func.NHFunc;
 
@@ -72,6 +73,9 @@ public class PhaseAbility extends Ability{
 	
 	@Override
 	public void update(Unit unit){
+		for(WeaponMount wm : unit.mounts()){
+			if(wm.bullet != null)return;
+		}
 		if(unit.controller() instanceof Player)return;
 		reloadValue += Time.delta;
 		

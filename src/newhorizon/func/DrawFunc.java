@@ -112,7 +112,7 @@ public class DrawFunc{
         circlePercent(x, y, rad, f > 0 ? f : -f, in + -90 * Mathf.sign(f));
     }
     
-    public static void fillCirclePrecent(float centerX, float centerY, float x, float y, float rad, float percent, float angle){
+    public static void fillCirclePercent(float centerX, float centerY, float x, float y, float rad, float percent, float angle){
         float p = Mathf.clamp(percent);
     
         int sides = Lines.circleVertices(rad);
@@ -123,7 +123,6 @@ public class DrawFunc{
         int i;
     
         vec21.trns(angle, rad);
-        Fill.circle(x + vec21.x, y + vec21.y, Lines.getStroke() / 2f);
     
         for(i = 0; i < sides * p - 1; ++i){
             float a = space * (float)i + angle;
@@ -141,11 +140,44 @@ public class DrawFunc{
         float sin2 = Mathf.sinDeg(a + space);
         float f = sides * p - i;
         vec21.trns(a, 0, len * (f - 1));
-        Fill.circle(x + rad * cos2 + vec21.x, y + rad * sin2 + vec21.y, Lines.getStroke() / 2f);
+        Fill.tri(x + rad * cos, y + rad * sin, x + rad * cos2 + vec21.x, y + rad * sin2 + vec21.y, centerX, centerY);
+    }
+    
+    public static void fillCirclePercentFade(float centerX, float centerY, float x, float y, float rad, float percent, float angle, float aScl, float start , float end){
+        float p = Mathf.clamp(percent);
+        
+        int sides = Lines.circleVertices(rad);
+        
+        float space = 360.0F / (float)sides;
+        float len = 2 * rad * Mathf.sinDeg(space / 2);
+        
+        int i;
+        
+        vec21.trns(angle, rad);
+        
+        for(i = 0; i < sides * p - 1; ++i){
+            float a = space * (float)i + angle;
+            float cos = Mathf.cosDeg(a);
+            float sin = Mathf.sinDeg(a);
+            float cos2 = Mathf.cosDeg(a + space);
+            float sin2 = Mathf.sinDeg(a + space);
+            Draw.alpha(Mathf.curve(i / (sides * p), start, end) * aScl);
+            Fill.tri(x + rad * cos, y + rad * sin, x + rad * cos2, y + rad * sin2, centerX, centerY);
+        }
+    
+        float a = space * i + angle;
+        float cos = Mathf.cosDeg(a);
+        float sin = Mathf.sinDeg(a);
+        float cos2 = Mathf.cosDeg(a + space);
+        float sin2 = Mathf.sinDeg(a + space);
+        float f = sides * p - i;
+        vec21.trns(a, 0, len * (f - 1));
+        Draw.alpha(aScl);
         Fill.tri(x + rad * cos, y + rad * sin, x + rad * cos2 + vec21.x, y + rad * sin2 + vec21.y, centerX, centerY);
     }
     
     public static void circlePercent(float x, float y, float rad, float percent, float angle) {
+//        Lines.swirl(x, y, rad, 360 * percent, angle);
         float p = Mathf.clamp(percent);
         
         int sides = Lines.circleVertices(rad);
@@ -177,7 +209,6 @@ public class DrawFunc{
         float sin2 = Mathf.sinDeg(a + space);
         float f = sides * p - i;
         vec21.trns(a, 0, len * (f - 1));
-        Fill.circle(x + rad * cos2 + vec21.x, y + rad * sin2 + vec21.y, Lines.getStroke() / 2f);
         Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2 + vec21.x, y + r1 * sin2 + vec21.y, x + r2 * cos2 + vec21.x, y + r2 * sin2 + vec21.y, x + r2 * cos, y + r2 * sin);
     }
     

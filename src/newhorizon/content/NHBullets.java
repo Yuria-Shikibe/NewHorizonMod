@@ -841,7 +841,7 @@ public class NHBullets implements ContentList{
 			trailEffect = smokeEffect = shootEffect = hitEffect = despawnEffect = Fx.none;
 		}};
 		
-		darkEnrLightning = new PosLightningType(130){{
+		darkEnrLightning = new PosLightningType(100){{
 			lightningColor = NHColor.darkEnrColor;
 			maxRange = 800f;
 			boltNum = 1;
@@ -852,14 +852,14 @@ public class NHBullets implements ContentList{
 			maxRange = 250f;
 		}};
 		
-		darkEnrlaser = new ContinuousLaserBulletType(1000){
+		darkEnrlaser = new ContinuousLaserBulletType(420){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
 				shake = 3;
 				colors = new Color[]{NHColor.darkEnrColor.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.darkEnrColor, NHColor.darkEnr};
 				width = 18f;
-				length = 1000f;
+				length = 800f;
 				oscScl = 0.4f;
 				oscMag = 1.5f;
 				lifetime = 35f;
@@ -888,7 +888,7 @@ public class NHBullets implements ContentList{
 			}
 		};
 		
-		decayLaser = new AdaptedLaserBulletType(1700){{
+		decayLaser = new AdaptedLaserBulletType(600){{
 			colors = new Color[]{NHColor.darkEnrColor.cpy().mul(1f, 1f, 1f, 0.3f), NHColor.darkEnrColor, Color.white};
 			laserEffect = NHFx.darkEnergyLaserShoot;
 			length = 880f;
@@ -917,7 +917,7 @@ public class NHBullets implements ContentList{
 			shootEffect = Fx.none;
 		}};
 		
-		rapidBomb = new SpeedUpBulletType(9f, 100, NewHorizon.name("strike")){{
+		rapidBomb = new SpeedUpBulletType(9f, 75, NewHorizon.name("strike")){{
 			trailLength = 8;
 			trailWidth = 1.75f;
 			
@@ -937,13 +937,12 @@ public class NHBullets implements ContentList{
 			hitEffect = NHFx.darkEnrCircleSplash;
 		}};
 		
-		airRaid = new SpeedUpBulletType(9f, 450, STRIKE){{
+		airRaid = new SpeedUpBulletType(9f, 250, STRIKE){{
 			hitSound = Sounds.explosionbig;
 			trailChance = 0.075f;
 			trailEffect = NHFx.polyTrail;
 			
 			trailLength = 23;
-			drawSize = 500f;
 			
 			homingPower = 0.08f;
 			homingRange = 400f;
@@ -1063,7 +1062,7 @@ public class NHBullets implements ContentList{
 			despawnEffect = NHFx.lightningHitLarge(backColor);
 		}};
 		
-		strikeRocket = new BasicBulletType(9, 260, STRIKE){{
+		strikeRocket = new BasicBulletType(9, 200, STRIKE){{
 			trailColor = lightningColor = backColor = lightColor = NHColor.darkEnrColor;
 			frontColor = NHColor.darkEnrFront;
 			lightning = 2;
@@ -1193,7 +1192,7 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
-		arc_9000 = new LightningLinkerBulletType(2.75f, 750){{
+		arc_9000 = new LightningLinkerBulletType(2.75f, 550){{
 			trailWidth = 4.5f;
 			trailLength = 66;
 			
@@ -1455,8 +1454,6 @@ public class NHBullets implements ContentList{
 				trailWidth = 12F;
 				trailLength = 120;
 				
-				drag = 0.01f;
-				speed = 8f;
 				scaleVelocity = true;
 				splashDamageRadius = 400f;
 				hitColor = lightColor = lightningColor = trailColor = NHColor.darkEnrColor;

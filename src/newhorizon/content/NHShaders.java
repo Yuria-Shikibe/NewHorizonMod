@@ -3,8 +3,8 @@ package newhorizon.content;
 import arc.Core;
 import arc.files.Fi;
 import arc.graphics.gl.Shader;
-import arc.util.Log;
 import mindustry.Vars;
+import mindustry.graphics.Shaders;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
 
@@ -17,7 +17,7 @@ public class NHShaders{
 	
 	public static class GravityTrapShader extends ModShader{
 		public GravityTrapShader(){
-			super("gravityTrap", "screenspace");
+			super("screenspace", "gravityTrap");
 		}
 		
 		@Override
@@ -31,7 +31,7 @@ public class NHShaders{
 	}
 	
 	public static class ModShader extends Shader{
-		public ModShader(String frag, String vert){
+		public ModShader(String vert, String frag){
 			super(getShaderFi(vert + ".vert"), getShaderFi(frag + ".frag"));
 		}
 	}
@@ -41,10 +41,10 @@ public class NHShaders{
 		
 		if(mod.root.child("shader").exists()){
 			Fi shaders = mod.root.child("shader");
-			Log.info(shaders.findAll());
+//			Log.info(shaders.findAll());
 			if(shaders.child(file).exists())return shaders.child(file);
 		}
 		
-		return Core.files.internal("shaders/" + file);
+		return Shaders.getShaderFi(file);
 	}
 }
