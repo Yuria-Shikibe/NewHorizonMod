@@ -344,10 +344,14 @@ public class TableFunc{
                             }, "js");
                         }).growX();
                         t.row();
+    
+                        t.button("Check World Data", Styles.cleart, () -> {
+                            ui.showText("Vars.state.rules.tags", state.rules.tags.toString(), Align.left);
+                        }).padTop(OFFSET).padRight(OFFSET).growX();
+                        t.button("Remove World Data", Styles.cleart, () -> {
+                            ui.showConfirm("Are you sure?", state.rules.tags::clear);
+                        }).growX();
                         
-                        t.button("Debug", Styles.cleart, () -> {
-                            new TableTexDebugDialog("debug").show();
-                        }).disabled(b -> !NHSetting.getBool("@active.debug")).padTop(OFFSET).grow();
                     }).growX().fillY();
                 }});
             }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();

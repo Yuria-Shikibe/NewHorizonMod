@@ -644,6 +644,10 @@ public class CutsceneScript{
 					paneTable = t;
 					t.top();
 				}).grow().pad(OFFSET).get();
+				
+				exited(() -> {
+					getScene().unfocus(this);
+				});
 			}
 			
 			public void updateChildren(){
@@ -1060,7 +1064,7 @@ public class CutsceneScript{
 				
 				addListener(new Tooltip(t -> {
 					t.background(Tex.buttonEdge3).add("Remain Time: 00:00 ").update(l -> {
-						float remain = totalTime - Float.parseFloat(state.rules.tags.get(eventName));
+						float remain = totalTime - getFloatOrNaN(eventName);
 						l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + Mathf.floor(remain / Time.toMinutes) + ":" + Mathf.floor((remain % Time.toMinutes) / Time.toSeconds));
 					}).left().fill();
 				}));
