@@ -335,8 +335,8 @@ public class TableFunc{
                                 () -> textArea.setText(CutsceneScript.currentScriptFile.readString())
                             );
                         }).growX().disabled(b -> CutsceneScript.currentScriptFile == null).padTop(OFFSET).padRight(OFFSET);
-                        t.button("Check World Data", Styles.cleart, () -> {
-                            ui.showText("Vars.state.rules.tags", state.rules.tags.toString(), Align.left);
+                        t.button("Debug Menu", Styles.cleart, () -> {
+                            new TableTexDebugDialog("").show();
                         }).growX().padRight(OFFSET);
                         t.button("@load", Styles.cleart, () -> {
                             platform.showMultiFileChooser(file -> {
