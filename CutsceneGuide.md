@@ -203,9 +203,21 @@ CutsceneScript.curIniter.add(run(() => {
 This piece adds the cutscene *Condition Determiner* to the initializer, making the cutscene after the `if` statement only run on the first time load the world. Meanwhile, this method will put data to the `Vars.state.rules.<StringMap>tag`, as a sign that the world has already made the initialization run. If you invoke `Vars.state.rules.tags.get("inited")` afterwards, you will receive a  `true` in `String`.
 
 ##### How to move my camera?
-- Before moving your camera, you have to invoke method `UIActions.pauseCamera()`; in addition, you have to invoke method `UIActions.resumeCamera()` after your cutscene movement has completed.
+- Before moving your camera, you have to invoke method `UIActions.pauseCamera()`; in addition, you have to invoke method `UIActions.resumeCamera()` after your cutscene movement has completed. But considered that most of the camera moving have to do with curtain 
 - The coordinate of the camera moving method all using _**\*8**_ format.
 - > ![Coord Format](https://github.com/Yuria-Shikibe/NewHorizonMod/raw/main/github-pictures/guide/coord-format.png)
+
+Continue the code from above:
+
+```js 
+CutsceneScript.curIniter.add(run(() => {
+  if(CutsceneScript.canInit())UIActions.actionSeq(
+      UIActions.startCutsceneDefault(),
+      Actions.delay(3),
+      UIActions.endCutsceneDefault()
+  );
+}));
+```
 
 
 
