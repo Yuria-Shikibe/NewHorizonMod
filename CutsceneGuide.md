@@ -332,8 +332,8 @@ CutsceneScript.curIniter.add(run(() => {
                     t.image(Icon.warning).padRight(OFFSET);
                 })
             ),
-            Actions.run(run(() -> {
-                NHFunc.spawnUnit(state.rules.waveTeam, 80, 80, core.angleTo(player.team().core()), 40, 20, 30f, NHUnitTypes.strike, 4);
+            Actions.run(run(() => {
+                NHFunc.spawnUnit(state.rules.waveTeam, 80, 80, 45, 120, 20, 30, NHUnitTypes.striker, 4);
             }))
         ),
         UIActions.endCutsceneDefault()
