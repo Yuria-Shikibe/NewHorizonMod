@@ -159,9 +159,9 @@ public static boolean actionSeq(Action... actions){
 - All `Action`s' time are formatted into **Second** while other method are `tick(1 / 60 Sec)` format.
 - Almost all methods uses **\*8** coordinates. 
 
-#### Examples & Introduction
+### Examples & Introduction
 
-##### How To Start A Cutscene?
+#### How To Start A Cutscene?
 ```js
 UIActions.actionSeq(
     UIActions.startCutsceneDefault(),
@@ -174,7 +174,7 @@ You can find your UI is hidden and curtains go into the screen.
 
 So, use `UIActions.actionSeq(Action... actions)` to start a cutscene.
 
-##### When To Start?
+#### When To Start?
 The method above only told you how to activate a cutscene manually. So how to activate them on specific time?
 ```js 
 CutsceneScript.curIniter.add(run(() => {
@@ -187,7 +187,7 @@ CutsceneScript.curIniter.add(run(() => {
 ```
 This piece adds the *Cutscene Activator* to the initializer, which means that the script will be run **every time** when the world is loaded. Copy them to your script debugger and **Save Them To Your Script File** and reload the world, see what will happen.
 
-##### How To Limit Them?
+#### How To Limit Them?
 Ok we just have learned how to use the initializer, but you want your cutscene will only be played while the first time loading the world. How to do?
 
 Continue the code from above:
@@ -202,7 +202,7 @@ CutsceneScript.curIniter.add(run(() => {
 ```
 This piece adds the cutscene *Condition Determiner* to the initializer, making the cutscene after the `if` statement only run on the first time load the world. Meanwhile, this method will put data to the `Vars.state.rules.<StringMap>tag`, as a sign that the world has already made the initialization run. If you invoke `Vars.state.rules.tags.get("inited")` afterwards, you will receive a  `true` in `String`.
 
-##### How To Move & Hold My Camera?
+#### How To Move & Hold My Camera?
 - See these methods in [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) :
   - `UIActions.track(Position target, float duration)`
   - `UIActions.moveTo(float x, float y, float duration, Interp interpolation)`
@@ -239,7 +239,7 @@ CutsceneScript.curIniter.add(run(() => {
 
 So, in the code above, you will move your camera to (80, 80) (or (10, 10) as tile format) in 1 sec with a slow -> fast -> slow animation curve. And hold at the position for 3 sec.
 
-##### How To Use Caution Mark?
+#### How To Use Caution Mark?
 - See the method in [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) :
   - `cautionAt(float x, float y, float size, float duration, Color color)`
 - Currently, the mark only has one style. I will develop more in the future.
@@ -258,7 +258,7 @@ CutsceneScript.curIniter.add(run(() => {
 }));
 ```
 
-##### Something Goes Wrong!?
+#### Something Goes Wrong!?
 - If you have tried the code from above, you may find that your caution mark didn't appear immediately after your camera move to the destination, instead, it waited for about 3 sec.
 - Yes, but not *about*, it waited for exactly 3s, the same param you writing in `UIActions.holdCamera(80, 80, 3)` .
 - SO WHAT TO DO IF YOU WANT THE `holdCamera` and `cautionAt` function in the same time?
@@ -281,7 +281,7 @@ CutsceneScript.curIniter.add(run(() => {
 }));
 ```
 
-##### Text Pop Up
+#### Text Pop Up
 - See [RunnableAction](https://github.com/Anuken/Arc/blob/0e99b0291f81d74d335dca8b0cf3bf26931f1197/arc-core/src/arc/scene/actions/RunnableAction.java)
 - See these methods in [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) :
   - `labelAct(String text, float duration, float holdDuration)`
@@ -311,7 +311,7 @@ CutsceneScript.curIniter.add(run(() => {
 }));
 ```
 
-##### Units Jump In And Other Methods In An Action
+#### Units Jump In And Other Methods In An Action
 - See these methods in [NHFunc.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/func/NHFunc.java) :
   - `spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum)`
   - `spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type)`
@@ -341,7 +341,7 @@ CutsceneScript.curIniter.add(run(() => {
 }));
 ```
 
-##### Debug
+#### Debug
 Ok, finally you finished your first cutscene script.
 Use `Remove World Data` in the debugger and retest the script.
 
