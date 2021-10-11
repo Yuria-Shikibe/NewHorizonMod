@@ -5,7 +5,7 @@
 ## FOREWORD
 
 - Though the cutscene script has to do with javascript, it isn't so hard.
-- Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can maje cutscenes.
+- Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can make cutscenes.
 - So relax. **_You Can Do It_**
 - Example: [Script For Map (@HC)Hostile HQ](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/assets/custom-cutscene/(%40HC)Hostile%20HQ-cutscene.js)
 - Main Codes: [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java)
@@ -201,9 +201,9 @@ public static final Seq<Runnable> curUpdater = new Seq<>(), curIniter = new Seq<
 public static final Seq<Cons<Boolean>> curEnder = new Seq<>();
 ```
 
-- `curUpdater` Used to storage movements that is acted every update(Do not run during pause).
-- `curIniter` Used to storage movements that is acted when the world is loaded.
-- `curEnder` Used to storage movements that is acted when game over. Param `Boolean`: true -> win; false -> lose.
+- `curUpdater` Used to store movements that is acted every update(Do not run during pause).
+- `curIniter` Used to store movements that is acted when the world is loaded.
+- `curEnder` Used to store movements that is acted when game over. Param `Boolean`: true -> win; false -> lose.
 
 ---
 
@@ -213,7 +213,7 @@ public static final Seq<Cons<Boolean>> curEnder = new Seq<>();
 public static final ObjectMap<Block, Cons<Building>> blockDestroyListener = new ObjectMap<>();
 ```
 
-- Used to storage movements that will be called when a specific type of block is destroyed
+- Used to store movements that will be called when a specific type of block is destroyed
 
 ---
 
@@ -283,7 +283,7 @@ public static float getFloat(String key){
     return Float.parseFloat(state.rules.tags.get(key));
 }
 ```
-- Used for getting a `float` if an event's data if the string does not contain a parsable `float`, or it will throw an `Exception`.
+- Used for getting a `float` if an event's data in the string does not contain a parsable `float`, or it will throw an `Exception`.
 
 ###### getFloatOrNaN(String key)
 ```java
@@ -295,7 +295,7 @@ public static float getFloatOrNaN(String key){
     return f;
 }
 ```
-- Used for getting a `float` if an event's data if the string does not contain a parsable `float`, or it will return `Float.NaN`.
+- Used for getting a `float` if an event's data in the string does not contain a parsable `float`, or it will return `Float.NaN`.
 
 ~~Sorry I'm too tired, I may finish these in the future. Read [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) first~~
 
