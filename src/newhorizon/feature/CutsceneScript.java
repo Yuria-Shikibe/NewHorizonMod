@@ -356,7 +356,7 @@ public class CutsceneScript{
 	protected static void init(SectorPreset sector){
 		reset();
 		
-		UIActions.init();
+		UIActions.forceInit();
 		
 		curSectorPreset = sector;
 		
