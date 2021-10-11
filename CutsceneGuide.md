@@ -261,7 +261,7 @@ CutsceneScript.curIniter.add(run(() => {
 #### Something Goes Wrong!?
 - If you have tried the code from above, you may find that your caution mark didn't appear immediately after your camera move to the destination, instead, it waited for about 3 sec.
 - Yes, but not *about*, it waited for exactly 3s, the same param you writing in `UIActions.holdCamera(80, 80, 3)` .
-- SO WHAT TO DO IF YOU WANT THE `holdCamera` and `cautionAt` function in the same time?
+- SO WHAT TO DO IF YOU WANT THE `holdCamera` AND `cautionAt` FUNCTION IN THE SAME TIME? Use `Actions.parallel(Action... actions)`.
 
 See: [ParallelAction](https://github.com/Anuken/Arc/blob/0e99b0291f81d74d335dca8b0cf3bf26931f1197/arc-core/src/arc/scene/actions/ParallelAction.java)
 See: [Action Invoke](https://github.com/Anuken/Arc/blob/0e99b0291f81d74d335dca8b0cf3bf26931f1197/arc-core/src/arc/scene/actions/Actions.java)
