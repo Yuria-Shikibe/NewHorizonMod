@@ -159,6 +159,56 @@ public static boolean actionSeq(Action... actions){
 - All `Action`s' time are formatted into **Second** while other method are `tick(1 / 60 Sec)` format.
 - Almost all methods uses **\*8** coordinates. 
 
+#### Examples
+
+##### How to start a cutscene?
+```js
+UIActions.actionSeq(
+    UIActions.startCutsceneDefault(),
+    Actions.delay(3),
+    UIActions.endCutsceneDefault()
+);
+```
+Here is a piece of `JS` code. Copy it to your cutscene script debugger and select them, then run `Run Selection`.
+You can find your UI is hidden and curtains go into the screen.
+
+So, use `UIActions.actionSeq(Action... actions)` to start a cutscene.
+
+##### When to start?
+The method above only told you how to activate a cutscene manually. So how to activate them on specific time?
+```js 
+CutsceneScript.curIniter.add(run(() => {
+  UIActions.actionSeq(
+      UIActions.startCutsceneDefault(),
+      Actions.delay(3),
+      UIActions.endCutsceneDefault()
+  );
+}));
+```
+This piece adds the *Cutscene Activator* to the initializer, which means that the script will be run **every time** when the world is loaded. Copy them to your script debugger and **Save Them To Your Script File** and reload the world, see what will happen.
+
+##### How to limit them?
+Ok we just have learned how to use the initializer, but you want your cutscene will only be played while the first time loading the world. How to do?
+
+Continue the code from above:
+```js 
+CutsceneScript.curIniter.add(run(() => {
+  if(CutsceneScript.canInit())UIActions.actionSeq(
+      UIActions.startCutsceneDefault(),
+      Actions.delay(3),
+      UIActions.endCutsceneDefault()
+  );
+}));
+```
+This piece adds the cutscene *Condition Determiner* to the initializer, making the cutscene after the `if` statement only run on the first time load the world. Meanwhile, this method will put data to the `Vars.state.rules.<StringMap>tag`, as a sign that the world has already made the initialization run. If you invoke `Vars.state.rules.tags.get("inited")` afterwards, you will receive a  `true` in `String`.
+
+##### How to move my camera?
+- Before moving your camera, you have to invoke method `UIActions.pauseCamera()`; in addition, you have to invoke method `UIActions.resumeCamera()` after your cutscene movement has completed.
+- The coordinate of the camera moving method all using _**\*8**_ format.
+- > ![Coord Format](https://github.com/Yuria-Shikibe/NewHorizonMod/raw/main/github-pictures/guide/coord-format.png)
+
+
+
 ### Commonly Used Fields & Methods
 
 #### Interpolation: `Interp` & `NHInterp`
