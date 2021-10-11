@@ -159,7 +159,7 @@ public static boolean actionSeq(Action... actions){
 - All `Action`s' time are formatted into **Second** while other method are `tick(1 / 60 Sec)` format.
 - Almost all methods uses **\*8** coordinates. 
 
-#### Examples
+#### Examples & Introduction
 
 ##### How To Start A Cutscene?
 ```js
