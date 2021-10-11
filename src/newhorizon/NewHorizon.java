@@ -150,13 +150,15 @@ public class NewHorizon extends Mod{
 			        String body = json.get("body").asString();
 			        if(!tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
 			        	new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
-			        		cont.pane(t -> {
-			        			t.add(new WarningBar()).growX().height(LEN / 2).padTop(LEN).row();
+			        		cont.table(t -> {
+			        			t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
 			        			t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
-						        t.add(new WarningBar()).growX().height(LEN / 2).padBottom(LEN).row();
-						        t.add("[lightgray]Version: [accent]" + tag).left().row();
+						        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
+						        t.add("\t[lightgray]Version: [accent]" + tag).left().row();
 						        t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
-			        			t.add("[accent]Description: \n[]" + body).left();
+						        t.pane(c -> {
+							        c.add("[accent]Description: \n[]" + body).left();
+						        }).grow();
 					        }).grow().padBottom(OFFSET).row();
 					
 					        cont.table(table -> {
