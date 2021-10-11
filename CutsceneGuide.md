@@ -161,7 +161,7 @@ public static boolean actionSeq(Action... actions){
 
 #### Examples
 
-##### How to start a cutscene?
+##### How To Start A Cutscene?
 ```js
 UIActions.actionSeq(
     UIActions.startCutsceneDefault(),
@@ -174,52 +174,180 @@ You can find your UI is hidden and curtains go into the screen.
 
 So, use `UIActions.actionSeq(Action... actions)` to start a cutscene.
 
-##### When to start?
+##### When To Start?
 The method above only told you how to activate a cutscene manually. So how to activate them on specific time?
 ```js 
 CutsceneScript.curIniter.add(run(() => {
-  UIActions.actionSeq(
-      UIActions.startCutsceneDefault(),
-      Actions.delay(3),
-      UIActions.endCutsceneDefault()
-  );
+    UIActions.actionSeq(
+        UIActions.startCutsceneDefault(),
+        Actions.delay(3),
+        UIActions.endCutsceneDefault()
+    );
 }));
 ```
 This piece adds the *Cutscene Activator* to the initializer, which means that the script will be run **every time** when the world is loaded. Copy them to your script debugger and **Save Them To Your Script File** and reload the world, see what will happen.
 
-##### How to limit them?
+##### How To Limit Them?
 Ok we just have learned how to use the initializer, but you want your cutscene will only be played while the first time loading the world. How to do?
 
 Continue the code from above:
 ```js 
 CutsceneScript.curIniter.add(run(() => {
-  if(CutsceneScript.canInit())UIActions.actionSeq(
-      UIActions.startCutsceneDefault(),
-      Actions.delay(3),
-      UIActions.endCutsceneDefault()
-  );
+    if(CutsceneScript.canInit())UIActions.actionSeq(
+        UIActions.startCutsceneDefault(),
+        Actions.delay(3),
+        UIActions.endCutsceneDefault()
+    );
 }));
 ```
 This piece adds the cutscene *Condition Determiner* to the initializer, making the cutscene after the `if` statement only run on the first time load the world. Meanwhile, this method will put data to the `Vars.state.rules.<StringMap>tag`, as a sign that the world has already made the initialization run. If you invoke `Vars.state.rules.tags.get("inited")` afterwards, you will receive a  `true` in `String`.
 
-##### How to move my camera?
-- Before moving your camera, you have to invoke method `UIActions.pauseCamera()`; in addition, you have to invoke method `UIActions.resumeCamera()` after your cutscene movement has completed. But considered that most of the camera moving have to do with curtain 
+##### How To Move & Hold My Camera?
+- See these methods in [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) :
+  - `UIActions.track(Position target, float duration)`
+  - `UIActions.moveTo(float x, float y, float duration, Interp interpolation)`
+  - `UIActions.holdCamera(float x, float y, float duration)`
+- Before moving your camera, you have to invoke method `UIActions.pauseCamera()`; in addition, you have to invoke method `UIActions.resumeCamera()` after your cutscene movement has completed. But considered that most of the camera moving have to do with curtain stretch in, so the method `UIActions.startCutsceneDefault()` & `UIActions.endCutsceneDefault()`, two methods used at the beginning and the end respectively, include the method of pause & resume camera. So you can invoke them more convenient.
 - The coordinate of the camera moving method all using _**\*8**_ format.
 - > ![Coord Format](https://github.com/Yuria-Shikibe/NewHorizonMod/raw/main/github-pictures/guide/coord-format.png)
+- Also, remember again: _ALL `Action` USE **SECOND** FORMAT._
 
 Continue the code from above:
 
 ```js 
 CutsceneScript.curIniter.add(run(() => {
-  if(CutsceneScript.canInit())UIActions.actionSeq(
-      UIActions.startCutsceneDefault(),
-      Actions.delay(3),
-      UIActions.endCutsceneDefault()
-  );
+    if(CutsceneScript.canInit())UIActions.actionSeq(
+        UIActions.startCutsceneDefault(),
+        UIActions.moveTo(80, 80, 1, Interp.pow3),
+        UIActions.holdCamera(80, 80, 3),
+        UIActions.endCutsceneDefault()
+    );
 }));
 ```
 
+Or you can use this if you don't want to use the curtain stretch in effect.
+```js 
+CutsceneScript.curIniter.add(run(() => {
+    if(CutsceneScript.canInit())UIActions.actionSeq(
+        UIActions.pauseCamera(),
+        UIActions.moveTo(80, 80, 1, Interp.pow3),
+        UIActions.holdCamera(80, 80, 3),
+        UIActions.resumeCamera()
+    );
+}));
+```
 
+So, in the code above, you will move your camera to (80, 80) (or (10, 10) as tile format) in 1 sec with a slow -> fast -> slow animation curve. And hold at the position for 3 sec.
+
+##### How To Use Caution Mark?
+- See the method in [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) :
+  - `cautionAt(float x, float y, float size, float duration, Color color)`
+- Currently, the mark only has one style. I will develop more in the future.
+- Param: `size` is relative to your screen size.
+
+Continue the code from above:
+```js 
+CutsceneScript.curIniter.add(run(() => {
+    if(CutsceneScript.canInit())UIActions.actionSeq(
+        UIActions.startCutsceneDefault(),
+        UIActions.moveTo(80, 80, 1, Interp.pow3),
+        UIActions.holdCamera(80, 80, 3),
+        UIActions.cautionAt(80, 80, 16, 2, Pal.accent),
+        UIActions.endCutsceneDefault()
+    );
+}));
+```
+
+##### Something Goes Wrong!?
+- If you have tried the code from above, you may find that your caution mark didn't appear immediately after your camera move to the destination, instead, it waited for about 3 sec.
+- Yes, but not *about*, it waited for exactly 3s, the same param you writing in `UIActions.holdCamera(80, 80, 3)` .
+- SO WHAT TO DO IF YOU WANT THE `holdCamera` and `cautionAt` function in the same time?
+
+See: [ParallelAction](https://github.com/Anuken/Arc/blob/0e99b0291f81d74d335dca8b0cf3bf26931f1197/arc-core/src/arc/scene/actions/ParallelAction.java)
+See: [Action Invoke](https://github.com/Anuken/Arc/blob/0e99b0291f81d74d335dca8b0cf3bf26931f1197/arc-core/src/arc/scene/actions/Actions.java)
+
+Sample:
+```js 
+CutsceneScript.curIniter.add(run(() => {
+    if(CutsceneScript.canInit())UIActions.actionSeq(
+        UIActions.startCutsceneDefault(),
+        UIActions.moveTo(80, 80, 1, Interp.pow3),
+        Actions.parallel(
+          UIActions.holdCamera(80, 80, 3),
+          UIActions.cautionAt(80, 80, 16, 2, Pal.accent)
+        ),
+        UIActions.endCutsceneDefault()
+    );
+}));
+```
+
+##### Text Pop Up
+- See [RunnableAction](https://github.com/Anuken/Arc/blob/0e99b0291f81d74d335dca8b0cf3bf26931f1197/arc-core/src/arc/scene/actions/RunnableAction.java)
+- See these methods in [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java) :
+  - `labelAct(String text, float duration, float holdDuration)`
+  - `labelAct(String text, float duration, float holdDuration, Interp interpolation, Cons<Table> modifier)`
+- If you want to use other methods in an action, use `RunnableAction` to invoke the method.
+- Remember again: _ALL GENERAL METHOD USE **TICK** FORMAT._
+
+
+Sample:
+```js 
+CutsceneScript.curIniter.add(run(() => {
+    if(CutsceneScript.canInit())UIActions.actionSeq(
+        UIActions.startCutsceneDefault(),
+        UIActions.moveTo(80, 80, 1, Interp.pow3),
+        Actions.parallel(
+            UIActions.holdCamera(80, 80, 3),
+            UIActions.cautionAt(80, 80, 16, 2, Pal.accent),
+            UIActions.labelAct(
+                "[accent]Speaker[]: @@@Saying: BOTH YURIA AND NEW HORIZON MOD SUCKS"
+                , 0.75, 2.25, Interp.linear, cons(t => {
+                    t.image(Icon.warning).padRight(OFFSET);
+                })
+            )
+        ),
+        UIActions.endCutsceneDefault()
+    );
+}));
+```
+
+##### Units Jump In And Other Methods In An Action
+- See these methods in [NHFunc.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/func/NHFunc.java) :
+  - `spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum)`
+  - `spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type)`
+- For some technical reasons currently, the text which has the fade in effect do not support *Color Mark* like `[accent]Text[]`.
+
+Sample:
+```js 
+CutsceneScript.curIniter.add(run(() => {
+    if(CutsceneScript.canInit())UIActions.actionSeq(
+        UIActions.startCutsceneDefault(),
+        UIActions.moveTo(80, 80, 1, Interp.pow3),
+        Actions.parallel(
+            UIActions.holdCamera(80, 80, 3),
+            UIActions.cautionAt(80, 80, 16, 2, Pal.accent),
+            UIActions.labelAct(
+                "[accent]Speaker[]: @@@Saying: BOTH YURIA AND NEW HORIZON MOD SUCKS"
+                , 0.75, 2.25, Interp.linear, cons(t => {
+                    t.image(Icon.warning).padRight(OFFSET);
+                })
+            ),
+            Actions.run(run(() -> {
+                NHFunc.spawnUnit(state.rules.waveTeam, 80, 80, core.angleTo(player.team().core()), 40, 20, 30f, NHUnitTypes.strike, 4);
+            }))
+        ),
+        UIActions.endCutsceneDefault()
+    );
+}));
+```
+
+##### Debug
+Ok, finally you finished your first cutscene script.
+Use `Remove World Data` in the debugger and retest the script.
+
+#### Exceptions:
+- If nothing was popped up, it was likely that you mistook the `Class` name of a `Field` or a `Method`.
+- If a `NullPointerException` popped up, add `if` statements to make all things you are invoking are `NotNull`.
 
 ### Commonly Used Fields & Methods
 

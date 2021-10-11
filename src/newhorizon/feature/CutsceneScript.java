@@ -720,7 +720,7 @@ public class CutsceneScript{
 		 * */
 		public static CameraMoveAction moveTo(float x, float y, float duration, Interp interpolation){
 			CameraMoveAction action = Actions.action(CameraMoveAction.class, CameraMoveAction::new);
-			action.setPosition(x, y);
+			action.setPosition(x + Mathf.random(0.01f), y);
 			action.setDuration(duration);
 			action.setInterpolation(interpolation);
 			return action;
@@ -803,6 +803,8 @@ public class CutsceneScript{
 			if(Vars.mobile)Core.camera.position.set(Vars.player);
 			else if(Vars.control.input instanceof DesktopInput)((DesktopInput)Vars.control.input).panning = false;
 			cameraActor = null;
+			
+			if(!Vars.headless)Core.camera.update();
 		}
 		
 		/** Generate a table that fill the screen. */
