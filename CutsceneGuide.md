@@ -287,6 +287,7 @@ CutsceneScript.curIniter.add(run(() => {
   - `labelAct(String text, float duration, float holdDuration)`
   - `labelAct(String text, float duration, float holdDuration, Interp interpolation, Cons<Table> modifier)`
 - If you want to use other methods in an action, use `RunnableAction` to invoke the method.
+- For some technical reasons currently, the text which has the fade in effect do not support *Color Mark* like `[accent]Text[]`.
 - Remember again: _ALL GENERAL METHOD USE **TICK** FORMAT._
 
 
@@ -315,7 +316,6 @@ CutsceneScript.curIniter.add(run(() => {
 - See these methods in [NHFunc.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/func/NHFunc.java) :
   - `spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum)`
   - `spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type)`
-- For some technical reasons currently, the text which has the fade in effect do not support *Color Mark* like `[accent]Text[]`.
 
 Sample:
 ```js 
