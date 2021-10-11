@@ -209,7 +209,7 @@ public class NHFx{
 	}
 
 	public static Effect laserEffect(float num){
-		return new Effect(26.0F, (e) -> {
+		return new Effect(26.0F, e -> {
 			Draw.color(Color.white);
 			float length = !(e.data instanceof Float) ? 70.0F : (Float)e.data;
 			Angles.randLenVectors(e.id, (int)(length / num), length, e.rotation, 0.0F, (x, y) -> {
@@ -220,7 +220,7 @@ public class NHFx{
 	}
 
 	public static Effect chargeEffectSmall(Color color, float lifetime){
-		return new Effect(lifetime, 100.0F, (e) -> {
+		return new Effect(lifetime, 100.0F, e -> {
 			Draw.color(color);
 			Drawf.light(e.x, e.y, e.fin() * 55f, color, 0.7f);
 			randLenVectors(e.id, 7, 3 + 50 * e.fout(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.finpow() * 3f));
@@ -231,7 +231,7 @@ public class NHFx{
 	}
 	
 	public static Effect chargeBeginEffect(Color color, float size, float lifetime){
-		return new Effect(lifetime, (e) -> {
+		return new Effect(lifetime, e -> {
 			Draw.color(color);
 			Drawf.light(e.x, e.y, e.fin() * size, color, 0.7f);
 			Fill.circle(e.x, e.y, size * e.fin());
@@ -277,7 +277,7 @@ public class NHFx{
 	}
 	
 	public static Effect instShoot(Color color){
-		return get("instShoot", color, new Effect(24.0F, (e) -> {
+		return get("instShoot", color, new Effect(24.0F, e -> {
 			e.scaled(10.0F, (b) -> {
 				Draw.color(Color.white, color, b.fin());
 				Lines.stroke(b.fout() * 3.0F + 0.2F);
@@ -292,12 +292,26 @@ public class NHFx{
 		}));
 	}
 	
+	public static Effect hitSpark(Color color, float lifetime, int num, float range, float stroke, float length){
+		return new Effect(lifetime, e -> {
+			color(color, Color.white, e.fout() * 0.3f);
+			stroke(e.fout() * stroke);
+			
+			randLenVectors(e.id, num, e.finpow() * range, e.rotation, 360f, (x, y) -> {
+				float ang = Mathf.angle(x, y);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * length * 0.85f + length * 0.15f);
+			});
+		});
+	}
+	
+	
+	
 	public static Effect instBomb(Color color){
 		return get("instBomb", color, instBombSize(color, 4, 80f));
 	}
 	
 	public static Effect instBombSize(Color color, int num, float size){
-		return new Effect(15.0F, size * 1.5f, (e) -> {
+		return new Effect(15.0F, size * 1.5f, e -> {
 			Draw.color(color);
 			Lines.stroke(e.fout() * 4.0F);
 			Lines.circle(e.x, e.y, 4.0F + e.finpow() * size / 4f);
@@ -319,7 +333,7 @@ public class NHFx{
 	public static Effect instHit(Color color){return get("instHit", color, instHit(color, 5, 50)); }
 	
 	public static Effect instHit(Color color, int num, float size){
-		return new Effect(20.0F, size * 1.5f, (e) -> {
+		return new Effect(20.0F, size * 1.5f, e -> {
 			for(int i = 0; i < 2; ++i) {
 				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.25f));
 				float m = i == 0 ? 1.0F : 0.5F;
@@ -350,7 +364,7 @@ public class NHFx{
 	}
 	
 	public static Effect instTrail(Color color, float angle, boolean random){
-		return new Effect(30.0F, (e) -> {
+		return new Effect(30.0F, e -> {
 			for(int j : angle == 0 ? oneArr: Mathf.signs){
 				for(int i = 0; i < 2; ++i) {
 					Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
@@ -365,8 +379,24 @@ public class NHFx{
 		});
 	}
 	
+	public static Effect lineCircleOut(Color color, float lifetime, float size, float stroke){
+		return new Effect(50, e -> {
+			color(color);
+			stroke(e.fout() * stroke);
+			Lines.circle(e.x, e.y, e.fin(Interp.pow3Out) * size);
+		});
+	}
+	
+	public static Effect lineSquareOut(Color color, float lifetime, float size, float stroke, float rotation){
+		return new Effect(50, e -> {
+			color(color);
+			stroke(e.fout() * stroke);
+			Lines.square(e.x, e.y, e.fin(Interp.pow3Out) * size, rotation);
+		});
+	}
+	
 	public static Effect polyCloud(Color color, float lifetime, float size, float range, int num){
-		return (new Effect(lifetime, (e) -> {
+		return (new Effect(lifetime, e -> {
 			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
 				Draw.color(color, Pal.gray, e.fin());
 				Fill.poly(e.x + x, e.y + y, 6, size * e.fout(), e.rotation);
@@ -378,11 +408,25 @@ public class NHFx{
 	}
 	
 	public static Effect square(Color color, float lifetime, int num, float range, float size){
-		return new Effect(lifetime, (e) -> {
+		return new Effect(lifetime, e -> {
 			Draw.color(color);
+			rand.setSeed(e.id);
 			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
-				Fill.square(e.x + x, e.y + y, size * e.fout(), 45);
-				Drawf.light(e.x + x, e.y + y, e.fout(Interp.pow3Out) * (size + Mathf.range(size / 2f)), color, 0.7f);
+				float s = e.fout(Interp.pow3In) * (size + rand.range(size / 3f));
+				Fill.square(e.x + x, e.y + y, s, 45);
+				Drawf.light(e.x + x, e.y + y, s * 2.25f, color, 0.7f);
+			});
+		});
+	}
+	
+	public static Effect circleSplash(Color color, float lifetime, int num, float range, float size){
+		return new Effect(lifetime, e -> {
+			Draw.color(color);
+			rand.setSeed(e.id);
+			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
+				float s = e.fout(Interp.pow3In) * (size + rand.range(size / 3f));
+				Fill.circle(e.x + x, e.y + y, s);
+				Drawf.light(e.x + x, e.y + y, s * 2.25f, color, 0.7f);
 			});
 		});
 	}
@@ -461,6 +505,16 @@ public class NHFx{
 			color(e.color);
 			stroke(2f * e.fout());
 			Lines.circle(e.x, e.y, 5f * e.fout());
+		}),
+	
+		hitSparkLarge = new Effect(40, e -> {
+			color(e.color, Color.white, e.fout() * 0.3f);
+			stroke(e.fout() * 1.6f);
+			
+			randLenVectors(e.id, 18, e.finpow() * 27f, e.rotation, 360f, (x, y) -> {
+				float ang = Mathf.angle(x, y);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
+			});
 		}),
 	
 		chainLightningFade = new Effect(45f, 500f, e -> {
@@ -676,13 +730,13 @@ public class NHFx{
 			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * e.rotation);
 		}),
 	
-		healEffect = new Effect(11.0F, (e) -> {
+		healEffect = new Effect(11.0F, e -> {
 			Draw.color(NHColor.lightSkyBack);
 			Lines.stroke(e.fout() * 2.0F);
 			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * 79.0F);
 		}),
 	
-		activeEffect = new Effect(22.0F, (e) -> {
+		activeEffect = new Effect(22.0F, e -> {
 			Draw.color(NHColor.lightSkyBack);
 			Lines.stroke(e.fout() * 3.0F);
 			Lines.poly(e.x, e.y, 6,4.0F + e.finpow() * e.rotation);
@@ -698,8 +752,13 @@ public class NHFx{
 			circle(e.x, e.y, e.rotation  / tilesize * e.finpow());
 		}),
 		//All effects
-		trail = new Effect(50.0F, (e) -> {
+		trail = new Effect(50.0F, e -> {
 			Draw.color(e.color, Color.gray, e.fin());
+			randLenVectors(e.id, 2, tilesize * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.rotation * e.fout()));
+		}),
+	
+		trailSolidColor = new Effect(50.0F, e -> {
+			Draw.color(e.color);
 			randLenVectors(e.id, 2, tilesize * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.rotation * e.fout()));
 		}),
 	
@@ -743,7 +802,7 @@ public class NHFx{
 			circle(e.x, e.y, e.rotation * e.fin());
 		}),
 	
-		 unitLandSize = (new Effect(30.0F, (e) -> {
+		 unitLandSize = (new Effect(30.0F, e -> {
 			 Draw.color(Pal.lightishGray);
 			 Angles.randLenVectors((long)e.id, 9, 3.0F + 20.0F * e.finpow(), (x, y) -> {
 				 Fill.circle(e.x + x, e.y + y, e.fout() * e.rotation + 0.4F);
@@ -993,7 +1052,7 @@ public class NHFx{
 			Drawf.light(e.x, e.y, e.fout() * 80f, NHColor.thurmixRedLight, 0.7f);
 		}),
 	
-		hyperCloud = new Effect(140.0F, 400.0F, (e) -> {
+		hyperCloud = new Effect(140.0F, 400.0F, e -> {
 			randLenVectors(e.id, 20, e.finpow() * 160.0F, (x, y) -> {
 				float size = e.fout() * 15.0F;
 				Draw.color(e.color, Color.lightGray, e.fin());

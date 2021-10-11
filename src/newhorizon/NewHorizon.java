@@ -3,20 +3,24 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
-import arc.scene.style.TextureRegionDrawable;
+import arc.util.Align;
 import arc.util.Http;
 import arc.util.Log;
 import arc.util.Time;
+import arc.util.async.Threads;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
+import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
+import mindustry.ui.BorderImage;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
+import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
@@ -68,7 +72,7 @@ public class NewHorizon extends Mod{
 	
 	private static UnlockableContent[] getUpdateContent(){
 		return new UnlockableContent[]{
-				NHUnitTypes.saviour
+				NHUnitTypes.sin
 		};
 	}
 	
@@ -136,41 +140,70 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
-	        Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
-		        Jval json = Jval.read(res.getResultAsString());
-		        String tag = json.get("tag_name").asString();
-		        String body = json.get("body").asString();
-		        if(!tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
-			        Vars.ui.showCustomConfirm(
-	                Core.bundle.get("mod.ui.has-new-update") + ": " + tag,
-			        "[accent]Description: \n[]" + body,
-			        "@mods.github.open",
-			        "@back",
-			        () -> Core.app.openURI(MOD_RELEASES), () -> {});
-		        }
-		        Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
-	        }, ex -> Log.err(ex.toString()));
+	        Threads.thread(() -> {
+		        Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
+			        Jval json = Jval.read(res.getResultAsString());
+			        
+			        //Log.info(json);
+			        
+			        String tag = json.get("tag_name").asString();
+			        String body = json.get("body").asString();
+			        if(!tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
+			        	new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
+			        		cont.pane(t -> {
+			        			t.add(new WarningBar()).growX().height(LEN / 2).padTop(LEN).row();
+			        			t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
+						        t.add(new WarningBar()).growX().height(LEN / 2).padBottom(LEN).row();
+						        t.add("[lightgray]Version: [accent]" + tag).left().row();
+						        t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
+			        			t.add("[accent]Description: \n[]" + body).left();
+					        }).grow().padBottom(OFFSET).row();
+					
+					        cont.table(table -> {
+						        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
+						        table.button("@mods.github.open", Icon.github, Styles.cleart, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
+					        }).bottom().growX().height(LEN).padTop(OFFSET);
+					        
+					        addCloseListener();
+				        }}.show();
+			        }
+			        Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
+		        }, ex -> Log.err(ex.toString()));
+	        });
         	
         	if(NHSetting.versionChange){
         		new BaseDialog("Detected Update"){{
         			addCloseListener();
         			
-        			cont.pane(table -> {
-        				table.add(NHSetting.modMeta.version + ": ").row();
-        				table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
-        				table.add(Core.bundle.get("mod.ui.update-log"));
+        			cont.pane(main -> {
+        				main.top();
+				        main.pane(table -> {
+				        	table.align(Align.topLeft);
+					        table.add(NHSetting.modMeta.version + ": ").row();
+					        table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
+					        table.add(Core.bundle.get("mod.ui.update-log")).left();
+				        }).growX().fillY().padBottom(LEN).row();
+				        main.pane(t -> {
+					        for(int index = 0; index < getUpdateContent().length; index++){
+					        	UnlockableContent c = getUpdateContent()[index];
+					        	t.table(Tex.pane, table -> {
+					        		table.add(new BorderImage(c.fullIcon, OFFSET / 2).border(Pal.accent)).fill();
+					        		table.pane(i -> {
+								        i.top();
+					        			i.add("[gray]NEW [lightgray]" + c.getContentType().toString().toUpperCase() + "[]: [accent]" + c.localizedName + "[]").left().row();
+					        			i.image().growX().height(OFFSET / 3).pad(OFFSET / 3).color(Color.lightGray).row();
+					        			i.add("[accent]Description: []").left().row();
+					        			i.add(c.description).padLeft(LEN).left().get().setWrap(true);
+							        }).grow().padLeft(OFFSET).top();
+							        table.button(Icon.info, Styles.clearTransi, LEN, () -> {
+								        ContentInfoDialog dialog = new ContentInfoDialog();
+								        dialog.show(c);
+							        }).growY().width(LEN).padLeft(OFFSET);
+						        }).grow().row();
+					        }
+				        }).growX().top().row();
 			        }).grow().row();
-			        cont.pane(t -> {
-				        int index = 0;
-				        for(UnlockableContent c : getUpdateContent()){
-					        if(index % 8 == 0)t.row();
-					        t.button(new TextureRegionDrawable(c.fullIcon), Styles.clearTransi, LEN, () -> {
-						        ContentInfoDialog dialog = new ContentInfoDialog();
-						        dialog.show(c);
-					        }).size(LEN);
-					        index++;
-				        }
-			        }).growX().top().row();
+        			
         			cont.table(table -> {
 				        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
 				        table.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).growX().height(LEN);

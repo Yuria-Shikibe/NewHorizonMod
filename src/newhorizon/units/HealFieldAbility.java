@@ -1,5 +1,6 @@
 package newhorizon.units;
 
+import arc.Core;
 import arc.func.Floatf;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -172,5 +173,9 @@ public class HealFieldAbility extends Ability{
 		Drawf.light(rx, ry, range * 1.5f, scanColor, curStroke * 0.8f);
 		
 		Draw.reset();
+	}
+	
+	public String localized(){
+		return Core.bundle.get("ability.healfield");
 	}
 }

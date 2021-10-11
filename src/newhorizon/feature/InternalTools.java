@@ -20,8 +20,6 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 
-import java.util.Comparator;
-
 import static newhorizon.func.TableFunc.LEN;
 import static newhorizon.func.TableFunc.OFFSET;
 
@@ -79,7 +77,7 @@ public class InternalTools{
 							Cons2<ObjectMap<String, Color>, Table> func = (kvs, table) -> {
 								table.clearChildren();
 								int[] missing = new int[1];
-								kvs.keys().toSeq().sort(Comparator.comparing(s -> s.split(" = ")[0])).each(k -> {
+								kvs.keys().toSeq().sortComparing(c -> c.split(" = ")[0]).each(k -> {
 									Color v = kvs.get(k);
 									float[] h = new float[1];
 									table.table(v.equals(Color.white) ? Tex.clear : ((TextureRegionDrawable)Tex.whiteui).tint(v.r, v.g, v.b, 0.35f), c -> {
@@ -97,7 +95,7 @@ public class InternalTools{
 								});
 							};
 							
-							toStorage.sort(Comparator.comparing(s -> s.split(" = ")[0]));
+							toStorage.sortComparing(c -> c.split(" = ")[0]);
 							
 							func.get(original, ori);
 							func.get(preview, pre);
@@ -109,7 +107,7 @@ public class InternalTools{
 					
 					StringBuilder stringBuilder = new StringBuilder();
 					toStorage.each(s -> {
-						stringBuilder.append(s.replaceAll("\n", "\\n")).append("\n");
+						stringBuilder.append(s.replaceAll("\n", "\\\\n")).append("\n");
 					});
 					
 					String s = stringBuilder.toString();

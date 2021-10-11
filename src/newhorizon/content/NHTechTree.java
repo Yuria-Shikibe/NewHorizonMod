@@ -111,6 +111,7 @@ public class NHTechTree implements ContentList {
         addUnit(NHUnitTypes.thynomo, NHUnitTypes.aliotiat);
         addUnit(NHUnitTypes.aliotiat, NHUnitTypes.tarlidor);
         addUnit(NHUnitTypes.tarlidor, NHUnitTypes.annihilation);
+        addUnit(NHUnitTypes.annihilation, NHUnitTypes.sin);
         
         addUnit(Blocks.navalFactory, NHUnitTypes.relay);
         addUnit(NHUnitTypes.relay, NHUnitTypes.ghost);

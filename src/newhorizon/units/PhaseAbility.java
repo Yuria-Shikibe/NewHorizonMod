@@ -13,8 +13,10 @@ import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
-import mindustry.entities.units.WeaponMount;
-import mindustry.gen.*;
+import mindustry.gen.Groups;
+import mindustry.gen.Sounds;
+import mindustry.gen.Teamc;
+import mindustry.gen.Unit;
 import newhorizon.func.NHFunc;
 
 import static arc.graphics.g2d.Draw.color;
@@ -73,10 +75,7 @@ public class PhaseAbility extends Ability{
 	
 	@Override
 	public void update(Unit unit){
-		for(WeaponMount wm : unit.mounts()){
-			if(wm.bullet != null)return;
-		}
-		if(unit.controller() instanceof Player)return;
+		if(unit.isPlayer())return;
 		reloadValue += Time.delta;
 		
 		Teamc target = Units.closestEnemy(unit.team, unit.x, unit.y, teleportRange * 2f, b -> true);

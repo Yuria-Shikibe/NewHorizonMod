@@ -127,7 +127,7 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 		if(Mathf.chanceDelta(effectLightningChance) && b.lifetime - b.time > Fx.chainLightning.lifetime && Core.settings.getBool("enableeffectdetails")){
 			for(int i = 0; i < effectLingtning; i++){
 				Vec2 v = randVec.rnd(effectLightningLength + Mathf.random(effectLightningLengthRand)).add(b).add(Tmp.v1.set(b.vel).scl(Fx.chainLightning.lifetime / 2));
-				Fx.chainLightning.at(v.x, v.y, 12f, outColor, b);
+				Fx.chainLightning.at(b.x, b.y, 12f, outColor, v.cpy());
 				NHFx.lightningHitSmall.at(v.x, v.y, 20f, outColor);
 			}
 		}

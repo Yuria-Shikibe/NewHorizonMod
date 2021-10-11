@@ -33,6 +33,7 @@ import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.NewHorizon;
 import newhorizon.feature.CutsceneScript;
 import newhorizon.feature.InternalTools;
 import newhorizon.feature.ScreenHack;
@@ -219,23 +220,6 @@ public class TableTexDebugDialog extends BaseDialog{
 			buttonImage.addCloseListener();
 			buttonImage.show();
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
-//
-//		cont.button("Test", () -> {
-//			buttonImage = new BaseDialog("Test"){{
-//				cont.pane(table -> {
-//					int index = 0;
-//					for(TextureRegion tex : NHPixmap.test){
-//						if(index % 8 == 0) table.row();
-//						table.table(Tex.buttonEdge3, t -> {
-//							t.image(new TextureRegionDrawable(tex)).grow().row();
-//						});
-//						index++;
-//					}
-//				}).fill();
-//			}};
-//			buttonImage.addCloseListener();
-//			buttonImage.show();
-//		}).size(LEN * 3, LEN).pad(OFFSET / 2).disabled(b -> mobile);
 		
 		cont.button("UnlockALL", () -> {
 			for(UnlockableContent content : content.items()){
@@ -379,6 +363,16 @@ public class TableTexDebugDialog extends BaseDialog{
 			}).grow();
 			dialog.addCloseButton();
 			dialog.show();
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("Generate Icon", () -> {
+			ui.loadAnd("[accent]Generating", () -> {
+				content.units().each(u -> {
+					if(u.name.contains(NewHorizon.MOD_NAME)){
+						NHPixmap.saveUnitPixmap(Core.atlas.getPixmap(u.fullIcon).crop(), u);
+					}
+				});
+			});
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.row();

@@ -109,7 +109,7 @@ public class NHBullets implements ContentList{
 			{
 				lifetime = 60;
 				despawnEffect = hitEffect = NHFx.lightSkyCircleSplash;
-				knockback = 12f;
+				knockback = 4f;
 				width = 15f;
 				height = 37f;
 				lightningDamage = damage * 0.75f;
@@ -550,7 +550,7 @@ public class NHBullets implements ContentList{
 			}
 		};
 		
-		hurricaneType = new LightningLinkerBulletType(2.3f, 200){{
+		hurricaneType = new LightningLinkerBulletType(2.5f, 250){{
 			disableAccel();
 			
 			range = 340f;
@@ -563,6 +563,8 @@ public class NHBullets implements ContentList{
 			randomGenerateRange = 280f;
 			randomLightningNum = 5;
 			linkRange = 280f;
+			
+			scaleVelocity = true;
 			
 			drag = 0.0065f;
 			fragLifeMin = 0.3f;
@@ -604,7 +606,7 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
-		railGun1 = new BasicBulletType(35f, 2200, STRIKE) {{
+		railGun1 = new TrailFadeBulletType(35f, 2200, STRIKE) {{
 			width = 12f;
 			height = 36f;
 			
@@ -630,7 +632,7 @@ public class NHBullets implements ContentList{
 			knockback = 14f;
 		}};
 		
-		railGun2 = new BasicBulletType(40f, 3000, STRIKE) {{
+		railGun2 = new TrailFadeBulletType(40f, 3000, STRIKE) {{
 			width = 16f;
 			height = 50f;
 			
@@ -779,14 +781,14 @@ public class NHBullets implements ContentList{
 			hitSound = Sounds.plasmaboom;
 		}};
 		
-		hurricaneLaser = new AdaptedContinuousLaserBulletType(640){
+		hurricaneLaser = new AdaptedContinuousLaserBulletType(650){
 			{
 				strokes = new float[]{2f, 1.7f, 1.3f, 0.7f};
 				tscales = new float[]{1.1f, 0.8f, 0.65f, 0.4f};
 				shake = 3;
 				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.6f), NHColor.lightSkyFront, Color.white};
 				width = 7f;
-				length = 500f;
+				length = 540f;
 				oscScl = 0.4f;
 				oscMag = 1.5f;
 				lifetime = 160f;
@@ -1104,7 +1106,7 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
-		annMissile = new BasicBulletType(6.6f, 50f, STRIKE){
+		annMissile = new BasicBulletType(6.6f, 80f, STRIKE){
 			@Override
 			public float range(){return 280f;}
 			
@@ -1145,7 +1147,6 @@ public class NHBullets implements ContentList{
 					Fill.circle(e.x, e.y, e.fout() * e.fout() * 13);
 					randLenVectors(e.id, 4, 7 + 40 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3));
 				});
-				
 			}
 		};
 		

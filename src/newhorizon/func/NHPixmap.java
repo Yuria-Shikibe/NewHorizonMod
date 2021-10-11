@@ -1,21 +1,31 @@
 package newhorizon.func;
 
 import arc.Core;
+import arc.Files;
+import arc.files.Fi;
 import arc.func.Boolf;
 import arc.graphics.Color;
 import arc.graphics.Pixmap;
+import arc.graphics.PixmapIO;
 import arc.graphics.Pixmaps;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
+import arc.util.Log;
 import mindustry.Vars;
-import mindustry.game.Team;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import newhorizon.NewHorizon;
+
+import java.io.IOException;
 
 public class NHPixmap{
+	private static final boolean DEBUGGING_SPRITE = false;
+	
+	private static final Color OColor = Color.valueOf("565666");
+	
 	public static void outlineLegs(MultiPacker packer, UnitType type){
 		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless){
 			Color color = Color.valueOf("565666");
@@ -29,7 +39,7 @@ public class NHPixmap{
 	}
 	
 	public static void createIcons(MultiPacker packer, UnitType type){
-		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless && type.region != null && type.region.found() && type.region instanceof TextureAtlas.AtlasRegion){
+		if(!Vars.headless && DEBUGGING_SPRITE){
 			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)type.region;
 			
 			PixmapRegion r = Core.atlas.getPixmap(Core.atlas.find(type.name));
@@ -37,26 +47,26 @@ public class NHPixmap{
 			Pixmap base = new Pixmap(type.region.width, type.region.height);
 			base.draw(r.crop(), true);
 			
-			TextureAtlas.AtlasRegion tC = Core.atlas.find(type.name + "-cell");
-			//base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), 0, 0, true);
-			base.draw(fillColor(Core.atlas.getPixmap(tC), Team.sharded.color), -1, 0, true);
+			base.draw(replaceColor(Core.atlas.getPixmap(type.cellRegion), ObjectMap.of((Boolf<Color>) c -> c.equals(Color.white), Color.valueOf("ffa664"), (Boolf<Color>) c -> c.equals(Color.valueOf("dcc6c6")), Color.valueOf("dc804e"))), 0, 0, true);
 
 			for(Weapon w : type.weapons){
 				if(w.top)continue;
-				drawWeaponPixmap(base, w, false, type.outlineColor, type.outlineRadius);
+				drawWeaponPixmap(base, w, false, OColor, type.outlineRadius);
 			}
 
-			base = Pixmaps.outline(new PixmapRegion(base), type.outlineColor, type.outlineRadius);
+			base = Pixmaps.outline(new PixmapRegion(base), OColor, type.outlineRadius);
 
 			for(Weapon w : type.weapons){
 				if(!w.top)continue;
-				drawWeaponPixmap(base, w, true, type.outlineColor, type.outlineRadius);
+				drawWeaponPixmap(base, w, true, OColor, type.outlineRadius);
 			}
 
 			if(Core.settings.getBool("linear")){
 				Pixmaps.bleed(base);
 			}
-
+			
+			//used to debug
+			
 			packer.add(MultiPacker.PageType.main, type.name + "-full", base);
 		}
 	}
@@ -97,6 +107,7 @@ public class NHPixmap{
 		return base;
 	}
 	
+	@Deprecated
 	public static void drawWeaponPixmap(Pixmap base, Weapon w, boolean outline, Color outlineColor, int radius){
 		if(w.region != null && w.region.found() && w.region instanceof TextureAtlas.AtlasRegion){
 			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)w.region;
@@ -117,4 +128,17 @@ public class NHPixmap{
 	public static int getCenter(Pixmap base, Pixmap above, boolean WorH, boolean outline){
 		return (WorH ? (base.getWidth() - above.getWidth()) / 2 : (base.getHeight() - above.getHeight()) / 2);
 	}
+	
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	public static void saveUnitPixmap(Pixmap pixmap, UnitType type){
+		Fi dic = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/unit/full", Files.FileType.absolute);
+		if(dic.exists()){
+			Fi n = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/unit/full/" + type.name.replaceAll(NewHorizon.MOD_NAME + "-", "") + "-full.png");
+			if(!n.exists())try{n.file().createNewFile();}catch(IOException e){Log.err(e);}
+			PixmapIO.writePng(n, pixmap);
+			Log.info("Created Icon: " + type.localizedName);
+		}
+	}
+	
+	
 }

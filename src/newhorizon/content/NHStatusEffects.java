@@ -22,10 +22,21 @@ import newhorizon.func.NHPixmap;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect
-            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end;
+            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased;
     
     @Override
     public void load(){
+        phased = new NHStatusEffect("phased"){{
+            damage = -15f;
+            speedMultiplier = 1.5f;
+            damageMultiplier = 1.25f;
+    
+            textureColor = color = NHColor.lightSkyBack;
+            
+            effectChance = 0.25f;
+            effect = NHFx.squareRand(color, 8f, 16f);
+        }};
+        
         end = new NHStatusEffect("end"){{
             damage = 1000;
             permanent = true;

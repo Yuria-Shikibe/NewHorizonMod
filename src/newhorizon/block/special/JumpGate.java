@@ -21,6 +21,7 @@ import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
+import arc.util.Structs;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -48,6 +49,7 @@ import mindustry.ui.Fonts;
 import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -257,7 +259,7 @@ public class JumpGate extends Block {
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
         dialogIn.cont.pane(inner -> {
-            inner.image(set.type.fullIcon).center().row();
+            inner.button(new TextureRegionDrawable(set.type.fullIcon), Styles.clearPartiali, () -> new ContentInfoDialog().show(set.type)).growX().fillY().center().row();
             inner.image().growX().height(OFFSET / 4).pad(OFFSET / 4f).color(Pal.accent).row();
             inner.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().padLeft(OFFSET).row();
             inner.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFunc.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).left().padLeft(OFFSET).row();
@@ -702,11 +704,14 @@ public class JumpGate extends Block {
         public UnitSet(){this(UnitTypes.alpha, new byte[]{-1, -1}, 0); }
     
         public UnitSet(@NotNull UnitType type, byte[] sortIndex, float costTime, ItemStack... requirements){
+            Arrays.sort(requirements, Structs.comparingInt(j -> j.item.id));
             this.type = type;
             this.sortIndex = sortIndex;
             this.costTime = costTime;
             this.requirements.addAll(requirements);
             if(!NHLoader.unitBuildCost.containsKey(type))NHLoader.unitBuildCost.put(type, ItemStack.mult(requirements, 20));
+    
+            
         }
     
         @Override

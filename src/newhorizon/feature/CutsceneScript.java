@@ -257,7 +257,7 @@ public class CutsceneScript{
 			SectorPreset sp = state.getSector().preset;
 			return initer.containsKey(sp) || updaters.containsKey(sp) || ender.containsKey(sp);
 		}else if(state.map != null){
-			return state.map.hasTag("CUTSCENE_KEY") || (state.map.name().contains("(@HC)") && scriptDirectory.child(state.map.name() + "-cutscene.js").exists());
+			return state.map.hasTag(CUTSCENE_KEY) || (state.map.name().contains("(@HC)") && scriptDirectory.child(state.map.name() + "-cutscene.js").exists());
 		}else return false;
 	}
 	
@@ -635,7 +635,7 @@ public class CutsceneScript{
 					visible(() -> ui.hudfrag.shown);
 					
 					setSize(Core.graphics.getWidth() / 4f, Core.graphics.getHeight() / 4.45f);
-					setPosition(Core.settings.getInt("eventbarsoffsetx", 0), Core.settings.getInt("eventbarsoffsety", 0));
+					setPosition(Core.settings.getInt("eventbarsoffsetx", 0) / 100f * Core.graphics.getWidth(), Core.settings.getInt("eventbarsoffsety", 0) / 100f * Core.graphics.getHeight());
 				});
 				
 				background(Tex.buttonEdge3);
@@ -1063,7 +1063,10 @@ public class CutsceneScript{
 				});
 				
 				addListener(new Tooltip(t -> {
-					t.background(Tex.buttonEdge3).add("Remain Time: 00:00 ").update(l -> {
+					t.background(Tex.bar);
+					t.color.set(Color.black);
+					t.color.a = 0.35f;
+					t.add("Remain Time: 00:00 ").update(l -> {
 						float remain = totalTime - getFloatOrNaN(eventName);
 						l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + Mathf.floor(remain / Time.toMinutes) + ":" + Mathf.floor((remain % Time.toMinutes) / Time.toSeconds));
 					}).left().fill();

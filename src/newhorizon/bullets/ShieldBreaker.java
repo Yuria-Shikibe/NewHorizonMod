@@ -44,6 +44,6 @@ public class ShieldBreaker extends SpeedUpBulletType{
     @Override
     public void update(Bullet b) {
         super.update(b);
-        if(b.timer(5, 8))breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
+        if(b.timer(5, 5))breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
     }
 }

@@ -1,5 +1,6 @@
 package newhorizon.units;
 
+import arc.func.Cons;
 import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
@@ -105,6 +106,11 @@ public class NHWeapon extends Weapon{
 		return this;
 	}
 	
+	public NHWeapon set(Cons<NHWeapon> cons){
+		cons.get(this);
+		return this;
+	}
+	
 	public NHWeapon setPos(float x, float y){
 		this.x = x;
 		this.y = y;
@@ -129,6 +135,11 @@ public class NHWeapon extends Weapon{
 	public static Weapon setPos(Weapon weapon, float x, float y){
 		weapon.x = x;
 		weapon.y = y;
+		return weapon;
+	}
+	
+	public static Weapon set(Weapon weapon, Cons<Weapon> cons){
+		cons.get(weapon);
 		return weapon;
 	}
 }

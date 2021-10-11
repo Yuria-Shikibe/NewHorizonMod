@@ -2194,6 +2194,9 @@ public class NHBlocks implements ContentList {
 				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
 					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 300, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 500)
 				),
+				new UnitSet(NHUnitTypes.sin, new byte[]{NHUnitTypes.GROUND_LINE_1, 6}, 480 * 60f,
+						with(NHItems.setonAlloy, 600, NHItems.upgradeSort, 200, NHItems.seniorProcessor, 500, NHItems.thermoCorePositive, 500, NHItems.irayrondPanel, 300)
+				),
 				new UnitSet(NHUnitTypes.declining, new byte[]{NHUnitTypes.NAVY_LINE_1, 5}, 420 * 60f,
 					with(NHItems.setonAlloy, 500, NHItems.irayrondPanel, 300, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300)
 				),
