@@ -218,7 +218,21 @@ public class TableFunc{
     
     private static final Table starter = new Table(Tex.paneSolid);
     
-    public static final TextArea textArea = new TextArea("");
+    public static class DebugTextArea extends TextArea{
+        public DebugTextArea(String text){
+            super(text);
+        }
+    
+        @Override
+        public void clearSelection(){
+        }
+        
+        public void setSelection(boolean b){
+            hasSelection = b;
+        }
+    }
+    
+    public static final DebugTextArea textArea = new DebugTextArea("");
     
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static int getLineNum(String string){
@@ -270,6 +284,7 @@ public class TableFunc{
             table.button(Icon.logic, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
                 showInner(starter, new Table(Tex.button){{
                     setSize(Core.graphics.getWidth() / 1.5f, Core.graphics.getHeight() * 0.75f);
+                    
                     Label label = new Label("");
                     label.setWrap(false);
                     label.setText(textArea.getText());
@@ -277,15 +292,16 @@ public class TableFunc{
                     Label liner = new Label("");
                     liner.setWrap(false);
                     
+                    int linesGlobal = getLineNum(CutsceneScript.getModGlobalJS().readString());
 
                     ScrollPane sp = pane(Styles.horizontalPane, t -> {
                         t.align(Align.topLeft);
                         Cell<Label> l = t.add(liner).color(Color.gray).padTop(13.5f).fill();
-                        Cell<TextArea> textAreaMod = t.add(textArea).fill();
+                        Cell<DebugTextArea> textAreaMod = t.add(textArea).fill();
                         t.update(() -> {
                             label.setText(textArea.getText());
                             StringBuilder stringBuilder = new StringBuilder();
-                            int linesGlobal = getLineNum(CutsceneScript.getModGlobalJS().readString());
+                            
                             int lines = textArea.getLinesShowing();
     
                             for(int i = 0; i < lines; i++)stringBuilder.append(i + linesGlobal + 1).append("\n");
@@ -350,8 +366,11 @@ public class TableFunc{
                         }).padTop(OFFSET).padRight(OFFSET).growX();
                         t.button("Remove World Data", Styles.cleart, () -> {
                             ui.showConfirm("Are you sure?", state.rules.tags::clear);
+                        }).growX().padRight(OFFSET);
+                        t.button("Clear Selection", Styles.cleart, () -> {
+                            textArea.setSelection(false);
                         }).growX();
-                        
+    
                     }).growX().fillY();
                 }});
             }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();

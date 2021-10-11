@@ -3,5 +3,5 @@ author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "Adds new content, including units, turrets, blocks, etc. Mod content are presented with pretty textures and amazing effects.\n\n [sky]You can get the Mod Guide in the GitHub-README-MOD Guide."
-version: "1.9.9 Beta"
+version: "1.9.9.1 Beta"
 minGameVersion: 131
