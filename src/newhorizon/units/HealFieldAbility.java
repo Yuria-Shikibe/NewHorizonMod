@@ -112,7 +112,8 @@ public class HealFieldAbility extends Ability{
 		
 		reload += Time.delta;
 		
-		curStroke = 1;
+		if(reload / reloadTime > 0.15f)curStroke = Mathf.lerp(curStroke, 1, 0.0075f);
+		else curStroke = Mathf.lerp(curStroke, 0, 0.01f);
 		
 		if(reload >= reloadTime){
 			reload = reloadTime;
@@ -166,7 +167,7 @@ public class HealFieldAbility extends Ability{
 		if(curStroke > 0){
 			for(int i = 0; i < sectors; i++){
 				float rot = unit.rotation + i * 360f / sectors + Time.time * rotateSpeed;
-				Lines.swirl(rx, ry, range, sectorRad, rot);
+				Lines.swirl(rx, ry, range * reload / reloadTime, sectorRad, rot);
 			}
 		}
 		

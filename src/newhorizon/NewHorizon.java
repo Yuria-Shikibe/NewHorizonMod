@@ -24,19 +24,20 @@ import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
-import newhorizon.feature.CutsceneScript;
+import newhorizon.feature.cutscene.CutsceneScript;
 import newhorizon.feature.ScreenHack;
-import newhorizon.func.ClassIDIniter;
+import newhorizon.feature.cutscene.EventSamples;
+import newhorizon.func.EntityRegister;
 import newhorizon.func.NHSetting;
-import newhorizon.func.TableFunc;
-import newhorizon.func.Tables;
-import newhorizon.func.Tables.LinkTable;
+import newhorizon.ui.TableFunc;
+import newhorizon.ui.Tables;
+import newhorizon.ui.Tables.LinkTable;
 import newhorizon.vars.EventTriggers;
 
 import java.io.IOException;
 
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
@@ -249,12 +250,13 @@ public class NewHorizon extends Mod{
 			contentList.load();
 		}
 		
-		ClassIDIniter.load();
-		if(!ClassIDIniter.safe)Log.info("Detected id map conflict");
+		EntityRegister.load();
+		if(!EntityRegister.safe)Log.info("Detected id map conflict");
 		
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		
 		CutsceneScript.load();
+		EventSamples.load();
 		
 		Log.info("Loaded Complete." + NHSetting.modMeta.version);
     }

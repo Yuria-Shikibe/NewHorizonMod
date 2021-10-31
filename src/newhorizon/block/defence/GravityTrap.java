@@ -29,8 +29,8 @@ import newhorizon.vars.NHVars;
 import newhorizon.vars.NHWorldVars;
 
 import static mindustry.Vars.tilesize;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class GravityTrap extends Block{
 	protected Cons2<HyperSpaceWarper.Carrier, GravityTrapBuild> act = (c, b) -> {

@@ -37,8 +37,8 @@ import newhorizon.interfaces.Upgraderc;
 import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class UpgradeBlock extends Block{
 	public static final int defaultID = -1;

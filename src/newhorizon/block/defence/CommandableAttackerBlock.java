@@ -29,13 +29,13 @@ import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.func.DrawFunc;
-import newhorizon.func.TableFunc;
+import newhorizon.ui.TableFunc;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.LEN;
 
 public abstract class CommandableAttackerBlock extends CommandableBlock{
 	public float range = 100f;

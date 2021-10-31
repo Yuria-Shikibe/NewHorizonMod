@@ -12,6 +12,9 @@ public class NHContent extends Content{
 	public static TextureRegion
 			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2;
 	
+	public static TextureRegion //UI
+		raid, objective;
+	
 	public static void initLoad(){
 		new NHContent().load();
 	}
@@ -31,9 +34,10 @@ public class NHContent extends Content{
 		icon = Core.atlas.find(NewHorizon.name("icon-white"));
 		icon2 = Core.atlas.find(NewHorizon.name("icon-2"));
 		
-		for(UpgradeData data : NHUpgradeDatas.all){
-			data.load();
-			data.init();
-		}
+		raid = Core.atlas.find(NewHorizon.name("raid"));
+		objective = Core.atlas.find(NewHorizon.name("objective"));
+		
+		NHUpgradeDatas.all.each(UpgradeData::load);
+		NHUpgradeDatas.all.each(UpgradeData::init);
 	}
 }

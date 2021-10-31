@@ -35,10 +35,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.*;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.graphics.MultiPacker;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 import mindustry.io.TypeIO;
 import mindustry.logic.Ranged;
 import mindustry.type.Category;
@@ -62,7 +59,12 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
 import newhorizon.content.NHSounds;
 import newhorizon.feature.NHBaseEntity;
-import newhorizon.func.*;
+import newhorizon.func.DrawFunc;
+import newhorizon.func.EntityRegister;
+import newhorizon.func.NHFunc;
+import newhorizon.func.NHSetting;
+import newhorizon.ui.TableFunc;
+import newhorizon.ui.Tables;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,14 +74,14 @@ import java.util.Objects;
 
 import static mindustry.Vars.*;
 import static newhorizon.func.NHFunc.regSize;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class JumpGate extends Block {
     protected static final ObjectMap<UnitSet, Integer> allSets = new ObjectMap<>();
     
     static{
-        ClassIDIniter.put(Spawner.class, new ClassIDIniter.Set(Spawner::new));
+        EntityRegister.put(Spawner.class, new EntityRegister.ProvSet(Spawner::new));
     }
     
     public int maxSpawnPerOne = 15;
@@ -749,7 +751,10 @@ public class JumpGate extends Block {
         public transient long lastUpdated, updateSpacing;
     
         public transient Unit addUnit = Nulls.unit;
-    
+        
+        public final Seq<Trail> trails = new Seq<>();
+        public float trailWidth = 3f;
+        
         @Override
         public float clipSize(){
             return 500;
@@ -760,8 +765,12 @@ public class JumpGate extends Block {
             this.lifetime = lifetime;
             this.rotation = rotation;
             this.team = team;
+            this.size = type.hitSize;
+            trailWidth = Mathf.clamp(size / 15f, 1.25f, 4f);
             set(pos);
             NHFx.spawnWave.at(x, y, size, team.color);
+            
+            trails.add(new Trail(30), new Trail(50), new Trail(70));
         }
     
         @Override
@@ -785,6 +794,14 @@ public class JumpGate extends Block {
             if(Units.canCreate(team, type)){
                 time += Time.delta;
                 surviveTime = 0;
+    
+                if(!headless && NHSetting.enableDetails()){
+                    for(int i = 0; i < trails.size; i++){
+                        Trail trail = trails.get(i);
+                        Tmp.v1.trns(Time.time * (i + 1) * 1.5f + i * 360f / trails.size + Mathf.randomSeed(id, 360), (fin() + 1) / 2 * size * (1 + 0.5f * i) + Mathf.sinDeg(Time.time * (1 + 0.5f * i)) * size / 2,  fin(Interp.swing) * fout(Interp.swingOut) * size / 3).add(this);
+                        trail.update(Tmp.v1.x, Tmp.v1.y);
+                    }
+                }
             }else surviveTime += Time.delta;
             
             if(surviveTime > surviveLifeime)remove();
@@ -812,6 +829,13 @@ public class JumpGate extends Block {
                     NHFx.spawnGround.at(addUnit.x, addUnit.y, type.hitSize / tilesize * 3, team.color);
                     NHFx.circle.at(addUnit.x, addUnit.y, type.hitSize * 4, team.color);
                 });
+            }
+    
+            if(!headless && NHSetting.enableDetails()){
+                for(int i = 0; i < trails.size; i++){
+                    Trail trail = trails.get(i);
+                    Fx.trailFade.at(x, y, trailWidth, team.color, trail.copy());
+                }
             }
         }
         
@@ -843,13 +867,15 @@ public class JumpGate extends Block {
             }
     
             if(can && NHSetting.enableDetails()){
-                float railF = Mathf.curve(fin(Interp.pow2Out), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
-                Tmp.v1.trns(rotation, 0f, (2 - railF) * tilesize * 1.4f);
-    
-                Lines.stroke(railF * 2f);
-                for(int i : Mathf.signs){
-                    Lines.lineAngleCenter(x + Tmp.v1.x * i, y + Tmp.v1.y * i, rotation(), tilesize * (3f + railF) * tilesize * Mathf.curve(fout(Interp.pow5Out), 0f, 0.1f));
-                }
+//                float railF = Mathf.curve(fin(Interp.pow2Out), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
+//                Tmp.v1.trns(rotation, 0f, (2 - railF) * tilesize * 1.4f);
+//
+//                Lines.stroke(railF * 2f);
+//                for(int i : Mathf.signs){
+//                    Lines.lineAngleCenter(x + Tmp.v1.x * i, y + Tmp.v1.y * i, rotation(), tilesize * (3f + railF) * tilesize * Mathf.curve(fout(Interp.pow5Out), 0f, 0.1f));
+//                }
+                
+                trails.each(t -> t.draw(team.color, trailWidth));
             }
             
             if(can) DrawFunc.overlayText(Fonts.tech, String.valueOf(Mathf.ceil((lifetime - time) / 60f)), x, y, 0, 0,0.25f, team.color, false, true);
@@ -890,7 +916,7 @@ public class JumpGate extends Block {
         }
     
         @Override public boolean serialize(){return true;}
-        @Override public int classId(){return ClassIDIniter.getID(getClass());}
+        @Override public int classId(){return EntityRegister.getID(getClass());}
     
         @Override
         public void snapSync(){}

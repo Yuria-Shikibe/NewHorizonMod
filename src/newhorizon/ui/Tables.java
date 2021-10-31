@@ -1,4 +1,4 @@
-package newhorizon.func;
+package newhorizon.ui;
 
 import arc.Core;
 import arc.func.Cons;
@@ -23,11 +23,12 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.block.special.JumpGate;
+import newhorizon.func.NHSetting;
 
 import static mindustry.Vars.state;
 import static mindustry.Vars.ui;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class Tables{
 	public static class LinkTable extends Table{

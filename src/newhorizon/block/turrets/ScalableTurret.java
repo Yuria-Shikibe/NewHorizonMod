@@ -29,15 +29,15 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
 import newhorizon.feature.UpgradeData;
 import newhorizon.feature.UpgradeData.DataEntity;
-import newhorizon.func.TableFunc;
-import newhorizon.func.TextureFilterValue;
+import newhorizon.ui.TableFunc;
+import newhorizon.ui.TextureFilterValue;
 import newhorizon.interfaces.ScalableBlockc;
 import newhorizon.interfaces.Scalablec;
 import newhorizon.interfaces.Upgraderc;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFunc.getPercent;
+import static newhorizon.ui.TableFunc.getPercent;
 
 public class ScalableTurret extends Turret implements ScalableBlockc{
 	public UpgradeData defaultData = NHUpgradeDatas.none;

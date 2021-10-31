@@ -62,7 +62,7 @@ public class PosLightning {
 	public static final float RANGE_RAND = 5f;
 	public static final float ROT_DST = Vars.tilesize * 0.6f;
 	
-	//Set the range of lightning's randX.
+	//ProvSet the range of lightning's randX.
 	private static float getBoltRandomRange() {return Mathf.random(1f, 7f); }
 	
 	private static final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();

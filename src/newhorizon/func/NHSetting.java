@@ -17,6 +17,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
+import newhorizon.ui.TableFunc;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,8 +26,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static mindustry.Vars.ui;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class NHSetting{
 	//private static final Json json = new Json();

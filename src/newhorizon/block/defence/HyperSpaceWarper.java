@@ -50,16 +50,17 @@ import newhorizon.content.NHSounds;
 import newhorizon.feature.NHBaseEntity;
 import newhorizon.feature.PosLightning;
 import newhorizon.func.*;
+import newhorizon.ui.TableFunc;
 import newhorizon.vars.NHVars;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class HyperSpaceWarper extends Block{
 	
 	static{
-		ClassIDIniter.put(Carrier.class, new ClassIDIniter.Set(Carrier::new));
+		EntityRegister.put(Carrier.class, Carrier::new);
 	}
 	
 	private static Tile furthest;
@@ -577,7 +578,7 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public int classId(){
-			return ClassIDIniter.getID(getClass());
+			return EntityRegister.getID(getClass());
 		}
 		
 		@Override

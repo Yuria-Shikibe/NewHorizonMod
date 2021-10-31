@@ -155,7 +155,7 @@ public class ScreenHack{
 		
 		Core.scene.root.addChildAt(1, hackShowTable);
 		
-		reloadMap.put(player.name(), coolDown);
+		reloadMap.put(player.name(), Math.max(coolDown, time * 2));
 	}
 	
 	public static class ScreenHackEvent{

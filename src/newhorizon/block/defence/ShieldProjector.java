@@ -36,9 +36,9 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.feature.PosLightning;
-import newhorizon.func.ClassIDIniter;
+import newhorizon.func.EntityRegister;
 import newhorizon.func.DrawFunc;
-import newhorizon.func.TableFunc;
+import newhorizon.ui.TableFunc;
 import newhorizon.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,12 +46,12 @@ import java.nio.FloatBuffer;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.LEN;
 
 public class ShieldProjector extends CommandableBlock{
 	
 	static{
-		ClassIDIniter.put(Projector.class, new ClassIDIniter.Set(Projector::new));
+		EntityRegister.put(Projector.class, new EntityRegister.ProvSet(Projector::new));
 	}
 	
 	public TextureRegion baseRegion, heatRegion;
@@ -574,7 +574,7 @@ public class ShieldProjector extends CommandableBlock{
 		
 		@Override
 		public int classId(){
-			return ClassIDIniter.getID(getClass());
+			return EntityRegister.getID(getClass());
 		}
 		
 		@Override

@@ -12,6 +12,7 @@ import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Blocks;
+import mindustry.content.SectorPresets;
 import mindustry.ctype.ContentList;
 import mindustry.game.EventType;
 import mindustry.game.SectorInfo;
@@ -21,15 +22,14 @@ import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
 import mindustry.world.blocks.storage.CoreBlock;
-import newhorizon.feature.CutsceneScript;
+import newhorizon.feature.cutscene.*;
 import newhorizon.func.NHFunc;
 
 import static mindustry.Vars.*;
-import static newhorizon.feature.CutsceneScript.KeyFormat.ENEMY_CORE_DESTROYED_EVENT;
-import static newhorizon.feature.CutsceneScript.KeyFormat.generateName;
-import static newhorizon.feature.CutsceneScript.UIActions;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.feature.cutscene.KeyFormat.ENEMY_CORE_DESTROYED_EVENT;
+import static newhorizon.feature.cutscene.KeyFormat.generateName;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class NHSectorPresets implements ContentList{
 	public static ObjectMap<SectorPreset, Cons<Sector>> captureMap = new ObjectMap<>(), loseMap = new ObjectMap<>();
@@ -39,6 +39,13 @@ public class NHSectorPresets implements ContentList{
 	
 	@Override
 	public void load(){
+		CutsceneScript.ender.put(SectorPresets.craters, Seq.with((Boolean b) -> {
+			if(!NHBlocks.jumpGatePrimary.unlocked() && b){
+				EventSamples.jumpgateUnlockObjective.setup();
+				EventSamples.jumpgateUnlock.setup();
+			}
+		}));
+		
 		ancientBattefield = new NHSectorPreset("ancient-battefield", NHPlanets.midantha, 96){{
 			addStartingItems = true;
 			difficulty = 10;
@@ -55,7 +62,7 @@ public class NHSectorPresets implements ContentList{
 				if(CutsceneScript.timer.get(0, 2400f) && sector.save != null && sector.save.meta != null && sector.save.meta.timePlayed > 3000f){
 					if(state.rules.attackMode && state.rules.waveTeam.cores().any() && state.rules.waveTeam.cores().size < 3){
 						CoreBlock.CoreBuild core = state.rules.waveTeam.core();
-						UIActions.actionSeq(
+						UIActions.actionSeqMinor(
 							Actions.parallel(
 								UIActions.cautionAt(core.x, core.y, core.block.size * tilesize / 2f, 6f, core.team.color),
 								Actions.run(() -> {
@@ -165,37 +172,15 @@ public class NHSectorPresets implements ContentList{
 								)
 						);
 					});
-					CutsceneScript.reload(generateName("Air Raid", NHColor.darkEnrColor, 60 * 60 * 8), Time.delta, 60 * 60 * 8, () -> true, () -> state.rules.defaultTeam.cores().size > 1 && state.rules.waveTeam.cores().any(), () -> {
-						CoreBlock.CoreBuild core = state.teams.closestCore(world.unitWidth(), world.unitHeight(), state.rules.defaultTeam);
-						CoreBlock.CoreBuild coreE = state.rules.waveTeam.cores().firstOpt();
-						UIActions.actionSeq(
-							Actions.parallel(
-								UIActions.cautionAt(core.x, core.y, core.block.size * tilesize / 3.5f, 4f, core.team.color),
-								Actions.run(() -> {
-									NHSounds.alarm.play();
-									for(int i = 0; i < 35; i++){
-										Time.run(i * 4f, CutsceneScript.WorldActions.raidPos(coreE, coreE.team, NHBullets.airRaid, coreE.x + Mathf.range(160f), coreE.y + Mathf.range(160f), core, b -> {
-											b.damage(b.damage / 4);
-											b.vel.rotate(Mathf.range(1));
-											b.type.shootEffect.at(b.x, b.y, b.angleTo(core), b.type.hitColor);
-											b.type.smokeEffect.at(b.x, b.y, b.angleTo(core), b.type.hitColor);
-										}));
-									}
-								}),
-								UIActions.labelAct(
-									"[accent]Caution[]: @@@Raid Incoming."
-									, 0.75f, 3.26f, Interp.linear, t -> {
-										t.image(Icon.warning).padRight(OFFSET);
-									}
-								)
-							)
-						);
-					});
+					
+					CutsceneScript.runEventOnce("RaidSetup", EventSamples.waveTeamRaid::setup);
+					
+					
 					CutsceneScript.reload(eventNameFlagship, Time.delta, 60 * 60 * 10, () -> !CutsceneScript.getBool("SpawnedBoss"), () -> true, () -> {
 						CutsceneScript.runEventOnce("SpawnedBoss", () -> {
 							float sX = world.unitWidth() - 240, sY =  world.unitHeight() - 240;
 							
-							CutsceneScript.UIActions.actionSeq(
+							UIActions.actionSeq(
 								Actions.parallel(Actions.delay(2f), UIActions.curtainIn(2f, Interp.pow2Out)), Actions.run(UIActions::pauseCamera),
 								UIActions.moveTo(sX - 360, sY - 120, 2f, Interp.pow3),
 								Actions.parallel(
@@ -209,7 +194,7 @@ public class NHSectorPresets implements ContentList{
 													}),
 											Actions.run(() -> {
 												Angles.randLenVectors(Time.millis(), 3, 400f, (i, j) -> {
-													CutsceneScript.WorldActions.raidDirection(state.rules.waveTeam.cores().firstOpt(), state.rules.waveTeam, NHBullets.eternity,
+													WorldActions.raidDirection(state.rules.waveTeam.cores().firstOpt(), state.rules.waveTeam, NHBullets.eternity,
 															sX + 480 + i, sY + 800 + j, 225, Mathf.dst(sX + 480 + i, sY + 800 + j, sX, sY) + Mathf.random(600, 900), b -> {}
 													).run();
 												});
@@ -352,6 +337,7 @@ public class NHSectorPresets implements ContentList{
 				bool -> {
 					if(bool){
 						state.rules.tags.clear();
+						CutsceneEventEntity.events.clear();
 					}
 				}, b -> {}
 			));

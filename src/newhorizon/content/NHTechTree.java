@@ -1,12 +1,19 @@
 package newhorizon.content;
 
+import arc.Core;
+import arc.graphics.Color;
+import arc.scene.ui.layout.Table;
 import mindustry.content.*;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Objectives;
+import mindustry.gen.Iconc;
 import mindustry.type.ItemStack;
+import mindustry.type.SectorPreset;
 import mindustry.type.UnitType;
+
+import static newhorizon.ui.TableFunc.OFFSET;
 
 
 public class NHTechTree implements ContentList {
@@ -36,7 +43,7 @@ public class NHTechTree implements ContentList {
         //Blocks;
         add(NHBlocks.bombLauncher, NHBlocks.airRaider);
         
-        add(Blocks.commandCenter, NHBlocks.jumpGatePrimary);
+        add(Blocks.commandCenter, NHBlocks.jumpGatePrimary, new EventObjective(SectorPresets.craters));
         add(NHBlocks.jumpGatePrimary, NHBlocks.jumpGateJunior, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
         add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
@@ -147,12 +154,39 @@ public class NHTechTree implements ContentList {
         add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.quantumCraters, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
         add(NHSectorPresets.quantumCraters, NHSectorPresets.luminariOutpost, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
         add(NHSectorPresets.luminariOutpost, NHSectorPresets.downpour, new Objectives.SectorComplete(NHSectorPresets.luminariOutpost));
-        add(NHSectorPresets.downpour, NHSectorPresets.quantumCraters, new Objectives.SectorComplete(NHSectorPresets.downpour));
         add(NHSectorPresets.downpour, NHSectorPresets.ancientBattefield, new Objectives.SectorComplete(NHSectorPresets.downpour));
         add(NHSectorPresets.downpour, NHSectorPresets.mainPath, new Objectives.SectorComplete(NHSectorPresets.downpour));
         add(NHSectorPresets.mainPath, NHSectorPresets.hostileHQ, new Objectives.SectorComplete(NHSectorPresets.mainPath));
         add(NHSectorPresets.quantumCraters, NHSectorPresets.deltaHQ, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
        
         add(Liquids.water, NHLiquids.quantumLiquid, new Objectives.Produce(NHLiquids.quantumLiquid));
+    }
+    
+    public static class EventObjective implements Objectives.Objective{
+        public final SectorPreset where;
+    
+        public EventObjective(SectorPreset where){
+            this.where = where;
+        }
+    
+        @Override
+        public boolean complete(){
+            return false;
+        }
+    
+        @Override
+        public String display(){
+            return Core.bundle.get("nh.cutscene.research-objective") + (where.unlocked() ? where.localizedName : Iconc.lock);
+        }
+    
+        @Override
+        public void build(Table table){
+            table.table(t -> {
+                t.image().growX().height(OFFSET / 4).pad(OFFSET / 4).color(Color.lightGray);
+                t.image(NHContent.objective).fill().pad(OFFSET).color(Color.lightGray);
+                t.image().growX().height(OFFSET / 4).pad(OFFSET / 4).color(Color.lightGray);
+            }).fill().row();
+            table.add("@nh.cutscene.research-objective" + (where.unlocked() ? where.localizedName : Iconc.lock));
+        }
     }
 }

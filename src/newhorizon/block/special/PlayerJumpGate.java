@@ -25,7 +25,7 @@ import newhorizon.func.NHFunc;
 import newhorizon.interfaces.Linkablec;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.LEN;
 
 public class PlayerJumpGate extends Block{
 	protected float dstMax;

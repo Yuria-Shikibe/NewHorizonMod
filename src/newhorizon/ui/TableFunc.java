@@ -1,4 +1,4 @@
-package newhorizon.func;
+package newhorizon.ui;
 
 import arc.Core;
 import arc.audio.Sound;
@@ -49,7 +49,9 @@ import mindustry.type.UnitType;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.modules.ItemModule;
-import newhorizon.feature.CutsceneScript;
+import newhorizon.feature.cutscene.CutsceneScript;
+import newhorizon.func.NHFunc;
+import newhorizon.func.NHSetting;
 import newhorizon.vars.NHVars;
 
 import java.lang.reflect.Field;
@@ -218,21 +220,7 @@ public class TableFunc{
     
     private static final Table starter = new Table(Tex.paneSolid);
     
-    public static class DebugTextArea extends TextArea{
-        public DebugTextArea(String text){
-            super(text);
-        }
-    
-        @Override
-        public void clearSelection(){
-        }
-        
-        public void setSelection(boolean b){
-            hasSelection = b;
-        }
-    }
-    
-    public static final DebugTextArea textArea = new DebugTextArea("");
+    public static final TextArea textArea = new TextArea("");
     
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static int getLineNum(String string){
@@ -277,14 +265,16 @@ public class TableFunc{
         
         Player player = Vars.player;
         
+        boolean hasInner = starter.getChildren().contains(e -> "INNER".equals(e.name));
+        
         starter.table(table -> {
-            table.button(Icon.settings, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
+            table.defaults().size(starter.getWidth() - OFFSET);
+            table.button(Icon.settings, Styles.clearTransi, () -> {
                 showInner(starter, new ToolTable());
-            }).grow().disabled(b -> !NHSetting.getBool("@active.admin-panel") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();
-            table.button(Icon.logic, Styles.clearTransi, starter.getWidth() - OFFSET, () -> {
+            }).grow().disabled(b -> !NHSetting.getBool("@active.admin-panel") || hasInner).row();
+            table.button(Icon.logic, Styles.clearTransi, () -> {
                 showInner(starter, new Table(Tex.button){{
                     setSize(Core.graphics.getWidth() / 1.5f, Core.graphics.getHeight() * 0.75f);
-                    
                     Label label = new Label("");
                     label.setWrap(false);
                     label.setText(textArea.getText());
@@ -297,7 +287,7 @@ public class TableFunc{
                     ScrollPane sp = pane(Styles.horizontalPane, t -> {
                         t.align(Align.topLeft);
                         Cell<Label> l = t.add(liner).color(Color.gray).padTop(13.5f).fill();
-                        Cell<DebugTextArea> textAreaMod = t.add(textArea).fill();
+                        Cell<TextArea> textAreaMod = t.add(textArea).fill();
                         t.update(() -> {
                             label.setText(textArea.getText());
                             StringBuilder stringBuilder = new StringBuilder();
@@ -318,30 +308,16 @@ public class TableFunc{
 //
                     row();
                     table(t -> {
-                        t.defaults().height(LEN);
-                        t.button("@save", Styles.cleart, () -> {
-                            ui.showConfirm("Are you sure you want save the script?", () -> {
-                                if(CutsceneScript.currentScriptFile != null){
-                                    int hash = CutsceneScript.currentScriptFile.readString().hashCode();
-                                    CutsceneScript.currentScriptFile.writeString(textArea.getText(), false);
-                                    ui.showText("Save successfully", hash + " -> " + textArea.getText().hashCode());
-                                }else{
-                                    ui.showCustomConfirm("Script File Missing", "Copy to clipboard?", "Accept", "@back",
-                                        () -> {
-                                            Core.app.setClipboardText(textArea.getText());
-                                        }, () -> {
-                
-                                        }
-                                    );
-                                }
-                            });
-                        }).growX().padRight(OFFSET);
-                        t.button("Try Run Selection", Styles.cleart, () -> {
-                            Core.app.post(() -> CutsceneScript.tryRunJS(textArea.getSelection()));
-                        }).growX();
+                        t.defaults().height(LEN).growX().pad(OFFSET / 2f);
+                        t.button("Try Run From Clipboard", Styles.cleart, () -> {
+                            Core.app.post(() -> CutsceneScript.runJS(Core.app.getClipboardText()));
+                        }).disabled(b -> Core.app.getClipboardText().isEmpty());
+                        t.button("***", Styles.cleart, () -> {
+                            Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
+                        }).disabled(b -> true);
                         t.button("Run Selection", Styles.cleart, () -> {
                             Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
-                        }).growX();
+                        }).disabled(b -> textArea.getSelection().isEmpty());
                         t.row();
                         
                         t.button("Reload From Matched File", Styles.cleart, () -> {
@@ -350,30 +326,48 @@ public class TableFunc{
                                 "This will overwrite the script here",
                                 () -> textArea.setText(CutsceneScript.currentScriptFile.readString())
                             );
-                        }).growX().disabled(b -> CutsceneScript.currentScriptFile == null).padTop(OFFSET).padRight(OFFSET);
-                        t.button("Debug Menu", Styles.cleart, () -> {
-                            new TableTexDebugDialog("").show();
-                        }).growX().padRight(OFFSET);
-                        t.button("@load", Styles.cleart, () -> {
+                        }).growX().disabled(b -> CutsceneScript.currentScriptFile == null);
+                        t.button("Load Script", Styles.cleart, () -> {
                             platform.showMultiFileChooser(file -> {
                                 textArea.setText(file.readString());
                             }, "js");
-                        }).growX();
+                        });
+                        t.button("Save Script", Styles.cleart, () -> {
+                            ui.showConfirm("Are you sure you want save the script?", () -> {
+                                if(CutsceneScript.currentScriptFile != null){
+                                    int hash = CutsceneScript.currentScriptFile.readString().hashCode();
+                                    CutsceneScript.currentScriptFile.writeString(textArea.getText(), false);
+                                    ui.showText("Save successfully", hash + " -> " + textArea.getText().hashCode());
+                                }else{
+                                    ui.showCustomConfirm("Script File Missing", "Copy to clipboard?", "Accept", "@back",
+                                            () -> {
+                                                Core.app.setClipboardText(textArea.getText());
+                                            }, () -> {
+                            
+                                            }
+                                    );
+                                }
+                            });
+                        });
+    
                         t.row();
     
                         t.button("Check World Data", Styles.cleart, () -> {
                             ui.showText("Vars.state.rules.tags", state.rules.tags.toString(), Align.left);
-                        }).padTop(OFFSET).padRight(OFFSET).growX();
+                        });
                         t.button("Remove World Data", Styles.cleart, () -> {
                             ui.showConfirm("Are you sure?", state.rules.tags::clear);
-                        }).growX().padRight(OFFSET);
-                        t.button("Clear Selection", Styles.cleart, () -> {
-                            textArea.setSelection(false);
-                        }).growX();
+                        });
+                        t.button("Debug Menu", Styles.cleart, () -> {
+                            new TableTexDebugDialog("").show();
+                        });
     
                     }).growX().fillY();
                 }});
-            }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || starter.getChildren().contains(e -> "INNER".equals(e.name))).row();
+            }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || hasInner).row();
+            table.button(Icon.play, Styles.clearTransi, () -> {
+                Core.app.post(() -> CutsceneScript.runJS(Core.app.getClipboardText()));
+            }).disabled(b -> Core.app.getClipboardText().isEmpty() || hasInner || !NHSetting.getBool("@active.debug"));
         }).grow().row();
         
         Core.scene.root.addChildAt(1, starter);
@@ -441,7 +435,6 @@ public class TableFunc{
     public static void link(Table parent, Links.LinkEntry link){
         parent.add(new Tables.LinkTable(link)).size(Tables.LinkTable.w + OFFSET * 2f, Tables.LinkTable.h).padTop(OFFSET / 2f).row();
     }
-    
     
     public static void rectSelectTable(Table parentT, Runnable run){
         NHVars.resetCtrl();

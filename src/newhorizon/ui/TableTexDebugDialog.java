@@ -1,4 +1,4 @@
-package newhorizon.func;
+package newhorizon.ui;
 
 import arc.Core;
 import arc.Events;
@@ -34,16 +34,20 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NewHorizon;
-import newhorizon.feature.CutsceneScript;
+import newhorizon.feature.cutscene.CutsceneScript;
 import newhorizon.feature.InternalTools;
 import newhorizon.feature.ScreenHack;
+import newhorizon.feature.cutscene.UIActions;
+import newhorizon.func.NHInterp;
+import newhorizon.func.NHPixmap;
+import newhorizon.func.NHSetting;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.*;
-import static newhorizon.func.TableFunc.LEN;
-import static newhorizon.func.TableFunc.OFFSET;
+import static newhorizon.ui.TableFunc.LEN;
+import static newhorizon.ui.TableFunc.OFFSET;
 
 public class TableTexDebugDialog extends BaseDialog{
 	private BaseDialog
@@ -383,9 +387,9 @@ public class TableTexDebugDialog extends BaseDialog{
 			
 			for(int i = 0; i < cores.size; i++){
 				CoreBlock.CoreBuild core = cores.get(i);
-				actions.add(CutsceneScript.UIActions.moveTo(core.x, core.y, 2f, Interp.circleOut));
+				actions.add(UIActions.moveTo(core.x, core.y, 2f, Interp.circleOut));
 				actions.add(Actions.parallel(
-					CutsceneScript.UIActions.labelAct(
+					UIActions.labelAct(
 					"Team<[#" + core.team.color +  "]" + core.team.name.toUpperCase() +
 						"[]>: @@@" +
 						core.block.localizedName + " [[" + core.tileX() + ", " + core.tileY() + "]", 0.5f, 1.5f, Interp.linear, t -> {
@@ -401,7 +405,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			
 			acts.addAll(Actions.run(() -> control.pause()), Actions.delay(2f)).addAll(actions).add(Actions.run(() -> control.resume()));
 			
-			CutsceneScript.UIActions.actionSeq(acts.toArray(Action.class));
+			UIActions.actionSeq(acts.toArray(Action.class));
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 
 		cont.button("Add Rand Progress Bar", () -> {
@@ -413,7 +417,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			});
 			
 			Time.runTask(30f, () -> {
-				CutsceneScript.UIActions.reloadBar(
+				UIActions.reloadBar(
 						name,
 						time, () -> String.valueOf(time), () -> Pal.heal
 				);
@@ -422,6 +426,10 @@ public class TableTexDebugDialog extends BaseDialog{
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("Bundle Tool", InternalTools::patchBundle).size(LEN * 3, LEN).pad(OFFSET / 2);
+		
+		cont.button("Skip Wave", () -> {
+			state.wave += 10;
+		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		addCloseButton();
 	}

@@ -24,6 +24,7 @@ public class NHSounds{
 		metalWalk = new Sound(),
 		hugeShoot = new Sound(),
 		hugeBlast = new Sound(),
+		signal = new Sound(),
 		railGunBlast = new Sound();
 	
 	public static void load(){
@@ -44,6 +45,7 @@ public class NHSounds{
 		thermoShoot = loadSound("thermoShoot");
 		hugeShoot = loadSound("hugeShoot");
 		hugeBlast = loadSound("hugeBlast");
+		signal = loadSound("signal");
 	}
 	
 	private static Sound loadSound(String soundName){

@@ -216,7 +216,7 @@ public class NHFunc{
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
         
-        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, Mathf.random(-100, 100)))return false;
+        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, rand.nextLong()))return false;
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
