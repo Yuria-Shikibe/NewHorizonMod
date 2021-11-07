@@ -62,23 +62,23 @@ import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
-import newhorizon.block.adapt.*;
-import newhorizon.block.defence.*;
-import newhorizon.block.distribution.RemoteRouter;
-import newhorizon.block.distribution.TowardGate;
-import newhorizon.block.drawer.DrawFactories;
-import newhorizon.block.drawer.DrawHoldLiquid;
-import newhorizon.block.drawer.DrawPrinter;
-import newhorizon.block.drawer.NHDrawAnimation;
-import newhorizon.block.special.*;
-import newhorizon.block.turrets.FinalTurret;
-import newhorizon.block.turrets.MultTractorBeamTurret;
-import newhorizon.block.turrets.ScalableTurret;
-import newhorizon.block.turrets.SpeedupTurret;
-import newhorizon.bullets.AdaptedContinuousLaserBulletType;
-import newhorizon.bullets.AdaptedLaserBulletType;
-import newhorizon.bullets.EffectBulletType;
-import newhorizon.feature.ScreenHack;
+import newhorizon.expand.block.adapt.*;
+import newhorizon.expand.block.defence.*;
+import newhorizon.expand.block.distribution.RemoteRouter;
+import newhorizon.expand.block.distribution.TowardGate;
+import newhorizon.expand.block.drawer.DrawFactories;
+import newhorizon.expand.block.drawer.DrawHoldLiquid;
+import newhorizon.expand.block.drawer.DrawPrinter;
+import newhorizon.expand.block.drawer.NHDrawAnimation;
+import newhorizon.expand.block.special.*;
+import newhorizon.expand.block.turrets.FinalTurret;
+import newhorizon.expand.block.turrets.MultTractorBeamTurret;
+import newhorizon.expand.block.turrets.ScalableTurret;
+import newhorizon.expand.block.turrets.SpeedupTurret;
+import newhorizon.expand.bullets.AdaptedContinuousLaserBulletType;
+import newhorizon.expand.bullets.AdaptedLaserBulletType;
+import newhorizon.expand.bullets.EffectBulletType;
+import newhorizon.util.feature.ScreenHack;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -120,7 +120,7 @@ public class NHBlocks implements ContentList {
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator,
 		//Special
-		playerJumpGate, debuger, payloadEntrance, gravityGully, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
+		playerJumpGate, debuger, payloadEntrance, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
 		disposePowerVoid, disposePowerNode, temporaryPowerSource,
 	
 		//Env
@@ -1748,7 +1748,7 @@ public class NHBlocks implements ContentList {
 			requirements(Category.units, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
 		}};
 		
-		gravityGully = new GravityTrap("gravity-gully"){{
+		gravityTrap = new GravityTrap("gravity-gully"){{
 			size = 3;
 			health = 1250;
 			

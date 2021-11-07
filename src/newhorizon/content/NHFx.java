@@ -2,19 +2,18 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
+import arc.scene.ui.layout.Scl;
 import arc.struct.ObjectMap;
 import arc.util.Time;
 import arc.util.Tmp;
+import arc.util.pooling.Pools;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
@@ -22,7 +21,8 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import newhorizon.func.NHSetting;
+import mindustry.ui.Fonts;
+import newhorizon.util.func.NHSetting;
 
 import java.util.Arrays;
 
@@ -847,6 +847,38 @@ public class NHFx{
 			Draw.mixcol(e.color, 1);
 			Draw.rect(type.fullIcon, e.x, e.y, type.fullIcon.width * e.fout(Interp.pow2Out) * Draw.scl * 1.2f, type.fullIcon.height * e.fout(Interp.pow2Out) * Draw.scl * 1.2f, e.rotation - 90f);
 			Draw.reset();
+		}),
+	
+//		fellowTrail = new Effect(90f, 5000, e -> {
+//			if(!(e.data instanceof Vec2))return;
+//			Vec2 data = e.data();
+//
+//			color(e.color);
+//		}),
+	
+		dataTransport = new Effect(60f, 100f, e -> {
+			rand.setSeed(e.id);
+			int i = rand.random(8, 10000);
+			
+			Vec2 vec2 = Tmp.v1.setToRandomDirection(rand).scl(rand.random(36f, 80f) * e.rotation * e.fout(Interp.pow2Out)).add(e.x, e.y);
+			
+			String text = Integer.toBinaryString(i).substring(1);
+			
+			Font font = Fonts.def;
+			GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
+			boolean ints = font.usesIntegerPositions();
+			font.setUseIntegerPositions(false);
+			font.getData().setScale(Mathf.curve(e.fin(), 0, 0.1f) * e.rotation * (e.fout(Interp.pow2In) * 3 + 1) / 4 / Scl.scl(1.0f));
+			layout.setText(font, text);
+			font.setColor(e.color);
+			
+			font.draw(text, vec2.x, vec2.y, 1);
+			
+			font.setUseIntegerPositions(ints);
+			font.setColor(Color.white);
+			font.getData().setScale(1.0F);
+			Draw.reset();
+			Pools.free(layout);
 		}),
 
 		darkEnergySpread = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {

@@ -24,20 +24,20 @@ import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
-import newhorizon.feature.cutscene.CutsceneScript;
-import newhorizon.feature.ScreenHack;
-import newhorizon.feature.cutscene.EventSamples;
-import newhorizon.func.EntityRegister;
-import newhorizon.func.NHSetting;
-import newhorizon.ui.TableFunc;
-import newhorizon.ui.Tables;
-import newhorizon.ui.Tables.LinkTable;
-import newhorizon.vars.EventTriggers;
+import newhorizon.util.feature.cutscene.CutsceneScript;
+import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.feature.cutscene.EventSamples;
+import newhorizon.util.func.EntityRegister;
+import newhorizon.util.func.NHSetting;
+import newhorizon.util.ui.TableFunc;
+import newhorizon.util.ui.Tables;
+import newhorizon.util.ui.Tables.LinkTable;
+import newhorizon.expand.vars.EventTriggers;
 
 import java.io.IOException;
 
-import static newhorizon.ui.TableFunc.LEN;
-import static newhorizon.ui.TableFunc.OFFSET;
+import static newhorizon.util.ui.TableFunc.LEN;
+import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{

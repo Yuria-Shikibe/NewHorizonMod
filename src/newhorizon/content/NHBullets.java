@@ -27,10 +27,10 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import newhorizon.NewHorizon;
-import newhorizon.bullets.*;
-import newhorizon.feature.PosLightning;
-import newhorizon.func.DrawFunc;
-import newhorizon.func.NHSetting;
+import newhorizon.expand.bullets.*;
+import newhorizon.util.feature.PosLightning;
+import newhorizon.util.func.DrawFunc;
+import newhorizon.util.func.NHSetting;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;

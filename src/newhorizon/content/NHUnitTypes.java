@@ -41,15 +41,15 @@ import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
 import newhorizon.NewHorizon;
-import newhorizon.bullets.*;
-import newhorizon.feature.PosLightning;
-import newhorizon.feature.ScreenHack;
-import newhorizon.func.DrawFunc;
-import newhorizon.func.NHFunc;
-import newhorizon.func.NHPixmap;
-import newhorizon.func.NHSetting;
-import newhorizon.units.*;
-import newhorizon.vars.EventTriggers;
+import newhorizon.expand.bullets.*;
+import newhorizon.util.feature.PosLightning;
+import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.func.DrawFunc;
+import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHPixmap;
+import newhorizon.util.func.NHSetting;
+import newhorizon.expand.units.*;
+import newhorizon.expand.vars.EventTriggers;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -788,8 +788,6 @@ public class NHUnitTypes implements ContentList{
 			
 			buildBeamOffset = 15f;
 			
-			range = maxRange = aimDst = 800f;
-			
 			weapons.add(
 				closeAATurret.copy().setPos(13f, -23f),
 				closeAATurret.copy().setPos(19f, -28f),
@@ -803,9 +801,8 @@ public class NHUnitTypes implements ContentList{
 				cooldownTime = 150f;
 				shake = 12f;
 				
-				
 				top = false;
-				mirror = rotate = autoTarget = false;
+				mirror = rotate = false;
 				shootSound = NHSounds.railGunBlast;
 				soundPitchMax = 1.1f;
 				soundPitchMin = 0.9f;
@@ -837,7 +834,13 @@ public class NHUnitTypes implements ContentList{
 					despawnEffect = NHFx.lightningHitLarge;
 					hitEffect = NHFx.instHit(hitColor, 5, 80f);
 					despawnHit = true;
-				}};
+				}
+					
+					@Override
+					public float range(){
+						return 800;
+					}
+				};
 				
 				shootStatus = StatusEffects.slow;
 				shootStatusDuration = bullet.lifetime * 1.5f;

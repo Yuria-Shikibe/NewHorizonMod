@@ -5,7 +5,7 @@ import mindustry.content.Items;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.type.ItemStack;
-import newhorizon.feature.UpgradeData;
+import newhorizon.util.feature.UpgradeData;
 
 import static mindustry.Vars.tilesize;
 

@@ -39,10 +39,10 @@ const loader = Vars.mods.getMod(modName).loader;
 
 const loadClass = (fullName) => loader.loadClass(fullName).newInstance(); //Garbage things 
 
-const CutsceneScript = loadClass("newhorizon.feature.cutscene.CutsceneScript");
-const UIActions = loadClass("newhorizon.feature.cutscene.CutsceneScript$UIActions");
-const KeyFormat = loadClass("newhorizon.feature.cutscene.CutsceneScript$KeyFormat");
-const WorldActions = loadClass("newhorizon.feature.cutscene.CutsceneScript$WorldActions"); 
+const CutsceneScript = loadClass("newhorizon.util.feature.cutscene.CutsceneScript");
+const UIActions = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$UIActions");
+const KeyFormat = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$KeyFormat");
+const WorldActions = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$WorldActions"); 
 
 const NHBlocks = loadClass("newhorizon.content.NHBlocks");
 const NHBullets = loadClass("newhorizon.content.NHBullets");
@@ -56,12 +56,12 @@ const NHSectorPresets = loadClass("newhorizon.content.NHSectorPresets");
 const NHFx = loadClass("newhorizon.content.NHFx");
 const NHColor = loadClass("newhorizon.content.NHColor");
 const NHPlanets = loadClass("newhorizon.content.NHPlanets");
-const NHFunc = loadClass("newhorizon.func.NHFunc");
-const DrawFunc = loadClass("newhorizon.func.DrawFunc");
-const Tables = loadClass("newhorizon.ui.Tables");
-const TableFunc = loadClass("newhorizon.ui.TableFunc");
-const NHInterp = loadClass("newhorizon.func.NHInterp");
-const PosLightning = loadClass("newhorizon.feature.PosLightning"); 
+const NHFunc = loadClass("newhorizon.util.func.NHFunc");
+const DrawFunc = loadClass("newhorizon.util.func.DrawFunc");
+const Tables = loadClass("newhorizon.util.ui.Tables");
+const TableFunc = loadClass("newhorizon.util.ui.TableFunc");
+const NHInterp = loadClass("newhorizon.util.func.NHInterp");
+const PosLightning = loadClass("newhorizon.util.feature.PosLightning"); 
 
 const OFFSET = 12, LEN = 60; 
 
@@ -166,7 +166,7 @@ public static boolean actionSeq(Action... actions){
 #### Interpolasi: `Interp` & `NHInterp` 
 
 ![](https://github.com/Yuria-Shikibe/NewHorizonMod/raw/main/github-pictures/guide/interps.png)
-- Kamu bisa mendapatkan ini semua dari `arc.math.Interp`, `newhorizon.func.NHInterp`.
+- Kamu bisa mendapatkan ini semua dari `arc.math.Interp`, `newhorizon.util.func.NHInterp`.
 - Ini semua digunakan untuk kurva animasi, yang dimana ini semua bisa diatur.
 - Jika kamu mengaktifkan `Panel Alat` & `Mode Debug` di `Pengaturan Mod`, kamu bisa meakses tabel ini dari *Tabel Cheat -> Debug -> Interp*.
 --- 

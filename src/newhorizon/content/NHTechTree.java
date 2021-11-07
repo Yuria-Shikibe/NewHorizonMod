@@ -13,7 +13,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.SectorPreset;
 import mindustry.type.UnitType;
 
-import static newhorizon.ui.TableFunc.OFFSET;
+import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NHTechTree implements ContentList {
@@ -48,7 +48,7 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
         
-        add(NHBlocks.hyperspaceWarper, NHBlocks.gravityGully);
+        add(NHBlocks.hyperspaceWarper, NHBlocks.gravityTrap);
         add(Blocks.powerNode, NHBlocks.insulatedWall);
         add(Blocks.surgeWall, NHBlocks.heavyDefenceWall);
         add(NHBlocks.heavyDefenceWall, NHBlocks.heavyDefenceWallLarge);

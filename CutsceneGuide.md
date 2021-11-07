@@ -38,10 +38,10 @@ const loader = Vars.mods.getMod(modName).loader;
 
 const loadClass = (fullName) => loader.loadClass(fullName).newInstance(); //Garbage things
 
-const CutsceneScript = loadClass("newhorizon.feature.cutscene.CutsceneScript");
-const UIActions = loadClass("newhorizon.feature.cutscene.CutsceneScript$UIActions");
-const KeyFormat = loadClass("newhorizon.feature.cutscene.CutsceneScript$KeyFormat");
-const WorldActions = loadClass("newhorizon.feature.cutscene.CutsceneScript$WorldActions");
+const CutsceneScript = loadClass("newhorizon.util.feature.cutscene.CutsceneScript");
+const UIActions = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$UIActions");
+const KeyFormat = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$KeyFormat");
+const WorldActions = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$WorldActions");
 
 const NHBlocks = loadClass("newhorizon.content.NHBlocks");
 const NHBullets = loadClass("newhorizon.content.NHBullets");
@@ -55,12 +55,12 @@ const NHSectorPresets = loadClass("newhorizon.content.NHSectorPresets");
 const NHFx = loadClass("newhorizon.content.NHFx");
 const NHColor = loadClass("newhorizon.content.NHColor");
 const NHPlanets = loadClass("newhorizon.content.NHPlanets");
-const NHFunc = loadClass("newhorizon.func.NHFunc");
-const DrawFunc = loadClass("newhorizon.func.DrawFunc");
-const Tables = loadClass("newhorizon.ui.Tables");
-const TableFunc = loadClass("newhorizon.ui.TableFunc");
-const NHInterp = loadClass("newhorizon.func.NHInterp");
-const PosLightning = loadClass("newhorizon.feature.PosLightning");
+const NHFunc = loadClass("newhorizon.util.func.NHFunc");
+const DrawFunc = loadClass("newhorizon.util.func.DrawFunc");
+const Tables = loadClass("newhorizon.util.ui.Tables");
+const TableFunc = loadClass("newhorizon.util.ui.TableFunc");
+const NHInterp = loadClass("newhorizon.util.func.NHInterp");
+const PosLightning = loadClass("newhorizon.util.feature.PosLightning");
 
 const OFFSET = 12, LEN = 60;
 
@@ -354,7 +354,7 @@ Use `Remove World Data` in the debugger and retest the script.
 #### Interpolation: `Interp` & `NHInterp`
 
 ![](https://github.com/Yuria-Shikibe/NewHorizonMod/raw/main/github-pictures/guide/interps.png)
-- You can get these from class `arc.math.Interp`, `newhorizon.func.NHInterp`.
+- You can get these from class `arc.math.Interp`, `newhorizon.util.func.NHInterp`.
 - These are use as animation curves, which can adjust the progress of animations.
 - If you activated the `Tool Panel` & `Debug Mod` in `Mod Settings`, you can access this table from *Cheat Table -> Debug -> Interp*.
 ---

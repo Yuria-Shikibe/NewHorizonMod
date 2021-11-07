@@ -6,14 +6,14 @@ import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import newhorizon.NewHorizon;
-import newhorizon.feature.UpgradeData;
+import newhorizon.util.feature.UpgradeData;
 
 public class NHContent extends Content{
 	public static TextureRegion
 			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2;
 	
 	public static TextureRegion //UI
-		raid, objective;
+		raid, objective, fleet;
 	
 	public static void initLoad(){
 		new NHContent().load();
@@ -36,6 +36,7 @@ public class NHContent extends Content{
 		
 		raid = Core.atlas.find(NewHorizon.name("raid"));
 		objective = Core.atlas.find(NewHorizon.name("objective"));
+		fleet = Core.atlas.find(NewHorizon.name("fleet"));
 		
 		NHUpgradeDatas.all.each(UpgradeData::load);
 		NHUpgradeDatas.all.each(UpgradeData::init);

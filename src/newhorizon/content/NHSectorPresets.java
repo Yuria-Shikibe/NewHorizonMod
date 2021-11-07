@@ -22,14 +22,14 @@ import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
 import mindustry.world.blocks.storage.CoreBlock;
-import newhorizon.feature.cutscene.*;
-import newhorizon.func.NHFunc;
+import newhorizon.util.feature.cutscene.*;
+import newhorizon.util.func.NHFunc;
 
 import static mindustry.Vars.*;
-import static newhorizon.feature.cutscene.KeyFormat.ENEMY_CORE_DESTROYED_EVENT;
-import static newhorizon.feature.cutscene.KeyFormat.generateName;
-import static newhorizon.ui.TableFunc.LEN;
-import static newhorizon.ui.TableFunc.OFFSET;
+import static newhorizon.util.feature.cutscene.KeyFormat.ENEMY_CORE_DESTROYED_EVENT;
+import static newhorizon.util.feature.cutscene.KeyFormat.generateName;
+import static newhorizon.util.ui.TableFunc.LEN;
+import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class NHSectorPresets implements ContentList{
 	public static ObjectMap<SectorPreset, Cons<Sector>> captureMap = new ObjectMap<>(), loseMap = new ObjectMap<>();
@@ -152,29 +152,10 @@ public class NHSectorPresets implements ContentList{
 				if(sector != null && sector.info.wasCaptured)return;
 				
 				if(CutsceneScript.eventHasData(ENEMY_CORE_DESTROYED_EVENT)){
-					CutsceneScript.reload(generateName("Hostile Reinforcements Arriving", Pal.ammo, 60 * 60 * 5), Time.delta, 60 * 60 * 5, () -> true, () -> state.rules.waveTeam.cores().size == 1, () -> {
-						CoreBlock.CoreBuild core = state.rules.waveTeam.core();
-						UIActions.actionSeq(
-								Actions.parallel(
-										UIActions.cautionAt(core.x, core.y, core.block.size * tilesize / 2f, 6f, core.team.color),
-										Actions.run(() -> {
-											NHSounds.alarm.play();
-											NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 300f, 30f, NHUnitTypes.destruction, 4);
-											NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 240f, 15f, NHUnitTypes.striker, 6);
-											NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 300f, 60f, NHUnitTypes.hurricane, 2);
-										}),
-										UIActions.labelAct(
-												"[accent]Caution[]: @@@Hostile Fleet Incoming."
-												, 0.75f, 3.26f, Interp.linear, t -> {
-													t.image(Icon.warning).padRight(OFFSET);
-												}
-										)
-								)
-						);
-					});
-					
-					CutsceneScript.runEventOnce("RaidSetup", EventSamples.waveTeamRaid::setup);
-					
+					if(!CutsceneScript.isPlayingCutscene){
+						CutsceneScript.runEventOnce("setup-reinforcements", () -> EventSamples.fleetApproaching.setup());
+						CutsceneScript.runEventOnce("setup-raid", () -> EventSamples.waveTeamRaid.setup());
+					}
 					
 					CutsceneScript.reload(eventNameFlagship, Time.delta, 60 * 60 * 10, () -> !CutsceneScript.getBool("SpawnedBoss"), () -> true, () -> {
 						CutsceneScript.runEventOnce("SpawnedBoss", () -> {
@@ -232,8 +213,6 @@ public class NHSectorPresets implements ContentList{
 						CoreBlock.CoreBuild core = state.teams.cores(state.rules.waveTeam).first();
 						
 						UIActions.reloadBarDelay("Hostile Flagships Arriving", 60 * 60 * 10, Pal.redderDust);
-						UIActions.reloadBarDelay("Hostile Reinforcements Arriving", 60 * 60 * 5, Pal.ammo);
-						UIActions.reloadBarDelay("Air Raid", 60 * 60 * 8, NHColor.darkEnrColor);
 						
 						UIActions.actionSeq(
 							Actions.parallel(Actions.delay(2f), UIActions.curtainIn(2f, Interp.pow2Out)), Actions.run(UIActions::pauseCamera),
@@ -359,6 +338,8 @@ public class NHSectorPresets implements ContentList{
 			addStartingItems = true;
 			difficulty = 8;
 			startWaveTimeMultiplier = 2.5f;
+			
+			CutsceneScript.presentJS.put(this, "const destroyReactors = extend(DestroyObjectiveEventClass, \"destroyReactors\", {});\n" + "\n" + "destroyReactors.targets = func(e => {\n" + "    const buildings = new Seq();\n" + "\n" + "    Groups.build.each(\n" + "        boolf(b => b.isValid() && b.team != Vars.state.rules.defaultTeam && b.block.flags.contains(BlockFlag.reactor)),\n" + "        cons(b => buildings.add(b))\n" + "    );\n" + "\n" + "    return buildings;\n" + "});\n" + "\n" + "const award = extend(FleetEventClass, \"award\", {});\n" + "award.teamFunc = func(e => Vars.state.rules.defaultTeam);\n" + "award.targetFunc = func(e => Vars.state.teams.get(award.teamFunc.get(e)).core());\n" + "award.removeAfterTriggered = true;\n" + "award.unitTypeMap = ObjectMap.of(NHUnitTypes.longinus, 6);\n" + "\n" + "destroyReactors.action = cons(e => award.setup());\n" + "\n" + "CutsceneScript.curIniter.add(run(() => {\n" + "    if(CutsceneScript.canInit())destroyReactors.setup();\n" + "}));");
 		}};
 		
 		quantumCraters = new NHSectorPreset("quantum-craters", NHPlanets.midantha, 86){{

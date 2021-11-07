@@ -18,7 +18,7 @@ import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
-import newhorizon.func.NHPixmap;
+import newhorizon.util.func.NHPixmap;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect
