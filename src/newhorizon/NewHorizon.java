@@ -86,11 +86,11 @@ public class NewHorizon extends Mod{
 				"Custom Events!", "Allow players to create custom events with js, with a high degree of freedom", "Feature", NHContent.objective
 			),
 			new LatestFeature(
-				"Camera Zoom Action", "Use Actions to zoom your camera", "Feature", NHContent.icon
+				"Bug Fixes", "Building Upgraders and Primary JumpGates now doesn't cause crashes", "Fixes", NHContent.pointerRegion
 			),
 			new LatestFeature(
-				"Bug Fixes", "Building Upgraders and Primary JumpGates now doesn't cause crashes", "Fixes", NHContent.pointerRegion
-			)
+					"Camera Zoom Action", "Use Actions to zoom your camera", "Feature", NHContent.icon
+			),
 		};
 	}
 	
@@ -140,7 +140,7 @@ public class NewHorizon extends Mod{
 					t.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@log", Icon.book, Styles.transt, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 				}).grow();
 				if(!Vars.mobile)table.table(t -> {
 				
