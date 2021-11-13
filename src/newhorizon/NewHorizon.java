@@ -174,7 +174,7 @@ public class NewHorizon extends Mod{
 						        t.add("\t[lightgray]Version: [accent]" + tag).left().row();
 						        t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
 						        t.pane(c -> {
-							        c.align(Align.topLeft);
+							        c.align(Align.topLeft).margin(OFFSET);
 							        c.add("[accent]Description: \n[]" + body).left();
 						        }).grow();
 					        }).grow().padBottom(OFFSET).row();
