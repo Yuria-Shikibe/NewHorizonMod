@@ -7,6 +7,7 @@ import arc.util.Align;
 import arc.util.Http;
 import arc.util.Log;
 import arc.util.Time;
+import arc.util.async.Threads;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
@@ -155,41 +156,42 @@ public class NewHorizon extends Mod{
 	
     public NewHorizon(){
 		Log.info("Loaded NewHorizon Mod constructor.");
-	
-	    Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
-		    Jval json = Jval.read(res.getResultAsString());
-		
-		    tag = json.get("tag_name").asString();
-		    body = json.get("body").asString();
-		    
-		    if(tag != null)Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
-	    }, ex -> Log.err(ex.toString()));
 		
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
-	        Time.runTask(15f, () -> {
-		        if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
-			        new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
-				        cont.table(t -> {
-					        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
-					        t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
-					        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
-					        t.add("\t[lightgray]Version: [accent]" + tag).left().row();
-					        t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
-					        t.pane(c -> {
-						        c.add("[accent]Description: \n[]" + body).left();
-					        }).grow();
-				        }).grow().padBottom(OFFSET).row();
-				
-				        cont.table(table -> {
-					        table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
-					        table.button("@mods.github.open", Icon.github, Styles.cleart, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
-				        }).bottom().growX().height(LEN).padTop(OFFSET);
-				
-				        addCloseListener();
-			        }}.show();
-		        }
+	        Threads.thread(() -> {
+		        Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
+			        Jval json = Jval.read(res.getResultAsString());
+			
+			        tag = json.get("tag_name").asString();
+			        body = json.get("body").asString();
+			
+			        if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
+				        new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
+					        cont.table(t -> {
+					        	t.align(Align.topLeft);
+						        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
+						        t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
+						        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
+						        t.add("\t[lightgray]Version: [accent]" + tag).left().row();
+						        t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
+						        t.pane(c -> {
+							        c.add("[accent]Description: \n[]" + body).left();
+						        }).grow();
+					        }).grow().padBottom(OFFSET).row();
+					
+					        cont.table(table -> {
+						        table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
+						        table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
+					        }).bottom().growX().height(LEN).padTop(OFFSET);
+					
+					        addCloseListener();
+				        }}.show();
+			        }
+			
+			        if(tag != null)Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
+		        }, ex -> Log.err(ex.toString()));
 	        });
-	        
+        	
         	if(NHSetting.versionChange){
         		showNew();
 	        }
