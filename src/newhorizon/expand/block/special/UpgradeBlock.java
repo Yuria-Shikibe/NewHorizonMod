@@ -136,7 +136,7 @@ public class UpgradeBlock extends Block{
 		public int link = -1;
 		public int upgradingID = defaultID;
 		public int latestSelectID = -1;
-		public float remainTime;
+		public float remainTime = -1;
 		public float warmup;
 		
 		protected transient Color baseColorTst = Pal.accent;

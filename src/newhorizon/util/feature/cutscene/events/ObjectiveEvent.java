@@ -21,6 +21,8 @@ public class ObjectiveEvent extends CutsceneEvent{
 	public Func<CutsceneEventEntity, Boolean> trigger = e -> true;
 	public Cons<CutsceneEventEntity> action = e -> {};
 	
+	public float checkSpacing = 30f;
+	
 	public ObjectiveEvent(String name){
 		super(name);
 		
@@ -29,7 +31,7 @@ public class ObjectiveEvent extends CutsceneEvent{
 	
 	@Override
 	public void updateEvent(CutsceneEventEntity e){
-		if(trigger.get(e))e.act();
+		if(e.timer.get(checkSpacing) && trigger.get(e))e.act();
 	}
 	
 	@Override
