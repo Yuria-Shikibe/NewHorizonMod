@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.scene.ui.layout.Table;
+import mindustry.Vars;
 import mindustry.gen.Sounds;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
@@ -25,6 +26,8 @@ public class ObjectiveEvent extends CutsceneEvent{
 	
 	public ObjectiveEvent(String name){
 		super(name);
+		
+		checkSpacing = Vars.mobile ? 60f : 30f;
 		
 		removeAfterTriggered = true;
 	}

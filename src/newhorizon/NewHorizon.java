@@ -87,6 +87,9 @@ public class NewHorizon extends Mod{
 			),
 			new LatestFeature(
 				"Camera Zoom Action", "Use Actions to zoom your camera", "Feature", NHContent.icon
+			),
+			new LatestFeature(
+				"Bug Fixes", "Building Upgraders and Primary JumpGates now doesn't cause crashes", "Fixes", NHContent.pointerRegion
 			)
 		};
 	}

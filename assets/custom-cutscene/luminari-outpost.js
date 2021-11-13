@@ -4,7 +4,7 @@ destroyReactors.targets = func(e => {
     const buildings = new Seq();
 
     Groups.build.each(
-        boolf(b => b.isValid() && b.team != Vars.state.rules.defaultTeam && b.block.flags.contains(BlockFlag.reactor)),
+        boolf(b => b.isValid() && b.team != Vars.state.rules.defaultTeam && b.block == NHBlocks.hyperGenerator),
         cons(b => buildings.add(b))
     );
 
