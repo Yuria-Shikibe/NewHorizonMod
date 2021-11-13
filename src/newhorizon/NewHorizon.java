@@ -91,6 +91,9 @@ public class NewHorizon extends Mod{
 			new LatestFeature(
 					"Camera Zoom Action", "Use Actions to zoom your camera", "Feature", NHContent.icon
 			),
+			new LatestFeature(
+					"", "Fixed the sector 'The Craters' doesn't pop up the cutscene mission", "Fixes", NHContent.icon
+			),
 		};
 	}
 	
