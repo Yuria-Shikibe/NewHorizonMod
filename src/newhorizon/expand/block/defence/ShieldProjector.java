@@ -50,10 +50,6 @@ import static newhorizon.util.ui.TableFunc.LEN;
 
 public class ShieldProjector extends CommandableBlock{
 	
-	static{
-		EntityRegister.put(Projector.class, new EntityRegister.ProvSet(Projector::new));
-	}
-	
 	public TextureRegion baseRegion, heatRegion;
 	
 	public Color heatColor = Pal.ammo;

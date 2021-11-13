@@ -3,7 +3,6 @@ package newhorizon.expand.vars;
 import arc.struct.OrderedSet;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.special.CommandableBlock;
-import newhorizon.expand.block.special.UpgradeBlock;
 import newhorizon.expand.interfaces.BeforeLoadc;
 import newhorizon.expand.interfaces.ServerInitc;
 
@@ -15,7 +14,6 @@ public class NHWorldVars{
 	public static final OrderedSet<ServerInitc> serverLoad = new OrderedSet<>();
 	public static final OrderedSet<BeforeLoadc> advancedLoad = new OrderedSet<>();
 	
-	public transient final OrderedSet<UpgradeBlock.UpgradeBlockBuild> upgraderGroup = new OrderedSet<>();
 	public transient final OrderedSet<GravityTrap.GravityTrapBuild> gravityTraps = new OrderedSet<>();
 	public transient final OrderedSet<CommandableBlock.CommandableBlockBuild> commandables = new OrderedSet<>();
 	
@@ -24,8 +22,6 @@ public class NHWorldVars{
 	
 	
 	public void clear(){
-		
-		upgraderGroup.clear();
 		commandables.clear();
 		gravityTraps.clear();
 		

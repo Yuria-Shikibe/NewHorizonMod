@@ -30,12 +30,12 @@ public class EventCompletePacket extends Packet{
 	
 	public void handleClient(){
 		if(entity == null)return;
-		entity.netAct();
+		entity.act();
 	}
 	
 	public void handleServer(NetConnection con) {
 		if(con.player != null && !con.kicked && entity != null) {
-			entity.netAct();
+			entity.act();
 		}
 	}
 }

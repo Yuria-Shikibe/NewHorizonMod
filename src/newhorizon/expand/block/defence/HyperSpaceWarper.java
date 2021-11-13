@@ -47,22 +47,20 @@ import mindustry.world.meta.Stat;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.NHBaseEntity;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.*;
+import newhorizon.util.func.DrawFunc;
+import newhorizon.util.func.EntityRegister;
+import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHSetting;
 import newhorizon.util.ui.TableFunc;
-import newhorizon.expand.vars.NHVars;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class HyperSpaceWarper extends Block{
-	
-	static{
-		EntityRegister.put(Carrier.class, Carrier::new);
-	}
-	
 	private static Tile furthest;
 	
 	public float reloadTime = 1200f;
@@ -420,6 +418,10 @@ public class HyperSpaceWarper extends Block{
 		public UnitPayload toCarry;
 		public Team team;
 		public Vec2 to;
+		
+		public transient long lastUpdated, updateSpacing;
+		
+		public transient float x_LAST_, x_TARGET_, y_LAST_, y_TARGET_;
 		
 		public transient Vec2 vel = new Vec2();
 		

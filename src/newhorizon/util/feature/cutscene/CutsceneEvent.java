@@ -10,9 +10,14 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
+import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 
 public class CutsceneEvent implements Cloneable{
-	public static final ObjectMap<String, CutsceneEvent> cutsceneEvents = new ObjectMap<>();
+	protected static final ObjectMap<String, CutsceneEvent> cutsceneEvents = new ObjectMap<>();
+	
+	public static CutsceneEvent get(String name){
+		return cutsceneEvents.get(name);
+	}
 	
 	public static final CutsceneEvent NULL_EVENT = new CutsceneEvent("NULL_EVENT"){{
 		removeAfterTriggered = true;
@@ -31,6 +36,7 @@ public class CutsceneEvent implements Cloneable{
 	
 	public boolean initOnce = true;
 	public boolean removeAfterTriggered = false;
+	public boolean removeAfterVictory = true;
 	public boolean isHidden = false;
 	public boolean updatable = true, drawable = false;
 	public Boolp exist = () -> true;
@@ -48,12 +54,15 @@ public class CutsceneEvent implements Cloneable{
 	
 	public CutsceneEvent(){this("null", false);}
 	
+	@SuppressWarnings("UnusedReturnValue")
 	public CutsceneEventEntity setup(){
 		if(name.equals("null"))throw new ArcRuntimeException("Illegal Event #" + System.identityHashCode(this) + "[!]RENAME IT!");
 		CutsceneEventEntity entity = Pools.obtain(CutsceneEventEntity.class, CutsceneEventEntity::new);
 		entity.setType(this);
 		
 		if(!Vars.net.client())entity.add();
+		if(!UIActions.disabled())onCallUI(entity);
+		
 		return entity;
 	}
 	
@@ -73,10 +82,16 @@ public class CutsceneEvent implements Cloneable{
 	
 	}
 	
+	public void onCallUI(CutsceneEventEntity e){
+	
+	}
+	
+	@HeadlessDisabled
 	public void setupTable(CutsceneEventEntity e, Table table){
 	
 	}
 	
+	@HeadlessDisabled
 	public void removeTable(CutsceneEventEntity e, Table table){
 		e.infoT.remove();
 	}

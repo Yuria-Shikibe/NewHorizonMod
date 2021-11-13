@@ -36,6 +36,11 @@ public class DestroyObjectiveEvent extends ObjectiveEvent{
 	}
 	
 	@Override
+	public void setType(CutsceneEventEntity e){
+		e.size = 10000000;
+	}
+	
+	@Override
 	public void draw(CutsceneEventEntity e){
 		Draw.alpha(0.55f);
 		Draw.blend(Blending.additive);
@@ -59,12 +64,5 @@ public class DestroyObjectiveEvent extends ObjectiveEvent{
 		
 		Draw.blend();
 		Draw.reset();
-	}
-	
-	@Override
-	public void updateEvent(CutsceneEventEntity e){
-		super.updateEvent(e);
-		
-		if(!Vars.headless)e.set(Core.camera.position);
 	}
 }

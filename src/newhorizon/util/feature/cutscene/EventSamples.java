@@ -22,6 +22,7 @@ public class EventSamples{
 			jumpgateUnlockObjective, waveTeamRaid, fleetApproaching, destroyGravityTraps, destroyReactors;
 	
 	public static void load(){
+		
 		destroyReactors = new DestroyObjectiveEvent("destroyReactors"){{
 			targets = e -> {
 				Seq<Building> buildings = new Seq<>();
@@ -104,10 +105,11 @@ public class EventSamples{
 		}};
 		
 		jumpgateUnlock = new SignalEvent("jumpgateUnlock"){{
-			action = () -> CutsceneScript.netUnlock(NHBlocks.jumpGatePrimary);
+			action = () -> NHBlocks.jumpGatePrimary.unlock();
 			position = new Vec2(888, 1392);
 			
 			cannotBeRemove = true;
+			removeAfterVictory = false;
 		}};
 		
 		jumpgateUnlockObjective = new ObjectiveEvent("jumpgateUnlockObjective"){{
@@ -115,6 +117,7 @@ public class EventSamples{
 			trigger = e -> NHBlocks.jumpGatePrimary.unlocked();
 			
 			cannotBeRemove = true;
+			removeAfterVictory = false;
 		}};
 	}
 }

@@ -32,6 +32,7 @@ public class LabelAction extends TemporalAction{
 	
 	@Override
 	protected void begin(){
+		if(UIActions.disabled())return;
 		Sounds.press.play(10);
 		
 		label = new Label("");
@@ -84,11 +85,13 @@ public class LabelAction extends TemporalAction{
 	
 	@Override
 	protected void end(){
+		if(UIActions.disabled())return;
 		table.actions(Actions.fadeOut(0.45f), Actions.remove());
 	}
 	
 	@Override
 	protected void update(float percent){
+		if(UIActions.disabled())return;
 		String[] s = text.split("@@@");
 		String speaker = s[0];
 		StringBuilder saying = new StringBuilder();

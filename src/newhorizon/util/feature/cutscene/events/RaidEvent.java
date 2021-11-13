@@ -143,30 +143,31 @@ public class RaidEvent extends CutsceneEvent{
 	}
 	
 	@Override
+	public void onCallUI(CutsceneEventEntity e){
+		Color color = teamFunc.get(e).color;
+		
+		UIActions.showLabel(2f, t -> {
+			if(teamFunc.get(e) != Vars.player.team())NHSounds.alarm.play();
+			
+			t.background(Styles.black5);
+			
+			t.table(t2 -> {
+				t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(color);
+				t2.image(NHContent.raid).fill().color(color);
+				t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(color);
+			}).growX().pad(OFFSET / 2).fillY().row();
+			
+			t.add("<< " + Core.bundle.get("nh.cutscene.event.raid-alert") + " >>").color(color);
+		});
+	}
+	
+	@Override
 	public void onCall(CutsceneEventEntity e){
 		Position position = targetFunc.get(e);
 		if(position == null)position = new Vec2().set(Vars.state.rules.defaultTeam.cores().firstOpt());
 		if(position == null){
 			e.set(0, 0);
 		}else e.set(position);
-		
-		
-		if(!Vars.headless){
-			Color color = teamFunc.get(e).color;
-			
-			if(teamFunc.get(e) != Vars.player.team())NHSounds.alarm.play();
-			UIActions.showLabel(2f, t -> {
-				t.background(Styles.black5);
-				
-				t.table(t2 -> {
-					t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(color);
-					t2.image(NHContent.raid).fill().color(color);
-					t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(color);
-				}).growX().pad(OFFSET / 2).fillY().row();
-				
-				t.add("<< " + Core.bundle.get("nh.cutscene.event.raid-alert") + " >>").color(color);
-			});
-		}
 	}
 	
 	@Override

@@ -38,9 +38,9 @@ public class CautionAction extends TemporalAction{
 	
 	@Override
 	protected void begin(){
-		drawer = new Table(Tex.pane){
+		if(!UIActions.disabled())drawer = new Table(Tex.pane){
 			{
-				Core.scene.root.addChildAt(0, this);
+				UIActions.root().addChildAt(0, this);
 				
 				update(() -> {
 					if(Vars.state.isMenu()) remove();
@@ -70,7 +70,7 @@ public class CautionAction extends TemporalAction{
 	
 	@Override
 	protected void end(){
-		drawer.actions(Actions.fadeOut(1f), Actions.remove());
+		if(!UIActions.disabled())drawer.actions(Actions.fadeOut(1f), Actions.remove());
 	}
 	
 	public enum MarkStyles{

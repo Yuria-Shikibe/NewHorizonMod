@@ -3,21 +3,24 @@ package newhorizon.util.feature.cutscene.actions;
 import arc.Core;
 import arc.math.Mathf;
 import arc.scene.actions.TemporalAction;
+import newhorizon.util.feature.cutscene.UIActions;
 
 public class CameraMoveAction extends TemporalAction{
 	public float startX, startY;
 	public float endX, endY;
 	
+	
+	
 	@Override
 	protected void begin(){
-		if(Mathf.equal(startX, endX) && Mathf.equal(startY, endY)) return;
+		if(UIActions.disabled() || (Mathf.equal(startX, endX) && Mathf.equal(startY, endY))) return;
 		startX = Core.camera.position.x;
 		startY = Core.camera.position.y;
 	}
 	
 	@Override
 	protected void update(float percent){
-		Core.camera.position.set(startX + (endX - startX) * percent, startY + (endY - startY) * percent);
+		if(!UIActions.disabled())Core.camera.position.set(startX + (endX - startX) * percent, startY + (endY - startY) * percent);
 	}
 	
 	@Override

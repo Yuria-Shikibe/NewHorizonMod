@@ -23,10 +23,10 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHColor;
-import newhorizon.util.feature.PosLightning;
 import newhorizon.expand.interfaces.BeforeLoadc;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.expand.vars.NHWorldVars;
+import newhorizon.util.feature.PosLightning;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;

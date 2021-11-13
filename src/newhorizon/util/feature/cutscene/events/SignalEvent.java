@@ -34,7 +34,7 @@ public class SignalEvent extends CutsceneEvent{
 	public SignalEvent(String name){
 		super(name);
 		position = new Vec2(0, 0);
-		reloadTime = 150f;
+		reloadTime = 300f;
 		
 		removeAfterTriggered = true;
 	}
@@ -52,7 +52,7 @@ public class SignalEvent extends CutsceneEvent{
 			}
 			
 			if(Mathf.chanceDelta(0.22))NHFx.dataTransport.at(e.x, e.y, Mathf.random(0.15f, 0.55f), Pal.accent);
-			if(e.reload >= reloadTime)e.act();
+			if(e.reload >= reloadTime)e.netAct();
 		}else{
 			e.reload = Mathf.lerpDelta(e.reload, 0, 0.04f);
 		}
@@ -61,30 +61,32 @@ public class SignalEvent extends CutsceneEvent{
 	@Override
 	public void triggered(CutsceneEventEntity e){
 		action.run();
-		for(int i = 0; i < 4; i++) Time.run(15f * i, () -> Fx.spawn.at(position));
 		
-		if(!Vars.headless){
-			UIActions.showLabel(2f, t -> {
-				t.background(Styles.black5);
-				
-				t.table(t2 -> {
-					t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(Color.lightGray);
-					t2.image(NHContent.objective).fill().color(Color.lightGray);
-					t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(Color.lightGray);
-				}).growX().pad(OFFSET / 2).fillY().row();
-				
-				t.add("[accent]<< []" + Core.bundle.get("nh.cutscene.event.signal-found") + "[accent] >>[]");
-			});
-		}
+		for(int i = 0; i < 4; i++)Time.run(15f * i, () -> Fx.spawn.at(position));
+		
+		UIActions.showLabel(2f, t -> {
+			t.background(Styles.black5);
+			
+			t.table(t2 -> {
+				t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(Color.lightGray);
+				t2.image(NHContent.objective).fill().color(Color.lightGray);
+				t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(Color.lightGray);
+			}).growX().pad(OFFSET / 2).fillY().row();
+			
+			t.add("[accent]<< []" + Core.bundle.get("nh.cutscene.event.signal-found") + "[accent] >>[]");
+		});
+	}
+	
+	@Override
+	public void onCallUI(CutsceneEventEntity e){
+		UIActions.actionSeqMinor(UIActions.labelAct("[lightgray]@@@" + Core.bundle.get("nh.cutscene.event.signal-detected"), 0.25f, 0.75f, Interp.linear, t -> {
+			t.image(Icon.tree).padRight(OFFSET);
+		}));
 	}
 	
 	@Override
 	public void onCall(CutsceneEventEntity e){
 		e.set(position);
-		
-		UIActions.actionSeqMinor(UIActions.labelAct("[lightgray]@@@" + Core.bundle.get("nh.cutscene.event.signal-detected"), 0.25f, 0.75f, Interp.linear, t -> {
-			t.image(Icon.tree).padRight(OFFSET);
-		}));
 	}
 	
 	@Override

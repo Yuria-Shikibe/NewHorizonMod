@@ -29,12 +29,11 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import mindustry.world.meta.Stat;
 import newhorizon.content.NHFx;
-import newhorizon.util.feature.UpgradeData;
-import newhorizon.util.feature.UpgradeData.DataEntity;
 import newhorizon.expand.interfaces.ScalableBlockc;
 import newhorizon.expand.interfaces.Scalablec;
 import newhorizon.expand.interfaces.Upgraderc;
-import newhorizon.expand.vars.NHVars;
+import newhorizon.util.feature.UpgradeData;
+import newhorizon.util.feature.UpgradeData.DataEntity;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -128,10 +127,10 @@ public class UpgradeBlock extends Block{
 	}
 	
 	public class UpgradeBlockBuild extends Building implements Upgraderc{
-		public Seq<DataEntity> datas = new Seq<>();
+		public final Seq<DataEntity> datas = new Seq<>(upgradeDatas.size);
 		
 		{
-			setData();
+			upgradeDatas.each(e -> datas.add(e.newSubEntity()));
 		}
 		
 		public int link = -1;
@@ -140,7 +139,7 @@ public class UpgradeBlock extends Block{
 		public float remainTime;
 		public float warmup;
 		
-		protected transient Color baseColorTst = getLinkColor();
+		protected transient Color baseColorTst = Pal.accent;
 		protected transient SoundLoop upgradeSoundLoop = new SoundLoop(upgradeSound, 1f);
 		
 		protected boolean coreValid(Building core) {
@@ -149,6 +148,11 @@ public class UpgradeBlock extends Block{
 		
 		protected boolean coreValid() {
 			return core() != null && core().items != null && !core().items.empty();
+		}
+		
+		@Override
+		public void created(){
+			baseColorTst = getLinkColor();
 		}
 		
 		@Override
@@ -236,7 +240,7 @@ public class UpgradeBlock extends Block{
 		public void buildSwitchAmmoTable(Table t, boolean setting) {
 			t.table(Tex.paneSolid, table -> {
 				if(setting){
-					table.pane(cont -> 
+					table.pane(cont ->
 						cont.button("Upgrade", Icon.settings, Styles.cleart, this::upgraderTableBuild).size(LEN * buttonPerLine, LEN)
 					).fillX().height(LEN).pad(OFFSET / 3f).row();
 				}
@@ -280,7 +284,7 @@ public class UpgradeBlock extends Block{
 			} else if (!(other instanceof Scalablec)) {
 				ui.showErrorMessage("Failed to connect, target " + other + " doesn't implement @Scalablec");
 				return true;
-			} else { 
+			} else {
 				Scalablec target = (Scalablec)other;
 				if (!target.isConnected() && target.team() == team && target.within(this, range())) {
 					configure(Point2.unpack(target.pos()));
@@ -336,12 +340,6 @@ public class UpgradeBlock extends Block{
 				if(Mathf.equal(warmup, 0, 0.0015F))warmup = 0f;
 				else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
 			}
-		}
-
-		@Override
-		public void placed() {
-			super.placed();
-			baseColorTst = getLinkColor();
 		}
 		
 		@Override
@@ -419,9 +417,9 @@ public class UpgradeBlock extends Block{
 			}
 		}
 		@Override public void onRemoved() {
-			NHVars.world.upgraderGroup.remove(this);
 			if(linkValid())target().resetUpgrade();
 		}
+		
 		public Scalablec target(){return linkValid() ? (Scalablec)link() : null;}
 		
 		@Override

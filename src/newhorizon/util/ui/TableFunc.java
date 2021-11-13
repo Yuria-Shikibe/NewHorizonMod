@@ -2,6 +2,7 @@ package newhorizon.util.ui;
 
 import arc.Core;
 import arc.audio.Sound;
+import arc.func.Boolp;
 import arc.func.Cons;
 import arc.func.Prov;
 import arc.graphics.Color;
@@ -49,10 +50,10 @@ import mindustry.type.UnitType;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.modules.ItemModule;
+import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
-import newhorizon.expand.vars.NHVars;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -220,7 +221,7 @@ public class TableFunc{
     
     private static final Table starter = new Table(Tex.paneSolid);
     
-    public static final TextArea textArea = new TextArea("");
+    public static final TextArea textArea = Vars.headless ? null : new TextArea("");
     
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static int getLineNum(String string){
@@ -265,13 +266,13 @@ public class TableFunc{
         
         Player player = Vars.player;
         
-        boolean hasInner = starter.getChildren().contains(e -> "INNER".equals(e.name));
+        Boolp hasInner = () -> starter.getChildren().contains(e -> "INNER".equals(e.name));
         
         starter.table(table -> {
             table.defaults().size(starter.getWidth() - OFFSET);
             table.button(Icon.settings, Styles.clearTransi, () -> {
                 showInner(starter, new ToolTable());
-            }).grow().disabled(b -> !NHSetting.getBool("@active.admin-panel") || hasInner).row();
+            }).grow().disabled(b -> !NHSetting.getBool("@active.admin-panel") || hasInner.get()).row();
             table.button(Icon.logic, Styles.clearTransi, () -> {
                 showInner(starter, new Table(Tex.button){{
                     setSize(Core.graphics.getWidth() / 1.5f, Core.graphics.getHeight() * 0.75f);
@@ -282,8 +283,6 @@ public class TableFunc{
                     Label liner = new Label("");
                     liner.setWrap(false);
                     
-                    int linesGlobal = getLineNum(CutsceneScript.getModGlobalJS().readString());
-
                     ScrollPane sp = pane(Styles.horizontalPane, t -> {
                         t.align(Align.topLeft);
                         Cell<Label> l = t.add(liner).color(Color.gray).padTop(13.5f).fill();
@@ -294,9 +293,9 @@ public class TableFunc{
                             
                             int lines = textArea.getLinesShowing();
     
-                            for(int i = 0; i < lines; i++)stringBuilder.append(i + linesGlobal + 1).append("\n");
+                            for(int i = 0; i < lines; i++)stringBuilder.append(i).append("\n");
                             liner.setText(stringBuilder.toString());
-//
+                            
                             l.fillX().height(label.getPrefHeight() + LEN * 4);
                             textAreaMod.size(label.getPrefWidth() + LEN * 4, label.getPrefHeight() + LEN * 4);
                             t.table().fill();
@@ -305,7 +304,6 @@ public class TableFunc{
                     
                     
                     sp.setForceScroll(true, true);
-//
                     row();
                     table(t -> {
                         t.defaults().height(LEN).growX().pad(OFFSET / 2f);
@@ -364,10 +362,10 @@ public class TableFunc{
     
                     }).growX().fillY();
                 }});
-            }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || hasInner).row();
+            }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || hasInner.get()).row();
             table.button(Icon.play, Styles.clearTransi, () -> {
                 Core.app.post(() -> CutsceneScript.runJS(Core.app.getClipboardText()));
-            }).disabled(b -> Core.app.getClipboardText().isEmpty() || hasInner || !NHSetting.getBool("@active.debug"));
+            }).disabled(b -> Core.app.getClipboardText() == null || Core.app.getClipboardText().isEmpty() || hasInner.get() || !NHSetting.getBool("@active.debug"));
         }).grow().row();
         
         Core.scene.root.addChildAt(1, starter);

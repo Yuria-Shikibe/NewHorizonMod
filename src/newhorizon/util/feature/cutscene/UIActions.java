@@ -17,7 +17,6 @@ import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.gen.Iconc;
@@ -25,6 +24,7 @@ import mindustry.gen.Tex;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import newhorizon.util.feature.cutscene.actions.*;
+import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
 
 import static mindustry.Vars.*;
@@ -41,33 +41,40 @@ public class UIActions{
 	
 	protected static Element actor = new Element();
 	protected static Table multiActor = new Table();
-	protected static Table defaultFiller;
-	protected static Table up = new Table(), down = new Table();
-	protected static HUDTable eventBarTable = null;
+	@HeadlessDisabled protected static Table up = new Table(), down = new Table();
+	@HeadlessDisabled protected static HUDTable eventBarTable = null;
 	
-	protected static Table root;
+	@HeadlessDisabled protected static Table root;
 	
 	private static long lastToast;
 	
 	public static float /*Updated*/ width_UTD = 0, height_UTD = 0;
 	
+	public static boolean disabled(){
+		return headless;
+	}
 	
-	public static Table root(){
+	@HeadlessDisabled public static Table root(){
 		return root;
 	}
 	
-	public static void addElement(Element element){
+	@HeadlessDisabled public static void addElement(Element element){
 		root.addChildAt(1, element);
 	}
 	
-	public static Table eventTable(){
+	@HeadlessDisabled public static Table eventTable(){
 		return eventBarTable == null ? null : eventBarTable.paneTable;
 	}
 	
-	public static void initHUD(){
+	public static void init(){
+		actor = null;
+		actor = new Element();
+		
+		if(disabled())return;
+		
 		if(root == null)root = new Table(Tex.clear){
 			{
-				Core.scene.root.addChildAt(2, this);
+				if(Core.scene != null)Core.scene.root.addChildAt(2, this);
 			}
 			
 			@Override
@@ -89,14 +96,11 @@ public class UIActions{
 				return b;
 			}
 		};
-		actor = null;
-		actor = new Element();
 		
 		if(eventBarTable != null)eventBarTable.remove();
 		
 		Element element = root.find("CutsceneHUD");
 		if(element != null) element.remove();
-		
 		
 		if(root.find("CutsceneHUD") == null){
 			eventBarTable = new HUDTable();
@@ -108,15 +112,13 @@ public class UIActions{
 	}
 	
 	public static void reset(){
-		Log.info("Run Reset");
-		
-		if(eventBarTable == null) return;
+		if(eventBarTable == null)return;
 		eventBarTable.reset();
 		eventBarTable.remove();
 		eventBarTable = null;
 	}
 	
-	protected static class HUDTable extends Table{
+	@HeadlessDisabled protected static class HUDTable extends Table{
 		public Table paneTable = new Table();
 		public ScrollPane pane;
 		
@@ -155,7 +157,7 @@ public class UIActions{
 				
 				t.update(() -> {
 					if(t.getChildren().size > 1) element[0].remove();
-					else if(!t.hasChildren())element[0] = constructor.get();
+					else if(!t.hasChildren()) element[0] = constructor.get();
 				});
 				
 				t.top().row();
@@ -166,10 +168,6 @@ public class UIActions{
 			pane.setupFadeScrollBars(0.15f, 0.25f);
 			
 			exited(() -> getScene().unfocus(this));
-		}
-		
-		public void updateChildren(){
-			//				childrenChanged();
 		}
 		
 		public void addElement(Element element){
@@ -209,6 +207,7 @@ public class UIActions{
 	 *
 	 * @implNote ProvSet an identifier for the target point on the HUD.
 	 */
+	@HeadlessDisabled
 	public static CautionAction cautionAt(float x, float y, float size, float duration, Color color){
 		CautionAction action = Actions.action(CautionAction.class, CautionAction::new);
 		action.setDuration(duration);
@@ -220,6 +219,7 @@ public class UIActions{
 		return action;
 	}
 	
+	@HeadlessDisabled
 	public static CautionAction customCautionAt(float x, float y, float size, float duration, Color color, CautionAction.MarkStyles style){
 		CautionAction action = Actions.action(CautionAction.class, CautionAction::new);
 		action.setDuration(duration);
@@ -236,6 +236,7 @@ public class UIActions{
 	 *
 	 * @implNote ProvSet the camera on a certain target.
 	 */
+	@HeadlessDisabled
 	public static CameraTrackerAction track(Position target, float duration){
 		CameraTrackerAction action = Actions.action(CameraTrackerAction.class, CameraTrackerAction::new);
 		action.trackTarget = target;
@@ -251,6 +252,7 @@ public class UIActions{
 	 *
 	 * @implNote Make the camera slide to a certain position.
 	 */
+	@HeadlessDisabled
 	public static CameraMoveAction moveTo(float x, float y, float duration, Interp interpolation){
 		CameraMoveAction action = Actions.action(CameraMoveAction.class, CameraMoveAction::new);
 		action.setPosition(x + Mathf.random(0.01f), y);
@@ -266,11 +268,50 @@ public class UIActions{
 	 *
 	 * @implNote Make the camera fixed on a certain position.
 	 */
+	@HeadlessDisabled
 	public static CameraMoveAction holdCamera(float x, float y, float duration){
 		CameraMoveAction action = Actions.action(CameraMoveAction.class, CameraMoveAction::new);
 		action.startX = action.endX = x;
 		action.startY = action.endY = y;
 		action.setDuration(duration);
+		return action;
+	}
+	
+	
+	/**
+	 * @param duration Use second format.
+	 * @param targetZoom Camera's zoom shift to how.
+	 *
+	 * @implNote Make the camera's zoom shift to a certain value.
+	 */
+	@HeadlessDisabled
+	public static CameraZoomAction shiftZoom(float targetZoom, float duration){
+		CameraZoomAction action = Actions.action(CameraZoomAction.class, CameraZoomAction::new);
+		action.toScl = targetZoom;
+		action.setDuration(duration);
+		return action;
+	}
+	
+	@HeadlessDisabled
+	public static CameraZoomAction shiftZoom(float targetZoom, float duration, Interp interp){
+		CameraZoomAction action = Actions.action(CameraZoomAction.class, CameraZoomAction::new);
+		action.toScl = targetZoom;
+		action.setDuration(duration);
+		if(interp != null)action.setInterpolation(interp);
+		return action;
+	}
+	
+	/**
+	 * @param duration Use second format.
+	 *
+	 * @implNote Fix the camera's zoom;
+	 */
+	@HeadlessDisabled
+	public static CameraZoomAction fixZoom(float duration){
+		CameraZoomAction action = Actions.action(CameraZoomAction.class, CameraZoomAction::new);
+		action.toScl = 0;
+		action.setDuration(duration);
+		action.setInterpolation(NHInterp.zero);
 		return action;
 	}
 	
@@ -280,6 +321,7 @@ public class UIActions{
 	 *
 	 * @implNote Pop up a text dialog on your screen.
 	 */
+	@HeadlessDisabled
 	public static LabelAction labelAct(String text, float duration, float holdDuration){
 		LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
 		action.setDuration(duration + holdDuration);
@@ -297,6 +339,7 @@ public class UIActions{
 	 *
 	 * @implNote Pop up a text dialog on your screen.
 	 */
+	@HeadlessDisabled
 	public static LabelAction labelActFull(String text, float duration, float holdDuration, Interp outFunc, Interp inFunc, Cons<Table> modifier){
 		LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
 		action.setDuration(duration + holdDuration);
@@ -315,6 +358,7 @@ public class UIActions{
 	 *
 	 * @implNote Pop up a text dialog on your screen.
 	 */
+	@HeadlessDisabled
 	public static LabelAction labelAct(String text, float duration, float holdDuration, Interp interpolation, Cons<Table> modifier){
 		LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
 		action.setDuration(duration + holdDuration);
@@ -326,16 +370,17 @@ public class UIActions{
 	}
 	
 	/** Make camera stop following player on desktop; make player stop following camera on phones. */
-	public static void pauseCamera(){
+	@HeadlessDisabled public static void pauseCamera(){
 		lockInput = true;
 	}
 	
 	/** Make camera follow player on desktop; make player follow camera on phones. */
-	public static void resumeCamera(){
+	@HeadlessDisabled public static void resumeCamera(){
 		lockInput = false;
 	}
 	
 	/** Generate a table that fill the screen. */
+	@HeadlessDisabled
 	public static Table filler(Runnable removed, Runnable update, boolean removeShowUI){
 		return new Table(Tex.clear){
 			{
@@ -365,7 +410,7 @@ public class UIActions{
 		};
 	}
 	
-	public static Table filler(){
+	@HeadlessDisabled public static Table filler(){
 		return filler(null, () -> {}, false);
 	}
 	
@@ -390,6 +435,7 @@ public class UIActions{
 	 * @see TimeScaleAction
 	 * @see RepeatAction
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	public static boolean actionSeq(Action... actions){
 		boolean isPlaying = CutsceneScript.isPlayingCutscene && currentActions == null;
 		
@@ -437,6 +483,7 @@ public class UIActions{
 		return isPlaying;
 	}
 	
+	@SuppressWarnings("UnusedReturnValue")
 	public static boolean actionSeqMinor(Action... actions){
 		boolean isPlaying = CutsceneScript.isPlayingCutscene;
 		
@@ -473,8 +520,10 @@ public class UIActions{
 	/**
 	 * Pull out the black curtain from the upper and lower sides of the screen.
 	 */
+	@HeadlessDisabled
 	public static Action curtainIn(float time, Interp func){
-		return Actions.run(() -> {
+		if(disabled())return Actions.run(() -> {});
+		else return Actions.run(() -> {
 			disableVanillaUI();
 			down = new Table(Styles.black){
 				{
@@ -530,6 +579,7 @@ public class UIActions{
 	/**
 	 * Remove the black curtain from the upper and lower sides of the screen.
 	 */
+	@HeadlessDisabled
 	public static Action curtainOut(float time, Interp func){
 		return Actions.run(() -> {
 			if(up == null || down == null) return;
@@ -552,6 +602,7 @@ public class UIActions{
 	 * Pull out the black curtain from the upper and lower sides of the screen. Make camera stop following player on
 	 * desktop; make player stop following camera on phones. Hide vanilla UI.
 	 */
+	@HeadlessDisabled
 	public static Action startCutsceneDefault(){
 		return Actions.sequence(Actions.parallel(Actions.delay(2f), UIActions.curtainIn(2f, Interp.pow2Out)), Actions.run(UIActions::pauseCamera));
 	}
@@ -560,26 +611,23 @@ public class UIActions{
 	 * Remove the black curtain from the upper and lower sides of the screen. Make camera follow player on desktop; make
 	 * player follow camera on phones. Show vanilla UI.
 	 */
+	@HeadlessDisabled
 	public static Action endCutsceneDefault(){
-		return headless ? Actions.run(() -> {}) : Actions.parallel(moveTo(player.x, player.y, 0.5f, Interp.pow3), Actions.run(UIActions::resumeCamera), UIActions.curtainOut(1f, Interp.pow2In));
+		return disabled() ? Actions.run(() -> {}) : Actions.parallel(moveTo(player.x, player.y, 0.5f, Interp.pow3), Actions.run(UIActions::resumeCamera), UIActions.curtainOut(1f, Interp.pow2In));
 	}
 	
-	public static float yAxis(){return headless ? 0 : Core.graphics.getHeight() / 8f;}
-	
-	public static boolean shown(){return !Vars.state.isMenu();}
-	
 	/** Hide vanilla UI. */
-	public static void disableVanillaUI(){if(!headless)Vars.ui.hudfrag.shown = false;}
+	@HeadlessDisabled public static void disableVanillaUI(){if(!disabled())Vars.ui.hudfrag.shown = false;}
 	
 	/** Show vanilla UI. */
-	public static void enableVanillaUI(){if(!headless)Vars.ui.hudfrag.shown = true;}
+	@HeadlessDisabled public static void enableVanillaUI(){if(!disabled())Vars.ui.hudfrag.shown = true;}
 	
 	/**
 	 * Add an event bar after 0.75sec.
 	 *
 	 * @param totalTime Uses tick format
 	 */
-	public static void reloadBarDelay(String eventName, float totalTime, Color color){
+	@HeadlessDisabled public static void reloadBarDelay(String eventName, float totalTime, Color color){
 		reloadBarDelay(KeyFormat.generateName(eventName, color, totalTime), totalTime, () -> eventName, () -> color);
 	}
 	
@@ -588,7 +636,7 @@ public class UIActions{
 	 *
 	 * @param totalTime Uses tick format
 	 */
-	public static void reloadBarDelay(String eventFullName, float totalTime, Prov<CharSequence> showName, Prov<Color> showColor){
+	@HeadlessDisabled public static void reloadBarDelay(String eventFullName, float totalTime, Prov<CharSequence> showName, Prov<Color> showColor){
 		Time.runTask(45f, () -> reloadBar(eventFullName, totalTime, showName, showColor));
 	}
 	
@@ -600,8 +648,9 @@ public class UIActions{
 	 *
 	 * @param totalTime Uses tick format
 	 */
+	@HeadlessDisabled
 	public static void reloadBar(String eventName, float totalTime, Prov<CharSequence> showName, Prov<Color> showColor){
-		if(headless || !state.rules.tags.containsKey(eventName)) return;
+		if(disabled() || !state.rules.tags.containsKey(eventName)) return;
 		
 		Table t = new Table(Tex.sideline){
 			{
@@ -623,20 +672,15 @@ public class UIActions{
 					}).left().fill();
 				}));
 			}
-			
-			@Override
-			public boolean remove(){
-				eventBarTable.updateChildren();
-				return super.remove();
-			}
 		};
 		
 		eventBarTable.paneTable.row();
 		eventBarTable.paneTable.add(t).growX().fillY().padRight(OFFSET);
 	}
 	
+	@HeadlessDisabled
 	public static void showLabel(float duration, Cons<Table> modifier){
-		if(state.isMenu())return;
+		if(state.isMenu() || disabled())return;
 		
 		scheduleToast(duration, () -> {
 			if(state.isMenu())return;
@@ -661,24 +705,27 @@ public class UIActions{
 		});
 	}
 	
+	@HeadlessDisabled
 	public static void checkPosition(Position position){
+		if(disabled())return;
 		if(mobile)UIActions.actionSeqMinor(
-				Actions.run(UIActions::pauseCamera),
-				UIActions.moveTo(position.getX(), position.getY(), 1f, Interp.pow3),
-				UIActions.holdCamera(position.getX(), position.getY(), 1f),
-				UIActions.moveTo(Vars.player.x, Vars.player.y, 0.5f, Interp.pow3),
-				Actions.run(UIActions::resumeCamera)
+			Actions.run(UIActions::pauseCamera),
+			UIActions.moveTo(position.getX(), position.getY(), 1f, Interp.pow3),
+			UIActions.holdCamera(position.getX(), position.getY(), 1f),
+			UIActions.moveTo(Vars.player.x, Vars.player.y, 0.5f, Interp.pow3),
+			Actions.run(UIActions::resumeCamera)
 		);
 		else UIActions.actionSeqMinor(
-				Actions.run(UIActions::pauseCamera),
-				UIActions.moveTo(position.getX(), position.getY(), 1f, Interp.pow3),
-				UIActions.holdCamera(position.getX(), position.getY(), 1f),
-				Actions.run(UIActions::resumeCamera)
+			Actions.run(UIActions::pauseCamera),
+			UIActions.moveTo(position.getX(), position.getY(), 1f, Interp.pow3),
+			UIActions.holdCamera(position.getX(), position.getY(), 1f),
+			Actions.run(UIActions::resumeCamera)
 		);
 	}
 	
+	@HeadlessDisabled
 	private static void scheduleToast(float time, Runnable run){
-		long duration = (int)((time + 0.75f) * 1000);
+		long duration = (int)((time + 1.25f) * 1000);
 		long since = Time.timeSinceMillis(lastToast);
 		if(since > duration){
 			lastToast = Time.millis();
@@ -688,4 +735,8 @@ public class UIActions{
 			lastToast += duration;
 		}
 	}
+	
+	public static float yAxis(){return disabled() ? 0 : Core.graphics.getHeight() / 8f;}
+	
+	public static boolean shown(){return !Vars.state.isMenu();}
 }

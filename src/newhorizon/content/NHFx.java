@@ -864,7 +864,7 @@ public class NHFx{
 			
 			String text = Integer.toBinaryString(i).substring(1);
 			
-			Font font = Fonts.def;
+			Font font = Fonts.tech;
 			GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 			boolean ints = font.usesIntegerPositions();
 			font.setUseIntegerPositions(false);

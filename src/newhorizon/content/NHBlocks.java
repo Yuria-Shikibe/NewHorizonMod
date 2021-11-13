@@ -745,7 +745,6 @@ public class NHBlocks implements ContentList {
 					NHItems.setonAlloy, NHBullets.railGun2
 			);
 			consumes.powerCond(12f, TurretBuild::isActive);
-			limitRange();
 			
 			size = 4;
 			health = 4550;
@@ -753,18 +752,19 @@ public class NHBlocks implements ContentList {
 			recoilAmount = 6f;
 			shootShake = 5f;
 			range = 620.0F;
-			shootSound = NHSounds.railGunBlast;
-			heatColor = NHItems.irayrondPanel.color;
-			chargeBeginEffect = NHFx.railShoot(heatColor, range + 40f, tilesize * 1.5f, 45f, 14f);
-			chargeTime = chargeBeginEffect.lifetime;
-			//chargeEffect = NHFx.genericCharge(heatColor, 13f, 50f, chargeBeginEffect.lifetime);
 			minRange = 120f;
 			rotateSpeed = 1.5f;
 			shootCone = 8f;
+			
+			shootSound = NHSounds.railGunBlast;
+			heatColor = NHItems.irayrondPanel.color;
+			
 			coolantMultiplier = 0.55f;
 			restitution = 0.009f;
 			cooldown = 0.009f;
-			ammoUseEffect = Fx.casing3Double;
+			
+			maxAmmo = 16;
+			ammoPerShot = 2;
 			
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.setonAlloy, 150, NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
 			NHTechTree.add(Blocks.foreshadow, this);

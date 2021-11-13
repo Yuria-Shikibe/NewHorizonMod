@@ -11,10 +11,12 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.Label;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Interval;
+import arc.util.Log;
+import arc.util.Nullable;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.core.GameState;
-import mindustry.ctype.UnlockableContent;
 import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
@@ -29,7 +31,6 @@ import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
 import newhorizon.util.feature.cutscene.packets.TagPacket;
-import newhorizon.util.feature.cutscene.packets.UnlockPacket;
 import newhorizon.util.ui.TableFunc;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
+@SuppressWarnings({"CodeBlock2Expr", "SpellCheckingInspection"})
 public class CutsceneScript{
 	public static final String CCS_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide";
 	/**
@@ -106,19 +108,17 @@ public class CutsceneScript{
 	
 	public static void load(){
 		Net.registerPacket(TagPacket::new);
-		Net.registerPacket(UnlockPacket::new);
 		Net.registerPacket(EventCompletePacket::new);
 		
 		mod = mods.getMod(NewHorizon.class);
 		
-		if(headless)return; //TODO :: headless valid
-		
+//		if(headless)return; //TODO :: headless valid
+//
 		Events.on(EventType.SaveLoadEvent.class, e -> {
 			CutsceneEventEntity.afterIO();
 		});
 		
 		Events.on(EventType.SaveWriteEvent.class, e -> {
-//			if(!CutsceneEventEntity.registeredExit)throw new ArcRuntimeException("Did not save");
 			CutsceneEventEntity.afterIO();
 		});
 		
@@ -149,11 +149,15 @@ public class CutsceneScript{
 			UIActions.multiActor.act(Core.graphics.getDeltaTime());
 		});
 		
-		Events.on(EventType.SectorCaptureEvent.class, e -> curEnder.each(c -> c.get(true)));
+		Events.on(EventType.SectorCaptureEvent.class, e -> {
+			curEnder.each(c -> c.get(true));
+			CutsceneEventEntity.events.each(et -> et.eventType.removeAfterVictory, CutsceneEventEntity::remove);
+		});
 		
-		Events.on(EventType.SectorLoseEvent.class, e -> curEnder.each(c -> c.get(false)));
-		
-		if(!headless)initDirectory();
+		Events.on(EventType.SectorLoseEvent.class, e -> {
+			curEnder.each(c -> c.get(false));
+			CutsceneEventEntity.events.clear();
+		});
 		
 		Events.on(EventType.ClientLoadEvent.class, e -> {
 			try{
@@ -191,7 +195,7 @@ public class CutsceneScript{
 									addCloseButton();
 									
 									cont.pane(t -> {
-										Label rootScript = new Label(mod.root.child("scripts").child("cutsceneLoader.js").readString().trim());
+										Label rootScript = new Label(getModGlobalJSCode().trim());
 										rootScript.setWrap(false);
 										Label label = new Label(editor.tags.get(CUTSCENE_KEY).trim());
 										label.setWrap(false);
@@ -213,6 +217,23 @@ public class CutsceneScript{
 									}).grow();
 								}}.show();
 							}).disabled(b -> !editor.tags.containsKey(CUTSCENE_KEY)).row();
+							t.button("Export JS", Icon.export, () -> {
+								Fi fi = scriptDirectory.child(editor.tags.get("name") + "-cutscene.js");
+								
+								if(!fi.exists()){
+									try{
+										//noinspection ResultOfMethodCallIgnored
+										fi.file().createNewFile();
+									}catch(IOException ex){
+										ui.showErrorMessage(ex.toString());
+										return;
+									}
+								}
+								
+								fi.writeString(editor.tags.get(CUTSCENE_KEY).trim());
+								
+								ui.showText("OPERATION STATE", "Export Successfully");
+							}).disabled(b -> !editor.tags.containsKey(CUTSCENE_KEY)).row();
 						}).grow();
 					}}.show();
 				}).size(180f * 2 + 10f, 60f);
@@ -223,7 +244,7 @@ public class CutsceneScript{
 			control.input.addLock(() -> UIActions.lockInput);
 		});
 		
-		
+		if(!headless)initDirectory();
 	}
 	
 	protected static void initDirectory(){
@@ -279,7 +300,7 @@ public class CutsceneScript{
 		UIActions.multiActor.clearChildren();
 		taskUpdater.clear();
 		
-		TableFunc.textArea.clearText();
+		if(!Vars.headless)TableFunc.textArea.clearText();
 		
 		isPlayingCutscene = false;
 	}
@@ -308,7 +329,7 @@ public class CutsceneScript{
 		if(js == null || js.isEmpty())return;
 		
 		try{
-			scripts.run(mod, CutsceneScript.getModGlobalJSCode() + js);
+			scripts.run(mod, js);
 		}catch(Exception e){
 			Vars.ui.showErrorMessage(e.toString());
 		}
@@ -323,7 +344,7 @@ public class CutsceneScript{
 		
 		SectorPreset sector = Vars.state.getSector() == null ? null : Vars.state.getSector().preset;
 		
-		UIActions.initHUD();
+		UIActions.init();
 		
 		curSectorPreset = sector;
 		
@@ -400,6 +421,7 @@ public class CutsceneScript{
 	 * Run an event that only happens once.
 	 *
 	 * */
+	@SuppressWarnings("UnusedReturnValue")
 	public static boolean runEventOnce(String eventName, Runnable run){
 		boolean hasRun = false;
 		if(!state.rules.tags.containsKey(eventName) || !Boolean.parseBoolean(state.rules.tags.get(eventName))){
@@ -478,12 +500,5 @@ public class CutsceneScript{
 			packet.tags = state.rules.tags;
 			Vars.net.send(packet, true);
 		}
-	}
-	
-	public static void netUnlock(UnlockableContent content){
-		content.unlock();
-		UnlockPacket packet = new UnlockPacket();
-		packet.content = content;
-		Vars.net.send(packet, true);
 	}
 }

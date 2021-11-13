@@ -50,7 +50,7 @@ public class ShapedWall extends Wall{
 
 	public int linkMaxIteration = 1;
 	public float linkAlphaLerpDst = 24f;
-	public float linkAlphaScl = 0.75f;
+	public float linkAlphaScl = 0.45f;
 	public float minShareDamage = 70;
 	
 	public final IntMap<TextureRegion> sprites = new IntMap<>();
@@ -81,7 +81,8 @@ public class ShapedWall extends Wall{
 	
 	public class ShapeWallBuild extends Building{
 		public Seq<ShapeWallBuild> connectedWalls = new Seq<>();
-		public BoolSeq proximityWalls = new BoolSeq(8);
+		public transient BoolSeq proximityWalls = new BoolSeq(8);
+		public transient TextureRegion currentRegion = region;
 		protected int drawKey = defaultKey;
 		
 		public void updateKey(){
@@ -99,6 +100,8 @@ public class ShapedWall extends Wall{
 			drawKey = key.hashCode();
 			
 			if(key.startsWith("0000"))drawKey = defaultKey;
+			
+			currentRegion = sprites.get(drawKey);
 		}
 		
 		public void computePoint(Point2 point){
@@ -191,14 +194,7 @@ public class ShapedWall extends Wall{
 		
 		@Override
 		public void draw(){
-			TextureRegion t = sprites.get(drawKey);
-			if(t != null)Draw.rect(t, x, y);
-		}
-		
-		@Override
-		public void afterDestroyed(){
-			super.afterDestroyed();
-			updateConnection(false);
+			Draw.rect(currentRegion, x, y);
 		}
 		
 		@Override
@@ -266,6 +262,8 @@ public class ShapedWall extends Wall{
 			for(int i = 0; i < 8; i++){
 				proximityWalls.add(read.bool());
 			}
+			
+			currentRegion = sprites.get(drawKey);
 		}
 	}
 }

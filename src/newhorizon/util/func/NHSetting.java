@@ -29,8 +29,8 @@ import static mindustry.Vars.ui;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
+//TODO use Core.setting. find a time to remake this shit class
 public class NHSetting{
-	//private static final Json json = new Json();
 	private static final String initKey = "initialized";
 	private static boolean debug = false;
 	private static Fi setting;
@@ -47,7 +47,6 @@ public class NHSetting{
 	
 	static{
 		defaultKeys.put("initialized", "null version");
-		defaultKeys.put("last-gh-release-tag", "null version");
 		defaultKeys.put("@active.hid-start-log", String.valueOf(false));
 		defaultKeys.put("@active.admin-panel", String.valueOf(false));
 		defaultKeys.put("@active.debug", String.valueOf(false));
@@ -131,7 +130,7 @@ public class NHSetting{
 	
 	public static void initSettingList() throws IOException{
 		debug = !Vars.headless && getBool("@active.debug");
-		modMeta = Vars.mods.getMod(NewHorizon.class).meta;
+		modMeta = NewHorizon.MOD.meta;
 		
 		if(!modMeta.version.equals(settingList.getProperty(initKey))){
 			versionChange = true;

@@ -44,7 +44,7 @@ public class NHTechTree implements ContentList {
         add(NHBlocks.bombLauncher, NHBlocks.airRaider);
         
         add(Blocks.commandCenter, NHBlocks.jumpGatePrimary, new EventObjective(SectorPresets.craters));
-        add(NHBlocks.jumpGatePrimary, NHBlocks.jumpGateJunior, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
+        add(NHBlocks.jumpGatePrimary, NHBlocks.jumpGateJunior, new Objectives.SectorComplete(SectorPresets.nuclearComplex));
         add(NHBlocks.jumpGateJunior, NHBlocks.jumpGate);
         add(NHBlocks.jumpGate, NHBlocks.hyperspaceWarper);
         

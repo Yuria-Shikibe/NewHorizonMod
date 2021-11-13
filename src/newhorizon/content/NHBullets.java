@@ -616,8 +616,11 @@ public class NHBullets implements ContentList{
 			trailRotation = true;
 			
 			pierce = pierceBuilding = true;
+			pierceCap = 3;
 			
-			lifetime = 21f;
+			ammoMultiplier = 1f;
+			
+			lifetime = 20f;
 			lightningColor = frontColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color;
 			lightning = 4;
 			lightningLength = 6;
@@ -643,8 +646,11 @@ public class NHBullets implements ContentList{
 			trailRotation = true;
 			
 			pierce = pierceBuilding = true;
+			pierceCap = 6;
 			
-			lifetime = 17f;
+			ammoMultiplier = 1f;
+			
+			lifetime = 16f;
 			lightningColor = frontColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color;
 			lightning = 4;
 			lightningLength = 6;

@@ -72,7 +72,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 		Groups.all.remove(this);
 		events.remove(this);
 		
-		if(!Vars.headless && !eventType.isHidden && UIActions.eventTable() != null)eventType.removeTable(this, UIActions.eventTable());
+		if(!UIActions.disabled() && !eventType.isHidden && UIActions.eventTable() != null)eventType.removeTable(this, UIActions.eventTable());
 		eventType.onRemove(this);
 		
 		added = false;
@@ -94,7 +94,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 			inited = true;
 		}
 		
-		if(!Vars.headless && !eventType.isHidden)show(UIActions.eventTable());
+		if(!UIActions.disabled() && !eventType.isHidden)show(UIActions.eventTable());
 	}
 	
 	@Override
@@ -113,7 +113,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 		inited = reads.bool();
 		name = reads.str();
 		
-		eventType = CutsceneEvent.cutsceneEvents.get(name);
+		eventType = CutsceneEvent.get(name);
 		
 		setType(eventType);
 		
@@ -136,7 +136,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 		}
 		
 		writes.bool(inited);
-		writes.str(name);
+		writes.str(eventType.name);
 		
 		eventType.write(this, writes);
 	}
@@ -144,17 +144,17 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 	public void act(){
 		eventType.triggered(this);
 		
-		if(Vars.net.active()){
-			EventCompletePacket packet = new EventCompletePacket();
-			packet.entity = this;
-			Vars.net.send(packet, true);
-		}
-		
 		if(eventType.removeAfterTriggered)remove();
 	}
 	
 	public void netAct(){
 		eventType.triggered(this);
+		
+		if(Vars.net.active()){
+			EventCompletePacket packet = new EventCompletePacket();
+			packet.entity = this;
+			Vars.net.send(packet, true);
+		}
 		
 		if(eventType.removeAfterTriggered)remove();
 	}
@@ -194,7 +194,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 		y = reads.f();
 		
 		inited = reads.bool();
-		eventType = CutsceneEvent.cutsceneEvents.get(reads.str());
+		eventType = CutsceneEvent.get(reads.str());
 		
 		eventType.read(this, reads);
 	}
@@ -203,7 +203,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 		writes.f(y);
 		
 		writes.bool(inited);
-		writes.str(name);
+		writes.str(eventType.name);
 		
 		eventType.write(this, writes);
 	}
@@ -216,8 +216,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 	@Override public void lastUpdated(long l){lastUpdated = l;}
 	@Override public long updateSpacing(){return updateSpacing;}
 	@Override public void updateSpacing(long l){updateSpacing = l;}
-	@Override public <T extends Entityc> T self(){return (T)this;}
-	@Override public <T> T as(){return (T)this;}
+	
 	@Override public int classId(){return EntityRegister.getID(CutsceneEventEntity.class);}
 	@Override public boolean serialize(){return true;}
 

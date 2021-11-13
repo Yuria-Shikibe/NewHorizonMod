@@ -20,10 +20,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Structs;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -80,10 +77,6 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class JumpGate extends Block {
     protected static final ObjectMap<UnitSet, Integer> allSets = new ObjectMap<>();
     
-    static{
-        EntityRegister.put(Spawner.class, new EntityRegister.ProvSet(Spawner::new));
-    }
-    
     public int maxSpawnPerOne = 15;
     public boolean adaptable = false;
     @Nullable public Block adaptBase = null;
@@ -135,13 +128,6 @@ public class JumpGate extends Block {
          */
         config(IntSeq.class, (JumpGateBuild tile, IntSeq seq) -> {
             if(seq.size < 3)return;
-//            switch(seq.get(0)){
-//                case 0 -> tile.startBuild(seq.get(1), seq.get(2));
-//                case 1 -> {
-//                    tile.planSpawnID = seq.get(1);
-//                    tile.planSpawnNum = seq.get(2);
-//                }
-//            }
             if(seq.get(0) == 0){
                 tile.startBuild(seq.get(1), seq.get(2));
             }else{
@@ -506,9 +492,9 @@ public class JumpGate extends Block {
                             }
                         }).grow().row();
                         t.table(in -> {
-                            in.image().height(OFFSET / 3).growX();
+                            in.image().height(OFFSET / 3).growX().color(Color.lightGray);
                             in.add(l).fillX().height(LEN).padLeft(OFFSET).padRight(OFFSET);
-                            in.image().height(OFFSET / 3).growX().row();
+                            in.image().height(OFFSET / 3).growX().color(Color.lightGray).row();
                         }).growX().height(LEN).row();
                         t.add(s).growX().height(LEN).padRight(OFFSET).padLeft(OFFSET).row();
                         t.add(currentPlan).growX().fillY();
@@ -519,7 +505,7 @@ public class JumpGate extends Block {
                         t.button("@confirm", Icon.cancel, Styles.cleart, () -> configure(IntSeq.with(1, selectID, selectNum))).growX().height(LEN);
                     }).growX().fillY();
                     addCloseListener();
-
+                    
                     keyDown(c -> {
                         if(c == KeyCode.backspace)configure(IntSeq.with(1, 0, 0));
                         if(c == KeyCode.enter)configure(IntSeq.with(1, selectID, selectNum));
@@ -927,7 +913,9 @@ public class JumpGate extends Block {
         }
     
         @Override public boolean serialize(){return true;}
-        @Override public int classId(){return EntityRegister.getID(getClass());}
+        @Override public int classId(){
+            return EntityRegister.getID(getClass());
+        }
     
         @Override
         public void snapSync(){}

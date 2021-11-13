@@ -20,8 +20,6 @@ public class CCS_Scripts implements Disposable{
 	public final Context context;
 	public final ImporterTopLevel scope;
 	
-	public NativeJavaClass CustomEvent;
-	
 	protected ClassLoader formalLoader = null;
 	
 	protected boolean errored;
@@ -33,8 +31,6 @@ public class CCS_Scripts implements Disposable{
 		
 		context = Vars.platform.getScriptContext();
 		scope = new ImporterTopLevel(context);
-
-		CustomEvent = new NativeJavaClass(scope, CutsceneEvent.class, true);
 		
 		formalLoader = context.getApplicationClassLoader();
 		
@@ -44,22 +40,15 @@ public class CCS_Scripts implements Disposable{
 				.setModuleScriptProvider(new SoftCachingModuleScriptProvider(new CCS_ScriptModuleProvider()))
 				.setSandboxed(true).createRequire(context, scope).install(scope);
 		
-		if(!run(Core.files.internal("scripts/global.js").readString(), "global.js", false)){
+		if(!run(Core.files.internal("scripts/global.js").readString() + CutsceneScript.getModGlobalJSCode(), "CCS_Importer", false)){
 			errored = true;
 		}
+		
 		Log.debug("Time to load cutscene script engine: @", Time.elapsed());
 	}
 	public boolean hasErrored(){
 		return errored;
 	}
-	
-//	public void startRegister(){
-//		context.setApplicationClassLoader(mod.loader);
-//	}
-//
-//	public void endRegister(){
-//		context.setApplicationClassLoader(formalLoader);
-//	}
 	
 	public String runConsole(String text){
 		try{
@@ -92,7 +81,7 @@ public class CCS_Scripts implements Disposable{
 	private boolean run(String script, String file, boolean wrap){
 		try{
 			context.evaluateString(scope,
-					wrap ? "(function(){'use strict';\n" + script + "\n})();" : script,
+					wrap ? "(function(){'use strict';" + script + "\n})();" : script,
 					file, 0);
 			return true;
 		}catch(Throwable t){

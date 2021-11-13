@@ -1,6 +1,7 @@
 package newhorizon.content;
 
 import arc.Events;
+import arc.files.Fi;
 import arc.func.Cons;
 import arc.math.Angles;
 import arc.math.Interp;
@@ -22,6 +23,7 @@ import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.NewHorizon;
 import newhorizon.util.feature.cutscene.*;
 import newhorizon.util.func.NHFunc;
 
@@ -37,12 +39,31 @@ public class NHSectorPresets implements ContentList{
 	public static SectorPreset
 		hostileHQ, downpour, luminariOutpost, quantumCraters, ruinedWarehouse, shatteredRavine, deltaHQ, mainPath, ancientBattefield;
 	
+	protected static Fi scriptsDic = null;
+	
+	protected static String loadJS(String name){
+		return scriptsDic.child(name.replaceFirst(NewHorizon.MOD_NAME + "-", "") + ".js").readString();
+	}
+	
 	@Override
 	public void load(){
+		scriptsDic = NewHorizon.MOD.root.child("custom-cutscene");
+		
 		CutsceneScript.ender.put(SectorPresets.craters, Seq.with((Boolean b) -> {
 			if(!NHBlocks.jumpGatePrimary.unlocked() && b){
-				EventSamples.jumpgateUnlockObjective.setup();
-				EventSamples.jumpgateUnlock.setup();
+				CutsceneScript.runEventOnce("JGP", () -> {
+					EventSamples.jumpgateUnlockObjective.setup();
+					EventSamples.jumpgateUnlock.setup();
+				});
+			}
+		}));
+		
+		CutsceneScript.initer.put(SectorPresets.craters, Seq.with(() -> {
+			if(!NHBlocks.jumpGatePrimary.unlocked() && state.getSector().isCaptured()){
+				CutsceneScript.runEventOnce("JGP", () -> {
+					EventSamples.jumpgateUnlockObjective.setup();
+					EventSamples.jumpgateUnlock.setup();
+				});
 			}
 		}));
 		
@@ -339,7 +360,7 @@ public class NHSectorPresets implements ContentList{
 			difficulty = 8;
 			startWaveTimeMultiplier = 2.5f;
 			
-			CutsceneScript.presentJS.put(this, "const destroyReactors = extend(DestroyObjectiveEventClass, \"destroyReactors\", {});\n" + "\n" + "destroyReactors.targets = func(e => {\n" + "    const buildings = new Seq();\n" + "\n" + "    Groups.build.each(\n" + "        boolf(b => b.isValid() && b.team != Vars.state.rules.defaultTeam && b.block.flags.contains(BlockFlag.reactor)),\n" + "        cons(b => buildings.add(b))\n" + "    );\n" + "\n" + "    return buildings;\n" + "});\n" + "\n" + "const award = extend(FleetEventClass, \"award\", {});\n" + "award.teamFunc = func(e => Vars.state.rules.defaultTeam);\n" + "award.targetFunc = func(e => Vars.state.teams.get(award.teamFunc.get(e)).core());\n" + "award.removeAfterTriggered = true;\n" + "award.unitTypeMap = ObjectMap.of(NHUnitTypes.longinus, 6);\n" + "\n" + "destroyReactors.action = cons(e => award.setup());\n" + "\n" + "CutsceneScript.curIniter.add(run(() => {\n" + "    if(CutsceneScript.canInit())destroyReactors.setup();\n" + "}));");
+			CutsceneScript.presentJS.put(this, loadJS(name));
 		}};
 		
 		quantumCraters = new NHSectorPreset("quantum-craters", NHPlanets.midantha, 86){{
