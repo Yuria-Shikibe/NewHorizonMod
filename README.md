@@ -10,7 +10,7 @@
 [![Discord](https://img.shields.io/discord/825801593466388520.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord&color=17cf48)](https://discord.gg/yNmbMcuwyW)
 
 ## Server
-Currently, shutting down.
+`n4.mcyxsj.top:20177`
 
 ###### For foreigners (foreign countries relative to China)
 
