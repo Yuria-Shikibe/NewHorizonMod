@@ -168,17 +168,19 @@ public class NewHorizon extends Mod{
 			        if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
 				        new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
 					        cont.table(t -> {
-					        	t.align(Align.topLeft);
 						        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
 						        t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
 						        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
 						        t.add("\t[lightgray]Version: [accent]" + tag).left().row();
 						        t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
 						        t.pane(c -> {
+							        c.align(Align.topLeft);
 							        c.add("[accent]Description: \n[]" + body).left();
 						        }).grow();
 					        }).grow().padBottom(OFFSET).row();
 					
+					        
+					        
 					        cont.table(table -> {
 						        table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
 						        table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
