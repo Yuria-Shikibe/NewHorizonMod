@@ -3,16 +3,14 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
-import arc.util.Align;
-import arc.util.Http;
-import arc.util.Log;
-import arc.util.Time;
+import arc.util.*;
 import arc.util.async.Threads;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
+import mindustry.gen.Player;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
@@ -26,6 +24,8 @@ import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
 import newhorizon.expand.vars.EventTriggers;
 import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.feature.cutscene.CutsceneEvent;
+import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.func.EntityRegister;
@@ -178,7 +178,6 @@ public class NewHorizon extends Mod{
 							        c.add("[accent]Description: \n[]" + body).left();
 						        }).grow();
 					        }).grow().padBottom(OFFSET).row();
-					
 					        
 					        
 					        cont.table(table -> {
@@ -186,6 +185,8 @@ public class NewHorizon extends Mod{
 						        table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
 					        }).bottom().growX().height(LEN).padTop(OFFSET);
 					
+					        
+					        
 					        addCloseListener();
 				        }}.show();
 			        }
@@ -250,9 +251,122 @@ public class NewHorizon extends Mod{
 		}}.show();
 	}
 	
-	@Override
-	public void init(){
+	public void init() {
+		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
+	}
 	
+	public void registerServerCommands(CommandHandler handler) {
+		handler.register("events", "List all events in the map.", (args) -> {
+			if (CutsceneEventEntity.events.isEmpty()) {
+				Log.info("No Event Available");
+			}
+			
+			CutsceneEventEntity.events.each(Log::info);
+		});
+		
+		handler.register("eventtypes", "List all event types in the map.", (args) -> {
+			if (CutsceneEvent.cutsceneEvents.isEmpty()) {
+				Log.info("No Event Available");
+			}
+			
+			CutsceneEvent.cutsceneEvents.each(Log::info);
+		});
+		
+		handler.register("runevent", "<id>", "Trigger Event (Admin Only)", (args) -> {
+			if (args.length == 0) {
+				Log.warn("[VIOLET]Failed, pls type ID");
+			} else {
+				try {
+					CutsceneEventEntity event = CutsceneEventEntity.events.getByID(Integer.parseInt(args[0]));
+					event.act();
+					Log.info("Triggered: " + event);
+				} catch (NumberFormatException var2) {
+					Log.warn("[VIOLET]Failed, the ID must be a <Number>");
+				}
+			}
+			
+		});
+	}
+	
+	public void registerClientCommands(CommandHandler handler) {
+		handler.<Player>register("runwave", "<num>", "Run Wave (Admin Only)", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else if (args.length == 0) {
+				Vars.logic.runWave();
+			} else {
+				try {
+					for(int i = 0; i < Integer.parseInt(args[0]); ++i) {
+						Time.run(i * 60.0F, Vars.logic::runWave);
+					}
+				} catch (NumberFormatException var3) {
+					player.sendMessage("[VIOLET]Failed, the param must be a <Number>");
+				}
+			}
+		});
+		
+		handler.<Player>register("runevent", "<id>", "Trigger Event (Admin Only)", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else if (args.length == 0) {
+				player.sendMessage("[VIOLET]Failed, pls type ID");
+			} else {
+				try {
+					CutsceneEventEntity event = CutsceneEventEntity.events.getByID(Integer.parseInt(args[0]));
+					event.act();
+					player.sendMessage("Triggered: " + event);
+				} catch (NumberFormatException var3) {
+					player.sendMessage("[VIOLET]Failed, the ID must be a <Number>");
+				}
+			}
+			
+		});
+		
+		handler.<Player>register("events", "List all cutscene events in the map.", (args, player) -> {
+			if (CutsceneEventEntity.events.isEmpty()) {
+				player.sendMessage("No Event Available");
+			} else {
+				StringBuilder builder = new StringBuilder();
+				builder.append("[accent]Events: [lightgray]\n");
+				CutsceneEventEntity.events.each((e) -> {
+					builder.append(e).append('\n');
+				});
+				player.sendMessage(builder.toString());
+			}
+		});
+		
+		handler.<Player>register("eventtypes", "List all cutscene event types in the map.", (args, player) -> {
+			if (CutsceneEvent.cutsceneEvents.isEmpty()) {
+				player.sendMessage("No EventTypes Available");
+			} else {
+				StringBuilder builder = new StringBuilder();
+				builder.append("[accent]Events: [lightgray]\n");
+				CutsceneEvent.cutsceneEvents.each((k, e) -> {
+					builder.append(k).append("->").append(e).append('\n');
+				});
+				player.sendMessage(builder.toString());
+			}
+		});
+		
+		handler.<Player>register("runjs", "<Code>", "Run js codes (Admin Only)", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else {
+				if (args.length == 0) {
+					player.sendMessage("[VIOLET]Failed, pls type Code");
+				}
+				
+				Core.app.post(() -> {
+					try {
+						CutsceneScript.runJS(args[0]);
+					} catch (Throwable var3) {
+						player.sendMessage(var3.toString());
+					}
+					
+				});
+			}
+			
+		});
 	}
 	
 	@Override

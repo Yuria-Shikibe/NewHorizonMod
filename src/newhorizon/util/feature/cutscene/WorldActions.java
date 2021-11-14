@@ -24,6 +24,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class WorldActions{
 	public static void signal(float x, float y, float size, float cautionRange, float inaccuracyScl, float time, Color color, Sound sound){
+		if(headless)return;
 		float f = player.dst(x, y) / cautionRange;
 		
 		if(player == null || f > 1)return;

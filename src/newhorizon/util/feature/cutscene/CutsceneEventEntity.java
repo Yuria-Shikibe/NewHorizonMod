@@ -14,24 +14,45 @@ import mindustry.gen.Groups;
 import mindustry.gen.Syncc;
 import mindustry.io.TypeIO;
 import newhorizon.util.feature.NHBaseEntity;
+import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
 import newhorizon.util.func.EntityRegister;
 
 import java.nio.FloatBuffer;
+import java.util.Objects;
 
-public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Entityc, Syncc, Drawc{
+/**
+ * Basic Event Entity that can act many types of things.<p>
+ *
+ *
+ * This is the internal entity of {@link CutsceneEvent}.<p>
+ * Define what the event will do in {@link CutsceneEventEntity#eventType} ({@link CutsceneEvent}), not here.<p>
+ *
+ * Use {@link CutsceneEventEntity#data} to store different types of things, such as {@link arc.struct.Seq}, {@link mindustry.gen.Building} or sth else.
+ * In most cases, this class should not be extended to implement extra functions.<p>
+ *
+ * This event entity is position syncable and reload syncable. And it is savable. <p>
+ *
+ * If this event can be triggered in a client, {@link CutsceneEventEntity#netAct()} should be used to act it to sync.
+ *
+ * @see CutsceneEvent
+ * @see Syncc
+ * @see Drawc
+ * @see Entityc
+ *
+ * @author Yuria
+ * */
+public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc, Drawc{
 	public static final EntityGroup<CutsceneEventEntity> events = new EntityGroup<>(CutsceneEventEntity.class, false, true);
 	
 	protected static boolean registeredLoad = false, registeredExit = false;
 	
-	public static void afterIO(){
-		registeredLoad = registeredExit = false;
-	}
+	public static void afterIO(){registeredLoad = registeredExit = false;}
 	
 	public transient long lastUpdated, updateSpacing;
 	
 	protected boolean inited = false;
-	public Table infoT;
+	@HeadlessDisabled public Table infoT;
 	protected String name;
 	protected CutsceneEvent eventType = CutsceneEvent.NULL_EVENT;
 	
@@ -148,15 +169,13 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 	}
 	
 	public void netAct(){
-		eventType.triggered(this);
-		
 		if(Vars.net.active()){
 			EventCompletePacket packet = new EventCompletePacket();
 			packet.entity = this;
 			Vars.net.send(packet, true);
 		}
 		
-		if(eventType.removeAfterTriggered)remove();
+		act();
 	}
 	
 	public void show(Table table){
@@ -164,18 +183,6 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 		table.row();
 		
 		eventType.setupTable(this, table);
-	}
-	
-	
-	public CutsceneEventEntity copy(){
-		try{
-			CutsceneEventEntity n = (CutsceneEventEntity)super.clone();
-			n.added = false;
-			n.id(EntityGroup.nextId());
-			return n;
-		}catch(CloneNotSupportedException e){
-			throw new AssertionError();
-		}
 	}
 	
 	public void setType(CutsceneEvent type){
@@ -286,7 +293,20 @@ public class CutsceneEventEntity extends NHBaseEntity implements Cloneable, Enti
 	
 	@Override
 	public String toString(){
-		return Time.millis() + "CutsceneEventEntity{" + "added=" + added + ", id=" + id + '}';
+		return "CutsceneEventEntity{" + "type=" + eventType + ", id=" + id + '}';
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(this == o) return true;
+		if(!(o instanceof CutsceneEventEntity)) return false;
+		CutsceneEventEntity that = (CutsceneEventEntity)o;
+		return id == that.id && name.equals(that.name) && eventType.equals(that.eventType);
+	}
+	
+	@Override
+	public int hashCode(){
+		return Objects.hash(id, name, eventType);
 	}
 	
 	@Override

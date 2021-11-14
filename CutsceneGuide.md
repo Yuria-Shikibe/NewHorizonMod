@@ -9,6 +9,11 @@
 - So relax. **_You Can Do It_**
 - Example: [Script For Map (@HC)Hostile HQ](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/assets/custom-cutscene/(%40HC)Hostile%20HQ-cutscene.js)
 - Main Codes: [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java)
+- Important: 
+  - [CutsceneEvent.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneEvent.java)
+  - [CutsceneEventEntity.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneEventEntity.java)
+  - [UIActions.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/UIActions.java)
+  - [WorldActions.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/WorldActions.java)
 
 ---
 

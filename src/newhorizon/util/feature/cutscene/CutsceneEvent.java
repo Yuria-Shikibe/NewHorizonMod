@@ -12,8 +12,13 @@ import arc.util.pooling.Pools;
 import mindustry.Vars;
 import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 
+/**
+ *
+ *
+ *
+ * */
 public class CutsceneEvent implements Cloneable{
-	protected static final ObjectMap<String, CutsceneEvent> cutsceneEvents = new ObjectMap<>();
+	public static final ObjectMap<String, CutsceneEvent> cutsceneEvents = new ObjectMap<>();
 	
 	public static CutsceneEvent get(String name){
 		return cutsceneEvents.get(name);
@@ -122,7 +127,7 @@ public class CutsceneEvent implements Cloneable{
 	
 	@Override
 	public String toString(){
-		return "CutsceneEvent{" + "name='" + name + '\'' + '}';
+		return name;
 	}
 	
 	public <T extends CutsceneEvent> T copyAnd(Class<T> c, String name, Cons<T> modifier){

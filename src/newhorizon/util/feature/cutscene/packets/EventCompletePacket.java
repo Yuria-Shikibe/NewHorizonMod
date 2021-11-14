@@ -2,6 +2,7 @@ package newhorizon.util.feature.cutscene.packets;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.net.NetConnection;
 import mindustry.net.Packet;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
@@ -36,6 +37,10 @@ public class EventCompletePacket extends Packet{
 	public void handleServer(NetConnection con) {
 		if(con.player != null && !con.kicked && entity != null) {
 			entity.act();
+			
+			EventCompletePacket packet = new EventCompletePacket();
+			packet.entity = entity;
+			Vars.net.send(packet, true);
 		}
 	}
 }
