@@ -12,28 +12,28 @@
 ## Server
 `n4.mcyxsj.top:20177`
 
-###### For foreigners (foreign countries relative to China)
+###### For non Chinese players:
 
-First, you may need a __VPN Service__ to have a better play experience, ~~since that big fucking gaint net wall stands there, around China.~~
+First, you may need a __VPN__(virtual private network) to have a better experience, ~~because of that big fucking net wall around China.~~
 
-Most of the players in the server may speak Chinese when you log in.
+A large quantity of the players speak Chinese
+    
+It may be hard to talk to those players. But some of those players can speak English, and are willing to translate for you, so don't lose hope.
 
-Well, you may feel it is impossible to communicate with them because as I know, many of the players in the Chinese Mindustry community (especially in my place) do not speak English fluently. However, I believe there must be players who are good at English that are willing to translate what you say to others, then translate what is replied to you.
+Else, just because your frustrated doesnt make griefing okay. I believe every player can get along with one another ~~so long as no one blows up a reactor or breaks someone else's schematic~~.
 
-But if that doesn't happen, making everything function right and not demolishing buildings at will are enough. I believe every player can get along well with one another ~~as long as no one blows up a reactor or breaks someone else's blueprint~~.
-
-Don't forget to invite your friends to try this mod, because you guys can use the amount of non-Chinese speaking players to turn the situation. ~~Also if Chinese players don't quit, this may be a fantastic chance for them to learn English~~ (~~Maaaaaaaybeeeeeee~~). 
+Do invite your friends to try this mod, because you guys can use the amount of english speakers to turn the tables. ~~Also if the Chinese players don't quit, this could be a fantastic chance for them to learn English~~ (~~Maaaaaaaybeeeeeee~~). 
 
 Have a nice day.
 
 ## Caution
 **MOD DOES NOT SUPPORT _IOS_**
 
-**If you are using a PC**, mod requires `JDK/JVM` installed, or maybe other versions (**_at least 8_**).
+**If you are using a PC/laptop**, mod requires java installed, and maybe other versions (**_at least 8_**).
 
-If you downloaded from `Action`, unzip the Mod.zip file first, then install the mod in-game;
+If you have git cloned this repository, simply install the mod in game.
 
-Here are the `Requirements` override code, which I believe it wouldn't cause conflict between multiple mods. Still, I give a setting to disable the override.
+Here are the `Requirements` override code, which I believe won't cause conflict between multiple mods. Nonetheless, I added a setting to disable the override.
 
 ```java
 public class NHOverride{
@@ -86,12 +86,12 @@ public class NHOverride{
    if everything goes correctly, you will see the link sign between the two buildings.
    ![guide-link](github-pictures/guide/link-upgrade.png)
 3. Click the `Upgrader`.
-4. Click button `Upgrade`.
+4. Click the button labeled `Upgrade`.
    if everything goes correctly, you will see the table of all the upgrade options.
 5. Select the option you want to upgrade.
    ![guide-upgrade](github-pictures/guide/ui-upgrade.png)
    
-- Upgrade needs resources. The upgrader can take resources directly from the `Core`. ~~Nice and simple, right?~~
+- Upgrading costs resources. The upgrader can take resources directly from the `Core`. ~~Nice and simple, right?~~
 6. Make the turret function correctly just like other turrets.
 ---
 
@@ -111,9 +111,9 @@ public class NHOverride{
    ![guide-jump-gate](github-pictures/guide/ui-jump-gate.png)
 3. Select the plus icon to summon the unit.
    
-- Spawning units requires resource, which the jump gate can take the resource directly from the `Core`.
-- To place the `Senior Jump Gate`, the `Junior Jump Gate` is required as a base.
-- A new auto-spawn system has been added since 1.7.8, which allows you to spawn specific unit when wave passed by. This also works for enemies, so you guys can use it to make some interesting maps. 
+- Spawning units costs resources, which the jump gate can take directly from the `Core`.
+- To place the `Senior Jump Gate`, the `Junior Jump Gate` is required as a base(you must place the senior jump gate over the junior jump gate).
+- A new spawn system has been added since 1.7.8, which allows you to spawn specific units when a wave has passed. This also applys to enemies, so you guys can use it to make some interesting maps. 
 
 ---
 #### Player Jump Gate
@@ -124,12 +124,12 @@ public class NHOverride{
 
 ###### Use Steps:
 1. Click the building.
-2. Make sure the building isn't locked (You can get and switch the mode through the left button), then tap another `Player Jump Gate` to link.
+2. Make sure the building isn't locked (You can switch the mode with the left button), then tap another `Player Jump Gate` to link.
 3. Make sure you are using a flying unit. Get close to the building, then click the button `Teleport` to teleport to the linked building.
 
 - Has cooldown time.
 - Requires power to function. 
-- Available in the server.
+- Available in server.
 
 ---
 #### Hyperspace Folding Gate & Gravity Trap
@@ -150,7 +150,7 @@ public class NHOverride{
 - The jump could be intercepted by a `Gravity Trap Field` on it's **WAY TO THE DESTINATION(Not only the destination position will be affected)**, and the intercepted unit will receeive percentage damage. 
 - Has cooldown time.
 - Requires power and other items to function.
-- Available in the server.
+- Available in server.
 
 ---
 #### Commandable Block
