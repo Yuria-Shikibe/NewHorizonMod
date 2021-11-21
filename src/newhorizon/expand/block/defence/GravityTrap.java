@@ -7,7 +7,10 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.util.Log;
+import arc.math.geom.Position;
+import arc.math.geom.QuadTree;
+import arc.math.geom.Rect;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -23,10 +26,11 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHColor;
-import newhorizon.expand.interfaces.BeforeLoadc;
+import newhorizon.expand.vars.EventTriggers;
 import newhorizon.expand.vars.NHVars;
-import newhorizon.expand.vars.NHWorldVars;
 import newhorizon.util.feature.PosLightning;
+import newhorizon.util.func.NHFunc;
+import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -55,13 +59,17 @@ public class GravityTrap extends Block{
 	
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid){
-		for(GravityTrapBuild b : NHVars.world.gravityTraps){
+		Seq<TrapField> seq = NHFunc.getObjects(NHVars.world.gravityTraps);
+		
+		for(TrapField bi : seq){
+			GravityTrapBuild b = bi.build;
 			Draw.color(Pal.gray);
 			Lines.stroke(3);
 			Lines.poly(b.x, b.y, 6, b.range());
 		}
 		
-		for(GravityTrapBuild b : NHVars.world.gravityTraps){
+		for(TrapField bi : seq){
+			GravityTrapBuild b = bi.build;
 			Draw.color(b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust);
 			Draw.alpha(b.warmup / 12f);
 			Lines.stroke(1);
@@ -100,8 +108,9 @@ public class GravityTrap extends Block{
 		});
 	}
 	
-	public class GravityTrapBuild extends Building implements Ranged, BeforeLoadc{
+	public class GravityTrapBuild extends Building implements Ranged{
 		public float warmup;
+		public transient TrapField field;
 		
 		@Override
 		public void write(Writes write){
@@ -127,12 +136,6 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
-		public boolean configTapped(){
-			Log.info(NHVars.world.gravityTraps);
-			return super.configTapped();
-		}
-		
-		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
 		}
@@ -144,13 +147,7 @@ public class GravityTrap extends Block{
 		@Override
 		public void remove(){
 			super.remove();
-			NHVars.world.gravityTraps.remove(this);
-			NHWorldVars.advancedLoad.remove(this);
-		}
-		
-		@Override
-		public void onRemoved(){
-			NHVars.world.gravityTraps.remove(this);
+			NHVars.world.gravityTraps.remove(field);
 		}
 		
 		@Override
@@ -181,13 +178,34 @@ public class GravityTrap extends Block{
 		@Override
 		public void add(){
 			super.add();
-			NHWorldVars.advancedLoad.add(this);
-			beforeLoad();
+			
+			field = new TrapField(this);
+			
+			NHVars.world.gravityTraps.insert(field);
+			EventTriggers.actBeforeLoad.add(() -> NHVars.world.gravityTraps.insert(field));
+		}
+	}
+	
+	public static class TrapField implements Position, QuadTree.QuadTreeObject{
+		public @NotNull GravityTrapBuild build;
+		
+		public TrapField(@NotNull GravityTrapBuild build){
+			this.build = build;
 		}
 		
 		@Override
-		public void beforeLoad(){
-			NHVars.world.gravityTraps.add(this);
+		public float getX(){
+			return build.x;
+		}
+		
+		@Override
+		public float getY(){
+			return build.y;
+		}
+		
+		@Override
+		public void hitbox(Rect out){
+			out.setSize(build.range()).setCenter(build.x, build.y);
 		}
 	}
 }

@@ -1,25 +1,26 @@
 package newhorizon.expand.vars;
 
+import arc.math.geom.QuadTree;
+import arc.math.geom.Rect;
 import arc.struct.OrderedSet;
+import mindustry.Vars;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.special.CommandableBlock;
-import newhorizon.expand.interfaces.BeforeLoadc;
-import newhorizon.expand.interfaces.ServerInitc;
 
 public class NHWorldVars{
 	public transient boolean serverLoaded = true;
 	public transient boolean worldLoaded = false;
 	public transient boolean load = false;
 	
-	public static final OrderedSet<ServerInitc> serverLoad = new OrderedSet<>();
-	public static final OrderedSet<BeforeLoadc> advancedLoad = new OrderedSet<>();
-	
-	public transient final OrderedSet<GravityTrap.GravityTrapBuild> gravityTraps = new OrderedSet<>();
+	public transient final QuadTree<GravityTrap.TrapField> gravityTraps;
 	public transient final OrderedSet<CommandableBlock.CommandableBlockBuild> commandables = new OrderedSet<>();
 	
 	public transient int ix, iy;
 	public transient int commandPos = -1;
 	
+	public NHWorldVars(){
+		gravityTraps = new QuadTree<>(Vars.world.getQuadBounds(new Rect()));
+	}
 	
 	public void clear(){
 		commandables.clear();
@@ -29,9 +30,7 @@ public class NHWorldVars{
 		commandPos = -1;
 	}
 	
-	public void clearLast(){
-		advancedLoad.clear();
-		serverLoad.clear();
+	public void afterLoad(){
+		gravityTraps.bounds.set(Vars.world.getQuadBounds(new Rect()));
 	}
-	
 }

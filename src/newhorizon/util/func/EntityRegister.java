@@ -4,6 +4,7 @@ import arc.func.Prov;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
+import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
@@ -12,7 +13,7 @@ import newhorizon.expand.block.special.JumpGate;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 
 public class EntityRegister{
-	public static boolean safe = true;
+	private static final boolean debugging = true;
 	private static final int startFrom = 100;
 	
 	public static final ObjectMap<Class<?>, ProvSet> needIdClasses = new ObjectMap<>();
@@ -42,8 +43,14 @@ public class EntityRegister{
 			classIdMap.put(c, EntityMapping.register(c.toString(), needIdClasses.get(c).prov));
 		}
 		
-		Log.info(classIdMap);
-//		Log.info(((Prov<JumpGate.Spawner>)(JumpGate.Spawner::new)).get().classId());
+		if(debugging || Vars.headless){
+			Log.info("//-------------------------------------------------------");
+			classIdMap.each((c, i) -> {
+				Log.info(i + "|" + c.getSimpleName());
+			});
+			Log.info("//-------------------------------------------------------");
+		}
+		
 		
 		needIdClasses.clear();
 	}

@@ -14,6 +14,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.game.EventType;
+import mindustry.game.Teams;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
@@ -23,13 +24,14 @@ import mindustry.graphics.Pal;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHItems;
+import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
-import newhorizon.content.NHStatusEffects;
+import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
-import newhorizon.expand.interfaces.BeforeLoadc;
-import newhorizon.expand.interfaces.ServerInitc;
 
 
 public class EventTriggers{
@@ -85,27 +87,29 @@ public class EventTriggers{
 //
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-			NHVars.reset();
-			
-			for(Runnable run : actBeforeLoad)run.run();
-			for(BeforeLoadc c : NHWorldVars.advancedLoad)c.beforeLoad();
-			
-			NHVars.world.clearLast();
 			NHVars.world.worldLoaded = true;
-			//
-			//			if(Vars.player.admin)for(Block c : contents)c.buildVisibility = BuildVisibility.shown;
-			//			else for(Block c : contents)c.buildVisibility = BuildVisibility.sandboxOnly;
-			//
+			
+			NHVars.world.afterLoad();
+			
+			actBeforeLoad.each(Runnable::run);
+			actBeforeLoad.clear();
+			
+			for(Teams.TeamData data : Vars.state.teams.getActive()){
+				data.mineItems.add(NHItems.zeta);
+			}
 		});
-		
-		if(Vars.headless)return;
 		
 		Events.on(EventType.StateChangeEvent.class, e -> {
 			if(e.from == GameState.State.playing && e.to == GameState.State.menu){
 				NHVars.reset();
+				
+				RemoteCoreStorage.clear();
+				
 				NHVars.world.worldLoaded = false;
 			}
 		});
+		
+		if(Vars.headless)return;
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			if(caution){
@@ -172,7 +176,8 @@ public class EventTriggers{
 			float z = Draw.z();
 			
 			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
-				for(GravityTrap.GravityTrapBuild b : NHVars.world.gravityTraps){
+				for(GravityTrap.TrapField bi : NHFunc.getObjects(NHVars.world.gravityTraps)){
+					GravityTrap.GravityTrapBuild b = bi.build;
 					if(!b.active())return;
 					Draw.z(Layer.buildBeam + Mathf.num(b.team != Vars.player.team() ^ ((Time.time % (scl * 8 * Mathf.pi)) > scl * Mathf.pi && (Time.time % (scl * 8 * Mathf.pi)) < scl * Mathf.pi * 5)));
 					
@@ -190,10 +195,6 @@ public class EventTriggers{
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
 			if(!NHSetting.getBool("@active.override") && e.host.name.equals(NewHorizon.SERVER_AUZ_NAME)){
 				caution = true;
-			}
-			
-			for(ServerInitc c : NHWorldVars.serverLoad){
-				c.loadAfterConnect();
 			}
 		});
 		

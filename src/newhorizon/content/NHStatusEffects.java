@@ -27,9 +27,9 @@ public class NHStatusEffects implements ContentList{
     @Override
     public void load(){
         phased = new NHStatusEffect("phased"){{
-            damage = -15f;
-            speedMultiplier = 1.5f;
-            damageMultiplier = 1.25f;
+            damage = -10f;
+            speedMultiplier = 1.25f;
+            damageMultiplier = 1.15f;
     
             textureColor = color = NHColor.lightSkyBack;
             

@@ -15,8 +15,10 @@ import arc.util.Tmp;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
+import mindustry.entities.UnitSorts;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.EmpBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.*;
@@ -102,7 +104,7 @@ public class NHBlocks implements ContentList {
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
 		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion,
 		blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret, multipleArtillery,
-		antiMatterTurret, atomSeparator, eternity,
+		antiMatterTurret, atomSeparator, eternity, synchro,
 
 		//Liquids
 		irdryonTank,
@@ -262,6 +264,61 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadTurrets(){
+		synchro = new ItemTurret("synchro"){{
+			size = 3;
+			health = 1420;
+			spread = 5f;
+			reloadTime = 12f;
+			inaccuracy = 0.75f;
+			
+			recoilAmount = 5f;
+			
+			coolantMultiplier = 2f;
+			
+			velocityInaccuracy = 0.075f;
+			unitSort = UnitSorts.weakest;
+			
+			range = 360f;
+			
+			shootSound = NHSounds.synchro;
+			
+			shootLength = 16f;
+			
+			ammo(
+				NHItems.zeta, NHBullets.synchroZeta,
+				NHItems.fusionEnergy, NHBullets.synchroFusion,
+				NHItems.thermoCorePositive, NHBullets.synchroThermoPst,
+				Items.phaseFabric, NHBullets.synchroPhase
+			);
+			
+			ammoPerShot = 1;
+			maxAmmo = 80;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.metalOxhydrigen, 90, NHItems.juniorProcessor, 60, NHItems.zeta, 120, Items.plastanium, 80));
+			
+			buildType = () -> new ItemTurretBuild(){
+				@Override
+				protected void shoot(BulletType type){
+					for(int j : Mathf.signs){
+						tr.trns(rotation, shootLength, Mathf.range(xRand) + spread * j);
+						
+						for(int i = 0; i < shots; i++){
+							bullet(type, rotation + Mathf.range(inaccuracy + type.inaccuracy));
+						}
+						
+						effects();
+					}
+					
+					shotCounter++;
+					
+					recoil = recoilAmount;
+					heat = 1f;
+					
+					useAmmo();
+				}
+			};
+		}};
+		
 		eternity = new FinalTurret("eternity"){{
 			size = 16;
 			outlineRadius = 7;
@@ -651,7 +708,7 @@ public class NHBlocks implements ContentList {
 			size = 3;
 			health = 1350;
 			requirements(Category.turret, ItemStack.with(Items.titanium, 60, NHItems.presstanium, 45, NHItems.zeta, 90, NHItems.juniorProcessor, 40));
-			NHTechTree.add(Blocks.lancer, this);
+			
 			powerUse = 7.5f;
 			shootType = new BasicBulletType(7f, 50f, NewHorizon.name("circle-bolt")){{
 				drag = 0.01f;

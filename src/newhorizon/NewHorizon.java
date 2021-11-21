@@ -44,21 +44,18 @@ public class NewHorizon extends Mod{
 //	static{
 //		Vars.testMobile = Vars.mobile = true;
 //	}
-	
+//
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
+	public static final String MOD_NAME_BAR = "new-horizon-";
 	public static final String SERVER_ADDRESS = "n4.mcyxsj.top:20177", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	
 	public static Mods.LoadedMod MOD;
 	
 	public static Links.LinkEntry[] links;
-	
-	protected static String body, tag;
-	
-	protected static long mark = 0;
 	
 	public static String name(String name){
 		return MOD_NAME + "-" + name;
@@ -93,7 +90,7 @@ public class NewHorizon extends Mod{
 					"Camera Zoom Action", "Use Actions to zoom your camera", "Feature", NHContent.icon
 			),
 			new LatestFeature(
-					"", "Fixed the sector 'The Craters' doesn't pop up the cutscene mission", "Fixes", NHContent.icon
+				NHBlocks.synchro
 			),
 		};
 	}
@@ -157,13 +154,13 @@ public class NewHorizon extends Mod{
     public NewHorizon(){
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
-        Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
+        Events.on(ClientLoadEvent.class, e -> {
 	        Threads.thread(() -> {
 		        Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
 			        Jval json = Jval.read(res.getResultAsString());
 			
-			        tag = json.get("tag_name").asString();
-			        body = json.get("body").asString();
+			        String tag = json.get("tag_name").asString();
+			        String body = json.get("body").asString();
 			
 			        if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
 				        new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
@@ -178,15 +175,15 @@ public class NewHorizon extends Mod{
 							        c.add("[accent]Description: \n[]" + body).left();
 						        }).grow();
 					        }).grow().padBottom(OFFSET).row();
-					        
-					        
+					
+					
 					        cont.table(table -> {
 						        table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
 						        table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
 					        }).bottom().growX().height(LEN).padTop(OFFSET);
 					
-					        
-					        
+					
+					
 					        addCloseListener();
 				        }}.show();
 			        }
@@ -194,20 +191,16 @@ public class NewHorizon extends Mod{
 			        if(tag != null)Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
 		        }, ex -> Log.err(ex.toString()));
 	        });
-        	
-        	if(NHSetting.versionChange){
-        		showNew();
-	        }
-        	
-        	if(!NHSetting.getBool("@active.hid-start-log"))startLog();
-        	
-	        TableFunc.tableMain();
 	        
-	        NHSetting.updateSettingMenu();
-	        NHSetting.applySettings();
-	        
-	        ScreenHack.load();
-        }));
+        	Time.runTask(10f, () -> {
+		
+		        if(NHSetting.versionChange){
+			        showNew();
+		        }
+		
+		        if(!NHSetting.getBool("@active.hid-start-log"))startLog();
+	        });
+        });
 	}
 	
 	public static void showNew(){
@@ -252,6 +245,15 @@ public class NewHorizon extends Mod{
 	}
 	
 	public void init() {
+		TableFunc.tableMain();
+		
+		NHSetting.updateSettingMenu();
+		NHSetting.applySettings();
+		
+		ScreenHack.load();
+		
+		NHRegister.load();
+		
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 	}
 	
@@ -399,6 +401,6 @@ public class NewHorizon extends Mod{
 		EventSamples.load();
 		CutsceneScript.load();
 		
-		Log.info(MOD.meta.name + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + "sec.");
+		Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }
 }

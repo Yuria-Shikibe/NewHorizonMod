@@ -8,12 +8,12 @@
 - Of course, you need some grammar to make your journey easier, however the cutscene script is something that likes Lego Bricks. You just need to buffer code blocks one by one then you can make cutscenes.
 - So relax. **_You Can Do It_**
 - Example: [Script For Map (@HC)Hostile HQ](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/assets/custom-cutscene/(%40HC)Hostile%20HQ-cutscene.js)
-- Main Codes: [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneScript.java)
+- Main Codes: [CutsceneScript.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/util/feature/cutscene/CutsceneScript.java)
 - Important: 
-  - [CutsceneEvent.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneEvent.java)
+  - [CutsceneEvent.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/util/feature/cutscene/CutsceneEvent.java)
   - [CutsceneEventEntity.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneEventEntity.java)
-  - [UIActions.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/UIActions.java)
-  - [WorldActions.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/WorldActions.java)
+  - [UIActions.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/util/feature/cutscene/UIActions.java)
+  - [WorldActions.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/util/feature/cutscene/WorldActions.java)
 
 ---
 
@@ -21,7 +21,7 @@
 
 - Powered by **JavaScript**.
 - Could be stored into the map file after you finish it, making it available without *external files*.
-- Available for multiple-player games and servers.
+- Available for multiple-player games and headless servers.
 - Has in-game debugger. You have to activate these mod settings to access it.
   - `Debug Mode`
   - `Tool Panel`
@@ -99,13 +99,6 @@ function newEvent(name, args){
 ```
 
 The way I used to import the `Class` is really garbage. If you are able to improve it, just **PULL REQUEST** .
-Also, when your cutscene js is run by the mod, the line of the code is plussed the line number of the PRE IMPORTER.
-> EG: 
-> 
-> You write ```WorldActions.raidFromCoreDefault(NHBulltes.airRaid, 10, 1, 120, 1)``` in the first line in your script file.
-> 
-> If something goes wrong at this line, the report will say `Line 36(35 + 1)` has problems
-
 This importer has imported most of the MOD Classes that you will need. If you need more, you can invoke the method `loadClass(<String> Class Full Name);` to load more classes.
 
 ### Main Process

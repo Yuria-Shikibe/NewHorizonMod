@@ -1,7 +1,7 @@
 package newhorizon.util.feature.cutscene;
 
-import arc.func.Boolp;
 import arc.func.Cons;
+import arc.func.Func;
 import arc.math.geom.Position;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
@@ -10,6 +10,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
+import mindustry.core.NetClient;
 import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 
 /**
@@ -30,7 +31,6 @@ public class CutsceneEvent implements Cloneable{
 		cannotBeRemove = true;
 		updatable = false;
 		drawable = false;
-		exist = () -> true;
 	}};
 	
 	public boolean cannotBeRemove = false;
@@ -44,7 +44,7 @@ public class CutsceneEvent implements Cloneable{
 	public boolean removeAfterVictory = true;
 	public boolean isHidden = false;
 	public boolean updatable = true, drawable = false;
-	public Boolp exist = () -> true;
+	public Func<CutsceneEventEntity, Boolean> exist = e -> true;
 	
 	protected CutsceneEvent(String name, boolean register){
 		this.name = name;
@@ -59,6 +59,11 @@ public class CutsceneEvent implements Cloneable{
 	
 	public CutsceneEvent(){this("null", false);}
 	
+	/**
+	 * Used to generate an event entity safely and add it to the {@link mindustry.gen.Groups#all}.
+	 *
+	 *
+	 * */
 	@SuppressWarnings("UnusedReturnValue")
 	public CutsceneEventEntity setup(){
 		if(name.equals("null"))throw new ArcRuntimeException("Illegal Event #" + System.identityHashCode(this) + "[!]RENAME IT!");
@@ -71,47 +76,64 @@ public class CutsceneEvent implements Cloneable{
 		return entity;
 	}
 	
+	/** What to draw in this event.*/
 	public void draw(CutsceneEventEntity e){
 	
 	}
 	
+	/** What to update in this event every moment.*/
 	public void updateEvent(CutsceneEventEntity e){
 	
 	}
 	
+	/** What to do while the event entity is removed.*/
 	public void onRemove(CutsceneEventEntity e){
 	
 	}
 	
+	/** What to do while the event entity is created.*/
 	public void onCall(CutsceneEventEntity e){
 	
 	}
 	
+	/**
+	 * What to do (with UI) while the event entity is created.
+	 * Only act in clients.
+	 *
+	 * */
+	@HeadlessDisabled
 	public void onCallUI(CutsceneEventEntity e){
 	
 	}
 	
+	/** What to show about this event.*/
 	@HeadlessDisabled
 	public void setupTable(CutsceneEventEntity e, Table table){
 	
 	}
 	
+	/** Used for special {@link arc.scene.Action} if needed.*/
 	@HeadlessDisabled
 	public void removeTable(CutsceneEventEntity e, Table table){
 		e.infoT.remove();
 	}
 	
+	/** What to do while the event entity is triggered.*/
 	public void triggered(CutsceneEventEntity e){
 	
 	}
 	
+	/** What to do after {@link mindustry.gen.Entityc#read(Reads)}*/
 	public void afterRead(CutsceneEventEntity e){
 	
 	}
 	
+	/** What to do after {@link NetClient#sync()}*/
+	@SuppressWarnings("JavadocReference")
 	public void afterSync(CutsceneEventEntity e){
 	
 	}
+	
 	
 	public void write(CutsceneEventEntity e, Writes writes){
 	
@@ -121,13 +143,14 @@ public class CutsceneEvent implements Cloneable{
 	
 	}
 	
+	/** What to do while initializing.*/
 	public void setType(CutsceneEventEntity e){
 	
 	}
 	
 	@Override
 	public String toString(){
-		return name;
+		return "EventType: " + name;
 	}
 	
 	public <T extends CutsceneEvent> T copyAnd(Class<T> c, String name, Cons<T> modifier){

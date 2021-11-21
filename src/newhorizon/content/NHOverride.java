@@ -7,6 +7,7 @@ import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ContinuousLaserBulletType;
+import mindustry.game.Team;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
@@ -25,6 +26,8 @@ public class NHOverride{
 		Blocks.coreShard.health *= 5;
 		
 		Fx.lightning.layer(Fx.lightning.layer - 0.1f);
+		
+		Team.purple.name = "Luminari";
 		
 		addReq(Blocks.blastDrill,
 				new ItemStack(NHItems.presstanium, 50),
@@ -155,7 +158,6 @@ public class NHOverride{
 	
 	private static void addReq(Block target, ItemStack... items){
 		ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];
-		
 		
 		System.arraycopy(target.requirements, 0, newReq, 0, target.requirements.length);
 		System.arraycopy(items, 0, newReq, target.requirements.length, items.length);

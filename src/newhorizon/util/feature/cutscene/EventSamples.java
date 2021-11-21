@@ -38,8 +38,8 @@ public class EventSamples{
 			targets = e -> {
 				Seq<Building> buildings = new Seq<>();
 				
-				NHVars.world.gravityTraps.each(b -> {
-					if(b.team != Vars.state.rules.defaultTeam)buildings.add(b);
+				NHFunc.getObjects(NHVars.world.gravityTraps).each(b -> {
+					if(b.build.team != Vars.state.rules.defaultTeam)buildings.add(b.build);
 				});
 				
 				return buildings;

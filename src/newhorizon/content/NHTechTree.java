@@ -41,6 +41,9 @@ public class NHTechTree implements ContentList {
     @Override
     public void load(){
         //Blocks;
+        add(Blocks.lancer, NHBlocks.pulseLaserTurret);
+        add(NHBlocks.pulseLaserTurret, NHBlocks.synchro);
+        
         add(NHBlocks.bombLauncher, NHBlocks.airRaider);
         
         add(Blocks.commandCenter, NHBlocks.jumpGatePrimary, new EventObjective(SectorPresets.craters));

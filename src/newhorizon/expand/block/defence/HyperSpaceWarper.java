@@ -19,7 +19,6 @@ import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -565,16 +564,14 @@ public class HyperSpaceWarper extends Block{
 				x += vel.x;
 				y += vel.y;
 				
-				for(GravityTrap.GravityTrapBuild build : NHVars.world.gravityTraps){
-					if(build.team != team && build.active() && Intersector.isInsideHexagon(x, y, build.range() * 2f, build.x, build.y)){
+				NHVars.world.gravityTraps.intersect(x - 4, y - 4, tilesize, tilesize, b -> {
+					if(b.build.team != team && b.build.active() && Intersector.isInsideHexagon(x, y, b.build.range() * 2f, b.getX(), b.getY())){
 						intercepted = true;
-						Log.info("Triggered");
 						toCarry.unit.damage(toCarry.unit.health * 0.3f);
-						PosLightning.createEffect(build, this, build.team.color, 2, PosLightning.WIDTH);
+						PosLightning.createEffect(b.build, this, b.build.team.color, 2, PosLightning.WIDTH);
 						NHFx.square45_4_45.at(x, y, team.color);
-						break;
 					}
-				}
+				});
 			}
 		}
 		

@@ -23,7 +23,7 @@ public class CCS_Scripts implements Disposable{
 	protected ClassLoader formalLoader = null;
 	
 	protected boolean errored;
-	protected static Mods.LoadedMod mod;
+	protected Mods.LoadedMod mod;
 	
 	public CCS_Scripts(){
 		Time.mark();
@@ -44,7 +44,7 @@ public class CCS_Scripts implements Disposable{
 			errored = true;
 		}
 		
-		Log.debug("Time to load cutscene script engine: @", Time.elapsed());
+		Log.info("[["+ mod.meta.displayName + "]Time to load cutscene script engine: @", Time.elapsed());
 	}
 	public boolean hasErrored(){
 		return errored;
@@ -111,7 +111,7 @@ public class CCS_Scripts implements Disposable{
 		}
 	}
 	
-	public static class CCS_ContextFactory extends ContextFactory{
+	public class CCS_ContextFactory extends ContextFactory{
 		
 		@Override
 		protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args){
@@ -123,7 +123,7 @@ public class CCS_Scripts implements Disposable{
 			return new CCS_Context(this);
 		}
 		
-		public static class CCS_Context extends Context{
+		public class CCS_Context extends Context{
 			public CCS_Context(ContextFactory factory){
 				super(factory);
 				setApplicationClassLoader(mod.loader);

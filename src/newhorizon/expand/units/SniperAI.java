@@ -20,8 +20,13 @@ public class SniperAI extends FlyingAI{
 		
 		if(target != null && unit.hasWeapons() && command() == UnitCommand.attack){
 			if(!unit.type.circleTarget){
-				unit.lookAt(target);
-				moveTo(target, unit.type.maxRange - APPROACHING_DST);
+				if(unit.within(target, unit.type.maxRange - APPROACHING_DST)){
+					moveTo(target, unit.type.maxRange - APPROACHING_DST / 2);
+					unit.lookAt(target);
+					unit.lookAt(target); //Always Look At target in range
+				}else if(unit.within(target, unit.type.maxRange - APPROACHING_DST / 2)){
+					unit.lookAt(target);
+				}else moveTo(target, unit.type.maxRange - APPROACHING_DST / 2);
 			}else{
 				attack(unit.type.range * 0.75f);
 			}
@@ -35,5 +40,4 @@ public class SniperAI extends FlyingAI{
 			moveTo(targetFlag(unit.x, unit.y, BlockFlag.rally, false), 60f);
 		}
 	}
-
 }

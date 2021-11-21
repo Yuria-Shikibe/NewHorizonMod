@@ -33,7 +33,7 @@ import java.util.Objects;
  *
  * This event entity is position syncable and reload syncable. And it is savable. <p>
  *
- * If this event can be triggered in a client, {@link CutsceneEventEntity#netAct()} should be used to act it to sync.
+ * If this event can be triggered in a client, {@link CutsceneEventEntity#syncAct()} should be used to act it to sync.
  *
  * @see CutsceneEvent
  * @see Syncc
@@ -45,40 +45,48 @@ import java.util.Objects;
 public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc, Drawc{
 	public static final EntityGroup<CutsceneEventEntity> events = new EntityGroup<>(CutsceneEventEntity.class, false, true);
 	
+	/** Used for js-custom event type register.*/
 	protected static boolean registeredLoad = false, registeredExit = false;
-	
 	public static void afterIO(){registeredLoad = registeredExit = false;}
 	
 	public transient long lastUpdated, updateSpacing;
 	
+	/** Whether this event entity is the first time created.*/
 	protected boolean inited = false;
+	
+	/** What the entity display on your HUD*/
 	@HeadlessDisabled public Table infoT;
-	protected String name;
+	
+	/** What the entity display on your HUD*/
 	protected CutsceneEvent eventType = CutsceneEvent.NULL_EVENT;
 	
-	public transient float reload, reload_LAST_, reload_TARGET_;
+	/** Used for events that need a reloading time*/
+	public float reload;
 	
+	/** Used for net sync*/
+	public transient float reload_LAST_, reload_TARGET_;
 	public transient float x_LAST_, x_TARGET_, y_LAST_, y_TARGET_;
 	
+	/** Used for special use like {@link mindustry.gen.Bullet#data}, {@link mindustry.entities.Effect.EffectContainer#data}*/
 	public Object data;
 	
+	/** Used for short spacing and IO-Not-Required use*/
 	public Interval timer = new Interval(6);
 	
-	{
-		size = 500f;
-	}
+	/* Init the draw size*/
+	{size = 500f;}
 	
-	public CutsceneEventEntity(){
-		name = eventType.name;
-	}
+	/** Constructor, has nothing to do*/
+	public CutsceneEventEntity(){}
 	
 	public <T> T data(){
 		return (T)data;
 	}
 	
+	
 	@Override
 	public void update(){
-		if(!eventType.exist.get()){
+		if(!eventType.exist.get(this)){
 			remove();
 			return;
 		}
@@ -132,9 +140,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		}
 		
 		inited = reads.bool();
-		name = reads.str();
-		
-		eventType = CutsceneEvent.get(name);
+		eventType = CutsceneEvent.get(reads.str());
 		
 		setType(eventType);
 		
@@ -162,23 +168,23 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		eventType.write(this, writes);
 	}
 	
+	/** Used for generic events that is synchronous.*/
 	public void act(){
 		eventType.triggered(this);
 		
 		if(eventType.removeAfterTriggered)remove();
 	}
 	
-	public void netAct(){
+	/** Used for events that need synchronously act from client to server.*/
+	public void syncAct(){
 		if(Vars.net.active()){
 			EventCompletePacket packet = new EventCompletePacket();
 			packet.entity = this;
 			Vars.net.send(packet, true);
-		}
-		
-		act();
+		}else act();
 	}
 	
-	public void show(Table table){
+	@HeadlessDisabled public void show(Table table){
 		if(table == null)return;
 		table.row();
 		
@@ -186,8 +192,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	}
 	
 	public void setType(CutsceneEvent type){
-		this.eventType = type == null ? CutsceneEvent.NULL_EVENT : type;
-		name = eventType.name;
+		eventType = type == null ? CutsceneEvent.NULL_EVENT : type;
 		
 		eventType.setType(this);
 	}
@@ -301,12 +306,12 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		if(this == o) return true;
 		if(!(o instanceof CutsceneEventEntity)) return false;
 		CutsceneEventEntity that = (CutsceneEventEntity)o;
-		return id == that.id && name.equals(that.name) && eventType.equals(that.eventType);
+		return id == that.id && eventType.equals(that.eventType);
 	}
 	
 	@Override
 	public int hashCode(){
-		return Objects.hash(id, name, eventType);
+		return Objects.hash(id, eventType);
 	}
 	
 	@Override

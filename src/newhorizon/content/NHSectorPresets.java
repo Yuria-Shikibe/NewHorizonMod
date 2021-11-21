@@ -176,6 +176,8 @@ public class NHSectorPresets implements ContentList{
 					if(!CutsceneScript.isPlayingCutscene){
 						CutsceneScript.runEventOnce("setup-reinforcements", () -> EventSamples.fleetApproaching.setup());
 						CutsceneScript.runEventOnce("setup-raid", () -> EventSamples.waveTeamRaid.setup());
+						
+						
 					}
 					
 					CutsceneScript.reload(eventNameFlagship, Time.delta, 60 * 60 * 10, () -> !CutsceneScript.getBool("SpawnedBoss"), () -> true, () -> {

@@ -8,6 +8,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Geometry;
+import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.IntSeq;
@@ -232,5 +233,13 @@ public class NHFunc{
         JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
         spawner.init(type, team, vec21.set(x, y), angle, delay);
         if(!net.client())spawner.add();
+    }
+    
+    public static <T extends QuadTree.QuadTreeObject> Seq<T> getObjects(QuadTree<T> tree){
+        Seq<T> seq = new Seq<>();
+        
+        tree.getObjects(seq);
+        
+        return seq;
     }
 }

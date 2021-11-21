@@ -190,9 +190,6 @@ public class DrawFunc{
         
         int i;
         
-        vec21.trns(angle, rad);
-        Fill.circle(x + vec21.x, y + vec21.y, Lines.getStroke() / 2f);
-        
         for(i = 0; i < sides * p - 1; ++i){
             float a = space * (float)i + angle;
             float cos = Mathf.cosDeg(a);

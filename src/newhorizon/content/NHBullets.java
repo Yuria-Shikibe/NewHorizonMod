@@ -41,6 +41,7 @@ public class NHBullets implements ContentList{
 	
 	public static
 	BulletType
+		synchroZeta, synchroThermoPst, synchroFusion, synchroPhase,
 		longRangeShoot, longRangeShootRapid, longRangeShootSplash, mineShoot,
 		artilleryIrd, artilleryFusion, artilleryPlast, artilleryThermo, artilleryPhase, artilleryMissile,
 		railGun1, railGun2, hurricaneType, polyCloud, missileTitanium, missileThorium, missileZeta, missile, missileStrike,
@@ -131,6 +132,122 @@ public class NHBullets implements ContentList{
 		STRIKE = NewHorizon.name("strike");
 		
 		loadFragType();
+		
+		synchroZeta = new BasicBulletType(8f, 65f){{
+			lifetime = 48f;
+			
+			width = 8f;
+			height = 42f;
+			
+			shrinkX = 0;
+			
+			trailWidth = 1.95f;
+			trailLength = 9;
+			
+			trailColor = backColor = hitColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.royal, 0.45f);
+			frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+			
+			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
+			smokeEffect = Fx.shootBigSmoke;
+			
+			despawnEffect = hitEffect = new MultiEffect(NHFx.hitSparkLarge, NHFx.square(backColor, 85f, 5, 52, 5), NHFx.hugeSmoke);
+			
+			ammoMultiplier = 4;
+		}};
+		
+		synchroFusion = new BasicBulletType(8f, 65f){{
+			lifetime = 48f;
+			
+			width = 8f;
+			height = 42f;
+			
+			shrinkX = 0;
+			
+			trailWidth = 1.95f;
+			trailLength = 9;
+			
+			trailColor = backColor = hitColor = lightColor = lightningColor = NHItems.fusionEnergy.color;
+			frontColor = Color.white;
+			
+			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
+			smokeEffect = Fx.shootBigSmoke;
+			
+			despawnEffect = hitEffect = new MultiEffect(NHFx.square(backColor, 85f, 5, 52, 5), NHFx.crossBlast(backColor, splashDamageRadius * 1.5f, 45));
+			
+			splashDamage = damage;
+			splashDamageRadius = 32f;
+			incendAmount = 6;
+			incendChance = 0.25f;
+			incendSpread = splashDamageRadius * 0.75f;
+			
+			ammoMultiplier = 6;
+			
+			reloadMultiplier = 0.9f;
+			
+			status = StatusEffects.melting;
+			statusDuration = 120f;
+		}};
+		
+		synchroPhase = new BasicBulletType(8f, 65f){{
+			lifetime = 48f;
+			
+			width = 8f;
+			height = 42f;
+			
+			shrinkX = 0;
+			
+			trailWidth = 1.95f;
+			trailLength = 9;
+			
+			trailColor = backColor = hitColor = lightColor = lightningColor = Items.phaseFabric.color;
+			frontColor = Color.white;
+			
+			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
+			frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+			
+			despawnEffect = hitEffect = NHFx.square(backColor, 85f, 5, 52, 5);
+			
+			status = NHStatusEffects.emp2;
+			statusDuration = 180f;
+			
+			pierceCap = 4;
+			
+			reloadMultiplier = 1.15f;
+			
+			ammoMultiplier = 6;
+		}};
+		
+		synchroThermoPst = new BasicBulletType(8f, 80f){{
+			lifetime = 48f;
+			
+			width = 8f;
+			height = 42f;
+			
+			shrinkX = 0;
+			
+			trailWidth = 1.95f;
+			trailLength = 9;
+			
+			trailColor = backColor = hitColor = lightColor = lightningColor = NHColor.thermoPst;
+			frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+			
+			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
+			smokeEffect = Fx.shootBigSmoke;
+			
+			despawnEffect = hitEffect = NHFx.lightningHitLarge;
+			
+			lightningDamage = damage;
+			lightningLength = 6;
+			lightningLengthRand = 12;
+			lightning = 3;
+			
+			ammoMultiplier = 8;
+			
+			reloadMultiplier = 0.8f;
+			
+			status = StatusEffects.melting;
+			statusDuration = 120f;
+		}};
 		
 		airRaidMissile = new SpeedUpBulletType(2f, 800f, NHBullets.STRIKE){{
 			trailLength = 14;

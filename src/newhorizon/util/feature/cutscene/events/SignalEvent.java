@@ -52,7 +52,7 @@ public class SignalEvent extends CutsceneEvent{
 			}
 			
 			if(Mathf.chanceDelta(0.22))NHFx.dataTransport.at(e.x, e.y, Mathf.random(0.15f, 0.55f), Pal.accent);
-			if(e.reload >= reloadTime)e.netAct();
+			if(e.reload >= reloadTime)e.syncAct();
 		}else{
 			e.reload = Mathf.lerpDelta(e.reload, 0, 0.04f);
 		}

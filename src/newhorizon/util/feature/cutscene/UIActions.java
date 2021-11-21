@@ -74,7 +74,7 @@ public class UIActions{
 		
 		if(root == null)root = new Table(Tex.clear){
 			{
-				if(Core.scene != null)Core.scene.root.addChildAt(2, this);
+				if(Core.scene != null)Core.scene.root.addChildAt(0, this);
 			}
 			
 			@Override
@@ -733,6 +733,15 @@ public class UIActions{
 		}else{
 			Time.runTask((duration - since) / 1000f * 60f, run);
 			lastToast += duration;
+		}
+	}
+	
+	public static void skip(){
+		actor.act(Float.MAX_VALUE);
+		
+		while(waitingPool.any()){
+			actor.actions(waitingPool.pop());
+			actor.act(Float.MAX_VALUE);
 		}
 	}
 	

@@ -25,9 +25,7 @@ import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.expand.interfaces.BeforeLoadc;
 import newhorizon.expand.vars.NHVars;
-import newhorizon.expand.vars.NHWorldVars;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +57,7 @@ public abstract class CommandableBlock extends Block{
 		if(groupBoolf == null)groupBoolf = (b1, b2) -> b1.block == b2.block;
 	}
 	
-	public abstract class CommandableBlockBuild extends Building implements BeforeLoadc, Ranged, ControlBlock{
+	public abstract static class CommandableBlockBuild extends Building implements Ranged, ControlBlock{
 		public transient int lastTarget = -1;
 		public float reload;
 		public int target = -1;
@@ -147,26 +145,14 @@ public abstract class CommandableBlock extends Block{
 		@Override
 		public void remove(){
 			super.remove();
-			NHWorldVars.advancedLoad.remove(this);
-			NHVars.world.commandables.remove(this);
-		}
-		
-		@Override
-		public void onRemoved(){
-			super.onRemoved();
-			NHWorldVars.advancedLoad.remove(this);
 			NHVars.world.commandables.remove(this);
 		}
 		
 		@Override
 		public void add(){
 			super.add();
-			NHWorldVars.advancedLoad.add(this);
-			beforeLoad();
+			NHVars.world.commandables.add(this);
 		}
-		
-		@Override
-		public void beforeLoad(){NHVars.world.commandables.add(this); }
 	}
 	
 	public enum CommandableBlockType{

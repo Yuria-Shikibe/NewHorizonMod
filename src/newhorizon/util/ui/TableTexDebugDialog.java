@@ -241,6 +241,9 @@ public class TableTexDebugDialog extends BaseDialog{
 			for(UnlockableContent content : content.sectors()){
 				content.unlock();
 			}
+			for(UnlockableContent content : content.statusEffects()){
+				content.unlock();
+			}
 		}).size(LEN * 3, LEN).pad(OFFSET / 2);
 		
 		cont.button("Settings", () -> {
@@ -325,20 +328,20 @@ public class TableTexDebugDialog extends BaseDialog{
 				
 				cont.pane(t -> {
 					for(int i = 0; i < all.size; i++){
-						if(i % 5 == 0)t.row();
+						if(i % 4 == 0)t.row();
 						
 						UnlockableContent c = all.get(i);
 						t.table(Tex.pane, table -> {
-							table.image(c.fullIcon).size(LEN);
+							table.image(c.fullIcon).size(LEN / 2);
 							table.add(c.localizedName).padLeft(OFFSET / 2);
 							table.button(Icon.lock, Styles.clearPartiali, () -> {
 								if(c.unlocked())c.clearUnlock();
 								else c.unlock();
-							}).size(LEN).update(b -> {
+							}).size(LEN / 2).update(b -> {
 								if(c.unlocked())b.getStyle().imageUp = Icon.lockOpen;
 								else b.getStyle().imageUp = Icon.lock;
 							});
-						}).fill().pad(OFFSET / 2);
+						}).fill().pad(OFFSET / 4);
 					}
 				}).grow();
 				

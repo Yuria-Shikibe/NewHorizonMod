@@ -995,7 +995,7 @@ public class NHFx{
 		})),
 		
 		hugeSmoke = new Effect(40f, e -> {
-			Draw.color(Color.gray);
+			Draw.color(Color.lightGray, Color.gray, e.fin());
 			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
 		}),

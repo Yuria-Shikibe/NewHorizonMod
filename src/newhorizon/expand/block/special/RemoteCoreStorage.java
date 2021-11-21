@@ -20,10 +20,8 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
-import newhorizon.util.func.DrawFunc;
-import newhorizon.expand.interfaces.BeforeLoadc;
 import newhorizon.expand.vars.EventTriggers;
-import newhorizon.expand.vars.NHWorldVars;
+import newhorizon.util.func.DrawFunc;
 
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
@@ -37,8 +35,10 @@ public class RemoteCoreStorage extends StorageBlock{
 		for(int i = 0; i < Team.all.length; i++){
 			placedMap.put(i, ObjectSet.with());
 		}
-		
-		EventTriggers.actBeforeLoad.add(() -> placedMap.each((id, i) -> placedMap.put(id, ObjectSet.with())));
+	}
+	
+	public static void clear(){
+		placedMap.each((id, i) -> i.clear());
 	}
 	
 	public RemoteCoreStorage(String name){
@@ -88,35 +88,23 @@ public class RemoteCoreStorage extends StorageBlock{
 		return super.canPlaceOn(tile, team) && placedMap.get(team.id).size < maxPlaceNum(team);
 	}
 	
-	public class RemoteCoreStorageBuild extends StorageBuild implements BeforeLoadc{
+	public class RemoteCoreStorageBuild extends StorageBuild{
 		public float warmup = 0;
 		public float progress = 0;
 		
 		@Override
 		public void remove(){
 			super.remove();
-			NHWorldVars.advancedLoad.remove(this);
+			placedMap.get(team.id).remove(this);
 		}
 		
 		
 		@Override
 		public void add(){
 			super.add();
-			NHWorldVars.advancedLoad.add(this);
-			beforeLoad();
-		}
-		
-		@Override
-		public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
-			super.init(tile, team, shouldAdd, rotation);
 			
 			placedMap.get(team.id).add(this);
-			return this;
-		}
-		
-		@Override
-		public void onRemoved(){
-			placedMap.get(team.id).remove(this);
+			EventTriggers.actBeforeLoad.add(() -> placedMap.get(team.id).add(this));
 		}
 		
 		@Override
@@ -177,11 +165,6 @@ public class RemoteCoreStorage extends StorageBlock{
 		@Override
 		public void drawConfigure(){
 			if(core() != null) DrawFunc.posSquareLink(Mathf.equal(warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, 1, 4, true, tile, core());
-		}
-		
-		@Override
-		public void beforeLoad(){
-			placedMap.get(team.id).add(this);
 		}
 	}
 }

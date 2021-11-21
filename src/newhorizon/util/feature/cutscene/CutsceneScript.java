@@ -40,6 +40,21 @@ import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * */
 @SuppressWarnings({"CodeBlock2Expr", "SpellCheckingInspection"})
 public class CutsceneScript{
 	public static final String CCS_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide";
@@ -55,7 +70,7 @@ public class CutsceneScript{
 	 * {@code initHasRun} Used to avoid repeating loading.
 	 *
 	 *
-	 * @author Yuria / Martix
+	 * @author Yuria
 	 */
 	protected static Fi scriptDirectory;
 	public static Fi currentScriptFile;
@@ -98,8 +113,6 @@ public class CutsceneScript{
 	
 	protected static Interval packetTimer = new Interval();
 	
-	protected static boolean initedScripts = false;
-	
 	protected static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2();
 	
 	public static String scriptDirectoryPath(){
@@ -131,8 +144,9 @@ public class CutsceneScript{
 		Events.on(EventType.StateChangeEvent.class, e -> {
 			if(e.to == GameState.State.menu)UIActions.lockInput = false;
 			if((e.from == GameState.State.playing && e.to == GameState.State.menu)){
-				reset();
+				UIActions.skip();
 				exit();
+				reset();
 			}
 		});
 		
@@ -290,7 +304,7 @@ public class CutsceneScript{
 	protected static void reset(){
 		curSectorPreset = null;
 		currentScriptFile = null;
-		initedScripts = false;
+		
 		curEnder.clear();
 		curIniter.clear();
 		curUpdater.clear();
@@ -309,16 +323,8 @@ public class CutsceneScript{
 		return mod.root.child("scripts").child("cutsceneLoader.js");
 	}
 	
-	public static Fi getModImporterJS(){
-		return mod.root.child("scripts").child("importer.js");
-	}
-	
 	public static String getModGlobalJSCode(){
 		return getModGlobalJS().readString();
-	}
-	
-	public static String getModImporterJSCode(){
-		return mod.root.child("scripts").child("importer.js").readString();
 	}
 	
 	/**
@@ -339,8 +345,6 @@ public class CutsceneScript{
 		if(scripts == null)scripts = new CCS_Scripts();
 		
 		reset();
-		
-		initedScripts = true;
 		
 		SectorPreset sector = Vars.state.getSector() == null ? null : Vars.state.getSector().preset;
 		
