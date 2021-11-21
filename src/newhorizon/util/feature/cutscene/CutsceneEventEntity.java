@@ -181,7 +181,9 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 			EventCompletePacket packet = new EventCompletePacket();
 			packet.entity = this;
 			Vars.net.send(packet, true);
-		}else act();
+		}
+		
+		act();
 	}
 	
 	@HeadlessDisabled public void show(Table table){

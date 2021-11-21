@@ -24,9 +24,10 @@ public class SniperAI extends FlyingAI{
 					moveTo(target, unit.type.maxRange - APPROACHING_DST / 2);
 					unit.lookAt(target);
 					unit.lookAt(target); //Always Look At target in range
-				}else if(unit.within(target, unit.type.maxRange - APPROACHING_DST / 2)){
+				}else{
+					moveTo(target, unit.type.maxRange - APPROACHING_DST / 2);
 					unit.lookAt(target);
-				}else moveTo(target, unit.type.maxRange - APPROACHING_DST / 2);
+				}
 			}else{
 				attack(unit.type.range * 0.75f);
 			}

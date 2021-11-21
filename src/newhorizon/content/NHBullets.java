@@ -45,7 +45,7 @@ public class NHBullets implements ContentList{
 		longRangeShoot, longRangeShootRapid, longRangeShootSplash, mineShoot,
 		artilleryIrd, artilleryFusion, artilleryPlast, artilleryThermo, artilleryPhase, artilleryMissile,
 		railGun1, railGun2, hurricaneType, polyCloud, missileTitanium, missileThorium, missileZeta, missile, missileStrike,
-		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, huriEnergyCloud, warperBullet,
+		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, hyperBlastLinker, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrLightning, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile, collapserBullet, collapserLaserSmall,
 		strikeMissile, arc_9000, empFrag, empBlot2, empBlot3, antiAirSap, eternity, airRaidMissile;
@@ -54,11 +54,10 @@ public class NHBullets implements ContentList{
 	public void loadFragType(){
 		collapserBullet = new LightningLinkerBulletType(){{
 			effectLightningChance = 0.15f;
-			drawSize = 300f;
 			damage = 200;
-			outColor = trailColor = lightColor = lightningColor = hitColor = NHColor.thurmixRed;
+			backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.thurmixRed;
 			size = 10f;
-			innerColor = NHColor.thurmixRedLight;
+			frontColor = NHColor.thurmixRedLight;
 			range = 600f;
 			spreadEffect = Fx.none;
 
@@ -78,8 +77,40 @@ public class NHBullets implements ContentList{
 			splashDamage = lightningDamage = damage / 3f;
 			lifetime = 130f;
 			despawnEffect = NHFx.lightningHitLarge(hitColor);
-			hitEffect = NHFx.instHit(hitColor, 4, 80f);
-			shootEffect = Fx.none;
+			hitEffect = NHFx.sharpBlast(hitColor, frontColor, 35, splashDamageRadius * 1.25f);
+			shootEffect = NHFx.hitSpark(backColor, 45f, 12, 60, 3, 8);
+			smokeEffect = NHFx.hugeSmoke;
+		}};
+		
+		hyperBlastLinker = new LightningLinkerBulletType(){{
+			effectLightningChance = 0.15f;
+			damage = 220;
+			backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.thermoPst;
+			size = 8f;
+			frontColor = NHColor.thermoPst.cpy().lerp(Color.white, 0.25f);
+			range = 200f;
+			
+			trailWidth = 8f;
+			trailLength = 20;
+			
+			speed = 5f;
+			
+			disableAccel();
+			
+			linkRange = 280f;
+			
+			maxHit = 8;
+			drag = 0.085f;
+			hitSound = Sounds.explosionbig;
+			splashDamageRadius = 120f;
+			splashDamage = lightningDamage = damage / 4f;
+			lifetime = 50f;
+			
+			scaleVelocity = false;
+			
+			despawnEffect = NHFx.lightningHitLarge(hitColor);
+			hitEffect = new MultiEffect(NHFx.blast(backColor, splashDamageRadius), NHFx.hitSpark(backColor, 65f, 22, splashDamageRadius, 4, 16));
+			shootEffect = NHFx.hitSpark(backColor, 45f, 12, 60, 3, 8);
 			smokeEffect = NHFx.hugeSmoke;
 		}};
 		
@@ -141,7 +172,7 @@ public class NHBullets implements ContentList{
 			
 			shrinkX = 0;
 			
-			trailWidth = 1.95f;
+			trailWidth = 1.7f;
 			trailLength = 9;
 			
 			trailColor = backColor = hitColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(Color.royal, 0.45f);
@@ -163,7 +194,7 @@ public class NHBullets implements ContentList{
 			
 			shrinkX = 0;
 			
-			trailWidth = 1.95f;
+			trailWidth = 1.7f;
 			trailLength = 9;
 			
 			trailColor = backColor = hitColor = lightColor = lightningColor = NHItems.fusionEnergy.color;
@@ -172,13 +203,13 @@ public class NHBullets implements ContentList{
 			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
 			smokeEffect = Fx.shootBigSmoke;
 			
-			despawnEffect = hitEffect = new MultiEffect(NHFx.square(backColor, 85f, 5, 52, 5), NHFx.crossBlast(backColor, splashDamageRadius * 1.5f, 45));
-			
 			splashDamage = damage;
 			splashDamageRadius = 32f;
 			incendAmount = 6;
 			incendChance = 0.25f;
 			incendSpread = splashDamageRadius * 0.75f;
+			
+			despawnEffect = hitEffect = new MultiEffect(NHFx.circleOut(backColor, splashDamageRadius * 1.25f), NHFx.hitSparkLarge);
 			
 			ammoMultiplier = 6;
 			
@@ -196,7 +227,7 @@ public class NHBullets implements ContentList{
 			
 			shrinkX = 0;
 			
-			trailWidth = 1.95f;
+			trailWidth = 1.7f;
 			trailLength = 9;
 			
 			trailColor = backColor = hitColor = lightColor = lightningColor = Items.phaseFabric.color;
@@ -225,7 +256,7 @@ public class NHBullets implements ContentList{
 			
 			shrinkX = 0;
 			
-			trailWidth = 1.95f;
+			trailWidth = 1.7f;
 			trailLength = 9;
 			
 			trailColor = backColor = hitColor = lightColor = lightningColor = NHColor.thermoPst;
@@ -675,8 +706,8 @@ public class NHBullets implements ContentList{
 			trailWidth = 8f;
 			trailLength = 40;
 			
-			outColor = trailColor = lightColor = lightningColor = NHColor.lightSkyBack;
-			innerColor = Color.white;
+			backColor = trailColor = lightColor = lightningColor = NHColor.lightSkyBack;
+			frontColor = Color.white;
 			randomGenerateRange = 280f;
 			randomLightningNum = 5;
 			linkRange = 280f;
@@ -1322,8 +1353,8 @@ public class NHBullets implements ContentList{
 			
 			disableAccel();
 			
-			outColor = trailColor = hitColor = lightColor = lightningColor = NHColor.darkEnrColor;
-			innerColor = NHColor.darkEnr;
+			backColor = trailColor = hitColor = lightColor = lightningColor = NHColor.darkEnrColor;
+			frontColor = NHColor.darkEnr;
 			randomGenerateRange = 280f;
 			randomLightningNum = 6;
 			linkRange = 280f;
@@ -1349,7 +1380,7 @@ public class NHBullets implements ContentList{
 					backColor = lightColor = lightningColor = NHColor.darkEnrColor;
 					frontColor = Color.white;
 					
-					trailEffect = NHFx.polyTrail(backColor, innerColor, 4.65f, 22f);
+					trailEffect = NHFx.polyTrail(backColor, frontColor, 4.65f, 22f);
 					trailChance = 0f;
 					despawnEffect = hitEffect = NHFx.darkErnExplosion;
 					knockback = 12f;

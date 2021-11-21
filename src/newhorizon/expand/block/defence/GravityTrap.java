@@ -187,7 +187,7 @@ public class GravityTrap extends Block{
 	}
 	
 	public static class TrapField implements Position, QuadTree.QuadTreeObject{
-		public @NotNull GravityTrapBuild build;
+		public final @NotNull GravityTrapBuild build;
 		
 		public TrapField(@NotNull GravityTrapBuild build){
 			this.build = build;
@@ -205,7 +205,7 @@ public class GravityTrap extends Block{
 		
 		@Override
 		public void hitbox(Rect out){
-			out.setSize(build.range()).setCenter(build.x, build.y);
+			out.setSize(build.range() * 2).setCenter(build.x, build.y);
 		}
 	}
 }

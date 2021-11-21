@@ -439,10 +439,33 @@ public class NHFx{
 			float circleRad = e.fin(Interp.circleOut) * range;
 			Lines.stroke(Mathf.clamp(range / 24, 4, 20) * e.fout());
 			Lines.circle(e.x, e.y, circleRad);
-			for(int i = 0; i < Mathf.clamp(range / 16, 8, 28); i++){
+			for(int i = 0; i < Mathf.clamp(range / 12, 9, 60); i++){
 				Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
 				Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
 			}
+		});
+	}
+	
+	public static Effect sharpBlast(Color colorExternal, Color colorInternal, float lifetime, float range){
+		return new Effect(lifetime, range * 2, e -> {
+			Angles.randLenVectors(e.id, (int)Mathf.clamp(range / 4, 4, 18), range / 8, range * (1 + e.fout(Interp.pow2OutInverse)) / 2f, (x, y) -> {
+				float angle = Mathf.angle(x, y);
+				float width = e.foutpowdown() * rand.random(range / 6, range / 3);
+				
+				rand.setSeed(e.id);
+				float length = rand.random(range / 2, range * 1.1f) * e.fout();
+				
+				Draw.color(colorExternal);
+				Drawf.tri(e.x + x, e.y + y, width, range / 3 * e.fout(Interp.circleOut), angle - 180);
+				Drawf.tri(e.x + x, e.y + y, width, length, angle);
+				
+				Draw.color(colorInternal);
+				
+				width *= e.fout();
+				
+				Drawf.tri(e.x + x, e.y + y, width / 2, range / 3 * e.fout(Interp.circleOut) * 0.9f * e.fout(), angle - 180);
+				Drawf.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
+			});
 		});
 	}
 	
@@ -463,7 +486,7 @@ public class NHFx{
 			float circleRad = e.fin(Interp.circleOut) * rad * 4f;
 			Lines.stroke(12 * e.fout());
 			Lines.circle(e.x, e.y, circleRad);
-			for(int i = 0; i < 16; i++){
+			for(int i = 0; i < 24; i++){
 				Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
 				Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
 			}

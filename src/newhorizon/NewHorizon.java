@@ -78,16 +78,13 @@ public class NewHorizon extends Mod{
 	private static LatestFeature[] getUpdateContent(){
 		return new LatestFeature[]{
 			new LatestFeature(
-				"Cutscenes are available in server now!", "Make the cutscene available in servers(Syncable and no crashes)", "Improving", NHContent.objective
+				"Fx", "Improved some effects.", "Improvements", NHContent.pointerRegion
 			),
 			new LatestFeature(
-				"Custom Events!", "Allow players to create custom events with js, with a high degree of freedom", "Feature", NHContent.objective
+					"Algorithm", "Improved Hyperspace collide algorithm from traverse to QuadTree.", "Improvements", NHContent.pointerRegion
 			),
 			new LatestFeature(
-				"Bug Fixes", "Building Upgraders and Primary JumpGates now doesn't cause crashes", "Fixes", NHContent.pointerRegion
-			),
-			new LatestFeature(
-					"Camera Zoom Action", "Use Actions to zoom your camera", "Feature", NHContent.icon
+					"Bug Fixes", "Building Rail Gun now doesn't cause crashes", "Fixes", NHContent.icon
 			),
 			new LatestFeature(
 				NHBlocks.synchro
@@ -237,9 +234,8 @@ public class NewHorizon extends Mod{
 			}).grow().row();
 			
 			cont.table(table -> {
-				table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
-				table.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).growX().height(LEN);
-				table.button("@log", Icon.add, Styles.cleart, NewHorizon::showNew).growX().height(LEN);
+				table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
+				table.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN);
 			}).bottom().growX().height(LEN).padTop(OFFSET);
 		}}.show();
 	}
@@ -294,12 +290,12 @@ public class NewHorizon extends Mod{
 		handler.<Player>register("runwave", "<num>", "Run Wave (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
-			} else if (args.length == 0) {
+			} else if (args.length == 0 || args[0].isEmpty()) {
 				Vars.logic.runWave();
 			} else {
 				try {
 					for(int i = 0; i < Integer.parseInt(args[0]); ++i) {
-						Time.run(i * 60.0F, Vars.logic::runWave);
+						Time.run(i * 90.0F, Vars.logic::runWave);
 					}
 				} catch (NumberFormatException var3) {
 					player.sendMessage("[VIOLET]Failed, the param must be a <Number>");

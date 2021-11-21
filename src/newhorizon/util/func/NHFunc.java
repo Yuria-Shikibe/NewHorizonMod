@@ -78,7 +78,11 @@ public class NHFunc{
     }
     
     public static void randFadeLightningEffect(float x, float y, float range, float lightningLength, Color color, boolean in){
-        vec21.rnd(range).add(x, y);
+        randFadeLightningEffectScl(x, y, range, 0.55f, 1.1f, lightningLength, color, in);
+    }
+    
+    public static void randFadeLightningEffectScl(float x, float y, float range, float sclMin, float sclMax, float lightningLength, Color color, boolean in){
+        vec21.rnd(range).scl(Mathf.random(sclMin, sclMax)).add(x, y);
         (in ? NHFx.chainLightningFadeReversed : NHFx.chainLightningFade).at(x, y, lightningLength, color, vec21.cpy());
     }
     

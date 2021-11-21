@@ -42,14 +42,13 @@ import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.feature.ScreenHack;
 import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
-import newhorizon.expand.units.*;
-import newhorizon.expand.vars.EventTriggers;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -784,7 +783,7 @@ public class NHUnitTypes implements ContentList{
 			commandRadius = 220f;
 			
 			defaultController = SniperAI::new;
-			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.turret, BlockFlag.generator, null};
 			
 			buildBeamOffset = 15f;
 			
@@ -1142,7 +1141,7 @@ public class NHUnitTypes implements ContentList{
 			outlineColor = OColor;
 				rotateShooting = false;
 				commandRadius = 240f;
-				abilities.add(new ForceFieldAbility(180f, 300, 80000, 900));
+				abilities.add(new ForceFieldAbility(180f, 60, 80000, 900));
 				constructor = EntityMapping.map(3);
 				rotateShooting = false;
 				
@@ -1476,16 +1475,6 @@ public class NHUnitTypes implements ContentList{
 				flying = true;
 			}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
-			
-			@Override
-			public Unit create(Team team){
-				Unit u = super.create(team);
-				for(WeaponMount mount : u.mounts){
-					mount.reload = mount.weapon.reload;
-				}
-				Events.fire(EventTriggers.BossGeneratedEvent.class, new EventTriggers.BossGeneratedEvent(u));
-				return u;
-			}
 			
 			@Override
 			public void drawCell(Unit unit){
