@@ -56,7 +56,6 @@ public class ObjectiveEvent extends CutsceneEvent{
 		});
 		
 		table.add(e.infoT).growX().row();
-		
 	}
 	
 	@Override

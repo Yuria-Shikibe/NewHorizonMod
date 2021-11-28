@@ -19,10 +19,12 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
+import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.cutscene.actions.*;
 import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
@@ -38,6 +40,9 @@ public class UIActions{
 	protected static boolean lockInput = false;
 	
 	public static boolean lockingInput(){return lockInput;}
+	
+	@HeadlessDisabled protected static float extendX = 0, extendY = 0;
+	@HeadlessDisabled protected static float lastTap = 0;
 	
 	protected static Element actor = new Element();
 	protected static Table multiActor = new Table();
@@ -127,16 +132,20 @@ public class UIActions{
 			
 			update(() -> {
 				if(state.isMenu()) remove();
-				visible(() -> ui.hudfrag.shown);
 				
-				setSize(width_UTD / 4f, height_UTD / 4f);
-				setPosition(Core.settings.getInt("eventbarsoffsetx", 0) / 100f * width, Core.settings.getInt("eventbarsoffsety", 0) / 100f * height);
+				setSize(width_UTD / 4f + extendX, height_UTD / 4f + extendY);
+				setPosition(Core.settings.getInt("eventbarsoffsetx", 0) / 100f * width_UTD, Core.settings.getInt("eventbarsoffsety", 0) / 100f * height_UTD);
 			});
+			
+			visible(() -> ui.hudfrag.shown && Core.settings.getBool("showeventtable"));
+			touchable(() -> NHVars.ctrl.pressDown ? Touchable.childrenOnly : Touchable.enabled);
 			
 			background(Tex.buttonEdge3);
 			
 			pane = pane(t -> {
 				paneTable = t;
+				
+				t.touchable(() -> NHVars.ctrl.pressDown ? Touchable.disabled : Touchable.enabled);
 				
 				Prov<Table> constructor = () -> {
 					Cell<Table> table = t.table(i -> {
@@ -168,6 +177,44 @@ public class UIActions{
 			pane.setupFadeScrollBars(0.15f, 0.25f);
 			
 			exited(() -> getScene().unfocus(this));
+			
+			Table grabber = new Table(Tex.button){{
+				image(Icon.move).center();
+				
+				touchable(() -> Touchable.enabled);
+				
+				update(() -> {
+					setPosition(HUDTable.this.getWidth(), HUDTable.this.getHeight());
+					setSize(LEN / 2);
+					lastTap -= Time.delta;
+				});
+				
+				dragged(((x1, y1) -> {
+					extendX += x1;
+					extendY += y1;
+					
+					extendX = Mathf.clamp(extendX, -width_UTD / 4f, width_UTD / 2);
+					extendY = Mathf.clamp(extendY, -height_UTD / 4f, height_UTD / 2);
+					
+					NHVars.ctrl.pressDown = true;
+				}));
+				
+				released(() -> NHVars.ctrl.pressDown = false);
+				exited(() -> NHVars.ctrl.pressDown = false);
+				hovered(() -> getScene().setScrollFocus(this));
+				
+				Runnable tap = () -> {
+					if(lastTap > 0){
+						extendX = extendY = 0;
+					}
+					lastTap = 6;
+				};
+				
+				tapped(tap);
+				clicked(tap);
+			}};
+			
+			addChild(grabber);
 		}
 		
 		public void addElement(Element element){
@@ -565,6 +612,8 @@ public class UIActions{
 						setSize(Core.graphics.getWidth(), yAxis());
 						setPosition(0, height_UTD - yAxis());
 					})));
+					
+					if(!Vars.net.client())button("Skip Cutscene", Icon.play, Styles.cleart, UIActions::skip).top().grow().marginLeft(LEN);
 				}
 				
 				@Override
@@ -737,10 +786,16 @@ public class UIActions{
 	}
 	
 	public static void skip(){
-		actor.act(Float.MAX_VALUE);
+		skipAllCurrent();
 		
 		while(waitingPool.any()){
 			actor.actions(waitingPool.pop());
+			skipAllCurrent();
+		}
+	}
+	
+	public static void skipAllCurrent(){
+		while(actor.getActions().any()){
 			actor.act(Float.MAX_VALUE);
 		}
 	}

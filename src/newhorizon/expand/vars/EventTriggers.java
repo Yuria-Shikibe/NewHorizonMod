@@ -9,12 +9,12 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.game.EventType;
-import mindustry.game.Teams;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
@@ -24,7 +24,6 @@ import mindustry.graphics.Pal;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
-import newhorizon.content.NHItems;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
@@ -46,6 +45,8 @@ public class EventTriggers{
 	public static final Seq<Runnable> actBeforeLoad = new Seq<>();
 	public static Seq<Block> banned = new Seq<>();
 	
+	public static Interval timer = new Interval();
+	
 	private static String kickWarn;
 	
 	private static boolean caution = false;
@@ -63,6 +64,7 @@ public class EventTriggers{
 	
 	
 	public static void load(){
+	
 //		banned.addAll(Blocks.itemSource, Blocks.powerSource, Blocks.liquidSource, Blocks.payloadSource, Blocks.router);
 //
 //		Events.on(EventType.BlockBuildEndEvent.class, e -> {
@@ -85,6 +87,9 @@ public class EventTriggers{
 //			}
 //		});
 //
+//		Events.run(EventType.Trigger.update, () -> {
+//			if(timer.get(60f) && !Vars.state.isMenu())TileSortMap.continueUpdateAll();
+//		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHVars.world.worldLoaded = true;
@@ -94,9 +99,12 @@ public class EventTriggers{
 			actBeforeLoad.each(Runnable::run);
 			actBeforeLoad.clear();
 			
-			for(Teams.TeamData data : Vars.state.teams.getActive()){
-				data.mineItems.add(NHItems.zeta);
-			}
+//			for(Teams.TeamData data : Vars.state.teams.getActive()){
+//				data.mineItems.add(NHItems.zeta);
+//			}
+			
+//			TileSortMap.init();
+//			TileSortMap.softUpdateAll();
 		});
 		
 		Events.on(EventType.StateChangeEvent.class, e -> {

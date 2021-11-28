@@ -1,12 +1,11 @@
 package newhorizon.util.feature.cutscene.actions;
 
 import arc.Core;
+import arc.flabel.FLabel;
 import arc.func.Cons;
 import arc.math.Interp;
-import arc.math.Mathf;
 import arc.scene.actions.Actions;
 import arc.scene.actions.TemporalAction;
-import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import mindustry.Vars;
 import mindustry.gen.Sounds;
@@ -24,7 +23,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class LabelAction extends TemporalAction{
 	public float margin = 0;
 	public String text;
-	public Label label;
+	public FLabel label;
 	public Table table;
 	public Cons<Table> modifier = null;
 	
@@ -35,7 +34,7 @@ public class LabelAction extends TemporalAction{
 		if(UIActions.disabled())return;
 		Sounds.press.play(10);
 		
-		label = new Label("");
+		label = new FLabel(text.replaceAll("@@@", ""));
 		label.setWrap(true);
 		
 		table = new Table(Tex.buttonEdge3){{
@@ -90,13 +89,5 @@ public class LabelAction extends TemporalAction{
 	}
 	
 	@Override
-	protected void update(float percent){
-		if(UIActions.disabled())return;
-		String[] s = text.split("@@@");
-		String speaker = s[0];
-		StringBuilder saying = new StringBuilder();
-		for(int i = 1; i < s.length; i++) saying.append(s[i]);
-		
-		label.setText(speaker + saying.substring(0, (int)(saying.length() * Mathf.curve(percent, 0, margin))));
-	}
+	protected void update(float percent){}
 }

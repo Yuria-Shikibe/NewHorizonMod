@@ -200,7 +200,6 @@ public class RaidEvent extends CutsceneEvent{
 					}).left().fillY().growX().row();
 				}));
 			}).padLeft(OFFSET * 2).growX().fillY().row();
-			
 		});
 		
 		e.infoT.pack();

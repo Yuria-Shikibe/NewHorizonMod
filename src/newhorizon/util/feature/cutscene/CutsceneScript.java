@@ -81,7 +81,7 @@ public class CutsceneScript{
 	
 	public static final String CUTSCENE_KEY = "custom-cutscene-script";
 	
-	public static final ObjectMap<SectorPreset, String> presentJS = new ObjectMap<>(6);
+	public static final ObjectMap<SectorPreset, Fi> presentJS = new ObjectMap<>(6);
 	public static final ObjectMap<SectorPreset, Seq<Runnable>> updaters = new ObjectMap<>(6);
 	public static final ObjectMap<SectorPreset, Seq<Runnable>> initer = new ObjectMap<>(6);
 	public static final ObjectMap<SectorPreset, Seq<Cons<Boolean>>> ender = new ObjectMap<>(6); // true -> win, false -> lose
@@ -123,16 +123,15 @@ public class CutsceneScript{
 		Net.registerPacket(TagPacket::new);
 		Net.registerPacket(EventCompletePacket::new);
 		
-		mod = mods.getMod(NewHorizon.class);
+		mod = NewHorizon.MOD;
 		
-//		if(headless)return; //TODO :: headless valid
-//
 		Events.on(EventType.SaveLoadEvent.class, e -> {
 			CutsceneEventEntity.afterIO();
 		});
 		
 		Events.on(EventType.SaveWriteEvent.class, e -> {
 			CutsceneEventEntity.afterIO();
+			UIActions.skip();
 		});
 		
 		Events.on(EventType.BlockDestroyEvent.class, e -> {
@@ -256,9 +255,19 @@ public class CutsceneScript{
 			}
 			
 			control.input.addLock(() -> UIActions.lockInput);
+			
+			UIActions.extendX = Core.settings.getFloat("nh-ccs-extendx", 0);
+			UIActions.extendY = Core.settings.getFloat("nh-ccs-extendy", 0);
 		});
 		
-		if(!headless)initDirectory();
+		if(!headless){
+			initDirectory();
+			
+			Events.on(EventType.SaveWriteEvent.class, e -> {
+				Core.settings.put("nh-ccs-extendx", UIActions.extendX);
+				Core.settings.put("nh-ccs-extendy", UIActions.extendY);
+			});
+		}
 	}
 	
 	protected static void initDirectory(){
@@ -271,7 +280,7 @@ public class CutsceneScript{
 	public static boolean hasScript(){
 		if(state.getSector() != null && state.getSector().preset != null){
 			SectorPreset sp = state.getSector().preset;
-			return initer.containsKey(sp) || updaters.containsKey(sp) || ender.containsKey(sp);
+			return initer.containsKey(sp) || updaters.containsKey(sp) || ender.containsKey(sp) || presentJS.containsKey(sp);
 		}else if(state.map != null){
 			return state.map.hasTag(CUTSCENE_KEY) || (state.map.name().contains("(@HC)") && !headless && scriptDirectory.child(state.map.name() + "-cutscene.js").exists());
 		}else return false;
@@ -367,7 +376,7 @@ public class CutsceneScript{
 			
 			if(presentJS.containsKey(sector)){
 				Core.app.post(() -> {
-					runJS(presentJS.get(sector));
+					runJS(presentJS.get(sector).readString());
 					curIniter.each(Runnable::run);
 				});
 			}else curIniter.each(Runnable::run);

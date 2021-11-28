@@ -2612,6 +2612,7 @@ public class NHUnitTypes implements ContentList{
 		
 		striker = new UnitType("striker"){{
 			outlineColor = OColor;
+			defaultController = SniperAI::new;
 			weapons.add(new NHWeapon("striker-weapon"){{
 				mirror = false;
 				rotate = false;

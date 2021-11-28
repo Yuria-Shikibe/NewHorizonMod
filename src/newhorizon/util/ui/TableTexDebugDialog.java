@@ -24,6 +24,7 @@ import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
+import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
@@ -34,6 +35,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NewHorizon;
+import newhorizon.expand.vars.TileSortMap;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.InternalTools;
 import newhorizon.util.feature.ScreenHack;
@@ -58,6 +60,8 @@ public class TableTexDebugDialog extends BaseDialog{
 	
 	public TableTexDebugDialog(String title){
 		this(title, Core.scene.getStyle(Dialog.DialogStyle.class));
+		
+		cont.defaults().size(LEN * 3, LEN).pad(OFFSET / 2).style(Styles.transt);
 		
 		cont.button("Icons", () -> {
 			iconDialog = new BaseDialog("ICONS"){{
@@ -89,7 +93,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			iconDialog.addCloseListener();
 			iconDialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("TableTexes", () -> {
 			tableDialog = new BaseDialog("ICONS"){{
@@ -119,7 +123,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			tableDialog.addCloseListener();
 			tableDialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("ButtonTexts", () -> {
 			buttonText = new BaseDialog("ButtonTexts"){{
@@ -151,7 +155,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonText.addCloseListener();
 			buttonText.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("ButtonImages", () -> {
 			buttonImage = new BaseDialog("ButtonImages"){{
@@ -194,7 +198,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.row();
 		
@@ -223,7 +227,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}};
 			buttonImage.addCloseListener();
 			buttonImage.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("UnlockALL", () -> {
 			for(UnlockableContent content : content.items()){
@@ -244,11 +248,11 @@ public class TableTexDebugDialog extends BaseDialog{
 			for(UnlockableContent content : content.statusEffects()){
 				content.unlock();
 			}
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("Settings", () -> {
 			new NHSetting.SettingDialog().show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("Interp", () -> {
 			BaseDialog dialog = new BaseDialog("Interpolation", Styles.fullDialog);
@@ -318,7 +322,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}).grow();
 			dialog.addCloseButton();
 			dialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.row();
 		
@@ -347,11 +351,11 @@ public class TableTexDebugDialog extends BaseDialog{
 				
 				addCloseButton();
 			}}.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("Hack", () -> {
 			Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent(Vars.player, 600f));
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("Weathers", () -> {
 			BaseDialog dialog = new BaseDialog("");
@@ -370,7 +374,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			}).grow();
 			dialog.addCloseButton();
 			dialog.show();
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.button("Generate Icon", () -> {
 			ui.loadAnd("[accent]Generating", () -> {
@@ -380,7 +384,7 @@ public class TableTexDebugDialog extends BaseDialog{
 					}
 				});
 			});
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
 		cont.row();
 		
@@ -409,7 +413,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			acts.addAll(Actions.run(() -> control.pause()), Actions.delay(2f)).addAll(actions).add(Actions.run(() -> control.resume()));
 			
 			UIActions.actionSeq(acts.toArray(Action.class));
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 
 		cont.button("Add Rand Progress Bar", () -> {
 			float time = Mathf.random(240f, 600f);
@@ -426,13 +430,19 @@ public class TableTexDebugDialog extends BaseDialog{
 				);
 			});
 			
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
 		
-		cont.button("Bundle Tool", InternalTools::patchBundle).size(LEN * 3, LEN).pad(OFFSET / 2);
+		cont.button("Bundle Tool", InternalTools::patchBundle);
 		
 		cont.button("Skip Wave", () -> {
 			state.wave += 10;
-		}).size(LEN * 3, LEN).pad(OFFSET / 2);
+		});
+		
+		cont.row();
+		
+		cont.button("Update Sort Map", TileSortMap::updateAll);
+		
+		cont.button("Update Sort Map", () -> TileSortMap.show(TileSortMap.SortTarget.health, Team.sharded));
 		
 		addCloseButton();
 	}

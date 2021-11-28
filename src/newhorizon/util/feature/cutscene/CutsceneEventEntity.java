@@ -79,6 +79,8 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	/** Constructor, has nothing to do*/
 	public CutsceneEventEntity(){}
 	
+	public CutsceneEvent eventType(){return eventType;}
+	
 	public <T> T data(){
 		return (T)data;
 	}
@@ -160,6 +162,8 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 			
 			registeredExit = true;
 			registeredLoad = false;
+			
+			
 		}
 		
 		writes.bool(inited);
@@ -199,6 +203,10 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		eventType.setType(this);
 	}
 	
+	public void setupDebugTable(Table table){
+		eventType.debugTable(this, table);
+	}
+	
 	@Override public void afterRead(){
 		eventType.afterRead(this);
 	}
@@ -233,7 +241,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	
 	@Override public int classId(){return EntityRegister.getID(CutsceneEventEntity.class);}
 	@Override public boolean serialize(){return true;}
-
+	
 	@Override
 	public void snapSync(){
 		updateSpacing = 16;

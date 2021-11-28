@@ -51,7 +51,7 @@ public class NewHorizon extends Mod{
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
 	public static final String MOD_NAME_BAR = "new-horizon-";
-	public static final String SERVER_ADDRESS = "n4.mcyxsj.top:20177", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
+	public static final String SERVER_ADDRESS = "n1.mcyxsj.top:20192", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	
 	public static Mods.LoadedMod MOD;
 	
@@ -78,16 +78,19 @@ public class NewHorizon extends Mod{
 	private static LatestFeature[] getUpdateContent(){
 		return new LatestFeature[]{
 			new LatestFeature(
-				"Fx", "Improved some effects.", "Improvements", NHContent.pointerRegion
+					"Version Adaption", "Adapted to MDT v135", "Adaption", NHContent.objective
 			),
 			new LatestFeature(
-					"Algorithm", "Improved Hyperspace collide algorithm from traverse to QuadTree.", "Improvements", NHContent.pointerRegion
+				"UI", "Added a setting to hide the event table.", "Improvements", NHContent.pointerRegion
 			),
 			new LatestFeature(
-					"Bug Fixes", "Building Rail Gun now doesn't cause crashes", "Fixes", NHContent.icon
+				"UI", "Added a drag button to scale the to event table.", "Improvements", NHContent.pointerRegion
 			),
 			new LatestFeature(
-				NHBlocks.synchro
+				"UI", "Added a button to skip some cutscene", "Improvements", NHContent.pointerRegion
+			),
+			new LatestFeature(
+				"Improvements", "Made the unit striker's AI to AI:Sniper", "Improvements", NHContent.pointerRegion
 			),
 		};
 	}
@@ -241,6 +244,11 @@ public class NewHorizon extends Mod{
 	}
 	
 	public void init() {
+		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
+		
+		
+		if(Vars.headless)return;
+		
 		TableFunc.tableMain();
 		
 		NHSetting.updateSettingMenu();
@@ -249,8 +257,6 @@ public class NewHorizon extends Mod{
 		ScreenHack.load();
 		
 		NHRegister.load();
-		
-		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 	}
 	
 	public void registerServerCommands(CommandHandler handler) {
@@ -352,18 +358,14 @@ public class NewHorizon extends Mod{
 			} else {
 				if (args.length == 0) {
 					player.sendMessage("[VIOLET]Failed, pls type Code");
-				}
-				
-				Core.app.post(() -> {
+				}else{
 					try {
 						CutsceneScript.runJS(args[0]);
 					} catch (Throwable var3) {
 						player.sendMessage(var3.toString());
 					}
-					
-				});
+				}
 			}
-			
 		});
 	}
 	

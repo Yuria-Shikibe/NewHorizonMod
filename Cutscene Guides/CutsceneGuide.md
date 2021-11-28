@@ -363,6 +363,39 @@ CutsceneScript.curIniter.add(run(() => {
 }));
 ```
 
+#### Custom Event
+- See These:
+  - [CutsceneEvent.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/util/feature/cutscene/CutsceneEvent.java)
+  - [CutsceneEventEntity.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/feature/CutsceneEventEntity.java)
+
+Sample: If all enemy Hyper Generator get destroyed, friendly reinforcements inbound.
+```js 
+const destroyReactors = extend(DestroyObjectiveEventClass, "destroyReactors", {});
+
+destroyReactors.targets = func(e => {
+    const buildings = new Seq();
+
+    Groups.build.each(
+        boolf(b => b.isValid() && b.team != Vars.state.rules.defaultTeam && b.block == NHBlocks.hyperGenerator),
+        cons(b => buildings.add(b))
+    );
+
+    return buildings;
+});
+
+const award = extend(FleetEventClass, "award", {});
+award.teamFunc = func(e => Vars.state.rules.defaultTeam);
+award.targetFunc = func(e => Vars.state.teams.get(award.teamFunc.get(e)).core());
+award.removeAfterTriggered = true;
+award.unitTypeMap = ObjectMap.of(NHUnitTypes.longinus, 6);
+
+destroyReactors.action = cons(e => award.setup());
+
+CutsceneScript.curIniter.add(run(() => {
+    if(CutsceneScript.canInit())destroyReactors.setup();
+}));
+```
+
 #### Debug
 Ok, finally you finished your first cutscene script.
 Use `Remove World Data` in the debugger and retest the script.

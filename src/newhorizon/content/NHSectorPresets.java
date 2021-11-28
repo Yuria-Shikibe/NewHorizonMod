@@ -41,8 +41,8 @@ public class NHSectorPresets implements ContentList{
 	
 	protected static Fi scriptsDic = null;
 	
-	protected static String loadJS(String name){
-		return scriptsDic.child(name.replaceFirst(NewHorizon.MOD_NAME + "-", "") + ".js").readString();
+	protected static Fi loadJS(String name){
+		return scriptsDic.child(name.replaceFirst(NewHorizon.MOD_NAME + "-", "") + ".js");
 	}
 	
 	@Override

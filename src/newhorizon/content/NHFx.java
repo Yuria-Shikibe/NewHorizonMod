@@ -891,7 +891,7 @@ public class NHFx{
 			GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
 			boolean ints = font.usesIntegerPositions();
 			font.setUseIntegerPositions(false);
-			font.getData().setScale(Mathf.curve(e.fin(), 0, 0.1f) * e.rotation * (e.fout(Interp.pow2In) * 3 + 1) / 4 / Scl.scl(1.0f));
+			font.getData().setScale(Mathf.curve(e.fin(), 0, 0.1f) * e.rotation * (e.fout(Interp.pow2In) * 3 + 1) / 4 / Scl.scl(1.0f) + 0.01f);
 			layout.setText(font, text);
 			font.setColor(e.color);
 			

@@ -2,6 +2,7 @@ package newhorizon.util.feature.cutscene;
 
 import arc.func.Cons;
 import arc.func.Func;
+import arc.graphics.Color;
 import arc.math.geom.Position;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
@@ -11,7 +12,13 @@ import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.core.NetClient;
+import mindustry.gen.Icon;
+import mindustry.gen.Tex;
+import mindustry.ui.Styles;
 import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
+
+import static newhorizon.util.ui.TableFunc.LEN;
+import static newhorizon.util.ui.TableFunc.OFFSET;
 
 /**
  *
@@ -146,6 +153,17 @@ public class CutsceneEvent implements Cloneable{
 	/** What to do while initializing.*/
 	public void setType(CutsceneEventEntity e){
 	
+	}
+	
+	public void debugTable(CutsceneEventEntity e, Table table){
+		table.table(Tex.pane, t -> {
+			t.add(name + "|" + e.id).growX().fillY().row();
+			t.add(e.infoT).growX().fillY();
+			t.row().image().growX().height(OFFSET / 3).pad(OFFSET / 2).color(Color.lightGray).row();
+			t.table(i -> {
+				i.button("RUN", Icon.play, Styles.transt, e::act).growX().height(LEN - OFFSET);
+			}).growX().fillY();
+		}).growX().fillY();
 	}
 	
 	@Override

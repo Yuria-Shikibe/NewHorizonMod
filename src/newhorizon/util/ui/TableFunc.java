@@ -49,9 +49,12 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
+import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.expand.vars.NHVars;
+import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
+import newhorizon.util.feature.cutscene.UIActions;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
 
@@ -310,9 +313,24 @@ public class TableFunc{
                         t.button("Try Run From Clipboard", Styles.cleart, () -> {
                             Core.app.post(() -> CutsceneScript.runJS(Core.app.getClipboardText()));
                         }).disabled(b -> Core.app.getClipboardText().isEmpty());
-                        t.button("***", Styles.cleart, () -> {
-                            Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
-                        }).disabled(b -> true);
+                        t.button("Debug Events", Styles.cleart, () -> {
+                            new BaseDialog("Debug"){{
+                                addCloseButton();
+                                cont.pane(t -> {
+                                    CutsceneEventEntity.events.each(e -> {
+                                        e.setupDebugTable(t);
+                                        t.row();
+                                    });
+                                }).grow();
+                            }
+    
+                                @Override
+                                public void hide(){
+                                    super.hide();
+                                    CutsceneEventEntity.events.each(e -> !e.eventType().isHidden, e -> e.show(UIActions.eventTable()));
+                                }
+                            }.show();
+                        }).disabled(b -> CutsceneEventEntity.events.isEmpty());
                         t.button("Run Selection", Styles.cleart, () -> {
                             Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
                         }).disabled(b -> textArea.getSelection().isEmpty());

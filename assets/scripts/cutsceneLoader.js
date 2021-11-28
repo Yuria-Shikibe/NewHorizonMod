@@ -1,6 +1,4 @@
-Log.info("Loaded Cutscene Class Vault");
-
-let loader = Vars.mods.getMod("new-horizon").loader;
+const loader = Vars.mods.getMod("new-horizon").loader;
 
 function loadContent(fullName){
      return loader.loadClass(fullName).newInstance(); //Garbage things
@@ -57,3 +55,5 @@ const world = Vars.world;
 function newEvent(name, args){
     return extend(CutsceneEventClass, name, args);
 }
+
+Log.info("Loaded Cutscene Class Vault");
