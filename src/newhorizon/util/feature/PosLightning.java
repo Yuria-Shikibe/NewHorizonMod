@@ -203,8 +203,6 @@ public class PosLightning {
 				}
 				createBoltEffect(color, width, p = computeVectors(randomArray, from, to));
 			}
-			
-			Fx.chainLightning.at(p.first().x, p.first().y, 0, color, p.peek());
 		}
 	}
 	

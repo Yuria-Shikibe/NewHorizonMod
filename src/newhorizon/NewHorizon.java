@@ -15,7 +15,6 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
-import mindustry.ui.BorderImage;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
@@ -41,9 +40,10 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-//	static{
+	static{
+		Vars.experimental = true;
 //		Vars.testMobile = Vars.mobile = true;
-//	}
+	}
 //
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
@@ -77,21 +77,7 @@ public class NewHorizon extends Mod{
 	
 	private static LatestFeature[] getUpdateContent(){
 		return new LatestFeature[]{
-			new LatestFeature(
-					"Version Adaption", "Adapted to MDT v135", "Adaption", NHContent.objective
-			),
-			new LatestFeature(
-				"UI", "Added a setting to hide the event table.", "Improvements", NHContent.pointerRegion
-			),
-			new LatestFeature(
-				"UI", "Added a drag button to scale the to event table.", "Improvements", NHContent.pointerRegion
-			),
-			new LatestFeature(
-				"UI", "Added a button to skip some cutscene", "Improvements", NHContent.pointerRegion
-			),
-			new LatestFeature(
-				"Improvements", "Made the unit striker's AI to AI:Sniper", "Improvements", NHContent.pointerRegion
-			),
+			new LatestFeature(NHBlocks.laserWall), new LatestFeature(NHBlocks.ancientLaserWall)
 		};
 	}
 	
@@ -219,7 +205,9 @@ public class NewHorizon extends Mod{
 					for(int index = 0; index < getUpdateContent().length; index++){
 						LatestFeature c = getUpdateContent()[index];
 						t.table(Tex.pane, table -> {
-							table.add(new BorderImage(c.icon, OFFSET / 2).border(Pal.accent)).fill();
+							table.table(i -> {
+								i.image(c.icon).fill();
+							}).fill().get().pack();
 							table.pane(i -> {
 								i.top();
 								i.add("[gray]NEW [lightgray]" + c.type.toUpperCase() + "[]: [accent]" + c.title + "[]").left().row();

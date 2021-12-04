@@ -15,6 +15,7 @@ import arc.util.Tmp;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
@@ -111,7 +112,7 @@ public class NHBlocks implements ContentList {
 		//Liquids factories
 		irdryonFluidFactory, xenBetaFactory, xenGammaFactory, zetaFluidFactory, oilRefiner, waterInstancer,
 		//walls
-		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge,
+		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge, laserWall, ancientLaserWall,
 		//Distributions
 		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter, multiArmorConveyor, multiConveyor, multiEfficientConveyor,
 		multiJunction, multiRouter, multiConduit,
@@ -1557,6 +1558,44 @@ public class NHBlocks implements ContentList {
 	@Override
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		ancientLaserWall = new LaserWallBlock("ancient-laser-wall"){{
+			size = 2;
+			consumes.powerCond(80f, LaserWallBuild::canActivate);
+			health = 8000;
+			range = 800;
+			
+			generateType = new Shooter(1000){{
+				Color c = Items.surgeAlloy.color;
+				colors = new Color[]{c.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f), c.cpy().mul(1f, 1f, 1f, 0.6f), c, Color.white};
+				hitColor = lightColor = lightningColor = c;
+				width = 4.5f;
+				oscMag = 0.5f;
+				
+				lightningDamage = 200;
+			}
+				
+				@Override
+				public void hit(Bullet b, float x, float y){
+					super.hit(b, x, y);
+					
+					for(int i = 0; i < 2; i++){
+						Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(180), lightningLength + Mathf.random(lightningLengthRand));
+					}
+				}
+			};
+			
+			requirements(Category.defense, with(NHItems.seniorProcessor, 120, NHItems.upgradeSort, 80, NHItems.zeta, 180));
+		}};
+		
+		laserWall = new LaserWallBlock("laser-wall"){{
+			size = 3;
+			consumes.powerCond(30f, LaserWallBuild::canActivate);
+			health = 4000;
+			
+			requirements(Category.defense, with(NHItems.juniorProcessor, 80, Items.copper, 120, NHItems.multipleSteel, 80, NHItems.zeta, 180, Items.graphite, 50));
+			NHTechTree.add(Blocks.forceProjector, this);
+		}};
 		
 		shapedWall = new ShapedWall("shaped-wall"){{
 			health = 6000;

@@ -51,7 +51,7 @@ public class UIActions{
 	
 	@HeadlessDisabled protected static Table root;
 	
-	private static long lastToast;
+	protected static long lastToast;
 	
 	public static float /*Updated*/ width_UTD = 0, height_UTD = 0;
 	

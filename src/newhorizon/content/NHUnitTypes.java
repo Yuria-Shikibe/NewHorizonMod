@@ -2613,6 +2613,7 @@ public class NHUnitTypes implements ContentList{
 		striker = new UnitType("striker"){{
 			outlineColor = OColor;
 			defaultController = SniperAI::new;
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.turret, BlockFlag.generator, null};
 			weapons.add(new NHWeapon("striker-weapon"){{
 				mirror = false;
 				rotate = false;

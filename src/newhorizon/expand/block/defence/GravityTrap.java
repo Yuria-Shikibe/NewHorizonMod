@@ -182,7 +182,7 @@ public class GravityTrap extends Block{
 			field = new TrapField(this);
 			
 			NHVars.world.gravityTraps.insert(field);
-			EventTriggers.actBeforeLoad.add(() -> NHVars.world.gravityTraps.insert(field));
+			EventTriggers.actAfterLoad.add(() -> NHVars.world.gravityTraps.insert(field));
 		}
 	}
 	

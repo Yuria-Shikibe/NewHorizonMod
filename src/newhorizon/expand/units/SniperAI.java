@@ -34,7 +34,7 @@ public class SniperAI extends FlyingAI{
 		}
 		
 		if(target == null && command() == UnitCommand.attack && state.rules.waves && unit.team == state.rules.defaultTeam){
-			moveTo(getClosestSpawner(), Math.max(state.rules.dropZoneRadius + 120f, unit.type.range - APPROACHING_DST));
+			moveTo(getClosestSpawner(), Math.max(state.rules.dropZoneRadius + 120f, unit.type.maxRange - APPROACHING_DST));
 		}
 		
 		if(command() == UnitCommand.rally){

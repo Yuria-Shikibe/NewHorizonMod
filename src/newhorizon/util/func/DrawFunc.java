@@ -371,4 +371,12 @@ public class DrawFunc{
     public static void posSquareLink(Color color, float stroke, float size, boolean drawBottom, Position from, Position to){
         posSquareLinkArr(color, stroke, size, drawBottom, false, from, to);
     }
+    
+    public static float rotator_90(float in /*(0, 1)*/, float margin){
+        return 90 * NHInterp.pow10.apply(Mathf.curve(in, margin, 1 - margin));
+    }
+    
+    public static float rotator_90(){return 90 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
+    
+    public static float cycle_100(){return Time.time % 100 / 100;}
 }

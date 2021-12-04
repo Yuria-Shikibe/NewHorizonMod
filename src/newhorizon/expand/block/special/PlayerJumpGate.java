@@ -54,13 +54,14 @@ public class PlayerJumpGate extends Block{
 	}
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid){
+		super.drawPlace(x, y, rotation, valid);
+		
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
 		
 		if(!control.input.frag.config.isShown()) return;
 		Building selected = control.input.frag.config.getSelectedTile();
 		if(selected == null || !(selected.block instanceof PlayerJumpGate) || !(selected.within(x * tilesize, y * tilesize, range))) return;
 		
-		//if so, draw a dotted line towards it while it is in range
 		float sin = Mathf.absin(Time.time, 6f, 1f);
 		Tmp.v1.set(x * tilesize + offset, y * tilesize + offset).sub(selected.x, selected.y).limit((size / 2f + 1) * tilesize + sin + 0.5f);
 		float x2 = x * tilesize - Tmp.v1.x, y2 = y * tilesize - Tmp.v1.y,

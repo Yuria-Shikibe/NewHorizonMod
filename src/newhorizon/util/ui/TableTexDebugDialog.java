@@ -440,9 +440,9 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.row();
 		
-		cont.button("Update Sort Map", TileSortMap::updateAll);
+		cont.button("Update Sort Map", () -> TileSortMap.registerTeam(Team.purple));
 		
-		cont.button("Update Sort Map", () -> TileSortMap.show(TileSortMap.SortTarget.health, Team.sharded));
+		cont.button("Show Sort Map", () -> TileSortMap.getTeamMap(Team.purple).showAsDialog(TileSortMap.ValueCalculator.healthSqrt));
 		
 		addCloseButton();
 	}

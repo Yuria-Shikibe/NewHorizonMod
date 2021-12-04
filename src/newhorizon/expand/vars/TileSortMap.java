@@ -1,154 +1,151 @@
 package newhorizon.expand.vars;
 
+import arc.Core;
 import arc.func.Intf;
+import arc.graphics.Color;
 import arc.graphics.Pixmap;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.struct.IntMap;
 import arc.struct.ObjectMap;
-import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Tmp;
-import arc.util.async.Threads;
 import mindustry.Vars;
 import mindustry.game.Team;
-import mindustry.game.Teams;
 import mindustry.gen.Building;
+import mindustry.gen.Groups;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
 
 public class TileSortMap{
+	public static final ObjectMap<Team, TileSortMap> maps = new ObjectMap<>();
+	protected static final Color backColor = Color.darkGray;
+	
+	protected static final Color tmpColor = new Color();
+	protected static Tile tile;
+	
+	protected Pixmap pixmap;
+	
 	public static final int
 		HEALTH = 0,
 		INDUSTRY = 1,
 		DEFENCE = 2;
 	
-	public static ObjectMap<Team, IntMap<Integer[]>> sortMap;
+	public final Team team;
+	public IntMap<Integer[]> sortMap = new IntMap<>();
+	public int[] max = new int[ValueCalculator.all.length];
 	
-	public static int lastUpdatedIndex = 0;
-	public static boolean complete = false;
+	public int lastUpdatedIndex = 0;
+	public boolean complete = false;
 	
-	public static void init(){
-		Seq<Teams.TeamData> active = Vars.state.teams.getActive();
+	protected TileSortMap(Team team){
+		this.team = team;
+	}
+	
+	public static TileSortMap getTeamMap(Team team){
+		return maps.get(team);
+	}
+	
+	public static void registerTeam(Team team){
+		TileSortMap map = new TileSortMap(team);
 		
-		sortMap = new ObjectMap<>(active.size);
+		Core.app.post(map::update);
 		
-		int size = Vars.world.tiles.width * Vars.world.tiles.height;
-		
-		active.each(t -> sortMap.put(t.team, new IntMap<>(size)));
-		
-		sortMap.each((t, im) -> {
-			for(int i = 0; i < size; i++){
-				im.put(i, new Integer[SortTarget.all.length]);
+		maps.put(team, map);
+	}
+	
+	public static void clear(){
+		maps.clear();
+	}
+	
+	public void update(ValueCalculator target){
+		Groups.build.each(b -> b.team == team, b -> {
+			int index;
+			
+			int value = target.getValue.get(b);
+			
+			for(Tile t : filledTiles(b)){
+				index = t.array();
+				
+				Integer[] intArr = sortMap.get(index);
+				
+				if(intArr == null){
+					intArr = new Integer[ValueCalculator.all.length];
+					intArr[target.ordinal()] = value;
+					sortMap.put(index, intArr);
+				}else{
+					intArr[target.ordinal()] = value;
+				}
 			}
+			
+			max[target.ordinal()] = Math.max(max[target.ordinal()], value);
 		});
 	}
 	
-	public static void startNewSoftUpdate(){
-		complete = false;
-		lastUpdatedIndex = 0;
-	}
-	
-	public static void forceEndSoftUpdate(){
-		complete = true;
-		lastUpdatedIndex = size();
-	}
-	
-	public static void softUpdateAll(){
-		complete = false;
-		lastUpdatedIndex = 0;
-		
-		softUpdate();
-		softUpdate();
-		softUpdate();
-	}
-	
-	public static void continueUpdateAll(){
-		softUpdate();
-		softUpdate();
-		softUpdate();
-	}
-	
-	public static void softUpdateSingle(){
-		Thread thread = Threads.thread(() -> {
-			int index = lastUpdatedIndex++;
+	public void update(){
+		Groups.build.each(b -> b.team == team, b -> {
+			int index;
 			
-			if(index >= size()){
-				complete = true;
-				return;
-			}
+			int[] value = new int[ValueCalculator.all.length];
 			
-			sortMap.each((t, im) -> {
-				Building building = Vars.world.tiles.geti(index).build;
-				if(building == null)return;
+			for(int i = 0; i < ValueCalculator.all.length; i++)value[i] = ValueCalculator.all[i].getValue.get(b);
+			
+			for(Tile t : filledTiles(b)){
+				index = t.array();
 				
-				Integer[] integers = im.get(index);
+				Integer[] intArr = sortMap.get(index);
 				
-				for(int j = 0; j < SortTarget.all.length; j++){
-					integers[j] = SortTarget.all[j].getValue.get(building);
-				}
-			});
-			
-			Log.info( Thread.currentThread().getId() + "|" + lastUpdatedIndex + "|" + complete);
-		});
-	}
-	
-	public static void softUpdate(){
-		Thread thread = Threads.daemon("MapUpdater", () -> {
-			
-			int index = 0;
-			
-			while(index < size() && !complete){
-				index = lastUpdatedIndex++;
-				
-				if(index >= size()){
-					Log.info("Break");
-					break;
-				}
-				
-				int finalIndex = index;
-				sortMap.each((t, im) -> {
-					Building building = Vars.world.tiles.geti(finalIndex).build;
-					if(building == null)return;
+				if(intArr == null){
+					intArr = new Integer[ValueCalculator.all.length];
 					
-					Integer[] integers = im.get(finalIndex);
-					
-					for(int j = 0; j < SortTarget.all.length; j++){
-						integers[j] = SortTarget.all[j].getValue.get(building);
+					for(int i = 0; i < ValueCalculator.all.length; i++){
+						int v = value[i];
+						intArr[i] = v;
+						max[i] = Math.max(max[i], v);
 					}
-				});
-				
-				Log.info( Thread.currentThread().getId() + "|" + lastUpdatedIndex + "|" + complete);
-			}
-			
-			complete = true;
-			Log.info(Thread.currentThread().getId() + "|" + lastUpdatedIndex + "|Complete" );
-		});
-	}
-	
-	public static void updateAll(){
-//		Seq<Teams.TeamData> removed = Vars.state.teams.active.removeAll(t -> !t.active());
-//		Seq<Teams.TeamData> active = Vars.state.teams.active;
-		
-//		removed.each(k -> sortMap.remove(k.team));
-		
-		int size = size();
-		
-		sortMap.each((t, im) -> {
-//			Log.info(t + "|" + size);
-			for(int i = 0; i < size; i++){
-				Building building = Vars.world.tiles.geti(i).build;
-				if(building == null)continue;
-				
-				Integer[] integers = im.get(i);
-				
-				for(int j = 0; j < SortTarget.all.length; j++){
-					integers[j] = SortTarget.all[j].getValue.get(building);
-//					Log.info(integers[j]);
+					
+					sortMap.put(index, intArr);
+				}else for(int i = 0; i < ValueCalculator.all.length; i++){
+					int v = value[i];
+					intArr[i] = v;
+					max[i] = Math.max(max[i], v);
 				}
 			}
 		});
+	}
+	
+	public static Tile[] filledTiles(Building building){
+		if(building.isPayload())return new Tile[]{};
+		
+		int radius = 0;
+		int index = 0;
+		
+		Tile[] tile = new Tile[Mathf.pow(building.block.size, 2)];
+		
+		if(building.block.size % 2 == 1){
+			radius = (building.block.size - 1) / 2;
+			
+			for(int dx = building.tile.x - radius; dx <= building.tile.x + radius; ++dx) {
+				for(int dy = building.tile.y - radius; dy <= building.tile.y + radius; ++dy) {
+					tile[index++] = Vars.world.tile(dx, dy);
+				}
+			}
+			
+			return tile;
+		}else{
+			radius = building.block.size / 2 - 1;
+			
+			for(int dx = building.tile.x - radius; dx <= building.tile.x + radius + 1; ++dx) {
+				for(int dy = building.tile.y - radius; dy <= building.tile.y + radius + 1; ++dy) {
+					tile[index++] = Vars.world.tile(dx, dy);
+				}
+			}
+			
+			return tile;
+		}
 	}
 	
 	public static int size(){return Vars.world.tiles.width * Vars.world.tiles.height;}
@@ -161,78 +158,45 @@ public class TileSortMap{
 		return Vars.world.tiles.geti(index).y;
 	}
 	
-	public static void update(SortTarget sort, Team team){
-		if(!sortMap.containsKey(team))return;
-		
-		IntMap<Integer[]> map = sortMap.get(team);
-		int size = size();
-		
-		for(int i = 0; i < size; i++){
-			Building building = Vars.world.tiles.geti(i).build;
-			if(building == null)continue;
-			
-			Integer[] integers = map.get(i);
-			
-			integers[sort.ordinal()] = sort.getValue.get(building);
-		}
+	public static int index(Tile tile){
+		return tile.array();
 	}
 	
-	public static void update(SortTarget sort){
-		Seq<Teams.TeamData> removed = Vars.state.teams.active.removeAll(t -> !t.active());;
-		Seq<Teams.TeamData> active = Vars.state.teams.getActive();
+	public TextureRegion outputAsPixmap(ValueCalculator target){
+		int index = target.ordinal();
 		
-		removed.each(k -> sortMap.remove(k.team));
+		tmpColor.set(team.color);
 		
-		int size = size();
-		
-		sortMap.each((t, map) -> {
-			for(int i = 0; i < size; i++){
-				Building building = Vars.world.tiles.geti(i).build;
-				if(building == null)continue;
-				
-				Integer[] integers = map.get(i);
-				
-				integers[sort.ordinal()] = sort.getValue.get(building);
-			}
-		});
-	}
-	
-	public static int getMax(SortTarget sort, Team team){
-		if(!sortMap.containsKey(team))return -1;
-		
-		//     1. Get key seq                      | 2. Sort                                 | 3. Get Max
-		return sortMap.get(team).values().toArray().sortComparing(arr -> arr[sort.ordinal()]).first()[sort.ordinal()];
-	}
-	
-	public static Pixmap asPixmap(SortTarget sort, Team team){
 		Pixmap pixmap = new Pixmap(Vars.world.tiles.width, Vars.world.tiles.height);
 		
-		if(!sortMap.containsKey(team))return pixmap;
+		pixmap.fill(Tmp.c1.set(backColor).a(0.25f));
+		pixmap.outline(backColor, 3);
 		
-		Tmp.c1.set(team.color);
-		IntMap<Integer[]> map = sortMap.get(team);
-		int size = size();
-		int max = getMax(sort, team);
-		
-		for(int i = 0; i < size; i++){
-			int v = map.get(i)[sort.ordinal()];
-			Tmp.c1.a(v / (float)max);
-			pixmap.set(x(i), y(i), Tmp.c1);
+		for(IntMap.Entry<Integer[]> entry : sortMap.entries()){
+			tile = Vars.world.tiles.geti(entry.key);
+			
+			float lerp = entry.value[index] / (float)max[index];
+			
+			tmpColor.set(team.color);
+			pixmap.set(tile.x, Vars.world.tiles.height - tile.y, tmpColor.a(Mathf.clamp(lerp, 0.15f, 1f)).lerp(Color.white, Mathf.clamp(lerp, 0f, 0.55f)));
 		}
 		
-		return pixmap;
+		this.pixmap = pixmap;
+		
+		Texture texture = new Texture(pixmap);
+		return new TextureRegion(texture);
 	}
 	
-	public static void show(SortTarget sort, Team team){
-		new BaseDialog("SHOW"){{
+	public void showAsDialog(ValueCalculator target){
+		new BaseDialog(""){{
+			cont.pane(t -> t.image(outputAsPixmap(target)).fill()).grow();
 			addCloseButton();
-			
-			cont.image(new TextureRegion(new Texture(asPixmap(sort, team)))).grow();
 		}}.show();
 	}
 	
-	public enum SortTarget{
-		health(b -> (int)b.health),
+	public enum ValueCalculator{
+		healthLinear(b -> (int)b.health),
+		healthSqrt(b -> (int)(Mathf.sqrt(b.health))),
 		industry(b -> {
 			if(b.block instanceof GenericCrafter){
 				GenericCrafter block = (GenericCrafter)b.block;
@@ -247,13 +211,24 @@ public class TileSortMap{
 				return (int)b.health * (int)(block.consumes.hasPower() ? block.consumes.getPower().usage / 60f : 1) * block.size;
 			}else return 0;
 		}),
-		storage(b -> b.items().total() / b.block.size / b.block.size)
+		storage(b -> b.items() == null ? 0 : b.items().total() / b.block.size / b.block.size),
+		power(b -> {
+			if(b.block instanceof PowerGenerator){
+				PowerGenerator generator = (PowerGenerator)b.block;
+				
+				return (int)(Mathf.log(Mathf.E, generator.powerProduction * 60 * b.power.status));
+			}else if(b.block.consumes.hasPower()){
+				if(b.block.consumes.getPower().buffered){
+					return (int)(Mathf.log(60, b.block.consumes.getPower().capacity * 60 * b.power.status));
+				}else return (int)(Mathf.log(40, b.block.consumes.getPower().usage * 60 * b.power.status));
+			}return 0;
+		})
 		;
 		
-		public static final SortTarget[] all = values();
+		public static final ValueCalculator[] all = values();
 		public Intf<Building> getValue;
 		
-		SortTarget(Intf<Building> getValue){
+		ValueCalculator(Intf<Building> getValue){
 			this.getValue = getValue;
 		}
 	}

@@ -42,7 +42,7 @@ public class EventTriggers{
 		}
 	}
 	
-	public static final Seq<Runnable> actBeforeLoad = new Seq<>();
+	public static final Seq<Runnable> actAfterLoad = new Seq<>();
 	public static Seq<Block> banned = new Seq<>();
 	
 	public static Interval timer = new Interval();
@@ -96,8 +96,8 @@ public class EventTriggers{
 			
 			NHVars.world.afterLoad();
 			
-			actBeforeLoad.each(Runnable::run);
-			actBeforeLoad.clear();
+			actAfterLoad.each(Runnable::run);
+			actAfterLoad.clear();
 			
 //			for(Teams.TeamData data : Vars.state.teams.getActive()){
 //				data.mineItems.add(NHItems.zeta);

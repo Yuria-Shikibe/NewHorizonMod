@@ -104,7 +104,7 @@ public class RemoteCoreStorage extends StorageBlock{
 			super.add();
 			
 			placedMap.get(team.id).add(this);
-			EventTriggers.actBeforeLoad.add(() -> placedMap.get(team.id).add(this));
+			EventTriggers.actAfterLoad.add(() -> placedMap.get(team.id).add(this));
 		}
 		
 		@Override

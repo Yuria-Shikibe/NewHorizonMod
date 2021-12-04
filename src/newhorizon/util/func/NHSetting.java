@@ -59,7 +59,6 @@ public class NHSetting{
 		}
 		
 		SettingEntry.add("@active.override", String.valueOf(false), true);
-		SettingEntry.add("@active.advance-load*", String.valueOf(false), true);
 		SettingEntry.add("@active.tool-panel*", String.valueOf(false), true);
 		SettingEntry.add("@active.double-zoom*", String.valueOf(false), true);
 	}
