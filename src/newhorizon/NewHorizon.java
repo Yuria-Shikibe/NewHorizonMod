@@ -42,7 +42,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class NewHorizon extends Mod{
 	static{
 //		Vars.experimental = true;
-		Vars.testMobile = Vars.mobile = true;
+//		Vars.testMobile = Vars.mobile = true;
 	}
 //
 	
