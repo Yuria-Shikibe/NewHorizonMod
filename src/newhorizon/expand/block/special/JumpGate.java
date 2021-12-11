@@ -823,15 +823,6 @@ public class JumpGate extends Block {
                 for(int i = 0; i < trails.size; i++){
                     Trail trail = trails.get(i);
                     Fx.trailFade.at(x, y, trailWidth, team.color, trail.copy());
-    
-//                    Tmp.v1.trns(trailProgress * (i + 1) * 1.5f + i * 360f / trails.size + Mathf.randomSeed(id, 360), (fin() + 1) / 2 * size * (1 + 0.5f * i) + Mathf.sinDeg(trailProgress * (1 + 0.5f * i)) * size / 2,  fin(Interp.swing) * fout(Interp.swingOut) * size / 3).add(this);
-//                    NHFx.
-//
-                }
-    
-                for(int i = 0; i < trails.size; i++){
-                    Trail trail = trails.get(i);
-                    trail.update(Tmp.v1.x, Tmp.v1.y);
                 }
             }
         }
@@ -872,7 +863,10 @@ public class JumpGate extends Block {
 //                    Lines.lineAngleCenter(x + Tmp.v1.x * i, y + Tmp.v1.y * i, rotation(), tilesize * (3f + railF) * tilesize * Mathf.curve(fout(Interp.pow5Out), 0f, 0.1f));
 //                }
                 
-                trails.each(t -> t.draw(team.color, trailWidth));
+                trails.each(t -> {
+                    t.drawCap(team.color, trailWidth);
+                    t.draw(team.color, trailWidth);
+                });
             }
             
             if(can) DrawFunc.overlayText(Fonts.tech, String.valueOf(Mathf.ceil((lifetime - time) / 60f)), x, y, 0, 0,0.25f, team.color, false, true);

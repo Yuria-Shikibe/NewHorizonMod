@@ -30,7 +30,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHColor;
 import newhorizon.expand.interfaces.Linkablec;
-import newhorizon.expand.vars.EventTriggers;
+import newhorizon.expand.vars.EventListeners;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHSetting;
@@ -43,7 +43,7 @@ public class LaserWallBlock extends Block{
 	public float warmupSpeed = 0.075f;
 	public float minActivate = 0.3f;
 	
-	public Shooter generateType = new Shooter(220f); //Should be continuous.
+	public Shooter generateType = new Shooter(100f); //Should be continuous.
 	
 	public LaserWallBlock(String name){
 		super(name);
@@ -171,7 +171,7 @@ public class LaserWallBlock extends Block{
 			linkPos = read.i();
 			warmup = read.f();
 			
-			EventTriggers.actAfterLoad.and(() -> linkPos(linkPos));
+			EventListeners.actAfterLoad.and(() -> linkPos(linkPos));
 		}
 		
 		@Override

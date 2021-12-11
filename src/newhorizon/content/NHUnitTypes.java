@@ -1,7 +1,6 @@
 package newhorizon.content;
 
 import arc.Core;
-import arc.Events;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -19,6 +18,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
+import mindustry.audio.SoundLoop;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
@@ -45,10 +45,7 @@ import newhorizon.expand.bullets.*;
 import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.feature.ScreenHack;
-import newhorizon.util.func.DrawFunc;
-import newhorizon.util.func.NHFunc;
-import newhorizon.util.func.NHPixmap;
-import newhorizon.util.func.NHSetting;
+import newhorizon.util.func.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -87,6 +84,7 @@ public class NHUnitTypes implements ContentList{
 		EntityMapping.nameMap.put(NewHorizon.name("tarlidor"), EntityMapping.idMap[4]);
 		EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
 		EntityMapping.nameMap.put(NewHorizon.name("sin"), EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
 	}
 	
 	public void loadWeapon(){
@@ -567,7 +565,7 @@ public class NHUnitTypes implements ContentList{
 						trailEffect = new Effect(16f, e -> {
 							color(Pal.heal);
 							for(int s : Mathf.signs){
-								Drawf.tri(e.x, e.y, 4f, 30f * Mathf.curve(e.fin(), 0, 0.1f) * e.fout(0.9f), e.rotation + 135f * s);
+								DrawFunc.tri(e.x, e.y, 4f, 30f * Mathf.curve(e.fin(), 0, 0.1f) * e.fout(0.9f), e.rotation + 135f * s);
 							}
 						});
 						
@@ -1158,7 +1156,7 @@ public class NHUnitTypes implements ContentList{
 					Lines.circle(e.x, e.y, circleRad);
 					for(int i = 0; i < 16; i++){
 						Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
-						Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+						DrawFunc.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
 					}
 					
 					e.scaled(120f, i -> {
@@ -1176,15 +1174,15 @@ public class NHUnitTypes implements ContentList{
 							float length = rand.random(rad / 2, rad * 5) * i.fout(Interp.circleOut);
 							
 							Draw.color(NHColor.thurmixRed);
-							Drawf.tri(i.x + x, i.y + y, width, rad / 3 * i.fout(Interp.circleOut), angle - 180);
-							Drawf.tri(i.x + x, i.y + y, width, length, angle);
+							DrawFunc.tri(i.x + x, i.y + y, width, rad / 3 * i.fout(Interp.circleOut), angle - 180);
+							DrawFunc.tri(i.x + x, i.y + y, width, length, angle);
 							
 							Draw.color(Color.black);
 							
 							width *= i.fout();
 							
-							Drawf.tri(i.x + x, i.y + y, width / 2, rad / 3 * i.fout(Interp.circleOut) * 0.9f * i.fout(), angle - 180);
-							Drawf.tri(i.x + x, i.y + y, width / 2, length / 1.5f * i.fout(), angle);
+							DrawFunc.tri(i.x + x, i.y + y, width / 2, rad / 3 * i.fout(Interp.circleOut) * 0.9f * i.fout(), angle - 180);
+							DrawFunc.tri(i.x + x, i.y + y, width / 2, length / 1.5f * i.fout(), angle);
 						});
 						
 						Draw.color(Color.black);
@@ -1232,7 +1230,7 @@ public class NHUnitTypes implements ContentList{
 							Draw.color(heatColor);
 							for(int i : Mathf.signs){
 								for(int j : Mathf.signs){
-									Drawf.tri(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f1 * rad / 1.75f + Mathf.num(j > 0) * 2f * (f1 + 1) / 2, (rad * 3f + Mathf.num(j > 0) * 20f) * f1, j * Time.time + 90 * i);
+									DrawFunc.tri(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f1 * rad / 3f + Mathf.num(j > 0) * 2f * (f1 + 1) / 2, (rad * 3f + Mathf.num(j > 0) * 20f) * f1, j * Time.time + 90 * i);
 								}
 							}
 							
@@ -1325,7 +1323,7 @@ public class NHUnitTypes implements ContentList{
 									});
 									
 									Units.nearbyEnemies(team, vec.x, vec.y, splashDamageRadius * 2, u -> {
-										if(u.isPlayer())Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent((Player)u.controller(), 360f));
+										if(u.isPlayer())ScreenHack.generate(360);
 									});
 									
 									if(!NHSetting.enableDetails())return;
@@ -1401,14 +1399,14 @@ public class NHUnitTypes implements ContentList{
 									for(int i = 0; i < (int)(rad / 4); i++){
 										Tmp.v1.trns(rand.random(360f) + rand.range(1f) * rad / 5 * b.fin(Interp.pow2Out), rad / 4 * circleF + rand.random(rad * (1 + b.fin(Interp.circleOut)) / 2f));
 										float angle = Tmp.v1.angle();
-										Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 28 + rand.random(0, 8), rad / 16 * b.fout(), angle);
-										Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 12 + rand.random(0, 2), rad / 12 * b.fout(), angle - 180);
+										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 28 + rand.random(0, 8), rad / 16 * b.fout(), angle);
+										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 12 + rand.random(0, 2), rad / 12 * b.fout(), angle - 180);
 									}
 									
 									Angles.randLenVectors(b.id + 1, (int)(rad / 3), rad / 4 * circleF, rad * (1 + b.fout(Interp.pow3In)) / 3, (x, y) -> {
 										float angle = Mathf.angle(x, y);
-										Drawf.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 43 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
-										Drawf.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 12 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 43 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 12 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
 									});
 									
 									Drawf.light(b.x, b.y, rad * f * (b.fin() + 1) * 2, Draw.getColor(), 0.7f);
@@ -1498,9 +1496,15 @@ public class NHUnitTypes implements ContentList{
 		};
 		
 		guardian = new UnitType("guardian"){{
-			constructor = EntityMapping.map(3);
+			deathExplosionEffect = Fx.none;
+			deathSound = Sounds.plasmaboom;
+			trailLength = 40;
+			trailScl = 3f;
 			
-			aimDst = 320f;
+			immunities = ObjectSet.with(StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.burning,
+					StatusEffects.melting, StatusEffects.blasted, StatusEffects.corroded, StatusEffects.electrified, StatusEffects.freezing, StatusEffects.muddy,
+					NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.quantization
+					);
 			
 			hitSize = 45;
 			speed = 1.5f;
@@ -1509,7 +1513,7 @@ public class NHUnitTypes implements ContentList{
 			health = 22000;
 			commandLimit = 4;
 			itemCapacity = 0;
-			rotateSpeed = 100;
+			rotateSpeed = 6;
 			engineSize = 8f;
 			flying = true;
 			abilities.add(new PhaseAbility(600f, 320f, 160f));
@@ -1531,13 +1535,13 @@ public class NHUnitTypes implements ContentList{
 						width = 22f;
 						height = 40f;
 						
-						func = Interp.pow2In;
+						func = NHInterp.inOut;
 						
 						pierceCap = 3;
 						splashDamage = damage / 4;
 						splashDamageRadius = 24f;
 						
-						trailLength = 20;
+						trailLength = 30;
 						trailWidth = 3f;
 						
 						accelerateBegin = 0.4f;
@@ -1546,15 +1550,26 @@ public class NHUnitTypes implements ContentList{
 						velocityBegin = 1.85f;
 						velocityIncrease = 12f;
 						
-						lifetime = 160f;
+						lifetime = 220f;
 						
-						trailEffect = NHFx.trail;
+						trailEffect = new Effect(28f, 50f, e -> {
+							Rand rand = NHFunc.rand;
+							rand.setSeed(e.id);
+							Draw.color(e.color);
+							for(int i : Mathf.signs){
+								float ang = e.rotation - 180 + rand.random(10, 45) * i;
+								Tmp.v1.trns(ang, rand.random(4, 14)).scl(0.3f + e.fin(Interp.pow3Out)).add(e.x, e.y);
+								DrawFunc.arrow(Tmp.v1.x, Tmp.v1.y, rand.random(3, 6.5f) * e.fout(), rand.random(17, 28) * e.fout(Interp.pow3Out) * Mathf.curve(e.fin(), 0, 0.05f), rand.random(-4, -8) * e.fout(), ang);
+							}
+						});
+						
+						trailRotation = true;
 						trailChance = 0.35f;
 						trailParam = 5f;
 						
 						homingRange = 640F;
-						homingPower = 0.125f;
-						homingDelay = 30f;
+						homingPower = 0.1f;
+						homingDelay = 5;
 						
 						lightning = 3;
 						lightningLengthRand = 10;
@@ -1562,18 +1577,20 @@ public class NHUnitTypes implements ContentList{
 						lightningDamage = damage / 4;
 						
 						shootEffect = smokeEffect = Fx.none;
-						hitEffect = Fx.hitBeam;
-						despawnEffect = new Effect(20f, b -> {
+						hitEffect = despawnEffect = new MultiEffect(new Effect(65f, b -> {
 							Draw.color(b.color);
-							Angles.randLenVectors(b.id, 4, 35 * b.fin() + 5, (x, y) -> Fill.circle(b.x + x, b.y + y, 4 * b.fout(Interp.pow2Out)));
-						});
+							
+							Fill.circle(b.x, b.y, 6f * b.fout(Interp.pow3Out));
+							
+							Angles.randLenVectors(b.id, 6, 35 * b.fin() + 5, (x, y) -> Fill.circle(b.x + x, b.y + y, 4 * b.fout(Interp.pow2Out)));
+						}), NHFx.hitSparkLarge);
 						
 						despawnHit = false;
 					}
 					
 					@Override
 					public float range(){
-						return 400f;
+						return 480;
 					}
 					
 					@Override
@@ -1594,16 +1611,16 @@ public class NHUnitTypes implements ContentList{
 						
 						for(int i = 0; i < lightning; i++)Lightning.create(b, b.team.color, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
 						
-						if(!(b.owner instanceof Healthc)) return;
-						Healthc from = (Healthc)b.owner;
-						if(!from.isAdded() || from.healthf() > 0.99f) return;
+						if(!(b.owner instanceof Unit))return;
+						Unit from = (Unit)b.owner;
+						if(from.dead || !from.isAdded() || from.healthf() > 0.99f) return;
 						NHFx.chainLightningFade.at(b.x, b.y, Mathf.random(12, 20), b.team.color, from);
 						from.heal(damage / 8);
 					}
 					
 					@Override
 					public void despawned(Bullet b){
-						despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+						despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
 						Effect.shake(despawnShake, despawnShake, b);
 					}
 					
@@ -1623,7 +1640,7 @@ public class NHUnitTypes implements ContentList{
 					public void drawTrail(Bullet b){
 						if(trailLength > 0 && b.trail != null){
 							float z = Draw.z();
-							Draw.z(z - 0.0001f);
+							Draw.z(z - 0.0002f);
 							b.trail.draw(b.team.color, trailWidth);
 							Draw.z(z);
 						}
@@ -1632,19 +1649,11 @@ public class NHUnitTypes implements ContentList{
 					@Override
 					public void draw(Bullet b) {
 						drawTrail(b);
-						
-						float height = this.height * ((1f - shrinkY) + shrinkY * b.fout());
-						float width = this.width * ((1f - shrinkX) + shrinkX * b.fout());
-						float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);
-						
-						Color mix = Tmp.c1.set(mixColorFrom).lerp(mixColorTo, b.fin());
-						
-						Draw.mixcol(mix, mix.a);
-						
+
+						Draw.color(b.team.color, Color.white, 0.85f);
+						DrawFunc.arrow(b.x, b.y, 5, 35, -5, b.rotation());
 						Draw.color(b.team.color);
-						Draw.rect(backRegion, b.x, b.y, width, height, b.rotation() + offset);
-						Draw.color(Tmp.c1.set(b.team.color).lerp(Color.white, 0.45f));
-						Draw.rect(frontRegion, b.x, b.y, width, height, b.rotation() + offset);
+						DrawFunc.arrow(b.x, b.y, 5, 35, 5 * (-1 + b.fin() * 2), b.rotation());
 						
 						Draw.reset();
 					}
@@ -1662,15 +1671,23 @@ public class NHUnitTypes implements ContentList{
 						b.vel.setLength(velocityBegin + func.apply(b.fin()) * velocityIncrease);
 						
 						if(homingPower > 0.0001f && b.time >= homingDelay){
-							Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> ((e.isGrounded() && collidesGround) || (e.isFlying() && collidesAir)) && !b.collided.contains(e.id), t -> collidesGround);
-							if(target != null){
-								b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 50f));
-							}
+							Runnable aim = () -> {
+								Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> ((e.isGrounded() && collidesGround) || (e.isFlying() && collidesAir)) && !b.collided.contains(e.id), t -> collidesGround);
+								if(target != null){
+									b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 60f * b.fin()));
+								}
+							};
+							
+							if(b.owner instanceof Unit){
+								Unit u = (Unit)b.owner;
+								if(u.isShooting())b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(u.aimX, u.aimY), homingPower * Time.delta * 60f * b.fin()));
+								else aim.run();
+							}else aim.run();
 						}
 						
 						if(trailChance > 0){
 							if(Mathf.chanceDelta(trailChance)){
-								trailEffect.at(b.x, b.y, trailParam, b.team.color);
+								trailEffect.at(b.x, b.y, b.rotation(), b.team.color);
 							}
 						}
 					}
@@ -1683,138 +1700,107 @@ public class NHUnitTypes implements ContentList{
 				rotate = true;
 				x = y = shootX = 0;
 				shootY = 0;
-				shake = 12;
 				continuous = true;
-				rotateSpeed = 1;
+				rotateSpeed = 100;
 				reload = 320f;
-				bullet = new BulletType(0, 350f){{
-					shake = 3;
-					lifetime = 150f;
-					shootSound = Sounds.none;
-					hitEffect = NHFx.square45_4_45;
-					shootEffect = Fx.none;
-					smokeEffect = Fx.none;
-					maxRange = 600f;
-					
-					reflectable = false;
-					despawnEffect = Fx.none;
-					impact = true;
-					keepVelocity = false;
-					collides = false;
-					pierce = true;
-					hittable = false;
-					absorbable = false;
-				}
 				
-					private final Effect initEffect = new Effect(150f, 600f, e -> {
-						float scl = 1f;
-						Draw.color(e.color, Color.white, e.fout() * 0.25f);
-						
-						float extend = Mathf.curve(e.fin(), 0, 0.015f) * scl;
-						float rot = e.fout(Interp.pow3In);
-						
-						for(int i : Mathf.signs){
-							Drawf.tri(e.x, e.y, 16 * e.foutpowdown() * scl,100 + 300 * extend, e.rotation + (180) * rot + 90 * i + 45);
-							Drawf.tri(e.x, e.y, 16 * e.foutpowdown() * scl,100 + 300 * extend, e.rotation + (180) * rot + 90 * i - 45);
-						}
-						
-					}).followParent(true).layer(Layer.bullet);
-					
-					private final float strafeAngle = 225;
-					
+				shots = 3;
+				shake = 13;
+				shootSound = Sounds.none;
+				
+				bullet = new StrafeLaser(300f){
 					@Override
-					public void init(){
-						drawSize = maxRange * 2f;
-					}
-					
-					private float getRotate(Bullet b){
-						return /*-strafeAngle / 2 + strafeAngle * b.fin(Interp.pow3);*/0;
+					public float range(){
+						return 480;
 					}
 					
 					@Override
 					public void init(Bullet b){
 						super.init(b);
 						Sounds.laserblast.at(b);
-						initEffect.at(b.x, b.y, b.rotation(), b.team.color, b.owner);
-					}
-					
-					@Override
-					public void draw(Bullet b){
-						float rotation = b.rotation() + getRotate(b);
-						
-						Color[] colors = {b.team.color.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), b.team.color.cpy().mul(1f, 1f, 1f, 0.5f), b.team.color, Color.white};
-						
-						float fout = b.fout(0.25f) * Mathf.curve(b.fin(), 0, 0.175f);
-						float realLength = NHFunc.findLaserLength(b, rotation, maxRange * fout);
-						float baseLen = realLength * fout;
-						
-						Tmp.v1.trns(rotation, baseLen);
-						float width = 18f;
-						Tmp.v2.trns(rotation, 0, width / 2 * fout);
-						
-						Tmp.v3.setZero();
-						if(realLength < maxRange){
-							Tmp.v3.set(Tmp.v2).scl((maxRange - realLength) / maxRange);
-						}
-						
-						Draw.color(b.team.color);
-						Tmp.v2.scl(0.9f);
-						Tmp.v3.scl(0.9f);
-						Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
-						if(realLength < maxRange)Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
-						
-						Tmp.v2.scl(1.15f);
-						Tmp.v3.scl(1.15f);
-						Draw.alpha(0.5f);
-						Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
-						if(realLength < maxRange)Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
-						
-						Draw.alpha(1f);
-						Draw.color(Tmp.c1.set(b.team.color).lerp(Color.white, 0.7f));
-						Tmp.v2.scl(0.5f);
-						Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + (Tmp.v1.x + Tmp.v3.x) / 3, b.y + (Tmp.v1.y + Tmp.v3.y) / 3, b.x + (Tmp.v1.x - Tmp.v3.x) / 3, b.y + (Tmp.v1.y - Tmp.v3.y) / 3);
-						
-						Drawf.light(b.team, b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.5f, b.team.color, 0.7f);
-						Draw.reset();
-					}
-					
-					@Override
-					public float continuousDamage(){
-						return damage / 5f * 60f;
-					}
-					
-					@Override
-					public void update(Bullet b){
-						if(b.timer.get(1, 5))Damage.collideLine(b, b.team, Fx.none, b.x, b.y, b.rotation() + getRotate(b), maxRange * b.fout(0.1f) * Mathf.curve(b.fin(), 0, 0.1f), false);
-						
-						if(shake > 0){
-							Effect.shake(shake, shake, b);
-						}
 					}
 					
 					@Override
 					public void hit(Bullet b, float x, float y){
-						hitEffect.at(x, y, b.rotation() + getRotate(b), b.team.color);
+						super.hit(b, x, y);
+						if(b.owner instanceof Unit){
+							Unit from = (Unit)b.owner;
+							if(from.dead || !from.isAdded() || from.healthf() > 0.99f) return;
+							from.heal(damage / 20);
+							
+							if(headless || !NHSetting.enableDetails())return;
+							PosLightning.createEffect(b, from, b.team.color, 2, Mathf.random(1.5f, 3));
+						}
+					}
+					
+					@Override
+					public void draw(Bullet b){
+						super.draw(b);
+						
+						Draw.z(Layer.effect);
+						
+						float fout = b.fout(0.25f) * Mathf.curve(b.fin(), 0, 0.125f);
+						
+						Draw.color(b.team.color);
+						Fill.circle(b.x, b.y, width / 1.225f * fout);
+						
+						if(b.owner instanceof Unit){
+							Unit unit = (Unit)b.owner;
+							if(!unit.dead){
+								Draw.color(Tmp.c1.set(b.team.color).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+								Draw.z(Layer.bullet);
+								Lines.stroke((width / 3 + Mathf.absin(Time.time, 4, 0.8f)) * fout);
+								Lines.line(b.x, b.y, unit.x, unit.y, false);
+							}
+						}
+						
+						for(int i : Mathf.signs){
+							DrawFunc.tri(b.x, b.y, 6 * fout,10 + 50 * fout, Time.time * 1.5f + 90 * i);
+							DrawFunc.tri(b.x, b.y, 6 * fout,20 + 60 * fout, Time.time * -1f + 90 * i);
+						}
+						
+						Draw.z(Layer.effect + 0.001f);
+						Draw.color(b.team.color, Color.white, 0.55f);
+						Fill.circle(b.x, b.y, width / 1.85f * fout);
+						Draw.color(Color.black);
+						Fill.circle(b.x, b.y, width / 2.125f * fout);
+						
+						Draw.z(Layer.bullet);
 					}
 				};
 			}
-				
-				/*@Override
-				public void draw(Unit unit, WeaponMount mount){
-					if(!unit.isLocal())return;
+				private final Effect initEffect = new Effect(150f, 600f, e -> {
+					float scl = 1f;
+					Draw.color(e.color, Color.white, e.fout() * 0.25f);
 					
-					float z = Draw.z();
+					float extend = Mathf.curve(e.fin(), 0, 0.015f) * scl;
+					float rot = e.fout(Interp.pow3In);
 					
-					Draw.z(Layer.buildBeam);
-					Draw.color(unit.team.color);
-					DrawFunc.fillCirclePercent(unit.x, unit.y, unit.x, unit.y, bullet.maxRange, 270 / 360, mount.rotation - 270 / 2);
-					Draw.z(z);
-				}
-				
+					for(int i : Mathf.signs){
+						DrawFunc.tri(e.x, e.y, 9 * e.foutpowdown() * scl,100 + 300 * extend, e.rotation + (180) * rot + 90 * i + 45);
+						DrawFunc.tri(e.x, e.y, 9 * e.foutpowdown() * scl,100 + 300 * extend, e.rotation + (180) * rot + 90 * i - 45);
+					}
+					
+				}).followParent(true).layer(Layer.bullet);
+			
 				@Override
 				public void update(Unit unit, WeaponMount mount){
 					boolean can = unit.canShoot();
+					float lastReload = mount.reload;
 					mount.reload = Math.max(mount.reload - Time.delta * unit.reloadMultiplier, 0);
+					mount.recoil = Mathf.approachDelta(mount.recoil, 0, (Math.abs(recoil) * unit.reloadMultiplier) / recoilTime);
+					
+					//rotate if applicable
+					if(rotate && (mount.rotate || mount.shoot) && can){
+						float axisX = unit.x + Angles.trnsx(unit.rotation - 90,  x, y),
+								axisY = unit.y + Angles.trnsy(unit.rotation - 90,  x, y);
+						
+						mount.targetRotation = Angles.angle(axisX, axisY, mount.aimX, mount.aimY) - unit.rotation;
+						mount.rotation = Angles.moveToward(mount.rotation, mount.targetRotation, rotateSpeed * Time.delta);
+					}else if(!rotate){
+						mount.rotation = 0;
+						mount.targetRotation = unit.angleTo(mount.aimX, mount.aimY);
+					}
 					
 					float
 							weaponRotation = unit.rotation - 90 + (rotate ? mount.rotation : 0),
@@ -1829,8 +1815,8 @@ public class NHUnitTypes implements ContentList{
 						if(!mount.bullet.isAdded() || mount.bullet.time >= mount.bullet.lifetime || mount.bullet.type != bullet){
 							mount.bullet = null;
 						}else{
-							mount.bullet.set(bulletX, bulletY);
 							mount.reload = reload;
+							mount.recoil = recoil;
 							unit.vel.add(Tmp.v1.trns(unit.rotation + 180f, mount.bullet.type.recoil));
 							if(shootSound != Sounds.none && !headless){
 								if(mount.sound == null) mount.sound = new SoundLoop(shootSound, 1f);
@@ -1839,33 +1825,26 @@ public class NHUnitTypes implements ContentList{
 						}
 					}else{
 						//heat decreases when not firing
-						mount.heat = Math.max(mount.heat - Time.delta * unit.reloadMultiplier / mount.weapon.cooldownTime, 0);
+						mount.heat = Math.max(mount.heat - Time.delta * unit.reloadMultiplier / cooldownTime, 0);
 						
 						if(mount.sound != null){
 							mount.sound.update(bulletX, bulletY, false);
 						}
 					}
 					
-					//rotate if applicable
-					if(rotate && (mount.rotate || mount.shoot) && can){
-						float axisX = unit.x + Angles.trnsx(unit.rotation - 90,  x, y),
-								axisY = unit.y + Angles.trnsy(unit.rotation - 90,  x, y);
-						
-						mount.targetRotation = Angles.angle(axisX, axisY, mount.aimX, mount.aimY) - unit.rotation;
-						mount.rotation = Angles.moveToward(mount.rotation, mount.targetRotation, rotateSpeed * Time.delta);
-					}else if(!rotate){
-						mount.rotation = 0;
-						mount.targetRotation = unit.angleTo(mount.aimX, mount.aimY);
+					boolean wasFlipped = mount.side;
+					if(otherSide != -1 && alternate && mount.side == flipSprite && mount.reload <= reload / 2f && lastReload > reload / 2f){
+						unit.mounts[otherSide].side = !unit.mounts[otherSide].side;
+						mount.side = !mount.side;
 					}
 					
-					//shoot if applicable
 					if(mount.shoot && //must be shooting
-							can && //must be able to shoot
-							(!useAmmo || unit.ammo > 0 || !state.rules.unitAmmo || unit.team.rules().infiniteAmmo) && //check ammo
-							(!alternate || mount.side == flipSprite) &&
-							unit.vel.len() >= mount.weapon.minShootVelocity && //check velocity requirements
-							mount.reload <= 0.0001f && //reload has to be 0
-							Angles.within(rotate ? mount.rotation : unit.rotation, mount.targetRotation, mount.weapon.shootCone) //has to be within the cone
+						can && //must be able to shoot
+						(!useAmmo || unit.ammo > 0 || !state.rules.unitAmmo || unit.team.rules().infiniteAmmo) && //check ammo
+						(!alternate || wasFlipped == flipSprite) &&
+						unit.vel.len() >= minShootVelocity && //check velocity requirements
+						mount.reload <= 0.0001f && //reload has to be 0
+						Angles.within(rotate ? mount.rotation : unit.rotation, mount.targetRotation, shootCone) //has to be within the cone
 					){
 						shoot(unit, mount, bulletX, bulletY, mount.aimX, mount.aimY, mountX, mountY, shootAngle, Mathf.sign(x));
 						
@@ -1876,7 +1855,39 @@ public class NHUnitTypes implements ContentList{
 							if(unit.ammo < 0) unit.ammo = 0;
 						}
 					}
-				}*/
+				}
+				
+				@Override
+				protected void shoot(Unit unit, WeaponMount mount, float oX, float oY, float aimX, float aimY, float mountX, float mountY, float rotation, int side){
+					float baseX = unit.x, baseY = unit.y;
+					
+					initEffect.at(unit.x, unit.y, unit.rotation, unit.team.color, unit);
+					
+					(continuous ? Sounds.none : shootSound).at(shootX, shootY, Mathf.random(soundPitchMin, soundPitchMax));
+					
+					BulletType ammo = bullet;
+					float lifeScl = ammo.scaleVelocity ? Mathf.clamp(Mathf.dst(shootX, shootY, aimX, aimY) / ammo.range()) : 1f;
+					boolean parentize = ammo.keepVelocity || parentizeEffects;
+					Rand rand = NHFunc.rand;
+					rand.setSeed(unit.id + (int)(aimX / 20) << 6 + (int)(aimY / 20) << 4);
+					for(int i = 0; i < shots; i++){
+						float shootX = oX + rand.range(hitSize * 2), shootY = oY + rand.range(hitSize * 2);
+						
+						bullet(unit, shootX, shootY, rotation, 1).fdata = bullet.maxRange * rand.random(1, 1.25f);
+						
+						
+						Effect.shake(shake, shake, shootX, shootY);
+						mount.recoil = recoil;
+						mount.heat = 1f;
+						
+						ejectEffect.at(mountX, mountY, rotation * side);
+						ammo.shootEffect.at(shootX, shootY, rotation, parentize ? unit : null);
+						ammo.smokeEffect.at(shootX, shootY, rotation, parentize ? unit : null);
+						unit.apply(shootStatus, shootStatusDuration);
+					}
+					
+//					Angles.shotgun(shots, spacing, rotation, f -> mount.bullet = bullet(unit, shootX, shootY, f + Mathf.range(inaccuracy), lifeScl));
+				}
 			});
 			
 			trailLength = -1;
@@ -1884,13 +1895,24 @@ public class NHUnitTypes implements ContentList{
 			crashDamageMultiplier = Mathf.clamp(hitSize / 10f, 1, 10);
 			payloadCapacity = Float.MAX_VALUE;
 			buildBeamOffset = 0;
+			
+			defaultController = SniperAI::new;
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.generator, BlockFlag.turret, null};
 		}
 			public Effect slopeEffect = NHFx.boolSelector;
 			
 			public final float outerEyeScl = 0.25f;
 			public final float innerEyeScl = 0.18f;
 			
-			public final float[][] rotator = {{120f, 14f, 1f}, {80f, 12f, -0.75f}};
+			public final float[][] rotator = {
+				{75f, 0, 8.5f, 1.35f, 0.1f},
+				{55f, 0, 6.5f, -1.7f, 0.1f},
+				{100f, 30, 11, 0.75f, 0.7f},
+				{25, 0, 13, 0.75f, 0.3f},
+				{60f, -20, 6f, -0.5f, 1.25f}
+			};
+			
+			
 			public final float bodySize = 24f;
 			
 			@Override
@@ -1934,14 +1956,16 @@ public class NHUnitTypes implements ContentList{
 				
 				for(float[] j : rotator){
 					for(int i : Mathf.signs){
-						Drawf.tri(unit.x, unit.y, j[1], j[0], Time.time * j[2] + 90 + 90 * i + Mathf.randomSeed(unit.id));
+						float ang = Time.time * j[3] + 90 + 90 * i + Mathf.randomSeed(unit.id);
+						Tmp.v1.trns(ang, hitSize * j[4]).add(unit);
+						DrawFunc.arrow(Tmp.v1.x, Tmp.v1.y, j[2], j[0], j[1], ang);
 					}
 				}
-				
-				if(unit instanceof Trailc){
-					Trail trail = ((Trailc)unit).trail();
-					trail.draw(unit.team.color, (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f) * unit.elevation) * trailScl);
-				}
+//
+//				if(unit instanceof Trailc){
+//					Trail trail = ((Trailc)unit).trail();
+//					trail.draw(unit.team.color, (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f) * unit.elevation) * trailScl);
+//				}
 				
 				Draw.color(Tmp.c1.set(unit.team.color).lerp(Color.white, 0.65f));
 				Fill.circle(unit.x, unit.y, bodySize * sizeF * 0.75f * unit.healthf());
@@ -1954,6 +1978,8 @@ public class NHUnitTypes implements ContentList{
 				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) + 0.45f);
 				Tmp.v1.setLength(bodySize * sizeF * (outerEyeScl - innerEyeScl));
 				Fill.circle(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, bodySize * sizeF * innerEyeScl);
+//				Tmp.v1.setLength(hitSize * 1.5f);
+//				DrawFunc.arrow(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, hitSize / 8, hitSize / 4, hitSize / 8, Tmp.v1.angle());
 				Draw.reset();
 			}
 			

@@ -1,9 +1,12 @@
 package newhorizon.expand.vars;
 
 import arc.math.Rand;
+import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 
 public class NHVars{
+	public static final float MarkLayer = Layer.light + 5;
+	
 	public static NHWorldVars world = new NHWorldVars();
 	public static NHCtrlVars ctrl = new NHCtrlVars();
 	

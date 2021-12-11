@@ -1,7 +1,6 @@
 package newhorizon.content;
 
 import arc.Core;
-import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -22,7 +21,10 @@ import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.EmpBulletType;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Sounds;
+import mindustry.gen.Teamc;
+import mindustry.gen.Unitc;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -82,6 +84,7 @@ import newhorizon.expand.bullets.AdaptedContinuousLaserBulletType;
 import newhorizon.expand.bullets.AdaptedLaserBulletType;
 import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.func.DrawFunc;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -349,11 +352,11 @@ public class NHBlocks implements ContentList {
 				float rot = e.fout(Interp.pow10In);
 				
 				for(int i : Mathf.signs){
-					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i - 45);
+					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i - 45);
 				}
 				
 				for(int i : Mathf.signs){
-					Drawf.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i + 45);
+					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i + 45);
 				}
 			});
 			
@@ -643,8 +646,8 @@ public class NHBlocks implements ContentList {
 							float fi = Mathf.randomSeed(b.id, 360f);
 							
 							for(int i : Mathf.signs){
-								Drawf.tri(b.x, b.y, 6 * f2 * f, 80 * f2 * f, fi + (i + 1) * 90 + Time.time * 2);
-								Drawf.tri(b.x, b.y, 6 * f2 * f, 65 * f2 * f, fi + (i + 1) * 90 - Time.time * 2 + 90);
+								DrawFunc.tri(b.x, b.y, 6 * f2 * f, 80 * f2 * f, fi + (i + 1) * 90 + Time.time * 2);
+								DrawFunc.tri(b.x, b.y, 6 * f2 * f, 65 * f2 * f, fi + (i + 1) * 90 - Time.time * 2 + 90);
 							}
 						}
 					}
@@ -816,6 +819,25 @@ public class NHBlocks implements ContentList {
 			
 			shootSound = NHSounds.railGunBlast;
 			heatColor = NHItems.irayrondPanel.color;
+			
+//			chargeEffects = 2;
+//			chargeBeginEffect = NHFx.railShoot(heatColor, range, 18, 40, 12);
+//			chargeEffect = NHFx.genericCharge(heatColor, 5, range, 120);
+//			chargeTime = 120f;
+//
+//			buildType = () -> new ItemTurretBuild(){
+//				public BulletType useAmmo(){
+//					if(cheating()) return peekAmmo();
+//
+//					AmmoEntry entry = ammo.peek();
+//					entry.amount -= ammoPerShot;
+//					if(entry.amount <= 0) ammo.pop();
+//					totalAmmo -= ammoPerShot;
+//					totalAmmo = Math.max(totalAmmo, 0);
+//					ejectEffects();
+//					return entry.type();
+//				}
+//			};
 			
 			coolantMultiplier = 0.55f;
 			restitution = 0.009f;
@@ -1565,7 +1587,7 @@ public class NHBlocks implements ContentList {
 			health = 8000;
 			range = 800;
 			
-			generateType = new Shooter(1000){{
+			generateType = new Shooter(500){{
 				Color c = Items.surgeAlloy.color;
 				colors = new Color[]{c.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f), c.cpy().mul(1f, 1f, 1f, 0.6f), c, Color.white};
 				hitColor = lightColor = lightningColor = c;
@@ -1768,7 +1790,7 @@ public class NHBlocks implements ContentList {
 					super.despawned(b);
 					
 					Units.nearbyEnemies(b.team, b.x, b.y, radius, u -> {
-						if(u.isPlayer())Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent((Player)u.controller(), 600f));
+						if(u.isPlayer())ScreenHack.generate(600);
 					});
 					
 					for(int i = 0; i < 6; i++){

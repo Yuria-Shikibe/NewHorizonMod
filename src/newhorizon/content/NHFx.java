@@ -22,6 +22,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
+import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHSetting;
 
 import java.util.Arrays;
@@ -253,7 +254,7 @@ public class NHFx{
 			
 			e.scaled(10f, i -> {
 				stroke(1.35f * i.fout());
-				circle(e.x, e.y, size * 0.5f * i.finpow());
+				circle(e.x, e.y, size * 0.7f * i.finpow());
 			});
 			
 			rand.setSeed(e.id);
@@ -261,7 +262,7 @@ public class NHFx{
 			float randL = rand.random(sizeDiv);
 			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, size / 16 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + rotate);
+				DrawFunc.tri(e.x, e.y, size / 20 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + rotate);
 			}
 		});
 	}
@@ -286,8 +287,8 @@ public class NHFx{
 			Draw.color(color);
 			
 			for(int i : Mathf.signs){
-				Drawf.tri(e.x, e.y, 13.0F * e.fout(), 85.0F, e.rotation + 90.0F * i);
-				Drawf.tri(e.x, e.y, 13.0F * e.fout(), 50.0F, e.rotation + 20.0F * i);
+				DrawFunc.tri(e.x, e.y, 8.0F * e.fout(), 85.0F, e.rotation + 90.0F * i);
+				DrawFunc.tri(e.x, e.y, 8.0F * e.fout(), 50.0F, e.rotation + 20.0F * i);
 			}
 		}));
 	}
@@ -319,13 +320,13 @@ public class NHFx{
 			
 			int i;
 			for(i = 0; i < num; ++i) {
-				Drawf.tri(e.x, e.y, size / 12f, size * e.fout(), (float)(i * 90 + 45));
+				DrawFunc.tri(e.x, e.y, size / 12f, size * e.fout(), (float)(i * 90 + 45));
 			}
 			
 			Draw.color();
 			
 			for(i = 0; i < num; ++i) {
-				Drawf.tri(e.x, e.y, size / 26f, size / 2.5f * e.fout(), (float)(i * 90 + 45));
+				DrawFunc.tri(e.x, e.y, size / 26f, size / 2.5f * e.fout(), (float)(i * 90 + 45));
 			}
 		});
 	}
@@ -341,8 +342,8 @@ public class NHFx{
 				for(int j = 0; j < num; ++j) {
 					float rot = e.rotation + Mathf.randomSeedRange((e.id + j), size);
 					float w = 23.0F * e.fout() * m;
-					Drawf.tri(e.x, e.y, w, (size + Mathf.randomSeedRange((e.id + j), size * 0.8f)) * m, rot);
-					Drawf.tri(e.x, e.y, w, size * 0.4f * m, rot + 180.0F);
+					DrawFunc.tri(e.x, e.y, w, (size + Mathf.randomSeedRange((e.id + j), size * 0.8f)) * m, rot);
+					DrawFunc.tri(e.x, e.y, w, size * 0.4f * m, rot + 180.0F);
 				}
 			}
 			
@@ -371,8 +372,8 @@ public class NHFx{
 					float m = i == 0 ? 1.0F : 0.5F;
 					float rot = e.rotation + 180.0F;
 					float w = 15.0F * e.fout() * m;
-					Drawf.tri(e.x, e.y, w, 30.0F + (random ? Mathf.randomSeedRange(e.id, 15.0F) : 8) * m, rot + j * angle);
-					if(angle == 0)Drawf.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F + j * angle);
+					DrawFunc.tri(e.x, e.y, w, 30.0F + (random ? Mathf.randomSeedRange(e.id, 15.0F) : 8) * m, rot + j * angle);
+					if(angle == 0)DrawFunc.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F + j * angle);
 					else  Fill.circle(e.x, e.y, w / 2.3f);
 				}
 			}
@@ -441,7 +442,7 @@ public class NHFx{
 			Lines.circle(e.x, e.y, circleRad);
 			for(int i = 0; i < Mathf.clamp(range / 12, 9, 60); i++){
 				Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
-				Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+				DrawFunc.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
 			}
 		});
 	}
@@ -450,32 +451,76 @@ public class NHFx{
 		return new Effect(lifetime, range * 2, e -> {
 			Angles.randLenVectors(e.id, (int)Mathf.clamp(range / 4, 4, 18), range / 8, range * (1 + e.fout(Interp.pow2OutInverse)) / 2f, (x, y) -> {
 				float angle = Mathf.angle(x, y);
-				float width = e.foutpowdown() * rand.random(range / 6, range / 3);
+				float width = e.foutpowdown() * rand.random(range / 6, range / 3) / 2;
 				
 				rand.setSeed(e.id);
 				float length = rand.random(range / 2, range * 1.1f) * e.fout();
 				
 				Draw.color(colorExternal);
-				Drawf.tri(e.x + x, e.y + y, width, range / 3 * e.fout(Interp.circleOut), angle - 180);
-				Drawf.tri(e.x + x, e.y + y, width, length, angle);
+				DrawFunc.tri(e.x + x, e.y + y, width, range / 3 * e.fout(Interp.circleOut), angle - 180);
+				DrawFunc.tri(e.x + x, e.y + y, width, length, angle);
 				
 				Draw.color(colorInternal);
 				
 				width *= e.fout();
 				
-				Drawf.tri(e.x + x, e.y + y, width / 2, range / 3 * e.fout(Interp.circleOut) * 0.9f * e.fout(), angle - 180);
-				Drawf.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
+				DrawFunc.tri(e.x + x, e.y + y, width / 2, range / 3 * e.fout(Interp.circleOut) * 0.9f * e.fout(), angle - 180);
+				DrawFunc.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
 			});
 		});
 	}
 	
 	public static final float lightningAlign = 0.5f;
 	
-	public static final Effect
+	public static Effect
 		cautionOutline = new Effect(60f, e -> {
 			Draw.color(e.color);
 			Lines.stroke(e.fout() * 2f);
 			Lines.square(e.x, e.y, e.rotation + e.rotation / 8 * e.fin(Interp.circleOut) + 1);
+		}),
+	
+		energyUnitBlast = new Effect(150F, 1600f, e -> {
+			float rad = e.rotation;
+			rand.setSeed(e.id);
+			
+			Draw.color(Color.white, e.color, e.fin() / 5 + 0.6f);
+			float circleRad = e.fin(Interp.circleOut) * rad;
+			Lines.stroke(12 * e.fout());
+			Lines.circle(e.x, e.y, circleRad);
+			
+			e.scaled(120f, i -> {
+				Fill.circle(i.x, i.y, rad * i.fout() / 2);
+				Lines.stroke(18 * i.fout());
+				Lines.circle(i.x, i.y, i.fin(Interp.circleOut) * rad * 1.2f);
+				
+				Angles.randLenVectors(i.id, (int)(rad / 4), rad / 6, rad * (1 + i.fout(Interp.circleOut)) / 2f, (x, y) -> {
+					float angle = Mathf.angle(x, y);
+					float width = i.foutpowdown() * rand.random(rad / 8, rad / 10);
+					float length = rand.random(rad / 2, rad) * i.fout(Interp.circleOut);
+					
+					Draw.color(i.color);
+					DrawFunc.tri(i.x + x, i.y + y, width, rad / 8 * i.fout(Interp.circleOut), angle - 180);
+					DrawFunc.tri(i.x + x, i.y + y, width, length, angle);
+					
+					Draw.color(Color.black);
+					
+					width *= i.fout();
+					
+					DrawFunc.tri(i.x + x, i.y + y, width / 2, rad / 8 * i.fout(Interp.circleOut) * 0.9f * i.fout(), angle - 180);
+					DrawFunc.tri(i.x + x, i.y + y, width / 2, length / 1.5f * i.fout(), angle);
+				});
+				
+				Draw.color(Color.black);
+				Fill.circle(i.x, i.y, rad * i.fout() * 0.375f);
+			});
+			
+			Drawf.light(e.x, e.y, rad * e.fout() * 4f * Mathf.curve(e.fin(), 0f, 0.05f), e.color, 0.7f);
+		}).layer(Layer.effect + 0.001f),
+	
+		absorbFix = new Effect(12, e -> {
+			color(e.color);
+			stroke(2f * e.fout());
+			Lines.circle(e.x, e.y, 5f * e.fout());
 		}),
 	
 		collapserBulletExplode = new Effect(300F, 1600f, e -> {
@@ -488,7 +533,7 @@ public class NHFx{
 			Lines.circle(e.x, e.y, circleRad);
 			for(int i = 0; i < 24; i++){
 				Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
-				Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+				DrawFunc.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
 			}
 			
 			e.scaled(120f, i -> {
@@ -506,15 +551,15 @@ public class NHFx{
 					float length = rand.random(rad / 2, rad * 5) * i.fout(Interp.circleOut);
 					
 					Draw.color(i.color);
-					Drawf.tri(i.x + x, i.y + y, width, rad / 3 * i.fout(Interp.circleOut), angle - 180);
-					Drawf.tri(i.x + x, i.y + y, width, length, angle);
+					DrawFunc.tri(i.x + x, i.y + y, width, rad / 3 * i.fout(Interp.circleOut), angle - 180);
+					DrawFunc.tri(i.x + x, i.y + y, width, length, angle);
 					
 					Draw.color(Color.black);
 					
 					width *= i.fout();
 					
-					Drawf.tri(i.x + x, i.y + y, width / 2, rad / 3 * i.fout(Interp.circleOut) * 0.9f * i.fout(), angle - 180);
-					Drawf.tri(i.x + x, i.y + y, width / 2, length / 1.5f * i.fout(), angle);
+					DrawFunc.tri(i.x + x, i.y + y, width / 2, rad / 3 * i.fout(Interp.circleOut) * 0.9f * i.fout(), angle - 180);
+					DrawFunc.tri(i.x + x, i.y + y, width / 2, length / 1.5f * i.fout(), angle);
 				});
 				
 				Draw.color(Color.black);
@@ -523,12 +568,6 @@ public class NHFx{
 			
 			Drawf.light(e.x, e.y, rad * e.fslope() * 4f, e.color, 0.7f);
 		}).layer(Layer.effect + 0.001f),
-		
-		absorbFix = new Effect(12, e -> {
-			color(e.color);
-			stroke(2f * e.fout());
-			Lines.circle(e.x, e.y, 5f * e.fout());
-		}),
 	
 		hitSparkLarge = new Effect(40, e -> {
 			color(e.color, Color.white, e.fout() * 0.3f);
@@ -797,7 +836,7 @@ public class NHFx{
 			float len = e.data();
 			color(e.color);
 			for(int i : Mathf.signs) {
-				Drawf.tri(e.x, e.y, 13f * e.fout() * e.fslope(), len * 4f * e.fout(), e.rotation + 90 + i * 90);
+				DrawFunc.tri(e.x, e.y, 13f * e.fout() * e.fslope(), len * 4f * e.fout(), e.rotation + 90 + i * 90);
 			}
 			Lines.stroke(e.fout() * 2.0F);
 			randLenVectors(e.id, 6, 3 + len * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
@@ -810,7 +849,7 @@ public class NHFx{
 			
 			color(e.color);
 			v.trns(e.rotation - 90, (len + Mathf.randomSeed(e.id, 0, len)) * e.fin(Interp.circleOut));
-			for(int i : Mathf.signs)Drawf.tri(e.x + v.x, e.y + v.y, Mathf.clamp(len / 8, 8, 25) * (f + e.fout(0.2f) * 2f) / 3, len * 2f * e.fin(Interp.circleOut), e.rotation + 90 + i * 90);
+			for(int i : Mathf.signs) DrawFunc.tri(e.x + v.x, e.y + v.y, Mathf.clamp(len / 8, 8, 25) * (f + e.fout(0.2f) * 2f) / 3, len * 2f * e.fin(Interp.circleOut), e.rotation + 90 + i * 90);
 		}),
 		
 		line = new Effect(30f, e -> {
@@ -854,14 +893,14 @@ public class NHFx{
 			if (!(e.data instanceof UnitType))return;
 			UnitType type = e.data();
 			color(e.color);
-
+			
 			Draw.z((type.engineSize < 0 ? Layer.effect - 0.1f : type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.1f);
 			
 			Tmp.v1.trns(e.rotation, -type.engineOffset);
 			
 			e.scaled(45, i -> {
-				Drawf.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 1.5f * i.fout(Interp.sineIn), 2500, i.rotation - 180);
-				Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.75f * i.fout(Interp.sineIn));
+				DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 1.5f * i.fout(Interp.pow3InInverse), 2500, i.rotation - 180);
+				Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.75f * i.fout(Interp.pow3InInverse));
 			});
 
 			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
@@ -911,7 +950,7 @@ public class NHFx{
 			Fill.circle(e.x + x, e.y + y, e.fout() * 9f);
 			Drawf.light(e.x + x, e.y + y, e.fout() * 25f, NHColor.darkEnrColor, 0.7f);
 		})),
-					
+		
 		largeDarkEnergyHitCircle = new Effect(20f, e -> {
 			color(NHColor.darkEnrColor);
 			Fill.circle(e.x, e.y, e.fout() * 44);
@@ -936,14 +975,14 @@ public class NHFx{
 			Fill.circle(e.x, e.y, e.fout() * 30);
 			Drawf.light(e.x, e.y, e.fout() * 80f, NHColor.darkEnrColor, 0.7f);
 		}),
-				
+		
 		mediumDarkEnergyHit = new Effect(23, e -> {
 			color(NHColor.darkEnrColor);
 			stroke(e.fout() * 2.8f);
 			circle(e.x, e.y, e.fin() * 60);
 			stroke(e.fout() * 2.12f);
 			circle(e.x, e.y, e.fin() * 35);
-					
+			
 			stroke(e.fout() * 2.25f);
 			randLenVectors(e.id, 9, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 12f));
 			
@@ -1005,7 +1044,7 @@ public class NHFx{
 		darkEnergyShoot = new Effect(25, e -> {
 			color(NHColor.darkEnrColor);
 			for (int i : Mathf.signs){
-				Drawf.tri(e.x, e.y, 2 + 2 * e.fout(), 28 * e.fout(), e.rotation + 90 * i);
+				DrawFunc.tri(e.x, e.y, 2 + 2 * e.fout(), 28 * e.fout(), e.rotation + 90 * i);
 			}
 		}),
 		
@@ -1032,7 +1071,7 @@ public class NHFx{
 			Fill.circle(e.x, e.y, e.fin() * 20);
 			Drawf.light(e.x, e.y, e.fin() * 35f, NHColor.darkEnrColor, 0.7f);
 		}),
-						
+		
 		upgrading = new Effect(30, e -> {
 			color(e.color);
 			float drawSize = e.rotation * tilesize * e.fout();
@@ -1133,7 +1172,7 @@ public class NHFx{
 			circle(e.x, e.y, 45f * e.fin());
 			
 			for(int i = 0; i < 4; i++){
-				Drawf.tri(e.x, e.y, e.rotation * (e.fout() + 1) / 2, e.rotation * 27f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
+				DrawFunc.tri(e.x, e.y, e.rotation * (e.fout() + 1) / 3, e.rotation * 27f * Mathf.curve(e.fin(), 0, 0.12f) * e.fout(), i * 90);
 			}
 			Drawf.light(e.x, e.y, e.fout() * 80f, e.color, 0.7f);
 		}),

@@ -14,11 +14,14 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.gen.Buildingc;
+import mindustry.gen.Teamc;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHColor;
 
 import static mindustry.Vars.tilesize;
 
@@ -46,6 +49,18 @@ public class DrawFunc{
         return cameraDstScl(x, y, NOR_DISTANCE);
     }
     
+    public static void tri(float x, float y, float width, float length, float angle){
+        float wx = Angles.trnsx(angle + 90, width), wy = Angles.trnsy(angle + 90, width);
+        Fill.tri(x + wx, y + wy, x - wx, y - wy, Angles.trnsx(angle, length) + x, Angles.trnsy(angle, length) + y);
+    }
+    
+    public static void arrow(float x, float y, float width, float length, float offset, float angle){
+        float wx = Angles.trnsx(angle + 90, width), wy = Angles.trnsy(angle + 90, width);
+        float ox = Angles.trnsx(angle, offset), oy = Angles.trnsy(angle, offset);
+        float cx = Angles.trnsx(angle, length) + x, cy = Angles.trnsy(angle, length) + y;
+        Fill.tri(x + ox, y + oy, x - wx, y - wy, cx, cy);
+        Fill.tri(x + wx, y + wy, x + ox, y + oy, cx, cy);
+    }
     
     public static void drawConnected(float x, float y, float size, Color color){
         Draw.reset();
@@ -364,6 +379,14 @@ public class DrawFunc{
         }
     }
 
+    public static Color markColor(Team target){
+        return target == Vars.player.team() ? NHColor.ally : NHColor.hostile;
+    }
+    
+    public static Color markColor(Teamc target){
+        return target.team() == Vars.player.team() ? NHColor.ally : NHColor.hostile;
+    }
+    
     public static void posSquareLink(Color color, float stroke, float size, boolean drawBottom, float x, float y, float x2, float y2){
         posSquareLink(color, stroke, size, drawBottom, vec21.set(x, y), vec22.set(x2, y2));
     }

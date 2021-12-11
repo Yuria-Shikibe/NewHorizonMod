@@ -1,17 +1,17 @@
 package newhorizon.util.func;
 
 import arc.func.Boolf;
+import arc.func.Cons;
 import arc.func.Intc2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Geometry;
-import arc.math.geom.QuadTree;
-import arc.math.geom.Rect;
-import arc.math.geom.Vec2;
+import arc.math.geom.*;
+import arc.struct.IntFloatMap;
 import arc.struct.IntSeq;
+import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
@@ -19,12 +19,10 @@ import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.core.World;
 import mindustry.entities.Effect;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.Bullet;
-import mindustry.gen.Player;
-import mindustry.gen.Unit;
-import mindustry.gen.WaterMovec;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -52,6 +50,16 @@ public class NHFunc{
             vec22 = new Vec2(),
             vec23 = new Vec2();
     
+    private static Tile furthest;
+    private static Building tmpBuilding;
+    private static Unit tmpUnit;
+    private static final Rect rect = new Rect();
+    private static final Rect hitrect = new Rect();
+    private static final Vec2 tr = new Vec2(), seg1 = new Vec2(), seg2 = new Vec2();
+    private static final Seq<Unit> units = new Seq<>();
+    private static final IntSet collidedBlocks = new IntSet();
+    private static final IntFloatMap damages = new IntFloatMap();
+    
     public static final Rand rand = new Rand(0);
     public static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;
@@ -75,6 +83,91 @@ public class NHFunc{
                 (x, y) -> (tileParma = world.tile(x, y)) != null && tileParma.team() != b.team && tileParma.block().absorbLasers);
         
         return found && tileParma != null ? Math.max(6f, b.dst(tileParma.worldx(), tileParma.worldy())) : length;
+    }
+    
+    public static void collideLine(Bullet hitter, Team team, Effect effect, float x, float y, float angle, float length, boolean large, boolean laser){
+        if(laser) length = findLaserLength(hitter, angle, length);
+    
+        collidedBlocks.clear();
+        tr.trnsExact(angle, length);
+    
+        Intc2 collider = (cx, cy) -> {
+            Building tile = world.build(cx, cy);
+            boolean collide = tile != null && collidedBlocks.add(tile.pos());
+        
+            if(hitter.damage > 0){
+                float health = !collide ? 0 : tile.health;
+            
+                if(collide && tile.team != team && tile.collide(hitter)){
+                    tile.collision(hitter);
+                    hitter.type.hit(hitter, tile.x, tile.y);
+                }
+            
+                //try to heal the tile
+                if(collide && hitter.type.testCollision(hitter, tile)){
+                    hitter.type.hitTile(hitter, tile, health, false);
+                }
+            }
+        };
+    
+        if(hitter.type.collidesGround){
+            seg1.set(x, y);
+            seg2.set(seg1).add(tr);
+            world.raycastEachWorld(x, y, seg2.x, seg2.y, (cx, cy) -> {
+                collider.get(cx, cy);
+            
+                for(Point2 p : Geometry.d4){
+                    Tile other = world.tile(p.x + cx, p.y + cy);
+                    if(other != null && (large || Intersector.intersectSegmentRectangle(seg1, seg2, other.getBounds(Tmp.r1)))){
+                        collider.get(cx + p.x, cy + p.y);
+                    }
+                }
+                return false;
+            });
+        }
+    
+        rect.setPosition(x, y).setSize(tr.x, tr.y);
+        float x2 = tr.x + x, y2 = tr.y + y;
+    
+        if(rect.width < 0){
+            rect.x += rect.width;
+            rect.width *= -1;
+        }
+    
+        if(rect.height < 0){
+            rect.y += rect.height;
+            rect.height *= -1;
+        }
+    
+        float expand = 3f;
+    
+        rect.y -= expand;
+        rect.x -= expand;
+        rect.width += expand * 2;
+        rect.height += expand * 2;
+    
+        Cons<Unit> cons = e -> {
+            e.hitbox(hitrect);
+        
+            Vec2 vec = Geometry.raycastRect(x, y, x2, y2, hitrect.grow(expand * 2));
+        
+            if(vec != null && hitter.damage > 0){
+                effect.at(vec.x, vec.y);
+                e.collision(hitter, vec.x, vec.y);
+                hitter.collision(e, vec.x, vec.y);
+            }
+        };
+    
+        units.clear();
+    
+        Units.nearbyEnemies(team, rect, u -> {
+            if(u.checkTarget(hitter.type.collidesAir, hitter.type.collidesGround)){
+                units.add(u);
+            }
+        });
+    
+        units.sort(u -> u.dst2(hitter));
+        units.each(cons);
     }
     
     public static void randFadeLightningEffect(float x, float y, float range, float lightningLength, Color color, boolean in){

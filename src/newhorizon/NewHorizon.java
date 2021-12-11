@@ -21,7 +21,7 @@ import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
-import newhorizon.expand.vars.EventTriggers;
+import newhorizon.expand.vars.EventListeners;
 import newhorizon.util.feature.ScreenHack;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
@@ -77,7 +77,11 @@ public class NewHorizon extends Mod{
 	
 	private static LatestFeature[] getUpdateContent(){
 		return new LatestFeature[]{
-			new LatestFeature(NHBlocks.laserWall), new LatestFeature(NHBlocks.ancientLaserWall)
+			new LatestFeature("Effect Improvement", "Improved many weapon effects and the field mark of Gravity Trap", "Improvement", Icon.upOpen.getRegion()),
+			new LatestFeature("Unit Improvement", "Improved unit: Carv'osher", "Improvement", NHUnitTypes.guardian.fullIcon),
+			new LatestFeature("Balance Improvement", "Reduced the damage of all the laser walls", "Balance", NHBlocks.laserWall.fullIcon),
+			new LatestFeature("Bug Fixes", "The cutscene now won't skip while the map is auto saving.", "Fixes", Icon.upOpen.getRegion()),
+			new LatestFeature("Bug Fixes", "Fixed the gravity trap field would pop and draw exceptionally.", "Fixes", Icon.upOpen.getRegion()),
 		};
 	}
 	
@@ -375,10 +379,10 @@ public class NewHorizon extends Mod{
 		}
 		
 		EntityRegister.load();
-		EventTriggers.load();
+		EventListeners.load();
 	    NHSounds.load();
 		NHContent.initLoad();
-//		NHShaders.init();
+		NHShaders.init();
 		
 		for(ContentList contentList : content)contentList.load();
 		

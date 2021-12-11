@@ -975,14 +975,14 @@ public class NHBullets implements ContentList{
 				for(int i : Mathf.signs){
 					for(int j : Mathf.signs){
 						Draw.color(NHColor.lightSkyBack);
-						Drawf.tri(b.x, b.y, 16f * f, 86f + Mathf.absin(Time.time * j, 6f, 20f) * f, 90 + 90 * i + Time.time * j);
+						DrawFunc.tri(b.x, b.y, 7f * f, 86f + Mathf.absin(Time.time * j, 6f, 20f) * f, 90 + 90 * i + Time.time * j);
 					}
 				}
 				
 				for(int i : Mathf.signs){
 					for(int j : Mathf.signs){
 						Draw.color(Color.white);
-						Drawf.tri(b.x, b.y, 7f * f, 63f + Mathf.absin(Time.time * j, 6f, 12f) * f, 90 + 90 * i + Time.time * j);
+						DrawFunc.tri(b.x, b.y, 3f * f, 63f + Mathf.absin(Time.time * j, 6f, 12f) * f, 90 + 90 * i + Time.time * j);
 					}
 				}
 				
@@ -1501,11 +1501,11 @@ public class NHBullets implements ContentList{
 				float rotAngle = b.fdata;
 				
 				for(int i : Mathf.signs){
-					Drawf.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i - 45);
+					DrawFunc.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i - 45);
 				}
 				
 				for(int i : Mathf.signs){
-					Drawf.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i + 45);
+					DrawFunc.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i + 45);
 				}
 				
 				if(NHSetting.enableDetails()){

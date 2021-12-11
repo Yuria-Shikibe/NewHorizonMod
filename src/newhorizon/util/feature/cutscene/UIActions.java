@@ -19,6 +19,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.game.Saves;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
@@ -28,6 +29,8 @@ import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.cutscene.actions.*;
 import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
+
+import java.lang.reflect.Field;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -51,7 +54,7 @@ public class UIActions{
 	
 	@HeadlessDisabled protected static Table root;
 	
-	protected static long lastToast;
+	protected static long lastToast, waiting;
 	
 	public static float /*Updated*/ width_UTD = 0, height_UTD = 0;
 	
@@ -117,6 +120,7 @@ public class UIActions{
 	}
 	
 	public static void reset(){
+		waiting = 0;
 		if(eventBarTable == null)return;
 		eventBarTable.reset();
 		eventBarTable.remove();
@@ -497,6 +501,17 @@ public class UIActions{
 				@Override
 				public void act(float delta){
 					super.act(delta);
+					
+					if(control.saves.getCurrent().isAutosave()){
+						try{
+							Field field = Saves.class.getDeclaredField("time");
+							field.setAccessible(true);
+							field.set(control.saves, 0);
+						}catch(NoSuchFieldException | IllegalAccessException e){
+							e.printStackTrace();
+						}
+					}
+					
 					if(Vars.state.isMenu()){
 						actor.getActions().clear();
 						actor.remove();
@@ -774,13 +789,18 @@ public class UIActions{
 	
 	@HeadlessDisabled
 	private static void scheduleToast(float time, Runnable run){
+		if(waiting > 5)return;
 		long duration = (int)((time + 1.25f) * 1000);
 		long since = Time.timeSinceMillis(lastToast);
 		if(since > duration){
 			lastToast = Time.millis();
 			run.run();
 		}else{
-			Time.runTask((duration - since) / 1000f * 60f, run);
+			waiting++;
+			Time.runTask((duration - since) / 1000f * 60f, () -> {
+				waiting--;
+				run.run();
+			});
 			lastToast += duration;
 		}
 	}

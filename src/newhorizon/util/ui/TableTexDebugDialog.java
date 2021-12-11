@@ -1,7 +1,6 @@
 package newhorizon.util.ui;
 
 import arc.Core;
-import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -20,7 +19,6 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Time;
-import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
@@ -36,9 +34,10 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NewHorizon;
 import newhorizon.expand.vars.TileSortMap;
-import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.InternalTools;
 import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.feature.WarpUnit;
+import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.UIActions;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
@@ -354,7 +353,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		});
 		
 		cont.button("Hack", () -> {
-			Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent(Vars.player, 600f));
+			ScreenHack.generate(360);
 		});
 		
 		cont.button("Weathers", () -> {
@@ -439,6 +438,8 @@ public class TableTexDebugDialog extends BaseDialog{
 		});
 		
 		cont.row();
+		
+		cont.button("Warp", () -> Groups.unit.each(WarpUnit::warp));
 		
 		cont.button("Update Sort Map", () -> TileSortMap.registerTeam(Team.purple));
 		

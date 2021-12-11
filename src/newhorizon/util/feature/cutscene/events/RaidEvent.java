@@ -110,7 +110,6 @@ public class RaidEvent extends CutsceneEvent{
 		
 		Draw.reset();
 		Draw.blend();
-		//				DrawFunc.arrow();
 	}
 	
 	@Override

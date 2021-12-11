@@ -26,7 +26,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHColor;
-import newhorizon.expand.vars.EventTriggers;
+import newhorizon.expand.vars.EventListeners;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
@@ -146,8 +146,9 @@ public class GravityTrap extends Block{
 		
 		@Override
 		public void remove(){
-			super.remove();
 			NHVars.world.gravityTraps.remove(field);
+			
+			super.remove();
 		}
 		
 		@Override
@@ -182,7 +183,7 @@ public class GravityTrap extends Block{
 			field = new TrapField(this);
 			
 			NHVars.world.gravityTraps.insert(field);
-			EventTriggers.actAfterLoad.add(() -> NHVars.world.gravityTraps.insert(field));
+			EventListeners.actAfterLoad.add(() -> NHVars.world.gravityTraps.insert(field));
 		}
 	}
 	
@@ -205,7 +206,12 @@ public class GravityTrap extends Block{
 		
 		@Override
 		public void hitbox(Rect out){
-			out.setSize(build.range() * 2).setCenter(build.x, build.y);
+			out.setSize(build.range() * 3).setCenter(build.x, build.y);
+		}
+		
+		@Override
+		public String toString(){
+			return "TrapField{" + "build=" + build.id + '}';
 		}
 	}
 }

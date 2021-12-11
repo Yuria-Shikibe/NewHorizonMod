@@ -45,6 +45,8 @@ public class NHSetting{
 	
 	private static float originalZoomMin = 0.5f, originalZoomMax = 5f;
 	
+	public static boolean enableEffectDetails = false;
+	
 	static{
 		defaultKeys.put("initialized", "null version");
 		defaultKeys.put("@active.hid-start-log", String.valueOf(false));
@@ -103,6 +105,10 @@ public class NHSetting{
 			needReload = b;
 			return this;
 		}
+	}
+	
+	public static void update(){
+		enableEffectDetails = Core.settings.getBool("enableeffectdetails");
 	}
 	
 	public static void settingFile() throws IOException{
@@ -230,7 +236,7 @@ public class NHSetting{
 	}
 	
 	
-	public static boolean enableDetails(){return Core.settings.getBool("enableeffectdetails");}
+	public static boolean enableDetails(){return enableEffectDetails;}
 	
 	public static class SettingDialog extends BaseDialog{
 		private static boolean changed = false;

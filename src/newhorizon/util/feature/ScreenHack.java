@@ -1,6 +1,7 @@
 package newhorizon.util.feature;
 
 import arc.Core;
+import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -11,11 +12,8 @@ import arc.math.Rand;
 import arc.scene.actions.Actions;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.Vars;
-import mindustry.gen.Player;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
@@ -28,12 +26,11 @@ import static mindustry.Vars.state;
 public class ScreenHack{
 	private static final float coolDown = 30 * Time.toSeconds;
 	private static float hackLifetime = 0f;
-	private static float hackRemainTime = 0f;
+	private static float hackRemainTime = 0f, reloadTime = 0;
 	private static float hackWarmup = 0f;
 	private static final Rand rand = new Rand();
 	private static int seed = 0;
 	
-	private static final ObjectMap<String, Float> reloadMap = new ObjectMap<>();
 	
 	private static final Color from = Pal.heal, to = NHColor.lightSkyBack;
 	
@@ -137,16 +134,13 @@ public class ScreenHack{
 	}
 	
 	public static void update(){
-		if(state.isMenu())reloadMap.clear();
+		if(state.isMenu())reloadTime = 0;
 		if(state.isPaused())return;
-		reloadMap.each((key, f) -> {
-			if(f < 0)reloadMap.remove(key);
-			else reloadMap.put(key, f - Time.delta);
-		});
+		reloadTime -= Time.delta;
 	}
 	
-	public static void generate(Player player, float time){
-		if(!player.equals(Vars.player) || reloadMap.containsKey(player.name()))return;
+	public static void generate(float time){
+		if(reloadTime > 0)return;
 		hackRemainTime = hackLifetime = time;
 		
 		NHSounds.alarm.play();
@@ -156,10 +150,12 @@ public class ScreenHack{
 		
 		UIActions.root().addChildAt(1, hackShowTable);
 		
-		reloadMap.put(player.name(), Math.max(coolDown, time * 2));
+		reloadTime = Math.max(coolDown, time * 2);
+		
+		Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent(time));
 	}
 	
-	public static void forceGenerate(){
+	public static void continueGenerate(){
 		hackRemainTime = hackLifetime = 60f;
 		
 		hackShowTable.actions(Actions.fadeIn(1f));
@@ -169,11 +165,9 @@ public class ScreenHack{
 	}
 	
 	public static class ScreenHackEvent{
-		public final Player target;
 		public final float time;
 		
-		public ScreenHackEvent(Player target, float time){
-			this.target = target;
+		public ScreenHackEvent(float time){
 			this.time = time;
 		}
 	}

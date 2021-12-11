@@ -20,7 +20,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
-import newhorizon.expand.vars.EventTriggers;
+import newhorizon.expand.vars.EventListeners;
 import newhorizon.util.func.DrawFunc;
 
 import static mindustry.Vars.state;
@@ -104,7 +104,7 @@ public class RemoteCoreStorage extends StorageBlock{
 			super.add();
 			
 			placedMap.get(team.id).add(this);
-			EventTriggers.actAfterLoad.add(() -> placedMap.get(team.id).add(this));
+			EventListeners.actAfterLoad.add(() -> placedMap.get(team.id).add(this));
 		}
 		
 		@Override

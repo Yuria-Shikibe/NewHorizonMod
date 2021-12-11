@@ -115,6 +115,8 @@ public class CutsceneScript{
 	
 	protected static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2();
 	
+	protected static long latestTime = 0;
+	
 	public static String scriptDirectoryPath(){
 		return Vars.customMapDirectory + "/custom-cutscene";
 	}
@@ -143,7 +145,7 @@ public class CutsceneScript{
 		Events.on(EventType.StateChangeEvent.class, e -> {
 			if(e.to == GameState.State.menu)UIActions.lockInput = false;
 			if((e.from == GameState.State.playing && e.to == GameState.State.menu)){
-				UIActions.skip();
+				
 				exit();
 				reset();
 			}
