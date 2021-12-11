@@ -46,8 +46,8 @@ void main(){
 
         color.a = ALPHA;
 
-        color.a *= 1.0 + 2.0 * (step(mod(coords.y - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.x + u_time / 4.0, SPACING), LEN));
-        if(color.a == ALPHA)color.a *= 1.0 + 2.0 * (step(mod(coords.x - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.y + u_time / 4.0, SPACING), LEN));
+        color.a *= 1.0 + 2.0 * (step(mod(coords.y / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.x / u_dp + u_time / 4.0, SPACING), LEN));
+        if(color.a == ALPHA)color.a *= 1.0 + 2.0 * (step(mod(coords.x  / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.y / u_dp + u_time / 4.0, SPACING), LEN));
 
         color.a *= 1.0 + sin(u_time / 18.0) * 0.1;
     }
