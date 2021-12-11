@@ -5,7 +5,6 @@ import arc.files.Fi;
 import arc.graphics.gl.Shader;
 import arc.scene.ui.layout.Scl;
 import arc.util.Time;
-import mindustry.Vars;
 import mindustry.graphics.Shaders;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
@@ -41,7 +40,7 @@ public class NHShaders{
 	}
 	
 	public static Fi getShaderFi(String file){
-		Mods.LoadedMod mod = Vars.mods.getMod(NewHorizon.class);
+		Mods.LoadedMod mod = NewHorizon.MOD;
 		
 		Fi shaders = mod.root.child("shaders");
 		if(shaders.exists()){
