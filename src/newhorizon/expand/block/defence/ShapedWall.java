@@ -214,7 +214,7 @@ public class ShapedWall extends Wall{
 		public void created(){
 			super.created();
 			updateConnection(true);
-			if(Vars.net.active() && !Vars.headless){
+			if(!Vars.headless){
 				initSeq();
 				updateIndexKey(true);
 			}
@@ -241,7 +241,7 @@ public class ShapedWall extends Wall{
 		@Override
 		public void onRemoved(){
 			super.onRemoved();
-			updateIndexKey(false);
+			if(!Vars.headless)updateIndexKey(false);
 		}
 		
 		@Override

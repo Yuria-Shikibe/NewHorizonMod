@@ -179,6 +179,8 @@ public class NHBlocks implements ContentList {
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
+			
+//			cacheLayer = NHContent.quantum;
 		}};
 		
 		quantumFieldDeep = new Floor("quantum-field-deep", 0){{
@@ -199,6 +201,8 @@ public class NHBlocks implements ContentList {
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
+			
+//			cacheLayer = NHContent.quantum;
 		}};
 		
 		metalUnit = new StaticWall("metal-unit"){{

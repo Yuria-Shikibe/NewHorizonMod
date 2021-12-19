@@ -208,6 +208,18 @@ public class NHFunc{
     }
     
     /**
+     * @param height Half of the total height
+     * @param width  Half of the total width
+     * */
+    public static void square(int x, int y, int width, int height, Intc2 cons) {
+        for(int dx = -width; dx <= width; ++dx) {
+            for(int dy = -height; dy <= height; ++dy) {
+                cons.get(dx + x, dy + y);
+            }
+        }
+    }
+    
+    /**
      * @implNote Get all the {@link Tile} {@code tile} within a certain range at certain position.
      * @param x the abscissa of search center.
      * @param y the ordinate of search center.

@@ -1,11 +1,15 @@
 package newhorizon;
 
+import java.util.Arrays;
+import java.util.function.Function;
+
 public class Runner{
 	public static void main(String[] args){
-		int i = 0;
+		System.out.println(1 / 2);
+		System.out.println(3 / 2);
 		
-		System.out.println(i++);
+		Function<String, String> s = String::toLowerCase;
 		
-		System.out.println(i);
+		System.out.println(Arrays.toString(s.getClass().getMethods()));
 	}
 }

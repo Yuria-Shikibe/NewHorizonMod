@@ -1,6 +1,7 @@
 package newhorizon.util.feature.cutscene.events;
 
 import arc.Core;
+import arc.Events;
 import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.Blending;
@@ -31,10 +32,7 @@ import mindustry.ui.Styles;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
-import newhorizon.util.feature.cutscene.CutsceneEvent;
-import newhorizon.util.feature.cutscene.CutsceneEventEntity;
-import newhorizon.util.feature.cutscene.UIActions;
-import newhorizon.util.feature.cutscene.WorldActions;
+import newhorizon.util.feature.cutscene.*;
 import newhorizon.util.ui.TableFunc;
 
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -60,6 +58,12 @@ public class RaidEvent extends CutsceneEvent{
 		super(name);
 		
 		drawable = true;
+	}
+	
+	@Override
+	public CutsceneEventEntity setup(){
+		Events.fire(Triggers.raid_setup);
+		return super.setup();
 	}
 	
 	@Override
@@ -139,6 +143,8 @@ public class RaidEvent extends CutsceneEvent{
 		})));
 		
 		e.set(targetFunc.get(e));
+		
+		Events.fire(Triggers.raid_launch);
 	}
 	
 	@Override

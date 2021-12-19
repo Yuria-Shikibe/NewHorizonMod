@@ -4,10 +4,12 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.entities.Lightning;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
@@ -18,7 +20,7 @@ import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
 
 public class EnergyUnit extends UnitEntity{
-	public Trail[] trails;
+	protected Trail[] trails = {};
 	
 	@Override
 	public int classId(){
@@ -35,6 +37,17 @@ public class EnergyUnit extends UnitEntity{
 		}
 		
 		NHFx.energyUnitBlast.at(x, y, hitSize * 4, team.color);
+		
+		Vec2 v = new Vec2().set(this);
+		
+		for(int i = 0; i < NHFx.energyUnitBlast.lifetime / 6; i++){
+			Time.run(i * 6, () -> {
+				for(int j = 0; j < 3; j++){
+					Lightning.create(team, team.color, 120f, v.x, v.y, Mathf.random(360), Mathf.random(12, 28));
+					NHFunc.randFadeLightningEffect(v.x, v.y, Mathf.random(360), Mathf.random(12, 28), team.color, Mathf.chance(0.5));
+				}
+			});
+		}
 	}
 	
 	@Override
@@ -51,10 +64,12 @@ public class EnergyUnit extends UnitEntity{
 	public void draw(){
 		Draw.z(Layer.bullet);
 		
-		if(NHSetting.enableDetails())for(int i = 0; i < trails.length; i++){
-			Tmp.c1.set(team.color).mul(1 + i * 0.045f).lerp(Color.white, 0.075f * i + Mathf.absin(4f, 0.3f) +  Mathf.clamp(hitTime) / 5f);
-			trails[i].drawCap(Tmp.c1, type.trailScl);
-			trails[i].draw(Tmp.c1, type.trailScl);
+		if(NHSetting.enableDetails()){
+			for(int i = 0; i < trails.length; i++){
+				Tmp.c1.set(team.color).mul(1 + i * 0.005f).lerp(Color.white, 0.015f * i + Mathf.absin(4f, 0.3f) +  Mathf.clamp(hitTime) / 5f);
+				trails[i].drawCap(Tmp.c1, type.trailScl);
+				trails[i].draw(Tmp.c1, type.trailScl);
+			}
 		}
 		
 		super.draw();

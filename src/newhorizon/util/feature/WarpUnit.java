@@ -1,16 +1,19 @@
 package newhorizon.util.feature;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.struct.IntSeq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
+import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -64,12 +67,11 @@ public class WarpUnit{
 		
 	}).followParent(true);
 	
-	public static void warp(Unit unit){
-		unit.apply(StatusEffects.unmoving, prepare.lifetime);
-		
+	public static void warp(Unit unit, float angle){
+		unit.abilities().and(new Rotator(angle));
 		toBeRemoved.add(unit.id());
 		
-		prepare.at(unit.x, unit.y, unit.rotation, unit);
+//		prepare.at(unit.x, unit.y, unit.rotation, unit);
 		
 		Time.run(prepare.lifetime, () -> {
 			warp.at(unit.x, unit.y, unit.rotation, unit.team.color, unit.type);
@@ -77,5 +79,49 @@ public class WarpUnit{
 			toBeRemoved.removeValue(unit.id());
 			unit.remove();
 		});
+	}
+	
+	public static class Rotator extends Ability{
+//		protected static final Vec2 direction = new Vec2();
+		public float targetAng = 45;
+		
+		protected float warmup = 0;
+		
+		public Rotator(float targetAng){
+			this.targetAng = targetAng;
+		}
+		
+		@Override
+		public void update(Unit unit){
+			unit.lookAt(targetAng);
+			
+			warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
+		}
+		
+		@Override
+		public void draw(Unit unit){
+			float z = Draw.z();
+			
+			int particles = (int)unit.type.hitSize;
+			float particleLife = 40f, particleRad = unit.type.hitSize, particleStroke = 1.1f, particleLen = unit.hitSize / 8f;
+			Rand rand = new Rand();
+			float base = (Time.time / particleLife);
+			rand.setSeed(unit.id);
+			
+			Tmp.v1.trns(unit.rotation, unit.type.engineOffset * 1.25f);
+			
+			Draw.z(Layer.effect);
+			
+			Draw.color(Color.white, warmup * 0.6f);
+			
+			for(int i = 0; i < particles; i++){
+				float fin = (rand.random(1f) + base) % 1f * warmup, fout = 1f - fin;
+				float angle = unit.rotation + rand.range(60f) - 180;
+				float len = particleRad * Interp.pow2Out.apply(fin);
+				Lines.lineAngle(unit.x + Angles.trnsx(angle, len) + Tmp.v1.x, unit.y + Angles.trnsy(angle, len) + Tmp.v1.y, angle, particleLen * fout * warmup);
+			}
+			
+			Draw.z(z);
+		}
 	}
 }

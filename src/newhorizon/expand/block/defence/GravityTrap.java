@@ -1,7 +1,10 @@
 package newhorizon.expand.block.defence;
 
 import arc.Core;
+import arc.func.Boolp;
+import arc.func.Cons;
 import arc.func.Cons2;
+import arc.func.Prov;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
@@ -15,7 +18,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -29,6 +32,7 @@ import newhorizon.content.NHColor;
 import newhorizon.expand.vars.EventListeners;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.PosLightning;
+import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHFunc;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,20 +66,7 @@ public class GravityTrap extends Block{
 		Seq<TrapField> seq = NHFunc.getObjects(NHVars.world.gravityTraps);
 		
 		for(TrapField bi : seq){
-			GravityTrapBuild b = bi.build;
-			Draw.color(Pal.gray);
-			Lines.stroke(3);
-			Lines.poly(b.x, b.y, 6, b.range());
-		}
-		
-		for(TrapField bi : seq){
-			GravityTrapBuild b = bi.build;
-			Draw.color(b.team == Vars.player.team() ? Pal.lancerLaser : Pal.redderDust);
-			Draw.alpha(b.warmup / 12f);
-			Lines.stroke(1);
-			Fill.poly(b.x, b.y, 6, b.range());
-			Draw.alpha(1);
-			Lines.poly(b.x, b.y, 6, b.range());
+			bi.draw();
 		}
 		
 		Draw.color(Pal.gray);
@@ -152,6 +143,13 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
+		public void onRemoved(){
+			NHVars.world.gravityTraps.remove(field);
+			
+			super.onRemoved();
+		}
+		
+		@Override
 		public void draw(){
 			super.draw();
 			
@@ -188,30 +186,58 @@ public class GravityTrap extends Block{
 	}
 	
 	public static class TrapField implements Position, QuadTree.QuadTreeObject{
-		public final @NotNull GravityTrapBuild build;
+		public Cons<TrapField> drawer = e -> {};
+		public float x = 0, y = 0;
+		public float range = 120;
+		public Boolp activated = () -> true;
+		public Prov<Team> team = () -> Team.derelict;
+		
+		public boolean active(){return activated.get();}
+		
+		public void setPosition(Position position){
+			x = position.getX();
+			y = position.getY();
+		}
+		
+		public TrapField(){
+		
+		}
 		
 		public TrapField(@NotNull GravityTrapBuild build){
-			this.build = build;
+			setPosition(build);
+			activated = () -> build.active() && build.isValid();
+			team = () -> build.team;
+			range = build.range();
+		}
+		
+		public Team team(){
+			return team.get();
+		}
+		
+		public void draw(){
+			if(!active())return;
+			Draw.color(DrawFunc.markColor(team()));
+			Fill.poly(x, y, 6, range);
 		}
 		
 		@Override
 		public float getX(){
-			return build.x;
+			return x;
 		}
 		
 		@Override
 		public float getY(){
-			return build.y;
+			return y;
 		}
 		
 		@Override
 		public void hitbox(Rect out){
-			out.setSize(build.range() * 3).setCenter(build.x, build.y);
+			out.setSize(range * 3).setCenter(x, y);
 		}
 		
 		@Override
 		public String toString(){
-			return "TrapField{" + "build=" + build.id + '}';
+			return "TrapField{" + "pos(" + x + ", " + y + ")}";
 		}
 	}
 }

@@ -1,13 +1,15 @@
-#define THICK 1.25
-#define LEN 14.0
-#define SPACING 50.0
+#define HIGHP
 
-#define ALPHA 0.33
-#define STEP 2.5
+const float THICK = 1.05;
+const float LEN = 8.0;
+const float SPACING = 25.0;
 
-#define ALLY vec4(0.57, 0.68, 1.0, 1.0)
-#define HOSTILE vec4(1.0, 0.44, 0.41, 1.0)
-#define BOTH vec4(1, 0.82, 0.49, 1.0)
+const float ALPHA = 0.33;
+const float STEP = 2.5;
+
+const vec4 ALLY = vec4(0.57, 0.68, 1.0, 1.0);
+const vec4 HOSTILE = vec4(1.0, 0.44, 0.41, 1.0);
+const vec4 BOTH = vec4(1, 0.82, 0.49, 1.0);
 
 uniform sampler2D u_texture;
 uniform vec2 u_texsize;

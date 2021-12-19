@@ -5,10 +5,14 @@ import arc.graphics.g2d.TextureRegion;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
+import mindustry.graphics.CacheLayer;
 import newhorizon.NewHorizon;
 import newhorizon.util.feature.UpgradeData;
 
 public class NHContent extends Content{
+	public static CacheLayer
+			quantum;
+	
 	public static TextureRegion
 			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2;
 	
@@ -26,6 +30,8 @@ public class NHContent extends Content{
 	
 	public void load(){
 		if(Vars.headless)return;
+		
+		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum));
 		
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));

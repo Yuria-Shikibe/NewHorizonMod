@@ -439,7 +439,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.row();
 		
-		cont.button("Warp", () -> Groups.unit.each(WarpUnit::warp));
+		cont.button("Warp", () -> Groups.unit.each(u -> WarpUnit.warp(u, 45)));
 		
 		cont.button("Update Sort Map", () -> TileSortMap.registerTeam(Team.purple));
 		

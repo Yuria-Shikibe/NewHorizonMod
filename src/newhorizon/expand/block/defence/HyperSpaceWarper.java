@@ -565,10 +565,10 @@ public class HyperSpaceWarper extends Block{
 				y += vel.y;
 				
 				NHVars.world.gravityTraps.intersect(x - 4, y - 4, tilesize, tilesize, b -> {
-					if(b.build.team != team && b.build.active() && Intersector.isInsideHexagon(x, y, b.build.range() * 2f, b.getX(), b.getY())){
+					if(b.team() != team && b.active() && Intersector.isInsideHexagon(x, y, b.range * 2f, b.getX(), b.getY())){
 						intercepted = true;
 						toCarry.unit.damage(toCarry.unit.health * 0.3f);
-						PosLightning.createEffect(b.build, this, b.build.team.color, 2, PosLightning.WIDTH);
+						PosLightning.createEffect(b, this, b.team().color, 2, PosLightning.WIDTH);
 						NHFx.square45_4_45.at(x, y, team.color);
 					}
 				});

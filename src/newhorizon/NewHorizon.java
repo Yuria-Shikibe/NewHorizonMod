@@ -29,6 +29,7 @@ import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.ui.Hints;
 import newhorizon.util.ui.LatestFeature;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.Tables.LinkTable;
@@ -249,6 +250,8 @@ public class NewHorizon extends Mod{
 		ScreenHack.load();
 		
 		NHRegister.load();
+		
+		Vars.ui.hints.hints.addAll(Hints.DefaultHint.all);
 	}
 	
 	public void registerServerCommands(CommandHandler handler) {
@@ -381,8 +384,8 @@ public class NewHorizon extends Mod{
 		EntityRegister.load();
 		EventListeners.load();
 	    NHSounds.load();
-		NHContent.initLoad();
 		NHShaders.init();
+		NHContent.initLoad();
 		
 		for(ContentList contentList : content)contentList.load();
 		

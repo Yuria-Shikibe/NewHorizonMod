@@ -13,7 +13,6 @@ import mindustry.world.meta.BlockFlag;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHUnitTypes;
-import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.cutscene.events.*;
 import newhorizon.util.func.NHFunc;
 
@@ -34,21 +33,21 @@ public class EventSamples{
 			cannotBeRemove = true;
 		}};
 		
-		destroyGravityTraps = new DestroyObjectiveEvent("destroyGravityTraps"){{
-			targets = e -> {
-				Seq<Building> buildings = new Seq<>();
-				
-				NHFunc.getObjects(NHVars.world.gravityTraps).each(b -> {
-					if(b.build.team != Vars.state.rules.defaultTeam)buildings.add(b.build);
-				});
-				
-				return buildings;
-			};
-			
-			targetBlock = NHBlocks.gravityTrap;
-			cannotBeRemove = true;
-			
-		}};
+//		destroyGravityTraps = new DestroyObjectiveEvent("destroyGravityTraps"){{
+//			targets = e -> {
+//				Seq<Building> buildings = new Seq<>();
+//
+//				NHFunc.getObjects(NHVars.world.gravityTraps).each(b -> {
+//					if(b.team != Vars.state.rules.defaultTeam)buildings.add(b.build);
+//				});
+//
+//				return buildings;
+//			};
+//
+//			targetBlock = NHBlocks.gravityTrap;
+//			cannotBeRemove = true;
+//
+//		}};
 		
 		fleetApproaching = new FleetEvent("fleetApproaching"){{
 			reloadTime = 60 * 60 * 8;

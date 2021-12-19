@@ -15,6 +15,7 @@ ext{
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
+    gameData = 'E:/apps/mdt_data'
 
     doExec = { cmd ->
         def proc = cmd.execute(null, new File("$buildDir/libs"))
@@ -67,6 +68,23 @@ jar{
 
     from("assets/"){
         include "**"
+    }
+}
+
+task debug(type : Jar){
+    dependsOn jar
+
+    def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
+    def toDelete = new File("$gameData/mods/NewHorizonModDesktop.jar")
+    if(fi.exists()){
+        if(toDelete.exists())toDelete.delete()
+        fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")
+
+        try{
+            Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
+        }catch(IOException io){
+            System.out.print(io)
+        }
     }
 }
 

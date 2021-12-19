@@ -3,10 +3,8 @@ package newhorizon.expand.vars;
 import arc.Core;
 import arc.Events;
 import arc.func.Cons2;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Interval;
@@ -16,7 +14,6 @@ import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -27,7 +24,7 @@ import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.util.feature.ScreenHack;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
 
@@ -62,7 +59,13 @@ public class EventListeners{
 	}
 	
 	
+	public static transient boolean raid_setup;
+	
 	public static void load(){
+		Events.run(Triggers.raid_setup, () -> {
+			raid_setup = true;
+		});
+		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHVars.world.worldLoaded = true;
 			
@@ -90,6 +93,8 @@ public class EventListeners{
 		});
 		
 		if(Vars.headless)return;
+		
+		
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			if(caution){
@@ -126,22 +131,16 @@ public class EventListeners{
 				Seq<GravityTrap.TrapField> bi = NHFunc.getObjects(NHVars.world.gravityTraps);
 				
 				Draw.z(Layer.overlayUI + 0.1f);
-				for(GravityTrap.TrapField i : bi){
-					GravityTrap.GravityTrapBuild b = i.build;
-					Drawf.square(b.x, b.y, b.block.size * Vars.tilesize / 2f, b.team.color);
-				}
+				
 				Draw.reset();
 				
-				Draw.blend(Blending.additive);
+//				Draw.blend(Blending.additive);
 				Draw.z(Layer.light + 5);
 				for(GravityTrap.TrapField i : bi){
-					GravityTrap.GravityTrapBuild b = i.build;
-					if(!b.active())continue;
-					Draw.color(DrawFunc.markColor(b));
-					Fill.poly(b.x, b.y, 6, b.range());
+					i.draw();
 				}
 				Draw.reset();
-				Draw.blend();
+//				Draw.blend();
 			}
 		});
 		

@@ -889,7 +889,7 @@ public class NHFx{
 			}
 		}),
 
-		jumpTrail = new Effect(70f, 5000, e -> {
+		jumpTrail = new Effect(120f, 5000, e -> {
 			if (!(e.data instanceof UnitType))return;
 			UnitType type = e.data();
 			color(e.color);
@@ -898,9 +898,9 @@ public class NHFx{
 			
 			Tmp.v1.trns(e.rotation, -type.engineOffset);
 			
-			e.scaled(45, i -> {
-				DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 1.5f * i.fout(Interp.pow3InInverse), 2500, i.rotation - 180);
-				Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.75f * i.fout(Interp.pow3InInverse));
+			e.scaled(100, i -> {
+				DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 1.5f * i.fout(Interp.slowFast), 3000, i.rotation - 180);
+				Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.75f * i.fout(Interp.slowFast));
 			});
 
 			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));

@@ -24,7 +24,6 @@ import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
-import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -32,7 +31,10 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
 import mindustry.gen.*;
-import mindustry.graphics.*;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.MultiPacker;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
@@ -45,7 +47,10 @@ import newhorizon.expand.bullets.*;
 import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.feature.ScreenHack;
-import newhorizon.util.func.*;
+import newhorizon.util.func.DrawFunc;
+import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHPixmap;
+import newhorizon.util.func.NHSetting;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -569,7 +574,7 @@ public class NHUnitTypes implements ContentList{
 							}
 						});
 						
-						hitEffect = new MultiEffect(NHFx.circleOut(backColor, rad * 1.5f), NHFx.blast(backColor, rad));
+						hitEffect = new MultiEffect(NHFx.circleOut(backColor, rad * 1.5f), NHFx.blast(backColor, rad), NHFx.hitSpark(backColor, 120f, 40, rad * 1.7f, 2.5f, 12f));
 						despawnEffect = NHFx.crossBlast(backColor, rad * 1.8f, 45);
 					}
 						@Override public float range(){return maxRange;}
@@ -1530,168 +1535,7 @@ public class NHUnitTypes implements ContentList{
 				x = y = shootX = shootY = 0;
 				reload = 120f;
 				shootSound = NHSounds.blaster;
-				bullet = new SpeedUpBulletType(0.25f, 160){
-					{
-						width = 22f;
-						height = 40f;
-						
-						func = NHInterp.inOut;
-						
-						pierceCap = 3;
-						splashDamage = damage / 4;
-						splashDamageRadius = 24f;
-						
-						trailLength = 30;
-						trailWidth = 3f;
-						
-						accelerateBegin = 0.4f;
-						accelerateEnd = 0.75f;
-						
-						velocityBegin = 1.85f;
-						velocityIncrease = 12f;
-						
-						lifetime = 220f;
-						
-						trailEffect = new Effect(28f, 50f, e -> {
-							Rand rand = NHFunc.rand;
-							rand.setSeed(e.id);
-							Draw.color(e.color);
-							for(int i : Mathf.signs){
-								float ang = e.rotation - 180 + rand.random(10, 45) * i;
-								Tmp.v1.trns(ang, rand.random(4, 14)).scl(0.3f + e.fin(Interp.pow3Out)).add(e.x, e.y);
-								DrawFunc.arrow(Tmp.v1.x, Tmp.v1.y, rand.random(3, 6.5f) * e.fout(), rand.random(17, 28) * e.fout(Interp.pow3Out) * Mathf.curve(e.fin(), 0, 0.05f), rand.random(-4, -8) * e.fout(), ang);
-							}
-						});
-						
-						trailRotation = true;
-						trailChance = 0.35f;
-						trailParam = 5f;
-						
-						homingRange = 640F;
-						homingPower = 0.1f;
-						homingDelay = 5;
-						
-						lightning = 3;
-						lightningLengthRand = 10;
-						lightningLength = 5;
-						lightningDamage = damage / 4;
-						
-						shootEffect = smokeEffect = Fx.none;
-						hitEffect = despawnEffect = new MultiEffect(new Effect(65f, b -> {
-							Draw.color(b.color);
-							
-							Fill.circle(b.x, b.y, 6f * b.fout(Interp.pow3Out));
-							
-							Angles.randLenVectors(b.id, 6, 35 * b.fin() + 5, (x, y) -> Fill.circle(b.x + x, b.y + y, 4 * b.fout(Interp.pow2Out)));
-						}), NHFx.hitSparkLarge);
-						
-						despawnHit = false;
-					}
-					
-					@Override
-					public float range(){
-						return 480;
-					}
-					
-					@Override
-					public void hit(Bullet b, float x, float y){
-						b.hit = true;
-						hitEffect.at(x, y, b.rotation(), b.team.color);
-						hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
-						
-						Effect.shake(hitShake, hitShake, b);
-						
-						if(splashDamageRadius > 0 && !b.absorbed){
-							Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
-							
-							if(status != StatusEffects.none){
-								Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
-							}
-						}
-						
-						for(int i = 0; i < lightning; i++)Lightning.create(b, b.team.color, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
-						
-						if(!(b.owner instanceof Unit))return;
-						Unit from = (Unit)b.owner;
-						if(from.dead || !from.isAdded() || from.healthf() > 0.99f) return;
-						NHFx.chainLightningFade.at(b.x, b.y, Mathf.random(12, 20), b.team.color, from);
-						from.heal(damage / 8);
-					}
-					
-					@Override
-					public void despawned(Bullet b){
-						despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
-						Effect.shake(despawnShake, despawnShake, b);
-					}
-					
-					@Override
-					public void removed(Bullet b){
-						if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-							Fx.trailFade.at(b.x, b.y, trailWidth, b.team.color, b.trail.copy());
-						}
-					}
-					
-					@Override
-					public void init(Bullet b) {
-						super.init(b);
-						b.vel.rotate(Mathf.range(180));
-					}
-					
-					public void drawTrail(Bullet b){
-						if(trailLength > 0 && b.trail != null){
-							float z = Draw.z();
-							Draw.z(z - 0.0002f);
-							b.trail.draw(b.team.color, trailWidth);
-							Draw.z(z);
-						}
-					}
-					
-					@Override
-					public void draw(Bullet b) {
-						drawTrail(b);
-
-						Draw.color(b.team.color, Color.white, 0.85f);
-						DrawFunc.arrow(b.x, b.y, 5, 35, -5, b.rotation());
-						Draw.color(b.team.color);
-						DrawFunc.arrow(b.x, b.y, 5, 35, 5 * (-1 + b.fin() * 2), b.rotation());
-						
-						Draw.reset();
-					}
-					
-					@Override
-					public void update(Bullet b) {
-						if(!headless && trailLength > 0){
-							if(b.trail == null){
-								b.trail = new Trail(trailLength);
-							}
-							b.trail.length = trailLength;
-							b.trail.update(b.x, b.y, trailInterp.apply(b.fin()));
-						}
-						
-						b.vel.setLength(velocityBegin + func.apply(b.fin()) * velocityIncrease);
-						
-						if(homingPower > 0.0001f && b.time >= homingDelay){
-							Runnable aim = () -> {
-								Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, e -> ((e.isGrounded() && collidesGround) || (e.isFlying() && collidesAir)) && !b.collided.contains(e.id), t -> collidesGround);
-								if(target != null){
-									b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(target), homingPower * Time.delta * 60f * b.fin()));
-								}
-							};
-							
-							if(b.owner instanceof Unit){
-								Unit u = (Unit)b.owner;
-								if(u.isShooting())b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(u.aimX, u.aimY), homingPower * Time.delta * 60f * b.fin()));
-								else aim.run();
-							}else aim.run();
-						}
-						
-						if(trailChance > 0){
-							if(Mathf.chanceDelta(trailChance)){
-								trailEffect.at(b.x, b.y, b.rotation(), b.team.color);
-							}
-						}
-					}
-				};
+				bullet = NHBullets.guardianBullet;
 			}}, new Weapon(){{
 				shootCone = 10;
 				predictTarget = false;
@@ -1709,6 +1553,8 @@ public class NHUnitTypes implements ContentList{
 				shootSound = Sounds.none;
 				
 				bullet = new StrafeLaser(300f){
+					
+					
 					@Override
 					public float range(){
 						return 480;
@@ -1735,19 +1581,20 @@ public class NHUnitTypes implements ContentList{
 					
 					@Override
 					public void draw(Bullet b){
+						Tmp.c1.set(b.team.color).lerp(Color.white, Mathf.absin(4f, 0.3f));
+						
 						super.draw(b);
 						
 						Draw.z(Layer.effect);
 						
 						float fout = b.fout(0.25f) * Mathf.curve(b.fin(), 0, 0.125f);
 						
-						Draw.color(b.team.color);
+						Draw.color(Tmp.c1);
 						Fill.circle(b.x, b.y, width / 1.225f * fout);
 						
 						if(b.owner instanceof Unit){
 							Unit unit = (Unit)b.owner;
 							if(!unit.dead){
-								Draw.color(Tmp.c1.set(b.team.color).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
 								Draw.z(Layer.bullet);
 								Lines.stroke((width / 3 + Mathf.absin(Time.time, 4, 0.8f)) * fout);
 								Lines.line(b.x, b.y, unit.x, unit.y, false);
@@ -1766,6 +1613,8 @@ public class NHUnitTypes implements ContentList{
 						Fill.circle(b.x, b.y, width / 2.125f * fout);
 						
 						Draw.z(Layer.bullet);
+						
+						Draw.reset();
 					}
 				};
 			}
@@ -1873,7 +1722,7 @@ public class NHUnitTypes implements ContentList{
 					for(int i = 0; i < shots; i++){
 						float shootX = oX + rand.range(hitSize * 2), shootY = oY + rand.range(hitSize * 2);
 						
-						bullet(unit, shootX, shootY, rotation, 1).fdata = bullet.maxRange * rand.random(1, 1.25f);
+						bullet(unit, shootX, shootY, rotation, 1);
 						
 						
 						Effect.shake(shake, shake, shootX, shootY);
