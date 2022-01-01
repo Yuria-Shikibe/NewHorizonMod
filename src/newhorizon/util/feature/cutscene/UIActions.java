@@ -534,7 +534,10 @@ public class UIActions{
 				}
 			}
 			
-			if(!headless)control.input.frag.config.hideConfig();
+			if(!headless){
+				control.input.frag.inv.hide();
+				control.input.frag.config.hideConfig();
+			}
 			
 			CutsceneScript.isPlayingCutscene = true;
 			currentActions = acts;
