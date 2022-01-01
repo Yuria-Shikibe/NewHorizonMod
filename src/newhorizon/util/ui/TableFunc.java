@@ -4,6 +4,7 @@ import arc.Core;
 import arc.audio.Sound;
 import arc.func.Boolp;
 import arc.func.Cons;
+import arc.func.Floatp;
 import arc.func.Prov;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -24,10 +25,7 @@ import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Image;
-import arc.scene.ui.Label;
-import arc.scene.ui.ScrollPane;
-import arc.scene.ui.TextArea;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
@@ -106,7 +104,8 @@ public class TableFunc{
                     label.setText(Core.bundle.get("waves.perspawn") + ": [accent]" + spawnNum + "[]* | At: " + (int)point.x + ", " + (int)point.y);
                     label.setWidth(getWidth());
                 });
-                add(label).growX().fillY().pad(OFFSET).row();
+                add(label).growX().fillY().pad(OFFSET).align(Align.topLeft).row();
+                button("Copy Coords", Icon.copy, Styles.transt, () -> Core.app.setClipboardText((int)point.x + ", " + (int)point.y)).growX().fillY().row();
     
                 pane(con -> {
                     con.button(Icon.leftOpen, Styles.clearPartiali, () -> spawnNum = Mathf.clamp(--spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
@@ -598,6 +597,18 @@ public class TableFunc{
             Time.runTask((duration - since) / 1000f * 60f, run);
             lastToast += duration;
         }
+    }
+    
+    public static void countdown(Element e, Floatp remainTime){
+        e.addListener(new Tooltip(t2 -> {
+            t2.background(Tex.bar);
+            t2.color.set(Color.black);
+            t2.color.a = 0.35f;
+            t2.add("Remain Time: 00:00 ").update(l -> {
+                float remain = remainTime.get();
+                l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + Mathf.floor(remain / Time.toMinutes) + ":" + Mathf.floor((remain % Time.toMinutes) / Time.toSeconds));
+            }).left().fillY().growX().row();
+        }));
     }
     
     public static void showToast(Drawable icon, String text, Sound sound){

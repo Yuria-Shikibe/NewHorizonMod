@@ -1352,6 +1352,8 @@ public class NHBullets implements ContentList{
 			trailLength = 15;
 			trailWidth = 3f;
 			drawSize = 300f;
+			
+			inaccuracy = 0;
 		}};
 		
 		curveBomb = new SpeedUpBulletType(4, 80f, "shell"){{
@@ -1584,7 +1586,16 @@ public class NHBullets implements ContentList{
 			hitEffect = NHFx.largeDarkEnergyHit;
 			shootEffect = NHFx.darkEnergyShootBig;
 			smokeEffect = NHFx.darkEnergySmokeBig;
-		}};
+		}
+			
+			@Override
+			public void draw(Bullet b){
+				Draw.color(backColor);
+				DrawFunc.surround(b.id, b.x, b.y, size * 1.45f, 14, 7,11, b.fin(NHInterp.parabola4Reversed));
+			
+				super.draw(b);
+			}
+		};
 		
 		empBlot2 = new EmpBulletType(){{
 			sprite = CIRCLE_BOLT;
@@ -1663,17 +1674,17 @@ public class NHBullets implements ContentList{
 				float rot = b.fout(Interp.pow10In);
 				
 				float chargeCircleFrontRad = 20;
-				float width = chargeCircleFrontRad * 2;
-				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 7f);
+				float width = chargeCircleFrontRad * 1.2f;
+				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 4.5f);
 				
 				float rotAngle = b.fdata;
 				
 				for(int i : Mathf.signs){
-					DrawFunc.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i - 45);
+					DrawFunc.tri(b.x, b.y, width * b.foutpowdown(), 200 + 570 * extend, rotAngle + 90 * i - 45);
 				}
 				
 				for(int i : Mathf.signs){
-					DrawFunc.tri(b.x, b.y, width * b.foutpowdown(), 300 + 700 * extend, rotAngle + 90 * i + 45);
+					DrawFunc.tri(b.x, b.y, width * b.foutpowdown(), 200 + 570 * extend, rotAngle + 90 * i + 45);
 				}
 				
 				if(NHSetting.enableDetails()){
@@ -1690,7 +1701,7 @@ public class NHBullets implements ContentList{
 				Lines.circle(b.x, b.y, rad);
 				
 				Draw.color(Color.white);
-				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 9f);
+				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 6.5f);
 				
 				Drawf.light(b.team, b.x, b.y, rad, hitColor, 0.5f);
 			}
@@ -1726,7 +1737,7 @@ public class NHBullets implements ContentList{
 					Team team = b.team;
 					for(int k = 0; k < 7; k++){
 						Time.run(Mathf.random(6f, 12f) * k, () -> {
-							if(Mathf.chanceDelta(0.4f)) hitSound.at(vec2.x, vec2.y, hitSoundPitch, hitSoundVolume);
+							if(Mathf.chanceDelta(0.4f))hitSound.at(vec2.x, vec2.y, hitSoundPitch, hitSoundVolume);
 							despawnSound.at(vec2);
 							Effect.shake(hitShake, hitShake, vec2);
 							
@@ -1780,7 +1791,7 @@ public class NHBullets implements ContentList{
 				scaleVelocity = true;
 				splashDamageRadius = 400f;
 				hitColor = lightColor = lightningColor = trailColor = NHColor.darkEnrColor;
-				Effect effect = NHFx.crossBlast(hitColor, 720f);
+				Effect effect = NHFx.crossBlast(hitColor, 420f, 45);
 				effect.lifetime += 180;
 				despawnEffect = NHFx.circleOut(hitColor, splashDamageRadius);
 				hitEffect = new MultiEffect(new Effect(180F, 600f, e -> {

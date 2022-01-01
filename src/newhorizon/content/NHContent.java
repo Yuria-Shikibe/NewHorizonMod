@@ -19,7 +19,16 @@ public class NHContent extends Content{
 	public static TextureRegion //UI
 		raid, objective, fleet;
 	
-	public static void initLoad(){
+	public static void loadModContent(){
+		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum){
+//			@Override
+//			public void end(){
+//				super.end();
+//				Draw.flush();
+//				Vars.renderer.blocks.floor.beginDraw();
+//			}
+		});
+		
 		new NHContent().load();
 	}
 	
@@ -30,8 +39,6 @@ public class NHContent extends Content{
 	
 	public void load(){
 		if(Vars.headless)return;
-		
-		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum));
 		
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));

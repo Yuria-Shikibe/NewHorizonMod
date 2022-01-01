@@ -23,7 +23,7 @@ import newhorizon.util.feature.cutscene.UIActions;
 
 import static mindustry.Vars.state;
 
-public class ScreenHack{
+public class ScreenInterferencer{
 	private static final float coolDown = 30 * Time.toSeconds;
 	private static float hackLifetime = 0f;
 	private static float hackRemainTime = 0f, reloadTime = 0;
@@ -152,7 +152,7 @@ public class ScreenHack{
 		
 		reloadTime = Math.max(coolDown, time * 2);
 		
-		Events.fire(ScreenHack.ScreenHackEvent.class, new ScreenHack.ScreenHackEvent(time));
+		Events.fire(ScreenInterferencer.ScreenHackEvent.class, new ScreenInterferencer.ScreenHackEvent(time));
 	}
 	
 	public static void continueGenerate(){

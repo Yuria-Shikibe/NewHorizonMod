@@ -65,9 +65,11 @@ public class GravityTrap extends Block{
 	public void drawPlace(int x, int y, int rotation, boolean valid){
 		Seq<TrapField> seq = NHFunc.getObjects(NHVars.world.gravityTraps);
 		
+		Draw.z(Layer.light + 5);
 		for(TrapField bi : seq){
 			bi.draw();
 		}
+		Draw.z(Layer.overlayUI);
 		
 		Draw.color(Pal.gray);
 		Lines.stroke(3);

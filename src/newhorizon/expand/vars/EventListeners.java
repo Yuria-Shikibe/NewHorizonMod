@@ -23,7 +23,7 @@ import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.special.RemoteCoreStorage;
-import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
@@ -105,12 +105,12 @@ public class EventListeners{
 		});
 
 		Events.run(EventType.Trigger.update, () -> {
-			ScreenHack.update();
+			ScreenInterferencer.update();
 			NHSetting.update();
 		});
 		
-		Events.on(ScreenHack.ScreenHackEvent.class, e -> {
-			ScreenHack.generate(e.time);
+		Events.on(ScreenInterferencer.ScreenHackEvent.class, e -> {
+			ScreenInterferencer.generate(e.time);
 		});
 		
 		kickWarn = Core.bundle.get("mod.ui.requite.need-override");

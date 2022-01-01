@@ -44,6 +44,7 @@ const ObjectiveEventClass = loadClass("newhorizon.util.feature.cutscene.events.O
 const RaidEventClass = loadClass("newhorizon.util.feature.cutscene.events.RaidEvent");
 const SignalEventClass = loadClass("newhorizon.util.feature.cutscene.events.SignalEvent");
 const DestroyObjectiveEventClass = loadClass("newhorizon.util.feature.cutscene.events.DestroyObjectiveEvent");
+const SimpleReloadEventClass = loadClass("newhorizon.util.feature.cutscene.events.SimpleReloadEvent");
 
 const OFFSET = 12;
 const LEN = 60;
@@ -55,5 +56,42 @@ const world = Vars.world;
 function newEvent(name, args){
     return extend(CutsceneEventClass, name, args);
 }
+
+function playerInit(run){
+    CutsceneScript.curIniter.add(run);
+}
+
+function playerUpdate(run){
+    CutsceneScript.curUpdater.add(run);
+}
+
+function playerEnd(run){
+    CutsceneScript.curEnder.add(run);
+}
+
+function runOnce(tag, run){
+    CutsceneScript.runEventOnce(tag, run);
+}
+
+function bigEventLaunch(actions){
+    const events = new Seq(actions.length + 2);
+
+    events.add(UIActions.startCutsceneDefault());
+    events.addAll(actions);
+    events.add(UIActions.endCutsceneDefault());
+
+    UIActions.actionSeq(events.toArray(Action));
+}
+
+function actionSeq(actions){
+    return UIActions.actionSeq(actions);
+}
+
+function actionSeqMinor(actions){
+    return UIActions.actionSeqMinor(actions);
+}
+
+function enemyTeam(){return Vars.state.rules.waveTeam;}
+function allyTeam(){return Vars.state.rules.defaultTeam;}
 
 Log.info("Loaded Cutscene Class Vault");

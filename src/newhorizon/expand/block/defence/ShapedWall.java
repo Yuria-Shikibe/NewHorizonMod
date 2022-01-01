@@ -17,7 +17,6 @@ import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.world.blocks.defense.Wall;
-import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 
 import static mindustry.Vars.tilesize;
@@ -64,6 +63,7 @@ public class ShapedWall extends Wall{
 	public void load(){
 		super.load();
 		sprites.put(defaultKey, Core.atlas.find(name));
+		
 		loop: for(int i = 0; i < 256; i ++){
 			String key = Integer.toBinaryString(i);
 			StringBuilder builder = new StringBuilder();
@@ -163,7 +163,7 @@ public class ShapedWall extends Wall{
 		
 		public void drawTeam() {
 			Draw.color(this.team.color);
-			Draw.rect(NewHorizon.name("block-team-center"), x, y);
+			Fill.square(x, y, 1.015f, 45);
 			Draw.color();
 		}
 		
@@ -220,18 +220,9 @@ public class ShapedWall extends Wall{
 			}
 		}
 		
-		@Override
-		public void placed(){
-			super.placed();
-			
-			initSeq();
-			
-			updateIndexKey(true);
-		}
-		
 		public void initSeq(){
-			if(proximityWalls.size < 8){
-				proximityWalls.clear();
+			if(proximityWalls.size != 8){
+				proximityWalls = new BoolSeq(8);
 				for(int i = 0; i < 8; i++){
 					proximityWalls.add(false);
 				}

@@ -46,7 +46,9 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class FleetEvent extends CutsceneEvent{
 	public ObjectMap<UnitType, Number> unitTypeMap = ObjectMap.of();
 	public Func<CutsceneEventEntity, Team> teamFunc = e -> Vars.state.rules.waveTeam;
+	
 	public Func<CutsceneEventEntity, Position> targetFunc = e -> new Vec2(-120, -120);
+	
 	public Func<CutsceneEventEntity, Position> sourceFunc = e -> {
 		Team team = teamFunc.get(e);
 		CoreBlock.CoreBuild coreBuild = team.core();
@@ -58,6 +60,7 @@ public class FleetEvent extends CutsceneEvent{
 		
 		return Geometry.findFurthest(coreBuild.x, coreBuild.y, Vars.state.rules.waveTeam.cores());
 	};
+	
 	public Func<CutsceneEventEntity, Float> angle = e -> {
 		Position source = sourceFunc.get(e), target = targetFunc.get(e);
 		if(source == null || target == null)return 45f;
@@ -132,7 +135,7 @@ public class FleetEvent extends CutsceneEvent{
 		
 		UIActions.actionSeqMinor(Actions.parallel(
 			UIActions.cautionAt((e).getX(), (e).getY(), 4, 3, team.color),
-			UIActions.labelAct("[accent]Caution[]: @@@Fleet Incoming.", 0.75f, 2.25f, Interp.linear, t -> {
+			UIActions.labelAct("[accent]Caution[]: Fleet Incoming.", 0.75f, 2.25f, Interp.linear, t -> {
 			t.image(NHContent.fleet).size(LEN).padRight(OFFSET);
 		})));
 		

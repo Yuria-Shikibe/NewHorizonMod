@@ -6,12 +6,11 @@ import arc.util.Nullable;
 import arc.util.Structs;
 import mindustry.Vars;
 import mindustry.ui.fragments.HintsFragment;
-import newhorizon.expand.vars.EventListeners;
 
 public class Hints{
 	
 	public enum DefaultHint implements HintsFragment.Hint{
-		raid_setup(visibleAll, () -> EventListeners.raid_setup)
+//		raid_setup(visibleAll, () -> EventListeners.raid_setup)
 		;
 		
 		public static boolean[] toBeTrigger = new boolean[values().length];

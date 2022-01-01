@@ -3,8 +3,10 @@ package newhorizon.expand.bullets;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import mindustry.Vars;
+import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
+import mindustry.gen.Sounds;
 import newhorizon.content.NHFx;
 
 
@@ -13,11 +15,18 @@ public class ShieldBreaker extends SpeedUpBulletType{
     
     protected static BulletType breakType = new EffectBulletType(3f){{
         this.absorbable = true;
+        collides = false;
+        lifetime = 8f;
+        drawSize = 0;
         this.damage = 1;
     }
         @Override
         public void despawned(Bullet b){
-            if(b.absorbed && b.data instanceof Color)NHFx.shuttle.at(b.x, b.y, Mathf.random(360f), (Color)b.data, b.damage / Vars.tilesize / 2f);
+            if(b.absorbed && b.data instanceof Color){
+                NHFx.shuttle.at(b.x, b.y, Mathf.random(360f), (Color)b.data, b.damage / Vars.tilesize / 2f);
+                Effect.shake(b.damage / 100, b.damage / 100, b);
+                Sounds.plasmaboom.at(b);
+            }
         }
     };
     

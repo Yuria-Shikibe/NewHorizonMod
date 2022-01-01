@@ -52,7 +52,6 @@ import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHFunc;
-import newhorizon.util.func.NHSetting;
 import newhorizon.util.ui.TableFunc;
 
 import static mindustry.Vars.*;
@@ -431,6 +430,20 @@ public class HyperSpaceWarper extends Block{
 		
 		protected transient boolean onGoing = true;
 		
+		public static void create(Unit unit, Vec2 to, float rot){
+			Carrier c = Pools.obtain(Carrier.class, Carrier::new);
+			c.init(unit, to, rot);
+			c.set(unit);
+			c.add();
+		}
+		
+		public static void create(Unit unit, Vec2 to){
+			Carrier c = Pools.obtain(Carrier.class, Carrier::new);
+			c.init(unit, to, unit.angleTo(to));
+			c.set(unit);
+			c.add();
+		}
+		
 		public void init(Unit unit, Vec2 to, float rotation){
 			finalRot = rotation;
 			size = unit.hitSize * 2f;
@@ -450,7 +463,7 @@ public class HyperSpaceWarper extends Block{
 		@Override
 		public void draw(){
 			Draw.z(Layer.effect);
-			if(NHSetting.enableDetails() && ((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2)) && onGoing){
+			if((!complete && time > lifetime / 2) || onMove || (contained && time < lifetime / 2) && onGoing){
 				trail.draw(team.color, 4f);
 			}
 			
@@ -557,7 +570,7 @@ public class HyperSpaceWarper extends Block{
 			}
 			
 			if(onMove && contained){
-				if(NHSetting.enableDetails())trail.update(x, y);
+				if(!headless)trail.update(x, y);
 				
 				vel.set(to).sub(x, y).nor().scl(dstPerMove * Time.delta);
 				

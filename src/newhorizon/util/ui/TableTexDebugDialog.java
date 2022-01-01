@@ -7,6 +7,7 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.scene.Action;
 import arc.scene.actions.Actions;
 import arc.scene.style.Drawable;
@@ -33,9 +34,10 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NewHorizon;
+import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.vars.TileSortMap;
 import newhorizon.util.feature.InternalTools;
-import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.feature.WarpUnit;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.UIActions;
@@ -258,7 +260,7 @@ public class TableTexDebugDialog extends BaseDialog{
 			dialog.setFillParent(true);
 			dialog.cont.pane(t -> {
 				setFillParent(true);
-				float unitLength = 1.5f;
+				float unitLength = 2f;
 				float offset = 70 * unitLength;
 				float len = 100;
 				float sigs = 100;
@@ -353,7 +355,7 @@ public class TableTexDebugDialog extends BaseDialog{
 		});
 		
 		cont.button("Hack", () -> {
-			ScreenHack.generate(360);
+			ScreenInterferencer.generate(360);
 		});
 		
 		cont.button("Weathers", () -> {
@@ -443,7 +445,13 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("Update Sort Map", () -> TileSortMap.registerTeam(Team.purple));
 		
+		cont.button("Analyses Sort Map", () -> TileSortMap.getTeamMap(Team.purple).analysis());
+		
 		cont.button("Show Sort Map", () -> TileSortMap.getTeamMap(Team.purple).showAsDialog(TileSortMap.ValueCalculator.healthSqrt));
+		
+		cont.row();
+		
+		cont.button("Hyper Warp", () -> Groups.unit.each(u -> HyperSpaceWarper.Carrier.create(u, new Vec2().set(player))));
 		
 		addCloseButton();
 	}

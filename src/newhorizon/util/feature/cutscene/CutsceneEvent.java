@@ -161,7 +161,9 @@ public class CutsceneEvent implements Cloneable{
 			t.add(e.infoT).growX().fillY();
 			t.row().image().growX().height(OFFSET / 3).pad(OFFSET / 2).color(Color.lightGray).row();
 			t.table(i -> {
-				i.button("RUN", Icon.play, Styles.transt, e::act).growX().height(LEN - OFFSET);
+				i.defaults().growX().height(LEN - OFFSET);
+				i.button("RUN", Icon.play, Styles.transt, e::act);
+				i.button("REMOVE", Icon.cancel, Styles.transt, e::remove);
 			}).growX().fillY();
 		}).growX().fillY();
 	}

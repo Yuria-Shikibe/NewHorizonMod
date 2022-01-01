@@ -207,6 +207,16 @@ public class NHFunc{
         }
     }
     
+    public static void squareAbs(int startX, int startY, int endX, int endY, Intc2 cons) {
+        if(startX > endX || startY > endY)throw new IllegalArgumentException("MIN > MAX");
+        for(int dx = startX; dx <= endX; ++dx) {
+            for(int dy = startY; dy <= endY; ++dy) {
+//                Log.info(dy + dx * (endY - startY) + "/" + (endX - startX) * (endY - startY));
+                cons.get(dx, dy);
+            }
+        }
+    }
+    
     /**
      * @param height Half of the total height
      * @param width  Half of the total width

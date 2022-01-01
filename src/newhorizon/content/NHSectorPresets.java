@@ -10,6 +10,7 @@ import arc.scene.Action;
 import arc.scene.actions.Actions;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Blocks;
@@ -37,7 +38,7 @@ public class NHSectorPresets implements ContentList{
 	public static ObjectMap<SectorPreset, Cons<Sector>> captureMap = new ObjectMap<>(), loseMap = new ObjectMap<>();
 	
 	public static SectorPreset
-		hostileHQ, downpour, luminariOutpost, quantumCraters, ruinedWarehouse, shatteredRavine, deltaHQ, mainPath, ancientBattefield;
+		hostileHQ, downpour, luminariOutpost, quantumCraters, ruinedWarehouse, shatteredRavine, deltaHQ, mainPath, ancientBattefield, primaryBase;
 	
 	protected static Fi scriptsDic = null;
 	
@@ -67,6 +68,25 @@ public class NHSectorPresets implements ContentList{
 			}
 		}));
 		
+		primaryBase = new NHSectorPreset("primary-base", NHPlanets.midantha, 46){{
+			addStartingItems = true;
+			difficulty = 4;
+			
+			rules = r -> {
+				r.winWave = -1;
+			};
+			
+			CutsceneScript.initer.put(this, Seq.with(() -> {
+				state.rules.waves = true;
+				state.getSector().info.wasCaptured = false;
+				state.getSector().info.waves = true;
+				Log.info(state.getSector().isCaptured());
+			}));
+			
+			loseMap.put(this, NHSectorPresets::resetSector);
+			CutsceneScript.presentJS.put(this, loadJS(name));
+		}};
+		
 		ancientBattefield = new NHSectorPreset("ancient-battefield", NHPlanets.midantha, 96){{
 			addStartingItems = true;
 			difficulty = 10;
@@ -91,7 +111,7 @@ public class NHSectorPresets implements ContentList{
 									NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.team().core()), 120f, 360f, 30f, NHUnitTypes.destruction, 6);
 								}),
 								UIActions.labelAct(
-									"[accent]Caution[]: @@@Hostile Fleet Incoming."
+									"[accent]Caution[]: Hostile Fleet Incoming."
 									, 0.75f, 3.26f, Interp.linear, t -> {
 										t.image(Icon.warning).padRight(OFFSET);
 									}
@@ -110,7 +130,7 @@ public class NHSectorPresets implements ContentList{
 							UIActions.startCutsceneDefault(),
 							UIActions.moveTo(316, 612, 1f, Interp.pow3Out),
 							UIActions.labelAct(
-								"[accent]Objective[]: @@@Use the limited resources and these gates to defeat enemies."
+								"[accent]Objective[]: Use the limited resources and these gates to defeat enemies."
 								, 0.75f, 3.25f, Interp.linear, t -> {
 									t.image(Icon.download).size(LEN - OFFSET);
 									t.image(Icon.upOpen).size(LEN - OFFSET);
@@ -119,7 +139,7 @@ public class NHSectorPresets implements ContentList{
 							),
 							UIActions.moveTo(316, 3712, 6f, Interp.pow3Out),
 							UIActions.labelAct(
-								"[accent]Objective[]: @@@Destroy Enemy Base!"
+								"[accent]Objective[]: Destroy Enemy Base!"
 								, 0.75f, 4.75f, Interp.linear, t -> {
 									t.image(Icon.warning).padRight(OFFSET);
 								}
@@ -192,7 +212,7 @@ public class NHSectorPresets implements ContentList{
 									Actions.sequence(
 										Actions.parallel(
 											UIActions.labelAct(
-													"[accent]Caution[]: @@@Flagship Group Incoming.",
+													"[accent]Caution[]: Flagship Group Incoming.",
 													0.75f, 6.25f, Interp.linear, t -> {
 														t.image(Icon.warning).padRight(OFFSET);
 													}),
@@ -211,7 +231,7 @@ public class NHSectorPresets implements ContentList{
 												NHFunc.spawnUnit(state.rules.waveTeam, sX, sY, 225, 300f, 180f, 90f, NHUnitTypes.collapser, 4);
 											}),
 											UIActions.labelActFull(
-											"[accent]Caution[]: @@@Collapsers Approaching",
+											"[accent]Caution[]: Collapsers Approaching",
 											0.75f, 6.25f, Interp.linear, Interp.one, t -> {
 												t.image(Icon.warning).padRight(OFFSET);
 											})
@@ -244,7 +264,7 @@ public class NHSectorPresets implements ContentList{
 								UIActions.holdCamera(core.x, core.y, 8f),
 								Actions.sequence(
 									UIActions.labelAct(
-											"[accent]Caution[]: @@@Reinforcements Incoming."
+											"[accent]Caution[]: Reinforcements Incoming."
 											, 0.75f, 3.25f, Interp.linear, t -> {
 												t.image(Icon.warning).padRight(OFFSET);
 											}
@@ -257,7 +277,7 @@ public class NHSectorPresets implements ContentList{
 											NHFunc.spawnUnit(core.team, core.x, core.y, core.angleTo(player.core()), 240f, 60f, 30f, NHUnitTypes.guardian, 2);
 										}),
 										UIActions.labelActFull(
-											"[accent]Caution[]: @@@Multiple hostile units detected."
+											"[accent]Caution[]: Multiple hostile units detected."
 											, 0.75f, 3.25f, Interp.linear, Interp.one, t -> {
 												t.image(Icon.warning).padRight(OFFSET);
 											}
@@ -285,7 +305,7 @@ public class NHSectorPresets implements ContentList{
 								UIActions.cautionAt(1416, 1968, tilesize / 2f, 3.5f, Pal.heal),
 								UIActions.cautionAt(1512, 2040, tilesize / 2f, 3.5f, Pal.heal),
 								UIActions.labelAct(
-									"[accent]Caution[]: @@@Don't destroy these [accent]Power Voids[] unless you have sufficient military power."
+									"[accent]Caution[]: Don't destroy these [accent]Power Voids[] unless you have sufficient military power."
 									, 0.75f, 4.26f, Interp.linear, t -> {
 										t.image(Icon.warning).padRight(OFFSET);
 									}
@@ -297,7 +317,7 @@ public class NHSectorPresets implements ContentList{
 								UIActions.cautionAt(1864, 2032, tilesize * 3 / 2f, 3.5f, Pal.power),
 								UIActions.cautionAt(1512, 2040, tilesize / 2f, 3.5f, Pal.heal),
 								UIActions.labelAct(
-									"[accent]Caution[]: @@@These [accent]Power Voids[] are linked to specific [sky]Jump Gates[]\nDestroy these voids will make these gates start to spawn units."
+									"[accent]Caution[]: These [accent]Power Voids[] are linked to specific [sky]Jump Gates[]\nDestroy these voids will make these gates start to spawn units."
 									, 0.75f, 3.25f, Interp.linear, t -> {
 										t.image(NHBlocks.disposePowerVoid.fullIcon).size(LEN - OFFSET);
 										t.image(Icon.rightOpen).size(LEN - OFFSET);
@@ -314,7 +334,7 @@ public class NHSectorPresets implements ContentList{
 								UIActions.holdCamera(core.x, core.y, 3f),
 								UIActions.labelAct(
 										"Team<[#" + core.team.color +  "]" + core.team.name.toUpperCase() +
-												"[]> : @@@" +
+												"[]> : " +
 												core.block.localizedName + " [[" + core.tileX() + ", " + core.tileY() + "]", 0.5f, 2.5f, Interp.linear, t -> {
 											if(!core.team.emoji.isEmpty()){
 												t.add(core.team.emoji).padRight(OFFSET);

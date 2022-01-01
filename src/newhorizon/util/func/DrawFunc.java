@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
@@ -60,6 +61,18 @@ public class DrawFunc{
         float cx = Angles.trnsx(angle, length) + x, cy = Angles.trnsy(angle, length) + y;
         Fill.tri(x + ox, y + oy, x - wx, y - wy, cx, cy);
         Fill.tri(x + wx, y + wy, x + ox, y + oy, cx, cy);
+    }
+    
+    public static void surround(long id, float x, float y, float rad, int num, float innerSize, float outerSize, float interp){
+        Rand rand = NHFunc.rand;
+        rand.setSeed(id);
+        for(int i = 0; i < num; i++){
+            vec21.trns(rand.random(360f) + rand.range(1f) * rad * Interp.pow2Out.apply(interp), rad / 2f + rand.random(rad * (1 + Interp.circleOut.apply(interp)) / 2f));
+            float angle = vec21.angle();
+            vec21.add(x, y);
+            DrawFunc.tri(vec21.x, vec21.y, (interp + 1) * outerSize + rand.random(0, outerSize / 8), outerSize * (Interp.exp5In.apply(interp) + 0.25f) / 2f, angle);
+            DrawFunc.tri(vec21.x, vec21.y, (interp + 1) / 2 * innerSize + rand.random(0, innerSize / 8), innerSize * (Interp.exp5In.apply(interp) + 0.5f), angle - 180);
+        }
     }
     
     public static void drawConnected(float x, float y, float size, Color color){

@@ -17,8 +17,7 @@ import static mindustry.Vars.state;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 /**
- * Used to make a pop-up dialog with texts extending out. Use {@code "@@@"} to split the text. The text before it will
- * always be shown, while the latter will have a fade in effect.
+ * Used to make a pop-up dialog with texts extending out.
  */
 public class LabelAction extends TemporalAction{
 	public float margin = 0;
@@ -34,7 +33,7 @@ public class LabelAction extends TemporalAction{
 		if(UIActions.disabled())return;
 		Sounds.press.play(10);
 		
-		label = new FLabel(text.replaceAll("@@@", ""));
+		label = new FLabel(text);
 		label.setWrap(true);
 		
 		table = new Table(Tex.buttonEdge3){{

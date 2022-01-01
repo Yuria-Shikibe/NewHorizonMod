@@ -19,7 +19,6 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
-import mindustry.game.Saves;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
@@ -29,8 +28,6 @@ import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.cutscene.actions.*;
 import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
-
-import java.lang.reflect.Field;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -312,6 +309,15 @@ public class UIActions{
 		return action;
 	}
 	
+	@HeadlessDisabled
+	public static CameraMoveAction moveToSimple(float x, float y){
+		CameraMoveAction action = Actions.action(CameraMoveAction.class, CameraMoveAction::new);
+		action.setPosition(x + Mathf.random(0.01f), y);
+		action.setDuration(1.25f);
+		action.setInterpolation(Interp.pow3);
+		return action;
+	}
+	
 	/**
 	 * @param duration Use second format.
 	 * @param x        Use *8 format.
@@ -420,6 +426,31 @@ public class UIActions{
 		return action;
 	}
 	
+	@HeadlessDisabled
+	public static LabelAction labelActSimple(String text){
+		LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
+		action.setDuration(0.5f + text.length() * 0.0635f);
+		action.margin = Mathf.clamp(0.5f / (action.getDuration()));
+		action.text = text;
+		action.modifier = table -> table.image(Icon.logic).padLeft(OFFSET).padRight(OFFSET);
+		
+		return action;
+	}
+	
+	@HeadlessDisabled
+	public static Action[] moveAndLabel(Object... items){
+		if(items.length % 3 != 0)throw new IllegalArgumentException("Wrong param");
+		Action[] stacks = new Action[items.length / 3 * 2];
+		
+		int index = 0;
+		for(int i = 0; i < items.length; i += 3){
+			stacks[index++] = moveToSimple(((Number)items[i]).floatValue(), ((Number)items[i + 1]).floatValue()) ;
+			stacks[index++] = labelActSimple((String)items[i + 2]);
+		}
+		
+		return stacks;
+	}
+	
 	/** Make camera stop following player on desktop; make player stop following camera on phones. */
 	@HeadlessDisabled public static void pauseCamera(){
 		lockInput = true;
@@ -495,6 +526,14 @@ public class UIActions{
 		acts[acts.length - 1] = Actions.remove();
 		
 		if(!isPlaying){
+			if(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave()){
+				try{
+					CutsceneScript.autosaveReload = (Float)CutsceneScript.saveReloadField.get(control.saves);
+				}catch(IllegalAccessException e){
+					e.printStackTrace();
+				}
+			}
+			
 			CutsceneScript.isPlayingCutscene = true;
 			currentActions = acts;
 			actor = new Element(){
@@ -502,12 +541,10 @@ public class UIActions{
 				public void act(float delta){
 					super.act(delta);
 					
-					if(control.saves.getCurrent().isAutosave()){
+					if(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave()){
 						try{
-							Field field = Saves.class.getDeclaredField("time");
-							field.setAccessible(true);
-							field.set(control.saves, 0);
-						}catch(NoSuchFieldException | IllegalAccessException e){
+							CutsceneScript.saveReloadField.set(control.saves, CutsceneScript.autosaveReload * 0.95f);
+						}catch(IllegalAccessException e){
 							e.printStackTrace();
 						}
 					}
@@ -524,6 +561,8 @@ public class UIActions{
 				@Override
 				public boolean remove(){
 					currentActions = null;
+					
+					if(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave())control.saves.getCurrent().save();
 					
 					if(waitingPool.any()){
 						Time.run(60f, () -> {
@@ -818,6 +857,12 @@ public class UIActions{
 		while(actor.getActions().any()){
 			actor.act(Float.MAX_VALUE);
 		}
+	}
+	
+	public static void forceEnd(){
+		if(up != null)up.remove();
+		if(down != null)down.remove();
+		lockInput = false;
 	}
 	
 	public static float yAxis(){return disabled() ? 0 : Core.graphics.getHeight() / 8f;}

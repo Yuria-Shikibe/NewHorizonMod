@@ -9,6 +9,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.core.Logic;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
@@ -30,6 +31,7 @@ public class SignalEvent extends CutsceneEvent{
 	
 	public float range = 1800f;
 	public Runnable action = () -> {};
+	
 	
 	public SignalEvent(String name){
 		super(name);
@@ -79,7 +81,7 @@ public class SignalEvent extends CutsceneEvent{
 	
 	@Override
 	public void onCallUI(CutsceneEventEntity e){
-		UIActions.actionSeqMinor(UIActions.labelAct("[lightgray]@@@" + Core.bundle.get("nh.cutscene.event.signal-detected"), 0.25f, 0.75f, Interp.linear, t -> {
+		UIActions.actionSeqMinor(UIActions.labelAct("[lightgray]" + Core.bundle.get("nh.cutscene.event.signal-detected"), 0.25f, 0.75f, Interp.linear, t -> {
 			t.image(Icon.tree).padRight(OFFSET);
 		}));
 	}
@@ -106,5 +108,7 @@ public class SignalEvent extends CutsceneEvent{
 		});
 		
 		table.add(e.infoT).row();
+		
+		
 	}
 }

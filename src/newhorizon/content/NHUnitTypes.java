@@ -46,7 +46,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHPixmap;
@@ -1282,11 +1282,21 @@ public class NHUnitTypes implements ContentList{
 							Bullet b = bullet.create(unit, unit.team, Tmp.v1.x, Tmp.v1.y, 0);
 							b.vel.setZero();
 							b.set(Tmp.v1);
+							unit.apply(shootStatus, shootStatusDuration);
+							
+							if(headless)return;
+							Vec2 vec2 = new Vec2().trns(unit.rotation, y).add(unit);
+							PosLightning.createEffect(vec2, b, NHColor.thurmixRed, 3, 2.5f);
+							for(int i = 0; i < 5; i++){
+								Time.run(i * 6f, () -> {
+									NHFx.chainLightningFade.at(vec2.x, vec2.y, Mathf.random(8, 14), NHColor.thurmixRed, b);
+								});
+							}
 							
 							ejectEffect.at(mountX, mountY, rotation * side);
 							ammo.shootEffect.at(shootX, shootY, rotation);
 							ammo.smokeEffect.at(shootX, shootY, rotation);
-							unit.apply(shootStatus, shootStatusDuration);
+							
 						}
 						
 						{
@@ -1315,10 +1325,10 @@ public class NHUnitTypes implements ContentList{
 									
 									float damageMulti = b.damageMultiplier();
 									Team team = b.team;
-									for(int i = 0; i < splashDamageRadius / (tilesize * 2); i++){
+									for(int i = 0; i < splashDamageRadius / (tilesize * 3.5f); i++){
 										int finalI = i;
 										Time.run(i * despawnEffect.lifetime / (splashDamageRadius / (tilesize * 2)), () -> {
-											Damage.damage(team, vec.x, vec.y, tilesize * (finalI + 6), splashDamage * damageMulti, true, true);
+											Damage.damage(team, vec.x, vec.y, tilesize * (finalI + 6), splashDamage * damageMulti, true);
 										});
 									}
 									
@@ -1328,7 +1338,7 @@ public class NHUnitTypes implements ContentList{
 									});
 									
 									Units.nearbyEnemies(team, vec.x, vec.y, splashDamageRadius * 2, u -> {
-										if(u.isPlayer())ScreenHack.generate(360);
+										if(u.isPlayer()) ScreenInterferencer.generate(360);
 									});
 									
 									if(!NHSetting.enableDetails())return;
@@ -1400,18 +1410,19 @@ public class NHUnitTypes implements ContentList{
 									Lines.circle(b.x, b.y, rad * b.fout(Interp.pow3In));
 									Lines.circle(b.x, b.y, b.fin(Interp.circleOut) * rad * 3f * Mathf.curve(b.fout(), 0, 0.05f));
 									
-									Rand rand = new Rand(b.id);
+									Rand rand = NHFunc.rand;
+									rand.setSeed(b.id);
 									for(int i = 0; i < (int)(rad / 4); i++){
-										Tmp.v1.trns(rand.random(360f) + rand.range(1f) * rad / 5 * b.fin(Interp.pow2Out), rad / 4 * circleF + rand.random(rad * (1 + b.fin(Interp.circleOut)) / 2f));
+										Tmp.v1.trns(rand.random(360f) + rand.range(1f) * rad / 5 * b.fin(Interp.pow2Out), rad / 2.5f * circleF + rand.random(rad * (1 + b.fin(Interp.circleOut)) / 2f));
 										float angle = Tmp.v1.angle();
-										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 28 + rand.random(0, 8), rad / 16 * b.fout(), angle);
-										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 12 + rand.random(0, 2), rad / 12 * b.fout(), angle - 180);
+										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 28 + rand.random(0, 8), rad / 16 * (b.fin(Interp.exp5In) + 0.25f), angle);
+										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 12 + rand.random(0, 2), rad / 12 * (b.fin(Interp.exp5In) + 0.5f) / 1.2f, angle - 180);
 									}
 									
 									Angles.randLenVectors(b.id + 1, (int)(rad / 3), rad / 4 * circleF, rad * (1 + b.fout(Interp.pow3In)) / 3, (x, y) -> {
 										float angle = Mathf.angle(x, y);
-										DrawFunc.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 43 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
-										DrawFunc.tri(b.x + x, b.y + y, rad / 6 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 12 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 35 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 9 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
 									});
 									
 									Drawf.light(b.x, b.y, rad * f * (b.fin() + 1) * 2, Draw.getColor(), 0.7f);
@@ -1425,10 +1436,12 @@ public class NHUnitTypes implements ContentList{
 								}
 								
 								{
+									hittable = false;
 									collides = false;
 									collidesTiles = collidesAir = collidesGround = true;
 									speed = 100;
 									
+									despawnHit = true;
 									keepVelocity = false;
 									
 									splashDamageRadius = 800f;
@@ -1456,6 +1469,7 @@ public class NHUnitTypes implements ContentList{
 									
 									shootEffect = NHFx.lightningHitLarge(hitColor);
 									
+									hitEffect = NHFx.hitSpark(hitColor, 240f, 220, 900, 8, 27);
 									despawnEffect = NHFx.collapserBulletExplode;
 								}
 							};
@@ -1521,7 +1535,7 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 6;
 			engineSize = 8f;
 			flying = true;
-			abilities.add(new PhaseAbility(600f, 320f, 160f));
+//			abilities.add(new PhaseAbility(600f, 320f, 160f));
 			weapons.add(new Weapon(){{
 				shootCone = 360;
 				rotate = false;
@@ -1753,11 +1767,19 @@ public class NHUnitTypes implements ContentList{
 			public final float outerEyeScl = 0.25f;
 			public final float innerEyeScl = 0.18f;
 			
+			/*
+			* [0] -> Length
+			* [1] -> Arrow Offset
+			* [2] -> Width
+			* [3] -> Rotate Speed
+			* [4] -> Origin Offset
+			* */
 			public final float[][] rotator = {
 				{75f, 0, 8.5f, 1.35f, 0.1f},
 				{55f, 0, 6.5f, -1.7f, 0.1f},
-				{100f, 30, 11, 0.75f, 0.7f},
 				{25, 0, 13, 0.75f, 0.3f},
+				
+				{100f, 33.5f, 11, 0.75f, 0.7f},
 				{60f, -20, 6f, -0.5f, 1.25f}
 			};
 			
@@ -1805,7 +1827,7 @@ public class NHUnitTypes implements ContentList{
 				
 				for(float[] j : rotator){
 					for(int i : Mathf.signs){
-						float ang = Time.time * j[3] + 90 + 90 * i + Mathf.randomSeed(unit.id);
+						float ang = Time.time * j[3] + 90 + 90 * i + Mathf.randomSeed(unit.id, 360);
 						Tmp.v1.trns(ang, hitSize * j[4]).add(unit);
 						DrawFunc.arrow(Tmp.v1.x, Tmp.v1.y, j[2], j[0], j[1], ang);
 					}

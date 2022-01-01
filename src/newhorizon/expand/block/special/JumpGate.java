@@ -96,7 +96,9 @@ public class JumpGate extends Block {
     public float cooldownTime = 300f;
     
     protected static UnitSet tmpSet;
-    protected static int selectID = 0, selectNum = 0;
+    
+    public transient static int selectID = 0, selectNum = 1;
+    
     protected static final Vec2 linkVec = new Vec2();
     protected static final Point2 point = new Point2();
     

@@ -7,9 +7,11 @@ import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.scene.ui.layout.Table;
 import mindustry.Vars;
+import mindustry.gen.Icon;
 import mindustry.gen.Sounds;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
+import mindustry.ui.Styles;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.ui.ObjectiveSign;
@@ -41,6 +43,22 @@ public class ObjectiveEvent extends CutsceneEvent{
 	public void triggered(CutsceneEventEntity e){
 		Sounds.unlock.play();
 		action.get(e);
+	}
+	
+	@Override
+	public void debugTable(CutsceneEventEntity e, Table table){
+		table.table(Tex.pane, t -> {
+			t.add(name + "|" + e.id).growX().fillY().row();
+			t.add(e.infoT).growX().fillY();
+			t.row().image().growX().height(OFFSET / 3).pad(OFFSET / 2).color(Color.lightGray).row();
+			t.table(i -> {
+				i.defaults().growX().height(LEN - OFFSET);
+				i.button("COMPLETE", Icon.play, Styles.transt, () -> {
+					e.act();
+					e.remove();
+				});
+			}).growX().fillY();
+		}).growX().fillY();
 	}
 	
 	@Override

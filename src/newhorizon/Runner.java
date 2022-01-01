@@ -13,3 +13,9 @@ public class Runner{
 		System.out.println(Arrays.toString(s.getClass().getMethods()));
 	}
 }
+
+class Tester{
+	static{
+		System.out.print("Inited");
+	}
+}

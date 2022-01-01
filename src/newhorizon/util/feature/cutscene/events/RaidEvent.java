@@ -138,7 +138,7 @@ public class RaidEvent extends CutsceneEvent{
 					shootModifier.get(b);
 				}));
 			}
-		}), UIActions.labelAct("[accent]Caution[]: @@@Raid Incoming.", 0.75f, number * shootDelay / 60f, Interp.linear, t -> {
+		}), UIActions.labelAct("[accent]Caution[]: Raid Incoming.", 0.75f, number * shootDelay / 60f, Interp.linear, t -> {
 			t.image(NHContent.raid).size(LEN).padRight(OFFSET);
 		})));
 		

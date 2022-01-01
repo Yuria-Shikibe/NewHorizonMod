@@ -71,22 +71,28 @@ jar{
     }
 }
 
-task debug(type : Jar){
-    dependsOn jar
-
-    def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
-    def toDelete = new File("$gameData/mods/NewHorizonModDesktop.jar")
-    if(fi.exists()){
-        if(toDelete.exists())toDelete.delete()
-        fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")
-
-        try{
-            Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
-        }catch(IOException io){
-            System.out.print(io)
-        }
+task deleteLast(type : Jar){
+    doFirst{
+        delete{"$gameData/mods/NewHorizonModDesktop.jar"}
     }
 }
+
+//task debug(){
+//    dependsOn jar
+//    doFirst{
+//        delete{"$gameData/mods/NewHorizonModDesktop.jar"}
+//    }
+//
+//    def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
+//
+//    if(!fi.exists() || !fi.renameTo(new File("$gameData/mods/NewHorizonModDesktop.jar")))throw new RuntimeException("Failed to replace the old version mod")
+//
+//    try{
+//        Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
+//    }catch(IOException io){
+//        System.out.print(io)
+//    }
+//}
 
 task deploy(type : Jar){
     def fi = new File("$rootDir/mod.hjson")

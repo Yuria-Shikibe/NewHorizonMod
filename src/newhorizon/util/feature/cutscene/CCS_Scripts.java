@@ -40,7 +40,11 @@ public class CCS_Scripts implements Disposable{
 				.setModuleScriptProvider(new SoftCachingModuleScriptProvider(new CCS_ScriptModuleProvider()))
 				.setSandboxed(true).createRequire(context, scope).install(scope);
 		
-		if(!run(Core.files.internal("scripts/global.js").readString() + CutsceneScript.getModGlobalJSCode(), "CCS_Importer", false)){
+		if(!run(Core.files.internal("scripts/global.js").readString(), "Global", false)){
+			errored = true;
+		}
+		
+		if(!run(CutsceneScript.getModGlobalJSCode(), "cutsceneLoader.js", false)){
 			errored = true;
 		}
 		

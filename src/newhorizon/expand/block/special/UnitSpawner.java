@@ -29,16 +29,16 @@ import newhorizon.util.func.NHFunc;
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
-public class UnitIniter extends Block{
+public class UnitSpawner extends Block{
 	public float spawnRange = 4;
 	
 	protected static String divKey = "@@@";
 	
-	public UnitIniter(String name){
+	public UnitSpawner(String name){
 		super(name);
 		
 		alwaysUnlocked = true;
-		ambientSound = breakSound = Sounds.none;
+		destroySound = ambientSound = breakSound = Sounds.none;
 		size = 1;
 		update = true;
 		outputsPayload = true;

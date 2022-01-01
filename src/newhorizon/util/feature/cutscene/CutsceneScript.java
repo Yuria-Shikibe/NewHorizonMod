@@ -19,6 +19,7 @@ import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
+import mindustry.game.Saves;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
@@ -117,11 +118,22 @@ public class CutsceneScript{
 	
 	protected static long latestTime = 0;
 	
+	protected static float autosaveReload = 0;
+	
+	public static Field saveReloadField;
+	
 	public static String scriptDirectoryPath(){
 		return Vars.customMapDirectory + "/custom-cutscene";
 	}
 	
 	public static void load(){
+		try{
+			saveReloadField = Saves.class.getDeclaredField("time");
+			saveReloadField.setAccessible(true);
+		}catch(NoSuchFieldException e){
+			e.printStackTrace();
+		}
+		
 		Net.registerPacket(TagPacket::new);
 		Net.registerPacket(EventCompletePacket::new);
 		
@@ -293,6 +305,8 @@ public class CutsceneScript{
 	}
 	
 	public static String getScript(Map map){
+		if(curSectorPreset != null && presentJS.containsKey(curSectorPreset))return presentJS.get(curSectorPreset).readString();
+		
 		if(map.tags.containsKey(CUTSCENE_KEY)){
 			return map.tag(CUTSCENE_KEY);
 		}else if(map.name().contains("(@HC)") && !headless){

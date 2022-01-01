@@ -83,7 +83,7 @@ import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.AdaptedContinuousLaserBulletType;
 import newhorizon.expand.bullets.AdaptedLaserBulletType;
 import newhorizon.expand.bullets.EffectBulletType;
-import newhorizon.util.feature.ScreenHack;
+import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.func.DrawFunc;
 
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -130,7 +130,7 @@ public class NHBlocks implements ContentList {
 		disposePowerVoid, disposePowerNode, temporaryPowerSource,
 	
 		//Env
-		quantumField, quantumFieldDeep, metalUnit, metalTower, metalGround, metalGroundQuantum,
+		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalUnit, metalTower, metalGround, metalGroundQuantum,
 		metalGroundHeat, conglomerateRock, conglomerateWall
 		;
 	
@@ -142,6 +142,7 @@ public class NHBlocks implements ContentList {
 		
 		conglomerateRock = new Floor("conglomerate-rock", 3){{
 			mapColor = Color.valueOf("565557");
+			blendGroup = Blocks.stone;
 		}};
 		
 		metalGroundHeat = new Floor("metal-ground-heat", 3){{
@@ -174,6 +175,7 @@ public class NHBlocks implements ContentList {
 			emitLight = true;
 			lightRadius = 32f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
+			blendGroup = this;
 			
 			attributes.set(Attribute.heat, 1.25f);
 			attributes.set(Attribute.water, -1f);
@@ -196,6 +198,7 @@ public class NHBlocks implements ContentList {
 			lightRadius = 40f;
 			liquidMultiplier = 2f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
+			blendGroup = quantumField;
 			
 			attributes.set(Attribute.heat, 1.5f);
 			attributes.set(Attribute.water, -1f);
@@ -204,6 +207,38 @@ public class NHBlocks implements ContentList {
 			
 //			cacheLayer = NHContent.quantum;
 		}};
+		
+		quantumFieldDisturbing = new Floor("quantum-field-disturbing", 0){{
+			drownTime = 180f;
+			status = NHStatusEffects.quantization;
+			statusDuration = 240f;
+			speedMultiplier = 1.3f;
+			liquidDrop = NHLiquids.quantumLiquid;
+			isLiquid = true;
+			attributes.set(Attribute.light, 3f);
+			emitLight = true;
+			lightRadius = 40f;
+			liquidMultiplier = 2f;
+			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.2f);
+			blendGroup = this;
+			
+			attributes.set(Attribute.heat, 1.5f);
+			attributes.set(Attribute.water, -1f);
+			attributes.set(Attribute.oil, -1f);
+			attributes.set(Attribute.spores, -1f);
+			
+			cacheLayer = NHContent.quantum;
+			
+			details = "Has unique shader.";
+		}
+			
+			@Override
+			public void load(){
+				super.load();
+				
+				editorIcon = fullIcon = uiIcon = region = Core.atlas.find(NewHorizon.name("quantum-field-disturbing-icon"));
+			}
+		};
 		
 		metalUnit = new StaticWall("metal-unit"){{
 			variants = 6;
@@ -333,7 +368,7 @@ public class NHBlocks implements ContentList {
 			range = 800;
 			heatColor = NHColor.darkEnrColor;
 			shootLength = 9 * tilesize;
-			unitSort = (unit, x, y) -> -unit.health;
+			unitSort = UnitSorts.strongest;
 			
 			shots = 1;
 			burstSpacing = 0;
@@ -356,11 +391,11 @@ public class NHBlocks implements ContentList {
 				float rot = e.fout(Interp.pow10In);
 				
 				for(int i : Mathf.signs){
-					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i - 45);
+					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 1.2f * e.foutpowdown() * scl,200 + 500 * extend, e.rotation + (90 + rand) * rot + 90 * i - 45);
 				}
 				
 				for(int i : Mathf.signs){
-					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 2 * e.foutpowdown() * scl,300 + 700 * extend, e.rotation + (90 + rand) * rot + 90 * i + 45);
+					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 1.2f * e.foutpowdown() * scl,200 + 500 * extend, e.rotation + (90 + rand) * rot + 90 * i + 45);
 				}
 			});
 			
@@ -885,6 +920,7 @@ public class NHBlocks implements ContentList {
 			ammo(
 					NHItems.thermoCorePositive, NHBullets.blastEnergyPst, NHItems.thermoCoreNegative, NHBullets.blastEnergyNgt
 			);
+			spread = 0;
 			shots = 8;
 			burstSpacing = 4f;
 			maxAmmo = 80;
@@ -894,6 +930,7 @@ public class NHBlocks implements ContentList {
 			shootCone = 50.0F;
 			rotateSpeed = 1.5F;
 			range = 440.0F;
+			inaccuracy = 1;
 			heatColor = NHBullets.blastEnergyPst.lightColor;
 			recoilAmount = 4.0F;
 			shootSound = NHSounds.thermoShoot;
@@ -1689,7 +1726,7 @@ public class NHBlocks implements ContentList {
 			NHTechTree.add(Blocks.coreShard, this);
 		}};
 		
-		unitIniter = new UnitIniter("unit-initer");
+		unitIniter = new UnitSpawner("unit-initer");
 		
 		shieldProjector = new ShieldProjector("shield-projector"){{
 			consumes.power(1f);
@@ -1794,7 +1831,7 @@ public class NHBlocks implements ContentList {
 					super.despawned(b);
 					
 					Units.nearbyEnemies(b.team, b.x, b.y, radius, u -> {
-						if(u.isPlayer())ScreenHack.generate(600);
+						if(u.isPlayer()) ScreenInterferencer.generate(600);
 					});
 					
 					for(int i = 0; i < 6; i++){

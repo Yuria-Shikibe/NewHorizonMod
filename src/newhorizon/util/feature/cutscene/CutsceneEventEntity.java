@@ -67,6 +67,9 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	public transient float reload_LAST_, reload_TARGET_;
 	public transient float x_LAST_, x_TARGET_, y_LAST_, y_TARGET_;
 	
+	public boolean disabled = false;
+	
+	
 	/** Used for special use like {@link mindustry.gen.Bullet#data}, {@link mindustry.entities.Effect.EffectContainer#data}*/
 	public Object data;
 	

@@ -113,7 +113,7 @@ public class NHTechTree implements ContentList {
         addUnit(NHUnitTypes.warper, NHUnitTypes.striker);
         addUnit(NHUnitTypes.warper, NHUnitTypes.naxos);
         addUnit(NHUnitTypes.striker, NHUnitTypes.longinus);
-        addUnit(NHUnitTypes.striker, NHUnitTypes.destruction);
+        add(NHUnitTypes.striker, NHUnitTypes.destruction, new EventObjective(NHSectorPresets.primaryBase));
         addUnit(NHUnitTypes.destruction, NHUnitTypes.hurricane);
         
         addUnit(Blocks.groundFactory, NHUnitTypes.origin);
@@ -152,7 +152,8 @@ public class NHTechTree implements ContentList {
         addProduce(NHLiquids.xenAlpha, NHLiquids.xenBeta);
         addProduce(NHLiquids.xenBeta, NHLiquids.xenGamma);
         
-        add(SectorPresets.planetaryTerminal, NHSectorPresets.ruinedWarehouse, new Objectives.SectorComplete(SectorPresets.planetaryTerminal));
+        add(SectorPresets.planetaryTerminal, NHSectorPresets.primaryBase, new Objectives.SectorComplete(SectorPresets.planetaryTerminal));
+        add(NHSectorPresets.primaryBase, NHSectorPresets.ruinedWarehouse, new SpecialMap("complete-primary-base", SectorPresets.planetaryTerminal));
         add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.shatteredRavine, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
         add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.quantumCraters, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
         add(NHSectorPresets.quantumCraters, NHSectorPresets.luminariOutpost, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
@@ -163,6 +164,31 @@ public class NHTechTree implements ContentList {
         add(NHSectorPresets.quantumCraters, NHSectorPresets.deltaHQ, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));
        
         add(Liquids.water, NHLiquids.quantumLiquid, new Objectives.Produce(NHLiquids.quantumLiquid));
+    }
+    
+    public static class SpecialMap implements Objectives.Objective{
+        String key;
+        SectorPreset preset;
+    
+        public SpecialMap(String key, SectorPreset preset){
+            this.key = key;
+            this.preset = preset;
+        }
+    
+        /** @return whether this objective is met. */
+        @Override
+        public boolean complete(){
+            return Core.settings.getBool(key, false);
+        }
+    
+        /**
+         * @return the string displayed when this objective is completed, in imperative form. e.g. when the objective is
+         * 'complete 10 waves', this would display "complete 10 waves".
+         */
+        @Override
+        public String display(){
+            return Core.bundle.get("nh.cutscene.research-objective") + (preset.unlocked() ? preset.localizedName : Iconc.lock);
+        }
     }
     
     public static class EventObjective implements Objectives.Objective{

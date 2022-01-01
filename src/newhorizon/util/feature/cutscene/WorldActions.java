@@ -84,6 +84,21 @@ public class WorldActions{
 		};
 	}
 	
+	public static Runnable raidPosMulti(Entityc owner, Team team, BulletType type, float x, float y, float toX, float toY, int num, float delay, float spread, float inaccuracy){
+		float scl = NHFunc.scaleBulletLifetime(type, x, y, toX, toY);
+		
+		return () -> {
+			for(int i = 0; i < num; i++){
+				Time.run(i * delay, () -> {
+					float fX = x + Mathf.range(spread), fY = y + Mathf.range(spread);
+					Bullet b = type.create(owner, team, fX, fY, Angles.angle(fX, fY, toX, toY), 1, scl);
+					b.vel.rotate(Mathf.range(inaccuracy));
+					b.lifetime *= 1 + Mathf.range(0.035f);
+				});
+			}
+		};
+	}
+	
 	public static Runnable raidPos(Entityc owner, Team team, BulletType type, float x, float y, Position target, Cons<Bullet> modifier){
 		float scl = NHFunc.scaleBulletLifetime(type, x, y, target.getX(), target.getY());
 		

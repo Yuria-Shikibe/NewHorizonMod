@@ -32,11 +32,27 @@ public class NHShaders{
 		};
 		
 		quantum = new ModSurfaceShader("quantum"){
+			@Override
+			public String textureName(){
+				return "noise";
+			}
+			
+			@Override
+			public void loadNoise(){
+//				Texture texture = Core.atlas.find(NewHorizon.name("fog")).texture;
+//				texture.setFilter(Texture.TextureFilter.linear);
+//				texture.setWrap(Texture.TextureWrap.repeat);
+//				noiseTex = texture;
+				Core.assets.load("sprites/" + textureName() + ".png", Texture.class).loaded = t -> {
+					t.setFilter(Texture.TextureFilter.linear);
+					t.setWrap(Texture.TextureWrap.repeat);
+				};
+			}
 		};
 	}
 	
 	public static class ModSurfaceShader extends ModShader{
-		Texture noiseTex;
+		protected Texture noiseTex;
 		
 		public ModSurfaceShader(String frag){
 			super("screenspace", frag);
