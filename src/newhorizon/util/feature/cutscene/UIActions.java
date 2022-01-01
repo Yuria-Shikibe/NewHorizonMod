@@ -534,6 +534,8 @@ public class UIActions{
 				}
 			}
 			
+			if(!headless)control.input.frag.config.hideConfig();
+			
 			CutsceneScript.isPlayingCutscene = true;
 			currentActions = acts;
 			actor = new Element(){
