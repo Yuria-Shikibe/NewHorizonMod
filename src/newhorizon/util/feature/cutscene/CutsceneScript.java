@@ -177,13 +177,17 @@ public class CutsceneScript{
 		});
 		
 		Events.on(EventType.SectorCaptureEvent.class, e -> {
-			curEnder.each(c -> c.get(true));
-			CutsceneEventEntity.events.each(et -> et.eventType.removeAfterVictory, CutsceneEventEntity::remove);
+			if(e.sector == state.getSector()){
+				curEnder.each(c -> c.get(true));
+				CutsceneEventEntity.events.each(et -> et.eventType.removeAfterVictory, CutsceneEventEntity::remove);
+			}
 		});
 		
 		Events.on(EventType.SectorLoseEvent.class, e -> {
-			curEnder.each(c -> c.get(false));
-			CutsceneEventEntity.events.clear();
+			if(e.sector == state.getSector()){
+				curEnder.each(c -> c.get(false));
+				CutsceneEventEntity.events.clear();
+			}
 		});
 		
 		Events.on(EventType.ClientLoadEvent.class, e -> {
