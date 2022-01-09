@@ -43,7 +43,7 @@ import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.headless;
 
 public class NHBullets implements ContentList{
-	public static String CIRCLE_BOLT, STRIKE;
+	public static String CIRCLE_BOLT, STRIKE, MISSILE_LARGE = "missile-large";
 	
 	public static
 	BulletType
@@ -63,7 +63,7 @@ public class NHBullets implements ContentList{
 				width = 22f;
 				height = 40f;
 				
-				func = NHInterp.inOut;
+				accelInterp = NHInterp.inOut;
 				
 				pierceCap = 3;
 				splashDamage = damage / 4;
@@ -195,7 +195,7 @@ public class NHBullets implements ContentList{
 					b.trail.update(b.x, b.y, trailInterp.apply(b.fin()));
 				}
 				
-				b.vel.setLength(velocityBegin + func.apply(b.fin()) * velocityIncrease);
+				b.vel.setLength(velocityBegin + accelInterp.apply(b.fin()) * velocityIncrease);
 				
 				if(homingPower > 0.0001f && b.time >= homingDelay){
 					Runnable aim = () -> {
@@ -1367,7 +1367,7 @@ public class NHBullets implements ContentList{
 			
 			velocityBegin = 2f;
 			velocityIncrease = 8f;
-			func = Interp.pow3In;
+			accelInterp = Interp.pow3In;
 			trailLength = 15;
 			trailWidth = 3.5f;
 			drawSize = 250f;
@@ -1490,7 +1490,7 @@ public class NHBullets implements ContentList{
 			accelerateBegin = 0.05f;
 			accelerateEnd = 0.8f;
 			
-			func = Interp.pow2In;
+			accelInterp = Interp.pow2In;
 			
 			collidesAir = false;
 			hitEffect = NHFx.thurmixHit;
@@ -1762,7 +1762,7 @@ public class NHBullets implements ContentList{
 				accelerateEnd = 0.75f;
 				accelerateBegin = 0.1f;
 				
-				func = Interp.pow2;
+				accelInterp = Interp.pow2;
 				trailInterp = Interp.pow10Out;
 				
 				despawnSound = Sounds.plasmaboom;

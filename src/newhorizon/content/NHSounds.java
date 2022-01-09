@@ -26,6 +26,7 @@ public class NHSounds{
 		hugeBlast = new Sound(),
 		signal = new Sound(),
 		synchro = new Sound(),
+		defenceBreak = new Sound(),
 		railGunBlast = new Sound();
 	
 	public static void load(){
@@ -48,6 +49,7 @@ public class NHSounds{
 		hugeBlast = loadSound("hugeBlast");
 		signal = loadSound("signal");
 		synchro = loadSound("synchro");
+		defenceBreak = loadSound("break");
 	}
 	
 	private static Sound loadSound(String soundName){

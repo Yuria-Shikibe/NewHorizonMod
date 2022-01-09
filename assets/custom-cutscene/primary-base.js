@@ -156,7 +156,6 @@ goal.action = cons(e => {
         UIActions.labelActSimple("Well done, that's must be enough to..."),
         UIActions.startCutsceneDefault(),
         UIActions.moveToSimple(1440, 2120),
-//        Actions.delay(0.75),
         Actions.run(WorldActions.raidPosMulti(null, enemyTeam(), NHBullets.collapserBullet, 2532, 2748, 1400, 2100, 100, 0.8, 300, 0.75)),
         Actions.delay(5),
         Actions.parallel(

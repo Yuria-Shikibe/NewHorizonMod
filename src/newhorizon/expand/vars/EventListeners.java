@@ -15,7 +15,6 @@ import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHShaders;
@@ -27,6 +26,7 @@ import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.ui.UnitInfo;
 
 
 public class EventListeners{
@@ -39,9 +39,8 @@ public class EventListeners{
 	}
 	
 	public static final Seq<Runnable> actAfterLoad = new Seq<>();
-	public static Seq<Block> banned = new Seq<>();
 	
-	public static Interval timer = new Interval();
+	public static Interval timer = new Interval(6);
 	
 	private static String kickWarn;
 	
@@ -94,19 +93,21 @@ public class EventListeners{
 		
 		if(Vars.headless)return;
 		
-		
-		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			if(caution){
 				caution = false;
 				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new NHSetting.SettingDialog().show(), () -> {});
 				Vars.player.con.kick(kickWarn, 1);
 			}
+			
+			UnitInfo.added.clear();
+//			UnitInfo.addBars();
 		});
 
 		Events.run(EventType.Trigger.update, () -> {
 			ScreenInterferencer.update();
 			NHSetting.update();
+//			UnitInfo.update();
 		});
 		
 		Events.on(ScreenInterferencer.ScreenHackEvent.class, e -> {

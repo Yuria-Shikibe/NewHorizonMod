@@ -15,7 +15,7 @@ ext{
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
-    gameData = 'E:/apps/mdt_data'
+    gameData = 'C:/Users/Administrator/AppData/Roaming/Mindustry'
 
     doExec = { cmd ->
         def proc = cmd.execute(null, new File("$buildDir/libs"))
@@ -71,28 +71,33 @@ jar{
     }
 }
 
-task deleteLast(type : Jar){
-    doFirst{
-        delete{"$gameData/mods/NewHorizonModDesktop.jar"}
+task deleteLast{
+    def fi = new File("$gameData/mods/NewHorizonModDesktop.jar");
+    if(fi.exists()){
+//        Class<?> fileSys = ClassLoader.getSystemClassLoader().loadClass("java.io.DefaultFileSystem");
+//        FileSystem system = (FileSystem)fileSys.getMethod("getFileSystem()").invoke(null, new Object[]{});
+
+        System.out.println("Delete Old:" + fi.delete())
     }
 }
 
-//task debug(){
-//    dependsOn jar
-//    doFirst{
-//        delete{"$gameData/mods/NewHorizonModDesktop.jar"}
+task debugMod{
+    dependsOn deleteLast
+    dependsOn jar
+
+    def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
+
+//    if(!fi.exists())throw new RuntimeException("Missing Mod File")
+//    if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar"))throw new RuntimeException("Failed to replace the old version mod")
+//
+//    doLast {
+//        try{
+//            Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
+//        }catch(IOException io){
+//            System.out.print(io)
+//        }
 //    }
-//
-//    def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
-//
-//    if(!fi.exists() || !fi.renameTo(new File("$gameData/mods/NewHorizonModDesktop.jar")))throw new RuntimeException("Failed to replace the old version mod")
-//
-//    try{
-//        Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
-//    }catch(IOException io){
-//        System.out.print(io)
-//    }
-//}
+}
 
 task deploy(type : Jar){
     def fi = new File("$rootDir/mod.hjson")

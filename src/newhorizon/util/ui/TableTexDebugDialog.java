@@ -453,6 +453,8 @@ public class TableTexDebugDialog extends BaseDialog{
 		
 		cont.button("Hyper Warp", () -> Groups.unit.each(u -> HyperSpaceWarper.Carrier.create(u, new Vec2().set(player))));
 		
+		cont.button("Add Bars", UnitInfo::addBars);
+		
 		addCloseButton();
 	}
 	

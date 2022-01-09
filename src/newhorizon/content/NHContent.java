@@ -51,6 +51,7 @@ public class NHContent extends Content{
 		objective = Core.atlas.find(NewHorizon.name("objective"));
 		fleet = Core.atlas.find(NewHorizon.name("fleet"));
 		
+		
 		NHUpgradeDatas.all.each(UpgradeData::load);
 		NHUpgradeDatas.all.each(UpgradeData::init);
 	}

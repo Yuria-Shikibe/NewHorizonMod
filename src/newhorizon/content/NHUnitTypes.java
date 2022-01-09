@@ -54,12 +54,13 @@ import newhorizon.util.func.NHSetting;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
+import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.Vars.*;
 
 public class NHUnitTypes implements ContentList{
 	private static final Color OColor = Color.valueOf("565666");
 	
-	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
+	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, AIR_LINE_2 = 2, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
 	
 	public static NHWeapon
 			posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon,
@@ -70,7 +71,7 @@ public class NHUnitTypes implements ContentList{
 	public static Weapon pointDefenceWeaponC;
 	
 	public static UnitType
-			guardian, gather,
+			guardian, gather, anvil,
 			saviour, 
 			sharp, branch, warper, striker, annihilation, sin, hurricane, collapser, longinus,
 			origin, thynomo, aliotiat, tarlidor, destruction, naxos,
@@ -165,7 +166,7 @@ public class NHUnitTypes implements ContentList{
 				
 				velocityBegin = 12f;
 				velocityIncrease = 22f;
-				func = Interp.pow3Out;
+				accelInterp = Interp.pow3Out;
 				accelerateBegin = 0f;
 				accelerateEnd = 0.8f;
 				
@@ -410,6 +411,180 @@ public class NHUnitTypes implements ContentList{
 	@Override
 	public void load(){
 		loadWeapon();
+		
+		anvil = new UnitType("anvil"){{
+			outlineColor = OColor;
+			constructor = EntityMapping.map(5);
+			
+			EnergyFieldAbility ability = new EnergyFieldAbility(150f, 120f, 380f);
+			ability.color = NHColor.thurmixRed;
+			ability.y = -9f;
+			ability.healEffect = new Effect(11, e -> {
+				color(NHColor.thurmixRed);
+				stroke(e.fout() * 2f);
+				Lines.circle(e.x, e.y, 2f + e.finpow() * 7f);
+			});
+			ability.status = NHStatusEffects.emp1;
+			ability.sectors = 4;
+			ability.sectorRad = 0.16f;
+			
+			abilities.add(ability);
+			
+			commandRadius = 240f;
+			hitSize = 60f;
+			armor = 36.0F;
+			health = 64000.0F;
+			speed = 0.9F;
+			rotateSpeed = 0.75f;
+			accel = 0.04F;
+			drag = 0.035f;
+			flying = true;
+			engineOffset = 65.0F;
+			engineSize = 24f;
+			buildSpeed = 8.0F;
+			drawShields = false;
+			commandLimit = 6;
+			lowAltitude = true;
+			buildBeamOffset = 43.0F;
+			payloadCapacity = (5 * 5) * tilePayload;
+			
+			NHWeapon weapon = new NHWeapon("anvil-cannon"){{
+				mirror = true;
+				rotate = false;
+				alternate = true;
+				top = true;
+				
+				layerOffset = 0.1f;
+				
+				shootY = 31;
+				recoil = 6f;
+				recoilTime = 90f;
+				reload = 160f;
+				shootCone = 35f;
+				
+				bullet = new ShieldBreaker(6, 180f, 2400){{
+					sprite = NHBullets.MISSILE_LARGE;
+					trailColor = lightningColor = backColor = lightColor = NHColor.thurmixRed;
+					frontColor = NHColor.thurmixRedLight;
+					lightning = 2;
+					lightningCone = 360;
+					lightningLengthRand = lightningLength = 12;
+					homingPower = 0;
+					scaleVelocity = false;
+					
+					velocityBegin = 5f;
+					velocityIncrease = 10f;
+					accelInterp = Interp.pow3OutInverse;
+					
+					lifetime = 45f;
+					trailLength = 15;
+					trailWidth = 3.5f;
+					
+					splashDamage = lightningDamage = damage * 0.7f;
+					splashDamageRadius = 40f;
+					
+					width = 22f;
+					height = 35f;
+					
+					hitShake = 3f;
+					hitSound = Sounds.explosion;
+					hitEffect = new MultiEffect(NHFx.blast(backColor, 60f), NHFx.hitSpark(backColor, 75f, 8, 80f, 2f, 12f));
+					
+					smokeEffect = Fx.shootBigSmoke;
+					shootEffect = NHFx.shootCircleSmall(backColor);
+					
+					despawnEffect = NHFx.lightningHitLarge(backColor);
+					
+					status = NHStatusEffects.weak;
+					statusDuration = 180f;
+				}};
+				
+				shots = 6;
+				shotDelay = 12f;
+				inaccuracy = 2f;
+				velocityRnd = 0.075f;
+				
+				x = 30;
+				y = -2;
+				
+				shootSound = NHSounds.flak;
+				shake = 4f;
+			}};
+			
+			NHWeapon aaTurret = new NHWeapon("rapid-laser-cannon"){{
+				mirror = true;
+				rotate = true;
+				alternate = true;
+				top = true;
+				
+//				controllable = false;
+				autoTarget = true;
+				rotateSpeed = 30;
+				shootY = 10;
+				recoil = 2f;
+				reload = 12f;
+				
+				bullet = new ShrapnelBulletType(){{
+					length = 520;
+					damage = 300.0F;
+					status = StatusEffects.slow;
+					statusDuration = 60f;
+					width = 16f;
+					fromColor = NHColor.thurmixRedLight;
+					hitColor = lightColor = lightningColor = toColor = NHColor.thurmixRed;
+					shootEffect = NHFx.lightningHitSmall(toColor);
+					smokeEffect = new MultiEffect(new Effect(lifetime + 2f, b -> {
+						Draw.color(fromColor, toColor, b.fin());
+						Fill.circle(b.x, b.y, (width / 2f) * b.fout());
+						DrawFunc.tri(b.x, b.y, width / 1.75f * b.fout(Interp.circleIn), 30f, b.rotation + 60);
+						DrawFunc.tri(b.x, b.y, width / 1.75f * b.fout(Interp.circleIn), 30f, b.rotation - 60);
+					}), NHFx.hitSpark(toColor, 35f, 6, 24f, 1.75f, 8f));
+				}};
+				
+				shots = 1;
+				
+				x = 20;
+				y = -34;
+				
+				shootSound = NHSounds.synchro;
+				shake = 1f;
+			}};
+			
+			PointDefenseWeapon pointDefenseWeapon = new PointDefenseWeapon(NewHorizon.name("anvil-point-cannon")){{
+				color = NHColor.thurmixRed;
+				x = 14;
+				y = -2f;
+				reload = 6f;
+				targetInterval = 6f;
+				targetSwitchInterval = 8f;
+				bullet = new BulletType(){{
+					shootEffect = NHFx.shootLineSmall(color);
+					hitEffect = NHFx.lightningHitSmall(color);
+					maxRange = 280f;
+					damage = 120f;
+				}
+					
+					@Override
+					public float range(){
+						return maxRange;
+					}
+				};
+			}};
+			
+			weapons.addAll(
+				weapon, weapon.copy().setPos(50, -24), aaTurret, aaTurret.copy().transform(12, -12),
+				pointDefenseWeapon, NHWeapon.setPos(pointDefenseWeapon.copy(), 13, 41)
+			);
+			
+			range = 500f;
+			
+			ammoType = new PowerAmmoType();
+			
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.factory, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
+			
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
 		
 		saviour = new UnitType("saviour"){{
 			outlineColor = OColor;
@@ -1412,17 +1587,17 @@ public class NHUnitTypes implements ContentList{
 									
 									Rand rand = NHFunc.rand;
 									rand.setSeed(b.id);
-									for(int i = 0; i < (int)(rad / 4); i++){
-										Tmp.v1.trns(rand.random(360f) + rand.range(1f) * rad / 5 * b.fin(Interp.pow2Out), rad / 2.5f * circleF + rand.random(rad * (1 + b.fin(Interp.circleOut)) / 2f));
+									for(int i = 0; i < (int)(rad / 3); i++){
+										Tmp.v1.trns(rand.random(360f) + rand.range(1f) * rad / 5 * b.fin(Interp.pow2Out), rad / 2.05f * circleF + rand.random(rad * (1 + b.fin(Interp.circleOut)) / 1.8f));
 										float angle = Tmp.v1.angle();
 										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 28 + rand.random(0, 8), rad / 16 * (b.fin(Interp.exp5In) + 0.25f), angle);
 										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 12 + rand.random(0, 2), rad / 12 * (b.fin(Interp.exp5In) + 0.5f) / 1.2f, angle - 180);
 									}
 									
-									Angles.randLenVectors(b.id + 1, (int)(rad / 3), rad / 4 * circleF, rad * (1 + b.fout(Interp.pow3In)) / 3, (x, y) -> {
+									Angles.randLenVectors(b.id + 1, (int)(rad / 3), rad / 4 * circleF, rad * (1 + b.fin(Interp.pow3Out)) / 3, (x, y) -> {
 										float angle = Mathf.angle(x, y);
-										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 35 + rand.random(4, 12) * (b.fin(Interp.circleIn) + 1) / 2, angle);
-										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fin()) / 2, (b.fin() * 3 + 1) / 3 * 9 + rand.random(0, 2) * (b.fout() + 1) / 2, angle - 180);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fout()) / 2.2f, (b.fout() * 3 + 1) / 3 * 25 + rand.random(4, 12) * (b.fout(Interp.circleOut) + 1) / 2, angle);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fout()) / 2.2f, (b.fout() * 3 + 1) / 3 * 9 + rand.random(0, 2) * (b.fin() + 1) / 2, angle - 180);
 									});
 									
 									Drawf.light(b.x, b.y, rad * f * (b.fin() + 1) * 2, Draw.getColor(), 0.7f);
@@ -1628,6 +1803,40 @@ public class NHUnitTypes implements ContentList{
 						
 						Draw.z(Layer.bullet);
 						
+						Draw.reset();
+						
+						float rotation = dataRot ? b.fdata : b.rotation() + getRotation(b);
+						
+						float maxRange = this.maxRange * fout;
+						float realLength = NHFunc.findLaserLength(b, rotation, maxRange);
+						
+						Tmp.v1.trns(rotation, realLength);
+						
+						Tmp.v2.trns(rotation, 0, width / 2 * fout);
+						
+						Tmp.v3.setZero();
+						if(realLength < maxRange){
+							Tmp.v3.set(Tmp.v2).scl((maxRange - realLength) / maxRange);
+						}
+						
+						Draw.color(Tmp.c1);
+						Tmp.v2.scl(0.9f);
+						Tmp.v3.scl(0.9f);
+						Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
+						if(realLength < maxRange)Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
+						
+						Tmp.v2.scl(1.2f);
+						Tmp.v3.scl(1.2f);
+						Draw.alpha(0.5f);
+						Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
+						if(realLength < maxRange)Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
+						
+						Draw.alpha(1f);
+						Draw.color(Tmp.c2.set(Tmp.c1).lerp(Color.white, 0.57f));
+						Tmp.v2.scl(0.5f);
+						Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + (Tmp.v1.x + Tmp.v3.x) / 3, b.y + (Tmp.v1.y + Tmp.v3.y) / 3, b.x + (Tmp.v1.x - Tmp.v3.x) / 3, b.y + (Tmp.v1.y - Tmp.v3.y) / 3);
+						
+						Drawf.light(b.team, b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.5f, getColor(b), 0.7f);
 						Draw.reset();
 					}
 				};
@@ -2264,7 +2473,7 @@ public class NHUnitTypes implements ContentList{
 							velocityIncrease = 8f;
 							accelerateBegin = 0;
 							accelerateEnd = 0.9f;
-							func = Interp.pow2In;
+							accelInterp = Interp.pow2In;
 							trailLength = 15;
 							trailWidth = 3.5f;
 							
@@ -2330,7 +2539,7 @@ public class NHUnitTypes implements ContentList{
 			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 22, 18f));
 			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 25, 2));
 			
-			immunities.addAll(NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred);
+			immunities.addAll(NHStatusEffects.weak, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
 			
 			groundLayer = Layer.legUnit + 0.1f;
 			

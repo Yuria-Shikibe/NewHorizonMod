@@ -65,9 +65,11 @@ public class DrawFunc{
     
     public static void surround(long id, float x, float y, float rad, int num, float innerSize, float outerSize, float interp){
         Rand rand = NHFunc.rand;
+        
         rand.setSeed(id);
         for(int i = 0; i < num; i++){
-            vec21.trns(rand.random(360f) + rand.range(1f) * rad * Interp.pow2Out.apply(interp), rad / 2f + rand.random(rad * (1 + Interp.circleOut.apply(interp)) / 2f));
+            float len = rad * rand.random(0.75f, 1.5f);
+            vec21.trns(rand.random(360f) + rand.range(2f) * (1.5f - Mathf.curve(len, rad * 0.75f, rad * 1.5f)) * Time.time, len);
             float angle = vec21.angle();
             vec21.add(x, y);
             DrawFunc.tri(vec21.x, vec21.y, (interp + 1) * outerSize + rand.random(0, outerSize / 8), outerSize * (Interp.exp5In.apply(interp) + 0.25f) / 2f, angle);

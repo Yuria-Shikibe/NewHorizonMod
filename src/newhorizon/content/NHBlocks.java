@@ -859,12 +859,14 @@ public class NHBlocks implements ContentList {
 			shootSound = NHSounds.railGunBlast;
 			heatColor = NHItems.irayrondPanel.color;
 			
-//			chargeEffects = 2;
-//			chargeBeginEffect = NHFx.railShoot(heatColor, range, 18, 40, 12);
-//			chargeEffect = NHFx.genericCharge(heatColor, 5, range, 120);
-//			chargeTime = 120f;
-//
-//			buildType = () -> new ItemTurretBuild(){
+			chargeEffects = 2;
+			chargeBeginEffect = NHFx.railShoot(heatColor, range, 18, 90, 12);
+			chargeEffect = NHFx.genericCharge(heatColor, 13, 90, 90);
+			chargeTime = 90;
+			
+			accurateDelay = true;
+			
+			buildType = () -> new ItemTurretBuild(){
 //				public BulletType useAmmo(){
 //					if(cheating()) return peekAmmo();
 //
@@ -876,7 +878,12 @@ public class NHBlocks implements ContentList {
 //					ejectEffects();
 //					return entry.type();
 //				}
-//			};
+//
+				@Override
+				public BulletType peekAmmo(){
+					return ammo.any() ? ammo.peek().type() : NHBullets.railGun1;
+				}
+			};
 			
 			coolantMultiplier = 0.55f;
 			restitution = 0.009f;
@@ -1628,7 +1635,7 @@ public class NHBlocks implements ContentList {
 			health = 8000;
 			range = 800;
 			
-			generateType = new Shooter(500){{
+			generateType = new Shooter(450){{
 				Color c = Items.surgeAlloy.color;
 				colors = new Color[]{c.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f), c.cpy().mul(1f, 1f, 1f, 0.6f), c, Color.white};
 				hitColor = lightColor = lightningColor = c;
@@ -1648,7 +1655,7 @@ public class NHBlocks implements ContentList {
 				}
 			};
 			
-			requirements(Category.defense, with(NHItems.seniorProcessor, 120, NHItems.upgradeSort, 80, NHItems.zeta, 180));
+			requirements(Category.defense, with(NHItems.seniorProcessor, 150, NHItems.upgradeSort, 100, NHItems.zeta, 300));
 		}};
 		
 		laserWall = new LaserWallBlock("laser-wall"){{
@@ -1656,7 +1663,7 @@ public class NHBlocks implements ContentList {
 			consumes.powerCond(30f, LaserWallBuild::canActivate);
 			health = 4000;
 			
-			requirements(Category.defense, with(NHItems.juniorProcessor, 80, Items.copper, 120, NHItems.multipleSteel, 80, NHItems.zeta, 180, Items.graphite, 50));
+			requirements(Category.defense, with(NHItems.juniorProcessor, 120, Items.copper, 350, NHItems.multipleSteel, 80, NHItems.zeta, 180, Items.graphite, 80));
 			NHTechTree.add(Blocks.forceProjector, this);
 		}};
 		
@@ -2337,14 +2344,17 @@ public class NHBlocks implements ContentList {
 			
 			addSets(
 				new UnitSet(NHUnitTypes.saviour, new byte[]{NHUnitTypes.OTHERS, 5}, 400 * 60f,
-					with(NHItems.setonAlloy, 200, Items.surgeAlloy, 150, NHItems.seniorProcessor, 150, NHItems.thermoCoreNegative, 100, Items.plastanium, 200, NHItems.zeta, 500)
+					with(NHItems.setonAlloy, 250, Items.surgeAlloy, 200, NHItems.seniorProcessor, 150, NHItems.thermoCoreNegative, 100, Items.plastanium, 200, NHItems.zeta, 500)
 				),
-				new UnitSet(NHUnitTypes.collapser, new byte[]{NHUnitTypes.OTHERS, 7}, 600 * 60f,
-					new ItemStack(NHItems.darkEnergy, 2000),
-					new ItemStack(NHItems.upgradeSort, 2000)
+				new UnitSet(NHUnitTypes.collapser, new byte[]{NHUnitTypes.AIR_LINE_2, 7}, 600 * 60f,
+					new ItemStack(NHItems.darkEnergy, 2500),
+					new ItemStack(NHItems.upgradeSort, 2500)
+				),
+				new UnitSet(NHUnitTypes.anvil, new byte[]{NHUnitTypes.AIR_LINE_2, 6}, 600 * 60f,
+					with(NHItems.zeta, 1000, NHItems.setonAlloy, 500, NHItems.upgradeSort, 200, NHItems.seniorProcessor, 600, NHItems.thermoCorePositive, 400)
 				),
 				new UnitSet(NHUnitTypes.guardian, new byte[]{NHUnitTypes.OTHERS, 5}, 9600f,
-					new ItemStack(NHItems.darkEnergy, 800)
+					new ItemStack(NHItems.darkEnergy, 1200)
 				),
 				new UnitSet(NHUnitTypes.annihilation, new byte[]{NHUnitTypes.GROUND_LINE_1, 5}, 320 * 60f,
 					with(NHItems.setonAlloy, 200, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 100)

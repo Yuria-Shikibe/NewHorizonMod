@@ -22,10 +22,27 @@ import newhorizon.util.func.NHPixmap;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect
-            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased;
+            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased, weak;
     
     @Override
     public void load(){
+        weak = new NHStatusEffect("weak"){{
+            damage = 10;
+            speedMultiplier = 0.75f;
+            damageMultiplier = 0.75f;
+            reloadMultiplier = 0.75f;
+            
+            
+            textureColor = color = NHColor.thurmixRed;
+    
+            effectChance = 0.25f;
+            effect = new MultiEffect(new Effect(30, e -> {
+                Draw.color(color);
+                float drawSize = 24f * e.fout();
+                Draw.rect(NHContent.pointerRegion, e.x, e.y - e.rotation * 24f * e.finpow(), drawSize, drawSize, -180);
+            }), NHFx.crossBlast(color, 30, 45));
+        }};
+        
         phased = new NHStatusEffect("phased"){{
             damage = -10f;
             speedMultiplier = 1.25f;

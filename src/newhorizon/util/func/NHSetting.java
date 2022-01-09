@@ -232,7 +232,15 @@ public class NHSetting{
 	public static void applySettings(){
 		TableFunc.disableTable();
 		debug = getBool("@active.debug");
-		if(NHSetting.getBool("@active.tool-panel*")) TableFunc.showTable();
+		if(NHSetting.getBool("@active.tool-panel*"))TableFunc.showTable();
+		
+		if(NHSetting.getBool("@active.double-zoom*")){
+			Vars.renderer.maxZoom = originalZoomMax * 4;
+			Vars.renderer.minZoom = 0.6f;
+		}else{
+			Vars.renderer.maxZoom = originalZoomMax;
+			Vars.renderer.minZoom = originalZoomMin;
+		}
 	}
 	
 	

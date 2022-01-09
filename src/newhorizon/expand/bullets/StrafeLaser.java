@@ -6,6 +6,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -13,6 +14,8 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHFunc;
 
 import static arc.graphics.g2d.Draw.color;
@@ -26,6 +29,10 @@ public class StrafeLaser extends BulletType{
 	public float computeTick = 5f;
 	public float fallScl = 0.125f;
 	public boolean dataRot = true;
+	public float lerpWhiteSine = 0.3f;
+	
+	public float sideTriRootLength = 20, sideTriLength = 50, sideTriWidth = 6;
+	public float sideLengthDifference = 10;
 	
 	public StrafeLaser(float damage){
 		this.damage = damage;
@@ -57,6 +64,8 @@ public class StrafeLaser extends BulletType{
 		pierce = true;
 		hittable = false;
 		absorbable = false;
+		
+		hitColor = null;
 	}
 	
 	@Override
@@ -85,6 +94,10 @@ public class StrafeLaser extends BulletType{
 		return continuousDamage();
 	}
 	
+	public Color getColor(Bullet b){
+		return hitColor == null ? b.team.color : hitColor;
+	}
+	
 	@Override
 	public void draw(Bullet b){
 		float rotation = dataRot ? b.fdata : b.rotation() + getRotation(b);
@@ -102,24 +115,47 @@ public class StrafeLaser extends BulletType{
 			Tmp.v3.set(Tmp.v2).scl((maxRange - realLength) / maxRange);
 		}
 		
-		Draw.color(Tmp.c1);
-		Tmp.v2.scl(0.9f);
-		Tmp.v3.scl(0.9f);
-		Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
-		if(realLength < maxRange)Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
+		if(lerpWhiteSine != 0){
+			Tmp.c1.set(getColor(b)).lerp(Color.white, Mathf.absin(4f, lerpWhiteSine));
+		}else Tmp.c1.set(getColor(b));
 		
-		Tmp.v2.scl(1.2f);
-		Tmp.v3.scl(1.2f);
+		
+		Draw.z(Layer.bullet + 0.01f);
+		Draw.color(Tmp.c1);
+		Fill.circle(b.x, b.y, width / 1.225f * fout);
+		
+		for(int i : Mathf.signs){
+			DrawFunc.tri(b.x, b.y, sideTriWidth * fout,sideTriRootLength - sideLengthDifference + (sideTriLength - sideLengthDifference) * fout, Time.time * 1.5f + 90 * i);
+			DrawFunc.tri(b.x, b.y, sideTriWidth * fout,sideTriRootLength + sideTriLength * fout, Time.time * -1f + 90 * i);
+		}
+		
+		Draw.color(Tmp.c1, Color.white, 0.55f);
+		Fill.circle(b.x, b.y, width / 1.85f * fout);
+		Draw.color(Color.white);
+		Fill.circle(b.x, b.y, width / 2.125f * fout);
+		
+		Draw.z(Layer.bullet);
+		
+		Draw.reset();
+		
+		Tmp.v2.scl(1.1f);
+		Tmp.v3.scl(1.1f);
 		Draw.alpha(0.5f);
 		Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
 		if(realLength < maxRange)Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
 		
+		Draw.color(Tmp.c1);
+		Tmp.v2.scl(0.85f);
+		Tmp.v3.scl(0.85f);
+		Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
+		if(realLength < maxRange)Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
+		
 		Draw.alpha(1f);
-		Draw.color(Tmp.c2.set(Tmp.c1).lerp(Color.white, 0.57f));
+		Draw.color(Tmp.c2.set(Tmp.c1).lerp(Color.white, 0.3f));
 		Tmp.v2.scl(0.5f);
 		Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + (Tmp.v1.x + Tmp.v3.x) / 3, b.y + (Tmp.v1.y + Tmp.v3.y) / 3, b.x + (Tmp.v1.x - Tmp.v3.x) / 3, b.y + (Tmp.v1.y - Tmp.v3.y) / 3);
 		
-		Drawf.light(b.team, b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.5f, b.team.color, 0.7f);
+		Drawf.light(b.team, b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.5f, getColor(b), 0.7f);
 		Draw.reset();
 	}
 	
@@ -147,6 +183,6 @@ public class StrafeLaser extends BulletType{
 	
 	@Override
 	public void hit(Bullet b, float x, float y){
-		hitEffect.at(x, y, b.rotation() + getRotation(b), b.team.color);
+		hitEffect.at(x, y, b.rotation() + getRotation(b), getColor(b));
 	}
 }

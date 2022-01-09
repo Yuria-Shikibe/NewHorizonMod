@@ -52,7 +52,7 @@ public class NewHorizon extends Mod{
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
 	public static final String MOD_NAME_BAR = "new-horizon-";
-	public static final String SERVER_ADDRESS = "n1.mcyxsj.top:20192", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
+	public static final String SERVER_ADDRESS = "175.178.22.6:6666", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	
 	public static Mods.LoadedMod MOD;
 	
@@ -78,9 +78,9 @@ public class NewHorizon extends Mod{
 	
 	private static LatestFeature[] getUpdateContent(){
 		return new LatestFeature[]{
-			new LatestFeature(NHSectorPresets.primaryBase),
-			new LatestFeature(NHBlocks.quantumFieldDisturbing),
-			new LatestFeature("Effect Improvement", "Improved the effect of shield breakers and the collapser", "Improvement", Icon.upOpen.getRegion()),
+			new LatestFeature(NHUnitTypes.anvil),
+			new LatestFeature(NHStatusEffects.weak),
+			new LatestFeature("Fixes", "Fixed some bugs about cutscene", "Improvement", Icon.wrench.getRegion()),
 		};
 	}
 	
@@ -382,7 +382,7 @@ public class NewHorizon extends Mod{
 		EntityRegister.load();
 		EventListeners.load();
 	    NHSounds.load();
-		NHShaders.init();
+		if(!Vars.headless)NHShaders.init();
 		NHContent.loadModContent();
 		
 		for(ContentList contentList : content)contentList.load();

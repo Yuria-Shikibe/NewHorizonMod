@@ -116,6 +116,9 @@ public class NHTechTree implements ContentList {
         add(NHUnitTypes.striker, NHUnitTypes.destruction, new EventObjective(NHSectorPresets.primaryBase));
         addUnit(NHUnitTypes.destruction, NHUnitTypes.hurricane);
         
+        addUnit(NHUnitTypes.destruction, NHUnitTypes.anvil);
+        addUnit(NHUnitTypes.anvil, NHUnitTypes.collapser);
+        
         addUnit(Blocks.groundFactory, NHUnitTypes.origin);
         addUnit(NHUnitTypes.origin, NHUnitTypes.thynomo);
         addUnit(NHUnitTypes.thynomo, NHUnitTypes.aliotiat);

@@ -7,20 +7,14 @@ import arc.util.Time;
 import mindustry.Vars;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
-import rhino.*;
-import rhino.module.RequireBuilder;
-import rhino.module.provider.ModuleSource;
-import rhino.module.provider.SoftCachingModuleScriptProvider;
-import rhino.module.provider.UrlModuleSourceProvider;
-
-import java.net.URISyntaxException;
-import java.util.regex.Pattern;
+import rhino.Context;
+import rhino.ImporterTopLevel;
+import rhino.NativeJavaObject;
+import rhino.Undefined;
 
 public class CCS_Scripts implements Disposable{
 	public final Context context;
 	public final ImporterTopLevel scope;
-	
-	protected ClassLoader formalLoader = null;
 	
 	protected boolean errored;
 	protected Mods.LoadedMod mod;
@@ -32,13 +26,7 @@ public class CCS_Scripts implements Disposable{
 		context = Vars.platform.getScriptContext();
 		scope = new ImporterTopLevel(context);
 		
-		formalLoader = context.getApplicationClassLoader();
-		
 		context.setApplicationClassLoader(mod.loader);
-		
-		new RequireBuilder()
-				.setModuleScriptProvider(new SoftCachingModuleScriptProvider(new CCS_ScriptModuleProvider()))
-				.setSandboxed(true).createRequire(context, scope).install(scope);
 		
 		if(!run(Core.files.internal("scripts/global.js").readString(), "Global", false)){
 			errored = true;
@@ -50,6 +38,7 @@ public class CCS_Scripts implements Disposable{
 		
 		Log.info("[["+ mod.meta.displayName + "]Time to load cutscene script engine: @", Time.elapsed());
 	}
+	
 	public boolean hasErrored(){
 		return errored;
 	}
@@ -100,38 +89,5 @@ public class CCS_Scripts implements Disposable{
 	@Override
 	public void dispose(){
 		Context.exit();
-	}
-	
-	protected class CCS_ScriptModuleProvider extends UrlModuleSourceProvider{
-		protected final Pattern directory = Pattern.compile("^(.+?)/(.+)");
-		
-		public CCS_ScriptModuleProvider(){
-			super(null, null);
-		}
-		
-		@Override
-		public ModuleSource loadSource(String moduleId, Scriptable paths, Object validator) throws URISyntaxException{
-			return null;
-		}
-	}
-	
-	public class CCS_ContextFactory extends ContextFactory{
-		
-		@Override
-		protected Object doTopCall(Callable callable, Context cx, Scriptable scope, Scriptable thisObj, Object[] args){
-			return super.doTopCall(callable, cx, scope, thisObj, args);
-		}
-		
-		@Override
-		protected Context makeContext(){
-			return new CCS_Context(this);
-		}
-		
-		public class CCS_Context extends Context{
-			public CCS_Context(ContextFactory factory){
-				super(factory);
-				setApplicationClassLoader(mod.loader);
-			}
-		}
 	}
 }

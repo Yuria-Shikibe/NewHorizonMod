@@ -79,7 +79,7 @@ public class UIActions{
 		
 		if(root == null)root = new Table(Tex.clear){
 			{
-				if(Core.scene != null)Core.scene.root.addChildAt(0, this);
+				if(Core.scene != null)Core.scene.root.addChildAt(1, this);
 			}
 			
 			@Override
@@ -110,7 +110,7 @@ public class UIActions{
 		if(root.find("CutsceneHUD") == null){
 			eventBarTable = new HUDTable();
 			
-			root.addChildAt(10, eventBarTable);
+			root.addChildAt(100, eventBarTable);
 		}
 		
 		eventBarTable.setup();
@@ -809,7 +809,7 @@ public class UIActions{
 			table.pack();
 			table.act(0f);
 			
-			root.addChildAt(0, table);
+			root.addChildAt(1, table);
 		});
 	}
 	

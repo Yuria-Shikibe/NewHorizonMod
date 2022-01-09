@@ -56,4 +56,9 @@ public class LightningStorm extends ParticleWeather{
 			}
 		}
 	}
+	
+	@Override
+	public void drawOver(WeatherState state){
+		super.drawOver(state);
+	}
 }

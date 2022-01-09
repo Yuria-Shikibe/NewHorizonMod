@@ -39,6 +39,9 @@ public class NHWeapon extends Weapon{
 //	}
 	@Override
 	public void draw(Unit unit, WeaponMount mount){
+		float z = Draw.z();
+		Draw.z(z + layerOffset);
+		
 		float
 				rotation = unit.rotation - 90,
 				weaponRotation  = rotation + (rotate ? mount.rotation : 0),
@@ -76,8 +79,10 @@ public class NHWeapon extends Weapon{
 			Draw.color();
 		}
 		
-		if(!drawShadow)return;
-		float z = Draw.z();
+		if(!drawShadow){
+			Draw.z(z);
+			return;
+		}
 		Draw.z(Math.min(Layer.darkness, unit.elevation > 0.5f ? (unit.type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : unit.type.groundLayer + Mathf.clamp(unit.type.hitSize / 4000f, 0, 0.01f) - 1f));
 		Draw.color(Pal.shadow);
 		float e = Math.max(unit.elevation, unit.type.visualElevation);
@@ -87,6 +92,7 @@ public class NHWeapon extends Weapon{
 				region.height * Draw.scl,
 				weaponRotation);
 		Draw.color();
+		
 		Draw.z(z);
 	}
 	
@@ -114,6 +120,12 @@ public class NHWeapon extends Weapon{
 	public NHWeapon setPos(float x, float y){
 		this.x = x;
 		this.y = y;
+		return this;
+	}
+	
+	public NHWeapon transform(float x, float y){
+		this.x += x;
+		this.y += y;
 		return this;
 	}
 	

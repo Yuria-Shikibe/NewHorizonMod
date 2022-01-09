@@ -25,12 +25,11 @@ import static mindustry.Vars.indexer;
 import static mindustry.Vars.tilesize;
 
 public class RemoteRouter extends Block{
-	public float range = 120f;
-	public float reloadTime = 60f;
+	public float range = 144f;
+	public float reloadTime = 45f;
 	public int maxDeliverPer = 45;
 	
-	public float loss = 0.25f;
-	public float downScale = 0.85f;
+	public float loss = 0.1f;
 	
 	public RemoteRouter(String name){
 		super(name);
@@ -119,9 +118,6 @@ public class RemoteRouter extends Block{
 							removeStack(stack.item, Mathf.ceil(toDeliver * (1 + loss)));
 							Fx.itemTransfer.at(x, y, toDeliver, stack.item.color, b);
 							lastDelivered += toDeliver;
-							
-							b.timeScale = downScale;
-							b.timeScaleDuration = reloadTime + 1f;
 						}
 					}
 					

@@ -40,6 +40,7 @@ public class ScreenInterferencer{
 	
 	private static Table hackShowTable;
 	
+	
 	public static void load(){
 		hackShowTable = new Table(Tex.clear){
 			{
@@ -47,24 +48,24 @@ public class ScreenInterferencer{
 				
 				table(Tex.pane, table -> {
 					table.table(t -> {
-						Label label = new Label(">> [red]System Overridden[] <<");
+						Label label = new Label(">> [red]IMAGER OVERLOAD[] <<");
 						t.update(() -> {
 							int i = (int)(Time.time / 12 % 4);
 							switch(i){
 								case 0 : {
-									label.setText("    [red]SYSTEM OVERLOAD[]    ");
+									label.setText("    [red]IMAGER OVERLOAD[]    ");
 									break;
 								}
 								case 1 : {
-									label.setText("  > [red]SYSTEM OVERLOAD[] <  ");
+									label.setText("  > [red]IMAGER OVERLOAD[] <  ");
 									break;
 								}
 								case 2 : {
-									label.setText(" >> [red]SYSTEM OVERLOAD[] << ");
+									label.setText(" >> [red]IMAGER OVERLOAD[] << ");
 									break;
 								}
 								case 3 : {
-									label.setText(">>> [red]SYSTEM OVERLOAD[] <<<");
+									label.setText(">>> [red]IMAGER OVERLOAD[] <<<");
 									break;
 								}
 							}
@@ -97,6 +98,8 @@ public class ScreenInterferencer{
 			
 			@Override
 			public void draw(){
+				super.draw();
+				
 				float particleLen = Core.graphics.getWidth() / 8f;
 				float stroke = Core.graphics.getHeight() / 40f;
 				float life = Core.graphics.getWidth() / 10f;
@@ -148,7 +151,7 @@ public class ScreenInterferencer{
 		hackShowTable.actions(Actions.fadeIn(1f));
 		hackShowTable.setPosition(0, 0);
 		
-		UIActions.root().addChildAt(1, hackShowTable);
+		UIActions.root().addChildAt(0, hackShowTable);
 		
 		reloadTime = Math.max(coolDown, time * 2);
 		
@@ -161,7 +164,7 @@ public class ScreenInterferencer{
 		hackShowTable.actions(Actions.fadeIn(1f));
 		hackShowTable.setPosition(0, 0);
 		
-		UIActions.root().addChildAt(1, hackShowTable);
+		UIActions.root().addChildAt(0, hackShowTable);
 	}
 	
 	public static class ScreenHackEvent{

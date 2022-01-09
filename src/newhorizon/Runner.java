@@ -11,6 +11,8 @@ public class Runner{
 		Function<String, String> s = String::toLowerCase;
 		
 		System.out.println(Arrays.toString(s.getClass().getMethods()));
+		
+		
 	}
 }
 
