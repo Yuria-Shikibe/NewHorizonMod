@@ -1,6 +1,6 @@
 package newhorizon.util.feature.cutscene;
 
-import arc.math.Rand;
+import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
@@ -14,11 +14,11 @@ import newhorizon.content.NHBlocks;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.util.feature.cutscene.events.*;
-import newhorizon.util.func.NHFunc;
 
 public class EventSamples{
 	public static CutsceneEvent jumpgateUnlock,
-			jumpgateUnlockObjective, waveTeamRaid, fleetApproaching, destroyGravityTraps, destroyReactors;
+			jumpgateUnlockObjective, waveTeamRaid, fleetApproaching, destroyGravityTraps, destroyReactors,
+			raid1, raid2, raid3;
 	
 	public static void load(){
 		
@@ -71,30 +71,7 @@ public class EventSamples{
 		
 		waveTeamRaid = new RaidEvent("waveTeamRaid"){{
 			reloadTime = 60 * 60 * 6;
-			targetFunc = e -> {
-				Rand rand = NHFunc.rand;
-				rand.setSeed(e.id);
-				
-				Building b = null;
-				int times = 0;
-				
-				Seq<Building> all = new Seq<>();
-				Groups.build.copy(all);
-				
-				while(b == null && times < 1024 && all.any()){
-					int index = rand.random(all.size - 1);
-					b = all.get(index);
-					if(b.team == Vars.state.rules.waveTeam || (b.proximity().size < 3 && b.block.health < 1600)){
-						all.remove(index);
-						b = null;
-					}
-					times++;
-				}
-				
-				return new Vec2().set(b == null ? Vec2.ZERO : b);
-			};
 			
-			teamFunc = e -> Vars.state.rules.waveTeam;
 			
 			number = 30;
 			shootDelay = 6f;
@@ -117,6 +94,45 @@ public class EventSamples{
 			
 			cannotBeRemove = true;
 			removeAfterVictory = false;
+		}};
+		
+		raid1 = new RaidEvent("raid1"){{
+			reloadTime = 60 * 60 * 6;
+			
+			
+			number = 40;
+			shootDelay = 4f;
+			bulletType = NHBullets.blastEnergyNgt;
+			
+			cannotBeRemove = true;
+		}};
+		
+		raid2 = new RaidEvent("raid2"){{
+			reloadTime = 60 * 60 * 4;
+			
+			
+			number = 60;
+			shootDelay = 2f;
+			bulletType = NHBullets.skyFrag;
+			
+			cannotBeRemove = true;
+		}};
+		
+		raid3 = new RaidEvent("raid3"){{
+			reloadTime = 60 * 60 * 6;
+			
+			
+			number = 50;
+			shootDelay = 3f;
+			bulletType = NHBullets.hyperBlast;
+			
+			shootModifier = b -> {
+				b.lifetime(b.lifetime() * (1 + Mathf.range(0.075f)));
+				b.vel.scl(1 + Mathf.range(0.075f));
+			};
+			
+			
+			cannotBeRemove = true;
 		}};
 	}
 }

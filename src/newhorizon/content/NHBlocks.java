@@ -198,7 +198,7 @@ public class NHBlocks implements ContentList {
 			lightRadius = 40f;
 			liquidMultiplier = 2f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
-			blendGroup = quantumField;
+			blendGroup = this;
 			
 			attributes.set(Attribute.heat, 1.5f);
 			attributes.set(Attribute.water, -1f);
@@ -417,7 +417,7 @@ public class NHBlocks implements ContentList {
 			shootShake = 80f;
 			shootSound = Sounds.laserblast;
 			health = 800000;
-			shootCone = 10f;
+			shootCone = 5f;
 			maxAmmo = 50;
 			consumes.powerCond(800f, FinalTurretBuild::isActive);
 			reloadTime = 1800f;

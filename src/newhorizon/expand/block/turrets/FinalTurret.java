@@ -23,6 +23,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.util.func.DrawFunc;
+import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 
 import static mindustry.Vars.tilesize;
@@ -95,33 +96,38 @@ public class FinalTurret extends ItemTurret{
 	public void createIcons(MultiPacker packer){
 		super.createIcons(packer);
 		
-		PixmapRegion originLeft, originRight, originMiddle, baseR = Core.atlas.getPixmap(baseRegion);
-		
-		Pixmap
-			left = Pixmaps.outline(originLeft = Core.atlas.getPixmap(leftRegion), outlineColor, outlineRadius),
-			right = Pixmaps.outline(originRight = Core.atlas.getPixmap(rightRegion), outlineColor, outlineRadius),
-			leftDown = Pixmaps.outline(Core.atlas.getPixmap(leftDownRegion), outlineColor, outlineRadius),
-			rightDown = Pixmaps.outline(Core.atlas.getPixmap(rightDownRegion), outlineColor, outlineRadius),
-			middle = Pixmaps.outline(originMiddle = Core.atlas.getPixmap(region), outlineColor, outlineRadius);
-		
-		packer.add(MultiPacker.PageType.main, name + "-side-L-outline", left);
-		packer.add(MultiPacker.PageType.main, name + "-side-R-outline", right);
-		packer.add(MultiPacker.PageType.main, name + "-side-down-L-outline", leftDown);
-		packer.add(MultiPacker.PageType.main, name + "-side-down-R-outline", rightDown);
-		packer.add(MultiPacker.PageType.main, name + "-middle-outline", middle);
-		
-		Pixmap base = new Pixmap(baseR.width, baseR.height);
-		base.draw(Core.atlas.getPixmap(baseRegion).crop());
-		base.draw(leftDown, true);
-		base.draw(rightDown, true);
-		base.draw(left, true);
-		base.draw(right, true);
-		base.draw(middle, true);
-		base.draw(originLeft.crop(), true);
-		base.draw(originRight.crop(), true);
-		base.draw(originMiddle.crop(), true);
-		
-		packer.add(MultiPacker.PageType.main, name + "-full", base);
+		if(NHPixmap.isDebugging()){
+			PixmapRegion originLeft, originRight, originMiddle, baseR = Core.atlas.getPixmap(baseRegion);
+			
+			Pixmap left = Pixmaps.outline(originLeft = Core.atlas.getPixmap(leftRegion), outlineColor, outlineRadius), right = Pixmaps.outline(originRight = Core.atlas.getPixmap(rightRegion), outlineColor, outlineRadius), leftDown = Pixmaps.outline(Core.atlas.getPixmap(leftDownRegion), outlineColor, outlineRadius), rightDown = Pixmaps.outline(Core.atlas.getPixmap(rightDownRegion), outlineColor, outlineRadius), middle = Pixmaps.outline(originMiddle = Core.atlas.getPixmap(region), outlineColor, outlineRadius);
+			
+			NHPixmap.packAndAdd(packer, name + "-side-L-outline", left);
+			NHPixmap.packAndAdd(packer, name + "-side-R-outline", right);
+			NHPixmap.packAndAdd(packer, name + "-side-down-L-outline", leftDown);
+			NHPixmap.packAndAdd(packer, name + "-side-down-R-outline", rightDown);
+			NHPixmap.packAndAdd(packer, name + "-middle-outline", middle);
+			
+//			packer.add(MultiPacker.PageType.main, name + "-side-L-outline", left);
+//			packer.add(MultiPacker.PageType.main, name + "-side-R-outline", right);
+//			packer.add(MultiPacker.PageType.main, name + "-side-down-L-outline", leftDown);
+//			packer.add(MultiPacker.PageType.main, name + "-side-down-R-outline", rightDown);
+//			packer.add(MultiPacker.PageType.main, name + "-middle-outline", middle);
+			
+			Pixmap base = new Pixmap(baseR.width, baseR.height);
+			base.draw(Core.atlas.getPixmap(baseRegion).crop());
+			base.draw(leftDown, true);
+			base.draw(rightDown, true);
+			base.draw(left, true);
+			base.draw(right, true);
+			base.draw(middle, true);
+			base.draw(originLeft.crop(), true);
+			base.draw(originRight.crop(), true);
+			base.draw(originMiddle.crop(), true);
+			
+			NHPixmap.packAndAdd(packer, name + "-full", base);
+			
+//			packer.add(MultiPacker.PageType.main, name + "-full", base);
+		}
 	}
 	
 	public TextureRegion getRegion(int i, boolean outline){

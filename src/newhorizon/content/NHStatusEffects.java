@@ -5,10 +5,12 @@ import arc.graphics.Color;
 import arc.graphics.Pixmaps;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.util.Log;
+import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
@@ -29,8 +31,8 @@ public class NHStatusEffects implements ContentList{
         weak = new NHStatusEffect("weak"){{
             damage = 10;
             speedMultiplier = 0.75f;
-            damageMultiplier = 0.75f;
-            reloadMultiplier = 0.75f;
+            damageMultiplier = 0.9f;
+            reloadMultiplier = 0.9f;
             
             
             textureColor = color = NHColor.thurmixRed;
@@ -55,8 +57,7 @@ public class NHStatusEffects implements ContentList{
         }};
         
         end = new NHStatusEffect("end"){{
-            damage = 1000;
-            permanent = true;
+            damage = 100;
             textureColor = color = NHColor.darkEnrColor;
             effectChance = 0.1f;
             effect = new Effect(20f, 20f, e -> {
@@ -64,7 +65,16 @@ public class NHStatusEffects implements ContentList{
                 Lines.stroke(1.5f * e.fout(Interp.pow3Out));
                 Lines.square(e.x, e.y, Mathf.randomSeed(e.id, 2f, 8f) * e.fin(Interp.pow2Out) + 6f, 45);
             });
-        }};
+        }
+    
+            @Override
+            public void update(Unit unit, float time){
+                if(!Vars.headless && Mathf.chanceDelta(0.1)){
+                    Tmp.v1.rnd(Mathf.random(unit.hitSize() / 3.5f, unit.hitSize()) * 2f);
+                    NHFx.shuttleLerp.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, Tmp.v1.angle(), color, Tmp.v1.len());
+                }
+            }
+        };
         
         scrambler = new NHStatusEffect("scrambler-status"){{
             disarm = true;
@@ -162,16 +172,27 @@ public class NHStatusEffects implements ContentList{
 		public NHStatusEffect(String name){
 			super(name);
 		}
-		
-		@Override
+        
+        @Override
+        public void load(){
+            super.load();
+        }
+        
+        @Override
 		public void createIcons(MultiPacker packer){
-			if((fullIcon != null && fullIcon.found() && fullIcon instanceof TextureAtlas.AtlasRegion)){
+		    TextureRegion region = Core.atlas.find(name);
+		    
+            Log.info(region);
+		    
+			if(NHPixmap.isDebugging() && region != null && region.found()){
 				if(textureColor != null){
-					packer.add(MultiPacker.PageType.main, name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(fullIcon), textureColor).outline(Color.valueOf("404049"), 3));
+				    NHPixmap.addProcessed(name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(region), textureColor).outline(Color.valueOf("404049"), 3));
+//					packer.add(MultiPacker.PageType.main, name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(fullIcon), textureColor).outline(Color.valueOf("404049"), 3));
 				}else{
-					packer.add(MultiPacker.PageType.main, name + "-full", Pixmaps.outline(Core.atlas.getPixmap(fullIcon), Color.valueOf("404049"), 3));
+                    NHPixmap.addProcessed(name + "-full", Pixmaps.outline(Core.atlas.getPixmap(region), Color.valueOf("404049"), 3));
+//                    packer.add(MultiPacker.PageType.main, name + "-full", Pixmaps.outline(Core.atlas.getPixmap(fullIcon), Color.valueOf("404049"), 3));
 				}
-			}
+			}else super.createIcons(packer);
 		}
 	}
 }

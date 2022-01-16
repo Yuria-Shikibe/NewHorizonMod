@@ -7,6 +7,7 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.content.Bullets;
 import mindustry.entities.EntityGroup;
 import mindustry.gen.Drawc;
 import mindustry.gen.Entityc;
@@ -135,6 +136,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	public void read(Reads reads){
 		super.read(reads);
 		
+		
 		if(!registeredLoad){
 			String code  = TypeIO.readString(reads);
 			if(code == null || code.isEmpty())code = "print('Empty Register');";
@@ -157,6 +159,8 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	@Override
 	public void write(Writes writes){
 		super.write(writes);
+		
+		
 		
 		if(!registeredExit){
 			String code = CutsceneScript.getScript();

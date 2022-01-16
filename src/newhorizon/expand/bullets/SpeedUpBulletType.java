@@ -39,6 +39,10 @@ public class SpeedUpBulletType extends BasicBulletType{
 		this(speed, damage, "bullet");
 	}
 	
+	public SpeedUpBulletType(float damage, String bulletSprite){
+		super(1, damage, bulletSprite);
+	}
+	
 	@Override
 	public void init(){
 		super.init();

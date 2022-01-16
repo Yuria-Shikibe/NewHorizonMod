@@ -283,6 +283,18 @@ public class NewHorizon extends Mod{
 			}
 			
 		});
+		
+		handler.register("runjs", "<Code>", "Run js codes", (args) -> {
+			if (args.length == 0) {
+				Log.warn("[E]Failed, pls type Code");
+			}else{
+				try {
+					CutsceneScript.runJS(args[0]);
+				} catch (Throwable var3) {
+					Log.err(var3.toString());
+				}
+			}
+		});
 	}
 	
 	public void registerClientCommands(CommandHandler handler) {

@@ -2,6 +2,7 @@ package newhorizon.util.feature;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -44,7 +45,7 @@ public class ScreenInterferencer{
 	public static void load(){
 		hackShowTable = new Table(Tex.clear){
 			{
-				setSize(Core.graphics.getWidth(), Core.graphics.getHeight());
+				setSize(UIActions.width_UTD, UIActions.height_UTD);
 				
 				table(Tex.pane, table -> {
 					table.table(t -> {
@@ -76,13 +77,16 @@ public class ScreenInterferencer{
 				}).growX().fillY().center();
 				
 				update(() -> {
+					setPosition(0, 0);
+					setSize(UIActions.width_UTD, UIActions.height_UTD);
+					
 					if(state.isMenu()){
 						hackWarmup = hackRemainTime = 0;
 						remove();
-						setPosition(0, 0);
-						setSize(Core.graphics.getWidth(), Core.graphics.getHeight());
 					}
-					if(!state.isPaused() && !state.isMenu())hackRemainTime = Mathf.approachDelta(hackRemainTime, 0, 1);
+					if(!state.isPaused() && !state.isMenu()){
+						hackRemainTime = Mathf.approachDelta(hackRemainTime, 0, 1);
+					}
 					
 					if(hackRemainTime > 0){
 						hackWarmup = Mathf.approachDelta(hackWarmup, 1, 0.1f);
@@ -110,8 +114,10 @@ public class ScreenInterferencer{
 				
 				Draw.color(from, Color.white, to, Mathf.absin(8f, 1f));
 				Draw.alpha((0.3f + Mathf.absin(12f, 0.2f)) * Mathf.curve((hackRemainTime / hackLifetime + hackWarmup) / 2f, 0, 0.2f));
-				Draw.getColor().lerp(Color.white, rand.random(0.7f, 0.9f) * Mathf.curve(hackRemainTime / hackLifetime, 0, 0.2f));
+//				Draw.getColor().lerp(Color.white, rand.random(0.7f, 0.9f) * Mathf.curve(hackRemainTime / hackLifetime, 0, 0.2f));
 				Fill.rect(width / 2, height / 2, width, height);
+				
+				Draw.blend(Blending.additive);
 				
 				for(int i = -40; i < 40; i++){
 					for(int j = -15; j < 15; j++){
@@ -128,6 +134,7 @@ public class ScreenInterferencer{
 					}
 				}
 				
+				Draw.blend();
 				Draw.color(Pal.redderDust);
 				Lines.lineAngleCenter(width / 2, height / 2, 0, width * Mathf.clamp(hackRemainTime / hackLifetime));
 				

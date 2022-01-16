@@ -232,7 +232,10 @@ public class ShapedWall extends Wall{
 		@Override
 		public void onRemoved(){
 			super.onRemoved();
-			if(!Vars.headless)updateIndexKey(false);
+			if(!Vars.headless){
+				initSeq();
+				updateIndexKey(false);
+			}
 		}
 		
 		@Override

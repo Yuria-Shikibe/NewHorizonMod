@@ -1,6 +1,7 @@
 package newhorizon.util.ui;
 
 import arc.Core;
+import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -19,6 +20,7 @@ import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
+import arc.util.Scaling;
 import arc.util.Time;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
@@ -26,6 +28,7 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
+import mindustry.gen.Sounds;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -34,6 +37,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHSounds;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.vars.TileSortMap;
 import newhorizon.util.feature.InternalTools;
@@ -384,8 +388,10 @@ public class TableTexDebugDialog extends BaseDialog{
 						NHPixmap.saveUnitPixmap(Core.atlas.getPixmap(u.fullIcon).crop(), u);
 					}
 				});
+				
+				NHPixmap.saveAddProcessed();
 			});
-		});
+		}).disabled(b -> !NHPixmap.isDebugging());
 		
 		cont.row();
 		
@@ -454,6 +460,42 @@ public class TableTexDebugDialog extends BaseDialog{
 		cont.button("Hyper Warp", () -> Groups.unit.each(u -> HyperSpaceWarper.Carrier.create(u, new Vec2().set(player))));
 		
 		cont.button("Add Bars", UnitInfo::addBars);
+		
+		cont.button("Sounds", () -> {
+			new BaseDialog("ICONS"){{
+				addCloseButton();
+				
+				Class<?> c = Sounds.class;
+				Seq<Field> fields = Seq.with(Sounds.class.getFields()).and(NHSounds.class.getFields());
+				
+				cont.pane(t -> {
+					int index = 0;
+					for(Field f : fields){
+						try{
+							if(Sound.class.isAssignableFrom(f.getType())){
+								if(index % 6 == 0) t.row();
+								t.table(inner -> {
+									inner.table(Tex.pane, de -> {
+										de.margin(6f);
+										de.add(f.getName()).growX();
+										de.button(Icon.play, Styles.clearPartiali, () -> {
+											try{
+												((Sound)f.get(null)).play();
+											}catch(IllegalAccessException e){
+												e.printStackTrace();
+											}
+										}).growY().scaling(Scaling.fit);
+									}).size(LEN * 3, LEN).pad(OFFSET / 3);
+								}).size(LEN * 3, LEN).pad(OFFSET / 3);
+								index++;
+							}
+						}catch(IllegalArgumentException err){
+							throw new IllegalArgumentException(err);
+						}
+					}
+				}).grow();
+			}}.show();
+		});
 		
 		addCloseButton();
 	}

@@ -1,7 +1,6 @@
 package newhorizon.util.func;
 
 import arc.Core;
-import arc.Files;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.graphics.Color;
@@ -10,6 +9,7 @@ import arc.graphics.PixmapIO;
 import arc.graphics.Pixmaps;
 import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureAtlas;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.util.Log;
@@ -21,10 +21,39 @@ import newhorizon.NewHorizon;
 
 import java.io.IOException;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class NHPixmap{
-	private static final boolean DEBUGGING_SPRITE = false;
+	private static final boolean DEBUGGING_SPRITE = true;
 	
-	private static final Color OColor = Color.valueOf("565666");
+	public static final String PCD_SUFFIX = "-processed";
+	
+	public static boolean isDebugging(){return DEBUGGING_SPRITE;}
+	
+	public static ObjectMap<String, Pixmap> processed = new ObjectMap<>();
+	
+	public static Pixmap addProcessed(String name, Pixmap pixmap){
+		processed.put(name, pixmap);
+		
+		return pixmap;
+	}
+	
+	public static Pixmap outLineAndAdd(String name, PixmapRegion pixmap, Color color, int radius){
+		return addProcessed(name, Pixmaps.outline(pixmap, color, radius));
+	}
+	
+	public static Pixmap outLineAndAdd(String name, TextureRegion pixmap, Color color, int radius){
+		return outLineAndAdd(name, Core.atlas.getPixmap(pixmap), color, radius);
+	}
+	
+	public static void packOutlineAndAdd(MultiPacker packer, String name, TextureRegion pixmap, Color color, int radius){
+		packer.add(MultiPacker.PageType.main, name, outLineAndAdd(name, pixmap, color, radius));
+	}
+	
+	public static void packAndAdd(MultiPacker packer, String name, Pixmap pixmap){
+		packer.add(MultiPacker.PageType.main, name, addProcessed(name, pixmap));
+	}
+	
+	public static final Color OUTLINE_COLOR = Color.valueOf("565666");
 	
 	public static void outlineLegs(MultiPacker packer, UnitType type){
 		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless){
@@ -51,14 +80,14 @@ public class NHPixmap{
 
 			for(Weapon w : type.weapons){
 				if(w.top)continue;
-				drawWeaponPixmap(base, w, false, OColor, type.outlineRadius);
+				drawWeaponPixmap(base, w, false, OUTLINE_COLOR, type.outlineRadius);
 			}
 
-			base = Pixmaps.outline(new PixmapRegion(base), OColor, type.outlineRadius);
+			base = Pixmaps.outline(new PixmapRegion(base), OUTLINE_COLOR, type.outlineRadius);
 
 			for(Weapon w : type.weapons){
 				if(!w.top)continue;
-				drawWeaponPixmap(base, w, true, OColor, type.outlineRadius);
+				drawWeaponPixmap(base, w, true, OUTLINE_COLOR, type.outlineRadius);
 			}
 
 			if(Core.settings.getBool("linear")){
@@ -67,7 +96,7 @@ public class NHPixmap{
 			
 			//used to debug
 			
-			packer.add(MultiPacker.PageType.main, type.name + "-full", base);
+			packAndAdd(packer, type.name + "-full", base);
 		}
 	}
 	
@@ -129,16 +158,43 @@ public class NHPixmap{
 		return (WorH ? (base.getWidth() - above.getWidth()) / 2 : (base.getHeight() - above.getHeight()) / 2);
 	}
 	
-	@SuppressWarnings("ResultOfMethodCallIgnored")
+	public static Fi processedDir(){
+		Fi dic = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/pre-processed");
+		if(!dic.exists())dic.mkdirs();
+		return dic;
+	}
+	
+	public static Fi processedPng(String fileName, String suffix){
+		Fi fi = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/pre-processed/" + fileName.replaceAll(NewHorizon.MOD_NAME + "-", "") + suffix + ".png");
+		if(!fi.exists()){
+			try{
+				fi.file().createNewFile();
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+		return fi;
+	}
+	
 	public static void saveUnitPixmap(Pixmap pixmap, UnitType type){
-		Fi dic = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/unit/full", Files.FileType.absolute);
+		Fi dic = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/pre-processed");
+		if(!dic.exists())dic.mkdirs();
 		if(dic.exists()){
-			Fi n = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/unit/full/" + type.name.replaceAll(NewHorizon.MOD_NAME + "-", "") + "-full.png");
+			Fi n = processedPng(type.name, "-full");
 			if(!n.exists())try{n.file().createNewFile();}catch(IOException e){Log.err(e);}
 			PixmapIO.writePng(n, pixmap);
 			Log.info("Created Icon: " + type.localizedName);
 		}
 	}
 	
-	
+	public static void saveAddProcessed(){
+		processedDir();
+		
+		for(ObjectMap.Entry<String, Pixmap> entry : processed.entries()){
+			Fi n = processedPng(entry.key, "");
+			PixmapIO.writePng(n, entry.value);
+			Log.info("Created Icon: " + entry.key);
+		}
+		
+	}
 }

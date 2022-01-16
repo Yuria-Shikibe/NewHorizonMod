@@ -8,6 +8,7 @@ import mindustry.ctype.ContentType;
 import mindustry.graphics.CacheLayer;
 import newhorizon.NewHorizon;
 import newhorizon.util.feature.UpgradeData;
+import newhorizon.util.func.NHPixmap;
 
 public class NHContent extends Content{
 	public static CacheLayer
@@ -37,8 +38,14 @@ public class NHContent extends Content{
 		return ContentType.error;
 	}
 	
+	public void process(){
+		NHPixmap.outLineAndAdd("ann-missile" + NHPixmap.PCD_SUFFIX, Core.atlas.find(NewHorizon.name("ann-missile")), NHPixmap.OUTLINE_COLOR, 4);
+	}
+	
 	public void load(){
 		if(Vars.headless)return;
+		
+		if(NHPixmap.isDebugging())process();
 		
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));
@@ -50,7 +57,6 @@ public class NHContent extends Content{
 		raid = Core.atlas.find(NewHorizon.name("raid"));
 		objective = Core.atlas.find(NewHorizon.name("objective"));
 		fleet = Core.atlas.find(NewHorizon.name("fleet"));
-		
 		
 		NHUpgradeDatas.all.each(UpgradeData::load);
 		NHUpgradeDatas.all.each(UpgradeData::init);

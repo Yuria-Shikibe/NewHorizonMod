@@ -10,11 +10,13 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
 import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -23,9 +25,7 @@ import mindustry.Vars;
 import mindustry.content.Bullets;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.Bullet;
-import mindustry.gen.Icon;
-import mindustry.gen.Tex;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
@@ -33,6 +33,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.util.feature.cutscene.*;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.ui.TableFunc;
 
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -40,8 +41,35 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class RaidEvent extends CutsceneEvent{
 	public BulletType bulletType = Bullets.artilleryDense;
-	public Func<CutsceneEventEntity, Team> teamFunc;
-	public Func<CutsceneEventEntity, Position> targetFunc;
+	
+	public Func<CutsceneEventEntity, Team> teamFunc = e -> Vars.state.rules.waveTeam;
+	public Func<CutsceneEventEntity, Position> targetFunc = e -> {
+		Rand rand = NHFunc.rand;
+		rand.setSeed(e.id);
+		
+		Building b = null;
+		
+		int times = 0;
+		
+		Seq<Building> all = new Seq<>(Groups.build.size());
+		Groups.build.copy(all);
+		
+		
+		while(b == null && times < 1024 && all.any()){
+			int index = rand.random(all.size - 1);
+			b = all.get(index);
+			if(b.team == teamFunc.get(e) || (b.proximity().size < 3 && b.block.health < 1600)){
+				all.remove(index);
+				b = null;
+			}
+			times++;
+		}
+		
+		if(b == null && teamFunc.get(e) != Vars.state.rules.defaultTeam)b = Vars.state.rules.defaultTeam.core();
+		
+		return new Vec2().set(b == null ? Vec2.ZERO : b);
+	};
+	
 	public Func<CutsceneEventEntity, Position> sourceFunc = e -> {
 		Team team = teamFunc.get(e);
 		CoreBlock.CoreBuild core = team.cores().firstOpt();

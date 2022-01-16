@@ -28,6 +28,8 @@ import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.ui.UnitInfo;
 
+import static mindustry.Vars.control;
+
 
 public class EventListeners{
 	public static class BossGeneratedEvent{
@@ -93,6 +95,10 @@ public class EventListeners{
 		
 		if(Vars.headless)return;
 		
+//		if(NHPixmap.isDebugging())Events.on(EventType.ContentInitEvent.class, e -> {
+//			NHPixmap.saveAddProcessed();
+//		});
+		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			if(caution){
 				caution = false;
@@ -128,7 +134,7 @@ public class EventListeners{
 			
 			Building building = Vars.control.input.frag.config.getSelectedTile();
 			
-			if(building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper)){
+			if(control.input.block instanceof GravityTrap || (building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper))){
 				Seq<GravityTrap.TrapField> bi = NHFunc.getObjects(NHVars.world.gravityTraps);
 				
 				Draw.z(Layer.overlayUI + 0.1f);

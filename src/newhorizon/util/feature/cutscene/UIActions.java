@@ -14,13 +14,11 @@ import arc.scene.actions.*;
 import arc.scene.event.Touchable;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.Tooltip;
-import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
@@ -146,28 +144,28 @@ public class UIActions{
 			pane = pane(t -> {
 				paneTable = t;
 				
-				t.touchable(() -> NHVars.ctrl.pressDown ? Touchable.disabled : Touchable.enabled);
-				
-				Prov<Table> constructor = () -> {
-					Cell<Table> table = t.table(i -> {
-						i.image().color(Color.gray).growX().height(OFFSET / 4).pad(OFFSET / 4);
-						i.add(Iconc.cancel + "  " + Core.bundle.get("nh.cutscene.empty-event")).color(Color.gray).padLeft(OFFSET).padRight(OFFSET).fill();
-						i.image().color(Color.gray).growX().height(OFFSET / 4).pad(OFFSET / 4);
-					}).growX().fillY().center();
-					
-					table.row();
-					
-					Table i = table.get();
-					i.color.a(0);
-					i.actions(Actions.fadeIn(0.1f));
-					return i;
-				};
-				
-				Table[] element = {constructor.get()};
+				t.touchable(() -> NHVars.ctrl.pressDown && !visible ? Touchable.disabled : Touchable.enabled);
+//
+//				Prov<Table> constructor = () -> {
+//					Cell<Table> table = t.table(i -> {
+//						i.image().color(Color.gray).growX().height(OFFSET / 4).pad(OFFSET / 4);
+//						i.add(Iconc.cancel + "  " + Core.bundle.get("nh.cutscene.empty-event")).color(Color.gray).padLeft(OFFSET).padRight(OFFSET).fill();
+//						i.image().color(Color.gray).growX().height(OFFSET / 4).pad(OFFSET / 4);
+//					}).growX().fillY().center();
+//
+//					table.row();
+//
+//					Table i = table.get();
+//					i.color.a(0);
+//					i.actions(Actions.fadeIn(0.1f));
+//					return i;
+//				};
+//
+//				Table[] element = {constructor.get()};
 				
 				t.update(() -> {
-					if(t.getChildren().size > 1) element[0].remove();
-					else if(!t.hasChildren()) element[0] = constructor.get();
+					if(t.hasChildren())HUDTable.this.actions(Actions.visible(true), Actions.fadeIn(0.35f));
+					else HUDTable.this.actions(Actions.fadeOut(0.35f), Actions.visible(false));
 				});
 				
 				t.top().row();

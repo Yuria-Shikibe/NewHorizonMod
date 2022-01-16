@@ -949,6 +949,9 @@ public class NHBullets implements ContentList{
 			buildingDamageMultiplier = 1.25f;
 			hitShake = 8f;
 			knockback = 14f;
+			
+			hitSound = Sounds.explosion;
+			despawnSound = Sounds.explosionbig;
 		}};
 		
 		railGun2 = new TrailFadeBulletType(40f, 3000, STRIKE) {{
@@ -980,6 +983,9 @@ public class NHBullets implements ContentList{
 			buildingDamageMultiplier = 1.25f;
 			hitShake = 12f;
 			knockback = 22f;
+			
+			hitSound = Sounds.explosion;
+			despawnSound = Sounds.explosionbig;
 		}};
 		
 		warperBullet = new SpeedUpBulletType(0.35f, 20f, CIRCLE_BOLT){
@@ -1675,7 +1681,7 @@ public class NHBullets implements ContentList{
 				
 				float chargeCircleFrontRad = 20;
 				float width = chargeCircleFrontRad * 1.2f;
-				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 4.5f);
+				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 3.5f);
 				
 				float rotAngle = b.fdata;
 				
@@ -1701,7 +1707,7 @@ public class NHBullets implements ContentList{
 				Lines.circle(b.x, b.y, rad);
 				
 				Draw.color(Color.white);
-				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 6.5f);
+				Fill.circle(b.x, b.y, width * (b.fout() + 4) / 5.5f);
 				
 				Drawf.light(b.team, b.x, b.y, rad, hitColor, 0.5f);
 			}
@@ -1726,26 +1732,42 @@ public class NHBullets implements ContentList{
 				float spacing = 3f;
 				
 				
-				Angles.randLenVectors(b.id, 7, splashDamageRadius / 1.5f, ((x, y) -> {
+				Angles.randLenVectors(b.id, 7, splashDamageRadius / 1.25f, ((x, y) -> {
 					float nowX = b.x + x;
 					float nowY = b.y + y;
 					
-					hitEffect.at(nowX, nowY, 0, hitColor);
-					hit(b, nowX, nowY);
+//					hitEffect.at(nowX, nowY, 0, hitColor);
+//					hit(b, nowX, nowY);
 					
 					Vec2 vec2 = new Vec2(nowX, nowY);
 					Team team = b.team;
-					for(int k = 0; k < 7; k++){
-						Time.run(Mathf.random(6f, 12f) * k, () -> {
-							if(Mathf.chanceDelta(0.4f))hitSound.at(vec2.x, vec2.y, hitSoundPitch, hitSoundVolume);
-							despawnSound.at(vec2);
-							Effect.shake(hitShake, hitShake, vec2);
-							
-							for(int i = 0; i < lightning / 2; i++){
-								Lightning.create(team, lightningColor, lightningDamage, vec2.x, vec2.y, Mathf.random(360f), lightningLength + Mathf.random(lightningLengthRand));
+					float mul = b.damageMultiplier();
+					Time.run(Mathf.random(6f, 12f) + Mathf.sqrt(x * x + y * y) / splashDamageRadius * 1.75f, () -> {
+						if(Mathf.chanceDelta(0.4f))hitSound.at(vec2.x, vec2.y, hitSoundPitch, hitSoundVolume);
+						despawnSound.at(vec2);
+						Effect.shake(hitShake, hitShake, vec2);
+						
+						for(int i = 0; i < lightning / 2; i++){
+							Lightning.create(team, lightningColor, lightningDamage, vec2.x, vec2.y, Mathf.random(360f), lightningLength + Mathf.random(lightningLengthRand));
+						}
+						
+						hitEffect.at(vec2.x, vec2.y, 0, hitColor);
+						hitSound.at(vec2.x, vec2.y, hitSoundPitch, hitSoundVolume);
+						
+						if(fragBullet != null){
+							for(int i = 0; i < fragBullets; i++){
+								fragBullet.create(team.cores().firstOpt(), team, vec2.x, vec2.y, Mathf.random(360), Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
 							}
-						});
-					}
+						}
+						
+						if(splashDamageRadius > 0 && !b.absorbed){
+							Damage.damage(team, vec2.x, vec2.y, splashDamageRadius, splashDamage * mul, collidesAir, collidesGround);
+							
+							if(status != StatusEffects.none){
+								Damage.status(team, vec2.x, vec2.y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+							}
+						}
+					});
 				}));
 			}
 			
@@ -1753,6 +1775,7 @@ public class NHBullets implements ContentList{
 				drawSize = 1200f;
 				width = height = shrinkX = shrinkY = 0;
 				collides = false;
+				despawnHit = false;
 				collidesAir = collidesGround = collidesTiles = true;
 				splashDamage = 2000f;
 				
@@ -1775,7 +1798,7 @@ public class NHBullets implements ContentList{
 				lightningLengthRand = 50;
 				
 				status = NHStatusEffects.end;
-				
+				statusDuration = 180f;
 				//					ammoMultiplier = 0.1f;
 				
 				fragBullets = 1;
