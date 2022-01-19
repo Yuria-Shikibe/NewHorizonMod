@@ -60,7 +60,7 @@ public class DebugDialog extends BaseDialog{
 				Class<?> c = Icon.class;
 				
 				Field[] fields = c.getFields();
-				t.pane(t -> {
+				cont.pane(t -> {
 					int index = 0;
 					for(Field f : fields){
 						try{
@@ -89,7 +89,7 @@ public class DebugDialog extends BaseDialog{
 				Class<?> c = Tex.class;
 				
 				Field[] fields = c.getFields();
-				t.pane(t -> {
+				cont.pane(t -> {
 					int index = 0;
 					for(Field f : fields){
 						try{
@@ -116,7 +116,7 @@ public class DebugDialog extends BaseDialog{
 				Class<?> c = Styles.class;
 				
 				Field[] fields = c.getFields();
-				t.pane(t -> {
+				cont.pane(t -> {
 					int index = 0;
 					for(Field f : fields){
 						try{
@@ -145,7 +145,7 @@ public class DebugDialog extends BaseDialog{
 				Class<?> c = Styles.class;
 				
 				Field[] fields = c.getFields();
-				t.pane(t -> {
+				cont.pane(t -> {
 					int index = 0;
 					for(Field f : fields){
 						try{
@@ -180,7 +180,7 @@ public class DebugDialog extends BaseDialog{
 			}}.show());
 			
 			t.button("Unit Icons", () -> new BaseDialog("Units"){{
-				t.pane(table -> {
+				cont.pane(table -> {
 					AtomicInteger index = new AtomicInteger();
 					
 					content.units().each( (unit) -> {
@@ -283,7 +283,7 @@ public class DebugDialog extends BaseDialog{
 				Class<?> c = Sounds.class;
 				Seq<Field> fields = Seq.with(Sounds.class.getFields()).and(NHSounds.class.getFields());
 				
-				t.pane(t -> {
+				cont.pane(t -> {
 					int index = 0;
 					for(Field f : fields){
 						try{
@@ -352,7 +352,7 @@ public class DebugDialog extends BaseDialog{
 			t.button("Unlock Single", () -> new BaseDialog("UNLOCK"){{
 				Seq<UnlockableContent> all = new Seq<>().addAll(content.units().select(c -> !c.isHidden())).addAll(content.blocks().select(c -> !c.isHidden())).addAll(content.items().select(c -> !c.isHidden())).addAll(content.liquids()).addAll(content.statusEffects().select(c -> !c.isHidden())).addAll(content.sectors().select(c -> !c.isHidden())).addAll(content.planets().select(c -> !c.isHidden())).as();
 				
-				t.pane(t -> {
+				cont.pane(t -> {
 					for(int i = 0; i < all.size; i++){
 						if(i % 4 == 0)t.row();
 						
