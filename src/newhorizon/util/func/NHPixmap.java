@@ -24,7 +24,7 @@ import java.io.IOException;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class NHPixmap{
-	private static final boolean DEBUGGING_SPRITE = true;
+	private static final boolean DEBUGGING_SPRITE = false;
 	
 	public static final String PCD_SUFFIX = "-processed";
 	

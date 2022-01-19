@@ -42,7 +42,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-	public static final boolean DEBUGGING = true;
+	public static final boolean DEBUGGING = false;
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
