@@ -33,7 +33,7 @@ public class ScreenInterferencer{
 	private static int seed = 0;
 	
 	
-	private static final Color from = Pal.heal, to = NHColor.lightSkyBack;
+	public static final Color from = Pal.heal, to = NHColor.lightSkyBack;
 	
 	private static int getSeed(){return seed++;}
 	
@@ -93,7 +93,7 @@ public class ScreenInterferencer{
 					}else hackWarmup = Mathf.approachDelta(hackWarmup, 0, 0.02f);
 					
 					if(Mathf.zero(hackWarmup) && hackLifetime > 0){
-						actions(Actions.fadeOut(1f, Interp.fade), Actions.remove());
+						actions(Actions.fadeOut(0.25f, Interp.fade), Actions.remove());
 						hackLifetime = 0;
 					}
 				});
@@ -136,7 +136,7 @@ public class ScreenInterferencer{
 				
 				Draw.blend();
 				Draw.color(Pal.redderDust);
-				Lines.lineAngleCenter(width / 2, height / 2, 0, width * Mathf.clamp(hackRemainTime / hackLifetime));
+				Lines.lineAngleCenter(width / 2, height / 2, 0, width * 1.35f * Mathf.clamp(hackRemainTime / hackLifetime));
 				
 				super.draw();
 			}
@@ -166,12 +166,12 @@ public class ScreenInterferencer{
 	}
 	
 	public static void continueGenerate(){
-		hackRemainTime = hackLifetime = 60f;
+		hackRemainTime = hackLifetime = 30f;
 		
 		hackShowTable.actions(Actions.fadeIn(1f));
 		hackShowTable.setPosition(0, 0);
 		
-		UIActions.root().addChildAt(0, hackShowTable);
+		if(reloadTime <= 0)UIActions.root().addChildAt(0, hackShowTable);
 	}
 	
 	public static class ScreenHackEvent{

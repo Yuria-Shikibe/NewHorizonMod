@@ -22,8 +22,9 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.graphic.DrawFunc;
 
 import java.util.Arrays;
 
@@ -179,7 +180,7 @@ public class NHFx{
 			
 			e.scaled(lifetime / 3, t -> {
 				stroke(3f * t.fout());
-				circle(e.x, e.y, 3f + t.fin(Interp.circleOut) * range);
+				circle(e.x, e.y, 8f + t.fin(Interp.circleOut) * range * 1.35f);
 			});
 			
 			e.scaled(lifetime / 2, t -> {
@@ -399,10 +400,10 @@ public class NHFx{
 	public static Effect polyCloud(Color color, float lifetime, float size, float range, int num){
 		return (new Effect(lifetime, e -> {
 			randLenVectors(e.id, num, range * e.finpow(), (x, y) -> {
-				Draw.color(color, Pal.gray, e.fin());
+				Draw.color(color, Pal.gray, e.fin() * 0.65f);
 				Fill.poly(e.x + x, e.y + y, 6, size * e.fout(), e.rotation);
 				Drawf.light(e.x + x, e.y + y, size * e.fout() * 2.5f, color, e.fout() * 0.65f);
-				Draw.color(Color.white, Pal.gray, e.fin());
+				Draw.color(Color.white, Pal.gray, e.fin() * 0.65f);
 				Fill.poly(e.x + x, e.y + y, 6, size * e.fout() / 2, e.rotation);
 			});
 		})).layer(Layer.bullet);
@@ -440,7 +441,7 @@ public class NHFx{
 			float circleRad = e.fin(Interp.circleOut) * range;
 			Lines.stroke(Mathf.clamp(range / 24, 4, 20) * e.fout());
 			Lines.circle(e.x, e.y, circleRad);
-			for(int i = 0; i < Mathf.clamp(range / 12, 9, 60); i++){
+			if(NHSetting.enableDetails())for(int i = 0; i < Mathf.clamp(range / 12, 9, 60); i++){
 				Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
 				DrawFunc.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
 			}
@@ -459,6 +460,8 @@ public class NHFx{
 				Draw.color(colorExternal);
 				DrawFunc.tri(e.x + x, e.y + y, width, range / 3 * e.fout(Interp.pow2In), angle - 180);
 				DrawFunc.tri(e.x + x, e.y + y, width, length, angle);
+				
+				if(!NHSetting.enableDetails())return;
 				
 				Draw.color(colorInternal);
 				
@@ -792,13 +795,13 @@ public class NHFx{
 			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * e.rotation);
 		}),
 	
-		healEffect = new Effect(11.0F, e -> {
+		healEffectSky = new Effect(11.0F, e -> {
 			Draw.color(NHColor.lightSkyBack);
 			Lines.stroke(e.fout() * 2.0F);
 			Lines.poly(e.x, e.y, 6, 2.0F + e.finpow() * 79.0F);
 		}),
 	
-		activeEffect = new Effect(22.0F, e -> {
+		activeEffectSky = new Effect(22.0F, e -> {
 			Draw.color(NHColor.lightSkyBack);
 			Lines.stroke(e.fout() * 3.0F);
 			Lines.poly(e.x, e.y, 6,4.0F + e.finpow() * e.rotation);
@@ -813,13 +816,18 @@ public class NHFx{
 			stroke(3 * e.fout(), e.color);
 			circle(e.x, e.y, e.rotation  / tilesize * e.finpow());
 		}),
-		//All effects
-		trail = new Effect(50.0F, e -> {
+
+		trailToGray = new Effect(50.0F, e -> {
 			Draw.color(e.color, Color.gray, e.fin());
 			randLenVectors(e.id, 2, tilesize * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.rotation * e.fout()));
 		}),
 	
-		trailSolidColor = new Effect(50.0F, e -> {
+		trailFromWhite = new Effect(50.0F, e -> {
+			Draw.color(e.color, Color.white, e.fout() * 0.35f);
+			randLenVectors(e.id, 2, tilesize * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.rotation * e.fout()));
+		}),
+	
+		trailSolid = new Effect(50.0F, e -> {
 			Draw.color(e.color);
 			randLenVectors(e.id, 2, tilesize * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.rotation * e.fout()));
 		}),
@@ -1206,7 +1214,26 @@ public class NHFx{
 			float finY = Mathf.curve(e.fslope(), step + 0.05f, step * 2);
 			
 			Fill.rect(e.x, e.y, e.rotation * finX, (e.rotation - 1) * finY + 1);
-		});
+		}),
+	
+		triTrail =  new Effect(28f, 50f, e -> {
+			Rand rand = NHFunc.rand;
+			rand.setSeed(e.id);
+			Draw.color(e.color, Color.white, e.fout() * 0.6f);
+			for(int i : Mathf.signs){
+				float ang = e.rotation - 180 + rand.random(10, 45) * i;
+				Tmp.v1.trns(ang, rand.random(4, 14) * ( 0.75f + e.fin() * 1.5f)).scl(0.3f + e.fin(Interp.pow3Out)).add(e.x, e.y);
+				DrawFunc.arrow(Tmp.v1.x, Tmp.v1.y, rand.random(3, 6.5f) * e.fout(), rand.random(17, 28) * e.fout(Interp.pow3Out) * Mathf.curve(e.fin(), 0, 0.05f), rand.random(-4, -8) * e.fout(), ang);
+			}
+		}),
+	
+		ultFireBurn = new Effect(25f, e -> {
+			color(NHColor.lightSkyBack, Color.gray, e.fin() * 0.75f);
+			
+			randLenVectors(e.id, 2, 2f + e.fin() * 7f, (x, y) -> {
+				Fill.square(e.x + x, e.y + y, 0.2f + e.fout() * 1.5f, 45);
+			});
+		}).layer(Layer.bullet + 1);
 }
 
 

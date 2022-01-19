@@ -5,7 +5,7 @@ import arc.graphics.g2d.Draw;
 import mindustry.gen.Buildingc;
 import newhorizon.NewHorizon;
 import newhorizon.util.feature.UpgradeData.DataEntity;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.tilesize;
 

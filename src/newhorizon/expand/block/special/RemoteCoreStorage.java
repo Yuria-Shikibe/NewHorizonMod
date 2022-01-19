@@ -21,7 +21,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.expand.vars.EventListeners;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;

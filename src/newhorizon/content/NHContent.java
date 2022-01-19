@@ -7,6 +7,7 @@ import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.graphics.CacheLayer;
 import newhorizon.NewHorizon;
+import newhorizon.expand.entities.UltFire;
 import newhorizon.util.feature.UpgradeData;
 import newhorizon.util.func.NHPixmap;
 
@@ -45,6 +46,7 @@ public class NHContent extends Content{
 	public void load(){
 		if(Vars.headless)return;
 		
+		UltFire.load();
 		if(NHPixmap.isDebugging())process();
 		
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));

@@ -32,7 +32,7 @@ import newhorizon.content.NHColor;
 import newhorizon.expand.interfaces.Linkablec;
 import newhorizon.expand.vars.EventListeners;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.NHSetting;
 
 import static mindustry.Vars.control;

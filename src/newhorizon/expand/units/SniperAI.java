@@ -7,7 +7,7 @@ import mindustry.world.meta.BlockFlag;
 import static mindustry.Vars.state;
 
 public class SniperAI extends FlyingAI{
-	protected static final float APPROACHING_DST = 64f;
+	protected static final float APPROACHING_DST = 48f;
 	
 	@Override
 	public void updateWeapons(){

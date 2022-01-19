@@ -13,6 +13,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.util.Log;
+import arc.util.OS;
 import mindustry.Vars;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
@@ -136,6 +137,17 @@ public class NHPixmap{
 		return base;
 	}
 	
+	public static void mulColor(Pixmap pixmap, Color color){
+		Color c = new Color();
+		
+		for(int y = 0; y < pixmap.height; ++y){
+			for(int x = 0; x < pixmap.width; ++x){
+				c.set(pixmap.get(x, y));
+				pixmap.set(x, y, c.mul(color));
+			}
+		}
+	}
+	
 	@Deprecated
 	public static void drawWeaponPixmap(Pixmap base, Weapon w, boolean outline, Color outlineColor, int radius){
 		if(w.region != null && w.region.found() && w.region instanceof TextureAtlas.AtlasRegion){
@@ -158,14 +170,23 @@ public class NHPixmap{
 		return (WorH ? (base.getWidth() - above.getWidth()) / 2 : (base.getHeight() - above.getHeight()) / 2);
 	}
 	
+	public static String rootPath(){
+		return OS.env("MDT_SPRITE_HOME");
+	}
+	
+	public static String path(String p){
+		return rootPath() + p;
+	}
+	
+	@SuppressWarnings("UnusedReturnValue")
 	public static Fi processedDir(){
-		Fi dic = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/pre-processed");
+		Fi dic = new Fi(path("/pre-processed"));
 		if(!dic.exists())dic.mkdirs();
 		return dic;
 	}
 	
 	public static Fi processedPng(String fileName, String suffix){
-		Fi fi = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/pre-processed/" + fileName.replaceAll(NewHorizon.MOD_NAME + "-", "") + suffix + ".png");
+		Fi fi = new Fi(rootPath() + "/pre-processed/" + fileName.replaceAll(NewHorizon.MOD_NAME + "-", "") + suffix + ".png");
 		if(!fi.exists()){
 			try{
 				fi.file().createNewFile();
@@ -177,7 +198,7 @@ public class NHPixmap{
 	}
 	
 	public static void saveUnitPixmap(Pixmap pixmap, UnitType type){
-		Fi dic = new Fi("E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/assets/sprites/pre-processed");
+		Fi dic = new Fi(rootPath() + "/pre-processed");
 		if(!dic.exists())dic.mkdirs();
 		if(dic.exists()){
 			Fi n = processedPng(type.name, "-full");

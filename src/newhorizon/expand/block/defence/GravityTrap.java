@@ -30,7 +30,7 @@ import newhorizon.content.NHColor;
 import newhorizon.expand.vars.EventListeners;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;

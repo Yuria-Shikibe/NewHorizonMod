@@ -28,7 +28,7 @@ import mindustry.world.meta.StatValues;
 import newhorizon.expand.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.expand.vars.NHVars;
 import org.jetbrains.annotations.NotNull;

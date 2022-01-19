@@ -28,6 +28,7 @@ import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.func.EntityRegister;
+import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.ui.Hints;
 import newhorizon.util.ui.LatestFeature;
@@ -41,18 +42,14 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-	static{
-//		Vars.experimental = true;
-//		Vars.testMobile = Vars.mobile = true;
-	}
-//
+	public static final boolean DEBUGGING = true;
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
 	public static final String MOD_NAME_BAR = "new-horizon-";
-	public static final String SERVER_ADDRESS = "175.178.22.6:6666", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
+	public static final String SERVER = "175.178.22.6:6666", SERVER_ADDRESS = "175.178.22.6", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	
 	public static Mods.LoadedMod MOD;
 	
@@ -78,9 +75,14 @@ public class NewHorizon extends Mod{
 	
 	private static LatestFeature[] getUpdateContent(){
 		return new LatestFeature[]{
-			new LatestFeature(NHUnitTypes.anvil),
-			new LatestFeature(NHStatusEffects.weak),
-			new LatestFeature("Fixes", "Fixed some bugs about cutscene", "Improvement", Icon.wrench.getRegion()),
+			new LatestFeature(NHStatusEffects.scannerDown),
+			new LatestFeature(NHStatusEffects.ultFireBurn),
+			new LatestFeature("Value Adjustments", "Reduced the loss and Increased the range of Block [accent]Remote Router[]", "Balance", NHBlocks.remoteRouter),
+			new LatestFeature("Value Adjustments", "Reduced the damage of Status [accent]End[]", "Balance", NHStatusEffects.end),
+			new LatestFeature("New Fire Type", "Add a new plasma fire type", "Content", NHStatusEffects.ultFireBurn.fullIcon),
+			new LatestFeature("UI Adjustment", "Made the event table hidden while there is nothing to show", "Improvement", Icon.wrench.getRegion()),
+			new LatestFeature("Simplified Effect", "Made the Effects more simplified while Setting [accent]Enable Effect Details[] is disabled", "Graphic Optimization", Icon.wrench.getRegion()),
+			new LatestFeature("Fixes", "Fixed some bugs about UI", "Fixes", Icon.wrench.getRegion()),
 		};
 	}
 	
@@ -103,7 +105,8 @@ public class NewHorizon extends Mod{
 		dialog.addCloseListener();
 		dialog.show();
 	}
-
+	
+	
 	public static void startLog(){
 		BaseDialog dialog = new BaseDialog("");
 		dialog.closeOnBack();
@@ -130,7 +133,7 @@ public class NewHorizon extends Mod{
 					t.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@log", Icon.book, Styles.transt, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER_ADDRESS)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 				}).grow();
 				if(!Vars.mobile)table.table(t -> {
 				
@@ -138,58 +141,6 @@ public class NewHorizon extends Mod{
 			}).fill();
 		}).grow();
 		dialog.show();
-	}
-	
-    public NewHorizon(){
-		Log.info("Loaded NewHorizon Mod constructor.");
-		
-        Events.on(ClientLoadEvent.class, e -> {
-	        Threads.thread(() -> {
-		        Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
-			        Jval json = Jval.read(res.getResultAsString());
-			
-			        String tag = json.get("tag_name").asString();
-			        String body = json.get("body").asString();
-			
-			        if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
-				        new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
-					        cont.table(t -> {
-						        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
-						        t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
-						        t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
-						        t.add("\t[lightgray]Version: [accent]" + tag).left().row();
-						        t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
-						        t.pane(c -> {
-							        c.align(Align.topLeft).margin(OFFSET);
-							        c.add("[accent]Description: \n[]" + body).left();
-						        }).grow();
-					        }).grow().padBottom(OFFSET).row();
-					
-					
-					        cont.table(table -> {
-						        table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
-						        table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
-					        }).bottom().growX().height(LEN).padTop(OFFSET);
-					
-					
-					
-					        addCloseListener();
-				        }}.show();
-			        }
-			
-			        if(tag != null)Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
-		        }, ex -> Log.err(ex.toString()));
-	        });
-	        
-        	Time.runTask(10f, () -> {
-		
-		        if(NHSetting.versionChange){
-			        showNew();
-		        }
-		
-		        if(!NHSetting.getBool("@active.hid-start-log"))startLog();
-	        });
-        });
 	}
 	
 	public static void showNew(){
@@ -234,6 +185,61 @@ public class NewHorizon extends Mod{
 		}}.show();
 	}
 	
+	
+	
+	public NewHorizon(){
+		Log.info("Loaded NewHorizon Mod constructor.");
+		
+		Events.on(ClientLoadEvent.class, e -> {
+			Threads.thread(() -> {
+				Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
+					Jval json = Jval.read(res.getResultAsString());
+					
+					String tag = json.get("tag_name").asString();
+					String body = json.get("body").asString();
+					
+					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
+						new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
+							cont.table(t -> {
+								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
+								t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
+								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
+								t.add("\t[lightgray]Version: [accent]" + tag).left().row();
+								t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
+								t.pane(c -> {
+									c.align(Align.topLeft).margin(OFFSET);
+									c.add("[accent]Description: \n[]" + body).left();
+								}).grow();
+							}).grow().padBottom(OFFSET).row();
+							
+							
+							cont.table(table -> {
+								table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
+								table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
+							}).bottom().growX().height(LEN).padTop(OFFSET);
+							
+							
+							
+							addCloseListener();
+						}}.show();
+					}
+					
+					if(tag != null)Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
+				}, ex -> Log.err(ex.toString()));
+			});
+			
+			Time.runTask(10f, () -> {
+				
+				if(NHSetting.versionChange){
+					showNew();
+				}
+				
+				if(!NHSetting.getBool("@active.hid-start-log"))startLog();
+			});
+		});
+	}
+	
+	@Override
 	public void init() {
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 		
@@ -252,6 +258,7 @@ public class NewHorizon extends Mod{
 		Vars.ui.hints.hints.addAll(Hints.DefaultHint.all);
 	}
 	
+	@Override
 	public void registerServerCommands(CommandHandler handler) {
 		handler.register("events", "List all events in the map.", (args) -> {
 			if (CutsceneEventEntity.events.isEmpty()) {
@@ -297,6 +304,7 @@ public class NewHorizon extends Mod{
 		});
 	}
 	
+	@Override
 	public void registerClientCommands(CommandHandler handler) {
 		handler.<Player>register("runwave", "<num>", "Run Wave (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
@@ -376,6 +384,9 @@ public class NewHorizon extends Mod{
 	
 	@Override
     public void loadContent(){
+		Log.info("Debug Mode: " + DEBUGGING);
+		Log.info("Process Texture Mode: " + NHPixmap.isDebugging());
+		
 		Time.mark();
 		
 		MOD = Vars.mods.getMod(getClass());
@@ -393,12 +404,14 @@ public class NewHorizon extends Mod{
 		
 		EntityRegister.load();
 		EventListeners.load();
-	    NHSounds.load();
-		if(!Vars.headless)NHShaders.init();
+		
+		if(!Vars.headless){
+			NHSounds.load();
+			NHShaders.init();
+		}
+		
 		NHContent.loadModContent();
-		
 		for(ContentList contentList : content)contentList.load();
-		
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		
 		EventSamples.load();

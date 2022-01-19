@@ -23,7 +23,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.Turret;
 import newhorizon.content.NHFx;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 @SuppressWarnings("SuspiciousNameCombination")
 public class TowardShield extends Ability{

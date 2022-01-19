@@ -33,13 +33,13 @@ import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.expand.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
+import newhorizon.expand.block.special.CommandableBlock;
+import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.EntityRegister;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
-import newhorizon.expand.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.FloatBuffer;
@@ -62,7 +62,7 @@ public class ShieldProjector extends CommandableBlock{
 	public float assistRange = 600f;
 	public float rotateSpeed = 0.015f;
 	
-	public float provideHealth = 3500f;
+	public float provideHealth = 6000f;
 	public float provideRange = 240f;
 	public float provideLifetime = 4800f;
 	

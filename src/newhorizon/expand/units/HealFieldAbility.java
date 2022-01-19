@@ -22,7 +22,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.NHFunc;
 
 public class HealFieldAbility extends Ability{

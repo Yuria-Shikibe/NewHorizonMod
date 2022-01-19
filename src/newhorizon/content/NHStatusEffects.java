@@ -20,14 +20,46 @@ import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.NewHorizon;
+import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.func.NHPixmap;
 
 public class NHStatusEffects implements ContentList{
-    public static StatusEffect
-            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased, weak;
+    public static StatusEffect ultFireBurn,
+            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased, weak, scannerDown;
     
     @Override
     public void load(){
+        ultFireBurn = new NHStatusEffect("ult-fire-burn"){{
+            damage = 3;
+            
+            color = textureColor = NHColor.lightSkyBack;
+            speedMultiplier = 1.2f;
+            effect = NHFx.ultFireBurn;
+        }};
+        
+        scannerDown = new NHStatusEffect("scanner-down"){{
+            damage = 2;
+            show = true;
+            
+            damageMultiplier = 0.95f;
+            speedMultiplier = 0.9f;
+            reloadMultiplier = 0.9f;
+            
+            effectChance = 0.2f;
+            color = ScreenInterferencer.from.cpy().lerp(ScreenInterferencer.to, 0.5f);
+            effect = new MultiEffect(NHFx.squareRand(ScreenInterferencer.from, 8f, 16f), NHFx.squareRand(ScreenInterferencer.to, 8f, 16f));
+        }
+    
+            @Override
+            public void update(Unit unit, float time){
+               super.update(unit, time);
+            
+                if(unit.isLocal()){
+                    ScreenInterferencer.continueGenerate();
+                }
+            }
+        };
+        
         weak = new NHStatusEffect("weak"){{
             damage = 10;
             speedMultiplier = 0.75f;
@@ -57,8 +89,13 @@ public class NHStatusEffects implements ContentList{
         }};
         
         end = new NHStatusEffect("end"){{
-            damage = 100;
+            damage = 60;
             textureColor = color = NHColor.darkEnrColor;
+            
+            damageMultiplier = 0.5f;
+            reloadMultiplier = 0.5f;
+            speedMultiplier = 0.5f;
+            
             effectChance = 0.1f;
             effect = new Effect(20f, 20f, e -> {
                 Draw.color(Color.white, color, e.fin() + 0.35f);

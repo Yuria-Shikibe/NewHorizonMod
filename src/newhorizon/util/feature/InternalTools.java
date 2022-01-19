@@ -1,8 +1,13 @@
 package newhorizon.util.feature;
 
+import arc.Core;
 import arc.files.Fi;
 import arc.func.Cons2;
-import arc.graphics.Color;
+import arc.graphics.*;
+import arc.graphics.g2d.Draw;
+import arc.math.Interp;
+import arc.math.Rand;
+import arc.math.geom.Vec2;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
@@ -10,6 +15,7 @@ import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.struct.StringMap;
 import arc.util.Align;
+import arc.util.Tmp;
 import arc.util.io.PropertiesUtils;
 import mindustry.Vars;
 import mindustry.gen.Icon;
@@ -19,6 +25,8 @@ import mindustry.mod.Mods;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHColor;
+import newhorizon.util.func.NHPixmap;
 
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -26,6 +34,12 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class InternalTools{
 	private static Fi toProcess;
 	
+	public static void showTexture(Texture texture){
+		new BaseDialog("Debug"){{
+			cont.image(Draw.wrap(texture)).fill().center();
+			addCloseButton();
+		}}.show();
+	}
 	
 	public static void patchBundle(){
 		new BaseDialog(""){{
@@ -124,5 +138,56 @@ public class InternalTools{
 			
 			addCloseButton();
 		}}.show();
+	}
+	
+	public static void fireAnime(){
+		Vars.ui.loadfrag.show();
+//		Vars.ui.load
+		Vars.ui.loadAnd("[accent]Generating", () -> {
+			Color from = NHColor.lightSkyFront, to = Color.darkGray;
+			
+			Fi root = NHPixmap.processedDir();
+			Fi fireRoot = root.child("ult-fire");
+			if(!fireRoot.exists())fireRoot.mkdirs();
+			
+			Rand rand = new Rand();
+			
+			long id = rand.nextLong();
+			int num = 13;
+			int total = 40;
+			String name = NewHorizon.name("square"), outPut = "ult-fire-";
+			int size = 160;
+			float step = 1.9f;
+			
+			rand.setSeed(id);
+			
+			Pixmap square = Core.atlas.getPixmap(name).crop();
+			
+			for(int fIndex = 0; fIndex < total; fIndex++){
+				Pixmap base = new Pixmap(size, size);
+				
+				for(int i = 0; i < num; i++){
+					float fin = ((fIndex + rand.random(total + i)) % total) / (float)total;
+					float fout = 1 - fin * 0.95f;
+					float fslope = Math.max(0.515f - Math.abs(fin - 0.5f), 0.005f) * 2f;
+					
+					Vec2 vec2 = new Vec2().setToRandomDirection(rand).scl(rand.random(3, 6) + rand.random(4, 32) * Interp.circleOut.apply(fin) * step);
+					Tmp.c1.set(from).lerp(to, rand.range(0.2f) + Interp.swingIn.apply(fin) * 0.8f * rand.random(0.75f, 1.25f));
+					Pixmap pixmap = Pixmaps.scale(square, fslope * rand.random(0.15f, 0.8f) + 0.075f);
+					NHPixmap.mulColor(pixmap, Tmp.c1);
+					
+					base.draw(pixmap, (base.width - pixmap.width) / 2 + (int)vec2.x, (base.height - pixmap.height) / 2 + (int)vec2.y, true);
+				}
+				
+				rand.setSeed(id);
+				
+				PixmapIO.writePng(fireRoot.child(outPut + fIndex + ".png"), base);
+				
+				Vars.ui.loadfrag.setProgress((float)fIndex / total);
+			}
+			
+			Vars.ui.loadfrag.hide();
+		});
+		
 	}
 }

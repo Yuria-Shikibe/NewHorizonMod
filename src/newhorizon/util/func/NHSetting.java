@@ -135,6 +135,7 @@ public class NHSetting{
 	
 	public static void initSettingList() throws IOException{
 		debug = !Vars.headless && getBool("@active.debug");
+		enableEffectDetails = Core.settings.getBool("enableeffectdetails");
 		modMeta = NewHorizon.MOD.meta;
 		
 		if(!modMeta.version.equals(settingList.getProperty(initKey))){

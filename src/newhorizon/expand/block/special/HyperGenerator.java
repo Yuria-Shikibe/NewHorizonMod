@@ -34,13 +34,13 @@ import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.tilesize;
 
@@ -178,8 +178,10 @@ public class HyperGenerator extends PowerGenerator{
 					Drawf.tri(b.x, b.y, triWidth * f2 * f, triLength * 1.3f * f2 * f, (i + 1) * 90 - Time.time * 2 + 90);
 				}
 				
-				Draw.color(Tmp.c1.set(effectColor).lerp(Color.black, 0.8f));
+				Draw.color(Color.black);
+				Draw.z(Layer.effect + 0.01f);
 				Fill.circle(b.x, b.y, size * tilesize / 5f * f);
+				Draw.z(Layer.bullet);
 				
 				Drawf.light(b.team, b, lightningRange * 4f * b.fout(Interp.pow2Out), effectColor, 0.75f);
 			}

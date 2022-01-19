@@ -8,7 +8,9 @@ EventSamples.raid3.setup();
 
 Time.run(120, run(() => UIActions.skip()));
 
-Groups.build.each(boolf(b => b.team != Team.sharded && !(b instanceof CoreBlock.CoreBuild)), cons(b => {Time.run(3600 + Mathf.random(900), run(() => {b.kill();}));}));
+Groups.build.each(boolf(b => b.team != Team.sharded && !(b instanceof CoreBlock.CoreBuild)), cons(b => {Time.run(Mathf.random(900), run(() => {b.kill();}));}));
+
+Groups.build.each(boolf(b => !(b instanceof CoreBlock.CoreBuild)), cons(b => {Time.run(Mathf.random(900), run(() => {b.kill();}));}));
 
 Groups.build.each(cons(b=>Time.run(Mathf.random(900),run(()=>b.kill()))));
 

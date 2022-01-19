@@ -22,7 +22,7 @@ import mindustry.graphics.MultiPacker;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 

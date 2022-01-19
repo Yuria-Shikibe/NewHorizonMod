@@ -20,7 +20,6 @@ import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.EmpBulletType;
-import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.gen.Teamc;
@@ -84,7 +83,8 @@ import newhorizon.expand.bullets.AdaptedContinuousLaserBulletType;
 import newhorizon.expand.bullets.AdaptedLaserBulletType;
 import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.util.feature.ScreenInterferencer;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -670,7 +670,7 @@ public class NHBlocks implements ContentList {
 							Draw.color(frontColor);
 							Fill.circle(e.x, e.y, e.fout() * height / 2f);
 						});
-						despawnEffect = new MultiEffect(NHFx.crossBlast(backColor, 120f), NHFx.instHit(backColor, 3, 80f));
+						despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(backColor, 120f), NHFx.instHit(backColor, 3, 80f));
 						height = width = 40;
 					}
 						
@@ -766,7 +766,7 @@ public class NHBlocks implements ContentList {
 				hitEffect = NHFx.lightningHitLarge(backColor);
 				despawnEffect = NHFx.instHit(backColor, 3, 22f);
 				trailChance = 0.35f;
-				trailEffect = NHFx.trail;
+				trailEffect = NHFx.trailToGray;
 				trailParam = 4f;
 				height = 35f;
 				width = 10f;
@@ -815,7 +815,9 @@ public class NHBlocks implements ContentList {
 			ammoPerShot = 1;
 			ammoEjectBack = 6f;
 			burstSpacing = 2f;
-			inaccuracy = 13f;
+			inaccuracy = 9f;
+			spread = 0;
+			
 			xRand = tilesize * size / 3.5f;
 			shootSound = Sounds.missile;
 			coolantMultiplier = 0.85f;
@@ -1476,7 +1478,7 @@ public class NHBlocks implements ContentList {
 			craftTime = 30f;
 			size = 2;
 			craftEffect = Fx.formsmoke;
-			updateEffect = NHFx.trail;
+			updateEffect = NHFx.trailToGray;
 			hasPower = hasItems = hasLiquids = true;
 			drawer = new DrawHoldLiquid();
 			consumes.item(Items.thorium, 3);
@@ -1818,7 +1820,7 @@ public class NHBlocks implements ContentList {
 					Drawf.light(e.x, e.y, rad * 1.2f, hitColor, 0.7f);
 				});
 				
-				hitEffect = new MultiEffect(NHFx.blast(hitColor, radius), NHFx.square(hitColor, 100f, 3, 80f, 8f));
+				hitEffect = new OptionalMultiEffect(NHFx.square(hitColor, 100f, 3, 80f, 8f), NHFx.blast(hitColor, radius));
 			}
 				
 				@Override
@@ -1878,7 +1880,7 @@ public class NHBlocks implements ContentList {
 			size = 3;
 			bulletHitter = new EffectBulletType(75f){{
 				trailChance = 0.25f;
-				trailEffect = NHFx.trail;
+				trailEffect = NHFx.trailToGray;
 				trailParam = 1.5f;
 				
 				smokeEffect = NHFx.hugeSmoke;
@@ -1894,7 +1896,7 @@ public class NHBlocks implements ContentList {
 				splashDamageRadius = 120f;
 				hitShake = despawnShake = 20f;
 				hitSound = despawnSound = Sounds.explosionbig;
-				hitEffect = despawnEffect = new MultiEffect(NHFx.blast(hitColor, splashDamageRadius * 1.5f), NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f));
+				hitEffect = despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f), NHFx.blast(hitColor, splashDamageRadius * 1.5f));
 			}};
 			consumes.powerCond(6f, BombLauncherBuild::isCharging);
 			consumes.item(NHItems.fusionEnergy, 2);

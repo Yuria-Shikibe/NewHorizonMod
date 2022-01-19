@@ -24,4 +24,12 @@ public class LatestFeature{
 		this.type = type;
 		this.icon = icon;
 	}
+	
+	public LatestFeature(String title, String description, String type, UnlockableContent content){
+		this.content = content;
+		this.title = title;
+		this.description = description;
+		this.type = type;
+		this.icon = content.fullIcon;
+	}
 }

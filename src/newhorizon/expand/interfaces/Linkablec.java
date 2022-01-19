@@ -12,11 +12,11 @@ import mindustry.gen.Building;
 import mindustry.gen.Buildingc;
 import mindustry.graphics.Drawf;
 import mindustry.logic.Ranged;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static newhorizon.util.func.DrawFunc.sinScl;
+import static newhorizon.util.graphic.DrawFunc.sinScl;
 
 public interface Linkablec extends Buildingc, Ranged{
 	Seq<Building> tmpSeq = new Seq<>(1);

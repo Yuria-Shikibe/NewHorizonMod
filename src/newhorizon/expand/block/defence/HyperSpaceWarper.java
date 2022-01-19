@@ -49,7 +49,7 @@ import newhorizon.content.NHSounds;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.NHBaseEntity;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.ui.TableFunc;

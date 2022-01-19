@@ -41,7 +41,7 @@ public class EnergyUnit extends UnitEntity{
 		stroke(e.fout() * 2.5f);
 		circle(e.x, e.y, e.fin() * e.rotation * 1.5f);
 		stroke(e.fout() * 3.2f);
-		randLenVectors(e.id, (int)e.rotation, e.rotation / 4 + e.rotation * e.fin(), (x, y) -> {
+		randLenVectors(e.id, (int)e.rotation, e.rotation / 3 + e.rotation * e.fin() * 1.75f, (x, y) -> {
 			lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
 		});
 		color(Color.black);

@@ -28,8 +28,8 @@ import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-import newhorizon.expand.block.special.JumpGate;
 import newhorizon.content.NHFx;
+import newhorizon.expand.block.special.JumpGate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -360,5 +360,20 @@ public class NHFunc{
         tree.getObjects(seq);
         
         return seq;
+    }
+    
+    public static <T> void shuffle(Seq<T> seq, Rand rand){
+        T[] items = seq.items;
+        for(int i = seq.size - 1; i >= 0; i--){
+            int ii = Mathf.random(i);
+            T temp = items[i];
+            items[i] = items[ii];
+            items[ii] = temp;
+        }
+    }
+    
+    public static Rand rand(long id){
+        rand.setSeed(id);
+        return rand;
     }
 }

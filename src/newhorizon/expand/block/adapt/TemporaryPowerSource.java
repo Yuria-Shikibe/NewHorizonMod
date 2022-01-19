@@ -9,7 +9,7 @@ import mindustry.Vars;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.blocks.sandbox.PowerSource;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 public class TemporaryPowerSource extends PowerSource{
 	public TemporaryPowerSource(String name){

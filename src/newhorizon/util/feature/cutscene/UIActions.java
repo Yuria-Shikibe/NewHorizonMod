@@ -128,6 +128,7 @@ public class UIActions{
 		
 		public HUDTable(){
 			name = "CutsceneHUD";
+			color.a = 0;
 			
 			update(() -> {
 				if(state.isMenu()) remove();
@@ -145,27 +146,12 @@ public class UIActions{
 				paneTable = t;
 				
 				t.touchable(() -> NHVars.ctrl.pressDown && !visible ? Touchable.disabled : Touchable.enabled);
-//
-//				Prov<Table> constructor = () -> {
-//					Cell<Table> table = t.table(i -> {
-//						i.image().color(Color.gray).growX().height(OFFSET / 4).pad(OFFSET / 4);
-//						i.add(Iconc.cancel + "  " + Core.bundle.get("nh.cutscene.empty-event")).color(Color.gray).padLeft(OFFSET).padRight(OFFSET).fill();
-//						i.image().color(Color.gray).growX().height(OFFSET / 4).pad(OFFSET / 4);
-//					}).growX().fillY().center();
-//
-//					table.row();
-//
-//					Table i = table.get();
-//					i.color.a(0);
-//					i.actions(Actions.fadeIn(0.1f));
-//					return i;
-//				};
-//
-//				Table[] element = {constructor.get()};
 				
 				t.update(() -> {
-					if(t.hasChildren())HUDTable.this.actions(Actions.visible(true), Actions.fadeIn(0.35f));
-					else HUDTable.this.actions(Actions.fadeOut(0.35f), Actions.visible(false));
+					if(!hasActions()){
+						if(t.hasChildren())HUDTable.this.actions(Actions.visible(true), Actions.fadeIn(0.35f));
+						else HUDTable.this.actions(Actions.fadeOut(0.35f), Actions.visible(false));
+					}
 				});
 				
 				t.top().row();

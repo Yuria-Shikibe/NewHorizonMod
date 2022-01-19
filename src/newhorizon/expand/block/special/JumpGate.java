@@ -56,7 +56,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
 import newhorizon.content.NHSounds;
 import newhorizon.util.feature.NHBaseEntity;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;

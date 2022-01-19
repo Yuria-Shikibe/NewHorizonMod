@@ -1,4 +1,4 @@
-package newhorizon.util.func;
+package newhorizon.util.graphic;
 
 import arc.Core;
 import arc.graphics.Color;
@@ -23,6 +23,8 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHColor;
+import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHInterp;
 
 import static mindustry.Vars.tilesize;
 

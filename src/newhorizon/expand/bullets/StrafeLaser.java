@@ -15,7 +15,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.NHFunc;
 
 import static arc.graphics.g2d.Draw.color;

@@ -4,7 +4,7 @@ import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import mindustry.entities.abilities.EnergyFieldAbility;
 import mindustry.gen.Unit;
-import newhorizon.util.func.DrawFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 public class StrongerEnergyField extends EnergyFieldAbility{
 	public StrongerEnergyField(float damage, float reload, float range){

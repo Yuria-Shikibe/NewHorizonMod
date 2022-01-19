@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import mindustry.entities.Damage;
-import mindustry.entities.Lightning;
 import mindustry.entities.bullet.ContinuousLaserBulletType;
 import mindustry.gen.Bullet;
 import mindustry.graphics.Layer;
@@ -38,13 +37,5 @@ public class AdaptedContinuousLaserBulletType extends ContinuousLaserBulletType{
 	public void update(Bullet b){
 		super.update(b);
 		if(b.timer(2, lightningEffectDelta)) PosLightning.createEffect(b, Damage.findLaserLength(b, length) * Mathf.clamp(b.time > b.lifetime - fadeTime ? 1f - (b.time - (lifetime - fadeTime)) / fadeTime : 1f) * lenscales[2] * 0.9f, b.rotation(), hitColor, 2, PosLightning.WIDTH);
-	}
-	
-	@Override
-	public void hit(Bullet b, float x, float y){
-		super.hit(b, x, y);
-		for(int i = 0; i < lightning; i++){
-			Lightning.create(b, hitColor, lightningDamage, x, y, b.angleTo(x, y) + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
-		}
 	}
 }

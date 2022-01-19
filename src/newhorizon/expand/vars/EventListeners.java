@@ -8,6 +8,7 @@ import arc.graphics.g2d.Draw;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Interval;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.game.EventType;
@@ -26,7 +27,6 @@ import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
-import newhorizon.util.ui.UnitInfo;
 
 import static mindustry.Vars.control;
 
@@ -46,7 +46,7 @@ public class EventListeners{
 	
 	private static String kickWarn;
 	
-	private static boolean caution = false;
+	private static boolean connectCaution = false;
 	
 	public static final ObjectMap<Class<?>, Seq<Cons2<? extends Building, Tile>>> onTapActor = new ObjectMap<>();
 	
@@ -100,13 +100,13 @@ public class EventListeners{
 //		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-			if(caution){
-				caution = false;
+			if(connectCaution){
+				connectCaution = false;
 				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new NHSetting.SettingDialog().show(), () -> {});
-				Vars.player.con.kick(kickWarn, 1);
+				Vars.player.con.close();
 			}
-			
-			UnitInfo.added.clear();
+
+//			UnitInfo.added.clear();
 //			UnitInfo.addBars();
 		});
 
@@ -151,9 +151,18 @@ public class EventListeners{
 			}
 		});
 		
+		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
-			if(!NHSetting.getBool("@active.override") && e.host.name.equals(NewHorizon.SERVER_AUZ_NAME)){
-				caution = true;
+			if(!NHSetting.getBool("@active.override") && e.host.address.equals(NewHorizon.SERVER_ADDRESS)){
+				connectCaution = true;
+			}
+			
+			if(NewHorizon.DEBUGGING){
+				Log.info(e.host.address);
+				Log.info(e.host.port);
+				Log.info(e.host.name);
+				Log.info(e.host.description);
+				Log.info(e.host.versionType);
 			}
 		});
 		
@@ -169,29 +178,5 @@ public class EventListeners{
 				}
 			}
 		});
-		
-//		Events.on(EventType.ClientPreConnectEvent.class, e -> {
-//			server = true;
-//			if(Vars.headless)return;
-//		});
-//
-//		Events.on(EventType.StateChangeEvent.class, e -> {
-//			if(server){
-//				server = false;
-//				for(Block c : contents){
-//					c.buildVisibility = BuildVisibility.sandboxOnly;
-//				}
-//			}
-//			if(Vars.headless)return;
-//		});
-		
-//		Events.on(EventType.StateChangeEvent.class, e -> {
-//			NHSetting.log("Event", "Server Preload Run");
-//
-//			if(NHWorldVars.worldLoaded){
-//				NHSetting.log("Event", "Leaving World");
-//				NHWorldVars.worldLoaded= false;
-//			}
-//		});
 	}
 }

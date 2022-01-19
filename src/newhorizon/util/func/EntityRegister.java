@@ -7,14 +7,15 @@ import arc.util.Log;
 import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
+import newhorizon.NewHorizon;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShieldProjector;
 import newhorizon.expand.block.special.JumpGate;
+import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.EnergyUnit;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 
 public class EntityRegister{
-	private static final boolean debugging = true;
 	private static final int startFrom = 100;
 	
 	public static final ObjectMap<Class<?>, ProvSet> needIdClasses = new ObjectMap<>();
@@ -26,6 +27,7 @@ public class EntityRegister{
 		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
 		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
 		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
+		EntityRegister.put(UltFire.class, UltFire::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){
@@ -45,7 +47,7 @@ public class EntityRegister{
 			classIdMap.put(c, EntityMapping.register(c.toString(), needIdClasses.get(c).prov));
 		}
 		
-		if(debugging || Vars.headless){
+		if(NewHorizon.DEBUGGING || Vars.headless){
 			Log.info("//=============================================\\\\");
 			classIdMap.each((c, i) -> {
 				Log.info(i + "|" + c.getSimpleName());

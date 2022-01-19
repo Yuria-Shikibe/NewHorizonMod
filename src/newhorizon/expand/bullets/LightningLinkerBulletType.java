@@ -2,11 +2,13 @@ package newhorizon.expand.bullets;
 
 import arc.Core;
 import arc.audio.Sound;
+import arc.func.Cons;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -34,6 +36,8 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 	public float randomLightningChance = 0.1f;
 	public int randomLightningNum = 4;
 	public Sound randomGenerateSound = Sounds.plasmaboom;
+	
+	public Cons<Position> hitModifier = p -> {};
 	
 	public float range = -1;
 	
@@ -117,6 +121,8 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 			randomGenerateSound.at(hitPos, Mathf.random(0.9f, 1.1f));
 			Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius / 8, splashDamage * b.damageMultiplier() / 8, collidesAir, collidesGround);
 			NHFx.lightningHitLarge.at(hitPos.getX(), hitPos.getY(), lightningColor);
+			
+			hitModifier.get(hitPos);
 		});
 		
 		if(Mathf.chanceDelta(effectLightningChance) && b.lifetime - b.time > Fx.chainLightning.lifetime && Core.settings.getBool("enableeffectdetails")){
@@ -157,6 +163,8 @@ public class LightningLinkerBulletType extends SpeedUpBulletType{
 				Lightning.create(b, lightningColor, lightningDamage < 0.0F ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2.0F) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
 			}
 			hitSound.at(hitPos, Mathf.random(0.9f, 1.1f));
+			
+			hitModifier.get(hitPos);
 		});
 		
 		super.despawned(b);

@@ -24,6 +24,7 @@ import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -41,13 +42,15 @@ import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.feature.ScreenInterferencer;
-import newhorizon.util.func.DrawFunc;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -188,7 +191,7 @@ public class NHUnitTypes implements ContentList{
 				shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
 				smokeEffect = NHFx.hugeSmoke;
 				trailChance = 0.6f;
-				trailEffect = NHFx.trail;
+				trailEffect = NHFx.trailToGray;
 				hitShake = 8f;
 				hitSound = Sounds.explosionbig;
 				hitEffect = NHFx.instHit(backColor, 3, 85f);
@@ -199,7 +202,15 @@ public class NHUnitTypes implements ContentList{
 				fragLifeMin = 0.25f;
 				fragVelocityMax = 1.2f;
 				fragVelocityMin = 0.75f;
-			}};
+			}
+				
+				@Override
+				public void hitTile(Bullet b, Building build, float initialHealth, boolean direct){
+					super.hitTile(b, build, initialHealth, direct);
+					
+					UltFire.create(build.tile);
+				}
+			};
 		}
 			@Override
 			public void draw(Unit unit, WeaponMount mount){
@@ -288,7 +299,7 @@ public class NHUnitTypes implements ContentList{
 				smokeEffect = Fx.shootBigSmoke2;
 				
 				trailChance = 0.6f;
-				trailEffect = NHFx.trail;
+				trailEffect = NHFx.trailToGray;
 				
 				hitShake = 3f;
 				hitSound = Sounds.plasmaboom;
@@ -417,7 +428,7 @@ public class NHUnitTypes implements ContentList{
 			trailLength = 40;
 			trailScl = 3f;
 			
-			immunities = ObjectSet.with(StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.burning,
+			immunities = ObjectSet.with(NHStatusEffects.scannerDown, NHStatusEffects.weak, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.burning,
 					StatusEffects.melting, StatusEffects.blasted, StatusEffects.corroded, StatusEffects.electrified, StatusEffects.freezing, StatusEffects.muddy,
 					NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.quantization
 			);
@@ -432,7 +443,6 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 6;
 			engineSize = 8f;
 			flying = true;
-			//			abilities.add(new PhaseAbility(600f, 320f, 160f));
 			weapons.add(new Weapon(){{
 				shootCone = 360;
 				rotate = false;
@@ -440,8 +450,8 @@ public class NHUnitTypes implements ContentList{
 				alternate = false;
 				predictTarget = false;
 				top = false;
-				shots = 12;
-				shotDelay = 6f;
+				shots = 17;
+				shotDelay = 4.2f;
 				velocityRnd = 0.15f;
 				x = y = shootX = shootY = 0;
 				reload = 120f;
@@ -464,8 +474,6 @@ public class NHUnitTypes implements ContentList{
 				shootSound = Sounds.none;
 				
 				bullet = new StrafeLaser(300f){
-					
-					
 					@Override
 					public float range(){
 						return 480;
@@ -966,7 +974,7 @@ public class NHUnitTypes implements ContentList{
 							
 							trailChance = 0.1f;
 							trailParam = 4f;
-							trailEffect = NHFx.trail;
+							trailEffect = NHFx.trailToGray;
 							
 							spin = 3f;
 							shrinkX = shrinkY = 0.15f;
@@ -1380,7 +1388,7 @@ public class NHUnitTypes implements ContentList{
 							width = 22f;
 							height = 35f;
 							
-							trailEffect = NHFx.trail;
+							trailEffect = NHFx.trailToGray;
 							trailParam = 3f;
 							trailChance = 0.35f;
 							
@@ -1388,7 +1396,7 @@ public class NHUnitTypes implements ContentList{
 							hitSound = Sounds.explosion;
 							hitEffect = NHFx.hitSpark(backColor, 75f, 24, 95f, 2.8f, 16);
 							
-							smokeEffect = new MultiEffect(NHFx.hugeSmoke, NHFx.circleSplash(backColor, 60f, 8, 60f, 6));
+							smokeEffect = new OptionalMultiEffect(NHFx.hugeSmoke, NHFx.circleSplash(backColor, 60f, 8, 60f, 6));
 							shootEffect = NHFx.hitSpark(backColor, 30f, 15, 35f, 1.7f, 8);
 							
 							despawnEffect = NHFx.blast(backColor, 60);
@@ -1399,7 +1407,14 @@ public class NHUnitTypes implements ContentList{
 							fragLifeMin = 0.2f;
 							fragVelocityMax = 0.7f;
 							fragVelocityMin = 0.4f;
-						}};
+						}
+							
+							@Override
+							public void hit(Bullet b, float x, float y){
+								super.hit(b, x, y);
+								UltFire.create(b, splashDamageRadius);
+							}
+						};
 						
 						shootSound = Sounds.artillery;
 					}},
@@ -1435,7 +1450,7 @@ public class NHUnitTypes implements ContentList{
 			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 22, 18f));
 			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 25, 2));
 			
-			immunities.addAll(NHStatusEffects.weak, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
+			immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
 			
 			groundLayer = Layer.legUnit + 0.1f;
 			
@@ -1505,7 +1520,7 @@ public class NHUnitTypes implements ContentList{
 					frontColor = backColor.cpy().lerp(Color.white, 0.45f);
 					trailChance = 0.1f;
 					trailParam = 1f;
-					trailEffect = NHFx.trail;
+					trailEffect = NHFx.trailToGray;
 					despawnEffect = NHFx.square(backColor, 18f, 2, 12f, 2);
 					hitEffect = NHFx.lightningHitSmall(backColor);
 					shootEffect = NHFx.shootLineSmall(backColor);
@@ -1663,7 +1678,7 @@ public class NHUnitTypes implements ContentList{
 			flying = true;
 			circleTarget = true;
 			hitSize = 16.0F;
-			armor = 30.0F;
+			armor = 40.0F;
 			engineOffset = 12.5f;
 			engineSize = 5.0F;
 			rotateSpeed = 3.75f;
@@ -1695,7 +1710,7 @@ public class NHUnitTypes implements ContentList{
 						
 						shootSound = NHSounds.thermoShoot;
 						
-						bullet = new BasicBulletType(7f, 100f, "missile-large"){{
+						bullet = new BasicBulletType(7f, 200f, "missile-large"){{
 							trailLength = 20;
 							trailWidth = 2.5f;
 							trailColor = lightColor = lightningColor = backColor = hitColor = NHColor.lightSkyBack;
@@ -1708,7 +1723,7 @@ public class NHUnitTypes implements ContentList{
 							weaveMag = 0.8f;
 							
 							homingDelay = 8f;
-							homingPower = 0.1f;
+							homingPower = 0.7f;
 							homingRange = 200f;
 							
 							splashDamageRadius = 60f;
@@ -1742,7 +1757,7 @@ public class NHUnitTypes implements ContentList{
 							collidesAir = true;
 							collidesGround = collidesTiles = false;
 							
-							damage = 80f;
+							damage = 100f;
 							lightning = 1;
 							lightningDamage = damage / 4f;
 							lightningLength = 10;
@@ -1822,6 +1837,9 @@ public class NHUnitTypes implements ContentList{
 		
 		destruction = new UnitType("destruction"){{
 			outlineColor = OColor;
+			
+			defaultController = SniperAI::new;
+			
 			constructor = EntityMapping.map(3);
 			weapons.addAll(
 				closeAATurret.copy().setPos(37, -18), closeAATurret.copy().setPos(26, -8), new NHWeapon(){{
@@ -1860,24 +1878,24 @@ public class NHUnitTypes implements ContentList{
 				new Weapon(){{
 					x = shootX = shootY = 0;
 					y = -2;
-					xRand = 25f;
+					xRand = 27f;
 					
 					rotate = mirror = alternate = false;
 					
-					bullet = new SpeedUpBulletType(120f, NewHorizon.name("ann-missile")){{
+					bullet = new SpeedUpBulletType(200f, NewHorizon.name("ann-missile")){{
 						velocityBegin = 4f;
 						velocityIncrease = 8f;
 						
 						absorbable = false;
-						splashDamage = damage / 1.25f;
+						splashDamage = damage;
 						splashDamageRadius = 20f;
 						incendAmount = 2;
 						incendChance = 0.08f;
 						incendSpread = 24f;
 						makeFire = true;
 						lifetime += 12f;
-						trailColor = Color.lightGray.cpy().lerp(Color.gray, 0.65f);
-						trailEffect = NHFx.trail;
+						trailColor = NHColor.trail;
+						trailEffect = NHFx.trailToGray;
 						trailParam = 2f;
 						trailChance = 0.2f;
 						trailLength = 15;
@@ -1895,6 +1913,8 @@ public class NHUnitTypes implements ContentList{
 						despawnEffect = NHFx.hitSparkLarge;
 						
 						collidesAir = false;
+						collides = false;
+						scaleVelocity = true;
 						
 						hitShake = despawnShake = 2f;
 						despawnSound = hitSound = Sounds.explosion;
@@ -1931,20 +1951,52 @@ public class NHUnitTypes implements ContentList{
 							float z = Draw.z();
 							Draw.z(Layer.flyingUnitLow - 0.2f);
 							Tmp.v1.trns(b.rotation(), height / 1.75f).add(b);
+							Drawf.shadow(Tmp.v1.x, Tmp.v1.y, height / 1.25f);
 							Draw.rect(backRegion, Tmp.v1.x, Tmp.v1.y, b.rotation() - 90);
 							Draw.z(z);
 						}
+						
+						public void hit(Bullet b, float x, float y){
+							hitEffect.at(x, y, b.rotation(), hitColor);
+							hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
+							
+							Effect.shake(hitShake, hitShake, b);
+							
+							if(splashDamageRadius > 0 && !b.absorbed){
+								Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
+								
+								if(status != StatusEffects.none){
+									Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+								}
+								
+								if(makeFire){
+									UltFire.create(x, y, splashDamageRadius, b.team);
+								}
+							}
+							
+							for(int i = 0; i < lightning; i++){
+								Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+							}
+						}
+						
+						public void hitTile(Bullet b, Building build, float initialHealth, boolean direct){
+							UltFire.create(build.tile);
+							
+							if(build.team != b.team && direct){
+								hit(b);
+							}
+						}
 					};
 					
-					shots = 40;
-					shotDelay = 1.25f;
+					shots = 20;
+					shotDelay = 2.5f;
 					reload = 180f;
-					inaccuracy = 1.25f;
-					velocityRnd = 0.075f;
+					inaccuracy = 2f;
+					velocityRnd = 0.1f;
 					
 					shake = 1.25f;
 					shootSound = NHSounds.launch;
-					shootCone = 5f;
+					shootCone = 8f;
 				}}
 			);
 			armor = 25.0F;
@@ -1965,9 +2017,11 @@ public class NHUnitTypes implements ContentList{
 			buildBeamOffset = 15F;
 			ammoCapacity = 800;
 			abilities.add(new ForceFieldAbility(100.0F, 4.0F, 4000.0F, 360.0F), new RepairFieldAbility(500f, 160f, 240f){{
-				healEffect = NHFx.healEffect;
-				activeEffect = NHFx.activeEffect;
+				healEffect = NHFx.healEffectSky;
+				activeEffect = NHFx.activeEffectSky;
 			}});
+			
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.factory, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
@@ -2047,6 +2101,13 @@ public class NHUnitTypes implements ContentList{
 							@Override
 							public float range(){
 								return 800;
+							}
+							
+							@Override
+							public void hit(Bullet b, float x, float y){
+								super.hit(b, x, y);
+								
+								UltFire.create(x, y, 42, b.team);
 							}
 						};
 						
@@ -2198,8 +2259,8 @@ public class NHUnitTypes implements ContentList{
 				);
 				
 				abilities.add(new ForceFieldAbility(120.0F, 60F, 30000.0F, 1200.0F), new RepairFieldAbility(800f, 160f, 240f){{
-					healEffect = NHFx.healEffect;
-					activeEffect = NHFx.activeEffect;
+					healEffect = NHFx.healEffectSky;
+					activeEffect = NHFx.activeEffectSky;
 				}});
 				
 				commandLimit = 6;
@@ -2317,7 +2378,7 @@ public class NHUnitTypes implements ContentList{
 			
 			ammoType = new PowerAmmoType();
 			
-			immunities = ObjectSet.with(NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, StatusEffects.burning, StatusEffects.melting, NHStatusEffects.scrambler);
+			immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.scannerDown, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, StatusEffects.burning, StatusEffects.melting, NHStatusEffects.scrambler);
 			
 			weapons.add(
 					new Weapon(){{
@@ -2333,7 +2394,7 @@ public class NHUnitTypes implements ContentList{
 						
 						shootSound = Sounds.plasmadrop;
 						
-						bullet = new ShieldBreaker(6, 30, "mine-bullet", 4000){{
+						bullet = new ShieldBreaker(6, 30, "mine-bullet", 3000){{
 							maxRange = 400;
 							scaleVelocity = true;
 							shootEffect = hitEffect = Fx.hitEmpSpark;
@@ -2343,7 +2404,7 @@ public class NHUnitTypes implements ContentList{
 							backColor = lightColor = trailColor = lightningColor = hitColor = Pal.heal;
 							frontColor = Color.white;
 							
-							trailEffect = NHFx.trailSolidColor;
+							trailEffect = NHFx.trailSolid;
 							trailParam = 4f;
 							trailChance = 0.5f;
 							
@@ -2362,7 +2423,10 @@ public class NHUnitTypes implements ContentList{
 							trailLength = 18;
 							
 							pierceBuilding = true;
-							pierceCap = 6;
+							pierceCap = 8;
+							
+							status = NHStatusEffects.scannerDown;
+							statusDuration = 180f;
 						}
 							@Override public float range(){return maxRange;}
 						};
@@ -2455,7 +2519,7 @@ public class NHUnitTypes implements ContentList{
 								}
 							});
 							
-							hitEffect = new MultiEffect(NHFx.circleOut(backColor, rad * 1.5f), NHFx.blast(backColor, rad), NHFx.hitSpark(backColor, 120f, 40, rad * 1.7f, 2.5f, 12f));
+							hitEffect = new OptionalMultiEffect(NHFx.circleOut(backColor, rad * 1.5f), NHFx.blast(backColor, rad), NHFx.hitSpark(backColor, 120f, 40, rad * 1.7f, 2.5f, 12f));
 							despawnEffect = NHFx.crossBlast(backColor, rad * 1.8f, 45);
 						}
 							@Override public float range(){return maxRange;}
@@ -2502,7 +2566,7 @@ public class NHUnitTypes implements ContentList{
 			
 			abilities.add(ability);
 			
-			immunities.addAll(StatusEffects.slow, StatusEffects.electrified, StatusEffects.muddy, StatusEffects.blasted, StatusEffects.shocked, StatusEffects.sapped, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.weak);
+			immunities.addAll(NHStatusEffects.scannerDown, StatusEffects.slow, StatusEffects.electrified, StatusEffects.muddy, StatusEffects.blasted, StatusEffects.shocked, StatusEffects.sapped, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.weak);
 			
 			commandRadius = 240f;
 			hitSize = 70f;
@@ -2560,7 +2624,7 @@ public class NHUnitTypes implements ContentList{
 					
 					hitShake = despawnShake = 3f;
 					hitSound = despawnSound = Sounds.explosion;
-					hitEffect = new MultiEffect(NHFx.blast(backColor, 60f), NHFx.hitSpark(backColor, 75f, 8, 80f, 2f, 12f));
+					hitEffect = new OptionalMultiEffect(NHFx.blast(backColor, 60f), NHFx.hitSpark(backColor, 75f, 8, 80f, 2f, 12f));
 					
 					smokeEffect = NHFx.hugeSmoke;
 					shootEffect = NHFx.shootLineSmall(backColor);
@@ -2607,7 +2671,7 @@ public class NHUnitTypes implements ContentList{
 					fromColor = NHColor.thurmixRedLight;
 					hitColor = lightColor = lightningColor = toColor = NHColor.thurmixRed;
 					shootEffect = NHFx.lightningHitSmall(toColor);
-					smokeEffect = new MultiEffect(new Effect(lifetime + 2f, b -> {
+					smokeEffect = new OptionalMultiEffect(new Effect(lifetime + 2f, b -> {
 						Draw.color(fromColor, toColor, b.fin());
 						Fill.circle(b.x, b.y, (width / 2f) * b.fout());
 						DrawFunc.tri(b.x, b.y, width / 1.75f * b.fout(Interp.circleIn), 30f, b.rotation + 60);
@@ -2671,7 +2735,9 @@ public class NHUnitTypes implements ContentList{
 			fallSpeed = 0.008f;
 			drawShields = false;
 			
-			deathExplosionEffect = new MultiEffect(new Effect(300F, 1600f, e -> {
+			immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
+			
+			deathExplosionEffect = new OptionalMultiEffect(NHFx.blast(NHColor.thurmixRed, 400f), new Effect(300F, 1600f, e -> {
 				Rand rand = NHFunc.rand;
 				float rad = 150f;
 				rand.setSeed(e.id);
@@ -2716,7 +2782,7 @@ public class NHUnitTypes implements ContentList{
 				});
 				
 				Drawf.light(e.x, e.y, rad * e.fslope() * 4f, NHColor.thurmixRed, 0.7f);
-			}).layer(Layer.effect + 0.001f), NHFx.blast(NHColor.thurmixRed, 400f));
+			}).layer(Layer.effect + 0.001f));
 			fallEffect = NHFx.blast(NHColor.thurmixRed, 120f);
 			
 			targetAir = targetGround = true;
@@ -2987,6 +3053,9 @@ public class NHUnitTypes implements ContentList{
 									fragLifeMin = 0.7f;
 									fragVelocityMax = 0.6f;
 									fragVelocityMin = 0.2f;
+									
+									status = NHStatusEffects.weak;
+									statusDuration = 300f;
 									
 									shootEffect = NHFx.lightningHitLarge(hitColor);
 									

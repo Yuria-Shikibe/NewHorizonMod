@@ -15,6 +15,7 @@ import arc.input.KeyCode;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
@@ -48,7 +49,9 @@ import mindustry.type.UnitType;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
+import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
@@ -171,6 +174,13 @@ public class TableFunc{
                         con.button("Remove Fires", Styles.cleart, () -> {
                             for(int i = 0; i < 20; i++) Time.run(i * Time.delta * 3, Groups.fire::clear);
                         }).grow();
+                        con.button("Cathc Fires", Styles.cleart, () -> {
+                            Geometry.circle(World.toTile(point.x), World.toTile(point.y), 10, ((x1, y1) -> {
+                                Tile tile = world.tile(x1, y1);
+                                if(tile != null)UltFire.create(tile);
+                            }));
+                            
+                        }).disabled(b -> !pointValid()).grow();
                     }).growX().height(LEN).row();
                     tin.pane(con -> {
                         con.button("Add Items", Styles.cleart, () -> {
@@ -311,7 +321,7 @@ public class TableFunc{
                         t.defaults().height(LEN).growX().pad(OFFSET / 2f);
                         t.button("Try Run From Clipboard", Styles.cleart, () -> {
                             Core.app.post(() -> CutsceneScript.runJS(Core.app.getClipboardText()));
-                        }).disabled(b -> Core.app.getClipboardText().isEmpty());
+                        }).disabled(b -> Core.app.getClipboardText() == null || Core.app.getClipboardText().isEmpty());
                         t.button("Debug Events", Styles.cleart, () -> {
                             new BaseDialog("Debug"){{
                                 addCloseButton();
@@ -355,11 +365,11 @@ public class TableFunc{
                                     ui.showText("Save successfully", hash + " -> " + textArea.getText().hashCode());
                                 }else{
                                     ui.showCustomConfirm("Script File Missing", "Copy to clipboard?", "Accept", "@back",
-                                            () -> {
-                                                Core.app.setClipboardText(textArea.getText());
-                                            }, () -> {
-                            
-                                            }
+                                        () -> {
+                                            Core.app.setClipboardText(textArea.getText());
+                                        }, () -> {
+                        
+                                        }
                                     );
                                 }
                             });
@@ -374,7 +384,7 @@ public class TableFunc{
                             ui.showConfirm("Are you sure?", state.rules.tags::clear);
                         });
                         t.button("Debug Menu", Styles.cleart, () -> {
-                            new TableTexDebugDialog("").show();
+                            new DebugDialog("").show();
                         });
     
                     }).growX().fillY();
