@@ -79,6 +79,7 @@ public class NewHorizon extends Mod{
 			new LatestFeature(NHStatusEffects.ultFireBurn),
 			new LatestFeature("Value Adjustments", "Reduced the loss and Increased the range of Block [accent]Remote Router[]", "Balance", NHBlocks.remoteRouter),
 			new LatestFeature("Value Adjustments", "Reduced the damage of Status [accent]End[]", "Balance", NHStatusEffects.end),
+			new LatestFeature("Unit Adjustments", "Strengthen Unit [accent]Destruction[]", "Balance", NHUnitTypes.destruction),
 			new LatestFeature("New Fire Type", "Add a new plasma fire type", "Content", NHStatusEffects.ultFireBurn.fullIcon),
 			new LatestFeature("UI Adjustment", "Made the event table hidden while there is nothing to show", "Improvement", Icon.wrench.getRegion()),
 			new LatestFeature("Simplified Effect", "Made the Effects more simplified while Setting [accent]Enable Effect Details[] is disabled", "Graphic Optimization", Icon.wrench.getRegion()),
@@ -238,7 +239,7 @@ public class NewHorizon extends Mod{
 			});
 		});
 	}
-	
+
 	@Override
 	public void init() {
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
