@@ -2487,7 +2487,7 @@ public class NHUnitTypes implements ContentList{
 			
 			range = maxRange = 100 + SniperAI.APPROACHING_DST;
 			
-			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.factory, BlockFlag.reactor, BlockFlag.turret, BlockFlag.generator, BlockFlag.core, null};
+			targetFlags = playerTargetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.factory, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
 			
 			weapons.add(new Weapon(){{
 				reload = 60f;
