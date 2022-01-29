@@ -80,7 +80,7 @@ public class NewHorizon extends Mod{
 			new LatestFeature(NHUnitTypes.assaulter),
 			new LatestFeature(NHBlocks.fireExtinguisher),
 			new LatestFeature(NHWeathers.heavyRaid1), new LatestFeature(NHWeathers.raid1), new LatestFeature(NHWeathers.raid2), new LatestFeature(NHWeathers.intervention1),
-			new LatestFeature("Balance", "Made Unit: " + NHUnitTypes.naxos.localizedName + " Much more stronger", "Feature", NHContent.objective),
+			new LatestFeature("Balance", "Made Unit: " + NHUnitTypes.naxos.localizedName + " Much more stronger", "Feature", NHUnitTypes.naxos),
 			new LatestFeature("New Features", "Map Events now can be simply applied to maps as Weather.", "Feature", NHContent.objective),
 			new LatestFeature("New Features", "Gravity Field now deals damage to Unit: " + NHUnitTypes.guardian.localizedName, "Feature", NHBlocks.gravityTrap),
 			new LatestFeature("New Features", "Gravity Field now can be carried on Unit: " + NHUnitTypes.saviour.localizedName, "Feature", NHUnitTypes.saviour),
