@@ -4,7 +4,6 @@ import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.util.*;
-import arc.util.async.Threads;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
@@ -21,8 +20,8 @@ import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.*;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.EventListeners;
-import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
@@ -32,6 +31,7 @@ import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.ui.Hints;
 import newhorizon.util.ui.LatestFeature;
+import newhorizon.util.ui.ScreenInterferencer;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.Tables.LinkTable;
 
@@ -43,6 +43,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class NewHorizon extends Mod{
 	public static final boolean DEBUGGING = false;
+	public static final boolean DEBUGGING_SPRITE = false;
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
@@ -75,19 +76,19 @@ public class NewHorizon extends Mod{
 	
 	private static LatestFeature[] getUpdateContent(){
 		return new LatestFeature[]{
-			new LatestFeature(NHStatusEffects.scannerDown),
-			new LatestFeature(NHStatusEffects.ultFireBurn),
-			new LatestFeature("Value Adjustments", "Reduced the loss and Increased the range of Block [accent]Remote Router[]", "Balance", NHBlocks.remoteRouter),
-			new LatestFeature("Value Adjustments", "Reduced the damage of Status [accent]End[]", "Balance", NHStatusEffects.end),
-			new LatestFeature("Unit Adjustments", "Strengthen Unit [accent]Destruction[]", "Balance", NHUnitTypes.destruction),
-			new LatestFeature("New Fire Type", "Add a new plasma fire type", "Content", NHStatusEffects.ultFireBurn.fullIcon),
-			new LatestFeature("UI Adjustment", "Made the event table hidden while there is nothing to show", "Improvement", Icon.wrench.getRegion()),
-			new LatestFeature("Simplified Effect", "Made the Effects more simplified while Setting [accent]Enable Effect Details[] is disabled", "Graphic Optimization", Icon.wrench.getRegion()),
-			new LatestFeature("Fixes", "Fixed some bugs about UI", "Fixes", Icon.wrench.getRegion()),
+			new LatestFeature(NHStatusEffects.stronghold),
+			new LatestFeature(NHUnitTypes.assaulter),
+			new LatestFeature(NHBlocks.fireExtinguisher),
+			new LatestFeature(NHWeathers.heavyRaid1), new LatestFeature(NHWeathers.raid1), new LatestFeature(NHWeathers.raid2), new LatestFeature(NHWeathers.intervention1),
+			new LatestFeature("Balance", "Made Unit: " + NHUnitTypes.naxos.localizedName + " Much more stronger", "Feature", NHContent.objective),
+			new LatestFeature("New Features", "Map Events now can be simply applied to maps as Weather.", "Feature", NHContent.objective),
+			new LatestFeature("New Features", "Gravity Field now deals damage to Unit: " + NHUnitTypes.guardian.localizedName, "Feature", NHBlocks.gravityTrap),
+			new LatestFeature("New Features", "Gravity Field now can be carried on Unit: " + NHUnitTypes.saviour.localizedName, "Feature", NHUnitTypes.saviour),
+			new LatestFeature("Value Adjustments", "Slightly increased the damage and duration of Status [accent]End[]", "Balance", NHStatusEffects.end),
 		};
 	}
 	
-	private static void links(){
+	private static void showAbout(){
 		if(links == null)links = new Links.LinkEntry[]{
 			new Links.LinkEntry("mod.ccs", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide", Icon.settings, Pal.heal),
 			new Links.LinkEntry("mod.discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
@@ -106,7 +107,6 @@ public class NewHorizon extends Mod{
 		dialog.addCloseListener();
 		dialog.show();
 	}
-	
 	
 	public static void startLog(){
 		BaseDialog dialog = new BaseDialog("");
@@ -131,7 +131,7 @@ public class NewHorizon extends Mod{
 						dialog.hide();
 						NHSetting.applySettings();
 					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-					t.button("@links", Icon.link, Styles.transt, NewHorizon::links).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@links", Icon.link, Styles.transt, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@log", Icon.book, Styles.transt, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
@@ -192,7 +192,7 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
 		Events.on(ClientLoadEvent.class, e -> {
-			Threads.thread(() -> {
+			Core.app.post(() -> {
 				Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
 					Jval json = Jval.read(res.getResultAsString());
 					
@@ -262,11 +262,11 @@ public class NewHorizon extends Mod{
 	@Override
 	public void registerServerCommands(CommandHandler handler) {
 		handler.register("events", "List all events in the map.", (args) -> {
-			if (CutsceneEventEntity.events.isEmpty()) {
+			if (NHGroups.events.isEmpty()) {
 				Log.info("No Event Available");
 			}
 			
-			CutsceneEventEntity.events.each(Log::info);
+			NHGroups.events.each(Log::info);
 		});
 		
 		handler.register("eventtypes", "List all event types in the map.", (args) -> {
@@ -282,7 +282,7 @@ public class NewHorizon extends Mod{
 				Log.warn("[VIOLET]Failed, pls type ID");
 			} else {
 				try {
-					CutsceneEventEntity event = CutsceneEventEntity.events.getByID(Integer.parseInt(args[0]));
+					CutsceneEventEntity event = NHGroups.events.getByID(Integer.parseInt(args[0]));
 					event.act();
 					Log.info("Triggered: " + event);
 				} catch (NumberFormatException var2) {
@@ -330,7 +330,7 @@ public class NewHorizon extends Mod{
 				player.sendMessage("[VIOLET]Failed, pls type ID");
 			} else {
 				try {
-					CutsceneEventEntity event = CutsceneEventEntity.events.getByID(Integer.parseInt(args[0]));
+					CutsceneEventEntity event = NHGroups.events.getByID(Integer.parseInt(args[0]));
 					event.act();
 					player.sendMessage("Triggered: " + event);
 				} catch (NumberFormatException var3) {
@@ -341,12 +341,12 @@ public class NewHorizon extends Mod{
 		});
 		
 		handler.<Player>register("events", "List all cutscene events in the map.", (args, player) -> {
-			if (CutsceneEventEntity.events.isEmpty()) {
+			if (NHGroups.events.isEmpty()) {
 				player.sendMessage("No Event Available");
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
-				CutsceneEventEntity.events.each((e) -> {
+				NHGroups.events.each((e) -> {
 					builder.append(e).append('\n');
 				});
 				player.sendMessage(builder.toString());

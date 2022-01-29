@@ -33,10 +33,9 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHSounds;
-import newhorizon.expand.block.defence.HyperSpaceWarper;
+import newhorizon.expand.entities.Carrier;
 import newhorizon.expand.vars.TileSortMap;
 import newhorizon.util.feature.InternalTools;
-import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.feature.WarpUnit;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
@@ -314,9 +313,10 @@ public class DebugDialog extends BaseDialog{
 				dialog.cont.pane(t1 -> {
 					t1.image().growX().height(OFFSET / 4).pad(OFFSET / 2).color(Pal.accent).row();
 					t1.pane(table -> {
-						for(Content tent : content.getBy(ContentType.weather)){
-							Weather c = (Weather)tent;
-							table.button(c.localizedName, () -> Groups.weather.add(c.create(5f))).growX().fillY().row();
+						for(Content content : content.getBy(ContentType.weather)){
+							if(!(content instanceof Weather))continue;
+							Weather c = (Weather)content;
+							table.button(c.localizedName, new TextureRegionDrawable(c.fullIcon), () -> Groups.weather.add(c.create(5f))).growX().padTop(OFFSET / 2f).fillY().row();
 						}
 					}).grow().row();
 					t1.image().growX().height(OFFSET / 4).pad(OFFSET / 2).color(Pal.accent).row();
@@ -404,7 +404,7 @@ public class DebugDialog extends BaseDialog{
 			
 			t.button("Warp", () -> Groups.unit.each(u -> WarpUnit.warp(u, 45)));
 			
-			t.button("Hyper Warp", () -> Groups.unit.each(u -> HyperSpaceWarper.Carrier.create(u, new Vec2().set(player))));
+			t.button("Hyper Warp", () -> Groups.unit.each(u -> Carrier.create(u, new Vec2().set(player))));
 			
 			t.row();
 			

@@ -17,6 +17,7 @@ import arc.scene.actions.Actions;
 import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Align;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -27,14 +28,17 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.util.feature.cutscene.*;
+import newhorizon.util.feature.cutscene.events.util.BulletHandler;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.ui.TableFunc;
+import newhorizon.util.ui.Tables;
 
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -42,7 +46,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class RaidEvent extends CutsceneEvent{
 	public BulletType bulletType = Bullets.artilleryDense;
 	
-	public Func<CutsceneEventEntity, Team> teamFunc = e -> Vars.state.rules.waveTeam;
+	public Func<CutsceneEventEntity, Team> attackerTeamFunc = e -> Vars.state.rules.waveTeam;
 	public Func<CutsceneEventEntity, Position> targetFunc = e -> {
 		Rand rand = NHFunc.rand;
 		rand.setSeed(e.id);
@@ -58,29 +62,30 @@ public class RaidEvent extends CutsceneEvent{
 		while(b == null && times < 1024 && all.any()){
 			int index = rand.random(all.size - 1);
 			b = all.get(index);
-			if(b.team == teamFunc.get(e) || (b.proximity().size < 3 && b.block.health < 1600)){
+			if(b.team == attackerTeamFunc.get(e) || (b.proximity().size < 3 && b.block.health < 1600)){
 				all.remove(index);
 				b = null;
 			}
 			times++;
 		}
 		
-		if(b == null && teamFunc.get(e) != Vars.state.rules.defaultTeam)b = Vars.state.rules.defaultTeam.core();
+		if(b == null && attackerTeamFunc.get(e) != Vars.state.rules.defaultTeam)b = Vars.state.rules.defaultTeam.core();
 		
 		return new Vec2().set(b == null ? Vec2.ZERO : b);
 	};
-	
 	public Func<CutsceneEventEntity, Position> sourceFunc = e -> {
-		Team team = teamFunc.get(e);
+		Team team = attackerTeamFunc.get(e);
 		CoreBlock.CoreBuild core = team.cores().firstOpt();
 		
-		return core == null ? new Vec2(Vars.world.unitWidth() + 500, Vars.world.unitHeight() + 500) : core;
+		return core == null ? (team == Vars.state.rules.waveTeam && Vars.spawner.getSpawns().any()) ? Vars.spawner.getSpawns().get(Mathf.randomSeed(e.id, 0, Math.max(0, Vars.spawner.getSpawns().size - 1))) : new Vec2(Vars.world.unitWidth() + 500, Vars.world.unitHeight() + 500) : core;
 	};
+	
 	public int number = 30;
 	public float shootDelay = 6;
 	public float inaccuracy = 2;
+	public float sourceSpread = 140;
 	
-	public Cons<Bullet> shootModifier = b -> b.lifetime(b.lifetime() * (1 + Mathf.range(0.075f)));
+	public Cons<Bullet> shootModifier = BulletHandler.spread1;
 	
 	public RaidEvent(String name){
 		super(name);
@@ -106,7 +111,7 @@ public class RaidEvent extends CutsceneEvent{
 	
 	@Override
 	public void draw(CutsceneEventEntity e){
-		Team team = teamFunc.get(e);
+		Team team = attackerTeamFunc.get(e);
 		Position source = sourceFunc.get(e);
 		if(source == null)return;
 		
@@ -131,7 +136,7 @@ public class RaidEvent extends CutsceneEvent{
 		Lines.stroke(5f * f);
 		Draw.blend(Blending.additive);
 		
-		float spread = (e.dst(source) * Mathf.sinDeg(inaccuracy) / Mathf.cosDeg(inaccuracy)) * 1.35f;
+		float spread = (sourceSpread / 2 + e.dst(source) * Mathf.sinDeg(inaccuracy) / Mathf.cosDeg(inaccuracy)) * 1.35f;
 		
 		Lines.circle(e.x, e.y, spread * (1 + Mathf.absin(4f, 0.055f)));
 		
@@ -147,7 +152,7 @@ public class RaidEvent extends CutsceneEvent{
 	@Override
 	public void triggered(CutsceneEventEntity e){
 		if(e == null)return;
-		Team team = teamFunc.get(e);
+		Team team = attackerTeamFunc.get(e);
 		Position source = sourceFunc.get(e);
 		if(source == null)return;
 		
@@ -156,13 +161,13 @@ public class RaidEvent extends CutsceneEvent{
 		UIActions.actionSeqMinor(Actions.parallel(UIActions.cautionAt((e).getX(), (e).getY(), 4, number * shootDelay / 60f, team.color), Actions.run(() -> {
 			NHSounds.alarm.play();
 			for(int i = 0; i < number; i++){
-				Time.run(i * shootDelay, WorldActions.raidPos(team.cores().firstOpt(), team, bulletType, source.getX() + Mathf.range(120), source.getY() + Mathf.range(120), vec2.x, vec2.y, b -> {
-					b.vel.rotate(Mathf.range(inaccuracy));
+				int finalI = i;
+				Time.run(i * shootDelay, WorldActions.raidPos(team.cores().firstOpt(), team, bulletType, source.getX() + Mathf.randomSeedRange(e.id + finalI, sourceSpread), source.getY() + Mathf.randomSeedRange(e.id + 100 - finalI, sourceSpread), vec2.x, vec2.y, b -> {
+					b.vel.rotate(Mathf.randomSeedRange(e.id + 50 + finalI, inaccuracy));
 					if(b.type.shootEffect != null)
 						b.type.shootEffect.at(b.x, b.y, b.angleTo(source), b.type.hitColor);
 					if(b.type.smokeEffect != null)
 						b.type.smokeEffect.at(b.x, b.y, b.angleTo(source), b.type.hitColor);
-					
 					shootModifier.get(b);
 				}));
 			}
@@ -177,10 +182,10 @@ public class RaidEvent extends CutsceneEvent{
 	
 	@Override
 	public void onCallUI(CutsceneEventEntity e){
-		Color color = teamFunc.get(e).color;
+		Color color = attackerTeamFunc.get(e).color;
 		
 		UIActions.showLabel(2f, t -> {
-			if(teamFunc.get(e) != Vars.player.team())NHSounds.alarm.play();
+			if(attackerTeamFunc.get(e) != Vars.player.team())NHSounds.alarm.play();
 			
 			t.background(Styles.black5);
 			
@@ -205,7 +210,7 @@ public class RaidEvent extends CutsceneEvent{
 	
 	@Override
 	public void setupTable(CutsceneEventEntity e, Table table){
-		Color color = teamFunc.get(e).color;
+		Color color = attackerTeamFunc.get(e).color;
 		
 		e.infoT = new Table(Tex.sideline, t -> {
 			t.table(c -> {
@@ -248,5 +253,32 @@ public class RaidEvent extends CutsceneEvent{
 	@Override
 	public void write(CutsceneEventEntity e, Writes writes){
 		writes.f(e.reload);
+	}
+	
+	@Override
+	public void display(Table table){
+		table.row().table().padLeft(OFFSET * 2).getTable().table(t -> {
+			t.add('<' + Core.bundle.get("mod.ui.raid") + '>').color(Pal.accent).center().growX().fillY().row();
+			t.add(Core.bundle.get("mod.ui.raid.description")).color(Color.lightGray).center().growX().fillY().row();
+			t.image().color(Pal.accent).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			
+			t.align(Align.topLeft);
+			t.add("[lightgray]" + Core.bundle.get("mod.ui.collide-air") + ": " + TableFunc.judge(bulletType.collidesAir && bulletType.collides)).left().row();
+			t.add("[lightgray]" + Core.bundle.get("mod.ui.collide-ground") + ": " + TableFunc.judge(bulletType.collidesGround && bulletType.collides)).left().row();
+			t.add("[lightgray]" + Core.bundle.get("mod.ui.collide-tile") + ": " + TableFunc.judge(bulletType.collidesTiles)).left().row();
+			
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			
+			t.add("[lightgray]" + Core.bundle.get("mod.ui.absorbable") + ": " + TableFunc.judge(bulletType.absorbable)).left().row();
+			t.add("[lightgray]" + Core.bundle.get("mod.ui.hittable") + ": " + TableFunc.judge(bulletType.hittable)).left().row();
+			
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			
+			t.add("[lightgray]" + Core.bundle.get("stat.launchtime") + ": [accent]" + TableFunc.format(reloadTime / Time.toSeconds) + "[]" + Core.bundle.get("unit.seconds")).left().row();
+			
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			
+			t.table(b -> Tables.ammo(b, "[lightgray]*[accent]" + number, bulletType, NHContent.raid, 0)).row();
+		}).fill().padBottom(OFFSET).left().row();
 	}
 }

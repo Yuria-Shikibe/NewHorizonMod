@@ -19,6 +19,7 @@ import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.core.World;
 import mindustry.entities.Effect;
+import mindustry.entities.Fires;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
@@ -29,7 +30,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHFx;
-import newhorizon.expand.block.special.JumpGate;
+import newhorizon.expand.entities.Spawner;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -73,6 +74,14 @@ public class NHFunc{
     });
     private static final Vec2 point1 = new Vec2(), point2 = new Vec2(), point3 = new Vec2(), point4 = new Vec2();
     private static final Rect r1 = new Rect(), r2 = new Rect();
+    
+    public static void extinguish(Team team, float x, float y, float range, float intensity){
+        indexer.eachBlock(team, x, y, range, b -> true, b -> Fires.extinguish(b.tile, intensity));
+    }
+    
+    public static void extinguish(Teamc teamc, float range, float intensity){
+        indexer.eachBlock(teamc.team(), teamc.x(), teamc.y(), range, b -> true, b -> Fires.extinguish(b.tile, intensity));
+    }
     
     public static float findLaserLength(Bullet b, float angle, float length){
         Tmp.v1.trnsExact(angle, length);
@@ -340,7 +349,7 @@ public class NHFunc{
         
         int i = 0;
         for (Vec2 s : vectorSeq) {
-            JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
+            Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
             spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay);
             if(!net.client())spawner.add();
             i++;
@@ -349,7 +358,7 @@ public class NHFunc{
     }
     
     public static void spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type){
-        JumpGate.Spawner spawner = Pools.obtain(JumpGate.Spawner.class, JumpGate.Spawner::new);
+        Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
         spawner.init(type, team, vec21.set(x, y), angle, delay);
         if(!net.client())spawner.add();
     }

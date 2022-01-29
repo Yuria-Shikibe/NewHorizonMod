@@ -1,4 +1,4 @@
-package newhorizon.util.feature;
+package newhorizon.util.ui;
 
 import arc.Core;
 import arc.Events;
@@ -30,12 +30,12 @@ public class ScreenInterferencer{
 	private static float hackRemainTime = 0f, reloadTime = 0;
 	private static float hackWarmup = 0f;
 	private static final Rand rand = new Rand();
-	private static int seed = 0;
+	private static long seed = 0;
 	
 	
 	public static final Color from = Pal.heal, to = NHColor.lightSkyBack;
 	
-	private static int getSeed(){return seed++;}
+	private static long getSeed(){return seed++;}
 	
 	private static final Label.LabelStyle style = new Label.LabelStyle(Fonts.tech, Color.white){{background = Tex.clear;}};
 	
@@ -147,6 +147,8 @@ public class ScreenInterferencer{
 		if(state.isMenu())reloadTime = 0;
 		if(state.isPaused())return;
 		reloadTime -= Time.delta;
+		
+		if(UIActions.lockingInput())reloadTime = Mathf.lerpDelta(reloadTime, 0, 0.1f);
 	}
 	
 	public static void generate(float time){

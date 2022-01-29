@@ -1,6 +1,5 @@
 package newhorizon.util.feature.cutscene;
 
-import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
@@ -17,8 +16,7 @@ import newhorizon.util.feature.cutscene.events.*;
 
 public class EventSamples{
 	public static CutsceneEvent jumpgateUnlock,
-			jumpgateUnlockObjective, waveTeamRaid, fleetApproaching, destroyGravityTraps, destroyReactors,
-			raid1, raid2, raid3;
+			jumpgateUnlockObjective, waveTeamRaid, fleetApproaching, destroyGravityTraps, destroyReactors;
 	
 	public static void load(){
 		
@@ -94,45 +92,6 @@ public class EventSamples{
 			
 			cannotBeRemove = true;
 			removeAfterVictory = false;
-		}};
-		
-		raid1 = new RaidEvent("raid1"){{
-			reloadTime = 60 * 60 * 6;
-			
-			
-			number = 40;
-			shootDelay = 4f;
-			bulletType = NHBullets.blastEnergyNgt;
-			
-			cannotBeRemove = true;
-		}};
-		
-		raid2 = new RaidEvent("raid2"){{
-			reloadTime = 60 * 60 * 4;
-			
-			
-			number = 60;
-			shootDelay = 2f;
-			bulletType = NHBullets.skyFrag;
-			
-			cannotBeRemove = true;
-		}};
-		
-		raid3 = new RaidEvent("raid3"){{
-			reloadTime = 60 * 60 * 6;
-			
-			
-			number = 50;
-			shootDelay = 3f;
-			bulletType = NHBullets.hyperBlast;
-			
-			shootModifier = b -> {
-				b.lifetime(b.lifetime() * (1 + Mathf.range(0.075f)));
-				b.vel.scl(1 + Mathf.range(0.075f));
-			};
-			
-			
-			cannotBeRemove = true;
 		}};
 	}
 }

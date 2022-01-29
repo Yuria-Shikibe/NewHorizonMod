@@ -34,6 +34,7 @@ public class OptionalMultiEffect extends MultiEffect{
 				cont.id = e.id;
 				f.render(cont);
 			});
+			clip = f.clip;
 		}
 	}
 }

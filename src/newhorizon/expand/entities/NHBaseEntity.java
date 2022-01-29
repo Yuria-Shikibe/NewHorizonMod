@@ -1,4 +1,4 @@
-package newhorizon.util.feature;
+package newhorizon.expand.entities;
 
 import arc.math.geom.Position;
 import arc.util.io.Reads;

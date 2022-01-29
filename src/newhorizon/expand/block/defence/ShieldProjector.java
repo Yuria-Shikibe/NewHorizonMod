@@ -35,6 +35,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
 import newhorizon.expand.block.special.CommandableBlock;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.EntityRegister;
@@ -148,7 +149,7 @@ public class ShieldProjector extends CommandableBlock{
 		@Override
 		public void setTarget(Point2 point2){
 			NHVars.world.commandPos = target = point2.pack();
-			for(CommandableBlockBuild build : NHVars.world.commandables){
+			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build != null && build.team == team && groupBoolf.get(this, build)){
 					build.overlap();
 				}
@@ -177,7 +178,7 @@ public class ShieldProjector extends CommandableBlock{
 		
 		@Override
 		public void updateControl(){
-			for(CommandableBlockBuild build : NHVars.world.commandables){
+			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build != null && build.team == team && groupBoolf.get(this, build)){
 					build.target = target;
 				}
@@ -231,7 +232,7 @@ public class ShieldProjector extends CommandableBlock{
 			float health = 0;
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
-			for(CommandableBlockBuild build : NHVars.world.commandables){
+			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build.team == team && groupBoolf.get(this, build) && build.canCommand(pos) && !build.isPreparing()){
 					build.command(pos);
 					participants.add(build);
@@ -271,7 +272,7 @@ public class ShieldProjector extends CommandableBlock{
 			float health = 0;
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
-			for(CommandableBlockBuild build : NHVars.world.commandables){
+			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand(target)){
 					builds.add(build);
 					DrawFunc.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, t.x, t.y);

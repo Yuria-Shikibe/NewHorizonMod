@@ -5,11 +5,16 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.net.NetConnection;
 import mindustry.net.Packet;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 
 public class EventCompletePacket extends Packet{
 	private byte[] DATA;
 	public CutsceneEventEntity entity;
+	
+	public int getPriority(){
+		return priorityHigh;
+	}
 	
 	public EventCompletePacket(){
 		this.DATA = NODATA;
@@ -26,7 +31,7 @@ public class EventCompletePacket extends Packet{
 	public void handled(){
 		BAIS.setBytes(this.DATA);
 		
-		entity = CutsceneEventEntity.events.getByID(READ.i());
+		entity = NHGroups.events.getByID(READ.i());
 	}
 	
 	public void handleClient(){
@@ -38,9 +43,7 @@ public class EventCompletePacket extends Packet{
 		if(con.player != null && !con.kicked && entity != null) {
 			entity.act();
 			
-			EventCompletePacket packet = new EventCompletePacket();
-			packet.entity = entity;
-			Vars.net.send(packet, true);
+			Vars.net.sendExcept(con, this, true);
 		}
 	}
 }

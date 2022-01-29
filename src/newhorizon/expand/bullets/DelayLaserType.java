@@ -14,6 +14,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.bullet.LaserBulletType;
 import mindustry.gen.Bullet;
+import mindustry.gen.Healthc;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import newhorizon.content.NHFx;
@@ -43,12 +44,18 @@ public class DelayLaserType extends LaserBulletType {
     @Override
     public void update(Bullet b) {
         if (b.time - effectTime > 0 && b.data() instanceof Boolean && !(boolean)b.data()){
-            shoot(b);
+            if(b.owner() instanceof Healthc){
+                if(((Healthc)b.owner).isValid())shoot(b);
+            }else shoot(b);
         }
     }
 
     @Override
     public void init(Bullet b) {
+        if(instantDisappear){
+            b.time = lifetime;
+        }
+        
         b.data(false);
         chargeSound.at(b, Mathf.random(0.8f, 1.05f));
     }
@@ -79,6 +86,10 @@ public class DelayLaserType extends LaserBulletType {
                     });
                 }
             }
+        }
+    
+        if(killShooter && b.owner() instanceof Healthc){
+            ((Healthc)b.owner()).kill();
         }
     }
 

@@ -39,12 +39,22 @@ const TableFunc = loadContent("newhorizon.util.ui.TableFunc");
 const NHInterp = loadContent("newhorizon.util.func.NHInterp");
 const PosLightning = loadContent("newhorizon.util.feature.PosLightning");
 
+const BulletHandler = loadContent("newhorizon.util.feature.cutscene.events.util.BulletHandler");
+const PreMadeRaids = loadContent("newhorizon.util.feature.cutscene.events.util.PreMadeRaids");
+const TriggerGenerator = loadContent("newhorizon.util.feature.cutscene.events.util.TriggerGenerator");
+const AutoEventTrigger = loadContent("newhorizon.util.feature.cutscene.events.util.AutoEventTrigger");
+
+const OV_Pair = loadContent("newhorizon.util.func.OV_Pair");
+
 const FleetEventClass = loadClass("newhorizon.util.feature.cutscene.events.FleetEvent");
 const ObjectiveEventClass = loadClass("newhorizon.util.feature.cutscene.events.ObjectiveEvent");
 const RaidEventClass = loadClass("newhorizon.util.feature.cutscene.events.RaidEvent");
 const SignalEventClass = loadClass("newhorizon.util.feature.cutscene.events.SignalEvent");
 const DestroyObjectiveEventClass = loadClass("newhorizon.util.feature.cutscene.events.DestroyObjectiveEvent");
 const SimpleReloadEventClass = loadClass("newhorizon.util.feature.cutscene.events.SimpleReloadEvent");
+
+const NHGroups = loadContent("newhorizon.expand.entities.NHGroups");
+const NHBlending = loadContent("newhorizon.util.graphic.NHBlending");
 
 const OFFSET = 12;
 const LEN = 60;

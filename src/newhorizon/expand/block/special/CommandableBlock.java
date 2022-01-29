@@ -25,7 +25,7 @@ import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.expand.vars.NHVars;
+import newhorizon.expand.entities.NHGroups;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +100,7 @@ public abstract class CommandableBlock extends Block{
 		
 		@Override
 		public void created(){
-			NHVars.world.commandables.add(this);
+			NHGroups.commandableBuilds.add(this);
 			
 			unit = (BlockUnitc)UnitTypes.block.create(team);
 			unit.tile(this);
@@ -145,13 +145,13 @@ public abstract class CommandableBlock extends Block{
 		@Override
 		public void remove(){
 			super.remove();
-			NHVars.world.commandables.remove(this);
+			NHGroups.commandableBuilds.remove(this);
 		}
 		
 		@Override
 		public void add(){
 			super.add();
-			NHVars.world.commandables.add(this);
+			NHGroups.commandableBuilds.add(this);
 		}
 	}
 	

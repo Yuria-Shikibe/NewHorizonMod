@@ -15,18 +15,17 @@ import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Unit;
-import mindustry.graphics.Layer;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
-import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
-import newhorizon.expand.block.special.RemoteCoreStorage;
-import newhorizon.util.feature.ScreenInterferencer;
+import newhorizon.expand.entities.GravityTrapField;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.feature.cutscene.Triggers;
-import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.ui.ScreenInterferencer;
 
 import static mindustry.Vars.control;
 
@@ -59,17 +58,19 @@ public class EventListeners{
 		}else actions.add(act);
 	}
 	
+	public static final Seq<Runnable> toDraw = new Seq<>();
 	
 	public static transient boolean raid_setup;
 	
 	public static void load(){
+		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
+		
 		Events.run(Triggers.raid_setup, () -> {
 			raid_setup = true;
 		});
 		
+		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-			NHVars.world.worldLoaded = true;
-			
 			NHVars.world.afterLoad();
 			
 			actAfterLoad.each(Runnable::run);
@@ -79,25 +80,17 @@ public class EventListeners{
 		Events.on(EventType.ResetEvent.class, e -> {
 			actAfterLoad.clear();
 			NHVars.reset();
-			RemoteCoreStorage.clear();
 		});
 		
 		Events.on(EventType.StateChangeEvent.class, e -> {
 			if(e.to == GameState.State.menu){
-				NHVars.reset();
-				
 				actAfterLoad.clear();
-				RemoteCoreStorage.clear();
-				
-				NHVars.world.worldLoaded = false;
+				NHVars.reset();
 			}
 		});
 		
 		if(Vars.headless)return;
 		
-//		if(NHPixmap.isDebugging())Events.on(EventType.ContentInitEvent.class, e -> {
-//			NHPixmap.saveAddProcessed();
-//		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			if(connectCaution){
@@ -105,50 +98,36 @@ public class EventListeners{
 				Vars.ui.showCustomConfirm("@warning", kickWarn, "@settings", "@confirm", () -> new NHSetting.SettingDialog().show(), () -> {});
 				Vars.player.con.close();
 			}
-
-//			UnitInfo.added.clear();
-//			UnitInfo.addBars();
 		});
 
 		Events.run(EventType.Trigger.update, () -> {
 			ScreenInterferencer.update();
 			NHSetting.update();
-//			UnitInfo.update();
+			
+			if(Vars.state.isPlaying())NHGroups.update();
 		});
 		
 		Events.on(ScreenInterferencer.ScreenHackEvent.class, e -> {
 			ScreenInterferencer.generate(e.time);
 		});
 		
-		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
-		
 		Events.on(BossGeneratedEvent.class, e -> {
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");
 		});
 		
 		Events.run(EventType.Trigger.draw, () -> {
-			Draw.drawRange(Layer.light + 5, 1, () -> Vars.renderer.effectBuffer.begin(Color.clear), () -> {
-				Vars.renderer.effectBuffer.end();
-				Vars.renderer.effectBuffer.blit(NHShaders.gravityTrapShader);
-			});
-			
 			Building building = Vars.control.input.frag.config.getSelectedTile();
 			
 			if(control.input.block instanceof GravityTrap || (building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper))){
-				Seq<GravityTrap.TrapField> bi = NHFunc.getObjects(NHVars.world.gravityTraps);
-				
-				Draw.z(Layer.overlayUI + 0.1f);
-				
-				Draw.reset();
-				
-//				Draw.blend(Blending.additive);
-				Draw.z(Layer.light + 5);
-				for(GravityTrap.TrapField i : bi){
-					i.draw();
-				}
-				Draw.reset();
-//				Draw.blend();
+				Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
+					Vars.renderer.effectBuffer.begin(Color.clear);
+					GravityTrapField.DRAWER.run();
+					Vars.renderer.effectBuffer.end();
+					Vars.renderer.effectBuffer.blit(NHShaders.gravityTrapShader);
+				});
 			}
+			
+			toDraw.each(Runnable::run);
 		});
 		
 		
@@ -165,8 +144,6 @@ public class EventListeners{
 				Log.info(e.host.versionType);
 			}
 		});
-		
-		Events.on(EventType.UnitChangeEvent.class, e -> e.unit.apply(NHStatusEffects.invincible, 180f));
 		
 		Events.on(EventType.TapEvent.class, e -> {
 			Building selecting = Vars.control.input.frag.config.getSelectedTile();

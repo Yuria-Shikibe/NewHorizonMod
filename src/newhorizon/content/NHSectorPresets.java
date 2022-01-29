@@ -25,7 +25,11 @@ import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NewHorizon;
-import newhorizon.util.feature.cutscene.*;
+import newhorizon.expand.entities.NHGroups;
+import newhorizon.util.feature.cutscene.CutsceneScript;
+import newhorizon.util.feature.cutscene.EventSamples;
+import newhorizon.util.feature.cutscene.UIActions;
+import newhorizon.util.feature.cutscene.WorldActions;
 import newhorizon.util.func.NHFunc;
 
 import static mindustry.Vars.*;
@@ -359,7 +363,7 @@ public class NHSectorPresets implements ContentList{
 				bool -> {
 					if(bool){
 						state.rules.tags.clear();
-						CutsceneEventEntity.events.clear();
+						NHGroups.events.clear();
 					}
 				}, b -> {}
 			));

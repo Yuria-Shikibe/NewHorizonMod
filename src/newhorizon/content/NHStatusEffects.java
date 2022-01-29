@@ -8,7 +8,6 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
@@ -19,16 +18,29 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import newhorizon.NewHorizon;
-import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.func.NHPixmap;
+import newhorizon.util.ui.ScreenInterferencer;
 
 public class NHStatusEffects implements ContentList{
-    public static StatusEffect ultFireBurn,
-            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased, weak, scannerDown;
+    public static StatusEffect ultFireBurn, stronghold,
+            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased, weak, scannerDown, intercepted;
     
     @Override
     public void load(){
+        stronghold = new NHStatusEffect("stronghold"){{
+            color = textureColor = Color.lightGray;
+            speedMultiplier = 0.001f;
+            healthMultiplier = 2f;
+        }};
+        
+        intercepted = new NHStatusEffect("intercepted"){{
+           damage = 15;
+           
+           speedMultiplier = damageMultiplier = 0.8f;
+           effect = NHFx.square45_4_45;
+           color = textureColor = Pal.accent;
+        }};
+        
         ultFireBurn = new NHStatusEffect("ult-fire-burn"){{
             damage = 3;
             
@@ -39,7 +51,6 @@ public class NHStatusEffects implements ContentList{
         
         scannerDown = new NHStatusEffect("scanner-down"){{
             damage = 2;
-            show = true;
             
             damageMultiplier = 0.95f;
             speedMultiplier = 0.9f;
@@ -61,9 +72,8 @@ public class NHStatusEffects implements ContentList{
         };
         
         weak = new NHStatusEffect("weak"){{
-            damage = 10;
             speedMultiplier = 0.75f;
-            damageMultiplier = 0.9f;
+            damageMultiplier = 0.8f;
             reloadMultiplier = 0.9f;
             
             
@@ -89,7 +99,7 @@ public class NHStatusEffects implements ContentList{
         }};
         
         end = new NHStatusEffect("end"){{
-            damage = 60;
+            damage = 100;
             textureColor = color = NHColor.darkEnrColor;
             
             damageMultiplier = 0.5f;
@@ -140,21 +150,19 @@ public class NHStatusEffects implements ContentList{
         }};
         
         invincible = new NHStatusEffect("invincible"){{
-            healthMultiplier = 1000000;
+            healthMultiplier = 10;
         }
             @Override
-            public void update(Unit unit, float time){
-                if(!unit.spawnedByCore)unit.unapply(this);
-            }
-    
-            @Override
-            public void draw(Unit unit){
-                if(!unit.spawnedByCore)return;
+            public void draw(Unit unit, float time){
                 Draw.z(Layer.effect);
                 Draw.color(NHColor.lightSkyBack);
-                TextureRegion area = Core.atlas.find(NewHorizon.name("upgrade"));
-                Draw.rect(area, unit.x + unit.hitSize * 1.25f, unit.y, -90);
-                Draw.rect(area, unit.x - unit.hitSize * 1.25f, unit.y, 90);
+                
+                float size = Mathf.clamp(time / 30f) * NHContent.upgrade.height * Draw.scl;
+    
+                for(int i : Mathf.signs){
+                    Tmp.v1.trns(unit.rotation + 90 * i,unit.hitSize * 1.5f).add(unit);
+                    Draw.rect(NHContent.upgrade, Tmp.v1.x, Tmp.v1.y, size, size, unit.rotation + 90 * i - 90);
+                }
             }
         };
         
@@ -219,16 +227,9 @@ public class NHStatusEffects implements ContentList{
 		public void createIcons(MultiPacker packer){
 		    TextureRegion region = Core.atlas.find(name);
 		    
-            Log.info(region);
-		    
 			if(NHPixmap.isDebugging() && region != null && region.found()){
-				if(textureColor != null){
-				    NHPixmap.addProcessed(name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(region), textureColor).outline(Color.valueOf("404049"), 3));
-//					packer.add(MultiPacker.PageType.main, name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(fullIcon), textureColor).outline(Color.valueOf("404049"), 3));
-				}else{
-                    NHPixmap.addProcessed(name + "-full", Pixmaps.outline(Core.atlas.getPixmap(region), Color.valueOf("404049"), 3));
-//                    packer.add(MultiPacker.PageType.main, name + "-full", Pixmaps.outline(Core.atlas.getPixmap(fullIcon), Color.valueOf("404049"), 3));
-				}
+				if(textureColor != null)NHPixmap.addProcessed(name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(region), textureColor).outline(Color.valueOf("404049"), 3));
+				else NHPixmap.addProcessed(name + "-full", Pixmaps.outline(Core.atlas.getPixmap(region), Color.valueOf("404049"), 3));
 			}else super.createIcons(packer);
 		}
 	}

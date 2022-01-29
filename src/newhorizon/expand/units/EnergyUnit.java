@@ -7,7 +7,9 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Intersector;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -24,6 +26,9 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHStatusEffects;
+import newhorizon.expand.entities.GravityTrapField;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
@@ -75,7 +80,7 @@ public class EnergyUnit extends UnitEntity{
 	protected transient Vec2 lastPos = new Vec2();
 	protected float reloadValue = 0;
 	protected float lastHealth = 0;
-	protected Interval timer = new Interval();
+	protected Interval timer = new Interval(5);
 	
 	protected Trail[] trails = {};
 	
@@ -140,36 +145,49 @@ public class EnergyUnit extends UnitEntity{
 	}
 	
 	protected void updateTeleport(){
-		reloadValue += Time.delta;
-		
-		Teamc target = Units.closestEnemy(team, x, y, teleportRange * 2f, b -> true);
-		int[] num = {0};
-		float[] damage = {0};
-		
-		reloadValue += Math.max(lastHealth - health, 0) / 2f;
-		lastHealth = health;
-		
-		if(timer.get(5f))
-			Groups.bullet.intersect(x - teleportRange, y - teleportRange, teleportRange * 2f, teleportRange * 2f, bullet -> {
+		if(!hasEffect(NHStatusEffects.intercepted)){
+			reloadValue += Time.delta;
+			
+			Teamc target = Units.closestEnemy(team, x, y, teleportRange * 2f, b -> true);
+			int[] num = {0};
+			float[] damage = {0};
+			
+			reloadValue += Math.max(lastHealth - health, 0) / 2f;
+			lastHealth = health;
+			
+			if(timer.get(5f)) Groups.bullet.intersect(x - teleportRange, y - teleportRange, teleportRange * 2f, teleportRange * 2f, bullet -> {
 				if(bullet.team == team)return;
 				num[0]++;
 				damage[0] += bullet.damage();
 			});
-		
-		if(reloadValue > reload && (target != null || ((hitTime > 0 || num[0] > 4 || damage[0] > reload / 2)))){
-			float dst = target == null ? teleportRange + teleportMinRange : dst(target) / 2f;
-			float angle = target == null ? rotation : angleTo(target);
-			Tmp.v2.trns(angle + Mathf.range(1) * 45,dst * Mathf.random(1, 2), Mathf.range(0.2f) * dst).clamp(teleportMinRange, teleportRange).add(this).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, Vars.world.unitHeight() + Vars.finalWorldBounds, Vars.world.unitWidth() + Vars.finalWorldBounds);
 			
-			NHFunc.teleportUnitNet(this, Tmp.v2.x, Tmp.v2.y, angleTo(Tmp.v2.x, Tmp.v2.y), isPlayer() ? getPlayer() : null);
-			reloadValue = 0;
-		}
+			if(reloadValue > reload && (target != null || ((hitTime > 0 || num[0] > 4 || damage[0] > reload / 2)))){
+				float dst = target == null ? teleportRange + teleportMinRange : dst(target) / 2f;
+				float angle = target == null ? rotation : angleTo(target);
+				Tmp.v2.trns(angle + Mathf.range(1) * 45,dst * Mathf.random(1, 2), Mathf.range(0.2f) * dst).clamp(teleportMinRange, teleportRange).add(this).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, Vars.world.unitHeight() + Vars.finalWorldBounds, Vars.world.unitWidth() + Vars.finalWorldBounds);
+				
+				NHFunc.teleportUnitNet(this, Tmp.v2.x, Tmp.v2.y, angleTo(Tmp.v2.x, Tmp.v2.y), isPlayer() ? getPlayer() : null);
+				reloadValue = 0;
+			}
+		}else reloadValue = 0;
+		
 	}
 	
 	@Override
 	public void update(){
 		super.update();
 		
+		Seq<GravityTrapField> fields = new Seq<>();
+		NHGroups.gravityTraps.intersect(x - hitSize / 4, y - hitSize / 4, hitSize / 2, hitSize / 2, fields);
+		
+		if(timer.get(1, 8))fields.each(f -> f.team() != team && f.active() && Intersector.isInsideHexagon(x, y, f.range * 2f, f.getX(), f.getY()), f -> {
+			Vec2 target = new Vec2(x, y);
+			NHFx.slidePoly.at(f.x, f.y, hitSize, f.team().color, target);
+			NHFx.chainLightningFade.at(f.x, f.y, 12, f.team().color, target);
+			impulseNet(Tmp.v1.set(this).sub(f).nor().scl(50 * (f.range * 0.75f - f.dst(this))));
+			damage(35f, true);
+			apply(NHStatusEffects.intercepted, 60f);
+		});
 		
 		if(!Vars.headless && lastPos.dst(this) > effectTriggerLen){
 			Sounds.plasmaboom.at(this);
@@ -180,9 +198,9 @@ public class EnergyUnit extends UnitEntity{
 				t.clear();
 			}
 			
-			teleport.at(x, y, hitSize, team.color);
-			teleport.at(lastPos.x, lastPos.y, hitSize, team.color);
-			teleportTrans.at(lastPos.x, lastPos.y, hitSize, team.color, new Vec2().set(this));
+			teleport.at(x, y, hitSize / 2, team.color);
+			teleport.at(lastPos.x, lastPos.y, hitSize / 2, team.color);
+			teleportTrans.at(lastPos.x, lastPos.y, hitSize / 2, team.color, new Vec2().set(this));
 		}
 		
 		lastPos.set(this);

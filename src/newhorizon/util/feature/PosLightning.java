@@ -21,11 +21,12 @@ import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Building;
+import mindustry.gen.Bullet;
+import mindustry.gen.Entityc;
+import mindustry.gen.Healthc;
 import mindustry.graphics.Layer;
 import newhorizon.expand.bullets.EffectBulletType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Provide methods that can generate Position to Position Lightning.<p>
@@ -111,16 +112,7 @@ public class PosLightning {
 		createRange(owner, owner == null || owner.type.collidesAir, owner == null || owner.type.collidesGround, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
-	public static void createRange(Entityc owner, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
-		createRange(owner, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, movement);
-	}
-	
-	//create lightning to the enemies in range.
-	public static void createRange(Entityc owner, Position from, Team team, float range, int hits, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum) {
-		createRange(owner, from, team, range, hits, color, createLightning, damage, boltLen, width, boltNum, position -> {});
-	}
-	
-	public static void createLength(@Nullable Bullet owner, Team team, Position from, float length, float angle, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement){
+	public static void createLength(Bullet owner, Team team, Position from, float length, float angle, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement){
 		create(owner, team, from, tmp2.trns(angle, length).add(from), color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
@@ -168,7 +160,7 @@ public class PosLightning {
 		createRandomRange(null, team, from, rand, color, createLightning, damage, boltLen, width, boltNum, generateNum, movement);
 	}
 	
-	public static void createRandomRange(@NotNull Bullet owner, float rand, Color color, boolean createLightning, float damage, float width, int boltNum, int generateNum, Cons<Position> movement){
+	public static void createRandomRange(Bullet owner, float rand, Color color, boolean createLightning, float damage, float width, int boltNum, int generateNum, Cons<Position> movement){
 		createRandomRange(owner, owner.team, owner, rand, color, createLightning, damage, owner.type.lightningLength + Mathf.random(owner.type.lightningLengthRand), width, boltNum, generateNum, movement);
 	}
 	
@@ -191,8 +183,6 @@ public class PosLightning {
 		}else{
 			float dst = from.dst(to);
 			
-			Seq<Vec2> p = null;
-			
 			for(int i = 0; i < boltNum; i++){
 				float len = getBoltRandomRange();
 				float randRange = len * RANGE_RAND;
@@ -201,9 +191,10 @@ public class PosLightning {
 				for(int num = 0; num < dst / (ROT_DST * len) + 1; num++){
 					randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
 				}
-				createBoltEffect(color, width, p = computeVectors(randomArray, from, to));
+				createBoltEffect(color, width, computeVectors(randomArray, from, to));
 			}
 		}
+		
 	}
 	
 	//Private methods and classes.

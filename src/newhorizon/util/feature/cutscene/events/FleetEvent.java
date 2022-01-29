@@ -1,7 +1,6 @@
 package newhorizon.util.feature.cutscene.events;
 
 import arc.Core;
-import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.Blending;
 import arc.graphics.Color;
@@ -9,6 +8,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Geometry;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
@@ -16,6 +16,7 @@ import arc.scene.actions.Actions;
 import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -23,10 +24,12 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.entities.Units;
 import mindustry.game.Team;
-import mindustry.gen.Bullet;
+import mindustry.gen.Building;
+import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
@@ -38,6 +41,7 @@ import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.UIActions;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.ui.IconNumDisplay;
 import newhorizon.util.ui.TableFunc;
 
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -47,7 +51,22 @@ public class FleetEvent extends CutsceneEvent{
 	public ObjectMap<UnitType, Number> unitTypeMap = ObjectMap.of();
 	public Func<CutsceneEventEntity, Team> teamFunc = e -> Vars.state.rules.waveTeam;
 	
-	public Func<CutsceneEventEntity, Position> targetFunc = e -> new Vec2(-120, -120);
+	public Func<CutsceneEventEntity, Position> targetFunc = e -> {
+		Rand rand = NHFunc.rand;
+		rand.setSeed(e.id);
+		
+		Building b = null;
+		
+		int times = 0;
+		
+		Team team = teamFunc.get(e);
+		Seq<Building> all = new Seq<>(Groups.build.size());
+		Groups.build.copy(all);
+		all.remove(bi -> bi.team == team);
+		if(all.any())b = all.get(rand.random(all.size - 1));
+		
+		return new Vec2().set(b == null ? Vec2.ZERO : b);
+	};
 	
 	public Func<CutsceneEventEntity, Position> sourceFunc = e -> {
 		Team team = teamFunc.get(e);
@@ -70,8 +89,6 @@ public class FleetEvent extends CutsceneEvent{
 	public float spawnDelay = 30f;
 	public float delay = 600f;
 	public float range = 120f;
-	
-	public Cons<Bullet> shootModifier = b -> b.lifetime(b.lifetime() * (1 + Mathf.range(0.075f)));
 	
 	public FleetEvent(String name){
 		super(name);
@@ -164,7 +181,7 @@ public class FleetEvent extends CutsceneEvent{
 	@Override
 	public void onCall(CutsceneEventEntity e){
 		Position position = targetFunc.get(e);
-		if(position == null)position = new Vec2().set(Vars.state.rules.defaultTeam.cores().firstOpt());
+		if(position == null)position = new Vec2().set(teamFunc.get(e).cores().firstOpt());
 		if(position == null){
 			e.set(0, 0);
 		}else e.set(position);
@@ -217,5 +234,19 @@ public class FleetEvent extends CutsceneEvent{
 	@Override
 	public void write(CutsceneEventEntity e, Writes writes){
 		writes.f(e.reload);
+	}
+	
+	@Override
+	public void display(Table table){
+		table.row().table().padLeft(OFFSET * 2).getTable().table(t -> {
+			t.add('<' + Core.bundle.get("mod.ui.fleet") + '>').color(Pal.accent).center().growX().fillY().row();
+			t.add(Core.bundle.get("mod.ui.fleet.description")).color(Color.lightGray).center().growX().fillY().row();
+			t.image().color(Pal.accent).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			
+			for(ObjectMap.Entry<UnitType, Number> entry : unitTypeMap.entries()){
+				t.add(new IconNumDisplay(entry.key.fullIcon, entry.value.intValue(), entry.key.localizedName)).left().row();
+			}
+		}).fill();
+		
 	}
 }

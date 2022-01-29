@@ -6,17 +6,21 @@ import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.graphics.CacheLayer;
+import mindustry.graphics.Layer;
 import newhorizon.NewHorizon;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.feature.UpgradeData;
 import newhorizon.util.func.NHPixmap;
 
 public class NHContent extends Content{
+	public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
+	public static final float MATTER_STORM_LAYER = Layer.weather + 0.112f; // Making it wried
+	
 	public static CacheLayer
 			quantum;
 	
 	public static TextureRegion
-			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2;
+			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade;
 	
 	public static TextureRegion //UI
 		raid, objective, fleet;
@@ -49,6 +53,7 @@ public class NHContent extends Content{
 		UltFire.load();
 		if(NHPixmap.isDebugging())process();
 		
+		upgrade = Core.atlas.find(NewHorizon.name("upgrade"));
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));
 		iconLevel = Core.atlas.find(NewHorizon.name("level-up"));

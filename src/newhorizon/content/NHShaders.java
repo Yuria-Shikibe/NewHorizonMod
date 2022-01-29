@@ -4,6 +4,7 @@ import arc.Core;
 import arc.files.Fi;
 import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
+import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.util.Time;
 import mindustry.graphics.Shaders;
@@ -13,11 +14,17 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.renderer;
 
 public class NHShaders{
-	public static Shader gravityTrapShader;
+	public static MatterStormShader matterStorm;
+	
+	public static Shader
+			gravityTrapShader;
+			
 	
 	public static ModSurfaceShader quantum;
 	
 	public static void init(){
+		matterStorm = new MatterStormShader("storm");
+		
 		gravityTrapShader = new ModShader("screenspace", "gravityTrap"){
 			@Override
 			public void apply(){
@@ -49,6 +56,20 @@ public class NHShaders{
 				};
 			}
 		};
+	}
+	
+	public static class MatterStormShader extends ModSurfaceShader{
+		public Vec2 direction = new Vec2();
+		
+		public MatterStormShader(String frag){
+			super(frag);
+		}
+		
+		@Override
+		public void apply(){
+			super.apply();
+			setUniformf("u_direction", direction.x, direction.y);
+		}
 	}
 	
 	public static class ModSurfaceShader extends ModShader{

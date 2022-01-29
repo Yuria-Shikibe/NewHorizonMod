@@ -7,15 +7,14 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.content.Bullets;
-import mindustry.entities.EntityGroup;
 import mindustry.gen.Drawc;
 import mindustry.gen.Entityc;
 import mindustry.gen.Groups;
 import mindustry.gen.Syncc;
 import mindustry.io.TypeIO;
-import newhorizon.util.feature.NHBaseEntity;
-import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
+import newhorizon.expand.entities.NHBaseEntity;
+import newhorizon.expand.entities.NHGroups;
+import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
 import newhorizon.util.func.EntityRegister;
 
@@ -44,7 +43,6 @@ import java.util.Objects;
  * @author Yuria
  * */
 public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc, Drawc{
-	public static final EntityGroup<CutsceneEventEntity> events = new EntityGroup<>(CutsceneEventEntity.class, false, true);
 	
 	/** Used for js-custom event type register.*/
 	protected static boolean registeredLoad = false, registeredExit = false;
@@ -105,7 +103,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		Groups.draw.remove(this);
 		Groups.sync.remove(this);
 		Groups.all.remove(this);
-		events.remove(this);
+		NHGroups.events.remove(this);
 		
 		if(!UIActions.disabled() && !eventType.isHidden && UIActions.eventTable() != null)eventType.removeTable(this, UIActions.eventTable());
 		eventType.onRemove(this);
@@ -120,7 +118,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		Groups.draw.add(this);
 		Groups.sync.add(this);
 		Groups.all.add(this);
-		events.add(this);
+		NHGroups.events.add(this);
 		
 		added = true;
 		
@@ -147,7 +145,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		}
 		
 		inited = reads.bool();
-		eventType = CutsceneEvent.get(reads.str());
+		eventType = CutsceneEvent.readEvent(reads);
 		
 		setType(eventType);
 		
@@ -160,8 +158,6 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	public void write(Writes writes){
 		super.write(writes);
 		
-		
-		
 		if(!registeredExit){
 			String code = CutsceneScript.getScript();
 			if(code == null || code.isEmpty())code = "print('Empty Register');";
@@ -169,12 +165,10 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 			
 			registeredExit = true;
 			registeredLoad = false;
-			
-			
 		}
 		
 		writes.bool(inited);
-		writes.str(eventType.name);
+		CutsceneEvent.writeEvent(eventType, writes);
 		
 		eventType.write(this, writes);
 	}

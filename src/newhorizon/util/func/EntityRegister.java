@@ -8,12 +8,13 @@ import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
-import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShieldProjector;
-import newhorizon.expand.block.special.JumpGate;
+import newhorizon.expand.entities.Carrier;
+import newhorizon.expand.entities.Spawner;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.EnergyUnit;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
+import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 
 public class EntityRegister{
 	private static final int startFrom = 100;
@@ -22,12 +23,13 @@ public class EntityRegister{
 	private static final ObjectMap<Class<?>, Integer> classIdMap = new ObjectMap<>();
 	
 	static{
-		EntityRegister.put(JumpGate.Spawner.class, JumpGate.Spawner::new);
-		EntityRegister.put(HyperSpaceWarper.Carrier.class, HyperSpaceWarper.Carrier::new);
+		EntityRegister.put(Spawner.class, Spawner::new);
+		EntityRegister.put(Carrier.class, Carrier::new);
 		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
 		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
 		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
 		EntityRegister.put(UltFire.class, UltFire::new);
+		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){

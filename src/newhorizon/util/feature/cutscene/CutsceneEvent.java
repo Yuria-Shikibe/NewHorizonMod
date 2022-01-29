@@ -14,8 +14,10 @@ import mindustry.Vars;
 import mindustry.core.NetClient;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
+import mindustry.ui.Displayable;
 import mindustry.ui.Styles;
-import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
+import newhorizon.util.annotation.HeadlessDisabled;
+import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
 
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -25,7 +27,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
  *
  *
  * */
-public class CutsceneEvent implements Cloneable{
+public class CutsceneEvent implements Cloneable, Displayable{
 	public static final ObjectMap<String, CutsceneEvent> cutsceneEvents = new ObjectMap<>();
 	
 	public static CutsceneEvent get(String name){
@@ -78,7 +80,10 @@ public class CutsceneEvent implements Cloneable{
 		entity.setType(this);
 		
 		if(!Vars.net.client())entity.add();
-		if(!UIActions.disabled())onCallUI(entity);
+		if(!UIActions.disabled()){
+			if(Vars.net.client())onCallUINet(entity);
+			onCallUI(entity);
+		}
 		
 		return entity;
 	}
@@ -111,6 +116,10 @@ public class CutsceneEvent implements Cloneable{
 	@HeadlessDisabled
 	public void onCallUI(CutsceneEventEntity e){
 	
+	}
+	
+	public void onCallUINet(CutsceneEventEntity e){
+		Vars.net.send(new EventUICallPacket(e), true);
 	}
 	
 	/** What to show about this event.*/
@@ -184,5 +193,22 @@ public class CutsceneEvent implements Cloneable{
 		}catch(CloneNotSupportedException e){
 			throw new AssertionError();
 		}
+	}
+	
+	public static void writeEvent(CutsceneEvent event, Writes writes){
+		writes.str(event.name);
+	}
+	
+	public static CutsceneEvent readEvent(Reads reads){
+		return get(reads.str());
+	}
+	
+	@Override
+	public void display(Table table){
+	
+	}
+	
+	public String type(){
+		return getClass().getSimpleName().isEmpty() ? getClass().getSuperclass().getSimpleName() : getClass().getSimpleName();
 	}
 }

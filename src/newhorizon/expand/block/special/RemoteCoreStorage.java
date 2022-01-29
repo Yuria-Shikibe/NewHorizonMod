@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -20,6 +19,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.EventListeners;
 import newhorizon.util.graphic.DrawFunc;
 
@@ -29,16 +29,14 @@ import static mindustry.Vars.tilesize;
 public class RemoteCoreStorage extends StorageBlock{
 	private static CoreBlock.CoreBuild tmpCoreBuild;
 	
-	public static final ObjectMap<Integer, ObjectSet<RemoteCoreStorageBuild>> placedMap = new ObjectMap<>(Team.all.length);
-	
 	static{
 		for(int i = 0; i < Team.all.length; i++){
-			placedMap.put(i, ObjectSet.with());
+			NHGroups.placedRemoteCore.put(i, ObjectSet.with());
 		}
 	}
 	
 	public static void clear(){
-		placedMap.each((id, i) -> i.clear());
+		NHGroups.placedRemoteCore.each((id, i) -> i.clear());
 	}
 	
 	public RemoteCoreStorage(String name){
@@ -50,7 +48,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	}
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		if(maxPlaceNum(Vars.player.team()) <= placedMap.get(Vars.player.team().id).size){
+		if(maxPlaceNum(Vars.player.team()) <= NHGroups.placedRemoteCore.get(Vars.player.team().id).size){
 			drawPlaceText("Maximum Placement Quantity Reached", x, y, false);
 		}
 	}
@@ -69,9 +67,9 @@ public class RemoteCoreStorage extends StorageBlock{
 		super.setBars();
 		bars.add("maxPlace", (RemoteCoreStorageBuild entity) ->
 			new Bar(
-				() -> "Max Place | " + placedMap.get(entity.team.id).size + " / " + maxPlaceNum(entity.team),
-				() -> placedMap.get(entity.team.id).size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
-				() -> (float)placedMap.get(entity.team.id).size / maxPlaceNum(entity.team)
+				() -> "Max Place | " + NHGroups.placedRemoteCore.get(entity.team.id).size + " / " + maxPlaceNum(entity.team),
+				() -> NHGroups.placedRemoteCore.get(entity.team.id).size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
+				() -> (float)NHGroups.placedRemoteCore.get(entity.team.id).size / maxPlaceNum(entity.team)
 			)
 		);
 		bars.add("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
@@ -85,7 +83,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team){
-		return super.canPlaceOn(tile, team) && placedMap.get(team.id).size < maxPlaceNum(team);
+		return super.canPlaceOn(tile, team) && NHGroups.placedRemoteCore.get(team.id).size < maxPlaceNum(team);
 	}
 	
 	public class RemoteCoreStorageBuild extends StorageBuild{
@@ -95,7 +93,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		@Override
 		public void remove(){
 			super.remove();
-			placedMap.get(team.id).remove(this);
+			NHGroups.placedRemoteCore.get(team.id).remove(this);
 		}
 		
 		
@@ -103,13 +101,13 @@ public class RemoteCoreStorage extends StorageBlock{
 		public void add(){
 			super.add();
 			
-			placedMap.get(team.id).add(this);
-			EventListeners.actAfterLoad.add(() -> placedMap.get(team.id).add(this));
+			NHGroups.placedRemoteCore.get(team.id).add(this);
+			EventListeners.actAfterLoad.add(() -> NHGroups.placedRemoteCore.get(team.id).add(this));
 		}
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0 && core() != null && placedMap.get(team.id).size <= maxPlaceNum(team)){
+			if(efficiency() > 0 && core() != null && NHGroups.placedRemoteCore.get(team.id).size <= maxPlaceNum(team)){
 				if(Mathf.equal(warmup, 1, 0.015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{

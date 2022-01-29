@@ -18,7 +18,6 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import mindustry.ui.Cicon;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.Turret;
@@ -27,13 +26,13 @@ import mindustry.world.meta.Stat;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
+import newhorizon.expand.interfaces.ScalableBlockc;
+import newhorizon.expand.interfaces.Scalablec;
+import newhorizon.expand.interfaces.Upgraderc;
 import newhorizon.util.feature.UpgradeData;
 import newhorizon.util.feature.UpgradeData.DataEntity;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.TextureFilterValue;
-import newhorizon.expand.interfaces.ScalableBlockc;
-import newhorizon.expand.interfaces.Scalablec;
-import newhorizon.expand.interfaces.Upgraderc;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
@@ -57,7 +56,7 @@ public class ScalableTurret extends Turret implements ScalableBlockc{
 	@Override
     public void setStats(){
 		stats.add(Stat.abilities, new TextureFilterValue(
-				upgraderBlock != null && upgraderBlock.icon(Cicon.xlarge).found() ? upgraderBlock.icon(Cicon.xlarge) : NHContent.iconLevel,
+				upgraderBlock != null && upgraderBlock.fullIcon != null ? upgraderBlock.fullIcon : NHContent.iconLevel,
 				"[accent]Caution[gray]: Need be linked by [lightgray]<" + (upgraderBlock == null ? "UPGRADE BLOCK" : upgraderBlock.localizedName) + ">[gray] to function."
 		));
 		super.setStats();

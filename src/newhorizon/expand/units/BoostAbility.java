@@ -21,6 +21,8 @@ import mindustry.graphics.Trail;
 public class BoostAbility extends Ability{
 	public static final int maxSize = 8;
 	
+	public boolean drawAirFlow = true;
+	
 	public float velocityMultiple = 3f;
 	public float warmupTime = 120f;
 	public int trailLength = 8;
@@ -29,6 +31,12 @@ public class BoostAbility extends Ability{
 //	public float accelUp = 0.045f;
 //	public float accelDown = 0.07f;
 	
+	
+	public BoostAbility(boolean drawAirFlow, float velocityMultiple, float angleCone){
+		this.drawAirFlow = drawAirFlow;
+		this.velocityMultiple = velocityMultiple;
+		this.angleCone = angleCone;
+	}
 	
 	public BoostAbility(){
 		this(3);
@@ -44,7 +52,7 @@ public class BoostAbility extends Ability{
 	}
 	
 	protected Trail trail = new Trail(trailLength);
-	protected Seq<Float> seq = new Seq<>();
+	protected Seq<Float> seq = new Seq<>(maxSize);
 	protected Interval timer = new Interval();
 	
 	@Override
@@ -58,9 +66,7 @@ public class BoostAbility extends Ability{
 	
 	public float warmup(float angle){
 		float f = 0;
-		for(float i : seq){
-			if(Angles.within(angle, i, angleCone))f++;
-		}
+		for(float i : seq)if(Angles.within(angle, i, angleCone))f++;
 		return f / seq.size;
 	}
 	
@@ -100,6 +106,8 @@ public class BoostAbility extends Ability{
 		Draw.z(unit.type.lowAltitude ? Layer.flyingUnitLow - 0.001f : Layer.flyingUnit - 0.001f);
 		trail.draw(unit.team.color, unit.type.engineSize / 1.5f);
 		Draw.z(z);
+		
+		if(!drawAirFlow)return;
 		
 		int particles = (int)unit.type.hitSize;
 		float particleLife = 40f, particleRad = unit.type.hitSize, particleStroke = 1.1f, particleLen = unit.hitSize / 8f;

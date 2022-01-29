@@ -24,11 +24,9 @@ import java.io.IOException;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class NHPixmap{
-	private static final boolean DEBUGGING_SPRITE = false;
-	
 	public static final String PCD_SUFFIX = "-processed";
 	
-	public static boolean isDebugging(){return DEBUGGING_SPRITE;}
+	public static boolean isDebugging(){return NewHorizon.DEBUGGING_SPRITE;}
 	
 	public static ObjectMap<String, Pixmap> processed = new ObjectMap<>();
 	
@@ -58,7 +56,7 @@ public class NHPixmap{
 	
 	public static void outlineLegs(MultiPacker packer, UnitType type){
 		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless){
-			Color color = Color.valueOf("565666");
+			Color color = OUTLINE_COLOR;
 			if(type.legRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-leg", Pixmaps.outline(Core.atlas.getPixmap(type.legRegion), color, type.outlineRadius));
 			if(type.jointRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-joint", Pixmaps.outline(Core.atlas.getPixmap(type.jointRegion), color, type.outlineRadius));
 			if(type.baseJointRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-joint-base", Pixmaps.outline(Core.atlas.getPixmap(type.baseJointRegion), color, type.outlineRadius));
@@ -69,7 +67,7 @@ public class NHPixmap{
 	}
 	
 	public static void createIcons(MultiPacker packer, UnitType type){
-		if(!Vars.headless && DEBUGGING_SPRITE){
+		if(!Vars.headless && isDebugging()){
 			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)type.region;
 			
 			PixmapRegion r = Core.atlas.getPixmap(Core.atlas.find(type.name));

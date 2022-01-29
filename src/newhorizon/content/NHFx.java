@@ -1,6 +1,7 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -336,25 +337,28 @@ public class NHFx{
 	
 	public static Effect instHit(Color color, int num, float size){
 		return new Effect(20.0F, size * 1.5f, e -> {
+			rand.setSeed(e.id);
+			
 			for(int i = 0; i < 2; ++i) {
 				Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.25f));
 				float m = i == 0 ? 1.0F : 0.5F;
 				
+				
 				for(int j = 0; j < num; ++j) {
-					float rot = e.rotation + Mathf.randomSeedRange((e.id + j), size);
-					float w = 23.0F * e.fout() * m;
-					DrawFunc.tri(e.x, e.y, w, (size + Mathf.randomSeedRange((e.id + j), size * 0.8f)) * m, rot);
-					DrawFunc.tri(e.x, e.y, w, size * 0.4f * m, rot + 180.0F);
+					float rot = e.rotation + rand.range(size);
+					float w = 15.0F * e.fout() * m;
+					DrawFunc.tri(e.x, e.y, w, (size + rand.range( size * 0.6f)) * m, rot);
+					DrawFunc.tri(e.x, e.y, w, size * 0.3f * m, rot + 180.0F);
 				}
 			}
 			
-			e.scaled(10.0F, (c) -> {
+			e.scaled(12.0F, (c) -> {
 				Draw.color(color.cpy().lerp(Color.white, 0.25f));
 				Lines.stroke(c.fout() * 2.0F + 0.2F);
 				Lines.circle(e.x, e.y, c.fin() * size * 0.7f);
 			});
 			
-			e.scaled(12.0F, (c) -> {
+			e.scaled(18.0F, (c) -> {
 				Draw.color(color);
 				Angles.randLenVectors(e.id, 25, 5.0F + e.fin() * size * 1.25f, e.rotation, 60.0F, (x, y) -> {
 					Fill.square(e.x + x, e.y + y, c.fout() * 3.0F, 45.0F);
@@ -362,6 +366,16 @@ public class NHFx{
 			});
 			
 			Drawf.light(e.x, e.y, e.fout() * size, color, 0.7f);
+		});
+	}
+	
+	public static Effect smoothColorCircle(Color out, float rad, float lifetime){
+		return new Effect(lifetime, rad * 2, e -> {
+			Draw.blend(Blending.additive);
+			Draw.z(Layer.effect + 0.1f);
+			float radius = e.fin(Interp.pow3Out) * rad;
+			Fill.light(e.x, e.y, circleVertices(radius), radius, Color.clear, Tmp.c1.set(out).a(e.fout(Interp.pow10Out)));
+			Draw.blend();
 		});
 	}
 	
@@ -539,6 +553,16 @@ public class NHFx{
 				DrawFunc.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
 			}
 			
+			if(NHSetting.enableDetails()){
+				Draw.blend(Blending.additive);
+				Draw.z(Layer.effect + 0.1f);
+				
+				Fill.light(e.x, e.y, circleVertices(circleRad), circleRad, Color.clear, Tmp.c1.set(Draw.getColor()).a(e.fout(Interp.pow10Out)));
+				Draw.blend();
+				Draw.z(Layer.effect);
+			}
+			
+			
 			e.scaled(120f, i -> {
 				Draw.color(Color.white, i.color, i.fin() + 0.4f);
 				Fill.circle(i.x, i.y, rad * i.fout());
@@ -582,6 +606,7 @@ public class NHFx{
 			});
 		}),
 	
+		/**{@link mindustry.entities.Effect.EffectContainer#data}<{@link Position}> as Target */
 		chainLightningFade = new Effect(45f, 500f, e -> {
 			if(!(e.data instanceof Position)) return;
 			Position p = e.data();
@@ -629,6 +654,7 @@ public class NHFx{
 			Lines.endLine();
 		}).followParent(false),
 	
+		/**{@link mindustry.entities.Effect.EffectContainer} as Target */
 		chainLightningFadeReversed = new Effect(45f, 500f, e -> {
 			if(!(e.data instanceof Position))return;
 			Position p = e.data();
@@ -877,14 +903,14 @@ public class NHFx{
 		}),
 		
 		circle = new Effect(25f, e -> {
-			color(e.color, Color.white, e.fout() * 0.75f);
-			stroke(2 * e.fout());
-			circle(e.x, e.y, e.rotation * e.fin());
+			color(e.color, Color.white, e.fout() * 0.65f);
+			stroke(Mathf.clamp(e.rotation / 18f, 2, 6) * e.fout());
+			circle(e.x, e.y, e.rotation * e.finpow());
 		}),
 	
 		 unitLandSize = (new Effect(30.0F, e -> {
 			 Draw.color(Pal.lightishGray);
-			 Angles.randLenVectors((long)e.id, 9, 3.0F + 20.0F * e.finpow(), (x, y) -> {
+			 Angles.randLenVectors(e.id, 9, 3.0F + 20.0F * e.finpow(), (x, y) -> {
 				 Fill.circle(e.x + x, e.y + y, e.fout() * e.rotation + 0.4F);
 			 });
 		})).layer(20.0F),
@@ -1233,7 +1259,18 @@ public class NHFx{
 			randLenVectors(e.id, 2, 2f + e.fin() * 7f, (x, y) -> {
 				Fill.square(e.x + x, e.y + y, 0.2f + e.fout() * 1.5f, 45);
 			});
-		}).layer(Layer.bullet + 1);
+		}).layer(Layer.bullet + 1),
+	
+		slidePoly = new Effect(60f, 600f, e -> {
+			if(!(e.data instanceof Position))return;
+			Position data = e.data();
+			
+			e.lifetime = data.dst(e.x, e.y) / 7f;
+			
+			Draw.color(e.color, Color.white, e.fout() * 0.6f);
+			Lines.stroke(4f * e.fout());
+			Lines.poly(Mathf.lerp(e.x, data.getX(), e.fin(Interp.pow2Out)), Mathf.lerp(e.y, data.getY(), e.fin(Interp.pow2Out)), 6, Math.max(10, e.rotation - 18) * e.fin() + 18);
+		});
 }
 
 

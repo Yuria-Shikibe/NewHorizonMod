@@ -30,7 +30,9 @@ import mindustry.type.SectorPreset;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
+import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
 import newhorizon.util.feature.cutscene.packets.TagPacket;
 import newhorizon.util.ui.TableFunc;
 
@@ -136,6 +138,7 @@ public class CutsceneScript{
 		
 		Net.registerPacket(TagPacket::new);
 		Net.registerPacket(EventCompletePacket::new);
+		Net.registerPacket(EventUICallPacket::new);
 		
 		mod = NewHorizon.MOD;
 		
@@ -179,14 +182,14 @@ public class CutsceneScript{
 		Events.on(EventType.SectorCaptureEvent.class, e -> {
 			if(e.sector == state.getSector()){
 				curEnder.each(c -> c.get(true));
-				CutsceneEventEntity.events.each(et -> et.eventType.removeAfterVictory, CutsceneEventEntity::remove);
+				NHGroups.events.each(et -> et.eventType.removeAfterVictory, CutsceneEventEntity::remove);
 			}
 		});
 		
 		Events.on(EventType.SectorLoseEvent.class, e -> {
 			if(e.sector == state.getSector()){
 				curEnder.each(c -> c.get(false));
-				CutsceneEventEntity.events.clear();
+				NHGroups.events.clear();
 			}
 		});
 		
@@ -409,7 +412,6 @@ public class CutsceneScript{
 	}
 	
 	protected static void exit(){
-		CutsceneEventEntity.events.clear();
 		UIActions.reset();
 		CutsceneEvent.cutsceneEvents.each((s, e) -> {
 			if(!e.cannotBeRemove)CutsceneEvent.cutsceneEvents.remove(s);

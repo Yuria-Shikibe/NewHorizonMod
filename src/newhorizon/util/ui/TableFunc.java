@@ -51,9 +51,9 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.vars.NHVars;
-import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.UIActions;
 import newhorizon.util.func.NHFunc;
@@ -73,7 +73,14 @@ public class TableFunc{
     private static Team selectTeam = Team.sharded;
     private static UnitType selected = UnitTypes.alpha;
     private static long lastToast;
-
+    
+    public static final String tabSpace = "    ";
+    public static final float LEN = 60f;
+    public static final float OFFSET = 12f;
+    public static String format(float value){return df.format(value);}
+    public static String judge(boolean value){return value ? "[heal]" + Core.bundle.get("yes") + "[]" : "[#ff7b69]" + Core.bundle.get("no") + "[]";}
+    public static String getPercent(float value){return Mathf.floor(value * 100) + "%";}
+    
     private static boolean pointValid(){
         return point.x >= 0 && point.y >= 0 && point.x <= world.width() * tilesize && point.y <= world.height() * tilesize;
     }
@@ -224,13 +231,6 @@ public class TableFunc{
         }
     }
     
-    public static final String tabSpace = "    ";
-    public static final float LEN = 60f;
-    public static final float OFFSET = 12f;
-    public static String format(float value){return df.format(value);}
-    public static String getJudge(boolean value){return value ? "[green]Yes[]" : "[red]No[]";}
-    public static String getPercent(float value){return Mathf.floor(value * 100) + "%";}
-    
     private static final Table starter = new Table(Tex.paneSolid);
     
     public static final TextArea textArea = Vars.headless ? null : new TextArea("");
@@ -326,7 +326,7 @@ public class TableFunc{
                             new BaseDialog("Debug"){{
                                 addCloseButton();
                                 cont.pane(t -> {
-                                    CutsceneEventEntity.events.each(e -> {
+                                    NHGroups.events.each(e -> {
                                         e.setupDebugTable(t);
                                         t.row();
                                     });
@@ -336,10 +336,10 @@ public class TableFunc{
                                 @Override
                                 public void hide(){
                                     super.hide();
-                                    CutsceneEventEntity.events.each(e -> !e.eventType().isHidden, e -> e.show(UIActions.eventTable()));
+                                    NHGroups.events.each(e -> !e.eventType().isHidden, e -> e.show(UIActions.eventTable()));
                                 }
                             }.show();
-                        }).disabled(b -> CutsceneEventEntity.events.isEmpty());
+                        }).disabled(b -> NHGroups.events.isEmpty());
                         t.button("Run Selection", Styles.cleart, () -> {
                             Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
                         }).disabled(b -> textArea.getSelection().isEmpty());
@@ -406,7 +406,7 @@ public class TableFunc{
             Field[] fields = typeClass.getFields();
             for(Field field : fields){
                 try{
-                    if(field.getGenericType().toString().equals("boolean")) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": ").append(getJudge(field.getBoolean(type))).append("[]")).left().row();
+                    if(field.getGenericType().toString().equals("boolean")) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": ").append(judge(field.getBoolean(type))).append("[]")).left().row();
                     if(field.getGenericType().toString().equals("float") && field.getFloat(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getFloat(type)).append("[]")).left().row();
                     if(field.getGenericType().toString().equals("int") && field.getInt(type) > 0) table.add(new StringBuilder().append("[gray]").append(field.getName()).append(": [accent]").append(field.getInt(type)).append("[]")).left().row();
                     

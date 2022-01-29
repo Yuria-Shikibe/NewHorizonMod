@@ -115,8 +115,9 @@ public class NHTechTree implements ContentList {
         addUnit(NHUnitTypes.striker, NHUnitTypes.longinus);
         add(NHUnitTypes.striker, NHUnitTypes.destruction, new EventObjective(NHSectorPresets.primaryBase));
         addUnit(NHUnitTypes.destruction, NHUnitTypes.hurricane);
-        
-        addUnit(NHUnitTypes.destruction, NHUnitTypes.anvil);
+    
+        addUnit(UnitTypes.horizon, NHUnitTypes.assaulter);
+        addUnit(NHUnitTypes.assaulter, NHUnitTypes.anvil);
         addUnit(NHUnitTypes.anvil, NHUnitTypes.collapser);
         
         addUnit(Blocks.groundFactory, NHUnitTypes.origin);
@@ -156,7 +157,7 @@ public class NHTechTree implements ContentList {
         addProduce(NHLiquids.xenBeta, NHLiquids.xenGamma);
         
         add(SectorPresets.planetaryTerminal, NHSectorPresets.primaryBase, new Objectives.SectorComplete(SectorPresets.planetaryTerminal));
-        add(NHSectorPresets.primaryBase, NHSectorPresets.ruinedWarehouse, new SpecialMap("complete-primary-base", SectorPresets.planetaryTerminal));
+        add(NHSectorPresets.primaryBase, NHSectorPresets.ruinedWarehouse, new SpecialMap("complete-primary-base", NHSectorPresets.primaryBase));
         add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.shatteredRavine, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
         add(NHSectorPresets.ruinedWarehouse, NHSectorPresets.quantumCraters, new Objectives.SectorComplete(NHSectorPresets.ruinedWarehouse));
         add(NHSectorPresets.quantumCraters, NHSectorPresets.luminariOutpost, new Objectives.SectorComplete(NHSectorPresets.quantumCraters));

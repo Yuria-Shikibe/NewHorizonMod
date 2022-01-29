@@ -1,22 +1,13 @@
 package newhorizon.expand.block.defence;
 
 import arc.Core;
-import arc.func.Boolp;
-import arc.func.Cons;
-import arc.func.Cons2;
-import arc.func.Prov;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Position;
-import arc.math.geom.QuadTree;
-import arc.math.geom.Rect;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -26,23 +17,15 @@ import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
-import newhorizon.content.NHColor;
+import newhorizon.expand.entities.GravityTrapField;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.EventListeners;
-import newhorizon.expand.vars.NHVars;
-import newhorizon.util.feature.PosLightning;
-import newhorizon.util.graphic.DrawFunc;
-import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class GravityTrap extends Block{
-	protected Cons2<HyperSpaceWarper.Carrier, GravityTrapBuild> act = (c, b) -> {
-		c.intercepted = true;
-		PosLightning.createEffect(c, b , NHColor.darkEnrColor, 2, PosLightning.WIDTH * 1.5f);
-	};
-	
 	private static Tile tmpTile;
 	
 	public int range = 35;
@@ -60,10 +43,10 @@ public class GravityTrap extends Block{
 	
 //	@Override
 //	public void drawPlace(int x, int y, int rotation, boolean valid){
-//		Seq<TrapField> seq = NHFunc.getObjects(NHVars.world.gravityTraps);
+//		Seq<GravityTrapField> seq = NHFunc.getObjects(NHVars.world.gravityTraps);
 //
 //		Draw.z(Layer.light + 5);
-//		for(TrapField bi : seq){
+//		for(GravityTrapField bi : seq){
 //			bi.draw();
 //		}
 //		Draw.z(Layer.overlayUI);
@@ -100,7 +83,7 @@ public class GravityTrap extends Block{
 	
 	public class GravityTrapBuild extends Building implements Ranged{
 		public float warmup;
-		public transient TrapField field;
+		public transient GravityTrapField field;
 		
 		@Override
 		public void write(Writes write){
@@ -136,14 +119,14 @@ public class GravityTrap extends Block{
 		
 		@Override
 		public void remove(){
-			NHVars.world.gravityTraps.remove(field);
+			NHGroups.gravityTraps.remove(field);
 			
 			super.remove();
 		}
 		
 		@Override
 		public void onRemoved(){
-			NHVars.world.gravityTraps.remove(field);
+			NHGroups.gravityTraps.remove(field);
 			
 			super.onRemoved();
 		}
@@ -177,66 +160,11 @@ public class GravityTrap extends Block{
 		public void add(){
 			super.add();
 			
-			field = new TrapField(this);
+			field = new GravityTrapField(this);
 			
-			NHVars.world.gravityTraps.insert(field);
-			EventListeners.actAfterLoad.add(() -> NHVars.world.gravityTraps.insert(field));
+			NHGroups.gravityTraps.insert(field);
+			EventListeners.actAfterLoad.add(() -> NHGroups.gravityTraps.insert(field));
 		}
 	}
 	
-	public static class TrapField implements Position, QuadTree.QuadTreeObject{
-		public Cons<TrapField> drawer = e -> {};
-		public float x = 0, y = 0;
-		public float range = 120;
-		public Boolp activated = () -> true;
-		public Prov<Team> team = () -> Team.derelict;
-		
-		public boolean active(){return activated.get();}
-		
-		public void setPosition(Position position){
-			x = position.getX();
-			y = position.getY();
-		}
-		
-		public TrapField(){
-		
-		}
-		
-		public TrapField(@NotNull GravityTrapBuild build){
-			setPosition(build);
-			activated = () -> build.active() && build.isValid();
-			team = () -> build.team;
-			range = build.range();
-		}
-		
-		public Team team(){
-			return team.get();
-		}
-		
-		public void draw(){
-			if(!active())return;
-			Draw.color(DrawFunc.markColor(team()));
-			Fill.poly(x, y, 6, range);
-		}
-		
-		@Override
-		public float getX(){
-			return x;
-		}
-		
-		@Override
-		public float getY(){
-			return y;
-		}
-		
-		@Override
-		public void hitbox(Rect out){
-			out.setSize(range * 3).setCenter(x, y);
-		}
-		
-		@Override
-		public String toString(){
-			return "TrapField{" + "pos(" + x + ", " + y + ")}";
-		}
-	}
 }

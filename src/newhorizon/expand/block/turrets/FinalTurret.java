@@ -22,9 +22,9 @@ import mindustry.graphics.MultiPacker;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
-import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.tilesize;
 
@@ -64,6 +64,7 @@ public class FinalTurret extends ItemTurret{
 		
 		outlineRadius = 0;
 		outlineIcon = false;
+		
 		
 	}
 	
@@ -181,7 +182,7 @@ public class FinalTurret extends ItemTurret{
 			Draw.rect(baseRegion, x, y);
 			Draw.color();
 			
-			Draw.z(Layer.turret + 0.1f);
+			Draw.z(Layer.power + 0.1f);
 			
 			float fin = loadProgress / reloadTime;
 			

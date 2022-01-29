@@ -36,8 +36,8 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHUpgradeDatas;
-import newhorizon.util.ui.TableFunc;
 import newhorizon.expand.interfaces.Upgraderc;
+import newhorizon.util.ui.TableFunc;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -306,7 +306,7 @@ public class UpgradeData implements Comparable<UpgradeData>{
 							index ++;
 						}
 					}).left().row();
-					table.add("[lightgray]CanUpgrade?: " + getJudge(from.canUpgrade(this)) + "[]").left().row();
+					table.add("[lightgray]CanUpgrade?: " + judge(from.canUpgrade(this)) + "[]").left().row();
 				}
 				table.row();
 			}).grow().row();

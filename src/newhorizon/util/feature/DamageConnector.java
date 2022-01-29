@@ -12,6 +12,7 @@ import mindustry.gen.Teamc;
 import mindustry.gen.Timedc;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.expand.entities.NHBaseEntity;
 
 public class DamageConnector {
 	public Color color;

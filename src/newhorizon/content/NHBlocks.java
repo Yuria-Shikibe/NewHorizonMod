@@ -82,9 +82,9 @@ import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.AdaptedContinuousLaserBulletType;
 import newhorizon.expand.bullets.AdaptedLaserBulletType;
 import newhorizon.expand.bullets.EffectBulletType;
-import newhorizon.util.feature.ScreenInterferencer;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
+import newhorizon.util.ui.ScreenInterferencer;
 
 import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
@@ -124,7 +124,7 @@ public class NHBlocks implements ContentList {
 		//Powers
 		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator, zetaGenerator,
 		//Defence
-		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator,
+		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher,
 		//Special
 		playerJumpGate, debuger, payloadEntrance, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
 		disposePowerVoid, disposePowerNode, temporaryPowerSource,
@@ -1631,6 +1631,18 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
+		fireExtinguisher = new FireExtinguisher("fire-extinguisher"){{
+			size = 3;
+			health = 920;
+			intensity = 1600;
+			
+			consumes.item(NHItems.metalOxhydrigen, 2);
+			consumes.powerCond(3f, FireExtinguisherBuild::isActive);
+			
+			requirements(Category.defense, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 120, Items.copper, 80, Items.graphite, 60));
+			NHTechTree.add(Blocks.tsunami, this);
+		}};
+		
 		ancientLaserWall = new LaserWallBlock("ancient-laser-wall"){{
 			size = 2;
 			consumes.powerCond(80f, LaserWallBuild::canActivate);
@@ -1657,7 +1669,7 @@ public class NHBlocks implements ContentList {
 				}
 			};
 			
-			requirements(Category.defense, with(NHItems.seniorProcessor, 150, NHItems.upgradeSort, 100, NHItems.zeta, 300));
+			requirements(Category.defense, with(NHItems.seniorProcessor, 250, NHItems.upgradeSort, 300, NHItems.zeta, 800));
 		}};
 		
 		laserWall = new LaserWallBlock("laser-wall"){{
@@ -2245,6 +2257,9 @@ public class NHBlocks implements ContentList {
 			));
 			
 			addSets(
+				new UnitSet(NHUnitTypes.assaulter, new byte[]{NHUnitTypes.AIR_LINE_2, 1}, 15 * 60f,
+					with(Items.silicon, 16, Items.copper, 30, NHItems.zeta, 20)
+				),
 				new UnitSet(UnitTypes.poly, new byte[]{NHUnitTypes.OTHERS, 2}, 45 * 60f,
 					with(Items.lead, 30, Items.copper, 60, Items.graphite, 45, Items.silicon, 30)
 				),

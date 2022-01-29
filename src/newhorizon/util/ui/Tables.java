@@ -3,15 +3,22 @@ package newhorizon.util.ui;
 import arc.Core;
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
+import arc.util.Strings;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.content.StatusEffects;
+import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
@@ -21,16 +28,91 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 import mindustry.world.modules.ItemModule;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.util.func.NHSetting;
 
-import static mindustry.Vars.state;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class Tables{
+	public static void ammo(Table table, String name, BulletType type, TextureRegion icon, int indent){
+		table.row();
+		
+		table.table().padTop(OFFSET);
+		table.image(icon).size(3 * 8).padRight(4).right().top();
+		if(!name.isEmpty())table.add(name).padRight(10).left().top();
+		
+		table.table(bt -> {
+			bt.left().defaults().padRight(3).left();
+			
+			if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
+				if(type.continuousDamage() > 0){
+					bt.add(Core.bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
+				}else{
+					bt.add(Core.bundle.format("bullet.damage", type.damage));
+				}
+			}
+			
+			if(type.buildingDamageMultiplier != 1){
+				sep(bt, Core.bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
+			}
+			
+			if(type.splashDamage > 0){
+				sep(bt, Core.bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
+			}
+			
+			if(!Mathf.equal(type.reloadMultiplier, 1f)){
+				sep(bt, Core.bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
+			}
+			
+			if(type.knockback > 0){
+				sep(bt, Core.bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
+			}
+			
+			if(type.healPercent > 0f){
+				sep(bt, Core.bundle.format("bullet.healpercent", Strings.autoFixed(type.healPercent, 2)));
+			}
+			
+			if(type.pierce || type.pierceCap != -1){
+				sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
+			}
+			
+			if(type.incendAmount > 0){
+				sep(bt, "@bullet.incendiary");
+			}
+			
+			if(type.homingPower > 0.01f){
+				sep(bt, "@bullet.homing");
+			}
+			
+			if(type.lightning > 0){
+				sep(bt, Core.bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
+			}
+			
+			if(type.status != StatusEffects.none){
+				sep(bt, (type.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
+			}
+			
+			if(type.fragBullet != null){
+				sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
+				bt.row();
+				
+				StatValues.ammo(ObjectMap.of(UnitTypes.block, type.fragBullet), indent + 1).display(bt);
+			}
+		}).padTop(-9).padLeft(indent * 8).left().get().background(Tex.underline);
+		
+		table.row();
+	}
+	
+	protected static void sep(Table table, String text){
+		table.row();
+		table.add(text);
+	}
+	
 	public static class LinkTable extends Table{
 		protected static float h = Core.graphics.isPortrait() ? 90f : 80f;
 		protected static float w = Core.graphics.isPortrait() ? 330f : 600f;

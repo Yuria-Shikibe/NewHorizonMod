@@ -23,8 +23,8 @@ import mindustry.gen.Tex;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import newhorizon.expand.vars.NHVars;
+import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.actions.*;
-import newhorizon.util.feature.cutscene.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
 
 import static mindustry.Vars.*;

@@ -1,5 +1,7 @@
 package newhorizon.content;
 
+import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -32,6 +34,7 @@ import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHInterp;
+import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -54,7 +57,7 @@ public class NHBullets implements ContentList{
 		strikeLaser, tear, skyFrag, hurricaneLaser, hyperBlast, hyperBlastLinker, huriEnergyCloud, warperBullet,
 		none, supSky, darkEnrLightning, darkEnrlaser, decayLaser, longLaser, rapidBomb, airRaid,
 		blastEnergyPst, blastEnergyNgt, curveBomb, strikeRocket, annMissile, collapserBullet, collapserLaserSmall, guardianBullet,
-		strikeMissile, arc_9000, empFrag, empBlot2, empBlot3, antiAirSap, eternity, airRaidMissile;
+		strikeMissile, arc_9000, empFrag, empBlot2, empBlot3, antiAirSap, eternity, airRaidMissile, destructionRocket;
 		
 	
 	public void loadFragType(){
@@ -63,6 +66,7 @@ public class NHBullets implements ContentList{
 			colorMid = NHColor.lightSkyBack;
 			
 			lifetime = 12f;
+			radius = 4f;
 			
 			trailEffect = NHFx.ultFireBurn;
 		}
@@ -75,8 +79,6 @@ public class NHBullets implements ContentList{
 			
 			@Override
 			public void update(Bullet b){
-				super.update(b);
-				
 				if(Mathf.chanceDelta(fireTrailChance)){
 					UltFire.create(b.tileOn());
 				}
@@ -920,7 +922,7 @@ public class NHBullets implements ContentList{
 					hitSound.at(hitPos, Mathf.random(0.9f, 1.1f));
 				});
 				
-				UltFire.create(b.x, b.y, splashDamageRadius * 6, b.team);
+				UltFire.createChance(b.x, b.y, splashDamageRadius * 6, 0.5f, b.team);
 			}
 			
 			@Override
@@ -1003,7 +1005,7 @@ public class NHBullets implements ContentList{
 			public void despawned(Bullet b){
 				super.despawned(b);
 				
-				UltFire.create(b, splashDamageRadius / 2f);
+				UltFire.createChance(b, splashDamageRadius / 2f, 0.5f);
 			}
 		};
 		
@@ -1532,6 +1534,112 @@ public class NHBullets implements ContentList{
 			});
 		}};
 		
+		destructionRocket = new SpeedUpBulletType(200f, NewHorizon.name("ann-missile")){{
+			velocityBegin = 4f;
+			velocityIncrease = 8f;
+			
+			absorbable = false;
+			splashDamage = damage;
+			splashDamageRadius = 20f;
+			incendAmount = 2;
+			incendChance = 0.08f;
+			incendSpread = 24f;
+			makeFire = true;
+			lifetime += 12f;
+			trailColor = NHColor.trail;
+			trailEffect = NHFx.trailToGray;
+			trailParam = 2f;
+			trailChance = 0.2f;
+			trailLength = 15;
+			trailWidth = 1.2f;
+			
+			width = 5;
+			height = 18f;
+			
+			backColor = hitColor = lightColor = lightningColor = NHColor.lightSkyBack;
+			frontColor = NHColor.lightSkyFront;
+			
+			smokeEffect = Fx.none;
+			shootEffect = Fx.none;
+			hitEffect = NHFx.blast(backColor, splashDamageRadius * 0.75f);
+			despawnEffect = NHFx.hitSparkLarge;
+			
+			collidesAir = false;
+			collides = false;
+			scaleVelocity = true;
+			
+			hitShake = despawnShake = 2f;
+			despawnSound = hitSound = Sounds.explosion;
+		}
+			
+			@Override
+			public void load(){
+				backRegion = frontRegion = Core.atlas.find(sprite + NHPixmap.PCD_SUFFIX);
+			}
+			
+			@Override
+			public void drawTrail(Bullet b){
+				if(trailLength > 0 && b.trail != null){
+					b.trail.draw(trailColor, trailWidth);
+					b.trail.drawCap(trailColor, trailWidth);
+				}
+			}
+			
+			@Override
+			public void updateTrail(Bullet b){
+				if(!headless && trailLength > 0 && b.time > 5f){
+					if(b.trail == null){
+						b.trail = new Trail(trailLength);
+					}
+					b.trail.length = trailLength;
+					b.trail.update(b.x, b.y, trailInterp.apply(b.fin()));
+				}
+			}
+			
+			@Override
+			public void draw(Bullet b){
+				drawTrail(b);
+				
+				float z = Draw.z();
+				Draw.z(Layer.flyingUnitLow - 0.2f);
+				Tmp.v1.trns(b.rotation(), height / 1.75f).add(b);
+				Drawf.shadow(Tmp.v1.x, Tmp.v1.y, height / 1.25f);
+				Draw.rect(backRegion, Tmp.v1.x, Tmp.v1.y, b.rotation() - 90);
+				Draw.z(z);
+			}
+			
+			public void hit(Bullet b, float x, float y){
+				hitEffect.at(x, y, b.rotation(), hitColor);
+				hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
+				
+				Effect.shake(hitShake, hitShake, b);
+				
+				if(splashDamageRadius > 0 && !b.absorbed){
+					Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
+					
+					if(status != StatusEffects.none){
+						Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+					}
+					
+					if(makeFire){
+						UltFire.createChance(x, y, splashDamageRadius, 0.35f, b.team);
+					}
+				}
+				
+				for(int i = 0; i < lightning; i++){
+					Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+				}
+			}
+			
+			public void hitTile(Bullet b, Building build, float initialHealth, boolean direct){
+				UltFire.create(build.tile);
+				
+				if(build.team != b.team && direct){
+					hit(b);
+				}
+			}
+		};
+		
 		annMissile = new BasicBulletType(6.6f, 80f, STRIKE){
 			@Override
 			public float range(){return 280f;}
@@ -1888,13 +1996,13 @@ public class NHBullets implements ContentList{
 				hitSound = Sounds.explosionbig;
 				hitShake = 60;
 				despawnShake = 100;
-				lightning = 18;
+				lightning = 12;
 				lightningDamage = 2000f;
 				lightningLength = 30;
 				lightningLengthRand = 50;
 				
 				status = NHStatusEffects.end;
-				statusDuration = 180f;
+				statusDuration = 1200f;
 				//					ammoMultiplier = 0.1f;
 				
 				fragBullets = 1;
@@ -1933,7 +2041,13 @@ public class NHBullets implements ContentList{
 					Fill.circle(e.x, e.y, rad * f * 0.75f);
 					
 					Drawf.light(e.x, e.y, rad * f * 2f, Draw.getColor(), 0.7f);
-				}).layer(Layer.effect + 0.001f), effect);
+				}).layer(Layer.effect + 0.001f), effect, new Effect(260, 460f, e -> {
+					Draw.blend(Blending.additive);
+					Draw.z(Layer.flyingUnit - 0.8f);
+					float radius = e.fin(Interp.pow3Out) * 230;
+					Fill.light(e.x, e.y, circleVertices(radius), radius, Color.clear, Tmp.c1.set(NHColor.darkEnrColor).a(e.fout(Interp.pow10Out)));
+					Draw.blend();
+				}));
 			}
 		};
 	}

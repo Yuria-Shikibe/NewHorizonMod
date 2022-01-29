@@ -25,12 +25,13 @@ import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import newhorizon.expand.block.special.CommandableBlock;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.block.special.CommandableBlock;
+import newhorizon.expand.entities.NHGroups;
+import newhorizon.expand.vars.NHVars;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
-import newhorizon.expand.vars.NHVars;
 import org.jetbrains.annotations.NotNull;
 
 import static mindustry.Vars.tilesize;
@@ -118,7 +119,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		@Override
 		public void setTarget(Point2 p){
 			NHVars.world.commandPos = target = p.pack();
-			for(CommandableBlockBuild build : NHVars.world.commandables){
+			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build != null && build.team == team && groupBoolf.get(this, build)){
 					build.overlap();
 				}
@@ -220,7 +221,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			if(target < 0 && NHVars.world.commandPos < 0)return;
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
-			for(CommandableBlockBuild build : NHVars.world.commandables){
+			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build != this && build != null && build.team == team && groupBoolf.get(this, build) && build.canCommand(build.target)){
 					builds.add(build);
 					DrawFunc.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
@@ -253,7 +254,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			float realSpread = 0f;
 			
 			Seq<CommandableBlockBuild> participants = new Seq<>();
-			for(CommandableBlockBuild build : NHVars.world.commandables){
+			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build.team == team && groupBoolf.get(this, build) && build.canCommand(pos) && !build.isPreparing()){
 					build.command(pos);
 					participants.add(build);

@@ -22,8 +22,8 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.graphic.DrawFunc;
 
 public class HealFieldAbility extends Ability{
 	public Color scanColor = Pal.heal;
@@ -117,6 +117,8 @@ public class HealFieldAbility extends Ability{
 		
 		if(reload >= reloadTime){
 			reload = reloadTime;
+			
+			NHFunc.extinguish(unit, range, Float.MAX_VALUE / 2);
 			
 			//noinspection SuspiciousNameCombination
 			Tmp.v1.trns(unit.rotation, spawnY, spawnX).add(unit);

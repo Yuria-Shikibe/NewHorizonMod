@@ -43,7 +43,16 @@ public class UltFire extends Fire{
 	
 	public static void create(float x, float y, Team team){
 		Tile tile = Vars.world.tile(World.toTile(x), World.toTile(y));
+		
 		if(tile != null && tile.build != null && tile.build.team != team)create(tile);
+	}
+	
+	public static void createChance(float x, float y, float range, float chance, Team team){
+		indexer.eachBlock(null, x, y, range, other -> other.team != team && Mathf.chanceDelta(chance), other -> UltFire.create(other.tile));
+	}
+	
+	public static void createChance(Teamc teamc, float range, float chance){
+		indexer.eachBlock(null, teamc.x(), teamc.y(), range, other -> other.team != teamc.team() && Mathf.chanceDelta(chance), other -> UltFire.create(other.tile));
 	}
 	
 	public static void create(float x, float y, float range, Team team){
@@ -123,10 +132,10 @@ public class UltFire extends Fire{
 				}
 				
 				if (damage) {
-					lifetime += Mathf.clamp(flammability / 8.0F, 0.1F, 0.8F) * Time.delta;
+					lifetime += Mathf.clamp(flammability / 16.0F, 0.1F, 0.5F) * Time.delta;
 				}
 				
-				if (flammability > 1.0F && (spreadTimer += Time.delta * Mathf.clamp(flammability / 5.0F, 0.5F, 2.0F)) >= 22.0F) {
+				if (flammability > 1.0F && (spreadTimer += Time.delta * Mathf.clamp(flammability / 5.0F, 0.5F, 1.0F)) >= 22.0F) {
 					spreadTimer = 0.0F;
 					Point2 p = Geometry.d4[Mathf.random(3)];
 					Tile other = Vars.world.tile(tile.x + p.x, tile.y + p.y);
@@ -135,7 +144,7 @@ public class UltFire extends Fire{
 				
 				if (flammability > 0.0F && (fireballTimer += Time.delta * Mathf.clamp(flammability / 10.0F, 0.0F, 1.5F)) >= 40.0F) {
 					fireballTimer = 0.0F;
-					NHBullets.ultFireball.createNet(Team.derelict, x, y, Mathf.random(360.0F), -1.0F, 1.0F, 1.0F);
+					NHBullets.ultFireball.createNet(Team.derelict, x, y, Mathf.random(360.0F), 1.0F, 1.0F, 1.0F);
 				}
 				
 				if ((damageTimer += Time.delta) >= 40.0F) {

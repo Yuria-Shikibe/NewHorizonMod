@@ -418,5 +418,13 @@ public class DrawFunc{
     
     public static float rotator_90(){return 90 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
     
+    public static float rotator_180(){return 180 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
+    
+    public static float rotator_360(){return 360 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
+    
     public static float cycle_100(){return Time.time % 100 / 100;}
+    
+    public static float cycle(float T){
+        return Time.time % T / T;
+    }
 }
