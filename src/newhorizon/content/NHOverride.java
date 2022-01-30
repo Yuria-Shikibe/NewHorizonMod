@@ -16,6 +16,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.production.GenericCrafter;
+import newhorizon.NewHorizon;
 
 import java.util.Arrays;
 
@@ -61,6 +62,11 @@ public class NHOverride{
 		Unit_T4.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
 		Unit_T5.each(u -> u.immunities.addAll(NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.ultFireBurn));
 		Unit_T6.each(u -> u.immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.scrambler));
+		
+		new Seq<UnitType>().and(Unit_T4.asArray()).and(Unit_T5.asArray()).filter(u -> !u.name.startsWith(NewHorizon.MOD_NAME)).each(u -> {
+			u.armor += 3;
+			u.health *= 1.1;
+		});
 		
 		Blocks.coreFoundation.health *= 5;
 		Blocks.coreNucleus.health *= 5;

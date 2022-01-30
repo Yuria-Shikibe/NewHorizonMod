@@ -11,13 +11,12 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.util.Align;
-import arc.util.Log;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.scene.style.TextureRegionDrawable;
+import arc.util.*;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.EntityGroup;
 import mindustry.entities.bullet.BulletType;
@@ -28,6 +27,8 @@ import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
 import mindustry.type.Weather;
+import mindustry.ui.Styles;
+import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.blocks.Attributes;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Stat;
@@ -130,6 +131,16 @@ public class MatterStorm extends Weather{
 				
 				t.add("[lightgray]" + Core.bundle.get("mod.ui.absorbable") + ": " + TableFunc.judge(bulletType.absorbable)).left().row();
 				t.add("[lightgray]" + Core.bundle.get("mod.ui.hittable") + ": " + TableFunc.judge(bulletType.hittable)).left().row();
+				
+				t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+				
+				if(status != null && status != StatusEffects.none && !status.isHidden())t.table(info -> {
+					info.left();
+					info.add("[lightgray]" + Core.bundle.get("content.status.name") + ": ").padRight(OFFSET);
+					info.button(new TextureRegionDrawable(status.uiIcon), Styles.clearPartiali, () -> {
+						new ContentInfoDialog().show(status);
+					}).scaling(Scaling.fit);
+				}).fill().row();
 				
 				t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
 				

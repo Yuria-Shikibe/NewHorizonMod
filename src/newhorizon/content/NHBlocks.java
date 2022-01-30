@@ -100,7 +100,7 @@ public class NHBlocks implements ContentList {
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior, jumpGatePrimary,
 		multiplePresstaniumFactory, presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
-		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory,
+		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory, metalOxhydrigenFactoryLarge,
 		sandCracker,
 		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory, irdryonVault,
 	
@@ -1403,7 +1403,7 @@ public class NHBlocks implements ContentList {
 		metalOxhydrigenFactory = new GenericCrafter("metal-oxhydrigen-factory") {
 			{
 				requirements(Category.crafting, with(Items.copper, 60, NHItems.juniorProcessor, 30, NHItems.presstanium, 25, Items.thorium, 25));
-				craftEffect = Fx.none;
+				craftEffect = NHFx.square(NHColor.lightSkyFront, 38, 3, 24, 3.2f);
 				outputItem = new ItemStack(NHItems.metalOxhydrigen, 4);
 				craftTime = 120f;
 				size = 2;
@@ -1420,6 +1420,37 @@ public class NHBlocks implements ContentList {
 				consumes.power(2f);
 			}
 		};
+		
+		metalOxhydrigenFactoryLarge = new GenericCrafter("metal-oxhydrigen-factory-large"){{
+			health = 450;
+			size = 3;
+			
+			requirements(Category.crafting, with(NHItems.multipleSteel, 50, NHItems.juniorProcessor, 60, NHItems.presstanium, 55, NHItems.zeta, 85));
+			NHTechTree.add(metalOxhydrigenFactory, this);
+			
+			itemCapacity = 40;
+			liquidCapacity = 80;
+			
+			updateEffect = new Effect(40f, 80f, e -> {
+				Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin() * 0.8f);
+				Lines.stroke(2f * e.fout());
+				Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
+			});
+			craftEffect = NHFx.square(NHColor.lightSkyFront, 38, 5, 34, 5);
+			outputItem = new ItemStack(NHItems.metalOxhydrigen, 8);
+			craftTime = 60f;
+			hasPower = hasLiquids = hasItems = true;
+			drawer = new DrawArcSmelter(){{
+				flameRad = 0.45f;
+				circleStroke = 0.8f;
+				flameRadiusMag = 0.15f;
+				flameColor = NHColor.lightSkyFront;
+				midColor = NHColor.lightSkyBack;
+			}};
+			consumes.liquid(Liquids.water, 0.25f);
+			consumes.item(Items.lead, 3);
+			consumes.power(5f);
+		}};
 		
 		thermoCoreFactory = new GenericCrafter("thermo-core-factory") {
 			{

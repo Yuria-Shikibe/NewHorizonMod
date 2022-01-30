@@ -39,6 +39,19 @@ import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class Tables{
+	private static float damage = 0;
+	
+	public static float estimateBulletDamage(BulletType type, int num){
+		damage += type.damage * num / 1.8f * Mathf.num(type.collides);
+		damage += type.splashDamage * Mathf.sqrt(type.splashDamageRadius) / tilesize / 4.0f;
+		damage += type.lightningDamage * type.lightning * (type.lightningLength + type.lightningLengthRand / 3f) / 3f;
+		if(type.fragBullet != null)damage += estimateBulletDamage(type.fragBullet, type.fragBullets);
+		
+		float r = damage;
+		damage = 0;
+		return r;
+	}
+	
 	public static void ammo(Table table, String name, BulletType type, TextureRegion icon, int indent){
 		table.row();
 		

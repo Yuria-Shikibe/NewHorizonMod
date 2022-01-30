@@ -278,6 +278,11 @@ public class RaidEvent extends CutsceneEvent{
 			
 			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
 			
+			t.add("[lightgray]" + Core.bundle.format("mod.ui.estimated-damage", Tables.estimateBulletDamage(bulletType, number)) + ": [accent]" + TableFunc.format(reloadTime / Time.toSeconds) + "[]" + Core.bundle.get("unit.seconds")).left().row();
+			
+			
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			
 			t.table(b -> Tables.ammo(b, "[lightgray]*[accent]" + number, bulletType, NHContent.raid, 0)).row();
 		}).fill().padBottom(OFFSET).left().row();
 	}
