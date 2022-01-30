@@ -24,6 +24,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Bullets;
+import mindustry.core.UI;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -278,8 +279,7 @@ public class RaidEvent extends CutsceneEvent{
 			
 			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
 			
-			t.add("[lightgray]" + Core.bundle.format("mod.ui.estimated-damage", Tables.estimateBulletDamage(bulletType, number)) + ": [accent]" + TableFunc.format(reloadTime / Time.toSeconds) + "[]" + Core.bundle.get("unit.seconds")).left().row();
-			
+			t.add("[lightgray]" + Core.bundle.format("mod.ui.estimated-max-damage", UI.formatAmount((long)(Tables.estimateBulletDamage(bulletType, number, true))))).left().row();
 			
 			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
 			
