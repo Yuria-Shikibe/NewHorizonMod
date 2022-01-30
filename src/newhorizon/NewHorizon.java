@@ -76,6 +76,7 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
+			new FeatureLog(NHBlocks.metalOxhydrigenFactoryLarge),
 			new FeatureLog(NHWeathers.quantumStorm),
 			new FeatureLog(NHWeathers.solarStorm),
 			new FeatureLog(FeatureLog.ADJUST, "Reduced the production cost of Block: " + NHBlocks.irayrondPanelFactorySmall, FeatureLog.BALANCE, NHBlocks.irayrondPanelFactorySmall),
