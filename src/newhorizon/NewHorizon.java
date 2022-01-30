@@ -214,8 +214,6 @@ public class NewHorizon extends Mod{
 								table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
 							}).bottom().growX().height(LEN).padTop(OFFSET);
 							
-							
-							
 							addCloseListener();
 						}}.show();
 					}
