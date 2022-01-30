@@ -12,6 +12,7 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
@@ -23,6 +24,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
+import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.graphic.DrawFunc;
@@ -811,7 +813,15 @@ public class NHFx{
 			Draw.color(e.color);
 			randLenVectors(e.id, 4, 20f * e.finpow(), (x, y) -> {
 				Fill.square(e.x + x, e.y + y, 4f * e.fout(), 45);
-				Drawf.light(e.x + x, e.y + y, e.fout() * 4f, e.color, 0.7f);
+				Drawf.light(e.x + x, e.y + y, e.fout() * 6f, e.color, 0.7f);
+			});
+		}),
+	
+		square45_8_45 = new Effect(45f, e-> {
+			Draw.color(e.color);
+			randLenVectors(e.id, 7, 34f * e.finpow(), (x, y) -> {
+				Fill.square(e.x + x, e.y + y, 8f * e.fout(), 45);
+				Drawf.light(e.x + x, e.y + y, e.fout() * 12f, e.color, 0.7f);
 			});
 		}),
 	
@@ -1270,7 +1280,32 @@ public class NHFx{
 			Draw.color(e.color, Color.white, e.fout() * 0.6f);
 			Lines.stroke(4f * e.fout());
 			Lines.poly(Mathf.lerp(e.x, data.getX(), e.fin(Interp.pow2Out)), Mathf.lerp(e.y, data.getY(), e.fin(Interp.pow2Out)), 6, Math.max(10, e.rotation - 18) * e.fin() + 18);
-		});
+		}),
+	
+		lightningFade = (new Effect(PosLightning.lifetime, 1200.0f, e -> {
+			if(!(e.data instanceof Seq)) return;
+			Seq<Vec2> points = e.data();
+			
+			e.lifetime = e.rotation;
+			
+			Vec2 data = points.peek(); //x -> stroke, y -> fadeOffset;
+			float stroke = data.x;
+			float fadeOffset = data.y;
+			
+			if(points.size < 2)return;
+			Draw.color(e.color);
+			for(int i = 1; i < points.size - 1; i++){
+				Draw.alpha(Mathf.clamp((float)(i + fadeOffset - e.time) / points.size));
+				Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size) * stroke);
+				Vec2 from = points.get(i - 1);
+				Vec2 to = points.get(i);
+				Lines.line(from.x, from.y, to.x, to.y, false);
+				Fill.circle(from.x, from.y, Lines.getStroke() / 2);
+			}
+			
+			Vec2 last = points.get(points.size - 2);
+			Fill.circle(last.x, last.y, Lines.getStroke() / 2);
+		})).layer(Layer.effect - 0.001f);
 }
 
 

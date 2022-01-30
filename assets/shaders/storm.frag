@@ -1,43 +1,54 @@
 #define HIGHP
 
-//shades of cryofluid
-const vec3 S1 = vec3(145.0, 96.0 , 237.0) / 255.0;
-const vec3 S2 = vec3(176.0, 130.0, 245.0) / 255.0;
-const vec3 S3 = vec3(206.0, 160.0, 255.0) / 255.0;
+#define NSCALE 100.0 / 25.3
+#define SCL 470.0
 
 
-const float p1 = S1.x * S1.z;
-const float p2 = S2.x * S2.z;
-const float p3 = S3.x * S3.z * 1.15;
+uniform vec2 u_direction;
 
-#define NSCALE 100.0 / 9.75
+uniform vec4 u_color_sec;
+uniform vec4 u_color_pri;
 
-uniform sampler2D u_texture;
+uniform mat2 u_rotator;
+uniform mat2 u_scaler;
+
 uniform sampler2D u_noise;
 
 uniform vec2 u_campos;
 uniform vec2 u_resolution;
-
-uniform vec2 u_direction;
-
 uniform float u_time;
 
 varying vec2 v_texCoords;
 
-const float mscl = 40.0;
-const float mth = 7.0;
-
 void main(){
-    vec2 c = v_texCoords.xy;
-    vec2 coords = vec2(c.x * u_resolution.x + u_campos.x, c.y * u_resolution.y + u_campos.y);
+    float btime = u_time / 1800.0;
+    float intensity = length(u_direction);
 
-    float btime = u_time / 600.0;
-    float noise = (texture2D(u_noise, (coords) / NSCALE * u_direction * length(u_direction) + vec2(btime) * u_direction).r + texture2D(u_noise, (coords) / NSCALE + vec2(btime * 1.1) * vec2(-0.8, -1.0) * u_direction).r) / 2.0;
-    vec4 color = texture2D(u_texture, c);
+    vec2 n = normalize(u_direction);
+    vec2 v = vec2(n.y, -n.x);
+    vec2 coords = v_texCoords.xy * u_resolution + u_campos;
+
+    vec2 stretch = (dot(v, coords) * v + dot(v, coords) * n / SCL / pow(intensity, 3)) / SCL;
 
 
-    color.rgb *= smoothstep(0.3, 0.8, noise);
-    color.a = texture2D(u_noise, (coords) / NSCALE + vec2(btime) * u_direction).r;
+    float noise1 = (
+        texture2D(u_noise, coords / NSCALE + stretch +
+        vec2(btime * intensity) * -n +
+        vec2(cos(btime / SCL + (coords.y + stretch.x) * 0.004) / 10.0, sin(btime / SCL * 1.5 + (coords.x + stretch.y) * 0.004) / 8.0) * n
+    ).r - texture2D(u_noise, coords / NSCALE + n * intensity + vec2(btime / 70.0) * (v + n)).r * 0.6) * 2.2;
+
+    float noise2 = texture2D(u_noise, coords / NSCALE * 1.8 + stretch -n * intensity + vec2(btime / 10.0 * sqrt(intensity)) * -n + vec2(0, sin(btime / 10.0 + coords.x * 0.008) / 18.0) * v).r;
+
+    float noise3 = texture2D(u_noise, coords / NSCALE + vec2(stretch.y, stretch.x) * v + vec2(-btime / 20.0) * n + vec2(0, sin(btime / 10.0 + coords.x * 0.008) / 18.0) * n).r;
+
+    vec4 color = u_color_pri;
+
+    color.a *= noise1 + noise2 * 1.5 - noise3 * 0.4;
+    color.rgb *= max(1 + (noise1 * (1.6 - noise3)) * 0.6 - pow(1 - color.a * 0.8, 2) * 1.4, 0.8);
+
+    color.rgb = mix(color.rgb, u_color_sec.rgb, noise2);
+    color.rgb *= max(noise2 + color.a * 0.5, 0.8);
+    color.rgb *= clamp(color.rgb, 0.758, 0.955);
 
     gl_FragColor = color;
 }

@@ -2198,6 +2198,7 @@ public class NHUnitTypes implements ContentList{
 		
 		rhino = new UnitType("rhino"){{
 			outlineColor = OColor;
+			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, StatusEffects.shocked, StatusEffects.burning, StatusEffects.melting, StatusEffects.electrified, StatusEffects.wet, StatusEffects.slow, StatusEffects.blasted);
 			defaultController = BuilderAI::new;
 			constructor = EntityMapping.map(3);
 			abilities.add(new BoostAbility());
@@ -2235,6 +2236,7 @@ public class NHUnitTypes implements ContentList{
 			outlineColor = OColor;
 			defaultController = MinerAI::new;
 			constructor = EntityMapping.map(3);
+			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, StatusEffects.shocked, StatusEffects.burning, StatusEffects.melting, StatusEffects.electrified, StatusEffects.wet, StatusEffects.slow, StatusEffects.blasted);
 			weapons.add(new RepairBeamWeapon("repair-beam-weapon-center"){{
 				y = -6.5f;
 				x = 0;
@@ -2292,7 +2294,7 @@ public class NHUnitTypes implements ContentList{
 			
 			ammoType = new PowerAmmoType();
 			
-			immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.scannerDown, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, StatusEffects.burning, StatusEffects.melting, NHStatusEffects.scrambler);
+			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.weak, NHStatusEffects.scannerDown, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, StatusEffects.burning, StatusEffects.melting, NHStatusEffects.scrambler);
 			
 			weapons.add(
 					new Weapon(){{

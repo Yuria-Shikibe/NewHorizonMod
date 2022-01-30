@@ -45,7 +45,7 @@ public class NHPlanets implements ContentList {
 
     @Override
     public void load(){
-        midantha = new Planet("midantha", Planets.sun, 3, 0.95f) {{
+        midantha = new Planet("midantha", Planets.sun, 0.95f, 3) {{
             generator = new NHModPlanetGenerator();
             
             bloom = true;

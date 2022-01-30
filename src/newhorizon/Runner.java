@@ -1,6 +1,5 @@
 package newhorizon;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
 public class Runner{
@@ -10,7 +9,7 @@ public class Runner{
 		
 		Function<String, String> s = String::toLowerCase;
 		
-		System.out.println(Arrays.toString(s.getClass().getMethods()));
+		System.out.println(1.0E10f);
 		
 		
 	}

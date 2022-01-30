@@ -46,6 +46,26 @@ public class NHSetting{
 	private static float originalZoomMin = 0.5f, originalZoomMax = 5f;
 	
 	public static boolean enableEffectDetails = false;
+	public static boolean alwaysShowGravityTrapFields = false;
+	
+	public static void updateSettingMenu(){
+		SettingsMenuDialog settingTable = Vars.ui.settings;
+		settingTable.game.row();
+		settingTable.graphics.checkPref("enableeffectdetails", true);
+		settingTable.graphics.checkPref("alwaysshowgravitytrapfields", false);
+		settingTable.game.checkPref("showeventtable", true);
+		settingTable.game.sliderPref("eventbarsoffsetx", 0, 0, 100, 4, i -> i + "%");
+		settingTable.game.sliderPref("eventbarsoffsety", 0, 0, 100, 4, i -> i + "%");
+		
+		settingTable.game.row().button("MOD: [sky]" + modMeta.displayName, new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
+			new SettingDialog().show();
+		}).size(LEN * 6f, LEN + OFFSET);
+	}
+	
+	public static void update(){
+		enableEffectDetails = Core.settings.getBool("enableeffectdetails");
+		alwaysShowGravityTrapFields = Core.settings.getBool("alwaysshowgravitytrapfields");
+	}
 	
 	static{
 		defaultKeys.put("initialized", "null version");
@@ -107,10 +127,6 @@ public class NHSetting{
 		}
 	}
 	
-	public static void update(){
-		enableEffectDetails = Core.settings.getBool("enableeffectdetails");
-	}
-	
 	public static void settingFile() throws IOException{
 		Fi fi = new Fi(Vars.modDirectory + "/new-horizon/NHSettings.properties");
 		Fi fileParent = fi.parent();
@@ -142,19 +158,6 @@ public class NHSetting{
 			versionChange = true;
 			updateProperty(modMeta.version);
 		}
-	}
-	
-	public static void updateSettingMenu(){
-		SettingsMenuDialog settingTable = Vars.ui.settings;
-		settingTable.game.row();
-		settingTable.graphics.checkPref("enableeffectdetails", true);
-		settingTable.game.checkPref("showeventtable", true);
-		settingTable.game.sliderPref("eventbarsoffsetx", 0, 0, 100, 4, i -> i + "%");
-		settingTable.game.sliderPref("eventbarsoffsety", 0, 0, 100, 4, i -> i + "%");
-		
-		settingTable.game.row().button("MOD: [sky]" + modMeta.displayName, new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
-			new SettingDialog().show();
-		}).size(LEN * 6f, LEN + OFFSET);
 	}
 	
 	private static void updateProperty(String version) throws IOException{

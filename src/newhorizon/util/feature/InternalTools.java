@@ -15,6 +15,7 @@ import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.struct.StringMap;
 import arc.util.Align;
+import arc.util.Scaling;
 import arc.util.Tmp;
 import arc.util.io.PropertiesUtils;
 import mindustry.Vars;
@@ -36,7 +37,7 @@ public class InternalTools{
 	
 	public static void showTexture(Texture texture){
 		new BaseDialog("Debug"){{
-			cont.image(Draw.wrap(texture)).fill().center();
+			cont.image(Draw.wrap(texture)).scaling(Scaling.fit).center();
 			addCloseButton();
 		}}.show();
 	}

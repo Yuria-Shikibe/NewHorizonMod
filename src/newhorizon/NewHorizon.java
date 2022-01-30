@@ -29,8 +29,8 @@ import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.Hints;
-import newhorizon.util.ui.LatestFeature;
 import newhorizon.util.ui.ScreenInterferencer;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.Tables.LinkTable;
@@ -43,7 +43,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class NewHorizon extends Mod{
 	public static final boolean DEBUGGING = false;
-	public static final boolean DEBUGGING_SPRITE = false;
+	public static final boolean DEBUGGING_SPRITE = true;
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
@@ -74,17 +74,12 @@ public class NewHorizon extends Mod{
 		new NHTechTree(),
 	};
 	
-	private static LatestFeature[] getUpdateContent(){
-		return new LatestFeature[]{
-			new LatestFeature(NHStatusEffects.stronghold),
-			new LatestFeature(NHUnitTypes.assaulter),
-			new LatestFeature(NHBlocks.fireExtinguisher),
-			new LatestFeature(NHWeathers.heavyRaid1), new LatestFeature(NHWeathers.raid1), new LatestFeature(NHWeathers.raid2), new LatestFeature(NHWeathers.intervention1),
-			new LatestFeature("Balance", "Made Unit: " + NHUnitTypes.naxos.localizedName + " Much more stronger", "Feature", NHUnitTypes.naxos),
-			new LatestFeature("New Features", "Map Events now can be simply applied to maps as Weather.", "Feature", NHContent.objective),
-			new LatestFeature("New Features", "Gravity Field now deals damage to Unit: " + NHUnitTypes.guardian.localizedName, "Feature", NHBlocks.gravityTrap),
-			new LatestFeature("New Features", "Gravity Field now can be carried on Unit: " + NHUnitTypes.saviour.localizedName, "Feature", NHUnitTypes.saviour),
-			new LatestFeature("Value Adjustments", "Slightly increased the damage and duration of Status [accent]End[]", "Balance", NHStatusEffects.end),
+	private static FeatureLog[] getUpdateContent(){
+		return new FeatureLog[]{
+			new FeatureLog(NHWeathers.quantumStorm),
+			new FeatureLog(NHWeathers.solarStorm),
+			new FeatureLog(FeatureLog.ADJUST, "Reduced the production cost of Block: " + NHBlocks.irayrondPanelFactorySmall, FeatureLog.BALANCE, NHBlocks.irayrondPanelFactorySmall),
+			new FeatureLog("A new [sky]Setting[]", "Added a new setting to keep you have the look of gravity trap's fields", FeatureLog.NEW_FEATURE, Icon.settings.getRegion()),
 		};
 	}
 	
@@ -158,7 +153,7 @@ public class NewHorizon extends Mod{
 				}).growX().fillY().padBottom(LEN).row();
 				main.pane(t -> {
 					for(int index = 0; index < getUpdateContent().length; index++){
-						LatestFeature c = getUpdateContent()[index];
+						FeatureLog c = getUpdateContent()[index];
 						t.table(Tex.pane, table -> {
 							table.table(i -> {
 								i.image(c.icon).fill();
@@ -406,12 +401,15 @@ public class NewHorizon extends Mod{
 		EntityRegister.load();
 		EventListeners.load();
 		
+		NHContent.loadModContent();
+		
 		if(!Vars.headless){
 			NHSounds.load();
 			NHShaders.init();
 		}
 		
-		NHContent.loadModContent();
+		NHContent.loadModContentLater();
+		
 		for(ContentList contentList : content)contentList.load();
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		

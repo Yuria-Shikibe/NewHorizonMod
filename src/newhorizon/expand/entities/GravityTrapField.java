@@ -1,13 +1,17 @@
 package newhorizon.expand.entities;
 
+import arc.func.Boolf2;
 import arc.func.Boolp;
 import arc.func.Prov;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.math.geom.Intersector;
 import arc.math.geom.Position;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
+import arc.struct.Seq;
 import mindustry.game.Team;
+import mindustry.gen.Hitboxc;
 import mindustry.gen.Unit;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.util.func.NHFunc;
@@ -15,8 +19,40 @@ import newhorizon.util.graphic.DrawFunc;
 import org.jetbrains.annotations.NotNull;
 
 public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
+	protected static final Seq<GravityTrapField> tmpSeq = new Seq<>();
+	protected static final Rect tmpRect = new Rect();
+	
 	public static final Runnable DRAWER = () -> {
 		for(GravityTrapField i : NHFunc.getObjects(NHGroups.gravityTraps))i.draw();
+	};
+	
+	public static final Boolf2<Team, Hitboxc> IntersectedAlly = (team, entity) -> {
+		entity.hitbox(tmpRect);
+		tmpSeq.clear();
+		NHGroups.gravityTraps.intersect(tmpRect, tmpSeq);
+//		Log.info(tmpSeq);
+		for(GravityTrapField f : tmpSeq){
+//			Log.info(Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y()));
+			
+			if(team == f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y())){
+				return true;
+			}
+		}
+	
+		return false;
+	};
+	
+	public static final Boolf2<Team, Hitboxc> IntersectedHostile = (team, entity) -> {
+		entity.hitbox(tmpRect);
+		tmpSeq.clear();
+		NHGroups.gravityTraps.intersect(tmpRect, tmpSeq);
+		for(GravityTrapField f : tmpSeq){
+			if(team != f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y())){
+				return true;
+			}
+		}
+		
+		return false;
 	};
 	
 	public float x = 0, y = 0;

@@ -7,6 +7,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
@@ -32,6 +33,7 @@ import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.Carrier;
 import newhorizon.expand.vars.TileSortMap;
@@ -188,9 +190,9 @@ public class DebugDialog extends BaseDialog{
 							table.table(Tex.buttonEdge3, t -> {
 								t.button(new TextureRegionDrawable(unit.fullIcon), Styles.cleari,LEN * 3,() -> {
 									BaseDialog d = new BaseDialog("info"){{
-										t.image(unit.fullIcon);
+										cont.image(unit.fullIcon);
 									}};
-									d.addCloseListener();
+									d.addCloseButton();
 									d.show();
 								}).grow().row();
 								t.pane(in -> in.add(unit.localizedName).height(LEN).fillX()).height(LEN).growX();
@@ -316,7 +318,10 @@ public class DebugDialog extends BaseDialog{
 						for(Content content : content.getBy(ContentType.weather)){
 							if(!(content instanceof Weather))continue;
 							Weather c = (Weather)content;
-							table.button(c.localizedName, new TextureRegionDrawable(c.fullIcon), () -> Groups.weather.add(c.create(5f))).growX().padTop(OFFSET / 2f).fillY().row();
+							table.button(c.localizedName, new TextureRegionDrawable(c.fullIcon), () -> {
+								float intensity = Mathf.random(2, 10);
+								c.create(intensity, 600);
+							}).growX().padTop(OFFSET / 2f).fillY().row();
 						}
 					}).grow().row();
 					t1.image().growX().height(OFFSET / 4).pad(OFFSET / 2).color(Pal.accent).row();
@@ -417,6 +422,10 @@ public class DebugDialog extends BaseDialog{
 			t.row();
 			
 			t.button("Add Bars", UnitInfo::addBars);
+			
+			t.row();
+			
+			t.button("see Tex", () -> InternalTools.showTexture(NHContent.smoothNoise));
 		}).grow();
 		
 		addCloseButton();

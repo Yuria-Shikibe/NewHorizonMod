@@ -1,14 +1,17 @@
 package newhorizon.content;
 
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Structs;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.content.UnitTypes;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ContinuousLaserBulletType;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
+import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
@@ -19,6 +22,45 @@ import java.util.Arrays;
 public class NHOverride{
 	public static void load(){
 		Fx.trailFade.clip = 2000;
+		
+		ObjectSet<UnitType> Unit_T1 = ObjectSet.with(
+			UnitTypes.dagger, UnitTypes.nova, UnitTypes.crawler, UnitTypes.flare, UnitTypes.mono,
+			UnitTypes.risso, UnitTypes.retusa, NHUnitTypes.origin, NHUnitTypes.sharp, NHUnitTypes.assaulter
+		);
+		
+		ObjectSet<UnitType> Unit_T2 = ObjectSet.with(
+			UnitTypes.mace, UnitTypes.pulsar, UnitTypes.atrax, UnitTypes.horizon, UnitTypes.poly,
+			UnitTypes.minke, UnitTypes.oxynoe, NHUnitTypes.thynomo, NHUnitTypes.branch, NHUnitTypes.relay
+		);
+		
+		ObjectSet<UnitType> Unit_T3 = ObjectSet.with(
+			UnitTypes.fortress, UnitTypes.quasar, UnitTypes.spiroct, UnitTypes.zenith, UnitTypes.mega,
+			UnitTypes.bryde, UnitTypes.cyerce, NHUnitTypes.aliotiat, NHUnitTypes.warper, NHUnitTypes.ghost,
+			NHUnitTypes.rhino, NHUnitTypes.gather
+		);
+		
+		ObjectSet<UnitType> Unit_T4 = ObjectSet.with(
+			UnitTypes.scepter, UnitTypes.vela, UnitTypes.arkyid, UnitTypes.antumbra, UnitTypes.quad,
+			UnitTypes.sei, UnitTypes.aegires, NHUnitTypes.tarlidor, NHUnitTypes.naxos, NHUnitTypes.striker, NHUnitTypes.zarkov
+		);
+		
+		ObjectSet<UnitType> Unit_T5 = ObjectSet.with(
+			UnitTypes.reign, UnitTypes.toxopid, UnitTypes.eclipse, UnitTypes.oct,
+			UnitTypes.omura, UnitTypes.navanax, NHUnitTypes.annihilation, NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.declining, NHUnitTypes.saviour
+		);
+		
+		ObjectSet<UnitType> Unit_T6 = ObjectSet.with(
+			NHUnitTypes.hurricane, NHUnitTypes.guardian, NHUnitTypes.anvil
+		);
+		
+		ObjectSet<UnitType> Unit_T7 = ObjectSet.with(
+			NHUnitTypes.collapser
+		);
+		
+		Unit_T3.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
+		Unit_T4.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
+		Unit_T5.each(u -> u.immunities.addAll(NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.ultFireBurn));
+		Unit_T6.each(u -> u.immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.scrambler));
 		
 		Blocks.coreFoundation.health *= 5;
 		Blocks.coreNucleus.health *= 5;

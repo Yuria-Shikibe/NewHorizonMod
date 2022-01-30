@@ -42,7 +42,7 @@ public class NHStatusEffects implements ContentList{
         }};
         
         ultFireBurn = new NHStatusEffect("ult-fire-burn"){{
-            damage = 3;
+            damage = 1.5f;
             
             color = textureColor = NHColor.lightSkyBack;
             speedMultiplier = 1.2f;

@@ -4,6 +4,17 @@ Draw.blend();
 Draw.blend(NHBlending.test3);
 Draw.blend(new Blending(Gl.blendSrcRgb, Gl.blendEquationRgb));
 
+print(NHWeathers.quantumStorm.isActive())
+Groups.weather.clear();
+NHWeathers.quantumField.create(Mathf.random(1, 2), 300);
+NHWeathers.quantumStorm.instance().windVector.rotate(5);
+
+NHWeathers.quantumStorm.create(Mathf.random(1, 2), 300);
+
+NHWeathers.quantumStorm.instance().intensity += 0.5;
+NHWeathers.quantumStorm.instance().intensity -= 0.5;
+
+
 NHGroups.events.clear();
 
 EventSamples.waveTeamRaid.setup();

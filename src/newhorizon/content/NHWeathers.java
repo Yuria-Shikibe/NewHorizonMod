@@ -6,8 +6,11 @@ import arc.struct.ObjectMap;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Items;
+import mindustry.content.StatusEffects;
 import mindustry.ctype.ContentList;
+import mindustry.gen.Sounds;
 import mindustry.gen.WeatherState;
+import mindustry.graphics.Pal;
 import mindustry.type.Weather;
 import mindustry.type.weather.ParticleWeather;
 import mindustry.world.meta.Attribute;
@@ -26,7 +29,7 @@ public class NHWeathers implements ContentList{
 			intervention1,
 	
 	
-			quantumField, quantumStorm;
+			quantumField, quantumStorm, solarStorm;
 	@Override
 	public void load(){
 		raid1 = new EventGenerator("standard-raid-1", () -> Vars.state.rules.defaultTeam, new AutoEventTrigger().setEvent(PreMadeRaids.standardRaid1));
@@ -50,14 +53,44 @@ public class NHWeathers implements ContentList{
 		}));
 		
 		quantumStorm = new MatterStorm("quantum-storm"){{
-			duration = 4 * Time.toMinutes;
-			
-			statusAir = statusGround = true;
-			status = NHStatusEffects.quantization;
+			status = NHStatusEffects.ultFireBurn;
 			statusDuration = 60f;
-			attrs.set(Attribute.light, -0.3f);
-			opacityMultiplier = 0.47f;
+			rotateBullets = true;
+			
+			buildingEmp = 3;
+			
+			textureColor = primaryColor = NHColor.darkEnrColor;
+			secondaryColor = NHColor.lightSkyBack;
 		}};
+		
+		solarStorm = new MatterStorm("solar-storm"){{
+			status = StatusEffects.melting;
+			statusDuration = 60f;
+			
+			force = 4;
+			noise = Sounds.fire;
+			
+			primaryColor = Pal.accent;
+			textureColor = secondaryColor = Pal.ammo;
+			
+			attrs.set(Attribute.heat, 2f);
+		}
+			
+//			@Override
+//			public void init(){
+//				super.init();
+//
+//
+//
+//				bulletType.fragBullet = Bullets.fireball;
+//				bulletType.fragBullets = 4;
+//				bulletType.damage = 15f;
+//				bulletType.splashDamage = 40;
+//				bulletType.splashDamageRadius = 40;
+//				bulletType.lightning = 0;
+//				bulletType.hitEffect = NHFx.lightningHitLarge;
+//			}
+		};
 		
 		quantumField = new ParticleWeather("quantum-weather"){{
 			duration = 4 * Time.toMinutes;

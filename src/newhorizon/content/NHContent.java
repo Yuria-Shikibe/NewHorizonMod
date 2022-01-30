@@ -1,6 +1,8 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.func.Cons;
+import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.Vars;
 import mindustry.ctype.Content;
@@ -16,6 +18,12 @@ public class NHContent extends Content{
 	public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
 	public static final float MATTER_STORM_LAYER = Layer.weather + 0.112f; // Making it wried
 	
+	public static Texture
+			smoothNoise, particleNoise, darkerNoise
+			
+			
+			;
+	
 	public static CacheLayer
 			quantum;
 	
@@ -26,16 +34,20 @@ public class NHContent extends Content{
 		raid, objective, fleet;
 	
 	public static void loadModContent(){
-		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum){
-//			@Override
-//			public void end(){
-//				super.end();
-//				Draw.flush();
-//				Vars.renderer.blocks.floor.beginDraw();
-//			}
-		});
+		
 		
 		new NHContent().load();
+	}
+	
+	public static void loadModContentLater(){
+		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum){
+			//			@Override
+			//			public void end(){
+			//				super.end();
+			//				Draw.flush();
+			//				Vars.renderer.blocks.floor.beginDraw();
+			//			}
+		});
 	}
 	
 	@Override
@@ -65,7 +77,33 @@ public class NHContent extends Content{
 		objective = Core.atlas.find(NewHorizon.name("objective"));
 		fleet = Core.atlas.find(NewHorizon.name("fleet"));
 		
+		
+		smoothNoise = loadTex("smooth-noise", t -> {
+			t.setFilter(Texture.TextureFilter.linear);
+			t.setWrap(Texture.TextureWrap.repeat);
+		});
+		
+		particleNoise = loadTex("particle-noise", t -> {
+			t.setFilter(Texture.TextureFilter.linear);
+			t.setWrap(Texture.TextureWrap.repeat);
+		});
+		
+		darkerNoise = loadTex("darker-noise", t -> {
+			t.setFilter(Texture.TextureFilter.linear);
+			t.setWrap(Texture.TextureWrap.repeat);
+		});
+//.png
+//		NHLoader.loadSprite("tex");
+		
 		NHUpgradeDatas.all.each(UpgradeData::load);
 		NHUpgradeDatas.all.each(UpgradeData::init);
+	}
+	
+	Texture loadTex(String name, Cons<Texture> modifier){
+		Texture tex = new Texture(NewHorizon.MOD.root.child("textures").child(name + (name.endsWith(".png") ? "" : ".png")));
+		modifier.get(tex);
+		
+		
+		return tex;
 	}
 }

@@ -2,8 +2,10 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.files.Fi;
+import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
+import arc.math.Mat;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.util.Time;
@@ -46,34 +48,65 @@ public class NHShaders{
 			
 			@Override
 			public void loadNoise(){
-//				Texture texture = Core.atlas.find(NewHorizon.name("fog")).texture;
-//				texture.setFilter(Texture.TextureFilter.linear);
-//				texture.setWrap(Texture.TextureWrap.repeat);
-//				noiseTex = texture;
-				Core.assets.load("sprites/" + textureName() + ".png", Texture.class).loaded = t -> {
-					t.setFilter(Texture.TextureFilter.linear);
-					t.setWrap(Texture.TextureWrap.repeat);
-				};
+				super.loadNoise();
+				
+				noiseTex2 = NHContent.darkerNoise;
+				noiseTex1 = NHContent.smoothNoise;
+			}
+
+			@Override
+			public Texture getTexture(){
+				return NHContent.smoothNoise;
 			}
 		};
 	}
 	
 	public static class MatterStormShader extends ModSurfaceShader{
 		public Vec2 direction = new Vec2();
+		public Color primaryColor = new Color(), secondaryColor = new Color();
+		public Mat rotator = new Mat(), scaler = new Mat();
 		
 		public MatterStormShader(String frag){
 			super(frag);
 		}
 		
+		public void applyDirection(Vec2 vec2, float scl){
+			direction.set(vec2).scl(scl);
+			rotator.setToRotation(vec2.angle());
+			scaler.setToScaling(direction);
+		}
+		
 		@Override
 		public void apply(){
 			super.apply();
+			
 			setUniformf("u_direction", direction.x, direction.y);
+			setUniformf("u_color_sec", secondaryColor);
+			setUniformf("u_color_pri", primaryColor);
+			setUniformMatrix("u_rotator", rotator);
+			setUniformMatrix("u_scaler", scaler);
+		}
+		
+		@Override
+		public String textureName(){
+			return "noise";
+		}
+		
+		@Override
+		public void loadNoise(){
+			super.loadNoise();
+			noiseTex2 = NHContent.darkerNoise;
+			noiseTex1 = NHContent.smoothNoise;
+		}
+		
+		@Override
+		public Texture getTexture(){
+			return NHContent.smoothNoise;
 		}
 	}
 	
 	public static class ModSurfaceShader extends ModShader{
-		protected Texture noiseTex;
+		protected Texture noiseTex1, noiseTex2;
 		
 		public ModSurfaceShader(String frag){
 			super("screenspace", frag);
@@ -83,6 +116,10 @@ public class NHShaders{
 		public ModSurfaceShader(String vertRaw, String fragRaw){
 			super(vertRaw, fragRaw);
 			loadNoise();
+		}
+		
+		public Texture getTexture(){
+			return null;
 		}
 		
 		public String textureName(){
@@ -103,14 +140,25 @@ public class NHShaders{
 			setUniformf("u_time", Time.time);
 			
 			if(hasUniform("u_noise")){
-				if(noiseTex == null){
-					noiseTex = Core.assets.get("sprites/" + textureName() + ".png", Texture.class);
+				if(noiseTex1 == null){
+					noiseTex1 = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
 				}
 				
-				noiseTex.bind(1);
+				noiseTex1.bind(1);
 				renderer.effectBuffer.getTexture().bind(0);
 				
 				setUniformi("u_noise", 1);
+			}
+			
+			if(hasUniform("u_noise_2")){
+				if(noiseTex2 == null){
+					noiseTex2 = Core.assets.get("sprites/" + "noise" + ".png", Texture.class);
+				}
+				
+				noiseTex2.bind(1);
+				renderer.effectBuffer.getTexture().bind(0);
+				
+				setUniformi("u_noise_2", 1);
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import arc.Events;
 import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Interval;
@@ -116,9 +117,11 @@ public class EventListeners{
 		});
 		
 		Events.run(EventType.Trigger.draw, () -> {
+			Vec2 vec2 = new Vec2().set(Vars.player);
+			
 			Building building = Vars.control.input.frag.config.getSelectedTile();
 			
-			if(control.input.block instanceof GravityTrap || (building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper))){
+			if(NHSetting.alwaysShowGravityTrapFields || control.input.block instanceof GravityTrap || (building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper))){
 				Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
 					Vars.renderer.effectBuffer.begin(Color.clear);
 					GravityTrapField.DRAWER.run();

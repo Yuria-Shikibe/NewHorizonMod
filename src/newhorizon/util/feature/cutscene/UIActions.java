@@ -510,7 +510,7 @@ public class UIActions{
 		acts[acts.length - 1] = Actions.remove();
 		
 		if(!isPlaying){
-			if(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave()){
+			if(!Vars.headless && control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave()){
 				try{
 					CutsceneScript.autosaveReload = (Float)CutsceneScript.saveReloadField.get(control.saves);
 				}catch(IllegalAccessException e){
@@ -530,7 +530,7 @@ public class UIActions{
 				public void act(float delta){
 					super.act(delta);
 					
-					if(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave()){
+					if(!Vars.headless && control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave()){
 						try{
 							CutsceneScript.saveReloadField.set(control.saves, CutsceneScript.autosaveReload * 0.95f);
 						}catch(IllegalAccessException e){
@@ -551,7 +551,7 @@ public class UIActions{
 				public boolean remove(){
 					currentActions = null;
 					
-					if(control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave())control.saves.getCurrent().save();
+					if(!headless && control.saves.getCurrent() != null && control.saves.getCurrent().isAutosave())control.saves.getCurrent().save();
 					
 					if(waitingPool.any()){
 						Time.run(60f, () -> {

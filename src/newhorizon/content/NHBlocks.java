@@ -1531,8 +1531,8 @@ public class NHBlocks implements ContentList {
 				}
 			};
 			consumes.liquid(NHLiquids.xenBeta, 0.1f);
-			consumes.items(new ItemStack(NHItems.presstanium, 8), new ItemStack(NHItems.metalOxhydrigen, 2));
-			consumes.power(12f);
+			consumes.items(new ItemStack(NHItems.presstanium, 5), new ItemStack(NHItems.metalOxhydrigen, 3));
+			consumes.power(10f);
 		}};
 		
 		multipleSurgeAlloyFactory = new GenericCrafter("multiple-surge-alloy-factory"){{
