@@ -1,15 +1,6 @@
 #define HIGHP
 
-//shades of cryofluid
-const vec3 S1 = vec3(145.0, 96.0 , 237.0) / 255.0;
-const vec3 S2 = vec3(176.0, 130.0, 245.0) / 255.0;
-const vec3 S3 = vec3(206.0, 160.0, 255.0) / 255.0;
-
 const vec4 C0 = vec4(158.0, 145.0, 255.0, 255.0) / 255.0;
-
-const float p1 = S1.x * S1.z;
-const float p2 = S2.x * S2.z;
-const float p3 = S3.x * S3.z * 1.15;
 
 #define NSCALE 100.0 / 5.75
 
@@ -37,8 +28,6 @@ void main(){
 
     vec4 color = texture2D(u_texture, c);
 
-//    color.rgb *= noise + 0.8f;
-
     float lerp = smoothstep(- wave + sin(1.15 * (coords.x + coords.y) + btime * 100.0) / 4.0, wave + 1.0 - cos(1.15 * (coords.x - coords.y) + btime * 200.0) / 4.0, noise1) - noise3;
 
 
@@ -48,7 +37,7 @@ void main(){
 
     color.rgb = mix(color.rgb, C0.rgb, noise2);
 
-    color.rgb *= lerp * 0.3 + 1 + noise2 * 0.66 - noise3;
+    color.rgb *= lerp * 0.3 + 1.0 + noise2 * 0.66 - noise3;
 
     gl_FragColor = color;
 }

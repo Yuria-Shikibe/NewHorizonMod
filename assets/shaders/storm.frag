@@ -28,7 +28,7 @@ void main(){
     vec2 v = vec2(n.y, -n.x);
     vec2 coords = v_texCoords.xy * u_resolution + u_campos;
 
-    vec2 stretch = (dot(v, coords) * v + dot(v, coords) * n / SCL / pow(intensity, 3)) / SCL;
+    vec2 stretch = (dot(v, coords) * v + dot(v, coords) * n / SCL / pow(intensity, 3.0)) / SCL;
 
 
     float noise1 = (
@@ -39,12 +39,12 @@ void main(){
 
     float noise2 = texture2D(u_noise, coords / NSCALE * 1.8 + stretch -n * intensity + vec2(btime / 10.0 * sqrt(intensity)) * -n + vec2(0, sin(btime / 10.0 + coords.x * 0.008) / 18.0) * v).r;
 
-    float noise3 = texture2D(u_noise, coords / NSCALE + vec2(stretch.y, stretch.x) * v + vec2(-btime / 20.0) * n + vec2(0, sin(btime / 10.0 + coords.x * 0.008) / 18.0) * n).r;
+    float noise3 = texture2D(u_noise, coords / NSCALE + vec2(stretch.y, stretch.x) * v + vec2(-btime / 20.0) * n + vec2(0.0, sin(btime / 10.0 + coords.x * 0.008) / 18.0) * n).r;
 
     vec4 color = u_color_pri;
 
     color.a *= noise1 + noise2 * 1.5 - noise3 * 0.4;
-    color.rgb *= max(1 + (noise1 * (1.6 - noise3)) * 0.6 - pow(1 - color.a * 0.8, 2) * 1.4, 0.8);
+    color.rgb *= max(1.0 + (noise1 * (1.6 - noise3)) * 0.6 - pow(1.0 - color.a * 0.8, 2.0) * 1.4, 0.8);
 
     color.rgb = mix(color.rgb, u_color_sec.rgb, noise2);
     color.rgb *= max(noise2 + color.a * 0.5, 0.8);

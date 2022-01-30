@@ -187,14 +187,16 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
 		Events.on(ClientLoadEvent.class, e -> {
-			Core.app.post(() -> {
+			Time.runTask(15f, () -> Core.app.post(() -> {
 				Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
 					Jval json = Jval.read(res.getResultAsString());
 					
 					String tag = json.get("tag_name").asString();
 					String body = json.get("body").asString();
 					
-					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0"))){
+					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0")) && !tag.equals(MOD.meta.version)){
+						Log.info("should show");
+						
 						new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
 							cont.table(t -> {
 								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
@@ -218,9 +220,9 @@ public class NewHorizon extends Mod{
 						}}.show();
 					}
 					
-					if(tag != null)Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
+					if(tag != null) Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
 				}, ex -> Log.err(ex.toString()));
-			});
+			}));
 			
 			Time.runTask(10f, () -> {
 				

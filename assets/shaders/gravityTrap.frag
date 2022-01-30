@@ -9,7 +9,7 @@
 
 #define ALLY vec4(0.57, 0.68, 1.0, 1.0)
 #define HOSTILE vec4(1.0, 0.44, 0.41, 1.0)
-#define BOTH vec4(1, 0.82, 0.49, 1.0)
+#define BOTH vec4(1.0, 0.82, 0.49, 1.0)
 
 uniform sampler2D u_texture;
 uniform vec2 u_texsize;
