@@ -1,6 +1,5 @@
 package newhorizon.util.feature.cutscene;
 
-import arc.Core;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Interval;
@@ -18,6 +17,7 @@ import newhorizon.expand.entities.NHBaseEntity;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
+import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
 import newhorizon.util.func.EntityRegister;
 
 import java.nio.FloatBuffer;
@@ -134,9 +134,12 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		
 		added = true;
 		
-		if(!inited && !Vars.headless)Core.app.post(() -> {
-			eventType.onCallUI(this);
-		});
+		if(Vars.net.server()){
+			if(!Vars.headless)eventType.onCallUI(this);
+			Time.runTask(12f, () -> {
+				Vars.net.send(new EventUICallPacket(this), true);
+			});
+		}
 		
 		if(!eventType.initOnce || !inited){
 			eventType.onCall(this);

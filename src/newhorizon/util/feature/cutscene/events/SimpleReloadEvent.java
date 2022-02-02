@@ -6,6 +6,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
@@ -37,8 +38,8 @@ public class SimpleReloadEvent extends CutsceneEvent{
 		e.reload += Time.delta;
 		
 		if(e.reload >= reloadTime){
-			e.act();
-			e.reload = 0;
+			if(Vars.net.server())e.actNet();
+			else if(!Vars.net.active())e.act();
 		}
 	}
 	
@@ -60,6 +61,7 @@ public class SimpleReloadEvent extends CutsceneEvent{
 	
 	@Override
 	public void triggered(CutsceneEventEntity e){
+		e.reload = 0;
 		action.run();
 	}
 	

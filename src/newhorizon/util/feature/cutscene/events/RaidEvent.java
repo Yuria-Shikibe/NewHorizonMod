@@ -106,8 +106,8 @@ public class RaidEvent extends CutsceneEvent{
 		e.reload += Time.delta;
 		
 		if(e.reload >= reloadTime){
-			e.actNet();
-			e.reload = 0;
+			if(Vars.net.server())e.actNet();
+			else if(!Vars.net.active())e.act();
 		}
 	}
 	
@@ -154,6 +154,7 @@ public class RaidEvent extends CutsceneEvent{
 	@Override
 	public void triggered(CutsceneEventEntity e){
 		if(e == null)return;
+		e.reload = 0;
 		Team team = attackerTeamFunc.get(e);
 		Position source = sourceFunc.get(e);
 		if(source == null)return;

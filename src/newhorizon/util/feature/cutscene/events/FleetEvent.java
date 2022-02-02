@@ -121,8 +121,8 @@ public class FleetEvent extends CutsceneEvent{
 		e.reload += Time.delta;
 		
 		if(e.reload >= reloadTime && !CutsceneScript.isPlayingCutscene){
-			e.act();
-			e.reload = 0;
+			if(Vars.net.server())e.actNet();
+			else if(!Vars.net.active())e.act();
 		}
 	}
 	
@@ -162,6 +162,8 @@ public class FleetEvent extends CutsceneEvent{
 	@Override
 	public void triggered(CutsceneEventEntity e){
 		Team team = teamFunc.get(e);
+		
+		e.reload = 0;
 		
 		if(!UIActions.disabled() && teamFunc.get(e) != Vars.player.team())NHSounds.alarm.play();
 		unitTypeMap.each((u, i) -> {
