@@ -8,17 +8,20 @@ import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ctype.ContentList;
 import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
+import mindustry.type.Item;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
+import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.EventListeners;
@@ -342,6 +345,18 @@ public class NewHorizon extends Mod{
 			
 		});
 		
+		handler.<Player>register("fill", "<id>", "Trigger Event (Admin Only)", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else if (args.length == 0 || args[0].isEmpty()) {
+				ItemModule module = player.team().core().items;
+				for(Item i : Vars.content.items())module.set(i, 1000000);
+			} else {
+				ItemModule module = Team.get(Integer.parseInt(args[0])).core().items;
+				for(Item i : Vars.content.items())module.set(i, 1000000);
+			}
+		});
+		
 		handler.<Player>register("events", "List all cutscene events in the map.", (args, player) -> {
 			if (NHGroups.event.isEmpty()) {
 				player.sendMessage("No Event Available");
@@ -355,7 +370,7 @@ public class NewHorizon extends Mod{
 			}
 		});
 		
-		handler.<Player>register("eventtypes", "List all cutscene event types in the map.", (args, player) -> {
+		handler.<Player>register("eventTypes", "List all cutscene event types in the map.", (args, player) -> {
 			if (CutsceneEvent.cutsceneEvents.isEmpty()) {
 				player.sendMessage("No EventTypes Available");
 			} else {
@@ -363,6 +378,19 @@ public class NewHorizon extends Mod{
 				builder.append("[accent]Events: [lightgray]\n");
 				CutsceneEvent.cutsceneEvents.each((k, e) -> {
 					builder.append(k).append("->").append(e).append('\n');
+				});
+				player.sendMessage(builder.toString());
+			}
+		});
+		
+		handler.<Player>register("eventTriggers", "List all event triggers in the map.", (args, player) -> {
+			if (NHGroups.autoEventTriggers.isEmpty()) {
+				player.sendMessage("No Trigger Available");
+			} else {
+				StringBuilder builder = new StringBuilder();
+				builder.append("[accent]Events: [lightgray]\n");
+				NHGroups.autoEventTriggers.each(e -> {
+					builder.append(e.toString()).append('\n').append(e.desc());
 				});
 				player.sendMessage(builder.toString());
 			}
@@ -420,13 +448,14 @@ public class NewHorizon extends Mod{
 			NHShaders.init();
 		}
 		
-		NHContent.loadModContentLater();
+		NHContent.loadAfterContent();
 		
 		for(ContentList contentList : content)contentList.load();
 		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
 		
 		EventSamples.load();
 		CutsceneScript.load();
+		EventListeners.loadAfterContent();
 		
 		Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }

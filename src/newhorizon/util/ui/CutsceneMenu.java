@@ -76,28 +76,7 @@ public class CutsceneMenu extends BaseDialog{
 					info.defaults().size(LEN * 3, LEN).padTop(OFFSET).align(Align.topLeft);
 					
 					info.button("@mod.ui.all-triggers", () -> {
-						new BaseDialog(""){{
-							addCloseButton();
-							
-							cont.pane(t -> {
-								occasions.each((tName, trigger) -> {
-									t.table(Tex.sideline, info -> {
-										info.add(trigger.toString()).growX().fill().row();
-										if(!CutsceneEvent.inValidEvent(trigger.eventType))info.table(Tex.button, show -> {
-											trigger.eventType.display(show);
-										}).growX().fillY().pad(OFFSET / 2f).row();
-										info.defaults().growX().height(LEN).pad(OFFSET / 2f);
-										info.button("@mod.ui.config-trigger", Icon.settings, () -> new ConfigDialog(tName, trigger, (name, o) -> {}).show()).row();
-										info.button("@waves.remove", Icon.cancel, () -> ui.showConfirm("@mod.ui.trigger-delete.confirm", () -> {
-											removeTrigger(tName);
-											info.remove();
-											updateJson();
-										}));
-									}).growX().fillY().pad(OFFSET).row();
-								});
-							}).grow();
-							
-						}}.show();
+						allTriggers().show();
 					}).disabled(b -> occasions.isEmpty()).row();
 					
 					info.button("@add", () -> {
@@ -277,6 +256,7 @@ public class CutsceneMenu extends BaseDialog{
 	public void hide(){
 		super.hide();
 		
+		Log.info(root.toString());
 		editor.tags.put(CUSTOME_EVENTS_KEY, root.toString());
 	}
 	
@@ -286,6 +266,7 @@ public class CutsceneMenu extends BaseDialog{
 		public String constructor = "//[heal]Empty Constructor.[]\n//[heal]Please Apply JavaScript If You Want To Custom An Event."; //Js Code
 		public boolean constructorError = false;
 		public Table displayEventTable = new Table();
+		public boolean fromAll = false;
 		
 		public ObjectMap<UnlockableContent, Table> added = new ObjectMap<>();
 		
@@ -468,18 +449,18 @@ public class CutsceneMenu extends BaseDialog{
 					t.defaults().align(Align.topLeft).padLeft(LEN).padRight(LEN);
 					
 					Func<Displayable, Table> displayed = d -> new Table(Tex.sideline){{
-						marginLeft(OFFSET * 1.5f);
+						left().marginLeft(OFFSET * 1.5f).marginRight(OFFSET * 1.5f);
 						if(d != null){
 							d.display(this);
 						}else this.add(Iconc.cancel + " " + Core.bundle.get("nh.cutscene.empty-event")).color(Pal.redderDust);
 					}};
 					
 					displayEventTable = displayed.get(newTrigger.eventType);
-					Table shower = t.table(Styles.black3, s -> {
+					Table shower = t.table(Tex.clear, s -> {
 						s.margin(OFFSET);
 						s.align(Align.topLeft);
 						s.defaults().align(Align.topLeft);
-						s.add(displayEventTable).growX().fillY().margin(OFFSET);
+						s.add(displayEventTable).growX().fillY().margin(OFFSET).left();
 					}).growX().fillY().get().row();
 					
 					t.row();
@@ -538,11 +519,23 @@ public class CutsceneMenu extends BaseDialog{
 							}
 						});
 					}).fillX().height(LEN - OFFSET).padTop(OFFSET / 3).margin(OFFSET).disabled(b -> !CutsceneEvent.inValidEvent(newTrigger.eventType)).row();
+					t.button("@mod.ui.event-js-export", Icon.export, () -> {
+						ui.showCustomConfirm("@preparingcontent", "@mod.ui.export-approach", "@mod.ui.export-approach.file", "@mod.ui.export-approach.clipboard", () -> {
+							platform.export((occasionName == null || occasionName.isEmpty()) ? "constructor" : (occasionName + "-consturctor"), "js", file -> {
+								file.writeString(constructor);
+							});
+						}, () -> Core.app.setClipboardText(constructor));
+					}).fillX().height(LEN - OFFSET).padTop(OFFSET / 3).margin(OFFSET).disabled(b -> constructor == null || constructor.isEmpty()).row();
+					
 					t.add("[accent]" + Iconc.warning + " " + Core.bundle.get("mod.ui.handle-event")).growX().fillY().padBottom(OFFSET).left().row();
 					t.pane(js -> {
 						js.align(Align.topLeft).background(Tex.pane);
 						js.label(() -> constructor).fill().pad(OFFSET / 2f).align(Align.topLeft).color(Color.lightGray).get().setWrap(false);
-					}).growX().fillY().visible(() -> constructor != null && !constructor.isEmpty());
+					}).growX().fillY().visible(() -> constructor != null && !constructor.isEmpty()).row();
+					
+					t.button("@mod.ui.event-js-templates", Icon.link, () -> {
+						Core.app.openURI("https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Custom-Event-JS-Templates");
+					}).size(LEN * 8, LEN - OFFSET).padTop(OFFSET / 3).margin(OFFSET).disabled(b -> constructor == null || constructor.isEmpty()).row();
 				}).growX().fillY().padBottom(LEN).row();
 				
 				table.add("@mod.ui.event-requirement").color(Color.lightGray).growX().fillY().padLeft(LEN * 2).left().padBottom(OFFSET / 2).row();
@@ -584,13 +577,16 @@ public class CutsceneMenu extends BaseDialog{
 		public boolean checkConstructor(){
 			boolean ligal = false;
 			
+			constructorError = false;
+			
 			try{
 				CutsceneEvent.eventHandled = null;
 				CutsceneScript.runJS(constructor);
 				if(CutsceneEvent.eventHandled != null && CutsceneEvent.eventHandled != CutsceneEvent.NULL_EVENT)ligal = true;
-			}catch(Throwable t){
+			}catch(Exception t){
 				Log.err(t.toString());
 				Vars.ui.showException(t);
+				constructorError = true;
 			}
 			
 			if(ligal){
@@ -599,16 +595,13 @@ public class CutsceneMenu extends BaseDialog{
 				CutsceneEvent.eventHandled = null;
 				newTrigger.eventProv = constructor;
 			}else{
-				ui.showErrorMessage("@mod.ui.apply-constructor-failed");
+				if(!constructorError)ui.showErrorMessage("@mod.ui.apply-constructor-failed");
 				constructor = "";
 			}
-			
-			constructorError = !ligal;
 			
 			return ligal;
 		}
 		
-		//
 		public <T extends UnlockableContent> void buildRequirementTable(Table table, Class<T> type, String title, Seq<T> total, Seq<OV_Pair<T>> target){
 			table.table(i -> {
 				i.image().color(Color.lightGray).padRight(OFFSET).growX().height(OFFSET / 3);
@@ -688,6 +681,12 @@ public class CutsceneMenu extends BaseDialog{
 			pane.setOverscroll(false, false);
 			table.add(pane).height(LEN * 6).fillX().left();
 		}
+		
+		@Override
+		public void hide(){
+			super.hide();
+			if(fromAll)allTriggers().show();
+		}
 	}
 	
 	public boolean removeTrigger(String name){
@@ -698,5 +697,36 @@ public class CutsceneMenu extends BaseDialog{
 	public void addTrigger(String name, AutoEventTrigger trigger){
 		occasions.put(name, trigger);
 		CCS_JsonHandler.addTrigger(name, trigger, triggers.asArray());
+	}
+	
+	public Dialog allTriggers(){
+		return new BaseDialog(""){{
+			addCloseButton();
+			
+			cont.pane(t -> {
+				occasions.each((tName, trigger) -> {
+					t.table(Tex.sideline, info -> {
+						info.add(trigger.toString()).growX().fill().row();
+						if(!CutsceneEvent.inValidEvent(trigger.eventType))info.table(Tex.button, show -> {
+							show.left();
+							trigger.eventType.display(show);
+						}).left().growX().fillY().pad(OFFSET / 2f).row();
+						info.defaults().growX().height(LEN).pad(OFFSET / 2f);
+						info.button("@mod.ui.config-trigger", Icon.settings, () -> {
+							ConfigDialog dialog = new ConfigDialog(tName, trigger, (name, o) -> {});
+							dialog.fromAll = true;
+							hide();
+							dialog.show();
+						}).row();
+						info.button("@waves.remove", Icon.cancel, () -> ui.showConfirm("@mod.ui.trigger-delete.confirm", () -> {
+							removeTrigger(tName);
+							info.remove();
+							updateJson();
+						}));
+					}).growX().fillY().pad(OFFSET).row();
+				});
+			}).grow();
+			
+		}};
 	}
 }

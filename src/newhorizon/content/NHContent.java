@@ -40,7 +40,7 @@ public class NHContent extends Content{
 		new NHContent().load();
 	}
 	
-	public static void loadModContentLater(){
+	public static void loadAfterContent(){
 		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum){
 			//			@Override
 			//			public void end(){

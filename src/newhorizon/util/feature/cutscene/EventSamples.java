@@ -15,10 +15,16 @@ import newhorizon.content.NHUnitTypes;
 import newhorizon.util.feature.cutscene.events.*;
 
 public class EventSamples{
-	public static CutsceneEvent jumpgateUnlock,
+	public static CutsceneEvent jumpgateUnlock, fleetInbound,
 			jumpgateUnlockObjective, waveTeamRaid, fleetApproaching, destroyGravityTraps, destroyReactors;
 	
 	public static void load(){
+		fleetInbound = new FleetEvent("inbuilt-inbound-fleet"){{
+			unitTypeMap = ObjectMap.of(NHUnitTypes.guardian, 3);
+			reloadTime = 30 * 60;
+			
+			removeAfterTriggered = cannotBeRemove = true;
+		}};
 		
 		destroyReactors = new DestroyObjectiveEvent("destroyReactors"){{
 			targets = e -> {
@@ -64,7 +70,7 @@ public class EventSamples{
 			unitTypeMap = ObjectMap.of(NHUnitTypes.striker, 6, NHUnitTypes.hurricane, 2, NHUnitTypes.guardian, 2);
 			
 			cannotBeRemove = true;
-			
+			removeAfterTriggered = false;
 		}};
 		
 		waveTeamRaid = new RaidEvent("waveTeamRaid"){{
@@ -75,6 +81,7 @@ public class EventSamples{
 			shootDelay = 6f;
 			bulletType = NHBullets.airRaidMissile;
 			
+			removeAfterTriggered = false;
 			cannotBeRemove = true;
 		}};
 		

@@ -14,6 +14,7 @@ import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -216,7 +217,7 @@ public class RaidEvent extends CutsceneEvent{
 		e.infoT = new Table(Tex.sideline, t -> {
 			t.table(c -> {
 				c.table(t2 -> {
-					t2.image(NHContent.raid).size(LEN - OFFSET).padLeft(OFFSET).padRight(OFFSET / 2).color(color);
+					t2.button(new TextureRegionDrawable(NHContent.raid), Styles.clearPartiali, LEN - OFFSET, this::showAsDialog).size(LEN - OFFSET).padLeft(OFFSET).padRight(OFFSET / 2).color(color);
 					t2.add("Raid").color(color);
 					t2.button("Check Target", Icon.eye, Styles.transt, () -> {
 						UIActions.checkPosition(e);

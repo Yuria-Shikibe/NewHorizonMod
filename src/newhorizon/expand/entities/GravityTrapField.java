@@ -12,6 +12,7 @@ import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Hitboxc;
+import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.util.func.NHFunc;
@@ -30,15 +31,24 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 		entity.hitbox(tmpRect);
 		tmpSeq.clear();
 		NHGroups.gravityTraps.intersect(tmpRect, tmpSeq);
-//		Log.info(tmpSeq);
 		for(GravityTrapField f : tmpSeq){
-//			Log.info(Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y()));
-			
 			if(team == f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y())){
 				return true;
 			}
 		}
 	
+		return false;
+	};
+	
+	public static final Boolf2<Teamc, Rect> IntersectedAllyRect = (team, rect) -> {
+		tmpSeq.clear();
+		NHGroups.gravityTraps.intersect(rect, tmpSeq);
+		for(GravityTrapField f : tmpSeq){
+			if(team.team() == f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, team.x(), team.y())){
+				return true;
+			}
+		}
+		
 		return false;
 	};
 	

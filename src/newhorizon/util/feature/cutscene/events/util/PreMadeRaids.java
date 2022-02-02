@@ -44,7 +44,7 @@ public class PreMadeRaids{
 		
 		
 		number = 50;
-		shootDelay = 1f;
+		shootDelay = 2f;
 		bulletType = NHBullets.hyperBlast;
 		
 		shootModifier = BulletHandler.spread2;
@@ -53,8 +53,8 @@ public class PreMadeRaids{
 	}}, deadlyRaid1 = new RaidEvent(NewHorizon.name("deadlyRaid1")){{
 		reloadTime = 60 * 60 * 4;
 		
-		number = 180;
-		shootDelay = 2f;
+		number = 140;
+		shootDelay = 18f;
 		bulletType = NHBullets.synchroThermoPst;
 		
 		shootModifier = BulletHandler.spread2;
@@ -64,7 +64,7 @@ public class PreMadeRaids{
 		reloadTime = 60 * 60 * 3;
 		
 		number = 160;
-		shootDelay = 4f;
+		shootDelay = 10f;
 		sourceSpread = 360f;
 		bulletType = NHBullets.destructionRocket;
 		

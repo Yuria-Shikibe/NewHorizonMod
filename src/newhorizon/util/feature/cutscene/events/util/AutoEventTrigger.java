@@ -2,7 +2,6 @@ package newhorizon.util.feature.cutscene.events.util;
 
 import arc.func.Cons;
 import arc.func.Prov;
-import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
@@ -23,6 +22,7 @@ import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.func.EntityRegister;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.OV_Pair;
 
 import static newhorizon.util.feature.cutscene.CCS_JsonHandler.DEFAULT;
@@ -31,10 +31,12 @@ import static newhorizon.util.feature.cutscene.CCS_JsonHandler.TEAM_DEFAULT;
 @ClientDisabled
 public class AutoEventTrigger implements Entityc, Cloneable{
 	public boolean added;
-	public transient int id = EntityGroup.nextId();
+	public transient int id = 0; //ID is given after add;
 	
 	public Prov<Team> teamProv = null;
-	public Team team;
+	public Team team = null;
+	
+	//TODO use Bits instead
 	public Seq<OV_Pair<Item>> items = new Seq<>();
 	public Seq<OV_Pair<UnitType>> units = new Seq<>();
 	public Seq<OV_Pair<Block>> buildings = new Seq<>();
@@ -42,8 +44,8 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public CutsceneEvent eventType;
 	public String eventProv = "";
 	
-	public int minTriggerWave = 8;
-	public float spacingBase = 180 * Time.toSeconds, spacingRand = 60 * Time.toSeconds;
+	public int minTriggerWave = 5;
+	public float spacingBase = 120 * Time.toSeconds, spacingRand = 120 * Time.toSeconds;
 	public boolean disposable = false;
 	
 	protected float spacing = 60;
@@ -52,7 +54,6 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public float checkSpacing = 180f;
 	
 	public AutoEventTrigger(){
-		team = null;
 		teamProv = () -> Vars.state.rules.defaultTeam;
 		eventType = CutsceneEvent.NULL_EVENT;
 	}
@@ -66,25 +67,6 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public AutoEventTrigger modify(Cons<AutoEventTrigger> modifier){
 		modifier.get(this);
 		return this;
-	}
-	
-	public AutoEventTrigger(Team team, CutsceneEvent eventType){
-		this.team = team;
-		this.eventType = eventType;
-	}
-	
-	public AutoEventTrigger(Team team, CutsceneEvent eventType, OV_Pair<Item>[] items, OV_Pair<UnitType>[] units, OV_Pair<Block>[] buildings){
-		this.team = team;
-		this.items.addAll(items);
-		this.units.addAll(units);
-		this.buildings.addAll(buildings);
-		this.eventType = eventType;
-	}
-	
-	public AutoEventTrigger(Team team, CutsceneEvent eventType, Cons<AutoEventTrigger> modifier){
-		this.team = team;
-		this.eventType = eventType;
-		modifier.get(this);
 	}
 	
 	public boolean meet(Team team){
@@ -119,9 +101,9 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 			}
 			
 			if(meet()){
-				eventType.setup();
+				eventType.setup().setEventProv(eventProv);
 				reload = 0;
-				spacing = spacingBase + Mathf.random(spacingRand);
+				spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
 				
 				if(disposable)remove();
 			}
@@ -132,9 +114,19 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public void update(){
 		reload += Time.delta;
 		
+		if(CutsceneEvent.inValidEvent(eventType))remove();
+		
 		if(reload > spacing){
 			check();
 		}
+	}
+	
+	public float getSpacing(){
+		return spacing;
+	}
+	
+	public float getReload(){
+		return reload;
 	}
 	
 	@Override public void read(Reads read){
@@ -193,11 +185,11 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 		}
 		for(int i = 0; i < units.size; i++){
 			TypeIO.writeUnitType(write, units.get(i).item);
-			write.i(items.get(i).value);
+			write.i(units.get(i).value);
 		}
 		for(int i = 0; i < buildings.size; i++){
 			TypeIO.writeBlock(write, buildings.get(i).item);
-			write.i(items.get(i).value);
+			write.i(buildings.get(i).value);
 		}
 		
 		if(eventProv.isEmpty())CutsceneEvent.writeEvent(eventType, write);
@@ -214,10 +206,12 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	@ClientDisabled
 	public void add(){
 		if(!Vars.net.client() && !added){
+			id = EntityGroup.nextId();
+			
 			Groups.all.add(this);
 			NHGroups.autoEventTriggers.add(this);
 			
-			spacing = spacingBase + Mathf.random(spacingRand);
+			spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
 			reload = 0;
 			
 			added = false;
@@ -238,7 +232,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	
 	@Override public boolean serialize(){ return true; }
 	
-	@Override public int classId(){return EntityRegister.getID(getClass());}
+	@Override public int classId(){return EntityRegister.getID(AutoEventTrigger.class);}
 	@Override public void afterRead(){ }
 	@Override public int id(){return id; }
 	@Override public void id(int id){ this.id = id; }
@@ -253,7 +247,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 			AutoEventTrigger clone = (AutoEventTrigger)super.clone();
 			
 			clone.added = false;
-			clone.id = EntityGroup.nextId();
+			clone.id = 0;
 			
 			return clone;
 		}catch(CloneNotSupportedException ignored){return null;}

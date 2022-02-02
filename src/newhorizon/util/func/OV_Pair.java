@@ -35,6 +35,14 @@ public class OV_Pair<T>{
 		return stacks;
 	}
 	
+	public static <T> Seq<OV_Pair<T>> seqWith(Object... items){
+		Seq<OV_Pair<T>> stacks = new Seq<>(items.length / 2);
+		for(int i = 0; i < items.length; i += 2){
+			stacks.add(new OV_Pair<>((T)items[i], ((Number)items[i + 1]).intValue()));
+		}
+		return stacks;
+	}
+	
 	public int getValue(){
 		return value;
 	}

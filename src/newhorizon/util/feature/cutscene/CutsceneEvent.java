@@ -20,27 +20,45 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Displayable;
 import mindustry.ui.Styles;
+import mindustry.ui.dialogs.BaseDialog;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
+import org.jetbrains.annotations.NotNull;
 
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 /**
+ * The shell of {@link CutsceneEventEntity}<p>
  *
- *
+ * @author YURIA
+ * @since 1.10.0
  *
  * */
 public class CutsceneEvent implements Cloneable, Displayable{
+	/**
+	 * All {@link CutsceneEvent} are stored here. <p>
+	 * CutsceneEvent constructed by external javascript will be removed after load another game.
+	 *
+	 * */
 	public static final ObjectMap<String, CutsceneEvent> cutsceneEvents = new ObjectMap<>();
 	public static CutsceneEvent eventHandled = null;
 	
+	/**
+	 * Get a {@link CutsceneEvent} by its name.
+	 * @return exist ? a specific Event : {@link CutsceneEvent#NULL_EVENT}.
+	 * */
+	@NotNull
 	public static CutsceneEvent get(String name){
 		if(has(name))return cutsceneEvents.get(name);
 		else return CutsceneEvent.NULL_EVENT;
 	}
 	public static boolean has(String name){return cutsceneEvents.containsKey(name);}
 	
+	/** Construct a {@link CutsceneEvent} by using external <b>JavaScript Code</b>.
+	 * @param prov JavaScript Code
+	 * */
 	public static CutsceneEvent construct(String prov){
 		eventHandled = null;
 		try{
@@ -51,19 +69,22 @@ public class CutsceneEvent implements Cloneable, Displayable{
 		}
 		CutsceneEvent eventType = eventHandled;
 		eventHandled = null;
-		return eventType;
+		return eventType == null ? NULL_EVENT : eventType;
 	}
 	
+	/** @param event To be checked event.*/
 	public static boolean inValidEvent(CutsceneEvent event){
 		return event == null || event == NULL_EVENT;
 	}
 	
+	/** A Event referred to null*/
 	public static final CutsceneEvent NULL_EVENT = new CutsceneEvent("NULL_EVENT"){{
 		removeAfterTriggered = true;
 		isHidden = true;
 		cannotBeRemove = true;
 		updatable = false;
 		drawable = false;
+		exist = e -> false;
 	}
 		
 		@Override
@@ -72,17 +93,35 @@ public class CutsceneEvent implements Cloneable, Displayable{
 		}
 	};
 	
+	/** Used for builtin events, don't use is external code.*/
 	public boolean cannotBeRemove = false;
+	
+	/** The name of the event*/
 	public String name;
 	
+	/** May will be used*/
 	public Position position;
-	public float reloadTime;
+	public float reloadTime = 180;
 	
+	/** Only run {@link CutsceneEvent#onCall(CutsceneEventEntity)} once.*/
 	public boolean initOnce = true;
+	
+	/** Whether the event will be removed after it is triggered.*/
 	public boolean removeAfterTriggered = false;
+	
+	/** Whether the event will be removed after the sector is captured.*/
 	public boolean removeAfterVictory = true;
+	
+	/** Whether the event will be showed on HUD.*/
 	public boolean isHidden = false;
-	public boolean updatable = true, drawable = false;
+	
+	/** Whether the event will be updated.*/
+	public boolean updatable = true;
+	
+	/** Whether the event will be draw.*/
+	public boolean drawable = false;
+	
+	/** Whether the event should exist.*/
 	public Func<CutsceneEventEntity, Boolean> exist = e -> true;
 	
 	protected CutsceneEvent(String name, boolean register){
@@ -99,9 +138,11 @@ public class CutsceneEvent implements Cloneable, Displayable{
 	public CutsceneEvent(){this("null", false);}
 	
 	/**
-	 * Used to generate an event entity safely and add it to the {@link mindustry.gen.Groups#all}.
+	 * Used to generate an event entity safely.<p>
 	 *
+	 * Add the event to the {@link mindustry.gen.Groups#all} and {@link NHGroups#event}.
 	 *
+	 * @return The created {@link CutsceneEventEntity}.
 	 * */
 	@SuppressWarnings("UnusedReturnValue")
 	public CutsceneEventEntity setup(){
@@ -110,10 +151,10 @@ public class CutsceneEvent implements Cloneable, Displayable{
 		entity.setType(this);
 		
 		if(!Vars.net.client())entity.add();
-		if(!UIActions.disabled()){
-			if(Vars.net.client())onCallUINet(entity);
-			onCallUI(entity);
-		}
+//		if(!UIActions.disabled()){
+//			onCallUINet(entity);
+//			onCallUI(entity);
+//		}
 		
 		return entity;
 	}
@@ -194,6 +235,7 @@ public class CutsceneEvent implements Cloneable, Displayable{
 	
 	}
 	
+	/** Used for debug table.*/
 	public void debugTable(CutsceneEventEntity e, Table table){
 		table.table(Tex.pane, t -> {
 			t.add(name + "|" + e.id).growX().fillY().row();
@@ -240,5 +282,20 @@ public class CutsceneEvent implements Cloneable, Displayable{
 	
 	public String type(){
 		return getClass().getSimpleName().isEmpty() ? getClass().getSuperclass().getSimpleName() : getClass().getSimpleName();
+	}
+	
+	public void showAsDialog(){
+		new BaseDialog("Event: " + name){{
+			cont.pane(t -> {
+				t.background(Styles.black5);
+				t.table(Tex.sideline, i -> {
+					i.left().marginLeft(OFFSET * 1.5f).marginRight(OFFSET * 1.5f);
+					i.left();
+					display(i);
+				}).fill();
+			}).grow().margin(LEN);
+			
+			addCloseButton();
+		}}.show();
 	}
 }

@@ -46,6 +46,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import mindustry.ui.Bar;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
@@ -54,6 +55,7 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.vars.NHVars;
+import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.UIActions;
 import newhorizon.util.func.NHFunc;
@@ -273,8 +275,8 @@ public class TableFunc{
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
 
         starter.update(() -> starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f));
-        starter.visible(() -> !state.isMenu() && ui.hudfrag.shown && !net.active());
-        starter.touchable(() -> !state.isMenu() && ui.hudfrag.shown && !net.active() ? Touchable.enabled : Touchable.disabled);
+        starter.visible(() -> !state.isMenu() && ui.hudfrag.shown && !net.client());
+        starter.touchable(() -> !state.isMenu() && ui.hudfrag.shown && !net.client() ? Touchable.enabled : Touchable.disabled);
         
         Player player = Vars.player;
         
@@ -321,9 +323,49 @@ public class TableFunc{
                     row();
                     table(t -> {
                         t.defaults().height(LEN).growX().pad(OFFSET / 2f);
-                        t.button("Try Run From Clipboard", Styles.cleart, () -> {
-                            Core.app.post(() -> CutsceneScript.runJS(Core.app.getClipboardText()));
-                        }).disabled(b -> Core.app.getClipboardText() == null || Core.app.getClipboardText().isEmpty());
+                        t.button("All Triggers", Styles.cleart, () -> {
+                            new BaseDialog(""){{
+                                addCloseButton();
+        
+                                cont.pane(t -> {
+                                    NHGroups.autoEventTriggers.each(trigger -> {
+                                        t.table(Tex.sideline, info -> {
+                                            info.defaults().left().growX().fillY().pad(OFFSET / 2f);
+                                            info.add(trigger.toString()).row();
+                                            if(!CutsceneEvent.inValidEvent(trigger.eventType))info.table(Tex.buttonEdge3, show -> {
+                                                show.left();
+                                                trigger.eventType.display(show);
+                                            }).row();
+                                            info.table(Tex.buttonEdge3, show -> {
+                                                show.defaults().growX().fillY().pad(OFFSET / 2f).left();
+                                                show.table(d -> {
+                                                    d.left();
+                                                    d.defaults().left().growX().fillY();
+                                                    trigger.items.each(p -> {
+                                                        d.add(new IconNumDisplay(p.item.fullIcon, p.value, p.item.localizedName)).row();
+                                                    });
+                                                    trigger.units.each(p -> {
+                                                        d.add(new IconNumDisplay(p.item.fullIcon, p.value, p.item.localizedName)).row();
+                                                    });
+                                                    trigger.buildings.each(p -> {
+                                                        d.add(new IconNumDisplay(p.item.fullIcon, p.value, p.item.localizedName)).row();
+                                                    });
+                                                }).row();
+                                                show.add("[lightgray]Min Spawn Wave [accent]" + trigger.minTriggerWave).row();
+                                                show.add("[lightgray]BaseSpacing [accent]" + trigger.spacingBase / Time.toMinutes).row();
+                                                show.add("[lightgray]RandSpacing [accent]" + trigger.spacingRand / Time.toMinutes).row();
+                                                show.add("[lightgray]Disposable: " + judge(trigger.disposable)).row();
+                                                show.label(() -> "[lightgray]Reload: [accent]" + format(trigger.getReload() / Time.toMinutes)).row();
+                                                show.label(() -> "[lightgray]Spacing: [accent]" + format(trigger.getSpacing() / Time.toMinutes)).row();
+                                                show.add(new Bar("Ratio", Pal.accent, () -> trigger.getReload() / trigger.getSpacing())).height(48).row();
+                                                show.label(() -> "[lightgray]Meet: [accent]" + judge(trigger.meet())).row();
+                                            }).row();
+                                        }).growX().fillY().pad(OFFSET).row();
+                                    });
+                                }).grow();
+        
+                            }}.show();
+                        }).disabled(b -> NHGroups.autoEventTriggers.isEmpty());
                         t.button("Debug Events", Styles.cleart, () -> {
                             new BaseDialog("Debug"){{
                                 addCloseButton();

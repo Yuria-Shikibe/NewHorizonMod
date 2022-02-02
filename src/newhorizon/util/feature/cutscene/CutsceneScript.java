@@ -40,8 +40,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 
 import static mindustry.Vars.*;
-import static newhorizon.util.ui.TableFunc.LEN;
-import static newhorizon.util.ui.TableFunc.OFFSET;
 
 /**
  *
@@ -200,7 +198,7 @@ public class CutsceneScript{
 				field.setAccessible(true);
 				menu = (BaseDialog)field.get(ui.editor);
 				
-				menu.cont.row().button("@mod.ui.cutscene-menu", new TextureRegionDrawable(NHContent.objective), LEN - OFFSET, () -> {
+				menu.cont.row().button("@mod.ui.cutscene-menu", new TextureRegionDrawable(NHContent.icon), 30, () -> {
 					new CutsceneMenu().show();
 				}).size(180f * 2 + 10f, 60f);
 			}catch(IllegalAccessException | NoSuchFieldException ex){
@@ -313,17 +311,20 @@ public class CutsceneScript{
 		
 		curSectorPreset = sector;
 		
-		if(state.map.hasTag(CUSTOME_EVENTS_KEY)){
-			try{
-				runEventOnce("SetUpTriggers", () -> {
-					CCS_JsonHandler.generators(Jval.read(state.map.tags.get(CUSTOME_EVENTS_KEY))).each((n, t) -> {
-						t.add();
+		Core.app.post(() -> {
+			if(state.map.hasTag(CUSTOME_EVENTS_KEY)){
+				try{
+					runEventOnce("SetUpTriggers", () -> {
+						CCS_JsonHandler.generators(Jval.read(state.map.tags.get(CUSTOME_EVENTS_KEY))).each((n, t) -> {
+							t.add();
+						});
 					});
-				});
-			}catch(Exception e){
-				Log.err(e);
+				}catch(Exception e){
+					ui.showException(e);
+				}
 			}
-		}
+		});
+		
 		
 		if(sector != null){
 			if(updaters.containsKey(sector)){

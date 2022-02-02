@@ -76,7 +76,7 @@ public class InternalTools{
 								}else{
 									preview.put(k + " = " + v, Pal.heal);
 									original.put(k + " = " + v, new Color().set(Color.lightGray).a(0));
-									toStorage.add(k + " = <TODO>" + v);
+									toStorage.add(k + " = TODO" + v);
 								}
 							});
 							

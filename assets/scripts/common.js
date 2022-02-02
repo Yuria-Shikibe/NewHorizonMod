@@ -10,8 +10,9 @@ NHWeathers.quantumStorm.create(_,_);
 
 NHWeathers.quantumStorm.create(Mathf.random(__,__),__);
 Groups.weather.clear();
-NHWeathers.quantumStorm.create(4,1800);
+NHWeathers.solarStorm.create(4,1800);
 
+NHGroups.autoEventTriggers.each(cons(e=>Log.info(e.meet())))
 
 NHWeathers.quantumStorm.instance().intensity+=0.5;
 NHWeathers.quantumStorm.instance().intensity-=0.5;
@@ -22,7 +23,10 @@ NHGroups.event.clear();
 NHGroups.event.getByID(ID)
 
 EventSamples.waveTeamRaid.setup();
+EventSamples.fleetInbound.setup()
 EventSamples.jumpgateUnlock.setup()
+
+Log.info
 
 PreMadeRaids.raid2.setup().set(__*8,__*8)
 

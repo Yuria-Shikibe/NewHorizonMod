@@ -1,8 +1,10 @@
 package newhorizon.util.feature.cutscene;
 
+import arc.Core;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Interval;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -58,6 +60,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	
 	/** What the entity display on your HUD*/
 	protected CutsceneEvent eventType = CutsceneEvent.NULL_EVENT;
+	protected String eventProv = "";
 	
 	/** Used for events that need a reloading time*/
 	public float reload;
@@ -87,6 +90,15 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		return (T)data;
 	}
 	
+	
+	public String getEventProv(){
+		return eventProv;
+	}
+	
+	public CutsceneEventEntity setEventProv(String eventProv){
+		this.eventProv = eventProv;
+		return this;
+	}
 	
 	@Override
 	public void update(){
@@ -122,6 +134,10 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		
 		added = true;
 		
+		if(!inited && !Vars.headless)Core.app.post(() -> {
+			eventType.onCallUI(this);
+		});
+		
 		if(!eventType.initOnce || !inited){
 			eventType.onCall(this);
 			inited = true;
@@ -145,8 +161,13 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		}
 		
 		inited = reads.bool();
-		eventType = CutsceneEvent.readEvent(reads);
+		eventProv = reads.str();
 		
+		
+		if(eventProv.isEmpty())eventType = CutsceneEvent.readEvent(reads);
+		else eventType = CutsceneEvent.construct(eventProv);
+		
+		if(eventType == CutsceneEvent.NULL_EVENT)Log.err("NULL EVENT READ");
 		setType(eventType);
 		
 		eventType.read(this, reads);
@@ -168,7 +189,8 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		}
 		
 		writes.bool(inited);
-		CutsceneEvent.writeEvent(eventType, writes);
+		writes.str(eventProv);
+		if(eventProv.isEmpty())CutsceneEvent.writeEvent(eventType, writes);
 		
 		eventType.write(this, writes);
 	}
@@ -217,7 +239,9 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		y = reads.f();
 		
 		inited = reads.bool();
-		eventType = CutsceneEvent.get(reads.str());
+		eventProv = reads.str();
+		if(!eventProv.isEmpty())eventType = CutsceneEvent.construct(eventProv);
+		else eventType = CutsceneEvent.get(reads.str());
 		
 		eventType.read(this, reads);
 	}
@@ -226,7 +250,8 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		writes.f(y);
 		
 		writes.bool(inited);
-		writes.str(eventType.name);
+		writes.str(eventProv);
+		if(eventProv.isEmpty())writes.str(eventType.name);
 		
 		eventType.write(this, writes);
 	}

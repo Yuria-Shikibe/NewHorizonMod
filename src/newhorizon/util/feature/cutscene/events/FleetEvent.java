@@ -13,6 +13,7 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
@@ -37,6 +38,7 @@ import mindustry.ui.Styles;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
@@ -52,23 +54,6 @@ public class FleetEvent extends CutsceneEvent{
 	public ObjectMap<UnitType, Number> unitTypeMap = ObjectMap.of();
 	public Func<CutsceneEventEntity, Team> teamFunc = e -> Vars.state.rules.waveTeam;
 	
-	public Func<CutsceneEventEntity, Position> targetFunc = e -> {
-		Rand rand = NHFunc.rand;
-		rand.setSeed(e.id);
-		
-		Building b = null;
-		
-		int times = 0;
-		
-		Team team = teamFunc.get(e);
-		Seq<Building> all = new Seq<>(Groups.build.size());
-		Groups.build.copy(all);
-		all.remove(bi -> bi.team == team);
-		if(all.any())b = all.get(rand.random(all.size - 1));
-		
-		return new Vec2().set(b == null ? Vec2.ZERO : b);
-	};
-	
 	public Func<CutsceneEventEntity, Position> sourceFunc = e -> {
 		Team team = teamFunc.get(e);
 		CoreBlock.CoreBuild coreBuild = team.core();
@@ -81,10 +66,42 @@ public class FleetEvent extends CutsceneEvent{
 		return Geometry.findFurthest(coreBuild.x, coreBuild.y, Vars.state.rules.waveTeam.cores());
 	};
 	
+	public Func<CutsceneEventEntity, Position> targetFunc = e -> {
+		Rand rand = NHFunc.rand;
+		rand.setSeed(e.id);
+		
+		Building b = null;
+		
+		int times = 0;
+		
+		Team team = teamFunc.get(e);
+		Position source = sourceFunc.get(e);
+		
+		Seq<Building> all = new Seq<>(Groups.build.size());
+		Groups.build.copy(all);
+		all.remove(bi -> bi.team == team);
+		
+		while(b == null && all.any()){
+			int index = rand.random(all.size - 1);
+			b = all.get(index);
+			
+			if(GravityTrapField.IntersectedAllyRect.get(b, Tmp.r1.setSize(4).setCenter(b.x, b.y))){
+				all.remove(index);
+				b = null;
+			}
+		}
+		
+		Vec2 t = new Vec2();
+		if(b != null)t.set(b);
+		if(all.isEmpty())t.set(source);
+		
+		return t;
+	};
+	
 	public Func<CutsceneEventEntity, Float> angle = e -> {
 		Position source = sourceFunc.get(e), target = targetFunc.get(e);
 		if(source == null || target == null)return 45f;
-		else return target.angleTo(source);
+		else return target.angleTo(source) - 180;
 	};
 	
 	public float spawnDelay = 30f;
@@ -196,7 +213,7 @@ public class FleetEvent extends CutsceneEvent{
 		e.infoT = new Table(Tex.sideline, t -> {
 			t.table(c -> {
 				c.table(t2 -> {
-					t2.image(NHContent.fleet).size(LEN - OFFSET).padLeft(OFFSET).padRight(OFFSET / 2).color(color);
+					t2.button(new TextureRegionDrawable(NHContent.fleet), Styles.clearPartiali, LEN - OFFSET, this::showAsDialog).size(LEN - OFFSET).padLeft(OFFSET).padRight(OFFSET / 2).color(color);
 					t2.add("INTERVENE").color(color);
 					t2.button("Check Target", Icon.eye, Styles.transt, () -> {
 						UIActions.checkPosition(e);

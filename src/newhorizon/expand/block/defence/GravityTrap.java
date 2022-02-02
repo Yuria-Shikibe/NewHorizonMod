@@ -48,9 +48,7 @@ public class GravityTrap extends Block{
 		super.setStats();
 		stats.add(Stat.range, range, StatUnit.blocks);
 		stats.add(Stat.output, (t) -> {
-			t.table(i -> {
-				i.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
-			}).growX().fillY().row();
+			t.row().left();
 			t.table(i -> {
 				i.image().size(LEN).color(Pal.lancerLaser).left();
 				i.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).growX().padLeft(OFFSET / 2).row();
@@ -59,6 +57,15 @@ public class GravityTrap extends Block{
 				i.image().size(LEN).color(Pal.redderDust).left();
 				i.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).growX().padLeft(OFFSET / 2).row();
 			}).padTop(OFFSET).growX().fillY().row();
+		});
+		stats.add(Stat.abilities, t -> {
+			t.table(table -> {
+				table.left();
+				table.defaults().fill().pad(OFFSET / 3).left();
+				table.add("- " + Core.bundle.get("mod.ui.gravity-trap.ability-1")).row();
+				table.add("- " + Core.bundle.get("mod.ui.gravity-trap.ability-2")).row();
+				table.add("- " + Core.bundle.get("mod.ui.gravity-trap.ability-3")).row();
+			}).fill();
 		});
 	}
 	

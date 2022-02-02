@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import mindustry.Vars;
@@ -34,7 +33,7 @@ public class SignalEvent extends CutsceneEvent{
 	
 	public SignalEvent(String name){
 		super(name);
-		position = new Vec2(0, 0);
+		position = null;
 		reloadTime = 300f;
 		
 		removeAfterTriggered = true;
@@ -87,7 +86,7 @@ public class SignalEvent extends CutsceneEvent{
 	
 	@Override
 	public void onCall(CutsceneEventEntity e){
-		e.set(position);
+		if(position != null)e.set(position);
 	}
 	
 	@Override

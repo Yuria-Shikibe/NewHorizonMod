@@ -73,11 +73,12 @@ public class NHUnitTypes implements ContentList{
 	public static Weapon pointDefenceWeaponC;
 	
 	public static UnitType
-			guardian, gather, anvil,
-			saviour, assaulter,
-			sharp, branch, warper, striker, annihilation, sin, hurricane, collapser, longinus,
-			origin, thynomo, aliotiat, tarlidor, destruction, naxos,
-			relay, ghost, zarkov, declining, rhino;
+			guardian, //Energy
+			gather, saviour, rhino, //Air-Assist
+			assaulter, anvil, collapser, //Air-2
+			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
+			sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
+			relay, ghost, zarkov, declining; //Navy
 	
 	static{
 		EntityMapping.nameMap.put(NewHorizon.name("declining"), EntityMapping.idMap[20]);

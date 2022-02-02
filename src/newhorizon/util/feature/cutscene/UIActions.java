@@ -161,7 +161,11 @@ public class UIActions{
 			pane.setFadeScrollBars(true);
 			pane.setupFadeScrollBars(0.15f, 0.25f);
 			
-			exited(() -> getScene().unfocus(this));
+			exited(() -> {
+				if(getScene() != null)getScene().unfocus(this);
+			});
+			
+			
 			
 			Table grabber = new Table(Tex.button){{
 				image(Icon.move).center();

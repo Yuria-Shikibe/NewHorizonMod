@@ -33,6 +33,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.feature.PosLightning;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
@@ -189,7 +190,8 @@ public class NHBullets implements ContentList{
 			@Override
 			public void init(Bullet b) {
 				super.init(b);
-				b.vel.rotate(Mathf.range(180));
+				
+				b.vel.rotate(NHFunc.rand(b.id).random(360));
 			}
 			
 			

@@ -58,9 +58,6 @@ public class EntityRegister{
 			});
 			Log.info("\\\\=============================================//");
 		}
-		
-		
-		needIdClasses.clear();
 	}
 	
 	public static class ProvSet{
