@@ -316,7 +316,7 @@ public class NHFx{
 	}
 	
 	public static Effect instBombSize(Color color, int num, float size){
-		return new Effect(15.0F, size * 1.5f, e -> {
+		return new Effect(22.0F, size * 1.5f, e -> {
 			Draw.color(color);
 			Lines.stroke(e.fout() * 4.0F);
 			Lines.circle(e.x, e.y, 4.0F + e.finpow() * size / 4f);

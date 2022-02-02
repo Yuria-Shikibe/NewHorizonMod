@@ -25,7 +25,7 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 	
 	/** Whether add the spawn point of the bullet to the trail seq.*/
 	public boolean addBeginPoint = false;
-	public boolean hitShowTrail = false;
+	public boolean hitShowTrail = true;
 	
 	public TrailFadeBulletType(){
 		super();

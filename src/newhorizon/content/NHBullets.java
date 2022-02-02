@@ -1032,7 +1032,8 @@ public class NHBullets implements ContentList{
 			hitEffect = NHFx.instHit(lightningColor);
 			smokeEffect = Fx.smokeCloud;
 			trailEffect = NHFx.instTrail(lightningColor, 40, true);
-			despawnEffect = new OptionalMultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));lightningDamage = damage / 7;
+			despawnEffect = new OptionalMultiEffect(NHFx.instBomb(lightningColor), NHFx.crossBlast(lightningColor));
+			lightningDamage = damage / 7;
 			buildingDamageMultiplier = 1.25f;
 			hitShake = 8f;
 			knockback = 14f;
