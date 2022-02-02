@@ -6,7 +6,9 @@ Draw.blend(new Blending(Gl.blendSrcRgb, Gl.blendEquationRgb));
 
 print(NHWeathers.quantumStorm.isActive())
 Groups.weather.clear();
-NHWeathers.quantumStorm.create(_,_);
+NHWeathers.quantumStorm.create(1,1800);
+
+
 
 NHWeathers.quantumStorm.create(Mathf.random(__,__),__);
 Groups.weather.clear();
@@ -26,19 +28,20 @@ EventSamples.waveTeamRaid.setup();
 EventSamples.fleetInbound.setup()
 EventSamples.jumpgateUnlock.setup()
 
-Log.info
+PreMadeRaids.deadlyRaid3.setup()
 
+CutsceneEvent.get("inbuilt-inbound-server-1").setup()
 PreMadeRaids.raid2.setup().set(__*8,__*8)
 
-for(var i=0;i<20;i++)PreMadeRaids.deadlyRaid2.setup();
+for(var i=0;i<3;i++)PreMadeRaids.deadlyRaid2.setup();
 
 Time.run(120, run(() => UIActions.skip()));
 
 Groups.build.each(boolf(b => b.team != Team.sharded && !(b instanceof CoreBlock.CoreBuild)), cons(b => {Time.run(Mathf.random(900), run(() => {b.kill();}));}));
 
-Groups.build.each(boolf(b => !(b instanceof CoreBlock.CoreBuild)), cons(b => {Time.run(Mathf.random(900), run(() => {b.kill();}));}));
+Groups.build.each(boolf(b =>!(b instanceof CoreBuild)),cons(b=>Time.run(Mathf.random(900),run(()=>b.kill())));
 
-Groups.build.each(cons(b=>Time.run(Mathf.random(___),run(()=>b.kill()))));
+Groups.build.each(cons(b=>Time.run(Mathf.random(900),run(()=>b.kill()))));
 
 TriggerGenerator.setToDefault(PreMadeRaids.standardRaid1);
 TriggerGenerator.Item_50SurgeAlloy();

@@ -5,6 +5,7 @@ import arc.func.Cons;
 import arc.func.Prov;
 import arc.struct.Seq;
 import arc.util.Interval;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -59,11 +60,12 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public static float timeScale = 1;
 	
 	public static void setScale(float f){
+		Log.info("Set: " + f);
 		Core.settings.put(SPEED_SCL_KEY, f);
 	}
 	
 	public static float getScale(){
-		return Core.settings.getFloat(SPEED_SCL_KEY, 1);
+		return Core.settings.getFloat(SPEED_SCL_KEY, 0.675f);
 	}
 	
 	public AutoEventTrigger(){

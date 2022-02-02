@@ -1,6 +1,6 @@
 package newhorizon.expand.entities;
 
-import arc.Core;
+import arc.math.Mathf;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.struct.ObjectMap;
@@ -9,6 +9,7 @@ import arc.struct.OrderedSet;
 import mindustry.Vars;
 import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
+import mindustry.gen.Groups;
 import newhorizon.expand.block.special.CommandableBlock;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
@@ -30,6 +31,7 @@ public class NHGroups{
 	}
 	
 	public static void update(){
-		AutoEventTrigger.timeScale = Core.settings.getFloat(AutoEventTrigger.SPEED_SCL_KEY);
+		AutoEventTrigger.timeScale = AutoEventTrigger.getScale();
+		if(Vars.headless)AutoEventTrigger.timeScale *= Mathf.curve(Groups.player.size(), 1.125f, 7.5f);
 	}
 }

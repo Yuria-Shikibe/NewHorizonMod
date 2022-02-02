@@ -319,7 +319,7 @@ public class MatterStorm extends Weather{
 	
 	@Override
 	public WeatherState create(float intensity, float duration){
-		UIActions.actionSeqMinor(UIActions.labelAct(Core.bundle.format("nh.cutscene.event.incoming", localizedName), 1, 1.5f, Interp.fade, t -> {
+		if(!Vars.headless)UIActions.actionSeqMinor(UIActions.labelAct(Core.bundle.format("nh.cutscene.event.incoming", localizedName), 1, 1.5f, Interp.fade, t -> {
 			t.image(Icon.warning).scaling(Scaling.fit).padRight(OFFSET);
 			t.image(uiIcon).scaling(Scaling.fit).padRight(OFFSET);
 		}));
@@ -361,9 +361,9 @@ public class MatterStorm extends Weather{
 		
 		@Override
 		public void readSync(Reads read){
-			prepareReload = read.f();
-			
 			super.readSync(read);
+			
+			prepareReload = read.f();
 		}
 		
 		@Override
@@ -382,7 +382,7 @@ public class MatterStorm extends Weather{
 		
 		@Override
 		public int classId(){
-			return EntityRegister.getID(getClass());
+			return EntityRegister.getID(AdaptedWeatherState.class);
 		}
 	}
 }

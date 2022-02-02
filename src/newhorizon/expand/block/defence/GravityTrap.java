@@ -9,6 +9,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -67,6 +68,17 @@ public class GravityTrap extends Block{
 				table.add("- " + Core.bundle.get("mod.ui.gravity-trap.ability-3")).row();
 			}).fill();
 		});
+	}
+	
+	@Override
+	public void drawPlace(int x, int y, int rotation, boolean valid){
+		super.drawPlace(x, y, rotation, valid);
+		
+		Lines.stroke(3, Pal.gray);
+		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
+		
+		Lines.stroke(1, Vars.player.team().color);
+		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
 	}
 	
 	public class GravityTrapBuild extends Building implements Ranged{

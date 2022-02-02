@@ -79,19 +79,19 @@ public class EventListeners{
 			new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(Items.surgeAlloy, 50, NHItems.juniorProcessor, 150);
 				eventType = PreMadeRaids.standardRaid1;
-				spacingBase *= 1.5f;
+				spacingBase *= 1.75f;
 				spacingRand = 60 * 60;
 			}},
 			new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.multipleSteel, 150, Items.plastanium, 100);
 				eventType = PreMadeRaids.quickRaid1;
-				spacingBase *= 1.75f;
+				spacingBase *= 2;
 				spacingRand = 120 * 60;
 			}},
 			new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 150);
 				eventType = PreMadeRaids.deadlyRaid1;
-				spacingBase *= 2;
+				spacingBase *= 2.25f;
 				spacingRand = 180 * 60;
 			}},
 			new AutoEventTrigger(){{
@@ -113,8 +113,8 @@ public class EventListeners{
 					removeAfterTriggered = cannotBeRemove = true;
 				}};
 				
-				spacingBase = 60 * 60;
-				spacingRand = 60 * 60;
+				spacingBase = 90 * 60;
+				spacingRand = 120 * 60;
 			}},
 			new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.darkEnergy, 300);
