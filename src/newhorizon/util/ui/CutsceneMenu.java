@@ -405,7 +405,7 @@ public class CutsceneMenu extends BaseDialog{
 								}catch(NumberFormatException exception){
 									ui.showErrorMessage(textArea.getText() + " is Not A Number!");
 								}
-							}).disabled(b -> textArea.getText().isEmpty()).size(LEN + OFFSET, LEN - OFFSET).padRight(OFFSET).padLeft(OFFSET);
+							}).disabled(b -> textArea.getText().isEmpty()).size(LEN * 2, LEN - OFFSET).padRight(OFFSET).padLeft(OFFSET);
 							
 							l.slider(0, 30, 0.5f, newTrigger.spacingBase / Time.toMinutes, f -> newTrigger.spacingBase = f * Time.toMinutes).growX();
 						}).growX().fillY().pad(OFFSET);
@@ -428,7 +428,7 @@ public class CutsceneMenu extends BaseDialog{
 								}catch(NumberFormatException exception){
 									ui.showErrorMessage(textArea.getText() + " is Not A Number!");
 								}
-							}).disabled(b -> textArea.getText().isEmpty()).size(LEN + OFFSET, LEN - OFFSET).padRight(OFFSET).padLeft(OFFSET);
+							}).disabled(b -> textArea.getText().isEmpty()).size(LEN * 2, LEN - OFFSET).padRight(OFFSET).padLeft(OFFSET);
 							
 							l.slider(0, 30, 0.5f, newTrigger.spacingRand / Time.toMinutes, f -> newTrigger.spacingRand = f * Time.toMinutes).growX();
 						}).growX().fillY().pad(OFFSET);
@@ -452,7 +452,7 @@ public class CutsceneMenu extends BaseDialog{
 								}catch(NumberFormatException exception){
 									ui.showErrorMessage(textArea.getText() + " is Not A Number!");
 								}
-							}).disabled(b -> textArea.getText().isEmpty()).size(LEN + OFFSET, LEN - OFFSET).padRight(OFFSET).padLeft(OFFSET);
+							}).disabled(b -> textArea.getText().isEmpty()).size(LEN * 2, LEN - OFFSET).padRight(OFFSET).padLeft(OFFSET);
 							
 							l.slider(0, 100, 1, newTrigger.minTriggerWave, f -> newTrigger.minTriggerWave = (int)f).growX();
 						}).growX().fillY().pad(OFFSET);
