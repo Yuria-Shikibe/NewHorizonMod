@@ -150,13 +150,13 @@ public class NewHorizon extends Mod{
 					table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
 					table.add(Core.bundle.get("mod.ui.update-log")).left();
 				}).growX().fillY().padBottom(LEN).row();
-				main.image().growX().height(4).pad(6);
 				main.table(t -> {
 					t.add("@yuria.plugin.ad").fillY().growX().row();
 					t.button("@openlink", Icon.export, () -> {
 						Core.app.openURI("https://github.com/Yuria-Shikibe/RangeImager");
 					}).pad(OFFSET / 2f).growX();
 				}).growX().fillY().padBottom(OFFSET).row();
+				main.image().growX().height(4).pad(6).color(Color.lightGray).row();
 				main.pane(t -> {
 					for(int index = 0; index < getUpdateContent().length; index++){
 						FeatureLog c = getUpdateContent()[index];
