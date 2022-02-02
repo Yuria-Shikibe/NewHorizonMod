@@ -516,8 +516,8 @@ public class CutsceneMenu extends BaseDialog{
 						}).growX().height(LEN - OFFSET).margin(OFFSET).padRight(OFFSET / 3f);
 						bu.button("@clear", Icon.cancel, () -> {
 							newTrigger.eventType = CutsceneEvent.NULL_EVENT;
-							displayEventTable.remove();
 							constructor = "";
+							displayEventTable.remove();
 							shower.add(displayEventTable = displayed.get(newTrigger.eventType));
 						}).growX().height(LEN - OFFSET).margin(OFFSET).padLeft(OFFSET / 3f);
 					}).growX().fillY().row();
@@ -525,12 +525,18 @@ public class CutsceneMenu extends BaseDialog{
 						ui.showCustomConfirm("@preparingcontent", "@mod.ui.apply-approach", "@mod.ui.apply-approach.file", "@mod.ui.apply-approach.clipboard", () -> {
 							platform.showMultiFileChooser(fi -> {
 								constructor = fi.readString();
-								checkConstructor();
+								if(checkConstructor()){
+									displayEventTable.remove();
+									shower.add(displayEventTable = displayed.get(newTrigger.eventType));
+								};
 							}, "js");
 						}, () -> {
 							constructor = Core.app.getClipboardText();
 							if(constructor == null)constructor = "//NULL";
-							checkConstructor();
+							if(checkConstructor()){
+								displayEventTable.remove();
+								shower.add(displayEventTable = displayed.get(newTrigger.eventType));
+							};
 						});
 					}).fillX().height(LEN - OFFSET).padTop(OFFSET / 3).margin(OFFSET).disabled(b -> !CutsceneEvent.inValidEvent(newTrigger.eventType)).row();
 					t.add("[accent]" + Iconc.warning + " " + Core.bundle.get("mod.ui.handle-event")).growX().fillY().padBottom(OFFSET).left().row();
