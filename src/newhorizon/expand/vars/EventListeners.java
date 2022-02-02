@@ -164,6 +164,8 @@ public class EventListeners{
 			actAfterLoad.clear();
 		});
 		
+		
+		
 		Events.on(EventType.ResetEvent.class, e -> {
 			actAfterLoad.clear();
 			NHVars.reset();
