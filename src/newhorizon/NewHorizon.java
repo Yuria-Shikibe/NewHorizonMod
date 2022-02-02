@@ -76,7 +76,7 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE, NHContent.objective),
+			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE + FeatureLog.IMPORTANT, NHContent.objective),
 			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),
 		};
 	}

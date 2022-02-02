@@ -14,7 +14,8 @@ public class FeatureLog{
 			IMPROVE = "Improvement",
 			BALANCE = "Balance",
 			NEW_FEATURE = "New Feature",
-			FIXES = "Fix";
+			FIXES = "Fix",
+			IMPORTANT = "[gray]/[royal]Important Update";
 			
 	
 	public FeatureLog(UnlockableContent content){
