@@ -164,7 +164,11 @@ public class EventListeners{
 			actAfterLoad.clear();
 		});
 		
-		
+		Events.run(EventType.Trigger.update, () -> {
+			if(Vars.state.isPlaying()){
+				NHGroups.update();
+			}
+		});
 		
 		Events.on(EventType.ResetEvent.class, e -> {
 			actAfterLoad.clear();
@@ -219,6 +223,7 @@ public class EventListeners{
 			toDraw.each(Runnable::run);
 			
 			ShadowProcessor.post();
+			ShadowProcessor.clear();
 		});
 		
 		

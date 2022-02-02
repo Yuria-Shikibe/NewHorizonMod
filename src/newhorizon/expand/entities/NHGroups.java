@@ -1,5 +1,6 @@
 package newhorizon.expand.entities;
 
+import arc.Core;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.struct.ObjectMap;
@@ -26,5 +27,9 @@ public class NHGroups{
 		gravityTraps.clear();
 		RemoteCoreStorage.clear();
 		commandableBuilds.clear();
+	}
+	
+	public static void update(){
+		AutoEventTrigger.timeScale = Core.settings.getFloat(AutoEventTrigger.SPEED_SCL_KEY);
 	}
 }

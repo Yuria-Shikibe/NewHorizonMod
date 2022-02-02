@@ -130,8 +130,6 @@ public class FleetEvent extends CutsceneEvent{
 	public void draw(CutsceneEventEntity e){
 		Team team = teamFunc.get(e);
 		
-		
-		
 		Draw.blend(Blending.additive);
 		Draw.z(Layer.legUnit + 1);
 		Draw.color(team.color, Color.white, 0.075f);
@@ -140,19 +138,7 @@ public class FleetEvent extends CutsceneEvent{
 		float f = Interp.pow3Out.apply(Mathf.curve(1 - e.reload / reloadTime, 0, 0.05f));
 		
 		Draw.rect(NHContent.fleet, e, NHContent.fleet.width * f * Draw.scl, NHContent.fleet.height * f * Draw.scl, 0);
-		
-		float ang = angle.get(e);
-		
-		for(int i = 0; i < 4; i++){
-			float s = (1 - ((Time.time + 25 * i) % 100) / 100) * f * Draw.scl * 1.75f;
-			Tmp.v1.trns(ang + 180, 36 + 12 * i).add(e);
-			Draw.blend(Blending.additive);
-			Draw.rect(NHContent.arrowRegion, Tmp.v1, NHContent.arrowRegion.width * s, NHContent.arrowRegion.height * s, ang - 90);
-		}
-		
-		
 		Lines.stroke(5f * f);
-		Draw.blend(Blending.additive);
 		Lines.circle(e.x, e.y, range * (1 + Mathf.absin(4f, 0.055f)));
 		
 		Draw.reset();

@@ -125,7 +125,7 @@ public class RaidEvent extends CutsceneEvent{
 		float f = Interp.pow3Out.apply(Mathf.curve(1 - e.reload / reloadTime, 0, 0.05f));
 
 		Draw.rect(NHContent.raid, e, NHContent.raid.width * f * Draw.scl, NHContent.raid.height * f * Draw.scl, 0);
-
+		
 		float ang = source.angleTo(e);
 
 		for(int i = 0; i < 4; i++){

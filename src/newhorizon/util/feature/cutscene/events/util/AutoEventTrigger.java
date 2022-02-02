@@ -1,5 +1,6 @@
 package newhorizon.util.feature.cutscene.events.util;
 
+import arc.Core;
 import arc.func.Cons;
 import arc.func.Prov;
 import arc.struct.Seq;
@@ -30,6 +31,8 @@ import static newhorizon.util.feature.cutscene.CCS_JsonHandler.TEAM_DEFAULT;
 
 @ClientDisabled
 public class AutoEventTrigger implements Entityc, Cloneable{
+	public static final String SPEED_SCL_KEY = "speed-scl";
+	
 	public boolean added;
 	public transient int id = 0; //ID is given after add;
 	
@@ -52,6 +55,16 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	protected float reload;
 	protected final Interval timer = new Interval(3);
 	public float checkSpacing = 180f;
+	
+	public static float timeScale = 1;
+	
+	public static void setScale(float f){
+		Core.settings.put(SPEED_SCL_KEY, f);
+	}
+	
+	public static float getScale(){
+		return Core.settings.getFloat(SPEED_SCL_KEY, 1);
+	}
 	
 	public AutoEventTrigger(){
 		teamProv = () -> Vars.state.rules.defaultTeam;
@@ -112,7 +125,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	
 	@Override
 	public void update(){
-		reload += Time.delta;
+		reload += Time.delta * timeScale;
 		
 		if(CutsceneEvent.inValidEvent(eventType))remove();
 		
