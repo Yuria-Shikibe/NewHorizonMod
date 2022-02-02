@@ -335,9 +335,7 @@ public class CutsceneMenu extends BaseDialog{
 			occasionName = name;
 			if(eventTrigger.eventProv != null && !eventTrigger.eventProv.isEmpty()){
 				constructor = eventTrigger.eventProv;
-				if(checkConstructor()){
-					newTrigger.eventType = CutsceneEvent.construct(constructor);
-				}
+				checkConstructor();
 			}
 			
 			addCloseListener();
@@ -477,9 +475,10 @@ public class CutsceneMenu extends BaseDialog{
 					}};
 					
 					displayEventTable = displayed.get(newTrigger.eventType);
-					Table shower = t.table(s -> {
+					Table shower = t.table(Styles.black3, s -> {
+						s.margin(OFFSET);
 						s.align(Align.topLeft);
-						s.defaults().align(Align.topLeft).pad(OFFSET * 2);
+						s.defaults().align(Align.topLeft);
 						s.add(displayEventTable).growX().fillY().margin(OFFSET);
 					}).growX().fillY().get().row();
 					
@@ -499,7 +498,7 @@ public class CutsceneMenu extends BaseDialog{
 											c.button("@sectors.select", Icon.rightOpen, () -> {
 												newTrigger.eventType = event;
 												displayEventTable.remove();
-												shower.add(displayEventTable = displayed.get(event));
+												shower.row().add(displayEventTable = displayed.get(event)).left();
 												hide();
 											}).growX().height(LEN - OFFSET).disabled(b -> CutsceneEvent.inValidEvent(event)).row();
 											c.table(s -> {
@@ -518,7 +517,7 @@ public class CutsceneMenu extends BaseDialog{
 							newTrigger.eventType = CutsceneEvent.NULL_EVENT;
 							constructor = "";
 							displayEventTable.remove();
-							shower.add(displayEventTable = displayed.get(newTrigger.eventType));
+							shower.row().add(displayEventTable = displayed.get(newTrigger.eventType)).left();
 						}).growX().height(LEN - OFFSET).margin(OFFSET).padLeft(OFFSET / 3f);
 					}).growX().fillY().row();
 					t.button("@mod.ui.event-js-constructor", Icon.download, () -> {
@@ -527,7 +526,7 @@ public class CutsceneMenu extends BaseDialog{
 								constructor = fi.readString();
 								if(checkConstructor()){
 									displayEventTable.remove();
-									shower.add(displayEventTable = displayed.get(newTrigger.eventType));
+									shower.row().add(displayEventTable = displayed.get(newTrigger.eventType));
 								};
 							}, "js");
 						}, () -> {
@@ -535,7 +534,7 @@ public class CutsceneMenu extends BaseDialog{
 							if(constructor == null)constructor = "//NULL";
 							if(checkConstructor()){
 								displayEventTable.remove();
-								shower.add(displayEventTable = displayed.get(newTrigger.eventType));
+								shower.row().add(displayEventTable = displayed.get(newTrigger.eventType));
 							}
 						});
 					}).fillX().height(LEN - OFFSET).padTop(OFFSET / 3).margin(OFFSET).disabled(b -> !CutsceneEvent.inValidEvent(newTrigger.eventType)).row();

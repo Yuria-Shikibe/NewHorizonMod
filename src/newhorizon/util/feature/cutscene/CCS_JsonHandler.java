@@ -148,10 +148,7 @@ public class CCS_JsonHandler{
 		String eventName = map.get(KEY_EVENT).asString();
 		trigger.eventProv = map.get(KEY_EVENT_PROV).asString();
 		if(trigger.eventProv != null && !trigger.eventProv.isEmpty()){
-			CutsceneEvent.eventHandled = null;
-			CutsceneScript.runJS(trigger.eventProv);
-			trigger.eventType = CutsceneEvent.eventHandled;
-			CutsceneEvent.eventHandled = null;
+			trigger.eventType = CutsceneEvent.construct(trigger.eventProv);
 		}
 		
 		trigger.eventType = CutsceneEvent.get(eventName);

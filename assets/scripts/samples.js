@@ -1,3 +1,5 @@
+//Since 1.10.7
+
 //--------------------------------------------
 const event = extend(FleetEventClass, "custom-fleet-event", {});
 event.unitTypeMap = ObjectMap.of(

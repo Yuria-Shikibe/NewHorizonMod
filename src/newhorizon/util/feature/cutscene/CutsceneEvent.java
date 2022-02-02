@@ -8,6 +8,7 @@ import arc.math.geom.Position;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.util.ArcRuntimeException;
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.pooling.Pools;
@@ -42,7 +43,12 @@ public class CutsceneEvent implements Cloneable, Displayable{
 	
 	public static CutsceneEvent construct(String prov){
 		eventHandled = null;
-		CutsceneScript.runJS(prov);
+		try{
+			CutsceneScript.runJS(prov);
+		}catch(Exception e){
+			Log.err(e);
+			Vars.ui.showException(e);
+		}
 		CutsceneEvent eventType = eventHandled;
 		eventHandled = null;
 		return eventType;
