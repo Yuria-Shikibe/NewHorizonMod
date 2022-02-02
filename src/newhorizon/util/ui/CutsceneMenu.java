@@ -312,7 +312,7 @@ public class CutsceneMenu extends BaseDialog{
 					}catch(NumberFormatException exception){
 						ui.showErrorMessage(textArea.getText() + " is Not A Number!");
 					}
-				}).disabled(b -> textArea.getText().isEmpty()).size(LEN + OFFSET, LEN - OFFSET);
+				}).disabled(b -> textArea.getText().isEmpty()).size(LEN * 2, LEN - OFFSET);
 				
 				slider(0, scl * 500, scl, amount.get(), f -> {
 					findAnd(content, (int)f);
@@ -540,7 +540,7 @@ public class CutsceneMenu extends BaseDialog{
 					}).growX().fillY().visible(() -> constructor != null && !constructor.isEmpty());
 				}).growX().fillY().padBottom(LEN).row();
 				
-				table.add("@mod.ui.event-requirement").growX().fillY().padLeft(LEN * 2).left().padBottom(OFFSET / 2).row();
+				table.add("@mod.ui.event-requirement").color(Color.lightGray).growX().fillY().padLeft(LEN * 2).left().padBottom(OFFSET / 2).row();
 				
 				buildRequirementTable(table, Item.class, "@content.item.name", content.items().removeAll(UnlockableContent::isHidden), newTrigger.items);
 				buildRequirementTable(table, UnitType.class, "@content.unit.name", content.units().copy().removeAll(UnlockableContent::isHidden), newTrigger.units);

@@ -25,6 +25,8 @@ public class FeatureLog{
 		type = content.getContentType().toString();
 		
 		this.content = content;
+		
+		
 	}
 	
 	public FeatureLog(String title, String description, String type, TextureRegion icon){
