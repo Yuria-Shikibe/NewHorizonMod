@@ -135,7 +135,7 @@ public class EventListeners{
 			}}
 		);
 		
-		if(Vars.headless){
+		if(Vars.headless || NewHorizon.DEBUGGING){
 			Events.on(EventType.WorldLoadEvent.class, e -> {
 				Core.app.post(() -> Core.app.post(() -> {
 					if(!Vars.state.rules.pvp && NHGroups.autoEventTriggers.size() < autoTriggers.size){
@@ -158,6 +158,7 @@ public class EventListeners{
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHVars.world.afterLoad();
+			ShadowProcessor.clear();
 			
 			actAfterLoad.each(Runnable::run);
 			actAfterLoad.clear();
@@ -172,6 +173,7 @@ public class EventListeners{
 			if(e.to == GameState.State.menu){
 				actAfterLoad.clear();
 				NHVars.reset();
+				ShadowProcessor.clear();
 			}
 		});
 		

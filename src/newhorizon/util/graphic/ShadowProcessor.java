@@ -12,6 +12,10 @@ import newhorizon.util.func.NHSetting;
 public class ShadowProcessor{
 	private static final ObjectMap<Float, Seq<Runnable>> toPost = new ObjectMap<>();
 	
+	public static void clear(){
+		toPost.clear();
+	}
+	
 	public static void add(float z, Runnable drawer){
 		if(!NHSetting.enableDetails()){
 			Draw.color(Pal.shadow);
