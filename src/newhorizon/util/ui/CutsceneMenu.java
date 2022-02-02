@@ -325,7 +325,7 @@ public class CutsceneMenu extends BaseDialog{
 		}
 		
 		public boolean inValidName(String curret, String formal){
-			return curret == null || !curret.equals(formal) && occasions.containsKey(occasionName);
+			return curret == null || formal == null || !curret.equals(formal) && occasions.containsKey(occasionName);
 		}
 		
 		public ConfigDialog(String name, AutoEventTrigger eventTrigger, Cons2<String, AutoEventTrigger> modifier){
@@ -536,7 +536,7 @@ public class CutsceneMenu extends BaseDialog{
 							if(checkConstructor()){
 								displayEventTable.remove();
 								shower.add(displayEventTable = displayed.get(newTrigger.eventType));
-							};
+							}
 						});
 					}).fillX().height(LEN - OFFSET).padTop(OFFSET / 3).margin(OFFSET).disabled(b -> !CutsceneEvent.inValidEvent(newTrigger.eventType)).row();
 					t.add("[accent]" + Iconc.warning + " " + Core.bundle.get("mod.ui.handle-event")).growX().fillY().padBottom(OFFSET).left().row();
@@ -557,18 +557,23 @@ public class CutsceneMenu extends BaseDialog{
 				t.defaults().growX().height(LEN).padTop(OFFSET).marginLeft(OFFSET).marginRight(OFFSET);
 				t.button("@back", Icon.left, Styles.cleart, this::hide);
 				t.button("@editor.apply", Icon.left, Styles.cleart, () -> {
+					boolean able = true;
+					
 					if(inValidName(occasionName, name)){
 						ui.showErrorMessage(Core.bundle.get("mod.ui.trigger-give-name"));
-					}if(CutsceneEvent.inValidEvent(newTrigger.eventType)){
+						able = false;
+					}
+					if(CutsceneEvent.inValidEvent(newTrigger.eventType)){
 						ui.showErrorMessage(Core.bundle.get("mod.ui.invalid-event"));
-					}else{
+						able = false;
+					}
+					
+					if(able){
 						if(name != null){
 							removeTrigger(name);
 						}
-						if(occasionName != null){
-							addTrigger(occasionName, newTrigger);
-						}
-						
+						addTrigger(occasionName, newTrigger);
+					
 						modifier.get(occasionName, eventTrigger);
 						updateJson();
 						hide();
