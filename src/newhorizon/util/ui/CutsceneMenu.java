@@ -559,7 +559,9 @@ public class CutsceneMenu extends BaseDialog{
 						if(name != null){
 							removeTrigger(name);
 						}
-						addTrigger(occasionName, newTrigger);
+						if(occasionName != null){
+							addTrigger(occasionName, newTrigger);
+						}
 						
 						modifier.get(occasionName, eventTrigger);
 						updateJson();
