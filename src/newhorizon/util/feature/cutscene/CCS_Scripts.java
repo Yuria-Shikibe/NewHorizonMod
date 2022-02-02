@@ -16,7 +16,7 @@ public class CCS_Scripts implements Disposable{
 	public final Context context;
 	public final ImporterTopLevel scope;
 	
-	protected boolean errored;
+	protected boolean error;
 	protected Mods.LoadedMod mod;
 	
 	public CCS_Scripts(){
@@ -29,18 +29,18 @@ public class CCS_Scripts implements Disposable{
 		context.setApplicationClassLoader(mod.loader);
 		
 		if(!run(Core.files.internal("scripts/global.js").readString(), "Global", false)){
-			errored = true;
+			error = true;
 		}
 		
 		if(!run(CutsceneScript.getModGlobalJSCode(), "cutsceneLoader.js", false)){
-			errored = true;
+			error = true;
 		}
 		
 		Log.info("[["+ mod.meta.displayName + "]Time to load cutscene script engine: @", Time.elapsed());
 	}
 	
 	public boolean hasErrored(){
-		return errored;
+		return error;
 	}
 	
 	public String runConsole(String text){

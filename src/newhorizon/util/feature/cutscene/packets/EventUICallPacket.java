@@ -35,7 +35,7 @@ public class EventUICallPacket extends Packet{
 	public void handled(){
 		BAIS.setBytes(this.DATA);
 		
-		entity = NHGroups.events.getByID(READ.i());
+		entity = NHGroups.event.getByID(READ.i());
 	}
 	
 	public void handleClient(){

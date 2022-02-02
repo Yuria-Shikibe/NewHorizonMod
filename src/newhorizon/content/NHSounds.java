@@ -5,6 +5,7 @@ import arc.assets.AssetDescriptor;
 import arc.assets.loaders.SoundLoader;
 import arc.audio.Sound;
 import mindustry.Vars;
+import mindustry.audio.SoundLoop;
 
 public class NHSounds{
 	public static Sound
@@ -31,6 +32,12 @@ public class NHSounds{
 		defenceBreak = new Sound(),
 		railGunBlast = new Sound();
 	
+	public static SoundLoop alertLoop = new SoundLoop(alert2, 1);
+	
+	public static void alertLoop(){
+		if(!Vars.headless && Core.audio.countPlaying(alert2) == 0)alert2.play();
+	}
+	
 	public static void load(){
 		alert2 = loadSound("alert-2");
 		shock = loadSound("shock");
@@ -54,6 +61,8 @@ public class NHSounds{
 		signal = loadSound("signal");
 		synchro = loadSound("synchro");
 		defenceBreak = loadSound("break");
+		
+		alertLoop = new SoundLoop(alert2, 1);
 	}
 	
 	private static Sound loadSound(String soundName){

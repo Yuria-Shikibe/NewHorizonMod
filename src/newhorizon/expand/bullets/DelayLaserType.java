@@ -9,6 +9,7 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
@@ -44,7 +45,7 @@ public class DelayLaserType extends LaserBulletType {
     @Override
     public void update(Bullet b) {
         if (b.time - effectTime > 0 && b.data() instanceof Boolean && !(boolean)b.data()){
-            if(b.owner() instanceof Healthc){
+            if(!Vars.net.client() && b.owner() instanceof Healthc){
                 if(((Healthc)b.owner).isValid())shoot(b);
             }else shoot(b);
         }
@@ -53,7 +54,7 @@ public class DelayLaserType extends LaserBulletType {
     @Override
     public void init(Bullet b) {
         if(instantDisappear){
-            b.time = lifetime;
+            b.time = b.lifetime;
         }
         
         b.data(false);

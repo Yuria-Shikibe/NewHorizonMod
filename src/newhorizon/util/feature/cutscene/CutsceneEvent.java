@@ -1,5 +1,6 @@
 package newhorizon.util.feature.cutscene;
 
+import arc.Core;
 import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.Color;
@@ -13,7 +14,9 @@ import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.core.NetClient;
 import mindustry.gen.Icon;
+import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
+import mindustry.graphics.Pal;
 import mindustry.ui.Displayable;
 import mindustry.ui.Styles;
 import newhorizon.util.annotation.HeadlessDisabled;
@@ -29,9 +32,24 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
  * */
 public class CutsceneEvent implements Cloneable, Displayable{
 	public static final ObjectMap<String, CutsceneEvent> cutsceneEvents = new ObjectMap<>();
+	public static CutsceneEvent eventHandled = null;
 	
 	public static CutsceneEvent get(String name){
-		return cutsceneEvents.get(name);
+		if(has(name))return cutsceneEvents.get(name);
+		else return CutsceneEvent.NULL_EVENT;
+	}
+	public static boolean has(String name){return cutsceneEvents.containsKey(name);}
+	
+	public static CutsceneEvent construct(String prov){
+		eventHandled = null;
+		CutsceneScript.runJS(prov);
+		CutsceneEvent eventType = eventHandled;
+		eventHandled = null;
+		return eventType;
+	}
+	
+	public static boolean inValidEvent(CutsceneEvent event){
+		return event == null || event == NULL_EVENT;
 	}
 	
 	public static final CutsceneEvent NULL_EVENT = new CutsceneEvent("NULL_EVENT"){{
@@ -40,7 +58,13 @@ public class CutsceneEvent implements Cloneable, Displayable{
 		cannotBeRemove = true;
 		updatable = false;
 		drawable = false;
-	}};
+	}
+		
+		@Override
+		public void display(Table table){
+			table.add(Iconc.cancel + " " + Core.bundle.get("nh.cutscene.empty-event")).color(Pal.redderDust).row();
+		}
+	};
 	
 	public boolean cannotBeRemove = false;
 	public String name;

@@ -33,7 +33,7 @@ import java.util.Objects;
  *
  * This event entity is position syncable and reload syncable. And it is savable. <p>
  *
- * If this event can be triggered in a client, {@link CutsceneEventEntity#syncAct()} should be used to act it to sync.
+ * If this event can be triggered in a client, {@link CutsceneEventEntity#actNet()} should be used to act it to sync.
  *
  * @see CutsceneEvent
  * @see Syncc
@@ -103,7 +103,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		Groups.draw.remove(this);
 		Groups.sync.remove(this);
 		Groups.all.remove(this);
-		NHGroups.events.remove(this);
+		NHGroups.event.remove(this);
 		
 		if(!UIActions.disabled() && !eventType.isHidden && UIActions.eventTable() != null)eventType.removeTable(this, UIActions.eventTable());
 		eventType.onRemove(this);
@@ -118,7 +118,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 		Groups.draw.add(this);
 		Groups.sync.add(this);
 		Groups.all.add(this);
-		NHGroups.events.add(this);
+		NHGroups.event.add(this);
 		
 		added = true;
 		
@@ -181,7 +181,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 	}
 	
 	/** Used for events that need synchronously act from client to server.*/
-	public void syncAct(){
+	public void actNet(){
 		if(Vars.net.active()){
 			EventCompletePacket packet = new EventCompletePacket();
 			packet.entity = this;

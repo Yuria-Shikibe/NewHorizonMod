@@ -1,5 +1,9 @@
 package newhorizon.util.func;
 
+import arc.func.Cons2;
+import arc.func.Func;
+import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.io.TypeIO;
@@ -114,6 +118,37 @@ public class OV_Pair<T>{
 		for(OV_Pair<?> pair : pairs){
 			pair.write(writes);
 		}
+	}
+	
+	public static <T> void writeArr(Seq<OV_Pair<T>> pairs, Writes writes){
+		writes.i(pairs.size);
+		for(OV_Pair<T> pair : pairs){
+			pair.write(writes);
+		}
+	}
+	
+	public static <T> void writeArr(Seq<OV_Pair<T>> pairs, Writes writes, Cons2<Writes, OV_Pair<T>> writer){
+		writes.i(pairs.size);
+		Log.info("Write ");
+		for(OV_Pair<T> pair : pairs){
+			writer.get(writes, pair);
+		}
+	}
+	
+	public static <T> Seq<OV_Pair<T>> readSeq(Reads reads){
+		int length = reads.i();
+		Seq<OV_Pair<T>> out = new Seq<>(length);
+		for(int i = 0; i < length; i++)out.add(readToNew(reads));
+		
+		return out;
+	}
+	
+	public static <T> Seq<OV_Pair<T>> readSeq(Reads reads, Func<Reads, OV_Pair<T>> reader){
+		int length = reads.i();
+		Seq<OV_Pair<T>> out = new Seq<>(length);
+		for(int i = 0; i < length; i++)out.add(reader.get(reads));
+		
+		return out;
 	}
 	
 	public static <E> OV_Pair<E>[] readArr(Reads reads){

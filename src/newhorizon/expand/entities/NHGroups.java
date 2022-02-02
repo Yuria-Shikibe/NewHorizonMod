@@ -14,7 +14,7 @@ import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 
 public class NHGroups{
-	public static final EntityGroup<CutsceneEventEntity> events = new EntityGroup<>(CutsceneEventEntity.class, false, true);
+	public static final EntityGroup<CutsceneEventEntity> event = new EntityGroup<>(CutsceneEventEntity.class, false, true);
 	public static final EntityGroup<AutoEventTrigger> autoEventTriggers = new EntityGroup<>(AutoEventTrigger.class, false, true);
 	
 	public static final ObjectMap<Integer, ObjectSet<RemoteCoreStorage.RemoteCoreStorageBuild>> placedRemoteCore = new ObjectMap<>(Team.all.length);
@@ -22,13 +22,9 @@ public class NHGroups{
 	public static final OrderedSet<CommandableBlock.CommandableBlockBuild> commandableBuilds = new OrderedSet<>();
 	
 	public static void clear(){
-		events.clear();
+		event.clear();
 		gravityTraps.clear();
 		RemoteCoreStorage.clear();
 		commandableBuilds.clear();
-	}
-	
-	public static void update(){
-		autoEventTriggers.each(AutoEventTrigger::check);
 	}
 }

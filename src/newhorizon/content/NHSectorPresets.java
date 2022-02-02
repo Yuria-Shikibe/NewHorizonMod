@@ -24,6 +24,7 @@ import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.meta.BlockFlag;
 import newhorizon.NewHorizon;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.feature.cutscene.CutsceneScript;
@@ -78,6 +79,7 @@ public class NHSectorPresets implements ContentList{
 			
 			rules = r -> {
 				r.winWave = -1;
+				r.bannedBlocks.addAll(content.blocks().select(b -> b.flags.contains(BlockFlag.launchPad)));
 			};
 			
 			CutsceneScript.initer.put(this, Seq.with(() -> {
@@ -363,7 +365,7 @@ public class NHSectorPresets implements ContentList{
 				bool -> {
 					if(bool){
 						state.rules.tags.clear();
-						NHGroups.events.clear();
+						NHGroups.event.clear();
 					}
 				}, b -> {}
 			));

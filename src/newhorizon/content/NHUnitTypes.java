@@ -109,7 +109,7 @@ public class NHUnitTypes implements ContentList{
 			shots = 1;
 			rotateSpeed = 25f;
 			shootSound = NHSounds.gauss;
-			bullet = new ShrapnelBulletType(){{
+			bullet = new AdaptShrapnelBulletType(){{
 				lifetime = 45f;
 				length = 200f;
 				damage = 180.0F;
@@ -118,7 +118,7 @@ public class NHUnitTypes implements ContentList{
 				fromColor = NHColor.lightSkyFront;
 				toColor = NHColor.lightSkyBack;
 				serrationSpaceOffset = 40f;
-				width = 8f;
+				width = 6f;
 				shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
 				smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
 					Draw.color(fromColor, toColor, b.fin());
@@ -1278,7 +1278,8 @@ public class NHUnitTypes implements ContentList{
 					shots = 4;
 					inaccuracy = 4.0F;
 					ejectEffect = Fx.none;
-					bullet = new ShrapnelBulletType(){{
+					bullet = new AdaptShrapnelBulletType(){{
+						width -= 2;
 						length = 280;
 						damage = 160.0F;
 						status = StatusEffects.shocked;
@@ -2677,12 +2678,12 @@ public class NHUnitTypes implements ContentList{
 				heatColor = Pal.redderDust;
 				cooldownTime = 45f;
 				
-				bullet = new ShrapnelBulletType(){{
+				bullet = new AdaptShrapnelBulletType(){{
 					length = 520;
 					damage = 300.0F;
 					status = StatusEffects.slow;
 					statusDuration = 60f;
-					width = 16f;
+					width = 11f;
 					fromColor = NHColor.thurmixRedLight;
 					hitColor = lightColor = lightningColor = toColor = NHColor.thurmixRed;
 					shootEffect = NHFx.lightningHitSmall(toColor);

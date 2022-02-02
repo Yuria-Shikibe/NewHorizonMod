@@ -105,7 +105,7 @@ public class RaidEvent extends CutsceneEvent{
 		e.reload += Time.delta;
 		
 		if(e.reload >= reloadTime){
-			e.act();
+			e.actNet();
 			e.reload = 0;
 		}
 	}
@@ -235,8 +235,9 @@ public class RaidEvent extends CutsceneEvent{
 					t2.color.a = 0.35f;
 					t2.add("Remain Time: 00:00 ").update(l -> {
 						float remain = reloadTime - e.reload;
-						l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + Mathf.floor(remain / Time.toMinutes) + ":" + Mathf.floor((remain % Time.toMinutes) / Time.toSeconds));
+						l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + UI.formatTime(remain));
 					}).left().fillY().growX().row();
+					t2.table().fillX();
 				}));
 			}).padLeft(OFFSET * 2).growX().fillY().row();
 		});
@@ -258,30 +259,30 @@ public class RaidEvent extends CutsceneEvent{
 	
 	@Override
 	public void display(Table table){
-		table.row().table().padLeft(OFFSET * 2).getTable().table(t -> {
+		table.table(t -> {
 			t.add('<' + Core.bundle.get("mod.ui.raid") + '>').color(Pal.accent).center().growX().fillY().row();
 			t.add(Core.bundle.get("mod.ui.raid.description")).color(Color.lightGray).center().growX().fillY().row();
-			t.image().color(Pal.accent).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			t.image().color(Pal.accent).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 			
 			t.align(Align.topLeft);
 			t.add("[lightgray]" + Core.bundle.get("mod.ui.collide-air") + ": " + TableFunc.judge(bulletType.collidesAir && bulletType.collides)).left().row();
 			t.add("[lightgray]" + Core.bundle.get("mod.ui.collide-ground") + ": " + TableFunc.judge(bulletType.collidesGround && bulletType.collides)).left().row();
 			t.add("[lightgray]" + Core.bundle.get("mod.ui.collide-tile") + ": " + TableFunc.judge(bulletType.collidesTiles)).left().row();
 			
-			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 			
 			t.add("[lightgray]" + Core.bundle.get("mod.ui.absorbable") + ": " + TableFunc.judge(bulletType.absorbable)).left().row();
 			t.add("[lightgray]" + Core.bundle.get("mod.ui.hittable") + ": " + TableFunc.judge(bulletType.hittable)).left().row();
 			
-			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 			
 			t.add("[lightgray]" + Core.bundle.get("stat.launchtime") + ": [accent]" + TableFunc.format(reloadTime / Time.toSeconds) + "[]" + Core.bundle.get("unit.seconds")).left().row();
 			
-			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 			
 			t.add("[lightgray]" + Core.bundle.format("mod.ui.estimated-max-damage", UI.formatAmount((long)(Tables.estimateBulletDamage(bulletType, number, true))))).left().row();
 			
-			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 			
 			t.table(b -> Tables.ammo(b, "[lightgray]*[accent]" + number, bulletType, NHContent.raid, 0)).row();
 		}).fill().padBottom(OFFSET).left().row();

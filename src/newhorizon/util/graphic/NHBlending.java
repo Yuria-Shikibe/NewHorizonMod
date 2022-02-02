@@ -4,8 +4,7 @@ import arc.graphics.Blending;
 import arc.graphics.Gl;
 
 public class NHBlending{
-	public static final Blending
-		test = new Blending(Gl.srcColor, Gl.dstAlpha),
+	public static final Blending alphaKeeper = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha),
 		test2 = new Blending(Gl.blendSrcRgb, Gl.blendEquationRgb),
 		test3 = new Blending(Gl.oneMinusSrcColor, Gl.blendDstRgb);
 	

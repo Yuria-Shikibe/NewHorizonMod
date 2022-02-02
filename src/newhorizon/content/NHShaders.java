@@ -21,10 +21,12 @@ public class NHShaders{
 	public static Shader
 			gravityTrapShader;
 			
-	
+	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
 	
 	public static void init(){
+		shadowShader = new ShadowShader();
+		
 		matterStorm = new MatterStormShader("storm");
 		
 		gravityTrapShader = new ModShader("screenspace", "gravityTrap"){
@@ -59,6 +61,29 @@ public class NHShaders{
 				return NHContent.smoothNoise;
 			}
 		};
+	}
+	
+	public static class ShadowShader extends ModShader{
+		public Color color = Color.white;
+		
+		public ShadowShader set(Color color){
+			this.color = color;
+			
+			return this;
+		}
+		
+		public ShadowShader(){
+			super("screenspace", "shadow");
+		}
+		
+		@Override
+		public void apply(){
+			setUniformf("u_offset",
+					Core.camera.position.x - Core.camera.width / 2,
+					Core.camera.position.y - Core.camera.height / 2);
+			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+			setUniformf("u_alpha", color);
+		}
 	}
 	
 	public static class MatterStormShader extends ModSurfaceShader{

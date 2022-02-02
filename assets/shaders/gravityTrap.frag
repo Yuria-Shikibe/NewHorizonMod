@@ -4,12 +4,12 @@
 #define LEN 8.0
 #define SPACING 32.0
 
-#define ALPHA 0.33
+#define ALPHA 0.18
 #define STEP 2.5
 
 #define ALLY vec4(0.57, 0.68, 1.0, 1.0)
 #define HOSTILE vec4(1.0, 0.44, 0.41, 1.0)
-#define BOTH vec4(1.0, 0.82, 0.49, 1.0)
+#define BOTH vec4(1.0, 0.86, 0.55, 1.0)
 
 uniform sampler2D u_texture;
 uniform vec2 u_texsize;
@@ -54,12 +54,15 @@ void main(){
         color.a *= 1.0 + sin(u_time / 18.0) * 0.1;
     }
 
-    if(texture2D(u_texture, T).a < 0.9 && color.a < 0.001){
+    if(texture2D(u_texture, T).a < 0.005 && maxed.a > 0.001){
         if(maxed.r > 0.0 && maxed.b > 0.0)maxed = BOTH;
         else{
             if(maxed.r > 0.0)maxed = HOSTILE;
             else if(maxed.b > 0.0)maxed = ALLY;
         }
+
+        maxed.a = 0.53;
+
         gl_FragColor = maxed;
     }else{
         gl_FragColor = color;

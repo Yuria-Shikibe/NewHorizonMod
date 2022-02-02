@@ -22,6 +22,7 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.core.UI;
 import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -214,8 +215,9 @@ public class FleetEvent extends CutsceneEvent{
 					t2.color.a = 0.35f;
 					t2.add("Remain Time: 00:00 ").update(l -> {
 						float remain = reloadTime - e.reload;
-						l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + Mathf.floor(remain / Time.toMinutes) + ":" + Mathf.floor((remain % Time.toMinutes) / Time.toSeconds));
+						l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + UI.formatTime(remain));
 					}).left().fillY().growX().row();
+					t2.table().fillX();
 				}));
 			}).padLeft(OFFSET * 2).growX().fillY().row();
 			
@@ -238,15 +240,15 @@ public class FleetEvent extends CutsceneEvent{
 	
 	@Override
 	public void display(Table table){
-		table.row().table().padLeft(OFFSET * 2).getTable().table(t -> {
+		table.table(t -> {
 			t.add('<' + Core.bundle.get("mod.ui.fleet") + '>').color(Pal.accent).center().growX().fillY().row();
 			t.add(Core.bundle.get("mod.ui.fleet.description")).color(Color.lightGray).center().growX().fillY().row();
-			t.image().color(Pal.accent).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
+			t.image().color(Pal.accent).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(OFFSET / 2).padRight(OFFSET / 2).row();
 			
 			for(ObjectMap.Entry<UnitType, Number> entry : unitTypeMap.entries()){
 				t.add(new IconNumDisplay(entry.key.fullIcon, entry.value.intValue(), entry.key.localizedName)).left().row();
 			}
-		}).fill();
+		}).fill().row();
 		
 	}
 }

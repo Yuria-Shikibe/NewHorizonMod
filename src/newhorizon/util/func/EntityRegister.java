@@ -13,6 +13,7 @@ import newhorizon.expand.entities.Carrier;
 import newhorizon.expand.entities.Spawner;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.EnergyUnit;
+import newhorizon.expand.weather.MatterStorm;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 
@@ -30,6 +31,7 @@ public class EntityRegister{
 		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
 		EntityRegister.put(UltFire.class, UltFire::new);
 		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
+		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){

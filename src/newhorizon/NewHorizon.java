@@ -76,11 +76,8 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(NHBlocks.metalOxhydrigenFactoryLarge),
-			new FeatureLog(NHWeathers.quantumStorm),
-			new FeatureLog(NHWeathers.solarStorm),
-			new FeatureLog(FeatureLog.ADJUST, "Reduced the production cost of Block: " + NHBlocks.irayrondPanelFactorySmall, FeatureLog.BALANCE, NHBlocks.irayrondPanelFactorySmall),
-			new FeatureLog("A new [sky]Setting[]", "Added a new setting to keep you have the look of gravity trap's fields", FeatureLog.NEW_FEATURE, Icon.settings.getRegion()),
+			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE, NHContent.objective),
+			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),
 		};
 	}
 	
@@ -89,7 +86,8 @@ public class NewHorizon extends Mod{
 			new Links.LinkEntry("mod.ccs", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide", Icon.settings, Pal.heal),
 			new Links.LinkEntry("mod.discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
 			new Links.LinkEntry("mod.github", MOD_GITHUB_URL, Icon.github, Color.valueOf("24292e")),
-			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent)
+			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent),
+			new Links.LinkEntry("yuria.plugin", "https://github.com/Yuria-Shikibe/RangeImager", Icon.export, NHColor.thurmixRed)
 		};
 		
 		BaseDialog dialog = new BaseDialog("@links");
@@ -152,6 +150,13 @@ public class NewHorizon extends Mod{
 					table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
 					table.add(Core.bundle.get("mod.ui.update-log")).left();
 				}).growX().fillY().padBottom(LEN).row();
+				main.image().growX().height(4).pad(6);
+				main.table(t -> {
+					t.add("@yuria.plugin.ad").fillY().growX().row();
+					t.button("@openlink", Icon.export, () -> {
+						Core.app.openURI("https://github.com/Yuria-Shikibe/RangeImager");
+					}).pad(OFFSET / 2f).growX();
+				}).growX().fillY().padBottom(OFFSET).row();
 				main.pane(t -> {
 					for(int index = 0; index < getUpdateContent().length; index++){
 						FeatureLog c = getUpdateContent()[index];
@@ -195,7 +200,7 @@ public class NewHorizon extends Mod{
 					String tag = json.get("tag_name").asString();
 					String body = json.get("body").asString();
 					
-					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0")) && !tag.equals(MOD.meta.version)){
+					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0")) && !tag.equals('v' + MOD.meta.version)){
 						Log.info("should show");
 						
 						new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
@@ -258,11 +263,11 @@ public class NewHorizon extends Mod{
 	@Override
 	public void registerServerCommands(CommandHandler handler) {
 		handler.register("events", "List all events in the map.", (args) -> {
-			if (NHGroups.events.isEmpty()) {
+			if (NHGroups.event.isEmpty()) {
 				Log.info("No Event Available");
 			}
 			
-			NHGroups.events.each(Log::info);
+			NHGroups.event.each(Log::info);
 		});
 		
 		handler.register("eventtypes", "List all event types in the map.", (args) -> {
@@ -278,7 +283,7 @@ public class NewHorizon extends Mod{
 				Log.warn("[VIOLET]Failed, pls type ID");
 			} else {
 				try {
-					CutsceneEventEntity event = NHGroups.events.getByID(Integer.parseInt(args[0]));
+					CutsceneEventEntity event = NHGroups.event.getByID(Integer.parseInt(args[0]));
 					event.act();
 					Log.info("Triggered: " + event);
 				} catch (NumberFormatException var2) {
@@ -289,15 +294,12 @@ public class NewHorizon extends Mod{
 		});
 		
 		handler.register("runjs", "<Code>", "Run js codes", (args) -> {
-			if (args.length == 0) {
-				Log.warn("[E]Failed, pls type Code");
-			}else{
-				try {
-					CutsceneScript.runJS(args[0]);
-				} catch (Throwable var3) {
-					Log.err(var3.toString());
-				}
+			StringBuilder sb = new StringBuilder();
+			for(String s : args){
+				sb.append(s);
+				sb.append(' ');
 			}
+			CutsceneScript.runJS(sb.toString());
 		});
 	}
 	
@@ -326,7 +328,7 @@ public class NewHorizon extends Mod{
 				player.sendMessage("[VIOLET]Failed, pls type ID");
 			} else {
 				try {
-					CutsceneEventEntity event = NHGroups.events.getByID(Integer.parseInt(args[0]));
+					CutsceneEventEntity event = NHGroups.event.getByID(Integer.parseInt(args[0]));
 					event.act();
 					player.sendMessage("Triggered: " + event);
 				} catch (NumberFormatException var3) {
@@ -337,12 +339,12 @@ public class NewHorizon extends Mod{
 		});
 		
 		handler.<Player>register("events", "List all cutscene events in the map.", (args, player) -> {
-			if (NHGroups.events.isEmpty()) {
+			if (NHGroups.event.isEmpty()) {
 				player.sendMessage("No Event Available");
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
-				NHGroups.events.each((e) -> {
+				NHGroups.event.each((e) -> {
 					builder.append(e).append('\n');
 				});
 				player.sendMessage(builder.toString());
@@ -370,7 +372,12 @@ public class NewHorizon extends Mod{
 					player.sendMessage("[VIOLET]Failed, pls type Code");
 				}else{
 					try {
-						CutsceneScript.runJS(args[0]);
+						StringBuilder sb = new StringBuilder();
+						for(String s : args){
+							sb.append(s);
+							sb.append(' ');
+						}
+						CutsceneScript.runJS(sb.toString());
 					} catch (Throwable var3) {
 						player.sendMessage(var3.toString());
 					}

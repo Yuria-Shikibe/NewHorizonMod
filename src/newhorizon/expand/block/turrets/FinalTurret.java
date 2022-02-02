@@ -25,6 +25,7 @@ import newhorizon.content.NHFx;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.graphic.ShadowProcessor;
 
 import static mindustry.Vars.tilesize;
 
@@ -57,7 +58,7 @@ public class FinalTurret extends ItemTurret{
 	protected static final int[] DRAW_KEY = {-1, 1, 0};
 	protected static final boolean[] DRAW_KEY_BOOL = {true, false};
 	protected static final Rand rand = new Rand();
-	
+	protected static float fin;
 	
 	public FinalTurret(String name){
 		super(name);
@@ -184,21 +185,36 @@ public class FinalTurret extends ItemTurret{
 			
 			Draw.z(Layer.power + 0.1f);
 			
-			float fin = loadProgress / reloadTime;
+			fin = loadProgress / reloadTime;
 			
 			tr2.trns(rotation, -recoil);
 			trSide.trns(rotation, 0, -curve.apply(fin) * extendX - extendXMin);
 			trFront.trns(rotation, curve.apply(fin) * extendY + extendYMin);
 			trFrontSide.trns(rotation, 0, -extendFrontX * curve.apply(fin));
 			//Layer: Shadow
-			for(int i : Mathf.signs){
-				Drawf.shadow(getDownRegion(i, true), x + tr2.x - elevation + trSide.x * i * downExtendScl, y + tr2.y - elevation + trSide.y * i * downExtendScl, rotation - 90);
-				Drawf.shadow(getDownRegion(i, true), x + tr2.x + trFront.x - elevation + (trSide.x + trFrontSide.x) * i * downExtendScl, y + tr2.y + trFront.y - elevation + (trSide.y + trFrontSide.y) * i * downExtendScl, rotation - 90);
-				Drawf.shadow(getDownRegion(i, true), x + tr2.x + trFront.x * extentYBackScl - elevation + (trSide.x + trFrontSide.x * extendBackXScl) * i * downExtendScl, y + tr2.y + trFront.y * extentYBackScl - elevation + (trSide.y + trFrontSide.y * extendBackXScl) * i * downExtendScl, rotation - 90);
-			}
-			for(int i : DRAW_KEY){
-				Drawf.shadow(getRegion(i, true), x + tr2.x - elevation + trSide.x * i, y + tr2.y - elevation + trSide.y * i, rotation - 90);
-			}
+			
+//			Gl.enable(Gl.blend);
+//			Gl.blendFunc(Gl.srcAlpha, Gl.oneMinusSrcAlpha);
+//			Gl.blendColor(0, 0, 0, Pal.shadow.a);
+//			Gl.disable(Gl.depthTest);
+			
+			ShadowProcessor.add(Draw.z() - 0.0001f, () -> {
+				tr2.trns(rotation, -recoil);
+				trSide.trns(rotation, 0, -curve.apply(fin) * extendX - extendXMin);
+				trFront.trns(rotation, curve.apply(fin) * extendY + extendYMin);
+				trFrontSide.trns(rotation, 0, -extendFrontX * curve.apply(fin));
+				
+				for(int i : Mathf.signs){
+					Draw.rect(getDownRegion(i, true), x + tr2.x - elevation + trSide.x * i * downExtendScl, y + tr2.y - elevation + trSide.y * i * downExtendScl, rotation - 90);
+					Draw.rect(getDownRegion(i, true), x + tr2.x + trFront.x - elevation + (trSide.x + trFrontSide.x) * i * downExtendScl, y + tr2.y + trFront.y - elevation + (trSide.y + trFrontSide.y) * i * downExtendScl, rotation - 90);
+					Draw.rect(getDownRegion(i, true), x + tr2.x + trFront.x * extentYBackScl - elevation + (trSide.x + trFrontSide.x * extendBackXScl) * i * downExtendScl, y + tr2.y + trFront.y * extentYBackScl - elevation + (trSide.y + trFrontSide.y * extendBackXScl) * i * downExtendScl, rotation - 90);
+				}
+				for(int i : DRAW_KEY){
+					Draw.rect(getRegion(i, true), x + tr2.x - elevation + trSide.x * i, y + tr2.y - elevation + trSide.y * i, rotation - 90);
+				}
+				
+				Draw.reset();
+			});
 			
 			//Layer: DownRegion
 			for(int i : Mathf.signs){

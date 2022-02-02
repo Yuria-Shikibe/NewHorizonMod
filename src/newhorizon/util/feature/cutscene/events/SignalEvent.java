@@ -9,7 +9,6 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.core.Logic;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
@@ -54,7 +53,7 @@ public class SignalEvent extends CutsceneEvent{
 			}
 			
 			if(Mathf.chanceDelta(0.22))NHFx.dataTransport.at(e.x, e.y, Mathf.random(0.15f, 0.55f), Pal.accent);
-			if(e.reload >= reloadTime)e.syncAct();
+			if(e.reload >= reloadTime)e.actNet();
 		}else{
 			e.reload = Mathf.lerpDelta(e.reload, 0, 0.04f);
 		}

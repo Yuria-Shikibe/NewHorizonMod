@@ -39,9 +39,10 @@ const TableFunc = loadContent("newhorizon.util.ui.TableFunc");
 const NHInterp = loadContent("newhorizon.util.func.NHInterp");
 const PosLightning = loadContent("newhorizon.util.feature.PosLightning");
 
+const CCS_JsonHandler = loadContent("newhorizon.util.feature.cutscene.CCS_JsonHandler");
+
 const BulletHandler = loadContent("newhorizon.util.feature.cutscene.events.util.BulletHandler");
 const PreMadeRaids = loadContent("newhorizon.util.feature.cutscene.events.util.PreMadeRaids");
-const TriggerGenerator = loadContent("newhorizon.util.feature.cutscene.events.util.TriggerGenerator");
 const AutoEventTrigger = loadContent("newhorizon.util.feature.cutscene.events.util.AutoEventTrigger");
 
 const OV_Pair = loadContent("newhorizon.util.func.OV_Pair");
@@ -62,6 +63,10 @@ const LEN = 60;
 const state = Vars.state;
 const tilesize = Vars.tilesize;
 const world = Vars.world;
+
+function handleEvent(event){
+    CutsceneEvent.eventHandled = event;
+}
 
 function newEvent(name, args){
     return extend(CutsceneEventClass, name, args);

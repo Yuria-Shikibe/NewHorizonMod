@@ -311,6 +311,8 @@ public class TableFunc{
                             l.fillX().height(label.getPrefHeight() + LEN * 4);
                             textAreaMod.size(label.getPrefWidth() + LEN * 4, label.getPrefHeight() + LEN * 4);
                             t.table().fill();
+                            
+                            
                         });
                     }).grow().pad(OFFSET).get();
                     
@@ -326,7 +328,7 @@ public class TableFunc{
                             new BaseDialog("Debug"){{
                                 addCloseButton();
                                 cont.pane(t -> {
-                                    NHGroups.events.each(e -> {
+                                    NHGroups.event.each(e -> {
                                         e.setupDebugTable(t);
                                         t.row();
                                     });
@@ -336,10 +338,10 @@ public class TableFunc{
                                 @Override
                                 public void hide(){
                                     super.hide();
-                                    NHGroups.events.each(e -> !e.eventType().isHidden, e -> e.show(UIActions.eventTable()));
+                                    NHGroups.event.each(e -> !e.eventType().isHidden, e -> e.show(UIActions.eventTable()));
                                 }
                             }.show();
-                        }).disabled(b -> NHGroups.events.isEmpty());
+                        }).disabled(b -> NHGroups.event.isEmpty());
                         t.button("Run Selection", Styles.cleart, () -> {
                             Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
                         }).disabled(b -> textArea.getSelection().isEmpty());

@@ -12,13 +12,17 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.scene.style.TextureRegionDrawable;
-import arc.util.*;
+import arc.util.Align;
+import arc.util.Scaling;
+import arc.util.Time;
+import arc.util.Tmp;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
-import mindustry.entities.EntityGroup;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -39,10 +43,8 @@ import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.util.func.NHFunc;
-import newhorizon.util.func.NHInterp;
-import newhorizon.util.func.NHPixmap;
-import newhorizon.util.func.NHSetting;
+import newhorizon.util.feature.cutscene.UIActions;
+import newhorizon.util.func.*;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.Tables;
 
@@ -98,7 +100,7 @@ public class MatterStorm extends Weather{
 	public BulletType bulletType = null;
 	
 	public MatterStorm(String name){
-		super(name);
+		super(name, AdaptedWeatherState::new);
 		
 		opacityMultiplier = 3;
 		sound = Sounds.pulse;
@@ -278,7 +280,7 @@ public class MatterStorm extends Weather{
 			noise.at(randX, randY, Mathf.random(0.9f, 1.1f), Mathf.sqrt(state.intensity) + 1f);
 		}
 	}
-
+	
 	@Override
 	public void drawUnder(WeatherState state){
 
@@ -314,50 +316,36 @@ public class MatterStorm extends Weather{
 
 		Vars.renderer.effectBuffer.blit(NHShaders.matterStorm);
 	}
-
+	
 	@Override
-	public WeatherState create(){
-		return super.create();
+	public WeatherState create(float intensity, float duration){
+		UIActions.actionSeqMinor(UIActions.labelAct(Core.bundle.format("nh.cutscene.event.incoming", localizedName), 1, 1.5f, Interp.fade, t -> {
+			t.image(Icon.warning).scaling(Scaling.fit).padRight(OFFSET);
+			t.image(uiIcon).scaling(Scaling.fit).padRight(OFFSET);
+		}));
+		
+		return super.create(intensity, duration);
 	}
 	
 	public static class AdaptedWeatherState extends WeatherState{
+		public float prepareReload = 450f;
+		
 		@Override
-		public void remove(){
-			if (this.added) {
-				Groups.all.remove(this);
-				Groups.sync.remove(this);
-				Groups.draw.remove(this);
-				Groups.weather.remove(this);
-				
-				if (Vars.net.client()) {
-					Vars.netClient.addRemovedEntity(this.id());
-				}
-				
-				this.added = false;
-				Groups.queueFree(this);
+		public void init(Weather weather){
+			super.init(weather);
+			
+			prepareReload = Mathf.clamp(300 + (float)Math.log(intensity) * 60f, 300, 1500);
+		}
+		
+		@Override
+		public void update(){
+			prepareReload -= Time.delta;
+			
+			if(prepareReload < 0){
+				super.update();
 			}
-		}
-		
-		@Override
-		public void add(){
-			super.add();
-		}
-		
-		@Override
-		public void reset(){
-			this.x = 0.0F;
-			this.y = 0.0F;
 			
-			this.intensity = 1.0F;
-			this.opacity = 0.0F;
-			this.life = 0.0F;
-			this.effectTimer = 0.0F;
-			this.lastUpdated = 0L;
-			this.updateSpacing = 0L;
-			this.added = false;
-			this.id = EntityGroup.nextId();
-			
-			Log.info("reseted |" + weather);
+			if(prepareReload > -180)NHSounds.alertLoop();
 		}
 		
 		public static AdaptedWeatherState create(){
@@ -365,10 +353,36 @@ public class MatterStorm extends Weather{
 		}
 		
 		@Override
-		public boolean equals(Object obj){
-			boolean b =  super.equals(obj);
-			Log.info(obj + "|" + b);
-			return b;
+		public void read(Reads read){
+			super.read(read);
+			
+			prepareReload = read.f();
+		}
+		
+		@Override
+		public void readSync(Reads read){
+			prepareReload = read.f();
+			
+			super.readSync(read);
+		}
+		
+		@Override
+		public void write(Writes write){
+			super.write(write);
+			
+			write.f(prepareReload);
+		}
+		
+		@Override
+		public void writeSync(Writes write){
+			super.writeSync(write);
+			
+			write.f(prepareReload);
+		}
+		
+		@Override
+		public int classId(){
+			return EntityRegister.getID(getClass());
 		}
 	}
 }

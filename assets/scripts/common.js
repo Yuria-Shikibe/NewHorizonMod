@@ -1,28 +1,30 @@
-NHGroups.events.each(cons(e=>e.act()));
-
+NHGroups.event.each(cons(e=>e.reload+=10000000));
+NHGroups.event.each(cons(e=>e.actNet()));
 Draw.blend();
 Draw.blend(NHBlending.test3);
 Draw.blend(new Blending(Gl.blendSrcRgb, Gl.blendEquationRgb));
 
 print(NHWeathers.quantumStorm.isActive())
 Groups.weather.clear();
-NHWeathers.quantumField.create(Mathf.random(1, 2), 300);
-NHWeathers.quantumStorm.instance().windVector.rotate(5);
+NHWeathers.quantumStorm.create(_,_);
 
-NHWeathers.quantumStorm.create(Mathf.random(1, 2), 300);
-
-NHWeathers.quantumStorm.instance().intensity += 0.5;
-NHWeathers.quantumStorm.instance().intensity -= 0.5;
+NHWeathers.quantumStorm.create(Mathf.random(__,__),__);
+Groups.weather.clear();
+NHWeathers.quantumStorm.create(4,1800);
 
 
-NHGroups.events.clear();
+NHWeathers.quantumStorm.instance().intensity+=0.5;
+NHWeathers.quantumStorm.instance().intensity-=0.5;
+
+NHGroups.gravityTraps.intersect(__*8,__*8,8,8,cons(e=>Log.info(e)));
+
+NHGroups.event.clear();
+NHGroups.event.getByID(ID)
 
 EventSamples.waveTeamRaid.setup();
-
-NHGroups.events.getByID(ID)
-
 EventSamples.jumpgateUnlock.setup()
-PreMadeRaids.standardRaid1.setup();
+
+PreMadeRaids.raid2.setup().set(__*8,__*8)
 
 for(var i=0;i<20;i++)PreMadeRaids.deadlyRaid2.setup();
 
@@ -32,19 +34,27 @@ Groups.build.each(boolf(b => b.team != Team.sharded && !(b instanceof CoreBlock.
 
 Groups.build.each(boolf(b => !(b instanceof CoreBlock.CoreBuild)), cons(b => {Time.run(Mathf.random(900), run(() => {b.kill();}));}));
 
-Groups.build.each(cons(b=>Time.run(Mathf.random(900),run(()=>b.kill()))));
+Groups.build.each(cons(b=>Time.run(Mathf.random(___),run(()=>b.kill()))));
 
 TriggerGenerator.setToDefault(PreMadeRaids.standardRaid1);
 TriggerGenerator.Item_50SurgeAlloy();
 
+const destroyReactors = extend(DestroyObjectiveEventClass, "destroyReactors", {});
 
+destroyReactors.targets = func(e => {
+    const buildings = new Seq();
 
-Vars.state.map.tags.put("custom-cutscene-script", "const raid = extend(RaidEventClass, ‘raid’, {});raid.reloadTime = 60 * 60 * 3;raid.targetFunc = func(e => {const rand = NHFunc.rand;rand.setSeed(e.id);let b = null;let times = 0;let all = new Seq();Groups.build.copy(all);while(b == null && times < 1024 && all.any()){let index = rand.random(all.size - 1);b = all.get(index);if(b.team == Vars.state.rules.waveTeam || (b.proximity.size < 3 && b.block.health < 1600)){all.remove(index);b = null;}times++;}return new Vec2().set(b == null ? Vec2.ZERO : b);});raid.teamFunc = func(e => Vars.state.rules.waveTeam);raid.number = 30;raid.shootDelay = 6;raid.removeAfterTriggered = true;");
+    Groups.build.each(
+        boolf(b => b.isValid() && b.team != Vars.state.rules.defaultTeam && b.block == NHBlocks.hyperGenerator),
+        cons(b => buildings.add(b))
+    );
 
-const raid = extend(RaidEventClass, "raid", {});raid.reloadTime = 60 * 60 * 3;raid.targetFunc = func(e => {const rand = NHFunc.rand;rand.setSeed(e.id);let b = null;let times = 0;let all = new Seq();Groups.build.copy(all);while(b == null && times < 1024 && all.any()){let index = rand.random(all.size - 1);b = all.get(index);if(b.team == Vars.state.rules.waveTeam || (b.proximity.size < 3 && b.block.health < 1600)){all.remove(index);b = null;}times++;}return new Vec2().set(b == null ? Vec2.ZERO : b);});raid.teamFunc = func(e => Vars.state.rules.waveTeam);raid.number = 30;raid.shootDelay = 6;raid.removeAfterTriggered = true;
+    return buildings;
+});
 
-runOnce("SETUP", run(() => raid.setup()));
+handleEvent(destroyReactors);
 
-EventSamples.waveTeamRaid.bulletType=Bullets.artilleryPlastic;EventSamples.waveTeamRaid.number=90;EventSamples.waveTeamRaid.setup();
+const event = extend(RaidEventClass, "raid-custom", {});
+handleEvent(event);
 
 

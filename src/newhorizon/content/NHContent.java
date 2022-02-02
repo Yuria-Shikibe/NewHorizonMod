@@ -28,7 +28,8 @@ public class NHContent extends Content{
 			quantum;
 	
 	public static TextureRegion
-			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade;
+			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade,
+			linkArrow;
 	
 	public static TextureRegion //UI
 		raid, objective, fleet;
@@ -77,6 +78,7 @@ public class NHContent extends Content{
 		objective = Core.atlas.find(NewHorizon.name("objective"));
 		fleet = Core.atlas.find(NewHorizon.name("fleet"));
 		
+		linkArrow = Core.atlas.find(NewHorizon.name("linked-arrow"));
 		
 		smoothNoise = loadTex("smooth-noise", t -> {
 			t.setFilter(Texture.TextureFilter.linear);
@@ -102,7 +104,6 @@ public class NHContent extends Content{
 	Texture loadTex(String name, Cons<Texture> modifier){
 		Texture tex = new Texture(NewHorizon.MOD.root.child("textures").child(name + (name.endsWith(".png") ? "" : ".png")));
 		modifier.get(tex);
-		
 		
 		return tex;
 	}

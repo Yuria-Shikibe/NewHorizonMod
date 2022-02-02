@@ -6,23 +6,21 @@ import arc.files.Fi;
 import arc.func.Boolf;
 import arc.func.Cons;
 import arc.func.Prov;
-import arc.graphics.Color;
 import arc.math.geom.Vec2;
-import arc.scene.ui.Label;
+import arc.scene.style.TextureRegionDrawable;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
+import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.core.GameState;
 import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
 import mindustry.game.Saves;
 import mindustry.gen.Building;
-import mindustry.gen.Icon;
-import mindustry.graphics.Pal;
 import mindustry.maps.Map;
 import mindustry.mod.Mods;
 import mindustry.net.Net;
@@ -30,10 +28,12 @@ import mindustry.type.SectorPreset;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHContent;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
 import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
 import newhorizon.util.feature.cutscene.packets.TagPacket;
+import newhorizon.util.ui.CutsceneMenu;
 import newhorizon.util.ui.TableFunc;
 
 import java.io.IOException;
@@ -75,7 +75,7 @@ public class CutsceneScript{
 	 *
 	 * @author Yuria
 	 */
-	protected static Fi scriptDirectory;
+	public static Fi scriptDirectory;
 	public static Fi currentScriptFile;
 	
 	public static Mods.LoadedMod mod;
@@ -83,6 +83,7 @@ public class CutsceneScript{
 	public static CCS_Scripts scripts;
 	
 	public static final String CUTSCENE_KEY = "custom-cutscene-script";
+	public static final String CUSTOME_EVENTS_KEY = "custom-event-json";
 	
 	public static final ObjectMap<SectorPreset, Fi> presentJS = new ObjectMap<>(6);
 	public static final ObjectMap<SectorPreset, Seq<Runnable>> updaters = new ObjectMap<>(6);
@@ -160,7 +161,6 @@ public class CutsceneScript{
 		Events.on(EventType.StateChangeEvent.class, e -> {
 			if(e.to == GameState.State.menu)UIActions.lockInput = false;
 			if((e.from == GameState.State.playing && e.to == GameState.State.menu)){
-				
 				exit();
 				reset();
 			}
@@ -182,14 +182,14 @@ public class CutsceneScript{
 		Events.on(EventType.SectorCaptureEvent.class, e -> {
 			if(e.sector == state.getSector()){
 				curEnder.each(c -> c.get(true));
-				NHGroups.events.each(et -> et.eventType.removeAfterVictory, CutsceneEventEntity::remove);
+				NHGroups.event.each(et -> et.eventType.removeAfterVictory, CutsceneEventEntity::remove);
 			}
 		});
 		
 		Events.on(EventType.SectorLoseEvent.class, e -> {
 			if(e.sector == state.getSector()){
 				curEnder.each(c -> c.get(false));
-				NHGroups.events.clear();
+				NHGroups.event.clear();
 			}
 		});
 		
@@ -200,76 +200,8 @@ public class CutsceneScript{
 				field.setAccessible(true);
 				menu = (BaseDialog)field.get(ui.editor);
 				
-				menu.cont.row().button("Cutscene Scripts", Icon.eye, () -> {
-					new BaseDialog(""){{
-						addCloseButton();
-						
-						cont.table(t -> {
-							t.defaults().size(LEN * 6, LEN).padBottom(OFFSET);
-							
-							t.button("Guide", Icon.info, () -> {
-								Core.app.openURI(CCS_URL);
-							}).row();
-							t.button("Package Scripts", Icon.download, () -> {
-								platform.showMultiFileChooser(file -> {
-									editor.tags.put(CUTSCENE_KEY,
-											file.readString()
-									);
-								}, "js");
-							}).row();
-							t.button("Delete Scripts", Icon.trash, () -> {
-								ui.showConfirm("Are you sure you want to delete it?", () -> {
-									if(editor.tags.remove(CUTSCENE_KEY) != null){
-										ui.showText("OPERATION STATE", "Delete Successfully");
-									}else ui.showErrorMessage("Script is null");
-								});
-							}).disabled(b -> !editor.tags.containsKey(CUTSCENE_KEY)).row();
-							t.button("Read Scripts", Icon.bookOpen, () -> {
-								new BaseDialog(""){{
-									addCloseButton();
-									
-									cont.pane(t -> {
-										Label rootScript = new Label(getModGlobalJSCode().trim());
-										rootScript.setWrap(false);
-										Label label = new Label(editor.tags.get(CUTSCENE_KEY).trim());
-										label.setWrap(false);
-										
-										t.left();
-										
-										t.image().height(OFFSET / 3).growX().color(Pal.heal).padTop(OFFSET / 2).row();
-										t.add("[heal]//Package Importer: ").pad(OFFSET / 2).row();
-										t.image().height(OFFSET / 3).growX().color(Pal.heal).padBottom(OFFSET / 2).row();
-										
-										t.add(rootScript).color(Color.gray).growX().padLeft(LEN * 3).row();
-										
-										t.image().height(OFFSET / 3).growX().color(Pal.heal).padTop(OFFSET / 2).row();
-										t.add("[heal]//Custom Cutscene Script: ").pad(OFFSET / 2).row();
-										t.image().height(OFFSET / 3).growX().color(Pal.heal).padBottom(OFFSET / 2).row();
-										
-										t.add(label).growX().padLeft(LEN * 3);
-										
-									}).grow();
-								}}.show();
-							}).disabled(b -> !editor.tags.containsKey(CUTSCENE_KEY)).row();
-							t.button("Export JS", Icon.export, () -> {
-								Fi fi = scriptDirectory.child(editor.tags.get("name") + "-cutscene.js");
-								
-								if(!fi.exists()){
-									try{
-										//noinspection ResultOfMethodCallIgnored
-										fi.file().createNewFile();
-									}catch(IOException ex){
-										ui.showErrorMessage(ex.toString());
-										return;
-									}
-								}
-								
-								fi.writeString(editor.tags.get(CUTSCENE_KEY).trim());
-								
-								ui.showText("OPERATION STATE", "Export Successfully");
-							}).disabled(b -> !editor.tags.containsKey(CUTSCENE_KEY)).row();
-						}).grow();
-					}}.show();
+				menu.cont.row().button("@mod.ui.cutscene-menu", new TextureRegionDrawable(NHContent.objective), LEN - OFFSET, () -> {
+					new CutsceneMenu().show();
 				}).size(180f * 2 + 10f, 60f);
 			}catch(IllegalAccessException | NoSuchFieldException ex){
 				ui.showErrorMessage(ex.toString());
@@ -366,12 +298,9 @@ public class CutsceneScript{
 	public static void runJS(String js){
 		if(js == null || js.isEmpty())return;
 		
-		try{
-			scripts.run(mod, js);
-		}catch(Exception e){
-			Vars.ui.showErrorMessage(e.toString());
-		}
+		scripts.run(mod, js);
 	}
+	
 	
 	protected static void init(){
 		if(scripts == null)scripts = new CCS_Scripts();
@@ -383,6 +312,18 @@ public class CutsceneScript{
 		UIActions.init();
 		
 		curSectorPreset = sector;
+		
+		if(state.map.hasTag(CUSTOME_EVENTS_KEY)){
+			try{
+				runEventOnce("SetUpTriggers", () -> {
+					CCS_JsonHandler.generators(Jval.read(state.map.tags.get(CUSTOME_EVENTS_KEY))).each((n, t) -> {
+						t.add();
+					});
+				});
+			}catch(Exception e){
+				Log.err(e);
+			}
+		}
 		
 		if(sector != null){
 			if(updaters.containsKey(sector)){

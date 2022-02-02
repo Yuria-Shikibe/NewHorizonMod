@@ -1,5 +1,6 @@
 package newhorizon.util.ui;
 
+import arc.func.Intp;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;
@@ -41,5 +42,21 @@ public class IconNumDisplay extends Table{
 				t.pack();
 			}));
 		}
+		
+		public IconImage(TextureRegion region, Intp amount){
+			
+			add(new Table(o -> {
+				o.left();
+				o.add(new Image(region)).scaling(Scaling.fit).size(32f);
+			}));
+			
+			add(new Table(t -> {
+				t.left().bottom();
+				t.label(() -> amount.get() > 1000 ? UI.formatAmount(amount.get()) : amount.get() + "");
+				t.pack();
+			}));
+		}
 	}
+	
+	
 }

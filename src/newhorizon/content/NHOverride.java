@@ -149,23 +149,25 @@ public class NHOverride{
 		addReq(Blocks.cyclone, new ItemStack(NHItems.metalOxhydrigen, 55));
 		addReq(Blocks.disassembler, new ItemStack(NHItems.multipleSteel, 65), new ItemStack(NHItems.juniorProcessor, 30));
 		removeReq(Blocks.disassembler, Items.silicon);
+		
 		spectre: {
 			if(!(Blocks.spectre instanceof ItemTurret))break spectre;
 			ItemTurret block = (ItemTurret)Blocks.spectre;
 			block.range += 80;
 			block.health *= 1.5f;
 			addReq(Blocks.spectre,
-					new ItemStack(NHItems.zeta, 220),
-					new ItemStack(NHItems.seniorProcessor, 100)
+				new ItemStack(NHItems.zeta, 220),
+				new ItemStack(NHItems.seniorProcessor, 100)
 			);
 			removeReq(Blocks.spectre, Items.silicon, Items.surgeAlloy, Items.graphite);
 			for(Item item : block.ammoTypes.keys()){
 				BulletType type = block.ammoTypes.get(item);
 				type.damage *= 2f;
 				type.pierceCap *= 1.5f;
-				type.lifetime += 20f;
+				type.lifetime += 8f;
 			}
 		}
+		
 		meltdown: {
 			if(!(Blocks.meltdown instanceof LaserTurret))break meltdown;
 			LaserTurret block = (LaserTurret)Blocks.meltdown;

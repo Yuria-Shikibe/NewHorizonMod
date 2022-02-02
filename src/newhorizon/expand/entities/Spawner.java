@@ -6,11 +6,13 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.struct.Seq;
+import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.audio.SoundLoop;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.content.UnitTypes;
@@ -45,11 +47,14 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	public float surviveTime, surviveLifeime = 3000f;
 	public float rotation;
 	
-	public transient float trailProgress = Mathf.random(360);
+	public Interval timer = new Interval();
 	
-	public transient long lastUpdated, updateSpacing;
+	public float trailProgress = Mathf.random(360);
 	
-	public transient Unit addUnit = Nulls.unit;
+	public long lastUpdated, updateSpacing;
+	
+	public SoundLoop soundLoop;
+	public Unit spawndUnit = Nulls.unit;
 	
 	public final Seq<Trail> trails = Seq.with(new Trail(30), new Trail(50), new Trail(70));
 	public float trailWidth = 3f;
@@ -84,6 +89,8 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		if(Vars.net.client()){
 			Vars.netClient.addRemovedEntity(id());
 		}
+		
+		if(soundLoop != null)soundLoop.update(x, y, false);
 	}
 	
 	@Override
@@ -113,20 +120,20 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	}
 	
 	public void effect(){
-		Effect.shake(type.hitSize / 3f, type.hitSize / 4f, addUnit);
-		NHSounds.jumpIn.at(addUnit.x, addUnit.y);
+		Effect.shake(type.hitSize / 3f, type.hitSize / 4f, spawndUnit);
+		NHSounds.jumpIn.at(spawndUnit.x, spawndUnit.y);
 		if(type.flying){
-			NHFx.jumpTrail.at(addUnit.x, addUnit.y, rotation(), team.color, type);
-			addUnit.apply(StatusEffects.slow, NHFx.jumpTrail.lifetime);
+			NHFx.jumpTrail.at(spawndUnit.x, spawndUnit.y, rotation(), team.color, type);
+			spawndUnit.apply(StatusEffects.slow, NHFx.jumpTrail.lifetime);
 		}else{
 			NHFx.spawn.at(x, y, type.hitSize, team.color);
-			Fx.unitSpawn.at(addUnit.x, addUnit.y, rotation(), type);
+			Fx.unitSpawn.at(spawndUnit.x, spawndUnit.y, rotation(), type);
 			Time.run(Fx.unitSpawn.lifetime, () -> {
 				for(int j = 0; j < 3; j++){
-					Time.run(j * 8, () -> Fx.spawn.at(addUnit));
+					Time.run(j * 8, () -> Fx.spawn.at(spawndUnit));
 				}
-				NHFx.spawnGround.at(addUnit.x, addUnit.y, type.hitSize / tilesize * 3, team.color);
-				NHFx.circle.at(addUnit.x, addUnit.y, type.hitSize * 4, team.color);
+				NHFx.spawnGround.at(spawndUnit.x, spawndUnit.y, type.hitSize / tilesize * 3, team.color);
+				NHFx.circle.at(spawndUnit.x, spawndUnit.y, type.hitSize * 4, team.color);
 			});
 		}
 		
@@ -139,15 +146,17 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	}
 	
 	public void dump(){
-		addUnit = type.create(team);
-		addUnit.set(x, y);
-		addUnit.rotation = rotation();
-		if(!Vars.net.client()) addUnit.add();
-		addUnit.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
+		spawndUnit = type.create(team);
+		spawndUnit.set(x, y);
+		spawndUnit.rotation = rotation();
+		if(!Vars.net.client()) spawndUnit.add();
+		spawndUnit.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
 	}
 	
 	@Override
 	public void draw(){
+		if(type.health > 8000 && team != Vars.player.team())NHSounds.alertLoop();
+		
 		TextureRegion pointerRegion = NHContent.pointerRegion, arrowRegion = NHContent.arrowRegion;
 		
 		Drawf.light(team, x, y, clipSize() * fout(), team.color, 0.7f);
@@ -166,14 +175,6 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		}
 		
 		if(can && NHSetting.enableDetails()){
-			//                float railF = Mathf.curve(fin(Interp.pow2Out), 0f, 0.1f) * Mathf.curve(fout(Interp.pow4Out), 0f, 0.1f) * fin();
-			//                Tmp.v1.trns(rotation, 0f, (2 - railF) * tilesize * 1.4f);
-			//
-			//                Lines.stroke(railF * 2f);
-			//                for(int i : Mathf.signs){
-			//                    Lines.lineAngleCenter(x + Tmp.v1.x * i, y + Tmp.v1.y * i, rotation(), tilesize * (3f + railF) * tilesize * Mathf.curve(fout(Interp.pow5Out), 0f, 0.1f));
-			//                }
-			
 			trails.each(t -> {
 				t.drawCap(team.color, trailWidth);
 				t.draw(team.color, trailWidth);

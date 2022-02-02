@@ -23,9 +23,9 @@ import newhorizon.content.NHShaders;
 import newhorizon.expand.block.defence.GravityTrap;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.entities.GravityTrapField;
-import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.graphic.ShadowProcessor;
 import newhorizon.util.ui.ScreenInterferencer;
 
 import static mindustry.Vars.control;
@@ -104,8 +104,6 @@ public class EventListeners{
 		Events.run(EventType.Trigger.update, () -> {
 			ScreenInterferencer.update();
 			NHSetting.update();
-			
-			if(Vars.state.isPlaying())NHGroups.update();
 		});
 		
 		Events.on(ScreenInterferencer.ScreenHackEvent.class, e -> {
@@ -131,6 +129,8 @@ public class EventListeners{
 			}
 			
 			toDraw.each(Runnable::run);
+			
+			ShadowProcessor.post();
 		});
 		
 		

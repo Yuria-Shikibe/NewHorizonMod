@@ -2,6 +2,7 @@ package newhorizon.expand.block.defence;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Time;
@@ -16,10 +17,11 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.NewHorizon;
+import newhorizon.content.NHContent;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.EventListeners;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -40,27 +42,6 @@ public class GravityTrap extends Block{
 		sync = true;
 		noUpdateDisabled = true;
 	}
-	
-//	@Override
-//	public void drawPlace(int x, int y, int rotation, boolean valid){
-//		Seq<GravityTrapField> seq = NHFunc.getObjects(NHVars.world.gravityTraps);
-//
-//		Draw.z(Layer.light + 5);
-//		for(GravityTrapField bi : seq){
-//			bi.draw();
-//		}
-//		Draw.z(Layer.overlayUI);
-//
-//		Draw.color(Pal.gray);
-//		Lines.stroke(3);
-//		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
-//		Draw.color(Pal.place);
-//		Draw.alpha(0.125f);
-//		Lines.stroke(1);
-//		Fill.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
-//		Draw.alpha(1f);
-//		Lines.poly(x * tilesize + offset, y * tilesize + offset, 6, range * tilesize);
-//	}
 	
 	@Override
 	public void setStats(){
@@ -142,13 +123,18 @@ public class GravityTrap extends Block{
 			Draw.color(team.color);
 			float length = tilesize * size / 4f + sin;
 			
-			TextureRegion region = Core.atlas.find(NewHorizon.name("linked-arrow"));
+			TextureRegion region = NHContent.linkArrow;
 			for(int i = 0; i < 4; i++){
 				Tmp.v1.trns(i * 90, -length);
-				
 				Draw.rect(region, x + Tmp.v1.x, y + Tmp.v1.y, region.width * warmup * Draw.scl, region.height * warmup * Draw.scl, i * 90);
 			}
+			
+			Lines.stroke(warmup * (1 + sin / 2f));
+			Lines.spikes(x, y, sin * 4 + size, warmup * (tilesize + sin), 4, 45 + DrawFunc.rotator_90());
+			
 			Draw.reset();
+			
+			
 		}
 		
 		@Override
