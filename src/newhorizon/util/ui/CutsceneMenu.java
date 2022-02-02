@@ -154,7 +154,7 @@ public class CutsceneMenu extends BaseDialog{
 							}
 						}
 					}).row();
-				}).growY().fillX();
+				}).padLeft(LEN).growY().fillX();
 				
 				c.image().color(Color.darkGray).width(OFFSET / 4).growY().pad(OFFSET);
 				
@@ -164,7 +164,7 @@ public class CutsceneMenu extends BaseDialog{
 					jsonTable.label(() -> jsonToString).self(l -> l.get().setWrap(false)).fill().align(Align.left);
 				}).self(p -> {
 					p.get().setForceScroll(true, true);
-				}).grow().padRight(LEN + OFFSET).padBottom(OFFSET / 3).marginBottom(OFFSET / 2);
+				}).grow().maxWidth(Core.graphics.getWidth() - LEN * 7).padRight(LEN + OFFSET).padBottom(OFFSET / 3).marginBottom(OFFSET / 2).left();
 			}).grow().height(LEN * 12).row();
 			
 			t.table(i -> {

@@ -45,6 +45,10 @@ public class NewHorizon extends Mod{
 	public static final boolean DEBUGGING = false;
 	public static final boolean DEBUGGING_SPRITE = false;
 	
+//	{
+//		Vars.testMobile = true;
+//	}
+	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
