@@ -325,7 +325,7 @@ public class CutsceneMenu extends BaseDialog{
 		}
 		
 		public boolean inValidName(String curret, String formal){
-			return curret == null || formal == null || !curret.equals(formal) && occasions.containsKey(occasionName);
+			return curret == null || !curret.equals(formal) && occasions.containsKey(occasionName);
 		}
 		
 		public ConfigDialog(String name, AutoEventTrigger eventTrigger, Cons2<String, AutoEventTrigger> modifier){
