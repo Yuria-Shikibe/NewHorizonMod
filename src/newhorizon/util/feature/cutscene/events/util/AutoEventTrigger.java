@@ -108,31 +108,23 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 		return meet(team());
 	}
 	
-	public void check(){
-		if(!Vars.net.client() && timer.get(checkSpacing)){
-			if(team().cores().isEmpty()){
-				remove();
-				return;
-			}
-			
-			if(meet()){
-				eventType.setup().setEventProv(eventProv);
-				reload = 0;
-				spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
-				
-				if(disposable)remove();
-			}
-		}
-	}
-	
 	@Override
 	public void update(){
-		reload += Time.delta * timeScale;
+		if(team().cores().isEmpty()){
+			remove();
+			return;
+		}
 		
 		if(CutsceneEvent.inValidEvent(eventType))remove();
 		
-		if(reload > spacing){
-			check();
+		reload += Time.delta * timeScale;
+		
+		if(reload > spacing && !Vars.net.client() && timer.get(checkSpacing) && meet()){
+			eventType.setup().setEventProv(eventProv);
+			reload = 0;
+			spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
+			
+			if(disposable)remove();
 		}
 	}
 	

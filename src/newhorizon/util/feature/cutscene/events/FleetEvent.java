@@ -81,19 +81,36 @@ public class FleetEvent extends CutsceneEvent{
 		Groups.build.copy(all);
 		all.remove(bi -> bi.team == team);
 		
+		Vec2 t = null;
+		
 		while(b == null && all.any()){
 			int index = rand.random(all.size - 1);
 			b = all.get(index);
 			
+			int i = 0;
+			
 			if(GravityTrapField.IntersectedAllyRect.get(b, Tmp.r1.setSize(4).setCenter(b.x, b.y))){
+				while(i < 10){
+					
+					Tmp.v1.rnd(240).add(b).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, Vars.finalWorldBounds + Vars.world.unitHeight(), Vars.finalWorldBounds + Vars.world.unitWidth());
+					if(GravityTrapField.IntersectedAllyRect.get(b, Tmp.r1.setSize(4).setCenter(Tmp.v1.x, Tmp.v1.y))){
+						i++;
+						continue;
+					}
+					
+					t = Tmp.v1.cpy();
+					break;
+				}
 				all.remove(index);
 				b = null;
 			}
 		}
 		
-		Vec2 t = new Vec2();
-		if(b != null)t.set(b);
-		if(all.isEmpty())t.set(source);
+		if(t == null){
+			if(b != null)t = new Vec2().set(b);
+			if(all.isEmpty())t = new Vec2().set(source);
+			if(t == null)t = Vec2.ZERO.cpy();
+		}
 		
 		return t;
 	};

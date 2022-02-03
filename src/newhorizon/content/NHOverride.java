@@ -22,8 +22,208 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class NHOverride{
+	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
+	
 	public static void load(){
 		Fx.trailFade.clip = 2000;
+		
+		{
+		modSpawnGroup.addAll(
+				new SpawnGroup(NHUnitTypes.origin){{
+                     end = 12;
+                     unitScaling = 2f;
+                     max = 30;
+                 }},
+				
+				new SpawnGroup(NHUnitTypes.assaulter){{
+					begin = 4;
+					end = 13;
+					unitAmount = 1;
+					unitScaling = 1.25f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.sharp){{
+					begin = 6;
+					end = 16;
+					unitScaling = 1f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.origin){{
+					begin = 11;
+					unitScaling = 1.7f;
+					spacing = 2;
+					max = 4;
+					shieldScaling = 25f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.thynomo){{
+					begin = 16;
+					spacing = 3;
+					unitScaling = 0.5f;
+					max = 25;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.origin){{
+					begin = 12;
+					unitScaling = 1;
+					unitAmount = 4;
+					spacing = 2;
+					shieldScaling = 20f;
+					max = 14;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.thynomo){{
+					begin = 28;
+					spacing = 3;
+					unitScaling = 1;
+					end = 40;
+					shieldScaling = 20f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.aliotiat){{
+					begin = 45;
+					spacing = 3;
+					unitScaling = 1;
+					max = 10;
+					shieldScaling = 30f;
+					shields = 100;
+					effect = StatusEffects.overdrive;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.sharp){{
+					begin = 16;
+					unitScaling = 1;
+					spacing = 2;
+					shieldScaling = 20f;
+					max = 20;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.warper){{
+					begin = 40;
+					end = 80;
+					spacing = 5;
+					unitAmount = 2;
+					unitScaling = 2;
+					max = 20;
+					shieldScaling = 30;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.branch){{
+					begin = 35;
+					spacing = 3;
+					unitAmount = 4;
+					effect = StatusEffects.overdrive;
+					items = new ItemStack(NHItems.thermoCorePositive, 60);
+					end = 60;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.branch){{
+					begin = 42;
+					spacing = 3;
+					unitAmount = 4;
+					effect = StatusEffects.overdrive;
+					items = new ItemStack(NHItems.thermoCorePositive, 100);
+					end = 130;
+					max = 30;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.warper){{
+					begin = 55;
+					unitAmount = 2;
+					spacing = 2;
+					unitScaling = 2;
+					shieldScaling = 20;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.tarlidor){{
+					begin = 53;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 6;
+					shieldScaling = 30f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.annihilation){{
+					begin = 81;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 8;
+					shieldScaling = 30f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.sin){{
+					begin = 120;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 10;
+					shieldScaling = 30f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.hurricane){{
+					begin = 140;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 10;
+					shieldScaling = 300f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.anvil){{
+					begin = 145;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 15;
+					shieldScaling = 30f;
+					shields = 300;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.guardian){{
+					begin = 125;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 20;
+					shieldScaling = 30f;
+					shields = 500;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.saviour){{
+					begin = 105;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 12;
+					shieldScaling = 30f;
+					shields = 3000;
+					
+					payloads = Seq.with(NHUnitTypes.aliotiat, NHUnitTypes.aliotiat);
+				}},
+				
+				new SpawnGroup(NHUnitTypes.striker){{
+					begin = 75;
+					unitAmount = 2;
+					unitScaling = 3;
+					spacing = 4;
+					shields = 40f;
+					shieldScaling = 30f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.destruction){{
+					begin = 90;
+					unitAmount = 2;
+					unitScaling = 3;
+					spacing = 10;
+					shields = 40f;
+					shieldScaling = 100f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.collapser){{
+					begin = 180;
+					unitAmount = 1;
+					unitScaling = 1;
+					spacing = 25;
+					shields = 1000;
+					shieldScaling = 350f;
+				}}
+		);
+		}//Apply Mod Units
 		
 		try{
 			Field field;
@@ -31,203 +231,7 @@ public class NHOverride{
 			field.setAccessible(true);
 			Vars.waves.get();
 			Seq<SpawnGroup> spawns = (Seq<SpawnGroup>)field.get(Vars.waves);
-			{
-				spawns.addAll(
-					new SpawnGroup(NHUnitTypes.origin){{
-						end = 12;
-						unitScaling = 2f;
-						max = 30;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.assaulter){{
-						begin = 4;
-						end = 13;
-						unitAmount = 1;
-						unitScaling = 1.25f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.sharp){{
-						begin = 6;
-						end = 16;
-						unitScaling = 1f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.origin){{
-						begin = 11;
-						unitScaling = 1.7f;
-						spacing = 2;
-						max = 4;
-						shieldScaling = 25f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.thynomo){{
-						begin = 16;
-						spacing = 3;
-						unitScaling = 0.5f;
-						max = 25;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.origin){{
-						begin = 12;
-						unitScaling = 1;
-						unitAmount = 4;
-						spacing = 2;
-						shieldScaling = 20f;
-						max = 14;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.thynomo){{
-						begin = 28;
-						spacing = 3;
-						unitScaling = 1;
-						end = 40;
-						shieldScaling = 20f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.aliotiat){{
-						begin = 45;
-						spacing = 3;
-						unitScaling = 1;
-						max = 10;
-						shieldScaling = 30f;
-						shields = 100;
-						effect = StatusEffects.overdrive;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.sharp){{
-						begin = 16;
-						unitScaling = 1;
-						spacing = 2;
-						shieldScaling = 20f;
-						max = 20;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.warper){{
-						begin = 40;
-						end = 80;
-						spacing = 5;
-						unitAmount = 2;
-						unitScaling = 2;
-						max = 20;
-						shieldScaling = 30;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.branch){{
-						begin = 35;
-						spacing = 3;
-						unitAmount = 4;
-						effect = StatusEffects.overdrive;
-						items = new ItemStack(NHItems.thermoCorePositive, 60);
-						end = 60;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.branch){{
-						begin = 42;
-						spacing = 3;
-						unitAmount = 4;
-						effect = StatusEffects.overdrive;
-						items = new ItemStack(NHItems.thermoCorePositive, 100);
-						end = 130;
-						max = 30;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.warper){{
-						begin = 55;
-						unitAmount = 2;
-						spacing = 2;
-						unitScaling = 2;
-						shieldScaling = 20;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.tarlidor){{
-						begin = 53;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 6;
-						shieldScaling = 30f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.annihilation){{
-						begin = 81;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 8;
-						shieldScaling = 30f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.sin){{
-						begin = 120;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 10;
-						shieldScaling = 30f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.hurricane){{
-						begin = 140;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 10;
-						shieldScaling = 300f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.anvil){{
-						begin = 145;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 15;
-						shieldScaling = 30f;
-						shields = 300;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.guardian){{
-						begin = 125;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 20;
-						shieldScaling = 30f;
-						shields = 500;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.saviour){{
-						begin = 105;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 12;
-						shieldScaling = 30f;
-						shields = 3000;
-						
-						payloads = Seq.with(NHUnitTypes.aliotiat, NHUnitTypes.aliotiat);
-					}},
-					
-					new SpawnGroup(NHUnitTypes.striker){{
-						begin = 75;
-						unitAmount = 2;
-						unitScaling = 3;
-						spacing = 4;
-						shields = 40f;
-						shieldScaling = 30f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.destruction){{
-						begin = 90;
-						unitAmount = 2;
-						unitScaling = 3;
-						spacing = 10;
-						shields = 40f;
-						shieldScaling = 100f;
-					}},
-					
-					new SpawnGroup(NHUnitTypes.collapser){{
-						begin = 180;
-						unitAmount = 1;
-						unitScaling = 1;
-						spacing = 25;
-						shields = 1000;
-						shieldScaling = 350f;
-					}}
-				);
-			}//Apply Mod Units
+			spawns.addAll(modSpawnGroup);
 		}catch(NoSuchFieldException | IllegalAccessException e){
 			e.printStackTrace();
 		}

@@ -30,7 +30,6 @@ void main(){
 
     vec2 stretch = (dot(v, coords) * v + dot(v, coords) * n / SCL / pow(intensity, 3.0)) / SCL;
 
-
     float noise1 = (
         texture2D(u_noise, coords / NSCALE + stretch +
         vec2(btime * intensity) * -n +

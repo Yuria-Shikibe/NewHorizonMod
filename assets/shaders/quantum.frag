@@ -20,11 +20,10 @@ void main(){
 
     float btime = u_time / 4000.0;
     float wave = abs(sin(coords.x / 5.0 + coords.y / 5.0) + 0.2 * sin(0.5 * coords.x) + 0.2 * sin(coords.y * 0.8)) / 20.0;
+
     float noise1 = wave + texture2D(u_noise, (coords) / NSCALE + vec2(btime) * vec2(-0.3, 0.7) + vec2(sin(btime * 12.0 + coords.y * 0.006) / 10.0, cos(btime * 8.0 + coords.x * 0.008) / 12.0)).r;
     float noise2 = wave + texture2D(u_noise, (coords) / NSCALE + vec2(btime) * vec2(1.2, -0.5) + vec2(cos(btime * -12.0 + coords.x * 0.01) / 10.0, sin(btime * 10.0 + coords.x * 0.008) / 12.0)).r * 0.85;
-
     float noise3 = pow(texture2D(u_noise, (coords) / NSCALE / 2.0 + vec2(btime) * vec2(-0.8, -0.5) + vec2(cos(btime * 8.0 + coords.x * 0.005) / 16.0, cos(btime * 12.0 + coords.y * 0.006) / 18.0)).r, 2.5);
-
 
     vec4 color = texture2D(u_texture, c);
 

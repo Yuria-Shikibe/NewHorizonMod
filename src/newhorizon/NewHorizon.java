@@ -409,25 +409,17 @@ public class NewHorizon extends Mod{
 		handler.<Player>register("runjs", "<Code>", "Run js codes (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
-			} else {
-				if (args.length == 0) {
-					player.sendMessage("[VIOLET]Failed, pls type Code");
-				}else{
-					try {
-						StringBuilder sb = new StringBuilder();
-						for(String s : args){
-							sb.append(s);
-							sb.append(' ');
-						}
-						CutsceneScript.runJS(sb.toString());
-					} catch (Throwable var3) {
-						player.sendMessage(var3.toString());
-					}
+			}else{
+				StringBuilder sb = new StringBuilder();
+				for(String s : args){
+					sb.append(s);
+					sb.append(' ');
 				}
+				CutsceneScript.runJS(sb.toString());
 			}
 		});
 		
-		handler.<Player>register("runjs", "<Scale>", "Set Auto Event Trigger Time Scale (Admin Only)", (args, player) -> {
+		handler.<Player>register("setScale", "<Scale>", "Set Auto Event Trigger Time Scale (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
 			} else {

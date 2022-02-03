@@ -68,6 +68,8 @@ public class PreMadeRaids{
 		sourceSpread = 360f;
 		bulletType = NHBullets.destructionRocket;
 		
+		
+		
 		shootModifier = b -> {
 			b.lifetime(b.lifetime() * (0.95f + Mathf.range(0.1f)));
 			b.drag = (Mathf.random(0.00075f));

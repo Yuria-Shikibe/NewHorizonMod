@@ -17,6 +17,7 @@ import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.core.GameState;
 import mindustry.game.EventType;
+import mindustry.game.SpawnGroup;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
@@ -34,7 +35,6 @@ import newhorizon.expand.block.special.PlayerJumpGate;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.ClientDisabled;
-import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.feature.cutscene.events.FleetEvent;
@@ -86,26 +86,23 @@ public class EventListeners{
 	public static final Seq<AutoEventTrigger> autoTriggers = new Seq<>();
 	
 	public static void loadAfterContent(){
-		autoTriggers.addAll(
-			new AutoEventTrigger(){{
+		{
+			autoTriggers.addAll(new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(Items.surgeAlloy, 50, NHItems.juniorProcessor, 150);
 				eventType = PreMadeRaids.standardRaid1;
 				spacingBase *= 1.75f;
 				spacingRand = 60 * 60;
-			}},
-			new AutoEventTrigger(){{
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.multipleSteel, 150, Items.plastanium, 100);
 				eventType = PreMadeRaids.raid2;
 				spacingBase *= 2;
 				spacingRand = 120 * 60;
-			}},
-			new AutoEventTrigger(){{
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 150);
 				eventType = PreMadeRaids.deadlyRaid1;
 				spacingBase *= 2.25f;
 				spacingRand = 180 * 60;
-			}},
-			new AutoEventTrigger(){{
+			}}, new AutoEventTrigger(){{
 				buildings = OV_Pair.seqWith(NHBlocks.jumpGate, 1);
 				eventType = new FleetEvent("inbuilt-inbound-server-1"){{
 					unitTypeMap = ObjectMap.of(NHUnitTypes.naxos, 2, NHUnitTypes.striker, 4, NHUnitTypes.warper, 10, NHUnitTypes.assaulter, 4);
@@ -116,8 +113,7 @@ public class EventListeners{
 				minTriggerWave = 25;
 				spacingBase = 120 * 60;
 				spacingRand = 120 * 60;
-			}},
-			new AutoEventTrigger(){{
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(Items.thorium, 50, NHItems.zeta, 80, NHItems.presstanium, 30);
 				eventType = new FleetEvent("inbuilt-inbound-server-2"){{
 					unitTypeMap = ObjectMap.of(NHUnitTypes.branch, 4, NHUnitTypes.sharp, 4);
@@ -128,17 +124,15 @@ public class EventListeners{
 				
 				spacingBase = 90 * 60;
 				spacingRand = 120 * 60;
-			}},
-			new AutoEventTrigger(){{
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.darkEnergy, 300);
 				eventType = EventSamples.fleetInbound;
 				
 				minTriggerWave = 35;
 				spacingBase = 240 * 60;
 				spacingRand = 120 * 60;
-			}},
-			new AutoEventTrigger(){{
-				items = OV_Pair.seqWith(NHItems.upgradeSort, 300);
+			}}, new AutoEventTrigger(){{
+				items = OV_Pair.seqWith(NHItems.upgradeSort, 500);
 				eventType = new FleetEvent("inbuilt-inbound-server-4"){{
 					unitTypeMap = ObjectMap.of(NHUnitTypes.longinus, 4, NHUnitTypes.naxos, 10, NHUnitTypes.saviour, 2);
 					reloadTime = 40 * 60;
@@ -148,18 +142,32 @@ public class EventListeners{
 				minTriggerWave = 35;
 				spacingBase = 240 * 60;
 				spacingRand = 180 * 60;
-			}}
-		);
+			}});
+		}
 		
 		if(Vars.headless || NewHorizon.DEBUGGING){
 			Events.on(EventType.WorldLoadEvent.class, e -> {
-				Core.app.post(() -> Core.app.post(() -> {
-					if(!Vars.state.rules.pvp && NHGroups.autoEventTriggers.size() < autoTriggers.size){
-						CutsceneScript.runEventOnce("server-trigger-init", () -> {
-							autoTriggers.each(t -> t.copy().add());
-						});
+				Core.app.post(() -> {
+					if(Vars.state.rules.waves){
+						boolean hasModUnit = false;
+						for(SpawnGroup g : Vars.state.rules.spawns){
+							if(g.type.name.contains(NewHorizon.MOD_NAME)){
+								hasModUnit = true;
+								break;
+							}
+						}
+						
+						if(!hasModUnit){
+							Core.app.post(() -> Vars.state.rules.spawns.addAll(NHOverride.modSpawnGroup));
+						}
 					}
-				}));
+					
+					Core.app.post(() -> Core.app.post(() -> {
+						if(!Vars.state.rules.pvp && NHGroups.autoEventTriggers.size() < autoTriggers.size){
+							autoTriggers.each(t -> t.copy().add());
+						}
+					}));
+				});
 			});
 		}
 	}
@@ -306,7 +314,7 @@ public class EventListeners{
 		});
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {
-			if(!NHSetting.getBool("@active.override") && e.host.address.equals(NewHorizon.SERVER_ADDRESS)){
+			if(!NHSetting.getBool("@active.override")){
 				connectCaution = true;
 			}
 			
