@@ -15,6 +15,7 @@ import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
@@ -144,6 +145,7 @@ public class ScreenInterferencer{
 	}
 	
 	public static void update(){
+		if(Vars.headless)return;
 		if(state.isMenu())reloadTime = 0;
 		if(state.isPaused())return;
 		reloadTime -= Time.delta;
@@ -152,6 +154,7 @@ public class ScreenInterferencer{
 	}
 	
 	public static void generate(float time){
+		if(Vars.headless)return;
 		if(reloadTime > 0)return;
 		hackRemainTime = hackLifetime = time;
 		
@@ -168,6 +171,7 @@ public class ScreenInterferencer{
 	}
 	
 	public static void continueGenerate(){
+		if(Vars.headless)return;
 		hackRemainTime = hackLifetime = 30f;
 		
 		hackShowTable.actions(Actions.fadeIn(1f));

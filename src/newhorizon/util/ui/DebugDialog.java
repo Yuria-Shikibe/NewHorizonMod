@@ -379,6 +379,22 @@ public class DebugDialog extends BaseDialog{
 				addCloseButton();
 			}}.show());
 			
+			t.button("Apply Default Waves", () -> {
+				state.rules.spawns.clear();
+				state.rules.spawns.addAll(waves.get());
+			});
+			
+			t.button("Show UI Structure", () -> {
+				new BaseDialog(""){{
+					addCloseButton();
+					
+					cont.pane(t -> {
+						t.add(ui.hudGroup.toString());
+					}).grow();
+					
+				}}.show();
+			});
+			
 			t.row();
 			
 			t.button("Hack", () -> ScreenInterferencer.generate(360));

@@ -330,6 +330,7 @@ public class MatterStorm extends Weather{
 	public static class AdaptedWeatherState extends WeatherState{
 		public float prepareReload = 450f;
 		
+		
 		@Override
 		public void init(Weather weather){
 			super.init(weather);

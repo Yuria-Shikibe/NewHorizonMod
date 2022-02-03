@@ -1,6 +1,7 @@
 package newhorizon.util.graphic;
 
 import arc.Core;
+import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -16,9 +17,12 @@ import arc.util.Tmp;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.game.Team;
+import mindustry.gen.Building;
 import mindustry.gen.Buildingc;
+import mindustry.gen.Groups;
 import mindustry.gen.Teamc;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
 import newhorizon.NewHorizon;
@@ -46,6 +50,12 @@ public class DrawFunc{
         vec21.set(Core.camera.position);
         float dst = Mathf.dst(x, y, vec21.x, vec21.y);
         return 1 - Mathf.clamp(dst / norDst);
+    }
+    
+    public static <T extends Building> void drawWhileHold(Class<T> type, Cons<T> drawer){
+        Draw.z(Layer.overlayUI + 1);
+        Seq<T> builds = Groups.build.copy(new Seq<>()).filter(b -> b.team == Vars.player.team() && type.isAssignableFrom(b.getClass())).as();
+        for(T build : builds)drawer.get(build);
     }
     
     public static float cameraDstScl(float x, float y){

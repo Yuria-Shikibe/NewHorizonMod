@@ -6,9 +6,9 @@ Draw.blend(new Blending(Gl.blendSrcRgb, Gl.blendEquationRgb));
 
 print(NHWeathers.quantumStorm.isActive())
 Groups.weather.clear();
-NHWeathers.quantumStorm.create(1,1800);
+NHWeathers.quantumStorm.create(3,1800);
 
-
+PreMadeRaids.raid1.setup();
 
 NHWeathers.quantumStorm.create(Mathf.random(__,__),__);
 Groups.weather.clear();

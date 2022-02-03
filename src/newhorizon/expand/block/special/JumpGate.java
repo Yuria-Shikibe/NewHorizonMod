@@ -18,10 +18,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Structs;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -650,7 +647,17 @@ public class JumpGate extends Block {
             planSpawnID = read.i();
             planSpawnNum = read.i();
         }
-        
+    
+        @Override
+        public void displayBars(Table table){
+            super.displayBars(table);
+            table.row().table(t -> {
+                t.left();
+                t.label(() -> "[lightgray]Constructing: [accent]" + (getType() == null ? Core.bundle.get("none") : getType().localizedName)).pad(OFFSET / 2f);
+                t.image(() -> getType() == null ? Icon.cancel.getRegion() : getType().uiIcon).size(LEN - OFFSET).scaling(Scaling.fit);
+            }).growX().fillY().visible(this::isCalling);
+        }
+    
         public boolean isCalling(){return calls.containsKey(spawnID);}
         public UnitType getType(){
             UnitSet set = calls.get(spawnID);

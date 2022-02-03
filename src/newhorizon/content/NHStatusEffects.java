@@ -23,7 +23,7 @@ import newhorizon.util.ui.ScreenInterferencer;
 
 public class NHStatusEffects implements ContentList{
     public static StatusEffect ultFireBurn, stronghold,
-            staticVel, emp1, emp2, emp3, invincible, quantization, accel_3, scrambler, end, phased, weak, scannerDown, intercepted;
+            staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
     @Override
     public void load(){
@@ -133,11 +133,6 @@ public class NHStatusEffects implements ContentList{
                 float drawSize = 24f * e.fout();
                 Draw.rect(NHContent.pointerRegion, e.x, e.y - e.rotation * 24f * e.finpow(), drawSize, drawSize, -180);
             }), NHFx.lightningHitSmall(color));
-        }};
-        
-        accel_3 = new StatusEffect("accel_3"){{
-            speedMultiplier = 3;
-            show = false;
         }};
         
         quantization = new NHStatusEffect("quantization"){{

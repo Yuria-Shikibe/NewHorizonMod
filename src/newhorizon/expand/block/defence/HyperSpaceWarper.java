@@ -154,17 +154,17 @@ public class HyperSpaceWarper extends Block{
 			}
 		}
 		
-		public boolean chargeCons(){return reload > reloadTime;}
+		public boolean chargeValid(){return reload > reloadTime;}
 		
 		@Override
 		public void updateTile(){
 			if(consValid()){
-				if(!chargeCons()){
+				if(!chargeValid()){
 					reload += efficiency() * delta();
 				}
 			}
 			
-			if(efficiency() > 0 && chargeCons()){
+			if(efficiency() > 0 && chargeValid()){
 				if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{
@@ -196,7 +196,7 @@ public class HyperSpaceWarper extends Block{
 		}
 		
 		public boolean canTeleport(){
-			return chargeCons() && consValid();
+			return chargeValid() && consValid();
 		}
 		
 		@Override

@@ -50,6 +50,7 @@ public class NHSetting{
 	
 	public static void updateSettingMenu(){
 		SettingsMenuDialog settingTable = Vars.ui.settings;
+		
 		settingTable.game.row();
 		settingTable.graphics.checkPref("enableeffectdetails", true);
 		settingTable.graphics.checkPref("alwaysshowgravitytrapfields", false);
@@ -57,9 +58,9 @@ public class NHSetting{
 		settingTable.game.sliderPref("eventbarsoffsetx", 0, 0, 100, 4, i -> i + "%");
 		settingTable.game.sliderPref("eventbarsoffsety", 0, 0, 100, 4, i -> i + "%");
 		
-		settingTable.game.row().button("MOD: [sky]" + modMeta.displayName, new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
+		settingTable.game.row().button("MOD: [sky]" + modMeta.displayName + "[]", new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
 			new SettingDialog().show();
-		}).size(LEN * 6f, LEN + OFFSET);
+		}).growX().height(LEN);
 	}
 	
 	public static void update(){

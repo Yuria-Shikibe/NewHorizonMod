@@ -50,7 +50,7 @@ public class NHBullets implements ContentList{
 	
 	public static
 	BulletType
-		ultFireball,
+		ultFireball, saviourBullet,
 		synchroZeta, synchroThermoPst, synchroFusion, synchroPhase,
 		longRangeShoot, longRangeShootRapid, longRangeShootSplash, mineShoot,
 		artilleryIrd, artilleryFusion, artilleryPlast, artilleryThermo, artilleryPhase, artilleryMissile,
@@ -360,6 +360,65 @@ public class NHBullets implements ContentList{
 		STRIKE = NewHorizon.name("strike");
 		
 		loadFragType();
+		
+		saviourBullet = new EmpBulletType(){{
+			float rad = 100f;
+			
+			maxRange = 400f;
+			scaleVelocity = true;
+			lightOpacity = 0.7f;
+			healPercent = 20f;
+			timeIncrease = 3f;
+			timeDuration = 60f * 20f;
+			powerDamageScl = 3f;
+			damage = 100;
+			hitColor = lightColor = Pal.heal;
+			lightRadius = 70f;
+			shootEffect = Fx.hitEmpSpark;
+			smokeEffect = Fx.healWave;
+			lifetime = 60f;
+			lightningColor = backColor = Pal.heal;
+			frontColor = Color.white;
+			
+			lightning = 3;
+			lightningDamage = damage;
+			lightningLength = 7;
+			lightningLengthRand = 16;
+			
+			width = 16f;
+			height = 35f;
+			speed = 8f;
+			trailLength = 20;
+			trailWidth = 2.7f;
+			trailColor = Pal.heal;
+			trailInterval = 3f;
+			splashDamage = damage * 0.75f;
+			splashDamageRadius = rad;
+			hitShake = 4f;
+			trailRotation = true;
+			status = StatusEffects.electrified;
+			hitSound = Sounds.plasmaboom;
+			
+			trailEffect = new Effect(16f, e -> {
+				color(Pal.heal);
+				for(int s : Mathf.signs){
+					DrawFunc.tri(e.x, e.y, 4f, 30f * Mathf.curve(e.fin(), 0, 0.1f) * e.fout(0.9f), e.rotation + 135f * s);
+				}
+			});
+			
+			hitEffect = new OptionalMultiEffect(NHFx.blast(backColor, rad), NHFx.hitSpark(backColor, 120f, 40, rad * 1.7f, 2.5f, 12f));
+			despawnEffect = NHFx.crossBlast(backColor, rad * 1.8f, 45);
+		}
+			
+			@Override
+			public void hit(Bullet b){
+				super.hit(b);
+				
+				NHFunc.extinguish(b, splashDamageRadius, 3000);
+			}
+			
+			@Override public float range(){return maxRange;}
+		};
 		
 		synchroZeta = new BasicBulletType(8f, 65f){{
 			lifetime = 48f;

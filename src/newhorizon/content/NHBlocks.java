@@ -122,12 +122,12 @@ public class NHBlocks implements ContentList {
 		//Drills
 		largeWaterExtractor, beamDrill,
 		//Powers
-		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator, zetaGenerator,
+		armorPowerNode, armorBatteryLarge, disposableBattery, radiationGenerator, zetaGenerator, hugeBattery, heavyPowerNode,
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher,
 		//Special
 		playerJumpGate, debuger, payloadEntrance, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
-		disposePowerVoid, disposePowerNode, temporaryPowerSource,
+		disposePowerVoid, disposePowerNode, temporaryPowerSource, gravityTrapSmall,
 	
 		//Env
 		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalUnit, metalTower, metalGround, metalGroundQuantum,
@@ -832,7 +832,7 @@ public class NHBlocks implements ContentList {
 			shootCone = 60f;
 			range = 300f;
 			hasPower = true;
-			force = 18.0F;
+			force = 28.0F;
 			scaledForce = 8.0F;
 			shootLength = size * tilesize / 2f - 3;
 			damage = 0.15F;
@@ -1959,13 +1959,23 @@ public class NHBlocks implements ContentList {
 			requirements(Category.units, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
 		}};
 		
+		gravityTrapSmall = new GravityTrap("gravity-trap-small"){{
+			size = 2;
+			health = 640;
+			range = 16;
+			
+			consumes.power(5f);
+			requirements(Category.units, BuildVisibility.shown, with(Items.titanium, 60, NHItems.metalOxhydrigen, 80, NHItems.juniorProcessor, 50, Items.copper, 200, NHItems.zeta, 50));
+			NHTechTree.add(hyperspaceWarper, this);
+		}};
+		
 		gravityTrap = new GravityTrap("gravity-gully"){{
 			size = 3;
 			health = 1250;
 			
 			consumes.power(8f);
 			requirements(Category.units, BuildVisibility.shown, with(Items.plastanium, 80, NHItems.multipleSteel, 80, NHItems.juniorProcessor, 80, Items.copper, 200));
-			NHTechTree.add(hyperspaceWarper, this);
+			NHTechTree.add(gravityTrapSmall, this);
 		}};
 		
 		irdryonTank = new LiquidRouter("irdryon-tank"){{
@@ -2053,6 +2063,14 @@ public class NHBlocks implements ContentList {
 			consumes.powerBuffered(45000.0F);
 		}};
 		
+		hugeBattery = new Battery("huge-battery"){{
+			size = 5;
+			health = 1600;
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(Items.phaseFabric, 40, NHItems.juniorProcessor, 20, NHItems.zeta, 80, NHItems.presstanium, 35, Items.graphite, 50));
+			NHTechTree.add(Blocks.batteryLarge, this);
+			consumes.powerBuffered(500_000);
+		}};
+		
 		armorPowerNode = new PowerNode("armor-power-node"){{
 			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 25, NHItems.juniorProcessor, 5, Items.lead, 25));
 			NHTechTree.add(Blocks.powerNodeLarge, this);
@@ -2060,6 +2078,15 @@ public class NHBlocks implements ContentList {
 			maxNodes = 12;
 			laserRange = 8.5F;
 			health = 1650;
+		}};
+		
+		heavyPowerNode = new PowerNode("heavy-power-node"){{
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 25, NHItems.juniorProcessor, 15, NHItems.zeta, 45, NHItems.presstanium, 40));
+			NHTechTree.add(Blocks.powerNodeLarge, this);
+			size = 3;
+			maxNodes = 30;
+			laserRange = 20F;
+			health = 1050;
 		}};
 		
 		largeWaterExtractor = new SolidPump("large-water-extractor"){{

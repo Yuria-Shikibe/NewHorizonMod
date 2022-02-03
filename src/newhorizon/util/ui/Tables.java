@@ -52,8 +52,6 @@ public class Tables{
 		if(type.fragBullet != null)damage += estimateBulletDamage(type.fragBullet, type.fragBullets, false);
 		
 		return damage;
-		
-		
 	}
 	
 	public static void ammo(Table table, String name, BulletType type, TextureRegion icon, int indent){

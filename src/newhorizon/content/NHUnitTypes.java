@@ -26,7 +26,10 @@ import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.*;
-import mindustry.entities.bullet.*;
+import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.BulletType;
+import mindustry.entities.bullet.ContinuousLaserBulletType;
+import mindustry.entities.bullet.FlakBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
@@ -918,7 +921,7 @@ public class NHUnitTypes implements ContentList{
 					splashDamageRadius = 24f;
 					
 					hitEffect = NHFx.blast(backColor, splashDamageRadius);
-					despawnEffect = NHFx.crossBlast(backColor, 40f);
+					despawnEffect = NHFx.square45_6_45;
 					shootEffect = NHFx.shootCircleSmall(backColor);
 					smokeEffect = Fx.shootBigSmoke;
 					
@@ -1740,7 +1743,7 @@ public class NHUnitTypes implements ContentList{
 							shootEffect = NHFx.shootCircleSmall(backColor);
 							smokeEffect = Fx.shootBigSmoke;
 							hitEffect = NHFx.blast(backColor, splashDamageRadius);
-							despawnEffect = NHFx.circleOut(backColor, splashDamageRadius * 1.25f);
+							despawnEffect = NHFx.hitSparkLarge;
 							despawnShake = hitShake = 5f;
 							
 							collidesAir = collides = true;
@@ -2391,65 +2394,7 @@ public class NHUnitTypes implements ContentList{
 						shootSound = Sounds.laser;
 						cooldownTime = 40f;
 						
-						bullet = new EmpBulletType(){{
-							float rad = 100f;
-							
-							maxRange = 400f;
-							scaleVelocity = true;
-							lightOpacity = 0.7f;
-							healPercent = 20f;
-							timeIncrease = 3f;
-							timeDuration = 60f * 20f;
-							powerDamageScl = 3f;
-							damage = 100;
-							hitColor = lightColor = Pal.heal;
-							lightRadius = 70f;
-							clipSize = 250f;
-							shootEffect = Fx.hitEmpSpark;
-							smokeEffect = Fx.healWave;
-							lifetime = 60f;
-							lightningColor = backColor = Pal.heal;
-							frontColor = Color.white;
-							
-							lightning = 3;
-							lightningDamage = damage;
-							lightningLength = 7;
-							lightningLengthRand = 16;
-							
-							width = 16f;
-							height = 35f;
-							speed = 8f;
-							trailLength = 20;
-							trailWidth = 2.7f;
-							trailColor = Pal.heal;
-							trailInterval = 3f;
-							splashDamage = damage * 0.75f;
-							splashDamageRadius = rad;
-							hitShake = 4f;
-							trailRotation = true;
-							status = StatusEffects.electrified;
-							hitSound = Sounds.plasmaboom;
-							
-							trailEffect = new Effect(16f, e -> {
-								color(Pal.heal);
-								for(int s : Mathf.signs){
-									DrawFunc.tri(e.x, e.y, 4f, 30f * Mathf.curve(e.fin(), 0, 0.1f) * e.fout(0.9f), e.rotation + 135f * s);
-								}
-							});
-							
-							hitEffect = new OptionalMultiEffect(NHFx.circleOut(backColor, rad * 1.5f), NHFx.blast(backColor, rad), NHFx.hitSpark(backColor, 120f, 40, rad * 1.7f, 2.5f, 12f));
-							despawnEffect = NHFx.crossBlast(backColor, rad * 1.8f, 45);
-						}
-							
-							@Override
-							public void hit(Bullet b){
-								super.hit(b);
-								
-								NHFunc.extinguish(b, splashDamageRadius, 800);
-							}
-							
-							@Override public float range(){return maxRange;}
-						};
+						bullet = NHBullets.saviourBullet;
 					}}
 			);
 			

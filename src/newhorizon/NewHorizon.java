@@ -15,6 +15,7 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
+import mindustry.net.ServerGroup;
 import mindustry.type.Item;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
@@ -29,6 +30,7 @@ import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
+import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
@@ -58,6 +60,7 @@ public class NewHorizon extends Mod{
 	public static final String MOD_NAME = "new-horizon";
 	public static final String MOD_NAME_BAR = "new-horizon-";
 	public static final String SERVER = "175.178.22.6:6666", SERVER_ADDRESS = "175.178.22.6", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
+	public static final String EU_NH_SERVER = "Emphasize.cn:12510";
 	
 	public static Mods.LoadedMod MOD;
 	
@@ -83,8 +86,9 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE + FeatureLog.IMPORTANT, NHContent.objective),
-			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),
+			new FeatureLog(NHBlocks.gravityTrapSmall), new FeatureLog(NHBlocks.hugeBattery), new FeatureLog(NHBlocks.heavyPowerNode),
+//			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE + FeatureLog.IMPORTANT, NHContent.objective),
+//			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),
 		};
 	}
 	
@@ -200,6 +204,13 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
 		Events.on(ClientLoadEvent.class, e -> {
+			Core.app.post(NHSetting::updateSettingMenu);
+			
+			Vars.defaultServers.add(new ServerGroup(){{
+				name = "[sky]New Horizon [white]Mod [lightgray]Servers";
+				addresses = new String[]{SERVER, EU_NH_SERVER};
+			}});
+			
 			Time.runTask(15f, () -> Core.app.post(() -> {
 				Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
 					Jval json = Jval.read(res.getResultAsString());
@@ -257,7 +268,6 @@ public class NewHorizon extends Mod{
 		
 		TableFunc.tableMain();
 		
-		NHSetting.updateSettingMenu();
 		NHSetting.applySettings();
 		
 		ScreenInterferencer.load();
@@ -411,6 +421,22 @@ public class NewHorizon extends Mod{
 						}
 						CutsceneScript.runJS(sb.toString());
 					} catch (Throwable var3) {
+						player.sendMessage(var3.toString());
+					}
+				}
+			}
+		});
+		
+		handler.<Player>register("runjs", "<Scale>", "Set Auto Event Trigger Time Scale (Admin Only)", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else {
+				if (args.length == 0){
+					AutoEventTrigger.setScale(0.8f);
+				}else{
+					try {
+						AutoEventTrigger.setScale(Float.parseFloat(args[0]));
+					} catch (NumberFormatException var3) {
 						player.sendMessage(var3.toString());
 					}
 				}
