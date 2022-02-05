@@ -86,7 +86,8 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(NHBlocks.gravityTrapSmall), new FeatureLog(NHBlocks.hugeBattery), new FeatureLog(NHBlocks.heavyPowerNode),
+			new FeatureLog(NHBlocks.multiSteelItemBridge), new FeatureLog(NHBlocks.multiSteelLiquidBridge),
+			new FeatureLog("Unit & Turret Balance", "Many Balance work done to units and turrets", FeatureLog.BALANCE, Icon.wrench.getRegion())
 //			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE + FeatureLog.IMPORTANT, NHContent.objective),
 //			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),
 		};
@@ -380,33 +381,33 @@ public class NewHorizon extends Mod{
 			}
 		});
 		
-		handler.<Player>register("eventTypes", "List all cutscene event types in the map.", (args, player) -> {
+		handler.<Player>register("eventtypes", "List all cutscene event types in the map.", (args, player) -> {
 			if (CutsceneEvent.cutsceneEvents.isEmpty()) {
 				player.sendMessage("No EventTypes Available");
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
 				CutsceneEvent.cutsceneEvents.each((k, e) -> {
-					builder.append(k).append("->").append(e).append('\n');
+					builder.append(k).append("->").append(e.getClass().getSuperclass().getSimpleName()).append('\n');
 				});
 				player.sendMessage(builder.toString());
 			}
 		});
 		
-		handler.<Player>register("eventTriggers", "List all event triggers in the map.", (args, player) -> {
+		handler.<Player>register("eventtriggers", "List all event triggers in the map.", (args, player) -> {
 			if (NHGroups.autoEventTriggers.isEmpty()) {
 				player.sendMessage("No Trigger Available");
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
 				NHGroups.autoEventTriggers.each(e -> {
-					builder.append(e.toString()).append('\n').append(e.desc());
+					builder.append("[royal]").append(e.toString()).append("[lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append(e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]").append("[]\n");
 				});
 				player.sendMessage(builder.toString());
 			}
 		});
 		
-		handler.<Player>register("runjs", "<Code>", "Run js codes (Admin Only)", (args, player) -> {
+		handler.<Player>register("js", "<Code>", "Run js codes (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
 			}else{
@@ -419,15 +420,17 @@ public class NewHorizon extends Mod{
 			}
 		});
 		
-		handler.<Player>register("setScale", "<Scale>", "Set Auto Event Trigger Time Scale (Admin Only)", (args, player) -> {
+		handler.<Player>register("setscale", "<Scale>", "Set Auto Event Trigger Time Scale (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
 			} else {
 				if (args.length == 0){
 					AutoEventTrigger.setScale(0.8f);
+					player.sendMessage("Set to: [accent]0.8");
 				}else{
 					try {
 						AutoEventTrigger.setScale(Float.parseFloat(args[0]));
+						player.sendMessage("Set to: [accent]" + Float.parseFloat(args[0]));
 					} catch (NumberFormatException var3) {
 						player.sendMessage(var3.toString());
 					}

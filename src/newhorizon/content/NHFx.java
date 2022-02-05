@@ -140,11 +140,12 @@ public class NHFx{
 	}
 	
 	public static Effect shootLineSmall(Color color){
-		return get("shootLineSmall", color,new Effect(20, e -> {
+		return get("shootLineSmall", color,new Effect(37f, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
-			randLenVectors(e.id, 4, 2 + 18 * e.fin(), e.rotation, 30f, (x, y) -> {
-				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 8 + 3);
-				Drawf.light(e.x + x, e.y + y, e.fout(0.25f) * 12f, color, 0.7f);
+			randLenVectors(e.id, 6, 4 + 22 * e.fin(), e.rotation, 22F, (x, y) -> {
+				Lines.stroke(1.5f * e.fout(0.2f));
+				lineAngleCenter(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 9f + 3);
+				Drawf.light(e.x + x, e.y + y, e.fout() * 13f + 3, color, 0.7f);
 			});
 		}));
 	}
@@ -188,7 +189,7 @@ public class NHFx{
 			
 			e.scaled(lifetime / 2, t -> {
 				Fill.circle(t.x, t.y, t.fout() * 8f);
-				Angles.randLenVectors(t.id + 1, (int)(range / 13), 2 + range * 0.75f * t.finpow(), (x, y) -> {
+				if(NHSetting.enableDetails())Angles.randLenVectors(t.id + 1, (int)(range / 13), 2 + range * 0.75f * t.finpow(), (x, y) -> {
 					Fill.circle(t.x + x, t.y + y, t.fout(Interp.pow2Out) * Mathf.clamp(range / 15f, 3f, 14f));
 					Drawf.light(t.x + x, t.y + y, t.fout(Interp.pow2Out) * Mathf.clamp(range / 15f, 3f, 14f), color, 0.5f);
 				});
@@ -357,12 +358,12 @@ public class NHFx{
 			e.scaled(12.0F, (c) -> {
 				Draw.color(color.cpy().lerp(Color.white, 0.25f));
 				Lines.stroke(c.fout() * 2.0F + 0.2F);
-				Lines.circle(e.x, e.y, c.fin() * size * 0.7f);
+				Lines.circle(e.x, e.y, c.fin() * size * 1.1f);
 			});
 			
-			e.scaled(18.0F, (c) -> {
+			if(NHSetting.enableDetails())e.scaled(18.0F, (c) -> {
 				Draw.color(color);
-				Angles.randLenVectors(e.id, 25, 5.0F + e.fin() * size * 1.25f, e.rotation, 60.0F, (x, y) -> {
+				Angles.randLenVectors(e.id, 25, 8.0F + e.fin() * size * 1.25f, e.rotation, 60.0F, (x, y) -> {
 					Fill.square(e.x + x, e.y + y, c.fout() * 3.0F, 45.0F);
 				});
 			});

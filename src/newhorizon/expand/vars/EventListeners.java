@@ -35,6 +35,7 @@ import newhorizon.expand.block.special.PlayerJumpGate;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.ClientDisabled;
+import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.feature.cutscene.events.FleetEvent;
@@ -88,6 +89,11 @@ public class EventListeners{
 	public static void loadAfterContent(){
 		{
 			autoTriggers.addAll(new AutoEventTrigger(){{
+				items = OV_Pair.seqWith(NHItems.upgradeSort, 1000, NHItems.darkEnergy, 1000);
+				eventType = EventSamples.waveTeamRaid;
+				spacingBase *= 2.75f;
+				spacingRand = 120 * 60;
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(Items.surgeAlloy, 50, NHItems.juniorProcessor, 150);
 				eventType = PreMadeRaids.standardRaid1;
 				spacingBase *= 1.75f;
@@ -164,7 +170,7 @@ public class EventListeners{
 					
 					Core.app.post(() -> Core.app.post(() -> {
 						if(!Vars.state.rules.pvp && NHGroups.autoEventTriggers.size() < autoTriggers.size){
-							autoTriggers.each(t -> t.copy().add());
+							CutsceneScript.runEventOnce("setup-events", () -> autoTriggers.each(t -> t.copy().add()));
 						}
 					}));
 				});
@@ -244,65 +250,67 @@ public class EventListeners{
 				});
 			}
 			
-			if(control.input.block instanceof JumpGate){
-				DrawFunc.drawWhileHold(JumpGate.JumpGateBuild.class, build -> {
-					Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
-					Draw.color(Pal.gray);
-					Fill.square(Tmp.v1.x + player.x, Tmp.v1.y + player.y, 5);
-					Draw.color();
-					if(build.isCalling())Draw.mixcol(Color.white, Mathf.absin(4f, 0.45f));
-					else{
-						if(build.cooling)Draw.mixcol(Pal.lancerLaser, Mathf.absin(4f, 0.45f));
-						else Draw.mixcol(player.team().color, Mathf.absin(4f, 0.45f));
-					}
-					Draw.rect(build.block.fullIcon, Tmp.v1.x + player.x, Tmp.v1.y + player.y, 8, 8, 0);
-					Tmp.v2.set(Tmp.v1).nor().scl(player.unit().hitSize() + 22).add(player.x, player.y);
-					Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v2.x, Tmp.v2.y, 10f, 4f, player.team().color);
-				});
-			}
 			
-			if(control.input.block instanceof HyperSpaceWarper){
-				DrawFunc.drawWhileHold(HyperSpaceWarper.HyperSpaceWarperBuild.class, build -> {
-					Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
-					Draw.color(Pal.gray);
-					Fill.square(Tmp.v1.x + player.x, Tmp.v1.y + player.y, 5);
-					Draw.color();
-					if(build.chargeValid())Draw.mixcol(player.team().color, Mathf.absin(4f, 0.45f));
-					else Draw.mixcol(Color.white, Mathf.absin(4f, 0.45f));
-					
-					Draw.rect(build.block.fullIcon, Tmp.v1.x + player.x, Tmp.v1.y + player.y, 8, 8, 0);
-					Tmp.v2.set(Tmp.v1).nor().scl(player.unit().hitSize() + 22).add(player.x, player.y);
-					Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v2.x, Tmp.v2.y, 10f, 4f, player.team().color);
-				});
-			}
 			
-			if(control.input.block instanceof PlayerJumpGate){
-				Seq<Building> hasDrawnDash = new Seq<>();
-				Seq<PlayerJumpGate.PlayerJumpGateBuild> builds = Groups.build.copy(new Seq<>()).filter(b -> b.team == Vars.player.team() && b instanceof PlayerJumpGate.PlayerJumpGateBuild).as();
-				for(PlayerJumpGate.PlayerJumpGateBuild build : builds){
-					Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
-					Draw.color(Pal.gray);
-					
-					Draw.z(Layer.overlayUI + 1);
-					Fill.square(Tmp.v1.x + player.x, Tmp.v1.y + player.y, 5);
-					Draw.color();
-					if(build.canFunction())Draw.mixcol(player.team().color, Mathf.absin(4f, 0.45f));
-					else Draw.mixcol(Color.white, Mathf.absin(4f, 0.45f));
-					
-					Draw.rect(build.block.fullIcon, Tmp.v1.x + player.x, Tmp.v1.y + player.y, 8, 8, 0);
-					Tmp.v2.set(Tmp.v1).nor().scl(player.unit().hitSize() + 22).add(player.x, player.y);
-					Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v2.x, Tmp.v2.y, 10f, 4f, player.team().color);
-					
-					
-					if(build.linkValid()){
-						PlayerJumpGate.PlayerJumpGateBuild linked = (PlayerJumpGate.PlayerJumpGateBuild)build.link();
+			if(Core.settings.getBool("showinstructor")){
+				if(control.input.block instanceof JumpGate){
+					DrawFunc.drawWhileHold(JumpGate.JumpGateBuild.class, build -> {
 						Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
-						Tmp.v3.trns(player.angleTo(linked), player.unit().hitSize() + 15).add(player.x, player.y);
-						Draw.z(Layer.overlayUI + 0.9f);
-						if(!hasDrawnDash.contains(build))Drawf.dashLine(player.team().color, Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v3.x, Tmp.v3.y);
-						Draw.z(Layer.overlayUI + 0.95f);
-						Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v3.x, Tmp.v3.y, 10f, 3f, player.team().color);
-						if(linked.link() == build)hasDrawnDash.add(linked);
+						Draw.color(Pal.gray);
+						Fill.square(Tmp.v1.x + player.x, Tmp.v1.y + player.y, 5);
+						Draw.color();
+						if(build.isCalling())Draw.mixcol(Color.white, Mathf.absin(4f, 0.45f));
+						else{
+							if(build.cooling)Draw.mixcol(Pal.lancerLaser, Mathf.absin(4f, 0.45f));
+							else Draw.mixcol(player.team().color, Mathf.absin(4f, 0.45f));
+						}
+						Draw.rect(build.block.fullIcon, Tmp.v1.x + player.x, Tmp.v1.y + player.y, 8, 8, 0);
+						Tmp.v2.set(Tmp.v1).nor().scl(player.unit().hitSize() + 22).add(player.x, player.y);
+						Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v2.x, Tmp.v2.y, 10f, 4f, player.team().color);
+					});
+				}
+				if(control.input.block instanceof HyperSpaceWarper){
+					DrawFunc.drawWhileHold(HyperSpaceWarper.HyperSpaceWarperBuild.class, build -> {
+						Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
+						Draw.color(Pal.gray);
+						Fill.square(Tmp.v1.x + player.x, Tmp.v1.y + player.y, 5);
+						Draw.color();
+						if(build.chargeValid())Draw.mixcol(player.team().color, Mathf.absin(4f, 0.45f));
+						else Draw.mixcol(Color.white, Mathf.absin(4f, 0.45f));
+						
+						Draw.rect(build.block.fullIcon, Tmp.v1.x + player.x, Tmp.v1.y + player.y, 8, 8, 0);
+						Tmp.v2.set(Tmp.v1).nor().scl(player.unit().hitSize() + 22).add(player.x, player.y);
+						Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v2.x, Tmp.v2.y, 10f, 4f, player.team().color);
+					});
+				}
+				if(control.input.block instanceof PlayerJumpGate){
+					Seq<Building> hasDrawnDash = new Seq<>();
+					Seq<PlayerJumpGate.PlayerJumpGateBuild> builds = Groups.build.copy(new Seq<>()).filter(b -> b.team == Vars.player.team() && b instanceof PlayerJumpGate.PlayerJumpGateBuild).as();
+					for(PlayerJumpGate.PlayerJumpGateBuild build : builds){
+						Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
+						Draw.color(Pal.gray);
+						
+						Draw.z(Layer.overlayUI + 1);
+						Fill.square(Tmp.v1.x + player.x, Tmp.v1.y + player.y, 5);
+						Draw.color();
+						if(build.canFunction())Draw.mixcol(player.team().color, Mathf.absin(4f, 0.45f));
+						else Draw.mixcol(Color.white, Mathf.absin(4f, 0.45f));
+						
+						Draw.rect(build.block.fullIcon, Tmp.v1.x + player.x, Tmp.v1.y + player.y, 8, 8, 0);
+						Tmp.v2.set(Tmp.v1).nor().scl(player.unit().hitSize() + 22).add(player.x, player.y);
+						Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v2.x, Tmp.v2.y, 10f, 4f, player.team().color);
+						
+						
+						if(build.linkValid()){
+							PlayerJumpGate.PlayerJumpGateBuild linked = (PlayerJumpGate.PlayerJumpGateBuild)build.link();
+							Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
+							Tmp.v3.trns(player.angleTo(linked), player.unit().hitSize() + 15).add(player.x, player.y);
+							Draw.z(Layer.overlayUI + 0.9f);
+							if(!hasDrawnDash.contains(build))Drawf.dashLine(player.team().color, Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v3.x, Tmp.v3.y);
+							Draw.z(Layer.overlayUI + 0.95f);
+							Drawf.arrow(Tmp.v1.x + player.x, Tmp.v1.y + player.y, Tmp.v3.x, Tmp.v3.y, 10f, 3f, player.team().color);
+							if(linked.link() == build)hasDrawnDash.add(linked);
+						}
 					}
 				}
 			}

@@ -9,10 +9,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.*;
-import arc.struct.IntFloatMap;
-import arc.struct.IntSeq;
-import arc.struct.IntSet;
-import arc.struct.Seq;
+import arc.struct.*;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -26,10 +23,13 @@ import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHFx;
+import newhorizon.expand.bullets.SpeedUpBulletType;
 import newhorizon.expand.entities.Spawner;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -266,6 +266,19 @@ public class NHFunc{
     @Contract(value = "!null, _ -> param1", pure = true)
     public static Color getColor(Color defaultColor, Team team){
         return defaultColor == null ? team.color : defaultColor;
+    }
+    
+    public static void limitRangeWithoutNew(ItemTurret turret, float margin){
+        for(ObjectMap.Entry<Item, BulletType> entry : turret.ammoTypes.entries()){
+            entry.value.lifetime = (turret.range + margin) / entry.value.speed;
+        }
+    }
+    
+    public static void limitRangeByRange(ItemTurret turret, float margin){
+        for(ObjectMap.Entry<Item, BulletType> entry : turret.ammoTypes.entries()){
+            entry.value.lifetime *= (turret.range + margin) / entry.value.range();
+            if(entry.value instanceof SpeedUpBulletType)((SpeedUpBulletType)entry.value).init();
+        }
     }
     
     //not support server

@@ -54,6 +54,7 @@ public class NHSetting{
 		settingTable.game.row();
 		settingTable.graphics.checkPref("enableeffectdetails", true);
 		settingTable.graphics.checkPref("alwaysshowgravitytrapfields", false);
+		settingTable.game.checkPref("showinstructor", true);
 		settingTable.game.checkPref("showeventtable", true);
 		settingTable.game.sliderPref("eventbarsoffsetx", 0, 0, 100, 4, i -> i + "%");
 		settingTable.game.sliderPref("eventbarsoffsety", 0, 0, 100, 4, i -> i + "%");

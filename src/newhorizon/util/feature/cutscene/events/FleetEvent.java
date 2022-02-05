@@ -83,15 +83,14 @@ public class FleetEvent extends CutsceneEvent{
 		
 		Vec2 t = null;
 		
-		while(b == null && all.any()){
+		loop: while(b == null && all.any()){
 			int index = rand.random(all.size - 1);
 			b = all.get(index);
 			
 			int i = 0;
 			
 			if(GravityTrapField.IntersectedAllyRect.get(b, Tmp.r1.setSize(4).setCenter(b.x, b.y))){
-				while(i < 10){
-					
+				while(i < 30){
 					Tmp.v1.rnd(240).add(b).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, Vars.finalWorldBounds + Vars.world.unitHeight(), Vars.finalWorldBounds + Vars.world.unitWidth());
 					if(GravityTrapField.IntersectedAllyRect.get(b, Tmp.r1.setSize(4).setCenter(Tmp.v1.x, Tmp.v1.y))){
 						i++;
@@ -99,8 +98,9 @@ public class FleetEvent extends CutsceneEvent{
 					}
 					
 					t = Tmp.v1.cpy();
-					break;
+					break loop;
 				}
+				
 				all.remove(index);
 				b = null;
 			}

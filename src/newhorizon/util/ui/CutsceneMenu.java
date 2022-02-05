@@ -256,7 +256,6 @@ public class CutsceneMenu extends BaseDialog{
 	public void hide(){
 		super.hide();
 		
-		Log.info(root.toString());
 		editor.tags.put(CUSTOME_EVENTS_KEY, root.toString());
 	}
 	
@@ -531,7 +530,7 @@ public class CutsceneMenu extends BaseDialog{
 					t.pane(js -> {
 						js.align(Align.topLeft).background(Tex.pane);
 						js.label(() -> constructor).fill().pad(OFFSET / 2f).align(Align.topLeft).color(Color.lightGray).get().setWrap(false);
-					}).growX().fillY().visible(() -> constructor != null && !constructor.isEmpty()).row();
+					}).fillY().width(Core.graphics.getWidth() - LEN * 4 - OFFSET).visible(() -> constructor != null && !constructor.isEmpty()).center().row();
 					
 					t.button("@mod.ui.event-js-templates", Icon.link, () -> {
 						Core.app.openURI("https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Custom-Event-JS-Templates");

@@ -193,11 +193,6 @@ public class EnergyUnit extends UnitEntity{
 			Sounds.plasmaboom.at(this);
 			Sounds.plasmaboom.at(lastPos);
 			
-			for(Trail t : trails){
-				Fx.trailFade.at(lastPos.x, lastPos.y, 0, team.color, t.copy());
-				t.clear();
-			}
-			
 			teleport.at(x, y, hitSize / 2, team.color);
 			teleport.at(lastPos.x, lastPos.y, hitSize / 2, team.color);
 			teleportTrans.at(lastPos.x, lastPos.y, hitSize / 2, team.color, new Vec2().set(this));

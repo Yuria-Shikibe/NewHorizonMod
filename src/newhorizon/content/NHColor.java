@@ -8,7 +8,7 @@ public class NHColor{
 	public static Color
 		ally = new Color(0, 0, 1, 0.15f), hostile = new Color(1, 0, 0, 0.15f),
 		lightSkyBack = Color.valueOf("#8DB0FF"),
-		lightSkyFront = lightSkyBack.cpy().lerp(Color.white, 0.35f),
+		lightSkyFront = lightSkyBack.cpy().lerp(Color.white, 0.65f),
 		darkEnrColor = Pal.sapBullet,
 		thurmixRed = Color.valueOf("#FF9492"),
 		thurmixRedLight = Color.valueOf("#FFCED0"),

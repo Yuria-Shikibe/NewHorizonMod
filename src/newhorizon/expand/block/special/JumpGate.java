@@ -37,6 +37,7 @@ import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
 import mindustry.type.Category;
+import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
@@ -100,11 +101,14 @@ public class JumpGate extends Block {
     public JumpGate(String name){
         super(name);
         copyConfig = saveConfig = true;
+        highUnloadPriority = false;
         update = true;
         sync = true;
         configurable = true;
+        acceptsItems = true;
+        unloadable = true;
         solid = true;
-        hasPower = true;
+        hasPower = hasItems = true;
         timers = 3;
         category = Category.units;
         consumes.powerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
@@ -305,11 +309,16 @@ public class JumpGate extends Block {
         public boolean cooling = false;
         
         //Local var
-        public transient int spawnNum = 1;
+        public int spawnNum = 1;
         public int buildingSpawnNum = 0;
         
         public int planSpawnID = 0;
         public int planSpawnNum = 0;
+    
+        @Override
+        public boolean acceptItem(Building source, Item item){
+            return items.get(item) < getMaximumAccepted(item);
+        }
     
         @Override
         public void created(){
@@ -408,7 +417,14 @@ public class JumpGate extends Block {
             
             Draw.reset();
         }
-
+    
+        @Override
+        public void updateTableAlign(Table table){
+            Vec2 pos = Core.input.mouseScreen(x - block.size * 4f - 1.0F, y);
+            table.setPosition(pos.x, pos.y, Align.right);
+        }
+        
+    
         @Override
         public void buildConfiguration(Table table) {
             BaseDialog dialog = new BaseDialog("@spawn");
@@ -422,7 +438,7 @@ public class JumpGate extends Block {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
                                 Label can = new Label("");
                                 table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFunc.judge(canSpawn(set, false))));
-                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, core() != null ? core().items : null)).size(LEN);
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, items())).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();
                             if(!hideSet(set.type)){
@@ -561,13 +577,12 @@ public class JumpGate extends Block {
         }
 
         public void consumeItems(){
-            if(!cheating() && core() != null)core().items.remove(ItemStack.mult(getSet().requirements(), buildingSpawnNum));
+            if(!cheating())items().remove(ItemStack.mult(getSet().requirements(), buildingSpawnNum));
         }
 
         public boolean hasConsume(UnitSet set, int num){
             if(set == null || cheating())return true;
-            if(core() == null)return false;
-            return core().items.has(ItemStack.mult(set.requirements(), num));
+            return items.has(ItemStack.mult(set.requirements(), num));
         }
 
         public float costTime(UnitSet set, boolean buildingParma){
@@ -585,12 +600,13 @@ public class JumpGate extends Block {
             
             if(!calls.keys().toSeq().contains(set, false)){
                 if(isCalling()){
-                    if(core() != null && getSet() != null){
+                    if(getSet() != null){
                         for(ItemStack stack : ItemStack.mult(getSet().requirements(), buildingSpawnNum * (costTime(getSet(), true) - buildProgress) / costTime(getSet(), true))){
-                            core().items.add(stack.item, Math.min(stack.amount, core().getMaximumAccepted(stack.item) - core().items.get(stack.item)));
+                            items().add(stack.item, Math.min(stack.amount, getMaximumAccepted(stack.item) - items.get(stack.item)));
                         }
                     }
                 }
+                
                 spawnID = 0;
                 buildProgress = 0;
             }else{

@@ -45,6 +45,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		hasItems = true;
 		itemCapacity = 0;
 		configurable = true;
+		highUnloadPriority = true;
 	}
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid) {

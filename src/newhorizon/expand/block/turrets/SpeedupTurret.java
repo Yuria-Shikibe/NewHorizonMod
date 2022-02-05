@@ -12,7 +12,7 @@ import newhorizon.content.NHColor;
 public class SpeedupTurret extends PowerTurret{
 	public float maxSpeedupScl = 0.5f;
 	public float speedupPerShoot = 0.075f;
-	public float slowDownReloadTime = 90f;
+	public float slowDownReloadTime = 150f;
 	public float inaccuracyUp = 0f;
 	
 	public SpeedupTurret(String name){

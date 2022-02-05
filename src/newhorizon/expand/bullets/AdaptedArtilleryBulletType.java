@@ -20,6 +20,7 @@ public class AdaptedArtilleryBulletType extends ArtilleryBulletType{
 	
 	@Override
 	public void draw(Bullet b){
+		drawTrail(b);
 		float baseScale = 0.7f;
 		float scale = (baseScale + b.fslope() * (1f - baseScale));
 		float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f);

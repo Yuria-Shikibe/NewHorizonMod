@@ -161,9 +161,6 @@ public class RaidEvent extends CutsceneEvent{
 		
 		Vec2 vec2 = new Vec2().set(e);
 		
-		
-		
-		
 		UIActions.actionSeqMinor(Actions.parallel(UIActions.cautionAt((e).getX(), (e).getY(), 4, number * shootDelay / 60f, team.color), Actions.run(() -> {
 			NHSounds.alarm.play();
 			for(int i = 0; i < number; i++){

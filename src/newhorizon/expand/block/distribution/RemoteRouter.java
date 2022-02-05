@@ -46,7 +46,7 @@ public class RemoteRouter extends Block{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.output, t -> {
-			t.add(Core.bundle.format("mod.ui.loss", (loss / (1 + loss)) * 100));
+			t.add(Core.bundle.format("mod.ui.loss", loss * 100));
 		});
 		stats.add(Stat.reload, 60f / reloadTime, StatUnit.perSecond);
 		stats.add(Stat.range, range / tilesize, StatUnit.blocks);

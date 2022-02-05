@@ -70,6 +70,8 @@ public class UIActions{
 	}
 	
 	public static void init(){
+		
+		actor.clear();
 		actor = null;
 		actor = new Element();
 		
@@ -77,7 +79,7 @@ public class UIActions{
 		
 		if(root == null)root = new Table(Tex.clear){
 			{
-				if(Core.scene != null)Core.scene.root.addChildAt(1, this);
+				if(ui != null && ui.hudGroup != null)ui.hudGroup.addChildAt(1, this);
 			}
 			
 			@Override
@@ -90,6 +92,8 @@ public class UIActions{
 				
 				super.act(delta);
 				if(Vars.state.isMenu())remove();
+				
+				
 			}
 			
 			@Override
@@ -99,6 +103,7 @@ public class UIActions{
 				return b;
 			}
 		};
+		else root.clear();
 		
 		if(eventBarTable != null)eventBarTable.remove();
 		

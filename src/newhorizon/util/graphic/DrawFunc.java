@@ -45,6 +45,16 @@ public class DrawFunc{
     public static final int[] oneArr = {1};
     
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
+    private static final Rand rand = new Rand();
+    
+    public static void randLenVectors(long seed, float fin, int amount, float minLength, float length, Angles.ParticleConsumer cons){
+        rand.setSeed(seed);
+        for(int i = 0; i < amount; i++){
+            float l = rand.nextFloat();
+            vec21.trns(rand.random(360f), length * l * fin + minLength);
+            cons.accept(vec21.x, vec21.y, fin * l, (1f - fin) * l);
+        }
+    }
     
     public static float cameraDstScl(float x, float y, float norDst){
         vec21.set(Core.camera.position);

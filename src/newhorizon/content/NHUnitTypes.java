@@ -51,6 +51,7 @@ import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.graphic.DrawFunc;
@@ -362,13 +363,13 @@ public class NHUnitTypes implements ContentList{
 			shots = 1;
 			predictTarget = rotate = false;
 			top = alternate = true;
-			reload = 30f;
+			reload = 45f;
 			shootY = 4f;
 			shootSound = Sounds.spark;
 			heatColor = NHColor.lightSkyBack;
 			bullet = new PosLightningType(20f){{
 				lightningColor = NHColor.lightSkyBack;
-				maxRange = 160f;
+				maxRange = 140f;
 				hitEffect = NHFx.lightningHitSmall(lightningColor);
 				lightningLength = 1;
 				lightningLengthRand = 4;
@@ -1207,18 +1208,28 @@ public class NHUnitTypes implements ContentList{
 					alternate = true;
 					ejectEffect = Fx.none;
 					recoil = 4.4f;
-					bullet = new ShieldBreaker(6.25f, 50, 650f){{
+					bullet = new ShieldBreaker(4.25f, 40, 650f){{
 							drawSize = 500f;
 							trailLength = 18;
 							trailWidth = 3.5f;
 							spin = 2.75f;
-							hitEffect = shootEffect = despawnEffect = NHFx.lightSkyCircleSplash;
-							lifetime = 40f;
+							despawnEffect = NHFx.square45_6_45;
+							hitEffect = new Effect(45f, e -> {
+								Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin());
+								Lines.stroke(2.5f * e.fout());
+								if(NHSetting.enableDetails())DrawFunc.randLenVectors(e.id, e.fin(Interp.pow3Out), 3, 6, 21f, (x1, y1, fin, fout) -> {
+									Lines.square(e.x + x1, e.y + y1, 14 * Interp.pow3Out.apply(fin), 45);
+								});
+								Lines.spikes(e.x, e.y, 28 * e.finpow(), 5 * e.fout() + 8 * NHInterp.parabola4Reversed.apply(e.fin()), 4, 45);
+							});
+							lifetime = 50f;
 							pierceCap = 8;
 							width = 20f;
 							height = 44f;
-							backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
-							frontColor = Color.white;
+							backColor = lightColor = lightningColor = hitColor = trailColor = NHColor.lightSkyBack;
+							shootEffect = NHFx.shootLineSmall(backColor);
+							
+							frontColor = Color.royal.cpy().lerp(NHColor.lightSkyFront, 0.3f);
 							lightning = 3;
 							lightningDamage = damage / 4;
 							lightningLength = 3;
@@ -1238,6 +1249,7 @@ public class NHUnitTypes implements ContentList{
 					rotateSpeed = 5f;
 					inaccuracy = 6.0F;
 					velocityRnd = 0.38f;
+					shotDelay = 3.8f;
 					x = 8f;
 					alternate = false;
 					ejectEffect = Fx.none;
@@ -1246,13 +1258,14 @@ public class NHUnitTypes implements ContentList{
 					shootSound = Sounds.plasmaboom;
 				}}
 			);
+			
 			engineOffset = 13.0F;
 			engineSize = 6.5F;
 			speed = 0.4f;
 			hitSize = 20f;
-			health = 9000f;
+			health = 7000f;
 			buildSpeed = 1.8f;
-			armor = 8f;
+			armor = 6f;
 			rotateSpeed = 3.3f;
 			fallSpeed = 0.016f;
 			mechStepParticles = true;
@@ -1278,15 +1291,15 @@ public class NHUnitTypes implements ContentList{
 					recoil = 5.4f;
 					predictTarget = false;
 					shootCone = 30f;
-					reload = 20f;
-					shots = 4;
+					reload = 60f;
+					shots = 2;
 					inaccuracy = 4.0F;
 					ejectEffect = Fx.none;
 					bullet = new AdaptShrapnelBulletType(){{
 						width -= 2;
 						length = 280;
 						damage = 160.0F;
-						status = StatusEffects.shocked;
+						status = NHStatusEffects.ultFireBurn;
 						statusDuration = 60f;
 						fromColor = NHColor.lightSkyFront;
 						toColor = NHColor.lightSkyBack;
@@ -1307,24 +1320,23 @@ public class NHUnitTypes implements ContentList{
 					recoil = 2.7f;
 					shootY = 7f;
 					shootCone = 40f;
-					reload = 60f;
+					reload = 180f;
 					shots = 5;
-					shotDelay = 8f;
+					shotDelay = 16f;
 					inaccuracy = 5.0F;
 					ejectEffect = Fx.none;
 					bullet = NHBullets.annMissile;
 					shootSound = NHSounds.launch;
 				}}
 			);
-			abilities.add(new ForceFieldAbility(64.0F, 10F, 5000.0F, 900.0F));
-			range = 320f;
+			abilities.add(new ForceFieldAbility(64.0F, 1.25F, 3000.0F, 1200.0F));
 			engineOffset = 15.0F;
 			engineSize = 6.5F;
-			speed = 0.3f;
+			speed = 0.275f;
 			hitSize = 33f;
-			health = 25000f;
+			health = 22000f;
 			buildSpeed = 2.8f;
-			armor = 25f;
+			armor = 15f;
 			rotateSpeed = 1.8f;
 			singleTarget = false;
 			fallSpeed = 0.016f;
@@ -1468,13 +1480,13 @@ public class NHUnitTypes implements ContentList{
 			rotateSpeed = 1f;
 			fallSpeed = 0.03f;
 			mechStepParticles = true;
-			mechStepShake = 2f;
+			mechStepShake = 3f;
 			canDrown = false;
 			mechFrontSway = 2.2f;
 			mechSideSway = 0.8f;
 			canBoost = true;
 			landShake = 12f;
-			boostMultiplier = 3.5f;
+			boostMultiplier = 2.5f;
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
@@ -1907,8 +1919,8 @@ public class NHUnitTypes implements ContentList{
 					bullet = NHBullets.destructionRocket;
 					
 					shots = 20;
-					shotDelay = 2.5f;
-					reload = 180f;
+					shotDelay = 3.5f;
+					reload = 300f;
 					inaccuracy = 2f;
 					velocityRnd = 0.1f;
 					
@@ -1917,9 +1929,9 @@ public class NHUnitTypes implements ContentList{
 					shootCone = 8f;
 				}}
 			);
-			armor = 25.0F;
-			health = 25000.0F;
-			speed = 0.65F;
+			armor = 15.0F;
+			health = 15000.0F;
+			speed = 0.45F;
 			rotateSpeed = 1.0F;
 			accel = 0.04F;
 			drag = 0.018F;
@@ -1934,7 +1946,7 @@ public class NHUnitTypes implements ContentList{
 			singleTarget = false;
 			buildBeamOffset = 15F;
 			ammoCapacity = 800;
-			abilities.add(new ForceFieldAbility(100.0F, 4.0F, 4000.0F, 360.0F), new RepairFieldAbility(500f, 160f, 240f){{
+			abilities.add(new RepairFieldAbility(500f, 160f, 240f){{
 				healEffect = NHFx.healEffectSky;
 				activeEffect = NHFx.activeEffectSky;
 			}});
@@ -2275,7 +2287,7 @@ public class NHUnitTypes implements ContentList{
 		
 		saviour = new UnitType("saviour"){{
 			outlineColor = OColor;
-//			defaultController = RepairAI::new;
+			defaultController = SniperAI::new;
 			constructor = EntityMapping.map(5);
 			commandRadius = 240f;
 			hitSize = 55f;

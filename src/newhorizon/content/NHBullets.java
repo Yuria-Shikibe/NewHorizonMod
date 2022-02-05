@@ -331,26 +331,38 @@ public class NHBullets implements ContentList{
 			hitSound = Sounds.plasmaboom;
 		}};
 		
-		skyFrag = new BasicBulletType(3.3f, 85){
-			@Override
-			public float range(){return 180f;}
-			
+		skyFrag = new BasicBulletType(3.8f, 70){
 			{
 				lifetime = 60;
-				despawnEffect = hitEffect = NHFx.lightSkyCircleSplash;
+				despawnEffect = NHFx.square45_4_45;
+				hitEffect = new Effect(45f, e -> {
+					Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin());
+					Lines.stroke(1.75f * e.fout());
+					if(NHSetting.enableDetails())Lines.spikes(e.x, e.y, 28 * e.finpow(), 5 * e.fout() + 8 * e.fin(NHInterp.parabola4Reversed), 4, 45);
+					Lines.square(e.x, e.y, 14 * e.fin(Interp.pow3Out), 45);
+				});
 				knockback = 4f;
 				width = 15f;
 				height = 37f;
-				lightningDamage = damage * 0.75f;
-				backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
-				frontColor = Color.white;
-				lightning = 3;
-				lightningLength = 8;
+				lightningDamage = damage * 0.65f;
+				splashDamage = damage * 0.15f;
+				splashDamageRadius = 24f;
+				backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
+				frontColor = NHColor.lightSkyFront;
+				lightning = 2;
+				lightningLength = lightningLengthRand = 8;
 				smokeEffect = Fx.shootBigSmoke2;
 				trailChance = 0.6f;
 				trailEffect = NHFx.skyTrail;
+				drag = 0.015f;
 				hitShake = 2f;
 				hitSound = Sounds.explosion;
+			}
+			
+			@Override
+			public void hit(Bullet b){
+				super.hit(b);
+				UltFire.createChance(b, 12, 0.1f);
 			}
 		};
 	}
@@ -586,86 +598,128 @@ public class NHBullets implements ContentList{
 		
 		artilleryIrd = new AdaptedArtilleryBulletType(5f, 200f, "large-bomb"){{
 			collidesTiles = collidesGround = true;
-			reloadMultiplier = 1.25f;
+			collidesAir = collides = false;
+			reloadMultiplier = 1.75f;
 			shrinkX = shrinkY = 0;
 			spin = 4f;
 			hitShake = 4f;
+			
+			trailInterp = NHInterp.parabola4ReversedOver;
+			trailLength = NHSetting.enableDetails() ? 25 : 8;
+			trailWidth = 2f;
+			
 			width = height = 27.0F;
 			splashDamage = damage;
-			splashDamageRadius = 12f;
+			splashDamageRadius = 22f;
 			frontColor = Color.white;
 			backColor = trailColor = lightColor = lightningColor = NHColor.lightSkyBack.cpy().lerp(frontColor, 0.55f);
+			trailChance = 0.08f;
+			trailEffect = NHFx.trailToGray;
 			hitEffect = NHFx.instHit(backColor, 2, 40f);
 			despawnEffect = NHFx.crossBlast(backColor, 80f);
 			shootEffect = NHFx.shootLineSmall(backColor);
 		}};
 		
-		artilleryFusion = new ArtilleryBulletType(4f, 100f, CIRCLE_BOLT){{
+		artilleryFusion = new ArtilleryBulletType(4f, 180f, MISSILE_LARGE){{
 			collidesTiles = collidesGround = true;
+			collidesAir = collides = false;
 			width = height = 32.0F;
 			hitShake = 6f;
 			splashDamage = damage;
-			splashDamageRadius = 24f;
+			
+			trailInterp = NHInterp.parabola4ReversedOver;
+			trailLength = NHSetting.enableDetails() ? 50 : 15;
+			trailWidth = 2f;
+			
+			splashDamageRadius = 44f;
 			incendSpread = 6f;
+			incendChance = 0.3f;
+			incendAmount = 5;
+			makeFire = true;
 			frontColor = Color.white;
-			backColor = trailColor = lightColor = lightningColor = NHItems.fusionEnergy.color.cpy().lerp(frontColor, 0.15f);
+			trailChance = 0.08f;
+			trailEffect = NHFx.trailToGray;
+			backColor = trailColor = lightColor = lightningColor = NHItems.fusionEnergy.color.cpy().lerp(frontColor, 0.05f);
 			hitEffect = NHFx.lightningHitLarge(backColor);
 			despawnEffect = NHFx.crossBlast(backColor, 80f);
 			shootEffect = NHFx.shootCircleSmall(backColor);
 			smokeEffect = NHFx.hugeSmoke;
 		}};
 		
-		artilleryPlast = new ArtilleryBulletType(4f, 90f){{
+		artilleryPlast = new ArtilleryBulletType(4f, 120f){{
 			collidesTiles = collidesGround = true;
+			collidesAir = collides = false;
 			reloadMultiplier = 0.95f;
 			hitShake = 4f;
 			width = 18f;
 			height = 36f;
-			splashDamage = damage / 4;
-			splashDamageRadius = 12f;
+			splashDamage = damage;
+			splashDamageRadius = 22f;
 			frontColor = Color.white;
-			backColor = trailColor = lightColor = lightningColor = Items.plastanium.color.cpy().lerp(frontColor, 0.15f);
-			hitEffect = NHFx.lightningHitLarge(backColor);
+			trailChance = 0.08f;
+			trailEffect = NHFx.trailToGray;
+			backColor = trailColor = lightColor = lightningColor = hitColor = Items.plastanium.color.cpy().lerp(frontColor, 0.15f);
+			hitEffect = NHFx.lightningHitLarge;
 			despawnEffect = Fx.plasticExplosion;
 			shootEffect = Fx.plasticExplosion;
 			smokeEffect = NHFx.hugeSmoke;
-			fragBullets = 6;
-			fragBullet = Bullets.fragPlasticFrag;
-			fragVelocityMin = fragLifeMin = 0.085f;
-			fragVelocityMax = fragLifeMax = 1.025f;
+			fragBullets = 2;
+			fragBullet = Bullets.fragPlastic;
+			fragLifeMin = 0.085f;
+			fragLifeMax = 1.225f;
+			fragVelocityMax = 0.4f;
+			fragVelocityMin = 0.075f;
 		}};
 		
-		artilleryThermo = new AdaptedArtilleryBulletType(2f, 180f, "large-bomb"){{
+		artilleryThermo = new AdaptedArtilleryBulletType(3.5f, 250f, "large-bomb"){{
 			collidesTiles = collidesGround = true;
+			collidesAir = collides = false;
 			reloadMultiplier = 0.95f;
 			shrinkX = shrinkY = 0;
 			spin = 2f;
 			hitShake = 8f;
+			
+			trailInterp = NHInterp.parabola4ReversedOver;
+			trailLength = NHSetting.enableDetails() ? 60 : 20;
+			trailWidth = 2f;
+			
 			width = height = 40.0F;
 			splashDamage = damage;
-			splashDamageRadius = 36f;
+			splashDamageRadius = 32f;
 			lightning = 3;
-			lightningDamage = damage / 4;
+			lightningDamage = damage / 3;
 			lightningLength = lightningLengthRand = 10;
 			frontColor = Color.white;
+			trailChance = 0.08f;
+			trailEffect = NHFx.trailToGray;
 			backColor = trailColor = lightColor = lightningColor = NHItems.thermoCorePositive.color;
-			hitEffect = NHFx.lightningHitLarge(backColor);
-			despawnEffect = NHFx.crossBlast(backColor, 100);
+			hitEffect = NHFx.blast(backColor, 50);
+			despawnEffect = NHFx.hitSpark(backColor, 80, 15, 80, 1.7f, 12);
 			shootEffect = NHFx.instShoot(backColor);
 			smokeEffect = NHFx.hugeSmoke;
 		}};
 		
-		artilleryPhase = new ArtilleryBulletType(8f, 110f){{
+		artilleryPhase = new ArtilleryBulletType(8f, 120f){{
 			collidesTiles = collidesGround = true;
-			hitShake = 2f;
+			hitShake = 3f;
 			width = 14f;
 			height = 35f;
 			collides = true;
-			splashDamage = damage / 8;
-			splashDamageRadius = 4f;
+			
+			ammoMultiplier = 8;
+			reloadMultiplier = 3.5f;
+			
+			trailInterp = NHInterp.parabola4ReversedOver;
+			trailLength = NHSetting.enableDetails() ? 20 : 10;
+			trailWidth = 1.5f;
+			
+			splashDamage = damage / 4;
+			splashDamageRadius = 20f;
 			frontColor = Color.white;
+			trailChance = 0.08f;
+			trailEffect = NHFx.trailToGray;
 			backColor = trailColor = lightColor = lightningColor = Items.phaseFabric.color.cpy().lerp(frontColor, 0.15f);
-			hitEffect = NHFx.instHit(backColor, 2, 25f);
+			hitEffect = NHFx.circleSplash(backColor, 45f, 4, 38f, 6);
 			despawnEffect = NHFx.crossBlast(backColor, 100);
 			shootEffect = NHFx.instShoot(backColor);
 			smokeEffect = NHFx.hugeSmoke;
@@ -673,17 +727,24 @@ public class NHBullets implements ContentList{
 			statusDuration = 60f;
 		}};
 		
-		artilleryMissile = new ArtilleryBulletType(5f, 100f){{
+		artilleryMissile = new ArtilleryBulletType(7f, 150f){{
 			collidesTiles = collidesGround = true;
 			hitShake = 2f;
 			width = 14f;
 			height = 35f;
+			
+			collides = true;
+			
+			trailLength = 20;
+			trailWidth = 2f;
+			
 			splashDamage = damage;
-			splashDamageRadius = 8f;
+			splashDamageRadius = 12f;
 			trailParam = 3.5f;
+			trailChance = 0.08f;
 			trailEffect = NHFx.trailToGray;
 			homingDelay = 20f;
-			homingPower = 0.05f;
+			homingPower = 0.075f;
 			homingRange = 250f;
 			frontColor = Pal.bulletYellow;
 			backColor = trailColor = lightColor = lightningColor = Pal.bulletYellowBack;
@@ -930,7 +991,7 @@ public class NHBullets implements ContentList{
 			}
 		}};
 		
-		polyCloud = new SpeedUpBulletType(0.05f, 70){
+		polyCloud = new SpeedUpBulletType(0.05f, 50){
 			@Override public float range(){return 360f;}
 		{
 			buildingDamageMultiplier = 0.2f;
@@ -943,7 +1004,7 @@ public class NHBullets implements ContentList{
 			homingDelay = 15f;
 			homingPower = 10f;
 			homingRange = 320f;
-			splashDamage = lightningDamage = damage / 2;
+			splashDamage = lightningDamage = damage / 4;
 			splashDamageRadius = 12f;
 			backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
 			frontColor = Color.white;
@@ -954,7 +1015,7 @@ public class NHBullets implements ContentList{
 			velocityIncrease = 8;
 			accelerateBegin = 0.05f;
 			accelerateEnd = 0.65f;
-			lifetime = 140f;
+			lifetime = 100f;
 			hitShake = 2;
 			hitSound = Sounds.plasmaboom;
 			hitEffect = NHFx.shootCircleSmall(backColor);
@@ -1871,7 +1932,8 @@ public class NHBullets implements ContentList{
 		
 		empBlot2 = new EmpBulletType(){{
 			sprite = CIRCLE_BOLT;
-			speed = 4f;
+			speed = 7.5f;
+			drag = 0.0095f;
 			damage = 10f;
 			status = NHStatusEffects.emp2;
 			ammoMultiplier = 3;
@@ -1890,11 +1952,11 @@ public class NHBullets implements ContentList{
 			trailEffect = NHFx.trailToGray;
 			trailParam = width / 3;
 			hitEffect = NHFx.lightningHitLarge(backColor);
-			despawnEffect = NHFx.crossBlast(backColor);
+			despawnEffect = NHFx.crossBlast(backColor, 85, 45);
 			collidesAir = collidesGround = true;
 			collides = false;
 			hitSound = Sounds.plasmaboom;
-			
+			inaccuracy = 2;
 			fragBullet = empFrag;
 			fragBullets = 2;
 			fragVelocityMin = fragLifeMin = 0.95f;
@@ -1903,7 +1965,8 @@ public class NHBullets implements ContentList{
 		
 		empBlot3 = new EmpBulletType(){{
 			sprite = CIRCLE_BOLT;
-			speed = 4f;
+			speed = 7.5f;
+			drag = 0.0095f;
 			damage = 15f;
 			
 			status = NHStatusEffects.emp3;
@@ -1923,7 +1986,8 @@ public class NHBullets implements ContentList{
 			trailEffect = NHFx.trailToGray;
 			trailParam = width / 3;
 			hitEffect = NHFx.lightningHitLarge(backColor);
-			despawnEffect = NHFx.crossBlast(backColor);
+			despawnEffect = NHFx.crossBlast(backColor, 120, 45);
+			inaccuracy = 2;
 			collidesAir = collidesGround = true;
 			collides = false;
 			hitSound = Sounds.plasmaboom;
