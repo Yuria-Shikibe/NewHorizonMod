@@ -87,6 +87,7 @@ public class NewHorizon extends Mod{
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
 			new FeatureLog(NHBlocks.multiSteelItemBridge), new FeatureLog(NHBlocks.multiSteelLiquidBridge),
+			new FeatureLog("Adjust", "Jump Gates now need input", FeatureLog.ADJUST, NHBlocks.jumpGate.fullIcon),
 			new FeatureLog("Unit & Turret Balance", "Many Balance work done to units and turrets", FeatureLog.BALANCE, Icon.wrench.getRegion())
 //			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE + FeatureLog.IMPORTANT, NHContent.objective),
 //			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),

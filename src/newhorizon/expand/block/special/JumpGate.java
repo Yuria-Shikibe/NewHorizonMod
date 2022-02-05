@@ -436,9 +436,7 @@ public class JumpGate extends Block {
                         UnitSet set = calls.get(hashcode);
                         callTable.table(Tex.pane, info -> {
                             info.add(new Tables.UnitSetTable(set, table2 -> {
-                                Label can = new Label("");
-                                table2.update(() -> can.setText("[lightgray]Can Spawn?: " + TableFunc.judge(canSpawn(set, false))));
-                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, can, items())).size(LEN);
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, new Label(() -> ("[lightgray]Can Spawn?: " + TableFunc.judge(canSpawn(set, false)))), items())).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();
                             if(!hideSet(set.type)){
