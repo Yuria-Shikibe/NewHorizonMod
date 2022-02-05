@@ -401,7 +401,8 @@ public class NewHorizon extends Mod{
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
 				NHGroups.autoEventTriggers.each(e -> {
-					builder.append("[royal]").append(e.toString()).append("[lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append(e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]").append("[]\n");
+					builder.append("[royal]").append(e.toString()).append("[lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append(e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]").append("[lightgray]\n");
+					builder.append("Reload: ").append(e.getReload()).append('\n').append("Spacing: ").append(e.getSpacing()).append('\n');
 				});
 				player.sendMessage(builder.toString());
 			}
