@@ -93,6 +93,7 @@ public class EventListeners{
 				eventType = EventSamples.waveTeamRaid;
 				spacingBase *= 2.75f;
 				spacingRand = 120 * 60;
+				disposable = true;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(Items.surgeAlloy, 50, NHItems.juniorProcessor, 150);
 				eventType = PreMadeRaids.standardRaid1;

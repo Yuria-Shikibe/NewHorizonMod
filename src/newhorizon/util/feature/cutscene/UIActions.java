@@ -90,10 +90,10 @@ public class UIActions{
 				UIActions.width_UTD = width;
 				UIActions.height_UTD = height;
 				
+				toBack();
+				
 				super.act(delta);
 				if(Vars.state.isMenu())remove();
-				
-				
 			}
 			
 			@Override
