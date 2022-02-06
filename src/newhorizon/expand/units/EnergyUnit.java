@@ -116,9 +116,11 @@ public class EnergyUnit extends UnitEntity{
 	public void setType(UnitType type){
 		super.setType(type);
 		
-		trails = new Trail[3];
-		for(int i = 0; i < trails.length; i++){
-			trails[i] = new Trail(type.trailLength);
+		if(trails.length != 3){
+			trails = new Trail[3];
+			for(int i = 0; i < trails.length; i++){
+				trails[i] = new Trail(type.trailLength);
+			}
 		}
 	}
 	
