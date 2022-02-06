@@ -79,7 +79,8 @@ public class UIActions{
 		
 		if(root == null)root = new Table(Tex.clear){
 			{
-				if(ui != null && ui.hudGroup != null)ui.hudGroup.addChildAt(1, this);
+				touchable = Touchable.childrenOnly;
+				if(ui != null && ui.hudGroup != null) ui.hudGroup.addChildAt(0, this);
 			}
 			
 			@Override
@@ -138,19 +139,20 @@ public class UIActions{
 			update(() -> {
 				if(state.isMenu()) remove();
 				
+				if(paneTable.hasChildren())getScene().unfocus(this);
+				
 				setSize(width_UTD / 4f + extendX, height_UTD / 4f + extendY);
 				setPosition(Core.settings.getInt("eventbarsoffsetx", 0) / 100f * width_UTD, Core.settings.getInt("eventbarsoffsety", 0) / 100f * height_UTD);
 			});
 			
-			visible(() -> ui.hudfrag.shown && Core.settings.getBool("showeventtable"));
-			touchable(() -> !hasChildren() || NHVars.ctrl.pressDown ? Touchable.disabled : Touchable.enabled);
+			visible(() -> paneTable.hasChildren() && ui.hudfrag.shown && Core.settings.getBool("showeventtable"));
 			
 			background(Tex.buttonEdge3);
 			
 			pane = pane(t -> {
 				paneTable = t;
 				
-				t.touchable(() -> NHVars.ctrl.pressDown && !visible ? Touchable.disabled : Touchable.enabled);
+				t.touchable(() -> !hasChildren() || (NHVars.ctrl.pressDown && !visible) ? Touchable.disabled : Touchable.enabled);
 				
 				t.update(() -> {
 					if(!hasActions()){
@@ -163,8 +165,11 @@ public class UIActions{
 				t.defaults().growX().fillY();
 			}).grow().pad(OFFSET).get();
 			
+			pane.name = "event/bars";
 			pane.setFadeScrollBars(true);
 			pane.setupFadeScrollBars(0.15f, 0.25f);
+			
+			touchable(() -> pane.hasChildren() ? Touchable.childrenOnly : Touchable.disabled);
 			
 			exited(() -> {
 				if(getScene() != null)getScene().unfocus(this);
