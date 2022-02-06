@@ -143,7 +143,7 @@ public class UIActions{
 			});
 			
 			visible(() -> ui.hudfrag.shown && Core.settings.getBool("showeventtable"));
-			touchable(() -> NHVars.ctrl.pressDown ? Touchable.childrenOnly : Touchable.enabled);
+			touchable(() -> hasChildren() || NHVars.ctrl.pressDown ? Touchable.disabled : Touchable.enabled);
 			
 			background(Tex.buttonEdge3);
 			
@@ -155,7 +155,7 @@ public class UIActions{
 				t.update(() -> {
 					if(!hasActions()){
 						if(t.hasChildren())HUDTable.this.actions(Actions.visible(true), Actions.fadeIn(0.35f));
-						else HUDTable.this.actions(Actions.fadeOut(0.35f), Actions.visible(false));
+						else HUDTable.this.actions(Actions.fadeOut(0.35f), Actions.visible(false), Actions.run(() -> getScene().unfocus(this)));
 					}
 				});
 				
