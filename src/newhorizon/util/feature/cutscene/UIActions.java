@@ -152,7 +152,7 @@ public class UIActions{
 			pane = pane(t -> {
 				paneTable = t;
 				
-				t.touchable(() -> !hasChildren() || (NHVars.ctrl.pressDown && !visible) ? Touchable.disabled : Touchable.enabled);
+				t.touchable(() -> NHVars.ctrl.pressDown && !visible ? Touchable.disabled : Touchable.enabled);
 				
 				t.update(() -> {
 					if(!hasActions()){
@@ -168,8 +168,6 @@ public class UIActions{
 			pane.name = "event/bars";
 			pane.setFadeScrollBars(true);
 			pane.setupFadeScrollBars(0.15f, 0.25f);
-			
-			touchable(() -> pane.hasChildren() ? Touchable.childrenOnly : Touchable.disabled);
 			
 			exited(() -> {
 				if(getScene() != null)getScene().unfocus(this);
