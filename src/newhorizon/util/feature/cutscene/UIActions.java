@@ -143,7 +143,7 @@ public class UIActions{
 			});
 			
 			visible(() -> ui.hudfrag.shown && Core.settings.getBool("showeventtable"));
-			touchable(() -> hasChildren() || NHVars.ctrl.pressDown ? Touchable.disabled : Touchable.enabled);
+			touchable(() -> !hasChildren() || NHVars.ctrl.pressDown ? Touchable.disabled : Touchable.enabled);
 			
 			background(Tex.buttonEdge3);
 			
