@@ -27,9 +27,9 @@ import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHStatusEffects;
+import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.NHGroups;
-import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
 

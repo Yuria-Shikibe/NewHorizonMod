@@ -13,12 +13,12 @@ import mindustry.gen.Entityc;
 import mindustry.gen.Groups;
 import mindustry.gen.Syncc;
 import mindustry.io.TypeIO;
+import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.NHBaseEntity;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
 import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
-import newhorizon.util.func.EntityRegister;
 
 import java.nio.FloatBuffer;
 import java.util.Objects;
@@ -107,7 +107,7 @@ public class CutsceneEventEntity extends NHBaseEntity implements Entityc, Syncc,
 			return;
 		}
 		
-		if(eventType.updatable)eventType.updateEvent(this);
+		if(eventType.updatable && eventType.updatability.get(this))eventType.updateEvent(this);
 	}
 	
 	@Override

@@ -32,7 +32,6 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.EntityRegister;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.*;

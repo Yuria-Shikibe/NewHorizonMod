@@ -38,7 +38,6 @@ import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.Carrier;
 import newhorizon.expand.vars.TileSortMap;
 import newhorizon.util.feature.InternalTools;
-import newhorizon.util.feature.WarpUnit;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
@@ -422,8 +421,6 @@ public class DebugDialog extends BaseDialog{
 			t.button("-10 Wave", () -> state.wave = Math.max(0, state.wave - 10));
 			
 			t.row();
-			
-			t.button("Warp", () -> Groups.unit.each(u -> WarpUnit.warp(u, 45)));
 			
 			t.button("Hyper Warp", () -> Groups.unit.each(u -> Carrier.create(u, new Vec2().set(player))));
 			

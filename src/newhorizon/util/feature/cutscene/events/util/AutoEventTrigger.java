@@ -20,10 +20,10 @@ import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
-import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.OV_Pair;
 
@@ -204,7 +204,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	
 	public void remove(){
 		Groups.all.remove(this);
-		NHGroups.autoEventTriggers.remove(this);
+		NHGroups.autoEventTrigger.remove(this);
 		
 		added = false;
 	}
@@ -216,7 +216,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 			id = EntityGroup.nextId();
 			
 			Groups.all.add(this);
-			NHGroups.autoEventTriggers.add(this);
+			NHGroups.autoEventTrigger.add(this);
 			
 			spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
 			reload = 0;

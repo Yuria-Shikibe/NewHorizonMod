@@ -14,7 +14,7 @@ Core.settings.put("speed-scl",_);
 
 NHWeathers.quantumStorm.create(Mathf.random(__,__),__);
 Groups.weather.clear();
-NHWeathers.solarStorm.create(3,1500);
+NHWeathers.quantumStorm.create(3,1500);
 
 NHGroups.autoEventTriggers.each(cons(e=>Log.info(e.meet())))
 

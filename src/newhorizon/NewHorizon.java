@@ -24,6 +24,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
+import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.EventListeners;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
@@ -31,7 +32,6 @@ import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
-import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.ui.FeatureLog;
@@ -51,8 +51,10 @@ public class NewHorizon extends Mod{
 	public static final boolean DEBUGGING_SPRITE = false;
 	
 //	{
-//		Vars.testMobile = true;
+//		Vars.mobile = Vars.testMobile = true;
 //	}
+	
+	public static boolean contentLoadComplete = false;
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
@@ -396,12 +398,12 @@ public class NewHorizon extends Mod{
 		});
 		
 		handler.<Player>register("eventtriggers", "List all event triggers in the map.", (args, player) -> {
-			if (NHGroups.autoEventTriggers.isEmpty()) {
+			if (NHGroups.autoEventTrigger.isEmpty()) {
 				player.sendMessage("No Trigger Available");
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
-				NHGroups.autoEventTriggers.each(e -> {
+				NHGroups.autoEventTrigger.each(e -> {
 					builder.append("[royal]").append(e.toString()).append("[lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append(e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]").append("[lightgray]\n");
 					builder.append("Reload: ").append(e.getReload()).append('\n').append("Spacing: ").append(e.getSpacing()).append('\n');
 				});
@@ -479,6 +481,8 @@ public class NewHorizon extends Mod{
 		EventSamples.load();
 		CutsceneScript.load();
 		EventListeners.loadAfterContent();
+		
+		contentLoadComplete = true;
 		
 		Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }

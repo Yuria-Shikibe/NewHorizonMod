@@ -12,6 +12,7 @@ import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Log;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Items;
@@ -39,6 +40,9 @@ import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.feature.cutscene.Triggers;
 import newhorizon.util.feature.cutscene.events.FleetEvent;
+import newhorizon.util.feature.cutscene.events.ObjectiveEvent;
+import newhorizon.util.feature.cutscene.events.ReachWaveObjective;
+import newhorizon.util.feature.cutscene.events.SimpleReloadEvent;
 import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 import newhorizon.util.feature.cutscene.events.util.PreMadeRaids;
 import newhorizon.util.func.NHSetting;
@@ -95,13 +99,22 @@ public class EventListeners{
 				spacingRand = 120 * 60;
 				disposable = true;
 			}}, new AutoEventTrigger(){{
+				items = OV_Pair.seqWith(Items.plastanium, 100, NHItems.metalOxhydrigen, 100);
+				eventType = new FleetEvent("inbuilt-inbound-server-1"){{
+					unitTypeMap = ObjectMap.of(NHUnitTypes.warper, 8, NHUnitTypes.assaulter, 4, NHUnitTypes.branch, 4);
+					reloadTime = 40 * 60;
+					removeAfterTriggered = cannotBeRemove = true;
+				}};
+				spacingBase *= 2.05f;
+				spacingRand = 60 * 60;
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(Items.surgeAlloy, 50, NHItems.juniorProcessor, 150);
 				eventType = PreMadeRaids.standardRaid1;
 				spacingBase *= 1.75f;
 				spacingRand = 60 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.multipleSteel, 150, Items.plastanium, 100);
-				eventType = PreMadeRaids.raid2;
+				eventType = PreMadeRaids.raid3;
 				spacingBase *= 2;
 				spacingRand = 120 * 60;
 			}}, new AutoEventTrigger(){{
@@ -149,6 +162,46 @@ public class EventListeners{
 				minTriggerWave = 35;
 				spacingBase = 240 * 60;
 				spacingRand = 180 * 60;
+			}}, new AutoEventTrigger(){{
+				buildings = OV_Pair.seqWith(NHBlocks.gravityTrap, 3);
+				eventType = new SimpleReloadEvent("random-solar-storm"){{
+					action = () -> NHWeathers.solarStorm.create(Mathf.random(0.75f, 3.75f), Mathf.random(0.75f, 1.25f) * 20 * Time.toSeconds);
+					info = () -> "Incoming [ammo]Solar Storm[] Detected!";
+					color = () -> Pal.ammo;
+					cannotBeRemove = true;
+					removeAfterTriggered = true;
+					reloadTime = 480f;
+				}};
+				spacingBase = 150 * 60;
+				spacingRand = 150 * 60;
+			}}, new AutoEventTrigger(){{
+				eventType = new ObjectiveEvent("build-gates"){{
+					trigger = e -> NHGroups.jumpGate.asArray().filter(b -> b.team == Vars.state.rules.defaultTeam).size > 3;
+					info = e -> "Construct [accent]" + NHGroups.jumpGate.asArray().filter(b -> b.team == Vars.state.rules.defaultTeam).size + "/4[] Jump-Gates of any type.";
+					action = e -> EventSamples.allyBuildersInbound.setup();
+				}};
+				spacingBase = 5 * 60;
+				spacingRand = 0;
+				minTriggerWave = 0;
+				disposable = true;
+			}}, new AutoEventTrigger(){{
+				eventType = new ReachWaveObjective("inbuilt-reach-wave-15"){{
+					targetWave = 15;
+					toTrigger = EventSamples.allyStrikersInbound;
+				}};
+				spacingBase = 5 * 60;
+				spacingRand = 0;
+				minTriggerWave = 0;
+				disposable = true;
+			}}, new AutoEventTrigger(){{
+				eventType = new ReachWaveObjective("inbuilt-reach-wave-35"){{
+					targetWave = 35;
+					toTrigger = EventSamples.allySavoursInbound;
+				}};
+				spacingBase = 5 * 60;
+				spacingRand = 0;
+				minTriggerWave = 0;
+				disposable = true;
 			}});
 		}
 		
@@ -170,7 +223,7 @@ public class EventListeners{
 					}
 					
 					Core.app.post(() -> Core.app.post(() -> {
-						if(!Vars.state.rules.pvp && NHGroups.autoEventTriggers.size() < autoTriggers.size){
+						if(!Vars.state.rules.pvp && NHGroups.autoEventTrigger.size() < autoTriggers.size){
 							CutsceneScript.runEventOnce("setup-events", () -> autoTriggers.each(t -> t.copy().add()));
 						}
 					}));

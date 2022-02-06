@@ -24,7 +24,6 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHStatusEffects;
-import newhorizon.util.func.EntityRegister;
 
 import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.rect;

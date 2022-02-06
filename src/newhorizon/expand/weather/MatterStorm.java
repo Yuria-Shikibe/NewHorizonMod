@@ -41,10 +41,14 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHShaders;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.TrailFadeBulletType;
+import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.feature.cutscene.UIActions;
-import newhorizon.util.func.*;
+import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHInterp;
+import newhorizon.util.func.NHPixmap;
+import newhorizon.util.func.NHSetting;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.Tables;
 

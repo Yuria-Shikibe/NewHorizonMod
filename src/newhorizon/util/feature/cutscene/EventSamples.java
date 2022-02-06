@@ -4,7 +4,10 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.content.UnitTypes;
+import mindustry.entities.Units;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -15,11 +18,51 @@ import newhorizon.content.NHUnitTypes;
 import newhorizon.util.feature.cutscene.events.*;
 
 public class EventSamples{
-	public static CutsceneEvent jumpgateUnlock, fleetInbound,
+	public static CutsceneEvent jumpgateUnlock, fleetInbound, allyBuildersInbound, allyStrikersInbound, allySavoursInbound,
 			jumpgateUnlockObjective, waveTeamRaid, fleetApproaching, destroyGravityTraps, destroyReactors;
 	
 	public static void load(){
-		fleetInbound = new FleetEvent("inbuilt-inbound-fleet"){{
+		allyBuildersInbound = new FleetEvent("ally-builders-inbound"){{
+			unitTypeMap = ObjectMap.of(UnitTypes.poly, 2);
+			reloadTime = 90 * 60;
+			
+			removeAfterTriggered = false;
+			cannotBeRemove = true;
+			updatability = e -> teamFunc.get(e).data().countType(UnitTypes.poly) + 2 <= Units.getCap(teamFunc.get(e));
+			teamFunc = e -> Vars.state.rules.defaultTeam;
+			targetFunc = e -> {
+				CoreBlock.CoreBuild build = teamFunc.get(e).cores().firstOpt();
+				if(build == null)return new Vec2();
+				else return build;
+			};
+			sourceFunc = targetFunc;
+			angle = e -> {
+				CoreBlock.CoreBuild build = teamFunc.get(e).cores().firstOpt();
+				if(build == null)return 45f;
+				Tmp.v1.set(build).sub(Vars.world.unitWidth() / 2f, Vars.world.unitHeight() / 2f);
+				float ang = Tmp.v1.angle();
+				if(ang > 270)return 135f;
+				else if(ang > 180)return 45f;
+				else if(ang > 90)return 315f;
+				else return 215f;
+			};
+			exist = e -> teamFunc.get(e).data().hasCore();
+		}};
+		
+		allyStrikersInbound = allyBuildersInbound.copyAnd(FleetEvent.class, "ally-strikers-inbound", e -> {
+			e.unitTypeMap = ObjectMap.of(NHUnitTypes.striker, 3);
+			e.removeAfterTriggered = true;
+			e.reloadTime = 600f;
+		});
+		
+		allySavoursInbound = allyBuildersInbound.copyAnd(FleetEvent.class, "ally-savour-inbound", e -> {
+			e.unitTypeMap = ObjectMap.of(NHUnitTypes.saviour, 1, NHUnitTypes.rhino, 4, UnitTypes.mega, 4);
+			e.removeAfterTriggered = true;
+			e.reloadTime = 600f;
+		});
+		
+		
+		fleetInbound = new FleetEvent("inbuilt-hostile-fleet-inbound"){{
 			unitTypeMap = ObjectMap.of(NHUnitTypes.guardian, 3);
 			reloadTime = 30 * 60;
 			

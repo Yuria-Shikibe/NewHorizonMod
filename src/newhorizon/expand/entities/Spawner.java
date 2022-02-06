@@ -30,7 +30,6 @@ import mindustry.ui.Fonts;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
-import newhorizon.util.func.EntityRegister;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.graphic.DrawFunc;

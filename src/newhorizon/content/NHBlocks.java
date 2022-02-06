@@ -288,23 +288,7 @@ public class NHBlocks implements ContentList {
 	}
 	
 	private static void loadExperiments(){
-		
-//		payloadEntrance = new PayloadEntrance("payload-entrance"){{
-//			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
-//			size = 7;
-//		}};
-//
-//		liquidAndItemBridge = new LiquidAndItemBridge("debug"){{
-//			requirements(Category.effect, with(Items.lead, 200, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
-//			range = 12;
-//		}};
-//
 
-//		configurer = new Configurer("configurer"){{
-//			size = 1;
-//			requirements(Category.effect, BuildVisibility.shown, with(Items.lead, 30, NHItems.juniorProcessor, 15, NHItems.presstanium, 15));
-//			NHTechTree.add(Blocks.logicProcessor, this);
-//		}};
 	}
 	
 	private static void loadTurrets(){

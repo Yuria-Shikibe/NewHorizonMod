@@ -328,7 +328,7 @@ public class TableFunc{
                                 addCloseButton();
         
                                 cont.pane(t -> {
-                                    NHGroups.autoEventTriggers.each(trigger -> {
+                                    NHGroups.autoEventTrigger.each(trigger -> {
                                         t.table(Tex.sideline, info -> {
                                             info.defaults().left().growX().fillY().pad(OFFSET / 2f);
                                             info.add(trigger.toString()).row();
@@ -365,7 +365,7 @@ public class TableFunc{
                                 }).grow();
         
                             }}.show();
-                        }).disabled(b -> NHGroups.autoEventTriggers.isEmpty());
+                        }).disabled(b -> NHGroups.autoEventTrigger.isEmpty());
                         t.button("Debug Events", Styles.cleart, () -> {
                             new BaseDialog("Debug"){{
                                 addCloseButton();

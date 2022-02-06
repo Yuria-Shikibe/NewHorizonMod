@@ -55,6 +55,7 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHLoader;
+import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
@@ -318,6 +319,20 @@ public class JumpGate extends Block {
         @Override
         public boolean acceptItem(Building source, Item item){
             return items.get(item) < getMaximumAccepted(item);
+        }
+    
+        @Override
+        public void add(){
+            if(!added)NHGroups.jumpGate.add(this);
+            
+            super.add();
+        }
+    
+        @Override
+        public void remove(){
+            if(added)NHGroups.jumpGate.remove(this);
+            
+            super.remove();
         }
     
         @Override
@@ -699,43 +714,6 @@ public class JumpGate extends Block {
         @Override
         public boolean cheating(){
             return super.cheating() || (team == state.rules.waveTeam && !state.rules.pvp) || state.rules.infiniteResources;
-        }
-    
-        public void readBase(Reads read) {
-            this.health = Math.min(read.f(), (float)this.block.health);
-            byte rot = read.b();
-            this.team = Team.get(read.b());
-            this.rotation = rot & 127;
-            boolean legacy = true;
-            if ((rot & 128) != 0) {
-                byte ver = read.b();
-                if (ver == 1) {
-                    byte on = read.b();
-                    this.enabled = on == 1;
-                    if (!this.enabled) {
-                        this.enabledControlTime = 360.0F;
-                    }
-                }
-            
-                legacy = false;
-            }
-            
-            if (this.items != null) {
-                this.items.read(read, legacy);
-            }
-        
-            if (this.power != null) {
-                this.power.read(read, legacy);
-            }
-        
-            if (this.liquids != null) {
-                this.liquids.read(read, legacy);
-            }
-        
-            if (this.cons != null) {
-                this.cons.read(read, legacy);
-            }
-        
         }
     }
     

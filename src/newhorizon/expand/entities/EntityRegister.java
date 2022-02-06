@@ -1,4 +1,4 @@
-package newhorizon.util.func;
+package newhorizon.expand.entities;
 
 import arc.func.Prov;
 import arc.struct.ObjectMap;
@@ -9,9 +9,6 @@ import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.defence.ShieldProjector;
-import newhorizon.expand.entities.Carrier;
-import newhorizon.expand.entities.Spawner;
-import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.EnergyUnit;
 import newhorizon.expand.weather.MatterStorm;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;

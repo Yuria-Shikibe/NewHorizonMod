@@ -37,8 +37,6 @@ public class NHContent extends Content{
 		raid, objective, fleet;
 	
 	public static void loadModContent(){
-		
-		
 		new NHContent().load();
 	}
 	

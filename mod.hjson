@@ -3,6 +3,6 @@ author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "Adds new content, including units, turrets, blocks, maps, etc. Mod content are presented with pretty textures and amazing effects, and some maps have their unique cutscenes.\n\n [sky]You can get the Mod Guide in the GitHub-README-MOD Guide."
-version: "1.10.9"
+version: "1.10.9.1"
 
 minGameVersion: 135

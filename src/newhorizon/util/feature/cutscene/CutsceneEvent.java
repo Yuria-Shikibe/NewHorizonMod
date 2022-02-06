@@ -21,6 +21,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Displayable;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import newhorizon.NewHorizon;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
@@ -77,6 +78,8 @@ public class CutsceneEvent implements Cloneable, Displayable{
 		return event == null || event == NULL_EVENT;
 	}
 	
+	public static final CutsceneEventEntity NULL_INSTANCE = new CutsceneEventEntity();
+	
 	/** A Event referred to null*/
 	public static final CutsceneEvent NULL_EVENT = new CutsceneEvent("NULL_EVENT"){{
 		removeAfterTriggered = true;
@@ -86,6 +89,11 @@ public class CutsceneEvent implements Cloneable, Displayable{
 		drawable = false;
 		exist = e -> false;
 	}
+		
+		@Override
+		public CutsceneEventEntity setup(){
+			return NULL_INSTANCE;
+		}
 		
 		@Override
 		public void display(Table table){
@@ -123,12 +131,16 @@ public class CutsceneEvent implements Cloneable, Displayable{
 	
 	/** Whether the event should exist.*/
 	public Func<CutsceneEventEntity, Boolean> exist = e -> true;
+	/** Whether the event should update.*/
+	public Func<CutsceneEventEntity, Boolean> updatability = e -> true;
 	
 	protected CutsceneEvent(String name, boolean register){
 		this.name = name;
 		if(register){
 			cutsceneEvents.put(name, this);
 		}
+		
+		cannotBeRemove = !NewHorizon.contentLoadComplete;
 	}
 	
 	public CutsceneEvent(String name){
@@ -258,8 +270,8 @@ public class CutsceneEvent implements Cloneable, Displayable{
 		try{
 			T clone = (T)super.clone();
 			clone.name = name;
-			cutsceneEvents.put(name, clone);
 			modifier.get(clone);
+			cutsceneEvents.put(name, clone);
 			
 			return clone;
 		}catch(CloneNotSupportedException e){

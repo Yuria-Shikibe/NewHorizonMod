@@ -53,6 +53,7 @@ const RaidEventClass = loadClass("newhorizon.util.feature.cutscene.events.RaidEv
 const SignalEventClass = loadClass("newhorizon.util.feature.cutscene.events.SignalEvent");
 const DestroyObjectiveEventClass = loadClass("newhorizon.util.feature.cutscene.events.DestroyObjectiveEvent");
 const SimpleReloadEventClass = loadClass("newhorizon.util.feature.cutscene.events.SimpleReloadEvent");
+const ReachWaveObjectiveClass = loadClass("newhorizon.util.feature.cutscene.events.ReachWaveObjective");
 
 const NHGroups = loadContent("newhorizon.expand.entities.NHGroups");
 const NHBlending = loadContent("newhorizon.util.graphic.NHBlending");
