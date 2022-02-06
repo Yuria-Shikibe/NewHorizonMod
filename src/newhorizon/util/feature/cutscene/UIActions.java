@@ -139,8 +139,6 @@ public class UIActions{
 			update(() -> {
 				if(state.isMenu()) remove();
 				
-				if(paneTable.hasChildren())getScene().unfocus(this);
-				
 				setSize(width_UTD / 4f + extendX, height_UTD / 4f + extendY);
 				setPosition(Core.settings.getInt("eventbarsoffsetx", 0) / 100f * width_UTD, Core.settings.getInt("eventbarsoffsety", 0) / 100f * height_UTD);
 			});
