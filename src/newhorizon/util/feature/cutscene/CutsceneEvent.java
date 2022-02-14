@@ -3,6 +3,7 @@ package newhorizon.util.feature.cutscene;
 import arc.Core;
 import arc.func.Cons;
 import arc.func.Func;
+import arc.func.Prov;
 import arc.graphics.Color;
 import arc.math.geom.Position;
 import arc.scene.ui.layout.Table;
@@ -111,6 +112,8 @@ public class CutsceneEvent implements Cloneable, Displayable{
 	public Position position;
 	public float reloadTime = 180;
 	
+	public Prov<CutsceneEventEntity> entityType = () -> Pools.obtain(CutsceneEventEntity.class, CutsceneEventEntity::new);
+	
 	/** Only run {@link CutsceneEvent#onCall(CutsceneEventEntity)} once.*/
 	public boolean initOnce = true;
 	
@@ -159,7 +162,7 @@ public class CutsceneEvent implements Cloneable, Displayable{
 	@SuppressWarnings("UnusedReturnValue")
 	public CutsceneEventEntity setup(){
 		if(name.equals("null"))throw new ArcRuntimeException("Illegal Event #" + System.identityHashCode(this) + "[!]RENAME IT!");
-		CutsceneEventEntity entity = Pools.obtain(CutsceneEventEntity.class, CutsceneEventEntity::new);
+		CutsceneEventEntity entity = entityType.get();
 		entity.setType(this);
 		
 		if(!Vars.net.client())entity.add();

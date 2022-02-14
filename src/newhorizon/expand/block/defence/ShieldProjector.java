@@ -37,7 +37,6 @@ import newhorizon.content.NHFx;
 import newhorizon.expand.block.special.CommandableBlock;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.NHGroups;
-import newhorizon.expand.vars.NHVars;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
@@ -148,7 +147,7 @@ public class ShieldProjector extends CommandableBlock{
 		
 		@Override
 		public void setTarget(Point2 point2){
-			NHVars.world.commandPos = target = point2.pack();
+			commandPos = target = point2.pack();
 			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build != null && build.team == team && groupBoolf.get(this, build)){
 					build.overlap();
@@ -252,7 +251,7 @@ public class ShieldProjector extends CommandableBlock{
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.effect, Styles.clearPartiali, () -> {
 					configure(target);
-				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
+				}).size(LEN).disabled(b -> commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFunc.pointSelectTable(t, this::configure);
 				}).size(LEN * 4, LEN).row();
@@ -305,7 +304,7 @@ public class ShieldProjector extends CommandableBlock{
 		
 		@Override
 		public boolean overlap(){
-			target = NHVars.world.commandPos;
+			target = commandPos;
 			return false;
 		}
 		

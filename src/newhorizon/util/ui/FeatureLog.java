@@ -1,6 +1,8 @@
 package newhorizon.util.ui;
 
+import arc.func.Cons;
 import arc.graphics.g2d.TextureRegion;
+import arc.scene.ui.layout.Table;
 import mindustry.ctype.UnlockableContent;
 
 public class FeatureLog{
@@ -9,11 +11,14 @@ public class FeatureLog{
 	public String title, description, type;
 	public TextureRegion icon;
 	
+	public boolean important = false;
+	public Cons<Table> modifier = null;
+	
 	public static final String
 			ADJUST = "Adjustment",
 			IMPROVE = "Improvement",
 			BALANCE = "Balance",
-			NEW_FEATURE = "New Feature",
+			NEW_FEATURE = "Feature",
 			FIXES = "Fix",
 			IMPORTANT = "[gray]/[royal]Important Update";
 			

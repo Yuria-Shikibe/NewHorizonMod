@@ -37,7 +37,7 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.Carrier;
 import newhorizon.expand.vars.TileSortMap;
-import newhorizon.util.feature.InternalTools;
+import newhorizon.util.Tool_Internal;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
@@ -410,9 +410,9 @@ public class DebugDialog extends BaseDialog{
 				NHPixmap.saveAddProcessed();
 			})).disabled(b -> !NHPixmap.isDebugging());
 			
-			t.button("Fire Tool", InternalTools::fireAnime);
+			t.button("Fire Tool", Tool_Internal::fireAnime);
 			
-			t.button("Bundle Tool", InternalTools::patchBundle);
+			t.button("Bundle Tool", Tool_Internal::patchBundle);
 			
 			t.row();
 			
@@ -438,7 +438,7 @@ public class DebugDialog extends BaseDialog{
 			
 			t.row();
 			
-			t.button("see Tex", () -> InternalTools.showTexture(NHContent.smoothNoise));
+			t.button("see Tex", () -> Tool_Internal.showTexture(NHContent.smoothNoise));
 		}).grow();
 		
 		addCloseButton();

@@ -20,7 +20,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.expand.entities.NHGroups;
-import newhorizon.expand.vars.EventListeners;
+import newhorizon.util.EventListeners;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.state;

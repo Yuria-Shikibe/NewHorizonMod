@@ -128,7 +128,7 @@ public class NHBlocks implements ContentList {
 		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher,
 		//Special
 		playerJumpGate, debuger, payloadEntrance, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
-		disposePowerVoid, disposePowerNode, temporaryPowerSource, gravityTrapSmall,
+		disposePowerVoid, disposePowerNode, temporaryPowerSource, gravityTrapSmall, beacon,
 	
 		//Env
 		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalUnit, metalTower, metalGround, metalGroundQuantum,
@@ -1647,6 +1647,10 @@ public class NHBlocks implements ContentList {
 	public void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
 		
+		beacon = new BeaconBlock("beacon"){{
+			size = 3;
+		}};
+		
 		multiSteelItemBridge = new BufferedItemBridge("multi-steel-item-bridge"){{
 			health = 480;
 			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.zeta, 5, Items.graphite, 10));
@@ -1758,6 +1762,7 @@ public class NHBlocks implements ContentList {
 		
 		remoteRouter = new RemoteRouter("remote-router"){{
 			size = 3;
+			loss = 5f;
 			consumes.power(10);
 			requirements(Category.distribution, BuildVisibility.shown, with(NHItems.seniorProcessor, 80, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, Items.surgeAlloy, 80));
 			health = 450;
@@ -2312,7 +2317,7 @@ public class NHBlocks implements ContentList {
 			spawnReloadTime = 750f;
 			range = 160f;
 			
-			itemCapacity = 800;
+			itemCapacity = 500;
 			
 			consumes.power(8f);
 			
@@ -2370,7 +2375,7 @@ public class NHBlocks implements ContentList {
 					Items.thorium, 1000
 			));
 			
-			itemCapacity = 1500;
+			itemCapacity = 1200;
 			
 			addSets(
 				new UnitSet(NHUnitTypes.naxos, new byte[]{NHUnitTypes.AIR_LINE_1, 4}, 120 * 60f,
@@ -2417,7 +2422,7 @@ public class NHBlocks implements ContentList {
 			adaptable = true;
 			adaptBase = jumpGateJunior;
 			
-			itemCapacity = 8000;
+			itemCapacity = 3000;
 			
 			requirements(Category.units, BuildVisibility.shown, with(
 				NHItems.presstanium, 1800,

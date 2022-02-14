@@ -49,8 +49,8 @@ import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
+import newhorizon.util.ui.NHUI;
 import newhorizon.util.ui.TableFunc;
-import newhorizon.util.ui.Tables;
 
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -150,7 +150,7 @@ public class MatterStorm extends Weather{
 				
 				t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
 				
-				t.table(info -> Tables.ammo(info, localizedName, bulletType, fullIcon,0)).row();
+				t.table(info -> NHUI.ammo(info, localizedName, bulletType, fullIcon,0)).row();
 			}).fill().padBottom(OFFSET).left().row();
 		});
 	}

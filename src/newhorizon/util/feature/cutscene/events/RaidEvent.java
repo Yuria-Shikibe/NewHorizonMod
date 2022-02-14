@@ -39,8 +39,8 @@ import newhorizon.content.NHSounds;
 import newhorizon.util.feature.cutscene.*;
 import newhorizon.util.feature.cutscene.events.util.BulletHandler;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.ui.NHUI;
 import newhorizon.util.ui.TableFunc;
-import newhorizon.util.ui.Tables;
 
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -222,7 +222,7 @@ public class RaidEvent extends CutsceneEvent{
 					t2.add("Raid").color(color);
 					t2.button("Check Target", Icon.eye, Styles.transt, () -> {
 						UIActions.checkPosition(e);
-					}).disabled(b -> UIActions.lockingInput()).growX().height(LEN - OFFSET * 2).padLeft(OFFSET).marginLeft(OFFSET).pad(OFFSET / 3);
+					}).disabled(b -> UIActions.lockingInput()).growX().height(LEN - OFFSET * 1.5f).padLeft(OFFSET).marginLeft(OFFSET).pad(OFFSET / 3);
 				}).growX().pad(OFFSET / 2).fillY().row();
 				c.add(
 					new Bar(
@@ -282,11 +282,11 @@ public class RaidEvent extends CutsceneEvent{
 			
 			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 			
-			t.add("[lightgray]" + Core.bundle.format("mod.ui.estimated-max-damage", UI.formatAmount((long)(Tables.estimateBulletDamage(bulletType, number, true))))).left().row();
+			t.add("[lightgray]" + Core.bundle.format("mod.ui.estimated-max-damage", UI.formatAmount((long)(NHUI.estimateBulletDamage(bulletType, number, true))))).left().row();
 			
 			t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 			
-			t.table(b -> Tables.ammo(b, "[lightgray]*[accent]" + number, bulletType, NHContent.raid, 0)).row();
+			t.table(b -> NHUI.ammo(b, "[lightgray]*[accent]" + number, bulletType, NHContent.raid, 0)).row();
 		}).fill().padBottom(OFFSET).left().row();
 	}
 }

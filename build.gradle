@@ -9,6 +9,7 @@ repositories{
     maven{ url 'https://www.jitpack.io' }
 }
 
+
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v135'
@@ -23,18 +24,21 @@ ext{
     }
 }
 
+sourceCompatibility = 8
+targetCompatibility = 8
+
 //java 8 backwards compatibility flag
-allprojects{
-    tasks.withType(JavaCompile){
-        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-            options.compilerArgs.addAll(['--release', '8'])
-        }
-//
-//        doFirst {
-//            options.compilerArgs.addAll(['--release', '14', "--enable-preview"])
+//allprojects{
+//    tasks.withType(JavaCompile){
+//        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+//            options.compilerArgs.addAll(['--release', '8'])
 //        }
-    }
-}
+////
+////        doFirst {
+////            options.compilerArgs.addAll(['--release', '14', "--enable-preview"])
+////        }
+//    }
+//}
 
 dependencies{
     compileOnly 'org.jetbrains:annotations:22.0.0'

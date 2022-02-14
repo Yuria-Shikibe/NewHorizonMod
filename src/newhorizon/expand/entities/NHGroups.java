@@ -5,10 +5,12 @@ import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
+import newhorizon.expand.block.special.BeaconBlock;
 import newhorizon.expand.block.special.CommandableBlock;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.block.special.RemoteCoreStorage;
@@ -23,6 +25,7 @@ public class NHGroups{
 	public static final QuadTree<GravityTrapField> gravityTraps = new QuadTree<>(Vars.world.getQuadBounds(new Rect()));
 	public static final ObjectSet<CommandableBlock.CommandableBlockBuild> commandableBuilds = new ObjectSet<>();
 	public static final ObjectSet<JumpGate.JumpGateBuild> jumpGate = new ObjectSet<>();
+	public static final Seq<BeaconBlock.BeaconBuild> beacon = new Seq<>();
 	
 	public static void clear(){
 		event.clear();
@@ -31,6 +34,7 @@ public class NHGroups{
 		commandableBuilds.clear();
 		autoEventTrigger.clear();
 		jumpGate.clear();
+		beacon.clear();
 	}
 	
 	public static void update(){

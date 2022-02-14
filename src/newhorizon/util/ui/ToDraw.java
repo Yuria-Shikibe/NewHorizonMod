@@ -2,7 +2,7 @@ package newhorizon.util.ui;
 
 import arc.graphics.g2d.Draw;
 import arc.scene.Element;
-import newhorizon.expand.vars.EventListeners;
+import newhorizon.util.EventListeners;
 
 public class ToDraw extends Element{
 	public Runnable drawer;

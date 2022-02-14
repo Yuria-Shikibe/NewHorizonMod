@@ -27,8 +27,8 @@ import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.OV_Pair;
 
-import static newhorizon.util.feature.cutscene.CCS_JsonHandler.DEFAULT;
-import static newhorizon.util.feature.cutscene.CCS_JsonHandler.TEAM_DEFAULT;
+import static newhorizon.util.Tool_JsonHandler.DEFAULT;
+import static newhorizon.util.Tool_JsonHandler.TEAM_DEFAULT;
 
 @ClientDisabled
 public class AutoEventTrigger implements Entityc, Cloneable{

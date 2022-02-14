@@ -34,7 +34,7 @@ public class NHContent extends Content{
 			linkArrow;
 	
 	public static TextureRegion //UI
-		raid, objective, fleet;
+		raid, objective, fleet, capture;
 	
 	public static void loadModContent(){
 		new NHContent().load();
@@ -77,6 +77,7 @@ public class NHContent extends Content{
 		raid = Core.atlas.find(NewHorizon.name("raid"));
 		objective = Core.atlas.find(NewHorizon.name("objective"));
 		fleet = Core.atlas.find(NewHorizon.name("fleet"));
+		capture = Core.atlas.find(NewHorizon.name("capture"));
 		
 		linkArrow = Core.atlas.find(NewHorizon.name("linked-arrow"));
 		

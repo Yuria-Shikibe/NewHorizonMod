@@ -54,12 +54,12 @@ public class NHSetting{
 		settingTable.game.row();
 		settingTable.graphics.checkPref("enableeffectdetails", true);
 		settingTable.graphics.checkPref("alwaysshowgravitytrapfields", false);
-		settingTable.game.checkPref("showinstructor", true);
+		settingTable.game.checkPref("showinstructor", false);
 		settingTable.game.checkPref("showeventtable", true);
 		settingTable.game.sliderPref("eventbarsoffsetx", 0, 0, 100, 4, i -> i + "%");
 		settingTable.game.sliderPref("eventbarsoffsety", 0, 0, 100, 4, i -> i + "%");
 		
-		settingTable.game.row().button("MOD: [sky]" + modMeta.displayName + "[]", new TextureRegionDrawable(NHContent.icon2), LEN, () -> {
+		settingTable.game.row().button("MOD: [sky]" + modMeta.displayName + "[]", new TextureRegionDrawable(NHContent.icon2), LEN - 8, () -> {
 			new SettingDialog().show();
 		}).growX().height(LEN);
 	}

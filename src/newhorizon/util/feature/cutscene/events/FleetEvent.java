@@ -222,7 +222,7 @@ public class FleetEvent extends CutsceneEvent{
 					t2.add("INTERVENE").color(color);
 					t2.button("Check Target", Icon.eye, Styles.transt, () -> {
 						UIActions.checkPosition(e);
-					}).disabled(b -> UIActions.lockingInput()).growX().height(LEN - OFFSET * 2).padLeft(OFFSET).marginLeft(OFFSET).pad(OFFSET / 3);
+					}).disabled(b -> UIActions.lockingInput()).growX().height(LEN - OFFSET * 1.5f).padLeft(OFFSET).marginLeft(OFFSET).pad(OFFSET / 3);
 				}).growX().pad(OFFSET / 2).fillY().row();
 				c.add(
 					new Bar(

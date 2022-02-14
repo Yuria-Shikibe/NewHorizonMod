@@ -59,8 +59,8 @@ import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.ui.NHUI;
 import newhorizon.util.ui.TableFunc;
-import newhorizon.util.ui.Tables;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -72,6 +72,7 @@ import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class JumpGate extends Block {
+    protected static ItemModule nextItems;
     protected static final ObjectMap<UnitSet, Integer> allSets = new ObjectMap<>();
     
     public int maxSpawnPerOne = 15;
@@ -157,11 +158,23 @@ public class JumpGate extends Block {
         }
     }
     
-    public void placeBegan(Tile tile, Block previous) {
-        if (previous instanceof JumpGate) {
+    @Override
+    public void placeBegan(Tile tile, Block previous){
+        //finish placement immediately when a block is replaced.
+        if(previous instanceof JumpGate){
             tile.setBlock(this, tile.team());
-            Fx.placeBlock.at(tile, (float)tile.block().size);
-            Fx.upgradeCore.at(tile, (float)tile.block().size);
+            Fx.placeBlock.at(tile, tile.block().size);
+            Fx.upgradeCore.at(tile, tile.block().size);
+            
+            //set up the correct items
+            if(nextItems != null){
+                //force-set the total items
+                if(tile.build != null){
+                    tile.build.items.set(nextItems);
+                }
+                
+                nextItems = null;
+            }
         }
     }
     
@@ -171,6 +184,9 @@ public class JumpGate extends Block {
         if (!Vars.state.rules.infiniteResources && items != null) {
             items.remove(ItemStack.mult(requirements, Vars.state.rules.buildCostMultiplier));
         }
+    
+        if(!NHVars.state.jumpGateUseCoreItems && tile.build != null)nextItems = tile.build.items;
+        
     }
     
     public void drawPlace(int x, int y, int rotation, boolean valid) {
@@ -239,7 +255,7 @@ public class JumpGate extends Block {
             t.row().add(Core.bundle.get("editor.spawn") + ":").left().pad(OFFSET).row();
             for(Integer i : getSortedKeys()) {
                 UnitSet set = calls.get(i);
-                t.add(new Tables.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearPartiali, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
+                t.add(new NHUI.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.clearPartiali, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
             }
         });
     }
@@ -318,7 +334,7 @@ public class JumpGate extends Block {
     
         @Override
         public boolean acceptItem(Building source, Item item){
-            return items.get(item) < getMaximumAccepted(item);
+            return !NHVars.state.jumpGateUseCoreItems && realItems().get(item) < getMaximumAccepted(item);
         }
     
         @Override
@@ -358,7 +374,7 @@ public class JumpGate extends Block {
         public void updateTile(){
             progress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 0.5f);
             if(!cooling && isCalling() && Units.canCreate(team, getType())){
-                buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta() * warmup;
+                buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta() * warmup * state.rules.unitBuildSpeed(team);
                 if(buildProgress >= costTime(getSet(), true) && !jammed){
                     spawn(getSet());
                 }
@@ -435,8 +451,11 @@ public class JumpGate extends Block {
     
         @Override
         public void updateTableAlign(Table table){
-            Vec2 pos = Core.input.mouseScreen(x - block.size * 4f - 1.0F, y);
-            table.setPosition(pos.x, pos.y, Align.right);
+            if(NHVars.state.jumpGateUseCoreItems)super.updateTableAlign(table);
+            else{
+                Vec2 pos = Core.input.mouseScreen(x - block.size * 4f - 1.0F, y);
+                table.setPosition(pos.x, pos.y, Align.right);
+            }
         }
         
     
@@ -450,8 +469,8 @@ public class JumpGate extends Block {
                     for(Integer hashcode : getSortedKeys()) {
                         UnitSet set = calls.get(hashcode);
                         callTable.table(Tex.pane, info -> {
-                            info.add(new Tables.UnitSetTable(set, table2 -> {
-                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, new Label(() -> ("[lightgray]Construction Available?: " + TableFunc.judge(canSpawn(set, false) && hasConsume(set, spawnNum)))), items())).size(LEN);
+                            info.add(new NHUI.UnitSetTable(set, table2 -> {
+                                table2.button(Icon.infoCircle, Styles.clearTransi, () -> showInfo(set, new Label(() -> ("[lightgray]Construction Available?: " + TableFunc.judge(canSpawn(set, false) && hasConsume(set, spawnNum)))), realItems())).size(LEN);
                                 table2.button(Icon.add, Styles.clearPartiali, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();
                             if(!hideSet(set.type)){
@@ -590,12 +609,12 @@ public class JumpGate extends Block {
         }
 
         public void consumeItems(){
-            if(!cheating())items().remove(ItemStack.mult(getSet().requirements(), buildingSpawnNum));
+            if(!cheating())realItems().remove(ItemStack.mult(getSet().requirements(), buildingSpawnNum));
         }
 
         public boolean hasConsume(UnitSet set, int num){
             if(set == null || cheating())return true;
-            return items.has(ItemStack.mult(set.requirements(), num));
+            return realItems().has(ItemStack.mult(set.requirements(), num));
         }
 
         public float costTime(UnitSet set, boolean buildingParma){
@@ -615,7 +634,7 @@ public class JumpGate extends Block {
                 if(isCalling()){
                     if(getSet() != null){
                         for(ItemStack stack : ItemStack.mult(getSet().requirements(), buildingSpawnNum * (costTime(getSet(), true) - buildProgress) / costTime(getSet(), true))){
-                            items().add(stack.item, Math.min(stack.amount, getMaximumAccepted(stack.item) - items.get(stack.item)));
+                            realItems().add(stack.item, Math.min(stack.amount, getMaximumAccepted(stack.item) - realItems().get(stack.item)));
                         }
                     }
                 }
@@ -713,7 +732,11 @@ public class JumpGate extends Block {
     
         @Override
         public boolean cheating(){
-            return super.cheating() || (team == state.rules.waveTeam && !state.rules.pvp) || state.rules.infiniteResources;
+            return super.cheating() || (team == state.rules.waveTeam && !state.rules.pvp && NHVars.state.jumpGateEnemyCheatEnabled) || state.rules.infiniteResources;
+        }
+        
+        public ItemModule realItems(){
+            return NHVars.state.jumpGateUseCoreItems && team.data().hasCore() ? team.core().items() : items;
         }
     }
     

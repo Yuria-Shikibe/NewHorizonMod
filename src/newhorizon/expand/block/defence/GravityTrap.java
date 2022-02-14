@@ -21,7 +21,7 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHContent;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.NHGroups;
-import newhorizon.expand.vars.EventListeners;
+import newhorizon.util.EventListeners;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.tilesize;

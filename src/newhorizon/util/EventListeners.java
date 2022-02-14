@@ -1,4 +1,4 @@
-package newhorizon.expand.vars;
+package newhorizon.util;
 
 import arc.Core;
 import arc.Events;
@@ -8,6 +8,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.style.TextureRegionDrawable;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Interval;
@@ -17,6 +18,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.core.GameState;
+import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
 import mindustry.game.SpawnGroup;
 import mindustry.gen.Building;
@@ -26,6 +28,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
 import newhorizon.content.*;
@@ -35,6 +38,7 @@ import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.block.special.PlayerJumpGate;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.NHGroups;
+import newhorizon.expand.vars.NHVars;
 import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
@@ -49,10 +53,12 @@ import newhorizon.util.func.NHSetting;
 import newhorizon.util.func.OV_Pair;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.ShadowProcessor;
+import newhorizon.util.ui.NHWorldSettingDialog;
 import newhorizon.util.ui.ScreenInterferencer;
 
-import static mindustry.Vars.control;
-import static mindustry.Vars.player;
+import java.lang.reflect.Field;
+
+import static mindustry.Vars.*;
 
 
 public class EventListeners{
@@ -99,7 +105,7 @@ public class EventListeners{
 				spacingRand = 120 * 60;
 				disposable = true;
 			}}, new AutoEventTrigger(){{
-				items = OV_Pair.seqWith(Items.plastanium, 100, NHItems.metalOxhydrigen, 100);
+				items = OV_Pair.seqWith(Items.plastanium, 1000, NHItems.metalOxhydrigen, 400);
 				eventType = new FleetEvent("inbuilt-inbound-server-1"){{
 					unitTypeMap = ObjectMap.of(NHUnitTypes.warper, 8, NHUnitTypes.assaulter, 4, NHUnitTypes.branch, 4);
 					reloadTime = 40 * 60;
@@ -246,11 +252,14 @@ public class EventListeners{
 			
 			actAfterLoad.each(Runnable::run);
 			actAfterLoad.clear();
+			
+			Core.app.post(NHVars::load);
 		});
 		
 		Events.run(EventType.Trigger.update, () -> {
 			if(Vars.state.isPlaying()){
 				NHGroups.update();
+				NHVars.update();
 			}
 		});
 		
@@ -268,6 +277,21 @@ public class EventListeners{
 		});
 		
 		if(Vars.headless)return;
+		
+		Events.on(EventType.ClientLoadEvent.class, e -> {
+			try{
+				BaseDialog menu;
+				Field field = MapEditorDialog.class.getDeclaredField("menu");
+				field.setAccessible(true);
+				menu = (BaseDialog)field.get(ui.editor);
+				
+				menu.cont.row().button("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), 30, () -> {
+					new NHWorldSettingDialog().show();
+				}).size(180f * 2 + 10f, 60f);
+			}catch(IllegalAccessException | NoSuchFieldException ex){
+				ui.showErrorMessage(ex.toString());
+			}
+		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			if(connectCaution){
@@ -290,23 +314,10 @@ public class EventListeners{
 			Vars.ui.hudfrag.showToast(Icon.warning, e.unit.type.localizedName + " Approaching");
 		});
 		
-		Events.run(EventType.Trigger.draw, () -> {
-			Vec2 vec2 = new Vec2().set(Vars.player);
-			
-			Building building = Vars.control.input.frag.config.getSelectedTile();
-			
-			if(NHSetting.alwaysShowGravityTrapFields || control.input.block instanceof GravityTrap || (building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper))){
-				Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
-					Vars.renderer.effectBuffer.begin(Color.clear);
-					GravityTrapField.DRAWER.run();
-					Vars.renderer.effectBuffer.end();
-					Vars.renderer.effectBuffer.blit(NHShaders.gravityTrapShader);
-				});
-			}
-			
-			
-			
+		Events.run(EventType.Trigger.postDraw, () -> {
 			if(Core.settings.getBool("showinstructor")){
+				Draw.alpha(1);
+				
 				if(control.input.block instanceof JumpGate){
 					DrawFunc.drawWhileHold(JumpGate.JumpGateBuild.class, build -> {
 						Tmp.v1.trns(player.angleTo(build), player.unit().hitSize() + 15);
@@ -368,11 +379,28 @@ public class EventListeners{
 					}
 				}
 			}
-			
-			toDraw.each(Runnable::run);
-			
+		});
+		
+		Events.run(EventType.Trigger.drawOver, () -> {
 			ShadowProcessor.post();
 			ShadowProcessor.clear();
+		});
+		
+		Events.run(EventType.Trigger.drawOver, () -> {
+			Vec2 vec2 = new Vec2().set(Vars.player);
+			
+			Building building = Vars.control.input.frag.config.getSelectedTile();
+			
+			if(NHSetting.alwaysShowGravityTrapFields || control.input.block instanceof GravityTrap || (building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper))){
+				Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
+					Vars.renderer.effectBuffer.begin(Color.clear);
+					GravityTrapField.DRAWER.run();
+					Vars.renderer.effectBuffer.end();
+					Vars.renderer.effectBuffer.blit(NHShaders.gravityTrapShader);
+				});
+			}
+			
+			toDraw.each(Runnable::run);
 		});
 		
 		Events.on(EventType.ClientPreConnectEvent.class, e -> {

@@ -17,7 +17,6 @@ const CutsceneEvent = CutsceneEventClass.newInstance();
 
 const CutsceneEventEntity = loadContent("newhorizon.util.feature.cutscene.CutsceneEventEntity");
 const CutsceneScript = loadContent("newhorizon.util.feature.cutscene.CutsceneScript");
-const CCS_Scripts = CutsceneScript.scripts;
 const EventSamples = loadContent("newhorizon.util.feature.cutscene.EventSamples");
 
 const NHBlocks = loadContent("newhorizon.content.NHBlocks");
@@ -34,12 +33,12 @@ const NHColor = loadContent("newhorizon.content.NHColor");
 const NHPlanets = loadContent("newhorizon.content.NHPlanets");
 const NHFunc = loadContent("newhorizon.util.func.NHFunc");
 const DrawFunc = loadContent("newhorizon.util.graphic.DrawFunc");
-const Tables = loadContent("newhorizon.util.ui.Tables");
 const TableFunc = loadContent("newhorizon.util.ui.TableFunc");
 const NHInterp = loadContent("newhorizon.util.func.NHInterp");
 const PosLightning = loadContent("newhorizon.util.feature.PosLightning");
 
-const CCS_JsonHandler = loadContent("newhorizon.util.feature.cutscene.CCS_JsonHandler");
+const T_JS = CutsceneScript.scripts;
+const T_JSON = loadContent("newhorizon.util.Tool_JsonHandler");
 
 const BulletHandler = loadContent("newhorizon.util.feature.cutscene.events.util.BulletHandler");
 const PreMadeRaids = loadContent("newhorizon.util.feature.cutscene.events.util.PreMadeRaids");

@@ -7,7 +7,6 @@ import arc.func.Boolf;
 import arc.func.Cons;
 import arc.func.Prov;
 import arc.math.geom.Vec2;
-import arc.scene.style.TextureRegionDrawable;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Interval;
@@ -17,7 +16,6 @@ import arc.util.Time;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.core.GameState;
-import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
 import mindustry.game.Saves;
 import mindustry.gen.Building;
@@ -25,15 +23,14 @@ import mindustry.maps.Map;
 import mindustry.mod.Mods;
 import mindustry.net.Net;
 import mindustry.type.SectorPreset;
-import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
-import newhorizon.content.NHContent;
 import newhorizon.expand.entities.NHGroups;
+import newhorizon.util.Tool_JsonHandler;
+import newhorizon.util.Tool_Scripts;
 import newhorizon.util.feature.cutscene.packets.EventCompletePacket;
 import newhorizon.util.feature.cutscene.packets.EventUICallPacket;
 import newhorizon.util.feature.cutscene.packets.TagPacket;
-import newhorizon.util.ui.CutsceneMenu;
 import newhorizon.util.ui.TableFunc;
 
 import java.io.IOException;
@@ -78,7 +75,7 @@ public class CutsceneScript{
 	
 	public static Mods.LoadedMod mod;
 	
-	public static CCS_Scripts scripts;
+	public static Tool_Scripts scripts;
 	
 	public static final String CUTSCENE_KEY = "custom-cutscene-script";
 	public static final String CUSTOME_EVENTS_KEY = "custom-event-json";
@@ -192,19 +189,6 @@ public class CutsceneScript{
 		});
 		
 		Events.on(EventType.ClientLoadEvent.class, e -> {
-			try{
-				BaseDialog menu;
-				Field field = MapEditorDialog.class.getDeclaredField("menu");
-				field.setAccessible(true);
-				menu = (BaseDialog)field.get(ui.editor);
-				
-				menu.cont.row().button("@mod.ui.cutscene-menu", new TextureRegionDrawable(NHContent.icon), 30, () -> {
-					new CutsceneMenu().show();
-				}).size(180f * 2 + 10f, 60f);
-			}catch(IllegalAccessException | NoSuchFieldException ex){
-				ui.showErrorMessage(ex.toString());
-			}
-			
 			control.input.addLock(() -> UIActions.lockInput);
 			
 			UIActions.extendX = Core.settings.getFloat("nh-ccs-extendx", 0);
@@ -301,7 +285,7 @@ public class CutsceneScript{
 	
 	
 	protected static void init(){
-		if(scripts == null)scripts = new CCS_Scripts();
+		if(scripts == null)scripts = new Tool_Scripts();
 		
 		reset();
 		
@@ -315,7 +299,7 @@ public class CutsceneScript{
 			if(state.map.hasTag(CUSTOME_EVENTS_KEY)){
 				try{
 					runEventOnce("SetUpTriggers", () -> {
-						CCS_JsonHandler.generators(Jval.read(state.map.tags.get(CUSTOME_EVENTS_KEY))).each((n, t) -> {
+						Tool_JsonHandler.generators(Jval.read(state.map.tags.get(CUSTOME_EVENTS_KEY))).each((n, t) -> {
 							t.add();
 						});
 					});

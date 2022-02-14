@@ -38,8 +38,14 @@ import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-public class Tables{
+public class NHUI{
 	private static float damage = 0;
+	
+	public static Table coreInfo;
+	
+	public static void init(){
+		coreInfo = ui.hudGroup.find("coreinfo");
+	}
 	
 	public static float estimateBulletDamage(BulletType type, int num, boolean init){
 		if(init){damage = 1;}

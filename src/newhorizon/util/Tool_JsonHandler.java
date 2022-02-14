@@ -1,9 +1,12 @@
-package newhorizon.util.feature.cutscene;
+package newhorizon.util;
 
+import arc.Core;
 import arc.func.Prov;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.ArcRuntimeException;
+import arc.util.Log;
+import arc.util.Time;
 import arc.util.serialization.Jval;
 import arc.util.serialization.Jval.JsonArray;
 import arc.util.serialization.Jval.JsonMap;
@@ -13,6 +16,8 @@ import mindustry.game.Team;
 import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import newhorizon.NewHorizon;
+import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 import newhorizon.util.func.OV_Pair;
 
@@ -23,37 +28,97 @@ import newhorizon.util.func.OV_Pair;
  *
  *
  * */
-public class CCS_JsonHandler{
+public class Tool_JsonHandler{
+	private static JsonMap initContext;
+	
+	
 	public static final int TEAM_WAVE = -2, TEAM_DEFAULT = -1;
 	public static final Prov<Team> DEFAULT = () -> Vars.state.rules.defaultTeam, ENEMY = () -> Vars.state.rules.waveTeam;
 	
 	public static final String
-		KEY_TRIGGERS = "triggers", TRIGGER_NAME = "name", TRIGGER_OCCASION = "occasion",
+			ALL_SETTINGS = "nh-world-settings",
+			JUMP_GATE_CHEAT_ENABLED = "jg-use-cheat-enabled",
+			JUMP_GATE_USE_CORE_ITEMS = "jg-use-core-items",
 	
-		KEY_TRIGGER_WAVE = "wave",
-		KEY_SPACING_BASE = "spacingBase", KEY_SPACING_RAND = "spacingRand",
-		KEY_DISPOSABLE = "disposable",
+			BEACON_CAPTURE_SCORE = "capture-score",
+			BEACON_UNIT_FIELD = "enable-unit-capture",
+			BEACON_ENABLE = "enable-beacon-capture",
+			BEACON_FIELD_POLYGON = "use-polygon-field";
 	
-		KEY_TEAM = "team",
-		KEY_ITEMS = "items", CONTENT_ITEM = "content", CONTENT_AMOUNT = "amount",
-		KEY_UNITS = "units",
-		KEY_BLOCKS = "blocks",
-		KEY_EVENT = "event",
-		KEY_EVENT_PROV = "eventProv";
+	public static final String
+			KEY_TRIGGERS = "triggers", TRIGGER_NAME = "name", TRIGGER_OCCASION = "occasion",
+		
+			KEY_TRIGGER_WAVE = "wave",
+			KEY_SPACING_BASE = "spacingBase", KEY_SPACING_RAND = "spacingRand",
+			KEY_DISPOSABLE = "disposable",
+		
+			KEY_TEAM = "team",
+			KEY_ITEMS = "items", CONTENT_ITEM = "content", CONTENT_AMOUNT = "amount",
+			KEY_UNITS = "units",
+			KEY_BLOCKS = "blocks",
+			KEY_EVENT = "event",
+			KEY_EVENT_PROV = "eventProv";
 	
-	public static void initJval(Jval jval){
+	public static void setContext(Jval jval){
+		initContext = jval.asObject();
+		if(NewHorizon.DEBUGGING){
+			Log.info("Context Posted.");
+			Core.app.post(() -> {
+				if(initContext != null)throw new ArcRuntimeException("The context hasn't been rested!");
+			});
+		}
+	}
+	
+	public static boolean getBool_Context(String key, boolean def){
+		if(!initContext.containsKey(key))return def;
+		else return initContext.get(key).asBool();
+	}
+	
+	public static float getFloat_Context(String key, float def){
+		if(!initContext.containsKey(key))return def;
+		else return initContext.get(key).asFloat();
+	}
+	
+	public static int getInt_Context(String key, int def){
+		if(!initContext.containsKey(key))return def;
+		else return initContext.get(key).asInt();
+	}
+	
+	public static void initKey_Context(String key, Jval value){
+		if(!initContext.containsKey(key))initContext.put(key, value);
+	}
+	
+	public static void initKey_Context(String key, String value){
+		if(!initContext.containsKey(key))initContext.put(key, Jval.valueOf(value));
+	}
+	
+	public static void initKey_Context(String key, float value){
+		if(!initContext.containsKey(key))initContext.put(key, Jval.valueOf(value));
+	}
+	
+	public static void initKey_Context(String key, boolean value){
+		if(!initContext.containsKey(key))initContext.put(key, Jval.valueOf(value));
+	}
+	
+	public static void endContext(){
+		initContext = null;
+	}
+	
+	public static void initEventJval(Jval jval){
 		JsonMap map = jval.asObject();
 		
-		if(!map.containsKey(KEY_TEAM))      map.put(KEY_TEAM, Jval.valueOf(-1));
-		if(!map.containsKey(KEY_ITEMS))     map.put(KEY_ITEMS, Jval.valueOf("{}"));
-		if(!map.containsKey(KEY_UNITS))     map.put(KEY_UNITS, Jval.valueOf("{}"));
-		if(!map.containsKey(KEY_BLOCKS))    map.put(KEY_BLOCKS, Jval.valueOf("{}"));
-		if(!map.containsKey(KEY_EVENT))     map.put(KEY_EVENT, Jval.valueOf(""));
-		if(!map.containsKey(KEY_EVENT_PROV))map.put(KEY_EVENT_PROV, Jval.valueOf(""));
-		if(!map.containsKey(KEY_TRIGGER_WAVE))map.put(KEY_TRIGGER_WAVE, Jval.valueOf(10));
-		if(!map.containsKey(KEY_SPACING_BASE))map.put(KEY_SPACING_BASE, Jval.valueOf(5));
-		if(!map.containsKey(KEY_SPACING_RAND))map.put(KEY_SPACING_RAND, Jval.valueOf(2));
-		if(!map.containsKey(KEY_DISPOSABLE))map.put(KEY_DISPOSABLE, Jval.valueOf(false));
+		setContext(jval);
+		initKey_Context(KEY_TEAM, Jval.valueOf(-1));
+		initKey_Context(KEY_ITEMS, Jval.newObject());
+		initKey_Context(KEY_UNITS, Jval.newObject());
+		initKey_Context(KEY_BLOCKS, Jval.newObject());
+		initKey_Context(KEY_EVENT, "");
+		initKey_Context(KEY_EVENT_PROV, "");
+		initKey_Context(KEY_TRIGGER_WAVE, 10);
+		initKey_Context(KEY_SPACING_BASE, 2 * Time.toMinutes);
+		initKey_Context(KEY_SPACING_RAND, 2 * Time.toMinutes);
+		initKey_Context(KEY_DISPOSABLE, false);
+		endContext();
 	}
 	
 	public static JsonArray triggers(Jval root){
@@ -84,7 +149,7 @@ public class CCS_JsonHandler{
 	}
 	
 	public static Jval writeTrigger(AutoEventTrigger trigger, Jval jval){
-		initJval(jval);
+		initEventJval(jval);
 		
 		Jval items = Jval.newArray();
 		for(OV_Pair<Item> content : trigger.items){
@@ -129,7 +194,7 @@ public class CCS_JsonHandler{
 	}
 	
 	public static AutoEventTrigger readTrigger(Jval jval){
-		initJval(jval);
+		initEventJval(jval);
 		
 		AutoEventTrigger trigger = new AutoEventTrigger();
 		JsonMap map = jval.asObject();

@@ -1,4 +1,4 @@
-package newhorizon.util.feature;
+package newhorizon.util;
 
 import arc.Core;
 import arc.files.Fi;
@@ -32,7 +32,7 @@ import newhorizon.util.func.NHPixmap;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-public class InternalTools{
+public class Tool_Internal{
 	private static Fi toProcess;
 	
 	public static void showTexture(Texture texture){

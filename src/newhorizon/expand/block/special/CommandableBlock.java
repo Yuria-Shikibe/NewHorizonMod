@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import static mindustry.Vars.*;
 
 public abstract class CommandableBlock extends Block{
+	public transient int commandPos = -1;
 	public Boolf2<CommandableBlockBuild, CommandableBlockBuild> groupBoolf = null;
 	protected static final Vec2 tmpVec = new Vec2();
 	protected static final Point2 tmpPoint = new Point2();
@@ -48,7 +49,7 @@ public abstract class CommandableBlock extends Block{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.reload, reloadTime / Time.toSeconds, StatUnit.seconds);
-		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shoot", "\n 1 -> Control All\n 2 -> Control Single \n X, Y are both [accent]<tilesize>(8x)[] format")));
+		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shoot", "\n 1 -> Control All\n 2 -> Control Single \n X, Y are both [accent]<Unit>(x8)[] format")));
 	}
 	
 	@Override

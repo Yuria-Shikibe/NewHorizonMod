@@ -3,6 +3,8 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.scene.ui.Label;
+import arc.scene.ui.layout.Table;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -26,7 +28,8 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.NHGroups;
-import newhorizon.expand.vars.EventListeners;
+import newhorizon.expand.vars.NHVars;
+import newhorizon.util.EventListeners;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.feature.cutscene.CutsceneScript;
@@ -34,11 +37,8 @@ import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.func.NHSetting;
-import newhorizon.util.ui.FeatureLog;
-import newhorizon.util.ui.Hints;
-import newhorizon.util.ui.ScreenInterferencer;
-import newhorizon.util.ui.TableFunc;
-import newhorizon.util.ui.Tables.LinkTable;
+import newhorizon.util.ui.*;
+import newhorizon.util.ui.NHUI.LinkTable;
 
 import java.io.IOException;
 
@@ -47,7 +47,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-	public static final boolean DEBUGGING = false;
+	public static final boolean DEBUGGING = true;
 	public static final boolean DEBUGGING_SPRITE = false;
 	
 //	{
@@ -88,9 +88,11 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(NHBlocks.multiSteelItemBridge), new FeatureLog(NHBlocks.multiSteelLiquidBridge),
-			new FeatureLog("Adjust", "Jump Gates now need input", FeatureLog.ADJUST, NHBlocks.jumpGate.fullIcon),
-			new FeatureLog("Unit & Turret Balance", "Many Balance work done to units and turrets", FeatureLog.BALANCE, Icon.wrench.getRegion())
+			new FeatureLog(NHBlocks.beacon),
+			new FeatureLog("[[[accent]Since 1.11.0[]]Territory Capture Game Mode", "Added a completely new game mode.\nEnable it in Editor -> Menu -> New Horizon Extra Settings -> Beacon Capture\n(WIP)", FeatureLog.NEW_FEATURE, NHContent.capture){{
+				important = true;
+			}},
+			new FeatureLog("[[[accent]Since 1.11.0[]]New Map Settings", "Added some new mod map settings for custom maps.\n1. Jump Gates use items from core, default disabled, just like the old version. Added for some quick battle maps.\n2. Enemy's Jump Gates consumes items.\nSet them in Editor -> Menu -> New Horizon Extra Settings", FeatureLog.NEW_FEATURE, Icon.settings.getRegion())
 //			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE + FeatureLog.IMPORTANT, NHContent.objective),
 //			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),
 		};
@@ -175,7 +177,12 @@ public class NewHorizon extends Mod{
 				main.pane(t -> {
 					for(int index = 0; index < getUpdateContent().length; index++){
 						FeatureLog c = getUpdateContent()[index];
-						t.table(Tex.pane, table -> {
+						Table info = new Table(Tex.pane, table -> {
+							if(c.important || c.content != null){
+								table.background(Tex.whitePane);
+								if(c.important)table.color.set(Pal.accent);
+							}
+							
 							table.table(i -> {
 								i.image(c.icon).fill();
 							}).fill().get().pack();
@@ -185,12 +192,21 @@ public class NewHorizon extends Mod{
 								i.image().growX().height(OFFSET / 3).pad(OFFSET / 3).color(Color.lightGray).row();
 								i.add("[accent]Description: []").left().row();
 								i.add(c.description).padLeft(LEN).left().get().setWrap(true);
+								if(c.modifier != null)c.modifier.get(i);
 							}).grow().padLeft(OFFSET).top();
 							table.button(Icon.info, Styles.clearTransi, LEN, () -> {
 								ContentInfoDialog dialog = new ContentInfoDialog();
 								dialog.show(c.content);
 							}).growY().width(LEN).padLeft(OFFSET).disabled(b -> c.content == null);
-						}).grow().row();
+						});
+						if(!c.important)t.add(info).grow().row();
+						else{
+							Label label = new Label("IMPORTANT", Styles.techLabel);
+							label.setFontScale(1.25f);
+							
+							
+							t.stack(new Table(table -> table.margin(OFFSET * 2).add(label)).bottom(), new Table(Styles.black6){{setFillParent(true);}}, info).grow().row();
+						}
 					}
 				}).growX().top().row();
 			}).grow().row();
@@ -208,6 +224,8 @@ public class NewHorizon extends Mod{
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
 		Events.on(ClientLoadEvent.class, e -> {
+			NHUI.init();
+			
 			Core.app.post(NHSetting::updateSettingMenu);
 			
 			Vars.defaultServers.add(new ServerGroup(){{
@@ -223,8 +241,6 @@ public class NewHorizon extends Mod{
 					String body = json.get("body").asString();
 					
 					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0")) && !tag.equals('v' + MOD.meta.version)){
-						Log.info("should show");
-						
 						new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
 							cont.table(t -> {
 								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
@@ -266,7 +282,7 @@ public class NewHorizon extends Mod{
 	@Override
 	public void init() {
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
-		
+		NHVars.init();
 		
 		if(Vars.headless)return;
 		

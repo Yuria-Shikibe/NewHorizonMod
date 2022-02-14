@@ -29,7 +29,7 @@ import mindustry.ui.Displayable;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
-import newhorizon.util.feature.cutscene.CCS_JsonHandler;
+import newhorizon.util.Tool_JsonHandler;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.UIActions;
@@ -58,7 +58,7 @@ public class CutsceneMenu extends BaseDialog{
 		
 		initRoot();
 		
-		CCS_JsonHandler.generators(root).each((n, t) -> {
+		Tool_JsonHandler.generators(root).each((n, t) -> {
 			occasions.put(n, t);
 		});
 		
@@ -98,7 +98,7 @@ public class CutsceneMenu extends BaseDialog{
 					info.button("@editor.import", () -> {
 						platform.showMultiFileChooser(fi -> {
 							root = Jval.read(fi.readString());
-							triggers = CCS_JsonHandler.triggersJval(root);
+							triggers = Tool_JsonHandler.triggersJval(root);
 							updateJson();
 						}, "json", "hjson");
 					}).row();
@@ -112,7 +112,7 @@ public class CutsceneMenu extends BaseDialog{
 						if(s != null && !s.isEmpty()){
 							try{
 								root = Jval.read(s);
-								triggers = CCS_JsonHandler.triggersJval(root);
+								triggers = Tool_JsonHandler.triggersJval(root);
 								updateJson();
 							}catch(Exception e){
 								ui.showException(e);
@@ -125,8 +125,8 @@ public class CutsceneMenu extends BaseDialog{
 						if(s != null && !s.isEmpty()){
 							try{
 								Jval jval = Jval.read(s);
-								AutoEventTrigger tg = CCS_JsonHandler.readTrigger(jval);
-								addTrigger(jval.get(CCS_JsonHandler.TRIGGER_NAME).asString(), tg);
+								AutoEventTrigger tg = Tool_JsonHandler.readTrigger(jval);
+								addTrigger(jval.get(Tool_JsonHandler.TRIGGER_NAME).asString(), tg);
 								updateJson();
 							}catch(Exception e){
 								ui.showException(e);
@@ -237,11 +237,11 @@ public class CutsceneMenu extends BaseDialog{
 	public void initRoot(){
 		if(editor.tags.containsKey(CUSTOME_EVENTS_KEY)){
 			root = Jval.read(editor.tags.get(CUSTOME_EVENTS_KEY));
-			triggers = CCS_JsonHandler.triggersJval(root);
+			triggers = Tool_JsonHandler.triggersJval(root);
 		}
 		else{
 			root = Jval.newObject();
-			root.add(CCS_JsonHandler.KEY_TRIGGERS, (triggers = Jval.newArray()));
+			root.add(Tool_JsonHandler.KEY_TRIGGERS, (triggers = Jval.newArray()));
 		}
 		
 		updateJson();
@@ -690,12 +690,12 @@ public class CutsceneMenu extends BaseDialog{
 	
 	public boolean removeTrigger(String name){
 		occasions.remove(name);
-		return triggers.asArray().remove(triggers.asArray().find(jval -> jval.asObject().get(CCS_JsonHandler.TRIGGER_NAME).asString().equals(name)));
+		return triggers.asArray().remove(triggers.asArray().find(jval -> jval.asObject().get(Tool_JsonHandler.TRIGGER_NAME).asString().equals(name)));
 	}
 	
 	public void addTrigger(String name, AutoEventTrigger trigger){
 		occasions.put(name, trigger);
-		CCS_JsonHandler.addTrigger(name, trigger, triggers.asArray());
+		Tool_JsonHandler.addTrigger(name, trigger, triggers.asArray());
 	}
 	
 	public Dialog allTriggers(){

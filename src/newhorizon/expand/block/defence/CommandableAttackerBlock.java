@@ -29,7 +29,6 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.block.special.CommandableBlock;
 import newhorizon.expand.entities.NHGroups;
-import newhorizon.expand.vars.NHVars;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
 import org.jetbrains.annotations.NotNull;
@@ -118,7 +117,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public void setTarget(Point2 p){
-			NHVars.world.commandPos = target = p.pack();
+			commandPos = target = p.pack();
 			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
 				if(build != null && build.team == team && groupBoolf.get(this, build)){
 					build.overlap();
@@ -187,7 +186,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		
 		@Override
 		public boolean overlap(){
-			target = NHVars.world.commandPos;
+			target = commandPos;
 			return false;
 		}
 		
@@ -212,13 +211,13 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		@Override
 		public void drawConfigure(){
 			super.drawConfigure();
-			tmpPoint.set(Point2.unpack(NHVars.world.commandPos));
+			tmpPoint.set(Point2.unpack(commandPos));
 			
 			float realSpread = spread();
 			
 			Drawf.dashCircle(x, y, range, team.color);
 			
-			if(target < 0 && NHVars.world.commandPos < 0)return;
+			if(target < 0 && commandPos < 0)return;
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
@@ -233,9 +232,9 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 				DrawFunc.posSquareLink(Pal.heal, 1, 2, false, build.x, build.y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
 			}
 			
-			tmpPoint.set(Point2.unpack(NHVars.world.commandPos));
+			tmpPoint.set(Point2.unpack(commandPos));
 			
-			if(NHVars.world.commandPos > 0){
+			if(commandPos > 0){
 				DrawFunc.posSquareLink(Pal.accent, 1, 2, true, x, y, World.unconv(tmpPoint.x), World.unconv(tmpPoint.y));
 				DrawFunc.drawConnected(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), 10f, Pal.accent);
 				Drawf.circles(World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), realSpread, Pal.accent);
@@ -243,7 +242,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			if(isValid())builds.add(this);
 			for(CommandableBlockBuild build : builds){
-				float time = build.delayTime(NHVars.world.commandPos);
+				float time = build.delayTime(commandPos);
 				DrawFunc.overlayText("Delay: " + TableFunc.format(time) + " Sec.", build.x, build.y, build.block.size * tilesize / 2f, time > 4.5f ? Pal.accent : Pal.lancerLaser, true);
 			}
 			DrawFunc.overlayText(Core.bundle.format("mod.ui.participants", builds.size), World.unconv(tmpPoint.x), World.unconv(tmpPoint.y), tilesize * 2f, Pal.accent, true);
@@ -283,8 +282,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 		public void buildConfiguration(Table table){
 			table.table(Tex.paneSolid, t -> {
 				t.button(Icon.modeAttack, Styles.clearPartiali, () -> {
-					configure(NHVars.world.commandPos);
-				}).size(LEN).disabled(b -> NHVars.world.commandPos < 0);
+					configure(commandPos);
+				}).size(LEN).disabled(b -> commandPos < 0);
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
 					TableFunc.pointSelectTable(t, this::configure);
 				}).size(LEN * 4, LEN).row();

@@ -47,6 +47,10 @@ public class DrawFunc{
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
     private static final Rand rand = new Rand();
     
+    public static void fillRect(float srcX, float srcY, float w, float h){
+        Fill.quad(srcX, srcY, srcX + w, srcY, srcX + w, srcY + h, srcX, srcY + h);
+    }
+    
     public static void randLenVectors(long seed, float fin, int amount, float minLength, float length, Angles.ParticleConsumer cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){

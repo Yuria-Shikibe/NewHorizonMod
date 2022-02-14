@@ -26,7 +26,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
-import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.NHGeom;
 
 import java.util.Arrays;
 
@@ -284,7 +284,7 @@ public class TileSortMap{
 				Log.info("Blend");
 				
 				int finalI = i;
-				NHFunc.squareAbs(leftDown.x, leftDown.y, rightUp.x, rightUp.y, ((x, y) -> {
+				NHGeom.squareAbs(leftDown.x, leftDown.y, rightUp.x, rightUp.y, ((x, y) -> {
 					pixmap.set(x, reserveY(y), Tmp.c1.set(Pal.heal).lerp(Pal.power, finalI / 5f).a(0.1f));
 				}));
 			}
@@ -335,13 +335,13 @@ public class TileSortMap{
 		
 		
 		/*quadrant 1*/
-		NHFunc.squareAbs(centerX, centerY, endX, endY, ((x, y) -> sigma.get(x, y, 0)));
+		NHGeom.squareAbs(centerX, centerY, endX, endY, ((x, y) -> sigma.get(x, y, 0)));
 		/*quadrant 2*/
-		NHFunc.squareAbs(startX, centerY, centerX, endY, ((x, y) -> sigma.get(x, y, 1)));
+		NHGeom.squareAbs(startX, centerY, centerX, endY, ((x, y) -> sigma.get(x, y, 1)));
 		/*quadrant 3*/
-		NHFunc.squareAbs(startX, startY, centerX, centerY, ((x, y) -> sigma.get(x, y, 2)));
+		NHGeom.squareAbs(startX, startY, centerX, centerY, ((x, y) -> sigma.get(x, y, 2)));
 		/*quadrant 4*/
-		NHFunc.squareAbs(centerX, startY, endX, centerY, ((x, y) -> sigma.get(x, y, 3)));
+		NHGeom.squareAbs(centerX, startY, endX, centerY, ((x, y) -> sigma.get(x, y, 3)));
 		
 		for(byte i = 0; i < 4; i++){
 			cpt.get(i);

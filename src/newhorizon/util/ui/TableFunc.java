@@ -69,7 +69,7 @@ import static mindustry.Vars.*;
 
 public class TableFunc{
     private static final int tableZ = 2;
-    private static final DecimalFormat df = new DecimalFormat("######0.00");
+    private static final DecimalFormat df = new DecimalFormat("######0.0");
     private static final Vec2 point = new Vec2(-1, -1);
     private static int spawnNum = 1;
     private static Team selectTeam = Team.sharded;
@@ -233,7 +233,9 @@ public class TableFunc{
         }
     }
     
-    private static final Table starter = new Table(Tex.paneSolid);
+    private static final Table starter = new Table(Tex.paneSolid){
+    
+    };
     
     public static final TextArea textArea = Vars.headless ? null : new TextArea("");
     
@@ -273,9 +275,15 @@ public class TableFunc{
         if(headless)return;
         
         starter.setSize(LEN + OFFSET, (LEN + OFFSET) * 3);
-
-        starter.update(() -> starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f));
-        starter.visible(() -> !state.isMenu() && ui.hudfrag.shown && !net.client());
+        
+        starter.update(() -> {
+            starter.setPosition(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f);
+    
+            if(Core.input.mouseX() < 120 && starter.x < -1 && !starter.hasActions()){
+                starter.actions(Actions.moveTo(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f, 0.1f));
+            }else if(starter.x > -1 && !starter.hasActions())starter.actions(Actions.moveTo(-starter.getWidth(), (Core.graphics.getHeight() - starter.getHeight()) / 2f, 0.1f));
+        });
+        starter.visible(() -> !state.isMenu() && ui.hudfrag.shown && !net.client() && starter.color.a > 0.01f);
         starter.touchable(() -> !state.isMenu() && ui.hudfrag.shown && !net.client() ? Touchable.enabled : Touchable.disabled);
         
         Player player = Vars.player;
@@ -440,7 +448,6 @@ public class TableFunc{
         }).grow().row();
         
         Core.scene.root.addChildAt(1, starter);
-        starter.setScale(Core.scene.table().scaleX, Core.scene.table().scaleY);
     }
     
     public static void buildBulletTypeInfo(Table t, BulletType type){
@@ -502,7 +509,7 @@ public class TableFunc{
     }
     
     public static void link(Table parent, Links.LinkEntry link){
-        parent.add(new Tables.LinkTable(link)).size(Tables.LinkTable.w + OFFSET * 2f, Tables.LinkTable.h).padTop(OFFSET / 2f).row();
+        parent.add(new NHUI.LinkTable(link)).size(NHUI.LinkTable.w + OFFSET * 2f, NHUI.LinkTable.h).padTop(OFFSET / 2f).row();
     }
     
     public static void rectSelectTable(Table parentT, Runnable run){
