@@ -244,9 +244,13 @@ public class BeaconBlock extends Block{
 			boolean effect = timer.get(30f);
 			
 			if(!NHVars.state.mode_beaconCapture || !Vars.state.teams.isActive(team)){
+				if(enabled)Events.fire(BeaconCapturedEvent.class, new BeaconCapturedEvent(this, false));
 				enabled(false);
 				return;
-			}else enabled(true);
+			}else{
+				if(!enabled)Events.fire(BeaconCapturedEvent.class, new BeaconCapturedEvent(this, true));
+				enabled(true);
+			}
 			
 			Seq<Unit> nearby = Groups.unit.intersect(x - captureRange, y - captureRange, captureRange * 2f, captureRange * 2f);
 			nearby.filter(u -> u.within(this, captureRange));

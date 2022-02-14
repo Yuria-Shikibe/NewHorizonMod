@@ -47,7 +47,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-	public static final boolean DEBUGGING = true;
+	public static final boolean DEBUGGING = false;
 	public static final boolean DEBUGGING_SPRITE = false;
 	
 //	{
