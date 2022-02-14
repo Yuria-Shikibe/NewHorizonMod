@@ -95,9 +95,9 @@ public class BeaconCaptureCore implements Runnable{
 		readScore();
 		updatePixmap();
 		
-		if(!Vars.headless)Core.app.post(() -> {
+		if(!Vars.headless)Core.app.post(() -> Core.app.post(() -> {
 			new CaptureProgress().setup();
-		});
+		}));
 	}
 	
 	public void updateBeacons(){
@@ -349,7 +349,9 @@ public class BeaconCaptureCore implements Runnable{
 	}
 	
 	public synchronized void putUnit(int x, int y, Team team){
-		int index = x + y * world.tiles.width;
+		Tile tile = world.tiles.get(x, y);
+		if(tile == null)return;
+		int index = tile.array();
 		ObjectSet<Team> map = unitCaptured.get(index);
 		if(map == null)unitCaptured.put(index, map = new ObjectSet<>(Vars.state.teams.active.size));
 		map.add(team);
@@ -490,6 +492,15 @@ public class BeaconCaptureCore implements Runnable{
 		}
 		
 		@Override
+		public CutsceneEventEntity setup(){
+			CutsceneEventEntity entity = entityType.get();
+			entity.setType(this);
+			
+			entity.add();
+			return entity;
+		}
+		
+		@Override
 		public void setupTable(CutsceneEventEntity e, Table table){
 			e.infoT = new Table(Tex.sideline, t -> {
 				t.margin(OFFSET * 2f);
@@ -542,6 +553,7 @@ public class BeaconCaptureCore implements Runnable{
 	}
 	
 	public static class SyncScorePacket extends Packet{
+		
 		private byte[] DATA;
 		public IntIntMap scores = new IntIntMap();
 		

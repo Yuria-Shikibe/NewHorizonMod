@@ -28,6 +28,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.net.Net;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
@@ -40,6 +41,7 @@ import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.annotation.ClientDisabled;
+import newhorizon.util.feature.BeaconCaptureCore;
 import newhorizon.util.feature.cutscene.CutsceneScript;
 import newhorizon.util.feature.cutscene.EventSamples;
 import newhorizon.util.feature.cutscene.Triggers;
@@ -240,6 +242,8 @@ public class EventListeners{
 	
 	public static void load(){
 		kickWarn = Core.bundle.get("mod.ui.requite.need-override");
+		
+		Net.registerPacket(BeaconCaptureCore.SyncScorePacket::new);
 		
 		Events.run(Triggers.raid_setup, () -> {
 			raid_setup = true;
