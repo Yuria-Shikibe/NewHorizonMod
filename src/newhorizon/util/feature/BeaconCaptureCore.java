@@ -29,7 +29,6 @@ import mindustry.net.Packet;
 import mindustry.ui.BorderImage;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
-import newhorizon.content.NHFx;
 import newhorizon.expand.block.special.BeaconBlock;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.NHVars;
@@ -161,12 +160,11 @@ public class BeaconCaptureCore implements Runnable{
 			if(teamData.team == Vars.state.rules.waveTeam)linkable.addAll(Vars.spawner.getSpawns());
 			teamData.units.each(unit -> {
 				if(unit.hitSize > 8 && unit.type.health > 1000){
-					float maxDst = unit.hitSize * 4f + Mathf.sqrt(unit.health);
+					float maxDst = BeaconBlock.transformer.get(unit);
 					
 					Position closest = Geometry.findClosest(unit.x, unit.y, linkable);
 					if(unit.dst(closest) < maxDst){
-						NHFx.slidePoly.at(closest.getX(), closest.getY(), unit.hitSize, unit.team.color, unit);
-						NHGeom.square(unit.tileX(), unit.tileY(), (int)unit.hitSize / 6, ((x, y) -> {
+						NHGeom.square(unit.tileX(), unit.tileY(), (int)unit.hitSize / 8, ((x, y) -> {
 							putUnit(x, y, unit.team);
 						}));
 					}

@@ -54,6 +54,8 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
  * @author Yuria
  * */
 public class BeaconBlock extends Block{
+	public static final Floatf<Unit> transformer = unit -> unit.hitSize * 4f + Mathf.sqrt(unit.health);
+	
 	public float captureRange = 200;
 	public float captureReload = 1500;
 	public float captureSpeedPerUnit = 1.25f;
