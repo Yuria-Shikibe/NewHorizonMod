@@ -334,8 +334,8 @@ public class BeaconBlock extends Block{
 			NHFx.circle.at(x, y, captureRange, capturingTeam.color);
 			capture.at(x, y, capturingTeam.color);
 			if(!UIActions.disabled()){
-				UIActions.actionSeqMinor(UIActions.labelAct(Core.bundle.format(""), 2f, 0.5f, Interp.fade, t -> {
-					t.image(fullIcon).size(LEN - OFFSET * 2f).scaling(Scaling.fit);
+				UIActions.actionSeqMinor(UIActions.labelAct(Core.bundle.format("mod.ui.beacon-captured", team.color, team, capturingTeam.color, capturingTeam), 2f, 0.5f, Interp.fade, t -> {
+					t.image(fullIcon).size(LEN - OFFSET * 2f).padRight(OFFSET * 1.5f).scaling(Scaling.fit);
 				}));
 			}
 			
