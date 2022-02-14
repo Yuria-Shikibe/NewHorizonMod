@@ -54,7 +54,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
  * @author Yuria
  * */
 public class BeaconBlock extends Block{
-	public static final Floatf<Unit> transformer = unit -> unit.hitSize * 4f + Mathf.sqrt(unit.health);
+	public static final Floatf<Unit> transformer = unit -> unit.hitSize * 8f + Mathf.sqrt(unit.health * 2f);
 	
 	public float captureRange = 200;
 	public float captureReload = 1500;
@@ -179,6 +179,14 @@ public class BeaconBlock extends Block{
 			super.draw();
 			
 			if(!enabled)return;
+			if(team == Team.derelict){
+				float z = Draw.z();
+				Draw.z(Layer.effect);
+				Lines.stroke(1.5f);
+				Lines.circle(x, y, captureRange);
+				Draw.z(z);
+				return;
+			}
 			
 			Draw.color(team.color);
 			float z = Draw.z();
@@ -243,14 +251,11 @@ public class BeaconBlock extends Block{
 			
 			boolean effect = timer.get(30f);
 			
-			if(!NHVars.state.mode_beaconCapture || !Vars.state.teams.isActive(team)){
-				if(enabled)Events.fire(BeaconCapturedEvent.class, new BeaconCapturedEvent(this, false));
-				enabled(false);
-				return;
-			}else{
-				if(!enabled)Events.fire(BeaconCapturedEvent.class, new BeaconCapturedEvent(this, true));
-				enabled(true);
+			if(team != Team.derelict && !Vars.state.teams.isActive(team)){
+				Events.fire(BeaconCapturedEvent.class, new BeaconCapturedEvent(this, false));
+				changeTeam(Team.derelict);
 			}
+			
 			
 			Seq<Unit> nearby = Groups.unit.intersect(x - captureRange, y - captureRange, captureRange * 2f, captureRange * 2f);
 			nearby.filter(u -> u.within(this, captureRange));
@@ -282,7 +287,7 @@ public class BeaconBlock extends Block{
 					reload = Math.min(reload + recoverSpeed * Time.delta * 3f, captureReload);
 				}else if(hasHostile){
 					captureSpeedScl = transform.get(captureSpeedScl);
-					reload = Math.max(reload - captureSpeedScl * captureSpeedPerUnit * Time.delta * captureWarmup, -2f);
+					reload = Math.max(reload - captureSpeedScl * captureSpeedPerUnit * Time.delta * captureWarmup - Mathf.num(team == Team.derelict) * captureReload * 2f, -2f);
 					progress += captureSpeedScl * captureSpeedPerUnit * Time.delta * captureWarmup / 2f;
 				}else if(recapturing()){
 					//If so, there must have no other team's units nearby;
