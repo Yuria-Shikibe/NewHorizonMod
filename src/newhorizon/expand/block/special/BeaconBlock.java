@@ -92,7 +92,7 @@ public class BeaconBlock extends Block{
 	
 	@Override
 	public boolean canBreak(Tile tile){
-		return Vars.state.rules.infiniteResources;
+		return Vars.state.rules.infiniteResources || Vars.state.isEditor();
 	}
 	
 	@Override
