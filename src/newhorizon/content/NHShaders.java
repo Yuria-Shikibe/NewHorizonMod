@@ -103,10 +103,6 @@ public class NHShaders{
 		
 		@Override
 		public void apply(){
-			setUniformf("u_offset",
-					Core.camera.position.x - Core.camera.width / 2,
-					Core.camera.position.y - Core.camera.height / 2);
-			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
 			setUniformf("u_alpha", color);
 		}
 	}

@@ -1,8 +1,6 @@
 #define HIGHP
 
 uniform sampler2D u_texture;
-uniform vec2 u_texsize;
-uniform vec2 u_offset;
 uniform vec4 u_alpha;
 
 varying vec2 v_texCoords;

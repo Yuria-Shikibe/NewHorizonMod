@@ -97,7 +97,7 @@ public class BeaconBlock extends Block{
 	
 	@Override
 	public boolean isHidden(){
-		return super.isHidden() || !NHVars.state.captureMod();
+		return super.isHidden() || (!NHVars.state.captureMod() && !Vars.state.isEditor());
 	}
 	
 	@Override

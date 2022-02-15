@@ -19,6 +19,7 @@ const CutsceneEventEntity = loadContent("newhorizon.util.feature.cutscene.Cutsce
 const CutsceneScript = loadContent("newhorizon.util.feature.cutscene.CutsceneScript");
 const EventSamples = loadContent("newhorizon.util.feature.cutscene.EventSamples");
 
+const NHContent = loadContent("newhorizon.content.NHContent");
 const NHBlocks = loadContent("newhorizon.content.NHBlocks");
 const NHBullets = loadContent("newhorizon.content.NHBullets");
 const NHItems = loadContent("newhorizon.content.NHItems");

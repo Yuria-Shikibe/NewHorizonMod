@@ -19,7 +19,6 @@ public class NHContent extends Content{
 	public static final float MATTER_STORM_LAYER = Layer.weather + 0.112f; // Making it wried
 	public static final float EVENT_LAYER = Layer.weather + 5.12142f; // Making it wried
 	
-	
 	public static Texture
 			smoothNoise, particleNoise, darkerNoise
 			

@@ -432,6 +432,17 @@ public class UIActions{
 	}
 	
 	@HeadlessDisabled
+	public static LabelAction labelActSimple(String text, Cons<Table> modifier){
+		LabelAction action = Actions.action(LabelAction.class, LabelAction::new);
+		action.setDuration(0.5f + text.length() * 0.0635f);
+		action.margin = Mathf.clamp(0.5f / (action.getDuration()));
+		action.text = text;
+		action.modifier = modifier;
+		
+		return action;
+	}
+	
+	@HeadlessDisabled
 	public static Action[] moveAndLabel(Object... items){
 		if(items.length % 3 != 0)throw new IllegalArgumentException("Wrong param");
 		Action[] stacks = new Action[items.length / 3 * 2];

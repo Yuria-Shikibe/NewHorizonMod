@@ -263,12 +263,16 @@ public class EventListeners{
 		Events.on(EventType.ResetEvent.class, e -> {
 			actAfterLoad.clear();
 			NHVars.reset();
+			NHGroups.clear();
+			
+			if(headless)Log.info("Reset");
 		});
 		
 		Events.on(EventType.StateChangeEvent.class, e -> {
 			if(e.to == GameState.State.menu){
 				actAfterLoad.clear();
 				NHVars.reset();
+				NHGroups.clear();
 				ShadowProcessor.clear();
 			}
 		});

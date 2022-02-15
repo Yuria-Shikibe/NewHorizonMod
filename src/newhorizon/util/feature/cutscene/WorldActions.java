@@ -9,7 +9,9 @@ import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.scene.actions.Actions;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.units.UnitCommand;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
@@ -23,6 +25,10 @@ import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class WorldActions{
+	public static void setToRally(){
+		Vars.state.teams.active.each(t -> t.command = UnitCommand.rally);
+	}
+	
 	public static void signal(float x, float y, float size, float cautionRange, float inaccuracyScl, float time, Color color, Sound sound){
 		if(headless)return;
 		float f = player.dst(x, y) / cautionRange;
