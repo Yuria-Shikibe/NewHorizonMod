@@ -223,6 +223,8 @@ public class NewHorizon extends Mod{
 	public NewHorizon(){
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
+		Core.app.addListener(new NHApplicationCore());
+		
 		Events.on(ClientLoadEvent.class, e -> {
 			NHUI.init();
 			
@@ -417,13 +419,12 @@ public class NewHorizon extends Mod{
 			if (NHGroups.autoEventTrigger.isEmpty()) {
 				player.sendMessage("No Trigger Available");
 			} else {
-				StringBuilder builder = new StringBuilder();
-				builder.append("[accent]Events: [lightgray]\n");
+				
+				player.sendMessage("[accent]Events: [lightgray]\n");
 				NHGroups.autoEventTrigger.each(e -> {
-					builder.append("[royal]").append(e.toString()).append("[lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append(e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]").append("[lightgray]\n");
-					builder.append("Reload: ").append(e.getReload()).append('\n').append("Spacing: ").append(e.getSpacing()).append('\n');
+					String builder = "[royal]" + e.toString() + "[lightgray]" + '\n' + e.desc() + '\n' + "Meet Requirements?: " + (e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]") + "[lightgray]\n" + "Reload: " + e.getReload() + '\n' + "Spacing: " + e.getSpacing() + '\n';
+					player.sendMessage(builder);
 				});
-				player.sendMessage(builder.toString());
 			}
 		});
 		

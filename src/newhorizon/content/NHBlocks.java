@@ -1762,7 +1762,7 @@ public class NHBlocks implements ContentList {
 		
 		remoteRouter = new RemoteRouter("remote-router"){{
 			size = 3;
-			loss = 5f;
+			loss = 0.05f;
 			consumes.power(10);
 			requirements(Category.distribution, BuildVisibility.shown, with(NHItems.seniorProcessor, 80, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, Items.surgeAlloy, 80));
 			health = 450;

@@ -1,22 +1,19 @@
 package newhorizon.util.func;
 
 import arc.func.Intc2;
-import arc.struct.IntSeq;
+import arc.struct.LongSeq;
 
 /**
  * Multi Thread Safe
  * */
 public class NHGeom{
 	public static void raycast(int x0f, int y0f, int x1, int y1, int width, int height, Intc2 cons){
-		IntSeq calculated = new IntSeq();
+		LongSeq calculated = new LongSeq();
 		
 		int x0 = x0f;
 		int y0 = y0f;
 		int dx = Math.abs(x1 - x0);
 		int dy = Math.abs(y1 - y0);
-		
-		int tx = dx + width;
-		int ty = dy + height;
 		
 		int sx = x0 < x1 ? 1 : -1;
 		int sy = y0 < y1 ? 1 : -1;
@@ -24,10 +21,9 @@ public class NHGeom{
 		int err = dx - dy;
 		int e2;
 		while(x0 != x1 && y0 != y1){
-			
 			for(int w = -width / 2; w < width / 2; w++){
 				for(int h = -height / 2; h < height / 2; h++){
-					int index = (h + y0) * tx + w + x0;
+					long index = ((long)(w + x0)) << 32 | ((long)(y0 + h));
 					if(calculated.contains(index))continue;
 					cons.get(x0 + w, y0 + h);
 					calculated.add(index);

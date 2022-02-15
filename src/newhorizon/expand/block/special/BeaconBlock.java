@@ -29,6 +29,7 @@ import mindustry.type.Category;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.BuildVisibility;
@@ -54,7 +55,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
  * @author Yuria
  * */
 public class BeaconBlock extends Block{
-	public static final Floatf<Unit> transformer = unit -> unit.hitSize * 8f + Mathf.sqrt(unit.health * 2f);
+	public static final Floatf<Unit> maxLinkDst = unit -> unit.hitSize * 8f + Mathf.sqrt(unit.health * 2f);
 	
 	public float captureRange = 200;
 	public float captureReload = 1500;
@@ -63,7 +64,7 @@ public class BeaconBlock extends Block{
 	public float recoverSpeed = 1f;
 	public float warmupSpeed = 0.02f;
 	public Floatf<Unit> scl = u -> Mathf.curve(u.health, 500, 6000) + 0.075f;
-	public Floatf<Float> transform = Mathf::sqrt;
+	public Floatf<Float> speedTransform = Mathf::sqrt;
 	
 	public int drawSectors = 4;
 	public float drawSectorRotateSpeed = 0.45f;
@@ -90,6 +91,11 @@ public class BeaconBlock extends Block{
 	}
 	
 	@Override
+	public boolean canBreak(Tile tile){
+		return Vars.state.rules.infiniteResources;
+	}
+	
+	@Override
 	public boolean isHidden(){
 		return super.isHidden() || !NHVars.state.captureMod();
 	}
@@ -106,7 +112,7 @@ public class BeaconBlock extends Block{
 		super.init();
 		
 		clipSize = Math.max(clipSize, captureRange * 2);
-		capture = new Effect(90f, size * tilesize, e -> {
+		if(capture == null)capture = new Effect(90f, size * tilesize, e -> {
 			Draw.mixcol(e.color, 1);
 			Draw.scl(1.5f * e.foutpow());
 			Draw.rect(teamRegion, e.x, e.y);
@@ -265,6 +271,7 @@ public class BeaconBlock extends Block{
 			
 			for(Unit unit : nearby){
 //				if(effect)NHFx.slidePoly.at(unit.x, unit.y, unit.hitSize, unit.team.color, this);
+				if(!Vars.state.teams.isActive(unit.team))continue;
 				
 				if(unit.team == team){
 					hasAlly = true;
@@ -286,7 +293,7 @@ public class BeaconBlock extends Block{
 				if(hasAlly){
 					reload = Math.min(reload + recoverSpeed * Time.delta * 3f, captureReload);
 				}else if(hasHostile){
-					captureSpeedScl = transform.get(captureSpeedScl);
+					captureSpeedScl = speedTransform.get(captureSpeedScl);
 					reload = Math.max(reload - captureSpeedScl * captureSpeedPerUnit * Time.delta * captureWarmup - Mathf.num(team == Team.derelict) * captureReload * 2f, -2f);
 					progress += captureSpeedScl * captureSpeedPerUnit * Time.delta * captureWarmup / 2f;
 				}else if(recapturing()){

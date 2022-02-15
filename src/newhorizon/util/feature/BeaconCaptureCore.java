@@ -24,6 +24,7 @@ import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.core.Logic;
 import mindustry.game.Team;
+import mindustry.gen.Call;
 import mindustry.gen.Tex;
 import mindustry.net.Packet;
 import mindustry.ui.BorderImage;
@@ -32,6 +33,7 @@ import mindustry.world.Tile;
 import newhorizon.expand.block.special.BeaconBlock;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.NHVars;
+import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
 import newhorizon.util.func.NHGeom;
@@ -66,17 +68,17 @@ public class BeaconCaptureCore implements Runnable{
 	public IntIntMap scores = new IntIntMap();
 	
 	public float drawReload = 0;
-	public static final float drawReloadTime = 15f;
+	public static final float drawReloadTime = 30f;
 	
 	public float scoreReload = 0;
 	public static final float scoreReloadTime = 240f;
 	
 	public float unitFieldReload = 0;
-	public static final float unitFieldReloadTime = 15f;
+	public static final float unitFieldReloadTime = 30f;
 	
-	public Pixmap pixmap = new Pixmap(1, 1);
-	public Texture texture;
-	public TextureRegion textureRegion = new TextureRegion();
+	@HeadlessDisabled public Pixmap pixmap = new Pixmap(1, 1);
+	@HeadlessDisabled public Texture texture;
+	@HeadlessDisabled public TextureRegion textureRegion = new TextureRegion();
 	
 	public Thread updateThread;
 	
@@ -86,23 +88,29 @@ public class BeaconCaptureCore implements Runnable{
 		buildCaptured = new IntMap<>();
 		unitCaptured = new IntMap<>();
 		combined = new IntMap<>();
-		texture = new Texture(1, 1);
+		
+		if(!Vars.headless)texture = new Texture(1, 1);
 		
 		Vars.state.teams.active.each(teamData -> {
 			scores.put(teamData.team.id, 0);
 		});
 		
 		readScore();
-		updatePixmap();
 		
-		if(!Vars.headless)Core.app.post(() -> Core.app.post(() -> {
-			new CaptureProgress().setup();
-		}));
+		if(!Vars.headless){
+			updatePixmap();
+			Core.app.post(() -> Core.app.post(() -> {
+				new CaptureProgress().setup();
+			}));
+		}
 	}
 	
 	public void updateBeacons(){
-		taskQueue.post(() -> {synchronized(buildCaptured){
-			buildCaptured.clear();}});
+		taskQueue.post(() -> {
+			synchronized(buildCaptured){
+				buildCaptured.clear();
+			}
+		});
 		taskQueue.post(() -> {
 			Vars.state.teams.active.each(teamData -> {
 				Seq<BeaconBlock.BeaconBuild> builds = NHGroups.beacon.copy().filter(b -> b.team == teamData.team);
@@ -160,7 +168,7 @@ public class BeaconCaptureCore implements Runnable{
 			if(teamData.team == Vars.state.rules.waveTeam)linkable.addAll(Vars.spawner.getSpawns());
 			teamData.units.each(unit -> {
 				if(unit.hitSize > 8 && unit.type.health > 1000){
-					float maxDst = BeaconBlock.transformer.get(unit);
+					float maxDst = BeaconBlock.maxLinkDst.get(unit);
 					
 					Position closest = Geometry.findClosest(unit.x, unit.y, linkable);
 					if(unit.dst(closest) < maxDst){
@@ -190,6 +198,7 @@ public class BeaconCaptureCore implements Runnable{
 		lastCapturedArea = new IntIntMap(capturedArea);
 		calculatingArea = false;
 	}
+	
 	/** The two building should be the same team! */
 	public void updatePair(BeaconBlock.BeaconBuild src, BeaconBlock.BeaconBuild target, boolean add){
 		Seq<BeaconBlock.BeaconBuild> ced = calculatedPair.get(target);
@@ -233,30 +242,30 @@ public class BeaconCaptureCore implements Runnable{
 	public void updatePixmap(){
 		Pixmap pixmap = new Pixmap(Vars.world.tiles.width, Vars.world.tiles.height);
 		
-		pixmap.fill(Tmp.c1.set(0, 0, 0, 0.6f));
+		Color c1 = new Color(), c2 = new Color();
 		
-		try{
-			Seq<int[]> toBlit = new Seq<>();
+		pixmap.fill(c1.set(0, 0, 0, 0.6f));
+		
+		Seq<int[]> toBlit = new Seq<>();
+		
+		for(IntMap.Entry<ObjectSet<Team>> entry : combined.entries()){
+			if(entry.value == null)continue;
 			
-			for(IntMap.Entry<ObjectSet<Team>> entry : combined.entries()){
-				if(entry.key < 0 || entry.key > world.width() * world.height())continue;
-				Tile tile = Vars.world.tiles.geti(entry.key);
-				
-				entry.value.each(team -> {
-					Tmp.c1.set(team.color);
-					Tmp.c2.set(pixmap.get(tile.x, world.tiles.height - tile.y)).a(1);
-					pixmap.set(tile.x, Vars.world.tiles.height - tile.y, Tmp.c2.lerp(Tmp.c1, 0.65f).a(1f));
-					toBlit.add(new int[]{tile.x, world.tiles.height - tile.y});
-				});
-			}
+			Tile tile = Vars.world.tiles.geti(entry.key);
 			
-			if(NHSetting.enableDetails())toBlit.each(arr -> {
-				Tmp.c2.set(pixmap.get(arr[0], arr[1]));
-				pixmap.set(arr[0], arr[1], Tmp.c2.mul(1.05f).lerp(Color.white, 0.125f));
+			entry.value.each(team -> {
+				c1.set(team.color);
+				c2.set(pixmap.get(tile.x, world.tiles.height - tile.y)).a(1);
+				pixmap.set(tile.x, Vars.world.tiles.height - tile.y, c2.lerp(c1, 0.65f).a(1f));
+				toBlit.add(new int[]{tile.x, world.tiles.height - tile.y});
 			});
-		}catch(Exception e){
-			Log.err(e);
 		}
+		
+		if(NHSetting.enableDetails())toBlit.each(arr -> {
+			c2.set(pixmap.get(arr[0], arr[1]));
+			pixmap.set(arr[0], arr[1], c2.mul(1.05f).lerp(Color.white, 0.125f));
+		});
+	
 		
 		this.pixmap = pixmap;
 		this.texture = new Texture(pixmap);
@@ -272,7 +281,7 @@ public class BeaconCaptureCore implements Runnable{
 		}
 		
 		afterUpdateScore();
-		if(Vars.net.active())syncScore();
+		if(Vars.net.server())syncScore();
 	}
 	
 	public void afterUpdateScore(){
@@ -280,8 +289,21 @@ public class BeaconCaptureCore implements Runnable{
 			if(entry.value > winScore){
 				NHVars.state.beaconCaptureCore = null;
 				NHVars.state.mode_beaconCapture = false;
-				if(!Vars.state.isCampaign())Logic.gameOver(Team.get(entry.key));
-				else Logic.sectorCapture();
+				
+				if(!Vars.net.client()){
+					Team winner = Team.get(entry.key);
+					if(winner == null)winner = Team.derelict;
+					
+					if(Vars.headless){
+						Call.updateGameOver(winner);
+						
+//						Vars.state.teams.active.each(teamData -> teamData.cores.each(c -> Time.run(Mathf.random(60f), c::kill)));
+						return;
+					}
+					
+					if(!Vars.state.isCampaign())Call.gameOver(winner);
+					else Logic.sectorCapture();
+				}
 				
 				return;
 			}
@@ -411,7 +433,7 @@ public class BeaconCaptureCore implements Runnable{
 			Draw.tint(color);
 			DrawFunc.fillRect(x, y, width, height);
 			
-			Draw.alpha(parentAlpha * 0.825f);
+			Draw.alpha(parentAlpha);
 			float widthOffset = 0;
 			
 			float allyScoreScale = (float)lastCapturedArea.get(Vars.player.team().id) / (float)lastArea;
@@ -463,12 +485,13 @@ public class BeaconCaptureCore implements Runnable{
 			Draw.tint(color);
 			DrawFunc.fillRect(x, y, width, height);
 			
-			Draw.alpha(parentAlpha * 0.7f);
+			Draw.alpha(parentAlpha);
 			for(int[] arr : sc){
 				float scl = (float)arr[1] / winScore;
 				
-				float fc = Tmp.c1.set(Color.darkGray).a(parentAlpha).toFloatBits();
-				float fb = Tmp.c2.set(Color.darkGray).lerp(Team.get(arr[0]).color, Mathf.curve(scl, 0, 0.125f)).a(parentAlpha).toFloatBits();
+				Color tc = Team.get(arr[0]).color;
+				float fc = Tmp.c1.set(tc).mul(1.25f).a(parentAlpha).toFloatBits();
+				float fb = Tmp.c2.set(Tmp.c1).lerp(tc, Mathf.curve(scl, 0, 0.125f)).a(parentAlpha).toFloatBits();
 				Fill.quad(x, y, fc, x, y + height, fc, x + scl * width, y + height, fb, x + scl * width, y, fb);
 			}
 			

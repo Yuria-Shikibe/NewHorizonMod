@@ -260,13 +260,6 @@ public class EventListeners{
 			Core.app.post(NHVars::load);
 		});
 		
-		Events.run(EventType.Trigger.update, () -> {
-			if(Vars.state.isPlaying()){
-				NHGroups.update();
-				NHVars.update();
-			}
-		});
-		
 		Events.on(EventType.ResetEvent.class, e -> {
 			actAfterLoad.clear();
 			NHVars.reset();
@@ -308,10 +301,6 @@ public class EventListeners{
 		Events.run(EventType.Trigger.update, () -> {
 			ScreenInterferencer.update();
 			NHSetting.update();
-		});
-		
-		Events.on(ScreenInterferencer.ScreenHackEvent.class, e -> {
-			ScreenInterferencer.generate(e.time);
 		});
 		
 		Events.on(BossGeneratedEvent.class, e -> {
