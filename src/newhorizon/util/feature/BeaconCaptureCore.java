@@ -11,6 +11,7 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.math.geom.Point2;
 import arc.math.geom.Position;
 import arc.scene.Element;
 import arc.scene.ui.Label;
@@ -29,13 +30,13 @@ import mindustry.gen.Tex;
 import mindustry.net.Packet;
 import mindustry.ui.BorderImage;
 import mindustry.ui.Styles;
-import mindustry.world.Tile;
 import newhorizon.expand.block.special.BeaconBlock;
 import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.vars.NHVars;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.feature.cutscene.CutsceneEvent;
 import newhorizon.util.feature.cutscene.CutsceneEventEntity;
+import newhorizon.util.func.Map2D;
 import newhorizon.util.func.NHGeom;
 import newhorizon.util.func.NHSetting;
 import newhorizon.util.graphic.DrawFunc;
@@ -49,12 +50,15 @@ public class BeaconCaptureCore implements Runnable{
 	public static final String SCORE_KEY = "capture-scores";
 	public static final long updateInterval = 3;
 	
-	public int winScore = 100000;
+	public int winScore = 100_000;
+	public float scl = 0.2f;
 	
 	public Seq<Runnable> scoreUpdateListener = new Seq<>();
 	public Seq<Runnable> pixmapUpdateListener = new Seq<>();
 	
 	public TaskQueue taskQueue = new TaskQueue();
+	
+	public Map2D<Point2> tiles;
 	
 	public final IntMap<ObjectSet<Team>> buildCaptured;
 	public final IntMap<ObjectSet<Team>> unitCaptured;
@@ -68,13 +72,13 @@ public class BeaconCaptureCore implements Runnable{
 	public IntIntMap scores = new IntIntMap();
 	
 	public float drawReload = 0;
-	public static final float drawReloadTime = 30f;
+	public static final float drawReloadTime = 45f;
 	
 	public float scoreReload = 0;
 	public static final float scoreReloadTime = 240f;
 	
 	public float unitFieldReload = 0;
-	public static final float unitFieldReloadTime = 30f;
+	public static final float unitFieldReloadTime = 45f;
 	
 	@HeadlessDisabled public Pixmap pixmap = new Pixmap(1, 1);
 	@HeadlessDisabled public Texture texture;
@@ -89,6 +93,8 @@ public class BeaconCaptureCore implements Runnable{
 		unitCaptured = new IntMap<>();
 		combined = new IntMap<>();
 		
+		tiles = new Map2D<>(proj(world.width()), proj(world.height()));
+		
 		if(!Vars.headless)texture = new Texture(1, 1);
 		
 		Vars.state.teams.active.each(teamData -> {
@@ -98,8 +104,9 @@ public class BeaconCaptureCore implements Runnable{
 		readScore();
 		
 		if(!Vars.headless){
-			updatePixmap();
 			Core.app.post(() -> Core.app.post(() -> {
+				updatePixmap();
+				updateBeacons();
 				new CaptureProgress().setup();
 			}));
 		}
@@ -118,7 +125,7 @@ public class BeaconCaptureCore implements Runnable{
 					if(builds.size == 1){
 						BeaconBlock.BeaconBuild beacon = builds.first();
 						synchronized(buildCaptured){
-							NHGeom.square(beacon.tileX(), beacon.tileY(), beacon.fieldSize() / 2, ((x, y) -> {
+							NHGeom.square(proj(beacon.tileX()), proj(beacon.tileY()), proj(beacon.fieldSize() / 2), ((x, y) -> {
 								switchField(x, y, beacon.team, true);
 							}));
 						}
@@ -144,7 +151,7 @@ public class BeaconCaptureCore implements Runnable{
 			synchronized(buildCaptured){
 				Seq<BeaconBlock.BeaconBuild> all = NHGroups.beacon.copy().removeAll(b -> b == beacon || b.team != beacon.team);
 				if(all.isEmpty()){
-					NHGeom.square(beacon.tileX(), beacon.tileY(), beacon.fieldSize() / 2, ((x, y) -> {
+					NHGeom.square(proj(beacon.tileX()), proj(beacon.tileY()), proj(beacon.fieldSize() / 2), ((x, y) -> {
 						switchField(x, y, beacon.team, add);
 					}));
 				}else{
@@ -172,7 +179,7 @@ public class BeaconCaptureCore implements Runnable{
 					
 					Position closest = Geometry.findClosest(unit.x, unit.y, linkable);
 					if(unit.dst(closest) < maxDst){
-						NHGeom.square(unit.tileX(), unit.tileY(), (int)unit.hitSize / 8, ((x, y) -> {
+						NHGeom.square((int)(unit.tileX() * scl), (int)(unit.tileY() * scl), (int)(unit.hitSize / 8 * scl), ((x, y) -> {
 							putUnit(x, y, unit.team);
 						}));
 					}
@@ -199,13 +206,17 @@ public class BeaconCaptureCore implements Runnable{
 		calculatingArea = false;
 	}
 	
+	public int proj(int v){
+		return (int)(v * scl);
+	}
+	
 	/** The two building should be the same team! */
 	public void updatePair(BeaconBlock.BeaconBuild src, BeaconBlock.BeaconBuild target, boolean add){
 		Seq<BeaconBlock.BeaconBuild> ced = calculatedPair.get(target);
 		if(ced != null)ced.add(src);
 		else calculatedPair.put(target, Seq.with(src));
 		
-		NHGeom.raycast(src.tileX(), src.tileY(), target.tileX(), target.tileY(), target.fieldSize(), target.fieldSize(), ((x, y) -> {
+		NHGeom.raycast(proj(src.tileX()), proj(src.tileY()), proj(target.tileX()), proj(target.tileY()), proj(target.fieldSize()), proj(target.fieldSize()), ((x, y) -> {
 			switchField(x, y, target.team, add);
 		}));
 	}
@@ -215,18 +226,20 @@ public class BeaconCaptureCore implements Runnable{
 		scoreReload += Time.delta;
 		if(NHVars.state.unitHoldField)unitFieldReload += Time.delta;
 		
-		if(unitFieldReload > unitFieldReloadTime){
-			taskQueue.post(this::updateUnitCapture);
-			taskQueue.post(this::updateCombine);
+		if(!Vars.state.isPaused()){
+			if(unitFieldReload > unitFieldReloadTime){
+				taskQueue.post(this::updateUnitCapture);
+				taskQueue.post(this::updateCombine);
+				
+				unitFieldReload = 0;
+			}
 			
-			unitFieldReload = 0;
-		}
-		
-		if(scoreReload > scoreReloadTime && taskQueue.size() == 0){
-			if(!Vars.net.client()){
-				updateScore();
-				writeScore();
-				scoreReload = 0;
+			if(scoreReload > scoreReloadTime && taskQueue.size() == 0){
+				if(!Vars.net.client()){
+					updateScore();
+					writeScore();
+					scoreReload = 0;
+				}
 			}
 		}
 		
@@ -240,7 +253,7 @@ public class BeaconCaptureCore implements Runnable{
 	}
 	
 	public void updatePixmap(){
-		Pixmap pixmap = new Pixmap(Vars.world.tiles.width, Vars.world.tiles.height);
+		Pixmap pixmap = new Pixmap(tiles.width, tiles.height);
 		
 		Color c1 = new Color(), c2 = new Color();
 		
@@ -251,13 +264,14 @@ public class BeaconCaptureCore implements Runnable{
 		for(IntMap.Entry<ObjectSet<Team>> entry : combined.entries()){
 			if(entry.value == null)continue;
 			
-			Tile tile = Vars.world.tiles.geti(entry.key);
+			int x = tiles.x(entry.key);
+			int y = tiles.y(entry.key);
 			
 			entry.value.each(team -> {
 				c1.set(team.color);
-				c2.set(pixmap.get(tile.x, world.tiles.height - tile.y)).a(1);
-				pixmap.set(tile.x, Vars.world.tiles.height - tile.y, c2.lerp(c1, 0.65f).a(1f));
-				toBlit.add(new int[]{tile.x, world.tiles.height - tile.y});
+				c2.set(pixmap.get(x, tiles.height - y)).a(1);
+				pixmap.set(x, tiles.height - y, c2.lerp(c1, 0.65f).a(1f));
+				if(NHSetting.enableDetails())toBlit.add(new int[]{x, tiles.height - y});
 			});
 		}
 		
@@ -355,32 +369,34 @@ public class BeaconCaptureCore implements Runnable{
 		}
 	}
 	
+	public int convertIndex(int x, int y){
+		return (int)(x * scl) + (int)(y * scl);
+	}
+	
 	public synchronized void put(int x, int y, Team team){
-		Tile tile = world.tiles.get(x, y);
-		if(tile == null)return;
-		int index = tile.array();
+		int index = tiles.index(x, y);
+		if(!tiles.has(index))return;
 		ObjectSet<Team> map = buildCaptured.get(index);
 		if(map == null) buildCaptured.put(index, map = new ObjectSet<>(Vars.state.teams.active.size));
 		map.add(team);
 	}
 	
 	public synchronized void remove(int x, int y, Team team){
-		int index = x + y * world.tiles.width;
+		int index = tiles.index(x, y);
 		ObjectSet<Team> map = buildCaptured.get(index);
 		if(map != null)map.remove(team);
 	}
 	
 	public synchronized void putUnit(int x, int y, Team team){
-		Tile tile = world.tiles.get(x, y);
-		if(tile == null)return;
-		int index = tile.array();
+		int index = tiles.index(x, y);
+		if(!tiles.has(index))return;
 		ObjectSet<Team> map = unitCaptured.get(index);
 		if(map == null)unitCaptured.put(index, map = new ObjectSet<>(Vars.state.teams.active.size));
 		map.add(team);
 	}
 	
 	public synchronized void removeUnit(int x, int y, Team team){
-		int index = x + y * world.tiles.width;
+		int index = x + y * tiles.width;
 		ObjectSet<Team> map = unitCaptured.get(index);
 		if(map != null)map.remove(team);
 	}

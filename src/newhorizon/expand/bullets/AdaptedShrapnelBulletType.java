@@ -9,7 +9,7 @@ import mindustry.gen.Bullet;
 import mindustry.graphics.Drawf;
 import newhorizon.util.graphic.DrawFunc;
 
-public class AdaptShrapnelBulletType extends ShrapnelBulletType{
+public class AdaptedShrapnelBulletType extends ShrapnelBulletType{
 	@Override
 	public void draw(Bullet b){
 		float realLength = b.fdata, rot = b.rotation();

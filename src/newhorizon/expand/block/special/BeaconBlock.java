@@ -34,6 +34,7 @@ import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.expand.entities.NHGroups;
@@ -97,7 +98,7 @@ public class BeaconBlock extends Block{
 	
 	@Override
 	public boolean isHidden(){
-		return super.isHidden() || (!NHVars.state.captureMod() && !Vars.state.isEditor());
+		return super.isHidden() || (!NHVars.state.captureMod() && !Vars.state.isEditor()) && !NewHorizon.DEBUGGING;
 	}
 	
 	@Override

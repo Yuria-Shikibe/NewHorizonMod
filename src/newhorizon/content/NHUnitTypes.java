@@ -114,7 +114,7 @@ public class NHUnitTypes implements ContentList{
 			shots = 1;
 			rotateSpeed = 25f;
 			shootSound = NHSounds.gauss;
-			bullet = new AdaptShrapnelBulletType(){{
+			bullet = new AdaptedShrapnelBulletType(){{
 				lifetime = 45f;
 				length = 200f;
 				damage = 180.0F;
@@ -1295,7 +1295,7 @@ public class NHUnitTypes implements ContentList{
 					shots = 2;
 					inaccuracy = 4.0F;
 					ejectEffect = Fx.none;
-					bullet = new AdaptShrapnelBulletType(){{
+					bullet = new AdaptedShrapnelBulletType(){{
 						width -= 2;
 						length = 280;
 						damage = 160.0F;
@@ -2636,7 +2636,7 @@ public class NHUnitTypes implements ContentList{
 				heatColor = Pal.redderDust;
 				cooldownTime = 45f;
 				
-				bullet = new AdaptShrapnelBulletType(){{
+				bullet = new AdaptedShrapnelBulletType(){{
 					length = 520;
 					damage = 300.0F;
 					status = StatusEffects.slow;
