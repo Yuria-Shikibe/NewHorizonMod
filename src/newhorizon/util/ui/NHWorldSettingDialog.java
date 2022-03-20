@@ -97,7 +97,7 @@ public class NHWorldSettingDialog extends BaseDialog{
 			addBoolSetting(table, BEACON_ENABLE, false);
 //			addBoolSetting(table, BEACON_FIELD_POLYGON, BEACON_ENABLE, false);
 			addBoolSetting(table, BEACON_UNIT_FIELD, BEACON_ENABLE, true);
-			addSliderSetting(table, BEACON_CAPTURE_SCORE, BEACON_ENABLE, 1_000_000, 500_000, 100_000_000, 50000, s -> s + " Score");
+			addSliderSetting(table, BEACON_CAPTURE_SCORE, BEACON_ENABLE, 100_000, 10_000, 1_000_000, 5000, s -> s + " Score");
 			
 			endContext();
 		}).margin(OFFSET * 2).grow().self(t -> {

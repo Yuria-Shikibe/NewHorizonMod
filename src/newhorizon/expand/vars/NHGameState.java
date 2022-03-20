@@ -51,7 +51,7 @@ public class NHGameState{
 			beaconCaptureCore = new BeaconCaptureCore();
 			beaconCaptureCore.updateBeacons();
 			
-			beaconCaptureCore.winScore = getInt_Context(BEACON_CAPTURE_SCORE, 1_000_000);
+			beaconCaptureCore.winScore = getInt_Context(BEACON_CAPTURE_SCORE, 100_000);
 		}
 		
 		endContext();
