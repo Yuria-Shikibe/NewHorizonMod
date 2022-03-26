@@ -310,8 +310,6 @@ public class NHFx{
 		});
 	}
 	
-	
-	
 	public static Effect instBomb(Color color){
 		return get("instBomb", color, instBombSize(color, 4, 80f));
 	}
@@ -1314,7 +1312,25 @@ public class NHFx{
 			
 			Vec2 last = points.get(points.size - 2);
 			Fill.circle(last.x, last.y, Lines.getStroke() / 2);
-		})).layer(Layer.effect - 0.001f);
+		})).layer(Layer.effect - 0.001f),
+	
+		crossBlast = new Effect(35, 140, e -> {
+			color(e.color, Color.white, e.fout() * 0.55f);
+			Drawf.light(e.x, e.y, e.fout() * 70, e.color, 0.7f);
+			
+			e.scaled(10f, i -> {
+				stroke(1.35f * i.fout());
+				circle(e.x, e.y, 49 * i.finpow());
+			});
+			
+			rand.setSeed(e.id);
+			float sizeDiv = 35;
+			float randL = rand.random(sizeDiv);
+			
+			for(int i = 0; i < 4; i++){
+				DrawFunc.tri(e.x, e.y, 3.5f * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90);
+			}
+		});
 }
 
 

@@ -1024,6 +1024,7 @@ public class NHBullets implements ContentList{
 			status = NHStatusEffects.scannerDown;
 			statusDuration = 60f;
 		}
+		
 			@Override
 			public void update(Bullet b){
 				if(Mathf.chanceDelta(0.45f))trailEffect.at(b.x, b.y, b.rotation());
@@ -1037,7 +1038,7 @@ public class NHBullets implements ContentList{
 				PosLightning.createRandomRange(b, b.team, b, splashDamageRadius * 30, lightColor, Mathf.chanceDelta(lightning / 10f), 0, 0, PosLightning.WIDTH, 2 + Mathf.random(1), lightning, hitPos -> {
 					Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
 					NHFx.lightningHitLarge.at(hitPos.getX(), hitPos.getY(), lightningColor);
-					NHFx.crossBlast(lightColor).at(hitPos);
+					NHFx.crossBlast.at(hitPos.getX(), hitPos.getY(), hitColor);
 					for (int j = 0; j < lightning; j++) {
 						Lightning.create(b, lightningColor, lightningDamage < 0.0F ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2.0F) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
 					}

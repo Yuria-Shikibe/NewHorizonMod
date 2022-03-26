@@ -1411,7 +1411,6 @@ public class NHBlocks implements ContentList {
 			size = 3;
 			
 			requirements(Category.crafting, with(NHItems.multipleSteel, 50, NHItems.juniorProcessor, 60, NHItems.presstanium, 55, NHItems.zeta, 85));
-			NHTechTree.add(metalOxhydrigenFactory, this);
 			
 			itemCapacity = 40;
 			liquidCapacity = 80;

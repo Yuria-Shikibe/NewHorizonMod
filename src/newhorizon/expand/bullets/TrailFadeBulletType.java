@@ -9,6 +9,7 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
 import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHSetting;
@@ -21,11 +22,12 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 	public float spacing = 8f;
 	public float randX = 6f;
 	
-	public float updateSpacing = 0.2f;
+	public float updateSpacing = 0.3f;
 	
 	/** Whether add the spawn point of the bullet to the trail seq.*/
 	public boolean addBeginPoint = false;
-	public boolean hitShowTrail = true;
+	public boolean hitBlinkTrail = true;
+	public boolean despawnBlinkTrail = false;
 	
 	public TrailFadeBulletType(){
 		super();
@@ -45,13 +47,43 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 	protected static final Rand rand = new Rand();
 	
 	@Override
+	public void despawned(Bullet b){
+		if(!Vars.headless && (b.data instanceof Seq[])){
+			Seq<Vec2>[] pointsArr = (Seq<Vec2>[])b.data();
+			for(Seq<Vec2> points : pointsArr){
+				points.add(new Vec2(b.x, b.y));
+				if(despawnBlinkTrail || (b.absorbed && hitBlinkTrail)){
+					PosLightning.createBoltEffect(hitColor, stroke * 2f, points);
+					Vec2 v = points.first();
+					NHFx.lightningHitSmall.at(v.x, v.y, hitColor);
+				}else{
+					points.add(new Vec2(stroke, fadeOffset));
+					NHFx.lightningFade.at(b.x, b.y, points.size * speed * 2, hitColor, points);
+				}
+			}
+			
+			b.data = null;
+		}
+		
+		super.despawned(b);
+	}
+	
+	@Override
+	public void hitEntity(Bullet b, Hitboxc entity, float health){
+		super.hitEntity(b, entity, health);
+		
+		hit(b);
+	}
+	
+	@Override
 	public void hit(Bullet b){
 		super.hit(b);
+		
 		if(Vars.headless || !(b.data instanceof Seq[]))return;
 		Seq<Vec2>[] pointsArr = (Seq<Vec2>[])b.data();
 		for(Seq<Vec2> points : pointsArr){
 			points.add(new Vec2(b.x, b.y));
-			if(hitShowTrail){
+			if(hitBlinkTrail){
 				PosLightning.createBoltEffect(hitColor, stroke * 2f, points);
 				Vec2 v = points.first();
 				NHFx.lightningHitSmall.at(v.x, v.y, hitColor);
@@ -59,7 +91,6 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 				points.add(new Vec2(stroke, fadeOffset));
 				NHFx.lightningFade.at(b.x, b.y, points.size * speed * 2, hitColor, points);
 			}
-			
 		}
 	}
 	

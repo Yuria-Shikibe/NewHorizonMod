@@ -177,7 +177,7 @@ public class MatterStorm extends Weather{
 				trailRotation = true;
 				pierce = true;
 				pierceCap = 3;
-				hitShowTrail = false;
+				hitBlinkTrail = false;
 				collidesTiles = false;
 				stroke = 4;
 				drawSize = 1600;

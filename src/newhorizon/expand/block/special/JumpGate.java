@@ -633,8 +633,10 @@ public class JumpGate extends Block {
             if(!calls.keys().toSeq().contains(set, false)){
                 if(isCalling()){
                     if(getSet() != null){
+                        Building target = NHVars.state.jumpGateUseCoreItems && team.data().hasCore() ? team.core() : self();
+                        
                         for(ItemStack stack : ItemStack.mult(getSet().requirements(), buildingSpawnNum * (costTime(getSet(), true) - buildProgress) / costTime(getSet(), true))){
-                            realItems().add(stack.item, Math.min(stack.amount, getMaximumAccepted(stack.item) - realItems().get(stack.item)));
+                            realItems().add(stack.item, Math.min(stack.amount, target.getMaximumAccepted(stack.item) - realItems().get(stack.item)));
                         }
                     }
                 }
