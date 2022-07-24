@@ -25,7 +25,9 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Sounds;
+import mindustry.gen.WeatherState;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
@@ -36,20 +38,17 @@ import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.blocks.Attributes;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Stat;
+import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHShaders;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.EntityRegister;
-import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.util.feature.cutscene.UIActions;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
-import newhorizon.util.func.NHSetting;
-import newhorizon.util.ui.NHUI;
 import newhorizon.util.ui.TableFunc;
 
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -143,14 +142,12 @@ public class MatterStorm extends Weather{
 				if(status != null && status != StatusEffects.none && !status.isHidden())t.table(info -> {
 					info.left();
 					info.add("[lightgray]" + Core.bundle.get("content.status.name") + ": ").padRight(OFFSET);
-					info.button(new TextureRegionDrawable(status.uiIcon), Styles.clearPartiali, () -> {
+					info.button(new TextureRegionDrawable(status.uiIcon), Styles.cleari, () -> {
 						new ContentInfoDialog().show(status);
 					}).scaling(Scaling.fit);
 				}).fill().row();
 				
 				t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).padLeft(-OFFSET * 2).padRight(-OFFSET * 2).row();
-				
-				t.table(info -> NHUI.ammo(info, localizedName, bulletType, fullIcon,0)).row();
 			}).fill().padBottom(OFFSET).left().row();
 		});
 	}
@@ -171,7 +168,6 @@ public class MatterStorm extends Weather{
 
 		if(bulletType == null){
 			bulletType = new TrailFadeBulletType(18, bulletDamage){{
-				disableAccel();
 				width = 0;
 				height = 0;
 				trailRotation = true;
@@ -184,7 +180,7 @@ public class MatterStorm extends Weather{
 				updateSpacing = 1;
 				randX = 12;
 				spacing = 12;
-				boltNum = 1;
+				trailNum = 1;
 				weaveMag = 2;
 				weaveScale = 12;
 				lifetime = 40f;
@@ -192,7 +188,7 @@ public class MatterStorm extends Weather{
 				lightning = 4;
 				lightningLength = 8;
 				lightningLengthRand = 13;
-				shootEffect = NHFx.instShoot(hitColor);
+				shootEffect = NHFx.instShoot(hitColor, frontColor);
 				hitEffect = NHFx.hitSpark(hitColor, 45f, 20, 50f, 2.8f, 12);
 				smokeEffect = Fx.smokeCloud;
 				trailEffect = Fx.none;
@@ -233,32 +229,6 @@ public class MatterStorm extends Weather{
 	public void update(WeatherState state){
 		float speed = force * state.intensity * Time.delta;
 		float ang = state.windVector.angle();
-
-		if(speed > 0.001f){
-			if(!Vars.headless)Vars.renderer.shake(force / 3, force);
-
-			for(Unit entity : Groups.unit){
-				if(!GravityTrapField.IntersectedAlly.get(entity.team, entity)){
-					entity.impulse(Tmp.v1.set(state.windVector).scl(speed * (entity.isFlying() ? 1 : 0.4f)));
-					entity.reloadMultiplier(overload);
-					if(Mathf.chanceDelta(sparkEffectChance * Time.delta))sparkEffect.at(entity.x, entity.y, ang, getColor(), entity.hitSize);
-				}
-			}
-
-			if(rotateBullets)for(Bullet entity : Groups.bullet){
-				if(entity.type.absorbable && !GravityTrapField.IntersectedAlly.get(entity.team, entity)){
-					entity.vel().setAngle(Angles.moveToward(entity.vel.angle(), ang, speed / 500 * entity.vel.len()));
-					entity.vel().add(Tmp.v1.set(state.windVector).scl(speed / 220));
-				}
-			}
-
-			if(buildingEmp > 0){
-				Groups.build.each(b -> b.block.hasPower && b.block.canOverdrive && b.timeScale < buildingEmp,b -> {
-					b.timeScale = Math.max(b.timeScale, buildingEmp);
-					b.timeScaleDuration = Math.max(b.timeScaleDuration, 10f);
-				});
-			}
-		}
 	}
 
 	@Override
@@ -267,13 +237,13 @@ public class MatterStorm extends Weather{
 		
 		if(!Vars.net.client() && Mathf.chanceDelta(bulletSpawnChance * Mathf.sqrt(state.intensity)))for(int i = 0; i < 4; i++){
 			float randX = Mathf.random(Vars.world.unitWidth()), randY = Mathf.random(Vars.world.unitHeight());
-			float maxRange = bulletLifeMax * bulletType.range();
+			float maxRange = bulletLifeMax * bulletType.range;
 			float ang = state.windVector.angle();
 			float maxLife = bulletLifeMax;
 
 			Vars.world.getQuadBounds(Tmp.r1);
 			if(!Tmp.r1.contains(Tmp.v1.trns(ang, maxRange).add(randX, randY))){
-				maxLife = ((randY > Vars.world.unitHeight() / 2f ? Vars.world.unitHeight() - randY : randY) + Vars.finalWorldBounds) / Math.abs(Mathf.sinDeg(ang)) / bulletType.range();
+				maxLife = ((randY > Vars.world.unitHeight() / 2f ? Vars.world.unitHeight() - randY : randY) + Vars.finalWorldBounds) / Math.abs(Mathf.sinDeg(ang)) / bulletType.range;
 			}
 
 			bulletType.createNet(Team.derelict, randX, randY, ang, bulletType.damage * (state.intensity + 1), Mathf.random(bulletVelocityMin, bulletVelocityMax), Mathf.random(Math.min(bulletLifeMin, maxLife), maxLife));
@@ -323,11 +293,6 @@ public class MatterStorm extends Weather{
 	
 	@Override
 	public WeatherState create(float intensity, float duration){
-		if(!Vars.headless)UIActions.actionSeqMinor(UIActions.labelAct(Core.bundle.format("nh.cutscene.event.incoming", localizedName), 1, 1.5f, Interp.fade, t -> {
-			t.image(Icon.warning).scaling(Scaling.fit).padRight(OFFSET);
-			t.image(uiIcon).scaling(Scaling.fit).padRight(OFFSET);
-		}));
-		
 		return super.create(intensity, duration);
 	}
 	

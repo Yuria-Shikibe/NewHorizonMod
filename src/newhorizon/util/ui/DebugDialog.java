@@ -8,7 +8,6 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Dialog;
@@ -22,7 +21,6 @@ import arc.util.Scaling;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
-import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Sounds;
@@ -35,12 +33,9 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
-import newhorizon.expand.entities.Carrier;
-import newhorizon.expand.vars.TileSortMap;
 import newhorizon.util.Tool_Internal;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
-import newhorizon.util.func.NHSetting;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,7 +49,7 @@ public class DebugDialog extends BaseDialog{
 		this(title, Core.scene.getStyle(Dialog.DialogStyle.class));
 		
 		cont.pane(t -> {
-			t.defaults().size(LEN * 3, LEN).pad(OFFSET / 2).style(Styles.transt);
+			t.defaults().size(LEN * 3, LEN).pad(OFFSET / 2).style(Styles.cleart);
 			
 			t.button("Icons", () -> new BaseDialog("Icons"){{
 				Class<?> c = Icon.class;
@@ -205,8 +200,6 @@ public class DebugDialog extends BaseDialog{
 			
 			t.row();
 			
-			t.button("Settings", () -> new NHSetting.SettingDialog().show());
-			
 			t.button("Interps", () -> {
 				BaseDialog dialog = new BaseDialog("Interpolation", Styles.fullDialog);
 				dialog.setFillParent(true);
@@ -281,7 +274,7 @@ public class DebugDialog extends BaseDialog{
 				addCloseButton();
 				
 				Class<?> c = Sounds.class;
-				Seq<Field> fields = Seq.with(Sounds.class.getFields()).and(NHSounds.class.getFields());
+				Seq<Field> fields = Seq.with(Sounds.class.getFields()).addAll(NHSounds.class.getFields());
 				
 				cont.pane(t -> {
 					int index = 0;
@@ -292,7 +285,7 @@ public class DebugDialog extends BaseDialog{
 								t.table(inner -> inner.table(Tex.pane, de -> {
 									de.margin(6f);
 									de.add(f.getName()).growX();
-									de.button(Icon.play, Styles.clearPartiali, () -> {
+									de.button(Icon.play, Styles.cleari, () -> {
 										try{
 											((Sound)f.get(null)).play();
 										}catch(IllegalAccessException e){
@@ -364,7 +357,7 @@ public class DebugDialog extends BaseDialog{
 						t.table(Tex.pane, table -> {
 							table.image(c.fullIcon).size(LEN / 2);
 							table.add(c.localizedName).padLeft(OFFSET / 2);
-							table.button(Icon.lock, Styles.clearPartiali, () -> {
+							table.button(Icon.lock, Styles.cleari, () -> {
 								if(c.unlocked())c.clearUnlock();
 								else c.unlock();
 							}).size(LEN / 2).update(b -> {
@@ -396,10 +389,6 @@ public class DebugDialog extends BaseDialog{
 			
 			t.row();
 			
-			t.button("Hack", () -> ScreenInterferencer.generate(360));
-			
-			t.row();
-			
 			t.button("Generate Icon", () -> ui.loadAnd("[accent]Generating", () -> {
 				content.units().each(u -> {
 					if(u.name.contains(NewHorizon.MOD_NAME)){
@@ -412,6 +401,10 @@ public class DebugDialog extends BaseDialog{
 			
 			t.button("Fire Tool", Tool_Internal::fireAnime);
 			
+			t.button("Texture Lerp Tool", Tool_Internal::textureLerp);
+			
+			t.button("Texture Pick Tool", Tool_Internal::texturePick);
+			
 			t.button("Bundle Tool", Tool_Internal::patchBundle);
 			
 			t.row();
@@ -419,22 +412,6 @@ public class DebugDialog extends BaseDialog{
 			t.button("+10 Wave", () -> state.wave += 10);
 			
 			t.button("-10 Wave", () -> state.wave = Math.max(0, state.wave - 10));
-			
-			t.row();
-			
-			t.button("Hyper Warp", () -> Groups.unit.each(u -> Carrier.create(u, new Vec2().set(player))));
-			
-			t.row();
-			
-			t.button("Update Sort Map", () -> TileSortMap.registerTeam(Team.purple));
-			
-			t.button("Analyses Sort Map", () -> TileSortMap.getTeamMap(Team.purple).analysis());
-			
-			t.button("Show Sort Map", () -> TileSortMap.getTeamMap(Team.purple).showAsDialog(TileSortMap.ValueCalculator.healthSqrt));
-			
-			t.row();
-			
-			t.button("Add Bars", UnitInfo::addBars);
 			
 			t.row();
 			

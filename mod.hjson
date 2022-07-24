@@ -2,7 +2,7 @@ displayName: "New Horizon"
 author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
-description: "Adds new content, including units, turrets, blocks, maps, etc. Mod content are presented with pretty textures and amazing effects, and some maps have their unique cutscenes.\n\n [sky]You can get the Mod Guide in the GitHub-README-MOD Guide."
-version: "1.11.0.6.1, Interrupted Content Update until the Release of v7"
+description: "Warning: Unfinished For V7"
+version: "0.1"
 
-minGameVersion: 135
+minGameVersion: 136.1

@@ -1,10 +1,9 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
-import mindustry.ctype.ContentList;
 import mindustry.type.Item;
 
-public class NHItems implements ContentList{
+public class NHItems{
 	
 	//Load Mod Items
 	
@@ -13,9 +12,7 @@ public class NHItems implements ContentList{
 	zeta, fusionEnergy, multipleSteel, irayrondPanel,
 	setonAlloy, darkEnergy, upgradeSort, metalOxhydrigen,
 	thermoCorePositive, thermoCoreNegative;
-	
-	@Override
-	public void load(){
+	public static void load(){
 		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("CFFF87")){{
 			radioactivity = 2.5f;
 			explosiveness = 3f;

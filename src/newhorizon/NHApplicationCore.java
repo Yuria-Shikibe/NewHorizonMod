@@ -3,8 +3,6 @@ package newhorizon;
 import arc.ApplicationListener;
 import arc.util.Log;
 import mindustry.Vars;
-import newhorizon.expand.entities.NHGroups;
-import newhorizon.expand.vars.NHVars;
 
 public class NHApplicationCore implements ApplicationListener{
 	public NHApplicationCore(){
@@ -14,8 +12,6 @@ public class NHApplicationCore implements ApplicationListener{
 	@Override
 	public void update(){
 		if(Vars.state.isPlaying()){
-			NHGroups.update();
-			NHVars.update();
 		}
 	}
 	

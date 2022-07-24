@@ -3,6 +3,7 @@ package newhorizon.util.func;
 import arc.func.Cons;
 import arc.func.Func2;
 import arc.func.Intc2;
+import arc.func.Prov;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.util.Nullable;
@@ -28,6 +29,11 @@ public class Map2D<T> implements Iterable<T>{
 		}
 	}
 	
+	public void fill(Prov<T> constructor){
+		for(int i = 0; i < array.length; i++){
+			array[i] = constructor.get();
+		}
+	}
 
 	public void fill(Func2<Integer, Integer, T> constructor){
 		for(int i = 0; i < array.length; i++){

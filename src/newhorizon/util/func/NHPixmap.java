@@ -18,6 +18,7 @@ import mindustry.Vars;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 
 import java.io.IOException;

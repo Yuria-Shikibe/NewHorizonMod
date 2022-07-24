@@ -13,7 +13,6 @@ import arc.struct.*;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
-import arc.util.pooling.Pools;
 import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.Fires;
@@ -29,8 +28,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHFx;
-import newhorizon.expand.bullets.SpeedUpBulletType;
-import newhorizon.expand.entities.Spawner;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,7 +85,7 @@ public class NHFunc{
     
         tileParma = null;
         
-        boolean found = world.raycast(b.tileX(), b.tileY(), World.toTile(b.x + Tmp.v1.x), World.toTile(b.y + Tmp.v1.y),
+        boolean found = World.raycast(b.tileX(), b.tileY(), World.toTile(b.x + Tmp.v1.x), World.toTile(b.y + Tmp.v1.y),
                 (x, y) -> (tileParma = world.tile(x, y)) != null && tileParma.team() != b.team && tileParma.block().absorbLasers);
         
         return found && tileParma != null ? Math.max(6f, b.dst(tileParma.worldx(), tileParma.worldy())) : length;
@@ -114,7 +111,7 @@ public class NHFunc{
             
                 //try to heal the tile
                 if(collide && hitter.type.testCollision(hitter, tile)){
-                    hitter.type.hitTile(hitter, tile, health, false);
+                    hitter.type.hitTile(hitter, tile, cx * tilesize, cy * tilesize, health, false);
                 }
             }
         };
@@ -122,7 +119,7 @@ public class NHFunc{
         if(hitter.type.collidesGround){
             seg1.set(x, y);
             seg2.set(seg1).add(tr);
-            world.raycastEachWorld(x, y, seg2.x, seg2.y, (cx, cy) -> {
+            World.raycastEachWorld(x, y, seg2.x, seg2.y, (cx, cy) -> {
                 collider.get(cx, cy);
             
                 for(Point2 p : Geometry.d4){
@@ -244,13 +241,6 @@ public class NHFunc{
         }
     }
     
-    public static void limitRangeByRange(ItemTurret turret, float margin){
-        for(ObjectMap.Entry<Item, BulletType> entry : turret.ammoTypes.entries()){
-            entry.value.lifetime *= (turret.range + margin) / entry.value.range();
-            if(entry.value instanceof SpeedUpBulletType)((SpeedUpBulletType)entry.value).init();
-        }
-    }
-    
     //not support server
     public static void spawnSingleUnit(UnitType type, Team team, int spawnNum, float x, float y){
         for(int spawned = 0; spawned < spawnNum; spawned++){
@@ -262,10 +252,6 @@ public class NHFunc{
                 }else Log.info("Unit == null");
             });
         }
-    }
-    
-    public static float scaleBulletLifetime(BulletType type, float x, float y, float toX, float toY){
-        return Mathf.dst(x, y, toX, toY) / type.range();
     }
     
     @Contract(pure = true)
@@ -321,29 +307,6 @@ public class NHFunc{
         }
         
         return true;
-    }
-    
-    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
-        if(type == null)return false;
-        clearTmp();
-        Seq<Vec2> vectorSeq = new Seq<>();
-        
-        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, rand.nextLong()))return false;
-        
-        int i = 0;
-        for (Vec2 s : vectorSeq) {
-            Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
-            spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay);
-            if(!net.client())spawner.add();
-            i++;
-        }
-        return true;
-    }
-    
-    public static void spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type){
-        Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
-        spawner.init(type, team, vec21.set(x, y), angle, delay);
-        if(!net.client())spawner.add();
     }
     
     public static <T extends QuadTree.QuadTreeObject> Seq<T> getObjects(QuadTree<T> tree){

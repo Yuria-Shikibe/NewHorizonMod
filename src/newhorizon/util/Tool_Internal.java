@@ -34,6 +34,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class Tool_Internal{
 	private static Fi toProcess;
+	private static Color tmpColor;
 	
 	public static void showTexture(Texture texture){
 		new BaseDialog("Debug"){{
@@ -190,5 +191,35 @@ public class Tool_Internal{
 			Vars.ui.loadfrag.hide();
 		});
 		
+	}
+	
+	public static void textureLerp(){
+		toProcess = new Fi("E:\\apps\\\\UserData\\MaterialEditor\\123.png");
+		if(toProcess.exists()){
+			Pixmap pixmap = PixmapIO.readPNG(toProcess);
+			pixmap.each((x, y) -> {
+				tmpColor = new Color().rgba8888(pixmap.get(x, y));
+				tmpColor.a(tmpColor.r);
+				tmpColor.r = tmpColor.g = tmpColor.b = 1;
+				tmpColor.clamp();
+				pixmap.set(x, y, tmpColor);
+			});
+			PixmapIO.writePng(toProcess, pixmap);
+		}
+	}
+	
+	public static void texturePick(){
+		toProcess = new Fi("E:\\apps\\koikatu\\UserData\\cap\\123.png");
+		if(toProcess.exists()){
+			Pixmap pixmap = PixmapIO.readPNG(toProcess);
+			pixmap.each((x, y) -> {
+				tmpColor = new Color().rgba8888(pixmap.get(x, y));
+				if(tmpColor.r > 2 / 255f || tmpColor.g > 2 / 255f || tmpColor.b > 2 / 255f){
+					tmpColor.set(Color.clear);
+					pixmap.set(x, y, tmpColor);
+				}
+			});
+			PixmapIO.writePng(toProcess, pixmap);
+		}
 	}
 }

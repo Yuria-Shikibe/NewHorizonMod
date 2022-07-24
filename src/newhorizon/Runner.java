@@ -1,21 +1,18 @@
 package newhorizon;
 
-import java.io.IOException;
-
 public class Runner{
+	public static final double MIN = 0, MAX = 2 * Math.E;
+	
+	public static final double STEP = 0.05;
+	
 	public static void main(String[] args){
-		
-		
-		try{
-			Runtime.getRuntime().exec("cmd /c cd C:\\Users\\Administrator");
-		}catch(IOException e){
-			e.printStackTrace();
+		for(double i = MIN; i < MAX; i += STEP){
+			print("ln(" + i + ")", Math.log(i));
+			print("exp(" + i + ")", Math.exp(i));
 		}
 	}
-}
-
-class Tester{
-	static{
-		System.out.print("Inited");
+	
+	static void print(String expression, double output){
+		System.out.println(expression + " = " + output);
 	}
 }

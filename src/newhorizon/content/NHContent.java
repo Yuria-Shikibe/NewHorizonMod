@@ -11,7 +11,6 @@ import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
 import newhorizon.NewHorizon;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.util.feature.UpgradeData;
 import newhorizon.util.func.NHPixmap;
 
 public class NHContent extends Content{
@@ -94,11 +93,7 @@ public class NHContent extends Content{
 			t.setFilter(Texture.TextureFilter.linear);
 			t.setWrap(Texture.TextureWrap.repeat);
 		});
-//.png
-//		NHLoader.loadSprite("tex");
-		
-		NHUpgradeDatas.all.each(UpgradeData::load);
-		NHUpgradeDatas.all.each(UpgradeData::init);
+
 	}
 	
 	Texture loadTex(String name, Cons<Texture> modifier){

@@ -24,9 +24,9 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
+import newhorizon.NHSetting;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
-import newhorizon.util.func.NHSetting;
 import newhorizon.util.graphic.DrawFunc;
 
 import java.util.Arrays;
@@ -132,9 +132,10 @@ public class NHFx{
 	public static Effect shootCircleSmall(Color color){
 		return get("shootCircleSmall", color, new Effect(30, e -> {
 			color(color, Color.white, e.fout() * 0.75f);
-			randLenVectors(e.id, 4, 3 + 23 * e.fin(), (x, y) -> {
-				Fill.circle(e.x + x, e.y + y, e.fout() * 3.22f);
-				Drawf.light(e.x + x, e.y + y, e.fout() * 4f, color, 0.7f);
+			rand.setSeed(e.id);
+			randLenVectors(e.id, 3, 3 + 23 * e.fin(), e.rotation, 22, (x, y) -> {
+				Fill.circle(e.x + x, e.y + y, e.fout() * rand.random(1.5f, 3.2f));
+				Drawf.light(e.x + x, e.y + y, e.fout() * 4.5f, color, 0.7f);
 			});
 		}));
 	}
@@ -282,8 +283,8 @@ public class NHFx{
 		}));
 	}
 	
-	public static Effect instShoot(Color color){
-		return get("instShoot", color, new Effect(24.0F, e -> {
+	public static Effect instShoot(Color color, Color colorInner){
+		return new Effect(24.0F, e -> {
 			e.scaled(10.0F, (b) -> {
 				Draw.color(Color.white, color, b.fin());
 				Lines.stroke(b.fout() * 3.0F + 0.2F);
@@ -293,9 +294,18 @@ public class NHFx{
 			
 			for(int i : Mathf.signs){
 				DrawFunc.tri(e.x, e.y, 8.0F * e.fout(), 85.0F, e.rotation + 90.0F * i);
-				DrawFunc.tri(e.x, e.y, 8.0F * e.fout(), 50.0F, e.rotation + 20.0F * i);
+				DrawFunc.tri(e.x, e.y, 8.0F * e.fout(), 50.0F, 90 + 90.0F * i);
 			}
-		}));
+			
+			if(!NHSetting.enableDetails())return;
+			
+			Draw.color(colorInner);
+			
+			for(int i : Mathf.signs){
+				DrawFunc.tri(e.x, e.y, 5F * e.fout(), 48.0F, e.rotation + 90.0F * i);
+				DrawFunc.tri(e.x, e.y, 5F * e.fout(), 29.0F, 90 + 90.0F * i);
+			}
+		});
 	}
 	
 	public static Effect hitSpark(Color color, float lifetime, int num, float range, float stroke, float length){
@@ -607,7 +617,7 @@ public class NHFx{
 			});
 		}),
 	
-		/**{@link mindustry.entities.Effect.EffectContainer#data}<{@link Position}> as Target */
+		/**{@link Effect.EffectContainer#data}<{@link Position}> as Target */
 		chainLightningFade = new Effect(45f, 500f, e -> {
 			if(!(e.data instanceof Position)) return;
 			Position p = e.data();
@@ -655,7 +665,7 @@ public class NHFx{
 			Lines.endLine();
 		}).followParent(false),
 	
-		/**{@link mindustry.entities.Effect.EffectContainer} as Target */
+		/**{@link Effect.EffectContainer} as Target */
 		chainLightningFadeReversed = new Effect(45f, 500f, e -> {
 			if(!(e.data instanceof Position))return;
 			Position p = e.data();
@@ -817,7 +827,7 @@ public class NHFx{
 		}),
 	
 		square45_6_45 = new Effect(45f, e-> {
-			Draw.color(e.color);
+			Draw.color(e.color, Color.white, e.fout() * 0.6f);
 			randLenVectors(e.id, 6, 27f * e.finpow(), (x, y) -> {
 				Fill.square(e.x + x, e.y + y, 5f * e.fout(), 45);
 				Drawf.light(e.x + x, e.y + y, e.fout() * 9F, e.color, 0.7f);
@@ -825,7 +835,7 @@ public class NHFx{
 		}),
 	
 		square45_8_45 = new Effect(45f, e-> {
-			Draw.color(e.color);
+			Draw.color(e.color, Color.white, e.fout() * 0.6f);
 			randLenVectors(e.id, 7, 34f * e.finpow(), (x, y) -> {
 				Fill.square(e.x + x, e.y + y, 8f * e.fout(), 45);
 				Drawf.light(e.x + x, e.y + y, e.fout() * 12f, e.color, 0.7f);

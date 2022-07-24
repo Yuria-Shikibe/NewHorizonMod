@@ -1,8 +1,6 @@
 package newhorizon.expand.units;
 
 import mindustry.ai.types.FlyingAI;
-import mindustry.entities.units.UnitCommand;
-import mindustry.world.meta.BlockFlag;
 
 import static mindustry.Vars.state;
 
@@ -18,27 +16,17 @@ public class SniperAI extends FlyingAI{
 	public void updateMovement(){
 		unloadPayloads();
 		
-		if(target != null && unit.hasWeapons() && command() == UnitCommand.attack){
-			if(!unit.type.circleTarget){
-				if(unit.within(target, unit.type.maxRange - APPROACHING_DST)){
-					moveTo(target, unit.type.maxRange - APPROACHING_DST / 2);
-					unit.lookAt(target);
-					unit.lookAt(target); //Always Look At target in range
-				}else{
-					moveTo(target, unit.type.maxRange - APPROACHING_DST / 2);
-					unit.lookAt(target);
-				}
+		if(target != null && unit.hasWeapons()){
+			if(unit.type.circleTarget){
+				circleAttack(120f);
 			}else{
-				attack(unit.type.range * 0.75f);
+				moveTo(target, unit.type.maxRange - APPROACHING_DST);
+				unit.lookAt(target);
 			}
 		}
 		
-		if(target == null && command() == UnitCommand.attack && state.rules.waves && unit.team == state.rules.defaultTeam){
-			moveTo(getClosestSpawner(), Math.max(state.rules.dropZoneRadius + 120f, unit.type.maxRange - APPROACHING_DST));
-		}
-		
-		if(command() == UnitCommand.rally){
-			moveTo(targetFlag(unit.x, unit.y, BlockFlag.rally, false), 60f);
+		if(target == null && state.rules.waves && unit.team == state.rules.defaultTeam){
+			moveTo(getClosestSpawner(), state.rules.dropZoneRadius + 130f);
 		}
 	}
 }

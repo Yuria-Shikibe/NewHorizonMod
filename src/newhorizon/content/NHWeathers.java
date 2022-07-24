@@ -4,7 +4,6 @@ import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
 import arc.util.Time;
 import mindustry.content.StatusEffects;
-import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.gen.WeatherState;
 import mindustry.graphics.Pal;
@@ -13,11 +12,10 @@ import mindustry.type.weather.ParticleWeather;
 import mindustry.world.meta.Attribute;
 import newhorizon.expand.weather.MatterStorm;
 
-public class NHWeathers implements ContentList{
+public class NHWeathers{
 	public static Weather
 			quantumField, quantumStorm, solarStorm;
-	@Override
-	public void load(){
+	public static void load(){
 		quantumStorm = new MatterStorm("quantum-storm"){{
 			status = NHStatusEffects.ultFireBurn;
 			statusDuration = 60f;

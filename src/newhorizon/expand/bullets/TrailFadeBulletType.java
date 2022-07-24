@@ -8,14 +8,15 @@ import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import mindustry.Vars;
+import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;
+import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.NHSetting;
 
-public class TrailFadeBulletType extends SpeedUpBulletType{
-	public int boltNum = 2;
+public class TrailFadeBulletType extends BasicBulletType{
+	public int trailNum = 2;
 	public float stroke = 2F;
 	public int fadeOffset = 10;
 	
@@ -92,14 +93,16 @@ public class TrailFadeBulletType extends SpeedUpBulletType{
 				NHFx.lightningFade.at(b.x, b.y, points.size * speed * 2, hitColor, points);
 			}
 		}
+		
+		b.data = null;
 	}
 	
 	@Override
 	public void init(Bullet b){
 		super.init(b);
 		if(Vars.headless || (!NHSetting.enableDetails() && trailLength > 0))return;
-		Seq<Vec2>[] points = new Seq[boltNum];
-		for(int i = 0; i < boltNum; i++){
+		Seq<Vec2>[] points = new Seq[trailNum];
+		for(int i = 0; i < trailNum; i++){
 			Seq<Vec2> p = new Seq<>();
 			if(addBeginPoint)p.add(new Vec2(b.x, b.y));
 			points[i] = p;

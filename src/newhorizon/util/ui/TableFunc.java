@@ -17,7 +17,6 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.scene.Element;
 import arc.scene.actions.Actions;
@@ -27,7 +26,6 @@ import arc.scene.event.Touchable;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
-import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
 import arc.util.Time;
@@ -46,20 +44,12 @@ import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
-import mindustry.ui.Bar;
-import mindustry.ui.Links;
 import mindustry.ui.Styles;
-import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
-import newhorizon.expand.entities.NHGroups;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.vars.NHVars;
-import newhorizon.util.feature.cutscene.CutsceneEvent;
-import newhorizon.util.feature.cutscene.CutsceneScript;
-import newhorizon.util.feature.cutscene.UIActions;
 import newhorizon.util.func.NHFunc;
-import newhorizon.util.func.NHSetting;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -94,7 +84,7 @@ public class TableFunc{
             
             left();
             table(table -> {
-                button(Icon.cancel, Styles.clearTransi, () -> {
+                table.button(Icon.cancel, Styles.cleari, () -> {
                     actions(Actions.touchable(Touchable.disabled), Actions.moveBy(-width, 0, 0.4f, Interp.pow3In), Actions.remove());
                 }).width(LEN).growY();
             }).growY().fillX().padRight(OFFSET);
@@ -117,19 +107,19 @@ public class TableFunc{
                     label.setWidth(getWidth());
                 });
                 add(label).growX().fillY().pad(OFFSET).align(Align.topLeft).row();
-                button("Copy Coords", Icon.copy, Styles.transt, () -> Core.app.setClipboardText((int)point.x + ", " + (int)point.y)).growX().fillY().row();
+                button("Copy Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText((int)point.x + ", " + (int)point.y)).growX().fillY().row();
     
                 pane(con -> {
-                    con.button(Icon.leftOpen, Styles.clearPartiali, () -> spawnNum = Mathf.clamp(--spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
+                    con.button(Icon.leftOpen, Styles.cleari, () -> spawnNum = Mathf.clamp(--spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
                     con.slider(1, 100, 2, spawnNum, (f) -> spawnNum = (int)f).growX().height(LEN - OFFSET * 1.5f).padLeft(OFFSET / 2).padRight(OFFSET / 2);
-                    con.button(Icon.rightOpen, Styles.clearPartiali, () -> spawnNum = Mathf.clamp(++spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
+                    con.button(Icon.rightOpen, Styles.cleari, () -> spawnNum = Mathf.clamp(++spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
                 }).growX().height(LEN).row();
     
                 table(con -> {
                     con.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
                         pointSelectTable(starter, p -> point.set(World.unconv(p.x), World.unconv(p.y)));
                     }).grow();
-                    con.button(Icon.cancel, Styles.clearTransi, () -> point.set(-1, -1)).size(LEN);
+                    con.button(Icon.cancel, Styles.cleari, () -> point.set(-1, -1)).size(LEN);
                 }).growX().height(LEN).row();
     
                 ScrollPane p = pane(table -> {
@@ -194,6 +184,9 @@ public class TableFunc{
                     tin.pane(con -> {
                         con.button("Add Items", Styles.cleart, () -> {
                             for(Item item : content.items()) player.team().core().items.add(item, 1000000);
+                        }).size(LEN * 2, LEN);
+                        con.button("Debug", Styles.cleart, () -> {
+                            new DebugDialog("debug").show();
                         }).size(LEN * 2, LEN);
                     }).grow().row();
                 });
@@ -292,159 +285,9 @@ public class TableFunc{
         
         starter.table(table -> {
             table.defaults().size(starter.getWidth() - OFFSET);
-            table.button(Icon.settings, Styles.clearTransi, () -> {
+            table.button(Icon.settings, Styles.cleari, () -> {
                 showInner(starter, new ToolTable());
-            }).grow().disabled(b -> !NHSetting.getBool("@active.admin-panel") || hasInner.get()).row();
-            table.button(Icon.logic, Styles.clearTransi, () -> {
-                showInner(starter, new Table(Tex.button){{
-                    setSize(Core.graphics.getWidth() / 1.5f, Core.graphics.getHeight() * 0.75f);
-                    Label label = new Label("");
-                    label.setWrap(false);
-                    label.setText(textArea.getText());
-
-                    Label liner = new Label("");
-                    liner.setWrap(false);
-                    
-                    ScrollPane sp = pane(Styles.horizontalPane, t -> {
-                        t.align(Align.topLeft);
-                        Cell<Label> l = t.add(liner).color(Color.gray).padTop(13.5f).fill();
-                        Cell<TextArea> textAreaMod = t.add(textArea).fill();
-                        t.update(() -> {
-                            label.setText(textArea.getText());
-                            StringBuilder stringBuilder = new StringBuilder();
-                            
-                            int lines = textArea.getLinesShowing();
-    
-                            for(int i = 0; i < lines; i++)stringBuilder.append(i).append("\n");
-                            liner.setText(stringBuilder.toString());
-                            
-                            l.fillX().height(label.getPrefHeight() + LEN * 4);
-                            textAreaMod.size(label.getPrefWidth() + LEN * 4, label.getPrefHeight() + LEN * 4);
-                            t.table().fill();
-                            
-                            
-                        });
-                    }).grow().pad(OFFSET).get();
-                    
-                    
-                    sp.setForceScroll(true, true);
-                    row();
-                    table(t -> {
-                        t.defaults().height(LEN).growX().pad(OFFSET / 2f);
-                        t.button("All Triggers", Styles.cleart, () -> {
-                            new BaseDialog(""){{
-                                addCloseButton();
-        
-                                cont.pane(t -> {
-                                    NHGroups.autoEventTrigger.each(trigger -> {
-                                        t.table(Tex.sideline, info -> {
-                                            info.defaults().left().growX().fillY().pad(OFFSET / 2f);
-                                            info.add(trigger.toString()).row();
-                                            if(!CutsceneEvent.inValidEvent(trigger.eventType))info.table(Tex.buttonEdge3, show -> {
-                                                show.left();
-                                                trigger.eventType.display(show);
-                                            }).row();
-                                            info.table(Tex.buttonEdge3, show -> {
-                                                show.defaults().growX().fillY().pad(OFFSET / 2f).left();
-                                                show.table(d -> {
-                                                    d.left();
-                                                    d.defaults().left().growX().fillY();
-                                                    trigger.items.each(p -> {
-                                                        d.add(new IconNumDisplay(p.item.fullIcon, p.value, p.item.localizedName)).row();
-                                                    });
-                                                    trigger.units.each(p -> {
-                                                        d.add(new IconNumDisplay(p.item.fullIcon, p.value, p.item.localizedName)).row();
-                                                    });
-                                                    trigger.buildings.each(p -> {
-                                                        d.add(new IconNumDisplay(p.item.fullIcon, p.value, p.item.localizedName)).row();
-                                                    });
-                                                }).row();
-                                                show.add("[lightgray]Min Spawn Wave [accent]" + trigger.minTriggerWave).row();
-                                                show.add("[lightgray]BaseSpacing [accent]" + trigger.spacingBase / Time.toMinutes).row();
-                                                show.add("[lightgray]RandSpacing [accent]" + trigger.spacingRand / Time.toMinutes).row();
-                                                show.add("[lightgray]Disposable: " + judge(trigger.disposable)).row();
-                                                show.label(() -> "[lightgray]Reload: [accent]" + format(trigger.getReload() / Time.toMinutes)).row();
-                                                show.label(() -> "[lightgray]Spacing: [accent]" + format(trigger.getSpacing() / Time.toMinutes)).row();
-                                                show.add(new Bar("Ratio", Pal.accent, () -> trigger.getReload() / trigger.getSpacing())).height(48).row();
-                                                show.label(() -> "[lightgray]Meet: [accent]" + judge(trigger.meet())).row();
-                                            }).row();
-                                        }).growX().fillY().pad(OFFSET).row();
-                                    });
-                                }).grow();
-        
-                            }}.show();
-                        }).disabled(b -> NHGroups.autoEventTrigger.isEmpty());
-                        t.button("Debug Events", Styles.cleart, () -> {
-                            new BaseDialog("Debug"){{
-                                addCloseButton();
-                                cont.pane(t -> {
-                                    NHGroups.event.each(e -> {
-                                        e.setupDebugTable(t);
-                                        t.row();
-                                    });
-                                }).grow();
-                            }
-    
-                                @Override
-                                public void hide(){
-                                    super.hide();
-                                    NHGroups.event.each(e -> !e.eventType().isHidden, e -> e.show(UIActions.eventTable()));
-                                }
-                            }.show();
-                        }).disabled(b -> NHGroups.event.isEmpty());
-                        t.button("Run Selection", Styles.cleart, () -> {
-                            Core.app.post(() -> CutsceneScript.runJS(textArea.getSelection()));
-                        }).disabled(b -> textArea.getSelection().isEmpty());
-                        t.row();
-                        
-                        t.button("Reload From Matched File", Styles.cleart, () -> {
-                            ui.showConfirm(
-                                "Are you sure you want reload the script from matched file: " + CutsceneScript.currentScriptFile.name() + "?",
-                                "This will overwrite the script here",
-                                () -> textArea.setText(CutsceneScript.currentScriptFile.readString())
-                            );
-                        }).growX().disabled(b -> CutsceneScript.currentScriptFile == null);
-                        t.button("Load Script", Styles.cleart, () -> {
-                            platform.showMultiFileChooser(file -> {
-                                textArea.setText(file.readString());
-                            }, "js");
-                        });
-                        t.button("Save Script", Styles.cleart, () -> {
-                            ui.showConfirm("Are you sure you want save the script?", () -> {
-                                if(CutsceneScript.currentScriptFile != null){
-                                    int hash = CutsceneScript.currentScriptFile.readString().hashCode();
-                                    CutsceneScript.currentScriptFile.writeString(textArea.getText(), false);
-                                    ui.showText("Save successfully", hash + " -> " + textArea.getText().hashCode());
-                                }else{
-                                    ui.showCustomConfirm("Script File Missing", "Copy to clipboard?", "Accept", "@back",
-                                        () -> {
-                                            Core.app.setClipboardText(textArea.getText());
-                                        }, () -> {
-                        
-                                        }
-                                    );
-                                }
-                            });
-                        });
-    
-                        t.row();
-    
-                        t.button("Check World Data", Styles.cleart, () -> {
-                            ui.showText("Vars.state.rules.tags", state.rules.tags.toString(), Align.left);
-                        });
-                        t.button("Remove World Data", Styles.cleart, () -> {
-                            ui.showConfirm("Are you sure?", state.rules.tags::clear);
-                        });
-                        t.button("Debug Menu", Styles.cleart, () -> {
-                            new DebugDialog("").show();
-                        });
-    
-                    }).growX().fillY();
-                }});
-            }).grow().disabled(b -> !NHSetting.getBool("@active.debug") || hasInner.get()).row();
-            table.button(Icon.play, Styles.clearTransi, () -> {
-                Core.app.post(() -> CutsceneScript.runJS(Core.app.getClipboardText()));
-            }).disabled(b -> Core.app.getClipboardText() == null || Core.app.getClipboardText().isEmpty() || hasInner.get() || !NHSetting.getBool("@active.debug"));
+            }).grow().disabled(b -> hasInner.get()).row();
         }).grow().row();
         
         Core.scene.root.addChildAt(1, starter);
@@ -506,99 +349,6 @@ public class TableFunc{
                 });
             }).growX().height(size).padLeft(OFFSET / 2).left();
         }).growX().height(size).left().row();
-    }
-    
-    public static void link(Table parent, Links.LinkEntry link){
-        parent.add(new NHUI.LinkTable(link)).size(NHUI.LinkTable.w + OFFSET * 2f, NHUI.LinkTable.h).padTop(OFFSET / 2f).row();
-    }
-    
-    public static void rectSelectTable(Table parentT, Runnable run){
-        NHVars.resetCtrl();
-        
-        Rect r = NHVars.ctrl.rect;
-        
-        NHVars.ctrl.isSelecting = true;
-        
-        NHVars.ctrl.pressDown = false;
-        
-        Table pTable = new Table(Tex.pane){{
-            update(() -> {
-                if(Vars.state.isMenu())remove();
-                else{
-                    Vec2 v = Core.camera.project(r.x + r.width / 2, r.y - OFFSET);
-                    setPosition(v.x, v.y, 0);
-                }
-            });
-            table(Tex.paneSolid, t -> {
-                t.button(Icon.upOpen, Styles.clearFulli, () -> {
-                    run.run();
-                    remove();
-                    NHVars.ctrl.isSelecting = false;
-                }).size(LEN * 4, LEN).disabled(b -> NHVars.ctrl.pressDown);
-            }).size(LEN * 4, LEN);
-        }};
-        
-        Table floatTable = new Table(Tex.clear){{
-            parentT.color.a = 0.3f;
-            
-            update(() -> {
-                r.setSize(Math.abs(NHVars.ctrl.to.x - NHVars.ctrl.from.x), Math.abs(NHVars.ctrl.to.y - NHVars.ctrl.from.y)).setCenter((NHVars.ctrl.from.x + NHVars.ctrl.to.x) / 2f, (NHVars.ctrl.from.y + NHVars.ctrl.to.y) / 2f);
-                
-                if(Vars.state.isMenu() || !NHVars.ctrl.isSelecting){
-                    NHVars.ctrl.from.set(0, 0);
-                    NHVars.ctrl.to.set(0, 0);
-                    remove();
-                }
-                
-                if(!mobile && NHVars.ctrl.pressDown){
-                    NHVars.ctrl.to.set(Core.camera.unproject(Core.input.mouse())).clamp(0, 0, world.unitHeight(), world.unitWidth());
-                }
-            });
-            
-            touchable = Touchable.enabled;
-            setFillParent(true);
-            if(mobile){
-                addListener(new InputListener(){
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    if(!NHVars.ctrl.pressDown){
-                        touchable = Touchable.enabled;
-                        NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
-                        NHVars.ctrl.to.set(NHVars.ctrl.from);
-                    }else{
-                        NHVars.ctrl.to.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
-                    }
-                    NHVars.ctrl.pressDown = !NHVars.ctrl.pressDown;
-                    return false;
-                    }
-                });
-            }else addListener(new InputListener(){
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    parentT.touchable = Touchable.childrenOnly;
-                    NHVars.ctrl.pressDown = true;
-                    NHVars.ctrl.from.set(Core.camera.unproject(x, y)).clamp(-finalWorldBounds, -finalWorldBounds, world.unitHeight() + finalWorldBounds, world.unitWidth() + finalWorldBounds);
-                    NHVars.ctrl.to.set(NHVars.ctrl.from);
-                    return false;
-                }
-                
-                public void exit(InputEvent event, float x, float y, int pointer, Element toActor) {
-                    if(remove()){
-                        parentT.touchable = Touchable.enabled;
-                        run.run();
-                        NHVars.resetCtrl();
-                    }
-                }
-            });
-        }
-            
-            @Override
-            public boolean remove(){
-                parentT.color.a = 1f;
-                return super.remove();
-            }
-        };
-        
-        Core.scene.root.addChildAt(9, floatTable);
-        if(mobile)Core.scene.root.addChildAt(10, pTable);
     }
     
     public static void pointSelectTable(Table parentT, Cons<Point2> cons){

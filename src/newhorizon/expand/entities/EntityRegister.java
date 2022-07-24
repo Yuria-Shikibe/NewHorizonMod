@@ -8,11 +8,6 @@ import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
-import newhorizon.expand.block.defence.ShieldProjector;
-import newhorizon.expand.units.EnergyUnit;
-import newhorizon.expand.weather.MatterStorm;
-import newhorizon.util.feature.cutscene.CutsceneEventEntity;
-import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 
 public class EntityRegister{
 	private static final int startFrom = 100;
@@ -21,14 +16,14 @@ public class EntityRegister{
 	private static final ObjectMap<Class<?>, Integer> classIdMap = new ObjectMap<>();
 	
 	static{
-		EntityRegister.put(Spawner.class, Spawner::new);
-		EntityRegister.put(Carrier.class, Carrier::new);
-		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
-		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
-		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
+//		EntityRegister.put(Spawner.class, Spawner::new);
+//		EntityRegister.put(Carrier.class, Carrier::new);
+//		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
+//		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
+//		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
 		EntityRegister.put(UltFire.class, UltFire::new);
-		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
-		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
+//		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
+//		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){
@@ -50,9 +45,7 @@ public class EntityRegister{
 		
 		if(NewHorizon.DEBUGGING || Vars.headless){
 			Log.info("//=============================================\\\\");
-			classIdMap.each((c, i) -> {
-				Log.info(i + "|" + c.getSimpleName());
-			});
+			classIdMap.each((c, i) -> Log.info(i + "|" + c.getSimpleName()));
 			Log.info("\\\\=============================================//");
 		}
 	}

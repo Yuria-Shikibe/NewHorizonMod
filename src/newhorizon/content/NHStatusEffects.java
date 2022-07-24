@@ -10,7 +10,6 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
@@ -19,14 +18,12 @@ import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.util.func.NHPixmap;
-import newhorizon.util.ui.ScreenInterferencer;
 
-public class NHStatusEffects implements ContentList{
+public class NHStatusEffects{
     public static StatusEffect ultFireBurn, stronghold,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
-    @Override
-    public void load(){
+    public static void load(){
         stronghold = new NHStatusEffect("stronghold"){{
             color = textureColor = Color.lightGray;
             speedMultiplier = 0.001f;
@@ -57,18 +54,18 @@ public class NHStatusEffects implements ContentList{
             reloadMultiplier = 0.9f;
             
             effectChance = 0.2f;
-            color = ScreenInterferencer.from.cpy().lerp(ScreenInterferencer.to, 0.5f);
-            effect = new MultiEffect(NHFx.squareRand(ScreenInterferencer.from, 8f, 16f), NHFx.squareRand(ScreenInterferencer.to, 8f, 16f));
+//            color = ScreenInterferencer.from.cpy().lerp(ScreenInterferencer.to, 0.5f);
+//            effect = new MultiEffect(NHFx.squareRand(ScreenInterferencer.from, 8f, 16f), NHFx.squareRand(ScreenInterferencer.to, 8f, 16f));
         }
     
-            @Override
-            public void update(Unit unit, float time){
-               super.update(unit, time);
-            
-                if(unit.isLocal()){
-                    ScreenInterferencer.continueGenerate();
-                }
-            }
+//            @Override
+//            public void update(Unit unit, float time){
+//               super.update(unit, time);
+//
+//                if(unit.isLocal()){
+//                    ScreenInterferencer.continueGenerate();
+//                }
+//            }
         };
         
         weak = new NHStatusEffect("weak"){{
@@ -99,14 +96,14 @@ public class NHStatusEffects implements ContentList{
         }};
         
         end = new NHStatusEffect("end"){{
-            damage = 100;
+            damage = 120;
             textureColor = color = NHColor.darkEnrColor;
             
             damageMultiplier = 0.5f;
             reloadMultiplier = 0.5f;
             speedMultiplier = 0.5f;
             
-            effectChance = 0.1f;
+            effectChance = 0.075f;
             effect = new Effect(20f, 20f, e -> {
                 Draw.color(Color.white, color, e.fin() + 0.35f);
                 Lines.stroke(1.5f * e.fout(Interp.pow3Out));

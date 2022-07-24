@@ -26,7 +26,6 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.graphics.Layer;
-import newhorizon.expand.bullets.EffectBulletType;
 
 /**
  * Provide methods that can generate Position to Position Lightning.<p>
@@ -48,7 +47,8 @@ import newhorizon.expand.bullets.EffectBulletType;
  * @author Yuria
  */
 public class PosLightning {
-	public static final BulletType hitter = new EffectBulletType(10f){{
+	public static final BulletType hitter = new BulletType(){{
+		lifetime = 10f;
 		absorbable = true;
 		collides = collidesAir = collidesGround = collidesTiles = true;
 		status = StatusEffects.shocked;

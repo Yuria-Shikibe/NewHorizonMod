@@ -3,44 +3,27 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
-import arc.scene.ui.Label;
-import arc.scene.ui.layout.Table;
-import arc.util.*;
+import arc.util.Align;
+import arc.util.Http;
+import arc.util.Log;
+import arc.util.Time;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
-import mindustry.ctype.ContentList;
 import mindustry.game.EventType.ClientLoadEvent;
-import mindustry.game.Team;
 import mindustry.gen.Icon;
-import mindustry.gen.Player;
-import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
 import mindustry.net.ServerGroup;
-import mindustry.type.Item;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
-import mindustry.ui.dialogs.ContentInfoDialog;
-import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.expand.entities.EntityRegister;
-import newhorizon.expand.entities.NHGroups;
-import newhorizon.expand.vars.NHVars;
-import newhorizon.util.EventListeners;
-import newhorizon.util.feature.cutscene.CutsceneEvent;
-import newhorizon.util.feature.cutscene.CutsceneEventEntity;
-import newhorizon.util.feature.cutscene.CutsceneScript;
-import newhorizon.util.feature.cutscene.EventSamples;
-import newhorizon.util.feature.cutscene.events.util.AutoEventTrigger;
 import newhorizon.util.func.NHPixmap;
-import newhorizon.util.func.NHSetting;
-import newhorizon.util.ui.*;
-import newhorizon.util.ui.NHUI.LinkTable;
-
-import java.io.IOException;
+import newhorizon.util.ui.FeatureLog;
+import newhorizon.util.ui.TableFunc;
 
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -72,29 +55,8 @@ public class NewHorizon extends Mod{
 		return MOD_NAME + "-" + name;
 	}
 	
-	private static final ContentList[] content = {
-		new NHStatusEffects(),
-		new NHItems(),
-        new NHLiquids(),
-        new NHBullets(),
-		new NHUpgradeDatas(),
-		new NHUnitTypes(),
-		new NHBlocks(),
-		new NHPlanets(),
-		new NHSectorPresets(),
-		new NHWeathers(),
-		new NHTechTree(),
-	};
-	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(NHBlocks.beacon),
-			new FeatureLog("[[[accent]Since 1.11.0[]]Territory Capture Game Mode", "Added a completely new game mode.\nEnable it in Editor -> Menu -> New Horizon Extra Settings -> Beacon Capture\n(WIP)", FeatureLog.NEW_FEATURE, NHContent.capture){{
-				important = true;
-			}},
-			new FeatureLog("[[[accent]Since 1.11.0[]]New Map Settings", "Added some new mod map settings for custom maps.\n1. Jump Gates use items from core, default disabled, just like the old version. Added for some quick battle maps.\n2. Enemy's Jump Gates consumes items.\nSet them in Editor -> Menu -> New Horizon Extra Settings", FeatureLog.NEW_FEATURE, Icon.settings.getRegion())
-//			new FeatureLog("Customizable Event Trigger", "Enter the menu from the <Editor Menu> -> <Cutscene Menu>, has ease UI.", FeatureLog.NEW_FEATURE + FeatureLog.IMPORTANT, NHContent.objective),
-//			new FeatureLog("Sprite Adjust", "Slightly adjustments so some sprites.", FeatureLog.IMPROVE, Icon.wrench.getRegion()),
 		};
 	}
 	
@@ -106,17 +68,16 @@ public class NewHorizon extends Mod{
 			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent),
 			new Links.LinkEntry("yuria.plugin", "https://github.com/Yuria-Shikibe/RangeImager", Icon.export, NHColor.thurmixRed)
 		};
-		
-		BaseDialog dialog = new BaseDialog("@links");
-		dialog.cont.pane(table -> {
-			LinkTable.sync();
-			for(Links.LinkEntry entry : links){
-				TableFunc.link(table, entry);
-			}
-		}).grow().row();
-		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN);
-		dialog.addCloseListener();
-		dialog.show();
+//
+//		BaseDialog dialog = new BaseDialog("@links");
+//		dialog.cont.pane(table -> {
+//			for(Links.LinkEntry entry : links){
+//				TableFunc.link(table, entry);
+//			}
+//		}).grow().row();
+//		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN);
+//		dialog.addCloseListener();
+//		dialog.show();
 	}
 	
 	public static void startLog(){
@@ -133,92 +94,27 @@ public class NewHorizon extends Mod{
 				table.add("").row();
 			}).growX().center().row();
 			
-			inner.table(table -> {
-				if(!Vars.mobile)table.table(t -> {
-				
-				}).grow();
-				table.table(t -> {
-					t.button("@back", Icon.left, Styles.transt, () -> {
-						dialog.hide();
-						NHSetting.applySettings();
-					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-					t.button("@links", Icon.link, Styles.transt, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-					t.button("@log", Icon.book, Styles.transt, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-				}).grow();
-				if(!Vars.mobile)table.table(t -> {
-				
-				}).grow();
-			}).fill();
+//			inner.table(table -> {
+//				if(!Vars.mobile)table.table(t -> {
+//
+//				}).grow();
+//				table.table(t -> {
+//					t.button("@back", Icon.left, Styles.transt, () -> {
+//						dialog.hide();
+//						NHSetting.applySettings();
+//					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//					t.button("@links", Icon.link, Styles.transt, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//					t.button("@log", Icon.book, Styles.transt, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//				}).grow();
+//				if(!Vars.mobile)table.table(t -> {
+//
+//				}).grow();
+//			}).fill();
 		}).grow();
 		dialog.show();
 	}
-	
-	public static void showNew(){
-		new BaseDialog("Detected Update"){{
-			addCloseListener();
-			
-			cont.pane(main -> {
-				main.top();
-				main.pane(table -> {
-					table.align(Align.topLeft);
-					table.add(NHSetting.modMeta.version + ": ").row();
-					table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
-					table.add(Core.bundle.get("mod.ui.update-log")).left();
-				}).growX().fillY().padBottom(LEN).row();
-				main.table(t -> {
-					t.add("@yuria.plugin.ad").fillY().growX().row();
-					t.button("@openlink", Icon.export, () -> {
-						Core.app.openURI("https://github.com/Yuria-Shikibe/RangeImager");
-					}).pad(OFFSET / 2f).growX();
-				}).growX().fillY().padBottom(OFFSET).row();
-				main.image().growX().height(4).pad(6).color(Color.lightGray).row();
-				main.pane(t -> {
-					for(int index = 0; index < getUpdateContent().length; index++){
-						FeatureLog c = getUpdateContent()[index];
-						Table info = new Table(Tex.pane, table -> {
-							if(c.important || c.content != null){
-								table.background(Tex.whitePane);
-								if(c.important)table.color.set(Pal.accent);
-							}
-							
-							table.table(i -> {
-								i.image(c.icon).fill();
-							}).fill().get().pack();
-							table.pane(i -> {
-								i.top();
-								i.add("[gray]NEW [lightgray]" + c.type.toUpperCase() + "[]: [accent]" + c.title + "[]").left().row();
-								i.image().growX().height(OFFSET / 3).pad(OFFSET / 3).color(Color.lightGray).row();
-								i.add("[accent]Description: []").left().row();
-								i.add(c.description).padLeft(LEN).left().get().setWrap(true);
-								if(c.modifier != null)c.modifier.get(i);
-							}).grow().padLeft(OFFSET).top();
-							table.button(Icon.info, Styles.clearTransi, LEN, () -> {
-								ContentInfoDialog dialog = new ContentInfoDialog();
-								dialog.show(c.content);
-							}).growY().width(LEN).padLeft(OFFSET).disabled(b -> c.content == null);
-						});
-						if(!c.important)t.add(info).grow().row();
-						else{
-							Label label = new Label("IMPORTANT", Styles.techLabel);
-							label.setFontScale(1.25f);
-							
-							
-							t.stack(new Table(table -> table.margin(OFFSET * 2).add(label)).bottom(), new Table(Styles.black6){{setFillParent(true);}}, info).grow().row();
-						}
-					}
-				}).growX().top().row();
-			}).grow().row();
-			
-			cont.table(table -> {
-				table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
-				table.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN);
-			}).bottom().growX().height(LEN).padTop(OFFSET);
-		}}.show();
-	}
-	
-	
 	
 	public NewHorizon(){
 		Log.info("Loaded NewHorizon Mod constructor.");
@@ -226,10 +122,6 @@ public class NewHorizon extends Mod{
 		Core.app.addListener(new NHApplicationCore());
 		
 		Events.on(ClientLoadEvent.class, e -> {
-			NHUI.init();
-			
-			Core.app.post(NHSetting::updateSettingMenu);
-			
 			Vars.defaultServers.add(new ServerGroup(){{
 				name = "[sky]New Horizon [white]Mod [lightgray]Servers";
 				addresses = new String[]{SERVER, EU_NH_SERVER};
@@ -258,8 +150,8 @@ public class NewHorizon extends Mod{
 							
 							
 							cont.table(table -> {
-								table.button("@back", Icon.left, Styles.transt, this::hide).growX().height(LEN);
-								table.button("@mods.github.open", Icon.github, Styles.transt, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
+								table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
+								table.button("@mods.github.open", Icon.github, Styles.cleart, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
 							}).bottom().growX().height(LEN).padTop(OFFSET);
 							
 							addCloseListener();
@@ -269,37 +161,21 @@ public class NewHorizon extends Mod{
 					if(tag != null) Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
 				}, ex -> Log.err(ex.toString()));
 			}));
-			
-			Time.runTask(10f, () -> {
-				
-				if(NHSetting.versionChange){
-					showNew();
-				}
-				
-				if(!NHSetting.getBool("@active.hid-start-log"))startLog();
-			});
 		});
 	}
 
 	@Override
 	public void init() {
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
-		NHVars.init();
 		
 		if(Vars.headless)return;
 		
+		Vars.renderer.maxZoom = 10f;
+		Vars.renderer.minZoom = 1f;
 		TableFunc.tableMain();
-		
-		NHSetting.applySettings();
-		
-		ScreenInterferencer.load();
-		
-		NHRegister.load();
-		
-		Vars.ui.hints.hints.addAll(Hints.DefaultHint.all);
 	}
 	
-	@Override
+/*	@Override
 	public void registerServerCommands(CommandHandler handler) {
 		handler.register("events", "List all events in the map.", (args) -> {
 			if (NHGroups.event.isEmpty()) {
@@ -340,9 +216,9 @@ public class NewHorizon extends Mod{
 			}
 			CutsceneScript.runJS(sb.toString());
 		});
-	}
+	}*/
 	
-	@Override
+/*	@Override
 	public void registerClientCommands(CommandHandler handler) {
 		handler.<Player>register("runwave", "<num>", "Run Wave (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
@@ -458,7 +334,7 @@ public class NewHorizon extends Mod{
 				}
 			}
 		});
-	}
+	}*/
 	
 	@Override
     public void loadContent(){
@@ -469,19 +345,7 @@ public class NewHorizon extends Mod{
 		
 		MOD = Vars.mods.getMod(getClass());
 		
-		if(!Vars.headless){
-			try{
-				NHSetting.settingFile();
-				NHSetting.initSetting();
-				NHSetting.initSettingList();
-				NHSetting.loadSettings();
-			}catch(IOException e){
-				throw new IllegalArgumentException(e);
-			}
-		}
-		
 		EntityRegister.load();
-		EventListeners.load();
 		
 		NHContent.loadModContent();
 		
@@ -492,12 +356,12 @@ public class NewHorizon extends Mod{
 		
 		NHContent.loadAfterContent();
 		
-		for(ContentList contentList : content)contentList.load();
-		if(Vars.headless || NHSetting.getBool("@active.override"))NHOverride.load();
-		
-		EventSamples.load();
-		CutsceneScript.load();
-		EventListeners.loadAfterContent();
+		{
+			NHItems.load();
+			NHLiquids.load();
+			NHStatusEffects.load();
+			NHUnitTypes.load();
+		}
 		
 		contentLoadComplete = true;
 		

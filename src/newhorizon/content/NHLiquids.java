@@ -1,10 +1,9 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
-import mindustry.ctype.ContentList;
 import mindustry.type.Liquid;
 
-public class NHLiquids implements ContentList{
+public class NHLiquids{
 	
 	//Load Mod Liquids
 	
@@ -15,12 +14,11 @@ public class NHLiquids implements ContentList{
 	zetaFluid, quantumLiquid,
 	irdryonFluid;
 	
-	@Override
-	public void load(){
+	public static void load(){
 		quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor){{
 			heatCapacity = 0.75f;
 			lightColor = NHColor.darkEnrColor;
-			effect = NHStatusEffects.quantization;
+//			effect = NHStatusEffects.quantization;
 		}};
 		
 		
@@ -45,7 +43,7 @@ public class NHLiquids implements ContentList{
 			viscosity = 0.5f;
 			temperature = 0f;
 			lightColor = Color.valueOf("#CAEEFF");
-			effect = NHStatusEffects.emp2;
+//			effect = NHStatusEffects.emp2;
 		}};
 
 		zetaFluid = new Liquid("zeta-fluid", Color.valueOf("#f0ffba")){{
