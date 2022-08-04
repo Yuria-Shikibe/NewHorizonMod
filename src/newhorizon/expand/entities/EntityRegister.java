@@ -8,6 +8,7 @@ import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
+import newhorizon.expand.units.EnergyUnit;
 
 public class EntityRegister{
 	private static final int startFrom = 100;
@@ -16,11 +17,11 @@ public class EntityRegister{
 	private static final ObjectMap<Class<?>, Integer> classIdMap = new ObjectMap<>();
 	
 	static{
-//		EntityRegister.put(Spawner.class, Spawner::new);
+		EntityRegister.put(Spawner.class, Spawner::new);
 //		EntityRegister.put(Carrier.class, Carrier::new);
 //		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
 //		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
-//		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
+		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
 		EntityRegister.put(UltFire.class, UltFire::new);
 //		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 //		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);

@@ -21,6 +21,7 @@ import mindustry.graphics.Drawf;
 import mindustry.world.Tile;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
+import newhorizon.content.NHBullets;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHStatusEffects;
 
@@ -43,6 +44,10 @@ public class UltFire extends Fire{
 		Tile tile = Vars.world.tile(World.toTile(x), World.toTile(y));
 		
 		if(tile != null && tile.build != null && tile.build.team != team)create(tile);
+	}
+	
+	public static void createChance(Position pos, double chance){
+		if(Mathf.chanceDelta(chance))UltFire.create(pos);
 	}
 	
 	public static void createChance(float x, float y, float range, float chance, Team team){
@@ -142,7 +147,7 @@ public class UltFire extends Fire{
 				
 				if (flammability > 0.0F && (fireballTimer += Time.delta * Mathf.clamp(flammability / 10.0F, 0.0F, 1.5F)) >= 40.0F) {
 					fireballTimer = 0.0F;
-//					NHBullets.ultFireball.createNet(Team.derelict, x, y, Mathf.random(360.0F), 1.0F, 1.0F, 1.0F);
+					NHBullets.ultFireball.createNet(Team.derelict, x, y, Mathf.random(360.0F), 1.0F, 1.0F, 1.0F);
 				}
 				
 				if ((damageTimer += Time.delta) >= 40.0F) {

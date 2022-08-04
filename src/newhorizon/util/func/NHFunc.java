@@ -13,6 +13,7 @@ import arc.struct.*;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import arc.util.pooling.Pools;
 import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.Fires;
@@ -28,6 +29,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHFx;
+import newhorizon.expand.entities.Spawner;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -307,6 +309,29 @@ public class NHFunc{
         }
         
         return true;
+    }
+    
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
+        if(type == null)return false;
+        clearTmp();
+        Seq<Vec2> vectorSeq = new Seq<>();
+        
+        if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, rand.nextLong()))return false;
+        
+        int i = 0;
+        for (Vec2 s : vectorSeq) {
+            Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
+            spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay);
+            if(!net.client())spawner.add();
+            i++;
+        }
+        return true;
+    }
+    
+    public static void spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type){
+        Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
+        spawner.init(type, team, vec21.set(x, y), angle, delay);
+        if(!net.client())spawner.add();
     }
     
     public static <T extends QuadTree.QuadTreeObject> Seq<T> getObjects(QuadTree<T> tree){

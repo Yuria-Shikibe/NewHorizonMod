@@ -357,10 +357,19 @@ public class NewHorizon extends Mod{
 		NHContent.loadAfterContent();
 		
 		{
+			NHStatusEffects.load();
 			NHItems.load();
 			NHLiquids.load();
-			NHStatusEffects.load();
+			NHBullets.load();
 			NHUnitTypes.load();
+			NHBlocks.load();
+			NHWeathers.load();
+			
+//			Vars.content.each(c -> {
+//				if(c instanceof UnlockableContent && c.minfo.mod == MOD){
+//					c.
+//				}
+//			});
 		}
 		
 		contentLoadComplete = true;

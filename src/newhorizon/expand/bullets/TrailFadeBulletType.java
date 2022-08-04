@@ -19,6 +19,7 @@ public class TrailFadeBulletType extends BasicBulletType{
 	public int trailNum = 2;
 	public float stroke = 2F;
 	public int fadeOffset = 10;
+	public int strokeOffset = 15;
 	
 	public float spacing = 8f;
 	public float randX = 6f;
@@ -59,7 +60,7 @@ public class TrailFadeBulletType extends BasicBulletType{
 					NHFx.lightningHitSmall.at(v.x, v.y, hitColor);
 				}else{
 					points.add(new Vec2(stroke, fadeOffset));
-					NHFx.lightningFade.at(b.x, b.y, points.size * speed * 2, hitColor, points);
+					NHFx.lightningFade.at(b.x, b.y, strokeOffset, hitColor, points);
 				}
 			}
 			
@@ -90,7 +91,7 @@ public class TrailFadeBulletType extends BasicBulletType{
 				NHFx.lightningHitSmall.at(v.x, v.y, hitColor);
 			}else{
 				points.add(new Vec2(stroke, fadeOffset));
-				NHFx.lightningFade.at(b.x, b.y, points.size * speed * 2, hitColor, points);
+				NHFx.lightningFade.at(b.x, b.y, strokeOffset, hitColor, points);
 			}
 		}
 		
@@ -134,8 +135,8 @@ public class TrailFadeBulletType extends BasicBulletType{
 				if(points.size < 2)return;
 				Draw.color(hitColor);
 				for(int i = 1; i < points.size; i++){
-					Draw.alpha(((float)(i + fadeOffset) / points.size));
-					Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size) * stroke);
+//					Draw.alpha(((float)(i + fadeOffset) / points.size));
+					Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size * (strokeOffset - (points.size - i)) / strokeOffset) * stroke);
 					Vec2 from = points.get(i - 1);
 					Vec2 to = points.get(i);
 					Lines.line(from.x, from.y, to.x, to.y, false);

@@ -35,6 +35,7 @@ import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
+import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 
 public class NHFx{
@@ -475,7 +476,7 @@ public class NHFx{
 	
 	public static Effect sharpBlast(Color colorExternal, Color colorInternal, float lifetime, float range){
 		return new Effect(lifetime, range * 2, e -> {
-			Angles.randLenVectors(e.id, (int)Mathf.clamp(range / 4, 4, 18), range / 8, range * (1 + e.fout(Interp.pow2OutInverse)) / 2f, (x, y) -> {
+			Angles.randLenVectors(e.id, (int)Mathf.clamp(range / 8, 4, 18), range / 8, range * (1 + e.fout(Interp.pow2OutInverse)) / 2f, (x, y) -> {
 				float angle = Mathf.angle(x, y);
 				float width = e.foutpowdown() * rand.random(range / 6, range / 3) / 2;
 				
@@ -888,8 +889,12 @@ public class NHFx{
 		boolSelector = new Effect(0, 0, e -> {}),
 	
 		skyTrail = new Effect(22, e -> {
-			color(NHColor.lightSkyBack, Pal.gray, e.fin());
-			Fill.poly(e.x, e.y, 6, 4.7f * e.fout(), e.rotation);
+			color(NHColor.lightSkyBack, Pal.gray, e.fin() * 0.6f);
+			
+			rand.setSeed(e.id);
+			randLenVectors(e.id, 3, e.finpow() * 13, e.rotation - 180, 30f, (x, y) -> {
+				Fill.poly(e.x + x, e.y + y, 6, rand.random(2, 4) * e.foutpow(), e.rotation);
+			});
 		}),
 	
 		shuttle = new Effect(70f, 800f, e -> {
@@ -963,18 +968,27 @@ public class NHFx{
 		jumpTrail = new Effect(120f, 5000, e -> {
 			if (!(e.data instanceof UnitType))return;
 			UnitType type = e.data();
-			color(e.color);
+			color(type.engineColor == null ? e.color : type.engineColor);
 			
-			Draw.z((type.engineSize < 0 ? Layer.effect - 0.1f : type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.1f);
+			if(type.engineLayer > 0)Draw.z(type.engineLayer);
+			Draw.z((type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.001f);
 			
-			Tmp.v1.trns(e.rotation, -type.engineOffset);
-			
-			e.scaled(100, i -> {
-				DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 1.5f * i.fout(Interp.slowFast), 3000, i.rotation - 180);
-				Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, type.engineSize * 0.75f * i.fout(Interp.slowFast));
-			});
-
-			randLenVectors(e.id, 15, 800, e.rotation - 180, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
+			for(int index = 0; index < type.engines.size; index++){
+				UnitType.UnitEngine engine = type.engines.get(index);
+				
+				if(Angles.angleDist(engine.rotation, -90) > 75)return;
+				float ang = Mathf.slerp(engine.rotation, -90, 0.75f);
+				
+				//noinspection SuspiciousNameCombination
+				Tmp.v1.trns(e.rotation, engine.y, -engine.x);
+				
+				e.scaled(80, i -> {
+					DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 1.5f * i.fout(Interp.slowFast), 3000 * engine.radius / type.engineSize, i.rotation + ang - 90);
+					Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 0.75f * i.fout(Interp.slowFast));
+				});
+				
+				randLenVectors(e.id + index, 22, 400 * engine.radius / type.engineSize, e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
+			}
 			
 			Draw.color();
 			Draw.mixcol(e.color, 1);
@@ -1303,17 +1317,28 @@ public class NHFx{
 			if(!(e.data instanceof Seq)) return;
 			Seq<Vec2> points = e.data();
 			
-			e.lifetime = e.rotation;
+			e.lifetime = points.size < 2 ? 0 : 1000;
+			int strokeOffset = (int)e.rotation;
+			
+			
+			if(points.size > strokeOffset + 1 && strokeOffset > 0 && points.size > 2){
+				points.removeRange(0, points.size - strokeOffset - 1);
+			}
+			
+			if(!state.isPaused()){
+				points.remove(0);
+			}
+			
+			if(points.size < 2)return;
 			
 			Vec2 data = points.peek(); //x -> stroke, y -> fadeOffset;
 			float stroke = data.x;
 			float fadeOffset = data.y;
 			
-			if(points.size < 2)return;
 			Draw.color(e.color);
 			for(int i = 1; i < points.size - 1; i++){
-				Draw.alpha(Mathf.clamp((float)(i + fadeOffset - e.time) / points.size));
-				Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size) * stroke);
+//				Draw.alpha(Mathf.clamp((float)(i + fadeOffset - e.time) / points.size));
+				Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size * (strokeOffset - (points.size - i)) / strokeOffset) * stroke);
 				Vec2 from = points.get(i - 1);
 				Vec2 to = points.get(i);
 				Lines.line(from.x, from.y, to.x, to.y, false);

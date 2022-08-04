@@ -18,6 +18,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Scaling;
+import mindustry.core.Logic;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
@@ -33,7 +34,9 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
+import newhorizon.content.NHUnitTypes;
 import newhorizon.util.Tool_Internal;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 
@@ -413,9 +416,15 @@ public class DebugDialog extends BaseDialog{
 			
 			t.button("-10 Wave", () -> state.wave = Math.max(0, state.wave - 10));
 			
+			t.button("capture", Logic::sectorCapture).disabled(b -> !state.isCampaign());
+			
 			t.row();
 			
 			t.button("see Tex", () -> Tool_Internal.showTexture(NHContent.smoothNoise));
+			
+			t.button("summon", () -> {
+				NHFunc.spawnSingleUnit(player.team(), player.x, player.y, player.unit().rotation, 300f, NHUnitTypes.longinus);
+			});
 		}).grow();
 		
 		addCloseButton();
