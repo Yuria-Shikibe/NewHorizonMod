@@ -101,7 +101,7 @@ public class JumpGate extends Block {
     public JumpGate(String name){
         super(name);
         copyConfig = true;
-        highUnloadPriority = false;
+//        highUnloadPriority = false;
         update = true;
         sync = true;
         configurable = true;

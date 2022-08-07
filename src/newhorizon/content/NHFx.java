@@ -22,6 +22,7 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
 import newhorizon.NHSetting;
@@ -502,6 +503,20 @@ public class NHFx{
 	public static final float lightningAlign = 0.5f;
 	
 	public static Effect
+		trailFadeFast =  new Effect(600f, e -> {
+			if(!(e.data instanceof Trail)) return;
+			Trail trail = e.data();
+			//lifetime is how many frames it takes to fade out the trail
+			e.lifetime = trail.length * 1.4f;
+			
+			if(!state.isPaused()){
+				trail.shorten();
+				trail.shorten();
+			}
+			trail.drawCap(e.color, e.rotation * e.foutpow());
+			trail.draw(e.color, e.rotation * e.foutpow());
+		}),
+	
 		cautionOutline = new Effect(60f, e -> {
 			Draw.color(e.color);
 			Lines.stroke(e.fout() * 2f);
@@ -971,7 +986,7 @@ public class NHFx{
 			color(type.engineColor == null ? e.color : type.engineColor);
 			
 			if(type.engineLayer > 0)Draw.z(type.engineLayer);
-			Draw.z((type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.001f);
+			else Draw.z((type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.001f);
 			
 			for(int index = 0; index < type.engines.size; index++){
 				UnitType.UnitEngine engine = type.engines.get(index);

@@ -1,6 +1,5 @@
 //package newhorizon.content;
 //
-//import arc.Core;
 //import arc.graphics.Blending;
 //import arc.graphics.Color;
 //import arc.graphics.g2d.Draw;
@@ -24,7 +23,10 @@
 //import mindustry.entities.Effect;
 //import mindustry.entities.Units;
 //import mindustry.entities.abilities.*;
-//import mindustry.entities.bullet.*;
+//import mindustry.entities.bullet.BasicBulletType;
+//import mindustry.entities.bullet.BulletType;
+//import mindustry.entities.bullet.ContinuousLaserBulletType;
+//import mindustry.entities.bullet.FlakBulletType;
 //import mindustry.entities.effect.MultiEffect;
 //import mindustry.entities.pattern.ShootPattern;
 //import mindustry.entities.units.WeaponMount;
@@ -36,7 +38,6 @@
 //import mindustry.graphics.Pal;
 //import mindustry.type.UnitType;
 //import mindustry.type.Weapon;
-//import mindustry.type.ammo.ItemAmmoType;
 //import mindustry.type.ammo.PowerAmmoType;
 //import mindustry.type.weapons.PointDefenseWeapon;
 //import mindustry.type.weapons.RepairBeamWeapon;
@@ -44,7 +45,6 @@
 //import newhorizon.NewHorizon;
 //import newhorizon.expand.bullets.ChainBulletType;
 //import newhorizon.expand.bullets.EffectBulletType;
-//import newhorizon.expand.bullets.PosLightningType;
 //import newhorizon.expand.bullets.TrailFadeBulletType;
 //import newhorizon.expand.entities.UltFire;
 //import newhorizon.expand.units.EnergyUnit;
@@ -66,11 +66,7 @@
 //
 //	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, AIR_LINE_2 = 2, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
 //
-//	public static Weapon
-//			posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon,
-//			mainCannon, laserCannon
 //
-//			;
 //
 //	public static Weapon pointDefenceWeaponC;
 //
@@ -100,491 +96,12 @@
 //		EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
 //	}
 //
-//	public static void loadWeapon(){
-//		laserCannon = new Weapon("laser-cannon"){{
-//			mirror = top = alternate = autoTarget = rotate = true;
-//			predictTarget = controllable = false;
-//			x = 22;
-//			y = -50;
-//			reload = 12f;
-//			recoil = 3f;
-//			inaccuracy = 0;
-//			shoot = new ShootPattern();
-//			rotateSpeed = 25f;
-//			shootSound = NHSounds.gauss;
-//			bullet = new ShrapnelBulletType(){{
-//				lifetime = 45f;
-//				length = 200f;
-//				damage = 180.0F;
-//				status = StatusEffects.shocked;
-//				statusDuration = 60f;
-//				fromColor = NHColor.lightSkyFront;
-//				toColor = NHColor.lightSkyBack;
-//				serrationSpaceOffset = 40f;
-//				width = 6f;
-//				shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
-//				smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
-//					Draw.color(fromColor, toColor, b.fin());
-//					Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
-//				}));
-//			}};
-//		}};
-//
-//		pointDefenceWeaponC = new PointDefenseWeapon(NewHorizon.name("cannon")){{
-//			color = NHColor.lightSkyFront;
-//			mirror = top = alternate = true;
-//			reload = 6.0F;
-//			targetInterval = 6.0F;
-//			targetSwitchInterval = 6.0F;
-//			bullet = new BulletType() {
-//				{
-//					shootEffect = NHFx.shootLineSmall(color);
-//					hitEffect = NHFx.lightningHitSmall;
-//					hitColor = color;
-//					maxRange = 240.0F;
-//					damage = 150f;
-//				}
-//			};
-//		}};
-//
-//		mainCannon = new Weapon("main-cannon"){{
-//			top = rotate = true;
-//			mirror = false;
-//			alternate = false;
-//			cooldownTime = 240f;
-//			recoil = 7f;
-//			shoot = new ShootPattern(){{
-//				shots = 3;
-//			}};
-//			rotateSpeed = 1f;
-//			shootSound = NHSounds.flak;
-//			shootCone = 5f;
-//			shootY = 15f;
-//			reload = 300f;
-//			shake = 7f;
-//			ejectEffect = Fx.blastsmoke;
-//			bullet = new BasicBulletType(5.25f, 180f, "large-bomb"){{
-//				lifetime = 22f;
-//
-//				width = height = 25f;
-//
-//				spin = 4f;
-//
-//				trailWidth = 2.2f;
-//				trailLength = 20;
-//
-////				velocityBegin = 12f;
-////				velocityIncrease = 22f;
-////				accelInterp = Interp.pow3Out;
-////				accelerateBegin = 0f;
-////				accelerateEnd = 0.8f;
-//
-//				homingDelay = 5f;
-//				homingPower = 0.0075f;
-//				homingRange = 140f;
-//
-//				pierce = pierceBuilding = true;
-//
-//				lightning = 2;
-//				lightningDamage = damage / 4f;
-//				lightningLength = 4;
-//				lightningLengthRand = 12;
-//
-//				splashDamageRadius = 16f;
-//				splashDamage = damage * 0.75f;
-//				backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
-//
-//				knockback = 20f;
-//
-//				frontColor = NHColor.lightSkyFront;
-//				shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
-//				smokeEffect = NHFx.hugeSmoke;
-//				trailChance = 0.6f;
-//				trailEffect = NHFx.trailToGray;
-//				hitShake = 8f;
-//				hitSound = Sounds.explosionbig;
-//				hitEffect = NHFx.instHit(backColor, 3, 85f);
-//
-//				fragBullets = 3;
-//				fragBullet = NHBullets.basicSkyFrag;
-//				fragLifeMax = 0.5f;
-//				fragLifeMin = 0.25f;
-//				fragVelocityMax = 1.2f;
-//				fragVelocityMin = 0.75f;
-//			}
-//
-//				@Override
-//				public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
-//					super.hitTile(b, build, x, y, initialHealth, direct);
-//
-//					UltFire.createChance(build.tile, 0.015f);
-//				}
-//			};
-//		}
-//			@Override
-//			public void draw(Unit unit, WeaponMount mount){
-//				super.draw(unit, mount);
-//
-//				if(!unit.isLocal())return;
-//
-//				float
-//					z = Draw.z(),
-//					rotation = unit.rotation - 90f,
-//					weaponRotation  = rotation + (rotate ? mount.rotation : 0),
-//					fin = Mathf.clamp(1 - (mount.reload - 10f) / reload),
-//					wx = unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, recoil),
-//					wy = unit.y + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, recoil);
-//
-//				if(fin == 1f)return;
-//
-//				TextureRegion arrowRegion = NHContent.arrowRegion;
-//
-//				Draw.z(Layer.bullet);
-//				Draw.color(bullet.hitColor);
-//
-//				float railF = Mathf.curve(Interp.pow2Out.apply(fin), 0f, 0.25f) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f) * fin;
-//
-//				float length = bullet.range;
-//				float spacing = 25f;
-//				for(int i = 0; i <= length / spacing; i++){
-//					Tmp.v1.trns(weaponRotation + 90f, i * spacing * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f) + shootY);
-//					float f = Interp.pow3Out.apply(Mathf.clamp((fin * length - i * spacing) / spacing)) * (0.6f + railF * 0.4f) * 0.8f;
-//					Draw.rect(arrowRegion, wx + Tmp.v1.x, wy + Tmp.v1.y, arrowRegion.width * Draw.scl * f, arrowRegion.height * Draw.scl * f, weaponRotation);
-//				}
-//
-//				Tmp.v1.trns(weaponRotation + 90f, 0f, (2 - railF) * 5f);
-//				Tmp.v2.trns(weaponRotation + 90f, shootY);
-//				Lines.stroke(railF * 2f);
-//				for(int i : Mathf.signs){
-//					Lines.lineAngle(wx + Tmp.v1.x * i + Tmp.v2.x, wy + Tmp.v1.y * i + Tmp.v2.y, weaponRotation + 90f, length * (0.75f + railF / 4f) * Mathf.curve(Interp.pow5Out.apply(1 - fin) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f), 0f, 0.1f));
-//				}
-//
-//				Draw.reset();
-//				Draw.z(z);
-//			}
-//		};
-//
-//		multipleLauncher = new Weapon("mult-launcher"){{
-//			reload = 60f;
-//
-//			shoot = new ShootPattern(){{
-//				shots = 3;
-//				shotDelay = 8f;
-//			}};
-//
-//			shake = 3f;
-//
-//			shootX = 2;
-//			xRand = 5;
-//
-//			mirror = true;
-//			rotateSpeed = 2.5f;
-//			alternate = true;
-//			shootSound = NHSounds.launch;
-//			shootCone = 30f;
-//			shootY = 5f;
-//			top = true;
-//			rotate = true;
-//			bullet = new BasicBulletType(5.25f, 100f, NHBullets.STRIKE){{
-//				lifetime = 50;
-//
-//				knockback = 12f;
-//				width = 11f;
-//				height = 28f;
-//
-//				trailWidth = 2.2f;
-//				trailLength = 20;
-//				drawSize = 300f;
-//
-//
-//				homingDelay = 5f;
-//				homingPower = 0.0075f;
-//				homingRange = 140f;
-//
-//				splashDamageRadius = 16f;
-//				splashDamage = damage * 0.75f;
-//				backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
-//				frontColor = NHColor.lightSkyFront;
-//
-//				hitEffect = NHFx.circleSplash(backColor, 40f, 4, 40f, 6f);
-//				despawnEffect = NHFx.hitSparkLarge;
-//				shootEffect = NHFx.shootCircleSmall(backColor);
-//				smokeEffect = Fx.shootBigSmoke2;
-//
-//				trailChance = 0.6f;
-//				trailEffect = NHFx.trailToGray;
-//
-//				hitShake = 3f;
-//				hitSound = Sounds.plasmaboom;
-//			}};
-//		}};
-//
-//		posLiTurret = new Weapon("pos-li-blaster"){{
-//			shake = 1f;
-//			shoot = new ShootPattern();
-//			predictTarget = rotate = false;
-//			top = alternate = true;
-//			reload = 45f;
-//			shootY = 4f;
-//			shootSound = Sounds.spark;
-//			heatColor = NHColor.lightSkyBack;
-//			bullet = new PosLightningType(20f){{
-//				lightningColor = NHColor.lightSkyBack;
-//				maxRange = 140f;
-//				hitEffect = NHFx.lightningHitSmall(lightningColor);
-//				lightningLength = 1;
-//				lightningLengthRand = 4;
-//			}};
-//		}};
-//
-//		closeAATurret = new Weapon("anti-air-pulse-laser"){{
-//			shake = 0f;
-//			shoot = new ShootPattern();
-//			rotate = top = true;
-//			heatColor = NHColor.lightSkyBack;
-//			shootSound = Sounds.missile;
-//			shootY = 3f;
-//			recoil = 2f;
-//			x = 9.5f;
-//			y = -7f;
-//			reload = 10f;
-//			autoTarget = true;
-//			controllable = predictTarget = false;
-//			bullet = NHBullets.basicSkyFrag;
-//		}};
-//
-//		smallCannon = new Weapon("cannon"){{
-//			top = mirror = rotate = true;
-//			reload = 45f;
-//
-//			shoot = new ShootPattern(){{
-//				shots = 3;
-//				shotDelay = 8f;
-//			}};
-//			controllable = false;
-//			autoTarget = true;
-//			shake = 3f;
-//			inaccuracy = 4f;
-//			rotateSpeed = 2.5f;
-//			alternate = true;
-//			shootSound = NHSounds.scatter;
-//			shootCone = 15;
-//			shootY = 5f;
-//			bullet = new BasicBulletType(5f, 20f){{
-//					hitColor = trailColor = lightningColor = backColor = lightColor = NHColor.lightSkyBack;
-//					frontColor = NHColor.lightSkyFront;
-//
-//					width = 8f;
-//					height = 20f;
-//					lifetime = 55f;
-//
-//					hitEffect = NHFx.lightningHitSmall(backColor);
-//					shootEffect = NHFx.shootLineSmall(backColor);
-//					smokeEffect = Fx.shootSmallSmoke;
-//					despawnEffect = NHFx.square(backColor, 15f, 2, 14f, 3);
-//				}
-//			};
-//		}};
-//	}
 //
 //	@Override
 //	public void load(){
 //		loadWeapon();
 //
 //		//Others:
-//
-//		guardian = new UnitType("guardian"){{
-//			clipSize = 260f;
-//
-//			deathExplosionEffect = Fx.none;
-//			deathSound = Sounds.plasmaboom;
-//			trailLength = 40;
-//			trailScl = 3f;
-//
-//			immunities = ObjectSet.with(NHStatusEffects.scannerDown, NHStatusEffects.weak, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.burning,
-//					StatusEffects.melting, StatusEffects.blasted, StatusEffects.corroded, StatusEffects.electrified, StatusEffects.freezing, StatusEffects.muddy,
-//					NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.quantization
-//			);
-//
-//			hitSize = 45;
-//			speed = 1.5f;
-//			accel = 0.07F;
-//			drag = 0.075F;
-//			health = 22000;
-//			itemCapacity = 0;
-//			rotateSpeed = 6;
-//			engineSize = 8f;
-//			flying = true;
-//
-//			trailLength = -1;
-//			buildSpeed = 10f;
-//			crashDamageMultiplier = Mathf.clamp(hitSize / 10f, 1, 10);
-//			payloadCapacity = Float.MAX_VALUE;
-//			buildBeamOffset = 0;
-//
-//			aiController = SniperAI::new;
-//			targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.generator, BlockFlag.turret, null};
-//		}
-//			public Effect slopeEffect = NHFx.boolSelector;
-//
-//			public final float outerEyeScl = 0.25f;
-//			public final float innerEyeScl = 0.18f;
-//
-//			/*
-//			 * [0] -> Length
-//			 * [1] -> Arrow Offset
-//			 * [2] -> Width
-//			 * [3] -> Rotate Speed
-//			 * [4] -> Origin Offset
-//			 * */
-//			public final float[][] rotator = {
-//					{75f, 0, 8.5f, 1.35f, 0.1f},
-//					{55f, 0, 6.5f, -1.7f, 0.1f},
-//					{25, 0, 13, 0.75f, 0.3f},
-//
-//					{100f, 33.5f, 11, 0.75f, 0.7f},
-//					{60f, -20, 6f, -0.5f, 1.25f}
-//			};
-//
-//
-//			public final float bodySize = 24f;
-//
-//			@Override
-//			public void load(){
-//				super.load();
-//				shadowRegion = uiIcon = fullIcon = Core.atlas.find(NewHorizon.name("jump-gate-pointer"));
-//			}
-//
-//			@Override
-//			public void init(){
-//				super.init();
-//				if(trailLength < 0)trailLength = (int)bodySize * 4;
-//				if(slopeEffect == NHFx.boolSelector)slopeEffect = new Effect(30, b -> {
-//					if(!(b.data instanceof Integer))return;
-//					int i = b.data();
-//					Draw.color(b.color);
-//					Angles.randLenVectors(b.id, (int)(b.rotation / 8f), b.rotation / 4f + b.rotation * 2f * b.fin(), (x, y) -> Fill.circle(b.x + x, b.y + y, b.fout() * b.rotation / 2.25f));
-//					Lines.stroke((i < 0 ? b.fin(Interp.pow2InInverse) : b.fout(Interp.pow2Out)) * 2f);
-//					Lines.circle(b.x, b.y, (i > 0 ? (b.fin(Interp.pow2InInverse) + 0.5f) : b.fout(Interp.pow2Out)) * b.rotation);
-//				}).layer(Layer.bullet);
-//
-//				engineSize = bodySize / 4;
-//				engineSize *= -1;
-//			}
-//
-//			@Override
-//			public void draw(Unit unit){
-//				super.draw(unit);
-//			}
-//
-//			@Override
-//			public void drawBody(Unit unit){
-//				Drawf.light(unit.x,unit.y, unit.hitSize * 4f, unit.team.color, 0.68f);
-//				Draw.z(Layer.effect + 0.001f);
-//				float sizeF = 1 + Mathf.absin(4f, 0.1f);
-//				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) + Mathf.clamp(unit.hitTime) / 5f * 3f);
-//				Draw.alpha(0.65f);
-//				Fill.circle(unit.x, unit.y, bodySize * sizeF * 1.1f);
-//				Draw.alpha(1f);
-//				Fill.circle(unit.x, unit.y, bodySize * sizeF);
-//
-//				for(float[] j : rotator){
-//					for(int i : Mathf.signs){
-//						float ang = Time.time * j[3] + 90 + 90 * i + Mathf.randomSeed(unit.id, 360);
-//						Tmp.v1.trns(ang, hitSize * j[4]).add(unit);
-//						DrawFunc.arrow(Tmp.v1.x, Tmp.v1.y, j[2], j[0], j[1], ang);
-//					}
-//				}
-//				//
-//				//				if(unit instanceof Trailc){
-//				//					Trail trail = ((Trailc)unit).trail();
-//				//					trail.draw(unit.team.color, (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f) * unit.elevation) * trailScl);
-//				//				}
-//
-//				Draw.color(Tmp.c1.set(unit.team.color).lerp(Color.white, 0.65f));
-//				Fill.circle(unit.x, unit.y, bodySize * sizeF * 0.75f * unit.healthf());
-//				Draw.color(Color.black);
-//				Fill.circle(unit.x, unit.y, bodySize * sizeF * 0.7f * unit.healthf());
-//
-//				Draw.color(unit.team.color);
-//				Tmp.v1.set(unit.aimX, unit.aimY).sub(unit).nor().scl(bodySize * 0.15f);
-//				Fill.circle(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, bodySize * sizeF * outerEyeScl);
-//				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) + 0.45f);
-//				Tmp.v1.setLength(bodySize * sizeF * (outerEyeScl - innerEyeScl));
-//				Fill.circle(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, bodySize * sizeF * innerEyeScl);
-//				//				Tmp.v1.setLength(hitSize * 1.5f);
-//				//				DrawFunc.arrow(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, hitSize / 8, hitSize / 4, hitSize / 8, Tmp.v1.angle());
-//				Draw.reset();
-//			}
-//
-//			@Override
-//			public void update(Unit unit){
-//				super.update(unit);
-//				if(Mathf.chanceDelta(0.1))for(int i : Mathf.signs)slopeEffect.at(unit.x + Mathf.range(bodySize), unit.y + Mathf.range(bodySize), bodySize, unit.team.color, i);
-//			}
-//
-//			@Override
-//			public void drawCell(Unit unit){
-//			}
-//
-//			@Override
-//			public void drawControl(Unit unit){
-//				Draw.z(Layer.effect + 0.001f);
-//				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) +  Mathf.clamp(unit.hitTime) / 5f);
-//				for(int i = 0; i < 4; i++){
-//					float rotation = Time.time * 1.5f + i * 90;
-//					Tmp.v1.trns(rotation, bodySize * 1.5f).add(unit);
-//					Draw.rect(NHContent.arrowRegion, Tmp.v1.x, Tmp.v1.y, rotation + 90);
-//				}
-//				Draw.reset();
-//			}
-//
-//			@Override
-//			public void drawItems(Unit unit){
-//				super.drawItems(unit);
-//			}
-//
-//			@Override
-//			public <T extends Unit & Legsc> void drawLegs(T unit){
-//			}
-//
-//			@Override
-//			public void drawLight(Unit unit){
-//				Drawf.light(unit.x, unit.y, bodySize * 3f, unit.team.color, lightOpacity);
-//			}
-//
-//			@Override
-//			public void drawMech(Mechc mech){
-//			}
-//
-//			@Override
-//			public void drawOutline(Unit unit){
-//			}
-//
-//			@Override
-//			public <T extends Unit & Payloadc> void drawPayload(T unit){
-//				super.drawPayload(unit);
-//			}
-//
-//			@Override
-//			public void drawShadow(Unit unit){
-//			}
-//
-//			@Override
-//			public void drawShield(Unit unit){
-//				float alpha = unit.shieldAlpha();
-//				float radius = unit.hitSize() * 1.3f;
-//				Fill.light(unit.x, unit.y, Lines.circleVertices(radius), radius, Tmp.c1.set(Pal.shield), Tmp.c2.set(unit.team.color).a(0.7f).lerp(Color.white, Mathf.clamp(unit.hitTime() / 2f)).a(Pal.shield.a * alpha));
-//			}
-//
-//			@Override
-//			public void drawSoftShadow(Unit unit){
-//			}
-//
-//			@Override
-//			public void drawWeapons(Unit unit){
-//			}
-//		};
 //
 //		//Navy:
 //
@@ -603,11 +120,7 @@
 //			buildSpeed = 1.125f;
 //
 //			trailLength = 70;
-////			trailX = 4f;
-////			trailY = -9;
 //			trailScl = 1.65f;
-//
-//			rotateShooting = false;
 //
 //			weapons.add(new Weapon(NewHorizon.name("primary-weapon")){{
 //				mirror = top = rotate = alternate = true;
@@ -755,39 +268,6 @@
 //			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 //		};
 //
-//		declining = new UnitType("declining"){{
-//			outlineColor = OColor;
-//			weapons.add(mainCannon.copy().setPos(0, -17));
-//			weapons.add(mainCannon.copy().setPos(0, 25));
-//			weapons.add(mainCannon.copy().setPos(0, -56));
-//
-//			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 30, -30));
-//			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 36, -35));
-//			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 24, -35));
-//
-//			weapons.add(laserCannon);
-//
-//			abilities.add(new TowardShield(160f, 200f, 20000f, 2000f, 120f, 0.025f, 0, 58));
-//			health = 30000;
-//			speed = 0.75f;
-//			drag = 0.18f;
-//			hitSize = 60f;
-//			commandRadius = 240f;
-//			armor = 30;
-//			commandLimit = 3;
-//			accel = 0.1f;
-//			rotateSpeed = 0.9f;
-//			rotateShooting = false;
-//			buildSpeed = 6f;
-//
-//			trailLength = 70;
-//			trailX = 20f;
-//			trailY = -40f;
-//			trailScl = 4f;
-//		}
-//			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
-//		};
-//
 //		//Grounds:
 //
 //		origin = new UnitType("origin"){{
@@ -918,7 +398,7 @@
 //					alternate = true;
 //					ejectEffect = Fx.none;
 //					recoil = 4.4f;
-//					bullet = new ShieldBreaker(4.25f, 40, 650f){{
+//					bullet = new ShieldBreakerType(4.25f, 40, 650f){{
 //							drawSize = 500f;
 //							trailLength = 18;
 //							trailWidth = 3.5f;
@@ -1059,147 +539,7 @@
 //			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 //		};
 //
-//		sin = new UnitType("sin"){{
-//			outlineColor = OColor;
-//			abilities.add(new ForceFieldAbility(88.0F, 20F, 5000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f){{
-//				activeEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 60f, 240f, 4f, 45);
-//				applyEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 30f, 45f, 1f, 45);
-//			}});
 //
-//			drawShields = false;
-//			engineOffset = 18.0F;
-//			engineSize = 9F;
-//			speed = 0.2f;
-//			hitSize = 52f;
-//			health = 80000f;
-//			buildSpeed = 4f;
-//			armor = 80f;
-//
-//			ammoType = new ItemAmmoType(NHItems.presstanium);
-//
-//			weapons.add(
-//					new NHWeapon("sin-cannon"){{
-//						top = false;
-//						rotate = false;
-//						alternate = true;
-//						shake = 3.5f;
-//						shootY = 32f;
-//						x = 42f;
-//						y = -2f;
-//						recoil = 5.4f;
-//						predictTarget = true;
-//						shootCone = 30f;
-//						reload = 60f;
-//						shots = 3;
-//						shotDelay = 3.5f;
-//						spacing = 2;
-//						velocityRnd = 0.075f;
-//						inaccuracy = 6.0F;
-//						ejectEffect = Fx.none;
-//						bullet = new SpeedUpBulletType(4, 200f, NHBullets.STRIKE){{
-//							trailColor = lightningColor = backColor = lightColor = NHColor.lightSkyBack;
-//							frontColor = NHColor.lightSkyFront;
-//							lightning = 2;
-//							lightningCone = 360;
-//							lightningLengthRand = lightningLength = 8;
-//							homingPower = 0;
-//							scaleVelocity = true;
-//							collides = false;
-//
-//							velocityBegin = 2f;
-//							velocityIncrease = 8f;
-//							accelerateBegin = 0;
-//							accelerateEnd = 0.9f;
-//							accelInterp = Interp.pow2In;
-//							trailLength = 15;
-//							trailWidth = 3.5f;
-//
-//							splashDamage = lightningDamage = damage;
-//							splashDamageRadius = 48f;
-//							lifetime = 95f;
-//
-//							width = 22f;
-//							height = 35f;
-//
-//							trailEffect = NHFx.trailToGray;
-//							trailParam = 3f;
-//							trailChance = 0.35f;
-//
-//							hitShake = 7f;
-//							hitSound = Sounds.explosion;
-//							hitEffect = NHFx.hitSpark(backColor, 75f, 24, 95f, 2.8f, 16);
-//
-//							smokeEffect = new OptionalMultiEffect(NHFx.hugeSmoke, NHFx.circleSplash(backColor, 60f, 8, 60f, 6));
-//							shootEffect = NHFx.hitSpark(backColor, 30f, 15, 35f, 1.7f, 8);
-//
-//							despawnEffect = NHFx.blast(backColor, 60);
-//
-//							fragBullet = NHBullets.skyFrag;
-//							fragBullets = 5;
-//							fragLifeMax = 0.6f;
-//							fragLifeMin = 0.2f;
-//							fragVelocityMax = 0.7f;
-//							fragVelocityMin = 0.4f;
-//						}
-//
-//							@Override
-//							public void hit(Bullet b, float x, float y){
-//								super.hit(b, x, y);
-//								UltFire.createChance(b, splashDamageRadius, 0.4f);
-//							}
-//						};
-//
-//						shootSound = Sounds.artillery;
-//					}},
-//					new NHWeapon(){{
-//						mirror = false;
-//						rotate = true;
-//						rotateSpeed = 25f;
-//						x = 0;
-//						y = 12f;
-//						recoil = 2.7f;
-//						shootY = 7f;
-//						shootCone = 40f;
-//						velocityRnd = 0.075f;
-//						reload = 150f;
-//						xRand = 18f;
-//						shots = 12;
-//						shotDelay = 4f;
-//						inaccuracy = 5.0F;
-//						ejectEffect = Fx.none;
-//						bullet = NHBullets.annMissile;
-//						shootSound = NHSounds.launch;
-//					}}
-//			);
-//
-//			weapons.add(multipleLauncher.copy().setPos(26, -12.5f));
-//
-//			weapons.add(laserCannon.copy().set(w -> {
-//				w.mirror = false;
-//				w.x = 0;
-//				w.y = 14;
-//			}));
-//
-//			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 22, 18f));
-//			weapons.add(NHWeapon.setPos(pointDefenceWeaponC.copy(), 25, 2));
-//
-//			immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
-//
-//			groundLayer = Layer.legUnit + 0.1f;
-//
-//			rotateSpeed = 1f;
-//			fallSpeed = 0.03f;
-//			mechStepParticles = true;
-//			mechStepShake = 3f;
-//			canDrown = false;
-//			mechFrontSway = 2.2f;
-//			mechSideSway = 0.8f;
-//			canBoost = true;
-//			landShake = 12f;
-//			boostMultiplier = 2.5f;
-//		}
-//			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
-//		};
 //
 //		//Air 1:
 //
@@ -2037,7 +1377,7 @@
 //
 //						shootSound = Sounds.plasmadrop;
 //
-//						bullet = new ShieldBreaker(6, 30, "mine-bullet", 3000){{
+//						bullet = new ShieldBreakerType(6, 30, "mine-bullet", 3000){{
 //							maxRange = 400;
 //							scaleVelocity = true;
 //							shootEffect = hitEffect = Fx.hitEmpSpark;
@@ -2282,7 +1622,7 @@
 //				reload = 160f;
 //				shootCone = 15f;
 //
-//				bullet = new ShieldBreaker(6, 200f, 1200){{
+//				bullet = new ShieldBreakerType(6, 200f, 1200){{
 //					sprite = NHBullets.MISSILE_LARGE;
 //					trailColor = lightningColor = backColor = lightColor = NHColor.thurmixRed;
 //					frontColor = NHColor.thurmixRedLight;
