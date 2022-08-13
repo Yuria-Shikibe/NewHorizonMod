@@ -13,13 +13,11 @@ import arc.math.Mathf;
 import arc.struct.ObjectSet;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
-import mindustry.entities.abilities.EnergyFieldAbility;
-import mindustry.entities.abilities.ForceFieldAbility;
-import mindustry.entities.abilities.RepairFieldAbility;
-import mindustry.entities.abilities.StatusFieldAbility;
+import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
@@ -74,10 +72,10 @@ public class NHUnitTypes{
 			;
 	
 	public static UnitType
-			sin,
+			sin, tarlidor, aliotiat,
 			guardian,
 			declining,
-			longinus, anvil,
+			longinus, anvil, gather,
 			saviour;
 	
 	static{
@@ -528,6 +526,177 @@ public class NHUnitTypes{
 		loadWeapon();
 		
 		loadPreviousWeapon();
+		
+		tarlidor = new UnitType("tarlidor"){{
+			outlineColor = OColor;
+			abilities.add(new ShieldRegenFieldAbility(50.0F, 50F, 600.0F, 800.0F));
+			weapons.add(
+				new Weapon(NewHorizon.name("stiken")){{
+					top = false;
+					shake = 3f;
+					shootY = 13f;
+					reload = 50f;
+					
+					rotate = true;
+					rotateSpeed = 0.85f;
+					rotationLimit = 10f;
+					
+					shoot = new ShootPattern(){{
+						shots = 2;
+						shotDelay = 7f;
+					}};
+					
+					parts.add(new RegionPart(){{
+						under = true;
+						name = NewHorizon.name("longinus-weapon-charger");
+						x = 0f;
+						y = -4f;
+						moveY = -6f;
+						progress = PartProgress.recoil;
+						heatColor = Color.clear;
+					}});
+					
+					x = 17.5f;
+					inaccuracy = 3.0F;
+					alternate = true;
+					ejectEffect = Fx.none;
+					recoil = 4.4f;
+					bullet = new ShieldBreakerType(4.25f, 40, 650f){{
+							drawSize = 500f;
+							trailLength = 18;
+							trailWidth = 3.5f;
+							spin = 2.75f;
+							despawnEffect = NHFx.square45_6_45;
+							hitEffect = new Effect(45f, e -> {
+								Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin());
+								Lines.stroke(2.5f * e.fout());
+								DrawFunc.randLenVectors(e.id, e.fin(Interp.pow3Out), 3, 6, 21f, (x1, y1, fin, fout) -> {
+									Lines.square(e.x + x1, e.y + y1, 14 * Interp.pow3Out.apply(fin), 45);
+								});
+							});
+							lifetime = 50f;
+							pierceCap = 8;
+							width = 20f;
+							height = 44f;
+							lightColor = NHColor.lightSkyFront;
+							backColor = lightningColor = hitColor = trailColor = NHColor.lightSkyBack;
+							shootEffect = NHFx.shootLineSmall(backColor);
+
+							frontColor = NHColor.lightSkyFront;
+							lightning = 3;
+							lightningDamage = damage / 4;
+							lightningLength = 3;
+							lightningLengthRand = 10;
+							smokeEffect = Fx.shootBigSmoke2;
+							hitShake = 4f;
+							hitSound = Sounds.plasmaboom;
+							shrinkX = shrinkY = 0.7f;
+					}};
+					shootSound = Sounds.laser;
+				}}, new Weapon(NewHorizon.name("arc-blaster")){{
+					top = true;
+					rotate = true;
+					shootY = 12f;
+					reload = 45f;
+					
+					shoot = new ShootHelix(){{
+						shots = 2;
+						scl = 4f;
+						shotDelay = 3.8f;
+					}};
+					
+					
+					rotateSpeed = 5f;
+					inaccuracy = 6.0F;
+					velocityRnd = 0.38f;
+					
+					x = 8f;
+					alternate = false;
+					ejectEffect = Fx.none;
+					recoil = 1.7f;
+					bullet = NHBullets.basicSkyFrag;
+					shootSound = Sounds.plasmaboom;
+				}}
+			);
+
+			engineOffset = 13.0F;
+			engineSize = 6.5F;
+			speed = 0.4f;
+			hitSize = 20f;
+			health = 7000f;
+			buildSpeed = 1.8f;
+			armor = 6f;
+			rotateSpeed = 3.3f;
+			fallSpeed = 0.016f;
+			mechStepParticles = true;
+			stepShake = 0.15f;
+			canBoost = true;
+			mechLandShake = 6f;
+			boostMultiplier = 3.5f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
+		};
+		
+		aliotiat = new UnitType("aliotiat"){{
+			outlineColor = OColor;
+			weapons.add(copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 6f, -2f));
+			engineOffset = 10.0F;
+			engineSize = 4.5F;
+			speed = 0.35f;
+			hitSize = 22f;
+			health = 1200f;
+			buildSpeed = 1.2f;
+			armor = 5f;
+			rotateSpeed = 2.8f;
+
+			singleTarget = false;
+			fallSpeed = 0.016f;
+			mechStepParticles = true;
+			stepShake = 0.15f;
+			canBoost = true;
+			mechLandShake = 6f;
+			boostMultiplier = 3.5f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
+		};
+		
+		gather = new UnitType("gather"){{
+			outlineColor = OColor;
+			aiController = MinerAI::new;
+			constructor = EntityMapping.map(3);
+			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, StatusEffects.shocked, StatusEffects.burning, StatusEffects.melting, StatusEffects.electrified, StatusEffects.wet, StatusEffects.slow, StatusEffects.blasted);
+			weapons.add(new RepairBeamWeapon("repair-beam-weapon-center"){{
+				y = -6.5f;
+				x = 0;
+				shootY = 6f;
+				mirror = false;
+				beamWidth = 0.7f;
+				repairSpeed = 0.6f;
+
+				bullet = new BulletType(){{
+					maxRange = 120f;
+				}};
+			}});
+			armor = 12;
+			hitSize = 16f;
+			flying = true;
+			drag = 0.06F;
+			accel = 0.12F;
+			itemCapacity = 120;
+			speed = 1.2F;
+			health = 1200.0F;
+			engineSize = 3.4F;
+			engineOffset = 9.2F;
+			range = 80.0F;
+			isEnemy = false;
+			mineTier = 6;
+			mineSpeed = 10F;
+			lowAltitude = true;
+			
+			mineItems.addAll(NHItems.zeta);
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
+		};
 		
 		saviour = new UnitType("saviour"){{
 			outlineColor = OColor;
@@ -1002,7 +1171,7 @@ public class NHUnitTypes{
 						top = false;
 						rotate = true;
 						rotationLimit = 13f;
-						rotateSpeed = 1f;
+						rotateSpeed = 0.75f;
 						alternate = true;
 						shake = 3.5f;
 						shootY = 32f;
@@ -1120,6 +1289,9 @@ public class NHUnitTypes{
 			
 			groundLayer = Layer.legUnit + 0.1f;
 			
+			mechLandShake = 12f;
+			stepShake = 5f;
+			
 			rotateSpeed = 1f;
 			fallSpeed = 0.03f;
 			mechStepParticles = true;
@@ -1173,7 +1345,11 @@ public class NHUnitTypes{
 
 			Weapon weapon = new Weapon(NewHorizon.name("anvil-cannon")){{
 				mirror = true;
-				rotate = false;
+				rotate = true;
+				
+				rotateSpeed = 1.25f;
+				rotationLimit = 35f;
+				
 				alternate = true;
 				top = true;
 

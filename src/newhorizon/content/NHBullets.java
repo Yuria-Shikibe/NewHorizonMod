@@ -113,10 +113,11 @@ public class NHBullets{
 				lifetime = 60;
 				despawnEffect = NHFx.square45_4_45;
 				hitEffect = new Effect(45f, e -> {
+					Fx.rand.setSeed(e.id);
 					Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin());
 					Lines.stroke(1.75f * e.fout());
-					if(NHSetting.enableDetails())Lines.spikes(e.x, e.y, 28 * e.finpow(), 5 * e.fout() + 8 * e.fin(NHInterp.parabola4Reversed), 4, 45);
-					Lines.square(e.x, e.y, 14 * e.fin(Interp.pow3Out), 45);
+					if(NHSetting.enableDetails())Lines.spikes(e.x, e.y, Fx.rand.random(14, 28) * e.finpow(), Fx.rand.random(1, 5) * e.fout() + Fx.rand.random(5, 8) * e.fin(NHInterp.parabola4Reversed), 4, 45);
+					Lines.square(e.x, e.y, Fx.rand.random(4, 14) * e.fin(Interp.pow3Out), 45);
 				});
 				knockback = 4f;
 				width = 15f;
