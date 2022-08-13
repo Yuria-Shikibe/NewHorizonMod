@@ -9,10 +9,10 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import mindustry.gen.Building;
 import mindustry.world.Block;
-import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawDefault;
 
 
-public class DrawFactories extends DrawBlock{
+public class DrawFactories extends DrawDefault{
 	public TextureRegion rotator, rotator2, bottom, liquid, pressor, top;
 	public Color liquidColor;
 	public float drawRotator;

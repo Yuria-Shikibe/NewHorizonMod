@@ -11,13 +11,13 @@ import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.type.Item;
 import mindustry.world.Block;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawDefault;
 import org.jetbrains.annotations.NotNull;
 
-public class DrawPrinter extends DrawBlock {
+public class DrawPrinter extends DrawDefault{
 	public DrawPrinter(@NotNull Item item){
 		this.toPrint = item;
 	}
@@ -46,8 +46,7 @@ public class DrawPrinter extends DrawBlock {
 
 		Draw.rect(entity.block.region, entity.x, entity.y);
 		
-		Draw.draw(Draw.z(), () -> Drawf.construct(entity.x, entity.y, toPrint.fullIcon, lightColor, 0, entity.progress(), ((GenericCrafter)entity.block()).craftTime / time, time));
-		
+		Draw.draw(Layer.blockOver, () -> Drawf.construct(entity.x, entity.y, toPrint.fullIcon, printColor, 0, entity.progress(), entity.progress(), time));
 		
 		if (lightColor.a > 0.001f) {
 			Draw.color(lightColor, entity.warmup());

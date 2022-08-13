@@ -49,5 +49,11 @@ void main(){
     color.rgb *= max(noise2 + color.a * 0.5, 0.8);
     color.rgb *= clamp(color.rgb, 0.758, 0.955);
 
+    if(color.r + color.g + color.b > 0.5 * 3.0){
+        gl_FragColor = color;
+    }else{
+        gl_FragColor = vec4(0.0);
+    }
+
     gl_FragColor = color;
 }

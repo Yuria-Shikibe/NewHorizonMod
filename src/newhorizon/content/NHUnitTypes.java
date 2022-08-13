@@ -181,7 +181,7 @@ public class NHUnitTypes{
 			reload = 300f;
 			shake = 7f;
 			ejectEffect = Fx.blastsmoke;
-			bullet = new BasicBulletType(7.25f, 380f){{
+			bullet = new BasicBulletType(9.25f, 380f){{
 				lifetime = 122f;
 				
 				trailInterp = NHInterp.artilleryPlus;
@@ -201,7 +201,7 @@ public class NHUnitTypes{
 				//				accelerateBegin = 0f;
 				//				accelerateEnd = 0.8f;
 				
-				maxRange = 640;
+				maxRange = 740;
 				pierce = pierceBuilding = false;
 				collideTerrain = collideFloor = collidesGround = collidesTiles = false;
 				scaleLife = true;
@@ -222,7 +222,7 @@ public class NHUnitTypes{
 				smokeEffect = NHFx.hugeSmoke;
 				trailChance = 0.6f;
 				trailEffect = NHFx.trailToGray;
-				hitShake = 12f;
+				despawnShake = 22f;
 				hitSound = Sounds.explosionbig;
 				hitEffect = new OptionalMultiEffect(NHFx.blast(backColor,  45f), NHFx.crossBlast(backColor, 120f, 45f), NHFx.hitSpark(backColor, 150f, 45, 170f, 2f, 13));
 				
@@ -870,7 +870,7 @@ public class NHUnitTypes{
 						
 						layerOffset = -0.0005f;
 						
-						bullet = new TrailFadeBulletType(20f, 420f){{
+						bullet = new TrailFadeBulletType(25f, 820f){{
 							recoil = 0.095f;
 							lifetime = 40f;
 							trailLength = 200;
@@ -958,6 +958,9 @@ public class NHUnitTypes{
 			
 			weapons.add(laserCannon);
 			
+			immunities.addAll(StatusEffects.blasted, StatusEffects.tarred, StatusEffects.burning, StatusEffects.freezing, StatusEffects.melting, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1);
+			targetFlags = new BlockFlag[]{BlockFlag.unitAssembler, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
+			
 			health = 30000;
 			speed = 0.75f;
 			drag = 0.18f;
@@ -966,6 +969,9 @@ public class NHUnitTypes{
 			accel = 0.1f;
 			rotateSpeed = 0.9f;
 			buildSpeed = 6f;
+			
+			waveTrailX = 20;
+			waveTrailY = -49;
 			
 			trailLength = 70;
 			trailScl = 4f;
