@@ -1150,7 +1150,7 @@ public class NHFx{
 		
 		darkEnergyCharge = new Effect(130f, e -> {
 			rand.setSeed(e.id);
-			randLenVectors(e.id, 6, rand.random(50f, 180f) * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
+			randLenVectors(e.id, 12, rand.random(90f, 200f) * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
 				color(NHColor.darkEnrColor);
 				float rad = rand.random(9f, 18f);
 				Fill.circle(e.x + x, e.y + y, e.fin() * rad);
