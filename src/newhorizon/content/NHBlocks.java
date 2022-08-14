@@ -784,7 +784,7 @@ public class NHBlocks{
 					drawRegion = false;
 					mirror = true;
 					heatColor = Color.clear;
-					progress = PartProgress.recoil;
+					progress = PartProgress.recoil.min(PartProgress.warmup);
 					moveY = -15f;
 					children.add(new RegionPart("-wing"){{
 						under = mirror = true;
