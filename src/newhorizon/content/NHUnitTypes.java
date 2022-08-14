@@ -1039,7 +1039,7 @@ public class NHUnitTypes{
 						
 						layerOffset = -0.0005f;
 						
-						bullet = new TrailFadeBulletType(25f, 820f){{
+						bullet = new TrailFadeBulletType(25f, 500f){{
 							recoil = 0.095f;
 							lifetime = 40f;
 							trailLength = 200;

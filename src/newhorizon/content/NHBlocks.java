@@ -11,9 +11,21 @@ import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.content.*;
 import mindustry.entities.Effect;
+import mindustry.entities.UnitSorts;
+import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.ContinuousLaserBulletType;
+import mindustry.entities.part.DrawPart;
+import mindustry.entities.part.FlarePart;
+import mindustry.entities.part.RegionPart;
+import mindustry.entities.pattern.ShootBarrel;
+import mindustry.entities.pattern.ShootMulti;
+import mindustry.entities.pattern.ShootPattern;
+import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Building;
+import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -24,6 +36,10 @@ import mindustry.world.blocks.defense.Door;
 import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.defense.MendProjector;
 import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.LaserTurret;
+import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
@@ -52,7 +68,10 @@ import newhorizon.expand.block.drawer.DrawPrinter;
 import newhorizon.expand.block.special.HyperGenerator;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.block.special.UnitSpawner;
+import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.graphic.OptionalMultiEffect;
 
+import static arc.graphics.g2d.Lines.lineAngle;
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
@@ -257,7 +276,554 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
-	
+		eternity = new ItemTurret("eternity"){{
+			size = 16;
+			outlineRadius = 7;
+			range = 800;
+			heatColor = NHColor.darkEnrColor;
+			unitSort = UnitSorts.strongest;
+			
+			drawer = new DrawTurret(){{
+				parts.add(new RegionPart("-side"){{
+					under = mirror = true;
+					moveX = 6f;
+					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
+				}}, new RegionPart("-side-down"){{
+					mirror = true;
+					layerOffset = -0.001f;
+					moveX = 10f;
+					moveY = 45f;
+					y = 10f;
+					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
+				}}, new RegionPart("-side-down"){{
+					mirror = true;
+					layerOffset = -0.0035f;
+					moveX = -9f;
+					moveY = 7f;
+					y = -2f;
+					x = 8;
+					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
+				}}, new RegionPart("-side-down"){{
+					under = mirror = true;
+					layerOffset = -0.002f;
+					moveY = -33f;
+					y = -33f;
+					x = 14;
+					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
+				}});
+				
+				parts.add(new FlarePart(){{
+					layer = Layer.effect;
+					rotMove = 360;
+					rotation = 45f;
+					followRotation = true;
+					y = 70f;
+					stroke = 7;
+					radius = -2;
+					radiusTo = 68;
+					color1 = NHColor.darkEnrColor;
+					color2 = NHColor.darkEnrFront;
+					progress = DrawPart.PartProgress.smoothReload.inv().curve(Interp.pow10In);
+				}});
+			}};
+			shoot = new ShootPattern();
+			inaccuracy = 0;
+			
+			ammoPerShot = 10;
+			coolantMultiplier = 0.8f;
+			canOverdrive = false;
+			rotateSpeed = 0.25f;
+			
+			float chargeCircleFrontRad = 12f;
+			
+			shootEffect = new Effect(120f, 2000f, e -> {
+				float scl = 1f;
+				if(e.data instanceof Float)scl *= (float)e.data;
+				Draw.color(heatColor, Color.white, e.fout() * 0.25f);
+				
+				float rand = Mathf.randomSeed(e.id, 60f);
+				float extend = Mathf.curve(e.fin(Interp.pow10Out), 0.075f, 1f) * scl;
+				float rot = e.fout(Interp.pow10In);
+				
+				for(int i : Mathf.signs){
+					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 1.2f * e.foutpowdown() * scl,200 + 500 * extend, e.rotation + (90 + rand) * rot + 90 * i - 45);
+				}
+				
+				for(int i : Mathf.signs){
+					DrawFunc.tri(e.x, e.y, chargeCircleFrontRad * 1.2f * e.foutpowdown() * scl,200 + 500 * extend, e.rotation + (90 + rand) * rot + 90 * i + 45);
+				}
+			});
+			
+			smokeEffect = new Effect(50, e -> {
+				Draw.color(heatColor);
+				Lines.stroke(e.fout() * 5f);
+				Lines.circle(e.x, e.y, e.fin() * 300);
+				Lines.stroke(e.fout() * 3f);
+				Lines.circle(e.x, e.y, e.fin() * 180);
+				Lines.stroke(e.fout() * 3.2f);
+				Angles.randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
+					lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
+				});
+				Draw.color(Color.white);
+				Drawf.light(e.x, e.y, e.fout() * 120, heatColor, 0.7f);
+			});
+			
+			recoil = 18f;
+			shake = 80f;
+			shootSound = Sounds.laserblast;
+			health = 800000;
+			shootCone = 5f;
+			maxAmmo = 50;
+			consumePowerCond(800f, TurretBuild::isActive);
+			reload = 1800f;
+			
+			ammo(NHItems.darkEnergy, NHBullets.eternity);
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 5000, NHItems.darkEnergy, 2000));
+		}};
+		
+		synchro = new ItemTurret("synchro"){{
+			size = 3;
+			health = 1420;
+			reload = 12f;
+			inaccuracy = 0.75f;
+			
+			recoil = 1f;
+			
+			drawer = new DrawTurret(){{
+				parts.add(new RegionPart("-shooter"){{
+					under = true;
+					outline = true;
+					moveY = -5f;
+					progress = PartProgress.recoil;
+				}});
+			}};
+			
+			coolantMultiplier = 2f;
+			
+			velocityRnd = 0.075f;
+			unitSort = UnitSorts.weakest;
+			
+			range = 360f;
+			
+			shootSound = NHSounds.synchro;
+			
+			shoot = new ShootMulti(new ShootPattern(), new ShootBarrel(){{
+				barrels = new float[]{-6.5f, 3f, 0f};
+			}}, new ShootBarrel(){{
+				barrels = new float[]{6.5f, 3f, 0f};
+			}});
+			
+			ammo(
+					NHItems.zeta, NHBullets.synchroZeta,
+					NHItems.fusionEnergy, NHBullets.synchroFusion,
+					NHItems.thermoCorePositive, NHBullets.synchroThermoPst,
+					Items.phaseFabric, NHBullets.synchroPhase
+			);
+			
+			ammoPerShot = 1;
+			maxAmmo = 80;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(Items.phaseFabric, 20, NHItems.metalOxhydrigen, 90, NHItems.juniorProcessor, 60, NHItems.zeta, 120, Items.plastanium, 80));
+		}};
+		
+		antiBulletTurret = new PointDefenseTurret("anti-bullet-turret"){{
+			health = 1080;
+			size = 3;
+			
+			color = lightColor = NHColor.lightSkyBack;
+			beamEffect = Fx.chainLightning;
+			hitEffect = NHFx.square45_4_45;
+			shootEffect = NHFx.shootLineSmall(color);
+			shootSound = NHSounds.gauss;
+			
+			range = 280f;
+			
+			hasPower = true;
+			consumePowerCond(8f, (PointDefenseBuild b) -> b.target != null);
+			
+			shootLength = 5f;
+			bulletDamage = 80f;
+			reload = 6f;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 90, NHItems.juniorProcessor, 60, NHItems.presstanium, 120, NHItems.zeta, 120, Items.graphite, 80));
+		}};
+		
+		pulseShotgun = new ItemTurret("pulse-shotgun"){{
+			health = 960;
+			range = 200;
+			smokeEffect = Fx.shootBigSmoke;
+			
+			shoot = new ShootSpread(){{
+				shots = 12;
+				shotDelay = 2f;
+				spread = 1.25f;
+			}};
+
+			reload = 90f;
+			recoil = 3f;
+			shootCone = 30f;
+			inaccuracy = 4f;
+			size = 2;
+			shootSound = Sounds.shootSnap;
+			shake = 3f;
+			ammo(
+					Items.titanium, new BasicBulletType(5, 24){{
+						width = 8f;
+						height = 25f;
+						hitColor = backColor = lightColor = trailColor = Items.titanium.color.cpy().lerp(Color.white, 0.1f);
+						frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+						hitEffect = NHFx.crossBlast(hitColor, height + width);
+						shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 12f, 2f);
+						ammoMultiplier = 8;
+					}},
+					
+					Items.plastanium, new BasicBulletType(5, 26){{
+						width = 8f;
+						height = 25f;
+						fragBullets = 4;
+						fragBullet = new BasicBulletType(2, 26){{
+							width = 3f;
+							lifetime = 10f;
+							height = 12f;
+							ammoMultiplier = 12;
+							hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
+							frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+							hitEffect = NHFx.lightningHitSmall;
+							shootEffect = despawnEffect = NHFx.square45_4_45;
+						}};
+						fragAngle = 130f;
+						fragVelocityMax = 1.1f;
+						fragVelocityMin = 0.5f;
+						fragLifeMax = 1.25f;
+						fragLifeMin = 0.25f;
+						ammoMultiplier = 12;
+						hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
+						frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+						hitEffect = NHFx.crossBlast(hitColor, height + width);
+						shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
+					}},
+					
+					NHItems.zeta, new BasicBulletType(5, 18){{
+						width = 8f;
+						height = 25f;
+						lightning = 2;
+						lightningLength = 2;
+						lightningLengthRand = 6;
+						lightningDamage = damage;
+						status = StatusEffects.shocked;
+						statusDuration = 15f;
+						ammoMultiplier = 12;
+						lightningColor = hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
+						frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+						hitEffect = NHFx.crossBlast(hitColor, height + width);
+						shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
+					}},
+					
+					Items.pyratite, new BasicBulletType(5, 18){{
+						width = 8f;
+						height = 25f;
+						incendAmount = 4;
+						incendChance = 0.25f;
+						incendSpread = 12f;
+						status = StatusEffects.burning;
+						statusDuration = 15f;
+						ammoMultiplier = 12;
+						hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
+						frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+						hitEffect = NHFx.crossBlast(hitColor, height + width);
+						despawnEffect = Fx.blastExplosion;
+						shootEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
+					}},
+					
+					Items.blastCompound, new BasicBulletType(5, 22){{
+						width = 8f;
+						height = 25f;
+						status = StatusEffects.blasted;
+						statusDuration = 15f;
+						splashDamageRadius = 12f;
+						splashDamage = damage;
+						ammoMultiplier = 8;
+						hitColor = backColor = lightColor = trailColor = Items.blastCompound.color.cpy().lerp(Color.white, 0.1f);
+						frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+						hitEffect = NHFx.crossBlast(hitColor, height + width);
+						despawnEffect = Fx.blastExplosion;
+						shootEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
+					}}
+			);
+			
+			limitRange();
+			maxAmmo = 120;
+			ammoPerShot = 1;
+			
+			requirements(Category.turret, with(Items.copper, 30, Items.graphite, 40, NHItems.presstanium, 50, Items.lead, 60));
+		}};
+		
+		atomSeparator = new LaserTurret("atom-separator"){{
+			health = 12000;
+			range = 360f;
+			shootEffect = NHFx.hugeSmoke;
+			shootCone = 20.0F;
+			recoil = 6.0F;
+			size = 5;
+			shake = 4.0F;
+			reload = 90.0F;
+			
+			accurateDelay = false;
+			rotateSpeed = 3f;
+			firingMoveFract = 0.15F;
+			shootDuration = 200.0F;
+			shootSound = Sounds.laserbig;
+			loopSound = Sounds.beam;
+			loopSoundVolume = 2.0F;
+			shootType = new ContinuousLaserBulletType(300){{
+				shake = 3;
+				hitColor = NHColor.lightSkyBack;
+				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.75f, 0.85f, 1f, 0.65f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.65f), NHColor.lightSkyBack, Color.white};
+				width = 16f;
+				length = 380f;
+				oscScl = 0.4f;
+				oscMag = 1.5f;
+				lifetime = 35f;
+				lightning = 2;
+				lightningLength = 2;
+				lightningLengthRand = 8;
+				lightColor = lightningColor =  NHColor.lightSkyBack;
+				hitEffect = NHFx.shootCircleSmall(NHColor.lightSkyBack);
+				shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
+				lightningDamage = damage / 6f;
+			}};
+			coolant = consumeCoolant(0.3F);
+			consumePower(16.0F);
+			unitSort = (u, x, y) -> u.speed();
+			requirements(Category.turret, with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 200, NHItems.zeta, 150, NHItems.presstanium, 250, NHItems.metalOxhydrigen, 150));
+		}};
+		
+		bloodStar = new ItemTurret("blood-star"){{
+			size = 5;
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 230, NHItems.zeta, 300, NHItems.seniorProcessor, 200, NHItems.presstanium, 300, Items.thorium, 600));
+			recoil = 5f;
+			reload = 120f;
+			range = 520f;
+			unitSort = (u, x, y) -> -u.hitSize();
+			shootSound = Sounds.laserblast;
+			inaccuracy = 0f;
+			shootCone = 15f;
+			heatColor = Items.surgeAlloy.color.cpy().lerp(Color.white, 0.2f);
+			consumePowerCond(12f, TurretBuild::isActive);
+			
+			ammo(NHItems.thermoCorePositive,
+					new BasicBulletType(4, 500, "large-bomb"){{
+						lightning = 6;
+						lightningCone = 360;
+						lightningLengthRand = lightningLength = 12;
+						splashDamageRadius = 60f;
+						splashDamage = lightningDamage = 0.5f * damage;
+						
+						trailColor = backColor = lightColor = lightningColor = heatColor;
+						frontColor = Color.white;
+						
+						status = NHStatusEffects.emp1;
+						statusDuration = 30f;
+						
+						spin = 3f;
+						trailLength = 40;
+						trailWidth = 2.5f;
+						lifetime = 140f;
+						shrinkX = shrinkY = 0;
+						hitSound = Sounds.explosionbig;
+						drawSize = 60f;
+						hitShake = despawnShake = 6f;
+						shootEffect = NHFx.instShoot(backColor, frontColor);
+						smokeEffect = Fx.shootBigSmoke2;
+						hitEffect = new Effect(50, e -> {
+							Draw.color(backColor);
+							Fill.circle(e.x, e.y, e.fout() * height / 1.5f);
+							Lines.stroke(e.fout() * 3f);
+							Lines.circle(e.x, e.y, e.fin() * 80);
+							Lines.stroke(e.fout() * 2f);
+							Lines.circle(e.x, e.y, e.fin() * 50);
+							Angles.randLenVectors(e.id, 35, 18 + 100 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 12 + 4));
+							
+							Draw.color(frontColor);
+							Fill.circle(e.x, e.y, e.fout() * height / 2f);
+						});
+						despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(backColor, 120f), NHFx.instHit(backColor, 3, 80f));
+						height = width = 40;
+					}
+						
+						@Override
+						public void draw(Bullet b){
+							super.draw(b);
+							
+							float f = Mathf.curve(b.fout(), 0, 0.05f);
+							float f2 = Mathf.curve(b.fin(), 0, 0.1f);
+							Draw.color(backColor);
+							
+							float fi = Mathf.randomSeed(b.id, 360f);
+							
+							for(int i : Mathf.signs){
+								DrawFunc.tri(b.x, b.y, 6 * f2 * f, 80 * f2 * f, fi + (i + 1) * 90 + Time.time * 2);
+								DrawFunc.tri(b.x, b.y, 6 * f2 * f, 65 * f2 * f, fi + (i + 1) * 90 - Time.time * 2 + 90);
+							}
+						}
+					}
+			);
+		}};
+		
+		multipleLauncher = new ItemTurret("multiple-launcher"){{
+			size = 3;
+			health = 1250;
+			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
+			
+			ammo(
+					Items.titanium, NHBullets.missileTitanium,
+					Items.thorium, NHBullets.missileThorium,
+					NHItems.zeta, NHBullets.missileZeta,
+					Items.graphite, NHBullets.missileNormal,
+					NHItems.presstanium, NHBullets.missileStrike
+			);
+			smokeEffect = Fx.shootSmallFlame;
+			shootEffect = Fx.shootBig2;
+			recoil = 3f;
+			range = 280f;
+			reload = 90f;
+			
+			shoot = new ShootBarrel(){{
+				barrels = new float[]{
+					-4, -2, 0,
+					0, -3, 0,
+					4, -2, 0
+				};
+				
+				shotDelay = 2f;
+				shots = 15;
+			}};
+			
+			maxAmmo = 160;
+			ammoPerShot = 1;
+			ammoEjectBack = 6f;
+			inaccuracy = 9f;
+			
+			xRand = tilesize * size / 6.5f;
+			shootSound = Sounds.missile;
+			coolantMultiplier = 0.85f;
+		}};
+		
+		thermoTurret = new PowerTurret("thermo-turret"){{
+			size = 1;
+			health = 320;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.copper, 50, Items.silicon, 25));
+			shootType = new BasicBulletType(6.5f, 18f){{
+				hitEffect = new Effect(12.0F, (e) -> {
+					Draw.color(Pal.lancerLaser, Color.white, e.fout() * 0.75f);
+					Lines.stroke(e.fout() * 1.5F);
+					Angles.randLenVectors(e.id, 3, e.finpow() * 17.0F, e.rotation, 360.0F, (x, y) -> {
+						float ang = Mathf.angle(x, y);
+						Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 4.0F + 1.0F);
+					});
+				});
+				trailWidth = 1.25f;
+				trailLength = 15;
+				drawSize = 180f;
+				
+				knockback = 0.5f;
+				trailColor = backColor = hitColor = Pal.lancerLaser;
+				frontColor = Color.white;
+				lifetime = 50f;
+				homingDelay = 1f;
+				homingPower = 0.2f;
+				homingRange = 120f;
+				status = StatusEffects.shocked;
+				collidesGround = false;
+				statusDuration = 30f;
+				width = 5f;
+				drawSize = 120f;
+				height = 22f;
+			}};
+			consumePower(3.5f);
+			
+			shoot = new ShootPattern(){{
+				shots = 5;
+				shotDelay = 6f;
+			}};
+			
+			inaccuracy = 3f;
+			reload = 75f;
+			shootCone = 50.0F;
+			rotateSpeed = 8.0F;
+			targetGround = false;
+			range = 200.0F;
+			shootEffect = Fx.lightningShoot;
+			smokeEffect = Fx.shootSmallSmoke;
+			heatColor = Color.red;
+			recoil = 1.0F;
+			shootSound = NHSounds.thermoShoot;
+		}};
+		
+		endOfEra = new ItemTurret("end-of-era"){{
+			recoil = 5f;
+			
+			moveWhileCharging = false;
+			
+			shootWarmupSpeed = 0.05f;
+			
+			drawer = new DrawTurret(){{
+				parts.add(new RegionPart("-charger"){{
+					under = mirror = true;
+					layerOffset = -0.002f;
+					moveX = 14f;
+					moveY = -9f;
+					moveRot = -45f;
+					y = -4f;
+					x = 16f;
+					
+					progress = PartProgress.warmup;
+				}}, new RegionPart(){{
+					drawRegion = false;
+					mirror = true;
+					heatColor = Color.clear;
+					progress = PartProgress.recoil;
+					moveY = -15f;
+					children.add(new RegionPart("-wing"){{
+						under = mirror = true;
+						moveRot = 12.5f;
+						moveY = 14f;
+						moveX = 4f;
+						heatColor = NHColor.darkEnrColor;
+						progress = PartProgress.warmup;
+					}});
+				}}, new RegionPart("-shooter"){{
+					outline = true;
+					layerOffset = 0.001f;
+					moveY = -9f;
+					heatColor = NHColor.darkEnrColor;
+					progress = PartProgress.warmup.add(PartProgress.recoil.mul(0.5f));
+				}});
+			}};
+			
+			shoot = new ShootPattern(){{
+				firstShotDelay = NHFx.darkEnergyChargeBegin.lifetime;
+			}};
+			
+			chargeSound = NHSounds.railGunCharge;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 2000));
+			ammo(NHItems.darkEnergy, NHBullets.arc_9000);
+			ammoPerShot = 4;
+			maxAmmo = 20;
+			size = 8;
+			health = 15000;
+			hasItems = true;
+			heatColor = NHColor.darkEnrColor;
+			consumePower(30f);
+			reload = 300f;
+			range = 800f;
+			inaccuracy = 1f;
+			shootCone = 45f;
+			shootSound = Sounds.laserbig;
+		}};
 	}
 	
 	private static void loadFactories(){
@@ -1137,6 +1703,10 @@ public class NHBlocks{
 			itemDuration = 150f;
 			consumeItem(NHItems.zeta, 3);
 			consumeLiquid(Liquids.cryofluid,0.1f);
+			
+			hasLiquids = true;
+			
+			drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion(Liquids.cryofluid), new DrawWarmupRegion());
 			
 			lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
 			generateEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);

@@ -1148,13 +1148,17 @@ public class NHFx{
 			}
 		}),
 		
-		darkEnergyCharge = new Effect(130f, e -> randLenVectors(e.id, 3, 60 * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
-			color(NHColor.darkEnrColor);
-			Fill.circle(e.x + x, e.y + y, e.fin() * 13f);
-			color(NHColor.darkEnr);
-			Fill.circle(e.x + x, e.y + y, e.fin() * 7f);
-			Drawf.light(e.x + x, e.y + y, e.fin() * 16f, NHColor.darkEnrColor, 0.7f);
-		})),
+		darkEnergyCharge = new Effect(130f, e -> {
+			rand.setSeed(e.id);
+			randLenVectors(e.id, 6, rand.random(50f, 180f) * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
+				color(NHColor.darkEnrColor);
+				float rad = rand.random(9f, 18f);
+				Fill.circle(e.x + x, e.y + y, e.fin() * rad);
+				color(NHColor.darkEnr);
+				Fill.circle(e.x + x, e.y + y, e.fin() * rad / 1.8f);
+				Drawf.light(e.x + x, e.y + y, e.fin() * rad * 1.5f, NHColor.darkEnrColor, 0.7f);
+			});
+		}),
 		
 		hugeSmoke = new Effect(40f, e -> {
 			Draw.color(Color.lightGray, Color.gray, e.fin());
