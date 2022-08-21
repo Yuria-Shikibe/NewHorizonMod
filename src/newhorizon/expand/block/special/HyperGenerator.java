@@ -34,6 +34,7 @@ import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.EffectBulletType;
@@ -211,18 +212,18 @@ public class HyperGenerator extends PowerGenerator{
 					Damage.damage(point.getX(), point.getY(), splashDamageRadius, splashDamage);
 				});
 				
-//				if(b.timer(4, 5)){
-//					float range = size * Vars.tilesize / 1.5f;
-//					NHFx.hyperExplode.at(b.x + Mathf.range(range), b.y + Mathf.range(range), effectColor);
-//					Sounds.explosionbig.at(b);
-//					NHBullets.hyperBlast.create(b, Team.derelict, b.x, b.y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
-//				}
-//
-//				if(b.timer(5, 8)){
-//					float range = size * Vars.tilesize / 1.5f;
-//					NHFx.hitSparkLarge.at(b.x + Mathf.range(range), b.y + Mathf.range(range), effectColor);
-//					NHBullets.hyperBlastLinker.create(b, Team.derelict, b.x, b.y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
-//				}
+				if(b.timer(4, 5)){
+					float range = size * Vars.tilesize / 1.5f;
+					NHFx.hyperExplode.at(b.x + Mathf.range(range), b.y + Mathf.range(range), effectColor);
+					Sounds.explosionbig.at(b);
+					NHBullets.hyperBlast.create(b, Team.derelict, b.x, b.y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
+				}
+
+				if(b.timer(5, 8)){
+					float range = size * Vars.tilesize / 1.5f;
+					NHFx.hitSparkLarge.at(b.x + Mathf.range(range), b.y + Mathf.range(range), effectColor);
+					NHBullets.hyperBlastLinker.create(b, Team.derelict, b.x, b.y, Mathf.random(360), NHBullets.hyperBlast.damage * baseExplosiveness, Mathf.random(minVelScl, maxVelScl), Mathf.random(minTimeScl, maxTimeScl), new Object());
+				}
 			}
 			
 			@Override

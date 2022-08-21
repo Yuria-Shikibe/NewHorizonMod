@@ -3,6 +3,8 @@ package newhorizon.util.func;
 import arc.math.Interp;
 
 public class NHInterp{
+//	public static final Interp upThenFastDown = x -> -0.926837f + 1.85241f * x + 0.202482f / x;
+	public static final Interp upThenFastDown = x -> 1.0115f * (1.833f * (0.9991f * x - 1.1f) + 0.2f / (0.9991f * x - 1.1f) + 2.2f);
 	public static final Interp artillery = x -> 1 - 2 * (x-0.5f) * (x-0.5f);
 	public static final Interp artilleryPlus = x -> 3 * x - 3 * x * x + 0.25f;
 	public static final Interp artilleryPlusReversed = x -> -3 * x + 3 * x * x + 1;

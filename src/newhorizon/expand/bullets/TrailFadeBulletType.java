@@ -6,7 +6,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec2;
-import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
@@ -14,17 +14,18 @@ import mindustry.gen.Hitboxc;
 import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
+import newhorizon.util.func.Vec2Seq;
 
 public class TrailFadeBulletType extends BasicBulletType{
-	public int trailNum = 2;
-	public float stroke = 2F;
-	public int fadeOffset = 10;
-	public int strokeOffset = 15;
+	public int tracers = 2;
+	public float tracerStroke = 3F;
+	public int tracerFadeOffset = 10;
+	public int tracerStrokeOffset = 15;
 	
-	public float spacing = 8f;
-	public float randX = 6f;
+	public float tracerSpacing = 8f;
+	public float tracerRandX = 6f;
 	
-	public float updateSpacing = 0.3f;
+	public float tracerUpdateSpacing = 0.3f;
 	
 	/** Whether add the spawn point of the bullet to the trail seq.*/
 	public boolean addBeginPoint = false;
@@ -45,22 +46,22 @@ public class TrailFadeBulletType extends BasicBulletType{
 		this(speed, damage, "bullet");
 	}
 	
-	protected static final Vec2 v1 = new Vec2(), v2 = new Vec2();
+	protected static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2();
 	protected static final Rand rand = new Rand();
 	
 	@Override
 	public void despawned(Bullet b){
-		if(!Vars.headless && (b.data instanceof Seq[])){
-			Seq<Vec2>[] pointsArr = (Seq<Vec2>[])b.data();
-			for(Seq<Vec2> points : pointsArr){
-				points.add(new Vec2(b.x, b.y));
+		if(!Vars.headless && (b.data instanceof Vec2Seq[])){
+			Vec2Seq[] pointsArr = (Vec2Seq[])b.data();
+			for(Vec2Seq points : pointsArr){
+				points.add(b.x, b.y);
 				if(despawnBlinkTrail || (b.absorbed && hitBlinkTrail)){
-					PosLightning.createBoltEffect(hitColor, stroke * 2f, points);
-					Vec2 v = points.first();
+					PosLightning.createBoltEffect(hitColor, tracerStroke * 2f, points);
+					Vec2 v = points.firstTmp();
 					NHFx.lightningHitSmall.at(v.x, v.y, hitColor);
 				}else{
-					points.add(new Vec2(stroke, fadeOffset));
-					NHFx.lightningFade.at(b.x, b.y, strokeOffset, hitColor, points);
+					points.add(tracerStroke, tracerFadeOffset);
+					NHFx.lightningFade.at(b.x, b.y, tracerStrokeOffset, hitColor, points);
 				}
 			}
 			
@@ -81,17 +82,17 @@ public class TrailFadeBulletType extends BasicBulletType{
 	public void hit(Bullet b){
 		super.hit(b);
 		
-		if(Vars.headless || !(b.data instanceof Seq[]))return;
-		Seq<Vec2>[] pointsArr = (Seq<Vec2>[])b.data();
-		for(Seq<Vec2> points : pointsArr){
-			points.add(new Vec2(b.x, b.y));
+		if(Vars.headless || !(b.data instanceof Vec2Seq[]))return;
+		Vec2Seq[] pointsArr = (Vec2Seq[])b.data();
+		for(Vec2Seq points : pointsArr){
+			points.add(b.x, b.y);
 			if(hitBlinkTrail){
-				PosLightning.createBoltEffect(hitColor, stroke * 2f, points);
-				Vec2 v = points.first();
+				PosLightning.createBoltEffect(hitColor, tracerStroke * 2f, points);
+				Vec2 v = points.firstTmp();
 				NHFx.lightningHitSmall.at(v.x, v.y, hitColor);
 			}else{
-				points.add(new Vec2(stroke, fadeOffset));
-				NHFx.lightningFade.at(b.x, b.y, strokeOffset, hitColor, points);
+				points.add(tracerStroke, tracerFadeOffset);
+				NHFx.lightningFade.at(b.x, b.y, tracerStrokeOffset, hitColor, points);
 			}
 		}
 		
@@ -102,10 +103,10 @@ public class TrailFadeBulletType extends BasicBulletType{
 	public void init(Bullet b){
 		super.init(b);
 		if(Vars.headless || (!NHSetting.enableDetails() && trailLength > 0))return;
-		Seq<Vec2>[] points = new Seq[trailNum];
-		for(int i = 0; i < trailNum; i++){
-			Seq<Vec2> p = new Seq<>();
-			if(addBeginPoint)p.add(new Vec2(b.x, b.y));
+		Vec2Seq[] points = new Vec2Seq[tracers];
+		for(int i = 0; i < tracers; i++){
+			Vec2Seq p = new Vec2Seq();
+			if(addBeginPoint)p.add(b.x, b.y);
 			points[i] = p;
 		}
 		b.data = points;
@@ -114,13 +115,13 @@ public class TrailFadeBulletType extends BasicBulletType{
 	@Override
 	public void update(Bullet b){
 		super.update(b);
-		if(!Vars.headless && b.timer(2, updateSpacing)){
-			if(!(b.data instanceof Seq[]))return;
-			Seq<Vec2>[] points = (Seq<Vec2>[])b.data();
-			for(Seq<Vec2> seq : points){
-				v2.trns(b.rotation(), 0, rand.range(randX));
-				v1.set(1, 0).setToRandomDirection(rand).scl(spacing);
-				seq.add(new Vec2(b.x, b.y).add(v1).add(v2));
+		if(!Vars.headless && b.timer(2, tracerUpdateSpacing)){
+			if(!(b.data instanceof Vec2Seq[]))return;
+			Vec2Seq[] points = (Vec2Seq[])b.data();
+			for(Vec2Seq seq : points){
+				v2.trns(b.rotation(), 0, rand.range(tracerRandX));
+				v1.set(1, 0).setToRandomDirection(rand).scl(tracerSpacing);
+				seq.add(v3.set(b.x, b.y).add(v1).add(v2));
 			}
 		}
 	}
@@ -129,21 +130,21 @@ public class TrailFadeBulletType extends BasicBulletType{
 	public void drawTrail(Bullet b){
 		super.drawTrail(b);
 		
-		if((b.data instanceof Seq[])){
-			Seq<Vec2>[] pointsArr = (Seq<Vec2>[])b.data();
-			for(Seq<Vec2> points : pointsArr){
-				if(points.size < 2)return;
+		if((b.data instanceof Vec2Seq[])){
+			Vec2Seq[] pointsArr = (Vec2Seq[])b.data();
+			for(Vec2Seq points : pointsArr){
+				if(points.size() < 2)return;
 				Draw.color(hitColor);
-				for(int i = 1; i < points.size; i++){
+				for(int i = 1; i < points.size(); i++){
 //					Draw.alpha(((float)(i + fadeOffset) / points.size));
-					Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size * (strokeOffset - (points.size - i)) / strokeOffset) * stroke);
-					Vec2 from = points.get(i - 1);
-					Vec2 to = points.get(i);
+					Lines.stroke(Mathf.clamp((i + tracerFadeOffset / 2f) / points.size() * (tracerStrokeOffset - (points.size() - i)) / tracerStrokeOffset) * tracerStroke);
+					Vec2 from = points.setVec2(i - 1, Tmp.v1);
+					Vec2 to = points.setVec2(i, Tmp.v2);
 					Lines.line(from.x, from.y, to.x, to.y, false);
 					Fill.circle(from.x, from.y, Lines.getStroke() / 2);
 				}
 				
-				Fill.circle(points.peek().x, points.peek().y, stroke);
+				Fill.circle(points.peekTmp().x, points.peekTmp().y, tracerStroke);
 			}
 		}
 	}

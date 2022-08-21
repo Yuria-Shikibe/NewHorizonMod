@@ -20,6 +20,7 @@ import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
 
@@ -90,7 +91,7 @@ public class LightningLinkerBulletType extends BasicBulletType{
 			Fill.circle(e.x + x, e.y + y, e.fout() * size / 2f);
 			color(frontColor);
 			Fill.circle(e.x + x, e.y + y, e.fout() * (size / 3f - 1f));
-		}));
+		})).layer(Layer.effect + 0.00001f);
 		if(liHitEffect == NHFx.boolSelector)liHitEffect = NHFx.lightningHitSmall(backColor);
 		
 		if(trailWidth < 0)trailWidth = size * 0.75f;

@@ -175,12 +175,12 @@ public class MatterStorm extends Weather{
 				pierceCap = 3;
 				hitBlinkTrail = false;
 				collidesTiles = false;
-				stroke = 4;
+				tracerStroke = 4;
 				drawSize = 1600;
-				updateSpacing = 1;
-				randX = 12;
-				spacing = 12;
-				trailNum = 1;
+				tracerUpdateSpacing = 1;
+				tracerRandX = 12;
+				tracerSpacing = 12;
+				tracers = 1;
 				weaveMag = 2;
 				weaveScale = 12;
 				lifetime = 40f;

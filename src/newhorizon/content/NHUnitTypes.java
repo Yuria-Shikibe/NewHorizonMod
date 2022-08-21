@@ -13,14 +13,14 @@ import arc.math.Mathf;
 import arc.struct.ObjectSet;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.ShrapnelBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
@@ -28,6 +28,7 @@ import mindustry.entities.part.ShapePart;
 import mindustry.entities.pattern.ShootHelix;
 import mindustry.entities.pattern.ShootPattern;
 import mindustry.entities.pattern.ShootSine;
+import mindustry.entities.pattern.ShootSpread;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
@@ -47,9 +48,7 @@ import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.expand.bullets.ShieldBreakerType;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.expand.units.EnergyUnit;
-import newhorizon.expand.units.HealFieldAbility;
-import newhorizon.expand.units.SniperAI;
+import newhorizon.expand.units.*;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.DrawFunc;
@@ -72,11 +71,12 @@ public class NHUnitTypes{
 			;
 	
 	public static UnitType
-			sin, tarlidor, aliotiat,
-			guardian,
-			declining,
-			longinus, anvil, gather,
-			saviour;
+			guardian, //Energy
+			gather, saviour, rhino, //Air-Assist
+			assaulter, anvil, collapser, //Air-2
+			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
+			sharp, branch, warper, striker, naxos, destruction, longinus, hurricane, //Air-1
+			relay, ghost, zarkov, declining; //Navy
 	
 	static{
 			EntityMapping.nameMap.put(NewHorizon.name("declining"), EntityMapping.idMap[20]);
@@ -106,6 +106,14 @@ public class NHUnitTypes{
 		Weapon n = weapon.copy();
 		n.x = x;
 		n.y = y;
+		return n;
+	}
+	
+	public static Weapon copyAndMoveAnd(Weapon weapon, float x, float y, Cons<Weapon> modifier){
+		Weapon n = weapon.copy();
+		n.x = x;
+		n.y = y;
+		modifier.get(n);
 		return n;
 	}
 	
@@ -179,8 +187,15 @@ public class NHUnitTypes{
 			reload = 300f;
 			shake = 7f;
 			ejectEffect = Fx.blastsmoke;
-			bullet = new BasicBulletType(9.25f, 380f){{
+			bullet = new TrailFadeBulletType(9.25f, 380f){{
 				lifetime = 122f;
+				
+				tracerUpdateSpacing *= 3f;
+				tracerSpacing *= 1.5f;
+				
+				tracers = 1;
+				tracerStrokeOffset = tracerFadeOffset = 20;
+				
 				
 				trailInterp = NHInterp.artilleryPlus;
 				shrinkInterp = NHInterp.artilleryPlus;
@@ -433,8 +448,8 @@ public class NHUnitTypes{
 			top = true;
 			
 			bullet = new BasicBulletType(){{
-				width = 7f;
-				height = 25f;
+				width = 8f;
+				height = 28f;
 				trailWidth = 1f;
 				trailLength = 7;
 				
@@ -445,7 +460,7 @@ public class NHUnitTypes{
 				trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack;
 				frontColor = NHColor.lightSkyFront;
 				
-				damage = 15f;
+				damage = 25f;
 				
 				smokeEffect = Fx.shootSmallSmoke;
 				shootEffect = NHFx.shootCircleSmall(backColor);
@@ -526,6 +541,771 @@ public class NHUnitTypes{
 		loadWeapon();
 		
 		loadPreviousWeapon();
+		
+		assaulter = new UnitType("assaulter") {
+			{
+				constructor = EntityMapping.map(3);
+				hitSize = 16.0F;
+				armor = 8.0F;
+				health = 220.0F;
+				speed = 3.0F;
+				rotateSpeed = 2.75F;
+				accel = 0.075F;
+				drag = 0.035F;
+				flying = true;
+				engineOffset = 12.0F;
+				engineSize = 3.0F;
+				buildSpeed = 0.0F;
+				abilities.add(new BoostAbility(false, 1.5F, 15.0F));
+				range = maxRange = 148.0F;
+				targetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.factory, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
+				weapons.add(new Weapon() {
+					{
+						reload = 155;
+						shoot = new ShootPattern(){{
+							firstShotDelay = 120.0F;
+						}};
+						shootStatus = NHStatusEffects.stronghold;
+						shootStatusDuration = 680.0F;
+						x = y = 0.0F;
+						shootY = 15.0F;
+						continuous = parentizeEffects = true;
+						mirror = alternate = false;
+						shootCone = 5.0F;
+						chargeSound = Sounds.lasercharge;
+						shootSound = Sounds.laserblast;
+						bullet = new LaserBulletType(200.0F) {
+							{
+								chargeEffect = new Effect(120.0F, e -> {
+									Draw.color(NHColor.thurmixRed);
+									float p = NHInterp.upThenFastDown.apply(e.fin());
+									Lines.stroke(p * 2f);
+									Lines.circle(e.x, e.y, 45 * p);
+									Lines.spikes(e.x, e.y, (65 - e.fin() * 45) * p, (e.fin() * 26 + 3) * p, 4, 45 + e.rotation);
+									
+									Lines.stroke(e.finpow() * 3f);
+									Lines.circle(e.x, e.y, 72 * e.fout(Interp.pow5Out));
+									
+									Fill.circle(e.x, e.y, 6 * e.fin());
+									Draw.color(NHColor.thurmixRedLight);
+									Fill.circle(e.x, e.y, 3.5f * e.fin());
+								}).followParent(true);
+								
+								colors = new Color[]{NHColor.thurmixRed.cpy().mul(1.0F, 1.0F, 1.0F, 0.3F), NHColor.thurmixRed, Color.white};
+								length = 180.0F;
+								width = 18.0F;
+								lengthFalloff = 0.6F;
+								sideLength = 90.0F;
+								sideWidth = 1.35F;
+								sideAngle = 40.0F;
+								lightningSpacing = 40.0F;
+								lightningLength = 2;
+								lightningDelay = 1.1F;
+								lightningLengthRand = 10;
+								lightningDamage = damage / 5.0F;
+								lightningAngleRand = 40.0F;
+								hitColor = lightningColor = NHColor.thurmixRed;
+								smokeEffect = shootEffect = Fx.none;
+								hitEffect = NHFx.laserHit(NHColor.thurmixRed);
+								lifetime = 30.0F;
+								status = NHStatusEffects.weak;
+								statusDuration = 60.0F;
+								killShooter = true;
+								keepVelocity = false;
+							}
+							
+							@Override
+							public void init(Bullet b){
+								super.init(b);
+								
+								if(killShooter && b.owner() instanceof Healthc){
+									((Healthc) b.owner()).kill();
+								}
+							}
+						};
+					}
+				});
+			}
+			
+			public void createIcons(MultiPacker packer) {
+				super.createIcons(packer);
+				NHPixmap.createIcons(packer, this);
+			}
+		};
+		
+		rhino = new UnitType("rhino"){{
+			outlineColor = OColor;
+			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, StatusEffects.shocked, StatusEffects.burning, StatusEffects.melting, StatusEffects.electrified, StatusEffects.wet, StatusEffects.slow, StatusEffects.blasted);
+			aiController = BuilderAI::new;
+			constructor = EntityMapping.map(3);
+			abilities.add(new BoostAbility());
+			weapons.add(new RepairBeamWeapon("point-defense-mount"){{
+				y = -8.5f;
+				x = 0;
+				shootY = 4f;
+				mirror = false;
+				beamWidth = 0.7f;
+				repairSpeed = 1f;
+
+				bullet = new BulletType(){{
+					maxRange = 120f;
+				}};
+			}});
+			armor = 12;
+			buildBeamOffset = 6f;
+			buildSpeed = 5f;
+			hitSize = 20f;
+			flying = true;
+			drag = 0.06F;
+			accel = 0.12F;
+			itemCapacity = 200;
+			speed = 1F;
+			health = 3000.0F;
+			engineSize = 3.4F;
+			engineOffset = 10.5f;
+			isEnemy = false;
+			lowAltitude = true;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
+		naxos = new UnitType("naxos"){{
+			outlineColor = OColor;
+			constructor = EntityMapping.map(3);
+			health = 8500.0F;
+			speed = 3f;
+			accel = 0.75F;
+			drag = 0.015F;
+			flying = true;
+			targetAir = true;
+			targetGround = false;
+			circleTarget = true;
+			hitSize = 16.0F;
+			armor = 40.0F;
+			engineOffset = 12.5f;
+			engineSize = 5.0F;
+			rotateSpeed = 4.75f;
+			buildSpeed = 1.25f;
+			lowAltitude = false;
+
+			aiController = InterceptorAI::new;
+			
+			for(int i : Mathf.signs){
+				engines.add(new UnitEngine(i * 14.25f, -14.5f, 3, -90 + i * 15));
+			}
+			
+			abilities.add(new BoostAbility(3f, 160f));
+
+			weapons.add(
+					new Weapon(NewHorizon.name("impulse-side")){{
+						mirror = alternate = true;
+						top = rotate = false;
+						reload = 45f;
+
+						inaccuracy = 5f;
+
+						x = -10.5f;
+						y = -2f;
+						shootY = 6f;
+						shootX = 1;
+
+						shootCone = 30f;
+
+						shoot = new ShootPattern(){{
+							shots = 3;
+							shotDelay = 8f;
+						}};
+						
+						shootSound = NHSounds.thermoShoot;
+
+						bullet = new TrailFadeBulletType(7f, 200f, "missile-large"){{
+							trailLength = 20;
+							trailWidth = 2.5f;
+							trailColor = lightColor = lightningColor = backColor = hitColor = NHColor.lightSkyBack;
+							frontColor = NHColor.lightSkyFront;
+							
+							tracers = 1;
+							tracerUpdateSpacing *= 2.25f;
+							tracerRandX *= 0.75f;
+							
+							hitBlinkTrail = false;
+							
+							width = 10f;
+							height = 30f;
+
+							weaveScale = 7f;
+							weaveMag = 0.8f;
+
+							homingDelay = 8f;
+							homingPower = 0.7f;
+							homingRange = 200f;
+
+							splashDamageRadius = 60f;
+							splashDamage = damage / 2;
+
+							shootEffect = NHFx.shootCircleSmall(backColor);
+							smokeEffect = Fx.shootBigSmoke;
+							hitEffect = NHFx.blast(backColor, splashDamageRadius);
+							despawnEffect = NHFx.hitSparkLarge;
+							despawnShake = hitShake = 5f;
+
+							collidesAir = collides = true;
+							collidesGround = collidesTiles = false;
+						}};
+					}},
+					new Weapon(){{
+						reload = 180f;
+						shootSound = Sounds.beam;
+						x = 0;
+						continuous = true;
+						top = alternate = rotate = mirror = false;
+						minShootVelocity = 2f;
+
+						shootStatus = NHStatusEffects.invincible;
+						shootStatusDuration = 360f;
+
+						bullet = new BulletType(){{
+							impact = true;
+							keepVelocity = false;
+							collides = false;
+							pierce = true;
+							hittable = false;
+							absorbable = false;
+
+							collidesAir = true;
+							collidesGround = collidesTiles = false;
+
+							damage = 100f;
+							lightning = 1;
+							lightningDamage = damage / 4f;
+							lightningLength = 10;
+							lightningLengthRand = 15;
+
+							knockback = 30f;
+
+							lifetime = 360f;
+
+							status = StatusEffects.melting;
+							statusDuration = 60f;
+							maxRange = 80f;
+							speed = 0.0001f;
+
+							lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
+							hitEffect = NHFx.square(hitColor, 30f, 3, 80f, 5f);
+							despawnEffect = Fx.none;
+							shootEffect = NHFx.instShoot(hitColor, NHColor.lightSkyFront);
+							smokeEffect = NHFx.square(hitColor, 45f, 5, 60f, 5f);
+						}
+
+							@Override
+							public float continuousDamage(){
+								return damage / 5f * 60f;
+							}
+
+							@Override
+							public float estimateDPS(){
+								//assume firing duration is about 100 by default, may not be accurate there's no way of knowing in this method
+								//assume it pierces 3 blocks/units
+								return damage * 100f / 5f * 3f;
+							}
+
+							@Override
+							public void hit(Bullet b, float x, float y){
+								super.hit(b, x, y);
+
+								if(b.owner instanceof Healthc)((Healthc)b.owner).healFract(b.damage / 10);
+							}
+
+							@Override
+							public void update(Bullet b){
+
+								//damage every 5 ticks
+								if(b.timer(1, 5f)){
+									Damage.collideLine(b, b.team, hitEffect, b.x, b.y, b.rotation(), maxRange, true, false);
+								}
+
+								if(shake > 0){
+									Effect.shake(shake, shake, b);
+								}
+							}
+
+							@Override
+							public void draw(Bullet b){
+								float f = Mathf.curve(b.fin(), 0, 0.015f) * Mathf.curve(b.fout(), 0, 0.025f);
+								float sine = 1 + Mathf.absin(0.7f, 0.075f);
+								float stroke = 6f;
+								float offset = 8f;
+								float rot = b.rotation();
+								Draw.color(hitColor);
+								Tmp.v1.trns(rot, 0, stroke).scl(f * sine);
+								Tmp.v2.trns(rot, 0, stroke + stroke).scl(f * sine);
+								Tmp.v3.trns(rot, maxRange).scl(f);
+								for(int i : Mathf.signs){
+									Fill.tri(
+											b.x + Tmp.v1.x * i, b.y + Tmp.v1.y * i,
+											b.x + Tmp.v2.x * i, b.y + Tmp.v2.y * i,
+											b.x + Tmp.v3.x, b.y + Tmp.v3.y
+									);
+								}
+								Draw.reset();
+							}
+						};
+					}}
+			);
+
+			targetFlags = new BlockFlag[]{null};
+
+			buildBeamOffset = 15f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
+		annihilation = new UnitType("annihilation"){{
+			outlineColor = OColor;
+			drawShields = false;
+			weapons.add(
+				new Weapon(NewHorizon.name("large-launcher")){{
+					top = false;
+					rotate = false;
+					alternate = true;
+					shake = 3.5f;
+					shootY = 16f;
+					x = 20f;
+					recoil = 5.4f;
+					predictTarget = false;
+					shootCone = 30f;
+					reload = 60f;
+					shoot = new ShootSpread(){{
+						spread = 3f;
+						shots = 2;
+					}};
+					
+					inaccuracy = 4.0F;
+					ejectEffect = Fx.none;
+					bullet = new ShrapnelBulletType(){{
+						width -= 2;
+						length = 280;
+						damage = 160.0F;
+						status = NHStatusEffects.ultFireBurn;
+						statusDuration = 60f;
+						fromColor = NHColor.lightSkyFront;
+						toColor = NHColor.lightSkyBack;
+						shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
+						smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
+							Draw.color(fromColor, toColor, b.fin());
+							Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
+						}));
+					}};
+					shootSound = Sounds.shotgun;
+				}}, new Weapon(){{
+					mirror = false;
+					rotate = true;
+					alternate = true;
+					rotateSpeed = 25f;
+					x = 0;
+					y = 8f;
+					recoil = 2.7f;
+					shootY = 7f;
+					shootCone = 40f;
+					reload = 180f;
+					shoot = new ShootPattern(){{
+						shots = 5;
+						shotDelay = 16f;
+					}};
+					inaccuracy = 5.0F;
+					ejectEffect = Fx.none;
+					bullet = NHBullets.annMissile;
+					shootSound = NHSounds.launch;
+				}}
+			);
+			abilities.add(new ForceFieldAbility(64.0F, 1.25F, 3000.0F, 1200.0F));
+			engineOffset = 15.0F;
+			engineSize = 6.5F;
+			speed = 0.275f;
+			hitSize = 33f;
+			health = 22000f;
+			buildSpeed = 2.8f;
+			armor = 15f;
+			rotateSpeed = 1.8f;
+			singleTarget = false;
+			fallSpeed = 0.016f;
+			mechStepParticles = true;
+			stepShake = 0.5f;
+			canBoost = true;
+			mechLandShake = 6f;
+			boostMultiplier = 3.5f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
+		};
+		
+		sharp = new UnitType("sharp"){{
+			outlineColor = OColor;
+			constructor = EntityMapping.map(3);
+
+			itemCapacity = 15;
+			health = 140;
+			armor = 1;
+			engineOffset = 10F;
+			engineSize = 2.8f;
+			speed = 1.5f;
+			flying = true;
+			accel = 0.08F;
+			drag = 0.02f;
+			baseRotateSpeed = 1.5f;
+			rotateSpeed = 2.5f;
+			hitSize = 10f;
+			singleTarget = true;
+
+			weapons.add(new Weapon(){{
+				top = false;
+				rotate = false;
+				alternate = false;
+				mirror = false;
+				x = 0f;
+				y = 0f;
+				reload = 30f;
+				shoot = new ShootHelix(){{
+					shots = 4;
+					shotDelay = 4f;
+				}};
+				inaccuracy = 5f;
+				ejectEffect = Fx.none;
+				velocityRnd = 0.125f;
+				shake = 2f;
+				maxRange = 140f;
+				bullet = new BasicBulletType(3.5f, 6f){{
+					trailWidth = 1f;
+					trailLength = 10;
+					drawSize = 200f;
+
+					homingPower = 0.1f;
+					homingRange = 120f;
+					width = 5f;
+					height = 25f;
+					keepVelocity = true;
+					knockback = 0.75f;
+					trailColor = backColor = lightColor = lightningColor = hitColor = NHColor.lightSkyBack;
+					frontColor = backColor.cpy().lerp(Color.white, 0.45f);
+					trailChance = 0.1f;
+					trailParam = 1f;
+					trailEffect = NHFx.trailToGray;
+					despawnEffect = NHFx.square(backColor, 18f, 2, 12f, 2);
+					hitEffect = NHFx.lightningHitSmall(backColor);
+					shootEffect = NHFx.shootLineSmall(backColor);
+					smokeEffect = Fx.shootBigSmoke2;
+				}};
+				shootSound = NHSounds.thermoShoot;
+			}});
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+
+		branch = new UnitType("branch"){{
+			outlineColor = OColor;
+			constructor = EntityMapping.map(3);
+			weapons.add(new Weapon(){{
+				top = false;
+				rotate = true;
+				alternate = true;
+				mirror = false;
+				shoot = new ShootPattern(){{
+					shotDelay = 3f;
+					shots = 5;
+				}};
+				x = 0f;
+				y = -10f;
+				reload = 30f;
+				inaccuracy = 4f;
+				ejectEffect = Fx.none;
+				bullet = new FlakBulletType(2.55f, 15){{
+					collidesGround = true;
+					sprite = NHBullets.CIRCLE_BOLT;
+
+					trailLength = 15;
+					trailWidth = 3f;
+
+					weaveMag = 4f;
+					weaveScale = 4f;
+
+					splashDamageRadius = 20f;
+					explodeRange = splashDamageRadius / 1.5f;
+					splashDamage = damage;
+
+					homingDelay = 5f;
+					homingPower = 0.005f;
+					homingRange = 80f;
+
+					lifetime = 60f;
+					shrinkX = shrinkY = 0;
+					backColor = lightningColor = hitColor = lightColor = trailColor = NHColor.lightSkyBack;
+					frontColor = backColor.cpy().lerp(Color.white, 0.55f);
+					width = height = 8f;
+					smokeEffect = Fx.shootBigSmoke;
+					shootEffect = NHFx.shootCircleSmall(backColor);
+					hitEffect = NHFx.lightningHitSmall(backColor);
+					despawnEffect = NHFx.shootCircleSmall(backColor);
+				}};
+				shootSound = NHSounds.blaster;
+			}});
+			engineOffset = 9.0F;
+			engineSize = 3f;
+			speed = 2.4f;
+			accel = 0.06F;
+			drag = 0.035F;
+			hitSize = 14f;
+			health = 460f;
+			buildSpeed = 0.5f;
+			baseRotateSpeed = 1.5f;
+			rotateSpeed = 2.5f;
+			armor = 3.5f;
+			flying = true;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+
+		warper = new UnitType("warper"){{
+			outlineColor = OColor;
+			constructor = EntityMapping.map(3);
+			weapons.add(new Weapon(){{
+				top = false;
+				rotate = true;
+				alternate = true;
+				mirror = false;
+				x = 0f;
+				y = -10f;
+				reload = 6f;
+				inaccuracy = 3f;
+				ejectEffect = Fx.none;
+				bullet = NHBullets.warperBullet;
+				shootSound = NHSounds.blaster;
+			}});
+			abilities.add(new MoveLightningAbility(10, 16, 0.2f, 12, 4, 6, NHColor.lightSkyBack));
+			targetAir = false;
+			maxRange = 200;
+			engineOffset = 14.0F;
+			engineSize = 4f;
+			speed = 5f;
+			accel = 0.04F;
+			drag = 0.0075F;
+			circleTarget = true;
+			hitSize = 14f;
+			health = 1000f;
+			buildSpeed = 0.8f;
+			baseRotateSpeed = 1.5f;
+			rotateSpeed = 2.5f;
+			armor = 3.5f;
+			flying = true;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
+		origin = new UnitType("origin"){{
+			outlineColor = OColor;
+			weapons.add(
+				new Weapon(NewHorizon.name("origin-weapon")){{
+					mirror = true;
+					this.top = false;
+					
+					rotate = true;
+					rotationLimit = 15f;
+					
+					x = 5f;
+					y = -1f;
+					shootY = 6f;
+					reload = 15f;
+					shoot = new ShootSpread(){{
+						shots = 3;
+						spread = 3;
+					}};
+					inaccuracy = 4f;
+					velocityRnd = 0.15f;
+					shootSound = NHSounds.scatter;
+					shake = 0.75f;
+					bullet = new BasicBulletType(4f, 7f){{
+						width = 5f;
+						height = 25f;
+						backColor = lightningColor = lightColor = hitColor = NHColor.lightSkyBack;
+						frontColor = backColor.cpy().lerp(Color.white, 0.45f);
+						shootEffect = NHFx.shootLineSmall(backColor);
+						despawnEffect = NHFx.square(hitColor, 16f, 2, 12, 2f);
+						hitEffect = NHFx.lightningHitSmall(backColor);
+						smokeEffect = Fx.shootBigSmoke2;
+						lifetime = 45f;
+					}};
+				}}
+			);
+			speed = 0.6F;
+			hitSize = 8.0F;
+			health = 160.0F;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
+		};
+
+		thynomo = new UnitType("thynomo"){{
+			outlineColor = OColor;
+			weapons.add(
+				new Weapon(NewHorizon.name("thynomo-weapon")){{
+					mirror = true;
+					top = false;
+					
+					rotate = true;
+					rotationLimit = 15f;
+					
+					x = 8f;
+					y = 1f;
+					shootY = 9.5f;
+					reload = 90f;
+					shootCone = 25f;
+					shootStatus = StatusEffects.slow;
+					shootStatusDuration = 90f;
+					continuous = true;
+					shootSound = Sounds.beam;
+					bullet = new ContinuousLaserBulletType(18f){{
+						length = 120f;
+						width = 2.55f;
+
+						incendChance = 0.025F;
+						incendSpread = 5.0F;
+						incendAmount = 1;
+						
+						shake = 3;
+						colors = new Color[]{NHColor.lightSkyFront.cpy().mul(0.8f, 0.85f, 0.9f, 0.2f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.5f), NHColor.lightSkyBack, Color.white};
+						oscScl = 0.4f;
+						oscMag = 1.5f;
+						lifetime = 90f;
+						lightColor = hitColor = NHColor.lightSkyBack;
+						hitEffect = NHFx.lightSkyCircleSplash;
+						shootEffect = NHFx.square(hitColor, 22f, 4, 16, 3f);
+						smokeEffect = Fx.shootBigSmoke;
+					}};
+				}}
+			);
+			boostMultiplier = 2.0F;
+			health = 650.0F;
+			buildSpeed = 0.75F;
+			rotateSpeed = 2.5f;
+			canBoost = true;
+			armor = 9.0F;
+			mechLandShake = 2.0F;
+			riseSpeed = 0.05F;
+			mechFrontSway = 0.55F;
+			speed = 0.4F;
+			hitSize = 15f;
+			engineOffset = 7.4F;
+			engineSize = 4.25F;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
+		};
+
+		
+		ghost = new UnitType("ghost"){{
+			outlineColor = OColor;
+			health = 1200;
+			speed = 1.75f;
+			drag = 0.18f;
+			hitSize = 20f;
+			armor = 12;
+			accel = 0.1f;
+			rotateSpeed = 2f;
+			buildSpeed = 3f;
+
+			weapons.add(
+					copyAndMove(smallCannon, 12,-7),
+					copyAndMove(smallCannon, 5,-1),
+					new Weapon(NewHorizon.name("laser-cannon")){{
+						top = rotate = true;
+						rotateSpeed = 3f;
+						x = 0;
+						y = -11;
+
+						recoil = 2f;
+						mirror = false;
+						reload = 60f;
+						shootY = 5f;
+						shootCone = 12f;
+						shake = 8f;
+						inaccuracy = 3f;
+						shoot = new ShootPattern();
+						predictTarget = true;
+
+						shootSound = Sounds.laser;
+
+						bullet = new BasicBulletType(2f, 90, "mine-bullet"){{
+							scaleLife = true;
+							keepVelocity = false;
+
+							trailLength = 22;
+							trailWidth = 4f;
+							drawSize = 120f;
+							recoil = 1.5f;
+
+							trailChance = 0.1f;
+							trailParam = 4f;
+							trailEffect = NHFx.trailToGray;
+
+							spin = 3f;
+							shrinkX = shrinkY = 0.15f;
+							height = width = 25f;
+							lifetime = 160f;
+
+							status = StatusEffects.blasted;
+
+							backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.lightSkyBack;
+							frontColor = NHColor.lightSkyFront;
+
+							splashDamage = damage / 3;
+							splashDamageRadius = 24f;
+
+							lightningLength = 2;
+							lightningLengthRand = 4;
+							lightningDamage = 10;
+
+							hitSound = Sounds.explosion;
+							hitShake = 8f;
+							shootEffect = NHFx.shootCircleSmall(backColor);
+							smokeEffect = Fx.shootSmallSmoke;
+							despawnEffect = NHFx.lightningHitLarge(backColor);
+							hitEffect = NHFx.hugeSmoke;
+						}};
+					}}
+			);
+			
+			trailLength = 70;
+			waveTrailX = 5f;
+			waveTrailY = -13;
+			trailScl = 1.65f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+
+		zarkov = new UnitType("zarkov"){{
+			outlineColor = OColor;
+			weapons.add(
+				copyAndMove(multipleLauncher, 8, -22),
+				copyAndMove(multipleLauncher, 16, -8),
+				copyAnd(smallCannon, weapon -> {
+					weapon.x = 8.5f;
+					weapon.y = 5.75f;
+					weapon.autoTarget = true;
+					weapon.controllable = false;
+				})
+			);
+			health = 12000;
+			speed = 1f;
+			drag = 0.18f;
+			hitSize = 42f;
+			armor = 16f;
+			accel = 0.1f;
+			rotateSpeed = 1.6f;
+			buildSpeed = 3f;
+
+			trailLength = 70;
+			waveTrailX = 7f;
+			waveTrailY = -25f;
+			trailScl = 2.6f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
 		
 		tarlidor = new UnitType("tarlidor"){{
 			outlineColor = OColor;
@@ -639,7 +1419,10 @@ public class NHUnitTypes{
 		
 		aliotiat = new UnitType("aliotiat"){{
 			outlineColor = OColor;
-			weapons.add(copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 6f, -2f));
+			weapons.add(copyAndMoveAnd(posLiTurret, 10f, 3f, w -> {
+				w.shoot = new ShootPattern();
+				w.shoot.firstShotDelay = w.reload / 2;
+			}), copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 10f, 3f), copyAndMove(posLiTurret, 6f, -2f));
 			engineOffset = 10.0F;
 			engineSize = 4.5F;
 			speed = 0.35f;
@@ -1044,11 +1827,11 @@ public class NHUnitTypes{
 							lifetime = 40f;
 							trailLength = 200;
 							trailWidth = 2F;
-							trailNum = 1;
+							tracers = 1;
 							keepVelocity = false;
 							
-							spacing = 10f;
-							updateSpacing *= 1.25f;
+							tracerSpacing = 10f;
+							tracerUpdateSpacing *= 1.25f;
 							
 							trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack;
 							frontColor = NHColor.lightSkyFront;

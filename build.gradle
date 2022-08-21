@@ -91,16 +91,16 @@ task debugMod{
 
     def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
 
-//    if(!fi.exists())throw new RuntimeException("Missing Mod File")
-//    if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar"))throw new RuntimeException("Failed to replace the old version mod")
-//
-//    doLast {
-//        try{
-//            Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
-//        }catch(IOException io){
-//            System.out.print(io)
-//        }
-//    }
+
+    doLast {
+        try{
+            if(!fi.exists())throw new RuntimeException("Missing Mod File")
+            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar"))throw new RuntimeException("Failed to replace the old version mod")
+            Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
+        }catch(IOException io){
+            System.out.print(io)
+        }
+    }
 }
 
 task deploy(type : Jar){

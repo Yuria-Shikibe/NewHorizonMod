@@ -183,6 +183,8 @@ public class JumpGate extends Block {
             items.remove(ItemStack.mult(requirements, Vars.state.rules.buildCostMultiplier));
         }
     
+        nextItems = tile.build.items;
+    
 //        if(!NHVars.state.jumpGateUseCoreItems && tile.build != null)nextItems = tile.build.items;
     }
     

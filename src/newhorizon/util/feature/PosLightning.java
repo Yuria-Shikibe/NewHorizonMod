@@ -12,6 +12,7 @@ import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
@@ -26,6 +27,8 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.graphics.Layer;
+import newhorizon.expand.bullets.EffectBulletType;
+import newhorizon.util.func.Vec2Seq;
 
 /**
  * Provide methods that can generate Position to Position Lightning.<p>
@@ -47,8 +50,7 @@ import mindustry.graphics.Layer;
  * @author Yuria
  */
 public class PosLightning {
-	public static final BulletType hitter = new BulletType(){{
-		lifetime = 10f;
+	public static final BulletType hitter = new EffectBulletType(10f){{
 		absorbable = true;
 		collides = collidesAir = collidesGround = collidesTiles = true;
 		status = StatusEffects.shocked;
@@ -58,6 +60,7 @@ public class PosLightning {
 	
 	public static final Cons<Position> none = p -> {};
 	
+	public static final FloatSeq floatSeq = new FloatSeq();
 	public static final float lifetime = Fx.chainLightning.lifetime;
 	public static final float WIDTH = 2.5f;
 	public static final float RANGE_RAND = 5f;
@@ -69,24 +72,21 @@ public class PosLightning {
 	private static final Vec2 tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 	
 	public static final Effect posLightning = (new Effect(lifetime, 1200.0f, e -> {
-		if(!(e.data instanceof Seq)) return;
-		Seq<Vec2> lines = e.data();
+		if(!(e.data instanceof Vec2Seq)) return;
+		Vec2Seq lines = e.data();
 		
-		Draw.color(Color.white, e.color, e.fin());
+		Draw.color(e.color, Color.white, e.fout() * 0.64f);
 		
 		Lines.stroke(e.rotation * e.fout());
 		
-		Fill.circle(lines.first().x, lines.first().y, Lines.getStroke() / 2f);
+		Fill.circle(lines.firstTmp().x, lines.firstTmp().y, Lines.getStroke() / 2f);
 		
-		for(int i = 0; i < lines.size - 1; i++){
-			Vec2 cur = lines.get(i);
-			Vec2 next = lines.get(i + 1);
+		for(int i = 0; i < lines.size() - 1; i++){
+			Vec2 cur = lines.setVec2(i, Tmp.v1);
+			Vec2 next = lines.setVec2(i + 1, Tmp.v2);
 			
 			Lines.line(cur.x, cur.y, next.x, next.y, false);
-		}
-		
-		for(Vec2 p : lines){
-			Fill.circle(p.x, p.y, Lines.getStroke() / 2f);
+			Fill.circle(next.x, next.y, Lines.getStroke() / 2f);
 		}
 	})).layer(Layer.effect - 0.001f);
 	
@@ -187,7 +187,8 @@ public class PosLightning {
 				float len = getBoltRandomRange();
 				float randRange = len * RANGE_RAND;
 				
-				FloatSeq randomArray = new FloatSeq();
+				floatSeq.clear();
+				FloatSeq randomArray = floatSeq;
 				for(int num = 0; num < dst / (ROT_DST * len) + 1; num++){
 					randomArray.add(Mathf.range(randRange) / (num * 0.025f + 1));
 				}
@@ -229,20 +230,20 @@ public class PosLightning {
 	}
 
 	//create lightning effect.
-	public static void createBoltEffect(Color color, float width, Seq<Vec2> vets) {
-		posLightning.at((vets.first().x + vets.peek().x) / 2f, (vets.first().y + vets.peek().y) / 2f, width, color, vets);
+	public static void createBoltEffect(Color color, float width, Vec2Seq vets) {
+		posLightning.at((vets.firstTmp().x + vets.peekTmp().x) / 2f, (vets.firstTmp().y + vets.peekTmp().y) / 2f, width, color, vets);
 	}
 	
-	private static Seq<Vec2> computeVectors(FloatSeq randomVec, Position from, Position to){
+	private static Vec2Seq computeVectors(FloatSeq randomVec, Position from, Position to){
 		int param = randomVec.size;
 		float angle = from.angleTo(to);
 		
-		Seq<Vec2> lines = new Seq<>(param);
+		Vec2Seq lines = new Vec2Seq(param);
 		tmp1.trns(angle, from.dst(to) / (param - 1));
 		
-		lines.add(new Vec2().set(from));
-		for (int i = 1; i < param - 2; i ++)lines.add(new Vec2().trns(angle - 90, randomVec.get(i)).add(tmp1, i).add(from.getX(), from.getY()));
-		lines.add(new Vec2().set(to));
+		lines.add(from);
+		for (int i = 1; i < param - 2; i ++)lines.add(tmp3.trns(angle - 90, randomVec.get(i)).add(tmp1, i).add(from.getX(), from.getY()));
+		lines.add(to);
 		
 		return lines;
 	}

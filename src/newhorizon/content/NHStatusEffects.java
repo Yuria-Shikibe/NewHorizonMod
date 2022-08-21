@@ -1,11 +1,8 @@
 package newhorizon.content;
 
-import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.Pixmaps;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Tmp;
@@ -14,10 +11,8 @@ import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
-import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import newhorizon.util.func.NHPixmap;
 
 public class NHStatusEffects{
     public static StatusEffect ultFireBurn, stronghold,
@@ -96,7 +91,7 @@ public class NHStatusEffects{
         }};
         
         end = new NHStatusEffect("end"){{
-            damage = 120;
+            damage = 200;
             textureColor = color = NHColor.darkEnrColor;
             
             damageMultiplier = 0.5f;
@@ -215,14 +210,14 @@ public class NHStatusEffects{
             super.load();
         }
         
-        @Override
-		public void createIcons(MultiPacker packer){
-		    TextureRegion region = Core.atlas.find(name);
-		    
-			if(NHPixmap.isDebugging() && region != null && region.found()){
-				if(textureColor != null)NHPixmap.addProcessed(name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(region), textureColor).outline(Color.valueOf("404049"), 3));
-				else NHPixmap.addProcessed(name + "-full", Pixmaps.outline(Core.atlas.getPixmap(region), Color.valueOf("404049"), 3));
-			}else super.createIcons(packer);
-		}
+//        @Override
+//		public void createIcons(MultiPacker packer){
+//		    TextureRegion region = Core.atlas.find(name);
+//
+//			if(NHPixmap.isDebugging() && region != null && region.found()){
+//				if(textureColor != null)NHPixmap.addProcessed(name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(region), textureColor).outline(Color.valueOf("404049"), 3));
+//				else NHPixmap.addProcessed(name + "-full", Pixmaps.outline(Core.atlas.getPixmap(region), Color.valueOf("404049"), 3));
+//			}else super.createIcons(packer);
+//		}
 	}
 }

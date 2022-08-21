@@ -12,7 +12,6 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.struct.ObjectMap;
-import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
@@ -28,6 +27,7 @@ import mindustry.ui.Fonts;
 import newhorizon.NHSetting;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.func.Vec2Seq;
 import newhorizon.util.graphic.DrawFunc;
 
 import java.util.Arrays;
@@ -145,9 +145,9 @@ public class NHFx{
 	public static Effect shootLineSmall(Color color){
 		return get("shootLineSmall", color,new Effect(37f, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
-			randLenVectors(e.id, 6, 4 + 22 * e.fin(), e.rotation, 22F, (x, y) -> {
-				Lines.stroke(1.5f * e.fout(0.2f));
-				lineAngleCenter(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 9f + 3);
+			randLenVectors(e.id, 4, 8 + 32 * e.fin(), e.rotation, 22F, (x, y) -> {
+				Lines.stroke(1.25f * e.fout(0.2f));
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 6f + 3);
 				Drawf.light(e.x + x, e.y + y, e.fout() * 13f + 3, color, 0.7f);
 			});
 		}));
@@ -1333,38 +1333,38 @@ public class NHFx{
 		}),
 	
 		lightningFade = (new Effect(PosLightning.lifetime, 1200.0f, e -> {
-			if(!(e.data instanceof Seq)) return;
-			Seq<Vec2> points = e.data();
+			if(!(e.data instanceof Vec2Seq)) return;
+			Vec2Seq points = e.data();
 			
-			e.lifetime = points.size < 2 ? 0 : 1000;
+			e.lifetime = points.size() < 2 ? 0 : 1000;
 			int strokeOffset = (int)e.rotation;
 			
 			
-			if(points.size > strokeOffset + 1 && strokeOffset > 0 && points.size > 2){
-				points.removeRange(0, points.size - strokeOffset - 1);
+			if(points.size() > strokeOffset + 1 && strokeOffset > 0 && points.size() > 2){
+				points.removeRange(0, points.size() - strokeOffset - 1);
 			}
 			
 			if(!state.isPaused()){
 				points.remove(0);
 			}
 			
-			if(points.size < 2)return;
+			if(points.size() < 2)return;
 			
-			Vec2 data = points.peek(); //x -> stroke, y -> fadeOffset;
+			Vec2 data = points.peekTmp(); //x -> stroke, y -> fadeOffset;
 			float stroke = data.x;
 			float fadeOffset = data.y;
 			
 			Draw.color(e.color);
-			for(int i = 1; i < points.size - 1; i++){
-//				Draw.alpha(Mathf.clamp((float)(i + fadeOffset - e.time) / points.size));
-				Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size * (strokeOffset - (points.size - i)) / strokeOffset) * stroke);
-				Vec2 from = points.get(i - 1);
-				Vec2 to = points.get(i);
+			for(int i = 1; i < points.size() - 1; i++){
+//				Draw.alpha(Mathf.clamp((float)(i + fadeOffset - e.time) / points.size()));
+				Lines.stroke(Mathf.clamp((i + fadeOffset / 2f) / points.size() * (strokeOffset - (points.size() - i)) / strokeOffset) * stroke);
+				Vec2 from = points.setVec2(i - 1, Tmp.v1);
+				Vec2 to = points.setVec2(i, Tmp.v2);
 				Lines.line(from.x, from.y, to.x, to.y, false);
 				Fill.circle(from.x, from.y, Lines.getStroke() / 2);
 			}
 			
-			Vec2 last = points.get(points.size - 2);
+			Vec2 last = points.tmpVec2(points.size() - 2);
 			Fill.circle(last.x, last.y, Lines.getStroke() / 2);
 		})).layer(Layer.effect - 0.001f),
 	
