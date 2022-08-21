@@ -190,12 +190,12 @@ public class NHUnitTypes{
 			bullet = new TrailFadeBulletType(9.25f, 380f){{
 				lifetime = 122f;
 				
-				tracerUpdateSpacing *= 3f;
+				tracerUpdateSpacing *= 6f;
 				tracerSpacing *= 1.5f;
 				
 				tracers = 1;
-				tracerStrokeOffset = tracerFadeOffset = 20;
-				
+				tracerStrokeOffset = tracerFadeOffset = 13;
+				hitBlinkTrail = false;
 				
 				trailInterp = NHInterp.artilleryPlus;
 				shrinkInterp = NHInterp.artilleryPlus;

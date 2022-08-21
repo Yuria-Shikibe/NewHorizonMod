@@ -324,7 +324,7 @@ public class NHBlocks{
 					followRotation = true;
 					y = 70f;
 					stroke = 7;
-					radius = -2;
+					radius = 0;
 					radiusTo = 68;
 					color1 = NHColor.darkEnrColor;
 					color2 = NHColor.darkEnrFront;
@@ -648,8 +648,9 @@ public class NHBlocks{
 					}
 				}
 			};
+			
 			coolant = consumeCoolant(0.3F);
-			consumePower(16.0F);
+			consumePower(30.0F);
 			unitSort = (u, x, y) -> u.speed();
 			requirements(Category.turret, with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 200, NHItems.zeta, 150, NHItems.presstanium, 250, NHItems.metalOxhydrigen, 150));
 		}};
@@ -894,7 +895,13 @@ public class NHBlocks{
 			itemCapacity = 20;
 			hasPower = hasItems = true;
 			craftEffect = NHFx.hugeSmoke;
-			updateEffect = Fx.smeltsmoke;
+			updateEffect = new Effect(80f, e -> {
+				Fx.rand.setSeed(e.id);
+				Draw.color(Color.lightGray, Color.gray, e.fin());
+				Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> {
+					Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
+				});
+			}).layer(Layer.blockOver + 1);
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
 			consumePower(1.5f);
 			setExchangeMap(Items.copper, 1, 1, Items.lead, 1, 1, Items.titanium, 1, 2, Items.thorium, 1, 3, Items.scrap, 2, 5);

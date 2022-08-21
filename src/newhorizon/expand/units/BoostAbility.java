@@ -1,19 +1,13 @@
 package newhorizon.expand.units;
 
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
 import arc.math.Angles;
-import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Interval;
-import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
@@ -138,28 +132,28 @@ public class BoostAbility extends Ability{
 		}
 		Draw.z(z);
 		
-		if(!drawAirFlow)return;
-		
-		int particles = (int)unit.type.hitSize;
-		float particleLife = 40f, particleRad = unit.type.hitSize, particleStroke = 1.1f, particleLen = unit.hitSize / 8f;
-		Rand rand = new Rand();
-		float base = (Time.time / particleLife);
-		rand.setSeed(unit.id);
-		
-		float warmup = warmup(unit.rotation) * Mathf.clamp(unit.vel.len() / unit.speed());
-		Tmp.v1.trns(unit.rotation, unit.type.engineOffset * 1.25f);
-		
-		Draw.blend(Blending.additive);
-		
-		Draw.color(Color.white, warmup * 0.6f);
-		
-		for(int i = 0; i < particles; i++){
-			float fin = (rand.random(1f) + base) % 1f * warmup, fout = 1f - fin;
-			float angle = unit.rotation + rand.range(60f) - 180;
-			float len = particleRad * Interp.pow2Out.apply(fin);
-			Lines.lineAngle(unit.x + Angles.trnsx(angle, len) + Tmp.v1.x, unit.y + Angles.trnsy(angle, len) + Tmp.v1.y, angle, particleLen * fout * warmup);
-		}
-		
-		Draw.blend();
+//		if(!drawAirFlow)return;
+//
+//		int particles = (int)unit.type.hitSize;
+//		float particleLife = 40f, particleRad = unit.type.hitSize, particleStroke = 1.1f, particleLen = unit.hitSize / 8f;
+//		Rand rand = new Rand();
+//		float base = (Time.time / particleLife);
+//		rand.setSeed(unit.id);
+//
+//		float warmup = warmup(unit.rotation) * Mathf.clamp(unit.vel.len() / unit.speed());
+//		Tmp.v1.trns(unit.rotation, unit.type.engineOffset * 1.25f);
+//
+//		Draw.blend(Blending.additive);
+//
+//		Draw.color(Color.white, warmup * 0.6f);
+//
+//		for(int i = 0; i < particles; i++){
+//			float fin = (rand.random(1f) + base) % 1f * warmup, fout = 1f - fin;
+//			float angle = unit.rotation + rand.range(60f) - 180;
+//			float len = particleRad * Interp.pow2Out.apply(fin);
+//			Lines.lineAngle(unit.x + Angles.trnsx(angle, len) + Tmp.v1.x, unit.y + Angles.trnsy(angle, len) + Tmp.v1.y, angle, particleLen * fout * warmup);
+//		}
+//
+//		Draw.blend();
 	}
 }
