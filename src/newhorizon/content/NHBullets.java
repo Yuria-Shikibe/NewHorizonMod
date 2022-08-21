@@ -699,6 +699,20 @@ public class NHBullets{
 				rangeOverride = 480f;
 			}
 			
+			public void updateTrailEffects(Bullet b){
+				if(trailChance > 0){
+					if(Mathf.chanceDelta(trailChance)){
+						trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, b.team.color);
+					}
+				}
+				
+				if(trailInterval > 0f){
+					if(b.timer(0, trailInterval)){
+						trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, b.team.color);
+					}
+				}
+			}
+			
 			@Override
 			public void hit(Bullet b, float x, float y){
 				b.hit = true;
