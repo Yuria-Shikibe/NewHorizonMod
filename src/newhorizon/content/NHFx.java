@@ -1088,7 +1088,7 @@ public class NHFx{
 			color(NHColor.darkEnr);
 			Fill.circle(e.x, e.y, e.fout() * 30);
 			Drawf.light(e.x, e.y, e.fout() * 80f, NHColor.darkEnrColor, 0.7f);
-		}).layer(Layer.effect + 0.000001f),
+		}).layer(Layer.effect - 0.000001f),
 		
 		mediumDarkEnergyHit = new Effect(23, e -> {
 			color(NHColor.darkEnrColor);
