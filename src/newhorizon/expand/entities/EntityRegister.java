@@ -21,7 +21,7 @@ public class EntityRegister{
 		EntityRegister.put(AdaptedTimedKillUnit.class, AdaptedTimedKillUnit::new);
 		EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 		EntityRegister.put(Spawner.class, Spawner::new);
-//		EntityRegister.put(Carrier.class, Carrier::new);
+		EntityRegister.put(Carrier.class, Carrier::new);
 //		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
 //		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
 		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
