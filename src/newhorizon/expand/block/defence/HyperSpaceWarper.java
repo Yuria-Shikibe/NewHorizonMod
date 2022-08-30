@@ -266,7 +266,14 @@ public class HyperSpaceWarper extends Block{
 						configure(Math.max(4, (int)Mathf.sqrt(selects.size / Mathf.pi) + 2));
 					}).size(LEN * 4, LEN).disabled(b -> !canTeleport()).row();
 					
-					if(mobile)t.button("@back", Icon.download, Styles.cleart, this::deselect).size(LEN * 4, LEN).row();
+					if(mobile)t.button("@back", Icon.leftOpen, Styles.cleart, () -> {
+						deselect();
+						control.input.inv.hide();
+						p.update(() -> {});
+						Core.app.post(() -> {
+							control.input.commandMode = control.input.commandRect = false;
+						});
+					}).size(LEN * 4, LEN).row();
 				}).fill();
 				/*if(mobile)p.table(Tex.paneSolid, t -> {
 					TextArea xArea = new TextArea("");

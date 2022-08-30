@@ -35,9 +35,9 @@ public class NewHorizon extends Mod{
 		if(DEBUGGING)Log.info(obj);
 	}
 	
-	{
-		Vars.mobile = Vars.testMobile = true;
-	}
+//	{
+//		Vars.mobile = Vars.testMobile = true;
+//	}
 	
 	public static boolean contentLoadComplete = false;
 	
