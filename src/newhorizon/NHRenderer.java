@@ -7,7 +7,6 @@ import arc.graphics.gl.FrameBuffer;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Drawc;
-import mindustry.graphics.Shaders;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
 import newhorizon.expand.block.defence.GravityTrap;
@@ -51,11 +50,6 @@ public class NHRenderer{
 				GravityTrapField.drawAll();
 				mask.end();
 				mask.blit(NHShaders.gravityTrapShader);
-				
-				effect.begin(Color.clear);
-				mask.blit(Shaders.screenspace);
-				effect.end();
-				effect.blit(NHShaders.outliner);
 			});
 		}
 	}
