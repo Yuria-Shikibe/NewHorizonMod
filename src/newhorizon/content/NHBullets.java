@@ -172,13 +172,15 @@ public class NHBullets{
 			health = 3000;
 			homingDelay = 17f;
 			lowAltitude = true;
-			engineSize = 3f;
+			engineSize = 2.75f;
 			engineOffset = 23f;
 			engineColor = trailColor = NHColor.darkEnrColor;
 			engineLayer = Layer.effect;
-			trailLength = 80;
+			trailLength = 45;
 			deathExplosionEffect = Fx.none;
 			loopSoundVolume = 0.1f;
+			
+			clipSize = 620;
 			
 //			parts.add(new RegionPart("-fin"){{
 //				mirror = true;
