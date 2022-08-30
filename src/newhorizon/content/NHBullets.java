@@ -25,10 +25,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
-import mindustry.graphics.Trail;
+import mindustry.graphics.*;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.unit.MissileUnitType;
@@ -40,6 +37,7 @@ import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
+import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
@@ -220,7 +218,8 @@ public class NHBullets{
 				}};
 			}});
 		}
-			
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		
 			@Override
 			public void drawEngines(Unit unit){}
 			

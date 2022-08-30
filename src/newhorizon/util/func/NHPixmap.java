@@ -57,7 +57,7 @@ public class NHPixmap{
 	
 	public static void outlineLegs(MultiPacker packer, UnitType type){
 		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless){
-			Color color = OUTLINE_COLOR;
+			Color color = type.outlineColor;
 			if(type.legRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-leg", Pixmaps.outline(Core.atlas.getPixmap(type.legRegion), color, type.outlineRadius));
 			if(type.jointRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-joint", Pixmaps.outline(Core.atlas.getPixmap(type.jointRegion), color, type.outlineRadius));
 			if(type.baseJointRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-joint-base", Pixmaps.outline(Core.atlas.getPixmap(type.baseJointRegion), color, type.outlineRadius));
