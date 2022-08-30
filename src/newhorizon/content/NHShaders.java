@@ -32,7 +32,7 @@ public class NHShaders{
 //
 //		};
 		
-		outliner = new OutlineShader();
+//		outliner = new OutlineShader();
 		
 		hyperspace = new HyperspaceShader();
 		
