@@ -20,7 +20,6 @@ import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.*;
-import mindustry.entities.part.ShapePart;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
@@ -171,7 +170,7 @@ public class NHBullets{
 			
 			outlineColor = Pal.darkOutline;
 			health = 3000;
-			homingDelay = 30f;
+			homingDelay = 17f;
 			lowAltitude = true;
 			engineSize = 3f;
 			engineOffset = 23f;
@@ -180,16 +179,6 @@ public class NHBullets{
 			trailLength = 80;
 			deathExplosionEffect = Fx.none;
 			loopSoundVolume = 0.1f;
-			
-			parts.add(new ShapePart(){{
-				layer = Layer.effect;
-				circle = true;
-				y = -0.25f;
-				radius = 1.5f;
-				color = Pal.suppress;
-				colorTo = Color.white;
-				progress = PartProgress.life.curve(Interp.pow5In);
-			}});
 			
 //			parts.add(new RegionPart("-fin"){{
 //				mirror = true;
