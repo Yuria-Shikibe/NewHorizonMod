@@ -48,7 +48,6 @@ import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.expand.vars.NHVars;
 import newhorizon.util.func.NHFunc;
 
 import java.lang.reflect.Field;
@@ -58,6 +57,9 @@ import static mindustry.Vars.*;
 
 
 public class TableFunc{
+    private static final Vec2 ctrlVec = new Vec2();
+    private static int tmpX = 0, tmpY = 0;
+    
     private static final int tableZ = 2;
     private static final DecimalFormat df = new DecimalFormat("######0.0");
     private static final Vec2 point = new Vec2(-1, -1);
@@ -65,6 +67,8 @@ public class TableFunc{
     private static Team selectTeam = Team.sharded;
     private static UnitType selected = UnitTypes.alpha;
     private static long lastToast;
+    
+    private static Table pTable = new Table(), floatTable = new Table();
     
     public static final String tabSpace = "    ";
     public static final float LEN = 60f;
@@ -356,21 +360,40 @@ public class TableFunc{
         Touchable parentTouchable = parentT.touchable;
         
         parentT.touchablility = () -> Touchable.disabled;
-        
-        NHVars.resetCtrl();
     
-        Table pTable = new Table(Tex.clear){{
+        if(!pTable.hasParent())ctrlVec.set(Core.camera.unproject(Core.input.mouse()));
+        
+        if(!pTable.hasParent())pTable = new Table(Tex.clear){{
             update(() -> {
                 if(Vars.state.isMenu()){
                     remove();
                 }else{
-                    Vec2 v = Core.camera.project(World.toTile(NHVars.ctrl.ctrlVec2.x) * tilesize, World.toTile(NHVars.ctrl.ctrlVec2.y) * tilesize);
+                    Vec2 v = Core.camera.project(World.toTile(ctrlVec.x) * tilesize, World.toTile(ctrlVec.y) * tilesize);
                     setPosition(v.x, v.y, 0);
                 }
             });
-        }};
+        }
+            @Override
+            public void draw(){
+                super.draw();
         
-        Table floatTable = new Table(Tex.clear){{
+                Lines.stroke(9, Pal.gray);
+                drawLines();
+                Lines.stroke(3, Pal.accent);
+                drawLines();
+//                DrawFunc.overlayText("(" + World.unconv(ctrlVec.x) + ", " + World.unconv(ctrlVec.y) + ")", x + LEN * 1, y + OFFSET, 0, Pal.accent, false);
+            }
+    
+            private void drawLines(){
+                Lines.square(x, y, 28, 45);
+                Lines.line(x - OFFSET * 4, y, 0, y);
+                Lines.line(x + OFFSET * 4, y, Core.graphics.getWidth(), y);
+                Lines.line(x, y - OFFSET * 4, x, 0);
+                Lines.line(x, y + OFFSET * 4, x, Core.graphics.getHeight());
+            }
+        };
+    
+        if(!pTable.hasParent())floatTable = new Table(Tex.clear){{
             update(() -> {
                 if(Vars.state.isMenu())remove();
             });
@@ -380,14 +403,18 @@ public class TableFunc{
             addListener(new InputListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                NHVars.ctrl.ctrlVec2.set(Core.camera.unproject(x, y)).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, world.unitHeight() + Vars.finalWorldBounds, world.unitWidth() + Vars.finalWorldBounds);
+                ctrlVec.set(Core.camera.unproject(x, y)).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, world.unitHeight() + Vars.finalWorldBounds, world.unitWidth() + Vars.finalWorldBounds);
                 return false;
                 }
             });
         }};
         
+//        ImageButton button = new ImageButton(Icon.cancel, Styles.emptyi){
+//
+//        };
+        
         pTable.button(Icon.cancel, Styles.emptyi, () -> {
-            cons.get(Tmp.p1.set(World.toTile(NHVars.ctrl.ctrlVec2.x), World.toTile(NHVars.ctrl.ctrlVec2.y)));
+            cons.get(Tmp.p1.set(World.toTile(ctrlVec.x), World.toTile(ctrlVec.y)));
             parentT.touchablility = original;
             parentT.touchable = parentTouchable;
             pTable.remove();

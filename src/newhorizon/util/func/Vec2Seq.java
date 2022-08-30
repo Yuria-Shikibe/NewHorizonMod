@@ -46,7 +46,8 @@ public class Vec2Seq implements Iterable<Vec2>, Eachable<Vec2>{
 	
 	public Vec2Seq(float[] vec2s){
 		this(vec2s.length / 2);
-		addAll(vec2s);
+		coordinates.items = vec2s;
+		coordinates.size = vec2s.length;
 	}
 	
 	public int size(){

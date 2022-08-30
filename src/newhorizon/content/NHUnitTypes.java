@@ -13,6 +13,7 @@ import arc.math.Mathf;
 import arc.struct.ObjectSet;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
@@ -22,13 +23,9 @@ import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.part.ShapePart;
-import mindustry.entities.pattern.ShootHelix;
-import mindustry.entities.pattern.ShootPattern;
-import mindustry.entities.pattern.ShootSine;
-import mindustry.entities.pattern.ShootSpread;
+import mindustry.entities.pattern.*;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
@@ -46,9 +43,12 @@ import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.expand.bullets.ShieldBreakerType;
+import newhorizon.expand.bullets.StrafeLaser;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.*;
+import newhorizon.util.feature.PosLightning;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.DrawFunc;
@@ -196,6 +196,7 @@ public class NHUnitTypes{
 				tracers = 1;
 				tracerStrokeOffset = tracerFadeOffset = 13;
 				hitBlinkTrail = false;
+				scaledSplashDamage = true;
 				
 				trailInterp = NHInterp.artilleryPlus;
 				shrinkInterp = NHInterp.artilleryPlus;
@@ -750,7 +751,7 @@ public class NHUnitTypes{
 							despawnShake = hitShake = 5f;
 
 							collidesAir = collides = true;
-							collidesGround = collidesTiles = false;
+							collidesGround = collidesTiles =  false;
 						}};
 					}},
 					new Weapon(){{
@@ -876,8 +877,9 @@ public class NHUnitTypes{
 					shootCone = 30f;
 					reload = 60f;
 					shoot = new ShootSpread(){{
-						spread = 3f;
+						spread = 1f;
 						shots = 2;
+						shotDelay = 7f;
 					}};
 					
 					inaccuracy = 4.0F;
@@ -1350,9 +1352,7 @@ public class NHUnitTypes{
 							hitEffect = new Effect(45f, e -> {
 								Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin());
 								Lines.stroke(2.5f * e.fout());
-								DrawFunc.randLenVectors(e.id, e.fin(Interp.pow3Out), 3, 6, 21f, (x1, y1, fin, fout) -> {
-									Lines.square(e.x + x1, e.y + y1, 14 * Interp.pow3Out.apply(fin), 45);
-								});
+								DrawFunc.randLenVectors(e.id, e.fin(Interp.pow3Out), 3, 6, 21f, (x1, y1, fin, fout) -> Lines.square(e.x + x1, e.y + y1, 14 * Interp.pow3Out.apply(fin), 45));
 							});
 							lifetime = 50f;
 							pierceCap = 8;
@@ -1721,6 +1721,7 @@ public class NHUnitTypes{
 							layer = Layer.effect;
 						}});
 					
+/*
 						for(int s : Mathf.signs){
 							parts.add(new HaloPart(){{
 								tri = true;
@@ -1762,6 +1763,7 @@ public class NHUnitTypes{
 								layer = Layer.effect;
 							}});
 						}
+*/
 						
 						
 						parts.add(new RegionPart("-panel"){{
@@ -1841,10 +1843,15 @@ public class NHUnitTypes{
 							hitSound = Sounds.plasmaboom;
 							despawnShake = hitShake = 18f;
 							
+							pierceArmor = true;
+							
+//							pierceArmor = pierceBuilding = true;
+//							pierceCap = 4;
+							
 							lightning = 5;
 							lightningLength = 6;
 							lightningLengthRand = 18;
-							lightningDamage = 70;
+							lightningDamage = 150;
 							
 							smokeEffect = NHFx.square(hitColor, 80f, 8, 48f, 6f);
 							shootEffect = NHFx.instShoot(backColor, frontColor);
@@ -2295,17 +2302,19 @@ public class NHUnitTypes{
 					NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.quantization
 			);
 			
+			armor = 20;
+			
 			hitSize = 45;
 			speed = 1.5f;
 			accel = 0.07F;
 			drag = 0.075F;
-			health = 22000;
+			health = 30000;
 			itemCapacity = 0;
 			rotateSpeed = 6;
 			engineSize = 8f;
 			flying = true;
 			
-			trailLength = -1;
+			trailLength = 70;
 			buildSpeed = 10f;
 			crashDamageMultiplier = Mathf.clamp(hitSize / 10f, 1, 10);
 			payloadCapacity = Float.MAX_VALUE;
@@ -2314,6 +2323,7 @@ public class NHUnitTypes{
 			weapons.add(new Weapon(){{
 				reload = 180f;
 				x = y =shootX = shootY = 0;
+				shootCone = 360;
 				shootSound = NHSounds.blaster;
 				bullet = NHBullets.guardianBullet;
 				shoot = new ShootPattern(){
@@ -2328,9 +2338,235 @@ public class NHUnitTypes{
 						shotDelay = 3f;
 					}
 				};
-			}});
+			}}, new Weapon(){{
+				reload = 120f;
+				x = y = shootX = shootY = 0;
+				rotateSpeed = 360;
+				
+				shootSound = NHSounds.hugeShoot;
+				
+				velocityRnd = 0.015f;
+				
+				shoot = new ShootMulti(new ShootSummon(0, 0, 220, 0){{
+					shots = 3;
+					shotDelay = 1f;
+				}}, new ShootSpread(){{
+					shots = 2;
+					spread = 2f;
+					shotDelay = 25;
+				}});
+				
+				bullet = NHBullets.guardianBulletLightningBall;
+			}}, new Weapon() {
+				private final Effect initEffect;
+				{
+					shootCone = 30.0F;
+					predictTarget = false;
+					top = false;
+					mirror = false;
+					rotate = true;
+					x = y = shootX = shootY = 0.0F;
+					continuous = false;
+					rotateSpeed = 100.0F;
+					reload = 600.0F;
+					
+					shootStatus = NHStatusEffects.intercepted;
+					shootStatusDuration = 180f;
+					
+					shoot = new ShootSummon(0, 0, 180, 0){{
+						shots = 3;
+					}};
+					
+					shake = 13.0F;
+					shootSound = Sounds.none;
+					bullet = new StrafeLaser(300.0F){
+						public void init(Bullet b) {
+							super.init(b);
+							Sounds.laserblast.at(b);
+						}
+						
+						public void hit(Bullet b, float x, float y) {
+							super.hit(b, x, y);
+							if (b.owner instanceof Unit) {
+								Unit from = (Unit)b.owner;
+								if (from.dead || !from.isAdded() || from.healthf() > 0.99F) {
+									return;
+								}
+								
+								from.heal(this.damage / 20.0F);
+								if (Vars.headless || !NHSetting.enableDetails()) {
+									return;
+								}
+								
+								PosLightning.createEffect(b, from, b.team.color, 2, Mathf.random(1.5F, 3.0F));
+							}
+							
+						}
+						
+						public void draw(Bullet b) {
+							Tmp.c1.set(b.team.color).lerp(Color.white, Mathf.absin(4.0F, 0.1F));
+							super.draw(b);
+							Draw.z(110.0F);
+							float fout = b.fout(0.25F) * Mathf.curve(b.fin(), 0.0F, 0.125F);
+							Draw.color(Tmp.c1);
+							Fill.circle(b.x, b.y, this.width / 1.225F * fout);
+							if (b.owner instanceof Unit) {
+								Unit unit = (Unit)b.owner;
+								if (!unit.dead) {
+									Draw.z(100.0F);
+									Lines.stroke((this.width / 3.0F + Mathf.absin(Time.time, 4.0F, 0.8F)) * fout);
+									Lines.line(b.x, b.y, unit.x, unit.y, false);
+								}
+							}
+							
+							
+							for(int i : Mathf.signs){
+								DrawFunc.tri(b.x, b.y, 6.0F * fout, 10.0F + 50.0F * fout, Time.time * 1.5F + (float)(90 * i));
+								DrawFunc.tri(b.x, b.y, 6.0F * fout, 20.0F + 60.0F * fout, Time.time * -1.0F + (float)(90 * i));
+							}
+							
+							Draw.z(110.001F);
+							Draw.color(b.team.color, Color.white, 0.25F);
+							Fill.circle(b.x, b.y, this.width / 1.85F * fout);
+							Draw.color(Color.black);
+							Fill.circle(b.x, b.y, this.width / 2.155F * fout);
+							Draw.z(100.0F);
+							Draw.reset();
+							float rotation = this.dataRot ? b.fdata : b.rotation() + this.getRotation(b);
+							float maxRange = this.maxRange * fout;
+							float realLength = NHFunc.findLaserLength(b, rotation, maxRange);
+							Tmp.v1.trns(rotation, realLength);
+							Tmp.v2.trns(rotation, 0.0F, this.width / 2.0F * fout);
+							Tmp.v3.setZero();
+							if (realLength < maxRange) {
+								Tmp.v3.set(Tmp.v2).scl((maxRange - realLength) / maxRange);
+							}
+							
+							Draw.color(Tmp.c1);
+							Tmp.v2.scl(0.9F);
+							Tmp.v3.scl(0.9F);
+							Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
+							if (realLength < maxRange) {
+								Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
+							}
+							
+							Tmp.v2.scl(1.2F);
+							Tmp.v3.scl(1.2F);
+							Draw.alpha(0.5F);
+							Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + Tmp.v1.x + Tmp.v3.x, b.y + Tmp.v1.y + Tmp.v3.y, b.x + Tmp.v1.x - Tmp.v3.x, b.y + Tmp.v1.y - Tmp.v3.y);
+							if (realLength < maxRange) {
+								Fill.circle(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v3.len());
+							}
+							
+							Draw.alpha(1.0F);
+							Draw.color(Color.black);
+//							Draw.color(Tmp.c2.set(Tmp.c1).lerp(Color.white, 0.35F));
+							Draw.z(Draw.z() + 0.01f);
+							Tmp.v2.scl(0.5F);
+							Fill.quad(b.x - Tmp.v2.x, b.y - Tmp.v2.y, b.x + Tmp.v2.x, b.y + Tmp.v2.y, b.x + (Tmp.v1.x + Tmp.v3.x) / 3.0F, b.y + (Tmp.v1.y + Tmp.v3.y) / 3.0F, b.x + (Tmp.v1.x - Tmp.v3.x) / 3.0F, b.y + (Tmp.v1.y - Tmp.v3.y) / 3.0F);
+							Drawf.light(b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, this.width * 1.5F, this.getColor(b), 0.7F);
+							Draw.reset();
+							Draw.z(Draw.z() - 0.01f);
+						}
+					};
+					
+					initEffect = (new Effect(150.0F, 600.0F, (e) -> {
+						float scl = 1.0F;
+						Draw.color(e.color, Color.white, e.fout() * 0.25F);
+						float extend = Mathf.curve(e.fin(), 0.0F, 0.015F) * scl;
+						float rot = e.fout(Interp.pow3In);
+						
+						for(int i : Mathf.signs){
+							DrawFunc.tri(e.x, e.y, 9.0F * e.foutpowdown() * scl, 100.0F + 300.0F * extend, e.rotation + 180.0F * rot + (float)(90 * i) + 45.0F);
+							DrawFunc.tri(e.x, e.y, 9.0F * e.foutpowdown() * scl, 100.0F + 300.0F * extend, e.rotation + 180.0F * rot + (float)(90 * i) - 45.0F);
+						}
+						
+						for(int i : Mathf.signs){
+							DrawFunc.tri(e.x, e.y, 6.0F * e.foutpowdown() * scl, 40.0F + 120.0F * extend, e.rotation + 270.0F * rot + (float)(90 * i) + 45.0F);
+							DrawFunc.tri(e.x, e.y, 6.0F * e.foutpowdown() * scl, 40.0F + 120.0F * extend, e.rotation + 270.0F * rot + (float)(90 * i) - 45.0F);
+						}
+						
+					})).followParent(true).layer(100.0F);
+				}
+				
+				@Override
+				protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
+//					if(!unit.isBoss())return;
+					super.shoot(unit, mount, shootX, shootY, rotation);
+					initEffect.at(unit.x, unit.y, unit.rotation, unit.team.color, unit);
+				}
+				
+//				@Override
+//				public void update(Unit unit, WeaponMount mount){
+//					if(unit.isBoss())super.update(unit, mount);
+//				}
+				
+				/*public void update(Unit unit, WeaponMount mount) {
+					boolean can = unit.canShoot();
+					float lastReload = mount.reload;
+					mount.reload = Math.max(mount.reload - Time.delta * unit.reloadMultiplier, 0.0F);
+					mount.recoil = Mathf.approachDelta(mount.recoil, 0.0F, Math.abs(this.recoil) * unit.reloadMultiplier / this.recoilTime);
+					float weaponRotation;
+					float mountX;
+					if (this.rotate && (mount.rotate || mount.shoot) && can) {
+						weaponRotation = unit.x + Angles.trnsx(unit.rotation - 90.0F, this.x, this.y);
+						mountX = unit.y + Angles.trnsy(unit.rotation - 90.0F, this.x, this.y);
+						mount.targetRotation = Angles.angle(weaponRotation, mountX, mount.aimX, mount.aimY) - unit.rotation;
+						mount.rotation = Angles.moveToward(mount.rotation, mount.targetRotation, this.rotateSpeed * Time.delta);
+					} else if (!this.rotate) {
+						mount.rotation = 0.0F;
+						mount.targetRotation = unit.angleTo(mount.aimX, mount.aimY);
+					}
+					
+					weaponRotation = unit.rotation - 90.0F + (this.rotate ? mount.rotation : 0.0F);
+					mountX = unit.x + Angles.trnsx(unit.rotation - 90.0F, this.x, this.y);
+					float mountY = unit.y + Angles.trnsy(unit.rotation - 90.0F, this.x, this.y);
+					float bulletX = mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY);
+					float bulletY = mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY);
+					float shootAngle = this.rotate ? weaponRotation + 90.0F : Angles.angle(bulletX, bulletY, mount.aimX, mount.aimY) + (unit.rotation - unit.angleTo(mount.aimX, mount.aimY));
+					if (this.continuous && mount.bullet != null) {
+						if (mount.bullet.isAdded() && !(mount.bullet.time >= mount.bullet.lifetime) && mount.bullet.type == this.bullet) {
+							mount.reload = this.reload;
+							mount.recoil = this.recoil;
+							unit.vel.add(Tmp.v1.trns(unit.rotation + 180.0F, mount.bullet.type.recoil));
+							if (this.shootSound != Sounds.none && !Vars.headless) {
+								if (mount.sound == null) {
+									mount.sound = new SoundLoop(this.shootSound, 1.0F);
+								}
+								
+								mount.sound.update(bulletX, bulletY, true);
+							}
+						} else {
+							mount.bullet = null;
+						}
+					} else {
+						mount.heat = Math.max(mount.heat - Time.delta * unit.reloadMultiplier / this.cooldownTime, 0.0F);
+						if (mount.sound != null) {
+							mount.sound.update(bulletX, bulletY, false);
+						}
+					}
+					
+					boolean wasFlipped = mount.side;
+					if (this.otherSide != -1 && this.alternate && mount.side == this.flipSprite && mount.reload <= this.reload / 2.0F && lastReload > this.reload / 2.0F) {
+						unit.mounts[this.otherSide].side = !unit.mounts[this.otherSide].side;
+						mount.side = !mount.side;
+					}
+					
+					if (mount.shoot && can && (!this.useAmmo || unit.ammo > 0.0F || !Vars.state.rules.unitAmmo || unit.team.rules().infiniteAmmo) && (!this.alternate || wasFlipped == this.flipSprite) && unit.vel.len() >= this.minShootVelocity && mount.reload <= 1.0E-4F && Angles.within(this.rotate ? mount.rotation : unit.rotation, mount.targetRotation, this.shootCone)) {
+						this.shoot(unit, mount, bulletX, bulletY, mount.aimX, mount.aimY, mountX, mountY, shootAngle, Mathf.sign(this.x));
+						mount.reload = this.reload;
+						if (this.useAmmo) {
+							--unit.ammo;
+							if (unit.ammo < 0.0F) {
+								unit.ammo = 0.0F;
+							}
+						}
+					}
+					
+				}*/
+			});
 			
-			aiController = SniperAI::new;
+//			aiController = SniperAI::new;
 			targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.generator, BlockFlag.turret, null};
 		}
 			public Effect slopeEffect = NHFx.boolSelector;
@@ -2387,6 +2623,8 @@ public class NHUnitTypes{
 			
 			@Override
 			public void drawBody(Unit unit){
+				if(unit.isBoss())Draw.scl(2f);
+				
 				Drawf.light(unit.x,unit.y, unit.hitSize * 4f, unit.team.color, 0.68f);
 				Draw.z(Layer.effect + 0.001f);
 				float sizeF = 1 + Mathf.absin(4f, 0.1f);
@@ -2403,11 +2641,6 @@ public class NHUnitTypes{
 						DrawFunc.arrow(Tmp.v1.x, Tmp.v1.y, j[2], j[0], j[1], ang);
 					}
 				}
-				//
-				//				if(unit instanceof Trailc){
-				//					Trail trail = ((Trailc)unit).trail();
-				//					trail.draw(unit.team.color, (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f) * unit.elevation) * trailScl);
-				//				}
 				
 				Draw.color(Tmp.c1.set(unit.team.color).lerp(Color.white, 0.65f));
 				Fill.circle(unit.x, unit.y, bodySize * sizeF * 0.75f * unit.healthf());
@@ -2420,8 +2653,6 @@ public class NHUnitTypes{
 				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) + 0.45f);
 				Tmp.v1.setLength(bodySize * sizeF * (outerEyeScl - innerEyeScl));
 				Fill.circle(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, bodySize * sizeF * innerEyeScl);
-				//				Tmp.v1.setLength(hitSize * 1.5f);
-				//				DrawFunc.arrow(Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, hitSize / 8, hitSize / 4, hitSize / 8, Tmp.v1.angle());
 				Draw.reset();
 			}
 			

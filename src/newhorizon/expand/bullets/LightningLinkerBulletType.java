@@ -1,6 +1,5 @@
 package newhorizon.expand.bullets;
 
-import arc.Core;
 import arc.audio.Sound;
 import arc.func.Cons;
 import arc.graphics.g2d.Draw;
@@ -21,6 +20,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
 
@@ -51,7 +51,7 @@ public class LightningLinkerBulletType extends BasicBulletType{
 	public float effectLightningLength = -1;
 	public float effectLightningLengthRand = -1;
 	
-	public Effect slopeEffect = NHFx.boolSelector, liHitEffect = NHFx.boolSelector, spreadEffect = NHFx.boolSelector;
+	public Effect slopeEffect, liHitEffect, spreadEffect;
 	
 	public static final Vec2 randVec = new Vec2();
 	
@@ -69,6 +69,8 @@ public class LightningLinkerBulletType extends BasicBulletType{
 		lightningCone = 360f;
 		
 		trailWidth = -1;
+		
+		liHitEffect = NHFx.lightningHitSmall;
 	}
 	
 	public LightningLinkerBulletType(){
@@ -78,7 +80,7 @@ public class LightningLinkerBulletType extends BasicBulletType{
 	@Override
 	public void init(){
 		super.init();
-		if(slopeEffect == NHFx.boolSelector)slopeEffect = new Effect(25, e -> {
+		if(slopeEffect == null)slopeEffect = new Effect(25, e -> {
 			if(!(e.data instanceof Integer))return;
 			int i = e.data();
 			Draw.color(backColor);
@@ -86,13 +88,12 @@ public class LightningLinkerBulletType extends BasicBulletType{
 			Lines.stroke((i < 0 ? e.fin() : e.fout()) * 3f);
 			Lines.circle(e.x, e.y, (i > 0 ? e.fin() : e.fout()) * size * 1.1f);
 		});
-		if(spreadEffect == NHFx.boolSelector)spreadEffect = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
+		if(spreadEffect == null)spreadEffect = new Effect(32f, e -> randLenVectors(e.id, 2, 6 + 45 * e.fin(), (x, y) -> {
 			color(backColor);
 			Fill.circle(e.x + x, e.y + y, e.fout() * size / 2f);
 			color(frontColor);
 			Fill.circle(e.x + x, e.y + y, e.fout() * (size / 3f - 1f));
 		})).layer(Layer.effect + 0.00001f);
-		if(liHitEffect == NHFx.boolSelector)liHitEffect = NHFx.lightningHitSmall(backColor);
 		
 		if(trailWidth < 0)trailWidth = size * 0.75f;
 		if(trailLength < 0)trailLength = 12;
@@ -111,7 +112,9 @@ public class LightningLinkerBulletType extends BasicBulletType{
 		if (b.timer(5, generateDelay)) {
 			for(int i : Mathf.signs)slopeEffect.at(b.x + Mathf.range(size / 4f), b.y + Mathf.range(size / 4f), b.rotation(), i);
 			spreadEffect.at(b);
-			PosLightning.createRange(b, collidesAir, collidesGround, b, b.team, linkRange, maxHit, backColor, Mathf.chanceDelta(randomLightningChance), lightningDamage, lightningLength, PosLightning.WIDTH, boltNum, p -> liHitEffect.at(p));
+			PosLightning.createRange(b, collidesAir, collidesGround, b, b.team, linkRange, maxHit, backColor, Mathf.chanceDelta(randomLightningChance), lightningDamage, lightningLength, PosLightning.WIDTH, boltNum, p -> {
+				liHitEffect.at(p.getX(), p.getY(), hitColor);
+			});
 		}
 		
 		if(randomGenerateRange > 0f && Mathf.chance(Time.delta * randomGenerateChance) && b.lifetime - b.time > PosLightning.lifetime)PosLightning.createRandomRange(b, b.team, b, randomGenerateRange, backColor, Mathf.chanceDelta(randomLightningChance), 0, 0, boltWidth, boltNum, randomLightningNum, hitPos -> {
@@ -122,7 +125,7 @@ public class LightningLinkerBulletType extends BasicBulletType{
 			hitModifier.get(hitPos);
 		});
 		
-		if(Mathf.chanceDelta(effectLightningChance) && b.lifetime - b.time > Fx.chainLightning.lifetime && Core.settings.getBool("enableeffectdetails")){
+		if(Mathf.chanceDelta(effectLightningChance) && b.lifetime - b.time > Fx.chainLightning.lifetime && NHSetting.enableDetails()){
 			for(int i = 0; i < effectLingtning; i++){
 				Vec2 v = randVec.rnd(effectLightningLength + Mathf.random(effectLightningLengthRand)).add(b).add(Tmp.v1.set(b.vel).scl(Fx.chainLightning.lifetime / 2));
 				Fx.chainLightning.at(b.x, b.y, 12f, backColor, v.cpy());

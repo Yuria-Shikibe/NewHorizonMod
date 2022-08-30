@@ -261,7 +261,7 @@ public class NHFunc{
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     
-    /**[1]For flying, [2] for navy, [3] for ground */
+    /**[0]For flying, [1] for navy, [2] for ground */
     public static Seq<Boolf<Tile>> formats(){
         Seq<Boolf<Tile>> seq = new Seq<>(3);
         

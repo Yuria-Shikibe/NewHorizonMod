@@ -627,9 +627,21 @@ public class NHFx{
 			color(e.color, Color.white, e.fout() * 0.3f);
 			stroke(e.fout() * 1.6f);
 			
-			randLenVectors(e.id, 18, e.finpow() * 27f, e.rotation, 360f, (x, y) -> {
+			rand.setSeed(e.id);
+			randLenVectors(e.id, 18, e.finpow() * 27f, (x, y) -> {
 				float ang = Mathf.angle(x, y);
-				lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(4, 8) + 1f);
+			});
+		}),
+	
+		hitSparkHuge = new Effect(70, e -> {
+			color(e.color, Color.white, e.fout() * 0.3f);
+			stroke(e.fout() * 1.6f);
+			
+			rand.setSeed(e.id);
+			randLenVectors(e.id, 26, e.finpow() * 65f, (x, y) -> {
+				float ang = Mathf.angle(x, y);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(6, 9) + 2f);
 			});
 		}),
 	
@@ -789,6 +801,8 @@ public class NHFx{
 		
 		attackWarningPos = new Effect(120f, 2000f, e -> {
 			if(!(e.data instanceof Position))return;
+			
+			e.lifetime = e.rotation;
 			Position pos = e.data();
 			
 			Draw.color(e.color);
@@ -1074,7 +1088,7 @@ public class NHFx{
 			color(NHColor.darkEnr);
 			Fill.circle(e.x, e.y, e.fout() * 30);
 			Drawf.light(e.x, e.y, e.fout() * 80f, NHColor.darkEnrColor, 0.7f);
-		}),
+		}).layer(Layer.effect + 0.000001f),
 		
 		mediumDarkEnergyHit = new Effect(23, e -> {
 			color(NHColor.darkEnrColor);

@@ -448,7 +448,7 @@ public class DrawFunc{
     
     public static float cycle_100(){return Time.time % 100 / 100;}
     
-    public static float cycle(float T){
-        return Time.time % T / T;
+    public static float cycle(float fi, float T){
+        return (Time.time + fi) % T / T;
     }
 }

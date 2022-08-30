@@ -1,8 +1,8 @@
 #define HIGHP
 
-#define THICK 0.8
-#define LEN 8.0
-#define SPACING 32.0
+#define THICK 1.2
+#define LEN 12.0
+#define SPACING 40.0
 
 #define ALPHA 0.18
 #define STEP 2.5
@@ -23,17 +23,19 @@ varying vec2 v_texCoords;
 void main(){
     vec2 T = v_texCoords.xy;
     vec2 coords = (T * u_texsize) + u_offset;
-    vec4 color = texture2D(u_texture, T);
+    vec4 color = texture2D(u_texture, v_texCoords);
     vec2 v = u_invsize;
 //
+
+
     vec4 maxed =
         max(
             max(
-                max(texture2D(u_texture, T + vec2(0.0, STEP) * v), texture2D(u_texture, T + vec2(0.0, -STEP) * v)
+                max(texture2D(u_texture, T + vec2(STEP, STEP) * v), texture2D(u_texture, T + vec2(STEP, -STEP) * v)
             ),
-            texture2D(u_texture, T + vec2(STEP, 0.0) * v)
+            texture2D(u_texture, T + vec2(-STEP, STEP) * v)
         ),
-        texture2D(u_texture, T + vec2(-STEP, 0.0) * v)
+        texture2D(u_texture, T + vec2(-STEP, -STEP) * v)
     );
 
     if(color.a >= 0.001){
@@ -45,8 +47,16 @@ void main(){
 
         color.a = ALPHA;
 
-        color.a *= 1.0 + 2.0 * (step(mod(coords.y / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.x / u_dp + u_time / 4.0, SPACING), LEN));
-        if(color.a == ALPHA)color.a *= 1.0 + 2.0 * (step(mod(coords.x  / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.y / u_dp + u_time / 4.0, SPACING), LEN));
+        if(color.rgb == ALLY.rgb){
+            color.a *= 1.0 + 2.0 * (step(mod(coords.y / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.x / u_dp + u_time / 4.0, SPACING), LEN));
+            if (color.a == ALPHA)color.a *= 1.0 + 2.0 * (step(mod(coords.x  / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.y / u_dp + u_time / 4.0, SPACING), LEN));
+        }else if(color.rgb == HOSTILE.rgb){
+            color.a *= (0.47 + abs(sin(u_time / 15.0)) * .05 + 0.9 * (step(mod(coords.x / u_dp + coords.y / u_dp + u_time / 4.0, 10.0), 3.0)));
+        }else{
+            color.a *= 1.0 + 2.0 * (step(mod(coords.y / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.x / u_dp + u_time / 4.0, SPACING), LEN));
+            if(color.a == ALPHA)color.a *= 1.0 + 2.0 * (step(mod(coords.x  / u_dp - (LEN - THICK) / 2.0 + u_time / 4.0, SPACING), THICK) * step(mod(coords.y / u_dp + u_time / 4.0, SPACING), LEN));
+            if(color.a == ALPHA)color.a *= (0.37 + abs(sin(u_time / 15.0)) * .05 + 0.9 * (step(mod(coords.x / u_dp + coords.y / u_dp + u_time / 4.0, 10.0), 3.0)));
+        }
 
         color.a *= 1.0 + sin(u_time / 18.0) * 0.1;
     }

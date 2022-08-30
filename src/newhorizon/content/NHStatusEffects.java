@@ -26,9 +26,8 @@ public class NHStatusEffects{
         }};
         
         intercepted = new NHStatusEffect("intercepted"){{
-           damage = 15;
+           damage = 0;
            
-           speedMultiplier = damageMultiplier = 0.8f;
            effect = NHFx.square45_4_45;
            color = textureColor = Pal.accent;
         }};

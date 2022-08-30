@@ -8,6 +8,7 @@ import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
+import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
 
 public class EntityRegister{
@@ -17,6 +18,8 @@ public class EntityRegister{
 	private static final ObjectMap<Class<?>, Integer> classIdMap = new ObjectMap<>();
 	
 	static{
+		EntityRegister.put(AdaptedTimedKillUnit.class, AdaptedTimedKillUnit::new);
+		EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 		EntityRegister.put(Spawner.class, Spawner::new);
 //		EntityRegister.put(Carrier.class, Carrier::new);
 //		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);

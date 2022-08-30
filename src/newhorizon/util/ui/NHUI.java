@@ -122,7 +122,7 @@ public class NHUI{
 				sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
 				bt.row();
 				
-				StatValues.ammo(ObjectMap.of(UnitTypes.block, type.fragBullet), indent + 1).display(bt);
+				StatValues.ammo(ObjectMap.of(UnitTypes.block, type.fragBullet), indent + 1, true).display(bt);
 			}
 		}).padTop(-9).padLeft(indent * 8).left().get().background(Tex.underline);
 		

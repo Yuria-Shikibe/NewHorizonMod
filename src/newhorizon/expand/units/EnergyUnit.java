@@ -8,6 +8,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -23,10 +24,12 @@ import mindustry.gen.UnitEntity;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
+import newhorizon.NHGroups;
 import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.entities.EntityRegister;
+import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.func.NHFunc;
 
 import static arc.graphics.g2d.Draw.color;
@@ -42,9 +45,16 @@ public class EnergyUnit extends UnitEntity{
 		stroke(e.fout() * 2.5f);
 		circle(e.x, e.y, e.fin() * e.rotation * 1.5f);
 		stroke(e.fout() * 3.2f);
-		randLenVectors(e.id, (int)e.rotation, e.rotation / 3 + e.rotation * e.fin() * 1.75f, (x, y) -> {
+		randLenVectors(e.id, (int)e.rotation * 2, e.rotation / 1.5f + e.rotation * e.fin() * 2.75f, (x, y) -> {
 			lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
 		});
+		
+		Fx.rand.setSeed(e.id + 100);
+		
+		randLenVectors(e.id + 100, (int)e.rotation, e.rotation / 2f + e.rotation * e.fin() * 3f, (x, y) -> {
+			Fill.circle(e.x + x, e.y + y, Fx.rand.random(e.rotation, e.rotation * 2f) * e.foutpow());
+		});
+		
 		color(Color.black);
 		Fill.circle(e.x, e.y, e.fout() * e.rotation * 0.7f);
 	});
@@ -67,9 +77,9 @@ public class EnergyUnit extends UnitEntity{
 		}
 	});
 	
-	public float reload = 600;
+	public float reload = 240;
 	public float teleportMinRange = 180f;
-	public float teleportRange = 340f;
+	public float teleportRange = 400f;
 	
 	public static final float effectTriggerLen = 40f;
 	
@@ -80,10 +90,7 @@ public class EnergyUnit extends UnitEntity{
 	
 	protected Trail[] trails = {};
 	
-	@Override
-	public int classId(){
-		return EntityRegister.getID(getClass());
-	}
+	@Override public int classId(){return EntityRegister.getID(getClass());}
 	
 	@Override
 	public void destroy(){
@@ -159,21 +166,40 @@ public class EnergyUnit extends UnitEntity{
 				damage[0] += bullet.damage();
 			});
 			
-			if(reloadValue > reload && (target != null || ((hitTime > 0 || num[0] > 4 || damage[0] > reload / 2)))){
+			if(teleportValid() && (target != null || ((hitTime > 0 || num[0] > 4 || damage[0] > reload / 2))) && (!isLocal() || Vars.mobile)){
 				float dst = target == null ? teleportRange + teleportMinRange : dst(target) / 2f;
 				float angle = target == null ? rotation : angleTo(target);
 				Tmp.v2.trns(angle + Mathf.range(1) * 45,dst * Mathf.random(1, 2), Mathf.range(0.2f) * dst).clamp(teleportMinRange, teleportRange).add(this).clamp(-Vars.finalWorldBounds, -Vars.finalWorldBounds, Vars.world.unitHeight() + Vars.finalWorldBounds, Vars.world.unitWidth() + Vars.finalWorldBounds);
 				
-				NHFunc.teleportUnitNet(this, Tmp.v2.x, Tmp.v2.y, angleTo(Tmp.v2.x, Tmp.v2.y), isPlayer() ? getPlayer() : null);
-				reloadValue = 0;
+				teleport(Tmp.v2.x, Tmp.v2.y);
 			}
-		}else reloadValue = 0;
-		
+		}
+	}
+	
+	public boolean teleportValid(){
+		return reloadValue > reload;
+	}
+	
+	public void teleport(float x, float y){
+		NHFunc.teleportUnitNet(this, x, y, angleTo(x, y), isPlayer() ? getPlayer() : null);
+		reloadValue = 0;
 	}
 	
 	@Override
 	public void update(){
 		super.update();
+		
+		Seq<GravityTrapField> fields = new Seq<>();
+		NHGroups.gravityTraps.intersect(x - hitSize / 4, y - hitSize / 4, hitSize / 2, hitSize / 2, fields);
+		
+		if(timer.get(1, 8))fields.each(f -> f.team() != team && f.active(), f -> {
+			Vec2 target = new Vec2(x, y);
+			NHFx.slidePoly.at(f.x, f.y, hitSize, f.team().color, target);
+			NHFx.chainLightningFade.at(f.x, f.y, 12, f.team().color, target);
+			impulseNet(Tmp.v1.set(this).sub(f).nor().scl(50 * (f.range * 0.75f - f.dst(this))));
+			damage(35f, true);
+			apply(NHStatusEffects.intercepted, 60f);
+		});
 		
 		if(!Vars.headless && lastPos.dst(this) > effectTriggerLen){
 			Sounds.plasmaboom.at(this);
@@ -182,6 +208,11 @@ public class EnergyUnit extends UnitEntity{
 			teleport.at(x, y, hitSize / 2, team.color);
 			teleport.at(lastPos.x, lastPos.y, hitSize / 2, team.color);
 			teleportTrans.at(lastPos.x, lastPos.y, hitSize / 2, team.color, new Vec2().set(this));
+			
+			for(Trail t : trails){
+				Fx.trailFade.at(lastPos.x, lastPos.y, type.trailScl, team.color, t.copy());
+				t.clear();
+			}
 		}
 		
 		lastPos.set(this);
@@ -198,7 +229,7 @@ public class EnergyUnit extends UnitEntity{
 				
 				Tmp.v1.trns(
 						Time.time * scl * rand.random(0.5f, 1.5f) + i * 360f / trails.length + rand.random(360),
-						hitSize * (1.1f + 0.35f * i) * 0.65f
+						hitSize * (1.1f + 0.5f * i) * 0.75f
 				).add(this).add(
 						Mathf.sinDeg(Time.time * scl * rand.random(0.75f, 1.25f) * s) * hitSize / 3 * (i * 0.125f + 1) * rand.random(-1.5f, 1.5f),
 						Mathf.cosDeg(Time.time * scl * rand.random(0.75f, 1.25f) * s) * hitSize / 3 * (i * 0.125f + 1) * rand.random(-1.5f, 1.5f)
@@ -209,7 +240,7 @@ public class EnergyUnit extends UnitEntity{
 		
 		if(Mathf.chanceDelta(0.15) && healthf() < 0.6f)NHFunc.randFadeLightningEffect(x, y, Mathf.range(hitSize, hitSize * 4), Mathf.range(hitSize / 4, hitSize / 2), team.color, Mathf.chance(0.5));
 		
-		if(!Vars.net.client())updateTeleport();
+		if(!Vars.net.client() || isLocal())updateTeleport();
 	}
 	
 	@Override

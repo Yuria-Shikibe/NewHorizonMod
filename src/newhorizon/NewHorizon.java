@@ -3,10 +3,8 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
-import arc.util.Align;
-import arc.util.Http;
-import arc.util.Log;
-import arc.util.Time;
+import arc.math.Mathf;
+import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.game.EventType.ClientLoadEvent;
@@ -30,8 +28,12 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-	public static final boolean DEBUGGING = false;
+	public static final boolean DEBUGGING = true;
 	public static final boolean DEBUGGING_SPRITE = false;
+	
+	public static void debugLog(Object obj){
+		if(DEBUGGING)Log.info(obj);
+	}
 	
 //	{
 //		Vars.mobile = Vars.testMobile = true;
@@ -47,6 +49,7 @@ public class NewHorizon extends Mod{
 	public static final String SERVER = "175.178.22.6:6666", SERVER_ADDRESS = "175.178.22.6", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static final String EU_NH_SERVER = "Emphasize.cn:12510";
 	
+	private static boolean showed = false;
 	public static Mods.LoadedMod MOD;
 	
 	public static Links.LinkEntry[] links;
@@ -81,8 +84,58 @@ public class NewHorizon extends Mod{
 	}
 	
 	public static void startLog(){
+		if(showed)return;
+		showed = true;
+		
 		BaseDialog dialog = new BaseDialog("");
-		dialog.closeOnBack();
+		
+		Runnable runnable = () -> {
+			Core.app.post(() -> Core.app.post(() -> Core.settings.getBoolOnce("nh-first-load", () -> {
+				new BaseDialog("CAUTION"){
+					private float countdown = 480f;
+					private boolean exitable = false;
+					
+					{
+						update(() -> {
+							countdown -= Time.delta;
+							if(countdown < 0 && !exitable){
+								exitable = true;
+								addCloseListener();
+							}
+						});
+						
+						cont.pane(t -> {
+							t.left();
+							t.table().margin(LEN).row();
+							t.defaults().align(Align.left).padLeft(OFFSET).row();
+							t.add("").update(b -> {
+								b.setText("[gray]This Dialog Can Be Closed In [accent]" + Mathf.ceil(Math.max(countdown, 0) / 60) + " [lightgray]sec." + "\n" + Core.bundle.format("startwarn.1", Mathf.ceil(Math.max(countdown, 0) / 60)));
+								if(countdown < 0)b.remove();
+							}).row();
+							t.image().growX().height(OFFSET / 3f).pad(OFFSET).color(Pal.turretHeat).row();
+							t.add("[gray]This Dialog Only Shows [lightgray]Once[] After Installation.").row();
+							t.add(Core.bundle.get("startwarn.2")).row();
+							t.image().growX().height(OFFSET / 3f).pad(OFFSET).color(Color.lightGray).row();
+							t.add("[accent]Tips:").row();
+							t.add("If the mod support your language (En, in_ID, ko, uk_UA, zh_CH) and the language of the mod doesn't fit yours, please set the language to another one, reload, set it to yours, reload again, and this should work.").padLeft(LEN).row();
+							t.add(Core.bundle.get("startwarn.3")).row();
+							t.add(Core.bundle.get("startwarn.4")).padLeft(LEN).row();
+							t.image().growX().height(OFFSET / 3f).pad(OFFSET).color(Pal.heal).row();
+							t.add("[lightgray]The warns below are special messages to Chinese players, so if you aren't Chinese, skip it.").row();
+							t.add(Core.bundle.get("startwarn.5")).row();
+							t.add(Core.bundle.get("startwarn.6")).padLeft(LEN).row();
+						}).grow().pad(LEN * 1.5f).row();
+						cont.button("", Styles.cleart, this::hide).update(b -> {
+							b.setDisabled(countdown > 0);
+							b.setText(countdown > 0 ? "[accent]" + Mathf.ceil(Math.max(countdown, 0) / 60) + " []sec." : Core.bundle.get("confirm"));
+						}).growX().height(LEN).pad(OFFSET);
+					}
+				}.show();
+			})));
+		};
+		
+		dialog.closeOnBack(runnable);
+		
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
 				table.table(t -> t.image(NHContent.icon2).fill()).center().growX().fillY().row();
@@ -94,24 +147,24 @@ public class NewHorizon extends Mod{
 				table.add("").row();
 			}).growX().center().row();
 			
-//			inner.table(table -> {
-//				if(!Vars.mobile)table.table(t -> {
-//
-//				}).grow();
-//				table.table(t -> {
-//					t.button("@back", Icon.left, Styles.transt, () -> {
-//						dialog.hide();
-//						NHSetting.applySettings();
-//					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button("@links", Icon.link, Styles.transt, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button("@settings", Icon.settings, Styles.transt, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button("@log", Icon.book, Styles.transt, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.transt, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//				}).grow();
-//				if(!Vars.mobile)table.table(t -> {
-//
-//				}).grow();
-//			}).fill();
+			inner.table(table -> {
+				if(!Vars.mobile)table.table(t -> {
+
+				}).grow();
+				table.table(t -> {
+					t.button("@back", Icon.left, Styles.cleart, () -> {
+						dialog.hide();
+						runnable.run();
+					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@links", Icon.link, Styles.cleart, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//					t.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+//					t.button("@log", Icon.book, Styles.cleart, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.cleart, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+				}).grow();
+				if(!Vars.mobile)table.table(t -> {
+
+				}).grow();
+			}).fill();
 		}).grow();
 		dialog.show();
 	}
@@ -119,15 +172,13 @@ public class NewHorizon extends Mod{
 	public NewHorizon(){
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
-		Core.app.addListener(new NHApplicationCore());
-		
 		Events.on(ClientLoadEvent.class, e -> {
 			Vars.defaultServers.add(new ServerGroup(){{
 				name = "[sky]New Horizon [white]Mod [lightgray]Servers";
 				addresses = new String[]{SERVER, EU_NH_SERVER};
 			}});
 			
-			Time.runTask(15f, () -> Core.app.post(() -> {
+			Time.runTask(15f, () -> Threads.daemon(() -> {
 				Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
 					Jval json = Jval.read(res.getResultAsString());
 					
@@ -135,38 +186,43 @@ public class NewHorizon extends Mod{
 					String body = json.get("body").asString();
 					
 					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0")) && !tag.equals('v' + MOD.meta.version)){
-						new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
-							cont.table(t -> {
-								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
-								t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
-								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
-								t.add("\t[lightgray]Version: [accent]" + tag).left().row();
-								t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
-								t.pane(c -> {
-									c.align(Align.topLeft).margin(OFFSET);
-									c.add("[accent]Description: \n[]" + body).left();
-								}).grow();
-							}).grow().padBottom(OFFSET).row();
-							
-							
-							cont.table(table -> {
-								table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
-								table.button("@mods.github.open", Icon.github, Styles.cleart, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
-							}).bottom().growX().height(LEN).padTop(OFFSET);
-							
-							addCloseListener();
-						}}.show();
+						Core.app.post(() -> {
+							new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
+								cont.table(t -> {
+									t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
+									t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
+									t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
+									t.add("\t[lightgray]Version: [accent]" + tag).left().row();
+									t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
+									t.pane(c -> {
+										c.align(Align.topLeft).margin(OFFSET);
+										c.add("[accent]Description: \n[]" + body).left();
+									}).grow();
+								}).grow().padBottom(OFFSET).row();
+								
+								
+								cont.table(table -> {
+									table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
+									table.button("@mods.github.open", Icon.github, Styles.cleart, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
+								}).bottom().growX().height(LEN).padTop(OFFSET);
+								
+								addCloseListener();
+							}}.show();
+						});
 					}
 					
 					if(tag != null) Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
 				}, ex -> Log.err(ex.toString()));
 			}));
+			
+			Core.app.post(Time.runTask(10f, NewHorizon::startLog));
 		});
 	}
 
 	@Override
 	public void init() {
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
+		Core.app.addListener(new NHModCore());
 		
 		if(Vars.headless)return;
 		
@@ -346,6 +402,7 @@ public class NewHorizon extends Mod{
 		MOD = Vars.mods.getMod(getClass());
 		
 		EntityRegister.load();
+		NHEventListenerRegister.load();
 		
 		NHContent.loadModContent();
 		
@@ -364,6 +421,7 @@ public class NewHorizon extends Mod{
 			NHUnitTypes.load();
 			NHBlocks.load();
 			NHWeathers.load();
+			NHTechTree.load();
 			
 //			Vars.content.each(c -> {
 //				if(c instanceof UnlockableContent && c.minfo.mod == MOD){

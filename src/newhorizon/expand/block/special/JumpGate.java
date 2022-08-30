@@ -21,12 +21,10 @@ import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.core.World;
 import mindustry.entities.Units;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
@@ -48,13 +46,14 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
-import newhorizon.expand.vars.NHVars;
+import newhorizon.content.NHTechTree;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.NHUI;
@@ -93,7 +92,7 @@ public class JumpGate extends Block {
     
     protected static UnitSet tmpSet;
     
-    public transient static int selectID = 0, selectNum = 1;
+    protected static int selectID = 0, selectNum = 1;
     
     protected static final Vec2 linkVec = new Vec2();
     protected static final Point2 point = new Point2();
@@ -110,10 +109,14 @@ public class JumpGate extends Block {
         solid = true;
         hasPower = hasItems = true;
         timers = 3;
+        envEnabled = Env.any;
         category = Category.units;
-        consumePowerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
-        consumePowerCond(10, JumpGateBuild::isCalling);
         logicConfigurable = true;
+        separateItemCapacity = true;
+        group = BlockGroup.units;
+        
+        consumePowerCond(basePowerDraw, (JumpGateBuild b) -> !b.isCalling());
+        
         config(Boolean.class, (JumpGateBuild tile, Boolean i) -> {
             if(i)tile.spawn(tile.getSet());
             else tile.startBuild(0, 0);
@@ -144,6 +147,7 @@ public class JumpGate extends Block {
         return super.canReplace(other) || (other instanceof JumpGate && size > other.size);
     }
     
+    /*
     public boolean canPlaceOn(Tile tile, Team team) {
         if(adaptBase == null || state.rules.infiniteResources)return true;
         CoreBlock.CoreBuild core = team.core();
@@ -186,16 +190,16 @@ public class JumpGate extends Block {
         nextItems = tile.build.items;
     
 //        if(!NHVars.state.jumpGateUseCoreItems && tile.build != null)nextItems = tile.build.items;
-    }
+    }*/
     
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         Color color = baseColor == null ? Pal.accent : baseColor;
         Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, color);
-        if (Vars.world.tile(x, y) != null) {
-            if (!canPlaceOn(Vars.world.tile(x, y), Vars.player.team())) {
-                drawPlaceText(Core.bundle.get((Vars.player.team().core() == null || !Vars.player.team().core().items.has(requirements, Vars.state.rules.buildCostMultiplier)) && !Vars.state.rules.infiniteResources ? "bar.noresources" : "nh-need-base"), x, y, valid);
-            }
-        }
+//        if (Vars.world.tile(x, y) != null) {
+//            if (!canPlaceOn(Vars.world.tile(x, y), Vars.player.team())) {
+//                drawPlaceText(Core.bundle.get((Vars.player.team().core() == null || !Vars.player.team().core().items.has(requirements, Vars.state.rules.buildCostMultiplier)) && !Vars.state.rules.infiniteResources ? "bar.noresources" : "nh-need-base"), x, y, valid);
+//            }
+//        }
     }
     
     public void addSets(UnitSet... sets){
@@ -537,7 +541,7 @@ public class JumpGate extends Block {
                         if(c == KeyCode.left)selectNum = Mathf.clamp(--selectNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
                         if(c == KeyCode.right)selectNum = Mathf.clamp(++selectNum, 1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne));
                     });
-                }}.show()).disabled(b -> NHVars.ctrl.isSelecting).size(LEN * 5, LEN);
+                }}.show()).size(LEN * 5, LEN);
             }).fill();
         }
     
@@ -740,7 +744,7 @@ public class JumpGate extends Block {
             this.sortIndex = sortIndex;
             this.costTime = costTime;
             this.requirements.addAll(requirements);
-//            if(!NHLoader.unitBuildCost.containsKey(type))NHLoader.unitBuildCost.put(type, ItemStack.mult(requirements, 20));
+            if(!NHTechTree.unitBuildCost.containsKey(type))NHTechTree.unitBuildCost.put(type, ItemStack.mult(requirements, 15));
         }
     
         @Override

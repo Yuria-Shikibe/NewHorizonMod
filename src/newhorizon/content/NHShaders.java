@@ -22,10 +22,18 @@ public class NHShaders{
 	public static Shader
 			gravityTrapShader;
 			
+	public static Shader alphaFloorer;
+	public static OutlineShader outliner;
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
 	
 	public static void init(){
+//		alphaFloorer = new ModShader("screenspace", "alphaFloorer"){
+//
+//		};
+		
+		outliner = new OutlineShader();
+		
 		hyperspace = new HyperspaceShader();
 		
 		shadowShader = new ShadowShader();
@@ -64,6 +72,26 @@ public class NHShaders{
 				return NHContent.smoothNoise;
 			}
 		};
+	}
+	
+	public static class OutlineShader extends ModShader{
+		public OutlineShader(){
+			super("screenspace", "outliner");
+		}
+		
+		public Color color = Color.lightGray;
+		
+		@Override
+		public void apply(){
+			setUniformf("u_offset",
+					Core.camera.position.x - Core.camera.width / 2,
+					Core.camera.position.y - Core.camera.height / 2);
+			setUniformf("u_dp", Scl.scl(1f));
+			setUniformf("u_time", Time.time / Scl.scl(1f));
+			setUniformf("u_color", color);
+			setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
+			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+		}
 	}
 	
 	public static class HyperspaceShader extends ModShader{
