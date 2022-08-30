@@ -1031,7 +1031,7 @@ public class NHBlocks{
 				Color color = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f);
 				
 				drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(){{
-					flameColor = color;
+					midColor = flameColor = color;
 					flameRad /= 1.585f;
 					particleStroke /= 1.35f;
 					particleLen /= 1.25f;
