@@ -162,7 +162,7 @@ public class NHBullets{
 			drag /= 2;
 			maxRange = 5f;
 			
-			lifetime = 60f * 3.25f;
+			lifetime = 60f * 1.75f;
 			
 			constructor = AdaptedTimedKillUnit::new;
 			targetPriority = 0f;
