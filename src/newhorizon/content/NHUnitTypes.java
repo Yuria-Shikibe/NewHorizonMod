@@ -14,6 +14,7 @@ import arc.struct.ObjectSet;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
@@ -638,6 +639,7 @@ public class NHUnitTypes{
 			outlineColor = OColor;
 			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, StatusEffects.shocked, StatusEffects.burning, StatusEffects.melting, StatusEffects.electrified, StatusEffects.wet, StatusEffects.slow, StatusEffects.blasted);
 			aiController = BuilderAI::new;
+			defaultCommand = UnitCommand.rebuildCommand;
 			constructor = EntityMapping.map(3);
 			abilities.add(new BoostAbility());
 			weapons.add(new RepairBeamWeapon("point-defense-mount"){{
