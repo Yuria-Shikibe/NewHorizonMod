@@ -79,7 +79,7 @@ public class RemoteCoreStorage extends StorageBlock{
 	
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation){
-		return super.canPlaceOn(tile, team, rotation) && NHGroups.placedRemoteCore[Vars.player.team().id].size < maxPlaceNum(team);
+		return super.canPlaceOn(tile, team, rotation) && NHGroups.placedRemoteCore[team.id].size < maxPlaceNum(team);
 	}
 	
 	public class RemoteCoreStorageBuild extends StorageBuild{
