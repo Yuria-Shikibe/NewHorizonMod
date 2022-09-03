@@ -981,7 +981,7 @@ public class NHBlocks{
 			liquidCapacity = 60f;
 			itemCapacity = 20;
 			hasPower = hasLiquids = hasItems = true;
-			drawer = new DrawMulti(new DrawDefault(), new DrawLiquidTile(Liquids.oil), new DrawRegion("-top"));
+			drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion(Liquids.oil), new DrawRegion("-top"));
 			consumePower(5f);
 			consumeItems(new ItemStack(Items.sand, 5));
 			outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
