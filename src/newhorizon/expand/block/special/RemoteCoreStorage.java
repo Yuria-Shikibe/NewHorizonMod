@@ -95,7 +95,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void add(){
-			if(!added)NHGroups.placedRemoteCore[Vars.player.team().id].add(this);
+			if(!added)NHGroups.placedRemoteCore[team.id].add(this);
 			
 			super.add();
 		}
