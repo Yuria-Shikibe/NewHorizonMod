@@ -89,7 +89,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		@Override
 		public void remove(){
 			super.remove();
-			NHGroups.placedRemoteCore[Vars.player.team().id].remove(this);
+			NHGroups.placedRemoteCore[team.id].remove(this);
 		}
 		
 		
@@ -102,7 +102,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0 && core() != null && NHGroups.placedRemoteCore[Vars.player.team().id].size <= maxPlaceNum(team)){
+			if(efficiency() > 0 && core() != null && NHGroups.placedRemoteCore[team.id].size <= maxPlaceNum(team)){
 				if(Mathf.equal(warmup, 1, 0.015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{
