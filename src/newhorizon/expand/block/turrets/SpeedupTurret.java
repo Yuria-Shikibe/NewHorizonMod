@@ -89,6 +89,7 @@ public class SpeedupTurret extends PowerTurret{
 			if(overheat < overheatTime && !requireCompleteCooling){
 				super.updateTile();
 			}else{
+				slowDownReload = 0;
 				coolDown();
 				if(linearWarmup){
 					shootWarmup = Mathf.approachDelta(shootWarmup, 0, shootWarmupSpeed);
@@ -127,7 +128,7 @@ public class SpeedupTurret extends PowerTurret{
 	            reloadCounter = 0f;
             }else{
 	            reloadCounter += (1 + speedupScl) * delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
-	            overheat = Mathf.approachDelta(overheat, overheatTime + 0.05f, ((speedupScl / maxSpeedupScl) * 1) / (1 + (liquids().current() == null ? 0 : liquids().current().heatCapacity)));
+	            overheat = Mathf.approachDelta(overheat, overheatTime + 0.05f, timeScale * ((speedupScl / maxSpeedupScl) * 1) / (1 + (liquids().current() == null ? 0 : liquids().current().heatCapacity)));
 	            if(overheat > overheatTime)requireCompleteCooling = true;
             }
         }
