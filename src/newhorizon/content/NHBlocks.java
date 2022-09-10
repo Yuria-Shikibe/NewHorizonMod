@@ -292,7 +292,7 @@ public class NHBlocks{
 					moveY = -2.75f;
 					progress = PartProgress.recoil;
 					children.add(new RegionPart("-shooter"){{
-						heatLayerOffset = 0f;
+						heatLayerOffset = 0.001f;
 						heatColor = NHColor.thurmixRed.cpy().a(0.85f);
 						progress = PartProgress.warmup;
 						mirror = outline = true;
@@ -301,7 +301,7 @@ public class NHBlocks{
 						moveRot = 11.25f;
 					}});
 				}}, new RegionPart("-up"){{
-					layerOffset = 0.00001f;
+					layerOffset = 0.3f;
 					
 					heatColor = NHColor.thurmixRed.cpy().a(0.85f);
 					outline = false;
