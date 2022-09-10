@@ -48,6 +48,7 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.sandbox.PowerVoid;
 import mindustry.world.blocks.storage.StorageBlock;
+import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
@@ -66,6 +67,8 @@ import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
+import newhorizon.expand.block.turrets.SpeedupTurret;
+import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
@@ -277,7 +280,57 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		argmot = new SpeedupTurret("argmot"){{
+			shoot = new ShootAlternate(){{
+				spread = 7f;
+			}};
+			
+			drawer = new DrawTurret(){{
+				parts.add(new RegionPart(){{
+					drawRegion = false;
+					mirror = true;
+					moveY = -2.75f;
+					progress = PartProgress.recoil;
+					children.add(new RegionPart("-shooter"){{
+						heatColor = NHColor.thurmixRed.cpy().a(0.85f);
+						progress = PartProgress.warmup;
+						mirror = outline = true;
+						moveX = 2f;
+						moveY = 2f;
+						moveRot = 11.25f;
+					}});
+				}}, new RegionPart("-up"){{
+					layerOffset = 0.00001f;
+					
+					heatColor = NHColor.thurmixRed.cpy().a(0.85f);
+					outline = false;
+				}});
+			}};
+			
+			warmupMaintainTime = 30f;
+			
+			health = 960;
+			requirements(Category.turret, with(NHItems.multipleSteel, 120, NHItems.juniorProcessor, 80, Items.plastanium, 120));
+			maxSpeedupScl = 9f;
+			speedupPerShoot = 0.3f;
+			hasLiquids = true;
+			coolant = new ConsumeCoolant(0.15f);
+			consumePowerCond(8f, TurretBuild::isActive);
+			size = 3;
+			range = 200;
+			reload = 60f;
+			shootCone = 24f;
+			shootSound = NHSounds.laser3;
+			shootType = new PosLightningType(75f){{
+				lightningColor = hitColor = NHColor.lightSkyBack;
+				maxRange = rangeOverride = 250f;
+				hitEffect = NHFx.hitSpark;
+				smokeEffect = Fx.shootBigSmoke2;
+			}};
+		}};
+		
 		eternity = new ItemTurret("eternity"){{
+			armor = 30;
 			size = 16;
 			outlineRadius = 7;
 			range = 1200;
@@ -288,7 +341,7 @@ public class NHBlocks{
 			
 			drawer = new DrawTurret(){{
 				parts.add(new RegionPart("-side"){{
-					under = mirror = true;
+					under = turretShading = mirror = true;
 					moveX = 6f;
 					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
 				}}, new RegionPart("-side-down"){{
@@ -610,7 +663,7 @@ public class NHBlocks{
 		atomSeparator = new LaserTurret("atom-separator"){{
 			health = 12000;
 			range = 360f;
-			shootEffect = NHFx.hugeSmoke;
+			shootEffect = NHFx.hugeSmokeGray;
 			shootCone = 20.0F;
 			recoil = 6.0F;
 			size = 5;
@@ -827,11 +880,13 @@ public class NHBlocks{
 		
 		endOfEra = new ShootMatchTurret("end-of-era"){{
 			recoil = 5f;
+			armor = 15;
 			
+			warmupMaintainTime = 30f;
 			coolant = consumeCoolant(0.5F);
 			moveWhileCharging = false;
 			
-			shootWarmupSpeed = 0.05f;
+			shootWarmupSpeed = 0.035f;
 			
 			drawer = new DrawTurret(){{
 				parts.add(new RegionPart("-charger"){{
@@ -908,9 +963,11 @@ public class NHBlocks{
 					0, -22, 0,
 				};
 				firstShotDelay = NHFx.darkEnergyChargeBegin.lifetime;
-				shots = 6;
+				shots = 3;
 				shotDelay = 12f;
 			}});
+			
+			rotateSpeed = 1f;
 			ammoPerShot = 4;
 			maxAmmo = 20;
 			size = 8;
@@ -935,7 +992,7 @@ public class NHBlocks{
 			craftTime = 45f;
 			itemCapacity = 20;
 			hasPower = hasItems = true;
-			craftEffect = NHFx.hugeSmoke;
+			craftEffect = NHFx.hugeSmokeGray;
 			updateEffect = new Effect(80f, e -> {
 				Fx.rand.setSeed(e.id);
 				Draw.color(Color.lightGray, Color.gray, e.fin());
@@ -981,7 +1038,7 @@ public class NHBlocks{
 			liquidCapacity = 60f;
 			itemCapacity = 20;
 			hasPower = hasLiquids = hasItems = true;
-			drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion(Liquids.oil), new DrawRegion("-top"));
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault(), new DrawRegion("-top"));
 			consumePower(5f);
 			consumeItems(new ItemStack(Items.sand, 5));
 			outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
@@ -1474,6 +1531,8 @@ public class NHBlocks{
 			health = 8000;
 			range = 800;
 			
+			armor = 20f;
+			
 			generateType = new Shooter(450){{
 				Color c = Items.surgeAlloy.color;
 				colors = new Color[]{c.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f), c.cpy().mul(1f, 1f, 1f, 0.6f), c, Color.white};
@@ -1501,6 +1560,8 @@ public class NHBlocks{
 			size = 3;
 			consumePowerCond(30f, LaserWallBuild::canActivate);
 			health = 4000;
+			
+			armor = 10f;
 			
 			requirements(Category.defense, with(NHItems.juniorProcessor, 120, Items.copper, 350, NHItems.multipleSteel, 80, NHItems.zeta, 180, Items.graphite, 80));
 //			NHTechTree.add(Blocks.forceProjector, this);
@@ -2017,17 +2078,21 @@ public class NHBlocks{
 		}};
 		
 		setonWall = new Wall("seton-wall"){{
+			armor = 15f;
+			
 			size = 1;
 			health = 1250;
-			chanceDeflect = 10.0F;
+			chanceDeflect = 15.0F;
 			flashHit = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 5, NHItems.irayrondPanel, 10, Items.silicon, 15, NHItems.presstanium, 15));
 		}};
 		
 		setonWallLarge = new Wall("seton-wall-large"){{
+			armor = 15f;
+			
 			size = 2;
 			health = 1250 * healthMult2;
-			chanceDeflect = 10.0F;
+			chanceDeflect = 15.0F;
 			flashHit = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult2, NHItems.irayrondPanel, 10 * healthMult2, Items.silicon, 15 * healthMult2, NHItems.presstanium, 15 * healthMult2));
 		}};
@@ -2043,6 +2108,8 @@ public class NHBlocks{
 			hasPower = true;
 			consumesPower = true;
 			conductivePower = true;
+			
+			armor = 30f;
 			
 			size = 1;
 			health = 1750;
@@ -2086,6 +2153,8 @@ public class NHBlocks{
 			regenSpeed = 5f * healthMult2;
 			glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
 			consumePower(8f / 60f * healthMult2);
+			
+			armor = 30f;
 			
 			outputsPower = false;
 			hasPower = true;
@@ -2134,6 +2203,8 @@ public class NHBlocks{
 			range = 120;
             health = 1350;
             effectColor = NHColor.lightSkyBack;
+			
+			armor = 10f;
 		}};
 		
 		chargeWallLarge = new ChargeWall("charge-wall-large"){{
@@ -2143,6 +2214,8 @@ public class NHBlocks{
 			range = 200;
             health = 1350 * healthMult2;
             effectColor = NHColor.lightSkyBack;
+			
+			armor = 10f;
 		}};
 		
 		irdryonVault = new StorageBlock("irdryon-vault"){{
@@ -2160,6 +2233,8 @@ public class NHBlocks{
 			spawnDelay = 90f;
 			spawnReloadTime = 750f;
 			range = 160f;
+			
+			armor = 5f;
 			
 			itemCapacity = 500;
 			
@@ -2219,6 +2294,8 @@ public class NHBlocks{
 					Items.thorium, 1000
 			));
 			
+			armor = 10f;
+			
 			itemCapacity = 1200;
 			
 			addSets(
@@ -2265,6 +2342,8 @@ public class NHBlocks{
 			size = 8;
 			adaptable = true;
 			adaptBase = jumpGateJunior;
+			
+			armor = 20f;
 			
 			itemCapacity = 3000;
 			

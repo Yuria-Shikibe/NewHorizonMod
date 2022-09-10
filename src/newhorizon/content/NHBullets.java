@@ -19,6 +19,7 @@ import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
+import mindustry.entities.abilities.MoveEffectAbility;
 import mindustry.entities.bullet.*;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
@@ -119,7 +120,7 @@ public class NHBullets{
 			despawnEffect = NHFx.lightningHitLarge(hitColor);
 			hitEffect = new OptionalMultiEffect(NHFx.hitSpark(backColor, 65f, 22, splashDamageRadius, 4, 16), NHFx.blast(backColor, splashDamageRadius));
 			shootEffect = NHFx.hitSpark(backColor, 45f, 12, 60, 3, 8);
-			smokeEffect = NHFx.hugeSmoke;
+			smokeEffect = NHFx.hugeSmokeGray;
 		}};
 		
 		hyperBlast = new BasicBulletType(3.3f, 400){{
@@ -155,18 +156,20 @@ public class NHBullets{
 		loadPriority();
 		
 		airRaidMissile = new MissileUnitType("air-raid-missile"){{
-			speed = 14.6f;
+			speed = 4.6f;
 			accel = 0.5f;
 			drag /= 2;
 			maxRange = 5f;
 			
-			lifetime = 60f * 1.05f;
+			lifetime = 60f * 3.35f;
 			
 			constructor = AdaptedTimedKillUnit::new;
 			targetPriority = 0f;
 			
 			rotateSpeed = 6.5f;
 			baseRotateSpeed = 6.5f;
+			
+			armor = 10;
 			
 			outlineColor = Pal.darkOutline;
 			health = 3000;
@@ -179,6 +182,14 @@ public class NHBullets{
 			trailLength = 45;
 			deathExplosionEffect = Fx.none;
 			loopSoundVolume = 0.1f;
+			
+			abilities.add(new MoveEffectAbility(){{
+				effect = NHFx.hugeSmoke;
+				rotation = 180f;
+				y = -22f;
+				color = Color.grays(0.6f).lerp(NHColor.darkEnrColor, 0.5f).a(0.9f);
+				interval = 5f;
+			}});
 			
 			clipSize = 620;
 			
@@ -200,7 +211,7 @@ public class NHBullets{
 				
 				shootSound = Sounds.explosionbig;
 				
-				bullet = new ExplosionBulletType(600f, 120f){{
+				bullet = new ExplosionBulletType(900, 120f){{
 					trailColor = lightColor = lightningColor = NHColor.darkEnrColor;
 					
 					suppressionRange = 140f;
@@ -253,7 +264,7 @@ public class NHBullets{
 			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
 			smokeEffect = Fx.shootBigSmoke;
 			
-			despawnEffect = hitEffect = new OptionalMultiEffect(NHFx.hitSparkLarge, NHFx.square(backColor, 85f, 5, 52, 5), NHFx.hugeSmoke);
+			despawnEffect = hitEffect = new OptionalMultiEffect(NHFx.hitSparkLarge, NHFx.square(backColor, 85f, 5, 52, 5), NHFx.hugeSmokeGray);
 			
 			ammoMultiplier = 4;
 		}};
@@ -726,7 +737,7 @@ public class NHBullets{
 				
 				hitEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
 				
-				shootEffect = NHFx.hugeSmoke;
+				shootEffect = NHFx.hugeSmokeGray;
 				smokeEffect = new Effect(45f, e -> {
 					color(lightColor, Color.white, e.fout() * 0.7f);
 					randLenVectors(e.id, 8, 5 + 55 * e.fin(), e.rotation, 45, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));

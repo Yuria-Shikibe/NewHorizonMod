@@ -57,6 +57,9 @@ public class NHTechTree{
 			});
 			
 			node(NHBlocks.jumpGatePrimary, () -> {
+				node(NHBlocks.jumpGateJunior, () -> {
+					node(NHBlocks.jumpGate);
+				});
 				nodeUnit(NHUnitTypes.origin, () -> {
 					nodeUnit(NHUnitTypes.thynomo, () -> {
 						nodeUnit(NHUnitTypes.aliotiat, () -> {
@@ -115,6 +118,7 @@ public class NHTechTree{
 				
 				});
 				node(NHBlocks.synchro, () -> {
+					node(NHBlocks.argmot);
 					node(NHBlocks.multipleLauncher, () -> {
 						node(NHBlocks.bloodStar, () -> {
 							node(NHBlocks.endOfEra, () -> {

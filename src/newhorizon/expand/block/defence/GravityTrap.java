@@ -79,7 +79,7 @@ public class GravityTrap extends Block{
 		super.drawPlace(x, y, rotation, valid);
 		
 		Lines.stroke(3, Pal.gray);
-		Lines.square(x * tilesize + offset, y * tilesize + offset, range * tilesize);
+		Lines.square(x * tilesize + offset, y * tilesize + offset, range * tilesize + 1);
 		
 		Lines.stroke(1, Vars.player.team().color);
 		Lines.square(x * tilesize + offset, y * tilesize + offset, range * tilesize);
@@ -120,15 +120,18 @@ public class GravityTrap extends Block{
 		}
 		
 		@Override
-		public void pickedUp(){
+		public void afterPickedUp(){
+			super.afterPickedUp();
 			warmup = 0;
 			NHGroups.gravityTraps.remove(field);
 		}
 		
+		
+		
 		@Override
 		public void drawConfigure(){
 			Lines.stroke(3, Pal.gray);
-			Lines.square(x, y, range());
+			Lines.square(x, y, range() + 1);
 			
 			Lines.stroke(1, team.color);
 			Lines.square(x, y, range());

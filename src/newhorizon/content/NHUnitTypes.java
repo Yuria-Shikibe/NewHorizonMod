@@ -182,7 +182,7 @@ public class NHUnitTypes{
 			}};
 			
 			rotateSpeed = 1f;
-			shootSound = NHSounds.flak;
+			shootSound = NHSounds.flak2;
 			shootCone = 5f;
 			shootY = 15f;
 			reload = 300f;
@@ -234,7 +234,7 @@ public class NHUnitTypes{
 				
 				frontColor = NHColor.lightSkyFront;
 				shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
-				smokeEffect = NHFx.hugeSmoke;
+				smokeEffect = NHFx.hugeSmokeGray;
 				trailChance = 0.6f;
 				trailEffect = NHFx.trailToGray;
 				despawnShake = 22f;
@@ -719,7 +719,7 @@ public class NHUnitTypes{
 							shotDelay = 8f;
 						}};
 						
-						shootSound = NHSounds.thermoShoot;
+						shootSound = NHSounds.laser5;
 
 						bullet = new TrailFadeBulletType(7f, 200f, "missile-large"){{
 							trailLength = 20;
@@ -775,6 +775,8 @@ public class NHUnitTypes{
 							hittable = false;
 							absorbable = false;
 
+							pierceArmor = true;
+							
 							collidesAir = true;
 							collidesGround = collidesTiles = false;
 
@@ -1269,7 +1271,7 @@ public class NHUnitTypes{
 							shootEffect = NHFx.shootCircleSmall(backColor);
 							smokeEffect = Fx.shootSmallSmoke;
 							despawnEffect = NHFx.lightningHitLarge(backColor);
-							hitEffect = NHFx.hugeSmoke;
+							hitEffect = NHFx.hugeSmokeGray;
 						}};
 					}}
 			);
@@ -1374,7 +1376,7 @@ public class NHUnitTypes{
 							hitSound = Sounds.plasmaboom;
 							shrinkX = shrinkY = 0.7f;
 					}};
-					shootSound = Sounds.laser;
+					shootSound = NHSounds.laser4;
 				}}, new Weapon(NewHorizon.name("arc-blaster")){{
 					top = true;
 					rotate = true;
@@ -1604,7 +1606,7 @@ public class NHUnitTypes{
 						y = -7;
 						reload = 75f;
 						recoil = 7f;
-						shootSound = Sounds.laser;
+						shootSound = NHSounds.laser3;
 						cooldownTime = 40f;
 
 						bullet = NHBullets.saviourBullet;
@@ -2018,7 +2020,7 @@ public class NHUnitTypes{
 							hitSound = Sounds.explosion;
 							hitEffect = NHFx.hitSpark(backColor, 75f, 24, 95f, 2.8f, 16);
 							
-							smokeEffect = new OptionalMultiEffect(NHFx.hugeSmoke, NHFx.circleSplash(backColor, 60f, 8, 60f, 6));
+							smokeEffect = new OptionalMultiEffect(NHFx.hugeSmokeGray, NHFx.circleSplash(backColor, 60f, 8, 60f, 6));
 							shootEffect = NHFx.hitSpark(backColor, 30f, 15, 35f, 1.7f, 8);
 							
 							despawnEffect = NHFx.blast(backColor, 60);
@@ -2170,7 +2172,7 @@ public class NHUnitTypes{
 					progress = PartProgress.warmup.add(PartProgress.recoil.mul(0.3f));
 				}});
 				
-				bullet = new ShieldBreakerType(9, 200f, 1200){{
+				bullet = new ShieldBreakerType(9, 300f, 1200){{
 					sprite = NHBullets.MISSILE_LARGE;
 					trailColor = lightningColor = backColor = lightColor = NHColor.thurmixRed;
 					frontColor = NHColor.thurmixRedLight;
@@ -2193,7 +2195,7 @@ public class NHUnitTypes{
 					hitSound = despawnSound = Sounds.explosion;
 					hitEffect = new OptionalMultiEffect(NHFx.blast(backColor, 60f), NHFx.hitSpark(backColor, 75f, 8, 80f, 2f, 12f));
 
-					smokeEffect = NHFx.hugeSmoke;
+					smokeEffect = NHFx.hugeSmokeGray;
 					shootEffect = NHFx.shootLineSmall(backColor);
 
 					despawnEffect = NHFx.lightningHitLarge(backColor);
@@ -2203,7 +2205,7 @@ public class NHUnitTypes{
 				}};
 
 				shoot = new ShootPattern(){{
-					shots = 5;
+					shots = 3;
 					shotDelay = 14f;
 				}};
 				

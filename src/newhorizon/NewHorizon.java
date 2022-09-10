@@ -28,8 +28,8 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-	public static final boolean DEBUGGING = false;
-	public static final boolean DEBUGGING_SPRITE = true;
+	public static final boolean DEBUGGING = true;
+	public static final boolean DEBUGGING_SPRITE = false;
 	
 	public static void debugLog(Object obj){
 		if(DEBUGGING)Log.info(obj);
@@ -71,16 +71,16 @@ public class NewHorizon extends Mod{
 			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent),
 			new Links.LinkEntry("yuria.plugin", "https://github.com/Yuria-Shikibe/RangeImager", Icon.export, NHColor.thurmixRed)
 		};
-//
-//		BaseDialog dialog = new BaseDialog("@links");
-//		dialog.cont.pane(table -> {
-//			for(Links.LinkEntry entry : links){
-//				TableFunc.link(table, entry);
-//			}
-//		}).grow().row();
-//		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN);
-//		dialog.addCloseListener();
-//		dialog.show();
+
+		BaseDialog dialog = new BaseDialog("@links");
+		dialog.cont.pane(table -> {
+			for(Links.LinkEntry entry : links){
+				TableFunc.link(table, entry);
+			}
+		}).grow().row();
+		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN);
+		dialog.addCloseListener();
+		dialog.show();
 	}
 	
 	public static void startLog(){
@@ -156,7 +156,7 @@ public class NewHorizon extends Mod{
 						dialog.hide();
 						runnable.run();
 					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button("@links", Icon.link, Styles.cleart, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@links", Icon.link, Styles.cleart, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 //					t.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 //					t.button("@log", Icon.book, Styles.cleart, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.cleart, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
@@ -171,6 +171,8 @@ public class NewHorizon extends Mod{
 	
 	public NewHorizon(){
 		Log.info("Loaded NewHorizon Mod constructor.");
+		
+		NHInputListener.registerModBinding();
 		
 		Events.on(ClientLoadEvent.class, e -> {
 			Vars.defaultServers.add(new ServerGroup(){{
@@ -406,12 +408,14 @@ public class NewHorizon extends Mod{
 		
 		NHContent.loadModContent();
 		
+		NHSounds.load();
+		
 		if(!Vars.headless){
-			NHSounds.load();
+			
 			NHShaders.init();
 		}
 		
-		NHContent.loadAfterContent();
+		NHContent.loadBeforeContentLoad();
 		
 		{
 			NHStatusEffects.load();
@@ -429,6 +433,8 @@ public class NewHorizon extends Mod{
 //				}
 //			});
 		}
+		
+		NHContent.loadLast();
 		
 		contentLoadComplete = true;
 		

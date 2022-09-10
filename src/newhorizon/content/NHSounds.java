@@ -4,11 +4,17 @@ import arc.Core;
 import arc.assets.AssetDescriptor;
 import arc.assets.loaders.SoundLoader;
 import arc.audio.Sound;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.audio.SoundLoop;
+import newhorizon.NewHorizon;
+
+import java.lang.reflect.Field;
 
 public class NHSounds{
 	public static Sound
+		cannon, laser2, laser3, laser4, laser5, thermo,
+		flak2 = new Sound(),
 		alert2 = new Sound(),
 		shock = new Sound(),
 		alarm = new Sound(),
@@ -20,7 +26,6 @@ public class NHSounds{
 		coil = new Sound(),
 		flak = new Sound(),
 		gauss = new Sound(),
-		pulse = new Sound(),
 		scatter = new Sound(),
 		thermoShoot = new Sound(),
 		jumpIn = new Sound(),
@@ -39,28 +44,37 @@ public class NHSounds{
 	}
 	
 	public static void load(){
-		alert2 = loadSound("alert-2");
-		shock = loadSound("shock");
-		alarm = loadSound("alarm");
-		hyperspace = loadSound("hyperspace");
-		rapidLaser = loadSound("rapidLaser");
-		launch = loadSound("launch");
-		railGunBlast = loadSound("railGunBlast");
-		railGunCharge = loadSound("railGunCharge");
-		blaster = loadSound("blaster");
-		coil = loadSound("coil");
-		flak = loadSound("flak");
-		gauss = loadSound("gauss");
-		pulse = loadSound("pulse");
-		scatter = loadSound("scatter");
-		jumpIn = loadSound("jumpIn");
-		metalWalk = loadSound("metalWalk");
-		thermoShoot = loadSound("thermoShoot");
-		hugeShoot = loadSound("hugeShoot");
-		hugeBlast = loadSound("hugeBlast");
-		signal = loadSound("signal");
-		synchro = loadSound("synchro");
-		defenceBreak = loadSound("break");
+		Class<?> c = NHSounds.class;
+		Seq<Field> fields = new Seq<>(c.getFields());
+		fields.filter(f -> Sound.class.equals(f.getType()));
+		try{
+			for(Field f : fields)f.set(null, loadSound(f.getName()));
+		}catch(IllegalAccessException e){
+			e.printStackTrace();
+		}
+		
+//		flak2 = loadSound("flak2");
+//		alert2 = loadSound("alert2");
+//		shock = loadSound("shock");
+//		alarm = loadSound("alarm");
+//		hyperspace = loadSound("hyperspace");
+//		rapidLaser = loadSound("rapidLaser");
+//		launch = loadSound("launch");
+//		railGunBlast = loadSound("railGunBlast");
+//		railGunCharge = loadSound("railGunCharge");
+//		blaster = loadSound("blaster");
+//		coil = loadSound("coil");
+//		flak = loadSound("flak");
+//		gauss = loadSound("gauss");
+//		scatter = loadSound("scatter");
+//		jumpIn = loadSound("jumpIn");
+//		metalWalk = loadSound("metalWalk");
+//		thermoShoot = loadSound("thermoShoot");
+//		hugeShoot = loadSound("hugeShoot");
+//		hugeBlast = loadSound("hugeBlast");
+//		signal = loadSound("signal");
+//		synchro = loadSound("synchro");
+//		defenceBreak = loadSound("break");
 		
 		alertLoop = new SoundLoop(alert2, 1);
 	}
@@ -74,6 +88,7 @@ public class NHSounds{
 			
 			AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
 			desc.errored = Throwable::printStackTrace;
+			NewHorizon.debugLog("loaded Sound: " + soundName);
 			return sound;
 		}else return new Sound();
 	}

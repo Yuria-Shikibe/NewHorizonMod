@@ -38,7 +38,7 @@ public class NHContent extends Content{
 		new NHContent().load();
 	}
 	
-	public static void loadAfterContent(){
+	public static void loadBeforeContentLoad(){
 		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum){
 			//			@Override
 			//			public void end(){
@@ -47,6 +47,10 @@ public class NHContent extends Content{
 			//				Vars.renderer.blocks.floor.beginDraw();
 			//			}
 		});
+	}
+	
+	public static void loadLast(){
+	
 	}
 	
 	@Override

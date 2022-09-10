@@ -44,6 +44,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
@@ -476,5 +477,9 @@ public class TableFunc{
                     Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove()))
             );
         });
+    }
+    
+    public static void link(Table parent, Links.LinkEntry link){
+        parent.add(new NHUI.LinkTable(link)).size(NHUI.LinkTable.w + OFFSET * 2f, NHUI.LinkTable.h).padTop(OFFSET / 2f).row();
     }
 }

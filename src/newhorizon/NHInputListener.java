@@ -43,13 +43,13 @@ public class NHInputListener{
 									(KeyBinds.Axis)def.defaultValue(type) : new KeyBinds.Axis((KeyCode)def.defaultValue(type)));
 				}
 			}
+			
 		}catch(NoSuchFieldException | IllegalAccessException e){
 			e.printStackTrace();
 		}
 	}
 	
 	public NHInputListener(){
-		NHInputListener.registerModBinding();
 //		Seq<KeyBinds.KeyBind> binds = new Seq<>(KeyBinds.KeyBind.class);
 //		binds.addAll(Binding.values());
 //		binds.addAll(NHKeyBinding.values());

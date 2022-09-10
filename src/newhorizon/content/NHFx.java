@@ -623,6 +623,17 @@ public class NHFx{
 			Drawf.light(e.x, e.y, rad * e.fout(Interp.circleOut) * 4f, e.color, 0.7f);
 		}).layer(Layer.effect + 0.001f),
 	
+		hitSpark = new Effect(40, e -> {
+			color(e.color, Color.white, e.fout() * 0.3f);
+			stroke(e.fout() * 1.6f);
+			
+			rand.setSeed(e.id);
+			randLenVectors(e.id, 11, e.finpow() * 20f, (x, y) -> {
+				float ang = Mathf.angle(x, y);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(2.5f, 6.25f) + 1f);
+			});
+		}),
+	
 		hitSparkLarge = new Effect(40, e -> {
 			color(e.color, Color.white, e.fout() * 0.3f);
 			stroke(e.fout() * 1.6f);
@@ -630,7 +641,7 @@ public class NHFx{
 			rand.setSeed(e.id);
 			randLenVectors(e.id, 18, e.finpow() * 27f, (x, y) -> {
 				float ang = Mathf.angle(x, y);
-				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(4, 8) + 1f);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(4, 8) + 2f);
 			});
 		}),
 	
@@ -641,7 +652,7 @@ public class NHFx{
 			rand.setSeed(e.id);
 			randLenVectors(e.id, 26, e.finpow() * 65f, (x, y) -> {
 				float ang = Mathf.angle(x, y);
-				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(6, 9) + 2f);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(6, 9) + 3f);
 			});
 		}),
 	
@@ -1174,8 +1185,14 @@ public class NHFx{
 			});
 		}),
 		
-		hugeSmoke = new Effect(40f, e -> {
+		hugeSmokeGray = new Effect(40f, e -> {
 			Draw.color(Color.lightGray, Color.gray, e.fin());
+			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
+			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
+		}),
+	
+		hugeSmoke = new Effect(40f, e -> {
+			Draw.color(e.color);
 			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
 		}),
