@@ -2083,6 +2083,8 @@ public class NHBlocks{
 		setonWall = new Wall("seton-wall"){{
 			armor = 15f;
 			
+			insulated = true;
+			
 			size = 1;
 			health = 1250;
 			chanceDeflect = 15.0F;
@@ -2092,6 +2094,8 @@ public class NHBlocks{
 		
 		setonWallLarge = new Wall("seton-wall-large"){{
 			armor = 15f;
+			
+			insulated = true;
 			
 			size = 2;
 			health = 1250 * healthMult2;
