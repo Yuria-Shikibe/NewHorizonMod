@@ -302,7 +302,8 @@ public class NHBlocks{
 					}});
 				}}, new RegionPart("-up"){{
 					layerOffset = 0.3f;
-					heatLayerOffset += layerOffset;
+					
+					turretHeatLayer += layerOffset + 0.1f;
 					
 					heatColor = NHColor.thurmixRed.cpy().a(0.85f);
 					outline = false;
