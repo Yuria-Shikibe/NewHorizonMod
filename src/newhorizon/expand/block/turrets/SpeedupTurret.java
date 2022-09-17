@@ -17,7 +17,7 @@ import newhorizon.content.NHColor;
 public class SpeedupTurret extends PowerTurret{
 	
 	public float overheatTime = 360f;
-	public float overheatCoolAmount = 3f;
+	public float overheatCoolAmount = 1.25f;
 	
 	public float maxSpeedupScl = 0.5f;
 	public float speedupPerShoot = 0.075f;

@@ -310,7 +310,7 @@ public class NHBlocks{
 				}});
 			}};
 			
-			warmupMaintainTime = 30f;
+			warmupMaintainTime = 120f;
 			
 			health = 960;
 			requirements(Category.turret, with(NHItems.multipleSteel, 120, NHItems.juniorProcessor, 80, Items.plastanium, 120));
