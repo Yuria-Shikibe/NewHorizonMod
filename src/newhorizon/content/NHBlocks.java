@@ -9,7 +9,10 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.util.Eachable;
 import arc.util.Time;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
@@ -19,6 +22,7 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ContinuousFlameBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
@@ -46,6 +50,8 @@ import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.SolidPump;
+import mindustry.world.blocks.sandbox.ItemSource;
+import mindustry.world.blocks.sandbox.LiquidSource;
 import mindustry.world.blocks.sandbox.PowerVoid;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumeCoolant;
@@ -66,6 +72,7 @@ import newhorizon.expand.block.special.HyperGenerator;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.block.special.UnitSpawner;
+import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.PosLightningType;
@@ -75,8 +82,7 @@ import newhorizon.util.graphic.OptionalMultiEffect;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.renderer;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
 
 public class NHBlocks{
@@ -84,6 +90,7 @@ public class NHBlocks{
 	//Load Mod Factories
 
 	public static Block
+		reinForcedItemSource, reinForcedLiquidSource,
 		//delivery,
 		zetaOre, xenMelter, hyperGenerator, fusionCollapser,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior, jumpGatePrimary,
@@ -280,6 +287,22 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		gravity = new MultTractorBeamTurret("gravity"){{
+			size = 3;
+			requirements(Category.turret, ItemStack.with(Items.metaglass, 35, NHItems.juniorProcessor, 15, Items.lead, 80, NHItems.presstanium, 45));
+			health = 1020;
+			maxAttract = 8;
+			shootCone = 60f;
+			range = 300f;
+			hasPower = true;
+			force = 40.0F;
+			scaledForce = 8.0F;
+			shootLength = size * tilesize / 2f - 3;
+			damage = 0.15F;
+			rotateSpeed = 6f;
+			consumePowerCond(6.0F, (MultTractorBeamBuild e) -> e.target != null);
+		}};
+		
 		argmot = new SpeedupTurret("argmot"){{
 			shoot = new ShootAlternate(){{
 				spread = 7f;
@@ -794,6 +817,15 @@ public class NHBlocks{
 			health = 1250;
 			coolant = consumeCoolant(0.2F);
 			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
+			
+			drawer = new DrawTurret(){{
+				parts.add(new RegionPart("-shooter"){{
+					mirror = true;
+					progress = PartProgress.warmup.compress(0, 0.75f);
+					moveX = 0.75f;
+					moveY = -1.5f;
+				}});
+			}};
 			
 			ammo(
 					Items.titanium, NHBullets.missileTitanium,
@@ -1527,6 +1559,80 @@ public class NHBlocks{
 	
 	public static void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		reinForcedLiquidSource = new LiquidSource("reinforced-liquid-source"){{
+			size = 1;
+			health = 800;
+			armor = 10;
+			buildVisibility = BuildVisibility.sandboxOnly;
+			
+			category = Category.liquid;
+			
+			buildType = () -> new LiquidSourceBuild(){
+				@Override
+				public boolean canPickup(){
+					return false;
+				}
+				
+				@Override
+				public void write(Writes write){
+					write.str(source == null ? "null-liquid" : source.name);
+				}
+				
+				@Override
+				public void read(Reads read, byte revision){
+					source = content.liquid(read.str());
+				}
+			};
+		}};
+		
+		reinForcedItemSource = new ItemSource("reinforced-item-source"){{
+			size = 1;
+			health = 800;
+			armor = 10;
+			buildVisibility = BuildVisibility.sandboxOnly;
+			
+			buildType = () -> new ItemSourceBuild(){
+				@Override
+				public boolean canPickup(){
+					return false;
+				}
+				
+				@Override
+				public void draw(){
+					if (this.block.variants != 0 && this.block.variantRegions != null) {
+						Draw.rect(this.block.variantRegions[Mathf.randomSeed((long)this.tile.pos(), 0, Math.max(0, this.block.variantRegions.length - 1))], this.x, this.y, this.drawrot());
+					} else {
+						Draw.rect(this.block.region, this.x, this.y, this.drawrot());
+					}
+					
+					this.drawTeamTop();
+					
+					if(outputItem == null){
+						Draw.rect(NHContent.crossRegion, x, y);
+					}else{
+						Draw.color(outputItem.color);
+						Draw.rect(NHContent.sourceCenter, x, y);
+						Draw.color();
+					}
+				}
+				
+				@Override
+				public void write(Writes write){
+					write.str(outputItem == null ? "null-item" : outputItem.name);
+				}
+				
+				@Override
+				public void read(Reads read, byte revision){
+					outputItem = content.item(read.str());
+				}
+			};
+		}
+			@Override
+			public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list){
+				drawPlanConfigCenter(plan, plan.config, NewHorizon.name("source-center"), true);
+			}
+		};
 		
 		ancientLaserWall = new LaserWallBlock("ancient-laser-wall"){{
 			size = 2;

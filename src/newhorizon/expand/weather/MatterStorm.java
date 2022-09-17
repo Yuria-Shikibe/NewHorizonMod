@@ -224,12 +224,37 @@ public class MatterStorm extends Weather{
 			};
 		}
 	}
-
-	@Override
-	public void update(WeatherState state){
-		float speed = force * state.intensity * Time.delta;
-		float ang = state.windVector.angle();
-	}
+//
+//	@Override
+//	public void update(WeatherState state){
+//		float speed = force * state.intensity * Time.delta;
+//		float ang = state.windVector.angle();
+//
+//		if(speed > 0.001f){
+//			if(!Vars.headless)Vars.renderer.shake(force / 3, force);
+//
+//			for(Unit entity : Groups.unit){
+//				if(!GravityTrapField.IntersectedAlly.get(entity.team, entity)){
+//					entity.impulse(Tmp.v1.set(state.windVector).scl(speed * (entity.isFlying() ? 1 : 0.4f)));
+//					entity.reloadMultiplier(overload);
+//					if(Mathf.chanceDelta(sparkEffectChance * Time.delta))sparkEffect.at(entity.x, entity.y, ang, getColor(), entity.hitSize);
+//				}
+//			}
+//
+//			if(rotateBullets)for(Bullet entity : Groups.bullet){
+//				if(entity.type.absorbable && !GravityTrapField.IntersectedAlly.get(entity.team, entity)){
+//					entity.vel().setAngle(Angles.moveToward(entity.vel.angle(), ang, speed / 500 * entity.vel.len()));
+//					entity.vel().add(Tmp.v1.set(state.windVector).scl(speed / 220));
+//				}
+//			}
+//
+//			if(buildingEmp > 0){
+//				Groups.build.each(b -> b.block.hasPower && b.block.canOverdrive && b.timeScale() < buildingEmp, b -> {
+//					b.applySlowdown(buildingEmp, 30f);
+//				});
+//			}
+//		}
+//	}
 
 	@Override
 	public void updateEffect(WeatherState state){

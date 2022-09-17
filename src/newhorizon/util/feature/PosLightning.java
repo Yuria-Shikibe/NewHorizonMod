@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Geometry;
 import arc.math.geom.Position;
 import arc.math.geom.Rect;
@@ -27,6 +28,8 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.graphics.Layer;
+import newhorizon.NHSetting;
+import newhorizon.content.NHFx;
 import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.util.func.Vec2Seq;
 
@@ -60,6 +63,7 @@ public class PosLightning {
 	
 	public static final Cons<Position> none = p -> {};
 	
+	public static final Rand rand = new Rand();
 	public static final FloatSeq floatSeq = new FloatSeq();
 	public static final float lifetime = Fx.chainLightning.lifetime;
 	public static final float WIDTH = 2.5f;
@@ -231,6 +235,11 @@ public class PosLightning {
 
 	//create lightning effect.
 	public static void createBoltEffect(Color color, float width, Vec2Seq vets) {
+		if(NHSetting.enableDetails()){
+			vets.each(((x, y) -> {
+				if(Mathf.chance(0.0855))NHFx.lightningSpark.at(x, y, rand.random(2f + width, 4f + width),color);
+			}));
+		}
 		posLightning.at((vets.firstTmp().x + vets.peekTmp().x) / 2f, (vets.firstTmp().y + vets.peekTmp().y) / 2f, width, color, vets);
 	}
 	

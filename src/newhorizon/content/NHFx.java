@@ -771,13 +771,23 @@ public class NHFx{
 			
 			e.scaled(7f, s -> {
 				stroke(0.5f + s.fout());
-				Lines.circle(e.x, e.y, s.fin() * e.rotation);
+				Lines.circle(e.x, e.y, s.fin() * (e.rotation + 12f));
 			});
 			
 			stroke(0.75f + e.fout());
 			
-			randLenVectors(e.id, 6, e.fin() * e.rotation + 5f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 2f));
+			randLenVectors(e.id, 6, e.fin() * e.rotation + 7f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 2f));
 		
+			Fill.circle(e.x, e.y, 2.5f * e.fout());
+		}),
+	
+		lightningSpark = new Effect(Fx.chainLightning.lifetime, e -> {
+			color(Color.white, e.color, e.fin() + 0.25f);
+			
+			stroke(0.65f + e.fout());
+			
+			randLenVectors(e.id, 3, e.fin() * e.rotation + 6f, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 4 + 2f));
+			
 			Fill.circle(e.x, e.y, 2.5f * e.fout());
 		}),
 	

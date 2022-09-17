@@ -16,6 +16,12 @@ public class NHTechTree{
 	}
 	
 	public static void load(){
+		unitBuildCost.each((u, is) -> {
+			if(u instanceof NHUnitTypes.NHUnitType){
+				((NHUnitTypes.NHUnitType)u).setRequirements(is);
+			}
+		});
+		
 		nodeRoot("new-horizon", NHBlocks.presstaniumFactory, () -> {
 			node(NHBlocks.zetaGenerator, () -> {
 				node(NHBlocks.hyperGenerator);
@@ -117,8 +123,12 @@ public class NHTechTree{
 				node(NHBlocks.thermoTurret, () -> {
 				
 				});
+				
 				node(NHBlocks.synchro, () -> {
-					node(NHBlocks.argmot);
+					node(NHBlocks.argmot, () -> {
+						node(NHBlocks.gravity);
+					});
+					
 					node(NHBlocks.multipleLauncher, () -> {
 						node(NHBlocks.bloodStar, () -> {
 							node(NHBlocks.endOfEra, () -> {

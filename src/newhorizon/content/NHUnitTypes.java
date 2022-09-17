@@ -33,6 +33,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
+import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
@@ -71,7 +72,7 @@ public class NHUnitTypes{
 			
 			;
 	
-	public static UnitType
+	public static NHUnitType
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
 			assaulter, anvil, collapser, //Air-2
@@ -97,6 +98,16 @@ public class NHUnitTypes{
 			EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
 		}
 	
+	public static class NHUnitType extends UnitType{
+		public NHUnitType(String name){
+			super(name);
+		}
+		
+		public void setRequirements(ItemStack[] stacks){
+			firstRequirements = cachedRequirements = stacks;
+		}
+	}
+		
 	public static Weapon copyAnd(Weapon weapon, Cons<Weapon> modifier){
 		Weapon n = weapon.copy();
 		modifier.get(n);
@@ -544,7 +555,7 @@ public class NHUnitTypes{
 		
 		loadPreviousWeapon();
 		
-		assaulter = new UnitType("assaulter") {
+		assaulter = new NHUnitType("assaulter") {
 			{
 				constructor = EntityMapping.map(3);
 				hitSize = 16.0F;
@@ -635,7 +646,7 @@ public class NHUnitTypes{
 			}
 		};
 		
-		rhino = new UnitType("rhino"){{
+		rhino = new NHUnitType("rhino"){{
 			outlineColor = OColor;
 			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, StatusEffects.shocked, StatusEffects.burning, StatusEffects.melting, StatusEffects.electrified, StatusEffects.wet, StatusEffects.slow, StatusEffects.blasted);
 			aiController = BuilderAI::new;
@@ -672,7 +683,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		naxos = new UnitType("naxos"){{
+		naxos = new NHUnitType("naxos"){{
 			outlineColor = OColor;
 			constructor = EntityMapping.map(3);
 			health = 8500.0F;
@@ -865,7 +876,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		annihilation = new UnitType("annihilation"){{
+		annihilation = new NHUnitType("annihilation"){{
 			outlineColor = OColor;
 			drawShields = false;
 			weapons.add(
@@ -944,7 +955,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 		
-		sharp = new UnitType("sharp"){{
+		sharp = new NHUnitType("sharp"){{
 			outlineColor = OColor;
 			constructor = EntityMapping.map(3);
 
@@ -1006,7 +1017,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 
-		branch = new UnitType("branch"){{
+		branch = new NHUnitType("branch"){{
 			outlineColor = OColor;
 			constructor = EntityMapping.map(3);
 			weapons.add(new Weapon(){{
@@ -1069,7 +1080,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 
-		warper = new UnitType("warper"){{
+		warper = new NHUnitType("warper"){{
 			outlineColor = OColor;
 			constructor = EntityMapping.map(3);
 			weapons.add(new Weapon(){{
@@ -1105,7 +1116,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		origin = new UnitType("origin"){{
+		origin = new NHUnitType("origin"){{
 			outlineColor = OColor;
 			weapons.add(
 				new Weapon(NewHorizon.name("origin-weapon")){{
@@ -1147,7 +1158,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 
-		thynomo = new UnitType("thynomo"){{
+		thynomo = new NHUnitType("thynomo"){{
 			outlineColor = OColor;
 			weapons.add(
 				new Weapon(NewHorizon.name("thynomo-weapon")){{
@@ -1204,7 +1215,7 @@ public class NHUnitTypes{
 		};
 
 		
-		ghost = new UnitType("ghost"){{
+		ghost = new NHUnitType("ghost"){{
 			outlineColor = OColor;
 			health = 1200;
 			speed = 1.75f;
@@ -1284,7 +1295,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 
-		zarkov = new UnitType("zarkov"){{
+		zarkov = new NHUnitType("zarkov"){{
 			outlineColor = OColor;
 			weapons.add(
 				copyAndMove(multipleLauncher, 8, -22),
@@ -1313,7 +1324,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		tarlidor = new UnitType("tarlidor"){{
+		tarlidor = new NHUnitType("tarlidor"){{
 			outlineColor = OColor;
 			abilities.add(new ShieldRegenFieldAbility(50.0F, 50F, 600.0F, 800.0F));
 			weapons.add(
@@ -1421,7 +1432,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 		
-		aliotiat = new UnitType("aliotiat"){{
+		aliotiat = new NHUnitType("aliotiat"){{
 			outlineColor = OColor;
 			weapons.add(copyAndMoveAnd(posLiTurret, 10f, 3f, w -> {
 				w.shoot = new ShootPattern();
@@ -1447,7 +1458,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 		
-		gather = new UnitType("gather"){{
+		gather = new NHUnitType("gather"){{
 			outlineColor = OColor;
 			aiController = MinerAI::new;
 			constructor = EntityMapping.map(3);
@@ -1485,7 +1496,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 		
-		saviour = new UnitType("saviour"){{
+		saviour = new NHUnitType("saviour"){{
 			outlineColor = OColor;
 			aiController = SniperAI::new;
 			hitSize = 55f;
@@ -1629,7 +1640,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		longinus = new UnitType("longinus"){{
+		longinus = new NHUnitType("longinus"){{
 			outlineColor = OColor;
 			constructor = EntityMapping.map(3);
 			lowAltitude = true;
@@ -1909,7 +1920,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		declining = new UnitType("declining"){{
+		declining = new NHUnitType("declining"){{
 			outlineColor = OColor;
 			weapons.add(copyAndMove(mainCannon, 0, -17));
 			weapons.add(copyAndMove(mainCannon, 0, 25));
@@ -1942,7 +1953,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		sin = new UnitType("sin"){{
+		sin = new NHUnitType("sin"){{
 			outlineColor = OColor;
 			abilities.add(new ForceFieldAbility(88.0F, 20F, 5000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f){{
 				activeEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 60f, 240f, 4f, 45);
@@ -2098,7 +2109,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 		
-		anvil = new UnitType("anvil"){{
+		anvil = new NHUnitType("anvil"){{
 			outlineColor = OColor;
 			constructor = EntityMapping.map(3);
 
@@ -2290,7 +2301,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		guardian = new UnitType("guardian"){{
+		guardian = new NHUnitType("guardian"){{
 			clipSize = 260f;
 			
 			engineLayer = Layer.effect;

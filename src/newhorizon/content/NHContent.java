@@ -28,6 +28,7 @@ public class NHContent extends Content{
 			quantum;
 	
 	public static TextureRegion
+			crossRegion, sourceCenter,
 			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade,
 			linkArrow;
 	
@@ -68,6 +69,8 @@ public class NHContent extends Content{
 		UltFire.load();
 		if(NHPixmap.isDebugging())process();
 		
+		crossRegion = Core.atlas.find("cross");
+		sourceCenter = Core.atlas.find(NewHorizon.name("source-center"));
 		upgrade = Core.atlas.find(NewHorizon.name("upgrade"));
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));
