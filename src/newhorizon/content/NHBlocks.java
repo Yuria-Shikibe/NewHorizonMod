@@ -917,6 +917,8 @@ public class NHBlocks{
 			recoil = 5f;
 			armor = 15;
 			
+			unitSort = UnitSorts.strongest;
+			
 			warmupMaintainTime = 30f;
 			coolant = consumeCoolant(0.5F);
 			moveWhileCharging = false;
