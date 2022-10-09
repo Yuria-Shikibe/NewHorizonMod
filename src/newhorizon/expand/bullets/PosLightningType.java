@@ -10,6 +10,7 @@ import newhorizon.util.feature.PosLightning;
 
 public class PosLightningType extends BulletType{
 	public int boltNum = 2;
+	public float hitEffectRotation = 12f;
 	
 	public PosLightningType(float damage){
 		super(0.0001f, damage);
@@ -60,7 +61,7 @@ public class PosLightningType extends BulletType{
 		}
 		
 		PosLightning.createLength(b, b.team, b, length, b.rotation(), lightningColor, true, 0, 0, PosLightning.WIDTH, boltNum, p -> {
-			hitEffect.at(p);
+			hitEffect.at(p.getX(), p.getY(), hitEffectRotation, hitColor);
 			Effect.shake(hitShake, hitShake, p);
 		});
 		super.init(b);

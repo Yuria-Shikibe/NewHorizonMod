@@ -35,7 +35,7 @@ public class NHContent extends Content{
 	public static TextureRegion //UI
 		raid, objective, fleet, capture;
 	
-	public static void loadModContent(){
+	public static void loadPriority(){
 		new NHContent().load();
 	}
 	

@@ -480,6 +480,6 @@ public class TableFunc{
     }
     
     public static void link(Table parent, Links.LinkEntry link){
-        parent.add(new NHUI.LinkTable(link)).size(NHUI.LinkTable.w + OFFSET * 2f, NHUI.LinkTable.h).padTop(OFFSET / 2f).row();
+        parent.add(new NHUIFunc.LinkTable(link)).size(NHUIFunc.LinkTable.w + OFFSET * 2f, NHUIFunc.LinkTable.h).padTop(OFFSET / 2f).row();
     }
 }

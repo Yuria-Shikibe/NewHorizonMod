@@ -72,7 +72,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 	
 	public void init(Unit unit, Vec2 to, float rotation){
 		finalRot = rotation;
-		size = unit.hitSize * 2f;
+		drawSize = unit.hitSize * 2f;
 		this.unit = unit;
 		this.to = to;
 		team(unit.team());
@@ -93,7 +93,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 			trail.draw(team.color, 4f);
 		}
 		
-		if(!onMove && team != null) Drawf.light(this, size * fslope(), team.color, 0.8f);
+		if(!onMove && team != null) Drawf.light(this, drawSize * fslope(), team.color, 0.8f);
 		if(!onMove && unit != null && !unit.isNull()){
 			float height = Mathf.curve(fslope() * fslope(), 0f, 0.3f) * 1.1f;
 			float width = Mathf.curve(fslope() * fslope(), 0.35f, 0.75f) * 1.1f;
@@ -106,7 +106,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 				
 				Draw.color(Pal.ammo);
 				Draw.z(Layer.bullet - 0.1f);
-				float size = this.size / 3;
+				float size = this.drawSize / 3;
 				float sin = Mathf.absin(Time.time * DrawFunc.sinScl, 8f, 2f);
 				float length = size / 1.5f + sin;
 				
@@ -202,7 +202,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 			x += vel.x;
 			y += vel.y;
 			
-			NHGroups.gravityTraps.intersect(x - size / 2f, y - size / 2f, size, size, b -> {
+			NHGroups.gravityTraps.intersect(x - drawSize / 2f, y - drawSize / 2f, drawSize, drawSize, b -> {
 				if(b.team() != team && b.active()){
 					intercepted = true;
 					toCarry.unit.damage(toCarry.unit.health * 0.3f);

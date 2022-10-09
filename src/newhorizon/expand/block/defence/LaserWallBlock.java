@@ -34,7 +34,7 @@ import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.NHEventListenerRegister;
+import newhorizon.NHRegister;
 import newhorizon.NHSetting;
 import newhorizon.content.NHColor;
 import newhorizon.expand.interfaces.Linkablec;
@@ -218,7 +218,7 @@ public class LaserWallBlock extends Block{
 		@Override
 		public void created(){
 			linkPos(linkPos);
-			NHEventListenerRegister.postAfterLoad(() -> linkPos(linkPos));
+			NHRegister.postAfterLoad(() -> linkPos(linkPos));
 		}
 		
 		@Override

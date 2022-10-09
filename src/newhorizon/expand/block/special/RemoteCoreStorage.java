@@ -40,6 +40,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		hasItems = true;
 		itemCapacity = 0;
 		configurable = true;
+		replaceable = false;
 	}
 	
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
@@ -48,7 +49,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		}
 	}
 	
-	public static int maxPlaceNum(Team team){
+	public int maxPlaceNum(Team team){
 		return (team == Vars.state.rules.waveTeam && !state.rules.pvp) || team.rules().cheat ? Integer.MAX_VALUE : Mathf.clamp(Vars.world.width() * Vars.world.height() / 10000, 3, 10);
 	}
 	
@@ -62,9 +63,9 @@ public class RemoteCoreStorage extends StorageBlock{
 		super.setBars();
 		addBar("maxPlace", (RemoteCoreStorageBuild entity) ->
 			new Bar(
-				() -> "Max Place | " + NHGroups.placedRemoteCore[Vars.player.team().id].size + " / " + maxPlaceNum(entity.team),
-				() -> NHGroups.placedRemoteCore[Vars.player.team().id].size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
-				() -> (float)NHGroups.placedRemoteCore[Vars.player.team().id].size / maxPlaceNum(entity.team)
+				() -> "Max Place | " + NHGroups.placedRemoteCore[entity.team.id].size + " / " + maxPlaceNum(entity.team),
+				() -> NHGroups.placedRemoteCore[entity.team.id].size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
+				() -> (float)NHGroups.placedRemoteCore[entity.team.id].size / maxPlaceNum(entity.team)
 			)
 		);
 		addBar("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
@@ -75,7 +76,6 @@ public class RemoteCoreStorage extends StorageBlock{
 			() -> (float)(entity.items.total() / ((tmpCoreBuild = entity.core()) == null ? Integer.MAX_VALUE : tmpCoreBuild.storageCapacity)))
 		);
 	}
-	
 	
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation){
@@ -150,6 +150,11 @@ public class RemoteCoreStorage extends StorageBlock{
 					Lines.square(x + Tmp.v1.x, y + Tmp.v1.y, (1 - f) * 8, 45);
 				}
 			}
+		}
+		
+		@Override
+		public boolean canPickup(){
+			return false;
 		}
 		
 		@Override

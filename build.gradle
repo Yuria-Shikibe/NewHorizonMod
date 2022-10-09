@@ -1,3 +1,5 @@
+import java.time.Instant
+
 apply plugin: "java"
 
 version '1.0'
@@ -12,7 +14,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v138'
+    mindustryVersion = 'v139'
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
@@ -24,8 +26,8 @@ ext{
     }
 }
 
-sourceCompatibility = 8
-targetCompatibility = 8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 //java 8 backwards compatibility flag
 //allprojects{
@@ -57,7 +59,7 @@ task jarAndroid{
         //dex and desugar files - this requires d8 in your PATH
 //        String s = "E:/SDK_Tools/android-13/d8.bat $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar";
 //        doExec(s.toString());
-        doExec "E:/apps/Android/Sdk/build-tools/30.0.2/d8.bat $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar";
+        doExec "E:/apps/Android/Sdk/build-tools/30.0.2/d8.bat $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
     }
 }
 
@@ -88,17 +90,61 @@ task deleteLast{
 }
 
 task debugMod{
-    dependsOn deleteLast
-    dependsOn jar
-
     def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
+    def debugLog = new File("$rootDir/build/libs/debug.properties")
+    if(!debugLog.exists())debugLog.createNewFile()
 
+    doFirst {
+        try{
+
+            Reader fileReader = new FileReader(debugLog)
+            Properties property = new Properties()
+            property.load(fileReader)
+            Instant last
+
+            try {
+                def toEpochMilli = Long.parseLong(String.valueOf(property.get("lastInstant_toEpochMilli")))
+                last = Instant.ofEpochMilli(toEpochMilli)
+            }catch(e){
+                last = Instant.ofEpochMilli(0)
+            }
+
+            fileReader.close()
+
+
+            for (ProcessHandle p : ProcessHandle.allProcesses()){
+                if(p.info().startInstant().isPresent() && last == p.info().startInstant().get()){
+                    Runtime.getRuntime().exec("taskkill /PID " + p.pid())
+                    break
+                }
+            }
+        }catch(IOException e){
+            e.printStackTrace()
+        }
+    }
+
+    dependsOn jar
+    dependsOn deleteLast
 
     doLast {
+        System.gc()
+
         try{
             if(!fi.exists())throw new RuntimeException("Missing Mod File")
-            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar"))throw new RuntimeException("Failed to replace the old version mod")
-            Runtime.getRuntime().exec("java -jar $rootDir/build/libs/Mindustry.jar")
+            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")){
+                throw new RuntimeException("Failed to replace the old version mod")
+            }
+
+//            Process p = Runtime.getRuntime().exec("java -jar E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/build/libs/Mindustry.jar")
+//
+//            Writer writer = new FileWriter(debugLog)
+//            Reader reader = new FileReader(debugLog)
+//            Properties properties = new Properties()
+//            properties.load(reader)
+//            properties.setProperty("lastInstant_toEpochMilli",  String.valueOf(p.info().startInstant().get().toEpochMilli()))
+//            properties.store(writer, "debug")
+//            reader.close()
+//            writer.close()
         }catch(IOException io){
             System.out.print(io)
         }

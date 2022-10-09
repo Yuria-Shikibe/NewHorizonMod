@@ -237,7 +237,7 @@ public class PosLightning {
 	public static void createBoltEffect(Color color, float width, Vec2Seq vets) {
 		if(NHSetting.enableDetails()){
 			vets.each(((x, y) -> {
-				if(Mathf.chance(0.0855))NHFx.lightningSpark.at(x, y, rand.random(2f + width, 4f + width),color);
+				if(Mathf.chance(0.0855))NHFx.lightningSpark.at(x, y, rand.random(2f + width, 4f + width), color);
 			}));
 		}
 		posLightning.at((vets.firstTmp().x + vets.peekTmp().x) / 2f, (vets.firstTmp().y + vets.peekTmp().y) / 2f, width, color, vets);

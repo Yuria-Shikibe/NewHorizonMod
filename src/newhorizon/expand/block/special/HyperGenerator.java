@@ -110,11 +110,12 @@ public class HyperGenerator extends PowerGenerator{
 	
 	public void setBars() {
 		super.setBars();
-		addBar("poweroutput", (HyperGeneratorBuild entity) -> new Bar(
-			() -> Core.bundle.format("bar.poweroutput", Strings.fixed(Math.max(entity.getPowerProduction() - entity.power().status, 0.0F) * 60.0F * entity.timeScale(), 1)),
-			() -> Pal.powerBar,
-			() -> entity.productionEfficiency)
-		);
+		
+		addBar("power", (HyperGeneratorBuild entity) -> new Bar(() ->
+				Core.bundle.format("bar.poweroutput",
+						Strings.fixed(Math.max(entity.getPowerProduction() - consPower.usage, 0) * 60 * entity.timeScale(), 1)),
+				() -> Pal.powerBar,
+				() -> entity.productionEfficiency));
 	}
 	
 	public void setStats() {

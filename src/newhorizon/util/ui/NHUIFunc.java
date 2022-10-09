@@ -5,6 +5,8 @@ import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.scene.actions.Actions;
+import arc.scene.event.Touchable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
@@ -12,6 +14,7 @@ import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Strings;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -19,6 +22,8 @@ import mindustry.content.StatusEffects;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.pattern.ShootMulti;
+import mindustry.entities.pattern.ShootPattern;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
@@ -31,20 +36,81 @@ import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import mindustry.world.modules.ItemModule;
+import newhorizon.NHUI;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.special.JumpGate;
+import newhorizon.util.annotation.HeadlessDisabled;
+import newhorizon.util.func.NHInterp;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-public class NHUI{
+public class NHUIFunc{
 	private static float damage = 0;
+	private static long lastToast, waiting;
 	
 	public static Table coreInfo;
 	
 	public static void init(){
 		coreInfo = ui.hudGroup.find("coreinfo");
+	}
+	
+	@HeadlessDisabled
+	public static void showLabel(float duration, Cons<Table> modifier){
+		if(state.isMenu() || headless)return;
+		
+		scheduleToast(duration, () -> {
+			if(state.isMenu())return;
+			
+			Table table = new Table(){{
+				touchable = Touchable.disabled;
+				update(() -> {
+					if(state.isMenu())remove();
+					setWidth(NHUI.getWidth());
+					setPosition(0, (NHUI.getHeight() - height) / 2);
+				});
+				color.a(0);
+				actions(Actions.fadeIn(0.45f, NHInterp.bounce5Out), Actions.delay(duration), Actions.fadeOut(0.5f), Actions.remove());
+			}}.margin(4);
+			
+			modifier.get(table);
+			
+			table.pack();
+			table.act(0f);
+			
+			NHUI.root.addChild(table);
+		});
+	}
+	
+	@HeadlessDisabled
+	private static void scheduleToast(float time, Runnable run){
+		if(waiting > 5)return;
+		long duration = (int)((time + 1.25f) * 1000);
+		long since = Time.timeSinceMillis(lastToast);
+		if(since > duration){
+			lastToast = Time.millis();
+			run.run();
+		}else{
+			waiting++;
+			Time.runTask((duration - since) / 1000f * 60f, () -> {
+				waiting--;
+				run.run();
+			});
+			lastToast += duration;
+		}
+	}
+	
+	public static int getTotalShots(ShootPattern pattern){
+		int total = 0;
+		
+		if(pattern instanceof ShootMulti){
+			ShootMulti multi = (ShootMulti)pattern;
+			for(ShootPattern p : multi.dest)total += getTotalShots(p);
+			total *= pattern.shots;
+		}else total = pattern.shots;
+		
+		return total;
 	}
 	
 	public static float estimateBulletDamage(BulletType type, int num, boolean init){

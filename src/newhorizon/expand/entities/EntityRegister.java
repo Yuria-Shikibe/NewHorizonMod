@@ -8,6 +8,7 @@ import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
+import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
 
@@ -26,7 +27,8 @@ public class EntityRegister{
 //		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
 		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
 		EntityRegister.put(UltFire.class, UltFire::new);
-//		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
+		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
+		EntityRegister.put(WorldEvent.class, WorldEvent::new);
 //		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 	}
 	

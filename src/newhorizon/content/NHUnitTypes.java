@@ -343,7 +343,7 @@ public class NHUnitTypes{
 			shootY = 5f;
 			top = true;
 			rotate = true;
-			bullet = new BasicBulletType(5.25f, 100f, NHBullets.STRIKE){{
+			bullet = new BasicBulletType(5.25f, 150f, NHBullets.STRIKE){{
 				lifetime = 50;
 				
 				knockback = 12f;
@@ -558,6 +558,7 @@ public class NHUnitTypes{
 		assaulter = new NHUnitType("assaulter") {
 			{
 				constructor = EntityMapping.map(3);
+				itemCapacity = 10;
 				hitSize = 16.0F;
 				armor = 8.0F;
 				health = 220.0F;
@@ -829,7 +830,7 @@ public class NHUnitTypes{
 							public void hit(Bullet b, float x, float y){
 								super.hit(b, x, y);
 
-								if(b.owner instanceof Healthc)((Healthc)b.owner).healFract(b.damage / 10);
+								if(b.owner instanceof Healthc)((Healthc)b.owner).healFract(b.damage / 30);
 							}
 
 							@Override
@@ -1461,6 +1462,7 @@ public class NHUnitTypes{
 		gather = new NHUnitType("gather"){{
 			outlineColor = OColor;
 			aiController = MinerAI::new;
+			defaultCommand = UnitCommand.mineCommand;
 			constructor = EntityMapping.map(3);
 			immunities = ObjectSet.with(NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, StatusEffects.shocked, StatusEffects.burning, StatusEffects.melting, StatusEffects.electrified, StatusEffects.wet, StatusEffects.slow, StatusEffects.blasted);
 			weapons.add(new RepairBeamWeapon("repair-beam-weapon-center"){{
@@ -1628,7 +1630,7 @@ public class NHUnitTypes{
 				effectRadius = 6f;
 				sectors = 6;
 				sectorRad = 0.065f;
-			}});
+			}}, new GravityTrapAbility(240));
 		}
 
 			@Override
@@ -1642,6 +1644,7 @@ public class NHUnitTypes{
 		
 		longinus = new NHUnitType("longinus"){{
 			outlineColor = OColor;
+			aiController = SniperAI::new;
 			constructor = EntityMapping.map(3);
 			lowAltitude = true;
 			health = 10000.0F;

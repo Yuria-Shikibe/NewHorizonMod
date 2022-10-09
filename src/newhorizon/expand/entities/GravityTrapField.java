@@ -46,7 +46,19 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 		tmpSeq.clear();
 		NHGroups.gravityTraps.intersect(rect, tmpSeq);
 		for(GravityTrapField f : tmpSeq){
-			if(team.team() == f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, team.x(), team.y())){
+			if(team.team() == f.team() && f.active()){
+				return true;
+			}
+		}
+		
+		return false;
+	};
+	
+	public static final Boolf2<Teamc, Rect> IntersectedHostileRect = (team, rect) -> {
+		tmpSeq.clear();
+		NHGroups.gravityTraps.intersect(rect, tmpSeq);
+		for(GravityTrapField f : tmpSeq){
+			if(team.team() != f.team() && f.active()){
 				return true;
 			}
 		}
@@ -59,7 +71,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 		tmpSeq.clear();
 		NHGroups.gravityTraps.intersect(tmpRect, tmpSeq);
 		for(GravityTrapField f : tmpSeq){
-			if(team != f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y())){
+			if(team != f.team() && f.active()){
 				return true;
 			}
 		}

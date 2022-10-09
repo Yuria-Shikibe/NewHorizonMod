@@ -12,17 +12,18 @@ import mindustry.world.blocks.environment.Floor;
 import static mindustry.Vars.player;
 
 public abstract class NHBaseEntity implements Posc, Drawc{
-	public float x = 0, y = 0, size = 40;
+	public float x = 0, y = 0, drawSize = 40;
 	public boolean added;
 	public transient int id = EntityGroup.nextId();
 	
 	@Override
 	public float clipSize(){
-		return size * 2;
+		return drawSize * 2;
 	}
 	
 	@Override
 	public void remove(){
+		if(!added)return;
 		Groups.draw.remove(this);
 		Groups.all.remove(this);
 		added = false;

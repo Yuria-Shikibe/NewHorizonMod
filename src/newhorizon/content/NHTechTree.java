@@ -33,6 +33,7 @@ public class NHTechTree{
 					node(NHBlocks.gravityTrapSmall, () -> {
 						node(NHBlocks.hyperspaceWarper);
 						node(NHBlocks.gravityTrap);
+						node(NHBlocks.assignOverdrive);
 					});
 				});
 				node(NHBlocks.largeShieldGenerator);

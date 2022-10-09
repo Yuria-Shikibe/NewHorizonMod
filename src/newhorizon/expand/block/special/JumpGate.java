@@ -56,7 +56,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHTechTree;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
-import newhorizon.util.ui.NHUI;
+import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
 import org.jetbrains.annotations.NotNull;
 
@@ -258,7 +258,7 @@ public class JumpGate extends Block {
             t.row().add(Core.bundle.get("editor.spawn") + ":").left().pad(OFFSET).row();
             for(Integer i : getSortedKeys()) {
                 UnitSet set = calls.get(i);
-                t.add(new NHUI.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.cleari, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
+                t.add(new NHUIFunc.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.cleari, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
             }
         });
     }
@@ -453,7 +453,7 @@ public class JumpGate extends Block {
                     for(Integer hashcode : getSortedKeys()) {
                         UnitSet set = calls.get(hashcode);
                         callTable.table(Tex.pane, info -> {
-                            info.add(new NHUI.UnitSetTable(set, table2 -> {
+                            info.add(new NHUIFunc.UnitSetTable(set, table2 -> {
                                 table2.button(Icon.infoCircle, Styles.cleari, () -> showInfo(set, new Label(() -> ("[lightgray]Construction Available?: " + TableFunc.judge(canSpawn(set, false) && hasConsume(set, spawnNum)))), realItems())).size(LEN);
                                 table2.button(Icon.add, Styles.cleari, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();

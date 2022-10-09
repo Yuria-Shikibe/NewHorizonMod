@@ -177,6 +177,8 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			configureChargeProgress = 0;
 			initiateConfigure = false;
 			reload = Math.max(0, reload - reloadTime);
+			
+			consume();
 		}
 		
 		@Override

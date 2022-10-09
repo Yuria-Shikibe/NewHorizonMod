@@ -33,10 +33,9 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHSounds;
-import newhorizon.content.NHUnitTypes;
 import newhorizon.util.Tool_Internal;
-import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 
@@ -423,7 +422,7 @@ public class DebugDialog extends BaseDialog{
 			t.button("see Tex", () -> Tool_Internal.showTexture(NHContent.smoothNoise));
 			
 			t.button("summon", () -> {
-				NHFunc.spawnSingleUnit(player.team(), player.x, player.y, player.unit().rotation, 300f, NHUnitTypes.longinus);
+				NHInbuiltEvents.intervention_std.create();
 			});
 		}).grow();
 		

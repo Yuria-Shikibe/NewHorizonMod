@@ -7,7 +7,7 @@ import mindustry.gen.Teamc;
 
 import static mindustry.Vars.state;
 
-//TODO to be down
+//TODO to be done
 public class InterceptorAI extends FlyingAI{
 	//	@Override
 	//	public void updateMovement(){

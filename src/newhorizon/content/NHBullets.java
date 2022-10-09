@@ -52,7 +52,7 @@ public class NHBullets{
 	public static UnitType airRaidMissile;
 	
 	public static BulletType
-			warperBullet,
+			warperBullet, airRaidBomb,
 			hyperBlastLinker, hyperBlast,
 			arc_9000, eternity,
 			synchroZeta, synchroThermoPst, synchroFusion, synchroPhase,
@@ -154,6 +154,36 @@ public class NHBullets{
 		STRIKE = NewHorizon.name("strike");
 		
 		loadPriority();
+		
+		airRaidBomb = new BasicBulletType(18f, 800f, NHBullets.STRIKE){{
+			trailLength = 14;
+			
+			trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
+			frontColor = Color.white;
+			
+			hitSound = Sounds.explosionbig;
+			trailChance = 0.075f;
+			trailEffect = NHFx.polyTrail;
+			drawSize = 120f;
+			
+			collides = false;
+			scaleLife = true;
+			hitShake = despawnShake = 16f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = lightningLength = 20;
+			shootEffect = NHFx.instShoot(backColor, frontColor);
+			smokeEffect = NHFx.square(NHColor.darkEnrColor, 50f, 3, 80f, 5f);
+			shrinkX = shrinkY = 0;
+			splashDamageRadius = 100f;
+			splashDamage = lightningDamage = damage;
+			height = 66f;
+			width = 20f;
+			lifetime = 120f;
+			
+			despawnEffect = NHFx.instHit(backColor, 4, 180f);
+			hitEffect = new OptionalMultiEffect(NHFx.largeDarkEnergyHit, NHFx.square(NHColor.darkEnrColor, 100f, 3, 80f, 8f), NHFx.largeDarkEnergyHitCircle);
+		}};
 		
 		airRaidMissile = new MissileUnitType("air-raid-missile"){{
 			speed = 4.6f;

@@ -3,6 +3,6 @@ author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "Warning: Unfinished For V7"
-version: "0.1.7"
+version: "0.2.1"
 
-minGameVersion: 138
+minGameVersion: 139

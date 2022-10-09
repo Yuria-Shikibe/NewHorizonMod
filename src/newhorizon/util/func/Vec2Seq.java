@@ -186,7 +186,7 @@ public class Vec2Seq implements Iterable<Vec2>, Eachable<Vec2>{
 	
 	public void each(Floatc2 f){
 		for(int i = 0; i < size(); i++){
-			f.get(coordinates.items[i], coordinates.items[i + 1]);
+			f.get(coordinates.items[i * 2], coordinates.items[i * 2 + 1]);
 		}
 	}
 	

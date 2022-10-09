@@ -60,7 +60,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	
 	@Override
 	public float clipSize(){
-		return size + 500;
+		return drawSize + 500;
 	}
 	
 	public void init(UnitType type, Team team, Position pos, float rotation, float lifetime){
@@ -68,10 +68,10 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		this.lifetime = lifetime;
 		this.rotation = rotation;
 		this.team = team;
-		this.size = type.hitSize;
-		trailWidth = Mathf.clamp(size / 15f, 1.25f, 4f);
+		this.drawSize = type.hitSize;
+		trailWidth = Mathf.clamp(drawSize / 15f, 1.25f, 4f);
 		set(pos);
-		NHFx.spawnWave.at(x, y, size, team.color);
+		NHFx.spawnWave.at(x, y, drawSize, team.color);
 	}
 	
 	@Override
@@ -103,7 +103,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 				
 				for(int i = 0; i < trails.size; i++){
 					Trail trail = trails.get(i);
-					Tmp.v1.trns(trailProgress * (i + 1) * 1.5f + i * 360f / trails.size + Mathf.randomSeed(id, 360), ((fin() + 1) / 2 * size * (1 + 0.5f * i) + Mathf.sinDeg(trailProgress * (1 + 0.5f * i)) * size / 2) * (fout(Interp.pow3) * 7 + 1) / 8, fin(Interp.swing) * fout(Interp.swingOut) * size / 3 * fout()).add(this);
+					Tmp.v1.trns(trailProgress * (i + 1) * 1.5f + i * 360f / trails.size + Mathf.randomSeed(id, 360), ((fin() + 1) / 2 * drawSize * (1 + 0.5f * i) + Mathf.sinDeg(trailProgress * (1 + 0.5f * i)) * drawSize / 2) * (fout(Interp.pow3) * 7 + 1) / 8, fin(Interp.swing) * fout(Interp.swingOut) * drawSize / 3 * fout()).add(this);
 					trail.update(Tmp.v1.x, Tmp.v1.y, (fout(0.25f) * 2 + 1) / 3);
 				}
 			}
@@ -186,7 +186,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 			Draw.z(Layer.effect);
 			Draw.color(Pal.ammo);
 			
-			float s = Mathf.clamp(size / 4f, 12f, 20f);
+			float s = Mathf.clamp(drawSize / 4f, 12f, 20f);
 			Draw.rect(Icon.warning.getRegion(), x, y, s, s);
 		}
 		

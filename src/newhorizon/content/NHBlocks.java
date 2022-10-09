@@ -60,6 +60,7 @@ import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.adapt.AdaptUnloader;
+import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.adapt.LaserBeamDrill;
 import newhorizon.expand.block.adapt.MultiCrafter;
 import newhorizon.expand.block.commandable.AirRaider;
@@ -616,7 +617,7 @@ public class NHBlocks{
 							ammoMultiplier = 12;
 							hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
 							frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-							hitEffect = NHFx.lightningHitSmall;
+							hitEffect = NHFx.lightningHitSmall(backColor);
 							shootEffect = despawnEffect = NHFx.square45_4_45;
 						}};
 						fragAngle = 130f;
@@ -916,6 +917,8 @@ public class NHBlocks{
 		endOfEra = new ShootMatchTurret("end-of-era"){{
 			recoil = 5f;
 			armor = 15;
+			
+			shootCone = 15f;
 			
 			unitSort = UnitSorts.strongest;
 			
@@ -1781,7 +1784,7 @@ public class NHBlocks{
 			
 			size = 3;
 			consumePowerCond(6f, AirRaiderBuild::isCharging);
-			consumeItem(NHItems.darkEnergy, 2);
+			consumeItem(NHItems.darkEnergy, 4);
 			itemCapacity = 16;
 			health = 4500;
 			
@@ -1791,35 +1794,7 @@ public class NHBlocks{
 				Lines.square(e.x, e.y, size * tilesize / 2f + tilesize * 1.5f * e.fin(Interp.pow2In));
 			});
 			
-			bullet = new BasicBulletType(18f, 800f, NHBullets.STRIKE){{
-				trailLength = 14;
-				
-				trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
-				frontColor = Color.white;
-				
-				hitSound = Sounds.explosionbig;
-				trailChance = 0.075f;
-				trailEffect = NHFx.polyTrail;
-				drawSize = 120f;
-				
-				collides = false;
-				scaleLife = true;
-				hitShake = despawnShake = 16f;
-				lightning = 3;
-				lightningCone = 360;
-				lightningLengthRand = lightningLength = 20;
-				shootEffect = NHFx.instShoot(backColor, frontColor);
-				smokeEffect = NHFx.square(NHColor.darkEnrColor, 50f, 3, 80f, 5f);
-				shrinkX = shrinkY = 0;
-				splashDamageRadius = 100f;
-				splashDamage = lightningDamage = damage;
-				height = 66f;
-				width = 20f;
-				lifetime = 120f;
-				
-				despawnEffect = NHFx.instHit(backColor, 4, 180f);
-				hitEffect = new OptionalMultiEffect(NHFx.largeDarkEnergyHit, NHFx.square(NHColor.darkEnrColor, 100f, 3, 80f, 8f), NHFx.largeDarkEnergyHitCircle);
-			}};
+			bullet = NHBullets.airRaidBomb;
 		}};
 		
 		
@@ -2028,7 +2003,7 @@ public class NHBlocks{
 			health = 2500;
 		}};
 		
-/*		assignOverdrive = new AssignOverdrive("assign-overdrive"){{
+		assignOverdrive = new AssignOverdrive("assign-overdrive"){{
 			requirements(Category.effect, with(NHItems.irayrondPanel, 120, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
 			//NHTechTree.add(Blocks.overdriveProjector, this);
 			consumePower(14.0F);
@@ -2039,7 +2014,7 @@ public class NHBlocks{
 			hasBoost = true;
 			consumeItem(Items.phaseFabric).boost();
 			consumeLiquid(NHLiquids.xenBeta, 0.1f);
-		}};*/
+		}};
 		
 		largeMendProjector = new MendProjector("large-mend-projector"){{
 			size = 3;

@@ -25,6 +25,7 @@ public class NHModCore implements ApplicationListener{
 	@Override
 	public void update(){
 		if(Vars.state.isPlaying()){
+			NHGroups.update();
 			if(!Vars.headless && inputListener != null){
 				inputListener.update();
 			}

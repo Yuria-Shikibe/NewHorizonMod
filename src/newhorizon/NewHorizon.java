@@ -8,17 +8,25 @@ import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
+import mindustry.gen.Player;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
 import mindustry.net.ServerGroup;
+import mindustry.type.Item;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.expand.entities.EntityRegister;
+import newhorizon.expand.entities.WorldEvent;
+import newhorizon.expand.eventsys.AutoEventTrigger;
+import newhorizon.expand.eventsys.WorldEventType;
+import newhorizon.expand.packets.NHCall;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
@@ -28,7 +36,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 
 public class NewHorizon extends Mod{
-	public static final boolean DEBUGGING = true;
+	public static boolean DEBUGGING = false;
 	public static final boolean DEBUGGING_SPRITE = false;
 	
 	public static void debugLog(Object obj){
@@ -39,7 +47,12 @@ public class NewHorizon extends Mod{
 //		Vars.mobile = Vars.testMobile = true;
 //	}
 	
-	public static boolean contentLoadComplete = false;
+	protected static boolean contentLoadComplete = false;
+	
+	@SuppressWarnings("FinalStaticMethod")
+	public static final boolean loadedComplete(){
+		return contentLoadComplete;
+	}
 	
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
@@ -170,17 +183,21 @@ public class NewHorizon extends Mod{
 	}
 	
 	public NewHorizon(){
+		DEBUGGING = Boolean.parseBoolean(OS.env("MINDUSTRY_DEBUG"));
+		
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
 		NHInputListener.registerModBinding();
 		
 		Events.on(ClientLoadEvent.class, e -> {
+			Core.app.post(NHUI::init);
+			
 			Vars.defaultServers.add(new ServerGroup(){{
 				name = "[sky]New Horizon [white]Mod [lightgray]Servers";
-				addresses = new String[]{SERVER, EU_NH_SERVER};
+				addresses = new String[]{SERVER};
 			}});
 			
-			Time.runTask(15f, () -> Threads.daemon(() -> {
+			if(!DEBUGGING)Time.runTask(15f, () -> Threads.daemon(() -> {
 				Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
 					Jval json = Jval.read(res.getResultAsString());
 					
@@ -230,7 +247,7 @@ public class NewHorizon extends Mod{
 		
 		Vars.renderer.maxZoom = 10f;
 		Vars.renderer.minZoom = 1f;
-		TableFunc.tableMain();
+		if(DEBUGGING)TableFunc.tableMain();
 	}
 	
 /*	@Override
@@ -276,7 +293,7 @@ public class NewHorizon extends Mod{
 		});
 	}*/
 	
-/*	@Override
+	@Override
 	public void registerClientCommands(CommandHandler handler) {
 		handler.<Player>register("runwave", "<num>", "Run Wave (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
@@ -301,14 +318,29 @@ public class NewHorizon extends Mod{
 				player.sendMessage("[VIOLET]Failed, pls type ID");
 			} else {
 				try {
-					CutsceneEventEntity event = NHGroups.event.getByID(Integer.parseInt(args[0]));
-					event.act();
+					WorldEvent event = NHGroups.events.getByID(Integer.parseInt(args[0]));
+					event.type.triggerNet(event);
 					player.sendMessage("Triggered: " + event);
 				} catch (NumberFormatException var3) {
 					player.sendMessage("[VIOLET]Failed, the ID must be a <Number>");
 				}
 			}
-			
+		});
+		
+		handler.<Player>register("setupevent", "<name>", "Setup Event (Admin Only)", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else if (args.length == 0) {
+				player.sendMessage("[VIOLET]Failed, pls type ID");
+			} else {
+				try {
+					WorldEventType event = WorldEventType.getStdType(args[0]);
+					event.create();
+					player.sendMessage("Setup: " + event);
+				} catch (NumberFormatException var3) {
+					player.sendMessage("[VIOLET]Undefined<Number>");
+				}
+			}
 		});
 		
 		handler.<Player>register("fill", "<id>", "Trigger Event (Admin Only)", (args, player) -> {
@@ -322,27 +354,27 @@ public class NewHorizon extends Mod{
 				for(Item i : Vars.content.items())module.set(i, 1000000);
 			}
 		});
-		
+
 		handler.<Player>register("events", "List all cutscene events in the map.", (args, player) -> {
-			if (NHGroups.event.isEmpty()) {
+			if (NHGroups.events.isEmpty()) {
 				player.sendMessage("No Event Available");
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
-				NHGroups.event.each((e) -> {
+				NHGroups.events.each((e) -> {
 					builder.append(e).append('\n');
 				});
 				player.sendMessage(builder.toString());
 			}
 		});
-		
+
 		handler.<Player>register("eventtypes", "List all cutscene event types in the map.", (args, player) -> {
-			if (CutsceneEvent.cutsceneEvents.isEmpty()) {
+			if (WorldEventType.allTypes.isEmpty()) {
 				player.sendMessage("No EventTypes Available");
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
-				CutsceneEvent.cutsceneEvents.each((k, e) -> {
+				WorldEventType.allTypes.each((k, e) -> {
 					builder.append(k).append("->").append(e.getClass().getSuperclass().getSimpleName()).append('\n');
 				});
 				player.sendMessage(builder.toString());
@@ -353,26 +385,19 @@ public class NewHorizon extends Mod{
 			if (NHGroups.autoEventTrigger.isEmpty()) {
 				player.sendMessage("No Trigger Available");
 			} else {
-				
-				player.sendMessage("[accent]Events: [lightgray]\n");
+				StringBuilder builder = new StringBuilder();
 				NHGroups.autoEventTrigger.each(e -> {
-					String builder = "[royal]" + e.toString() + "[lightgray]" + '\n' + e.desc() + '\n' + "Meet Requirements?: " + (e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]") + "[lightgray]\n" + "Reload: " + e.getReload() + '\n' + "Spacing: " + e.getSpacing() + '\n';
-					player.sendMessage(builder);
+					builder.append("\n======================\n");
+					builder.append("[royal]").append(e.toString()).append("[lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append((e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]")).append("[lightgray]\n").append("Reload: ").append(e.getReload()).append("\nSpacing: ").append(e.getSpacing()).append('\n');
+					builder.append("Percentage: [accent]").append((int)(e.getReload() / e.getSpacing() * 100)).append("[]%\n");
+					builder.append("======================\n");
 				});
+				NHCall.infoDialog(builder.toString(), player.con);
 			}
 		});
 		
-		handler.<Player>register("js", "<Code>", "Run js codes (Admin Only)", (args, player) -> {
-			if (!player.admin()) {
-				player.sendMessage("[VIOLET]Admin Only");
-			}else{
-				StringBuilder sb = new StringBuilder();
-				for(String s : args){
-					sb.append(s);
-					sb.append(' ');
-				}
-				CutsceneScript.runJS(sb.toString());
-			}
+		handler.<Player>register("getscale", "<Scale>", "Check Auto Event Trigger Time Scale", (args, player) -> {
+			player.sendMessage("Scale: " + AutoEventTrigger.timeScale);
 		});
 		
 		handler.<Player>register("setscale", "<Scale>", "Set Auto Event Trigger Time Scale (Admin Only)", (args, player) -> {
@@ -392,10 +417,12 @@ public class NewHorizon extends Mod{
 				}
 			}
 		});
-	}*/
+	}
 	
 	@Override
     public void loadContent(){
+		contentLoadComplete = false;
+		
 		Log.info("Debug Mode: " + DEBUGGING);
 		Log.info("Process Texture Mode: " + NHPixmap.isDebugging());
 		
@@ -404,14 +431,13 @@ public class NewHorizon extends Mod{
 		MOD = Vars.mods.getMod(getClass());
 		
 		EntityRegister.load();
-		NHEventListenerRegister.load();
+		NHRegister.load();
 		
-		NHContent.loadModContent();
+		NHContent.loadPriority();
 		
 		NHSounds.load();
 		
 		if(!Vars.headless){
-			
 			NHShaders.init();
 		}
 		
@@ -426,12 +452,7 @@ public class NewHorizon extends Mod{
 			NHBlocks.load();
 			NHWeathers.load();
 			NHTechTree.load();
-			
-//			Vars.content.each(c -> {
-//				if(c instanceof UnlockableContent && c.minfo.mod == MOD){
-//					c.
-//				}
-//			});
+			NHInbuiltEvents.load();
 		}
 		
 		NHContent.loadLast();
