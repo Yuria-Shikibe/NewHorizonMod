@@ -63,7 +63,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 	@Override
 	public void setStats(){
 		super.setStats();
-		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shootp", "\n 1 -> Control All\n 2 -> Control Single")));
+//		stats.add(Stat.instructions, t -> t.add(Core.bundle.format("mod.ui.support-logic-control", "shootp", "\n 1 -> Control All\n 2 -> Control Single")));
 		stats.add(Stat.range, range / tilesize, StatUnit.blocks);
 		stats.add(Stat.damage, StatValues.ammo(ObjectMap.of(this, bullet)));
 	}
@@ -240,7 +240,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 					configure(targetVec);
 				}).size(LEN).disabled(b -> targetVec.epsilonEquals(x, y, 0.1f));
 				t.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
-					TableFunc.pointSelectTable(t, this::configure);
+					TableFunc.selectPos(t, this::configure);
 				}).size(LEN * 4, LEN).row();
 			}).fill();
 

@@ -43,10 +43,7 @@ import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
-import newhorizon.expand.bullets.PosLightningType;
-import newhorizon.expand.bullets.ShieldBreakerType;
-import newhorizon.expand.bullets.StrafeLaser;
-import newhorizon.expand.bullets.TrailFadeBulletType;
+import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
@@ -56,10 +53,13 @@ import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
+import static arc.graphics.g2d.Draw.color;
+import static arc.graphics.g2d.Lines.*;
+import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilePayload;
 
 public class NHUnitTypes{
-	private static final Color OColor = Color.valueOf("565666");
+	public static final Color OColor = Color.valueOf("565666");
 	
 	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, AIR_LINE_2 = 2, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
 	
@@ -187,7 +187,7 @@ public class NHUnitTypes{
 			velocityRnd = 0.075f;
 			
 			shoot = new ShootPattern(){{
-				shots = 2;
+				shots = 3;
 				firstShotDelay = 280f;
 				shotDelay = 20f;
 			}};
@@ -199,85 +199,7 @@ public class NHUnitTypes{
 			reload = 300f;
 			shake = 7f;
 			ejectEffect = Fx.blastsmoke;
-			bullet = new TrailFadeBulletType(9.25f, 380f){{
-				lifetime = 122f;
-				
-				tracerUpdateSpacing *= 6f;
-				tracerSpacing *= 1.5f;
-				
-				tracers = 1;
-				tracerStrokeOffset = tracerFadeOffset = 13;
-				hitBlinkTrail = false;
-				scaledSplashDamage = true;
-				
-				trailInterp = NHInterp.artilleryPlus;
-				shrinkInterp = NHInterp.artilleryPlus;
-				
-				shrinkX = 0.75f;
-				shrinkY = 0.4f;
-				width = 25f;
-				height = 55f;
-				
-				trailWidth = 4.7f;
-				trailLength = 140;
-				
-				//				velocityBegin = 12f;
-				//				velocityIncrease = 22f;
-				//				accelInterp = Interp.pow3Out;
-				//				accelerateBegin = 0f;
-				//				accelerateEnd = 0.8f;
-				
-				maxRange = 740;
-				pierce = pierceBuilding = false;
-				collideTerrain = collideFloor = collidesGround = collidesTiles = false;
-				scaleLife = true;
-				
-				lightning = 3;
-				lightningLength = 4;
-				lightningLengthRand = 32;
-				
-				splashDamageRadius = 76f;
-				splashDamage = damage;
-				lightningDamage = damage * 0.75f;
-				backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
-				
-				knockback = 20f;
-				
-				frontColor = NHColor.lightSkyFront;
-				shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
-				smokeEffect = NHFx.hugeSmokeGray;
-				trailChance = 0.6f;
-				trailEffect = NHFx.trailToGray;
-				despawnShake = 22f;
-				hitSound = Sounds.explosionbig;
-				hitEffect = new OptionalMultiEffect(NHFx.blast(backColor,  45f), NHFx.crossBlast(backColor, 120f, 45f), NHFx.hitSpark(backColor, 150f, 45, 170f, 2f, 13));
-				
-				fragBullets = 7;
-				fragBullet = NHBullets.basicSkyFrag;
-				fragLifeMax = 0.5f;
-				fragLifeMin = 0.25f;
-				fragVelocityMax = 0.72f;
-				fragVelocityMin = 0.075f;
-			}
-				public void removed(Bullet b){
-					if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
-						NHFx.trailFadeFast.at(b.x, b.y, trailWidth, trailColor, b.trail.copy());
-					}
-				}
-			
-				@Override
-				public void init(Bullet b){
-					super.init(b);
-					b.lifetime *= Mathf.random(0.955f, 1.025f);
-				}
-				
-				@Override
-				public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
-					super.hitTile(b, build, x, y, initialHealth, direct);
-					
-					UltFire.createChance(b, splashDamageRadius, 0.1f);
-				}
-			};
+			bullet = NHBullets.declineProjectile;
 		}
 			@Override
 			public void draw(Unit unit, WeaponMount mount){
@@ -445,7 +367,6 @@ public class NHUnitTypes{
 		}};
 	}
 	
-	
 	private static void loadWeapon(){
 		basicCannon = new Weapon(NewHorizon.name("basic-weapon")){{
 			shoot = new ShootPattern();
@@ -554,6 +475,205 @@ public class NHUnitTypes{
 		loadWeapon();
 		
 		loadPreviousWeapon();
+		
+		hurricane = new NHUnitType("hurricane"){{
+			drawShields = false;
+			outlineColor = OColor;
+			outlineRadius += 1;
+				constructor = EntityMapping.map(3);
+				
+				weapons.add(copyAndMove(pointDefenceWeaponC, 20, -31));
+				weapons.add(copyAndMove(pointDefenceWeaponC, 16, -22));
+
+				weapons.add(
+					new Weapon(){{
+						rotate = false;
+						mirror = true;
+						shoot = new ShootPattern(){{
+							shots = 3;
+							shotDelay = 20f;
+						}};
+						reload = 150f;
+						x = 27.75f;
+						y = -4f;
+						bullet = new MissileSpawner(NHBullets.skyMissile);
+					}},
+					new Weapon(){{
+						predictTarget = false;
+						mirror = false;
+						rotate = true;
+						rotationLimit = 5f;
+						rotateSpeed = 0.5f;
+						continuous = true;
+						alternate = false;
+						shake = 5f;
+						shootY = 47f;
+						reload = 220f;
+						shoot = new ShootPattern(){{
+							shots = 1;
+						}};
+						
+						x = 0;
+						y = 25f;
+						ejectEffect = Fx.none;
+						recoil = 4.4f;
+						bullet = NHBullets.atomSeparator.copy();
+						bullet.lifetime = 300f;
+						bullet.damage = 200f;
+						bullet.shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
+						((ContinuousFlameBulletType)bullet).lengthInterp = NHInterp.laser;
+						shootSound = Sounds.beam;
+						shootStatus = StatusEffects.slow;
+						shootStatusDuration = bullet.lifetime + 40f;
+					}},
+					
+					new Weapon(NewHorizon.name("swepter")){{
+						mirror = false;
+						top = true;
+						rotate = true;
+						rotationLimit = 240f;
+						alternate = false;
+						shake = 5f;
+						shootY = 17f;
+						reload = 300f;
+						rotateSpeed = 2.15f;
+						
+						shoot = new ShootPattern(){{
+							shots = 1;
+						}};
+						
+						y = -40f;
+						x = 0f;
+						inaccuracy = 3.0F;
+						ejectEffect = Fx.none;
+						recoil = 5.4f;
+						bullet = new LightningLinkerBulletType(2.5f, 250){{
+							
+							range = 340f;
+							
+							trailWidth = 8f;
+							trailLength = 40;
+							
+							backColor = trailColor = lightColor = lightningColor = NHColor.lightSkyBack;
+							frontColor = Color.white;
+							randomGenerateRange = 280f;
+							randomLightningNum = 5;
+							linkRange = 280f;
+							
+							scaleLife = true;
+							
+							hitModifier = UltFire::create;
+							
+							size /= 1.5f;
+							drag = 0.0065f;
+							fragLifeMin = 0.125f;
+							fragLifeMax = 0.45f;
+							fragVelocityMax = 0.75f;
+							fragVelocityMin = 0.25f;
+							fragBullets = 13;
+							fragBullet = NHBullets.basicSkyFrag;
+							hitSound = Sounds.explosionbig;
+							drawSize = 40;
+							splashDamageRadius = 240;
+							splashDamage = 80;
+							lifetime = 300;
+							despawnEffect = Fx.none;
+							hitEffect = new Effect(50, e -> {
+								color(NHColor.lightSkyBack);
+								Fill.circle(e.x, e.y, e.fout() * 44);
+								stroke(e.fout() * 3.2f);
+								circle(e.x, e.y, e.fin() * 80);
+								stroke(e.fout() * 2.5f);
+								circle(e.x, e.y, e.fin() * 50);
+								Angles.randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
+									stroke(e.fout() * 3.2f);
+									lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
+								});
+								color(Color.white);
+								Fill.circle(e.x, e.y, e.fout() * 30);
+							});
+							shootEffect = new Effect(30f, e -> {
+								color(NHColor.lightSkyBack);
+								Fill.circle(e.x, e.y, e.fout() * 32);
+								color(Color.white);
+								Fill.circle(e.x, e.y, e.fout() * 20);
+							});
+							smokeEffect = new Effect(40f, 100, e -> {
+								color(NHColor.lightSkyBack);
+								stroke(e.fout() * 3.7f);
+								circle(e.x, e.y, e.fin() * 100 + 15);
+								stroke(e.fout() * 2.5f);
+								circle(e.x, e.y, e.fin() * 60 + 15);
+								randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f));
+							});
+						}
+							
+							@Override
+							public void despawned(Bullet b){
+								super.despawned(b);
+								
+								UltFire.createChance(b, splashDamageRadius / 2f, 0.5f);
+							}
+						};
+						shootSound = Sounds.laserblast;
+					}},
+					new Weapon(NewHorizon.name("impulse")){{
+						heatColor = NHColor.lightSkyBack;
+						top = true;
+						rotate = true;
+						shootY = 8f;
+						reload = 50f;
+						x = 40f;
+						y = -30f;
+						rotateSpeed = 6f;
+						
+						inaccuracy = 6.0F;
+						velocityRnd = 0.38f;
+						alternate = false;
+						ejectEffect = Fx.none;
+						recoil = 1.7f;
+						shootSound = Sounds.plasmaboom;
+						
+						bullet = new ChainBulletType(200f){{
+							length = 260f;
+							hitColor = lightColor = lightningColor = NHColor.lightSkyBack;
+							shootEffect = NHFx.hitSparkLarge;
+							hitEffect = NHFx.lightningHitSmall;
+							smokeEffect = NHFx.hugeSmokeGray;
+						}};
+						
+						shoot = new ShootPattern(){{
+							shots = 3;
+							shotDelay = 15f;
+						}};
+					}}
+				);
+			
+				for(int i : Mathf.signs){
+					engines.add(new UnitEngine(i * 44.25f, -49f, 7, -90 + 8 * i));
+				}
+				
+				abilities.add(new RepairFieldAbility(800f, 160f, 240f){{
+					healEffect = NHFx.healEffectSky;
+					activeEffect = NHFx.activeEffectSky;
+				}});
+				
+				lowAltitude = true;
+				itemCapacity = 500;
+				health = 72000.0F;
+				speed = 1F;
+				accel = 0.04F;
+				drag = 0.025F;
+				flying = true;
+				hitSize = 100.0F;
+				armor = 60.0F;
+				engineOffset = 55.0F;
+				engineSize = 20.0F;
+				rotateSpeed = 0.75F;
+				buildSpeed = 2.8f;
+			}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
 		
 		assaulter = new NHUnitType("assaulter") {
 			{
@@ -709,7 +829,7 @@ public class NHUnitTypes{
 				engines.add(new UnitEngine(i * 14.25f, -14.5f, 3, -90 + i * 15));
 			}
 			
-			abilities.add(new BoostAbility(3f, 160f));
+			abilities.add(new BoostAbility(2.25f, 160f));
 
 			weapons.add(
 					new Weapon(NewHorizon.name("impulse-side")){{
@@ -830,7 +950,7 @@ public class NHUnitTypes{
 							public void hit(Bullet b, float x, float y){
 								super.hit(b, x, y);
 
-								if(b.owner instanceof Healthc)((Healthc)b.owner).healFract(b.damage / 30);
+								if(b.owner instanceof Healthc)((Healthc)b.owner).healFract(b.damage / 50);
 							}
 
 							@Override
@@ -2127,7 +2247,7 @@ public class NHUnitTypes{
 			ability.status = NHStatusEffects.emp1;
 			ability.sectors = 4;
 			ability.sectorRad = 0.16f;
-			ability.healPercent = 1f;
+			ability.healPercent = 0.25f;
 			ability.statusDuration = 120f;
 			ability.shootSound = NHSounds.synchro;
 

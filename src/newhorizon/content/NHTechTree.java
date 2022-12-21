@@ -85,7 +85,11 @@ public class NHTechTree{
 					nodeUnit(NHUnitTypes.branch, () -> {
 						nodeUnit(NHUnitTypes.warper, () -> {
 							nodeUnit(NHUnitTypes.naxos, () -> {
-								nodeUnit(NHUnitTypes.longinus, () -> {});
+								nodeUnit(NHUnitTypes.longinus, () -> {
+									nodeUnit(NHUnitTypes.hurricane, () -> {
+									
+									});
+								});
 							});
 						});
 					});
@@ -122,12 +126,14 @@ public class NHTechTree{
 			
 			node(NHBlocks.pulseShotgun, () -> {
 				node(NHBlocks.thermoTurret, () -> {
-				
+					node(NHBlocks.blaster);
 				});
 				
 				node(NHBlocks.synchro, () -> {
 					node(NHBlocks.argmot, () -> {
-						node(NHBlocks.gravity);
+						node(NHBlocks.gravity, () -> {
+							node(NHBlocks.webber);
+						});
 					});
 					
 					node(NHBlocks.multipleLauncher, () -> {

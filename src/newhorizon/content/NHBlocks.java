@@ -19,7 +19,6 @@ import mindustry.entities.Lightning;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.ContinuousFlameBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.BuildPlan;
@@ -76,6 +75,7 @@ import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
+import newhorizon.expand.block.turrets.Webber;
 import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -121,7 +121,7 @@ public class NHBlocks{
 		//Powers
 		armorPowerNode, armorBatteryLarge, radiationGenerator, zetaGenerator, hugeBattery, heavyPowerNode,
 		//Defence
-		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher,
+		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher, webber,
 		//Special
 		playerJumpGate, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
 		disposePowerVoid, gravityTrapSmall,
@@ -288,6 +288,25 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		webber = new Webber("webber"){{
+			size = 3;
+			
+			moveInterp = Interp.pow3In;
+			status = NHStatusEffects.scrambler;
+			shootLength = 22f;
+			laserColor = NHColor.thermoPst;
+			requirements(Category.turret, ItemStack.with(Items.plastanium, 85, NHItems.juniorProcessor, 55, NHItems.presstanium, 80));
+			hasPower = true;
+			cal = d -> 4 * Interp.pow4Out.apply(d) - 3;
+			scaledForce = 0;
+			force = 40f;
+			range = 280.0F;
+			damage = 0.3F;
+			scaledHealth = 160.0F;
+			rotateSpeed = 10.0F;
+			consumePower(6.0F);
+		}};
+		
 		gravity = new MultTractorBeamTurret("gravity"){{
 			size = 3;
 			requirements(Category.turret, ItemStack.with(Items.metaglass, 35, NHItems.juniorProcessor, 15, Items.lead, 80, NHItems.presstanium, 45));
@@ -704,35 +723,7 @@ public class NHBlocks{
 			shootSound = Sounds.laserbig;
 			loopSound = Sounds.beam;
 			loopSoundVolume = 2.0F;
-			shootType = new ContinuousFlameBulletType(300){{
-				shake = 3;
-				hitColor = flareColor = lightColor = lightningColor = NHColor.lightSkyBack;
-				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.75f, 0.85f, 1f, 0.65f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.65f), NHColor.lightSkyBack, NHColor.lightSkyFront};
-				width = 6;
-				length = 380f;
-				oscScl = 0.9f;
-				oscMag *= 2f;
-				lifetime = 35f;
-				lightning = 4;
-				lightningLength = 2;
-				lightningLengthRand = 18;
-				flareLength = 75;
-				flareWidth = 6;
-				hitEffect = NHFx.shootCircleSmall(NHColor.lightSkyBack);
-				shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
-				lightningDamage = damage / 6f;
-				despawnHit = false;
-				pierceArmor = true;
-			}
-				@Override
-				public void update(Bullet b){
-					super.update(b);
-					
-					if(Mathf.chanceDelta(0.11))for(int i = 0; i < lightning; i++){
-						Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
-					}
-				}
-			};
+			shootType = NHBullets.atomSeparator;
 			
 			coolant = consumeCoolant(0.3F);
 			consumePower(30.0F);
@@ -1007,7 +998,8 @@ public class NHBlocks{
 				shotDelay = 12f;
 			}});
 			
-			rotateSpeed = 1f;
+			shootCone = 20f;
+			rotateSpeed = 0.75f;
 			ammoPerShot = 4;
 			maxAmmo = 20;
 			size = 8;
@@ -1564,6 +1556,35 @@ public class NHBlocks{
 	
 	public static void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		blaster = new ShockwaveGenerator("blaster"){{
+			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+			
+			size = 3;
+			chargerOffset = 5.65f;
+			rotateOffset = -45f;
+			damage = 150;
+			lightningDamage = 200;
+			generateLiNum = 3;
+			generateLiLen = 12;
+			generateLenRand = 20;
+			gettingBoltNum = 1;
+			lightningColor = NHColor.darkEnrColor;
+			generateEffect = NHFx.blastgenerate;
+			acceptEffect = NHFx.blastAccept;
+			blastSound = Sounds.explosionbig;
+			status = NHStatusEffects.emp2;
+			range = 240;
+			health = 1200;
+			knockback = 10f;
+			consumePower(8f);
+			itemCapacity = 30;
+			consumeItem(NHItems.zeta, 3);
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(){{
+				midColor = flameColor = NHColor.darkEnrColor;
+			}}, new DrawDefault());
+		}};
 		
 		reinForcedLiquidSource = new LiquidSource("reinforced-liquid-source"){{
 			size = 1;
@@ -2424,13 +2445,13 @@ public class NHBlocks{
 		
 		jumpGate = new JumpGate("jump-gate"){{
 			consumePowerCond(60, JumpGateBuild::isCalling);
-			health = 50000;
+			health = 80000;
 			spawnDelay = 30f;
 			spawnReloadTime = 300f;
 			range = 600f;
 			squareStroke = 2.35f;
 			size = 8;
-			adaptable = true;
+			adaptable = false;
 			adaptBase = jumpGateJunior;
 			
 			armor = 20f;
@@ -2450,33 +2471,34 @@ public class NHBlocks{
 			
 			addSets(
 				new UnitSet(NHUnitTypes.longinus, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 400 * 60f,
-						with(NHItems.setonAlloy, 300, Items.surgeAlloy, 150, NHItems.seniorProcessor, 400, NHItems.thermoCoreNegative, 200)
+					with(NHItems.setonAlloy, 300, Items.surgeAlloy, 150, NHItems.seniorProcessor, 400, NHItems.thermoCoreNegative, 250)
 				),
 				new UnitSet(NHUnitTypes.saviour, new byte[]{NHUnitTypes.OTHERS, 5}, 300 * 60f,
-					with(NHItems.setonAlloy, 250, Items.surgeAlloy, 200, NHItems.seniorProcessor, 150, NHItems.thermoCoreNegative, 100, Items.plastanium, 200, NHItems.zeta, 500)
+					with(NHItems.setonAlloy, 450, Items.surgeAlloy, 400, NHItems.seniorProcessor, 350, NHItems.thermoCoreNegative, 150, Items.plastanium, 400, NHItems.zeta, 500)
 				),
 				new UnitSet(NHUnitTypes.declining, new byte[]{NHUnitTypes.NAVY_LINE_1, 5}, 420 * 60f,
-						with(NHItems.setonAlloy, 500, NHItems.irayrondPanel, 300, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300)
+					with(NHItems.setonAlloy, 800, NHItems.irayrondPanel, 600, NHItems.seniorProcessor, 400, NHItems.thermoCoreNegative, 300)
 				),
 				new UnitSet(NHUnitTypes.guardian, new byte[]{NHUnitTypes.OTHERS, 5}, 9600f,
-						new ItemStack(NHItems.darkEnergy, 1200)
+						new ItemStack(NHItems.darkEnergy, 1500)
 				),
 				new UnitSet(NHUnitTypes.sin, new byte[]{NHUnitTypes.GROUND_LINE_1, 6}, 480 * 60f,
-						with(NHItems.setonAlloy, 600, NHItems.upgradeSort, 200, NHItems.seniorProcessor, 500, NHItems.thermoCorePositive, 500, NHItems.irayrondPanel, 300)
+					with(NHItems.setonAlloy, 600, NHItems.upgradeSort, 750, NHItems.seniorProcessor, 300, NHItems.thermoCorePositive, 500, NHItems.presstanium, 1500)
 				),
 				new UnitSet(NHUnitTypes.anvil, new byte[]{NHUnitTypes.AIR_LINE_2, 6}, 600 * 60f,
-					with(NHItems.zeta, 1000, NHItems.setonAlloy, 500, NHItems.upgradeSort, 200, NHItems.seniorProcessor, 600, NHItems.thermoCorePositive, 400)
+					with(NHItems.multipleSteel, 1000, NHItems.setonAlloy, 800, NHItems.upgradeSort, 600, NHItems.seniorProcessor, 600, NHItems.thermoCorePositive, 750)
+				),
+				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
+					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 900, NHItems.seniorProcessor, 1200, NHItems.thermoCoreNegative, 500)
 				),
 				new UnitSet(NHUnitTypes.annihilation, new byte[]{NHUnitTypes.GROUND_LINE_1, 5}, 320 * 60f,
-					with(NHItems.setonAlloy, 200, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 100)
+					with(NHItems.setonAlloy, 600, NHItems.irayrondPanel, 900, NHItems.seniorProcessor, 800, NHItems.fusionEnergy, 500)
 				)/*,
 				new UnitSet(UnitTypes.quell, new byte[]{NHUnitTypes.AIR_LINE_2, 4}, 30 * 60f,
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.upgradeSort, 500)
 				),
-				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
-					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 300, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 500)
-				),
+				
 				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
 					with(NHItems.setonAlloy, 300, NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 500, NHItems.fusionEnergy, 150)
 				)*/

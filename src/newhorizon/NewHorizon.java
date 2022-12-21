@@ -2,6 +2,7 @@ package newhorizon;
 
 import arc.Core;
 import arc.Events;
+import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.util.*;
@@ -9,6 +10,7 @@ import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
+import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
 import mindustry.graphics.Pal;
@@ -354,6 +356,22 @@ public class NewHorizon extends Mod{
 				for(Item i : Vars.content.items())module.set(i, 1000000);
 			}
 		});
+		
+		handler.<Player>register("killteam", "<id>", "Destroy The Team (Admin Only)", (args, player) -> {
+			Cons<Team> destroyer = t -> {
+				Groups.build.each(b -> b.team == t, b -> Time.run(Mathf.random(60, 300), b::kill));
+				Groups.unit.each(b -> b.team == t, b -> Time.run(Mathf.random(60, 300), b::kill));
+			};
+			
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else if (args.length == 0 || args[0].isEmpty()) {
+				destroyer.get(player.team());
+			} else {
+				destroyer.get(Team.get(Integer.parseInt(args[0])));
+				player.sendMessage("Killed: [accent]" + Team.get(Integer.parseInt(args[0])));
+			}
+		});
 
 		handler.<Player>register("events", "List all cutscene events in the map.", (args, player) -> {
 			if (NHGroups.events.isEmpty()) {
@@ -442,6 +460,8 @@ public class NewHorizon extends Mod{
 		}
 		
 		NHContent.loadBeforeContentLoad();
+		
+		NHOverride.load();
 		
 		{
 			NHStatusEffects.load();

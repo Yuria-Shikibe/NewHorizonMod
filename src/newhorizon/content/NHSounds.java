@@ -40,7 +40,9 @@ public class NHSounds{
 	public static SoundLoop alertLoop = new SoundLoop(alert2, 1);
 	
 	public static void alertLoop(){
-		if(!Vars.headless && Core.audio.countPlaying(alert2) == 0)alert2.play();
+		if(!Vars.headless){
+			Vars.control.sound.loop(alert2, 2f);
+		}
 	}
 	
 	public static void load(){

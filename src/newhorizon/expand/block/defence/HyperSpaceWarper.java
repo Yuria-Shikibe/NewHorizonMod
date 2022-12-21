@@ -255,7 +255,7 @@ public class HyperSpaceWarper extends Block{
 				});
 				p.table(Tex.paneSolid, t -> {
 					t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> {
-						TableFunc.pointSelectTable(table, this::configure);
+						TableFunc.selectPos(table, this::configure);
 					}).size(LEN * 4, LEN).row();
 					
 					t.button("@mod.ui.select-unit", Icon.filter, Styles.cleart, () -> {

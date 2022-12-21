@@ -26,6 +26,26 @@ public class NHInbuiltEvents{
 	
 	private static void loadEventTriggers(){
 		autoTriggers.addAll(new AutoEventTrigger(){{
+			items = OV_Pair.seqWith(NHItems.seniorProcessor, 1200, NHItems.presstanium, 5000, NHItems.upgradeSort, 500);
+			eventType = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-artillery"){{
+				ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 30, 0){{
+					shots = 8;
+					shotDelay = 18f;
+				}}, new ShootSpread(){{
+					shots = 3;
+					spread = 8f;
+					shotDelay = 4f;
+				}});
+				
+				ammo(NHBullets.declineProjectile, shootPattern);
+				radius = 230;
+				reloadTime = 180 * 60;
+			}});
+			
+			minTriggerWave = 0;
+			spacingBase = 1800 * 60;
+			spacingRand = 600 * 60;
+		}},new AutoEventTrigger(){{
 			items = OV_Pair.seqWith(NHItems.multipleSteel, 1500, NHItems.presstanium, 1000, Items.plastanium, 1000);
 			eventType = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-std"){{
 				ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 30, 0){{

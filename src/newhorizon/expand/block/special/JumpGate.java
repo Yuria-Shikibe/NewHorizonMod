@@ -500,7 +500,7 @@ public class JumpGate extends Block {
             
             table.table(Tex.paneSolid, t -> {
                 t.button("@spawn", Icon.add, Styles.cleart, dialog::show).size(LEN * 5, LEN).row();
-                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFunc.pointSelectTable(table, this::configure)).size(LEN * 5, LEN).row();
+                t.button("@mod.ui.select-target", Icon.move, Styles.cleart, () -> TableFunc.selectPos(table, this::configure)).size(LEN * 5, LEN).row();
                 t.button("@settings", Icon.settings, Styles.cleart, () -> new BaseDialog("@settings"){{
                     Label l = new Label(""), currentPlan = new Label("");
                     Slider s = new Slider(1, Mathf.clamp(Units.getCap(team), 1, maxSpawnPerOne), 1, false);

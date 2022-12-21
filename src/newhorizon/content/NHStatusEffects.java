@@ -116,7 +116,8 @@ public class NHStatusEffects{
         
         scrambler = new NHStatusEffect("scrambler-status"){{
             disarm = true;
-            damage = 2;
+            damage = 0.35f;
+            speedMultiplier = 0.15f;
             textureColor = color = NHColor.thermoPst;
             effectChance = 0.1f;
             effect = new MultiEffect(new Effect(30, e -> {

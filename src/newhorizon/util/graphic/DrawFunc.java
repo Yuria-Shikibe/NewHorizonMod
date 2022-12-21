@@ -2,6 +2,7 @@ package newhorizon.util.graphic;
 
 import arc.Core;
 import arc.func.Cons;
+import arc.func.Floatc2;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -269,39 +270,51 @@ public class DrawFunc{
         overlayText(Fonts.outline, text, x, y, offset, 1, 0.25f, color, underline, false);
     }
     
-    public static void drawSine(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant, boolean flip){
+    public static void drawSine2(float x, float y, float x2, float y2, float in, float scale, float scaleSpeed, float scaleOffset, float mag, float wavelength){
         float dstTotal = Mathf.dst(x, y, x2, y2);
-        int dst = (int)(dstTotal / distant);
+        float ang = Angles.angle(x, y, x2, y2);
+        int dst = (int)(dstTotal / wavelength);
     
-        if(dst < 1)return;
-    
-        Vec2 vec = new Vec2().trns(Angles.angle(x, y, x2, y2), distant);
-    
-        for(int sign : flip ? Mathf.signs : oneArr){
-            for(int p = 0; p < phase; p++){
-                Fill.circle(x, y, Lines.getStroke());
-            
-                for(int i = 0; i < dst; i++){
-                    vec21.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
-                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i) * sinScl,
-                            scale,
-                            mag
-                    ) - mag / 2) * i);
-                
-                    vec22.trns(Angles.angle(x, y, x2, y2) + 90, (Mathf.absin(
-                            (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i + 1) * sinScl,
-                            1 * scale,
-                            mag
-                    ) - mag / 2) * i);
-                
-                    Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
-                
-                    Lines.line(from.x, from.y, to.x, to.y, false);
-                    Fill.circle(from.x, from.y, Lines.getStroke() / 2f);
-                    Fill.circle(to.x, to.y, Lines.getStroke() / 2f);
-                }
-            }
+//        Log.info(dst);
+        
+        Lines.beginLine();
+//        Lines.linePoint(x, y);
+        Lines.linePoint(x, y);
+        
+        for(int i = 0; i < dst; i++){
+            vec21.trns(ang, i * wavelength, Mathf.sin(in + scale * (scaleSpeed * i + scaleOffset), scale, mag)).add(x, y);
+            Lines.linePoint(vec21);
         }
+    
+        Lines.linePoint(x2, y2);
+//        Lines.linePoint(x2, y2);
+        Lines.endLine(false);
+        
+    }
+    
+    public static void drawSine2Modifier(float x, float y, float x2, float y2, float in, float scale, float scaleSpeed, float scaleOffset, float mag, float wavelength, Floatc2 f){
+        float dstTotal = Mathf.dst(x, y, x2, y2);
+        float ang = Angles.angle(x, y, x2, y2);
+        int dst = (int)(dstTotal / wavelength);
+        
+        //        Log.info(dst);
+        
+        Lines.beginLine();
+        //        Lines.linePoint(x, y);
+    
+        vec21.trns(ang, 0, Mathf.sin(in + scale * scaleOffset, scale, mag)).add(x, y);
+        Lines.linePoint(vec21);
+        f.get(vec21.x, vec21.y);
+        
+        for(int i = 1; i < dst; i++){
+            vec21.trns(ang, i * wavelength, Mathf.sin(in + scale * (scaleSpeed * i + scaleOffset), scale, mag)).add(x, y);
+            Lines.linePoint(vec21);
+        }
+        
+        Lines.linePoint(x2, y2);
+        //        Lines.linePoint(x2, y2);
+        Lines.endLine(false);
+        
     }
     
     public static void drawSineLerp(float x, float y, float x2, float y2, int phase, float mag, float scale, float offset, float distant){
@@ -448,6 +461,8 @@ public class DrawFunc{
     
     public static float cycle_100(){return Time.time % 100 / 100;}
     
+    
+    /** @return A interpolation in [0, 1)*/
     public static float cycle(float fi, float T){
         return (Time.time + fi) % T / T;
     }
