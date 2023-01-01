@@ -236,7 +236,7 @@ public class NewHorizon extends Mod{
 				}, ex -> Log.err(ex.toString()));
 			}));
 			
-			Core.app.post(Time.runTask(10f, NewHorizon::startLog));
+//			Core.app.post(Time.runTask(10f, NewHorizon::startLog));
 		});
 	}
 
@@ -461,8 +461,6 @@ public class NewHorizon extends Mod{
 		
 		NHContent.loadBeforeContentLoad();
 		
-		NHOverride.load();
-		
 		{
 			NHStatusEffects.load();
 			NHItems.load();
@@ -471,9 +469,12 @@ public class NewHorizon extends Mod{
 			NHUnitTypes.load();
 			NHBlocks.load();
 			NHWeathers.load();
+			NHPlanets.load();
 			NHTechTree.load();
 			NHInbuiltEvents.load();
 		}
+		
+		NHOverride.load();
 		
 		NHContent.loadLast();
 		

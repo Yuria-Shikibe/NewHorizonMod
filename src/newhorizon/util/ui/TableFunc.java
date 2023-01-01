@@ -28,6 +28,7 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -198,9 +199,11 @@ public class TableFunc{
                         con.button("Pixel Art", Styles.cleart, () -> {
                             selectPos(starter, po -> {
                                 PixelArtGenerator.leftDown.set(po.x, po.y);
+                                Log.info(po.x + " | " + po.y);
                                 Core.app.post(() -> {
                                     selectPos(starter, poi -> {
                                         PixelArtGenerator.rightTop.set(poi.x, poi.y);
+                                        Log.info(poi.x + " | " + poi.y);
                                         platform.showMultiFileChooser(fi -> {
                                             PixelArtGenerator.toRead = fi;
                                             boolean b = PixelArtGenerator.process();

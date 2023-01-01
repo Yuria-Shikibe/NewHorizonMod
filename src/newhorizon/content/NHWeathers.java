@@ -18,7 +18,7 @@ public class NHWeathers{
 	public static void load(){
 		quantumStorm = new MatterStorm("quantum-storm"){{
 			status = NHStatusEffects.ultFireBurn;
-			statusDuration = 60f;
+			statusDuration = 15f;
 			rotateBullets = true;
 			
 			buildingEmp = 3;
@@ -57,7 +57,7 @@ public class NHWeathers{
 		};
 		
 		quantumField = new ParticleWeather("quantum-weather"){{
-			duration = 4 * Time.toMinutes;
+			duration = 0.5f * Time.toMinutes;
 			noiseLayers = 4;
 			noiseLayerAlphaM = 0.7f;
 			noiseLayerSpeedM = 2f;

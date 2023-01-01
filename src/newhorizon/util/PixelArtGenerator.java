@@ -24,6 +24,8 @@ public class PixelArtGenerator{
 	public static Point2 leftDown = new Point2(), rightTop = new Point2();
 	
 	public static boolean process(){
+		builds.clear();
+		
 		if(toRead == null)return false;
 		Pixmap pixmap = PixmapIO.readPNG(toRead);
 		
@@ -72,7 +74,7 @@ public class PixelArtGenerator{
 		new BaseDialog("Preview"){{
 			addCloseButton();
 			cont.table(t -> {
-				t.image(new TextureRegion(new Texture(finalPixmap1))).scaling(Scaling.fill);
+				t.image(new TextureRegion(new Texture(finalPixmap1))).scaling(Scaling.stretch);
 			}).grow();
 		}}.show();
 		

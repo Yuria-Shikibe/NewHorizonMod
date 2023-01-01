@@ -166,11 +166,10 @@ public class RaidEventType extends TargetableEventType{
 	public void trigger(WorldEvent e){
 		Team team = e.team;
 		Position source = source(e);
-		Position target = target(e);
 		if(source == null)return;
 		if(!Vars.headless && team != Vars.player.team())warnOnTrigger(e);
 		
-		Vec2 t = new Vec2().set(target);
+		Vec2 t = new Vec2().set(e.x, e.y);
 		
 		projectiles.each((b, s) -> {
 			s.shoot(e.intData, (xOffset, yOffset, angle, delay, mover) -> {

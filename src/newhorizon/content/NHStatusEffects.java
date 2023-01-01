@@ -115,9 +115,9 @@ public class NHStatusEffects{
         };
         
         scrambler = new NHStatusEffect("scrambler-status"){{
-            disarm = true;
+            reloadMultiplier = 0.35f;
             damage = 0.35f;
-            speedMultiplier = 0.15f;
+            speedMultiplier = 0.125f;
             textureColor = color = NHColor.thermoPst;
             effectChance = 0.1f;
             effect = new MultiEffect(new Effect(30, e -> {
@@ -137,7 +137,7 @@ public class NHStatusEffects{
         }};
         
         invincible = new NHStatusEffect("invincible"){{
-            healthMultiplier = 10;
+            healthMultiplier = 3;
         }
             @Override
             public void draw(Unit unit, float time){

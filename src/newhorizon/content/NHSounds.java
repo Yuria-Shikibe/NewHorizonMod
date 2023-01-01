@@ -6,8 +6,6 @@ import arc.assets.loaders.SoundLoader;
 import arc.audio.Sound;
 import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.audio.SoundLoop;
-import newhorizon.NewHorizon;
 
 import java.lang.reflect.Field;
 
@@ -36,8 +34,6 @@ public class NHSounds{
 		synchro = new Sound(),
 		defenceBreak = new Sound(),
 		railGunBlast = new Sound();
-	
-	public static SoundLoop alertLoop = new SoundLoop(alert2, 1);
 	
 	public static void alertLoop(){
 		if(!Vars.headless){
@@ -77,8 +73,6 @@ public class NHSounds{
 //		signal = loadSound("signal");
 //		synchro = loadSound("synchro");
 //		defenceBreak = loadSound("break");
-		
-		alertLoop = new SoundLoop(alert2, 1);
 	}
 	
 	private static Sound loadSound(String soundName){
@@ -90,7 +84,6 @@ public class NHSounds{
 			
 			AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
 			desc.errored = Throwable::printStackTrace;
-			NewHorizon.debugLog("loaded Sound: " + soundName);
 			return sound;
 		}else return new Sound();
 	}

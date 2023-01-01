@@ -346,10 +346,13 @@ public class DebugDialog extends BaseDialog{
 				for(UnlockableContent tent : content.statusEffects()){
 					tent.unlock();
 				}
+				for(UnlockableContent tent : content.planets()){
+					tent.unlock();
+				}
 			});
 			
 			t.button("Unlock Single", () -> new BaseDialog("UNLOCK"){{
-				Seq<UnlockableContent> all = new Seq<>().addAll(content.units().select(c -> !c.isHidden())).addAll(content.blocks().select(c -> !c.isHidden())).addAll(content.items().select(c -> !c.isHidden())).addAll(content.liquids()).addAll(content.statusEffects().select(c -> !c.isHidden())).addAll(content.sectors().select(c -> !c.isHidden())).addAll(content.planets().select(c -> !c.isHidden())).as();
+				Seq<UnlockableContent> all = new Seq<>().addAll(content.units().select(c -> !c.isHidden())).addAll(content.blocks().select(c -> !c.isHidden())).addAll(content.items().select(c -> !c.isHidden())).addAll(content.liquids()).addAll(content.statusEffects().select(c -> !c.isHidden())).addAll(content.sectors().select(c -> !c.isHidden())).addAll(content.planets()).as();
 				
 				cont.pane(t -> {
 					for(int i = 0; i < all.size; i++){

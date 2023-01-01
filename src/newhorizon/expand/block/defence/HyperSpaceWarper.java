@@ -390,11 +390,13 @@ public class HyperSpaceWarper extends Block{
 			
 			if(!selects.isEmpty())for(int id : selects.items){
 				Unit unit = Groups.unit.getByID(id);
-				Drawf.square(unit.x, unit.y, unit.hitSize / 3f, -DrawFunc.rotator_90() + 45);
-				
-				for(int i = 0; i < 4; i++){
-					Tmp.v1.trns(DrawFunc.rotator_90() + 45 + i * 90, unit.hitSize / 1.9f);
-					DrawFunc.arrow(NHContent.arrowRegion, unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, 1, Tmp.v1.angle() + 90, team.color.cpy().lerp(Color.white, 0.05f + Mathf.absin(4f, 0.1f)));
+				if(unit != null){
+					Drawf.square(unit.x, unit.y, unit.hitSize / 3f, -DrawFunc.rotator_90() + 45);
+					
+					for(int i = 0; i < 4; i++){
+						Tmp.v1.trns(DrawFunc.rotator_90() + 45 + i * 90, unit.hitSize / 1.9f);
+						DrawFunc.arrow(NHContent.arrowRegion, unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, 1, Tmp.v1.angle() + 90, team.color.cpy().lerp(Color.white, 0.05f + Mathf.absin(4f, 0.1f)));
+					}
 				}
 			}
 			

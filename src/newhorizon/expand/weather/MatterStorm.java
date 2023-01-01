@@ -18,6 +18,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import arc.util.noise.Noise;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -25,9 +26,7 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.Bullet;
-import mindustry.gen.Sounds;
-import mindustry.gen.WeatherState;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
@@ -45,12 +44,15 @@ import newhorizon.content.NHShaders;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.EntityRegister;
+import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.TableFunc;
 
+import static mindustry.Vars.control;
+import static mindustry.Vars.headless;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class MatterStorm extends Weather{
@@ -224,41 +226,49 @@ public class MatterStorm extends Weather{
 			};
 		}
 	}
-//
-//	@Override
-//	public void update(WeatherState state){
-//		float speed = force * state.intensity * Time.delta;
-//		float ang = state.windVector.angle();
-//
-//		if(speed > 0.001f){
-//			if(!Vars.headless)Vars.renderer.shake(force / 3, force);
-//
-//			for(Unit entity : Groups.unit){
-//				if(!GravityTrapField.IntersectedAlly.get(entity.team, entity)){
-//					entity.impulse(Tmp.v1.set(state.windVector).scl(speed * (entity.isFlying() ? 1 : 0.4f)));
-//					entity.reloadMultiplier(overload);
-//					if(Mathf.chanceDelta(sparkEffectChance * Time.delta))sparkEffect.at(entity.x, entity.y, ang, getColor(), entity.hitSize);
-//				}
-//			}
-//
-//			if(rotateBullets)for(Bullet entity : Groups.bullet){
-//				if(entity.type.absorbable && !GravityTrapField.IntersectedAlly.get(entity.team, entity)){
-//					entity.vel().setAngle(Angles.moveToward(entity.vel.angle(), ang, speed / 500 * entity.vel.len()));
-//					entity.vel().add(Tmp.v1.set(state.windVector).scl(speed / 220));
-//				}
-//			}
-//
-//			if(buildingEmp > 0){
-//				Groups.build.each(b -> b.block.hasPower && b.block.canOverdrive && b.timeScale() < buildingEmp, b -> {
-//					b.applySlowdown(buildingEmp, 30f);
-//				});
-//			}
-//		}
-//	}
 
 	@Override
 	public void updateEffect(WeatherState state){
-		super.updateEffect(state);
+		{
+			float speed = force * state.intensity * Time.delta;
+			
+			if(speed > 0.001f && state.effectTimer <= 0){
+				state.effectTimer = statusDuration - 5f;
+				float ang = state.windVector.angle();
+				
+				if(!Vars.headless)Vars.renderer.shake(force / 3, force);
+				
+				for(Unit entity : Groups.unit){
+					if(entity.checkTarget(statusAir, statusGround) && !GravityTrapField.IntersectedAlly.get(entity.team, entity)){
+						if(status != StatusEffects.none)entity.apply(status, statusDuration);
+						entity.impulse(Tmp.v1.set(state.windVector).scl(speed * (entity.isFlying() ? 1 : 0.4f)));
+						entity.reloadMultiplier(overload);
+						if(Mathf.chanceDelta(sparkEffectChance * Time.delta))sparkEffect.at(entity.x, entity.y, ang, getColor(), entity.hitSize);
+					}
+				}
+				
+				if(rotateBullets)for(Bullet entity : Groups.bullet){
+					if(entity.type.absorbable && !GravityTrapField.IntersectedAlly.get(entity.team, entity)){
+						entity.vel().setAngle(Angles.moveToward(entity.vel.angle(), ang, speed / 500 * entity.vel.len()));
+						entity.vel().add(Tmp.v1.set(state.windVector).scl(speed / 220));
+					}
+				}
+				
+				if(buildingEmp > 0){
+					Groups.build.each(b -> b.block.hasPower && b.block.canOverdrive && b.timeScale() < buildingEmp, b -> {
+						b.applySlowdown(buildingEmp, statusDuration);
+					});
+				}
+				
+			}else{
+				state.effectTimer -= Time.delta;
+			}
+		}
+		
+		if(!headless && sound != Sounds.none){
+			float noise = soundVolOscMag > 0 ? (float)Math.abs(Noise.rawNoise(Time.time / soundVolOscScl)) * soundVolOscMag : 0;
+			control.sound.loop(sound, Math.max((soundVol + noise) * state.opacity, soundVolMin));
+		}
 		
 		if(!Vars.net.client() && Mathf.chanceDelta(bulletSpawnChance * Mathf.sqrt(state.intensity)))for(int i = 0; i < 4; i++){
 			float randX = Mathf.random(Vars.world.unitWidth()), randY = Mathf.random(Vars.world.unitHeight());

@@ -69,6 +69,7 @@ public class WorldEventType{
 		allTypes.remove(NULL.name);
 	}
 	
+	public boolean fadeUI = false;
 	public final String name;
 	public boolean removeAfterTrigger;
 	public boolean drawable = false, minimapMarkable = false;
@@ -128,7 +129,7 @@ public class WorldEventType{
 	
 	
 	public void trigger(WorldEvent event){
-	
+		if(removeAfterTrigger)event.remove();
 	}
 	
 	public void editorTable(Table table){

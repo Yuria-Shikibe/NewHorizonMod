@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import mindustry.content.SectorPresets;
 import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
@@ -23,6 +24,10 @@ public class NHTechTree{
 		});
 		
 		nodeRoot("new-horizon", NHBlocks.presstaniumFactory, () -> {
+			node(NHPlanets.midantha, ItemStack.with(NHItems.darkEnergy, 100, NHItems.seniorProcessor, 1000, NHItems.presstanium, 5000), Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
+			
+			});
+			
 			node(NHBlocks.zetaGenerator, () -> {
 				node(NHBlocks.hyperGenerator);
 			});
@@ -85,6 +90,9 @@ public class NHTechTree{
 					nodeUnit(NHUnitTypes.branch, () -> {
 						nodeUnit(NHUnitTypes.warper, () -> {
 							nodeUnit(NHUnitTypes.naxos, () -> {
+								nodeUnit(NHUnitTypes.destruction, () -> {
+								
+								});
 								nodeUnit(NHUnitTypes.longinus, () -> {
 									nodeUnit(NHUnitTypes.hurricane, () -> {
 									
@@ -132,7 +140,9 @@ public class NHTechTree{
 				node(NHBlocks.synchro, () -> {
 					node(NHBlocks.argmot, () -> {
 						node(NHBlocks.gravity, () -> {
-							node(NHBlocks.webber);
+							node(NHBlocks.webber, () -> {
+								node(NHBlocks.executor);
+							});
 						});
 					});
 					

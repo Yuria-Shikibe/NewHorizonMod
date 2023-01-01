@@ -1,9 +1,11 @@
 package newhorizon.expand.entities;
 
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.scene.Element;
+import arc.scene.actions.Actions;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.io.Reads;
@@ -132,7 +134,10 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		
 		if(ui != null){
 			NHUI.eventDialog.layout();
-			if(ui.parent != null)ui.parent.remove();
+			if(ui.parent != null){
+				if(type.fadeUI)ui.parent.actions(Actions.delay(1.5f), Actions.alpha(0, 0.45f, Interp.fade), Actions.remove());
+				else ui.parent.remove();
+			}
 			ui.remove();
 		}
 	}

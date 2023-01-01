@@ -1,6 +1,9 @@
 package newhorizon.content;
 
+import arc.func.Intc;
 import arc.graphics.Color;
+import arc.math.Mathf;
+import arc.math.Rand;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Structs;
@@ -24,12 +27,15 @@ import newhorizon.NewHorizon;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import static mindustry.content.UnitTypes.*;
+
 public class NHOverride{
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
 	public static final Seq<Color> validColor = new Seq<>();
 	
 	public static void load(){
 		overrideCanvas();
+		overrideVanillaMain();
 	}
 	
 	public static void overrideCanvas(){
@@ -210,15 +216,13 @@ public class NHOverride{
 				new SpawnGroup(NHUnitTypes.saviour){{
 					begin = 105;
 					unitAmount = 1;
-					unitScaling = 1;
-					spacing = 12;
+					unitScaling = 3;
+					spacing = 9;
 					shieldScaling = 30f;
 					shields = 3000;
-					
-					payloads = Seq.with(NHUnitTypes.aliotiat, NHUnitTypes.aliotiat);
 				}},
 				
-				new SpawnGroup(NHUnitTypes.striker){{
+				new SpawnGroup(NHUnitTypes.naxos){{
 					begin = 75;
 					unitAmount = 2;
 					unitScaling = 3;
@@ -227,23 +231,33 @@ public class NHOverride{
 					shieldScaling = 30f;
 				}},
 				
-				new SpawnGroup(NHUnitTypes.destruction){{
-					begin = 90;
+				new SpawnGroup(NHUnitTypes.sin){{
+					begin = 130;
+					unitAmount = 1;
+					unitScaling = 1;
+					effect = StatusEffects.boss;
+					spacing = 15;
+					shields = 80f;
+					shieldScaling = 100f;
+				}},
+				
+				new SpawnGroup(NHUnitTypes.longinus){{
+					begin = 100;
 					unitAmount = 2;
 					unitScaling = 3;
 					spacing = 10;
 					shields = 40f;
-					shieldScaling = 100f;
-				}},
-				
-				new SpawnGroup(NHUnitTypes.collapser){{
-					begin = 180;
-					unitAmount = 1;
-					unitScaling = 1;
-					spacing = 25;
-					shields = 1000;
-					shieldScaling = 350f;
+					shieldScaling = 20f;
 				}}
+				
+//				new SpawnGroup(NHUnitTypes.collapser){{
+//					begin = 180;
+//					unitAmount = 1;
+//					unitScaling = 1;
+//					spacing = 25;
+//					shields = 1000;
+//					shieldScaling = 350f;
+//				}}
 		);
 		}//Apply Mod Units
 		
@@ -266,7 +280,7 @@ public class NHOverride{
 		
 		ObjectSet<UnitType> Unit_T2 = ObjectSet.with(
 			UnitTypes.mace, UnitTypes.pulsar, UnitTypes.atrax, UnitTypes.horizon, UnitTypes.poly,
-			UnitTypes.minke, UnitTypes.oxynoe, NHUnitTypes.thynomo, NHUnitTypes.branch, NHUnitTypes.relay
+			UnitTypes.minke, UnitTypes.oxynoe, NHUnitTypes.thynomo, NHUnitTypes.branch/*, NHUnitTypes.relay*/
 		);
 		
 		ObjectSet<UnitType> Unit_T3 = ObjectSet.with(
@@ -277,21 +291,21 @@ public class NHOverride{
 		
 		ObjectSet<UnitType> Unit_T4 = ObjectSet.with(
 			UnitTypes.scepter, UnitTypes.vela, UnitTypes.arkyid, UnitTypes.antumbra, UnitTypes.quad,
-			UnitTypes.sei, UnitTypes.aegires, NHUnitTypes.tarlidor, NHUnitTypes.naxos, NHUnitTypes.striker, NHUnitTypes.zarkov
+			UnitTypes.sei, UnitTypes.aegires, NHUnitTypes.tarlidor, NHUnitTypes.naxos/*, NHUnitTypes.striker*/, NHUnitTypes.zarkov
 		);
 		
 		ObjectSet<UnitType> Unit_T5 = ObjectSet.with(
 			UnitTypes.reign, UnitTypes.toxopid, UnitTypes.eclipse, UnitTypes.oct,
-			UnitTypes.omura, UnitTypes.navanax, NHUnitTypes.annihilation, NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.declining, NHUnitTypes.saviour
+			UnitTypes.omura, UnitTypes.navanax/*, NHUnitTypes.annihilation*/, NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.declining, NHUnitTypes.saviour
 		);
 		
 		ObjectSet<UnitType> Unit_T6 = ObjectSet.with(
 			NHUnitTypes.hurricane, NHUnitTypes.guardian, NHUnitTypes.anvil
 		);
 		
-		ObjectSet<UnitType> Unit_T7 = ObjectSet.with(
-			NHUnitTypes.collapser
-		);
+//		ObjectSet<UnitType> Unit_T7 = ObjectSet.with(
+//			NHUnitTypes.collapser
+//		);
 		
 		Unit_T3.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
 		Unit_T4.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
@@ -316,7 +330,7 @@ public class NHOverride{
 				new ItemStack(NHItems.juniorProcessor, 40)
 		);
 		removeReq(Blocks.blastDrill, Items.silicon);
-		
+
 		addReq(Blocks.coreFoundation,
 				new ItemStack(NHItems.presstanium, 1500),
 				new ItemStack(NHItems.metalOxhydrigen, 800),
@@ -327,34 +341,34 @@ public class NHOverride{
 				new ItemStack(NHItems.juniorProcessor, 30)
 		);
 		removeReq(Blocks.plastaniumCompressor, Items.silicon);
-		
+
 		addReq(Blocks.multiplicativeReconstructor,
 				new ItemStack(NHItems.presstanium, 80)
 		);
-		
+
 		addReq(Blocks.exponentialReconstructor,
 				new ItemStack(NHItems.presstanium, 400),
 				new ItemStack(NHItems.metalOxhydrigen, 400),
 				new ItemStack(NHItems.juniorProcessor, 600)
 		);
 		removeReq(Blocks.exponentialReconstructor, Items.silicon);
-		
+
 		addReq(Blocks.tetrativeReconstructor,
 				new ItemStack(NHItems.irayrondPanel, 200),
 				new ItemStack(NHItems.multipleSteel, 400),
 				new ItemStack(NHItems.seniorProcessor, 600)
 		);
 		removeReq(Blocks.tetrativeReconstructor, Items.silicon);
-		
+
 		removeReq(Blocks.ripple, Items.titanium);
 		addReq(Blocks.ripple,
 			new ItemStack(NHItems.presstanium, 50)
 		);
-		
+
 		addReq(Blocks.fuse,
 				new ItemStack(NHItems.zeta, 80)
 		);
-		
+
 		addReq(Blocks.coreNucleus,
 				new ItemStack(NHItems.irayrondPanel, 1500),
 				new ItemStack(NHItems.multipleSteel, 800),
@@ -366,7 +380,7 @@ public class NHOverride{
 				new ItemStack(NHItems.juniorProcessor, 30),
 				new ItemStack(NHItems.metalOxhydrigen, 45)
 		);
-		
+
 		((GenericCrafter) Blocks.surgeSmelter).craftTime += 30f;
 		removeReq(Blocks.surgeSmelter, Items.silicon);
 		addReq(Blocks.swarmer,
@@ -378,7 +392,7 @@ public class NHOverride{
 		addReq(Blocks.cyclone, new ItemStack(NHItems.metalOxhydrigen, 55));
 		addReq(Blocks.disassembler, new ItemStack(NHItems.multipleSteel, 65), new ItemStack(NHItems.juniorProcessor, 30));
 		removeReq(Blocks.disassembler, Items.silicon);
-		
+
 		spectre: {
 			if(!(Blocks.spectre instanceof ItemTurret))break spectre;
 			ItemTurret block = (ItemTurret)Blocks.spectre;
@@ -396,7 +410,7 @@ public class NHOverride{
 				type.lifetime += 8f;
 			}
 		}
-		
+
 		meltdown: {
 			if(!(Blocks.meltdown instanceof LaserTurret))break meltdown;
 			LaserTurret block = (LaserTurret)Blocks.meltdown;
@@ -410,29 +424,226 @@ public class NHOverride{
 			block.range += 120;
 			block.shootDuration += 60;
 		}
-		
-		
+
+
 		removeReq(Blocks.meltdown, Items.silicon);
-		
+
 		addReq(Blocks.foreshadow,
 				new ItemStack(NHItems.seniorProcessor, 220),
 				new ItemStack(NHItems.multipleSteel, 180)
 		);
 		removeReq(Blocks.foreshadow, Items.silicon);
-		
+
 		addReq(Blocks.rtgGenerator,
 				new ItemStack(NHItems.juniorProcessor, 65),
 				new ItemStack(NHItems.multipleSteel, 45)
 		);
 		removeReq(Blocks.rtgGenerator, Items.silicon);
-		
+
 		addReq(Blocks.logicProcessor, ItemStack.with(NHItems.juniorProcessor, 80));
 		removeReq(Blocks.logicProcessor, Items.silicon);
-		
+
 		addReq(Blocks.hyperProcessor, ItemStack.with(NHItems.seniorProcessor, 80));
 		removeReq(Blocks.hyperProcessor, Items.silicon);
 	}
 	
+	public static Seq<SpawnGroup> generate(float difficulty){
+		//apply power curve to make starting sectors easier
+		return generate(Mathf.pow(difficulty, 1.12f), new Rand(), false);
+	}
+	
+	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack){
+		return generate(difficulty, rand, attack, false);
+	}
+	
+	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly){
+		return generate(difficulty, rand, attack, airOnly, false);
+	}
+	
+	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval){
+		UnitType[][] species = {
+				{NHUnitTypes.origin, NHUnitTypes.thynomo, NHUnitTypes.aliotiat, NHUnitTypes.tarlidor, NHUnitTypes.annihilation, NHUnitTypes.sin},
+				{NHUnitTypes.sharp, NHUnitTypes.branch, NHUnitTypes.warper, NHUnitTypes.naxos, NHUnitTypes.hurricane},
+				{flare, NHUnitTypes.assaulter, NHUnitTypes.branch, NHUnitTypes.destruction, NHUnitTypes.longinus},
+				{NHUnitTypes.sharp, NHUnitTypes.assaulter, NHUnitTypes.branch, NHUnitTypes.longinus, NHUnitTypes.guardian},
+				{risso, minke, NHUnitTypes.ghost, NHUnitTypes.zarkov, NHUnitTypes.declining},
+				{risso, oxynoe, cyerce, aegires, navanax}, //retusa intentionally left out as it cannot damage the core properly
+				{horizon, zenith, rand.chance(0.5) ? quad : antumbra, rand.chance(0.5) ? NHUnitTypes.longinus : NHUnitTypes.destruction, rand.chance(0.5) ? NHUnitTypes.anvil : NHUnitTypes.hurricane}
+		};
+		
+		if(airOnly){
+			species = Structs.filter(UnitType[].class, species, v -> v[0].flying);
+		}
+		
+		if(naval){
+			species = Structs.filter(UnitType[].class, species, v -> v[0].flying || v[0].naval);
+		}else{
+			species = Structs.filter(UnitType[].class, species, v -> !v[0].naval);
+		}
+		
+		UnitType[][] fspec = species;
+		
+		//required progression:
+		//- extra periodic patterns
+		
+		Seq<SpawnGroup> out = new Seq<>();
+		
+		//max reasonable wave, after which everything gets boring
+		int cap = 150;
+		
+		float shieldStart = 30, shieldsPerWave = 20 + difficulty*30f;
+		float[] scaling = {1f, 1.15f, 1.55f, 2.5f, 2.7f, 3f};
+		
+		Intc createProgression = start -> {
+			//main sequence
+			UnitType[] curSpecies = Structs.random(fspec);
+			int curTier = 0;
+			
+			for(int i = start; i < cap;){
+				int f = i;
+				int next = rand.random(8, 16) + (int)Mathf.lerp(5f, 0f, difficulty) + curTier * 4;
+				
+				float shieldAmount = Math.max((i - shieldStart) * shieldsPerWave, 0);
+				int space = start == 0 ? 1 : rand.random(1, 2);
+				int ctier = curTier;
+				
+				//main progression
+				out.add(new SpawnGroup(curSpecies[Math.min(curTier, curSpecies.length - 1)]){{
+					unitAmount = f == start ? 1 : (int)(6 / scaling[ctier]);
+					begin = f;
+					end = f + next >= cap ? never : f + next;
+					max = 13;
+					unitScaling = (difficulty < 0.4f ? rand.random(2.5f, 5f) : rand.random(1f, 4f)) * scaling[ctier];
+					shields = shieldAmount;
+					shieldScaling = shieldsPerWave;
+					spacing = space;
+				}});
+				
+				//extra progression that tails out, blends in
+//				out.add(new SpawnGroup(curSpecies[Math.min(curTier, curSpecies.length - 1)]){{
+//					unitAmount = (int)(3 / scaling[ctier]);
+//					begin = f + next - 1;
+//					end = f + next + rand.random(6, 10);
+//					max = 6;
+//					unitScaling = rand.random(2f, 4f);
+//					spacing = rand.random(2, 4);
+//					shields = shieldAmount/2f;
+//					shieldScaling = shieldsPerWave;
+//				}});
+				
+				i += next + 1;
+				if(curTier < 3 || (rand.chance(0.05) && difficulty > 0.8)){
+					curTier ++;
+				}
+				
+				//do not spawn bosses
+				curTier = Math.min(curTier, 6);
+				
+				//small chance to switch species
+				if(rand.chance(0.3)){
+					curSpecies = Structs.random(fspec);
+				}
+			}
+		};
+		
+		createProgression.get(0);
+		
+		int step = 5 + rand.random(5);
+		
+		while(step <= cap){
+			createProgression.get(step);
+			step += (int)(rand.random(15, 30) * Mathf.lerp(1f, 0.5f, difficulty));
+		}
+		
+		int bossWave = (int)(rand.random(90, 120) * Mathf.lerp(1f, 0.5f, difficulty));
+		int bossSpacing = (int)(rand.random(25, 40) * Mathf.lerp(1f, 0.5f, difficulty));
+		
+		int bossTier = difficulty < 0.6 ? 3 : 4;
+		
+		//main boss progression
+		out.add(new SpawnGroup(Structs.random(species)[bossTier]){{
+			unitAmount = 1;
+			begin = bossWave;
+			spacing = bossSpacing;
+			end = never;
+			max = 16;
+			unitScaling = bossSpacing;
+			shieldScaling = shieldsPerWave;
+			effect = StatusEffects.boss;
+		}});
+		
+		//alt boss progression
+		out.add(new SpawnGroup(Structs.random(species)[bossTier]){{
+			unitAmount = 1;
+			begin = bossWave + rand.random(3, 5) * bossSpacing;
+			spacing = bossSpacing;
+			end = never;
+			max = 16;
+			unitScaling = bossSpacing;
+			shieldScaling = shieldsPerWave;
+			effect = StatusEffects.boss;
+		}});
+		
+		int finalBossStart = 120 + rand.random(30);
+		
+		//final boss waves
+		out.add(new SpawnGroup(Structs.random(species)[bossTier]){{
+			unitAmount = 1;
+			begin = finalBossStart;
+			spacing = bossSpacing/2;
+			end = never;
+			unitScaling = bossSpacing;
+			shields = 500;
+			shieldScaling = shieldsPerWave * 4;
+			effect = StatusEffects.boss;
+		}});
+		
+		//final boss waves (alt)
+		out.add(new SpawnGroup(Structs.random(species)[bossTier]){{
+			unitAmount = 1;
+			begin = finalBossStart + 15;
+			spacing = bossSpacing/2;
+			end = never;
+			unitScaling = bossSpacing;
+			shields = 500;
+			shieldScaling = shieldsPerWave * 4;
+			effect = StatusEffects.boss;
+		}});
+		
+		//add megas to heal the base.
+		if(attack && difficulty >= 0.5){
+			int amount = Mathf.random(1, 3 + (int)(difficulty*2));
+			
+			for(int i = 0; i < amount; i++){
+				int wave = Mathf.random(3, 20);
+				out.add(new SpawnGroup(mega){{
+					unitAmount = 1;
+					begin = wave;
+					end = wave;
+					max = 16;
+				}});
+			}
+		}
+		
+		//shift back waves on higher difficulty for a harder start
+		int shift = Math.max((int)(difficulty * 14 - 5), 0);
+		
+		for(SpawnGroup group : out){
+			group.begin -= shift;
+			group.end -= shift;
+		}
+		
+		out.add(NHOverride.modSpawnGroup);
+		
+		out.each(s -> {
+			if(s.type == NHUnitTypes.longinus){
+				s.unitScaling *= 1.75f;
+				s.unitAmount = (int)Math.max(1, s.unitAmount / 1.5f);
+			}
+		});
+		
+		return out;
+	}
 	
 	private static void addReq(Block target, ItemStack... items){
 		ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];

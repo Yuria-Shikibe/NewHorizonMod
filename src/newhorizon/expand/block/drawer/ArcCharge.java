@@ -40,8 +40,6 @@ public class ArcCharge extends DrawPart{
 	
 	protected final static Vec2 tr = new Vec2(), tr2 = new Vec2();
 	
-	
-	
 	@Override
 	public void draw(PartParams params){
 		Draw.z(Layer.effect - 1f);

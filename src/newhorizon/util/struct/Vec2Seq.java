@@ -1,4 +1,4 @@
-package newhorizon.util.func;
+package newhorizon.util.struct;
 
 import arc.func.Boolf;
 import arc.func.Cons;

@@ -32,6 +32,7 @@ import mindustry.type.Weapon;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.LightningLinkerBulletType;
+import newhorizon.expand.bullets.SpeedUpBulletType;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;
@@ -51,7 +52,7 @@ public class NHBullets{
 	public static UnitType airRaidMissile, skyMissile;
 	
 	public static BulletType
-			declineProjectile, atomSeparator,
+			declineProjectile, atomSeparator, blastEnergyPst, blastEnergyNgt,
 			warperBullet, airRaidBomb,
 			hyperBlastLinker, hyperBlast,
 			arc_9000, eternity,
@@ -156,6 +157,72 @@ public class NHBullets{
 		STRIKE = NewHorizon.name("strike");
 		
 		loadPriority();
+		
+		blastEnergyPst = new SpeedUpBulletType(0.85f, 100f, CIRCLE_BOLT){{
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
+			lifetime = 64f;
+			ammoMultiplier = 4f;
+			accelerateBegin = 0.1f;
+			accelerateEnd = 0.85f;
+			velocityIncrease = 14f;
+			hitShake = despawnShake = 2f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = 12;
+			lightningLength = 4;
+			homingPower = 0.195f;
+			homingRange = 600f;
+			homingDelay = 12;
+			width = height = 16f;
+			splashDamageRadius = 30f;
+			lightningDamage = damage * 0.65f;
+			splashDamage = 0.65f * damage;
+			shrinkX = shrinkY = 0;
+			hitEffect = NHFx.crossBlast(backColor);
+			despawnEffect = NHFx.hyperBlast(backColor);
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootBigSmoke;
+			trailEffect = NHFx.trailToGray;
+			trailChance = 0.23f;
+			trailParam = 2.7f;
+			
+			trailLength = 15;
+			trailWidth = 3.5f;
+			drawSize = 300f;
+		}};
+		
+		blastEnergyNgt = new SpeedUpBulletType(3.85f, 80f){{
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
+			lifetime = 36f;
+			knockback = 4f;
+			ammoMultiplier = 8f;
+			accelerateBegin = 0.1f;
+			accelerateEnd = 0.85f;
+			velocityIncrease = 18f;
+			hitShake = despawnShake = 5f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = 12;
+			lightningLength = 4;
+			width = 14f;
+			height = 46f;
+			pierceCap = 4;
+			shrinkX = shrinkY = 0;
+			splashDamageRadius = 120f;
+			lightningDamage = damage * 0.85f;
+			splashDamage = 0.85f * damage;
+			hitEffect = NHFx.lightningHitLarge(backColor);
+			despawnEffect = NHFx.crossBlast(backColor);
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootBigSmoke;
+			trailEffect = NHFx.trailToGray;
+			
+			trailLength = 15;
+			trailWidth = 3f;
+			drawSize = 300f;
+			
+			inaccuracy = 0;
+		}};
 		
 		atomSeparator = new ContinuousFlameBulletType(300){{
 			shake = 3;
@@ -1161,12 +1228,16 @@ public class NHBullets{
 			}
 		};
 		
-		guardianBullet = new BasicBulletType(10f, 180){
+		guardianBullet = new SpeedUpBulletType(2f, 180){
 			{
 				width = 22f;
 				height = 40f;
 				
-//				accelInterp = NHInterp.inOut;
+				velocityBegin = 1f;
+				velocityIncrease = 11f;
+				accelInterp = NHInterp.inOut;
+				accelerateBegin = 0.045f;
+				accelerateEnd = 0.675f;
 				
 				pierceCap = 3;
 				splashDamage = damage / 4;
