@@ -18,11 +18,13 @@ import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.UnitSorts;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
@@ -997,14 +999,19 @@ public class NHBlocks{
 			recoil = 1f;
 			shake = 8f;
 			range = 620.0F;
-			minRange = 120f;
+			minRange = 160f;
 			rotateSpeed = 1.5f;
 			
 			buildType = () -> new ItemTurretBuild(){
 				@Override
 				public void drawSelect(){
 					super.drawSelect();
-					Drawf.dashCircle(x, y, minRange, team.color);
+					Drawf.dashCircle(x, y, minRange, Pal.redderDust);
+				}
+				
+				@Override
+				protected boolean validateTarget(){
+					return (!Units.invalidateTarget(target, canHeal() ? Team.derelict : team, x, y) && !within(target, minRange)) || isControlled() || logicControlled();
 				}
 			};
 			
@@ -1026,7 +1033,7 @@ public class NHBlocks{
 			public void drawPlace(int x, int y, int rotation, boolean valid){
 				super.drawPlace(x, y, rotation, valid);
 				
-				Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.placing);
+				Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.redderDust);
 			}
 			
 			@Override

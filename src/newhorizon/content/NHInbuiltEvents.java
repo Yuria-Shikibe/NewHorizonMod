@@ -305,7 +305,7 @@ public class NHInbuiltEvents{
 				
 				if(Vars.state.isCampaign() && Vars.state.rules.sector.planet == NHPlanets.midantha){
 					Core.app.post(() -> {
-						if(Vars.state.rules.tags.containsKey(applyKey) && !Vars.state.rules.sector.isCaptured()){
+						if(Vars.state.isCampaign() && Vars.state.rules.tags.containsKey(applyKey) && !Vars.state.rules.sector.isCaptured()){
 							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp)autoTriggers.each(t -> t.copy().add());
 							AutoEventTrigger.setScale(0.35f);
 						}
