@@ -21,7 +21,7 @@ jobs:
       run: chmod +x gradlew
     
     - name: Build with Gradle
-      run: ./gradlew deploy
+      run: ./gradlew deployNet
          
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
