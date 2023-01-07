@@ -150,6 +150,7 @@ public class NHTechTree{
 					
 					node(NHBlocks.multipleLauncher, () -> {
 						node(NHBlocks.bloodStar, () -> {
+							node(NHBlocks.railGun);
 							node(NHBlocks.endOfEra, () -> {
 								node(NHBlocks.airRaider);
 								node(NHBlocks.eternity, () -> {});

@@ -77,9 +77,6 @@ jar{
 task deleteLast{
     def fi = new File("$gameData/mods/NewHorizonModDesktop.jar")
     if(fi.exists()){
-//        Class<?> fileSys = ClassLoader.getSystemClassLoader().loadClass("java.io.DefaultFileSystem");
-//        FileSystem system = (FileSystem)fileSys.getMethod("getFileSystem()").invoke(null, new Object[]{});
-
         System.out.println("Delete Old:" + fi.delete())
     }
 }

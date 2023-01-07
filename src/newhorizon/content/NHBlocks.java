@@ -56,6 +56,8 @@ import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
@@ -403,13 +405,13 @@ public class NHBlocks{
 			speedupPerShoot = 0.3f;
 			hasLiquids = true;
 			coolant = new ConsumeCoolant(0.15f);
-			consumePowerCond(8f, TurretBuild::isActive);
+			consumePowerCond(14f, TurretBuild::isActive);
 			size = 3;
 			range = 200;
 			reload = 60f;
 			shootCone = 24f;
 			shootSound = NHSounds.laser3;
-			shootType = new PosLightningType(75f){{
+			shootType = new PosLightningType(70f){{
 				lightningColor = hitColor = NHColor.lightSkyBack;
 				maxRange = rangeOverride = 250f;
 				hitEffect = NHFx.hitSpark;
@@ -429,19 +431,20 @@ public class NHBlocks{
 			
 			drawer = new DrawTurret(){{
 				parts.add(new RegionPart("-side"){{
-					under = turretShading = mirror = true;
+					under = mirror = true;
+					layerOffset = -0.1f;
 					moveX = 6f;
 					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
 				}}, new RegionPart("-side-down"){{
 					mirror = true;
-					layerOffset = -0.001f;
+					layerOffset = -0.5f;
 					moveX = 10f;
 					moveY = 45f;
 					y = 10f;
 					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
 				}}, new RegionPart("-side-down"){{
 					mirror = true;
-					layerOffset = -0.0035f;
+					layerOffset = -0.35f;
 					moveX = -9f;
 					moveY = 7f;
 					y = -2f;
@@ -449,7 +452,7 @@ public class NHBlocks{
 					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
 				}}, new RegionPart("-side-down"){{
 					under = mirror = true;
-					layerOffset = -0.002f;
+					layerOffset = -0.2f;
 					moveY = -33f;
 					y = -33f;
 					x = 14;
@@ -946,6 +949,92 @@ public class NHBlocks{
 			recoil = 1.0F;
 			shootSound = NHSounds.thermoShoot;
 		}};
+		
+		railGun = new ItemTurret("rail-gun"){{
+			unitSort = (u, x, y) -> -u.speed();
+			
+			maxAmmo = 50;
+			ammoPerShot = 10;
+			
+			drawer = new DrawTurret("reinforced-"){{
+				parts.add(new RegionPart("-acceler"){{
+					mirror = false;
+//					under = turretShading = true;
+					moveX = 0;
+					moveY = -5f;
+					
+					progress = PartProgress.recoil;
+				}}, new RegionPart("-top"){{
+					outline = true;
+					heatLight = false;
+					mirror = false;
+					//					under = turretShading = true;
+					moveX = 0;
+					moveY = 0;
+				}});
+			}};
+			
+			ammo(
+					NHItems.irayrondPanel, NHBullets.railGun1,
+					NHItems.setonAlloy, NHBullets.railGun2,
+					NHItems.upgradeSort, NHBullets.railGun3
+			);
+			
+			consumePowerCond(12f, TurretBuild::isActive);
+			
+			shoot = new ShootPattern(){{
+				shots = 1;
+				firstShotDelay = 90f;
+			}};
+			
+			moveWhileCharging = false;
+			shootCone = 6f;
+			
+			size = 4;
+			health = 4550;
+			armor = 15f;
+			reload = 200f;
+			recoil = 1f;
+			shake = 8f;
+			range = 620.0F;
+			minRange = 120f;
+			rotateSpeed = 1.5f;
+			
+			buildType = () -> new ItemTurretBuild(){
+				@Override
+				public void drawSelect(){
+					super.drawSelect();
+					Drawf.dashCircle(x, y, minRange, team.color);
+				}
+			};
+			
+			shootSound = NHSounds.railGunBlast;
+//			heatColor = NHItems.irayrondPanel.color;
+			
+			accurateDelay = true;
+			
+			coolantMultiplier = 0.55f;
+			cooldownTime = 90f;
+			
+			maxAmmo = 16;
+			ammoPerShot = 2;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.setonAlloy, 150, NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
+		}
+			
+			@Override
+			public void drawPlace(int x, int y, int rotation, boolean valid){
+				super.drawPlace(x, y, rotation, valid);
+				
+				Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.placing);
+			}
+			
+			@Override
+			public void setStats(){
+				super.setStats();
+				stats.add(Stat.shootRange, minRange / tilesize, StatUnit.blocks);
+			}
+		};
 		
 		endOfEra = new ShootMatchTurret("end-of-era"){{
 			recoil = 5f;
