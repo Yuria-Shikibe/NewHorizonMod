@@ -39,10 +39,7 @@ import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.OreBlock;
-import mindustry.world.blocks.environment.Prop;
-import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.liquid.LiquidBridge;
 import mindustry.world.blocks.liquid.LiquidRouter;
@@ -128,7 +125,7 @@ public class NHBlocks{
 		disposePowerVoid, gravityTrapSmall,
 	
 		//Env
-		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalUnit, metalTower, metalGround, metalGroundQuantum, metalScarp,
+		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalWall, metalTower, metalGround, metalGroundQuantum, metalScarp, metalVent,
 		metalGroundHeat, conglomerateRock, conglomerateWall
 		;
 	
@@ -158,7 +155,7 @@ public class NHBlocks{
 		
 		metalGroundHeat = new Floor("metal-ground-heat", 3){{
 			mapColor = Pal.darkerGray.cpy().lerp(NHColor.darkEnr, 0.5f);
-			wall = metalUnit;
+			wall = metalWall;
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.heat, 1.25f);
@@ -235,6 +232,8 @@ public class NHBlocks{
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.2f);
 			blendGroup = this;
 			
+			wall = NHBlocks.metalWall;
+			
 			attributes.set(Attribute.heat, 1.5f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
@@ -253,17 +252,18 @@ public class NHBlocks{
 			}
 		};
 		
-		metalUnit = new StaticWall("metal-unit"){{
+		metalWall = new StaticWall("metal-unit"){{
 			variants = 6;
 		}};
 		
 		metalTower = new StaticWall("metal-tower"){{
 			variants = 3;
+			layer = Layer.blockOver + 1;
 		}};
 		
 		metalGround = new Floor("metal-ground", 6){{
 			mapColor = Pal.darkerGray;
-			wall = metalUnit;
+			wall = metalWall;
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.heat, 0);
@@ -275,9 +275,30 @@ public class NHBlocks{
 			decoration = metalScarp;
 		}};
 		
+		metalVent = new SteamVent("metal-vent"){{
+			variants = 2;
+			parent = blendGroup = NHBlocks.metalGround;
+			attributes.set(Attribute.steam, 1.5f);
+			
+			effectColor = Pal.darkerMetal;
+			
+			effect = new Effect(140f, e -> {
+				color(e.color, NHColor.darkEnr, e.fin() * 0.86f);
+
+				Draw.alpha(e.fslope() * 0.78f);
+
+				float length = 3f + e.finpow() * 10f;
+				Fx.rand.setSeed(e.id);
+				for(int i = 0; i < Fx.rand.random(3, 5); i++){
+					Fx.v.trns(Fx.rand.random(360f), Fx.rand.random(length));
+					Fill.circle(e.x + Fx.v.x, e.y + Fx.v.y, Fx.rand.random(1.2f, 3.5f) + e.fslope() * 1.1f);
+				}
+			}).layer(Layer.darkness - 1);
+		}};
+		
 		metalGroundQuantum = new Floor("metal-ground-quantum", 2){{
 			mapColor = Pal.darkerMetal;
-			wall = metalUnit;
+			wall = metalWall;
 			blendGroup = metalGround;
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
@@ -1126,7 +1147,12 @@ public class NHBlocks{
 		
 		waterInstancer = new GenericCrafter("water-instancer"){{
 			size = 1;
-			updateEffect = Fx.smeltsmoke;
+			updateEffect = new Effect(15, e -> {
+				randLenVectors(e.id, 6, 4f + e.fin() * 5f, (x, y) -> {
+					color(NHColor.darkEnrColor, NHColor.deeperBlue, e.fin());
+					Fill.square(e.x + x, e.y + y, 0.5f + e.fout() * 2f, 45);
+				});
+			});
 			consumePower(0.5f);
 			consumeLiquid(NHLiquids.quantumLiquid, 0.1f);
 			outputLiquid = new LiquidStack(Liquids.water, 12f / 60f);

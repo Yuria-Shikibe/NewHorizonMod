@@ -3,10 +3,7 @@ package newhorizon.content;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Geometry;
-import arc.math.geom.Rect;
-import arc.math.geom.Vec2;
-import arc.math.geom.Vec3;
+import arc.math.geom.*;
 import arc.struct.GridBits;
 import arc.struct.Seq;
 import arc.util.Structs;
@@ -19,6 +16,7 @@ import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.ai.Astar;
 import mindustry.content.Blocks;
+import mindustry.content.Items;
 import mindustry.content.Loadouts;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
@@ -39,13 +37,14 @@ import mindustry.world.Tile;
 import mindustry.world.TileGen;
 import mindustry.world.blocks.campaign.LaunchPad;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.SteamVent;
 import mindustry.world.blocks.environment.TallBlock;
 import mindustry.world.meta.Env;
 
 import static mindustry.Vars.state;
 
 public class NHPlanets{
-	public static Planet midantha;
+	public static Planet midantha, sentourt;
 	
 	public static void load(){
 		midantha = new NHPlanet("midantha", Planets.sun, 1, 3){{
@@ -64,11 +63,13 @@ public class NHPlanets{
 					NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f).mul(1.05f),
 //					Pal.gray.cpy().lerp(Pal.metalGrayDark, 0.25f).lerp(NHColor.darkEnr, 0.02f),
 //					Pal.gray,
-					Pal.darkerGray,
+					Pal.darkestGray.cpy().mul(0.95f),
+					Pal.darkestGray.cpy().lerp(Color.white, 0.105f),
 					Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
 					Pal.darkestGray
 			);
 			
+			clearSectorOnLose = true;
 			allowWaveSimulation = true;
 			allowLaunchSchematics = false;
 			allowLaunchLoadout = true;
@@ -77,18 +78,18 @@ public class NHPlanets{
 				r.waveTeam = Team.malis;
 				r.placeRangeCheck = false;
 				r.showSpawns = true;
-				r.waveSpacing = 1.3333f * Time.toMinutes;
+				r.waveSpacing = 80 * Time.toSeconds;
 				r.initialWaveSpacing = 8f * Time.toMinutes;
-				r.winWave = 150;
+				if(r.sector.preset == null)r.winWave = 150;
 				r.bannedUnits.add(NHUnitTypes.guardian);
 				r.coreDestroyClear = true;
 				
 				Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
 				teamRule.rtsAi = false;
-				teamRule.unitBuildSpeedMultiplier = 3f;
-				teamRule.blockDamageMultiplier = 1.5f;
+				teamRule.unitBuildSpeedMultiplier = 5f;
+				teamRule.blockDamageMultiplier = 1.25f;
 				teamRule.buildSpeedMultiplier = 3f;
-				teamRule.blockHealthMultiplier = 2f;
+				teamRule.blockHealthMultiplier = 1.25f;
 				
 				teamRule = r.teams.get(r.waveTeam);
 				teamRule.infiniteAmmo = teamRule.infiniteResources = true;
@@ -98,8 +99,8 @@ public class NHPlanets{
 			
 			cloudMeshLoader = () -> {
 				return new MultiMesh(
-						new HexSkyMesh(this, 2, 0.15F, 0.14F, 5, Pal.gray.cpy().lerp(NHColor.darkEnrColor, 0.35f).a(0.45F), 2, 0.42F, 1.0F, 0.43F),
-						new HexSkyMesh(this, 3, 0.6F, 0.15F, 5, Pal.gray.cpy().lerp(NHColor.darkEnrColor, 0.125f).a(0.75F), 2, 0.42F, 1.2F, 0.45F));
+					new HexSkyMesh(this, 2, 0.15F, 0.14F, 5, Pal.darkerMetal.cpy().lerp(NHColor.darkEnrColor, 0.35f).a(0.55F), 2, 0.42F, 1.0F, 0.43F),
+					new HexSkyMesh(this, 3, 1.26F, 0.155F, 4, Pal.darkestGray.cpy().lerp(NHColor.darkEnrColor, 0.105f).a(0.75F), 6, 0.42F, 1.32F, 0.4F));
 			};
 			
 			defaultEnv = Env.terrestrial | Env.groundWater | Env.oxygen;
@@ -112,8 +113,82 @@ public class NHPlanets{
 			atmosphereRadOut = 0.3f;
 			startSector = 0;
 		}
+			public void updateBaseCoverage(){
+				for(Sector sector : sectors){
+					float sum = 1.25f;
+					for(Sector other : sector.near()){
+						if(other.generateEnemyBase){
+							sum += 0.9f;
+						}
+					}
+					
+					if(sector.hasEnemyBase()){
+						sum += 0.88f;
+					}
+					
+					Rand rand = new Rand();
+					rand.setSeed(sector.id);
+					sector.threat = sector.preset == null ? rand.random(0.65f, 1f) : Mathf.clamp(sector.preset.difficulty / 10f);
+				}
+			}
+		};
 		
-		
+		sentourt = new NHPlanet("sentourt", midantha, 0.22f, 1){{
+			bloom = true;
+			visible = true;
+			accessible = false;
+			hasAtmosphere = false;
+			alwaysUnlocked = false;
+			meshLoader = () -> new NHModMesh(
+					this, 5,
+					5, 0.3, 1.7, 1.2, 1.4,
+					1.1f,
+					Pal.accent.cpy(),
+					Pal.accent.cpy().mul(1.25f),
+					//					Pal.gray.cpy().lerp(Pal.metalGrayDark, 0.25f).lerp(NHColor.darkEnr, 0.02f),
+					//					Pal.gray,
+					Pal.darkerGray,
+					Pal.darkerMetal,
+					Pal.darkestMetal,
+					Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
+					Pal.darkestGray
+			);
+			
+			clearSectorOnLose = true;
+			allowWaveSimulation = true;
+			allowLaunchSchematics = false;
+			allowLaunchLoadout = true;
+			
+			ruleSetter = r -> {
+				r.waveTeam = Team.malis;
+				r.placeRangeCheck = false;
+				r.showSpawns = true;
+				r.waveSpacing = 80 * Time.toSeconds;
+				r.initialWaveSpacing = 8f * Time.toMinutes;
+				if(r.sector.preset == null)r.winWave = 150;
+				r.bannedUnits.add(NHUnitTypes.guardian);
+				r.coreDestroyClear = true;
+				
+				Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
+				teamRule.rtsAi = false;
+				teamRule.unitBuildSpeedMultiplier = 5f;
+				teamRule.blockDamageMultiplier = 1.25f;
+				teamRule.buildSpeedMultiplier = 3f;
+				teamRule.blockHealthMultiplier = 1.25f;
+				
+				teamRule = r.teams.get(r.waveTeam);
+				teamRule.infiniteAmmo = teamRule.infiniteResources = true;
+			};
+			
+			defaultEnv = Env.terrestrial;
+			
+			iconColor = Items.surgeAlloy.color;
+			
+			landCloudColor = Color.valueOf("3c1b8f");
+			startSector = 0;
+		}
+			
+			
 			public void updateBaseCoverage(){
 				for(Sector sector : sectors){
 					float sum = 1.25f;
@@ -278,8 +353,8 @@ public class NHPlanets{
 				Rect r = tmpRects.get(k);
 				for(int i = 0; i < r.width; i++){
 					for(int j = 0; j < r.height; j++){
-						Tile tile = tiles.getn((int)(i + r.x), (int)(j + r.y));
-						if(tile.floor().isLiquid)continue;
+						Tile tile = tiles.get((int)(i + r.x), (int)(j + r.y));
+						if(tile == null || tile.floor().isLiquid)continue;
 						tile.setBlock(Blocks.air);
 						if(i == 0 || i == (int)r.width - 1 || j == 0 || j == (int)r.height - 1){
 							tile.setFloor(Blocks.darkPanel3.asFloor());
@@ -297,7 +372,7 @@ public class NHPlanets{
 			tmpRects.clear();
 			
 			Block oW = Blocks.coreZone.asFloor().wall;
-			Blocks.coreZone.asFloor().wall = NHBlocks.metalUnit;
+			Blocks.coreZone.asFloor().wall = NHBlocks.metalWall;
 			
 			cells(4);
 			
@@ -364,15 +439,19 @@ public class NHPlanets{
 						ore = Blocks.oreCopper;
 					}
 					
-					if(noise(x + 644 + y*0.35f, y - 538, 5, 6f, 45f, 1f) > 0.75f){
+					if(noise(x + 344 + y*0.35f, y - 538, 5, 6f, 45f, 1f) > 0.75f){
 						ore = Blocks.oreCoal;
 					}
 					
-					if(noise(x + y * 1.254f + 278, y - 238, 4, 1.08f, 85f, 1f) > 0.763f){
+					if(noise(x + 244, y - 138, 6, 3f, 35f, 1f) > 0.8f){
+						ore = Blocks.oreBeryllium;
+					}
+					
+					if(noise(x + 578, y - 238, 4, 2.08f, 85f, 1f) > 0.793f){
 						ore = Blocks.oreTungsten;
 					}
 					
-					if(noise(y - 1234, x - 938, 9, 2.28f, 15f, 1f) > 0.890383f){
+					if(noise(y - 1234, x - 938, 6, 2.28f, 15f, 1f) > 0.880383f){
 						ore = NHBlocks.oreZeta;
 					}
 					
@@ -468,12 +547,44 @@ public class NHPlanets{
 			
 			trimDark();
 			
+			int minVents = rand.random(9, 12);
+			int ventCount = 0;
+			
+			//vents
+			outer:
+			for(Tile tile : tiles){
+				Floor floor = tile.floor();
+				if((floor == NHBlocks.metalGround) && rand.chance(0.002)){
+					int radius = 2;
+					for(int x = -radius; x <= radius; x++){
+						for(int y = -radius; y <= radius; y++){
+							Tile other = tiles.get(x + tile.x, y + tile.y);
+							if(other == null || (other.floor() != NHBlocks.metalGround) || other.block().solid){
+								continue outer;
+							}
+						}
+					}
+					
+					ventCount ++;
+					for(Point2 pos : SteamVent.offsets){
+						Tile other = tiles.get(pos.x + tile.x + 1, pos.y + tile.y + 1);
+						other.setOverlay(Blocks.air);
+						other.setFloor(NHBlocks.metalVent.asFloor());
+					}
+				}
+			}
+			
 			state.rules.env = sector.planet.defaultEnv;
 			
 			Schematics.placeLoadout(NHContent.mLoadout, spawnX, spawnY);
 			
 			state.rules.waves = true;
 			state.rules.showSpawns = true;
+			state.rules.onlyDepositCore = false;
+			state.rules.fog = false;
+			
+			if(state.rules.sector.preset != null)return;
+			
 			state.rules.winWave = 150;
 			state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
 			state.rules.spawns = NHOverride.generate(1, new Rand(sector.id), false, false, false);

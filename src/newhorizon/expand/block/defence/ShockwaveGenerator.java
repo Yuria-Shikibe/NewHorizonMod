@@ -4,6 +4,7 @@ package newhorizon.expand.block.defence;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.math.Mathf;
+import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
@@ -11,6 +12,7 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Posc;
 import mindustry.gen.Sounds;
@@ -72,6 +74,11 @@ public class ShockwaveGenerator extends Block {
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.accent);
+	}
+	
+	@Override
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+		drawer.drawPlan(this, plan, list);
 	}
 	
 	@Override

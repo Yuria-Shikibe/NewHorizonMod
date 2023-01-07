@@ -293,16 +293,23 @@ public class NHInbuiltEvents{
 					Vars.state.rules.tags.remove(applyKey);
 					return;
 				}
+				
 				if(Vars.state.rules.pvp || NHGroups.autoEventTrigger.size() >= autoTriggers.size)return;
 				if(Vars.headless || NewHorizon.DEBUGGING){
 					Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
 						EventHandler.runEventOnce("setup-triggers", () -> {
-							if(NHGroups.autoEventTrigger.isEmpty())autoTriggers.each(t -> t.copy().add());
+							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp)autoTriggers.each(t -> t.copy().add());
 						});
 					})));
-				}else if(Vars.state.rules.tags.containsKey(applyKey)){
-					if(NHGroups.autoEventTrigger.isEmpty())autoTriggers.each(t -> t.copy().add());
-					AutoEventTrigger.setScale(0.1f);
+				}
+				
+				if(Vars.state.isCampaign() && Vars.state.rules.sector.planet == NHPlanets.midantha){
+					Core.app.post(() -> {
+						if(Vars.state.rules.tags.containsKey(applyKey) && !Vars.state.rules.sector.isCaptured()){
+							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp)autoTriggers.each(t -> t.copy().add());
+							AutoEventTrigger.setScale(0.35f);
+						}
+					});
 				}
 			});
 		

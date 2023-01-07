@@ -247,6 +247,7 @@ public class NewHorizon extends Mod{
 		
 		if(Vars.headless)return;
 		
+		NHSetting.loadUI();
 		Vars.renderer.maxZoom = 10f;
 		Vars.renderer.minZoom = 1f;
 		if(DEBUGGING)TableFunc.tableMain();
@@ -470,11 +471,15 @@ public class NewHorizon extends Mod{
 			NHBlocks.load();
 			NHWeathers.load();
 			NHPlanets.load();
+			NHSectorPresents.load();
 			NHTechTree.load();
 			NHInbuiltEvents.load();
 		}
 		
+		NHSetting.load();
+		
 		NHOverride.load();
+		if(Vars.headless || NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE))NHOverride.loadOptional();
 		
 		NHContent.loadLast();
 		

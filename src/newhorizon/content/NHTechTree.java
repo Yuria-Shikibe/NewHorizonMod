@@ -25,7 +25,9 @@ public class NHTechTree{
 		
 		nodeRoot("new-horizon", NHBlocks.presstaniumFactory, () -> {
 			node(NHPlanets.midantha, ItemStack.with(NHItems.darkEnergy, 100, NHItems.seniorProcessor, 1000, NHItems.presstanium, 5000), Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
-			
+				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1000), () -> {
+				
+				});
 			});
 			
 			node(NHBlocks.zetaGenerator, () -> {

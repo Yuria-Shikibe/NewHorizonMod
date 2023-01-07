@@ -106,15 +106,6 @@ public class WorldEventObjective extends MapObjectives.MapObjective{
 		return "[accent]" + NHGroups.events.size() + "[] events in total.";
 	}
 	
-	/**
-	 * @return The localized type-name of this objective, defaulting to the class simple name without the "Objective"
-	 * prefix.
-	 */
-	@Override
-	public String typeName(){
-		return super.typeName();
-	}
-	
 	/** @return True if this objective is done and should be removed from the executor. */
 	@Override
 	public boolean update(){

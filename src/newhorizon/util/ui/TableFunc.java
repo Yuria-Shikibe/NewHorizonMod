@@ -111,11 +111,11 @@ public class TableFunc{
             Table in = new Table(){{
                 Label label = new Label("Spawn");
                 update(() -> {
-                    label.setText(Core.bundle.get("waves.perspawn") + ": [accent]" + spawnNum + "[]* | At: " + (int)point.x + ", " + (int)point.y);
+                    label.setText(Core.bundle.get("waves.perspawn") + ": [accent]" + spawnNum + "[]* | At: " + tmpX + ", " + tmpY);
                     label.setWidth(getWidth());
                 });
                 add(label).growX().fillY().pad(OFFSET).align(Align.topLeft).row();
-                button("Copy Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText((int)point.x + ", " + (int)point.y)).growX().fillY().row();
+                button("Copy Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText(tmpX + ", " + tmpY)).growX().fillY().row();
     
                 pane(con -> {
                     con.button(Icon.leftOpen, Styles.cleari, () -> spawnNum = Mathf.clamp(--spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
@@ -125,7 +125,11 @@ public class TableFunc{
     
                 table(con -> {
                     con.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
-                        selectPos(starter, p -> point.set(World.unconv(p.x), World.unconv(p.y)));
+                        selectPos(starter, p -> {
+                            tmpX = p.x;
+                            tmpY = p.y;
+                            point.set(World.unconv(p.x), World.unconv(p.y));
+                        });
                     }).grow();
                     con.button(Icon.cancel, Styles.cleari, () -> point.set(-1, -1)).size(LEN);
                 }).growX().height(LEN).row();

@@ -1,5 +1,3 @@
-import java.time.Instant
-
 apply plugin: "java"
 
 version '1.0'
@@ -91,9 +89,8 @@ task debugMod{
     def debugLog = new File("$rootDir/build/libs/debug.properties")
     if(!debugLog.exists())debugLog.createNewFile()
 
-    doFirst {
+    /*doFirst {
         try{
-
             Reader fileReader = new FileReader(debugLog)
             Properties property = new Properties()
             property.load(fileReader)
@@ -118,18 +115,15 @@ task debugMod{
         }catch(IOException e){
             e.printStackTrace()
         }
-    }
+    }*/
 
     dependsOn jar
     dependsOn deleteLast
 
     doLast {
-        System.gc()
-
         try{
             if(!fi.exists())throw new RuntimeException("Missing Mod File")
-            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")){
-                throw new RuntimeException("Failed to replace the old version mod")
+            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")){throw new RuntimeException("Failed to replace the old version mod")
             }
 
 //            Process p = Runtime.getRuntime().exec("java -jar E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/build/libs/Mindustry.jar")

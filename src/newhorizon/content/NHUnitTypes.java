@@ -326,7 +326,7 @@ public class NHUnitTypes{
 			}};
 			rotate = top = true;
 			heatColor = NHColor.lightSkyBack;
-			shootSound = Sounds.missile;
+			shootSound = NHSounds.laser5;
 			shootY = 3f;
 			recoil = 2f;
 			x = 9.5f;
@@ -334,7 +334,12 @@ public class NHUnitTypes{
 			reload = 25;
 			autoTarget = true;
 			controllable = predictTarget = false;
-			bullet = NHBullets.basicSkyFrag;
+			BasicBulletType b = (BasicBulletType)NHBullets.basicSkyFrag;
+			b.width *= 0.75f;
+			b.height *= 0.75f;
+			b.damage *= 0.75f;
+			b.trailWidth *= 0.75f;
+			bullet = b;
 		}};
 		
 		smallCannon = new Weapon(NewHorizon.name("cannon")){{
@@ -712,7 +717,7 @@ public class NHUnitTypes{
 				flying = true;
 				hitSize = 100.0F;
 				armor = 60.0F;
-				engineOffset = 55.0F;
+				engineOffset = 60.0F;
 				engineSize = 20.0F;
 				rotateSpeed = 0.75F;
 				buildSpeed = 2.8f;
@@ -1056,7 +1061,7 @@ public class NHUnitTypes{
 					recoil = 5.4f;
 					predictTarget = false;
 					shootCone = 30f;
-					reload = 60f;
+					reload = 40f;
 					shoot = new ShootSpread(){{
 						spread = 1f;
 						shots = 2;
@@ -1068,7 +1073,7 @@ public class NHUnitTypes{
 					bullet = new ShrapnelBulletType(){{
 						width -= 2;
 						length = 280;
-						damage = 160.0F;
+						damage = 200.0F;
 						status = NHStatusEffects.ultFireBurn;
 						statusDuration = 60f;
 						fromColor = NHColor.lightSkyFront;
@@ -2195,7 +2200,7 @@ public class NHUnitTypes{
 						x = 0;
 						y = -9f;
 						recoil = 10;
-						reload = 300f;
+						reload = 420f;
 						cooldownTime = 150f;
 						rotationLimit = 10f;
 						shake = 12f;
@@ -2236,7 +2241,7 @@ public class NHUnitTypes{
 //							pierceArmor = pierceBuilding = true;
 //							pierceCap = 4;
 							
-							lightning = 5;
+							lightning = 3;
 							lightningLength = 6;
 							lightningLengthRand = 18;
 							lightningDamage = 150;
