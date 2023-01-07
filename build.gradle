@@ -86,8 +86,8 @@ task deleteLast{
 
 task debugMod{
     def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
-    def debugLog = new File("$rootDir/build/libs/debug.properties")
-    if(!debugLog.exists())debugLog.createNewFile()
+    //def debugLog = new File("$rootDir/build/libs/debug.properties")
+    //if(!debugLog.exists())debugLog.createNewFile()
 
     /*doFirst {
         try{
@@ -123,7 +123,8 @@ task debugMod{
     doLast {
         try{
             if(!fi.exists())throw new RuntimeException("Missing Mod File")
-            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")){throw new RuntimeException("Failed to replace the old version mod")
+            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")){
+                throw new RuntimeException("Failed to replace the old version mod")
             }
 
 //            Process p = Runtime.getRuntime().exec("java -jar E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/build/libs/Mindustry.jar")
@@ -180,17 +181,6 @@ task deploy(type : Jar){
 }
 
 task deployNet(type : Jar){
-    def fi = new File("$rootDir/mod.hjson")
-    fi.withReader { reader ->
-        def lines = reader.readLines()
-        fi.withWriter { writer ->
-            lines.each { line ->
-                def check = line.split(":")[0] == "minGameVersion"
-                if(!check) writer.append("$line\r\n")
-            }
-            writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
-        }
-    }
     dependsOn jarAndroidNet
     dependsOn jar
     archiveFileName = "${project.archivesBaseName}.jar"
