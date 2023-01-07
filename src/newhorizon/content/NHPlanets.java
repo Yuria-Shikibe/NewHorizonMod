@@ -72,7 +72,7 @@ public class NHPlanets{
 			clearSectorOnLose = true;
 			allowWaveSimulation = true;
 			allowLaunchSchematics = false;
-			allowLaunchLoadout = true;
+			allowLaunchLoadout = false;
 			
 			ruleSetter = r -> {
 				r.waveTeam = Team.malis;
@@ -547,29 +547,32 @@ public class NHPlanets{
 			
 			trimDark();
 			
-			int minVents = rand.random(9, 12);
+			int minVents = rand.random(10, 15);
 			int ventCount = 0;
 			
 			//vents
-			outer:
-			for(Tile tile : tiles){
-				Floor floor = tile.floor();
-				if((floor == NHBlocks.metalGround) && rand.chance(0.002)){
-					int radius = 2;
-					for(int x = -radius; x <= radius; x++){
-						for(int y = -radius; y <= radius; y++){
-							Tile other = tiles.get(x + tile.x, y + tile.y);
-							if(other == null || (other.floor() != NHBlocks.metalGround) || other.block().solid){
-								continue outer;
+			over: while(ventCount < minVents){
+				outer:
+				for(Tile tile : tiles){
+					Floor floor = tile.floor();
+					if((floor == NHBlocks.metalGround) && rand.chance(0.002)){
+						int radius = 2;
+						for(int x = -radius; x <= radius; x++){
+							for(int y = -radius; y <= radius; y++){
+								Tile other = tiles.get(x + tile.x, y + tile.y);
+								if(other == null || (other.floor() != NHBlocks.metalGround) || other.block().solid){
+									continue outer;
+								}
 							}
 						}
-					}
-					
-					ventCount ++;
-					for(Point2 pos : SteamVent.offsets){
-						Tile other = tiles.get(pos.x + tile.x + 1, pos.y + tile.y + 1);
-						other.setOverlay(Blocks.air);
-						other.setFloor(NHBlocks.metalVent.asFloor());
+						
+						ventCount++;
+						for(Point2 pos : SteamVent.offsets){
+							Tile other = tiles.get(pos.x + tile.x + 1, pos.y + tile.y + 1);
+							other.setOverlay(Blocks.air);
+							other.setFloor(NHBlocks.metalVent.asFloor());
+						}
+						if(ventCount >= minVents)break over;
 					}
 				}
 			}
