@@ -56,7 +56,7 @@ public class SpeedupTurret extends PowerTurret{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.inaccuracy, inaccuracyUp, StatUnit.degrees);
-		stats.add(Stat.maxConsecutive, overheatTime, StatUnit.seconds);
+		stats.add(Stat.heatCapacity, overheatTime / Time.toSeconds, StatUnit.seconds);
 	}
 	
 	@Override

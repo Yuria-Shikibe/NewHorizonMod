@@ -10,6 +10,7 @@ import mindustry.net.Net;
 import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.expand.eventsys.WorldEventObjective;
 import newhorizon.expand.packets.LongInfoMessageCallPacket;
+import newhorizon.util.graphic.EffectDrawer;
 
 public class NHRegister{
 	public static final Seq<Runnable> afterLoad = new Seq<>();
@@ -46,9 +47,9 @@ public class NHRegister{
 			NHModCore.core.renderer.draw();
 		});
 		
-		Events.run(EventType.Trigger.postDraw, () -> {
-			NHModCore.core.renderer.draw();
-		});
+//		Events.run(EventType.Trigger.postDraw, () -> {
+//			NHModCore.core.renderer.draw();
+//		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NewHorizon.debugLog("WorldLoad Event Triggered");
@@ -64,7 +65,6 @@ public class NHRegister{
 			
 			if(Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
 				Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
-				
 				Vars.player.con.close();
 			}
 			
@@ -76,6 +76,10 @@ public class NHRegister{
 					worldLoaded = true
 				)));
 			});
+			
+			if(!Vars.headless){
+				EffectDrawer.drawer.clear();
+			}
 		});
 		
 		if(!Vars.headless)Events.on(EventType.StateChangeEvent.class, e -> {

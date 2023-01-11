@@ -71,6 +71,7 @@ public class NHTechTree{
 			});
 			
 			node(NHBlocks.jumpGatePrimary, () -> {
+				node(NHBlocks.remoteStorage);
 				node(NHBlocks.jumpGateJunior, () -> {
 					node(NHBlocks.jumpGate);
 				});
@@ -149,6 +150,7 @@ public class NHTechTree{
 					});
 					
 					node(NHBlocks.multipleLauncher, () -> {
+						node(NHBlocks.bombLauncher);
 						node(NHBlocks.bloodStar, () -> {
 							node(NHBlocks.railGun);
 							node(NHBlocks.endOfEra, () -> {

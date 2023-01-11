@@ -40,7 +40,7 @@ void main(){
     );
 
     if(maxed.a > 0.001){
-        color = lerp(color, u_color, 0.5);
+        color = mix(color, u_color, 0.5);
         color *= 1.5;
 
         gl_FragColor = maxed;

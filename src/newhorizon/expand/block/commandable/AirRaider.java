@@ -48,8 +48,6 @@ public class AirRaider extends CommandableAttackerBlock{
 	}
 	
 	public class AirRaiderBuild extends CommandableAttackerBlockBuild{
-		public float heat = 0;
-		
 		@Override
 		public void shoot(Vec2 target){
 			super.shoot(target);
@@ -91,15 +89,6 @@ public class AirRaider extends CommandableAttackerBlock{
 			fshootEffect.at(x + tr.x, y + tr.y, rotation);
 			fsmokeEffect.at(x + tr.x, y + tr.y, rotation);
 			shootSound.at(x + tr.x, y + tr.y, Mathf.random(0.9f, 1.1f));
-			
-			heat = 1f;
-		}
-		
-		@Override
-		public void updateTile(){
-			super.updateTile();
-			
-			heat = Mathf.approachDelta(heat, 0, cooldownSpeed);
 		}
 	}
 }

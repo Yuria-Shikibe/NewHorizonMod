@@ -844,9 +844,10 @@ public class NHFx{
 			Draw.color(e.color);
 			Lines.stroke(2 * e.fout());
 			Lines.circle(e.x, e.y, e.rotation);
+			
 			for(float i = 0.75f; i < 1.5f; i += 0.25f){
-				Lines.square(e.x, e.y, e.rotation / i, e.time);
-				Lines.square(e.x, e.y, e.rotation / i, -e.time);
+				Lines.spikes(e.x, e.y, e.rotation / i, e.rotation / 10f, 4, e.time);
+				Lines.spikes(e.x, e.y, e.rotation / i / 1.5f, e.rotation / 12f, 4, -e.time * 1.25f);
 			}
 			
 			TextureRegion arrowRegion = NHContent.arrowRegion;
@@ -854,7 +855,7 @@ public class NHFx{
 			
 			for (int l = 0; l < 4; l++) {
 				float angle = 90 * l;
-				float regSize = e.rotation / 120f;
+				float regSize = e.rotation / 150f;
 				for (int i = 0; i < 4; i++) {
 					Tmp.v1.trns(angle, (i - 4) * tilesize * e.rotation / tilesize / 4);
 					float f = (100 - (Time.time - 25 * i) % 100) / 100;

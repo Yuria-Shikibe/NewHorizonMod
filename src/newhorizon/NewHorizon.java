@@ -30,6 +30,7 @@ import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.WorldEventType;
 import newhorizon.expand.packets.NHCall;
 import newhorizon.util.func.NHPixmap;
+import newhorizon.util.graphic.EffectDrawer;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 
@@ -248,6 +249,9 @@ public class NewHorizon extends Mod{
 		if(Vars.headless)return;
 		
 		NHSetting.loadUI();
+		EffectDrawer.drawer.init();
+		
+		
 		Vars.renderer.maxZoom = 10f;
 		Vars.renderer.minZoom = 1f;
 		if(DEBUGGING)TableFunc.tableMain();

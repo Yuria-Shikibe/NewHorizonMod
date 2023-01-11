@@ -15,10 +15,7 @@ import arc.util.pooling.Pool;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.ai.Astar;
-import mindustry.content.Blocks;
-import mindustry.content.Items;
-import mindustry.content.Loadouts;
-import mindustry.content.Planets;
+import mindustry.content.*;
 import mindustry.game.Rules;
 import mindustry.game.Schematics;
 import mindustry.game.Team;
@@ -39,6 +36,8 @@ import mindustry.world.blocks.campaign.LaunchPad;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.SteamVent;
 import mindustry.world.blocks.environment.TallBlock;
+import mindustry.world.blocks.production.SolidPump;
+import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
 
 import static mindustry.Vars.state;
@@ -83,6 +82,13 @@ public class NHPlanets{
 				if(r.sector.preset == null)r.winWave = 150;
 				r.bannedUnits.add(NHUnitTypes.guardian);
 				r.coreDestroyClear = true;
+				
+				r.bannedBlocks.addAll(Vars.content.blocks().copy().filter(b -> {
+					if(b instanceof SolidPump){
+						SolidPump pump = (SolidPump)b;
+						return pump.result == Liquids.water && pump.attribute == Attribute.water;
+					}else return false;
+				}));
 				
 				Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
 				teamRule.rtsAi = false;
@@ -153,6 +159,7 @@ public class NHPlanets{
 					Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
 					Pal.darkestGray
 			);
+			
 			
 			clearSectorOnLose = true;
 			allowWaveSimulation = true;
@@ -589,6 +596,7 @@ public class NHPlanets{
 			if(state.rules.sector.preset != null)return;
 			
 			state.rules.winWave = 150;
+			state.rules.weather.clear();
 			state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
 			state.rules.spawns = NHOverride.generate(1, new Rand(sector.id), false, false, false);
 			state.rules.tags.put(NHInbuiltEvents.applyKey, "true");

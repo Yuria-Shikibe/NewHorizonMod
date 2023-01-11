@@ -3,7 +3,9 @@ package newhorizon.expand.block.defence;
 
 import arc.audio.Sound;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -79,6 +81,16 @@ public class ShockwaveGenerator extends Block {
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
 		drawer.drawPlan(this, plan, list);
+	}
+	
+	@Override
+	public TextureRegion[] icons(){
+		return drawer.finalIcons(this);
+	}
+	
+	@Override
+	public void getRegionsToOutline(Seq<TextureRegion> out){
+		drawer.getRegionsToOutline(this, out);
 	}
 	
 	@Override

@@ -281,9 +281,9 @@ public class HyperGenerator extends PowerGenerator{
 					}
 				}
 				progress += efficiency() * Time.delta;
-				if(Mathf.equal(warmup, 1.0F, 0.0015F) || Vars.net.active()){
+				if(Mathf.equal(warmup, 1.0F, 0.0015F)){
 					warmup = 1.0F;
-				}else warmup = Mathf.lerpDelta(warmup, 1, warmupSpeed);
+				}else warmup = Mathf.lerpDelta(warmup, 1, warmupSpeed + (Mathf.num(Vars.net.active()) * 0.025f));
 			}else{
 				if(Mathf.equal(warmup, 0F, 0.0015F)){
 					warmup = 0F;

@@ -66,19 +66,18 @@ import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.adapt.LaserBeamDrill;
 import newhorizon.expand.block.adapt.MultiCrafter;
 import newhorizon.expand.block.commandable.AirRaider;
+import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.*;
 import newhorizon.expand.block.drawer.ArcCharge;
 import newhorizon.expand.block.drawer.DrawFactories;
 import newhorizon.expand.block.drawer.DrawPrinter;
 import newhorizon.expand.block.drawer.DrawRotator;
-import newhorizon.expand.block.special.HyperGenerator;
-import newhorizon.expand.block.special.JumpGate;
-import newhorizon.expand.block.special.RemoteCoreStorage;
-import newhorizon.expand.block.special.UnitSpawner;
+import newhorizon.expand.block.special.*;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.block.turrets.Webber;
+import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -126,7 +125,7 @@ public class NHBlocks{
 		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher, webber,
 		//Special
 		playerJumpGate, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
-		disposePowerVoid, gravityTrapSmall,
+		disposePowerVoid, gravityTrapSmall, lableSpawner,
 	
 		//Env
 		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalWall, metalTower, metalGround, metalGroundQuantum, metalScarp, metalVent,
@@ -955,8 +954,8 @@ public class NHBlocks{
 		railGun = new ItemTurret("rail-gun"){{
 			unitSort = (u, x, y) -> -u.speed();
 			
-			maxAmmo = 50;
-			ammoPerShot = 10;
+			maxAmmo = 40;
+			ammoPerShot = 5;
 			
 			drawer = new DrawTurret("reinforced-"){{
 				parts.add(new RegionPart("-acceler"){{
@@ -1022,9 +1021,7 @@ public class NHBlocks{
 			
 			coolantMultiplier = 0.55f;
 			cooldownTime = 90f;
-			
-			maxAmmo = 16;
-			ammoPerShot = 2;
+			coolant = consumeCoolant(0.3f);
 			
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.setonAlloy, 150, NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
 		}
@@ -1145,10 +1142,10 @@ public class NHBlocks{
 			hasItems = true;
 			heatColor = NHColor.darkEnrColor;
 			consumePower(30f);
-			reload = 300f;
+			reload = 360f;
 			range = 800f;
-			inaccuracy = 1f;
-			shootCone = 45f;
+			inaccuracy = 0f;
+			shootCone = 20f;
 			shootSound = Sounds.laserbig;
 		}};
 		
@@ -1728,7 +1725,7 @@ public class NHBlocks{
 		final int healthMult2 = 4, healthMult3 = 9;
 		
 		blaster = new ShockwaveGenerator("blaster"){{
-			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+			requirements(Category.defense, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
 			
 			size = 3;
 			chargerOffset = 5.65f;
@@ -1957,7 +1954,7 @@ public class NHBlocks{
 		}};
 		
 		airRaider = new AirRaider("air-raider"){{
-			requirements(Category.effect, with(NHItems.upgradeSort, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
+			requirements(Category.defense, with(NHItems.upgradeSort, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
 			
 			shoot = new ShootSummon(0, 0, 120, 0){{
 				shots = 4;
@@ -1994,10 +1991,11 @@ public class NHBlocks{
 			health = 960;
 			consumePower(10);
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 150, NHItems.multipleSteel, 120));
-			//NHTechTree.add(Blocks.coreShard, this);
 		}};
 		
 		unitIniter = new UnitSpawner("unit-initer");
+		
+		lableSpawner = new LabelSpawner("label-spawner");
 		
 /*		shieldProjector = new ShieldProjector("shield-projector"){{
 			consumePower(1f);
@@ -2115,13 +2113,15 @@ public class NHBlocks{
 				}
 			};
 		}};
-		
+		*/
 
 		bombLauncher = new BombLauncher("bomb-launcher"){{
-			requirements(Category.effect, with(Items.phaseFabric, 100, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.thorium, 100, Items.surgeAlloy, 75));
+			requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 260, NHItems.juniorProcessor, 120, Items.thorium, 500, Items.surgeAlloy, 75));
 			//NHTechTree.add(Blocks.massDriver, this);
 			size = 3;
-			bulletHitter = new EffectBulletType(75f){{
+			storage = 1;
+			
+			bullet = new EffectBulletType(15f){{
 				trailChance = 0.25f;
 				trailEffect = NHFx.trailToGray;
 				trailParam = 1.5f;
@@ -2129,10 +2129,11 @@ public class NHBlocks{
 				smokeEffect = NHFx.hugeSmoke;
 				shootEffect = NHFx.boolSelector;
 				
+				scaledSplashDamage = true;
 				collidesTiles = collidesGround = collides = true;
-				splashDamage = 500f;
-				lightningDamage = 200f;
-				hitColor = NHColor.thurmixRed;
+				splashDamage = 800f;
+				lightningDamage = 400f;
+				lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
 				lightning = 3;
 				lightningLength = 8;
 				lightningLengthRand = 16;
@@ -2141,11 +2142,14 @@ public class NHBlocks{
 				hitSound = despawnSound = Sounds.explosionbig;
 				hitEffect = despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f), NHFx.blast(hitColor, splashDamageRadius * 1.5f));
 			}};
+			
+			reloadTime = 300f;
+			
 			consumePowerCond(6f, BombLauncherBuild::isCharging);
 			consumeItem(NHItems.fusionEnergy, 2);
 			itemCapacity = 16;
-			health = 900;
-		}};*/
+			health = 1200;
+		}};
 		
 		hyperspaceWarper = new HyperSpaceWarper("hyper-space-warper"){{
 			size = 4;
@@ -2478,7 +2482,7 @@ public class NHBlocks{
 		}};
 		
 		chargeWall = new ChargeWall("charge-wall"){{
-			requirements(Category.defense, with(NHItems.irayrondPanel, 10, NHItems.seniorProcessor, 5, NHItems.upgradeSort, 15));
+			requirements(Category.defense, with(NHItems.seniorProcessor, 5, NHItems.upgradeSort, 5));
 			size = 1;
 			absorbLasers = true;
 			range = 120;

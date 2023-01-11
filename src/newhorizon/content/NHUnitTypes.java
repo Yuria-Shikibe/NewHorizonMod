@@ -1000,7 +1000,7 @@ public class NHUnitTypes{
 							public void hit(Bullet b, float x, float y){
 								super.hit(b, x, y);
 
-								if(b.owner instanceof Healthc)((Healthc)b.owner).healFract(b.damage / 50);
+								if(b.owner instanceof Healthc)((Healthc)b.owner).heal(b.damage / 5);
 							}
 
 							@Override
@@ -1233,7 +1233,7 @@ public class NHUnitTypes{
 					hitEffect = NHFx.lightningHitSmall(backColor);
 					despawnEffect = NHFx.shootCircleSmall(backColor);
 				}};
-				shootSound = NHSounds.blaster;
+				shootSound = Sounds.missileSmall;
 			}});
 			engineOffset = 9.0F;
 			engineSize = 3f;

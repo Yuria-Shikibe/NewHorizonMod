@@ -81,13 +81,9 @@ public class UnitSpawner extends Block{
 		public transient boolean addUnit = false;
 		
 		
-		@Override
-		public void onDestroyed(){
-		}
+		@Override public void onDestroyed(){}
 		
-		@Override
-		public void afterDestroyed(){
-		}
+		@Override public void afterDestroyed(){}
 		
 		@Override
 		public void buildConfiguration(Table table){
@@ -105,14 +101,11 @@ public class UnitSpawner extends Block{
 			return toSpawnType.name + divKey + angle + divKey + delay;
 		}
 		
-		@Override
-		public void updateTile(){
+		@Override public void updateTile(){
 			if(!addUnit)addUnit();
 		}
 		
-		@Override
-		public void drawConfigure(){
-		}
+		@Override public void drawConfigure(){}
 		
 		@Override
 		public void draw(){

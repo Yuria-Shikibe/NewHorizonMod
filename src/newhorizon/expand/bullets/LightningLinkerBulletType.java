@@ -138,7 +138,7 @@ public class LightningLinkerBulletType extends BasicBulletType{
 	public void init(Bullet b) {
 		super.init(b);
 		
-		b.vel.scl(1 + b.lifetime / lifetime);
+		b.vel.scl(1 + b.lifetime * drag * 28 / lifetime);
 	}
 	
 	@Override

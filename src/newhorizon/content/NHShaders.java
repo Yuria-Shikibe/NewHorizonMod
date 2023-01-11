@@ -20,7 +20,7 @@ public class NHShaders{
 	public static HyperspaceShader hyperspace;
 	
 	public static Shader
-			gravityTrapShader;
+			gravityTrapShader, scannerDown;
 			
 	public static Shader alphaFloorer;
 	public static OutlineShader outliner;
@@ -33,6 +33,8 @@ public class NHShaders{
 //		};
 		
 //		outliner = new OutlineShader();
+		
+		scannerDown = new ModShader("screenspace", "scannerDown");
 		
 		hyperspace = new HyperspaceShader();
 		

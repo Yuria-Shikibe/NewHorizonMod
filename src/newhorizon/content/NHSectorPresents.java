@@ -1,6 +1,5 @@
 package newhorizon.content;
 
-import arc.Core;
 import mindustry.type.SectorPreset;
 
 public class NHSectorPresents{
@@ -13,9 +12,14 @@ public class NHSectorPresents{
 			
 			rules = r -> {
 				r.tags.put(NHInbuiltEvents.applyKey, "true");
-				Core.app.post(() -> {
-					r.winWave = captureWave;
-				});
+				r.winWave = captureWave;
+//				NHRegister.postAfterLoad(() -> {
+//					if(Vars.net.client())return;
+//					WorldLabel l = Pools.obtain(WorldLabel.class, WorldLabel::create);
+//					l.text(Core.bundle.get("nh.sector-hint.initialPlane.raider"));
+//					l.set(307 * 8, 306 * 8);
+//					l.add();
+//				});
 			};
 		}};
 	}

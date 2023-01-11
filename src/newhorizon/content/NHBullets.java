@@ -160,7 +160,7 @@ public class NHBullets{
 		loadPriority();
 		
 		
-		railGun1 = new TrailFadeBulletType(35f, 2200, STRIKE) {{
+		railGun1 = new TrailFadeBulletType(35f, 1750, STRIKE) {{
 			width = 12f;
 			height = 36f;
 			
@@ -186,7 +186,7 @@ public class NHBullets{
 			smokeEffect = Fx.smokeCloud;
 			trailEffect = NHFx.instTrail(lightningColor, 60, true);
 			despawnEffect = new OptionalMultiEffect(NHFx.instBomb(lightningColor), NHFx.hitSparkLarge, NHFx.square45_6_45);
-			lightningDamage = damage / 7;
+			lightningDamage = damage / 8;
 			buildingDamageMultiplier = 0.5f;
 			hitShake = 8f;
 			knockback = 14f;
@@ -195,7 +195,7 @@ public class NHBullets{
 			despawnSound = Sounds.explosionbig;
 		}};
 		
-		railGun2 = new TrailFadeBulletType(40f, 3000, STRIKE) {{
+		railGun2 = new TrailFadeBulletType(40f, 2500, STRIKE) {{
 			width = 16f;
 			height = 50f;
 			
@@ -223,7 +223,7 @@ public class NHBullets{
 			smokeEffect = NHFx.hugeSmokeGray;
 			trailEffect = NHFx.instTrail(lightningColor, 40, true);
 			despawnEffect = new OptionalMultiEffect(NHFx.instBomb(lightningColor), NHFx.hitSparkHuge, NHFx.square45_8_45);
-			lightningDamage = damage / 7;
+			lightningDamage = damage / 7.5f;
 			buildingDamageMultiplier = 0.5f;
 			hitShake = 12f;
 			knockback = 22f;
@@ -232,7 +232,7 @@ public class NHBullets{
 			despawnSound = Sounds.explosionbig;
 		}};
 		
-		railGun3 = new TrailFadeBulletType(50f, 4000, STRIKE) {{
+		railGun3 = new TrailFadeBulletType(50f, 3250, STRIKE) {{
 			width = 16f;
 			height = 50f;
 			
@@ -263,6 +263,8 @@ public class NHBullets{
 			lightningDamage = damage / 7;
 			splashDamage = 2000;
 			splashDamageRadius = 80;
+			
+			buildingDamageMultiplier = 0.75f;
 			
 			hitShake = 22f;
 			knockback = 32f;
@@ -978,7 +980,7 @@ public class NHBullets{
 			
 			drawSize = 500f;
 			
-			drag = 0.0065f;
+			drag = 0.0035f;
 			fragLifeMin = 0.1f;
 			fragLifeMax = 1f;
 			fragVelocityMin = 0.1f;
