@@ -15,7 +15,7 @@ import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 
 public class ChainBulletType extends BulletType{
-	public int maxHit = 20;
+	public int maxHit = 12;
 	public float chainRange = 200f;
 	public float length = 200f;
 	public float thick = 2f;

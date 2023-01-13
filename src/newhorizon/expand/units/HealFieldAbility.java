@@ -137,7 +137,7 @@ public class HealFieldAbility extends Ability{
 					
 					Time.run(i * 90f / bs.size, () -> {
 						if(!b.isValid())return;
-						Fx.healBlockFull.at(b.x, b.y, b.block.size, b.block());
+						Fx.healBlockFull.at(b.x, b.y, b.block.size, scanColor, b.block());
 						b.healFract(healMount);
 					});
 				}

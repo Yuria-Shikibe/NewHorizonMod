@@ -1,5 +1,3 @@
-import java.time.Instant
-
 apply plugin: "java"
 
 version '1.0'
@@ -14,7 +12,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v139'
+    mindustryVersion = 'v140.4'
     //version of SDK you will be using
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
@@ -56,9 +54,6 @@ task jarAndroid{
         def files = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File("E:/apps/Android/Sdk/platforms/android-30/android.jar")])
         def dependencies = files.collect{ "--classpath $it.path" }.join(" ")
 
-        //dex and desugar files - this requires d8 in your PATH
-//        String s = "E:/SDK_Tools/android-13/d8.bat $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar";
-//        doExec(s.toString());
         doExec "E:/apps/Android/Sdk/build-tools/30.0.2/d8.bat $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
     }
 }
@@ -82,21 +77,17 @@ jar{
 task deleteLast{
     def fi = new File("$gameData/mods/NewHorizonModDesktop.jar")
     if(fi.exists()){
-//        Class<?> fileSys = ClassLoader.getSystemClassLoader().loadClass("java.io.DefaultFileSystem");
-//        FileSystem system = (FileSystem)fileSys.getMethod("getFileSystem()").invoke(null, new Object[]{});
-
         System.out.println("Delete Old:" + fi.delete())
     }
 }
 
 task debugMod{
     def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
-    def debugLog = new File("$rootDir/build/libs/debug.properties")
-    if(!debugLog.exists())debugLog.createNewFile()
+    //def debugLog = new File("$rootDir/build/libs/debug.properties")
+    //if(!debugLog.exists())debugLog.createNewFile()
 
-    doFirst {
+    /*doFirst {
         try{
-
             Reader fileReader = new FileReader(debugLog)
             Properties property = new Properties()
             property.load(fileReader)
@@ -121,14 +112,12 @@ task debugMod{
         }catch(IOException e){
             e.printStackTrace()
         }
-    }
+    }*/
 
     dependsOn jar
     dependsOn deleteLast
 
     doLast {
-        System.gc()
-
         try{
             if(!fi.exists())throw new RuntimeException("Missing Mod File")
             if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")){
@@ -151,6 +140,18 @@ task debugMod{
     }
 }
 
+task jarAndroidNet{
+    dependsOn "jar"
+    doLast{
+        //collect dependencies needed for desugaring
+        def files = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File("$sdkRoot/platforms/android-$sdkVersion/android.jar")])
+        def dependencies = files.collect{ "--classpath $it.path" }.join(" ")
+
+        //dex and desugar files - this requires d8 in your PATH
+        doExec("d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar")
+    }
+}
+
 task deploy(type : Jar){
     def fi = new File("$rootDir/mod.hjson")
     fi.withReader { reader ->
@@ -163,7 +164,21 @@ task deploy(type : Jar){
             writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
         }
     }
+
     dependsOn jarAndroid
+    dependsOn jar
+    archiveFileName = "${project.archivesBaseName}.jar"
+
+    from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
+
+    doLast{
+        delete{ delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar" }
+        delete{ delete "$buildDir/libs/${project.archivesBaseName}Android.jar" }
+    }
+}
+
+task deployNet(type : Jar){
+    dependsOn jarAndroidNet
     dependsOn jar
     archiveFileName = "${project.archivesBaseName}.jar"
 

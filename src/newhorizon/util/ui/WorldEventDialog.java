@@ -148,6 +148,7 @@ public class WorldEventDialog extends BaseDialog{
 			addCloseButton();
 			
 			cont.pane(t -> {
+				t.margin(120f);
 				NHGroups.autoEventTrigger.each(trigger -> {
 					t.table(Tex.sideline, info -> {
 						info.defaults().left().growX().fillY().pad(OFFSET / 2f);

@@ -55,13 +55,23 @@ public class NHRegister{
 			
 			NHGroups.resize();
 			NHModCore.core.initOnLoadWorld();
-			EventHandler.create();
-
-			afterLoad.each(Runnable::run);
+			if(!Vars.state.isEditor()){
+				EventHandler.create();
+				afterLoad.each(Runnable::run);
+			}
+			
 			afterLoad.clear();
 			
+			if(Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
+				Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
+				
+				Vars.player.con.close();
+			}
+			
 			Core.app.post(() -> {
-				Vars.state.rules.objectives.add(new WorldEventObjective());
+				if(Vars.state.isPlaying()){
+					Vars.state.rules.objectives.all.insert(0, new WorldEventObjective());
+				}
 				Core.app.post(() -> Core.app.post(() -> Core.app.post(() ->
 					worldLoaded = true
 				)));

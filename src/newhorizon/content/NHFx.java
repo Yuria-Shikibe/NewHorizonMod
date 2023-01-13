@@ -27,8 +27,8 @@ import mindustry.ui.Fonts;
 import newhorizon.NHSetting;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
-import newhorizon.util.func.Vec2Seq;
 import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.struct.Vec2Seq;
 
 import java.util.Arrays;
 
@@ -102,11 +102,14 @@ public class NHFx{
 	public static Effect genericCharge(Color color, float size, float range, float lifetime){
 		return new Effect(lifetime, e -> {
 			color(color);
+			Lines.stroke(size / 7f * e.fin());
 			
-			randLenVectors(e.id, 12, 1f + 20f * e.fout(), e.rotation, range, (x, y) -> {
+			randLenVectors(e.id, 12, 3f + 30f * e.fout(), e.rotation, range, (x, y) -> {
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * size + size / 4f);
 				Drawf.light(e.x + x, e.y + y, e.fout(0.25f) * size, color, 0.7f);
 			});
+			
+			Fill.circle(e.x, e.y, size * 0.48f * Interp.pow3Out.apply(e.fin()));
 		});
 	}
 	
@@ -399,10 +402,10 @@ public class NHFx{
 					Draw.color(i == 0 ? color : color.cpy().lerp(Color.white, 0.15f));
 					float m = i == 0 ? 1.0F : 0.5F;
 					float rot = e.rotation + 180.0F;
-					float w = 15.0F * e.fout() * m;
+					float w = 10.0F * e.fout() * m;
 					DrawFunc.tri(e.x, e.y, w, 30.0F + (random ? Mathf.randomSeedRange(e.id, 15.0F) : 8) * m, rot + j * angle);
 					if(angle == 0)DrawFunc.tri(e.x, e.y, w, 10.0F * m, rot + 180.0F + j * angle);
-					else  Fill.circle(e.x, e.y, w / 2.3f);
+					else  Fill.circle(e.x, e.y, w / 2f);
 				}
 			}
 		});
@@ -479,7 +482,7 @@ public class NHFx{
 		return new Effect(lifetime, range * 2, e -> {
 			Angles.randLenVectors(e.id, (int)Mathf.clamp(range / 8, 4, 18), range / 8, range * (1 + e.fout(Interp.pow2OutInverse)) / 2f, (x, y) -> {
 				float angle = Mathf.angle(x, y);
-				float width = e.foutpowdown() * rand.random(range / 6, range / 3) / 2;
+				float width = e.foutpowdown() * rand.random(range / 6, range / 3) / 2 * e.fout();
 				
 				rand.setSeed(e.id);
 				float length = rand.random(range / 2, range * 1.1f) * e.fout();

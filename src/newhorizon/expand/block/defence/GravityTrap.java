@@ -116,7 +116,7 @@ public class GravityTrap extends Block{
 				else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
 			}
 			
-			field.setPosition(self());
+			if(field != null)field.setPosition(self());
 		}
 		
 		@Override
@@ -126,7 +126,10 @@ public class GravityTrap extends Block{
 			NHGroups.gravityTraps.remove(field);
 		}
 		
-		
+		@Override
+		public boolean canPickup(){
+			return false;
+		}
 		
 		@Override
 		public void drawConfigure(){

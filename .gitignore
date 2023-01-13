@@ -22,7 +22,6 @@ logs/
 /tests/build/
 /server/build/
 /test_files/
-/annotations/build/
 /desktop-sdl/build/
 desktop-sdl/build/
 /android/assets/mindustry-maps/
@@ -144,15 +143,9 @@ nb-configuration.xml
 /local.properties
 .gradle/
 gradle-app.setting
-/build/
-/android/build/
-/core/build/
-/desktop/build/
-/html/build/
-/ios/build/
-/ios-moe/build/
 
 ## OS Specific
 .DS_Store
 Thumbs.db
 android/libs/
+/.run/

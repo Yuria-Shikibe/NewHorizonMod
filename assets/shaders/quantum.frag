@@ -1,6 +1,6 @@
 #define HIGHP
 
-const vec4 C0 = vec4(158.0, 145.0, 255.0, 255.0) / 255.0;
+const vec4 C0 = vec4(155.0, 163.0, 250.0, 255.0) / 255.0;
 
 #define NSCALE 100.0 / 5.75
 

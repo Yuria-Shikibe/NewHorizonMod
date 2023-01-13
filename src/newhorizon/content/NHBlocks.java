@@ -11,18 +11,20 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.util.Eachable;
 import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.UnitSorts;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.ContinuousFlameBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
@@ -39,9 +41,7 @@ import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.OreBlock;
-import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.liquid.LiquidBridge;
 import mindustry.world.blocks.liquid.LiquidRouter;
@@ -58,6 +58,8 @@ import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
@@ -76,6 +78,7 @@ import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
+import newhorizon.expand.block.turrets.Webber;
 import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -93,7 +96,7 @@ public class NHBlocks{
 	public static Block
 		reinForcedItemSource, reinForcedLiquidSource,
 		//delivery,
-		zetaOre, xenMelter, hyperGenerator, fusionCollapser,
+		oreZeta, xenMelter, hyperGenerator, fusionCollapser,
 		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior, jumpGatePrimary,
 		multiplePresstaniumFactory, presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, irayrondPanelFactorySmall,
@@ -103,8 +106,7 @@ public class NHBlocks{
 	
 		//Turrets
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
-		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion,
-		blastTurret, empTurret, gravity, multipleLauncher, pulseLaserTurret, multipleArtillery,
+		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, executor, empTurret, gravity, multipleLauncher, pulseLaserTurret, multipleArtillery,
 		antiMatterTurret, atomSeparator, eternity, synchro,
 
 		//Liquids
@@ -121,17 +123,30 @@ public class NHBlocks{
 		//Powers
 		armorPowerNode, armorBatteryLarge, radiationGenerator, zetaGenerator, hugeBattery, heavyPowerNode,
 		//Defence
-		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher,
+		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher, webber,
 		//Special
 		playerJumpGate, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
 		disposePowerVoid, gravityTrapSmall,
 	
 		//Env
-		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalUnit, metalTower, metalGround, metalGroundQuantum,
+		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalWall, metalTower, metalGround, metalGroundQuantum, metalScarp, metalVent,
 		metalGroundHeat, conglomerateRock, conglomerateWall
 		;
 	
 	private static void loadEnv(){
+		metalScarp = new Prop("metal-scrap"){{
+			variants = 3;
+			breakEffect = new Effect(23, e -> {
+				float scl = Math.max(e.rotation, 1);
+				Fx.rand.setSeed(e.id);
+				randLenVectors(e.id, 6, 19f * e.finpow() * scl, (x, y) -> {
+					color(Tmp.c1.set(e.color).mul(1 + Fx.rand.range(0.125f)));
+					Fill.square(e.x + x, e.y + y, e.fout() * 3.5f * scl + 0.3f);
+				});
+			}).layer(Layer.debris);
+			breakSound = NHSounds.metalWalk;
+		}};
+		
 		conglomerateWall = new StaticWall("conglomerate-wall"){{
 			variants = 4;
 			mapColor = Color.valueOf("858585");
@@ -144,7 +159,7 @@ public class NHBlocks{
 		
 		metalGroundHeat = new Floor("metal-ground-heat", 3){{
 			mapColor = Pal.darkerGray.cpy().lerp(NHColor.darkEnr, 0.5f);
-			wall = metalUnit;
+			wall = metalWall;
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.heat, 1.25f);
@@ -159,6 +174,8 @@ public class NHBlocks{
 			lightColor = NHColor.darkEnrColor;
 			emitLight = true;
 			lightRadius = 35f;
+			
+			decoration = metalScarp;
 		}};
 		
 		quantumField = new Floor("quantum-field", 8){{
@@ -219,6 +236,8 @@ public class NHBlocks{
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.2f);
 			blendGroup = this;
 			
+			wall = NHBlocks.metalWall;
+			
 			attributes.set(Attribute.heat, 1.5f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
@@ -237,17 +256,18 @@ public class NHBlocks{
 			}
 		};
 		
-		metalUnit = new StaticWall("metal-unit"){{
+		metalWall = new StaticWall("metal-unit"){{
 			variants = 6;
 		}};
 		
 		metalTower = new StaticWall("metal-tower"){{
 			variants = 3;
+			layer = Layer.blockOver + 1;
 		}};
 		
 		metalGround = new Floor("metal-ground", 6){{
 			mapColor = Pal.darkerGray;
-			wall = metalUnit;
+			wall = metalWall;
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.heat, 0);
@@ -256,11 +276,33 @@ public class NHBlocks{
 			walkSound = NHSounds.metalWalk;
 			walkSoundVolume = 0.05f;
 			speedMultiplier = 1.25f;
+			decoration = metalScarp;
+		}};
+		
+		metalVent = new SteamVent("metal-vent"){{
+			variants = 2;
+			parent = blendGroup = NHBlocks.metalGround;
+			attributes.set(Attribute.steam, 1.5f);
+			
+			effectColor = Pal.darkerMetal;
+			
+			effect = new Effect(140f, e -> {
+				color(e.color, NHColor.darkEnr, e.fin() * 0.86f);
+
+				Draw.alpha(e.fslope() * 0.78f);
+
+				float length = 3f + e.finpow() * 10f;
+				Fx.rand.setSeed(e.id);
+				for(int i = 0; i < Fx.rand.random(3, 5); i++){
+					Fx.v.trns(Fx.rand.random(360f), Fx.rand.random(length));
+					Fill.circle(e.x + Fx.v.x, e.y + Fx.v.y, Fx.rand.random(1.2f, 3.5f) + e.fslope() * 1.1f);
+				}
+			}).layer(Layer.darkness - 1);
 		}};
 		
 		metalGroundQuantum = new Floor("metal-ground-quantum", 2){{
 			mapColor = Pal.darkerMetal;
-			wall = metalUnit;
+			wall = metalWall;
 			blendGroup = metalGround;
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
@@ -270,6 +312,10 @@ public class NHBlocks{
 			walkSound = NHSounds.metalWalk;
 			walkSoundVolume = 0.05f;
 			speedMultiplier = 1.25f;
+			
+			decoration = metalScarp;
+			
+			
 			
 			emitLight = true;
 			lightColor = NHColor.darkEnrColor;
@@ -288,6 +334,25 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		webber = new Webber("webber"){{
+			size = 3;
+			
+			moveInterp = Interp.pow3In;
+			status = NHStatusEffects.scrambler;
+			shootLength = 22f;
+			laserColor = NHColor.thermoPst;
+			requirements(Category.turret, ItemStack.with(NHItems.multipleSteel, 50, Items.plastanium, 85, NHItems.seniorProcessor, 35, NHItems.presstanium, 80));
+			hasPower = true;
+			cal = d -> 4 * Interp.pow3Out.apply(d) - 3;
+			scaledForce = 0;
+			force = 45f;
+			range = 280.0F;
+			damage = 0.3F;
+			scaledHealth = 160.0F;
+			rotateSpeed = 10.0F;
+			consumePower(12.0F);
+		}};
+		
 		gravity = new MultTractorBeamTurret("gravity"){{
 			size = 3;
 			requirements(Category.turret, ItemStack.with(Items.metaglass, 35, NHItems.juniorProcessor, 15, Items.lead, 80, NHItems.presstanium, 45));
@@ -342,13 +407,13 @@ public class NHBlocks{
 			speedupPerShoot = 0.3f;
 			hasLiquids = true;
 			coolant = new ConsumeCoolant(0.15f);
-			consumePowerCond(8f, TurretBuild::isActive);
+			consumePowerCond(14f, TurretBuild::isActive);
 			size = 3;
 			range = 200;
 			reload = 60f;
 			shootCone = 24f;
 			shootSound = NHSounds.laser3;
-			shootType = new PosLightningType(75f){{
+			shootType = new PosLightningType(70f){{
 				lightningColor = hitColor = NHColor.lightSkyBack;
 				maxRange = rangeOverride = 250f;
 				hitEffect = NHFx.hitSpark;
@@ -368,19 +433,20 @@ public class NHBlocks{
 			
 			drawer = new DrawTurret(){{
 				parts.add(new RegionPart("-side"){{
-					under = turretShading = mirror = true;
+					under = mirror = true;
+					layerOffset = -0.1f;
 					moveX = 6f;
 					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
 				}}, new RegionPart("-side-down"){{
 					mirror = true;
-					layerOffset = -0.001f;
+					layerOffset = -0.5f;
 					moveX = 10f;
 					moveY = 45f;
 					y = 10f;
 					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
 				}}, new RegionPart("-side-down"){{
 					mirror = true;
-					layerOffset = -0.0035f;
+					layerOffset = -0.35f;
 					moveX = -9f;
 					moveY = 7f;
 					y = -2f;
@@ -388,7 +454,7 @@ public class NHBlocks{
 					progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
 				}}, new RegionPart("-side-down"){{
 					under = mirror = true;
-					layerOffset = -0.002f;
+					layerOffset = -0.2f;
 					moveY = -33f;
 					y = -33f;
 					x = 14;
@@ -584,7 +650,7 @@ public class NHBlocks{
 			shoot = new ShootSpread(){{
 				shots = 12;
 				shotDelay = 2f;
-				spread = 1.25f;
+				spread = 0.55f;
 			}};
 
 			reload = 90f;
@@ -704,35 +770,7 @@ public class NHBlocks{
 			shootSound = Sounds.laserbig;
 			loopSound = Sounds.beam;
 			loopSoundVolume = 2.0F;
-			shootType = new ContinuousFlameBulletType(300){{
-				shake = 3;
-				hitColor = flareColor = lightColor = lightningColor = NHColor.lightSkyBack;
-				colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.75f, 0.85f, 1f, 0.65f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.65f), NHColor.lightSkyBack, NHColor.lightSkyFront};
-				width = 6;
-				length = 380f;
-				oscScl = 0.9f;
-				oscMag *= 2f;
-				lifetime = 35f;
-				lightning = 4;
-				lightningLength = 2;
-				lightningLengthRand = 18;
-				flareLength = 75;
-				flareWidth = 6;
-				hitEffect = NHFx.shootCircleSmall(NHColor.lightSkyBack);
-				shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
-				lightningDamage = damage / 6f;
-				despawnHit = false;
-				pierceArmor = true;
-			}
-				@Override
-				public void update(Bullet b){
-					super.update(b);
-					
-					if(Mathf.chanceDelta(0.11))for(int i = 0; i < lightning; i++){
-						Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
-					}
-				}
-			};
+			shootType = NHBullets.atomSeparator;
 			
 			coolant = consumeCoolant(0.3F);
 			consumePower(30.0F);
@@ -914,6 +952,97 @@ public class NHBlocks{
 			shootSound = NHSounds.thermoShoot;
 		}};
 		
+		railGun = new ItemTurret("rail-gun"){{
+			unitSort = (u, x, y) -> -u.speed();
+			
+			maxAmmo = 50;
+			ammoPerShot = 10;
+			
+			drawer = new DrawTurret("reinforced-"){{
+				parts.add(new RegionPart("-acceler"){{
+					mirror = false;
+//					under = turretShading = true;
+					moveX = 0;
+					moveY = -5f;
+					
+					progress = PartProgress.recoil;
+				}}, new RegionPart("-top"){{
+					outline = true;
+					heatLight = false;
+					mirror = false;
+					//					under = turretShading = true;
+					moveX = 0;
+					moveY = 0;
+				}});
+			}};
+			
+			ammo(
+					NHItems.irayrondPanel, NHBullets.railGun1,
+					NHItems.setonAlloy, NHBullets.railGun2,
+					NHItems.upgradeSort, NHBullets.railGun3
+			);
+			
+			consumePowerCond(12f, TurretBuild::isActive);
+			
+			shoot = new ShootPattern(){{
+				shots = 1;
+				firstShotDelay = 90f;
+			}};
+			
+			moveWhileCharging = false;
+			shootCone = 6f;
+			
+			size = 4;
+			health = 4550;
+			armor = 15f;
+			reload = 200f;
+			recoil = 1f;
+			shake = 8f;
+			range = 620.0F;
+			minRange = 160f;
+			rotateSpeed = 1.5f;
+			
+			buildType = () -> new ItemTurretBuild(){
+				@Override
+				public void drawSelect(){
+					super.drawSelect();
+					Drawf.dashCircle(x, y, minRange, Pal.redderDust);
+				}
+				
+				@Override
+				protected boolean validateTarget(){
+					return (!Units.invalidateTarget(target, canHeal() ? Team.derelict : team, x, y) && !within(target, minRange)) || isControlled() || logicControlled();
+				}
+			};
+			
+			shootSound = NHSounds.railGunBlast;
+//			heatColor = NHItems.irayrondPanel.color;
+			
+			accurateDelay = true;
+			
+			coolantMultiplier = 0.55f;
+			cooldownTime = 90f;
+			
+			maxAmmo = 16;
+			ammoPerShot = 2;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.setonAlloy, 150, NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
+		}
+			
+			@Override
+			public void drawPlace(int x, int y, int rotation, boolean valid){
+				super.drawPlace(x, y, rotation, valid);
+				
+				Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, minRange, Pal.redderDust);
+			}
+			
+			@Override
+			public void setStats(){
+				super.setStats();
+				stats.add(Stat.shootRange, minRange / tilesize, StatUnit.blocks);
+			}
+		};
+		
 		endOfEra = new ShootMatchTurret("end-of-era"){{
 			recoil = 5f;
 			armor = 15;
@@ -1007,7 +1136,8 @@ public class NHBlocks{
 				shotDelay = 12f;
 			}});
 			
-			rotateSpeed = 1f;
+			shootCone = 20f;
+			rotateSpeed = 0.75f;
 			ammoPerShot = 4;
 			maxAmmo = 20;
 			size = 8;
@@ -1020,6 +1150,33 @@ public class NHBlocks{
 			inaccuracy = 1f;
 			shootCone = 45f;
 			shootSound = Sounds.laserbig;
+		}};
+		
+		executor = new ItemTurret("executor"){{
+			size = 6;
+			health = 10200;
+			requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 250, NHItems.irayrondPanel, 650, Items.plastanium, 375, NHItems.seniorProcessor, 150, NHItems.setonAlloy, 400));
+			ammo(
+					NHItems.thermoCorePositive, NHBullets.blastEnergyPst, NHItems.thermoCoreNegative, NHBullets.blastEnergyNgt
+			);
+			
+			shoot = new ShootPattern(){{
+				shots = 8;
+				shotDelay = 4f;
+			}};
+			
+			consumePower(10.0F);
+			maxAmmo = 80;
+			ammoPerShot = 8;
+			xRand = tilesize * (size - 2.225f) / 2;
+			reload = 120f;
+			shootCone = 50.0F;
+			rotateSpeed = 1.5F;
+			range = 440.0F;
+			inaccuracy = 1;
+			heatColor = NHBullets.blastEnergyPst.lightColor;
+			recoil = 4.0F;
+			shootSound = NHSounds.thermoShoot;
 		}};
 	}
 	
@@ -1086,7 +1243,12 @@ public class NHBlocks{
 		
 		waterInstancer = new GenericCrafter("water-instancer"){{
 			size = 1;
-			updateEffect = Fx.smeltsmoke;
+			updateEffect = new Effect(15, e -> {
+				randLenVectors(e.id, 6, 4f + e.fin() * 5f, (x, y) -> {
+					color(NHColor.darkEnrColor, NHColor.deeperBlue, e.fin());
+					Fill.square(e.x + x, e.y + y, 0.5f + e.fout() * 2f, 45);
+				});
+			});
 			consumePower(0.5f);
 			consumeLiquid(NHLiquids.quantumLiquid, 0.1f);
 			outputLiquid = new LiquidStack(Liquids.water, 12f / 60f);
@@ -1111,7 +1273,7 @@ public class NHBlocks{
 			outputLiquid = new LiquidStack(NHLiquids.xenAlpha, 12f / 60f);
 		}};
 		
-		zetaOre = new OreBlock("ore-zeta"){{
+		oreZeta = new OreBlock("ore-zeta"){{
 			oreDefault = true;
 			variants = 3;
 			oreThreshold = 0.95F;
@@ -1564,6 +1726,35 @@ public class NHBlocks{
 	
 	public static void load() {
 		final int healthMult2 = 4, healthMult3 = 9;
+		
+		blaster = new ShockwaveGenerator("blaster"){{
+			requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+			
+			size = 3;
+			chargerOffset = 5.65f;
+			rotateOffset = -45f;
+			damage = 150;
+			lightningDamage = 200;
+			generateLiNum = 3;
+			generateLiLen = 12;
+			generateLenRand = 20;
+			gettingBoltNum = 1;
+			lightningColor = NHColor.darkEnrColor;
+			generateEffect = NHFx.blastgenerate;
+			acceptEffect = NHFx.blastAccept;
+			blastSound = Sounds.explosionbig;
+			status = NHStatusEffects.emp2;
+			range = 240;
+			health = 1200;
+			knockback = 10f;
+			consumePower(8f);
+			itemCapacity = 30;
+			consumeItem(NHItems.zeta, 3);
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(){{
+				midColor = flameColor = NHColor.darkEnrColor;
+			}}, new DrawDefault());
+		}};
 		
 		reinForcedLiquidSource = new LiquidSource("reinforced-liquid-source"){{
 			size = 1;
@@ -2424,13 +2615,13 @@ public class NHBlocks{
 		
 		jumpGate = new JumpGate("jump-gate"){{
 			consumePowerCond(60, JumpGateBuild::isCalling);
-			health = 50000;
+			health = 80000;
 			spawnDelay = 30f;
 			spawnReloadTime = 300f;
 			range = 600f;
 			squareStroke = 2.35f;
 			size = 8;
-			adaptable = true;
+			adaptable = false;
 			adaptBase = jumpGateJunior;
 			
 			armor = 20f;
@@ -2450,35 +2641,35 @@ public class NHBlocks{
 			
 			addSets(
 				new UnitSet(NHUnitTypes.longinus, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 400 * 60f,
-						with(NHItems.setonAlloy, 300, Items.surgeAlloy, 150, NHItems.seniorProcessor, 400, NHItems.thermoCoreNegative, 200)
+					with(NHItems.setonAlloy, 300, Items.surgeAlloy, 150, NHItems.seniorProcessor, 400, NHItems.thermoCoreNegative, 250)
 				),
 				new UnitSet(NHUnitTypes.saviour, new byte[]{NHUnitTypes.OTHERS, 5}, 300 * 60f,
-					with(NHItems.setonAlloy, 250, Items.surgeAlloy, 200, NHItems.seniorProcessor, 150, NHItems.thermoCoreNegative, 100, Items.plastanium, 200, NHItems.zeta, 500)
+					with(NHItems.setonAlloy, 450, Items.surgeAlloy, 400, NHItems.seniorProcessor, 350, NHItems.thermoCoreNegative, 150, Items.plastanium, 400, NHItems.zeta, 500)
 				),
 				new UnitSet(NHUnitTypes.declining, new byte[]{NHUnitTypes.NAVY_LINE_1, 5}, 420 * 60f,
-						with(NHItems.setonAlloy, 500, NHItems.irayrondPanel, 300, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300)
+					with(NHItems.setonAlloy, 800, NHItems.irayrondPanel, 600, NHItems.seniorProcessor, 400, NHItems.thermoCoreNegative, 300)
 				),
 				new UnitSet(NHUnitTypes.guardian, new byte[]{NHUnitTypes.OTHERS, 5}, 9600f,
-						new ItemStack(NHItems.darkEnergy, 1200)
+						new ItemStack(NHItems.darkEnergy, 1500)
 				),
 				new UnitSet(NHUnitTypes.sin, new byte[]{NHUnitTypes.GROUND_LINE_1, 6}, 480 * 60f,
-						with(NHItems.setonAlloy, 600, NHItems.upgradeSort, 200, NHItems.seniorProcessor, 500, NHItems.thermoCorePositive, 500, NHItems.irayrondPanel, 300)
+					with(NHItems.setonAlloy, 600, NHItems.upgradeSort, 750, NHItems.seniorProcessor, 300, NHItems.thermoCorePositive, 500, NHItems.presstanium, 1500)
 				),
 				new UnitSet(NHUnitTypes.anvil, new byte[]{NHUnitTypes.AIR_LINE_2, 6}, 600 * 60f,
-					with(NHItems.zeta, 1000, NHItems.setonAlloy, 500, NHItems.upgradeSort, 200, NHItems.seniorProcessor, 600, NHItems.thermoCorePositive, 400)
+					with(NHItems.multipleSteel, 1000, NHItems.setonAlloy, 800, NHItems.upgradeSort, 600, NHItems.seniorProcessor, 600, NHItems.thermoCorePositive, 750)
+				),
+				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
+					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 900, NHItems.seniorProcessor, 1200, NHItems.thermoCoreNegative, 500)
 				),
 				new UnitSet(NHUnitTypes.annihilation, new byte[]{NHUnitTypes.GROUND_LINE_1, 5}, 320 * 60f,
-					with(NHItems.setonAlloy, 200, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 100)
+					with(NHItems.setonAlloy, 600, NHItems.irayrondPanel, 900, NHItems.seniorProcessor, 800, NHItems.fusionEnergy, 500)
+				),
+				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
+						with(NHItems.setonAlloy, 350, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 250)
 				)/*,
 				new UnitSet(UnitTypes.quell, new byte[]{NHUnitTypes.AIR_LINE_2, 4}, 30 * 60f,
 					new ItemStack(NHItems.darkEnergy, 500),
 					new ItemStack(NHItems.upgradeSort, 500)
-				),
-				new UnitSet(NHUnitTypes.hurricane, new byte[]{NHUnitTypes.AIR_LINE_1, 6}, 480 * 60f,
-					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 300, NHItems.seniorProcessor, 800, NHItems.thermoCoreNegative, 500)
-				),
-				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
-					with(NHItems.setonAlloy, 300, NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 500, NHItems.fusionEnergy, 150)
 				)*/
 			);
 		}};

@@ -21,24 +21,24 @@ import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.MoveEffectAbility;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.game.Team;
-import mindustry.gen.Bullet;
-import mindustry.gen.Sounds;
-import mindustry.gen.Teamc;
-import mindustry.gen.Unit;
-import mindustry.graphics.*;
+import mindustry.gen.*;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.unit.MissileUnitType;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.LightningLinkerBulletType;
+import newhorizon.expand.bullets.SpeedUpBulletType;
+import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.expand.units.AdaptedTimedKillUnit;
+import newhorizon.expand.units.AdaptedMissileUnitType;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
-import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
@@ -49,9 +49,11 @@ import static arc.math.Angles.randLenVectors;
 public class NHBullets{
 	public static String CIRCLE_BOLT, STRIKE, MISSILE_LARGE = "missile-large";
 	
-	public static UnitType airRaidMissile;
+	public static UnitType airRaidMissile, skyMissile;
 	
 	public static BulletType
+			railGun1, railGun2, railGun3,
+			declineProjectile, atomSeparator, blastEnergyPst, blastEnergyNgt,
 			warperBullet, airRaidBomb,
 			hyperBlastLinker, hyperBlast,
 			arc_9000, eternity,
@@ -60,6 +62,8 @@ public class NHBullets{
 			ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet;
 	
 	private static void loadPriority(){
+		
+		
 		warperBullet = new BasicBulletType(4f, 20f, CIRCLE_BOLT){
 			{
 				shrinkX = shrinkY = 0.35f;
@@ -155,6 +159,306 @@ public class NHBullets{
 		
 		loadPriority();
 		
+		
+		railGun1 = new TrailFadeBulletType(35f, 2200, STRIKE) {{
+			width = 12f;
+			height = 36f;
+			
+			trailLength = 20;
+			trailWidth = 2;
+			trailInterval = 1f;
+			trailRotation = true;
+			despawnBlinkTrail = hitBlinkTrail = true;
+			
+			pierceArmor = pierce = pierceBuilding = true;
+			pierceCap = 3;
+			
+			ammoMultiplier = 1f;
+			
+			lifetime = 20f;
+			lightningColor = hitColor = frontColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color;
+			chargeEffect = NHFx.genericCharge(backColor, 13, 90, 90);
+			lightning = 4;
+			lightningLength = 6;
+			lightningLengthRand = 10;
+			shootEffect = NHFx.instShoot(lightningColor, lightningColor.cpy().lerp(Color.white, 0.2f));
+			hitEffect = NHFx.instHit(lightningColor);
+			smokeEffect = Fx.smokeCloud;
+			trailEffect = NHFx.instTrail(lightningColor, 60, true);
+			despawnEffect = new OptionalMultiEffect(NHFx.instBomb(lightningColor), NHFx.hitSparkLarge, NHFx.square45_6_45);
+			lightningDamage = damage / 7;
+			buildingDamageMultiplier = 0.5f;
+			hitShake = 8f;
+			knockback = 14f;
+			
+			hitSound = Sounds.explosion;
+			despawnSound = Sounds.explosionbig;
+		}};
+		
+		railGun2 = new TrailFadeBulletType(40f, 3000, STRIKE) {{
+			width = 16f;
+			height = 50f;
+			
+			trailLength = 18;
+			trailWidth = 2;
+			trailInterval = 1f;
+			trailChance = 0.4f;
+			trailRotation = true;
+			despawnBlinkTrail = hitBlinkTrail = true;
+			
+			pierceArmor = pierce = pierceBuilding = true;
+			pierceCap = 6;
+			
+			ammoMultiplier = 1f;
+			
+			lifetime = 16f;
+			frontColor = NHItems.irayrondPanel.color;
+			lightningColor = hitColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color.cpy().lerp(NHColor.deeperBlue, 0.4f);
+			chargeEffect = NHFx.genericCharge(backColor, 18, 120, 90);
+			lightning = 4;
+			lightningLength = 6;
+			lightningLengthRand = 10;
+			shootEffect = NHFx.instShoot(lightningColor, lightningColor.cpy().lerp(Color.white, 0.2f));
+			hitEffect = NHFx.instHit(lightningColor, 6, 120);
+			smokeEffect = NHFx.hugeSmokeGray;
+			trailEffect = NHFx.instTrail(lightningColor, 40, true);
+			despawnEffect = new OptionalMultiEffect(NHFx.instBomb(lightningColor), NHFx.hitSparkHuge, NHFx.square45_8_45);
+			lightningDamage = damage / 7;
+			buildingDamageMultiplier = 0.5f;
+			hitShake = 12f;
+			knockback = 22f;
+			
+			hitSound = Sounds.explosion;
+			despawnSound = Sounds.explosionbig;
+		}};
+		
+		railGun3 = new TrailFadeBulletType(50f, 4000, STRIKE) {{
+			width = 16f;
+			height = 50f;
+			
+			trailLength = 18;
+			trailWidth = 2;
+			trailInterval = 1f;
+			trailChance = 0.4f;
+			trailRotation = true;
+			despawnBlinkTrail = hitBlinkTrail = true;
+			
+			pierceArmor = pierce = pierceBuilding = true;
+			pierceCap = 2;
+			
+			ammoMultiplier = 1;
+			
+			lifetime = 12.8f;
+			frontColor = NHItems.irayrondPanel.color;
+			lightningColor = hitColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color.cpy().lerp(NHColor.darkEnrColor, 0.6f);
+			chargeEffect = NHFx.genericCharge(backColor, 18, 120, 90);
+			lightning = 6;
+			lightningLength = 12;
+			lightningLengthRand = 20;
+			shootEffect = NHFx.instShoot(lightningColor, lightningColor.cpy().lerp(Color.white, 0.2f));
+			hitEffect = NHFx.instHit(lightningColor, 6, 120);
+			smokeEffect = NHFx.hugeSmoke;
+			trailEffect = NHFx.instTrail(lightningColor, 40, true);
+			despawnEffect = new OptionalMultiEffect(NHFx.instBomb(lightningColor), NHFx.sharpBlast(backColor, frontColor, 50f, 90f));
+			lightningDamage = damage / 7;
+			splashDamage = 2000;
+			splashDamageRadius = 80;
+			
+			hitShake = 22f;
+			knockback = 32f;
+			
+			hitSound = Sounds.explosion;
+			despawnSound = Sounds.explosionbig;
+		}};
+		
+		blastEnergyPst = new SpeedUpBulletType(0.85f, 100f, CIRCLE_BOLT){{
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
+			lifetime = 64f;
+			ammoMultiplier = 4f;
+			accelerateBegin = 0.1f;
+			accelerateEnd = 0.85f;
+			velocityIncrease = 14f;
+			hitShake = despawnShake = 2f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = 12;
+			lightningLength = 4;
+			homingPower = 0.195f;
+			homingRange = 600f;
+			homingDelay = 12;
+			width = height = 16f;
+			splashDamageRadius = 30f;
+			lightningDamage = damage * 0.65f;
+			splashDamage = 0.65f * damage;
+			shrinkX = shrinkY = 0;
+			hitEffect = NHFx.crossBlast(backColor);
+			despawnEffect = NHFx.hyperBlast(backColor);
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootBigSmoke;
+			trailEffect = NHFx.trailToGray;
+			trailChance = 0.23f;
+			trailParam = 2.7f;
+			
+			trailLength = 15;
+			trailWidth = 3.5f;
+			drawSize = 300f;
+		}};
+		
+		blastEnergyNgt = new SpeedUpBulletType(3.85f, 80f){{
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
+			lifetime = 36f;
+			knockback = 4f;
+			ammoMultiplier = 8f;
+			accelerateBegin = 0.1f;
+			accelerateEnd = 0.85f;
+			velocityIncrease = 18f;
+			hitShake = despawnShake = 5f;
+			lightning = 3;
+			lightningCone = 360;
+			lightningLengthRand = 12;
+			lightningLength = 4;
+			width = 14f;
+			height = 46f;
+			pierceCap = 4;
+			shrinkX = shrinkY = 0;
+			splashDamageRadius = 120f;
+			lightningDamage = damage * 0.85f;
+			splashDamage = 0.85f * damage;
+			hitEffect = NHFx.lightningHitLarge(backColor);
+			despawnEffect = NHFx.crossBlast(backColor);
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootBigSmoke;
+			trailEffect = NHFx.trailToGray;
+			
+			trailLength = 15;
+			trailWidth = 3f;
+			drawSize = 300f;
+			
+			inaccuracy = 0;
+		}};
+		
+		atomSeparator = new ContinuousFlameBulletType(300){{
+			shake = 3;
+			hitColor = flareColor = lightColor = lightningColor = NHColor.lightSkyBack;
+			colors = new Color[]{NHColor.lightSkyBack.cpy().mul(0.75f, 0.85f, 1f, 0.65f), NHColor.lightSkyBack.cpy().mul(1f, 1f, 1f, 0.65f), NHColor.lightSkyBack.cpy().lerp(NHColor.deeperBlue, 0.5f), NHColor.deeperBlue};
+			width = 6;
+			length = 380f;
+			oscScl = 0.9f;
+			oscMag *= 2f;
+			lifetime = 35f;
+			lightning = 4;
+			lightningLength = 2;
+			lightningLengthRand = 18;
+			flareLength = 75;
+			flareWidth = 6;
+			hitEffect = NHFx.shootCircleSmall(NHColor.lightSkyBack);
+			shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
+			lightningDamage = damage / 6f;
+			despawnHit = false;
+			pierceArmor = true;
+		}
+			@Override
+			public void update(Bullet b){
+				super.update(b);
+				
+				if(Mathf.chanceDelta(0.11))for(int i = 0; i < lightning; i++){
+					Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+				}
+			}
+			
+			@Override
+			public void hit(Bullet b, float x, float y){
+				hitEffect.at(x, y, b.rotation(), hitColor);
+				hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
+				
+				Effect.shake(hitShake, hitShake, b);
+				
+				Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+			}
+		};
+		
+		declineProjectile = new TrailFadeBulletType(9.25f, 350f){{
+			lifetime = 122f;
+			
+			tracerUpdateSpacing *= 6f;
+			tracerSpacing *= 1.5f;
+			
+			hittable = false;
+			
+			tracers = 1;
+			tracerStrokeOffset = tracerFadeOffset = 13;
+			hitBlinkTrail = false;
+			scaledSplashDamage = true;
+			
+			trailInterp = NHInterp.artilleryPlus;
+			shrinkInterp = NHInterp.artilleryPlus;
+			
+			shrinkX = 0.75f;
+			shrinkY = 0.4f;
+			width = 25f;
+			height = 55f;
+			
+			trailWidth = 4.7f;
+			trailLength = 140;
+			
+			//				velocityBegin = 12f;
+			//				velocityIncrease = 22f;
+			//				accelInterp = Interp.pow3Out;
+			//				accelerateBegin = 0f;
+			//				accelerateEnd = 0.8f;
+			
+			maxRange = 740;
+			pierce = pierceBuilding = false;
+			collideTerrain = collideFloor = collidesGround = collidesTiles = false;
+			scaleLife = true;
+			
+			lightning = 6;
+			lightningLength = 4;
+			lightningLengthRand = 32;
+			
+			splashDamageRadius = 76f;
+			splashDamage = damage;
+			lightningDamage = damage * 0.75f;
+			backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
+			
+			knockback = 20f;
+			
+			frontColor = NHColor.lightSkyFront;
+			shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
+			smokeEffect = NHFx.hugeSmokeGray;
+			trailChance = 0.6f;
+			trailEffect = NHFx.trailToGray;
+			despawnShake = 22f;
+			hitSound = Sounds.explosionbig;
+			hitEffect = new OptionalMultiEffect(NHFx.blast(backColor,  45f), NHFx.crossBlast(backColor, 120f, 45f), NHFx.hitSpark(backColor, 150f, 45, 170f, 2f, 13));
+			
+			fragBullets = 7;
+			fragBullet = NHBullets.basicSkyFrag;
+			fragLifeMax = 0.5f;
+			fragLifeMin = 0.25f;
+			fragVelocityMax = 0.72f;
+			fragVelocityMin = 0.075f;
+		}
+			public void removed(Bullet b){
+				if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
+					NHFx.trailFadeFast.at(b.x, b.y, trailWidth, trailColor, b.trail.copy());
+				}
+			}
+			
+			@Override
+			public void init(Bullet b){
+				super.init(b);
+				b.lifetime *= Mathf.random(0.955f, 1.025f);
+			}
+			
+			@Override
+			public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+				super.hitTile(b, build, x, y, initialHealth, direct);
+				
+				UltFire.createChance(b, splashDamageRadius, 0.1f);
+			}
+		};
+		
 		airRaidBomb = new BasicBulletType(18f, 800f, NHBullets.STRIKE){{
 			trailLength = 14;
 			
@@ -185,15 +489,77 @@ public class NHBullets{
 			hitEffect = new OptionalMultiEffect(NHFx.largeDarkEnergyHit, NHFx.square(NHColor.darkEnrColor, 100f, 3, 80f, 8f), NHFx.largeDarkEnergyHitCircle);
 		}};
 		
-		airRaidMissile = new MissileUnitType("air-raid-missile"){{
+		skyMissile = new AdaptedMissileUnitType("sky-missile"){{
+			speed = 2.3f;
+			accel = 0.45f;
+			drag /= 2;
+			
+			trailAppearDelay = 22f;
+			lifetime = 60f * 3.35f;
+			
+			armor = 5;
+			
+			outlineColor = NHUnitTypes.OColor;
+			health = 800;
+			
+			homingDelay = 17f;
+			lowAltitude = true;
+			engineSize = 2f;
+			engineOffset = 18f;
+			engineColor = trailColor = NHColor.lightSkyBack;
+			engineLayer = Layer.effect;
+			trailLength = 13;
+			deathExplosionEffect = Fx.none;
+			loopSoundVolume = 0.1f;
+			
+			abilities.add(new MoveEffectAbility(){{
+				effect = NHFx.skyTrail;
+				y = -engineOffset;
+				interval = 5f;
+			}});
+			
+			weapons.add(new Weapon(){{
+				shootCone = 360f;
+				mirror = false;
+				reload = 1f;
+				shootOnDeath = true;
+				
+				shootSound = Sounds.plasmaboom;
+				
+				bullet = new ExplosionBulletType(40, 180f){{
+					trailColor = lightColor = lightningColor = hitColor = NHColor.lightSky;
+					
+					hitSound = despawnSound = Sounds.none;
+					
+					scaledSplashDamage = true;
+					splashDamageRadius = 40f;
+					lightningDamage = damage;
+					
+					hitShake = despawnShake = 16f;
+					lightning = 2;
+					lightningCone = 360;
+					lightningLengthRand = lightningLength = 5;
+					
+					shootEffect = new MultiEffect(NHFx.blast(NHColor.lightSky, 30f), NHFx.hitSparkHuge);
+				}};
+			}});
+		}
+			
+			@Override
+			public void draw(Unit unit){
+				Draw.zTransform(f -> f - 2f);
+				super.draw(unit);
+				Draw.zTransform();
+			}
+		};
+		
+		airRaidMissile = new AdaptedMissileUnitType("air-raid-missile"){{
 			speed = 4.6f;
 			accel = 0.5f;
 			drag /= 2;
-			maxRange = 5f;
 			
 			lifetime = 60f * 3.35f;
 			
-			constructor = AdaptedTimedKillUnit::new;
 			targetPriority = 0f;
 			
 			rotateSpeed = 6.5f;
@@ -223,16 +589,6 @@ public class NHBullets{
 			
 			clipSize = 620;
 			
-//			parts.add(new RegionPart("-fin"){{
-//				mirror = true;
-//				progress = PartProgress.life.mul(3f).curve(Interp.pow5In);
-//				moveRot = 32f;
-//				rotation = -6f;
-//				moveY = 1.5f;
-//				x = 3f / 4f;
-//				y = -6f / 4f;
-//			}});
-			
 			weapons.add(new Weapon(){{
 				shootCone = 360f;
 				mirror = false;
@@ -250,32 +606,16 @@ public class NHBullets{
 					
 					lightningDamage = damage = splashDamage;
 					
+					splashDamageRadius = 200f;
 					hitShake = despawnShake = 16f;
 					lightning = 3;
 					lightningCone = 360;
 					lightningLengthRand = lightningLength = 20;
 					
-					shootEffect = new OptionalMultiEffect(NHFx.largeDarkEnergyHit, NHFx.blast(NHColor.darkEnrColor, 190f), NHFx.largeDarkEnergyHitCircle, NHFx.instHit(NHColor.darkEnrColor, 4, 90f));
+					shootEffect = new OptionalMultiEffect(NHFx.largeDarkEnergyHit, NHFx.blast(NHColor.darkEnrColor, 140f), NHFx.largeDarkEnergyHitCircle, NHFx.instHit(NHColor.darkEnrColor, 4, 90f));
 				}};
 			}});
-		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
-		
-			@Override
-			public void drawEngines(Unit unit){}
-			
-			@Override
-			public void drawTrail(Unit unit){
-				if(unit.trail == null){
-					unit.trail = new Trail(trailLength);
-				}
-				Trail trail = unit.trail;
-				Color color = trailColor == null ? unit.team.color : trailColor;
-				float width = (engineSize + Mathf.absin(Time.time, 2f, engineSize / 4f) * (useEngineElevation ? unit.elevation : 1f)) * trailScl;
-				trail.draw(color, width);
-				trail.drawCap(color, width);
-			}
-		};
+		}};
 		
 		synchroZeta = new BasicBulletType(8f, 65f){{
 			lifetime = 48f;
@@ -1001,12 +1341,16 @@ public class NHBullets{
 			}
 		};
 		
-		guardianBullet = new BasicBulletType(10f, 180){
+		guardianBullet = new SpeedUpBulletType(2f, 180){
 			{
 				width = 22f;
 				height = 40f;
 				
-//				accelInterp = NHInterp.inOut;
+				velocityBegin = 1f;
+				velocityIncrease = 11f;
+				accelInterp = NHInterp.inOut;
+				accelerateBegin = 0.045f;
+				accelerateEnd = 0.675f;
 				
 				pierceCap = 3;
 				splashDamage = damage / 4;
@@ -1132,7 +1476,7 @@ public class NHBullets{
 			}
 		};
 		
-		eternity = new BasicBulletType(10f, 1000f){
+		eternity = new SpeedUpBulletType(10f, 1000f){
 			@Override
 			public void draw(Bullet b){
 				super.draw(b);
@@ -1242,8 +1586,14 @@ public class NHBullets{
 				despawnHit = false;
 				collidesAir = collidesGround = collidesTiles = true;
 				splashDamage = 4000f;
-				pierceArmor = true;
-				drag = 0.01f;
+				
+				velocityBegin = 6f;
+				velocityIncrease = -5.9f;
+				
+				accelerateEnd = 0.75f;
+				accelerateBegin = 0.1f;
+				
+				accelInterp = Interp.pow2;
 				trailInterp = Interp.pow10Out;
 				
 				despawnSound = Sounds.plasmaboom;

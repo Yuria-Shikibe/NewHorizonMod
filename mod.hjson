@@ -2,7 +2,7 @@ displayName: "New Horizon"
 author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
-description: "Warning: Unfinished For V7"
-version: "0.2.1"
+description: "Warning: Beta Version For V7"
+version: "0.2.4"
 
-minGameVersion: 139
+minGameVersion: 140.4

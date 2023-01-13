@@ -2,7 +2,10 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.Events;
+import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.content.UnitTypes;
@@ -13,19 +16,105 @@ import mindustry.entities.pattern.ShootSummon;
 import mindustry.game.EventType;
 import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
+import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.*;
 import newhorizon.util.annotation.ClientDisabled;
-import newhorizon.util.func.OV_Pair;
+import newhorizon.util.struct.OV_Pair;
 
 public class NHInbuiltEvents{
+	public static final String applyKey = "applyTriggers";
+	
 	public static WorldEventType
 		intervention_std;
 	
 	@ClientDisabled
-	public static final Seq<AutoEventTrigger> autoTriggers = new Seq<>();
+	public static final Seq<AutoEventTrigger> autoTriggers = new Seq<>(), campaignTriggers = new Seq<>();
 	
 	private static void loadEventTriggers(){
+		AutoEventTrigger wave1 = new AutoEventTrigger(){{
+			disposable = triggerAfterAdd = true;
+			reload = spacing = 10000;
+			spacingBase = spacingRand = 0;
+			items = OV_Pair.seqWith();
+			units = OV_Pair.seqWith();
+			buildings = OV_Pair.seqWith();
+			minTriggerWave = 0;
+			eventType = WorldEventType.inbuilt(new ReachWaveObjective("inbuilt-wave-10"){{
+				targetWave = 10;
+				toTrigger = new InterventionEventType("wave10-reward"){{
+					spawn(NHUnitTypes.rhino, 1, NHUnitTypes.gather, 2);
+					removeAfterTrigger = true;
+					defaultTeam = () -> Vars.state.rules.defaultTeam;
+				}
+					@Override public Position target(WorldEvent e){
+						Position p = defaultTeam.get().core();
+						return p == null ? new Vec2().set(Vars.world.unitWidth() / 2f, Vars.world.unitHeight() / 2f) : p;
+					}
+					
+					@Override
+					public Position source(WorldEvent event){
+						Position t = target(event);
+						Tmp.v1.set(t).sub(Vars.spawner.getFirstSpawn()).nor().add(t);
+						return Tmp.v1;
+					}
+				};
+			}});
+		}};
+		
+		AutoEventTrigger wave2 = new AutoEventTrigger(){{
+			disposable = triggerAfterAdd = true;
+			reload = spacing = 10000;
+			spacingBase = spacingRand = 0;
+			items = OV_Pair.seqWith();
+			units = OV_Pair.seqWith();
+			buildings = OV_Pair.seqWith();
+			minTriggerWave = 0;
+			eventType = WorldEventType.inbuilt(new ReachWaveObjective("inbuilt-wave-55"){{
+				targetWave = 55;
+				toTrigger = new InterventionEventType("wave55-reward"){{
+					spawn(NHUnitTypes.saviour, 1, NHUnitTypes.naxos, 2);
+					removeAfterTrigger = true;
+					defaultTeam = () -> Vars.state.rules.defaultTeam;
+				}
+					@Override public Position target(WorldEvent e){
+						Position p = defaultTeam.get().core();
+						return p == null ? new Vec2().set(Vars.world.unitWidth() / 2f, Vars.world.unitHeight() / 2f) : p;
+					}
+					
+					@Override
+					public Position source(WorldEvent event){
+						Position t = target(event);
+						Tmp.v1.set(t).sub(Vars.spawner.getFirstSpawn()).nor().add(t);
+						return Tmp.v1;
+					}
+				};
+			}});
+		}};
+		
+		autoTriggers.add(wave1, wave2);
+		campaignTriggers.add(wave1, wave2);
+		
 		autoTriggers.addAll(new AutoEventTrigger(){{
+			items = OV_Pair.seqWith(NHItems.seniorProcessor, 1200, NHItems.presstanium, 5000, NHItems.upgradeSort, 500);
+			eventType = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-artillery"){{
+				ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 30, 0){{
+					shots = 8;
+					shotDelay = 18f;
+				}}, new ShootSpread(){{
+					shots = 6;
+					spread = 3f;
+					shotDelay = 4f;
+				}});
+				
+				ammo(NHBullets.declineProjectile, shootPattern);
+				radius = 230;
+				reloadTime = 20 * 60;
+			}});
+			
+			minTriggerWave = 0;
+			spacingBase = 1800 * 60;
+			spacingRand = 600 * 60;
+		}},new AutoEventTrigger(){{
 			items = OV_Pair.seqWith(NHItems.multipleSteel, 1500, NHItems.presstanium, 1000, Items.plastanium, 1000);
 			eventType = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-std"){{
 				ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 30, 0){{
@@ -197,15 +286,36 @@ public class NHInbuiltEvents{
 			spacingRand = 300 * 60;
 		}});
 		
-		if(Vars.headless || NewHorizon.DEBUGGING){
 			Events.on(EventType.WorldLoadEvent.class, e -> {
-				Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
-					if(!Vars.state.rules.pvp && NHGroups.autoEventTrigger.size() < autoTriggers.size){
-						EventHandler.runEventOnce("setup-events", () -> autoTriggers.each(t -> t.copy().add()));
-					}
-				})));
+				if(Vars.state.isCampaign() && Vars.state.rules.sector.isCaptured()){
+					NHGroups.events.clear();
+					NHGroups.autoEventTrigger.clear();
+					Vars.state.rules.tags.remove(applyKey);
+					return;
+				}
+				
+				if(Vars.state.rules.pvp || NHGroups.autoEventTrigger.size() >= autoTriggers.size)return;
+				if(Vars.headless || NewHorizon.DEBUGGING){
+					Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
+						EventHandler.runEventOnce("setup-triggers", () -> {
+							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp)autoTriggers.each(t -> t.copy().add());
+						});
+					})));
+				}
+				
+				if(Vars.state.isCampaign() && Vars.state.rules.sector.planet == NHPlanets.midantha){
+					Core.app.post(() -> {
+						if(Vars.state.isCampaign() && Vars.state.rules.tags.containsKey(applyKey) && !Vars.state.rules.sector.isCaptured()){
+							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp)autoTriggers.each(t -> t.copy().add());
+							AutoEventTrigger.setScale(0.35f);
+						}
+					});
+				}
 			});
-		}
+		
+		Events.on(EventType.SectorCaptureEvent.class, e -> {
+			NHGroups.events.clear();
+		});
 	}
 	
 	public static void load(){

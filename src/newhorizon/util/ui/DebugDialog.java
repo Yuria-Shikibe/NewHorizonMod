@@ -18,6 +18,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Scaling;
+import mindustry.content.TechTree;
 import mindustry.core.Logic;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
@@ -328,28 +329,11 @@ public class DebugDialog extends BaseDialog{
 			t.row();
 			
 			t.button("Unlock ALL", () -> {
-				for(UnlockableContent tent : content.items()){
-					tent.unlock();
-				}
-				for(UnlockableContent tent : content.liquids()){
-					tent.unlock();
-				}
-				for(UnlockableContent tent : content.units()){
-					tent.unlock();
-				}
-				for(UnlockableContent tent : content.blocks()){
-					tent.unlock();
-				}
-				for(UnlockableContent tent : content.sectors()){
-					tent.unlock();
-				}
-				for(UnlockableContent tent : content.statusEffects()){
-					tent.unlock();
-				}
+				TechTree.all.each(c -> c.content.unlock());
 			});
 			
 			t.button("Unlock Single", () -> new BaseDialog("UNLOCK"){{
-				Seq<UnlockableContent> all = new Seq<>().addAll(content.units().select(c -> !c.isHidden())).addAll(content.blocks().select(c -> !c.isHidden())).addAll(content.items().select(c -> !c.isHidden())).addAll(content.liquids()).addAll(content.statusEffects().select(c -> !c.isHidden())).addAll(content.sectors().select(c -> !c.isHidden())).addAll(content.planets().select(c -> !c.isHidden())).as();
+				Seq<UnlockableContent> all = TechTree.all.map(n -> n.content);
 				
 				cont.pane(t -> {
 					for(int i = 0; i < all.size; i++){
@@ -377,6 +361,15 @@ public class DebugDialog extends BaseDialog{
 				state.rules.spawns.clear();
 				state.rules.spawns.addAll(waves.get());
 			});
+			
+			t.button("Clear Fog", () -> {
+				state.rules.fog = false;
+			});
+			
+			t.button("Remove Limit", () -> {
+				state.rules.limitMapArea = false;
+			});
+			
 			
 			t.button("Show UI Structure", () -> {
 				new BaseDialog(""){{

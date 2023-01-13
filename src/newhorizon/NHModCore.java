@@ -28,6 +28,7 @@ public class NHModCore implements ApplicationListener{
 			NHGroups.update();
 			if(!Vars.headless && inputListener != null){
 				inputListener.update();
+				NHSetting.update();
 			}
 		}
 	}

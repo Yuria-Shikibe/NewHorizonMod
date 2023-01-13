@@ -31,7 +31,7 @@ import mindustry.graphics.Layer;
 import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
 import newhorizon.expand.bullets.EffectBulletType;
-import newhorizon.util.func.Vec2Seq;
+import newhorizon.util.struct.Vec2Seq;
 
 /**
  * Provide methods that can generate Position to Position Lightning.<p>

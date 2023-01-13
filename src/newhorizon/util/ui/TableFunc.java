@@ -28,6 +28,7 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -48,7 +49,9 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
+import newhorizon.NewHorizon;
 import newhorizon.expand.entities.UltFire;
+import newhorizon.util.PixelArtGenerator;
 import newhorizon.util.func.NHFunc;
 
 import java.lang.reflect.Field;
@@ -108,11 +111,11 @@ public class TableFunc{
             Table in = new Table(){{
                 Label label = new Label("Spawn");
                 update(() -> {
-                    label.setText(Core.bundle.get("waves.perspawn") + ": [accent]" + spawnNum + "[]* | At: " + (int)point.x + ", " + (int)point.y);
+                    label.setText(Core.bundle.get("waves.perspawn") + ": [accent]" + spawnNum + "[]* | At: " + tmpX + ", " + tmpY);
                     label.setWidth(getWidth());
                 });
                 add(label).growX().fillY().pad(OFFSET).align(Align.topLeft).row();
-                button("Copy Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText((int)point.x + ", " + (int)point.y)).growX().fillY().row();
+                button("Copy Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText(tmpX + ", " + tmpY)).growX().fillY().row();
     
                 pane(con -> {
                     con.button(Icon.leftOpen, Styles.cleari, () -> spawnNum = Mathf.clamp(--spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);
@@ -122,7 +125,11 @@ public class TableFunc{
     
                 table(con -> {
                     con.button("@mod.ui.select-target", Icon.move, Styles.cleart, LEN, () -> {
-                        pointSelectTable(starter, p -> point.set(World.unconv(p.x), World.unconv(p.y)));
+                        selectPos(starter, p -> {
+                            tmpX = p.x;
+                            tmpY = p.y;
+                            point.set(World.unconv(p.x), World.unconv(p.y));
+                        });
                     }).grow();
                     con.button(Icon.cancel, Styles.cleari, () -> point.set(-1, -1)).size(LEN);
                 }).growX().height(LEN).row();
@@ -192,6 +199,24 @@ public class TableFunc{
                         }).size(LEN * 2, LEN);
                         con.button("Debug", Styles.cleart, () -> {
                             new DebugDialog("debug").show();
+                        }).size(LEN * 2, LEN);
+                        con.button("Pixel Art", Styles.cleart, () -> {
+                            selectPos(starter, po -> {
+                                PixelArtGenerator.leftDown.set(po.x, po.y);
+                                Log.info(po.x + " | " + po.y);
+                                Core.app.post(() -> {
+                                    selectPos(starter, poi -> {
+                                        PixelArtGenerator.rightTop.set(poi.x, poi.y);
+                                        Log.info(poi.x + " | " + poi.y);
+                                        platform.showMultiFileChooser(fi -> {
+                                            PixelArtGenerator.toRead = fi;
+                                            boolean b = PixelArtGenerator.process();
+                                            if(b)Vars.ui.showInfoToast("Generate Successful", 1);
+                                            else Vars.ui.showInfoToast("Generate Failed", 1);
+                                        }, "png");
+                                    });
+                                });
+                            });
                         }).size(LEN * 2, LEN);
                     }).grow().row();
                 });
@@ -281,7 +306,7 @@ public class TableFunc{
                 starter.actions(Actions.moveTo(0, (Core.graphics.getHeight() - starter.getHeight()) / 2f, 0.1f));
             }else if(starter.x > -1 && !starter.hasActions())starter.actions(Actions.moveTo(-starter.getWidth(), (Core.graphics.getHeight() - starter.getHeight()) / 2f, 0.1f));
         });
-        starter.visible(() -> !state.isMenu() && ui.hudfrag.shown && !net.client() && starter.color.a > 0.01f);
+        starter.visible(() -> !state.isMenu() && ui.hudfrag.shown && (!net.client() || NewHorizon.DEBUGGING) && starter.color.a > 0.01f);
         starter.touchable(() -> !state.isMenu() && ui.hudfrag.shown && !net.client() ? Touchable.enabled : Touchable.disabled);
         
         Player player = Vars.player;
@@ -356,7 +381,7 @@ public class TableFunc{
         }).growX().height(size).left().row();
     }
     
-    public static void pointSelectTable(Table parentT, Cons<Point2> cons){
+    public static void selectPos(Table parentT, Cons<Point2> cons){
         Prov<Touchable> original = parentT.touchablility;
         Touchable parentTouchable = parentT.touchable;
         

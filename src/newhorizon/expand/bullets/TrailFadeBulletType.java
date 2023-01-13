@@ -14,7 +14,7 @@ import mindustry.gen.Hitboxc;
 import newhorizon.NHSetting;
 import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.func.Vec2Seq;
+import newhorizon.util.struct.Vec2Seq;
 
 public class TrailFadeBulletType extends BasicBulletType{
 	public int tracers = 2;

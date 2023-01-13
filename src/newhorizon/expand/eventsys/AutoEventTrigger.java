@@ -23,7 +23,7 @@ import newhorizon.NHGroups;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.func.NHFunc;
-import newhorizon.util.func.OV_Pair;
+import newhorizon.util.struct.OV_Pair;
 
 @ClientDisabled
 public class AutoEventTrigger implements Entityc, Cloneable{
@@ -42,6 +42,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public int minTriggerWave = 5;
 	public float spacingBase = 120 * Time.toSeconds, spacingRand = 120 * Time.toSeconds;
 	public boolean disposable = false;
+	public boolean triggerAfterAdd = false;
 	
 	protected float spacing = 60;
 	protected float reload;
@@ -112,11 +113,13 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 		if(reload > spacing && !Vars.net.client() && timer.get(checkSpacing)){
 			EventHandler.get().post(() -> {
 				if(meet()){
-					eventType.create();
-					reload = 0;
-					spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
-					
-					if(disposable)remove();
+					Core.app.post(() -> {
+						eventType.create();
+						reload = 0;
+						spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
+						
+						if(disposable)remove();
+					});
 				}
 			});
 		}
@@ -189,6 +192,11 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	@Override
 	@ClientDisabled
 	public void add(){
+		if(triggerAfterAdd){
+			eventType.create();
+			return;
+		}
+		
 		if(!Vars.net.client() && !added){
 			id = EntityGroup.nextId();
 			
@@ -198,7 +206,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 			spacing = spacingBase + NHFunc.rand(id).random(spacingRand);
 			reload = 0;
 			
-			added = false;
+			added = true;
 		}
 	}
 	

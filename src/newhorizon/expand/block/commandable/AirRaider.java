@@ -38,6 +38,8 @@ public class AirRaider extends CommandableAttackerBlock{
 		range = 1000f;
 		spread = 40f;
 		prepareDelay = 90f;
+		
+		unloadable = false;
 	}
 	
 	@Override

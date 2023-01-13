@@ -1,6 +1,7 @@
 package newhorizon.util.func;
 
 import arc.math.Interp;
+import arc.math.Mathf;
 
 public class NHInterp{
 //	public static final Interp upThenFastDown = x -> -0.926837f + 1.85241f * x + 0.202482f / x;
@@ -16,4 +17,5 @@ public class NHInterp{
 	public static final Interp parabola4 = x -> 4 * (x - 0.5f) * (x - 0.5f);
 	public static final Interp parabola4Reversed = x -> -4 * (x - 0.5f) * (x - 0.5f) + 1;
 	public static final Interp parabola4Reversed_X4 = x -> (-4 * (x - 0.5f) * (x - 0.5f) + 1) * 2.75f;
+	public static final Interp laser = x -> Interp.pow10Out.apply(x * 1.5f) * Mathf.curve(1 - x, 0, 0.085f);
 }

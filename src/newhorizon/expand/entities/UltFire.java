@@ -103,6 +103,7 @@ public class UltFire extends Fire{
 	}
 	
 	public void draw() {
+		Draw.alpha(0.35f);
 		Draw.alpha(Mathf.clamp(warmup / 20.0F));
 		Draw.z(110.0F);
 		Draw.rect(ultRegion[Math.min((int)animation, ultRegion.length - 1)], x + Mathf.randomSeedRange((long)((int)y), 2.0F), y + Mathf.randomSeedRange((long)((int)x), 2.0F));
