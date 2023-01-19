@@ -80,14 +80,14 @@ public class NHPixmap{
 
 			for(Weapon w : type.weapons){
 				if(w.top)continue;
-				drawWeaponPixmap(base, w, false, OUTLINE_COLOR, type.outlineRadius);
+				drawWeaponPixmap(base, w, false, type.outlineColor, type.outlineRadius);
 			}
 
-			base = Pixmaps.outline(new PixmapRegion(base), OUTLINE_COLOR, type.outlineRadius);
+//			base = Pixmaps.outline(new PixmapRegion(base), type.outlineColor, type.outlineRadius);
 
 			for(Weapon w : type.weapons){
 				if(!w.top)continue;
-				drawWeaponPixmap(base, w, true, OUTLINE_COLOR, type.outlineRadius);
+				drawWeaponPixmap(base, w, true, type.outlineColor, type.outlineRadius);
 			}
 
 			if(Core.settings.getBool("linear")){
@@ -149,11 +149,13 @@ public class NHPixmap{
 	
 	@Deprecated
 	public static void drawWeaponPixmap(Pixmap base, Weapon w, boolean outline, Color outlineColor, int radius){
-		if(w.region != null && w.region.found() && w.region instanceof TextureAtlas.AtlasRegion){
-			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)w.region;
+		TextureRegion region = Core.atlas.find(w.name + "-preview", w.region);
+		
+		if(region != null && region.found() && region instanceof TextureAtlas.AtlasRegion){
+			TextureAtlas.AtlasRegion t = (TextureAtlas.AtlasRegion)region;
 			if(!t.found())return;
 			
-			Pixmap wRegion = outline ? Pixmaps.outline(Core.atlas.getPixmap(t), outlineColor, radius) : Core.atlas.getPixmap(t).crop();
+			Pixmap wRegion = region != w.region ? Pixmaps.outline(Core.atlas.getPixmap(t), outlineColor, radius) : Core.atlas.getPixmap(t).crop();
 			
 			if(w.mirror){
 				Pixmap wRegion2 = wRegion.flipX();
@@ -201,6 +203,7 @@ public class NHPixmap{
 		if(!dic.exists())dic.mkdirs();
 		if(dic.exists()){
 			Fi n = processedPng(type.name, "-full");
+			if(n.exists())return;
 			if(!n.exists())try{n.file().createNewFile();}catch(IOException e){Log.err(e);}
 			PixmapIO.writePng(n, pixmap);
 			Log.info("Created Icon: " + type.localizedName);

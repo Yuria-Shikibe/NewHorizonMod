@@ -63,6 +63,7 @@ public class ShockwaveGenerator extends Block {
 		update = true;
 		//configurable = true;
 		solid = true;
+		attacks = true;
 	}
 	
 	@Override

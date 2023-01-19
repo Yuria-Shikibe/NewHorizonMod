@@ -10,7 +10,10 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -18,6 +21,7 @@ import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
+import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -35,6 +39,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
@@ -69,13 +74,12 @@ public class NHUnitTypes{
 	
 	public static Weapon
 			posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon,
-			mainCannon, pointDefenceWeaponC
-			
-			;
+			mainCannon, pointDefenceWeaponC;
 	
 	public static NHUnitType
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
+			pester, //Air-ancient
 			assaulter, anvil/*, collapser*/, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
@@ -88,13 +92,15 @@ public class NHUnitTypes{
 			EntityMapping.nameMap.put(NewHorizon.name("relay"), EntityMapping.idMap[20]);
 
 			EntityMapping.nameMap.put(NewHorizon.name("saviour"), EntityMapping.idMap[5]);
-
+			EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
+		
 			EntityMapping.nameMap.put(NewHorizon.name("origin"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("thynomo"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("aliotiat"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("tarlidor"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("sin"), EntityMapping.idMap[4]);
+			EntityMapping.nameMap.put(NewHorizon.name("pester"), PesterEntity::new);
 
 			EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
 		}
@@ -102,6 +108,8 @@ public class NHUnitTypes{
 	public static class NHUnitType extends UnitType{
 		public NHUnitType(String name){
 			super(name);
+			
+			ammoType = new ItemAmmoType(NHItems.presstanium);
 		}
 		
 		public void setRequirements(ItemStack[] stacks){
@@ -128,6 +136,20 @@ public class NHUnitTypes{
 		n.y = y;
 		modifier.get(n);
 		return n;
+	}
+	
+	public static Seq<StatusEffect> statuses;
+	
+	public static void immunise(UnitType type){
+		if(statuses == null){
+			statuses = Vars.content.statusEffects().copy();
+			statuses.filter(s -> {
+				return s.disarm || s.damage > 0 || s.healthMultiplier * s.reloadMultiplier * s.buildSpeedMultiplier < 1;
+			});
+			statuses.add(NHStatusEffects.scannerDown);
+		}
+		
+		type.immunities.addAll(statuses);
 	}
 	
 	private static void loadPreviousWeapon(){
@@ -485,6 +507,560 @@ public class NHUnitTypes{
 		
 		loadPreviousWeapon();
 		
+		pester = new NHUnitType("pester"){{
+			
+			outlineRadius += 1;
+			outlineColor = Pal.darkOutline;
+			
+			engineOffset = 45.25f;
+			engineSize = -1;
+			
+			immunise(this);
+			
+			abilities.add(new MoveEffectAbility(){{
+				minVelocity = 0;
+				rotateEffect = false;
+				effectParam = engineSize;
+				parentizeEffects = true;
+				teamColor = true;
+				display = false;
+				
+				y = -engineOffset;
+				effect = new Effect(33, b -> {
+					Draw.color(b.color);
+					Angles.randLenVectors(b.id, (int)(b.rotation / 8f), b.rotation / 5f + b.rotation * 2f * b.fin(), (x, y) -> {
+						Fill.circle(b.x + x, b.y + y, b.fout() * b.rotation / 2.25f);
+					});
+				});
+			}});
+			
+			abilities.add(new ShieldArcAbility(){{
+				radius = 160f;
+				angle = 270;
+				regen = 5f;
+				cooldown = 60f * 10f;
+				max = 50000f;
+				width = 10f;
+				whenShooting = false;
+			}});
+			
+			class PestEngine extends UnitEngine{
+				float triScl = 1;
+				
+				public PestEngine(float x, float y, float radius, float rotation, float triScl){
+					super(x, y, radius, rotation);
+					this.triScl = triScl;
+				}
+				
+				public PestEngine(float x, float y, float radius, float rotation){
+					super(x, y, radius, rotation);
+				}
+				
+				public void draw(Unit unit){
+					UnitType type = unit.type;
+					float scale = type.useEngineElevation ? unit.elevation : 1f;
+					
+					if(scale <= 0.0001f)return;
+					
+//					float z = Draw.z();
+					float rot = unit.rotation - 90;
+					
+//					Draw.z(Layer.effect + 0.005f);
+					Color color = unit.team.color;
+					
+					Tmp.v1.set(x, y).rotate(rot).add(unit);
+					float ex = Tmp.v1.x, ey = Tmp.v1.y;
+					
+					Draw.color(color);
+					Fill.circle(
+						ex,
+						ey,
+						(radius + Mathf.absin(Time.time, 4f, radius / 4f)) * scale
+					);
+					
+					float ang = Time.time * 1.5f;
+					for(int i : Mathf.signs){
+						DrawFunc.tri(ex, ey, radius / 3f * triScl, radius * 2.35f * triScl, ang + 90 * i);
+					}
+					
+					ang *= -1.5f;
+					for(int i : Mathf.signs){
+						DrawFunc.tri(ex, ey, radius / 4f * triScl, radius * 1.85f * triScl, ang + 90 * i);
+					}
+					
+					Draw.color(Color.white);
+					Fill.circle(
+							ex,
+							ey,
+							(radius + Mathf.absin(Time.time, 4f, radius / 4f)) * 0.785f  * scale
+					);
+					
+					Draw.color(Color.black);
+					Fill.circle(
+						ex,
+						ey,
+						(radius + Mathf.absin(Time.time, 4f, radius / 4f)) * 0.7f  * scale
+					);
+					
+//					Draw.z(z);
+				}
+			}
+			
+			engines.add(new PestEngine(0f, -engineOffset, 16f, -90f));
+			engines.add(new PestEngine(0f, -115, 6f, -90f, 0.3f));
+			engineLayer = Layer.effect + 0.005f;
+			
+			Weapon laser = new Weapon(name + "-laser"){{
+				mirror = true;
+				rotateSpeed = 2.15f;
+				rotate = true;
+				
+				parts.add(new RegionPart("-shooter"){{
+					layerOffset = 0.05f;
+					
+					moveY = 7.5f;
+					progress = PartProgress.warmup;
+				}}, new RegionPart("-top"){{
+					layerOffset = 0.075f;
+					outline = false;
+				}});
+				
+				shootSound = NHSounds.laser5;
+				reload = 60f;
+				shootWarmupSpeed = 0.05f;
+				shoot = new AdaptedShootHelix(){{
+					shots = 5;
+					mag = 1.15f;
+					scl = 6f;
+					shotDelay = 3.3f;
+					offset = Mathf.PI2 * 12;
+					
+					firstShotDelay = 10f;
+				}};
+				
+				shootY = 9;
+				velocityRnd = 0.075f;
+				
+				bullet = new SpeedUpBulletType(2.85f, 120f){{
+					frontColor = Color.white;
+					backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
+					lifetime = 126f;
+					knockback = 2f;
+					ammoMultiplier = 8f;
+					accelerateBegin = 0.1f;
+					accelerateEnd = 0.85f;
+					
+					despawnSound = hitSound = Sounds.dullExplosion;
+					
+					velocityBegin = 8f;
+					velocityIncrease = -5f;
+					
+					homingDelay = 20f;
+					homingPower = 0.05f;
+					homingRange = 120f;
+					
+					despawnHit = pierceBuilding = true;
+					hitShake = despawnShake = 5f;
+					lightning = 1;
+					lightningCone = 360;
+					lightningLengthRand = 12;
+					lightningLength = 4;
+					width = 10f;
+					height = 35f;
+					pierceCap = 8;
+					shrinkX = shrinkY = 0;
+					
+					lightningDamage = damage * 0.85f;
+					
+					hitEffect = NHFx.hitSparkLarge;
+					despawnEffect = NHFx.square45_6_45;
+					shootEffect = NHFx.shootCircleSmall(backColor);
+					smokeEffect = NHFx.hugeSmokeGray;
+					trailEffect = NHFx.trailToGray;
+					
+					trailLength = 15;
+					trailWidth = 2f;
+					drawSize = 300f;
+				}};
+			}};
+			Weapon scdLaser = new Weapon(name + "-secondary-laser"){{
+				shootY = 3f;
+				shootX = -1f;
+				
+				recoil = 1f;
+				
+				reload = 16f;
+				mirror = rotate = true;
+				rotateSpeed = 4f;
+				autoTarget = true;
+				controllable = false;
+				
+				shootSound = NHSounds.rapidLaser;
+				
+				bullet = new PosLightningType(120f){{
+					maxRange = 160f;
+					lifetime = 48f;
+					boltNum = 1;
+					hitEffect = NHFx.hitSpark;
+					hitColor = lightColor = lightningColor = NHColor.ancient;
+				}};
+			}};
+			Weapon pdf = new PointDefenseWeapon(){{
+				beamEffect = Fx.chainLightning;
+				
+				mirror = false;
+				x = 0f;
+				y = -engineOffset;
+				reload = 5f;
+				targetInterval = 10f;
+				targetSwitchInterval = 8f;
+				shootSound = NHSounds.gauss;
+				
+				bullet = new BulletType(){{
+					shootEffect = Fx.none;
+					hitEffect = NHFx.lightningHitSmall;
+					maxRange = 200f;
+					damage = 200f;
+				}};
+			}
+				@Override
+				protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
+					if(!(mount.target instanceof Bullet)) return;
+					
+					Bullet target = (Bullet)mount.target;
+					if(target.damage() > bullet.damage){
+						target.damage(target.damage() - bullet.damage);
+					}else{
+						target.remove();
+					}
+					
+					beamEffect.at(shootX, shootY, rotation, unit.team.color, new Vec2().set(target));
+					bullet.shootEffect.at(shootX, shootY, rotation, unit.team.color);
+					bullet.hitEffect.at(target.x, target.y, 12f, unit.team.color);
+					shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
+					mount.recoil = 1f;
+					mount.heat = 1f;
+				}
+			};
+			
+			weapons.add(copyAndMove(laser, 34.5f, 1.25f));
+			weapons.add(copyAndMove(laser, 30f, -74.5f));
+			weapons.add(new Weapon(name + "-cannon"){{
+				x = 56;
+				y = -48;
+				shootY = 18f;
+				
+				rotate = true;
+				rotateSpeed = 1.4f;
+				
+				shoot = new ShootPattern();
+				shootSound = NHSounds.thermo;
+				recoil = 3f;
+				
+				reload = 90f;
+				
+				bullet = new SpeedUpBulletType(2.85f, 240f, "mine-bullet"){{
+					frontColor = Color.white;
+					backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
+					lifetime = 95f;
+					
+					accelerateBegin = 0.15f;
+					accelerateEnd = 0.95f;
+					
+					despawnSound = hitSound = Sounds.titanExplosion;
+					
+					velocityBegin = 8f;
+					velocityIncrease = -7.5f;
+					
+					collides = false;
+					scaleLife = scaledSplashDamage = true;
+					despawnHit = true;
+					hitShake = despawnShake = 18f;
+					lightning = 4;
+					lightningCone = 360;
+					lightningLengthRand = 12;
+					lightningLength = 10;
+					width = height = 30;
+					shrinkX = shrinkY = 0;
+					
+					splashDamageRadius = 120f;
+					splashDamage = 800f;
+					
+					lightningDamage = damage * 0.85f;
+					
+					hitEffect = NHFx.hitSparkLarge;
+					despawnEffect = NHFx.square45_6_45;
+					shootEffect = NHFx.shootCircleSmall(backColor);
+					smokeEffect = NHFx.hugeSmokeGray;
+					trailEffect = NHFx.trailToGray;
+					
+					trailLength = 15;
+					trailWidth = 5f;
+					drawSize = 300f;
+					
+					shootEffect = NHFx.instShoot(backColor, frontColor);
+					smokeEffect = NHFx.lightningHitLarge;
+					
+					hitEffect = new Effect(90, e -> {
+						Draw.color(backColor, frontColor, e.fout() * 0.7f);
+						Fill.circle(e.x, e.y, e.fout() * height / 1.25f);
+						Lines.stroke(e.fout() * 3f);
+						Lines.circle(e.x, e.y, e.fin() * 80);
+						Lines.stroke(e.fout() * 2f);
+						Lines.circle(e.x, e.y, e.fin() * 50);
+						Angles.randLenVectors(e.id, 35, 18 + 100 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 12 + 4));
+						
+						Draw.color(frontColor);
+						Fill.circle(e.x, e.y, e.fout() * height / 1.75f);
+					});
+					despawnEffect = new OptionalMultiEffect(NHFx.hitSparkHuge, NHFx.instHit(backColor, 3, 120f));
+					
+					fragBullets = 3;
+					fragBullet = new LaserBulletType(){{
+						length = 460f;
+						damage = 4060f;
+						width = 45f;
+						
+						lifetime = 65f;
+						
+						splashDamage = 800;
+						splashDamageRadius = 120;
+						hitShake = 18f;
+						
+						lightningSpacing = 35f;
+						lightningLength = 8;
+						lightningDelay = 1.1f;
+						lightningLengthRand = 15;
+						lightningDamage = 450;
+						lightningAngleRand = 40f;
+						scaledSplashDamage = largeHit = true;
+						
+						lightningColor = trailColor = hitColor = lightColor = Items.surgeAlloy.color.cpy().lerp(Pal.accent, 0.055f);
+						
+						despawnHit = false;
+						hitEffect = new Effect(90, 500, e -> {
+							Draw.color(backColor, frontColor, e.fout() * 0.7f);
+							Fill.circle(e.x, e.y, e.fout() * height / 1.55f);
+							Lines.stroke(e.fout() * 3f);
+							Lines.circle(e.x, e.y, e.fin(Interp.pow3Out) * 80);
+							Angles.randLenVectors(e.id, 18, 18 + 100 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 7f));
+							
+							Draw.color(frontColor);
+							Fill.circle(e.x, e.y, e.fout() * height / 2f);
+						});
+						
+						sideAngle = 15f;
+						sideWidth = 0f;
+						sideLength = 0f;
+						colors = new Color[]{hitColor.cpy().a(0.2f), hitColor, Color.white};
+					}
+						
+						@Override
+						public void despawned(Bullet b){
+							//							super.despawned(b);
+						}
+						
+						@Override
+						public void init(Bullet b){
+							Position p = NHFunc.collideBuildOnLength(b.team, b.x, b.y, length, b.rotation(), bu -> true);
+							
+							float resultLength = b.dst(p), rot = b.rotation();
+							
+							b.fdata = resultLength;
+							laserEffect.at(b.x, b.y, rot, resultLength * 0.75f);
+							
+							Time.run(b.lifetime() * 0.2f, () -> {
+								hit(b, p.getX(), p.getY());
+							});
+							
+							if(lightningSpacing > 0){
+								int idx = 0;
+								for(float i = 0; i <= resultLength; i += lightningSpacing){
+									float cx = b.x + Angles.trnsx(rot,  i),
+											cy = b.y + Angles.trnsy(rot, i);
+									
+									int f = idx++;
+									
+									for(int s : Mathf.signs){
+										Time.run(f * lightningDelay, () -> {
+											if(b.isAdded() && b.type == this){
+												Lightning.create(b, lightningColor,
+														lightningDamage < 0 ? damage : lightningDamage,
+														cx, cy, rot + 90*s + Mathf.range(lightningAngleRand),
+														lightningLength + Mathf.random(lightningLengthRand));
+											}
+										});
+									}
+								}
+							}
+						}
+						
+						@Override
+						public void draw(Bullet b){
+							float realLength = b.fdata;
+							
+							float f = Mathf.curve(b.fin(), 0f, 0.2f);
+							float baseLen = realLength * f;
+							float cwidth = width;
+							float compound = 1f;
+							
+							Tmp.v1.trns(b.rotation(), baseLen);
+							
+							for(Color color : colors){
+								Draw.color(color);
+								Lines.stroke((cwidth *= lengthFalloff) * b.fout());
+								Lines.lineAngle(b.x, b.y, b.rotation(), baseLen, false);
+								
+								Fill.circle(Tmp.v1.x + b.x, Tmp.v1.y + b.y, Lines.getStroke() * 2.2f);
+								Fill.circle(b.x, b.y, 1f * cwidth * b.fout());
+								compound *= lengthFalloff;
+							}
+							Draw.reset();
+							Drawf.light(b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.4f * b.fout(), colors[0], 0.6f);
+						}
+					};
+				}};
+			}});
+			weapons.add(new Weapon(){{
+				y = -engineOffset;
+				x = 0;
+				
+				shootSound = Sounds.beam;
+				rotationLimit = 5f;
+				rotateSpeed = 0.75f;
+				rotate = true;
+				mirror = false;
+				continuous = true;
+				predictTarget = false;
+				
+				reload = 480f;
+				shootCone = 5f;
+				
+				bullet = new ContinuousLaserBulletType(){{
+					length = 800f;
+					lightningColor = hitColor = lightColor = NHColor.ancient;
+					
+					lifetime = 120f;
+					width = 8f;
+					
+					damage = 350;
+					lightningDamage = 120;
+					lightning = 2;
+					lightningLength = lightningLengthRand = 10;
+					
+					hitEffect = NHFx.square45_8_45;
+					shootEffect = Fx.none;
+					smokeEffect = NHFx.hugeSmokeGray;
+					
+					largeHit = true;
+					backLength += 12f;
+					frontLength += 20f;
+					
+					colors = new Color[]{Color.white.cpy().a(0), Color.white, Color.white};
+				}
+					
+					@Override
+					public void init(Bullet b){
+						super.init(b);
+						
+						NHFx.lightningHitLarge.at(b.x, b.y, b.team.color);
+						Sounds.laserblast.at(b);
+					}
+					
+					@Override
+					public void hit(Bullet b, float x, float y){
+						hitEffect.at(x, y, b.rotation(), b.team.color);
+						hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
+						
+						Effect.shake(hitShake, hitShake, b);
+						
+						if(fragOnHit){
+							createFrags(b, x, y);
+						}
+						createPuddles(b, x, y);
+						createIncend(b, x, y);
+						createUnits(b, x, y);
+						
+						if(suppressionRange > 0){
+							//bullets are pooled, require separate Vec2 instance
+							Damage.applySuppression(b.team, b.x, b.y, suppressionRange, suppressionDuration, 0f, suppressionEffectChance, new Vec2(b.x, b.y));
+						}
+						
+						createSplashDamage(b, x, y);
+						
+						for(int i = 0; i < lightning; i++){
+							Lightning.create(b, b.team.color, lightningDamage < 0 ? damage : lightningDamage, x, y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+						}
+						
+						if(!Vars.headless && Mathf.chanceDelta(0.1))PosLightning.createEffect(b, Tmp.v1.set(x, y), b.team.color, 1, 2.2f);
+						if(b.owner instanceof Healthc){
+							Healthc h = (Healthc)b.owner;
+							h.heal(80);
+						}
+					}
+					
+					public void applyDamage(Bullet b){
+						Damage.collideLine(b, b.team, Fx.none, b.x, b.y, b.rotation(), currentLength(b), largeHit, laserAbsorb, pierceCap);
+					}
+				
+					@Override
+					public void draw(Bullet b){
+						float realLength = Damage.findLaserLength(b, length);
+						float fout = Mathf.clamp(b.time > b.lifetime - fadeTime ? 1f - (b.time - (lifetime - fadeTime)) / fadeTime : 1f);
+						float baseLen = realLength * fout;
+						float rot = b.rotation();
+						
+						for(int i = 0; i < colors.length; i++){
+							Draw.color(Tmp.c1.set(b.team.color).lerp(colors[i], (float)i / (colors.length + 1f)).mul(1f + Mathf.absin(Time.time, 1f, 0.1f)));
+							
+							float colorFin = i / (float)(colors.length - 1);
+							float baseStroke = Mathf.lerp(strokeFrom, strokeTo, colorFin);
+							float stroke = (width + Mathf.absin(Time.time, oscScl, oscMag)) * fout * baseStroke;
+							float ellipseLenScl = Mathf.lerp(1 - i / (float)(colors.length), 1f, pointyScaling);
+							
+							Lines.stroke(stroke);
+							Lines.lineAngle(b.x, b.y, rot, baseLen - frontLength, false);
+							
+							//back ellipse
+							Drawf.flameFront(b.x, b.y, divisions, rot + 180f, backLength, stroke / 2f);
+							
+							//front ellipse
+							Tmp.v1.trnsExact(rot, baseLen - frontLength);
+							Drawf.flameFront(b.x + Tmp.v1.x, b.y + Tmp.v1.y, divisions, rot, frontLength * ellipseLenScl, stroke / 2f);
+						}
+						
+						Tmp.v1.trns(b.rotation(), baseLen * 1.1f);
+						
+						Drawf.light(b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, lightStroke, b.team.color, 0.7f);
+						Draw.reset();
+					}
+				};
+			}});
+			
+			weapons.add(copyAndMove(scdLaser, 42f, 55f));
+			weapons.add(copyAndMove(scdLaser, 51.5f, -80.5f));
+			weapons.add(copyAndMove(scdLaser, 37f, -95.75f));
+			
+			weapons.add(pdf);
+			weapons.add(pdf.copy());
+			weapons.add(pdf.copy());
+			
+			lowAltitude = true;
+			itemCapacity = 500;
+			health = 220000.0F;
+			speed = 0.45F;
+			accel = 0.04F;
+			drag = 0.025F;
+			flying = true;
+			hitSize = 130.0F;
+			armor = 150.0F;
+
+			rotateSpeed = 0.35F;
+			buildSpeed = 10f;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
 		hurricane = new NHUnitType("hurricane"){{
 			drawShields = false;
 			outlineColor = OColor;
@@ -502,6 +1078,7 @@ public class NHUnitTypes{
 							shots = 8;
 							shotDelay = 10f;
 						}};
+						
 						reload = 150f;
 						x = 27.75f;
 						y = -4f;
@@ -576,7 +1153,6 @@ public class NHUnitTypes{
 						shootStatus = StatusEffects.slow;
 						shootStatusDuration = bullet.lifetime + 40f;
 					}},
-					
 					new Weapon(NewHorizon.name("swepter")){{
 						mirror = false;
 						top = true;
@@ -1000,7 +1576,7 @@ public class NHUnitTypes{
 							public void hit(Bullet b, float x, float y){
 								super.hit(b, x, y);
 
-								if(b.owner instanceof Healthc)((Healthc)b.owner).heal(b.damage / 5);
+								if(b.owner instanceof Healthc)((Healthc)b.owner).heal(b.damage / 3);
 							}
 
 							@Override
@@ -2751,7 +3327,6 @@ public class NHUnitTypes{
 				
 				bullet = NHBullets.guardianBulletLightningBall;
 			}}, new Weapon() {
-				private final Effect initEffect;
 				{
 					shootCone = 30.0F;
 					predictTarget = false;
@@ -2862,31 +3437,13 @@ public class NHUnitTypes{
 							Draw.z(Draw.z() - 0.01f);
 						}
 					};
-					
-					initEffect = (new Effect(150.0F, 600.0F, (e) -> {
-						float scl = 1.0F;
-						Draw.color(e.color, Color.white, e.fout() * 0.25F);
-						float extend = Mathf.curve(e.fin(), 0.0F, 0.015F) * scl;
-						float rot = e.fout(Interp.pow3In);
-						
-						for(int i : Mathf.signs){
-							DrawFunc.tri(e.x, e.y, 9.0F * e.foutpowdown() * scl, 100.0F + 300.0F * extend, e.rotation + 180.0F * rot + (float)(90 * i) + 45.0F);
-							DrawFunc.tri(e.x, e.y, 9.0F * e.foutpowdown() * scl, 100.0F + 300.0F * extend, e.rotation + 180.0F * rot + (float)(90 * i) - 45.0F);
-						}
-						
-						for(int i : Mathf.signs){
-							DrawFunc.tri(e.x, e.y, 6.0F * e.foutpowdown() * scl, 40.0F + 120.0F * extend, e.rotation + 270.0F * rot + (float)(90 * i) + 45.0F);
-							DrawFunc.tri(e.x, e.y, 6.0F * e.foutpowdown() * scl, 40.0F + 120.0F * extend, e.rotation + 270.0F * rot + (float)(90 * i) - 45.0F);
-						}
-						
-					})).followParent(true).layer(100.0F);
 				}
 				
 				@Override
 				protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
 //					if(!unit.isBoss())return;
 					super.shoot(unit, mount, shootX, shootY, rotation);
-					initEffect.at(unit.x, unit.y, unit.rotation, unit.team.color, unit);
+					NHFx.crossSpinBlast.at(unit.x, unit.y, unit.rotation, unit.team.color, unit);
 				}
 				
 //				@Override

@@ -213,7 +213,7 @@ public class WorldEventType{
 	}
 	
 	public void warnHUD(WorldEvent event){
-		TableFunc.showToast(Icon.warning, "[#ff7b69]Event Detected", NHSounds.alarm);
+		TableFunc.showToast(Icon.warning, "[#ff7b69]Event Detected", NHSounds.alert2);
 	}
 	
 	public void afterSync(WorldEvent event){

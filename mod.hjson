@@ -5,4 +5,4 @@ main: "newhorizon.NewHorizon"
 description: "Warning: Beta Version For V7"
 version: "0.2.5"
 
-minGameVersion: 140.4
+minGameVersion: 141.2

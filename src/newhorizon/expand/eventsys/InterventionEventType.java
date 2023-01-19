@@ -73,7 +73,7 @@ public class InterventionEventType extends TargetableEventType{
 		NHUIFunc.showLabel(2.5f, t -> {
 			Color color = event.team.color;
 			
-			if(event.team != Vars.player.team())NHSounds.alarm.play();
+			if(event.team != Vars.player.team())NHSounds.alert2.play();
 			
 			t.background(Styles.black5);
 			

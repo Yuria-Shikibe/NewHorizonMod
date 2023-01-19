@@ -74,7 +74,7 @@ public class EventHandler implements Runnable{
 			if(net.client()) return;
 			try{
 				
-				if(state.isPlaying()){
+				if(state.isGame()){
 					queue.run();
 				}
 				

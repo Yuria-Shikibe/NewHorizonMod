@@ -526,6 +526,23 @@ public class NHFx{
 			Lines.square(e.x, e.y, e.rotation + e.rotation / 8 * e.fin(Interp.circleOut) + 1);
 		}),
 	
+		crossSpinBlast = (new Effect(150.0F, 600.0F, (e) -> {
+			float scl = 1.0F;
+			Draw.color(e.color, Color.white, e.fout() * 0.25F);
+			float extend = Mathf.curve(e.fin(), 0.0F, 0.015F) * scl;
+			float rot = e.fout(Interp.pow3In);
+			
+			for(int i : Mathf.signs){
+				DrawFunc.tri(e.x, e.y, 9.0F * e.foutpowdown() * scl, 100.0F + 300.0F * extend, e.rotation + 180.0F * rot + (float)(90 * i) + 45.0F);
+				DrawFunc.tri(e.x, e.y, 9.0F * e.foutpowdown() * scl, 100.0F + 300.0F * extend, e.rotation + 180.0F * rot + (float)(90 * i) - 45.0F);
+			}
+			
+			for(int i : Mathf.signs){
+				DrawFunc.tri(e.x, e.y, 6.0F * e.foutpowdown() * scl, 40.0F + 120.0F * extend, e.rotation + 270.0F * rot + (float)(90 * i) + 45.0F);
+				DrawFunc.tri(e.x, e.y, 6.0F * e.foutpowdown() * scl, 40.0F + 120.0F * extend, e.rotation + 270.0F * rot + (float)(90 * i) - 45.0F);
+			}
+		})).followParent(true).layer(100.0F),
+		
 		energyUnitBlast = new Effect(150F, 1600f, e -> {
 			float rad = e.rotation;
 			rand.setSeed(e.id);
@@ -1037,11 +1054,11 @@ public class NHFx{
 				Tmp.v1.trns(e.rotation, engine.y, -engine.x);
 				
 				e.scaled(80, i -> {
-					DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 1.5f * i.fout(Interp.slowFast), 3000 * engine.radius / type.engineSize, i.rotation + ang - 90);
+					DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 1.5f * i.fout(Interp.slowFast), 3000 * engine.radius / (type.engineSize + 4), i.rotation + ang - 90);
 					Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 0.75f * i.fout(Interp.slowFast));
 				});
 				
-				randLenVectors(e.id + index, 22, 400 * engine.radius / type.engineSize, e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
+				randLenVectors(e.id + index, 22, 400 * engine.radius / (type.engineSize + 4), e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
 			}
 			
 			Draw.color();
@@ -1428,6 +1445,24 @@ public class NHFx{
 			
 			for(int i = 0; i < 4; i++){
 				DrawFunc.tri(e.x, e.y, 3.5f * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90);
+			}
+		}),
+	
+		crossBlast_45 = new Effect(35, 140, e -> {
+			color(e.color, Color.white, e.fout() * 0.55f);
+			Drawf.light(e.x, e.y, e.fout() * 70, e.color, 0.7f);
+			
+			e.scaled(10f, i -> {
+				stroke(1.35f * i.fout());
+				circle(e.x, e.y, 55 * i.finpow());
+			});
+			
+			rand.setSeed(e.id);
+			float sizeDiv = 60;
+			float randL = rand.random(sizeDiv);
+			
+			for(int i = 0; i < 4; i++){
+				DrawFunc.tri(e.x, e.y, 5.85f * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + 45);
 			}
 		});
 }

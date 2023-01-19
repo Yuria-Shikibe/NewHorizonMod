@@ -11,6 +11,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
+import newhorizon.expand.units.PesterEntity;
 
 public class EntityRegister{
 	private static final int startFrom = 100;
@@ -19,13 +20,14 @@ public class EntityRegister{
 	private static final ObjectMap<Class<?>, Integer> classIdMap = new ObjectMap<>();
 	
 	static{
+		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
+		EntityRegister.put(PesterEntity.class, PesterEntity::new);
 		EntityRegister.put(AdaptedTimedKillUnit.class, AdaptedTimedKillUnit::new);
-		EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 		EntityRegister.put(Spawner.class, Spawner::new);
 		EntityRegister.put(Carrier.class, Carrier::new);
 //		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
 //		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
-		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
+		
 		EntityRegister.put(UltFire.class, UltFire::new);
 		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 		EntityRegister.put(WorldEvent.class, WorldEvent::new);

@@ -220,7 +220,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			}
 
 			if(!Vars.headless && participantsTmp.any()){
-				if(team != Vars.player.team())TableFunc.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  (int)(pos.x / 8) + ", " + (int)(pos.y / 8), NHSounds.alarm);
+				if(team != Vars.player.team())TableFunc.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " +  (int)(pos.x / 8) + ", " + (int)(pos.y / 8), NHSounds.alert2);
 				NHFx.attackWarningRange.at(pos.x, pos.y, 80, team.color);
 			}
 		}

@@ -42,25 +42,27 @@ public class SpeedUpBulletType extends BasicBulletType{
 	}
 	
 	@Override
-	public void init(){
-		super.init();
-		
-		if(accelerateBegin > 1)return;
-		
+	protected float calculateRange(){
 		if(velocityBegin < 0)velocityBegin = speed;
 		
 		boolean computeRange = rangeOverride < 0;
+		float cal = 0;
 		
 		FloatSeq speeds = new FloatSeq();
-		for(float i = 0; i < 1; i += 0.05f){
+		for(float i = 0; i <= 1; i += 0.05f){
 			float s = velocityBegin + accelInterp.apply(Mathf.curve(i, accelerateBegin, accelerateEnd)) * velocityIncrease;
 			speeds.add(s);
-			if(computeRange)range += s * lifetime * 0.05f;
+			if(computeRange)cal += s * lifetime * 0.05f;
 		}
 		speed = speeds.sum() / speeds.size;
 		
-		if(computeRange)range += 1;
+		if(computeRange)cal += 1;
 		
+		return cal;
+	}
+	
+	@Override
+	public void init(){
 		super.init();
 	}
 	

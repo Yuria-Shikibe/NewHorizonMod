@@ -5,6 +5,8 @@ import arc.Events;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Mathf;
+import arc.scene.ui.Label;
+import arc.scene.ui.layout.Table;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -13,6 +15,7 @@ import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
+import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
@@ -22,6 +25,7 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.expand.entities.EntityRegister;
@@ -76,6 +80,9 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
+			new FeatureLog(NHUnitTypes.pester){{
+				important = true;
+			}}
 		};
 	}
 	
@@ -97,6 +104,61 @@ public class NewHorizon extends Mod{
 		dialog.cont.button("@back", Icon.left, Styles.cleart, dialog::hide).size(LEN * 4, LEN);
 		dialog.addCloseListener();
 		dialog.show();
+	}
+	
+	public static void showNew(){
+		new BaseDialog("Detected Update"){{
+			addCloseListener();
+			
+			cont.pane(main -> {
+				main.top();
+				main.pane(table -> {
+					table.align(Align.topLeft);
+					table.add(MOD.meta.version + ": ").row();
+					table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
+					table.add(Core.bundle.get("mod.ui.update-log")).left();
+				}).growX().fillY().padBottom(LEN).row();
+				main.image().growX().height(4).pad(6).color(Color.lightGray).row();
+				main.pane(t -> {
+					for(int index = 0; index < getUpdateContent().length; index++){
+						FeatureLog c = getUpdateContent()[index];
+						Table info = new Table(Tex.pane, table -> {
+							if(c.important || c.content != null){
+								table.background(Tex.whitePane);
+								if(c.important)table.color.set(Pal.accent);
+							}
+							
+							table.table(i -> {
+								i.image(c.icon).fill();
+							}).fill().get().pack();
+							table.pane(i -> {
+								i.top();
+								i.add("[gray]NEW [lightgray]" + c.type.toUpperCase() + "[]: [accent]" + c.title + "[]").left().row();
+								i.image().growX().height(OFFSET / 3).pad(OFFSET / 3).color(Color.lightGray).row();
+								i.add("[accent]Description: []").left().row();
+								i.add(c.description).padLeft(LEN).left().get().setWrap(true);
+								if(c.modifier != null)c.modifier.get(i);
+							}).grow().padLeft(OFFSET).top();
+							table.button(Icon.info, Styles.cleari, LEN, () -> {
+								ContentInfoDialog dialog = new ContentInfoDialog();
+								dialog.show(c.content);
+							}).growY().width(LEN).padLeft(OFFSET).disabled(b -> c.content == null);
+						});
+						if(!c.important)t.add(info).grow().row();
+						else{
+							Label label = new Label("IMPORTANT", Styles.techLabel);
+							label.setFontScale(1.25f);
+							
+							t.stack(new Table(table -> table.margin(OFFSET * 2).add(label)).bottom(), new Table(Styles.black6){{setFillParent(true);}}, info).grow().row();
+						}
+					}
+				}).growX().top().row();
+			}).grow().padLeft(LEN).padRight(LEN).padTop(LEN).row();
+			
+			cont.table(table -> {
+				table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
+			}).bottom().growX().height(LEN).padTop(OFFSET).padLeft(LEN).padRight(LEN);
+		}}.show();
 	}
 	
 	public static void startLog(){
@@ -236,6 +298,14 @@ public class NewHorizon extends Mod{
 					if(tag != null) Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
 				}, ex -> Log.err(ex.toString()));
 			}));
+			
+			Time.runTask(10f, () -> {
+				if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){
+					showNew();
+				}
+				
+				Core.settings.put("nh-lastver", MOD.meta.version);
+			});
 			
 //			Core.app.post(Time.runTask(10f, NewHorizon::startLog));
 		});

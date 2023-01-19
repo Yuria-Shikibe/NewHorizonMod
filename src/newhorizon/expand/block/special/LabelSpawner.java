@@ -6,7 +6,6 @@ import arc.graphics.Color;
 import arc.math.geom.Point2;
 import arc.scene.ui.TextArea;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -147,7 +146,6 @@ public class LabelSpawner extends MessageBlock{
 		}
 		
 		public void addLabel(){
-			Log.info("add" + "|" + message);
 			if(!Vars.net.client() && targetPos != -1){
 				WorldLabel l = Pools.obtain(WorldLabel.class, WorldLabel::create);
 				String s = message.toString();

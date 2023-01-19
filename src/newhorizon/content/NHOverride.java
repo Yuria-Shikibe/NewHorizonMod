@@ -641,7 +641,7 @@ public class NHOverride{
 		out.add(NHOverride.modSpawnGroup);
 		
 		out.each(s -> {
-			if(s.type == NHUnitTypes.longinus){
+			if(s.type == NHUnitTypes.longinus || s.type == NHUnitTypes.naxos){
 				s.unitScaling *= 1.75f;
 				s.unitAmount = (int)Math.max(1, s.unitAmount / 1.5f);
 			}

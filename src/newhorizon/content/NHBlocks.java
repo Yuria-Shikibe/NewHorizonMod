@@ -2131,6 +2131,7 @@ public class NHBlocks{
 				
 				scaledSplashDamage = true;
 				collidesTiles = collidesGround = collides = true;
+				damage = 100;
 				splashDamage = 800f;
 				lightningDamage = 400f;
 				lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
@@ -2670,6 +2671,10 @@ public class NHBlocks{
 				),
 				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
 						with(NHItems.setonAlloy, 350, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 250)
+				),
+				new UnitSet(NHUnitTypes.pester, new byte[]{NHUnitTypes.OTHERS, 7}, 720 * 60f,
+						new ItemStack(NHItems.darkEnergy, itemCapacity),
+						new ItemStack(NHItems.upgradeSort, itemCapacity)
 				)/*,
 				new UnitSet(UnitTypes.quell, new byte[]{NHUnitTypes.AIR_LINE_2, 4}, 30 * 60f,
 					new ItemStack(NHItems.darkEnergy, 500),

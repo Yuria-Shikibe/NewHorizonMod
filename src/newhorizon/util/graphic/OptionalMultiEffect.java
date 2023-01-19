@@ -21,9 +21,10 @@ public class OptionalMultiEffect extends MultiEffect{
 	public void create(float x, float y, float rotation, Color color, Object data){
 		if(!shouldCreate()) return;
 		
-		for(Effect effect : effects){
-			effect.create(x, y, rotation, color, data);
-			if(!NHSetting.enableDetails())break;
-		}
+		if(NHSetting.enableDetails()){
+			for(Effect effect : effects){
+				effect.create(x, y, rotation, color, data);
+			}
+		}else effects[0].create(x, y, rotation, color, data);
 	}
 }

@@ -105,6 +105,7 @@ public class ChargeWall extends Block{
 		group = BlockGroup.walls;
 		buildCostMultiplier = 3f;
 		canOverdrive = false;
+		attacks = true;
 	}
 	
 	@Override

@@ -18,8 +18,8 @@ import newhorizon.expand.eventsys.AutoEventTrigger;
 public class NHGroups{
 //	public static final EntityGroup<CutsceneEventEntity> event = new EntityGroup<>(CutsceneEventEntity.class, false, true);
 	
-	public static final EntityGroup<AutoEventTrigger> autoEventTrigger = new EntityGroup<>(AutoEventTrigger.class, false, true);
-	public static final EntityGroup<WorldEvent> events = new EntityGroup<>(WorldEvent.class, false, true);
+	public static final EntityGroup<AutoEventTrigger> autoEventTrigger = new EntityGroup<>(AutoEventTrigger.class, false, true, (u, i) -> {});
+	public static final EntityGroup<WorldEvent> events = new EntityGroup<>(WorldEvent.class, false, true, (u, i) -> {});
 	public static final ObjectSet<RemoteCoreStorage.RemoteCoreStorageBuild>[] placedRemoteCore = new ObjectSet[Team.all.length];
 	public static QuadTree<GravityTrapField> gravityTraps = new QuadTree<>(Vars.world.getQuadBounds(new Rect()));
 	public static final Seq<GravityTrapField> gravityTrapsDraw = new Seq<>();

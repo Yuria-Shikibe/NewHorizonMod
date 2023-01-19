@@ -82,6 +82,23 @@ public class NHFunc{
         indexer.eachBlock(teamc.team(), teamc.x(), teamc.y(), range, b -> true, b -> Fires.extinguish(b.tile, intensity));
     }
     
+    @NotNull
+    public static Position collideBuild(Team team, float x1, float y1, float x2, float y2, Boolf<Building> boolf){
+        tmpBuilding = null;
+    
+        boolean found = World.raycast(World.toTile(x1), World.toTile(y1), World.toTile(x2), World.toTile(y2),
+                (x, y) -> (tmpBuilding = world.build(x, y)) != null && tmpBuilding.team != team && boolf.get(tmpBuilding));
+    
+        return found ? tmpBuilding : vec21.set(x2, y2);
+    }
+    
+    @NotNull
+    public static Position collideBuildOnLength(Team team, float x1, float y1, float length, float ang, Boolf<Building> boolf){
+        vec22.trns(ang, length).add(x1, y1);
+        return collideBuild(team, x1, y1, vec22.x, vec22.y, boolf);
+    }
+    
+    
     public static float findLaserLength(Bullet b, float angle, float length){
         Tmp.v1.trnsExact(angle, length);
     

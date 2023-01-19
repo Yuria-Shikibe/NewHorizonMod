@@ -274,6 +274,7 @@ public class NHBullets{
 		}};
 		
 		blastEnergyPst = new SpeedUpBulletType(0.85f, 100f, CIRCLE_BOLT){{
+			frontColor = Color.white;
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
 			lifetime = 64f;
 			ammoMultiplier = 4f;
@@ -307,6 +308,7 @@ public class NHBullets{
 		}};
 		
 		blastEnergyNgt = new SpeedUpBulletType(3.85f, 80f){{
+			frontColor = Color.white;
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
 			lifetime = 36f;
 			knockback = 4f;
