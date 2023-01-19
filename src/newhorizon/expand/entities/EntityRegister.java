@@ -27,7 +27,6 @@ public class EntityRegister{
 		EntityRegister.put(Carrier.class, Carrier::new);
 //		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
 //		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
-		
 		EntityRegister.put(UltFire.class, UltFire::new);
 		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 		EntityRegister.put(WorldEvent.class, WorldEvent::new);

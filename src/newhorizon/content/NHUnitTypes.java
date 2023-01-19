@@ -943,6 +943,8 @@ public class NHUnitTypes{
 					lifetime = 120f;
 					width = 8f;
 					
+					
+					
 					damage = 350;
 					lightningDamage = 120;
 					lightning = 2;

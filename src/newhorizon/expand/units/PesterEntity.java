@@ -131,7 +131,7 @@ public class PesterEntity extends UnitEntity{
 	public ObjectFloatMap<Healthc> hatred = new ObjectFloatMap<>();
 	public Seq<Healthc> nextTargets = new Seq<>();
 	
-	@Override public int classId(){return EntityRegister.getID(getClass());}
+	@Override public int classId(){return EntityRegister.getID(PesterEntity.class);}
 	
 	public Healthc findOwner(Entityc ent){
 		Healthc target = null;
@@ -202,7 +202,14 @@ public class PesterEntity extends UnitEntity{
 			});
 			
 			for(ObjectFloatMap.Entry<Healthc> e : hatred.entries()){
-				if(!e.key.isValid())hatred.remove(e.key, 0);
+				//??Why this happens??
+				if(e.key == null)continue;
+				
+				if(!e.key.isValid()){
+					hatred.remove(e.key, 0);
+					continue;
+				}
+				
 				
 				if(e.value > CHECK_DAMAGE){
 					nextTargets.add(e.key);
@@ -295,34 +302,40 @@ public class PesterEntity extends UnitEntity{
 	
 	@Override
 	public void readSync(Reads read){
-		salvoReload = read.f();
+		if(!isLocal()) {
+			salvoReload_LAST_ = salvoReload;
+			salvoReload_TARGET_ = read.f();
+		}else {
+			read.f();
+			salvoReload_LAST_ = salvoReload;
+			salvoReload_TARGET_ = salvoReload;
+		}
+		
 		super.readSync(read);
 	}
 	
 	@Override
 	public void readSyncManual(FloatBuffer buffer){
 		super.readSyncManual(buffer);
-		
 		salvoReload_LAST_ = salvoReload;
 		salvoReload_TARGET_ = buffer.get();
 	}
 	
-	public void interpolate() {
+	@Override
+	public void interpolate(){
 		super.interpolate();
-		
-		if (lastUpdated != 0L && updateSpacing != 0L) {
-			float timeSinceUpdate = (float)Time.timeSinceMillis(lastUpdated);
-			float alpha = Math.min(timeSinceUpdate / (float)updateSpacing, 2.0F);
-			salvoReload = Mathf.slerp(salvoReload_LAST_, salvoReload_TARGET_, alpha);
-		} else if (lastUpdated != 0L) {
-			salvoReload = salvoReload_TARGET_;
-		}
+//		if (lastUpdated != 0L && updateSpacing != 0L) {
+//			float timeSinceUpdate = (float)Time.timeSinceMillis(lastUpdated);
+//			float alpha = Math.min(timeSinceUpdate / (float)updateSpacing, 2.0F);
+//			salvoReload = Mathf.slerp(salvoReload_LAST_, salvoReload_TARGET_, alpha);
+//		} else if (lastUpdated != 0L) {
+//			salvoReload = salvoReload_TARGET_;
+//		}
 	}
 	
 	@Override
 	public void snapSync(){
 		super.snapSync();
-		
 		salvoReload_LAST_ = salvoReload_TARGET_;
 		salvoReload = salvoReload_TARGET_;
 	}
@@ -330,8 +343,11 @@ public class PesterEntity extends UnitEntity{
 	@Override
 	public void snapInterpolation(){
 		super.snapInterpolation();
-		
 		salvoReload_LAST_ = salvoReload;
 		salvoReload_TARGET_ = salvoReload;
+	}
+	
+	public boolean isSyncHidden(Player player) {
+		return nextTargets.isEmpty() && hatred.isEmpty() && !this.isShooting() && this.inFogTo(player.team());
 	}
 }

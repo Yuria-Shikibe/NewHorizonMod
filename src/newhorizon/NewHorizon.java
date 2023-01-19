@@ -323,7 +323,7 @@ public class NewHorizon extends Mod{
 		
 		
 		Vars.renderer.maxZoom = 10f;
-		Vars.renderer.minZoom = 1f;
+		Vars.renderer.minZoom = 1.15f;
 		if(DEBUGGING)TableFunc.tableMain();
 	}
 	

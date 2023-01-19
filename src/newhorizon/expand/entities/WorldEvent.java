@@ -154,12 +154,24 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		name = read.str();
 		type = WorldEventType.getStdType(read.str());
 		
-		x_LAST_ = x;
-		x_TARGET_ = read.f();
-		y_LAST_ = y;
-		y_TARGET_ = read.f();
-		reload_LAST_ = reload;
-		reload_TARGET_ = read.f();
+		if(!isLocal()) {
+			x_LAST_ = x;
+			x_TARGET_ = read.f();
+			y_LAST_ = y;
+			y_TARGET_ = read.f();
+			reload_LAST_ = reload;
+			reload_TARGET_ = read.f();
+		}else {
+			read.f();
+			read.f();
+			read.f();
+			y_LAST_ = y;
+			y_TARGET_ = y;
+			x_LAST_ = x;
+			x_TARGET_ = x;
+			reload_LAST_ = reload;
+			reload_TARGET_ = reload;
+		}
 		
 		type.readOnSync(this, read);
 		
