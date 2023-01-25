@@ -21,6 +21,7 @@ public abstract class TargetableEventType extends WorldEventType{
 	
 	public TargetableEventType(String name){
 		super(name);
+		hasCoord = true;
 	}
 	
 	@Override

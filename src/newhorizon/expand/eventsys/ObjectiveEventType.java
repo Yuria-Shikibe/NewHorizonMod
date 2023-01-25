@@ -37,7 +37,6 @@ public class ObjectiveEventType extends WorldEventType{
 	
 	@Override
 	public void init(WorldEvent event){
-		event.x = event.y = Float.NaN;
 		event.team = Vars.state.rules.defaultTeam;
 	}
 	
@@ -57,7 +56,7 @@ public class ObjectiveEventType extends WorldEventType{
 	}
 	
 	@Override
-	public float percent(WorldEvent event){
+	public float progressRatio(WorldEvent event){
 		return ratio.get(event);
 	}
 	

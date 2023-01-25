@@ -52,6 +52,7 @@ public class NHBullets{
 	public static UnitType airRaidMissile, skyMissile;
 	
 	public static BulletType
+			collapserBullet,
 			railGun1, railGun2, railGun3,
 			declineProjectile, atomSeparator, blastEnergyPst, blastEnergyNgt,
 			warperBullet, airRaidBomb,
@@ -159,6 +160,33 @@ public class NHBullets{
 		
 		loadPriority();
 		
+		collapserBullet = new LightningLinkerBulletType(){{
+			effectLightningChance = 0.15f;
+			damage = 200;
+			backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.thurmixRed;
+			size = 10f;
+			frontColor = NHColor.thurmixRedLight;
+			range = 600f;
+			spreadEffect = Fx.none;
+			
+			trailWidth = 8f;
+			trailLength = 20;
+			
+			speed = 6f;
+			
+			linkRange = 280f;
+			
+			maxHit = 12;
+			drag = 0.0065f;
+			hitSound = Sounds.explosionbig;
+			splashDamageRadius = 60f;
+			splashDamage = lightningDamage = damage / 3f;
+			lifetime = 130f;
+			despawnEffect = NHFx.lightningHitLarge(hitColor);
+			hitEffect = NHFx.sharpBlast(hitColor, frontColor, 35, splashDamageRadius * 1.25f);
+			shootEffect = NHFx.hitSpark(backColor, 45f, 12, 60, 3, 8);
+			smokeEffect = NHFx.hugeSmoke;
+		}};
 		
 		railGun1 = new TrailFadeBulletType(35f, 1750, STRIKE) {{
 			width = 12f;

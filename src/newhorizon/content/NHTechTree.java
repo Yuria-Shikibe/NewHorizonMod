@@ -87,7 +87,11 @@ public class NHTechTree{
 					});
 				});
 				nodeUnit(NHUnitTypes.assaulter, () -> {
-					nodeUnit(NHUnitTypes.anvil, () -> {});
+					nodeUnit(NHUnitTypes.anvil, () -> {
+						nodeUnit(NHUnitTypes.collapser, () -> {
+						
+						});
+					});
 				});
 				nodeUnit(NHUnitTypes.sharp, () -> {
 					nodeUnit(NHUnitTypes.branch, () -> {
@@ -136,6 +140,7 @@ public class NHTechTree{
 			});
 			
 			node(NHBlocks.pulseShotgun, () -> {
+				node(NHBlocks.beamLaserTurret);
 				node(NHBlocks.thermoTurret, () -> {
 					node(NHBlocks.blaster);
 				});

@@ -36,6 +36,7 @@ import newhorizon.expand.packets.NHCall;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.EffectDrawer;
 import newhorizon.util.ui.FeatureLog;
+import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
 
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -137,6 +138,9 @@ public class NewHorizon extends Mod{
 								i.image().growX().height(OFFSET / 3).pad(OFFSET / 3).color(Color.lightGray).row();
 								i.add("[accent]Description: []").left().row();
 								i.add(c.description).padLeft(LEN).left().get().setWrap(true);
+								if(c.modifier != null)i.table(i1 -> {
+									NHUIFunc.show(i1, c.content);
+								}).grow().left().row();
 								if(c.modifier != null)c.modifier.get(i);
 							}).grow().padLeft(OFFSET).top();
 							table.button(Icon.info, Styles.cleari, LEN, () -> {

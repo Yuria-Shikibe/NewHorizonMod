@@ -65,6 +65,7 @@ public class RaidEventType extends TargetableEventType{
 		minimapMarkable = true;
 		removeAfterTrigger = true;
 		drawable = true;
+		hasCoord = true;
 	}
 	
 	@Override
@@ -101,7 +102,7 @@ public class RaidEventType extends TargetableEventType{
 	public void draw(WorldEvent e){
 		super.draw(e);
 		
-		float f = Interp.pow3Out.apply(Mathf.curve(1 - percent(e), 0, 0.05f));
+		float f = Interp.pow3Out.apply(Mathf.curve(1 - progressRatio(e), 0, 0.05f));
 		
 		float ang = source(e).angleTo(e);
 		
@@ -118,7 +119,7 @@ public class RaidEventType extends TargetableEventType{
 	}
 	
 	@Override
-	public float percent(WorldEvent event){
+	public float progressRatio(WorldEvent event){
 		return Mathf.clamp(event.reload / reloadTime);
 	}
 	
@@ -201,9 +202,9 @@ public class RaidEventType extends TargetableEventType{
 				}).growX().pad(OFFSET / 2).fillY().row();
 				c.add(
 					new Bar(
-						() -> TableFunc.format(percent(e) * 100) + "%",
+						() -> TableFunc.format(progressRatio(e) * 100) + "%",
 						() -> color,
-						() -> percent(e)
+						() -> progressRatio(e)
 					)
 				).growX().height(LEN / 2);
 				c.addListener(new Tooltip(t2 -> {

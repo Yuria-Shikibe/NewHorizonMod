@@ -296,7 +296,9 @@ public class PesterEntity extends UnitEntity{
 	
 	@Override
 	public void writeSyncManual(FloatBuffer buffer){
-		super.writeSyncManual(buffer);
+		buffer.put(rotation);
+		buffer.put(x);
+		buffer.put(y);
 		buffer.put(salvoReload);
 	}
 	
@@ -305,7 +307,7 @@ public class PesterEntity extends UnitEntity{
 		if(!isLocal()) {
 			salvoReload_LAST_ = salvoReload;
 			salvoReload_TARGET_ = read.f();
-		}else {
+		}else{
 			read.f();
 			salvoReload_LAST_ = salvoReload;
 			salvoReload_TARGET_ = salvoReload;

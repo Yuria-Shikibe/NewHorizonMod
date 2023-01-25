@@ -14,6 +14,7 @@ import mindustry.entities.pattern.ShootPattern;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.entities.pattern.ShootSummon;
 import mindustry.game.EventType;
+import mindustry.graphics.Pal;
 import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
 import newhorizon.expand.entities.WorldEvent;
@@ -95,6 +96,22 @@ public class NHInbuiltEvents{
 		campaignTriggers.add(wave1, wave2);
 		
 		autoTriggers.addAll(new AutoEventTrigger(){{
+			items = OV_Pair.seqWith(NHItems.metalOxhydrigen, 1000, NHItems.presstanium, 1000);
+			units = OV_Pair.seqWith(NHUnitTypes.gather, 5);
+			eventType = WorldEventType.inbuilt(new WeatherCallEvent("inbuilt-weather-sun-storm", NHWeathers.solarStorm, Pal.ammo));
+			
+			minTriggerWave = 0;
+			spacingBase = 900 * 60;
+			spacingRand = 600 * 60;
+		}},new AutoEventTrigger(){{
+			items = OV_Pair.seqWith(NHItems.seniorProcessor, 1000, NHItems.irayrondPanel, 1000);
+			units = OV_Pair.seqWith(NHUnitTypes.naxos, 5);
+			eventType = WorldEventType.inbuilt(new WeatherCallEvent("inbuilt-weather-quantum-storm", NHWeathers.quantumStorm, NHColor.darkEnrColor));
+			
+			minTriggerWave = 0;
+			spacingBase = 1500 * 60;
+			spacingRand = 600 * 60;
+		}},new AutoEventTrigger(){{
 			items = OV_Pair.seqWith(NHItems.seniorProcessor, 1200, NHItems.presstanium, 5000, NHItems.upgradeSort, 500);
 			eventType = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-artillery"){{
 				ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 30, 0){{
@@ -189,6 +206,38 @@ public class NHInbuiltEvents{
 			
 			minTriggerWave = 0;
 			spacingBase = 2400 * 60;
+			spacingRand = 600 * 60;
+		}}, new AutoEventTrigger(){{
+			items = OV_Pair.seqWith(NHItems.setonAlloy, 1200, NHItems.multipleSteel, 3000);
+			buildings = OV_Pair.seqWith(NHBlocks.jumpGate, 1);
+			eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-destruction"){{
+				spawn(NHUnitTypes.destruction, 3, NHUnitTypes.naxos, 2);
+				reloadTime = 30 * 60;
+			}});
+			
+			spacingBase = 2400 * 60;
+			spacingRand = 600 * 60;
+			disposable = true;
+		}}, new AutoEventTrigger(){{
+			items = OV_Pair.seqWith(NHItems.darkEnergy, 1000);
+			buildings = OV_Pair.seqWith(NHBlocks.eternity, 2);
+			eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-pester-fleet"){{
+				spawn(NHUnitTypes.pester, 1, NHUnitTypes.guardian, 5);
+				reloadTime = 30 * 60;
+			}});
+			
+			spacingBase = 60 * 60;
+			spacingRand = 0;
+			disposable = true;
+		}}, new AutoEventTrigger(){{
+			items = OV_Pair.seqWith(NHItems.darkEnergy, 1000);
+			units = OV_Pair.seqWith(NHUnitTypes.pester, 1);
+			eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-pester"){{
+				spawn(NHUnitTypes.pester, 1);
+				reloadTime = 30 * 60;
+				
+			}});
+			spacingBase = 3600 * 60;
 			spacingRand = 600 * 60;
 		}}, new AutoEventTrigger(){{
 			items = OV_Pair.seqWith(Items.plastanium, 1000, NHItems.metalOxhydrigen, 400);

@@ -10,6 +10,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectSet;
@@ -26,6 +27,7 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
+import mindustry.entities.Units;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
@@ -33,6 +35,7 @@ import mindustry.entities.part.RegionPart;
 import mindustry.entities.part.ShapePart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.WeaponMount;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -63,6 +66,7 @@ import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilePayload;
+import static mindustry.Vars.tilesize;
 
 public class NHUnitTypes{
 	public static final Color OColor = Color.valueOf("565666");
@@ -80,7 +84,7 @@ public class NHUnitTypes{
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
 			pester, //Air-ancient
-			assaulter, anvil/*, collapser*/, //Air-2
+			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
 			/*relay,*/ ghost, zarkov, declining; //Navy
@@ -113,7 +117,11 @@ public class NHUnitTypes{
 		}
 		
 		public void setRequirements(ItemStack[] stacks){
-			firstRequirements = cachedRequirements = stacks;
+			cachedRequirements = stacks;
+		}
+		
+		public void setBuildCost(ItemStack[] stacks){
+			totalRequirements = firstRequirements = stacks;
 		}
 	}
 		
@@ -147,6 +155,7 @@ public class NHUnitTypes{
 				return s.disarm || s.damage > 0 || s.healthMultiplier * s.reloadMultiplier * s.buildSpeedMultiplier < 1;
 			});
 			statuses.add(NHStatusEffects.scannerDown);
+			statuses.add(StatusEffects.wet);
 		}
 		
 		type.immunities.addAll(statuses);
@@ -499,6 +508,41 @@ public class NHUnitTypes{
 					UltFire.createChance(b, 12, 0.05f);
 				}
 			};
+		}};
+		
+		collapserCannon = new Weapon(NewHorizon.name("collapser-cannon")){{
+			top = rotate = alternate = mirror = true;
+			reload = 60f;
+			shake = 12f;
+			heatColor = NHColor.thurmixRed;
+			shootSound = NHSounds.laser4;
+			shootY = 6f;
+			inaccuracy = 0;
+			
+			shoot = new ShootSpread(){{
+				shots = 3;
+				shotDelay = 2.25f;
+				spread = 1f;
+			}};
+			
+			rotateSpeed = 2f;
+			ejectEffect = NHFx.hugeSmoke;
+			shootCone = 20f;
+			bullet = new AdaptedLaserBulletType(800f){{
+				hitColor = NHColor.thurmixRed;
+				colors = new Color[]{hitColor.cpy().mul(1f, 1f, 1f, 0.45f), hitColor, NHColor.thurmixRedLight, Color.white};
+				length = 600f;
+				width = 14f;
+				lifetime = PosLightning.lifetime + 5f;
+				ammoMultiplier = 4;
+				lengthFalloff = 0.8f;
+				sideLength = 40f;
+				sideWidth = 0.5f;
+				sideAngle = 30f;
+				largeHit = true;
+				hitEffect = NHFx.instHit(hitColor, 2, 36f);
+				shootEffect = NHFx.square(hitColor, 15f, 2, 8f, 2f);
+			}};
 		}};
 	}
 	
@@ -3684,6 +3728,387 @@ public class NHUnitTypes{
 			
 			@Override
 			public void drawWeapons(Unit unit){
+			}
+		};
+		
+		collapser = new NHUnitType("collapser"){{
+			outlineColor = OColor;
+			abilities.add(new ForceFieldAbility(180f, 60, 80000, 900));
+			constructor = EntityMapping.map(3);
+
+			
+			immunise(this);
+			immunities.remove(NHStatusEffects.end);
+			fallSpeed = 0.008f;
+			drawShields = false;
+
+			immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
+
+			deathExplosionEffect = new OptionalMultiEffect(NHFx.blast(NHColor.thurmixRed, 400f), new Effect(300F, 1600f, e -> {
+				Rand rand = NHFunc.rand;
+				float rad = 150f;
+				rand.setSeed(e.id);
+
+				Draw.color(Color.white, NHColor.thurmixRed, e.fin() + 0.6f);
+				float circleRad = e.fin(Interp.circleOut) * rad * 4f;
+				Lines.stroke(12 * e.fout());
+				Lines.circle(e.x, e.y, circleRad);
+				for(int i = 0; i < 16; i++){
+					Tmp.v1.set(1, 0).setToRandomDirection(rand).scl(circleRad);
+					DrawFunc.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, rand.random(circleRad / 16, circleRad / 12) * e.fout(), rand.random(circleRad / 4, circleRad / 1.5f) * (1 + e.fin()) / 2, Tmp.v1.angle() - 180);
+				}
+
+				e.scaled(120f, i -> {
+					Draw.color(Color.white, NHColor.thurmixRed, i.fin() + 0.4f);
+					Fill.circle(i.x, i.y, rad * i.fout());
+					Lines.stroke(18 * i.fout());
+					Lines.circle(i.x, i.y, i.fin(Interp.circleOut) * rad * 1.2f);
+					Angles.randLenVectors(i.id, 40, rad / 3, rad * i.fin(Interp.pow2Out), (x, y) -> {
+						lineAngle(i.x + x, i.y + y, Mathf.angle(x, y), i.fslope() * 25 + 10);
+					});
+
+					if(NHSetting.enableDetails())Angles.randLenVectors(i.id, (int)(rad / 4), rad / 6, rad * (1 + i.fout(Interp.circleOut)) / 1.5f, (x, y) -> {
+						float angle = Mathf.angle(x, y);
+						float width = i.foutpowdown() * rand.random(rad / 6, rad / 3);
+						float length = rand.random(rad / 2, rad * 5) * i.fout(Interp.circleOut);
+
+						Draw.color(NHColor.thurmixRed);
+						DrawFunc.tri(i.x + x, i.y + y, width, rad / 3 * i.fout(Interp.circleOut), angle - 180);
+						DrawFunc.tri(i.x + x, i.y + y, width, length, angle);
+
+						Draw.color(Color.black);
+
+						width *= i.fout();
+
+						DrawFunc.tri(i.x + x, i.y + y, width / 2, rad / 3 * i.fout(Interp.circleOut) * 0.9f * i.fout(), angle - 180);
+						DrawFunc.tri(i.x + x, i.y + y, width / 2, length / 1.5f * i.fout(), angle);
+					});
+
+					Draw.color(Color.black);
+					Fill.circle(i.x, i.y, rad * i.fout() * 0.75f);
+				});
+
+				Drawf.light(e.x, e.y, rad * e.fslope() * 4f, NHColor.thurmixRed, 0.7f);
+			}).layer(Layer.effect + 0.001f));
+			fallEffect = NHFx.blast(NHColor.thurmixRed, 120f);
+
+			targetAir = targetGround = true;
+			weapons.addAll(
+					copyAndMove(collapserCannon, 60, -50),
+					copyAndMove(collapserCannon, 40, -20),
+					copyAndMove(collapserCannon, 32, 60),
+					new Weapon(NewHorizon.name("collapser-laser")){{
+						y = -42;
+						x = 0;
+						shootY = 25f;
+						
+						shoot = new ShootSpread(){{
+							shots = 3;
+							shotDelay = 15;
+							spread = 3f;
+						}};
+						
+						inaccuracy = 3f;
+						reload = 150f;
+						rotateSpeed = 1.5f;
+						rotate = true;
+						top = true;
+						shootSound = NHSounds.flak;
+						mirror = alternate = false;
+						bullet = NHBullets.collapserBullet;
+					}},
+					new Weapon(){
+						float rangeWeapon = 520f;
+
+						@Override
+						public void draw(Unit unit, WeaponMount mount){
+							float z = Draw.z();
+
+							Tmp.v1.trns(unit.rotation, y);
+							float f = 1 - mount.reload / reload;
+							float rad = 12f;
+
+							float f1 = Mathf.curve(f,  0.4f, 1f);
+							Draw.z(Layer.bullet);
+							Draw.color(heatColor);
+							for(int i : Mathf.signs){
+								for(int j : Mathf.signs){
+									DrawFunc.tri(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f1 * rad / 3f + Mathf.num(j > 0) * 2f * (f1 + 1) / 2, (rad * 3f + Mathf.num(j > 0) * 20f) * f1, j * Time.time + 90 * i);
+								}
+							}
+
+							TextureRegion arrowRegion = NHContent.arrowRegion;
+
+							Tmp.v6.set(mount.aimX, mount.aimY).sub(unit);
+							Tmp.v2.set(mount.aimX, mount.aimY).sub(unit).nor().scl(Math.min(Tmp.v6.len(), rangeWeapon)).add(unit);
+
+							for (int l = 0; l < 4; l++) {
+								float angle = 45 + 90 * l;
+								for (int i = 0; i < 4; i++) {
+									Tmp.v3.trns(angle, (i - 4) * tilesize + tilesize).add(Tmp.v2);
+									float fS = (100 - (Time.time + 25 * i) % 100) / 100 * f1 / 4;
+									Draw.rect(arrowRegion, Tmp.v3.x, Tmp.v3.y, arrowRegion.width * fS, arrowRegion.height * fS, angle + 90);
+								}
+							}
+
+							Lines.stroke((1.5f + Mathf.absin( Time.time + 4, 8f, 1.5f)) * f1, heatColor);
+							Lines.square(Tmp.v2.x, Tmp.v2.y, 4 + Mathf.absin(8f, 4f), 45);
+
+							Lines.stroke(rad / 2.5f * mount.heat, heatColor);
+							Lines.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, rad * 2 * (1 - mount.heat));
+
+							Draw.color(heatColor);
+							Fill.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad);
+							Lines.stroke(f * 1.5f);
+							DrawFunc.circlePercentFlip(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad + 5, Time.time, 20f);
+							Draw.color(Color.white);
+							Fill.circle(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, f * rad * 0.7f);
+
+							Draw.z(z);
+						}
+						
+						@Override
+						protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
+							shootSound.at(shootX, shootY, Mathf.random(soundPitchMin, soundPitchMax));
+
+							BulletType ammo = bullet;
+							float lifeScl = ammo.scaleLife ? Mathf.clamp(Mathf.dst(shootX, shootY, mount.aimX, mount.aimY) / ammo.range) : 1f;
+
+							Tmp.v6.set(mount.aimX, mount.aimY).sub(unit);
+							Tmp.v1.set(mount.aimX, mount.aimY).sub(unit).nor().scl(Math.min(Tmp.v6.len(), rangeWeapon)).add(unit);
+
+							Bullet b = bullet.create(unit, unit.team, Tmp.v1.x, Tmp.v1.y, 0);
+							b.vel.setZero();
+							b.set(Tmp.v1);
+							unit.apply(shootStatus, shootStatusDuration);
+
+							if(Vars.headless)return;
+							Vec2 vec2 = new Vec2().trns(unit.rotation, y).add(unit);
+							PosLightning.createEffect(vec2, b, NHColor.thurmixRed, 3, 2.5f);
+							for(int i = 0; i < 5; i++){
+								Time.run(i * 6f, () -> {
+									NHFx.chainLightningFade.at(vec2.x, vec2.y, Mathf.random(8, 14), NHColor.thurmixRed, b);
+								});
+							}
+							
+							ammo.shootEffect.at(shootX, shootY, rotation);
+							ammo.smokeEffect.at(shootX, shootY, rotation);
+						}
+
+						{
+							y = 50;
+							x = 0;
+							shootY = 25f;
+							shoot = new ShootPattern();
+							reload = 900f;
+							rotateSpeed = 100f;
+							rotate = true;
+							top = false;
+							mirror = alternate = predictTarget = false;
+							heatColor = NHColor.thurmixRed;
+							shootSound = NHSounds.hugeShoot;
+							bullet = new EffectBulletType(480f){
+								@Override
+								protected float calculateRange(){
+									return rangeWeapon;
+								}
+
+								@Override
+								public void despawned(Bullet b){
+									super.despawned(b);
+
+									Vec2 vec = new Vec2().set(b);
+
+									float damageMulti = b.damageMultiplier();
+									Team team = b.team;
+									for(int i = 0; i < splashDamageRadius / (tilesize * 3.5f); i++){
+										int finalI = i;
+										Time.run(i * despawnEffect.lifetime / (splashDamageRadius / (tilesize * 2)), () -> {
+											Damage.damage(team, vec.x, vec.y, tilesize * (finalI + 6), splashDamage * damageMulti, true);
+										});
+									}
+
+									Units.nearby(team, vec.x, vec.y, splashDamageRadius * 2, u -> {
+										u.heal((1 - u.healthf()) / 3 * u.maxHealth());
+										u.apply(StatusEffects.overclock, 360f);
+									});
+
+									Units.nearbyEnemies(team, vec.x, vec.y, splashDamageRadius * 2, u -> {
+										u.apply(NHStatusEffects.scannerDown, 600f);
+									});
+
+									if(!NHSetting.enableDetails())return;
+									float rad = 120;
+									float spacing = 2.5f;
+
+									for(int k = 0; k < (despawnEffect.lifetime - NHFx.chainLightningFadeReversed.lifetime) / spacing; k++){
+										Time.run(k * spacing, () -> {
+											for(int j : Mathf.signs){
+												Vec2 v = Tmp.v6.rnd(rad * 2 + Mathf.random(rad * 4)).add(vec);
+												(j > 0 ? NHFx.chainLightningFade : NHFx.chainLightningFadeReversed).at(v.x, v.y, 12f, hitColor, vec);
+											}
+										});
+									}
+								}
+
+								@Override
+								public void update(Bullet b){
+									float rad = 120;
+
+									Effect.shake(8 * b.fin(), 6, b);
+
+									if(b.timer(1, 12)){
+										Seq<Teamc> entites = new Seq<>();
+
+										Units.nearbyEnemies(b.team, b.x, b.y, rad * 2.5f * (1 + b.fin()) / 2, entites::add);
+
+										Units.nearbyBuildings(b.x, b.y, rad * 2.5f * (1 + b.fin()) / 2, e -> {
+											if(e.team != b.team)entites.add(e);
+										});
+
+										entites.shuffle();
+										entites.truncate(15);
+
+										for(Teamc e : entites){
+											PosLightning.create(b, b.team, b, e, lightningColor, false, lightningDamage, 5 + Mathf.random(5), PosLightning.WIDTH, 1, p -> {
+												NHFx.lightningHitSmall.at(p.getX(), p.getY(), 0, lightningColor);
+											});
+										}
+									}
+
+									if(NHSetting.enableDetails() && b.lifetime() - b.time() > NHFx.chainLightningFadeReversed.lifetime)for(int i = 0; i < 2; i++){
+										if(Mathf.chanceDelta(0.2 * Mathf.curve(b.fin(), 0, 0.8f))){
+											for(int j : Mathf.signs){
+												Sounds.spark.at(b.x, b.y, 1f, 0.3f);
+												Vec2 v = Tmp.v6.rnd(rad / 2 + Mathf.random(rad * 2) * (1 + Mathf.curve(b.fin(), 0, 0.9f)) / 1.5f).add(b);
+												(j > 0 ? NHFx.chainLightningFade : NHFx.chainLightningFadeReversed).at(v.x, v.y, 12f, hitColor, b);
+											}
+										}
+									}
+
+									if(b.fin() > 0.05f && Mathf.chanceDelta(b.fin() * 0.3f + 0.02f)){
+										NHSounds.blaster.at(b.x, b.y, 1f, 0.3f);
+										Tmp.v1.rnd(rad / 4 * b.fin());
+										NHFx.shuttleLerp.at(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Tmp.v1.angle(), hitColor, Mathf.random(rad, rad * 3f) * (Mathf.curve(b.fin(Interp.pow2In), 0, 0.7f) + 2) / 3);
+									}
+								}
+
+								@Override
+								public void draw(Bullet b){
+									float fin = Mathf.curve(b.fin(), 0, 0.02f);
+									float f = fin * Mathf.curve(b.fout(), 0f, 0.1f);
+									float rad = 120;
+
+									float circleF = (b.fout(Interp.pow2In) + 1) / 2;
+
+									Draw.color(hitColor);
+									Lines.stroke(rad / 20 * b.fin());
+									Lines.circle(b.x, b.y, rad * b.fout(Interp.pow3In));
+									Lines.circle(b.x, b.y, b.fin(Interp.circleOut) * rad * 3f * Mathf.curve(b.fout(), 0, 0.05f));
+
+									Rand rand = NHFunc.rand;
+									rand.setSeed(b.id);
+									for(int i = 0; i < (int)(rad / 3); i++){
+										Tmp.v1.trns(rand.random(360f) + rand.range(1f) * rad / 5 * b.fin(Interp.pow2Out), rad / 2.05f * circleF + rand.random(rad * (1 + b.fin(Interp.circleOut)) / 1.8f));
+										float angle = Tmp.v1.angle();
+										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 28 + rand.random(0, 8), rad / 16 * (b.fin(Interp.exp5In) + 0.25f), angle);
+										DrawFunc.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, (b.fin() + 1) / 2 * 12 + rand.random(0, 2), rad / 12 * (b.fin(Interp.exp5In) + 0.5f) / 1.2f, angle - 180);
+									}
+
+									Angles.randLenVectors(b.id + 1, (int)(rad / 3), rad / 4 * circleF, rad * (1 + b.fin(Interp.pow3Out)) / 3, (x, y) -> {
+										float angle = Mathf.angle(x, y);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fout()) / 2.2f, (b.fout() * 3 + 1) / 3 * 25 + rand.random(4, 12) * (b.fout(Interp.circleOut) + 1) / 2, angle);
+										DrawFunc.tri(b.x + x, b.y + y, rad / 8 * (1 + b.fout()) / 2.2f, (b.fout() * 3 + 1) / 3 * 9 + rand.random(0, 2) * (b.fin() + 1) / 2, angle - 180);
+									});
+
+									Drawf.light(b.x, b.y, rad * f * (b.fin() + 1) * 2, Draw.getColor(), 0.7f);
+
+									Draw.z(Layer.effect + 0.001f);
+									Draw.color(hitColor);
+									Fill.circle(b.x, b.y, rad * fin * circleF / 2f);
+									Draw.color(NHColor.thurmixRedDark);
+									Fill.circle(b.x, b.y, rad * fin * circleF * 0.75f / 2f);
+
+								}
+
+								{
+									hittable = false;
+									collides = false;
+									collidesTiles = collidesAir = collidesGround = true;
+									speed = 100;
+
+									despawnHit = true;
+									keepVelocity = false;
+
+									splashDamageRadius = 800f;
+									splashDamage = 800f;
+
+									lightningDamage = 200f;
+									lightning = 36;
+									lightningLength = 60;
+									lightningLengthRand = 60;
+
+									rangeWeapon = 400f;
+									hitShake = despawnShake = 40f;
+									drawSize = clipSize = 800f;
+									hitColor = lightColor = trailColor = lightningColor = NHColor.thurmixRed;
+
+									fragBullets = 22;
+									fragBullet = NHBullets.collapserBullet;
+									hitSound = NHSounds.hugeBlast;
+									hitSoundVolume = 4f;
+
+									fragLifeMax = 1.1f;
+									fragLifeMin = 0.7f;
+									fragVelocityMax = 0.6f;
+									fragVelocityMin = 0.2f;
+
+									status = NHStatusEffects.weak;
+									statusDuration = 3000f;
+
+									shootEffect = NHFx.lightningHitLarge(hitColor);
+
+									hitEffect = NHFx.hitSpark(hitColor, 240f, 220, 900, 8, 27);
+									despawnEffect = NHFx.collapserBulletExplode;
+								}
+							};
+						}
+					}
+			);
+
+			hitSize = 130f;
+
+			speed = 0.5f;
+			health = 180000;
+			rotateSpeed = 0.65f;
+			engineSize = 30f;
+			buildSpeed = 10f;
+			engineOffset = 62f;
+			itemCapacity = 300;
+			armor = 180;
+			lowAltitude = true;
+			flying = true;
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+
+			@Override
+			public void drawCell(Unit unit){
+				super.drawCell(unit);
+
+				Draw.z(Layer.effect + 0.001f);
+
+				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f));
+				Lines.stroke(3f + Mathf.absin(10f, 0.55f));
+				DrawFunc.circlePercent(unit.x, unit.y, unit.hitSize, unit.healthf(), 0);
+
+				for(int i = 0; i < 4; i++){
+					float rotation = Time.time * 1.5f + i * 90;
+					Tmp.v1.trns(rotation, hitSize * 1.1f).add(unit);
+					Draw.rect(NHContent.arrowRegion, Tmp.v1.x, Tmp.v1.y, rotation + 90);
+				}
+
+				Draw.z(Layer.flyingUnitLow);
+				Draw.reset();
 			}
 		};
 	}

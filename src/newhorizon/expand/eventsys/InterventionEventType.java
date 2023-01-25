@@ -51,6 +51,7 @@ public class InterventionEventType extends TargetableEventType{
 		minimapMarkable = true;
 		removeAfterTrigger = true;
 		drawable = true;
+		hasCoord = true;
 	}
 	
 	@Override
@@ -141,9 +142,9 @@ public class InterventionEventType extends TargetableEventType{
 				}).growX().pad(OFFSET / 2).fillY().row();
 				c.add(
 					new Bar(
-						() -> TableFunc.format(percent(e) * 100) + "%",
+						() -> TableFunc.format(progressRatio(e) * 100) + "%",
 						() -> color,
-						() -> percent(e)
+						() -> progressRatio(e)
 					)
 				).growX().height(LEN / 2);
 				c.addListener(new Tooltip(t2 -> {
@@ -168,7 +169,7 @@ public class InterventionEventType extends TargetableEventType{
 	}
 	
 	@Override
-	public float percent(WorldEvent event){
+	public float progressRatio(WorldEvent event){
 		return Mathf.clamp(event.reload / reloadTime);
 	}
 	

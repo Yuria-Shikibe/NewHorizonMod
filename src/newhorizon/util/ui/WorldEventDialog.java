@@ -116,7 +116,7 @@ public class WorldEventDialog extends BaseDialog{
 			
 			table.table(t -> {
 				t.defaults().growX().fillY().padBottom(6f);
-				if(e.type.percent(e) > 0)t.stack(new Bar("", e.team.color, () -> e.type.percent(e)), button).tooltip(modifier.get(e));
+				if(e.type.progressRatio(e) > 0)t.stack(new Bar("", e.team.color, () -> e.type.progressRatio(e)), button).tooltip(modifier.get(e));
 				else t.add(button).tooltip(modifier.get(e));
 				
 				

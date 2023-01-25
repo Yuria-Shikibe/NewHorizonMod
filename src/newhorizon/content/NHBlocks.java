@@ -77,6 +77,7 @@ import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.block.turrets.Webber;
+import newhorizon.expand.bullets.AdaptedLaserBulletType;
 import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.util.graphic.DrawFunc;
@@ -333,6 +334,48 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		beamLaserTurret = new ItemTurret("beam-laser-turret"){{
+			size = 2;
+			requirements(Category.turret, BuildVisibility.shown, with(Items.copper, 60, NHItems.juniorProcessor, 60, NHItems.presstanium, 60));
+			recoil = 1f;
+			reload = 40f;
+			
+			shoot = new ShootPattern(){{
+				shots = 3;
+				shotDelay = 1.5f;
+			}};
+			
+			heatColor = Pal.turretHeat.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f);
+			cooldownTime *= 2f;
+			shootSound = NHSounds.laser5;
+			range = 220f;
+			shootCone = 30f;
+			inaccuracy = 6f;
+			maxAmmo = 80;
+			ammoPerShot = 5;
+			shootY += 5f;
+			health = 600;
+			smokeEffect = Fx.shootBigSmoke2;
+			consumePowerCond(2f, TurretBuild::isActive);
+			ammo(
+				Items.silicon, new AdaptedLaserBulletType(100){{
+					colors = new Color[]{Pal.bulletYellowBack.cpy().mul(1f, 1f, 1f, 0.35f), Pal.bulletYellowBack, Color.white};
+					hitColor = Pal.bulletYellow;
+					length = 230f;
+					lifetime = 30f;
+					drawLine = true;
+					width = 14f;
+					lengthFalloff = 0.8f;
+					sideLength = 25f;
+					sideWidth = 0.7f;
+					sideAngle = 30f;
+					largeHit = false;
+					shootEffect = NHFx.square(hitColor, 15f, 2, 8f, 2f);
+				}}
+			);
+		}};
+		
+		
 		webber = new Webber("webber"){{
 			size = 3;
 			
@@ -2672,7 +2715,12 @@ public class NHBlocks{
 				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
 						with(NHItems.setonAlloy, 350, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 250)
 				),
-				new UnitSet(NHUnitTypes.pester, new byte[]{NHUnitTypes.OTHERS, 7}, 900 * 60f,
+				new UnitSet(NHUnitTypes.collapser, new byte[]{NHUnitTypes.AIR_LINE_2, 7}, 900 * 60f,
+						new ItemStack(NHItems.thermoCorePositive, 1000),
+						new ItemStack(NHItems.thermoCoreNegative, 1000),
+						new ItemStack(NHItems.upgradeSort, 2000)
+				),
+				new UnitSet(NHUnitTypes.pester, new byte[]{NHUnitTypes.OTHERS, 7}, 1200 * 60f,
 						new ItemStack(NHItems.darkEnergy, itemCapacity),
 						new ItemStack(NHItems.upgradeSort, itemCapacity)
 				)/*,

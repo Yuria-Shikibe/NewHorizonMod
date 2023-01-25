@@ -1,0 +1,30 @@
+package newhorizon.expand.eventsys;
+
+import arc.Core;
+import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
+import arc.scene.ui.layout.Table;
+import mindustry.type.Weather;
+import newhorizon.util.ui.NHUIFunc;
+
+public class WeatherCallEvent extends ReloadEventType{
+	public Weather weather;
+	public WeatherCallEvent(String name, Weather weather, Color color){
+		super(name);
+		this.weather = weather;
+		
+		colorFunc = e -> color;
+		info = e -> Core.bundle.format("nh.cutscene.event.incoming", weather.name);
+		act = e -> weather.create();
+	}
+	
+	@Override
+	public TextureRegion icon(){
+		return weather.fullIcon;
+	}
+	
+	@Override
+	public void buildSpeInfo(Table table){
+		NHUIFunc.show(table, weather);
+	}
+}

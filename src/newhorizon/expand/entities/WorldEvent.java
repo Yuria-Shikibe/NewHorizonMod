@@ -342,4 +342,8 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		this.team = team;
 	}
 	
+	@Override
+	public String toString(){
+		return "WorldEvent{" + "x=" + x + ", y=" + y + ", id=" + id + '}';
+	}
 }

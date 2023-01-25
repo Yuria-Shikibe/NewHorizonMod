@@ -69,6 +69,7 @@ public class WorldEventType{
 		allTypes.remove(NULL.name);
 	}
 	
+	public boolean hasCoord = false;
 	public boolean fadeUI = false;
 	public final String name;
 	public boolean removeAfterTrigger;
@@ -87,6 +88,7 @@ public class WorldEventType{
 		event.type = this;
 		event.add();
 		event.init();
+		
 		return event;
 	}
 	
@@ -161,7 +163,7 @@ public class WorldEventType{
 	public void draw(WorldEvent e){
 		Team team = e.team;
 		
-		float fin = percent(e);
+		float fin = progressRatio(e);
 		
 		Draw.blend(Blending.additive);
 		Draw.z(Layer.legUnit + 1);
@@ -181,13 +183,13 @@ public class WorldEventType{
 	}
 	
 	public void init(WorldEvent event){
-	
+		if(!hasCoord)event.x = event.y = Float.NaN;
 	}
 	
 	/**
 	 * if the percentage < 0 means that the event doesn't have a progress.
 	 * */
-	public float percent(WorldEvent event){
+	public float progressRatio(WorldEvent event){
 		return -1;
 	}
 	
