@@ -3,7 +3,6 @@ package newhorizon.content;
 import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
 import arc.util.Time;
-import mindustry.content.StatusEffects;
 import mindustry.gen.Sounds;
 import mindustry.gen.WeatherState;
 import mindustry.graphics.Pal;
@@ -28,7 +27,7 @@ public class NHWeathers{
 		}};
 		
 		solarStorm = new MatterStorm("solar-storm"){{
-			status = StatusEffects.melting;
+			status = NHStatusEffects.emp2;
 			statusDuration = 60f;
 			
 			force = 4;

@@ -109,7 +109,7 @@ public class MatterStorm extends Weather{
 		
 		opacityMultiplier = 3;
 		sound = Sounds.pulse;
-		duration = 0.15f * Time.toMinutes;
+		duration = 0.4f * Time.toMinutes;
 		
 		attrs = new Attributes();
 		attrs.set(Attribute.light, 6f);

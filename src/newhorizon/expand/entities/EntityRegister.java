@@ -12,6 +12,7 @@ import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
 import newhorizon.expand.units.PesterEntity;
+import newhorizon.expand.weather.MatterStorm;
 
 public class EntityRegister{
 	private static final int startFrom = 100;
@@ -30,7 +31,7 @@ public class EntityRegister{
 		EntityRegister.put(UltFire.class, UltFire::new);
 		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 		EntityRegister.put(WorldEvent.class, WorldEvent::new);
-//		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
+		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){

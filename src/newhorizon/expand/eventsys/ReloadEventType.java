@@ -75,7 +75,7 @@ public class ReloadEventType extends WorldEventType{
 		Table infoT = new Table(Tex.sideline, t -> {
 			t.table(c -> {
 				c.table(t2 -> {
-					Cell<TextButton> b = t2.button(Core.bundle.get("mod.ui.raid"), new TextureRegionDrawable(icon()), Styles.cleart, LEN - OFFSET, () -> showAsDialog(e)).growX().padLeft(OFFSET).padRight(OFFSET / 2).left().color(color);
+					Cell<TextButton> b = t2.button(Core.bundle.get("nh.dialog-event"), new TextureRegionDrawable(icon(), 0.5f), Styles.cleart, LEN - OFFSET, () -> showAsDialog(e)).growX().padLeft(OFFSET).padRight(OFFSET / 2).left().color(color);
 					b.minWidth(b.get().getWidth());
 					t2.label(e::coordText).expandX();
 					t2.add(e.name).expandX().left().color(Color.lightGray);
@@ -111,18 +111,18 @@ public class ReloadEventType extends WorldEventType{
 	@Override
 	public void warnHUD(WorldEvent event){
 		NHUIFunc.showLabel(2.5f, t -> {
-			Color color = colorFunc.get(event);
+			String color = colorFunc.get(event).toString();
 			
 			NHSounds.alert2.play();
 			
 			t.background(Styles.black5);
 			
 			t.table(t2 -> {
-				t2.image(icon()).fill().color(color);
+				t2.image(icon()).fill();
 			}).growX().pad(OFFSET / 2).margin(12f).fillY().row();
 			
 			t.table(l -> {
-				l.add(new FLabel("<< " + info.get(event) + " >>")).color(color).padBottom(4).row();
+				l.add(new FLabel("[#" + color + "]<<[] " + info.get(event) + "[#" + color + "] >>[]")).padBottom(4).row();
 			}).growX().fillY();
 		});
 	}

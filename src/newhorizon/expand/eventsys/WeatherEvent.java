@@ -7,14 +7,14 @@ import arc.scene.ui.layout.Table;
 import mindustry.type.Weather;
 import newhorizon.util.ui.NHUIFunc;
 
-public class WeatherCallEvent extends ReloadEventType{
+public class WeatherEvent extends ReloadEventType{
 	public Weather weather;
-	public WeatherCallEvent(String name, Weather weather, Color color){
+	public WeatherEvent(String name, Weather weather, Color color){
 		super(name);
 		this.weather = weather;
 		
 		colorFunc = e -> color;
-		info = e -> Core.bundle.format("nh.cutscene.event.incoming", weather.name);
+		info = e -> Core.bundle.format("nh.cutscene.event.incoming", weather.localizedName);
 		act = e -> weather.create();
 	}
 	

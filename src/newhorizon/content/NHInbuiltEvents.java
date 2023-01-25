@@ -98,15 +98,15 @@ public class NHInbuiltEvents{
 		autoTriggers.addAll(new AutoEventTrigger(){{
 			items = OV_Pair.seqWith(NHItems.metalOxhydrigen, 1000, NHItems.presstanium, 1000);
 			units = OV_Pair.seqWith(NHUnitTypes.gather, 5);
-			eventType = WorldEventType.inbuilt(new WeatherCallEvent("inbuilt-weather-sun-storm", NHWeathers.solarStorm, Pal.ammo));
+			eventType = WorldEventType.inbuilt(new WeatherEvent("inbuilt-weather-sun-storm", NHWeathers.solarStorm, Pal.ammo));
 			
 			minTriggerWave = 0;
 			spacingBase = 900 * 60;
 			spacingRand = 600 * 60;
 		}},new AutoEventTrigger(){{
 			items = OV_Pair.seqWith(NHItems.seniorProcessor, 1000, NHItems.irayrondPanel, 1000);
-			units = OV_Pair.seqWith(NHUnitTypes.naxos, 5);
-			eventType = WorldEventType.inbuilt(new WeatherCallEvent("inbuilt-weather-quantum-storm", NHWeathers.quantumStorm, NHColor.darkEnrColor));
+			buildings = OV_Pair.seqWith(NHBlocks.jumpGate, 1);
+			eventType = WorldEventType.inbuilt(new WeatherEvent("inbuilt-weather-quantum-storm", NHWeathers.quantumStorm, NHColor.darkEnrColor));
 			
 			minTriggerWave = 0;
 			spacingBase = 1500 * 60;
@@ -347,7 +347,12 @@ public class NHInbuiltEvents{
 				if(Vars.headless || NewHorizon.DEBUGGING){
 					Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
 						EventHandler.runEventOnce("setup-triggers", () -> {
-							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp)autoTriggers.each(t -> t.copy().add());
+							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp){
+								autoTriggers.each(t -> {
+									t.copy().add();
+									NewHorizon.debugLog(t.eventType.toString());
+								});
+							}
 						});
 					})));
 				}
