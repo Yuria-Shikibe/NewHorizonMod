@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import mindustry.Vars;
 import mindustry.type.Weather;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -15,7 +16,9 @@ public class WeatherEvent extends ReloadEventType{
 		
 		colorFunc = e -> color;
 		info = e -> Core.bundle.format("nh.cutscene.event.incoming", weather.localizedName);
-		act = e -> weather.create();
+		act = e -> {
+			if(!Vars.net.client())weather.create();
+		};
 	}
 	
 	@Override
