@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.entities.Effect;
@@ -13,12 +14,44 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
+import newhorizon.util.func.NHFunc;
 
 public class NHStatusEffects{
-    public static StatusEffect ultFireBurn, stronghold,
+    public static StatusEffect ultFireBurn, stronghold, overphased,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
     public static void load(){
+        overphased = new NHStatusEffect("overphased"){{
+            outline = true;
+            color = textureColor = NHColor.deeperBlue;
+            speedMultiplier = 1.75f;
+            healthMultiplier = 2.5f;
+            reloadMultiplier = 1.5f;
+            damageMultiplier = 1.25f;
+            
+            effectChance = 0.3f;
+            permanent = true;
+            hideDetails = false;
+            show = false;
+        }
+    
+            @Override
+            public void update(Unit unit, float time){
+                if(damage > 0){
+                    unit.damageContinuousPierce(damage);
+                }else if(damage < 0){ //heal unit
+                    unit.heal(-1f * damage * Time.delta);
+                }
+    
+                if(Mathf.chanceDelta(effectChance)){
+                    Tmp.v1.trns(unit.rotation, -unit.type.engineOffset).add(unit);
+                    NHFunc.randFadeLightningEffect(Tmp.v1.x, Tmp.v1.y, unit.hitSize * 1.7f, Mathf.random(8f, 18f), unit.team.color, Mathf.chance(0.5));
+                    
+                    effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, 0, color, parentizeEffect ? unit : null);
+                }
+            }
+        };
+        
         stronghold = new NHStatusEffect("stronghold"){{
             color = textureColor = Color.lightGray;
             speedMultiplier = 0.001f;
@@ -48,8 +81,8 @@ public class NHStatusEffects{
             reloadMultiplier = 0.9f;
             
             effectChance = 0.2f;
-//            color = ScreenInterferencer.from.cpy().lerp(ScreenInterferencer.to, 0.5f);
-//            effect = new MultiEffect(NHFx.squareRand(ScreenInterferencer.from, 8f, 16f), NHFx.squareRand(ScreenInterferencer.to, 8f, 16f));
+            color = Pal.heal.cpy().lerp(Pal.lancerLaser, 0.5f);
+            effect = new MultiEffect(NHFx.squareRand(Pal.heal, 8f, 16f), NHFx.squareRand(Pal.lancerLaser, 8f, 16f));
         }
     
 //            @Override

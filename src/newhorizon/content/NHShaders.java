@@ -12,6 +12,7 @@ import arc.util.Time;
 import mindustry.graphics.Shaders;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
+import newhorizon.util.graphic.TextureStretchIn;
 
 import static mindustry.Vars.renderer;
 
@@ -26,6 +27,7 @@ public class NHShaders{
 	public static OutlineShader outliner;
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
+	public static Stretch stretch;
 	
 	public static void init(){
 //		alphaFloorer = new ModShader("screenspace", "alphaFloorer"){
@@ -33,6 +35,8 @@ public class NHShaders{
 //		};
 		
 //		outliner = new OutlineShader();
+		
+		stretch = new Stretch();
 		
 		scannerDown = new ModShader("screenspace", "scannerDown");
 		
@@ -74,6 +78,30 @@ public class NHShaders{
 				return NHContent.smoothNoise;
 			}
 		};
+	}
+	
+	public static class Stretch extends ModShader{
+		TextureStretchIn.StretchData data = new TextureStretchIn.StretchData();
+		
+		public void setColor(TextureStretchIn.StretchData data){
+			this.data = data;
+		}
+		
+		public Stretch(){
+			super("screenspace", "stretch");
+		}
+		
+		@Override
+		public void apply(){
+			setUniformf("u_offset",
+					Core.camera.position.x - Core.camera.width / 2,
+					Core.camera.position.y - Core.camera.height / 2);
+			setUniformf("u_dp", Scl.scl(1f));
+//			float[] f = NHModCore.core.renderer.textureStretchIn.asArr();
+			setUniformf("u_data", data.x, data.y, data.radius, data.fin);
+			setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
+			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+		}
 	}
 	
 	public static class OutlineShader extends ModShader{

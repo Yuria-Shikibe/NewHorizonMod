@@ -64,7 +64,7 @@ public class InterceptorAI extends FlyingAI{
 	}
 	
 //	@Override
-//	public boolean checkTarget(Teamc target, float x, float y, float range){
+//	public boolean checkTarget(TeamHealthc target, float x, float y, float range){
 //		if(target instanceof Unit){
 //			return ((Unit) target).isFlying() && super.checkTarget(target, x, y, range);
 //		}
@@ -104,20 +104,20 @@ public class InterceptorAI extends FlyingAI{
 //	}
 	
 //	@Override
-//	public Teamc target(float x, float y, float range, boolean air, boolean ground){
-//		Teamc t = Units.bestTarget(unit.team, x, y, range, u -> u.checkTarget(unit.type.targetAir, unit.type.targetGround), e -> unit.type.targetGround, (u, x1, y1) ->
+//	public TeamHealthc target(float x, float y, float range, boolean air, boolean ground){
+//		TeamHealthc t = Units.bestTarget(unit.team, x, y, range, u -> u.checkTarget(unit.type.targetAir, unit.type.targetGround), e -> unit.type.targetGround, (u, x1, y1) ->
 //			-u.maxHealth()
 //		);
 //		return t == null ? target : t;
 //	}
 //
 //	@Override
-//	public Teamc findTarget(float x, float y, float range, boolean air, boolean ground){
+//	public TeamHealthc findTarget(float x, float y, float range, boolean air, boolean ground){
 //		return target(x, y, range, air, ground);
 //	}
 //
 //	@Override
-//	public Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
+//	public TeamHealthc findMainTarget(float x, float y, float range, boolean air, boolean ground){
 //		return target(x, y, range, air, ground);
 //	}
 }

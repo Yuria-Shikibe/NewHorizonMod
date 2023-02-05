@@ -195,13 +195,13 @@ public class NHFunc{
         units.each(cons);
     }
     
-    public static void randFadeLightningEffect(float x, float y, float range, float lightningLength, Color color, boolean in){
-        randFadeLightningEffectScl(x, y, range, 0.55f, 1.1f, lightningLength, color, in);
+    public static void randFadeLightningEffect(float x, float y, float range, float lightningPieceLength, Color color, boolean in){
+        randFadeLightningEffectScl(x, y, range, 0.55f, 1.1f, lightningPieceLength, color, in);
     }
     
-    public static void randFadeLightningEffectScl(float x, float y, float range, float sclMin, float sclMax, float lightningLength, Color color, boolean in){
+    public static void randFadeLightningEffectScl(float x, float y, float range, float sclMin, float sclMax, float lightningPieceLength, Color color, boolean in){
         vec21.rnd(range).scl(Mathf.random(sclMin, sclMax)).add(x, y);
-        (in ? NHFx.chainLightningFadeReversed : NHFx.chainLightningFade).at(x, y, lightningLength, color, vec21.cpy());
+        (in ? NHFx.chainLightningFadeReversed : NHFx.chainLightningFade).at(x, y, lightningPieceLength, color, vec21.cpy());
     }
     
     public static Unit teleportUnitNet(Unit before, float x, float y, float angle, @Nullable Player player){

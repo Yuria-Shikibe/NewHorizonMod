@@ -48,6 +48,14 @@ public class DrawFunc{
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
     private static final Rand rand = new Rand();
     
+    public static void randLenVectors(long seed, int amount, float length, float minLength, float angle, float range, Floatc2 cons){
+        rand.setSeed(seed);
+        for(int i = 0; i < amount; i++){
+            vec21.trns(angle + rand.range(range), minLength  + rand.random(length));
+            cons.get(vec21.x, vec21.y);
+        }
+    }
+    
     public static void fillRect(float srcX, float srcY, float w, float h){
         Fill.quad(srcX, srcY, srcX + w, srcY, srcX + w, srcY + h, srcX, srcY + h);
     }
@@ -453,6 +461,10 @@ public class DrawFunc{
         return 90 * NHInterp.pow10.apply(Mathf.curve(in, margin, 1 - margin));
     }
     
+    public static float rotator_120(float in /*(0, 1)*/, float margin){
+        return 120 * NHInterp.pow10.apply(Mathf.curve(in, margin, 1 - margin));
+    }
+    
     public static float rotator_90(){return 90 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
     
     public static float rotator_180(){return 180 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
@@ -463,7 +475,11 @@ public class DrawFunc{
     
     
     /** @return A interpolation in [0, 1)*/
-    public static float cycle(float fi, float T){
-        return (Time.time + fi) % T / T;
+    public static float cycle(float phaseOffset, float T){
+        return (Time.time + phaseOffset) % T / T;
+    }
+    
+    public static float cycle(float in, float phaseOffset, float T){
+        return (in + phaseOffset) % T / T;
     }
 }

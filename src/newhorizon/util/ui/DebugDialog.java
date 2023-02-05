@@ -18,6 +18,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Scaling;
+import arc.util.Time;
 import mindustry.content.TechTree;
 import mindustry.core.Logic;
 import mindustry.ctype.Content;
@@ -29,6 +30,7 @@ import mindustry.gen.Sounds;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
+import mindustry.type.StatusEffect;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
@@ -272,6 +274,27 @@ public class DebugDialog extends BaseDialog{
 				dialog.addCloseButton();
 				dialog.show();
 			});
+			
+			t.button("Status", () -> new BaseDialog("Status"){{
+				addCloseButton();
+				
+				Seq<StatusEffect> seq = content.statusEffects();
+				
+				cont.pane(t -> {
+					int index = 0;
+					for(StatusEffect s : seq){
+						if(index % 6 == 0) t.row();
+						t.table(inner -> inner.table(Tex.pane, de -> {
+							de.margin(6f);
+							de.image(s.fullIcon).size(60f);
+							de.button(Icon.play, Styles.cleari, () -> {
+								player.unit().apply(s, 10 * Time.toSeconds);
+							}).growY().scaling(Scaling.fit);
+						}).size(LEN * 3, LEN).pad(OFFSET / 3)).size(LEN * 3, LEN).pad(OFFSET / 3);
+						index++;
+					}
+				}).grow();
+			}}.show());
 			
 			t.button("Sounds", () -> new BaseDialog("ICONS"){{
 				addCloseButton();

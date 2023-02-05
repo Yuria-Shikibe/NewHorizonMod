@@ -156,6 +156,20 @@ public class NHFx{
 		}));
 	}
 	
+	public static Effect shootLine(float size, float angleRange){
+		int num = Mathf.clamp((int)size / 4, 6, 20);
+		
+		return get("shootLineSmall", Color.clear, new Effect(37f, e -> {
+			color(e.color, Color.white, e.fout() * 0.7f);
+			rand.setSeed(e.id);
+			DrawFunc.randLenVectors(e.id, num, 4 + (size * 1.2f) * e.fin(), size * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
+				Lines.stroke(1.5f * e.fout(0.32f));
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * (size * rand.random(0.3f, 0.8f) + rand.random(5f)) + rand.random(3f));
+				Drawf.light(e.x + x, e.y + y, e.fslope() * (size * 0.5f + 14f) + 3, e.color, 0.7f);
+			});
+		}));
+	}
+	
 	public static Effect laserHit(Color color){
 		return get("laserHit", color, new Effect(20, e -> {
 			color(color, Color.white, e.fout() * 0.7f);
@@ -968,6 +982,11 @@ public class NHFx{
 			});
 		}),
 	
+		circleOut  = new Effect(60f, 500f, e -> {
+			Lines.stroke(2.5f * e.fout(), e.color);
+			Lines.circle(e.x, e.y, e.rotation * e.fin(Interp.pow3Out));
+		}),
+	
 		shuttle = new Effect(70f, 800f, e -> {
 			if(!(e.data instanceof Float))return;
 			float len = e.data();
@@ -1223,6 +1242,12 @@ public class NHFx{
 		}),
 	
 		hugeSmoke = new Effect(40f, e -> {
+			Draw.color(e.color);
+			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
+			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
+		}),
+	
+		hugeSmokeLong = new Effect(80f, e -> {
 			Draw.color(e.color);
 			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));

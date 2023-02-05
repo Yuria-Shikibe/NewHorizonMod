@@ -22,7 +22,7 @@ varying vec2 v_texCoords;
 
 void main(){
     float btime = u_time / 1800.0;
-    float intensity = length(u_direction);
+    float intensity = length(u_direction * 5.0);
 
     vec2 n = normalize(u_direction);
     vec2 v = vec2(n.y, -n.x);

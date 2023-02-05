@@ -17,6 +17,7 @@ import arc.struct.Bits;
 import arc.struct.IntMap;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
+import arc.util.Disposable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool;
@@ -37,7 +38,7 @@ import static newhorizon.NHRenderer.height;
 import static newhorizon.NHRenderer.width;
 
 @HeadlessDisabled
-public class EffectDrawer{
+public class EffectDrawer implements Disposable{
 	public static final float FADE_TIME = 90f;
 	
 	protected static final Mat tmpMat = new Mat();
@@ -235,6 +236,12 @@ public class EffectDrawer{
 	public void clear(){
 		drawTask.clear();
 		lastSeq.clear();
+	}
+	
+	/** Releases all resources of this object. */
+	@Override
+	public void dispose(){
+		effectBuffer.dispose();
 	}
 	
 	public class EffectRenderer{

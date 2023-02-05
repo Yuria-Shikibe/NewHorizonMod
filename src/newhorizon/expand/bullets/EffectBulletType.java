@@ -8,6 +8,7 @@ public class EffectBulletType extends BulletType{
 	public EffectBulletType(float lifetime){
 		super();
 		this.lifetime = lifetime;
+		hittable = false;
 		despawnEffect = hitEffect = shootEffect = smokeEffect = trailEffect = Fx.none;
 		absorbable = collides = collidesAir = collidesGround = collidesTeam = collidesTiles = false;
 		hitSize = 0;

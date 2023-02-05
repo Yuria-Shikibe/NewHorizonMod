@@ -19,6 +19,8 @@ public class WeatherEvent extends ReloadEventType{
 		act = e -> {
 			if(!Vars.net.client())weather.create();
 		};
+		
+		
 	}
 	
 	@Override

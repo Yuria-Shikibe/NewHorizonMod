@@ -123,7 +123,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 	 *
 	 * */
 	/*
-	public <T extends Teamc> boolean checkExactHitbox(T t){
+	public <T extends TeamHealthc> boolean checkExactHitbox(T t){
 		return true;
 	}*/
 	

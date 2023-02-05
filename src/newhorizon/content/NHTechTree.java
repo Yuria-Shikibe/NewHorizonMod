@@ -232,9 +232,11 @@ public class NHTechTree{
 						nodeProduce(NHItems.thermoCorePositive, () -> {});
 						nodeProduce(NHItems.thermoCoreNegative, () -> {});
 						node(NHItems.darkEnergy, Seq.with(new Objectives.Produce(NHItems.thermoCorePositive), new Objectives.Produce(NHItems.thermoCorePositive)), () -> {
-							nodeUnit(NHUnitTypes.guardian, () -> {
-								nodeUnit(NHUnitTypes.pester, () -> {
-								
+							node(NHUnitTypes.laugra, () -> {
+								nodeUnit(NHUnitTypes.guardian, () -> {
+									nodeUnit(NHUnitTypes.pester, () -> {
+									
+									});
 								});
 							});
 						});

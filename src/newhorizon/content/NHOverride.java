@@ -126,7 +126,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.branch){{
-						begin = 42;
+						begin = 8;
 						spacing = 3;
 						unitAmount = 4;
 						effect = StatusEffects.overdrive;
@@ -136,7 +136,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.warper){{
-						begin = 55;
+						begin = 30;
 						unitAmount = 2;
 						spacing = 2;
 						unitScaling = 2;
@@ -144,7 +144,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.tarlidor){{
-						begin = 53;
+						begin = 35;
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 6;
@@ -152,15 +152,33 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.annihilation){{
-						begin = 81;
+						begin = 65;
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 8;
 						shieldScaling = 30f;
 					}},
 					
+					new SpawnGroup(NHUnitTypes.laugra){{
+						begin = 75;
+						unitAmount = 2;
+						unitScaling = 1;
+						spacing = 12;
+						shieldScaling = 600f;
+						effect = StatusEffects.boss;
+					}},
+					
+					
+					new SpawnGroup(NHUnitTypes.laugra){{
+						begin = 105;
+						unitAmount = 1;
+						unitScaling = 0.7f;
+						spacing = 4;
+						shieldScaling = 200f;
+					}},
+					
 					new SpawnGroup(NHUnitTypes.sin){{
-						begin = 120;
+						begin = 110;
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 10;
@@ -168,7 +186,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.hurricane){{
-						begin = 140;
+						begin = 105;
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 10;
@@ -176,7 +194,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.anvil){{
-						begin = 145;
+						begin = 70;
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 15;
@@ -185,7 +203,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.guardian){{
-						begin = 125;
+						begin = 85;
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 20;
@@ -194,7 +212,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.saviour){{
-						begin = 105;
+						begin = 70;
 						unitAmount = 1;
 						unitScaling = 3;
 						spacing = 9;
@@ -212,7 +230,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.sin){{
-						begin = 130;
+						begin = 100;
 						unitAmount = 1;
 						unitScaling = 1;
 						effect = StatusEffects.boss;
@@ -222,22 +240,31 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.longinus){{
-						begin = 100;
+						begin = 90;
 						unitAmount = 2;
 						unitScaling = 3;
 						spacing = 10;
 						shields = 40f;
 						shieldScaling = 20f;
-					}}
+					}},
 					
-					//				new SpawnGroup(NHUnitTypes.collapser){{
-					//					begin = 180;
-					//					unitAmount = 1;
-					//					unitScaling = 1;
-					//					spacing = 25;
-					//					shields = 1000;
-					//					shieldScaling = 350f;
-					//				}}
+					new SpawnGroup(NHUnitTypes.collapser){{
+						begin = 120;
+						unitAmount = 1;
+						unitScaling = 1;
+						spacing = 20;
+						shields = 19000;
+						shieldScaling = 3500f;
+					}},
+					
+					new SpawnGroup(NHUnitTypes.pester){{
+						begin = 130;
+						unitAmount = 1;
+						unitScaling = 1;
+						spacing = 20;
+						shields = 19000;
+						shieldScaling = 3500f;
+					}}
 			);
 		}//Apply Mod Units
 	}
@@ -496,7 +523,8 @@ public class NHOverride{
 		//max reasonable wave, after which everything gets boring
 		int cap = 150;
 		
-		float shieldStart = 30, shieldsPerWave = 20 + difficulty*30f;
+		final float[] shieldStart = {30};
+		float shieldsPerWave = 20 + difficulty*30f;
 		float[] scaling = {1f, 1.15f, 1.55f, 2.5f, 2.7f, 3f};
 		
 		Intc createProgression = start -> {
@@ -508,7 +536,7 @@ public class NHOverride{
 				int f = i;
 				int next = rand.random(8, 16) + (int)Mathf.lerp(5f, 0f, difficulty) + curTier * 4;
 				
-				float shieldAmount = Math.max((i - shieldStart) * shieldsPerWave, 0);
+				float shieldAmount = Math.max((i - shieldStart[0]) * shieldsPerWave, 0);
 				int space = start == 0 ? 1 : rand.random(1, 2);
 				int ctier = curTier;
 				
@@ -639,6 +667,15 @@ public class NHOverride{
 		}
 		
 		out.add(NHOverride.modSpawnGroup);
+		
+		if(difficulty > 0.9){
+			out.add(new SpawnGroup(NHUnitTypes.pester){{
+				effect = NHStatusEffects.overphased;
+				begin = 148;
+				spacing = 1;
+				unitAmount = 1;
+			}});
+		}
 		
 		out.each(s -> {
 			if(s.type == NHUnitTypes.longinus || s.type == NHUnitTypes.naxos){

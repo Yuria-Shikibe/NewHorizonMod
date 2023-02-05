@@ -9,16 +9,14 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.StatusEffects;
-import mindustry.entities.Damage;
-import mindustry.entities.Effect;
-import mindustry.entities.Lightning;
-import mindustry.entities.Units;
+import mindustry.entities.*;
 import mindustry.entities.abilities.MoveEffectAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
@@ -31,14 +29,17 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
+import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.expand.bullets.LightningLinkerBulletType;
 import newhorizon.expand.bullets.SpeedUpBulletType;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;
+import newhorizon.expand.units.PesterEntity;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
+import newhorizon.util.graphic.ColorWarpEffect;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
@@ -52,6 +53,7 @@ public class NHBullets{
 	public static UnitType airRaidMissile, skyMissile;
 	
 	public static BulletType
+			pesterBlackHole, laugraBullet,
 			collapserBullet,
 			railGun1, railGun2, railGun3,
 			declineProjectile, atomSeparator, blastEnergyPst, blastEnergyNgt,
@@ -65,15 +67,16 @@ public class NHBullets{
 	private static void loadPriority(){
 		
 		
-		warperBullet = new BasicBulletType(4f, 20f, CIRCLE_BOLT){
+		warperBullet = new SpeedUpBulletType(4f, 20f, CIRCLE_BOLT){
 			{
 				shrinkX = shrinkY = 0.35f;
 				buildingDamageMultiplier = 1.5f;
 				keepVelocity = false;
 				
-//				velocityIncrease = 4f;
-//				accelerateBegin = 0.01f;
-//				accelerateEnd = 0.9f;
+				velocityBegin = 0.5f;
+				velocityIncrease = 3f;
+				accelerateBegin = 0.01f;
+				accelerateEnd = 0.9f;
 				
 				homingPower = 0;
 				hitColor = trailColor = lightningColor = backColor = lightColor = NHColor.lightSkyBack;
@@ -159,6 +162,107 @@ public class NHBullets{
 		STRIKE = NewHorizon.name("strike");
 		
 		loadPriority();
+		
+		pesterBlackHole = new EffectBulletType(120){{
+			despawnHit = true;
+			splashDamageRadius = 240;
+			
+			lightningDamage = 2000;
+			lightning = 2;
+			lightningLength = 4;
+			lightningLengthRand = 8;
+			
+			scaledSplashDamage = true;
+			collidesAir = collidesGround = collidesTiles = true;
+			splashDamage = 3800;
+			damage = 10000;
+		}
+			
+			@Override
+			public void draw(Bullet b){
+				if(!(b.data instanceof Seq))return;
+				Seq<Sized> data = (Seq<Sized>)b.data;
+				
+				Draw.color(b.team.color, Color.white, b.fin() * 0.7f);
+				Draw.alpha(b.fin(Interp.pow3Out) * 1.1f);
+				Lines.stroke(2 * b.fout());
+				for(Sized s : data){
+					if(s instanceof Building){
+						Fill.square(s.getX(), s.getY(), s.hitSize() / 2);
+					}else{
+						Lines.spikes(s.getX(), s.getY(), s.hitSize() * (0.5f + b.fout() * 2f), s.hitSize() / 2f * b.fslope() + 12 * b.fin(), 4, 45);
+					}
+				}
+				
+				Drawf.light(b.x, b.y, splashDamageRadius, b.team.color, 0.3f + b.fin() * 0.8f);
+			}
+			
+			public void hitT(Sized target, Entityc o, Team team, float x, float y){
+				for(int i = 0; i < lightning; i++){
+					Lightning.create(team, team.color, lightningDamage, x, y, Mathf.random(360), lightningLength + Mathf.random(lightningLengthRand));
+				}
+				
+				if(target instanceof Unit){
+					if(((Unit)target).health > 1000)PesterEntity.hitter.create(o, team, x, y, 0);
+				}
+			}
+			
+			@Override
+			public void update(Bullet b){
+				super.update(b);
+				
+				if(!(b.data instanceof Seq))return;
+				Seq<Sized> data = (Seq<Sized>)b.data;
+				data.remove(d -> !((Healthc)d).isValid());
+			}
+			
+			@Override
+			public void despawned(Bullet b){
+				super.despawned(b);
+				
+				float rad = 33;
+				
+				Vec2 v = new Vec2().set(b);
+				Team t = b.team;
+				
+				for(int i = 0; i < 5; i++){
+					Time.run(i * 0.35f + Mathf.random(2), () -> {
+						Tmp.v1.rnd(rad / 3).scl(Mathf.random());
+						NHFx.shuttle.at(v.x + Tmp.v1.x, v.y + Tmp.v1.y, Tmp.v1.angle(), t.color, Mathf.random(rad * 3f, rad * 12f));
+					});
+				}
+				
+				if(!(b.data instanceof Seq))return;
+				Entityc o = b.owner();
+				Seq<Sized> data = (Seq<Sized>)b.data;
+				for(Sized s : data){
+					float size = Math.min(s.hitSize(), 85);
+					Time.run(Mathf.random(44), () -> {
+						if(Mathf.chance(0.32) || data.size < 8)NHFx.shuttle.at(s.getX(), s.getY(), 45, t.color, Mathf.random(size * 3f, size * 12f));
+						hitT(s, o, t, s.getX(), s.getY());
+					});
+				}
+				
+				createSplashDamage(b, b.x, b.y);
+			}
+			
+			@Override
+			public void init(Bullet b){
+				super.init(b);
+				
+				Seq<Sized> data = new Seq<>();
+				
+				Vars.indexer.eachBlock(null, b.x, b.y, splashDamageRadius, bu -> bu.team != b.team, data::add);
+				
+				Groups.unit.intersect(b.x - splashDamageRadius / 2, b.y - splashDamageRadius / 2, splashDamageRadius, splashDamageRadius, u -> {
+					if(u.team != b.team)data.add(u);
+				});
+				
+				b.data = data;
+				
+				NHFx.circleOut.at(b.x, b.y, splashDamageRadius * 1.25f, b.team.color);
+			}
+		};
 		
 		collapserBullet = new LightningLinkerBulletType(){{
 			effectLightningChance = 0.15f;
@@ -764,6 +868,72 @@ public class NHBullets{
 			status = StatusEffects.melting;
 			statusDuration = 120f;
 		}};
+		
+		laugraBullet = new SpeedUpBulletType(200, STRIKE){{
+			
+			lightOpacity = 0.7f;
+			healPercent = 20f;
+			
+			reflectable = false;
+			knockback = 3f;
+			impact = true;
+			
+			velocityBegin = 1f;
+			velocityIncrease = 18f;
+			accelerateBegin = 0.05f;
+			accelerateEnd = 0.55f;
+			
+			pierce = pierceBuilding = true;
+			pierceCap = 5;
+			
+			lightningColor = backColor = trailColor = hitColor = lightColor = NHColor.ancient;
+			lightRadius = 70f;
+			shootEffect = new ColorWarpEffect(NHFx.shootLine(33f, 32), backColor);
+			smokeEffect = NHFx.hugeSmokeLong;
+			lifetime = 40f;
+			
+			frontColor = Color.white;
+			
+			lightning = 2;
+			lightningDamage = damage / 8f + 10f;
+			lightningLength = 7;
+			lightningLengthRand = 16;
+			
+			splashDamageRadius = 36f;
+			splashDamage = damage / 2f;
+			
+			width = 13f;
+			height = 35f;
+			speed = 8f;
+			trailLength = 20;
+			trailWidth = 2.3f;
+			trailInterval = 1.76f;
+			hitShake = 8f;
+			trailRotation = true;
+			keepVelocity = true;
+			status = NHStatusEffects.scannerDown;
+			statusDuration = 600f;
+			
+			hitSound = Sounds.plasmaboom;
+			
+			trailEffect = new Effect(10f, e -> {
+				color(trailColor, Color.white, e.fout() * 0.66f);
+				for(int s : Mathf.signs){
+					DrawFunc.tri(e.x, e.y, 3f, 30f * Mathf.curve(e.fin(), 0, 0.1f) * e.fout(0.9f), e.rotation + 145f * s);
+				}
+			});
+			
+			hitEffect = new OptionalMultiEffect(NHFx.square45_6_45, NHFx.hitSparkLarge);
+			despawnEffect = NHFx.lightningHitLarge;
+		}
+			
+			@Override
+			public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+				super.hitTile(b, build, x, y, initialHealth, direct);
+				
+				if(build.block.armor > 10 || build.block.absorbLasers)b.time(b.lifetime());
+			}
+		};
 		
 		saviourBullet = new EmpBulletType(){{
 			float rad = 100f;

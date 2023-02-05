@@ -15,6 +15,7 @@ import arc.struct.ObjectMap;
 import arc.util.Log;
 import arc.util.OS;
 import mindustry.Vars;
+import mindustry.gen.Tankc;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
@@ -74,6 +75,11 @@ public class NHPixmap{
 			PixmapRegion r = Core.atlas.getPixmap(Core.atlas.find(type.name));
 			
 			Pixmap base = new Pixmap(type.region.width, type.region.height);
+			
+			if(type.constructor.get() instanceof Tankc){
+				base.draw(Core.atlas.getPixmap(type.treadRegion));
+			}
+			
 			base.draw(r.crop(), true);
 			
 			base.draw(replaceColor(Core.atlas.getPixmap(type.cellRegion), ObjectMap.of((Boolf<Color>) c -> c.equals(Color.white), Color.valueOf("ffa664"), (Boolf<Color>) c -> c.equals(Color.valueOf("dcc6c6")), Color.valueOf("dc804e"))), 0, 0, true);
@@ -187,15 +193,7 @@ public class NHPixmap{
 	}
 	
 	public static Fi processedPng(String fileName, String suffix){
-		Fi fi = new Fi(rootPath() + "/pre-processed/" + fileName.replaceAll(NewHorizon.MOD_NAME + "-", "") + suffix + ".png");
-		if(!fi.exists()){
-			try{
-				fi.file().createNewFile();
-			}catch(IOException e){
-				e.printStackTrace();
-			}
-		}
-		return fi;
+		return new Fi(rootPath() + "/pre-processed/" + fileName.replaceAll(NewHorizon.MOD_NAME + "-", "") + suffix + ".png");
 	}
 	
 	public static void saveUnitPixmap(Pixmap pixmap, UnitType type){

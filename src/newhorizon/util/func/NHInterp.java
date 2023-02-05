@@ -10,6 +10,7 @@ public class NHInterp{
 	public static final Interp artilleryPlus = x -> 3 * x - 3 * x * x + 0.25f;
 	public static final Interp artilleryPlusReversed = x -> -3 * x + 3 * x * x + 1;
 	public static final Interp.BounceOut bounce5Out = new Interp.BounceOut(5);
+	public static final Interp.BounceIn bounce5In = new Interp.BounceIn(5);
 	public static final Interp.Pow pow10 = new Interp.Pow(10);
 	public static final Interp zero = a -> 0;
 	public static final Interp inOut = a -> 2 * (0.9f * a + 0.31f) + 1f / (5f * (a + 0.1f)) - 1.6f;

@@ -4,7 +4,6 @@ import arc.ApplicationListener;
 import arc.Core;
 import arc.util.Log;
 import mindustry.Vars;
-import newhorizon.util.graphic.EffectDrawer;
 
 public class NHModCore implements ApplicationListener{
 	public static NHModCore core;
@@ -29,7 +28,8 @@ public class NHModCore implements ApplicationListener{
 			NHGroups.update();
 			if(!Vars.headless){
 				if(inputListener != null)inputListener.update();
-				EffectDrawer.drawer.update();
+				renderer.effectDrawer.update();
+				renderer.textureStretchIn.update();
 				NHSetting.update();
 			}
 		}

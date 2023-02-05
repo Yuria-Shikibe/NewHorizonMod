@@ -11,7 +11,7 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Position;
+import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
@@ -31,6 +31,7 @@ import mindustry.entities.Units;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.part.ShapePart;
 import mindustry.entities.pattern.*;
@@ -50,6 +51,7 @@ import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
@@ -71,19 +73,23 @@ import static mindustry.Vars.tilesize;
 public class NHUnitTypes{
 	public static final Color OColor = Color.valueOf("565666");
 	
-	public static final byte OTHERS = Byte.MIN_VALUE, GROUND_LINE_1 = 0, AIR_LINE_1 = 1, AIR_LINE_2 = 2, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
+	public static final byte
+			ANCIENT_GROUND = 10, ANCIENT_AIR = 11,
+			OTHERS = Byte.MIN_VALUE,
+			GROUND_LINE_1 = 0, AIR_LINE_1 = 1, AIR_LINE_2 = 2, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
 	
 	public static Weapon
 		basicCannon, laserCannon;
 	
 	public static Weapon
+			ancientSecTurret,
 			posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon,
 			mainCannon, pointDefenceWeaponC;
 	
 	public static NHUnitType
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
-			pester, //Air-ancient
+			pester, laugra, //ancient
 			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
@@ -105,6 +111,7 @@ public class NHUnitTypes{
 			EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("sin"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("pester"), PesterEntity::new);
+			EntityMapping.nameMap.put(NewHorizon.name("laugra"), EntityMapping.idMap[43]);
 
 			EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
 		}
@@ -118,10 +125,10 @@ public class NHUnitTypes{
 		
 		public void setRequirements(ItemStack[] stacks){
 			cachedRequirements = stacks;
+			totalRequirements = firstRequirements = ItemStack.mult(stacks, 1 / 15f);
 		}
 		
 		public void setBuildCost(ItemStack[] stacks){
-			totalRequirements = firstRequirements = stacks;
 		}
 	}
 		
@@ -162,6 +169,29 @@ public class NHUnitTypes{
 	}
 	
 	private static void loadPreviousWeapon(){
+		ancientSecTurret = new Weapon(NewHorizon.name("pester-secondary-laser")){{
+			shootY = 3f;
+			shootX = -1f;
+			
+			recoil = 1f;
+			
+			reload = 16f;
+			mirror = rotate = true;
+			rotateSpeed = 4f;
+			autoTarget = true;
+			controllable = false;
+			
+			shootSound = NHSounds.gauss;
+			
+			bullet = new PosLightningType(120f){{
+				maxRange = 160f;
+				lifetime = 48f;
+				boltNum = 1;
+				hitEffect = NHFx.hitSpark;
+				hitColor = lightColor = lightningColor = NHColor.ancient;
+			}};
+		}};
+		
 		laserCannon = new Weapon(NewHorizon.name("laser-cannon")){{
 			mirror = top = alternate = autoTarget = rotate = true;
 			predictTarget = controllable = false;
@@ -551,7 +581,150 @@ public class NHUnitTypes{
 		
 		loadPreviousWeapon();
 		
+		laugra = new NHUnitType("laugra"){{
+			health = 22000;
+			armor = 45;
+			rotateSpeed = 3f;
+			speed = 1.5f;
+			
+			immunise(this);
+			
+			squareShape = true;
+			omniMovement = false;
+			rotateMoveFirst = true;
+			envDisabled = Env.none;
+			hitSize = 50f;
+			
+			accel = 0.25f;
+			
+			treadRects = new Rect[]{new Rect(-85.0F, -104.0F, 28.0F, 208.0F)};
+			
+			hoverable = hovering = true;
+			
+			Weapon w = ancientSecTurret.copy();
+			w.reload = 16f;
+			w.bullet = new BasicBulletType(){{
+				width = 9f;
+				height = 28f;
+				trailWidth = 1.3f;
+				trailLength = 7;
+				
+				speed = 12f;
+				lifetime = 24f;
+				drag = 0.015f;
+				
+				trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
+				frontColor = Color.white;
+				
+				damage = 40f;
+				
+				smokeEffect = Fx.shootSmallSmoke;
+				shootEffect = NHFx.shootCircleSmall(backColor);
+				despawnEffect = NHFx.square45_4_45;
+				hitEffect = NHFx.hitSpark;
+			}};
+			
+			weapons.add(copyAndMove(w, 18.5f, 11f), copyAndMove(w, 18.5f, -13f));
+			
+			weapons.add(new Weapon(name + "-turret"){{
+				x = y = 0;
+				rotate = true;
+				rotateSpeed = 3.5f;
+				mirror = alternate = false;
+				layerOffset = 0.15f;
+				
+				shootWarmupSpeed /= 2f;
+				minWarmup = 0.9f;
+				
+				recoil = 2.25f;
+				shake = 8f;
+				reload = 120f;
+				
+				shootY = 25;
+				
+				cooldownTime = 45f;
+				heatColor = NHColor.ancientHeat;
+				
+				shoot = new ShootAlternate(){{
+					shots = 2;
+					shotDelay = 0f;
+					spread = 12.3f;
+				}};
+				
+				inaccuracy = 1.3f;
+				shootSound = NHSounds.flak;
+				
+				bullet = NHBullets.laugraBullet;
+				
+				abilities.add(new GravityTrapAbility(120f));
+				
+				parts.add(new RegionPart("-panel"){{
+					outline = mirror = true;
+					x = y = 0;
+					moveX = -2;
+					moveRot = -6f;
+					moveY = -2f;
+					progress = PartProgress.warmup;
+				}}, new RegionPart("-barrel"){{
+					under = outline = true;
+					x = y = 0;
+					moveY = -6f;
+					progress = PartProgress.recoil;
+				}}, new HaloPart(){{
+					shapes = 1;
+					layer = Layer.bullet + 1f;
+					x = 0;
+					y = -32f;
+					color = NHColor.ancient;
+					hollow = true;
+					sides = 4;
+					stroke = 0f;
+					strokeTo = 1.1f;
+					radiusTo = 6f;
+					rotateSpeed = 1.2f;
+					
+					progress = PartProgress.warmup.blend(PartProgress.reload, 0.3f);
+				}});
+				
+				parts.add(new HaloPart(){{
+					shapes = 1;
+					layer = Layer.bullet + 1f;
+					x = 14;
+					y = -18.5f;
+					
+					haloRadius = 0;
+					
+					color = NHColor.ancient;
+					tri = mirror = true;
+					strokeTo = 2.1f;
+					triLength = -0.1f;
+					triLengthTo = 16f;
+					haloRotation = 315;
+					
+					progress = PartProgress.warmup;
+				}}, new HaloPart(){{
+					shapes = 1;
+					layer = Layer.bullet + 1f;
+					x = 14;
+					y = -18.5f;
+					haloRadius = 0;
+					color = NHColor.ancient;
+					tri = mirror = true;
+					strokeTo = 2.1f;
+					triLength = -0.1f;
+					triLengthTo = 3f;
+					haloRotation = 135;
+					
+					progress = PartProgress.warmup;
+				}});
+			}});
+		}
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
 		pester = new NHUnitType("pester"){{
+			
+			trailScl = 2f;
 			
 			outlineRadius += 1;
 			outlineColor = Pal.darkOutline;
@@ -727,28 +900,7 @@ public class NHUnitTypes{
 					drawSize = 300f;
 				}};
 			}};
-			Weapon scdLaser = new Weapon(name + "-secondary-laser"){{
-				shootY = 3f;
-				shootX = -1f;
-				
-				recoil = 1f;
-				
-				reload = 16f;
-				mirror = rotate = true;
-				rotateSpeed = 4f;
-				autoTarget = true;
-				controllable = false;
-				
-				shootSound = NHSounds.rapidLaser;
-				
-				bullet = new PosLightningType(120f){{
-					maxRange = 160f;
-					lifetime = 48f;
-					boltNum = 1;
-					hitEffect = NHFx.hitSpark;
-					hitColor = lightColor = lightningColor = NHColor.ancient;
-				}};
-			}};
+			
 			Weapon pdf = new PointDefenseWeapon(){{
 				beamEffect = Fx.chainLightning;
 				
@@ -906,7 +1058,7 @@ public class NHUnitTypes{
 						
 						@Override
 						public void init(Bullet b){
-							Position p = NHFunc.collideBuildOnLength(b.team, b.x, b.y, length, b.rotation(), bu -> true);
+							Vec2 p = new Vec2().set(NHFunc.collideBuildOnLength(b.team, b.x, b.y, length, b.rotation(), bu -> true));
 							
 							float resultLength = b.dst(p), rot = b.rotation();
 							
@@ -1083,9 +1235,9 @@ public class NHUnitTypes{
 				};
 			}});
 			
-			weapons.add(copyAndMove(scdLaser, 42f, 55f));
-			weapons.add(copyAndMove(scdLaser, 51.5f, -80.5f));
-			weapons.add(copyAndMove(scdLaser, 37f, -95.75f));
+			weapons.add(copyAndMove(ancientSecTurret, 42f, 55f));
+			weapons.add(copyAndMove(ancientSecTurret, 51.5f, -80.5f));
+			weapons.add(copyAndMove(ancientSecTurret, 37f, -95.75f));
 			
 			weapons.add(pdf);
 			weapons.add(pdf.copy());
@@ -2673,6 +2825,8 @@ public class NHUnitTypes{
 				new Weapon(NewHorizon.name("longinus-weapon")){{
 						shootY = 42;
 						
+						minWarmup = 0.95f;
+						
 						healColor = NHColor.thurmixRed;
 						
 						shoot = new ShootHelix(){{
@@ -3106,7 +3260,7 @@ public class NHUnitTypes{
 			canBoost = true;
 			boostMultiplier = 2.5f;
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
+//			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 		
 		anvil = new NHUnitType("anvil"){{
@@ -3298,7 +3452,7 @@ public class NHUnitTypes{
 			targetFlags = new BlockFlag[]{BlockFlag.factory, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
 
 		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+//			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		guardian = new NHUnitType("guardian"){{

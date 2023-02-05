@@ -81,9 +81,9 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(NHUnitTypes.pester){{
+			new FeatureLog(NHUnitTypes.laugra){{
 				important = true;
-			}}
+			}}, new FeatureLog("PESTER NEW FEATURE", "Pester in state of Boss now has unique horrible ability.", FeatureLog.NEW_FEATURE, Icon.upOpen.getRegion())
 		};
 	}
 	

@@ -879,7 +879,7 @@
 //									Effect.shake(8 * b.fin(), 6, b);
 //
 //									if(b.timer(1, 12)){
-//										Seq<Teamc> entites = new Seq<>();
+//										Seq<TeamHealthc> entites = new Seq<>();
 //
 //										Units.nearbyEnemies(b.team, b.x, b.y, rad * 2.5f * (1 + b.fin()) / 2, entites::add);
 //
@@ -890,7 +890,7 @@
 //										entites.shuffle();
 //										entites.truncate(15);
 //
-//										for(Teamc e : entites){
+//										for(TeamHealthc e : entites){
 //											PosLightning.create(b, b.team, b, e, lightningColor, false, lightningDamage, 5 + Mathf.random(5), PosLightning.WIDTH, 1, p -> {
 //												NHFx.lightningHitSmall.at(p.getX(), p.getY(), 0, lightningColor);
 //											});
