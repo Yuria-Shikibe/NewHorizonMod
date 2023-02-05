@@ -495,13 +495,6 @@ public class PesterEntity extends UnitEntity{
 	}
 	
 	@Override
-	public void writeSyncManual(FloatBuffer buffer){
-		super.writeSyncManual(buffer);
-		buffer.put(salvoReload);
-		buffer.put(bossWeaponReload);
-	}
-	
-	@Override
 	public void readSync(Reads read){
 		super.readSync(read);
 		
@@ -521,12 +514,21 @@ public class PesterEntity extends UnitEntity{
 	}
 	
 	@Override
+	public void writeSyncManual(FloatBuffer buffer){
+		super.writeSyncManual(buffer);
+//		Log.info("put");
+//		buffer.put(salvoReload);
+//		buffer.put(bossWeaponReload);
+	}
+	
+	@Override
 	public void readSyncManual(FloatBuffer buffer){
 		super.readSyncManual(buffer);
-		salvoReload_LAST_ = salvoReload;
-		salvoReload_TARGET_ = buffer.get();
-		bossWeaponReload_LAST_ = bossWeaponReload;
-		bossWeaponReload_TARGET_ = buffer.get();
+//		Log.info("read");
+//		salvoReload_LAST_ = salvoReload;
+//		salvoReload_TARGET_ = buffer.get();
+//		bossWeaponReload_LAST_ = bossWeaponReload;
+//		bossWeaponReload_TARGET_ = buffer.get();
 	}
 	
 	@Override

@@ -10,6 +10,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
+import mindustry.ctype.ContentType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
@@ -21,6 +22,7 @@ import mindustry.mod.Mod;
 import mindustry.mod.Mods;
 import mindustry.net.ServerGroup;
 import mindustry.type.Item;
+import mindustry.type.StatusEffect;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
@@ -376,6 +378,22 @@ public class NewHorizon extends Mod{
 	
 	@Override
 	public void registerClientCommands(CommandHandler handler) {
+		handler.<Player>register("status", "Apply a status to player's unit", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else if (args.length == 0 || args[0].isEmpty()) {
+				for(StatusEffect s : Vars.content.statusEffects()){
+					player.sendMessage(s.name + "|" + s.id);
+				}
+			} else {
+				try {
+					player.unit().apply(Vars.content.getByID(ContentType.status, Integer.parseInt(args[0])), 120 * Time.toSeconds);
+				} catch (NumberFormatException var3) {
+					player.sendMessage("[VIOLET]Failed, the param must be a <Number>");
+				}
+			}
+		});
+		
 		handler.<Player>register("runwave", "<num>", "Run Wave (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
