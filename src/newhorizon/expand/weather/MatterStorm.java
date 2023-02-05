@@ -302,6 +302,8 @@ public class MatterStorm extends Weather{
 
 	@Override
 	public void drawOver(WeatherState state){
+		//TODO mobile fix
+		if(Vars.mobile)return;
 		Drawf.light(Vars.world.unitWidth() / 2f, Vars.world.unitHeight() / 2f, 1000000f, getColor(), state.opacity);
 
 		Draw.blend();
