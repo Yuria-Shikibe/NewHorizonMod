@@ -11,13 +11,15 @@ public class NHLiquids{
 	xenAlpha, 
 	xenBeta,
 	xenGamma,
-	zetaFluid, quantumLiquid,
+	zetaFluid, quantumEntity,
 	irdryonFluid;
 	
 	public static void load(){
-		quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor){{
+		quantumEntity = new Liquid("quantum-liquid", NHColor.darkEnrColor){{
 			heatCapacity = 0.75f;
 			lightColor = NHColor.darkEnrColor;
+			gas = true;
+			barColor = gasColor = lightColor;
 //			effect = NHStatusEffects.quantization;
 		}};
 		

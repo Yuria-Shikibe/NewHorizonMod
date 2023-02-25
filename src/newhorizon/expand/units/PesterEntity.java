@@ -164,7 +164,7 @@ public class PesterEntity extends UnitEntity{
 	@Override
 	public void setType(UnitType type){
 		super.setType(type);
-		lastTargetPos.set(x, y);
+		if(!Vars.net.active())lastTargetPos.set(x, y);
 		
 		if(!Vars.headless && trails.length != 4){
 			trails = new Trail[4];

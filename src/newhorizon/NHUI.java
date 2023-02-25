@@ -1,6 +1,7 @@
 package newhorizon;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.scene.Group;
 import arc.scene.event.Touchable;
 import arc.scene.ui.ImageButton;
@@ -14,9 +15,11 @@ import mindustry.gen.Tex;
 import mindustry.ui.Styles;
 import newhorizon.util.ui.WorldEventDialog;
 
+import static mindustry.gen.Tex.*;
+
 public class NHUI{
 	//References:
-	public static Table HudFragment_overlaymarker, HUD_waves, HUD_statustable;
+	public static Table HudFragment_overlaymarker, HUD_waves, HUD_statustable, HUD_status;
 	public static WidgetGroup HUD_waves_editor;
 	
 	public static WorldEventDialog eventDialog;
@@ -44,6 +47,7 @@ public class NHUI{
 			HUD_waves_editor = HudFragment_overlaymarker.find("waves/editor");
 			HUD_waves = HUD_waves_editor.find("waves");
 			HUD_statustable = HUD_waves.find("statustable");
+			HUD_status = HUD_statustable.find("status");
 		}catch(ClassCastException e){
 			throw new ArcRuntimeException("Invalid UI Parameter! Check Game&Mod's Version!");
 		}
@@ -52,6 +56,9 @@ public class NHUI{
 		eventDialog = new WorldEventDialog();
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
+			t.update(() -> {
+				t.setWidth(HUD_waves.getWidth());
+			});
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {
@@ -92,7 +99,27 @@ public class NHUI{
 			t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
 		});
 		
-		HUD_statustable.row().add(table).left().fill().margin(10f).padBottom(4f);
+		float w = 30f;
+		
+		try{
+			ImageButton skip = ((ImageButton)HUD_statustable.find("skip"));
+			
+			skip.setStyle(new ImageButton.ImageButtonStyle(){{
+				over = buttonSelectTrans;
+				down = whitePane;
+				up = pane;
+				imageUp = Icon.play;
+				disabled = pane;
+				imageDisabledColor = Color.clear;
+				imageUpColor = Color.white;
+			}});
+			
+			w = skip.getWidth();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		HUD_statustable.row().add(table).left().margin(10f);
 	}
 	
 	public static void clear(){

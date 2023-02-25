@@ -582,6 +582,8 @@ public class NHUnitTypes{
 		loadPreviousWeapon();
 		
 		laugra = new NHUnitType("laugra"){{
+			outlineColor = Pal.darkOutline;
+			
 			health = 22000;
 			armor = 45;
 			rotateSpeed = 3f;
@@ -602,7 +604,7 @@ public class NHUnitTypes{
 			hoverable = hovering = true;
 			
 			Weapon w = ancientSecTurret.copy();
-			w.reload = 16f;
+			w.reload = 12f;
 			w.bullet = new BasicBulletType(){{
 				width = 9f;
 				height = 28f;
@@ -757,7 +759,7 @@ public class NHUnitTypes{
 				regen = 5f;
 				cooldown = 60f * 10f;
 				max = 50000f;
-				width = 10f;
+				width = 15f;
 				whenShooting = false;
 			}});
 			
@@ -867,6 +869,9 @@ public class NHUnitTypes{
 					accelerateBegin = 0.1f;
 					accelerateEnd = 0.85f;
 					
+					status = NHStatusEffects.entangled;
+					statusDuration = 30f;
+					
 					despawnSound = hitSound = Sounds.dullExplosion;
 					
 					velocityBegin = 8f;
@@ -960,6 +965,9 @@ public class NHUnitTypes{
 					backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
 					lifetime = 95f;
 					
+					status = NHStatusEffects.entangled;
+					statusDuration = 300f;
+					
 					accelerateBegin = 0.15f;
 					accelerateEnd = 0.95f;
 					
@@ -1016,6 +1024,9 @@ public class NHUnitTypes{
 						length = 460f;
 						damage = 4060f;
 						width = 45f;
+						
+						status = NHStatusEffects.entangled;
+						statusDuration = 120f;
 						
 						lifetime = 65f;
 						
@@ -1139,7 +1150,8 @@ public class NHUnitTypes{
 					lifetime = 120f;
 					width = 8f;
 					
-					
+					status = NHStatusEffects.entangled;
+					statusDuration = 30f;
 					
 					damage = 350;
 					lightningDamage = 120;
@@ -3109,7 +3121,7 @@ public class NHUnitTypes{
 		
 		sin = new NHUnitType("sin"){{
 			outlineColor = OColor;
-			abilities.add(new ForceFieldAbility(88.0F, 20F, 5000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f){{
+			abilities.add(new ForceFieldAbility(88.0F, 20F, 30000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f){{
 				activeEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 60f, 240f, 4f, 45);
 				applyEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 30f, 45f, 1f, 45);
 			}});

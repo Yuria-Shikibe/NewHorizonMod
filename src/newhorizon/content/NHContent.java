@@ -14,6 +14,7 @@ import mindustry.game.Schematics;
 import mindustry.gen.Icon;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
+import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.func.NHPixmap;
@@ -35,8 +36,7 @@ public class NHContent extends Content{
 			
 			;
 	
-	public static CacheLayer
-			quantum;
+	public static CacheLayer quantumLayer;
 	
 	public static TextureRegion
 			crossRegion, sourceCenter,
@@ -46,12 +46,16 @@ public class NHContent extends Content{
 	public static TextureRegion //UI
 		raid, objective, fleet, capture;
 	
+	public static Attribute quantum;
+	
 	public static void loadPriority(){
 		new NHContent().load();
 	}
 	
 	public static void loadBeforeContentLoad(){
-		CacheLayer.add(quantum = new CacheLayer.ShaderLayer(NHShaders.quantum){});
+		CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum){});
+		
+		quantum = Attribute.add("quantum");
 	}
 	
 	public static void loadLast(){

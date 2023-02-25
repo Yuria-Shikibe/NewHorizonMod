@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import mindustry.content.Items;
 import mindustry.content.SectorPresets;
 import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
@@ -23,7 +24,7 @@ public class NHTechTree{
 			}
 		});
 		
-		nodeRoot("new-horizon", NHBlocks.presstaniumFactory, () -> {
+		TechNode root = nodeRoot("new-horizon", NHBlocks.presstaniumFactory, () -> {
 			node(NHPlanets.midantha, ItemStack.with(NHItems.darkEnergy, 100, NHItems.seniorProcessor, 1000, NHItems.presstanium, 5000), Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
 				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1000), () -> {
 				
@@ -38,7 +39,6 @@ public class NHTechTree{
 				node(NHBlocks.heavyPowerNode);
 				node(NHBlocks.largeMendProjector, () -> {
 					node(NHBlocks.gravityTrapSmall, () -> {
-						node(NHBlocks.hyperspaceWarper);
 						node(NHBlocks.gravityTrap);
 						node(NHBlocks.assignOverdrive);
 					});
@@ -62,7 +62,6 @@ public class NHTechTree{
 					node(NHBlocks.setonWall, () -> {
 						node(NHBlocks.setonWallLarge, () -> {
 							node(NHBlocks.chargeWall, () -> {
-								node(NHBlocks.shapedWall);
 								node(NHBlocks.chargeWallLarge);
 							});
 						});
@@ -212,7 +211,7 @@ public class NHTechTree{
 			});
 			
 			nodeProduce(NHItems.presstanium, () -> {
-				nodeProduce(NHLiquids.quantumLiquid, () -> {
+				nodeProduce(NHLiquids.quantumEntity, () -> {
 					node(NHBlocks.waterInstancer);
 				});
 				
@@ -232,12 +231,26 @@ public class NHTechTree{
 						nodeProduce(NHItems.thermoCorePositive, () -> {});
 						nodeProduce(NHItems.thermoCoreNegative, () -> {});
 						node(NHItems.darkEnergy, Seq.with(new Objectives.Produce(NHItems.thermoCorePositive), new Objectives.Produce(NHItems.thermoCorePositive)), () -> {
-							node(NHUnitTypes.laugra, () -> {
-								nodeUnit(NHUnitTypes.guardian, () -> {
-									nodeUnit(NHUnitTypes.pester, () -> {
+							node(NHItems.ancimembrane, ItemStack.with(NHItems.seniorProcessor, 3000, Items.tungsten, 10000, NHItems.setonAlloy, 1000), () -> {
+								node(NHBlocks.ancimembraneConcentrator, () -> {
+									node(NHBlocks.dendrite);
 									
+									node(NHBlocks.hyperspaceWarper);
+									
+									node(NHBlocks.shapedWall, () -> {
+										node(NHBlocks.ancientLaserWall);
+									});
+									
+									node(NHUnitTypes.laugra, () -> {
+										nodeUnit(NHUnitTypes.pester, () -> {
+										
+										});
 									});
 								});
+							});
+							
+							nodeUnit(NHUnitTypes.guardian, () -> {
+							
 							});
 						});
 					});
@@ -255,5 +268,8 @@ public class NHTechTree{
 				});
 			});
 		});
+		
+		root.planet = NHPlanets.midantha;
+		root.children.each(c -> c.planet = NHPlanets.midantha);
 	}
 }

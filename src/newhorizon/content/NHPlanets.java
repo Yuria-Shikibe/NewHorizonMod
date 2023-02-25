@@ -74,6 +74,7 @@ public class NHPlanets{
 			allowLaunchLoadout = false;
 			
 			ruleSetter = r -> {
+				r.hideBannedBlocks = true;
 				r.waveTeam = Team.malis;
 				r.placeRangeCheck = false;
 				r.showSpawns = true;

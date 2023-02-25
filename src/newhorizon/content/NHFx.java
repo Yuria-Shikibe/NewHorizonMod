@@ -11,7 +11,7 @@ import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
-import arc.struct.ObjectMap;
+import arc.struct.IntMap;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
@@ -40,7 +40,7 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 
 public class NHFx{
-	public static final ObjectMap<Integer, Effect> same = new ObjectMap<>();
+	public static final IntMap<Effect> same = new IntMap<>();
 	private static final Rand rand = new Rand();
 	private static final Vec2 v = new Vec2();
 	private static final int[] oneArr = {1};
@@ -157,7 +157,7 @@ public class NHFx{
 	}
 	
 	public static Effect shootLine(float size, float angleRange){
-		int num = Mathf.clamp((int)size / 4, 6, 20);
+		int num = Mathf.clamp((int)size / 6, 6, 20);
 		
 		return get("shootLineSmall", Color.clear, new Effect(37f, e -> {
 			color(e.color, Color.white, e.fout() * 0.7f);
@@ -1236,7 +1236,7 @@ public class NHFx{
 		}),
 		
 		hugeSmokeGray = new Effect(40f, e -> {
-			Draw.color(Color.lightGray, Color.gray, e.fin());
+			Draw.color(Color.gray, Color.darkGray, e.fin());
 			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
 		}),

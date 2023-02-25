@@ -14,6 +14,9 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import newhorizon.expand.entities.WorldEvent;
+import newhorizon.expand.eventsys.annotation.Customizable;
+import newhorizon.expand.eventsys.annotation.NumberParam;
+import newhorizon.expand.eventsys.custom.NumberDisplay;
 import newhorizon.util.ui.ObjectiveSign;
 
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -25,6 +28,7 @@ public class ObjectiveEventType extends WorldEventType{
 	public Boolf<WorldEvent> trigger = e -> true;
 	public Cons<WorldEvent> action = e -> {};
 	
+	@Customizable @NumberParam(display = NumberDisplay.time, stepSize = 30, max = Time.toSeconds * 10, min = 30)
 	public float checkSpacing = 30f;
 	
 	public ObjectiveEventType(String name){

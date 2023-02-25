@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.gl.FrameBuffer;
 import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
 import arc.util.Disposable;
 import mindustry.Vars;
 import mindustry.gen.Building;
@@ -28,6 +29,9 @@ public class NHRenderer implements Disposable{
 	
 	public Rect viewport = new Rect();
 	
+	public Vec2 tmp = new Vec2(1, 0);
+	
+//	public Texture matterStorm = new Texture(1920, 1080);
 	
 	public NHRenderer(){
 		mask = effect = new FrameBuffer();
@@ -55,7 +59,22 @@ public class NHRenderer implements Disposable{
 		height = graphics.getHeight();
 		
 		drawGravityTrapField();
-		EffectDrawer.drawer.draw();
+		
+//		effect.resize(graphics.getWidth(), graphics.getHeight());
+//
+//		effect.begin(Color.clear);
+//		NHShaders.matterStorm.primaryColor.set(Color.white);
+//		NHShaders.matterStorm.applyDirection(tmp, 8f);
+//		NHShaders.matterStorm.secondaryColor.set(Tmp.c1.set(Color.white).lerp(Color.white, Mathf.absin(8f, 0.4f)));
+//		effect.end();
+//
+//		matterStorm = effect.getTexture();
+//		matterStorm.bind(0);
+//		NHShaders.matterStorm.bind();
+//		NHShaders.matterStorm.apply();
+//
+//		matterStorm.setFilter(Texture.TextureFilter.linear);
+//		matterStorm.setWrap(Texture.TextureWrap.repeat);
 	}
 	
 	public void afterDraw(){
@@ -85,6 +104,7 @@ public class NHRenderer implements Disposable{
 		mask.dispose();
 		effect.dispose();
 		effectDrawer.dispose();
+//		matterStorm.dispose();
 		textureStretchIn.dispose();
 	}
 }

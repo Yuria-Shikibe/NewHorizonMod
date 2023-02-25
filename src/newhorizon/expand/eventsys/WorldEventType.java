@@ -8,6 +8,7 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.math.geom.Position;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
@@ -16,6 +17,8 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import arc.util.serialization.Json;
+import arc.util.serialization.JsonValue;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
@@ -29,6 +32,10 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.WorldEvent;
+import newhorizon.expand.eventsys.annotation.Customizable;
+import newhorizon.expand.eventsys.annotation.NumberParam;
+import newhorizon.expand.eventsys.annotation.Parserable;
+import newhorizon.expand.eventsys.annotation.Pos;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
 
@@ -36,7 +43,7 @@ import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-public class WorldEventType{
+public class WorldEventType implements Json.JsonSerializable{
 	public static final ObjectMap<String, WorldEventType> allTypes = new ObjectMap<>();
 	public static final ObjectMap<String, WorldEventType> costumeTypes = new ObjectMap<>();
 	
@@ -70,11 +77,19 @@ public class WorldEventType{
 	}
 	
 	public boolean hasCoord = false;
-	public boolean fadeUI = false;
-	public final String name;
-	public boolean removeAfterTrigger;
+	
+	@Customizable public boolean fadeUI = false;
+	@Customizable @Parserable(value = String.class, params = {Void.class}) public final String name;
+	@Customizable public boolean removeAfterTrigger;
+	
 	public boolean drawable = false, minimapMarkable = false;
 	public boolean warnOnHUD = true;
+	
+	@Customizable @Pos
+	@Parserable(value = Integer.class, params = {Point2.class})
+	@NumberParam()
+	public int initPos = -1;
+	
 	public Prov<? extends WorldEvent> eventProv = WorldEvent::new;
 	
 	public WorldEventType(String name){
@@ -88,6 +103,11 @@ public class WorldEventType{
 		event.type = this;
 		event.add();
 		event.init();
+		
+		if(initPos != -1 && hasCoord){
+			Tmp.p1.set(Point2.unpack(initPos));
+			event.set(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize);
+		}
 		
 		return event;
 	}
@@ -255,5 +275,15 @@ public class WorldEventType{
 			
 			addCloseButton();
 		}}.show();
+	}
+	
+	@Override
+	public void write(Json json){
+	
+	}
+	
+	@Override
+	public void read(Json json, JsonValue jsonData){
+	
 	}
 }

@@ -7,12 +7,19 @@ public class NHItems{
 	
 	//Load Mod Items
 	
-	public static Item 
+	public static Item
+	ancimembrane,
 	presstanium, seniorProcessor, juniorProcessor,
 	zeta, fusionEnergy, multipleSteel, irayrondPanel,
 	setonAlloy, darkEnergy, upgradeSort, metalOxhydrigen,
 	thermoCorePositive, thermoCoreNegative;
 	public static void load(){
+		ancimembrane = new Item("ancimembrane"){{
+			cost = 5;
+			
+			charge = 5;
+		}};
+		
 		thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("CFFF87")){{
 			radioactivity = 2.5f;
 			explosiveness = 3f;
@@ -23,6 +30,7 @@ public class NHItems{
 		}};
 		presstanium = new Item("presstanium", Color.valueOf("6495ED")){{
 			flammability = 0.35f;
+			cost = 1.5f;
 		}};
 		seniorProcessor = new Item("processor-senior", Color.valueOf("FFFACD"));
 		juniorProcessor = new Item("processor-junior", Color.valueOf("808080"));
@@ -36,16 +44,23 @@ public class NHItems{
 			charge = 1.25f;
 			radioactivity = 1f;
 		}};
-		multipleSteel = new Item("multiple-steel", Color.valueOf("cedbe3"));
-		irayrondPanel = new Item("irayrond-panel", Color.valueOf("E4F0FF"));
+		multipleSteel = new Item("multiple-steel", Color.valueOf("cedbe3")){{
+			cost = 1.75f;
+		}};
+		irayrondPanel = new Item("irayrond-panel", Color.valueOf("E4F0FF")){{
+			cost = 2f;
+		}};
 		setonAlloy = new Item("seton-alloy", Color.valueOf("#151C23")){{
+			cost = 2.5f;
 		}};
 		darkEnergy = new Item("dark-energy", Color.valueOf("#BE91FF")){{
 			radioactivity = 5f;
 			explosiveness = 5f;
 			charge = 25f;
 		}};
-		upgradeSort = new Item("upgradeSort", Color.valueOf("1D1E23"));
+		upgradeSort = new Item("upgradeSort", Color.valueOf("1D1E23")){{
+			cost = 3f;
+		}};
 		metalOxhydrigen = new Item("metal-oxhydrigen", Color.valueOf("#BFF3FF"));
 	}
 	

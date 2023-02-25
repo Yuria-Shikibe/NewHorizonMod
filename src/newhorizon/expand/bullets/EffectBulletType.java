@@ -10,7 +10,7 @@ public class EffectBulletType extends BulletType{
 		this.lifetime = lifetime;
 		hittable = false;
 		despawnEffect = hitEffect = shootEffect = smokeEffect = trailEffect = Fx.none;
-		absorbable = collides = collidesAir = collidesGround = collidesTeam = collidesTiles = false;
+		absorbable = collides = collidesAir = collidesGround = collidesTeam = collidesTiles = collideFloor = collideTerrain = false;
 		hitSize = 0;
 		speed = 0.0001f;
 		drawSize = 120f;

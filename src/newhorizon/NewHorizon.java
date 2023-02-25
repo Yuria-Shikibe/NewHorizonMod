@@ -34,6 +34,7 @@ import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.WorldEventType;
+import newhorizon.expand.eventsys.custom.Customizer;
 import newhorizon.expand.packets.NHCall;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.EffectDrawer;
@@ -83,9 +84,12 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(NHUnitTypes.laugra){{
+			new FeatureLog(NHItems.ancimembrane){{
 				important = true;
-			}}, new FeatureLog("PESTER NEW FEATURE", "Pester in state of Boss now has unique horrible ability.", FeatureLog.NEW_FEATURE, Icon.upOpen.getRegion())
+			}}, new FeatureLog(NHBlocks.ancimembraneConcentrator){{
+			}}, new FeatureLog(NHBlocks.dendrite){{
+			}}, new FeatureLog(NHStatusEffects.entangled){{
+			}}
 		};
 	}
 	
@@ -129,6 +133,7 @@ public class NewHorizon extends Mod{
 							if(c.important || c.content != null){
 								table.background(Tex.whitePane);
 								if(c.important)table.color.set(Pal.accent);
+								else table.color.set(Color.gray);
 							}
 							
 							table.table(i -> {
@@ -378,7 +383,7 @@ public class NewHorizon extends Mod{
 	
 	@Override
 	public void registerClientCommands(CommandHandler handler) {
-		handler.<Player>register("status", "Apply a status to player's unit", (args, player) -> {
+		handler.<Player>register("applystatus", "Apply a status to player's unit", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
 			} else if (args.length == 0 || args[0].isEmpty()) {
@@ -578,6 +583,7 @@ public class NewHorizon extends Mod{
 		if(Vars.headless || NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE))NHOverride.loadOptional();
 		
 		NHContent.loadLast();
+		Customizer.customizer = new Customizer();
 		
 		contentLoadComplete = true;
 		

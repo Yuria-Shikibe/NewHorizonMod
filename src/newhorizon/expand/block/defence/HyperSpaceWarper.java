@@ -115,9 +115,7 @@ public class HyperSpaceWarper extends Block{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.output, (t) -> {
-			t.table(i -> {
-				i.row().add("[gray]Legends:").left().pad(OFFSET).growX().height(LEN).row();
-			}).growX().fillY().row();
+			t.left();
 			t.table(i -> {
 				i.image().size(LEN).color(Pal.lancerLaser).left();
 				i.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).growX().padLeft(OFFSET / 2).row();
@@ -143,6 +141,11 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public float warmup(){
+			return reload / reloadTime;
+		}
+		
+		@Override
+		public float progress(){
 			return reload / reloadTime;
 		}
 		

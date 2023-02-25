@@ -40,7 +40,7 @@ public class NHInbuiltEvents{
 			units = OV_Pair.seqWith();
 			buildings = OV_Pair.seqWith();
 			minTriggerWave = 0;
-			eventType = WorldEventType.inbuilt(new ReachWaveObjective("inbuilt-wave-10"){{
+			eventType = WorldEventType.inbuilt(new ReachWaveEvent("inbuilt-wave-10"){{
 				targetWave = 10;
 				toTrigger = new InterventionEventType("wave10-reward"){{
 					spawn(NHUnitTypes.rhino, 1, NHUnitTypes.gather, 2);
@@ -70,7 +70,7 @@ public class NHInbuiltEvents{
 			units = OV_Pair.seqWith();
 			buildings = OV_Pair.seqWith();
 			minTriggerWave = 0;
-			eventType = WorldEventType.inbuilt(new ReachWaveObjective("inbuilt-wave-55"){{
+			eventType = WorldEventType.inbuilt(new ReachWaveEvent("inbuilt-wave-55"){{
 				targetWave = 55;
 				toTrigger = new InterventionEventType("wave55-reward"){{
 					spawn(NHUnitTypes.saviour, 1, NHUnitTypes.naxos, 2);
@@ -361,7 +361,7 @@ public class NHInbuiltEvents{
 					Core.app.post(() -> {
 						if(Vars.state.isCampaign() && Vars.state.rules.tags.containsKey(applyKey) && !Vars.state.rules.sector.isCaptured()){
 							if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp)autoTriggers.each(t -> t.copy().add());
-							AutoEventTrigger.setScale(0.35f);
+							AutoEventTrigger.setScale(0.55f);
 						}
 					});
 				}

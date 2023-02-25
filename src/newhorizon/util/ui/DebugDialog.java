@@ -38,6 +38,7 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.eventsys.custom.CustomUIGen;
 import newhorizon.util.Tool_Internal;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
@@ -251,7 +252,7 @@ public class DebugDialog extends BaseDialog{
 										
 										Lines.beginLine();
 										
-										for(float i = 0; i < len; i += len / sigs){
+										for(float i = 0; i <= len; i += len / sigs){
 											Lines.linePoint(x + i * unitLength + offset, y + interp.apply(i / sigs) * len * unitLength + offset);
 										}
 										
@@ -440,6 +441,20 @@ public class DebugDialog extends BaseDialog{
 			t.button("summon", () -> {
 				NHInbuiltEvents.intervention_std.create();
 			});
+			
+			t.button("gen", () -> {
+				new CustomUIGen().show();
+			});
+			
+			/*t.button("genT", () -> {
+				new BaseDialog(""){{
+					addCloseButton();
+					
+					cont.table(t -> {
+						t.image(Draw.wrap(NHModCore.core.renderer.matterStorm));
+					}).grow();
+				}}.show();
+			});*/
 		}).grow();
 		
 		addCloseButton();

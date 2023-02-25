@@ -870,6 +870,8 @@ public class NHBullets{
 		}};
 		
 		laugraBullet = new SpeedUpBulletType(200, STRIKE){{
+			status = NHStatusEffects.entangled;
+			statusDuration = 320f;
 			
 			lightOpacity = 0.7f;
 			healPercent = 20f;
@@ -895,7 +897,7 @@ public class NHBullets{
 			frontColor = Color.white;
 			
 			lightning = 2;
-			lightningDamage = damage / 8f + 10f;
+			lightningDamage = damage / 4f + 10f;
 			lightningLength = 7;
 			lightningLengthRand = 16;
 			
@@ -911,8 +913,6 @@ public class NHBullets{
 			hitShake = 8f;
 			trailRotation = true;
 			keepVelocity = true;
-			status = NHStatusEffects.scannerDown;
-			statusDuration = 600f;
 			
 			hitSound = Sounds.plasmaboom;
 			

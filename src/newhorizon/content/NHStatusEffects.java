@@ -17,10 +17,39 @@ import mindustry.type.StatusEffect;
 import newhorizon.util.func.NHFunc;
 
 public class NHStatusEffects{
-    public static StatusEffect ultFireBurn, stronghold, overphased,
+    public static StatusEffect
+            entangled,
+            ultFireBurn, stronghold, overphased,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
     public static void load(){
+        entangled = new NHStatusEffect("entangled"){{
+            color = textureColor = Color.lightGray;
+            speedMultiplier = 0.95f;
+            reloadMultiplier = 0.95f;
+            outline = true;
+            
+            effectChance = 0.085f;
+            effect = new Effect(45f, e -> {
+                Lines.stroke(e.fslope() * 2f);
+                Draw.color(NHColor.ancient, Color.white, e.fout() * 0.75f);
+                Lines.spikes(e.x, e.y, 45f * e.fin(),3 + 8 * e.fslope() + 5 * e.fin(),4, 45);
+            });
+        }
+        
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+                
+                unit.shield *= 0.975f;
+                
+                if(unit.shield > 50f && Mathf.chanceDelta(0.065)){
+                    NHFx.shuttle.at(unit.x + Mathf.random(unit.hitSize * 0.75f), unit.x + Mathf.random(unit.hitSize * 0.75f), 45, NHColor.ancient, Mathf.clamp(unit.shield, 1000, 6000) / Vars.tilesize / 30f);
+                    Effect.shake(3, 5, unit);
+                }
+            }
+        };
+        
         overphased = new NHStatusEffect("overphased"){{
             outline = true;
             color = textureColor = NHColor.deeperBlue;

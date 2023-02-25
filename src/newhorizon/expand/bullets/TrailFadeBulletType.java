@@ -8,7 +8,6 @@ import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;
 import newhorizon.NHSetting;
@@ -16,7 +15,7 @@ import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.struct.Vec2Seq;
 
-public class TrailFadeBulletType extends BasicBulletType{
+public class TrailFadeBulletType extends SpeedUpBulletType{
 	public int tracers = 2;
 	public float tracerStroke = 3F;
 	public int tracerFadeOffset = 10;
