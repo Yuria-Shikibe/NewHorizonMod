@@ -84,12 +84,10 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(NHItems.ancimembrane){{
-				important = true;
-			}}, new FeatureLog(NHBlocks.ancimembraneConcentrator){{
-			}}, new FeatureLog(NHBlocks.dendrite){{
-			}}, new FeatureLog(NHStatusEffects.entangled){{
-			}}
+				new FeatureLog(NHBlocks.reconstructPlastaniumFactory),
+				new FeatureLog(NHBlocks.antibody),
+				new FeatureLog(NHStatusEffects.overphased),
+				new FeatureLog(NHSectorPresents.abandonedOutpost)
 		};
 	}
 	

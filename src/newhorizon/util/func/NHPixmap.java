@@ -19,7 +19,6 @@ import mindustry.gen.Tankc;
 import mindustry.graphics.MultiPacker;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 
 import java.io.IOException;
@@ -57,7 +56,7 @@ public class NHPixmap{
 	public static final Color OUTLINE_COLOR = Color.valueOf("565666");
 	
 	public static void outlineLegs(MultiPacker packer, UnitType type){
-		if(NHSetting.getBool("@active.advance-load*") && !Vars.headless){
+		if(isDebugging() && !Vars.headless){
 			Color color = type.outlineColor;
 			if(type.legRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-leg", Pixmaps.outline(Core.atlas.getPixmap(type.legRegion), color, type.outlineRadius));
 			if(type.jointRegion.found())packer.add(MultiPacker.PageType.main, type.name + "-joint", Pixmaps.outline(Core.atlas.getPixmap(type.jointRegion), color, type.outlineRadius));
@@ -80,7 +79,8 @@ public class NHPixmap{
 				base.draw(Core.atlas.getPixmap(type.treadRegion));
 			}
 			
-			base.draw(r.crop(), true);
+//			base.draw(r.crop(), true);
+			base.draw(replaceColor(r.crop(), type.outlineColor, Color.clear), true);
 			
 			base.draw(replaceColor(Core.atlas.getPixmap(type.cellRegion), ObjectMap.of((Boolf<Color>) c -> c.equals(Color.white), Color.valueOf("ffa664"), (Boolf<Color>) c -> c.equals(Color.valueOf("dcc6c6")), Color.valueOf("dc804e"))), 0, 0, true);
 
@@ -89,7 +89,7 @@ public class NHPixmap{
 				drawWeaponPixmap(base, w, false, type.outlineColor, type.outlineRadius);
 			}
 
-//			base = Pixmaps.outline(new PixmapRegion(base), type.outlineColor, type.outlineRadius);
+			base = Pixmaps.outline(new PixmapRegion(base), type.outlineColor, type.outlineRadius);
 
 			for(Weapon w : type.weapons){
 				if(!w.top)continue;
@@ -104,6 +104,21 @@ public class NHPixmap{
 			
 			packAndAdd(packer, type.name + "-full", base);
 		}
+	}
+	
+	public static Pixmap replaceColor(Pixmap pixmap, Color from, Color to){
+		
+		int f = from.rgba8888();
+		int t = to.rgba8888();
+		
+		for(int y = 0; y < pixmap.height; ++y){
+			for(int x = 0; x < pixmap.width; ++x){
+				int c = pixmap.get(x, y);
+				if(c == f)pixmap.set(x, y, t);
+			}
+		}
+		
+		return pixmap;
 	}
 	
 	public static Pixmap replaceColor(PixmapRegion pixmap, ObjectMap<Boolf<Color>, Color> map){

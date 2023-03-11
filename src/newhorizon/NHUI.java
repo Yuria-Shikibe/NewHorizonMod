@@ -2,6 +2,7 @@ package newhorizon;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.scene.Element;
 import arc.scene.Group;
 import arc.scene.event.Touchable;
 import arc.scene.ui.ImageButton;
@@ -15,6 +16,7 @@ import mindustry.gen.Tex;
 import mindustry.ui.Styles;
 import newhorizon.util.ui.WorldEventDialog;
 
+import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
 public class NHUI{
@@ -56,9 +58,6 @@ public class NHUI{
 		eventDialog = new WorldEventDialog();
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
-			t.update(() -> {
-				t.setWidth(HUD_waves.getWidth());
-			});
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {
@@ -99,27 +98,31 @@ public class NHUI{
 			t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
 		});
 		
-		float w = 30f;
-		
 		try{
-			ImageButton skip = ((ImageButton)HUD_statustable.find("skip"));
+			ImageButton skip = HUD_statustable.find("skip");
 			
 			skip.setStyle(new ImageButton.ImageButtonStyle(){{
 				over = buttonSelectTrans;
 				down = whitePane;
 				up = pane;
 				imageUp = Icon.play;
-				disabled = pane;
+				disabled = paneRight;
 				imageDisabledColor = Color.clear;
 				imageUpColor = Color.white;
 			}});
 			
-			w = skip.getWidth();
+			skip.addChild(new Table(underline){{
+				touchable = Touchable.disabled;
+				setSize(skip.getWidth(), skip.getHeight());
+			}}.visible(() -> !(state.rules.waves && state.rules.waveSending && ((net.server() || player.admin) || !net.active()) && state.enemies == 0 && !spawner.isSpawning())));
+			
+			Element infoT = HUD_waves.find("infotable");
+			infoT.remove();
+			HUD_waves.row().add(table).left().margin(10f).growX().row();
+			HUD_waves.add(infoT).width(65f * 5f + 4f).left();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		HUD_statustable.row().add(table).left().margin(10f);
 	}
 	
 	public static void clear(){

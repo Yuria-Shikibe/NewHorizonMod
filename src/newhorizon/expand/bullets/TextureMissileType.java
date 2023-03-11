@@ -18,7 +18,7 @@ import newhorizon.util.func.NHPixmap;
 
 import static mindustry.Vars.headless;
 
-public class TextureMissileType extends SpeedUpBulletType{
+public class TextureMissileType extends AccelBulletType{
 	public TextureMissileType(float damage, String bulletSprite){
 		super(damage, bulletSprite);
 		

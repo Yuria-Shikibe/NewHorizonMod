@@ -16,6 +16,10 @@ public class ColorWarpEffect extends Effect{
 		this.color = color;
 	}
 	
+	public static ColorWarpEffect wrap(Effect effect, Color color){
+		return new ColorWarpEffect(effect, color);
+	}
+	
 	@Override
 	public void init(){
 		effect.init();

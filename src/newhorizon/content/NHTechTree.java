@@ -3,13 +3,13 @@ package newhorizon.content;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import mindustry.content.Items;
-import mindustry.content.SectorPresets;
 import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 
 import static mindustry.content.TechTree.*;
 
+@SuppressWarnings("CodeBlock2Expr")
 public class NHTechTree{
 	public static ObjectMap<UnitType, ItemStack[]> unitBuildCost = new ObjectMap<>();
 	
@@ -24,9 +24,9 @@ public class NHTechTree{
 			}
 		});
 		
-		TechNode root = nodeRoot("new-horizon", NHBlocks.presstaniumFactory, () -> {
-			node(NHPlanets.midantha, ItemStack.with(NHItems.darkEnergy, 100, NHItems.seniorProcessor, 1000, NHItems.presstanium, 5000), Seq.with(new Objectives.SectorComplete(SectorPresets.planetaryTerminal)), () -> {
-				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1000), () -> {
+		TechNode root = nodeRoot("new-horizon", NHPlanets.midantha, () -> {
+			node(NHSectorPresents.abandonedOutpost, ItemStack.with(/*NHItems.juniorProcessor, 1000*/), () -> {
+				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.abandonedOutpost)), () -> {
 				
 				});
 			});
@@ -170,39 +170,41 @@ public class NHTechTree{
 				});
 			});
 			
-			node(NHBlocks.zetaFactorySmall, () -> {
-				node(NHBlocks.zetaFactoryLarge);
-				node(NHBlocks.zetaFluidFactory);
-				node(NHBlocks.xenMelter, () -> {
-					node(NHBlocks.xenBetaFactory, () -> {
-						node(NHBlocks.xenGammaFactory);
+			node(NHBlocks.presstaniumFactory, () -> {
+				node(NHBlocks.zetaFactorySmall, () -> {
+					node(NHBlocks.zetaFactoryLarge);
+					node(NHBlocks.zetaFluidFactory);
+					node(NHBlocks.xenMelter, () -> {
+						node(NHBlocks.xenBetaFactory, () -> {
+							node(NHBlocks.xenGammaFactory);
+						});
+					});
+					node(NHBlocks.fusionEnergyFactory, () -> {
+						node(NHBlocks.thermoCoreFactory, () -> {
+							node(NHBlocks.thermoCoreNegativeFactory);
+							node(NHBlocks.thermoCorePositiveFactory);
+							node(NHBlocks.darkEnergyFactory);
+						});
 					});
 				});
-				node(NHBlocks.fusionEnergyFactory, () -> {
-					node(NHBlocks.thermoCoreFactory, () -> {
-						node(NHBlocks.thermoCoreNegativeFactory);
-						node(NHBlocks.thermoCorePositiveFactory);
-						node(NHBlocks.darkEnergyFactory);
+				node(NHBlocks.juniorProcessorFactory, () -> {
+					node(NHBlocks.multiplePresstaniumFactory);
+					node(NHBlocks.sandCracker, () -> {
+						node(NHBlocks.oilRefiner);
 					});
-				});
-			});
-			node(NHBlocks.juniorProcessorFactory, () -> {
-				node(NHBlocks.multiplePresstaniumFactory);
-				node(NHBlocks.sandCracker, () -> {
-					node(NHBlocks.oilRefiner);
-				});
-				node(NHBlocks.seniorProcessorFactory, () -> {
-				
-				});
-				node(NHBlocks.metalOxhydrigenFactory, () -> {
-					node(NHBlocks.metalOxhydrigenFactoryLarge);
-					node(NHBlocks.multipleSteelFactory, () -> {
-						node(NHBlocks.irayrondPanelFactory, () -> {
-							node(NHBlocks.irayrondPanelFactorySmall);
-							node(NHBlocks.irdryonFluidFactory, () -> {
-								node(NHBlocks.multipleSurgeAlloyFactory);
-								node(NHBlocks.setonAlloyFactory, () -> {
-									node(NHBlocks.upgradeSortFactory);
+					node(NHBlocks.seniorProcessorFactory, () -> {
+					
+					});
+					node(NHBlocks.metalOxhydrigenFactory, () -> {
+						node(NHBlocks.metalOxhydrigenFactoryLarge);
+						node(NHBlocks.multipleSteelFactory, () -> {
+							node(NHBlocks.reconstructPlastaniumFactory);
+							node(NHBlocks.irayrondPanelFactory, () -> {
+								node(NHBlocks.irdryonFluidFactory, () -> {
+									node(NHBlocks.multipleSurgeAlloyFactory);
+									node(NHBlocks.setonAlloyFactory, () -> {
+										node(NHBlocks.upgradeSortFactory);
+									});
 								});
 							});
 						});
@@ -233,7 +235,9 @@ public class NHTechTree{
 						node(NHItems.darkEnergy, Seq.with(new Objectives.Produce(NHItems.thermoCorePositive), new Objectives.Produce(NHItems.thermoCorePositive)), () -> {
 							node(NHItems.ancimembrane, ItemStack.with(NHItems.seniorProcessor, 3000, Items.tungsten, 10000, NHItems.setonAlloy, 1000), () -> {
 								node(NHBlocks.ancimembraneConcentrator, () -> {
-									node(NHBlocks.dendrite);
+									node(NHBlocks.antibody, () -> {
+										node(NHBlocks.dendrite);
+									});
 									
 									node(NHBlocks.hyperspaceWarper);
 									
@@ -252,6 +256,8 @@ public class NHTechTree{
 							nodeUnit(NHUnitTypes.guardian, () -> {
 							
 							});
+						}).children.each(c -> {
+//							c.researchCostMultipliers
 						});
 					});
 				});

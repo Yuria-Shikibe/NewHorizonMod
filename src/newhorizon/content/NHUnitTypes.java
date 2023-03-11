@@ -860,7 +860,7 @@ public class NHUnitTypes{
 				shootY = 9;
 				velocityRnd = 0.075f;
 				
-				bullet = new SpeedUpBulletType(2.85f, 120f){{
+				bullet = new AccelBulletType(2.85f, 120f){{
 					frontColor = Color.white;
 					backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
 					lifetime = 126f;
@@ -960,7 +960,7 @@ public class NHUnitTypes{
 				
 				reload = 90f;
 				
-				bullet = new SpeedUpBulletType(2.85f, 240f, "mine-bullet"){{
+				bullet = new AccelBulletType(2.85f, 240f, "mine-bullet"){{
 					frontColor = Color.white;
 					backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
 					lifetime = 95f;
@@ -1858,6 +1858,7 @@ public class NHUnitTypes{
 					ejectEffect = Fx.none;
 					bullet = new ShrapnelBulletType(){{
 						width -= 2;
+						hitLarge = true;
 						length = 280;
 						damage = 200.0F;
 						status = NHStatusEffects.ultFireBurn;
@@ -2619,7 +2620,7 @@ public class NHUnitTypes{
 					shoot = new ShootPattern();
 					
 					ejectEffect = Fx.none;
-					bullet = new SpeedUpBulletType(0.05f, 50){
+					bullet = new AccelBulletType(0.05f, 50){
 						{
 							rangeOverride = 360f;
 							buildingDamageMultiplier = 0.2f;

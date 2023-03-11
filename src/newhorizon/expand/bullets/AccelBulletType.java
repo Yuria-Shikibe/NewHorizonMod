@@ -6,7 +6,7 @@ import arc.struct.FloatSeq;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 
-public class SpeedUpBulletType extends BasicBulletType{
+public class AccelBulletType extends BasicBulletType{
 	public float velocityBegin = -1;
 	public float velocityIncrease = 0;
 	public float accelerateBegin = 0.1f;
@@ -18,26 +18,26 @@ public class SpeedUpBulletType extends BasicBulletType{
 		accelerateBegin = 10;
 	}
 	
-	public SpeedUpBulletType(){
+	public AccelBulletType(){
 		super();
 	}
 	
-	public SpeedUpBulletType(float velocityBegin, float velocityIncrease, Interp accelInterp, float damage, String bulletSprite){
+	public AccelBulletType(float velocityBegin, float velocityIncrease, Interp accelInterp, float damage, String bulletSprite){
 		super(1, damage, bulletSprite);
 		this.velocityBegin = velocityBegin;
 		this.velocityIncrease = velocityIncrease;
 		this.accelInterp = accelInterp;
 	}
 	
-	public SpeedUpBulletType(float speed, float damage, String bulletSprite) {
+	public AccelBulletType(float speed, float damage, String bulletSprite) {
 		super(speed, damage, bulletSprite);
 	}
 	
-	public SpeedUpBulletType(float speed, float damage) {
+	public AccelBulletType(float speed, float damage) {
 		this(speed, damage, "bullet");
 	}
 	
-	public SpeedUpBulletType(float damage, String bulletSprite){
+	public AccelBulletType(float damage, String bulletSprite){
 		super(1, damage, bulletSprite);
 	}
 	

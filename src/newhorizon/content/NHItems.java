@@ -16,7 +16,7 @@ public class NHItems{
 	public static void load(){
 		ancimembrane = new Item("ancimembrane"){{
 			cost = 5;
-			
+			color = NHColor.ancient;
 			charge = 5;
 		}};
 		

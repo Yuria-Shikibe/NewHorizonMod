@@ -29,9 +29,9 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
+import newhorizon.expand.bullets.AccelBulletType;
 import newhorizon.expand.bullets.EffectBulletType;
 import newhorizon.expand.bullets.LightningLinkerBulletType;
-import newhorizon.expand.bullets.SpeedUpBulletType;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;
@@ -67,7 +67,7 @@ public class NHBullets{
 	private static void loadPriority(){
 		
 		
-		warperBullet = new SpeedUpBulletType(4f, 20f, CIRCLE_BOLT){
+		warperBullet = new AccelBulletType(4f, 20f, CIRCLE_BOLT){
 			{
 				shrinkX = shrinkY = 0.35f;
 				buildingDamageMultiplier = 1.5f;
@@ -405,7 +405,7 @@ public class NHBullets{
 			despawnSound = Sounds.explosionbig;
 		}};
 		
-		blastEnergyPst = new SpeedUpBulletType(0.85f, 100f, CIRCLE_BOLT){{
+		blastEnergyPst = new AccelBulletType(0.85f, 100f, CIRCLE_BOLT){{
 			frontColor = Color.white;
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
 			lifetime = 64f;
@@ -439,7 +439,7 @@ public class NHBullets{
 			drawSize = 300f;
 		}};
 		
-		blastEnergyNgt = new SpeedUpBulletType(3.85f, 80f){{
+		blastEnergyNgt = new AccelBulletType(3.85f, 80f){{
 			frontColor = Color.white;
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
 			lifetime = 36f;
@@ -869,7 +869,7 @@ public class NHBullets{
 			statusDuration = 120f;
 		}};
 		
-		laugraBullet = new SpeedUpBulletType(200, STRIKE){{
+		laugraBullet = new AccelBulletType(200, STRIKE){{
 			status = NHStatusEffects.entangled;
 			statusDuration = 320f;
 			
@@ -1543,7 +1543,7 @@ public class NHBullets{
 			}
 		};
 		
-		guardianBullet = new SpeedUpBulletType(2f, 180){
+		guardianBullet = new AccelBulletType(2f, 180){
 			{
 				width = 22f;
 				height = 40f;
@@ -1678,7 +1678,7 @@ public class NHBullets{
 			}
 		};
 		
-		eternity = new SpeedUpBulletType(10f, 1000f){
+		eternity = new AccelBulletType(10f, 1000f){
 			@Override
 			public void draw(Bullet b){
 				super.draw(b);

@@ -15,7 +15,7 @@ import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.struct.Vec2Seq;
 
-public class TrailFadeBulletType extends SpeedUpBulletType{
+public class TrailFadeBulletType extends AccelBulletType{
 	public int tracers = 2;
 	public float tracerStroke = 3F;
 	public int tracerFadeOffset = 10;

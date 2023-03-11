@@ -15,7 +15,7 @@ import mindustry.gen.Hitboxc;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import newhorizon.NHGroups;
-import newhorizon.expand.block.defence.GravityTrap;
+import newhorizon.expand.block.defence.GravityWell;
 import newhorizon.util.graphic.DrawFunc;
 import org.jetbrains.annotations.NotNull;
 
@@ -138,7 +138,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 	
 	}
 	
-	public GravityTrapField(@NotNull GravityTrap.GravityTrapBuild build){
+	public GravityTrapField(@NotNull GravityWell.GravityTrapBuild build){
 		setPosition(build);
 		activated = () -> build.active() && build.isValid();
 		team = () -> build.team;

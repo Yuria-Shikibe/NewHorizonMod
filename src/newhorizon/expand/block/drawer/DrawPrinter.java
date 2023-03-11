@@ -46,7 +46,9 @@ public class DrawPrinter extends DrawDefault{
 
 		Draw.rect(entity.block.region, entity.x, entity.y);
 		
-		Draw.draw(Layer.blockOver, () -> Drawf.construct(entity.x, entity.y, toPrint.fullIcon, printColor, 0, entity.progress(), entity.progress(), time));
+		Draw.draw(Layer.blockOver, () -> {
+			Drawf.construct(entity.x, entity.y, toPrint.fullIcon, printColor, 0, entity.progress(), entity.progress(), entity.totalProgress() * 3f);
+		});
 		
 		if (lightColor.a > 0.001f) {
 			Draw.color(lightColor, entity.warmup());

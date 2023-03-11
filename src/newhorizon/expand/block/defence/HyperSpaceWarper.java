@@ -53,7 +53,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class HyperSpaceWarper extends Block{
 	private static Tile furthest;
 	
-	public float reloadTime = 1200f;
+	public float reloadTime = Time.toMinutes;
 	public DrawBlock drawer = new DrawDefault();
 	public Effect completeEffect = Fx.none;
 	public float completeEffectChance = 0.075f;

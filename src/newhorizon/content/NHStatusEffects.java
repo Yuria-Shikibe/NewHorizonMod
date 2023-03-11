@@ -23,6 +23,7 @@ public class NHStatusEffects{
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
     public static void load(){
+        
         entangled = new NHStatusEffect("entangled"){{
             color = textureColor = Color.lightGray;
             speedMultiplier = 0.95f;
@@ -54,15 +55,20 @@ public class NHStatusEffects{
             outline = true;
             color = textureColor = NHColor.deeperBlue;
             speedMultiplier = 1.75f;
-            healthMultiplier = 2.5f;
-            reloadMultiplier = 1.5f;
-            damageMultiplier = 1.25f;
+            healthMultiplier = 3f;
+            reloadMultiplier = 2f;
+            damageMultiplier = 1.5f;
             
             effectChance = 0.3f;
             permanent = true;
             hideDetails = false;
-            show = false;
+            show = true;
         }
+    
+            @Override
+            public boolean isHidden(){
+                return false;
+            }
     
             @Override
             public void update(Unit unit, float time){

@@ -12,7 +12,7 @@ import mindustry.gen.Building;
 import mindustry.gen.Drawc;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
-import newhorizon.expand.block.defence.GravityTrap;
+import newhorizon.expand.block.defence.GravityWell;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.graphic.EffectDrawer;
@@ -83,7 +83,7 @@ public class NHRenderer implements Disposable{
 	public void drawGravityTrapField(){
 		mask.resize(graphics.getWidth(), graphics.getHeight());
 		Building building = Vars.control.input.config.getSelected();
-		if(/*NHSetting.alwaysShowGravityTrapFields ||*/control.input.block instanceof GravityTrap || (building != null && (building.block instanceof GravityTrap || building.block instanceof HyperSpaceWarper))){
+		if(/*NHSetting.alwaysShowGravityTrapFields ||*/control.input.block instanceof GravityWell || (building != null && (building.block instanceof GravityWell || building.block instanceof HyperSpaceWarper))){
 			Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
 				mask.begin(Color.clear);
 				GravityTrapField.drawAll();

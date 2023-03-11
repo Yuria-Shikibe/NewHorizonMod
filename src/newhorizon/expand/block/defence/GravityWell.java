@@ -29,12 +29,12 @@ import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
-public class GravityTrap extends Block{
+public class GravityWell extends Block{
 	private static Tile tmpTile;
 	
 	public int range = 35;
 	
-	public GravityTrap(String name){
+	public GravityWell(String name){
 		super(name);
 		solid = true;
 		configurable = true;
@@ -54,6 +54,7 @@ public class GravityTrap extends Block{
 		stats.add(Stat.range, range, StatUnit.blocks);
 		stats.add(Stat.output, (t) -> {
 			t.row().left();
+			t.add("").row();
 			t.table(i -> {
 				i.image().size(LEN).color(Pal.lancerLaser).left();
 				i.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).growX().padLeft(OFFSET / 2).row();

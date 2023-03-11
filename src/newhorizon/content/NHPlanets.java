@@ -118,7 +118,7 @@ public class NHPlanets{
 			landCloudColor = atmosphereColor = Color.valueOf("3c1b8f");
 			atmosphereRadIn = 0.02f;
 			atmosphereRadOut = 0.3f;
-			startSector = 0;
+			startSector = 15;
 		}
 			public void updateBaseCoverage(){
 				for(Sector sector : sectors){
@@ -135,7 +135,7 @@ public class NHPlanets{
 					
 					Rand rand = new Rand();
 					rand.setSeed(sector.id);
-					sector.threat = sector.preset == null ? rand.random(0.65f, 1f) : Mathf.clamp(sector.preset.difficulty / 10f);
+					sector.threat = sector.preset == null ? rand.random(0.55f, 1.1f) : Mathf.clamp(sector.preset.difficulty / 10f);
 				}
 			}
 		};
@@ -386,9 +386,6 @@ public class NHPlanets{
 			
 			Blocks.coreZone.asFloor().wall = oW;
 			
-			//TODO: yellow regolith biome tweaks
-			//TODO ice biome
-			
 			float length = width/2.6f;
 			Vec2 trns = Tmp.v1.trns(rand.random(360f), length);
 			int
@@ -406,8 +403,6 @@ public class NHPlanets{
 			median(12, 0.6, NHBlocks.quantumField);
 			
 			blend(NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 7);
-			
-			//TODO may overwrite floor blocks under walls and look bad
 			
 			scatter(NHBlocks.metalGround, NHBlocks.metalGroundQuantum, 0.075f);
 			
@@ -428,9 +423,9 @@ public class NHPlanets{
 			pass((x, y) -> {
 				if(block != Blocks.air){
 					if(nearAir(x, y)){
-						if(block == Blocks.carbonWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
+						if(block == NHBlocks.metalWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
 							block = Blocks.graphiticWall;
-						}else if(block != Blocks.carbonWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
+						}else if(block != NHBlocks.metalWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
 							ore = Blocks.wallOreBeryllium;
 						}
 					}
@@ -439,7 +434,7 @@ public class NHPlanets{
 						ore = Blocks.oreTitanium;
 					}
 					
-					if(noise(x + 134, y - 134, 5, 4f, 45f, 1f) > 0.78f){
+					if(noise(x + 134, y - 134, 5, 4f, 45f, 1f) > 0.73f){
 						ore = Blocks.oreLead;
 					}
 					
@@ -509,7 +504,6 @@ public class NHPlanets{
 				if(tile.overlay().needsSurface && !tile.floor().hasSurface()){
 					tile.setOverlay(Blocks.air);
 				}
-				
 			}
 			
 			blend(NHBlocks.quantumFieldDisturbing, Blocks.darkPanel3, 1);
@@ -555,7 +549,7 @@ public class NHPlanets{
 			
 			trimDark();
 			
-			int minVents = rand.random(10, 15);
+			int minVents = rand.random(22, 33);
 			int ventCount = 0;
 			
 			//vents

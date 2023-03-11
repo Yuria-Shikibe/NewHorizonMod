@@ -15,8 +15,9 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.Slider;
 import arc.scene.ui.layout.Table;
+import arc.struct.IntMap;
 import arc.struct.IntSeq;
-import arc.struct.ObjectMap;
+import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
@@ -71,7 +72,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class JumpGate extends Block {
     protected static ItemModule nextItems;
-    protected static final ObjectMap<UnitSet, Integer> allSets = new ObjectMap<>();
+    protected static final ObjectIntMap<UnitSet> allSets = new ObjectIntMap<>();
     
     public int maxSpawnPerOne = 15;
     public boolean adaptable = false;
@@ -86,7 +87,7 @@ public class JumpGate extends Block {
             pointerRegion,
             arrowRegion;
     public Color baseColor;
-    public final ObjectMap<Integer, UnitSet> calls = new ObjectMap<>();
+    public final IntMap<UnitSet> calls = new IntMap<>();
     public float squareStroke = 2f;
     
     public float cooldownTime = 300f;
@@ -227,14 +228,14 @@ public class JumpGate extends Block {
             calls.put(set.hashCode(), set);
         }
         
-        Seq<UnitSet> keys = calls.values().toSeq();
+        Seq<UnitSet> keys = calls.values().toArray();
         calls.clear();
         keys.sort();
         for(UnitSet set : keys)calls.put(set.hashCode(), set);
     }
     
     public Seq<Integer> getSortedKeys(){
-        Seq<UnitSet> keys = calls.values().toSeq().sort();
+        Seq<UnitSet> keys = calls.values().toArray().sort();
         Seq<Integer> hashs = new Seq<>();
         for(UnitSet set : keys){
             hashs.add(set.hashCode());
@@ -514,7 +515,8 @@ public class JumpGate extends Block {
                     cont.table(t -> {
                         t.pane(table -> {
                             int i = 0;
-                            for(int hash : calls.keys()){
+                            
+                            for(int hash : calls.keys().toArray().toArray()){
                                 UnitSet set = calls.get(hash);
                                 if(hideSet(set.type))continue;
                                 table.button(new TextureRegionDrawable(set.type.fullIcon), Styles.clearTogglei, LEN, () -> selectID = hash).update(b -> b.setChecked(hash == selectID));
@@ -599,7 +601,7 @@ public class JumpGate extends Block {
 
         public boolean hasConsume(UnitSet set, int num){
             if(set == null || cheating())return true;
-            return realItems().has(ItemStack.mult(set.requirements(), num));
+            return realItems().has(ItemStack.mult(set.requirements(), num * state.rules.teams.get(team).unitCostMultiplier));
         }
 
         public float costTime(UnitSet set, boolean buildingParma){
@@ -615,7 +617,7 @@ public class JumpGate extends Block {
             
             if(isCalling())cooling = true;
             
-            if(!calls.keys().toSeq().contains(set, false)){
+            if(!calls.keys().toArray().contains(set)){
                 if(isCalling()){
                     if(getSet() != null){
 //                        Building target = NHVars.state.jumpGateUseCoreItems && team.data().hasCore() ? team.core() : self();

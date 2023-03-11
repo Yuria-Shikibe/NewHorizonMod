@@ -3,12 +3,23 @@ package newhorizon.content;
 import mindustry.type.SectorPreset;
 
 public class NHSectorPresents{
-	public static SectorPreset initialPlane;
+	public static SectorPreset initialPlane, abandonedOutpost;
 	
 	public static void load(){
-		initialPlane = new SectorPreset("initialPlane", NHPlanets.midantha, 0){{
-			captureWave = 50;
+		abandonedOutpost = new SectorPreset("abandoned-outpost", NHPlanets.midantha, 15){{
+			captureWave = 40;
 			difficulty = 4;
+			
+			alwaysUnlocked = true;
+			
+			rules = r -> {
+				r.winWave = captureWave;
+			};
+		}};
+		
+		initialPlane = new SectorPreset("initial-plane", NHPlanets.midantha, 0){{
+			captureWave = 50;
+			difficulty = 7;
 			
 			rules = r -> {
 				r.tags.put(NHInbuiltEvents.applyKey, "true");

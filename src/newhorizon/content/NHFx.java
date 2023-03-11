@@ -158,12 +158,13 @@ public class NHFx{
 	
 	public static Effect shootLine(float size, float angleRange){
 		int num = Mathf.clamp((int)size / 6, 6, 20);
+		float thick = Mathf.clamp(0.75f, 2f, size / 22f);
 		
 		return get("shootLineSmall", Color.clear, new Effect(37f, e -> {
 			color(e.color, Color.white, e.fout() * 0.7f);
 			rand.setSeed(e.id);
 			DrawFunc.randLenVectors(e.id, num, 4 + (size * 1.2f) * e.fin(), size * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
-				Lines.stroke(1.5f * e.fout(0.32f));
+				Lines.stroke(thick * e.fout(0.32f));
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * (size * rand.random(0.3f, 0.8f) + rand.random(5f)) + rand.random(3f));
 				Drawf.light(e.x + x, e.y + y, e.fslope() * (size * 0.5f + 14f) + 3, e.color, 0.7f);
 			});

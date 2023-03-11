@@ -76,6 +76,7 @@ public class NHContent extends Content{
 		if(Vars.headless)return;
 		
 		Icon.icons.put("midantha", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("midantha"))));
+		Icon.icons.put("nh", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("icon-2"))));
 		UltFire.load();
 //		process();
 		
