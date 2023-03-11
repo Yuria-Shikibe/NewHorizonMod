@@ -20,6 +20,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NHGroups;
+import newhorizon.NHRegister;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.state;
@@ -92,10 +93,11 @@ public class RemoteCoreStorage extends StorageBlock{
 			NHGroups.placedRemoteCore[team.id].remove(this);
 		}
 		
-		
 		@Override
 		public void add(){
-			if(!added)NHGroups.placedRemoteCore[team.id].add(this);
+			if(!added) NHRegister.postAfterLoad(() -> {
+				NHGroups.placedRemoteCore[team.id].add(this);
+			});
 			
 			super.add();
 		}
