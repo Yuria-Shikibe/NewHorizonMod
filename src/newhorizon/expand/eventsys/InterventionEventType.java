@@ -13,11 +13,13 @@ import arc.scene.ui.layout.Table;
 import arc.struct.ObjectIntMap;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.content.StatusEffects;
 import mindustry.core.UI;
 import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;
@@ -34,6 +36,10 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class InterventionEventType extends TargetableEventType{
 	public ObjectIntMap<UnitType> spawner = new ObjectIntMap<>();
+	
+	//	@Customizable @Parserable()
+	public StatusEffect status = StatusEffects.none;
+	public float statusDuration = 600;
 	
 	public float spawnRange = 180f;
 	public float reloadTime = 600f;
@@ -120,7 +126,7 @@ public class InterventionEventType extends TargetableEventType{
 		float angle = source(e).angleTo(e);
 		
 		for(ObjectIntMap.Entry<UnitType> spawn : spawner.entries()){
-			NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)));
+			NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration);
 		}
 		
 		if(removeAfterTrigger)e.remove();

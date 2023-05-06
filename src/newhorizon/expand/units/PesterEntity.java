@@ -312,7 +312,8 @@ public class PesterEntity extends UnitEntity{
 	
 	
 	public void shootBossTarget(){
-		NHBullets.pesterBlackHole.create(self(), team, lastTargetPos.x, lastTargetPos.y, 0);
+		Bullet b = NHBullets.pesterBlackHole.create(self(), team, lastTargetPos.x, lastTargetPos.y, 0);
+		b.fdata = NHBullets.pesterBlackHole.splashDamageRadius;
 	}
 	
 	public void shootAtHatred(){

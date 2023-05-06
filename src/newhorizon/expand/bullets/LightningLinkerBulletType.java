@@ -16,6 +16,7 @@ import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
@@ -28,7 +29,7 @@ import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
 
 public class LightningLinkerBulletType extends BasicBulletType{
-	public float generateDelay = 10f;
+	public float hitSpacing = 10f;
 	public float size = 30f;
 	public float linkRange = 240f;
 	public float boltWidth = PosLightning.WIDTH;
@@ -50,6 +51,8 @@ public class LightningLinkerBulletType extends BasicBulletType{
 	public float effectLightningChance = 0.35f;
 	public float effectLightningLength = -1;
 	public float effectLightningLengthRand = -1;
+	
+	public boolean drawCircle = true;
 	
 	public Effect slopeEffect, liHitEffect, spreadEffect;
 	
@@ -75,6 +78,16 @@ public class LightningLinkerBulletType extends BasicBulletType{
 	
 	public LightningLinkerBulletType(){
 		this(1f, 1f);
+	}
+	
+	@Override
+	public boolean testCollision(Bullet bullet, Building tile){
+		return super.testCollision(bullet, tile);
+	}
+	
+	@Override
+	public float estimateDPS(){
+		return lightningDamage * maxHit * 0.75f * 60 / hitSpacing;
 	}
 	
 	@Override
@@ -109,7 +122,7 @@ public class LightningLinkerBulletType extends BasicBulletType{
 		super.update(b);
 		
 		Effect.shake(hitShake, hitShake, b);
-		if (b.timer(5, generateDelay)) {
+		if (b.timer(5, hitSpacing)) {
 			for(int i : Mathf.signs)slopeEffect.at(b.x + Mathf.range(size / 4f), b.y + Mathf.range(size / 4f), b.rotation(), i);
 			spreadEffect.at(b);
 			PosLightning.createRange(b, collidesAir, collidesGround, b, b.team, linkRange, maxHit, backColor, Mathf.chanceDelta(randomLightningChance), lightningDamage, lightningLength, PosLightning.WIDTH, boltNum, p -> {
@@ -145,10 +158,14 @@ public class LightningLinkerBulletType extends BasicBulletType{
 	public void draw(Bullet b) {
 		drawTrail(b);
 		
-		color(backColor);
-		Fill.circle(b.x, b.y, size);
-		color(frontColor);
-		Fill.circle(b.x, b.y, size / 7f + size / 3 * Mathf.curve(b.fout(), 0.1f, 0.35f));
+		if(drawCircle){
+			color(backColor);
+			Fill.circle(b.x, b.y, size);
+			color(frontColor);
+			Fill.circle(b.x, b.y, size / 7f + size / 3 * Mathf.curve(b.fout(), 0.1f, 0.35f));
+		}else{
+			super.draw(b);
+		}
 		
 		Drawf.light(b.x, b.y, size * 1.85f, backColor, 0.7f);
 	}

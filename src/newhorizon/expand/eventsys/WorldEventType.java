@@ -190,7 +190,7 @@ public class WorldEventType implements Json.JsonSerializable{
 		Draw.color(team.color, Color.white, 0.075f);
 		Draw.alpha(0.65f);
 		
-		float f = Interp.pow3Out.apply(Mathf.curve(1 - fin, 0, 0.05f));
+		float f = Interp.pow3Out.apply(Mathf.curve(1 - fin, 0, 0.01f));
 		
 		Draw.rect(icon(), e, NHContent.fleet.width * f * Draw.scl, NHContent.fleet.height * f * Draw.scl, 0);
 		Lines.stroke(5f * f);

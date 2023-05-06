@@ -60,6 +60,8 @@ public class NHRenderer implements Disposable{
 		
 		drawGravityTrapField();
 		
+		effectDrawer.draw();
+		
 //		effect.resize(graphics.getWidth(), graphics.getHeight());
 //
 //		effect.begin(Color.clear);

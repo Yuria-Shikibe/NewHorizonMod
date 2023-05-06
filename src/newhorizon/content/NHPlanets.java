@@ -74,10 +74,10 @@ public class NHPlanets{
 			allowLaunchLoadout = false;
 			
 			ruleSetter = r -> {
-				r.hideBannedBlocks = true;
 				r.waveTeam = Team.malis;
 				r.placeRangeCheck = false;
 				r.showSpawns = true;
+				r.hideBannedBlocks = true;
 				r.waveSpacing = 80 * Time.toSeconds;
 				r.initialWaveSpacing = 8f * Time.toMinutes;
 				if(r.sector.preset == null)r.winWave = 150;
@@ -424,10 +424,10 @@ public class NHPlanets{
 				if(block != Blocks.air){
 					if(nearAir(x, y)){
 						if(block == NHBlocks.metalWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
-							block = Blocks.graphiticWall;
-						}else if(block != NHBlocks.metalWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
 							ore = Blocks.wallOreBeryllium;
-						}
+						}/*else if(block != NHBlocks.metalWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
+							ore = Blocks.wallOreBeryllium;
+						}*/
 					}
 				}else if(!nearWall(x, y)){
 					if(noise(x + 150, y + x*2 + 100, 4, 3.8f, 55f, 1f) > 0.816f){
@@ -582,6 +582,12 @@ public class NHPlanets{
 			state.rules.env = sector.planet.defaultEnv;
 			
 			Schematics.placeLoadout(NHContent.mLoadout, spawnX, spawnY);
+			for(Point2 p : Geometry.d8){
+				Tile other = tiles.getn(spawnX + p.x, spawnY + p.y);
+				other.setFloor(Blocks.coreZone.asFloor());
+			}
+			
+			tiles.getn(spawnX, spawnY).setFloor(Blocks.coreZone.asFloor());
 			
 			state.rules.waves = true;
 			state.rules.showSpawns = true;

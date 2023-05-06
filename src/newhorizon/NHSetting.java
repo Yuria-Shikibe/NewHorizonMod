@@ -31,7 +31,7 @@ public class NHSetting{
 	public static void load(){
 		all.addAll(
 			new BoolSetting(EFFECT_DETAIL, true, true),
-			new BoolSetting(VANILLA_COST_OVERRIDE, true, true)
+			new BoolSetting(VANILLA_COST_OVERRIDE, false, true)
 		);
 		
 		all.each(SettingKey::setDefault);

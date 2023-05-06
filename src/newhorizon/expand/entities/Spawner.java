@@ -18,6 +18,7 @@ import mindustry.content.StatusEffects;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
+import mindustry.entities.units.StatusEntry;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
@@ -25,6 +26,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
 import mindustry.io.TypeIO;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Fonts;
 import newhorizon.NHSetting;
@@ -46,6 +48,8 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	public float surviveTime, surviveLifetime = 3000f;
 	public float rotation;
 	
+	public StatusEntry statusEntry = new StatusEntry().set(StatusEffects.none, 0);
+	
 	public Interval timer = new Interval();
 	
 	public float trailProgress = Mathf.random(360);
@@ -63,7 +67,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		return drawSize + 500;
 	}
 	
-	public void init(UnitType type, Team team, Position pos, float rotation, float lifetime){
+	public Spawner init(UnitType type, Team team, Position pos, float rotation, float lifetime){
 		this.type = type;
 		this.lifetime = lifetime;
 		this.rotation = rotation;
@@ -72,6 +76,15 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		trailWidth = Mathf.clamp(drawSize / 15f, 1.25f, 4f);
 		set(pos);
 		NHFx.spawnWave.at(x, y, drawSize, team.color);
+		
+		return this;
+	}
+	
+	public Spawner setStatus(StatusEffect status, float statusDuration){
+		statusEntry.effect = status;
+		statusEntry.time = statusDuration;
+		
+		return this;
 	}
 	
 	@Override
@@ -94,7 +107,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	
 	@Override
 	public void update(){
-		if(Units.canCreate(team, type)){
+		if(canCreate()){
 			time += Time.delta;
 			surviveTime = 0;
 			
@@ -150,6 +163,11 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		toSpawn.rotation = rotation();
 		if(!Vars.net.client()) toSpawn.add();
 		toSpawn.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
+		toSpawn.apply(statusEntry.effect, statusEntry.time);
+	}
+	
+	public boolean canCreate(){
+		return Units.canCreate(team, type) || team == Vars.state.rules.waveTeam;
 	}
 	
 	@Override
@@ -161,7 +179,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		Drawf.light(x, y, clipSize() * fout(), team.color, 0.7f);
 		Draw.z(Layer.effect - 1f);
 		
-		boolean can = Units.canCreate(team, type);
+		boolean can = canCreate();
 		
 		float regSize = NHFunc.regSize(type);
 		Draw.color(can ? team.color : Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(Time.time * DrawFunc.sinScl, 8f, 0.3f) + 0.1f));
@@ -202,6 +220,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		write.f(surviveTime);
 		TypeIO.writeUnitType(write, type);
 		TypeIO.writeTeam(write, team);
+		TypeIO.writeStatus(write, statusEntry);
 	}
 	
 	@Override
@@ -214,6 +233,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		
 		type = TypeIO.readUnitType(read);
 		team = TypeIO.readTeam(read);
+		statusEntry = TypeIO.readStatus(read);
 		
 		afterRead();
 	}

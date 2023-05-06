@@ -14,6 +14,7 @@ import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
+import mindustry.content.StatusEffects;
 import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.Fires;
@@ -24,6 +25,7 @@ import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
@@ -38,6 +40,11 @@ import static mindustry.Vars.*;
 import static mindustry.core.World.toTile;
 
 public class NHFunc{
+    private static long seedR = 0;
+    public static long getSeed(){
+        return seedR++;
+    }
+    
     private static final float MAX_TELEPORT_DST_NET = tilesize / 2f;
     private static Tile tileParma;
     private static Floor floorParma;
@@ -329,6 +336,10 @@ public class NHFunc{
     }
     
     public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
+        return spawnUnit(team, x, y, angle, spawnRange, spawnReloadTime, spawnDelay, type, spawnNum, StatusEffects.none, 0);
+    }
+    
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, StatusEffect statusEffect, float statusDuration){
         if(type == null)return false;
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
@@ -338,7 +349,7 @@ public class NHFunc{
         int i = 0;
         for (Vec2 s : vectorSeq) {
             Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
-            spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay);
+            spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay).setStatus(statusEffect, statusDuration);
             if(!net.client())spawner.add();
             i++;
         }

@@ -56,6 +56,8 @@ public class RaidEventType extends TargetableEventType{
 	@Customizable @NumberParam public float inaccuracy = 3f;
 	@Customizable @NumberParam public float velocityRnd = 0.075f;
 	
+
+	
 	@Customizable @Parserable(value = ObjectMap.class, params = {BulletType.class, ShootPattern.class})
 	public ObjectMap<BulletType, ShootPattern> projectiles = new ObjectMap<>();
 	

@@ -15,14 +15,35 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.graphic.ColorWarpEffect;
 
 public class NHStatusEffects{
     public static StatusEffect
+            reinforcements,
             entangled,
             ultFireBurn, stronghold, overphased,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
     public static void load(){
+        reinforcements = new NHStatusEffect("reinforcements"){{
+            show = false;
+            hideDetails = true;
+        }
+    
+            @Override
+            public void update(Unit unit, float time){
+                if(time < 60f || unit.healthf() < 0.1f){
+                    unit.clearStatuses();
+                    Effect.shake(unit.hitSize / 10f, unit.hitSize / 8f, unit.x, unit.y);
+                    NHFx.circleOut.at(unit.x, unit.y, unit.hitSize, unit.team.color);
+                    NHFx.jumpTrailOut.at(unit.x, unit.y, unit.rotation, unit.team.color, unit.type);
+                    NHSounds.jumpIn.at(unit.x, unit.y, 1, 3);
+                    
+                    unit.remove();
+                    if(Vars.net.client())Vars.netClient.clearRemovedEntity(unit.id);
+                }
+            }
+        };
         
         entangled = new NHStatusEffect("entangled"){{
             color = textureColor = Color.lightGray;
@@ -31,21 +52,17 @@ public class NHStatusEffects{
             outline = true;
             
             effectChance = 0.085f;
-            effect = new Effect(45f, e -> {
-                Lines.stroke(e.fslope() * 2f);
-                Draw.color(NHColor.ancient, Color.white, e.fout() * 0.75f);
-                Lines.spikes(e.x, e.y, 45f * e.fin(),3 + 8 * e.fslope() + 5 * e.fin(),4, 45);
-            });
+            effect = ColorWarpEffect.wrap(NHFx.hitSparkLarge, NHColor.ancientLightMid);
         }
         
             @Override
             public void update(Unit unit, float time){
                 super.update(unit, time);
                 
-                unit.shield *= 0.975f;
+                unit.shield *= 0.985f;
                 
                 if(unit.shield > 50f && Mathf.chanceDelta(0.065)){
-                    NHFx.shuttle.at(unit.x + Mathf.random(unit.hitSize * 0.75f), unit.x + Mathf.random(unit.hitSize * 0.75f), 45, NHColor.ancient, Mathf.clamp(unit.shield, 1000, 6000) / Vars.tilesize / 30f);
+                    NHFx.shuttle.at(unit.x + Mathf.random(unit.hitSize * 0.75f), unit.y + Mathf.random(unit.hitSize * 0.75f), 45, NHColor.ancient, Mathf.clamp(unit.shield, 1000, 6000) / Vars.tilesize / 22f);
                     Effect.shake(3, 5, unit);
                 }
             }

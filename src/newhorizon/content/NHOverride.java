@@ -22,6 +22,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.logic.CanvasBlock;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.NewHorizon;
 
@@ -267,6 +268,16 @@ public class NHOverride{
 					}}
 			);
 		}//Apply Mod Units
+		
+		Seq<UnitType> coreUnits = new Seq<>();
+		Vars.content.blocks().each(b -> {
+			if(b instanceof CoreBlock){
+				CoreBlock c = (CoreBlock)b;
+				coreUnits.add(c.unitType);
+				c.unitType.immunities.add(NHStatusEffects.scannerDown);
+			}
+		});
+		
 	}
 	
 	public static void loadOptional(){

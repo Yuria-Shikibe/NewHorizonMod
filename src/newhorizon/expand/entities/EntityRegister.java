@@ -11,6 +11,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
+import newhorizon.expand.units.NucleoidEntity;
 import newhorizon.expand.units.PesterEntity;
 import newhorizon.expand.weather.MatterStorm;
 
@@ -32,6 +33,7 @@ public class EntityRegister{
 		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 		EntityRegister.put(WorldEvent.class, WorldEvent::new);
 		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
+		EntityRegister.put(NucleoidEntity.class, NucleoidEntity::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){

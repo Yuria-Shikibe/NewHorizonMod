@@ -165,7 +165,7 @@ public class NHFx{
 			rand.setSeed(e.id);
 			DrawFunc.randLenVectors(e.id, num, 4 + (size * 1.2f) * e.fin(), size * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
 				Lines.stroke(thick * e.fout(0.32f));
-				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * (size * rand.random(0.3f, 0.8f) + rand.random(5f)) + rand.random(3f));
+				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), (e.fslope() + e.fin()) * 0.5f * (size * rand.random(0.15f, 0.5f) + rand.random(2f)) + rand.random(2f));
 				Drawf.light(e.x + x, e.y + y, e.fslope() * (size * 0.5f + 14f) + 3, e.color, 0.7f);
 			});
 		}));
@@ -403,12 +403,13 @@ public class NHFx{
 	public static Effect smoothColorCircle(Color out, float rad, float lifetime){
 		return new Effect(lifetime, rad * 2, e -> {
 			Draw.blend(Blending.additive);
-			Draw.z(Layer.effect + 0.1f);
 			float radius = e.fin(Interp.pow3Out) * rad;
-			Fill.light(e.x, e.y, circleVertices(radius), radius, Color.clear, Tmp.c1.set(out).a(e.fout(Interp.pow10Out)));
+			Fill.light(e.x, e.y, circleVertices(radius), radius, Color.clear, Tmp.c1.set(out).a(e.fout(Interp.pow5Out)));
 			Draw.blend();
-		});
+		}).layer(Layer.effect + 0.15f);
 	}
+	
+	
 	
 	public static Effect instTrail(Color color, float angle, boolean random){
 		return new Effect(30.0F, e -> {
@@ -658,7 +659,7 @@ public class NHFx{
 			Drawf.light(e.x, e.y, rad * e.fout(Interp.circleOut) * 4f, e.color, 0.7f);
 		}).layer(Layer.effect + 0.001f),
 	
-		hitSpark = new Effect(40, e -> {
+		hitSpark = new Effect(45, e -> {
 			color(e.color, Color.white, e.fout() * 0.3f);
 			stroke(e.fout() * 1.6f);
 			
@@ -988,6 +989,11 @@ public class NHFx{
 			Lines.circle(e.x, e.y, e.rotation * e.fin(Interp.pow3Out));
 		}),
 	
+		circleOutQuick  = new Effect(30f, 500f, e -> {
+			Lines.stroke(2.5f * e.fout(), e.color);
+			Lines.circle(e.x, e.y, e.rotation * e.fin(Interp.pow3Out));
+		}),
+	
 		shuttle = new Effect(70f, 800f, e -> {
 			if(!(e.data instanceof Float))return;
 			float len = e.data();
@@ -1008,6 +1014,38 @@ public class NHFx{
 			Lines.stroke(e.fout() * 2.0F);
 			randLenVectors(e.id, 6, 3 + len * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
 		}),
+	
+		shuttleDark = new Effect(70f, 800f, e -> {
+			if(!(e.data instanceof Float))return;
+			float len = e.data();
+			
+			color(e.color, Color.white, e.fout() * 0.3f);
+			stroke(e.fout() * 2.2F);
+			
+			randLenVectors(e.id, (int)Mathf.clamp(len / 12, 10, 40), e.finpow() * len, e.rotation, 360f, (x, y) -> {
+				float ang = Mathf.angle(x, y);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * len * 0.15f + len * 0.025f);
+			});
+			
+			float fout = e.fout(Interp.exp10Out);
+			for(int i : Mathf.signs) {
+				DrawFunc.tri(e.x, e.y, len / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
+			}
+			
+			Lines.stroke(e.fout() * 2.0F);
+			randLenVectors(e.id, 6, 3 + len * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
+			
+			float len1 = len * 0.66f;
+			color(Color.black);
+			for(int i : Mathf.signs) {
+				DrawFunc.tri(e.x, e.y, len1 / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len1 * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
+			}
+			
+			z(Layer.bullet - 0.11f);
+			for(int i : Mathf.signs) {
+				DrawFunc.tri(e.x, e.y, len1 / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len1 * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
+			}
+		}).layer(Layer.effect - 1f),
 	
 		shuttleLerp = new Effect(180f, 800f, e -> {
 			if(!(e.data instanceof Float))return;
@@ -1075,7 +1113,7 @@ public class NHFx{
 				
 				e.scaled(80, i -> {
 					DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 1.5f * i.fout(Interp.slowFast), 3000 * engine.radius / (type.engineSize + 4), i.rotation + ang - 90);
-					Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 0.75f * i.fout(Interp.slowFast));
+					Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 1.5f * i.fout(Interp.slowFast));
 				});
 				
 				randLenVectors(e.id + index, 22, 400 * engine.radius / (type.engineSize + 4), e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
@@ -1085,6 +1123,35 @@ public class NHFx{
 			Draw.mixcol(e.color, 1);
 			Draw.rect(type.fullIcon, e.x, e.y, type.fullIcon.width * e.fout(Interp.pow2Out) * Draw.scl * 1.2f, type.fullIcon.height * e.fout(Interp.pow2Out) * Draw.scl * 1.2f, e.rotation - 90f);
 			Draw.reset();
+		}),
+	
+		jumpTrailOut = new Effect(120f, 200, e -> {
+			if (!(e.data instanceof UnitType))return;
+			UnitType type = e.data();
+			color(type.engineColor == null ? e.color : type.engineColor);
+			
+			if(type.engineLayer > 0)Draw.z(type.engineLayer);
+			else Draw.z((type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) - 0.001f);
+			
+			Tmp.v2.trns(e.rotation, 2300);
+			
+			for(int index = 0; index < type.engines.size; index++){
+				UnitType.UnitEngine engine = type.engines.get(index);
+				
+				if(Angles.angleDist(engine.rotation, -90) > 75)return;
+				float ang = Mathf.slerp(engine.rotation, -90, 0.75f);
+				
+				//noinspection SuspiciousNameCombination
+				Tmp.v1.trns(e.rotation, engine.y, -engine.x).add(Tmp.v2);
+				
+				rand.setSeed(e.id);
+				e.scaled(80, i -> {
+					DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 3f * i.fout(Interp.slowFast), 2300 + rand.range(200), i.rotation + ang - 90);
+					Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 3f * i.fout(Interp.slowFast));
+				});
+				
+				randLenVectors(e.id + index, 42, 2370, e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
+			}
 		}),
 	
 //		fellowTrail = new Effect(90f, 5000, e -> {
@@ -1455,6 +1522,27 @@ public class NHFx{
 			Vec2 last = points.tmpVec2(points.size() - 2);
 			Fill.circle(last.x, last.y, Lines.getStroke() / 2);
 		})).layer(Layer.effect - 0.001f),
+	
+		crossBlastArrow45 = new Effect(65, 140, e -> {
+			color(e.color, Color.white, e.fout() * 0.55f);
+			Drawf.light(e.x, e.y, e.fout() * 70, e.color, 0.7f);
+			
+			e.scaled(10f, i -> {
+				stroke(1.35f * i.fout());
+				circle(e.x, e.y, 49 * i.finpow());
+			});
+			
+			rand.setSeed(e.id);
+			float sizeDiv = 138;
+			float randL = rand.random(sizeDiv);
+			
+			float f = Mathf.curve(e.fin(), 0, 0.05f);
+			
+			for(int i = 0; i < 4; i++){
+				Tmp.v1.trns(45 + i * 90, 66);
+				DrawFunc.arrow(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 27.5f * (e.fout() * 3f + 1) / 4 * e.fout(Interp.pow3In), (sizeDiv + randL) * f * e.fout(Interp.pow3), -randL / 6f * f, i * 90 + 45);
+			}
+		}),
 	
 		crossBlast = new Effect(35, 140, e -> {
 			color(e.color, Color.white, e.fout() * 0.55f);

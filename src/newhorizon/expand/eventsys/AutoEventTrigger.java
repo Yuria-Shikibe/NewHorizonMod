@@ -42,6 +42,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public int minTriggerWave = 5;
 	public float spacingBase = 120 * Time.toSeconds, spacingRand = 120 * Time.toSeconds;
 	public boolean disposable = false;
+	public boolean removeIfCaptured = true;
 	public boolean triggerAfterAdd = false;
 	
 	protected float spacing = 60;
@@ -101,7 +102,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	
 	@Override
 	public void update(){
-		if(team().cores().isEmpty()){
+		if(team().cores().isEmpty() || Vars.state.hasSector() && Vars.state.rules.sector.isCaptured()){
 			remove();
 			return;
 		}
@@ -152,6 +153,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 		for(int i = 0; i < buildingsS; i++)buildings.add(new OV_Pair<>(TypeIO.readBlock(read), read.i()));
 		
 		eventType = WorldEventType.getStdType(read.str());
+		if(WorldEventType.NULL == this.eventType)remove();
 	}
 	
 	@Override public void write(Writes write){
@@ -178,7 +180,10 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 			write.i(buildings.get(i).value);
 		}
 		
-		write.str(eventType.name);
+		if(eventType != null){
+			write.str(eventType.name);
+		}else write.str(WorldEventType.NULL.name);
+		
 	}
 	
 	public void remove(){

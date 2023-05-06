@@ -9,6 +9,8 @@ public class NHColor{
 	public static Color
 		ancient = Items.surgeAlloy.color.cpy().lerp(Pal.accent, 0.055f),
 		ancientLight = ancient.cpy().lerp(Color.white, 0.725f),
+		ancientLightMid = ancient.cpy().lerp(Color.white, 0.425f),
+		ancientDark = ancient.cpy().lerp(Color.black, 0.995f),
 		ancientHeat = NHColor.ancient.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f),
 		ally = new Color(0, 0, 1, 0.15f), hostile = new Color(1, 0, 0, 0.15f),
 		deeperBlue = Color.valueOf("#778ff2"),

@@ -2,9 +2,18 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Interp;
+import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
+import arc.scene.ui.layout.Scl;
 import arc.struct.Seq;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Items;
@@ -14,6 +23,9 @@ import mindustry.entities.pattern.ShootPattern;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.entities.pattern.ShootSummon;
 import mindustry.game.EventType;
+import mindustry.game.Team;
+import mindustry.graphics.Layer;
+import mindustry.graphics.MinimapRenderer;
 import mindustry.graphics.Pal;
 import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
@@ -21,6 +33,8 @@ import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.*;
 import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.struct.OV_Pair;
+
+import static mindustry.Vars.tilesize;
 
 public class NHInbuiltEvents{
 	public static final String applyKey = "applyTriggers";
@@ -220,11 +234,66 @@ public class NHInbuiltEvents{
 			disposable = true;
 		}}, new AutoEventTrigger(){{
 			items = OV_Pair.seqWith(NHItems.darkEnergy, 1000);
-			buildings = OV_Pair.seqWith(NHBlocks.eternity, 2);
-			eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-pester-fleet"){{
-				spawn(NHUnitTypes.pester, 1, NHUnitTypes.guardian, 5);
-				reloadTime = 30 * 60;
-			}});
+			buildings = OV_Pair.seqWith(NHBlocks.eternity, 5);
+			units = OV_Pair.seqWith(NHUnitTypes.pester, 2);
+			eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-ancient-fleet"){{
+				spawn(NHUnitTypes.nucleoid, 1,NHUnitTypes.pester, 2, NHUnitTypes.guardian, 5);
+				reloadTime = 45 * 60;
+				status = NHStatusEffects.overphased;
+			}
+				
+				@Override
+				public void drawMinimap(WorldEvent event, MinimapRenderer minimap){
+					minimap.transform(Tmp.v1.set(event.x, event.y));
+					
+					float rad = minimap.scale(range(event));
+					float fin = Interp.pow2Out.apply((Time.globalTime / 100f) % 1f);
+					
+					Draw.color(Tmp.c1.set(event.team.color).lerp(Color.white, Mathf.absin(Time.globalTime, 4f, 0.4f)));
+					
+					float size = minimap.scale((float)NHContent.pointerRegion.width / tilesize * 1.5f);
+					Draw.rect(NHContent.pointerRegion, Tmp.v1.x, Tmp.v1.y, size, size);
+					
+					Lines.stroke(Scl.scl((1f - fin) * 4.5f + 0.15f));
+					Lines.circle(Tmp.v1.x, Tmp.v1.y, rad * fin);
+					
+					fin = Interp.circleOut.apply((Time.globalTime / 50f) % 1f);
+					Lines.stroke(Scl.scl((1f - fin) * 2.5f));
+					Lines.circle(Tmp.v1.x, Tmp.v1.y, rad);
+					
+					Draw.reset();
+				}
+				
+				@Override
+				public void draw(WorldEvent e){
+					super.draw(e);
+					Team team = e.team;
+					float fin = progressRatio(e);
+					float fout = 1 - fin;
+					float scl = Interp.pow3Out.apply(Mathf.curve(fout, 0, 0.01f));
+					
+					Draw.blend(Blending.additive);
+					Draw.z(Layer.legUnit + 1);
+					Draw.color(team.color, Color.white, 0.075f);
+					Draw.alpha(0.65f);
+					
+					TextureRegion arrowRegion = NHContent.arrowRegion;
+					
+					float regSize = 1.1f;
+					for (int l : Mathf.signs) {
+						float angle = 90 + 90 * l;
+						for (int i = 0; i < 4; i++) {
+							Tmp.v1.trns(angle, i * 50 + spawnRange * 1.22f);
+							float f = (100 - (Time.time + 25 * i) % 100) / 100;
+							
+							Draw.rect(arrowRegion, e.x + Tmp.v1.x, e.y + Tmp.v1.y, arrowRegion.width * regSize * f * scl, arrowRegion.height * regSize * f * scl, angle + 90);
+						}
+					}
+					
+					Draw.reset();
+					Draw.blend();
+				}
+			});
 			
 			spacingBase = 60 * 60;
 			spacingRand = 0;

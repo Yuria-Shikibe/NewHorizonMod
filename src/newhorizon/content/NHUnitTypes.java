@@ -22,7 +22,6 @@ import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -56,11 +55,13 @@ import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
+import newhorizon.expand.packets.ShockWaveAbility;
 import newhorizon.expand.units.*;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
+import newhorizon.util.graphic.ColorWarpEffect;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
@@ -79,17 +80,17 @@ public class NHUnitTypes{
 			GROUND_LINE_1 = 0, AIR_LINE_1 = 1, AIR_LINE_2 = 2, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
 	
 	public static Weapon
-		basicCannon, laserCannon;
+		basicCannon, laserCannon, laugraTurret;
 	
 	public static Weapon
-			ancientSecTurret,
+			ancientSecTurret, ancientLightningBallTurret,
 			posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon,
 			mainCannon, pointDefenceWeaponC;
 	
 	public static NHUnitType
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
-			pester, laugra, //ancient
+			nucleoid, pester, laugra, //ancient
 			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
@@ -112,6 +113,7 @@ public class NHUnitTypes{
 			EntityMapping.nameMap.put(NewHorizon.name("sin"), EntityMapping.idMap[4]);
 			EntityMapping.nameMap.put(NewHorizon.name("pester"), PesterEntity::new);
 			EntityMapping.nameMap.put(NewHorizon.name("laugra"), EntityMapping.idMap[43]);
+			EntityMapping.nameMap.put(NewHorizon.name("nucleoid"), NucleoidEntity::new);
 
 			EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
 		}
@@ -438,6 +440,114 @@ public class NHUnitTypes{
 	}
 	
 	private static void loadWeapon(){
+		ancientLightningBallTurret = new Weapon(NewHorizon.name("pester-cannon")){{
+			x = 56;
+			y = -48;
+			shootY = 18f;
+			
+			rotate = true;
+			rotateSpeed = 1.4f;
+			
+			shoot = new ShootPattern();
+			shootSound = NHSounds.thermo;
+			recoil = 3f;
+			
+			reload = 90f;
+			
+			bullet = NHBullets.ancientBall;
+		}};
+		
+		laugraTurret = new Weapon( NewHorizon.name("laugra-turret")){{
+			x = y = 0;
+			rotate = true;
+			rotateSpeed = 3.5f;
+			mirror = alternate = false;
+			layerOffset = 0.15f;
+			
+			shootWarmupSpeed /= 2f;
+			minWarmup = 0.9f;
+			
+			recoil = 2.25f;
+			shake = 8f;
+			reload = 120f;
+			
+			shootY = 25;
+			
+			cooldownTime = 45f;
+			heatColor = NHColor.ancientHeat;
+			
+			shoot = new ShootAlternate(){{
+				shots = 2;
+				shotDelay = 0f;
+				spread = 12.3f;
+			}};
+			
+			inaccuracy = 1.3f;
+			shootSound = NHSounds.flak;
+			
+			bullet = NHBullets.laugraBullet;
+			
+			parts.add(new RegionPart("-panel"){{
+				outline = mirror = true;
+				x = y = 0;
+				moveX = -2;
+				moveRot = -6f;
+				moveY = -2f;
+				progress = PartProgress.warmup;
+			}}, new RegionPart("-barrel"){{
+				under = outline = true;
+				x = y = 0;
+				moveY = -6f;
+				progress = PartProgress.recoil;
+			}}, new HaloPart(){{
+				shapes = 1;
+				layer = Layer.bullet + 1f;
+				x = 0;
+				y = -32f;
+				color = NHColor.ancient;
+				hollow = true;
+				sides = 4;
+				stroke = 0f;
+				strokeTo = 1.1f;
+				radiusTo = 6f;
+				rotateSpeed = 1.2f;
+				
+				progress = PartProgress.warmup.blend(PartProgress.reload, 0.3f);
+			}});
+			
+//			parts.add(new HaloPart(){{
+//				shapes = 1;
+//				layer = Layer.bullet + 1f;
+//				x = 14;
+//				y = -18.5f;
+//
+//				haloRadius = 0;
+//
+//				color = NHColor.ancient;
+//				tri = mirror = true;
+//				strokeTo = 2.1f;
+//				triLength = -0.1f;
+//				triLengthTo = 16f;
+//				haloRotation = 315;
+//
+//				progress = PartProgress.warmup;
+//			}}, new HaloPart(){{
+//				shapes = 1;
+//				layer = Layer.bullet + 1f;
+//				x = 14;
+//				y = -18.5f;
+//				haloRadius = 0;
+//				color = NHColor.ancient;
+//				tri = mirror = true;
+//				strokeTo = 2.1f;
+//				triLength = -0.1f;
+//				triLengthTo = 3f;
+//				haloRotation = 135;
+//
+//				progress = PartProgress.warmup;
+//			}});
+		}};
+		
 		basicCannon = new Weapon(NewHorizon.name("basic-weapon")){{
 			shoot = new ShootPattern();
 			
@@ -581,8 +691,416 @@ public class NHUnitTypes{
 		
 		loadPreviousWeapon();
 		
+		nucleoid = new NHUnitType("nucleoid"){{
+			createScorch = false;
+			outlineRadius += 1;
+			outlineColor = Pal.darkOutline;
+			lightColor = NHColor.ancientLightMid;
+			
+			engineOffset = 140.25f;
+			engineSize = -1;
+			
+			immunise(this);
+			
+			deathExplosionEffect = Fx.none;
+			deathSound = NHSounds.jumpIn;
+			crashDamageMultiplier = 0;
+			
+			healColor = NHColor.ancientLightMid;
+			faceTarget = false;
+			lowAltitude = true;
+			itemCapacity = 500;
+			health = 1000000.0F;
+			speed = 0.175F;
+			accel = 0.04F;
+			drag = 0.035F;
+			flying = true;
+			hitSize = 200.0F;
+			armor = 220.0F;
+			
+			rotateSpeed = 0.25F;
+			buildSpeed = 20f;
+			
+			engines.add(new AncientEngine(-41.25f, -190.5f, 4f, -90));
+			engines.add(new AncientEngine(-41.25f, -187f, 6.5f, -90, 0.45f, 0.6f, 2.6f));
+			engines.add(new AncientEngine(64.0f, -170f, 7f, -90));
+			engines.add(new AncientEngine(64.0f, -167f, 7f, -90, 0.45f, 0.6f, 2.6f));
+			
+			float o = Mathf.random(5);
+			
+			for(float i = -18f; i < 34; i+= 2f){
+				engines.add(new AncientEngine(i, -190.5f, 4f, -90, o));
+			}
+			
+			for(float i = -16; i <= 32.0; i+= 6f){
+				engines.add(new AncientEngine(i, -187f, 6.5f, -90, 0.335f, 0.8f, 2.6f){{
+					phaseOffset = o;
+				}});
+			}
+			
+			abilities.add(new RepairFieldAbility(3000, 180, 220){{
+				this.healEffect = new Effect(11.0F, (e) -> {
+					Draw.color(NHColor.ancientLightMid);
+					Lines.stroke(e.fout() * 2.0F);
+					Lines.circle(e.x, e.y, 2.0F + e.finpow() * 7.0F);
+				});
+				this.activeEffect = new Effect(22.0F, (e) -> {
+					Draw.color(NHColor.ancientLightMid);
+					Lines.stroke(e.fout() * 2.0F);
+					Lines.circle(e.x, e.y, 4.0F + e.finpow() * e.rotation);
+				});
+			}
+			
+				float lastHealth = 0;
+				float selfHealReload = 0;
+			
+				public void update(Unit unit) {
+					super.update(unit);
+					
+					if(lastHealth <= unit.health && unit.damaged()){
+						selfHealReload += Time.delta;
+						
+						if(selfHealReload > 300){
+							unit.healFract(0.0005f);
+						}
+					}else{
+						selfHealReload = 0;
+					}
+					
+					lastHealth = unit.health;
+				}
+			});
+			abilities.add(new Ability(){{
+				display = false;
+			}
+				@Override
+				public void death(Unit unit){
+					Effect.shake(unit.hitSize / 10f, unit.hitSize / 8f, unit.x, unit.y);
+					NHFx.circleOut.at(unit.x, unit.y, unit.hitSize, unit.team.color);
+					NHFx.jumpTrailOut.at(unit.x, unit.y, unit.rotation, unit.team.color, unit.type);
+					NHSounds.jumpIn.at(unit.x, unit.y, 1, 3);
+				}
+			});
+			abilities.add(new ShockWaveAbility(180, 320, 2000, NHColor.ancientLightMid).status(StatusEffects.unmoving, 300f, NHStatusEffects.scannerDown, 300f, NHStatusEffects.emp3, 300f, NHStatusEffects.entangled, 300f, StatusEffects.disarmed, 300f).modify(a -> {
+				a.knockback = 400;
+				a.shootEffect = new MultiEffect(NHFx.circleOut, NHFx.hitSpark(a.hitColor, 55, 40, a.range + 30, 3, 8), NHFx.crossBlastArrow45, NHFx.smoothColorCircle(NHColor.ancientLightMid.cpy().a(0.3f), a.range, 60));
+			}));
+			
+			Weapon cannon = new Weapon(NewHorizon.name("ancient-cannon")){{
+				mirror = false;
+				layerOffset = 0.01f;
+				rotate = true;
+				
+				shootSound = Sounds.shootSmite;
+				reload = 90f;
+				rotateSpeed = 1.55f;
+				parts.add(new RegionPart("-barrel"){{
+					under = true;
+					layerOffset = -0.00175f;
+					
+					moveY = -4f;
+					progress = PartProgress.recoil;
+				}});
+				
+				shoot = new AdaptedShootHelix(){{
+					shots = 3;
+					mag = 1.15f;
+					scl = 6f;
+					shotDelay = 15f;
+					offset = Mathf.PI2 * 12;
+				}};
+				
+				inaccuracy = 1.5f;
+				velocityRnd = 0.075f;
+				
+				bullet = new TrailFadeBulletType(19f, 400f){{
+					lifetime = 50f;
+					trailLength = 14;
+					trailWidth = 1.6F;
+					tracerStroke -= 0.3f;
+					tracers = 1;
+					keepVelocity = true;
+					
+					tracerSpacing = 10f;
+					tracerUpdateSpacing *= 1.25f;
+					
+					hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
+					trailColor = NHColor.ancientLightMid;
+					frontColor = NHColor.ancientLight;
+					width = 9f;
+					height = 30f;
+					
+					hitSound = Sounds.plasmaboom;
+					despawnShake = hitShake = 18f;
+					
+					pierceArmor = true;
+					pierceCap = 4;
+					
+					smokeEffect = NHFx.hugeSmokeGray;
+					shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(33, 28),hitColor);
+					despawnEffect = NHFx.square45_6_45;
+					hitEffect = new MultiEffect(NHFx.hitSpark, NHFx.square45_4_45);
+				}};
+			}};
+			
+			parts.add(new RegionPart("-backwings"){{
+				outline = true;
+				layerOffset = -1f;
+			}});
+			
+			Weapon pds = new PointDefenseWeapon(NewHorizon.name("pester-secondary-laser")){{
+				color = NHColor.ancientLightMid;
+				mirror = false;
+				rotate = true;
+				top = true;
+				reload = 6.0F;
+				targetInterval = 8.0F;
+				targetSwitchInterval = 8.0F;
+				rotateSpeed = 8;
+				shootCone = 30f;
+				bullet = new BulletType() {
+					{
+						shootEffect = NHFx.shootLineSmall(color);
+						hitEffect = NHFx.lightningHitSmall;
+						hitColor = color;
+						maxRange = 360.0F;
+						damage = 250f;
+					}
+				};
+			}};
+			
+			weapons.add(copyAndMove(pds, -16.25f , 9.5f));
+			weapons.add(copyAndMove(pds, -56.5f , 52.5f));
+			weapons.add(copyAndMove(pds, 36.25f , -20.75f));
+			weapons.add(copyAndMove(pds, -69.5f , -137.0f));
+			weapons.add(copyAndMove(pds, -46.75f, -159.25f));
+			weapons.add(copyAndMove(pds, 36.75f, -166.25f));
+			
+			weapons.add(copyAndMove(new Weapon(NewHorizon.name("pester-laser")){{
+				mirror = false;
+				rotateSpeed = 2.15f;
+				rotate = true;
+				
+				shootSound = NHSounds.laser5;
+				reload = 90f;
+				shootWarmupSpeed = 0.05f;
+				shoot = new AdaptedShootHelix(){{
+					shots = 10;
+					mag = 1.15f;
+					scl = 7f;
+					shotDelay = 2.3f;
+					offset = Mathf.PI2 * 13;
+					
+					firstShotDelay = 10f;
+				}};
+				
+				shootY = 9;
+				velocityRnd = 0.075f;
+				
+				bullet = NHBullets.ancientStd;
+			}},  68.75f, -77.0f));
+			weapons.add(copyAndMove(cannon, -46.75f, -15.5f));
+			weapons.add(copyAndMove(cannon, -46.75f, -15.5f));
+			weapons.add(copyAndMove(cannon, -20.25f, 168.5f));
+			weapons.add(copyAndMove(cannon, 44.25f, -44.0f));
+			weapons.add(copyAndMoveAnd(ancientLightningBallTurret, 5.5f, -168.0f, w -> {
+				w.mirror = false;
+				
+				w.shoot.shotDelay = 12;
+				w.shoot.shots = 3;
+				
+				AccelBulletType Tbullet = (AccelBulletType)NHBullets.ancientBall.copy();
+				Tbullet.velocityBegin += 8;
+				Tbullet.velocityIncrease -= 8;
+				Tbullet.shootEffect = NHFx.blast(NHColor.ancient, 12f);
+				Tbullet.smokeEffect = NHFx.shootCircleSmall(NHColor.ancient);
+				Tbullet.fragBullets = 2;
+				w.bullet = Tbullet;
+			}));
+			
+			weapons.add(new Weapon(NewHorizon.name("ancient-executor")){{
+				x = 43.5f;
+				y = -109.75f;
+				
+				mirror = false;
+				layerOffset = 0.015f;
+				rotate = true;
+				
+				rotateSpeed = 0.75f;
+				reload = 90f;
+				
+				inaccuracy = 1.5f;
+				velocityRnd = 0.075f;
+				shootSound = NHSounds.railGunBlast;
+				
+				shoot = new ShootBarrel(){{
+					shots = 2;
+					barrels = new float[]{-20, 31, 0, 20, 31, 0};
+				}};
+				
+				bullet = new TrailFadeBulletType(28f, 1800f){{
+					lifetime = 40f;
+					trailLength = 90;
+					trailWidth = 3.6F;
+					tracers = 2;
+					tracerFadeOffset = 20;
+					keepVelocity = true;
+					
+					tracerSpacing = 10f;
+					tracerUpdateSpacing *= 1.25f;
+					
+					hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
+					trailColor = NHColor.ancientLightMid;
+					frontColor = NHColor.ancientLight;
+					width = 18f;
+					height = 60f;
+					
+					homingPower = 0.01f;
+					homingRange = 300f;
+					homingDelay = 5f;
+					
+					hitSound = Sounds.plasmaboom;
+					despawnShake = hitShake = 18f;
+					
+					status = NHStatusEffects.entangled;
+					statusDuration = 1200f;
+					
+					pierce = pierceArmor = pierceBuilding = true;
+					
+					lightning = 3;
+					lightningLength = 6;
+					lightningLengthRand = 18;
+					lightningDamage = 400;
+					
+					smokeEffect = ColorWarpEffect.wrap(NHFx.hitSparkHuge, hitColor);
+					shootEffect = NHFx.instShoot(backColor, frontColor);
+					despawnEffect = NHFx.lightningHitLarge;
+					hitEffect = new MultiEffect(NHFx.hitSpark(backColor, 75f, 24, 90f, 2f, 12f), NHFx.square45_6_45, NHFx.lineCircleOut(backColor, 18f, 20, 2), NHFx.sharpBlast(backColor, frontColor, 120f, 40f));
+				}
+					
+					@Override
+					public void createFrags(Bullet b, float x, float y){
+						super.createFrags(b, x, y);
+						
+						Bullet bu = NHBullets.nuBlackHole.create(b, x, y, 0);
+						bu.fdata = 36f;
+					}
+				};
+				
+				parts.add(new RegionPart("-barrel"){{
+					outline = true;
+					moveY = -5f;
+					progress = PartProgress.recoil;
+				}});
+			}});
+			weapons.add(new Weapon(name + "-missile"){{
+				reload = 240f;
+				xRand = 10f;
+				shootY = 75f;
+				
+				x = y = 0;
+				
+				layerOffset = 0.002f;
+				
+				shoot = new ShootMulti(new ShootBarrel(){{
+					shots = 3;
+					barrels = new float[]
+					{
+						-96,  0,  0,
+						-82,  0, 0,
+						-110,  0, 0,
+					};
+				}}, new ShootPattern(){{
+					shots = 15;
+					shotDelay = 4.5f;
+				}});
+				
+				velocityRnd = 0.05f;
+				shootSound = NHSounds.launch;
+				
+				bullet = new AccelBulletType(9.2f, 500){{
+					sprite = NHBullets.MISSILE_LARGE;
+					width = 6f;
+					height = 16f;
+					shrinkY = 0f;
+					
+					accelerateBegin = 0.1f;
+					accelerateEnd = 0.6f;
+					
+					velocityBegin = 3f;
+					velocityIncrease = 11f;
+					
+					backColor = hitColor = lightColor = lightningColor = NHColor.ancient;
+					trailColor = Color.gray;
+					frontColor = NHColor.ancientLight;
+					homingPower = 0.08f;
+					homingDelay = 5f;
+					lifetime = 120f;
+					hitEffect = NHFx.instHit(backColor, 2, 30f);
+					despawnEffect = NHFx.shootCircleSmall(backColor);
+					
+					lightning = 1;
+					lightningLengthRand = 12;
+					lightningLength = 3;
+					lightningDamage = 300;
+					
+					smokeEffect = Fx.shootPyraFlame;
+					shootEffect = NHFx.hugeSmokeGray;
+					
+					if(NHSetting.enableDetails()){
+						trailColor = NHColor.trail;
+						trailWidth = 2f;
+						trailLength = 12;
+					}
+				}
+					
+					@Override
+					public void updateHoming(Bullet b){
+						if(b.time >= this.homingDelay){
+							if(b.owner instanceof Unit){
+								Unit u = (Unit)b.owner;
+								if(u.isPlayer()){
+									Player p = u.getPlayer();
+									b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(p.mouseX, p.mouseY), homingPower * Time.delta * 50.0F));
+								}else super.updateHoming(b);
+							}else super.updateHoming(b);
+						}
+					}
+				};
+				
+				minWarmup = 0.9f;
+				shootWarmupSpeed /= 3f;
+				
+				shootCone = 360;
+				baseRotation = 90;
+				recoil = 2f;
+				mirror = rotate = false;
+				parts.add(new RegionPart("-cooler"){{
+					under = outline = true;
+					//					layerOffset = -0.0005f;
+					rotation = -90;
+					y = 7f;
+					moveY = -7f;
+					progress = PartProgress.warmup;
+				}}, new RegionPart("-silo"){{
+					under = outline = true;
+					rotation = -90;
+				}});
+			}});
+		}
+			
+			
+			
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
 		laugra = new NHUnitType("laugra"){{
 			outlineColor = Pal.darkOutline;
+			healColor = NHColor.ancientLightMid;
+			lightColor = NHColor.ancientLightMid;
+			
+			crushDamage = 120;
+			crashDamageMultiplier = 4f;
 			
 			health = 22000;
 			armor = 45;
@@ -626,107 +1144,18 @@ public class NHUnitTypes{
 				hitEffect = NHFx.hitSpark;
 			}};
 			
-			weapons.add(copyAndMove(w, 18.5f, 11f), copyAndMove(w, 18.5f, -13f));
+			abilities.add(new GravityTrapAbility(180f));
 			
-			weapons.add(new Weapon(name + "-turret"){{
-				x = y = 0;
-				rotate = true;
-				rotateSpeed = 3.5f;
-				mirror = alternate = false;
-				layerOffset = 0.15f;
-				
-				shootWarmupSpeed /= 2f;
-				minWarmup = 0.9f;
-				
-				recoil = 2.25f;
-				shake = 8f;
-				reload = 120f;
-				
-				shootY = 25;
-				
-				cooldownTime = 45f;
-				heatColor = NHColor.ancientHeat;
-				
-				shoot = new ShootAlternate(){{
-					shots = 2;
-					shotDelay = 0f;
-					spread = 12.3f;
-				}};
-				
-				inaccuracy = 1.3f;
-				shootSound = NHSounds.flak;
-				
-				bullet = NHBullets.laugraBullet;
-				
-				abilities.add(new GravityTrapAbility(120f));
-				
-				parts.add(new RegionPart("-panel"){{
-					outline = mirror = true;
-					x = y = 0;
-					moveX = -2;
-					moveRot = -6f;
-					moveY = -2f;
-					progress = PartProgress.warmup;
-				}}, new RegionPart("-barrel"){{
-					under = outline = true;
-					x = y = 0;
-					moveY = -6f;
-					progress = PartProgress.recoil;
-				}}, new HaloPart(){{
-					shapes = 1;
-					layer = Layer.bullet + 1f;
-					x = 0;
-					y = -32f;
-					color = NHColor.ancient;
-					hollow = true;
-					sides = 4;
-					stroke = 0f;
-					strokeTo = 1.1f;
-					radiusTo = 6f;
-					rotateSpeed = 1.2f;
-					
-					progress = PartProgress.warmup.blend(PartProgress.reload, 0.3f);
-				}});
-				
-				parts.add(new HaloPart(){{
-					shapes = 1;
-					layer = Layer.bullet + 1f;
-					x = 14;
-					y = -18.5f;
-					
-					haloRadius = 0;
-					
-					color = NHColor.ancient;
-					tri = mirror = true;
-					strokeTo = 2.1f;
-					triLength = -0.1f;
-					triLengthTo = 16f;
-					haloRotation = 315;
-					
-					progress = PartProgress.warmup;
-				}}, new HaloPart(){{
-					shapes = 1;
-					layer = Layer.bullet + 1f;
-					x = 14;
-					y = -18.5f;
-					haloRadius = 0;
-					color = NHColor.ancient;
-					tri = mirror = true;
-					strokeTo = 2.1f;
-					triLength = -0.1f;
-					triLengthTo = 3f;
-					haloRotation = 135;
-					
-					progress = PartProgress.warmup;
-				}});
-			}});
+			weapons.add(copyAndMove(w, 18.5f, 11f), copyAndMove(w, 18.5f, -13f));
+			weapons.add(laugraTurret);
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
 		pester = new NHUnitType("pester"){{
-			
 			trailScl = 2f;
+			healColor = NHColor.ancientLightMid;
+			lightColor = NHColor.ancientLightMid;
 			
 			outlineRadius += 1;
 			outlineColor = Pal.darkOutline;
@@ -827,6 +1256,15 @@ public class NHUnitTypes{
 			
 			engines.add(new PestEngine(0f, -engineOffset, 16f, -90f));
 			engines.add(new PestEngine(0f, -115, 6f, -90f, 0.3f));
+			
+			engines.add(new AncientEngine(0f, -engineOffset, 16f, -90f){{
+				forceZ = Layer.flyingUnit - 1f;
+				alpha = alphaMin = 1;
+			}});
+			engines.add(new AncientEngine(0f, -115, 8f, -90f, 0.3f){{
+				forceZ = Layer.flyingUnit - 1f;
+				alpha = alphaMin = 1;
+			}});
 			engineLayer = Layer.effect + 0.005f;
 			
 			Weapon laser = new Weapon(name + "-laser"){{
@@ -860,50 +1298,7 @@ public class NHUnitTypes{
 				shootY = 9;
 				velocityRnd = 0.075f;
 				
-				bullet = new AccelBulletType(2.85f, 120f){{
-					frontColor = Color.white;
-					backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
-					lifetime = 126f;
-					knockback = 2f;
-					ammoMultiplier = 8f;
-					accelerateBegin = 0.1f;
-					accelerateEnd = 0.85f;
-					
-					status = NHStatusEffects.entangled;
-					statusDuration = 30f;
-					
-					despawnSound = hitSound = Sounds.dullExplosion;
-					
-					velocityBegin = 8f;
-					velocityIncrease = -5f;
-					
-					homingDelay = 20f;
-					homingPower = 0.05f;
-					homingRange = 120f;
-					
-					despawnHit = pierceBuilding = true;
-					hitShake = despawnShake = 5f;
-					lightning = 1;
-					lightningCone = 360;
-					lightningLengthRand = 12;
-					lightningLength = 4;
-					width = 10f;
-					height = 35f;
-					pierceCap = 8;
-					shrinkX = shrinkY = 0;
-					
-					lightningDamage = damage * 0.85f;
-					
-					hitEffect = NHFx.hitSparkLarge;
-					despawnEffect = NHFx.square45_6_45;
-					shootEffect = NHFx.shootCircleSmall(backColor);
-					smokeEffect = NHFx.hugeSmokeGray;
-					trailEffect = NHFx.trailToGray;
-					
-					trailLength = 15;
-					trailWidth = 2f;
-					drawSize = 300f;
-				}};
+				bullet = NHBullets.ancientStd;
 			}};
 			
 			Weapon pdf = new PointDefenseWeapon(){{
@@ -946,188 +1341,7 @@ public class NHUnitTypes{
 			
 			weapons.add(copyAndMove(laser, 34.5f, 1.25f));
 			weapons.add(copyAndMove(laser, 30f, -74.5f));
-			weapons.add(new Weapon(name + "-cannon"){{
-				x = 56;
-				y = -48;
-				shootY = 18f;
-				
-				rotate = true;
-				rotateSpeed = 1.4f;
-				
-				shoot = new ShootPattern();
-				shootSound = NHSounds.thermo;
-				recoil = 3f;
-				
-				reload = 90f;
-				
-				bullet = new AccelBulletType(2.85f, 240f, "mine-bullet"){{
-					frontColor = Color.white;
-					backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
-					lifetime = 95f;
-					
-					status = NHStatusEffects.entangled;
-					statusDuration = 300f;
-					
-					accelerateBegin = 0.15f;
-					accelerateEnd = 0.95f;
-					
-					despawnSound = hitSound = Sounds.titanExplosion;
-					
-					velocityBegin = 8f;
-					velocityIncrease = -7.5f;
-					
-					collides = false;
-					scaleLife = scaledSplashDamage = true;
-					despawnHit = true;
-					hitShake = despawnShake = 18f;
-					lightning = 4;
-					lightningCone = 360;
-					lightningLengthRand = 12;
-					lightningLength = 10;
-					width = height = 30;
-					shrinkX = shrinkY = 0;
-					
-					splashDamageRadius = 120f;
-					splashDamage = 800f;
-					
-					lightningDamage = damage * 0.85f;
-					
-					hitEffect = NHFx.hitSparkLarge;
-					despawnEffect = NHFx.square45_6_45;
-					shootEffect = NHFx.shootCircleSmall(backColor);
-					smokeEffect = NHFx.hugeSmokeGray;
-					trailEffect = NHFx.trailToGray;
-					
-					trailLength = 15;
-					trailWidth = 5f;
-					drawSize = 300f;
-					
-					shootEffect = NHFx.instShoot(backColor, frontColor);
-					smokeEffect = NHFx.lightningHitLarge;
-					
-					hitEffect = new Effect(90, e -> {
-						Draw.color(backColor, frontColor, e.fout() * 0.7f);
-						Fill.circle(e.x, e.y, e.fout() * height / 1.25f);
-						Lines.stroke(e.fout() * 3f);
-						Lines.circle(e.x, e.y, e.fin() * 80);
-						Lines.stroke(e.fout() * 2f);
-						Lines.circle(e.x, e.y, e.fin() * 50);
-						Angles.randLenVectors(e.id, 35, 18 + 100 * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 12 + 4));
-						
-						Draw.color(frontColor);
-						Fill.circle(e.x, e.y, e.fout() * height / 1.75f);
-					});
-					despawnEffect = new OptionalMultiEffect(NHFx.hitSparkHuge, NHFx.instHit(backColor, 3, 120f));
-					
-					fragBullets = 3;
-					fragBullet = new LaserBulletType(){{
-						length = 460f;
-						damage = 4060f;
-						width = 45f;
-						
-						status = NHStatusEffects.entangled;
-						statusDuration = 120f;
-						
-						lifetime = 65f;
-						
-						splashDamage = 800;
-						splashDamageRadius = 120;
-						hitShake = 18f;
-						
-						lightningSpacing = 35f;
-						lightningLength = 8;
-						lightningDelay = 1.1f;
-						lightningLengthRand = 15;
-						lightningDamage = 450;
-						lightningAngleRand = 40f;
-						scaledSplashDamage = largeHit = true;
-						
-						lightningColor = trailColor = hitColor = lightColor = Items.surgeAlloy.color.cpy().lerp(Pal.accent, 0.055f);
-						
-						despawnHit = false;
-						hitEffect = new Effect(90, 500, e -> {
-							Draw.color(backColor, frontColor, e.fout() * 0.7f);
-							Fill.circle(e.x, e.y, e.fout() * height / 1.55f);
-							Lines.stroke(e.fout() * 3f);
-							Lines.circle(e.x, e.y, e.fin(Interp.pow3Out) * 80);
-							Angles.randLenVectors(e.id, 18, 18 + 100 * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 7f));
-							
-							Draw.color(frontColor);
-							Fill.circle(e.x, e.y, e.fout() * height / 2f);
-						});
-						
-						sideAngle = 15f;
-						sideWidth = 0f;
-						sideLength = 0f;
-						colors = new Color[]{hitColor.cpy().a(0.2f), hitColor, Color.white};
-					}
-						
-						@Override
-						public void despawned(Bullet b){
-							//							super.despawned(b);
-						}
-						
-						@Override
-						public void init(Bullet b){
-							Vec2 p = new Vec2().set(NHFunc.collideBuildOnLength(b.team, b.x, b.y, length, b.rotation(), bu -> true));
-							
-							float resultLength = b.dst(p), rot = b.rotation();
-							
-							b.fdata = resultLength;
-							laserEffect.at(b.x, b.y, rot, resultLength * 0.75f);
-							
-							Time.run(b.lifetime() * 0.2f, () -> {
-								hit(b, p.getX(), p.getY());
-							});
-							
-							if(lightningSpacing > 0){
-								int idx = 0;
-								for(float i = 0; i <= resultLength; i += lightningSpacing){
-									float cx = b.x + Angles.trnsx(rot,  i),
-											cy = b.y + Angles.trnsy(rot, i);
-									
-									int f = idx++;
-									
-									for(int s : Mathf.signs){
-										Time.run(f * lightningDelay, () -> {
-											if(b.isAdded() && b.type == this){
-												Lightning.create(b, lightningColor,
-														lightningDamage < 0 ? damage : lightningDamage,
-														cx, cy, rot + 90*s + Mathf.range(lightningAngleRand),
-														lightningLength + Mathf.random(lightningLengthRand));
-											}
-										});
-									}
-								}
-							}
-						}
-						
-						@Override
-						public void draw(Bullet b){
-							float realLength = b.fdata;
-							
-							float f = Mathf.curve(b.fin(), 0f, 0.2f);
-							float baseLen = realLength * f;
-							float cwidth = width;
-							float compound = 1f;
-							
-							Tmp.v1.trns(b.rotation(), baseLen);
-							
-							for(Color color : colors){
-								Draw.color(color);
-								Lines.stroke((cwidth *= lengthFalloff) * b.fout());
-								Lines.lineAngle(b.x, b.y, b.rotation(), baseLen, false);
-								
-								Fill.circle(Tmp.v1.x + b.x, Tmp.v1.y + b.y, Lines.getStroke() * 2.2f);
-								Fill.circle(b.x, b.y, 1f * cwidth * b.fout());
-								compound *= lengthFalloff;
-							}
-							Draw.reset();
-							Drawf.light(b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.4f * b.fout(), colors[0], 0.6f);
-						}
-					};
-				}};
-			}});
+			weapons.add(ancientLightningBallTurret);
 			weapons.add(new Weapon(){{
 				y = -engineOffset;
 				x = 0;

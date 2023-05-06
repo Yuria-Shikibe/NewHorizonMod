@@ -84,10 +84,10 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHBlocks.reconstructPlastaniumFactory),
-				new FeatureLog(NHBlocks.antibody),
-				new FeatureLog(NHStatusEffects.overphased),
-				new FeatureLog(NHSectorPresents.abandonedOutpost)
+				new FeatureLog(NHUnitTypes.nucleoid){{
+					important = true;
+				}},
+				new FeatureLog(NHBlocks.interferon),
 		};
 	}
 	

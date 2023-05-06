@@ -113,7 +113,7 @@ public class NHBlocks{
 		ancimembraneConcentrator,
 	
 		//Turrets
-		dendrite,
+		dendrite, interferon,
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
 		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, executor, empTurret, gravity, multipleLauncher, antibody, multipleArtillery,
 		antiMatterTurret, atomSeparator, eternity, synchro,
@@ -343,6 +343,104 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		interferon = new PowerTurret("interferon"){{
+			size = 3;
+			recoil = 1f;
+			reload = 120f;
+			health = 1800;
+			armor = 8;
+			
+			shoot = new ShootSine(){{
+				scl = 16f;
+				mag = 8f;
+			}};
+			
+			shootSound = Sounds.pulseBlast;
+			outlineColor = Pal.darkOutline;
+			warmupMaintainTime = 45f;
+			minWarmup = 0.9f;
+			shootWarmupSpeed /= 2f;
+			cooldownTime = 65f;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.presstanium, 250, NHItems.juniorProcessor, 120, Items.beryllium, 90, NHItems.zeta, 300));
+			shootY -= 6f;
+			shootType = new LightningLinkerBulletType(1.5f, 40){{
+				lifetime = 110;
+				keepVelocity = false;
+				
+				sprite = NHBullets.MISSILE_LARGE;
+				
+				trailColor = lightColor = lightningColor = hitColor = backColor = NHColor.ancient;
+				frontColor = NHColor.ancientLight;
+				
+				hitSpacing = 3f;
+				hitShake = 1.0F;
+				lightningDamage = damage = splashDamage = 45;
+				splashDamageRadius = 50f;
+				
+				lightning = 1;
+				lightningLength = lightningLengthRand = 8;
+				
+				effectLightningChance /= 3f;
+				effectLightningLength = 17;
+				
+				effectLingtning = 1;
+				
+				maxHit = 8;
+				despawnShake = 5f;
+				hitSound = despawnSound = Sounds.plasmaboom;
+				statusDuration = 120f;
+				status = NHStatusEffects.emp1;
+				
+				size = 5f;
+				width = 7f;
+				height = 22f;
+				drawCircle = false;
+				
+				trailWidth = 3f;
+				trailLength = 16;
+				
+				linkRange = 60f;
+				
+				scaleLife = false;
+				despawnHit = true;
+				
+				collidesAir = collidesGround = true;
+				
+				shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(33, 33), hitColor);
+				smokeEffect = ColorWarpEffect.wrap(NHFx.hitSparkHuge, hitColor);
+				
+				hitEffect = NHFx.hitSpark;
+				despawnEffect = NHFx.blast(hitColor, 42f);
+				
+				spreadEffect = ColorWarpEffect.wrap(NHFx.hitSpark, hitColor);
+			}};
+			
+			drawer = new DrawTurret("reinforced-"){{
+				parts.add(new RegionPart("-handle"){{
+						x = -5f;
+						moveX = 5f;
+						mirror = true;
+						under = turretShading = true;
+					
+						progress = PartProgress.warmup;
+	                }}, new RegionPart("-turret-base"){{
+						under = turretShading = true;
+					}}, new RegionPart("-barrel"){{
+						under = turretShading = true;
+						moveY = -4f;
+						progress = PartProgress.recoil;
+					}}
+				);
+			}};
+			
+			hasLiquids = true;
+			coolant = new ConsumeCoolant(0.15f);
+			consumePowerCond(12f, TurretBuild::isActive);
+			range = 160f;
+			inaccuracy = 1.25f;
+		}};
+		
 		beamLaserTurret = new ItemTurret("beam-laser-turret"){{
 			size = 2;
 			requirements(Category.turret, BuildVisibility.shown, with(Items.copper, 60, NHItems.juniorProcessor, 60, NHItems.presstanium, 60));
@@ -432,6 +530,7 @@ public class NHBlocks{
 			inaccuracy = 3f;
 			
 			shootSound = NHSounds.laser3;
+			outlineColor = Pal.darkOutline;
 			
 			ammo(NHItems.zeta, new AccelBulletType(2.85f, 40f){{
 				frontColor = NHColor.ancientLight;
@@ -478,7 +577,7 @@ public class NHBlocks{
 					width = 6;
 					length = 60;
 					lifetime = 22f;
-					damage = 80.0F;
+					damage = 70.0F;
 					status = NHStatusEffects.emp2;
 					serrationLenScl = 2f;
 					serrationWidth = 2f;
@@ -1376,6 +1475,7 @@ public class NHBlocks{
 			shootSound = NHSounds.railGunBlast;
 //			heatColor = NHItems.irayrondPanel.color;
 			
+			outlineColor = Pal.darkOutline;
 			accurateDelay = true;
 			
 			coolantMultiplier = 0.55f;
@@ -2754,7 +2854,7 @@ public class NHBlocks{
 			health = 1200;
 			armor = 3;
 			
-			consumePowerBuffered(30000f);
+//			consumePowerBuffered(30000f);
 		}};
 		
 		largeWaterExtractor = new SolidPump("large-water-extractor"){{
@@ -3155,6 +3255,12 @@ public class NHBlocks{
 				new UnitSet(NHUnitTypes.pester, new byte[]{NHUnitTypes.ANCIENT_AIR, 7}, 1200 * 60f,
 						new ItemStack(NHItems.ancimembrane, itemCapacity),
 						new ItemStack(NHItems.upgradeSort, itemCapacity / 2)
+				),
+				new UnitSet(NHUnitTypes.nucleoid, new byte[]{NHUnitTypes.ANCIENT_AIR, 8}, 1800 * 60f,
+						with(NHItems.ancimembrane, itemCapacity,
+								NHItems.upgradeSort, itemCapacity,
+								NHItems.darkEnergy, itemCapacity
+						)
 				),
 				new UnitSet(NHUnitTypes.laugra, new byte[]{NHUnitTypes.ANCIENT_GROUND, 5}, 480 * 60f,
 						with(NHItems.setonAlloy, 300, NHItems.seniorProcessor, 300, Items.surgeAlloy, 200)

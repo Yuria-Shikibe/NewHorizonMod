@@ -190,7 +190,7 @@ public class DebugDialog extends BaseDialog{
 							table.table(Tex.buttonEdge3, t -> {
 								t.button(new TextureRegionDrawable(unit.fullIcon), Styles.cleari,LEN * 3,() -> {
 									BaseDialog d = new BaseDialog("info"){{
-										cont.image(unit.fullIcon);
+										cont.image(unit.fullIcon).scaling(Scaling.fit);
 									}};
 									d.addCloseButton();
 									d.show();
