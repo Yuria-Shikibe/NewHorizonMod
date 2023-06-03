@@ -125,12 +125,8 @@ public class UltFire extends Fire{
 			if (!(time >= lifetime) && tile != null && !Float.isNaN(lifetime)) {
 				Building entity = tile.build;
 				boolean damage = entity != null;
-				if (baseFlammability < 0.0F || block != tile.block()) {
-					baseFlammability = tile.getFlammability();
-					block = tile.block();
-				}
 				
-				float flammability = baseFlammability + puddleFlammability;
+				float flammability = puddleFlammability;
 				if (!damage && flammability <= 0.0F) {
 					time += Time.delta * 8.0F;
 				}

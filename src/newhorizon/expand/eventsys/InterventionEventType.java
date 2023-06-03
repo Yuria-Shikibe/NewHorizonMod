@@ -1,6 +1,7 @@
 package newhorizon.expand.eventsys;
 
 import arc.Core;
+import arc.audio.Sound;
 import arc.flabel.FLabel;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
@@ -38,6 +39,7 @@ public class InterventionEventType extends TargetableEventType{
 	public ObjectIntMap<UnitType> spawner = new ObjectIntMap<>();
 	
 	//	@Customizable @Parserable()
+	public Sound callSound = NHSounds.alert2;
 	public StatusEffect status = StatusEffects.none;
 	public float statusDuration = 600;
 	
@@ -80,7 +82,7 @@ public class InterventionEventType extends TargetableEventType{
 		NHUIFunc.showLabel(2.5f, t -> {
 			Color color = event.team.color;
 			
-			if(event.team != Vars.player.team())NHSounds.alert2.play();
+			if(event.team != Vars.player.team())callSound.play();
 			
 			t.background(Styles.black5);
 			

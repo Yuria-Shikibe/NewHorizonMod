@@ -281,7 +281,7 @@ public class NHOverride{
 	}
 	
 	public static void loadOptional(){
-		overrideCanvas();
+		//overrideCanvas();
 		overrideVanillaMain();
 	}
 	

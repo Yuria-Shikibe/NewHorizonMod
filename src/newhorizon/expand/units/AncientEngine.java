@@ -14,31 +14,34 @@ import mindustry.type.UnitType;
 import static arc.graphics.g2d.Lines.circleVertices;
 
 public class AncientEngine extends UnitType.UnitEngine{
-	
-	
 	public AncientEngine(float x, float y, float radius, float rotation){
 		super(x, y, radius, rotation);
 	}
 	
 	public AncientEngine(float x, float y, float radius, float rotation, float phaseOffset){
-		super(x, y, radius, rotation);
+		this(x, y, radius, rotation);
 		this.phaseOffset = phaseOffset;
 	}
 	
-	public AncientEngine(float x, float y, float radius, float rotation, float alpha, float sizeSclPlus, float sizeSclMin){
-		super(x, y, radius, rotation);
-		this.alpha = alpha;
+	public AncientEngine(float x, float y, float radius, float rotation, float alphaBase, float sizeSclPlus, float sizeSclMin){
+		this(x, y, radius, rotation);
+		this.alphaBase = alphaBase;
 		this.sizeSclPlus = sizeSclPlus;
 		this.sizeSclMin = sizeSclMin;
 	}
 	
 	public float forceZ = -1;
 	public float phaseOffset = Mathf.random(5);
-	public float alpha = 0.8f;
+	public float alphaBase = 0.8f;
 	public float scl = 0.825f;
 	public float sizeSclPlus = 0.4f;
 	public float sizeSclMin = 0.95f;
-	public float alphaMin = 0.88f;
+	public float alphaSclMin = 0.88f;
+	
+	public AncientEngine a(float f){
+		this.alphaBase = f;
+		return this;
+	}
 	
 	@Override
 	public void draw(Unit unit){
@@ -54,7 +57,7 @@ public class AncientEngine extends UnitType.UnitEngine{
 			float ex = Tmp.v1.x;
 			float ey = Tmp.v1.y;
 			float rad = Mathf.curve(unit.vel.len2(), 0.001f, type.speed * type.speed) * radius * (sizeSclMin + Mathf.absin(Time.time + phaseOffset, scl, sizeSclPlus));
-			float a = alpha * (alphaMin + Mathf.absin(Time.time * 1.3f - phaseOffset, scl, 0.13f));
+			float a = alphaBase * (alphaSclMin + Mathf.absin(Time.time * 1.3f - phaseOffset, scl, 0.13f));
 			
 			Draw.blend(Blending.additive);
 			Draw.alpha(a);

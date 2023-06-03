@@ -10,6 +10,7 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.math.geom.Vec2;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -23,6 +24,8 @@ import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
+import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.BuildPlan;
@@ -71,6 +74,7 @@ import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.adapt.LaserBeamDrill;
 import newhorizon.expand.block.adapt.MultiCrafter;
+import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.*;
@@ -110,10 +114,10 @@ public class NHBlocks{
 		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory, irdryonVault,
 	
 		//Ancient
-		ancimembraneConcentrator,
+		ancimembraneConcentrator, ancientArtillery,
 	
 		//Turrets
-		dendrite, interferon,
+		dendrite, interferon, prism,
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
 		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, executor, empTurret, gravity, multipleLauncher, antibody, multipleArtillery,
 		antiMatterTurret, atomSeparator, eternity, synchro,
@@ -343,6 +347,452 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		ancientArtillery = new CaptureableTurret("ancient-artillery"){{
+			size = 8;
+			destructible = false;
+			sync = true;
+			
+			health = 45000;
+			armor = 120;
+			
+			lightColor = NHColor.ancientLightMid;
+			clipSize = 8 * 24;
+			
+			outlineColor = Pal.darkOutline;
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.ancimembrane, 1200, NHItems.seniorProcessor, 300));
+			
+			warmupMaintainTime = 90f;
+			shootWarmupSpeed /= 5f;
+			minWarmup = 0.9f;
+			shootCone = 15f;
+			rotateSpeed = 0.325f;
+			canOverdrive = false;
+			ammo(NHItems.fusionEnergy, new ShieldBreakerType(7f, 6000, NHBullets.MISSILE_LARGE, 10000){{
+				backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.ancientLightMid;
+				frontColor = NHColor.ancientLight;
+				trailEffect = NHFx.hugeTrail;
+				trailParam = 6f;
+				trailChance = 0.2f;
+				trailInterval = 3;
+				
+				lifetime = 200f;
+				scaleLife = true;
+				
+				trailWidth = 5f;
+				trailLength = 55;
+				trailInterp = Interp.slope;
+				
+				lightning = 6;
+				lightningLength = lightningLengthRand = 22;
+				splashDamage = damage;
+				lightningDamage = damage / 15;
+				splashDamageRadius = 120;
+				scaledSplashDamage = true;
+				despawnHit = true;
+				collides = false;
+				
+				shrinkY = shrinkX = 0.33f;
+				width = 17f;
+				height = 55f;
+				
+				despawnShake = hitShake = 12f;
+				
+				hitEffect = new MultiEffect(NHFx.square(hitColor, 200, 20 ,splashDamageRadius + 80, 10), NHFx.lightningHitLarge, NHFx.hitSpark(hitColor, 130, 85, splashDamageRadius * 1.5f, 2.2f, 10f), NHFx.subEffect(140, splashDamageRadius + 12, 33, 34f, Interp.pow2Out, ((i, x, y, rot, fin) -> {
+					float fout = Interp.pow2Out.apply(1 - fin);
+					for(int s : Mathf.signs) {
+						Drawf.tri(x, y, 12 * fout, 45 * Mathf.curve(fin, 0, 0.1f) * NHFx.fout(fin, 0.25f), rot + s * 90);
+					}
+				})));
+				despawnEffect = NHFx.circleOut(145f, splashDamageRadius + 15f, 3f);
+				
+				shootEffect = ColorWarpEffect.wrap(NHFx.missileShoot, hitColor);//NHFx.blast(hitColor, 45f);
+				smokeEffect = NHFx.instShoot(hitColor, frontColor);
+				
+				despawnSound = hitSound = Sounds.largeExplosion;
+				
+				fragBullets = 22;
+				fragBullet = new BasicBulletType(2f, 300, NHBullets.CIRCLE_BOLT){{
+					width = height = 10f;
+					shrinkY = shrinkX = 0.7f;
+					backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.ancientLightMid;
+					frontColor = NHColor.ancientLight;
+					trailEffect = Fx.missileTrail;
+					trailParam = 3.5f;
+					splashDamage = 80;
+					splashDamageRadius = 40;
+					
+					lifetime = 18f;
+					
+					lightning = 2;
+					lightningLength = lightningLengthRand = 4;
+					lightningDamage = 30;
+					
+					hitSoundVolume /= 2.2f;
+					despawnShake = hitShake = 4f;
+					despawnSound = hitSound = Sounds.dullExplosion;
+					
+					trailWidth = 5f;
+					trailLength = 35;
+					trailInterp = Interp.slope;
+					
+					despawnEffect = NHFx.blast(hitColor, 40f);
+					hitEffect = NHFx.hitSparkHuge;
+				}};
+				
+				fragLifeMax = 5f;
+				fragLifeMin = 1.5f;
+				fragVelocityMax = 2f;
+				fragVelocityMin = 0.35f;
+			}});
+			shooter(NHItems.fusionEnergy, new ShootPattern());
+			
+			ammoPerShot = 12;
+			maxAmmo = 180;
+			
+			range = 1200;
+			reload = 120;
+			
+			unitSort = NHUnitSorts.speedLow;
+			
+			shake = 7;
+			recoil = 3;
+			shootY = -13.5f;
+			shootSound = NHSounds.flak;
+			
+			consumePowerCond(5, TurretBuild::isActive);
+			
+			enableDrawStatus = false;
+			
+			drawer = new DrawTurret(){{
+				parts.addAll(
+					new RegionPart("-additional"){{
+						drawRegion = false;
+						heatColor = Color.red;
+						heatProgress = PartProgress.warmup;
+						heatLightOpacity = 0.55f;
+					}},
+					new AdaptedRegionPart("-armor"){{
+						outline = mirror = true;
+						layerOffset = 0.2f;
+						x = 2f;
+						
+						moveY = 16f;
+						moveX = 8f;
+						moveRot = -45;
+						moves.add(new PartMove(PartProgress.recoil, 0, -6, 0));
+					}},
+					new AdaptedRegionPart("-back"){{
+						outline = mirror = true;
+						layerOffset = 0.3f;
+						x = 2f;
+						moveY = -2f;
+						moveX = 5f;
+						
+						moves.add(new PartMove(PartProgress.recoil, 0, -4, 0));
+					}},
+					new AdaptedRegionPart("-cover"){{
+						outline = true;
+						layerOffset = 0.3f;
+						turretHeatLayer = Layer.turretHeat + layerOffset;
+						heatColor = Color.red;
+						heatProgress = PartProgress.warmup;
+						heatLightOpacity = 0.55f;
+					}},
+					new AdaptedRegionPart("-barrel"){{
+						outline = mirror = true;
+						layerOffset = 0.2f;
+						x = 2f;
+						
+						turretHeatLayer = Layer.turretHeat + layerOffset;
+						heatColor = Color.red;
+						heatProgress = PartProgress.warmup;
+						heatLightOpacity = 0.55f;
+						
+						moves.add(new PartMove(PartProgress.recoil, -1.75f, -8, -2.12f));
+						moveY = 6f;
+						moveX = 7.75f;
+						moveRot = 3.6f;
+					}},
+					new AdaptedRegionPart("-tail"){{
+						outline = mirror = true;
+						layerOffset = 0.2f;
+						x = 1f;
+						moveY = -4f;
+						moveX = 2f;
+					}},
+					new DrawArrowSequence(){{
+						x = 0;
+						y = 2f;
+						arrows = 9;
+						color = NHColor.ancientLightMid;
+						colorTo = Color.red;
+						colorToFinScl = 0.12f;
+					}},
+					new HaloPart(){{
+						y = -52f;
+						layer = Layer.bullet;
+						color = NHColor.ancient;
+						colorTo = NHColor.ancientLightMid;
+						hollow = true;
+						tri = false;
+						
+						shapes = 1;
+						
+						sides = 16;
+						stroke = -1f;
+						strokeTo = 3.4f;
+						radius = 8f;
+						radiusTo = 14.5f;
+						
+						haloRadius = 0;
+						
+						haloRotateSpeed = 2f;
+					}},
+					new HaloPart(){{
+						y = -52f;
+						layer = Layer.bullet;
+						color = NHColor.ancient;
+						colorTo = NHColor.ancientLightMid;
+						tri = true;
+						shapes = 2;
+						radius = -1;
+						radiusTo = 3.75f;
+						triLength = 6;
+						triLengthTo = 18;
+						
+						haloRadius = 14;
+						haloRadiusTo = 25;
+						haloRotateSpeed = 1.5f;
+					}},
+					new HaloPart(){{
+						y = -52f;
+						layer = Layer.bullet;
+						color = NHColor.ancient;
+						colorTo = NHColor.ancientLightMid;
+						tri = true;
+						shapes = 2;
+						radius = -1;
+						radiusTo = 3.75f;
+						triLength = 0;
+						triLengthTo = 4;
+						
+						haloRadius = 14;
+						haloRadiusTo = 25;
+						shapeRotation = 180;
+						haloRotateSpeed = 1.5f;
+					}},
+					
+					new HaloPart(){{
+						y = -52f;
+						layer = Layer.bullet;
+						color = NHColor.ancient;
+						colorTo = NHColor.ancientLightMid;
+						tri = true;
+						shapes = 2;
+						radius = -1;
+						radiusTo = 5f;
+						triLength = 10;
+						triLengthTo = 24;
+						
+						haloRadius = 15;
+						haloRadiusTo = 28;
+						haloRotateSpeed = -1f;
+					}},
+					new HaloPart(){{
+						y = -52f;
+						layer = Layer.bullet;
+						color = NHColor.ancient;
+						colorTo = NHColor.ancientLightMid;
+						tri = true;
+						shapes = 2;
+						radius = -1;
+						radiusTo = 5f;
+						triLength = 0;
+						triLengthTo = 6;
+						
+						haloRadius = 15;
+						haloRadiusTo = 28;
+						shapeRotation = 180;
+						haloRotateSpeed = -1f;
+					}}
+				);
+			}};
+		}};
+		
+		prism = new ItemTurret("prism"){{
+			size = 4;
+			recoil = 2f;
+			health = 6500;
+			
+			
+			
+			armor = 25;
+			
+			unitSort = UnitSorts.strongest;
+			
+			outlineColor = Pal.darkOutline;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 120, Items.tungsten, 350, NHItems.zeta, 500));
+			shootY = 4f;
+			
+			minWarmup = 0.9f;
+			warmupMaintainTime = 25f;
+			shootWarmupSpeed /= 2f;
+			
+			shootSound = Sounds.shootSmite;
+			
+			rotateSpeed = 1.1f;
+			canOverdrive = false;
+			
+			cooldownTime = 90f;
+			
+			squareSprite = false;
+			drawer = new DrawTurret("reinforced-"){{
+				heatColor = Color.red;
+				
+				parts.add(new RegionPart("-top"){{
+					under = turretShading = true;
+					layerOffset = outlineLayerOffset = -0.0015f;
+					heatLayerOffset = -0.0005f;
+				}}, new RegionPart("-barrel"){{
+					heatColor = Color.red;
+					mirror = true;
+					layerOffset = 0.001f;
+					outlineLayerOffset = -0.0025f;
+					moveY = 1f;
+					moveX = 1.5f;
+					moveRot = 8f;
+					
+					progress = PartProgress.warmup.blend(PartProgress.smoothReload, 0.5f);
+					
+					children.add(new RegionPart(""){{
+						name = NewHorizon.name("prism-barrel-charger");
+						mirror = true;
+						layerOffset = 0.001f;
+						outlineLayerOffset = -0.0025f;
+						moveX = 0.75f;
+						moveY = -0.75f;
+						progress = PartProgress.warmup;
+					}});
+					
+					progress = NHPartProgress.recoilWarmup;
+				}});
+			}};
+			
+			reload = 420f;
+			shootCone = 5f;
+			
+			ammoPerShot = 16;
+			maxAmmo = 80;
+			
+			ammo(NHItems.fusionEnergy,
+					new DelayedPointBulletType(){{
+				width = 15f;
+				damage = 1200;
+				lightningDamage = 40;
+				hitColor = NHColor.lightSkyBack;
+				lightColor = lightningColor = trailColor = NHColor.lightSkyMiddle;
+				rangeOverride = 600;
+				
+				ammoMultiplier = 1;
+				
+				lightning = 3;
+				lightningLength = lightningLengthRand = 8;
+				
+				despawnEffect = NHFx.lightningHitLarge;
+				hitEffect = NHFx.hitSparkHuge;
+				
+				status = NHStatusEffects.ultFireBurn;
+				statusDuration = 600f;
+				
+				trailEffect = new Effect(30f, 50f, e -> {
+					Draw.color(e.color, Color.white, e.fout() * 0.6f);
+					
+					float f = e.finpow();
+					Rand rand = Fx.rand;
+					rand.setSeed(e.id + 1);
+					Angles.randLenVectors(e.id, 6, 16, 0, 360, (x, y) -> {
+						Fill.poly(e.x + x * f, e.y + y * f, 3, rand.random(3, 5) * e.fout(), rand.random(360) + rand.random(80, 220) * e.fin(Interp.pow3Out));
+						Drawf.light(e.x + x * f, e.y + y * f, 8, e.color, 0.7f);
+					});
+				});
+				
+				trailSpacing *= 2f;
+				
+				shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(32f, 12f), hitColor);
+				smokeEffect = ColorWarpEffect.wrap(NHFx.square45_6_45, hitColor);
+				
+//				Vars.content.getByName(ContentType.block, "new-horizon-prism").reload = 12;
+				
+				despawnShake = hitShake = 2f;
+				fragBullets = 2;
+				
+				fragBullet = new ChainBulletType(700){{
+					collidesAir = collidesGround = true;
+					quietShoot = true;
+					hitColor = NHColor.lightSkyBack;
+					lightColor = lightningColor = trailColor = NHColor.lightSkyMiddle;
+					thick = 7.3f;
+					maxHit = 5;
+					hitEffect = NHFx.lightningHitSmall;
+					effectController = (t, f) -> {
+						DelayedPointBulletType.laser.at(f.getX(), f.getY(), thick, hitColor, new Vec2().set(t));
+					};
+				}};
+			}},
+				NHItems.thermoCorePositive, new DelayedPointBulletType(){{
+					width = 15f;
+					damage = 500;
+					splashDamage = 800;
+					splashDamageRadius = 120;
+					lightningDamage = 80;
+					hitColor = NHColor.thermoPst;
+					lightColor = lightningColor = trailColor = NHColor.thermoPst;
+					rangeOverride = 600;
+					
+					ammoMultiplier = 1;
+					lightning = 5;
+					lightningLength = lightningLengthRand = 18;
+					
+					despawnEffect = new OptionalMultiEffect(
+						NHFx.smoothColorCircle(hitColor, splashDamageRadius + 50f, 95f),
+						NHFx.circleOut(95f, splashDamageRadius + 50f, 2),
+						NHFx.spreadOutSpark(160f, splashDamageRadius + 40f, 72, 4, 72f, 13f, 4f, Interp.pow3Out)
+					);
+					hitEffect = NHFx.square45_6_45;
+					
+					status = NHStatusEffects.scrambler;
+					statusDuration = 600f;
+					
+					trailEffect = NHFx.square45_4_45;
+					
+					trailSpacing *= 2f;
+					reloadMultiplier = 0.75f;
+					
+					despawnShake = hitShake = 5f;
+					despawnSound = hitSound = NHSounds.shock;
+					hitSoundVolume = 2;
+					
+					fragBullets = 2;
+					fragBullet = NHBullets.hyperBlastLinker;
+					fragLifeMax = 1.3f;
+					fragLifeMin = 0.6f;
+					fragVelocityMax = 0.55f;
+					fragVelocityMin = 0.2f;
+					
+					shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(32f, 12f), hitColor);
+					smokeEffect = ColorWarpEffect.wrap(NHFx.square45_6_45, hitColor);
+				}}
+			);
+			
+			shake = 4;
+			hasLiquids = true;
+			liquidCapacity = 80f;
+			coolant = new ConsumeCoolant(0.5f);
+			coolantMultiplier = 2.25f;
+			range = 600f;
+		}};
+		
 		interferon = new PowerTurret("interferon"){{
 			size = 3;
 			recoil = 1f;
@@ -370,7 +820,8 @@ public class NHBlocks{
 				
 				sprite = NHBullets.MISSILE_LARGE;
 				
-				trailColor = lightColor = lightningColor = hitColor = backColor = NHColor.ancient;
+				trailColor = lightColor = lightningColor = hitColor = NHColor.ancientLightMid;
+				backColor = NHColor.ancientLightMid;
 				frontColor = NHColor.ancientLight;
 				
 				hitSpacing = 3f;
@@ -416,6 +867,7 @@ public class NHBlocks{
 				spreadEffect = ColorWarpEffect.wrap(NHFx.hitSpark, hitColor);
 			}};
 			
+			squareSprite = false;
 			drawer = new DrawTurret("reinforced-"){{
 				parts.add(new RegionPart("-handle"){{
 						x = -5f;
@@ -433,6 +885,7 @@ public class NHBlocks{
 					}}
 				);
 			}};
+			
 			
 			hasLiquids = true;
 			coolant = new ConsumeCoolant(0.15f);
@@ -496,6 +949,7 @@ public class NHBlocks{
 			shootWarmupSpeed /= 2f;
 			minWarmup = 0.9f;
 			
+			squareSprite = false;
 			drawer = new DrawTurret("reinforced-"){{
 				parts.add(new RegionPart("-top"){{
 					under = turretShading = true;
@@ -1169,6 +1623,7 @@ public class NHBlocks{
 			maxAmmo = 30;
 			cooldownTime = 65f;
 			
+			squareSprite = false;
 			drawer = new DrawTurret("reinforced-"){{
 				parts.add(new RegionPart("-top"){{
 					layerOffset = 0.1f;
@@ -1227,7 +1682,7 @@ public class NHBlocks{
 			
 			coolant = consumeCoolant(0.3F);
 			consumePower(50f);
-			unitSort = (u, x, y) -> u.speed();
+			unitSort = NHUnitSorts.speedLow;
 			requirements(Category.turret, with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 200, NHItems.zeta, 150, NHItems.presstanium, 250, NHItems.metalOxhydrigen, 150));
 		}};
 		
@@ -1413,8 +1868,10 @@ public class NHBlocks{
 			unitSort = (u, x, y) -> -u.speed();
 			
 			maxAmmo = 40;
-			ammoPerShot = 5;
+			ammoPerShot = 8;
+			canOverdrive = false;
 			
+			squareSprite = false;
 			drawer = new DrawTurret("reinforced-"){{
 				parts.add(new RegionPart("-acceler"){{
 					mirror = false;
@@ -2009,6 +2466,7 @@ public class NHBlocks{
 		
 		zetaFluidFactory = new AttributeCrafter("zeta-fluid-factory") {
 			{
+				squareSprite = false;
 				baseEfficiency = 0.75f;
 				attribute = NHContent.quantum;
 				boostScale = 0.2f;
@@ -2177,6 +2635,7 @@ public class NHBlocks{
 			
 			Color c = NHLiquids.zetaFluid.color.cpy();
 			
+			squareSprite = false;
 			updateEffect = Fx.formsmoke;
 			
 			craftEffect = new Effect(30f, e -> {
@@ -3256,7 +3715,7 @@ public class NHBlocks{
 						new ItemStack(NHItems.ancimembrane, itemCapacity),
 						new ItemStack(NHItems.upgradeSort, itemCapacity / 2)
 				),
-				new UnitSet(NHUnitTypes.nucleoid, new byte[]{NHUnitTypes.ANCIENT_AIR, 8}, 1800 * 60f,
+				new UnitSet(NHUnitTypes.nucleoid, new byte[]{NHUnitTypes.ANCIENT_AIR, 8}, 3600 * 60f,
 						with(NHItems.ancimembrane, itemCapacity,
 								NHItems.upgradeSort, itemCapacity,
 								NHItems.darkEnergy, itemCapacity

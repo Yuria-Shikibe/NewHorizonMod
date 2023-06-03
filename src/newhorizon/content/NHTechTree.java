@@ -146,6 +146,7 @@ public class NHTechTree{
 				
 				node(NHBlocks.synchro, () -> {
 					node(NHBlocks.argmot, () -> {
+						node(NHBlocks.prism);
 						node(NHBlocks.gravity, () -> {
 							node(NHBlocks.webber, () -> {
 								node(NHBlocks.executor);
@@ -236,7 +237,9 @@ public class NHTechTree{
 							node(NHItems.ancimembrane, ItemStack.with(NHItems.seniorProcessor, 3000, Items.tungsten, 10000, NHItems.setonAlloy, 1000), () -> {
 								node(NHBlocks.ancimembraneConcentrator, () -> {
 									node(NHBlocks.antibody, () -> {
-										node(NHBlocks.dendrite);
+										node(NHBlocks.interferon, () -> {
+											node(NHBlocks.dendrite);
+										});
 									});
 									
 									node(NHBlocks.hyperspaceWarper);

@@ -127,7 +127,7 @@ public class NHBullets{
 			scaleLife = false;
 			
 			despawnEffect = NHFx.lightningHitLarge(hitColor);
-			hitEffect = new OptionalMultiEffect(NHFx.hitSpark(backColor, 65f, 22, splashDamageRadius, 4, 16), NHFx.blast(backColor, splashDamageRadius));
+			hitEffect = new OptionalMultiEffect(NHFx.hitSpark(backColor, 65f, 22, splashDamageRadius, 4, 16), NHFx.blast(backColor, splashDamageRadius / 2f));
 			shootEffect = NHFx.hitSpark(backColor, 45f, 12, 60, 3, 8);
 			smokeEffect = NHFx.hugeSmokeGray;
 		}};
@@ -465,25 +465,27 @@ public class NHBullets{
 			@Override
 			public void init(Bullet b){
 				super.init(b);
+				if(!(b.data instanceof Float))return;
+				float fdata = (Float)b.data();
 				
 				Seq<Sized> data = new Seq<>();
 				
-				Vars.indexer.eachBlock(null, b.x, b.y, b.fdata, bu -> bu.team != b.team, data::add);
+				Vars.indexer.eachBlock(null, b.x, b.y, fdata, bu -> bu.team != b.team, data::add);
 				
-				Groups.unit.intersect(b.x - b.fdata / 2, b.y - b.fdata / 2, b.fdata, b.fdata, u -> {
+				Groups.unit.intersect(b.x - fdata / 2, b.y - fdata / 2, fdata, fdata, u -> {
 					if(u.team != b.team)data.add(u);
 				});
 				
 				b.data = data;
 				
-				NHFx.circleOut.at(b.x, b.y, b.fdata * 1.25f, b.team.color);
+				NHFx.circleOut.at(b.x, b.y, fdata * 1.25f, b.team.color);
 			}
 		};
 		
 		nuBlackHole = new EffectBulletType(20){{
 			despawnHit = true;
 			hitColor = NHColor.ancientLightMid;
-			splashDamageRadius = 0;
+			splashDamageRadius = 36;
 			
 			lightningDamage = 2000;
 			lightning = 2;
@@ -515,21 +517,19 @@ public class NHBullets{
 				Drawf.light(b.x, b.y, b.fdata, hitColor, 0.3f + b.fin() * 0.8f);
 			}
 			
-			public void hitT(Sized target, Entityc o, Team team, float x, float y){
+			public void hitT(Entityc o, Team team, float x, float y){
 				for(int i = 0; i < lightning; i++){
 					Lightning.create(team, team.color, lightningDamage, x, y, Mathf.random(360), lightningLength + Mathf.random(lightningLengthRand));
 				}
 				
-				if(target instanceof Unit){
-					if(((Unit)target).health > 1000)PesterEntity.hitter.create(o, team, x, y, 0, 3000, 1, 1, null);
-				}
+				PesterEntity.hitter.create(o, team, x, y, 0, 3000, 1, 1, null);
 			}
 			
 			@Override
 			public void update(Bullet b){
 				super.update(b);
 				
-				if(!(b.data instanceof Seq))return;
+				if(!(b.data instanceof Seq) || b.timer(0, 5))return;
 				Seq<Sized> data = (Seq<Sized>)b.data;
 				data.remove(d -> !((Healthc)d).isValid());
 			}
@@ -550,7 +550,7 @@ public class NHBullets{
 						
 						NHFx.shuttleDark.at(s.getX() + Mathf.range(size), s.getY() + Mathf.range(size), 45, b.team.color, sd);
 					}
-					hitT(s, o, b.team, s.getX(), s.getY());
+					hitT(o, b.team, s.getX(), s.getY());
 				}
 				
 				createSplashDamage(b, b.x, b.y);
@@ -559,6 +559,7 @@ public class NHBullets{
 			@Override
 			public void init(Bullet b){
 				super.init(b);
+				b.fdata = splashDamageRadius;
 				
 				Seq<Sized> data = new Seq<>();
 				
@@ -570,7 +571,6 @@ public class NHBullets{
 				
 				b.data = data;
 				
-				NHFx.circleOut.at(b.x, b.y, b.fdata * 1.25f, b.team.color);
 			}
 		};
 		

@@ -26,7 +26,6 @@ ext{
     sdkVersion = '30'
     sdkRoot = System.getenv("ANDROID_HOME")
     gameData = 'C:/Users/Administrator/AppData/Roaming/Mindustry'
-
     doExec = { cmd ->
         def proc = cmd.execute(null, new File("$buildDir/libs"))
         proc.waitForProcessOutput(System.out, System.err)
@@ -92,36 +91,36 @@ task deleteLast{
 
 task debugMod{
     def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
-    //def debugLog = new File("$rootDir/build/libs/debug.properties")
-    //if(!debugLog.exists())debugLog.createNewFile()
-
-    /*doFirst {
-        try{
-            Reader fileReader = new FileReader(debugLog)
-            Properties property = new Properties()
-            property.load(fileReader)
-            Instant last
-
-            try {
-                def toEpochMilli = Long.parseLong(String.valueOf(property.get("lastInstant_toEpochMilli")))
-                last = Instant.ofEpochMilli(toEpochMilli)
-            }catch(e){
-                last = Instant.ofEpochMilli(0)
-            }
-
-            fileReader.close()
-
-
-            for (ProcessHandle p : ProcessHandle.allProcesses()){
-                if(p.info().startInstant().isPresent() && last == p.info().startInstant().get()){
-                    Runtime.getRuntime().exec("taskkill /PID " + p.pid())
-                    break
-                }
-            }
-        }catch(IOException e){
-            e.printStackTrace()
-        }
-    }*/
+//    def debugLog = new File("$rootDir/build/libs/debug.properties")
+//    if(!debugLog.exists())debugLog.createNewFile()
+//
+//    doFirst {
+//        try{
+//            Reader fileReader = new FileReader(debugLog)
+//            Properties property = new Properties()
+//            property.load(fileReader)
+//            Instant last
+//
+//            try {
+//                def toEpochMilli = Long.parseLong(String.valueOf(property.get("lastInstant_toEpochMilli")))
+//                last = Instant.ofEpochMilli(toEpochMilli)
+//            }catch(ignored){
+//                last = Instant.ofEpochMilli(0)
+//            }
+//
+//            fileReader.close()
+//
+//
+//            for (ProcessHandle p : ProcessHandle.allProcesses()){
+//                if(p.info().startInstant().isPresent() && last == p.info().startInstant().get()){
+//                    Runtime.getRuntime().exec("taskkill /PID " + p.pid())
+//                    break
+//                }
+//            }
+//        }catch(IOException e){
+//            e.printStackTrace()
+//        }
+//    }
 
     dependsOn jar
     dependsOn deleteLast
@@ -133,8 +132,10 @@ task debugMod{
                 throw new RuntimeException("Failed to replace the old version mod")
             }
 
-//            Process p = Runtime.getRuntime().exec("java -jar E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/build/libs/Mindustry.jar")
+//            Process p = Runtime.getRuntime().exec("java -Xmx1024M -Xms1024M -jar E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/build/libs/Mindustry.jar")
 //
+//
+//            Thread.wait(1000)
 //            Writer writer = new FileWriter(debugLog)
 //            Reader reader = new FileReader(debugLog)
 //            Properties properties = new Properties()

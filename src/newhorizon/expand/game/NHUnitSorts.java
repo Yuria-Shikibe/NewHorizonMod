@@ -1,11 +1,15 @@
 package newhorizon.expand.game;
 
+import arc.math.Mathf;
 import mindustry.Vars;
 import mindustry.entities.Units.Sortf;
 import mindustry.world.meta.BlockGroup;
 
 public class NHUnitSorts{
 	private static float dcr;
+	
+	public static final Sortf speedLow = (u, x, y) -> u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
+	public static final Sortf speedHigh = (u, x, y) -> -u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
 	
 	public static final Sortf regionalHPMaximum_Unit = (u, x, y) -> {
 		dcr = 0;

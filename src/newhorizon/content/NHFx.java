@@ -42,8 +42,25 @@ import static mindustry.Vars.tilesize;
 public class NHFx{
 	public static final IntMap<Effect> same = new IntMap<>();
 	private static final Rand rand = new Rand();
+	private static final Rand rand2 = new Rand();
 	private static final Vec2 v = new Vec2();
 	private static final int[] oneArr = {1};
+	
+	public interface EffectParam{
+		void draw(long id, float x, float y, float rot, float fin);
+	}
+	
+	public static float fslope(float fin){
+		return (0.5f - Math.abs(fin - 0.5f)) * 2f;
+	}
+	
+	public static float fout(float fin, float margin){
+		if(fin >= 1f - margin){
+			return 1f - (fin - (1f - margin)) / margin;
+		}else{
+			return 1f;
+		}
+	}
 	
 	public static int hash(String m, Color c){
 		return Arrays.hashCode(new int[]{m.hashCode(), c.hashCode()});
@@ -54,6 +71,74 @@ public class NHFx{
 		Effect or = same.get(hash);
 		if(or == null)same.put(hash, effect);
 		return or == null ? effect : or;
+	}
+	
+	
+	
+	public static Effect spreadOutSpark(float lifetime, float radius, int sparks, int sparkSpikes, float sparkLifetime, float sparkSize, float sparkLength, Interp spreadOutInterp){
+		return new Effect(lifetime, radius * 2f, e -> {
+			rand.setSeed(e.id);
+			float finT = e.lifetime * e.fin(spreadOutInterp);
+			
+			for(int s = 0; s < sparks; s++){
+				float sBegin = rand.random(e.lifetime - sparkLifetime);
+				float
+						fin = (finT -  sBegin) / sparkLifetime;
+				
+				if(fin < 0 || fin > 1)continue;
+				
+				
+				float
+						fout = 1 - fin,
+						fslope = (0.5f - Math.abs(fin - 0.5f)) * 2f;
+				
+				rand2.setSeed(e.id + s);
+				v.setToRandomDirection(rand2).scl(radius * sBegin / (e.lifetime - sparkLifetime));
+				
+				Tmp.c1.set(e.color).lerp(Color.white, fout * 0.7f);
+				Draw.color(Tmp.c1);
+				Lines.stroke(1.2f * Mathf.curve(fout, 0, 0.22f));
+				randLenVectors(e.id + s + 1, sparkSpikes, sparkSize * fin, (x, y) -> {
+					lineAngle(e.x + x + v.x, e.y + y + v.y, Mathf.angle(x, y), fslope * sparkLength + 2);
+					Drawf.light(e.x + x + v.x, e.y + y + v.y, fin * sparkLength * fslope * 1.3f, Tmp.c1, 0.7f);
+				});
+			}
+		});
+	}
+	
+	public static Effect subEffect(float lifetime, float radius, int num, float childLifetime, Interp spreadOutInterp, EffectParam drawer){
+		return new Effect(lifetime, radius * 2f, e -> {
+			rand.setSeed(e.id);
+			float finT = e.lifetime * e.fin(spreadOutInterp);
+			
+			for(int s = 0; s < num; s++){
+				float sBegin = rand.random(e.lifetime - childLifetime);
+				float
+						fin = (finT -  sBegin) / childLifetime;
+				
+				if(fin < 0 || fin > 1)continue;
+				
+				
+				float
+						fout = 1 - fin;
+				
+				rand2.setSeed(e.id + s);
+				float theta = rand2.random(0f, Mathf.PI2);
+				v.set(Mathf.cos(theta), Mathf.sin(theta)).scl(radius * sBegin / (e.lifetime - childLifetime));
+				
+				Tmp.c1.set(e.color).lerp(Color.white, fout * 0.7f);
+				Draw.color(Tmp.c1);
+				drawer.draw(e.id + s + 9999, e.x + v.x, e.y + v.y, Mathf.radiansToDegrees * theta, fin);
+			}
+		});
+	}
+	
+	public static Effect circleOut(float lifetime, float radius, float thick){
+		return new Effect(lifetime, radius * 2f, e -> {
+			Draw.color(e.color, Color.white, e.fout() * 0.7f);
+			Lines.stroke(thick * e.fout());
+			Lines.circle(e.x, e.y, radius * e.fin(Interp.pow3Out));
+		});
 	}
 	
 	public static Effect squareRand(Color color, float sizeMin, float sizeMax){
@@ -405,6 +490,7 @@ public class NHFx{
 			Draw.blend(Blending.additive);
 			float radius = e.fin(Interp.pow3Out) * rad;
 			Fill.light(e.x, e.y, circleVertices(radius), radius, Color.clear, Tmp.c1.set(out).a(e.fout(Interp.pow5Out)));
+			Drawf.light(e.x, e.y, radius * 1.3f, out, 0.7f * e.fout(0.23f));
 			Draw.blend();
 		}).layer(Layer.effect + 0.15f);
 	}
@@ -540,6 +626,18 @@ public class NHFx{
 			Draw.color(e.color);
 			Lines.stroke(e.fout() * 2f);
 			Lines.square(e.x, e.y, e.rotation + e.rotation / 8 * e.fin(Interp.circleOut) + 1);
+		}),
+	
+		missileShoot = new Effect(130f, 300f, e -> {
+			color(e.color);
+			alpha(0.67f * e.fout(0.9f));
+			rand.setSeed(e.id);
+			for(int i = 0; i < 35; i++){
+				v.trns(e.rotation + 180f + rand.range(21f), rand.random(e.finpow() * 90f)).add(rand.range(3f), rand.range(3f));
+				e.scaled(e.lifetime * rand.random(0.2f, 1f), b -> {
+					Fill.circle(e.x + v.x, e.y + v.y, b.fout() * 9f + 0.3f);
+				});
+			}
 		}),
 	
 		crossSpinBlast = (new Effect(150.0F, 600.0F, (e) -> {
@@ -922,6 +1020,17 @@ public class NHFx{
 			});
 		}),
 	
+		square45_6_45_Charge = new Effect(90f, e-> {
+			Draw.color(e.color, Color.white, e.fin() * 0.6f);
+			randLenVectors(e.id, 12, 60 * e.fout(Interp.pow4Out), (x, y) -> {
+				Fill.square(e.x + x, e.y + y, 5f * e.fin(), 45);
+				Drawf.light(e.x + x, e.y + y, e.fin() * 9F, e.color, 0.7f);
+			});
+			
+			Lines.stroke(2f * e.fin());
+			Lines.circle(e.x, e.y, 80 * e.fout(Interp.pow5Out));
+		}),
+	
 		square45_8_45 = new Effect(45f, e-> {
 			Draw.color(e.color, Color.white, e.fout() * 0.6f);
 			randLenVectors(e.id, 7, 34f * e.finpow(), (x, y) -> {
@@ -1010,9 +1119,6 @@ public class NHFx{
 			for(int i : Mathf.signs) {
 				DrawFunc.tri(e.x, e.y, len / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
 			}
-			
-			Lines.stroke(e.fout() * 2.0F);
-			randLenVectors(e.id, 6, 3 + len * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
 		}),
 	
 		shuttleDark = new Effect(70f, 800f, e -> {
@@ -1031,11 +1137,9 @@ public class NHFx{
 			for(int i : Mathf.signs) {
 				DrawFunc.tri(e.x, e.y, len / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
 			}
-			
-			Lines.stroke(e.fout() * 2.0F);
-			randLenVectors(e.id, 6, 3 + len * e.fin(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 18 + 5));
-			
+		
 			float len1 = len * 0.66f;
+			z(Layer.effect + 0.0001f);
 			color(Color.black);
 			for(int i : Mathf.signs) {
 				DrawFunc.tri(e.x, e.y, len1 / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len1 * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
@@ -1302,7 +1406,15 @@ public class NHFx{
 				Drawf.light(e.x + x, e.y + y, e.fin() * rad * 1.5f, NHColor.darkEnrColor, 0.7f);
 			});
 		}),
-		
+	
+		hugeTrail = new Effect(40f, e -> {
+			Draw.color(e.color);
+			Draw.alpha(e.fout(0.85f) * 0.85f);
+			Angles.randLenVectors(e.id, 6, 2.0F + e.rotation * 5f * e.finpow(), (x, y) -> {
+				Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout(Interp.pow3Out) * e.rotation);
+			});
+		}),
+	
 		hugeSmokeGray = new Effect(40f, e -> {
 			Draw.color(Color.gray, Color.darkGray, e.fin());
 			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));

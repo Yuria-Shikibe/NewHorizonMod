@@ -178,15 +178,16 @@ public class RaidEventType extends TargetableEventType{
 		
 		Vec2 t = new Vec2().set(e.x, e.y);
 		
+		
 		projectiles.each((b, s) -> {
+			e.intData = 0;
 			s.shoot(e.intData, (xOffset, yOffset, angle, delay, mover) -> {
 				if(delay > 0f){
 					Time.run(delay, () -> bullet(e, b, source, t, mover));
 				}else{
 					bullet(e, b, source, t, mover);
 				}
-				e.intData++;
-			});
+			}, () -> e.intData++);
 		});
 		
 		if(removeAfterTrigger)e.remove();

@@ -7,17 +7,28 @@ import mindustry.entities.Effect;
 public class ColorWarpEffect extends Effect{
 	public Effect effect = Fx.none;
 	public Color color = Color.white.cpy();
+	public float rot = -1;
 	
 	public ColorWarpEffect(){
 	}
+	
 	
 	public ColorWarpEffect(Effect effect, Color color){
 		this.effect = effect;
 		this.color = color;
 	}
 	
+	public ColorWarpEffect(Effect effect, Color color, float rot){
+		this.effect = effect;
+		this.color = color;
+		this.rot = rot;
+	}
+	
 	public static ColorWarpEffect wrap(Effect effect, Color color){
 		return new ColorWarpEffect(effect, color);
+	}
+	public static ColorWarpEffect wrap(Effect effect, Color color, float rot){
+		return new ColorWarpEffect(effect, color, rot);
 	}
 	
 	@Override
@@ -33,6 +44,6 @@ public class ColorWarpEffect extends Effect{
 	
 	@Override
 	public void create(float x, float y, float rotation, Color color, Object data){
-		effect.create(x, y, rotation, this.color, data);
+		effect.create(x, y, rot > 0 ? rot : rotation, this.color, data);
 	}
 }

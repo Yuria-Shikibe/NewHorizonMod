@@ -240,6 +240,7 @@ public class NHInbuiltEvents{
 				spawn(NHUnitTypes.nucleoid, 1,NHUnitTypes.pester, 2, NHUnitTypes.guardian, 5);
 				reloadTime = 45 * 60;
 				status = NHStatusEffects.overphased;
+				callSound = NHSounds.alarm;
 			}
 				
 				@Override

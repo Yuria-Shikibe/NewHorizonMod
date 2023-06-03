@@ -24,6 +24,19 @@ public class NHModCore implements ApplicationListener{
 	
 	@Override
 	public void update(){
+//		try{
+//			Field f = Groups.class.getDeclaredField("freeQueue");
+//			f.setAccessible(true);
+//			try{
+//				Seq<Pool.Poolable> p = (Seq<Pool.Poolable>)f.get(null);
+//				p.clear();
+//			}catch(IllegalAccessException e){
+//				e.printStackTrace();
+//			}
+//		}catch(NoSuchFieldException e){
+//			e.printStackTrace();
+//		}
+		
 		if(Vars.state.isPlaying()){
 			NHGroups.update();
 			if(!Vars.headless){

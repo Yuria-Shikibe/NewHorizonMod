@@ -90,7 +90,7 @@ public class NHUnitTypes{
 	public static NHUnitType
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
-			nucleoid, pester, laugra, //ancient
+			nucleoid, pester, laugra, ancientProbe,//ancient
 			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
@@ -691,7 +691,47 @@ public class NHUnitTypes{
 		
 		loadPreviousWeapon();
 		
+		ancientProbe = new NHUnitType("ancient-probe"){{
+			constructor = EntityMapping.idMap[3];
+			
+			outlineColor = Pal.darkOutline;
+			lightColor = NHColor.ancientLightMid;
+			healColor = NHColor.ancientLightMid;
+			
+			fogRadius = 480f;
+			
+			lightRadius = 20f;
+			lightOpacity = 0.1f;
+			
+			flying = true;
+			health = 1500;
+			armor = 10;
+			hitSize = 16f;
+			drag /= 3f;
+			
+			isEnemy = false;
+			canAttack = false;
+			targetPriority = -3f;
+			
+			rotateSpeed = 1.7f;
+			speed = 1.75F;
+			accel = 0.24F;
+			
+			engineOffset = 14f;
+			engineSize = -1;
+			
+			targetFlags = new BlockFlag[]{BlockFlag.factory, BlockFlag.reactor, BlockFlag.generator, BlockFlag.turret, BlockFlag.core, null};
+			
+			float d = Mathf.random(2);
+			engines.add(new AncientEngine(-3.25f, -5.25f, 5f, -90, d));
+			engines.add(new AncientEngine(2.5f, -5.5f, 5f, -90, d));
+			
+			engines.add(new AncientEngine(-3.25f, -5f, 7f, -90).a(0.3f));
+			engines.add(new AncientEngine(2.5f, -5f, 7f, -90).a(0.3f));
+		}};
+		
 		nucleoid = new NHUnitType("nucleoid"){{
+			aiController = SniperAI::new;
 			createScorch = false;
 			outlineRadius += 1;
 			outlineColor = Pal.darkOutline;
@@ -705,6 +745,7 @@ public class NHUnitTypes{
 			deathExplosionEffect = Fx.none;
 			deathSound = NHSounds.jumpIn;
 			crashDamageMultiplier = 0;
+			strafePenalty = 0.1f;
 			
 			healColor = NHColor.ancientLightMid;
 			faceTarget = false;
@@ -720,6 +761,8 @@ public class NHUnitTypes{
 			
 			rotateSpeed = 0.25F;
 			buildSpeed = 20f;
+			
+			targetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.core, null};
 			
 			engines.add(new AncientEngine(-41.25f, -190.5f, 4f, -90));
 			engines.add(new AncientEngine(-41.25f, -187f, 6.5f, -90, 0.45f, 0.6f, 2.6f));
@@ -907,6 +950,7 @@ public class NHUnitTypes{
 				w.mirror = false;
 				
 				w.shoot.shotDelay = 12;
+				w.shoot = w.shoot.copy();
 				w.shoot.shots = 3;
 				
 				AccelBulletType Tbullet = (AccelBulletType)NHBullets.ancientBall.copy();
@@ -948,6 +992,7 @@ public class NHUnitTypes{
 					
 					tracerSpacing = 10f;
 					tracerUpdateSpacing *= 1.25f;
+					removeAfterPierce = false;
 					
 					hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
 					trailColor = NHColor.ancientLightMid;
@@ -983,7 +1028,6 @@ public class NHUnitTypes{
 						super.createFrags(b, x, y);
 						
 						Bullet bu = NHBullets.nuBlackHole.create(b, x, y, 0);
-						bu.fdata = 36f;
 					}
 				};
 				
@@ -1099,7 +1143,7 @@ public class NHUnitTypes{
 			healColor = NHColor.ancientLightMid;
 			lightColor = NHColor.ancientLightMid;
 			
-			crushDamage = 120;
+			crushDamage = 20;
 			crashDamageMultiplier = 4f;
 			
 			health = 22000;
@@ -1259,11 +1303,11 @@ public class NHUnitTypes{
 			
 			engines.add(new AncientEngine(0f, -engineOffset, 16f, -90f){{
 				forceZ = Layer.flyingUnit - 1f;
-				alpha = alphaMin = 1;
+				alphaBase = alphaSclMin = 1;
 			}});
 			engines.add(new AncientEngine(0f, -115, 8f, -90f, 0.3f){{
 				forceZ = Layer.flyingUnit - 1f;
-				alpha = alphaMin = 1;
+				alphaBase = alphaSclMin = 1;
 			}});
 			engineLayer = Layer.effect + 0.005f;
 			

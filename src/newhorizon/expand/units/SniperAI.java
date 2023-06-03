@@ -21,8 +21,12 @@ public class SniperAI extends FlyingAI{
 				circleAttack(120f);
 			}else{
 				moveTo(target, unit.type.maxRange - APPROACHING_DST);
-				unit.lookAt(target);
-				unit.lookAt(target);
+				if(unit.type.faceTarget){
+					unit.lookAt(target);
+					unit.lookAt(target);
+				}else if(!unit.isShooting()){
+					unit.lookAt(target);
+				}
 			}
 		}
 		
