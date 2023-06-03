@@ -367,7 +367,7 @@ public class NHBlocks{
 			shootCone = 15f;
 			rotateSpeed = 0.325f;
 			canOverdrive = false;
-			ammo(NHItems.fusionEnergy, new ShieldBreakerType(7f, 6000, NHBullets.MISSILE_LARGE, 10000){{
+			ammo(NHItems.fusionEnergy, new ShieldBreakerType(7f, 6000, NHBullets.MISSILE_LARGE, 7000){{
 				backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.ancientLightMid;
 				frontColor = NHColor.ancientLight;
 				trailEffect = NHFx.hugeTrail;
