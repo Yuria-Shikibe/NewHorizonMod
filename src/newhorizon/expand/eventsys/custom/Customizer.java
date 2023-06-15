@@ -10,11 +10,10 @@ import arc.util.Nullable;
 import arc.util.serialization.Json;
 import arc.util.serialization.JsonValue;
 import mindustry.Vars;
-import newhorizon.NewHorizon;
-import newhorizon.expand.eventsys.InterventionEventType;
-import newhorizon.expand.eventsys.RaidEventType;
-import newhorizon.expand.eventsys.ReachWaveEvent;
-import newhorizon.expand.eventsys.WorldEventType;
+import newhorizon.expand.eventsys.types.InterventionEventType;
+import newhorizon.expand.eventsys.types.RaidEventType;
+import newhorizon.expand.eventsys.types.ReachWaveEvent;
+import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.eventsys.annotation.Customizable;
 import newhorizon.expand.eventsys.annotation.NumberParam;
 import newhorizon.expand.eventsys.annotation.Parserable;
@@ -156,7 +155,7 @@ public class Customizer{
 		public void buildTable(Table parent){
 			params.each(p -> {
 				p.buildTable(parent);
-				NewHorizon.debugLog("build: " + p.getType());
+//				NewHorizon.debugLog("build: " + p.getType());
 			});
 		}
 		
@@ -170,13 +169,13 @@ public class Customizer{
 					if(inited.containsKey(f)){
 						params.add(inited.get(f));
 						
-						NewHorizon.debugLog(type.getSimpleName() + " | Registered Field: " + f.getName() + " as " + f.getType());
+//						NewHorizon.debugLog(type.getSimpleName() + " | Registered Field: " + f.getName() + " as " + f.getType());
 					}else{
 						CustomParam param = new CustomParam(type, f);
 						f.setAccessible(true);
 						params.add(param);
 						
-						NewHorizon.debugLog(type.getSimpleName() + " | Registered !New Field: " + f.getName() + " as " + f.getType());
+//						NewHorizon.debugLog(type.getSimpleName() + " | Registered !New Field: " + f.getName() + " as " + f.getType());
 					}
 				}
 			}

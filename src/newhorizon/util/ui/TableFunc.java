@@ -115,7 +115,8 @@ public class TableFunc{
                     label.setWidth(getWidth());
                 });
                 add(label).growX().fillY().pad(OFFSET).align(Align.topLeft).row();
-                button("Copy Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText(tmpX + ", " + tmpY)).growX().fillY().row();
+                button("Copy Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText(tmpX + ", " + tmpY)).growX().marginLeft(12f).fillY().row();
+                button("Copy Unit Coords", Icon.copy, Styles.cleart, () -> Core.app.setClipboardText((tmpX * 8 + 4) + ", " + (tmpY * 8 + 4))).growX().marginLeft(12f).fillY().row();
     
                 pane(con -> {
                     con.button(Icon.leftOpen, Styles.cleari, () -> spawnNum = Mathf.clamp(--spawnNum, 1, 100)).size(LEN - OFFSET * 1.5f);

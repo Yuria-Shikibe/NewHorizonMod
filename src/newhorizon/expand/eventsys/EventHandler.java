@@ -2,6 +2,7 @@ package newhorizon.expand.eventsys;
 
 import arc.util.TaskQueue;
 import newhorizon.expand.entities.WorldEvent;
+import newhorizon.expand.eventsys.types.WorldEventType;
 
 import static mindustry.Vars.net;
 import static mindustry.Vars.state;
@@ -39,7 +40,8 @@ public class EventHandler implements Runnable{
 		}
 	}
 	
-	public EventHandler(){
+	public static boolean has(String tag){
+		return state.rules.tags.containsKey(tag);
 	}
 	
 	public void posCalculation(WorldEvent event){
@@ -52,7 +54,6 @@ public class EventHandler implements Runnable{
 	
 	private void start(){
 		stop();
-		if(net.client())return;
 		
 		thread = new Thread(this, "EventHandler");
 		thread.setPriority(Thread.MIN_PRIORITY);

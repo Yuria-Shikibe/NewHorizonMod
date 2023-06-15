@@ -17,6 +17,7 @@ import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
+import arc.util.Log;
 import arc.util.Scaling;
 import arc.util.Time;
 import mindustry.content.TechTree;
@@ -36,9 +37,11 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHSounds;
-import newhorizon.expand.eventsys.custom.CustomUIGen;
+import newhorizon.expand.NHVars;
+import newhorizon.expand.cutscene.NHCSS_Core;
+import newhorizon.expand.cutscene.actions.CSSActions;
+import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.util.Tool_Internal;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
@@ -118,6 +121,7 @@ public class DebugDialog extends BaseDialog{
 				
 				Field[] fields = c.getFields();
 				cont.pane(t -> {
+					t.background(Tex.selection);
 					int index = 0;
 					for(Field f : fields){
 						try{
@@ -142,11 +146,11 @@ public class DebugDialog extends BaseDialog{
 			}}.show());
 			
 			t.button("ButtonImages", () -> new BaseDialog("ButtonImages"){{
-				
 				Class<?> c = Styles.class;
 				
 				Field[] fields = c.getFields();
 				cont.pane(t -> {
+					t.background(Tex.selection);
 					int index = 0;
 					for(Field f : fields){
 						try{
@@ -212,7 +216,7 @@ public class DebugDialog extends BaseDialog{
 				dialog.cont.pane(t1 -> {
 					setFillParent(true);
 					float unitLength = 2f;
-					float offset = 70 * unitLength;
+					float offset = 50 * unitLength;
 					float len = 100;
 					float sigs = 100;
 					Seq<Field> fields = new Seq<>();
@@ -221,7 +225,7 @@ public class DebugDialog extends BaseDialog{
 					int i = 0;
 					for(Field field : fields){
 						if(Interp.class.isAssignableFrom(field.getType())){
-							if(i++ % 5 == 0)t1.row();
+							if(i++ % 4 == 0)t1.row();
 							try{
 								Interp interp = (Interp)field.get(null);
 								
@@ -438,12 +442,19 @@ public class DebugDialog extends BaseDialog{
 			
 			t.button("see Tex", () -> Tool_Internal.showTexture(NHContent.smoothNoise));
 			
-			t.button("summon", () -> {
-				NHInbuiltEvents.intervention_std.create();
+			t.button("move", () -> {
+				CSSActions.beginCreateAction();
+				
+				float x = Mathf.random(0, world.unitWidth()), y = Mathf.random(0, world.unitHeight());
+				
+				NHCSS_Core.core.applySubBus(CSSActions.caution(x, y, 12, 300, Pal.accent));
+				CSSActions.endCreateAction();
 			});
 			
 			t.button("gen", () -> {
-				new CustomUIGen().show();
+//				new CustomUIGen().show();
+				Log.info(NHVars.worldData.eventReloadSpeed);
+				Log.info(AutoEventTrigger.timeScale);
 			});
 			
 			/*t.button("genT", () -> {

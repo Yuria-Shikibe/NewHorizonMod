@@ -1,4 +1,4 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.Core;
 import mindustry.game.MapObjectives;

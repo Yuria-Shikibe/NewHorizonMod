@@ -12,6 +12,7 @@ import newhorizon.content.NHFx;
 
 
 public class ShieldBreakerType extends BasicBulletType{
+    public float fragSpawnSpacing = 5;
     public float maxShieldDamage;
     
     protected static BulletType breakType = new EffectBulletType(3f){{
@@ -54,6 +55,6 @@ public class ShieldBreakerType extends BasicBulletType{
     @Override
     public void update(Bullet b) {
         super.update(b);
-        if(b.timer(5, 5))breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
+        if(b.timer(5, fragSpawnSpacing))breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
     }
 }

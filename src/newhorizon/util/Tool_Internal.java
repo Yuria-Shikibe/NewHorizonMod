@@ -194,7 +194,7 @@ public class Tool_Internal{
 	}
 	
 	public static void textureLerp(){
-		toProcess = new Fi("E:\\apps\\\\UserData\\MaterialEditor\\123.png");
+		toProcess = new Fi("");
 		if(toProcess.exists()){
 			Pixmap pixmap = PixmapIO.readPNG(toProcess);
 			pixmap.each((x, y) -> {
@@ -209,7 +209,7 @@ public class Tool_Internal{
 	}
 	
 	public static void texturePick(){
-		toProcess = new Fi("E:\\apps\\koikatu\\UserData\\cap\\123.png");
+		toProcess = new Fi("");
 		if(toProcess.exists()){
 			Pixmap pixmap = PixmapIO.readPNG(toProcess);
 			pixmap.each((x, y) -> {

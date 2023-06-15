@@ -1,4 +1,4 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.Core;
 import arc.audio.Sound;
@@ -27,6 +27,7 @@ import mindustry.ui.Styles;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.WorldEvent;
+import newhorizon.expand.eventsys.annotation.Customizable;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.ui.IconNumDisplay;
 import newhorizon.util.ui.NHUIFunc;
@@ -39,9 +40,12 @@ public class InterventionEventType extends TargetableEventType{
 	public ObjectIntMap<UnitType> spawner = new ObjectIntMap<>();
 	
 	//	@Customizable @Parserable()
+	@Customizable
 	public Sound callSound = NHSounds.alert2;
 	public StatusEffect status = StatusEffects.none;
 	public float statusDuration = 600;
+	
+	public double flag = Double.NaN;
 	
 	public float spawnRange = 180f;
 	public float reloadTime = 600f;
@@ -110,7 +114,7 @@ public class InterventionEventType extends TargetableEventType{
 	}
 	
 	public void triggerNet(WorldEvent event){
-		event.reload = reloadTime * 0.985f;
+		event.reload = reloadTime - 10f;
 	}
 	
 	@Override
@@ -128,7 +132,7 @@ public class InterventionEventType extends TargetableEventType{
 		float angle = source(e).angleTo(e);
 		
 		for(ObjectIntMap.Entry<UnitType> spawn : spawner.entries()){
-			NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration);
+			NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration, flag);
 		}
 		
 		if(removeAfterTrigger)e.remove();

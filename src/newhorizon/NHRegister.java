@@ -8,7 +8,7 @@ import mindustry.core.GameState;
 import mindustry.game.EventType;
 import mindustry.net.Net;
 import newhorizon.expand.eventsys.EventHandler;
-import newhorizon.expand.eventsys.WorldEventObjective;
+import newhorizon.expand.eventsys.types.WorldEventObjective;
 import newhorizon.expand.packets.LongInfoMessageCallPacket;
 import newhorizon.util.graphic.EffectDrawer;
 
@@ -35,7 +35,7 @@ public class NHRegister{
 	
 	public static void load(){
 		Events.on(EventType.ResetEvent.class, e -> {
-			NewHorizon.debugLog("Reset Event Triggered");
+//			NewHorizon.debugLog("Reset Event Triggered");
 			
 			NHGroups.clear();
 			worldLoaded = false;
@@ -52,7 +52,7 @@ public class NHRegister{
 //		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-			NewHorizon.debugLog("WorldLoad Event Triggered");
+//			NewHorizon.debugLog("WorldLoad Event Triggered");
 			
 			NHGroups.resize();
 			NHModCore.core.initOnLoadWorld();
@@ -63,7 +63,7 @@ public class NHRegister{
 			
 			afterLoad.clear();
 			
-			if(Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
+			if(!Vars.headless && Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
 				Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
 				Vars.player.con.close();
 			}

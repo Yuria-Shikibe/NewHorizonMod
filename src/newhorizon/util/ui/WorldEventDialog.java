@@ -6,8 +6,6 @@ import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.Color;
 import arc.scene.ui.Dialog;
-import arc.scene.ui.Image;
-import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.util.Align;
 import arc.util.Time;
@@ -22,7 +20,7 @@ import newhorizon.NHGroups;
 import newhorizon.NHUI;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.EventHandler;
-import newhorizon.expand.eventsys.WorldEventType;
+import newhorizon.expand.eventsys.types.WorldEventType;
 
 import static newhorizon.util.ui.TableFunc.*;
 
@@ -31,6 +29,13 @@ public class WorldEventDialog extends BaseDialog{
 	public boolean buildDebug = false;
 	
 	public Boolf<WorldEvent> currentFilter = e -> true;
+	public Func<WorldEvent, Cons<Table>> tooltipModifier = event -> iT -> {
+		iT.setBackground(Tex.pane);
+		iT.setSize(NHUI.getWidth(), NHUI.getHeight());
+		event.type.infoTable(iT);
+		iT.pack();
+		iT.visible(iT::hasChildren);
+	};
 	
 //	public ObjectMap<WorldEvent, Table> allToShow = new ObjectMap<>();
 	
@@ -103,28 +108,12 @@ public class WorldEventDialog extends BaseDialog{
 		NHGroups.events.each(e -> buildEvent(e, table));
 	}
 	
-	public void buildAllEventsSimple(Table table, Func<WorldEvent, Cons<Table>> modifier){
-		NHGroups.events.each(e -> {
-			TextButton button = new TextButton(e.info(), Styles.cleart);
-			button.marginLeft(4f);
-			button.stack(new Image(Styles.black5), new Image(e.type.icon())).size(38);
-			button.getCells().reverse();
-			button.clicked(() -> {
-				e.type.showAsDialog(e);
-			});
-			button.setColor(e.team.color);
-			
-			table.table(t -> {
-				t.defaults().growX().fillY().padBottom(6f);
-				if(e.type.progressRatio(e) > 0)t.stack(new Bar("", e.team.color, () -> e.type.progressRatio(e)), button).tooltip(modifier.get(e));
-				else t.add(button).tooltip(modifier.get(e));
-				
-				
-				t.update(() -> {
-					if(!e.added)t.remove();
-				});
-			}).growX().fillY().row();
-		});
+	public Table buildSimpleTable(WorldEvent e){
+		return e.type.buildSimpleTable(e);
+	}
+	
+	public void buildAllEventsSimple(Table table){
+		NHGroups.events.each(e -> table.add(buildSimpleTable(e)).row());
 	}
 	
 	public void buildEvent(WorldEvent event){

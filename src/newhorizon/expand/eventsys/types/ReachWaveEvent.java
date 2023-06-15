@@ -1,4 +1,4 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.Core;
 import arc.math.Mathf;
@@ -17,6 +17,7 @@ public class ReachWaveEvent extends ObjectiveEventType{
 	
 	public ReachWaveEvent(String name){
 		super(name);
+		
 		ratio = e -> Mathf.clamp(Vars.state.wave / (float)targetWave);
 		action = e -> toTrigger.create();
 		trigger = e -> Vars.state.wave >= targetWave;

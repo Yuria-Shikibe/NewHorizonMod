@@ -21,6 +21,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NHGroups;
 import newhorizon.expand.entities.EntityRegister;
+import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.struct.OV_Pair;
@@ -55,9 +56,10 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public static void setScale(float f){
 		Log.info("Set: " + f);
 		Core.settings.put(SPEED_SCL_KEY, f);
+		timeScale = f;
 	}
 	
-	public static float getScale(){
+	public static float getSettingScale(){
 		return Core.settings.getFloat(SPEED_SCL_KEY, 0.675f);
 	}
 	
@@ -111,7 +113,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 		
 		reload += Time.delta * timeScale;
 		
-		if(reload > spacing && !Vars.net.client() && timer.get(checkSpacing)){
+		if(reload > spacing && timer.get(checkSpacing)){
 			EventHandler.get().post(() -> {
 				if(meet()){
 					Core.app.post(() -> {

@@ -7,6 +7,7 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.ContentType;
 import mindustry.gen.Building;
@@ -15,6 +16,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
+import mindustry.logic.LAccess;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
@@ -48,6 +50,7 @@ public class UnitSpawner extends Block{
 		solid = solidifes = false;
 		requirements = ItemStack.empty;
 		category = Category.units;
+		destroyEffect = Fx.none;
 		buildVisibility = BuildVisibility.sandboxOnly;
 		config(UnitType.class, (UnitIniterBuild build, UnitType unit) -> build.toSpawnType = unit);
 		config(String.class, (UnitIniterBuild build, String unit) -> {
@@ -56,6 +59,11 @@ public class UnitSpawner extends Block{
 			build.angle = Float.parseFloat(s[1]);
 			build.delay = Float.parseFloat(s[2]);
 			build.toSpawnType = content.getByName(ContentType.unit, s[0]);
+		});
+		configClear((UnitIniterBuild tile) -> {
+			tile.toSpawnType = UnitTypes.alpha;
+			tile.angle = 0;
+			tile.delay = 30;
 		});
 	}
 	
@@ -101,6 +109,22 @@ public class UnitSpawner extends Block{
 			return toSpawnType.name + divKey + angle + divKey + delay;
 		}
 		
+		@Override
+		public void control(LAccess type, Object p1, double p2, double p3, double p4){
+			super.control(type, p1, p2, p3, p4);
+			
+			if(type == LAccess.shootp && p1 instanceof String){
+				toSpawnType = content.unit((String)p1);
+				angle = (float)p2;
+				delay = 30;
+			}
+		}
+		
+		@Override
+		public void control(LAccess type, double p1, double p2, double p3, double p4){
+			super.control(type, p1, p2, p3, p4);
+		}
+		
 		@Override public void updateTile(){
 			if(!addUnit)addUnit();
 		}
@@ -109,15 +133,17 @@ public class UnitSpawner extends Block{
 		
 		@Override
 		public void draw(){
-			super.draw();
-			Tmp.v1.trns(angle, tilesize * size * 1.5f);
-			Drawf.arrow(x, y, x + Tmp.v1.x, y + Tmp.v1.y, size * tilesize, tilesize / 2f);
-			if(toSpawnType == null)return;
-			
-			Drawf.light(x, y, tilesize * size * 3f, team.color, 0.8f);
-			Draw.z(Layer.overlayUI);
-			Draw.rect(toSpawnType.fullIcon, x, y, size * tilesize, size * tilesize);
-			DrawFunc.overlayText(delay / 60 + "s", x - Tmp.v1.x, y - Tmp.v1.y, -4f, Pal.accent, true);
+			if(Vars.state.isEditor()){
+				super.draw();
+				Tmp.v1.trns(angle, tilesize * size * 1.5f);
+				Drawf.arrow(x, y, x + Tmp.v1.x, y + Tmp.v1.y, size * tilesize, tilesize / 2f);
+				if(toSpawnType == null) return;
+				
+				Drawf.light(x, y, tilesize * size * 3f, team.color, 0.8f);
+				Draw.z(Layer.overlayUI);
+				Draw.rect(toSpawnType.fullIcon, x, y, size * tilesize, size * tilesize);
+				DrawFunc.overlayText(delay / 60 + "s", x - Tmp.v1.x, y - Tmp.v1.y, -4f, Pal.accent, true);
+			}
 		}
 		
 		@Override

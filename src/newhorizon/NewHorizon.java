@@ -5,11 +5,13 @@ import arc.Events;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
+import mindustry.core.World;
 import mindustry.ctype.ContentType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
@@ -30,11 +32,14 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
+import newhorizon.expand.NHVars;
+import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
-import newhorizon.expand.eventsys.WorldEventType;
 import newhorizon.expand.eventsys.custom.Customizer;
+import newhorizon.expand.eventsys.types.WorldEventType;
+import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.packets.NHCall;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.EffectDrawer;
@@ -42,6 +47,7 @@ import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
 
+import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -84,7 +90,7 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHBlocks.ancientArtillery)
+				new FeatureLog(NHSectorPresents.hostileResearchStation)
 		};
 	}
 	
@@ -322,15 +328,19 @@ public class NewHorizon extends Mod{
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 		Core.app.addListener(new NHModCore());
 		
+		NHVars.worldData = new NHWorldData();
+		NHCSS_UI.init();
+		
 		if(Vars.headless)return;
 		
 		NHSetting.loadUI();
 		EffectDrawer.drawer.init();
 		
-		
-		Vars.renderer.maxZoom = 10f;
-		Vars.renderer.minZoom = 1.15f;
-		if(DEBUGGING)TableFunc.tableMain();
+		if(DEBUGGING){
+			TableFunc.tableMain();
+			Vars.renderer.maxZoom = 10f;
+			Vars.renderer.minZoom = 0.5f;
+		}
 	}
 	
 /*	@Override
@@ -426,16 +436,37 @@ public class NewHorizon extends Mod{
 			}
 		});
 		
-		handler.<Player>register("setupevent", "<name>", "Setup Event (Admin Only)", (args, player) -> {
+		handler.<Player>register("setupevent", "<name> [team] [x] [y]", "Setup Event (Admin Only)", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
 			} else if (args.length == 0) {
 				player.sendMessage("[VIOLET]Failed, pls type ID");
 			} else {
 				try {
+					Team team;
+					
 					WorldEventType event = WorldEventType.getStdType(args[0]);
-					event.create();
-					player.sendMessage("Setup: " + event);
+					
+					WorldEvent e = event.eventProv.get();
+					e.type = event;
+					e.init();
+					
+					if(event.initPos != -1 && event.hasCoord){
+						Tmp.p1.set(Point2.unpack(event.initPos));
+						e.set(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize);
+					}
+					
+					if(args.length >= 2){
+						e.team = Team.get(Integer.parseInt(args[1]));
+						if(args.length >= 4){
+							e.set(Integer.parseInt(args[2]) * 8 + 4, Integer.parseInt(args[3]) * 8 + 4);
+						}
+					}
+					
+					e.add();
+					Core.app.post(() -> e.team = Team.get(Integer.parseInt(args[1])));
+					
+					player.sendMessage("Setup: " + event + " | " + e.team + " | (" + World.toTile(e.x) + ", " + World.toTile(e.y) + ")");
 				} catch (NumberFormatException var3) {
 					player.sendMessage("[VIOLET]Undefined<Number>");
 				}
@@ -490,7 +521,7 @@ public class NewHorizon extends Mod{
 				StringBuilder builder = new StringBuilder();
 				builder.append("[accent]Events: [lightgray]\n");
 				WorldEventType.allTypes.each((k, e) -> {
-					builder.append(k).append("->").append(e.getClass().getSuperclass().getSimpleName()).append('\n');
+					builder.append(e.getClass().getSuperclass().getSimpleName()).append("->").append(k).append('\n');
 				});
 				player.sendMessage(builder.toString());
 			}
@@ -503,7 +534,7 @@ public class NewHorizon extends Mod{
 				StringBuilder builder = new StringBuilder();
 				NHGroups.autoEventTrigger.each(e -> {
 					builder.append("\n======================\n");
-					builder.append("[royal]").append(e.toString()).append("[lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append((e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]")).append("[lightgray]\n").append("Reload: ").append(e.getReload()).append("\nSpacing: ").append(e.getSpacing()).append('\n');
+					builder.append("[royal]").append(e.toString()).append(" | ").append(e.eventType.name).append(" | [lightgray]").append('\n').append(e.desc()).append('\n').append("Meet Requirements?: ").append((e.meet() ? "[heal]Yes[]" : "[#ff7b69]No[]")).append("[lightgray]\n").append("Reload: ").append(e.getReload()).append("\nSpacing: ").append(e.getSpacing()).append('\n');
 					builder.append("Percentage: [accent]").append((int)(e.getReload() / e.getSpacing() * 100)).append("[]%\n");
 					builder.append("======================\n");
 				});

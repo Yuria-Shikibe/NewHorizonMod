@@ -18,9 +18,9 @@ import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
 import mindustry.gen.Groups;
+import mindustry.gen.PayloadUnit;
 import mindustry.gen.Sounds;
 import mindustry.gen.Teamc;
-import mindustry.gen.UnitEntity;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
@@ -36,7 +36,7 @@ import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 
-public class EnergyUnit extends UnitEntity{
+public class EnergyUnit extends PayloadUnit{
 	public static Effect teleport = new Effect(90, 150, e -> {
 		color(e.color, Color.white, e.fin() * 0.7f);
 		Fill.circle(e.x, e.y, e.fout() * e.rotation * 1.25f);

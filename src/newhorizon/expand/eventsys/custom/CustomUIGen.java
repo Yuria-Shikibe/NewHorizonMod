@@ -1,8 +1,8 @@
 package newhorizon.expand.eventsys.custom;
 
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.expand.eventsys.RaidEventType;
-import newhorizon.expand.eventsys.WorldEventType;
+import newhorizon.expand.eventsys.types.RaidEventType;
+import newhorizon.expand.eventsys.types.WorldEventType;
 
 public class CustomUIGen extends BaseDialog{
 	protected Customizer customizer;

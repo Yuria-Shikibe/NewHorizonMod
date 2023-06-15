@@ -4,6 +4,8 @@ import arc.ApplicationListener;
 import arc.Core;
 import arc.util.Log;
 import mindustry.Vars;
+import newhorizon.expand.NHVars;
+import newhorizon.expand.cutscene.NHCSS_Core;
 
 public class NHModCore implements ApplicationListener{
 	public static NHModCore core;
@@ -15,29 +17,17 @@ public class NHModCore implements ApplicationListener{
 		if(NewHorizon.DEBUGGING)Log.info("NH Listener Core Constructed");
 		
 		if(!Core.app.isHeadless()){
-			inputListener = new NHInputListener();
-			renderer = new NHRenderer();
+			NHVars.listener = inputListener = new NHInputListener();
+			NHVars.renderer = renderer = new NHRenderer();
 		}
 		
-		core = this;
+		NHVars.core = core = this;
 	}
 	
 	@Override
 	public void update(){
-//		try{
-//			Field f = Groups.class.getDeclaredField("freeQueue");
-//			f.setAccessible(true);
-//			try{
-//				Seq<Pool.Poolable> p = (Seq<Pool.Poolable>)f.get(null);
-//				p.clear();
-//			}catch(IllegalAccessException e){
-//				e.printStackTrace();
-//			}
-//		}catch(NoSuchFieldException e){
-//			e.printStackTrace();
-//		}
-		
 		if(Vars.state.isPlaying()){
+			NHCSS_Core.core.update();
 			NHGroups.update();
 			if(!Vars.headless){
 				if(inputListener != null)inputListener.update();

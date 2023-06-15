@@ -1,4 +1,4 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.func.Prov;
 import arc.math.Rand;
@@ -37,7 +37,8 @@ public abstract class TargetableEventType extends WorldEventType{
 			}else return new Vec2(-120, -120);
 		}
 		
-		return Geometry.findFurthest(coreBuild.x, coreBuild.y, Vars.state.rules.waveTeam.cores());
+		CoreBlock.CoreBuild b =  Geometry.findFurthest(coreBuild.x, coreBuild.y, Vars.state.rules.waveTeam.cores());
+		return b == null ? Vec2.ZERO : b;
 	}
 	
 	//TODO use multi threads
@@ -93,13 +94,13 @@ public abstract class TargetableEventType extends WorldEventType{
 	
 	@Override
 	public void init(WorldEvent event){
+		super.init(event);
 		event.team(defaultTeam.get());
 		event.set(target(event));
 	}
 	
 	@Override
 	public void onAdd(WorldEvent event){
-		event.team(defaultTeam.get());
 		super.onAdd(event);
 	}
 }

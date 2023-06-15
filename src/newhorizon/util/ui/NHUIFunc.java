@@ -16,12 +16,10 @@ import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Scaling;
-import arc.util.Strings;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.content.StatusEffects;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
@@ -182,26 +180,27 @@ public class NHUIFunc{
 		if(pattern instanceof ShootMulti){
 			ShootMulti multi = (ShootMulti)pattern;
 			for(ShootPattern p : multi.dest)total += getTotalShots(p);
-			total *= pattern.shots;
+			total *= multi.source.shots;
 		}else total = pattern.shots;
 		
 		return total;
 	}
 	
 	public static float estimateBulletDamage(BulletType type, int num, boolean init){
-		if(init){damage = 1;}
+		if(init)damage = 0;
 		
-		damage += type.damage * num / 1.8f * Mathf.num(type.collides || type.collidesGround || type.collidesTiles || type.collidesAir);
-		if(type.splashDamage > 0 && type.splashDamageRadius > 0)damage += type.splashDamage * Mathf.sqrt(type.splashDamageRadius) / tilesize / 4.0f;
+		damage += type.damage * num / 1.8f * Mathf.num(type.collides && (type.collidesGround || type.collidesTiles || type.collidesAir));
+		if(type.splashDamage > 0 && type.splashDamageRadius > 0)damage += type.splashDamage * Mathf.sqrt(type.splashDamageRadius) / tilesize / 3.0f;
 		damage += type.lightningDamage * type.lightning * (type.lightningLength + (type.lightningLengthRand + 1) / 3f) / 3f;
 		
 		
 		if(type.fragBullet != null)damage += estimateBulletDamage(type.fragBullet, type.fragBullets, false);
+		if(type.intervalBullet != null)damage += estimateBulletDamage(type.intervalBullet, type.intervalBullets, false) * type.lifetime / type.bulletInterval;
 		
 		return damage;
 	}
 	
-	public static void ammo(Table table, String name, BulletType type, TextureRegion icon, int indent){
+	public static void ammo(Table table, String name, BulletType type, TextureRegion icon){
 		table.row();
 		
 		table.table().padTop(OFFSET);
@@ -211,61 +210,8 @@ public class NHUIFunc{
 		table.table(bt -> {
 			bt.left().defaults().padRight(3).left();
 			
-			if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
-				if(type.continuousDamage() > 0){
-					bt.add(Core.bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
-				}else{
-					bt.add(Core.bundle.format("bullet.damage", type.damage));
-				}
-			}
-			
-			if(type.buildingDamageMultiplier != 1){
-				sep(bt, Core.bundle.format("bullet.buildingdamage", (int)(type.buildingDamageMultiplier * 100)));
-			}
-			
-			if(type.splashDamage > 0){
-				sep(bt, Core.bundle.format("bullet.splashdamage", (int)type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
-			}
-			
-			if(!Mathf.equal(type.reloadMultiplier, 1f)){
-				sep(bt, Core.bundle.format("bullet.reload", Strings.autoFixed(type.reloadMultiplier, 2)));
-			}
-			
-			if(type.knockback > 0){
-				sep(bt, Core.bundle.format("bullet.knockback", Strings.autoFixed(type.knockback, 2)));
-			}
-			
-			if(type.healPercent > 0f){
-				sep(bt, Core.bundle.format("bullet.healpercent", Strings.autoFixed(type.healPercent, 2)));
-			}
-			
-			if(type.pierce || type.pierceCap != -1){
-				sep(bt, type.pierceCap == -1 ? "@bullet.infinitepierce" : Core.bundle.format("bullet.pierce", type.pierceCap));
-			}
-			
-			if(type.incendAmount > 0){
-				sep(bt, "@bullet.incendiary");
-			}
-			
-			if(type.homingPower > 0.01f){
-				sep(bt, "@bullet.homing");
-			}
-			
-			if(type.lightning > 0){
-				sep(bt, Core.bundle.format("bullet.lightning", type.lightning, type.lightningDamage < 0 ? type.damage : type.lightningDamage));
-			}
-			
-			if(type.status != StatusEffects.none){
-				sep(bt, (type.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName);
-			}
-			
-			if(type.fragBullet != null){
-				sep(bt, Core.bundle.format("bullet.frags", type.fragBullets));
-				bt.row();
-				
-				StatValues.ammo(ObjectMap.of(UnitTypes.block, type.fragBullet), indent + 1, true).display(bt);
-			}
-		}).padTop(-9).padLeft(indent * 8).left().get().background(Tex.underline);
+			StatValues.ammo(ObjectMap.of(UnitTypes.block, type), 0, false).display(bt);
+		}).padTop(-9).left().get().background(Tex.underline);
 		
 		table.row();
 	}

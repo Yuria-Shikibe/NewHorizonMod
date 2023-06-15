@@ -101,12 +101,20 @@ public class CaptureableTurret extends ShootMatchTurret{
 		
 		@Override
 		public void afterDestroyed(){
+			float rot = rotation;
+			float warmup = warmupHold;
+			
 			if(!net.client()){
 				tile.setBlock(block, lastDamage);
+				CaptureableTurretBuild b = (CaptureableTurretBuild)tile.build;
+				b.rotation = rot;
+				b.warmupHold = warmup;
 			}
 			
 			//delay so clients don't destroy it afterwards
-			Core.app.post(() -> tile.setNet(block, lastDamage, 0));
+			Core.app.post(() -> {
+				tile.setNet(block, lastDamage, 0);
+			});
 			
 			//building does not exist on client yet
 			if(!net.client()){

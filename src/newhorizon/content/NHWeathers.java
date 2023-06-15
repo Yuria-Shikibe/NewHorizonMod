@@ -24,6 +24,7 @@ public class NHWeathers{
 			
 			textureColor = primaryColor = NHColor.darkEnrColor;
 			secondaryColor = NHColor.lightSkyBack;
+			bulletSpawnChance *= 1.5f;
 		}};
 		
 		solarStorm = new MatterStorm("solar-storm"){{

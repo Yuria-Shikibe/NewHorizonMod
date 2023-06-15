@@ -6,6 +6,7 @@ import arc.scene.Element;
 import arc.scene.Group;
 import arc.scene.event.Touchable;
 import arc.scene.ui.ImageButton;
+import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
 import arc.util.Align;
@@ -25,6 +26,7 @@ public class NHUI{
 	public static WidgetGroup HUD_waves_editor;
 	
 	public static WorldEventDialog eventDialog;
+	public static Table eventSimplePane = new Table();
 	
 	public static Group root;
 	
@@ -68,16 +70,15 @@ public class NHUI{
 				if(b.isChecked()){
 					infoT.clear();
 					infoT.table().padTop(4);
-					infoT.pane(i -> {
+					ScrollPane pane = infoT.pane(Styles.smallPane, i -> {
 						i.align(Align.topLeft);
-						eventDialog.buildAllEventsSimple(i, event -> iT -> {
-							iT.setBackground(Tex.pane);
-							i.margin(5f);
-							iT.setSize(NHUI.getWidth(), NHUI.getHeight());
-							event.type.infoTable(iT);
-							iT.pack();
-						});
-					}).grow().maxHeight(NHUI.getHeight() / 2f).get().setFadeScrollBars(false);
+						i.margin(5f);
+						i.defaults().growX().fillY().row();
+						eventDialog.buildAllEventsSimple(i);
+						eventSimplePane = i;
+					}).grow().maxHeight(NHUI.getHeight() / 2f).get();
+					pane.setFadeScrollBars(false);
+					pane.setForceScroll(false, true);
 					infoT.exited(() -> Core.scene.unfocus(infoT));
 				}else{
 					Core.scene.unfocus(infoT);

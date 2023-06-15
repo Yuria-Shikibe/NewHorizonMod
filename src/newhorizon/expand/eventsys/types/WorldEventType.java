@@ -1,4 +1,4 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.func.Prov;
 import arc.graphics.Blending;
@@ -10,6 +10,8 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Position;
+import arc.scene.ui.Image;
+import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
@@ -25,17 +27,20 @@ import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Layer;
 import mindustry.graphics.MinimapRenderer;
+import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.NHRegister;
+import newhorizon.NHUI;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
+import newhorizon.expand.cutscene.actions.CSSActions;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.annotation.Customizable;
-import newhorizon.expand.eventsys.annotation.NumberParam;
 import newhorizon.expand.eventsys.annotation.Parserable;
 import newhorizon.expand.eventsys.annotation.Pos;
+import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
 
@@ -87,7 +92,6 @@ public class WorldEventType implements Json.JsonSerializable{
 	
 	@Customizable @Pos
 	@Parserable(value = Integer.class, params = {Point2.class})
-	@NumberParam()
 	public int initPos = -1;
 	
 	public Prov<? extends WorldEvent> eventProv = WorldEvent::new;
@@ -98,6 +102,7 @@ public class WorldEventType implements Json.JsonSerializable{
 		addType(this);
 	}
 	
+	@ClientDisabled
 	public <T extends WorldEvent> T create(){
 		T event = (T)eventProv.get();
 		event.type = this;
@@ -110,6 +115,39 @@ public class WorldEventType implements Json.JsonSerializable{
 		}
 		
 		return event;
+	}
+	
+	public Table buildSimpleTable(WorldEvent e){
+		Table button = new Table(){{
+			TextButton tb1 = new TextButton("", Styles.cleart);
+			tb1.label(e::info).padLeft(4f);
+			tb1.marginLeft(4f);
+			tb1.stack(/*new Image(Styles.black5),*/ new Image(e.type.icon())).size(38);
+			tb1.getCells().reverse();
+			tb1.clicked(() -> {
+				e.type.showAsDialog(e);
+			});
+			tb1.setColor(e.team.color);
+			
+			add(tb1).grow();
+			
+			if(e.type.hasCoord){
+				button(Icon.eyeSmall, Styles.clearNonei, 40f, () -> {
+					CSSActions.check(e.x, e.y);
+				}).width(40).padLeft(6f).fillX().growY().get().setColor(e.team.color);
+			}
+		}};
+		
+		return new Table(t -> {
+			t.defaults().growX().fillY().padBottom(6f);
+			
+			if(e.type.progressRatio(e) >= 0)t.stack(new Bar("", e.team.color, () -> e.type.progressRatio(e)), button).tooltip(NHUI.eventDialog.tooltipModifier.get(e));
+			else t.add(button).tooltip(NHUI.eventDialog.tooltipModifier.get(e));
+			
+			t.update(() -> {
+				if(!e.added)t.remove();
+			});
+		});
 	}
 	
 	public Position source(WorldEvent event){
@@ -206,6 +244,11 @@ public class WorldEventType implements Json.JsonSerializable{
 		if(!hasCoord)event.x = event.y = Float.NaN;
 	}
 	
+	public String coordText(WorldEvent event){
+		if(!Float.isNaN(event.x) && !Float.isNaN(event.y))return "[[[accent]" +  (int)(event.x / 8) + ", " + (int)(event.y / 8) + "[]]";
+		else return "";
+	}
+	
 	/**
 	 * if the percentage < 0 means that the event doesn't have a progress.
 	 * */
@@ -231,7 +274,11 @@ public class WorldEventType implements Json.JsonSerializable{
 	
 	public void onAdd(WorldEvent event){
 		if(drawable)event.drawSize = range(event);
-		if(warnOnHUD && NHRegister.worldLoaded() && !Vars.headless && event.team != Vars.player.team() && !event.IOed)warnHUD(event);
+		if(warnOnHUD && NHRegister.worldLoaded() && !Vars.headless && event.team != Vars.player.team() && !event.IOed){
+			warnHUD(event);
+			
+			if(NHUI.eventSimplePane.visible)NHUI.eventSimplePane.add(NHUI.eventDialog.buildSimpleTable(event)).row();
+		}
 	}
 	
 	public void warnHUD(WorldEvent event){

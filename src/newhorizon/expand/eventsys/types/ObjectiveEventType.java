@@ -1,4 +1,4 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.func.Boolf;
 import arc.func.Cons;
@@ -37,10 +37,16 @@ public class ObjectiveEventType extends WorldEventType{
 		checkSpacing = Vars.mobile ? 60f : 30f;
 		
 		removeAfterTrigger = true;
+		
+		warnOnHUD = false;
+		minimapMarkable = false;
+		drawable = false;
+		hasCoord = false;
 	}
 	
 	@Override
 	public void init(WorldEvent event){
+		super.init(event);
 		event.team = Vars.state.rules.defaultTeam;
 	}
 	
@@ -89,6 +95,13 @@ public class ObjectiveEventType extends WorldEventType{
 		}).growX().fillY();
 	}
 	
+	@Override
+	public Table buildSimpleTable(WorldEvent e){
+		return new Table(Tex.sideline, t -> {
+			t.add(new ObjectiveSign(Color.gray, Pal.accent, 2, 4, 5, () -> trigger.get(e))).size(LEN / 2).pad(OFFSET / 2).padLeft(OFFSET).padRight(OFFSET).left();
+			t.label(() -> info.get(e)).growX().fillY();
+		});
+	}
 	
 	@Override
 	public void buildTable(WorldEvent e, Table table){

@@ -7,6 +7,7 @@ import arc.math.geom.Point2;
 import arc.scene.Element;
 import arc.scene.actions.Actions;
 import arc.scene.ui.layout.Table;
+import arc.util.Interval;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -17,7 +18,7 @@ import mindustry.io.TypeIO;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NHGroups;
 import newhorizon.NHUI;
-import newhorizon.expand.eventsys.WorldEventType;
+import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.util.annotation.HeadlessDisabled;
 
 import java.nio.FloatBuffer;
@@ -44,6 +45,8 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 	public Object data;
 	public Element ui;
 	
+	public Interval timer = new Interval();
+	
 	public transient boolean IOed = false;
 	
 	@Override
@@ -58,7 +61,7 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 	
 	@Override
 	public void draw(){
-		type.draw(this);
+		if(type.drawable)type.draw(this);
 	}
 	
 	@Override
@@ -113,8 +116,9 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		
 		Groups.sync.add(this);
 		NHGroups.events.add(this);
-		type.onAdd(this);
+		
 		added = true;
+		type.onAdd(this);
 		
 		if(!Vars.headless){
 			NHUI.eventDialog.buildEvent(this);
@@ -135,7 +139,9 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		if(ui != null){
 			NHUI.eventDialog.layout();
 			if(ui.parent != null){
-				if(type.fadeUI)ui.parent.actions(Actions.delay(1.5f), Actions.alpha(0, 0.45f, Interp.fade), Actions.remove());
+				if(type.fadeUI){
+					ui.parent.actions(Actions.delay(0.75f), Actions.fadeOut(1f, Interp.fade), Actions.remove());
+				}
 				else ui.parent.remove();
 			}
 			ui.remove();
@@ -190,12 +196,11 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 	}
 	
 	public String info(){
-		return type.type() + " | " + id + " | " + coordText();
+		return type.type() + "\n" + coordText();
 	}
 	
 	public String coordText(){
-		if(!Float.isNaN(x) && !Float.isNaN(y))return "[[[accent]" +  (int)(x / 8) + ", " + (int)(y / 8) + "[]]";
-		else return "[]";
+		return type.coordText(this);
 	}
 	
 	@Override

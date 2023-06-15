@@ -600,7 +600,7 @@ public class JumpGate extends Block {
         }
 
         public boolean hasConsume(UnitSet set, int num){
-            if(set == null || cheating())return true;
+            if(set == null || cheating() || (!state.rules.pvp && team == state.rules.waveTeam))return true;
             return realItems().has(ItemStack.mult(set.requirements(), num * state.rules.teams.get(team).unitCostMultiplier));
         }
 
@@ -722,7 +722,7 @@ public class JumpGate extends Block {
     
         @Override
         public boolean cheating(){
-            return super.cheating() || (team == state.rules.waveTeam && !state.rules.pvp || state.rules.infiniteResources);
+            return super.cheating();// || (team == state.rules.waveTeam && !state.rules.pvp || state.rules.infiniteResources);
         }
         
         public ItemModule realItems(){

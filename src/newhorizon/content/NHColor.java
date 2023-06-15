@@ -30,6 +30,7 @@ public class NHColor{
 	static{
 		Colors.put("heal", Pal.heal);
 		Colors.put("ancient", ancient);
+		Colors.put("reddust", Pal.redderDust);
 	}
 }
 

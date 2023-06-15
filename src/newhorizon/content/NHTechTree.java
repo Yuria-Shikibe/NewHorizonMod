@@ -27,7 +27,9 @@ public class NHTechTree{
 		TechNode root = nodeRoot("new-horizon", NHPlanets.midantha, () -> {
 			node(NHSectorPresents.abandonedOutpost, ItemStack.with(/*NHItems.juniorProcessor, 1000*/), () -> {
 				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.abandonedOutpost)), () -> {
-				
+					node(NHSectorPresents.hostileResearchStation, ItemStack.with(NHItems.seniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+					
+					});
 				});
 			});
 			
@@ -158,7 +160,7 @@ public class NHTechTree{
 						node(NHBlocks.bombLauncher);
 						node(NHBlocks.bloodStar, () -> {
 							node(NHBlocks.railGun);
-							node(NHBlocks.endOfEra, () -> {
+							node(NHBlocks.endOfEra, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
 								node(NHBlocks.airRaider);
 								node(NHBlocks.eternity, () -> {});
 							});
@@ -184,7 +186,9 @@ public class NHTechTree{
 						node(NHBlocks.thermoCoreFactory, () -> {
 							node(NHBlocks.thermoCoreNegativeFactory);
 							node(NHBlocks.thermoCorePositiveFactory);
-							node(NHBlocks.darkEnergyFactory);
+							node(NHBlocks.darkEnergyFactory, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+							
+							});
 						});
 					});
 				});

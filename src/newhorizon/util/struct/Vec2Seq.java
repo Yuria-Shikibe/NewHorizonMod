@@ -92,6 +92,8 @@ public class Vec2Seq implements Iterable<Vec2>, Eachable<Vec2>{
 		}
 	}
 	
+	
+	//TODO should be faster.
 	public void addAll(Vec2[] vec2s){
 		for(Vec2 vec2 : vec2s){
 			add(vec2);
@@ -150,6 +152,10 @@ public class Vec2Seq implements Iterable<Vec2>, Eachable<Vec2>{
 	
 	public Vec2 newVec2(int index){
 		return new Vec2(coordinates.items[index * 2], coordinates.items[index * 2 + 1]);
+	}
+	
+	public void get(int index, Floatc2 operator){
+		operator.get(coordinates.items[index * 2], coordinates.items[index * 2 + 1]);
 	}
 	
 	public void remove(int index){

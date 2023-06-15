@@ -737,6 +737,8 @@ public class NHUnitTypes{
 			outlineColor = Pal.darkOutline;
 			lightColor = NHColor.ancientLightMid;
 			
+			fogRadius = 120;
+			
 			engineOffset = 140.25f;
 			engineSize = -1;
 			
@@ -1200,6 +1202,8 @@ public class NHUnitTypes{
 			trailScl = 2f;
 			healColor = NHColor.ancientLightMid;
 			lightColor = NHColor.ancientLightMid;
+			
+			fogRadius = 70;
 			
 			outlineRadius += 1;
 			outlineColor = Pal.darkOutline;
@@ -2108,8 +2112,8 @@ public class NHUnitTypes{
 					reload = 40f;
 					shoot = new ShootSpread(){{
 						spread = 1f;
-						shots = 2;
-						shotDelay = 7f;
+						shots = 3;
+						shotDelay = 5f;
 					}};
 					
 					inaccuracy = 4.0F;
@@ -2118,9 +2122,9 @@ public class NHUnitTypes{
 						width -= 2;
 						hitLarge = true;
 						length = 280;
-						damage = 200.0F;
+						damage = 220.0F;
 						status = NHStatusEffects.ultFireBurn;
-						statusDuration = 60f;
+						statusDuration = 120f;
 						fromColor = NHColor.lightSkyFront;
 						toColor = NHColor.lightSkyBack;
 						shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
@@ -2142,7 +2146,7 @@ public class NHUnitTypes{
 					shootCone = 40f;
 					reload = 180f;
 					shoot = new ShootPattern(){{
-						shots = 5;
+						shots = 8;
 						shotDelay = 16f;
 					}};
 					inaccuracy = 5.0F;
@@ -2158,7 +2162,7 @@ public class NHUnitTypes{
 			hitSize = 33f;
 			health = 22000f;
 			buildSpeed = 2.8f;
-			armor = 15f;
+			armor = 18f;
 			rotateSpeed = 1.8f;
 			singleTarget = false;
 			fallSpeed = 0.016f;
@@ -2196,10 +2200,10 @@ public class NHUnitTypes{
 				mirror = false;
 				x = 0f;
 				y = 0f;
-				reload = 30f;
+				reload = 45f;
 				shoot = new ShootHelix(){{
 					shots = 4;
-					shotDelay = 4f;
+					shotDelay = 5f;
 				}};
 				inaccuracy = 5f;
 				ejectEffect = Fx.none;
@@ -2247,7 +2251,7 @@ public class NHUnitTypes{
 				}};
 				x = 0f;
 				y = -10f;
-				reload = 30f;
+				reload = 45f;
 				inaccuracy = 4f;
 				ejectEffect = Fx.none;
 				bullet = new FlakBulletType(2.55f, 15){{
@@ -2716,6 +2720,7 @@ public class NHUnitTypes{
 		saviour = new NHUnitType("saviour"){{
 			outlineColor = OColor;
 			aiController = SniperAI::new;
+			defaultCommand = UnitCommand.repairCommand;
 			hitSize = 55f;
 			armor = 36.0F;
 			health = 34000.0F;
@@ -3067,6 +3072,7 @@ public class NHUnitTypes{
 			outlineColor = OColor;
 			aiController = SniperAI::new;
 			constructor = EntityMapping.map(3);
+			fogRadius = 100;
 			lowAltitude = true;
 			health = 10000.0F;
 			speed = 0.45F;
@@ -3089,7 +3095,6 @@ public class NHUnitTypes{
 			
 			for(int i : Mathf.signs){
 				engines.add(new UnitEngine(21.5f * i, -43.5f, 5, -90 + 45 * i));
-//				engines.add(new UnitEngine(21.5f * i, -12.5f, 3f, 90 - 45 * i));
 			}
 			
 			weapons.add(
@@ -3160,51 +3165,6 @@ public class NHUnitTypes{
 							moveY = 11f;
 							layer = Layer.effect;
 						}});
-					
-/*
-						for(int s : Mathf.signs){
-							parts.add(new HaloPart(){{
-								tri = true;
-								progress = PartProgress.warmup;
-								y = 7f;
-								x = 3f * s;
-								mirror = false;
-								moveX = 7f * s;
-								moveY = -2f;
-								shapeMoveRot = -45f * s;
-								shapes = 1;
-								color = NHColor.lightSkyBack;
-								colorTo = NHColor.lightSkyMiddle;
-								shapeRotation = 90 * s;
-								radius = -0.1f;
-								radiusTo = 3f;
-								triLength = -0.1f;
-								triLengthTo = 3;
-								layer = Layer.effect;
-							}});
-							
-							parts.add(new HaloPart(){{
-								tri = true;
-								progress = PartProgress.warmup;
-								y = 7f;
-								x = 3f * s;
-								mirror = false;
-								moveX = 7f * s;
-								moveY = -2f;
-								shapeMoveRot = -45f * s;
-								shapes = 1;
-								color = NHColor.lightSkyBack;
-								colorTo = NHColor.lightSkyMiddle;
-								shapeRotation = -90 * s;
-								radius = -0.1f;
-								radiusTo = 3f;
-								triLength = -0.1f;
-								triLengthTo = 17;
-								layer = Layer.effect;
-							}});
-						}
-*/
-						
 						
 						parts.add(new RegionPart("-panel"){{
 							progress = PartProgress.warmup;
@@ -3264,7 +3224,7 @@ public class NHUnitTypes{
 						
 						layerOffset = -0.0005f;
 						
-						bullet = new TrailFadeBulletType(25f, 500f){{
+						bullet = new TrailFadeBulletType(25f, 600f){{
 							recoil = 0.095f;
 							lifetime = 40f;
 							trailLength = 200;
@@ -3291,7 +3251,7 @@ public class NHUnitTypes{
 							lightning = 3;
 							lightningLength = 6;
 							lightningLengthRand = 18;
-							lightningDamage = 150;
+							lightningDamage = 200;
 							
 							smokeEffect = NHFx.square(hitColor, 80f, 8, 48f, 6f);
 							shootEffect = NHFx.instShoot(backColor, frontColor);
@@ -3299,13 +3259,6 @@ public class NHUnitTypes{
 							hitEffect = new MultiEffect(NHFx.hitSpark(backColor, 75f, 24, 90f, 2f, 12f), NHFx.square45_6_45, NHFx.lineCircleOut(backColor, 18f, 20, 2), NHFx.sharpBlast(backColor, frontColor, 120f, 40f));
 							despawnHit = true;
 						}
-							
-							@Override
-							public void update(Bullet b){
-								super.update(b);
-								b.collided.clear();
-							}
-							
 							@Override
 							public void hit(Bullet b, float x, float y){
 								super.hit(b, x, y);
@@ -3730,7 +3683,7 @@ public class NHUnitTypes{
 			clipSize = 260f;
 			
 			engineLayer = Layer.effect;
-			engineOffset = 0;
+			engineOffset = 5f;
 			
 			deathExplosionEffect = Fx.none;
 			deathSound = Sounds.plasmaboom;
@@ -3910,81 +3863,13 @@ public class NHUnitTypes{
 					};
 				}
 				
+				
 				@Override
 				protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
 //					if(!unit.isBoss())return;
 					super.shoot(unit, mount, shootX, shootY, rotation);
 					NHFx.crossSpinBlast.at(unit.x, unit.y, unit.rotation, unit.team.color, unit);
 				}
-				
-//				@Override
-//				public void update(Unit unit, WeaponMount mount){
-//					if(unit.isBoss())super.update(unit, mount);
-//				}
-				
-				/*public void update(Unit unit, WeaponMount mount) {
-					boolean can = unit.canShoot();
-					float lastReload = mount.reload;
-					mount.reload = Math.max(mount.reload - Time.delta * unit.reloadMultiplier, 0.0F);
-					mount.recoil = Mathf.approachDelta(mount.recoil, 0.0F, Math.abs(this.recoil) * unit.reloadMultiplier / this.recoilTime);
-					float weaponRotation;
-					float mountX;
-					if (this.rotate && (mount.rotate || mount.shoot) && can) {
-						weaponRotation = unit.x + Angles.trnsx(unit.rotation - 90.0F, this.x, this.y);
-						mountX = unit.y + Angles.trnsy(unit.rotation - 90.0F, this.x, this.y);
-						mount.targetRotation = Angles.angle(weaponRotation, mountX, mount.aimX, mount.aimY) - unit.rotation;
-						mount.rotation = Angles.moveToward(mount.rotation, mount.targetRotation, this.rotateSpeed * Time.delta);
-					} else if (!this.rotate) {
-						mount.rotation = 0.0F;
-						mount.targetRotation = unit.angleTo(mount.aimX, mount.aimY);
-					}
-					
-					weaponRotation = unit.rotation - 90.0F + (this.rotate ? mount.rotation : 0.0F);
-					mountX = unit.x + Angles.trnsx(unit.rotation - 90.0F, this.x, this.y);
-					float mountY = unit.y + Angles.trnsy(unit.rotation - 90.0F, this.x, this.y);
-					float bulletX = mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY);
-					float bulletY = mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY);
-					float shootAngle = this.rotate ? weaponRotation + 90.0F : Angles.angle(bulletX, bulletY, mount.aimX, mount.aimY) + (unit.rotation - unit.angleTo(mount.aimX, mount.aimY));
-					if (this.continuous && mount.bullet != null) {
-						if (mount.bullet.isAdded() && !(mount.bullet.time >= mount.bullet.lifetime) && mount.bullet.type == this.bullet) {
-							mount.reload = this.reload;
-							mount.recoil = this.recoil;
-							unit.vel.add(Tmp.v1.trns(unit.rotation + 180.0F, mount.bullet.type.recoil));
-							if (this.shootSound != Sounds.none && !Vars.headless) {
-								if (mount.sound == null) {
-									mount.sound = new SoundLoop(this.shootSound, 1.0F);
-								}
-								
-								mount.sound.update(bulletX, bulletY, true);
-							}
-						} else {
-							mount.bullet = null;
-						}
-					} else {
-						mount.heat = Math.max(mount.heat - Time.delta * unit.reloadMultiplier / this.cooldownTime, 0.0F);
-						if (mount.sound != null) {
-							mount.sound.update(bulletX, bulletY, false);
-						}
-					}
-					
-					boolean wasFlipped = mount.side;
-					if (this.otherSide != -1 && this.alternate && mount.side == this.flipSprite && mount.reload <= this.reload / 2.0F && lastReload > this.reload / 2.0F) {
-						unit.mounts[this.otherSide].side = !unit.mounts[this.otherSide].side;
-						mount.side = !mount.side;
-					}
-					
-					if (mount.shoot && can && (!this.useAmmo || unit.ammo > 0.0F || !Vars.state.rules.unitAmmo || unit.team.rules().infiniteAmmo) && (!this.alternate || wasFlipped == this.flipSprite) && unit.vel.len() >= this.minShootVelocity && mount.reload <= 1.0E-4F && Angles.within(this.rotate ? mount.rotation : unit.rotation, mount.targetRotation, this.shootCone)) {
-						this.shoot(unit, mount, bulletX, bulletY, mount.aimX, mount.aimY, mountX, mountY, shootAngle, Mathf.sign(this.x));
-						mount.reload = this.reload;
-						if (this.useAmmo) {
-							--unit.ammo;
-							if (unit.ammo < 0.0F) {
-								unit.ammo = 0.0F;
-							}
-						}
-					}
-					
-				}*/
 			});
 			
 			aiController = SniperAI::new;
@@ -4129,6 +4014,11 @@ public class NHUnitTypes{
 			
 			@Override
 			public void drawTrail(Unit unit){
+			}
+			
+			@Override
+			public void updatePayload(Unit unit, Unit unitHolder, Building buildingHolder){
+				buildingHolder.enabled = false;
 			}
 			
 			@Override

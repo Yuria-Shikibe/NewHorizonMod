@@ -24,7 +24,6 @@ import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
-import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
@@ -75,6 +74,8 @@ import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.adapt.LaserBeamDrill;
 import newhorizon.expand.block.adapt.MultiCrafter;
 import newhorizon.expand.block.ancient.CaptureableTurret;
+import newhorizon.expand.block.ancient.wave.WaveConveyor;
+import newhorizon.expand.block.ancient.wave.WaveGenerator;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.*;
@@ -115,6 +116,9 @@ public class NHBlocks{
 	
 		//Ancient
 		ancimembraneConcentrator, ancientArtillery,
+	
+		//Wave Energy
+		waveEnergyConveyor, ancitentWaveEnergyConveyor, waveEnergyGenerator,
 	
 		//Turrets
 		dendrite, interferon, prism,
@@ -343,7 +347,38 @@ public class NHBlocks{
 	}
 	
 	private static void loadExperiments(){
-
+		waveEnergyGenerator = new WaveGenerator("wave-energy-generator"){{
+			size = 3;
+			
+			requirements(Category.power, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+			hasItems = hasLiquids = hasPower = true;
+			
+			itemCapacity = 20;
+			liquidCapacity = 40;
+			consumePower(5f);
+			consumeItem(NHItems.zeta, 5);
+			squareSprite = false;
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(){{
+				midColor = flameColor = NHColor.darkEnrColor;
+				circleStroke = 1.125f;
+				circleSpace = 1.9f;
+			}}, new DrawDefault());
+		}};
+		
+		waveEnergyConveyor = new WaveConveyor("wave-conveyor"){{
+			size = 1;
+			
+			requirements(Category.power, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+		}};
+		
+		ancitentWaveEnergyConveyor = new WaveConveyor("ancient-wave-conveyor"){{
+			size = 1;
+			
+			armored = true;
+			
+			requirements(Category.power, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+		}};
 	}
 	
 	private static void loadTurrets(){
@@ -367,83 +402,7 @@ public class NHBlocks{
 			shootCone = 15f;
 			rotateSpeed = 0.325f;
 			canOverdrive = false;
-			ammo(NHItems.fusionEnergy, new ShieldBreakerType(7f, 6000, NHBullets.MISSILE_LARGE, 7000){{
-				backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.ancientLightMid;
-				frontColor = NHColor.ancientLight;
-				trailEffect = NHFx.hugeTrail;
-				trailParam = 6f;
-				trailChance = 0.2f;
-				trailInterval = 3;
-				
-				lifetime = 200f;
-				scaleLife = true;
-				
-				trailWidth = 5f;
-				trailLength = 55;
-				trailInterp = Interp.slope;
-				
-				lightning = 6;
-				lightningLength = lightningLengthRand = 22;
-				splashDamage = damage;
-				lightningDamage = damage / 15;
-				splashDamageRadius = 120;
-				scaledSplashDamage = true;
-				despawnHit = true;
-				collides = false;
-				
-				shrinkY = shrinkX = 0.33f;
-				width = 17f;
-				height = 55f;
-				
-				despawnShake = hitShake = 12f;
-				
-				hitEffect = new MultiEffect(NHFx.square(hitColor, 200, 20 ,splashDamageRadius + 80, 10), NHFx.lightningHitLarge, NHFx.hitSpark(hitColor, 130, 85, splashDamageRadius * 1.5f, 2.2f, 10f), NHFx.subEffect(140, splashDamageRadius + 12, 33, 34f, Interp.pow2Out, ((i, x, y, rot, fin) -> {
-					float fout = Interp.pow2Out.apply(1 - fin);
-					for(int s : Mathf.signs) {
-						Drawf.tri(x, y, 12 * fout, 45 * Mathf.curve(fin, 0, 0.1f) * NHFx.fout(fin, 0.25f), rot + s * 90);
-					}
-				})));
-				despawnEffect = NHFx.circleOut(145f, splashDamageRadius + 15f, 3f);
-				
-				shootEffect = ColorWarpEffect.wrap(NHFx.missileShoot, hitColor);//NHFx.blast(hitColor, 45f);
-				smokeEffect = NHFx.instShoot(hitColor, frontColor);
-				
-				despawnSound = hitSound = Sounds.largeExplosion;
-				
-				fragBullets = 22;
-				fragBullet = new BasicBulletType(2f, 300, NHBullets.CIRCLE_BOLT){{
-					width = height = 10f;
-					shrinkY = shrinkX = 0.7f;
-					backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.ancientLightMid;
-					frontColor = NHColor.ancientLight;
-					trailEffect = Fx.missileTrail;
-					trailParam = 3.5f;
-					splashDamage = 80;
-					splashDamageRadius = 40;
-					
-					lifetime = 18f;
-					
-					lightning = 2;
-					lightningLength = lightningLengthRand = 4;
-					lightningDamage = 30;
-					
-					hitSoundVolume /= 2.2f;
-					despawnShake = hitShake = 4f;
-					despawnSound = hitSound = Sounds.dullExplosion;
-					
-					trailWidth = 5f;
-					trailLength = 35;
-					trailInterp = Interp.slope;
-					
-					despawnEffect = NHFx.blast(hitColor, 40f);
-					hitEffect = NHFx.hitSparkHuge;
-				}};
-				
-				fragLifeMax = 5f;
-				fragLifeMin = 1.5f;
-				fragVelocityMax = 2f;
-				fragVelocityMin = 0.35f;
-			}});
+			ammo(NHItems.fusionEnergy, NHBullets.ancientArtilleryProjectile);
 			shooter(NHItems.fusionEnergy, new ShootPattern());
 			
 			ammoPerShot = 12;
@@ -556,7 +515,7 @@ public class NHBlocks{
 						tri = true;
 						shapes = 2;
 						radius = -1;
-						radiusTo = 3.75f;
+						radiusTo = 4.2f;
 						triLength = 6;
 						triLengthTo = 18;
 						
@@ -572,7 +531,7 @@ public class NHBlocks{
 						tri = true;
 						shapes = 2;
 						radius = -1;
-						radiusTo = 3.75f;
+						radiusTo = 4.2f;
 						triLength = 0;
 						triLengthTo = 4;
 						
@@ -2749,6 +2708,7 @@ public class NHBlocks{
 		blaster = new ShockwaveGenerator("blaster"){{
 			requirements(Category.defense, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
 			
+			squareSprite = false;
 			size = 3;
 			chargerOffset = 5.65f;
 			rotateOffset = -45f;
@@ -3734,7 +3694,7 @@ public class NHBlocks{
 		loadFactories();
 		loadTurrets();
 		loadEnv();
-		loadExperiments();
+//		loadExperiments();
 		
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

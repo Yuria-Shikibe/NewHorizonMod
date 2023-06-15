@@ -1,4 +1,4 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.Core;
 import arc.graphics.Color;
@@ -14,13 +14,13 @@ public class WeatherEvent extends ReloadEventType{
 		super(name);
 		this.weather = weather;
 		
+		hasCoord = false;
+		
 		colorFunc = e -> color;
 		info = e -> Core.bundle.format("nh.cutscene.event.incoming", weather.localizedName);
 		act = e -> {
 			if(!Vars.net.client())weather.create();
 		};
-		
-		
 	}
 	
 	@Override

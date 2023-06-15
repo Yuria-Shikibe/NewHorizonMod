@@ -1,8 +1,7 @@
-package newhorizon.expand.eventsys;
+package newhorizon.expand.eventsys.types;
 
 import arc.Core;
 import arc.flabel.FLabel;
-import arc.func.Prov;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -49,14 +48,12 @@ import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class RaidEventType extends TargetableEventType{
-	@Customizable @Parserable(value = Prov.class, params = {Team.class}) public Prov<Team> bulletTeam = () -> Vars.state.rules.waveTeam;
+	protected static final Seq<Building> tmpSeq = new Seq<>();
 	
 	@Customizable @NumberParam public float radius = 180f;
 	@Customizable @NumberParam public float reloadTime = 600f;
 	@Customizable @NumberParam public float inaccuracy = 3f;
 	@Customizable @NumberParam public float velocityRnd = 0.075f;
-	
-
 	
 	@Customizable @Parserable(value = ObjectMap.class, params = {BulletType.class, ShootPattern.class})
 	public ObjectMap<BulletType, ShootPattern> projectiles = new ObjectMap<>();
@@ -84,22 +81,23 @@ public class RaidEventType extends TargetableEventType{
 		
 		int times = 0;
 		
-		Seq<Building> all = new Seq<>(Groups.build.size());
-		Groups.build.copy(all);
+		tmpSeq.clear();
+		Groups.build.copy(tmpSeq);
+		Seq<Building> all = tmpSeq;
 		
 		all.remove(bu -> bu.team == team);
 		
 		while(b == null && times < 1024 && all.any()){
 			int index = rand.random(all.size - 1);
 			b = all.get(index);
-			if(b.proximity().size < 3 || b.block.health < 1600){
+			if(b.proximity().size < 3 || b.block.health < 1600 || b.isPayload()){
 				all.remove(index);
 				b = null;
 			}
 			times++;
 		}
 		
-		if(b == null && team != Vars.state.rules.defaultTeam)b = Vars.state.rules.defaultTeam.core();
+		if(b == null)b = team.core();
 		
 		return new Vec2().set(b == null ? Vec2.ZERO : b);
 	}
@@ -150,7 +148,7 @@ public class RaidEventType extends TargetableEventType{
 		}
 	}
 	
-	protected void bullet(WorldEvent e, BulletType bullet, Position source, Position target, Mover mover){
+	protected void bullet(WorldEvent e, Team team, BulletType bullet, Position source, Position target, Mover mover){
 		if(Vars.state.isMenu())return;
 		
 		Tmp.v6.rnd(range(e)).add(target);
@@ -163,7 +161,7 @@ public class RaidEventType extends TargetableEventType{
 			lifeScl = Math.max(0, Mathf.dst(bulletX, bulletY, Tmp.v6.x, Tmp.v6.y) / bullet.range),
 			angle = aimAngle + Mathf.range(inaccuracy);
 		
-		Bullet shootBullet = bullet.create(e, bulletTeam.get(), bulletX, bulletY, angle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, Tmp.v6.x, Tmp.v6.y);
+		Bullet shootBullet = bullet.create(e, team, bulletX, bulletY, angle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, Tmp.v6.x, Tmp.v6.y);
 		
 		bullet.shootEffect.at(bulletX, bulletY, angle, bullet.hitColor);
 		bullet.smokeEffect.at(bulletX, bulletY, angle, bullet.hitColor);
@@ -183,9 +181,9 @@ public class RaidEventType extends TargetableEventType{
 			e.intData = 0;
 			s.shoot(e.intData, (xOffset, yOffset, angle, delay, mover) -> {
 				if(delay > 0f){
-					Time.run(delay, () -> bullet(e, b, source, t, mover));
+					Time.run(delay, () -> bullet(e, team, b, source, t, mover));
 				}else{
-					bullet(e, b, source, t, mover);
+					bullet(e, team, b, source, t, mover);
 				}
 			}, () -> e.intData++);
 		});
@@ -294,7 +292,7 @@ public class RaidEventType extends TargetableEventType{
 					
 					t.image().color(Color.gray).pad(OFFSET / 2).growX().height(OFFSET / 4).row();
 					
-					t.table(b -> NHUIFunc.ammo(b, "[lightgray]*[accent]" + shots, bulletType, NHContent.raid, 0)).row();
+					t.table(b -> NHUIFunc.ammo(b, "[lightgray]*[accent]" + shots, bulletType, NHContent.raid)).row();
 				}).fill().padBottom(12f).row();
 			});
 		}).fill();

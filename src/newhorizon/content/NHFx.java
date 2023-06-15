@@ -1064,7 +1064,7 @@ public class NHFx{
 		
 		spawnWave = new Effect(60f, e -> {
 			stroke(3 * e.fout(), e.color);
-			circle(e.x, e.y, e.rotation  / tilesize * e.finpow());
+			circle(e.x, e.y, e.rotation * e.finpow());
 		}),
 
 		trailToGray = new Effect(50.0F, e -> {

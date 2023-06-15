@@ -52,6 +52,7 @@ public class NHPlanets{
 			accessible = true;
 			hasAtmosphere = true;
 			alwaysUnlocked = true;
+			iconColor = NHColor.darkEnrColor;
 			meshLoader = () -> new NHModMesh(
 					this, 5,
 					5, 0.3, 1.7, 1.2, 1.4,
@@ -600,7 +601,7 @@ public class NHPlanets{
 			state.rules.weather.clear();
 			state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
 			state.rules.spawns = NHOverride.generate(1, new Rand(sector.id), false, false, false);
-			state.rules.tags.put(NHInbuiltEvents.applyKey, "true");
+			state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
 			if(rawTemp(sector.tile.v) < 0.75f){
 				state.rules.bannedBlocks.addAll(Vars.content.blocks().filter(b -> b instanceof LaunchPad));
 			}

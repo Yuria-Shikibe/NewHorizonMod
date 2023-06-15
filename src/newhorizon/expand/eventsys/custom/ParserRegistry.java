@@ -12,7 +12,7 @@ import arc.struct.LongMap;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import mindustry.gen.Tex;
-import newhorizon.expand.eventsys.WorldEventType;
+import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.eventsys.annotation.Parserable;
 import newhorizon.expand.eventsys.annotation.Pos;
 

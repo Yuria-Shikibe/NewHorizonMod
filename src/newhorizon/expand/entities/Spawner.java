@@ -48,6 +48,8 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	public float surviveTime, surviveLifetime = 3000f;
 	public float rotation;
 	
+	public double flagToApply = Double.NaN;
+	
 	public StatusEntry statusEntry = new StatusEntry().set(StatusEffects.none, 0);
 	
 	public Interval timer = new Interval();
@@ -75,7 +77,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		this.drawSize = type.hitSize;
 		trailWidth = Mathf.clamp(drawSize / 15f, 1.25f, 4f);
 		set(pos);
-		NHFx.spawnWave.at(x, y, drawSize, team.color);
+		NHFx.spawnWave.at(x, y, drawSize * 1.1f, team.color);
 		
 		return this;
 	}
@@ -161,6 +163,9 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		toSpawn = type.create(team);
 		toSpawn.set(x, y);
 		toSpawn.rotation = rotation();
+		if(!Double.isNaN(flagToApply)){
+			toSpawn.flag(flagToApply);
+		}
 		if(!Vars.net.client()) toSpawn.add();
 		toSpawn.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
 		toSpawn.apply(statusEntry.effect, statusEntry.time);
@@ -218,6 +223,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		write.f(time);
 		write.f(rotation);
 		write.f(surviveTime);
+		write.d(flagToApply);
 		TypeIO.writeUnitType(write, type);
 		TypeIO.writeTeam(write, team);
 		TypeIO.writeStatus(write, statusEntry);
@@ -230,6 +236,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		time = read.f();
 		rotation = read.f();
 		surviveTime = read.f();
+		flagToApply = read.d();
 		
 		type = TypeIO.readUnitType(read);
 		team = TypeIO.readTeam(read);

@@ -78,6 +78,7 @@ public class MatterStorm extends Weather{
 	public Sound noise = NHSounds.shock;
 	public float noiseChance = 0.0225f;
 	
+	public Effect sparkEffect2 = NHFx.hitSparkLarge;
 	public Effect sparkEffect = new Effect(45f, e -> {
 		if(!(e.data instanceof Number))return;
 		float data = ((Number)e.data()).floatValue();
@@ -170,6 +171,7 @@ public class MatterStorm extends Weather{
 
 		if(bulletType == null){
 			bulletType = new TrailFadeBulletType(18, bulletDamage){{
+				disableAccel();
 				width = 0;
 				height = 0;
 				trailRotation = true;
@@ -270,7 +272,7 @@ public class MatterStorm extends Weather{
 			control.sound.loop(sound, Math.max((soundVol + noise) * state.opacity, soundVolMin));
 		}
 		
-		if(!Vars.net.client() && Mathf.chanceDelta(bulletSpawnChance * Mathf.sqrt(state.intensity)))for(int i = 0; i < 4; i++){
+		if(!Vars.net.client() && Mathf.chanceDelta(bulletSpawnChance * state.intensity))for(int i = 0; i < 4; i++){
 			float randX = Mathf.random(Vars.world.unitWidth()), randY = Mathf.random(Vars.world.unitHeight());
 			float maxRange = bulletLifeMax * bulletType.range;
 			float ang = state.windVector.angle();

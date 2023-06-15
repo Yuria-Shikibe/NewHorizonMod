@@ -340,6 +340,10 @@ public class NHFunc{
     }
     
     public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, StatusEffect statusEffect, float statusDuration){
+        return spawnUnit(team, x, y, angle, spawnRange, spawnReloadTime, spawnDelay, type, spawnNum, statusEffect, statusDuration, Double.NaN);
+    }
+    
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, StatusEffect statusEffect, float statusDuration, double frag){
         if(type == null)return false;
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
@@ -350,6 +354,7 @@ public class NHFunc{
         for (Vec2 s : vectorSeq) {
             Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
             spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay).setStatus(statusEffect, statusDuration);
+            spawner.flagToApply = frag;
             if(!net.client())spawner.add();
             i++;
         }

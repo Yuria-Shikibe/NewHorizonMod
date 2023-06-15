@@ -9,6 +9,7 @@ import mindustry.Vars;
 import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
+import newhorizon.expand.NHVars;
 import newhorizon.expand.block.commandable.CommandableBlock;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.entities.GravityTrapField;
@@ -52,7 +53,12 @@ public class NHGroups{
 	}
 	
 	public static void update(){
-		AutoEventTrigger.timeScale = AutoEventTrigger.getScale();
-		if(Vars.headless)AutoEventTrigger.timeScale *= Mathf.curve(Groups.player.size(), 1.125f, 7.5f);
+		if(!Float.isNaN(NHVars.worldData.eventReloadSpeed)){
+			AutoEventTrigger.timeScale = NHVars.worldData.eventReloadSpeed;
+		}else{
+			AutoEventTrigger.timeScale = AutoEventTrigger.getSettingScale();
+		}
+		
+		if(Vars.headless) AutoEventTrigger.timeScale *= Mathf.curve(Groups.player.size(), 1.125f, 7.5f);
 	}
 }
