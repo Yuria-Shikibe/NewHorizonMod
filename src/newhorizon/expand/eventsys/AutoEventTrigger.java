@@ -51,7 +51,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	protected final Interval timer = new Interval(3);
 	public float checkSpacing = 180f;
 	
-	public static float timeScale = 1;
+	public static float timeScale = 0;
 	
 	public static void setScale(float f){
 		Log.info("Set: " + f);
@@ -70,6 +70,7 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	public AutoEventTrigger setEvent(WorldEventType event){
 		eventType = event;
 		return this;
+		
 	}
 	
 	

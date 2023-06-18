@@ -879,6 +879,7 @@ public class NHUnitTypes{
 			controller = u -> new ProbeAI();
 			fogRadius = 60f;
 			
+			bounded = false;
 			drawMinimap = false;
 			faceTarget = true;
 			

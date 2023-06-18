@@ -2,8 +2,10 @@ package newhorizon.util.func;
 
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.GridBits;
 import arc.struct.Seq;
 import arc.util.Nullable;
+import mindustry.Vars;
 import mindustry.gen.Building;
 import org.jetbrains.annotations.NotNull;
 
@@ -159,34 +161,23 @@ public class BuildingConcentration{
 			degreeOfDispersion /= buildings.size;
 		}
 		
+		private void getConnectedBuildingsRecursive(Building self, Seq<Building> connectedBuildings, GridBits visited, int maxSize){
+			if(connectedBuildings.size >= maxSize)return;
+			connectedBuildings.add(self);
+			for (Building building : self.proximity){
+				if (!visited.get(building.tileX(), building.tileY())) {
+					visited.set(building.tileX(), building.tileY());
+					getConnectedBuildingsRecursive(building, connectedBuildings, visited, maxSize);
+				}
+			}
+		}
+		
 		public Complex(int maxSize, Building source){
 			this.maxSize = maxSize;
 			
-			iterated.clear();
-			edgeBuilding.clear();
-			lastEdgeBuilding.clear();
+			GridBits visited = new GridBits(Vars.world.width(), Vars.world.height());
 			
-			edgeBuilding.add(source);
-			lastEdgeBuilding.add(source);
-			iterated.add(source);
-			
-			tmpBuildings.clear();
-			while(iterated.size <= maxSize){
-				for(Building building : edgeBuilding){
-					tmpBuildings.addAll(building.proximity());
-				}
-				
-				tmpBuildings.removeAll(lastEdgeBuilding);
-				iterated.add(lastEdgeBuilding);
-				
-				lastEdgeBuilding.clear();
-				lastEdgeBuilding.addAll(edgeBuilding);
-				
-				edgeBuilding.clear();
-				edgeBuilding.addAll(tmpBuildings);
-			}
-			
-			buildings = new Seq<>(iterated);
+			getConnectedBuildingsRecursive(source,(buildings = new Seq<>(maxSize)), visited, maxSize);
 			
 			if(buildings.size > maxSize){
 				buildings.truncate(maxSize);

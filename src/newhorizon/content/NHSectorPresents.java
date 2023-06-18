@@ -14,6 +14,7 @@ import mindustry.type.Planet;
 import mindustry.type.SectorPreset;
 import mindustry.type.UnitType;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.NHRegister;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.cutscene.CSSTexts;
@@ -78,7 +79,7 @@ public class NHSectorPresents{
 						unhitableable.add(u);
 					}
 				});
-				NHVars.worldData.addTaskOnSave(() -> {
+				NHRegister.addTaskOnSave(() -> {
 //					untargetable.each(u -> u.targetable = false);
 					unhitableable.each(u -> u.hittable = false);
 				});

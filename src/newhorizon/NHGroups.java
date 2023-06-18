@@ -59,6 +59,6 @@ public class NHGroups{
 			AutoEventTrigger.timeScale = AutoEventTrigger.getSettingScale();
 		}
 		
-		if(Vars.headless) AutoEventTrigger.timeScale *= Mathf.curve(Groups.player.size(), 1.125f, 7.5f);
+		if(Vars.headless)AutoEventTrigger.timeScale *= Mathf.curve(Groups.player.size(), 1.125f, 7.5f);
 	}
 }

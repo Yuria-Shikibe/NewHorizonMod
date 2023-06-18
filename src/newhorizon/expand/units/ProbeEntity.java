@@ -15,7 +15,6 @@ import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.ai.types.CommandAI;
 import mindustry.audio.SoundLoop;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -68,7 +67,7 @@ public class ProbeEntity extends UnitEntity{
 	
 	public float unscanCloakReload = 0;
 	
-	public Interval judgeTimer = new Interval();
+	public Interval timer = new Interval(2);
 	
 	protected static final Vec2 tmpVec = new Vec2();
 	
@@ -110,7 +109,7 @@ public class ProbeEntity extends UnitEntity{
 	}
 	
 	public float scanSpeedScl(){
-		return 1.5f / (scanTarget.block.size) * (1 + scanTarget.power.status) / 2f;
+		return 1.5f / (scanTarget.block.size) * (1 + scanTarget.power.status) / 2f * reloadMultiplier;
 	}
 	
 	@Override
@@ -119,21 +118,17 @@ public class ProbeEntity extends UnitEntity{
 	}
 	
 	public void updateJudging(){
-		if(judgeTimer.get(80f)){
+		if(timer.get(80f)){
 			if(scanned.size >= leastScan){
 				EventHandler.get().post(() -> {
 					Seq<BuildingConcentration.Complex> complexes = BuildingConcentration.getComplexes(scanned.size >= leastScan * 2 ? minComplexSize / 2 : minComplexSize, scanned.toSeq());
 					if(complexes.any()){
 						EventHandler.get().getSort().sort(complexes);
 						BuildingConcentration.Complex complex = complexes.first();
-
+						
 						Core.app.post(() -> {
 							spawnEvent(complex.centerX, complex.centerY);
 							apply(NHStatusEffects.reinforcements, 120f);
-							if(team == Vars.state.rules.waveTeam && Vars.spawner.getSpawns().any()){
-								CommandAI ai = new CommandAI();
-								ai.commandPosition(new Vec2().set(Vars.spawner.getFirstSpawn()));
-							}
 						});
 					}
 				});
@@ -156,7 +151,7 @@ public class ProbeEntity extends UnitEntity{
 	public void updateScan(){
 		if(team == targetTeam)return;
 		
-		scanTarget = Vars.indexer.findTile(targetTeam, x, y, scanRange, b -> b.block().hasPower && !scanned.contains(b));
+		if(timer.get(1, 40))scanTarget = Vars.indexer.findTile(targetTeam, x, y, scanRange, b -> b.block().hasPower && !scanned.contains(b));
 		
 		scanning = scanTarget != null && !scanOver();
 		

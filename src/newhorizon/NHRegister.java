@@ -29,6 +29,11 @@ public class NHRegister{
 	
 	}
 	
+	public static void addTaskOnSave(Runnable runnable){
+		taskOnSave.add(runnable);
+	}
+	public static final Seq<Runnable> taskOnSave = new Seq<>();
+	
 	public static boolean worldLoaded(){
 		return worldLoaded;
 	}
@@ -41,6 +46,10 @@ public class NHRegister{
 			worldLoaded = false;
 			afterLoad.clear();
 			EventHandler.dispose();
+			
+			while(taskOnSave.any()){
+				taskOnSave.pop().run();
+			}
 		});
 		
 		Events.run(EventType.Trigger.draw, () -> {
