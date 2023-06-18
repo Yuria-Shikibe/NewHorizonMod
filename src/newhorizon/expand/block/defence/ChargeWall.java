@@ -38,8 +38,8 @@ public class ChargeWall extends Block{
 	public float heatPerRise = 50f;
 	public float healLightStMin = 0.35f;
 	
-	public float healReloadTime = 90f,
-				 healPerEnr = 45f, 
+	public float healReloadTime = 75f,
+				 healPerEnr = 55f,
 				 healPercent = size;
 				
 	public float shootReloadTime = 20f,
@@ -97,7 +97,7 @@ public class ChargeWall extends Block{
 	public ChargeWall(String name){
 		super(name);
 		update = true;
-		buildCostMultiplier = 4;
+		
 		category = Category.defense;
 		
 		solid = true;

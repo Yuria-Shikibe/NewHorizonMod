@@ -20,7 +20,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v143.1'
+    mindustryVersion = 'v144.3'
     jabelVersion = "0.6.0"
     //version of SDK you will be using
     sdkVersion = '30'

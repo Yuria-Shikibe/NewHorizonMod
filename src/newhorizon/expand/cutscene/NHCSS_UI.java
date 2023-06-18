@@ -425,7 +425,7 @@ public class NHCSS_UI{
 		
 		float offset = 320;
 		float scl = dst / maxDst;
-		NHSounds.signal.play(scl * 0.96f);
+		NHSounds.signal.play((1 - scl) * 0.46f);
 		
 		MarkBox box = new MarkBox();//markBoxPool.obtain();
 		Tmp.v1.setToRandomDirection().scl(scl * offset + 8);

@@ -50,6 +50,61 @@ public class DrawFunc{
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
     private static final Rand rand = new Rand();
     
+    
+    public static void lineAngleLerp(float x, float y, float angle, float length, boolean cap, Color begin, Color end){
+        float stroke = Lines.getStroke();
+    
+        vec22.trns(angle, length);
+        
+        float x2 = x + vec22.x;
+        float y2 = y + vec22.y;
+        
+        float hstroke = stroke/2f;
+        float len = Mathf.len(x2 - x, y2 - y);
+        float diffx = (x2 - x) / len * hstroke, diffy = (y2 - y) / len * hstroke;
+    
+        float colorB = begin.toFloatBits();
+        float colorE = end.toFloatBits();
+        
+        if(cap){
+            Fill.quad(
+                x - diffx - diffy,
+                y - diffy + diffx,
+                colorB,
+            
+                x - diffx + diffy,
+                y - diffy - diffx,
+                colorB,
+            
+                x2 + diffx + diffy,
+                y2 + diffy - diffx,
+                colorE,
+            
+                x2 + diffx - diffy,
+                y2 + diffy + diffx,
+                colorE
+            );
+        }else{
+            Fill.quad(
+                x - diffy,
+                y + diffx,
+                colorB,
+            
+                x + diffy,
+                y - diffx,
+                colorB,
+            
+                x2 + diffy,
+                y2 - diffx,
+                colorE,
+            
+                x2 - diffy,
+                y2 + diffx,
+                colorE
+            );
+        }
+    }
+    
     public static void randLenVectors(long seed, int amount, float length, float minLength, float angle, float range, Floatc2 cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
@@ -507,7 +562,7 @@ public class DrawFunc{
     
     public static float rotator_180(){return 180 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
     
-    public static float rotator_360(){return 360 * Interp.pow5.apply(Mathf.curve(cycle_100(), 0.15f, 0.85f));}
+    public static float rotator_360(){return 360 * Interp.pow5.apply(Mathf.curve(cycle(0, 270), 0.15f, 0.85f));}
     
     public static float cycle_100(){return Time.time % 100 / 100;}
     

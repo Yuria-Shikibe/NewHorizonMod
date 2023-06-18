@@ -245,7 +245,7 @@ public class NHFx{
 		int num = Mathf.clamp((int)size / 6, 6, 20);
 		float thick = Mathf.clamp(0.75f, 2f, size / 22f);
 		
-		return get("shootLineSmall", Color.clear, new Effect(37f, e -> {
+		return new Effect(37f, e -> {
 			color(e.color, Color.white, e.fout() * 0.7f);
 			rand.setSeed(e.id);
 			DrawFunc.randLenVectors(e.id, num, 4 + (size * 1.2f) * e.fin(), size * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
@@ -253,7 +253,19 @@ public class NHFx{
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), (e.fslope() + e.fin()) * 0.5f * (size * rand.random(0.15f, 0.5f) + rand.random(2f)) + rand.random(2f));
 				Drawf.light(e.x + x, e.y + y, e.fslope() * (size * 0.5f + 14f) + 3, e.color, 0.7f);
 			});
-		}));
+		});
+	}
+	
+	public static Effect shootSquare(float lifetime, int num, float size, float angle, float range, float angleRange){
+		return new Effect(lifetime, e -> {
+			color(e.color, Color.white, e.fout() * 0.7f);
+			rand.setSeed(e.id);
+			DrawFunc.randLenVectors(e.id, num, size + range * e.fin(), size * 0.15f * e.fin(), e.rotation, angleRange, (x, y) -> {
+				float size0 = (e.fslope() + e.fout()) * 0.5f * (size * rand.random(0.25f, 1f));
+				Fill.square(e.x + x, e.y + y, size0, angle);
+				Drawf.light(e.x + x, e.y + y, size0 * 1.25f, e.color, 0.7f);
+			});
+		});
 	}
 	
 	public static Effect laserHit(Color color){
@@ -638,6 +650,18 @@ public class NHFx{
 					Fill.circle(e.x + v.x, e.y + v.y, b.fout() * 9f + 0.3f);
 				});
 			}
+		}),
+	
+		healReceiveCircle = new Effect(11.0F, (e) -> {
+			Draw.color(e.color);
+			Lines.stroke(e.fout() * 1.667F);
+			Lines.circle(e.x, e.y, 2.0F + e.finpow() * 7.0F);
+		}),
+	
+		healSendCircle = new Effect(22.0F, (e) -> {
+			Draw.color(e.color);
+			Lines.stroke(e.fout() * 2.0F);
+			Lines.circle(e.x, e.y, e.finpow() * e.rotation);
 		}),
 	
 		crossSpinBlast = (new Effect(150.0F, 600.0F, (e) -> {
@@ -1250,11 +1274,11 @@ public class NHFx{
 				
 				rand.setSeed(e.id);
 				e.scaled(80, i -> {
-					DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 3f * i.fout(Interp.slowFast), 2300 + rand.range(200), i.rotation + ang - 90);
+					DrawFunc.tri(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 3f * i.fout(Interp.slowFast), 2300 + rand.range(120), i.rotation + ang - 90);
 					Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 3f * i.fout(Interp.slowFast));
 				});
 				
-				randLenVectors(e.id + index, 42, 2370, e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
+				randLenVectors(e.id + index, 42, 2330, e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
 			}
 		}),
 	

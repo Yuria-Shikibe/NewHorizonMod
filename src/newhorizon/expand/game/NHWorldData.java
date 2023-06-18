@@ -1,5 +1,6 @@
 package newhorizon.expand.game;
 
+import arc.struct.Seq;
 import mindustry.io.SaveFileReader;
 import mindustry.io.SaveVersion;
 import newhorizon.expand.eventsys.AutoEventTrigger;
@@ -11,6 +12,11 @@ import java.io.IOException;
 public class NHWorldData implements SaveFileReader.CustomChunk{
 	public static NHWorldData data;
 	
+	public void addTaskOnSave(Runnable runnable){
+		taskOnSave.add(runnable);
+	}
+	public final Seq<Runnable> taskOnSave = new Seq<>();
+	
 	public NHWorldData(){
 		data = this;
 		
@@ -18,7 +24,7 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 	}
 	
 	public short version = 0;
-	public float eventReloadSpeed = Float.NaN;
+	public float eventReloadSpeed = -1;
 	
 	public void initFromMapRules(){
 	
@@ -29,6 +35,10 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 		stream.writeShort(version);
 		
 		stream.writeFloat(eventReloadSpeed);
+		
+		while(taskOnSave.any()){
+			taskOnSave.pop().run();
+		}
 	}
 	
 	@Override

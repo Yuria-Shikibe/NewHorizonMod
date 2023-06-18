@@ -1,4 +1,4 @@
-package newhorizon.expand.units;
+package newhorizon.expand.units.ablility;
 
 import arc.Core;
 import mindustry.Vars;

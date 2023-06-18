@@ -252,11 +252,14 @@ public class NHTechTree{
 										node(NHBlocks.ancientLaserWall);
 									});
 									
-									node(NHUnitTypes.laugra, () -> {
-										nodeUnit(NHUnitTypes.pester, () -> {
-										
+									node(NHUnitTypes.restrictionEnzyme, () -> {
+										node(NHUnitTypes.laugra, () -> {
+											nodeUnit(NHUnitTypes.pester, () -> {
+											
+											});
 										});
 									});
+									
 								});
 							});
 							

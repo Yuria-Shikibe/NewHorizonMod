@@ -126,7 +126,7 @@ public class DelayedPointBulletType extends BulletType{
 		
 		for(int i = 0; i < colors.length; i++){
 			Draw.color(Tmp.c1.set(hitColor).lerp(colors[i], i * 0.3f + 0.1f));
-			float s = (cwidth *= lengthFalloff) * b.fout();
+			float s = (cwidth *= lengthFalloff) * (b.fout() * 2 + 1) / 3;
 			Lines.stroke(s);
 			Lines.line(b.x, b.y, tX, tY, false);
 			

@@ -827,7 +827,7 @@ public class NHBullets{
 			despawnSound = Sounds.explosionbig;
 		}};
 		
-		blastEnergyPst = new AccelBulletType(0.85f, 100f, CIRCLE_BOLT){{
+		blastEnergyPst = new AccelBulletType(0.85f, 140f, CIRCLE_BOLT){{
 			frontColor = Color.white;
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
 			lifetime = 64f;
@@ -861,7 +861,7 @@ public class NHBullets{
 			drawSize = 300f;
 		}};
 		
-		blastEnergyNgt = new AccelBulletType(3.85f, 80f){{
+		blastEnergyNgt = new AccelBulletType(3.85f, 100f){{
 			frontColor = Color.white;
 			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
 			lifetime = 36f;
@@ -887,6 +887,8 @@ public class NHBullets{
 			shootEffect = NHFx.shootCircleSmall(backColor);
 			smokeEffect = Fx.shootBigSmoke;
 			trailEffect = NHFx.trailToGray;
+			
+			reloadMultiplier = 1.25f;
 			
 			trailLength = 15;
 			trailWidth = 3f;
@@ -976,7 +978,7 @@ public class NHBullets{
 			
 			splashDamageRadius = 76f;
 			splashDamage = damage;
-			lightningDamage = damage * 0.75f;
+			lightningDamage = damage * 0.5f;
 			backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.lightSkyBack;
 			
 			knockback = 20f;

@@ -75,7 +75,7 @@ public class WorldEventType implements Json.JsonSerializable{
 		return type;
 	}
 	
-	public static final WorldEventType NULL = new WorldEventType("null");
+	public static final WorldEventType NULL = new WorldEventType("null"){};
 	
 	static{
 		allTypes.remove(NULL.name);
@@ -106,8 +106,9 @@ public class WorldEventType implements Json.JsonSerializable{
 	public <T extends WorldEvent> T create(){
 		T event = (T)eventProv.get();
 		event.type = this;
-		event.add();
+		
 		event.init();
+		event.add();
 		
 		if(initPos != -1 && hasCoord){
 			Tmp.p1.set(Point2.unpack(initPos));
@@ -274,7 +275,7 @@ public class WorldEventType implements Json.JsonSerializable{
 	
 	public void onAdd(WorldEvent event){
 		if(drawable)event.drawSize = range(event);
-		if(warnOnHUD && NHRegister.worldLoaded() && !Vars.headless && event.team != Vars.player.team() && !event.IOed){
+		if(warnOnHUD && NHRegister.worldLoaded() && !Vars.headless){
 			warnHUD(event);
 			
 			if(NHUI.eventSimplePane.visible)NHUI.eventSimplePane.add(NHUI.eventDialog.buildSimpleTable(event)).row();

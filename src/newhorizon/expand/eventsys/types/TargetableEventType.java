@@ -98,9 +98,4 @@ public abstract class TargetableEventType extends WorldEventType{
 		event.team(defaultTeam.get());
 		event.set(target(event));
 	}
-	
-	@Override
-	public void onAdd(WorldEvent event){
-		super.onAdd(event);
-	}
 }

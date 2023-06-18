@@ -20,7 +20,10 @@ import static arc.Core.settings;
 import static newhorizon.util.ui.TableFunc.LEN;
 
 public class NHSetting{
-	public static final String EFFECT_DETAIL = "nh_effectdetail", VANILLA_COST_OVERRIDE = "nh_overridecost";
+	public static final String
+			EFFECT_DETAIL = "nh_effectdetail",
+			VANILLA_COST_OVERRIDE = "nh_overridecost",
+			DEBUGGING = "nh_debugging";
 	
 	public static boolean enableEffectDetail;
 	
@@ -31,7 +34,8 @@ public class NHSetting{
 	public static void load(){
 		all.addAll(
 			new BoolSetting(EFFECT_DETAIL, true, true),
-			new BoolSetting(VANILLA_COST_OVERRIDE, false, true)
+			new BoolSetting(VANILLA_COST_OVERRIDE, false, true),
+			new BoolSetting(DEBUGGING, false, true)
 		);
 		
 		all.each(SettingKey::setDefault);

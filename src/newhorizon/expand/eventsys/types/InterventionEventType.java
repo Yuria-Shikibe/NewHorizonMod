@@ -77,11 +77,6 @@ public class InterventionEventType extends TargetableEventType{
 	}
 	
 	@Override
-	public void onAdd(WorldEvent event){
-		super.onAdd(event);
-	}
-	
-	@Override
 	public void warnHUD(WorldEvent event){
 		NHUIFunc.showLabel(2.5f, t -> {
 			Color color = event.team.color;

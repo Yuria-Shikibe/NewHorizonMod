@@ -90,7 +90,8 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHSectorPresents.hostileResearchStation)
+				new FeatureLog(NHUnitTypes.ancientProbe){{important = true;}},
+				new FeatureLog(NHUnitTypes.restrictionEnzyme)
 		};
 	}
 	
@@ -260,7 +261,7 @@ public class NewHorizon extends Mod{
 	}
 	
 	public NewHorizon(){
-		DEBUGGING = Boolean.parseBoolean(OS.env("MINDUSTRY_DEBUG"));
+		DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 		
 		Log.info("Loaded NewHorizon Mod constructor.");
 		
@@ -339,7 +340,7 @@ public class NewHorizon extends Mod{
 		if(DEBUGGING){
 			TableFunc.tableMain();
 			Vars.renderer.maxZoom = 10f;
-			Vars.renderer.minZoom = 0.5f;
+			Vars.renderer.minZoom = 0.85f;
 		}
 	}
 	
@@ -450,6 +451,7 @@ public class NewHorizon extends Mod{
 					WorldEvent e = event.eventProv.get();
 					e.type = event;
 					e.init();
+					e.add();
 					
 					if(event.initPos != -1 && event.hasCoord){
 						Tmp.p1.set(Point2.unpack(event.initPos));
@@ -463,8 +465,7 @@ public class NewHorizon extends Mod{
 						}
 					}
 					
-					e.add();
-					Core.app.post(() -> e.team = Team.get(Integer.parseInt(args[1])));
+					if(args.length >= 2)Core.app.post(() -> e.team = Team.get(Integer.parseInt(args[1])));
 					
 					player.sendMessage("Setup: " + event + " | " + e.team + " | (" + World.toTile(e.x) + ", " + World.toTile(e.y) + ")");
 				} catch (NumberFormatException var3) {

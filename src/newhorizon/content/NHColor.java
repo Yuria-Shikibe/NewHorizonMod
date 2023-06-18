@@ -11,7 +11,7 @@ public class NHColor{
 		ancientLight = ancient.cpy().lerp(Color.white, 0.7f),
 		ancientLightMid = ancient.cpy().lerp(Color.white, 0.4f),
 		ancientDark = ancient.cpy().lerp(Color.black, 0.995f),
-		ancientHeat = NHColor.ancient.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f),
+		ancientHeat = Color.red.cpy().mul(1.075f),
 		ally = new Color(0, 0, 1, 0.15f), hostile = new Color(1, 0, 0, 0.15f),
 		deeperBlue = Color.valueOf("#778ff2"),
 		lightSky = Color.valueOf("#8DB0FF"),

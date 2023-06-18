@@ -1,6 +1,8 @@
 package newhorizon.expand.eventsys;
 
+import arc.struct.Sort;
 import arc.util.TaskQueue;
+import arc.util.Threads;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.types.WorldEventType;
 
@@ -9,6 +11,8 @@ import static mindustry.Vars.state;
 
 public class EventHandler implements Runnable{
 	private static EventHandler eventHandler;
+	private ThreadLocal<Sort> sortInstance;
+	
 	public static EventHandler get(){return eventHandler;}
 	public static void create(){
 		eventHandler = new EventHandler();
@@ -55,10 +59,15 @@ public class EventHandler implements Runnable{
 	private void start(){
 		stop();
 		
+		sortInstance = Threads.local(Sort::new);
 		thread = new Thread(this, "EventHandler");
 		thread.setPriority(Thread.MIN_PRIORITY);
 		thread.setDaemon(true);
 		thread.start();
+	}
+	
+	public Sort getSort(){
+		return sortInstance.get();
 	}
 	
 	private void stop(){

@@ -1,5 +1,6 @@
 package newhorizon.content;
 
+import arc.func.Cons;
 import arc.func.Intc;
 import arc.graphics.Color;
 import arc.math.Mathf;
@@ -24,6 +25,7 @@ import mindustry.world.blocks.logic.CanvasBlock;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 
 import java.lang.reflect.Field;
@@ -90,12 +92,21 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.aliotiat){{
-						begin = 45;
+						begin = 35;
 						spacing = 3;
 						unitScaling = 1;
-						max = 10;
+						max = 18;
 						shieldScaling = 30f;
 						shields = 100;
+					}},
+					
+					new SpawnGroup(NHUnitTypes.aliotiat){{
+						begin = 40;
+						spacing = 3;
+						unitScaling = 1;
+						max = 15;
+						shieldScaling = 50f;
+						shields = 150;
 						effect = StatusEffects.overdrive;
 					}},
 					
@@ -115,6 +126,7 @@ public class NHOverride{
 						unitScaling = 2;
 						max = 20;
 						shieldScaling = 30;
+						effect = StatusEffects.overdrive;
 					}},
 					
 					new SpawnGroup(NHUnitTypes.branch){{
@@ -149,15 +161,16 @@ public class NHOverride{
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 6;
-						shieldScaling = 30f;
+						shieldScaling = 80f;
 					}},
 					
 					new SpawnGroup(NHUnitTypes.annihilation){{
 						begin = 65;
 						unitAmount = 1;
 						unitScaling = 1;
-						spacing = 8;
-						shieldScaling = 30f;
+						spacing = 6;
+						shields = 2000;
+						shieldScaling = 800f;
 					}},
 					
 					new SpawnGroup(NHUnitTypes.laugra){{
@@ -176,6 +189,7 @@ public class NHOverride{
 						unitScaling = 0.7f;
 						spacing = 4;
 						shieldScaling = 200f;
+						effect = NHStatusEffects.overphased;
 					}},
 					
 					new SpawnGroup(NHUnitTypes.sin){{
@@ -204,7 +218,7 @@ public class NHOverride{
 					}},
 					
 					new SpawnGroup(NHUnitTypes.guardian){{
-						begin = 85;
+						begin = 75;
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 20;
@@ -253,9 +267,18 @@ public class NHOverride{
 						begin = 120;
 						unitAmount = 1;
 						unitScaling = 1;
-						spacing = 20;
+						spacing = 12;
 						shields = 19000;
 						shieldScaling = 3500f;
+					}},
+					
+					new SpawnGroup(NHUnitTypes.nucleoid){{
+						begin = 180;
+						unitAmount = 1;
+						unitScaling = 1;
+						spacing = 20;
+						shields = 80000;
+						shieldScaling = 2000f;
 					}},
 					
 					new SpawnGroup(NHUnitTypes.pester){{
@@ -263,21 +286,29 @@ public class NHOverride{
 						unitAmount = 1;
 						unitScaling = 1;
 						spacing = 20;
-						shields = 19000;
-						shieldScaling = 3500f;
+						shields = 26000;
+						shieldScaling = 5000f;
 					}}
 			);
 		}//Apply Mod Units
 		
-		Seq<UnitType> coreUnits = new Seq<>();
+//		Seq<UnitType> coreUnits = new Seq<>();
+//		Vars.content.blocks().each(b -> {
+//			if(b instanceof CoreBlock){
+//				CoreBlock c = (CoreBlock)b;
+//				coreUnits.add(c.unitType);
+//				c.unitType.immunities.add(NHStatusEffects.scannerDown);
+//			}
+//		});
+	}
+	
+	public static void coreUnits(Cons<UnitType> modifier){
 		Vars.content.blocks().each(b -> {
 			if(b instanceof CoreBlock){
 				CoreBlock c = (CoreBlock)b;
-				coreUnits.add(c.unitType);
-				c.unitType.immunities.add(NHStatusEffects.scannerDown);
+				modifier.get(c.unitType);
 			}
 		});
-		
 	}
 	
 	public static void loadOptional(){
@@ -300,7 +331,7 @@ public class NHOverride{
 	}
 	
 	public static void overrideVanillaMain(){
-		Fx.trailFade.clip = 2000;
+		if(NHSetting.enableDetails())Fx.trailFade.clip = 2000;
 		
 		try{
 			Field field;
@@ -507,11 +538,11 @@ public class NHOverride{
 		UnitType[][] species = {
 				{NHUnitTypes.origin, NHUnitTypes.thynomo, NHUnitTypes.aliotiat, NHUnitTypes.tarlidor, NHUnitTypes.annihilation, NHUnitTypes.sin},
 				{NHUnitTypes.sharp, NHUnitTypes.branch, NHUnitTypes.warper, NHUnitTypes.naxos, NHUnitTypes.hurricane},
-				{flare, NHUnitTypes.assaulter, NHUnitTypes.branch, NHUnitTypes.destruction, NHUnitTypes.longinus},
+				{flare, NHUnitTypes.assaulter, NHUnitTypes.restrictionEnzyme, NHUnitTypes.destruction, NHUnitTypes.longinus},
 				{NHUnitTypes.sharp, NHUnitTypes.assaulter, NHUnitTypes.branch, NHUnitTypes.longinus, NHUnitTypes.guardian},
 				{risso, minke, NHUnitTypes.ghost, NHUnitTypes.zarkov, NHUnitTypes.declining},
 				{risso, oxynoe, cyerce, aegires, navanax}, //retusa intentionally left out as it cannot damage the core properly
-				{NHUnitTypes.branch, zenith, rand.chance(0.5) ? quad : antumbra, rand.chance(0.5) ? NHUnitTypes.longinus : NHUnitTypes.destruction, rand.chance(0.5) ? NHUnitTypes.anvil : NHUnitTypes.hurricane}
+				{NHUnitTypes.branch, zenith, rand.chance(0.5) ? quad : antumbra, rand.chance(0.5) ? NHUnitTypes.longinus : NHUnitTypes.laugra, rand.chance(0.5) ? NHUnitTypes.anvil : NHUnitTypes.hurricane}
 		};
 		
 		if(airOnly){

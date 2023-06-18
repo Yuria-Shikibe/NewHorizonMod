@@ -35,13 +35,13 @@ import mindustry.type.StatusEffect;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHSounds;
-import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.cutscene.actions.CSSActions;
-import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.util.Tool_Internal;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
@@ -331,7 +331,9 @@ public class DebugDialog extends BaseDialog{
 						}
 					}
 				}).grow();
-			}}.show());
+			}
+			
+			}.show());
 			
 			t.button("Weathers", () -> {
 				BaseDialog dialog = new BaseDialog("");
@@ -451,10 +453,15 @@ public class DebugDialog extends BaseDialog{
 				CSSActions.endCreateAction();
 			});
 			
-			t.button("gen", () -> {
+			t.button("clear", () -> {
 //				new CustomUIGen().show();
-				Log.info(NHVars.worldData.eventReloadSpeed);
-				Log.info(AutoEventTrigger.timeScale);
+				Log.info(NHGroups.autoEventTrigger.size());
+				
+				NHGroups.autoEventTrigger.clear();
+				
+				Log.info(state.rules.tags.remove("setup-triggers"));
+				Log.info(state.rules.tags.remove(NHInbuiltEvents.APPLY_KEY));
+				Log.info(NHGroups.autoEventTrigger.size());
 			});
 			
 			/*t.button("genT", () -> {

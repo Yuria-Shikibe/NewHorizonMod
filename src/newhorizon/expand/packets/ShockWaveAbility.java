@@ -15,6 +15,7 @@ import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
+import mindustry.type.UnitType;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
@@ -42,6 +43,11 @@ public class ShockWaveAbility extends Ability{
 	public Effect shootEffect = NHFx.circleOut;
 	public Effect hitEffect = NHFx.hitSparkLarge;
 	
+	public float maxSpeed = -1;
+	
+	public int boltNum = 2;
+	public float boltWidth = 2;
+	
 	public ShockWaveAbility(float reload, float range, float damage, Color hitColor){
 		this.reload = reload;
 		this.range = range;
@@ -50,7 +56,7 @@ public class ShockWaveAbility extends Ability{
 	}
 	
 	public Cons2<Position, Position> effect = (from, to) -> {
-		PosLightning.createEffect(from, to, hitColor, 2, 2);
+		PosLightning.createEffect(from, to, hitColor, boltNum, boltWidth);
 	};
 	
 	public ShockWaveAbility modify(Cons<ShockWaveAbility> m){
@@ -67,13 +73,21 @@ public class ShockWaveAbility extends Ability{
 		return this;
 	}
 	
+	@Override
+	public void init(UnitType type){
+		super.init(type);
+		if(maxSpeed > 0)maxSpeed = maxSpeed * maxSpeed;
+	}
+	
 	protected float timer = 0;
 	
 	@Override
 	public void update(Unit unit){
 		timer += Time.delta;
 		
-		if(timer > reload){
+		if(maxSpeed > 0 && unit.vel().len2() > maxSpeed){
+			timer = 0;
+		}else if(timer > reload){
 			all.clear();
 			
 			Tmp.v1.trns(unit.rotation - 90, x, y).add(unit.x, unit.y);

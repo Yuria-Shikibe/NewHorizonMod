@@ -47,8 +47,6 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 	
 	public Interval timer = new Interval();
 	
-	public transient boolean IOed = false;
-	
 	@Override
 	public int classId(){
 		return EntityRegister.getID(getClass());
@@ -241,8 +239,6 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		team = TypeIO.readTeam(read);
 		type = WorldEventType.getStdType(read.str());
 		type.read(this, read);
-		
-		IOed = true;
 	}
 	
 	@Override

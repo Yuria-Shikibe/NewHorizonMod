@@ -7,6 +7,7 @@ import arc.func.Func;
 import arc.graphics.Color;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
 import arc.util.Align;
 import arc.util.Time;
 import mindustry.Vars;
@@ -54,11 +55,15 @@ public class WorldEventDialog extends BaseDialog{
 					cont.margin(6f);
 					cont.pane(t -> {
 						t.defaults().growX().height(50f).pad(4);
-						WorldEventType.allTypes.each((s, e) -> {
+						int num = 0;
+						for(ObjectMap.Entry<String, WorldEventType> entry : WorldEventType.allTypes.entries()){
 							buildDebug = true;
-							t.button(s, e::create).row();
+							WorldEventType type = entry.value;
+							t.button(entry.key, type::create);
+							num++;
+							if(num % 2 == 0)t.row();
 							buildDebug = false;
-						});
+						}
 					}).grow();
 				}}.show();
 			}).visible(() -> Vars.state.rules.infiniteResources);

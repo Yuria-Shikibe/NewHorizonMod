@@ -687,6 +687,7 @@ public class NHBlocks{
 				fragBullets = 2;
 				
 				fragBullet = new ChainBulletType(700){{
+					length = 0;
 					collidesAir = collidesGround = true;
 					quietShoot = true;
 					hitColor = NHColor.lightSkyBack;
@@ -2159,7 +2160,7 @@ public class NHBlocks{
 			}).layer(Layer.blockOver + 1);
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
 			consumePower(1.5f);
-			setExchangeMap(Items.copper, 1, 1, Items.lead, 1, 1, Items.titanium, 1, 2, Items.thorium, 1, 3, Items.scrap, 2, 5);
+			setExchangeMap(Items.copper, 1, 1, Items.lead, 1, 1, Items.titanium, 1, 2, Items.thorium, 1, 3, Items.scrap, 2, 5, Items.beryllium, 2, 3, Items.tungsten, 1, 2);
 			setOutput(Items.sand);
 		}};
 		
@@ -2971,7 +2972,6 @@ public class NHBlocks{
 			bullet = NHBullets.airRaidBomb;
 		}};
 		
-		
 		remoteStorage = new RemoteCoreStorage("remote-vault"){{
 			size = 3;
 			health = 960;
@@ -3582,6 +3582,9 @@ public class NHBlocks{
 				new UnitSet(NHUnitTypes.naxos, new byte[]{NHUnitTypes.AIR_LINE_1, 4}, 120 * 60f,
 					with(Items.plastanium, 300, NHItems.juniorProcessor, 250, NHItems.presstanium, 500, Items.surgeAlloy, 50, NHItems.metalOxhydrigen, 120)
 				),
+				new UnitSet(NHUnitTypes.restrictionEnzyme, new byte[]{NHUnitTypes.ANCIENT_GROUND, 3}, 75f * 60f,
+						with(Items.tungsten, 200, Items.plastanium, 100, NHItems.presstanium, 100, NHItems.zeta, 60, NHItems.juniorProcessor, 80)
+				),
 				new UnitSet(NHUnitTypes.rhino, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
 					with(Items.lead, 80, Items.graphite, 60, NHItems.presstanium, 60, NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 60)
 				),
@@ -3604,7 +3607,7 @@ public class NHBlocks{
 					with(Items.thorium, 90, Items.graphite, 50, NHItems.multipleSteel, 60, NHItems.juniorProcessor, 50)
 				),
 				new UnitSet(NHUnitTypes.zarkov, new byte[]{NHUnitTypes.NAVY_LINE_1, 4}, 140 * 60f,
-						ItemStack.with(NHItems.multipleSteel, 500, NHItems.juniorProcessor, 300, NHItems.presstanium, 400, NHItems.metalOxhydrigen, 200)
+						ItemStack.with(NHItems.multipleSteel, 400, NHItems.juniorProcessor, 300, NHItems.presstanium, 400, NHItems.metalOxhydrigen, 200)
 				)/*,
 				new UnitSet(NHUnitTypes.striker, new byte[]{NHUnitTypes.AIR_LINE_1, 4}, 150 * 60f,
 						ItemStack.with(Items.phaseFabric, 200, NHItems.juniorProcessor, 300, NHItems.presstanium, 350, NHItems.seniorProcessor, 75)
@@ -3625,7 +3628,7 @@ public class NHBlocks{
 			
 			armor = 20f;
 			
-			itemCapacity = 3000;
+			itemCapacity = 6000;
 			
 			requirements(Category.units, BuildVisibility.shown, with(
 				NHItems.presstanium, 1800,
@@ -3645,8 +3648,8 @@ public class NHBlocks{
 				new UnitSet(NHUnitTypes.saviour, new byte[]{NHUnitTypes.OTHERS, 5}, 300 * 60f,
 					with(NHItems.setonAlloy, 250, Items.surgeAlloy, 400, NHItems.seniorProcessor, 350, NHItems.thermoCoreNegative, 150, Items.plastanium, 400, NHItems.zeta, 500)
 				),
-				new UnitSet(NHUnitTypes.declining, new byte[]{NHUnitTypes.NAVY_LINE_1, 5}, 420 * 60f,
-					with(NHItems.setonAlloy, 500, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300)
+				new UnitSet(NHUnitTypes.declining, new byte[]{NHUnitTypes.NAVY_LINE_1, 6}, 420 * 60f,
+					with(NHItems.upgradeSort, 500, NHItems.irayrondPanel, 500, NHItems.seniorProcessor, 300, NHItems.thermoCoreNegative, 300, Items.tungsten, 1200)
 				),
 				new UnitSet(NHUnitTypes.guardian, new byte[]{NHUnitTypes.OTHERS, 5}, 9600f,
 						new ItemStack(NHItems.darkEnergy, 1500)
@@ -3661,18 +3664,18 @@ public class NHBlocks{
 					with(NHItems.setonAlloy, 800, NHItems.upgradeSort, 900, NHItems.seniorProcessor, 1200, NHItems.thermoCoreNegative, 500)
 				),
 				new UnitSet(NHUnitTypes.annihilation, new byte[]{NHUnitTypes.GROUND_LINE_1, 5}, 320 * 60f,
-					with(NHItems.setonAlloy, 400, NHItems.irayrondPanel, 400, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 400)
+					with(NHItems.setonAlloy, 250, NHItems.multipleSteel, 400, NHItems.seniorProcessor, 400, NHItems.fusionEnergy, 400)
 				),
 				new UnitSet(NHUnitTypes.destruction, new byte[]{NHUnitTypes.AIR_LINE_1, 5}, 360 * 60f,
 						with(NHItems.setonAlloy, 350, NHItems.irayrondPanel, 300, NHItems.seniorProcessor, 300, NHItems.fusionEnergy, 250)
 				),
 				new UnitSet(NHUnitTypes.collapser, new byte[]{NHUnitTypes.AIR_LINE_2, 7}, 900 * 60f,
-						new ItemStack(NHItems.thermoCorePositive, 1000),
-						new ItemStack(NHItems.thermoCoreNegative, 1000),
-						new ItemStack(NHItems.upgradeSort, 2000)
+						new ItemStack(NHItems.thermoCorePositive, 2500),
+						new ItemStack(NHItems.thermoCoreNegative, 2500),
+						new ItemStack(NHItems.upgradeSort, 4500)
 				),
 				new UnitSet(NHUnitTypes.pester, new byte[]{NHUnitTypes.ANCIENT_AIR, 7}, 1200 * 60f,
-						new ItemStack(NHItems.ancimembrane, itemCapacity),
+						new ItemStack(NHItems.ancimembrane, 3500),
 						new ItemStack(NHItems.upgradeSort, itemCapacity / 2)
 				),
 				new UnitSet(NHUnitTypes.nucleoid, new byte[]{NHUnitTypes.ANCIENT_AIR, 8}, 3600 * 60f,

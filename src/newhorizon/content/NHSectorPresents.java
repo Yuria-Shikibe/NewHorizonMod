@@ -12,6 +12,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
 import mindustry.type.SectorPreset;
+import mindustry.type.UnitType;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.block.special.JumpGate;
@@ -31,7 +32,7 @@ public class NHSectorPresents{
 	public static void load(){
 		hostileResearchStation = new NHSectorPresent("hostile-research-station", NHPlanets.midantha, 65){{
 			captureWave = 40;
-			difficulty = 4;
+			difficulty = 8;
 			
 			allowLaunchSchematics = false;
 			
@@ -64,6 +65,24 @@ public class NHSectorPresents{
 			};
 			
 			NHCSS_Core.register(NHCSS_Core.initers, Seq.with(() -> {
+//				Seq<UnitType> untargetable = new Seq<>();
+				Seq<UnitType> unhitableable = new Seq<>();
+				NHOverride.coreUnits(u -> {
+//					if(!u.targetable){
+//						u.targetable = true;
+//						untargetable.add(u);
+//					}
+//
+					if(!u.hittable){
+						u.hittable = true;
+						unhitableable.add(u);
+					}
+				});
+				NHVars.worldData.addTaskOnSave(() -> {
+//					untargetable.each(u -> u.targetable = false);
+					unhitableable.each(u -> u.hittable = false);
+				});
+				
 				EventHandler.runEventOnce("init", () -> {
 					NHVars.worldData.eventReloadSpeed = 0.35f;
 					Vars.state.rules.hiddenBuildItems.clear();
@@ -191,7 +210,7 @@ public class NHSectorPresents{
 						CoreBlock.CoreBuild base = Vars.state.rules.defaultTeam.cores().firstOpt();
 						float x = target.x;
 						float y = target.y;
-						NHVars.worldData.eventReloadSpeed = 6f;
+						NHVars.worldData.eventReloadSpeed = 4f;
 						if(base == null)return;
 						float x1 = base.x, y1 = base.y;
 						WorldOverride.getFov(x, y, Vars.state.rules.defaultTeam, 32);
@@ -217,7 +236,7 @@ public class NHSectorPresents{
 								}
 							}),
 							CSSActions.text(incomingRaid()),
-							CSSActions.triggerEvent(NHInbuiltEvents.quickRaid, new Vec2(x1, y1), () -> Vars.state.rules.waveTeam),
+							CSSActions.triggerEvent(NHInbuiltEvents.raidQuick, new Vec2(x1, y1), () -> Vars.state.rules.waveTeam),
 							CSSActions.cameraSustain(420f),
 							CSSActions.text(takingDamage_Heavy()),
 							CSSActions.withdrawCurtain()

@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.Events;
+import arc.func.Cons;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -12,6 +13,7 @@ import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
+import arc.scene.ui.layout.Table;
 import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -19,17 +21,23 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.content.UnitTypes;
+import mindustry.entities.Mover;
 import mindustry.entities.Units;
+import mindustry.entities.bullet.BulletType;
 import mindustry.entities.pattern.ShootMulti;
 import mindustry.entities.pattern.ShootPattern;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.entities.pattern.ShootSummon;
 import mindustry.game.EventType;
 import mindustry.game.Team;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.MinimapRenderer;
 import mindustry.graphics.Pal;
+import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.modules.ItemModule;
 import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
 import newhorizon.expand.NHVars;
@@ -49,15 +57,190 @@ public class NHInbuiltEvents{
 	public static final String APPLY_KEY = "applyTriggers";
 	
 	public static WorldEventType
-		intervention_std, quickRaid;
+		raidDifficult_1, raidDifficult_2, raidDifficult_3, raidDifficult_4, raidDifficult_ent, raidErase,
+		intervention_std, raidQuick, raidAncientAccurate, raidArtillery;
 	
 	@ClientDisabled
 	public static final Seq<AutoEventTrigger> autoTriggers = new Seq<>(), campaignTriggers = new Seq<>();
 	
-	private static void loadEventTriggers(){
+	public static ItemStack[][] difficultCheck = {
+		ItemStack.with(NHItems.ancimembrane, 3000, NHItems.darkEnergy, 1500), //8
+		ItemStack.with(NHItems.upgradeSort, 100), //7
+		ItemStack.with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 100), //6
+		ItemStack.with(Items.surgeAlloy, 150), //5
+		ItemStack.with(NHItems.multipleSteel, 200, Items.plastanium, 200), //4
+		ItemStack.with(NHItems.presstanium, 500, NHItems.juniorProcessor, 300), //3
+		ItemStack.with(Items.silicon, 500, Items.thorium, 500), //2
+		ItemStack.with(Items.copper, 5), //1
+	};
+	
+	//Check team core for data, should be quick
+	public static int dynamicGrowth(Team team){
+		int difficult = 0;
 		
-		quickRaid = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-quick"){{
+		if(!team.active())return 0;
+		CoreBlock.CoreBuild core = team.cores().firstOpt();
+		if(core == null)return 0;
+		ItemModule items = core.items;
+		
+		for(int i = 0; i < difficultCheck.length; i++){
+			ItemStack[] stacks = difficultCheck[i];
+			if(items.has(stacks))return difficultCheck.length - i;
+		}
+		
+		return difficult;
+	}
+	
+	public static BulletType copyAnd(BulletType source, Cons<BulletType> modifier){
+		BulletType n = source.copy();
+		modifier.get(n);
+		return n;
+	}
+	
+	@SuppressWarnings("DuplicateBranchesInSwitch")
+	public static WorldEventType dynamicRaid(int difficult){
+		switch(difficult){
+			case 0 : return intervention_std;
+			case 1 : return raidDifficult_1;
+			case 2 : return raidDifficult_2;
+			case 3 : return raidDifficult_3;
+			case 4 : return raidDifficult_4;
+			case 5 : return raidAncientAccurate;
+			case 6 : return raidArtillery;
+			case 7 : return raidQuick;
+			case 8 : return raidDifficult_ent;
+			case 9 : return raidErase;
+			default : return intervention_std;
+		}
+	};
+	
+	private static void loadEventTriggers(){
+		raidErase = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-erase"){{
+			ammo(NHBullets.pesterBlackHole, new ShootPattern());
+			radius = 280;
+			reloadTime = 30 * 60;
+			callSound = NHSounds.alarm;
+		}
+			
+			@Override
+			public void drawArrow(WorldEvent e){}
+			
+			@Override
+			protected void bullet(WorldEvent e, Team team, BulletType bullet, Position source, Position target, Mover mover){
+				bullet.create(e, team, target.getX(), target.getY(), 0, 10000, 0.0001f, 1, radius, mover, target.getX(), target.getY());
+			}
+		});
+		
+		raidDifficult_1 = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-difficult-1"){{
+			ShootPattern shootPattern = new ShootPattern(){{
+				shots = 30;
+				shotDelay = 4f;
+			}};
+			
+			inaccuracy = 0.145f;
+			ammo(copyAnd(NHBullets.synchroThermoPst, b -> {
+				b.collides = b.collidesAir = false;
+				b.scaleLife = true;
+				b.scaledSplashDamage = true;
+				b.splashDamage += b.damage * 1.5f;
+				b.lightning += 1;
+				b.lightningLength += 4;
+			}), shootPattern);
+			radius = 120;
+			reloadTime = 15 * 60;
+		}});
+		
+		raidDifficult_2 = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-difficult-2"){{
+			ShootPattern shootPattern = new ShootPattern(){{
+				shots = 24;
+				shotDelay = 8f;
+			}};
+			
+			inaccuracy = 0.145f;
+			ammo(copyAnd(NHBullets.saviourBullet, b -> {
+				b.collides = b.collidesAir = false;
+				b.scaleLife = true;
+				b.scaledSplashDamage = true;
+				b.splashDamage += b.damage;
+			}), shootPattern);
+			radius = 160;
+			reloadTime = 15 * 60;
+		}});
+		
+		raidDifficult_3 = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-difficult-3"){{
+			ammo(copyAnd(NHBullets.blastEnergyNgt, b -> {
+				b.collides = b.collidesAir = false;
+				b.scaleLife = true;
+				b.scaledSplashDamage = true;
+				b.splashDamage += b.damage;
+				b.splashDamageRadius = 56f;
+			}), new ShootPattern(){{
+				shots = 32;
+				shotDelay = 6f;
+			}});
+			radius = 80;
 			inaccuracy = 0;
+			reloadTime = 20 * 60;
+		}});
+		
+		raidDifficult_4 = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-difficult-4"){{
+			ammo(copyAnd(NHBullets.railGun3, b -> {
+				b.collides = b.collidesAir = false;
+				b.scaleLife = true;
+				b.scaledSplashDamage = true;
+				b.splashDamage = 150;
+				b.splashDamageRadius = 60;
+				b.despawnEffect = NHFx.hitSparkHuge;
+			}), new ShootPattern(){{
+				shots = 28;
+				shotDelay = 8f;
+			}});
+			radius = 80;
+			inaccuracy = 0;
+			reloadTime = 30 * 60;
+		}});
+		
+		raidDifficult_ent = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-eternity"){{
+			ammo(NHBullets.eternity, new ShootPattern(){{
+				firstShotDelay = 25f;
+			}}, NHBullets.shieldDestroyer, new ShootPattern(){{
+				shots = 10;
+				shotDelay = 6f;
+			}});
+			radius = 80;
+			inaccuracy = 0;
+			reloadTime = 30 * 60;
+		}});
+		
+		raidArtillery = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-artillery"){{
+			ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 0, 0){{
+				shots = 8;
+				shotDelay = 18f;
+			}}, new ShootSpread(){{
+				shots = 6;
+				spread = 2f;
+				shotDelay = 3f;
+			}});
+			
+			ammo(NHBullets.declineProjectile, shootPattern);
+			radius = 230;
+			reloadTime = 20 * 60;
+		}});
+		
+		raidAncientAccurate = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-ancientAccurate"){{
+			ShootPattern shootPattern = new ShootPattern(){{
+				shots = 2;
+				shotDelay = 16f;
+			}};
+			
+			velocityRnd /= 3f;
+			inaccuracy = 0.145f;
+			ammo(NHBullets.ancientArtilleryProjectile, shootPattern, NHBullets.shieldDestroyer, shootPattern);
+			radius = 80;
+			reloadTime = 15 * 60;
+		}});
+		
+		raidQuick = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-quick"){{
 			ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 40, 0){{
 				shots = 6;
 				shotDelay = 18f;
@@ -68,7 +251,7 @@ public class NHInbuiltEvents{
 				shotDelay = 3f;
 			}});
 			
-			inaccuracy = 1;
+			inaccuracy = 0;
 			
 			ammo(NHBullets.airRaidBomb, shootPattern, NHBullets.shieldDestroyer, new ShootSummon(0, 0, 80, 0){{
 				shots = 3;
@@ -178,6 +361,36 @@ public class NHInbuiltEvents{
 		
 		{
 			autoTriggers.addAll(new AutoEventTrigger(){{
+				items = OV_Pair.seqWith(NHItems.juniorProcessor, 50);
+				eventType = WorldEventType.inbuilt(new InterventionEventType("probe-inbound"){{
+					spawn(NHUnitTypes.ancientProbe, 2);
+					callSound = Sounds.none;
+					
+					drawable = minimapMarkable = false;
+					warnOnHUD = false;
+					spawnRange = 12f;
+					reloadTime = 60f;
+				}
+					@Override
+					public void warnOnTrigger(WorldEvent event){
+					}
+					
+					@Override
+					public void buildTable(WorldEvent e, Table table){
+						if(Vars.state.rules.infiniteResources)super.buildTable(e, table);
+					}
+					
+					@Override
+					public Table buildSimpleTable(WorldEvent e){
+						if(Vars.state.rules.infiniteResources)return super.buildSimpleTable(e);
+						else return new Table(t -> t.setSize(0, 0));
+					}
+				});
+				
+				minTriggerWave = 0;
+				spacingBase = 90 * 60;
+				spacingRand = 210 * 60;
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.metalOxhydrigen, 1000, NHItems.presstanium, 1000);
 				units = OV_Pair.seqWith(NHUnitTypes.gather, 5);
 				eventType = WorldEventType.inbuilt(new WeatherEvent("inbuilt-weather-sun-storm", NHWeathers.solarStorm, Pal.ammo));
@@ -195,27 +408,14 @@ public class NHInbuiltEvents{
 				spacingRand = 600 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.ancimembrane, 1200);
-				eventType = quickRaid;
+				eventType = raidQuick;
 				
 				minTriggerWave = 0;
 				spacingBase = 2400 * 60;
 				spacingRand = 800 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.seniorProcessor, 1200, NHItems.presstanium, 5000, NHItems.upgradeSort, 500);
-				eventType = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-artillery"){{
-					ShootPattern shootPattern = new ShootMulti(new ShootSummon(0, 0, 30, 0){{
-						shots = 8;
-						shotDelay = 18f;
-					}}, new ShootSpread(){{
-						shots = 6;
-						spread = 3f;
-						shotDelay = 4f;
-					}});
-					
-					ammo(NHBullets.declineProjectile, shootPattern);
-					radius = 230;
-					reloadTime = 20 * 60;
-				}});
+				eventType = raidArtillery;
 				
 				minTriggerWave = 0;
 				spacingBase = 1800 * 60;
@@ -378,12 +578,13 @@ public class NHInbuiltEvents{
 						
 						e.reload = 0;
 						
-						if(!Vars.headless && team != Vars.player.team()) warnOnTrigger(e);
 						float angle = source(e).angleTo(e);
 						
 						CSSActions.beginCreateAction();
 						
-						NHCSS_Core.core.applyMainBus(CSSActions.pack(CSSActions.pullCurtain(), CSSActions.cameraScl(Vars.renderer.minScale()), CSSActions.cameraMove(x, y), CSSActions.parallel(CSSActions.text("{TOKEN=BLINK}[lightgray]INBOUND ENEMIES"), CSSActions.text("{TOKEN=GRADIENT}[ancient]Ancient Flagships[lightgray] Approaching[]"), CSSActions.cameraSustain(35f)), CSSActions.parallel(CSSActions.delay(90f), CSSActions.runnable(() -> {
+						NHCSS_Core.core.applyMainBus(
+							CSSActions.pack(CSSActions.pullCurtain(),
+							CSSActions.cameraScl(Vars.headless ? 1 : Vars.renderer.minScale()), CSSActions.cameraMove(x, y), CSSActions.parallel(CSSActions.text("{TOKEN=BLINK}[lightgray]INBOUND ENEMIES"), CSSActions.text("{TOKEN=GRADIENT}[ancient]Ancient Flagships[lightgray] Approaching[]"), CSSActions.cameraSustain(35f)), CSSActions.parallel(CSSActions.delay(90f), CSSActions.runnable(() -> {
 							for(ObjectIntMap.Entry<UnitType> spawn : spawner.entries()){
 								NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration);
 							}
@@ -514,11 +715,11 @@ public class NHInbuiltEvents{
 				return;
 			}
 			
-			if(Vars.net.client() || Vars.state.rules.pvp || NHGroups.autoEventTrigger.size() >= autoTriggers.size)return;
+			if(Vars.net.client() || Vars.state.isEditor() || Vars.state.rules.pvp || (Vars.state.rules.infiniteResources && !NewHorizon.DEBUGGING) || NHGroups.autoEventTrigger.size() >= autoTriggers.size)return;
 			if(Vars.headless || NewHorizon.DEBUGGING){
 				Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
 					if(!Vars.state.rules.pvp) EventHandler.runEventOnce("setup-triggers", () -> {
-						if(NHGroups.autoEventTrigger.isEmpty() && !Vars.state.rules.pvp){
+						if(NHGroups.autoEventTrigger.isEmpty()){
 							autoTriggers.each(t -> {
 								t.copy().add();
 //								NewHorizon.debugLog(t.eventType.toString());
@@ -528,7 +729,7 @@ public class NHInbuiltEvents{
 				})));
 			}else if(Vars.state.isCampaign() && Vars.state.rules.sector.planet == NHPlanets.midantha){
 				Core.app.post(() -> {
-					if(Float.isNaN(NHVars.worldData.eventReloadSpeed))NHVars.worldData.eventReloadSpeed = 0.55f;
+					if(Float.isNaN(NHVars.worldData.eventReloadSpeed) || NHVars.worldData.eventReloadSpeed < 0)NHVars.worldData.eventReloadSpeed = 0.55f;
 					if(Vars.state.isCampaign() && Vars.state.rules.tags.containsKey(APPLY_KEY) && !Vars.state.rules.sector.isCaptured()){
 						if(NHGroups.autoEventTrigger.isEmpty())autoTriggers.each(t -> t.copy().add());
 					}

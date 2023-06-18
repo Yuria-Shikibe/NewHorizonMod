@@ -1,6 +1,7 @@
 package newhorizon.expand.eventsys.types;
 
 import arc.Core;
+import arc.audio.Sound;
 import arc.flabel.FLabel;
 import arc.graphics.Blending;
 import arc.graphics.Color;
@@ -58,6 +59,9 @@ public class RaidEventType extends TargetableEventType{
 	@Customizable @Parserable(value = ObjectMap.class, params = {BulletType.class, ShootPattern.class})
 	public ObjectMap<BulletType, ShootPattern> projectiles = new ObjectMap<>();
 	
+	@Customizable
+	public Sound callSound = NHSounds.alert2;
+	
 	public void ammo(Object... objects){
 		projectiles = ObjectMap.of(objects);
 	}
@@ -102,10 +106,7 @@ public class RaidEventType extends TargetableEventType{
 		return new Vec2().set(b == null ? Vec2.ZERO : b);
 	}
 	
-	@Override
-	public void draw(WorldEvent e){
-		super.draw(e);
-		
+	public void drawArrow(WorldEvent e){
 		float f = Interp.pow3Out.apply(Mathf.curve(1 - progressRatio(e), 0, 0.05f));
 		
 		float ang = source(e).angleTo(e);
@@ -120,6 +121,13 @@ public class RaidEventType extends TargetableEventType{
 		}
 		
 		Draw.blend();
+	}
+	
+	@Override
+	public void draw(WorldEvent e){
+		super.draw(e);
+		
+		drawArrow(e);
 	}
 	
 	@Override
@@ -154,8 +162,8 @@ public class RaidEventType extends TargetableEventType{
 		Tmp.v6.rnd(range(e)).add(target);
 		
 		float
-			bulletX = source.getX() + Mathf.range(range(e)),
-			bulletY = source.getY() + Mathf.range(range(e)),
+			bulletX = source.getX() + Mathf.range(range(e)) * 0.5f,
+			bulletY = source.getY() + Mathf.range(range(e)) * 0.5f,
 			aimAngle = Tmp.v6.angleTo(bulletX, bulletY) - 180,
 			//force scale life
 			lifeScl = Math.max(0, Mathf.dst(bulletX, bulletY, Tmp.v6.x, Tmp.v6.y) / bullet.range),
@@ -174,16 +182,16 @@ public class RaidEventType extends TargetableEventType{
 		if(source == null)return;
 		if(!Vars.headless && team != Vars.player.team())warnOnTrigger(e);
 		
+		Vec2 sr = new Vec2().set(source.getX(), source.getY());
 		Vec2 t = new Vec2().set(e.x, e.y);
-		
 		
 		projectiles.each((b, s) -> {
 			e.intData = 0;
 			s.shoot(e.intData, (xOffset, yOffset, angle, delay, mover) -> {
 				if(delay > 0f){
-					Time.run(delay, () -> bullet(e, team, b, source, t, mover));
+					Time.run(delay, () -> bullet(e, team, b, sr, t, mover));
 				}else{
-					bullet(e, team, b, source, t, mover);
+					bullet(e, team, b, sr, t, mover);
 				}
 			}, () -> e.intData++);
 		});
@@ -238,7 +246,7 @@ public class RaidEventType extends TargetableEventType{
 		NHUIFunc.showLabel(2.5f, t -> {
 			Color color = event.team.color;
 			
-			if(event.team != Vars.player.team())NHSounds.alert2.play();
+			if(event.team != Vars.player.team())callSound.play();
 			
 			t.background(Styles.black5);
 			
@@ -256,7 +264,7 @@ public class RaidEventType extends TargetableEventType{
 	
 	@Override
 	public void warnOnTrigger(WorldEvent event){
-		TableFunc.showToast(new TextureRegionDrawable(icon(), 0.2f), "[#" + event.team.color + "]" + Core.bundle.get("mod.ui.raid") + " []" + event.coordText(), NHSounds.alert2);
+		TableFunc.showToast(new TextureRegionDrawable(icon(), 0.2f), "[#" + event.team.color + "]" + Core.bundle.get("mod.ui.raid") + " []" + event.coordText(), callSound);
 	}
 	
 	public void triggerNet(WorldEvent event){

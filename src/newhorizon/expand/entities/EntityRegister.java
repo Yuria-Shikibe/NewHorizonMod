@@ -9,10 +9,7 @@ import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
 import newhorizon.expand.eventsys.AutoEventTrigger;
-import newhorizon.expand.units.AdaptedTimedKillUnit;
-import newhorizon.expand.units.EnergyUnit;
-import newhorizon.expand.units.NucleoidEntity;
-import newhorizon.expand.units.PesterEntity;
+import newhorizon.expand.units.*;
 import newhorizon.expand.weather.MatterStorm;
 
 public class EntityRegister{
@@ -34,6 +31,7 @@ public class EntityRegister{
 		EntityRegister.put(WorldEvent.class, WorldEvent::new);
 		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 		EntityRegister.put(NucleoidEntity.class, NucleoidEntity::new);
+		EntityRegister.put(ProbeEntity.class, ProbeEntity::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){
@@ -55,7 +53,7 @@ public class EntityRegister{
 		
 		if(NewHorizon.DEBUGGING || Vars.headless){
 			Log.info("//=============================================\\\\");
-			classIdMap.each((c, i) -> Log.info(i + "|" + c.getSimpleName()));
+			classIdMap.each((c, i) -> NewHorizon.debugLog(i + "|" + c.getSimpleName()));
 			Log.info("\\\\=============================================//");
 		}
 	}

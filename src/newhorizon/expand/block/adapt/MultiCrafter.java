@@ -8,6 +8,7 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.ui.ItemImage;
 import mindustry.ui.ReqImage;
+import mindustry.ui.Styles;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
@@ -34,14 +35,14 @@ public class MultiCrafter extends GenericCrafter{
 		Table table = new Table();
 		
 		for(ItemStack stack : exchangeMap.keys()){
-			table.table(i -> {
+			table.table(Styles.grayPanel, i -> {
 				i.add(new ReqImage(
 						new ItemImage(stack.item.uiIcon, stack.amount),
 						() -> building == null || building.items != null && building.items.has(stack.item, stack.amount)
 				)).growX().height(40f).left();
 				i.add(" -> ").growX().height(40f);
 				i.add(new ItemImage(outputItem.item.uiIcon, exchangeMap.get(stack))).growX().height(40f).right();
-			}).grow();
+			}).grow().padRight(16f);
 			if((++index % 2) == 0)table.row();
 		}
 		return table;

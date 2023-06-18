@@ -113,6 +113,8 @@ public class NHStatusEffects{
         intercepted = new NHStatusEffect("intercepted"){{
            damage = 0;
            
+           damageMultiplier = 0.5f;
+           
            effect = NHFx.square45_4_45;
            color = textureColor = Pal.accent;
         }};
@@ -130,14 +132,24 @@ public class NHStatusEffects{
             
             damageMultiplier = 0.95f;
             speedMultiplier = 0.9f;
-            reloadMultiplier = 0.9f;
+            reloadMultiplier = 0.6f;
             
             effectChance = 0.2f;
             color = Pal.heal.cpy().lerp(Pal.lancerLaser, 0.5f);
             effect = new MultiEffect(NHFx.squareRand(Pal.heal, 8f, 16f), NHFx.squareRand(Pal.lancerLaser, 8f, 16f));
         }
     
-//            @Override
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+                
+//                if(unit.controller() instanceof AIController){
+//                    AIController controller = (AIController)unit.controller();
+//                    unit.mounts[0].weapon.inaccuracy
+//                }
+            }
+    
+            //            @Override
 //            public void update(Unit unit, float time){
 //               super.update(unit, time);
 //
@@ -192,6 +204,8 @@ public class NHStatusEffects{
     
             @Override
             public void update(Unit unit, float time){
+                unit.damage(120, true);
+            
                 if(!Vars.headless && Mathf.chanceDelta(0.1)){
                     Tmp.v1.rnd(Mathf.random(unit.hitSize() / 3.5f, unit.hitSize()) * 2f);
                     NHFx.shuttleLerp.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, Tmp.v1.angle(), color, Tmp.v1.len());

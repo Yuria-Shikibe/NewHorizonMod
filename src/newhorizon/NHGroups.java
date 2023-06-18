@@ -53,7 +53,7 @@ public class NHGroups{
 	}
 	
 	public static void update(){
-		if(!Float.isNaN(NHVars.worldData.eventReloadSpeed)){
+		if(NHVars.worldData.eventReloadSpeed > 0){
 			AutoEventTrigger.timeScale = NHVars.worldData.eventReloadSpeed;
 		}else{
 			AutoEventTrigger.timeScale = AutoEventTrigger.getSettingScale();

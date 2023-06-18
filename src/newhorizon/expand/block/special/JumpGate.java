@@ -252,15 +252,14 @@ public class JumpGate extends Block {
     public void setStats() {
         super.setStats();
         stats.add(Stat.powerUse, basePowerDraw * 60F, StatUnit.powerSecond);
-        if(adaptBase != null)stats.add(Stat.abilities, t -> {
-            t.row().add(Core.bundle.get("toolmode.replace") + ":").left().pad(OFFSET).row();
-            t.image(adaptBase.fullIcon).size(LEN).padLeft(OFFSET).row();
-        });
+     
         stats.add(Stat.output, (t) -> {
             t.row().add(Core.bundle.get("editor.spawn") + ":").left().pad(OFFSET).row();
             for(Integer i : getSortedKeys()) {
                 UnitSet set = calls.get(i);
-                t.add(new NHUIFunc.UnitSetTable(set, table -> table.button(Icon.infoCircle, Styles.cleari, () -> showInfo(set, new Label("[accent]Caution[gray]: Summon needs building."), null)).size(LEN))).fill().row();
+                t.add(new NHUIFunc.UnitSetTable(set, table -> {
+                    table.button(Icon.infoCircle, Styles.clearNonei, () -> showInfo(set, new Label("[]"), null)).size(LEN);
+                })).fill().row();
             }
         });
     }
@@ -269,8 +268,11 @@ public class JumpGate extends Block {
         BaseDialog dialogIn = new BaseDialog("More Info");
         dialogIn.addCloseListener();
         dialogIn.cont.margin(15f);
+        if(!mobile){
+            dialogIn.cont.marginLeft(220f).marginRight(220f);
+        }
         dialogIn.cont.pane(inner -> {
-            inner.button(new TextureRegionDrawable(set.type.fullIcon), Styles.cleari, () -> new ContentInfoDialog().show(set.type)).growX().fillY().center().row();
+            inner.button(new TextureRegionDrawable(set.type.fullIcon), Styles.clearNonei, () -> new ContentInfoDialog().show(set.type)).growX().fillY().center().row();
             inner.image().growX().height(OFFSET / 4).pad(OFFSET / 4f).color(Pal.accent).row();
             inner.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().padLeft(OFFSET).row();
             inner.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFunc.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).left().padLeft(OFFSET).row();
@@ -456,8 +458,8 @@ public class JumpGate extends Block {
                         UnitSet set = calls.get(hashcode);
                         callTable.table(Tex.pane, info -> {
                             info.add(new NHUIFunc.UnitSetTable(set, table2 -> {
-                                table2.button(Icon.infoCircle, Styles.cleari, () -> showInfo(set, new Label(() -> ("[lightgray]Construction Available?: " + TableFunc.judge(canSpawn(set, false) && hasConsume(set, spawnNum)))), realItems())).size(LEN);
-                                table2.button(Icon.add, Styles.cleari, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
+                                table2.button(Icon.infoCircle, Styles.clearNonei, () -> showInfo(set, new Label(() -> ("[lightgray]Construction Available?: " + TableFunc.judge(canSpawn(set, false) && hasConsume(set, spawnNum)))), realItems())).size(LEN);
+                                table2.button(Icon.add, Styles.clearNonei, () -> configure(IntSeq.with(0, hashcode, spawnNum))).size(LEN).disabled(b -> (team.data().countType(set.type) + spawnNum > Units.getCap(team)) || jammed || isCalling() || !hasConsume(set, spawnNum) || cooling);
                             })).fillY().growX().row();
                             if(!hideSet(set.type)){
                                 Bar unitCurrent = new Bar(() -> Core.bundle.format("bar.unitcap", Fonts.getUnicodeStr(set.type.name), team.data().countType(set.type), Units.getCap(team)), () -> canSpawn(set, false) ? Pal.accent : Units.canCreate(team, set.type) ? Pal.ammo : Pal.redderDust, () -> (float)team.data().countType(set.type) / Units.getCap(team));
