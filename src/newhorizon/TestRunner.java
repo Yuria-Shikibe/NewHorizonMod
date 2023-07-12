@@ -2,11 +2,11 @@ package newhorizon;
 
 public class TestRunner{
 	public static void main(String[] args){
-		int w = 960, h = 1760;
+		int w = 240, h = 240;
 		int cx = w / 2, cy = h / 2;
 		
-		int inputX[] = {415, 254, 625, 202, 293, 627};
-		int inputY[] = {842, 670, 963, 1428, 1517, 1545};
+		int[] inputX = {72, 149, 163, 160, 99, 140};
+		int[] inputY = {164, 176, 133, 205, 207, 207};
 		
 		for(int i = 0; i < inputX.length; i++){
 			int py = h - inputY[i];

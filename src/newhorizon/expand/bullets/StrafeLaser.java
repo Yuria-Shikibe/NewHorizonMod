@@ -8,10 +8,15 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
+import mindustry.entities.UnitSorts;
+import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
+import mindustry.gen.Building;
 import mindustry.gen.Bullet;
+import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -173,7 +178,12 @@ public class StrafeLaser extends BulletType{
 		
 		if(dataRot && b.owner instanceof Unit){
 			Unit u = (Unit)b.owner;
-			b.fdata = Angles.moveToward(b.fdata, b.angleTo(u.aimX, u.aimY), 1f);
+			if(Vars.net.active()){
+				if(u.isPlayer()){
+					Player player = (Player)u.controller();
+					b.fdata = Angles.moveToward(b.fdata, b.angleTo(player.mouseX, player.mouseY), 1f);
+				}else b.fdata = Angles.moveToward(b.fdata, b.angleTo(Units.bestTarget(b.team, b.x, b.y, range, un -> un.type.canAttack, Building::isValid, UnitSorts.strongest)), 1f);
+			}else b.fdata = Angles.moveToward(b.fdata, b.angleTo(u.aimX, u.aimY), 1f);
 		}
 		
 		if(hitShake > 0){

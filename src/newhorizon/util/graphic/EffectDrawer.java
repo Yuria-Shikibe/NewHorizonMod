@@ -110,7 +110,7 @@ public class EffectDrawer implements Disposable{
 			}
 		});
 		
-		register(NHStatusEffects.ultFireBurn, 20, new EffectRenderer(NHShaders.scannerDown){
+		register(NHStatusEffects.ultFireBurn, 20, new EffectRenderer(){
 			private final Color from = NHColor.lightSkyFront, to = NHColor.deeperBlue;
 			
 			@Override
@@ -177,7 +177,7 @@ public class EffectDrawer implements Disposable{
 					Tmp.v1.set(vec3.x, vec3.y).sub(Core.camera.position).scl(Vars.renderer.getDisplayScale() / 3f);
 					float fin = vec3.z / life, fout = 1f - fin;
 					
-					Draw.alpha(Mathf.curve(fin, 0, 0.75f) * f);
+					Draw.alpha(Mathf.curve(fin, 0, 0.55f) * f);
 					Lines.stroke(stroke * fout * f);
 					Draw.tint(from, to, fout);
 					

@@ -1,4 +1,4 @@
-package newhorizon.expand.units;
+package newhorizon.expand.units.ai;
 
 import arc.math.geom.Position;
 import arc.util.Time;
@@ -8,6 +8,7 @@ import mindustry.entities.Units;
 import mindustry.gen.Building;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
+import newhorizon.expand.units.ProbeEntity;
 
 public class ProbeAI extends SniperAI{
 	public float nullReload = 0;

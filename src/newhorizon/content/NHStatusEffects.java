@@ -113,8 +113,9 @@ public class NHStatusEffects{
         intercepted = new NHStatusEffect("intercepted"){{
            damage = 0;
            
-           damageMultiplier = 0.5f;
+           speedMultiplier = 0.55f;
            
+           effectChance = 0.05f;
            effect = NHFx.square45_4_45;
            color = textureColor = Pal.accent;
         }};
@@ -177,8 +178,9 @@ public class NHStatusEffects{
         
         phased = new NHStatusEffect("phased"){{
             damage = -10f;
-            speedMultiplier = 1.25f;
-            damageMultiplier = 1.15f;
+            speedMultiplier = 1.5f;
+            damageMultiplier = 1.25f;
+            healthMultiplier = 1.5f;
     
             textureColor = color = NHColor.lightSkyBack;
             

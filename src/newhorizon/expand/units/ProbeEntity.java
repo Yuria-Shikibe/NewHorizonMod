@@ -7,7 +7,6 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.QuadTree;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
@@ -36,9 +35,9 @@ import newhorizon.util.graphic.DrawFunc;
 
 public class ProbeEntity extends UnitEntity{
 	public ObjectSet<Building> scanned = new ObjectSet<>();
+	public int scannedSize = 0;
 	
 	public Team targetTeam;
-	public QuadTree<Building> targetTree;
 	
 	public float scanRange = 240;
 	public final float SCAN_WARMUP_SPEED = 0.0075f;
@@ -60,7 +59,7 @@ public class ProbeEntity extends UnitEntity{
 	
 	public float lastSize = 0;
 	
-	public int leastScan = 12;
+	public int leastScan = 14;
 	public int minComplexSize = 16;
 	
 	public float scanSourceX = 0.5f, scanSourceY = 3;
@@ -92,7 +91,6 @@ public class ProbeEntity extends UnitEntity{
 		
 		scanRange = type.maxRange + 160f;
 		targetTeam = Vars.state.rules.defaultTeam;
-		targetTree = Vars.state.teams.get(targetTeam).buildingTree;
 	}
 	
 	@Override
@@ -119,9 +117,9 @@ public class ProbeEntity extends UnitEntity{
 	
 	public void updateJudging(){
 		if(timer.get(80f)){
-			if(scanned.size >= leastScan){
+			if(scannedSize >= leastScan){
 				EventHandler.get().post(() -> {
-					Seq<BuildingConcentration.Complex> complexes = BuildingConcentration.getComplexes(scanned.size >= leastScan * 2 ? minComplexSize / 2 : minComplexSize, scanned.toSeq());
+					Seq<BuildingConcentration.Complex> complexes = BuildingConcentration.getComplexes(scannedSize >= leastScan * 2 ? minComplexSize / 2 : minComplexSize, scanned.toSeq());
 					if(complexes.any()){
 						EventHandler.get().getSort().sort(complexes);
 						BuildingConcentration.Complex complex = complexes.first();
@@ -151,7 +149,7 @@ public class ProbeEntity extends UnitEntity{
 	public void updateScan(){
 		if(team == targetTeam)return;
 		
-		if(timer.get(1, 40))scanTarget = Vars.indexer.findTile(targetTeam, x, y, scanRange, b -> b.block().hasPower && !scanned.contains(b));
+		if(timer.get(1, 45))scanTarget = Vars.indexer.findTile(targetTeam, x, y, scanRange, b -> b.block().hasPower && !scanned.contains(b));
 		
 		scanning = scanTarget != null && !scanOver();
 		
@@ -167,11 +165,14 @@ public class ProbeEntity extends UnitEntity{
 			lastSize = Mathf.lerpDelta(lastSize, scanTarget.block.size * 4 * Mathf.sqrt2, scanWarmup * SCAN_WARMUP_SPEED);
 			scanPos.lerp(scanTarget, SCAN_SHIFT_SPEED * Time.delta);
 			
+			
+			
 			if(scanTarget.within(scanPos, lastSize / 1.5f))scanProgress = Mathf.approachDelta(scanProgress, 1.005f, SCAN_SPEED * scanSpeedScl());
 			
 			if(scanProgress >= 1){
 				scanProgress = 0;
 				scanned.add(scanTarget);
+				scannedSize += scanTarget.block.size;
 			}
 		}else{
 			scanSound.update(x, y, false, scanWarmup);

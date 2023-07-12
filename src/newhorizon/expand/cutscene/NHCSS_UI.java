@@ -162,7 +162,8 @@ public class NHCSS_UI{
 		
 		if(Vars.mobile){
 			textTable.update(() -> {
-				textTable.setSize(Scl.scl(width * 0.65f), Scl.scl(height * 0.33f));
+				textTable.setHeight(height * 0.33f);
+				textTable.setWidth(width);
 				textTable.setPosition(0, 0);
 			});
 		}else textTable.update(() -> {
@@ -295,6 +296,7 @@ public class NHCSS_UI{
 	}
 	
 	public static void withdrawCurtain(){
+		if(Vars.headless)return;
 		duringCurtain = false;
 		Vars.ui.hudfrag.shown = fallbackShowUI;
 	}
@@ -507,6 +509,8 @@ public class NHCSS_UI{
 		@Override
 		public void draw(){
 			super.draw();
+			
+			if(Vars.headless)return;
 			
 			Vec2 screenVec = tmpVec.set(Core.camera.project(markPoint.getX(), markPoint.getY()));
 			

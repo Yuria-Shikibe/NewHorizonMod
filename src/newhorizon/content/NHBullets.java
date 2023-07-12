@@ -1196,7 +1196,8 @@ public class NHBullets{
 			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
 			smokeEffect = Fx.shootBigSmoke;
 			
-			despawnEffect = hitEffect = new OptionalMultiEffect(NHFx.hitSparkLarge, NHFx.square(backColor, 85f, 5, 52, 5), NHFx.hugeSmokeGray);
+			despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
+			hitEffect = NHFx.hitSparkLarge;
 			
 			ammoMultiplier = 4;
 		}};

@@ -2,10 +2,17 @@ package newhorizon;
 
 import arc.Core;
 import arc.Events;
+import arc.math.Mathf;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Time;
 import mindustry.Vars;
+import mindustry.content.Planets;
 import mindustry.core.GameState;
+import mindustry.core.Logic;
 import mindustry.game.EventType;
+import mindustry.game.Team;
+import mindustry.gen.Groups;
 import mindustry.net.Net;
 import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.expand.eventsys.types.WorldEventObjective;
@@ -70,11 +77,30 @@ public class NHRegister{
 				afterLoad.each(Runnable::run);
 			}
 			
+			
+			//Fuck erekir on the server
+			if(Vars.headless){
+				if(Vars.state.rules.hiddenBuildItems.equals(ObjectSet.with(Planets.erekir.hiddenItems))){
+					Groups.player.each(p -> p.sendMessage("No Pure Erekir On The Server!!!"));
+					
+					Groups.build.each(b -> Time.run(Mathf.random(60, 600), b::kill));
+					Groups.unit.each(b -> Time.run(Mathf.random(60, 600), b::kill));
+					Time.run(600f, () -> {
+						Logic.updateGameOver(Team.derelict);
+//						Logic.gameOver(Team.derelict);
+					});
+					
+					Vars.maps.removeMap(Vars.state.map);
+				}
+			}
+			
 			afterLoad.clear();
 			
 			if(!Vars.headless && Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
-				Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
-				Vars.player.con.close();
+				Core.app.post(() -> {
+					Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
+					Vars.player.con.close();
+				});
 			}
 			
 			Core.app.post(() -> {

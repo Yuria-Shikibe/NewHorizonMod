@@ -182,6 +182,15 @@ public class NHOverride{
 						effect = StatusEffects.boss;
 					}},
 					
+					new SpawnGroup(NHUnitTypes.macrophage){{
+						begin = 75;
+						unitAmount = 2;
+						unitScaling = 0.5f;
+						spacing = 5;
+						shieldScaling = 500f;
+						shields = 1200;
+						effect = NHStatusEffects.quantization;
+					}},
 					
 					new SpawnGroup(NHUnitTypes.laugra){{
 						begin = 105;
@@ -542,7 +551,7 @@ public class NHOverride{
 				{NHUnitTypes.sharp, NHUnitTypes.assaulter, NHUnitTypes.branch, NHUnitTypes.longinus, NHUnitTypes.guardian},
 				{risso, minke, NHUnitTypes.ghost, NHUnitTypes.zarkov, NHUnitTypes.declining},
 				{risso, oxynoe, cyerce, aegires, navanax}, //retusa intentionally left out as it cannot damage the core properly
-				{NHUnitTypes.branch, zenith, rand.chance(0.5) ? quad : antumbra, rand.chance(0.5) ? NHUnitTypes.longinus : NHUnitTypes.laugra, rand.chance(0.5) ? NHUnitTypes.anvil : NHUnitTypes.hurricane}
+				{NHUnitTypes.branch, zenith, rand.chance(0.5) ? NHUnitTypes.naxos : NHUnitTypes.macrophage, rand.chance(0.5) ? NHUnitTypes.longinus : NHUnitTypes.laugra, rand.chance(0.5) ? NHUnitTypes.anvil : NHUnitTypes.hurricane}
 		};
 		
 		if(airOnly){

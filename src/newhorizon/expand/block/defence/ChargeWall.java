@@ -13,7 +13,6 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.SapBulletType;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Posc;
@@ -27,6 +26,7 @@ import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
+import newhorizon.expand.bullets.AdaptedSapBulletType;
 import newhorizon.util.feature.PosLightning;
 
 import static mindustry.Vars.tilesize;
@@ -60,7 +60,7 @@ public class ChargeWall extends Block{
 		shootEffect = NHFx.circleSplash,
 		onDestroyedEffect = Fx.none;
 	
-	public BulletType releaseType = new SapBulletType() {
+	public BulletType releaseType = new AdaptedSapBulletType() {
 		{
 			damage = shootDamage;
 			status = StatusEffects.none;

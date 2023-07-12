@@ -45,6 +45,10 @@ public class NHMath{
 		return asinTable[index((float)Math.sqrt(1 - cos * cos))];
 	}
 	
+	public static float asinDeg(float sin){
+		return asinTable[index(sin)] * radiansToDegrees;
+	}
+	
 	public static float asinRad(float sin){
 		return asinTable[index(sin)];
 	}

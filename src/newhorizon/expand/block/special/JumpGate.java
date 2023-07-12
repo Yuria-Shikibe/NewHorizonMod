@@ -26,6 +26,7 @@ import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.core.World;
 import mindustry.entities.Units;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
@@ -147,6 +148,19 @@ public class JumpGate extends Block {
     @Override
     public boolean canReplace(Block other){
         return super.canReplace(other) || (other instanceof JumpGate && size > other.size);
+    }
+    
+    public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        TextureRegion reg = getPlanRegion(plan, list);
+        Draw.rect(reg, plan.drawx(), plan.drawy(), !rotate || !rotateDraw ? 0 : plan.rotation * 90);
+        
+        if(plan.worldContext && player != null && teamRegion != null && teamRegion.found()){
+            if(teamRegions[player.team().id] == teamRegion) Draw.color(player.team().color);
+            Draw.rect(teamRegions[player.team().id], plan.drawx(), plan.drawy());
+            Draw.color();
+        }
+        
+        drawPlanConfig(plan, list);
     }
     
     /*

@@ -13,12 +13,15 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.struct.EnumSet;
+import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -29,11 +32,13 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.StatusEffect;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
@@ -52,7 +57,7 @@ public class HyperGenerator extends PowerGenerator{
 	public TextureRegion[] plasmaRegions;
 	public float warmupSpeed = 0.0015f;
 	public float disabledSpeed = 0.015f;
-	public float itemDuration = 120f;
+	public float itemDuration = 360f;
 	
 	public float structureLim = 0.3f;
 	public float beginDamageScl = 0.01f;
@@ -66,6 +71,10 @@ public class HyperGenerator extends PowerGenerator{
 	public float lightningDamage = 120f;
 	public int subNum = 1;
 	public int subNumRand = 1;
+	
+	public Seq<StatusEffect> toApplyStatus = new Seq<>();
+	public float statusRange = 480;
+	public float statusDuration = 15 * 60;
 	
 	public Cons<HyperGeneratorBuild> explodeAction = entity -> {};
 	public Cons<Position> explodeSub = entity -> {};
@@ -123,6 +132,10 @@ public class HyperGenerator extends PowerGenerator{
 		if (this.hasItems) {
 			this.stats.add(Stat.productionTime, this.itemDuration / 60.0F, StatUnit.seconds);
 		}
+		
+		stats.add(Stat.abilities, StatValues.statusEffects(toApplyStatus));
+		stats.add(Stat.abilities, statusRange / tilesize, StatUnit.blocks);
+		stats.add(Stat.abilities, statusDuration / 60f, StatUnit.seconds);
 	}
 	
 	@Override
@@ -269,8 +282,7 @@ public class HyperGenerator extends PowerGenerator{
 		public void updateTile(){
 			super.updateTile();
 			if(efficiency > 0){
-				if (this.timer(0, itemDuration / timeScale)) {
-					this.consume();
+				if (this.timer(0, itemDuration / edelta())) {
 					if(warmup > destroyedExplodeLimit){
 						workSound.at(this, Mathf.random(0.9f, 1.1f));
 						NHFx.hyperInstall.at(x, y, effectCircleSize / 1.5f * (warmup + 0.3f), effectColor);
@@ -278,7 +290,21 @@ public class HyperGenerator extends PowerGenerator{
 						if(Mathf.chanceDelta(warmup / 2))PosLightning.createRandomRange(Team.derelict, this, lightningRange, effectColor, true, lightningDamage * Math.max(Mathf.curve(1 - health / maxHealth(), structureLim, 1f) + beginDamageScl, 0.001f), lightningLen + Mathf.random(lightningLenRand), PosLightning.WIDTH, subNum + Mathf.random(subNumRand),updateLightning + Mathf.random(updateLightningRand), point -> {
 							NHFx.lightningHitLarge.at(point.getX(), point.getY(), effectColor);
 						});
+						
+						Log.info(optionalEfficiency);
+						if(optionalEfficiency > 0){
+							Units.nearby(team, x, y, statusRange, u -> {
+								Fx.chainLightning.at(x, y, 0, effectColor, u);
+								toApplyStatus.each(s -> {
+									u.apply(s, statusDuration);
+								});
+								
+								u.healFract(2.5f);
+							});
+						}
 					}
+					
+					this.consume();
 				}
 				progress += efficiency() * Time.delta;
 				if(Mathf.equal(warmup, 1.0F, 0.0015F)){
@@ -418,6 +444,12 @@ public class HyperGenerator extends PowerGenerator{
 		@Override
 		public void drawLight(){
 			Drawf.light(this.x, this.y, (110.0F + Mathf.absin(5.0F, 5.0F)) * this.warmup, effectColor, 0.8F * this.warmup);
+		}
+		
+		@Override
+		public void drawSelect(){
+			super.drawSelect();
+			Drawf.dashCircle(x, y, statusRange, team.color);
 		}
 		
 		@Override

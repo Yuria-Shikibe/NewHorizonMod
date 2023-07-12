@@ -90,8 +90,7 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHUnitTypes.ancientProbe){{important = true;}},
-				new FeatureLog(NHUnitTypes.restrictionEnzyme)
+				new FeatureLog(NHUnitTypes.macrophage)
 		};
 	}
 	
@@ -486,6 +485,16 @@ public class NewHorizon extends Mod{
 			}
 		});
 		
+		handler.<Player>register("killBelow", "<health>", "Trigger Event (Admin Only)", (args, player) -> {
+			if (!player.admin()) {
+				player.sendMessage("[VIOLET]Admin Only");
+			} else if (args.length == 0 || args[0].isEmpty()) {
+				Groups.unit.each(b -> b.type.health < 800, b -> Time.run(Mathf.random(60, 300), b::kill));
+			} else {
+				Groups.unit.each(b -> b.type.health < Integer.parseInt(args[0]), b -> Time.run(Mathf.random(60, 300), b::kill));
+			}
+		});
+		
 		handler.<Player>register("killteam", "<id>", "Destroy The Team (Admin Only)", (args, player) -> {
 			Cons<Team> destroyer = t -> {
 				Groups.build.each(b -> b.team == t, b -> Time.run(Mathf.random(60, 300), b::kill));
@@ -543,7 +552,7 @@ public class NewHorizon extends Mod{
 			}
 		});
 		
-		handler.<Player>register("getscale", "<Scale>", "Check Auto Event Trigger Time Scale", (args, player) -> {
+		handler.<Player>register("getscale", "Check Auto Event Trigger Time Scale", (args, player) -> {
 			player.sendMessage("Scale: " + AutoEventTrigger.timeScale);
 		});
 		

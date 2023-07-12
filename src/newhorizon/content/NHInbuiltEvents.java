@@ -64,13 +64,14 @@ public class NHInbuiltEvents{
 	public static final Seq<AutoEventTrigger> autoTriggers = new Seq<>(), campaignTriggers = new Seq<>();
 	
 	public static ItemStack[][] difficultCheck = {
-		ItemStack.with(NHItems.ancimembrane, 3000, NHItems.darkEnergy, 1500), //8
-		ItemStack.with(NHItems.upgradeSort, 100), //7
-		ItemStack.with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 100), //6
-		ItemStack.with(Items.surgeAlloy, 150), //5
-		ItemStack.with(NHItems.multipleSteel, 200, Items.plastanium, 200), //4
-		ItemStack.with(NHItems.presstanium, 500, NHItems.juniorProcessor, 300), //3
-		ItemStack.with(Items.silicon, 500, Items.thorium, 500), //2
+		ItemStack.with(NHItems.ancimembrane, 8000, NHItems.darkEnergy, 2500), //9
+		ItemStack.with(NHItems.ancimembrane, 2500, NHItems.darkEnergy, 1500), //8
+		ItemStack.with(NHItems.upgradeSort, 2500), //7
+		ItemStack.with(NHItems.irayrondPanel, 800, NHItems.seniorProcessor, 600, Items.surgeAlloy, 1200), //6
+		ItemStack.with(Items.surgeAlloy, 2500, NHItems.multipleSteel, 3200, Items.plastanium, 2400), //5
+		ItemStack.with(NHItems.multipleSteel, 3200, Items.plastanium, 2400, NHItems.presstanium, 3000, NHItems.juniorProcessor, 2500), //4
+		ItemStack.with(NHItems.presstanium, 3000, NHItems.juniorProcessor, 2500), //3
+		ItemStack.with(Items.silicon, 3000, Items.thorium, 2000), //2
 		ItemStack.with(Items.copper, 5), //1
 	};
 	
@@ -133,11 +134,11 @@ public class NHInbuiltEvents{
 		
 		raidDifficult_1 = WorldEventType.inbuilt(new RaidEventType("inbuilt-raid-difficult-1"){{
 			ShootPattern shootPattern = new ShootPattern(){{
-				shots = 30;
+				shots = 36;
 				shotDelay = 4f;
 			}};
 			
-			inaccuracy = 0.145f;
+			inaccuracy = 0;
 			ammo(copyAnd(NHBullets.synchroThermoPst, b -> {
 				b.collides = b.collidesAir = false;
 				b.scaleLife = true;
@@ -146,7 +147,7 @@ public class NHInbuiltEvents{
 				b.lightning += 1;
 				b.lightningLength += 4;
 			}), shootPattern);
-			radius = 120;
+			radius = 80;
 			reloadTime = 15 * 60;
 		}});
 		
@@ -175,7 +176,7 @@ public class NHInbuiltEvents{
 				b.splashDamage += b.damage;
 				b.splashDamageRadius = 56f;
 			}), new ShootPattern(){{
-				shots = 32;
+				shots = 24;
 				shotDelay = 6f;
 			}});
 			radius = 80;
@@ -192,8 +193,8 @@ public class NHInbuiltEvents{
 				b.splashDamageRadius = 60;
 				b.despawnEffect = NHFx.hitSparkHuge;
 			}), new ShootPattern(){{
-				shots = 28;
-				shotDelay = 8f;
+				shots = 16;
+				shotDelay = 12f;
 			}});
 			radius = 80;
 			inaccuracy = 0;
@@ -361,15 +362,15 @@ public class NHInbuiltEvents{
 		
 		{
 			autoTriggers.addAll(new AutoEventTrigger(){{
-				items = OV_Pair.seqWith(NHItems.juniorProcessor, 50);
+				items = OV_Pair.seqWith(NHItems.juniorProcessor, 800);
 				eventType = WorldEventType.inbuilt(new InterventionEventType("probe-inbound"){{
-					spawn(NHUnitTypes.ancientProbe, 2);
+					spawn(NHUnitTypes.ancientProbe, 1);
 					callSound = Sounds.none;
 					
 					drawable = minimapMarkable = false;
 					warnOnHUD = false;
 					spawnRange = 12f;
-					reloadTime = 60f;
+					reloadTime = 30f;
 				}
 					@Override
 					public void warnOnTrigger(WorldEvent event){
@@ -388,8 +389,8 @@ public class NHInbuiltEvents{
 				});
 				
 				minTriggerWave = 0;
-				spacingBase = 90 * 60;
-				spacingRand = 210 * 60;
+				spacingBase = 120 * 60;
+				spacingRand = 240 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.metalOxhydrigen, 1000, NHItems.presstanium, 1000);
 				units = OV_Pair.seqWith(NHUnitTypes.gather, 5);
@@ -400,7 +401,7 @@ public class NHInbuiltEvents{
 				spacingRand = 600 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.seniorProcessor, 1000, NHItems.irayrondPanel, 1000);
-				buildings = OV_Pair.seqWith(NHBlocks.jumpGate, 1);
+				buildings = OV_Pair.seqWith(NHBlocks.jumpGateJunior, 1);
 				eventType = WorldEventType.inbuilt(new WeatherEvent("inbuilt-weather-quantum-storm", NHWeathers.quantumStorm, NHColor.darkEnrColor));
 				
 				minTriggerWave = 0;
@@ -455,7 +456,7 @@ public class NHInbuiltEvents{
 				}});
 				
 				minTriggerWave = 0;
-				spacingBase = 2000 * 60;
+				spacingBase = 1800 * 60;
 				spacingRand = 600 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.irayrondPanel, 1500, NHItems.presstanium, 3000, Items.phaseFabric, 100);
@@ -497,16 +498,23 @@ public class NHInbuiltEvents{
 				spacingBase = 2400 * 60;
 				spacingRand = 120 * 60;
 			}}, new AutoEventTrigger(){{
-				items = OV_Pair.seqWith(NHItems.setonAlloy, 1200, NHItems.multipleSteel, 3000);
+				items = OV_Pair.seqWith(NHItems.multipleSteel, 1500, NHItems.seniorProcessor, 800);
+				eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-gunship"){{
+					spawn(NHUnitTypes.macrophage, 4);
+					reloadTime = 30 * 60;
+				}});
+				
+				spacingBase = 900 * 60;
+				spacingRand = 600 * 60;
+			}}, new AutoEventTrigger(){{
 				buildings = OV_Pair.seqWith(NHBlocks.jumpGate, 1);
 				eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-destruction"){{
 					spawn(NHUnitTypes.destruction, 3, NHUnitTypes.naxos, 2);
 					reloadTime = 30 * 60;
 				}});
 				
-				spacingBase = 2400 * 60;
-				spacingRand = 600 * 60;
-				disposable = true;
+				spacingBase = 1500 * 60;
+				spacingRand = 300 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.darkEnergy, 1000);
 				buildings = OV_Pair.seqWith(NHBlocks.eternity, 5);

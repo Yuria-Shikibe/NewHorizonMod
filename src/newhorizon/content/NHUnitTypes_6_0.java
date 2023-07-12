@@ -48,7 +48,7 @@
 //import newhorizon.expand.bullets.TrailFadeBulletType;
 //import newhorizon.expand.entities.UltFire;
 //import newhorizon.expand.units.EnergyUnit;
-//import newhorizon.expand.units.SniperAI;
+//import newhorizon.expand.units.ai.SniperAI;
 //import newhorizon.util.feature.PosLightning;
 //import newhorizon.util.func.NHFunc;
 //import newhorizon.util.func.NHInterp;

@@ -135,7 +135,7 @@ public class BuildingConcentration{
 		}
 		
 		public Complex(Building source){
-			this(64, source);
+			this(128, source);
 		}
 		
 		public void initData(){

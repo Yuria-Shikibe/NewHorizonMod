@@ -15,7 +15,10 @@ import arc.util.pooling.Pool;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.ai.Astar;
-import mindustry.content.*;
+import mindustry.content.Blocks;
+import mindustry.content.Liquids;
+import mindustry.content.Loadouts;
+import mindustry.content.Planets;
 import mindustry.game.Rules;
 import mindustry.game.Schematics;
 import mindustry.game.Team;
@@ -81,7 +84,7 @@ public class NHPlanets{
 				r.hideBannedBlocks = true;
 				r.waveSpacing = 80 * Time.toSeconds;
 				r.initialWaveSpacing = 8f * Time.toMinutes;
-				if(r.sector.preset == null)r.winWave = 150;
+				if(r.sector != null && r.sector.preset == null)r.winWave = 150;
 				r.bannedUnits.add(NHUnitTypes.guardian);
 				r.coreDestroyClear = true;
 				
@@ -191,7 +194,7 @@ public class NHPlanets{
 			
 			defaultEnv = Env.terrestrial;
 			
-			iconColor = Items.surgeAlloy.color;
+			iconColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.23f);
 			
 			landCloudColor = Color.valueOf("3c1b8f");
 			startSector = 0;
@@ -602,8 +605,8 @@ public class NHPlanets{
 			state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
 			state.rules.spawns = NHOverride.generate(1, new Rand(sector.id), false, false, false);
 			state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
-			if(rawTemp(sector.tile.v) < 0.75f){
-				state.rules.bannedBlocks.addAll(Vars.content.blocks().filter(b -> b instanceof LaunchPad));
+			if(rawTemp(sector.tile.v) < 0.65f){
+				state.rules.bannedBlocks.addAll(Vars.content.blocks().copy().filter(b -> b instanceof LaunchPad));
 			}
 		}
 		

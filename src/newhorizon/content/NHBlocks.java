@@ -208,7 +208,7 @@ public class NHBlocks{
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
 			blendGroup = this;
 			
-			attributes.set(Attribute.heat, 1.25f);
+			attributes.set(Attribute.heat, 0.25f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -231,7 +231,7 @@ public class NHBlocks{
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
 			blendGroup = this;
 			
-			attributes.set(Attribute.heat, 1.5f);
+			attributes.set(Attribute.heat, 0.5f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -255,7 +255,7 @@ public class NHBlocks{
 			
 			wall = NHBlocks.metalWall;
 			
-			attributes.set(Attribute.heat, 1.5f);
+			attributes.set(Attribute.heat, 0.5f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -3299,7 +3299,8 @@ public class NHBlocks{
 //			//NHTechTree.add(Blocks.titaniumConveyor, this);
 			speed = 0.12f;
 			displayedSpeed = 18f;
-			health = 120;
+			health = 240;
+			armor = 3;
 			junctionReplacement = multiJunction;
 		}};
 		
@@ -3308,7 +3309,8 @@ public class NHBlocks{
 //			//NHTechTree.add(Blocks.armoredConveyor, this);
 			speed = 0.12f;
 			displayedSpeed = 18f;
-			health =  320;
+			health = 560;
+			armor = 5;
 			junctionReplacement = multiJunction;
 		}};
 
@@ -3316,7 +3318,8 @@ public class NHBlocks{
 			requirements(Category.distribution,with(NHItems.zeta, 2,NHItems.irayrondPanel, 2, NHItems.juniorProcessor, 1));
 //			//NHTechTree.add(Blocks.plastaniumConveyor, this);
 			speed = 0.125f;
-			health = 320;
+			health = 720;
+			armor = 6;
 			itemCapacity = 20;
 			recharge = 1f;
 			
@@ -3336,7 +3339,10 @@ public class NHBlocks{
 			itemDuration = 180f;
 			ambientSound = Sounds.pulse;
 			ambientSoundVolume = 0.1F;
+			toApplyStatus.add(NHStatusEffects.phased, StatusEffects.overclock);
+			
 			consumePower(50.0F);
+			consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 4)).optional(true, true);
 			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
 			consumeLiquid(NHLiquids.zetaFluid, 0.25F);
 			requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
@@ -3598,13 +3604,16 @@ public class NHBlocks{
 					with(Items.copper, 120, NHItems.multipleSteel, 50, NHItems.presstanium, 60, NHItems.juniorProcessor, 45)
 				),
 				new UnitSet(NHUnitTypes.tarlidor, new byte[]{NHUnitTypes.GROUND_LINE_1, 4}, 130 * 60f,
-						ItemStack.with(Items.plastanium, 300, NHItems.juniorProcessor, 250, NHItems.presstanium, 500, NHItems.zeta, 250)
+					ItemStack.with(Items.plastanium, 300, NHItems.juniorProcessor, 250, NHItems.presstanium, 500, NHItems.zeta, 250)
 				),
 				new UnitSet(NHUnitTypes.ghost, new byte[]{NHUnitTypes.NAVY_LINE_1, 3}, 60 * 60f,
-						ItemStack.with(NHItems.presstanium, 60, NHItems.multipleSteel, 50, NHItems.juniorProcessor, 50)
+					ItemStack.with(NHItems.presstanium, 60, NHItems.multipleSteel, 50, NHItems.juniorProcessor, 50)
 				),
 				new UnitSet(NHUnitTypes.warper, new byte[]{NHUnitTypes.AIR_LINE_1, 3}, 65 * 60f,
 					with(Items.thorium, 90, Items.graphite, 50, NHItems.multipleSteel, 60, NHItems.juniorProcessor, 50)
+				),
+				new UnitSet(NHUnitTypes.macrophage, new byte[]{NHUnitTypes.ANCIENT_AIR, 4}, 180 * 60f,
+					with(Items.phaseFabric, 80, NHItems.irayrondPanel, 220, NHItems.presstanium, 160, NHItems.seniorProcessor, 80)
 				),
 				new UnitSet(NHUnitTypes.zarkov, new byte[]{NHUnitTypes.NAVY_LINE_1, 4}, 140 * 60f,
 						ItemStack.with(NHItems.multipleSteel, 400, NHItems.juniorProcessor, 300, NHItems.presstanium, 400, NHItems.metalOxhydrigen, 200)

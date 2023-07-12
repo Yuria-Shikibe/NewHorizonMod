@@ -1,4 +1,4 @@
-package newhorizon.expand.units;
+package newhorizon.expand.units.ai;
 
 import mindustry.ai.types.FlyingAI;
 

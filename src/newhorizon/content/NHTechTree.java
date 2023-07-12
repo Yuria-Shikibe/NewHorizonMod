@@ -253,9 +253,11 @@ public class NHTechTree{
 									});
 									
 									node(NHUnitTypes.restrictionEnzyme, () -> {
-										node(NHUnitTypes.laugra, () -> {
-											nodeUnit(NHUnitTypes.pester, () -> {
-											
+										node(NHUnitTypes.macrophage, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+											node(NHUnitTypes.laugra, () -> {
+												nodeUnit(NHUnitTypes.pester, () -> {
+												
+												});
 											});
 										});
 									});

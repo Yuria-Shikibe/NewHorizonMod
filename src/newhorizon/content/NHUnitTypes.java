@@ -62,6 +62,10 @@ import newhorizon.expand.units.ablility.AdaptedHealAbility;
 import newhorizon.expand.units.ablility.GravityTrapAbility;
 import newhorizon.expand.units.ablility.HealFieldAbility;
 import newhorizon.expand.units.ablility.TurretShield;
+import newhorizon.expand.units.ai.InterceptorAI;
+import newhorizon.expand.units.ai.ProbeAI;
+import newhorizon.expand.units.ai.SniperAI;
+import newhorizon.expand.units.ai.SurroundAI;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
@@ -84,10 +88,10 @@ public class NHUnitTypes{
 			OTHERS = Byte.MIN_VALUE,
 			GROUND_LINE_1 = 0, AIR_LINE_1 = 1, AIR_LINE_2 = 2, ENERGY_LINE_1 = 3, NAVY_LINE_1 = 6;
 	
-	public static Weapon
-		basicCannon, laserCannon, laugraTurret;
+	public static Weapon BasicCannon, laserCannon, laugraTurret;
 	
 	public static Weapon
+			ancientPulseLaser, ancientPulseLaserSmall,
 			ancientSecTurret, ancientLightningBallTurret, ancientPrism,
 			posLiTurret, closeAATurret, collapserCannon, collapserLaser, multipleLauncher, smallCannon,
 			mainCannon, pointDefenceWeaponC;
@@ -96,7 +100,7 @@ public class NHUnitTypes{
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
 			restrictionEnzyme,
-			nucleoid, pester, laugra, ancientProbe,//ancient
+			nucleoid, pester, laugra, macrophage, ancientProbe,//ancient
 			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
@@ -125,63 +129,6 @@ public class NHUnitTypes{
 
 			EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
 		}
-	
-	public static class NHUnitType extends UnitType{
-		public NHUnitType(String name){
-			super(name);
-			
-			ammoType = new ItemAmmoType(NHItems.presstanium);
-		}
-		
-		public void setRequirements(ItemStack[] stacks){
-			cachedRequirements = stacks;
-			totalRequirements = firstRequirements = ItemStack.mult(stacks, 1 / 15f);
-		}
-		
-		public void setBuildCost(ItemStack[] stacks){
-		}
-	}
-		
-	public static Weapon copyAnd(Weapon weapon, Cons<Weapon> modifier){
-		Weapon n = weapon.copy();
-		modifier.get(n);
-		return n;
-	}
-	
-	public static Weapon copyAndMove(Weapon weapon, float x, float y){
-		Weapon n = weapon.copy();
-		n.x = x;
-		n.y = y;
-		return n;
-	}
-	
-	public static Weapon copyAndMoveAnd(Weapon weapon, float x, float y, Cons<Weapon> modifier){
-		Weapon n = weapon.copy();
-		n.x = x;
-		n.y = y;
-		modifier.get(n);
-		return n;
-	}
-	
-	public static Seq<StatusEffect> statuses;
-	
-	public static void immunise(UnitType type){
-		if(statuses == null){
-			statuses = Vars.content.statusEffects().copy();
-			statuses.filter(s -> {
-				return s.disarm || s.damage > 0 || s.healthMultiplier * s.reloadMultiplier * s.buildSpeedMultiplier * s.speedMultiplier < 1;
-			});
-			statuses.add(NHStatusEffects.scannerDown);
-			statuses.remove(StatusEffects.overclock);
-			statuses.remove(StatusEffects.overdrive);
-			statuses.remove(NHStatusEffects.stronghold);
-			statuses.remove(NHStatusEffects.quantization);
-			statuses.add(StatusEffects.wet);
-			statuses.add(StatusEffects.unmoving);
-		}
-		
-		type.immunities.addAll(statuses);
-	}
 	
 	private static void loadPreviousWeapon(){
 		ancientSecTurret = new Weapon(NewHorizon.name("pester-secondary-laser")){{
@@ -453,6 +400,126 @@ public class NHUnitTypes{
 	}
 	
 	private static void loadWeapon(){
+		ancientPulseLaserSmall = new Weapon(NewHorizon.name("ancient-pulse-laser-small")){{
+			reload = 12;
+			recoil = 1;
+			inaccuracy = 0;
+			shootSound = NHSounds.gauss;
+			mirror = false;
+			rotate = true;
+			predictTarget = false;
+			rotateSpeed = 2.55f;
+			shootY += 6f;
+			heatColor = NHColor.ancientHeat;
+			
+			bullet = new AdaptedSapBulletType(){{
+				length = 320f;
+				damage = 60f;
+				sapStrength = 0.35f;
+				lightColor = hitColor = color = NHColor.ancientLightMid;
+				width = 0.22f;
+				keepVelocity = false;
+				
+				status = NHStatusEffects.intercepted;
+				statusDuration = 30f;
+			}};
+		}};
+		
+		ancientPulseLaser = new Weapon(NewHorizon.name("ancient-pulse-laser")){{
+			shoot = new ShootPattern(){{
+				shots = 24;
+				shotDelay = 2f;
+			}};
+			
+			heatColor = NHColor.ancientHeat;
+			targetInterval = 30;
+			targetSwitchInterval = 240;
+			
+			mirror = false;
+			rotate = true;
+			predictTarget = false;
+			rotateSpeed = 1.75f;
+			
+			shootY = 10;
+			shootX = 2.5f;
+			shake = 1;
+			shootSound = NHSounds.laser5;
+			recoil = 1f;
+			inaccuracy = 0;
+			xRand = 1f;
+			
+			reload = 360;
+			bullet = new RailBulletType(){{
+					length = 320f;
+					damage = 180f;
+					
+					hitColor = NHColor.ancientLightMid;
+					hitEffect = endEffect = Fx.hitBulletColor;
+					pierceDamageFactor = 0.4f;
+					
+					status = NHStatusEffects.emp1;
+					statusDuration = 180f;
+					
+					smokeEffect = Fx.colorSpark;
+					
+					endEffect = new Effect(16f, e -> {
+						color(e.color);
+						Drawf.tri(e.x, e.y, e.fout() * 1.5f, 6f, e.rotation);
+					});
+					
+					shootEffect = new Effect(16f, e -> {
+						color(e.color);
+						float w = 1.2f + 4 * e.fout();
+						
+						Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+						color(e.color);
+						
+						for(int i : Mathf.signs){
+							Drawf.tri(e.x, e.y, w * 0.9f, 22f * e.fout(), e.rotation + i * 60f);
+						}
+						
+						Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+					});
+					
+					lineEffect = new Effect(25f, e -> {
+						if(!(e.data instanceof Vec2)) return;
+						
+						Vec2 v = (Vec2)e.data;
+						
+						color(e.color);
+						stroke(e.fout() + 0.5f);
+						
+						Fx.rand.setSeed(e.id);
+						for(int i = 0; i < 7; i++){
+							Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+							Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+						}
+						
+						e.scaled(16f, b -> {
+							stroke(b.fout() * 1.5f);
+							color(e.color);
+							Lines.line(e.x, e.y, v.x, v.y);
+						});
+					});
+				}
+				
+				@Override
+				public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+					super.hitTile(b, build, x, y, initialHealth, direct);
+					
+					build.applySlowdown(0.25f, 180f);
+				}
+			};
+		}
+			
+			@Override
+			protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
+				super.shoot(unit, mount, shootX, shootY, rotation);
+				
+				mount.retarget = targetSwitchInterval;
+			}
+		};
+		
 		ancientPrism = new Weapon(NewHorizon.name("ancient-prism")){{
 			shootSound = NHSounds.laser4;
 			x = y =0;
@@ -530,9 +597,9 @@ public class NHUnitTypes{
 			
 			@Override
 			public void update(Unit unit, WeaponMount mount){
-				if(mount.warmup > 0.5f){
-					unit.apply(shootStatus, 5f);
-				}
+//				if(mount.warmup > 0.5f){
+//					unit.apply(shootStatus, 5f);
+//				}
 			
 				super.update(unit, mount);
 			}
@@ -612,41 +679,9 @@ public class NHUnitTypes{
 				
 				progress = PartProgress.warmup.blend(PartProgress.reload, 0.3f);
 			}});
-			
-//			parts.add(new HaloPart(){{
-//				shapes = 1;
-//				layer = Layer.bullet + 1f;
-//				x = 14;
-//				y = -18.5f;
-//
-//				haloRadius = 0;
-//
-//				color = NHColor.ancient;
-//				tri = mirror = true;
-//				strokeTo = 2.1f;
-//				triLength = -0.1f;
-//				triLengthTo = 16f;
-//				haloRotation = 315;
-//
-//				progress = PartProgress.warmup;
-//			}}, new HaloPart(){{
-//				shapes = 1;
-//				layer = Layer.bullet + 1f;
-//				x = 14;
-//				y = -18.5f;
-//				haloRadius = 0;
-//				color = NHColor.ancient;
-//				tri = mirror = true;
-//				strokeTo = 2.1f;
-//				triLength = -0.1f;
-//				triLengthTo = 3f;
-//				haloRotation = 135;
-//
-//				progress = PartProgress.warmup;
-//			}});
 		}};
 		
-		basicCannon = new Weapon(NewHorizon.name("basic-weapon")){{
+		BasicCannon = new Weapon(NewHorizon.name("basic-weapon")){{
 			shoot = new ShootPattern();
 			
 			shootSound = NHSounds.rapidLaser;
@@ -789,6 +824,82 @@ public class NHUnitTypes{
 		
 		loadPreviousWeapon();
 		
+		macrophage = new AncientUnit("macrophage"){{
+			aiController = SurroundAI::new;
+			constructor = EntityMapping.idMap[3];
+			fogRadius = 40f;
+			outlineRadius = 4;
+			
+			faceTarget = false;
+			
+			lightRadius = 20f;
+			lightOpacity = 0.1f;
+			
+			lowAltitude = flying = true;
+			health = 7000;
+			armor = 20;
+			hitSize = 32f;
+			drag /= 5f;
+			
+			rotateSpeed = 1.4f;
+			speed = 3.75F;
+			accel = 0.16F;
+			
+			engineOffset = 15f;
+			engineSize = -1;
+			strafePenalty = 0.3f;
+			
+			abilities.add(new AdaptedHealAbility(200, 1200, hitSize * 2f, healColor).modify(a -> {
+				a.selfHealReloadTime = 640;
+				a.selfHealAmount /= 12;
+			}), new TurretShield(){{
+				radius = hitSize + 16f;
+				angle = 130;
+				regen = 3f;
+				cooldown = 60f * 10f;
+				max = 2000f;
+				width = 24f;
+				drawWidth = 12f;
+				whenShooting = true;
+			}});
+			
+			addEngine(-1.5f, -22.75f, 0, 5f, true);
+			addEngine(-10.5f, -22.5f, 0, 3f, true);
+			addEngine(-5.25f, -22.75f, 0, 4f, true);
+			
+			weapons.add(copyAndMove(ancientPulseLaser, -10.0f, -9.0f));
+			weapons.add(copyAndMove(ancientPulseLaserSmall, 10.75f, -3.25f));
+			weapons.add(copyAndMove(ancientPulseLaserSmall, 7.25f, -14.0f));
+			weapons.add(copyAndMoveAnd(ancientPrism, 8.55f, -8.5f, w -> {
+				w.layerOffset = -1f;
+				w.reload += 60f;
+				w.rotateSpeed += 0.35f;
+			}));
+			
+			
+			targetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.factory, BlockFlag.reactor, BlockFlag.generator, null, BlockFlag.core};
+		}
+			
+			@Override
+			public void load(){
+				super.load();
+			}
+			
+			@Override
+			public void drawBody(Unit unit){
+				applyColor(unit);
+				
+				Draw.rect(region, unit.x, unit.y, unit.rotation - 90);
+				
+				Tmp.v1.trns(unit.rotation, Mathf.clamp(unit.vel.len2() / (speed * speed / 3f)) * -4f);
+				Draw.rect(legRegion, unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, unit.rotation - 90);
+				
+				Draw.reset();
+			}
+			
+			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
+		};
+		
 		restrictionEnzyme = new AncientUnit("restriction-enzyme"){{
 			speed = 0.6F;
 			drag = 0.1F;
@@ -892,12 +1003,14 @@ public class NHUnitTypes{
 			hitSize = 16f;
 			drag /= 3f;
 			
+			targetAir = false;
+			targetGround = true;
 			isEnemy = false;
 			targetPriority = -3f;
 			
 			rotateSpeed = 1.7f;
-			speed = 1.75F;
-			accel = 0.24F;
+			speed = 1.55F;
+			accel = 0.34F;
 			
 			engineOffset = 14f;
 			engineSize = -1;
@@ -969,7 +1082,8 @@ public class NHUnitTypes{
 				
 				shootCone = 360f;
 				shootWarmupSpeed /= 3;
-				targetAir = targetGround = true;
+				targetAir = false;
+				targetGround = true;
 				rotate = false;
 			}
 				
@@ -1001,7 +1115,7 @@ public class NHUnitTypes{
 						hitEffect = NHFx.lightningHitSmall;
 						hitColor = color;
 						maxRange = 360.0F;
-						damage = 250f;
+						damage = 150f;
 					}
 				};
 			}}) ;
@@ -3300,7 +3414,7 @@ public class NHUnitTypes{
 			health = 10000.0F;
 			speed = 0.45F;
 			outlineRadius = 4;
-			strafePenalty = 1f;
+			strafePenalty = 0.8f;
 			accel = 0.02F;
 			drag = 0.025F;
 			flying = true;
@@ -3496,12 +3610,12 @@ public class NHUnitTypes{
 			);
 			
 			weapons.add(
-				copyAnd(basicCannon, weapon -> {
+				copyAnd(BasicCannon, weapon -> {
 					weapon.x = 19.5f;
 					weapon.y = -28;
 					weapon.autoTarget = true;
 					weapon.controllable = false;
-				}), copyAnd(basicCannon, weapon -> {
+				}), copyAnd(BasicCannon, weapon -> {
 					weapon.x = 10;
 					weapon.y = -46f;
 					weapon.autoTarget = true;
@@ -3995,6 +4109,10 @@ public class NHUnitTypes{
 					shake = 13.0F;
 					shootSound = Sounds.none;
 					bullet = new StrafeLaser(300.0F){
+						{
+							strafeAngle = 0;
+						}
+						
 						public void init(Bullet b) {
 							super.init(b);
 							Sounds.laserblast.at(b);
@@ -4268,10 +4386,7 @@ public class NHUnitTypes{
 			outlineColor = OColor;
 			abilities.add(new ForceFieldAbility(180f, 60, 80000, 900));
 			constructor = EntityMapping.map(3);
-
 			
-			immunise(this);
-			immunities.remove(NHStatusEffects.end);
 			fallSpeed = 0.008f;
 			drawShields = false;
 
@@ -4649,5 +4764,62 @@ public class NHUnitTypes{
 				Draw.reset();
 			}
 		};
+	}
+	
+	public static class NHUnitType extends UnitType{
+		public NHUnitType(String name){
+			super(name);
+			
+			ammoType = new ItemAmmoType(NHItems.presstanium);
+		}
+		
+		public void setRequirements(ItemStack[] stacks){
+			cachedRequirements = stacks;
+			totalRequirements = firstRequirements = ItemStack.mult(stacks, 1 / 15f);
+		}
+		
+		public void setBuildCost(ItemStack[] stacks){
+		}
+	}
+	
+	public static Weapon copyAnd(Weapon weapon, Cons<Weapon> modifier){
+		Weapon n = weapon.copy();
+		modifier.get(n);
+		return n;
+	}
+	
+	public static Weapon copyAndMove(Weapon weapon, float x, float y){
+		Weapon n = weapon.copy();
+		n.x = x;
+		n.y = y;
+		return n;
+	}
+	
+	public static Weapon copyAndMoveAnd(Weapon weapon, float x, float y, Cons<Weapon> modifier){
+		Weapon n = weapon.copy();
+		n.x = x;
+		n.y = y;
+		modifier.get(n);
+		return n;
+	}
+	
+	public static Seq<StatusEffect> statuses;
+	
+	public static void immunise(UnitType type){
+		if(statuses == null){
+			statuses = Vars.content.statusEffects().copy();
+			statuses.filter(s -> {
+				return s.disarm || s.damage > 0 || s.healthMultiplier * s.reloadMultiplier * s.buildSpeedMultiplier * s.speedMultiplier < 1;
+			});
+			statuses.add(NHStatusEffects.scannerDown);
+			statuses.remove(StatusEffects.overclock);
+			statuses.remove(StatusEffects.overdrive);
+			statuses.remove(NHStatusEffects.stronghold);
+			statuses.remove(NHStatusEffects.quantization);
+			statuses.add(StatusEffects.wet);
+			statuses.add(StatusEffects.unmoving);
+		}
+		
+		type.immunities.addAll(statuses);
 	}
 }
