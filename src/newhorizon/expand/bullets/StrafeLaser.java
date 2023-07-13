@@ -14,10 +14,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.Building;
-import mindustry.gen.Bullet;
-import mindustry.gen.Player;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import newhorizon.util.func.NHFunc;
@@ -182,7 +179,10 @@ public class StrafeLaser extends BulletType{
 				if(u.isPlayer()){
 					Player player = (Player)u.controller();
 					b.fdata = Angles.moveToward(b.fdata, b.angleTo(player.mouseX, player.mouseY), 1f);
-				}else b.fdata = Angles.moveToward(b.fdata, b.angleTo(Units.bestTarget(b.team, b.x, b.y, range, un -> un.type.canAttack, Building::isValid, UnitSorts.strongest)), 1f);
+				}else{
+					Teamc target = Units.bestTarget(b.team, b.x, b.y, range, un -> un.type.canAttack, Building::isValid, UnitSorts.strongest);
+					if(target != null)b.fdata = Angles.moveToward(b.fdata, b.angleTo(target), 1f);
+				}
 			}else b.fdata = Angles.moveToward(b.fdata, b.angleTo(u.aimX, u.aimY), 1f);
 		}
 		

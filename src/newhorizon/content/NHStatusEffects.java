@@ -181,6 +181,7 @@ public class NHStatusEffects{
             speedMultiplier = 1.5f;
             damageMultiplier = 1.25f;
             healthMultiplier = 1.5f;
+            
     
             textureColor = color = NHColor.lightSkyBack;
             

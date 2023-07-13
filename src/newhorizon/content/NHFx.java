@@ -815,31 +815,32 @@ public class NHFx{
 		}),
 	
 		/**{@link Effect.EffectContainer#data}<{@link Position}> as Target */
-		chainLightningFade = new Effect(45f, 500f, e -> {
+		chainLightningFade = new Effect(220f, 500f, e -> {
 			if(!(e.data instanceof Position)) return;
 			Position p = e.data();
 			float tx = p.getX(), ty = p.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
 			Tmp.v1.set(p).sub(e.x, e.y).nor();
 			
+			e.lifetime = dst * 0.375f;
 			float normx = Tmp.v1.x, normy = Tmp.v1.y;
 			float range = e.rotation;
 			int links = Mathf.ceil(dst / range);
 			float spacing = dst / links;
 			
-			Lines.stroke(2.5f * Mathf.curve(e.fout(), 0, 0.7f));
-			Draw.color(Color.white, e.color, e.fin());
+			stroke(2.5f * Mathf.curve(e.fout(), 0, 0.7f));
+			color(Color.white, e.color, e.fin());
 			
-			Lines.beginLine();
+			beginLine();
 		
-			Fill.circle(e.x, e.y, Lines.getStroke() / 2);
-			Lines.linePoint(e.x, e.y);
+			Fill.circle(e.x, e.y, getStroke() / 2);
+			linePoint(e.x, e.y);
 			
 			rand.setSeed(e.id);
 		
 			float fin = Mathf.curve(e.fin(), 0, lightningAlign);
-			float i;
-			for(i = 0; i < links * fin; i++){
-				float nx, ny;
+			int i;
+			float nx = e.x, ny = e.y;
+			for(i = 0; i < (int)(links * fin); i++){
 				if(i == links - 1){
 					nx = tx;
 					ny = ty;
@@ -850,25 +851,32 @@ public class NHFx{
 					ny = e.y + normy * len + Tmp.v1.y;
 				}
 				
-				Lines.linePoint(nx, ny);
+				linePoint(nx, ny);
 			}
-//
-//			float f = (fin - i / links);
-//			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
-//			float len = (i + 1) * spacing;
-//			Lines.linePoint(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y);
-//			Fill.circle(e.x + normx * len + Tmp.v1.x, e.y + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
+
+			if(NHSetting.enableDetails() && i < links){
+				float f = Mathf.clamp(fin * links % 1);
+				float len = (i + 1) * spacing;
+				Tmp.v1.setToRandomDirection(rand).scl(range/2f);
+				Tmp.v2.set(nx, ny);
+				if(i == links - 1)Tmp.v2.lerp(tx, ty, f);
+				else Tmp.v2.lerp(e.x + (normx * len + Tmp.v1.x), e.y + (normy * len + Tmp.v1.y), f);
+				
+				linePoint(Tmp.v2.x, Tmp.v2.y);
+				Fill.circle(Tmp.v2.x, Tmp.v2.y, getStroke() / 2);
+			}
 			
-			Lines.endLine();
+			endLine();
 		}).followParent(false),
 	
 		/**{@link Effect.EffectContainer} as Target */
-		chainLightningFadeReversed = new Effect(45f, 500f, e -> {
+		chainLightningFadeReversed = new Effect(220f, 500f, e -> {
 			if(!(e.data instanceof Position))return;
 			Position p = e.data();
 			float tx = e.x, ty = e.y, dst = Mathf.dst(p.getX(), p.getY(), tx, ty);
 			Tmp.v1.set(e.x, e.y).sub(p).nor();
 			
+			e.lifetime = dst * 0.375f;
 			float normx = Tmp.v1.x, normy = Tmp.v1.y;
 			float range = e.rotation;
 			int links = Mathf.ceil(dst / range);
@@ -885,27 +893,33 @@ public class NHFx{
 			rand.setSeed(e.id);
 			
 			float fin = Mathf.curve(e.fin(), 0, lightningAlign);
-			float i;
-			for(i = 0; i < links *fin; i++){
-				float nx, ny;
+			int i;
+			float nx = p.getX(), ny = p.getY();
+			for(i = 0; i < (int)(links * fin); i++){
 				if(i == links - 1){
 					nx = tx;
 					ny = ty;
 				}else{
 					float len = (i + 1) * spacing;
-					Tmp.v1.setToRandomDirection(rand).scl(range / 2f);
+					Tmp.v1.setToRandomDirection(rand).scl(range/2f);
 					nx = p.getX() + normx * len + Tmp.v1.x;
 					ny = p.getY() + normy * len + Tmp.v1.y;
 				}
 				
-				Lines.linePoint(nx, ny);
+				linePoint(nx, ny);
 			}
 			
-//			float f = (fin - i / links);
-//			Tmp.v1.setToRandomDirection(rand).scl(range / 2f * f);
-//			float len = (i + 1) * spacing;
-//			Lines.linePoint(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y);
-//			Fill.circle(p.getX() + normx * len + Tmp.v1.x, p.getY() + normy * len + Tmp.v1.y, Lines.getStroke() / 2);
+			if(NHSetting.enableDetails() && i < links){
+				float f = Mathf.clamp(fin * links % 1);
+				float len = (i + 1) * spacing;
+				Tmp.v1.setToRandomDirection(rand).scl(range/2f);
+				Tmp.v2.set(nx, ny);
+				if(i == links - 1)Tmp.v2.lerp(tx, ty, f);
+				else Tmp.v2.lerp(p.getX() + (normx * len + Tmp.v1.x), p.getY() + (normy * len + Tmp.v1.y), f);
+				
+				linePoint(Tmp.v2.x, Tmp.v2.y);
+				Fill.circle(Tmp.v2.x, Tmp.v2.y, getStroke() / 2);
+			}
 			
 			Lines.endLine();
 		}).followParent(false),

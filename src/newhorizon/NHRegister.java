@@ -99,7 +99,7 @@ public class NHRegister{
 			if(!Vars.headless && Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
 				Core.app.post(() -> {
 					Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
-					Vars.player.con.close();
+					Vars.net.disconnect();
 				});
 			}
 			

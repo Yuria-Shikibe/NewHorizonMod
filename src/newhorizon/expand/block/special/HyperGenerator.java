@@ -14,7 +14,6 @@ import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -291,7 +290,6 @@ public class HyperGenerator extends PowerGenerator{
 							NHFx.lightningHitLarge.at(point.getX(), point.getY(), effectColor);
 						});
 						
-						Log.info(optionalEfficiency);
 						if(optionalEfficiency > 0){
 							Units.nearby(team, x, y, statusRange, u -> {
 								Fx.chainLightning.at(x, y, 0, effectColor, u);

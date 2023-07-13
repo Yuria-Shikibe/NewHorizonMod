@@ -24,10 +24,7 @@ import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
-import mindustry.entities.Damage;
-import mindustry.entities.Effect;
-import mindustry.entities.Lightning;
-import mindustry.entities.Units;
+import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
@@ -414,7 +411,7 @@ public class NHUnitTypes{
 			
 			bullet = new AdaptedSapBulletType(){{
 				length = 320f;
-				damage = 60f;
+				damage = 50f;
 				sapStrength = 0.35f;
 				lightColor = hitColor = color = NHColor.ancientLightMid;
 				width = 0.22f;
@@ -451,7 +448,7 @@ public class NHUnitTypes{
 			reload = 360;
 			bullet = new RailBulletType(){{
 					length = 320f;
-					damage = 180f;
+					damage = 160f;
 					
 					hitColor = NHColor.ancientLightMid;
 					hitEffect = endEffect = Fx.hitBulletColor;
@@ -836,8 +833,8 @@ public class NHUnitTypes{
 			lightOpacity = 0.1f;
 			
 			lowAltitude = flying = true;
-			health = 7000;
-			armor = 20;
+			health = 8000;
+			armor = 22;
 			hitSize = 32f;
 			drag /= 5f;
 			
@@ -1390,7 +1387,13 @@ public class NHUnitTypes{
 					moveY = -5f;
 					progress = PartProgress.recoil;
 				}});
-			}});
+			}
+				
+				@Override
+				protected Teamc findTarget(Unit unit, float x, float y, float range, boolean air, boolean ground){
+					return Units.bestTarget(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground, UnitSorts.strongest);
+				}
+			});
 			weapons.add(new Weapon(name + "-missile"){{
 				reload = 240f;
 				xRand = 10f;
@@ -2639,6 +2642,7 @@ public class NHUnitTypes{
 
 		warper = new NHUnitType("warper"){{
 			outlineColor = OColor;
+			aiController = SurroundAI::new;
 			constructor = EntityMapping.map(3);
 			weapons.add(new Weapon(){{
 				top = false;
@@ -3647,13 +3651,24 @@ public class NHUnitTypes{
 			
 			weapons.add(laserCannon);
 			
+			abilities.add(new TurretShield(){{
+				radius = hitSize + 112f;
+				angle = 130;
+				regen = 3f;
+				cooldown = 60f * 10f;
+				max = 10000f;
+				width = 24f;
+				drawWidth = 12f;
+				whenShooting = false;
+			}});
+			
 			immunities.addAll(StatusEffects.blasted, StatusEffects.tarred, StatusEffects.burning, StatusEffects.freezing, StatusEffects.melting, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1);
 			targetFlags = new BlockFlag[]{BlockFlag.unitAssembler, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
 			
 			health = 55000;
 			speed = 0.55f;
 			drag = 0.18f;
-			hitSize = 60f;
+			hitSize = 65f;
 			armor = 32;
 			accel = 0.1f;
 			rotateSpeed = 0.5f;

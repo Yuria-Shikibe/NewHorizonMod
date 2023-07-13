@@ -208,7 +208,7 @@ public class NHBlocks{
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
 			blendGroup = this;
 			
-			attributes.set(Attribute.heat, 0.25f);
+			attributes.set(Attribute.heat, 0.05f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -231,7 +231,7 @@ public class NHBlocks{
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
 			blendGroup = this;
 			
-			attributes.set(Attribute.heat, 0.5f);
+			attributes.set(Attribute.heat, 0.15f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -255,7 +255,7 @@ public class NHBlocks{
 			
 			wall = NHBlocks.metalWall;
 			
-			attributes.set(Attribute.heat, 0.5f);
+			attributes.set(Attribute.heat, 0.25f);
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
@@ -3613,7 +3613,7 @@ public class NHBlocks{
 					with(Items.thorium, 90, Items.graphite, 50, NHItems.multipleSteel, 60, NHItems.juniorProcessor, 50)
 				),
 				new UnitSet(NHUnitTypes.macrophage, new byte[]{NHUnitTypes.ANCIENT_AIR, 4}, 180 * 60f,
-					with(Items.phaseFabric, 80, NHItems.irayrondPanel, 220, NHItems.presstanium, 160, NHItems.seniorProcessor, 80)
+					with(Items.phaseFabric, 100, NHItems.irayrondPanel, 150, NHItems.presstanium, 320, Items.tungsten, 400, NHItems.seniorProcessor, 100)
 				),
 				new UnitSet(NHUnitTypes.zarkov, new byte[]{NHUnitTypes.NAVY_LINE_1, 4}, 140 * 60f,
 						ItemStack.with(NHItems.multipleSteel, 400, NHItems.juniorProcessor, 300, NHItems.presstanium, 400, NHItems.metalOxhydrigen, 200)

@@ -186,7 +186,7 @@ public class NHSetting{
 	}
 	
 	public static boolean enableDetails(){
-		return true;
+		return enableEffectDetail;
 	}
 	
 	public static boolean getBool(String key){
