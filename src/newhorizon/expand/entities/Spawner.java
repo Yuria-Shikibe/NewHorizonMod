@@ -1,10 +1,12 @@
 package newhorizon.expand.entities;
 
+import arc.Events;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
@@ -12,6 +14,7 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.ai.types.CommandAI;
 import mindustry.audio.SoundLoop;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
@@ -19,6 +22,7 @@ import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.units.StatusEntry;
+import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
@@ -60,6 +64,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	
 	public SoundLoop soundLoop;
 	public Unit toSpawn = Nulls.unit;
+	public Vec2 commandPos = new Vec2(Float.NaN, Float.NaN);
 	
 	public final Seq<Trail> trails = Seq.with(new Trail(30), new Trail(50), new Trail(70));
 	public float trailWidth = 3f;
@@ -77,7 +82,6 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		this.drawSize = type.hitSize;
 		trailWidth = Mathf.clamp(drawSize / 15f, 1.25f, 4f);
 		set(pos);
-		NHFx.spawnWave.at(x, y, drawSize * 1.1f, team.color);
 		
 		return this;
 	}
@@ -89,10 +93,22 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		return this;
 	}
 	
+	public Spawner setFlagToApply(double flagToApply){
+		this.flagToApply = flagToApply;
+		return this;
+	}
+	
+	public Spawner setFlagToApply(long flagToApply){
+		this.flagToApply = Double.longBitsToDouble(flagToApply);
+		return this;
+	}
+	
 	@Override
 	public void add(){
 		super.add();
 		Groups.sync.add(this);
+		
+		NHFx.spawnWave.at(x, y, drawSize * 1.1f, team.color);
 	}
 	
 	@Override
@@ -169,6 +185,17 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		if(!Vars.net.client()) toSpawn.add();
 		toSpawn.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
 		toSpawn.apply(statusEntry.effect, statusEntry.time);
+		if(commandPos != null && !commandPos.isNaN()){
+			if(toSpawn.isCommandable()){
+				toSpawn.command().commandPosition(commandPos);
+			}else{
+				CommandAI ai = new CommandAI();
+				ai.commandPosition(commandPos);
+				toSpawn.controller(ai);
+			}
+		}
+		
+		Events.fire(new EventType.UnitCreateEvent(toSpawn, null));
 	}
 	
 	public boolean canCreate(){
@@ -227,6 +254,8 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		TypeIO.writeUnitType(write, type);
 		TypeIO.writeTeam(write, team);
 		TypeIO.writeStatus(write, statusEntry);
+		
+		TypeIO.writeVec2(write, commandPos);
 	}
 	
 	@Override
@@ -241,6 +270,8 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		type = TypeIO.readUnitType(read);
 		team = TypeIO.readTeam(read);
 		statusEntry = TypeIO.readStatus(read);
+		
+		commandPos = TypeIO.readVec2(read);
 		
 		afterRead();
 	}
@@ -270,6 +301,8 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		
 		type = TypeIO.readUnitType(read);
 		team = TypeIO.readTeam(read);
+		if(commandPos != null)commandPos = TypeIO.readVec2(read);
+		else commandPos = new Vec2(Float.NaN, Float.NaN);
 		
 		afterSync();
 	}
@@ -285,6 +318,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		
 		TypeIO.writeUnitType(write, type);
 		TypeIO.writeTeam(write, team);
+		TypeIO.writeVec2(write, commandPos);
 	}
 	
 	@Override

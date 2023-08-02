@@ -131,7 +131,6 @@ public class WorldEventDialog extends BaseDialog{
 		target.add(table).growX().fillY().row();
 		event.buildTable(table);
 		if(Vars.state.rules.infiniteResources && !Vars.net.client() && buildDebug){
-			table.row().image().growX().height(4).pad(4).color(Color.lightGray).row();
 			event.buildDebugTable(table);
 			table.setBackground(Tex.pane);
 		}

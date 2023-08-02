@@ -1,6 +1,7 @@
 package newhorizon.expand.bullets;
 
 import arc.func.Cons2;
+import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
@@ -71,9 +72,9 @@ public class ChainBulletType extends BulletType{
 		}
 		
 		if(!quietShoot || !points.isEmpty()){
-			NHFunc.shuffle(points, NHFunc.rand(b.owner.id()));
+			NHFunc.shuffle(points, NHFunc.rand((long)Mathf.round(confirm.getX(), 16) + 8 << Mathf.round(confirm.getY(), 16)));
 			points.truncate(maxHit);
-			points.sort(e -> - confirm.dst(e) + confirm.angleTo(e) / 32f);
+//			points.sort(e -> - confirm.dst(e) + confirm.angleTo(e) / 32f);
 			points.insert(0, b);
 			points.insert(1, target);
 			

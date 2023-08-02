@@ -99,10 +99,11 @@ public class MatterStorm extends Weather{
 		});
 	});
 	
-	public float bulletDamage = 50f;
+	public float bulletDamage = 90f;
 	public float bulletVelocityMin = 0.6f, bulletVelocityMax = 1.4f, bulletLifeMin = 0.8f, bulletLifeMax = 2f;
 	public float bulletSpawnChance = 0.075f;
 	public float bulletSpawnNum = 2;
+	public float empScale = 0.75f;
 	public BulletType bulletType = null;
 	
 	public MatterStorm(String name){
@@ -257,8 +258,8 @@ public class MatterStorm extends Weather{
 				}
 				
 				if(buildingEmp > 0){
-					Groups.build.each(b -> b.block.hasPower && b.block.canOverdrive && b.timeScale() < buildingEmp, b -> {
-						b.applySlowdown(buildingEmp, statusDuration);
+					Groups.build.each(Building::isValid, b -> {
+						b.applySlowdown(buildingEmp, statusDuration + 15);
 					});
 				}
 				

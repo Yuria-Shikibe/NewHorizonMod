@@ -60,9 +60,9 @@ public class NewHorizon extends Mod{
 		if(DEBUGGING)Log.info(obj);
 	}
 	
-//	{
+	{
 //		Vars.mobile = Vars.testMobile = true;
-//	}
+	}
 	
 	protected static boolean contentLoadComplete = false;
 	
@@ -90,7 +90,12 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHUnitTypes.macrophage)
+				new FeatureLog(NHBlocks.processorCompactor){{
+					important = true;
+				}},
+				new FeatureLog(NHBlocks.ventExtractor),
+				new FeatureLog("Vanilla Upgrade", "Vanilla Turrets Now Equip Zeta Ammo!", FeatureLog.NEW_FEATURE, Icon.upOpen.getRegion()),
+				new FeatureLog("Executor Adjust", "Increased Executor's damage!", FeatureLog.ADJUST, NHBlocks.executor),
 		};
 	}
 	
@@ -144,8 +149,10 @@ public class NewHorizon extends Mod{
 								i.top();
 								i.add("[gray]NEW [lightgray]" + c.type.toUpperCase() + "[]: [accent]" + c.title + "[]").left().row();
 								i.image().growX().height(OFFSET / 3).pad(OFFSET / 3).color(Color.lightGray).row();
-								i.add("[accent]Description: []").left().row();
-								i.add(c.description).padLeft(LEN).left().get().setWrap(true);
+								if(c.description != null){
+									i.add("[accent]Description: []").left().row();
+									i.add(c.description).padLeft(LEN).left().get().setWrap(true);
+								}
 								if(c.modifier != null)i.table(i1 -> {
 									NHUIFunc.show(i1, c.content);
 								}).grow().left().row();
@@ -176,8 +183,6 @@ public class NewHorizon extends Mod{
 	public static void startLog(){
 		if(showed)return;
 		showed = true;
-		
-		BaseDialog dialog = new BaseDialog("");
 		
 		Runnable runnable = () -> {
 			Core.app.post(() -> Core.app.post(() -> Core.settings.getBoolOnce("nh-first-load", () -> {
@@ -224,6 +229,14 @@ public class NewHorizon extends Mod{
 			})));
 		};
 		
+		BaseDialog dialog = new BaseDialog(""){
+			@Override
+			public void hide(){
+				super.hide();
+				
+				runnable.run();
+			}
+		};
 		dialog.closeOnBack(runnable);
 		
 		dialog.cont.pane(inner -> {
@@ -242,12 +255,9 @@ public class NewHorizon extends Mod{
 
 				}).grow();
 				table.table(t -> {
-					t.button("@back", Icon.left, Styles.cleart, () -> {
-						dialog.hide();
-						runnable.run();
-					}).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@back", Icon.left, Styles.cleart, dialog::hide).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@links", Icon.link, Styles.cleart, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button("@settings", Icon.settings, Styles.cleart, () -> new NHSetting.SettingDialog().show()).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@hide-setting", Icon.settings, Styles.cleart, () -> Core.settings.put("nh_hide_starting_log", true)).disabled(b -> Core.settings.getBool("nh_hide_starting_log", false)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 //					t.button("@log", Icon.book, Styles.cleart, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.cleart, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 				}).grow();
@@ -319,7 +329,7 @@ public class NewHorizon extends Mod{
 				Core.settings.put("nh-lastver", MOD.meta.version);
 			});
 			
-//			Core.app.post(Time.runTask(10f, NewHorizon::startLog));
+			if(!Core.settings.getBool("nh_hide_starting_log"))Core.app.post(Time.runTask(10f, NewHorizon::startLog));
 		});
 	}
 

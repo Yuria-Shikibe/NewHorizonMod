@@ -1,5 +1,6 @@
 package newhorizon.expand.cutscene.actions;
 
+import arc.func.Boolp;
 import arc.func.Cons;
 import arc.func.Prov;
 import arc.graphics.Color;
@@ -117,6 +118,14 @@ public class CSSActions{
 		return new QueueAction(getContext()).initActions(actions);
 	}
 	
+	public static NHCSS_Action mark(float x, float y, float radius, float lifetime, Color color){
+		return new RunnableAction(getContext(), () -> NHCSS_UI.mark(x, y, radius, lifetime, color, () -> false));
+	}
+	
+	public static NHCSS_Action mark(float x, float y, float radius, float lifetime, Color color, NHCSS_UI.MarkStyle style){
+		return new RunnableAction(getContext(), () -> NHCSS_UI.mark(x, y, radius, lifetime, color, () -> false));
+	}
+	
 	public static NHCSS_Action delay(float duration){
 		return new DelayAction(getContext()).setDuration(duration);
 	}
@@ -146,6 +155,10 @@ public class CSSActions{
 	
 	public static NHCSS_Action parallel(NHCSS_Action... actions){
 		return new ParallelAction(getContext(), actions);
+	}
+	
+	public static NHCSS_Action waitUntil(Boolp trigger){
+		return new WaitAction(getContext(), trigger);
 	}
 	
 	public static NHCSS_Action cameraMove(float x, float y, float duration, float scl, Interp interp){

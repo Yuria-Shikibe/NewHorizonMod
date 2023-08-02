@@ -20,6 +20,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Items;
+import mindustry.content.StatusEffects;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Mover;
 import mindustry.entities.Units;
@@ -159,7 +160,7 @@ public class NHInbuiltEvents{
 			
 			inaccuracy = 0.145f;
 			ammo(copyAnd(NHBullets.saviourBullet, b -> {
-				b.collides = b.collidesAir = false;
+				b.collidesAir = false;
 				b.scaleLife = true;
 				b.scaledSplashDamage = true;
 				b.splashDamage += b.damage;
@@ -174,7 +175,11 @@ public class NHInbuiltEvents{
 				b.scaleLife = true;
 				b.scaledSplashDamage = true;
 				b.splashDamage += b.damage;
+				b.lightningDamage = b.damage / 2;
 				b.splashDamageRadius = 56f;
+				b.lightning = 4;
+				b.lightningLength = 3;
+				b.lightningLengthRand = 14;
 			}), new ShootPattern(){{
 				shots = 24;
 				shotDelay = 6f;
@@ -498,6 +503,16 @@ public class NHInbuiltEvents{
 				spacingBase = 2400 * 60;
 				spacingRand = 120 * 60;
 			}}, new AutoEventTrigger(){{
+				items = OV_Pair.seqWith(NHItems.upgradeSort, 3000, NHItems.thermoCorePositive, 2300, NHItems.thermoCoreNegative, 2300);
+				eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-collapser"){{
+					spawn(NHUnitTypes.collapser, 1);
+					reloadTime = 30 * 60;
+					status = StatusEffects.overdrive;
+				}});
+				
+				spacingBase = 1200 * 60;
+				spacingRand = 300 * 60;
+			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.multipleSteel, 1500, NHItems.seniorProcessor, 800);
 				eventType = WorldEventType.inbuilt(new InterventionEventType("inbuilt-inbound-gunship"){{
 					spawn(NHUnitTypes.macrophage, 4);
@@ -723,30 +738,36 @@ public class NHInbuiltEvents{
 				return;
 			}
 			
-			if(Vars.net.client() || Vars.state.isEditor() || Vars.state.rules.pvp || (Vars.state.rules.infiniteResources && !NewHorizon.DEBUGGING) || NHGroups.autoEventTrigger.size() >= autoTriggers.size)return;
-			if(Vars.headless || NewHorizon.DEBUGGING){
-				Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
-					if(!Vars.state.rules.pvp) EventHandler.runEventOnce("setup-triggers", () -> {
-						if(NHGroups.autoEventTrigger.isEmpty()){
-							autoTriggers.each(t -> {
-								t.copy().add();
-//								NewHorizon.debugLog(t.eventType.toString());
-							});
+			Core.app.post(() -> {
+				if(Vars.state.isMenu() || Vars.net.client() || Vars.state.isEditor() || Vars.state.rules.pvp || (Vars.state.rules.infiniteResources && !NewHorizon.DEBUGGING) || NHGroups.autoEventTrigger.size() >= autoTriggers.size)return;
+				if(Vars.headless || (NewHorizon.DEBUGGING && !Vars.net.client())){
+					Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
+						if(!Vars.state.rules.pvp)EventHandler.runEventOnce("setup-triggers", () -> {
+							if(NHGroups.autoEventTrigger.isEmpty()){
+								autoTriggers.each(t -> t.copy().add());
+							}
+						});
+					})));
+				}else if(Vars.state.isCampaign() && Vars.state.rules.sector.planet == NHPlanets.midantha){
+					Core.app.post(() -> {
+						if(Float.isNaN(NHVars.worldData.eventReloadSpeed) || NHVars.worldData.eventReloadSpeed < 0)NHVars.worldData.eventReloadSpeed = 0.55f;
+						if(Vars.state.isCampaign() && Vars.state.rules.tags.containsKey(APPLY_KEY) && !Vars.state.rules.sector.isCaptured()){
+							if(NHGroups.autoEventTrigger.isEmpty())autoTriggers.each(t -> t.copy().add());
 						}
 					});
-				})));
-			}else if(Vars.state.isCampaign() && Vars.state.rules.sector.planet == NHPlanets.midantha){
-				Core.app.post(() -> {
-					if(Float.isNaN(NHVars.worldData.eventReloadSpeed) || NHVars.worldData.eventReloadSpeed < 0)NHVars.worldData.eventReloadSpeed = 0.55f;
-					if(Vars.state.isCampaign() && Vars.state.rules.tags.containsKey(APPLY_KEY) && !Vars.state.rules.sector.isCaptured()){
+				}else Core.app.post(() -> Core.app.post(() -> {
+					NHVars.worldData.eventReloadSpeed = 0.55f;
+					if(NHVars.worldData.applyEventTriggers){
 						if(NHGroups.autoEventTrigger.isEmpty())autoTriggers.each(t -> t.copy().add());
 					}
-				});
-			}
+				}));
+			});
+			
 		});
 		
 		Events.on(EventType.SectorCaptureEvent.class, e -> {
 			NHGroups.events.clear();
+			NHGroups.autoEventTrigger.clear();
 		});
 	}
 	

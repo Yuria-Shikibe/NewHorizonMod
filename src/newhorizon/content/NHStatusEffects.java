@@ -8,23 +8,72 @@ import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
+import newhorizon.expand.cutscene.stateoverride.UnitOverride;
 import newhorizon.util.func.NHFunc;
-import newhorizon.util.graphic.ColorWarpEffect;
+import newhorizon.util.graphic.EffectWrapper;
 
 public class NHStatusEffects{
     public static StatusEffect
+            quiet, marker, healthLocker, forceWeak,
             reinforcements,
             entangled,
             ultFireBurn, stronghold, overphased,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
     public static void load(){
+        forceWeak = new NHStatusEffect("force-slow"){{
+            hideDetails = true;
+            show = false;
+            speedMultiplier = 0.855f;
+            reloadMultiplier = 0.75f;
+            damage = 0.45f;
+        }};
+        
+        healthLocker = new NHStatusEffect("health-locker"){{
+            hideDetails = true;
+            show = false;
+            permanent = true;
+            healthMultiplier = 8;
+        }
+    
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+            
+                if(unit.healthf() < 0.25f){
+                    unit.health = unit.maxHealth() / 4f;
+                }
+            }
+        };
+        
+        marker = new NHStatusEffect("marker"){{
+            hideDetails = true;
+            show = false;
+            permanent = true;
+        }
+    
+            @Override
+            public void update(Unit unit, float time){
+                UnitOverride.marked.put(Double.doubleToLongBits(unit.flag), unit);
+            }
+        };
+        
+        quiet = new NHStatusEffect("quiet"){{
+            disarm = true;
+            dragMultiplier = 10;
+            speedMultiplier = 0;
+            
+            hideDetails = true;
+            show = false;
+        }};
+        
         reinforcements = new NHStatusEffect("reinforcements"){{
             show = false;
             hideDetails = true;
@@ -52,7 +101,7 @@ public class NHStatusEffects{
             outline = true;
             
             effectChance = 0.085f;
-            effect = ColorWarpEffect.wrap(NHFx.hitSparkLarge, NHColor.ancientLightMid);
+            effect = EffectWrapper.wrap(NHFx.hitSparkLarge, NHColor.ancientLightMid);
         }
         
             @Override
@@ -277,7 +326,15 @@ public class NHStatusEffects{
             speedMultiplier = 0.8f;
             reloadMultiplier = 0.8f;
             damageMultiplier = 0.8f;
-        }};
+    
+            transitionDamage = 40;
+    
+            affinity(StatusEffects.shocked, (unit, status, time) -> {
+                if(Mathf.chance(0.085))NHFunc.randFadeLightningEffect(unit.x + Mathf.range(unit.hitSize), unit.y + Mathf.range(unit.hitSize), unit.hitSize * Mathf.random(1f, 1.6f) + 14f, 6f, Tmp.c1.set(Pal.powerLight).mul(Mathf.random(0.12f) + 1f), false);
+            });
+        }
+        
+        };
     
         emp2 = new NHStatusEffect("emp-2"){{
             damage = 0.15f;
@@ -287,6 +344,12 @@ public class NHStatusEffects{
             speedMultiplier = 0.6f;
             reloadMultiplier = 0.65f;
             damageMultiplier = 0.7f;
+    
+            transitionDamage = 80;
+    
+            affinity(StatusEffects.shocked, (unit, status, time) -> {
+                if(Mathf.chance(0.125))NHFunc.randFadeLightningEffect(unit.x + Mathf.range(unit.hitSize), unit.y + Mathf.range(unit.hitSize), unit.hitSize * Mathf.random(1.25f, 2f) + 22f, 7f, Tmp.c1.set(Pal.powerLight).mul(Mathf.random(0.16f) + 1f), false);
+            });
         }};
     
         emp3 = new NHStatusEffect("emp-3"){{
@@ -297,6 +360,12 @@ public class NHStatusEffects{
             speedMultiplier = 0.4f;
             reloadMultiplier = 0.5f;
             damageMultiplier = 0.6f;
+    
+            transitionDamage = 120;
+    
+            affinity(StatusEffects.shocked, (unit, status, time) -> {
+                if(Mathf.chance(0.155))NHFunc.randFadeLightningEffect(unit.x + Mathf.range(unit.hitSize), unit.y + Mathf.range(unit.hitSize), unit.hitSize * Mathf.random(1.4f, 2.2f) + 28f, 8f, Tmp.c1.set(Pal.powerLight).mul(Mathf.random(0.16f) + 1f), false);
+            });
         }};
     }
 	

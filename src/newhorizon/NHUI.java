@@ -15,6 +15,7 @@ import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
+import newhorizon.util.ui.NHWorldSettingDialog;
 import newhorizon.util.ui.WorldEventDialog;
 
 import static mindustry.Vars.*;
@@ -27,6 +28,8 @@ public class NHUI{
 	
 	public static WorldEventDialog eventDialog;
 	public static Table eventSimplePane = new Table();
+	
+	public static NHWorldSettingDialog nhWorldSettingDialog;
 	
 	public static Group root;
 	
@@ -43,6 +46,8 @@ public class NHUI{
 			setFillParent(true);
 			touchable = Touchable.childrenOnly;
 		}};
+		
+		nhWorldSettingDialog = new NHWorldSettingDialog();
 		
 		Core.scene.root.addChildAt(0, root);
 		

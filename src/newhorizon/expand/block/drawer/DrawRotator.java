@@ -6,6 +6,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
+import mindustry.graphics.Drawf;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 
@@ -15,6 +16,16 @@ public class DrawRotator extends DrawBlock{
 	public float x, y;
 	public float rotateSpeed = 1.25f;
 	public float primaryRotation = 0;
+	public boolean usesSpinDraw = false;
+	
+	public DrawRotator(boolean usesSpinDraw){
+		this.usesSpinDraw = usesSpinDraw;
+	}
+	
+	public DrawRotator(float rotateSpeed, boolean usesSpinDraw){
+		this.rotateSpeed = rotateSpeed;
+		this.usesSpinDraw = usesSpinDraw;
+	}
 	
 	public DrawRotator(float rotateSpeed, String suffix){
 		this.suffix = suffix;
@@ -42,7 +53,8 @@ public class DrawRotator extends DrawBlock{
 	
 	@Override
 	public void draw(Building build){
-		Draw.rect(rotator, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + primaryRotation);
+		if(usesSpinDraw)Drawf.spinSprite(rotator, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + primaryRotation);
+		else Draw.rect(rotator, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + primaryRotation);
 	}
 	
 	@Override

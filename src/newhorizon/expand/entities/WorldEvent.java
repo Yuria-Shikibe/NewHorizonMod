@@ -239,6 +239,8 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		team = TypeIO.readTeam(read);
 		type = WorldEventType.getStdType(read.str());
 		type.read(this, read);
+		
+		afterRead();
 	}
 	
 	@Override
@@ -316,6 +318,10 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 	@Override
 	public boolean cheating() {
 		return team.rules().cheat;
+	}
+	
+	public float ratio(){
+		return type.progressRatio(this);
 	}
 	
 	@Override

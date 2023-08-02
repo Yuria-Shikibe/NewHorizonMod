@@ -3,13 +3,15 @@ package newhorizon.expand.game;
 import mindustry.Vars;
 import mindustry.io.SaveFileReader;
 import mindustry.io.SaveVersion;
-import newhorizon.expand.eventsys.AutoEventTrigger;
+import newhorizon.expand.cutscene.NHCSS_Core;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
 public class NHWorldData implements SaveFileReader.CustomChunk{
+	public static short CURRENT_VER = 1;
+	
 	public static NHWorldData data;
 	
 	public NHWorldData(){
@@ -22,6 +24,8 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 	
 	public short version = 0;
 	public float eventReloadSpeed = -1;
+	public boolean jumpGateUsesCoreItems = true;
+	public boolean applyEventTriggers = false;
 	
 	public void initFromMapRules(){
 	
@@ -29,9 +33,16 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 	
 	@Override
 	public void write(DataOutput stream) throws IOException{
-		stream.writeShort(version);
+		stream.writeShort(CURRENT_VER);
 		
 		stream.writeFloat(eventReloadSpeed);
+		
+		stream.writeBoolean(jumpGateUsesCoreItems);
+		stream.writeBoolean(applyEventTriggers);
+		
+		if(NHCSS_Core.core.currentScene != null){
+			NHCSS_Core.core.currentScene.write(stream);
+		}
 	}
 	
 	@Override
@@ -40,14 +51,23 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 		
 		eventReloadSpeed = stream.readFloat();
 		
+		if(version > 0){
+			jumpGateUsesCoreItems = stream.readBoolean();
+			applyEventTriggers = stream.readBoolean();
+		}
+		
+		version = CURRENT_VER;
+		
+		if(NHCSS_Core.core.currentScene != null){
+			NHCSS_Core.core.currentScene.read(stream);
+		}
+		
 		afterRead();
 	}
 	
 	public void afterRead(){
 		if(Vars.headless && (Float.isNaN(eventReloadSpeed) || eventReloadSpeed > 5.55f)){
 			eventReloadSpeed = -1;
-			return;
 		}
-		if(!Float.isNaN(eventReloadSpeed) && eventReloadSpeed > 0)AutoEventTrigger.setScale(eventReloadSpeed);
 	}
 }

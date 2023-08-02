@@ -1,19 +1,40 @@
 package newhorizon.expand.cutscene.stateoverride;
 
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.LongMap;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.content.Fx;
+import mindustry.entities.abilities.Ability;
 import mindustry.gen.Groups;
 import mindustry.gen.Healthc;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
+import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.cutscene.actions.CutsceneAI;
 
 public class UnitOverride{
 	private static final Seq<Unit> tmpSeq = new Seq<>();
+	
 	public static final ObjectMap<Long, Seq<Unit>> flaggedCache = new ObjectMap<>();
 	
+	public static final LongMap<Unit> marked = new LongMap<>();
+	
+	public static final Ability deathExplode = new Ability(){
+		@Override
+		public void death(Unit unit){
+			float x = unit.x, y = unit.y;
+			
+			for(int i = 0; i < 2; i++){
+				Time.run(12 * i, () -> {
+					Fx.dynamicExplosion.at(x + Mathf.range(unit.hitSize), y + Mathf.range(unit.hitSize), unit.hitSize / 6f);
+				});
+			}
+		}
+	};
 	//ALL RETURN ARE A TEMPORARY SEQ
 	public static ObjectMap<String, Vec2> targets = new ObjectMap<>();
 	
@@ -55,6 +76,14 @@ public class UnitOverride{
 		}
 		
 		return tmpSeq;
+	}
+	
+	public static void setQuiet(Unit unit){
+		unit.apply(NHStatusEffects.quiet, 30f);
+	}
+	
+	public static void setCloak(Unit unit){
+		unit.dead = true;
 	}
 	
 	public static Seq<Unit> check(Seq<Unit> units){

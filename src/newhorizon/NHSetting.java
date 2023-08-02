@@ -25,7 +25,7 @@ public class NHSetting{
 			VANILLA_COST_OVERRIDE = "nh_overridecost",
 			DEBUGGING = "nh_debugging";
 	
-	public static boolean enableEffectDetail;
+	public static boolean enableEffectDetail = true;
 	
 	public static boolean changed = false;
 	
@@ -35,7 +35,8 @@ public class NHSetting{
 		all.addAll(
 			new BoolSetting(EFFECT_DETAIL, true, true),
 			new BoolSetting(VANILLA_COST_OVERRIDE, false, true),
-			new BoolSetting(DEBUGGING, false, true)
+			new BoolSetting(DEBUGGING, false, true),
+			new BoolSetting("nh_hide_starting_log", false, false)
 		);
 		
 		all.each(SettingKey::setDefault);
@@ -46,9 +47,7 @@ public class NHSetting{
 	public static void loadUI(){
 		Vars.ui.settings.addCategory("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), NHSetting::buildTable);
 		
-		Vars.ui.settings.closeOnBack(() -> {
-		
-		});
+//		Vars.ui.settings.closeOnBack(() -> {});
 	}
 	
 	static void update(){

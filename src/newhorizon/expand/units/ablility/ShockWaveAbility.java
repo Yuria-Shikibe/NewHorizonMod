@@ -1,4 +1,4 @@
-package newhorizon.expand.packets;
+package newhorizon.expand.units.ablility;
 
 import arc.audio.Sound;
 import arc.func.Cons;
@@ -83,7 +83,9 @@ public class ShockWaveAbility extends Ability{
 	
 	@Override
 	public void update(Unit unit){
-		timer += Time.delta;
+		if(unit.disarmed)return;
+		
+		timer += Time.delta * unit.reloadMultiplier;
 		
 		if(maxSpeed > 0 && unit.vel().len2() > maxSpeed){
 			timer = 0;

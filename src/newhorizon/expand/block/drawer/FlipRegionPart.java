@@ -5,9 +5,9 @@ import arc.graphics.g2d.TextureRegion;
 import mindustry.entities.part.DrawPart;
 import mindustry.entities.part.RegionPart;
 
-public class AdaptedRegionPart extends RegionPart{
+public class FlipRegionPart extends RegionPart{
 	
-	public AdaptedRegionPart(String region){
+	public FlipRegionPart(String region){
 		super(region);
 	}
 	

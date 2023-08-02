@@ -50,6 +50,13 @@ public class DrawFunc{
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
     private static final Rand rand = new Rand();
     
+    
+    
+    public static void drawAt(float z1, float z2, Runnable runnable){
+        Draw.draw(z1, runnable);
+        Draw.draw(z2, runnable);
+    }
+    
     public static void laser(TextureRegion line, TextureRegion start, TextureRegion end, float x, float y, float x2, float y2, float scale){
         float scl = 8f * scale * Draw.scl, rot = Mathf.angle(x2 - x, y2 - y);
         float vx = Mathf.cosDeg(rot) * scl, vy = Mathf.sinDeg(rot) * scl;

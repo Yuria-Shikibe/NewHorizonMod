@@ -52,6 +52,8 @@ public class LightningLinkerBulletType extends BasicBulletType{
 	public float effectLightningLength = -1;
 	public float effectLightningLengthRand = -1;
 	
+	public float trueHitChance = 0.66f;
+	
 	public boolean drawCircle = true;
 	
 	public Effect slopeEffect, liHitEffect, spreadEffect;
@@ -122,12 +124,14 @@ public class LightningLinkerBulletType extends BasicBulletType{
 		super.update(b);
 		
 		Effect.shake(hitShake, hitShake, b);
-		if (b.timer(5, hitSpacing)) {
+		if (b.timer(4, hitSpacing)) {
 			for(int i : Mathf.signs)slopeEffect.at(b.x + Mathf.range(size / 4f), b.y + Mathf.range(size / 4f), b.rotation(), i);
 			spreadEffect.at(b);
+			PosLightning.setHitChance(trueHitChance);
 			PosLightning.createRange(b, collidesAir, collidesGround, b, b.team, linkRange, maxHit, backColor, Mathf.chanceDelta(randomLightningChance), lightningDamage, lightningLength, PosLightning.WIDTH, boltNum, p -> {
 				liHitEffect.at(p.getX(), p.getY(), hitColor);
 			});
+			PosLightning.setHitChanceDef();
 		}
 		
 		if(randomGenerateRange > 0f && Mathf.chance(Time.delta * randomGenerateChance) && b.lifetime - b.time > PosLightning.lifetime)PosLightning.createRandomRange(b, b.team, b, randomGenerateRange, backColor, Mathf.chanceDelta(randomLightningChance), 0, 0, boltWidth, boltNum, randomLightningNum, hitPos -> {

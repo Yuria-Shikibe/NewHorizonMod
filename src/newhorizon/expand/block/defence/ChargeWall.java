@@ -88,7 +88,7 @@ public class ChargeWall extends Block{
 			NHFx.lightningHitLarge.at(tile.x, tile.y, effectColor);
 		});
 	};
-	Cons<ChargeWallBuild> closestTargetAct = tile -> PosLightning.create(tile, tile, tile.target, tile.team, effectColor, true, shootDamage, 4, PosLightning.WIDTH, 2, target ->{
+	Cons<ChargeWallBuild> closestTargetAct = tile -> PosLightning.create(tile, tile.team, tile, tile.target, effectColor, true, shootDamage, 4, PosLightning.WIDTH, 2, target ->{
 		hitEffect.at(target.getX(), target.getY(), tile.angleTo(target), effectColor);
 		shootEffect.at(tile.x, tile.y, effectColor);
 		releaseType.create(tile, tile.team, tile.x, tile.y, tile.angleTo(target));

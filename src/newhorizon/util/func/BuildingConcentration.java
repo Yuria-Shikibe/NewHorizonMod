@@ -1,12 +1,18 @@
 package newhorizon.util.func;
 
+import arc.func.Boolf;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.GridBits;
+import arc.struct.ObjectMap;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import mindustry.Vars;
 import mindustry.gen.Building;
+import mindustry.world.blocks.defense.turrets.Turret;
+import newhorizon.expand.block.special.HyperGenerator;
+import newhorizon.expand.block.special.JumpGate;
 import org.jetbrains.annotations.NotNull;
 
 public class BuildingConcentration{
@@ -74,7 +80,21 @@ public class BuildingConcentration{
 	}
 	
 	public static class Complex implements Comparable<Complex>{
+		public static final ObjectSet<Class<? extends Building>> priorityClasses = ObjectSet.with(
+			JumpGate.JumpGateBuild.class, HyperGenerator.HyperGeneratorBuild.class, Turret.TurretBuild.class
+		);
+		
+		public static final ObjectMap<Class<?>, Boolf<Building>> checkers = new ObjectMap<>();
+		
+		static{
+			checkers.put(Turret.TurretBuild.class, b -> b.block.size >= 4);
+		}
+		
+		public Seq<Building> priorityBuilding = new Seq<>();
+		
 		public Seq<Building> buildings;
+		
+		public Vec2 priorityCoord = new Vec2();
 		
 		public Building pop(){
 			return buildings.pop();
@@ -151,6 +171,14 @@ public class BuildingConcentration{
 			centerY = tmp.y;
 			
 			for(Building b : buildings){
+				if(priorityClasses.contains((Class<? extends Building>)b.block.subclass)){
+					if(checkers.containsKey(b.block.subclass)){
+						if(checkers.get(b.block.subclass).get(b)){
+							priorityBuilding.add(b);
+						}
+					}else priorityBuilding.add(b);
+				}
+				
 				maxDeltaX = Math.max(maxDeltaX, Math.abs(b.x - centerX));
 				maxDeltaY = Math.max(maxDeltaY, Math.abs(b.y - centerY));
 				
@@ -159,6 +187,13 @@ public class BuildingConcentration{
 			}
 			
 			degreeOfDispersion /= buildings.size;
+			
+			if(priorityBuilding.any()){
+				priorityBuilding.sort(b -> b.block.size);
+				priorityCoord.set(priorityBuilding.first());
+			}else{
+				priorityCoord.set(centerX, centerY);
+			}
 		}
 		
 		private void getConnectedBuildingsRecursive(Building self, Seq<Building> connectedBuildings, GridBits visited, int maxSize){

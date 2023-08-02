@@ -36,6 +36,15 @@ public class WorldOverride{
 		}
 	}
 	
+	public static Building getDummy(Team team, float x, float y){
+		Building b = Building.create();
+		b.set(x, y);
+		b.team(team);
+		b.tile = new Tile(World.toTile(x), World.toTile(y));
+		
+		return b;
+	}
+	
 	private static class FOVGiver extends Building implements Pool.Poolable{
 		public float radius;
 		

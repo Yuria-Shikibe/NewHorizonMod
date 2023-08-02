@@ -51,6 +51,7 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.liquid.LiquidBridge;
 import mindustry.world.blocks.liquid.LiquidRouter;
+import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
@@ -64,10 +65,7 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.*;
-import mindustry.world.meta.Attribute;
-import mindustry.world.meta.BuildVisibility;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.*;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
@@ -88,9 +86,10 @@ import newhorizon.expand.block.turrets.Webber;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.game.NHPartProgress;
 import newhorizon.expand.game.NHUnitSorts;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
-import newhorizon.util.graphic.ColorWarpEffect;
 import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static arc.graphics.g2d.Draw.color;
@@ -104,15 +103,21 @@ public class NHBlocks{
 	//Load Mod Factories
 
 	public static Block
+		tagger,
+		
 		reinForcedItemSource, reinForcedLiquidSource,
 		//delivery,
 		oreZeta, xenMelter, hyperGenerator, fusionCollapser,
-		chargeWall, chargeWallLarge, eoeUpgrader, jumpGate, jumpGateJunior, jumpGatePrimary,
+		chargeWall, chargeWallLarge,
+		
+		jumpGate, jumpGateJunior, jumpGatePrimary,
+	
+		ventExtractor, processorCompactor,
 		multiplePresstaniumFactory, presstaniumFactory, seniorProcessorFactory, juniorProcessorFactory, multipleSurgeAlloyFactory,
 		zetaFactoryLarge, zetaFactorySmall, fusionEnergyFactory, multipleSteelFactory, irayrondPanelFactory, reconstructPlastaniumFactory,
 		setonAlloyFactory, darkEnergyFactory, upgradeSortFactory, metalOxhydrigenFactory, metalOxhydrigenFactoryLarge,
 		sandCracker,
-		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory, irdryonVault,
+		thermoCorePositiveFactory, thermoCoreNegativeFactory, thermoCoreFactory, irdryonVault, arkyciteCompactor,
 	
 		//Ancient
 		ancimembraneConcentrator, ancientArtillery,
@@ -121,7 +126,7 @@ public class NHBlocks{
 		waveEnergyConveyor, ancitentWaveEnergyConveyor, waveEnergyGenerator,
 	
 		//Turrets
-		dendrite, interferon, prism,
+		dendrite, interferon, prism, hive,
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
 		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, executor, empTurret, gravity, multipleLauncher, antibody, multipleArtillery,
 		antiMatterTurret, atomSeparator, eternity, synchro,
@@ -138,6 +143,7 @@ public class NHBlocks{
 		//Drills
 		largeWaterExtractor, beamDrill,
 		//Powers
+		hydroFuelCell, ancientPowerNode,
 		armorPowerNode, armorBatteryLarge, radiationGenerator, zetaGenerator, hugeBattery, heavyPowerNode,
 		//Defence
 		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher, webber,
@@ -382,6 +388,205 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		hive = new ShootMatchTurret("hive"){{
+			size = 4;
+			health = 3200;
+			armor = 10;
+			
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 300, NHItems.seniorProcessor, 60, NHItems.juniorProcessor, 120, NHItems.presstanium, 200, Items.graphite, 150));
+			outlineColor = Pal.darkOutline;
+			
+			warmupMaintainTime = 90f;
+			shootWarmupSpeed /= 2f;
+			
+			reload = 150;
+			targetGround = false;
+			
+			range = 8 * 70;
+			
+			xRand = 6f;
+			velocityRnd = 0.105f;
+			
+			shootY = 8;
+			
+			rotateSpeed = 3;
+			cooldownTime = 60f;
+			recoil = 1.25f;
+			
+			Color heatC = Pal.turretHeat.cpy().lerp(Color.red, 0.33f);
+			heatColor = heatC;
+			
+			shake = 1.1f;
+			shootSound = Sounds.missileLarge;
+			
+			shoot = new AdaptedShootHelix(){{
+				flip = true;
+				shots = 10;
+				mag = 1.65f;
+				scl = 6f;
+				shotDelay = 3.5f;
+				offset = 9.75f * Mathf.PI2;
+				rotSpeedOffset = 0.015f;
+				rotSpeedBegin = 0.925f;
+			}};
+			
+			ammo(NHItems.juniorProcessor, new AccelBulletType(5.2f, 75, NHBullets.STRIKE){{
+				width = 7f;
+				height = 13f;
+				shrinkY = 0f;
+				
+				collideFloor = collidesGround = collidesTiles = false;
+				ammoMultiplier = 8f;
+				backColor = lightningColor = hitColor = Pal.bulletYellowBack;
+				lightColor = frontColor = Pal.bulletYellow;
+				splashDamageRadius = 12f;
+				splashDamage = damage / 3;
+				despawnEffect = Fx.smoke;
+				hitEffect = NHFx.hitSpark;
+				lifetime = 100f;
+				lightningDamage = damage / 2;
+				lightning = 2;
+				lightningLength = 3;
+				lightningLengthRand = 12;
+				
+				status = NHStatusEffects.emp2;
+				statusDuration = 180f;
+				
+				hitSound = despawnSound = Sounds.dullExplosion;
+				hitSoundVolume = 0.6f;
+				hitSoundPitch -= 0.11f;
+				hitShake = 1.1f;
+				
+				shootEffect = EffectWrapper.wrap(Fx.shootBigSmoke2, 180, true);
+				smokeEffect = NHFx.hugeSmokeGray;
+				lightningType = NHBullets.lightningAir;
+				
+				inaccuracy = 0.3f;
+				
+				weaveMag = 3f;
+				weaveScale = 3.55f;
+				homingDelay = 5f;
+				homingPower = 0.25f;
+				homingRange = 160f;
+				
+				velocityBegin = 1.4f;
+				velocityIncrease = 8f;
+				accelerateBegin = 0.005f;
+				accelerateEnd = 0.75f;
+				
+				trailColor = NHColor.trail;
+				trailWidth = 1f;
+				trailLength = 15;
+			}},
+					NHItems.seniorProcessor, new AccelBulletType(5.2f, 200, NHBullets.STRIKE){{
+				width = 14f;
+				height = 28f;
+				shrinkY = 0f;
+				lightningType = NHBullets.lightningAir;
+				
+				collideFloor = collidesGround = collidesTiles = false;
+				ammoMultiplier = 2f;
+				backColor = lightningColor = hitColor = Pal.bulletYellowBack;
+				lightColor = frontColor = Pal.bulletYellow;
+				splashDamageRadius = 64f;
+				splashDamage = damage / 5;
+				scaledSplashDamage = true;
+				despawnEffect = NHFx.blast(backColor, 64f);
+				lifetime = 142f;
+				hitEffect = NHFx.subEffect(90F, 120F, 18, 60F, Interp.pow2Out, (i, x, y, rot, fin) -> {
+					float fout = 1 - fin;
+					Draw.color(hitColor, Color.white, fin * 0.7f);
+					float f = NHFunc.rand(i).random(5, 8) * Mathf.curve(fin, 0, 0.1f) * fout;
+					Fill.circle(x, y, f);
+					Drawf.light(x, y, f * 1.25f, hitColor, 0.7f);
+				});
+				lightningDamage = damage / 2;
+				lightning = 4;
+				lightningLength = 12;
+				lightningLengthRand = 18;
+				
+				status = NHStatusEffects.emp3;
+				statusDuration = 640f;
+				
+				rangeChange = 80;
+				
+				reloadMultiplier = 0.25f;
+				
+				hitSound = despawnSound = Sounds.largeExplosion;
+				hitShake = despawnShake = 6.1f;
+				
+				shootEffect = EffectWrapper.wrap(NHFx.circleSplash, hitColor);
+				smokeEffect = EffectWrapper.wrap(NHFx.missileShoot, Color.gray.cpy().a(0.84f));
+				
+				inaccuracy = 0.3f;
+				
+				weaveMag = 2f;
+				weaveScale = 8f;
+				homingDelay = 5f;
+				homingPower = 0.325f;
+				homingRange = 320f;
+				
+				velocityBegin = 0.6f;
+				velocityIncrease = 6f;
+				accelerateBegin = 0.005f;
+				accelerateEnd = 0.75f;
+				
+				trailColor = NHColor.trail;
+				trailWidth = 2f;
+				trailLength = 18;
+			}});
+			ammoPerShot = 4;
+			maxAmmo = 120;
+			
+			AdaptedShootHelix shootS = (AdaptedShootHelix)shoot.copy();
+			shootS.flip = false;
+			shootS.shots = 4;
+			shootS.shotDelay = 6;
+			shootS.mag /= 2;
+			shootS.scl *= 2;
+			shootS.offset = shootS.scl * Mathf.PI2;
+			shooter(NHItems.juniorProcessor, shoot, NHItems.seniorProcessor, shootS);
+			
+			float mainMoveX = 2.5f;
+			drawer = new DrawTurret("reinforced-"){{
+				parts.add(new RegionPart("-barrel-main"){{
+					mirror = true;
+					moveX = mainMoveX;
+					heatColor = heatC;
+					heatLightOpacity = 0.86f;
+				}});
+				
+				parts.add(new RegionPart("-charger"){{
+					mirror = true;
+					moveX = mainMoveX;
+					
+					moves.add(new PartMove(){{
+						y = -1f;
+						x = 1f;
+						progress = PartProgress.warmup.compress(0.3f, 0.86f);
+					}});
+				}});
+				
+				parts.add(new RegionPart("-back"){{
+					mirror = true;
+					
+					moveX = mainMoveX;
+					
+					moves.add(new PartMove(){{
+						y = -1f;
+						x = 1.5f;
+						progress = PartProgress.warmup.compress(0.4f, 0.95f);
+					}});
+				}});
+			}};
+			
+			liquidCapacity = 120;
+			coolantMultiplier = 4f;
+			coolant = new ConsumeLiquid(Liquids.water, 0.5f);
+			
+			squareSprite = false;
+		}};
+		
 		ancientArtillery = new CaptureableTurret("ancient-artillery"){{
 			size = 8;
 			destructible = false;
@@ -430,7 +635,7 @@ public class NHBlocks{
 						heatProgress = PartProgress.warmup;
 						heatLightOpacity = 0.55f;
 					}},
-					new AdaptedRegionPart("-armor"){{
+					new FlipRegionPart("-armor"){{
 						outline = mirror = true;
 						layerOffset = 0.2f;
 						x = 2f;
@@ -440,7 +645,7 @@ public class NHBlocks{
 						moveRot = -45;
 						moves.add(new PartMove(PartProgress.recoil, 0, -6, 0));
 					}},
-					new AdaptedRegionPart("-back"){{
+					new FlipRegionPart("-back"){{
 						outline = mirror = true;
 						layerOffset = 0.3f;
 						x = 2f;
@@ -449,7 +654,7 @@ public class NHBlocks{
 						
 						moves.add(new PartMove(PartProgress.recoil, 0, -4, 0));
 					}},
-					new AdaptedRegionPart("-cover"){{
+					new FlipRegionPart("-cover"){{
 						outline = true;
 						layerOffset = 0.3f;
 						turretHeatLayer = Layer.turretHeat + layerOffset;
@@ -457,7 +662,7 @@ public class NHBlocks{
 						heatProgress = PartProgress.warmup;
 						heatLightOpacity = 0.55f;
 					}},
-					new AdaptedRegionPart("-barrel"){{
+					new FlipRegionPart("-barrel"){{
 						outline = mirror = true;
 						layerOffset = 0.2f;
 						x = 2f;
@@ -472,7 +677,7 @@ public class NHBlocks{
 						moveX = 7.75f;
 						moveRot = 3.6f;
 					}},
-					new AdaptedRegionPart("-tail"){{
+					new FlipRegionPart("-tail"){{
 						outline = mirror = true;
 						layerOffset = 0.2f;
 						x = 1f;
@@ -660,6 +865,7 @@ public class NHBlocks{
 				
 				despawnEffect = NHFx.lightningHitLarge;
 				hitEffect = NHFx.hitSparkHuge;
+				errorCorrectionRadius = 32;
 				
 				status = NHStatusEffects.ultFireBurn;
 				statusDuration = 600f;
@@ -678,8 +884,8 @@ public class NHBlocks{
 				
 				trailSpacing *= 2f;
 				
-				shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(32f, 12f), hitColor);
-				smokeEffect = ColorWarpEffect.wrap(NHFx.square45_6_45, hitColor);
+				shootEffect = EffectWrapper.wrap(NHFx.shootLine(32f, 12f), hitColor);
+				smokeEffect = EffectWrapper.wrap(NHFx.square45_6_45, hitColor);
 				
 //				Vars.content.getByName(ContentType.block, "new-horizon-prism").reload = 12;
 				
@@ -740,8 +946,8 @@ public class NHBlocks{
 					fragVelocityMax = 0.55f;
 					fragVelocityMin = 0.2f;
 					
-					shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(32f, 12f), hitColor);
-					smokeEffect = ColorWarpEffect.wrap(NHFx.square45_6_45, hitColor);
+					shootEffect = EffectWrapper.wrap(NHFx.shootLine(32f, 12f), hitColor);
+					smokeEffect = EffectWrapper.wrap(NHFx.square45_6_45, hitColor);
 				}}
 			);
 			
@@ -818,13 +1024,13 @@ public class NHBlocks{
 				
 				collidesAir = collidesGround = true;
 				
-				shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(33, 33), hitColor);
-				smokeEffect = ColorWarpEffect.wrap(NHFx.hitSparkHuge, hitColor);
+				shootEffect = EffectWrapper.wrap(NHFx.shootLine(33, 33), hitColor);
+				smokeEffect = EffectWrapper.wrap(NHFx.hitSparkHuge, hitColor);
 				
 				hitEffect = NHFx.hitSpark;
 				despawnEffect = NHFx.blast(hitColor, 42f);
 				
-				spreadEffect = ColorWarpEffect.wrap(NHFx.hitSpark, hitColor);
+				spreadEffect = EffectWrapper.wrap(NHFx.hitSpark, hitColor);
 			}};
 			
 			squareSprite = false;
@@ -1317,7 +1523,7 @@ public class NHBlocks{
 			consumePowerCond(8f, (PointDefenseBuild b) -> b.target != null);
 			
 			shootLength = 5f;
-			bulletDamage = 80f;
+			bulletDamage = 150f;
 			reload = 6f;
 			
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 90, NHItems.juniorProcessor, 60, NHItems.presstanium, 120, NHItems.zeta, 120, Items.graphite, 80));
@@ -1450,7 +1656,7 @@ public class NHBlocks{
 			
 			shootSound = NHSounds.flak2;
 			
-			ammo(NHItems.ancimembrane, new TrailFadeBulletType(4f, 200f, "circle-bullet"){{
+			ammo(NHItems.ancimembrane, new TrailFadeBulletType(4f, 360f, "circle-bullet"){{
 				velocityBegin = 8.8f;
 				velocityIncrease = -8.15f;
 				accelerateBegin = 0.1f;
@@ -1495,7 +1701,7 @@ public class NHBlocks{
 				
 				
 				smokeEffect = NHFx.hugeSmokeGray;
-				shootEffect = new ColorWarpEffect(NHFx.shootLine(30f, 120f), backColor);
+				shootEffect = new EffectWrapper(NHFx.shootLine(30f, 120f), backColor);
 				hitEffect = NHFx.square45_6_45;
 				despawnEffect = new Effect(35f, 70f, e -> {
 					Draw.color(e.color, Color.white, e.fout() * 0.7f);
@@ -1560,7 +1766,7 @@ public class NHBlocks{
 				
 				hitEffect = NHFx.hitSparkLarge;
 				despawnEffect = NHFx.square45_6_45;
-				shootEffect = new ColorWarpEffect(NHFx.shootLine(22, 20f), backColor);
+				shootEffect = new EffectWrapper(NHFx.shootLine(22, 20f), backColor);
 				smokeEffect = NHFx.hugeSmokeGray;
 				trailEffect = NHFx.trailToGray;
 				
@@ -1665,18 +1871,30 @@ public class NHBlocks{
 			health = 8000;
 			
 			ammo(NHItems.thermoCorePositive,
-					new BasicBulletType(4, 500, "large-bomb"){{
+					new BasicBulletType(4, 600, "large-bomb"){{
 						lightning = 6;
 						lightningCone = 360;
 						lightningLengthRand = lightningLength = 12;
 						splashDamageRadius = 60f;
 						splashDamage = lightningDamage = 0.5f * damage;
 						
-						trailColor = backColor = lightColor = lightningColor = heatColor;
+						trailEffect = NHFx.hitSparkLarge;
+						trailInterval = 3f;
+						
+						trailColor = backColor = hitColor = lightColor = lightningColor = heatColor;
 						frontColor = Color.white;
 						
-						status = NHStatusEffects.emp1;
-						statusDuration = 30f;
+						intervalBullets = 2;
+						bulletInterval = 3f;
+						intervalBullet = new AdaptedLightningBulletType(){{
+							lightningColor = trailColor = hitColor = lightColor = heatColor;
+							lightningLength = 4;
+							lightningLengthRand = 15;
+							damage = 60;
+						}};
+						
+						status = NHStatusEffects.emp3;
+						statusDuration = 90f;
 						
 						spin = 3f;
 						trailLength = 40;
@@ -1700,7 +1918,9 @@ public class NHBlocks{
 							Draw.color(frontColor);
 							Fill.circle(e.x, e.y, e.fout() * height / 2f);
 						});
-						despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(backColor, 120f), NHFx.instHit(backColor, 3, 80f));
+						despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(backColor, 120f), NHFx.instHit(backColor, 3, 80f),
+								NHFx.spreadOutSpark(120f, splashDamageRadius + 30f, 36, 4, 42f, 17f, 4f, Interp.pow3Out)
+						);
 						height = width = 40;
 					}
 						
@@ -1715,8 +1935,8 @@ public class NHBlocks{
 							float fi = Mathf.randomSeed(b.id, 360f);
 							
 							for(int i : Mathf.signs){
-								DrawFunc.tri(b.x, b.y, 6 * f2 * f, 80 * f2 * f, fi + (i + 1) * 90 + Time.time * 2);
-								DrawFunc.tri(b.x, b.y, 6 * f2 * f, 65 * f2 * f, fi + (i + 1) * 90 - Time.time * 2 + 90);
+								DrawFunc.tri(b.x, b.y, 3 * f2 * f, 60 * f2 * f, fi + (i + 1) * 90 + Time.time * 2);
+								DrawFunc.tri(b.x, b.y, 3 * f2 * f, 35 * f2 * f, fi + (i + 1) * 90 - Time.time * 2 + 90);
 							}
 						}
 					}
@@ -1921,11 +2141,14 @@ public class NHBlocks{
 			armor = 15;
 			
 			shootCone = 15f;
+			squareSprite = false;
 			
 			unitSort = UnitSorts.strongest;
 			
-			warmupMaintainTime = 30f;
-			coolant = consumeCoolant(0.5F);
+			warmupMaintainTime = 50f;
+			coolant = consume(new ConsumeLiquid(NHLiquids.quantumEntity, 20f / 60f));
+			coolantMultiplier = 2.5f;
+			
 			moveWhileCharging = false;
 			
 			shootWarmupSpeed = 0.035f;
@@ -1968,12 +2191,16 @@ public class NHBlocks{
 				firstShotDelay = NHFx.darkEnergyChargeBegin.lifetime;
 			}};
 			
+			outlineColor = Pal.darkOutline;
+			
 			chargeSound = NHSounds.railGunCharge;
 			
-			requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 2000));
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 1500));
 			ammo(NHItems.darkEnergy, NHBullets.arc_9000, NHItems.upgradeSort, new BulletType(){{
 				hitColor = lightColor = trailColor = NHColor.darkEnrFront;
 				spawnUnit = NHBullets.airRaidMissile;
+				rangeOverride = 120;
+				ammoMultiplier = 1;
 				chargeEffect = NHFx.railShoot(NHColor.darkEnrColor, 800f, 18, NHFx.darkEnergyChargeBegin.lifetime, 25);
 				shootEffect = NHFx.instShoot(NHColor.darkEnrColor, NHColor.darkEnrFront);
 				smokeEffect = new Effect(180f, 300f, b -> {
@@ -2009,40 +2236,46 @@ public class NHBlocks{
 				shotDelay = 12f;
 			}});
 			
-			shootCone = 20f;
+			shootCone = 12f;
 			rotateSpeed = 0.75f;
 			ammoPerShot = 4;
 			maxAmmo = 20;
 			size = 8;
-			health = 15000;
+			health = 28000;
+			armor = 15f;
 			hasItems = true;
 			heatColor = NHColor.darkEnrColor;
 			consumePower(30f);
-			reload = 360f;
+			reload = 420f;
 			range = 800f;
 			inaccuracy = 0f;
-			shootCone = 20f;
 			shootSound = Sounds.laserbig;
 		}};
 		
 		executor = new ItemTurret("executor"){{
 			size = 6;
-			health = 10200;
-			requirements(Category.turret, BuildVisibility.shown, with(Items.surgeAlloy, 250, NHItems.irayrondPanel, 650, Items.plastanium, 375, NHItems.seniorProcessor, 150, NHItems.setonAlloy, 400));
+			health = 15200;
+			armor = 10;
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 650, Items.tungsten, 375, NHItems.seniorProcessor, 150, NHItems.multipleSteel, 400));
 			ammo(
 					NHItems.thermoCorePositive, NHBullets.blastEnergyPst, NHItems.thermoCoreNegative, NHBullets.blastEnergyNgt
 			);
 			
-			shoot = new ShootPattern(){{
-				shots = 8;
+			shoot = new ShootBarrel(){{
+				shots = 3;
+				barrels = new float[]{
+						-11, 2, 0,
+						0, 2, 0,
+						11, 2, 0
+				};
 				shotDelay = 4f;
 			}};
 			
-			consumePower(10.0F);
 			maxAmmo = 80;
 			ammoPerShot = 8;
-			xRand = tilesize * (size - 2.225f) / 2;
-			reload = 120f;
+			xRand = 1;
+			velocityRnd = 0.08f;
+			reload = 16;
 			shootCone = 50.0F;
 			rotateSpeed = 1.5F;
 			range = 440.0F;
@@ -2050,10 +2283,185 @@ public class NHBlocks{
 			heatColor = NHBullets.blastEnergyPst.lightColor;
 			recoil = 4.0F;
 			shootSound = NHSounds.thermoShoot;
+			coolant = new ConsumeCoolant(0.25f);
 		}};
 	}
 	
 	private static void loadFactories(){
+		processorCompactor = new GenericCrafter("processor-compactor"){{
+			requirements(Category.crafting, with(NHItems.zeta, 120, NHItems.irayrondPanel, 80, NHItems.presstanium, 60, NHItems.seniorProcessor, 40));
+			health = 1500;
+			armor = 4;
+			size = 4;
+			
+			hasItems = hasPower = hasLiquids = true;
+			
+			consumePower(20);
+			consumeLiquid(NHLiquids.irdryonFluid, 15 / 60f);
+			consumeItem(Items.silicon, 6);
+			
+			outputItems = ItemStack.with(NHItems.juniorProcessor, 15, NHItems.seniorProcessor, 3);
+			
+			liquidCapacity = 50;
+			itemCapacity = 60;
+			craftTime = 150;
+			
+			squareSprite = false;
+			
+			Color senior = Pal.ammo.cpy().lerp(Color.red, 0.63f).lerp(Color.white, 0.2f);
+			Color junior = Pal.bulletYellowBack;
+			
+			updateEffectChance = 0.07f;
+			updateEffect = new Effect(30f, e -> {
+				Rand rand = NHFunc.rand(e.id);
+				Draw.color(senior, Color.white, e.fout() * 0.66f);
+				Draw.alpha(0.55f * e.fout() + 0.5f);
+				Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 16f, (x, y) -> {
+					Fill.square(e.x + x, e.y + y, e.fout() * rand.random(2, 4));
+				});
+				
+				Draw.color(junior, Color.white, e.fout() * 0.66f);
+				Draw.alpha(0.55f * e.fout() + 0.5f);
+				Angles.randLenVectors(e.id + 12, 4, 4f + e.finpow() * 16f, (x, y) -> {
+					Fill.square(e.x + x, e.y + y, e.fout() * rand.random(1, 3));
+				});
+			});
+			
+			
+			/*craftEffect = new Effect(30f, e -> {
+				Rand rand = NHFunc.rand(e.id);
+				Lines.stroke(e.fout() * 1.5f);
+				Draw.color(senior, Color.white, e.fout() * 0.66f);
+				Angles.randLenVectors(e.id, 3, 4f + e.fin() * 22, (x, y) -> {
+					Lines.square(e.x + x, e.y + y, e.finpow() * rand.random(7, 11));
+				});
+				
+				Draw.color(junior, Color.white, e.fout() * 0.66f);
+				Angles.randLenVectors(e.id + 6, 7, 4f + e.fin() * 22, (x, y) -> {
+					Lines.square(e.x + x, e.y + y, e.finpow() * rand.random(4, 7));
+				});
+			});*/
+			
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"),
+					new DrawScanLine(){{
+						colorFrom = junior;
+						lineLength = 73 / 4f;
+						scanLength = 73 / 4f;
+						scanScl = 15f;
+						scanAngle = 90;
+						lineStroke -= 0.15f;
+						totalProgressMultiplier = 1.25f;
+						phaseOffset = Mathf.random() * 5f;
+					}},
+					
+					new DrawScanLine(){{
+						colorFrom = junior;
+						lineLength = 73 / 4f;
+						scanLength = 73 / 4f;
+						scanScl = 15f;
+						scanAngle = 0;
+						totalProgressMultiplier = 1.55f;
+						phaseOffset = Mathf.random() * 5f;
+					}},
+					
+					new DrawScanLine(){{
+						colorFrom = senior;
+						lineLength = 73 / 4f;
+						scanLength = 73 / 4f;
+						scanScl = 15f;
+						scanAngle = 90;
+						totalProgressMultiplier = 1.35f;
+						phaseOffset = Mathf.random() * 5f;
+					}},
+					
+					new DrawScanLine(){{
+						colorFrom = senior;
+						lineLength = 73 / 4f;
+						scanLength = 73 / 4f;
+						scanScl = 8f;
+						scanAngle = 0;
+						lineStroke -= 0.15f;
+						totalProgressMultiplier = 1.65f;
+						phaseOffset = Mathf.random() * 5f;
+					}},
+					
+					new DrawRegion("-mid"), new DrawLiquidTile(NHLiquids.irdryonFluid, 54 / 4f), new DrawDefault(),
+					new DrawGlowRegion("-glow1"){{
+						color = junior;
+//						alpha = 1;
+					}}, new DrawGlowRegion("-glow2"){{
+						color = junior;
+//						alpha = 1;
+				
+				}}, new DrawGlowRegion("-glow3"){{
+					color = junior;
+//					alpha = 0.76f;
+				}}
+			);
+		}};
+		
+		ventExtractor = new AttributeCrafter("vent-extractor"){{
+			requirements(Category.production, with(Items.graphite, 40, Items.beryllium, 60, NHItems.presstanium, 30, NHItems.juniorProcessor, 20));
+			attribute = NHContent.quantum;
+			group = BlockGroup.liquids;
+			minEfficiency = 1f - 0.0001f;
+			boostScale = 1/9f;
+			baseEfficiency = 0f;
+			displayEfficiency = false;
+			
+			squareSprite = false;
+			
+			updateEffectChance -= 0.05f;
+			updateEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Liquids.nitrogen.color.cpy().a(0.45f));
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.nitrogen, 5), new DrawRegion("-mid"), new DrawLiquidTile(NHLiquids.quantumEntity, 40f / 4f), new DrawRotator(3f, true), new DrawDefault());
+			craftTime = 120f;
+			size = 3;
+			ambientSound = Sounds.hum;
+			ambientSoundVolume = 0.06f;
+			hasLiquids = true;
+			boostScale = 1f / 9f;
+			outputLiquid = new LiquidStack(Liquids.nitrogen, 16f / 60f);
+			consumePower(2f);
+			consumeLiquid(NHLiquids.quantumEntity, 0.1f);
+			liquidCapacity = 60f;
+		}};
+		
+		arkyciteCompactor = new AttributeCrafter("arkycite-compactor"){{
+			baseEfficiency = 1f;
+			attribute = NHContent.quantum;
+			boostScale = 0.25f;
+			maxBoost = 2;
+			
+			size = 3;
+			
+			squareSprite = false;
+			health = 560;
+			
+			requirements(Category.crafting, ItemStack.with(Items.beryllium, 120, Items.silicon, 60, NHItems.presstanium, 40, Items.metaglass, 60));
+			hasPower = hasLiquids = true;
+			
+			consumeLiquids(LiquidStack.with(NHLiquids.quantumEntity, 0.15f, Liquids.oil, 0.2f));
+			
+			outputLiquid = new LiquidStack(Liquids.arkycite, 0.5f);
+			craftTime = 30f;
+			
+			liquidCapacity = 180;
+			itemCapacity = 16;
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPistons(){{
+				sinMag = 2.75f;
+				sinScl = 5f;
+				sides = 4;
+				lenOffset += 0.25f;
+				angleOffset = 45;
+				sideOffset = Mathf.PI / 2f;
+			}}, new DrawLiquidTile(Liquids.arkycite, 38 / 4f), new DrawDefault(), new DrawGlowRegion(){{
+				color = NHLiquids.quantumEntity.color;
+				alpha = 0.721f;
+			}});
+		}};
+		
 		ancimembraneConcentrator = new AttributeCrafter("ancimembrane-concentrator"){{
 			size = 3;
 			
@@ -2145,7 +2553,6 @@ public class NHBlocks{
 		sandCracker = new MultiCrafter("sand-cracker"){{
 			size = 2;
 			requirements(Category.crafting, ItemStack.with(Items.lead, 40, Items.copper, 60, Items.graphite, 45));
-//			NHTechTree.add(Blocks.pulverizer, this);
 			health = 320;
 			craftTime = 45f;
 			itemCapacity = 20;
@@ -2333,8 +2740,29 @@ public class NHBlocks{
 				outputItem = new ItemStack(NHItems.darkEnergy, 2);
 				craftTime = 90f;
 				size = 2;
+				loopSound = Sounds.electricHum;
 				hasPower = hasItems = true;
-				drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
+				drawer = new DrawMulti(
+						new DrawRegion("-bottom"),
+						new DrawCrucibleFlame(){{
+							flameColor = NHColor.darkEnrColor;
+							midColor = NHColor.darkEnr;
+							particleRad += 0.25f;
+							circleSpace = 1f;
+							alpha = 0.3f;
+							particles = 18;
+						}},
+						new DrawDefault()
+				);
+				
+				updateEffectChance = 0.1f;
+				lightColor = NHColor.darkEnrColor;
+				updateEffect = NHFx.squareRand(lightColor, 4f, 8f);
+				craftEffect = new Effect(90f, e -> {
+					Draw.color(lightColor, Color.white, e.fin() * 0.7f);
+					Lines.stroke(e.fout() * 1.12f);
+					Lines.square(e.x, e.y, e.finpow() * 12f, 45f);
+				});
 				
 				consumeItems(new ItemStack(NHItems.thermoCoreNegative, 1), new ItemStack(NHItems.thermoCorePositive, 1));
 				consumePower(20f);
@@ -2351,7 +2779,25 @@ public class NHBlocks{
 				itemCapacity = 20;
 				liquidCapacity = 60f;
 				hasPower = hasLiquids = hasItems = true;
-				drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.fusionEnergy.color));
+				loopSound = Sounds.laserbeam;
+				loopSoundVolume /= 3f;
+				drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawCrucibleFlame(){{
+						particles = 45;
+						particleRad = 11f;
+					}},
+					new DrawDefault(),
+					new DrawLiquidTile(Liquids.water, 37 / 4f),
+					new DrawRotator(true){{
+						rotateSpeed = 4;
+					}},
+					new DrawRegion("-top")
+				);
+				
+				updateEffectChance = 0.075f;
+				updateEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, NHItems.fusionEnergy.color.cpy().a(0.53f));
+				
 				consumeLiquid(Liquids.water, 0.3f);
 				consumeItems(new ItemStack(NHItems.presstanium, 2), new ItemStack(NHItems.zeta, 6));
 				consumePower(6f);
@@ -2569,10 +3015,11 @@ public class NHBlocks{
 		multipleSteelFactory = new GenericCrafter("multiple-steel-factory") {
 			{
 				requirements(Category.crafting, with(Items.graphite, 65, NHItems.juniorProcessor, 65, NHItems.presstanium, 100, Items.metaglass, 30));
-				updateEffect = Fx.smeltsmoke;
-				craftEffect = Fx.shockwave;
+				lightColor = NHItems.multipleSteel.color;
+				updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
+				craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
 				outputItem = new ItemStack(NHItems.multipleSteel, 4);
-				craftTime = 40f;
+				craftTime = 60f;
 				itemCapacity = 20;
 				health = 600;
 				size = 3;
@@ -2639,18 +3086,25 @@ public class NHBlocks{
 		
 		setonAlloyFactory = new GenericCrafter("seton-alloy-factory"){{
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, NHItems.presstanium, 100, Items.surgeAlloy, 40));
-			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 4f + e.fin() * 12f, (x, y) -> {
+			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 4f + e.finpow() * 14f, (x, y) -> {
 				Draw.color(NHLiquids.irdryonFluid.color);
 				Fill.square(e.x + x, e.y + y, e.fout() * 3f);
 			}));
 			outputItem = new ItemStack(NHItems.setonAlloy, 2);
-			craftTime = 60f;
+			craftTime = 180f;
 			itemCapacity = 24;
 			liquidCapacity = 20f;
 			health = 500;
 			size = 3;
 			hasPower = hasLiquids = hasItems = true;
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.irdryonFluid), new DrawRotator(1, 45), new DrawRotator(-1.5f, "-rotator1"), new DrawDefault());
+			drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawPistons(){{
+						sides = 4;
+						sinMag = 3.9f;
+						lenOffset = -1.785f;
+						angleOffset = 45;
+					}}, new DrawRegion("-shade"), new DrawDefault(), new DrawLiquidTile(NHLiquids.irdryonFluid, 39 / 4f), new DrawRegion("-top"));
 		
 			consumeLiquid(NHLiquids.irdryonFluid, 0.12f);
 			consumeItems(new ItemStack(Items.plastanium, 4), new ItemStack(Items.graphite, 6));
@@ -2703,9 +3157,347 @@ public class NHBlocks{
 		}};
 	}
 	
-	public static void load() {
+	private static void loadPowers(){
+		ancientPowerNode = new PowerNode("ancient-power-node"){{
+			size = 1;
+			health = 3000;
+			armor = 30;
+			absorbLasers = true;
+			autolink = false;
+			
+			maxNodes = 20;
+			laserRange = 120;
+			timers++;
+			
+			lightColor = laserColor1 = NHColor.ancientLight;
+			laserColor2 = NHColor.ancient;
+			update = true; //Worth it?
+			
+			buildType = () -> new PowerNodeBuild(){
+				@Override
+				public void updateTile(){
+					if(damaged() && power.graph.getSatisfaction() > 0.5f){
+						if(timer.get(90f)){
+							Fx.healBlockFull.at(x, y, 0, NHColor.ancientLightMid, this.block);
+							healFract(5 * power.graph.getSatisfaction());
+						}
+					}
+				}
+			};
+			
+			requirements(Category.power,ItemStack.with(NHItems.ancimembrane, 50, NHItems.seniorProcessor, 15));
+		}};
+		
+		hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell"){{
+			size = 2;
+			requirements(Category.power,ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, Items.copper, 200, Items.graphite, 80, Items.metaglass, 60));
+			
+			lightColor = Pal.techBlue;
+			consumeEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Liquids.hydrogen.color.cpy().lerp(Liquids.nitrogen.color, 0.4f).a(0.56f));
+			generateEffect = new Effect(45f, e -> {
+				Draw.color(lightColor, Color.white, e.fin() * 0.66f);
+				Lines.stroke(e.fout() * 1.375f);
+				Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
+			});
+			//			//NHTechTree.add(Blocks.thoriumReactor,this);
+			powerProduction = 1720f / 60f;
+			loopSound = Sounds.flux;
+			loopSoundVolume = 0.14F;
+			itemCapacity = 40;
+			liquidCapacity = 30;
+			itemDuration = 240f;
+			consumeItem(NHItems.metalOxhydrigen, 4);
+			consumeLiquid(Liquids.nitrogen,2 / 60f);
+			
+			squareSprite = false;
+			hasLiquids = hasItems = true;
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.nitrogen, 2f), new DrawDefault(), new DrawGlowRegion(){{
+				color = Liquids.hydrogen.color;
+			}});
+		}};
+		
+		zetaGenerator = new ConsumeGenerator("zeta-generator"){{
+			requirements(Category.power,ItemStack.with(NHItems.metalOxhydrigen, 120, NHItems.juniorProcessor, 80, Items.plastanium, 80, NHItems.zeta,100, Items.copper, 150, Items.metaglass, 60));
+			
+			size = 3;
+			
+			powerProduction = 70f;
+			loopSound = Sounds.electricHum;
+			loopSoundVolume = 0.24F;
+			itemCapacity = 30;
+			liquidCapacity = 30;
+			itemDuration = 150f;
+			consumeItem(NHItems.zeta, 3);
+			consumeLiquid(Liquids.cryofluid,0.1f);
+			
+			hasLiquids = hasItems = true;
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.cryofluid), new DrawDefault(), new DrawGlowRegion(){{
+				color = NHItems.zeta.color;
+			}});
+			
+			lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
+			generateEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
+			//			explodeEffect = NHFx.lightningHitLarge(heatColor);
+		}};
+		
+		hugeBattery = new Battery("huge-battery"){{
+			size = 5;
+			health = 1600;
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(Items.phaseFabric, 40, NHItems.juniorProcessor, 20, NHItems.zeta, 80, NHItems.presstanium, 35, Items.graphite, 50));
+			//			//NHTechTree.add(Blocks.batteryLarge, this);
+			consumePowerBuffered(750_000);
+		}};
+		
+		armorBatteryLarge = new Battery("large-armor-battery"){{
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10, Items.lead, 40));
+			size = 3;
+			health = 3000;
+			armor = 15;
+			consumePowerBuffered(45000.0F);
+		}};
+		
+		heavyPowerNode = new PowerNode("heavy-power-node"){{
+			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 25, NHItems.juniorProcessor, 15, NHItems.zeta, 45, NHItems.presstanium, 40));
+			//			//NHTechTree.add(Blocks.powerNodeLarge, this);
+			size = 3;
+			maxNodes = 30;
+			laserRange = 20F;
+			health = 1200;
+			armor = 3;
+			
+			//			consumePowerBuffered(30000f);
+		}};
+		
+		hyperGenerator = new HyperGenerator("hyper-generator"){{
+			size = 8;
+			health = 12500;
+			powerProduction = 2000f;
+			updateLightning = updateLightningRand = 3;
+			effectColor = NHColor.thermoPst;
+			itemCapacity = 40;
+			itemDuration = 180f;
+			ambientSound = Sounds.pulse;
+			ambientSoundVolume = 0.1F;
+			toApplyStatus.add(NHStatusEffects.phased, StatusEffects.overclock);
+			
+			consumePower(100.0F);
+			consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 4)).optional(true, true);
+			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
+			consumeLiquid(NHLiquids.zetaFluid, 0.25F);
+			requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
+			//			//NHTechTree.add(fusionCollapser, this);
+		}};
+	}
+	
+	private static void loadWalls(){
 		final int healthMult2 = 4, healthMult3 = 9;
 		
+		shapedWall = new ShapedWall("shaped-wall"){{
+			health = 6000;
+			insulated = absorbLasers = true;
+			placeableLiquid = true;
+			crushDamageMultiplier = 0.025f;
+			
+			requirements(Category.defense, with(NHItems.upgradeSort, 5, NHItems.juniorProcessor, 2, NHItems.ancimembrane, 10));
+		}};
+		
+		ancientLaserWall = new LaserWallBlock("ancient-laser-wall"){{
+			size = 2;
+			consumePowerCond(80f, LaserWallBuild::canActivate);
+			health = 8000;
+			range = 800;
+			
+			armor = 20f;
+			crushDamageMultiplier = 0.025f;
+			
+			generateType = new Shooter(300){{
+				Color c = NHColor.ancient;
+				colors = new Color[]{c.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f), c.cpy().mul(1f, 1f, 1f, 0.6f), c, Color.white};
+				hitColor = lightColor = lightningColor = c;
+				width = 4.5f;
+				oscMag = 0.5f;
+				
+				status = NHStatusEffects.entangled;
+				statusDuration = 60f;
+				lightningDamage = 200;
+			}
+				
+				@Override
+				public void hit(Bullet b, float x, float y){
+					super.hit(b, x, y);
+					
+					for(int i = 0; i < 2; i++){
+						Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(180), lightningLength + Mathf.random(lightningLengthRand));
+					}
+				}
+			};
+			
+			requirements(Category.defense, with(NHItems.seniorProcessor, 120, NHItems.ancimembrane, 200, NHItems.zeta, 800));
+		}};
+		
+		laserWall = new LaserWallBlock("laser-wall"){{
+			size = 3;
+			consumePowerCond(30f, LaserWallBuild::canActivate);
+			health = 4000;
+			
+			armor = 10f;
+			
+			requirements(Category.defense, with(NHItems.juniorProcessor, 120, Items.copper, 350, NHItems.multipleSteel, 80, NHItems.zeta, 180, Items.graphite, 80));
+			//			NHTechTree.add(Blocks.forceProjector, this);
+		}};
+		
+		setonWall = new Wall("seton-wall"){{
+			armor = 15f;
+			
+			insulated = true;
+			crushDamageMultiplier = 0.15f;
+			
+			size = 1;
+			health = 1250;
+			chanceDeflect = 15.0F;
+			flashHit = true;
+			requirements(Category.defense, with(NHItems.setonAlloy, 5, NHItems.irayrondPanel, 10, Items.silicon, 15, NHItems.presstanium, 15));
+		}};
+		
+		setonWallLarge = new Wall("seton-wall-large"){{
+			armor = 15f;
+			
+			insulated = true;
+			crushDamageMultiplier = 0.15f;
+			
+			size = 2;
+			health = 1250 * healthMult2;
+			chanceDeflect = 15.0F;
+			flashHit = true;
+			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult2, NHItems.irayrondPanel, 10 * healthMult2, Items.silicon, 15 * healthMult2, NHItems.presstanium, 15 * healthMult2));
+		}};
+		
+		heavyDefenceWall = new ShieldWall("heavy-defence-wall"){{
+			shieldHealth = 1000f;
+			breakCooldown = 30f * 10f;
+			regenSpeed = 5f;
+			glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
+			consumePower(8f / 60f);
+			crushDamageMultiplier = 0.05f;
+			
+			outputsPower = false;
+			hasPower = true;
+			consumesPower = true;
+			conductivePower = true;
+			
+			armor = 30f;
+			
+			size = 1;
+			health = 1750;
+			absorbLasers = true;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20));
+			
+			buildType = () -> new ShieldWallBuild(){
+				@Override
+				public void draw(){
+					Draw.rect(block.region, x, y);
+					
+					if(shieldRadius > 0){
+						float radius = shieldRadius * tilesize / 2;
+						
+						Draw.z(Layer.shields);
+						
+						Draw.color(team.color, Color.white, Mathf.clamp(hit));
+						
+						if(renderer.animateShields){
+							Fill.square(x, y, radius);
+						}else{
+							Lines.stroke(1.5f);
+							Draw.alpha(0.09f + Mathf.clamp(0.08f * hit));
+							Fill.square(x, y, radius);
+							Draw.alpha(1f);
+							Lines.poly(x, y, 4, radius, 45f);
+							Draw.reset();
+						}
+						
+						Draw.reset();
+						
+						Drawf.additive(glowRegion, glowColor, (1f - glowMag + Mathf.absin(glowScl, glowMag)) * shieldRadius, x, y, 0f, Layer.blockAdditive);
+					}
+				}
+			};
+		}};
+		
+		heavyDefenceWallLarge = new ShieldWall("heavy-defence-wall-large"){{
+			shieldHealth = 1200f * healthMult2;
+			breakCooldown = 30f * 10f;
+			regenSpeed = 5f * healthMult2;
+			glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
+			consumePower(8f / 60f * healthMult2);
+			
+			armor = 30f;
+			crushDamageMultiplier = 0.05f;
+			
+			outputsPower = false;
+			hasPower = true;
+			consumesPower = true;
+			conductivePower = true;
+			
+			size = 2;
+			health = 1750 * healthMult2;
+			absorbLasers = true;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2));
+		}};
+		
+		heavyDefenceDoor = new AutoDoor("heavy-defence-door"){{
+			size = 1;
+			health = 1750;
+			armor = 30;
+			crushDamageMultiplier = 0.05f;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20, NHItems.juniorProcessor, 5));
+		}};
+		
+		heavyDefenceDoorLarge = new AutoDoor("heavy-defence-door-large"){{
+			size = 2;
+			health = 1750 * healthMult2;
+			armor = 30;
+			openfx = Fx.dooropenlarge;
+			closefx = Fx.doorcloselarge;
+			crushDamageMultiplier = 0.05f;
+			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2, NHItems.juniorProcessor, 5 * healthMult2));
+		}};
+		
+		
+		chargeWall = new ChargeWall("charge-wall"){{
+			requirements(Category.defense, with(NHItems.seniorProcessor, 5, NHItems.upgradeSort, 5));
+			size = 1;
+			absorbLasers = true;
+			range = 120;
+			health = 1350;
+			effectColor = NHColor.lightSkyBack;
+			
+			armor = 10f;
+		}};
+		
+		chargeWallLarge = new ChargeWall("charge-wall-large"){{
+			requirements(Category.defense, ItemStack.mult(chargeWall.requirements, healthMult2));
+			size = 2;
+			absorbLasers = true;
+			range = 200;
+			health = 1350 * healthMult2;
+			effectColor = NHColor.lightSkyBack;
+			
+			armor = 10f;
+		}};
+		
+		insulatedWall = new Wall("insulated-wall"){{
+			size = 1;
+			health = 300;
+			requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
+			insulated = true;
+			absorbLasers = true;
+		}};
+		
+	}
+	
+	public static void load() {
 		blaster = new ShockwaveGenerator("blaster"){{
 			requirements(Category.defense, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
 			
@@ -2812,50 +3604,6 @@ public class NHBlocks{
 			}
 		};
 		
-		ancientLaserWall = new LaserWallBlock("ancient-laser-wall"){{
-			size = 2;
-			consumePowerCond(80f, LaserWallBuild::canActivate);
-			health = 8000;
-			range = 800;
-			
-			armor = 20f;
-			
-			generateType = new Shooter(300){{
-				Color c = NHColor.ancient;
-				colors = new Color[]{c.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f), c.cpy().mul(1f, 1f, 1f, 0.6f), c, Color.white};
-				hitColor = lightColor = lightningColor = c;
-				width = 4.5f;
-				oscMag = 0.5f;
-				
-				status = NHStatusEffects.entangled;
-				statusDuration = 60f;
-				lightningDamage = 200;
-			}
-				
-				@Override
-				public void hit(Bullet b, float x, float y){
-					super.hit(b, x, y);
-					
-					for(int i = 0; i < 2; i++){
-						Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(180), lightningLength + Mathf.random(lightningLengthRand));
-					}
-				}
-			};
-			
-			requirements(Category.defense, with(NHItems.seniorProcessor, 120, NHItems.ancimembrane, 200, NHItems.zeta, 800));
-		}};
-		
-		laserWall = new LaserWallBlock("laser-wall"){{
-			size = 3;
-			consumePowerCond(30f, LaserWallBuild::canActivate);
-			health = 4000;
-			
-			armor = 10f;
-			
-			requirements(Category.defense, with(NHItems.juniorProcessor, 120, Items.copper, 350, NHItems.multipleSteel, 80, NHItems.zeta, 180, Items.graphite, 80));
-//			NHTechTree.add(Blocks.forceProjector, this);
-		}};
-		
 		multiSteelItemBridge = new BufferedItemBridge("multi-steel-item-bridge"){{
 			health = 480;
 			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.zeta, 5, Items.graphite, 10));
@@ -2888,13 +3636,6 @@ public class NHBlocks{
 			
 			requirements(Category.defense, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 120, Items.copper, 80, Items.graphite, 60));
 //			//NHTechTree.add(Blocks.tsunami, this);
-		}};
-		
-		shapedWall = new ShapedWall("shaped-wall"){{
-			health = 6000;
-			insulated = absorbLasers = true;
-			
-			requirements(Category.defense, with(NHItems.upgradeSort, 5, NHItems.juniorProcessor, 2, NHItems.ancimembrane, 10));
 		}};
 		
 		multiConduit = new Conduit("multi-conduit"){{
@@ -2980,9 +3721,6 @@ public class NHBlocks{
 		}};
 		
 		unitIniter = new UnitSpawner("unit-initer");
-		
-		lableSpawner = new LabelSpawner("label-spawner");
-		
 /*		shieldProjector = new ShieldProjector("shield-projector"){{
 			consumePower(1f);
 			consumePowerCond(8f, ShieldProjectorBuild::isCharging);
@@ -3100,7 +3838,6 @@ public class NHBlocks{
 			};
 		}};
 		*/
-
 		bombLauncher = new BombLauncher("bomb-launcher"){{
 			requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 260, NHItems.juniorProcessor, 120, Items.thorium, 500, Items.surgeAlloy, 75));
 			//NHTechTree.add(Blocks.massDriver, this);
@@ -3138,9 +3875,12 @@ public class NHBlocks{
 			health = 1200;
 		}};
 		
+		lableSpawner = new LabelSpawner("label-spawner");
+		
 		hyperspaceWarper = new HyperSpaceWarper("hyper-space-warper"){{
 			size = 4;
 			health = 2250;
+			squareSprite = false;
 			
 			completeEffect = NHFx.square45_4_45;
 			
@@ -3196,6 +3936,7 @@ public class NHBlocks{
 			speedBoost = 4f;
 			useTime = 300.0F;
 			hasBoost = true;
+			squareSprite = false;
 			consumeItem(Items.phaseFabric).boost();
 			consumeLiquid(NHLiquids.xenBeta, 0.1f);
 		}};
@@ -3214,38 +3955,6 @@ public class NHBlocks{
 			health = 980;
 			consumeItem(NHItems.juniorProcessor).boost();
 		}};
-
-		zetaGenerator = new ConsumeGenerator("zeta-generator"){{
-			requirements(Category.power,ItemStack.with(NHItems.metalOxhydrigen, 120, NHItems.juniorProcessor, 80, Items.plastanium, 80, NHItems.zeta,100, Items.copper, 150));
-//			//NHTechTree.add(Blocks.thoriumReactor,this);
-			size = 3;
-			powerProduction = 60f;
-			ambientSound = Sounds.hum;
-			ambientSoundVolume = 0.24F;
-			itemCapacity = 30;
-			liquidCapacity = 30;
-			itemDuration = 150f;
-			consumeItem(NHItems.zeta, 3);
-			consumeLiquid(Liquids.cryofluid,0.1f);
-			
-			hasLiquids = true;
-			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.cryofluid), new DrawDefault(), new DrawGlowRegion(){{
-				color = NHItems.zeta.color;
-			}});
-			
-			lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
-			generateEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
-//			explodeEffect = NHFx.lightningHitLarge(heatColor);
-		}};
-		
-		hugeBattery = new Battery("huge-battery"){{
-			size = 5;
-			health = 1600;
-			requirements(Category.power, BuildVisibility.shown, ItemStack.with(Items.phaseFabric, 40, NHItems.juniorProcessor, 20, NHItems.zeta, 80, NHItems.presstanium, 35, Items.graphite, 50));
-//			//NHTechTree.add(Blocks.batteryLarge, this);
-			consumePowerBuffered(750_000);
-		}};
 		
 		armorPowerNode = new PowerNode("armor-power-node"){{
 			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 25, NHItems.juniorProcessor, 5, Items.lead, 25));
@@ -3255,25 +3964,6 @@ public class NHBlocks{
 			laserRange = 8.5F;
 			health = 1650;
 			armor = 5;
-		}};
-		
-		armorBatteryLarge = new Battery("large-armor-battery"){{
-			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10, Items.lead, 40));
-			size = 3;
-			health = 3000;
-			consumePowerBuffered(45000.0F);
-		}};
-		
-		heavyPowerNode = new PowerNode("heavy-power-node"){{
-			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 25, NHItems.juniorProcessor, 15, NHItems.zeta, 45, NHItems.presstanium, 40));
-//			//NHTechTree.add(Blocks.powerNodeLarge, this);
-			size = 3;
-			maxNodes = 30;
-			laserRange = 20F;
-			health = 1200;
-			armor = 3;
-			
-//			consumePowerBuffered(30000f);
 		}};
 		
 		largeWaterExtractor = new SolidPump("large-water-extractor"){{
@@ -3329,144 +4019,6 @@ public class NHBlocks{
 			});
 		}};
 		
-		hyperGenerator = new HyperGenerator("hyper-generator"){{
-			size = 8;
-			health = 12500;
-			powerProduction = 1750f;
-			updateLightning = updateLightningRand = 3;
-			effectColor = NHColor.thermoPst;
-			itemCapacity = 40;
-			itemDuration = 180f;
-			ambientSound = Sounds.pulse;
-			ambientSoundVolume = 0.1F;
-			toApplyStatus.add(NHStatusEffects.phased, StatusEffects.overclock);
-			
-			consumePower(50.0F);
-			consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 4)).optional(true, true);
-			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
-			consumeLiquid(NHLiquids.zetaFluid, 0.25F);
-			requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
-//			//NHTechTree.add(fusionCollapser, this);
-		}};
-		
-		insulatedWall = new Wall("insulated-wall"){{
-			size = 1;
-			health = 300;
-			requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
-			insulated = true;
-			absorbLasers = true;
-		}};
-		
-		setonWall = new Wall("seton-wall"){{
-			armor = 15f;
-			
-			insulated = true;
-			
-			size = 1;
-			health = 1250;
-			chanceDeflect = 15.0F;
-			flashHit = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 5, NHItems.irayrondPanel, 10, Items.silicon, 15, NHItems.presstanium, 15));
-		}};
-		
-		setonWallLarge = new Wall("seton-wall-large"){{
-			armor = 15f;
-			
-			insulated = true;
-			
-			size = 2;
-			health = 1250 * healthMult2;
-			chanceDeflect = 15.0F;
-			flashHit = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult2, NHItems.irayrondPanel, 10 * healthMult2, Items.silicon, 15 * healthMult2, NHItems.presstanium, 15 * healthMult2));
-		}};
-		
-		heavyDefenceWall = new ShieldWall("heavy-defence-wall"){{
-			shieldHealth = 1000f;
-			breakCooldown = 30f * 10f;
-			regenSpeed = 5f;
-			glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
-			consumePower(8f / 60f);
-			
-			outputsPower = false;
-			hasPower = true;
-			consumesPower = true;
-			conductivePower = true;
-			
-			armor = 30f;
-			
-			size = 1;
-			health = 1750;
-			absorbLasers = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20));
-			
-			buildType = () -> new ShieldWallBuild(){
-				@Override
-				public void draw(){
-					Draw.rect(block.region, x, y);
-					
-					if(shieldRadius > 0){
-						float radius = shieldRadius * tilesize / 2;
-						
-						Draw.z(Layer.shields);
-						
-						Draw.color(team.color, Color.white, Mathf.clamp(hit));
-						
-						if(renderer.animateShields){
-							Fill.square(x, y, radius);
-						}else{
-							Lines.stroke(1.5f);
-							Draw.alpha(0.09f + Mathf.clamp(0.08f * hit));
-							Fill.square(x, y, radius);
-							Draw.alpha(1f);
-							Lines.poly(x, y, 4, radius, 45f);
-							Draw.reset();
-						}
-						
-						Draw.reset();
-						
-						Drawf.additive(glowRegion, glowColor, (1f - glowMag + Mathf.absin(glowScl, glowMag)) * shieldRadius, x, y, 0f, Layer.blockAdditive);
-					}
-				}
-			};
-		}};
-		
-		heavyDefenceWallLarge = new ShieldWall("heavy-defence-wall-large"){{
-			shieldHealth = 1200f * healthMult2;
-			breakCooldown = 30f * 10f;
-			regenSpeed = 5f * healthMult2;
-			glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
-			consumePower(8f / 60f * healthMult2);
-			
-			armor = 30f;
-			
-			outputsPower = false;
-			hasPower = true;
-			consumesPower = true;
-			conductivePower = true;
-			
-			size = 2;
-			health = 1750 * healthMult2;
-			absorbLasers = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2));
-		}};
-		
-		heavyDefenceDoor = new Door("heavy-defence-door"){{
-			size = 1;
-			health = 1750;
-			armor = 30;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20, NHItems.juniorProcessor, 5));
-		}};
-		
-		heavyDefenceDoorLarge = new Door("heavy-defence-door-large"){{
-			size = 2;
-			health = 1750 * healthMult2;
-			armor = 30;
-			openfx = Fx.dooropenlarge;
-			closefx = Fx.doorcloselarge;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2, NHItems.juniorProcessor, 5 * healthMult2));
-		}};
-		
 		largeShieldGenerator = new ForceProjector("large-shield-generator") {{
 			size = 4;
 			radius = 220f;
@@ -3480,28 +4032,6 @@ public class NHBlocks{
 			phaseShieldBoost = 12000.0F;
 			consumePower(15F);
 			requirements(Category.effect, with(NHItems.seniorProcessor, 120, Items.lead, 250, Items.graphite, 180, NHItems.presstanium, 150, Items.phaseFabric, 120, NHItems.multipleSteel, 50));
-		}};
-		
-		chargeWall = new ChargeWall("charge-wall"){{
-			requirements(Category.defense, with(NHItems.seniorProcessor, 5, NHItems.upgradeSort, 5));
-			size = 1;
-			absorbLasers = true;
-			range = 120;
-            health = 1350;
-            effectColor = NHColor.lightSkyBack;
-			
-			armor = 10f;
-		}};
-		
-		chargeWallLarge = new ChargeWall("charge-wall-large"){{
-			requirements(Category.defense, ItemStack.mult(chargeWall.requirements, healthMult2));
-			size = 2;
-			absorbLasers = true;
-			range = 200;
-            health = 1350 * healthMult2;
-            effectColor = NHColor.lightSkyBack;
-			
-			armor = 10f;
 		}};
 		
 		irdryonVault = new StorageBlock("irdryon-vault"){{
@@ -3521,6 +4051,7 @@ public class NHBlocks{
 			range = 160f;
 			
 			armor = 5f;
+			buildSpeedMultiplierCoefficient = 0.5f;
 			
 			itemCapacity = 500;
 			
@@ -3566,6 +4097,8 @@ public class NHBlocks{
 			spawnDelay = 60f;
 			spawnReloadTime = 600f;
 			range = 300f;
+			
+			buildSpeedMultiplierCoefficient = 0.75f;
 			
 			adaptBase = jumpGatePrimary;
 			adaptable = true;
@@ -3637,6 +4170,8 @@ public class NHBlocks{
 			
 			armor = 20f;
 			
+			buildSpeedMultiplierCoefficient = 1f;
+			
 			itemCapacity = 6000;
 			
 			requirements(Category.units, BuildVisibility.shown, with(
@@ -3706,6 +4241,8 @@ public class NHBlocks{
 		loadFactories();
 		loadTurrets();
 		loadEnv();
+		loadWalls();
+		loadPowers();
 //		loadExperiments();
 		
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
@@ -3713,6 +4250,15 @@ public class NHBlocks{
 			rebuildable = false;
 			requirements(Category.power, BuildVisibility.sandboxOnly, with());
 			alwaysUnlocked = true;
+		}};
+		
+		tagger = new MessageBlock("tagger"){{
+			forceDark = true;
+			maxTextLength = 100000;
+			requirements(Category.logic, BuildVisibility.editorOnly, with());
+			
+			targetable = false;
+			privileged = true;
 		}};
 	}
 }

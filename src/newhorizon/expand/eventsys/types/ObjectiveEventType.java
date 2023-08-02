@@ -83,8 +83,7 @@ public class ObjectiveEventType extends WorldEventType{
 	public void buildDebugTable(WorldEvent e, Table table){
 		table.table(Tex.pane, t -> {
 			t.add(name + "|" + e.id).growX().fillY().row();
-			t.add(e.ui).growX().fillY();
-			t.row().image().growX().height(OFFSET / 3).pad(OFFSET / 2).color(Color.lightGray).row();
+			t.add(e.ui).padBottom(4f).growX().fillY();
 			t.table(i -> {
 				i.defaults().growX().height(LEN - OFFSET);
 				i.button("COMPLETE", Icon.play, Styles.cleart, () -> {

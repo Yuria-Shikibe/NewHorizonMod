@@ -40,6 +40,8 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 
 public class NHFx{
+	public static final float EFFECT_MASK = Layer.effect + 0.0001f;
+	public static final float EFFECT_BOTTOM = Layer.bullet - 0.11f;
 	public static final IntMap<Effect> same = new IntMap<>();
 	private static final Rand rand = new Rand();
 	private static final Rand rand2 = new Rand();
@@ -60,6 +62,11 @@ public class NHFx{
 		}else{
 			return 1f;
 		}
+	}
+	
+	public static void drawDark(Runnable runnable){
+		Draw.draw(EFFECT_BOTTOM, runnable);
+		Draw.draw(EFFECT_MASK, runnable);
 	}
 	
 	public static int hash(String m, Color c){
@@ -189,7 +196,7 @@ public class NHFx{
 			color(color);
 			Lines.stroke(size / 7f * e.fin());
 			
-			randLenVectors(e.id, 12, 3f + 30f * e.fout(), e.rotation, range, (x, y) -> {
+			randLenVectors(e.id, 15, 3f + 60f * e.fout(), e.rotation, range, (x, y) -> {
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * size + size / 4f);
 				Drawf.light(e.x + x, e.y + y, e.fout(0.25f) * size, color, 0.7f);
 			});
@@ -821,14 +828,14 @@ public class NHFx{
 			float tx = p.getX(), ty = p.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
 			Tmp.v1.set(p).sub(e.x, e.y).nor();
 			
-			e.lifetime = dst * 0.375f;
+			e.lifetime = dst * 0.3f;
 			float normx = Tmp.v1.x, normy = Tmp.v1.y;
 			float range = e.rotation;
 			int links = Mathf.ceil(dst / range);
 			float spacing = dst / links;
 			
 			stroke(2.5f * Mathf.curve(e.fout(), 0, 0.7f));
-			color(Color.white, e.color, e.fin());
+			color(e.color ,Color.white, e.fout() * 0.6f);
 			
 			beginLine();
 		
@@ -876,14 +883,14 @@ public class NHFx{
 			float tx = e.x, ty = e.y, dst = Mathf.dst(p.getX(), p.getY(), tx, ty);
 			Tmp.v1.set(e.x, e.y).sub(p).nor();
 			
-			e.lifetime = dst * 0.375f;
+			e.lifetime = dst * 0.3f;
 			float normx = Tmp.v1.x, normy = Tmp.v1.y;
 			float range = e.rotation;
 			int links = Mathf.ceil(dst / range);
 			float spacing = dst / links;
 			
 			Lines.stroke(2.5f * Mathf.curve(e.fout(), 0, 0.7f));
-			Draw.color(Color.white, e.color, e.fin());
+			color(e.color ,Color.white, e.fout() * 0.6f);
 			
 			Lines.beginLine();
 			
@@ -1141,6 +1148,11 @@ public class NHFx{
 			Lines.circle(e.x, e.y, e.rotation * e.fin(Interp.pow3Out));
 		}),
 	
+		circleOutLong  = new Effect(120f, 500f, e -> {
+			Lines.stroke(2.5f * e.fout(), e.color);
+			Lines.circle(e.x, e.y, e.rotation * e.fin(Interp.pow3Out));
+		}),
+	
 		shuttle = new Effect(70f, 800f, e -> {
 			if(!(e.data instanceof Float))return;
 			float len = e.data();
@@ -1177,13 +1189,13 @@ public class NHFx{
 			}
 		
 			float len1 = len * 0.66f;
-			z(Layer.effect + 0.0001f);
+			z(EFFECT_MASK);
 			color(Color.black);
 			for(int i : Mathf.signs) {
 				DrawFunc.tri(e.x, e.y, len1 / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len1 * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
 			}
 			
-			z(Layer.bullet - 0.11f);
+			z(EFFECT_BOTTOM);
 			for(int i : Mathf.signs) {
 				DrawFunc.tri(e.x, e.y, len1 / 17f * fout * (Mathf.absin(0.8f, 0.07f) + 1), len1 * 3f * Interp.swingOut.apply(Mathf.curve(e.fin(), 0, 0.7f)) * (Mathf.absin(0.8f, 0.12f) + 1) * e.fout(0.2f), e.rotation + 90 + i * 90);
 			}
@@ -1356,10 +1368,16 @@ public class NHFx{
 			randLenVectors(e.id, 30, 18 + 80 * e.fin(), (x, y) -> {
 				lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 14 + 5);
 			});
+			
+			Draw.z(EFFECT_MASK);
 			color(NHColor.darkEnr);
 			Fill.circle(e.x, e.y, e.fout() * 30);
 			Drawf.light(e.x, e.y, e.fout() * 80f, NHColor.darkEnrColor, 0.7f);
-		}).layer(Layer.effect - 0.000001f),
+			
+			Draw.z(EFFECT_BOTTOM);
+			Fill.circle(e.x, e.y, e.fout() * 31);
+			Draw.z(Layer.effect - 0.0001f);
+		}).layer(Layer.effect - 0.0001f),
 		
 		mediumDarkEnergyHit = new Effect(23, e -> {
 			color(NHColor.darkEnrColor);
@@ -1435,13 +1453,19 @@ public class NHFx{
 		
 		darkEnergyCharge = new Effect(130f, e -> {
 			rand.setSeed(e.id);
-			randLenVectors(e.id, 12, rand.random(90f, 200f) * Mathf.curve(e.fout(), 0.25f, 1f), (x, y) -> {
+			randLenVectors(e.id, 12, 140f * e.fout(Interp.pow3Out), (x, y) -> {
 				color(NHColor.darkEnrColor);
 				float rad = rand.random(9f, 18f);
-				Fill.circle(e.x + x, e.y + y, e.fin() * rad);
+				float scl = rand.random(0.6f, 1f);
+				float dx = e.x + scl * x, dy = e.y + scl * y;
+				Fill.circle(dx, dy, e.fin() * rad);
 				color(NHColor.darkEnr);
-				Fill.circle(e.x + x, e.y + y, e.fin() * rad / 1.8f);
-				Drawf.light(e.x + x, e.y + y, e.fin() * rad * 1.5f, NHColor.darkEnrColor, 0.7f);
+				Draw.z(EFFECT_MASK);
+				Fill.circle(dx, dy, e.fin() * rad / 1.8f);
+				Draw.z(EFFECT_BOTTOM);
+				Fill.circle(dx, dy, e.fin() * rad / 1.8f);
+				Draw.z(Layer.effect);
+				Drawf.light(dx, dy, e.fin() * rad * 1.5f, NHColor.darkEnrColor, 0.7f);
 			});
 		}),
 	
@@ -1465,7 +1489,7 @@ public class NHFx{
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
 		}),
 	
-		hugeSmokeLong = new Effect(80f, e -> {
+		hugeSmokeLong = new Effect(120f, e -> {
 			Draw.color(e.color);
 			Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * e.finpow(), (x, y) -> Fill.circle(e.x + x / 2.0F, e.y + y / 2.0F, e.fout() * 2f));
 			e.scaled(25f, i -> Angles.randLenVectors(e.id, 6, 2.0F + 19.0F * i.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, i.fout() * 4.0F)));
@@ -1476,8 +1500,13 @@ public class NHFx{
 			Fill.circle(e.x, e.y, e.fin() * 32);
 			stroke(e.fin() * 3.7f);
 			circle(e.x, e.y, e.fout() * 80);
+			Draw.z(EFFECT_MASK);
 			color(NHColor.darkEnr);
 			Fill.circle(e.x, e.y, e.fin() * 20);
+			
+			Draw.z(EFFECT_BOTTOM);
+			color(NHColor.darkEnr);
+			Fill.circle(e.x, e.y, e.fin() * 22);
 			Drawf.light(e.x, e.y, e.fin() * 35f, NHColor.darkEnrColor, 0.7f);
 		}),
 		
@@ -1490,8 +1519,8 @@ public class NHFx{
 		darkErnExplosion = new Effect(40, e -> {
 			color(NHColor.darkEnrColor);
 			e.scaled(20, i -> {
-				stroke(3f * i.fout());
-				circle(e.x, e.y, 3f + i.fin() * 80f);
+				stroke(3f * i.foutpow());
+				circle(e.x, e.y, 3f + i.finpow() * 80f);
 			});
 
 			stroke(e.fout());
@@ -1649,7 +1678,7 @@ public class NHFx{
 				points.removeRange(0, points.size() - strokeOffset - 1);
 			}
 			
-			if(!state.isPaused()){
+			if(!state.isPaused() && points.any()){
 				points.remove(0);
 			}
 			

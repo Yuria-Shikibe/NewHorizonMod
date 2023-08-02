@@ -70,7 +70,9 @@ public class NHCSS_UI{
 	public static boolean controlOverride = false;
 	public static boolean cameraOverride = false;
 	
-	public static final float CURTAIN_HEIGHT_SCL = 0.1185f;
+	public static float CURTAIN_HEIGHT_SCL(){
+		return Core.graphics.isPortrait() ? 0.22f : 0.1185f;
+	}
 	public static final float CURTAIN_SPEED = 0.0175f;
 	
 	public static Interp curtainInterp = Interp.pow2Out;
@@ -110,7 +112,7 @@ public class NHCSS_UI{
 			public void draw(){
 				super.draw();
 			
-				float heightC = height * CURTAIN_HEIGHT_SCL * curtainInterp.apply(curtainProgress);
+				float heightC = height * CURTAIN_HEIGHT_SCL() * curtainInterp.apply(curtainProgress);
 				
 				Draw.color(Color.black);
 				Draw.alpha(Interp.pow3Out.apply(Mathf.curve(curtainProgress, 0, 0.75f)));
@@ -162,7 +164,7 @@ public class NHCSS_UI{
 		
 		if(Vars.mobile){
 			textTable.update(() -> {
-				textTable.setHeight(height * 0.33f);
+				textTable.setHeight(height * CURTAIN_HEIGHT_SCL());
 				textTable.setWidth(width);
 				textTable.setPosition(0, 0);
 			});
@@ -184,7 +186,7 @@ public class NHCSS_UI{
 				align(Align.topLeft);
 				button("Skip Cutscene", Icon.play, () -> {
 					NHCSS_Core.core.mainBus.skip();
-				}).marginLeft(8f).size(320, 50f);
+				}).marginLeft(8f).size(320, 50f).padTop(Vars.mobile ? 60 : 0);
 			}});
 			root.addChild(textTable);
 		}
@@ -401,6 +403,18 @@ public class NHCSS_UI{
 	}
 	
 	@HeadlessDisabled
+	public static void mark(float x, float y, float radius, float lifetime, Color color, MarkStyle style, Boolp removeCheck){
+		if(Vars.headless)return;
+		
+		
+		MarkBox box = new MarkBox();//markBoxPool.obtain();
+		box.init(radius, color, new Vec2(x, y), style);
+		box.removeCheck = removeCheck;
+		if(lifetime > 0)box.lifetime = lifetime;
+		box.addSelf();
+	}
+	
+	@HeadlessDisabled
 	public static void markSignal(float x, float y, float maxDst, Color color){
 		if(Vars.headless || !signalInterval.get(60f))return;
 		float dst = Core.camera.position.dst(x, y);
@@ -409,7 +423,7 @@ public class NHCSS_UI{
 		
 		float offset = 320;
 		float scl = dst / maxDst;
-		NHSounds.signal.play(scl * 2f);
+		NHSounds.signal.at(x, y, 1, 0.55f);
 		
 //		MarkBox box = new MarkBox();
 		MarkBox box = new MarkBox();//markBoxPool.obtain();
@@ -427,7 +441,7 @@ public class NHCSS_UI{
 		
 		float offset = 320;
 		float scl = dst / maxDst;
-		NHSounds.signal.play((1 - scl) * 0.46f);
+		NHSounds.signal.at(x, y, 1, 0.55f);
 		
 		MarkBox box = new MarkBox();//markBoxPool.obtain();
 		Tmp.v1.setToRandomDirection().scl(scl * offset + 8);
@@ -555,6 +569,20 @@ public class NHCSS_UI{
 				Lines.line(Math.max(0, i) * width, pos.y, pos.x + size * i * 2, pos.y);
 				Lines.line(pos.x, Math.max(0, i) * height, pos.x, pos.y + size * i * 2);
 			}
+		}),
+		
+		defaultNoLines((id, time, radius, pos, color, beyond) -> {
+			Tmp.c2.set(Pal.gray).a(color.a);
+			
+			float size = radius * Vars.renderer.getDisplayScale();
+			
+			float rotationS = 45 + 90 * NHInterp.pow10.apply((time / 120) % 1);
+			float angle = beyond ? Angles.angle(width / 2, height / 2, pos.x, pos.y) - 90 : 0;
+			Lines.stroke(9f, Tmp.c2);
+			Lines.square(pos.x, pos.y, size + 3f, rotationS);
+			Lines.stroke(3f, color);
+			if(beyond)Draw.rect(NHContent.pointerRegion, pos, size, size, angle);
+			Lines.square(pos.x, pos.y, size + 3f, rotationS);
 		}),
 		
 		fixed((id, time, radius, pos, color, beyond) -> {

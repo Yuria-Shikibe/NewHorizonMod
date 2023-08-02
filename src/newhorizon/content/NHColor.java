@@ -23,7 +23,7 @@ public class NHColor{
 		thurmixRedLight = Color.valueOf("#FFCED0"),
 		thurmixRedDark = thurmixRed.cpy().lerp(Color.black, 0.9f),
 		darkEnr = darkEnrColor.cpy().lerp(Color.black, 0.85f),
-		darkEnrFront = darkEnrColor.cpy().lerp(Color.white, 0.2f),
+		darkEnrFront = darkEnrColor.cpy().lerp(Color.white, 0.45f),
 		trail = Color.lightGray.cpy().lerp(Color.gray, 0.65f),
 		thermoPst = Color.valueOf("CFFF87").lerp(Color.white, 0.15f);
 	

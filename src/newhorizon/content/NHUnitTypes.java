@@ -23,6 +23,7 @@ import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
+import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
@@ -53,12 +54,8 @@ import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
-import newhorizon.expand.packets.ShockWaveAbility;
 import newhorizon.expand.units.*;
-import newhorizon.expand.units.ablility.AdaptedHealAbility;
-import newhorizon.expand.units.ablility.GravityTrapAbility;
-import newhorizon.expand.units.ablility.HealFieldAbility;
-import newhorizon.expand.units.ablility.TurretShield;
+import newhorizon.expand.units.ablility.*;
 import newhorizon.expand.units.ai.InterceptorAI;
 import newhorizon.expand.units.ai.ProbeAI;
 import newhorizon.expand.units.ai.SniperAI;
@@ -67,8 +64,8 @@ import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
-import newhorizon.util.graphic.ColorWarpEffect;
 import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static arc.graphics.g2d.Draw.color;
@@ -445,7 +442,7 @@ public class NHUnitTypes{
 			inaccuracy = 0;
 			xRand = 1f;
 			
-			reload = 360;
+			reload = 390;
 			bullet = new RailBulletType(){{
 					length = 320f;
 					damage = 160f;
@@ -587,8 +584,8 @@ public class NHUnitTypes{
 					};
 				}};
 				
-				shootEffect = ColorWarpEffect.wrap(NHFx.shootSquare(45, 8, 4, 45, 40, 25), hitColor);
-				smokeEffect = ColorWarpEffect.wrap(NHFx.hugeSmokeLong, Color.gray);
+				shootEffect = EffectWrapper.wrap(NHFx.shootSquare(45, 8, 4, 45, 40, 25), hitColor);
+				smokeEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Color.gray);
 			}};
 		}
 			
@@ -835,7 +832,7 @@ public class NHUnitTypes{
 			lowAltitude = flying = true;
 			health = 8000;
 			armor = 22;
-			hitSize = 32f;
+			hitSize = 36f;
 			drag /= 5f;
 			
 			rotateSpeed = 1.4f;
@@ -1125,6 +1122,8 @@ public class NHUnitTypes{
 			createScorch = false;
 			outlineRadius += 1;
 			
+			
+			
 			fogRadius = 120;
 			
 			engineOffset = 140.25f;
@@ -1236,7 +1235,7 @@ public class NHUnitTypes{
 					pierceCap = 4;
 					
 					smokeEffect = NHFx.hugeSmokeGray;
-					shootEffect = ColorWarpEffect.wrap(NHFx.shootLine(33, 28),hitColor);
+					shootEffect = EffectWrapper.wrap(NHFx.shootLine(33, 28),hitColor);
 					despawnEffect = NHFx.square45_6_45;
 					hitEffect = new MultiEffect(NHFx.hitSpark, NHFx.square45_4_45);
 				}};
@@ -1275,7 +1274,7 @@ public class NHUnitTypes{
 				if(w.bullet instanceof DelayedPointBulletType){
 					DelayedPointBulletType b = (DelayedPointBulletType)w.bullet;
 					b.rangeOverride = 960;
-					b.despawnEffect = ColorWarpEffect.wrap(NHFx.circle, b.hitColor, 40);
+					b.despawnEffect = EffectWrapper.wrap(NHFx.circle, b.hitColor, 40);
 					b.damage = 2000;
 					b.lightning = 2;
 					b.lightningDamage = b.damage;
@@ -1368,7 +1367,7 @@ public class NHUnitTypes{
 					lightningLengthRand = 18;
 					lightningDamage = 400;
 					
-					smokeEffect = ColorWarpEffect.wrap(NHFx.hitSparkHuge, hitColor);
+					smokeEffect = EffectWrapper.wrap(NHFx.hitSparkHuge, hitColor);
 					shootEffect = NHFx.instShoot(backColor, frontColor);
 					despawnEffect = NHFx.lightningHitLarge;
 					hitEffect = new MultiEffect(NHFx.hitSpark(backColor, 75f, 24, 90f, 2f, 12f), NHFx.square45_6_45, NHFx.lineCircleOut(backColor, 18f, 20, 2), NHFx.sharpBlast(backColor, frontColor, 120f, 40f));
@@ -1495,7 +1494,6 @@ public class NHUnitTypes{
 		
 		laugra = new AncientUnit("laugra"){{
 			crushDamage = 20;
-			crashDamageMultiplier = 4f;
 			
 			health = 22000;
 			armor = 45;
@@ -1537,7 +1535,10 @@ public class NHUnitTypes{
 				hitEffect = NHFx.hitSpark;
 			}};
 			
-			abilities.add(new GravityTrapAbility(180f));
+			abilities.add(new GravityTrapAbility(180f), new AdaptedHealAbility(200, 1200, hitSize * 2f, healColor).modify(a -> {
+				a.selfHealReloadTime = 640;
+				a.selfHealAmount /= 12;
+			}));
 			
 			weapons.add(copyAndMove(w, 18.5f, 11f), copyAndMove(w, 18.5f, -13f));
 			weapons.add(laugraTurret);
@@ -1578,7 +1579,10 @@ public class NHUnitTypes{
 				max = 50000f;
 				width = 15f;
 				whenShooting = false;
-			}});
+			}}, new AdaptedHealAbility(1500, 900, hitSize * 2f, healColor).modify(a -> {
+				a.selfHealReloadTime = 480;
+				a.selfHealAmount /= 8;
+			}));
 			
 			class PestEngine extends UnitEngine{
 				float triScl = 1;
@@ -1674,6 +1678,7 @@ public class NHUnitTypes{
 				reload = 60f;
 				shootWarmupSpeed = 0.05f;
 				shoot = new AdaptedShootHelix(){{
+					flip = true;
 					shots = 5;
 					mag = 1.15f;
 					scl = 6f;
@@ -2258,7 +2263,6 @@ public class NHUnitTypes{
 			engineOffset = 12.5f;
 			engineSize = 5.0F;
 			rotateSpeed = 4.75f;
-			buildSpeed = 1.25f;
 			lowAltitude = false;
 
 			aiController = InterceptorAI::new;
@@ -2668,7 +2672,6 @@ public class NHUnitTypes{
 			circleTarget = true;
 			hitSize = 14f;
 			health = 1000f;
-			buildSpeed = 0.8f;
 			baseRotateSpeed = 1.5f;
 			rotateSpeed = 2.5f;
 			armor = 3.5f;
@@ -2760,7 +2763,6 @@ public class NHUnitTypes{
 			);
 			boostMultiplier = 2.0F;
 			health = 650.0F;
-			buildSpeed = 0.75F;
 			rotateSpeed = 2.5f;
 			canBoost = true;
 			armor = 9.0F;
@@ -3053,7 +3055,7 @@ public class NHUnitTypes{
 			mineSpeed = 10F;
 			lowAltitude = true;
 			
-			mineItems.addAll(NHItems.zeta);
+			mineItems.addAll(NHItems.zeta, Items.beryllium, Items.tungsten);
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
@@ -3393,7 +3395,6 @@ public class NHUnitTypes{
 			engineOffset = 13F;
 			engineSize = 11F;
 			hitSize = 36.0F;
-			buildSpeed = 1.25F;
 			drawShields = false;
 			lowAltitude = true;
 			singleTarget = false;
@@ -3429,10 +3430,9 @@ public class NHUnitTypes{
 			engineOffset = 46f;
 			engineSize = 12.0F;
 			rotateSpeed = 0.65f;
-			buildSpeed = 3f;
 			ammoType = new ItemAmmoType(NHItems.presstanium);
 			
-			targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.turret, BlockFlag.generator, null};
+			targetFlags = new BlockFlag[]{BlockFlag.turret, null, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core};
 			
 			for(int i : Mathf.signs){
 				engines.add(new UnitEngine(21.5f * i, -43.5f, 5, -90 + 45 * i));
@@ -4831,6 +4831,8 @@ public class NHUnitTypes{
 			statuses.remove(StatusEffects.overdrive);
 			statuses.remove(NHStatusEffects.stronghold);
 			statuses.remove(NHStatusEffects.quantization);
+			statuses.remove(NHStatusEffects.quiet);
+			statuses.remove(NHStatusEffects.forceWeak);
 			statuses.add(StatusEffects.wet);
 			statuses.add(StatusEffects.unmoving);
 		}

@@ -4,7 +4,6 @@ import arc.Core;
 import arc.func.Cons;
 import arc.struct.Seq;
 import arc.util.Interval;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -20,6 +19,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NHGroups;
+import newhorizon.content.NHInbuiltEvents;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.util.annotation.ClientDisabled;
@@ -53,8 +53,11 @@ public class AutoEventTrigger implements Entityc, Cloneable{
 	
 	public static float timeScale = 0;
 	
+	public static void addAll(){
+		NHInbuiltEvents.autoTriggers.each(t -> t.copy().add());
+	}
+	
 	public static void setScale(float f){
-		Log.info("Set: " + f);
 		Core.settings.put(SPEED_SCL_KEY, f);
 		timeScale = f;
 	}

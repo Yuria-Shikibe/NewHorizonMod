@@ -70,6 +70,13 @@ public class WorldEventType implements Json.JsonSerializable{
 		if(costumeTypes.remove(type.name) == null)throw new IllegalArgumentException("Should Be Already Added To Costume Map");;
 	}
 	
+	public static void clearCustom(){
+		for(String key : costumeTypes.keys()){
+			allTypes.remove(key);
+			costumeTypes.remove(key);
+		}
+	}
+	
 	public static WorldEventType inbuilt(WorldEventType type){
 		addInbuilt(type);
 		return type;
@@ -97,7 +104,7 @@ public class WorldEventType implements Json.JsonSerializable{
 	public Prov<? extends WorldEvent> eventProv = WorldEvent::new;
 	
 	public WorldEventType(String name){
-		if(allTypes.keys().toSeq().contains(name))throw new IllegalArgumentException("Existed Name For A World Event");
+		if(allTypes.containsKey(name))throw new IllegalArgumentException("Existed Name For A World Event");
 		this.name = name;
 		addType(this);
 	}
@@ -108,12 +115,13 @@ public class WorldEventType implements Json.JsonSerializable{
 		event.type = this;
 		
 		event.init();
-		event.add();
 		
 		if(initPos != -1 && hasCoord){
 			Tmp.p1.set(Point2.unpack(initPos));
 			event.set(Tmp.p1.x * tilesize, Tmp.p1.y * tilesize);
 		}
+		
+		event.add();
 		
 		return event;
 	}

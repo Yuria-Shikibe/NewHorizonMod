@@ -30,7 +30,7 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class ReloadEventType extends WorldEventType{
 	public float reloadTime = 600f;
 	public Func<WorldEvent, Color> colorFunc = e -> Color.white;
-	public Floatf<WorldEvent> ratio = e -> e.type.progressRatio(e);
+	public Floatf<WorldEvent> barRatio = e -> e.type.progressRatio(e);
 	public Func<WorldEvent, CharSequence> info = WorldEvent::info;
 	public Cons<WorldEvent> act = e -> {};
 	
@@ -41,6 +41,7 @@ public class ReloadEventType extends WorldEventType{
 		
 		removeAfterTrigger = true;
 		drawable = false;
+		hasCoord = false;
 	}
 	
 	@Override
@@ -84,7 +85,7 @@ public class ReloadEventType extends WorldEventType{
 						new Bar(
 								() -> TableFunc.format(progressRatio(e) * 100) + "%",
 								() -> color,
-								() -> progressRatio(e)
+								() -> barRatio.get(e)
 						)
 				).growX().height(LEN / 2);
 				c.addListener(new Tooltip(t2 -> {
@@ -142,6 +143,6 @@ public class ReloadEventType extends WorldEventType{
 	}
 	
 	public void buildSpeInfo(Table table){
-	
+		table.add("[gray]N/A");
 	}
 }

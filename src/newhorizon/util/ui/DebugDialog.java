@@ -42,7 +42,6 @@ import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.cutscene.actions.CSSActions;
-import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.util.Tool_Internal;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
@@ -465,9 +464,15 @@ public class DebugDialog extends BaseDialog{
 				Log.info(NHGroups.autoEventTrigger.size());
 			});
 			
-			t.button("scale", () -> {
-//				new CustomUIGen().show();
-				Log.info(AutoEventTrigger.timeScale);
+			t.button("clear", () -> {
+				Log.info("TRIGGERS: " + NHGroups.autoEventTrigger.size());
+				Log.info("EVENTS: " + NHGroups.events.size());
+				Time.run(120f, () -> {
+					NHGroups.events.clear();
+					NHGroups.autoEventTrigger.clear();
+					Log.info("A TRIGGERS: " + NHGroups.autoEventTrigger.size());
+					Log.info("A EVENTS: " + NHGroups.events.size());
+				});
 			});
 			
 			/*t.button("genT", () -> {

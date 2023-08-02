@@ -31,6 +31,7 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
+import mindustry.ui.ItemImage;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
@@ -285,11 +286,21 @@ public class NHUIFunc{
 				table(Styles.grayPanel, t2 -> {
 					t2.margin(6f);
 					t2.defaults().left().padRight(OFFSET);
-					t2.table(Tex.clear, table2 -> TableFunc.tableImageShrink(set.type.fullIcon, LEN, table2)).size(LEN + OFFSET * 1.5f).left().padLeft(OFFSET / 2f);
+					t2.image(set.type.fullIcon).size(LEN + OFFSET).scaling(Scaling.fit).left().padLeft(OFFSET / 2f);
 					
 					t2.pane(table2 -> {
+						table2.left().marginLeft(12f);
 						table2.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().row();
 						table2.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFunc.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).row();
+					}).growX().height(LEN).center();
+					
+					t2.pack();
+					
+					t2.pane(items -> {
+						items.right();
+						for(ItemStack stack : set.baseRequirements()){
+							items.add(new ItemImage(stack.item.fullIcon, stack.amount)).padRight(OFFSET / 2).left();
+						}
 					}).growX().height(LEN).center();
 					
 					t2.table(stat).fillX().height(LEN + OFFSET).right();

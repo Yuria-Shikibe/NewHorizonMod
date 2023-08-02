@@ -386,8 +386,6 @@ public class PesterEntity extends UnitEntity{
 			float fadeS2 = Mathf.curve(fout, 0.09f, 0.185f);
 			float fade = bossWeaponWarmup * Mathf.curve(fout, 0, 0.025f) * NHInterp.bounce5In.apply(fadeS);
 			
-			Tmp.c1.set(team.color).lerp(Color.white, Mathf.absin(4f, 0.3f));//.a(NHInterp.bounce5In.apply(fadeS));
-			
 			Tmp.v2.trns(bossWeaponProgress / 17f, Mathf.sin(bossWeaponProgress, 30f, 60f) * fout, Mathf.cos(bossWeaponProgress + 177f, 17f, 35f) * fout);
 			Tmp.v3.set(Mathf.sin(bossWeaponProgress, 30, 15) * fout, Mathf.sin(bossWeaponProgress + Mathf.pi * 0.3f, 43, 12) * fout);
 			
@@ -449,6 +447,8 @@ public class PesterEntity extends UnitEntity{
 	@Override
 	public void draw(){
 		super.draw();
+		
+		Tmp.c1.set(team.color).lerp(Color.white, Mathf.absin(4f, 0.3f));//.a(NHInterp.bounce5In.apply(fadeS));
 		
 		Draw.reset();
 		

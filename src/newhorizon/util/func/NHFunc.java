@@ -14,7 +14,6 @@ import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
-import mindustry.content.StatusEffects;
 import mindustry.core.World;
 import mindustry.entities.Effect;
 import mindustry.entities.Fires;
@@ -335,35 +334,51 @@ public class NHFunc{
         return true;
     }
     
-    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
-        return spawnUnit(team, x, y, angle, spawnRange, spawnReloadTime, spawnDelay, type, spawnNum, StatusEffects.none, 0);
-    }
-    
-    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, StatusEffect statusEffect, float statusDuration){
-        return spawnUnit(team, x, y, angle, spawnRange, spawnReloadTime, spawnDelay, type, spawnNum, statusEffect, statusDuration, Double.NaN);
-    }
-    
-    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, StatusEffect statusEffect, float statusDuration, double frag){
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, Cons<Spawner> modifier){
         if(type == null)return false;
         clearTmp();
         Seq<Vec2> vectorSeq = new Seq<>();
-        
+    
         if(!ableToSpawnPoints(vectorSeq, type, x, y, spawnRange, spawnNum, rand.nextLong()))return false;
-        
+    
         int i = 0;
         for (Vec2 s : vectorSeq) {
             Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
-            spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay).setStatus(statusEffect, statusDuration);
-            spawner.flagToApply = frag;
+            spawner.init(type, team, s, angle, spawnReloadTime + i * spawnDelay);
+            modifier.get(spawner);
             if(!net.client())spawner.add();
             i++;
         }
         return true;
     }
     
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum){
+        return spawnUnit(team, x, y, angle, spawnRange, spawnReloadTime, spawnDelay, type, spawnNum, t -> {});
+    }
+    
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, StatusEffect statusEffect, float statusDuration){
+        return spawnUnit(team, x, y, angle, spawnRange, spawnReloadTime, spawnDelay, type, spawnNum, s -> {
+            s.setStatus(statusEffect, statusDuration);
+        });
+    }
+    
+    public static boolean spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum, StatusEffect statusEffect, float statusDuration, double frag){
+        return spawnUnit(team, x, y, angle, spawnRange, spawnReloadTime, spawnDelay, type, spawnNum, s -> {
+            s.setStatus(statusEffect, statusDuration);
+            s.flagToApply = frag;
+        });
+    }
+    
     public static void spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type){
         Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
         spawner.init(type, team, vec21.set(x, y), angle, delay);
+        if(!net.client())spawner.add();
+    }
+    
+    public static void spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type, Cons<Spawner> modifier){
+        Spawner spawner = Pools.obtain(Spawner.class, Spawner::new);
+        spawner.init(type, team, vec21.set(x, y), angle, delay);
+        modifier.get(spawner);
         if(!net.client())spawner.add();
     }
     

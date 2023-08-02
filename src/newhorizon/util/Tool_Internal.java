@@ -222,4 +222,8 @@ public class Tool_Internal{
 			PixmapIO.writePng(toProcess, pixmap);
 		}
 	}
+	
+	public static void fixSaves(){
+	
+	}
 }

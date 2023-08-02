@@ -31,6 +31,8 @@ public class DelayedPointBulletType extends BulletType{
 	protected static Color[] colors = {new Color(1, 1, 1, 0f).a(-5f), new Color(1, 1, 1, 1f), new Color(1, 1, 1, 1f)};
 	protected static float lengthFalloff = 0.5f;
 	
+	public float errorCorrectionRadius = 16;
+	
 	public float width = 8f;
 	public float trailSpacing = 10f;
 	
@@ -88,9 +90,8 @@ public class DelayedPointBulletType extends BulletType{
 		
 		cdist = 0f;
 		result = null;
-		float range = 8f;
 		
-		Units.nearbyEnemies(b.team, px - range, py - range, range*2f, range*2f, e -> {
+		Units.nearbyEnemies(b.team, px - errorCorrectionRadius, py - errorCorrectionRadius, errorCorrectionRadius*2f, errorCorrectionRadius*2f, e -> {
 			if(e.dead() || !e.checkTarget(collidesAir, collidesGround) || !e.hittable()) return;
 			
 			e.hitbox(Tmp.r1);

@@ -17,6 +17,10 @@ public class NHTechTree{
 		node(type, unitBuildCost.get(type), children);
 	}
 	
+	public static void nodeUnit(UnitType type, Seq<Objectives.Objective> objectives, Runnable children){
+		node(type, unitBuildCost.get(type), objectives, children);
+	}
+	
 	public static void load(){
 		unitBuildCost.each((u, is) -> {
 			if(u instanceof NHUnitTypes.NHUnitType){
@@ -28,7 +32,9 @@ public class NHTechTree{
 			node(NHSectorPresents.abandonedOutpost, ItemStack.with(/*NHItems.juniorProcessor, 1000*/), () -> {
 				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.abandonedOutpost)), () -> {
 					node(NHSectorPresents.hostileResearchStation, ItemStack.with(NHItems.seniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
-					
+						node(NHSectorPresents.ancientShipyard, Seq.with(new Objectives.SectorComplete(NHSectorPresents.hostileResearchStation)), () -> {
+						
+						});
 					});
 				});
 			});
@@ -38,6 +44,7 @@ public class NHTechTree{
 			});
 			
 			node(NHBlocks.armorPowerNode, () -> {
+				node(NHBlocks.hydroFuelCell);
 				node(NHBlocks.heavyPowerNode);
 				node(NHBlocks.largeMendProjector, () -> {
 					node(NHBlocks.gravityTrapSmall, () -> {
@@ -157,12 +164,13 @@ public class NHTechTree{
 					});
 					
 					node(NHBlocks.multipleLauncher, () -> {
+						node(NHBlocks.hive, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {});
 						node(NHBlocks.bombLauncher);
 						node(NHBlocks.bloodStar, () -> {
 							node(NHBlocks.railGun);
 							node(NHBlocks.endOfEra, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
 								node(NHBlocks.airRaider);
-								node(NHBlocks.eternity, () -> {});
+								node(NHBlocks.eternity, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard)), () -> {});
 							});
 						});
 					});
@@ -195,10 +203,14 @@ public class NHTechTree{
 				node(NHBlocks.juniorProcessorFactory, () -> {
 					node(NHBlocks.multiplePresstaniumFactory);
 					node(NHBlocks.sandCracker, () -> {
-						node(NHBlocks.oilRefiner);
+						node(NHBlocks.oilRefiner, () -> {
+							node(NHBlocks.arkyciteCompactor);
+						});
 					});
 					node(NHBlocks.seniorProcessorFactory, () -> {
-					
+						node(NHBlocks.processorCompactor, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+						
+						});
 					});
 					node(NHBlocks.metalOxhydrigenFactory, () -> {
 						node(NHBlocks.metalOxhydrigenFactoryLarge);
@@ -219,7 +231,9 @@ public class NHTechTree{
 			
 			nodeProduce(NHItems.presstanium, () -> {
 				nodeProduce(NHLiquids.quantumEntity, () -> {
-					node(NHBlocks.waterInstancer);
+					node(NHBlocks.waterInstancer, () -> {
+						node(NHBlocks.ventExtractor);
+					});
 				});
 				
 				nodeProduce(NHItems.juniorProcessor, () -> {
@@ -249,13 +263,15 @@ public class NHTechTree{
 									node(NHBlocks.hyperspaceWarper);
 									
 									node(NHBlocks.shapedWall, () -> {
-										node(NHBlocks.ancientLaserWall);
+										node(NHBlocks.ancientPowerNode, () -> {
+											node(NHBlocks.ancientLaserWall);
+										});
 									});
 									
-									node(NHUnitTypes.restrictionEnzyme, () -> {
-										node(NHUnitTypes.macrophage, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
-											node(NHUnitTypes.laugra, () -> {
-												nodeUnit(NHUnitTypes.pester, () -> {
+									nodeUnit(NHUnitTypes.restrictionEnzyme, () -> {
+										nodeUnit(NHUnitTypes.macrophage, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+											nodeUnit(NHUnitTypes.laugra, () -> {
+												nodeUnit(NHUnitTypes.pester, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard)), () -> {
 												
 												});
 											});

@@ -115,7 +115,8 @@ public class HyperSpaceWarper extends Block{
 	public void setStats(){
 		super.setStats();
 		stats.add(Stat.output, (t) -> {
-			t.left();
+			t.row().left();
+			t.add("").row();
 			t.table(i -> {
 				i.image().size(LEN).color(Pal.lancerLaser).left();
 				i.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).growX().padLeft(OFFSET / 2).row();

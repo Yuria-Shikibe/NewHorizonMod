@@ -11,8 +11,12 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.type.SectorPreset;
+import mindustry.world.Tile;
+import mindustry.world.blocks.logic.MessageBlock;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.actions.CSSActions;
+import newhorizon.expand.cutscene.stateoverride.UnitOverride;
+import newhorizon.expand.eventsys.types.WorldEventType;
 
 public class NHCSS_Core{
 	public static final String WIN_KEY = "wingame";
@@ -29,23 +33,32 @@ public class NHCSS_Core{
 	public NHCSS_Action.ActionBus mainBus;
 	public Seq<NHCSS_Action.ActionBus> subBuses = new Seq<>();
 	
-	public static ObjectMap<String, Seq<Runnable>> updaters = new ObjectMap<>();
-	public static ObjectMap<String, Seq<Runnable>> initers = new ObjectMap<>();
-	public static ObjectMap<String, Seq<Runnable>> enders = new ObjectMap<>();
+	public static ObjectMap<String, MapCutscene> cutscenes = new ObjectMap<>();
+	public MapCutscene currentScene;
 	
 	public static ObjectSet<SectorPreset> skippingLanding = new ObjectSet<>();
 	
 	public static final Seq<Runnable> NULL_ACTIONS = new Seq<>(0);
-	public Seq<Runnable> loadedActions = NULL_ACTIONS;
+	public Seq<Runnable> loadedUpdaters = NULL_ACTIONS;
+	public Seq<Runnable> loadedIniters = NULL_ACTIONS;
+	public Seq<Runnable> loadedEnders = NULL_ACTIONS;
 	public float actReload = 0;
 	
-	public static void register(ObjectMap<String, Seq<Runnable>> set, Seq<Runnable> runs, String... names){
-		for(String t : names){
-			set.put(t, runs);
-		}
+	public boolean loaded = false;
+	
+	public static void registerCutscene(String name, MapCutscene cutscene){
+		cutscenes.put(name, cutscene);
+	}
+	
+	public static void registerCutscene(MapCutscene cutscene){
+		cutscenes.put(cutscene.mapName, cutscene);
 	}
 	
 	static{
+		Events.on(EventType.ResetEvent.class, e -> {
+			core.loaded = false;
+		});
+		
 		Events.on(EventType.SaveWriteEvent.class, e -> {
 			if(core.mainBus != null && !core.mainBus.complete()){
 				core.mainBus.skip();
@@ -56,46 +69,51 @@ public class NHCSS_Core{
 			}
 		});
 		
-		Events.on(EventType.SectorLaunchEvent.class, e -> {
-			if(e.sector.preset != null){
+		Events.on(EventType.SectorLaunchLoadoutEvent.class, e -> {
+			if(!e.sector.isCaptured() && e.sector.preset != null){
 				if(skippingLanding.contains(e.sector.preset)){
 					NHCSS_UI.skipCoreLanding();
 					Core.app.post(NHCSS_UI::setSkippingLandingToDef);
 				}
+				
+				if(cutscenes.containsKey(e.sector.preset.name)){
+					load(e.sector.preset.name);
+				}
 			}
+		});
+		
+		Events.on(EventType.WorldLoadEndEvent.class, e -> {
+			WorldEventType.clearCustom();
 		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-			core.kill();
-			core = new NHCSS_Core();
-			NHVars.cutscene = core;
+			if(core.loaded)return;
 			
-			if(!Vars.state.isEditor()){
+			Tile tileZero = Vars.world.tile(2, 2);
 			
-//				Vars.state.map.tags.put("cutsceneID", "new-horizon-hostile-research-station")
-//
-//				NewHorizon.debugLog("test:" + initers.containsKey(Vars.state.map.name()));
-//				NewHorizon.debugLog(Vars.state.map.name());
-				Core.app.post(() -> {
-					if(updaters.containsKey(Vars.state.map.tag(CUTSCENE_ID))){
-						core.loadedActions = updaters.get(Vars.state.map.tag(CUTSCENE_ID)).copy();
-					}
-					
-					if(initers.containsKey(Vars.state.map.tag(CUTSCENE_ID)))for(Runnable r : initers.get(Vars.state.map.tag(CUTSCENE_ID))){
-						r.run();
-					}
-				});
+			String tagger = null;
+			
+			if(tileZero.build instanceof MessageBlock.MessageBuild){
+				MessageBlock.MessageBuild build = (MessageBlock.MessageBuild)tileZero.build;
+				String msg = build.message.toString();
+				if(msg.startsWith("@CS-")){
+					tagger = msg.replaceFirst("@CS-", "");
+				}else if(msg.startsWith("@code:")){
+					//Code support some day??
+					String code = msg.replaceFirst("@code:", "");
+				}
 			}
 			
-			if(core.loadedActions == null)core.loadedActions = NULL_ACTIONS;
+			if(tagger != null)load(tagger);
+			else core.loadCommon();
 		});
 		
 		Events.on(EventType.SectorCaptureEvent.class, e -> {
-			if(e.sector.preset != null && Vars.state.getSector() == e.sector && enders.containsKey(Vars.state.map.tag(CUTSCENE_ID)))for(Runnable r : enders.get(Vars.state.map.tag(CUTSCENE_ID))){
+			if(core.loadedEnders != null)for(Runnable r : core.loadedEnders){
 				r.run();
 			}
 			
-			if(core.loadedActions != null)core.loadedActions.clear();
+			if(core.loadedUpdaters != null)core.loadedUpdaters.clear();
 		});
 	}
 	
@@ -103,12 +121,51 @@ public class NHCSS_Core{
 		skippingLanding.add(preset);
 	}
 	
+	public static boolean enabled(){
+		return !Vars.state.isEditor() && !Vars.state.isMenu();
+	}
+	
+	public static void load(String name){
+		core.kill();
+		core = new NHCSS_Core();
+		NHVars.cutscene = core;
+		
+		if(cutscenes.containsKey(name)){
+			MapCutscene currentScene = cutscenes.get(name);
+			currentScene.core = core;
+			
+			Core.app.post(() -> {
+				if(enabled())currentScene.load();
+			});
+			
+			currentScene.register();
+			
+			core.currentScene = currentScene;
+		}
+		
+		Core.app.post(() -> Core.app.post(() -> {
+			if(enabled())for(Runnable r : core.loadedIniters){
+				r.run();
+			}
+		}));
+		
+		if(core.loadedUpdaters == null)core.loadedUpdaters = NULL_ACTIONS;
+		core.loaded = true;
+	}
+	
+	public void loadCommon(){
+		core.loaded = true;
+		core.loadedUpdaters = core.loadedEnders = core.loadedIniters = NULL_ACTIONS;
+		core.currentScene = null;
+	}
+	
 	public void kill(){
 		mainBus = null;
 		waitingBus.clear();
 		subBuses.clear();
-		if(loadedActions != null)loadedActions.clear();
+		if(loadedUpdaters != null) loadedUpdaters.clear();
 		NHCSS_UI.reset();
+		UnitOverride.marked.clear();
 	}
 	
 	public void applySubBus(NHCSS_Action... actions){
@@ -130,6 +187,7 @@ public class NHCSS_Core{
 	}
 	
 	public void draw(){
+		if(currentScene != null)currentScene.draw();
 //		NHCSS_UI.draw();
 	}
 	
@@ -154,7 +212,7 @@ public class NHCSS_Core{
 		
 		NHCSS_UI.update();
 		
-		for(Runnable r : loadedActions){
+		if(loadedUpdaters != null)for(Runnable r : loadedUpdaters){
 			r.run();
 		}
 	}

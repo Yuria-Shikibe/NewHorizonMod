@@ -13,15 +13,21 @@ import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.audio.SoundLoop;
+import mindustry.entities.units.UnitController;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Player;
 import mindustry.gen.Sounds;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.io.TypeIO;
+import mindustry.logic.LAccess;
 import mindustry.type.UnitType;
 import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHStatusEffects;
@@ -37,7 +43,7 @@ public class ProbeEntity extends UnitEntity{
 	public ObjectSet<Building> scanned = new ObjectSet<>();
 	public int scannedSize = 0;
 	
-	public Team targetTeam;
+	public Team targetTeam = null;
 	
 	public float scanRange = 240;
 	public final float SCAN_WARMUP_SPEED = 0.0075f;
@@ -82,7 +88,8 @@ public class ProbeEntity extends UnitEntity{
 		super.afterRead();
 		
 		scanPos.set(x, y);
-		targetTeam = Vars.state.rules.defaultTeam;
+		
+		if(targetTeam == null)targetTeam = Vars.state.rules.defaultTeam;
 	}
 	
 	@Override
@@ -90,8 +97,10 @@ public class ProbeEntity extends UnitEntity{
 		super.setType(type);
 		
 		scanRange = type.maxRange + 160f;
-		targetTeam = Vars.state.rules.defaultTeam;
+		
+		if(targetTeam == null)targetTeam = Vars.state.rules.defaultTeam;
 	}
+	
 	
 	@Override
 	public float clipSize(){
@@ -125,7 +134,7 @@ public class ProbeEntity extends UnitEntity{
 						BuildingConcentration.Complex complex = complexes.first();
 						
 						Core.app.post(() -> {
-							spawnEvent(complex.centerX, complex.centerY);
+							spawnEvent(complex.priorityCoord.x, complex.priorityCoord.y);
 							apply(NHStatusEffects.reinforcements, 120f);
 						});
 					}
@@ -292,5 +301,57 @@ public class ProbeEntity extends UnitEntity{
 	@Override
 	public boolean isCommandable(){
 		return false;
+	}
+	
+	@Override
+	public void readSync(Reads read){
+		targetTeam = TypeIO.readTeam(read);
+		
+		super.readSync(read);
+	}
+	
+	@Override
+	public void read(Reads read){
+		targetTeam = TypeIO.readTeam(read);
+		
+		super.read(read);
+	}
+	
+	@Override
+	public void write(Writes write){
+		TypeIO.writeTeam(write, targetTeam);
+		
+		super.write(write);
+	}
+	
+	@Override
+	public void writeSync(Writes write){
+		TypeIO.writeTeam(write, targetTeam);
+		
+		super.writeSync(write);
+	}
+	
+	//borrow it for a use
+	public void setProp(LAccess prop, Object value) {
+		switch(prop) {
+			case team:
+				if (value instanceof Team) {
+					Team t = (Team)value;
+					if (!Vars.net.client()) {
+						UnitController var9 = this.controller;
+						if (var9 instanceof Player) {
+							Player p = (Player)var9;
+							p.team(t);
+						}
+						
+						this.team = t;
+					}
+				}
+				break;
+			case payloadType:
+				if (value instanceof Team) {
+					this.targetTeam = (Team)value;
+				}
+		}
 	}
 }

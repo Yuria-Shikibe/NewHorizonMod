@@ -81,12 +81,13 @@ public class NHPlanets{
 				r.waveTeam = Team.malis;
 				r.placeRangeCheck = false;
 				r.showSpawns = true;
-				r.hideBannedBlocks = true;
 				r.waveSpacing = 80 * Time.toSeconds;
 				r.initialWaveSpacing = 8f * Time.toMinutes;
 				if(r.sector != null && r.sector.preset == null)r.winWave = 150;
 				r.bannedUnits.add(NHUnitTypes.guardian);
 				r.coreDestroyClear = true;
+				r.hideBannedBlocks = true;
+				r.dropZoneRadius = 64;
 				
 				r.bannedBlocks.addAll(Vars.content.blocks().copy().filter(b -> {
 					if(b instanceof SolidPump){
@@ -101,6 +102,7 @@ public class NHPlanets{
 				teamRule.blockDamageMultiplier = 1.25f;
 				teamRule.buildSpeedMultiplier = 3f;
 				teamRule.blockHealthMultiplier = 1.25f;
+				
 				
 				teamRule = r.teams.get(r.waveTeam);
 				teamRule.infiniteAmmo = teamRule.infiniteResources = true;

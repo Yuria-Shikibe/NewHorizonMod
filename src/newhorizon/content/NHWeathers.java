@@ -20,7 +20,7 @@ public class NHWeathers{
 			statusDuration = 15f;
 			rotateBullets = true;
 			
-			buildingEmp = 3;
+			buildingEmp = 0.4f;
 			
 			textureColor = primaryColor = NHColor.darkEnrColor;
 			secondaryColor = NHColor.lightSkyBack;
@@ -31,6 +31,7 @@ public class NHWeathers{
 			status = NHStatusEffects.emp2;
 			statusDuration = 60f;
 			
+			buildingEmp = 0.125f;
 			force = 4;
 			noise = Sounds.fire;
 			

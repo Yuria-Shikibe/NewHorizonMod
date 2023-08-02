@@ -51,23 +51,27 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 	
 	public Trail trail = new Trail(1);
 	
-	protected boolean dumped = false, onMove = false, contained, adjusted, intercepted = false, complete = false;
+	public boolean dumped = false, onMove = false, contained, adjusted, intercepted = false, complete = false;
 	protected float time = 0, lifetime = 540f, surviveTime = 0, surviveLifetime = 6000;
 	
-	protected transient boolean onGoing = true;
+	public transient boolean onGoing = true;
 	
-	public static void create(Unit unit, Vec2 to, float rot){
+	public static Carrier create(Unit unit, Vec2 to, float rot){
 		Carrier c = Pools.obtain(Carrier.class, Carrier::new);
 		c.init(unit, to, rot);
 		c.set(unit);
 		c.add();
+		
+		return c;
 	}
 	
-	public static void create(Unit unit, Vec2 to){
+	public static Carrier create(Unit unit, Vec2 to){
 		Carrier c = Pools.obtain(Carrier.class, Carrier::new);
 		c.init(unit, to, unit.angleTo(to));
 		c.set(unit);
 		c.add();
+		
+		return c;
 	}
 	
 	public void init(Unit unit, Vec2 to, float rotation){

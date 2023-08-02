@@ -52,6 +52,11 @@ public class CaptureableTurret extends ShootMatchTurret{
 		public float iframes = -1f;
 		
 		@Override
+		public boolean canControl(){
+			return playerControllable && !logicShooting;
+		}
+		
+		@Override
 		public void damage(@Nullable Team source, float damage){
 			if(iframes > 0) return;
 			

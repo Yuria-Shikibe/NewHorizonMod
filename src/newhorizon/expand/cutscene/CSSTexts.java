@@ -2,8 +2,13 @@ package newhorizon.expand.cutscene;
 
 import static arc.Core.bundle;
 
+
+/**
+ * @see arc.flabel.FConfig
+ * */
 public class CSSTexts{
 	public static String getBundle(String name, int textID){
+		
 		return bundle.get("nh.cutscene." + name + ".dia-" + textID);
 	}
 	
@@ -24,8 +29,14 @@ public class CSSTexts{
 	public static String incomingRaid(){
 		return bundle.get("nh.cutscene.incoming-raid");
 	}
+	public static String missionAccomplished(){
+		return bundle.get("nh.cutscene.mission-accomplished");
+	}
 	
 	public static String takingDamage_Heavy(){
 		return bundle.get("nh.cutscene.damage-taking-heavy");
+	}
+	public static String standbyHyperspace(){
+		return bundle.get("nh.cutscene.standby-hyperspace");
 	}
 }

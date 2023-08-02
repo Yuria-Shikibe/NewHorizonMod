@@ -10,10 +10,11 @@ import arc.struct.Seq;
 import arc.util.Structs;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.ContinuousLaserBulletType;
+import mindustry.entities.bullet.*;
+import mindustry.entities.effect.ParticleEffect;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
+import mindustry.gen.Bullet;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
@@ -27,6 +28,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
+import newhorizon.expand.bullets.AdaptedLightningBulletType;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -376,6 +378,7 @@ public class NHOverride{
 		);
 		
 		ObjectSet<UnitType> Unit_T5 = ObjectSet.with(
+			conquer,
 			UnitTypes.reign, UnitTypes.toxopid, UnitTypes.eclipse, UnitTypes.oct,
 			UnitTypes.omura, UnitTypes.navanax/*, NHUnitTypes.annihilation*/, NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.declining, NHUnitTypes.saviour
 		);
@@ -386,7 +389,7 @@ public class NHOverride{
 		
 		Unit_T3.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
 		Unit_T4.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
-		Unit_T5.each(u -> u.immunities.addAll(NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.ultFireBurn));
+		Unit_T5.each(u -> u.immunities.addAll(NHStatusEffects.emp1, NHStatusEffects.ultFireBurn));
 		Unit_T6.each(u -> u.immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.scrambler));
 		
 		new Seq<UnitType>().addAll(Unit_T4.toSeq()).addAll(Unit_T5.toSeq()).filter(u -> u != null && !u.name.startsWith(NewHorizon.MOD_NAME)).each(u -> {
@@ -401,7 +404,7 @@ public class NHOverride{
 		Blocks.coreShard.health *= 5;
 		
 		Blocks.coreShard.armor = 5;
-		Blocks.coreNucleus.armor = 7.5f;
+		Blocks.coreNucleus.armor = 15f;
 		Blocks.coreFoundation.armor = 10f;
 		
 		Fx.lightning.layer(Fx.lightning.layer - 0.1f);
@@ -492,6 +495,27 @@ public class NHOverride{
 				type.pierceCap *= 1.5f;
 				type.lifetime += 8f;
 			}
+			
+			block.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				reloadMultiplier= 1.5f;
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				speed= 10;
+				lifetime= 30;
+				knockback= 1.8f;
+				width= 18;
+				height= 20;
+				damage= 175;
+				splashDamageRadius= 38;
+				splashDamage= 35;
+				shootEffect= Fx.shootBig;
+				hitEffect= NHFx.hitSpark;
+				ammoMultiplier= 2;
+				lightningDamage= 50;
+				lightning= 1;
+				lightningLengthRand = 3;
+				lightningLength = 3;
+			}});
 		}
 
 		meltdown: {
@@ -507,13 +531,139 @@ public class NHOverride{
 			block.range += 120;
 			block.shootDuration += 60;
 		}
-
-
+		
+		salvo: {
+			if(!(Blocks.salvo instanceof ItemTurret))break salvo;
+			ItemTurret block = (ItemTurret)Blocks.salvo;
+			
+			block.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				speed = 6.5f;
+				damage= 20;
+				lightningDamage= 10;
+				lightning = 1;
+				lightningLengthRand = 3;
+				reloadMultiplier= 1.5f;
+				lifetime= 30.76f;
+				width= 7;
+				height= 10;
+				ammoMultiplier= 4;
+				shootEffect= Fx.shootBig;
+				hitEffect = despawnEffect = Fx.none;
+			}});
+		}
+		
+		fuse: {
+			if(!(Blocks.fuse instanceof ItemTurret))break fuse;
+			ItemTurret block = (ItemTurret)Blocks.fuse;
+			
+			block.ammoTypes.put(NHItems.zeta, new ShrapnelBulletType(){{
+				reloadMultiplier = 1.5f;
+				rangeChange = 40;
+				length = 140;
+				damage = 150;
+				width = 20;
+				lightningColor = trailColor = hitColor = lightColor = fromColor = NHItems.zeta.color;
+				toColor = Color.valueOf("ffafaf");
+				ammoMultiplier = 2;
+				pierce = true;
+				shootEffect = new ParticleEffect(){{
+					particles= 5;
+					line= true;
+					length = 55;
+					baseLength = 0;
+					lifetime = 15;
+					colorFrom = fromColor;
+					colorTo = toColor;
+					cone= 60;
+				}};
+				
+				smokeEffect = shootEffect;
+				
+				fragRandomSpread = 90;
+				fragBullets= 2;
+				fragBullet = new AdaptedLightningBulletType(){{
+					damage = 30;
+					lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
+					lightningLength = 5;
+					lightningLengthRand = 15;
+					collidesAir = true;
+				}};
+				
+				fragOnHit = false;
+			}
+				
+				@Override
+				public void despawned(Bullet b){}
+				
+				@Override
+				public void init(Bullet b){
+					super.init(b);
+					
+					createFrags(b, b.x, b.y);
+				}
+			});
+		}
+		
+		swarmer:{
+			if(!(Blocks.swarmer instanceof ItemTurret)) break swarmer;
+			ItemTurret block = (ItemTurret)Blocks.swarmer;
+			
+			block.ammoTypes.put(NHItems.zeta, new MissileBulletType(){{
+				damage= 60;
+				rangeChange=40;
+				lightningDamage= 15;
+				lightning= 3;
+				lightningLength = 1;
+				lightningLengthRand = 4;
+				speed= 3;
+				lifetime= 120;
+				width= 8;
+				height= 8;
+				ammoMultiplier= 2;
+				lightningColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				trailColor = Color.gray;
+				trailParam = 1.8f;
+				hitEffect= Fx.blastExplosion;
+				shootEffect= Fx.shootSmallFlame;
+				splashDamageRadius= 5;
+				splashDamage= 25;
+				reloadMultiplier = 0.85f;
+			}});
+		}
+		
+		ripple:{
+			if(!(Blocks.ripple instanceof ItemTurret)) break ripple;
+			ItemTurret block = (ItemTurret)Blocks.ripple;
+			
+			block.ammoTypes.put(NHItems.zeta, new ArtilleryBulletType(){{
+				damage= 60;
+				rangeChange=40;
+				lightningDamage= 15;
+				lightning= 3;
+				lightningLength= 6;
+				speed= 3;
+				lifetime= 180;
+				width= 10;
+				height= 20;
+				ammoMultiplier= 2;
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				trailParam = 2.3f;
+				frontColor = Color.white;
+				hitEffect= Fx.flakExplosionBig;
+				shootEffect= Fx.shootSmallFlame;
+				splashDamageRadius= 45;
+				splashDamage= 75;
+			}});
+			
+		}
+		
 		removeReq(Blocks.meltdown, Items.silicon);
 
 		addReq(Blocks.foreshadow,
-				new ItemStack(NHItems.seniorProcessor, 220),
-				new ItemStack(NHItems.multipleSteel, 180)
+			new ItemStack(NHItems.seniorProcessor, 80)
 		);
 		removeReq(Blocks.foreshadow, Items.silicon);
 

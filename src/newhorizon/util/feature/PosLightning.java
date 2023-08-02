@@ -69,6 +69,16 @@ public class PosLightning {
 	public static final float WIDTH = 2.5f;
 	public static final float RANGE_RAND = 5f;
 	public static final float ROT_DST = Vars.tilesize * 0.6f;
+	public static float trueHitChance = 1.1f;
+	
+	public static void setHitChance(float f){
+		trueHitChance = f;
+	}
+	
+	public static void setHitChanceDef(){
+		trueHitChance = 1.1f;
+	}
+	
 	
 	//ProvSet the range of lightning's randX.
 	private static float getBoltRandomRange() {return Mathf.random(1f, 7f); }
@@ -79,7 +89,7 @@ public class PosLightning {
 		if(!(e.data instanceof Vec2Seq)) return;
 		Vec2Seq lines = e.data();
 		
-		Draw.color(e.color, Color.white, e.fout() * 0.64f);
+		Draw.color(e.color, Color.white, e.fout() * 0.6f);
 		
 		Lines.stroke(e.rotation * e.fout());
 		
@@ -120,13 +130,9 @@ public class PosLightning {
 		create(owner, team, from, tmp2.trns(angle, length).add(from), color, createLightning, damage, boltLen, width, boltNum, movement);
 	}
 	
-	//A create method that could set lightning number and extra movements to the final target.
-	public static void create(Entityc owner, Position from, Position target, Team team, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
-		create(owner, team, from, target, color, createLightning, damage, boltLen, width, boltNum, movement);
-	}
-	
 	//A create method that with a Bullet owner.
 	public static void create(Entityc owner, Team team, Position from, Position target, Color color, boolean createLightning, float damage, int boltLen, float width, int boltNum, Cons<Position> movement) {
+		if(!Mathf.chance(trueHitChance))return;
 		Position sureTarget = findInterceptedPoint(from, target, team);
 		movement.get(sureTarget);
 		

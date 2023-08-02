@@ -150,7 +150,7 @@ public class EnergyUnit extends PayloadUnit{
 	}
 	
 	protected void updateTeleport(){
-		if(!hasEffect(NHStatusEffects.intercepted)){
+		if(!hasEffect(NHStatusEffects.intercepted) && !isPlayer()){
 			reloadValue += Time.delta;
 			
 			Teamc target = Units.closestEnemy(team, x, y, teleportRange * 2f, b -> true);

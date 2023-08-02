@@ -145,7 +145,7 @@ public class EffectDrawer implements Disposable{
 			}
 		});
 		
-		register(NHStatusEffects.phased, 25, new EffectRenderer(){
+		register(NHStatusEffects.invincible, 25, new EffectRenderer(){
 			private final Seq<Vec3> lastCoord = new Seq<>();
 			private final Color from = NHColor.lightSkyFront, to = NHColor.deeperBlue;
 			

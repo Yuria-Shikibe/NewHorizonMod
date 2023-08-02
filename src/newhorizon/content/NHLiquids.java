@@ -20,8 +20,16 @@ public class NHLiquids{
 			lightColor = NHColor.darkEnrColor;
 			gas = true;
 			barColor = gasColor = lightColor;
+			
 //			effect = NHStatusEffects.quantization;
-		}};
+		}
+			@Override
+			public void init(){
+				super.init();
+				
+				coolant = true;
+			}
+		};
 		
 		
 		xenAlpha = new Liquid("xen-alpha", Color.valueOf("#AEDFFF")){{

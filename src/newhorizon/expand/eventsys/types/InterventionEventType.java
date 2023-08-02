@@ -127,7 +127,7 @@ public class InterventionEventType extends TargetableEventType{
 		float angle = source(e).angleTo(e);
 		
 		for(ObjectIntMap.Entry<UnitType> spawn : spawner.entries()){
-			NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration, flag);
+			NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 50f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration, flag);
 		}
 		
 		if(removeAfterTrigger)e.remove();
