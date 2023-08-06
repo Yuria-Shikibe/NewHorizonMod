@@ -90,12 +90,10 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHBlocks.processorCompactor){{
+				new FeatureLog(NHBlocks.multipleArtillery){{
 					important = true;
 				}},
-				new FeatureLog(NHBlocks.ventExtractor),
-				new FeatureLog("Vanilla Upgrade", "Vanilla Turrets Now Equip Zeta Ammo!", FeatureLog.NEW_FEATURE, Icon.upOpen.getRegion()),
-				new FeatureLog("Executor Adjust", "Increased Executor's damage!", FeatureLog.ADJUST, NHBlocks.executor),
+				new FeatureLog("Sprite Remake", "Powered by [royal]@Aureus[]", FeatureLog.IMPROVE, NHUnitTypes.collapser),
 		};
 	}
 	

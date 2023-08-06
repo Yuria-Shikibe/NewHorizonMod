@@ -99,7 +99,7 @@ public class MatterStorm extends Weather{
 		});
 	});
 	
-	public float bulletDamage = 90f;
+	public float bulletDamage = 120f;
 	public float bulletVelocityMin = 0.6f, bulletVelocityMax = 1.4f, bulletLifeMin = 0.8f, bulletLifeMax = 2f;
 	public float bulletSpawnChance = 0.075f;
 	public float bulletSpawnNum = 2;
@@ -258,8 +258,8 @@ public class MatterStorm extends Weather{
 				}
 				
 				if(buildingEmp > 0){
-					Groups.build.each(Building::isValid, b -> {
-						b.applySlowdown(buildingEmp, statusDuration + 15);
+					Groups.build.each(b -> b.isValid() && b.block.hasPower , b -> {
+						b.applySlowdown(buildingEmp, statusDuration * 3f);
 					});
 				}
 				
@@ -273,7 +273,7 @@ public class MatterStorm extends Weather{
 			control.sound.loop(sound, Math.max((soundVol + noise) * state.opacity, soundVolMin));
 		}
 		
-		if(!Vars.net.client() && Mathf.chanceDelta(bulletSpawnChance * state.intensity))for(int i = 0; i < 4; i++){
+		if(!Vars.net.client() && Mathf.chanceDelta(bulletSpawnChance * state.intensity * 1.25f))for(int i = 0; i < 4; i++){
 			float randX = Mathf.random(Vars.world.unitWidth()), randY = Mathf.random(Vars.world.unitHeight());
 			float maxRange = bulletLifeMax * bulletType.range;
 			float ang = state.windVector.angle();

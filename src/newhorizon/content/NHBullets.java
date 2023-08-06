@@ -45,13 +45,15 @@ import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 
 public class NHBullets{
-	public static String CIRCLE_BOLT, STRIKE, MISSILE_LARGE = "missile-large";
+	public static String CIRCLE_BOLT, STRIKE, MISSILE_LARGE = "missile-large", MINE_BULLET = "mine-bullet";
 	
 	public static UnitType airRaidMissile, skyMissile;
 	
 	public static BulletType
 			lightningAir,
 			
+			artilleryHydro, artilleryMulti, artilleryNgt, artilleryFusion, artilleryPhase,
+	
 			shieldDestroyer, ancientArtilleryProjectile,
 			ancientBall, ancientStd,
 			pesterBlackHole, nuBlackHole, laugraBullet,
@@ -243,6 +245,222 @@ public class NHBullets{
 		
 		loadPriority();
 		
+		artilleryHydro = new ArtilleryBulletType(3f, 120f){{
+			scaledSplashDamage = true;
+			splashDamage = damage;
+			splashDamageRadius = 16;
+			inaccuracy = 4;
+			reloadMultiplier = 1.3f;
+			
+			backColor = hitColor = lightColor = lightningColor = trailColor = Pal.techBlue;
+			frontColor = NHColor.lightSkyFront;
+			
+			sprite = MINE_BULLET;
+			width = height = 10;
+			shrinkX = shrinkY = 0.2f;
+			
+			trailWidth = 2.1f;
+			trailLength = 16;
+			trailInterp = Interp.slope;
+			
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootSmokeDisperse;
+			despawnEffect = EffectWrapper.wrap(NHFx.circleOut, backColor, splashDamageRadius + 5);
+			hitEffect = NHFx.circleSplash;
+			trailParam  = 1.2f;
+		}};
+		
+		artilleryMulti = new ArtilleryBulletType(6f, 160f){{
+			scaledSplashDamage = true;
+			splashDamage = damage;
+			splashDamageRadius = 8;
+			inaccuracy = -1;
+			
+			backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.multipleSteel.color;
+			frontColor = NHColor.lightSkyFront;
+			
+			sprite = MINE_BULLET;
+			width = height = 8;
+			shrinkX = shrinkY = 0.2f;
+			
+			trailWidth = 1.8f;
+			trailLength = 10;
+			trailInterp = Interp.slope;
+			
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootSmokeDisperse;
+			despawnEffect = NHFx.square45_4_45;
+			hitEffect = EffectWrapper.wrap(NHFx.lightningHitSmall, backColor, 10);
+			trailParam = 1f;
+			
+			fragBullet = new ShrapnelBulletType(){{
+				lifetime = 18f;
+				length = 25f;
+				damage = 180.0F;
+				serrations = 2;
+				status = StatusEffects.shocked;
+				statusDuration = 60f;
+				fromColor = NHColor.lightSkyFront;
+				toColor = NHColor.lightSkyBack;
+				serrationSpaceOffset = 40f;
+				width = 4f;
+				despawnEffect = hitEffect = Fx.none;
+			}};
+			
+			fragBullets = 2;
+			fragRandomSpread = 0;
+			fragSpread = 72;
+			fragAngle = 36f;
+		}};
+		
+		artilleryNgt = new TrailFadeBulletType(2f, 250){{
+			tracers = 1;
+			tracerStroke = 1.2f;
+			tracerSpacing = 4f;
+			tracerUpdateSpacing = 2.3f;
+			hitBlinkTrail = false;
+			reloadMultiplier = 0.8f;
+			
+			collidesTiles = false;
+			collides = false;
+			collidesAir = false;
+			scaleLife = true;
+			hitShake = 1f;
+			hitSound = Sounds.explosion;
+			
+			scaledSplashDamage = true;
+			splashDamage = damage;
+			splashDamageRadius = 55;
+			inaccuracy = 2;
+			
+			lightning = 2;
+			lightningLength = 3;
+			lightningLengthRand = 6;
+			
+			bulletInterval = 3;
+			intervalBullets = 1;
+			intervalBullet = new AdaptedLightningBulletType(){{
+				lightColor = lightningColor = NHItems.thermoCoreNegative.color;
+				lightningLength = 3;
+				lightningLengthRand = 5;
+			}};
+			
+			backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.thermoCoreNegative.color;
+			frontColor = Color.white;
+			
+			sprite = MINE_BULLET;
+			width = height = 14;
+			shrinkX = shrinkY = 0.2f;
+			shrinkInterp = Interp.slope;
+			
+			trailWidth = 2.6f;
+			trailLength = 22;
+			trailInterp = Interp.slope;
+			
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootSmokeDisperse;
+			despawnEffect = NHFx.blast(backColor, 40);
+			hitEffect = NHFx.hitSparkHuge;
+			
+			fragBullet = new ShrapnelBulletType(){{
+				lifetime = 18f;
+				length = 22f;
+				damage = 50.0F;
+				serrations = 2;
+				status = StatusEffects.shocked;
+				statusDuration = 60f;
+				fromColor = NHColor.lightSkyFront;
+				toColor = NHColor.lightSkyBack;
+				serrationSpaceOffset = 40f;
+				width = 5f;
+				despawnEffect = hitEffect = Fx.none;
+			}};
+			
+			fragBullets = 4;
+			fragRandomSpread = 0;
+			fragSpread = 90;
+			fragAngle = 45;
+		}};
+		
+		artilleryFusion = new ArtilleryBulletType(6f, 180){{
+			scaledSplashDamage = true;
+			splashDamage = damage;
+			splashDamageRadius = 63;
+			inaccuracy = 3;
+			
+			backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.fusionEnergy.color;
+			frontColor = Color.white;
+			
+			sprite = MINE_BULLET;
+			width = height = 10;
+			shrinkX = shrinkY = 0.2f;
+			
+			trailWidth = 2f;
+			trailLength = 10;
+			trailInterp = Interp.slope;
+			
+			shootEffect = NHFx.shootCircleSmall(backColor);
+			smokeEffect = Fx.shootSmokeDisperse;
+			despawnEffect = NHFx.blast(backColor, splashDamageRadius * 0.66f);
+			hitEffect = Fx.none;
+			trailParam = 1.15f;
+			
+			fragBullets = 2;
+			fragRandomSpread = 0;
+			fragSpread = 72;
+			fragAngle = 36f;
+			
+			incendAmount = 2;
+			incendChance = 0.7f;
+			incendSpread = splashDamageRadius;
+		}};
+		
+		artilleryPhase = new AccelBulletType(6, 90){{
+			velocityBegin = 3;
+			velocityIncrease = 9;
+			accelerateBegin = 0.075f;
+			accelerateEnd = 0.77f;
+			
+			lifetime = 80;
+			
+			pierceCap = 2;
+			inaccuracy = -1;
+			
+			backColor = hitColor = lightColor = lightningColor = trailColor = Items.phaseFabric.color;
+			frontColor = Color.white;
+			
+			status = NHStatusEffects.emp3;
+			statusDuration = 90f;
+			
+			shootEffect = EffectWrapper.wrap(NHFx.shootLine(30, 30), backColor);
+			smokeEffect = Fx.shootSmokeDisperse;
+			hitEffect = NHFx.hitSparkLarge;
+			despawnEffect = NHFx.square45_4_45;
+			
+			ammoMultiplier = 6;
+			reloadMultiplier = 3f;
+			buildingDamageMultiplier = 0.75f;
+			
+			collidesAir = false;
+			
+			width = 12;
+			height = 33;
+			trailWidth = 2.6f;
+			trailLength = 10;
+			trailEffect = NHFx.polyTrail;
+			trailParam = 4;
+			trailInterval = 4;
+		}
+			
+			@Override
+			public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+				super.hitTile(b, build, x, y, initialHealth, direct);
+				
+				build.applySlowdown(0.2f, statusDuration);
+				build.applyHealSuppression(statusDuration);
+			}
+		};
+		
 		ancientArtilleryProjectile = new ShieldBreakerType(7f, 6000, NHBullets.MISSILE_LARGE, 7000){{
 			backColor = trailColor = lightColor = lightningColor = hitColor = NHColor.ancientLightMid;
 			frontColor = NHColor.ancientLight;
@@ -368,7 +586,7 @@ public class NHBullets{
 			drawSize = 300f;
 		}};
 		
-		ancientBall = new AccelBulletType(2.85f, 240f, "mine-bullet"){{
+		ancientBall = new AccelBulletType(2.85f, 240f, MINE_BULLET){{
 			frontColor = Color.white;
 			backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
 			lifetime = 95f;
@@ -919,7 +1137,7 @@ public class NHBullets{
 		
 		blastEnergyNgt = new AccelBulletType(3.85f, 100f){{
 			frontColor = Color.white;
-			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color.cpy().lerp(Color.white, 0.025f);
+			backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color;
 			lifetime = 44f;
 			knockback = 4f;
 			rangeChange = 120;
@@ -1087,6 +1305,7 @@ public class NHBullets{
 			hitSound = Sounds.explosionbig;
 			trailChance = 0.075f;
 			trailEffect = NHFx.polyTrail;
+			trailParam = 6;
 			drawSize = 120f;
 			
 			collides = false;
@@ -1503,7 +1722,7 @@ public class NHBullets{
 		
 		basicSkyFrag = new BasicBulletType(3.8f, 50){
 			{
-				speed = 12f;
+				speed = 6f;
 				trailLength = 12;
 				trailWidth = 2f;
 				lifetime = 60;

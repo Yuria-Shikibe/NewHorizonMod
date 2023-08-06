@@ -783,7 +783,7 @@ public class NHUnitTypes{
 			shake = 12f;
 			heatColor = NHColor.thurmixRed;
 			shootSound = NHSounds.laser4;
-			shootY = 6f;
+			shootY = 16f;
 			inaccuracy = 0;
 			
 			shoot = new ShootSpread(){{
@@ -2906,22 +2906,12 @@ public class NHUnitTypes{
 						shotDelay = 7f;
 					}};
 					
-					parts.add(new RegionPart(){{
-						under = true;
-						name = NewHorizon.name("longinus-weapon-charger");
-						x = 0f;
-						y = -4f;
-						moveY = -6f;
-						progress = PartProgress.recoil;
-						heatColor = Color.clear;
-					}});
-					
 					x = 17.5f;
 					inaccuracy = 3.0F;
 					alternate = true;
 					ejectEffect = Fx.none;
 					recoil = 4.4f;
-					bullet = new ShieldBreakerType(4.25f, 40, 650f){{
+					bullet = new ShieldBreakerType(6.25f, 40, 650f){{
 							drawSize = 500f;
 							trailLength = 18;
 							trailWidth = 3.5f;
@@ -2932,7 +2922,7 @@ public class NHUnitTypes{
 								Lines.stroke(2.5f * e.fout());
 								DrawFunc.randLenVectors(e.id, e.fin(Interp.pow3Out), 3, 6, 21f, (x1, y1, fin, fout) -> Lines.square(e.x + x1, e.y + y1, 14 * Interp.pow3Out.apply(fin), 45));
 							});
-							lifetime = 50f;
+							lifetime = 55f;
 							pierceCap = 8;
 							width = 20f;
 							height = 44f;
@@ -4404,6 +4394,7 @@ public class NHUnitTypes{
 			
 			fallSpeed = 0.008f;
 			drawShields = false;
+			faceTarget = false;
 
 			immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
 
@@ -4559,9 +4550,9 @@ public class NHUnitTypes{
 						}
 
 						{
-							y = 50;
+							y = 25.425f;
 							x = 0;
-							shootY = 25f;
+							shootY = 0;
 							shoot = new ShootPattern();
 							reload = 900f;
 							rotateSpeed = 100f;
@@ -4744,18 +4735,22 @@ public class NHUnitTypes{
 					}
 			);
 
-			hitSize = 130f;
+			hitSize = 140f;
 
 			speed = 0.5f;
 			health = 180000;
 			rotateSpeed = 0.65f;
 			engineSize = 30f;
 			buildSpeed = 10f;
-			engineOffset = 62f;
+			engineOffset = 68f;
 			itemCapacity = 300;
 			armor = 180;
 			lowAltitude = true;
 			flying = true;
+			
+			setEnginesMirror(
+				new UnitEngine(43.25f, -79.5f, 10, 315f)
+			);
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 

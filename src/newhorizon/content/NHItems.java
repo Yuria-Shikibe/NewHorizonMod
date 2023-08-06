@@ -25,7 +25,7 @@ public class NHItems{
 			explosiveness = 3f;
 			charge = 15f;
 		}};
-		thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("#7D95B2")){{
+		thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("#7D95B2").lerp(Color.white, 0.095f)){{
 			explosiveness = 1f;
 		}};
 		presstanium = new Item("presstanium", Color.valueOf("6495ED")){{

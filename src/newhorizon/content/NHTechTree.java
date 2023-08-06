@@ -164,7 +164,9 @@ public class NHTechTree{
 					});
 					
 					node(NHBlocks.multipleLauncher, () -> {
-						node(NHBlocks.hive, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {});
+						node(NHBlocks.hive, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+							node(NHBlocks.multipleArtillery);
+						});
 						node(NHBlocks.bombLauncher);
 						node(NHBlocks.bloodStar, () -> {
 							node(NHBlocks.railGun);

@@ -22,8 +22,6 @@ public class DrawFactories extends DrawDefault{
 	
 	@Override
 	public void draw(Building entity){
-		Draw.rect(bottom, entity.x, entity.y);
-		
 		if(liquidColor.a > 0.001f){
 			Draw.color(liquidColor);
 			Draw.alpha(entity.liquids.currentAmount() / entity.block.liquidCapacity);

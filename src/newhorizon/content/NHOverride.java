@@ -497,7 +497,6 @@ public class NHOverride{
 			}
 			
 			block.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
-				reloadMultiplier= 1.5f;
 				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
 				frontColor = Color.white;
 				speed= 10;
@@ -507,6 +506,7 @@ public class NHOverride{
 				height= 20;
 				damage= 175;
 				splashDamageRadius= 38;
+				reloadMultiplier = 1.2f;
 				splashDamage= 35;
 				shootEffect= Fx.shootBig;
 				hitEffect= NHFx.hitSpark;

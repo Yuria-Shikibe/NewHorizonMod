@@ -119,7 +119,7 @@ public class TrailFadeBulletType extends AccelBulletType{
 			Vec2Seq[] points = (Vec2Seq[])b.data();
 			for(Vec2Seq seq : points){
 				v2.trns(b.rotation(), 0, rand.range(tracerRandX));
-				v1.set(1, 0).setToRandomDirection(rand).scl(tracerSpacing);
+				v1.setToRandomDirection(rand).scl(tracerSpacing);
 				seq.add(v3.set(b.x, b.y).add(v1).add(v2));
 			}
 		}

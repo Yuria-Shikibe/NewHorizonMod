@@ -29,6 +29,8 @@ import static mindustry.Vars.tilesize;
 
 public class AssignOverdrive extends OverdriveProjector{
 	public int maxLink = 5;
+	public float strokeOffset = 0.1f;
+	public float strokeClamp = 0;
 	
 	public AssignOverdrive(String name){
 		super(name);
@@ -72,15 +74,21 @@ public class AssignOverdrive extends OverdriveProjector{
 		
 		@Override
 		public void draw(){
-			super.draw();
+			if (this.block.variants != 0 && this.block.variantRegions != null) {
+				Draw.rect(this.block.variantRegions[Mathf.randomSeed((long)this.tile.pos(), 0, Math.max(0, this.block.variantRegions.length - 1))], this.x, this.y, this.drawrot());
+			} else {
+				Draw.rect(this.block.region, this.x, this.y, this.drawrot());
+			}
+			
+			this.drawTeamTop();
 			
 			float f = 1f - (Time.time / 100f) % 1f;
 			
 			Draw.color(baseColor, phaseColor, phaseHeat);
-			Draw.alpha(heat * Mathf.absin(Time.time, 10f, 1f) * 0.5f);
+			Draw.alpha(heat * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
 			Draw.rect(topRegion, x, y);
 			Draw.alpha(1f);
-			Lines.stroke((2f * f + 0.1f) * heat);
+			Lines.stroke(Mathf.clamp(2f * Mathf.curve(f, strokeClamp, 1) + strokeOffset) * heat);
 			
 			float r = Math.max(0f, Mathf.clamp(2f - f * 2f) * size * tilesize / 2f - f - 0.2f), w = Mathf.clamp(0.5f - f) * size * tilesize;
 			Lines.beginLine();

@@ -2,11 +2,11 @@ package newhorizon;
 
 public class TestRunner{
 	public static void main(String[] args){
-		int w = 240, h = 240;
+		int w = 800, h = 837;
 		int cx = w / 2, cy = h / 2;
 		
-		int[] inputX = {72, 149, 163, 160, 99, 140};
-		int[] inputY = {164, 176, 133, 205, 207, 207};
+		int[] inputX = {557};
+		int[] inputY = {316};
 		
 		for(int i = 0; i < inputX.length; i++){
 			int py = h - inputY[i];
@@ -18,11 +18,6 @@ public class TestRunner{
 			System.out.println("X: " + dx / 4f + "f");
 			System.out.println("Y: " + dy / 4f + "f");
 			System.out.println("-------------");
-		}
-		
-		int i;
-		for(i = 0; i < 5; i++){
-			System.out.println(i);
 		}
 	}
 		

@@ -77,7 +77,7 @@ public class NHCSS_Core{
 				}
 				
 				if(cutscenes.containsKey(e.sector.preset.name)){
-					load(e.sector.preset.name);
+					load(e.sector.preset.name, null);
 				}
 			}
 		});
@@ -104,7 +104,7 @@ public class NHCSS_Core{
 				}
 			}
 			
-			if(tagger != null)load(tagger);
+			if(tagger != null)load(tagger, null);
 			else core.loadCommon();
 		});
 		
@@ -125,7 +125,7 @@ public class NHCSS_Core{
 		return !Vars.state.isEditor() && !Vars.state.isMenu();
 	}
 	
-	public static void load(String name){
+	public static void load(String name, String[] args){
 		core.kill();
 		core = new NHCSS_Core();
 		NHVars.cutscene = core;

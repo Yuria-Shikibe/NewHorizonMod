@@ -388,6 +388,91 @@ public class NHBlocks{
 	}
 	
 	private static void loadTurrets(){
+		multipleArtillery = new ShootMatchTurret("multiple-artillery"){{
+			drawer = new DrawTurret(){{
+				parts.add(new RegionPart("-mid"){{
+					moveY = -3;
+					
+					layerOffset = 0.01f;
+					
+					outline = true;
+					
+					progress = PartProgress.recoil;
+				}});
+				parts.add(new RegionPart("-barrel"){{
+					moveX = 5.5f;
+					
+					layerOffset = 0.01f;
+					
+					mirror = outline = true;
+					
+					moves.add(new PartMove(PartProgress.recoil, 0, -4, 0, 0, 0));
+				}});
+			}};
+			
+			recoil = 0.74f;
+			velocityRnd = 0.088f;
+			lifeRnd = 0.088f;
+			
+			reload = 72f;
+			
+			rotateSpeed = 1.22f;
+			
+			shoot = new ShootBarrel(){{
+				barrels = new float[]{
+					 5f, -3f, 0,
+					-5f, -3f, 0,
+					 11f, -2f, 0,
+					-11f, -2f, 0,
+				};
+				
+				shots = 4;
+			}};
+			
+			range = 640;
+			
+			minWarmup = 0.9f;
+			shootWarmupSpeed /= 2;
+			inaccuracy = 2;
+			shootY -= 5;
+			shootSound = Sounds.largeCannon;
+			
+			ammo(
+				NHItems.metalOxhydrigen, NHBullets.artilleryHydro,
+				NHItems.multipleSteel, NHBullets.artilleryMulti,
+				NHItems.thermoCoreNegative, NHBullets.artilleryNgt,
+				NHItems.fusionEnergy, NHBullets.artilleryFusion,
+				Items.phaseFabric, NHBullets.artilleryPhase
+			);
+			
+			shooter(Items.phaseFabric, new ShootBarrel(){{
+				barrels = new float[]{
+						5f, -3f, 0,
+						11f, -2f, 0,
+						-11f, -2f, 0,
+						-5f, -3f, 0,
+				};
+				
+				barrelOffset = 1;
+				shots = 2;
+			}});
+			
+			targetAir = false;
+			maxAmmo = 80;
+			
+			size = 4;
+			health = 2600;
+			outlineColor = Pal.darkOutline;
+			
+			squareSprite = false;
+			
+			coolantMultiplier /= 2;
+			coolant = new ConsumeCoolant(0.6f);
+			liquidCapacity = 90;
+			
+			requirements(Category.turret, with(NHItems.multipleSteel, 300, NHItems.seniorProcessor, 90, Items.plastanium, 120, NHItems.presstanium, 200, Items.phaseFabric, 100));
+		}};
+		
 		hive = new ShootMatchTurret("hive"){{
 			size = 4;
 			health = 3200;
@@ -429,6 +514,8 @@ public class NHBlocks{
 				rotSpeedOffset = 0.015f;
 				rotSpeedBegin = 0.925f;
 			}};
+			
+			canOverdrive = true;
 			
 			ammo(NHItems.juniorProcessor, new AccelBulletType(5.2f, 75, NHBullets.STRIKE){{
 				width = 7f;
@@ -581,7 +668,7 @@ public class NHBlocks{
 			}};
 			
 			liquidCapacity = 120;
-			coolantMultiplier = 4f;
+			coolantMultiplier = 2.4f;
 			coolant = new ConsumeLiquid(Liquids.water, 0.5f);
 			
 			squareSprite = false;
@@ -788,15 +875,13 @@ public class NHBlocks{
 			recoil = 2f;
 			health = 6500;
 			
-			
-			
 			armor = 25;
 			
 			unitSort = UnitSorts.strongest;
 			
 			outlineColor = Pal.darkOutline;
 			
-			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 120, Items.tungsten, 350, NHItems.zeta, 500));
+			requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 120, Items.tungsten, 350, NHItems.zeta, 500));
 			shootY = 4f;
 			
 			minWarmup = 0.9f;
@@ -806,7 +891,6 @@ public class NHBlocks{
 			shootSound = Sounds.shootSmite;
 			
 			rotateSpeed = 1.1f;
-			canOverdrive = false;
 			
 			cooldownTime = 90f;
 			
@@ -956,7 +1040,7 @@ public class NHBlocks{
 			liquidCapacity = 80f;
 			coolant = new ConsumeCoolant(0.5f);
 			coolantMultiplier = 2.25f;
-			range = 600f;
+			range = 520f;
 		}};
 		
 		interferon = new PowerTurret("interferon"){{
@@ -1052,7 +1136,6 @@ public class NHBlocks{
 				);
 			}};
 			
-			
 			hasLiquids = true;
 			coolant = new ConsumeCoolant(0.15f);
 			consumePowerCond(12f, TurretBuild::isActive);
@@ -1070,6 +1153,10 @@ public class NHBlocks{
 				shots = 3;
 				shotDelay = 1.75f;
 			}};
+			
+			canOverdrive = false;
+			squareSprite = false;
+			drawer = new DrawTurret("reinforced-");
 			
 			heatColor = Pal.turretHeat.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f);
 			cooldownTime *= 2f;
@@ -1320,6 +1407,7 @@ public class NHBlocks{
 			
 			coolant = consumeCoolant(0.8F);
 			
+			canOverdrive = false;
 			drawer = new DrawTurret(){{
 				parts.add(new RegionPart("-side"){{
 					under = mirror = true;
@@ -1407,7 +1495,6 @@ public class NHBlocks{
 			
 			ammoPerShot = 10;
 			coolantMultiplier = 0.8f;
-			canOverdrive = false;
 			rotateSpeed = 0.25f;
 			
 			float chargeCircleFrontRad = 12f;
@@ -1656,7 +1743,7 @@ public class NHBlocks{
 			
 			shootSound = NHSounds.flak2;
 			
-			ammo(NHItems.ancimembrane, new TrailFadeBulletType(4f, 360f, "circle-bullet"){{
+			ammo(NHItems.ancimembrane, new TrailFadeBulletType(4f, 580f, "circle-bullet"){{
 				velocityBegin = 8.8f;
 				velocityIncrease = -8.15f;
 				accelerateBegin = 0.1f;
@@ -1729,7 +1816,7 @@ public class NHBlocks{
 					super.update(b);
 					b.collided.clear();
 				}
-			}, NHItems.setonAlloy, new AccelBulletType(2.85f, 100f){{
+			}, NHItems.setonAlloy, new AccelBulletType(2.85f, 280f){{
 				frontColor = NHColor.ancientLight;
 				backColor = lightningColor = trailColor = hitColor = lightColor = NHColor.ancient;
 				lifetime = 92f;
@@ -1837,6 +1924,7 @@ public class NHBlocks{
 			shake = 4.0F;
 			reload = 60.0F;
 			
+			canOverdrive = false;
 			accurateDelay = false;
 			rotateSpeed = 3f;
 			firingMoveFract = 0.15F;
@@ -1846,7 +1934,7 @@ public class NHBlocks{
 			loopSoundVolume = 2.0F;
 			shootType = NHBullets.atomSeparator;
 			
-			coolant = consumeCoolant(0.3F);
+			coolant = consumeCoolant(1f);
 			consumePower(50f);
 			unitSort = NHUnitSorts.speedLow;
 			requirements(Category.turret, with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 200, NHItems.zeta, 150, NHItems.presstanium, 250, NHItems.metalOxhydrigen, 150));
@@ -1865,7 +1953,6 @@ public class NHBlocks{
 			shootCone = 15f;
 			heatColor = Items.surgeAlloy.color.cpy().lerp(Color.white, 0.2f);
 			consumePowerCond(12f, TurretBuild::isActive);
-			canOverdrive = false;
 			coolantMultiplier = 3f;
 			
 			health = 8000;
@@ -1948,7 +2035,7 @@ public class NHBlocks{
 			health = 1250;
 			coolant = consumeCoolant(0.2F);
 			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
-			
+			canOverdrive = false;
 			drawer = new DrawTurret(){{
 				parts.add(new RegionPart("-shooter"){{
 					mirror = true;
@@ -2049,7 +2136,6 @@ public class NHBlocks{
 			
 			maxAmmo = 40;
 			ammoPerShot = 8;
-			canOverdrive = false;
 			
 			squareSprite = false;
 			drawer = new DrawTurret("reinforced-"){{
@@ -2119,7 +2205,7 @@ public class NHBlocks{
 			cooldownTime = 90f;
 			coolant = consumeCoolant(0.3f);
 			
-			requirements(Category.turret, BuildVisibility.shown, with(NHItems.setonAlloy, 150, NHItems.irayrondPanel, 400, Items.plastanium, 250, NHItems.seniorProcessor, 250, NHItems.multipleSteel, 300, NHItems.zeta, 500, Items.phaseFabric, 175));
+			requirements(Category.turret, with(NHItems.setonAlloy, 150, Items.plastanium, 150, NHItems.seniorProcessor, 200, NHItems.zeta, 500, Items.phaseFabric, 125));
 		}
 			
 			@Override
@@ -2150,6 +2236,7 @@ public class NHBlocks{
 			coolantMultiplier = 2.5f;
 			
 			moveWhileCharging = false;
+			canOverdrive = false;
 			
 			shootWarmupSpeed = 0.035f;
 			
@@ -2271,6 +2358,7 @@ public class NHBlocks{
 				shotDelay = 4f;
 			}};
 			
+			canOverdrive = false;
 			maxAmmo = 80;
 			ammoPerShot = 8;
 			xRand = 1;
@@ -2296,11 +2384,11 @@ public class NHBlocks{
 			
 			hasItems = hasPower = hasLiquids = true;
 			
-			consumePower(20);
+			consumePower(25);
 			consumeLiquid(NHLiquids.irdryonFluid, 15 / 60f);
 			consumeItem(Items.silicon, 6);
 			
-			outputItems = ItemStack.with(NHItems.juniorProcessor, 15, NHItems.seniorProcessor, 3);
+			outputItems = ItemStack.with(NHItems.juniorProcessor, 18, NHItems.seniorProcessor, 6);
 			
 			liquidCapacity = 50;
 			itemCapacity = 60;
@@ -2603,7 +2691,7 @@ public class NHBlocks{
 			liquidCapacity = 60f;
 			itemCapacity = 20;
 			hasPower = hasLiquids = hasItems = true;
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault(), new DrawRegion("-top"));
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
 			consumePower(5f);
 			consumeItems(new ItemStack(Items.sand, 5));
 			outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
@@ -2828,12 +2916,12 @@ public class NHBlocks{
 				requirements(Category.crafting, with(Items.silicon, 40, NHItems.presstanium, 30, Items.copper, 25, Items.lead, 25));
 				craftEffect = Fx.none;
 				outputItem = new ItemStack(NHItems.juniorProcessor, 3);
-				craftTime = 120f;
+				craftTime = 180f;
 				size = 2;
 				hasPower = hasItems = true;
 				drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.fusionEnergy.color));
 				consumeItems(new ItemStack(Items.silicon, 2), new ItemStack(Items.copper, 4));
-				consumePower(2f);
+				consumePower(3f);
 			}
 		};
 		
@@ -2842,12 +2930,12 @@ public class NHBlocks{
 				requirements(Category.crafting, with(Items.surgeAlloy, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.thorium, 25));
 				craftEffect = Fx.none;
 				outputItem = new ItemStack(NHItems.seniorProcessor, 4);
-				craftTime = 120f;
+				craftTime = 180f;
 				size = 2;
 				hasPower = hasItems = true;
 				drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.fusionEnergy.color));
 				consumeItems(new ItemStack(Items.surgeAlloy, 2), new ItemStack(NHItems.juniorProcessor, 4));
-				consumePower(4f);
+				consumePower(6f);
 			}
 		};
 		
@@ -3078,7 +3166,7 @@ public class NHBlocks{
 			health = 500;
 			size = 3;
 			hasPower = hasLiquids = hasItems = true;
-			drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion(NHLiquids.zetaFluid), new DrawRegion("-top"));
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.zetaFluid), new DrawDefault());
 			consumeLiquid(NHLiquids.zetaFluid, 0.1f);
 			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 6), new ItemStack(Items.thorium, 6), new ItemStack(NHItems.fusionEnergy, 1));
 			consumePower(20f);
@@ -3124,10 +3212,7 @@ public class NHBlocks{
 			health = 260;
 			size = 2;
 			hasPower = hasLiquids = hasItems = true;
-			drawer = new DrawFactories() {{
-				liquidColor = NHLiquids.xenBeta.color;
-				drawTop = true;
-			}};
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.xenBeta), new DrawDefault());
 			consumeLiquid(NHLiquids.xenAlpha, 0.1f);
 			consumeItem(NHItems.zeta, 2);
 			consumePower(3f);
@@ -3146,11 +3231,7 @@ public class NHBlocks{
 			health = 260;
 			size = 2;
 			hasPower = hasLiquids = hasItems = true;
-			drawer = new DrawFactories() {
-				{
-					liquidColor = NHLiquids.xenBeta.color;
-				}
-			};
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.xenGamma), new DrawDefault());
 			consumeLiquid(NHLiquids.xenBeta, 0.2f);
 			consumeItems(new ItemStack(Items.phaseFabric, 2));
 			consumePower(8f);
@@ -3937,6 +4018,8 @@ public class NHBlocks{
 			useTime = 300.0F;
 			hasBoost = true;
 			squareSprite = false;
+			strokeOffset = -0.05f;
+			strokeClamp = 0.06f;
 			consumeItem(Items.phaseFabric).boost();
 			consumeLiquid(NHLiquids.xenBeta, 0.1f);
 		}};
@@ -4222,7 +4305,7 @@ public class NHBlocks{
 						new ItemStack(NHItems.ancimembrane, 3500),
 						new ItemStack(NHItems.upgradeSort, itemCapacity / 2)
 				),
-				new UnitSet(NHUnitTypes.nucleoid, new byte[]{NHUnitTypes.ANCIENT_AIR, 8}, 3600 * 60f,
+				new UnitSet(NHUnitTypes.nucleoid, new byte[]{NHUnitTypes.ANCIENT_AIR, 8}, 3600 * 60f * 2,
 						with(NHItems.ancimembrane, itemCapacity,
 								NHItems.upgradeSort, itemCapacity,
 								NHItems.darkEnergy, itemCapacity

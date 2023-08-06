@@ -17,7 +17,7 @@ public class NHColor{
 		lightSky = Color.valueOf("#8DB0FF"),
 		lightSkyBack = lightSky.cpy().lerp(Color.white, 0.2f),
 		lightSkyMiddle = lightSky.cpy().lerp(Color.white, 0.6f),
-		lightSkyFront = lightSky.cpy().lerp(Color.white, 0.8f),
+		lightSkyFront = lightSky.cpy().lerp(Color.white, 0.77f),
 		darkEnrColor = Pal.sapBullet,
 		thurmixRed = Color.valueOf("#FF9492"),
 		thurmixRedLight = Color.valueOf("#FFCED0"),

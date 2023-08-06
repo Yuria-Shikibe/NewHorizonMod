@@ -1416,8 +1416,8 @@ public class NHFx{
 		polyTrail = new Effect(25f, e -> {
 			color(e.color, Pal.gray, e.fin());
 			randLenVectors(e.id, 4, 46f * e.fin(), (x, y) -> {
-				Fill.poly(e.x + x, e.y + y, 6, 5.5f * e.fslope() * e.fout());
-				Drawf.light(e.x + x, e.y + y, e.fout() * 6f, NHColor.darkEnrColor, 0.7f);
+				Fill.poly(e.x + x, e.y + y, 6, e.rotation * e.fslope() * e.fout());
+				Drawf.light(e.x + x, e.y + y, e.fout() * e.rotation * 1.15f, e.color, 0.7f);
 			});
 		}),
 		
