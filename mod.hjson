@@ -3,6 +3,6 @@ author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "Warning: Beta Version For V7"
-version: "0.4.7"
+version: "0.4.8"
 
 minGameVersion: 145.1

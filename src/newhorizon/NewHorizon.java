@@ -90,10 +90,14 @@ public class NewHorizon extends Mod{
 	
 	private static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHBlocks.multipleArtillery){{
+				new FeatureLog(NHBlocks.concentration){{
 					important = true;
 				}},
-				new FeatureLog("Sprite Remake", "Powered by [royal]@Aureus[]", FeatureLog.IMPROVE, NHUnitTypes.collapser),
+				new FeatureLog(NHBlocks.armorAncient),
+				new FeatureLog(NHBlocks.armorClear),
+				new FeatureLog(NHBlocks.armorLight),
+				new FeatureLog(NHBlocks.armorQuantum),
+				new FeatureLog(NHBlocks.metalWallQuantum),
 		};
 	}
 	
