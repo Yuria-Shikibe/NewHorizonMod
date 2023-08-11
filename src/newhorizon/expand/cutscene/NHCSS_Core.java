@@ -40,8 +40,8 @@ public class NHCSS_Core{
 	
 	public static final Seq<Runnable> NULL_ACTIONS = new Seq<>(0);
 	public Seq<Runnable> loadedUpdaters = NULL_ACTIONS;
-	public Seq<Runnable> loadedIniters = NULL_ACTIONS;
-	public Seq<Runnable> loadedEnders = NULL_ACTIONS;
+	public Seq<Runnable> loadedIniters  = NULL_ACTIONS;
+	public Seq<Runnable> loadedEnders   = NULL_ACTIONS;
 	public float actReload = 0;
 	
 	public boolean loaded = false;

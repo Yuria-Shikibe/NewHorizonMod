@@ -218,7 +218,7 @@ public class NHPlanets{
 					
 					Rand rand = new Rand();
 					rand.setSeed(sector.id);
-					sector.threat = sector.preset == null ? rand.random(0.65f, 1f) : Mathf.clamp(sector.preset.difficulty / 10f);
+					sector.threat = sector.preset == null ? rand.random(0.55f, 1f) : Mathf.clamp(sector.preset.difficulty / 10f);
 				}
 			}
 		};
@@ -355,6 +355,8 @@ public class NHPlanets{
 			Pool<Rect> rectPool = Pools.get(Rect.class, Rect::new);
 			rand.setSeed(seed);
 			
+			float difficulty = sector == null ? rand.random(0.4f, 1f) : sector.threat;
+			
 			for(int i = 0; i < 24; i++){
 				int w = rand.random(10, width / 10);
 				int h = rand.random(10, height / 10);
@@ -376,8 +378,12 @@ public class NHPlanets{
 							if(k % 3 == 0){
 								tile.setFloor(Blocks.coreZone.asFloor());
 							}else if(Mathf.chance(0.1)){
-								tile.setFloor(Blocks.metalFloorDamaged.asFloor());
-							}else tile.setFloor(Blocks.metalFloor.asFloor());
+								if(k % 3 == 1){
+									tile.setFloor(NHBlocks.armorQuantum.asFloor());
+								}else{
+									tile.setFloor(NHBlocks.armorLight.asFloor());
+								}
+							}else tile.setFloor(NHBlocks.armorClear.asFloor());
 						}
 					}
 				}
@@ -483,7 +489,9 @@ public class NHPlanets{
 				}
 				
 				if((x % 85 == 0 || y % 85 == 0) && !floor.asFloor().isLiquid){
-					if(noise(x, y, 7, 0.67f, 55f, 3f) > 0.835f || Mathf.chance(0.175)){
+					if(difficulty > 0.815f){
+						floor = NHBlocks.armorAncient;
+					}else if(noise(x, y, 7, 0.67f, 55f, 3f) > 0.835f || Mathf.chance(0.175)){
 						floor = Blocks.metalFloor5;
 					}
 				}
@@ -602,10 +610,10 @@ public class NHPlanets{
 			
 			if(state.rules.sector.preset != null)return;
 			
-			state.rules.winWave = 150;
+			state.rules.winWave = Mathf.round(150 * difficulty, 5);
 			state.rules.weather.clear();
 			state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
-			state.rules.spawns = NHOverride.generate(1, new Rand(sector.id), false, false, false);
+			state.rules.spawns = NHOverride.generate(difficulty, new Rand(sector.id), false, false, false);
 			state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
 			if(rawTemp(sector.tile.v) < 0.65f){
 				state.rules.bannedBlocks.addAll(Vars.content.blocks().copy().filter(b -> b instanceof LaunchPad));

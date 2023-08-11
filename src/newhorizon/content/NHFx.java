@@ -793,9 +793,9 @@ public class NHFx{
 			stroke(e.fout() * 1.6f);
 			
 			rand.setSeed(e.id);
-			randLenVectors(e.id, 11, e.finpow() * 20f, (x, y) -> {
+			randLenVectors(e.id, 8, e.finpow() * 20f, (x, y) -> {
 				float ang = Mathf.angle(x, y);
-				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(2.5f, 6.25f) + 1f);
+				lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(1.95f, 4.25f) + 1f);
 			});
 		}),
 	

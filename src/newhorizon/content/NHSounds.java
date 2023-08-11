@@ -33,7 +33,8 @@ public class NHSounds{
 		signal = new Sound(),
 		synchro = new Sound(),
 		defenceBreak = new Sound(),
-		railGunBlast = new Sound();
+		railGunBlast = new Sound(),
+		largeBeam = new Sound();
 	
 	public static void alertLoop(){
 		if(!Vars.headless){

@@ -3,6 +3,7 @@ package newhorizon.content;
 import arc.Core;
 import arc.files.Fi;
 import arc.func.Cons;
+import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
@@ -21,6 +22,8 @@ import newhorizon.util.func.NHPixmap;
 
 import java.io.IOException;
 
+import static mindustry.Vars.renderer;
+
 public class NHContent extends Content{
 	public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
 	public static final float MATTER_STORM_LAYER = Layer.weather + 0.112f; // Making it wried
@@ -31,12 +34,12 @@ public class NHContent extends Content{
 	public static Schematic mLoadout;
 	
 	public static Texture
-			smoothNoise, particleNoise, darkerNoise
+			smoothNoise, particleNoise, darkerNoise, armorTex
 			
 			
 			;
 	
-	public static CacheLayer quantumLayer;
+	public static CacheLayer quantumLayer, armorLayer;
 	
 	public static TextureRegion
 			crossRegion, sourceCenter,
@@ -54,6 +57,26 @@ public class NHContent extends Content{
 	
 	public static void loadBeforeContentLoad(){
 		CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum){});
+		CacheLayer.add(armorLayer = new CacheLayer.ShaderLayer(NHShaders.tiler){
+			@Override
+			public void begin(){
+				renderer.blocks.floor.endc();
+				renderer.effectBuffer.begin();
+				Core.graphics.clear(Color.clear);
+				renderer.blocks.floor.beginc();
+			}
+			
+			@Override
+			public void end(){
+				renderer.blocks.floor.endc();
+				renderer.effectBuffer.end();
+				
+				NHShaders.tiler.texture = armorTex;
+				renderer.effectBuffer.blit(shader);
+				
+				renderer.blocks.floor.beginc();
+			}
+		});
 		
 		quantum = Attribute.add("quantum");
 	}
@@ -119,7 +142,11 @@ public class NHContent extends Content{
 			t.setFilter(Texture.TextureFilter.linear);
 			t.setWrap(Texture.TextureWrap.repeat);
 		});
-
+		
+		armorTex = loadTex("armor", t -> {
+			t.setFilter(Texture.TextureFilter.nearest);
+			t.setWrap(Texture.TextureWrap.repeat);
+		});
 	}
 	
 	Texture loadTex(String name, Cons<Texture> modifier){

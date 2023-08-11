@@ -116,7 +116,7 @@ public class NHCSS_UI{
 				
 				Draw.color(Color.black);
 				Draw.alpha(Interp.pow3Out.apply(Mathf.curve(curtainProgress, 0, 0.75f)));
-				Fill.quad(0, 0, 0, heightC, width, heightC, width, 0);
+				Fill.quad(0,  0, 0, heightC, width, heightC, width, 0);
 				Fill.quad(0, height, 0, height - heightC, width, height - heightC, width, height);
 				Draw.reset();
 				

@@ -259,7 +259,7 @@ public class MatterStorm extends Weather{
 				
 				if(buildingEmp > 0){
 					Groups.build.each(b -> b.isValid() && b.block.hasPower , b -> {
-						b.applySlowdown(buildingEmp, statusDuration * 3f);
+						b.applySlowdown(buildingEmp, statusDuration * 5f);
 					});
 				}
 				

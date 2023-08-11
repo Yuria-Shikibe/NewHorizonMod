@@ -1928,13 +1928,13 @@ public class NHBullets{
 			collidesTiles = true;
 			pierce = false;
 			collides = false;
-			
 			ammoMultiplier = 1f;
 			lifetime = 300;
 			despawnEffect = NHFx.circleOut(hitColor, splashDamageRadius * 1.5f);
 			hitEffect = NHFx.largeDarkEnergyHit;
 			shootEffect = NHFx.darkEnergyShootBig;
 			smokeEffect = NHFx.darkEnergySmokeBig;
+			hitSpacing = 3;
 		}
 			
 			@Override

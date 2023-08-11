@@ -155,7 +155,9 @@ public class NHTechTree{
 				
 				node(NHBlocks.synchro, () -> {
 					node(NHBlocks.argmot, () -> {
-						node(NHBlocks.prism);
+						node(NHBlocks.prism, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+							node(NHBlocks.concentration);
+						});
 						node(NHBlocks.gravity, () -> {
 							node(NHBlocks.webber, () -> {
 								node(NHBlocks.executor);

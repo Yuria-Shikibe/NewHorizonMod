@@ -19,6 +19,7 @@ import static mindustry.Vars.renderer;
 public class NHShaders{
 	public static MatterStormShader matterStorm;
 	public static HyperspaceShader hyperspace;
+	public static Tiler tiler;
 	
 	public static Shader
 			gravityTrapShader, scannerDown;
@@ -35,6 +36,8 @@ public class NHShaders{
 //		};
 		
 //		outliner = new OutlineShader();
+		
+		tiler = new Tiler();
 		
 		stretch = new Stretch();
 		
@@ -101,6 +104,29 @@ public class NHShaders{
 			setUniformf("u_data", data.x, data.y, data.radius, data.fin);
 			setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
 			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+		}
+	}
+	
+	public static class Tiler extends ModShader{
+		public Texture texture = Core.atlas.white().texture;
+		public float scl = 4F;
+		
+		public Tiler(){
+			super("screenspace", "tiler");
+		}
+		
+		@Override
+		public void apply(){
+			setUniformf("u_offset",
+					Core.camera.position.x - Core.camera.width / 2,
+					Core.camera.position.y - Core.camera.height / 2);
+			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+			setUniformf("u_tiletexsize", (float)texture.width / scl, (float)texture.height / scl);
+			
+			texture.bind(1);
+			renderer.effectBuffer.getTexture().bind(0);
+			
+			setUniformi("u_tiletex", 1);
 		}
 	}
 	
