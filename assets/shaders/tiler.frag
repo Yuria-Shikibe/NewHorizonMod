@@ -1,3 +1,5 @@
+#define HIGHP
+
 uniform sampler2D u_texture;
 uniform sampler2D u_tiletex;
 uniform vec2 u_texsize;

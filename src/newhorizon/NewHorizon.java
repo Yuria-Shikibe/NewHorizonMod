@@ -37,7 +37,6 @@ import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
-import newhorizon.expand.eventsys.custom.Customizer;
 import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.packets.NHCall;
@@ -631,7 +630,6 @@ public class NewHorizon extends Mod{
 		if(Vars.headless || NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE))NHOverride.loadOptional();
 		
 		NHContent.loadLast();
-		Customizer.customizer = new Customizer();
 		
 		contentLoadComplete = true;
 		

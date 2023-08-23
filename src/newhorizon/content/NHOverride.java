@@ -380,11 +380,11 @@ public class NHOverride{
 		ObjectSet<UnitType> Unit_T5 = ObjectSet.with(
 			conquer,
 			UnitTypes.reign, UnitTypes.toxopid, UnitTypes.eclipse, UnitTypes.oct,
-			UnitTypes.omura, UnitTypes.navanax/*, NHUnitTypes.annihilation*/, NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.declining, NHUnitTypes.saviour
+			UnitTypes.omura, UnitTypes.navanax, NHUnitTypes.annihilation, NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.declining, NHUnitTypes.saviour
 		);
 		
 		ObjectSet<UnitType> Unit_T6 = ObjectSet.with(
-			NHUnitTypes.hurricane, NHUnitTypes.guardian, NHUnitTypes.anvil
+			NHUnitTypes.hurricane, NHUnitTypes.guardian, NHUnitTypes.anvil, NHUnitTypes.sin
 		);
 		
 		Unit_T3.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
@@ -394,7 +394,7 @@ public class NHOverride{
 		
 		new Seq<UnitType>().addAll(Unit_T4.toSeq()).addAll(Unit_T5.toSeq()).filter(u -> u != null && !u.name.startsWith(NewHorizon.MOD_NAME)).each(u -> {
 			u.armor += 3;
-			u.health *= 1.1;
+			u.health *= 1.1f;
 		});
 		
 		
@@ -428,24 +428,6 @@ public class NHOverride{
 		);
 		removeReq(Blocks.plastaniumCompressor, Items.silicon);
 
-		addReq(Blocks.multiplicativeReconstructor,
-				new ItemStack(NHItems.presstanium, 80)
-		);
-
-		addReq(Blocks.exponentialReconstructor,
-				new ItemStack(NHItems.presstanium, 400),
-				new ItemStack(NHItems.metalOxhydrigen, 400),
-				new ItemStack(NHItems.juniorProcessor, 600)
-		);
-		removeReq(Blocks.exponentialReconstructor, Items.silicon);
-
-		addReq(Blocks.tetrativeReconstructor,
-				new ItemStack(NHItems.irayrondPanel, 200),
-				new ItemStack(NHItems.multipleSteel, 400),
-				new ItemStack(NHItems.seniorProcessor, 600)
-		);
-		removeReq(Blocks.tetrativeReconstructor, Items.silicon);
-
 		removeReq(Blocks.ripple, Items.titanium);
 		addReq(Blocks.ripple,
 			new ItemStack(NHItems.presstanium, 50)
@@ -467,7 +449,7 @@ public class NHOverride{
 				new ItemStack(NHItems.metalOxhydrigen, 45)
 		);
 
-		((GenericCrafter) Blocks.surgeSmelter).craftTime += 30f;
+		((GenericCrafter)Blocks.surgeSmelter).craftTime += 30f;
 		removeReq(Blocks.surgeSmelter, Items.silicon);
 		addReq(Blocks.swarmer,
 				new ItemStack(NHItems.juniorProcessor, 25),

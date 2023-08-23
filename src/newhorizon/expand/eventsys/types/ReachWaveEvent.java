@@ -4,15 +4,10 @@ import arc.Core;
 import arc.math.Mathf;
 import mindustry.Vars;
 import newhorizon.expand.entities.WorldEvent;
-import newhorizon.expand.eventsys.annotation.Customizable;
-import newhorizon.expand.eventsys.annotation.NumberParam;
-import newhorizon.expand.eventsys.annotation.Parserable;
 
 public class ReachWaveEvent extends ObjectiveEventType{
-	@Customizable @NumberParam
 	public int targetWave = 10;
 	
-	@Customizable @Parserable(WorldEventType.class)
 	public WorldEventType toTrigger = WorldEventType.NULL;
 	
 	public ReachWaveEvent(String name){

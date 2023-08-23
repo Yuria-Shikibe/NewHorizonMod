@@ -14,12 +14,9 @@ import mindustry.gen.Groups;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.WorldEvent;
-import newhorizon.expand.eventsys.annotation.Customizable;
-import newhorizon.expand.eventsys.annotation.Parserable;
 import newhorizon.util.func.NHFunc;
 
 public abstract class TargetableEventType extends WorldEventType{
-	@Customizable @Parserable(value = Prov.class, params = {Team.class})
 	public Prov<Team> defaultTeam = () -> Vars.state.rules.waveTeam;
 	
 	public TargetableEventType(String name){

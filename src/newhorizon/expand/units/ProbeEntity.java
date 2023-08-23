@@ -116,7 +116,7 @@ public class ProbeEntity extends UnitEntity{
 	}
 	
 	public float scanSpeedScl(){
-		return 1.5f / (scanTarget.block.size) * (1 + scanTarget.power.status) / 2f * reloadMultiplier;
+		return scanTarget.block.hasPower ? 1.5f / (scanTarget.block.size) * (1 + scanTarget.power.status) / 2f * reloadMultiplier : 2;
 	}
 	
 	@Override
@@ -158,7 +158,7 @@ public class ProbeEntity extends UnitEntity{
 	public void updateScan(){
 		if(team == targetTeam)return;
 		
-		if(timer.get(1, 45))scanTarget = Vars.indexer.findTile(targetTeam, x, y, scanRange, b -> b.block().hasPower && !scanned.contains(b));
+		if(timer.get(1, (scanTarget != null && scanTarget.isValid()) ? 600 : 45))scanTarget = Vars.indexer.findTile(targetTeam, x, y, scanRange, b -> !scanned.contains(b));
 		
 		scanning = scanTarget != null && !scanOver();
 		

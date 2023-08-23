@@ -1992,7 +1992,7 @@ public class NHUnitTypes{
 						recoil = 5.4f;
 						bullet = new LightningLinkerBulletType(2.5f, 250){{
 							
-							range = 340f;
+							rangeOverride = 480;
 							
 							trailWidth = 8f;
 							trailLength = 40;
@@ -3833,7 +3833,7 @@ public class NHUnitTypes{
 			outlineColor = OColor;
 			constructor = EntityMapping.map(3);
 
-			EnergyFieldAbility ability = new EnergyFieldAbility(150f, 150f, 300f);
+			EnergyFieldAbility ability = new EnergyFieldAbility(180f, 150f, 300f);
 			ability.color = NHColor.thurmixRed;
 			ability.y = -9f;
 			ability.healEffect = new Effect(11, e -> {
@@ -3853,8 +3853,8 @@ public class NHUnitTypes{
 			immunities.addAll(NHStatusEffects.scannerDown, StatusEffects.slow, StatusEffects.electrified, StatusEffects.muddy, StatusEffects.blasted, StatusEffects.shocked, StatusEffects.sapped, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.weak);
 
 			hitSize = 70f;
-			armor = 42;
-			health = 64000.0F;
+			armor = 52;
+			health = 78000.0F;
 			speed = 1F;
 			rotateSpeed = 0.75f;
 			accel = 0.06F;
@@ -3903,7 +3903,7 @@ public class NHUnitTypes{
 					progress = PartProgress.warmup.add(PartProgress.recoil.mul(0.3f));
 				}});
 				
-				bullet = new ShieldBreakerType(9, 300f, 1200){{
+				bullet = new ShieldBreakerType(9, 400f, 1200){{
 					sprite = NHBullets.MISSILE_LARGE;
 					trailColor = lightningColor = backColor = lightColor = NHColor.thurmixRed;
 					frontColor = NHColor.thurmixRedLight;

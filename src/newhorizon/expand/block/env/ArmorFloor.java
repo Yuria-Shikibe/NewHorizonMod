@@ -8,6 +8,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
+import mindustry.Vars;
 import mindustry.graphics.Drawf;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
@@ -54,7 +55,7 @@ public class ArmorFloor extends Floor{
 		
 		super.init();
 		
-		if(drawLiquidLight){
+		if(drawLiquidLight && !Vars.headless){
 			colors = new Color[variants];
 			
 			for(int i = 0; i < variants; i++){

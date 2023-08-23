@@ -1663,8 +1663,11 @@ public class NHBlocks{
 			heatColor = NHColor.darkEnrColor;
 			unitSort = NHUnitSorts.regionalHPMaximum_All;
 			
-			coolant = consumeCoolant(0.8F);
+			coolant = consume(new ConsumeLiquid(NHLiquids.quantumEntity, 1));
+			liquidCapacity = 120;
+			coolantMultiplier = 2.5f;
 			
+			buildCostMultiplier *= 2;
 			canOverdrive = false;
 			drawer = new DrawTurret(){{
 				parts.add(new RegionPart("-side"){{
@@ -1748,10 +1751,11 @@ public class NHBlocks{
 //					}
 //				});
 			}};
+			
 			shoot = new ShootPattern();
 			inaccuracy = 0;
 			
-			ammoPerShot = 10;
+			ammoPerShot = 40;
 			coolantMultiplier = 0.8f;
 			rotateSpeed = 0.25f;
 			
@@ -1794,7 +1798,7 @@ public class NHBlocks{
 			shootSound = Sounds.laserblast;
 			health = 800000;
 			shootCone = 5f;
-			maxAmmo = 50;
+			maxAmmo = 80;
 			consumePowerCond(800f, TurretBuild::isActive);
 			reload = 1800f;
 			
@@ -3185,9 +3189,9 @@ public class NHBlocks{
 		
 		seniorProcessorFactory = new GenericCrafter("processor-senior-factory") {
 			{
-				requirements(Category.crafting, with(Items.surgeAlloy, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.thorium, 25));
+				requirements(Category.crafting, with(Items.surgeAlloy, 75, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.plastanium, 45));
 				craftEffect = Fx.none;
-				outputItem = new ItemStack(NHItems.seniorProcessor, 4);
+				outputItem = new ItemStack(NHItems.seniorProcessor, 2);
 				craftTime = 180f;
 				size = 2;
 				hasPower = hasItems = true;

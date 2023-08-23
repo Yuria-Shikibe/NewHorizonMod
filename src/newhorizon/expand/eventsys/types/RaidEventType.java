@@ -38,9 +38,6 @@ import mindustry.ui.Styles;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.WorldEvent;
-import newhorizon.expand.eventsys.annotation.Customizable;
-import newhorizon.expand.eventsys.annotation.NumberParam;
-import newhorizon.expand.eventsys.annotation.Parserable;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
@@ -51,15 +48,13 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 public class RaidEventType extends TargetableEventType{
 	protected static final Seq<Building> tmpSeq = new Seq<>();
 	
-	@Customizable @NumberParam public float radius = 180f;
-	@Customizable @NumberParam public float reloadTime = 600f;
-	@Customizable @NumberParam public float inaccuracy = 3f;
-	@Customizable @NumberParam public float velocityRnd = 0.075f;
+	public float radius = 180f;
+	public float reloadTime = 600f;
+	public float inaccuracy = 3f;
+	public float velocityRnd = 0.075f;
 	
-	@Customizable @Parserable(value = ObjectMap.class, params = {BulletType.class, ShootPattern.class})
 	public ObjectMap<BulletType, ShootPattern> projectiles = new ObjectMap<>();
 	
-	@Customizable
 	public Sound callSound = NHSounds.alert2;
 	
 	public void ammo(Object... objects){

@@ -37,9 +37,6 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.cutscene.actions.CSSActions;
 import newhorizon.expand.entities.WorldEvent;
-import newhorizon.expand.eventsys.annotation.Customizable;
-import newhorizon.expand.eventsys.annotation.Parserable;
-import newhorizon.expand.eventsys.annotation.Pos;
 import newhorizon.util.annotation.ClientDisabled;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.TableFunc;
@@ -90,15 +87,13 @@ public class WorldEventType implements Json.JsonSerializable{
 	
 	public boolean hasCoord = false;
 	
-	@Customizable public boolean fadeUI = false;
-	@Customizable @Parserable(value = String.class, params = {Void.class}) public final String name;
-	@Customizable public boolean removeAfterTrigger;
+	public boolean fadeUI = false;
+	public final String name;
+	public boolean removeAfterTrigger;
 	
 	public boolean drawable = false, minimapMarkable = false;
 	public boolean warnOnHUD = true;
 	
-	@Customizable @Pos
-	@Parserable(value = Integer.class, params = {Point2.class})
 	public int initPos = -1;
 	
 	public Prov<? extends WorldEvent> eventProv = WorldEvent::new;
@@ -259,7 +254,7 @@ public class WorldEventType implements Json.JsonSerializable{
 	}
 	
 	/**
-	 * if the percentage < 0 means that the event doesn't have a progress.
+	 * if the percentage < 0 means that the event doesn't have progress.
 	 * */
 	public float progressRatio(WorldEvent event){
 		return -1;

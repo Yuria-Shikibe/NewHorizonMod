@@ -27,7 +27,6 @@ import mindustry.ui.Styles;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.WorldEvent;
-import newhorizon.expand.eventsys.annotation.Customizable;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.ui.IconNumDisplay;
 import newhorizon.util.ui.NHUIFunc;
@@ -40,7 +39,6 @@ public class InterventionEventType extends TargetableEventType{
 	public ObjectIntMap<UnitType> spawner = new ObjectIntMap<>();
 	
 	//	@Customizable @Parserable()
-	@Customizable
 	public Sound callSound = NHSounds.alert2;
 	public StatusEffect status = StatusEffects.none;
 	public float statusDuration = 600;

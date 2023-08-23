@@ -2539,6 +2539,7 @@ public class NHBullets{
 				
 				trailWidth = 12F;
 				trailLength = 120;
+				ammoMultiplier = 1;
 				
 				scaleLife = true;
 				splashDamageRadius = 400f;
