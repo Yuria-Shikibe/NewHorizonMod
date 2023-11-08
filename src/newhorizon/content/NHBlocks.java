@@ -2181,10 +2181,10 @@ public class NHBlocks{
 			range = 1360f;
 			shootEffect = NHFx.hugeSmokeGray;
 			shootCone = 20.0F;
-			recoil = 6.0F;
+			recoil = 2.0F;
 			size = 5;
 			shake = 4.0F;
-			reload = 60.0F;
+			reload = 20.0F;
 			
 			canOverdrive = false;
 			accurateDelay = false;
@@ -2199,7 +2199,7 @@ public class NHBlocks{
 			coolant = consumeCoolant(1f);
 			consumePower(50f);
 			unitSort = NHUnitSorts.slowest;
-			requirements(Category.turret, with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 200, NHItems.zeta, 150, NHItems.presstanium, 250, NHItems.metalOxhydrigen, 150));
+			requirements(Category.turret, with(NHItems.seniorProcessor, 100, NHItems.irayrondPanel, 100, NHItems.zeta, 150, NHItems.presstanium, 150, NHItems.metalOxhydrigen, 150));
 		}};
 		
 		bloodStar = new ItemTurret("blood-star"){{
