@@ -2178,7 +2178,7 @@ public class NHBlocks{
 		
 		atomSeparator = new LaserTurret("atom-separator"){{
 			health = 12000;
-			range = 360f;
+			range = 1360f;
 			shootEffect = NHFx.hugeSmokeGray;
 			shootCone = 20.0F;
 			recoil = 6.0F;
@@ -2294,7 +2294,7 @@ public class NHBlocks{
 		
 		multipleLauncher = new ItemTurret("multiple-launcher"){{
 			size = 3;
-			health = 1250;
+			health = 2250;
 			coolant = consumeCoolant(0.2F);
 			requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
 			canOverdrive = false;
@@ -2317,8 +2317,8 @@ public class NHBlocks{
 			smokeEffect = Fx.shootSmallFlame;
 			shootEffect = Fx.shootBig2;
 			recoil = 3f;
-			range = 280f;
-			reload = 90f;
+			range = 480f;
+			reload = 40f;
 			
 			shoot = new ShootBarrel(){{
 				barrels = new float[]{
@@ -2327,11 +2327,11 @@ public class NHBlocks{
 					4, -2, 0
 				};
 				
-				shotDelay = 2f;
+				shotDelay = 1f;
 				shots = 15;
 			}};
 			
-			maxAmmo = 160;
+			maxAmmo = 250;
 			ammoPerShot = 1;
 			ammoEjectBack = 6f;
 			inaccuracy = 9f;
@@ -2650,7 +2650,7 @@ public class NHBlocks{
 			consumeLiquid(NHLiquids.irdryonFluid, 15 / 60f);
 			consumeItem(Items.silicon, 6);
 			
-			outputItems = ItemStack.with(NHItems.juniorProcessor, 18, NHItems.seniorProcessor, 6);
+			outputItems = ItemStack.with(NHItems.juniorProcessor, 24, NHItems.seniorProcessor, 12);
 			
 			liquidCapacity = 50;
 			itemCapacity = 60;
@@ -2896,7 +2896,7 @@ public class NHBlocks{
 			consumePower(12);
 			consumeItems(with(NHItems.setonAlloy, 2, Items.tungsten, 6));
 			consumeLiquid(NHLiquids.quantumEntity, 0.2f);
-			outputItems = with(NHItems.ancimembrane, 3);
+			outputItems = with(NHItems.ancimembrane, 12);
 //			outputLiquid = new LiquidStack(Liquids.water, 0.5f);
 		}};
 		
@@ -2929,7 +2929,7 @@ public class NHBlocks{
 			consumePower(5);
 			consumeItems(with(Items.titanium, 6, Items.graphite, 2));
 			consumeLiquid(NHLiquids.zetaFluid, 0.125f);
-			outputItems = with(NHItems.presstanium, 8, Items.scrap, 1);
+			outputItems = with(NHItems.presstanium, 12, Items.scrap, 1);
 			
 			itemCapacity = 30;
 			liquidCapacity = 30;
@@ -2969,7 +2969,7 @@ public class NHBlocks{
 			});
 			consumePower(0.5f);
 			consumeLiquid(NHLiquids.quantumEntity, 0.1f);
-			outputLiquid = new LiquidStack(Liquids.water, 12f / 60f);
+			outputLiquid = new LiquidStack(Liquids.water, 18f / 60f);
 			craftTime = 30f;
 			requirements(Category.crafting, BuildVisibility.shown, with(Items.metaglass, 15, Items.copper, 30, NHItems.presstanium, 20));
 			//NHTechTree.add(Blocks.mechanicalPump, this);
@@ -3017,7 +3017,7 @@ public class NHBlocks{
 				requirements(Category.crafting, with(Items.silicon, 45, Items.lead, 115, Items.graphite, 25, Items.titanium, 100));
 				hasItems = hasPower = true;
 				craftTime = 60f;
-				outputItem = new ItemStack(NHItems.presstanium, 2);
+				outputItem = new ItemStack(NHItems.presstanium, 12);
 				size = 2;
 				health = 320;
 				updateEffect = Fx.smeltsmoke;
@@ -3033,7 +3033,7 @@ public class NHBlocks{
 				requirements(Category.crafting, with(Items.silicon, 15, Items.lead, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
 				craftTime = 75f;
-				outputItem = new ItemStack(NHItems.zeta, 1);
+				outputItem = new ItemStack(NHItems.zeta, 8);
 				size = 1;
 				health = 60;
 				craftEffect = new Effect(15, e -> {
@@ -3051,7 +3051,7 @@ public class NHBlocks{
 				}});
 				
 				consumePower(1.5f);
-				consumeItem(Items.thorium, 2);
+				consumeItem(Items.thorium, 5);
 			}
 		};
 		
@@ -3060,12 +3060,12 @@ public class NHBlocks{
 				requirements(Category.crafting, with(NHItems.seniorProcessor, 15, NHItems.presstanium, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
 				craftTime = 120f;
-				outputItem = new ItemStack(NHItems.thermoCorePositive, 1);
+				outputItem = new ItemStack(NHItems.thermoCorePositive, 5);
 				size = 1;
 				health = 60;
 				craftEffect = Fx.formsmoke;
 				consumePower(3f);
-				consumeItem(NHItems.thermoCoreNegative, 1);
+				consumeItem(NHItems.thermoCoreNegative, 3);
 			}
 		};
 		
@@ -3074,12 +3074,12 @@ public class NHBlocks{
 				requirements(Category.crafting, with(NHItems.seniorProcessor, 15, NHItems.presstanium, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
 				craftTime = 120f;
-				outputItem = new ItemStack(NHItems.thermoCoreNegative, 1);
+				outputItem = new ItemStack(NHItems.thermoCoreNegative, 8);
 				size = 1;
 				health = 60;
 				craftEffect = Fx.formsmoke;
 				consumePower(3f);
-				consumeItem(NHItems.thermoCorePositive, 1);
+				consumeItem(NHItems.thermoCorePositive, 3);
 			}
 		};
 		
@@ -3087,7 +3087,7 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(NHItems.irayrondPanel, 60, NHItems.setonAlloy, 30, NHItems.seniorProcessor, 60));
 				craftEffect = Fx.smeltsmoke;
-				outputItem = new ItemStack(NHItems.darkEnergy, 2);
+				outputItem = new ItemStack(NHItems.darkEnergy, 8);
 				craftTime = 90f;
 				size = 2;
 				loopSound = Sounds.electricHum;
@@ -3123,7 +3123,7 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.thorium, 60, Items.graphite, 30));
 				craftEffect = Fx.smeltsmoke;
-				outputItem = new ItemStack(NHItems.fusionEnergy, 3);
+				outputItem = new ItemStack(NHItems.fusionEnergy, 6);
 				craftTime = 90f;
 				size = 3;
 				itemCapacity = 20;
@@ -3161,7 +3161,7 @@ public class NHBlocks{
 					Draw.color(NHItems.irayrondPanel.color);
 					Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
 				}));
-				outputItem = new ItemStack(NHItems.irayrondPanel, 4);
+				outputItem = new ItemStack(NHItems.irayrondPanel, 8);
 				craftTime = 120f;
 				health = 800;
 				size = 4;
@@ -3177,7 +3177,7 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(Items.silicon, 40, NHItems.presstanium, 30, Items.copper, 25, Items.lead, 25));
 				craftEffect = Fx.none;
-				outputItem = new ItemStack(NHItems.juniorProcessor, 3);
+				outputItem = new ItemStack(NHItems.juniorProcessor, 12);
 				craftTime = 180f;
 				size = 2;
 				hasPower = hasItems = true;
@@ -3191,7 +3191,7 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(Items.surgeAlloy, 75, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.plastanium, 45));
 				craftEffect = Fx.none;
-				outputItem = new ItemStack(NHItems.seniorProcessor, 2);
+				outputItem = new ItemStack(NHItems.seniorProcessor, 8);
 				craftTime = 180f;
 				size = 2;
 				hasPower = hasItems = true;
@@ -3278,7 +3278,7 @@ public class NHBlocks{
 				Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
 			});
 			craftEffect = NHFx.square(NHColor.lightSkyFront, 38, 5, 34, 5);
-			outputItem = new ItemStack(NHItems.metalOxhydrigen, 8);
+			outputItem = new ItemStack(NHItems.metalOxhydrigen, 14);
 			craftTime = 60f;
 			hasPower = hasLiquids = hasItems = true;
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(){{
@@ -3289,7 +3289,7 @@ public class NHBlocks{
 				midColor = NHColor.lightSkyBack;
 			}}, new DrawDefault(), new DrawRegion("-top"));
 			consumeLiquid(Liquids.water, 0.25f);
-			consumeItem(Items.lead, 3);
+			consumeItem(Items.lead, 6);
 			consumePower(5f);
 		}};
 		
@@ -3297,7 +3297,7 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 80, NHItems.presstanium, 250, Items.plastanium, 80));
 				craftEffect = Fx.plasticExplosionFlak;
-				outputItem = new ItemStack(NHItems.thermoCorePositive, 4);
+				outputItem = new ItemStack(NHItems.thermoCorePositive, 8);
 				craftTime = 90f;
 				itemCapacity = 30;
 				health = 1500;
@@ -3345,7 +3345,7 @@ public class NHBlocks{
 		
 		zetaFactoryLarge = new GenericCrafter("large-zeta-factory") {{
 			requirements(Category.crafting, with(Items.plastanium, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25));
-			outputItem = new ItemStack(NHItems.zeta, 3);
+			outputItem = new ItemStack(NHItems.zeta, 15);
 			craftTime = 30f;
 			size = 2;
 			craftEffect = Fx.formsmoke;
@@ -3357,7 +3357,7 @@ public class NHBlocks{
 				plantColorLight = NHLiquids.zetaFluid.color.cpy().lerp(Color.white, 0.1f);
 			}}, new DrawDefault());
 			
-			consumeItem(Items.thorium, 3);
+			consumeItem(Items.thorium, 8);
 			consumePower(7f);
 			consumeLiquid(Liquids.water, 0.075f);
 		}};
@@ -3368,7 +3368,7 @@ public class NHBlocks{
 				lightColor = NHItems.multipleSteel.color;
 				updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
 				craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
-				outputItem = new ItemStack(NHItems.multipleSteel, 4);
+				outputItem = new ItemStack(NHItems.multipleSteel, 18);
 				craftTime = 60f;
 				itemCapacity = 20;
 				health = 600;
@@ -3382,7 +3382,7 @@ public class NHBlocks{
 					}
 				};
 				consumeLiquid(NHLiquids.xenAlpha, 0.2f);
-				consumeItems(new ItemStack(Items.metaglass, 4), new ItemStack(Items.titanium, 2));
+				consumeItems(new ItemStack(Items.metaglass, 6), new ItemStack(Items.titanium, 4));
 				consumePower(3f);
 			}
 		};
@@ -3401,7 +3401,7 @@ public class NHBlocks{
 				Lines.square(e.x, e.y, size * tilesize * 0.5f * e.finpow() + 6, 45);
 			});
 			
-			outputItem = new ItemStack(Items.plastanium, 5);
+			outputItem = new ItemStack(Items.plastanium, 12);
 			craftTime = 120f;
 			itemCapacity = 24;
 			liquidCapacity = 20f;
@@ -3411,7 +3411,7 @@ public class NHBlocks{
 			hasPower = hasLiquids = hasItems = true;
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.zetaFluid, 2.5f), new DrawPressor(), new DrawDefault());
 			consumeLiquid(NHLiquids.zetaFluid, 0.05f);
-			consumeItems(new ItemStack(NHItems.presstanium, 2), new ItemStack(Items.beryllium, 5));
+			consumeItems(new ItemStack(NHItems.presstanium, 2);
 			consumePower(10f);
 		}};
 		
@@ -3421,7 +3421,7 @@ public class NHBlocks{
 				Draw.color(Items.surgeAlloy.color);
 				Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
 			}));
-			outputItem = new ItemStack(Items.surgeAlloy, 5);
+			outputItem = new ItemStack(Items.surgeAlloy, 18);
 			craftTime = 90f;
 			itemCapacity = 30;
 			liquidCapacity = 20f;
@@ -3430,7 +3430,7 @@ public class NHBlocks{
 			hasPower = hasLiquids = hasItems = true;
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.zetaFluid), new DrawDefault());
 			consumeLiquid(NHLiquids.zetaFluid, 0.1f);
-			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 6), new ItemStack(Items.thorium, 6), new ItemStack(NHItems.fusionEnergy, 1));
+			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 6), new ItemStack(Items.thorium, 6));
 			consumePower(20f);
 		}};
 		
@@ -3440,7 +3440,7 @@ public class NHBlocks{
 				Draw.color(NHLiquids.irdryonFluid.color);
 				Fill.square(e.x + x, e.y + y, e.fout() * 3f);
 			}));
-			outputItem = new ItemStack(NHItems.setonAlloy, 2);
+			outputItem = new ItemStack(NHItems.setonAlloy, 12);
 			craftTime = 180f;
 			itemCapacity = 24;
 			liquidCapacity = 20f;
@@ -3503,7 +3503,7 @@ public class NHBlocks{
 	private static void loadPowers(){
 		ancientPowerNode = new PowerNode("ancient-power-node"){{
 			size = 1;
-			health = 3000;
+			health = 30000;
 			armor = 30;
 			absorbLasers = true;
 			autolink = false;
@@ -3550,7 +3550,6 @@ public class NHBlocks{
 			liquidCapacity = 30;
 			itemDuration = 240f;
 			consumeItem(NHItems.metalOxhydrigen, 4);
-			consumeLiquid(Liquids.nitrogen,2 / 60f);
 			
 			squareSprite = false;
 			hasLiquids = hasItems = true;
