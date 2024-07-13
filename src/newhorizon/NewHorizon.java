@@ -6,8 +6,6 @@ import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import arc.scene.ui.Label;
-import arc.scene.ui.layout.Table;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -18,7 +16,6 @@ import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
-import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
@@ -29,7 +26,6 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
-import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.expand.NHVars;
@@ -43,8 +39,8 @@ import newhorizon.expand.packets.NHCall;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.EffectDrawer;
 import newhorizon.util.ui.FeatureLog;
-import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
+import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -57,10 +53,6 @@ public class NewHorizon extends Mod{
 	
 	public static void debugLog(Object obj){
 		if(DEBUGGING)Log.info(obj);
-	}
-	
-	{
-//		Vars.mobile = Vars.testMobile = true;
 	}
 	
 	protected static boolean contentLoadComplete = false;
@@ -82,21 +74,32 @@ public class NewHorizon extends Mod{
 	public static Mods.LoadedMod MOD;
 	
 	public static Links.LinkEntry[] links;
-	
+	/** return "new-horizon-name" for sprite. */
 	public static String name(String name){
 		return MOD_NAME + "-" + name;
 	}
 	
-	private static FeatureLog[] getUpdateContent(){
+	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(NHBlocks.concentration){{
-					important = true;
-				}},
-				new FeatureLog(NHBlocks.armorAncient),
-				new FeatureLog(NHBlocks.armorClear),
-				new FeatureLog(NHBlocks.armorLight),
-				new FeatureLog(NHBlocks.armorQuantum),
-				new FeatureLog(NHBlocks.metalWallQuantum),
+            new FeatureLog(0, FeatureLog.featureType.FIX, NHBlocks.shapedWall),
+			new FeatureLog(1, FeatureLog.featureType.FIX, NHBlocks.remoteStorage),
+			new FeatureLog(2, FeatureLog.featureType.FIX, NHContent.ammoInfo),
+			new FeatureLog(3, FeatureLog.featureType.FIX, NHBlocks.largeShieldGenerator),
+
+			new FeatureLog(0, FeatureLog.featureType.BALANCE, NHBlocks.shapedWall),
+			new FeatureLog(1, FeatureLog.featureType.BALANCE, NHBlocks.chargeWallLarge),
+			new FeatureLog(2, FeatureLog.featureType.BALANCE, NHBlocks.processorCompactor),
+			new FeatureLog(3, FeatureLog.featureType.BALANCE, NHBlocks.thermoTurret),
+			new FeatureLog(4, FeatureLog.featureType.BALANCE, NHBlocks.zetaFluidFactory),
+			new FeatureLog(5, FeatureLog.featureType.BALANCE, NHBlocks.executor),
+			new FeatureLog(6, FeatureLog.featureType.BALANCE, NHBlocks.endOfEra),
+			new FeatureLog(7, FeatureLog.featureType.BALANCE, NHUnitTypes.zarkov),
+			new FeatureLog(8, FeatureLog.featureType.BALANCE, NHBlocks.railGun),
+			new FeatureLog(9, FeatureLog.featureType.BALANCE, NHBlocks.prism),
+			new FeatureLog(10, FeatureLog.featureType.BALANCE, NHBlocks.concentration),
+			new FeatureLog(11, FeatureLog.featureType.BALANCE, NHBlocks.multiEfficientConveyor),
+			new FeatureLog(12, FeatureLog.featureType.BALANCE, NHBlocks.irdryonTank),
+			new FeatureLog(13, FeatureLog.featureType.BALANCE, NHBlocks.zetaGenerator)
 		};
 	}
 	
@@ -121,64 +124,8 @@ public class NewHorizon extends Mod{
 	}
 	
 	public static void showNew(){
-		new BaseDialog("Detected Update"){{
-			addCloseListener();
-			
-			cont.pane(main -> {
-				main.top();
-				main.pane(table -> {
-					table.align(Align.topLeft);
-					table.add(MOD.meta.version + ": ").row();
-					table.image().height(OFFSET / 3).growX().color(Pal.accent).row();
-					table.add(Core.bundle.get("mod.ui.update-log")).left();
-				}).growX().fillY().padBottom(LEN).row();
-				main.image().growX().height(4).pad(6).color(Color.lightGray).row();
-				main.pane(t -> {
-					for(int index = 0; index < getUpdateContent().length; index++){
-						FeatureLog c = getUpdateContent()[index];
-						Table info = new Table(Tex.pane, table -> {
-							if(c.important || c.content != null){
-								table.background(Tex.whitePane);
-								if(c.important)table.color.set(Pal.accent);
-								else table.color.set(Color.gray);
-							}
-							
-							table.table(i -> {
-								i.image(c.icon).fill();
-							}).fill().get().pack();
-							table.pane(i -> {
-								i.top();
-								i.add("[gray]NEW [lightgray]" + c.type.toUpperCase() + "[]: [accent]" + c.title + "[]").left().row();
-								i.image().growX().height(OFFSET / 3).pad(OFFSET / 3).color(Color.lightGray).row();
-								if(c.description != null){
-									i.add("[accent]Description: []").left().row();
-									i.add(c.description).padLeft(LEN).left().get().setWrap(true);
-								}
-								if(c.modifier != null)i.table(i1 -> {
-									NHUIFunc.show(i1, c.content);
-								}).grow().left().row();
-								if(c.modifier != null)c.modifier.get(i);
-							}).grow().padLeft(OFFSET).top();
-							table.button(Icon.info, Styles.cleari, LEN, () -> {
-								ContentInfoDialog dialog = new ContentInfoDialog();
-								dialog.show(c.content);
-							}).growY().width(LEN).padLeft(OFFSET).disabled(b -> c.content == null);
-						});
-						if(!c.important)t.add(info).grow().row();
-						else{
-							Label label = new Label("IMPORTANT", Styles.techLabel);
-							label.setFontScale(1.25f);
-							
-							t.stack(new Table(table -> table.margin(OFFSET * 2).add(label)).bottom(), new Table(Styles.black6){{setFillParent(true);}}, info).grow().row();
-						}
-					}
-				}).growX().top().row();
-			}).grow().padLeft(LEN).padRight(LEN).padTop(LEN).row();
-			
-			cont.table(table -> {
-				table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
-			}).bottom().growX().height(LEN).padTop(OFFSET).padLeft(LEN).padRight(LEN);
-		}}.show();
+		NewFeatureDialog newFeatureDialog = new NewFeatureDialog();
+		newFeatureDialog.show();
 	}
 	
 	public static void startLog(){
@@ -273,8 +220,7 @@ public class NewHorizon extends Mod{
 	public NewHorizon(){
 		DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 		
-		Log.info("Loaded NewHorizon Mod constructor.");
-		
+		Log.info("<NEW HORIZON CONSTRUCTOR LOAD>");
 		NHInputListener.registerModBinding();
 		
 		Events.on(ClientLoadEvent.class, e -> {
@@ -326,7 +272,6 @@ public class NewHorizon extends Mod{
 				if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){
 					showNew();
 				}
-				
 				Core.settings.put("nh-lastver", MOD.meta.version);
 			});
 			
@@ -353,50 +298,7 @@ public class NewHorizon extends Mod{
 			Vars.renderer.minZoom = 0.85f;
 		}
 	}
-	
-/*	@Override
-	public void registerServerCommands(CommandHandler handler) {
-		handler.register("events", "List all events in the map.", (args) -> {
-			if (NHGroups.event.isEmpty()) {
-				Log.info("No Event Available");
-			}
-			
-			NHGroups.event.each(Log::info);
-		});
-		
-		handler.register("eventtypes", "List all event types in the map.", (args) -> {
-			if (CutsceneEvent.cutsceneEvents.isEmpty()) {
-				Log.info("No Event Available");
-			}
-			
-			CutsceneEvent.cutsceneEvents.each(Log::info);
-		});
-		
-		handler.register("runevent", "<id>", "Trigger Event (Admin Only)", (args) -> {
-			if (args.length == 0) {
-				Log.warn("[VIOLET]Failed, pls type ID");
-			} else {
-				try {
-					CutsceneEventEntity event = NHGroups.event.getByID(Integer.parseInt(args[0]));
-					event.act();
-					Log.info("Triggered: " + event);
-				} catch (NumberFormatException var2) {
-					Log.warn("[VIOLET]Failed, the ID must be a <Number>");
-				}
-			}
-			
-		});
-		
-		handler.register("runjs", "<Code>", "Run js codes", (args) -> {
-			StringBuilder sb = new StringBuilder();
-			for(String s : args){
-				sb.append(s);
-				sb.append(' ');
-			}
-			CutsceneScript.runJS(sb.toString());
-		});
-	}*/
-	
+
 	@Override
 	public void registerClientCommands(CommandHandler handler) {
 		handler.<Player>register("applystatus", "Apply a status to player's unit", (args, player) -> {

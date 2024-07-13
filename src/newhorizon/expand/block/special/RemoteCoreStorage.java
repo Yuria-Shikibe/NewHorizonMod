@@ -112,7 +112,7 @@ public class RemoteCoreStorage extends StorageBlock{
 			progress += warmup * efficiency() * Time.delta;
 			
 			if(Mathf.equal(warmup, 1, 0.015F)){
-				if(linkedCore == null || !linkedCore.isValid()){
+				if(linkedCore == null || !linkedCore.isValid() && core() != null){
 					linkedCore = core();
 					items = linkedCore.items;
 				}

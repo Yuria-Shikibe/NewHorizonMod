@@ -2883,6 +2883,11 @@ public class NHUnitTypes{
 			waveTrailX = 7f;
 			waveTrailY = -25f;
 			trailScl = 2.6f;
+
+			abilities.add(new RepairFieldAbility(250f, 180f, 120f){{
+				healEffect = NHFx.healEffectSky;
+				activeEffect = NHFx.activeEffectSky;
+			}});
 		}
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};

@@ -2,78 +2,89 @@ apply plugin: "java"
 
 version '1.0'
 
+def appDataRoaming = System.getProperty("user.home") + "/AppData/Roaming/Mindustry/mods"
+
 sourceSets.main.java.srcDirs = ["src"]
-
-
-allprojects {
-    repositories{
-        mavenCentral()
-        maven{ url 'https://www.jitpack.io' }
-    }
-}
 
 repositories{
     mavenCentral()
+    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven{ url 'https://www.jitpack.io' }
 }
 
+java{
+    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v145.1'
-    jabelVersion = "0.6.0"
-    //version of SDK you will be using
-    sdkVersion = '30'
-    sdkRoot = System.getenv("ANDROID_HOME")
-    gameData = 'C:/Users/Administrator/AppData/Roaming/Mindustry'
-    doExec = { cmd ->
-        def proc = cmd.execute(null, new File("$buildDir/libs"))
-        proc.waitForProcessOutput(System.out, System.err)
+    mindustryVersion = 'v146'
+    jabelVersion = "93fde537c7"
+    //windows sucks
+    isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
+    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+}
+
+//java 8 backwards compatibility flag
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.release.set(8)
+    } else {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-//java 8 backwards compatibility flag
-//allprojects{
-//    tasks.withType(JavaCompile){
-//        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-//            options.compilerArgs.addAll(['--release', '8'])
-//        }
-////
-////        doFirst {
-////            options.compilerArgs.addAll(['--release', '14', "--enable-preview"])
-////        }
-//    }
-//}
 
 dependencies{
     implementation 'org.jetbrains:annotations:20.1.0'
+
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-//    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+
+    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
-task jarAndroid{
-    dependsOn "jar"
-    doLast{
-        //collect dependencies needed for desugaring
-        def files = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File("E:/apps/Android/Sdk/platforms/android-30/android.jar")])
-        def dependencies = files.collect{ "--classpath $it.path" }.join(" ")
+//force arc version
+configurations.configureEach {
+    resolutionStrategy.eachDependency { details ->
+        if(details.requested.group == 'com.github.Anuken.Arc'){
+            details.useVersion "$mindustryVersion"
+        }
+    }
+}
 
-        doExec "E:/apps/Android/Sdk/build-tools/30.0.2/d8.bat $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
+tasks.register('jarAndroid') {
+    dependsOn "jar"
+
+    doLast {
+        if (!sdkRoot || !new File(sdkRoot as String).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
+
+        def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find { f -> new File(f, "android.jar").exists() }
+
+        if (!platformRoot) throw new GradleException("No android.jar found. Ensure that you have an Android platform installed.")
+
+        //collect dependencies needed for desugaring
+        def dependencies = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File(platformRoot, "android.jar")]).collect { "--classpath $it.path" }.join(" ")
+
+        def d8 = isWindows ? "d8.bat" : "d8"
+
+        //dex and desugar files - this requires d8 in your PATH
+        "$d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
+                .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
 
 jar{
-    archiveFileName = "${project.archivesBaseName}Desktop.jar"
+    archiveFileName = "NewHorizonDesktop.jar"
 
     from{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
     }
-    from(rootDir){
 
+    from(rootDir){
         include "mod.hjson"
     }
 
@@ -82,120 +93,52 @@ jar{
     }
 }
 
-task deleteLast{
-    def fi = new File("$gameData/mods/NewHorizonModDesktop.jar")
-    if(fi.exists()){
-        System.out.println("Delete Old:" + fi.delete())
-    }
+tasks.register('copyTo', Copy) {
+    from jar
+    into 'E:/Steam/steamapps/common/Mindustry/saves/mods'
+    rename { 'NewHorizonJar.jar' }
+
+    from jar
+    into appDataRoaming
+    rename { 'NewHorizonJar.jar' }
 }
 
-task debugMod{
-    def fi = new File("$rootDir/build/libs/NewHorizonModDesktop.jar")
-//    def debugLog = new File("$rootDir/build/libs/debug.properties")
-//    if(!debugLog.exists())debugLog.createNewFile()
-//
-//    doFirst {
-//        try{
-//            Reader fileReader = new FileReader(debugLog)
-//            Properties property = new Properties()
-//            property.load(fileReader)
-//            Instant last
-//
-//            try {
-//                def toEpochMilli = Long.parseLong(String.valueOf(property.get("lastInstant_toEpochMilli")))
-//                last = Instant.ofEpochMilli(toEpochMilli)
-//            }catch(ignored){
-//                last = Instant.ofEpochMilli(0)
-//            }
-//
-//            fileReader.close()
-//
-//
-//            for (ProcessHandle p : ProcessHandle.allProcesses()){
-//                if(p.info().startInstant().isPresent() && last == p.info().startInstant().get()){
-//                    Runtime.getRuntime().exec("taskkill /PID " + p.pid())
-//                    break
-//                }
-//            }
-//        }catch(IOException e){
-//            e.printStackTrace()
-//        }
-//    }
+tasks.register('debugMobile', JavaExec) {
+    dependsOn classes
+    dependsOn 'copyTo'
 
-    dependsOn jar
-    dependsOn deleteLast
-
-    doLast {
-        try{
-            if(!fi.exists())throw new RuntimeException("Missing Mod File")
-            if(!fi.renameTo("$gameData/mods/NewHorizonModDesktop.jar")){
-                throw new RuntimeException("Failed to replace the old version mod")
-            }
-
-//            Process p = Runtime.getRuntime().exec("java -Xmx1024M -Xms1024M -jar E:/Java_Projects/MDT_Mod_Project/NewHorizonMod/build/libs/Mindustry.jar")
-//
-//
-//            Thread.wait(1000)
-//            Writer writer = new FileWriter(debugLog)
-//            Reader reader = new FileReader(debugLog)
-//            Properties properties = new Properties()
-//            properties.load(reader)
-//            properties.setProperty("lastInstant_toEpochMilli",  String.valueOf(p.info().startInstant().get().toEpochMilli()))
-//            properties.store(writer, "debug")
-//            reader.close()
-//            writer.close()
-        }catch(IOException io){
-            System.out.print(io)
-        }
-    }
+    main = "-jar"
+    args = [
+            "E:/MindustryModDevLib/Mindustry7.0.jar",
+            "-debug",
+            "-testMobile"
+    ]
 }
 
-task jarAndroidNet{
-    dependsOn "jar"
-    doLast{
-        //collect dependencies needed for desugaring
-        def files = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File("$sdkRoot/platforms/android-$sdkVersion/android.jar")])
-        def dependencies = files.collect{ "--classpath $it.path" }.join(" ")
+tasks.register('debugDesktop', JavaExec) {
+    dependsOn classes
+    dependsOn 'copyTo'
 
-        //dex and desugar files - this requires d8 in your PATH
-        doExec("d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar")
-    }
+    main = "-jar"
+    args = [
+            "E:/MindustryModDevLib/Mindustry7.0.jar",
+            "-debug",
+    ]
+
 }
 
-task deploy(type : Jar){
-    def fi = new File("$rootDir/mod.hjson")
-    fi.withReader { reader ->
-        def lines = reader.readLines()
-        fi.withWriter { writer ->
-            lines.each { line ->
-                def check = line.split(":")[0] == "minGameVersion"
-                if(!check) writer.append("$line\r\n")
-            }
-            writer.append("minGameVersion: ${mindustryVersion.split("v")[1]}\r\n")
-        }
-    }
-
+tasks.register('deploy', Jar) {
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName = "${project.archivesBaseName}.jar"
+    archiveFileName = "${base.archivesBaseName}.jar"
 
-    from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
+    from { [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
 
-    doLast{
-        delete{ delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar" }
-        delete{ delete "$buildDir/libs/${project.archivesBaseName}Android.jar" }
+    doLast {
+        delete {
+            delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
+            delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
+        }
     }
 }
 
-task deployNet(type : Jar){
-    dependsOn jarAndroidNet
-    dependsOn jar
-    archiveFileName = "${project.archivesBaseName}.jar"
-
-    from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
-
-    doLast{
-        delete{ delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar" }
-        delete{ delete "$buildDir/libs/${project.archivesBaseName}Android.jar" }
-    }
-}

@@ -7,6 +7,7 @@ import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
@@ -19,6 +20,7 @@ import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.func.NHPixmap;
+import newhorizon.util.graphic.FloatPlatformDrawer;
 
 import java.io.IOException;
 
@@ -33,17 +35,13 @@ public class NHContent extends Content{
 	
 	public static Schematic mLoadout;
 	
-	public static Texture
-			smoothNoise, particleNoise, darkerNoise, armorTex
-			
-			
-			;
+	public static Texture smoothNoise, particleNoise, darkerNoise, armorTex;
 	
 	public static CacheLayer quantumLayer, armorLayer;
 	
 	public static TextureRegion
 			crossRegion, sourceCenter,
-			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade,
+			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade, upgrade2,
 			linkArrow;
 	
 	public static TextureRegion //UI
@@ -108,12 +106,13 @@ public class NHContent extends Content{
 		try{
 			mLoadout = Schematics.read(scheDir.child("init-loadout" + ".msch"));
 		}catch(IOException e){
-			e.printStackTrace();
+			Log.info(e);
 		}
 		
 		crossRegion = Core.atlas.find("cross");
 		sourceCenter = Core.atlas.find(NewHorizon.name("source-center"));
 		upgrade = Core.atlas.find(NewHorizon.name("upgrade"));
+		upgrade2 = Core.atlas.find(NewHorizon.name("upgrade2"));
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));
 		ammoInfo = Core.atlas.find(NewHorizon.name("upgrade-info"));
 		iconLevel = Core.atlas.find(NewHorizon.name("level-up"));
@@ -127,6 +126,8 @@ public class NHContent extends Content{
 		capture = Core.atlas.find(NewHorizon.name("capture"));
 		
 		linkArrow = Core.atlas.find(NewHorizon.name("linked-arrow"));
+
+		FloatPlatformDrawer.load();
 		
 		smoothNoise = loadTex("smooth-noise", t -> {
 			t.setFilter(Texture.TextureFilter.linear);

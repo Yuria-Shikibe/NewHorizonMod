@@ -2,7 +2,7 @@ displayName: "New Horizon"
 author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
-description: "Warning: Beta Version For V7"
-version: "0.4.8"
+description: "Warning: Beta Version For V7."
+version: "0.5.0"
 
 minGameVersion: 145.1

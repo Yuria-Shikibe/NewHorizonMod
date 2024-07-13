@@ -530,7 +530,7 @@ public class NHCSS_UI{
 			
 			boolean outer = screenVec.x < width * 0.05f || screenVec.y < height * 0.05f || screenVec.x > width * 0.95f || screenVec.y > height * 0.95f;
 			
-//			if(outer)screenVec.clamp(width * 0.05f, height * 0.05f, height * 0.95f, width * 0.95f);
+//			if(corner)screenVec.clamp(width * 0.05f, height * 0.05f, height * 0.95f, width * 0.95f);
 			
 			if(outer){
 				screenVec.x = Mathf.clamp(screenVec.x, width * 0.05f, width * 0.95f);
