@@ -78,7 +78,7 @@ tasks.register('jarAndroid') {
 }
 
 jar{
-    archiveFileName = "NewHorizonDesktop.jar"
+    archiveFileName = "${project.archivesBaseName}Desktop.jar"
 
     from{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
@@ -96,11 +96,11 @@ jar{
 tasks.register('copyTo', Copy) {
     from jar
     into 'E:/Steam/steamapps/common/Mindustry/saves/mods'
-    rename { 'NewHorizonJar.jar' }
+    rename { 'NewHorizonModJar.jar' }
 
     from jar
     into appDataRoaming
-    rename { 'NewHorizonJar.jar' }
+    rename { 'NewHorizonModJar.jar' }
 }
 
 tasks.register('debugMobile', JavaExec) {
