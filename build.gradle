@@ -130,7 +130,7 @@ tasks.register('debugDesktop', JavaExec) {
 tasks.register('deploy', Jar) {
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName = "${base.archivesBaseName}.jar"
+    archiveFileName = "${project.archivesBaseName}.jar"
 
     from { [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
 
