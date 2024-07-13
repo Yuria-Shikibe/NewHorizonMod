@@ -17,7 +17,6 @@ import mindustry.gen.Unit;
 import newhorizon.NHGroups;
 import newhorizon.expand.block.defence.GravityWell;
 import newhorizon.util.graphic.DrawFunc;
-import org.jetbrains.annotations.NotNull;
 
 public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 	protected static final Seq<GravityTrapField> tmpSeq = new Seq<>();
@@ -127,7 +126,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 		return true;
 	}*/
 	
-	public GravityTrapField(@NotNull Unit unit, float range){
+	public GravityTrapField(Unit unit, float range){
 		this.range = range;
 		team = unit::team;
 		activated = unit::isValid;
@@ -138,7 +137,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 	
 	}
 	
-	public GravityTrapField(@NotNull GravityWell.GravityTrapBuild build){
+	public GravityTrapField(GravityWell.GravityTrapBuild build){
 		setPosition(build);
 		activated = () -> build.active() && build.isValid();
 		team = () -> build.team;

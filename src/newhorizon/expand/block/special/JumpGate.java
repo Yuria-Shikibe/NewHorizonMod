@@ -66,7 +66,6 @@ import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.ItemImageDynamic;
 import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -872,7 +871,7 @@ public class JumpGate extends Block {
     
     public static class UnitSet implements Comparable<UnitSet>{
         public final Seq<ItemStack> requirements = new Seq<>(ItemStack.class);
-        public @NotNull UnitType type;
+        public UnitType type;
         public float costTime;
         
         //[0] -> Line or Type; [1] -> Tier.
@@ -880,7 +879,7 @@ public class JumpGate extends Block {
         
         public UnitSet(){this(UnitTypes.alpha, new byte[]{-1, -1}, 0); }
     
-        public UnitSet(@NotNull UnitType type, byte[] sortIndex, float costTime, ItemStack... requirements){
+        public UnitSet(UnitType type, byte[] sortIndex, float costTime, ItemStack... requirements){
             Arrays.sort(requirements, Structs.comparingInt(j -> j.item.id));
             this.type = type;
             this.sortIndex = sortIndex;
@@ -925,7 +924,7 @@ public class JumpGate extends Block {
         }
     
         @Override
-        public int compareTo(@NotNull UnitSet set2){
+        public int compareTo(UnitSet set2){
             return sortIndex[0] - set2.sortIndex[0] == 0 ? sortIndex[1] - set2.sortIndex[1] : sortIndex[0] - set2.sortIndex[0];
         }
     }

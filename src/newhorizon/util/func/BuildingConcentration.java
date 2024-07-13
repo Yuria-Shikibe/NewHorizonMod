@@ -13,7 +13,6 @@ import mindustry.gen.Building;
 import mindustry.world.blocks.defense.turrets.Turret;
 import newhorizon.expand.block.special.HyperGenerator;
 import newhorizon.expand.block.special.JumpGate;
-import org.jetbrains.annotations.NotNull;
 
 public class BuildingConcentration{
 	public static Seq<Building> iterated = new Seq<>();
@@ -222,7 +221,7 @@ public class BuildingConcentration{
 		}
 		
 		@Override
-		public int compareTo(@NotNull Complex complex){
+		public int compareTo(Complex complex){
 			return Float.compare(complex.getVariance(), getVariance());
 		}
 	}

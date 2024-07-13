@@ -15,10 +15,9 @@ import mindustry.graphics.Layer;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawDefault;
-import org.jetbrains.annotations.NotNull;
 
 public class DrawPrinter extends DrawDefault{
-	public DrawPrinter(@NotNull Item item){
+	public DrawPrinter(Item item){
 		this.toPrint = item;
 	}
 	
@@ -29,7 +28,7 @@ public class DrawPrinter extends DrawDefault{
 	public Color printColor;
 	public Color lightColor;
 	public float moveLength = 8f;
-	@NotNull public Item toPrint;
+	public Item toPrint;
 	public float time;
 	public TextureRegion bottom, lightRegion;
 	

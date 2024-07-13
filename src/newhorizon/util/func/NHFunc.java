@@ -31,9 +31,6 @@ import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHFx;
 import newhorizon.expand.entities.Spawner;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static mindustry.Vars.*;
 import static mindustry.core.World.toTile;
@@ -88,7 +85,7 @@ public class NHFunc{
         indexer.eachBlock(teamc.team(), teamc.x(), teamc.y(), range, b -> true, b -> Fires.extinguish(b.tile, intensity));
     }
     
-    @NotNull
+
     public static Position collideBuild(Team team, float x1, float y1, float x2, float y2, Boolf<Building> boolf){
         tmpBuilding = null;
     
@@ -98,7 +95,6 @@ public class NHFunc{
         return found ? tmpBuilding : vec21.set(x2, y2);
     }
     
-    @NotNull
     public static Position collideBuildOnLength(Team team, float x1, float y1, float length, float ang, Boolf<Building> boolf){
         vec22.trns(ang, length).add(x1, y1);
         return collideBuild(team, x1, y1, vec22.x, vec22.y, boolf);
@@ -210,7 +206,7 @@ public class NHFunc{
         (in ? NHFx.chainLightningFadeReversed : NHFx.chainLightningFade).at(x, y, lightningPieceLength, color, vec21.cpy());
     }
     
-    public static Unit teleportUnitNet(Unit before, float x, float y, float angle, @Nullable Player player){
+    public static Unit teleportUnitNet(Unit before, float x, float y, float angle, Player player){
         if(net.active() || headless){
             if(player != null){
                 player.set(x, y);
@@ -255,7 +251,6 @@ public class NHFunc{
         tiles.clear();
     }
     
-    @Contract(value = "!null, _ -> param1", pure = true)
     public static Color getColor(Color defaultColor, Team team){
         return defaultColor == null ? team.color : defaultColor;
     }
@@ -279,8 +274,7 @@ public class NHFunc{
         }
     }
     
-    @Contract(pure = true)
-    public static float regSize(@NotNull UnitType type){
+    public static float regSize(UnitType type){
         return type.hitSize / tilesize / tilesize / 3.25f;
     }
     
