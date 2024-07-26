@@ -14,7 +14,7 @@ public class DefenseBlock {
             requirements(Category.defense, with());
 
             size = 5;
-            clipSize = 420f;
+            clipSize = 600f;
         }};
     }
 }

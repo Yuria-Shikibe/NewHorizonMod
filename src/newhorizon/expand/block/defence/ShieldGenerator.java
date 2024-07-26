@@ -56,7 +56,7 @@ public class ShieldGenerator extends BaseTurret {
     public float shieldHealth = 100000f;
     public float recoverSpeed = 5000f/60f;
 
-    public float powerCons = 10000;
+    public float powerCons = 10000/60f;
 
     public float elevation = -1f;
     public TextureRegion turret;
@@ -73,6 +73,7 @@ public class ShieldGenerator extends BaseTurret {
         envEnabled |= Env.space;
         ambientSound = Sounds.shield;
         ambientSoundVolume = 0.08f;
+        canOverdrive = false;
 
         rotateSpeed = 0.1f;
         range = 288f;
@@ -226,9 +227,10 @@ public class ShieldGenerator extends BaseTurret {
         private void updateBullet(){
             if (!broken){
                 Groups.bullet.intersect(
-                    backCenter.x - range/2, backCenter.y - range/2, range, range, bullet -> {
+                    backCenter.x - range, backCenter.y - range, range * 2, range * 2, bullet -> {
                         float dst = Mathf.dst(backCenter.x, backCenter.y, bullet.x, bullet.y);
-                        if (dst < 260 && dst > 220 && bullet.team != team) {
+                        float angel = Angles.angle(backCenter.x, backCenter.y, bullet.x, bullet.y);
+                        if (dst < 260 && dst > 220 && bullet.team != team && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2) {
                             float bAng = bullet.vel.angle() + 180f;
                             float nAng = Tmp.v1.set(bullet.x - backCenter.x, bullet.y - backCenter.y).angle();
                             bullet.vel.rotate((nAng - bAng) * 2 + 180);
@@ -243,9 +245,10 @@ public class ShieldGenerator extends BaseTurret {
         }
         private void updateUnit(){
             if (!broken){
-                Units.nearbyEnemies(team, backCenter.x - range/2, backCenter.y - range/2, range, range, unit -> {
+                Units.nearbyEnemies(team, backCenter.x, backCenter.y, range, unit -> {
                     float dst = Mathf.dst(backCenter.x, backCenter.y, unit.x, unit.y);
-                    if (dst < 260 && dst > 220) {
+                    float angel = Angles.angle(backCenter.x, backCenter.y, unit.x, unit.y);
+                    if (dst < 260 && dst > 220 && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2) {
                         Vec2 vec2 = new Vec2(unit.x - backCenter.x, unit.y - backCenter.y);
                         unit.apply(NHStatusEffects.emp3);
                         unit.vel.setZero();
