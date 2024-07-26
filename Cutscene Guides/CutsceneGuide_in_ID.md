@@ -44,7 +44,7 @@ const UIActions = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$UIA
 const KeyFormat = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$KeyFormat");
 const WorldActions = loadClass("newhorizon.util.feature.cutscene.CutsceneScript$WorldActions"); 
 
-const NHBlocks = loadClass("newhorizon.content.NHBlocks");
+const NHBlocks = loadClass("newhorizon.content.blocks.NHBlocks");
 const NHBullets = loadClass("newhorizon.content.NHBullets");
 const NHItems = loadClass("newhorizon.content.NHItems");
 const NHLiquids = loadClass("newhorizon.content.NHLiquids");

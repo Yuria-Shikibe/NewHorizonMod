@@ -61,7 +61,7 @@ const CutsceneScript = loadContent("newhorizon.util.feature.cutscene.CutsceneScr
 const CCS_Scripts = CutsceneScript.scripts;
 const EventSamples = loadContent("newhorizon.util.feature.cutscene.EventSamples");
 
-const NHBlocks = loadContent("newhorizon.content.NHBlocks");
+const NHBlocks = loadContent("newhorizon.content.blocks.NHBlocks");
 const NHBullets = loadContent("newhorizon.content.NHBullets");
 const NHItems = loadContent("newhorizon.content.NHItems");
 const NHLiquids = loadContent("newhorizon.content.NHLiquids");
@@ -477,7 +477,7 @@ public static Interval timer = new Interval(6);
 
 ###### addListener(Seq<Block> types, Cons<Building> actor)
 ```java
-public static void addListener(Seq\<Block> types, Cons<Building> actor){
+public static void addListener(Seq<Block> types, Cons<Building> actor){
     for(Block type : types)addListener(type, actor);
 }
 ```

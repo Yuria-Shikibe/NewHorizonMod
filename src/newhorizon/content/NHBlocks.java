@@ -60,6 +60,8 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
+import newhorizon.content.blocks.DefenseBlock;
+import newhorizon.content.blocks.TurretBlock;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.adapt.LaserBeamDrill;
@@ -4347,7 +4349,7 @@ public class NHBlocks{
 			junctionReplacement = multiJunction;
 		}};
 		
-		multiArmorConveyor = new FloatConveyor("multi-armor-conveyor"){{
+		multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor"){{
 			requirements(Category.distribution,with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));
 //			//NHTechTree.add(Blocks.armoredConveyor, this);
 			speed = 0.12f;
@@ -4596,7 +4598,10 @@ public class NHBlocks{
 		loadEnv();
 		loadWalls();
 		loadPowers();
-//		loadExperiments();
+		//loadExperiments();
+
+		TurretBlock.load();
+		DefenseBlock.load();
 		
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

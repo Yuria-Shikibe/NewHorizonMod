@@ -1,0 +1,7 @@
+----known bug
+1.auto-update page wrong logo size
+2.armored multi conv
+3.NHFx.smoothColorCircle clip size fix
+
+----feature
+1.add positive/negative to bomb launcher

@@ -514,8 +514,6 @@ public class NHFx{
 		}).layer(Layer.effect + 0.15f);
 	}
 	
-	
-	
 	public static Effect instTrail(Color color, float angle, boolean random){
 		return new Effect(30.0F, e -> {
 			for(int j : angle == 0 ? oneArr: Mathf.signs){
@@ -619,6 +617,25 @@ public class NHFx{
 				width *= e.fout();
 				
 				DrawFunc.tri(e.x + x, e.y + y, width / 2, range / 3 * e.fout(Interp.pow2In) * 0.9f * e.fout(), angle - 180);
+				DrawFunc.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
+			});
+		});
+	}
+
+	public static Effect sharpBlastRand(Color colorExternal, Color colorInternal, float rotation, float ranAngle, float lifetime, float range){
+		return new Effect(lifetime, range * 2, e -> {
+			Angles.randLenVectors(e.id, (int)Mathf.clamp(range / 8, 2, 6), (1 + e.fout(Interp.pow2OutInverse)) / 2f, rotation, ranAngle, (x, y) -> {
+				float angle = Mathf.angle(x, y);
+				float width = e.foutpowdown() * rand.random(range / 6, range / 3) / 2 * e.fout();
+
+				rand.setSeed(e.id);
+				float length = rand.random(range / 2, range * 1.1f) * e.fout();
+
+				Draw.color(colorExternal);
+				DrawFunc.tri(e.x + x, e.y + y, width, length, angle);
+				if(!NHSetting.enableDetails())return;
+				Draw.color(colorInternal);
+				width *= e.fout();
 				DrawFunc.tri(e.x + x, e.y + y, width / 2, length / 1.5f * e.fout(), angle);
 			});
 		});
@@ -1757,7 +1774,18 @@ public class NHFx{
 			for(int i = 0; i < 4; i++){
 				DrawFunc.tri(e.x, e.y, 5.85f * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + 45);
 			}
-		});
+		}),
+
+	    triSpark = new Effect(26, e -> {
+	    	Draw.color(Pal.techBlue, Color.white, e.fin());
+	    	randLenVectors(e.id, 3, 3f + 24f * e.fin(), 5f, (x, y) -> {
+	    		float rand = Mathf.random(120f);
+	    		Fill.poly(e.x + x, e.y + y, 3, e.fout() * 8f * Mathf.random(0.8f, 1.2f), e.rotation + rand * e.fin());
+	    	});
+	    });
+
+
+	;
 }
 
 

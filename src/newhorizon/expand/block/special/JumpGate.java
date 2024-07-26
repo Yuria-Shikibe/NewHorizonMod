@@ -920,7 +920,7 @@ public class JumpGate extends Block {
         }
         
         public ItemStack[] dynamicRequirements(Team team){
-            return ItemStack.mult(requirements.toArray(), state.rules.unitCost(team) * (1 + Mathf.num(NHVars.worldData.jumpGateUsesCoreItems)));
+            return ItemStack.mult(requirements.toArray(), state.rules.unitCost(team));
         }
     
         @Override

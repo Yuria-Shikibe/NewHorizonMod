@@ -26,6 +26,7 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.expand.NHVars;
@@ -283,6 +284,8 @@ public class NewHorizon extends Mod{
 	public void init() {
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 		Core.app.addListener(new NHModCore());
+
+		//PlanetDialog.debugSelect = true;
 		
 		NHVars.worldData = new NHWorldData();
 		NHCSS_UI.init();
