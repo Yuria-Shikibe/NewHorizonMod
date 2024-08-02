@@ -16,6 +16,8 @@ public class FeatureLog{
 	public boolean important = false;
 	public Cons<Table> modifier = null;
 
+	public boolean isContent;
+
 	public enum featureType{
 
 		ADJUST("adjust"),
@@ -43,6 +45,8 @@ public class FeatureLog{
 		type = featureType.CONTENT;
 		
 		this.content = content;
+
+		isContent = true;
 	}
 	
 	public FeatureLog(String title, String description, featureType type, TextureRegion icon){
@@ -76,10 +80,10 @@ public class FeatureLog{
 	}
 
     public String getLocalizedTitle(){
-        return Core.bundle.get("nh.new-feature." + title);
+        return isContent? content.localizedName: Core.bundle.get("nh.new-feature." + title);
     }
 
     public String getLocalizedDescription(){
-        return Core.bundle.get("nh.new-feature." + description);
+        return isContent? content.description: Core.bundle.get("nh.new-feature." + description);
     }
 }

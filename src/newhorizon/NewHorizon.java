@@ -29,6 +29,8 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
+import newhorizon.content.blocks.DefenseBlock;
+import newhorizon.content.blocks.TurretBlock;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.entities.EntityRegister;
@@ -82,25 +84,8 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-            new FeatureLog(0, FeatureLog.featureType.FIX, NHBlocks.shapedWall),
-			new FeatureLog(1, FeatureLog.featureType.FIX, NHBlocks.remoteStorage),
-			new FeatureLog(2, FeatureLog.featureType.FIX, NHContent.ammoInfo),
-			new FeatureLog(3, FeatureLog.featureType.FIX, NHBlocks.largeShieldGenerator),
-
-			new FeatureLog(0, FeatureLog.featureType.BALANCE, NHBlocks.shapedWall),
-			new FeatureLog(1, FeatureLog.featureType.BALANCE, NHBlocks.chargeWallLarge),
-			new FeatureLog(2, FeatureLog.featureType.BALANCE, NHBlocks.processorCompactor),
-			new FeatureLog(3, FeatureLog.featureType.BALANCE, NHBlocks.thermoTurret),
-			new FeatureLog(4, FeatureLog.featureType.BALANCE, NHBlocks.zetaFluidFactory),
-			new FeatureLog(5, FeatureLog.featureType.BALANCE, NHBlocks.executor),
-			new FeatureLog(6, FeatureLog.featureType.BALANCE, NHBlocks.endOfEra),
-			new FeatureLog(7, FeatureLog.featureType.BALANCE, NHUnitTypes.zarkov),
-			new FeatureLog(8, FeatureLog.featureType.BALANCE, NHBlocks.railGun),
-			new FeatureLog(9, FeatureLog.featureType.BALANCE, NHBlocks.prism),
-			new FeatureLog(10, FeatureLog.featureType.BALANCE, NHBlocks.concentration),
-			new FeatureLog(11, FeatureLog.featureType.BALANCE, NHBlocks.multiEfficientConveyor),
-			new FeatureLog(12, FeatureLog.featureType.BALANCE, NHBlocks.irdryonTank),
-			new FeatureLog(13, FeatureLog.featureType.BALANCE, NHBlocks.zetaGenerator)
+			new FeatureLog(DefenseBlock.riftShield),
+			new FeatureLog(TurretBlock.electro)
 		};
 	}
 	

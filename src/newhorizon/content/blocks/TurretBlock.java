@@ -1,5 +1,9 @@
 package newhorizon.content.blocks;
 
+import arc.graphics.g2d.Draw;
+import arc.math.Interp;
+import arc.math.Mathf;
+import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.bullet.ArtilleryBulletType;
@@ -8,6 +12,7 @@ import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootPattern;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.StatusEffect;
@@ -99,8 +104,18 @@ public class TurretBlock {
 
                     despawnEffect = Fx.none;
                     hitEffect = new OptionalMultiEffect(
-                        NHFx.smoothColorCircle(NHColor.ancient, 100f, 150f, 0.6f),
-                        NHFx.circleOut(78f, 75f, 2)
+                        NHFx.smoothColorCircle(NHColor.ancient, 100f, 125f, 0.3f),
+                        NHFx.circleOut(150f, 100f, 4),
+                        NHFx.circleOut(78f, 75f, 2),
+                        NHFx.subEffect(130f, 85f, 12, 30f, Interp.pow2Out, ((i, x, y, rot, fin) -> {
+                            float fout = Interp.pow2Out.apply(1 - fin);
+                            float finpow = Interp.pow3Out.apply(fin);
+                            Tmp.v1.trns(rot, 25 * finpow);
+                            Draw.color(NHColor.ancient);
+                            for(int s : Mathf.signs) {
+                                Drawf.tri(x, y, 14 * fout, 30 * Mathf.curve(finpow, 0, 0.3f) * NHFx.fout(fin, 0.15f), rot + s * 90);
+                            }
+                        }))
                     );
                 }}
             );
