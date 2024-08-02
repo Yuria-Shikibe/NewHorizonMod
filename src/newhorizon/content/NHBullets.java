@@ -702,10 +702,6 @@ public class NHBullets{
 					b.fdata = resultLength;
 					laserEffect.at(b.x, b.y, rot, resultLength * 0.75f);
 					
-					Time.run(b.lifetime() * 0.2f, () -> {
-						hit(b, p.getX(), p.getY());
-					});
-					
 					if(lightningSpacing > 0){
 						int idx = 0;
 						for(float i = 0; i <= resultLength; i += lightningSpacing){

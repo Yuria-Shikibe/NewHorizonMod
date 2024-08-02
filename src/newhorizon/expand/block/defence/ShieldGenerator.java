@@ -149,7 +149,9 @@ public class ShieldGenerator extends BaseTurret {
         @Override
         public boolean onConfigureTapped(float x, float y) {
             //return super.onConfigureTapped(x, y);
-            targetAngel = Angles.angle(this.x, this.y, x, y);
+            if (efficiency > 0.01f){
+                targetAngel = Angles.angle(this.x, this.y, x, y);
+            }
             return false;
         }
 
@@ -245,14 +247,18 @@ public class ShieldGenerator extends BaseTurret {
             if (!broken){
                 Groups.bullet.intersect(
                     backCenter.x - range, backCenter.y - range, range * 2, range * 2, bullet -> {
-                        float chance = (recoverSpeed - bullet.damage) / recoverSpeed * 0.8f + 0.2f;
+                        float chance = (2000 - bullet.damage) / 2000 * 0.8f + 0.2f;
                         float dst = Mathf.dst(backCenter.x, backCenter.y, bullet.x, bullet.y);
                         float angel = Angles.angle(backCenter.x, backCenter.y, bullet.x, bullet.y);
-                        if (dst < 260 && dst > 220 && bullet.team != team && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2 && Mathf.chance(chance)) {
+                        if (dst < 260 && dst > 220 && bullet.team != team && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2) {
                             float bAng = bullet.vel.angle() + 180f;
                             float nAng = Tmp.v1.set(bullet.x - backCenter.x, bullet.y - backCenter.y).angle();
-                            bullet.vel.rotate((nAng - bAng) * 2 + 180);
-                            bullet.team(team);
+                            if (Mathf.chance(chance)){
+                                bullet.vel.rotate((nAng - bAng) * 2 + 180);
+                                bullet.team(team);
+                            }else {
+                                bullet.absorb();
+                            }
                             hit += bullet.damage / recoverSpeed;
                             buildup += bullet.damage;
                             NHFx.sharpBlastRand(team.color, Color.white, nAng, 90f, 65, Mathf.clamp(bullet.damage / 1200) * 100f).at(bullet);
