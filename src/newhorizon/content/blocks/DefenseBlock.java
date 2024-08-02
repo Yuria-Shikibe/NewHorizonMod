@@ -2,19 +2,16 @@ package newhorizon.content.blocks;
 
 import mindustry.type.Category;
 import mindustry.world.Block;
-import mindustry.world.meta.BuildVisibility;
+import newhorizon.content.NHItems;
 import newhorizon.expand.block.defence.ShieldGenerator;
 
 import static mindustry.type.ItemStack.with;
 
 public class DefenseBlock {
-    public static Block shield;
+    public static Block riftShield;
     public static void load(){
-        shield = new ShieldGenerator("shield"){{
-            requirements(Category.defense, with());
-
-            size = 5;
-            clipSize = 600f;
+        riftShield = new ShieldGenerator("rift-shield"){{
+            requirements(Category.effect, with(NHItems.setonAlloy, 200, NHItems.ancimembrane, 240, NHItems.seniorProcessor, 300, NHItems.upgradeSort, 175));
         }};
     }
 }

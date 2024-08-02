@@ -42,7 +42,7 @@ public class TurretShield extends Ability{
 			b.absorb();
 			Fx.absorb.at(b);
 			
-			//break shield
+			//break riftShield
 			if(paramField.data <= b.damage()){
 				paramField.data -= paramField.cooldown * paramField.regen;
 				
@@ -59,17 +59,17 @@ public class TurretShield extends Ability{
 	public float radius = 60f;
 	/** Shield regen speed in damage/tick. */
 	public float regen = 0.1f;
-	/** Maximum shield. */
+	/** Maximum riftShield. */
 	public float max = 200f;
-	/** Cooldown after the shield is broken, in ticks. */
+	/** Cooldown after the riftShield is broken, in ticks. */
 	public float cooldown = 60f * 5;
-	/** Angle of shield arc. */
+	/** Angle of riftShield arc. */
 	public float angle = 80f;
-	/** Offset parameters for shield. */
+	/** Offset parameters for riftShield. */
 	public float angleOffset = 0f, x = 0f, y = 0f;
 	/** If true, only activates when shooting. */
 	public boolean whenShooting = true;
-	/** Width of shield line. */
+	/** Width of riftShield line. */
 	public float width = 6f, drawWidth;
 	
 	/** Whether to draw the arc line. */

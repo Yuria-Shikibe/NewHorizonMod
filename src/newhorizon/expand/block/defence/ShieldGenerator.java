@@ -19,6 +19,8 @@ import arc.util.Eachable;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
@@ -29,6 +31,7 @@ import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.Category;
 import mindustry.type.Item;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
@@ -40,12 +43,14 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
+import static mindustry.type.ItemStack.with;
 
 public class ShieldGenerator extends BaseTurret {
     public final int timerUse = timers++;
@@ -71,12 +76,18 @@ public class ShieldGenerator extends BaseTurret {
         hasPower = true;
         hasItems = true;
         envEnabled |= Env.space;
-        ambientSound = Sounds.shield;
+        ambientSound = NHSounds.largeBeam;
         ambientSoundVolume = 0.08f;
         canOverdrive = false;
 
         rotateSpeed = 0.1f;
-        range = 288f;
+        range = 265f;
+
+        size = 5;
+        clipSize = 600f;
+
+        health = 12000;
+        armor = 32f;
 
         consumePower(powerCons);
         consumeItem(NHItems.ancimembrane, 2);
@@ -107,7 +118,7 @@ public class ShieldGenerator extends BaseTurret {
     @Override
     public void setBars(){
         super.setBars();
-        addBar("shield", (ShieldGeneratorBuild entity) -> new Bar("stat.shieldhealth", Pal.accent, () -> 1f - entity.buildup / (shieldHealth)).blink(Color.white));
+        addBar("riftShield", (ShieldGeneratorBuild entity) -> new Bar("stat.shieldhealth", Pal.accent, () -> 1f - entity.buildup / (shieldHealth)).blink(Color.white));
     }
 
     public class ShieldGeneratorBuild extends BaseTurretBuild implements ControlBlock{
@@ -153,7 +164,7 @@ public class ShieldGenerator extends BaseTurret {
             Draw.z(Layer.turret);
             Drawf.shadow(turret, x - elevation, y - elevation, rotation - 90);
             Draw.rect(turret, x, y, rotation - 90);
-            if (!broken & efficiency > 0){
+            if (!broken & radscl > 0){
                 drawShield();
             }
 
@@ -164,6 +175,11 @@ public class ShieldGenerator extends BaseTurret {
             Drawf.dashCircle(x, y, range(), team.color);
             Drawf.dashLine(team.color, x, y, leftCenter.x, leftCenter.y);
             Drawf.dashLine(team.color, x, y, rightCenter.x, rightCenter.y);
+        }
+
+        @Override
+        public boolean shouldAmbientSound() {
+            return efficiency > 0;
         }
 
         @Override
@@ -189,7 +205,7 @@ public class ShieldGenerator extends BaseTurret {
             }
             rotation = Angles.moveToward(rotation, targetAngel, rotateSpeed * efficiency);
 
-            backCenter = new Vec2(x - Angles.trnsx(rotation - 180, size * tilesize), y - Angles.trnsy(rotation - 180, size * tilesize));
+            backCenter = new Vec2(x - Angles.trnsx(rotation - 180, 16), y - Angles.trnsy(rotation - 180, 16));
             rightCenter = backCenter.cpy().add(Angles.trnsx(rotation - shieldArc/2, 250), Angles.trnsy(rotation - shieldArc/2, 250));
             leftCenter = backCenter.cpy().add(Angles.trnsx(rotation + shieldArc/2, 250), Angles.trnsy(rotation + shieldArc/2, 250));
 
@@ -225,12 +241,14 @@ public class ShieldGenerator extends BaseTurret {
             }
         }
         private void updateBullet(){
+            //todo reflect bullet from inner
             if (!broken){
                 Groups.bullet.intersect(
                     backCenter.x - range, backCenter.y - range, range * 2, range * 2, bullet -> {
+                        float chance = (recoverSpeed - bullet.damage) / recoverSpeed * 0.8f + 0.2f;
                         float dst = Mathf.dst(backCenter.x, backCenter.y, bullet.x, bullet.y);
                         float angel = Angles.angle(backCenter.x, backCenter.y, bullet.x, bullet.y);
-                        if (dst < 260 && dst > 220 && bullet.team != team && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2) {
+                        if (dst < 260 && dst > 220 && bullet.team != team && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2 && Mathf.chance(chance)) {
                             float bAng = bullet.vel.angle() + 180f;
                             float nAng = Tmp.v1.set(bullet.x - backCenter.x, bullet.y - backCenter.y).angle();
                             bullet.vel.rotate((nAng - bAng) * 2 + 180);
@@ -264,12 +282,12 @@ public class ShieldGenerator extends BaseTurret {
             float sin1 = (Mathf.sin(Time.time / 30f) * 0.12f + 1f) * radscl;
             float sin2 = (Mathf.sin(Time.time / 30f) * 0.18f + 1.1f) * radscl;
 
-            float xStart = x + Angles.trnsx(rotation, 16);
-            float yStart = y + Angles.trnsy(rotation, 16);
+            float xStart = backCenter.x;
+            float yStart = backCenter.y;
 
             Vec2 vec = new Vec2(xStart, yStart);
 
-            if (state.isPlaying()){
+            if (state.isPlaying() && radscl > 0.01f){
                 if (Mathf.chanceDelta(10f/60f)) {
                     PosLightning.createEffect(vec, rightCenter, team.color, 1, 2 * sin1);
                     PosLightning.createEffect(vec, leftCenter, team.color, 1, 2 * sin1);
@@ -298,8 +316,12 @@ public class ShieldGenerator extends BaseTurret {
 
             Draw.color(team.color, Color.white, Mathf.clamp(hit));
             Draw.z(Layer.effect + 0.0002f);
-            DrawFunc.surround(id, rightCenter.x, rightCenter.y, 22, 6, 4, 6, sin1);
-            DrawFunc.surround(id + 1, leftCenter.x, leftCenter.y, 22, 6, 4, 6, sin1);
+            if (radscl > 0.01f){
+                DrawFunc.surround(id, rightCenter.x, rightCenter.y, 22, 6, 4, 6, sin1);
+                DrawFunc.surround(id + 1, leftCenter.x, leftCenter.y, 22, 6, 4, 6, sin1);
+                DrawFunc.surround(id + 2, backCenter.x, backCenter.y, 22, 8, 3, 5, sin1);
+            }
+
         }
         private void drawPulse(){
             Draw.z(Layer.effect);
@@ -418,6 +440,27 @@ public class ShieldGenerator extends BaseTurret {
                 unit.tile(this);
             }
             return (Unit)unit;
+        }
+
+        public void write(Writes write){
+            super.write(write);
+            write.bool(broken);
+            write.f(buildup);
+            write.f(radscl);
+            write.f(warmup);
+            write.f(rotation);
+            write.f(targetAngel);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            broken = read.bool();
+            buildup = read.f();
+            radscl = read.f();
+            warmup = read.f();
+            rotation = read.f();
+            targetAngel = read.f();
         }
     }
 }

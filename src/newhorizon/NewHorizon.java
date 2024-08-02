@@ -220,6 +220,7 @@ public class NewHorizon extends Mod{
 	
 	public NewHorizon(){
 		DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
+		//PlanetDialog.debugSelect = true;
 		
 		Log.info("<NEW HORIZON CONSTRUCTOR LOAD>");
 		NHInputListener.registerModBinding();
@@ -244,7 +245,7 @@ public class NewHorizon extends Mod{
 							new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
 								cont.table(t -> {
 									t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
-									t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).row();
+									t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).scaling(Scaling.bounded).row();
 									t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
 									t.add("\t[lightgray]Version: [accent]" + tag).left().row();
 									t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();

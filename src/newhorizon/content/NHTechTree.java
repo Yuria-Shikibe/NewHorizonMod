@@ -6,6 +6,8 @@ import mindustry.content.Items;
 import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import newhorizon.content.blocks.DefenseBlock;
+import newhorizon.content.blocks.TurretBlock;
 
 import static mindustry.content.TechTree.*;
 
@@ -52,7 +54,9 @@ public class NHTechTree{
 						node(NHBlocks.assignOverdrive);
 					});
 				});
-				node(NHBlocks.largeShieldGenerator);
+				node(NHBlocks.largeShieldGenerator, () -> {
+					node(DefenseBlock.riftShield);
+				});
 				node(NHBlocks.armorBatteryLarge, () -> {
 					node(NHBlocks.hugeBattery);
 				});
@@ -163,6 +167,7 @@ public class NHTechTree{
 								node(NHBlocks.executor);
 							});
 						});
+					node(TurretBlock.electro);
 					});
 					
 					node(NHBlocks.multipleLauncher, () -> {

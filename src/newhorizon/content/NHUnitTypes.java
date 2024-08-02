@@ -1708,7 +1708,7 @@ public class NHUnitTypes{
 				bullet = new BulletType(){{
 					shootEffect = Fx.none;
 					hitEffect = NHFx.lightningHitSmall;
-					maxRange = 200f;
+					maxRange = 320f;
 					damage = 200f;
 				}};
 			}

@@ -513,6 +513,16 @@ public class NHFx{
 			Draw.blend();
 		}).layer(Layer.effect + 0.15f);
 	}
+
+	public static Effect smoothColorCircle(Color out, float rad, float lifetime, float alpha){
+		return new Effect(lifetime, rad * 2, e -> {
+			Draw.blend(Blending.additive);
+			float radius = e.fin(Interp.pow3Out) * rad;
+			Fill.light(e.x, e.y, circleVertices(radius), radius, Color.clear, Tmp.c1.set(out).a(e.fout(Interp.pow5Out) * alpha));
+			Drawf.light(e.x, e.y, radius * 1.3f, out, 0.7f * e.fout(0.23f));
+			Draw.blend();
+		}).layer(Layer.effect + 0.15f);
+	}
 	
 	public static Effect instTrail(Color color, float angle, boolean random){
 		return new Effect(30.0F, e -> {
@@ -1776,16 +1786,24 @@ public class NHFx{
 			}
 		}),
 
-	    triSpark = new Effect(26, e -> {
+	    triSpark1 = new Effect(26, e -> {
+			rand.setSeed(e.id);
 	    	Draw.color(Pal.techBlue, Color.white, e.fin());
 	    	randLenVectors(e.id, 3, 3f + 24f * e.fin(), 5f, (x, y) -> {
-	    		float rand = Mathf.random(120f);
-	    		Fill.poly(e.x + x, e.y + y, 3, e.fout() * 8f * Mathf.random(0.8f, 1.2f), e.rotation + rand * e.fin());
+	    		float randN = rand.random(120f);
+	    		Fill.poly(e.x + x, e.y + y, 3, e.fout() * 8f * rand.random(0.8f, 1.2f), e.rotation + randN * e.fin());
 	    	});
-	    });
+	    }),
 
+		triSpark2 = new Effect(26, e -> {
+			rand.setSeed(e.id);
+			Draw.color(NHColor.ancient, Color.white, e.fin());
+			randLenVectors(e.id, 3, 3f + 24f * e.fin(), 5f, (x, y) -> {
+				float randN = rand.random(120f);
+				Fill.poly(e.x + x, e.y + y, 3, e.fout() * 8f * rand.random(0.8f, 1.2f), e.rotation + randN * e.fin());
+			});
+		});
 
-	;
 }
 
 

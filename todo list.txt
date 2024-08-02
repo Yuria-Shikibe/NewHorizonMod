@@ -1,7 +1,7 @@
 ----known bug
-1.auto-update page wrong logo size
-2.armored multi conv
-3.NHFx.smoothColorCircle clip size fix
+[[[[[[[[[[1.auto-update page wrong logo size
+[[[[[[[2.armored multi conv
+3高轻带比如拉着过管道会用灰带桥过
 
 ----feature
 1.add positive/negative to bomb launcher

@@ -1,10 +1,16 @@
 package newhorizon.content.blocks;
 
+import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.entities.bullet.ArtilleryBulletType;
+import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.RegionPart;
+import mindustry.entities.pattern.ShootPattern;
 import mindustry.entities.pattern.ShootSpread;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
+import mindustry.type.StatusEffect;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.draw.DrawTurret;
@@ -26,42 +32,78 @@ public class TurretBlock {
 
     public static void load(){
         electro = new ItemTurret("electro"){{
-            requirements(Category.turret, with(Items.copper, 10));
+            requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 150, Items.phaseFabric, 100, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150));
+            canOverdrive = false;
 
+            health = 3200;
             outlineColor = Pal.darkOutline;
             velocityRnd = 0.2f;
 
-            ammo(NHItems.juniorProcessor, new TrailFadeBulletType(){{
-                damage = 100;
-                speed = 6f;
-                lifetime = 120f;
-                despawnHit = true;
-                hitShake = despawnShake = 2f;
+            ammo(
+                NHItems.juniorProcessor, new ArtilleryBulletType(){{
+                    damage = 75;
+                    speed = 6f;
+                    lifetime = 120f;
+                    hitShake = despawnShake = 1.2f;
+                    status = NHStatusEffects.emp2;
+                    hitSound = Sounds.none;
 
-                fragBullet = new DOTBulletType();
+                    fragBullet = new DOTBulletType(){{
+                        DOTDamage = damage = 75f;
+                        DOTRadius = 12f;
+                        radIncrease = 0.25f;
+                        fx = NHFx.triSpark1;
+                        lightningColor = Pal.techBlue;
+                    }};
+                    fragBullets = 1;
 
-                homingRange = 20f;
-                homingPower = 0.12f;
+                    homingRange = 20f;
+                    homingPower = 0.12f;
 
-                trailChance = 0.8f;
-                trailEffect = NHFx.triSpark;
+                    trailChance = 0.8f;
+                    trailEffect = NHFx.triSpark1;
 
-                tracers = 4;
-                tracerStroke = 5f;
-                tracerUpdateSpacing = 3;
-                tracerFadeOffset = 5;
-                tracerRandX = 16f;
-                tracerStrokeOffset = 6;
-                addBeginPoint = true;
+                    backColor = lightColor = lightningColor = trailColor = hitColor = Pal.techBlue;
 
-                backColor = lightColor = lightningColor = trailColor = hitColor = Pal.techBlue;
+                    despawnEffect = Fx.none;
+                    hitEffect = new OptionalMultiEffect(
+                        NHFx.smoothColorCircle(Pal.techBlue, 78f, 150f, 0.6f),
+                        NHFx.circleOut(70, 60f, 2)
+                    );
+                }},
+                NHItems.seniorProcessor, new ArtilleryBulletType(){{
+                    damage = 120;
+                    speed = 6.5f;
+                    lifetime = 150f;
+                    hitShake = despawnShake = 2f;
+                    status = NHStatusEffects.emp3;
+                    hitSound = Sounds.none;
 
-                despawnEffect = hitEffect = new OptionalMultiEffect(
-                    NHFx.smoothColorCircle(Pal.techBlue, 92f, 150f),
-                    NHFx.circleOut(95f, 82f, 2)
-                );
+                    fragBullet = new DOTBulletType(){{
+                        DOTDamage = damage = 120f;
+                        DOTRadius = 16f;
+                        radIncrease = 0.28f;
+                        effect = NHStatusEffects.emp3;
+                        fx = NHFx.triSpark2;
+                        lightningColor = NHColor.ancient;
+                    }};
+                    fragBullets = 1;
 
-            }});
+                    homingRange = 22f;
+                    homingPower = 0.13f;
+
+                    trailChance = 0.8f;
+                    trailEffect = NHFx.triSpark2;
+
+                    backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.ancient;
+
+                    despawnEffect = Fx.none;
+                    hitEffect = new OptionalMultiEffect(
+                        NHFx.smoothColorCircle(NHColor.ancient, 100f, 150f, 0.6f),
+                        NHFx.circleOut(78f, 75f, 2)
+                    );
+                }}
+            );
 
             reload = 120f;
             shootY = 10f;
@@ -112,10 +154,10 @@ public class TurretBlock {
             shootWarmupSpeed = 0.08f;
 
             scaledHealth = 300;
-            range = 600f;
+            range = 350f;
             size = 4;
 
-            shootEffect = NHFx.square(Pal.techBlue, 55f, 12, 60, 6);
+            shootEffect = NHFx.square(NHColor.ancient, 55f, 12, 60, 6);
 
             limitRange(-5f);
         }};
