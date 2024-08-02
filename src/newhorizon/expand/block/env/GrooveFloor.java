@@ -48,10 +48,10 @@ public class GrooveFloor extends Floor {
 
     private byte getTileIndex(Tile tile){
         byte index = 0;
-        if (world.tile(tile.x, tile.y + 1).floor() == this) index += 1;
-        if (world.tile(tile.x + 1, tile.y).floor() == this) index += 2;
-        if (world.tile(tile.x, tile.y - 1).floor() == this) index += 4;
-        if (world.tile(tile.x - 1, tile.y).floor() == this) index += 8;
+        if (world.floor(tile.x, tile.y + 1) == this) index += 1;
+        if (world.floor(tile.x + 1, tile.y) == this) index += 2;
+        if (world.floor(tile.x, tile.y - 1) == this) index += 4;
+        if (world.floor(tile.x - 1, tile.y) == this) index += 8;
         return index;
     }
 }

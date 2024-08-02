@@ -46,7 +46,7 @@ public class TurretBlock {
 
             ammo(
                 NHItems.juniorProcessor, new ArtilleryBulletType(){{
-                    damage = 75;
+                    damage = 40;
                     speed = 6f;
                     lifetime = 120f;
                     hitShake = despawnShake = 1.2f;
@@ -54,7 +54,7 @@ public class TurretBlock {
                     hitSound = Sounds.none;
 
                     fragBullet = new DOTBulletType(){{
-                        DOTDamage = damage = 75f;
+                        DOTDamage = damage = 40f;
                         DOTRadius = 12f;
                         radIncrease = 0.25f;
                         fx = NHFx.triSpark1;
@@ -77,7 +77,7 @@ public class TurretBlock {
                     );
                 }},
                 NHItems.seniorProcessor, new ArtilleryBulletType(){{
-                    damage = 120;
+                    damage = 75;
                     speed = 6.5f;
                     lifetime = 150f;
                     hitShake = despawnShake = 2f;
@@ -85,7 +85,7 @@ public class TurretBlock {
                     hitSound = Sounds.none;
 
                     fragBullet = new DOTBulletType(){{
-                        DOTDamage = damage = 120f;
+                        DOTDamage = damage = 75f;
                         DOTRadius = 16f;
                         radIncrease = 0.28f;
                         effect = NHStatusEffects.emp3;
@@ -101,6 +101,7 @@ public class TurretBlock {
                     trailEffect = NHFx.triSpark2;
 
                     backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.ancient;
+                    rangeChange = 45;
 
                     despawnEffect = Fx.none;
                     hitEffect = new OptionalMultiEffect(

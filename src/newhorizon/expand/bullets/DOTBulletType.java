@@ -11,6 +11,7 @@ import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.ContinuousBulletType;
 import mindustry.gen.Bullet;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -22,7 +23,7 @@ import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.Vars.state;
 
-public class DOTBulletType extends BasicBulletType {
+public class DOTBulletType extends ContinuousBulletType {
 
     public float DOTRadius = 12f;
     public float DOTDamage = 100f;
@@ -74,7 +75,7 @@ public class DOTBulletType extends BasicBulletType {
         float rad = (float) b.data;
         rad += radIncrease;
         b.data = rad;
-        if (b.timer(2, 1)){
+        if (b.timer(2, damageInterval)){
             Damage.damage(b.team, b.x, b.y, rad * 1.2f, DOTDamage * b.damageMultiplier());
             Units.nearby(null, b.x, b.y, rad, unit -> {
                 if (unit.team != b.team){
