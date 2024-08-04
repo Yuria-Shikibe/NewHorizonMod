@@ -11,13 +11,13 @@ import newhorizon.util.graphic.FloatPlatformDrawer;
 
 import static mindustry.Vars.world;
 
-public class FloatItemBridge extends ItemBridge {
+public class FloatItemBridge extends BufferedItemBridge {
     public FloatItemBridge(String name) {
         super(name);
         placeableLiquid = true;
     }
 
-    public class FloatItemBridgeBuild extends ItemBridgeBuild {
+    public class FloatItemBridgeBuild extends BufferedItemBridgeBuild {
         public Seq<Building> proximityBuild = new Seq<>();
         public boolean ab;
         public boolean[] edge, corner;
