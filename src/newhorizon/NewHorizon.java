@@ -263,8 +263,6 @@ public class NewHorizon extends Mod{
 					showNew();
 				}
 				Core.settings.put("nh-lastver", MOD.meta.version);
-				showNew();
-
 			});
 			
 			if(!Core.settings.getBool("nh_hide_starting_log"))Core.app.post(Time.runTask(10f, NewHorizon::startLog));
