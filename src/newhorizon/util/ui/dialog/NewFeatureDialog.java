@@ -55,7 +55,7 @@ public class NewFeatureDialog extends BaseDialog {
         main.pane(t -> {
             for (FeatureLog feature: getUpdateContent()) {
                 Table importantLabel = new Table(table -> {
-                    Label label = new Label("<<IMPORTANT UPDATE>>");
+                    Label label = new Label("[ancient]<<IMPORTANT UPDATE>>");
                     label.setStyle(Styles.techLabel);
                     label.setFontScale(1.25f);
                     table.add(label).row();

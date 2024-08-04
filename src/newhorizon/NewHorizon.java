@@ -46,6 +46,7 @@ import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
+import static newhorizon.util.ui.FeatureLog.featureType.BALANCE;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -84,8 +85,10 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(DefenseBlock.riftShield),
-			new FeatureLog(TurretBlock.electro)
+			new FeatureLog(DefenseBlock.riftShield){{important = true;}},
+			new FeatureLog(TurretBlock.electro){{important = true;}},
+
+			new FeatureLog(0, BALANCE, NHContent.ammoInfo)
 		};
 	}
 	
@@ -260,6 +263,8 @@ public class NewHorizon extends Mod{
 					showNew();
 				}
 				Core.settings.put("nh-lastver", MOD.meta.version);
+				showNew();
+
 			});
 			
 			if(!Core.settings.getBool("nh_hide_starting_log"))Core.app.post(Time.runTask(10f, NewHorizon::startLog));

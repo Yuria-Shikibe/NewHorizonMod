@@ -37,7 +37,7 @@ public class TurretBlock {
 
     public static void load(){
         electro = new ItemTurret("electro"){{
-            requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 150, Items.phaseFabric, 100, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150));
+            requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));
             canOverdrive = false;
 
             health = 3200;

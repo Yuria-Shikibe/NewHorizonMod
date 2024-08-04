@@ -1931,7 +1931,6 @@ public class NHBullets{
 			shootEffect = NHFx.darkEnergyShootBig;
 			smokeEffect = NHFx.darkEnergySmokeBig;
 			hitSpacing = 3;
-			hittable = false;
 		}
 			
 			@Override

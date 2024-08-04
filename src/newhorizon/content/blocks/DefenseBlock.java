@@ -11,7 +11,7 @@ public class DefenseBlock {
     public static Block riftShield;
     public static void load(){
         riftShield = new ShieldGenerator("rift-shield"){{
-            requirements(Category.effect, with(NHItems.setonAlloy, 200, NHItems.ancimembrane, 240, NHItems.seniorProcessor, 300, NHItems.upgradeSort, 175));
+            requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.upgradeSort, 300));
         }};
     }
 }

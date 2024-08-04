@@ -3822,7 +3822,8 @@ public class NHBlocks{
 			range = 120;
 			health = 2000;
 			effectColor = NHColor.lightSkyBack;
-			
+			crushDamageMultiplier = 0.025f;
+
 			armor = 32f;
 		}};
 		
@@ -3833,13 +3834,16 @@ public class NHBlocks{
 			range = 200;
 			health = 2000 * healthMult2;
 			effectColor = NHColor.lightSkyBack;
-			
+			crushDamageMultiplier = 0.025f;
+
+
 			armor = 32f;
 		}};
 		
 		insulatedWall = new Wall("insulated-wall"){{
 			size = 1;
 			health = 300;
+			buildCostMultiplier = 0.4f;
 			requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
 			insulated = true;
 			absorbLasers = true;
@@ -4277,8 +4281,9 @@ public class NHBlocks{
 //			//NHTechTree.add(Blocks.liquidTank, this);
 			size = 3;
 			underBullets = true;
-			liquidCapacity = 3000F;
-			health = 2500;
+			liquidCapacity = 4500;
+			armor = 12f;
+			health = 3200;
 		}};
 		
 		assignOverdrive = new AssignOverdrive("assign-overdrive"){{
@@ -4360,7 +4365,7 @@ public class NHBlocks{
 			junctionReplacement = multiJunction;
 		}};
 
-		multiConveyor = new StackConveyor("multi-conveyor"){{
+		multiConveyor = new FloatStackConveyor("multi-conveyor"){{
 			requirements(Category.distribution,with(NHItems.zeta, 2,NHItems.irayrondPanel, 2, NHItems.juniorProcessor, 1));
 //			//NHTechTree.add(Blocks.plastaniumConveyor, this);
 			speed = 0.125f;
