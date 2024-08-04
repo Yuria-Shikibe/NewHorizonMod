@@ -3965,9 +3965,7 @@ public class NHBlocks{
 			fadeIn = moveArrows = true;
 			hasPower = false;
 			range = 8;
-			speed = 40;
 			arrowSpacing = 8f;
-			bufferCapacity = 20;
 		}};
 		
 		multiSteelLiquidBridge = new FloatLiquidBridge("multi-steel-liquid-bridge"){{
