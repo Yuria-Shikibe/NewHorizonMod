@@ -4353,6 +4353,7 @@ public class NHBlocks{
 			health = 560;
 			armor = 3;
 			junctionReplacement = multiJunction;
+			bridgeReplacement = multiSteelItemBridge;
 		}};
 		
 		multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor"){{
