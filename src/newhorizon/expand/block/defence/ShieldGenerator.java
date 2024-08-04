@@ -61,7 +61,7 @@ public class ShieldGenerator extends BaseTurret {
     public float shieldHealth = 100000f;
     public float recoverSpeed = 5000f/60f;
 
-    public float powerCons = 10000/60f;
+    public float powerCons = 30000/60f;
 
     public float elevation = -1f;
     public TextureRegion turret;
