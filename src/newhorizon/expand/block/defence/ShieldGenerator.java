@@ -250,7 +250,8 @@ public class ShieldGenerator extends BaseTurret {
                         float chance = (2000 - bullet.damage) / 2000 * 0.8f + 0.2f;
                         float dst = Mathf.dst(backCenter.x, backCenter.y, bullet.x, bullet.y);
                         float angel = Angles.angle(backCenter.x, backCenter.y, bullet.x, bullet.y);
-                        if (dst < 260 && dst > 220 && bullet.team != team && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2) {
+                        boolean in = Angles.within(rotation, angel, shieldArc/2);
+                        if (dst < 260 && dst > 220 && bullet.team != team && in) {
                             float bAng = bullet.vel.angle() + 180f;
                             float nAng = Tmp.v1.set(bullet.x - backCenter.x, bullet.y - backCenter.y).angle();
                             if (Mathf.chance(chance)){
@@ -272,7 +273,8 @@ public class ShieldGenerator extends BaseTurret {
                 Units.nearbyEnemies(team, backCenter.x, backCenter.y, range, unit -> {
                     float dst = Mathf.dst(backCenter.x, backCenter.y, unit.x, unit.y);
                     float angel = Angles.angle(backCenter.x, backCenter.y, unit.x, unit.y);
-                    if (dst < 260 && dst > 220 && angel < rotation + shieldArc/2 && angel > rotation - shieldArc/2) {
+                    boolean in = Angles.within(rotation, angel, shieldArc/2);
+                    if (dst < 260 && dst > 220 && in) {
                         Vec2 vec2 = new Vec2(unit.x - backCenter.x, unit.y - backCenter.y);
                         unit.apply(NHStatusEffects.emp3);
                         unit.vel.setZero();
