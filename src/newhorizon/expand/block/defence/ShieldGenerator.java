@@ -244,7 +244,7 @@ public class ShieldGenerator extends BaseTurret {
         }
         private void updateBullet(){
             //todo reflect bullet from inner
-            if (!broken){
+            if (!broken && efficiency > 0.01f){
                 Groups.bullet.intersect(
                     backCenter.x - range, backCenter.y - range, range * 2, range * 2, bullet -> {
                         float chance = (2000 - bullet.damage) / 2000 * 0.8f + 0.2f;
@@ -268,7 +268,7 @@ public class ShieldGenerator extends BaseTurret {
             }
         }
         private void updateUnit(){
-            if (!broken){
+            if (!broken && efficiency > 0.01f){
                 Units.nearbyEnemies(team, backCenter.x, backCenter.y, range, unit -> {
                     float dst = Mathf.dst(backCenter.x, backCenter.y, unit.x, unit.y);
                     float angel = Angles.angle(backCenter.x, backCenter.y, unit.x, unit.y);
