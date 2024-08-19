@@ -62,6 +62,7 @@ import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.DefenseBlock;
 import newhorizon.content.blocks.EnvironmentBlock;
+import newhorizon.content.blocks.TestBlock;
 import newhorizon.content.blocks.TurretBlock;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
@@ -4610,7 +4611,10 @@ public class NHBlocks{
 		TurretBlock.load();
 		DefenseBlock.load();
 		EnvironmentBlock.load();
-		
+		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
+			TestBlock.load();
+		};
+
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;
 			rebuildable = false;

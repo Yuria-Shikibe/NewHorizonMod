@@ -94,7 +94,7 @@ public class NHUnitTypes{
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
 			restrictionEnzyme,
-			nucleoid, pester, laugra, macrophage, ancientProbe,//ancient
+			nucleoid, pester, laugra, macrophage, ancientProbe, constriction, //ancient
 			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
@@ -2777,7 +2777,6 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this); NHPixmap.outlineLegs(packer, this);}
 		};
 
-		
 		ghost = new NHUnitType("ghost"){{
 			outlineColor = OColor;
 			health = 1200;
@@ -4341,10 +4340,6 @@ public class NHUnitTypes{
 			public void drawItems(Unit unit){
 				super.drawItems(unit);
 			}
-//
-//			@Override
-//			public <T extends Unit & Legsc> void drawLegs(T unit){
-//			}
 			
 			@Override
 			public void drawLight(Unit unit){
@@ -4823,7 +4818,7 @@ public class NHUnitTypes{
 	public static void immunise(UnitType type){
 		if(statuses == null){
 			statuses = Vars.content.statusEffects().copy();
-			statuses.filter(s -> {
+			statuses.select(s -> {
 				return s.disarm || s.damage > 0 || s.healthMultiplier * s.reloadMultiplier * s.buildSpeedMultiplier * s.speedMultiplier < 1;
 			});
 			statuses.add(NHStatusEffects.scannerDown);

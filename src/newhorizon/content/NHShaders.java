@@ -10,6 +10,7 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.util.Time;
 import mindustry.graphics.Shaders;
+import mindustry.graphics.Voronoi;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.TextureStretchIn;
@@ -29,13 +30,15 @@ public class NHShaders{
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
 	public static Stretch stretch;
-	
+	public static Voronoi voronoi;
+
 	public static void init(){
 //		alphaFloorer = new ModShader("screenspace", "alphaFloorer"){
 //
 //		};
 		
 //		outliner = new OutlineShader();
+		//voronoi = new Voronoi();
 		
 		tiler = new Tiler();
 		
@@ -81,6 +84,18 @@ public class NHShaders{
 				return NHContent.smoothNoise;
 			}
 		};
+	}
+
+	public static class Voronoi extends ModShader{
+
+		public Voronoi() {
+			super("screenspace", "voronoi");
+		}
+
+		public void apply(){
+			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+			setUniformf("u_time", Time.time);
+		}
 	}
 	
 	public static class Stretch extends ModShader{

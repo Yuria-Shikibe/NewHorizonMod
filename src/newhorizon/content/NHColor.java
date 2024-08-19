@@ -25,8 +25,14 @@ public class NHColor{
 		darkEnr = darkEnrColor.cpy().lerp(Color.black, 0.85f),
 		darkEnrFront = darkEnrColor.cpy().lerp(Color.white, 0.45f),
 		trail = Color.lightGray.cpy().lerp(Color.gray, 0.65f),
-		thermoPst = Color.valueOf("CFFF87").lerp(Color.white, 0.15f);
-	
+		thermoPst = Color.valueOf("CFFF87").lerp(Color.white, 0.15f),
+
+		xenEmpty = Color.valueOf("a3a9ad"),
+		xenAlpha = Color.valueOf("abc8dc"),
+		xenBeta = Color.valueOf("94caed"),
+		xenGamma = Color.valueOf("78c9ff");
+
+
 	static{
 		Colors.put("heal", Pal.heal);
 		Colors.put("ancient", ancient);

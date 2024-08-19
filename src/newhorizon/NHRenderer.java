@@ -10,6 +10,8 @@ import arc.util.Disposable;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Drawc;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Shaders;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
 import newhorizon.expand.block.defence.GravityWell;
@@ -21,21 +23,20 @@ import newhorizon.util.graphic.TextureStretchIn;
 
 import static arc.Core.graphics;
 import static mindustry.Vars.control;
+import static mindustry.Vars.renderer;
 
 public class NHRenderer implements Disposable{
 	public static float width, height;
-	public FrameBuffer mask, effect;
+	public FrameBuffer mask;
 	public EffectDrawer effectDrawer;
 	public TextureStretchIn textureStretchIn;
 	
 	public Rect viewport = new Rect();
 	
 	public Vec2 tmp = new Vec2(1, 0);
-	
-//	public Texture matterStorm = new Texture(1920, 1080);
-	
+
 	public NHRenderer(){
-		mask = effect = new FrameBuffer();
+		mask = new FrameBuffer();
 		
 		effectDrawer = EffectDrawer.drawer;
 		textureStretchIn = new TextureStretchIn();
@@ -46,11 +47,7 @@ public class NHRenderer implements Disposable{
 		mask.dispose();
 		mask = null;
 		mask = new FrameBuffer();
-		
-		effect.dispose();
-		effect = null;
-		effect = new FrameBuffer();
-		
+
 		textureStretchIn.clear();
 	}
 	
@@ -65,22 +62,14 @@ public class NHRenderer implements Disposable{
 		
 		
 		effectDrawer.draw();
-		
-//		effect.resize(graphics.getWidth(), graphics.getHeight());
-//
-//		effect.begin(Color.clear);
-//		NHShaders.matterStorm.primaryColor.set(Color.white);
-//		NHShaders.matterStorm.applyDirection(tmp, 8f);
-//		NHShaders.matterStorm.secondaryColor.set(Tmp.c1.set(Color.white).lerp(Color.white, Mathf.absin(8f, 0.4f)));
-//		effect.end();
-//
-//		matterStorm = effect.getTexture();
-//		matterStorm.bind(0);
-//		NHShaders.matterStorm.bind();
-//		NHShaders.matterStorm.apply();
-//
-//		matterStorm.setFilter(Texture.TextureFilter.linear);
-//		matterStorm.setWrap(Texture.TextureWrap.repeat);
+
+		renderer.effectBuffer.resize(graphics.getWidth(), graphics.getHeight());
+		if(Vars.renderer.animateShields && Shaders.shield != null){
+			Draw.drawRange(NHContent.XEN_LAYER, 0.0001f, () -> renderer.effectBuffer.begin(Color.clear), () -> {
+				renderer.effectBuffer.end();
+				renderer.effectBuffer.blit(NHShaders.quantum);
+			});
+		}
 	}
 	
 	public void afterDraw(){
@@ -108,7 +97,6 @@ public class NHRenderer implements Disposable{
 	@Override
 	public void dispose(){
 		mask.dispose();
-		effect.dispose();
 		effectDrawer.dispose();
 //		matterStorm.dispose();
 		textureStretchIn.dispose();

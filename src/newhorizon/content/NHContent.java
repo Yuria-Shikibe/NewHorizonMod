@@ -28,6 +28,7 @@ import static mindustry.Vars.renderer;
 
 public class NHContent extends Content{
 	public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
+	public static final float XEN_LAYER = Layer.block - 0.003f;
 	public static final float MATTER_STORM_LAYER = Layer.weather + 0.112f; // Making it wried
 	public static final float EVENT_LAYER = Layer.weather + 5.12142f; // Making it wried
 	
@@ -40,7 +41,7 @@ public class NHContent extends Content{
 	public static CacheLayer quantumLayer, armorLayer;
 	
 	public static TextureRegion
-			crossRegion, sourceCenter,
+			crossRegion, sourceCenter, timeIcon, xenIcon,
 			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade, upgrade2,
 			linkArrow;
 	
@@ -111,6 +112,8 @@ public class NHContent extends Content{
 		
 		crossRegion = Core.atlas.find("cross");
 		sourceCenter = Core.atlas.find(NewHorizon.name("source-center"));
+		timeIcon = Core.atlas.find(NewHorizon.name("time-icon"));
+		xenIcon = Core.atlas.find(NewHorizon.name("xen-icon"));
 		upgrade = Core.atlas.find(NewHorizon.name("upgrade"));
 		upgrade2 = Core.atlas.find(NewHorizon.name("upgrade2"));
 		arrowRegion = Core.atlas.find(NewHorizon.name("jump-gate-arrow"));

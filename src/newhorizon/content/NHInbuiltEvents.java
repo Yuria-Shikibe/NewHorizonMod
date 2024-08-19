@@ -528,7 +528,8 @@ public class NHInbuiltEvents{
 					reloadTime = 30 * 60;
 				}});
 				
-				spacingBase = 1500 * 60;
+				spacingBase = 1500 * 60
+				;
 				spacingRand = 300 * 60;
 			}}, new AutoEventTrigger(){{
 				items = OV_Pair.seqWith(NHItems.darkEnergy, 1000);
