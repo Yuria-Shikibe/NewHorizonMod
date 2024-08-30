@@ -36,9 +36,9 @@ public class NHContent extends Content{
 	
 	public static Schematic mLoadout;
 	
-	public static Texture smoothNoise, particleNoise, darkerNoise, armorTex;
+	public static Texture smoothNoise, particleNoise, darkerNoise, armorTex, platingNoise;
 	
-	public static CacheLayer quantumLayer, armorLayer;
+	public static CacheLayer quantumLayer, armorLayer, platingLayer;
 	
 	public static TextureRegion
 			crossRegion, sourceCenter, timeIcon, xenIcon,
@@ -56,6 +56,7 @@ public class NHContent extends Content{
 	
 	public static void loadBeforeContentLoad(){
 		CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum){});
+		CacheLayer.add(platingLayer = new CacheLayer.ShaderLayer(NHShaders.platingSurface){});
 		CacheLayer.add(armorLayer = new CacheLayer.ShaderLayer(NHShaders.tiler){
 			@Override
 			public void begin(){
@@ -148,6 +149,11 @@ public class NHContent extends Content{
 		});
 		
 		armorTex = loadTex("armor", t -> {
+			t.setFilter(Texture.TextureFilter.nearest);
+			t.setWrap(Texture.TextureWrap.repeat);
+		});
+
+		platingNoise = loadTex("plating-noise", t -> {
 			t.setFilter(Texture.TextureFilter.nearest);
 			t.setWrap(Texture.TextureWrap.repeat);
 		});

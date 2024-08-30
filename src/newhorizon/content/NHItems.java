@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.graphics.Color;
 import mindustry.type.Item;
+import newhorizon.NHSetting;
 
 public class NHItems{
 	
@@ -12,7 +13,8 @@ public class NHItems{
 	presstanium, seniorProcessor, juniorProcessor,
 	zeta, fusionEnergy, multipleSteel, irayrondPanel,
 	setonAlloy, darkEnergy, upgradeSort, metalOxhydrigen,
-	thermoCorePositive, thermoCoreNegative;
+	thermoCorePositive, thermoCoreNegative,
+	magonite;
 	public static void load(){
 		ancimembrane = new Item("ancimembrane"){{
 			cost = 5;
@@ -62,6 +64,10 @@ public class NHItems{
 			cost = 3f;
 		}};
 		metalOxhydrigen = new Item("metal-oxhydrigen", Color.valueOf("#BFF3FF"));
+
+		if (NHSetting.getBool(NHSetting.EXPERIMENTAL)){
+			magonite = new Item("magonite", Color.valueOf("#cf665f"));
+		}
 	}
 	
 }

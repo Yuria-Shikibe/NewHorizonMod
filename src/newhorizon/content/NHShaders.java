@@ -30,7 +30,7 @@ public class NHShaders{
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
 	public static Stretch stretch;
-	public static Voronoi voronoi;
+	public static PlatingSurfaceShader platingSurface;
 
 	public static void init(){
 //		alphaFloorer = new ModShader("screenspace", "alphaFloorer"){
@@ -67,9 +67,9 @@ public class NHShaders{
 		
 		quantum = new ModSurfaceShader("quantum"){
 			@Override
-			public String textureName(){
-				return "noise";
-			}
+			public String textureName() {
+                return super.textureName();
+            }
 			
 			@Override
 			public void loadNoise(){
@@ -84,17 +84,45 @@ public class NHShaders{
 				return NHContent.smoothNoise;
 			}
 		};
+
+		platingSurface = new PlatingSurfaceShader();
 	}
 
-	public static class Voronoi extends ModShader{
+	public static class PlatingSurfaceShader extends ModShader{
+		protected Texture noiseTex;
 
-		public Voronoi() {
-			super("screenspace", "voronoi");
+		public PlatingSurfaceShader() {
+			super("screenspace", "platingFloor");
+			loadNoise();
 		}
 
+		public Texture getTexture(){
+			return NHContent.platingNoise;
+		}
+
+		public String textureName(){
+			return "noise";
+		}
+
+		public void loadNoise(){
+			noiseTex = NHContent.platingNoise;
+		}
+
+		@Override
 		public void apply(){
+			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
 			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-			setUniformf("u_time", Time.time);
+
+			if(hasUniform("u_noise")){
+				if(noiseTex == null){
+					noiseTex = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
+				}
+
+				noiseTex.bind(1);
+				renderer.effectBuffer.getTexture().bind(0);
+
+				setUniformi("u_noise", 1);
+			}
 		}
 	}
 	

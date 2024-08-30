@@ -503,7 +503,16 @@ public class NHFx{
 			Drawf.light(e.x, e.y, e.fout() * size, color, 0.7f);
 		});
 	}
-	
+
+	public static Effect smoothColorRect(Color out, float rad, float lifetime){
+		return new Effect(lifetime, rad * 2, e -> {
+			Draw.blend(Blending.additive);
+			float radius = e.fin(Interp.pow3Out) * rad;
+			Fill.light(e.x, e.y, 4, radius, 45f, Color.clear, Tmp.c1.set(out).a(e.fout(Interp.pow5Out)));
+			Draw.blend();
+		}).layer(Layer.effect + 0.15f);
+	}
+
 	public static Effect smoothColorCircle(Color out, float rad, float lifetime){
 		return new Effect(lifetime, rad * 2, e -> {
 			Draw.blend(Blending.additive);

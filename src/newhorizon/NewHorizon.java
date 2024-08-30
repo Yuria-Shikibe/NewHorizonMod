@@ -4,18 +4,25 @@ import arc.Core;
 import arc.Events;
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
+import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.core.World;
 import mindustry.ctype.ContentType;
+import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
@@ -27,6 +34,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
+import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.content.blocks.DefenseBlock;
@@ -38,6 +46,7 @@ import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.game.NHWorldData;
+import newhorizon.expand.map.planet.MidanthaPlanet;
 import newhorizon.expand.packets.NHCall;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.EffectDrawer;
@@ -46,6 +55,7 @@ import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
+import static newhorizon.expand.map.planet.MidanthaPlanet.MidanthaPlanetGenerator.*;
 import static newhorizon.util.ui.FeatureLog.featureType.BALANCE;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -207,13 +217,41 @@ public class NewHorizon extends Mod{
 	
 	public NewHorizon(){
 		DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
-		//PlanetDialog.debugSelect = true;
+		if (DEBUGGING){
+			PlanetDialog.debugSelect = true;
+
+			Events.run(EventType.Trigger.draw, () -> {
+				if (tmpRects.size > 0){
+					for (Rect rect: tmpRects){
+						Draw.z(Layer.max);
+						Lines.stroke(4);
+						Lines.rect(rect.x * tilesize, rect.y * tilesize, rect.width * tilesize - 8, rect.height * tilesize - 8);
+					}
+				}
+				if (tmpTiles.size > 0){
+					for (Tile tile: tmpTiles){
+						Draw.z(Layer.max);
+						Fill.rect(tile.x * tilesize, tile.y * tilesize, 4, 4);
+					}
+				}
+				if (tmpRivers.size > 0){
+					for (Vec2[] pos: tmpRivers){
+						Draw.z(Layer.max);
+						Lines.stroke(4);
+						Lines.line(pos[0].x * tilesize, pos[0].y * tilesize, pos[1].x * tilesize, pos[1].y * tilesize);
+					}
+				}
+			});
+
+		}
 		
 		Log.info("<NEW HORIZON CONSTRUCTOR LOAD>");
 		NHInputListener.registerModBinding();
 		
 		Events.on(ClientLoadEvent.class, e -> {
 			Core.app.post(NHUI::init);
+
+
 			
 			Vars.defaultServers.add(new ServerGroup(){{
 				name = "[sky]New Horizon [white]Mod [lightgray]Servers";

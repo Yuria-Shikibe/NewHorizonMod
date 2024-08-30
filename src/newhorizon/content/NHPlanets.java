@@ -42,14 +42,21 @@ import mindustry.world.blocks.environment.TallBlock;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
+import newhorizon.NHSetting;
+import newhorizon.expand.map.planet.CeitoPlanet;
+import newhorizon.expand.map.planet.MidanthaPlanet;
 
 import static mindustry.Vars.state;
 
 public class NHPlanets{
-	public static Planet midantha, sentourt;
+	public static Planet midantha, sentourt, danthami, ceito;
 	
 	public static void load(){
-		midantha = new NHPlanet("midantha", Planets.sun, 1, 3){{
+		ceito = new CeitoPlanet();
+		if (NHSetting.getBool(NHSetting.EXPERIMENTAL)){
+			danthami = new MidanthaPlanet();
+		}
+		midantha = new NHPlanet("midantha", ceito, 1, 3){{
 			bloom = true;
 			visible = true;
 			accessible = true;
@@ -64,8 +71,6 @@ public class NHPlanets{
 					NHColor.darkEnrFront,
 					NHColor.darkEnrColor,
 					NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f).mul(1.05f),
-//					Pal.gray.cpy().lerp(Pal.metalGrayDark, 0.25f).lerp(NHColor.darkEnr, 0.02f),
-//					Pal.gray,
 					Pal.darkestGray.cpy().mul(0.95f),
 					Pal.darkestGray.cpy().lerp(Color.white, 0.105f),
 					Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
@@ -145,10 +150,11 @@ public class NHPlanets{
 				}
 			}
 		};
-		
+
+
 		sentourt = new NHPlanet("sentourt", midantha, 0.22f, 1){{
 			bloom = true;
-			visible = true;
+			visible = false;
 			accessible = false;
 			hasAtmosphere = false;
 			alwaysUnlocked = false;
