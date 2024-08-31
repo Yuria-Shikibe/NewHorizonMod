@@ -12,6 +12,7 @@ import newhorizon.util.graphic.DrawFunc;
 
 public class AdaptedSapBulletType extends SapBulletType{
 	protected TextureRegion laser, laserEnd;
+	public boolean moveTarget = false;
 	
 	@Override
 	public void load(){
@@ -25,7 +26,11 @@ public class AdaptedSapBulletType extends SapBulletType{
 	public void draw(Bullet b){
 		if(b.data instanceof Position){
 			Position data = (Position)b.data();
-			Tmp.v1.set(data).lerp(b, b.fin());
+			if (moveTarget){
+				
+			}else {
+				Tmp.v1.set(data).lerp(b, b.fin());
+			}
 			
 			Draw.color(color);
 			DrawFunc.laser(laser, laserEnd,

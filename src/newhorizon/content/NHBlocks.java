@@ -60,10 +60,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
-import newhorizon.content.blocks.DefenseBlock;
-import newhorizon.content.blocks.EnvironmentBlock;
-import newhorizon.content.blocks.TestBlock;
-import newhorizon.content.blocks.TurretBlock;
+import newhorizon.content.blocks.*;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.adapt.LaserBeamDrill;
@@ -4611,6 +4608,7 @@ public class NHBlocks{
 		TurretBlock.load();
 		DefenseBlock.load();
 		EnvironmentBlock.load();
+		SpecialBlock.load();
 		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
 			TestBlock.load();
 		};

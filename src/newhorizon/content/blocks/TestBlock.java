@@ -20,7 +20,7 @@ import newhorizon.expand.recipe.Recipe;
 import static mindustry.type.ItemStack.with;
 
 public class TestBlock {
-    public static Block xenConduit, xenCrafter, irayroudRefinery, xenFactory, orePatch, nexusCore;
+    public static Block xenConduit, xenCrafter, irayroudRefinery, xenFactory, orePatch;
     public static TiledFloor ancientEnergyFloor;
     //steepCliff,
     //highAltitude;
@@ -55,12 +55,7 @@ public class TestBlock {
             recipeSeq.add(Recipes.xenAlphaCraft, Recipes.xenBetaCraft, Recipes.xenGammaCraft);
         }};
 
-        nexusCore = new NexusCore("nexus-core"){{
-            requirements(Category.production, with(Items.copper, 6));
 
-            size = 5;
-            unitType = NHUnitTypes.liv;
-        }};
         //steepCliff = new SteepCliff("steep-cliff");
         //highAltitude = new HighAltitudeMarker("high-altitude-marker");
     }

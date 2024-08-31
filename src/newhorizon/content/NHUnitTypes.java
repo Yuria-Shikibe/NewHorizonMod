@@ -841,11 +841,61 @@ public class NHUnitTypes{
 			engineSize = 0;
 			engineColor = NHColor.lightSky;
 
+			buildBeamOffset = 6f;
+			buildSpeed = 5f;
+
+			mineTier = 4;
+			mineSpeed = 15f;
+
 			engines.add(
-				new TrailEngine(4.5f, -7.2f, 2.2f, 65, 6, 2.0f),
-				new TrailEngine(0, -9.8f, 2.8f, 90, 10, 2.35f),
-				new TrailEngine(-4.5f, -7.2f, 2.2f, 115, 6, 2.0f)
+				new UnitEngine(4.5f, -7.2f, 2.2f, 65),
+				new UnitEngine(0, -9.8f, 2.8f, 90),
+				new UnitEngine(-4.5f, -7.2f, 2.2f, 115)
 			);
+
+			abilities.add(new BoostAbility(false, 2f, 45.0f){});
+
+			weapons.add(new Weapon(){{
+				layerOffset = -0.01f;
+				reload = 42;
+				recoil = 1.5f;
+				inaccuracy = 5;
+				shootSound = NHSounds.thermoShoot;
+				mirror = true;
+				rotate = false;
+				rotateSpeed = 2.55f;
+				shootY += 6f;
+				y = 2.2f;
+				heatColor = NHColor.ancientHeat;
+
+				shoot = new ShootPattern(){{
+					shots = 3;
+					shotDelay = 5f;
+				}};
+
+				bullet = new BasicBulletType(4.5f, 20f){{
+					trailWidth = 1.5f;
+					trailLength = 15;
+					drawSize = 200f;
+
+					lifetime = 40f;
+					homingPower = 0.1f;
+					homingRange = 120f;
+					width = 10f;
+					height = 25f;
+					keepVelocity = true;
+					knockback = 0.75f;
+					trailColor = backColor = lightColor = lightningColor = hitColor = NHColor.lightSkyBack;
+					frontColor = backColor.cpy().lerp(Color.white, 0.45f);
+					trailChance = 0.1f;
+					trailParam = 1f;
+					trailEffect = NHFx.trailToGray;
+					despawnEffect = NHFx.square(backColor, 18f, 2, 12f, 2);
+					hitEffect = NHFx.lightningHitSmall(backColor);
+					shootEffect = NHFx.shootLineSmall(backColor);
+					smokeEffect = Fx.shootBigSmoke2;
+				}};
+			}});
 
 			strafePenalty = 0.3f;
 		}};
@@ -1249,10 +1299,10 @@ public class NHUnitTypes{
 					tracerStroke -= 0.3f;
 					tracers = 1;
 					keepVelocity = true;
-					
+
 					tracerSpacing = 10f;
 					tracerUpdateSpacing *= 1.25f;
-					
+
 					hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
 					trailColor = NHColor.ancientLightMid;
 					frontColor = NHColor.ancientLight;
