@@ -30,7 +30,7 @@ public class NHShaders{
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
 	public static Stretch stretch;
-	public static PlatingSurfaceShader platingSurface;
+	//public static PlatingSurfaceShader platingSurface;
 
 	public static void init(){
 //		alphaFloorer = new ModShader("screenspace", "alphaFloorer"){
@@ -85,7 +85,7 @@ public class NHShaders{
 			}
 		};
 
-		platingSurface = new PlatingSurfaceShader();
+		//platingSurface = new PlatingSurfaceShader();
 	}
 
 	public static class PlatingSurfaceShader extends ModShader{
