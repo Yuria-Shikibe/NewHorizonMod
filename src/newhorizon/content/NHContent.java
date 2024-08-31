@@ -38,7 +38,7 @@ public class NHContent extends Content{
 	
 	public static Texture smoothNoise, particleNoise, darkerNoise, armorTex, platingNoise;
 	
-	public static CacheLayer quantumLayer, armorLayer, platingLayer;
+	public static CacheLayer quantumLayer, armorLayer/*, platingLayer*/;
 	
 	public static TextureRegion
 			crossRegion, sourceCenter, timeIcon, xenIcon,
@@ -56,7 +56,7 @@ public class NHContent extends Content{
 	
 	public static void loadBeforeContentLoad(){
 		CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum){});
-		CacheLayer.add(platingLayer = new CacheLayer.ShaderLayer(NHShaders.platingSurface){});
+		//CacheLayer.add(platingLayer = new CacheLayer.ShaderLayer(NHShaders.platingSurface){});
 		CacheLayer.add(armorLayer = new CacheLayer.ShaderLayer(NHShaders.tiler){
 			@Override
 			public void begin(){
