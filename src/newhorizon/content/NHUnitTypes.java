@@ -98,7 +98,8 @@ public class NHUnitTypes{
 			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
-			/*relay,*/ ghost, zarkov, declining; //Navy
+			/*relay,*/ ghost, zarkov, declining, //Navy
+			liv;
 	
 	static{
 			EntityMapping.nameMap.put(NewHorizon.name("declining"), EntityMapping.idMap[20]);
@@ -107,6 +108,7 @@ public class NHUnitTypes{
 			EntityMapping.nameMap.put(NewHorizon.name("relay"), EntityMapping.idMap[20]);
 
 			EntityMapping.nameMap.put(NewHorizon.name("saviour"), EntityMapping.idMap[5]);
+			EntityMapping.nameMap.put(NewHorizon.name("liv"), EntityMapping.idMap[5]);
 			EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 		
 			EntityMapping.nameMap.put(NewHorizon.name("origin"), EntityMapping.idMap[4]);
@@ -817,7 +819,36 @@ public class NHUnitTypes{
 		loadWeapon();
 		
 		loadPreviousWeapon();
-		
+
+		liv = new NHUnitType("liv"){{
+			aiController = BuilderAI::new;
+			fogRadius = 40f;
+			outlineRadius = 4;
+
+			lightRadius = 20f;
+			lightOpacity = 0.1f;
+
+			lowAltitude = flying = true;
+			health = 1000;
+			armor = 5;
+			hitSize = 18f;
+			drag /= 5f;
+
+			rotateSpeed = 4.5f;
+			speed = 4.5f;
+			accel = 0.5f;
+
+			engineSize = 0;
+			engineColor = NHColor.lightSky;
+
+			engines.add(
+				new TrailEngine(4.5f, -7.2f, 2.2f, 65, 6, 2.0f),
+				new TrailEngine(0, -9.8f, 2.8f, 90, 10, 2.35f),
+				new TrailEngine(-4.5f, -7.2f, 2.2f, 115, 6, 2.0f)
+			);
+
+			strafePenalty = 0.3f;
+		}};
 		macrophage = new AncientUnit("macrophage"){{
 			aiController = SurroundAI::new;
 			constructor = EntityMapping.idMap[3];

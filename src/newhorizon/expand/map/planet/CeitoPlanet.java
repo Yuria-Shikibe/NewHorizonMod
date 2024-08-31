@@ -57,6 +57,6 @@ public class CeitoPlanet extends Planet {
 
     @Override
     public void draw(PlanetParams params, Mat3D projection, Mat3D transform){
-        mesh.render(params, projection, transform.setToTranslation(position).rotate(Vec3.Y, Time.time / 10));
+        mesh.render(params, projection, transform.setToTranslation(position).rotate(Vec3.Y, Time.time / 20));
     }
 }

@@ -69,7 +69,7 @@ public class NexusCore extends CoreBlock {
             trails.get(i).update(x + Tmp.v1.x, y + Tmp.v1.y);
             float offset = rand.random(0.65f, 1.25f);
             Tmp.c1.set(build.team.color).mul(offset);
-            Fx.trailFade.at(x, y, 3, Tmp.c1, trails.get(i).copy());
+            Fx.trailFade.at(x, y, 2.5f, Tmp.c1, trails.get(i).copy());
         }
 
     }

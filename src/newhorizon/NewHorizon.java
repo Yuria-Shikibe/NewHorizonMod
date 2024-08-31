@@ -220,6 +220,7 @@ public class NewHorizon extends Mod{
 		if (DEBUGGING){
 			PlanetDialog.debugSelect = true;
 
+			/*
 			Events.run(EventType.Trigger.draw, () -> {
 				if (tmpRects.size > 0){
 					for (Rect rect: tmpRects){
@@ -242,6 +243,8 @@ public class NewHorizon extends Mod{
 					}
 				}
 			});
+			
+			 */
 
 		}
 		

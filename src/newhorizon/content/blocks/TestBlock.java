@@ -5,6 +5,7 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.content.NHUnitTypes;
 import newhorizon.content.Recipes;
 import newhorizon.expand.block.NHBlock;
 import newhorizon.expand.block.energy.XenConduit;
@@ -58,6 +59,7 @@ public class TestBlock {
             requirements(Category.production, with(Items.copper, 6));
 
             size = 5;
+            unitType = NHUnitTypes.liv;
         }};
         //steepCliff = new SteepCliff("steep-cliff");
         //highAltitude = new HighAltitudeMarker("high-altitude-marker");

@@ -34,7 +34,7 @@ public class NHContent extends Content{
 	
 	public static Fi scheDir;
 	
-	public static Schematic mLoadout;
+	public static Schematic mLoadout, nhBaseLoadout;
 	
 	public static Texture smoothNoise, particleNoise, darkerNoise, armorTex, platingNoise;
 	
@@ -107,6 +107,7 @@ public class NHContent extends Content{
 		
 		try{
 			mLoadout = Schematics.read(scheDir.child("init-loadout" + ".msch"));
+			nhBaseLoadout = Schematics.readBase64("bXNjaAF4nI2OvQrCMBSFT3+IQ6vioqs+QEsRBceii4P4AuIQ24sN1ETSFMWnN6VLxgz33uF+3+FginmEWPIXYXE9H3lHJ6XponiteoOkpq7S4m2EkgBYyx/Udghv9xArSZ+sUVr8lMx6KUwm7CKNpfuQ9O27rLKZ1p/YQRQH2LjIk5uGdFmWu31eDGdb5MVAIvFDA7AxmgHWWLuGboRUjnAYsxlmnmTqXzj1LfwHEERhIQ==");
 		}catch(IOException e){
 			Log.info(e);
 		}

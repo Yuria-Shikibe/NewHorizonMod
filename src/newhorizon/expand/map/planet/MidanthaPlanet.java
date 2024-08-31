@@ -194,11 +194,11 @@ public class MidanthaPlanet extends Planet {
             blend(NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 3);
             shrinkRect(3);
             //create cliffs
-            //rectCliff();
+            rectCliff();
             shrinkRect(1);
-            //rectCliff();
+            rectCliff();
             shrinkRect(1);
-            //rectCliff();
+            rectCliff();
             shrinkRect(1);
             //set core zone and enemy drop
             float length = width/3.2f;
@@ -585,7 +585,7 @@ public class MidanthaPlanet extends Planet {
                 Tile other = tiles.getn((int)Tmp.v1.x + p.x, (int)Tmp.v1.y + p.y);
                 other.setFloor(Blocks.coreZone.asFloor());
             }
-            Schematics.placeLoadout(NHContent.mLoadout, (int)Tmp.v1.x, (int)Tmp.v1.y);
+            Schematics.placeLoadout(NHContent.nhBaseLoadout, (int)Tmp.v1.x, (int)Tmp.v1.y);
         }
 
         private void setRule(float difficulty){
