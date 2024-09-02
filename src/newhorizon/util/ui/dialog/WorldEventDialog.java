@@ -1,4 +1,4 @@
-package newhorizon.util.ui;
+package newhorizon.util.ui.dialog;
 
 import arc.Core;
 import arc.func.Boolf;
@@ -22,6 +22,7 @@ import newhorizon.NHUI;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.expand.eventsys.types.WorldEventType;
+import newhorizon.util.ui.display.IconNumDisplay;
 
 import static newhorizon.util.ui.TableFunc.*;
 

@@ -38,6 +38,7 @@ import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.content.blocks.DefenseBlock;
+import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.content.blocks.TurretBlock;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_UI;
@@ -57,6 +58,7 @@ import newhorizon.util.ui.dialog.NewFeatureDialog;
 import static mindustry.Vars.tilesize;
 import static newhorizon.expand.map.planet.MidanthaPlanet.MidanthaPlanetGenerator.*;
 import static newhorizon.util.ui.FeatureLog.featureType.BALANCE;
+import static newhorizon.util.ui.FeatureLog.featureType.IMPORTANT;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -94,10 +96,11 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(DefenseBlock.riftShield){{important = true;}},
-			new FeatureLog(TurretBlock.electro){{important = true;}},
+			new FeatureLog(SpecialBlock.nexusCore){{important = true;}},
+			new FeatureLog(NHUnitTypes.liv){{important = true;}},
 
-			new FeatureLog(0, BALANCE, NHContent.ammoInfo)
+			new FeatureLog(0, BALANCE, NHContent.ammoInfo),
+			new FeatureLog(0, IMPORTANT, NHContent.objective)
 		};
 	}
 	
@@ -219,33 +222,6 @@ public class NewHorizon extends Mod{
 		DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 		if (DEBUGGING){
 			PlanetDialog.debugSelect = true;
-
-			/*
-			Events.run(EventType.Trigger.draw, () -> {
-				if (tmpRects.size > 0){
-					for (Rect rect: tmpRects){
-						Draw.z(Layer.max);
-						Lines.stroke(4);
-						Lines.rect(rect.x * tilesize, rect.y * tilesize, rect.width * tilesize - 8, rect.height * tilesize - 8);
-					}
-				}
-				if (tmpTiles.size > 0){
-					for (Tile tile: tmpTiles){
-						Draw.z(Layer.max);
-						Fill.rect(tile.x * tilesize, tile.y * tilesize, 4, 4);
-					}
-				}
-				if (tmpRivers.size > 0){
-					for (Vec2[] pos: tmpRivers){
-						Draw.z(Layer.max);
-						Lines.stroke(4);
-						Lines.line(pos[0].x * tilesize, pos[0].y * tilesize, pos[1].x * tilesize, pos[1].y * tilesize);
-					}
-				}
-			});
-			
-			 */
-
 		}
 		
 		Log.info("<NEW HORIZON CONSTRUCTOR LOAD>");
@@ -254,8 +230,6 @@ public class NewHorizon extends Mod{
 		Events.on(ClientLoadEvent.class, e -> {
 			Core.app.post(NHUI::init);
 
-
-			
 			Vars.defaultServers.add(new ServerGroup(){{
 				name = "[sky]New Horizon [white]Mod [lightgray]Servers";
 				addresses = new String[]{SERVER};
@@ -323,12 +297,14 @@ public class NewHorizon extends Mod{
 		
 		NHSetting.loadUI();
 		EffectDrawer.drawer.init();
-		
+
+		/*
 		if(DEBUGGING){
 			TableFunc.tableMain();
 			Vars.renderer.maxZoom = 10f;
 			Vars.renderer.minZoom = 0.85f;
 		}
+		 */
 	}
 
 	@Override

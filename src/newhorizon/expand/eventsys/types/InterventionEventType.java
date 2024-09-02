@@ -28,7 +28,7 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.util.func.NHFunc;
-import newhorizon.util.ui.IconNumDisplay;
+import newhorizon.util.ui.display.IconNumDisplay;
 import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
 

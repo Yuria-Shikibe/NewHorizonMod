@@ -1,4 +1,4 @@
-package newhorizon.util.ui;
+package newhorizon.util.ui.display;
 
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;

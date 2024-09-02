@@ -88,6 +88,7 @@ public class NHShaders{
 		//platingSurface = new PlatingSurfaceShader();
 	}
 
+	/*
 	public static class PlatingSurfaceShader extends ModShader{
 		protected Texture noiseTex;
 
@@ -125,6 +126,8 @@ public class NHShaders{
 			}
 		}
 	}
+
+	 */
 	
 	public static class Stretch extends ModShader{
 		TextureStretchIn.StretchData data = new TextureStretchIn.StretchData();

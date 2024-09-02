@@ -1,4 +1,4 @@
-package newhorizon.util.ui;
+package newhorizon.util.ui.display;
 
 import arc.graphics.Color;
 import arc.scene.ui.Image;

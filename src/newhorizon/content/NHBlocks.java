@@ -3061,7 +3061,7 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(NHItems.seniorProcessor, 15, NHItems.presstanium, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
-				craftTime = 120f;
+				craftTime = 60f;
 				outputItem = new ItemStack(NHItems.thermoCorePositive, 1);
 				size = 1;
 				health = 60;
@@ -3075,7 +3075,7 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(NHItems.seniorProcessor, 15, NHItems.presstanium, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
-				craftTime = 120f;
+				craftTime = 60f;
 				outputItem = new ItemStack(NHItems.thermoCoreNegative, 1);
 				size = 1;
 				health = 60;
@@ -3158,6 +3158,7 @@ public class NHBlocks{
 		
 		irayrondPanelFactory = new GenericCrafter("irayrond-panel-factory") {
 			{
+				itemCapacity = 40;
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.plastanium, 60, Items.surgeAlloy, 75, Items.graphite, 30));
 				craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 7, 4f + e.fin() * 18f, (x, y) -> {
 					Draw.color(NHItems.irayrondPanel.color);
@@ -3216,8 +3217,8 @@ public class NHBlocks{
 				}}, new DrawRegion("-top"));
 				itemCapacity = 20;
 				hasPower = hasLiquids = hasItems = true;
-				consumeLiquid(NHLiquids.xenBeta, 0.075f);
-				consumeItems(new ItemStack(NHItems.irayrondPanel, 2), new ItemStack(NHItems.metalOxhydrigen, 4));
+				consumeLiquid(NHLiquids.xenBeta, 3/60f);
+				consumeItems(new ItemStack(NHItems.irayrondPanel, 2));
 				consumePower(4f);
 			}
 		};
@@ -3347,9 +3348,10 @@ public class NHBlocks{
 		}};
 		
 		zetaFactoryLarge = new GenericCrafter("large-zeta-factory") {{
+			itemCapacity = 40;
 			requirements(Category.crafting, with(Items.plastanium, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25));
-			outputItem = new ItemStack(NHItems.zeta, 3);
-			craftTime = 30f;
+			outputItem = new ItemStack(NHItems.zeta, 8);
+			craftTime = 60f;
 			size = 2;
 			craftEffect = Fx.formsmoke;
 			updateEffect = NHFx.trailToGray;
@@ -3360,7 +3362,7 @@ public class NHBlocks{
 				plantColorLight = NHLiquids.zetaFluid.color.cpy().lerp(Color.white, 0.1f);
 			}}, new DrawDefault());
 			
-			consumeItem(Items.thorium, 3);
+			consumeItem(Items.thorium, 8);
 			consumePower(7f);
 			consumeLiquid(Liquids.water, 0.075f);
 		}};
@@ -3424,7 +3426,7 @@ public class NHBlocks{
 				Draw.color(Items.surgeAlloy.color);
 				Fill.square(e.x + x, e.y + y, e.fout() * 3f, 45);
 			}));
-			outputItem = new ItemStack(Items.surgeAlloy, 5);
+			outputItem = new ItemStack(Items.surgeAlloy, 6);
 			craftTime = 90f;
 			itemCapacity = 30;
 			liquidCapacity = 20f;
@@ -3433,7 +3435,7 @@ public class NHBlocks{
 			hasPower = hasLiquids = hasItems = true;
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.zetaFluid), new DrawDefault());
 			consumeLiquid(NHLiquids.zetaFluid, 0.1f);
-			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 6), new ItemStack(Items.thorium, 6), new ItemStack(NHItems.fusionEnergy, 1));
+			consumeItems(new ItemStack(Items.thorium, 6), new ItemStack(NHItems.fusionEnergy, 1));
 			consumePower(20f);
 		}};
 		
@@ -3851,7 +3853,7 @@ public class NHBlocks{
 	
 	public static void load() {
 		blaster = new ShockwaveGenerator("blaster"){{
-			requirements(Category.defense, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
+			requirements(Category.defense, with(NHItems.presstanium, 80, Items.graphite, 100,Items.thorium, 100, NHItems.juniorProcessor, 60));
 			
 			squareSprite = false;
 			size = 3;
@@ -4442,10 +4444,25 @@ public class NHBlocks{
 				),
 				new UnitSet(NHUnitTypes.thynomo, new byte[]{NHUnitTypes.GROUND_LINE_1, 2}, 35 * 60f,
 					with(Items.lead, 30, Items.titanium, 60, Items.graphite, 45, Items.silicon, 30)
-				)/*,
-				new UnitSet(NHUnitTypes.relay, new byte[]{NHUnitTypes.NAVY_LINE_1, 2}, 30 * 60f,
-						with(Items.metaglass, 30, Items.titanium, 60, Items.graphite, 30, Items.silicon, 50)
-				)*/
+				),
+				new UnitSet(NHUnitTypes.ghost, new byte[]{NHUnitTypes.NAVY_LINE_1, 3}, 60 * 60f,
+					ItemStack.with(NHItems.presstanium, 60, NHItems.multipleSteel, 50, NHItems.juniorProcessor, 50)
+				),
+				new UnitSet(NHUnitTypes.warper, new byte[]{NHUnitTypes.AIR_LINE_1, 3}, 65 * 60f,
+					with(Items.thorium, 90, Items.graphite, 50, NHItems.multipleSteel, 60, NHItems.juniorProcessor, 50)
+				),
+				new UnitSet(NHUnitTypes.aliotiat, new byte[]{NHUnitTypes.GROUND_LINE_1, 3}, 55 * 60f,
+					with(Items.copper, 120, NHItems.multipleSteel, 50, NHItems.presstanium, 60, NHItems.juniorProcessor, 45)
+				),
+				new UnitSet(NHUnitTypes.rhino, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
+					with(Items.lead, 80, Items.graphite, 60, NHItems.presstanium, 60, NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 60)
+				),
+				new UnitSet(UnitTypes.mega, new byte[]{NHUnitTypes.OTHERS, 2}, 45 * 60f,
+					with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, Items.graphite, 40, NHItems.juniorProcessor, 35)
+				),
+				new UnitSet(NHUnitTypes.gather, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
+					with(Items.thorium, 80, Items.metaglass, 30, NHItems.presstanium, 80, NHItems.zeta, 120, NHItems.juniorProcessor, 80)
+				)
 			);
 		}};
 		
@@ -4483,15 +4500,6 @@ public class NHBlocks{
 				),
 				new UnitSet(NHUnitTypes.restrictionEnzyme, new byte[]{NHUnitTypes.ANCIENT_GROUND, 3}, 75f * 60f,
 						with(Items.tungsten, 200, Items.plastanium, 100, NHItems.presstanium, 100, NHItems.zeta, 60, NHItems.juniorProcessor, 80)
-				),
-				new UnitSet(NHUnitTypes.rhino, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
-					with(Items.lead, 80, Items.graphite, 60, NHItems.presstanium, 60, NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 60)
-				),
-				new UnitSet(UnitTypes.mega, new byte[]{NHUnitTypes.OTHERS, 2}, 45 * 60f,
-					with(Items.copper, 80, Items.metaglass, 30, NHItems.presstanium, 40, Items.graphite, 40, NHItems.juniorProcessor, 35)
-				),
-				new UnitSet(NHUnitTypes.gather, new byte[]{NHUnitTypes.OTHERS, 3}, 60f * 60f,
-					with(Items.thorium, 80, Items.metaglass, 30, NHItems.presstanium, 80, NHItems.zeta, 120, NHItems.juniorProcessor, 80)
 				),
 				new UnitSet(NHUnitTypes.aliotiat, new byte[]{NHUnitTypes.GROUND_LINE_1, 3}, 55 * 60f,
 					with(Items.copper, 120, NHItems.multipleSteel, 50, NHItems.presstanium, 60, NHItems.juniorProcessor, 45)
@@ -4590,11 +4598,7 @@ public class NHBlocks{
 				),
 				new UnitSet(NHUnitTypes.laugra, new byte[]{NHUnitTypes.ANCIENT_GROUND, 5}, 480 * 60f,
 						with(NHItems.setonAlloy, 300, NHItems.seniorProcessor, 300, Items.surgeAlloy, 200)
-				)/*,
-				new UnitSet(UnitTypes.quell, new byte[]{NHUnitTypes.AIR_LINE_2, 4}, 30 * 60f,
-					new ItemStack(NHItems.darkEnergy, 500),
-					new ItemStack(NHItems.upgradeSort, 500)
-				)*/
+				)
 			);
 		}};
 		

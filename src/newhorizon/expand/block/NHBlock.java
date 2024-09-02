@@ -1,18 +1,11 @@
 package newhorizon.expand.block;
 
-import arc.Core;
-import arc.func.Func;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.util.Structs;
 import mindustry.gen.Building;
-import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import newhorizon.content.NHLiquids;
-import newhorizon.util.ui.NHBar;
 
 import java.lang.reflect.Constructor;
 

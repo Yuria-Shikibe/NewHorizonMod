@@ -25,7 +25,7 @@ import newhorizon.expand.eventsys.types.WorldEventObjective;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.packets.LongInfoMessageCallPacket;
 import newhorizon.util.graphic.EffectDrawer;
-import newhorizon.util.ui.NHWorldSettingDialog;
+import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 
 import java.lang.reflect.Field;
 

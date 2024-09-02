@@ -21,6 +21,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
+import mindustry.ai.types.FlyingAI;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Fx;
 import mindustry.content.Items;
@@ -848,12 +849,12 @@ public class NHUnitTypes{
 			mineSpeed = 15f;
 
 			engines.add(
-				new UnitEngine(4.5f, -7.2f, 2.2f, 65),
-				new UnitEngine(0, -9.8f, 2.8f, 90),
-				new UnitEngine(-4.5f, -7.2f, 2.2f, 115)
+				new UnitEngine(4.5f, -7.2f, 2.2f, -115),
+				new UnitEngine(0, -9.8f, 2.8f, -90),
+				new UnitEngine(-4.5f, -7.2f, 2.2f, -65)
 			);
 
-			abilities.add(new BoostAbility(false, 2f, 45.0f){});
+			abilities.add(new BoostAbility(false, 1.5f, 90.0f){});
 
 			weapons.add(new Weapon(){{
 				layerOffset = -0.01f;
@@ -1199,7 +1200,7 @@ public class NHUnitTypes{
 		};
 		
 		nucleoid = new AncientUnit("nucleoid"){{
-			aiController = SniperAI::new;
+			aiController = FlyingAI::new;
 			createScorch = false;
 			outlineRadius += 1;
 			
@@ -2964,7 +2965,7 @@ public class NHUnitTypes{
 			waveTrailY = -25f;
 			trailScl = 2.6f;
 
-			abilities.add(new RepairFieldAbility(250f, 180f, 120f){{
+			abilities.add(new RepairFieldAbility(200f, 180f, 120f){{
 				healEffect = NHFx.healEffectSky;
 				activeEffect = NHFx.activeEffectSky;
 			}});

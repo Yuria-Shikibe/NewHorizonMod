@@ -601,7 +601,7 @@ public class NHPlanets{
 			
 			state.rules.env = sector.planet.defaultEnv;
 			
-			Schematics.placeLoadout(NHContent.mLoadout, spawnX, spawnY);
+			Schematics.placeLoadout(NHContent.nhBaseLoadout, spawnX, spawnY);
 			for(Point2 p : Geometry.d8){
 				Tile other = tiles.getn(spawnX + p.x, spawnY + p.y);
 				other.setFloor(Blocks.coreZone.asFloor());

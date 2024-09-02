@@ -1,4 +1,4 @@
-package newhorizon.util.ui;
+package newhorizon.util.ui.display;
 
 import arc.func.Intp;
 import arc.graphics.g2d.TextureRegion;

@@ -15,15 +15,18 @@ import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
-import newhorizon.util.ui.NHWorldSettingDialog;
-import newhorizon.util.ui.WorldEventDialog;
+import newhorizon.util.ui.dialog.NHWorldSettingDialog;
+import newhorizon.util.ui.dialog.WorldEventDialog;
 
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
 public class NHUI{
-	//References:
+	//references:
+	//HUD stuff
 	public static Table HudFragment_overlaymarker, HUD_waves, HUD_statustable, HUD_status;
+	//BuildFragment stuff
+	public static Table inputTable, buildMenuTable, toolsTable;
 	public static WidgetGroup HUD_waves_editor;
 	
 	public static WorldEventDialog eventDialog;
@@ -60,7 +63,6 @@ public class NHUI{
 		}catch(ClassCastException e){
 			throw new ArcRuntimeException("Invalid UI Parameter! Check Game&Mod's Version!");
 		}
-		
 		
 		eventDialog = new WorldEventDialog();
 		
@@ -103,6 +105,7 @@ public class NHUI{
 			
 			t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
 		});
+		table.name = "nh-event-table";
 		
 		try{
 			ImageButton skip = HUD_statustable.find("skip");

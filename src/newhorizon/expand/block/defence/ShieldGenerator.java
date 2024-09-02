@@ -14,6 +14,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.*;
+import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
@@ -155,12 +156,12 @@ public class ShieldGenerator extends BaseTurret {
         }
 
         @Override
-        public boolean onConfigureTapped(float x, float y) {
-            //return super.onConfigureTapped(x, y);
-            if (efficiency > 0.01f){
-                targetAngel = Angles.angle(this.x, this.y, x, y);
+        public void buildConfiguration(Table table) {
+            if (state.isEditor()){
+                table.slider(0, 360, 45, rotation, f -> rotation = targetAngel = f).growX().row();
+            }else {
+                table.slider(0, 360, 45, targetAngel, f -> targetAngel = f).growX().row();
             }
-            return false;
         }
 
         public float getPercentage(){

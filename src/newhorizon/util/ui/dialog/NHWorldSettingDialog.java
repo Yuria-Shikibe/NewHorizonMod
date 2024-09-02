@@ -1,4 +1,4 @@
-package newhorizon.util.ui;
+package newhorizon.util.ui.dialog;
 
 import arc.Core;
 import arc.scene.ui.CheckBox;

@@ -9,7 +9,7 @@ import mindustry.type.LiquidStack;
 import mindustry.ui.ItemImage;
 import mindustry.ui.ReqImage;
 import mindustry.world.consumers.Consume;
-import newhorizon.util.ui.LiquidDisplay;
+import newhorizon.util.ui.display.LiquidDisplay;
 
 
 //This is just for show stats for annoying ConsumeDynamics

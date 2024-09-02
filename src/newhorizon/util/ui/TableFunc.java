@@ -50,6 +50,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.PixelArtGenerator;
 import newhorizon.util.func.NHFunc;
+import newhorizon.util.ui.dialog.DebugDialog;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;

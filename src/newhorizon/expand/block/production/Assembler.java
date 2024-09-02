@@ -37,8 +37,8 @@ import newhorizon.expand.block.consumer.NHConsumeItemDynamic;
 import newhorizon.expand.block.consumer.NHConsumeLiquidDynamic;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.expand.recipe.Recipe;
-import newhorizon.util.ui.ArrowDisplay;
-import newhorizon.util.ui.LiquidDisplay;
+import newhorizon.util.ui.display.ArrowDisplay;
+import newhorizon.util.ui.display.LiquidDisplay;
 
 import static mindustry.Vars.*;
 import static newhorizon.content.NHContent.timeIcon;

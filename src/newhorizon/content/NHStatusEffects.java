@@ -163,6 +163,8 @@ public class NHStatusEffects{
            damage = 0;
            
            speedMultiplier = 0.55f;
+           healthMultiplier = 0.75f;
+           damageMultiplier = 0.75f;
            
            effectChance = 0.05f;
            effect = NHFx.square45_4_45;
