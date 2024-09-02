@@ -24,6 +24,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
+import mindustry.ctype.ContentType;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.units.BuildPlan;
@@ -34,6 +35,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.Item;
+import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.blocks.ControlBlock;
@@ -47,6 +49,7 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
+import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 
@@ -60,7 +63,7 @@ public class ShieldGenerator extends BaseTurret {
     public float shieldArc = 70f;
     public float shieldRange = 250f;
 
-    public float shieldHealth = 100000f;
+    public float shieldHealth = 150000f;
     public float recoverSpeed = 5000f/60f;
 
     public float powerCons = 20000/60f;
@@ -72,6 +75,7 @@ public class ShieldGenerator extends BaseTurret {
         super(name);
         configurable = true;
 
+        saveConfig = true;
         update = true;
         solid = true;
         group = BlockGroup.projectors;
@@ -93,6 +97,15 @@ public class ShieldGenerator extends BaseTurret {
 
         consumePower(powerCons);
         consumeItem(NHItems.ancimembrane, 2);
+
+        config(Float.class, (ShieldGeneratorBuild build, Float rotation) -> {
+            build.targetAngel = rotation;
+        });
+        configClear((UnitSpawner.UnitIniterBuild tile) -> {
+            tile.toSpawnType = UnitTypes.alpha;
+            tile.angle = 0;
+            tile.delay = 30;
+        });
     }
 
     @Override
@@ -154,6 +167,11 @@ public class ShieldGenerator extends BaseTurret {
             rightCenter = backCenter.cpy().add(Angles.trnsx(rotation - shieldArc/2, 250), Angles.trnsy(rotation - shieldArc/2, 250));
             leftCenter = backCenter.cpy().add(Angles.trnsx(rotation + shieldArc/2, 250), Angles.trnsy(rotation + shieldArc/2, 250));
         }
+
+        public Float config(){
+            return targetAngel;
+        }
+
 
         @Override
         public void buildConfiguration(Table table) {
