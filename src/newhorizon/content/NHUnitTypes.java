@@ -823,6 +823,8 @@ public class NHUnitTypes{
 
 		liv = new NHUnitType("liv"){{
 			outlineColor = OColor;
+			itemCapacity = 150;
+			payloadCapacity = (2 * 2) * tilePayload;
 
 			aiController = BuilderAI::new;
 			fogRadius = 40f;

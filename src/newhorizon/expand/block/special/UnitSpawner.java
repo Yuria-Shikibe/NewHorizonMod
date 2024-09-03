@@ -97,7 +97,7 @@ public class UnitSpawner extends Block{
 		public void buildConfiguration(Table table){
 			table.slider(5, 20, 1, 0, f -> delay = f * 60f).growX().row();
 			table.slider(0, 360, 45, 0, f -> angle = f).growX().row();
-			ItemSelection.buildTable(table, content.units().select(b -> !b.isHidden()), this::type, this::configure);
+			ItemSelection.buildTable(table, content.units().retainAll(b -> !b.isHidden()), this::type, this::configure);
 		}
 		
 		public UnitType type(){
