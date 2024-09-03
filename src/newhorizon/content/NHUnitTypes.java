@@ -327,11 +327,11 @@ public class NHUnitTypes{
 			top = alternate = true;
 			reload = 45f;
 			shootY = 4f;
-			shootSound = Sounds.spark;
+			shootSound = NHSounds.laser3;
 			heatColor = NHColor.lightSkyBack;
 			bullet = new PosLightningType(20f){{
 				lightningColor = NHColor.lightSkyBack;
-				maxRange = 140f;
+				maxRange = 250f;
 				hitEffect = NHFx.lightningHitSmall(lightningColor);
 				lightningLength = 1;
 				lightningLengthRand = 4;
@@ -822,6 +822,8 @@ public class NHUnitTypes{
 		loadPreviousWeapon();
 
 		liv = new NHUnitType("liv"){{
+			outlineColor = OColor;
+
 			aiController = BuilderAI::new;
 			fogRadius = 40f;
 			outlineRadius = 4;
@@ -829,7 +831,7 @@ public class NHUnitTypes{
 			lightRadius = 20f;
 			lightOpacity = 0.1f;
 
-			lowAltitude = flying = true;
+			flying = true;
 			health = 1000;
 			armor = 5;
 			hitSize = 18f;
@@ -843,10 +845,10 @@ public class NHUnitTypes{
 			engineColor = NHColor.lightSky;
 
 			buildBeamOffset = 6f;
-			buildSpeed = 5f;
+			buildSpeed = 3f;
 
-			mineTier = 4;
-			mineSpeed = 15f;
+			mineTier = 3;
+			mineSpeed = 12f;
 
 			engines.add(
 				new UnitEngine(4.5f, -7.2f, 2.2f, -115),
@@ -857,28 +859,31 @@ public class NHUnitTypes{
 			abilities.add(new BoostAbility(false, 1.5f, 90.0f){});
 
 			weapons.add(new Weapon(){{
-				layerOffset = -0.01f;
 				reload = 42;
 				recoil = 1.5f;
 				inaccuracy = 5;
 				shootSound = NHSounds.thermoShoot;
-				mirror = true;
+				top = false;
+				mirror = alternate = true;
 				rotate = false;
 				rotateSpeed = 2.55f;
-				shootY += 6f;
-				y = 2.2f;
-				heatColor = NHColor.ancientHeat;
+				heatColor = NHColor.lightSky;
+				shootCone = 30f;
+
 
 				shoot = new ShootPattern(){{
-					shots = 3;
+					shots = 5;
 					shotDelay = 5f;
 				}};
 
 				bullet = new BasicBulletType(4.5f, 20f){{
+					ejectEffect = Fx.none;
 					trailWidth = 1.5f;
 					trailLength = 15;
 					drawSize = 200f;
 
+					status = StatusEffects.shocked;
+					statusDuration = 30f;
 					lifetime = 40f;
 					homingPower = 0.1f;
 					homingRange = 120f;

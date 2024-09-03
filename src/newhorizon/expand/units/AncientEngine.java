@@ -14,6 +14,7 @@ import mindustry.type.UnitType;
 import static arc.graphics.g2d.Lines.circleVertices;
 
 public class AncientEngine extends UnitType.UnitEngine{
+	public Color engineColor;
 	public AncientEngine(float x, float y, float radius, float rotation){
 		super(x, y, radius, rotation);
 	}
@@ -52,7 +53,7 @@ public class AncientEngine extends UnitType.UnitEngine{
 			if(forceZ > 0)Draw.z(forceZ);
 			
 			float rot = unit.rotation - 90.0F;
-			Color c = unit.team.color;
+			Color c = type.engineColor == null ? unit.team.color : type.engineColor;
 			Tmp.v1.set(x, y).rotate(rot).add(unit.x, unit.y);
 			float ex = Tmp.v1.x;
 			float ey = Tmp.v1.y;

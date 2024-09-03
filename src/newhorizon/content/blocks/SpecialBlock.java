@@ -18,7 +18,6 @@ public class SpecialBlock {
             requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
 
             alwaysUnlocked = true;
-            isFirstTier = true;
 
             unitType = NHUnitTypes.liv;
             health = 30000;

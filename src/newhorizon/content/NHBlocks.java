@@ -3853,7 +3853,7 @@ public class NHBlocks{
 	
 	public static void load() {
 		blaster = new ShockwaveGenerator("blaster"){{
-			requirements(Category.defense, with(NHItems.presstanium, 80, Items.graphite, 100,Items.thorium, 100, NHItems.juniorProcessor, 60));
+			requirements(Category.defense, with(NHItems.presstanium, 80, Items.graphite, 100,Items.thorium, 100, NHItems.juniorProcessor, 60, NHItems.multipleSteel, 30));
 			
 			squareSprite = false;
 			size = 3;
