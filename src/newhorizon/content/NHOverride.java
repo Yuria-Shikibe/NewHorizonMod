@@ -392,7 +392,7 @@ public class NHOverride{
 		Unit_T5.each(u -> u.immunities.addAll(NHStatusEffects.emp1, NHStatusEffects.ultFireBurn));
 		Unit_T6.each(u -> u.immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.scrambler));
 		
-		new Seq<UnitType>().addAll(Unit_T4.toSeq()).addAll(Unit_T5.toSeq()).filter(u -> u != null && !u.name.startsWith(NewHorizon.MOD_NAME)).each(u -> {
+		new Seq<UnitType>().addAll(Unit_T4.toSeq()).addAll(Unit_T5.toSeq()).retainAll(u -> u != null && !u.name.startsWith(NewHorizon.MOD_NAME)).each(u -> {
 			u.armor += 3;
 			u.health *= 1.1f;
 		});

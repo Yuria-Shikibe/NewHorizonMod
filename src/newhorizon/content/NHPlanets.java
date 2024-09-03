@@ -94,7 +94,7 @@ public class NHPlanets{
 				r.hideBannedBlocks = true;
 				r.dropZoneRadius = 64;
 				
-				r.bannedBlocks.addAll(Vars.content.blocks().copy().filter(b -> {
+				r.bannedBlocks.addAll(Vars.content.blocks().copy().retainAll(b -> {
 					if(b instanceof SolidPump){
 						SolidPump pump = (SolidPump)b;
 						return pump.result == Liquids.water && pump.attribute == Attribute.water;
@@ -622,7 +622,7 @@ public class NHPlanets{
 			state.rules.spawns = NHOverride.generate(difficulty, new Rand(sector.id), false, false, false);
 			state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
 			if(rawTemp(sector.tile.v) < 0.65f){
-				state.rules.bannedBlocks.addAll(Vars.content.blocks().copy().filter(b -> b instanceof LaunchPad));
+				state.rules.bannedBlocks.addAll(Vars.content.blocks().copy().retainAll(b -> b instanceof LaunchPad));
 			}
 		}
 		

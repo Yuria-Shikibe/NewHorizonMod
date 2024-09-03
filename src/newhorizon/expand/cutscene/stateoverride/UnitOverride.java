@@ -87,7 +87,7 @@ public class UnitOverride{
 	}
 	
 	public static Seq<Unit> check(Seq<Unit> units){
-		return units.filter(Healthc::isValid);
+		return units.retainAll(Healthc::isValid);
 	}
 	
 	public static void moveParallel(Unit center, Seq<Unit> group, Vec2 target){

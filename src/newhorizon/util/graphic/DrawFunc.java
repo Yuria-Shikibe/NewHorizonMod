@@ -176,7 +176,7 @@ public class DrawFunc{
     
     public static <T extends Building> void drawWhileHold(Class<T> type, Cons<T> drawer){
         Draw.z(Layer.overlayUI + 1);
-        Seq<T> builds = Groups.build.copy(new Seq<>()).filter(b -> b.team == Vars.player.team() && type.isAssignableFrom(b.getClass())).as();
+        Seq<T> builds = Groups.build.copy(new Seq<>()).retainAll(b -> b.team == Vars.player.team() && type.isAssignableFrom(b.getClass())).as();
         for(T build : builds)drawer.get(build);
     }
     

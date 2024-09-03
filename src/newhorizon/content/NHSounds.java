@@ -45,35 +45,12 @@ public class NHSounds{
 	public static void load(){
 		Class<?> c = NHSounds.class;
 		Seq<Field> fields = new Seq<>(c.getFields());
-		fields.filter(f -> Sound.class.equals(f.getType()));
+		fields.retainAll(f -> Sound.class.equals(f.getType()));
 		try{
 			for(Field f : fields)f.set(null, loadSound(f.getName()));
 		}catch(IllegalAccessException e){
 			e.printStackTrace();
 		}
-		
-//		flak2 = loadSound("flak2");
-//		alert2 = loadSound("alert2");
-//		shock = loadSound("shock");
-//		alarm = loadSound("alarm");
-//		hyperspace = loadSound("hyperspace");
-//		rapidLaser = loadSound("rapidLaser");
-//		launch = loadSound("launch");
-//		railGunBlast = loadSound("railGunBlast");
-//		railGunCharge = loadSound("railGunCharge");
-//		blaster = loadSound("blaster");
-//		coil = loadSound("coil");
-//		flak = loadSound("flak");
-//		gauss = loadSound("gauss");
-//		scatter = loadSound("scatter");
-//		jumpIn = loadSound("jumpIn");
-//		metalWalk = loadSound("metalWalk");
-//		thermoShoot = loadSound("thermoShoot");
-//		hugeShoot = loadSound("hugeShoot");
-//		hugeBlast = loadSound("hugeBlast");
-//		signal = loadSound("signal");
-//		synchro = loadSound("synchro");
-//		defenceBreak = loadSound("break");
 	}
 	
 	private static Sound loadSound(String soundName){

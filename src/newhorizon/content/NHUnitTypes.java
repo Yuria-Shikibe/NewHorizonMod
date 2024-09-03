@@ -4905,9 +4905,7 @@ public class NHUnitTypes{
 	public static void immunise(UnitType type){
 		if(statuses == null){
 			statuses = Vars.content.statusEffects().copy();
-			statuses.select(s -> {
-				return s.disarm || s.damage > 0 || s.healthMultiplier * s.reloadMultiplier * s.buildSpeedMultiplier * s.speedMultiplier < 1;
-			});
+			statuses.retainAll(s -> s.disarm || s.damage > 0 || s.healthMultiplier * s.reloadMultiplier * s.buildSpeedMultiplier * s.speedMultiplier < 1);
 			statuses.add(NHStatusEffects.scannerDown);
 			statuses.remove(StatusEffects.overclock);
 			statuses.remove(StatusEffects.overdrive);
