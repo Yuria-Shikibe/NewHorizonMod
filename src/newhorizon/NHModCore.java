@@ -9,7 +9,8 @@ import newhorizon.expand.cutscene.NHCSS_Core;
 
 public class NHModCore implements ApplicationListener{
 	public static NHModCore core;
-	
+	public static NHInputControl control;
+
 	public NHInputListener inputListener;
 	public NHRenderer renderer;
 	
@@ -19,6 +20,7 @@ public class NHModCore implements ApplicationListener{
 		if(!Core.app.isHeadless()){
 			NHVars.listener = inputListener = new NHInputListener();
 			NHVars.renderer = renderer = new NHRenderer();
+			control = new NHInputControl();
 		}
 		
 		NHVars.core = core = this;

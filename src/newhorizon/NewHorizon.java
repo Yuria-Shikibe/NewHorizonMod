@@ -4,13 +4,11 @@ import arc.Core;
 import arc.Events;
 import arc.func.Cons;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
+import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import arc.math.geom.Rect;
-import arc.math.geom.Vec2;
+import arc.scene.ui.ImageButton;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -22,7 +20,6 @@ import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
@@ -34,12 +31,9 @@ import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
-import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
-import newhorizon.content.blocks.DefenseBlock;
 import newhorizon.content.blocks.SpecialBlock;
-import newhorizon.content.blocks.TurretBlock;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.entities.EntityRegister;
@@ -47,8 +41,9 @@ import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.game.NHWorldData;
-import newhorizon.expand.map.planet.MidanthaPlanet;
+import newhorizon.expand.map.SchematicUtil;
 import newhorizon.expand.packets.NHCall;
+import newhorizon.util.NHDebugFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.EffectDrawer;
 import newhorizon.util.ui.FeatureLog;
@@ -56,7 +51,6 @@ import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
-import static newhorizon.expand.map.planet.MidanthaPlanet.MidanthaPlanetGenerator.*;
 import static newhorizon.util.ui.FeatureLog.featureType.BALANCE;
 import static newhorizon.util.ui.FeatureLog.featureType.IMPORTANT;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -229,58 +223,19 @@ public class NewHorizon extends Mod{
 		
 		Events.on(ClientLoadEvent.class, e -> {
 			Core.app.post(NHUI::init);
-
-			Vars.defaultServers.add(new ServerGroup(){{
-				name = "[sky]New Horizon [white]Mod [lightgray]Servers";
-				addresses = new String[]{SERVER};
-			}});
-			
-			if(!DEBUGGING)Time.runTask(15f, () -> Threads.daemon(() -> {
-				Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
-					Jval json = Jval.read(res.getResultAsString());
-					
-					String tag = json.get("tag_name").asString();
-					String body = json.get("body").asString();
-					
-					if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0")) && !tag.equals('v' + MOD.meta.version)){
-						Core.app.post(() -> {
-							new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
-								cont.table(t -> {
-									t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
-									t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).scaling(Scaling.bounded).row();
-									t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
-									t.add("\t[lightgray]Version: [accent]" + tag).left().row();
-									t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
-									t.pane(c -> {
-										c.align(Align.topLeft).margin(OFFSET);
-										c.add("[accent]Description: \n[]" + body).left();
-									}).grow();
-								}).grow().padBottom(OFFSET).row();
-								
-								
-								cont.table(table -> {
-									table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
-									table.button("@mods.github.open", Icon.github, Styles.cleart, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
-								}).bottom().growX().height(LEN).padTop(OFFSET);
-								
-								addCloseListener();
-							}}.show();
-						});
-					}
-					
-					if(tag != null) Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
-				}, ex -> Log.err(ex.toString()));
-			}));
-			
-			Time.runTask(10f, () -> {
-				if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){
-					showNew();
-				}
-				Core.settings.put("nh-lastver", MOD.meta.version);
+			updateServer();
+			fetchNewRelease();
+			showNewDialog();
+			showStartLog();
+			Time.run(10f, () -> {
+				//Core.app.post(NHDebugFunc::outputAtlas);
 			});
-			
-			if(!Core.settings.getBool("nh_hide_starting_log"))Core.app.post(Time.runTask(10f, NewHorizon::startLog));
 		});
+		Events.run(EventType.Trigger.draw, () -> {
+			NHModCore.control.terrainSelect();
+			//Fill.rect(NHUI.inputTable.x, NHUI.inputTable.y, NHUI.inputTable.getPrefWidth(), NHUI.inputTable.getPrefHeight());
+		});
+
 	}
 
 	@Override
@@ -288,8 +243,6 @@ public class NewHorizon extends Mod{
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 		Core.app.addListener(new NHModCore());
 
-		//PlanetDialog.debugSelect = true;
-		
 		NHVars.worldData = new NHWorldData();
 		NHCSS_UI.init();
 		
@@ -298,13 +251,9 @@ public class NewHorizon extends Mod{
 		NHSetting.loadUI();
 		EffectDrawer.drawer.init();
 
-		/*
-		if(DEBUGGING){
+		if(NHSetting.getBool(NHSetting.DEBUG_PANEL)){
 			TableFunc.tableMain();
-			Vars.renderer.maxZoom = 10f;
-			Vars.renderer.minZoom = 0.85f;
 		}
-		 */
 	}
 
 	@Override
@@ -546,4 +495,63 @@ public class NewHorizon extends Mod{
 		
 		Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }
+
+	private void updateServer(){
+		Vars.defaultServers.add(new ServerGroup(){{
+			name = "[sky]New Horizon [white]Mod [lightgray]Servers";
+			addresses = new String[]{SERVER};
+		}});
+	}
+
+	private void fetchNewRelease(){
+		if(!DEBUGGING)Time.runTask(15f, () -> Threads.daemon(() -> {
+			Http.get(Vars.ghApi + "/repos/" + MOD_REPO + "/releases/latest", res -> {
+				Jval json = Jval.read(res.getResultAsString());
+
+				String tag = json.get("tag_name").asString();
+				String body = json.get("body").asString();
+
+				if(tag != null && body != null && !tag.equals(Core.settings.get(MOD_NAME + "-last-gh-release-tag", "0")) && !tag.equals('v' + MOD.meta.version)){
+					Core.app.post(() -> {
+						new BaseDialog(Core.bundle.get("mod.ui.has-new-update") + ": " + tag){{
+							cont.table(t -> {
+								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padTop(LEN).expandX().row();
+								t.image(NHContent.icon2).center().pad(OFFSET).color(Pal.accent).scaling(Scaling.bounded).row();
+								t.add(new WarningBar()).growX().height(LEN / 2).padLeft(-LEN).padRight(-LEN).padBottom(LEN).expandX().row();
+								t.add("\t[lightgray]Version: [accent]" + tag).left().row();
+								t.image().growX().height(OFFSET / 3).pad(OFFSET / 3).row();
+								t.pane(c -> {
+									c.align(Align.topLeft).margin(OFFSET);
+									c.add("[accent]Description: \n[]" + body).left();
+								}).grow();
+							}).grow().padBottom(OFFSET).row();
+
+
+							cont.table(table -> {
+								table.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN);
+								table.button("@mods.github.open", Icon.github, Styles.cleart, () -> Core.app.openURI(MOD_RELEASES)).growX().height(LEN);
+							}).bottom().growX().height(LEN).padTop(OFFSET);
+
+							addCloseListener();
+						}}.show();
+					});
+				}
+
+				if(tag != null) Core.settings.put(MOD_NAME + "-last-gh-release-tag", tag);
+			}, ex -> Log.err(ex.toString()));
+		}));
+	}
+
+	private void showNewDialog(){
+		Time.runTask(10f, () -> {
+			if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){
+				showNew();
+			}
+			Core.settings.put("nh-lastver", MOD.meta.version);
+		});
+	}
+
+	private void showStartLog(){
+		if(!Core.settings.getBool(NHSetting.START_LOG))Core.app.post(Time.runTask(10f, NewHorizon::startLog));
+	}
 }

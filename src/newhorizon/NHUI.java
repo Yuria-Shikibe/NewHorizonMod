@@ -5,16 +5,23 @@ import arc.graphics.Color;
 import arc.scene.Element;
 import arc.scene.Group;
 import arc.scene.event.Touchable;
+import arc.scene.ui.Button;
+import arc.scene.ui.ButtonGroup;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
+import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.ArcRuntimeException;
+import arc.util.Log;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
+import newhorizon.expand.block.env.DataFloor;
+import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.dialog.WorldEventDialog;
 
@@ -27,6 +34,7 @@ public class NHUI{
 	public static Table HudFragment_overlaymarker, HUD_waves, HUD_statustable, HUD_status;
 	//BuildFragment stuff
 	public static Table inputTable, buildMenuTable, toolsTable;
+	public static Table tableTool;
 	public static WidgetGroup HUD_waves_editor;
 	
 	public static WorldEventDialog eventDialog;
@@ -60,13 +68,29 @@ public class NHUI{
 			HUD_waves = HUD_waves_editor.find("waves");
 			HUD_statustable = HUD_waves.find("statustable");
 			HUD_status = HUD_statustable.find("status");
+
+			inputTable = Vars.ui.hudGroup.find("inputTable");
+			buildMenuTable = (Table) inputTable.parent.parent.parent.parent;
+
 		}catch(ClassCastException e){
 			throw new ArcRuntimeException("Invalid UI Parameter! Check Game&Mod's Version!");
 		}
 		
 		eventDialog = new WorldEventDialog();
+
+
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
+			/*
+			if(NHSetting.getBool(NHSetting.TERRAIN_MODE)){
+				t.table(cont -> {
+					cont.add(tableTool).left().margin(2f).grow().row();
+				}).row();
+			}
+
+			 */
+
+
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {
@@ -106,6 +130,8 @@ public class NHUI{
 			t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
 		});
 		table.name = "nh-event-table";
+
+
 		
 		try{
 			ImageButton skip = HUD_statustable.find("skip");
@@ -130,7 +156,7 @@ public class NHUI{
 			HUD_waves.row().add(table).left().margin(10f).growX().row();
 			HUD_waves.add(infoT).width(65f * 5f + 4f).left();
 		}catch(Exception e){
-			e.printStackTrace();
+			Log.info(e);
 		}
 	}
 	

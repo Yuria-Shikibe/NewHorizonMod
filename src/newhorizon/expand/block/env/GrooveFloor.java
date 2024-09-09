@@ -39,6 +39,11 @@ public class GrooveFloor extends Floor {
     }
 
     @Override
+    protected boolean doEdge(Tile tile, Tile otherTile, Floor other){
+        return false;
+    }
+
+    @Override
     public void drawBase(Tile tile) {
         Draw.rect(variantRegions[getTileIndex(tile)], tile.worldx(), tile.worldy());
         Draw.alpha(1f);

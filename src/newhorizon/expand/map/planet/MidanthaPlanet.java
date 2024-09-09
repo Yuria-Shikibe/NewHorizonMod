@@ -11,10 +11,8 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.noise.Simplex;
 import mindustry.Vars;
-import mindustry.ai.Astar;
 import mindustry.content.Blocks;
 import mindustry.content.Liquids;
-import mindustry.content.Loadouts;
 import mindustry.game.Rules;
 import mindustry.game.Schematics;
 import mindustry.game.Team;
@@ -31,16 +29,13 @@ import mindustry.world.Tile;
 import mindustry.world.TileGen;
 import mindustry.world.blocks.campaign.LaunchPad;
 import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.TallBlock;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
 import newhorizon.content.*;
-import newhorizon.content.blocks.EnvironmentBlock;
-import newhorizon.expand.map.TerrainSchematic;
+import newhorizon.expand.map.SchematicUtil;
 
 import static mindustry.Vars.state;
-import static mindustry.Vars.world;
 import static newhorizon.content.NHPlanets.ceito;
 
 public class MidanthaPlanet extends Planet {
@@ -192,7 +187,7 @@ public class MidanthaPlanet extends Planet {
                 coreX = (int)(-trns.x + width/2f), coreY = (int)(-trns.y + height/2f);
             tiles.getn(spawnX, spawnY).setOverlay(Blocks.spawn);
             tiles.getn(coreX, coreY).setFloor(Blocks.coreZone.asFloor());
-            TerrainSchematic.placeTerrain(NHContent.terrainTest, coreX, coreY);
+            //SchematicUtil.placeTerrain(NHContent.terrainTest, coreX, coreY);
             Schematics.placeLoadout(NHContent.nhBaseLoadout, coreX, coreY);
             setRule(difficulty);
 

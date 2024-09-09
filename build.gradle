@@ -91,6 +91,7 @@ jar{
     }
 }
 
+//paths are hardcoded
 tasks.register('copyTo', Copy) {
     from jar
     into 'E:/Steam/steamapps/common/Mindustry/saves/mods'

@@ -47,6 +47,11 @@ public class TiledFloor extends Floor {
     }
 
     @Override
+    protected boolean doEdge(Tile tile, Tile otherTile, Floor other){
+        return false;
+    }
+
+    @Override
     public void drawBase(Tile tile) {
         Draw.rect(region, tile.worldx(), tile.worldy());
         drawTile(tile);

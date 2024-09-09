@@ -1,5 +1,6 @@
 package newhorizon.expand;
 
+import newhorizon.NHInputControl;
 import newhorizon.NHInputListener;
 import newhorizon.NHModCore;
 import newhorizon.NHRenderer;

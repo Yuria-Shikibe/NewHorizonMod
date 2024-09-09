@@ -2,9 +2,7 @@ package newhorizon.expand.block.defence;
 
 import arc.Core;
 import arc.Events;
-import arc.func.Cons;
 import arc.graphics.Color;
-import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
@@ -22,9 +20,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
-import mindustry.ctype.ContentType;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.units.BuildPlan;
@@ -33,15 +29,9 @@ import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.Category;
-import mindustry.type.Item;
-import mindustry.type.UnitType;
 import mindustry.ui.Bar;
-import mindustry.world.Block;
 import mindustry.world.blocks.ControlBlock;
-import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.defense.turrets.BaseTurret;
-import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
@@ -49,13 +39,10 @@ import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
-import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 
-import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
-import static mindustry.type.ItemStack.with;
 
 public class ShieldGenerator extends BaseTurret {
     public final int timerUse = timers++;
@@ -101,10 +88,8 @@ public class ShieldGenerator extends BaseTurret {
         config(Float.class, (ShieldGeneratorBuild build, Float rotation) -> {
             build.targetAngel = rotation;
         });
-        configClear((UnitSpawner.UnitIniterBuild tile) -> {
-            tile.toSpawnType = UnitTypes.alpha;
-            tile.angle = 0;
-            tile.delay = 30;
+        configClear((ShieldGeneratorBuild build) -> {
+            build.targetAngel = 90;
         });
     }
 

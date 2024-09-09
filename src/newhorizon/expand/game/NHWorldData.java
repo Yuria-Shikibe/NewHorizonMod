@@ -13,30 +13,25 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 	public static short CURRENT_VER = 1;
 	
 	public static NHWorldData data;
+	public static WorldTileData worldTileData;
 	
 	public NHWorldData(){
-//		Vars.mods.getMod("new-horizon").loader.loadClass("newhorizon.expand.NHVars").newInstance().worldData.eventReloadSpeed;
-		
 		data = this;
-		
+		worldTileData = new WorldTileData();
 		SaveVersion.addCustomChunk("nh-world-data", this);
+		SaveVersion.addCustomChunk("nh-world-tile-data", worldTileData);
 	}
 	
 	public short version = 0;
 	public float eventReloadSpeed = -1;
 	public boolean jumpGateUsesCoreItems = true;
 	public boolean applyEventTriggers = false;
-	
-	public void initFromMapRules(){
-	
-	}
-	
+
 	@Override
 	public void write(DataOutput stream) throws IOException{
 		stream.writeShort(CURRENT_VER);
 		
 		stream.writeFloat(eventReloadSpeed);
-		
 		stream.writeBoolean(jumpGateUsesCoreItems);
 		stream.writeBoolean(applyEventTriggers);
 		
