@@ -104,6 +104,8 @@ public class NHContent extends Content{
 //		process();
 		
 		scheDir = NewHorizon.MOD.root.child("schematics-bases");
+
+		NHSchematic.load();
 		
 		try{
 			mLoadout = Schematics.read(scheDir.child("init-loadout" + ".msch"));
@@ -155,13 +157,6 @@ public class NHContent extends Content{
 			t.setWrap(Texture.TextureWrap.repeat);
 		});
 
-		/*
-		platingNoise = loadTex("plating-noise", t -> {
-			t.setFilter(Texture.TextureFilter.nearest);
-			t.setWrap(Texture.TextureWrap.repeat);
-		});
-
-		 */
 	}
 	
 	Texture loadTex(String name, Cons<Texture> modifier){

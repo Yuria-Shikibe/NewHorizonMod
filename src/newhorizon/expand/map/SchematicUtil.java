@@ -1,5 +1,6 @@
 package newhorizon.expand.map;
 
+import arc.files.Fi;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -7,9 +8,11 @@ import arc.util.io.Reads;
 import arc.util.io.Streams;
 import arc.util.io.Writes;
 import arc.util.serialization.Base64Coder;
-import mindustry.content.Blocks;
+import mindustry.game.Schematic;
 import mindustry.game.Schematic.Stile;
+import mindustry.game.Team;
 import mindustry.io.TypeIO;
+import mindustry.world.Build;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.expand.map.TerrainSchematic.SData;
@@ -37,7 +40,6 @@ public class SchematicUtil {
         }
     }
 
-    /** Loads a schematic from base64. May throw an exception. */
     public static TerrainSchematic readBase64(String schematic){
         try{
             return read(new ByteArrayInputStream(Base64Coder.decode(schematic.trim())));
@@ -136,36 +138,46 @@ public class SchematicUtil {
         return null;
     }
 
-    public static void placeTerrain(TerrainSchematic schem, int x, int y){
-        int ox = x - schem.width/2, oy = y - schem.height/2;
-        schem.tileData.each(st -> {
-            Tile tile = world.tile(st.x + ox, st.y + oy);
-            if (tile != null) tile.data = st.data;
-        });
-        schem.floor.each(st -> {
-            Tile tile = world.tile(st.x + ox, st.y + oy);
-            if (tile != null) tile.setFloor((Floor) st.block);
-        });
-        schem.overlay.each(st -> {
-            Tile tile = world.tile(st.x + ox, st.y + oy);
-            if (tile != null) tile.setOverlay(st.block);
-        });
-        schem.block.each(st -> {
-            Tile tile = world.tile(st.x + ox, st.y + oy);
-            if (tile != null) tile.setBlock(st.block);
-        });
+    public static void placeTerrainOrigin(TerrainSchematic schem, int originX, int originY){
+        int ox = originX - schem.width/2, oy = originY - schem.height/2;
+        placeTerrain(schem, ox, oy);
     }
 
-    /*
-    public static void placeTerrain(Schematic schem, int x, int y){
-        int ox = x - schem.width/2, oy = y - schem.height/2;
+    public static void placeTerrainLB(TerrainSchematic schem, int startX, int startY){
+        placeTerrain(schem, startX, startY);
+    }
+
+    public static void placeBuildLB(Schematic schem, int startX, int startY, Team team){
         schem.tiles.each(st -> {
-            Tile tile = world.tile(st.x + ox, st.y + oy);
-            if (tile != null && st.block instanceof Floor){
-                tile.setFloor((Floor) st.block);
+            Tile tile = world.tile(st.x + startX, st.y + startY);
+            if(tile == null) return;
+
+            tile.setBlock(st.block, team, st.rotation);
+
+            Object config = st.config;
+            if(tile.build != null){
+                tile.build.configureAny(config);
             }
         });
     }
 
-     */
+    public static void placeTerrain(TerrainSchematic schem, int startX, int startY) {
+        schem.tileData.each(st -> {
+            Tile tile = world.tile(st.x + startX, st.y + startY);
+            if (tile != null) tile.data = st.data;
+        });
+        schem.floor.each(st -> {
+            Tile tile = world.tile(st.x + startX, st.y + startY);
+            if (tile != null) tile.setFloor((Floor) st.block);
+        });
+        schem.overlay.each(st -> {
+            Tile tile = world.tile(st.x + startX, st.y + startY);
+            if (tile != null) tile.setOverlay(st.block);
+        });
+        schem.block.each(st -> {
+            Tile tile = world.tile(st.x + startX, st.y + startY);
+            if (tile != null) tile.setBlock(st.block);
+        });
+    }
+
 }

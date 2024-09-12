@@ -172,7 +172,11 @@ public class DataFloorPlacer extends Block {
 
         @Override
         public String config(){
-            return terrainBlock.name + divKey + terrainData;
+            if (terrainBlock != null){
+                return terrainBlock.name + divKey + terrainData;
+            }else {
+                return "<N/A>";
+            }
         }
 
         @Override
