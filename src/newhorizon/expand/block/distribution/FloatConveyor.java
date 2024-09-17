@@ -57,6 +57,7 @@ public class FloatConveyor extends Conveyor {
             updateDrawRegion();
         }
 
+        @Override
         public void updateProximity() {
             super.updateProximity();
 

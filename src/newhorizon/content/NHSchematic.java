@@ -2,28 +2,38 @@ package newhorizon.content;
 
 import arc.files.Fi;
 import arc.struct.Seq;
+import arc.util.Log;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;
 import newhorizon.expand.map.SchematicUtil;
 import newhorizon.expand.map.TerrainSchematic;
 
+import java.io.IOException;
+
 import static newhorizon.content.NHContent.scheDir;
 
 public class NHSchematic {
-    public static TerrainSchematic TEST_CHUNK_WHITE, TEST_CHUNK_BLACK, river_10;
+    public static TerrainSchematic TEST_CHUNK_WHITE, TEST_CHUNK_BLACK;
+    public static TerrainSchematic QUANTUM_RIVER;
 
-    public static Seq<TerrainSchematic>[] QUANTUM_RIVER;
-
-    public static Schematic river_10_build;
+    public static Schematic[] QUANTUM_RIVER_BUILD;
 
     public static String nhss(String name){
         return scheDir.child(name + ".nhss").readString();
     }
 
-    public static void load(){
+    public static void load() throws IOException {
         TEST_CHUNK_WHITE = SchematicUtil.readBase64(nhss("test-chunk-white"));
         TEST_CHUNK_BLACK = SchematicUtil.readBase64(nhss("test-chunk-black"));
-        river_10 = SchematicUtil.readBase64("bmhzc3icjZpLbtxWEEX5/n8+TzNJVtCjrEiIpUSILNmCjQBZVZaUpYS3W9Z9AJFyCUaZaLLPKVGnOertw/Zh28z2/nM9tBhuP4bHUcCIGAkjYxSM+u8xGo46xsDAu7b5BjL4z4BnwDPgGfAMeAY8A54Bz4BnwDPgGfAMeAY8e1vMYFiMg2fBs+BZ8Cx4FjwLngXPgmfBs+BZ8Cx47vo7gufAc+A58Bx4DjwHngPPgefAc+A58Bx4DjwH3vVOefA8eB48j1c9eB48D54Hz4PnwfPgefA8eB48D1643XmDYTEOXgAv4FQAL4AXwAvgBfACeAG8AF4AL4AXb39Eg2ExDl4EL4IXcT6CF8GL4EXwIngRvAheBC+Cl249GAyLcfASeAm8BF7CRQm8BF4CL4GXwEvgJfASePmWlsGwGAcvg5fBy+Bl8DKuzOBl8DJ4GbwMXgYvg1dulRoMi3HwCngFvAJeAa+AV3B5Aa+AV8Ar4BXwCnj1Gjx4FbwKXgWvglfBq+BV8Cp4FbwKXgWvglfBq+BdPzYNvAZeA6+B18Br4DXwGngNvAZewxsbeA28Bl4Dr98+hgbDYhy8Dl4Hr4PXwevgdfA6eB28jnd38Dp4Hbxx+0QbDItx8AZ4A7wB3gBvgDfAG+AN8AZ4A4gB3gBvvz0cDIbFOHj4hGzIekOLGwLa8Fff8Kc6xsHDTdnwm2zQb3jP8W9eHzEYBsNiOLzscRQwIkbCyBgF4+BN8CZ4E7wJ3nx7Xv3yfP/X5Y+X18e/X54vn5/uvj4+/375dP/17uny8PTy8np9QCouMpqLjmfSx7vXPy+f757vny6/Xh9GP61v+/Lt7vnrt0+Xh8f7p4/XZ4t4Osin4/bz/56+fLy//3z9NP/4mixriny6yqfb6Z50za0cmot2zUXzxxcZTQNG04A5NWDkBozcgJEbMIoGjKIBIzdg5AaM3IA5NWA0DRhNA0bTgNE0YDUNWE0D9tSAlRuwcgNWbsAqGrCKBqzcgJUbsHID9tSA1TRgNQ1YTQNW04DTNOA0DbhTA05uwMkNOLkBp2jAKRpwcgNObsDJDbhTA07TgNM04DQNOE0DXtOA1zTgTw14uQEvN+DlBryiAa9owMsNeLkBLzfgTw14TQNe04DXNOA1DQRNA0HTQDg1EOQGgtxAkBsIigaCooEgNxDkBoLcQDg1EDQNBE0DQdNA0DQQNQ1ETQPx1ECUG4hyA1FuICoaiIoGotxAlBuIcgPx1EDUNBA1DURNA1HTQNI0kDQNpFMDSW4gyQ0kuYGkaCApGkhyA0luIMkNpFMDSdNA0jSQNA0kTQNZ00DWNJBPDWS5gSw3kOUGsqKBrGggyw1kuYEsN5BPDWRNA1nTQNY0kDUNFE0DRdNAOTVQ5AaK3ECRGyiKBoqigSI3UOQGitxAOTVQNA0UTQNF00DRNFA1DVRNA/XUQJUbqHIDVW6gKhqoigaq3ECVG6hyA/XUQNU0UDUNVE0DVdNA0zTQNA20UwNNbqDJDTS5gaZooCkaaHIDTW6gyQ20UwNN00DTNNA0DTRNA13TQNc00E8NdLmBLjfQ5Qa6ooGuaKDLDXS5gS430E8NdE0DXdNA1zTQNQ0MTQND08A4NTDkBobcwJAbGIoGhqKBITcw5AaG3MA4NTA0DQxNA0PTwNA0sGsa2DUN7KcGdrmBXW5glxvYFQ3sigZ2uYFdbmCXG9hPDeyaBnZNA7umgV3TwNQ0MDUNzFMDU25gyg1MuYGpaGAqGphyA1NuYMoNzFMDU9PA1DQwNQ3M2xcSjp9/Nnf3+LrdvmEUfnt6fHh4+yLV2+uBh5GHiYeZh4WHdcU1vt6/H96+xfV2uMgN5YZyQ7mh3FBuKDer3FBuVvn8fmi5h133sNzDcg/LPSz3sNzDcg+77mG5h+Uelnu4Ve4od5Q7yh3ljnJHuVvljnJHuV+NnkZPo6fR0+hp9DT61ehp9DQG3uuwygPlgfJAeaA8UB4oD6s8UB5W+fu9jtwjrntE7hG5R+QekXtE7hG5R1z3iNwjco/IPdIqT5QnyhPlifJEeaI8rfJEeaI8r8ZMY6Yx05hpzDRmGvNqzDRmGgvvdVnlhfJCeaG8UF4oL5SXVV4oL6v8/V5X7lHXPSr3qNyjco/KPSr3qNyjrntU7lG5R+UebZU3yhvljfJGeaO8Ud5WeaO8Ud5XY6ex09hp7DR2GjuNfTV2GjuNg/d6rPJB+aB8UD4oH5QPyscqH5SPVf5+r3fusa977Nxj5x4799i5x849du6xr3vs3GPnHjv3mKt8Uj4pn5RPyiflk/K5yifl1y8K/gdTu41Y");
-        river_10_build = Schematics.readBase64("bXNjaAF4nJXRsU7DMBCA4UviYhc7dV6AidkSkCJ1zDOwIgbTmmLhOpFbUYmnx8kNMPqyJMOdnU8/dNA1wKI9ORAv/tsl8/gA8uDO++Snix8jANwE++7CGerXtwbuoruazzH5nzGag71Y8xHGMZkp2L1LcJsX7WSuNgTo/r5NsOno8lk7mB9Wwf3/c4KPzpxs+vLxiOcNw/C0gyrPVssG1EU7/fMy3JYOz4dv8AJdtLPdQp238t78aufFhuJp0NOUevpluNDTLxds8IJiT/59ioChgFGKMEoRhgJGKbLCIisswikejh5OKcIpRTh6OKWIoAgECgSliKAUESgQlCJrLLLGIpLikeiRlCKSUkSiR1KKKIpAoUBRiihKEYUCRSnSYpEWi2iKR6NHU4poShGNHl3u+QXtksbI");
+        QUANTUM_RIVER = SchematicUtil.readBase64(nhss("quantum-river"));
+
+        loadSchematic();
+    }
+
+    public static void loadSchematic() throws IOException {
+        QUANTUM_RIVER_BUILD = new Schematic[16];
+        for (int i = 0; i < QUANTUM_RIVER_BUILD.length; i++){
+            QUANTUM_RIVER_BUILD[i] = Schematics.read(scheDir.child("quantum-river-build-" + i + ".msch"));
+        }
     }
 }

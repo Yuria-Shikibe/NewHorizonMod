@@ -9,6 +9,7 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Interval;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -63,7 +64,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	public long lastUpdated, updateSpacing;
 	
 	public SoundLoop soundLoop;
-	public Unit toSpawn = Nulls.unit;
+	public Unit toSpawn;
 	public Vec2 commandPos = new Vec2(Float.NaN, Float.NaN);
 	
 	public final Seq<Trail> trails = Seq.with(new Trail(30), new Trail(50), new Trail(70));
@@ -166,7 +167,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 				NHFx.circle.at(toSpawn.x, toSpawn.y, type.hitSize * 4, team.color);
 			});
 		}
-		
+
 		if(!headless && NHSetting.enableDetails()){
 			for(int i = 0; i < trails.size; i++){
 				Trail trail = trails.get(i);
@@ -194,7 +195,7 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 				toSpawn.controller(ai);
 			}
 		}
-		
+
 		Events.fire(new EventType.UnitCreateEvent(toSpawn, null));
 	}
 	

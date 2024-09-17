@@ -11,14 +11,18 @@ import mindustry.ui.Fonts;
 
 public class DrawUtil {
     public static void drawText(String text, float x, float y) {
+        drawText(text, x, y, 1f);
+    }
+
+    public static void drawText(String text, float x, float y, float size) {
         Font font = Fonts.outline;
         GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
         boolean ints = font.usesIntegerPositions();
         font.setUseIntegerPositions(false);
-        font.getData().setScale(1f / 6f / Scl.scl(1f));
+        font.getData().setScale(size / 6f / Scl.scl(1f));
 
         layout.setText(font, text);
-        font.draw(text, x, y + 14f, Align.center);
+        font.draw(text, x, y, Align.center);
 
         font.setUseIntegerPositions(ints);
         font.setColor(Color.white);

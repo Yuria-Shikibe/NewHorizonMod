@@ -43,6 +43,7 @@ import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.map.SchematicUtil;
 import newhorizon.expand.packets.NHCall;
+import newhorizon.util.DebugFunc;
 import newhorizon.util.NHDebugFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.EffectDrawer;
@@ -50,7 +51,7 @@ import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 import static newhorizon.util.ui.FeatureLog.featureType.BALANCE;
 import static newhorizon.util.ui.FeatureLog.featureType.IMPORTANT;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -216,9 +217,10 @@ public class NewHorizon extends Mod{
 		DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
 		if (DEBUGGING){
 			PlanetDialog.debugSelect = true;
+
+			Events.run(EventType.Trigger.universeDrawEnd, DebugFunc::renderSectorId);
 		}
-		
-		Log.info("<NEW HORIZON CONSTRUCTOR LOAD>");
+
 		NHInputListener.registerModBinding();
 		
 		Events.on(ClientLoadEvent.class, e -> {
@@ -233,7 +235,6 @@ public class NewHorizon extends Mod{
 		});
 		Events.run(EventType.Trigger.draw, () -> {
 			NHModCore.control.terrainSelect();
-			//Fill.rect(NHUI.inputTable.x, NHUI.inputTable.y, NHUI.inputTable.getPrefWidth(), NHUI.inputTable.getPrefHeight());
 		});
 
 	}

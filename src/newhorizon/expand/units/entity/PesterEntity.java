@@ -1,4 +1,4 @@
-package newhorizon.expand.units;
+package newhorizon.expand.units.entity;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;

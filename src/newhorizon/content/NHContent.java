@@ -105,9 +105,10 @@ public class NHContent extends Content{
 		
 		scheDir = NewHorizon.MOD.root.child("schematics-bases");
 
-		NHSchematic.load();
-		
+
 		try{
+			NHSchematic.load();
+
 			mLoadout = Schematics.read(scheDir.child("init-loadout" + ".msch"));
 			nhBaseLoadout = Schematics.readBase64("bXNjaAF4nI3QTQuCMBgH8L+VQhlEBnWtD7AYpXePHaIvEB2mPeSgtpiK0afPilCww3bYDs9vzxtm8PsYKHEjTA9U7bSRT632Wpx1WcA/U54aeS+kVgC8q0jomqN3PPWwUFSx7OtZqWTBZH2RwbwdUPQoc5ZqQ/V/H+8zcLBqk4soMjJxHIfRmtdPFPI1/8iRLe3DremyTU0mlW5kuPlKr1s/MUKlWUO3/Ec79f9TB0O4737H9snHtsmBifVwgf1yA9vlvgAW2YvD");
 			terrainTest = Schematics.readBase64("bXNjaAF4nE3R0WrDMAxAUcmyLJWxjxvt2+hD2hoW6NKR5P9pxyU0frmxySGxLQc5mNRp+O3yeerzPIzT8frTX9OPW1+u8/i3jo9JRNp9uPT7IuX7rOLL+pj6a/VL3kNJIUYqcdJIkNwp5UHhCle4whWucIWX7aNKCjFSiZNGguTuLw1ucGPZ4AY3uMENXrdNKinESCVOGgmSu1NxuMMd7nDnJYc73OFtO1QlhRipxEkjQXJ3CwEPeMADHvCAByTgCU94whOe8IQnPOH5L5/QvxPc");

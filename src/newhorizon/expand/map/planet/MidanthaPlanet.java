@@ -2,12 +2,12 @@ package newhorizon.expand.map.planet;
 
 import arc.func.Intc2;
 import arc.graphics.Color;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.*;
 import arc.struct.Seq;
 import arc.util.Log;
-import arc.util.Structs;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.noise.Simplex;
@@ -24,10 +24,8 @@ import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.type.Weather;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.TileGen;
-import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
@@ -119,7 +117,7 @@ public class MidanthaPlanet extends Planet {
         startSector = 15;
     }
 
-    public static class MidanthaPlanetGenerator extends PlanetGenerator {
+    public class MidanthaPlanetGenerator extends PlanetGenerator {
         //planet
         public float heightScl = 0.9f, octaves = 8, persistence = 0.7f, heightPow = 3f, heightMult = 1.6f;
         //chunk size
@@ -129,9 +127,9 @@ public class MidanthaPlanet extends Planet {
         public Chunk[][] chunks;
 
         //inner variable
-        public static final Seq<Rect> tmpRects = new Seq<>();
-        public static Seq<Tile> tmpTiles = new Seq<>();
-        public static Seq<Vec2[]> tmpRivers = new Seq<>();
+        public final Seq<Rect> chunkRects = new Seq<>();
+        public Seq<Point2> tmpTiles = new Seq<>();
+        public Seq<Point2> tmpRivers = new Seq<>();
 
 
         public boolean allowLanding(Sector sector){
@@ -160,7 +158,7 @@ public class MidanthaPlanet extends Planet {
 
         @Override
         public int getSectorSize(Sector sector){
-            return 600;
+            return 512;
         }
 
         float rawHeight(Vec3 position){
@@ -186,13 +184,11 @@ public class MidanthaPlanet extends Planet {
                     int cwx = cStart + cx * cSize,
                         cwy = cStart + cy * cSize;
 
-                    if ((cx + cy) % 2 == 0){
-                        SchematicUtil.placeTerrainLB(NHSchematic.TEST_CHUNK_WHITE, cwx, cwy);
-                    }else {
-                        SchematicUtil.placeTerrainLB(NHSchematic.TEST_CHUNK_BLACK, cwx, cwy);
-                    }
+                    SchematicUtil.placeTerrainLB(NHSchematic.TEST_CHUNK_BLACK, cwx, cwy);
                 }
             }
+            setRects();
+            setRiver();
 
             setSpawnAndCore();
             setRule();
@@ -217,11 +213,88 @@ public class MidanthaPlanet extends Planet {
             //resize the map
             cStart = (borderSize % cSize) / 2 + border;
             cStep = borderSize / cSize;
-            chunks = new Chunk [cStep][cStep];
+            chunks = new Chunk[cStep][cStep];
+            for (int i = 0; i < cStep; i++){
+                for (int j = 0; j < cStep; j++){
+                    chunks[i][j] = new Chunk();
+                }
+            }
 
             state.rules.limitMapArea = true;
             state.rules.limitX = state.rules.limitY = border;
             state.rules.limitWidth = state.rules.limitHeight = borderSize;
+        }
+
+        private void setRiver(){
+            for (Point2 p: tmpRivers){
+                chunks[p.x][p.y].river = true;
+            }
+
+            for (int x = 0; x < cStep; x++){
+                for (int y = 0; y < cStep; y++){
+                    if (chunks[x][y].river){
+                        int idx = 0;
+                        if (isRiverChunk(x, y + 1)) idx += 1;
+                        if (isRiverChunk(x + 1, y)) idx += 2;
+                        if (isRiverChunk(x, y - 1)) idx += 4;
+                        if (isRiverChunk(x - 1, y)) idx += 8;
+
+                        if (idx > 0){
+                            SchematicUtil.placeTerrainLB(NHSchematic.QUANTUM_RIVER, getChunkLBxy(x), getChunkLBxy(y), idx * cSize, 0, cSize, cSize);
+                            SchematicUtil.placeBuildLB(NHSchematic.QUANTUM_RIVER_BUILD[idx], getChunkLBxy(x), getChunkLBxy(y), Team.derelict);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private boolean isRiverChunk(int x, int y){
+            if (x < 0 || y < 0 || x >= cStep || y >= cStep) return true;
+            return chunks[x][y].river;
+        }
+
+        private int getChunkLBxy(int index){
+            return cStart + index * cSize;
+        }
+
+        private void setRects(){
+            chunkRects.clear();
+            tmpRivers.clear();
+            chunkRects.add(new Rect(0, 0, cStep-1, cStep-1));
+
+            for(int i = 0; i < 25; i++){
+                Rect largest = new Rect();
+                for (Rect rect: chunkRects){
+                    if (rect.area() > largest.area()) largest = rect;
+                }
+                spiltRect(largest);
+            }
+
+            //for (Rect rect: chunkRects){
+            //    Log.info("[" + (int)rect.x + "," + (int)rect.y + "," + (int)rect.width + "," + (int)rect.height + "]");
+            //}
+        }
+
+        private void spiltRect(Rect rect){
+            boolean verticalSplit = Mathf.chance(rect.width / (rect.width + rect.height));
+            if (verticalSplit && rect.width > 3){
+                int xSplit = rand.random(1, (int)rect.width - 1);
+                chunkRects.remove(rect);
+                for (int y = 0; y < rect.height + 1; y++){
+                    tmpRivers.add(new Point2((int) (rect.x) + xSplit, (int) (rect.y) + y));
+                }
+                chunkRects.add(new Rect(rect.x, rect.y, xSplit - 1, rect.height));
+                chunkRects.add(new Rect(rect.x + xSplit + 1, rect.y, rect.width - xSplit - 1, rect.height));
+            }else if (rect.height > 3){
+                int ySplit = rand.random(1, (int)rect.height - 1);
+                chunkRects.remove(rect);
+                for (int x = 0; x < rect.width + 1; x++){
+                    tmpRivers.add(new Point2((int) (rect.x) + x, (int) (rect.y) + ySplit));
+                }
+                chunkRects.add(new Rect(rect.x, rect.y, rect.width, ySplit - 1));
+                chunkRects.add(new Rect(rect.x, rect.y + ySplit + 1, rect.width, rect.height - ySplit - 1));
+            }
         }
 
         private void setSpawnAndCore(){
@@ -258,10 +331,6 @@ public class MidanthaPlanet extends Planet {
                 tile.setOverlay(ore);
             }
         }
-    }
-
-    public interface DrawBoolf{
-        boolean get(int x, int y);
     }
 
     public class Chunk{

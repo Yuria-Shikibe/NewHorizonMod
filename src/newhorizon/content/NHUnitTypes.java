@@ -62,6 +62,10 @@ import newhorizon.expand.units.ai.InterceptorAI;
 import newhorizon.expand.units.ai.ProbeAI;
 import newhorizon.expand.units.ai.SniperAI;
 import newhorizon.expand.units.ai.SurroundAI;
+import newhorizon.expand.units.entity.NucleoidEntity;
+import newhorizon.expand.units.entity.PesterEntity;
+import newhorizon.expand.units.entity.ProbeEntity;
+import newhorizon.expand.units.unitType.RadianceUnitType;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
@@ -96,7 +100,7 @@ public class NHUnitTypes{
 			guardian, //Energy
 			gather, saviour, rhino, //Air-Assist
 			restrictionEnzyme,
-			nucleoid, pester, laugra, macrophage, ancientProbe, constriction, //ancient
+			nucleoid, pester, laugra, macrophage, ancientProbe, radiance, //ancient
 			assaulter, anvil, collapser, //Air-2
 			origin, thynomo, aliotiat, tarlidor, annihilation, sin, //Ground-1
 			sharp, branch, warper/*, striker*/, naxos, destruction, longinus, hurricane, //Air-1
@@ -952,8 +956,11 @@ public class NHUnitTypes{
 		
 		loadPreviousWeapon();
 
+		//radiance = new RadianceUnitType("radiance");
+
 		liv = new NHUnitType("liv"){{
 			outlineColor = OColor;
+
 			itemCapacity = 150;
 			payloadCapacity = (2 * 2) * tilePayload;
 
@@ -1372,9 +1379,9 @@ public class NHUnitTypes{
 			engines.add(new AncientEngine(-41.25f, -187f, 6.5f, -90, 0.45f, 0.6f, 2.6f));
 			engines.add(new AncientEngine(64.0f, -170f, 7f, -90));
 			engines.add(new AncientEngine(64.0f, -167f, 7f, -90, 0.45f, 0.6f, 2.6f));
-			
+
 			float o = Mathf.random(5);
-			
+
 			for(float i = -18f; i < 34; i+= 2f){
 				engines.add(new AncientEngine(i, -190.5f, 4f, -90, o));
 			}
@@ -1822,10 +1829,8 @@ public class NHUnitTypes{
 					
 					if(scale <= 0.0001f)return;
 					
-//					float z = Draw.z();
 					float rot = unit.rotation - 90;
 					
-//					Draw.z(Layer.effect + 0.005f);
 					Color color = unit.team.color;
 					
 					Tmp.v1.set(x, y).rotate(rot).add(unit);

@@ -72,9 +72,8 @@ public class NHBuilding extends Building {
                 Fill.square(build.x, build.y, 2, 45);
                 Draw.reset();
             }
-            String xenInfo = "Graph ID: " + xen.graph.graphID + "\nGraph Area: " + xen.graph.area + "\nGraph Height: " + xen.graph.height + "\nXen Level: " + xen.getXenText()
-            ;
-            DrawUtil.drawText(xenInfo, x, y - 22);
+            String xenInfo = "Graph ID: " + xen.graph.graphID + "\nGraph Area: " + xen.graph.area + "\nGraph Height: " + xen.graph.height + "\nXen Level: " + xen.getXenText();
+            DrawUtil.drawText(xenInfo, x, y - 8);
         }
     }
 

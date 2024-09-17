@@ -10,6 +10,9 @@ import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.*;
+import newhorizon.expand.units.entity.NucleoidEntity;
+import newhorizon.expand.units.entity.PesterEntity;
+import newhorizon.expand.units.entity.ProbeEntity;
 import newhorizon.expand.weather.MatterStorm;
 
 public class EntityRegister{

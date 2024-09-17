@@ -14,14 +14,6 @@ public class AncientUnit extends NHUnitTypes.NHUnitType{
 	
 	protected static Seq<UnitType> toImmunise = new Seq<>();
 	
-//	static{
-//		Events.on(EventType.ContentInitEvent.class, e -> {
-//			toImmunise.each(NHUnitTypes::immunise);
-//			toImmunise.clear();
-//			toImmunise = null;
-//		});
-//	}
-	
 	public AncientUnit(String name){
 		super(name);
 		
