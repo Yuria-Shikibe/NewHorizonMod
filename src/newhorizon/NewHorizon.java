@@ -46,6 +46,7 @@ import newhorizon.expand.packets.NHCall;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.NHDebugFunc;
 import newhorizon.util.func.NHPixmap;
+import newhorizon.util.graphic.DrawUtil;
 import newhorizon.util.graphic.EffectDrawer;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;

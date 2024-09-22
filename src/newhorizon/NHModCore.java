@@ -3,9 +3,11 @@ package newhorizon;
 import arc.ApplicationListener;
 import arc.Core;
 import arc.util.Log;
+import arc.util.Time;
 import mindustry.Vars;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_Core;
+import newhorizon.util.func.NHFunc;
 
 public class NHModCore implements ApplicationListener{
 	public static NHModCore core;

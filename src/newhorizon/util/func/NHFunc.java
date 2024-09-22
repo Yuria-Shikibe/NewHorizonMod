@@ -62,7 +62,9 @@ public class NHFunc{
     private static final Seq<Unit> units = new Seq<>();
     private static final IntSet collidedBlocks = new IntSet();
     private static final IntFloatMap damages = new IntFloatMap();
-    
+
+    //just for effect. never modify this.
+    public static final Rand globalEffectRand = new Rand(0);
     public static final Rand rand = new Rand(0);
     public static final Effect debugEffect = new Effect(120f, 300f, e -> {
         if(!(e.data instanceof Seq))return;

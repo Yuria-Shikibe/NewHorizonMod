@@ -4601,7 +4601,7 @@ public class NHBlocks{
 				)
 			);
 		}};
-		
+
 		loadFactories();
 		loadTurrets();
 		loadEnv();
@@ -4609,6 +4609,7 @@ public class NHBlocks{
 		loadPowers();
 		//loadExperiments();
 
+		ProductionBlocks.load();
 		TurretBlock.load();
 		DefenseBlock.load();
 		EnvironmentBlock.load();

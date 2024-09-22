@@ -75,9 +75,11 @@ public class ProbeAI extends SniperAI{
 	@Override
 	public Teamc target(float x, float y, float range, boolean air, boolean ground){
 		Building target = Vars.indexer.findTile(probe.targetTeam, x, y, range, u -> u.block.priority >= TargetPriority.base && !probe.scanned.contains(u));
-		
-		if(probe.scanned.contains(target))target = null;
-		
+
+		if (target != null){
+			if(probe.scanned.contains(target))target = null;
+		}
+
 		if(target == null){
 			if(probe.targetTeam.cores().any())return probe.targetTeam.core();
 			else return null;
