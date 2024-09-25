@@ -5,10 +5,12 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.meta.BuildVisibility;
 
 public class DataFloor extends AtlasFloor {
     public DataFloor(String name) {
         super(name);
+        buildVisibility = BuildVisibility.hidden;
     }
 
     @Override

@@ -1,15 +1,11 @@
-package newhorizon.expand.block.production;
+package newhorizon.expand.block.production.drill;
 
 import arc.Core;
+import arc.func.Floatf;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Angles;
-import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.Rand;
 import arc.struct.EnumSet;
 import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
@@ -17,11 +13,11 @@ import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Iconc;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -29,14 +25,13 @@ import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.ui.Bar;
+import mindustry.ui.Fonts;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.production.Drill;
 import mindustry.world.meta.*;
-import newhorizon.content.NHColor;
-import newhorizon.util.func.NHFunc;
+import newhorizon.expand.block.consumer.PowerConsumer;
+import newhorizon.util.ui.BarExtend;
 
-import static arc.Core.settings;
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
@@ -55,23 +50,20 @@ public class AdaptDrill extends Block {
     protected final int maxOreTileReq = 10;
     protected @Nullable Item returnItem;
     protected int returnCount;
+    //yeah i want to make whitelist only so
     protected final ObjectIntMap<Item> oreCount = new ObjectIntMap<>();
     protected final Seq<Item> itemArray = new Seq<>();
 
     public TextureRegion baseRegion, topRegion, oreRegion;
+    public float powerConsBase;
 
     public float updateEffectChance = 0.02f;
-    public Effect updateEffect = new Effect(30f, e -> {
-        Rand rand = rand(e.id);
-        Draw.color(e.color, Color.white, e.fout() * 0.66f);
-        Draw.alpha(0.55f * e.fout() + 0.5f);
-        Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 17f, (x, y) -> {
-            Fill.square(e.x + x, e.y + y, e.fout() * rand.random(2.5f, 4));
-        });
-    });;
+    public Effect updateEffect = Fx.none;
 
     public AdaptDrill(String name) {
         super(name);
+        size = 4;
+
         update = true;
         solid = true;
 
@@ -88,6 +80,13 @@ public class AdaptDrill extends Block {
 
         group = BlockGroup.drills;
         flags = EnumSet.of(BlockFlag.drill);
+
+        consumePower(AdaptDrillBuild::getPowerCons);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Building> void consumePower(Floatf<T> usage){
+        consume(new PowerConsumer((Floatf<Building>) usage));
     }
 
     @Override
@@ -100,10 +99,19 @@ public class AdaptDrill extends Block {
 
     @Override
     public void setBars(){
-        super.setBars();
-
-        addBar("drillspeed", (AdaptDrillBuild e) ->
-            new Bar(() -> e.getMineSpeed() + "/s (" + (e.boostMultiplier >= 0? "+": "")+ (int)((e.boostMultiplier - 1) * 100) + "%)", () -> Pal.ammo, () -> e.warmup));
+        barMap.clear();
+        addBar("health", e -> new BarExtend(Core.bundle.format("nh.bar.health", e.health(), health, Strings.autoFixed(e.healthf() * 100, 0)), Pal.health, e::healthf, Iconc.add + "").blink(Color.white));
+        addBar("power", (AdaptDrillBuild e) -> new BarExtend(
+            Core.bundle.format("nh.bar.power-detail", Strings.autoFixed(e.getPowerCons() * 60f, 0), Strings.autoFixed((e.powerConsMul), 1), e.powerConsExtra),
+            Pal.powerBar,
+            () -> (Mathf.zero(consPower.requestedPower(e)) && e.power.graph.getPowerProduced() + e.power.graph.getBatteryStored() > 0f) ? 1f : e.power.status,
+            Iconc.power + ""));
+        addBar("outputOre", (AdaptDrillBuild e) -> new BarExtend(e::getMineInfo, e::getMineColor, () -> 1f, Iconc.settings + ""));
+        addBar("drillSpeed", (AdaptDrillBuild e) -> new BarExtend(
+            () -> Core.bundle.format("nh.bar.drill-speed", Strings.autoFixed(e.getMineSpeed(), 2), Strings.autoFixed((e.boostMul - 1) * 100, 1), e.boostFinalMul),
+            () -> Pal.ammo,
+            () -> e.warmup,
+            Iconc.production + ""));
     }
 
     public float mineInterval(){
@@ -115,7 +123,7 @@ public class AdaptDrill extends Block {
         super.setStats();
 
         stats.add(Stat.drillSpeed, mineSpeed, StatUnit.itemsSecond);
-        stats.add(Stat.drillTier, StatValues.items(item -> mineOres.contains(item)));
+        stats.add(Stat.drillTier, StatValues.items(item -> mineOres.contains(item)));;
     }
 
     @Override
@@ -140,7 +148,6 @@ public class AdaptDrill extends Block {
 
         countOre(tile);
         if(returnItem == null) return;
-
         Draw.color(returnItem.color);
         Draw.rect(oreRegion, plan.drawx(), plan.drawy());
         Draw.color();
@@ -225,9 +232,15 @@ public class AdaptDrill extends Block {
 
         public int dominantItems;
         public Item dominantItem;
+        public Item convertItem;
 
         public boolean coreSend = false;
-        public float boostMultiplier = 1f;
+        public float boostMul = 1f;
+        public float boostFinalMul = 1f;
+
+        //(base * multiplier) + extra
+        public float powerConsMul = 1f;
+        public float powerConsExtra = 0f;
         public Seq<DrillModule.DrillModuleBuild> modules = new Seq<>();
 
         @Override
@@ -239,6 +252,10 @@ public class AdaptDrill extends Block {
             dominantItems = returnCount;
 
             updateDrillModule();
+        }
+
+        public Item outputItem(){
+            return dominantItem != null? convertItem != null? convertItem: dominantItem: null;
         }
 
         @Override
@@ -253,11 +270,11 @@ public class AdaptDrill extends Block {
             if (progress > mineInterval()){
                 int outCount = (int) (progress / mineInterval()) * mineCount;
                 for (int i = 0; i < outCount; i++){
-                    if (dominantItem != null){
-                        if (coreSend && core() != null && core().acceptItem(this, dominantItem)){
-                            core().handleItem(this, dominantItem);
+                    if (outputItem() != null){
+                        if (coreSend && core() != null && core().acceptItem(this, outputItem())){
+                            core().handleItem(this, outputItem());
                         }else {
-                            offload(dominantItem);
+                            offload(outputItem());
                         }
                     }
                 }
@@ -269,12 +286,12 @@ public class AdaptDrill extends Block {
         public void drawSelect() {
             super.drawSelect();
 
-            if(dominantItem != null){
+            if(outputItem() != null){
                 float dx = x - size * tilesize/2f, dy = y + size * tilesize/2f, s = iconSmall / 4f;
                 Draw.mixcol(Color.darkGray, 1f);
-                Draw.rect(dominantItem.fullIcon, dx, dy - 1, s, s);
+                Draw.rect(outputItem().fullIcon, dx, dy - 1, s, s);
                 Draw.reset();
-                Draw.rect(dominantItem.fullIcon, dx, dy, s, s);
+                Draw.rect(outputItem().fullIcon, dx, dy, s, s);
             }
 
             Drawf.selected(this, Pal.accent);
@@ -287,57 +304,34 @@ public class AdaptDrill extends Block {
         public void draw() {
             Draw.rect(baseRegion, x, y);
             if (efficiency > 0.001){
-                if (items.total() < itemCapacity && dominantItem != null){
-                    warmup = Mathf.lerp(warmup, efficiency, 0.003f);
+                if (items.total() < itemCapacity && outputItem() != null){
+                    warmup = Mathf.lerp(warmup, efficiency, 0.005f);
                 }else {
                     warmup = Mathf.lerp(warmup, 0, 0.01f);
                 }
-                drawT1();
+                drawMining();
             }
             Draw.z(Layer.blockOver - 4f);
             Draw.rect(topRegion, x, y);
-            if(dominantItem != null){
+            if(outputItem() != null){
                 Draw.color(dominantItem.color);
                 Draw.rect(oreRegion, x, y);
                 Draw.color();
             }
+
+            drawTeamTop();
         }
-        private void drawT1(){
-            float rad = 9.2f + Mathf.absin(8, 1);
-            float base = (Time.time / 70f);
-            Tmp.c1.set(NHColor.thurmixRed).a(warmup/1.1f);
-            //Draw.z(Layer.effect);
-            Draw.color(Tmp.c1);
-            Lines.stroke(2f);
-            for(int i = 0; i < 32; i++){
-                Mathf.rand.setSeed(id + hashCode() + i);
-                float fin = (Mathf.rand.random(1f) + base) % 1f, fout = 1f - fin;
-                float angle = Mathf.rand.random(360f) + ((Time.time * 2.2f) % 360f);
-                float len = 12.5f * Interp.pow2.apply(fout);
-                Lines.lineAngle(
-                    x + Angles.trnsx(angle, len),
-                    y + Angles.trnsy(angle, len),
-                    angle, 6 * fin
-                );
-            }
 
-
-            Tmp.c1.set(NHColor.thurmixRed).a(warmup/1.3f);
-            Draw.color(Tmp.c1);
-            Lines.stroke(2f);
-            Lines.circle(x, y, rad);
-
-            Draw.reset();
-        }
+        public void drawMining(){}
 
         private void tryDump(){
             if(timer(timerDump, dumpTime)){
-                if (dominantItem != null){
-                    if (coreSend && items.has(dominantItem) && core() != null && core().acceptItem(this, dominantItem)){
-                        items.remove(dominantItem, 1);
-                        core().handleItem(this, dominantItem);
+                if (outputItem() != null){
+                    if (coreSend && items.has(outputItem()) && core() != null && core().acceptItem(this, outputItem())){
+                        items.remove(outputItem(), 1);
+                        core().handleItem(this, outputItem());
                     }else {
-                        dump(items.has(dominantItem) ? dominantItem : null);
+                        dump(items.has(outputItem()) ? outputItem() : null);
                     }
                 }
             }
@@ -345,14 +339,17 @@ public class AdaptDrill extends Block {
 
         private void updateEffect(){
             if (!headless){
-                if (warmup > 0.8f && efficiency > 0 && dominantItem != null && globalEffectRand.chance(updateEffectChance * boostMultiplier)){
-                    updateEffect.at(x + globalEffectRand.range(size * 3.6f), y + globalEffectRand.range(size * 3.6f), dominantItem.color);
+                if (warmup > 0.8f && efficiency > 0 && outputItem() != null && globalEffectRand.chance(updateEffectChance * boostScl())){
+                    updateEffect.at(x + globalEffectRand.range(size * 3.6f), y + globalEffectRand.range(size * 3.6f), outputItem().color);
                 }
             }
         }
 
         private void resetModule(){
-            boostMultiplier = 1f;
+            boostMul = 1f;
+            boostFinalMul = 1f;
+            powerConsMul = 1f;
+            powerConsExtra = 0f;
             coreSend = false;
             modules.clear();
         }
@@ -370,14 +367,38 @@ public class AdaptDrill extends Block {
             }
         }
 
+        public String getMineInfo(){
+            return outputItem() == null?
+                Iconc.cancel + " No Available Resource": convertItem == null?
+                Fonts.getUnicodeStr(outputItem().name) + " " + outputItem().localizedName:
+                Fonts.getUnicodeStr(dominantItem.name) + " " + dominantItem.localizedName + " -> " + Fonts.getUnicodeStr(outputItem().name) + " " + outputItem().localizedName;
+        }
+
+        public Color getMineColor(){
+            return outputItem() == null? Pal.darkishGray: Tmp.c1.set(outputItem().color).lerp(Color.black, 0.2f);
+        }
+
+        public String getBuildInfo(){
+            return getMineSpeed() + "/s (" + (boostScl() >= 1? "+": "")+ (int)((boostScl() - 1) * 100) + "%)";
+        }
+
+        //notice in tick
+        public float getPowerCons(){
+            return (powerConsBase * powerConsMul + powerConsExtra) / 60f;
+        }
+
         private void updateProgress(){
             if (items.total() < itemCapacity){
-                progress += edelta() * Mathf.clamp((float) dominantItems/maxOreTileReq) * boostMultiplier;
+                progress += edelta() * Mathf.clamp((float) dominantItems/maxOreTileReq) * boostScl();
             }
         }
 
+        public float boostScl(){
+            return boostMul * boostFinalMul;
+        }
+
         private float getMineSpeed(){
-            return Mathf.clamp((float) dominantItems/maxOreTileReq) * boostMultiplier * mineSpeed;
+            return Mathf.clamp((float) dominantItems/maxOreTileReq) * boostScl() * mineSpeed;
         }
 
         @Override

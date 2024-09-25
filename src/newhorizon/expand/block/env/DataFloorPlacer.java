@@ -45,7 +45,7 @@ public class DataFloorPlacer extends Block {
         rebuildable = false;
         solid = solidifes = false;
         requirements = ItemStack.empty;
-        category = Category.units;
+        category = Category.logic;
         destroyEffect = Fx.none;
         buildVisibility = BuildVisibility.sandboxOnly;
         config(Block.class, (DataFloorPlacerBuild build, Block block) -> build.terrainBlock = (DataFloor) block);
