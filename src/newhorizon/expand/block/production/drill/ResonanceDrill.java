@@ -23,7 +23,7 @@ import static newhorizon.util.func.NHFunc.rand;
 public class ResonanceDrill extends AdaptDrill {
     public ResonanceDrill() {
         super("resonance-mining-facility");
-        requirements(Category.production, with(Items.copper, 40, Items.lead, 20, Items.titanium, 32));
+        requirements(Category.production, with(Items.copper, 40, Items.lead, 48, Items.titanium, 32));
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium});
 
         mineSpeed = 5;

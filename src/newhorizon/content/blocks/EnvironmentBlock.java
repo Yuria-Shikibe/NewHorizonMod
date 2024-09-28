@@ -11,8 +11,7 @@ public class EnvironmentBlock {
     public static TiledFloor metalFloorPlain, labFloorLight, labFloorDark;
     public static AtlasFloor granite, diorite;
     public static DataFloor
-        //steepCliff,
-        lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark;
+        lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
     public static Block dataFloorPlacer;
     public static void load(){
         metalFloorGroove = new GrooveFloor("metal-floor-groove", 16);
@@ -24,6 +23,8 @@ public class EnvironmentBlock {
         lineMarkingFloor = new DataFloor("line-marking-floor");
         lineMarkingFloorQuantum = new DataFloor("line-marking-floor-quantum");
         lineMarkingFloorQuantumDark = new DataFloor("line-marking-floor-quantum-dark");
+        lineMarkingFloorAncient = new DataFloor("line-marking-floor-ancient");
+        lineMarkingFloorAncientDark = new DataFloor("line-marking-floor-ancient-dark");
 
         //steepCliff = new DataFloor("steep-cliff");
         dataFloorPlacer = new DataFloorPlacer("data-floor-placer");

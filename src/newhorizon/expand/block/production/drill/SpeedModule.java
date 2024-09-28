@@ -9,6 +9,7 @@ import arc.util.Time;
 import mindustry.content.Items;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
+import newhorizon.content.NHItems;
 
 import static mindustry.type.ItemStack.with;
 
@@ -16,7 +17,7 @@ public class SpeedModule extends DrillModule{
     public TextureRegion[] arrow = new TextureRegion[3];
     public SpeedModule() {
         super("speed-module");
-        requirements(Category.production, with(Items.copper, 25, Items.lead, 20, Items.titanium, 35));
+        requirements(Category.production, with(NHItems.juniorProcessor, 30, NHItems.presstanium, 25, Items.phaseFabric, 10, NHItems.multipleSteel, 20));
         size = 2;
         boostSpeed = 1f;
         powerMul = 1.0f;

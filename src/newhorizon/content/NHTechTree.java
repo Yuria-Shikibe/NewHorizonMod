@@ -7,6 +7,7 @@ import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import newhorizon.content.blocks.DefenseBlock;
+import newhorizon.content.blocks.ProductionBlocks;
 import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.content.blocks.TurretBlock;
 
@@ -42,7 +43,17 @@ public class NHTechTree{
 				});
 			});
 
-			node(SpecialBlock.nexusCore);
+			node(SpecialBlock.nexusCore, () -> {
+				node(ProductionBlocks.resonanceMiningFacility, () -> {
+					node(ProductionBlocks.beamMiningFacility, () -> {
+						node(ProductionBlocks.implosionMiningFacility, () -> {
+							node(ProductionBlocks.deliveryModule);
+						});
+						node(ProductionBlocks.speedModule);
+					});
+					node(ProductionBlocks.refineModule);
+				});
+			});
 
 			node(NHBlocks.zetaGenerator, () -> {
 				node(NHBlocks.hyperGenerator);

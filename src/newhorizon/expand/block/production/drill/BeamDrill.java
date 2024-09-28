@@ -18,6 +18,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.Item;
+import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.util.func.NHFunc;
 
@@ -47,7 +48,7 @@ public class BeamDrill extends AdaptDrill {
 
     public BeamDrill() {
         super("beam-mining-facility");
-        requirements(Category.production, with(Items.copper, 25, Items.lead, 20));
+        requirements(Category.production, with(NHItems.juniorProcessor, 50, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, NHItems.metalOxhydrigen, 40));
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
         mineSpeed = 7.5f;

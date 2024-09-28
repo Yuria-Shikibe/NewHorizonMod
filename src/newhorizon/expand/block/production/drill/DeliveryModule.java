@@ -9,6 +9,7 @@ import mindustry.content.Items;
 import mindustry.game.Team;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
+import newhorizon.content.NHItems;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.type.ItemStack.with;
@@ -17,7 +18,7 @@ public class DeliveryModule extends DrillModule{
     public DeliveryModule() {
         super("delivery-module");
 
-        requirements(Category.production, with(Items.copper, 25, Items.lead, 20, Items.titanium, 35));
+        requirements(Category.production, with(NHItems.juniorProcessor, 50, NHItems.irayrondPanel, 25, NHItems.seniorProcessor, 50, NHItems.multipleSteel, 50, NHItems.setonAlloy, 10));
         size = 2;
         powerMul = 1.5f;
         powerExtra = 600f;

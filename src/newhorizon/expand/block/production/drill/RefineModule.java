@@ -13,6 +13,7 @@ import arc.util.Time;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.Item;
+import newhorizon.content.NHItems;
 
 import static mindustry.type.ItemStack.with;
 
@@ -27,7 +28,7 @@ public class RefineModule extends DrillModule{
 
     public RefineModule() {
         super("refine-module");
-        requirements(Category.production, with(Items.copper, 25, Items.lead, 20, Items.titanium, 35));
+        requirements(Category.production, with(Items.copper, 25, NHItems.metalOxhydrigen, 20, Items.titanium, 25));
         size = 2;
         boostFinalMul = -0.25f;
         powerMul = 1.2f;

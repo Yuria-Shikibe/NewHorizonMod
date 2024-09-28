@@ -33,6 +33,8 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
+import newhorizon.content.blocks.EnvironmentBlock;
+import newhorizon.content.blocks.ProductionBlocks;
 import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_UI;
@@ -53,8 +55,7 @@ import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.*;
-import static newhorizon.util.ui.FeatureLog.featureType.BALANCE;
-import static newhorizon.util.ui.FeatureLog.featureType.IMPORTANT;
+import static newhorizon.util.ui.FeatureLog.featureType.*;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -92,11 +93,12 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(SpecialBlock.nexusCore){{important = true;}},
-			new FeatureLog(NHUnitTypes.liv){{important = true;}},
-
-			new FeatureLog(0, BALANCE, NHContent.ammoInfo),
-			new FeatureLog(0, IMPORTANT, NHContent.objective)
+			new FeatureLog(ProductionBlocks.resonanceMiningFacility),
+			new FeatureLog(ProductionBlocks.beamMiningFacility),
+			new FeatureLog(ProductionBlocks.implosionMiningFacility),
+			new FeatureLog(ProductionBlocks.refineModule),
+			new FeatureLog(ProductionBlocks.speedModule),
+			new FeatureLog(ProductionBlocks.deliveryModule),
 		};
 	}
 	
@@ -235,7 +237,9 @@ public class NewHorizon extends Mod{
 			});
 		});
 		Events.run(EventType.Trigger.draw, () -> {
-			NHModCore.control.terrainSelect();
+			if (NHSetting.getBool(NHSetting.TERRAIN_MODE)){
+				NHModCore.control.terrainSelect();
+			}
 		});
 
 	}
@@ -546,6 +550,8 @@ public class NewHorizon extends Mod{
 
 	private void showNewDialog(){
 		Time.runTask(10f, () -> {
+			showNew();
+
 			if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){
 				showNew();
 			}

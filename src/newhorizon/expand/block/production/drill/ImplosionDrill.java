@@ -31,7 +31,7 @@ import static newhorizon.util.func.NHFunc.rand;
 public class ImplosionDrill extends AdaptDrill{
     public ImplosionDrill() {
         super("implosion-mining-facility");
-        requirements(Category.production, with(Items.copper, 25, Items.lead, 20));
+        requirements(Category.production, with(NHItems.multipleSteel, 60, NHItems.seniorProcessor, 50, NHItems.irayrondPanel, 25, NHItems.presstanium, 50, NHItems.zeta, 100));
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
         size = 4;
 
