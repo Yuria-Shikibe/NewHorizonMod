@@ -550,8 +550,6 @@ public class NewHorizon extends Mod{
 
 	private void showNewDialog(){
 		Time.runTask(10f, () -> {
-			showNew();
-
 			if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){
 				showNew();
 			}

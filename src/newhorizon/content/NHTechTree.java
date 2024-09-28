@@ -74,9 +74,7 @@ public class NHTechTree{
 				node(NHBlocks.armorBatteryLarge, () -> {
 					node(NHBlocks.hugeBattery);
 				});
-				node(NHBlocks.largeWaterExtractor, () -> {
-					node(NHBlocks.beamDrill);
-				});
+				node(NHBlocks.largeWaterExtractor);
 			});
 			
 			node(NHBlocks.insulatedWall, () -> {

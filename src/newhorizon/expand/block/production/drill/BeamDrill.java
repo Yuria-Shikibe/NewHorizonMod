@@ -52,7 +52,8 @@ public class BeamDrill extends AdaptDrill {
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
         mineSpeed = 7.5f;
-        mineCount = 3;
+        mineCount = 5;
+        mineTier = 5;
 
         powerConsBase = 300f;
         itemCapacity = 75;
@@ -83,14 +84,7 @@ public class BeamDrill extends AdaptDrill {
         @Override
         public void draw() {
             Draw.rect(baseRegion, x, y);
-            if (efficiency > 0.001){
-                if (items.total() < itemCapacity && outputItem() != null){
-                    warmup = Mathf.lerp(warmup, efficiency, 0.005f);
-                }else {
-                    warmup = Mathf.lerp(warmup, 0, 0.01f);
-                }
-                drawMining();
-            }
+            if (warmup > 0f){drawMining();}
             Draw.z(Layer.blockOver - 4f);
             Draw.rect(topRegion, x, y);
             drawTeamTop();

@@ -36,7 +36,8 @@ public class ImplosionDrill extends AdaptDrill{
         size = 4;
 
         mineSpeed = 10f;
-        mineCount = 5;
+        mineCount = 15;
+        mineTier = 100;
 
         itemCapacity = 120;
 
@@ -63,14 +64,7 @@ public class ImplosionDrill extends AdaptDrill{
         @Override
         public void draw() {
             Draw.rect(baseRegion, x, y);
-            if (efficiency > 0.001){
-                if (items.total() < itemCapacity && outputItem() != null){
-                    warmup = Mathf.lerp(warmup, efficiency, 0.005f);
-                }else {
-                    warmup = Mathf.lerp(warmup, 0, 0.01f);
-                }
-                drawMining();
-            }
+            if (warmup > 0f){drawMining();}
             Draw.z(Layer.blockOver - 4f);
             Draw.rect(topRegion, x, y);
             drawTeamTop();
@@ -105,7 +99,7 @@ public class ImplosionDrill extends AdaptDrill{
                 );
             }
 
-            Tmp.c1.set(team.color).lerp(Color.white, 0.2f).a(warmup/1.1f);
+            Tmp.c1.set(team.color).lerp(Color.white, 0.4f).a(warmup/1.1f);
             Draw.color(Tmp.c1);
             Fill.circle(x, y, 3 + Mathf.sinDeg(Time.time * 1.2f));
             Lines.stroke(1.3f);

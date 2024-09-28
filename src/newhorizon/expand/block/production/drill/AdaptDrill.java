@@ -26,8 +26,10 @@ import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
+import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.meta.*;
 import newhorizon.content.NHStats;
 import newhorizon.expand.block.consumer.PowerConsumer;
@@ -45,13 +47,14 @@ public class AdaptDrill extends Block {
     //output count once
     public int mineCount = 2;
 
+    //yeah i want to make whitelist
+    public int mineTier;
     public Seq<Item> mineOres = new Seq<>();
 
     //return variables for countOre
     protected final int maxOreTileReq = 10;
     protected @Nullable Item returnItem;
     protected int returnCount;
-    //yeah i want to make whitelist only so
     protected final ObjectIntMap<Item> oreCount = new ObjectIntMap<>();
     protected final Seq<Item> itemArray = new Seq<>();
 
@@ -94,6 +97,14 @@ public class AdaptDrill extends Block {
         consume(new PowerConsumer((Floatf<Building>) usage));
     }
 
+    public float getMineSpeedHardnessMul(Item item){
+        if (item == null) return 0f;
+        if (item.hardness == 0) return 2;
+        if (item.hardness <= 2) return 1.5f;
+        if (item.hardness <= 4) return 1f;
+        return 0.8f;
+    }
+
     @Override
     public void load() {
         super.load();
@@ -105,6 +116,10 @@ public class AdaptDrill extends Block {
     @Override
     public void setBars(){
         barMap.clear();
+        addBar("aaa", (AdaptDrillBuild e) -> new Bar("aaa", Pal.techBlue, () -> e.warmup));
+        addBar("ccc", (AdaptDrillBuild e) -> new Bar("eee", Pal.techBlue, e::efficiency));
+
+
         addBar("health", e -> new BarExtend(Core.bundle.format("nh.bar.health", e.health(), health, Strings.autoFixed(e.healthf() * 100, 0)), Pal.health, e::healthf, Iconc.add + "").blink(Color.white));
         addBar("power", (AdaptDrillBuild e) -> new BarExtend(
             Core.bundle.format("nh.bar.power-detail", Strings.autoFixed(e.getPowerCons() * 60f, 0), Strings.autoFixed((e.powerConsMul), 1), e.powerConsExtra),
@@ -128,7 +143,28 @@ public class AdaptDrill extends Block {
         super.setStats();
 
         stats.add(Stat.drillSpeed, mineSpeed, StatUnit.itemsSecond);
-        stats.add(Stat.drillTier, StatValues.items(item -> mineOres.contains(item)));
+        stats.add(Stat.drillTier, table -> {
+            table.row();
+            table.table(c -> {
+                int i = 0;
+                for(Block block : content.blocks()){
+                    if (block.itemDrop == null || (!mineOres.contains(block.itemDrop) || block.itemDrop.hardness > mineTier)) continue;
+                    if ((block instanceof Floor && ((Floor) block).wallOre)) continue;
+
+                    c.table(Styles.grayPanel, b -> {
+                        b.image(block.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                        b.table(info -> {
+                            info.left();
+                            info.add(block.localizedName).left().row();
+                            info.add(block.itemDrop.emoji()).left();
+                        }).grow();
+                        b.add(Strings.autoFixed(mineSpeed * getMineSpeedHardnessMul(block.itemDrop), 1) + StatUnit.perSecond.localized())
+                            .right().pad(10f).padRight(15f).color(Color.lightGray);
+                    }).growX().pad(5);
+                    if(++i % 2 == 0) c.row();
+                }
+            }).growX().colspan(table.getColumns());
+        });
         stats.add(NHStats.maxBoostPercent, Core.bundle.get("nh.stat.percent"), Strings.autoFixed(maxBoost * 100, 0));
     }
 
@@ -169,7 +205,7 @@ public class AdaptDrill extends Block {
         countOre(tile);
 
         if(returnItem != null){
-            String oreCountText = (returnCount < maxOreTileReq? "[sky](": "[heal](") + returnCount + "/" +  maxOreTileReq + ")[] " +mineSpeed * Mathf.clamp((float) returnCount /maxOreTileReq) + "/s";
+            String oreCountText = (returnCount < maxOreTileReq? "[sky](": "[heal](") + returnCount + "/" +  maxOreTileReq + ")[] " + Strings.autoFixed(mineSpeed * Mathf.clamp((float) returnCount /maxOreTileReq) * getMineSpeedHardnessMul(returnItem), 1) + "/s";
             float width = drawPlaceText(oreCountText, x, y, valid);
             float dx = x * tilesize + offset - width/2f - 4f, dy = y * tilesize + offset + size * tilesize / 2f + 5, s = iconSmall / 4f;
             Draw.mixcol(Color.darkGray, 1f);
@@ -223,7 +259,7 @@ public class AdaptDrill extends Block {
     protected boolean canMine(Tile tile){
         if(tile == null || tile.block().isStatic()) return false;
         Item drops = tile.drop();
-        return drops != null && mineOres.contains(drops);
+        return drops != null && (mineOres.contains(drops) || drops.hardness > mineTier);
     }
 
     protected Item getDrop(Tile tile){
@@ -234,7 +270,6 @@ public class AdaptDrill extends Block {
         public float progress;
 
         //only for visual
-        public float targetWarmup;
         public float warmup;
 
         public int dominantItems;
@@ -314,17 +349,8 @@ public class AdaptDrill extends Block {
         @Override
         public void draw() {
             Draw.rect(baseRegion, x, y);
-            warmup = Mathf.lerp(warmup, targetWarmup, 0.01f);
 
-            if (items.total() < itemCapacity && outputItem() != null){
-                targetWarmup = efficiency;
-            }else {
-                targetWarmup = 0;
-            }
-
-            if (warmup > 0.001f){
-                drawMining();
-            }
+            if (warmup > 0f){drawMining();}
             Draw.z(Layer.blockOver - 4f);
             Draw.rect(topRegion, x, y);
             if(outputItem() != null){
@@ -402,10 +428,6 @@ public class AdaptDrill extends Block {
             return outputItem() == null? Pal.darkishGray: Tmp.c1.set(outputItem().color).lerp(Color.black, 0.2f);
         }
 
-        public String getBuildInfo(){
-            return getMineSpeed() + "/s (" + (boostScl() >= 1? "+": "")+ (int)((boostScl() - 1) * 100) + "%)";
-        }
-
         //notice in tick
         public float getPowerCons(){
             return (powerConsBase * powerConsMul + powerConsExtra) / 60f;
@@ -415,10 +437,17 @@ public class AdaptDrill extends Block {
             if (items.total() < itemCapacity){
                 progress += edelta() * Mathf.clamp((float) dominantItems/maxOreTileReq) * boostScl();
             }
+            if (!headless){
+                if (items.total() < itemCapacity && dominantItems > 0 && efficiency > 0){
+                    warmup = Mathf.approachDelta(warmup, efficiency, 0.01f);
+                }else {
+                    warmup = Mathf.approachDelta(warmup, 0, 0.01f);
+                }
+            }
         }
 
         public float boostScl(){
-            return boostMul * boostFinalMul;
+            return boostMul * boostFinalMul * getMineSpeedHardnessMul(dominantItem);
         }
 
         private float getMineSpeed(){

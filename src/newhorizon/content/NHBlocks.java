@@ -138,7 +138,7 @@ public class NHBlocks{
 		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter, multiArmorConveyor, multiConveyor, multiEfficientConveyor,
 		multiJunction, multiRouter, multiConduit, multiSteelItemBridge, multiSteelLiquidBridge,
 		//Drills
-		largeWaterExtractor, beamDrill,
+		largeWaterExtractor, //beamDrill,
 		//Powers
 		hydroFuelCell, ancientPowerNode,
 		armorPowerNode, armorBatteryLarge, radiationGenerator, zetaGenerator, hugeBattery, heavyPowerNode,
@@ -4025,7 +4025,8 @@ public class NHBlocks{
 			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
 //			//NHTechTree.add(Blocks.junction, this);
 		}};
-		
+
+		/*
 		beamDrill = new LaserBeamDrill("beam-drill"){{
 			size = 4;
 			health = 960;
@@ -4036,8 +4037,10 @@ public class NHBlocks{
 			consumePower(6);
 			consumeLiquid(Liquids.water, 0.1f).optional(true, true);
 			requirements(Category.production, BuildVisibility.shown, with(NHItems.juniorProcessor, 60, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, Items.lead, 80));
-//			//NHTechTree.add(Blocks.blastDrill, this);
+			//NHTechTree.add(Blocks.blastDrill, this);
 		}};
+
+		 */
 		
 		airRaider = new AirRaider("air-raider"){{
 			requirements(Category.defense, with(NHItems.upgradeSort, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));

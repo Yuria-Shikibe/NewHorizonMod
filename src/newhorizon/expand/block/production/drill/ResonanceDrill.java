@@ -26,10 +26,13 @@ public class ResonanceDrill extends AdaptDrill {
         requirements(Category.production, with(Items.copper, 40, Items.lead, 48, Items.titanium, 32));
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium});
 
-        mineSpeed = 5;
-        mineCount = 2;
+        mineSpeed = 5f;
+        mineCount = 3;
+        mineTier = 3;
 
         powerConsBase = 0f;
+
+        itemCapacity = 45;
 
         updateEffect = new Effect(30f, e -> {
             Rand rand = rand(e.id);
