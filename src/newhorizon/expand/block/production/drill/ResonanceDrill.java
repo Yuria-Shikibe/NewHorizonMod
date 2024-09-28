@@ -16,6 +16,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.Item;
 import newhorizon.content.NHColor;
+import newhorizon.content.NHItems;
 
 import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
@@ -24,11 +25,11 @@ public class ResonanceDrill extends AdaptDrill {
     public ResonanceDrill() {
         super("resonance-mining-facility");
         requirements(Category.production, with(Items.copper, 40, Items.lead, 48, Items.titanium, 32));
-        mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium});
+        mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
         mineSpeed = 5f;
         mineCount = 3;
-        mineTier = 3;
+        mineTier = 5;
 
         powerConsBase = 0f;
 

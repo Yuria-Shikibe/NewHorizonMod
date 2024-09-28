@@ -30,6 +30,7 @@ import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.meta.*;
 import newhorizon.content.NHStats;
 import newhorizon.expand.block.consumer.PowerConsumer;
@@ -116,10 +117,6 @@ public class AdaptDrill extends Block {
     @Override
     public void setBars(){
         barMap.clear();
-        addBar("aaa", (AdaptDrillBuild e) -> new Bar("aaa", Pal.techBlue, () -> e.warmup));
-        addBar("ccc", (AdaptDrillBuild e) -> new Bar("eee", Pal.techBlue, e::efficiency));
-
-
         addBar("health", e -> new BarExtend(Core.bundle.format("nh.bar.health", e.health(), health, Strings.autoFixed(e.healthf() * 100, 0)), Pal.health, e::healthf, Iconc.add + "").blink(Color.white));
         addBar("power", (AdaptDrillBuild e) -> new BarExtend(
             Core.bundle.format("nh.bar.power-detail", Strings.autoFixed(e.getPowerCons() * 60f, 0), Strings.autoFixed((e.powerConsMul), 1), e.powerConsExtra),
@@ -148,8 +145,9 @@ public class AdaptDrill extends Block {
             table.table(c -> {
                 int i = 0;
                 for(Block block : content.blocks()){
-                    if (block.itemDrop == null || (!mineOres.contains(block.itemDrop) || block.itemDrop.hardness > mineTier)) continue;
-                    if ((block instanceof Floor && ((Floor) block).wallOre)) continue;
+                    if (block.itemDrop == null) continue;
+                    if (!(mineOres.contains(block.itemDrop) || block.itemDrop.hardness < mineTier)) continue;
+                    if ((block instanceof Floor && ((Floor) block).wallOre) || block instanceof StaticWall) continue;
 
                     c.table(Styles.grayPanel, b -> {
                         b.image(block.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
@@ -259,7 +257,7 @@ public class AdaptDrill extends Block {
     protected boolean canMine(Tile tile){
         if(tile == null || tile.block().isStatic()) return false;
         Item drops = tile.drop();
-        return drops != null && (mineOres.contains(drops) || drops.hardness > mineTier);
+        return drops != null && (mineOres.contains(drops) || drops.hardness < mineTier);
     }
 
     protected Item getDrop(Tile tile){

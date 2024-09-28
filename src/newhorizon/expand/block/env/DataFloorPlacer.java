@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.scene.ui.Button;
 import arc.scene.ui.ButtonGroup;
+import arc.scene.ui.Image;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.util.io.Reads;
@@ -114,7 +115,7 @@ public class DataFloorPlacer extends Block {
                     tileDataSelect.clear();
                     tileDataSelectTable.clear();
                     if (terrainBlock == null) {
-                        tileDataSelectTable.label(() -> "<N/A>");
+                        tileDataSelectTable.label(() -> "                   < N / A >                   ");
                     }else {
                         for (int i = 0; i < terrainBlock.maxSize; i++){
                             int finalI = i;
