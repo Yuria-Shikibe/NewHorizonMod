@@ -4,10 +4,12 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Font;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Strings;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -34,6 +36,7 @@ public class DrillModule extends Block {
     public float powerMul = 0f;
     public float powerExtra = 0f;
     public boolean coreSend = false;
+    public boolean stackable = false;
     public DrillModule(String name) {
         super(name);
         size = 2;
@@ -93,13 +96,22 @@ public class DrillModule extends Block {
     }
 
     public class DrillModuleBuild extends Building{
-
+        public @Nullable AdaptDrill.AdaptDrillBuild drillBuild;
+        public float smoothWarmup, targetWarmup;
         @Override
         public void draw() {
             Draw.rect(region, x, y);
             Draw.z(Layer.blockOver);
             drawTeamTop();
             Draw.rect(topRotRegions[rotation], x, y);
+
+            targetWarmup = drillBuild == null? 0: drillBuild.warmup;
+            smoothWarmup = Mathf.lerp(smoothWarmup, targetWarmup, 0.02f);
+        }
+
+        @Override
+        public void onProximityUpdate() {
+            super.onProximityUpdate();
         }
 
         public boolean canApply(AdaptDrill.AdaptDrillBuild drill){
@@ -110,8 +122,27 @@ public class DrillModule extends Block {
                     return false;
                 }
             }
+            return (drill.boostMul + boostSpeed <= drill.maxBoost() + 1) && checkConvert(drill) && checkSameModule(drill);
+        }
+
+        public boolean checkConvert(AdaptDrill.AdaptDrillBuild drill){
+            if (convertList.size == 0) return true;
+            for (Item[] convert: convertList){
+                if (drill.dominantItem == convert[0]){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public boolean checkSameModule(AdaptDrill.AdaptDrillBuild drill){
+            if (stackable) return true;
+            for (DrillModuleBuild module: drill.modules){
+                if (module.block == this.block) return false;
+            }
             return true;
         }
+
         public void apply(AdaptDrill.AdaptDrillBuild drill){
             drill.boostMul += boostSpeed;
             drill.boostFinalMul += boostFinalMul;

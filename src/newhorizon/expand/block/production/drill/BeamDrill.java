@@ -13,7 +13,9 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.util.Time;
 import mindustry.content.Items;
+import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.Item;
 import newhorizon.content.NHItems;
@@ -31,8 +33,6 @@ public class BeamDrill extends AdaptDrill {
     public float shooterMoveRange = 5.2f;
     public float shootY = 1.55f;
 
-    public float shadowOffset = 2f;
-
     public float moveScale = 60f;
     public float moveScaleRand = 20f;
     public float laserScl = 0.2f;
@@ -41,8 +41,6 @@ public class BeamDrill extends AdaptDrill {
     public Color arcColor = Color.valueOf("f2d585");
     public float laserAlpha = 0.75f;
     public float laserAlphaSine = 0.2f;
-
-    public float coolSpeed = 0.03f;
 
     public int particles = 25;
     public float particleLife = 40f, particleRad = 9.75f, particleStroke = 1.8f, particleLen = 4f;
@@ -56,6 +54,19 @@ public class BeamDrill extends AdaptDrill {
         mineCount = 3;
 
         powerConsBase = 300f;
+        itemCapacity = 75;
+
+        maxBoost = 1f;
+
+        updateEffect = new Effect(30f, e -> {
+            Rand rand = rand(e.id);
+            Draw.color(e.color, Color.white, e.fout() * 0.66f);
+            Draw.alpha(0.55f * e.fout() + 0.5f);
+            Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 17f, (x, y) -> {
+                Fill.square(e.x + x, e.y + y, e.fout() * rand.random(2.5f, 4), 45);
+            });
+        });
+        updateEffectChance = 0.01f;
     }
 
     public void load(){
@@ -67,9 +78,26 @@ public class BeamDrill extends AdaptDrill {
 
     public class BeamDrillBuild extends AdaptDrillBuild{
         public Rand rand = new Rand();
+
+        @Override
+        public void draw() {
+            Draw.rect(baseRegion, x, y);
+            if (efficiency > 0.001){
+                if (items.total() < itemCapacity && outputItem() != null){
+                    warmup = Mathf.lerp(warmup, efficiency, 0.005f);
+                }else {
+                    warmup = Mathf.lerp(warmup, 0, 0.01f);
+                }
+                drawMining();
+            }
+            Draw.z(Layer.blockOver - 4f);
+            Draw.rect(topRegion, x, y);
+            drawTeamTop();
+        }
+
         @Override
         public void drawMining(){
-            float timeDrilled = Time.time / 1.5f;
+            float timeDrilled = Time.time / 2.5f;
             float
                 moveX = Mathf.sin(timeDrilled, moveScale + Mathf.randomSeed(id, -moveScaleRand, moveScaleRand), shooterMoveRange) + x,
                 moveY = Mathf.sin(timeDrilled + Mathf.randomSeed(id >> 1, moveScale), moveScale + Mathf.randomSeed(id >> 2, -moveScaleRand, moveScaleRand), shooterMoveRange) + y;
@@ -81,13 +109,13 @@ public class BeamDrill extends AdaptDrill {
             Drawf.laser(laser, laserEnd, x + (-shooterOffset + warmup * shooterExtendOffset + shootY), moveY, x - (-shooterOffset + warmup * shooterExtendOffset + shootY), moveY, stroke);
             Drawf.laser(laser, laserEnd, moveX, y + (-shooterOffset + warmup * shooterExtendOffset + shootY), moveX, y - (-shooterOffset + warmup * shooterExtendOffset + shootY), stroke);
 
-            Draw.color(arcColor);
+            Draw.color(dominantItem.color);
 
-            float sine = 1f + Mathf.sin(6f, 0.f);
+            float sine = 1f + Mathf.sin(6f, 0.1f);
 
-            Fill.circle(moveX, moveY, stroke * 8f * sine);
             Lines.stroke(stroke / laserScl / 2f);
             Lines.circle(moveX, moveY, stroke * 12f * sine);
+            Fill.circle(moveX, moveY, stroke * 8f * sine);
 
             rand.setSeed(id);
             float base = (Time.time / particleLife);

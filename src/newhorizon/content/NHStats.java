@@ -7,5 +7,6 @@ public class NHStats {
     public static final Stat
         powerConsModifier = new Stat("power-cons-modifier", StatCat.function),
         minerBoosModifier = new Stat("miner-boost-modifier", StatCat.function),
-        itemConvertList = new Stat("item-convert-list", StatCat.function);
+        itemConvertList = new Stat("item-convert-list", StatCat.function),
+        maxBoostPercent = new Stat("max-boost-percent", StatCat.function);
 }

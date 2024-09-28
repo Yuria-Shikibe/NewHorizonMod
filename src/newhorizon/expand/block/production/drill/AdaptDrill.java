@@ -29,6 +29,7 @@ import mindustry.ui.Fonts;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.*;
+import newhorizon.content.NHStats;
 import newhorizon.expand.block.consumer.PowerConsumer;
 import newhorizon.util.ui.BarExtend;
 
@@ -60,6 +61,8 @@ public class AdaptDrill extends Block {
     public float updateEffectChance = 0.02f;
     public Effect updateEffect = Fx.none;
 
+    public float maxBoost = 0f;
+
     public AdaptDrill(String name) {
         super(name);
         size = 4;
@@ -80,6 +83,8 @@ public class AdaptDrill extends Block {
 
         group = BlockGroup.drills;
         flags = EnumSet.of(BlockFlag.drill);
+
+        drawTeamOverlay = false;
 
         consumePower(AdaptDrillBuild::getPowerCons);
     }
@@ -123,7 +128,8 @@ public class AdaptDrill extends Block {
         super.setStats();
 
         stats.add(Stat.drillSpeed, mineSpeed, StatUnit.itemsSecond);
-        stats.add(Stat.drillTier, StatValues.items(item -> mineOres.contains(item)));;
+        stats.add(Stat.drillTier, StatValues.items(item -> mineOres.contains(item)));
+        stats.add(NHStats.maxBoostPercent, Core.bundle.get("nh.stat.percent"), Strings.autoFixed(maxBoost * 100, 0));
     }
 
     @Override
@@ -228,6 +234,7 @@ public class AdaptDrill extends Block {
         public float progress;
 
         //only for visual
+        public float targetWarmup;
         public float warmup;
 
         public int dominantItems;
@@ -242,6 +249,10 @@ public class AdaptDrill extends Block {
         public float powerConsMul = 1f;
         public float powerConsExtra = 0f;
         public Seq<DrillModule.DrillModuleBuild> modules = new Seq<>();
+
+        public float maxBoost(){
+            return maxBoost;
+        }
 
         @Override
         public void onProximityUpdate(){
@@ -303,12 +314,15 @@ public class AdaptDrill extends Block {
         @Override
         public void draw() {
             Draw.rect(baseRegion, x, y);
-            if (efficiency > 0.001){
-                if (items.total() < itemCapacity && outputItem() != null){
-                    warmup = Mathf.lerp(warmup, efficiency, 0.005f);
-                }else {
-                    warmup = Mathf.lerp(warmup, 0, 0.01f);
-                }
+            warmup = Mathf.lerp(warmup, targetWarmup, 0.01f);
+
+            if (items.total() < itemCapacity && outputItem() != null){
+                targetWarmup = efficiency;
+            }else {
+                targetWarmup = 0;
+            }
+
+            if (warmup > 0.001f){
                 drawMining();
             }
             Draw.z(Layer.blockOver - 4f);
@@ -351,7 +365,16 @@ public class AdaptDrill extends Block {
             powerConsMul = 1f;
             powerConsExtra = 0f;
             coreSend = false;
+            convertItem = null;
             modules.clear();
+        }
+
+        @Override
+        public void remove() {
+            super.remove();
+            for (DrillModule.DrillModuleBuild module: modules){
+                module.drillBuild = null;
+            }
         }
 
         public void updateDrillModule(){
@@ -360,6 +383,7 @@ public class AdaptDrill extends Block {
                 if (building instanceof DrillModule.DrillModuleBuild) {
                     DrillModule.DrillModuleBuild module = (DrillModule.DrillModuleBuild) building;
                     if (module.canApply(this)){
+                        module.drillBuild = this;
                         modules.add(module);
                         module.apply(this);
                     }

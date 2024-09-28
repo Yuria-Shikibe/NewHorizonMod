@@ -12,6 +12,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
+import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.Item;
 import newhorizon.content.NHColor;
@@ -43,15 +44,14 @@ public class ResonanceDrill extends AdaptDrill {
     public class ResonanceDrillBuild extends AdaptDrillBuild{
         public void drawMining(){
             float rad = 9.2f + Mathf.absin(8, 1);
-            float base = (Time.time / 70f);
-            Tmp.c1.set(NHColor.thurmixRed).a(warmup/1.1f);
-            //Draw.z(Layer.effect);
+            float base = (Time.time / 30f);
+            Tmp.c1.set(dominantItem.color).lerp(Color.white, 0.2f).a(warmup);
             Draw.color(Tmp.c1);
-            Lines.stroke(2f);
+            Lines.stroke(1.2f);
             for(int i = 0; i < 32; i++){
                 Mathf.rand.setSeed(id + hashCode() + i);
                 float fin = (Mathf.rand.random(1f) + base) % 1f, fout = 1f - fin;
-                float angle = Mathf.rand.random(360f) + ((Time.time * 2.2f) % 360f);
+                float angle = Mathf.rand.random(360f);
                 float len = 12.5f * Interp.pow2.apply(fout);
                 Lines.lineAngle(
                     x + Angles.trnsx(angle, len),
@@ -61,9 +61,9 @@ public class ResonanceDrill extends AdaptDrill {
             }
 
 
-            Tmp.c1.set(NHColor.thurmixRed).a(warmup/1.3f);
+            Tmp.c1.set(Pal.techBlue).lerp(Color.white, 0.2f).a(warmup/1.1f);
             Draw.color(Tmp.c1);
-            Lines.stroke(2f);
+            Lines.stroke(1.32f);
             Lines.circle(x, y, rad);
 
             Draw.reset();

@@ -16,17 +16,16 @@ public class DefenseBlock {
             requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.upgradeSort, 300));
         }};
 
-        ancientRuinWallLarge = new Wall("ancient-ruin-wall-large"){{
-            requirements(Category.defense, with(NHItems.setonAlloy, 32));
-            size = 2;
-            //largeWall = this;
-        }};
-
-        ancientRuinWall = new Wall("ancient-ruin-wall"){{
-            requirements(Category.defense, with(NHItems.setonAlloy, 8));
-            size = 1;
-            //smallWall = this;
-        }};
+        //ancientRuinWallLarge = new Wall("ancient-ruin-wall-large"){{
+        //    requirements(Category.defense, with(NHItems.setonAlloy, 32));
+        //    size = 2;
+        //    //largeWall = this;
+        //}};
+        //ancientRuinWall = new Wall("ancient-ruin-wall"){{
+        //    requirements(Category.defense, with(NHItems.setonAlloy, 8));
+        //    size = 1;
+        //    //smallWall = this;
+        //}};
 
         {
             //((TileWall)ancientRuinWallLarge).smallWall = (TileWall) ancientRuinWall;

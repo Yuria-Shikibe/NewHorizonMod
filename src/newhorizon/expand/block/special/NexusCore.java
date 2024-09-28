@@ -1,9 +1,11 @@
 package newhorizon.expand.block.special;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
@@ -17,24 +19,53 @@ import mindustry.entities.Effect;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
+import mindustry.type.Category;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHItems;
+import newhorizon.content.NHUnitTypes;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
 import static mindustry.Vars.tilesize;
+import static mindustry.type.ItemStack.with;
 
 public class NexusCore extends CoreBlock {
     public final Seq<Trail> trails = Seq.with(new Trail(30), new Trail(40), new Trail(50), new Trail(60), new Trail(70), new Trail(80), new Trail(90));
     public final Interp interp = Interp.pow2Out;
     public float coreDelay = -1;
     public static Rand rand = new Rand();
-    public NexusCore(String name) {
-        super(name);
+
+    public TextureRegion base;
+    public NexusCore() {
+        super("nexus-core");
+
+        requirements(Category.effect, with(NHItems.zeta, 1500, NHItems.presstanium, 1000, NHItems.juniorProcessor, 1000, NHItems.metalOxhydrigen, 1800, NHItems.multipleSteel, 600));
+
+        alwaysUnlocked = true;
+
+        unitType = NHUnitTypes.liv;
+        health = 30000;
+        itemCapacity = 10000;
+        size = 5;
+        armor = 20f;
+        incinerateNonBuildable = false;
+        buildCostMultiplier = 2f;
+        requiresCoreZone = true;
+
+        unitCapModifier = 10;
+
+        drawTeamOverlay = false;
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        base = Core.atlas.find(name + "-base");
     }
 
     public void drawLanding(CoreBuild build, float x, float y){
@@ -86,7 +117,8 @@ public class NexusCore extends CoreBlock {
         @Override
         public void draw(){
             if(!(renderer.getLandTime() > 0)){
-                super.draw();
+                Draw.rect(base, x, y);
+                drawTeamTop();
             }
         }
     }

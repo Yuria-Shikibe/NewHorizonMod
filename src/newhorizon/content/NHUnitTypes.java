@@ -203,7 +203,7 @@ public class NHUnitTypes{
 		}};
 		
 		mainCannon = new Weapon(NewHorizon.name("main-cannon")){{
-			top = rotate = true;
+			rotate = true;
 			mirror = false;
 			alternate = false;
 			cooldownTime = 240f;
@@ -221,11 +221,21 @@ public class NHUnitTypes{
 			rotateSpeed = 1f;
 			shootSound = NHSounds.flak2;
 			shootCone = 5f;
-			shootY = 15f;
+			shootY = 6f;
 			reload = 300f;
 			shake = 7f;
 			ejectEffect = Fx.blastsmoke;
 			bullet = NHBullets.declineProjectile;
+
+			//parts.add(new RegionPart(NewHorizon.name("main-cannon-barrel")){{
+			//	top = true;
+			//	outline = true;
+			//	moveY = -4;
+			//	heatLayerOffset = 0;
+			//	heatLightOpacity = 0.4f;
+			//	progress = PartProgress.recoil;
+			//	heatColor = NHColor.ancientHeat;
+			//}});
 		}
 			@Override
 			public void draw(Unit unit, WeaponMount mount){
@@ -262,7 +272,11 @@ public class NHUnitTypes{
 				Tmp.v2.trns(weaponRotation + 90f, shootY);
 				Lines.stroke(railF * 2f);
 				for(int i : Mathf.signs){
-					Lines.lineAngle(wx + Tmp.v1.x * i + Tmp.v2.x, wy + Tmp.v1.y * i + Tmp.v2.y, weaponRotation + 90f, length * (0.75f + railF / 4f) * Mathf.curve(Interp.pow5Out.apply(1 - fin) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f), 0f, 0.1f));
+					Lines.lineAngle(
+						wx + Tmp.v1.x * i + Tmp.v2.x,
+						wy + Tmp.v1.y * i + Tmp.v2.y,
+						weaponRotation + 90f,
+						length * (0.75f + railF / 4f) * Mathf.curve(Interp.pow5Out.apply(1 - fin) * Mathf.curve(Interp.pow4Out.apply(1 - fin), 0f, 0.1f), 0f, 0.1f));
 				}
 				
 				Draw.reset();
