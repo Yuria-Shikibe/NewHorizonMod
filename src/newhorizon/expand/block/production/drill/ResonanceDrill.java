@@ -24,16 +24,19 @@ import static newhorizon.util.func.NHFunc.rand;
 public class ResonanceDrill extends AdaptDrill {
     public ResonanceDrill() {
         super("resonance-mining-facility");
-        requirements(Category.production, with(Items.copper, 40, Items.lead, 48, Items.titanium, 32));
+        requirements(Category.production, with(Items.copper, 60, Items.lead, 45, Items.titanium, 40, Items.graphite, 20, Items.silicon, 40));
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
+
+        health = 960;
 
         mineSpeed = 5f;
         mineCount = 3;
         mineTier = 5;
 
-        powerConsBase = 0f;
+        powerConsBase = 150f;
 
         itemCapacity = 45;
+        maxBoost = 0.5f;
 
         updateEffect = new Effect(30f, e -> {
             Rand rand = rand(e.id);
@@ -46,6 +49,7 @@ public class ResonanceDrill extends AdaptDrill {
     }
 
     public class ResonanceDrillBuild extends AdaptDrillBuild{
+        public Rand rand = new Rand();
         public void drawMining(){
             float rad = 9.2f + Mathf.absin(8, 1);
             float base = (Time.time / 30f);
@@ -53,9 +57,9 @@ public class ResonanceDrill extends AdaptDrill {
             Draw.color(Tmp.c1);
             Lines.stroke(1.2f);
             for(int i = 0; i < 32; i++){
-                Mathf.rand.setSeed(id + hashCode() + i);
-                float fin = (Mathf.rand.random(1f) + base) % 1f, fout = 1f - fin;
-                float angle = Mathf.rand.random(360f);
+                rand.setSeed(id + hashCode() + i);
+                float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
+                float angle = rand.random(360f);
                 float len = 12.5f * Interp.pow2.apply(fout);
                 Lines.lineAngle(
                     x + Angles.trnsx(angle, len),

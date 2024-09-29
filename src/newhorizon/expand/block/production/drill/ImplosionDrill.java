@@ -35,6 +35,8 @@ public class ImplosionDrill extends AdaptDrill{
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
         size = 4;
 
+        health = 1560;
+
         mineSpeed = 10f;
         mineCount = 15;
         mineTier = 100;
@@ -88,9 +90,9 @@ public class ImplosionDrill extends AdaptDrill{
             Draw.color(Tmp.c1);
             Lines.stroke(1.2f);
             for(int i = 0; i < 32; i++){
-                Mathf.rand.setSeed(id + hashCode() + i);
-                float fin = (Mathf.rand.random(1f) + base) % 1f, fout = 1f - fin;
-                float angle = Mathf.rand.random(360f);
+                rand.setSeed(id + hashCode() + i);
+                float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
+                float angle = rand.random(360f);
                 float len = 13.5f * Interp.pow2.apply(fout);
                 Lines.lineAngle(
                     x + Angles.trnsx(angle, len),

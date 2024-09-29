@@ -17,11 +17,12 @@ public class SpeedModule extends DrillModule{
     public TextureRegion[] arrow = new TextureRegion[3];
     public SpeedModule() {
         super("speed-module");
+        health = 760;
         requirements(Category.production, with(NHItems.juniorProcessor, 30, NHItems.presstanium, 25, Items.phaseFabric, 10, NHItems.multipleSteel, 20));
         size = 2;
-        boostSpeed = 1f;
-        powerMul = 1.0f;
-        powerExtra = 180f;
+        boostSpeed = 0.5f;
+        powerMul = 0.4f;
+        powerExtra = 80f;
 
         stackable = true;
     }

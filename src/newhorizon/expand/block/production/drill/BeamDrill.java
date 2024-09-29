@@ -51,6 +51,8 @@ public class BeamDrill extends AdaptDrill {
         requirements(Category.production, with(NHItems.juniorProcessor, 50, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, NHItems.metalOxhydrigen, 40));
         mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
+        health = 1200;
+
         mineSpeed = 7.5f;
         mineCount = 5;
         mineTier = 5;

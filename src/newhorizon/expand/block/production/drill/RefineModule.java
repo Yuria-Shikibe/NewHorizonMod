@@ -28,12 +28,16 @@ public class RefineModule extends DrillModule{
 
     public RefineModule() {
         super("refine-module");
-        requirements(Category.production, with(Items.copper, 25, Items.metaglass, 20, Items.titanium, 25));
+        requirements(Category.production, with(NHItems.juniorProcessor, 35, Items.metaglass, 20, NHItems.presstanium, 40));
+        health = 720;
         size = 2;
         boostFinalMul = -0.25f;
-        powerMul = 1.2f;
-        powerExtra = 300f;
+        powerMul = 1f;
+        powerExtra = 180f;
         convertList.add(new Item[]{Items.sand, Items.silicon}, new Item[]{Items.coal, Items.graphite}, new Item[]{Items.beryllium, Items.oxide});
+        convertMul.put(Items.sand, -0.6f);
+        convertMul.put(Items.coal, -0.4f);
+        convertMul.put(Items.beryllium, -0.25f);
     }
 
     public class RefineModuleBuild extends DrillModuleBuild{

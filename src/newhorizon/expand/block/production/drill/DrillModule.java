@@ -7,6 +7,8 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.EnumSet;
+import arc.struct.ObjectFloatMap;
+import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
@@ -31,6 +33,7 @@ public class DrillModule extends Block {
     public TextureRegion topFullRegions;
     public TextureRegion[] topRotRegions;
     public Seq<Item[]> convertList = new Seq<>();
+    public ObjectFloatMap<Item> convertMul = new ObjectFloatMap<>();
     public float boostSpeed = 0f;
     public float boostFinalMul = 0f;
     public float powerMul = 0f;
@@ -81,7 +84,7 @@ public class DrillModule extends Block {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < convertList.size; i++){
             Item[] convert = convertList.get(i);
-            String cvt = Fonts.getUnicodeStr(convert[0].name) + convert[0].localizedName + " -> " + Fonts.getUnicodeStr(convert[1].name) + convert[1].localizedName + (i == convertList.size - 1?"": "\n");
+            String cvt = Fonts.getUnicodeStr(convert[0].name) + convert[0].localizedName + " -> " + Fonts.getUnicodeStr(convert[1].name) + convert[1].localizedName + "(-" + Strings.autoFixed((convertMul.get(convert[0], boostFinalMul)) * 100, 0) + "%)" + (i == convertList.size - 1?"": "\n");
             builder.append(cvt);
         }
         return builder.toString();
@@ -144,13 +147,13 @@ public class DrillModule extends Block {
         }
 
         public void apply(AdaptDrill.AdaptDrillBuild drill){
-            drill.boostMul += boostSpeed;
-            drill.boostFinalMul += boostFinalMul;
             drill.powerConsMul += powerMul;
             drill.powerConsExtra += powerExtra;
+            drill.boostMul += boostSpeed;
             for (Item[] convert: convertList){
                 if (drill.dominantItem == convert[0]){
                     drill.convertItem = convert[1];
+                    drill.boostFinalMul += convertMul.get(convert[0], boostFinalMul);
                 }
             }
             if (coreSend){

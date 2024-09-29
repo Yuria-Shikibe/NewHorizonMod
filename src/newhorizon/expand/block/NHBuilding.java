@@ -3,13 +3,16 @@ package newhorizon.expand.block;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
+import newhorizon.expand.block.graph.GraphEntity;
 import newhorizon.expand.block.module.XenModule;
 import newhorizon.util.graphic.DrawUtil;
 
 public class NHBuilding extends Building {
+    public GraphEntity<NHBuilding> graph;
     public XenModule xen;
 
     public NHBlock getNHBlock(){

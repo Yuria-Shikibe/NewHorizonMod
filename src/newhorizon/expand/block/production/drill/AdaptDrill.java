@@ -139,6 +139,7 @@ public class AdaptDrill extends Block {
     public void setStats(){
         super.setStats();
 
+        stats.add(Stat.powerUse, powerConsBase, StatUnit.powerSecond);
         stats.add(Stat.drillSpeed, mineSpeed, StatUnit.itemsSecond);
         stats.add(Stat.drillTier, table -> {
             table.row();

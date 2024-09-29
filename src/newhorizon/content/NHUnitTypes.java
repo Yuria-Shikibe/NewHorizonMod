@@ -1054,6 +1054,8 @@ public class NHUnitTypes{
 					hitEffect = NHFx.lightningHitSmall(backColor);
 					shootEffect = NHFx.shootLineSmall(backColor);
 					smokeEffect = Fx.shootBigSmoke2;
+
+					buildingDamageMultiplier = 0.4f;
 				}};
 			}});
 

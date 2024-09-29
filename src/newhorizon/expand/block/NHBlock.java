@@ -11,6 +11,8 @@ import java.lang.reflect.Constructor;
 
 /** used as the base of many blocks for NH. */
 public class NHBlock extends Block {
+
+    //xen modules, similar to hasItem, hasLiquid
     public boolean hasXen;
     public boolean xenInput;
     public boolean xenOutput;
@@ -39,6 +41,7 @@ public class NHBlock extends Block {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void initBuilding() {
         try{
             Class<?> current = getClass();
@@ -68,8 +71,7 @@ public class NHBlock extends Block {
                 current = current.getSuperclass();
             }
 
-        }catch(Throwable ignored){
-        }
+        }catch(Throwable ignored){}
 
         if(buildType == null){
             //assign default value
