@@ -84,7 +84,7 @@ public class DrillModule extends Block {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < convertList.size; i++){
             Item[] convert = convertList.get(i);
-            String cvt = Fonts.getUnicodeStr(convert[0].name) + convert[0].localizedName + " -> " + Fonts.getUnicodeStr(convert[1].name) + convert[1].localizedName + "(-" + Strings.autoFixed((convertMul.get(convert[0], boostFinalMul)) * 100, 0) + "%)" + (i == convertList.size - 1?"": "\n");
+            String cvt = Fonts.getUnicodeStr(convert[0].name) + convert[0].localizedName + " -> " + Fonts.getUnicodeStr(convert[1].name) + convert[1].localizedName + "(" + Strings.autoFixed((convertMul.get(convert[0], boostFinalMul)) * 100, 0) + "%)" + (i == convertList.size - 1?"": "\n");
             builder.append(cvt);
         }
         return builder.toString();
@@ -108,7 +108,7 @@ public class DrillModule extends Block {
             drawTeamTop();
             Draw.rect(topRotRegions[rotation], x, y);
 
-            targetWarmup = drillBuild == null? 0: drillBuild.warmup;
+            targetWarmup = (drillBuild != null && drillBuild.modules.contains(this))?drillBuild.warmup : 0;
             smoothWarmup = Mathf.lerp(smoothWarmup, targetWarmup, 0.02f);
         }
 
