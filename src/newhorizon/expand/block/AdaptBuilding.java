@@ -47,7 +47,7 @@ public class AdaptBuilding extends Building {
     }
 
     public boolean checkXenModule(Building building){
-        return (building instanceof AdaptBuilding b && b.getBlock() != null && b.getBlock().hasXen);
+        return (building instanceof AdaptBuilding && ((AdaptBuilding)building).getBlock() != null && ((AdaptBuilding)building).getBlock().hasXen);
     }
 
     public boolean hasXen(){

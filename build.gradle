@@ -1,8 +1,8 @@
+def appDataRoaming = System.getProperty("user.home") + "/AppData/Roaming/Mindustry/mods"
+
 apply plugin: "java"
 
 version '1.0'
-
-def appDataRoaming = System.getProperty("user.home") + "/AppData/Roaming/Mindustry/mods"
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -13,7 +13,7 @@ repositories{
 }
 
 java{
-    targetCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = 8
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
@@ -27,16 +27,11 @@ ext{
 }
 
 //java 8 backwards compatibility flag
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.release.set(8)
-    } else {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+allprojects{
+    tasks.withType(JavaCompile){
+        options.compilerArgs.addAll(['--release', '8'])
     }
 }
-
 
 dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
@@ -46,7 +41,7 @@ dependencies{
 }
 
 //force arc version
-configurations.configureEach {
+configurations.all{
     resolutionStrategy.eachDependency { details ->
         if(details.requested.group == 'com.github.Anuken.Arc'){
             details.useVersion "$mindustryVersion"
