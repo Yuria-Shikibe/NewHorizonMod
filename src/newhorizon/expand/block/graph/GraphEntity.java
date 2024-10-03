@@ -1,17 +1,19 @@
 package newhorizon.expand.block.graph;
 
-import arc.func.Cons;
+import arc.func.Boolf;
+import arc.func.Func;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import mindustry.gen.Building;
-import newhorizon.expand.block.NHBlock;
-import newhorizon.expand.block.NHBuilding;
+import newhorizon.expand.block.AdaptBuilding;
 
-import static newhorizon.expand.block.graph.GraphUpdater.xenGraphAll;
+import static newhorizon.expand.block.graph.GraphUpdater.GraphEntities;
 
-/** A graph used for builds. */
-public class GraphEntity<T extends NHBuilding>{
-    /*
+/**A graph used for builds.
+ *
+ * @see mindustry.world.blocks.power.PowerGraph
+ * */
+public class GraphEntity<T extends AdaptBuilding>{
+
     private final Queue<T> queue = new Queue<>();
 
     public final Seq<T> allBuildings = new Seq<>(false, 16);
@@ -24,6 +26,7 @@ public class GraphEntity<T extends NHBuilding>{
 
     public GraphEntity() {
         graphID = lastID++;
+        createGraph();
     }
 
     public void mergeGraph(GraphEntity<T> graph) {
@@ -39,60 +42,50 @@ public class GraphEntity<T extends NHBuilding>{
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void addBuild(T building) {
         if (!allBuildings.contains(building)) {
             //add this block to it
             allBuildings.add(building);
-            building.xen.setGraph(this);
+            building.graph = (GraphEntity<AdaptBuilding>) this;
         }
-    }
-
-    public void register() {
-        this.createGraph();
     }
 
     public void clear() {
         allBuildings.clear();
     }
 
-    public void remove(T building) {
+    public void remove(T building, Func<T, Seq<T>> targetBuilds, Boolf<T> isTarget) {
 
         //go through all the connections of this tile
-        for (Building other : building.proximity) {
-            NHBuilding b1 = checkXen(other);
-            if (b1 != null){
-                //check if it contains the graph
-                if (b1.xen.graph != this) continue;
+        for (T other : targetBuilds.get(building)) {
 
-                //create graph for this branch
-                XenGraph graph = new XenGraph(0, temp);
-                graph.register();
-                graph.addBuild(b1);
+            //check if it contains the graph or is the target graph that can be merged
+            if (!isTarget.get(other)) continue;
+            if (other.graph != this) continue;
 
-                //BFS time
-                queue.clear();
-                queue.addLast(b1);
-                while (queue.size > 0) {
-                    //get child from queue
-                    NHBuilding child = queue.removeFirst();
-                    //add it to the new branch graph
-                    graph.addBuild(child);
-                    //go through connections
-                    for (Building next : child.proximity) {
-                        NHBuilding b2 = checkXen(next);
-                        if (b2 != null){
-                            //make sure it hasn't looped back, and that the new graph being assigned hasn't already been assigned
-                            //also skip closed tiles
-                            if (b2 != building && b2.xen.graph != graph) {
-                                graph.addBuild(b2);
-                                queue.addLast(b2);
-                            }
-                        }
+            //create graph for this branch
+            GraphEntity<T> graph = new GraphEntity<>();
+            graph.createGraph();
+            graph.addBuild(other);
+
+            //BFS time
+            queue.clear();
+            queue.addLast(other);
+            while (queue.size > 0) {
+                //get child from queue
+                T child = queue.removeFirst();
+                //add it to the new branch graph
+                graph.addBuild(child);
+                //go through connections
+                for (T next : targetBuilds.get(child)) {
+                    //make sure it hasn't looped back, and that the new graph being assigned hasn't already been assigned
+                    //also skip closed tiles
+                    if (next != building && next.graph != graph) {
+                        graph.addBuild(next);
+                        queue.addLast(next);
                     }
                 }
-                //calculate the graph at last
-                graph.height = temp;
-                graph.amount = graph.height * graph.area;
             }
 
         }
@@ -101,9 +94,10 @@ public class GraphEntity<T extends NHBuilding>{
         removeGraph();
     }
 
+    @SuppressWarnings("unchecked")
     public void createGraph() {
         if (!added) {
-            xenGraphAll.put(graphID, this);
+            GraphEntities.put(graphID, (GraphEntity<AdaptBuilding>) this);
             added = true;
         }
     }
@@ -111,10 +105,8 @@ public class GraphEntity<T extends NHBuilding>{
     public void removeGraph() {
         if (added) {
             clear();
-            xenGraphAll.remove(graphID);
+            GraphEntities.remove(graphID);
             added = false;
         }
     }
-
-     */
 }

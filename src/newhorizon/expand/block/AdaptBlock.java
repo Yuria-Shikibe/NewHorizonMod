@@ -9,16 +9,20 @@ import mindustry.world.meta.Env;
 
 import java.lang.reflect.Constructor;
 
-/** used as the base of many blocks for NH. */
-public class NHBlock extends Block {
+/**used as the base of many blocks for NH.
+ * @see AdaptBuilding
+ *  */
+public class AdaptBlock extends Block {
 
+
+    public boolean isGraphEntity;
     //xen modules, similar to hasItem, hasLiquid
     public boolean hasXen;
     public boolean xenInput;
     public boolean xenOutput;
     public float xenArea;
 
-    public NHBlock(String name) {
+    public AdaptBlock(String name) {
         super(name);
 
         solid = true;
@@ -34,7 +38,7 @@ public class NHBlock extends Block {
 
         if(hasXen){
             addBar("xen-frequency", entity -> {
-                NHBuilding build = (NHBuilding)entity;
+                AdaptBuilding build = (AdaptBuilding)entity;
                 return new Bar(build::getXenText, build::getXenSmoothColor, build::getXenFrac);
             });
         }
@@ -75,7 +79,7 @@ public class NHBlock extends Block {
 
         if(buildType == null){
             //assign default value
-            buildType = NHBuilding::create;
+            buildType = AdaptBuilding::create;
         }
     }
 }

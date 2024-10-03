@@ -9,11 +9,10 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Layer;
 import mindustry.ui.Styles;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHShaders;
-import newhorizon.expand.block.NHBlock;
-import newhorizon.expand.block.NHBuilding;
+import newhorizon.expand.block.AdaptBlock;
+import newhorizon.expand.block.AdaptBuilding;
 
-public class XenConduit extends NHBlock {
+public class XenConduit extends AdaptBlock {
     public TextureRegion[] conduitRegion;
     public TextureRegion baseRegion, lightRegion;
     public XenConduit(String name) {
@@ -36,7 +35,7 @@ public class XenConduit extends NHBlock {
         lightRegion = Core.atlas.find(name + "-light");
     }
 
-    public class XenConduitBuild extends NHBuilding{
+    public class XenConduitBuild extends AdaptBuilding {
         private int index = 0;
 
         @Override

@@ -4,10 +4,8 @@ import arc.graphics.Color;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import mindustry.gen.Building;
-import newhorizon.expand.block.NHBlock;
-import newhorizon.expand.block.NHBuilding;
-
-import java.awt.*;
+import newhorizon.expand.block.AdaptBlock;
+import newhorizon.expand.block.AdaptBuilding;
 
 import static newhorizon.expand.block.graph.GraphUpdater.xenGraphAll;
 
@@ -21,13 +19,13 @@ public class XenGraph {
      * xen wave frequency: internal float 0-500, 50-200 for alpha (300-450 GHz), 200-350 for beta(450-600 GHz), 350-500 for gamma(600-750 GHz)
      * xen energy density: internal float 100 for a XED unit. for example, 100 area(10 conduit) with 450 GHz have 100 * 200 / 100 = 200XED.
      */
-    private static final Queue<NHBuilding> queue = new Queue<>();
+    private static final Queue<AdaptBuilding> queue = new Queue<>();
     public static int lastID = 0;
     //do not modify any of these unless you know what you're doing!
-    public final Seq<NHBuilding> producers = new Seq<>(false);
-    public final Seq<NHBuilding> consumers = new Seq<>(false);
-    public final Seq<NHBuilding> distributors = new Seq<>(false);
-    public final Seq<NHBuilding> allBuildings = new Seq<>(false);
+    public final Seq<AdaptBuilding> producers = new Seq<>(false);
+    public final Seq<AdaptBuilding> consumers = new Seq<>(false);
+    public final Seq<AdaptBuilding> distributors = new Seq<>(false);
+    public final Seq<AdaptBuilding> allBuildings = new Seq<>(false);
     public final int graphID;
 
     public float area;
@@ -88,14 +86,14 @@ public class XenGraph {
 
         //merge into other graph instead.
         if (allBuildings.size > graph.allBuildings.size) {
-            for (NHBuilding tile : graph.allBuildings) {
+            for (AdaptBuilding tile : graph.allBuildings) {
                 addBuild(tile);
                 calcCurrentHeight();
             }
             graph.removeGraph();
 
         } else {
-            for (NHBuilding tile : allBuildings) {
+            for (AdaptBuilding tile : allBuildings) {
                 graph.addBuild(tile);
                 graph.calcCurrentHeight();
             }
@@ -104,8 +102,8 @@ public class XenGraph {
 
     }
 
-    public void addBuild(NHBuilding building) {
-        NHBlock nhBlock = building.getNHBlock();
+    public void addBuild(AdaptBuilding building) {
+        AdaptBlock nhBlock = building.getBlock();
 
         if (nhBlock != null && nhBlock.hasXen) {
             if (!allBuildings.contains(building)) {
@@ -148,12 +146,12 @@ public class XenGraph {
      * Note that this does not actually remove the Building from the graph;
      * it creates *new* graphs that contain the correct buildings. Doing this invalidates the graph.
      */
-    public void remove(NHBuilding building) {
+    public void remove(AdaptBuilding building) {
 
         float temp = height;
         //go through all the connections of this tile
         for (Building other : building.proximity) {
-            NHBuilding b1 = checkXen(other);
+            AdaptBuilding b1 = checkXen(other);
             if (b1 != null){
                 //check if it contains the graph
                 if (b1.xen.graph != this) continue;
@@ -168,12 +166,12 @@ public class XenGraph {
                 queue.addLast(b1);
                 while (queue.size > 0) {
                     //get child from queue
-                    NHBuilding child = queue.removeFirst();
+                    AdaptBuilding child = queue.removeFirst();
                     //add it to the new branch graph
                     graph.addBuild(child);
                     //go through connections
                     for (Building next : child.proximity) {
-                        NHBuilding b2 = checkXen(next);
+                        AdaptBuilding b2 = checkXen(next);
                         if (b2 != null){
                             //make sure it hasn't looped back, and that the new graph being assigned hasn't already been assigned
                             //also skip closed tiles
@@ -210,10 +208,10 @@ public class XenGraph {
         }
     }
 
-    private NHBuilding checkXen(Building building){
-        if (building instanceof NHBuilding){
-            NHBuilding b = (NHBuilding) building;
-            if (b.getNHBlock() != null && b.getNHBlock().hasXen){
+    private AdaptBuilding checkXen(Building building){
+        if (building instanceof AdaptBuilding){
+            AdaptBuilding b = (AdaptBuilding) building;
+            if (b.getBlock() != null && b.getBlock().hasXen){
                 return b;
             }
         };

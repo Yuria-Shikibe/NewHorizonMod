@@ -11,16 +11,14 @@ import newhorizon.expand.block.graph.GraphEntity;
 import newhorizon.expand.block.module.XenModule;
 import newhorizon.util.graphic.DrawUtil;
 
-public class NHBuilding extends Building {
-    public GraphEntity<NHBuilding> graph;
+public class AdaptBuilding extends Building {
+    public GraphEntity<AdaptBuilding> graph;
+    public Seq<AdaptBuilding> proximityNH;
     public XenModule xen;
 
-    public NHBlock getNHBlock(){
-        if (block instanceof NHBlock){
-            return (NHBlock) block;
-        }else {
-            return null;
-        }
+    /** get the adapt block. */
+    public AdaptBlock getBlock(){
+        return (block instanceof AdaptBlock ? (AdaptBlock) block: null);
     }
 
     public String getXenText(){
@@ -41,36 +39,33 @@ public class NHBuilding extends Building {
 
     public boolean checkXenModule(int x, int y){
         Building building = Vars.world.build(x, y);
-        if (building instanceof NHBuilding){
-            NHBuilding b = (NHBuilding) building;
-            return b.getNHBlock() != null && b.getNHBlock().hasXen;
+        if (building instanceof AdaptBuilding){
+            AdaptBuilding b = (AdaptBuilding) building;
+            return b.getBlock() != null && b.getBlock().hasXen;
         }
         return false;
     }
 
     public boolean checkXenModule(Building building){
-        if (building instanceof NHBuilding){
-            NHBuilding b = (NHBuilding) building;
-            return b.getNHBlock() != null && b.getNHBlock().hasXen;
-        }
-        return false;
+        return (building instanceof AdaptBuilding b && b.getBlock() != null && b.getBlock().hasXen);
     }
 
     public boolean hasXen(){
-        return getNHBlock() != null && getNHBlock().hasXen;
+        return getBlock() != null && getBlock().hasXen;
     }
 
     public float xenArea(){
         if (hasXen()){
-            return getNHBlock().xenArea;
+            return getBlock().xenArea;
         }
         return 0;
     }
 
     @Override
     public void drawSelect() {
+        /*
         if (hasXen()) {
-            for (NHBuilding build : xen.graph.allBuildings) {
+            for (AdaptBuilding build : xen.graph.allBuildings) {
                 Draw.color(Pal.accent);
                 Fill.square(build.x, build.y, 2, 45);
                 Draw.reset();
@@ -78,6 +73,8 @@ public class NHBuilding extends Building {
             String xenInfo = "Graph ID: " + xen.graph.graphID + "\nGraph Area: " + xen.graph.area + "\nGraph Height: " + xen.graph.height + "\nXen Level: " + xen.getXenText();
             DrawUtil.drawText(xenInfo, x, y - 8);
         }
+
+         */
     }
 
     @Override
@@ -97,7 +94,7 @@ public class NHBuilding extends Building {
         if (hasXen()) {
             for (Building other : proximity) {
                 if (checkXenModule(other)){
-                    NHBuilding b = (NHBuilding)other;
+                    AdaptBuilding b = (AdaptBuilding)other;
                     xen.graph.mergeGraph(b.xen.graph);
                 }
             }

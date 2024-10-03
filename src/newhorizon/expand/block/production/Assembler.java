@@ -31,8 +31,8 @@ import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
-import newhorizon.expand.block.NHBlock;
-import newhorizon.expand.block.NHBuilding;
+import newhorizon.expand.block.AdaptBlock;
+import newhorizon.expand.block.AdaptBuilding;
 import newhorizon.expand.block.consumer.NHConsumeItemDynamic;
 import newhorizon.expand.block.consumer.NHConsumeLiquidDynamic;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
@@ -43,7 +43,7 @@ import newhorizon.util.ui.display.LiquidDisplay;
 import static mindustry.Vars.*;
 import static newhorizon.content.NHContent.timeIcon;
 
-public class Assembler extends NHBlock {
+public class Assembler extends AdaptBlock {
     public float warmupSpeed = 0.02f;
     public int[] capacities = {};
     public Seq<Recipe> recipeSeq = new Seq<>();
@@ -225,7 +225,7 @@ public class Assembler extends NHBlock {
         drawer.getRegionsToOutline(this, out);
     }
 
-    public class AssemblerBlockBuild extends NHBuilding {
+    public class AssemblerBlockBuild extends AdaptBuilding {
         public float progress;
         public float totalProgress;
         public float warmup;

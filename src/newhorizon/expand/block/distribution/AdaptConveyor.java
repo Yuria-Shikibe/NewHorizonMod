@@ -1,17 +1,15 @@
 package newhorizon.expand.block.distribution;
 
-import mindustry.gen.Building;
 import mindustry.type.ItemStack;
-import mindustry.world.Block;
-import newhorizon.expand.block.NHBlock;
-import newhorizon.expand.block.NHBuilding;
+import newhorizon.expand.block.AdaptBlock;
+import newhorizon.expand.block.AdaptBuilding;
 
-public class AdaptConveyor extends NHBlock {
+public class AdaptConveyor extends AdaptBlock {
     public AdaptConveyor(String name) {
         super(name);
     }
 
-    public class AdaptedConveyorBuild extends NHBuilding {
+    public class AdaptedConveyorBuild extends AdaptBuilding {
         public ItemStack item;
     }
 }
