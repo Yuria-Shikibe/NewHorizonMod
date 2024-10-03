@@ -38,16 +38,11 @@ public class AdaptBuilding extends Building {
     }
 
     public boolean checkXenModule(int x, int y){
-        Building building = Vars.world.build(x, y);
-        if (building instanceof AdaptBuilding){
-            AdaptBuilding b = (AdaptBuilding) building;
-            return b.getBlock() != null && b.getBlock().hasXen;
-        }
-        return false;
+        return (Vars.world.build(x, y) instanceof AdaptBuilding b && b.getBlock() != null && b.getBlock().hasXen);
     }
 
     public boolean checkXenModule(Building building){
-        return (building instanceof AdaptBuilding && ((AdaptBuilding)building).getBlock() != null && ((AdaptBuilding)building).getBlock().hasXen);
+        return (building instanceof AdaptBuilding b && b.getBlock() != null && b.getBlock().hasXen);
     }
 
     public boolean hasXen(){
