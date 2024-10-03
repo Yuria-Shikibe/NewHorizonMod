@@ -38,11 +38,12 @@ public class AdaptBuilding extends Building {
     }
 
     public boolean checkXenModule(int x, int y){
-        return (Vars.world.build(x, y) instanceof AdaptBuilding b && b.getBlock() != null && b.getBlock().hasXen);
+        Building building = Vars.world.build(x, y);
+        return (building instanceof AdaptBuilding && ((AdaptBuilding)building).getBlock() != null && ((AdaptBuilding)building).getBlock().hasXen);
     }
 
     public boolean checkXenModule(Building building){
-        return (building instanceof AdaptBuilding b && b.getBlock() != null && b.getBlock().hasXen);
+        return (building instanceof AdaptBuilding && ((AdaptBuilding)building).getBlock() != null && ((AdaptBuilding)building).getBlock().hasXen);
     }
 
     public boolean hasXen(){
@@ -70,12 +71,24 @@ public class AdaptBuilding extends Building {
         }
 
          */
+
+        if (getBlock().isGraphEntity) {
+            for (AdaptBuilding build : graph.allBuildings) {
+                Draw.color(Pal.accent);
+                Fill.square(build.x, build.y, 2, 45);
+                Draw.reset();
+            }
+        }
     }
 
     @Override
     public void created() {
         super.created();
 
+        if (getBlock().isGraphEntity){
+            graph = new GraphEntity<>();
+            graph.addBuild(this);
+        }
         if (hasXen()) {
             xen = new XenModule();
             xen.graph.addBuild(this);
@@ -85,6 +98,14 @@ public class AdaptBuilding extends Building {
     @Override
     public void onProximityAdded() {
         super.onProximityAdded();
+
+        if (getBlock().isGraphEntity){
+            for (Building other : proximity) {
+                if (other instanceof AdaptBuilding && ((AdaptBuilding)other).getBlock().isGraphEntity){
+                    graph.mergeGraph(((AdaptBuilding)other).graph);
+                }
+            }
+        }
 
         if (hasXen()) {
             for (Building other : proximity) {
@@ -99,6 +120,9 @@ public class AdaptBuilding extends Building {
     @Override
     public void onProximityRemoved() {
         super.onProximityRemoved();
+        if (getBlock().isGraphEntity){
+            graph.remove(this, (building) -> true);
+        }
         if (hasXen()) {
             xen.graph.remove(this);
         }
@@ -112,6 +136,5 @@ public class AdaptBuilding extends Building {
     @Override
     public void onRemoved() {
         super.onRemoved();
-
     }
 }
