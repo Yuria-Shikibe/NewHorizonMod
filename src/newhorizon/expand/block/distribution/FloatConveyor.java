@@ -1,15 +1,10 @@
 package newhorizon.expand.block.distribution;
 
-import arc.graphics.Color;
-import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
-import mindustry.content.Fx;
-import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.world.blocks.distribution.Conveyor;
-import newhorizon.expand.block.defence.ShapedWall;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 
 import static mindustry.Vars.world;

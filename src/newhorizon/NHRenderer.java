@@ -30,7 +30,6 @@ public class NHRenderer implements Disposable{
 
 	public NHRenderer(){
 		mask = new FrameBuffer();
-		
 		effectDrawer = new EffectDrawer();
 	}
 	
@@ -59,9 +58,6 @@ public class NHRenderer implements Disposable{
 				renderer.effectBuffer.blit(NHShaders.quantum);
 			});
 		}
-	}
-	
-	public void afterDraw(){
 	}
 	
 	public void drawGravityTrapField(){

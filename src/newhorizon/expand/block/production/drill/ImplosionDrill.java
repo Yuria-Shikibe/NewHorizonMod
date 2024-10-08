@@ -13,16 +13,10 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.Item;
-import newhorizon.content.NHColor;
-import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
-import newhorizon.util.func.NHFunc;
-import newhorizon.util.graphic.DrawFunc;
 
 import static arc.graphics.g2d.Lines.circleVertices;
 import static mindustry.type.ItemStack.with;

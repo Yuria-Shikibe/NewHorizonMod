@@ -4,11 +4,8 @@ import arc.Core;
 import arc.Events;
 import arc.func.Cons;
 import arc.graphics.Color;
-import arc.graphics.g2d.Fill;
-import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import arc.scene.ui.ImageButton;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -33,29 +30,21 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
-import newhorizon.content.blocks.EnvironmentBlock;
 import newhorizon.content.blocks.ProductionBlocks;
-import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.expand.NHVars;
-import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.types.WorldEventType;
-import newhorizon.expand.game.NHWorldData;
-import newhorizon.expand.map.SchematicUtil;
 import newhorizon.expand.packets.NHCall;
 import newhorizon.util.DebugFunc;
-import newhorizon.util.NHDebugFunc;
 import newhorizon.util.func.NHPixmap;
-import newhorizon.util.graphic.DrawUtil;
-import newhorizon.util.graphic.EffectDrawer;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
-import static mindustry.Vars.*;
-import static newhorizon.util.ui.FeatureLog.featureType.*;
+import static mindustry.Vars.tilesize;
+import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -218,14 +207,9 @@ public class NewHorizon extends Mod{
 	
 	public NewHorizon(){
 		DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
-		if (DEBUGGING){
-			PlanetDialog.debugSelect = true;
+		debugFunctions();
 
-			Events.run(EventType.Trigger.universeDrawEnd, DebugFunc::renderSectorId);
-		}
-
-		NHInputListener.registerModBinding();
-		
+		registerModBinding();
 		Events.on(ClientLoadEvent.class, e -> {
 			Core.app.post(NHUI::init);
 			updateServer();
@@ -236,12 +220,6 @@ public class NewHorizon extends Mod{
 				//Core.app.post(NHDebugFunc::outputAtlas);
 			});
 		});
-		Events.run(EventType.Trigger.draw, () -> {
-			if (NHSetting.getBool(NHSetting.TERRAIN_MODE)){
-				NHVars.control.terrainSelect();
-			}
-		});
-
 	}
 
 	@Override
@@ -249,16 +227,6 @@ public class NewHorizon extends Mod{
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 
 		NHVars.init();
-		NHCSS_UI.init();
-		
-		if(Vars.headless)return;
-		
-		NHSetting.loadUI();
-		NHVars.renderer.effectDrawer.init();
-
-		if(NHSetting.getBool(NHSetting.DEBUG_PANEL)){
-			TableFunc.tableMain();
-		}
 	}
 
 	@Override
@@ -501,6 +469,13 @@ public class NewHorizon extends Mod{
 		Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }
 
+	private void debugFunctions(){
+		if (DEBUGGING){
+			PlanetDialog.debugSelect = true;
+			Events.run(EventType.Trigger.universeDrawEnd, DebugFunc::renderSectorId);
+		}
+	}
+
 	private void updateServer(){
 		Vars.defaultServers.add(new ServerGroup(){{
 			name = "[sky]New Horizon [white]Mod [lightgray]Servers";
@@ -549,9 +524,7 @@ public class NewHorizon extends Mod{
 
 	private void showNewDialog(){
 		Time.runTask(10f, () -> {
-			if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){
-				showNew();
-			}
+			if(!Core.settings.get("nh-lastver", -1).equals(MOD.meta.version)){showNew();}
 			Core.settings.put("nh-lastver", MOD.meta.version);
 		});
 	}

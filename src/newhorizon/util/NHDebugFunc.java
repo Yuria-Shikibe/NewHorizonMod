@@ -2,15 +2,10 @@ package newhorizon.util;
 
 import arc.Core;
 import arc.files.Fi;
-import arc.graphics.Pixmap;
 import arc.graphics.PixmapIO;
 import arc.graphics.Texture;
-import arc.graphics.g2d.TextureAtlas;
-import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.util.Log;
-import mindustry.Vars;
-import newhorizon.NewHorizon;
 
 public class NHDebugFunc {
     public static final String NH_ROOT_PATH = "E:/MindustryModDevLib/NewHorizonMod";

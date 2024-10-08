@@ -7,7 +7,6 @@ import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Nullable;
-import arc.util.Time;
 import mindustry.Vars;
 import mindustry.core.World;
 import mindustry.graphics.Layer;
@@ -16,7 +15,6 @@ import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.expand.map.SchematicUtil;
 import newhorizon.expand.map.TerrainSchematic;
-import newhorizon.util.graphic.DrawUtil;
 
 import static mindustry.Vars.world;
 import static mindustry.input.PlaceMode.breaking;

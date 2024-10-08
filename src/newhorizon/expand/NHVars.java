@@ -1,12 +1,12 @@
 package newhorizon.expand;
 
 import arc.Core;
-import newhorizon.NHInputControl;
-import newhorizon.NHInputListener;
-import newhorizon.NHModCore;
-import newhorizon.NHRenderer;
+import mindustry.Vars;
+import newhorizon.*;
 import newhorizon.expand.cutscene.NHCSS_Core;
+import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.game.NHWorldData;
+import newhorizon.util.ui.TableFunc;
 
 public class NHVars{
 	public static NHWorldData worldData;
@@ -18,8 +18,6 @@ public class NHVars{
 
 
 	public static void init(){
-		if(!Core.app.isHeadless()){
-		}
 		worldData = new NHWorldData();
 		renderer = new NHRenderer();
 		listener = new NHInputListener();
@@ -28,5 +26,13 @@ public class NHVars{
 		core = new NHModCore();
 		Core.app.addListener(core);
 
+		NHCSS_UI.init();
+
+		if(Vars.headless)return;
+
+		NHSetting.loadUI();
+		if(NHSetting.getBool(NHSetting.DEBUG_PANEL)){
+			TableFunc.tableMain();
+		}
 	}
 }

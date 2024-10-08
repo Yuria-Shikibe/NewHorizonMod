@@ -5,8 +5,6 @@ import arc.math.geom.Point2;
 import arc.struct.Seq;
 import mindustry.gen.Building;
 import mindustry.world.blocks.distribution.BufferedItemBridge;
-import mindustry.world.blocks.distribution.ItemBridge;
-import mindustry.world.blocks.distribution.Junction;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 
 import static mindustry.Vars.world;

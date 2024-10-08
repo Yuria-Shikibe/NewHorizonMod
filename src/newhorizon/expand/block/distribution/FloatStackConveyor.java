@@ -4,7 +4,6 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import mindustry.gen.Building;
-import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.distribution.StackConveyor;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 

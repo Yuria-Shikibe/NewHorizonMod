@@ -1,8 +1,5 @@
 package newhorizon.content;
 
-import arc.files.Fi;
-import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;
 import newhorizon.expand.map.SchematicUtil;

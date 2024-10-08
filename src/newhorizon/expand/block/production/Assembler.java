@@ -40,7 +40,8 @@ import newhorizon.expand.recipe.Recipe;
 import newhorizon.util.ui.display.ArrowDisplay;
 import newhorizon.util.ui.display.LiquidDisplay;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.control;
+import static mindustry.Vars.iconMed;
 import static newhorizon.content.NHContent.timeIcon;
 
 public class Assembler extends AdaptBlock {

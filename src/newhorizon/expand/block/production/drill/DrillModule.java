@@ -2,13 +2,11 @@ package newhorizon.expand.block.production.drill;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Font;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.EnumSet;
 import arc.struct.ObjectFloatMap;
-import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
@@ -23,11 +21,10 @@ import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
-import mindustry.world.meta.Stat;
 import newhorizon.content.NHStats;
 import newhorizon.util.graphic.SpriteUtil;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.world;
 
 public class DrillModule extends Block {
     public TextureRegion topFullRegions;

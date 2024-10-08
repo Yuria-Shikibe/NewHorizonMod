@@ -3,7 +3,6 @@ package newhorizon.expand.block.consumer;
 import arc.func.Floatf;
 import mindustry.gen.Building;
 import mindustry.world.consumers.ConsumePower;
-import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.meta.Stats;
 
 public class PowerConsumer extends ConsumePower {

@@ -1,23 +1,14 @@
 package newhorizon.expand.units;
 
-import arc.Settings;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.math.Mathf;
-import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.Vars;
 import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
-import mindustry.ui.dialogs.SettingsMenuDialog;
 
 import static arc.Core.settings;
-import static arc.graphics.g2d.Lines.circleVertices;
 
 public class TrailEngine extends UnitType.UnitEngine{
     protected Trail trail;

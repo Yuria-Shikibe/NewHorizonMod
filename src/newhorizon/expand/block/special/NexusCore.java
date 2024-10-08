@@ -1,28 +1,20 @@
 package newhorizon.expand.block.special;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
-import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Vec2;
-import arc.scene.ui.layout.Scl;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
 import mindustry.type.Category;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
-import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHUnitTypes;
@@ -30,8 +22,8 @@ import newhorizon.content.NHUnitTypes;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.*;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.coreLandDuration;
+import static mindustry.Vars.renderer;
 import static mindustry.type.ItemStack.with;
 
 public class NexusCore extends CoreBlock {

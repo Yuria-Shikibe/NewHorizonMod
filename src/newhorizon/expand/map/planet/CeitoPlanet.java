@@ -1,13 +1,15 @@
 package newhorizon.expand.map.planet;
 
 import arc.graphics.Color;
-import arc.math.Rand;
 import arc.math.geom.Mat3D;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.graphics.g3d.*;
+import mindustry.graphics.g3d.GenericMesh;
+import mindustry.graphics.g3d.MatMesh;
+import mindustry.graphics.g3d.MultiMesh;
+import mindustry.graphics.g3d.PlanetParams;
 import mindustry.type.Planet;
 import newhorizon.expand.graphics.HexMeshExpand;
 

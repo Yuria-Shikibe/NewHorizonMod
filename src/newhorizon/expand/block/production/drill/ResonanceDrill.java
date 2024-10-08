@@ -15,7 +15,6 @@ import mindustry.entities.Effect;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.Item;
-import newhorizon.content.NHColor;
 import newhorizon.content.NHItems;
 
 import static mindustry.type.ItemStack.with;

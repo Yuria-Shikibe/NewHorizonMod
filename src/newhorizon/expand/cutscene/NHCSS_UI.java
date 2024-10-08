@@ -92,7 +92,6 @@ public class NHCSS_UI{
 		root = new WidgetGroup(){{
 			setFillParent(true);
 			touchable = Touchable.childrenOnly;
-//			color.set(Color.clear);
 		}};
 		
 		customizeLayer = new WidgetGroup(){{

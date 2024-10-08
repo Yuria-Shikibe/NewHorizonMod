@@ -1,25 +1,16 @@
 package newhorizon.expand.bullets;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
-import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.ContinuousBulletType;
 import mindustry.gen.Bullet;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import newhorizon.content.NHFx;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.util.feature.PosLightning;
-import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.Vars.state;
 

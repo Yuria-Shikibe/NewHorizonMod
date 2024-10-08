@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
-
 import mindustry.gen.Icon;
 import mindustry.graphics.Layer;
 import mindustry.ui.Styles;

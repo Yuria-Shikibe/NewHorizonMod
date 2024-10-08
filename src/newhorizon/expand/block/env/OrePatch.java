@@ -3,7 +3,6 @@ package newhorizon.expand.block.env;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import mindustry.Vars;
-import mindustry.graphics.Layer;
 import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.OverlayFloor;

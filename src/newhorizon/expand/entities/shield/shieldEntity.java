@@ -2,11 +2,9 @@ package newhorizon.expand.entities.shield;
 
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Polygon;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
-import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.entities.Units;

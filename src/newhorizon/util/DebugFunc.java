@@ -2,12 +2,12 @@ package newhorizon.util;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.util.Log;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import newhorizon.util.graphic.DrawUtil;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.renderer;
+import static mindustry.Vars.ui;
 
 public class DebugFunc {
     public static void renderSectorId(){

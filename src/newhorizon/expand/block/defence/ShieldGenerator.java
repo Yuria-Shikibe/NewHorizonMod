@@ -11,7 +11,9 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.*;
+import arc.math.geom.Geometry;
+import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Eachable;
@@ -25,7 +27,10 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.EventType;
-import mindustry.gen.*;
+import mindustry.gen.BlockUnitc;
+import mindustry.gen.Bullet;
+import mindustry.gen.Groups;
+import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -42,7 +47,8 @@ import newhorizon.content.NHStatusEffects;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
+import static mindustry.Vars.tilesize;
 
 public class ShieldGenerator extends BaseTurret {
     public final int timerUse = timers++;

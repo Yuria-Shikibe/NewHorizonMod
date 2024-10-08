@@ -13,7 +13,6 @@ import arc.math.Mat;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec3;
-import arc.struct.Bits;
 import arc.struct.IntMap;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
@@ -51,8 +50,11 @@ public class EffectDrawer implements Disposable{
 	public IntSeq zOrder;
 	
 	protected LastSeq lastSeq;
-	protected Bits lastStatus = new Bits();
 	protected IntMap<Runnable> drawTask = new IntMap<>();
+
+	public EffectDrawer(){
+		init();
+	}
 	
 	public void init(){
 		lastSeq = new LastSeq();

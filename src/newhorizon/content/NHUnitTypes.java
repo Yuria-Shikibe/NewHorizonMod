@@ -65,7 +65,6 @@ import newhorizon.expand.units.ai.SurroundAI;
 import newhorizon.expand.units.entity.NucleoidEntity;
 import newhorizon.expand.units.entity.PesterEntity;
 import newhorizon.expand.units.entity.ProbeEntity;
-import newhorizon.expand.units.unitType.RadianceUnitType;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
@@ -78,7 +77,6 @@ import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
-import static mindustry.Vars.state;
 
 public class NHUnitTypes{
 	public static final Color OColor = Color.valueOf("565666");

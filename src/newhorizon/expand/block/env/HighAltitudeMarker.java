@@ -1,8 +1,5 @@
 package newhorizon.expand.block.env;
 
-import arc.graphics.g2d.Draw;
-import arc.util.Tmp;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.OverlayFloor;
 

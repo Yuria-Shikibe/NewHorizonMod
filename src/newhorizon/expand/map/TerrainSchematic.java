@@ -1,21 +1,10 @@
 package newhorizon.expand.map;
 
-import arc.files.Fi;
-import arc.struct.ByteSeq;
-import arc.struct.IntSet;
 import arc.struct.Seq;
-import arc.struct.StringMap;
-import arc.util.Log;
-import arc.util.Nullable;
 import mindustry.content.Blocks;
-import mindustry.game.Schematic;
 import mindustry.game.Schematic.Stile;
 import mindustry.gen.Building;
-import mindustry.mod.Mods;
-import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.ConstructBlock;
-import mindustry.world.blocks.storage.CoreBlock;
 
 import static mindustry.Vars.world;
 

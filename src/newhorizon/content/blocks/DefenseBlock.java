@@ -2,10 +2,8 @@ package newhorizon.content.blocks;
 
 import mindustry.type.Category;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.Wall;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.defence.ShieldGenerator;
-import newhorizon.expand.block.defence.TileWall;
 
 import static mindustry.type.ItemStack.with;
 

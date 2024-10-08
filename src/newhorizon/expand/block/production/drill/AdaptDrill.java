@@ -24,23 +24,22 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
-import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
-import mindustry.world.meta.*;
+import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHStats;
 import newhorizon.expand.block.consumer.PowerConsumer;
 import newhorizon.util.ui.BarExtend;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.*;
 import static newhorizon.util.func.NHFunc.globalEffectRand;
-import static newhorizon.util.func.NHFunc.rand;
 
 public class AdaptDrill extends Block {
     //output speed in items/sec

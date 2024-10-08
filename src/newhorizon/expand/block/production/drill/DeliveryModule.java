@@ -5,8 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.util.Time;
-import mindustry.content.Items;
-import mindustry.game.Team;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import newhorizon.content.NHItems;

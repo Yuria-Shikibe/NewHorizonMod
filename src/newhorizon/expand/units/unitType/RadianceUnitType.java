@@ -6,7 +6,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -15,11 +14,7 @@ import mindustry.gen.UnitEntity;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
-import newhorizon.content.NHColor;
-import newhorizon.expand.units.AncientEngine;
 import newhorizon.expand.units.AncientUnit;
-
-import javax.sound.sampled.Line;
 
 import static arc.graphics.g2d.Lines.circleVertices;
 

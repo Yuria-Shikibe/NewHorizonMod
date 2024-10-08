@@ -7,27 +7,18 @@ import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.bullet.ArtilleryBulletType;
-import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.ShootPattern;
-import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.type.StatusEffect;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.draw.DrawTurret;
 import newhorizon.content.*;
 import newhorizon.expand.bullets.DOTBulletType;
-import newhorizon.expand.bullets.TrailFadeBulletType;
-import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.lineAngle;
-import static arc.math.Angles.randLenVectors;
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {

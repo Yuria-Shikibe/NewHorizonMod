@@ -1,7 +1,6 @@
 package newhorizon.expand.graphics;
 
 import arc.graphics.Color;
-import arc.graphics.gl.Shader;
 import arc.math.Mathf;
 import arc.math.geom.Vec3;
 import arc.util.Tmp;

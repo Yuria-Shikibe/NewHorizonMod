@@ -2,7 +2,6 @@ package newhorizon.expand.block.env;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;

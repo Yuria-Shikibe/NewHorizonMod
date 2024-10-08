@@ -16,6 +16,8 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 	
 	public NHWorldData(){
 		worldTileData = new WorldTileData();
+
+		//todo
 		SaveVersion.addCustomChunk("nh-world-data", this);
 		SaveVersion.addCustomChunk("nh-world-tile-data", worldTileData);
 	}

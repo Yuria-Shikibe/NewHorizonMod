@@ -18,9 +18,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.Item;
-import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
-import newhorizon.util.func.NHFunc;
 
 import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;

@@ -4,10 +4,8 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import newhorizon.content.Recipes;
-import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.energy.XenConduit;
 import newhorizon.expand.block.env.TiledFloor;
-import newhorizon.expand.block.graph.GraphBlock;
 import newhorizon.expand.block.production.Assembler;
 
 import static mindustry.type.ItemStack.with;

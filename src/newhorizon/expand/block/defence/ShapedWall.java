@@ -10,10 +10,8 @@ import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
-import mindustry.world.blocks.defense.ShieldWall;
 import mindustry.world.blocks.defense.Wall;
 import newhorizon.content.NHFx;
-import newhorizon.util.graphic.FloatPlatformDrawer;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;

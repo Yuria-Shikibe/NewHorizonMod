@@ -2,10 +2,12 @@ package newhorizon.expand.map.planet;
 
 import arc.func.Intc2;
 import arc.graphics.Color;
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.*;
+import arc.math.geom.Point2;
+import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
+import arc.math.geom.Vec3;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;

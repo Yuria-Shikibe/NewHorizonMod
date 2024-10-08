@@ -3,10 +3,8 @@ package newhorizon.expand.block.env;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Tmp;
-import mindustry.graphics.CacheLayer;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.OverlayFloor;
 
 import static mindustry.Vars.world;
 

@@ -8,7 +8,6 @@ import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
 

@@ -4,10 +4,8 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Point2;
-import arc.util.Timer;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
-import mindustry.world.Tile;
 import newhorizon.NewHorizon;
 
 import static mindustry.Vars.world;

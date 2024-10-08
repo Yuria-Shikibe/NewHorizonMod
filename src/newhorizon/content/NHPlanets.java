@@ -18,7 +18,6 @@ import mindustry.ai.Astar;
 import mindustry.content.Blocks;
 import mindustry.content.Liquids;
 import mindustry.content.Loadouts;
-import mindustry.content.Planets;
 import mindustry.game.Rules;
 import mindustry.game.Schematics;
 import mindustry.game.Team;

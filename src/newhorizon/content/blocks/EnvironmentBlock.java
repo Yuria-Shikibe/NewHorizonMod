@@ -1,9 +1,7 @@
 package newhorizon.content.blocks;
 
-import mindustry.content.Blocks;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
-import newhorizon.content.NHContent;
 import newhorizon.expand.block.env.*;
 
 public class EnvironmentBlock {

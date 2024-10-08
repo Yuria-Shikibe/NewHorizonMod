@@ -1,12 +1,9 @@
 package newhorizon.expand.block.graph;
 
 import arc.func.Boolf;
-import arc.func.Func;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.gen.Building;
-import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
 
 import static newhorizon.expand.block.graph.GraphUpdater.graphEntities;

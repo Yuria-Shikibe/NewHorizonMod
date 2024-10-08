@@ -24,7 +24,6 @@ import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.expand.eventsys.types.WorldEventObjective;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.packets.LongInfoMessageCallPacket;
-import newhorizon.util.graphic.EffectDrawer;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 
 import java.lang.reflect.Field;
@@ -42,10 +41,6 @@ public class NHRegister{
 	
 	static{
 		Net.registerPacket(LongInfoMessageCallPacket::new);
-	}
-	
-	private static void registerJsonClasses(){
-	
 	}
 	
 	public static void addTaskOnSave(Runnable runnable){
@@ -72,15 +67,12 @@ public class NHRegister{
 		
 		Events.run(EventType.Trigger.draw, () -> {
 			NHVars.renderer.draw();
+			if (NHSetting.getBool(NHSetting.TERRAIN_MODE)){
+				NHVars.control.terrainSelect();
+			}
 		});
 		
-//		Events.run(EventType.Trigger.postDraw, () -> {
-//			NHModCore.core.renderer.draw();
-//		});
-		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-//			NewHorizon.debugLog("WorldLoad Event Triggered");
-			
 			NHGroups.resize();
 			NHVars.core.initOnLoadWorld();
 			if(!Vars.state.isEditor()){
