@@ -5,12 +5,10 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.gl.FrameBuffer;
 import arc.math.geom.Rect;
-import arc.math.geom.Vec2;
 import arc.util.Disposable;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Drawc;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Shaders;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
@@ -19,7 +17,6 @@ import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.graphic.EffectDrawer;
-import newhorizon.util.graphic.TextureStretchIn;
 
 import static arc.Core.graphics;
 import static mindustry.Vars.control;
@@ -29,26 +26,18 @@ public class NHRenderer implements Disposable{
 	public static float width, height;
 	public FrameBuffer mask;
 	public EffectDrawer effectDrawer;
-	public TextureStretchIn textureStretchIn;
-	
 	public Rect viewport = new Rect();
-	
-	public Vec2 tmp = new Vec2(1, 0);
 
 	public NHRenderer(){
 		mask = new FrameBuffer();
 		
-		effectDrawer = EffectDrawer.drawer;
-		textureStretchIn = new TextureStretchIn();
-		textureStretchIn.load();
+		effectDrawer = new EffectDrawer();
 	}
 	
 	public void init(){
 		mask.dispose();
 		mask = null;
 		mask = new FrameBuffer();
-
-		textureStretchIn.clear();
 	}
 	
 	public void draw(){
@@ -98,7 +87,5 @@ public class NHRenderer implements Disposable{
 	public void dispose(){
 		mask.dispose();
 		effectDrawer.dispose();
-//		matterStorm.dispose();
-		textureStretchIn.dispose();
 	}
 }

@@ -19,9 +19,10 @@ public class GraphEntity<T extends AdaptBuilding>{
 
     private final Queue<T> queue = new Queue<>();
 
+    public T start;
+    public T end;
+
     public final Seq<T> allBuildings = new Seq<>(false, 16);
-    public final Seq<T> horizontalBuildings = new Seq<>(false, 16);
-    public final Seq<T> verticalBuildings = new Seq<>(false, 16);
 
     public static int lastID = 0;
     public final int graphID;
@@ -41,9 +42,11 @@ public class GraphEntity<T extends AdaptBuilding>{
         if (allBuildings.size > graph.allBuildings.size) {
             graph.allBuildings.each(this::addBuild);
             graph.removeGraph();
+            postCalculate();
         } else {
             allBuildings.each(graph::addBuild);
             removeGraph();
+            graph.postCalculate();
         }
     }
 
@@ -53,6 +56,8 @@ public class GraphEntity<T extends AdaptBuilding>{
             //add this block to it
             allBuildings.add(building);
             building.graph = (GraphEntity<AdaptBuilding>) this;
+
+            postCalculate();
         }
     }
 
@@ -60,11 +65,14 @@ public class GraphEntity<T extends AdaptBuilding>{
         allBuildings.clear();
     }
 
+    public void remove(T building){
+        remove(building, (b) -> true);
+    }
+
     public void remove(T building, Boolf<T> isTarget) {
 
         //go through all the connections of this tile
         for (T other : targetBuilds(building)) {
-            //Log.info("target" + targetBuilds(building).size);
 
             //check if it contains the graph or is the target graph that can be merged
             if (!isTarget.get(other)) continue;
@@ -92,10 +100,18 @@ public class GraphEntity<T extends AdaptBuilding>{
                     }
                 }
             }
-            //Log.info(graphID + "+" + allBuildings.size);
+            graph.postCalculate();
         }
         //implied empty graph here
         removeGraph();
+    }
+
+    public void postCalculate(){
+        if (allBuildings.isEmpty()) return;
+        allBuildings.each(build -> {
+            if (build.front() == null){end = build;}
+            if (build.back() == null){start = build;}
+        });
     }
 
     @SuppressWarnings("unchecked")

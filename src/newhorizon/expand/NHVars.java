@@ -1,5 +1,6 @@
 package newhorizon.expand;
 
+import arc.Core;
 import newhorizon.NHInputControl;
 import newhorizon.NHInputListener;
 import newhorizon.NHModCore;
@@ -13,4 +14,19 @@ public class NHVars{
 	public static NHRenderer renderer;
 	public static NHModCore core;
 	public static NHInputListener listener;
+	public static NHInputControl control;
+
+
+	public static void init(){
+		if(!Core.app.isHeadless()){
+		}
+		worldData = new NHWorldData();
+		renderer = new NHRenderer();
+		listener = new NHInputListener();
+		control = new NHInputControl();
+
+		core = new NHModCore();
+		Core.app.addListener(core);
+
+	}
 }

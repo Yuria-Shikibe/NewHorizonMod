@@ -43,7 +43,6 @@ public class EffectDrawer implements Disposable{
 	
 	protected static final Mat tmpMat = new Mat();
 	
-	public static EffectDrawer drawer = new EffectDrawer();
 	public final EffectRenderer none = new EffectRenderer();
 	
 	public FrameBuffer effectBuffer = new FrameBuffer();

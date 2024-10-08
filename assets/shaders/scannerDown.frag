@@ -9,14 +9,6 @@ varying vec2 v_texCoords;
 
 void main(){
     vec3 c;
-//    vec4 color;
-
-//    if(mod(v_texCoords.x, 360.0) <= 180.0){
-//        if(mod(v_texCoords.y, 120.0) <= 60.0){
-//            color = texture2D(u_texture, v_texCoords + vec2(180.0, 60.0));
-//        }else color = texture2D(u_texture, v_texCoords + vec2(180.0, -60.0));
-//    }else color = texture2D(u_texture, v_texCoords + vec2(-180.0, 60.0));
-
     vec4 color = texture2D(u_texture, v_texCoords);
 
     if(

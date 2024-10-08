@@ -238,7 +238,7 @@ public class NewHorizon extends Mod{
 		});
 		Events.run(EventType.Trigger.draw, () -> {
 			if (NHSetting.getBool(NHSetting.TERRAIN_MODE)){
-				NHModCore.control.terrainSelect();
+				NHVars.control.terrainSelect();
 			}
 		});
 
@@ -247,15 +247,14 @@ public class NewHorizon extends Mod{
 	@Override
 	public void init() {
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
-		Core.app.addListener(new NHModCore());
 
-		NHVars.worldData = new NHWorldData();
+		NHVars.init();
 		NHCSS_UI.init();
 		
 		if(Vars.headless)return;
 		
 		NHSetting.loadUI();
-		EffectDrawer.drawer.init();
+		NHVars.renderer.effectDrawer.init();
 
 		if(NHSetting.getBool(NHSetting.DEBUG_PANEL)){
 			TableFunc.tableMain();

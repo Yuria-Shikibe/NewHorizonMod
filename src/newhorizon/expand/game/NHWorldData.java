@@ -12,11 +12,9 @@ import java.io.IOException;
 public class NHWorldData implements SaveFileReader.CustomChunk{
 	public static short CURRENT_VER = 1;
 	
-	public static NHWorldData data;
 	public static WorldTileData worldTileData;
 	
 	public NHWorldData(){
-		data = this;
 		worldTileData = new WorldTileData();
 		SaveVersion.addCustomChunk("nh-world-data", this);
 		SaveVersion.addCustomChunk("nh-world-tile-data", worldTileData);

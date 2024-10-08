@@ -59,8 +59,7 @@ public class NHRegister{
 	
 	public static void load(){
 		Events.on(EventType.ResetEvent.class, e -> {
-//			NewHorizon.debugLog("Reset Event Triggered");
-			
+
 			NHGroups.clear();
 			worldLoaded = false;
 			afterLoad.clear();
@@ -72,7 +71,7 @@ public class NHRegister{
 		});
 		
 		Events.run(EventType.Trigger.draw, () -> {
-			NHModCore.core.renderer.draw();
+			NHVars.renderer.draw();
 		});
 		
 //		Events.run(EventType.Trigger.postDraw, () -> {
@@ -83,7 +82,7 @@ public class NHRegister{
 //			NewHorizon.debugLog("WorldLoad Event Triggered");
 			
 			NHGroups.resize();
-			NHModCore.core.initOnLoadWorld();
+			NHVars.core.initOnLoadWorld();
 			if(!Vars.state.isEditor()){
 				EventHandler.create();
 				afterLoad.each(Runnable::run);
@@ -141,7 +140,7 @@ public class NHRegister{
 			});
 			
 			if(!Vars.headless){
-				EffectDrawer.drawer.clear();
+				NHVars.renderer.effectDrawer.clear();
 			}
 		});
 		

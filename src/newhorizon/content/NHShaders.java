@@ -10,10 +10,8 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.util.Time;
 import mindustry.graphics.Shaders;
-import mindustry.graphics.Voronoi;
 import mindustry.mod.Mods;
 import newhorizon.NewHorizon;
-import newhorizon.util.graphic.TextureStretchIn;
 
 import static mindustry.Vars.renderer;
 
@@ -22,28 +20,15 @@ public class NHShaders{
 	public static HyperspaceShader hyperspace;
 	public static Tiler tiler;
 	
-	public static Shader
-			gravityTrapShader, scannerDown;
-			
-	public static Shader alphaFloorer;
-	public static OutlineShader outliner;
+	public static Shader gravityTrapShader, scannerDown;
+
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
-	public static Stretch stretch;
-	//public static PlatingSurfaceShader platingSurface;
 
 	public static void init(){
-//		alphaFloorer = new ModShader("screenspace", "alphaFloorer"){
-//
-//		};
-		
-//		outliner = new OutlineShader();
-		//voronoi = new Voronoi();
 		
 		tiler = new Tiler();
-		
-		stretch = new Stretch();
-		
+
 		scannerDown = new ModShader("screenspace", "scannerDown");
 		
 		hyperspace = new HyperspaceShader();
@@ -86,71 +71,6 @@ public class NHShaders{
 		};
 
 		//platingSurface = new PlatingSurfaceShader();
-	}
-
-	/*
-	public static class PlatingSurfaceShader extends ModShader{
-		protected Texture noiseTex;
-
-		public PlatingSurfaceShader() {
-			super("screenspace", "platingFloor");
-			loadNoise();
-		}
-
-		public Texture getTexture(){
-			return NHContent.platingNoise;
-		}
-
-		public String textureName(){
-			return "noise";
-		}
-
-		public void loadNoise(){
-			noiseTex = NHContent.platingNoise;
-		}
-
-		@Override
-		public void apply(){
-			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
-			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-
-			if(hasUniform("u_noise")){
-				if(noiseTex == null){
-					noiseTex = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
-				}
-
-				noiseTex.bind(1);
-				renderer.effectBuffer.getTexture().bind(0);
-
-				setUniformi("u_noise", 1);
-			}
-		}
-	}
-
-	 */
-	
-	public static class Stretch extends ModShader{
-		TextureStretchIn.StretchData data = new TextureStretchIn.StretchData();
-		
-		public void setColor(TextureStretchIn.StretchData data){
-			this.data = data;
-		}
-		
-		public Stretch(){
-			super("screenspace", "stretch");
-		}
-		
-		@Override
-		public void apply(){
-			setUniformf("u_offset",
-					Core.camera.position.x - Core.camera.width / 2,
-					Core.camera.position.y - Core.camera.height / 2);
-			setUniformf("u_dp", Scl.scl(1f));
-//			float[] f = NHModCore.core.renderer.textureStretchIn.asArr();
-			setUniformf("u_data", data.x, data.y, data.radius, data.fin);
-			setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
-			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
-		}
 	}
 	
 	public static class Tiler extends ModShader{
@@ -264,9 +184,9 @@ public class NHShaders{
 		}
 		
 		@Override
-		public String textureName(){
-			return "noise";
-		}
+		public String textureName() {
+            return super.textureName();
+        }
 		
 		@Override
 		public void loadNoise(){

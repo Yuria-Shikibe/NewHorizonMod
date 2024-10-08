@@ -9,24 +9,10 @@ import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.util.func.NHFunc;
 
-public class NHModCore implements ApplicationListener{
-	public static NHModCore core;
-	public static NHInputControl control;
+import static newhorizon.expand.NHVars.renderer;
 
-	public NHInputListener inputListener;
-	public NHRenderer renderer;
-	
-	public NHModCore(){
-		if(NewHorizon.DEBUGGING)Log.info("NH Listener Core Constructed");
-		
-		if(!Core.app.isHeadless()){
-			NHVars.listener = inputListener = new NHInputListener();
-			NHVars.renderer = renderer = new NHRenderer();
-			control = new NHInputControl();
-		}
-		
-		NHVars.core = core = this;
-	}
+public class NHModCore implements ApplicationListener{
+	public NHModCore(){}
 	
 	@Override
 	public void update(){
@@ -34,24 +20,23 @@ public class NHModCore implements ApplicationListener{
 			NHCSS_Core.core.update();
 			NHGroups.update();
 			if(!Vars.headless){
-				if(inputListener != null)inputListener.update();
+				if(NHVars.listener != null)NHVars.listener.update();
 				renderer.effectDrawer.update();
-				renderer.textureStretchIn.update();
 				NHSetting.update();
 			}
 		}
 	}
 	
 	@Override
-	public void dispose(){
-		if(NewHorizon.DEBUGGING)Log.info("Disposed");
-	}
+	public void dispose() {
+        ApplicationListener.super.dispose();
+    }
 	
 	@Override
-	public void init(){
-		if(NewHorizon.DEBUGGING)Log.info("Init NH Core");
-	}
-	
+	public void init() {
+        ApplicationListener.super.init();
+    }
+
 	public void initOnLoadWorld(){
 		if(!Vars.headless){
 			renderer.init();

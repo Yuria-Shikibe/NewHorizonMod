@@ -4612,6 +4612,7 @@ public class NHBlocks{
 		loadPowers();
 		//loadExperiments();
 
+		DistributionBlock.load();
 		ProductionBlocks.load();
 		TurretBlock.load();
 		DefenseBlock.load();

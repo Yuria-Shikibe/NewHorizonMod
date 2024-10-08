@@ -19,7 +19,9 @@ import static arc.Core.keybinds;
 @HeadlessDisabled
 public class NHInputListener{
 	public Unit currentUnit;
-	
+
+	public NHInputListener(){}
+
 	public static void registerModBinding(){
 		try{
 			Field definitionsField = KeyBinds.class.getDeclaredField("definitions");
@@ -48,14 +50,6 @@ public class NHInputListener{
 			e.printStackTrace();
 		}
 	}
-	
-	public NHInputListener(){
-//		Seq<KeyBinds.KeyBind> binds = new Seq<>(KeyBinds.KeyBind.class);
-//		binds.addAll(Binding.values());
-//		binds.addAll(NHKeyBinding.values());
-//		keybinds.setDefaults(binds.toArray());
-	}
-	
 	public void update(){
 		if(Vars.player != null)updatePlayerStatus();
 		

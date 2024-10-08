@@ -13,7 +13,6 @@ import newhorizon.util.graphic.DrawUtil;
 
 public class AdaptBuilding extends Building {
     public GraphEntity<AdaptBuilding> graph;
-    public Seq<AdaptBuilding> proximityNH;
     public XenModule xen;
 
     /** get the adapt block. */
