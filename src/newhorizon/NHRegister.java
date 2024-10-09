@@ -132,7 +132,7 @@ public class NHRegister{
 			});
 			
 			if(!Vars.headless){
-				NHVars.renderer.effectDrawer.clear();
+				NHVars.renderer.statusRenderer.clear();
 			}
 		});
 		

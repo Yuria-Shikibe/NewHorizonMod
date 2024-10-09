@@ -17,7 +17,7 @@ public class NHModCore implements ApplicationListener{
 			NHGroups.update();
 			if(!Vars.headless){
 				if(NHVars.listener != null)NHVars.listener.update();
-				renderer.effectDrawer.update();
+				renderer.statusRenderer.update();
 				NHSetting.update();
 			}
 		}

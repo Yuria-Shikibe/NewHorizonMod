@@ -24,9 +24,11 @@ public class NHShaders{
 
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
+	public static StatusEffectShader overPhased;
 
 	public static void init(){
-		
+		overPhased = new StatusEffectShader("screenspace", "overphased");
+
 		tiler = new Tiler();
 
 		scannerDown = new ModShader("screenspace", "scannerDown");
@@ -256,6 +258,19 @@ public class NHShaders{
 				
 				setUniformi("u_noise_2", 1);
 			}
+		}
+	}
+
+	public static class StatusEffectShader extends ModShader{
+
+		public StatusEffectShader(String vert, String frag) {
+			super(vert, frag);
+		}
+
+		@Override
+		public void apply(){
+			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+			setUniformf("u_invsize", 1f/Core.camera.width, 1f/Core.camera.height);
 		}
 	}
 	

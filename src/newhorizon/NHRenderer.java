@@ -16,7 +16,7 @@ import newhorizon.expand.block.defence.GravityWell;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.entities.GravityTrapField;
-import newhorizon.util.graphic.EffectDrawer;
+import newhorizon.util.graphic.StatusRenderer;
 
 import static arc.Core.graphics;
 import static mindustry.Vars.control;
@@ -25,12 +25,12 @@ import static mindustry.Vars.renderer;
 public class NHRenderer implements Disposable{
 	public static float width, height;
 	public FrameBuffer mask;
-	public EffectDrawer effectDrawer;
+	public StatusRenderer statusRenderer;
 	public Rect viewport = new Rect();
 
 	public NHRenderer(){
 		mask = new FrameBuffer();
-		effectDrawer = new EffectDrawer();
+		statusRenderer = new StatusRenderer();
 	}
 	
 	public void init(){
@@ -49,7 +49,7 @@ public class NHRenderer implements Disposable{
 		
 		
 		
-		effectDrawer.draw();
+		statusRenderer.draw();
 
 		renderer.effectBuffer.resize(graphics.getWidth(), graphics.getHeight());
 		if(Vars.renderer.animateShields && Shaders.shield != null){
@@ -82,6 +82,5 @@ public class NHRenderer implements Disposable{
 	@Override
 	public void dispose(){
 		mask.dispose();
-		effectDrawer.dispose();
 	}
 }
