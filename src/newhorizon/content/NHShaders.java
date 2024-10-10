@@ -24,10 +24,11 @@ public class NHShaders{
 
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
-	public static StatusEffectShader overPhased;
+	public static StatusEffectShader statusAlpha, statusXWave;
 
 	public static void init(){
-		overPhased = new StatusEffectShader("screenspace", "overphased");
+		statusAlpha = new StatusEffectShader("screenspace", "overphased");
+		statusXWave = new StatusEffectShader("screenspace", "statusXWave");
 
 		tiler = new Tiler();
 
@@ -269,8 +270,9 @@ public class NHShaders{
 
 		@Override
 		public void apply(){
-			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
-			setUniformf("u_invsize", 1f/Core.camera.width, 1f/Core.camera.height);
+			setUniformf("u_texsize", Core.camera.width * renderer.getDisplayScale(), Core.camera.height * renderer.getDisplayScale());
+			setUniformf("u_invsize", 1f/Core.camera.width * renderer.getDisplayScale(), 1f/Core.camera.height * renderer.getDisplayScale());
+			setUniformf("u_time", Time.time);
 		}
 	}
 	

@@ -6,6 +6,7 @@
 uniform sampler2D u_texture;
 uniform vec2 u_texsize;
 uniform vec2 u_invsize;
+uniform float u_time;
 
 varying vec2 v_texCoords;
 

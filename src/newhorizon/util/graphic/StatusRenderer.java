@@ -15,6 +15,7 @@ import arc.math.Rand;
 import arc.math.geom.Geometry;
 import arc.struct.IntMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool;
@@ -22,6 +23,7 @@ import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
 import mindustry.type.StatusEffect;
 import newhorizon.content.NHColor;
@@ -91,7 +93,7 @@ public class StatusRenderer{
 	}
 
 	public void registerStatusEffects(){
-		register(NHStatusEffects.ultFireBurn, 20, (warmup, unit, status) -> {
+		register(NHStatusEffects.ultFireBurn, 80, (warmup, unit, status) -> {
 			Color from = NHColor.lightSkyFront, to = NHColor.deeperBlue;
 
 			float rad = width() / 32f;
@@ -122,15 +124,15 @@ public class StatusRenderer{
 
 			Draw.blend();
 		});
-		register(NHStatusEffects.overphased, 60, Shaders.buildBeam, (warmup, unit, status) -> {
-			int step = 32;
+		register(NHStatusEffects.invincible, 60, NHShaders.statusXWave, (warmup, unit, status) -> {
+			int step = 36;
 			float rad = (width() + height()) / 2 / step;
 			float stroke = rad * 0.16f;
 			float inner = rad * 0.70f;
 
 			float cx = centerX(), cy = centerY(), dst = rad * Mathf.sqrt3;
 
-			float min = 0.7f;
+			float min = 0.65f;
 			float max = 0.85f;
 			rand.setSeed(statusRandId(status));
 			for (int i = 1; i < step/2; i++){
@@ -144,15 +146,19 @@ public class StatusRenderer{
 							float maxDst = Mathf.dst(Mathf.cosDeg(ang) * width()/2, Mathf.sinDeg(ang) * height()/2);
 							float frac = toCenter / maxDst;
 							float chance = frac > min? frac < max? Mathf.curve(frac, min, max): 1f: 0f;
+
 							if (rand.chance(chance)){
-								Tmp.c1.set(NHColor.lightSky).lerp(NHColor.lightSkyFront, warmup * MathUtil.timeValue(0.2f, 0.6f, 1.5f, rand.random(360)));
+								float mmax = 1.3f;
+								float innerFrac = Mathf.clamp(((frac - max) / (mmax - max)) * rand.random(0.72f, 1.2f));
+								float innerWarmup = Interp.bounceOut.apply(Interp.smoother.apply(Mathf.clamp(-Interp.reverse.apply(innerFrac) + warmup * 2)));
+
+								Tmp.c1.set(NHColor.lightSky).lerp(NHColor.lightSkyFront, innerWarmup * MathUtil.timeValue(0.2f, 0.6f, 1.5f, rand.random(360)));
 								Draw.color(Tmp.c1);
-								Draw.alpha(0.75f + MathUtil.timeValue(-0.1f, 0.2f, 2f, rand.random(360)) * warmup);
-								float innerFrac = Mathf.curve(frac, max, 1.3f);
-								float innerWarmup = Interp.exp5In.apply(Mathf.clamp(innerFrac + warmup * 2));;
-								Lines.stroke(stroke * innerWarmup);
-								Lines.poly(Tmp.v2.x, Tmp.v2.y, 6, rad * innerWarmup, 30);
-								Fill.poly(Tmp.v2.x, Tmp.v2.y, 6, inner * innerWarmup, 30);
+								Draw.alpha((1.25f * Mathf.clamp(0.32f + innerFrac * 0.6f) + MathUtil.timeValue(0.1f, 0.4f, 2f, rand.random(360))) * innerWarmup);
+
+								Lines.stroke(stroke);
+								Lines.poly(Tmp.v2.x, Tmp.v2.y, 6, rad, 30);
+								Fill.poly(Tmp.v2.x, Tmp.v2.y, 6, inner, 30);
 							}
 						}
 					}
@@ -161,168 +167,41 @@ public class StatusRenderer{
 
 
 		});
-		/*
-		register(NHStatusEffects.scannerDown, 100, new StatusDrawer(NHShaders.scannerDown){
-			private final Color from = Pal.heal, to = NHColor.lightSkyBack;
+		register(NHStatusEffects.scannerDown, 100, (warmup, unit, status) -> {
+			Color from = Pal.heal, to = NHColor.lightSkyBack;
+			float particleLen = width() / 8f;
+			float stroke = height() / 35f;
+			float life = width() / 10f;
+			Lines.stroke(stroke * warmup);
 
-			@Override
-			public void drawEffect(float warmup Unit unit){
-				float particleLen = width / 8f;
-				float stroke = height / 35f;
-				float life = width / 10f;
-				Lines.stroke(stroke * f);
+			float base = (Time.time / life);
+			rand.setSeed(statusRandId(status));
 
-				float base = (Time.time / life);
-				rand.setSeed(seed);
+			Draw.blend(Blending.additive);
 
-				Draw.blend(Blending.additive);
+			Draw.color(from, Color.white, to, Mathf.absin(4f, 1f));
+			Draw.alpha((0.7f + Mathf.absin(2f, 0.2f)) * Mathf.curve(warmup, 0, 0.5f));
+			Fill.quad(left(), bottom(), left(), top(), right(), top(), right(), bottom());
 
-				Draw.color(from, Color.white, to, Mathf.absin(4f, 1f));
-				Draw.alpha((0.7f + Mathf.absin(2f, 0.2f)) * Mathf.curve(f, 0, 0.5f));
-				Fill.quad(0, 0, width, 0, width, height, 0, height);
+			Draw.blend();
 
-				Draw.blend();
-
-				for(int i = -40; i < 40; i++){
-					for(int j = -15; j < 15; j++){
-						float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
-						int angle = Mathf.sign(rand.range(1));
-						float len = width / 35f * Interp.pow2Out.apply(fin);
-						Draw.alpha((rand.random(0.925f, 1f) + Mathf.absin(2f, 0.05f)) * Mathf.curve(f, 0, 0.5f));
-						Draw.tint(
-							Tmp.c1.set(from).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
-							Tmp.c2.set(to).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
-							rand.random(0f, 1f)
-						);
-
-						Draw.getColor().lerp(Color.white, Mathf.absin(2f, 0.075f));
-
-						Lines.lineAngle(width / 2 + rand.range(0.5f) * particleLen + j / 10f * width * fin, height / 2 + rand.range(0.5f) * stroke + i * height / 60, angle * 90 + 90, particleLen * (fout * 0.4f + 0.6f) * f);
-					}
-				}
-			}
-		});
-		register(NHStatusEffects.scannerDown, 100, new StatusDrawer(NHShaders.scannerDown){
-			{
-				cannotSkip = true;
-			}
-			private final Color from = Pal.heal, to = NHColor.lightSkyBack;
-			
-			@Override
-			public void drawEffect(StatusEffect effect, Unit unit, float f){
-				float particleLen = width / 8f;
-				float stroke = height / 35f;
-				float life = width / 10f;
-				Lines.stroke(stroke * f);
-				
-				float base = (Time.time / life);
-				rand.setSeed(seed);
-				
-				Draw.blend(Blending.additive);
-				
-				Draw.color(from, Color.white, to, Mathf.absin(4f, 1f));
-				Draw.alpha((0.7f + Mathf.absin(2f, 0.2f)) * Mathf.curve(f, 0, 0.5f));
-				Fill.quad(0, 0, width, 0, width, height, 0, height);
-				
-				Draw.blend();
-				
-				for(int i = -40; i < 40; i++){
-					for(int j = -15; j < 15; j++){
-						float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
-						int angle = Mathf.sign(rand.range(1));
-						float len = width / 35f * Interp.pow2Out.apply(fin);
-						Draw.alpha((rand.random(0.925f, 1f) + Mathf.absin(2f, 0.05f)) * Mathf.curve(f, 0, 0.5f));
-						Draw.tint(
-							Tmp.c1.set(from).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
-							Tmp.c2.set(to).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
-							rand.random(0f, 1f)
-						);
-						
-						Draw.getColor().lerp(Color.white, Mathf.absin(2f, 0.075f));
-						
-						Lines.lineAngle(width / 2 + rand.range(0.5f) * particleLen + j / 10f * width * fin, height / 2 + rand.range(0.5f) * stroke + i * height / 60, angle * 90 + 90, particleLen * (fout * 0.4f + 0.6f) * f);
-					}
-				}
-			}
-		});
-		register(NHStatusEffects.ultFireBurn, 20, new StatusDrawer(){
-			private final Color from = NHColor.lightSkyFront, to = NHColor.deeperBlue;
-			
-			@Override
-			public void drawEffect(StatusEffect effect, Unit unit, float f){
-				float rad = width / 22f;
-				float life = 180f;
-				int num = (int)(width * height / 5000);
-				
-				float base = (Time.time / life);
-				rand.setSeed(seed);
-				
-				Draw.blend(Blending.additive);
-				
-				Draw.color(from, Color.white, to, Mathf.absin(4f, 1f));
-				Draw.alpha((0.2f + Mathf.absin(1f, 0.15f)) * Mathf.curve(f, 0, 0.5f));
-				Fill.quad(0, 0, width, 0, width, height, 0, height);
-				
-				for(int i = 0; i < num; i++){
+			for(int i = -40; i < 40; i++){
+				for(int j = -15; j < 15; j++){
 					float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
-					Draw.alpha((rand.random(0.8f, 0.875f) + Mathf.absin(2f, 0.15f)) * (Mathf.curve(fout, 0.35f, 0.55f) + 3) / 4 * f);
+					int angle = Mathf.sign(rand.range(1));
+					Draw.alpha((rand.random(0.925f, 1f) + Mathf.absin(2f, 0.05f)) * Mathf.curve(warmup, 0, 0.5f));
 					Draw.tint(
-							Tmp.c1.set(from).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
-							Tmp.c2.set(to).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
-							rand.random(0f, 1f)
+						Tmp.c1.set(from).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
+						Tmp.c2.set(to).mul(rand.random(0.9f, 1.1f)).lerp(Color.white, rand.random(0.4f, 0.8f) * Mathf.curve(fout, 0.8f, 1f)),
+						rand.random(0f, 1f)
 					);
-					
-					Tmp.v1.setToRandomDirection(rand).scl(width / 2.075f, height / 2.05f).scl((rand.random(0.95f, 1.15f)) * Interp.fastSlow.apply(fout) + 0.165f + rand.random(0.05f, 0.125f));
-					Fill.square(Tmp.v1.x + width / 2, Tmp.v1.y + height / 2, rad * rand.random(0.8f, 1.8f) * fout * fout * f, 45);
-				}
-				
-				Draw.blend();
-			}
-		});
-		register(NHStatusEffects.invincible, 25, new StatusDrawer(){
-			private final Seq<Vec3> lastCoord = new Seq<>();
-			private final Color from = NHColor.lightSkyFront, to = NHColor.deeperBlue;
-			
-			@Override
-			public void drawEffect(StatusEffect effect, Unit unit, float f){
-				float rad = width / 1.75f;
-				float stroke = width / 27f;
-				float life = 125f;
-				int itr = 4;
-				
-				rand.setSeed(seed);
-				
-				Draw.blend(Blending.additive);
-				
-				if(lastCoord.isEmpty())for(int i = 0; i < itr; i++){
-					lastCoord.add(new Vec3(Core.camera.position.x, Core.camera.position.y, life * (i / (float)itr)));
-				}
-				
-				for(int i = 0; i < itr; i++){
-					Vec3 vec3 = lastCoord.get(i);
-					
-					if(!Vars.state.isPaused()){
-						vec3.z -= Time.delta;
-						if(vec3.z < -2){
-							vec3.set(Core.camera.position.x, Core.camera.position.y, life);
-						}
-					}
-					
-					Tmp.v1.set(vec3.x, vec3.y).sub(Core.camera.position).scl(renderer.getDisplayScale() / 3f);
-					float fin = vec3.z / life, fout = 1f - fin;
-					
-					Draw.alpha(Mathf.curve(fin, 0, 0.55f) * f);
-					Lines.stroke(stroke * fout * f);
-					Draw.tint(from, to, fout);
-					
-					Lines.square(width / 2 + Tmp.v1.x, height / 2 + Tmp.v1.y, rad * fout + 0.22f, 45);
-				}
-				
-				Draw.blend();
-			}
-		});
 
-		 */
+					Draw.getColor().lerp(Color.white, Mathf.absin(2f, 0.075f));
+
+					Lines.lineAngle(width() / 2 + rand.range(0.5f) * particleLen + j / 10f * width() * fin, height() / 2 + rand.range(0.5f) * stroke + i * height() / 60, angle * 90 + 90, particleLen * (fout * 0.4f + 0.6f) * warmup);
+				}
+			}
+		});
 	}
 	
 	public void register(StatusEffect effect, int priority, Cons3<Float, Unit, StatusEffect> statusRenderer){

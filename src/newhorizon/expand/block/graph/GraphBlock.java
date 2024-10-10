@@ -58,13 +58,12 @@ public class GraphBlock extends AdaptBlock {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.itemsMoved, itemPerSecond, StatUnit.itemsSecond);
+        stats.add(Stat.itemsMoved, itemPerSecond * itemCapacity, StatUnit.itemsSecond);
     }
 
     @Override
     public void setBars() {
         super.setBars();
-        addBar("progress", (GraphBlockBuild b) -> new Bar(() -> b.recDir + "", () -> Pal.techBlue, () -> 1f));
     }
 
     @Override

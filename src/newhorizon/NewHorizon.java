@@ -30,6 +30,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
+import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.content.blocks.ProductionBlocks;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.entities.EntityRegister;
@@ -82,12 +83,7 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(ProductionBlocks.resonanceMiningFacility),
-			new FeatureLog(ProductionBlocks.beamMiningFacility),
-			new FeatureLog(ProductionBlocks.implosionMiningFacility),
-			new FeatureLog(ProductionBlocks.refineModule),
-			new FeatureLog(ProductionBlocks.speedModule),
-			new FeatureLog(ProductionBlocks.deliveryModule),
+			new FeatureLog(DistributionBlock.hardLightConveyor),
 		};
 	}
 	
