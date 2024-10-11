@@ -83,7 +83,8 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			//new FeatureLog(DistributionBlock.hyperLinkConveyor),
+			new FeatureLog(DistributionBlock.hyperLinkConveyor),
+			new FeatureLog(DistributionBlock.compositeReloadConveyor),
 			new FeatureLog(DistributionBlock.hardLightConveyor),
 		};
 	}

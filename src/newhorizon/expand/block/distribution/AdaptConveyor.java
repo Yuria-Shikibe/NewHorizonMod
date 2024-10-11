@@ -35,7 +35,7 @@ import static mindustry.type.ItemStack.with;
 public class AdaptConveyor extends AdaptBlock {
     public TextureRegion[] edgeRegions, baseRegions, arrowRegions;
     public boolean drawPulse = false;
-    public float itemPerSecond = 4f;
+    public float itemPerSecond = 3f;
     public AdaptConveyor(String name) {
         super(name);
 
@@ -85,9 +85,9 @@ public class AdaptConveyor extends AdaptBlock {
         arrowRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-arrow"), 32, 32, 1, false);
 
         if (drawPulse){
-            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("conveyor-pulse")), 32, 32, 3, false);
+            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("track-rail-pulse")), 32, 32, 3, false);
         }else {
-            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("conveyor-base")), 32, 32, 0, false);
+            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("track-rail-base")), 32, 32, 0, false);
         }
     }
 
