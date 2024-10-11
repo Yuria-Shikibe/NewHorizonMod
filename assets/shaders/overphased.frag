@@ -32,7 +32,7 @@ void main() {
         scale = 1.0;
     }
 
-    vec4 color = texture(u_texture, position);
+    vec4 color = texture2D(u_texture, position);
     float alpha = color.a;
 
     color.a *= (alpha * scale);
