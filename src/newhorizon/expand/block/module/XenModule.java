@@ -7,7 +7,7 @@ import arc.util.Tmp;
 import arc.util.io.Writes;
 import mindustry.world.modules.BlockModule;
 import newhorizon.content.NHColor;
-import newhorizon.expand.block.graph.XenGraph;
+import newhorizon.expand.block.struct.XenGraph;
 
 public class XenModule extends BlockModule {
     public XenGraph graph;

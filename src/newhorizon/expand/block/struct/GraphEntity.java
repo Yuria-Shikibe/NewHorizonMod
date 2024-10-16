@@ -1,4 +1,4 @@
-package newhorizon.expand.block.graph;
+package newhorizon.expand.block.struct;
 
 import arc.func.Boolf;
 import arc.struct.Queue;
@@ -6,7 +6,7 @@ import arc.struct.Seq;
 import mindustry.gen.Building;
 import newhorizon.expand.block.AdaptBuilding;
 
-import static newhorizon.expand.block.graph.GraphUpdater.graphEntities;
+import static newhorizon.expand.block.struct.GraphUpdater.graphEntities;
 
 /**A graph used for builds.
  *

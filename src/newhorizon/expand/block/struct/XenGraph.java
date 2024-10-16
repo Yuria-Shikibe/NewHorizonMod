@@ -1,4 +1,4 @@
-package newhorizon.expand.block.graph;
+package newhorizon.expand.block.struct;
 
 import arc.graphics.Color;
 import arc.struct.Queue;
@@ -7,7 +7,7 @@ import mindustry.gen.Building;
 import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
 
-import static newhorizon.expand.block.graph.GraphUpdater.xenGraphAll;
+import static newhorizon.expand.block.struct.GraphUpdater.xenGraphAll;
 
 public class XenGraph {
     /** <p>concept:</p>

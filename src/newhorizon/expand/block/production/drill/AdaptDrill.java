@@ -30,10 +30,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
-import mindustry.world.meta.BlockFlag;
-import mindustry.world.meta.BlockGroup;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.*;
 import newhorizon.content.NHStats;
 import newhorizon.expand.block.consumer.PowerConsumer;
 import newhorizon.util.ui.BarExtend;
@@ -428,11 +425,11 @@ public class AdaptDrill extends Block {
 
         //notice in tick
         public float getPowerCons(){
-            return (powerConsBase * powerConsMul + powerConsExtra) / 60f;
+            return canOutput()? (powerConsBase * powerConsMul + powerConsExtra) / 60f: 0f;
         }
 
         private void updateProgress(){
-            if (items.total() < itemCapacity){
+            if (canOutput()){
                 progress += edelta() * Mathf.clamp((float) dominantItems/maxOreTileReq) * boostScl();
             }
             if (!headless){
@@ -456,6 +453,23 @@ public class AdaptDrill extends Block {
         public Object senseObject(LAccess sensor){
             if(sensor == LAccess.firstItem) return dominantItem;
             return super.senseObject(sensor);
+        }
+
+        public boolean canOutput(){
+            return items.total() < itemCapacity;
+        }
+
+        public BlockStatus status() {
+            if (!enabled) {
+                return BlockStatus.logicDisable;
+            }
+            if (!canOutput()) {
+                return BlockStatus.noOutput;
+            }
+            if (efficiency <= 0 || !productionValid()) {
+                return BlockStatus.noInput;
+            }
+            return BlockStatus.active;
         }
 
         @Override

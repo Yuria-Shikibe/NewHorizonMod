@@ -1,4 +1,4 @@
-package newhorizon.expand.block.graph;
+package newhorizon.expand.block.struct;
 
 import arc.struct.IntMap;
 import newhorizon.expand.block.AdaptBuilding;

@@ -1,7 +1,11 @@
 package newhorizon.util;
 
+import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import arc.util.Time;
+import mindustry.gen.Posc;
 
 public class MathUtil {
 
@@ -35,5 +39,21 @@ public class MathUtil {
         float start = (max + min) / 2;
 
         return sin * scale + start;
+    }
+
+    public static float dst(Posc a, Posc b){
+        return Mathf.dst(a.x(), a.y(), b.x(), b.y());
+    }
+
+    public static float dst(Vec2 a, Vec2 b){
+        return Mathf.dst(a.x, a.y, b.x, b.y);
+    }
+
+    public static float angle(Posc start, Posc end){
+        return Angles.angle(start.x(), start.y(), end.x(), end.y());
+    }
+
+    public static float angle(Vec2 start, Vec2 end){
+        return Angles.angle(start.x, start.y, end.x, end.y);
     }
 }

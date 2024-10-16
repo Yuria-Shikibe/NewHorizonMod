@@ -6,7 +6,7 @@ import arc.graphics.g2d.Fill;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
-import newhorizon.expand.block.graph.GraphEntity;
+import newhorizon.expand.block.struct.GraphEntity;
 import newhorizon.expand.block.module.XenModule;
 
 public class AdaptBuilding extends Building {
@@ -56,26 +56,7 @@ public class AdaptBuilding extends Building {
 
     @Override
     public void drawSelect() {
-        /*
-        if (hasXen()) {
-            for (AdaptBuilding build : xen.graph.allBuildings) {
-                Draw.color(Pal.accent);
-                Fill.square(build.x, build.y, 2, 45);
-                Draw.reset();
-            }
-            String xenInfo = "Graph ID: " + xen.graph.graphID + "\nGraph Area: " + xen.graph.area + "\nGraph Height: " + xen.graph.height + "\nXen Level: " + xen.getXenText();
-            DrawUtil.drawText(xenInfo, x, y - 8);
-        }
 
-         */
-
-        if (getBlock().isGraphEntity) {
-            for (AdaptBuilding build : graph.allBuildings) {
-                Draw.color(Pal.accent);
-                Fill.square(build.x, build.y, 2, 45);
-                Draw.reset();
-            }
-        }
     }
 
     @Override
