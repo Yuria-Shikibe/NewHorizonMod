@@ -56,4 +56,22 @@ public class MathUtil {
     public static float angle(Vec2 start, Vec2 end){
         return Angles.angle(start.x, start.y, end.x, end.y);
     }
+
+    public static float angleBisector(float a, float b) {
+        a = Mathf.mod(a, 360f);
+        b = Mathf.mod(b, 360f);
+
+        float delta = Math.abs(a - b);
+
+        return (delta > 180? (a + b) / 2f + 180: (a + b) / 2f) % 360;
+    }
+
+    public static float angelDistance(float start, float end){
+        start = Mathf.mod(start, 360f);
+        end = Mathf.mod(end, 360f);
+
+        return (end + 360 - start) % 360;
+
+    }
+
 }

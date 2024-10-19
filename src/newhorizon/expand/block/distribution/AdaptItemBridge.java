@@ -8,10 +8,8 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
-import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.struct.Queue;
-import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -21,7 +19,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
-import mindustry.world.Edges;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
@@ -31,14 +28,20 @@ import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.itemSize;
 import static mindustry.Vars.tilesize;
+import static newhorizon.NewHorizon.DEBUGGING;
 
 public class AdaptItemBridge extends AdaptBlock {
+    public static final float
+        LAYER_CORNER = Layer.block - 0.1f,
+        LAYER_SHADOW = Layer.block + 0.1f,
+        LAYER_BRIDGE = Layer.block + 0.2f,
+        LAYER_ARROW = Layer.block + 0.3f,
+        LAYER_ITEM = Layer.block + 0.4f;
+
     public float itemPerSecond = 3f;
     public int maxLength;
     public TextureRegion[] edgeRegion, headRegion ,arrowRegions;
     public AdaptConveyor conveyor;
-
-    private final Vec2 tmp0 = new Vec2(), tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2();
 
     public AdaptItemBridge(String name) {
         super(name);
@@ -64,8 +67,8 @@ public class AdaptItemBridge extends AdaptBlock {
 
 
 
-        config(Point2.class, (AdaptItemBridgeBuild tile, Point2 pos) -> tile.otherPos = Point2.pack(pos.x + tile.tileX(), pos.y + tile.tileY()));
-        config(Integer.class, (AdaptItemBridgeBuild tile, Integer status) -> tile.status = status);
+        //config(Point2.class, (AdaptItemBridgeBuild tile, Point2 pos) -> tile.otherPos = Point2.pack(pos.x + tile.tileX(), pos.y + tile.tileY()));
+        //config(Integer.class, (AdaptItemBridgeBuild tile, Integer status) -> tile.status = status);
     }
 
     @Override
@@ -73,7 +76,7 @@ public class AdaptItemBridge extends AdaptBlock {
         super.load();
         edgeRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-edge"), 32, 32, 1);
         arrowRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-arrow"), 32, 32, 1, false);
-        headRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-head0"), 8, 36);
+        headRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-head0"), 8, 36, 1);
     }
 
     public float framePeriod(){
@@ -81,18 +84,41 @@ public class AdaptItemBridge extends AdaptBlock {
     }
 
     public class AdaptItemBridgeBuild extends AdaptBuilding{
+        public Vec2
+            tmp0 = new Vec2(), tmp1 = new Vec2(), tmp2 = new Vec2(), tmp3 = new Vec2(),
+            tmp4 = new Vec2(), tmp5 = new Vec2(), tmp6 = new Vec2(), tmp7 = new Vec2();
+
         public float progress;
-        //status flag. -1 for disabled. 0 for receive, 1 for send
-        public static final int DISABLED_STATUS = -1;
-        public static final int RECEIVE_STATUS = 0;
-        public static final int SEND_STATUS = 1;
+        //status flag. -1 for disabled. 0 for receive, 1 for send, 2 for transfer
+        public static final int
+            STATUS_DISABLED = 0,
+            STATUS_SEND = 1,
+            STATUS_RECEIVE = 2,
+            STATUS_TRANSFER = 3;
+
+        //status for bridge
+        public int status = STATUS_DISABLED;
+
+        //packed pos for other build
+        public int senderPos = -1;
+        public int receiverPos = -1;
+        public AdaptItemBridgeBuild sender;
+        public AdaptItemBridgeBuild receiver;
 
         //used to control the bridge
+        //last input angle. rotDeg() if none.
+
         public float bridgeAng;
+        //bridge length.
         public float bridgeDst;
+        //bridge segments as conveyors.
         public int bridgeSeg;
 
+        public float cornerInAng;
+        public float cornerOutAng;
+
         //used to control the rotation center of the corner
+        //the rotation center between bridges.
         public Vec2 bridgeRotCenter = new Vec2();
         public float bridgeRotDst;
         public float bridgeRotAng;
@@ -100,16 +126,13 @@ public class AdaptItemBridge extends AdaptBlock {
 
         public Queue<ItemStacker> bridgeItems;
 
-        //packed pos for other build
-        public int otherPos = -1;
-        public AdaptItemBridgeBuild other;
-
-        public int status = DISABLED_STATUS;
 
         @Override
         public void created() {
             super.created();
             bridgeItems = new Queue<>();
+            cornerInAng = cornerOutAng = rotdeg();
+            reconnectBridge(null, null);
         }
 
 
@@ -123,27 +146,74 @@ public class AdaptItemBridge extends AdaptBlock {
         public boolean onConfigureBuildTapped(Building other){
             if(other != this && other instanceof AdaptItemBridgeBuild){
                 AdaptItemBridgeBuild build = (AdaptItemBridgeBuild)other;
-                setReceiver(build);
-                build.setSender(this);
 
-                bridgeAng = MathUtil.angle(this, other);
-                bridgeDst = MathUtil.dst(this, other) - tilesize;
+                if (build.sender != null) build.sender.receiver = null;
+                if (receiver != null) receiver.sender = null;
+
+                if (receiver != null) {
+                    receiver.reconnectBridge(null, receiver.receiver);
+                }
+                if (build.sender != null) {
+                    build.sender.reconnectBridge(build.sender.sender, null);
+                }
+
+                //calculate bridge
+                bridgeAng = MathUtil.angle(this, build);
+                bridgeDst = MathUtil.dst(this, build) - tilesize;
                 bridgeSeg = Mathf.round(bridgeDst / tilesize);
 
-                bridgeRotAng = (rotdeg() + 180 + bridgeAng)/2f;
-                bridgeRotClip = Angles.angleDist(bridgeAng, bridgeRotAng);
+                //calculate corner for both.
+                cornerOutAng = build.cornerInAng = MathUtil.angle(this, build);
+
+                //calculate rot center for both.
+                bridgeRotAng = MathUtil.angleBisector(cornerInAng + 180, cornerOutAng);
+                bridgeRotClip = Angles.angleDist(cornerOutAng, bridgeRotAng);
+
+                build.bridgeRotAng = MathUtil.angleBisector(build.cornerInAng + 180, build.cornerOutAng);
+                build.bridgeRotClip = Angles.angleDist(build.cornerOutAng, build.bridgeRotAng);
+
+                Log.info(build.bridgeRotAng);
+
                 if (Angles.within(bridgeRotClip, 90, 1f)){
                     bridgeRotCenter.set(this);
                     bridgeRotAng = rotdeg();
                     bridgeRotDst = 4f;
+
+                    build.bridgeRotCenter.set(build);
+                    build.bridgeRotAng = build.rotdeg();
+                    build.bridgeRotDst = 4f;
                 }else {
-                    float dst = tilesize/2f / Mathf.cosDeg(bridgeRotClip);
-                    bridgeRotCenter.trns(bridgeRotAng, dst).add(this);
-                    bridgeRotDst = dst;
+                    float dst1 = tilesize/2f / Mathf.cosDeg(bridgeRotClip);
+                    bridgeRotCenter.trns(bridgeRotAng, dst1).add(this);
+                    bridgeRotDst = dst1;
+
+                    float dst2 = tilesize/2f / Math.abs(Mathf.cosDeg(build.bridgeRotClip));
+                    build.bridgeRotCenter.trns(build.bridgeRotAng, dst2).add(build);
+                    build.bridgeRotDst = dst2;
                 }
+
+                reconnectBridge(sender, build);
+                build.reconnectBridge(this, build.receiver);
+
                 return true;
             }
             return true;
+        }
+
+        public void reconnectBridge(AdaptItemBridgeBuild sender, AdaptItemBridgeBuild receiver){
+            this.sender = sender;
+            senderPos = sender == null? -1: sender.pos();
+            this.receiver = receiver;
+            receiverPos = receiver == null? -1: receiver.pos();
+            updateBridgeStatus();
+            updateCorner();
+        }
+
+        public void updateBridgeStatus(){
+            if (sender == null && receiver == null) status = STATUS_DISABLED;
+            if (sender == null && receiver != null) status = STATUS_SEND;
+            if (sender != null && receiver == null) status = STATUS_RECEIVE;
+            if (sender != null && receiver != null) status = STATUS_TRANSFER;
         }
 
         public Item stackItem(){
@@ -161,7 +231,7 @@ public class AdaptItemBridge extends AdaptBlock {
                 progress += edelta();
             }
 
-            if (status == SEND_STATUS){
+            if (status == STATUS_SEND){
                 if(progress >= framePeriod() && bridgeCanInsert()){
                     bridgeQueueItem(stackItem(), stackCount());
                     progress %= framePeriod();
@@ -170,7 +240,7 @@ public class AdaptItemBridge extends AdaptBlock {
                 updateBridge();
             }
 
-            if (status == RECEIVE_STATUS){
+            if (status == STATUS_RECEIVE){
                 int max = stackCount();
                 if(progress >= framePeriod() && moveForwardStack() == max){
                     progress %= framePeriod();
@@ -215,8 +285,8 @@ public class AdaptItemBridge extends AdaptBlock {
             }
 
             ItemStacker first = bridgeItems.first();
-            if (first.progress > bridgeSeg * framePeriod() && other.acceptBridge(first.itemStack.item)){
-                other.handleBridge(first.itemStack.item, first.itemStack.amount);
+            if (first.progress > bridgeSeg * framePeriod() && receiver.acceptBridge(first.itemStack.item)){
+                receiver.handleBridge(first.itemStack.item, first.itemStack.amount);
                 bridgeItems.removeFirst();
             }
         }
@@ -226,13 +296,13 @@ public class AdaptItemBridge extends AdaptBlock {
         }
 
         public void bridgeDequeueItem(){
-            if (other == null) return;
+            if (receiver == null) return;
             bridgeItems.removeFirst();
         }
 
         public boolean bridgeCanDequeue(){
-            if (other == null) return false;
-            return other.acceptItem(this, bridgeItems.first().itemStack.item);
+            if (receiver == null) return false;
+            return receiver.acceptItem(this, bridgeItems.first().itemStack.item);
         }
 
         public boolean bridgeCanInsert(){
@@ -278,51 +348,18 @@ public class AdaptItemBridge extends AdaptBlock {
         }
 
         public boolean connected(){
-            return otherPos != -1 && status != -1;
-        }
-
-        public void resetBuild(){
-            if (other != null) {
-                other.otherPos = other.status = DISABLED_STATUS;
-                other.other = null;
-            }
-            otherPos = status = DISABLED_STATUS;
-            other = null;
-        }
-
-
-        public void setReceiver(AdaptItemBridgeBuild receiver){
-            resetBuild();
-            receiver.resetBuild();
-
-            setOther(receiver);
-            receiver.setOther(this);
-
-            receiver.status = RECEIVE_STATUS;
-            status = SEND_STATUS;
-        }
-
-        public void setSender(AdaptItemBridgeBuild sender){
-            resetBuild();
-            sender.resetBuild();
-
-            setOther(sender);
-            sender.setOther(this);
-
-            sender.status = SEND_STATUS;
-            status = RECEIVE_STATUS;
-        }
-
-        public void setOther(AdaptItemBridgeBuild build){
-            otherPos = build.pos();
-            other = build;
+            return status != STATUS_DISABLED;
         }
 
         @Override
         public void remove() {
-            if (!(status == DISABLED_STATUS)){
-                other.resetBuild();
-                resetBuild();
+            if (status != STATUS_DISABLED){
+                if (sender != null){
+                    sender.reconnectBridge(sender.sender, null);
+                }
+                if (receiver != null){
+                    receiver.reconnectBridge(null, receiver.receiver);
+                }
             }
 
             super.remove();
@@ -331,101 +368,178 @@ public class AdaptItemBridge extends AdaptBlock {
         @Override
         public void draw() {
             if (conveyor == null) return;
-            int index = (int)((((Time.time) % conveyor.framePeriod()) / conveyor.framePeriod()) * 16);
-            Draw.z(Layer.blockUnder - 0.1f);
-            if (other != null){
-                drawCorner();
-                drawBridge();
+            drawCorner();
+            drawBridge();
+        }
+
+        public void updateCorner(){
+            if (Angles.within(bridgeRotClip, 90, 1f) || status == STATUS_DISABLED){
+                tmp0.set(-tilesize/2f, tilesize/2f).rotate(rotdeg()).add(this);
+                tmp1.set(-tilesize/2f, -tilesize/2f).rotate(rotdeg()).add(this);
+                tmp2.set(-tilesize/4f, tilesize/2f).rotate(rotdeg()).add(this);
+                tmp3.set(-tilesize/4f, -tilesize/2f).rotate(rotdeg()).add(this);
+                tmp4.set(tilesize/4f, tilesize/2f).rotate(rotdeg()).add(this);
+                tmp5.set(tilesize/4f, -tilesize/2f).rotate(rotdeg()).add(this);
+                tmp6.set(tilesize/2f, tilesize/2f).rotate(rotdeg()).add(this);
+                tmp7.set(tilesize/2f, -tilesize/2f).rotate(rotdeg()).add(this);
+
+                return;
             }
-            /*
-            if (other != null){
-                drawBridge();
-                if (status == SEND_STATUS){
-                    //Draw.rect(headRegion[0], x, y, rotdeg());
-                    Draw.rect(arrowRegions[index], x, y, rotdeg());
-                }
-                if (status == RECEIVE_STATUS){
-                    //Draw.rect(headRegion[1], x, y, rotdeg());
-                    Draw.rect(arrowRegions[index + 16], x, y, rotdeg());
-                }
+
+            float dst = bridgeRotDst * Mathf.sinDeg(bridgeRotClip);
+            float ang = (90 - bridgeRotClip)/2f;
+            float len1 = dst - tilesize/2f, len2 = dst + tilesize/2f;
+            float dst1 = len1 / Mathf.cosDeg(ang), dst2 = len2 / Mathf.cosDeg(ang);
+
+            Tmp.v1.trns(cornerInAng + 180, tilesize/2f);
+            Tmp.v2.trns(cornerOutAng, tilesize/2f);
+
+            float ang1 = Tmp.v1.angle();
+            float ang2 = Tmp.v2.angle();
+
+            boolean realInvert = MathUtil.angelDistance(ang1, ang2) > 180f;
+            if (realInvert){
+                tmp0.trns(bridgeRotAng + 180f - ang * 2, len1).add(bridgeRotCenter);
+                tmp1.trns(bridgeRotAng + 180f - ang * 2, len2).add(bridgeRotCenter);
+                tmp2.trns(bridgeRotAng + 180f - ang, dst1).add(bridgeRotCenter);
+                tmp3.trns(bridgeRotAng + 180f - ang, dst2).add(bridgeRotCenter);
+                tmp4.trns(bridgeRotAng + 180f + ang, dst1).add(bridgeRotCenter);
+                tmp5.trns(bridgeRotAng + 180f + ang, dst2).add(bridgeRotCenter);
+                tmp6.trns(bridgeRotAng + 180f + ang * 2, len1).add(bridgeRotCenter);
+                tmp7.trns(bridgeRotAng + 180f + ang * 2, len2).add(bridgeRotCenter);
             }else {
-                //Draw.rect(headRegion[0], x, y, rotdeg());
-                Draw.rect(arrowRegions[index], x, y, rotdeg());
+                tmp0.trns(bridgeRotAng + 180f + ang * 2, len1).add(bridgeRotCenter);
+                tmp1.trns(bridgeRotAng + 180f + ang * 2, len2).add(bridgeRotCenter);
+                tmp2.trns(bridgeRotAng + 180f + ang, dst1).add(bridgeRotCenter);
+                tmp3.trns(bridgeRotAng + 180f + ang, dst2).add(bridgeRotCenter);
+                tmp4.trns(bridgeRotAng + 180f - ang, dst1).add(bridgeRotCenter);
+                tmp5.trns(bridgeRotAng + 180f - ang, dst2).add(bridgeRotCenter);
+                tmp6.trns(bridgeRotAng + 180f - ang * 2, len1).add(bridgeRotCenter);
+                tmp7.trns(bridgeRotAng + 180f - ang * 2, len2).add(bridgeRotCenter);
+            }
+        }
+
+        public void drawBridge(){
+            if (status == STATUS_DISABLED) return;
+            if (receiver == null) return;
+
+            int index = (int)((((Time.time) % conveyor.framePeriod()) / conveyor.framePeriod()) * 16);
+            //leave another 1 for connection
+            float dstLen = (bridgeDst + 1) / bridgeSeg;
+
+            for (int i = 0; i < bridgeSeg; i++){
+                float segDst = dstLen * i + tilesize - 0.5f;
+                int idx = i % 2;
+                Tmp.v1.trns(bridgeAng, segDst).add(this);
+                Draw.z(LAYER_BRIDGE);
+                Draw.rect(edgeRegion[idx], Tmp.v1.x, Tmp.v1.y, dstLen, tilesize, bridgeAng);
+                Draw.z(LAYER_ARROW);
+                Draw.rect(arrowRegions[index + 32], Tmp.v1.x, Tmp.v1.y, dstLen, tilesize, bridgeAng);
             }
 
-             */
-            float z = Draw.z();
-            //Draw.z(z + 0.0001f);
-            //Draw.rect(conveyor.edgeRegions[0], x, y, rotdeg());
-
-            if(stackItem() != null){
-                Draw.z(Layer.block + 0.11f);
-                Tmp.v1.set(Geometry.d4x(rotation + 2) * tilesize / 2f, Geometry.d4y(rotation + 2) * tilesize / 2f)
-                    .lerp(Geometry.d4x(rotation) * tilesize / 2f, Geometry.d4y(rotation) * tilesize / 2f, progress / framePeriod());
-                Draw.rect(stackItem().fullIcon, x + Tmp.v1.x, y + Tmp.v1.y, itemSize, itemSize);
-                DrawUtil.drawText(stackCount() + "", x + Tmp.v1.x, y + Tmp.v1.y, 1f);
+            for (int i = 0; i < bridgeItems.size; i++){
+                ItemStacker stack = bridgeItems.get(i);
+                float segDst = ((stack.progress / framePeriod()) / bridgeSeg) * (bridgeDst + 1) + tilesize/2f;
+                Tmp.v1.trns(bridgeAng, segDst).add(this);
+                Draw.z(LAYER_ITEM);
+                Draw.rect(stack.itemStack.item.fullIcon, Tmp.v1.x, Tmp.v1.y, itemSize, itemSize);
+                DrawUtil.drawText(stack.itemStack.amount + "", Tmp.v1.x, Tmp.v1.y, 1f);
             }
-            Draw.z(Layer.block + 0.2f);
-            //Lines.stroke(1f);
-            //Lines.lineAngle(x, y, rotdeg() + 180, 20);
-            //Lines.lineAngle(x, y, bridgeAng, 20);
-            //Lines.lineAngle(x, y, bridgeRotAng, bridgeRotDst);
         }
 
         public void drawCorner(){
-            float len = bridgeRotDst * Mathf.sinDeg(bridgeRotClip);
-            float ang = (90 - bridgeRotClip)/2f;
-            float start = bridgeRotAng + 180 - ang * 2;
-            for (int i = 0; i < 4; i++){
-                tmp0.trns(start + i * ang, len - 4.5f).add(bridgeRotCenter);
-                tmp1.trns(start + i * ang, len + 4.5f).add(bridgeRotCenter);
-                tmp2.trns(start + (i + 1) * ang, len + 4.5f).add(bridgeRotCenter);
-                tmp3.trns(start + (i + 1) * ang, len - 4.5f).add(bridgeRotCenter);
-                Fill.quad(
-                    headRegion[i],
-                    tmp0.x, tmp0.y,
-                    tmp1.x, tmp1.y,
-                    tmp2.x, tmp2.y,
-                    tmp3.x, tmp3.y
-                );
+            if (status == STATUS_DISABLED) {
+                quad(headRegion[0], tmp0, tmp1, tmp3, tmp2);
+                quad(headRegion[1], tmp2, tmp3, tmp5, tmp4);
+                quad(headRegion[2], tmp4, tmp5, tmp7, tmp6);
             }
+            if (status == STATUS_SEND){
+                quad(headRegion[0], tmp0, tmp1, tmp3, tmp2);
+                quad(headRegion[1], tmp2, tmp3, tmp5, tmp4);
+                quad(headRegion[2], tmp4, tmp5, tmp7, tmp6);
+            }
+            if (status == STATUS_RECEIVE){
+                quad(headRegion[2], tmp0, tmp1, tmp3, tmp2);
+                quad(headRegion[1], tmp2, tmp3, tmp5, tmp4);
+                quad(headRegion[0], tmp4, tmp5, tmp7, tmp6);
+            }
+            if (status == STATUS_TRANSFER){
+                quad(headRegion[2], tmp0, tmp1, tmp3, tmp2);
+                quad(headRegion[2], tmp2, tmp3, tmp5, tmp4);
+                quad(headRegion[2], tmp4, tmp5, tmp7, tmp6);
+            }
+
+            float frameProgress = (((Time.time) % conveyor.framePeriod()) / conveyor.framePeriod());
+            int index = 0;
+            if (status == STATUS_DISABLED){index = (int) (frameProgress * 16);}
+            if (status == STATUS_SEND){index = (int) (frameProgress * 16);}
+            if (status == STATUS_RECEIVE){index = (int) (frameProgress * 16 + 16);}
+            if (status == STATUS_TRANSFER){index = (int) (frameProgress * 16 + 32);}
+
+            float realProgress = (frameProgress + 0.5f) % 1f;
+            float ang = Mathf.lerp(cornerInAng, cornerOutAng, realProgress);
+            Draw.z(LAYER_ARROW);
+            Draw.rect(arrowRegions[index], x, y, ang);
+
+            if(stackItem() != null){
+                Draw.z(Layer.block + 0.11f);
+                Tmp.v1.trns(cornerInAng + 180, tilesize/2f).add(this);
+                Tmp.v2.trns(cornerOutAng, tilesize/2f).add(this);
+                Tmp.v3.set(Tmp.v1).lerp(Tmp.v2, cornerFrac());
+                Draw.z(LAYER_ITEM);
+                Draw.rect(stackItem().fullIcon, Tmp.v3.x, Tmp.v3.y, itemSize, itemSize);
+                DrawUtil.drawText(stackCount() + "", Tmp.v3.x, Tmp.v3.y, 1f);
+            }
+        }
+
+        public float cornerFrac(){
+            return progress / framePeriod();
+        }
+
+        public void quad(TextureRegion region, Vec2 v0, Vec2 v1, Vec2 v2, Vec2 v3){
+            Fill.quad(region, v0.x, v0.y, v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
         }
 
         @Override
         public void drawSelect() {
             super.drawSelect();
+
+
+            if (!DEBUGGING) return;
+            DrawUtil.drawText("status: " + status, x, y - 2);
+            DrawUtil.drawText("inAngle: " + cornerInAng, x, y - 6);
+            DrawUtil.drawText("outAngle: " + cornerOutAng, x, y - 10);
+            DrawUtil.drawText("rotAngle: " + bridgeRotAng, x, y - 14);
+
+            Fill.circle(tmp0.x, tmp0.y, 0.5f);
+            Fill.circle(tmp1.x, tmp1.y, 0.5f);
+            Fill.circle(tmp2.x, tmp2.y, 0.5f);
+            Fill.circle(tmp3.x, tmp3.y, 0.5f);
+            Fill.circle(tmp4.x, tmp4.y, 0.5f);
+            Fill.circle(tmp5.x, tmp5.y, 0.5f);
+            Fill.circle(tmp6.x, tmp6.y, 0.5f);
+            Fill.circle(tmp7.x, tmp7.y, 0.5f);
+
+            if (receiver != null){
+                Draw.color(Pal.techBlue);
+                Fill.circle(receiver.x, receiver.y, 2);
+                Fill.circle(receiver.bridgeRotCenter.x, receiver.bridgeRotCenter.y, 2);
+                Draw.color(Pal.remove);
+                Lines.lineAngle(receiver.x, receiver.y, receiver.cornerInAng + 180, 8);
+                Draw.color(Pal.techBlue);
+                Lines.lineAngle(receiver.x, receiver.y, receiver.cornerOutAng, 8);
+            }
+            if (sender != null){
+                Draw.color(Pal.remove);
+                Fill.circle(sender.x, sender.y, 2);
+                Fill.circle(sender.bridgeRotCenter.x, sender.bridgeRotCenter.y, 2);
+                Draw.color(Pal.remove);
+                Lines.lineAngle(sender.x, sender.y, sender.cornerInAng + 180, 8);
+                Draw.color(Pal.techBlue);
+                Lines.lineAngle(sender.x, sender.y, sender.cornerOutAng, 8);
+            }
         }
 
-        public void drawBridge(){
-            if (other == null) return;
-            if (status != SEND_STATUS) return;
-
-            int index = (int)((((Time.time) % conveyor.framePeriod()) / conveyor.framePeriod()) * 16);
-            float dstLen = bridgeDst / bridgeSeg;
-
-            for (int i = 0; i < bridgeSeg; i++){
-                float segDst = dstLen * i + dstLen;
-                int idx = i % 2;
-                Tmp.v1.trns(bridgeAng, segDst).add(this);
-                Draw.z(Layer.block + 0.1f);
-                Draw.rect(edgeRegion[idx], Tmp.v1.x, Tmp.v1.y, dstLen, tilesize, bridgeAng);
-                Draw.rect(arrowRegions[index + 32], Tmp.v1.x, Tmp.v1.y, dstLen, tilesize, bridgeAng);
-            }
-            for (int i = 0; i < bridgeItems.size; i++){
-                ItemStacker stack = bridgeItems.get(i);
-                float segDst = ((stack.progress / framePeriod()) / bridgeSeg) * bridgeDst;
-                Tmp.v1.trns(bridgeAng, segDst).add(this);
-                Draw.z(Layer.block + 0.11f);
-                Draw.rect(stack.itemStack.item.fullIcon, Tmp.v1.x, Tmp.v1.y, itemSize, itemSize);
-                DrawUtil.drawText(stack.itemStack.amount + "", Tmp.v1.x, Tmp.v1.y, 1f);
-            }
-            //Draw.z(Layer.block + 0.09f);
-            //Draw.color(Pal.shadow);
-            //Tmp.v1.trns(bridgeAng, 4f).add(this);
-            //Lines.stroke(tilesize);
-            //Lines.lineAngle(Tmp.v1.x - tilesize/4f, Tmp.v1.y - tilesize/4f, bridgeAng, bridgeDst - tilesize);
-            Draw.color();
-        }
     }
 
     public class ItemStacker{

@@ -115,12 +115,21 @@ public class NHRegister{
 			
 			afterLoad.clear();
 			
-			if(!Vars.headless && Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE) && NHSetting.getBool(NHSetting.EXPERIMENTAL)){
+			if(!Vars.headless && Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
 				Core.app.post(() -> {
 					Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
 					Vars.net.disconnect();
 				});
 			}
+
+			if(!Vars.headless && Vars.net.active() && NHSetting.getBool(NHSetting.EXPERIMENTAL)){
+				Core.app.post(() -> {
+					Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
+					Vars.net.disconnect();
+				});
+			}
+
+
 			
 			Core.app.post(() -> {
 				if(Vars.state.isPlaying()){
