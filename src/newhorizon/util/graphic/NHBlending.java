@@ -4,9 +4,14 @@ import arc.graphics.Blending;
 import arc.graphics.Gl;
 
 public class NHBlending{
-	public static final Blending sustainAlpha = new Blending(Gl.srcAlpha, Gl.oneMinusSrcAlpha){{
-	}},
-		test2 = new Blending(Gl.blendSrcRgb, Gl.blendEquationRgb),
-		test3 = new Blending(Gl.oneMinusSrcColor, Gl.blendDstRgb);
+	public static final Blending shadow = new Blending(Gl.constantAlpha, Gl.oneMinusConstantAlpha) {
+		@Override
+		public void apply() {
+			Gl.enable(Gl.blend);
+			Gl.blendColor(0, 0, 0, 0.22f);
+			Gl.blendFuncSeparate(src, dst, srcAlpha, dstAlpha);
+		}
+	};
+
 	
 }

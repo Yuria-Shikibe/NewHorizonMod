@@ -8,6 +8,7 @@ import arc.util.Time;
 import mindustry.gen.Posc;
 
 public class MathUtil {
+    private static final Vec2 tmp0 = new Vec2(), tmp1 = new Vec2(), tmp2 = new Vec2();
 
     /**@return sin value based on time.
      * @param min minimum value for sin vale
@@ -71,7 +72,12 @@ public class MathUtil {
         end = Mathf.mod(end, 360f);
 
         return (end + 360 - start) % 360;
-
     }
 
+    /** Angel move from start to end, the distance is in 180 degrees */
+    public static float angleRot(float start, float end, float progress){
+        tmp0.trns(start, 1);
+        tmp1.trns(end, 1);
+        return tmp2.set(tmp0).lerp(tmp1, progress).angle();
+    }
 }

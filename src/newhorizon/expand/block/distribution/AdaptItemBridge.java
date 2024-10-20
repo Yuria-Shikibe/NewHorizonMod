@@ -1,6 +1,7 @@
 package newhorizon.expand.block.distribution;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
@@ -24,6 +25,7 @@ import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
 import newhorizon.util.MathUtil;
 import newhorizon.util.graphic.DrawUtil;
+import newhorizon.util.graphic.NHBlending;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.itemSize;
@@ -32,16 +34,19 @@ import static newhorizon.NewHorizon.DEBUGGING;
 
 public class AdaptItemBridge extends AdaptBlock {
     public static final float
-        LAYER_CORNER = Layer.block - 0.1f,
+        LAYER_CORNER = Layer.block + 0.15f,
         LAYER_SHADOW = Layer.block + 0.1f,
         LAYER_BRIDGE = Layer.block + 0.2f,
         LAYER_ARROW = Layer.block + 0.3f,
-        LAYER_ITEM = Layer.block + 0.4f;
+        LAYER_ITEM = Layer.block + 0.4f,
+        SHADOW_OFFSET = 2.5f;
 
     public float itemPerSecond = 3f;
     public int maxLength;
-    public TextureRegion[] edgeRegion, headRegion ,arrowRegions;
+    public TextureRegion[] edgeRegion,arrowRegions;
+    public TextureRegion[][] cornerRegion;
     public AdaptConveyor conveyor;
+
 
     public AdaptItemBridge(String name) {
         super(name);
@@ -76,7 +81,21 @@ public class AdaptItemBridge extends AdaptBlock {
         super.load();
         edgeRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-edge"), 32, 32, 1);
         arrowRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-arrow"), 32, 32, 1, false);
-        headRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-head0"), 8, 36, 1);
+        cornerRegion = spiltQuad(SpriteUtil.splitRegionArray(Core.atlas.find(name + "-corner"), 38, 34));
+    }
+
+    public TextureRegion[][] spiltQuad(TextureRegion[] corner){
+        TextureRegion[][] out = new TextureRegion[corner.length][3];
+        for (int i = 0; i < corner.length; i++){
+            TextureRegion region = corner[i];
+            int x = region.getX();
+            int y = region.getY();
+
+            out[i][0] = new TextureRegion(region.texture, x + 1, y + 1, 8, 32);
+            out[i][1] = new TextureRegion(region.texture, x + 11, y + 1, 16, 32);
+            out[i][2] = new TextureRegion(region.texture, x + 29, y + 1, 8, 32);
+        }
+        return out;
     }
 
     public float framePeriod(){
@@ -176,11 +195,11 @@ public class AdaptItemBridge extends AdaptBlock {
 
                 if (Angles.within(bridgeRotClip, 90, 1f)){
                     bridgeRotCenter.set(this);
-                    bridgeRotAng = rotdeg();
+                    bridgeRotAng = cornerOutAng;
                     bridgeRotDst = 4f;
 
                     build.bridgeRotCenter.set(build);
-                    build.bridgeRotAng = build.rotdeg();
+                    build.bridgeRotAng = build.cornerOutAng;
                     build.bridgeRotDst = 4f;
                 }else {
                     float dst1 = tilesize/2f / Mathf.cosDeg(bridgeRotClip);
@@ -231,7 +250,7 @@ public class AdaptItemBridge extends AdaptBlock {
                 progress += edelta();
             }
 
-            if (status == STATUS_SEND){
+            if (status == STATUS_SEND || status == STATUS_TRANSFER){
                 if(progress >= framePeriod() && bridgeCanInsert()){
                     bridgeQueueItem(stackItem(), stackCount());
                     progress %= framePeriod();
@@ -307,7 +326,7 @@ public class AdaptItemBridge extends AdaptBlock {
 
         public boolean bridgeCanInsert(){
             if (bridgeSeg > 0 && bridgeItems.isEmpty()) return true;
-            return bridgeItems.last().progress > framePeriod();
+            return bridgeItems.last().progress > framePeriod() && bridgeItems.size < bridgeSeg;
         }
 
         public boolean acceptBridge(Item item){
@@ -374,14 +393,14 @@ public class AdaptItemBridge extends AdaptBlock {
 
         public void updateCorner(){
             if (Angles.within(bridgeRotClip, 90, 1f) || status == STATUS_DISABLED){
-                tmp0.set(-tilesize/2f, tilesize/2f).rotate(rotdeg()).add(this);
-                tmp1.set(-tilesize/2f, -tilesize/2f).rotate(rotdeg()).add(this);
-                tmp2.set(-tilesize/4f, tilesize/2f).rotate(rotdeg()).add(this);
-                tmp3.set(-tilesize/4f, -tilesize/2f).rotate(rotdeg()).add(this);
-                tmp4.set(tilesize/4f, tilesize/2f).rotate(rotdeg()).add(this);
-                tmp5.set(tilesize/4f, -tilesize/2f).rotate(rotdeg()).add(this);
-                tmp6.set(tilesize/2f, tilesize/2f).rotate(rotdeg()).add(this);
-                tmp7.set(tilesize/2f, -tilesize/2f).rotate(rotdeg()).add(this);
+                tmp0.set(-tilesize/2f, tilesize/2f).rotate(cornerInAng).add(this);
+                tmp1.set(-tilesize/2f, -tilesize/2f).rotate(cornerInAng).add(this);
+                tmp2.set(-tilesize/4f, tilesize/2f).rotate(cornerInAng).add(this);
+                tmp3.set(-tilesize/4f, -tilesize/2f).rotate(cornerInAng).add(this);
+                tmp4.set(tilesize/4f, tilesize/2f).rotate(cornerInAng).add(this);
+                tmp5.set(tilesize/4f, -tilesize/2f).rotate(cornerInAng).add(this);
+                tmp6.set(tilesize/2f, tilesize/2f).rotate(cornerInAng).add(this);
+                tmp7.set(tilesize/2f, -tilesize/2f).rotate(cornerInAng).add(this);
 
                 return;
             }
@@ -417,6 +436,13 @@ public class AdaptItemBridge extends AdaptBlock {
                 tmp6.trns(bridgeRotAng + 180f - ang * 2, len1).add(bridgeRotCenter);
                 tmp7.trns(bridgeRotAng + 180f - ang * 2, len2).add(bridgeRotCenter);
             }
+
+            if (receiver != null){
+                Log.info(MathUtil.dst(Tmp.v1.set(tmp0).lerp(tmp1, 0.5f), Tmp.v2.set(this)));
+                Log.info(MathUtil.dst(Tmp.v1.set(tmp6).lerp(tmp7, 0.5f), Tmp.v2.set(this)));
+                Log.info(MathUtil.dst(this, receiver));
+                Log.info(bridgeDst);
+            }
         }
 
         public void drawBridge(){
@@ -424,22 +450,27 @@ public class AdaptItemBridge extends AdaptBlock {
             if (receiver == null) return;
 
             int index = (int)((((Time.time) % conveyor.framePeriod()) / conveyor.framePeriod()) * 16);
-            //leave another 1 for connection
-            float dstLen = (bridgeDst + 1) / bridgeSeg;
+            float dstLen = bridgeDst / bridgeSeg;
 
             for (int i = 0; i < bridgeSeg; i++){
-                float segDst = dstLen * i + tilesize - 0.5f;
+                float segDst = dstLen * i + tilesize/2f + dstLen/2f;
                 int idx = i % 2;
                 Tmp.v1.trns(bridgeAng, segDst).add(this);
                 Draw.z(LAYER_BRIDGE);
                 Draw.rect(edgeRegion[idx], Tmp.v1.x, Tmp.v1.y, dstLen, tilesize, bridgeAng);
                 Draw.z(LAYER_ARROW);
-                Draw.rect(arrowRegions[index + 32], Tmp.v1.x, Tmp.v1.y, dstLen, tilesize, bridgeAng);
+                Draw.rect(arrowRegions[index], Tmp.v1.x, Tmp.v1.y, dstLen, tilesize, bridgeAng);
             }
+
+            Tmp.v1.trns(bridgeAng, tilesize / 2f + bridgeDst / 2f).add(this);
+            Draw.z(LAYER_SHADOW);
+            Draw.color(Pal.shadow);
+            Fill.rect(Tmp.v1.x - SHADOW_OFFSET, Tmp.v1.y - SHADOW_OFFSET, bridgeDst, tilesize, bridgeAng);
+            Draw.color();
 
             for (int i = 0; i < bridgeItems.size; i++){
                 ItemStacker stack = bridgeItems.get(i);
-                float segDst = ((stack.progress / framePeriod()) / bridgeSeg) * (bridgeDst + 1) + tilesize/2f;
+                float segDst = ((stack.progress / framePeriod()) / bridgeSeg) * bridgeDst + tilesize/2f;
                 Tmp.v1.trns(bridgeAng, segDst).add(this);
                 Draw.z(LAYER_ITEM);
                 Draw.rect(stack.itemStack.item.fullIcon, Tmp.v1.x, Tmp.v1.y, itemSize, itemSize);
@@ -448,41 +479,68 @@ public class AdaptItemBridge extends AdaptBlock {
         }
 
         public void drawCorner(){
-            if (status == STATUS_DISABLED) {
-                quad(headRegion[0], tmp0, tmp1, tmp3, tmp2);
-                quad(headRegion[1], tmp2, tmp3, tmp5, tmp4);
-                quad(headRegion[2], tmp4, tmp5, tmp7, tmp6);
-            }
-            if (status == STATUS_SEND){
-                quad(headRegion[0], tmp0, tmp1, tmp3, tmp2);
-                quad(headRegion[1], tmp2, tmp3, tmp5, tmp4);
-                quad(headRegion[2], tmp4, tmp5, tmp7, tmp6);
+            int index = (int)((((Time.time) % conveyor.framePeriod()) / conveyor.framePeriod()) * 16);
+            if (status == STATUS_DISABLED || status == STATUS_SEND){
+                quad(cornerRegion[index][0], tmp0, tmp1, tmp3, tmp2);
+                quad(cornerRegion[index][1], tmp2, tmp3, tmp5, tmp4);
+                quad(cornerRegion[index][2], tmp4, tmp5, tmp7, tmp6);
+
+                Draw.z(LAYER_SHADOW);
+                Draw.color(Pal.shadow);
+                Fill.quad(
+                    tmp2.x, tmp2.y,
+                    tmp3.x, tmp3.y,
+                    tmp5.x - SHADOW_OFFSET, tmp5.y - SHADOW_OFFSET,
+                    tmp4.x - SHADOW_OFFSET, tmp4.y - SHADOW_OFFSET);
+                Fill.quad(
+                    tmp4.x - SHADOW_OFFSET, tmp4.y - SHADOW_OFFSET,
+                    tmp5.x - SHADOW_OFFSET, tmp5.y - SHADOW_OFFSET,
+                    tmp7.x - SHADOW_OFFSET, tmp7.y - SHADOW_OFFSET,
+                    tmp6.x - SHADOW_OFFSET, tmp6.y - SHADOW_OFFSET);
+
+                if (status == STATUS_DISABLED){
+                    Fill.quad(
+                        tmp6.x, tmp6.y,
+                        tmp7.x, tmp7.y,
+                        tmp7.x - SHADOW_OFFSET, tmp7.y - SHADOW_OFFSET,
+                        tmp6.x - SHADOW_OFFSET, tmp6.y - SHADOW_OFFSET);
+                }
+                Draw.color();
             }
             if (status == STATUS_RECEIVE){
-                quad(headRegion[2], tmp0, tmp1, tmp3, tmp2);
-                quad(headRegion[1], tmp2, tmp3, tmp5, tmp4);
-                quad(headRegion[0], tmp4, tmp5, tmp7, tmp6);
+                quad(cornerRegion[index + 16][0], tmp0, tmp1, tmp3, tmp2);
+                quad(cornerRegion[index + 16][1], tmp2, tmp3, tmp5, tmp4);
+                quad(cornerRegion[index + 16][2], tmp4, tmp5, tmp7, tmp6);
+
+                Draw.z(LAYER_SHADOW);
+                Draw.color(Pal.shadow);
+                Fill.quad(
+                    tmp0.x - SHADOW_OFFSET, tmp0.y - SHADOW_OFFSET,
+                    tmp1.x - SHADOW_OFFSET, tmp1.y - SHADOW_OFFSET,
+                    tmp3.x - SHADOW_OFFSET, tmp3.y - SHADOW_OFFSET,
+                    tmp2.x - SHADOW_OFFSET, tmp2.y - SHADOW_OFFSET);
+                Fill.quad(
+                    tmp2.x - SHADOW_OFFSET, tmp2.y - SHADOW_OFFSET,
+                    tmp3.x - SHADOW_OFFSET, tmp3.y - SHADOW_OFFSET,
+                    tmp5.x, tmp5.y,
+                    tmp4.x, tmp4.y);
+                Draw.color();
             }
             if (status == STATUS_TRANSFER){
-                quad(headRegion[2], tmp0, tmp1, tmp3, tmp2);
-                quad(headRegion[2], tmp2, tmp3, tmp5, tmp4);
-                quad(headRegion[2], tmp4, tmp5, tmp7, tmp6);
+                quad(cornerRegion[index + 32][0], tmp0, tmp1, tmp3, tmp2);
+                quad(cornerRegion[index + 32][1], tmp2, tmp3, tmp5, tmp4);
+                quad(cornerRegion[index + 32][2], tmp4, tmp5, tmp7, tmp6);
+
+                Draw.z(LAYER_SHADOW);
+                Draw.color(Pal.shadow);
+                quadShadow(tmp0, tmp1, tmp3, tmp2);
+                quadShadow(tmp2, tmp3, tmp5, tmp4);
+                quadShadow(tmp4, tmp5, tmp7, tmp6);
+                Draw.color();
             }
 
-            float frameProgress = (((Time.time) % conveyor.framePeriod()) / conveyor.framePeriod());
-            int index = 0;
-            if (status == STATUS_DISABLED){index = (int) (frameProgress * 16);}
-            if (status == STATUS_SEND){index = (int) (frameProgress * 16);}
-            if (status == STATUS_RECEIVE){index = (int) (frameProgress * 16 + 16);}
-            if (status == STATUS_TRANSFER){index = (int) (frameProgress * 16 + 32);}
-
-            float realProgress = (frameProgress + 0.5f) % 1f;
-            float ang = Mathf.lerp(cornerInAng, cornerOutAng, realProgress);
-            Draw.z(LAYER_ARROW);
-            Draw.rect(arrowRegions[index], x, y, ang);
-
             if(stackItem() != null){
-                Draw.z(Layer.block + 0.11f);
+                Draw.z(Layer.blockUnder - 0.2f);
                 Tmp.v1.trns(cornerInAng + 180, tilesize/2f).add(this);
                 Tmp.v2.trns(cornerOutAng, tilesize/2f).add(this);
                 Tmp.v3.set(Tmp.v1).lerp(Tmp.v2, cornerFrac());
@@ -497,7 +555,14 @@ public class AdaptItemBridge extends AdaptBlock {
         }
 
         public void quad(TextureRegion region, Vec2 v0, Vec2 v1, Vec2 v2, Vec2 v3){
+            Draw.z(LAYER_CORNER);
             Fill.quad(region, v0.x, v0.y, v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
+        }
+
+        public void quadShadow(Vec2 v0, Vec2 v1, Vec2 v2, Vec2 v3){
+            Fill.quad(
+                v0.x - SHADOW_OFFSET, v0.y - SHADOW_OFFSET, v1.x - SHADOW_OFFSET, v1.y - SHADOW_OFFSET,
+                v2.x - SHADOW_OFFSET, v2.y - SHADOW_OFFSET, v3.x - SHADOW_OFFSET, v3.y - SHADOW_OFFSET);
         }
 
         @Override
@@ -511,12 +576,16 @@ public class AdaptItemBridge extends AdaptBlock {
             DrawUtil.drawText("outAngle: " + cornerOutAng, x, y - 10);
             DrawUtil.drawText("rotAngle: " + bridgeRotAng, x, y - 14);
 
+            Draw.color(Pal.accent, Pal.heal, 0f);
             Fill.circle(tmp0.x, tmp0.y, 0.5f);
             Fill.circle(tmp1.x, tmp1.y, 0.5f);
+            Draw.color(Pal.accent, Pal.heal, 1/3f);
             Fill.circle(tmp2.x, tmp2.y, 0.5f);
             Fill.circle(tmp3.x, tmp3.y, 0.5f);
+            Draw.color(Pal.accent, Pal.heal, 2/3f);
             Fill.circle(tmp4.x, tmp4.y, 0.5f);
             Fill.circle(tmp5.x, tmp5.y, 0.5f);
+            Draw.color(Pal.accent, Pal.heal, 1f);
             Fill.circle(tmp6.x, tmp6.y, 0.5f);
             Fill.circle(tmp7.x, tmp7.y, 0.5f);
 
