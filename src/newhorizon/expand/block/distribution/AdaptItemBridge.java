@@ -64,13 +64,10 @@ public class AdaptItemBridge extends AdaptBlock {
         update = true;
         group = BlockGroup.transportation;
         hasItems = true;
-        //actually the capacity doesnt really counts so much
         itemCapacity = 8;
         underBullets = true;
         drawTeamOverlay = false;
         priority = TargetPriority.transport;
-
-
 
         //config(Point2.class, (AdaptItemBridgeBuild tile, Point2 pos) -> tile.otherPos = Point2.pack(pos.x + tile.tileX(), pos.y + tile.tileY()));
         //config(Integer.class, (AdaptItemBridgeBuild tile, Integer status) -> tile.status = status);
