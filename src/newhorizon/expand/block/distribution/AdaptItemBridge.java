@@ -248,24 +248,30 @@ public class AdaptItemBridge extends AdaptBlock {
             }
 
             if (status == STATUS_SEND || status == STATUS_TRANSFER){
-                if(progress >= framePeriod() && bridgeCanInsert()){
-                    bridgeQueueItem(stackItem(), stackCount());
-                    progress %= framePeriod();
-                    items.remove(stackItem(), stackCount());
+                if (bridgeSeg > 0){
+                    if(progress >= framePeriod() && bridgeCanInsert()){
+                        bridgeQueueItem(stackItem(), stackCount());
+                        progress %= framePeriod();
+                        items.remove(stackItem(), stackCount());
+                    }
+                    updateBridge();
+                }else {
+                    int max = stackCount();
+                    if(progress >= framePeriod() && moveForwardStack(receiver) == max){
+                        progress %= framePeriod();
+                    }
                 }
-                updateBridge();
             }
 
             if (status == STATUS_RECEIVE){
                 int max = stackCount();
-                if(progress >= framePeriod() && moveForwardStack() == max){
+                if(progress >= framePeriod() && moveForwardStack(front()) == max){
                     progress %= framePeriod();
                 }
             }
         }
 
-        public int moveForwardStack() {
-            Building other = front();
+        public int moveForwardStack(Building other) {
             int max = stackCount();
             if (stackItem() != null && other != null && other.team == team) {
                 if (other.acceptItem(this, stackItem())){
