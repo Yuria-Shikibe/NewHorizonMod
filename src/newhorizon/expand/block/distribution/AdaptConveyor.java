@@ -108,8 +108,7 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
     }
 
     public class AdaptConveyorBuild extends AdaptBuilding implements StackTransport{
-        public float progress;
-        public boolean canSend;
+        public float progress, cooldown;
 
         public @Nullable Building next;
 
@@ -143,10 +142,19 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
                 progress += edelta();
             }
 
-            int max = stackCount();
-            if(progress >= framePeriod() && moveForwardStack() == max){
-                progress %= framePeriod();
-                recDir = -1;
+            if (cooldown > 0f){
+                cooldown -= edelta();
+            }
+
+
+            if(progress >= framePeriod() && cooldown <= 0){
+                int max = stackCount();
+                int moveCount =  moveForwardStack();
+                if (moveCount == max){
+                    progress %= framePeriod();
+                    recDir = -1;
+                }
+                cooldown += ((float) moveCount /itemCapacity) * framePeriod();
             }
         }
 
@@ -234,7 +242,7 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
             }
 
             int r = recDir == -1? rotation + 2: recDir;
-            float prog = canSend? 1: Mathf.clamp(progress / framePeriod());
+            float prog = Mathf.clamp(progress / framePeriod());
             float z = Draw.z();
             if(stackItem() != null){
                 Draw.z(z + 0.1f);
