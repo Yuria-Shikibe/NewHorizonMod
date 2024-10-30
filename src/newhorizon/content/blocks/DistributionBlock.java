@@ -2,8 +2,6 @@ package newhorizon.content.blocks;
 
 import mindustry.content.Items;
 import mindustry.type.Category;
-import mindustry.type.Item;
-import mindustry.world.Block;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.distribution.AdaptConveyor;
 import newhorizon.expand.block.distribution.AdaptItemBridge;

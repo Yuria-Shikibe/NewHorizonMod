@@ -3,7 +3,6 @@ package newhorizon.expand.block.distribution;
 import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
@@ -38,6 +37,14 @@ import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class AdaptConveyor extends AdaptBlock implements Autotiler {
+    public static final float
+        LAYER_CORNER = Layer.block + 0.15f,
+        LAYER_SHADOW = Layer.block + 0.1f,
+        LAYER_BRIDGE = Layer.block + 0.2f,
+        LAYER_ARROW = Layer.block + 0.3f,
+        LAYER_ITEM = Layer.block + 0.4f,
+        SHADOW_OFFSET = 2.5f;
+
     public TextureRegion[] edgeRegions, baseRegions, arrowRegions;
     public boolean drawPulse = false;
     public float itemPerSecond = 3f;
@@ -149,7 +156,7 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
 
             if(progress >= framePeriod() && cooldown <= 0){
                 int max = stackCount();
-                int moveCount =  moveForwardStack();
+                int moveCount = moveForwardStack();
                 if (moveCount == max){
                     progress %= framePeriod();
                     recDir = -1;
@@ -243,9 +250,8 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
 
             int r = recDir == -1? rotation + 2: recDir;
             float prog = Mathf.clamp(progress / framePeriod());
-            float z = Draw.z();
             if(stackItem() != null){
-                Draw.z(z + 0.1f);
+                Draw.z(LAYER_ITEM);
                 Tmp.v1.set(Geometry.d4x(r) * tilesize / 2f, Geometry.d4y(r) * tilesize / 2f)
                     .lerp(Geometry.d4x(rotation) * tilesize / 2f, Geometry.d4y(rotation) * tilesize / 2f, prog);
                 Draw.rect(stackItem().fullIcon, x + Tmp.v1.x, y + Tmp.v1.y, itemSize, itemSize);
