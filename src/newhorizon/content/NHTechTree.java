@@ -283,7 +283,7 @@ public class NHTechTree{
 									
 									node(NHBlocks.hyperspaceWarper);
 									
-									node(NHBlocks.shapedWall, () -> {
+									node(DefenseBlock.shapedWall, () -> {
 										node(NHBlocks.ancientPowerNode, () -> {
 											node(NHBlocks.ancientLaserWall);
 										});

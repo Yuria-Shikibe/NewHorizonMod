@@ -77,7 +77,7 @@ public class AdaptItemBridge extends AdaptBlock {
     public void load() {
         super.load();
         edgeRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-edge"), 32, 32, 1);
-        arrowRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-arrow"), 32, 32, 1, false);
+        arrowRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-arrow"), 32, 32, 1);
         cornerRegion = spiltQuad(SpriteUtil.splitRegionArray(Core.atlas.find(name + "-corner"), 38, 34));
     }
 

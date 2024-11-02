@@ -31,7 +31,6 @@ import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
-import mindustry.ui.ItemImage;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
@@ -43,6 +42,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
+import newhorizon.util.ui.display.ItemImage;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;

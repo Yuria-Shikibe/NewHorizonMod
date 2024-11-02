@@ -93,13 +93,13 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
     @Override
     public void load() {
         super.load();
-        edgeRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-edge"), 36, 36, 1, false);
-        arrowRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-arrow"), 32, 32, 1, false);
+        edgeRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-edge"), 36, 36, 1);
+        arrowRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-arrow"), 32, 32, 1);
 
         if (drawPulse){
-            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("track-rail-pulse")), 32, 32, 3, false);
+            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("track-rail-pulse")), 32, 32, 3);
         }else {
-            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("track-rail-base")), 32, 32, 0, false);
+            baseRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("track-rail-base")), 32, 32, 0);
         }
     }
 

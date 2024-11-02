@@ -141,7 +141,7 @@ public class NHBlocks{
 		hydroFuelCell, ancientPowerNode,
 		armorPowerNode, armorBatteryLarge, radiationGenerator, zetaGenerator, hugeBattery, heavyPowerNode,
 		//Defence
-		largeMendProjector, shapedWall, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher, webber,
+		largeMendProjector, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher, webber,
 		//Special
 		playerJumpGate, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
 		disposePowerVoid, gravityTrapSmall, lableSpawner,
@@ -3639,17 +3639,6 @@ public class NHBlocks{
 	
 	private static void loadWalls(){
 		final int healthMult2 = 4, healthMult3 = 9;
-		
-		shapedWall = new ShapedWall("shaped-wall"){{
-			health = 6000;
-			armor = 10f;
-
-			insulated = absorbLasers = true;
-			placeableLiquid = true;
-			crushDamageMultiplier = 0.025f;
-			
-			requirements(Category.defense, with(NHItems.upgradeSort, 5, NHItems.juniorProcessor, 2, NHItems.ancimembrane, 10));
-		}};
 		
 		ancientLaserWall = new LaserWallBlock("ancient-laser-wall"){{
 			size = 2;

@@ -6,9 +6,9 @@ import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
-import mindustry.ui.ItemImage;
 import mindustry.ui.ReqImage;
 import mindustry.world.consumers.Consume;
+import newhorizon.util.ui.display.ItemImage;
 import newhorizon.util.ui.display.LiquidDisplay;
 
 

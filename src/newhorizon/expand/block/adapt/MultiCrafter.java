@@ -6,12 +6,12 @@ import arc.struct.ObjectMap;
 import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
-import mindustry.ui.ItemImage;
 import mindustry.ui.ReqImage;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
+import newhorizon.util.ui.display.ItemImage;
 
 public class MultiCrafter extends GenericCrafter{
 	public ObjectMap<ItemStack, Integer> exchangeMap = new ObjectMap<>();

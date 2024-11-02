@@ -13,8 +13,7 @@ public class NHItems{
 	presstanium, seniorProcessor, juniorProcessor,
 	zeta, fusionEnergy, multipleSteel, irayrondPanel,
 	setonAlloy, darkEnergy, upgradeSort, metalOxhydrigen,
-	thermoCorePositive, thermoCoreNegative,
-	magonite;
+	thermoCorePositive, thermoCoreNegative;
 	public static void load(){
 		ancimembrane = new Item("ancimembrane"){{
 			cost = 5;
@@ -64,10 +63,6 @@ public class NHItems{
 			cost = 3f;
 		}};
 		metalOxhydrigen = new Item("metal-oxhydrigen", Color.valueOf("#BFF3FF"));
-
-		if (NHSetting.getBool(NHSetting.EXPERIMENTAL)){
-			magonite = new Item("magonite", Color.valueOf("#cf665f"));
-		}
 	}
 	
 }

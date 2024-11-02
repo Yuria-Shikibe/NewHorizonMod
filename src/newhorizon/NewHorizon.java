@@ -46,6 +46,8 @@ import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.NHInputListener.registerModBinding;
+import static newhorizon.util.graphic.SpriteUtil.ATLAS_INDEX_4_12;
+import static newhorizon.util.graphic.SpriteUtil.ATLAS_INDEX_4_12_MAP;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -215,7 +217,7 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
-				//Core.app.post(NHDebugFunc::outputAtlas);
+
 			});
 		});
 	}
@@ -225,6 +227,8 @@ public class NewHorizon extends Mod{
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 
 		NHVars.init();
+
+
 	}
 
 	@Override

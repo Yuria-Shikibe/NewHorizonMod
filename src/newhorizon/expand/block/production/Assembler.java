@@ -24,7 +24,6 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
-import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.draw.DrawBlock;
@@ -38,6 +37,7 @@ import newhorizon.expand.block.consumer.NHConsumeLiquidDynamic;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.expand.recipe.Recipe;
 import newhorizon.util.ui.display.ArrowDisplay;
+import newhorizon.util.ui.display.ItemDisplay;
 import newhorizon.util.ui.display.LiquidDisplay;
 
 import static mindustry.Vars.control;

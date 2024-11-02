@@ -13,7 +13,7 @@ import mindustry.world.meta.StatUnit;
 import static mindustry.Vars.iconMed;
 
 /**
- * An ItemDisplay, but for liquids.
+ * An ItemImage, but for liquids.
  */
 public class LiquidDisplay extends Table {
     public final Liquid liquid;
