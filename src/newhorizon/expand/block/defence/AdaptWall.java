@@ -23,8 +23,7 @@ import static mindustry.Vars.net;
 import static newhorizon.util.graphic.SpriteUtil.*;
 
 public class AdaptWall extends Wall {
-	public TextureRegion[] atlasRegion;
-	public TextureRegion[] topLargeRegion, topSmallRegion, topHorizontalRegion, topVerticalRegion;
+	public TextureRegion[] atlasRegion, topRegion;
 
 	public float maxShareStep = 3;
 
@@ -38,21 +37,16 @@ public class AdaptWall extends Wall {
 		absorbLasers = true;
 		placeableLiquid = true;
 		crushDamageMultiplier = 1f;
+		clipSize = tilesize * 2 + 2;
 	}
 	
 	@Override
 	public void load(){
 		super.load();
 		atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 0, ATLAS_INDEX_4_12);
-		topLargeRegion = new TextureRegion[2];
-		topSmallRegion = new TextureRegion[2];
-		topHorizontalRegion = new TextureRegion[2];
-		topVerticalRegion = new TextureRegion[2];
-		for (int i = 0; i < 2; i++){
-			topLargeRegion[i] = Core.atlas.find(name + "-top-large-" + i);
-			topSmallRegion[i] = Core.atlas.find(name + "-top-small-" + i);
-			topHorizontalRegion[i] = Core.atlas.find(name + "-top-horizontal-" + i);
-			topVerticalRegion[i] = Core.atlas.find(name + "-top-vertical-" + i);
+		topRegion = new TextureRegion[3];
+		for (int i = 0; i < 3; i++){
+			topRegion[i] = Core.atlas.find(name + "-top-" + i);
 		}
 	}
 	
@@ -93,50 +87,19 @@ public class AdaptWall extends Wall {
 
 		public void updateTopIndex(){
 			topIdx = 0;
-			if (tileX() % 4 < 2){
-				if (tileX() % 4 == 0 && tileY() % 2 == 0 && validTile(1, 0) && validTile(1, 1) && validTile(0, 1)){topIdx = 1; return;}
-				if (tileX() % 4 == 1 && tileY() % 2 == 0 && validTile(-1, 0) && validTile(0, 1) && validTile(-1, 1)){topIdx = 0; return;}
-				if (tileX() % 4 == 1 && tileY() % 2 == 1 && validTile(-1, 0) && validTile(-1, -1) && validTile(0, -1)){topIdx = 0; return;}
-				if (tileX() % 4 == 0 && tileY() % 2 == 1 && validTile(1, 0) && validTile(1, -1) && validTile(0, -1)){topIdx = 0; return;}
-			}else{
-				if (tileX() % 4 == 2 && tileY() % 2 == 1 && validTile(1, 0) && validTile(1, 1) && validTile(0, 1)){topIdx = 2; return;}
-				if (tileX() % 4 == 3 && tileY() % 2 == 1 && validTile(-1, 0) && validTile(0, 1) && validTile(-1, 1)){topIdx = 0; return;}
-				if (tileX() % 4 == 3 && tileY() % 2 == 0 && validTile(-1, 0) && validTile(-1, -1) && validTile(0, -1)){topIdx = 0; return;}
-				if (tileX() % 4 == 2 && tileY() % 2 == 0 && validTile(1, 0) && validTile(1, -1) && validTile(0, -1)){topIdx = 0; return;}
-
-				if (tileX() % 4 == 2 && tileY() % 2 == 0 && validTile(1, 0) && validTile(1, 1) && validTile(0, 1)){topIdx = 1; return;}
-				if (tileX() % 4 == 3 && tileY() % 2 == 0 && validTile(-1, 0) && validTile(0, 1) && validTile(-1, 1)){topIdx = 0; return;}
-				if (tileX() % 4 == 3 && tileY() % 2 == 1 && validTile(-1, 0) && validTile(-1, -1) && validTile(0, -1)){topIdx = 0; return;}
-				if (tileX() % 4 == 2 && tileY() % 2 == 1 && validTile(1, 0) && validTile(1, -1) && validTile(0, -1)){topIdx = 0; return;}
-
-			}
-
-
-			if(tileX() % 2 == 0 && tileY() % 2 == 1 && validTile(1, 0)){topIdx = 5; return;}
-			if(tileX() % 2 == 1 && tileY() % 2 == 1 && validTile(-1, 0)){topIdx = 0; return;}
-
-			if(tileX() % 2 == 0 && tileY() % 2 == 0 && validTile(1, 0)){topIdx = 6; return;}
-			if(tileX() % 2 == 1 && tileY() % 2 == 0 && validTile(-1, 0)){topIdx = 0; return;}
-
-			//if(tileY() % 2 == 1 && tileX() % 2 == 1 && validTile(0, 1)){topIdx = 7; return;}
-			//if(tileY() % 2 == 0 && tileX() % 2 == 1 && validTile(0, -1)){topIdx = 0; return;}
-			//if(tileY() % 2 == 1 && tileX() % 2 == 0 && validTile(0, 1)){topIdx = 8; return;}
-			//if(tileY() % 2 == 0 && tileX() % 2 == 0 && validTile(0, -1)){topIdx = 0; return;}
-
+			if (tileX() % 2 == 0 && tileY() % 2 == 0 && validTile(1, 0) && validTile(1, 1) && validTile(0, 1)){topIdx = 1; return;}
+			if (tileX() % 2 == 1 && tileY() % 2 == 0 && validTile(-1, 0) && validTile(0, 1) && validTile(-1, 1)){topIdx = 0; return;}
+			if (tileX() % 2 == 1 && tileY() % 2 == 1 && validTile(-1, 0) && validTile(-1, -1) && validTile(0, -1)){topIdx = 0; return;}
+			if (tileX() % 2 == 0 && tileY() % 2 == 1 && validTile(1, 0) && validTile(1, -1) && validTile(0, -1)){topIdx = 0; return;}
 
 			topIdx = (tileX() + tileY()) % 2 == 0? 3: 4;
 		}
 
 		public void drawTop(){
 			if (topIdx == 0) return;
-			if (topIdx == 1) {Draw.rect(topLargeRegion[0], x + tilesize/2f, y + tilesize/2f);}
-			if (topIdx == 2) {Draw.rect(topLargeRegion[1], x + tilesize/2f, y + tilesize/2f);}
-			if (topIdx == 3) {Draw.rect(topSmallRegion[0], x, y);}
-			if (topIdx == 4) {Draw.rect(topSmallRegion[1], x, y);}
-			if (topIdx == 5) {Draw.rect(topHorizontalRegion[0], x + tilesize/2f, y);}
-			if (topIdx == 6) {Draw.rect(topHorizontalRegion[1], x + tilesize/2f, y);}
-			if (topIdx == 7) {Draw.rect(topVerticalRegion[0], x, y + tilesize/2f);}
-			if (topIdx == 8) {Draw.rect(topVerticalRegion[1], x, y + tilesize/2f);}
+			if (topIdx == 1) {Draw.rect(topRegion[0], x + tilesize/2f, y + tilesize/2f);}
+			if (topIdx == 3) {Draw.rect(topRegion[1], x, y);}
+			if (topIdx == 4) {Draw.rect(topRegion[2], x, y);}
 		}
 
 		public boolean validTile(int x, int y){
