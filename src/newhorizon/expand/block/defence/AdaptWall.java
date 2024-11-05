@@ -1,7 +1,6 @@
 package newhorizon.expand.block.defence;
 
 import arc.Core;
-import arc.func.Func;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -10,7 +9,6 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.gen.Building;
@@ -19,9 +17,7 @@ import mindustry.gen.Call;
 import mindustry.gen.Iconc;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.Wall;
-import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHStats;
@@ -55,7 +51,7 @@ public class AdaptWall extends Wall {
 	@Override
 	public void load(){
 		super.load();
-		atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 0, ATLAS_INDEX_4_12);
+		atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, ATLAS_INDEX_4_12);
 		topRegion = new TextureRegion[3];
 		for (int i = 0; i < 3; i++){
 			topRegion[i] = Core.atlas.find(name + "-top-" + i);

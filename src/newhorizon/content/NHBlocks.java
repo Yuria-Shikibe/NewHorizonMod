@@ -3696,6 +3696,8 @@ public class NHBlocks{
 			chanceDeflect = 15.0F;
 			flashHit = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 5, NHItems.irayrondPanel, 10, Items.silicon, 15, NHItems.presstanium, 15));
+
+			buildVisibility = BuildVisibility.editorOnly;
 		}};
 		
 		setonWallLarge = new Wall("seton-wall-large"){{
@@ -3709,7 +3711,10 @@ public class NHBlocks{
 			chanceDeflect = 15.0F;
 			flashHit = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult2, NHItems.irayrondPanel, 10 * healthMult2, Items.silicon, 15 * healthMult2, NHItems.presstanium, 15 * healthMult2));
+
+			buildVisibility = BuildVisibility.editorOnly;
 		}};
+
 		
 		heavyDefenceWall = new ShieldWall("heavy-defence-wall"){{
 			shieldHealth = 1000f;
@@ -3730,7 +3735,8 @@ public class NHBlocks{
 			health = 1750;
 			absorbLasers = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20));
-			
+			buildVisibility = BuildVisibility.editorOnly;
+
 			buildType = () -> new ShieldWallBuild(){
 				@Override
 				public void draw(){
@@ -3781,6 +3787,9 @@ public class NHBlocks{
 			health = 1750 * healthMult2;
 			absorbLasers = true;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2));
+
+			buildVisibility = BuildVisibility.editorOnly;
+
 		}};
 		
 		heavyDefenceDoor = new AutoDoor("heavy-defence-door"){{
@@ -3789,6 +3798,7 @@ public class NHBlocks{
 			armor = 30;
 			crushDamageMultiplier = 0.05f;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20, NHItems.juniorProcessor, 5));
+			buildVisibility = BuildVisibility.editorOnly;
 		}};
 		
 		heavyDefenceDoorLarge = new AutoDoor("heavy-defence-door-large"){{
@@ -3799,6 +3809,8 @@ public class NHBlocks{
 			closefx = Fx.doorcloselarge;
 			crushDamageMultiplier = 0.05f;
 			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2, NHItems.juniorProcessor, 5 * healthMult2));
+
+			buildVisibility = BuildVisibility.editorOnly;
 		}};
 		
 		
@@ -3812,6 +3824,7 @@ public class NHBlocks{
 			crushDamageMultiplier = 0.025f;
 
 			armor = 32f;
+			buildVisibility = BuildVisibility.editorOnly;
 		}};
 		
 		chargeWallLarge = new ChargeWall("charge-wall-large"){{
@@ -3825,6 +3838,7 @@ public class NHBlocks{
 
 
 			armor = 32f;
+			buildVisibility = BuildVisibility.editorOnly;
 		}};
 		
 		insulatedWall = new Wall("insulated-wall"){{
@@ -3834,6 +3848,8 @@ public class NHBlocks{
 			requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
 			insulated = true;
 			absorbLasers = true;
+
+			buildVisibility = BuildVisibility.editorOnly;
 		}};
 		
 	}

@@ -1,14 +1,12 @@
 package newhorizon.expand.block.distribution;
 
 import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.struct.Queue;
 import arc.util.Log;
@@ -25,7 +23,6 @@ import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
 import newhorizon.util.MathUtil;
 import newhorizon.util.graphic.DrawUtil;
-import newhorizon.util.graphic.NHBlending;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.itemSize;

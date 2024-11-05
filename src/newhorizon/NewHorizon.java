@@ -30,8 +30,8 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
+import newhorizon.content.blocks.DefenseBlock;
 import newhorizon.content.blocks.DistributionBlock;
-import newhorizon.content.blocks.ProductionBlocks;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
@@ -46,8 +46,6 @@ import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.NHInputListener.registerModBinding;
-import static newhorizon.util.graphic.SpriteUtil.ATLAS_INDEX_4_12;
-import static newhorizon.util.graphic.SpriteUtil.ATLAS_INDEX_4_12_MAP;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -88,6 +86,10 @@ public class NewHorizon extends Mod{
 			new FeatureLog(DistributionBlock.hyperLinkConveyor),
 			new FeatureLog(DistributionBlock.compositeReloadConveyor),
 			new FeatureLog(DistributionBlock.hardLightConveyor),
+			new FeatureLog(DefenseBlock.presstaniumWall),
+			new FeatureLog(DefenseBlock.refactoringMultiWall),
+			new FeatureLog(DefenseBlock.setonPhasedWall),
+			new FeatureLog(DefenseBlock.shapedWall)
 		};
 	}
 	
@@ -119,62 +121,15 @@ public class NewHorizon extends Mod{
 	public static void startLog(){
 		if(showed)return;
 		showed = true;
-		
-		Runnable runnable = () -> {
-			Core.app.post(() -> Core.app.post(() -> Core.settings.getBoolOnce("nh-first-load", () -> {
-				new BaseDialog("CAUTION"){
-					private float countdown = 480f;
-					private boolean exitable = false;
-					
-					{
-						update(() -> {
-							countdown -= Time.delta;
-							if(countdown < 0 && !exitable){
-								exitable = true;
-								addCloseListener();
-							}
-						});
-						
-						cont.pane(t -> {
-							t.left();
-							t.table().margin(LEN).row();
-							t.defaults().align(Align.left).padLeft(OFFSET).row();
-							t.add("").update(b -> {
-								b.setText("[gray]This Dialog Can Be Closed In [accent]" + Mathf.ceil(Math.max(countdown, 0) / 60) + " [lightgray]sec." + "\n" + Core.bundle.format("startwarn.1", Mathf.ceil(Math.max(countdown, 0) / 60)));
-								if(countdown < 0)b.remove();
-							}).row();
-							t.image().growX().height(OFFSET / 3f).pad(OFFSET).color(Pal.turretHeat).row();
-							t.add("[gray]This Dialog Only Shows [lightgray]Once[] After Installation.").row();
-							t.add(Core.bundle.get("startwarn.2")).row();
-							t.image().growX().height(OFFSET / 3f).pad(OFFSET).color(Color.lightGray).row();
-							t.add("[accent]Tips:").row();
-							t.add("If the mod support your language (En, in_ID, ko, uk_UA, zh_CH) and the language of the mod doesn't fit yours, please set the language to another one, reload, set it to yours, reload again, and this should work.").padLeft(LEN).row();
-							t.add(Core.bundle.get("startwarn.3")).row();
-							t.add(Core.bundle.get("startwarn.4")).padLeft(LEN).row();
-							t.image().growX().height(OFFSET / 3f).pad(OFFSET).color(Pal.heal).row();
-							t.add("[lightgray]The warns below are special messages to Chinese players, so if you aren't Chinese, skip it.").row();
-							t.add(Core.bundle.get("startwarn.5")).row();
-							t.add(Core.bundle.get("startwarn.6")).padLeft(LEN).row();
-						}).grow().pad(LEN * 1.5f).row();
-						cont.button("", Styles.cleart, this::hide).update(b -> {
-							b.setDisabled(countdown > 0);
-							b.setText(countdown > 0 ? "[accent]" + Mathf.ceil(Math.max(countdown, 0) / 60) + " []sec." : Core.bundle.get("confirm"));
-						}).growX().height(LEN).pad(OFFSET);
-					}
-				}.show();
-			})));
-		};
+
 		
 		BaseDialog dialog = new BaseDialog(""){
 			@Override
 			public void hide(){
 				super.hide();
-				
-				runnable.run();
 			}
 		};
-		dialog.closeOnBack(runnable);
-		
+
 		dialog.cont.pane(inner -> {
 			inner.pane(table -> {
 				table.table(t -> t.image(NHContent.icon2).fill()).center().growX().fillY().row();
@@ -194,7 +149,7 @@ public class NewHorizon extends Mod{
 					t.button("@back", Icon.left, Styles.cleart, dialog::hide).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@links", Icon.link, Styles.cleart, NewHorizon::showAbout).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button("@hide-setting", Icon.settings, Styles.cleart, () -> Core.settings.put("nh_hide_starting_log", true)).disabled(b -> Core.settings.getBool("nh_hide_starting_log", false)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
-//					t.button("@log", Icon.book, Styles.cleart, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
+					t.button("@log", Icon.book, Styles.cleart, NewHorizon::showNew).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 					t.button(Core.bundle.get("servers.remote") + "\n(" + Core.bundle.get("waves.copy") + ")", Icon.host, Styles.cleart, () -> Core.app.setClipboardText(SERVER)).growX().height(LEN).padLeft(OFFSET).padRight(OFFSET).row();
 				}).grow();
 				if(!Vars.mobile)table.table(t -> {

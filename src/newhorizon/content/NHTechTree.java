@@ -76,20 +76,11 @@ public class NHTechTree{
 				});
 				node(NHBlocks.largeWaterExtractor);
 			});
-			
-			node(NHBlocks.insulatedWall, () -> {
-				node(NHBlocks.fireExtinguisher);
-				node(NHBlocks.heavyDefenceWall, () -> {
-					node(NHBlocks.heavyDefenceWallLarge);
-					node(NHBlocks.heavyDefenceDoor, () -> {
-						node(NHBlocks.heavyDefenceDoorLarge);
-					});
-					node(NHBlocks.setonWall, () -> {
-						node(NHBlocks.setonWallLarge, () -> {
-							node(NHBlocks.chargeWall, () -> {
-								node(NHBlocks.chargeWallLarge);
-							});
-						});
+
+			node(DefenseBlock.presstaniumWall, () -> {
+				node(DefenseBlock.refactoringMultiWall, () -> {
+					node(DefenseBlock.setonPhasedWall, () -> {
+						node(DefenseBlock.shapedWall);
 					});
 				});
 			});
@@ -282,11 +273,9 @@ public class NHTechTree{
 									});
 									
 									node(NHBlocks.hyperspaceWarper);
-									
-									node(DefenseBlock.shapedWall, () -> {
-										node(NHBlocks.ancientPowerNode, () -> {
-											node(NHBlocks.ancientLaserWall);
-										});
+
+									node(NHBlocks.ancientPowerNode, () -> {
+										node(NHBlocks.ancientLaserWall);
 									});
 									
 									nodeUnit(NHUnitTypes.restrictionEnzyme, () -> {

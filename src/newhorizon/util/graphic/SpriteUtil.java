@@ -71,15 +71,27 @@ public class SpriteUtil {
             indices[i] = i;
         }
 
-        Arrays.sort(indices, Comparator.comparingInt(a -> ATLAS_INDEX_4_12_RAW[a]));
+        for (int i = 1; i < indices.length; i++) {
+            int key = indices[i];
+            int keyValue = ATLAS_INDEX_4_12_RAW[key];
+            int j = i - 1;
+
+            while (j >= 0 && ATLAS_INDEX_4_12_RAW[indices[j]] > keyValue) {
+                indices[j + 1] = indices[j];
+                j = j - 1;
+            }
+            indices[j + 1] = key;
+        }
 
         for (int i = 0; i < indices.length; i++) {
             ATLAS_INDEX_4_12[indices[i]] = i;
         }
+
         for (int i = 0; i < ATLAS_INDEX_4_12_RAW.length; i++) {
             ATLAS_INDEX_4_12_MAP.put(ATLAS_INDEX_4_12_RAW[i], ATLAS_INDEX_4_12[i]);
         }
     }
+
 
 
     public static TextureRegion[] splitRegionArray(TextureRegion region, int tileWidth, int tileHeight){

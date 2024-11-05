@@ -24,12 +24,11 @@ public class NHShaders{
 
 	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
-	public static StatusEffectShader statusAlpha;
-	//statusXWave;
+	public static StatusEffectShader statusAlpha, statusXWave;
 
 	public static void init(){
 		statusAlpha = new StatusEffectShader("screenspace", "overphased");
-		//statusXWave = new StatusEffectShader("screenspace", "statusXWave");
+		statusXWave = new StatusEffectShader("screenspace", "statusXWave");
 
 		tiler = new Tiler();
 
