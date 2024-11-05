@@ -1,6 +1,8 @@
 package newhorizon.expand.block.defence;
 
 import arc.Core;
+import arc.func.Func;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
@@ -9,14 +11,23 @@ import arc.math.geom.Point2;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Call;
+import mindustry.gen.Iconc;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.Wall;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHStats;
+import newhorizon.util.graphic.DrawUtil;
 import newhorizon.util.graphic.SpriteUtil;
+import newhorizon.util.ui.BarExtend;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.net;
@@ -25,6 +36,7 @@ import static newhorizon.util.graphic.SpriteUtil.*;
 public class AdaptWall extends Wall {
 	public TextureRegion[] atlasRegion, topRegion;
 
+	public float damageReduction = 0.1f;
 	public float maxShareStep = 3;
 
 	private final Seq<Building> toDamage = new Seq<>();
@@ -49,7 +61,19 @@ public class AdaptWall extends Wall {
 			topRegion[i] = Core.atlas.find(name + "-top-" + i);
 		}
 	}
-	
+
+	@Override
+	public void setBars() {
+		barMap.clear();
+		addBar("health", e -> new BarExtend(Core.bundle.format("nh.bar.health", Strings.autoFixed(e.health(), 0), health, Strings.autoFixed(e.healthf() * 100, 0)), Pal.health, e::healthf, Iconc.add + "").blink(Color.white));
+	}
+
+	@Override
+	public void setStats() {
+		super.setStats();
+		stats.add(NHStats.damageReduction, damageReduction * 100, StatUnit.percent);
+	}
+
 	public class AdaptWallBuild extends Building{
 		public Seq<AdaptWallBuild> connectedWalls = new Seq<>();
 		public int drawIndex = 0;
@@ -113,7 +137,7 @@ public class AdaptWall extends Wall {
 			queue.addLast(this);
 			while (queue.size > 0) {
 				Building wall = queue.removeFirst();
-				toDamage.add(wall);
+				toDamage.addUnique(wall);
 				for (Building next : wall.proximity) {
 					if (linkValid(next) && !toDamage.contains(next)) {
 						toDamage.add(next);
@@ -135,8 +159,11 @@ public class AdaptWall extends Wall {
 		public void drawSelect() {
 			super.drawSelect();
 			findLinkWalls();
+			int i = 0;
 			for (Building wall: toDamage){
 				Fill.square(wall.x, wall.y, 2);
+				DrawUtil.drawText(i + "", wall.x, wall.y);
+				i++;
 			}
 		}
 
@@ -170,11 +197,10 @@ public class AdaptWall extends Wall {
 		@Override
 		public float handleDamage(float amount){
 			findLinkWalls();
-			float shareDamage = amount / toDamage.size;
+			float shareDamage = (amount / toDamage.size) * (1 - damageReduction);
 			for (Building b: toDamage){
 				damageShared(b, shareDamage);
 			}
-			NHFx.shareDamage.at(x, y, block.size * tilesize / 2f, team.color, Mathf.clamp(shareDamage/(block.health * 0.1f)));
 			return shareDamage;
 		}
 

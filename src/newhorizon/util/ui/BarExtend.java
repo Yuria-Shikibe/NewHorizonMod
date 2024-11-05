@@ -22,6 +22,11 @@ public class BarExtend extends Bar {
         this.icon = icon;
     }
 
+    //public BarExtend(Prov<String> name, Color color, Floatp fraction, String icon){
+    //    update(() -> set(name, fraction, color));
+    //    this.icon = icon;
+    //}
+
     @Override
     public void draw(){
         super.draw();

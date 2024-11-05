@@ -4,6 +4,7 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHStats;
 import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.expand.block.defence.ShieldGenerator;
 
@@ -18,36 +19,40 @@ public class DefenseBlock {
         }};
 
         presstaniumWall = new AdaptWall("presstanium-wall"){{
-            health = 800;
+            health = 1000;
             armor = 2f;
             maxShareStep = 1;
+            damageReduction = 0.1f;
 
-            requirements(Category.defense, with(NHItems.presstanium, 10, Items.copper, 6));
+            requirements(Category.defense, with(NHItems.presstanium, 4, Items.copper, 10));
         }};
 
         refactoringMultiWall = new AdaptWall("refactoring-multi-wall"){{
-            health = 1000;
+            health = 1200;
             armor = 4f;
             maxShareStep = 2;
+            damageReduction = 0.2f;
 
-            requirements(Category.defense, with(NHItems.multipleSteel, 6, Items.thorium, 12));
+            requirements(Category.defense, with(NHItems.multipleSteel, 4, Items.thorium, 12));
         }};
 
         setonPhasedWall = new AdaptWall("seton-phased-wall"){{
-            health = 1500;
+            health = 1800;
             armor = 8f;
             maxShareStep = 2;
+            damageReduction = 0.3f;
 
-            requirements(Category.defense, with(NHItems.setonAlloy, 10, Items.phaseFabric, 5));
+            requirements(Category.defense, with(NHItems.setonAlloy, 6, Items.phaseFabric, 8, NHItems.zeta, 6));
         }};
 
         shapedWall = new AdaptWall("shaped-wall"){{
             health = 3000;
             armor = 10f;
+            damageReduction = 0.5f;
 
             crushDamageMultiplier = 0.5f;
 
-            requirements(Category.defense, with(NHItems.upgradeSort, 5, NHItems.juniorProcessor, 2, NHItems.ancimembrane, 10));
+            requirements(Category.defense, with(NHItems.upgradeSort, 4, NHItems.juniorProcessor, 2, NHItems.ancimembrane, 10));
         }};
     }
 }
