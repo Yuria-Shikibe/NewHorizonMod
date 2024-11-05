@@ -124,7 +124,7 @@ public class StatusRenderer{
 
 			Draw.blend();
 		});
-		register(NHStatusEffects.invincible, 60, NHShaders.statusXWave, (warmup, unit, status) -> {
+		register(NHStatusEffects.invincible, 60, (warmup, unit, status) -> {
 			int step = 36;
 			float rad = (width() + height()) / 2 / step;
 			float stroke = rad * 0.16f;
