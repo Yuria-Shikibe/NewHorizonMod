@@ -155,11 +155,10 @@ public class AdaptWall extends Wall {
 		public void drawSelect() {
 			super.drawSelect();
 			findLinkWalls();
-			int i = 0;
 			for (Building wall: toDamage){
+				Draw.color(team.color);
+				Draw.alpha(0.5f);
 				Fill.square(wall.x, wall.y, 2);
-				DrawUtil.drawText(i + "", wall.x, wall.y);
-				i++;
 			}
 		}
 
@@ -178,7 +177,8 @@ public class AdaptWall extends Wall {
 		}
 		
 		public void drawTeam() {
-			Draw.color(this.team.color);
+			Draw.color(team.color);
+			Draw.alpha(0.25f);
 			Draw.z(Layer.blockUnder);
 			Fill.square(x, y, 5f);
 			Draw.color();

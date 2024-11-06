@@ -11,11 +11,13 @@ import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.game.Team;
+import mindustry.gen.Building;
 import mindustry.gen.Hitboxc;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import newhorizon.NHGroups;
 import newhorizon.expand.block.defence.GravityWell;
+import newhorizon.expand.block.special.NexusCore;
 import newhorizon.util.graphic.DrawFunc;
 
 public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
@@ -25,9 +27,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 	public static void drawAll(){
 		for(GravityTrapField i : NHGroups.gravityTrapsDraw)i.draw();
 	}
-	
-	public static final Runnable DRAWER = GravityTrapField::drawAll;
-	
+
 	public static final Boolf2<Team, Hitboxc> IntersectedAlly = (team, entity) -> {
 		entity.hitbox(tmpRect);
 		tmpSeq.clear();
@@ -140,6 +140,13 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 	public GravityTrapField(GravityWell.GravityTrapBuild build){
 		setPosition(build);
 		activated = () -> build.active() && build.isValid();
+		team = () -> build.team;
+		range = build.range();
+	}
+
+	public GravityTrapField(NexusCore.NexusCoreBuild build){
+		setPosition(build);
+		activated = build::isValid;
 		team = () -> build.team;
 		range = build.range();
 	}

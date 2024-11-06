@@ -19,7 +19,7 @@ public class DefenseBlock {
         }};
 
         presstaniumWall = new AdaptWall("presstanium-wall"){{
-            health = 1000;
+            health = 1200;
             armor = 2f;
             maxShareStep = 1;
             damageReduction = 0.1f;
@@ -28,7 +28,7 @@ public class DefenseBlock {
         }};
 
         refactoringMultiWall = new AdaptWall("refactoring-multi-wall"){{
-            health = 1200;
+            health = 1800;
             armor = 4f;
             maxShareStep = 2;
             damageReduction = 0.2f;
@@ -37,7 +37,7 @@ public class DefenseBlock {
         }};
 
         setonPhasedWall = new AdaptWall("seton-phased-wall"){{
-            health = 1800;
+            health = 2400;
             armor = 8f;
             maxShareStep = 2;
             damageReduction = 0.3f;

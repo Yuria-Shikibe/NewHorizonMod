@@ -63,7 +63,7 @@ public class NHRenderer implements Disposable{
 	public void drawGravityTrapField(){
 		mask.resize(graphics.getWidth(), graphics.getHeight());
 		Building building = Vars.control.input.config.getSelected();
-		if(/*NHSetting.alwaysShowGravityTrapFields ||*/control.input.block instanceof GravityWell || (building != null && (building.block instanceof GravityWell || building.block instanceof HyperSpaceWarper))){
+		if(control.input.block instanceof GravityWell || (building != null && (building.block instanceof GravityWell || building.block instanceof HyperSpaceWarper))){
 			Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
 				mask.begin(Color.clear);
 				GravityTrapField.drawAll();

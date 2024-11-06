@@ -5,32 +5,42 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
+import arc.math.Mathf;
 import arc.math.Rand;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
+import mindustry.gen.Groups;
+import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
 import mindustry.type.Category;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import newhorizon.NHGroups;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHUnitTypes;
+import newhorizon.expand.entities.GravityTrapField;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.coreLandDuration;
-import static mindustry.Vars.renderer;
+import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
+import static newhorizon.util.ui.TableFunc.LEN;
+import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class NexusCore extends CoreBlock {
     public final Seq<Trail> trails = Seq.with(new Trail(30), new Trail(40), new Trail(50), new Trail(60), new Trail(70), new Trail(80), new Trail(90));
     public final Interp interp = Interp.pow2Out;
     public float coreDelay = -1;
     public static Rand rand = new Rand();
+
+    public int range = 40;
 
     public TextureRegion base;
     public NexusCore() {
@@ -58,6 +68,33 @@ public class NexusCore extends CoreBlock {
     public void load() {
         super.load();
         base = Core.atlas.find(name + "-base");
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.range, range, StatUnit.blocks);
+        stats.add(Stat.output, (t) -> {
+            t.row().left();
+            t.add("").row();
+            t.table(i -> {
+                i.image().size(LEN).color(Pal.lancerLaser).left();
+                i.add(Core.bundle.get("mod.ui.gravity-trap-field-friendly")).growX().padLeft(OFFSET / 2).row();
+            }).padTop(OFFSET).growX().fillY().row();
+            t.table(i -> {
+                i.image().size(LEN).color(Pal.redderDust).left();
+                i.add(Core.bundle.get("mod.ui.gravity-trap-field-hostile")).growX().padLeft(OFFSET / 2).row();
+            }).padTop(OFFSET).growX().fillY().row();
+        });
+        stats.add(Stat.abilities, t -> {
+            t.table(table -> {
+                table.left();
+                table.defaults().fill().pad(OFFSET / 3).left();
+                table.add("- " + Core.bundle.get("mod.ui.gravity-trap.ability-1")).row();
+                table.add("- " + Core.bundle.get("mod.ui.gravity-trap.ability-2")).row();
+                table.add("- " + Core.bundle.get("mod.ui.gravity-trap.ability-3")).row();
+            }).fill();
+        });
     }
 
     public void drawLanding(CoreBuild build, float x, float y){
@@ -104,7 +141,14 @@ public class NexusCore extends CoreBlock {
     }
 
     public class NexusCoreBuild extends CoreBuild{
+        public transient GravityTrapField field;
         public void updateLandParticles(){}
+
+        @Override
+        public void created() {
+            super.created();
+            if(field != null)field.setPosition(self());
+        }
 
         @Override
         public void draw(){
@@ -112,6 +156,29 @@ public class NexusCore extends CoreBlock {
                 Draw.rect(base, x, y);
                 drawTeamTop();
             }
+        }
+
+        @Override
+        public void add(){
+            if(added)return;
+
+            Groups.all.add(this);
+            Groups.build.add(this);
+            this.added = true;
+
+            if(field == null)field = new GravityTrapField(this);
+
+            field.add();
+        }
+
+        public float range(){
+            return range * tilesize;
+        }
+
+        public void remove(){
+            if(added) NHGroups.gravityTraps.remove(field);
+
+            super.remove();
         }
     }
 }

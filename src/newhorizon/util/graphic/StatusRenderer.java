@@ -171,7 +171,7 @@ public class StatusRenderer{
 			Color from = Pal.heal, to = NHColor.lightSkyBack;
 			float particleLen = width() / 8f;
 			float stroke = height() / 35f;
-			float life = width() / 10f;
+			float life = width() / 10f * renderer.getDisplayScale();
 			Lines.stroke(stroke * warmup);
 
 			float base = (Time.time / life);
@@ -198,7 +198,11 @@ public class StatusRenderer{
 
 					Draw.getColor().lerp(Color.white, Mathf.absin(2f, 0.075f));
 
-					Lines.lineAngle(width() / 2 + rand.range(0.5f) * particleLen + j / 10f * width() * fin, height() / 2 + rand.range(0.5f) * stroke + i * height() / 60, angle * 90 + 90, particleLen * (fout * 0.4f + 0.6f) * warmup);
+					Lines.lineAngle(
+						centerX() + rand.range(0.5f) * particleLen + j / 10f * width() * fin,
+						centerY() + rand.range(0.5f) * stroke + i * height() / 60,
+						angle * 90 + 90,
+						particleLen * (fout * 0.4f + 0.6f) * warmup);
 				}
 			}
 		});
