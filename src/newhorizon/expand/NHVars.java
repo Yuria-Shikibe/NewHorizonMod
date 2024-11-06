@@ -19,7 +19,6 @@ public class NHVars{
 
 	public static void init(){
 		worldData = new NHWorldData();
-		renderer = new NHRenderer();
 		listener = new NHInputListener();
 		control = new NHInputControl();
 
@@ -29,6 +28,7 @@ public class NHVars{
 		NHCSS_UI.init();
 
 		if(Vars.headless)return;
+		renderer = new NHRenderer();
 
 		NHSetting.loadUI();
 		if(NHSetting.getBool(NHSetting.DEBUG_PANEL)){
