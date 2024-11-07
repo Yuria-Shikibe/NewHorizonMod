@@ -83,9 +83,12 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(DistributionBlock.hyperLinkConveyor),
 			new FeatureLog(DistributionBlock.compositeReloadConveyor),
+			new FeatureLog(DistributionBlock.hyperLinkConveyor),
 			new FeatureLog(DistributionBlock.hardLightConveyor),
+			new FeatureLog(DistributionBlock.compositeReloadBridge),
+			new FeatureLog(DistributionBlock.hyperLinkBridge),
+			
 			new FeatureLog(DefenseBlock.presstaniumWall),
 			new FeatureLog(DefenseBlock.refactoringMultiWall),
 			new FeatureLog(DefenseBlock.setonPhasedWall),

@@ -214,6 +214,7 @@ public class AdaptItemBridge extends AdaptBlock {
         }
 
         public void reconnectBridge(AdaptItemBridgeBuild sender, AdaptItemBridgeBuild receiver){
+
             this.sender = sender;
             senderPos = sender == null? -1: sender.pos();
             this.receiver = receiver;

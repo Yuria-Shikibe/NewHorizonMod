@@ -4304,6 +4304,7 @@ public class NHBlocks{
 			squareSprite = false;
 			strokeOffset = -0.05f;
 			strokeClamp = 0.06f;
+			schematicPriority = -20;
 			consumeItem(Items.phaseFabric).boost();
 			consumeLiquid(NHLiquids.xenBeta, 0.1f);
 		}};
