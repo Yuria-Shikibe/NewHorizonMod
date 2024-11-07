@@ -86,7 +86,7 @@ public class MidanthaPlanet extends Planet {
                 }else return false;
             }));
 
-            r.env = r.sector.planet.defaultEnv;
+            //r.env = r.sector.planet.defaultEnv;
             r.waves = true;
             r.showSpawns = true;
             r.onlyDepositCore = false;
