@@ -103,8 +103,9 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     @Override
     public void draw() {
         Draw.color(team.color);
-
         Draw.reset();
+
+        drawUnit();
     }
 
     @Override
@@ -162,27 +163,42 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     public void effect(){
         GridData grid = GridUtil.unitGridsMap.get(unitType.name);
 
+        for (int gy = 0; gy < grid.height; gy++){
+            for (int gx = grid.width - 1; gx > 0; gx--){
+                if (grid.getGridBottomLeft(gx, gy) > 0){
+                    float sx = grid.xShift / tilesize + gx * PX_LEN - (float) unitType.fullIcon.width / tilesize;
+                    float sy = grid.yShift / tilesize + gy * PX_LEN - (float) unitType.fullIcon.height / tilesize;
+                    float delay = gy * (300f / grid.height);
 
-
-        Effect blockSpark = new Effect(400, e -> {
-            rand.setSeed(e.id);
-            for (int gy = 0; gy < grid.height; gy++){
-                for (int gx = grid.width - 1; gx > 0; gx--){
-                    if (grid.getGridBottomLeft(gx, gy) > 0){
-                        float rx = grid.xShift + gx * PX_LEN - (float) unitType.fullIcon.width / tilesize;
-                        float ry = grid.yShift + gy * PX_LEN - (float) unitType.fullIcon.height / tilesize;
-                        Angles.randVectors(e.id + (gx + (long) gy * grid.width), 1, range * rand.random(1f, 5f) * e.fout(Interp.pow3In), (ex, ey) -> {
-                            Draw.color(team.color, Color.white, e.fout(Interp.pow3Out));
-                            Draw.alpha(Mathf.lerp(0.6f, 0.8f, e.fin()));
-                            Tmp.v1.set(rx, ry).rotate(e.rotation - 90);
-                            Fill.square(e.x + Tmp.v1.x + ex, e.y + Tmp.v1.y + ey, PX_LEN / 2f * e.fin(Interp.pow10Out), e.rotation - 90);
-                        });
-                    }
+                    Tmp.v1.set(sx, sy).rotate(rotation - 90).add(x, y);
+                    gridSpark(Tmp.v1.x, Tmp.v1.y, delay
+                    );
                 }
             }
-        });
+        }
+    }
 
-        blockSpark.at(x, y, rotation);
+    private void gridSpark(float x, float y, float delay){
+        Effect gridSpark = new Effect(120, e -> {
+            rand.setSeed(e.id);
+            Angles.randVectors(e.id, 1, range * rand.random(1f, 5f) * e.fout(Interp.pow3In), (ex, ey) -> {
+                Draw.color(team.color, Color.white, e.fslope());
+                Draw.alpha(1.2f * e.fout(Interp.pow10Out));
+                Fill.square(e.x + ex, e.y + ey, PX_LEN / 2f * e.fin(Interp.pow10Out), e.rotation - 90);
+            });
+        });
+        gridSpark.startDelay = delay;
+        gridSpark.at(x, y, rotation);
+    }
+
+    public void drawUnit(){
+        if (warpTimer > warpTime + warpBeginTime + warpChargeTime) return;
+        float progress = Mathf.clamp((warpTimer - 100) / 300f);
+        int height = Mathf.ceil(unitType.fullIcon.height * progress);
+        Tmp.tr1.set(unitType.fullIcon, 0, unitType.fullIcon.height - height, unitType.fullIcon.width, height);
+        Tmp.v1.trns(rotation, (float) (height - unitType.fullIcon.height) / tilesize).add(x, y);
+        Draw.z(Layer.flyingUnitLow);
+        Draw.rect(Tmp.tr1, Tmp.v1.x , Tmp.v1.y, rotation - 90);
     }
 
     @Override

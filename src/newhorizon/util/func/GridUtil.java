@@ -15,7 +15,7 @@ import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
 public class GridUtil {
-    public static final int GRID_LEN = 24;
+    public static final int GRID_LEN = 16;
     public static final int PX_LEN = GRID_LEN / tilesize * 2;
 
     public static final Point2[] samplingPixels = {new Point2(2, 2), new Point2(2, 13), new Point2(13, 13), new Point2(13, 2)};
