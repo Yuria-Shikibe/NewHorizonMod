@@ -22,7 +22,7 @@ import newhorizon.util.graphic.OptionalMultiEffect;
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {
-    public static Block electro;
+    public static Block electro, ancientRailgun;
 
     public static Block testShooter;
 
@@ -167,6 +167,16 @@ public class TurretBlock {
             shootEffect = NHFx.square(NHColor.ancient, 55f, 12, 60, 6);
 
             limitRange(-5f);
+        }};
+
+        ancientRailgun = new ItemTurret("ancient-railgun"){{
+            requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));
+            canOverdrive = false;
+
+            health = 3200;
+            outlineColor = Pal.darkOutline;
+
+            size = 8;
         }};
     }
 

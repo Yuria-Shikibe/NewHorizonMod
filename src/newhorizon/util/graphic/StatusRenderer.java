@@ -88,6 +88,8 @@ public class StatusRenderer{
 	public float bottom(){return centerY() - height()/2;}
 	public float top(){return centerY() + height()/2;}
 
+	public float scaledLen(){return renderer.getDisplayScale();}
+
 	public long statusRandId(StatusEffect status){
 		return status.id + status.hashCode();
 	}
@@ -206,6 +208,12 @@ public class StatusRenderer{
 				}
 			}
 		});
+		//register(NHStatusEffects.overphased, 20, NHShaders.distort, (warmup, unit, status) -> {
+		//	Draw.color(unit.team.color);
+		//	Fill.circle(centerX(), centerY(), 120);
+		//	Draw.color(Color.black);
+		//	Fill.circle(centerX(), centerY(), 100);
+		//});
 	}
 	
 	public void register(StatusEffect effect, int priority, Cons3<Float, Unit, StatusEffect> statusRenderer){

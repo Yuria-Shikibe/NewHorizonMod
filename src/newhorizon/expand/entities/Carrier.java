@@ -2,6 +2,7 @@ package newhorizon.expand.entities;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.Scaled;
@@ -13,6 +14,7 @@ import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -55,7 +57,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 	protected float time = 0, lifetime = 540f, surviveTime = 0, surviveLifetime = 6000;
 	
 	public transient boolean onGoing = true;
-	
+
 	public static Carrier create(Unit unit, Vec2 to, float rot){
 		Carrier c = Pools.obtain(Carrier.class, Carrier::new);
 		c.init(unit, to, rot);

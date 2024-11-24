@@ -17,9 +17,8 @@ import newhorizon.expand.units.entity.ProbeEntity;
 import newhorizon.expand.weather.MatterStorm;
 
 public class EntityRegister{
-	private static final int startFrom = 100;
-	
-	public static final ObjectMap<Class<?>, ProvSet> needIdClasses = new ObjectMap<>();
+
+    public static final ObjectMap<Class<?>, ProvSet> needIdClasses = new ObjectMap<>();
 	private static final ObjectMap<Class<?>, Integer> classIdMap = new ObjectMap<>();
 	
 	static{
@@ -28,14 +27,13 @@ public class EntityRegister{
 		EntityRegister.put(AdaptedTimedKillUnit.class, AdaptedTimedKillUnit::new);
 		EntityRegister.put(Spawner.class, Spawner::new);
 		EntityRegister.put(Carrier.class, Carrier::new);
-//		EntityRegister.put(ShieldProjector.Projector.class, ShieldProjector.Projector::new);
-//		EntityRegister.put(CutsceneEventEntity.class, CutsceneEventEntity::new);
 		EntityRegister.put(UltFire.class, UltFire::new);
 		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 		EntityRegister.put(WorldEvent.class, WorldEvent::new);
 		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 		EntityRegister.put(NucleoidEntity.class, NucleoidEntity::new);
 		EntityRegister.put(ProbeEntity.class, ProbeEntity::new);
+		EntityRegister.put(WarpRift.class, WarpRift::new);
 	}
 	
 	public static <T extends Entityc> void put(Class<T> c, ProvSet p){
@@ -65,12 +63,7 @@ public class EntityRegister{
 	public static class ProvSet{
 		public final String name;
 		public final Prov<?> prov;
-		
-		public ProvSet(String name, Prov<?> prov){
-			this.name = name;
-			this.prov = prov;
-		}
-		
+
 		public ProvSet(Prov<?> prov){
 			this.name = prov.get().getClass().toString();
 			this.prov = prov;

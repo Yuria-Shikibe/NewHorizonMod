@@ -6,6 +6,7 @@ import newhorizon.*;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.game.NHWorldData;
+import newhorizon.util.func.GridUtil;
 import newhorizon.util.ui.TableFunc;
 
 public class NHVars{
@@ -26,6 +27,7 @@ public class NHVars{
 		Core.app.addListener(core);
 
 		NHCSS_UI.init();
+		GridUtil.init();
 
 		if(Vars.headless)return;
 		renderer = new NHRenderer();
