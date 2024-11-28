@@ -55,7 +55,7 @@ public class WarpPortalIniter extends Block {
 
         public void addUnit(){
             WarpRift warpRift = new WarpRift();
-            warpRift.create(team, NHUnitTypes.anvil, x, y, 45);
+            warpRift.create(team, NHUnitTypes.anvil, x, y, 30);
             warpRift.add();
             kill();
             addUnit = true;
