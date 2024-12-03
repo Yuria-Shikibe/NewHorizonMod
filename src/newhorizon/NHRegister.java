@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -20,6 +21,8 @@ import mindustry.net.Net;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
 import newhorizon.expand.NHVars;
+import newhorizon.expand.block.flood.FloodBlock;
+import newhorizon.expand.block.flood.FloodGraph;
 import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.expand.eventsys.types.WorldEventObjective;
 import newhorizon.expand.game.NHWorldData;
@@ -29,6 +32,8 @@ import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import java.lang.reflect.Field;
 
 import static mindustry.Vars.ui;
+import static newhorizon.expand.block.struct.GraphUpdater.allGraph;
+import static newhorizon.expand.block.struct.GraphUpdater.xenGraphAll;
 
 public class NHRegister{
 	public static final Seq<Runnable> afterLoad = new Seq<>();
@@ -64,12 +69,18 @@ public class NHRegister{
 				taskOnSave.pop().run();
 			}
 		});
+
+		Events.on(EventType.WorldLoadBeginEvent.class, e -> {
+			allGraph.clear();
+			xenGraphAll.clear();
+		});
 		
 		Events.run(EventType.Trigger.draw, () -> {
 			NHVars.renderer.draw();
 			if (NHSetting.getBool(NHSetting.TERRAIN_MODE)){
 				NHVars.control.terrainSelect();
 			}
+			NHGroups.draw();
 		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {

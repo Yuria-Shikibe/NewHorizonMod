@@ -214,7 +214,7 @@ public class XenGraph {
             if (b.getBlock() != null && b.getBlock().hasXen){
                 return b;
             }
-        };
+        }
         return null;
     }
 }

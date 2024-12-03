@@ -22,7 +22,7 @@ public class NHModCore implements ApplicationListener{
 			}
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
         ApplicationListener.super.dispose();
