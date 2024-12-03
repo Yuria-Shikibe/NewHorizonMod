@@ -8,11 +8,14 @@ import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
+import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
 import mindustry.world.Tile;
+import mindustry.world.blocks.ConstructBlock;
 import newhorizon.content.blocks.FloodContentBlock;
 import newhorizon.expand.block.flood.FloodBlock.FloodBuilding;
 import newhorizon.util.func.WeightedRandom;
@@ -73,8 +76,6 @@ public class FloodGraph {
             allBuildings.add(building);
             building.graph = this;
 
-            building.updateGraph();
-
             if (building.block.size == 1 && building.tileX() % 2 == 0 && building.tileY() % 2 == 0){
                 merge1to2Candidate.add(building);
             }
@@ -94,6 +95,8 @@ public class FloodGraph {
                     merge4to8Candidate.add(building);
                 }
             }
+
+            building.syncGraph();
         }
     }
 
@@ -106,6 +109,9 @@ public class FloodGraph {
         merge1to2Candidate.clear();
         merge2to4Candidate.clear();
         merge4to8Candidate.clear();
+
+        size2Candidate.clear();
+        size4Candidate.clear();
     }
 
     public void remove(FloodBuilding building) {
@@ -168,28 +174,32 @@ public class FloodGraph {
         }
 
         timer += Time.delta;
-        int expandCount = 5;
+        int expandCount = 200;
         int count = 0;
 
         if (timer >= updateInterval){
             while (count < expandCount){
                 WeightedRandom.random(
                     new WeightedOption(100, this::expand11Block),
-                    //something definitely went wrong when placed and merge at the same time... im confused
-                    new WeightedOption(50, this::merge1to2),
-                    new WeightedOption(5, this::merge2to4),
-                    new WeightedOption(2, this::merge4to8),
 
-                    new WeightedOption(3, this::upgrade22Turret),
-                    new WeightedOption(3, this::upgrade22Unit),
-                    new WeightedOption(3, this::upgrade44Turret),
-                    new WeightedOption(3, this::upgrade44Unit)
+                    new WeightedOption(200, this::merge1to2),
+                    new WeightedOption(100, this::merge2to4),
+                    new WeightedOption(50, this::merge4to8)
+
+                    //new WeightedOption(3, this::upgrade22Turret),
+                    //new WeightedOption(3, this::upgrade22Unit),
+                    //new WeightedOption(3, this::upgrade44Turret),
+                    //new WeightedOption(3, this::upgrade44Unit)
 
                     );
                 count++;
             }
             timer %= updateInterval;
         }
+    }
+
+    public void construct(Tile tile, Block block, Team team){
+        ConstructBlock.constructed(tile, block, null, (byte) 0, team, null);
     }
 
     public void expand11Block(){
@@ -235,7 +245,7 @@ public class FloodGraph {
         if (merge1to2Candidate.isEmpty()) return;
         int step = 0;
         while (step < 4){
-            Building building = merge1to2Candidate.random();
+            FloodBuilding building = merge1to2Candidate.random();
             Tile tile = building.tile;
             if (checkBuilding(building)){
                 tile.setBlock(FloodContentBlock.dummy22, building.team);
@@ -265,7 +275,7 @@ public class FloodGraph {
         int step = 0;
         while (step < 4){
             Building building = merge4to8Candidate.random();
-            Tile tile = world.tile(building.tileX() + 3, building.tileY() + 3);
+            Tile tile = world.tile(building.tileX() + 2, building.tileY() + 2);
             if (checkBuilding(building)){
                 tile.setBlock(FloodContentBlock.dummy88, building.team);
                 break;
@@ -277,10 +287,20 @@ public class FloodGraph {
 
     public boolean checkBuilding(Building building){
         Block block = building.block;
-        return
-            checkBuildingSameTile(block, world.tile(building.tileX() + block.size, building.tileY() + block.size)) &&
-            checkBuildingSameTile(block, world.tile(building.tileX() + block.size, building.tileY())) &&
-            checkBuildingSameTile(block, world.tile(building.tileX(), building.tileY() + block.size));
+        Tile tile = building.tile;
+        int shift = (block.size + 1)/2;
+        int tx = tile.x - shift;
+        int ty = tile.y - shift;
+
+        for (int x = 0; x < block.size * 2 + 2; x++){
+            for (int y = 0; y < block.size * 2 + 2; y++){
+                if (!(world.build(tx + x, ty + y) instanceof FloodBuilding)){
+                    return false;
+                }
+            }
+        }
+
+        return checkBuildingSameTile(block, world.tile(tile.x + block.size, tile.y + block.size)) && checkBuildingSameTile(block, world.tile(tile.x + block.size, tile.y)) && checkBuildingSameTile(block, world.tile(tile.x, tile.y + block.size));
     }
 
     public boolean checkBuildingSameTile(Block block, Tile tile){

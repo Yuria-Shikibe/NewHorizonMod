@@ -21,7 +21,7 @@ public class FloodBlock extends Block {
         group = BlockGroup.walls;
         canOverdrive = false;
         envEnabled = Env.any;
-        update = true;
+        update = false;
     }
 
     public class FloodBuilding extends Building{
@@ -36,7 +36,6 @@ public class FloodBlock extends Block {
 
             graph = new FloodGraph();
             graph.addBuild(this);
-
         }
 
         @Override
@@ -59,7 +58,7 @@ public class FloodBlock extends Block {
             expandCandidate.clear();
             for (Point2 p: Edges.getEdges(size)){
                 Tile candidate = world.tile(tileX() + p.x, tileY() + p.y);
-                if (candidate != null && !candidate.dangerous() && candidate.build == null){
+                if (candidate != null && !candidate.dangerous() && !candidate.solid() && candidate.build == null){
                     expandCandidate.add(candidate);
                 }
             }
@@ -74,6 +73,15 @@ public class FloodBlock extends Block {
                 graph.expandCandidate.put(this, expandCandidate);
             }
         }
+
+        public void syncGraph(){
+            if (expandCandidate.isEmpty()){
+                graph.expandCandidate.remove(this);
+            }else {
+                graph.expandCandidate.put(this, expandCandidate);
+            }
+        }
+
 
         @Override
         public void onProximityUpdate() {
