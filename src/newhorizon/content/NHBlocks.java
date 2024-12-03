@@ -4622,9 +4622,10 @@ public class NHBlocks{
 		DefenseBlock.load();
 		EnvironmentBlock.load();
 		SpecialBlock.load();
+		FloodContentBlock.load();
 		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
 			TestBlock.load();
-		};
+		}
 
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;
