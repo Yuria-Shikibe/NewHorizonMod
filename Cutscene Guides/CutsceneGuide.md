@@ -335,7 +335,7 @@ CutsceneScript.curIniter.add(run(() => {
 ```
 
 #### Units Jump In And Other Methods In An Action
-- See these methods in [NHFunc.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/func/NHFunc.java) :
+- See these methods in [NHFunc.java](https://github.com/Yuria-Shikibe/NewHorizonMod/blob/main/src/newhorizon/util/func/NHFunc.java) :
   - `spawnUnit(Team team, float x, float y, float angle, float spawnRange, float spawnReloadTime, float spawnDelay, UnitType type, int spawnNum)`
   - `spawnSingleUnit(Team team, float x, float y, float angle, float delay, UnitType type)`
 
