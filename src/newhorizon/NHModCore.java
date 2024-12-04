@@ -1,7 +1,9 @@
 package newhorizon;
 
 import arc.ApplicationListener;
+import arc.Events;
 import mindustry.Vars;
+import mindustry.game.EventType;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_Core;
 

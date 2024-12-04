@@ -1,19 +1,25 @@
 package newhorizon.expand.block.flood;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.math.geom.QuadTree;
+import arc.math.geom.Rect;
 import arc.struct.ObjectMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Strings;
 import arc.util.Time;
+import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
+import mindustry.game.Teams;
 import mindustry.gen.Building;
-import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
+import mindustry.world.Build;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
 import newhorizon.content.blocks.FloodContentBlock;
@@ -28,16 +34,21 @@ public class FloodGraph {
 
     private static final Queue<FloodBuilding> queue = new Queue<>();
 
-    public final Seq<FloodBuilding> allBuildings = new Seq<>(false, 16);
-    public final Seq<FloodBuilding> coreBuilding = new Seq<>(false, 16);
+    public QuadTree<FloodBuilding> quadTreeBuildings = new QuadTree<>(new Rect(0, 0, world.unitWidth(), world.unitHeight()));
+    //public final Seq<FloodBuilding> allBuildings = new Seq<>(false, 16);
+    public Seq<FloodBuilding> allBuilding = new Seq<>(false, 16);
+    public Seq<FloodBuilding> coreBuilding = new Seq<>(false, 16);
 
-    public final ObjectMap<FloodBuilding, Seq<Tile>> expandCandidate = new ObjectMap<>();
-    public final Seq<FloodBuilding> merge1to2Candidate = new Seq<>(false, 16);
-    public final Seq<FloodBuilding> merge2to4Candidate = new Seq<>(false, 16);
-    public final Seq<FloodBuilding> merge4to8Candidate = new Seq<>(false, 16);
+    public ObjectMap<FloodBuilding, Seq<Tile>> expandCandidate = new ObjectMap<>();
+    public Seq<FloodBuilding> merge1to2Candidate = new Seq<>(false, 16);
+    public Seq<FloodBuilding> merge2to4Candidate = new Seq<>(false, 16);
+    public Seq<FloodBuilding> merge4to8Candidate = new Seq<>(false, 16);
 
-    public final Seq<FloodBuilding> size2Candidate = new Seq<>(false, 16);
-    public final Seq<FloodBuilding> size4Candidate = new Seq<>(false, 16);
+    public Seq<FloodBuilding> size2Candidate = new Seq<>(false, 16);
+    public Seq<FloodBuilding> size4Candidate = new Seq<>(false, 16);
+
+
+    public final Seq<WeightedOption> options = new Seq<>();
 
     public float updateInterval = 2f;
     public float timer;
@@ -49,20 +60,27 @@ public class FloodGraph {
     public FloodGraph() {
         graphID = lastID++;
         createGraph();
+
+        options.add(
+            new WeightedOption(100, this::expand11Block),
+
+            new WeightedOption(200, this::merge1to2),
+            new WeightedOption(100, this::merge2to4),
+            new WeightedOption(50, this::merge4to8)
+        );
     }
 
     public void mergeGraph(FloodGraph graph) {
         if (graph == this) return;
-
         //merge into other graph instead.
-        if (allBuildings.size > graph.allBuildings.size) {
-            for (FloodBuilding tile : graph.allBuildings) {
+        Log.info(allBuilding.size + "/" + graph.allBuilding.size);
+        if (allBuilding.size > graph.allBuilding.size) {
+            for (FloodBuilding tile : graph.allBuilding) {
                 addBuild(tile);
             }
             graph.removeGraph();
-
         } else {
-            for (FloodBuilding tile : allBuildings) {
+            for (FloodBuilding tile : allBuilding) {
                 graph.addBuild(tile);
             }
             removeGraph();
@@ -71,9 +89,11 @@ public class FloodGraph {
     }
 
     public void addBuild(FloodBuilding building) {
-        if (!allBuildings.contains(building)) {
+        if (!contain(building)) {
             //add this block to it
-            allBuildings.add(building);
+            allBuilding.add(building);
+            quadTreeBuildings.insert(building);
+            //allBuildings.add(building);
             building.graph = this;
 
             if (building.block.size == 1 && building.tileX() % 2 == 0 && building.tileY() % 2 == 0){
@@ -95,13 +115,25 @@ public class FloodGraph {
                     merge4to8Candidate.add(building);
                 }
             }
-
-            building.syncGraph();
         }
+
+        building.updateGraph();
+    }
+
+    public boolean contain(Building building){
+        return quadTreeBuildings.any(
+            building.x - building.hitSize()/2f + 1f,
+            building.y - building.hitSize()/2f + 1f,
+            building.hitSize() - 2f,
+            building.hitSize() - 2f
+        );
     }
 
     public void clear() {
-        allBuildings.clear();
+        allBuilding.clear();
+        quadTreeBuildings.clear();
+
+
         coreBuilding.clear();
 
         expandCandidate.clear();
@@ -112,6 +144,13 @@ public class FloodGraph {
 
         size2Candidate.clear();
         size4Candidate.clear();
+
+        allBuilding = null;
+        quadTreeBuildings = null;
+        merge1to2Candidate = null;
+        merge2to4Candidate = null;
+        merge4to8Candidate = null;
+
     }
 
     public void remove(FloodBuilding building) {
@@ -168,23 +207,15 @@ public class FloodGraph {
     }
 
     public void update(){
-        if (allBuildings.isEmpty()) {
-            removeGraph();
-            return;
-        }
-
+        if (!added) return;
         timer += Time.delta;
-        int expandCount = 200;
+        int expandCount = 10;
         int count = 0;
 
         if (timer >= updateInterval){
             while (count < expandCount){
                 WeightedRandom.random(
-                    new WeightedOption(100, this::expand11Block),
-
-                    new WeightedOption(200, this::merge1to2),
-                    new WeightedOption(100, this::merge2to4),
-                    new WeightedOption(50, this::merge4to8)
+                    options
 
                     //new WeightedOption(3, this::upgrade22Turret),
                     //new WeightedOption(3, this::upgrade22Unit),
@@ -206,11 +237,12 @@ public class FloodGraph {
         if (expandCandidate.isEmpty()) return;
         FloodBuilding building = expandCandidate.keys().toSeq().random();
         Seq<Tile> tiles = expandCandidate.get(building);
-        if (tiles.isEmpty()){
-
-        }else {
-            tiles.random().setBlock(FloodContentBlock.dummy11, building.team);
+        if (tiles.size > 0) {
+            Tile tile = tiles.random();
+            Build.beginPlace(null, FloodContentBlock.dummy11, building.team, tile.x, tile.y, 0);
+            ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team, null);
         }
+
     }
 
     public void upgrade22Turret(){
@@ -242,13 +274,15 @@ public class FloodGraph {
     }
 
     public void merge1to2(){
-        if (merge1to2Candidate.isEmpty()) return;
+        if (merge1to2Candidate == null || merge1to2Candidate.isEmpty()) return;
         int step = 0;
         while (step < 4){
             FloodBuilding building = merge1to2Candidate.random();
             Tile tile = building.tile;
             if (checkBuilding(building)){
-                tile.setBlock(FloodContentBlock.dummy22, building.team);
+                Build.beginPlace(null, FloodContentBlock.dummy22, building.team, tile.x, tile.y, 0);
+                ConstructBlock.constructFinish(tile, FloodContentBlock.dummy22, null, (byte) 0, building.team, null);
+                //tile.setBlock(FloodContentBlock.dummy22, building.team);
                 break;
             }else {
                 step++;
@@ -257,28 +291,28 @@ public class FloodGraph {
     }
 
     public void merge2to4(){
-        if (merge2to4Candidate.isEmpty()) return;
+        if (merge2to4Candidate == null || merge2to4Candidate.isEmpty()) return;
         int step = 0;
         while (step < 4){
             Building building = merge2to4Candidate.random();
             Tile tile = world.tile(building.tileX() + 1, building.tileY() + 1);
             if (checkBuilding(building)){
-                tile.setBlock(FloodContentBlock.dummy44, building.team);
-                break;
+                Build.beginPlace(null, FloodContentBlock.dummy44, building.team, tile.x, tile.y, 0);
+                ConstructBlock.constructFinish(tile, FloodContentBlock.dummy44, null, (byte) 0, building.team, null);                break;
             }else {
                 step++;
             }
         }
     }
     public void merge4to8(){
-        if (merge4to8Candidate.isEmpty()) return;
+        if (merge4to8Candidate == null || merge4to8Candidate.isEmpty()) return;
         int step = 0;
         while (step < 4){
             Building building = merge4to8Candidate.random();
             Tile tile = world.tile(building.tileX() + 2, building.tileY() + 2);
             if (checkBuilding(building)){
-                tile.setBlock(FloodContentBlock.dummy88, building.team);
-                break;
+                Build.beginPlace(null, FloodContentBlock.dummy88, building.team, tile.x, tile.y, 0);
+                ConstructBlock.constructFinish(tile, FloodContentBlock.dummy88, null, (byte) 0, building.team, null);                break;
             }else {
                 step++;
             }
@@ -288,6 +322,7 @@ public class FloodGraph {
     public boolean checkBuilding(Building building){
         Block block = building.block;
         Tile tile = building.tile;
+
         int shift = (block.size + 1)/2;
         int tx = tile.x - shift;
         int ty = tile.y - shift;
@@ -310,12 +345,14 @@ public class FloodGraph {
     public void draw(){
         Lines.stroke(1f);
 
-        allBuildings.each(building -> {
-            Draw.z(Layer.blockOver);
-            Draw.color(Pal.accent);
-            Draw.alpha(0.1f);
-            Fill.square(building.x, building.y, building.block.size * tilesize/2f);
-        });
+        //drawTree(quadTreeBuildings);
+
+        //quadTreeBuildings.objects.each(building -> {
+        //    Draw.z(Layer.blockOver);
+        //    Draw.color(Pal.accent);
+        //    Draw.alpha(0.25f);
+        //    Fill.square(building.x, building.y, building.block.size * tilesize/2f);
+        //});
 
         expandCandidate.each(((building, tiles) -> tiles.each(tile -> {
             Draw.z(Layer.blockOver);
@@ -342,6 +379,7 @@ public class FloodGraph {
 
          */
     }
+
 
     public boolean hasValidExpandCandidate(){
         return !expandCandidate.isEmpty();

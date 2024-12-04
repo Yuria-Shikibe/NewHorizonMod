@@ -377,15 +377,7 @@ public class NHFunc{
         modifier.get(spawner);
         if(!net.client())spawner.add();
     }
-    
-    public static <T extends QuadTree.QuadTreeObject> Seq<T> getObjects(QuadTree<T> tree){
-        Seq<T> seq = new Seq<>();
-        
-        tree.getObjects(seq);
-        
-        return seq;
-    }
-    
+
     public static <T> void shuffle(Seq<T> seq, Rand rand){
         T[] items = seq.items;
         for(int i = seq.size - 1; i >= 0; i--){

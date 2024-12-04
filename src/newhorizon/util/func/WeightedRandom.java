@@ -1,6 +1,7 @@
 package newhorizon.util.func;
 
 import arc.math.Rand;
+import arc.struct.Seq;
 import arc.util.pooling.Pool;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
@@ -14,6 +15,28 @@ public class WeightedRandom {
      * @param options Array of WeightedOption to choose from.
      */
     public static void random(WeightedOption... options) {
+        float totalWeight = 0;
+
+        // Calculate total weight
+        for (WeightedOption option : options) {
+            totalWeight += option.weight;
+        }
+
+        // Generate a random float between 0 and totalWeight
+        float randomValue = rand.nextFloat() * totalWeight;
+
+        // Iterate through options to find the one corresponding to randomValue
+        float cumulativeWeight = 0;
+        for (WeightedOption option : options) {
+            cumulativeWeight += option.weight;
+            if (randomValue <= cumulativeWeight) {
+                option.option.run();
+                return;
+            }
+        }
+    }
+
+    public static void random(Seq<WeightedOption> options){
         float totalWeight = 0;
 
         // Calculate total weight
