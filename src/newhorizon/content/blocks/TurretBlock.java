@@ -169,6 +169,7 @@ public class TurretBlock {
             limitRange(-5f);
         }};
 
+        /*
         ancientRailgun = new ItemTurret("ancient-railgun"){{
             requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));
             canOverdrive = false;
@@ -178,6 +179,8 @@ public class TurretBlock {
 
             size = 8;
         }};
+
+         */
     }
 
     public static void loadTest(){
