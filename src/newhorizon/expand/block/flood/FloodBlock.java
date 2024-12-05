@@ -4,6 +4,7 @@ import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.gen.Building;
+import mindustry.gen.Sounds;
 import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
@@ -22,6 +23,9 @@ public class FloodBlock extends Block {
         canOverdrive = false;
         envEnabled = Env.any;
         update = false;
+        drawCracks = false;
+
+        placeSound = Sounds.none;
     }
 
     public class FloodBuilding extends Building{

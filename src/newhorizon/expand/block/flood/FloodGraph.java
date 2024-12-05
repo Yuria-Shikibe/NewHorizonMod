@@ -50,7 +50,7 @@ public class FloodGraph {
 
     public final Seq<WeightedOption> options = new Seq<>();
 
-    public float updateInterval = 2f;
+    public float updateInterval = 6f;
     public float timer;
     public static int lastID = 0;
     public final int graphID;
@@ -209,7 +209,7 @@ public class FloodGraph {
     public void update(){
         if (!added) return;
         timer += Time.delta;
-        int expandCount = 10;
+        int expandCount = 2;
         int count = 0;
 
         if (timer >= updateInterval){

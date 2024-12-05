@@ -12,18 +12,22 @@ public class FloodContentBlock {
     public static void load(){
         dummy11 = new FloodBlock("dummy11"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+            health = 1000;
             size = 1;
         }};
         dummy22 = new FloodBlock("dummy22"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+            health = 5000;
             size = 2;
         }};
         dummy44 = new FloodBlock("dummy44"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+            health = 20000;
             size = 4;
         }};
         dummy88 = new FloodBlock("dummy88"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+            health = 80000;
             size = 8;
         }};
         turret22 = new FloodBlock("dummy22turret"){{
