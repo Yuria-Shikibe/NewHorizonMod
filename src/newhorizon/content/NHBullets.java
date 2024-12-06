@@ -32,7 +32,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;
-import newhorizon.expand.units.entity.PesterEntity;
+import newhorizon.expand.units.unitEntity.PesterEntity;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;

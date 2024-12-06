@@ -10,6 +10,7 @@ import newhorizon.content.blocks.DefenseBlock;
 import newhorizon.content.blocks.ProductionBlocks;
 import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.content.blocks.TurretBlock;
+import newhorizon.expand.units.unitType.NHUnitType;
 
 import static mindustry.content.TechTree.*;
 
@@ -27,8 +28,8 @@ public class NHTechTree{
 	
 	public static void load(){
 		unitBuildCost.each((u, is) -> {
-			if(u instanceof NHUnitTypes.NHUnitType){
-				((NHUnitTypes.NHUnitType)u).setRequirements(is);
+			if(u instanceof NHUnitType){
+				((NHUnitType)u).setRequirements(is);
 			}
 		});
 		

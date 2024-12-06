@@ -1,4 +1,4 @@
-package newhorizon.expand.units.entity;
+package newhorizon.expand.units.unitEntity;
 
 import arc.Core;
 import arc.graphics.Color;

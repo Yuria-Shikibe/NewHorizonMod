@@ -2,14 +2,17 @@ package newhorizon.expand.block.flood;
 
 import arc.math.geom.Point2;
 import arc.struct.Seq;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.world.Build;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.util.struct.WeightedOption;
 
+import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public class FloodCore extends CoreBlock {
@@ -31,6 +34,11 @@ public class FloodCore extends CoreBlock {
             () -> Pal.accent,
             () -> 1f
         ));
+    }
+
+    @Override
+    public boolean canPlaceOn(Tile tile, Team team, int rotation){
+        return true;
     }
 
     public class FloodCoreBuild extends CoreBuild implements FloodBuildingEntity{

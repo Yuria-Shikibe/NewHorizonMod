@@ -18,6 +18,15 @@ import newhorizon.content.NHFx;
 
 public class EnergyUnitII extends UnitEntity{
 	protected Seq<Clamper> clamps = new Seq<>(12);
+
+	@Override
+	public void add(){
+		super.add();
+
+		for(int i = 0; i < 12; i++){
+			clamps.add(new Clamper());
+		}
+	}
 	
 	@Override
 	public void draw(){

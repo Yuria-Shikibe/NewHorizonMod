@@ -11,9 +11,11 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
-import newhorizon.expand.units.entity.NucleoidEntity;
-import newhorizon.expand.units.entity.PesterEntity;
-import newhorizon.expand.units.entity.ProbeEntity;
+import newhorizon.expand.units.EnergyUnitII;
+import newhorizon.expand.units.unitEntity.FloodMechEntity;
+import newhorizon.expand.units.unitEntity.NucleoidEntity;
+import newhorizon.expand.units.unitEntity.PesterEntity;
+import newhorizon.expand.units.unitEntity.ProbeEntity;
 import newhorizon.expand.weather.MatterStorm;
 
 public class EntityRegister{
@@ -23,16 +25,21 @@ public class EntityRegister{
 	
 	static{
 		EntityRegister.put(EnergyUnit.class, EnergyUnit::new);
+		EntityRegister.put(EnergyUnitII.class, EnergyUnitII::new);
+
 		EntityRegister.put(PesterEntity.class, PesterEntity::new);
 		EntityRegister.put(AdaptedTimedKillUnit.class, AdaptedTimedKillUnit::new);
-		EntityRegister.put(Spawner.class, Spawner::new);
-		EntityRegister.put(Carrier.class, Carrier::new);
-		EntityRegister.put(UltFire.class, UltFire::new);
+		EntityRegister.put(NucleoidEntity.class, NucleoidEntity::new);
+		EntityRegister.put(ProbeEntity.class, ProbeEntity::new);
+		EntityRegister.put(FloodMechEntity.class, FloodMechEntity::new);
+
 		EntityRegister.put(AutoEventTrigger.class, AutoEventTrigger::new);
 		EntityRegister.put(WorldEvent.class, WorldEvent::new);
 		EntityRegister.put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
-		EntityRegister.put(NucleoidEntity.class, NucleoidEntity::new);
-		EntityRegister.put(ProbeEntity.class, ProbeEntity::new);
+
+		EntityRegister.put(Spawner.class, Spawner::new);
+		EntityRegister.put(Carrier.class, Carrier::new);
+		EntityRegister.put(UltFire.class, UltFire::new);
 		EntityRegister.put(WarpRift.class, WarpRift::new);
 	}
 	

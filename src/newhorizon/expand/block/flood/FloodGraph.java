@@ -2,6 +2,7 @@ package newhorizon.expand.block.flood;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
@@ -16,7 +17,11 @@ import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
+import newhorizon.content.NHUnitTypes;
 import newhorizon.content.blocks.FloodContentBlock;
+import newhorizon.expand.entities.WarpRift;
+import newhorizon.expand.units.unitType.NHUnitType;
+import newhorizon.util.MathUtil;
 import newhorizon.util.func.WeightedRandom;
 import newhorizon.util.struct.WeightedOption;
 
@@ -49,6 +54,7 @@ public class FloodGraph {
 
     public Seq<FloodBuildingEntity> size2Candidate = new Seq<>(false, 16);
     public Seq<FloodBuildingEntity> size4Candidate = new Seq<>(false, 16);
+    public Seq<FloodBuildingEntity> size8Candidate = new Seq<>(false, 16);
 
     //values indicated current state.
     //current flood's area.
@@ -61,6 +67,7 @@ public class FloodGraph {
     public WeightedOption merge1 = new WeightedOption(5, this::merge1to2);
     public WeightedOption merge2 = new WeightedOption(5, this::merge2to4);
     public WeightedOption merge4 = new WeightedOption(5, this::merge4to8);
+    public WeightedOption summon = new WeightedOption(5, this::createUnit);
 
     //inner values
     private static final float UPDATE_INTERVAL = 6f;
@@ -102,6 +109,7 @@ public class FloodGraph {
 
             if (building instanceof FloodCore.FloodCoreBuild){
                 FloodCore core = (FloodCore) building.block();
+                coreBuilding.add((FloodCore.FloodCoreBuild) building);
                 areaLimit += core.maxExpandArea;
             }
 
@@ -125,6 +133,9 @@ public class FloodGraph {
                 if ((building.tileX() - 1) % 8 == 0 && (building.tileY() - 1) % 8 == 0){
                     merge4to8Candidate.add(building);
                 }
+            }
+            if (building.block().size == 8){
+                size8Candidate.add(building);
             }
         }
 
@@ -217,12 +228,16 @@ public class FloodGraph {
 
     public void update(){
         if (!added) return;
+        if (coreBuilding.isEmpty()) return;
+
+        updateOptions();
+
         timer += Time.delta;
         int count = 0;
 
         if (timer >= UPDATE_INTERVAL){
             while (count < expandCount){
-                WeightedRandom.random(expand, merge1, merge2, merge4);
+                WeightedRandom.random(expand, merge1, merge2, merge4, summon);
                 count++;
             }
             timer %= UPDATE_INTERVAL;
@@ -233,8 +248,14 @@ public class FloodGraph {
     //    Build.beginPlace(null, FloodContentBlock.dummy11, building.team(), tile.x, tile.y, 0);
     //    ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team(), null);
     //}
+
     public void updateOptions(){
-        expand.setWeight(areaLimit - area);
+        float baseWeight = 100;
+        expand.setWeight(baseWeight / 4f + areaLimit - area);
+        merge1.setWeight(baseWeight + (areaLimit - area) * 2f);
+        merge2.setWeight(baseWeight + (areaLimit - area) * 1.5f);
+        merge4.setWeight(baseWeight + (areaLimit - area) * 0.8f);
+        summon.setWeight(10 + ((float) area / areaLimit) * 10);
     }
 
     public void expand11Block(){
@@ -294,6 +315,17 @@ public class FloodGraph {
                 step++;
             }
         }
+    }
+
+    public void createUnit(){
+        if (size8Candidate.isEmpty()) return;
+        FloodBuildingEntity building = size8Candidate.random();
+        FloodCore.FloodCoreBuild core = coreBuilding.random();
+        if (building == null || core == null)return;
+        float angle = MathUtil.angle(core, building);
+        WarpRift rift = new WarpRift();
+        rift.create(building.team(), NHUnitTypes.restrictionEnzyme, building.x(), building.y(), angle);
+        rift.add();
     }
 
     public boolean checkBuilding(FloodBuildingEntity building){

@@ -42,7 +42,6 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
-import mindustry.type.ItemStack;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
@@ -62,9 +61,11 @@ import newhorizon.expand.units.ai.InterceptorAI;
 import newhorizon.expand.units.ai.ProbeAI;
 import newhorizon.expand.units.ai.SniperAI;
 import newhorizon.expand.units.ai.SurroundAI;
-import newhorizon.expand.units.entity.NucleoidEntity;
-import newhorizon.expand.units.entity.PesterEntity;
-import newhorizon.expand.units.entity.ProbeEntity;
+import newhorizon.expand.units.unitEntity.NucleoidEntity;
+import newhorizon.expand.units.unitEntity.PesterEntity;
+import newhorizon.expand.units.unitEntity.ProbeEntity;
+import newhorizon.expand.units.unitType.AncientUnitType;
+import newhorizon.expand.units.unitType.NHUnitType;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
@@ -1059,7 +1060,7 @@ public class NHUnitTypes{
 
 			strafePenalty = 0.3f;
 		}};
-		macrophage = new AncientUnit("macrophage"){{
+		macrophage = new AncientUnitType("macrophage"){{
 			aiController = SurroundAI::new;
 			constructor = EntityMapping.idMap[3];
 			fogRadius = 40f;
@@ -1135,7 +1136,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		restrictionEnzyme = new AncientUnit("restriction-enzyme"){{
+		restrictionEnzyme = new AncientUnitType("restriction-enzyme"){{
 			speed = 0.6F;
 			drag = 0.1F;
 			hitSize = 21.0F;
@@ -1220,7 +1221,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		ancientProbe = new AncientUnit("ancient-probe"){{
+		ancientProbe = new AncientUnitType("ancient-probe"){{
 			aiController = ProbeAI::new;
 			controller = u -> new ProbeAI();
 			fogRadius = 60f;
@@ -1358,7 +1359,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		nucleoid = new AncientUnit("nucleoid"){{
+		nucleoid = new AncientUnitType("nucleoid"){{
 			aiController = FlyingAI::new;
 			createScorch = false;
 			outlineRadius += 1;
@@ -1733,7 +1734,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		laugra = new AncientUnit("laugra"){{
+		laugra = new AncientUnitType("laugra"){{
 			crushDamage = 20;
 			
 			health = 22000;
@@ -1787,7 +1788,7 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		pester = new AncientUnit("pester"){{
+		pester = new AncientUnitType("pester"){{
 			trailScl = 2f;
 			fogRadius = 70;
 			
@@ -5014,35 +5015,7 @@ public class NHUnitTypes{
 			}
 		};
 	}
-	
-	public static class NHUnitType extends UnitType{
-		public NHUnitType(String name){
-			super(name);
-			
-			ammoType = new ItemAmmoType(NHItems.presstanium);
-		}
 
-		@Override
-		public void init() {
-			super.init();
-			float maxWeaponRange = 0;
-			for(Weapon weapon : weapons){
-				if (weapon.range() > maxWeaponRange){
-					maxWeaponRange = weapon.range();
-				}
-			}
-			fogRadius = maxWeaponRange/8;
-		}
-
-		public void setRequirements(ItemStack[] stacks){
-			cachedRequirements = stacks;
-			totalRequirements = firstRequirements = ItemStack.mult(stacks, 1 / 15f);
-		}
-		
-		public void setBuildCost(ItemStack[] stacks){
-		}
-	}
-	
 	public static Weapon copyAnd(Weapon weapon, Cons<Weapon> modifier){
 		Weapon n = weapon.copy();
 		modifier.get(n);

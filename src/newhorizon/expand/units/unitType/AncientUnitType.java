@@ -1,4 +1,4 @@
-package newhorizon.expand.units;
+package newhorizon.expand.units.unitType;
 
 import arc.math.Mathf;
 import arc.struct.Seq;
@@ -8,13 +8,14 @@ import mindustry.type.ammo.ItemAmmoType;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHUnitTypes;
+import newhorizon.expand.units.AncientEngine;
 
-public class AncientUnit extends NHUnitTypes.NHUnitType{
+public class AncientUnitType extends NHUnitType {
 	public boolean immuniseAll = true;
 	
 	protected static Seq<UnitType> toImmunise = new Seq<>();
 	
-	public AncientUnit(String name){
+	public AncientUnitType(String name){
 		super(name);
 		
 		outlineColor = Pal.darkOutline;
@@ -42,7 +43,6 @@ public class AncientUnit extends NHUnitTypes.NHUnitType{
 		
 		if(immuniseAll){
 			NHUnitTypes.immunise(this);
-//			toImmunise.add(this);
 		}
 	}
 }

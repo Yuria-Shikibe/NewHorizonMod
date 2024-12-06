@@ -59,7 +59,7 @@ import mindustry.world.modules.ItemModule;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHTechTree;
-import newhorizon.content.NHUnitTypes;
+import newhorizon.expand.units.unitType.NHUnitType;
 import newhorizon.expand.NHVars;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
@@ -887,8 +887,8 @@ public class JumpGate extends Block {
             this.requirements.addAll(requirements);
             if(!NHTechTree.unitBuildCost.containsKey(type)){
                 NHTechTree.unitBuildCost.put(type, ItemStack.mult(requirements, 15));
-               if(type instanceof NHUnitTypes.NHUnitType){
-                   ((NHUnitTypes.NHUnitType)type).setRequirements(requirements);
+               if(type instanceof NHUnitType){
+                   ((NHUnitType)type).setRequirements(requirements);
                }
             }
         }

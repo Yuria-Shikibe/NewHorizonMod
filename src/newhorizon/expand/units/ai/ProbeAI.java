@@ -8,7 +8,7 @@ import mindustry.entities.Units;
 import mindustry.gen.Building;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
-import newhorizon.expand.units.entity.ProbeEntity;
+import newhorizon.expand.units.unitEntity.ProbeEntity;
 
 public class ProbeAI extends SniperAI{
 	public float nullReload = 0;
