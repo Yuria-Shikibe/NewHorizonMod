@@ -607,12 +607,23 @@ public class NHInbuiltEvents{
 						CSSActions.beginCreateAction();
 						
 						NHCSS_Core.core.applyMainBus(
-							CSSActions.pack(CSSActions.pullCurtain(),
-							CSSActions.cameraScl(Vars.headless ? 1 : Vars.renderer.minScale()), CSSActions.cameraMove(x, y), CSSActions.parallel(CSSActions.text("{TOKEN=BLINK}[lightgray]INBOUND ENEMIES"), CSSActions.text("{TOKEN=GRADIENT}[ancient]Ancient Flagships[lightgray] Approaching[]"), CSSActions.cameraSustain(35f)), CSSActions.parallel(CSSActions.delay(90f), CSSActions.runnable(() -> {
-							for(ObjectIntMap.Entry<UnitType> spawn : spawner.entries()){
-								NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration);
-							}
-						})), CSSActions.cameraReturn(), CSSActions.withdrawCurtain()));
+							CSSActions.pack(
+								CSSActions.pullCurtain(),
+								CSSActions.cameraScl(Vars.headless ? 1 : Vars.renderer.minScale()), CSSActions.cameraMove(x, y),
+								CSSActions.parallel(
+									CSSActions.text("{TOKEN=BLINK}[lightgray]INBOUND ENEMIES"),
+									CSSActions.text("{TOKEN=GRADIENT}[ancient]Ancient Flagships[lightgray] Approaching[]"),
+									CSSActions.cameraSustain(35f)
+								),
+								CSSActions.parallel(
+									CSSActions.delay(90f), CSSActions.runnable(() -> {
+										for(ObjectIntMap.Entry<UnitType> spawn : spawner.entries()){
+											NHFunc.spawnUnit(team, e.x, e.y, angle, spawnRange, 150f, 15f, spawn.key, Math.min(spawn.value, Units.getCap(team) - team.data().countType(spawn.key)), status, statusDuration);
+										}
+									})),
+								CSSActions.cameraReturn(),
+								CSSActions.withdrawCurtain()));
+
 						CSSActions.endCreateAction();
 						
 						

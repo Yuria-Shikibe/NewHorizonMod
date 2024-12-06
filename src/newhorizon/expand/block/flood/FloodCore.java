@@ -3,56 +3,45 @@ package newhorizon.expand.block.flood;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import mindustry.gen.Building;
-import mindustry.gen.Sounds;
-import mindustry.world.Block;
+import mindustry.graphics.Pal;
+import mindustry.ui.Bar;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
-import mindustry.world.meta.BlockGroup;
-import mindustry.world.meta.Env;
+import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.util.struct.WeightedOption;
 
 import static mindustry.Vars.world;
 
-public class FloodBlock extends Block {
-    public FloodBlock(String name) {
+public class FloodCore extends CoreBlock {
+    public int maxExpandArea = 4096;
+    public FloodCore(String name) {
         super(name);
-
-        solid = true;
-        destructible = true;
-        group = BlockGroup.walls;
-        canOverdrive = false;
-        envEnabled = Env.any;
-        update = false;
-        drawCracks = false;
-
-        placeSound = Sounds.none;
     }
 
-    public class FloodBuilding extends Building implements FloodBuildingEntity{
+    @Override
+    public void setBars() {
+        super.setBars();
+        addBar("graph area:", (FloodCoreBuild e) -> new Bar(
+            () -> "graph area: " + e.graph.area,
+            () -> Pal.accent,
+            () -> 1f
+        ));
+        addBar("limit area:", (FloodCoreBuild e) -> new Bar(
+            () -> "graph area: " + e.graph.areaLimit,
+            () -> Pal.accent,
+            () -> 1f
+        ));
+    }
+
+    public class FloodCoreBuild extends CoreBuild implements FloodBuildingEntity{
         public FloodGraph graph;
         public Seq<Tile> expandCandidate;
 
-        @Override
         public void created() {
             super.created();
 
             expandCandidate = new Seq<>();
             createGraph();
-        }
-
-        @Override
-        public void onProximityAdded() {
-            super.onProximityAdded();
-            for (Building other : proximity) {
-                if (other instanceof FloodBuilding){
-                    graph.mergeGraph(((FloodBuilding)other).graph);
-                }
-            }
-        }
-
-        @Override
-        public void onProximityRemoved() {
-            super.onProximityRemoved();
-            removeGraph();
         }
 
         public void updateExpandCandidate(){
@@ -98,15 +87,25 @@ public class FloodBlock extends Block {
         }
 
         @Override
-        public void onProximityUpdate() {
-            super.onProximityUpdate();
-            updateGraph();
+        public void onProximityAdded() {
+            super.onProximityAdded();
+            for (Building other : proximity) {
+                if (other instanceof FloodBlock.FloodBuilding){
+                    graph.mergeGraph(((FloodBlock.FloodBuilding)other).graph);
+                }
+            }
         }
 
         @Override
-        public void drawSelect() {
-            super.drawSelect();
-            graph.draw();
+        public void onProximityRemoved() {
+            super.onProximityRemoved();
+            removeGraph();
+        }
+
+        @Override
+        public void onProximityUpdate() {
+            super.onProximityUpdate();
+            updateGraph();
         }
     }
 }

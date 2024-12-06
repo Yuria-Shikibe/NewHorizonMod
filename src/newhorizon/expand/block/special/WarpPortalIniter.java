@@ -18,6 +18,9 @@ import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHUnitTypes;
+import newhorizon.expand.cutscene.NHCSS_Core;
+import newhorizon.expand.cutscene.NHCSS_UI;
+import newhorizon.expand.cutscene.actions.CSSActions;
 import newhorizon.expand.entities.WarpRift;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
@@ -97,6 +100,12 @@ public class WarpPortalIniter extends Block {
             WarpRift warpRift = new WarpRift();
             warpRift.create(team, toSpawnType, x, y, angle);
             warpRift.add();
+            CSSActions.beginCreateAction();
+            NHCSS_Core.core.applyMainBus(CSSActions.pack(
+                CSSActions.text("Units Warp Inbound"),
+                CSSActions.mark(x, y, toSpawnType.hitSize, 450f, team.color, NHCSS_UI.MarkStyle.defaultNoLines)
+            ));
+            CSSActions.endCreateAction();
             kill();
             addUnit = true;
         }

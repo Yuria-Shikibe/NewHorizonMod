@@ -9,7 +9,6 @@ import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.game.EventType;
-import mindustry.gen.Building;
 import mindustry.type.SectorPreset;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.MessageBlock;
@@ -24,13 +23,10 @@ public class NHCSS_Core{
 	
 	public static NHCSS_Core core = new NHCSS_Core();
 	public static final float ACT_SPACING = 120;
-	
-	public static void loadRegisters(){
-	
-	}
-	
-	public Queue<NHCSS_Action.ActionBus> waitingBus = new Queue<>();
+
 	public NHCSS_Action.ActionBus mainBus;
+
+	public Queue<NHCSS_Action.ActionBus> waitingBus = new Queue<>();
 	public Seq<NHCSS_Action.ActionBus> subBuses = new Seq<>();
 	
 	public static ObjectMap<String, MapCutscene> cutscenes = new ObjectMap<>();
@@ -77,7 +73,7 @@ public class NHCSS_Core{
 				}
 				
 				if(cutscenes.containsKey(e.sector.preset.name)){
-					load(e.sector.preset.name, null);
+					load(e.sector.preset.name);
 				}
 			}
 		});
@@ -104,7 +100,7 @@ public class NHCSS_Core{
 				}
 			}
 			
-			if(tagger != null)load(tagger, null);
+			if(tagger != null)load(tagger);
 			else core.loadCommon();
 		});
 		
@@ -125,7 +121,7 @@ public class NHCSS_Core{
 		return !Vars.state.isEditor() && !Vars.state.isMenu();
 	}
 	
-	public static void load(String name, String[] args){
+	public static void load(String name){
 		core.kill();
 		core = new NHCSS_Core();
 		NHVars.cutscene = core;
@@ -188,7 +184,6 @@ public class NHCSS_Core{
 	
 	public void draw(){
 		if(currentScene != null)currentScene.draw();
-//		NHCSS_UI.draw();
 	}
 	
 	public void update(){
@@ -216,11 +211,5 @@ public class NHCSS_Core{
 			r.run();
 		}
 	}
-	
-	public enum Trigger{
-		enemyCoreDestruction;
-		
-		Building monitorTarget;
-		int wave;
-	}
+
 }

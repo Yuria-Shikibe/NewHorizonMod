@@ -346,9 +346,8 @@ public class NHCSS_UI{
 			this.duration = duration;
 		}
 		
-		public TextBox setDefDuration(){
+		public void setDefDuration(){
 			duration = text.length() * FConfig.defaultSpeedPerChar * 60 + 60f;
-			return this;
 		}
 		
 		public void setup(){
@@ -394,7 +393,7 @@ public class NHCSS_UI{
 		if(Vars.headless)return;
 		
 		
-		MarkBox box = new MarkBox();//markBoxPool.obtain();
+		MarkBox box = new MarkBox();
 		box.init(radius, color, new Vec2(x, y), MarkStyle.defaultStyle);
 		box.removeCheck = removeCheck;
 		if(lifetime > 0)box.lifetime = lifetime;
@@ -635,7 +634,7 @@ public class NHCSS_UI{
 			Lines.spikes(pos.x, pos.y, size * 1.5f + 6f, size / 2, 4, 45);
 		});
 		
-		public DrawCaution drawer;
+		public final DrawCaution drawer;
 		
 		MarkStyle(DrawCaution drawer){
 			this.drawer = drawer;

@@ -66,8 +66,8 @@ public class CSSActions{
 	}
 	
 	public static NHCSS_Action text(String text, boolean wait){
-		NHCSS_UI.TextBox box;
-		return new TextAction(getContext(), box =  new NHCSS_UI.TextBox(text)).setDuration(box.duration + box.fadeTime);
+		NHCSS_UI.TextBox box = null;
+		return new TextAction(getContext(), new NHCSS_UI.TextBox(text)).setDuration(box.duration + box.fadeTime);
 	}
 	
 	public static NHCSS_Action text(String text){
@@ -123,7 +123,7 @@ public class CSSActions{
 	}
 	
 	public static NHCSS_Action mark(float x, float y, float radius, float lifetime, Color color, NHCSS_UI.MarkStyle style){
-		return new RunnableAction(getContext(), () -> NHCSS_UI.mark(x, y, radius, lifetime, color, () -> false));
+		return new RunnableAction(getContext(), () -> NHCSS_UI.mark(x, y, radius, lifetime, color, style, () -> false));
 	}
 	
 	public static NHCSS_Action delay(float duration){
