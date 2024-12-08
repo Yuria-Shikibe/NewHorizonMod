@@ -4,7 +4,7 @@
 
 ****A Java Mindustry<V7> mod for Android and PC.****
 
-**Powered by *Yuria*.**, Maintained by *酪桦姬*
+**Powered by *Yuria*, Maintained by *酪桦姬***
 
 ---
 ## Community
