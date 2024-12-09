@@ -1,18 +1,28 @@
 package newhorizon.expand.block.flood;
 
+import arc.Core;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.math.geom.Point2;
+import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import arc.util.Eachable;
+import arc.util.Log;
+import arc.util.Tmp;
+import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Build;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
+import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.blocks.storage.CoreBlock;
-import newhorizon.util.struct.WeightedOption;
+import newhorizon.content.blocks.FloodContentBlock;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.renderer;
 import static mindustry.Vars.world;
 
 public class FloodCore extends CoreBlock {
@@ -41,12 +51,38 @@ public class FloodCore extends CoreBlock {
         return true;
     }
 
+    @Override
+    public void drawPlan(BuildPlan plan, Eachable<BuildPlan> list, boolean valid) {
+        //drawWorldGrid();
+
+        super.drawPlan(plan, list, valid);
+
+    }
+
+    public void drawWorldGrid(){
+        Tmp.v1.set(Core.camera.position);
+        float width = Core.camera.width * renderer.getDisplayScale();
+        float height = Core.camera.width * renderer.getDisplayScale();
+
+        Draw.z(Layer.max);
+        Lines.stroke(renderer.getDisplayScale() * 2f);
+        Lines.rect(Tmp.v1.x + width/2f + 50, Tmp.v1.y + height/2f + 50, width - 100, height - 100);
+    }
+
     public class FloodCoreBuild extends CoreBuild implements FloodBuildingEntity{
         public FloodGraph graph;
         public Seq<Tile> expandCandidate;
 
         public void created() {
             super.created();
+
+            for (Point2 point2: Edges.getEdges(size)){
+                Tile tile = world.tile(tileX() + point2.x, tileY() + point2.y);
+                if (tile != null && !tile.dangerous() && !tile.solid() && tile.build == null){
+                    Build.beginPlace(null, FloodContentBlock.dummy11, team, tile.x, tile.y, 0);
+                    ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, team, null);
+                }
+            }
 
             expandCandidate = new Seq<>();
             createGraph();
@@ -60,6 +96,12 @@ public class FloodCore extends CoreBlock {
                     expandCandidate.add(candidate);
                 }
             }
+        }
+
+        @Override
+        public void draw() {
+            Draw.z(Layer.block + 0.1f);
+            Draw.rect(block.region, x, y, drawrot());
         }
 
         @Override
@@ -98,8 +140,8 @@ public class FloodCore extends CoreBlock {
         public void onProximityAdded() {
             super.onProximityAdded();
             for (Building other : proximity) {
-                if (other instanceof FloodBlock.FloodBuilding){
-                    graph.mergeGraph(((FloodBlock.FloodBuilding)other).graph);
+                if (other instanceof FloodBase.FloodBaseBuilding){
+                    graph.mergeGraph(((FloodBase.FloodBaseBuilding)other).graph);
                 }
             }
         }

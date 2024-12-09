@@ -8,6 +8,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec2;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -16,7 +17,6 @@ import mindustry.Vars;
 import mindustry.ai.types.CommandAI;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
-import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
 import mindustry.entities.abilities.ShieldArcAbility;
@@ -26,9 +26,11 @@ import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.io.TypeIO;
 import mindustry.type.UnitType;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHUnitTypes;
 import newhorizon.util.func.GridUtil;
 import newhorizon.util.struct.GridData;
 
@@ -42,13 +44,8 @@ import static newhorizon.util.func.GridUtil.PX_LEN;
 
 public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     public Team team = Team.derelict;
-    public UnitType unitType = UnitTypes.alpha;
+    public UnitType unitType = NHUnitTypes.guardian;
 
-    //warpChargeTime -- time for charge for the portal.
-    //warpBeginTime -- time for fully open the warp portal.
-    //warpTime -- time for warping units.
-    //warpEndTime -- time for close the warp portal.
-    //all in ticks.
     public float warpChargeTime = 120f, warpBeginTime = 120f, warpTime = 160f, warpEndTime = 120f;
 
     public float warpTimer = 0f;
@@ -58,11 +55,11 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
 
     public StatusEntry statusEntry = new StatusEntry().set(StatusEffects.none, 0);
 
-    public Unit toSpawn;
+    public Unit toSpawn = null;
 
     public Vec2 commandPos = new Vec2(Float.NaN, Float.NaN);
 
-    public float range = unitType.clipSize;
+    public float range = 0;
 
     public static final Rand rand = new Rand();
 
@@ -70,37 +67,17 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
 
     public float rotation = -90f;
 
-    public Effect marginEffect = new Effect(12, e -> {
-        rand.setSeed(e.id);
-
-        float dst = e.rotation;
-
-        float ang = rand.random(360);
-
-        float len = range * 0.1f;
-        float stroke = range * 0.25f;
-
-        Draw.z(Layer.effect - 0.01f);
-        Draw.color(Color.white);
-        Lines.stroke(stroke * 1.35f);
-        Lines.lineAngle(e.x, e.y, e.rotation, len * 1.2f);
-        Lines.lineAngle(e.x, e.y, e.rotation + 180, len * 0.4f * 1.2f);
-
-        Draw.z(Layer.effect);
-        Draw.color(team.color);
-        Lines.stroke(stroke);
-        Lines.lineAngle(e.x, e.y, e.rotation, len);
-        Lines.lineAngle(e.x, e.y, e.rotation + 180, len * 0.4f);
-    });
-
     public WarpRift create(Team team, UnitType unitType, float x, float y, float rotation){
         this.team = team;
         this.unitType = unitType;
         this.x = x;
         this.y = y;
         this.rotation = rotation;
+
+        this.range = unitType.clipSize;
         return this;
     }
+
     @Override
     public void draw() {
         Draw.color(team.color);
@@ -126,6 +103,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
 
         if (warpTimer >= spawnTime() && !created){
             dump();
+            remove();
         }
     }
 
@@ -317,11 +295,6 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     }
 
     @Override
-    public void readSync(Reads read) {
-
-    }
-
-    @Override
     public void readSyncManual(FloatBuffer buffer) {
 
     }
@@ -342,8 +315,67 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     }
 
     @Override
-    public void writeSync(Writes write) {
+    public boolean serialize(){return true;}
 
+    @Override
+    public int classId(){
+        return EntityRegister.getID(getClass());
+    }
+    
+
+    @Override
+    public void write(Writes write){
+        super.write(write);
+        write.f(warpTimer);
+        write.f(rotation);
+
+        TypeIO.writeUnitType(write, unitType);
+        TypeIO.writeTeam(write, team);
+        TypeIO.writeStatus(write, statusEntry);
+
+        TypeIO.writeVec2(write, commandPos);
+    }
+
+    @Override
+    public void read(Reads read){
+        super.read(read);
+        warpTimer = read.f();
+        rotation = read.f();
+
+        unitType = TypeIO.readUnitType(read);
+        team = TypeIO.readTeam(read);
+        statusEntry = TypeIO.readStatus(read);
+
+        commandPos = TypeIO.readVec2(read);
+        afterRead();
+    }
+
+    @Override
+    public void writeSync(Writes write) {
+        write.f(x);
+        write.f(y);
+        write.f(warpTimer);
+        write.f(rotation);
+
+        TypeIO.writeUnitType(write, unitType);
+        TypeIO.writeTeam(write, team);
+        TypeIO.writeVec2(write, commandPos);
+    }
+
+    @Override
+    public void readSync(Reads read) {
+        x = read.f();
+        y = read.f();
+
+        warpTimer = read.f();
+        rotation = read.f();
+
+        unitType = TypeIO.readUnitType(read);
+        team = TypeIO.readTeam(read);
+        statusEntry = TypeIO.readStatus(read);
+        commandPos = TypeIO.readVec2(read);
+
+        afterRead();
     }
 
     @Override

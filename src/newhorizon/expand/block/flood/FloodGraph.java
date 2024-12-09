@@ -1,28 +1,38 @@
 package newhorizon.expand.block.flood;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.math.Angles;
+import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.Tmp;
+import mindustry.entities.Effect;
+import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Groups;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.Build;
+import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.content.blocks.FloodContentBlock;
 import newhorizon.expand.entities.WarpRift;
-import newhorizon.expand.units.unitType.NHUnitType;
 import newhorizon.util.MathUtil;
 import newhorizon.util.func.WeightedRandom;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.struct.WeightedOption;
 
 import static mindustry.Vars.*;
@@ -70,11 +80,13 @@ public class FloodGraph {
     public WeightedOption summon = new WeightedOption(5, this::createUnit);
 
     //inner values
-    private static final float UPDATE_INTERVAL = 6f;
+    private static final float UPDATE_INTERVAL = 30f;
     private static int lastID = 0;
 
     private final int graphID;
     private float timer;
+
+    private Vec2 center;
 
     protected transient boolean added;
 
@@ -111,6 +123,7 @@ public class FloodGraph {
                 FloodCore core = (FloodCore) building.block();
                 coreBuilding.add((FloodCore.FloodCoreBuild) building);
                 areaLimit += core.maxExpandArea;
+                if (center == null) center = new Vec2(building.x(), building.y());
             }
 
             area += (int) Mathf.sqr(building.block().size);
@@ -244,10 +257,10 @@ public class FloodGraph {
         }
     }
 
-    //public void construct(Tile tile, Building building){
-    //    Build.beginPlace(null, FloodContentBlock.dummy11, building.team(), tile.x, tile.y, 0);
-    //    ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team(), null);
-    //}
+    public void construct(Tile tile, Building building){
+        Build.beginPlace(null, FloodContentBlock.dummy11, building.team(), tile.x, tile.y, 0);
+        ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team(), null);
+    }
 
     public void updateOptions(){
         float baseWeight = 100;
@@ -266,8 +279,26 @@ public class FloodGraph {
             Tile tile = tiles.random();
             Build.beginPlace(null, FloodContentBlock.dummy11, building.team(), tile.x, tile.y, 0);
             ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team(), null);
+            Building b = tile.build;
+            if (b != null){
+                buildEffect(b).at(b.x, b.y);
+            }
         }
+    }
 
+    public Effect buildEffect(Building b){
+        return new Effect(45f, e -> {
+            float width = b.block.size * tilesize / 2f * 1.2f;
+            float rotation = b.relativeTo((int) (center.x / tilesize), (int) (center.y / tilesize)) * 90;
+            Draw.color(Tmp.c1.set(b.team.color).lerp(Color.clear, e.fin(Interp.pow10In) * 0.9f + 0.1f));
+            Fill.square(e.x, e.y, width);
+            DrawFunc.gradient(
+                Tmp.v2.trns(rotation + 180, width - 2 * e.fout(Interp.pow2In) * width).add(e.x, e.y),
+                Tmp.v1.trns(rotation + 180, width - 2 * e.fout(Interp.pow5Out) * width).add(e.x, e.y),
+                width,
+                Tmp.c1.set(b.team.color).mul(1 + 0.1f * e.fslope())
+            );
+        });
     }
 
     public void merge1to2(){
@@ -279,7 +310,10 @@ public class FloodGraph {
             if (checkBuilding(building)){
                 Build.beginPlace(null, FloodContentBlock.dummy22, building.team(), tile.x, tile.y, 0);
                 ConstructBlock.constructFinish(tile, FloodContentBlock.dummy22, null, (byte) 0, building.team(), null);
-                //tile.setBlock(FloodContentBlock.dummy22, building.team);
+                Building b = tile.build;
+                if (b != null){
+                    buildEffect(b).at(b.x, b.y);
+                }
                 break;
             }else {
                 step++;
@@ -295,7 +329,11 @@ public class FloodGraph {
             Tile tile = world.tile(building.tileX() + 1, building.tileY() + 1);
             if (checkBuilding(building)){
                 Build.beginPlace(null, FloodContentBlock.dummy44, building.team(), tile.x, tile.y, 0);
-                ConstructBlock.constructFinish(tile, FloodContentBlock.dummy44, null, (byte) 0, building.team(), null);                break;
+                ConstructBlock.constructFinish(tile, FloodContentBlock.dummy44, null, (byte) 0, building.team(), null);
+                Building b = tile.build;
+                if (b != null){
+                    buildEffect(b).at(b.x, b.y);
+                }break;
             }else {
                 step++;
             }
@@ -310,7 +348,11 @@ public class FloodGraph {
             Tile tile = world.tile(building.tileX() + 2, building.tileY() + 2);
             if (checkBuilding(building)){
                 Build.beginPlace(null, FloodContentBlock.dummy88, building.team(), tile.x, tile.y, 0);
-                ConstructBlock.constructFinish(tile, FloodContentBlock.dummy88, null, (byte) 0, building.team(), null);                break;
+                ConstructBlock.constructFinish(tile, FloodContentBlock.dummy88, null, (byte) 0, building.team(), null);
+                Building b = tile.build;
+                if (b != null){
+                    buildEffect(b).at(b.x, b.y);
+                }break;
             }else {
                 step++;
             }
@@ -322,9 +364,11 @@ public class FloodGraph {
         FloodBuildingEntity building = size8Candidate.random();
         FloodCore.FloodCoreBuild core = coreBuilding.random();
         if (building == null || core == null)return;
+        UnitType unitType = NHUnitTypes.restrictionEnzyme;
+        if (Groups.unit.tree().any(building.x() - unitType.hitSize/2f + 1f, building.y() - unitType.hitSize/2f + 1f, unitType.hitSize - 2f, unitType.hitSize - 2f)) return;
         float angle = MathUtil.angle(core, building);
         WarpRift rift = new WarpRift();
-        rift.create(building.team(), NHUnitTypes.restrictionEnzyme, building.x(), building.y(), angle);
+        rift.create(building.team(), unitType, building.x(), building.y(), angle);
         rift.add();
     }
 
@@ -363,13 +407,13 @@ public class FloodGraph {
         //    Fill.square(building.x, building.y, building.block.size * tilesize/2f);
         //});
 
-        expandCandidate.each(((building, tiles) -> tiles.each(tile -> {
-            Draw.z(Layer.blockOver);
-            Draw.color(Pal.techBlue);
-            Draw.alpha(0.2f);
-            Lines.line(building.x(), building.y(), tile.drawx(), tile.drawy());
-            Lines.square(tile.drawx(), tile.drawy(), 4);
-        })));
+        //expandCandidate.each(((building, tiles) -> tiles.each(tile -> {
+        //    Draw.z(Layer.blockOver);
+        //    Draw.color(Pal.techBlue);
+        //    Draw.alpha(0.2f);
+        //    Lines.line(building.x(), building.y(), tile.drawx(), tile.drawy());
+        //    Lines.square(tile.drawx(), tile.drawy(), 4);
+        //})));
 
         /*
         merge2to4Candidate.each(building -> {

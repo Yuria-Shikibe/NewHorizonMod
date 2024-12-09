@@ -41,22 +41,17 @@ public class DrawFunc{
     public static float NOR_DISTANCE = 600f;
     
     private static final Vec2
-        vec21 = new Vec2(),
-        vec22 = new Vec2(),
-        vec23 = new Vec2();
-    
+        vec1 = new Vec2(),
+        vec2 = new Vec2(),
+        vec3 = new Vec2(),
+        vec4 = new Vec2();
+
     public static final int[] oneArr = {1};
     
     private static final Seq<Position> pointPos = new Seq<>(Position.class);
     private static final Rand rand = new Rand();
-    
-    
-    
-    public static void drawAt(float z1, float z2, Runnable runnable){
-        Draw.draw(z1, runnable);
-        Draw.draw(z2, runnable);
-    }
-    
+
+
     public static void laser(TextureRegion line, TextureRegion start, TextureRegion end, float x, float y, float x2, float y2, float scale){
         float scl = 8f * scale * Draw.scl, rot = Mathf.angle(x2 - x, y2 - y);
         float vx = Mathf.cosDeg(rot) * scl, vy = Mathf.sinDeg(rot) * scl;
@@ -96,10 +91,10 @@ public class DrawFunc{
     public static void lineAngleLerp(float x, float y, float angle, float length, boolean cap, Color begin, Color end){
         float stroke = Lines.getStroke();
     
-        vec22.trns(angle, length);
+        vec2.trns(angle, length);
         
-        float x2 = x + vec22.x;
-        float y2 = y + vec22.y;
+        float x2 = x + vec2.x;
+        float y2 = y + vec2.y;
         
         float hstroke = stroke/2f;
         float len = Mathf.len(x2 - x, y2 - y);
@@ -150,27 +145,23 @@ public class DrawFunc{
     public static void randLenVectors(long seed, int amount, float length, float minLength, float angle, float range, Floatc2 cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
-            vec21.trns(angle + rand.range(range), minLength  + rand.random(length));
-            cons.get(vec21.x, vec21.y);
+            vec1.trns(angle + rand.range(range), minLength  + rand.random(length));
+            cons.get(vec1.x, vec1.y);
         }
     }
-    
-    public static void fillRect(float srcX, float srcY, float w, float h){
-        Fill.quad(srcX, srcY, srcX + w, srcY, srcX + w, srcY + h, srcX, srcY + h);
-    }
-    
+
     public static void randLenVectors(long seed, float fin, int amount, float minLength, float length, Angles.ParticleConsumer cons){
         rand.setSeed(seed);
         for(int i = 0; i < amount; i++){
             float l = rand.nextFloat();
-            vec21.trns(rand.random(360f), length * l * fin + minLength);
-            cons.accept(vec21.x, vec21.y, fin * l, (1f - fin) * l);
+            vec1.trns(rand.random(360f), length * l * fin + minLength);
+            cons.accept(vec1.x, vec1.y, fin * l, (1f - fin) * l);
         }
     }
     
     public static float cameraDstScl(float x, float y, float norDst){
-        vec21.set(Core.camera.position);
-        float dst = Mathf.dst(x, y, vec21.x, vec21.y);
+        vec1.set(Core.camera.position);
+        float dst = Mathf.dst(x, y, vec1.x, vec1.y);
         return 1 - Mathf.clamp(dst / norDst);
     }
     
@@ -203,11 +194,11 @@ public class DrawFunc{
         rand.setSeed(id);
         for(int i = 0; i < num; i++){
             float len = rad * rand.random(0.75f, 1.5f);
-            vec21.trns(rand.random(360f) + rand.range(2f) * (1.5f - Mathf.curve(len, rad * 0.75f, rad * 1.5f)) * Time.time, len);
-            float angle = vec21.angle();
-            vec21.add(x, y);
-            DrawFunc.tri(vec21.x, vec21.y, (interp + 1) * outerSize + rand.random(0, outerSize / 8), outerSize * (Interp.exp5In.apply(interp) + 0.25f) / 2f, angle);
-            DrawFunc.tri(vec21.x, vec21.y, (interp + 1) / 2 * innerSize + rand.random(0, innerSize / 8), innerSize * (Interp.exp5In.apply(interp) + 0.5f), angle - 180);
+            vec1.trns(rand.random(360f) + rand.range(2f) * (1.5f - Mathf.curve(len, rad * 0.75f, rad * 1.5f)) * Time.time, len);
+            float angle = vec1.angle();
+            vec1.add(x, y);
+            DrawFunc.tri(vec1.x, vec1.y, (interp + 1) * outerSize + rand.random(0, outerSize / 8), outerSize * (Interp.exp5In.apply(interp) + 0.25f) / 2f, angle);
+            DrawFunc.tri(vec1.x, vec1.y, (interp + 1) / 2 * innerSize + rand.random(0, innerSize / 8), innerSize * (Interp.exp5In.apply(interp) + 0.5f), angle - 180);
         }
     }
     
@@ -286,7 +277,7 @@ public class DrawFunc{
     
         int i;
     
-        vec21.trns(angle, rad);
+        vec1.trns(angle, rad);
     
         for(i = 0; i < sides * p - 1; ++i){
             float a = space * (float)i + angle;
@@ -303,8 +294,8 @@ public class DrawFunc{
         float cos2 = Mathf.cosDeg(a + space);
         float sin2 = Mathf.sinDeg(a + space);
         float f = sides * p - i;
-        vec21.trns(a, 0, len * (f - 1));
-        Fill.tri(x + rad * cos, y + rad * sin, x + rad * cos2 + vec21.x, y + rad * sin2 + vec21.y, centerX, centerY);
+        vec1.trns(a, 0, len * (f - 1));
+        Fill.tri(x + rad * cos, y + rad * sin, x + rad * cos2 + vec1.x, y + rad * sin2 + vec1.y, centerX, centerY);
     }
     
     public static void fillCirclePercentFade(float centerX, float centerY, float x, float y, float rad, float percent, float angle, float aScl, float start , float end){
@@ -317,7 +308,7 @@ public class DrawFunc{
         
         int i;
         
-        vec21.trns(angle, rad);
+        vec1.trns(angle, rad);
         
         for(i = 0; i < sides * p - 1; ++i){
             float a = space * (float)i + angle;
@@ -335,9 +326,9 @@ public class DrawFunc{
         float cos2 = Mathf.cosDeg(a + space);
         float sin2 = Mathf.sinDeg(a + space);
         float f = sides * p - i;
-        vec21.trns(a, 0, len * (f - 1));
+        vec1.trns(a, 0, len * (f - 1));
         Draw.alpha(aScl);
-        Fill.tri(x + rad * cos, y + rad * sin, x + rad * cos2 + vec21.x, y + rad * sin2 + vec21.y, centerX, centerY);
+        Fill.tri(x + rad * cos, y + rad * sin, x + rad * cos2 + vec1.x, y + rad * sin2 + vec1.y, centerX, centerY);
     }
     
     public static void circlePercent(float x, float y, float rad, float percent, float angle) {
@@ -369,8 +360,8 @@ public class DrawFunc{
         float cos2 = Mathf.cosDeg(a + space);
         float sin2 = Mathf.sinDeg(a + space);
         float f = sides * p - i;
-        vec21.trns(a, 0, len * (f - 1));
-        Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2 + vec21.x, y + r1 * sin2 + vec21.y, x + r2 * cos2 + vec21.x, y + r2 * sin2 + vec21.y, x + r2 * cos, y + r2 * sin);
+        vec1.trns(a, 0, len * (f - 1));
+        Fill.quad(x + r1 * cos, y + r1 * sin, x + r1 * cos2 + vec1.x, y + r1 * sin2 + vec1.y, x + r2 * cos2 + vec1.x, y + r2 * sin2 + vec1.y, x + r2 * cos, y + r2 * sin);
     }
     
     public static void overlayText(String text, float x, float y, float offset, Color color, boolean underline){
@@ -389,8 +380,8 @@ public class DrawFunc{
         Lines.linePoint(x, y);
         
         for(int i = 0; i < dst; i++){
-            vec21.trns(ang, i * wavelength, Mathf.sin(in + scale * (scaleSpeed * i + scaleOffset), scale, mag)).add(x, y);
-            Lines.linePoint(vec21);
+            vec1.trns(ang, i * wavelength, Mathf.sin(in + scale * (scaleSpeed * i + scaleOffset), scale, mag)).add(x, y);
+            Lines.linePoint(vec1);
         }
     
         Lines.linePoint(x2, y2);
@@ -409,13 +400,13 @@ public class DrawFunc{
         Lines.beginLine();
         //        Lines.linePoint(x, y);
     
-        vec21.trns(ang, 0, Mathf.sin(in + scale * scaleOffset, scale, mag)).add(x, y);
-        Lines.linePoint(vec21);
-        f.get(vec21.x, vec21.y);
+        vec1.trns(ang, 0, Mathf.sin(in + scale * scaleOffset, scale, mag)).add(x, y);
+        Lines.linePoint(vec1);
+        f.get(vec1.x, vec1.y);
         
         for(int i = 1; i < dst; i++){
-            vec21.trns(ang, i * wavelength, Mathf.sin(in + scale * (scaleSpeed * i + scaleOffset), scale, mag)).add(x, y);
-            Lines.linePoint(vec21);
+            vec1.trns(ang, i * wavelength, Mathf.sin(in + scale * (scaleSpeed * i + scaleOffset), scale, mag)).add(x, y);
+            Lines.linePoint(vec1);
         }
         
         Lines.linePoint(x2, y2);
@@ -437,19 +428,19 @@ public class DrawFunc{
                 Fill.circle(x, y, Lines.getStroke());
                 
                 for(int i = 0; i < dst; i++){
-                    vec21.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
+                    vec1.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
                             (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag) * sinScl,
                             scale,
                             mag
                     ) - mag / 2);
     
-                    vec22.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
+                    vec2.trns(Angles.angle(x, y, x2, y2) + 90, Mathf.absin(
                             (mag / phase) * (3 * p) + (dstTotal / dst) * (offset * mag + i) * sinScl,
                             scale,
                             mag
                     ) - mag / 2);
                     
-                    Vec2 from = vec.cpy().scl(i).add(vec21).add(x, y), to = vec.cpy().scl(i + 1).add(vec22).add(x, y);
+                    Vec2 from = vec.cpy().scl(i).add(vec1).add(x, y), to = vec.cpy().scl(i + 1).add(vec2).add(x, y);
                     
                     Lines.line(from.x, from.y, to.x, to.y, false);
                     Fill.circle(from.x, from.y, Lines.getStroke() / 2f);
@@ -549,14 +540,14 @@ public class DrawFunc{
     }
     
     public static void posSquareLink(Color color, float stroke, float size, boolean drawBottom, float x, float y, float x2, float y2){
-        posSquareLink(color, stroke, size, drawBottom, vec21.set(x, y), vec22.set(x2, y2));
+        posSquareLink(color, stroke, size, drawBottom, vec1.set(x, y), vec2.set(x2, y2));
     }
 
     public static void posSquareLink(Color color, float stroke, float size, boolean drawBottom, Position from, Position to){
         posSquareLinkArr(color, stroke, size, drawBottom, false, from, to);
     }
     
-    public static void  quad(TextureRegion region, float x1, float y1, float c1, float x2, float y2, float c2, float x3, float y3, float c3, float x4, float y4, float c4){
+    public static void quad(TextureRegion region, float x1, float y1, float c1, float x2, float y2, float c2, float x3, float y3, float c3, float x4, float y4, float c4){
         float mcolor = Draw.getMixColor().toFloatBits();
         float u = region.u;
         float v = region.v;
@@ -607,14 +598,37 @@ public class DrawFunc{
     public static float rotator_360(){return 360 * Interp.pow5.apply(Mathf.curve(cycle(0, 270), 0.15f, 0.85f));}
     
     public static float cycle_100(){return Time.time % 100 / 100;}
-    
-    
-    /** @return A interpolation in [0, 1)*/
+    /** @return an interpolation in [0, 1)*/
     public static float cycle(float phaseOffset, float T){
         return (Time.time + phaseOffset) % T / T;
     }
     
     public static float cycle(float in, float phaseOffset, float T){
         return (in + phaseOffset) % T / T;
+    }
+
+    public static void gradient(float startX, float startY, float endX, float endY, float width, Color colorFrom, Color colorEnd){
+        float angle = Angles.angle(startX, startY, endX, endY);
+        float c1 = colorFrom.toFloatBits(), c2 = colorEnd.toFloatBits();
+
+        vec1.trns(angle - 90, width).add(startX, startY);
+        vec2.trns(angle + 90, width).add(startX, startY);
+        vec3.trns(angle + 90, width).add(endX, endY);
+        vec4.trns(angle - 90, width).add(endX, endY);
+
+        Fill.quad(
+            vec1.x, vec1.y, c1,
+            vec2.x, vec2.y, c1,
+            vec3.x, vec3.y, c2,
+            vec4.x, vec4.y, c2
+        );
+    }
+
+    public static void gradient(Vec2 start, Vec2 end, float width, Color colorFrom, Color colorEnd){
+        gradient(start.x, start.y, end.x, end.y, width, colorFrom, colorEnd);
+    }
+
+    public static void gradient(Vec2 start, Vec2 end, float width, Color colorFrom){
+        gradient(start.x, start.y, end.x, end.y, width, colorFrom, Color.clear);
     }
 }

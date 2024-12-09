@@ -1,7 +1,15 @@
 package newhorizon.expand.block.flood;
 
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.math.Interp;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
+import arc.util.Tmp;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.world.Block;
@@ -9,11 +17,13 @@ import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import newhorizon.util.graphic.DrawFunc;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
-public class FloodBlock extends Block {
-    public FloodBlock(String name) {
+public class FloodBase extends Block {
+    public FloodBase(String name) {
         super(name);
 
         solid = true;
@@ -25,9 +35,11 @@ public class FloodBlock extends Block {
         drawCracks = false;
 
         placeSound = Sounds.none;
+
+        placeEffect = Fx.none;
     }
 
-    public class FloodBuilding extends Building implements FloodBuildingEntity{
+    public class FloodBaseBuilding extends Building implements FloodBuildingEntity{
         public FloodGraph graph;
         public Seq<Tile> expandCandidate;
 
@@ -43,8 +55,8 @@ public class FloodBlock extends Block {
         public void onProximityAdded() {
             super.onProximityAdded();
             for (Building other : proximity) {
-                if (other instanceof FloodBuilding){
-                    graph.mergeGraph(((FloodBuilding)other).graph);
+                if (other instanceof FloodBaseBuilding){
+                    graph.mergeGraph(((FloodBaseBuilding)other).graph);
                 }
             }
         }

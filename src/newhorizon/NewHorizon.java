@@ -28,6 +28,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
+import mindustry.world.Edges;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.content.blocks.DefenseBlock;
@@ -175,7 +176,9 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
-
+				for (Point2 p: Edges.getEdges(8)){
+					Log.info(p);
+				}
 			});
 		});
 	}
