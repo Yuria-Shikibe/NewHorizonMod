@@ -7,13 +7,14 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.flood.FloodBase;
 import newhorizon.expand.block.flood.FloodCore;
+import newhorizon.expand.block.flood.FloodMargin;
 import newhorizon.expand.block.flood.FloodWall;
 
 public class FloodContentBlock {
     public static Block dummy11, dummy22, dummy44, dummy88, flood88core;
 
     public static void load(){
-        dummy11 = new FloodBase("dummy11"){{
+        dummy11 = new FloodMargin("dummy11"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
             health = 1000;
             size = 1;

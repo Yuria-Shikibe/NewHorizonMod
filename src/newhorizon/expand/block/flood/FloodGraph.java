@@ -15,6 +15,7 @@ import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -68,7 +69,7 @@ public class FloodGraph {
 
     //values indicated current state.
     //current flood's area.
-    public int expandCount = 4;
+    public int expandCount = 2;
     public int areaLimit;
     public int area;
 
@@ -263,12 +264,11 @@ public class FloodGraph {
     }
 
     public void updateOptions(){
-        float baseWeight = 100;
-        expand.setWeight(baseWeight / 4f + areaLimit - area);
-        merge1.setWeight(baseWeight + (areaLimit - area) * 2f);
-        merge2.setWeight(baseWeight + (areaLimit - area) * 1.5f);
-        merge4.setWeight(baseWeight + (areaLimit - area) * 0.8f);
-        summon.setWeight(10 + ((float) area / areaLimit) * 10);
+        expand.setWeight(10 + (1 - (float) area / areaLimit) * 40);
+        merge1.setWeight(10 + (1 - (float) area / areaLimit) * 10f);
+        merge2.setWeight(5 + (1 - (float) area / areaLimit) * 5f);
+        merge4.setWeight(5 + (1 - (float) area / areaLimit) * 2f);
+        summon.setWeight(2 + ((float) area / areaLimit) * 5);
     }
 
     public void expand11Block(){
@@ -360,11 +360,25 @@ public class FloodGraph {
     }
 
     public void createUnit(){
-        if (size8Candidate.isEmpty()) return;
-        FloodBuildingEntity building = size8Candidate.random();
+        if (allBuilding == null || allBuilding.isEmpty()) return;
+        FloodBuildingEntity building = allBuilding.random();
         FloodCore.FloodCoreBuild core = coreBuilding.random();
         if (building == null || core == null)return;
-        UnitType unitType = NHUnitTypes.restrictionEnzyme;
+        UnitType unitType;
+        if (area > 2500 && Mathf.chance(0.4f)){
+            unitType = UnitTypes.collaris;
+        }else if (area > 1800 && Mathf.chance(0.4f)){
+            unitType = UnitTypes.tecta;
+        }else if (area > 1000 && Mathf.chance(0.4f)){
+            unitType = UnitTypes.anthicus;
+        }else if (area > 500 && Mathf.chance(0.4f)){
+            unitType = UnitTypes.cleroi;
+        }else if (area > 200 && Mathf.chance(0.4f)){
+            unitType = UnitTypes.merui;
+        }else {
+            return;
+        }
+
         if (Groups.unit.tree().any(building.x() - unitType.hitSize/2f + 1f, building.y() - unitType.hitSize/2f + 1f, unitType.hitSize - 2f, unitType.hitSize - 2f)) return;
         float angle = MathUtil.angle(core, building);
         WarpRift rift = new WarpRift();
