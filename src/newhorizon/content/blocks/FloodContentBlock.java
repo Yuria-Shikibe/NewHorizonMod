@@ -17,26 +17,31 @@ public class FloodContentBlock {
         dummy11 = new FloodMargin("dummy11"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
             health = 1000;
+            armor = 8;
             size = 1;
         }};
         dummy22 = new FloodWall("dummy22"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
             health = 5000;
+            armor = 12;
             size = 2;
         }};
         dummy44 = new FloodWall("dummy44"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
             health = 20000;
+            armor = 15;
             size = 4;
         }};
         dummy88 = new FloodWall("dummy88"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
             health = 80000;
+            armor = 18;
             size = 8;
         }};
         flood88core = new FloodCore("flood88core"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
-            health = 80000;
+            health = 150000;
+            armor = 25;
             size = 8;
         }};
     }

@@ -69,7 +69,7 @@ public class FloodGraph {
 
     //values indicated current state.
     //current flood's area.
-    public int expandCount = 2;
+    public int expandCount = 1;
     public int areaLimit;
     public int area;
 
@@ -264,11 +264,11 @@ public class FloodGraph {
     }
 
     public void updateOptions(){
-        expand.setWeight(10 + (1 - (float) area / areaLimit) * 40);
+        expand.setWeight(12 + (1 - (float) area / areaLimit) * 40);
         merge1.setWeight(10 + (1 - (float) area / areaLimit) * 10f);
         merge2.setWeight(5 + (1 - (float) area / areaLimit) * 5f);
         merge4.setWeight(5 + (1 - (float) area / areaLimit) * 2f);
-        summon.setWeight(2 + ((float) area / areaLimit) * 5);
+        summon.setWeight(2 + ((float) area / areaLimit) * 4);
     }
 
     public void expand11Block(){
@@ -365,15 +365,15 @@ public class FloodGraph {
         FloodCore.FloodCoreBuild core = coreBuilding.random();
         if (building == null || core == null)return;
         UnitType unitType;
-        if (area > 2500 && Mathf.chance(0.4f)){
+        if (area > 2500 && Mathf.chance(0.2f)){
             unitType = UnitTypes.collaris;
-        }else if (area > 1800 && Mathf.chance(0.4f)){
+        }else if (area > 1800 && Mathf.chance(0.3f)){
             unitType = UnitTypes.tecta;
         }else if (area > 1000 && Mathf.chance(0.4f)){
             unitType = UnitTypes.anthicus;
         }else if (area > 500 && Mathf.chance(0.4f)){
             unitType = UnitTypes.cleroi;
-        }else if (area > 200 && Mathf.chance(0.4f)){
+        }else if (area > 200){
             unitType = UnitTypes.merui;
         }else {
             return;
