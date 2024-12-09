@@ -68,7 +68,7 @@ public class FloodGraph {
 
     //values indicated current state.
     //current flood's area.
-    public int expandCount = 5;
+    public int expandCount = 4;
     public int areaLimit;
     public int area;
 
