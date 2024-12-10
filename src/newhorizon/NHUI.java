@@ -80,22 +80,8 @@ public class NHUI{
 		eventDialog = new WorldEventDialog();
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
-			t.label(() -> "Xen Graph Count: " + xenGraphAll.size).row();
-			t.label(() -> "Graph Count: " + allGraph.size).row();
-			//t.label(() -> {
-			//	if (FloodGraph.allGraph.isEmpty()) return "null";
-			//	StringBuilder out = new StringBuilder();
-			//	for (FloodGraph graph: FloodGraph.allGraph){
-			//		out.append(graph.allBuildings.size).append("\n");
-			//		for (Building building: graph.allBuildings){
-			//			String text = building.tileX() + " " + building.tileY() + " ";
-			//			out.append(text);
-			//		}
-			//		out.append("\n");
-			//	}
-			//	return out;
-			//}).row();
-
+			//t.label(() -> "Xen Graph Count: " + xenGraphAll.size).row();
+			//t.label(() -> "Graph Count: " + allGraph.size).row();
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {
