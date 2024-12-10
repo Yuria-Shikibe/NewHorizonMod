@@ -47,7 +47,7 @@ public class WarpPortalIniter extends Block {
         requirements = ItemStack.empty;
         category = Category.units;
         destroyEffect = Fx.none;
-        buildVisibility = BuildVisibility.sandboxOnly;
+        buildVisibility = BuildVisibility.editorOnly;
     }
 
     public class WarpPortalIniterBuilding extends Building{

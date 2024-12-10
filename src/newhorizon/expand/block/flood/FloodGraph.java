@@ -73,6 +73,9 @@ public class FloodGraph {
     public int areaLimit;
     public int area;
 
+    //evolution factor from core. global factor maybe?
+    public float evolution;
+
     //options control. weighted, depend on current state.
     public WeightedOption expand = new WeightedOption(0, this::expand11Block);
     public WeightedOption merge1 = new WeightedOption(5, this::merge1to2);
@@ -98,6 +101,8 @@ public class FloodGraph {
 
     public void mergeGraph(FloodGraph graph) {
         if (graph == this) return;
+        if (!added || !graph.added) return;
+        if (allBuilding == null || graph.allBuilding == null) return;
         //merge into other graph instead.
         if (allBuilding.size > graph.allBuilding.size) {
             for (FloodBuildingEntity tile : graph.allBuilding) {
@@ -369,11 +374,11 @@ public class FloodGraph {
             unitType = UnitTypes.collaris;
         }else if (area > 1800 && Mathf.chance(0.3f)){
             unitType = UnitTypes.tecta;
-        }else if (area > 1000 && Mathf.chance(0.4f)){
+        }else if (area > 1250 && Mathf.chance(0.4f)){
             unitType = UnitTypes.anthicus;
-        }else if (area > 500 && Mathf.chance(0.4f)){
+        }else if (area > 720 && Mathf.chance(0.4f)){
             unitType = UnitTypes.cleroi;
-        }else if (area > 200){
+        }else if (area > 350){
             unitType = UnitTypes.merui;
         }else {
             return;

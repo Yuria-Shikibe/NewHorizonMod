@@ -5,11 +5,13 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import arc.util.Log;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
+import mindustry.world.Block;
+import mindustry.world.Build;
 import mindustry.world.Edges;
-import newhorizon.util.graphic.DrawUtil;
+import mindustry.world.Tile;
+import mindustry.world.blocks.ConstructBlock;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.tilesize;
@@ -24,6 +26,8 @@ public class FloodWall extends FloodBase{
     };
     public TextureRegion[] atlas;
     public int regionSize = 0;
+
+    public Block nextBlock;
 
     public FloodWall(String name) {
         super(name);
@@ -71,6 +75,23 @@ public class FloodWall extends FloodBase{
             drawIndex[1] = Mathf.num(checkTile[2]) * 2 + Mathf.num(checkTile[1]);
             drawIndex[2] = Mathf.num(checkTile[0]) * 2 + Mathf.num(checkTile[7]);
             drawIndex[3] = Mathf.num(checkTile[6]) * 2 + Mathf.num(checkTile[5]);
+        }
+
+        @Override
+        public void afterDestroyed() {
+            super.afterDestroyed();
+            if (nextBlock != null){
+                int shift = 0;
+                if (size == 4) shift = 1;
+                if (size == 8) shift = 2;
+                for (int x = 0; x < 2; x++){
+                    for (int y = 0; y < 2; y++){
+                        Tile tile = world.tile(tileX() - shift + size/2 * x, tileY() - shift + size/2 * y);
+                        Build.beginPlace(null, nextBlock, team, tile.x, tile.y, 0);
+                        ConstructBlock.constructFinish(tile, nextBlock, null, (byte) 0, team, null);
+                    }
+                }
+            }
         }
     }
 }
