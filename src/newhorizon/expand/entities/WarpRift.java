@@ -36,6 +36,7 @@ import newhorizon.util.struct.GridData;
 
 import java.nio.FloatBuffer;
 
+import static mindustry.Vars.headless;
 import static mindustry.Vars.tilesize;
 import static mindustry.type.UnitType.shadowTX;
 import static mindustry.type.UnitType.shadowTY;
@@ -140,6 +141,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     }
 
     public void effect(){
+        if (headless) return;
         GridData grid = GridUtil.unitGridsMap.get(unitType.name);
 
         for (int gy = grid.height - 1; gy > 0; gy--){

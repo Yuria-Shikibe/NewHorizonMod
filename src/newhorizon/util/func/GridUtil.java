@@ -11,8 +11,7 @@ import arc.util.Time;
 import mindustry.type.UnitType;
 import newhorizon.util.struct.GridData;
 
-import static mindustry.Vars.content;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class GridUtil {
     public static final int GRID_LEN = 16;
@@ -24,6 +23,8 @@ public class GridUtil {
     public static ObjectMap<String, GridData> unitGridsMap;
 
     public static void init(){
+
+        if (headless) return;
         unitGridsMap = new ObjectMap<>(content.units().size);
         for (UnitType unit : content.units()) {
             unitGridsMap.put(unit.name, GridUtil.getGridData(unit.fullIcon));
