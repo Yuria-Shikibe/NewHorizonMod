@@ -235,7 +235,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
         Groups.sync.add(this);
 
         NHFx.spawnWave.at(x, y, drawSize * 1.1f, team.color);
-        effect();
+        //effect();
     }
 
     @Override

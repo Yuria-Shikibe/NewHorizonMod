@@ -28,6 +28,7 @@ import mindustry.world.Build;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
+import newhorizon.NewHorizon;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.content.blocks.FloodContentBlock;
 import newhorizon.expand.entities.WarpRift;
@@ -46,7 +47,6 @@ import static newhorizon.expand.block.struct.GraphUpdater.allGraph;
  * notice the memory cost might be very high when it comes to larger graph (the quad tree's cost), avoid too high expand limit
  *
  * @see FloodBuildingEntity
- * @see WeightedOption
  * @see mindustry.world.blocks.power.PowerGraph
  */
 public class FloodGraph {
@@ -248,6 +248,11 @@ public class FloodGraph {
     public void update(){
         if (!added) return;
         if (coreBuilding.isEmpty()) return;
+        if (state.isEditor()) return;
+        if (coreBuilding.first().graph != this){
+            removeGraph();
+            return;
+        }
 
         updateOptions();
 
@@ -272,8 +277,8 @@ public class FloodGraph {
         expand.setWeight(12 + (1 - (float) area / areaLimit) * 40);
         merge1.setWeight(10 + (1 - (float) area / areaLimit) * 10f);
         merge2.setWeight(5 + (1 - (float) area / areaLimit) * 5f);
-        merge4.setWeight(5 + (1 - (float) area / areaLimit) * 2f);
-        summon.setWeight(2 + ((float) area / areaLimit) * 4);
+        merge4.setWeight(4 + (1 - (float) area / areaLimit) * 2f);
+        summon.setWeight(2 + ((float) area / areaLimit) * 3);
     }
 
     public void expand11Block(){
@@ -425,15 +430,15 @@ public class FloodGraph {
         //    Draw.alpha(0.25f);
         //    Fill.square(building.x, building.y, building.block.size * tilesize/2f);
         //});
-
-        //expandCandidate.each(((building, tiles) -> tiles.each(tile -> {
-        //    Draw.z(Layer.blockOver);
-        //    Draw.color(Pal.techBlue);
-        //    Draw.alpha(0.2f);
-        //    Lines.line(building.x(), building.y(), tile.drawx(), tile.drawy());
-        //    Lines.square(tile.drawx(), tile.drawy(), 4);
-        //})));
-
+        if (NewHorizon.DEBUGGING){
+            expandCandidate.each(((building, tiles) -> tiles.each(tile -> {
+                Draw.z(Layer.blockOver);
+                Draw.color(Pal.techBlue);
+                Draw.alpha(0.2f);
+                Lines.line(building.x(), building.y(), tile.drawx(), tile.drawy());
+                Lines.square(tile.drawx(), tile.drawy(), 4);
+            })));
+        }
         /*
         merge2to4Candidate.each(building -> {
             Draw.z(Layer.blockOver);

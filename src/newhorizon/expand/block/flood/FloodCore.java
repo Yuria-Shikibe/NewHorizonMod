@@ -22,8 +22,7 @@ import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.blocks.FloodContentBlock;
 
-import static mindustry.Vars.renderer;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class FloodCore extends CoreBlock {
     public int maxExpandArea = 4096;
@@ -48,7 +47,7 @@ public class FloodCore extends CoreBlock {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation){
-        return true;
+        return (tile.x - 3) % size == 0 && (tile.y - 3) % size == 0;
     }
 
     @Override
@@ -72,6 +71,8 @@ public class FloodCore extends CoreBlock {
     public class FloodCoreBuild extends CoreBuild implements FloodBuildingEntity{
         public FloodGraph graph;
         public Seq<Tile> expandCandidate;
+
+        public boolean createMargin = false;
 
         public void created() {
             super.created();
@@ -156,6 +157,13 @@ public class FloodCore extends CoreBlock {
         public void onProximityUpdate() {
             super.onProximityUpdate();
             updateGraph();
+        }
+
+        @Override
+        public void updateTile() {
+            if (!((tileX() - 3) % size == 0 && (tileY() - 3) % size == 0)){
+                kill();
+            }
         }
     }
 }

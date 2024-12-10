@@ -80,8 +80,7 @@ public class NHUI{
 		eventDialog = new WorldEventDialog();
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
-			//t.label(() -> "Xen Graph Count: " + xenGraphAll.size).row();
-			//t.label(() -> "Graph Count: " + allGraph.size).row();
+			t.label(() -> "Graph Count: " + allGraph.size).row();
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {
