@@ -161,9 +161,9 @@ public class FloodCore extends CoreBlock {
 
         @Override
         public void updateTile() {
-            if (!((tileX() - 3) % size == 0 && (tileY() - 3) % size == 0)){
-                kill();
-            }
+            //if (!((tileX() - 3) % size == 0 && (tileY() - 3) % size == 0)){
+            //    kill();
+            //}
         }
     }
 }

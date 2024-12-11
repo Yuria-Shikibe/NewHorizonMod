@@ -45,10 +45,12 @@ import static newhorizon.expand.block.struct.GraphUpdater.allGraph;
  * update depends on the core buildings.
  * update options use weighted options, the weight depend on many factors.
  * notice the memory cost might be very high when it comes to larger graph (the quad tree's cost), avoid too high expand limit
+ * nah better a new way
  *
  * @see FloodBuildingEntity
  * @see mindustry.world.blocks.power.PowerGraph
  */
+@Deprecated
 public class FloodGraph {
 
     private static final Queue<FloodBuildingEntity> queue = new Queue<>();
@@ -69,7 +71,7 @@ public class FloodGraph {
 
     //values indicated current state.
     //current flood's area.
-    public int expandCount = 1;
+    public int expandCount = 10;
     public int areaLimit;
     public int area;
 
@@ -84,7 +86,7 @@ public class FloodGraph {
     public WeightedOption summon = new WeightedOption(5, this::createUnit);
 
     //inner values
-    private static final float UPDATE_INTERVAL = 30f;
+    private static final float UPDATE_INTERVAL = 2f;
     private static int lastID = 0;
 
     private final int graphID;
@@ -249,7 +251,15 @@ public class FloodGraph {
         if (!added) return;
         if (coreBuilding.isEmpty()) return;
         if (state.isEditor()) return;
-        if (coreBuilding.first().graph != this){
+
+        //idk why but sometimes there are random duplicated graphs
+        //random check to remove them
+        //this sucks
+        if (coreBuilding.random().graph != this){
+            removeGraph();
+            return;
+        }
+        if (allBuilding.random().graph() != this){
             removeGraph();
             return;
         }
@@ -261,7 +271,7 @@ public class FloodGraph {
 
         if (timer >= UPDATE_INTERVAL){
             while (count < expandCount){
-                WeightedRandom.random(expand, merge1, merge2, merge4, summon);
+                WeightedRandom.random(expand/*, merge1, merge2, merge4, summon*/);
                 count++;
             }
             timer %= UPDATE_INTERVAL;
