@@ -8,8 +8,6 @@ import java.lang.annotation.Target;
 
 /**
  * All {@link ElementType#METHOD} & {@link ElementType#FIELD} & {@link ElementType#CONSTRUCTOR} annotated by this should only be used in single-player game or the server.
- *
- *
  * */
 
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.TYPE})

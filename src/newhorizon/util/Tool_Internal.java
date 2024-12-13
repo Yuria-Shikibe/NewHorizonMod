@@ -144,7 +144,6 @@ public class Tool_Internal{
 	
 	public static void fireAnime(){
 		Vars.ui.loadfrag.show();
-//		Vars.ui.load
 		Vars.ui.loadAnd("[accent]Generating", () -> {
 			Color from = NHColor.lightSkyFront, to = Color.darkGray;
 			

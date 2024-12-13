@@ -5,13 +5,16 @@ import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
-import newhorizon.expand.block.flood.FloodBase;
 import newhorizon.expand.block.flood.FloodCore;
 import newhorizon.expand.block.flood.FloodMargin;
 import newhorizon.expand.block.flood.FloodWall;
+import newhorizon.expand.block.synth.SynthCore;
+import newhorizon.expand.block.synth.SynthWall;
 
 public class FloodContentBlock {
     public static Block dummy11, dummy22, dummy44, dummy88, flood88core;
+    public static SynthCore test, test1;
+    public static SynthWall[] synthWalls;
 
     public static void load(){
         dummy11 = new FloodMargin("dummy11"){{
@@ -50,5 +53,14 @@ public class FloodContentBlock {
             armor = 25;
             size = 8;
         }};
+
+        test = new SynthCore("test"){{
+            requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+        }};
+
+        synthWalls = new SynthWall[8];
+        for (int i = 0; i < synthWalls.length; i++){
+            synthWalls[i] = new SynthWall("synth-wall-" + i, i + 1);
+        }
     }
 }

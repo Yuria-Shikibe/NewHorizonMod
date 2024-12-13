@@ -53,7 +53,6 @@ public class TiledFloor extends Floor {
     public void drawBase(Tile tile) {
         drawTile(tile);
         Draw.alpha(1f);
-        //drawEdges(tile);
         drawOverlay(tile);
     }
 }

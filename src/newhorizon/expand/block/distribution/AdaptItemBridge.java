@@ -21,7 +21,7 @@ import mindustry.type.ItemStack;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
-import newhorizon.util.MathUtil;
+import newhorizon.util.func.MathUtil;
 import newhorizon.util.graphic.DrawUtil;
 import newhorizon.util.graphic.SpriteUtil;
 

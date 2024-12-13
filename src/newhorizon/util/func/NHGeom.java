@@ -1,48 +1,15 @@
 package newhorizon.util.func;
 
 import arc.func.Intc2;
+import arc.math.geom.Bresenham2;
+import arc.math.geom.Point2;
 import arc.struct.LongSeq;
+import arc.struct.Seq;
 
 /**
  * Multi Thread Safe
  * */
 public class NHGeom{
-	public static void raycast(int x0f, int y0f, int x1, int y1, int width, int height, Intc2 cons){
-		LongSeq calculated = new LongSeq();
-		
-		int x0 = x0f;
-		int y0 = y0f;
-		int dx = Math.abs(x1 - x0);
-		int dy = Math.abs(y1 - y0);
-		
-		int sx = x0 < x1 ? 1 : -1;
-		int sy = y0 < y1 ? 1 : -1;
-		
-		int err = dx - dy;
-		int e2;
-		while(x0 != x1 && y0 != y1){
-			for(int w = -width / 2; w < width / 2; w++){
-				for(int h = -height / 2; h < height / 2; h++){
-					long index = ((long)(w + x0)) << 32 | ((long)(y0 + h));
-					if(calculated.contains(index))continue;
-					cons.get(x0 + w, y0 + h);
-					calculated.add(index);
-				}
-			}
-			
-			e2 = 2 * err;
-			if(e2 > -dy){
-				err = err - dy;
-				x0 = x0 + sx;
-			}
-			
-			if(e2 < dx){
-				err = err + dx;
-				y0 = y0 + sy;
-			}
-		}
-	}
-	
 	public static void square(int x, int y, int radius, Intc2 cons) {
 	    for(int dx = -radius; dx <= radius; ++dx) {
 	        for(int dy = -radius; dy <= radius; ++dy) {
@@ -55,7 +22,6 @@ public class NHGeom{
 	    if(startX > endX || startY > endY)throw new IllegalArgumentException("MIN > MAX");
 	    for(int dx = startX; dx <= endX; ++dx) {
 	        for(int dy = startY; dy <= endY; ++dy) {
-	//                Log.info(dy + dx * (endY - startY) + "/" + (endX - startX) * (endY - startY));
 	            cons.get(dx, dy);
 	        }
 	    }

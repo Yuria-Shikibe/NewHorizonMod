@@ -29,12 +29,11 @@ import static mindustry.Vars.renderer;
 public class NHContent extends Content{
 	public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
 	public static final float XEN_LAYER = Layer.block - 0.003f;
-	public static final float MATTER_STORM_LAYER = Layer.weather + 0.112f; // Making it wried
-	public static final float EVENT_LAYER = Layer.weather + 5.12142f; // Making it wried
-	
+	public static final float ARMOR_LAYER = Layer.block - 0.012f;
+
 	public static Fi scheDir;
 	
-	public static Schematic mLoadout, nhBaseLoadout, terrainTest;
+	public static Schematic mLoadout, nhBaseLoadout;
 	
 	public static Texture smoothNoise, particleNoise, darkerNoise, armorTex/*, platingNoise*/;
 	
@@ -56,7 +55,6 @@ public class NHContent extends Content{
 	
 	public static void loadBeforeContentLoad(){
 		CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum){});
-		//CacheLayer.add(platingLayer = new CacheLayer.ShaderLayer(NHShaders.platingSurface){});
 		CacheLayer.add(armorLayer = new CacheLayer.ShaderLayer(NHShaders.tiler){
 			@Override
 			public void begin(){

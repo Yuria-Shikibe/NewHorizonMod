@@ -176,9 +176,7 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
-				for (Point2 p: Edges.getEdges(8)){
-					Log.info(p);
-				}
+
 			});
 		});
 	}

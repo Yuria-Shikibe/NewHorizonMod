@@ -17,7 +17,7 @@ import newhorizon.content.NHContent;
 import static mindustry.Vars.world;
 
 public class ArmorFloor extends Floor{
-	public Floor solidReact = null;
+	public Floor solidReact;
 	public boolean useDynamicLight = false;
 	public Color[] colors;
 	

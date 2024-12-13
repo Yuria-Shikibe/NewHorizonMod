@@ -21,6 +21,7 @@ import newhorizon.util.graphic.StatusRenderer;
 import static arc.Core.graphics;
 import static mindustry.Vars.control;
 import static mindustry.Vars.renderer;
+import static newhorizon.content.NHContent.armorTex;
 
 public class NHRenderer implements Disposable{
 	public static float width, height;

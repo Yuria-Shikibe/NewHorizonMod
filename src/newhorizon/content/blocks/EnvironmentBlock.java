@@ -7,7 +7,6 @@ import newhorizon.expand.block.env.*;
 public class EnvironmentBlock {
     public static Floor metalFloorGroove;
     public static TiledFloor metalFloorPlain, labFloorLight, labFloorDark;
-    public static AtlasFloor granite, diorite;
     public static DataFloor
         lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
     public static Block dataFloorPlacer;

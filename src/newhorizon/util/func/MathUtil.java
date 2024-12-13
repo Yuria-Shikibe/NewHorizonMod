@@ -1,8 +1,7 @@
-package newhorizon.util;
+package newhorizon.util.func;
 
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import mindustry.gen.Posc;
