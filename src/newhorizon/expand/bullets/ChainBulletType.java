@@ -134,7 +134,7 @@ public class ChainBulletType extends BulletType{
 //	public @Nullable
 //	Bullet create(@Nullable Entityc owner, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, @Nullable Mover mover, float aimX, float aimY){
 //		Bullet b = bu;
-//		b.reset();
+//		b.worldReset();
 //		b.type = this;
 //		b.owner = owner;
 //		b.team = team;

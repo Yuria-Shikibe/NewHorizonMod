@@ -200,7 +200,7 @@ public class DelayedPointBulletType extends BulletType{
 		bullet.hitSize = hitSize;
 		bullet.mover = mover;
 		bullet.damage = (damage < 0 ? this.damage : damage) * bullet.damageMultiplier();
-		//reset trail
+		//worldReset trail
 		if(bullet.trail != null){
 			bullet.trail.clear();
 		}

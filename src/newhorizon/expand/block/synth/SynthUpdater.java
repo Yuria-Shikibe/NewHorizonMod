@@ -1,10 +1,17 @@
 package newhorizon.expand.block.synth;
 
-import arc.math.geom.QuadTree;
+import arc.math.Mathf;
+import arc.math.Rand;
+import arc.math.geom.Point2;
 import arc.math.geom.Rect;
 import arc.struct.ByteSeq;
+import arc.struct.Queue;
 import arc.struct.Seq;
-import newhorizon.expand.block.flood.FloodBuildingEntity;
+import arc.util.Log;
+import mindustry.gen.Building;
+import mindustry.gen.Shieldc;
+
+import java.util.PriorityQueue;
 
 import static mindustry.Vars.world;
 
@@ -13,27 +20,19 @@ public class SynthUpdater {
     public float updateTimer;
 
     //used to control the max altitude for tiles.
-    public volatile ByteSeq altitude;
-    public Seq<FloodBuildingEntity> allCores;
-    public QuadTree<FloodBuildingEntity> coreBuildings;
+    public Seq<Building> nodes = new Seq<>();
+    public Seq<Shieldc> bridge = new Seq<>();
 
-    public AltitudeUpdater altitudeUpdater;
 
-    /** init all stuff when a new map is loaded*/
-    public void init(){
-        allCores = new Seq<>();
-        altitude = new ByteSeq(world.width() * world.height());
-        coreBuildings = new QuadTree<>(new Rect(0, 0, world.unitWidth(), world.unitHeight()));
+    public Rand rand = new Rand();
+
+    //when new game about to load, worldReset everything.
+    public void worldReset(){
+
     }
 
-    public int getMaxAltitude(int x, int y){
-        return altitude.get(x + y * world.width());
-    }
+    //when blocks are added, set things.
+    public void worldInit(){
 
-    public static class AltitudeUpdater extends Thread{
-        @Override
-        public void run() {
-            super.run();
-        }
     }
 }

@@ -3,6 +3,7 @@ package newhorizon.expand;
 import arc.Core;
 import mindustry.Vars;
 import newhorizon.*;
+import newhorizon.expand.block.synth.SynthUpdater;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.game.NHWorldData;
@@ -24,14 +25,13 @@ public class NHVars{
 		control = new NHInputControl();
 
 		core = new NHModCore();
-		Core.app.addListener(core);
 
+		Core.app.addListener(core);
 		NHCSS_UI.init();
-		GridUtil.init();
 
 		if(Vars.headless)return;
+		GridUtil.init();
 		renderer = new NHRenderer();
-
 		NHSetting.loadUI();
 		if(NHSetting.getBool(NHSetting.DEBUG_PANEL)){
 			TableFunc.tableMain();

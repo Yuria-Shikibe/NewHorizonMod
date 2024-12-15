@@ -1,9 +1,7 @@
 package newhorizon;
 
 import arc.ApplicationListener;
-import arc.Events;
 import mindustry.Vars;
-import mindustry.game.EventType;
 import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_Core;
 
@@ -35,7 +33,7 @@ public class NHModCore implements ApplicationListener{
         ApplicationListener.super.init();
     }
 
-	public void initOnLoadWorld(){
+	public void worldInit(){
 		if(!Vars.headless){
 			renderer.init();
 		}

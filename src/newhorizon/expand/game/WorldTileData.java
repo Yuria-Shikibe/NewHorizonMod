@@ -47,7 +47,6 @@ public class WorldTileData implements SaveFileReader.CustomChunk{
         packPos.clear();
         tileByte.clear();
         int size = stream.readInt();
-        Log.info("size" + size);
         for (int i = 0; i < size; i++){
             packPos.add(stream.readInt());
             tileByte.add(stream.readByte());

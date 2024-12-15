@@ -8,7 +8,6 @@ import arc.math.geom.Rect;
 import arc.util.Disposable;
 import mindustry.Vars;
 import mindustry.gen.Building;
-import mindustry.gen.Drawc;
 import mindustry.graphics.Shaders;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
@@ -21,7 +20,6 @@ import newhorizon.util.graphic.StatusRenderer;
 import static arc.Core.graphics;
 import static mindustry.Vars.control;
 import static mindustry.Vars.renderer;
-import static newhorizon.content.NHContent.armorTex;
 
 public class NHRenderer implements Disposable{
 	public static float width, height;
@@ -73,12 +71,7 @@ public class NHRenderer implements Disposable{
 			});
 		}
 	}
-	
-	public void getTexture(Drawc drawc){
-		Draw.proj(Core.camera.mat);
-		drawc.draw();
-	}
-	
+
 	/** Releases all resources of this object. */
 	@Override
 	public void dispose(){

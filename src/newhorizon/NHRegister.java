@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
@@ -29,8 +30,6 @@ import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import java.lang.reflect.Field;
 
 import static mindustry.Vars.ui;
-import static newhorizon.expand.block.struct.GraphUpdater.allGraph;
-import static newhorizon.expand.block.struct.GraphUpdater.xenGraphAll;
 
 public class NHRegister{
 	public static final Seq<Runnable> afterLoad = new Seq<>();
@@ -68,8 +67,7 @@ public class NHRegister{
 		});
 
 		Events.on(EventType.WorldLoadBeginEvent.class, e -> {
-			allGraph.clear();
-			xenGraphAll.clear();
+			NHGroups.worldReset();
 		});
 		
 		Events.run(EventType.Trigger.draw, () -> {
@@ -81,8 +79,8 @@ public class NHRegister{
 		});
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
-			NHGroups.resize();
-			NHVars.core.initOnLoadWorld();
+			NHGroups.worldInit();
+			NHVars.core.worldInit();
 			if(!Vars.state.isEditor()){
 				EventHandler.create();
 				afterLoad.each(Runnable::run);
@@ -96,7 +94,7 @@ public class NHRegister{
 						try{
 							entry.dataField.set(data, entry.defData());
 						}catch(IllegalAccessException ex){
-							ex.printStackTrace();
+							Log.info(ex);
 						}
 					});
 				}else{
@@ -114,7 +112,6 @@ public class NHRegister{
 					Groups.unit.each(b -> Time.run(Mathf.random(60, 600), b::kill));
 					Time.run(600f, () -> {
 						Logic.updateGameOver(Team.derelict);
-//						Logic.gameOver(Team.derelict);
 					});
 					
 					Vars.maps.removeMap(Vars.state.map);
@@ -132,7 +129,7 @@ public class NHRegister{
 
 			if(!Vars.headless && Vars.net.active() && NHSetting.getBool(NHSetting.EXPERIMENTAL)){
 				Core.app.post(() -> {
-					Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
+					Vars.ui.showConfirm("need disable experimental content", NHSetting::showDialog);
 					Vars.net.disconnect();
 				});
 			}

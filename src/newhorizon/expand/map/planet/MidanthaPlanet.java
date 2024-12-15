@@ -130,7 +130,6 @@ public class MidanthaPlanet extends Planet {
 
         //inner variable
         public final Seq<Rect> chunkRects = new Seq<>();
-        public Seq<Point2> tmpTiles = new Seq<>();
         public Seq<Point2> tmpRivers = new Seq<>();
 
 
@@ -199,7 +198,7 @@ public class MidanthaPlanet extends Planet {
         //set the map border and limit map area, and set border variables
         private void setBorder(){
             //FUCK YOU ANUKE THE FUCKED POLY BORDER
-            //alright lets resize the area for that shit border
+            //alright lets worldCreated the area for that shit border
             for (int i = 0; i < width/2; i++){
                 if (world.getDarkness(i, i) == 0 &&
                     world.getDarkness(width - 1 - i, i) == 0 &&
@@ -212,7 +211,7 @@ public class MidanthaPlanet extends Planet {
             }
 
             borderSize = width - border * 2;
-            //resize the map
+            //worldCreated the map
             cStart = (borderSize % cSize) / 2 + border;
             cStep = borderSize / cSize;
             chunks = new Chunk[cStep][cStep];
@@ -272,10 +271,6 @@ public class MidanthaPlanet extends Planet {
                 }
                 spiltRect(largest);
             }
-
-            //for (Rect rect: chunkRects){
-            //    Log.info("[" + (int)rect.x + "," + (int)rect.y + "," + (int)rect.width + "," + (int)rect.height + "]");
-            //}
         }
 
         private void spiltRect(Rect rect){
