@@ -22,7 +22,7 @@ import mindustry.world.meta.BlockGroup;
 import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
 import newhorizon.util.func.MathUtil;
-import newhorizon.util.graphic.DrawUtil;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.itemSize;
@@ -475,7 +475,7 @@ public class AdaptItemBridge extends AdaptBlock {
                 Tmp.v1.trns(bridgeAng, segDst).add(this);
                 Draw.z(LAYER_ITEM);
                 Draw.rect(stack.itemStack.item.fullIcon, Tmp.v1.x, Tmp.v1.y, itemSize, itemSize);
-                DrawUtil.drawText(stack.itemStack.amount + "", Tmp.v1.x, Tmp.v1.y, 1f);
+                DrawFunc.drawText(stack.itemStack.amount + "", Tmp.v1.x, Tmp.v1.y, 1f);
             }
         }
 
@@ -547,7 +547,7 @@ public class AdaptItemBridge extends AdaptBlock {
                 Tmp.v3.set(Tmp.v1).lerp(Tmp.v2, cornerFrac());
                 Draw.z(LAYER_ITEM);
                 Draw.rect(stackItem().fullIcon, Tmp.v3.x, Tmp.v3.y, itemSize, itemSize);
-                DrawUtil.drawText(stackCount() + "", Tmp.v3.x, Tmp.v3.y, 1f);
+                DrawFunc.drawText(stackCount() + "", Tmp.v3.x, Tmp.v3.y, 1f);
             }
         }
 
@@ -572,10 +572,10 @@ public class AdaptItemBridge extends AdaptBlock {
 
 
             if (!DEBUGGING) return;
-            DrawUtil.drawText("status: " + status, x, y - 2);
-            DrawUtil.drawText("inAngle: " + cornerInAng, x, y - 6);
-            DrawUtil.drawText("outAngle: " + cornerOutAng, x, y - 10);
-            DrawUtil.drawText("rotAngle: " + bridgeRotAng, x, y - 14);
+            DrawFunc.drawText("status: " + status, x, y - 2);
+            DrawFunc.drawText("inAngle: " + cornerInAng, x, y - 6);
+            DrawFunc.drawText("outAngle: " + cornerOutAng, x, y - 10);
+            DrawFunc.drawText("rotAngle: " + bridgeRotAng, x, y - 14);
 
             Draw.color(Pal.accent, Pal.heal, 0f);
             Fill.circle(tmp0.x, tmp0.y, 0.5f);

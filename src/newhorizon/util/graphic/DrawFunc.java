@@ -13,6 +13,7 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
 import arc.struct.Seq;
+import arc.util.Align;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
@@ -630,5 +631,26 @@ public class DrawFunc{
 
     public static void gradient(Vec2 start, Vec2 end, float width, Color colorFrom){
         gradient(start.x, start.y, end.x, end.y, width, colorFrom, Color.clear);
+    }
+
+    public static void drawText(String text, float x, float y) {
+        drawText(text, x, y, 1f);
+    }
+
+    public static void drawText(String text, float x, float y, float size) {
+        Font font = Fonts.outline;
+        GlyphLayout layout = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
+        boolean ints = font.usesIntegerPositions();
+        font.setUseIntegerPositions(false);
+        font.getData().setScale(size / 6f / Scl.scl(1f));
+
+        layout.setText(font, text);
+        font.draw(text, x, y, Align.center);
+
+        font.setUseIntegerPositions(ints);
+        font.setColor(Color.white);
+        font.getData().setScale(1f);
+        Draw.reset();
+        Pools.free(layout);
     }
 }

@@ -3,6 +3,7 @@ package newhorizon.expand.block.synth;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Point2;
+import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.struct.ByteSeq;
 import arc.struct.Queue;
@@ -20,6 +21,7 @@ public class SynthUpdater {
     public float updateTimer;
 
     //used to control the max altitude for tiles.
+    public QuadTree<SynthCore.SynthCoreBuild> tree;
     public Seq<Building> nodes = new Seq<>();
     public Seq<Shieldc> bridge = new Seq<>();
 
@@ -28,7 +30,7 @@ public class SynthUpdater {
 
     //when new game about to load, worldReset everything.
     public void worldReset(){
-
+        tree = new QuadTree<>(new Rect(0, 0, world.unitWidth(), world.unitHeight()));
     }
 
     //when blocks are added, set things.

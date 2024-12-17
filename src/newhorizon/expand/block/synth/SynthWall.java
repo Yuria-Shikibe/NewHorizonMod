@@ -3,7 +3,6 @@ package newhorizon.expand.block.synth;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
@@ -15,12 +14,8 @@ import mindustry.type.ItemStack;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.NewHorizon;
-import newhorizon.content.NHContent;
 import newhorizon.content.NHItems;
-import newhorizon.expand.block.flood.FloodWall;
 import newhorizon.util.graphic.SpriteUtil;
-
-import static mindustry.Vars.tilesize;
 
 public class SynthWall extends Wall {
     public TextureRegion[] atlas;

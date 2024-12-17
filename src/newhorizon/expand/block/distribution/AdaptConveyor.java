@@ -29,7 +29,7 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.AdaptBlock;
 import newhorizon.expand.block.AdaptBuilding;
-import newhorizon.util.graphic.DrawUtil;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.itemSize;
@@ -255,7 +255,7 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
                 Tmp.v1.set(Geometry.d4x(r) * tilesize / 2f, Geometry.d4y(r) * tilesize / 2f)
                     .lerp(Geometry.d4x(rotation) * tilesize / 2f, Geometry.d4y(rotation) * tilesize / 2f, prog);
                 Draw.rect(stackItem().fullIcon, x + Tmp.v1.x, y + Tmp.v1.y, itemSize, itemSize);
-                DrawUtil.drawText(stackCount() + "", x + Tmp.v1.x, y + Tmp.v1.y, 1f);
+                DrawFunc.drawText(stackCount() + "", x + Tmp.v1.x, y + Tmp.v1.y, 1f);
             }
             Draw.reset();
 

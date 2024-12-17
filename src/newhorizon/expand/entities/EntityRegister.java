@@ -12,7 +12,6 @@ import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
 import newhorizon.expand.units.EnergyUnitII;
-import newhorizon.expand.units.unitEntity.FloodMechEntity;
 import newhorizon.expand.units.unitEntity.NucleoidEntity;
 import newhorizon.expand.units.unitEntity.PesterEntity;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
@@ -38,7 +37,6 @@ public class EntityRegister {
 		put(AdaptedTimedKillUnit.class, AdaptedTimedKillUnit::new);
 		put(NucleoidEntity.class, NucleoidEntity::new);
 		put(ProbeEntity.class, ProbeEntity::new);
-		put(FloodMechEntity.class, FloodMechEntity::new);
 
 		put(AutoEventTrigger.class, AutoEventTrigger::new);
 		put(WorldEvent.class, WorldEvent::new);

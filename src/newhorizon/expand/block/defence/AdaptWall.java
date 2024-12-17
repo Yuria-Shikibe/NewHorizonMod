@@ -21,7 +21,6 @@ import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHStats;
-import newhorizon.util.graphic.DrawUtil;
 import newhorizon.util.graphic.SpriteUtil;
 import newhorizon.util.ui.BarExtend;
 

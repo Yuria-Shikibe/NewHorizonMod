@@ -10,7 +10,7 @@ import arc.struct.ObjectSet;
 import arc.util.Log;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
-import newhorizon.util.graphic.DrawUtil;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.renderer;
 import static mindustry.Vars.ui;
@@ -40,7 +40,7 @@ public class DebugFunc {
         for(Sector sec : planet.sectors){
             if(sec != null){
                 String secText = "[" + sec.id + "]";
-                renderer.planets.drawPlane(sec, () -> DrawUtil.drawText(secText, 0, 15, 1.8f));
+                renderer.planets.drawPlane(sec, () -> DrawFunc.drawText(secText, 0, 15, 1.8f));
             }
         }
         Draw.reset();

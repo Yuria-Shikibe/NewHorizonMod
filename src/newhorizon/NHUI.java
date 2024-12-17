@@ -6,7 +6,6 @@ import arc.scene.Element;
 import arc.scene.Group;
 import arc.scene.event.Touchable;
 import arc.scene.ui.ImageButton;
-import arc.scene.ui.Label;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
@@ -14,19 +13,14 @@ import arc.util.Align;
 import arc.util.ArcRuntimeException;
 import arc.util.Log;
 import mindustry.Vars;
-import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
-import newhorizon.expand.block.flood.FloodGraph;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.dialog.WorldEventDialog;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.content;
 import static mindustry.gen.Tex.*;
-import static newhorizon.expand.block.struct.GraphUpdater.allGraph;
-import static newhorizon.expand.block.struct.GraphUpdater.xenGraphAll;
 
 public class NHUI{
 	//references:
@@ -80,7 +74,7 @@ public class NHUI{
 		eventDialog = new WorldEventDialog();
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
-			t.label(() -> "Graph Count: " + allGraph.size).row();
+			//t.label(() -> "Graph Count: ").row();
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {
