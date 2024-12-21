@@ -73,7 +73,7 @@ public class SynthConduit extends Wall {
                 Building b = tile.build;
                 if (b == null){
                     tile.setBlock(block, team, rotation);
-                }else if ((b instanceof SynthVesselBuild)){
+                }else if ((b instanceof SynthVesselBuild) && b.rotation == rotation){
                     ((SynthVesselBuild)b).handleExpandCommand(distance);
                 }
             }

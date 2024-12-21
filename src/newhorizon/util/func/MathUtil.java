@@ -2,6 +2,7 @@ package newhorizon.util.func;
 
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import mindustry.gen.Posc;
@@ -51,6 +52,10 @@ public class MathUtil {
 
     public static float angle(Posc start, Posc end){
         return Angles.angle(start.x(), start.y(), end.x(), end.y());
+    }
+
+    public static float angle(Point2 start, Point2 end){
+        return Angles.angle(start.x, start.y, end.x, end.y);
     }
 
     public static float angle(Vec2 start, Vec2 end){

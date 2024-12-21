@@ -20,7 +20,6 @@ import mindustry.gen.Groups;
 import mindustry.net.Net;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
-import newhorizon.expand.NHVars;
 import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.expand.eventsys.types.WorldEventObjective;
 import newhorizon.expand.game.NHWorldData;

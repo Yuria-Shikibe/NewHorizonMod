@@ -2,10 +2,9 @@ package newhorizon;
 
 import arc.ApplicationListener;
 import mindustry.Vars;
-import newhorizon.expand.NHVars;
 import newhorizon.expand.cutscene.NHCSS_Core;
 
-import static newhorizon.expand.NHVars.renderer;
+import static newhorizon.NHVars.renderer;
 
 public class NHModCore implements ApplicationListener{
 	public NHModCore(){}

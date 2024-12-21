@@ -34,7 +34,7 @@ import mindustry.type.SectorPreset;
 import mindustry.type.UnitType;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NHRegister;
-import newhorizon.expand.NHVars;
+import newhorizon.NHVars;
 import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.expand.cutscene.CSSTexts;

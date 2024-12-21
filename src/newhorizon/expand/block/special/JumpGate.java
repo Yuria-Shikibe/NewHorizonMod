@@ -60,7 +60,7 @@ import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHTechTree;
 import newhorizon.expand.units.unitType.NHUnitType;
-import newhorizon.expand.NHVars;
+import newhorizon.NHVars;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.ItemImageDynamic;

@@ -12,7 +12,7 @@ import mindustry.game.EventType;
 import mindustry.type.SectorPreset;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.MessageBlock;
-import newhorizon.expand.NHVars;
+import newhorizon.NHVars;
 import newhorizon.expand.cutscene.actions.CSSActions;
 import newhorizon.expand.cutscene.stateoverride.UnitOverride;
 import newhorizon.expand.eventsys.types.WorldEventType;

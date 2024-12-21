@@ -2,8 +2,11 @@ package newhorizon;
 
 import arc.Core;
 import arc.Events;
+import arc.files.Fi;
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.graphics.Pixmap;
+import arc.graphics.PixmapIO;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.util.*;
@@ -28,18 +31,17 @@ import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
-import mindustry.world.Edges;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.content.blocks.DefenseBlock;
 import newhorizon.content.blocks.DistributionBlock;
-import newhorizon.expand.NHVars;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.packets.NHCall;
 import newhorizon.util.DebugFunc;
+import newhorizon.util.feature.RectSpiller;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
@@ -47,6 +49,7 @@ import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.NHInputListener.registerModBinding;
+import static newhorizon.util.DebugFunc.NH_DEBUG_GRAPHIC_FOLDER;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -187,7 +190,25 @@ public class NewHorizon extends Mod{
 
 		NHVars.init();
 
+		Time.mark();
+		RectSpiller ls = new RectSpiller();
+		int size = 512;
+		ls.init(size, size);
 
+		Pixmap pixmap = new Pixmap(size, size);
+		ls.each((x, y) -> {
+			if (ls.getPos(x, y) == 0){
+				Tmp.c1.set(Color.white);
+			}else {
+				Tmp.c1.set(Color.black);
+			}
+			pixmap.set(x, y, Tmp.c1);
+		});
+		Fi fi = new Fi(NH_DEBUG_GRAPHIC_FOLDER + "value.png");
+		PixmapIO.writePng(fi, pixmap);
+		pixmap.dispose();
+
+		Log.info("generated time: " + Time.elapsed());
 	}
 
 	@Override

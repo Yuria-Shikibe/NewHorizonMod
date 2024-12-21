@@ -1,12 +1,11 @@
-package newhorizon.expand;
+package newhorizon;
 
 import arc.Core;
 import mindustry.Vars;
-import newhorizon.*;
-import newhorizon.expand.block.synth.SynthUpdater;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.cutscene.NHCSS_UI;
 import newhorizon.expand.game.NHWorldData;
+import newhorizon.util.feature.RectSpiller;
 import newhorizon.util.func.GridUtil;
 import newhorizon.util.ui.TableFunc;
 
@@ -17,6 +16,7 @@ public class NHVars{
 	public static NHModCore core;
 	public static NHInputListener listener;
 	public static NHInputControl control;
+	public static RectSpiller rectControl;
 
 
 	public static void init(){
@@ -25,6 +25,7 @@ public class NHVars{
 		control = new NHInputControl();
 
 		core = new NHModCore();
+		rectControl = new RectSpiller();
 
 		Core.app.addListener(core);
 		NHCSS_UI.init();

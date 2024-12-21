@@ -41,7 +41,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
-import newhorizon.expand.NHVars;
+import newhorizon.NHVars;
 import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.cutscene.actions.CSSActions;
 import newhorizon.expand.entities.WorldEvent;

@@ -8,7 +8,7 @@ import arc.struct.Seq;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.expand.NHVars;
+import newhorizon.NHVars;
 import newhorizon.expand.game.NHWorldData;
 
 import java.lang.reflect.Field;
