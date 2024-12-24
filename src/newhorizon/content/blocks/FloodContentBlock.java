@@ -4,8 +4,8 @@ import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
-import newhorizon.expand.block.synth.SynthCore;
-import newhorizon.expand.block.synth.SynthConduit;
+import newhorizon.expand.block.floodv2.SynthCore;
+import newhorizon.expand.block.floodv2.SynthConduit;
 
 public class FloodContentBlock {
     public static SynthCore test, testRot;

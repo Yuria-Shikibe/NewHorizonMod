@@ -1,14 +1,10 @@
-package newhorizon.expand.block.synth;
+package newhorizon.expand.block.floodv2;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.util.Log;
-import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
@@ -17,7 +13,6 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Wall;
-import newhorizon.content.blocks.FloodContentBlock;
 
 import static mindustry.Vars.world;
 import static newhorizon.NHVars.rectControl;

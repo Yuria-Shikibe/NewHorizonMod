@@ -1,4 +1,4 @@
-package newhorizon.expand.block.synth;
+package newhorizon.expand.block.floodv2;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -6,14 +6,11 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Geometry;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Wall;
-import newhorizon.content.NHFx;
 import newhorizon.content.blocks.FloodContentBlock;
 import newhorizon.util.graphic.DrawFunc;
 

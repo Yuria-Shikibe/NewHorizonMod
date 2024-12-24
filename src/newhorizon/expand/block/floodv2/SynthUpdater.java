@@ -1,18 +1,11 @@
-package newhorizon.expand.block.synth;
+package newhorizon.expand.block.floodv2;
 
-import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Point2;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
-import arc.struct.ByteSeq;
-import arc.struct.Queue;
 import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.gen.Building;
 import mindustry.gen.Shieldc;
-
-import java.util.PriorityQueue;
 
 import static mindustry.Vars.world;
 

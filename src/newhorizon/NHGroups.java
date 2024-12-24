@@ -11,7 +11,6 @@ import mindustry.game.Team;
 import mindustry.gen.Groups;
 import newhorizon.expand.block.commandable.CommandableBlock;
 import newhorizon.expand.block.special.RemoteCoreStorage;
-import newhorizon.expand.block.synth.SynthUpdater;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
