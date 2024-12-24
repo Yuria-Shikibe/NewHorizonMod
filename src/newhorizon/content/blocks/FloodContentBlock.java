@@ -23,7 +23,7 @@ public class FloodContentBlock {
             size = 3;
         }};
 
-        testWall = new SynthConduit("synth-conduit-1"){{
+        testWall = new SynthConduit("synth-vein"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
         }};
     }

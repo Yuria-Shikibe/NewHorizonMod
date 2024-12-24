@@ -16,7 +16,7 @@ import static mindustry.Vars.renderer;
 import static mindustry.Vars.ui;
 
 public class DebugFunc {
-    public static final String NH_ROOT_PATH = "E:/MindustryModDevLib/NewHorizonMod";
+    public static final String NH_ROOT_PATH = "E:/project/MindustryModDevLib/NewHorizonMod";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
     public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
 

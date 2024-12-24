@@ -102,9 +102,8 @@ public class SynthCore extends Wall {
                     t.setBlock(FloodContentBlock.testWall, team, rot);
                 }else {
                     if (t.build instanceof SynthConduit.SynthVesselBuild){
-                        int dst = expandDst[rot] - size/2;
                         SynthConduit.SynthVesselBuild build = (SynthConduit.SynthVesselBuild) t.build;
-                        build.handleExpandCommand(dst);
+                        build.handleExpandCommand(this);
                     }
                 }
             }
