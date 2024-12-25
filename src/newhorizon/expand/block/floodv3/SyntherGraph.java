@@ -32,7 +32,6 @@ import newhorizon.util.struct.WeightedOption;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.world;
-import static newhorizon.expand.block.struct.GraphUpdater.allGraph;
 import static newhorizon.expand.block.struct.GraphUpdater.syntherEntity;
 
 public class SyntherGraph {
@@ -41,9 +40,10 @@ public class SyntherGraph {
     public QuadTree<SyntherBuildingEntity> quadTreeBuildings = new QuadTree<>(new Rect(0, 0, world.unitWidth(), world.unitHeight()));
 
     public Seq<SyntherBuildingEntity> allBuilding = new Seq<>(false, 16);
-    public Seq<FloodCore.FloodCoreBuild> coreBuilding = new Seq<>(false, 16);
+    public Seq<SyntherCore.SyntherCoreBuilding> coreBuilding = new Seq<>(false, 16);
 
     public ObjectMap<SyntherBuildingEntity, Seq<Tile>> expandCandidate = new ObjectMap<>();
+    /*
     public Seq<SyntherBuildingEntity> merge1to2Candidate = new Seq<>(false, 16);
     public Seq<SyntherBuildingEntity> merge2to4Candidate = new Seq<>(false, 16);
     public Seq<SyntherBuildingEntity> merge4to8Candidate = new Seq<>(false, 16);
@@ -51,6 +51,8 @@ public class SyntherGraph {
     public Seq<SyntherBuildingEntity> size2Candidate = new Seq<>(false, 16);
     public Seq<SyntherBuildingEntity> size4Candidate = new Seq<>(false, 16);
     public Seq<SyntherBuildingEntity> size8Candidate = new Seq<>(false, 16);
+
+     */
 
     //values indicated current state.
     //current flood's area.
@@ -63,9 +65,9 @@ public class SyntherGraph {
 
     //options control. weighted, depend on current state.
     public WeightedOption expand = new WeightedOption(0, this::expand11Block);
-    public WeightedOption merge1 = new WeightedOption(5, this::merge1to2);
-    public WeightedOption merge2 = new WeightedOption(5, this::merge2to4);
-    public WeightedOption merge4 = new WeightedOption(5, this::merge4to8);
+    //public WeightedOption merge1 = new WeightedOption(5, this::merge1to2);
+    //public WeightedOption merge2 = new WeightedOption(5, this::merge2to4);
+    //public WeightedOption merge4 = new WeightedOption(5, this::merge4to8);
     public WeightedOption summon = new WeightedOption(5, this::createUnit);
 
     //inner values
@@ -110,19 +112,21 @@ public class SyntherGraph {
             quadTreeBuildings.insert(building);
             building.setGraph(this);
 
-            if (building instanceof FloodCore.FloodCoreBuild){
-                FloodCore core = (FloodCore) building.block();
-                coreBuilding.add((FloodCore.FloodCoreBuild) building);
-                areaLimit += core.maxExpandArea;
-                if (center == null) center = new Vec2(building.x(), building.y());
+            if (building instanceof SyntherCore.SyntherCoreBuilding){
+                coreBuilding.add((SyntherCore.SyntherCoreBuilding) building);
+
+                //SyntherCore core = (SyntherCore) building.block();
+                //areaLimit += core.maxExpandArea;
+                //if (center == null) center = new Vec2(building.x(), building.y());
             }
 
-            area += (int) Mathf.sqr(building.block().size);
+            //area += (int) Mathf.sqr(building.block().size);
 
+            /*
             if (building.block().size == 1 && building.tileX() % 2 == 0 && building.tileY() % 2 == 0){
                 merge1to2Candidate.add(building);
             }
-            /*
+
             if (building.block().size == 2){
                 if (building.block() == FloodContentBlock.dummy22){
                     size2Candidate.add(building);
@@ -166,6 +170,11 @@ public class SyntherGraph {
 
         expandCandidate.clear();
 
+        allBuilding = null;
+        quadTreeBuildings = null;
+
+        /*
+
         merge1to2Candidate.clear();
         merge2to4Candidate.clear();
         merge4to8Candidate.clear();
@@ -173,50 +182,55 @@ public class SyntherGraph {
         size2Candidate.clear();
         size4Candidate.clear();
 
-        allBuilding = null;
-        quadTreeBuildings = null;
+
         merge1to2Candidate = null;
         merge2to4Candidate = null;
         merge4to8Candidate = null;
+
+         */
     }
 
     public void remove(SyntherBuildingEntity building) {
-        //go through all the connections of this tile
+        //Seq<SyntherBuildingEntity> visited = new Seq<>();
+
         for (Building other : building.proximity()) {
-            if (!(other instanceof SyntherBuildingEntity))continue;
+            if (!(other instanceof SyntherBuildingEntity)) continue;
             SyntherBuildingEntity fbOther = (SyntherBuildingEntity) other;
-            //check if it contains the graph or is the target graph that can be merged
+
             if (fbOther.graph() != this) continue;
 
-            //create graph for this branch
             SyntherGraph graph = new SyntherGraph();
             graph.addBuild(fbOther);
 
-            //BFS time
             queue.clear();
             queue.addLast(fbOther);
+            //visited.add(fbOther);
+
             while (queue.size > 0) {
-                //get child from queue
                 SyntherBuildingEntity child = queue.removeFirst();
-                //add it to the new branch graph
+                //if (visited.contains(child)) continue;
+
                 graph.addBuild(child);
-                //go through connections
+                //visited.add(child);
+
                 for (Building next : child.proximity()) {
-                    if (!(next instanceof SyntherBuildingEntity))continue;
+                    if (!(next instanceof SyntherBuildingEntity)) continue;
                     SyntherBuildingEntity fbNext = (SyntherBuildingEntity) next;
 
-                    //make sure it hasn't looped back, and that the new graph being assigned hasn't already been assigned
-                    //also skip closed tiles
-                    if (fbNext != building && fbNext.graph() != graph) {
+                    if (fbNext != building && fbNext.graph() != graph
+                            //&& !visited.contains(fbNext)
+                    ) {
                         graph.addBuild(fbNext);
                         queue.addLast(fbNext);
+                        //visited.add(fbNext);
                     }
                 }
             }
         }
-        //implied empty graph here
+
         removeGraph();
     }
+
 
     public void createGraph() {
         if (!added){
@@ -241,10 +255,10 @@ public class SyntherGraph {
         //idk why but sometimes there are random duplicated graphs
         //random check to remove them
         //this sucks
-        //if (coreBuilding.random().graph != this){
-        //        removeGraph();
-        //        return;
-        //    }
+        if (coreBuilding.random().graph != this){
+                removeGraph();
+                return;
+        }
         if (allBuilding.random().graph() != this){
             removeGraph();
             return;
@@ -271,9 +285,9 @@ public class SyntherGraph {
 
     public void updateOptions(){
         expand.setWeight(12 + (1 - (float) area / areaLimit) * 40);
-        merge1.setWeight(10 + (1 - (float) area / areaLimit) * 10f);
-        merge2.setWeight(5 + (1 - (float) area / areaLimit) * 5f);
-        merge4.setWeight(4 + (1 - (float) area / areaLimit) * 2f);
+        //merge1.setWeight(10 + (1 - (float) area / areaLimit) * 10f);
+        //merge2.setWeight(5 + (1 - (float) area / areaLimit) * 5f);
+        //merge4.setWeight(4 + (1 - (float) area / areaLimit) * 2f);
         summon.setWeight(2 + ((float) area / areaLimit) * 3);
     }
 
@@ -306,6 +320,8 @@ public class SyntherGraph {
             );
         });
     }
+
+    /*
 
     public void merge1to2(){
         if (merge1to2Candidate == null || merge1to2Candidate.isEmpty()) return;
@@ -365,10 +381,12 @@ public class SyntherGraph {
         }
     }
 
+     */
+
     public void createUnit(){
         if (allBuilding == null || allBuilding.isEmpty()) return;
         SyntherBuildingEntity building = allBuilding.random();
-        FloodCore.FloodCoreBuild core = coreBuilding.random();
+        SyntherCore.SyntherCoreBuilding core = coreBuilding.random();
         if (building == null || core == null)return;
         UnitType unitType;
         if (area > 2500 && Mathf.chance(0.2f)){
@@ -420,28 +438,37 @@ public class SyntherGraph {
 
         //drawTree(quadTreeBuildings);
 
-        //quadTreeBuildings.objects.each(building -> {
-        //    Draw.z(Layer.blockOver);
-        //    Draw.color(Pal.accent);
-        //    Draw.alpha(0.25f);
-        //    Fill.square(building.x, building.y, building.block.size * tilesize/2f);
-        //});
+        quadTreeBuildings.objects.each(building -> {
+            Draw.z(Layer.blockOver);
+            Draw.color(Pal.accent);
+            Draw.alpha(0.25f);
+            Fill.square(building.x(), building.y(), building.block().size * tilesize/2f);
+        });
+
         if (NewHorizon.DEBUGGING){
-            expandCandidate.each(((building, tiles) -> tiles.each(tile -> {
-                Draw.z(Layer.blockOver);
-                Draw.color(Pal.techBlue);
-                Draw.alpha(0.2f);
-                Lines.line(building.x(), building.y(), tile.drawx(), tile.drawy());
-                Lines.square(tile.drawx(), tile.drawy(), 4);
-            })));
+
         }
-        /*
-        merge2to4Candidate.each(building -> {
+        expandCandidate.each(((building, tiles) -> tiles.each(tile -> {
+            Draw.z(Layer.blockOver);
+            Draw.color(Pal.techBlue);
+            Draw.alpha(0.2f);
+            Lines.line(building.x(), building.y(), tile.drawx(), tile.drawy());
+            Lines.square(tile.drawx(), tile.drawy(), 4);
+        })));
+
+        coreBuilding.each(building -> {
             Draw.z(Layer.blockOver);
             Draw.color(Pal.accent);
             Draw.alpha(0.3f);
             Fill.square(building.x, building.y, 2f);
         });
+        /*
+
+
+
+
+
+
 
         merge4to8Candidate.each(building -> {
             Draw.z(Layer.blockOver);

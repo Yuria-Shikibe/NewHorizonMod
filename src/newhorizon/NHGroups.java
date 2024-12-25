@@ -10,7 +10,10 @@ import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
 import newhorizon.expand.block.commandable.CommandableBlock;
+import newhorizon.expand.block.floodv3.SyntherCore;
+import newhorizon.expand.block.floodv3.SyntherGraph;
 import newhorizon.expand.block.special.RemoteCoreStorage;
+import newhorizon.expand.block.struct.GraphUpdater;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
@@ -49,7 +52,7 @@ public class NHGroups{
 	}
 
 	public static void worldReset(){
-
+		GraphUpdater.syntherEntity.clear();
 	}
 	
 	public static void update(){
@@ -58,11 +61,18 @@ public class NHGroups{
 		}else{
 			AutoEventTrigger.timeScale = AutoEventTrigger.getSettingScale();
 		}
+
+		for (SyntherGraph graph: GraphUpdater.syntherEntity.values()){
+			for (SyntherCore.SyntherCoreBuilding building: graph.coreBuilding){
+				building.graph.update();
+			}
+		}
 		
 		if(Vars.headless)AutoEventTrigger.timeScale *= Mathf.curve(Groups.player.size(), 1.125f, 7.5f);
 	}
 
 	public static void draw(){
+		for (SyntherGraph graph: GraphUpdater.syntherEntity.values()){graph.draw();}
 		//allGraph.values().toArray().each(FloodGraph::draw);
 	}
 }

@@ -9,6 +9,7 @@ import mindustry.gen.Call;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
+import newhorizon.content.blocks.FloodContentBlock;
 
 import static mindustry.Vars.world;
 
@@ -34,7 +35,7 @@ public class SyntherCore extends CoreBlock {
             for (Point2 point2: Edges.getEdges(size)){
                 Tile tile = world.tile(tileX() + point2.x, tileY() + point2.y);
                 if (tile != null && !tile.dangerous() && !tile.solid() && tile.build == null){
-                    Call.setTile(tile, Blocks.copperWall, team, 0);
+                    Call.setTile(tile, FloodContentBlock.SyntherVein, team, 0);
                 }
             }
 
