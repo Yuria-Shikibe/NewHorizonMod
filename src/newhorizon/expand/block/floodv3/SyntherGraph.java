@@ -12,11 +12,13 @@ import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
+import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -24,6 +26,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
+import newhorizon.content.blocks.FloodContentBlock;
 import newhorizon.expand.block.flood.FloodCore;
 import newhorizon.util.func.MathUtil;
 import newhorizon.util.func.WeightedRandom;
@@ -114,10 +117,10 @@ public class SyntherGraph {
 
             if (building instanceof SyntherCore.SyntherCoreBuilding){
                 coreBuilding.add((SyntherCore.SyntherCoreBuilding) building);
+                if (center == null) center = new Vec2(building.x(), building.y());
 
                 //SyntherCore core = (SyntherCore) building.block();
                 //areaLimit += core.maxExpandArea;
-                //if (center == null) center = new Vec2(building.x(), building.y());
             }
 
             //area += (int) Mathf.sqr(building.block().size);
@@ -255,6 +258,7 @@ public class SyntherGraph {
         //idk why but sometimes there are random duplicated graphs
         //random check to remove them
         //this sucks
+        /*
         if (coreBuilding.random().graph != this){
                 removeGraph();
                 return;
@@ -264,16 +268,24 @@ public class SyntherGraph {
             return;
         }
 
-        updateOptions();
+         */
+
+        //updateOptions();
 
         timer += Time.delta;
         int count = 0;
 
         if (timer >= UPDATE_INTERVAL){
+            //expand.option.run();
+
             while (count < expandCount){
-                WeightedRandom.random(expand/*, merge1, merge2, merge4, summon*/);
+                //WeightedRandom.random(expand, merge1, merge2, merge4, summon);
+                expand11Block();
                 count++;
             }
+
+
+
             timer %= UPDATE_INTERVAL;
         }
     }
@@ -297,6 +309,7 @@ public class SyntherGraph {
         Seq<Tile> tiles = expandCandidate.get(building);
         if (tiles.size > 0) {
             Tile tile = tiles.random();
+            Call.setTile(tile, FloodContentBlock.SyntherVein, building.team(), 0);
             //Build.beginPlace(null, FloodContentBlock.dummy11, building.team(), tile.x, tile.y, 0);
             //ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team(), null);
             Building b = tile.build;
@@ -438,7 +451,7 @@ public class SyntherGraph {
 
         //drawTree(quadTreeBuildings);
 
-        quadTreeBuildings.objects.each(building -> {
+        allBuilding.each(building -> {
             Draw.z(Layer.blockOver);
             Draw.color(Pal.accent);
             Draw.alpha(0.25f);

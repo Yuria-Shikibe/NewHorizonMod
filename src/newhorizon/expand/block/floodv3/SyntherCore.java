@@ -12,6 +12,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.content.blocks.FloodContentBlock;
 
 import static mindustry.Vars.world;
+import static newhorizon.NHVars.rectControl;
 
 public class SyntherCore extends CoreBlock {
     public int maxExpandArea = 4096;
@@ -46,6 +47,7 @@ public class SyntherCore extends CoreBlock {
         public void updateExpandCandidate(){
             expandCandidate.clear();
             for (Point2 p: Edges.getEdges(size)){
+                if (rectControl.getPos((tileX() + p.x) / 4, (tileY() + p.y) / 4) == 0) continue;
                 Tile candidate = world.tile(tileX() + p.x, tileY() + p.y);
                 if (candidate != null && !candidate.dangerous() && !candidate.solid() && candidate.build == null){
                     expandCandidate.add(candidate);
@@ -57,8 +59,8 @@ public class SyntherCore extends CoreBlock {
         public void onProximityAdded() {
             super.onProximityAdded();
             for (Building other : proximity) {
-                if (other instanceof SyntherCoreBuilding){
-                    graph.mergeGraph(((SyntherCoreBuilding)other).graph);
+                if (other instanceof SyntherBuildingEntity){
+                    graph.mergeGraph(((SyntherBuildingEntity)other).graph());
                 }
             }
         }
@@ -78,6 +80,12 @@ public class SyntherCore extends CoreBlock {
         @Override
         public SyntherGraph graph() {
             return graph;
+        }
+
+        @Override
+        public void remove() {
+            super.remove();
+            //removeGraph();
         }
 
         @Override

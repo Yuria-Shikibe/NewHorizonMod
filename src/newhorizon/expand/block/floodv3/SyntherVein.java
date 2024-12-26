@@ -47,23 +47,21 @@ public class SyntherVein extends Block {
 
         public void updateExpandCandidate(){
             expandCandidate.clear();
-            /*
-            for (Point2 p: Edges.getEdges(size)){
-                Tile candidate = world.tile(tileX() + p.x, tileY() + p.y);
-                if (rectControl.getPos(tileX() + p.x, tileY() + p.y) == 0) continue;
-                if (candidate != null && !candidate.dangerous() && !candidate.solid() && candidate.build == null){
-                    expandCandidate.add(candidate);
+
+            if (rectControl.getPos(tileX() / 4, tileY() / 4) == 0) {
+                for (Point2 p: Edges.getEdges(size)){
+                    Tile candidate = world.tile(tileX() + p.x, tileY() + p.y);
+                    if (candidate != null && !candidate.dangerous() && !candidate.solid() && candidate.build == null){
+                        expandCandidate.add(candidate);
+                    }
                 }
-            }
-
-            if (!expandCandidate.isEmpty())return;
-
-             */
-
-            for (Point2 p: Edges.getEdges(size)){
-                Tile candidate = world.tile(tileX() + p.x, tileY() + p.y);
-                if (candidate != null && !candidate.dangerous() && !candidate.solid() && candidate.build == null){
-                    expandCandidate.add(candidate);
+            }else {
+                for (Point2 p: Edges.getEdges(size)){
+                    if (rectControl.getPos((tileX() + p.x) / 4, (tileY() + p.y) / 4) == 0) continue;
+                    Tile candidate = world.tile(tileX() + p.x, tileY() + p.y);
+                    if (candidate != null && !candidate.dangerous() && !candidate.solid() && candidate.build == null){
+                        expandCandidate.add(candidate);
+                    }
                 }
             }
         }
@@ -72,8 +70,8 @@ public class SyntherVein extends Block {
         public void onProximityAdded() {
             super.onProximityAdded();
             for (Building other : proximity) {
-                if (other instanceof SyntherVeinBuild){
-                    graph.mergeGraph(((SyntherVeinBuild)other).graph);
+                if (other instanceof SyntherBuildingEntity){
+                    graph.mergeGraph(((SyntherBuildingEntity)other).graph());
                 }
             }
         }
@@ -88,6 +86,11 @@ public class SyntherVein extends Block {
         public void onProximityRemoved() {
             super.onProximityRemoved();
             removeGraph();
+        }
+
+        @Override
+        public void remove() {
+            super.remove();
         }
 
         @Override
@@ -121,6 +124,12 @@ public class SyntherVein extends Block {
         @Override
         public void removeGraph() {
             graph.remove(this);
+        }
+
+        @Override
+        public void drawSelect() {
+            super.drawSelect();
+            graph.draw();
         }
     }
 }

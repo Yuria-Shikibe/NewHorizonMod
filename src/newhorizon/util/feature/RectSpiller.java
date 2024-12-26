@@ -33,14 +33,14 @@ public class RectSpiller {
         rand.setSeed(Point2.pack(w, h));
         while (true){
             //tmpRects = quadTree.objects;
-            QuadRect target = tmpRects.find(r -> r.width > 21 || r.height > 21);
+            QuadRect target = tmpRects.find(r -> r.width > 3 || r.height > 3);
             if (target == null) return;
             recursiveSplit(target);
         }
     }
 
     public void recursiveSplit(QuadRect rect){
-        int sizeThreshold = 9;
+        int sizeThreshold = 1;
         float verticalChance = Mathf.maxZero(rect.width - sizeThreshold * 2);
         float horizontalChance = Mathf.maxZero(rect.height - sizeThreshold * 2);
 
@@ -84,6 +84,7 @@ public class RectSpiller {
     }
 
     public int getPos(int x, int y){
+        if (x < 0 || x >= width || y < 0 || y >= height) return 0;
         return values[x + y * width];
     }
 

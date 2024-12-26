@@ -5,6 +5,7 @@ import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
@@ -65,6 +66,7 @@ public class NHGroups{
 		for (SyntherGraph graph: GraphUpdater.syntherEntity.values()){
 			for (SyntherCore.SyntherCoreBuilding building: graph.coreBuilding){
 				building.graph.update();
+				//Log.info("updated");
 			}
 		}
 		
