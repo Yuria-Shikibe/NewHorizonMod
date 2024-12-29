@@ -62,15 +62,15 @@ public class NHGroups{
 		}else{
 			AutoEventTrigger.timeScale = AutoEventTrigger.getSettingScale();
 		}
-
-		for (SyntherGraph graph: GraphUpdater.syntherEntity.values()){
-			for (SyntherCore.SyntherCoreBuilding building: graph.coreBuilding){
-				building.graph.update();
-				//Log.info("updated");
-			}
-		}
-		
 		if(Vars.headless)AutoEventTrigger.timeScale *= Mathf.curve(Groups.player.size(), 1.125f, 7.5f);
+	}
+
+	public static void updateGroup(){
+		GraphUpdater.syntherEntity.each((id, entity) -> {
+			if (id == null) return;
+			if (entity == null) GraphUpdater.syntherEntity.remove(id);
+			else entity.update();
+		});
 	}
 
 	public static void draw(){

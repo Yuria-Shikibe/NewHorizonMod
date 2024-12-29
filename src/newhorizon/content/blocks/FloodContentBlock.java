@@ -13,7 +13,7 @@ import newhorizon.expand.block.floodv3.SyntherVein;
 public class FloodContentBlock {
     public static SynthCore test, testRot;
     public static SynthConduit testWall;
-    public static Block SyntherCore, SyntherVein;
+    public static Block SyntherCore, syntherVein1, syntherVein2, syntherVein4;
 
     public static void load(){
         /*
@@ -39,9 +39,19 @@ public class FloodContentBlock {
             size = 8;
         }};
 
-        SyntherVein = new SyntherVein("synther-vein"){{
+        syntherVein1 = new SyntherVein("synther-vein-1"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
             size = 1;
+        }};
+
+        syntherVein2 = new SyntherVein("synther-vein-2"){{
+            requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+            size = 2;
+        }};
+
+        syntherVein4 = new SyntherVein("synther-vein-4"){{
+            requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+            size = 4;
         }};
     }
 }

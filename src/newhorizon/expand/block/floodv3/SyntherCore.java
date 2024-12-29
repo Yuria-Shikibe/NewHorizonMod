@@ -2,7 +2,6 @@ package newhorizon.expand.block.floodv3;
 
 import arc.math.geom.Point2;
 import arc.struct.Seq;
-import mindustry.content.Blocks;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
@@ -33,12 +32,12 @@ public class SyntherCore extends CoreBlock {
         public void created() {
             super.created();
 
-            for (Point2 point2: Edges.getEdges(size)){
-                Tile tile = world.tile(tileX() + point2.x, tileY() + point2.y);
-                if (tile != null && !tile.dangerous() && !tile.solid() && tile.build == null){
-                    Call.setTile(tile, FloodContentBlock.SyntherVein, team, 0);
-                }
-            }
+            //for (Point2 point2: Edges.getEdges(size)){
+            //    Tile tile = world.tile(tileX() + point2.x, tileY() + point2.y);
+            //    if (tile != null && !tile.dangerous() && !tile.solid() && tile.build == null){
+            //        Call.setTile(tile, FloodContentBlock.syntherVein1, team, 0);
+            //    }
+            //}
 
             expandCandidate = new Seq<>();
             createGraph();

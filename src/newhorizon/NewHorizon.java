@@ -179,7 +179,7 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
-				//DebugFunc.outputContentSprites();
+				//DebugFunc.outputAtlas();
 			});
 		});
 	}
@@ -189,6 +189,7 @@ public class NewHorizon extends Mod{
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 
 		NHVars.init();
+		/*
 		Time.mark();
 		RectSpiller ls = new RectSpiller();
 		int size = 128;
@@ -206,6 +207,8 @@ public class NewHorizon extends Mod{
 		PixmapIO.writePng(fi, pixmap);
 		pixmap.dispose();
 		Log.info("generated time: " + Time.elapsed());
+
+		 */
 	}
 
 	@Override

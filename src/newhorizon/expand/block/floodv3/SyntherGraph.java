@@ -5,30 +5,23 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
-import arc.math.Mathf;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
-import mindustry.gen.Groups;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.FloodContentBlock;
-import newhorizon.expand.block.flood.FloodCore;
-import newhorizon.util.func.MathUtil;
 import newhorizon.util.func.WeightedRandom;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.struct.WeightedOption;
@@ -46,10 +39,14 @@ public class SyntherGraph {
     public Seq<SyntherCore.SyntherCoreBuilding> coreBuilding = new Seq<>(false, 16);
 
     public ObjectMap<SyntherBuildingEntity, Seq<Tile>> expandCandidate = new ObjectMap<>();
+
+    public Seq<SyntherBuildingEntity> merge1tiles = new Seq<>(false, 16);
+    public Seq<SyntherBuildingEntity> merge2tiles = new Seq<>(false, 16);
+
+    //public Seq<SyntherBuildingEntity> size2 = new Seq<>(false, 16);
+    //public Seq<SyntherBuildingEntity> size4 = new Seq<>(false, 16);
     /*
-    public Seq<SyntherBuildingEntity> merge1to2Candidate = new Seq<>(false, 16);
-    public Seq<SyntherBuildingEntity> merge2to4Candidate = new Seq<>(false, 16);
-    public Seq<SyntherBuildingEntity> merge4to8Candidate = new Seq<>(false, 16);
+
 
     public Seq<SyntherBuildingEntity> size2Candidate = new Seq<>(false, 16);
     public Seq<SyntherBuildingEntity> size4Candidate = new Seq<>(false, 16);
@@ -59,7 +56,7 @@ public class SyntherGraph {
 
     //values indicated current state.
     //current flood's area.
-    public int expandCount = 10;
+    public int expandCount = 1;
     public int areaLimit;
     public int area;
 
@@ -67,11 +64,9 @@ public class SyntherGraph {
     public float evolution;
 
     //options control. weighted, depend on current state.
-    public WeightedOption expand = new WeightedOption(0, this::expand11Block);
-    //public WeightedOption merge1 = new WeightedOption(5, this::merge1to2);
-    //public WeightedOption merge2 = new WeightedOption(5, this::merge2to4);
-    //public WeightedOption merge4 = new WeightedOption(5, this::merge4to8);
-    public WeightedOption summon = new WeightedOption(5, this::createUnit);
+    public WeightedOption expand = new WeightedOption(5, this::expand11Block);
+    public WeightedOption merge1 = new WeightedOption(5, this::merge1to2);
+    public WeightedOption merge2 = new WeightedOption(5, this::merge2to4);
 
     //inner values
     private static final float UPDATE_INTERVAL = 2f;
@@ -91,9 +86,6 @@ public class SyntherGraph {
 
     public void mergeGraph(SyntherGraph graph) {
         if (graph == this) return;
-        if (!added || !graph.added) return;
-        if (allBuilding == null || graph.allBuilding == null) return;
-        //merge into other graph instead.
         if (allBuilding.size > graph.allBuilding.size) {
             for (SyntherBuildingEntity tile : graph.allBuilding) {
                 addBuild(tile);
@@ -118,39 +110,16 @@ public class SyntherGraph {
             if (building instanceof SyntherCore.SyntherCoreBuilding){
                 coreBuilding.add((SyntherCore.SyntherCoreBuilding) building);
                 if (center == null) center = new Vec2(building.x(), building.y());
-
-                //SyntherCore core = (SyntherCore) building.block();
-                //areaLimit += core.maxExpandArea;
             }
 
-            //area += (int) Mathf.sqr(building.block().size);
 
-            /*
             if (building.block().size == 1 && building.tileX() % 2 == 0 && building.tileY() % 2 == 0){
-                merge1to2Candidate.add(building);
+                merge1tiles.add(building);
             }
 
-            if (building.block().size == 2){
-                if (building.block() == FloodContentBlock.dummy22){
-                    size2Candidate.add(building);
-                }
-                if (building.tileX() % 4 == 0 && building.tileY() % 4 == 0){
-                    merge2to4Candidate.add(building);
-                }
+            if (building.block().size == 2 && building.tileX() % 4 == 0 && building.tileY() % 4 == 0){
+                merge2tiles.add(building);
             }
-            if (building.block().size == 4){
-                if (building.block() == FloodContentBlock.dummy44){
-                    size4Candidate.add(building);
-                }
-                if ((building.tileX() - 1) % 8 == 0 && (building.tileY() - 1) % 8 == 0){
-                    merge4to8Candidate.add(building);
-                }
-            }
-            if (building.block().size == 8){
-                size8Candidate.add(building);
-            }
-
-             */
         }
 
         building.updateGraph();
@@ -170,31 +139,13 @@ public class SyntherGraph {
         quadTreeBuildings.clear();
 
         coreBuilding.clear();
-
         expandCandidate.clear();
 
-        allBuilding = null;
-        quadTreeBuildings = null;
-
-        /*
-
-        merge1to2Candidate.clear();
-        merge2to4Candidate.clear();
-        merge4to8Candidate.clear();
-
-        size2Candidate.clear();
-        size4Candidate.clear();
-
-
-        merge1to2Candidate = null;
-        merge2to4Candidate = null;
-        merge4to8Candidate = null;
-
-         */
+        merge1tiles.clear();
+        merge2tiles.clear();
     }
 
     public void remove(SyntherBuildingEntity building) {
-        //Seq<SyntherBuildingEntity> visited = new Seq<>();
 
         for (Building other : building.proximity()) {
             if (!(other instanceof SyntherBuildingEntity)) continue;
@@ -207,25 +158,19 @@ public class SyntherGraph {
 
             queue.clear();
             queue.addLast(fbOther);
-            //visited.add(fbOther);
 
             while (queue.size > 0) {
                 SyntherBuildingEntity child = queue.removeFirst();
-                //if (visited.contains(child)) continue;
 
                 graph.addBuild(child);
-                //visited.add(child);
 
                 for (Building next : child.proximity()) {
                     if (!(next instanceof SyntherBuildingEntity)) continue;
                     SyntherBuildingEntity fbNext = (SyntherBuildingEntity) next;
 
-                    if (fbNext != building && fbNext.graph() != graph
-                            //&& !visited.contains(fbNext)
-                    ) {
+                    if (fbNext != building && fbNext.graph() != graph) {
                         graph.addBuild(fbNext);
                         queue.addLast(fbNext);
-                        //visited.add(fbNext);
                     }
                 }
             }
@@ -255,32 +200,15 @@ public class SyntherGraph {
         if (coreBuilding.isEmpty()) return;
         if (state.isEditor()) return;
 
-        //idk why but sometimes there are random duplicated graphs
-        //random check to remove them
-        //this sucks
-        /*
-        if (coreBuilding.random().graph != this){
-                removeGraph();
-                return;
-        }
-        if (allBuilding.random().graph() != this){
-            removeGraph();
-            return;
-        }
-
-         */
-
-        //updateOptions();
+        updateOptions();
 
         timer += Time.delta;
         int count = 0;
 
         if (timer >= UPDATE_INTERVAL){
-            //expand.option.run();
 
             while (count < expandCount){
-                //WeightedRandom.random(expand, merge1, merge2, merge4, summon);
-                expand11Block();
+                WeightedRandom.random(expand, merge1, merge2);
                 count++;
             }
 
@@ -290,17 +218,10 @@ public class SyntherGraph {
         }
     }
 
-    public void construct(Tile tile, Building building){
-        //Build.beginPlace(null, FloodContentBlock.dummy11, building.team(), tile.x, tile.y, 0);
-        //ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team(), null);
-    }
-
     public void updateOptions(){
-        expand.setWeight(12 + (1 - (float) area / areaLimit) * 40);
-        //merge1.setWeight(10 + (1 - (float) area / areaLimit) * 10f);
-        //merge2.setWeight(5 + (1 - (float) area / areaLimit) * 5f);
-        //merge4.setWeight(4 + (1 - (float) area / areaLimit) * 2f);
-        summon.setWeight(2 + ((float) area / areaLimit) * 3);
+        expand.setWeight(10);
+        merge1.setWeight(10);
+        merge2.setWeight(10);
     }
 
     public void expand11Block(){
@@ -309,124 +230,54 @@ public class SyntherGraph {
         Seq<Tile> tiles = expandCandidate.get(building);
         if (tiles.size > 0) {
             Tile tile = tiles.random();
-            Call.setTile(tile, FloodContentBlock.SyntherVein, building.team(), 0);
-            //Build.beginPlace(null, FloodContentBlock.dummy11, building.team(), tile.x, tile.y, 0);
-            //ConstructBlock.constructFinish(tile, FloodContentBlock.dummy11, null, (byte) 0, building.team(), null);
-            Building b = tile.build;
-            if (b != null){
-                buildEffect(b).at(b.x, b.y);
-            }
+            Call.setTile(tile, FloodContentBlock.syntherVein1, building.team(), 0);
         }
     }
 
-    public Effect buildEffect(Building b){
-        return new Effect(45f, e -> {
-            float width = b.block.size * tilesize / 2f * 1.2f;
-            float rotation = b.relativeTo((int) (center.x / tilesize), (int) (center.y / tilesize)) * 90;
-            Draw.color(Tmp.c1.set(b.team.color).lerp(Color.clear, e.fin(Interp.pow10In) * 0.9f + 0.1f));
-            Fill.square(e.x, e.y, width);
-            DrawFunc.gradient(
-                    Tmp.v2.trns(rotation + 180, width - 2 * e.fout(Interp.pow2In) * width).add(e.x, e.y),
-                    Tmp.v1.trns(rotation + 180, width - 2 * e.fout(Interp.pow5Out) * width).add(e.x, e.y),
-                    width,
-                    Tmp.c1.set(b.team.color).mul(1 + 0.1f * e.fslope())
-            );
-        });
-    }
-
-    /*
-
     public void merge1to2(){
-        if (merge1to2Candidate == null || merge1to2Candidate.isEmpty()) return;
-        int step = 0;
-        while (step < 4){
-            SyntherBuildingEntity building = merge1to2Candidate.random();
+        if (merge1tiles == null || merge1tiles.isEmpty()){
+            expand11Block();
+        }else {
+            SyntherBuildingEntity building = merge1tiles.random();
             Tile tile = building.tile();
             if (checkBuilding(building)){
-                //Build.beginPlace(null, FloodContentBlock.dummy22, building.team(), tile.x, tile.y, 0);
-                //ConstructBlock.constructFinish(tile, FloodContentBlock.dummy22, null, (byte) 0, building.team(), null);
-                Building b = tile.build;
-                if (b != null){
-                    buildEffect(b).at(b.x, b.y);
+                for (int x = 0; x < 2; x++){
+                    for (int y = 0; y < 2; y++){
+                        Call.removeTile(world.tile(tile.x + x, tile.y + y));
+                    }
                 }
-                break;
+                Call.setTile(tile, FloodContentBlock.syntherVein2, building.team(), 0);
             }else {
-                step++;
+                expand11Block();
             }
         }
     }
 
     public void merge2to4(){
-        if (merge2to4Candidate == null || merge2to4Candidate.isEmpty()) return;
-        int step = 0;
-        while (step < 4){
-            SyntherBuildingEntity building = merge2to4Candidate.random();
+        if (merge2tiles == null || merge2tiles.isEmpty()){
+            merge1to2();
+        }else {
+            SyntherBuildingEntity building = merge2tiles.random();
             Tile tile = world.tile(building.tileX() + 1, building.tileY() + 1);
             if (checkBuilding(building)){
-                //Build.beginPlace(null, FloodContentBlock.dummy44, building.team(), tile.x, tile.y, 0);
-                //ConstructBlock.constructFinish(tile, FloodContentBlock.dummy44, null, (byte) 0, building.team(), null);
-                Building b = tile.build;
-                if (b != null){
-                    buildEffect(b).at(b.x, b.y);
-                }break;
+                for (int x = 0; x < 4; x++){
+                    for (int y = 0; y < 4; y++){
+                        Call.removeTile(world.tile(building.tileX() + x, building.tileY() + y));
+                    }
+                }
+                Call.setTile(tile, FloodContentBlock.syntherVein4, building.team(), 0);
             }else {
-                step++;
+                merge1to2();
             }
         }
-    }
-
-    public void merge4to8(){
-        if (merge4to8Candidate == null || merge4to8Candidate.isEmpty()) return;
-        int step = 0;
-        while (step < 4){
-            SyntherBuildingEntity building = merge4to8Candidate.random();
-            Tile tile = world.tile(building.tileX() + 2, building.tileY() + 2);
-            if (checkBuilding(building)){
-                //Build.beginPlace(null, FloodContentBlock.dummy88, building.team(), tile.x, tile.y, 0);
-                //ConstructBlock.constructFinish(tile, FloodContentBlock.dummy88, null, (byte) 0, building.team(), null);
-                Building b = tile.build;
-                if (b != null){
-                    buildEffect(b).at(b.x, b.y);
-                }break;
-            }else {
-                step++;
-            }
-        }
-    }
-
-     */
-
-    public void createUnit(){
-        if (allBuilding == null || allBuilding.isEmpty()) return;
-        SyntherBuildingEntity building = allBuilding.random();
-        SyntherCore.SyntherCoreBuilding core = coreBuilding.random();
-        if (building == null || core == null)return;
-        UnitType unitType;
-        if (area > 2500 && Mathf.chance(0.2f)){
-            unitType = UnitTypes.collaris;
-        }else if (area > 1800 && Mathf.chance(0.3f)){
-            unitType = UnitTypes.tecta;
-        }else if (area > 1250 && Mathf.chance(0.4f)){
-            unitType = UnitTypes.anthicus;
-        }else if (area > 720 && Mathf.chance(0.4f)){
-            unitType = UnitTypes.cleroi;
-        }else if (area > 350){
-            unitType = UnitTypes.merui;
-        }else {
-            return;
-        }
-
-        if (Groups.unit.tree().any(building.x() - unitType.hitSize/2f + 1f, building.y() - unitType.hitSize/2f + 1f, unitType.hitSize - 2f, unitType.hitSize - 2f)) return;
-        float angle = MathUtil.angle(core, building);
-        //WarpRift rift = new WarpRift();
-        //rift.create(building.team(), unitType, building.x(), building.y(), angle);
-        //rift.add();
     }
 
     public boolean checkBuilding(SyntherBuildingEntity building){
+
         Block block = building.block();
         Tile tile = building.tile();
 
+        /*
         int shift = (block.size + 1)/2;
         int tx = tile.x - shift;
         int ty = tile.y - shift;
@@ -438,6 +289,8 @@ public class SyntherGraph {
                 }
             }
         }
+
+         */
 
         return checkBuildingSameTile(block, world.tile(tile.x + block.size, tile.y + block.size)) && checkBuildingSameTile(block, world.tile(tile.x + block.size, tile.y)) && checkBuildingSameTile(block, world.tile(tile.x, tile.y + block.size));
     }
@@ -451,6 +304,7 @@ public class SyntherGraph {
 
         //drawTree(quadTreeBuildings);
 
+        if (allBuilding == null || allBuilding.isEmpty()) return;
         allBuilding.each(building -> {
             Draw.z(Layer.blockOver);
             Draw.color(Pal.accent);
@@ -498,6 +352,6 @@ public class SyntherGraph {
     }
 
     public void reset(){
-        //allGraph.values().toArray().each(SyntherGraph::removeGraph);
+        //syntherEntity.values().toArray().each(SyntherGraph::removeGraph);
     }
 }

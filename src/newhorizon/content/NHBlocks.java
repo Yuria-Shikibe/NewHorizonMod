@@ -4622,8 +4622,9 @@ public class NHBlocks{
 		DefenseBlock.load();
 		EnvironmentBlock.load();
 		SpecialBlock.load();
-		FloodContentBlock.load();
+		CraftingBlocks.load();
 		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
+			FloodContentBlock.load();
 			TestBlock.load();
 		}
 

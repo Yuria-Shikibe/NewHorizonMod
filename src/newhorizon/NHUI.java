@@ -16,6 +16,7 @@ import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
+import newhorizon.expand.block.struct.GraphUpdater;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.dialog.WorldEventDialog;
 
@@ -74,7 +75,7 @@ public class NHUI{
 		eventDialog = new WorldEventDialog();
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
-			//t.label(() -> "Graph Count: ").row();
+			t.label(() -> "Graph Count: " + GraphUpdater.syntherEntity.size).row();
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {

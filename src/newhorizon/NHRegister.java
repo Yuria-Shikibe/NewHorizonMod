@@ -68,7 +68,11 @@ public class NHRegister{
 		Events.on(EventType.WorldLoadBeginEvent.class, e -> {
 			NHGroups.worldReset();
 		});
-		
+
+		Events.run(EventType.Trigger.update, () -> {
+			NHGroups.updateGroup();
+		});
+
 		Events.run(EventType.Trigger.draw, () -> {
 			NHVars.renderer.draw();
 			if (NHSetting.getBool(NHSetting.TERRAIN_MODE)){
