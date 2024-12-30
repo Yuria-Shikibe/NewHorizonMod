@@ -3,16 +3,12 @@ package newhorizon.content.blocks;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
-import newhorizon.content.NHItems;
 import newhorizon.content.Recipes;
-import newhorizon.expand.block.distribution.AdaptItemBridge;
 import newhorizon.expand.block.energy.XenConduit;
 import newhorizon.expand.block.env.TiledFloor;
-import newhorizon.expand.block.production.Assembler;
+import newhorizon.expand.block.production.factory.Assembler;
 
 import static mindustry.type.ItemStack.with;
-import static newhorizon.content.blocks.DistributionBlock.compositeReloadConveyor;
-import static newhorizon.content.blocks.DistributionBlock.hyperLinkConveyor;
 
 public class TestBlock {
     public static Block xenConduit, xenCrafter, irayroudRefinery, xenFactory, orePatch;

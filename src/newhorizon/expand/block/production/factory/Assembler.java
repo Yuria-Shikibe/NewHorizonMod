@@ -1,4 +1,4 @@
-package newhorizon.expand.block.production;
+package newhorizon.expand.block.production.factory;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;

@@ -4614,15 +4614,15 @@ public class NHBlocks{
 		loadEnv();
 		loadWalls();
 		loadPowers();
-		//loadExperiments();
 
+		InnerBlock.load();
 		DistributionBlock.load();
 		ProductionBlocks.load();
 		TurretBlock.load();
 		DefenseBlock.load();
 		EnvironmentBlock.load();
 		SpecialBlock.load();
-		CraftingBlocks.load();
+		CraftingBlock.load();
 		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
 			FloodContentBlock.load();
 			TestBlock.load();
