@@ -56,7 +56,8 @@ public interface MultiBlock {
         return true;
     }
 
-    default void setLinkBuild(Building building, Tile tile, Team team, int size, int rotation){
+    default Seq<Building> setLinkBuild(Building building, Tile tile, Team team, int size, int rotation){
+        Seq<Building> out = new Seq<>();
         for (int i = 0; i < linkPos.size; i++){
             Point2 p = linkPos.get(i);
             int s = linkSize.get(i);
@@ -72,7 +73,30 @@ public interface MultiBlock {
 
             Tile t = world.tile(tile.x + xr, tile.y + yr);
             Call.setTile(t, InnerBlock.linkEntity[s - 1], team, 0);
-            ((LinkBlock.LinkBuild)t.build).linkBuild = building;
+            LinkBlock.LinkBuild b = (LinkBlock.LinkBuild)t.build;
+            b.linkBuild = building;
+            out.add(b);
+        }
+
+        return out;
+    }
+
+    default void removeLink(Tile tile, int size, int rotation){
+        for (int i = 0; i < linkPos.size; i++){
+            Point2 p = linkPos.get(i);
+            int s = linkSize.get(i);
+            int shift = (size + 1) % 2;
+            int offset = (s + 1) % 2;
+            int xr = p.x, yr = p.y;
+
+            switch(rotation){
+                case 1: xr = -p.y + shift - offset; yr = p.x; break;
+                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
+                case 3: xr = p.y; yr = -p.x + shift - offset; break;
+            }
+
+            Tile t = world.tile(tile.x + xr, tile.y + yr);
+            Call.removeTile(t);
         }
     }
 }

@@ -1,14 +1,10 @@
 package newhorizon.expand.block.production.factory;
 
-import arc.math.geom.Point2;
+import arc.struct.Seq;
 import mindustry.game.Team;
-import mindustry.gen.Call;
-import mindustry.world.Build;
+import mindustry.gen.Building;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
-import newhorizon.content.blocks.InnerBlock;
-
-import static mindustry.Vars.world;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public AdaptCrafter(String name) {
@@ -16,6 +12,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         rotate = true;
         rotateDraw = true;
+        quickRotate = false;
     }
 
     @Override
@@ -23,11 +20,38 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         return super.canPlaceOn(tile, team, rotation) && checkLink(tile, team, size, rotation);
     }
 
-    public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlock{
+    public class AdaptCrafterBuild extends GenericCrafterBuild{
+        public Seq<Building> linkEntities;
+        public Seq<Building> linkProximity;
+
         @Override
         public void created() {
             super.created();
-            setLinkBuild(this, tile, team, size, rotation);
+            linkProximity = new Seq<>();
+            linkEntities = setLinkBuild(this, tile, team, size, rotation);
+        }
+
+        public void removeLinkEntity(){
+
+        }
+
+        public void handleLinkEntity(){
+
+        }
+
+        public void updateLinkProximity(){
+
+        }
+
+        @Override
+        public void remove() {
+            removeLink(tile, size, rotation);
+            super.remove();
+        }
+
+        @Override
+        public void onRemoved() {
+            super.onRemoved();
         }
     }
 }
