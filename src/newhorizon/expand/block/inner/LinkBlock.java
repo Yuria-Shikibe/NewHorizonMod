@@ -17,6 +17,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.expand.block.production.factory.MultiBlockEntity;
 import newhorizon.util.annotation.NotNull;
 
 /** Inner building that are linked to a specific building. */
@@ -49,7 +50,9 @@ public class LinkBlock extends Block {
         public @NotNull Building linkBuild;
 
         public void updateLink(Building link){
-            linkBuild = link;
+            if (link instanceof MultiBlockEntity){
+                linkBuild = link;
+            }
         }
 
         @Override
@@ -172,7 +175,7 @@ public class LinkBlock extends Block {
         public void onProximityUpdate() {
             super.onProximityUpdate();
             if (linkBuild != null){
-                linkBuild.onProximityUpdate();
+                ((MultiBlockEntity)linkBuild).updateLinkProximity();
             }
         }
 

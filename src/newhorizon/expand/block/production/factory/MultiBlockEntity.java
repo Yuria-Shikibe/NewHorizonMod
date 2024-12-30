@@ -8,15 +8,9 @@ import mindustry.gen.Buildingc;
 import newhorizon.expand.block.inner.LinkBlock.LinkBuild;
 
 public interface MultiBlockEntity extends Buildingc {
-    Seq<LinkBuild> linkBuilds = new Seq<>();
-    Seq<Building> extendProximity = new Seq<>();
-    
-    default Seq<LinkBuild> getLinkBuilds(){
-        return linkBuilds;
-    }
+    void updateLinkProximity();
 
-    default void createLinkBuilding(Seq<Point2> linkPos, IntSeq linkSize){
+    //void setLinkBuild();
 
-    }
-
+    //void removeLinkBuild();
 }

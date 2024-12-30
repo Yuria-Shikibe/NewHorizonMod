@@ -74,7 +74,7 @@ public interface MultiBlock {
             Tile t = world.tile(tile.x + xr, tile.y + yr);
             Call.setTile(t, InnerBlock.linkEntity[s - 1], team, 0);
             LinkBlock.LinkBuild b = (LinkBlock.LinkBuild)t.build;
-            b.linkBuild = building;
+            b.updateLink(building);
             out.add(b);
         }
 

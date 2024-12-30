@@ -4,11 +4,13 @@ import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.content.Items;
+import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -119,6 +121,20 @@ public class FluxPhaser extends AdaptCrafter {
                 Draw.reset();
                 Draw.z(Layer.block);
             }
+        }
+
+        @Override
+        public void drawSelect() {
+            super.drawSelect();
+            /*
+            for (Building b: linkProximity){
+                Draw.color(Pal.remove);
+                Draw.alpha(0.5f);
+                Draw.z(Layer.block + 3f);
+                Fill.square(b.x, b.y, b.hitSize()/2f - 2f);
+            }
+
+             */
         }
     }
 }
