@@ -38,10 +38,10 @@ public class FluxPhaser extends AdaptCrafter {
         addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                 -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
-        craftTime = 5f;
-        consumePower(4);
-        consumeItems(with(Items.silicon, 1, NHItems.zeta, 1));
-        outputItems = with(Items.phaseFabric, 1);
+        craftTime = 60f;
+        consumePower(6);
+        consumeItems(with(Items.silicon, 4, NHItems.zeta, 3));
+        outputItems = with(Items.phaseFabric, 5);
 
         itemCapacity = 20;
     }
