@@ -1,16 +1,13 @@
 package newhorizon.expand.block.production.factory.content;
 
 import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.content.Items;
-import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
@@ -19,6 +16,9 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 import newhorizon.util.func.MathUtil;
+import newhorizon.util.graphic.DrawFunc;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.type.ItemStack.with;
 
@@ -38,10 +38,10 @@ public class FluxPhaser extends AdaptCrafter {
         addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                 -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
-        craftTime = 60f;
-        consumePower(10);
-        consumeItems(with(Items.silicon, 4, NHItems.zeta, 3));
-        outputItems = with(Items.phaseFabric, 5);
+        craftTime = 5f;
+        consumePower(4);
+        consumeItems(with(Items.silicon, 1, NHItems.zeta, 1));
+        outputItems = with(Items.phaseFabric, 1);
 
         itemCapacity = 20;
     }
@@ -126,15 +126,20 @@ public class FluxPhaser extends AdaptCrafter {
         @Override
         public void drawSelect() {
             super.drawSelect();
-            /*
-            for (Building b: linkProximity){
+
+            AtomicInteger i = new AtomicInteger(0);
+
+            linkProximityMap.each((target, source) -> {
                 Draw.color(Pal.remove);
                 Draw.alpha(0.5f);
                 Draw.z(Layer.block + 3f);
-                Fill.square(b.x, b.y, b.hitSize()/2f - 2f);
-            }
 
-             */
+                Lines.line(target.x, target.y, source.x, source.y);
+                Fill.square(target.x, target.y, target.hitSize()/2f - 2f);
+
+                DrawFunc.drawText(i + "", target.x, target.y);
+                i.getAndIncrement();
+            });
         }
     }
 }

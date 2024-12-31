@@ -4624,7 +4624,7 @@ public class NHBlocks{
 		SpecialBlock.load();
 		CraftingBlock.load();
 		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
-			FloodContentBlock.load();
+			//FloodContentBlock.load();
 			TestBlock.load();
 		}
 
