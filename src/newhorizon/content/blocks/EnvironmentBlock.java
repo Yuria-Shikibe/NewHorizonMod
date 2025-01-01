@@ -2,7 +2,10 @@ package newhorizon.content.blocks;
 
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
-import newhorizon.expand.block.env.*;
+import newhorizon.expand.block.env.DataFloor;
+import newhorizon.expand.block.env.DataFloorPlacer;
+import newhorizon.expand.block.env.GrooveFloor;
+import newhorizon.expand.block.env.TiledFloor;
 
 public class EnvironmentBlock {
     public static Floor metalFloorGroove;

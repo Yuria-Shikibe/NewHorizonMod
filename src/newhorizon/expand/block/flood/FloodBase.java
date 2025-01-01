@@ -1,15 +1,8 @@
 package newhorizon.expand.block.flood;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.math.Interp;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
-import arc.util.Tmp;
 import mindustry.content.Fx;
-import mindustry.entities.Effect;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.world.Block;
@@ -17,9 +10,7 @@ import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import newhorizon.util.graphic.DrawFunc;
 
-import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 public class FloodBase extends Block {

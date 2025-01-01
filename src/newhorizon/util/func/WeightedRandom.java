@@ -2,9 +2,6 @@ package newhorizon.util.func;
 
 import arc.math.Rand;
 import arc.struct.Seq;
-import arc.util.pooling.Pool;
-import mindustry.type.Item;
-import mindustry.type.ItemStack;
 import newhorizon.util.struct.WeightedOption;
 
 public class WeightedRandom {

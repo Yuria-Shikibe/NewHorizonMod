@@ -12,10 +12,9 @@ import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.ctype.Content;
-import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
-import mindustry.type.*;
-import mindustry.world.Block;
+import mindustry.type.Planet;
+import mindustry.type.Sector;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.DrawFunc;
 

@@ -1,10 +1,8 @@
 package newhorizon.expand.block.floodv3;
 
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.math.Interp;
 import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
@@ -12,8 +10,6 @@ import arc.struct.ObjectMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
 import mindustry.graphics.Layer;
@@ -23,11 +19,9 @@ import mindustry.world.Tile;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.FloodContentBlock;
 import newhorizon.util.func.WeightedRandom;
-import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.struct.WeightedOption;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.world;
 import static newhorizon.expand.block.struct.GraphUpdater.syntherEntity;
 
 public class SyntherGraph {

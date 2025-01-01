@@ -16,7 +16,8 @@ import newhorizon.util.graphic.DrawFunc;
 
 import java.util.Arrays;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class SynthCore extends Wall {
     public int expansionRadius = 12;

@@ -3,7 +3,6 @@ package newhorizon.expand.block.production.factory.content;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Tmp;
@@ -16,9 +15,6 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 import newhorizon.util.func.MathUtil;
-import newhorizon.util.graphic.DrawFunc;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.type.ItemStack.with;
 

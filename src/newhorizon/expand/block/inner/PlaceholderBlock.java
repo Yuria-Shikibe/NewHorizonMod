@@ -1,26 +1,14 @@
 package newhorizon.expand.block.inner;
 
 import arc.Core;
-import arc.func.Cons;
-import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
-import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
-import mindustry.gen.Teamc;
-import mindustry.gen.Unit;
-import mindustry.type.Item;
-import mindustry.type.Liquid;
-import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
-import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.expand.block.production.factory.MultiBlockEntity;
-import newhorizon.util.annotation.NotNull;
 
 public class PlaceholderBlock extends Block {
     public PlaceholderBlock(String name) {

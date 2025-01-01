@@ -1,8 +1,6 @@
 package newhorizon.expand.block.struct;
 
 import arc.struct.Queue;
-import arc.struct.Seq;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 
 public class StackerBuffer {

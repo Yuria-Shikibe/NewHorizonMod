@@ -8,11 +8,8 @@ import mindustry.gen.Sounds;
 import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
-import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import newhorizon.expand.block.flood.FloodBase;
-import newhorizon.expand.block.flood.FloodGraph;
 
 import static mindustry.Vars.world;
 import static newhorizon.NHVars.rectControl;

@@ -1,10 +1,6 @@
 package newhorizon.util.func;
 
 import arc.func.Intc2;
-import arc.math.geom.Bresenham2;
-import arc.math.geom.Point2;
-import arc.struct.LongSeq;
-import arc.struct.Seq;
 
 /**
  * Multi Thread Safe

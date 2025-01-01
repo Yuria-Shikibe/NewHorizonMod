@@ -5,8 +5,6 @@ import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;

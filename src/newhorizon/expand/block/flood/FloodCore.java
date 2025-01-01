@@ -4,10 +4,8 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.geom.Point2;
-import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Eachable;
-import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
@@ -15,14 +13,12 @@ import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
-import mindustry.world.Build;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
-import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.blocks.storage.CoreBlock;
-import newhorizon.content.blocks.FloodContentBlock;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.renderer;
+import static mindustry.Vars.world;
 
 public class FloodCore extends CoreBlock {
     public int maxExpandArea = 4096;

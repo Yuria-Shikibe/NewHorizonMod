@@ -5,9 +5,6 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
@@ -21,7 +18,6 @@ import newhorizon.util.graphic.DrawFunc;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.content;
-import static mindustry.Vars.state;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public AdaptCrafter(String name) {

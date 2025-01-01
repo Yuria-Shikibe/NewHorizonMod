@@ -2,7 +2,6 @@ package newhorizon.content;
 
 import arc.graphics.Color;
 import mindustry.type.Item;
-import newhorizon.NHSetting;
 
 public class NHItems{
 	

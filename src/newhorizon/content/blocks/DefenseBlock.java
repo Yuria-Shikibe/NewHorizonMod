@@ -4,7 +4,6 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import newhorizon.content.NHItems;
-import newhorizon.content.NHStats;
 import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.expand.block.defence.ShieldGenerator;
 

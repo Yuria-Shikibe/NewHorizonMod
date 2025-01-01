@@ -1,26 +1,12 @@
 package newhorizon.util.ui.display;
 
-import arc.graphics.Color;
-import arc.math.Interp;
-import arc.scene.actions.Actions;
-import arc.scene.ui.Image;
-import arc.scene.ui.Label;
-import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
-import arc.util.Nullable;
 import arc.util.Strings;
-import mindustry.core.UI;
-import mindustry.gen.Icon;
-import mindustry.gen.Tex;
-import mindustry.graphics.Pal;
 import mindustry.type.Item;
-import mindustry.type.ItemSeq;
 import mindustry.type.ItemStack;
 import mindustry.ui.ItemImage;
 import mindustry.ui.Styles;
 import mindustry.world.meta.StatUnit;
-
-import static mindustry.Vars.content;
 
 public class ItemDisplay extends Table{
     public final Item item;

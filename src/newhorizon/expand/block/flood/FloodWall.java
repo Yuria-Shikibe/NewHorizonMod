@@ -8,10 +8,8 @@ import arc.math.geom.Point2;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.world.Block;
-import mindustry.world.Build;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
-import mindustry.world.blocks.ConstructBlock;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.tilesize;

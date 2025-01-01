@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
-import arc.math.Mathf;
 import arc.math.Rand;
 import arc.struct.Seq;
 import arc.util.Time;

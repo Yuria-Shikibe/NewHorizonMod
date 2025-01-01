@@ -26,8 +26,8 @@ import mindustry.type.StatusEffect;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHShaders;
 import newhorizon.content.NHStatusEffects;
-import newhorizon.util.func.MathUtil;
 import newhorizon.util.annotation.HeadlessDisabled;
+import newhorizon.util.func.MathUtil;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.renderer;

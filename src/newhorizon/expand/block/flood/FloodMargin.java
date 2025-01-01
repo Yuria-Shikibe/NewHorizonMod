@@ -6,8 +6,6 @@ import arc.graphics.g2d.TextureRegion;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
-import newhorizon.content.NHContent;
-import newhorizon.expand.block.AdaptBuilding;
 import newhorizon.util.graphic.SpriteUtil;
 
 public class FloodMargin extends FloodWall{

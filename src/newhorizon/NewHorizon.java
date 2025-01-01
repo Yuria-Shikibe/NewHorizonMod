@@ -2,11 +2,8 @@ package newhorizon;
 
 import arc.Core;
 import arc.Events;
-import arc.files.Fi;
 import arc.func.Cons;
 import arc.graphics.Color;
-import arc.graphics.Pixmap;
-import arc.graphics.PixmapIO;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.util.*;
@@ -34,15 +31,12 @@ import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.content.blocks.CraftingBlock;
-import newhorizon.content.blocks.DefenseBlock;
-import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.expand.packets.NHCall;
 import newhorizon.util.DebugFunc;
-import newhorizon.util.feature.RectSpiller;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
@@ -50,7 +44,6 @@ import newhorizon.util.ui.dialog.NewFeatureDialog;
 
 import static mindustry.Vars.tilesize;
 import static newhorizon.NHInputListener.registerModBinding;
-import static newhorizon.util.DebugFunc.NH_DEBUG_GRAPHIC_FOLDER;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 

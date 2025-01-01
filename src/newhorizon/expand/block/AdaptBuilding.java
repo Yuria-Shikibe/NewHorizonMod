@@ -1,13 +1,10 @@
 package newhorizon.expand.block;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import mindustry.Vars;
 import mindustry.gen.Building;
-import mindustry.graphics.Pal;
-import newhorizon.expand.block.struct.GraphEntity;
 import newhorizon.expand.block.module.XenModule;
+import newhorizon.expand.block.struct.GraphEntity;
 
 public class AdaptBuilding extends Building {
     public GraphEntity<AdaptBuilding> graph;

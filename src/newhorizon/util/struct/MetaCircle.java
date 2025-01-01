@@ -1,7 +1,6 @@
 package newhorizon.util.struct;
 
 import arc.math.geom.Position;
-import mindustry.gen.Posc;
 
 /**
  * MetaCircle, 2D version of <a href="https://en.wikipedia.org/wiki/Metaballs">MetaBall</a>.<br>

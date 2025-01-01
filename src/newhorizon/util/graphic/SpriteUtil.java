@@ -3,11 +3,6 @@ package newhorizon.util.graphic;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Point2;
 import arc.struct.IntIntMap;
-import arc.struct.IntMap;
-import arc.util.Log;
-
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class SpriteUtil {
     /*

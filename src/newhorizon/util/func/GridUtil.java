@@ -7,7 +7,6 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.ObjectMap;
-import arc.util.Time;
 import mindustry.type.UnitType;
 import newhorizon.util.struct.GridData;
 

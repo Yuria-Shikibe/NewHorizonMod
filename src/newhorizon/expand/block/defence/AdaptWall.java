@@ -25,7 +25,6 @@ import newhorizon.util.graphic.SpriteUtil;
 import newhorizon.util.ui.BarExtend;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.net;
 import static newhorizon.util.graphic.SpriteUtil.*;
 
 public class AdaptWall extends Wall {

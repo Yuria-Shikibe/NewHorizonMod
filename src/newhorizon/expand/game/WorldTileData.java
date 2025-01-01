@@ -3,7 +3,6 @@ package newhorizon.expand.game;
 import arc.math.geom.Point2;
 import arc.struct.ByteSeq;
 import arc.struct.IntSeq;
-import arc.util.Log;
 import mindustry.io.SaveFileReader;
 import mindustry.world.Tile;
 
