@@ -122,24 +122,5 @@ public class FluxPhaser extends AdaptCrafter {
                 Draw.z(Layer.block);
             }
         }
-
-        @Override
-        public void drawSelect() {
-            super.drawSelect();
-
-            AtomicInteger i = new AtomicInteger(0);
-
-            linkProximityMap.each((target, source) -> {
-                Draw.color(Pal.remove);
-                Draw.alpha(0.5f);
-                Draw.z(Layer.block + 3f);
-
-                Lines.line(target.x, target.y, source.x, source.y);
-                Fill.square(target.x, target.y, target.hitSize()/2f - 2f);
-
-                DrawFunc.drawText(i + "", target.x, target.y);
-                i.getAndIncrement();
-            });
-        }
     }
 }

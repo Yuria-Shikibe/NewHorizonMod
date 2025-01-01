@@ -1,5 +1,8 @@
 package newhorizon.expand.block.production.factory;
 
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -7,10 +10,15 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
+import newhorizon.util.graphic.DrawFunc;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.state;
@@ -54,6 +62,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             if (!linkCreated){
                 linkEntities = setLinkBuild(this, tile, team, size, rotation);
                 linkCreated = true;
+                updateLinkProximity();
             }
             super.updateTile();
         }
@@ -61,8 +70,10 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         @Override
         public boolean dump(Item todump) {
             if (!block.hasItems || items.total() == 0 || linkProximityMap.size == 0 || (todump != null && !items.has(todump))) return false;
+            int dump = dumpIndex;
             for (int i = 0; i < linkProximityMap.size; i++) {
-                Building target = linkProximityMap.orderedKeys().get((i + dumpIndex) % linkProximityMap.size);
+                int idx = (i + dump) % linkProximityMap.size;
+                Building target = linkProximityMap.orderedKeys().get(idx);
                 Building source = linkProximityMap.get(target);
 
                 if (todump == null) {
@@ -92,9 +103,11 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         @Override
         public void offload(Item item) {
             produced(item, 1);
+            int dump = dumpIndex;
             for (int i = 0; i < linkProximityMap.size; i++) {
                 incrementDumpIndex(linkProximityMap.size);
-                Building target = linkProximityMap.orderedKeys().get(dumpIndex);
+                int idx = (i + dump) % linkProximityMap.size;
+                Building target = linkProximityMap.orderedKeys().get(idx);
                 Building source = linkProximityMap.get(target);
                 if (target.acceptItem(source, item) && canDump(target, item)) {
                     target.handleItem(source, item);
@@ -122,7 +135,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 }
 
                 //add self entity's proximity
-                Seq<Building> linkProximity = new Seq<>();
                 for (Building prox : proximity){
                     if (!linkEntities.contains(prox)){
                         linkProximityMap.put(prox, this);
@@ -142,6 +154,32 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             removeLink(tile, size, rotation);
             createPlaceholder(tile, size);
             super.remove();
+        }
+
+        @Override
+        public void drawSelect() {
+            super.drawSelect();
+
+            AtomicInteger i = new AtomicInteger(0);
+
+            linkProximityMap.each((target, source) -> {
+                if (dumpIndex == i.get()){
+                    Draw.color(Pal.techBlue);
+                }else {
+                    Draw.color(Pal.remove);
+                }
+
+                Draw.alpha(0.5f);
+                Draw.z(Layer.block + 3f);
+
+
+                Lines.line(target.x, target.y, source.x, source.y);
+                Fill.square(target.x, target.y, target.hitSize()/2f - 2f);
+
+                DrawFunc.drawText(i + "", target.x, target.y);
+                i.getAndIncrement();
+            });
+            DrawFunc.drawText(linkProximityMap.size + "", x, y);
         }
     }
 }

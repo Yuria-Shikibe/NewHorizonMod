@@ -33,6 +33,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
+import newhorizon.content.blocks.CraftingBlock;
 import newhorizon.content.blocks.DefenseBlock;
 import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.expand.entities.EntityRegister;
@@ -87,16 +88,7 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(DistributionBlock.compositeReloadConveyor),
-			new FeatureLog(DistributionBlock.hyperLinkConveyor),
-			new FeatureLog(DistributionBlock.hardLightConveyor),
-			new FeatureLog(DistributionBlock.compositeReloadBridge),
-			new FeatureLog(DistributionBlock.hyperLinkBridge),
-			
-			new FeatureLog(DefenseBlock.presstaniumWall),
-			new FeatureLog(DefenseBlock.refactoringMultiWall),
-			new FeatureLog(DefenseBlock.setonPhasedWall),
-			new FeatureLog(DefenseBlock.shapedWall)
+			new FeatureLog(CraftingBlock.fluxPhaser)
 		};
 	}
 	
