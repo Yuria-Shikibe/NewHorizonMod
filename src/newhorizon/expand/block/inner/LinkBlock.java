@@ -5,6 +5,8 @@ import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -20,7 +22,11 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;
 import newhorizon.util.annotation.NotNull;
 
-/** Inner building that are linked to a specific building. */
+/**
+ * Inner building that are linked to a specific building.
+ * Handle items, liquids, damage and so on a passed to the main building to handle.
+ * NEVER SUPPOSED TO USE OUTSIDE MULTI BLOCK!
+ * */
 public class LinkBlock extends Block {
     public LinkBlock(String name) {
         super(name);
@@ -43,6 +49,11 @@ public class LinkBlock extends Block {
         return false;
     }
 
+    @Override
+    public boolean isHidden(){
+        return true;
+    }
+
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class LinkBuild extends Building {
@@ -52,6 +63,8 @@ public class LinkBlock extends Block {
         public void updateLink(Building link){
             if (link instanceof MultiBlockEntity){
                 linkBuild = link;
+                items = link.items;
+                liquids = link.liquids;
             }
         }
 
@@ -60,7 +73,9 @@ public class LinkBlock extends Block {
 
         @Override
         public void drawSelect() {
-            linkBuild.drawSelect();
+            if (linkBuild != null) {
+                linkBuild.drawSelect();
+            }
         }
 
         @Override

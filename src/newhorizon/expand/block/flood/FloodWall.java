@@ -87,8 +87,8 @@ public class FloodWall extends FloodBase{
                 for (int x = 0; x < 2; x++){
                     for (int y = 0; y < 2; y++){
                         Tile tile = world.tile(tileX() - shift + size/2 * x, tileY() - shift + size/2 * y);
-                        Build.beginPlace(null, nextBlock, team, tile.x, tile.y, 0);
-                        ConstructBlock.constructFinish(tile, nextBlock, null, (byte) 0, team, null);
+                        //Build.beginPlace(null, nextBlock, team, tile.x, tile.y, 0);
+                        //ConstructBlock.constructFinish(tile, nextBlock, null, (byte) 0, team, null);
                     }
                 }
             }

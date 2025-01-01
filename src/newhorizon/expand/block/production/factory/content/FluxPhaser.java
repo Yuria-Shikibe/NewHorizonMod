@@ -31,7 +31,7 @@ public class FluxPhaser extends AdaptCrafter {
     public FluxPhaser() {
         super("flux-phaser");
 
-        requirements(Category.crafting, BuildVisibility.sandboxOnly, ItemStack.with(NHItems.zeta, 5));
+        requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 5));
 
         size = 3;
 

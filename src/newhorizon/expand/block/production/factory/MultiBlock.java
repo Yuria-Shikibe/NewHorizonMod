@@ -10,7 +10,9 @@ import mindustry.world.Build;
 import mindustry.world.Tile;
 import newhorizon.content.blocks.InnerBlock;
 import newhorizon.expand.block.inner.LinkBlock;
+import newhorizon.expand.block.inner.PlaceholderBlock;
 
+import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public interface MultiBlock {
@@ -54,6 +56,29 @@ public interface MultiBlock {
             if (!Build.validPlace(InnerBlock.linkEntity[s - 1], team, tile.x + xr, tile.y + yr, 0, false)) return false;
         }
         return true;
+    }
+
+    default void createPlaceholder(Tile tile, int size){
+        if (state.rules.infiniteResources) return;
+        if (tile == null || tile.build == null) return;
+        for (int i = 0; i < linkPos.size; i++){
+            Point2 p = linkPos.get(i);
+            int s = linkSize.get(i);
+            int shift = (size + 1) % 2;
+            int offset = (s + 1) % 2;
+            int xr = p.x, yr = p.y;
+
+            switch(tile.build.rotation){
+                case 1: xr = -p.y + shift - offset; yr = p.x; break;
+                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
+                case 3: xr = p.y; yr = -p.x + shift - offset; break;
+            }
+
+            Tile t = world.tile(tile.x + xr, tile.y + yr);
+            Call.setTile(t, InnerBlock.placeholderEntity[s - 1], tile.team(), 0);
+            PlaceholderBlock.PlaceholderBuild b = (PlaceholderBlock.PlaceholderBuild)t.build;
+            b.updateLink(tile);
+        }
     }
 
     default Seq<Building> setLinkBuild(Building building, Tile tile, Team team, int size, int rotation){

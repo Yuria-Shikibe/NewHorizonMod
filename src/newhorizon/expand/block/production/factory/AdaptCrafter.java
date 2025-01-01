@@ -1,17 +1,19 @@
 package newhorizon.expand.block.production.factory;
 
-import arc.struct.IntSeq;
-import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.Item;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
 
 import static mindustry.Vars.content;
+import static mindustry.Vars.state;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public AdaptCrafter(String name) {
@@ -27,7 +29,15 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         return super.canPlaceOn(tile, team, rotation) && checkLink(tile, team, size, rotation);
     }
 
+    @Override
+    public void placeBegan(Tile tile, Block previous) {
+        createPlaceholder(tile, size);
+    }
+
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
+
+        public boolean linkCreated = false;
+        public boolean linkLoaded = false;
         public Seq<Building> linkEntities;
         //ordered map, target-source pair
         public OrderedMap<Building, Building> linkProximityMap;
@@ -37,19 +47,16 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public void created() {
             super.created();
             linkProximityMap = new OrderedMap<>();
-            linkEntities = setLinkBuild(this, tile, team, size, rotation);
         }
 
-        public void removeLinkEntity(){
-
+        @Override
+        public void updateTile() {
+            if (!linkCreated){
+                linkEntities = setLinkBuild(this, tile, team, size, rotation);
+                linkCreated = true;
+            }
+            super.updateTile();
         }
-
-        public void handleLinkEntity(){
-
-        }
-
-        //most times its not a good idea to change the methods
-
 
         @Override
         public boolean dump(Item todump) {
@@ -133,12 +140,8 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         @Override
         public void remove() {
             removeLink(tile, size, rotation);
+            createPlaceholder(tile, size);
             super.remove();
-        }
-
-        @Override
-        public void onRemoved() {
-            super.onRemoved();
         }
     }
 }
