@@ -3,6 +3,8 @@ package newhorizon.expand.block.production.factory;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.math.geom.Point2;
+import arc.struct.IntSeq;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import mindustry.game.Team;
@@ -20,6 +22,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static mindustry.Vars.content;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
+    public Seq<Point2> linkPos = new Seq<>();
+    public IntSeq linkSize = new IntSeq();
+
     public AdaptCrafter(String name) {
         super(name);
 
@@ -38,19 +43,28 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         createPlaceholder(tile, size);
     }
 
+    @Override
+    public Seq<Point2> getLinkBlockPos() {
+        return linkPos;
+    }
+
+    @Override
+    public IntSeq getLinkBlockSize() {
+        return linkSize;
+    }
+
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
 
         public boolean linkCreated = false;
-        public boolean linkLoaded = false;
         public Seq<Building> linkEntities;
-        //ordered map, target-source pair
-        public OrderedMap<Building, Building> linkProximityMap;
+        //ordered seq, target-source pair
+        public Seq<Building[]> linkProximityMap;
         public int dumpIndex = 0;
 
         @Override
         public void created() {
             super.created();
-            linkProximityMap = new OrderedMap<>();
+            linkProximityMap = new Seq<>();
         }
 
         @Override
@@ -69,8 +83,9 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             int dump = dumpIndex;
             for (int i = 0; i < linkProximityMap.size; i++) {
                 int idx = (i + dump) % linkProximityMap.size;
-                Building target = linkProximityMap.orderedKeys().get(idx);
-                Building source = linkProximityMap.get(target);
+                Building[] pair = linkProximityMap.get(idx);
+                Building target = pair[0];
+                Building source = pair[1];
 
                 if (todump == null) {
                     for (int ii = 0; ii < content.items().size; ii++) {
@@ -103,8 +118,9 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             for (int i = 0; i < linkProximityMap.size; i++) {
                 incrementDumpIndex(linkProximityMap.size);
                 int idx = (i + dump) % linkProximityMap.size;
-                Building target = linkProximityMap.orderedKeys().get(idx);
-                Building source = linkProximityMap.get(target);
+                Building[] pair = linkProximityMap.get(idx);
+                Building target = pair[0];
+                Building source = pair[1];
                 if (target.acceptItem(source, item) && canDump(target, item)) {
                     target.handleItem(source, item);
                     return;
@@ -125,7 +141,9 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 for (Building link : linkEntities){
                     for (Building linkProx : link.proximity){
                         if (linkProx != this && !linkEntities.contains(linkProx)){
-                            linkProximityMap.put(linkProx, link);
+                            if (checkValidPair(linkProx, link)){
+                                linkProximityMap.add(new Building[]{linkProx, link});
+                            }
                         }
                     }
                 }
@@ -133,10 +151,26 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 //add self entity's proximity
                 for (Building prox : proximity){
                     if (!linkEntities.contains(prox)){
-                        linkProximityMap.put(prox, this);
+                        if (checkValidPair(prox, this)) {
+                            linkProximityMap.add(new Building[]{prox, this});
+                        }
                     }
                 }
             }
+        }
+
+        public boolean checkValidPair(Building target, Building source){
+            for (Building[] pair : linkProximityMap){
+                Building pairTarget = pair[0];
+                Building pairSource = pair[1];
+
+                if (target == pairTarget){
+                    if (target.relativeTo(pairSource) == target.relativeTo(source)){
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         @Override
@@ -158,7 +192,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
             AtomicInteger i = new AtomicInteger(0);
 
-            linkProximityMap.each((target, source) -> {
+            linkProximityMap.each(pair -> {
                 if (dumpIndex == i.get()){
                     Draw.color(Pal.techBlue);
                 }else {
@@ -168,6 +202,8 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 Draw.alpha(0.5f);
                 Draw.z(Layer.block + 3f);
 
+                Building target = pair[0];
+                Building source = pair[1];
 
                 Lines.line(target.x, target.y, source.x, source.y);
                 Fill.square(target.x, target.y, target.hitSize()/2f - 2f);

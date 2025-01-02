@@ -143,6 +143,13 @@ public class LinkBlock extends Block {
         }
 
         @Override
+        public void damage(float damage) {
+            if (linkBuild != null){
+                linkBuild.damage(damage);
+            }
+        }
+
+        @Override
         public void handleItem(Building source, Item item) {
             if (linkBuild != null){
                 linkBuild.handleItem(source, item);
@@ -201,5 +208,8 @@ public class LinkBlock extends Block {
         public void onProximityRemoved() {
             super.onProximityRemoved();
         }
+
+        @Override
+        public void onDestroyed() {}
     }
 }
