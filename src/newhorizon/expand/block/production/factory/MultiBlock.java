@@ -5,7 +5,6 @@ import arc.struct.IntSeq;
 import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;
-import mindustry.gen.Call;
 import mindustry.world.Build;
 import mindustry.world.Tile;
 import newhorizon.content.blocks.InnerBlock;
@@ -69,7 +68,7 @@ public interface MultiBlock {
             }
 
             Tile t = world.tile(tile.x + xr, tile.y + yr);
-            Call.setTile(t, InnerBlock.placeholderEntity[s - 1], tile.team(), 0);
+            t.setBlock(InnerBlock.placeholderEntity[s - 1], tile.team(), 0);
             PlaceholderBlock.PlaceholderBuild b = (PlaceholderBlock.PlaceholderBuild)t.build;
             b.updateLink(tile);
         }
@@ -91,7 +90,7 @@ public interface MultiBlock {
             }
 
             Tile t = world.tile(tile.x + xr, tile.y + yr);
-            Call.setTile(t, InnerBlock.linkEntity[s - 1], team, 0);
+            t.setBlock(InnerBlock.linkEntity[s - 1], team, 0);
             LinkBlock.LinkBuild b = (LinkBlock.LinkBuild)t.build;
             b.updateLink(building);
             out.add(b);
@@ -115,7 +114,7 @@ public interface MultiBlock {
             }
 
             Tile t = world.tile(tile.x + xr, tile.y + yr);
-            Call.removeTile(t);
+            t.remove();
         }
     }
 }

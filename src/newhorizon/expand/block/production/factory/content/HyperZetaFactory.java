@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Build;
@@ -25,10 +26,11 @@ public class HyperZetaFactory extends AdaptCrafter {
         addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
                 0, 2, 1, /**/1, 2, 1 /**/);
 
-        craftTime = 60f;
+        craftTime = 120f;
         consumePower(6);
-        consumeItems(with(Items.silicon, 4, NHItems.zeta, 3));
-        outputItems = with(Items.phaseFabric, 5);
+        consumeItems(with(Items.thorium, 4));
+        consumeLiquid(Liquids.cryofluid, 0.1f);
+        outputItems = with(NHItems.zeta, 8);
 
         itemCapacity = 20;
     }

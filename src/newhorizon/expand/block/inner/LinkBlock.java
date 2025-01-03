@@ -63,6 +63,9 @@ public class LinkBlock extends Block {
                 linkBuild = link;
                 items = link.items;
                 liquids = link.liquids;
+
+                //might not a good idea if do so
+                //block = link.block;
             }
         }
 
