@@ -19,25 +19,6 @@ public class CraftingBlock {
     public static void load(){
         fluxPhaser = new FluxPhaser();
         hyperZetaFactory = new HyperZetaFactory();
-        factory = new AdaptCrafter("factory"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 5));
 
-            size = 4;
-
-            addLink(-2, 0, 1, /**/-2, 1, 1, /**/-2, 2, 1, /**/
-                    -1, 3, 1, /**/0, 3, 1,  /**/1, 3, 1,  /**/
-                    3, 1, 1,  /**/3, 0, 1,  /**/3, -1, 1, /**/
-                    0, -2, 1, /**/1, -2, 1, /**/2, -2, 1, /**/
-                    3, -2, 1  /**/
-            );
-
-            craftTime = 120f;
-            consumePower(6);
-            consumeItems(with(Items.thorium, 4));
-            consumeLiquid(Liquids.cryofluid, 0.1f);
-            outputItems = with(NHItems.zeta, 8);
-
-            itemCapacity = 20;
-        }};
     }
 }

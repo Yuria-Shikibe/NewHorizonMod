@@ -45,6 +45,12 @@ public class HyperZetaFactory extends AdaptCrafter {
         }
     }
 
+    @Override
+    public void loadIcon() {
+        super.loadIcon();
+        uiIcon = Core.atlas.find(name + "-icon");
+    }
+
     public class HyperZetaFactoryBuild extends AdaptCrafterBuild {
         public void draw() {
             Draw.rect(rotRegion[rotation], x, y);
