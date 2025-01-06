@@ -5,7 +5,6 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
-import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;

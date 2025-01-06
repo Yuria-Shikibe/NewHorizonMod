@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.meta.BuildVisibility;
