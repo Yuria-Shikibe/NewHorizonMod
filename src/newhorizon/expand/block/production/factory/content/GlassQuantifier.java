@@ -9,6 +9,7 @@ import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 
 import static mindustry.type.ItemStack.with;
@@ -22,18 +23,14 @@ public class GlassQuantifier extends AdaptCrafter {
 
         size = 2;
 
-            /*
-            x x x x
-            x x x x
-             */
-        addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
-                -1, 0, 1, /**/-1, 1, 1 /**/);
+        addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
+                0, 2, 1, /**/1, 2, 1 /**/);
 
         craftTime = 120f;
-        consumePower(6);
-        consumeItems(with(Items.thorium, 5));
-        consumeLiquid(Liquids.cryofluid, 0.1f);
-        outputItems = with(NHItems.zeta, 10);
+        consumePower(3);
+        consumeItems(with(Items.sand, 4));
+        consumeLiquid(NHLiquids.quantumEntity, 0.1f);
+        outputItems = with(Items.metaglass, 6f);
 
         itemCapacity = 20;
     }

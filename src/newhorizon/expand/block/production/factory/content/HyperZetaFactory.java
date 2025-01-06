@@ -23,8 +23,8 @@ public class HyperZetaFactory extends AdaptCrafter {
 
         size = 2;
 
-        addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
-                0, 2, 1, /**/1, 2, 1 /**/);
+        addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
+                -1, 0, 1, /**/-1, 1, 1 /**/);
 
         craftTime = 120f;
         consumePower(6);
