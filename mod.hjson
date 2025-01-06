@@ -2,7 +2,7 @@ displayName: "New Horizon"
 author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
-description: "Warning: Beta Version For V7."
-version: "0.5.6.2"
+description: "[sky]THE HORIZON HAS EXPANDED."
+version: "0.5.6.4"
 
 minGameVersion: 146
