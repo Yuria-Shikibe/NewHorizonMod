@@ -115,19 +115,21 @@ public class BoostAbility extends Ability{
 		
 		for(int i = 0; i < trails.size; i++){
 			Trail trail = trails.get(i);
+			if (i >= unit.type.engines.size) continue;
 			UnitType.UnitEngine engine = unit.type.engines.get(i);
 			
 			Vec2 vec2 = PositionOffset.unitEngineOffset(unit, engine);
 			trail.update(unit.x + vec2.x, unit.y + vec2.y, same ? 1 : 0);
 		}
 	}
-	
+
 	@Override
 	public void draw(Unit unit){
 		float z = Draw.z();
 		Draw.z(unit.type.engineLayer > 0 ? unit.type.engineLayer : unit.type.lowAltitude ? Layer.flyingUnitLow - 0.001f : Layer.flyingUnit - 0.001f);
 		Color color = unit.type.engineColor == null ? unit.team.color : unit.type.engineColor;
 		for(int i = 0; i < trails.size; i++){
+			if (i >= unit.type.engines.size) continue;
 			trails.get(i).draw(color, unit.type.engines.get(i).radius / 1.25f);
 		}
 		Draw.z(z);
