@@ -7,11 +7,14 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Tmp;
 import mindustry.content.Items;
+import mindustry.entities.Effect;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.content.NHColor;
+import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 import newhorizon.util.func.MathUtil;
@@ -40,7 +43,15 @@ public class FluxPhaser extends AdaptCrafter {
         consumeItems(with(Items.silicon, 6, NHItems.zeta, 6));
         outputItems = with(Items.phaseFabric, 9);
 
-        itemCapacity = 20;
+        itemCapacity = 40;
+        health = 3000;
+
+        updateEffect = new Effect(40f, 80f, e -> {
+            Draw.color(Items.phaseFabric.color, Pal.accent, e.fin() * 0.8f);
+            Lines.stroke(2f * e.fout());
+            Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
+        });
+        craftEffect = NHFx.square(Items.phaseFabric.color, 38, 5, 34, 5);
     }
 
     @Override

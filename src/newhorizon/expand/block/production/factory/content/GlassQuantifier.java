@@ -3,6 +3,7 @@ package newhorizon.expand.block.production.factory.content;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -32,7 +33,11 @@ public class GlassQuantifier extends AdaptCrafter {
         consumeLiquid(NHLiquids.quantumEntity, 0.1f);
         outputItems = with(Items.metaglass, 6f);
 
-        itemCapacity = 20;
+        itemCapacity = 45;
+        health = 1600;
+
+        craftEffect = Fx.smeltsmoke;
+        updateEffect = Fx.smeltsmoke;
     }
 
     @Override
