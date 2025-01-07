@@ -68,6 +68,8 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void updateTile() {
+            if(isPayload()) return;
+
             if (!linkCreated){
                 linkEntities = setLinkBuild(this, tile, team, size, rotation);
                 linkCreated = true;
