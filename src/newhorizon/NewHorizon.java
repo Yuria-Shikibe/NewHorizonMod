@@ -81,7 +81,9 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-			new FeatureLog(CraftingBlock.fluxPhaser)
+				new FeatureLog(CraftingBlock.fluxPhaser),
+				new FeatureLog(CraftingBlock.glassQuantifier),
+				new FeatureLog(CraftingBlock.hyperZetaFactory)
 		};
 	}
 	

@@ -31,9 +31,9 @@ public class HyperZetaFactory extends AdaptCrafter {
 
         craftTime = 60f;
         consumePower(300 / 60f);
-        consumeItems(with(Items.thorium, 10));
-        consumeLiquid(NHLiquids.zetaFluid, 4 / 60f);
-        outputItems = with(NHItems.zeta, 20);
+        consumeItems(with(Items.thorium, 6));
+        consumeLiquid(NHLiquids.zetaFluid, 5 / 60f);
+        outputItems = with(NHItems.zeta, 10);
 
         itemCapacity = 60;
         health = 1600;

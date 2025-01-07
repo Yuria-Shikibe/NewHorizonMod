@@ -3033,7 +3033,7 @@ public class NHBlocks{
 				requirements(Category.crafting, with(Items.silicon, 15, Items.lead, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
 				craftTime = 75f;
-				outputItem = new ItemStack(NHItems.zeta, 1);
+				outputItem = new ItemStack(NHItems.zeta, 2);
 				size = 1;
 				health = 60;
 				craftEffect = new Effect(15, e -> {
@@ -3051,7 +3051,7 @@ public class NHBlocks{
 				}});
 				
 				consumePower(1.5f);
-				consumeItem(Items.thorium, 2);
+				consumeItem(Items.thorium, 3);
 			}
 		};
 		
@@ -3348,7 +3348,7 @@ public class NHBlocks{
 		zetaFactoryLarge = new GenericCrafter("large-zeta-factory") {{
 			itemCapacity = 40;
 			requirements(Category.crafting, with(Items.plastanium, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25));
-			outputItem = new ItemStack(NHItems.zeta, 8);
+			outputItem = new ItemStack(NHItems.zeta, 6);
 			craftTime = 60f;
 			size = 2;
 			craftEffect = Fx.formsmoke;
@@ -3360,7 +3360,7 @@ public class NHBlocks{
 				plantColorLight = NHLiquids.zetaFluid.color.cpy().lerp(Color.white, 0.1f);
 			}}, new DrawDefault());
 			
-			consumeItem(Items.thorium, 8);
+			consumeItem(Items.thorium, 6);
 			consumePower(7f);
 			consumeLiquid(Liquids.water, 0.075f);
 		}};
