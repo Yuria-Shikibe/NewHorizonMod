@@ -18,15 +18,16 @@ public class GlassQuantifier extends AdaptCrafter {
 
     public GlassQuantifier() {
         super("glass-quantifier");
-        requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 5));
+        requirements(Category.crafting, BuildVisibility.shown,
+                ItemStack.with(NHItems.multipleSteel, 40, NHItems.juniorProcessor, 60, NHItems.zeta, 100, Items.plastanium, 50));
 
         size = 2;
 
         addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
                 0, 2, 1, /**/1, 2, 1 /**/);
 
-        craftTime = 120f;
-        consumePower(3);
+        craftTime = 60f;
+        consumePower(480 / 60f);
         consumeItems(with(Items.sand, 4));
         consumeLiquid(NHLiquids.quantumEntity, 0.1f);
         outputItems = with(Items.metaglass, 6f);

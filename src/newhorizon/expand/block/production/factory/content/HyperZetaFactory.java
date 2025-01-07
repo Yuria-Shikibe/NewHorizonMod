@@ -9,6 +9,7 @@ import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 
 import static mindustry.type.ItemStack.with;
@@ -18,18 +19,19 @@ public class HyperZetaFactory extends AdaptCrafter {
 
     public HyperZetaFactory() {
         super("hyper-zeta-factory");
-        requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 5));
+        requirements(Category.crafting, BuildVisibility.shown,
+                ItemStack.with(NHItems.multipleSteel, 60, NHItems.irayrondPanel, 50, NHItems.juniorProcessor, 100, NHItems.metalOxhydrigen, 80));
 
         size = 2;
 
         addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                 -1, 0, 1, /**/-1, 1, 1 /**/);
 
-        craftTime = 120f;
-        consumePower(6);
-        consumeItems(with(Items.thorium, 4));
-        consumeLiquid(Liquids.cryofluid, 0.1f);
-        outputItems = with(NHItems.zeta, 8);
+        craftTime = 90f;
+        consumePower(300 / 60f);
+        consumeItems(with(Items.thorium, 12));
+        consumeLiquid(NHLiquids.zetaFluid, 4 / 60f);
+        outputItems = with(NHItems.zeta, 24);
 
         itemCapacity = 20;
     }

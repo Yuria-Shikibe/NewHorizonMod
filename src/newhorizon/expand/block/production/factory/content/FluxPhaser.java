@@ -27,17 +27,18 @@ public class FluxPhaser extends AdaptCrafter {
     public FluxPhaser() {
         super("flux-phaser");
 
-        requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 5));
+        requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                NHItems.irayrondPanel, 100, NHItems.seniorProcessor, 80, Items.plastanium, 60, NHItems.zeta, 100));
 
         size = 3;
 
         addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                 -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
-        craftTime = 60f;
-        consumePower(6);
-        consumeItems(with(Items.silicon, 4, NHItems.zeta, 3));
-        outputItems = with(Items.phaseFabric, 5);
+        craftTime = 120f;
+        consumePower(1080 / 60f);
+        consumeItems(with(Items.silicon, 6, NHItems.zeta, 6));
+        outputItems = with(Items.phaseFabric, 9);
 
         itemCapacity = 20;
     }
