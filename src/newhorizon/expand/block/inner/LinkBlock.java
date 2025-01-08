@@ -55,8 +55,7 @@ public class LinkBlock extends Block {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class LinkBuild extends Building {
-        /**Linked Build. Can't be null*/
-        public @NotNull Building linkBuild;
+        public Building linkBuild;
 
         public void updateLink(Building link){
             if (link instanceof MultiBlockEntity){
@@ -66,9 +65,12 @@ public class LinkBlock extends Block {
 
                 //might not a good idea if do so
                 //block = link.block;
+            }else {
+                tile.remove();
             }
         }
 
+        //skip draw
         @Override
         public void draw() {}
 

@@ -54,7 +54,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
 
-        public boolean linkCreated = false;
+        public boolean linkCreated = false, linkRemoved = false;
         public Seq<Building> linkEntities;
         //ordered seq, target-source pair
         public Seq<Building[]> linkProximityMap;
@@ -160,6 +160,11 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             }
         }
 
+        @Override
+        public Seq<Building> linkEntities() {
+            return linkEntities;
+        }
+
         public boolean checkValidPair(Building target, Building source){
             for (Building[] pair : linkProximityMap){
                 Building pairTarget = pair[0];
@@ -182,7 +187,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void remove() {
-            removeLink(tile, size, rotation);
+            removeLink(linkEntities);
             createPlaceholder(tile, size);
             super.remove();
         }
@@ -191,6 +196,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public void drawSelect() {
             super.drawSelect();
 
+            /*
             AtomicInteger i = new AtomicInteger(0);
 
             linkProximityMap.each(pair -> {
@@ -213,6 +219,8 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 i.getAndIncrement();
             });
             DrawFunc.drawText(linkProximityMap.size + "", x, y);
+
+             */
         }
     }
 }
