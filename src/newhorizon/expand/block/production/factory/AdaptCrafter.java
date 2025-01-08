@@ -2,7 +2,6 @@ package newhorizon.expand.block.production.factory;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
@@ -14,11 +13,8 @@ import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
-import newhorizon.util.graphic.DrawFunc;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static mindustry.Vars.content;
+import static mindustry.Vars.*;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public Seq<Point2> linkPos = new Seq<>();
@@ -210,32 +206,33 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         @Override
         public void drawSelect() {
             super.drawSelect();
+        }
 
-            /*
-            AtomicInteger i = new AtomicInteger(0);
+        @Override
+        public void drawTeam() {
+            Point2 p = teamOverlayPos(size, rotation);
+            Tile t = world.tile(tileX() + p.x, tileY() + p.y);
+            if (t != null){
+                Draw.color(team.color);
+                Draw.rect("block-border", t.worldx(), t.worldy());
+                Draw.color();
+            }
+        }
 
-            linkProximityMap.each(pair -> {
-                if (dumpIndex == i.get()){
-                    Draw.color(Pal.techBlue);
-                }else {
-                    Draw.color(Pal.remove);
-                }
+        @Override
+        public void drawStatus() {
+            if (block.enableDrawStatus && block.consumers.length > 0) {
+                Point2 p = statusOverlayPos(size, rotation);
+                Tile t = world.tile(tileX() + p.x, tileY() + p.y);
 
-                Draw.alpha(0.5f);
-                Draw.z(Layer.block + 3f);
-
-                Building target = pair[0];
-                Building source = pair[1];
-
-                Lines.line(target.x, target.y, source.x, source.y);
-                Fill.square(target.x, target.y, target.hitSize()/2f - 2f);
-
-                DrawFunc.drawText(i + "", target.x, target.y);
-                i.getAndIncrement();
-            });
-            DrawFunc.drawText(linkProximityMap.size + "", x, y);
-
-             */
+                float multiplier = block.size > 1 ? 1 : 0.64F;
+                Draw.z(Layer.power + 1);
+                Draw.color(Pal.gray);
+                Fill.square(t.worldx(), t.worldy(), 2.5F * multiplier, 45);
+                Draw.color(status().color);
+                Fill.square(t.worldx(), t.worldy(), 1.5F * multiplier, 45);
+                Draw.color();
+            }
         }
     }
 }

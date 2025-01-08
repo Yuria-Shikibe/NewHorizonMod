@@ -43,6 +43,10 @@ public class LinkBlock extends Block {
         hasLiquids = true;
 
         buildVisibility = BuildVisibility.hidden;
+
+        drawCracks = false;
+        drawArrow = false;
+        drawTeamOverlay = false;
     }
 
     public boolean canBreak(Tile tile){

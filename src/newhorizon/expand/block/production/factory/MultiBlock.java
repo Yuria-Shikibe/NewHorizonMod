@@ -102,4 +102,50 @@ public interface MultiBlock {
     default void removeLink(Seq<Building> links){
         links.each(b -> ((LinkBlock.LinkBuild)b).updateLink(null));
     }
+
+    default Point2 teamOverlayPos(int size, int rotation){
+        int shift = (size + 1) % 2;
+        int value = -size/2 + shift;
+
+        Point2 out = new Point2(value, value);
+
+        for (int i = 0; i < getLinkBlockPos().size; i++){
+            Point2 p = getLinkBlockPos().get(i);
+            int s = getLinkBlockSize().get(i);
+            int offset = (s + 1) % 2;
+            int xr = p.x, yr = p.y;
+
+            switch(rotation){
+                case 1: xr = -p.y + shift - offset; yr = p.x; break;
+                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
+                case 3: xr = p.y; yr = -p.x + shift - offset; break;
+            }
+
+            if ((xr + yr) < (value + value)) out.set(xr, yr);
+        }
+        return out;
+    }
+
+    default Point2 statusOverlayPos(int size, int rotation){
+        int shift = (size + 1) % 2;
+        int value1 = size/2, value2 = -size/2 + shift;
+
+        Point2 out = new Point2(value1, value2);
+
+        for (int i = 0; i < getLinkBlockPos().size; i++){
+            Point2 p = getLinkBlockPos().get(i);
+            int s = getLinkBlockSize().get(i);
+            int offset = (s + 1) % 2;
+            int xr = p.x, yr = p.y;
+
+            switch(rotation){
+                case 1: xr = -p.y + shift - offset; yr = p.x; break;
+                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
+                case 3: xr = p.y; yr = -p.x + shift - offset; break;
+            }
+
+            if ((xr - yr) > (value1 - value2)) out.set(xr, yr);
+        }
+        return out;
+    }
 }
