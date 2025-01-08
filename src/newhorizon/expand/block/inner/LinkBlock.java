@@ -33,7 +33,7 @@ public class LinkBlock extends Block {
         squareSprite = false;
 
         destructible = true;
-        breakable = true;
+        breakable = false;
         solid = true;
         rebuildable = false;
 
@@ -46,7 +46,7 @@ public class LinkBlock extends Block {
     }
 
     public boolean canBreak(Tile tile){
-        return true;
+        return false;
     }
 
     @Override
