@@ -33,9 +33,11 @@ public class LinkBlock extends Block {
         squareSprite = false;
 
         destructible = true;
-        breakable = false;
+        breakable = true;
         solid = true;
         rebuildable = false;
+
+        instantDeconstruct = true;
 
         hasItems = true;
         hasLiquids = true;
@@ -44,7 +46,7 @@ public class LinkBlock extends Block {
     }
 
     public boolean canBreak(Tile tile){
-        return false;
+        return true;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class LinkBlock extends Block {
                 //might not a good idea if do so
                 //block = link.block;
             }else {
+                linkBuild = null;
                 tile.remove();
             }
         }
@@ -216,5 +219,13 @@ public class LinkBlock extends Block {
 
         @Override
         public void onDestroyed() {}
+
+        @Override
+        public void remove() {
+            if (linkBuild != null){
+                ((MultiBlockEntity)linkBuild).handleRemove(this);
+            }
+            super.remove();
+        }
     }
 }

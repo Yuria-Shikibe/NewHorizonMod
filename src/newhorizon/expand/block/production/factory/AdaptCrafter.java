@@ -75,6 +75,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 linkCreated = true;
                 updateLinkProximity();
             }
+            if (linkEntities.isEmpty()) tile.remove();
             super.updateTile();
         }
 
@@ -161,6 +162,18 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         }
 
         @Override
+        public void handleRemove(Building building) {
+            if (building != null){
+                linkEntities.remove(building);
+            }
+            removeLink(linkEntities);
+            linkEntities.clear();
+            if (building != null){
+                kill();
+            }
+        }
+
+        @Override
         public Seq<Building> linkEntities() {
             return linkEntities;
         }
@@ -187,8 +200,10 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void remove() {
-            removeLink(linkEntities);
-            createPlaceholder(tile, size);
+            if (!linkEntities.isEmpty()){
+                handleRemove(null);
+                createPlaceholder(tile, size);
+            }
             super.remove();
         }
 
