@@ -202,7 +202,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void remove() {
-            if (linkEntities != null){
+            if (linkEntities != null && tile != null){
                 if (!linkEntities.isEmpty()){
                     handleRemove(null);
                     createPlaceholder(tile, size);

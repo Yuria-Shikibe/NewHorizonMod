@@ -41,6 +41,7 @@ public class LinkBlock extends Block {
 
         hasItems = true;
         hasLiquids = true;
+        hasPower = false;
 
         buildVisibility = BuildVisibility.hidden;
 
