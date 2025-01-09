@@ -32,12 +32,12 @@ public class LinkBlock extends Block {
         update = false;
         squareSprite = false;
 
-        destructible = true;
+        destructible = false;
         breakable = false;
         solid = true;
-        rebuildable = false;
 
         instantDeconstruct = true;
+        rebuildable = false;
 
         hasItems = true;
         hasLiquids = true;
@@ -227,10 +227,8 @@ public class LinkBlock extends Block {
 
         @Override
         public void remove() {
-            if (linkBuild != null){
-                ((MultiBlockEntity)linkBuild).handleRemove(this);
-            }
             super.remove();
+            if (linkBuild != null) {((MultiBlockEntity) linkBuild).invalidateEntity();}
         }
     }
 }
