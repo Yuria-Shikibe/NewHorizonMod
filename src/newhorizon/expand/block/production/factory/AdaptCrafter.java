@@ -202,6 +202,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public void remove() {
             if (linkEntities != null){
                 linkEntities.each(Building::kill);
+                createPlaceholder(tile, size);
             }
 
             super.remove();
