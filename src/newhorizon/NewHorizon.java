@@ -67,7 +67,7 @@ public class NewHorizon extends Mod{
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
-	public static final String SERVER = "175.178.22.6:6666", SERVER_ADDRESS = "175.178.22.6", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
+	public static final String SERVER = "203.135.99.51:10094", SERVER_ADDRESS = "175.178.22.6", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static final String EU_NH_SERVER = "Emphasize.cn:12510";
 	
 	private static boolean showed = false;
