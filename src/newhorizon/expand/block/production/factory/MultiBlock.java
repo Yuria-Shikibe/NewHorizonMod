@@ -16,9 +16,9 @@ import static mindustry.Vars.world;
 
 public interface MultiBlock {
 
-    Seq<Point2> getLinkBlockPos();
+    Seq<Point2> linkBlockPos();
 
-    IntSeq getLinkBlockSize();
+    IntSeq linkBlockSize();
 
     /**
      * x, y, size
@@ -26,15 +26,51 @@ public interface MultiBlock {
      * */
     default void addLink(int... value){
         for(int i = 0; i < value.length; i += 3){
-            getLinkBlockPos().add(new Point2(value[i], value[i + 1]));
-            getLinkBlockSize().add(value[i + 2]);
+            linkBlockPos().add(new Point2(value[i], value[i + 1]));
+            linkBlockSize().add(value[i + 2]);
         }
     }
 
+    default int linkRotX(Point2 pos, int blockSize, int linkSize, int rotation){
+        int shift = (blockSize + 1) % 2;
+        int offset = (linkSize + 1) % 2;
+        int px = pos.x, py = pos.y;
+        switch(rotation){
+            case 1: return -py + shift - offset;
+            case 2: return -px + shift - offset;
+            case 3: return py;
+            default: return 0;
+        }
+    }
+
+    default int linkRotY(Point2 pos, int blockSize, int linkSize, int rotation){
+        int shift = (blockSize + 1) % 2;
+        int offset = (linkSize + 1) % 2;
+        int px = pos.x, py = pos.y;
+        switch(rotation){
+            case 1: return px;
+            case 2: return -py + shift - offset;
+            case 3: return -px + shift - offset;
+            default: return 0;
+        }
+    }
+
+    default Tile linkTile(int idx, Building building){
+        return world.tile(
+                building.tileX() + linkRotX(linkBlockPos().get(idx), building.block().size, linkBlockSize().get(idx), building.rotation()),
+                building.tileY() + linkRotY(linkBlockPos().get(idx), building.block().size, linkBlockSize().get(idx), building.rotation()));
+    }
+
+    default Tile linkTile(int idx, int size, int rotation, Tile tile){
+        return world.tile(
+                tile.x + linkRotX(linkBlockPos().get(idx), size, linkBlockSize().get(idx), rotation),
+                tile.y + linkRotY(linkBlockPos().get(idx), size, linkBlockSize().get(idx), rotation));
+    }
+
     default boolean checkLink(Tile tile, Team team, int size, int rotation){
-        for (int i = 0; i < getLinkBlockPos().size; i++){
-            Point2 p = getLinkBlockPos().get(i);
-            int s = getLinkBlockSize().get(i);
+        for (int i = 0; i < linkBlockPos().size; i++){
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
             int shift = (size + 1) % 2;
             //rotated link size offset
             int offset = (s + 1) % 2;
@@ -54,9 +90,9 @@ public interface MultiBlock {
     default void createPlaceholder(Tile tile, int size){
         if (state.rules.infiniteResources) return;
         if (tile == null || tile.build == null) return;
-        for (int i = 0; i < getLinkBlockPos().size; i++){
-            Point2 p = getLinkBlockPos().get(i);
-            int s = getLinkBlockSize().get(i);
+        for (int i = 0; i < linkBlockPos().size; i++){
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
             int shift = (size + 1) % 2;
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
@@ -76,9 +112,9 @@ public interface MultiBlock {
 
     default Seq<Building> setLinkBuild(Building building, Tile tile, Team team, int size, int rotation){
         Seq<Building> out = new Seq<>();
-        for (int i = 0; i < getLinkBlockPos().size; i++){
-            Point2 p = getLinkBlockPos().get(i);
-            int s = getLinkBlockSize().get(i);
+        for (int i = 0; i < linkBlockPos().size; i++){
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
             int shift = (size + 1) % 2;
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
@@ -100,7 +136,7 @@ public interface MultiBlock {
     }
 
     default void removeLink(Seq<Building> links){
-        links.each(b -> ((LinkBlock.LinkBuild)b).updateLink(null));
+        links.each(Building::kill);
     }
 
     default Point2 teamOverlayPos(int size, int rotation){
@@ -109,9 +145,9 @@ public interface MultiBlock {
 
         Point2 out = new Point2(value, value);
 
-        for (int i = 0; i < getLinkBlockPos().size; i++){
-            Point2 p = getLinkBlockPos().get(i);
-            int s = getLinkBlockSize().get(i);
+        for (int i = 0; i < linkBlockPos().size; i++){
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
@@ -132,9 +168,9 @@ public interface MultiBlock {
 
         Point2 out = new Point2(value1, value2);
 
-        for (int i = 0; i < getLinkBlockPos().size; i++){
-            Point2 p = getLinkBlockPos().get(i);
-            int s = getLinkBlockSize().get(i);
+        for (int i = 0; i < linkBlockPos().size; i++){
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
