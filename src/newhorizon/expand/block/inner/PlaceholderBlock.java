@@ -55,8 +55,10 @@ public class PlaceholderBlock extends Block {
         public void updateTile() {
             super.updateTile();
             if (!checkTile && linkBuild == null){
-                updateLink(linkTile);
-                checkTile = true;
+                if (linkTile != null){
+                    updateLink(linkTile);
+                    checkTile = true;
+                }
             }
             if (linkBuild == null || !linkBuild.isAdded()){
                 tile.removeNet();

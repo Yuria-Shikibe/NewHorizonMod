@@ -5,6 +5,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
+import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
@@ -36,6 +37,11 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     @Override
     public void placeBegan(Tile tile, Block previous) {
         createPlaceholder(tile, size);
+    }
+
+    @Override
+    public void handlePlacementLine(Seq<BuildPlan> plans) {
+        super.handlePlacementLine(plans);
     }
 
     @Override

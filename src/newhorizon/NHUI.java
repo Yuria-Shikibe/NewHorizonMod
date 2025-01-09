@@ -75,7 +75,7 @@ public class NHUI{
 		eventDialog = new WorldEventDialog();
 		
 		Table table = new Table(Tex.buttonEdge4,  t -> {
-			t.label(() -> "Graph Count: " + GraphUpdater.syntherEntity.size).row();
+			//t.label(() -> "Graph Count: " + GraphUpdater.syntherEntity.size).row();
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 			infoT.update(() -> {
