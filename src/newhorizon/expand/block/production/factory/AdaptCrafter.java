@@ -45,12 +45,12 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     }
 
     @Override
-    public Seq<Point2> getLinkBlockPos() {
+    public Seq<Point2> linkBlockPos() {
         return linkPos;
     }
 
     @Override
-    public IntSeq getLinkBlockSize() {
+    public IntSeq linkBlockSize() {
         return linkSize;
     }
 
