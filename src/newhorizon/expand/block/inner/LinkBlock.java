@@ -228,7 +228,7 @@ public class LinkBlock extends Block {
         @Override
         public void remove() {
             if (linkBuild != null){
-                ((MultiBlockEntity)linkBuild).handleRemove(this);
+                ((MultiBlockEntity)linkBuild).invalidateEntity();
             }
             super.remove();
         }

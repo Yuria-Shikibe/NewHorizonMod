@@ -7,7 +7,7 @@ import mindustry.gen.Buildingc;
 public interface MultiBlockEntity extends Buildingc {
     void updateLinkProximity();
 
-    void handleRemove(Building building);
+    void invalidateEntity();
 
     Seq<Building> linkEntities();
 }
