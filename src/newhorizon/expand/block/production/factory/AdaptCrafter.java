@@ -209,6 +209,11 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         }
 
         @Override
+        public boolean canPickup() {
+            return false;
+        }
+
+        @Override
         public void drawSelect() {
             super.drawSelect();
         }
