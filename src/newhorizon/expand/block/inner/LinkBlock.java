@@ -1,13 +1,16 @@
 package newhorizon.expand.block.inner;
 
 import arc.Core;
+import arc.audio.Sound;
 import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Sounds;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import mindustry.type.Item;
@@ -29,13 +32,14 @@ public class LinkBlock extends Block {
     public LinkBlock(String name) {
         super(name);
 
-        update = false;
+        update = true;
         squareSprite = false;
 
         destructible = true;
         breakable = false;
         solid = true;
         rebuildable = false;
+        canOverdrive = false;
 
         instantDeconstruct = true;
 
@@ -48,6 +52,12 @@ public class LinkBlock extends Block {
         drawCracks = false;
         drawArrow = false;
         drawTeamOverlay = false;
+
+        ambientSound = Sounds.none;
+        breakSound = Sounds.none;
+        destroySound = Sounds.none;
+        loopSound = Sounds.none;
+        placeSound = Sounds.none;
     }
 
     public boolean canBreak(Tile tile){
@@ -59,7 +69,6 @@ public class LinkBlock extends Block {
         return true;
     }
 
-
     @SuppressWarnings("InnerClassMayBeStatic")
     public class LinkBuild extends Building {
         public Building linkBuild;
@@ -69,12 +78,18 @@ public class LinkBlock extends Block {
                 linkBuild = link;
                 items = link.items;
                 liquids = link.liquids;
-
                 //might not a good idea if do so
                 //block = link.block;
             }else {
                 linkBuild = null;
                 tile.remove();
+            }
+        }
+
+        @Override
+        public void updateTile() {
+            if (linkBuild == null || !linkBuild.isValid()){
+                kill();
             }
         }
 
@@ -206,30 +221,16 @@ public class LinkBlock extends Block {
 
         @Override
         public void onProximityUpdate() {
+            if (linkBuild != null) ((MultiBlockEntity)linkBuild).updateLinkProximity();
             super.onProximityUpdate();
-            if (linkBuild != null){
-                ((MultiBlockEntity)linkBuild).updateLinkProximity();
-            }
         }
 
         @Override
-        public void onProximityAdded() {
-            super.onProximityAdded();
-        }
-
-        @Override
-        public void onProximityRemoved() {
-            super.onProximityRemoved();
-        }
-
-        @Override
-        public void onDestroyed() {}
+        public void onDestroyed(){}
 
         @Override
         public void remove() {
-            if (linkBuild != null){
-                ((MultiBlockEntity)linkBuild).invalidateEntity();
-            }
+            if (linkBuild != null) ((MultiBlockEntity)linkBuild).invalidateEntity();
             super.remove();
         }
     }
