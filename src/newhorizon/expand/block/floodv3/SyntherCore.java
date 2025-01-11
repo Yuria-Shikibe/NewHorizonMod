@@ -10,6 +10,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 
 import static mindustry.Vars.world;
 import static newhorizon.NHVars.rectControl;
+//import static newhorizon.NHVars.rectControl;
 
 public class SyntherCore extends CoreBlock {
     public int maxExpandArea = 4096;

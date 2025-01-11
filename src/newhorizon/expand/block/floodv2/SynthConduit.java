@@ -16,6 +16,7 @@ import mindustry.world.blocks.defense.Wall;
 
 import static mindustry.Vars.world;
 import static newhorizon.NHVars.rectControl;
+//import static newhorizon.NHVars.rectControl;
 
 public class SynthConduit extends Wall {
     public float transportInterval = 20f;

@@ -38,7 +38,7 @@ public class NHGroups{
 		gravityTraps = new QuadTree<>(world.getQuadBounds(new Rect()));
 		gravityTrapsDraw.each(g -> gravityTraps.insert(g));
 
-		NHVars.rectControl.init(world.width(), world.height());
+		//NHVars.rectControl.init(world.width(), world.height());
 	}
 	
 	public static void clear(){
