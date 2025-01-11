@@ -12,6 +12,5 @@ public class CraftingBlock {
         fluxPhaser = new FluxPhaser();
         hyperZetaFactory = new HyperZetaFactory();
         glassQuantifier = new GlassQuantifier();
-
     }
 }

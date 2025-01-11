@@ -25,6 +25,9 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public AdaptCrafter(String name) {
         super(name);
 
+        hasItems = true;
+        hasLiquids = true;
+
         rotate = true;
         rotateDraw = true;
         quickRotate = false;
