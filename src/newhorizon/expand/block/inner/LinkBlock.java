@@ -230,5 +230,10 @@ public class LinkBlock extends Block {
             if (linkBuild != null) ((MultiBlockEntity)linkBuild).invalidateEntity();
             super.remove();
         }
+
+        @Override
+        public boolean canPickup() {
+            return false;
+        }
     }
 }

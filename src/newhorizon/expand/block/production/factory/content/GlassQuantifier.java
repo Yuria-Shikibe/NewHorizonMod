@@ -78,6 +78,7 @@ public class GlassQuantifier extends AdaptCrafter {
             drawFlame(1, 1, 0.8f);
             drawFlame(8, 0, 0.5f);
             drawFlame(0, 8, 0.5f);
+            Draw.z(Layer.block + 0.1f);
             Draw.rect(topRegion, x, y, rotdeg());
         }
 
