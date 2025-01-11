@@ -19,6 +19,7 @@ import newhorizon.content.NHItems;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 import newhorizon.util.func.MathUtil;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class FluxPhaser extends AdaptCrafter {
@@ -52,6 +53,8 @@ public class FluxPhaser extends AdaptCrafter {
             Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
         });
         craftEffect = NHFx.square(Items.phaseFabric.color, 38, 5, 34, 5);
+
+        clipSize = 5 * tilesize;
     }
 
     @Override

@@ -19,6 +19,7 @@ import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class HyperZetaFactory extends AdaptCrafter {
@@ -47,6 +48,8 @@ public class HyperZetaFactory extends AdaptCrafter {
 
         craftEffect = Fx.formsmoke;
         updateEffect = NHFx.trailToGray;
+
+        clipSize = 4 * tilesize;
     }
 
     @Override
