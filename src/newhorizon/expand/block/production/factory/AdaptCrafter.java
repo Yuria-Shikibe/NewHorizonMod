@@ -75,8 +75,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public void created() {
             super.created();
             linkProximityMap = new Seq<>();
-            teamPos = world.tile(tileX() + teamOverlayPos(size, rotation).x, tileY() + teamOverlayPos(size, rotation).y);
-            statusPos = world.tile(tileX() + statusOverlayPos(size, rotation).x, tileY() + statusOverlayPos(size, rotation).y);
         }
 
         @Override
@@ -226,6 +224,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void drawTeam() {
+            teamPos = world.tile(tileX() + teamOverlayPos(size, rotation).x, tileY() + teamOverlayPos(size, rotation).y);
             if (teamPos != null){
                 Draw.color(team.color);
                 Draw.rect("block-border", teamPos.worldx(), teamPos.worldy());
@@ -235,6 +234,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void drawStatus() {
+            statusPos = world.tile(tileX() + statusOverlayPos(size, rotation).x, tileY() + statusOverlayPos(size, rotation).y);
             if (block.enableDrawStatus && block.consumers.length > 0) {
                 float multiplier = block.size > 1 ? 1 : 0.64F;
                 Draw.z(Layer.power + 1);

@@ -16,6 +16,7 @@ import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
+import newhorizon.content.NHContent;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.dialog.WorldEventDialog;
 
@@ -113,6 +114,15 @@ public class NHUI{
 			}).growX().fillY().margin(4f);
 			
 			t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
+
+			/*
+			t.row().table(a -> {
+				a.image(NHContent.ammoInfo).size(64, 64);
+				a.label(() -> "SHOCKWAVE").left().expandX().fillX();
+				a.label(() -> "READY").right().expandX().fillX();
+			}).expandX().fillX();
+
+			 */
 		});
 		table.name = "nh-event-table";
 
