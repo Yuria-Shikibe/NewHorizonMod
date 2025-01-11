@@ -1,12 +1,10 @@
 package newhorizon.expand.block.inner;
 
 import arc.Core;
-import arc.audio.Sound;
 import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -21,7 +19,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;
-import newhorizon.util.annotation.NotNull;
 
 /**
  * Inner building that are linked to a specific building.

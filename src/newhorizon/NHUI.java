@@ -16,7 +16,6 @@ import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
-import newhorizon.expand.block.struct.GraphUpdater;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.dialog.WorldEventDialog;
 

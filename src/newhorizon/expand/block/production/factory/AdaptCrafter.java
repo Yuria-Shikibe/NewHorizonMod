@@ -2,12 +2,9 @@ package newhorizon.expand.block.production.factory;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.math.geom.Intersector;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
-import arc.util.Tmp;
-import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
@@ -18,7 +15,8 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.content;
+import static mindustry.Vars.world;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public Seq<Point2> linkPos = new Seq<>();

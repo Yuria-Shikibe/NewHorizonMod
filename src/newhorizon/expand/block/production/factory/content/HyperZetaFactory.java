@@ -9,7 +9,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;

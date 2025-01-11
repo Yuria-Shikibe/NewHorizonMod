@@ -1,7 +1,6 @@
 package newhorizon.expand.block.production.factory.content;
 
 import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -15,7 +14,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
