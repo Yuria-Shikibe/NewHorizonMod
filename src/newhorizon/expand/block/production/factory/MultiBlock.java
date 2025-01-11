@@ -184,4 +184,33 @@ public interface MultiBlock {
         }
         return out;
     }
+
+    default Point2 getMaxSize(int size, int rotation){
+        int shift = (size + 1) % 2;
+        int left = -size/2 + shift, bot = -size/2 + shift, right = size/2, top = size/2;
+
+        Point2 out = new Point2(size, size);
+
+        for (int i = 0; i < linkBlockPos().size; i++){
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
+            int offset = (s + 1) % 2;
+            int xr = p.x, yr = p.y;
+
+            switch(rotation){
+                case 1: xr = -p.y + shift - offset; yr = p.x; break;
+                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
+                case 3: xr = p.y; yr = -p.x + shift - offset; break;
+            }
+
+            if (xr < left) left = xr;
+            if (xr > right) right = xr;
+            if (yr < bot) bot = yr;
+            if (yr > top) top = yr;
+        }
+
+        out.set(right - left + 1, top - bot + 1);
+
+        return out;
+    }
 }

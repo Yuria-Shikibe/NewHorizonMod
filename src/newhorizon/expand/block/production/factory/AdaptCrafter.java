@@ -2,14 +2,17 @@ package newhorizon.expand.block.production.factory;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.math.geom.Intersector;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.input.Placement;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -27,6 +30,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         rotate = true;
         rotateDraw = true;
         quickRotate = false;
+        allowDiagonal = false;
     }
 
     @Override
@@ -40,8 +44,14 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     }
 
     @Override
-    public void handlePlacementLine(Seq<BuildPlan> plans) {
-        super.handlePlacementLine(plans);
+    public void changePlacementPath(Seq<Point2> points, int rotation){
+        Placement.calculateNodes(points, this, rotation, (point, other) -> {
+            if (rotation % 2 == 0) {
+                return Math.abs(point.x - other.x) <= getMaxSize(size, rotation).x;
+            }else{
+                return Math.abs(point.y - other.y) <= getMaxSize(size, rotation).y;
+            }
+        });
     }
 
     @Override
