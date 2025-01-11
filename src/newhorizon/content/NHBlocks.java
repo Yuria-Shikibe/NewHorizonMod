@@ -4616,7 +4616,6 @@ public class NHBlocks{
 		loadPowers();
 
 		InnerBlock.load();
-		DistributionBlock.load();
 		ProductionBlocks.load();
 		TurretBlock.load();
 		DefenseBlock.load();
@@ -4625,6 +4624,7 @@ public class NHBlocks{
 		CraftingBlock.load();
 		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
 			//FloodContentBlock.load();
+			DistributionBlock.load();
 			TestBlock.load();
 		}
 

@@ -61,11 +61,14 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         //ordered seq, target-source pair
         public Seq<Building[]> linkProximityMap;
         public int dumpIndex = 0;
+        public Tile teamPos, statusPos;
 
         @Override
         public void created() {
             super.created();
             linkProximityMap = new Seq<>();
+            teamPos = world.tile(tileX() + teamOverlayPos(size, rotation).x, tileY() + teamOverlayPos(size, rotation).y);
+            statusPos = world.tile(tileX() + statusOverlayPos(size, rotation).x, tileY() + statusOverlayPos(size, rotation).y);
         }
 
         @Override
@@ -215,11 +218,9 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void drawTeam() {
-            Point2 p = teamOverlayPos(size, rotation);
-            Tile t = world.tile(tileX() + p.x, tileY() + p.y);
-            if (t != null){
+            if (teamPos != null){
                 Draw.color(team.color);
-                Draw.rect("block-border", t.worldx(), t.worldy());
+                Draw.rect("block-border", teamPos.worldx(), teamPos.worldy());
                 Draw.color();
             }
         }
@@ -227,15 +228,12 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         @Override
         public void drawStatus() {
             if (block.enableDrawStatus && block.consumers.length > 0) {
-                Point2 p = statusOverlayPos(size, rotation);
-                Tile t = world.tile(tileX() + p.x, tileY() + p.y);
-
                 float multiplier = block.size > 1 ? 1 : 0.64F;
                 Draw.z(Layer.power + 1);
                 Draw.color(Pal.gray);
-                Fill.square(t.worldx(), t.worldy(), 2.5F * multiplier, 45);
+                Fill.square(statusPos.worldx(), statusPos.worldy(), 2.5F * multiplier, 45);
                 Draw.color(status().color);
-                Fill.square(t.worldx(), t.worldy(), 1.5F * multiplier, 45);
+                Fill.square(statusPos.worldx(), statusPos.worldy(), 1.5F * multiplier, 45);
                 Draw.color();
             }
         }

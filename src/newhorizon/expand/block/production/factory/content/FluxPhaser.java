@@ -82,7 +82,6 @@ public class FluxPhaser extends AdaptCrafter {
             Draw.rect(baseRegion, x, y, rotdeg());
 
             rand.setSeed(id);
-
             if(warmup() > 0.001f) {
                 Draw.color(Pal.accent);
                 Draw.alpha(MathUtil.timeValue(0.8f, 0.9f, 0.8f) * warmup());
@@ -100,11 +99,8 @@ public class FluxPhaser extends AdaptCrafter {
                 drawVerticalLine();
                 drawVerticalLine();
                 drawVerticalLine();
-
             }
             Draw.color();
-
-            Draw.z(Layer.block + 0.1f);
             Draw.rect(rotRegion[rotation], x, y);
         }
 
