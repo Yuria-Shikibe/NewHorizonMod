@@ -53,6 +53,7 @@ import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
+import newhorizon.expand.ability.active.RepulsionWaveAbility;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
@@ -1012,7 +1013,8 @@ public class NHUnitTypes{
 				new UnitEngine(-4.5f, -7.2f, 2.2f, -65)
 			);
 
-			abilities.add(new BoostAbility(false, 1.5f, 90.0f){});
+			abilities.add(
+					new BoostAbility(false, 1.5f, 90.0f){});
 
 			weapons.add(new Weapon(){{
 				reload = 42;
@@ -3640,7 +3642,9 @@ public class NHUnitTypes{
 			abilities.add(new RepairFieldAbility(500f, 160f, 240f){{
 				healEffect = NHFx.healEffectSky;
 				activeEffect = NHFx.activeEffectSky;
-			}});
+			}},
+					new RepulsionWaveAbility()
+			);
 
 			targetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.factory, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
 		}

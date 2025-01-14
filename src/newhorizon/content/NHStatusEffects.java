@@ -16,11 +16,13 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import newhorizon.expand.cutscene.stateoverride.UnitOverride;
+import newhorizon.expand.units.status.BoostStatusEffect;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
 public class NHStatusEffects{
     public static StatusEffect
+            boost,
             quiet, marker, healthLocker, forceWeak,
             reinforcements,
             entangled,
@@ -28,6 +30,11 @@ public class NHStatusEffects{
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
     
     public static void load(){
+        boost = new BoostStatusEffect("boost"){{
+            hideDetails = true;
+            show = false;
+        }};
+
         forceWeak = new NHStatusEffect("force-slow"){{
             hideDetails = true;
             show = false;
@@ -382,15 +389,5 @@ public class NHStatusEffects{
         public void load(){
             super.load();
         }
-        
-//        @Override
-//		public void createIcons(MultiPacker packer){
-//		    TextureRegion region = Core.atlas.find(name);
-//
-//			if(NHPixmap.isDebugging() && region != null && region.found()){
-//				if(textureColor != null)NHPixmap.addProcessed(name + "-full", NHPixmap.fillColor(Core.atlas.getPixmap(region), textureColor).outline(Color.valueOf("404049"), 3));
-//				else NHPixmap.addProcessed(name + "-full", Pixmaps.outline(Core.atlas.getPixmap(region), Color.valueOf("404049"), 3));
-//			}else super.createIcons(packer);
-//		}
 	}
 }

@@ -1,4 +1,4 @@
-package newhorizon.expand.packets;
+package newhorizon.expand.net.packet;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;

@@ -42,7 +42,7 @@ public class NHContent extends Content{
 	public static TextureRegion
 			crossRegion, sourceCenter, timeIcon, xenIcon,
 			iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade, upgrade2,
-			linkArrow;
+			linkArrow, activeBoost;
 	
 	public static TextureRegion //UI
 		raid, objective, fleet, capture;
@@ -89,7 +89,6 @@ public class NHContent extends Content{
 	}
 	
 	public void process(){
-//		NHPixmap.outLineAndAdd("sky-missile" + NHPixmap.PCD_SUFFIX, Core.atlas.find(NewHorizon.name("sky-missile")), NHPixmap.OUTLINE_COLOR, 4);
 		NHPixmap.outLineAndAdd("ann-missile" + NHPixmap.PCD_SUFFIX, Core.atlas.find(NewHorizon.name("ann-missile")), NHPixmap.OUTLINE_COLOR, 4);
 	}
 	
@@ -99,8 +98,7 @@ public class NHContent extends Content{
 		Icon.icons.put("midantha", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("midantha"))));
 		Icon.icons.put("nh", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("icon-2"))));
 		UltFire.load();
-//		process();
-		
+
 		scheDir = NewHorizon.MOD.root.child("schematics-bases");
 
 
@@ -132,6 +130,7 @@ public class NHContent extends Content{
 		capture = Core.atlas.find(NewHorizon.name("capture"));
 		
 		linkArrow = Core.atlas.find(NewHorizon.name("linked-arrow"));
+		activeBoost = Core.atlas.find(NewHorizon.name("active-boost"));
 
 		FloatPlatformDrawer.load();
 		

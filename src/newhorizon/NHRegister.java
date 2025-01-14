@@ -23,7 +23,8 @@ import newhorizon.content.NHContent;
 import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.expand.eventsys.types.WorldEventObjective;
 import newhorizon.expand.game.NHWorldData;
-import newhorizon.expand.packets.LongInfoMessageCallPacket;
+import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
+import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 
 import java.lang.reflect.Field;
@@ -41,6 +42,7 @@ public class NHRegister{
 	
 	static{
 		Net.registerPacket(LongInfoMessageCallPacket::new);
+		Net.registerPacket(ActiveAbilityTriggerPacket::new);
 	}
 	
 	public static void addTaskOnSave(Runnable runnable){

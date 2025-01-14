@@ -35,7 +35,7 @@ import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.eventsys.types.WorldEventType;
-import newhorizon.expand.packets.NHCall;
+import newhorizon.expand.net.NHCall;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
