@@ -10,8 +10,9 @@ public class StatusEffectAbility extends ActiveAbility{
     public StatusEffect statusEffect = StatusEffects.none;
     public float statusDuration = 15f;
 
-    public StatusEffectAbility() {
-
+    public StatusEffectAbility(StatusEffect statusEffect, float statusDuration) {
+        this.statusEffect = statusEffect;
+        this.statusDuration = statusDuration;
     }
 
     @Override

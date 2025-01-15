@@ -54,6 +54,7 @@ import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.ability.active.RepulsionWaveAbility;
+import newhorizon.expand.ability.active.StatusEffectAbility;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
@@ -70,6 +71,7 @@ import newhorizon.expand.units.unitEntity.PesterEntity;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
 import newhorizon.expand.units.unitType.AncientUnitType;
 import newhorizon.expand.units.unitType.NHUnitType;
+import newhorizon.expand.units.unitType.content.Destruction;
 import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
@@ -111,29 +113,31 @@ public class NHUnitTypes{
 			liv;
 	
 	static{
-			EntityMapping.nameMap.put(NewHorizon.name("declining"), EntityMapping.idMap[20]);
-			EntityMapping.nameMap.put(NewHorizon.name("zarkov"), EntityMapping.idMap[20]);
-			EntityMapping.nameMap.put(NewHorizon.name("ghost"), EntityMapping.idMap[20]);
-			EntityMapping.nameMap.put(NewHorizon.name("relay"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("destruction"), EntityMapping.idMap[3]);
 
-			EntityMapping.nameMap.put(NewHorizon.name("saviour"), EntityMapping.idMap[5]);
-			EntityMapping.nameMap.put(NewHorizon.name("liv"), EntityMapping.idMap[5]);
-			EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
+		EntityMapping.nameMap.put(NewHorizon.name("declining"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("zarkov"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("ghost"), EntityMapping.idMap[20]);
+		EntityMapping.nameMap.put(NewHorizon.name("relay"), EntityMapping.idMap[20]);
+
+		EntityMapping.nameMap.put(NewHorizon.name("saviour"), EntityMapping.idMap[5]);
+		EntityMapping.nameMap.put(NewHorizon.name("liv"), EntityMapping.idMap[5]);
+		EntityMapping.nameMap.put(NewHorizon.name("air-raid-missile"), AdaptedTimedKillUnit::new);
 		
-			EntityMapping.nameMap.put(NewHorizon.name("origin"), EntityMapping.idMap[4]);
-			EntityMapping.nameMap.put(NewHorizon.name("thynomo"), EntityMapping.idMap[4]);
-			EntityMapping.nameMap.put(NewHorizon.name("aliotiat"), EntityMapping.idMap[4]);
-			EntityMapping.nameMap.put(NewHorizon.name("tarlidor"), EntityMapping.idMap[4]);
-			EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
-			EntityMapping.nameMap.put(NewHorizon.name("sin"), EntityMapping.idMap[4]);
-			EntityMapping.nameMap.put(NewHorizon.name("pester"), PesterEntity::new);
-			EntityMapping.nameMap.put(NewHorizon.name("laugra"), EntityMapping.idMap[43]);
-			EntityMapping.nameMap.put(NewHorizon.name("nucleoid"), NucleoidEntity::new);
-			EntityMapping.nameMap.put(NewHorizon.name("restriction-enzyme"), EntityMapping.idMap[24]);
-			EntityMapping.nameMap.put(NewHorizon.name("ancient-probe"), ProbeEntity::new);
+		EntityMapping.nameMap.put(NewHorizon.name("origin"), EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put(NewHorizon.name("thynomo"), EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put(NewHorizon.name("aliotiat"), EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put(NewHorizon.name("tarlidor"), EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put(NewHorizon.name("annihilation"), EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put(NewHorizon.name("sin"), EntityMapping.idMap[4]);
+		EntityMapping.nameMap.put(NewHorizon.name("pester"), PesterEntity::new);
+		EntityMapping.nameMap.put(NewHorizon.name("laugra"), EntityMapping.idMap[43]);
+		EntityMapping.nameMap.put(NewHorizon.name("nucleoid"), NucleoidEntity::new);
+		EntityMapping.nameMap.put(NewHorizon.name("restriction-enzyme"), EntityMapping.idMap[24]);
+		EntityMapping.nameMap.put(NewHorizon.name("ancient-probe"), ProbeEntity::new);
 
-			EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
-		}
+		EntityMapping.nameMap.put(NewHorizon.name("guardian"), EnergyUnit::new);
+	}
 	
 	private static void loadPreviousWeapon(){
 		ancientSecTurret = new Weapon(NewHorizon.name("pester-secondary-laser")){{
@@ -1014,7 +1018,7 @@ public class NHUnitTypes{
 			);
 
 			abilities.add(
-					new BoostAbility(false, 1.5f, 90.0f){});
+					new BoostAbility(false, 1.5f, 90.0f));
 
 			weapons.add(new Weapon(){{
 				reload = 42;
@@ -3444,213 +3448,8 @@ public class NHUnitTypes{
 			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
 		};
 		
-		destruction = new NHUnitType("destruction"){{
-			outlineColor = OColor;
+		destruction = new Destruction();
 
-			aiController = SniperAI::new;
-
-			constructor = EntityMapping.map(3);
-			
-			weapons.add(copyAndMove(closeAATurret, 37, -18));
-			weapons.add(copyAndMove(closeAATurret, 26, -8));
-			
-			weapons.addAll(
-				new Weapon(){{
-					alternate = mirror = false;
-					top = rotate = true;
-					x = 0;
-					y = 0f;
-					reload = 300f;
-					
-					shoot = new ShootPattern();
-					
-					ejectEffect = Fx.none;
-					bullet = new AccelBulletType(0.05f, 50){
-						{
-							rangeOverride = 360f;
-							buildingDamageMultiplier = 0.2f;
-							width = height = 0;
-							trailLength = 0;
-							trailWidth = 0;
-							lightning = 3;
-							lightningLength = 2;
-							lightningLengthRand = 18;
-							homingDelay = 15f;
-							homingPower = 10f;
-							homingRange = 320f;
-							splashDamage = lightningDamage = damage / 4;
-							splashDamageRadius = 12f;
-							backColor = lightColor = lightningColor = trailColor = NHColor.lightSkyBack;
-							frontColor = Color.white;
-							trailEffect = NHFx.polyCloud(backColor, 45, 10, 32, 4);
-							trailChance = 0;
-							pierce = pierceBuilding = true;
-							velocityBegin = 1.25f;
-							velocityIncrease = 8;
-							accelerateBegin = 0.05f;
-							accelerateEnd = 0.65f;
-							lifetime = 100f;
-							hitShake = 2;
-							hitSound = Sounds.plasmaboom;
-							hitEffect = NHFx.shootCircleSmall(backColor);
-							despawnEffect = NHFx.lightningHitLarge(backColor);
-							
-							status = NHStatusEffects.scannerDown;
-							statusDuration = 60f;
-						}
-						
-						@Override
-						public void update(Bullet b){
-							if(Mathf.chanceDelta(0.45f))trailEffect.at(b.x, b.y, b.rotation());
-							b.collided.clear();
-							super.update(b);
-						}
-						
-						@Override
-						public void despawned(Bullet b){
-							super.despawned(b);
-							PosLightning.createRandomRange(b, b.team, b, splashDamageRadius * 30, lightColor, Mathf.chanceDelta(lightning / 10f), 0, 0, PosLightning.WIDTH, 2 + Mathf.random(1), lightning, hitPos -> {
-								Damage.damage(b.team, hitPos.getX(), hitPos.getY(), splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
-								NHFx.lightningHitLarge.at(hitPos.getX(), hitPos.getY(), lightningColor);
-								NHFx.crossBlast.at(hitPos.getX(), hitPos.getY(), hitColor);
-								for (int j = 0; j < lightning; j++) {
-									Lightning.create(b, lightningColor, lightningDamage < 0.0F ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2.0F) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
-								}
-								hitSound.at(hitPos, Mathf.random(0.9f, 1.1f));
-							});
-							
-							UltFire.createChance(b.x, b.y, splashDamageRadius * 6, 0.5f, b.team);
-						}
-						
-						@Override
-						public void hitEntity(Bullet b, Hitboxc other, float initialHealth){
-							super.hitEntity(b, other, initialHealth);
-							if(other instanceof Buildingc){
-								b.time += b.lifetime() / 90f;
-							}
-						}
-						
-						@Override
-						public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
-							if(makeFire && build.team != b.team){
-								UltFire.create(build.tile);
-							}
-							
-							if(build.team != b.team && direct){
-								hit(b);
-							}
-						}
-					};
-					shootSound = Sounds.plasmadrop;
-				}},
-				new Weapon(NewHorizon.name("arc-blaster")){{
-					alternate = mirror = top = rotate = true;
-					x = 10f;
-					y = 4f;
-					recoil = 3f;
-					shootCone = 20f;
-					reload = 120f;
-					shoot = new ShootPattern();
-					inaccuracy = 6f;
-					shake = 5f;
-					shootY = 5f;
-					ejectEffect = Fx.none;
-					predictTarget = false;
-					bullet = new ChainBulletType(250){{
-						hitColor = NHColor.lightSkyBack;
-						hitEffect = NHFx.square(hitColor, 20f, 2, 16f, 3f);
-						smokeEffect = Fx.shootBigSmoke;
-						shootEffect = NHFx.shootLineSmall(hitColor);
-					}};
-					//bullet = NHBullets.longLaser;
-					shootSound = Sounds.laser;
-				}},
-				new Weapon(){{
-					x = shootX = shootY = 0;
-					y = -2;
-					xRand = 27f;
-
-					rotate = mirror = alternate = false;
-
-					bullet = new TextureMissileType(200f, NewHorizon.name("ann-missile")){{
-						velocityBegin = 4f;
-						velocityIncrease = 8f;
-						
-						absorbable = false;
-						splashDamage = damage;
-						splashDamageRadius = 20f;
-						incendAmount = 2;
-						incendChance = 0.08f;
-						incendSpread = 24f;
-						makeFire = true;
-						lifetime += 12f;
-						trailColor = NHColor.trail;
-						trailEffect = NHFx.trailToGray;
-						trailParam = 2f;
-						trailChance = 0.2f;
-						trailLength = 15;
-						trailWidth = 1.2f;
-						
-						width = 5;
-						height = 18f;
-						
-						backColor = hitColor = lightColor = lightningColor = NHColor.lightSkyBack;
-						frontColor = NHColor.lightSkyFront;
-						
-						smokeEffect = Fx.none;
-						shootEffect = Fx.none;
-						hitEffect = NHFx.blast(backColor, splashDamageRadius * 0.75f);
-						despawnEffect = NHFx.hitSparkLarge;
-						
-						collidesAir = false;
-						collides = false;
-						scaleLife = true;
-						
-						hitShake = despawnShake = 2f;
-						despawnSound = hitSound = Sounds.explosion;
-					}};
-
-					shoot = new ShootPattern(){{
-						shots = 20;
-						shotDelay = 3.5f;
-					}};
-					reload = 300f;
-					inaccuracy = 2f;
-					velocityRnd = 0.1f;
-
-					shake = 1.25f;
-					shootSound = NHSounds.launch;
-					shootCone = 8f;
-				}}
-			);
-			
-			armor = 15.0F;
-			health = 15000.0F;
-			speed = 0.45F;
-			rotateSpeed = 1.0F;
-			accel = 0.04F;
-			drag = 0.018F;
-			flying = true;
-			engineOffset = 13F;
-			engineSize = 11F;
-			hitSize = 36.0F;
-			drawShields = false;
-			lowAltitude = true;
-			singleTarget = false;
-			buildBeamOffset = 15F;
-			ammoCapacity = 800;
-			abilities.add(new RepairFieldAbility(500f, 160f, 240f){{
-				healEffect = NHFx.healEffectSky;
-				activeEffect = NHFx.activeEffectSky;
-			}},
-					new RepulsionWaveAbility()
-			);
-
-			targetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.factory, BlockFlag.reactor, BlockFlag.generator, BlockFlag.core, null};
-		}
-			@Override public void createIcons(MultiPacker packer){super.createIcons(packer); NHPixmap.createIcons(packer, this);}
-		};
-		
 		longinus = new NHUnitType("longinus"){{
 			outlineColor = OColor;
 			aiController = SniperAI::new;
