@@ -9,8 +9,8 @@ import mindustry.gen.Unit;
 public class AccumulateAccelerate extends Ability {
     public float reloadMultiplier = 1f;
     public float maxMultiplier = 5f;
-    public float increasePerTick = 0.5f / 60f;
-    public float decreasePerTick = 1f / 60f;
+    public float increasePerTick = 0.2f / 60f;
+    public float decreasePerTick = 2f / 60f;
 
     @Override
     public void update(Unit unit) {

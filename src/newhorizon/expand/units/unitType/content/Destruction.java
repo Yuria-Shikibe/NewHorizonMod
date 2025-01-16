@@ -37,8 +37,8 @@ import static arc.graphics.g2d.Lines.stroke;
 
 public class Destruction extends NHUnitType {
     public BulletType coil = new RailBulletType(){{
-        length = 400f;
-        damage = 160f;
+        length = 600f;
+        damage = 300f;
 
         hitColor = Pal.techBlue;
         hitEffect = endEffect = Fx.hitBulletColor;
@@ -74,7 +74,7 @@ public class Destruction extends NHUnitType {
             Vec2 v = (Vec2)e.data;
 
             color(e.color);
-            stroke((e.fout() + 0.5f) * 2f);
+            stroke((e.fout() + 1f) * 2f);
 
             Fx.rand.setSeed(e.id);
             for(int i = 0; i < 7; i++){
@@ -83,7 +83,7 @@ public class Destruction extends NHUnitType {
             }
 
             e.scaled(16f, b -> {
-                stroke(b.fout() * 2.5f);
+                stroke(b.fout() * 2f);
                 color(e.color);
                 Lines.line(e.x, e.y, v.x, v.y);
             });
