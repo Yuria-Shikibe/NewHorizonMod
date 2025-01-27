@@ -82,7 +82,6 @@ public class AdaptConveyor extends AdaptBlock implements Autotiler {
     @Override
     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
         super.drawPlanRegion(plan, list);
-
     }
 
     //frame period in a circle. eg 5 ips -> 12 ticks a circle

@@ -4624,9 +4624,11 @@ public class NHBlocks{
 		CraftingBlock.load();
 		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
 			//FloodContentBlock.load();
-			DistributionBlock.load();
 			TestBlock.load();
 		}
+
+		DistributionBlock.load();
+		//EndFieldBlock.load();
 
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

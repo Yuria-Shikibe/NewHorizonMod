@@ -74,16 +74,16 @@ public class Destruction extends NHUnitType {
             Vec2 v = (Vec2)e.data;
 
             color(e.color);
-            stroke((e.fout() + 1f) * 2f);
+            stroke((e.fout() + 0.5f) * 2f);
 
             Fx.rand.setSeed(e.id);
-            for(int i = 0; i < 7; i++){
+            for(int i = 0; i < 40; i++){
                 Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
                 Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
             }
 
             e.scaled(16f, b -> {
-                stroke(b.fout() * 2f);
+                stroke(b.fout() * 3f);
                 color(e.color);
                 Lines.line(e.x, e.y, v.x, v.y);
             });
@@ -223,7 +223,7 @@ public class Destruction extends NHUnitType {
                     x = 30f;
                     y = -5f;
                     recoil = 3f;
-                    shootCone = 10f;
+                    shootCone = 15f;
                     reload = 25f;
                     inaccuracy = 6f;
                     shake = 5f;

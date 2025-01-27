@@ -130,6 +130,7 @@ public class NHUI{
 		});
 		table.name = "nh-event-table";
 
+		/*
 		Table abilityTable = new Table(buttonEdge2, t -> {
 			Button active = new Button(Styles.cleart);
 			active.table(a -> {
@@ -163,6 +164,8 @@ public class NHUI{
 		});
 
 		Vars.ui.hudGroup.addChild(abilityTable);
+
+		 */
 
 		try{
 			ImageButton skip = HUD_statustable.find("skip");
