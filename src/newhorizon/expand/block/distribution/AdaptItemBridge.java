@@ -42,7 +42,7 @@ public class AdaptItemBridge extends AdaptBlock {
     public int maxLength;
     public TextureRegion[] edgeRegion,arrowRegions;
     public TextureRegion[][] cornerRegion;
-    public AdaptConveyor conveyor;
+    public AdaptedConveyor conveyor;
 
 
     public AdaptItemBridge(String name) {

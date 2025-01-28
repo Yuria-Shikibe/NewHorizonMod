@@ -117,7 +117,7 @@ public class SpriteUtil {
             for(int cx = 0; cx < sw; cx++, x += pWidth){
                 int index = cx + cy * sw;
                 if (indexMap != null){
-                    tiles[indexMap[index]] = new TextureRegion(region.texture, x + pad, y + pad, tileWidth, tileHeight);
+                     tiles[indexMap[index]] = new TextureRegion(region.texture, x + pad, y + pad, tileWidth, tileHeight);
                 }else {
                     tiles[index] = new TextureRegion(region.texture, x + pad, y + pad, tileWidth, tileHeight);
                 }
