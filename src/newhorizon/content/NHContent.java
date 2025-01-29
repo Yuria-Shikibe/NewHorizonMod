@@ -18,6 +18,7 @@ import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
+import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.FloatPlatformDrawer;
@@ -132,6 +133,7 @@ public class NHContent extends Content{
 		linkArrow = Core.atlas.find(NewHorizon.name("linked-arrow"));
 		activeBoost = Core.atlas.find(NewHorizon.name("active-boost"));
 
+		LogisticsBlock.load();
 		FloatPlatformDrawer.load();
 		
 		smoothNoise = loadTex("smooth-noise", t -> {

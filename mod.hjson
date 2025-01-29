@@ -1,8 +1,8 @@
 displayName: "New Horizon"
-author: "Yuria"
+author: "Yuria & LHJ"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "[sky]THE HORIZON HAS EXPANDED."
-version: "0.5.8.a1"
+version: "0.5.8.a2"
 
 minGameVersion: 146
