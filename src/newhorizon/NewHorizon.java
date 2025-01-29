@@ -31,6 +31,7 @@ import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
 import newhorizon.content.blocks.CraftingBlock;
+import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.entities.WorldEvent;
 import newhorizon.expand.eventsys.AutoEventTrigger;
@@ -81,9 +82,10 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(CraftingBlock.fluxPhaser),
-				new FeatureLog(CraftingBlock.glassQuantifier),
-				new FeatureLog(CraftingBlock.hyperZetaFactory)
+				new FeatureLog(DistributionBlock.conveyor),
+				new FeatureLog(DistributionBlock.conveyorJunction),
+				new FeatureLog(DistributionBlock.conveyorRouter),
+				new FeatureLog(DistributionBlock.conveyorGate),
 		};
 	}
 	

@@ -1,4 +1,4 @@
-package newhorizon.expand.block.distribution;
+package newhorizon.expand.block.distribution.transport;
 
 import arc.Core;
 import arc.graphics.Blending;
@@ -120,8 +120,8 @@ public class AdaptConveyor extends Conveyor {
             if (blends(this, left())) {Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg() - 90);backDraw = false;}
             if (backDraw){Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg());}
 
-            Draw.color(team.color);
             Draw.z(Layer.block - 0.15f);
+            Draw.color(team.color, Color.white, 0.3f);
             Draw.rect(edgeRegions[blendbits], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
             Draw.color();
 
