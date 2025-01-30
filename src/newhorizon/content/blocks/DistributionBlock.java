@@ -18,6 +18,7 @@ public class DistributionBlock {
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
 
+            buildCost = 2f;
             speed = 0.115f;
             displayedSpeed = 15f;
             framePeriod = 9.2f;
@@ -27,8 +28,8 @@ public class DistributionBlock {
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
 
-            speed = 20;
-            capacity = 8;
+            speed = 3;
+            capacity = 1;
         }};
 
         conveyorRouter = new AdaptDirectionalRouter("logistics-router", (AdaptConveyor) conveyor){{

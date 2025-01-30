@@ -2,6 +2,7 @@ package newhorizon.expand.block.distribution.transport;
 
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
 import mindustry.world.blocks.distribution.Junction;
 
 public class AdaptJunction extends Junction {
@@ -33,6 +34,16 @@ public class AdaptJunction extends Junction {
         public void onProximityUpdate() {
             super.onProximityUpdate();
             upperIndex = LogisticsBlock.proximityUpperIndex(this);
+        }
+
+        @Override
+        public boolean canSend(Building target) {
+            return true;
+        }
+
+        @Override
+        public boolean canReceive(Building source) {
+            return true;
         }
     }
 }

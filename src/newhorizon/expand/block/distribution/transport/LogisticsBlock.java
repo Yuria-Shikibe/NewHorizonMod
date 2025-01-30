@@ -89,15 +89,19 @@ public class LogisticsBlock {
 
     public static int proximityUpperIndex(Building building){
         int drawIndex = 0;
-        if (check(building.tile.x, building.tile.y + 1)) drawIndex += 1;
-        if (check(building.tile.x + 1, building.tile.y)) drawIndex += 2;
-        if (check(building.tile.x, building.tile.y - 1)) drawIndex += 4;
-        if (check(building.tile.x - 1, building.tile.y)) drawIndex += 8;
+        if (check(building, building.tile.x, building.tile.y + 1)) drawIndex += 1;
+        if (check(building, building.tile.x + 1, building.tile.y)) drawIndex += 2;
+        if (check(building, building.tile.x, building.tile.y - 1)) drawIndex += 4;
+        if (check(building, building.tile.x - 1, building.tile.y)) drawIndex += 8;
         return drawIndex;
     }
 
-    public static boolean check(int x, int y){
+    public static boolean check(Building building, int x, int y){
         Building other = Vars.world.build(x, y);
-        return other instanceof LogisticBuild;
+        if (building instanceof LogisticBuild && other instanceof LogisticBuild){
+            return true;
+            //return ((LogisticBuild)building).canSend(other) || ((LogisticBuild)other).canReceive(building);
+        }
+        return false;
     }
 }

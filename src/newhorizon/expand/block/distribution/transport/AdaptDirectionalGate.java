@@ -128,5 +128,29 @@ public class AdaptDirectionalGate extends OverflowDuct {
             super.read(read, revision);
             invert = read.bool();
         }
+
+        @Override
+        public boolean canSend(Building target) {
+            if (target instanceof LogisticBuild){
+                if (target == front()) return true;
+                if (target == right()) return true;
+                if (target == left()) return true;
+
+                if (target == back()) return false;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean canReceive(Building source) {
+            if (source instanceof LogisticBuild){
+                if (source == front()) return false;
+                if (source == right()) return false;
+                if (source == left()) return false;
+
+                if (source == back()) return true;
+            }
+            return false;
+        }
     }
 }
