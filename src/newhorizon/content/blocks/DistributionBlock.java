@@ -3,15 +3,12 @@ package newhorizon.content.blocks;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.expand.block.distribution.transport.AdaptConveyor;
-import newhorizon.expand.block.distribution.transport.AdaptDirectionalGate;
-import newhorizon.expand.block.distribution.transport.AdaptDirectionalRouter;
-import newhorizon.expand.block.distribution.transport.AdaptJunction;
+import newhorizon.expand.block.distribution.transport.*;
 
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {
-    public static Block conveyor, conveyorJunction, conveyorRouter, conveyorGate;
+    public static Block conveyor, conveyorJunction, conveyorRouter, conveyorMerger, conveyorGate;
 
     public static void load(){
         conveyor = new AdaptConveyor("hard-light-rail"){{
@@ -33,6 +30,13 @@ public class DistributionBlock {
         }};
 
         conveyorRouter = new AdaptDirectionalRouter("logistics-router", (AdaptConveyor) conveyor){{
+            requirements(Category.distribution, with());
+            buildVisibility = BuildVisibility.shown;
+
+            speed = 4f;
+        }};
+
+        conveyorMerger = new AdaptDirectionMerger("logistics-merger", (AdaptConveyor) conveyor){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
 

@@ -26,7 +26,7 @@ public class AdaptDirectionalRouter extends DuctRouter {
         return new TextureRegion[]{region};
     }
 
-    public class AdaptDirectionalBuild extends DuctRouterBuild implements LogisticBuild {
+    public class AdaptDirectionalRouterBuild extends DuctRouterBuild implements LogisticBuild {
         public int upperIndex;
 
         @Override

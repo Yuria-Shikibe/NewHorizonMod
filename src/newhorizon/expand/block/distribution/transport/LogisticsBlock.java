@@ -26,7 +26,7 @@ public class LogisticsBlock {
 
     public static void load(){
         upperRegion = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("logistics-upper")), 32, 32, 1, SpriteUtil.ATLAS_INDEX_4_4);
-        overlayRegion = new TextureRegion[4];
+        overlayRegion = new TextureRegion[5];
         edgeRegion = new TextureRegion[2];
         itemsRegion = Core.atlas.find(NewHorizon.name("logistics-item"));
         for (int i = 0; i < overlayRegion.length; i++){overlayRegion[i] = Core.atlas.find(NewHorizon.name("logistics-overlay-"+i));}
