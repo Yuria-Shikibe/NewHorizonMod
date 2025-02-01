@@ -121,7 +121,7 @@ public class AdaptItemBridge extends BufferedItemBridge {
             Lines.square(ox, oy, 2f, 45f);
             Draw.mixcol(Draw.getColor(), 1f);
             Draw.color();
-            Fill.rect(x, y, 4, Angles.angle(tile.x, tile.y, other.x, other.y));
+            Fill.square(x, y, 2, Angles.angle(tile.x, tile.y, other.x, other.y) + 45);
             Draw.mixcol();
         }
 
