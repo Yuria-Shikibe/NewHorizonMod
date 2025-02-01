@@ -10,6 +10,8 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.math.geom.Point2;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -19,9 +21,11 @@ import mindustry.gen.Groups;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.input.Placement;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.BufferedItemBridge;
 import mindustry.world.blocks.distribution.ItemBridge;
+import newhorizon.util.func.MathUtil;
 
 import static mindustry.Vars.*;
 
@@ -86,6 +90,11 @@ public class AdaptItemBridge extends BufferedItemBridge {
         return ((other.block() == tile.block() && tile.block() == this) || (!(tile.block() instanceof ItemBridge) && other.block() == this))
                 && (other.team() == tile.team() || tile.block() != this)
                 && (!checkDouble || ((ItemBridgeBuild)other.build).link != tile.pos());
+    }
+
+    @Override
+    public void changePlacementPath(Seq<Point2> points, int rotation){
+        Placement.calculateNodes(points, this, rotation, (point, other) -> MathUtil.dst(point, other) <= range);
     }
 
     @Override
