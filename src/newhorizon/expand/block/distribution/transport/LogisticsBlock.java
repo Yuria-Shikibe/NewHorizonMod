@@ -51,7 +51,8 @@ public class LogisticsBlock {
 
         for (int i = 0; i < 4; i++){
             Building b = world.build(building.tileX() + Geometry.d4x(i), building.tileY() + Geometry.d4y(i));
-            if (b instanceof AdaptConveyor.AdaptConveyorBuild){
+            if (b instanceof AdaptConveyor.AdaptConveyorBuild &&
+                    (!((AdaptConveyor.AdaptConveyorBuild)b).armored || (((AdaptConveyor.AdaptConveyorBuild)b).armored && (b.rotation == i || b.rotation == (i + 2) % 4)))){
                 Draw.color(building.team.color, Color.white, 0.65f);
                 Draw.z(Layer.block - 0.2f);
                 if (b.rotation != (i+2)%4){

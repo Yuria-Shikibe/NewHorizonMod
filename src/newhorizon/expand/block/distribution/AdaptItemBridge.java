@@ -315,16 +315,6 @@ public class AdaptItemBridge extends AdaptBlock {
             bridgeItems.addLast(new ItemStacker(item, count));
         }
 
-        public void bridgeDequeueItem(){
-            if (receiver == null) return;
-            bridgeItems.removeFirst();
-        }
-
-        public boolean bridgeCanDequeue(){
-            if (receiver == null) return false;
-            return receiver.acceptItem(this, bridgeItems.first().itemStack.item);
-        }
-
         public boolean bridgeCanInsert(){
             if (bridgeSeg > 0 && bridgeItems.isEmpty()) return true;
             return bridgeItems.last().progress > framePeriod() && bridgeItems.size < bridgeSeg;

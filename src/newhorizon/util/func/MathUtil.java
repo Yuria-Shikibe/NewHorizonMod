@@ -46,6 +46,10 @@ public class MathUtil {
         return Mathf.dst(a.x(), a.y(), b.x(), b.y());
     }
 
+    public static float dst(Point2 a, Point2 b){
+        return Mathf.dst(a.x, a.y, b.x, b.y);
+    }
+
     public static float dst(Vec2 a, Vec2 b){
         return Mathf.dst(a.x, a.y, b.x, b.y);
     }

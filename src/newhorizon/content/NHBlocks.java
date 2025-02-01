@@ -70,6 +70,8 @@ import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.*;
 import newhorizon.expand.block.distribution.*;
+import newhorizon.expand.block.distribution.transport.AdaptConveyor;
+import newhorizon.expand.block.distribution.transport.AdaptItemBridge;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.env.ArmorFloor;
 import newhorizon.expand.block.special.*;
@@ -3968,8 +3970,8 @@ public class NHBlocks{
 			fadeIn = moveArrows = true;
 			hasPower = false;
 			range = 8;
-			speed = 40;
 			arrowSpacing = 8f;
+			speed = 40;
 			bufferCapacity = 20;
 		}};
 		

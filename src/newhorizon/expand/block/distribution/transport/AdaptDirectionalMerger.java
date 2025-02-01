@@ -1,13 +1,19 @@
 package newhorizon.expand.block.distribution.transport;
 
+import arc.util.Eachable;
 import arc.util.Nullable;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.world.Edges;
 
-public class AdaptDirectionMerger extends AdaptDirectionalRouter{
-    public AdaptDirectionMerger(String name, AdaptConveyor conveyorBlock) {
+public class AdaptDirectionalMerger extends AdaptDirectionalRouter{
+    public AdaptDirectionalMerger(String name, AdaptConveyor conveyorBlock) {
         super(name, conveyorBlock);
+    }
+
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        LogisticsBlock.drawPlan(plan, list, 4);
     }
 
     public class AdaptDirectionalMergerBuild extends AdaptDirectionalRouterBuild{

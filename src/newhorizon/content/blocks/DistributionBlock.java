@@ -1,14 +1,18 @@
 package newhorizon.content.blocks;
 
+import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.content.NHBlocks;
+import newhorizon.content.NHItems;
+import newhorizon.expand.block.distribution.FloatItemBridge;
 import newhorizon.expand.block.distribution.transport.*;
 
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {
-    public static Block conveyor, conveyorJunction, conveyorRouter, conveyorMerger, conveyorGate;
+    public static Block conveyor, conveyorJunction, conveyorRouter, conveyorMerger, conveyorGate, conveyorBridge;
 
     public static void load(){
         conveyor = new AdaptConveyor("hard-light-rail"){{
@@ -36,7 +40,7 @@ public class DistributionBlock {
             speed = 4f;
         }};
 
-        conveyorMerger = new AdaptDirectionMerger("logistics-merger", (AdaptConveyor) conveyor){{
+        conveyorMerger = new AdaptDirectionalMerger("logistics-merger", (AdaptConveyor) conveyor){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
 
@@ -50,6 +54,17 @@ public class DistributionBlock {
             speed = 4f;
         }};
 
+        conveyorBridge = new AdaptItemBridge("logistics-bridge", (AdaptConveyor) conveyor){{
+            requirements(Category.distribution, with());
+            buildVisibility = BuildVisibility.shown;
+
+            hasPower = false;
+            range = 10;
+            speed = 50;
+            bufferCapacity = 20;
+        }};
+
         ((AdaptConveyor) conveyor).junctionReplacement = conveyorJunction;
+        ((AdaptConveyor) conveyor).bridgeReplacement = conveyorBridge;
     }
 }
