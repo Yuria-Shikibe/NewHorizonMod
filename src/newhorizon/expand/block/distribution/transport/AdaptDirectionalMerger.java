@@ -24,6 +24,7 @@ public class AdaptDirectionalMerger extends AdaptDirectionalRouter{
 
         @Nullable
         public Building target(){
+            if (front() == null) return null;
             if(front().team == team && front().acceptItem(this, current)){
                 return front();
             }
@@ -33,7 +34,7 @@ public class AdaptDirectionalMerger extends AdaptDirectionalRouter{
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return current == null && items.total() == 0 && (item == sortItem || sortItem == null) &&
+            return current == null && items.total() == 0 && (sortItem == null || item == sortItem) &&
                     (Edges.getFacingEdge(source.tile(), tile).relativeTo(tile) != (rotation + 2) % 4);
         }
 
