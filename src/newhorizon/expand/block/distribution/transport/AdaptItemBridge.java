@@ -14,14 +14,20 @@ import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.input.Placement;
+import mindustry.type.Item;
+import mindustry.world.Edges;
+import mindustry.world.ItemBuffer;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.BufferedItemBridge;
 import mindustry.world.blocks.distribution.ItemBridge;
@@ -29,14 +35,21 @@ import newhorizon.util.func.MathUtil;
 
 import static mindustry.Vars.*;
 
-public class AdaptItemBridge extends BufferedItemBridge {
+public class AdaptItemBridge extends ItemBridge {
     public AdaptConveyor cBlock;
     public TextureRegion topRegion;
+
+    public final int timerAccept = timers++;
+
+    public float speed = 40f;
+    public int bufferCapacity = 50;
 
     public AdaptItemBridge(String name, AdaptConveyor cBlock) {
         super(name);
 
-        range = 10;
+        range = 6;
+        placeableLiquid = true;
+        drawTeamOverlay = false;
         this.cBlock = cBlock;
     }
 
@@ -102,7 +115,40 @@ public class AdaptItemBridge extends BufferedItemBridge {
         return Mathf.dst(x1, y1, x2, y2) <= range;
     }
 
-    public class AdaptItemBridgeBuild extends BufferedItemBridgeBuild {
+    public class AdaptItemBridgeBuild extends ItemBridgeBuild {
+
+        ItemBuffer buffer = new ItemBuffer(bufferCapacity);
+
+        @Override
+        public void updateTransport(Building other){
+            if(buffer.accepts() && items.total() > 0){
+                buffer.accept(items.take());
+            }
+
+            Item item = buffer.poll(speed / timeScale);
+            if(timer(timerAccept, 3.6f / timeScale) && item != null && other.acceptItem(this, item)){
+                moved = true;
+                other.handleItem(this, item);
+                buffer.remove();
+            }
+        }
+
+        @Override
+        public void doDump(){
+            dump();
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            buffer.write(write);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            buffer.read(read);
+        }
 
         private void drawInput(Tile other){
             if(!linkValid(tile, other, false)) return;
@@ -148,19 +194,6 @@ public class AdaptItemBridge extends BufferedItemBridge {
         @Override
         public void drawConfigure(){
             Drawf.select(x, y, tile.block().size * tilesize / 2f + 2f, Pal.accent);
-
-            /*
-            indexer.eachBlock(team, x, y, range * tilesize, b -> linkValid(tile, b.tile), b -> {
-                Tile other = b.tile;
-                if(linkValid(tile, other)){
-                    boolean linked = other.pos() == link;
-
-                    Drawf.select(other.drawx(), other.drawy(),
-                            other.block().size * tilesize / 2f + 2f + (linked ? 0f : Mathf.absin(Time.time, 4f, 1f)), linked ? Pal.place : Pal.breakInvalid);
-                }
-            });
-
-             */
         }
 
         @Override
@@ -191,15 +224,15 @@ public class AdaptItemBridge extends BufferedItemBridge {
             if(!linkValid(tile, other)) return;
             if(Mathf.zero(Renderer.bridgeOpacity)) return;
 
-            Draw.alpha(Renderer.bridgeOpacity * 0.75f);
-
             Lines.stroke(4.5f);
             Draw.blend(Blending.additive);
             Draw.color(team.color, Pal.gray, 0.45f);
+            Draw.alpha(Renderer.bridgeOpacity * 0.75f);
             Lines.line(cBlock.pulseRegions[cBlock.pulseFrame() * 5], x, y, other.worldx(), other.worldy(), false);
             Draw.blend(Blending.normal);
 
             Draw.color(team.color, Color.white, 0.4f);
+            Draw.alpha(Renderer.bridgeOpacity * 0.75f);
             Lines.line(cBlock.edgeRegions[0], x, y, other.worldx(), other.worldy(), false);
 
             float dst = Mathf.dst(x, y, other.worldx(), other.worldy()) - tilesize/4f;
@@ -211,6 +244,7 @@ public class AdaptItemBridge extends BufferedItemBridge {
                 Tmp.v1.trns(ang, (dst/seg) * i + tilesize/8f).add(this);
                 Tmp.v2.trns(ang, dst/seg).add(Tmp.v1);
                 Draw.color(team.color, Color.white, 0.7f);
+                Draw.alpha(Renderer.bridgeOpacity * 0.75f);
                 Lines.stroke(6f);
                 Lines.line(cBlock.arrowRegions[cBlock.conveyorFrame()], Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
                 Lines.line(cBlock.arrowRegions[cBlock.conveyorFrame() + 16], Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);

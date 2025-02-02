@@ -59,8 +59,8 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
 
             hasPower = false;
-            range = 10;
-            speed = 50;
+            range = 6;
+            speed = 40;
             bufferCapacity = 20;
         }};
 
