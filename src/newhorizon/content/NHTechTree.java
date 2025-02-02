@@ -37,9 +37,9 @@ public class NHTechTree{
 			node(NHSectorPresents.abandonedOutpost, ItemStack.with(/*NHItems.juniorProcessor, 1000*/), () -> {
 				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.abandonedOutpost)), () -> {
 					node(NHSectorPresents.hostileResearchStation, ItemStack.with(NHItems.seniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
-						node(NHSectorPresents.ancientShipyard, Seq.with(new Objectives.SectorComplete(NHSectorPresents.hostileResearchStation)), () -> {
-						
-						});
+						//node(NHSectorPresents.ancientShipyard, Seq.with(new Objectives.SectorComplete(NHSectorPresents.hostileResearchStation)), () -> {
+						//
+						//});
 					});
 				});
 			});
@@ -183,7 +183,7 @@ public class NHTechTree{
 							node(NHBlocks.railGun);
 							node(NHBlocks.endOfEra, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
 								node(NHBlocks.airRaider);
-								node(NHBlocks.eternity, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard)), () -> {});
+								node(NHBlocks.eternity/*, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard)), () -> {}*/);
 							});
 						});
 					});
@@ -282,7 +282,7 @@ public class NHTechTree{
 									nodeUnit(NHUnitTypes.restrictionEnzyme, () -> {
 										nodeUnit(NHUnitTypes.macrophage, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
 											nodeUnit(NHUnitTypes.laugra, () -> {
-												nodeUnit(NHUnitTypes.pester, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard)), () -> {
+												nodeUnit(NHUnitTypes.pester/*, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard))*/, () -> {
 												
 												});
 											});

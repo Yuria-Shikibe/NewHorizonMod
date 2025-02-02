@@ -65,6 +65,7 @@ public class NHSectorPresents{
 	public static SectorPreset initialPlane, abandonedOutpost, hostileResearchStation, ancientShipyard;
 	
 	public static void load(){
+		/*
 		ancientShipyard = new NHSectorPresent("ancient-shipyard", NHPlanets.midantha, 31){{
 			difficulty = 9;
 			
@@ -470,6 +471,7 @@ public class NHSectorPresents{
 				}else cutscene.reloadParam0 = Mathf.lerpDelta(cutscene.reloadParam0, 0, 0.0035f);
 			});
 		}};
+		*/
 		
 		hostileResearchStation = new NHSectorPresent("hostile-research-station", NHPlanets.midantha, 65){{
 			captureWave = 40;
