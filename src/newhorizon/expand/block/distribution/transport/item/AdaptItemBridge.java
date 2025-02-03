@@ -26,6 +26,8 @@ import mindustry.type.Item;
 import mindustry.world.ItemBuffer;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.ItemBridge;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.util.func.MathUtil;
 
 import static mindustry.Vars.*;
@@ -110,6 +112,13 @@ public class AdaptItemBridge extends ItemBridge {
         return Mathf.dst(x1, y1, x2, y2) <= range;
     }
 
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.add(Stat.range, range, StatUnit.blocks);
+        stats.add(Stat.speed, 15, StatUnit.itemsSecond);
+    }
+
     public class AdaptItemBridgeBuild extends ItemBridgeBuild {
 
         ItemBuffer buffer = new ItemBuffer(bufferCapacity);
@@ -177,6 +186,7 @@ public class AdaptItemBridge extends ItemBridge {
 
         @Override
         public void drawSelect(){
+
             if(linkValid(tile, world.tile(link))){
                 drawInput(world.tile(link));
             }
@@ -188,6 +198,7 @@ public class AdaptItemBridge extends ItemBridge {
 
         @Override
         public void drawConfigure(){
+            Drawf.dashCircle(x, y, range * tilesize, Pal.placing);
             Drawf.select(x, y, tile.block().size * tilesize / 2f + 2f, Pal.accent);
         }
 

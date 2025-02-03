@@ -21,6 +21,8 @@ import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.expand.block.distribution.transport.item.AdaptDirectionalUnloader;
 
 import static mindustry.Vars.content;
@@ -45,6 +47,9 @@ public class AdaptLiquidDirectionalUnloader extends Block {
         envDisabled = Env.none;
         clearOnDoubleTap = true;
         priority = TargetPriority.transport;
+        hasLiquids = true;
+        liquidCapacity = 50;
+        outputsLiquid = true;
 
         config(Liquid.class, (AdaptLiquidDirectionalUnloaderBuild tile, Liquid Liquid) -> tile.unloadLiquid = Liquid);
         configClear((AdaptLiquidDirectionalUnloaderBuild tile) -> tile.unloadLiquid = null);
@@ -53,7 +58,7 @@ public class AdaptLiquidDirectionalUnloader extends Block {
     @Override
     public void setStats() {
         super.setStats();
-        //stats.add(Stat.speed, 60f / speed, StatUnit.itemsSecond);
+        stats.add(Stat.speed, 60f * speed, StatUnit.liquidSecond);
     }
 
     @Override
@@ -108,13 +113,17 @@ public class AdaptLiquidDirectionalUnloader extends Block {
                             float amount = Math.min(speed * Time.delta, back.liquids.get(unloadLiquid));
                             float a = Math.min(amount, front.block.liquidCapacity - front.liquids.get(unloadLiquid));
                             float balance = Math.min(a, (bl / bc - fl / fc) * bc);
-                            front.handleLiquid(this, unloadLiquid, balance);
+                            this.handleLiquid(this, unloadLiquid, balance);
                             back.liquids.remove(unloadLiquid, balance);
                         }
                     }
                 }
 
                 unloadTimer %= speed;
+            }
+
+            if(liquids.currentAmount() > 0.01f){
+                dumpLiquid(liquids.current(), 2f, rotation);
             }
         }
 
