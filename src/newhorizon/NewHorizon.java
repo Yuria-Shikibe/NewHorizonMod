@@ -87,6 +87,9 @@ public class NewHorizon extends Mod{
 				new FeatureLog(DistributionBlock.conveyorRouter),
 				new FeatureLog(DistributionBlock.conveyorGate),
 				new FeatureLog(DistributionBlock.conveyorBridge),
+				new FeatureLog(DistributionBlock.conveyorUnloader),
+				new FeatureLog(DistributionBlock.liquidBridge),
+				new FeatureLog(DistributionBlock.liquidUnloader),
 		};
 	}
 	

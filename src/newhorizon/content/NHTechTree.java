@@ -52,11 +52,17 @@ public class NHTechTree{
 					node(ProductionBlocks.refineModule);
 				});
 				node(DistributionBlock.conveyor, () -> {
-					node(DistributionBlock.conveyorGate);
-					node(DistributionBlock.conveyorBridge);
 					node(DistributionBlock.conveyorJunction);
-					node(DistributionBlock.conveyorMerger);
-					node(DistributionBlock.conveyorRouter);
+					node(DistributionBlock.conveyorRouter, () -> {
+						node(DistributionBlock.conveyorMerger);
+						node(DistributionBlock.conveyorGate);
+					});
+					node(DistributionBlock.conveyorBridge, () -> {
+						node(DistributionBlock.liquidBridge);
+					});
+					node(DistributionBlock.conveyorUnloader, () -> {
+						node(DistributionBlock.liquidUnloader);
+					});
 				});
 			});
 
