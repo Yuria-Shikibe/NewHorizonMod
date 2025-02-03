@@ -121,7 +121,7 @@ public class AdaptLiquidDirectionalUnloader extends Block {
             }
 
             if(liquids.currentAmount() > 0.01f){
-                dumpLiquid(liquids.current(), 2f, rotation);
+                dumpLiquid(liquids.current(), 2f, 0);
             }
         }
 
