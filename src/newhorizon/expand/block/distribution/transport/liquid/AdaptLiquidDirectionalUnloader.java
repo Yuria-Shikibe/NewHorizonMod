@@ -108,10 +108,10 @@ public class AdaptLiquidDirectionalUnloader extends Block {
                 //CV from EU
                 if (front != null && back != null && front.block != null && back.block != null && back.liquids != null && front.team == team && back.team == team && unloadLiquid != null) {
                     if (front.acceptLiquid(this, unloadLiquid)) {
-                        float fl = front.liquids.get(unloadLiquid), bl = back.liquids.get(unloadLiquid), fc = front.block.liquidCapacity, bc = back.block.liquidCapacity;
+                        float fl = this.liquids.get(unloadLiquid), bl = back.liquids.get(unloadLiquid), fc = this.block.liquidCapacity, bc = back.block.liquidCapacity;
                         if (bl > 0 && bl / bc > fl / fc) {
                             float amount = Math.min(speed * Time.delta, back.liquids.get(unloadLiquid));
-                            float a = Math.min(amount, front.block.liquidCapacity - front.liquids.get(unloadLiquid));
+                            float a = Math.min(amount, this.block.liquidCapacity - this.liquids.get(unloadLiquid));
                             float balance = Math.min(a, (bl / bc - fl / fc) * bc);
                             this.handleLiquid(this, unloadLiquid, balance);
                             back.liquids.remove(unloadLiquid, balance);

@@ -75,18 +75,24 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             speed = 60f/16.5f;
+            hasPower = true;
+            conductivePower = true;
         }};
 
         liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge", (AdaptConveyor) conveyor){{
             requirements(Category.liquid, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
+            hasPower = false;
         }};
 
         liquidUnloader = new AdaptLiquidDirectionalUnloader("logistics-liquid-unloader"){{
             requirements(Category.liquid, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
+
+            hasPower = true;
+            conductivePower = true;
         }};
 
         ((AdaptConveyor) conveyor).junctionReplacement = conveyorJunction;
