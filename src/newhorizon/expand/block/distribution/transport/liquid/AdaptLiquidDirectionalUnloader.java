@@ -23,7 +23,6 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.expand.block.distribution.transport.item.AdaptDirectionalUnloader;
 
 import static mindustry.Vars.content;
 
@@ -102,20 +101,19 @@ public class AdaptLiquidDirectionalUnloader extends Block {
 
         @Override
         public void updateTile() {
-            if ((unloadTimer += edelta()) >= Time.delta) {
-                Building front = front(), back = back();
+            if (liquids.current() != unloadLiquid) liquids.clear();
 
-                //CV from EU
-                if (front != null && back != null && front.block != null && back.block != null && back.liquids != null && front.team == team && back.team == team && unloadLiquid != null) {
-                    if (front.acceptLiquid(this, unloadLiquid)) {
-                        float fl = this.liquids.get(unloadLiquid), bl = back.liquids.get(unloadLiquid), fc = this.block.liquidCapacity, bc = back.block.liquidCapacity;
-                        if (bl > 0 && bl / bc > fl / fc) {
-                            float amount = Math.min(speed * Time.delta, back.liquids.get(unloadLiquid));
-                            float a = Math.min(amount, this.block.liquidCapacity - this.liquids.get(unloadLiquid));
-                            float balance = Math.min(a, (bl / bc - fl / fc) * bc);
-                            this.handleLiquid(this, unloadLiquid, balance);
-                            back.liquids.remove(unloadLiquid, balance);
-                        }
+            if ((unloadTimer += edelta()) >= Time.delta) {
+                Building back = back();
+
+                if (back != null && back.block != null && back.liquids != null && back.team == team && unloadLiquid != null) {
+                    float fl = liquids.get(unloadLiquid), bl = back.liquids.get(unloadLiquid), fc = this.block.liquidCapacity, bc = back.block.liquidCapacity;
+                    if (bl > 0 && bl / bc > fl / fc) {
+                        float amount = Math.min(speed * Time.delta, back.liquids.get(unloadLiquid));
+                        float a = Math.min(amount, this.block.liquidCapacity - this.liquids.get(unloadLiquid));
+                        float balance = Math.min(a, (bl / bc - fl / fc) * bc);
+                        this.handleLiquid(this, unloadLiquid, balance);
+                        back.liquids.remove(unloadLiquid, balance);
                     }
                 }
 
