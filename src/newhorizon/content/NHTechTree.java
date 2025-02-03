@@ -6,10 +6,7 @@ import mindustry.content.Items;
 import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
-import newhorizon.content.blocks.DefenseBlock;
-import newhorizon.content.blocks.ProductionBlocks;
-import newhorizon.content.blocks.SpecialBlock;
-import newhorizon.content.blocks.TurretBlock;
+import newhorizon.content.blocks.*;
 import newhorizon.expand.units.unitType.NHUnitType;
 
 import static mindustry.content.TechTree.*;
@@ -53,6 +50,13 @@ public class NHTechTree{
 						node(ProductionBlocks.speedModule);
 					});
 					node(ProductionBlocks.refineModule);
+				});
+				node(DistributionBlock.conveyor, () -> {
+					node(DistributionBlock.conveyorGate);
+					node(DistributionBlock.conveyorBridge);
+					node(DistributionBlock.conveyorJunction);
+					node(DistributionBlock.conveyorMerger);
+					node(DistributionBlock.conveyorRouter);
 				});
 			});
 
@@ -195,8 +199,13 @@ public class NHTechTree{
 			});
 			
 			node(NHBlocks.presstaniumFactory, () -> {
+				node(CraftingBlock.glassQuantifier);
 				node(NHBlocks.zetaFactorySmall, () -> {
-					node(NHBlocks.zetaFactoryLarge);
+					node(NHBlocks.zetaFactoryLarge, () -> {
+						node(CraftingBlock.hyperZetaFactory, () -> {
+							node(CraftingBlock.fluxPhaser, () -> {});
+						});
+					});
 					node(NHBlocks.zetaFluidFactory);
 					node(NHBlocks.xenMelter, () -> {
 						node(NHBlocks.xenBetaFactory, () -> {
