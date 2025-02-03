@@ -1,10 +1,12 @@
-package newhorizon.expand.block.distribution.transport;
+package newhorizon.expand.block.distribution.transport.item;
 
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.world.blocks.distribution.DuctRouter;
+import newhorizon.expand.block.distribution.transport.LogisticBuild;
+import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 
 public class AdaptDirectionalRouter extends DuctRouter {
     public AdaptConveyor cBlock;

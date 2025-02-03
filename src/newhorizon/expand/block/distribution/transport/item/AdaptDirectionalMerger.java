@@ -1,4 +1,4 @@
-package newhorizon.expand.block.distribution.transport;
+package newhorizon.expand.block.distribution.transport.item;
 
 import arc.util.Eachable;
 import arc.util.Nullable;
@@ -6,6 +6,7 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.world.Edges;
+import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 
 public class AdaptDirectionalMerger extends AdaptDirectionalRouter{
     public AdaptDirectionalMerger(String name, AdaptConveyor conveyorBlock) {

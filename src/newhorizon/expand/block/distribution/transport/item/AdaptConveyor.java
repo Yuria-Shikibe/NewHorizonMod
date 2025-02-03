@@ -1,4 +1,4 @@
-package newhorizon.expand.block.distribution.transport;
+package newhorizon.expand.block.distribution.transport.item;
 
 import arc.Core;
 import arc.Graphics;

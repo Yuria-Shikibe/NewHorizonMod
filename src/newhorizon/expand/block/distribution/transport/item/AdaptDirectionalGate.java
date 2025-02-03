@@ -1,4 +1,4 @@
-package newhorizon.expand.block.distribution.transport;
+package newhorizon.expand.block.distribution.transport.item;
 
 import arc.Graphics;
 import arc.graphics.g2d.TextureRegion;
@@ -12,6 +12,8 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.world.blocks.distribution.OverflowDuct;
+import newhorizon.expand.block.distribution.transport.LogisticBuild;
+import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 
 import static mindustry.Vars.*;
 

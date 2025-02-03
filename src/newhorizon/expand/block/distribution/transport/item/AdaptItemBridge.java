@@ -1,4 +1,4 @@
-package newhorizon.expand.block.distribution.transport;
+package newhorizon.expand.block.distribution.transport.item;
 
 import arc.Core;
 import arc.graphics.Blending;
@@ -9,27 +9,22 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.gen.Groups;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.input.Placement;
 import mindustry.type.Item;
-import mindustry.world.Edges;
 import mindustry.world.ItemBuffer;
 import mindustry.world.Tile;
-import mindustry.world.blocks.distribution.BufferedItemBridge;
 import mindustry.world.blocks.distribution.ItemBridge;
 import newhorizon.util.func.MathUtil;
 

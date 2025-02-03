@@ -15,6 +15,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import newhorizon.NewHorizon;
+import newhorizon.expand.block.distribution.transport.item.AdaptConveyor;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.world;

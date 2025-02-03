@@ -1,9 +1,11 @@
-package newhorizon.expand.block.distribution.transport;
+package newhorizon.expand.block.distribution.transport.item;
 
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.world.blocks.distribution.Junction;
+import newhorizon.expand.block.distribution.transport.LogisticBuild;
+import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 
 public class AdaptJunction extends Junction {
     public AdaptConveyor cBlock;
@@ -22,7 +24,7 @@ public class AdaptJunction extends Junction {
         LogisticsBlock.drawPlan(plan, list, 3);
     }
 
-    public class AdaptJunctionBuild extends JunctionBuild implements LogisticBuild{
+    public class AdaptJunctionBuild extends JunctionBuild implements LogisticBuild {
         public int upperIndex;
 
         @Override
