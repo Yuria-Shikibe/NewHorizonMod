@@ -29,11 +29,8 @@ import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.type.UnitType;
-import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.entities.EntityRegister;
-import newhorizon.expand.entities.WorldEvent;
-import newhorizon.expand.eventsys.EventHandler;
 import newhorizon.util.func.BuildingConcentration;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHMath;
@@ -125,22 +122,7 @@ public class ProbeEntity extends UnitEntity{
 	}
 	
 	public void updateJudging(){
-		if(timer.get(80f)){
-			if(scannedSize >= leastScan){
-				EventHandler.get().post(() -> {
-					Seq<BuildingConcentration.Complex> complexes = BuildingConcentration.getComplexes(scannedSize >= leastScan * 2 ? minComplexSize / 2 : minComplexSize, scanned.toSeq());
-					if(complexes.any()){
-						EventHandler.get().getSort().sort(complexes);
-						BuildingConcentration.Complex complex = complexes.first();
-						
-						Core.app.post(() -> {
-							spawnEvent(complex.priorityCoord.x, complex.priorityCoord.y);
-							apply(NHStatusEffects.reinforcements, 120f);
-						});
-					}
-				});
-			}
-		}
+
 	}
 	
 	public boolean scanOver(){
@@ -148,11 +130,11 @@ public class ProbeEntity extends UnitEntity{
 	}
 	
 	public void spawnEvent(float x, float y){
-		if(!Vars.net.client()){
-			WorldEvent event = NHInbuiltEvents.dynamicRaid(NHInbuiltEvents.dynamicGrowth(targetTeam)).create();
-			event.team = team;
-			event.set(x, y);
-		}
+		//if(!Vars.net.client()){
+		//	WorldEvent event = NHInbuiltEvents.dynamicRaid(NHInbuiltEvents.dynamicGrowth(targetTeam)).create();
+		//	event.team = team;
+		//	event.set(x, y);
+		//}
 	}
 	
 	public void updateScan(){

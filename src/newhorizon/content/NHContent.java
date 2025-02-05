@@ -30,7 +30,6 @@ import static mindustry.Vars.renderer;
 public class NHContent extends Content{
 	public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
 	public static final float XEN_LAYER = Layer.block - 0.003f;
-	public static final float ARMOR_LAYER = Layer.block - 0.012f;
 
 	public static Fi scheDir;
 	

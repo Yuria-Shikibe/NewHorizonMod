@@ -3,7 +3,6 @@ package newhorizon.expand.game;
 import mindustry.Vars;
 import mindustry.io.SaveFileReader;
 import mindustry.io.SaveVersion;
-import newhorizon.expand.cutscene.NHCSS_Core;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -35,9 +34,7 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 		stream.writeBoolean(jumpGateUsesCoreItems);
 		stream.writeBoolean(applyEventTriggers);
 		
-		if(NHCSS_Core.core.currentScene != null){
-			NHCSS_Core.core.currentScene.write(stream);
-		}
+
 	}
 	
 	@Override
@@ -45,17 +42,13 @@ public class NHWorldData implements SaveFileReader.CustomChunk{
 		version = stream.readShort();
 		
 		eventReloadSpeed = stream.readFloat();
-		
+
 		if(version > 0){
 			jumpGateUsesCoreItems = stream.readBoolean();
 			applyEventTriggers = stream.readBoolean();
 		}
 		
 		version = CURRENT_VER;
-		
-		if(NHCSS_Core.core.currentScene != null){
-			NHCSS_Core.core.currentScene.read(stream);
-		}
 		
 		afterRead();
 	}

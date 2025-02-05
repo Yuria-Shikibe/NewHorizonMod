@@ -2,48 +2,31 @@ package newhorizon;
 
 import arc.Core;
 import arc.Events;
-import arc.func.Cons;
 import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.math.geom.Point2;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
-import mindustry.core.World;
-import mindustry.ctype.ContentType;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
-import mindustry.game.Team;
-import mindustry.gen.Groups;
 import mindustry.gen.Icon;
-import mindustry.gen.Player;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
 import mindustry.net.ServerGroup;
-import mindustry.type.Item;
-import mindustry.type.StatusEffect;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
-import mindustry.world.modules.ItemModule;
 import newhorizon.content.*;
-import newhorizon.content.blocks.CraftingBlock;
 import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.expand.entities.EntityRegister;
-import newhorizon.expand.entities.WorldEvent;
-import newhorizon.expand.eventsys.AutoEventTrigger;
-import newhorizon.expand.eventsys.types.WorldEventType;
-import newhorizon.expand.net.NHCall;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
-import static mindustry.Vars.tilesize;
 import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -206,6 +189,7 @@ public class NewHorizon extends Mod{
 
 	@Override
 	public void registerClientCommands(CommandHandler handler) {
+		/*
 		handler.<Player>register("applystatus", "Apply a status to player's unit", (args, player) -> {
 			if (!player.admin()) {
 				player.sendMessage("[VIOLET]Admin Only");
@@ -391,7 +375,11 @@ public class NewHorizon extends Mod{
 				}
 			}
 		});
+
+	*/
 	}
+
+
 	
 	@Override
     public void loadContent(){
@@ -429,7 +417,7 @@ public class NewHorizon extends Mod{
 			NHPlanets.load();
 			NHSectorPresents.load();
 			NHTechTree.load();
-			NHInbuiltEvents.load();
+			//NHInbuiltEvents.load();
 		}
 		
 		NHSetting.load();

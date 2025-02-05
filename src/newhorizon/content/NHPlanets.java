@@ -619,7 +619,7 @@ public class NHPlanets{
 			state.rules.weather.clear();
 			state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
 			state.rules.spawns = NHOverride.generate(difficulty, new Rand(sector.id), false, false, false);
-			state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
+			//state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
 			if(rawTemp(sector.tile.v) < 0.65f){
 				state.rules.bannedBlocks.addAll(Vars.content.blocks().copy().retainAll(b -> b instanceof LaunchPad));
 			}

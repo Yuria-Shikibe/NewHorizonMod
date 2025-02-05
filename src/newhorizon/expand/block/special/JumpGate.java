@@ -187,7 +187,7 @@ public class JumpGate extends Block {
     
     @Override
     public void placeBegan(Tile tile, Block previous){
-        //finish placement immediately when a block is replaced.
+        //end placement immediately when a block is replaced.
         if(previous instanceof JumpGate){
             tile.setBlock(this, tile.team());
             Fx.placeBlock.at(tile, tile.block().size);

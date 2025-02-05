@@ -13,7 +13,6 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
 import newhorizon.expand.block.defence.GravityWell;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
-import newhorizon.expand.cutscene.NHCSS_Core;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.graphic.StatusRenderer;
 
@@ -42,7 +41,7 @@ public class NHRenderer implements Disposable{
 		Core.camera.bounds(viewport);
 		width = graphics.getWidth();
 		height = graphics.getHeight();
-		NHCSS_Core.core.draw();
+		//NHCSS_Core.core.draw();
 		
 		drawGravityTrapField();
 		

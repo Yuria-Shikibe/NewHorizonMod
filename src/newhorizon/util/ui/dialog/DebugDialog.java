@@ -17,7 +17,6 @@ import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
-import arc.util.Log;
 import arc.util.Scaling;
 import arc.util.Time;
 import mindustry.content.TechTree;
@@ -35,13 +34,9 @@ import mindustry.type.StatusEffect;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import newhorizon.NHGroups;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHInbuiltEvents;
 import newhorizon.content.NHSounds;
-import newhorizon.expand.cutscene.NHCSS_Core;
-import newhorizon.expand.cutscene.actions.CSSActions;
 import newhorizon.util.Tool_Internal;
 import newhorizon.util.func.NHInterp;
 import newhorizon.util.func.NHPixmap;
@@ -443,47 +438,6 @@ public class DebugDialog extends BaseDialog{
 			t.row();
 			
 			t.button("see Tex", () -> Tool_Internal.showTexture(NHContent.smoothNoise));
-			
-			t.button("move", () -> {
-				CSSActions.beginCreateAction();
-				
-				float x = Mathf.random(0, world.unitWidth()), y = Mathf.random(0, world.unitHeight());
-				
-				NHCSS_Core.core.applySubBus(CSSActions.caution(x, y, 12, 300, Pal.accent));
-				CSSActions.endCreateAction();
-			});
-			
-			t.button("clear", () -> {
-//				new CustomUIGen().show();
-				Log.info(NHGroups.autoEventTrigger.size());
-				
-				NHGroups.autoEventTrigger.clear();
-				
-				Log.info(state.rules.tags.remove("setup-triggers"));
-				Log.info(state.rules.tags.remove(NHInbuiltEvents.APPLY_KEY));
-				Log.info(NHGroups.autoEventTrigger.size());
-			});
-			
-			t.button("clear", () -> {
-				Log.info("TRIGGERS: " + NHGroups.autoEventTrigger.size());
-				Log.info("EVENTS: " + NHGroups.events.size());
-				Time.run(120f, () -> {
-					NHGroups.events.clear();
-					NHGroups.autoEventTrigger.clear();
-					Log.info("A TRIGGERS: " + NHGroups.autoEventTrigger.size());
-					Log.info("A EVENTS: " + NHGroups.events.size());
-				});
-			});
-			
-			/*t.button("genT", () -> {
-				new BaseDialog(""){{
-					addCloseButton();
-					
-					cont.table(t -> {
-						t.image(Draw.wrap(NHModCore.core.renderer.matterStorm));
-					}).grow();
-				}}.show();
-			});*/
 		}).grow();
 		
 		addCloseButton();

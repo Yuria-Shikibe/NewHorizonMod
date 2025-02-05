@@ -387,7 +387,7 @@ public class HyperSpaceWarper extends Block{
 			
 			Draw.color(team.color);
 			
-			//draw command overlay UI
+			//draw command curtain UI
 			for(Unit unit : selectedUnits){
 				Drawf.square(unit.x, unit.y, unit.hitSize / 1.4f + 1f, DrawFunc.rotator_90() + 45);
 			}

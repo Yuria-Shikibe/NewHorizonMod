@@ -15,7 +15,6 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import newhorizon.expand.cutscene.stateoverride.UnitOverride;
 import newhorizon.expand.units.status.BoostStatusEffect;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.EffectWrapper;
@@ -57,18 +56,6 @@ public class NHStatusEffects{
                 if(unit.healthf() < 0.25f){
                     unit.health = unit.maxHealth() / 4f;
                 }
-            }
-        };
-        
-        marker = new NHStatusEffect("marker"){{
-            hideDetails = true;
-            show = false;
-            permanent = true;
-        }
-    
-            @Override
-            public void update(Unit unit, float time){
-                UnitOverride.marked.put(Double.doubleToLongBits(unit.flag), unit);
             }
         };
         

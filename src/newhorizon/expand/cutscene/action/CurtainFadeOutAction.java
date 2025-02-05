@@ -1,0 +1,16 @@
+package newhorizon.expand.cutscene.action;
+
+import newhorizon.expand.cutscene.components.Action;
+
+import static newhorizon.NHVars.cutsceneUI;
+
+public class CurtainFadeOutAction extends Action {
+    public CurtainFadeOutAction() {
+        super(0);
+    }
+
+    @Override
+    public void begin() {
+        cutsceneUI.targetOverlayAlpha = 0f;
+    }
+}

@@ -32,24 +32,18 @@ public class NHTechTree{
 		
 		TechNode root = nodeRoot("new-horizon", NHPlanets.midantha, () -> {
 			node(NHSectorPresents.abandonedOutpost, ItemStack.with(/*NHItems.juniorProcessor, 1000*/), () -> {
-				node(NHSectorPresents.initialPlane, ItemStack.with(NHItems.juniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.abandonedOutpost)), () -> {
-					node(NHSectorPresents.hostileResearchStation, ItemStack.with(NHItems.seniorProcessor, 1500), Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
-						//node(NHSectorPresents.ancientShipyard, Seq.with(new Objectives.SectorComplete(NHSectorPresents.hostileResearchStation)), () -> {
-						//
-						//});
-					});
-				});
+
 			});
 
 			node(SpecialBlock.nexusCore, () -> {
-				node(ProductionBlocks.resonanceMiningFacility, () -> {
-					node(ProductionBlocks.beamMiningFacility, () -> {
-						node(ProductionBlocks.implosionMiningFacility, () -> {
-							node(ProductionBlocks.deliveryModule);
+				node(ProductionBlock.resonanceMiningFacility, () -> {
+					node(ProductionBlock.beamMiningFacility, () -> {
+						node(ProductionBlock.implosionMiningFacility, () -> {
+							node(ProductionBlock.deliveryModule);
 						});
-						node(ProductionBlocks.speedModule);
+						node(ProductionBlock.speedModule);
 					});
-					node(ProductionBlocks.refineModule);
+					node(ProductionBlock.refineModule);
 				});
 				node(DistributionBlock.conveyor, () -> {
 					node(DistributionBlock.conveyorJunction);
@@ -173,7 +167,7 @@ public class NHTechTree{
 				
 				node(NHBlocks.synchro, () -> {
 					node(NHBlocks.argmot, () -> {
-						node(NHBlocks.prism, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+						node(NHBlocks.prism, () -> {
 							node(NHBlocks.concentration);
 						});
 						node(NHBlocks.gravity, () -> {
@@ -185,13 +179,13 @@ public class NHTechTree{
 					});
 					
 					node(NHBlocks.multipleLauncher, () -> {
-						node(NHBlocks.hive, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+						node(NHBlocks.hive, () -> {
 							node(NHBlocks.multipleArtillery);
 						});
 						node(NHBlocks.bombLauncher);
 						node(NHBlocks.bloodStar, () -> {
 							node(NHBlocks.railGun);
-							node(NHBlocks.endOfEra, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+							node(NHBlocks.endOfEra, () -> {
 								node(NHBlocks.airRaider);
 								node(NHBlocks.eternity/*, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard)), () -> {}*/);
 							});
@@ -222,7 +216,7 @@ public class NHTechTree{
 						node(NHBlocks.thermoCoreFactory, () -> {
 							node(NHBlocks.thermoCoreNegativeFactory);
 							node(NHBlocks.thermoCorePositiveFactory);
-							node(NHBlocks.darkEnergyFactory, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+							node(NHBlocks.darkEnergyFactory, () -> {
 							
 							});
 						});
@@ -236,7 +230,7 @@ public class NHTechTree{
 						});
 					});
 					node(NHBlocks.seniorProcessorFactory, () -> {
-						node(NHBlocks.processorCompactor, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+						node(NHBlocks.processorCompactor, () -> {
 						
 						});
 					});
@@ -295,7 +289,7 @@ public class NHTechTree{
 									});
 									
 									nodeUnit(NHUnitTypes.restrictionEnzyme, () -> {
-										nodeUnit(NHUnitTypes.macrophage, Seq.with(new Objectives.SectorComplete(NHSectorPresents.initialPlane)), () -> {
+										nodeUnit(NHUnitTypes.macrophage, () -> {
 											nodeUnit(NHUnitTypes.laugra, () -> {
 												nodeUnit(NHUnitTypes.pester/*, Seq.with(new Objectives.SectorComplete(NHSectorPresents.ancientShipyard))*/, () -> {
 												

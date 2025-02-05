@@ -8,7 +8,6 @@ import mindustry.Vars;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
 import newhorizon.NewHorizon;
-import newhorizon.expand.eventsys.AutoEventTrigger;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.EnergyUnit;
 import newhorizon.expand.units.EnergyUnitII;
@@ -38,7 +37,6 @@ public class EntityRegister {
 		put(NucleoidEntity.class, NucleoidEntity::new);
 		put(ProbeEntity.class, ProbeEntity::new);
 
-		put(AutoEventTrigger.class, AutoEventTrigger::new);
 		put(WorldEvent.class, WorldEvent::new);
 		put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 

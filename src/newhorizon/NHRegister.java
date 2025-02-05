@@ -20,8 +20,7 @@ import mindustry.gen.Groups;
 import mindustry.net.Net;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
-import newhorizon.expand.eventsys.EventHandler;
-import newhorizon.expand.eventsys.types.WorldEventObjective;
+
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
@@ -30,6 +29,7 @@ import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import java.lang.reflect.Field;
 
 import static mindustry.Vars.ui;
+import static newhorizon.NHVars.renderer;
 
 public class NHRegister{
 	public static final Seq<Runnable> afterLoad = new Seq<>();
@@ -60,8 +60,7 @@ public class NHRegister{
 			NHGroups.clear();
 			worldLoaded = false;
 			afterLoad.clear();
-			EventHandler.dispose();
-			
+
 			while(taskOnSave.any()){
 				taskOnSave.pop().run();
 			}
@@ -71,15 +70,8 @@ public class NHRegister{
 			NHGroups.worldReset();
 		});
 
-		Events.run(EventType.Trigger.update, () -> {
-			NHGroups.updateGroup();
-		});
-
 		Events.run(EventType.Trigger.draw, () -> {
-			NHVars.renderer.draw();
-			if (NHSetting.getBool(NHSetting.TERRAIN_MODE)){
-				NHVars.control.terrainSelect();
-			}
+			renderer.draw();
 			NHGroups.draw();
 		});
 		
@@ -87,7 +79,6 @@ public class NHRegister{
 			NHGroups.worldInit();
 			NHVars.core.worldInit();
 			if(!Vars.state.isEditor()){
-				EventHandler.create();
 				afterLoad.each(Runnable::run);
 			}
 			
@@ -143,7 +134,6 @@ public class NHRegister{
 			
 			Core.app.post(() -> {
 				if(Vars.state.isPlaying()){
-					Vars.state.rules.objectives.all.insert(0, new WorldEventObjective());
 				}
 				Core.app.post(() -> Core.app.post(() -> Core.app.post(() ->
 					worldLoaded = true
@@ -151,7 +141,7 @@ public class NHRegister{
 			});
 			
 			if(!Vars.headless){
-				NHVars.renderer.statusRenderer.clear();
+				renderer.statusRenderer.clear();
 			}
 		});
 		

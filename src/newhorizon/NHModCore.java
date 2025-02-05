@@ -2,9 +2,8 @@ package newhorizon;
 
 import arc.ApplicationListener;
 import mindustry.Vars;
-import newhorizon.expand.cutscene.NHCSS_Core;
 
-import static newhorizon.NHVars.renderer;
+import static newhorizon.NHVars.*;
 
 public class NHModCore implements ApplicationListener{
 	public NHModCore(){}
@@ -12,10 +11,10 @@ public class NHModCore implements ApplicationListener{
 	@Override
 	public void update(){
 		if(Vars.state.isPlaying()){
-			NHCSS_Core.core.update();
+			cutscene.update();
 			NHGroups.update();
 			if(!Vars.headless){
-				if(NHVars.listener != null)NHVars.listener.update();
+				if(listener != null)listener.update();
 				renderer.statusRenderer.update();
 				NHSetting.update();
 			}

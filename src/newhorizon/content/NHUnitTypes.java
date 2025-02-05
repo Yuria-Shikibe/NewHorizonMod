@@ -2632,7 +2632,7 @@ public class NHUnitTypes{
 
 							@Override
 							public float estimateDPS(){
-								//assume firing duration is about 100 by default, may not be accurate there's no way of knowing in this method
+								//assume firing maxTimer is about 100 by default, may not be accurate there's no way of knowing in this method
 								//assume it pierces 3 blocks/units
 								return damage * 100f / 5f * 3f;
 							}

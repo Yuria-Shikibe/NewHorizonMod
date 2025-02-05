@@ -63,7 +63,7 @@ public class TerrainSchematic {
     public String toString() {
         return "data size:" + tileData.size + "first: " + tileData.firstOpt().data +
             ", floor size =" + floor.size + "first: " + floor.firstOpt().block.name +
-            ", overlay size =" + overlay.size + "first: " + overlay.firstOpt().block.name +
+            ", curtain size =" + overlay.size + "first: " + overlay.firstOpt().block.name +
             ", block size =" + block.size + "first: " + block.firstOpt().block.name +
             ", width=" + width +
             ", height=" + height;

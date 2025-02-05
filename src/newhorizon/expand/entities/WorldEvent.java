@@ -17,8 +17,6 @@ import mindustry.gen.*;
 import mindustry.io.TypeIO;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NHGroups;
-import newhorizon.NHUI;
-import newhorizon.expand.eventsys.types.WorldEventType;
 import newhorizon.util.annotation.HeadlessDisabled;
 
 import java.nio.FloatBuffer;
@@ -26,27 +24,23 @@ import java.nio.FloatBuffer;
 public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Teamc{
 	public WorldEventType type = WorldEventType.NULL;
 	public Team team = Team.derelict;
-	
+	public float reload;
+	public String name = "";
+
+	public void init(){
+		name = type.name + "-" + id;
+	}
+
 	public transient long lastUpdated;
 	public transient long updateSpacing;
-	
+
 	protected transient float reload_LAST_;
 	protected transient float reload_TARGET_;
 	protected transient float x_LAST_;
 	protected transient float x_TARGET_;
 	protected transient float y_LAST_;
 	protected transient float y_TARGET_;
-	
-	@HeadlessDisabled
-	public transient int intData = 0;
-	
-	public float reload;
-	public String name = "";
-	public Object data;
-	public Element ui;
-	
-	public Interval timer = new Interval();
-	
+
 	@Override
 	public int classId(){
 		return EntityRegister.getID(getClass());
@@ -67,27 +61,18 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		if(type.shouldUpdate(this))type.updateEvent(this);
 	}
 	
-	public void buildTable(Table table){
-		type.buildTable(this, table);
-	}
-	
-	public void buildDebugTable(Table table){
-		type.buildDebugTable(this, table);
-	}
-	
 	@Override
 	public Building buildOn(){
 		return Vars.world.buildWorld(x, y);
 	}
-	
+
+	@Override
 	public boolean isSyncHidden(Player player) {
 		return inFogTo(player.team());
 	}
 	
 	@Override
-	public void afterSync(){
-	
-	}
+	public void afterSync(){}
 	
 	@Override
 	public boolean serialize(){
@@ -99,13 +84,7 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		remove();
 		Vars.netClient.clearRemovedEntity(id);
 	}
-	
-	public void init(){
-		type.init(this);
-		
-		name = type.name + "-" + id;
-	}
-	
+
 	@Override
 	public void add(){
 		if(added)return;
@@ -116,12 +95,7 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		NHGroups.events.add(this);
 		
 		added = true;
-		type.onAdd(this);
-		
-		if(!Vars.headless){
-			NHUI.eventDialog.buildEvent(this);
-		}
-	}
+    }
 	
 	@Override
 	public void remove(){
@@ -133,17 +107,6 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		type.onRemove(this);
 		
 		added = false;
-		
-		if(ui != null){
-			NHUI.eventDialog.layout();
-			if(ui.parent != null){
-				if(type.fadeUI){
-					ui.parent.actions(Actions.delay(0.75f), Actions.fadeOut(1f, Interp.fade), Actions.remove());
-				}
-				else ui.parent.remove();
-			}
-			ui.remove();
-		}
 	}
 	
 	@Override
@@ -181,7 +144,8 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		
 		afterSync();
 	}
-	
+
+	@Override
 	public void writeSync(Writes write) {
 		TypeIO.writeTeam(write, team);
 		write.str(name);
@@ -192,15 +156,7 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 		
 		type.writeOnSync(this, write);
 	}
-	
-	public String info(){
-		return type.type() + "\n" + coordText();
-	}
-	
-	public String coordText(){
-		return type.coordText(this);
-	}
-	
+
 	@Override
 	public void snapInterpolation() {
 		updateSpacing = 16L;
@@ -319,11 +275,7 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 	public boolean cheating() {
 		return team.rules().cheat;
 	}
-	
-	public float ratio(){
-		return type.progressRatio(this);
-	}
-	
+
 	@Override
 	public Team team(){
 		return team;
