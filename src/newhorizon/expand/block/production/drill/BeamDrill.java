@@ -37,12 +37,11 @@ public class BeamDrill extends AdaptDrill {
     public float laserScl = 0.2f;
 
     public Color laserColor = Color.valueOf("f58349");
-    public Color arcColor = Color.valueOf("f2d585");
     public float laserAlpha = 0.75f;
     public float laserAlphaSine = 0.2f;
 
     public int particles = 25;
-    public float particleLife = 40f, particleRad = 9.75f, particleStroke = 1.8f, particleLen = 4f;
+    public float particleLife = 40f, particleRad = 9.75f, particleLen = 4f;
 
     public BeamDrill() {
         super("beam-mining-facility");
@@ -84,7 +83,7 @@ public class BeamDrill extends AdaptDrill {
         @Override
         public void draw() {
             Draw.rect(baseRegion, x, y);
-            if (warmup > 0f){drawMining();}
+            if (warmup > 0f) drawMining();
             Draw.z(Layer.blockOver - 4f);
             Draw.rect(topRegion, x, y);
             drawTeamTop();

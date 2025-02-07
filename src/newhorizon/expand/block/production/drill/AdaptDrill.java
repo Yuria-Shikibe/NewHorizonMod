@@ -401,8 +401,7 @@ public class AdaptDrill extends Block {
         public void updateDrillModule(){
             resetModule();
             for (Building building: proximity){
-                if (building instanceof DrillModule.DrillModuleBuild) {
-                    DrillModule.DrillModuleBuild module = (DrillModule.DrillModuleBuild) building;
+                if (building instanceof DrillModule.DrillModuleBuild module) {
                     if (module.canApply(this)){
                         module.drillBuild = this;
                         modules.add(module);

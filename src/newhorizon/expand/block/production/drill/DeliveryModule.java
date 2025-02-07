@@ -42,7 +42,6 @@ public class DeliveryModule extends DrillModule{
 
             Lines.square(x, y, 8, Time.time / 8f);
             Lines.square(x, y, 8, -Time.time / 8f);
-
         }
     }
 }

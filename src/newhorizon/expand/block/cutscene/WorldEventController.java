@@ -24,6 +24,7 @@ public class WorldEventController extends Block {
         buildVisibility = BuildVisibility.sandboxOnly;
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     public class WorldEventControllerBuild extends Building implements CutsceneTrigger{
         public boolean active;
         public float progress;

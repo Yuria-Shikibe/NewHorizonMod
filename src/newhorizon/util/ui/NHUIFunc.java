@@ -4,22 +4,15 @@ import arc.Core;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
-import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Label;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
-import arc.util.Nullable;
 import arc.util.Scaling;
 import arc.util.Time;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.content.UnitTypes;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
@@ -29,16 +22,11 @@ import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
-import mindustry.ui.dialogs.BaseDialog;
-import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.meta.*;
-import mindustry.world.modules.ItemModule;
 import newhorizon.NHUI;
-import newhorizon.NewHorizon;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
@@ -50,7 +38,6 @@ import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class NHUIFunc{
-	private static float damage = 0;
 	private static long lastToast, waiting;
 	
 	public static Table coreInfo;
@@ -174,33 +161,7 @@ public class NHUIFunc{
 			lastToast += duration;
 		}
 	}
-	
-	public static int getTotalShots(ShootPattern pattern){
-		int total = 0;
-		
-		if(pattern instanceof ShootMulti){
-			ShootMulti multi = (ShootMulti)pattern;
-			for(ShootPattern p : multi.dest)total += getTotalShots(p);
-			total *= multi.source.shots;
-		}else total = pattern.shots;
-		
-		return total;
-	}
-	
-	public static float estimateBulletDamage(BulletType type, int num, boolean init){
-		if(init)damage = 0;
-		
-		damage += type.damage * num / 1.8f * Mathf.num(type.collides && (type.collidesGround || type.collidesTiles || type.collidesAir));
-		if(type.splashDamage > 0 && type.splashDamageRadius > 0)damage += type.splashDamage * Mathf.sqrt(type.splashDamageRadius) / tilesize / 3.0f;
-		damage += type.lightningDamage * type.lightning * (type.lightningLength + (type.lightningLengthRand + 1) / 3f) / 3f;
-		
-		
-		if(type.fragBullet != null)damage += estimateBulletDamage(type.fragBullet, type.fragBullets, false);
-		if(type.intervalBullet != null)damage += estimateBulletDamage(type.intervalBullet, type.intervalBullets, false) * type.lifetime / type.bulletInterval;
-		
-		return damage;
-	}
-	
+
 	public static void ammo(Table table, String name, BulletType type, TextureRegion icon){
 		table.row();
 		
@@ -216,12 +177,7 @@ public class NHUIFunc{
 		
 		table.row();
 	}
-	
-	protected static void sep(Table table, String text){
-		table.row();
-		table.add(text);
-	}
-	
+
 	public static class LinkTable extends Table{
 		protected static float h = Core.graphics.isPortrait() ? 90f : 80f;
 		protected static float w = Core.graphics.isPortrait() ? 330f : 600f;
@@ -306,122 +262,6 @@ public class NHUIFunc{
 					t2.table(stat).fillX().height(LEN + OFFSET).right();
 				}).growX().fillY().padBottom(OFFSET / 2).row();
 			}
-		}
-	}
-	
-	public static class ItemConsumeTable extends Table{
-		public final @Nullable
-		ItemModule itemModule;
-		
-		public ItemConsumeTable(@Nullable ItemModule itemModule){
-			this.itemModule = itemModule;
-			this.left();
-		}
-		
-		public void add(ItemStack stack){
-			float size = LEN - OFFSET;
-			table(t -> {
-				t.image(stack.item.fullIcon).size(size).left();
-				t.table(n -> {
-					Label l = new Label("");
-					n.update(() -> {
-						int amount = itemModule == null ? 0 : itemModule.get(stack.item);
-						l.setText(String.valueOf(amount));
-						l.setColor(amount < stack.amount ? Pal.redderDust : Color.white);
-					});
-					n.add(stack.item.localizedName + " ");
-					n.add(l);
-					n.add("/" + stack.amount);
-				}).height(size).fillX().padLeft(OFFSET / 2).left();
-			}).growX().height(size).left().row();
-		}
-	}
-	
-	public static class ItemSelectTable extends Table{
-		public boolean[] selects = new boolean[Vars.content.items().size];
-		public ItemSelectTable(){
-			background(Tex.button);
-			pane(table -> {
-				int i = 0;
-				for(Item item : Vars.content.items()){
-					if(i % 8 == 0)table.row();
-					table.table(Tex.clear, t -> {
-						t.button(new TextureRegionDrawable(item.fullIcon), Styles.clearTogglei, LEN - OFFSET, () -> {
-							selects[Vars.content.items().indexOf(item)] = !selects[Vars.content.items().indexOf(item)];
-						}).update(b -> b.setChecked(selects[Vars.content.items().indexOf(item)])).size(LEN);
-					}).fill();
-					i++;
-				}
-			}).grow();
-		}
-		public Seq<Item> getItems(Seq<Item> items){
-			items.clear();
-			for(Item item : Vars.content.items()){
-				if(selects[Vars.content.items().indexOf(item)])items.add(item);
-			}
-			return items;
-		}
-		
-		public Seq<Item> getItems(){
-			Seq<Item> items = new Seq<>(Item.class);
-			for(Item item : Vars.content.items()){
-				if(selects[Vars.content.items().indexOf(item)])items.add(item);
-			}
-			return items;
-		}
-		
-		
-		public void write(Writes write){
-			for(boolean b : selects){
-				write.bool(b);
-			}
-		}
-		
-		public void read(Reads read, byte revision) {
-			for(int i = 0; i < selects.length; i++){
-				selects[i] = read.bool();
-			}
-		}
-	}
-	
-	public static class LogDialog extends BaseDialog{
-		public LogDialog(UnlockableContent[] contents){
-			super("v" + NewHorizon.MOD.meta.version + " Update Log:");
-			addCloseListener();
-			cont.pane(table -> {
-				table.add("@fix").color(Pal.accent).left().row();
-				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-				table.add(TableFunc.tabSpace + Core.bundle.get("update.fix")).row();
-				
-				table.add("@add").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-				table.add(TableFunc.tabSpace + Core.bundle.get("update.add")).row();
-				contentLog(table, contents);
-				
-				table.add("@remove").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-				table.add(TableFunc.tabSpace + Core.bundle.get("update.remove")).row();
-				
-				table.add("@other").color(Pal.accent).padTop(OFFSET * 1.5f).left().row();
-				table.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).row();
-				table.add(TableFunc.tabSpace + Core.bundle.get("update.other")).row();
-			}).grow().row();
-			cont.image().color(Pal.accent).fillX().height(OFFSET / 4).pad(OFFSET / 3).bottom().row();
-			cont.button("@back", Icon.left, Styles.cleart, this::hide).fillX().height(LEN).row();
-		}
-		
-		public void contentLog(Table table, UnlockableContent[] contents){
-			table.pane(t -> {
-				int index = 0;
-				for(UnlockableContent c : contents){
-					if(index % 8 == 0)t.row();
-					t.button(new TextureRegionDrawable(c.fullIcon), Styles.cleari, LEN, () -> {
-						ContentInfoDialog dialog = new ContentInfoDialog();
-						dialog.show(c);
-					}).size(LEN);
-					index++;
-				}
-			}).fillY().growX().row();
 		}
 	}
 }

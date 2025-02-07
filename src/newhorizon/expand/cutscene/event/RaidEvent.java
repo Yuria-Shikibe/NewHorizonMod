@@ -1,10 +1,8 @@
 package newhorizon.expand.cutscene.event;
 
 import arc.Core;
-import arc.audio.Sound;
 import arc.flabel.FLabel;
 import arc.graphics.Color;
-import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.ui.Styles;
 import newhorizon.content.NHBullets;
