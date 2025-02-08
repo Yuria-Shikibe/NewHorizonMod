@@ -7,8 +7,7 @@ import mindustry.type.Category;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.expand.cutscene.components.ActionBus;
-import newhorizon.expand.cutscene.components.ui.ActionControl;
+import newhorizon.expand.cutscene.components.ActionControl;
 
 import static mindustry.Vars.ui;
 import static newhorizon.NHVars.cutscene;
