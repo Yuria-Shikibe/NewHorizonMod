@@ -6,7 +6,7 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class CurtainFadeOutAction extends Action {
     public CurtainFadeOutAction() {
-        super(0);
+        super(120);
     }
 
     @Override

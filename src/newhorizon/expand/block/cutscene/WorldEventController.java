@@ -29,11 +29,17 @@ public class WorldEventController extends Block {
         public boolean active;
         public float progress;
 
-        public WorldActionEvent event = new RaidEvent(Team.crux, 700, 700, 120);
+        public WorldActionEvent event;
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
             table.button("t", this::activate);
+        }
+
+        @Override
+        public void created() {
+            super.created();
+            event = new RaidEvent(Team.crux, x, y, closestCore().x, closestCore().y, 800f, 30f, 200f, 4, 0, 0, 300f);
         }
 
         public void update(){
@@ -41,7 +47,7 @@ public class WorldEventController extends Block {
             //when active, start event related update.
             if (event != null){
                 progress += Time.delta;
-                if (progress >= event.duration){
+                if (progress >= event.waitDuration){
                     event.trigger();
                     deactivate();
                 }

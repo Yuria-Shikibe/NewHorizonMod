@@ -28,44 +28,15 @@ public class SubActionBusBlock extends Block {
                 ActionBus bus = new ActionBus();
                 bus.addAll(
                         new InputLockAction(),
-                        new CurtainDrawAction(120),
-                        new WaitAction(20),
 
                         new CurtainFadeInAction(),
-                        new WaitAction(120),
                         new InfoFadeInAction(15),
-                        new InfoTextAction("[accent]<DUST TO DUST>[]{WAIT}{WAIT}{WAIT}\n\n2/5 16:09:10{WAIT}\nMIDANTHA BASE{WAIT}\nSECTOR 161"),
-                        new WaitAction(270),
+                        new InfoTextAction("[accent]<DUST TO DUST>[]"),
+                        new WaitAction(270/60f),
                         new InfoFadeOutAction(30),
-                        new WaitAction(20),
+                        new WaitAction(20/60f),
                         new CurtainFadeOutAction(),
 
-                        new CameraControlAction(100, 600, 600),
-                        new WaitAction(40),
-
-                        new SignalCutInAction(20),
-                        new SignalTextAction("yes you see some amongus words."),
-                        new WaitAction(300),
-                        new SignalTextAction("this is part of new horizon's cutscene."),
-                        new WaitAction(300),
-                        new SignalTextAction("lets return to your unit."),
-                        new WaitAction(300),
-                        new SignalCutOutAction(20),
-
-                        new CameraResetAction(150),
-
-                        new WaitAction(45),
-                        new SignalCutInAction(20),
-                        new SignalTextAction("yes this is you of course."),
-                        new WaitAction(300),
-                        new SignalTextAction("this cutscene is part of new horizon's current cutscene and im still expanding it."),
-                        new WaitAction(450),
-                        new SignalTextAction("now lets finish the cutscene."),
-                        new WaitAction(240),
-                        new SignalCutOutAction(20),
-
-                        new WaitAction(60),
-                        new CurtainRaiseAction(40),
                         new InputUnlockAction()
                 );
                 NHVars.cutscene.addMainActionBus(bus);

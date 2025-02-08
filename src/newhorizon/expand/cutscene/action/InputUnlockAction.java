@@ -13,7 +13,14 @@ public class InputUnlockAction extends Action {
     public void end() {
         cutsceneUI.controlOverride = true;
     }
+
+    @Override
     public void skip(){
         end();
+    }
+
+    @Override
+    public String phaseToString() {
+        return "input_unlock";
     }
 }

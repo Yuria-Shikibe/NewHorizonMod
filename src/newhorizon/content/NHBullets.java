@@ -30,6 +30,7 @@ import mindustry.type.Weapon;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;
 import newhorizon.expand.units.unitEntity.PesterEntity;
@@ -65,7 +66,7 @@ public class NHBullets{
 			arc_9000, eternity, arc_9000_frag,
 			synchroZeta, synchroThermoPst, synchroFusion, synchroPhase,
 			missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
-			ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet;
+			ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid;
 	
 	private static void loadPriority(){
 		arc_9000_frag = new FlakBulletType(3.75f, 200){
@@ -244,7 +245,9 @@ public class NHBullets{
 		STRIKE = NewHorizon.name("strike");
 		
 		loadPriority();
-		
+
+		basicRaid = new BasicRaidBulletType();
+
 		artilleryHydro = new ArtilleryBulletType(3f, 120f){{
 			scaledSplashDamage = true;
 			splashDamage = damage;

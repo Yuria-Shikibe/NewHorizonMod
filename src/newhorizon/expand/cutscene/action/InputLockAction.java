@@ -15,4 +15,9 @@ public class InputLockAction extends Action {
         cutsceneUI.controlOverride = true;
         Vars.control.input.config.forceHide();
     }
+
+    @Override
+    public String phaseToString() {
+        return "input_lock";
+    }
 }
