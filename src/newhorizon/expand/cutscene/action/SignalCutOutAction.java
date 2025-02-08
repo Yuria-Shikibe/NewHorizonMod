@@ -10,8 +10,8 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class SignalCutOutAction extends Action {
 
-    public SignalCutOutAction(float duration) {
-        super(duration);
+    public SignalCutOutAction() {
+        super(30);
     }
 
     @Override
@@ -29,5 +29,10 @@ public class SignalCutOutAction extends Action {
     public void skip() {
         end();
         cutsceneUI.textTable.actions(Actions.fadeOut(maxTimer / Time.toSeconds, Interp.pow2In));
+    }
+
+    @Override
+    public String phaseToString() {
+        return "signal_cut_out";
     }
 }

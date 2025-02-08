@@ -1,15 +1,10 @@
 package newhorizon.expand.cutscene.components.ui;
 
-import arc.func.Cons;
-import arc.func.Prov;
-import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
-import newhorizon.expand.cutscene.action.InputLockAction;
-import newhorizon.expand.cutscene.action.InputUnlockAction;
-import newhorizon.expand.cutscene.action.NullAction;
-import newhorizon.expand.cutscene.action.WaitAction;
+import newhorizon.expand.cutscene.action.*;
 import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.cutscene.components.ActionBus;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,14 +12,30 @@ import java.util.regex.Pattern;
 import static mindustry.Vars.ui;
 
 public class ActionControl {
-    //"wait_action 123 567 <wait action>" -> ["wait_action" "123" "567" "wait action"]
-    public static Seq<String> parseString(String input) {
+    public static ActionBus phaseCode(String code){
+        ActionBus bus = new ActionBus();
+        phaseLine(code).each(line -> {
+            bus.add(phaseAction(line));
+        });
+        return bus;
+    }
+
+    public static Seq<String> phaseLine(String code){
+        String[] lines = code.split("\\R");
+        return Seq.with(lines);
+    }
+
+    public static Seq<String> parseString(String line) {
         Seq<String> result = new Seq<>();
-        Matcher matcher = Pattern.compile("<([^>]*)>|\\S+").matcher(input);
+        Matcher matcher = Pattern.compile("<([^>]*)>|\\S+").matcher(line);
         while (matcher.find()) {
             result.add(matcher.group(1) != null ? matcher.group(1) : matcher.group());
         }
         return result;
+    }
+
+    public static String phaseString(String token) {
+        return token.replace("[n]", "\n");
     }
 
     public static Action phaseAction (String tokens){
@@ -33,9 +44,29 @@ public class ActionControl {
         String[] args = tokensArray.toArray(String.class);
         try{
             switch (actionName){
-                case "input_lock": return new InputLockAction();
-                case "input_unlock": return new InputUnlockAction();
-                case "wait_action": return new WaitAction(args);
+                case "camera_control" : return new CameraControlAction(args);
+                case "camera_reset" : return new CameraResetAction(args);
+
+                case "curtain_draw" : return new CurtainDrawAction();
+                case "curtain_raise" : return new CurtainRaiseAction();
+
+                case "curtain_fade_in" : return new CurtainFadeInAction();
+                case "curtain_fade_out" : return new CurtainFadeOutAction();
+
+                case "info_fade_in" : return new InfoFadeInAction();
+                case "info_fade_out" : return new InfoFadeOutAction();
+                case "info_text" : return new InfoTextAction(args);
+
+                case "input_lock" : return new InputLockAction();
+                case "input_unlock" : return new InputUnlockAction();
+
+                case "signal_cut_in" : return new SignalCutInAction();
+                case "signal_cut_out" : return new SignalCutOutAction();
+                case "signal_text" : return new SignalTextAction(args);
+
+                case "wait" : return new WaitAction(args);
+
+                case "" : return new NullAction();
             }
         }catch(Exception e){
             Log.err(e);

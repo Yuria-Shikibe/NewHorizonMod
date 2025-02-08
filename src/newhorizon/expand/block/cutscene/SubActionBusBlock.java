@@ -1,17 +1,26 @@
 package newhorizon.expand.block.cutscene;
 
 import arc.scene.ui.layout.Table;
-import mindustry.gen.Building;
+import arc.util.Log;
+import mindustry.gen.Icon;
 import mindustry.type.Category;
-import mindustry.world.Block;
+import mindustry.ui.Styles;
+import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.NHVars;
-import newhorizon.expand.cutscene.action.*;
 import newhorizon.expand.cutscene.components.ActionBus;
+import newhorizon.expand.cutscene.components.ui.ActionControl;
 
-public class SubActionBusBlock extends Block {
+import static mindustry.Vars.ui;
+import static newhorizon.NHVars.cutscene;
+
+public class SubActionBusBlock extends MessageBlock {
+
     public SubActionBusBlock(String name) {
         super(name);
+
+        maxTextLength = 5000;
+        maxNewlines = 200;
+
         configurable = true;
         destructible = true;
         solid = true;
@@ -20,27 +29,25 @@ public class SubActionBusBlock extends Block {
         buildVisibility = BuildVisibility.sandboxOnly;
     }
 
-    public class SubActionBusControllerBuild extends Building {
+    @SuppressWarnings("InnerClassMayBeStatic")
+    public class SubActionBusControllerBuild extends MessageBuild {
+
+        @Override
+        public void drawSelect() {}
+
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
-            table.button("trigger", () -> {
-                ActionBus bus = new ActionBus();
-                bus.addAll(
-                        new InputLockAction(),
+            table.button(Icon.play, Styles.cleari, this::playCutscene).size(40f);
+        }
 
-                        new CurtainFadeInAction(),
-                        new InfoFadeInAction(15),
-                        new InfoTextAction("[accent]<DUST TO DUST>[]"),
-                        new WaitAction(270/60f),
-                        new InfoFadeOutAction(30),
-                        new WaitAction(20/60f),
-                        new CurtainFadeOutAction(),
-
-                        new InputUnlockAction()
-                );
-                NHVars.cutscene.addMainActionBus(bus);
-            });
+        public void playCutscene() {
+            try{
+                cutscene.addMainActionBus(ActionControl.phaseCode(message.toString()));
+            }catch (Exception e){
+                Log.err(e);
+                ui.announce("Failed to create cutscene in block: " + tileX() + " " + tileY());
+            }
         }
     }
 }

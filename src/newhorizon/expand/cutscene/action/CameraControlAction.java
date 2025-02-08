@@ -11,6 +11,11 @@ public class CameraControlAction extends Action {
         target = new Vec2(x, y);
     }
 
+    public CameraControlAction(String[] args) {
+        super(Float.parseFloat(args[0]));
+        target = new Vec2(Float.parseFloat(args[1]), Float.parseFloat(args[2]));
+    }
+
     @Override
     public void act() {
         Core.camera.position.lerpDelta(target, progress());

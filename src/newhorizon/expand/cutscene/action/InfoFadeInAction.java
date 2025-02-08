@@ -9,12 +9,17 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class InfoFadeInAction extends Action {
 
-    public InfoFadeInAction(float duration) {
-        super(duration);
+    public InfoFadeInAction() {
+        super(15);
     }
 
     @Override
     public void begin() {
         cutsceneUI.infoTable.actions(Actions.fadeIn(maxTimer / Time.toSeconds, NHInterp.bounce5Out));
+    }
+
+    @Override
+    public String phaseToString() {
+        return "info_fade_in";
     }
 }

@@ -10,12 +10,17 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class SignalCutInAction extends Action {
 
-    public SignalCutInAction(float duration) {
-        super(duration);
+    public SignalCutInAction() {
+        super(30);
     }
 
     @Override
     public void begin() {
         cutsceneUI.textTable.actions(Actions.fadeIn(maxTimer / Time.toSeconds, NHInterp.bounce5Out));
+    }
+
+    @Override
+    public String phaseToString() {
+        return "signal_cut_in";
     }
 }

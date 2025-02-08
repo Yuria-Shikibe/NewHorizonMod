@@ -9,8 +9,17 @@ public class CameraResetAction extends Action {
         super(duration);
     }
 
+    public CameraResetAction(String[] args) {
+        super(Float.parseFloat(args[0]));
+    }
+
     @Override
     public void act() {
         Core.camera.position.lerpDelta(Vars.player, progress());
+    }
+
+    @Override
+    public String phaseToString() {
+        return "camera_reset";
     }
 }

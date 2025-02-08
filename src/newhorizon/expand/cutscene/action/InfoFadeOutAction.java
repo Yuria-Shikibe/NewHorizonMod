@@ -9,8 +9,8 @@ import newhorizon.expand.cutscene.components.Action;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class InfoFadeOutAction extends Action {
-    public InfoFadeOutAction(float duration) {
-        super(duration);
+    public InfoFadeOutAction() {
+        super(15);
     }
 
     @Override
@@ -28,5 +28,10 @@ public class InfoFadeOutAction extends Action {
     public void skip() {
         end();
         cutsceneUI.infoTable.actions(Actions.fadeOut(maxTimer / Time.toSeconds, Interp.pow2In));
+    }
+
+    @Override
+    public String phaseToString() {
+        return "info_fade_out";
     }
 }
