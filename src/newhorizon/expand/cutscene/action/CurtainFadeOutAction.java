@@ -16,7 +16,7 @@ public class CurtainFadeOutAction extends Action {
     }
 
     public void end() {
-        ui.hudfrag.shown = true;
+        //ui.hudfrag.shown = true;
     }
 
     @Override

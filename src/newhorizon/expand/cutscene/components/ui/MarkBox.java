@@ -17,7 +17,7 @@ import newhorizon.util.func.NHInterp;
 
 import static newhorizon.NHVars.cutsceneUI;
 
-public class MarkBox extends Table implements Pool.Poolable {
+public class MarkBox extends Table{
     protected static final Vec2 tmpVec = new Vec2();
     protected static final Color tmpColor = new Color();
 
@@ -82,7 +82,7 @@ public class MarkBox extends Table implements Pool.Poolable {
     }
 
     public void removeFromHUD() {
-        actions(Actions.fadeOut(0.7f), Actions.parallel(Actions.remove()/*, Actions.run(() -> markBoxPool.free(this))*/));
+        actions(Actions.fadeOut(0.7f), Actions.remove());
     }
 
     @Override

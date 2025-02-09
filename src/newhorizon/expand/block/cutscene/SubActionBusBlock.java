@@ -2,6 +2,8 @@ package newhorizon.expand.block.cutscene;
 
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.gen.Icon;
 import mindustry.type.Category;
 import mindustry.ui.Styles;
@@ -24,12 +26,15 @@ public class SubActionBusBlock extends MessageBlock {
         destructible = true;
         solid = true;
 
+        update = true;
+
         category = Category.logic;
         buildVisibility = BuildVisibility.sandboxOnly;
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class SubActionBusControllerBuild extends MessageBuild {
+    public class SubActionBusControllerBuild extends MessageBuild implements CutsceneTrigger{
+        public boolean active = false;
 
         @Override
         public void drawSelect() {}
@@ -37,16 +42,44 @@ public class SubActionBusBlock extends MessageBlock {
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
-            table.button(Icon.play, Styles.cleari, this::playCutscene).size(40f);
+            table.button(Icon.play, Styles.cleari, this::activate).size(40f);
+        }
+
+        @Override
+        public void updateTile() {
+            if (active) {
+                playCutscene();
+                active = false;
+            }
         }
 
         public void playCutscene() {
             try{
-                cutscene.addMainActionBus(ActionControl.phaseCode(message.toString()));
+                cutscene.addSubActionBus(ActionControl.phaseCode(message.toString(), this));
             }catch (Exception e){
                 Log.err(e);
                 ui.announce("Failed to create cutscene in block: " + tileX() + " " + tileY());
             }
+        }
+
+        @Override
+        public void activate() {
+            active = true;
+        }
+
+        @Override
+        public void deactivate() {
+            active = false;
+        }
+
+        @Override
+        public void write(Writes write) {
+            super.write(write);
+        }
+
+        @Override
+        public void read(Reads read) {
+            super.read(read);
         }
     }
 }

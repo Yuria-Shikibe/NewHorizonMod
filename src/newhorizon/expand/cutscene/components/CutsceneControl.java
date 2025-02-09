@@ -1,8 +1,10 @@
 package newhorizon.expand.cutscene.components;
 
+import arc.Events;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Time;
+import mindustry.game.EventType;
 
 import static newhorizon.NHVars.cutsceneUI;
 
@@ -12,9 +14,12 @@ public class CutsceneControl {
 	public float waitTimer = 0;
 
 	public ActionBus mainBus;
-	public Queue<ActionBus> waitingBuss = new Queue<>();
+	public Queue<ActionBus> waitingBuses = new Queue<>();
 	public Seq<ActionBus> subBuses = new Seq<>();
 
+	public CutsceneControl() {
+		Events.on(EventType.WorldLoadEvent.class, event -> clear());
+	}
 
 	public void update(){
 		//update the main action bus and remove completed action bus
@@ -37,8 +42,8 @@ public class CutsceneControl {
 		}
 
 		//change current main bus when waiting finished
-		if (mainBus == null && !waiting && !waitingBuss.isEmpty()) {
-			mainBus = waitingBuss.removeLast();
+		if (mainBus == null && !waiting && !waitingBuses.isEmpty()) {
+			mainBus = waitingBuses.removeLast();
 		}
 
 		//update the sub action bus
@@ -51,11 +56,25 @@ public class CutsceneControl {
 		cutsceneUI.update();
 	}
 
+	public void skipAll(){
+		if (mainBus != null) mainBus.skip();
+		if (waitingBuses != null && !waitingBuses.isEmpty()) waitingBuses.each(ActionBus::skip);
+		if (subBuses != null && !subBuses.isEmpty()) subBuses.each(ActionBus::skip);
+	}
+
+	public void clear(){
+		waiting = false;
+		waitTimer = 0;
+		mainBus = null;
+		waitingBuses.clear();
+		subBuses.clear();
+	}
+
 	public void addMainActionBus(ActionBus bus) {
 		if (mainBus == null) {
 			mainBus = bus;
 		}else {
-			waitingBuss.add(bus);
+			waitingBuses.add(bus);
 		}
 	}
 

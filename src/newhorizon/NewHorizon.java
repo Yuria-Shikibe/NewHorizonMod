@@ -41,12 +41,7 @@ public class NewHorizon extends Mod{
 	}
 	
 	protected static boolean contentLoadComplete = false;
-	
-	@SuppressWarnings("FinalStaticMethod")
-	public static final boolean loadedComplete(){
-		return contentLoadComplete;
-	}
-	
+
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
@@ -165,26 +160,6 @@ public class NewHorizon extends Mod{
 		Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
 
 		NHVars.init();
-		/*
-		Time.mark();
-		RectSpiller ls = new RectSpiller();
-		int size = 128;
-		ls.init(size, size);
-		Pixmap pixmap = new Pixmap(size, size);
-		ls.each((x, y) -> {
-			if (ls.getPos(x, y) == 0){
-				Tmp.c1.set(Color.white);
-			}else {
-				Tmp.c1.set(Color.black);
-			}
-			pixmap.set(x, y, Tmp.c1);
-		});
-		Fi fi = new Fi(NH_DEBUG_GRAPHIC_FOLDER + "value.png");
-		PixmapIO.writePng(fi, pixmap);
-		pixmap.dispose();
-		Log.info("generated time: " + Time.elapsed());
-
-		 */
 	}
 
 	@Override

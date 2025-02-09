@@ -26,8 +26,6 @@ public class ActionBus extends TimeQueue<Action> {
         current = null;
         queue.clear();
 
-        Core.app.post(() -> {
-            cutsceneUI.controlOverride = false;
-        });
+        Core.app.post(() -> cutsceneUI.controlOverride = false);
     }
 }

@@ -250,8 +250,6 @@ public class CutsceneUI {
 	@HeadlessDisabled
 	public void mark(float x, float y, float radius, float lifetime, Color color, Boolp removeCheck){
 		if(Vars.headless)return;
-		
-		
 		MarkBox box = new MarkBox();
 		box.init(radius, color, new Vec2(x, y), MarkStyle.defaultStyle);
 		box.removeCheck = removeCheck;
@@ -262,9 +260,7 @@ public class CutsceneUI {
 	@HeadlessDisabled
 	public void mark(float x, float y, float radius, float lifetime, Color color, MarkStyle style, Boolp removeCheck){
 		if(Vars.headless)return;
-		
-		
-		MarkBox box = new MarkBox();//markBoxPool.obtain();
+		MarkBox box = new MarkBox();
 		box.init(radius, color, new Vec2(x, y), style);
 		box.removeCheck = removeCheck;
 		if(lifetime > 0)box.lifetime = lifetime;

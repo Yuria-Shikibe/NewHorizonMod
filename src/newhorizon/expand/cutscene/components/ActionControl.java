@@ -3,6 +3,7 @@ package newhorizon.expand.cutscene.components;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.game.Team;
+import mindustry.gen.Building;
 import newhorizon.expand.cutscene.action.*;
 
 import java.util.regex.Matcher;
@@ -11,11 +12,9 @@ import java.util.regex.Pattern;
 import static mindustry.Vars.ui;
 
 public class ActionControl {
-    public static ActionBus phaseCode(String code){
+    public static ActionBus phaseCode(String code, Building source){
         ActionBus bus = new ActionBus();
-        phaseLine(code).each(line -> {
-            bus.add(phaseAction(line));
-        });
+        phaseLine(code).each(line -> bus.add(phaseAction(line, source)));
         return bus;
     }
 
@@ -57,14 +56,16 @@ public class ActionControl {
         }
     }
 
-    public static Action phaseAction (String tokens){
+    public static Action phaseAction (String tokens, Building source){
         Seq<String> tokensArray = parseString(tokens);
         String actionName = tokensArray.remove(0);
         String[] args = tokensArray.toArray(String.class);
         try{
             return switch (actionName) {
                 case "camera_control" -> new CameraControlAction(args);
+                case "camera_pan" -> new CameraPanAction(args);
                 case "camera_reset" -> new CameraResetAction(args);
+                case "camera_set" -> new CameraSetAction(args);
 
                 case "curtain_draw" -> new CurtainDrawAction();
                 case "curtain_raise" -> new CurtainRaiseAction();
@@ -78,9 +79,13 @@ public class ActionControl {
                 case "input_lock" -> new InputLockAction();
                 case "input_unlock" -> new InputUnlockAction();
 
+                case "mark_world" -> new MarkWorldAction(args);
+
                 case "signal_cut_in" -> new SignalCutInAction();
                 case "signal_cut_out" -> new SignalCutOutAction();
                 case "signal_text" -> new SignalTextAction(args);
+
+                case "trigger_activate" -> new TriggerActivateAction(args, source);
 
                 case "wait" -> new WaitAction(args);
 
