@@ -31,6 +31,7 @@ public class WarningSoundAction extends Action {
             case 0 -> NHSounds.alert2;
             case 1 -> NHSounds.alarm;
             case 2 -> Sounds.unlock;
+            case 3 -> Sounds.wind3;
             default -> Sounds.none;
         };
     }
