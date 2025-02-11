@@ -64,8 +64,6 @@ import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.adapt.MultiCrafter;
 import newhorizon.expand.block.ancient.CaptureableTurret;
-import newhorizon.expand.block.ancient.wave.WaveConveyor;
-import newhorizon.expand.block.ancient.wave.WaveGenerator;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.*;
@@ -373,42 +371,7 @@ public class NHBlocks{
 			}
 		};
 	}
-	
-	private static void loadExperiments(){
-		waveEnergyGenerator = new WaveGenerator("wave-energy-generator"){{
-			size = 3;
-			
-			requirements(Category.power, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
-			hasItems = hasLiquids = hasPower = true;
-			
-			itemCapacity = 20;
-			liquidCapacity = 40;
-			consumePower(5f);
-			consumeItem(NHItems.zeta, 5);
-			squareSprite = false;
-			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(){{
-				midColor = flameColor = NHColor.darkEnrColor;
-				circleStroke = 1.125f;
-				circleSpace = 1.9f;
-			}}, new DrawDefault());
-		}};
-		
-		waveEnergyConveyor = new WaveConveyor("wave-conveyor"){{
-			size = 1;
-			
-			requirements(Category.power, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
-		}};
-		
-		ancitentWaveEnergyConveyor = new WaveConveyor("ancient-wave-conveyor"){{
-			size = 1;
-			
-			armored = true;
-			
-			requirements(Category.power, with(NHItems.presstanium, 150, NHItems.multipleSteel, 100, NHItems.juniorProcessor, 120));
-		}};
-	}
-	
+
 	private static void loadTurrets(){
 		concentration = new ContinuousTurret("concentration"){{
 			requirements(Category.turret, with(Items.carbide, 50, Items.tungsten, 200, NHItems.setonAlloy, 150, NHItems.seniorProcessor, 75));

@@ -37,18 +37,14 @@ public class NHPixmap{
 		return pixmap;
 	}
 	
-	public static Pixmap outLineAndAdd(String name, PixmapRegion pixmap, Color color, int radius){
-		return addProcessed(name, Pixmaps.outline(pixmap, color, radius));
+	public static void outLineAndAdd(String name, PixmapRegion pixmap, Color color, int radius){
+		addProcessed(name, Pixmaps.outline(pixmap, color, radius));
 	}
 	
-	public static Pixmap outLineAndAdd(String name, TextureRegion pixmap, Color color, int radius){
-		return outLineAndAdd(name, Core.atlas.getPixmap(pixmap), color, radius);
+	public static void outLineAndAdd(String name, TextureRegion pixmap, Color color, int radius){
+		outLineAndAdd(name, Core.atlas.getPixmap(pixmap), color, radius);
 	}
-	
-	public static void packOutlineAndAdd(MultiPacker packer, String name, TextureRegion pixmap, Color color, int radius){
-		packer.add(MultiPacker.PageType.main, name, outLineAndAdd(name, pixmap, color, radius));
-	}
-	
+
 	public static void packAndAdd(MultiPacker packer, String name, Pixmap pixmap){
 		packer.add(MultiPacker.PageType.main, name, addProcessed(name, pixmap));
 	}

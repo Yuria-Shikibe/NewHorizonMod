@@ -52,15 +52,4 @@ public class NHMath{
 	public static float asinRad(float sin){
 		return asinTable[index(sin)];
 	}
-	
-	public static void main(String[] args){
-		float cos = 0.5f;
-		System.out.println(cosToSin(cos));
-		System.out.println((float)Math.sqrt(1 - cos * cos));
-		
-		float f1 = asinRad(cosToSin(cos)), f2 = acosRad(cos), d = Math.abs(f1 - f2);
-		System.out.println(f1);
-		System.out.println(f2);
-		System.out.println(d);
-	}
 }

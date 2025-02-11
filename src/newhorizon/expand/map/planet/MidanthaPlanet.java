@@ -185,7 +185,6 @@ public class MidanthaPlanet extends Planet {
                     int cwx = cStart + cx * cSize,
                         cwy = cStart + cy * cSize;
 
-                    SchematicUtil.placeTerrainLB(NHSchematic.TEST_CHUNK_BLACK, cwx, cwy);
                 }
             }
             setRects();
@@ -241,8 +240,7 @@ public class MidanthaPlanet extends Planet {
                         if (isRiverChunk(x - 1, y)) idx += 8;
 
                         if (idx > 0){
-                            SchematicUtil.placeTerrainLB(NHSchematic.QUANTUM_RIVER, getChunkLBxy(x), getChunkLBxy(y), idx * cSize, 0, cSize, cSize);
-                            SchematicUtil.placeBuildLB(NHSchematic.QUANTUM_RIVER_BUILD[idx], getChunkLBxy(x), getChunkLBxy(y), Team.derelict);
+
                         }
                     }
                 }
