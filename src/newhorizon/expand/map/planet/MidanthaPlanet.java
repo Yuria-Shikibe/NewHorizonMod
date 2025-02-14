@@ -1,14 +1,10 @@
 package newhorizon.expand.map.planet;
 
-import arc.func.Intc2;
+import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Point2;
-import arc.math.geom.Rect;
-import arc.math.geom.Vec2;
-import arc.math.geom.Vec3;
-import arc.struct.Seq;
+import arc.math.geom.*;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -26,16 +22,16 @@ import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.type.Weather;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.TileGen;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
 import newhorizon.content.*;
-import newhorizon.expand.map.SchematicUtil;
+import newhorizon.content.blocks.EnvironmentBlock;
 
 import static mindustry.Vars.state;
-import static mindustry.Vars.world;
 import static newhorizon.content.NHPlanets.ceito;
 
 public class MidanthaPlanet extends Planet {
@@ -86,7 +82,6 @@ public class MidanthaPlanet extends Planet {
                 }else return false;
             }));
 
-            //r.env = r.sector.planet.defaultEnv;
             r.waves = true;
             r.showSpawns = true;
             r.onlyDepositCore = false;
@@ -119,19 +114,10 @@ public class MidanthaPlanet extends Planet {
         startSector = 15;
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     public class MidanthaPlanetGenerator extends PlanetGenerator {
         //planet
         public float heightScl = 0.9f, octaves = 8, persistence = 0.7f, heightPow = 3f, heightMult = 1.6f;
-        //chunk size
-        public static final int cSize = 16;
-        //inner num after limit area
-        public int border, borderSize, cStart, cStep;
-        public Chunk[][] chunks;
-
-        //inner variable
-        public final Seq<Rect> chunkRects = new Seq<>();
-        public Seq<Point2> tmpRivers = new Seq<>();
-
 
         public boolean allowLanding(Sector sector){
             return (sector.hasBase() || sector.near().contains(s -> s.hasBase() && s.isCaptured()))/* && NHPlanets.midantha.unlocked()*/;
@@ -154,153 +140,103 @@ public class MidanthaPlanet extends Planet {
 
         @Override
         public float getSizeScl(){
-            return 350;
+            return 2000 * 1.07f * 6f / 4f;
         }
 
-        @Override
-        public int getSectorSize(Sector sector){
-            return 512;
-        }
 
         float rawHeight(Vec3 position){
             return Simplex.noise3d(seed, octaves, persistence, 1f/heightScl, 10f + position.x, 10f + position.y, 10f + position.z);
         }
 
-        float rawTemp(Vec3 position){
-            return position.dst(0, 0, 1)*2.2f - Simplex.noise3d(seed, 8, 0.54f, 1.4f, 10f + position.x, 10f + position.y, 10f + position.z) * 2.9f;
-        }
-
         @Override
         public void genTile(Vec3 position, TileGen tile){
-            tile.floor = Blocks.air;
+            tile.floor = EnvironmentBlock.metalFloorPlain;
             tile.block = Blocks.air;
         }
 
         @Override
         protected void generate(){
             rand.setSeed(seed + sector.id);
-            setBorder();
-            for (int cx = 0; cx < cStep; cx++){
-                for (int cy = 0; cy < cStep; cy++){
-                    int cwx = cStart + cx * cSize,
-                        cwy = cStart + cy * cSize;
 
-                }
-            }
-            setRects();
-            setRiver();
+            genRiver();
+            //genShoreline();
 
-            setSpawnAndCore();
+            placeLoadout();
+
             setRule();
         }
 
-        //set the map border and limit map area, and set border variables
-        private void setBorder(){
-            //FUCK YOU ANUKE THE FUCKED POLY BORDER
-            //alright lets worldCreated the area for that shit border
-            for (int i = 0; i < width/2; i++){
-                if (world.getDarkness(i, i) == 0 &&
-                    world.getDarkness(width - 1 - i, i) == 0 &&
-                    world.getDarkness(i, height - 1 - i) == 0 &&
-                    world.getDarkness(width - 1 - i, height - 1 - i) == 0){
-                    border = i;
-                    Log.info(border);
-                    break;
-                }
-            }
-
-            borderSize = width - border * 2;
-            //worldCreated the map
-            cStart = (borderSize % cSize) / 2 + border;
-            cStep = borderSize / cSize;
-            chunks = new Chunk[cStep][cStep];
-            for (int i = 0; i < cStep; i++){
-                for (int j = 0; j < cStep; j++){
-                    chunks[i][j] = new Chunk();
-                }
-            }
-
-            state.rules.limitMapArea = true;
-            state.rules.limitX = state.rules.limitY = border;
-            state.rules.limitWidth = state.rules.limitHeight = borderSize;
+        private void placeLoadout(){
+            float length = width/2.6f;
+            Vec2 trns = Tmp.v1.trns(rand.random(360f), length);
+            int spawnX = (int)(trns.x + width/2f), spawnY = (int)(trns.y + height/2f), endX = (int)(-trns.x + width/2f), endY = (int)(-trns.y + height/2f);
+            Schematics.placeLoadout(NHContent.nhBaseLoadout, spawnX, spawnY);
+            tiles.getn(endX, endY).setOverlay(Blocks.spawn);
         }
 
-        private void setRiver(){
-            for (Point2 p: tmpRivers){
-                chunks[p.x][p.y].river = true;
+        private void genRiver(){
+            float len = width / 6f;
+            float ang = rand.random(360f);
+            Vec2 trns = Tmp.v1.trns(ang, len).cpy();
+            for (int rot = 0; rot < 4; rot++){
+                genLine((int)(width/2f + trns.x), (int)(height/2f + trns.y), rot * 90);
+                genLine((int)(width/2f - trns.x), (int)(height/2f - trns.y), rot * 90);
             }
+        }
 
-            for (int x = 0; x < cStep; x++){
-                for (int y = 0; y < cStep; y++){
-                    if (chunks[x][y].river){
-                        int idx = 0;
-                        if (isRiverChunk(x, y + 1)) idx += 1;
-                        if (isRiverChunk(x + 1, y)) idx += 2;
-                        if (isRiverChunk(x, y - 1)) idx += 4;
-                        if (isRiverChunk(x - 1, y)) idx += 8;
+        private void genLine(int x, int y, int direction){
+            int curX = x, curY = y, lastX, lastY;
+            for (int i = 0; i < 100; i++){
+                lastX = curX;
+                lastY = curY;
+                int ang = Mathf.chance(0.8)? Mathf.random(-1, 1) * 45 + direction: direction;
+                int len = Mathf.random(20, 60);
+                Tmp.v1.trns(ang, len);
+                curX = lastX + (int)Tmp.v1.x;
+                curY = lastY + (int)Tmp.v1.y;
+                if ((curX > width || curX < 0) && (curY > height || curY < 0)) break;
+                drawLine(curX, curY, lastX, lastY, 7, NHBlocks.quantumField, NHBlocks.quantumFieldDeep);
+                drawLine(curX, curY, lastX, lastY, 4, NHBlocks.quantumFieldDeep, null);
+            }
+            /*
+            do {
+                lastX = curX;
+                lastY = curY;
+                float ang = Mathf.random(-2, 2) * 45 + direction;
+                float len = Mathf.random(16, 32);
+                Tmp.v1.trns(ang, len).add(x, y);
+                curX = (int)Tmp.v1.x;
+                curY = (int)Tmp.v1.y;
+                drawLine(curX, curY, lastX, lastY);
+            } while ((curX < width || curX > 0) && (curY < height || curY > 0));
 
-                        if (idx > 0){
+             */
+        }
 
+        public void drawCircle(int size, int x, int y, Cons<Tile> drawer){
+            for(int rx = -size; rx <= size; rx++){
+                for(int ry = -size; ry <= size; ry++){
+                    if(Mathf.within(rx, ry, size - 0.5f + 0.0001f)){
+                        int wx = x + rx, wy = y + ry;
+
+                        if(wx < 0 || wy < 0 || wx >= width || wy >= height){
+                            continue;
                         }
+
+                        drawer.get(tiles.get(wx, wy));
                     }
                 }
             }
-
         }
 
-        private boolean isRiverChunk(int x, int y){
-            if (x < 0 || y < 0 || x >= cStep || y >= cStep) return true;
-            return chunks[x][y].river;
-        }
-
-        private int getChunkLBxy(int index){
-            return cStart + index * cSize;
-        }
-
-        private void setRects(){
-            chunkRects.clear();
-            tmpRivers.clear();
-            chunkRects.add(new Rect(0, 0, cStep-1, cStep-1));
-
-            for(int i = 0; i < 25; i++){
-                Rect largest = new Rect();
-                for (Rect rect: chunkRects){
-                    if (rect.area() > largest.area()) largest = rect;
-                }
-                spiltRect(largest);
-            }
-        }
-
-        private void spiltRect(Rect rect){
-            boolean verticalSplit = Mathf.chance(rect.width / (rect.width + rect.height));
-            if (verticalSplit && rect.width > 3){
-                int xSplit = rand.random(1, (int)rect.width - 1);
-                chunkRects.remove(rect);
-                for (int y = 0; y < rect.height + 1; y++){
-                    tmpRivers.add(new Point2((int) (rect.x) + xSplit, (int) (rect.y) + y));
-                }
-                chunkRects.add(new Rect(rect.x, rect.y, xSplit - 1, rect.height));
-                chunkRects.add(new Rect(rect.x + xSplit + 1, rect.y, rect.width - xSplit - 1, rect.height));
-            }else if (rect.height > 3){
-                int ySplit = rand.random(1, (int)rect.height - 1);
-                chunkRects.remove(rect);
-                for (int x = 0; x < rect.width + 1; x++){
-                    tmpRivers.add(new Point2((int) (rect.x) + x, (int) (rect.y) + ySplit));
-                }
-                chunkRects.add(new Rect(rect.x, rect.y, rect.width, ySplit - 1));
-                chunkRects.add(new Rect(rect.x, rect.y + ySplit + 1, rect.width, rect.height - ySplit - 1));
-            }
-        }
-
-        private void setSpawnAndCore(){
-            float length = borderSize/3.2f;
-            float angel = rand.random(360f);
-            Vec2 trns = Tmp.v1.trns(angel, length);
-            int spawnX = (int)(trns.x + width/2f), spawnY = (int)(trns.y + height/2f),
-                coreX = (int)(-trns.x + width/2f), coreY = (int)(-trns.y + height/2f);
-            tiles.getn(spawnX, spawnY).setOverlay(Blocks.spawn);
-            tiles.getn(coreX, coreY).setFloor(Blocks.coreZone.asFloor());
-            Schematics.placeLoadout(NHContent.nhBaseLoadout, coreX, coreY);
+        private void drawLine(int x1, int y1, int x2, int y2, int rad, Block floor, Block ignore){
+            Bresenham2.line(x1, y1, x2, y2, (x, y) -> {
+                drawCircle(rad, x, y, tile -> {
+                    if (tile != null && tile.floor() != ignore) {
+                        tile.setFloor(floor.asFloor());
+                    }
+                });
+            });
         }
 
         private void setRule(){
@@ -312,24 +248,6 @@ public class MidanthaPlanet extends Planet {
             state.rules.weather.clear();
             state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
             state.rules.spawns = NHOverride.generate(difficulty, new Rand(sector.id), false, false, false);
-            //state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
         }
-
-        private void PassTile(Intc2 r){
-            for(Tile tile : tiles){
-                floor = tile.floor();
-                block = tile.block();
-                ore = tile.overlay();
-                r.get(tile.x, tile.y);
-                tile.setFloor(floor.asFloor());
-                tile.setBlock(block);
-                tile.setOverlay(ore);
-            }
-        }
-    }
-
-    public class Chunk{
-        public boolean natural = false;
-        public boolean river = false;
     }
 }

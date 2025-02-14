@@ -408,7 +408,7 @@ public class NewHorizon extends Mod{
     }
 
 	private void debugFunctions(){
-		if (DEBUGGING){
+		if (true){
 			PlanetDialog.debugSelect = true;
 			Events.run(EventType.Trigger.universeDrawEnd, DebugFunc::renderSectorId);
 		}

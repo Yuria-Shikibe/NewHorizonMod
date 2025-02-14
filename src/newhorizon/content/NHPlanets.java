@@ -52,9 +52,9 @@ public class NHPlanets{
 	
 	public static void load(){
 		ceito = new CeitoPlanet();
-		if (NHSetting.getBool(NHSetting.EXPERIMENTAL)){
-			danthami = new MidanthaPlanet();
-		}
+
+		danthami = new MidanthaPlanet();
+
 		midantha = new NHPlanet("midantha", ceito, 1, 3){{
 			bloom = true;
 			visible = true;
@@ -384,7 +384,7 @@ public class NHPlanets{
 								tile.setFloor(Blocks.coreZone.asFloor());
 							}else if(Mathf.chance(0.1)){
 								if(k % 3 == 1){
-									tile.setFloor(NHBlocks.armorQuantum.asFloor());
+									//tile.setFloor(NHBlocks.armorQuantum.asFloor());
 								}else{
 									tile.setFloor(NHBlocks.armorLight.asFloor());
 								}
@@ -495,7 +495,7 @@ public class NHPlanets{
 				
 				if((x % 85 == 0 || y % 85 == 0) && !floor.asFloor().isLiquid){
 					if(difficulty > 0.815f){
-						floor = NHBlocks.armorAncient;
+						//floor = NHBlocks.armorAncient;
 					}else if(noise(x, y, 7, 0.67f, 55f, 3f) > 0.835f || Mathf.chance(0.175)){
 						floor = Blocks.metalFloor5;
 					}

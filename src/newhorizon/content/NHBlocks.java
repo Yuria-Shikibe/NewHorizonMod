@@ -115,9 +115,6 @@ public class NHBlocks{
 		//Ancient
 		ancimembraneConcentrator, ancientArtillery,
 	
-		//Wave Energy
-		waveEnergyConveyor, ancitentWaveEnergyConveyor, waveEnergyGenerator,
-	
 		//Turrets
 		dendrite, interferon, prism, hive, concentration,
 		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
@@ -137,15 +134,15 @@ public class NHBlocks{
 		largeWaterExtractor, //beamDrill,
 		//Powers
 		hydroFuelCell, ancientPowerNode,
-		armorPowerNode, armorBatteryLarge, radiationGenerator, zetaGenerator, hugeBattery, heavyPowerNode,
+		armorPowerNode, armorBatteryLarge, zetaGenerator, hugeBattery, heavyPowerNode,
 		//Defence
 		largeMendProjector, assignOverdrive, antiBulletTurret, largeShieldGenerator, fireExtinguisher, webber,
 		//Special
-		playerJumpGate, gravityTrap, hyperspaceWarper, bombLauncher, scrambler, airRaider, configurer, shieldProjector, unitIniter, remoteStorage,
+		gravityTrap, hyperspaceWarper, bombLauncher, airRaider, unitIniter, remoteStorage,
 		disposePowerVoid, gravityTrapSmall, lableSpawner,
 	
 		//Env
-		armorClear, armorLight, armorQuantum, armorAncient,
+		armorClear, armorLight,
 		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalWall, metalWallQuantum, metalTower, metalGround, metalGroundQuantum, metalScarp, metalVent,
 		metalGroundHeat, conglomerateRock, conglomerateWall
 		;
@@ -190,22 +187,12 @@ public class NHBlocks{
 			blendGroup = this;
 		}};
 		
-		armorAncient = new ArmorFloor("armor-ancient", 9){{
-			quantumSetter.get(this);
-			lightRadius = 16f;
-			lightColor = NHColor.ancientLightMid.cpy().a(0.7f);
-			attributes.set(Attribute.light, 1);
-			attributes.set(Attribute.heat, 1);
-			speedMultiplier = 2f;
-			emitLight = true;
-		}};
-		
-		armorQuantum = new ArmorFloor("armor-quantum", 2, armorClear.asFloor()){{
-			quantumSetter.get(this);
-			lightColor = NHColor.darkEnrColor.cpy().a(0.7f);
-			lightRadius = 7f;
-			emitLight = true;
-		}};
+		//armorQuantum = new ArmorFloor("armor-quantum", 2, armorClear.asFloor()){{
+		//	quantumSetter.get(this);
+		//	lightColor = NHColor.darkEnrColor.cpy().a(0.7f);
+		//	lightRadius = 7f;
+		//	emitLight = true;
+		//}};
 		
 		armorLight = new ArmorFloor("armor-light", 3, armorClear.asFloor()){{
 			useDynamicLight = true;
