@@ -18,6 +18,7 @@ public class Atlas_4_4_Floor extends Floor {
 
     public Atlas_4_4_Floor(String name) {
         super(name, 0);
+        needsSurface = false;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class Atlas_4_4_Floor extends Floor {
     }
 
     public boolean checkTile(Tile tile){
-        return tile != null && (tile.floor() == this || blendFloors.contains(tile.floor()));
+        return tile != null && (tile.floor() == this || blendFloors.contains(tile.floor()) || tile.floor().isLiquid);
     }
 
 

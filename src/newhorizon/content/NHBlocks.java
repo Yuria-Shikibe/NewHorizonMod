@@ -142,7 +142,7 @@ public class NHBlocks{
 		disposePowerVoid, gravityTrapSmall, lableSpawner,
 	
 		//Env
-		armorClear, armorLight,
+		armorClear,
 		quantumField, quantumFieldDeep, quantumFieldDisturbing, metalWall, metalWallQuantum, metalTower, metalGround, metalGroundQuantum, metalScarp, metalVent,
 		metalGroundHeat, conglomerateRock, conglomerateWall
 		;
@@ -182,10 +182,10 @@ public class NHBlocks{
 			f.decoration = metalScarp;
 		};
 		
-		armorClear = new ArmorFloor("armor-clear", 0){{
-			quantumSetter.get(this);
-			blendGroup = this;
-		}};
+		//armorClear = new ArmorFloor("armor-clear", 0){{
+		//	quantumSetter.get(this);
+		//	blendGroup = this;
+		//}};
 		
 		//armorQuantum = new ArmorFloor("armor-quantum", 2, armorClear.asFloor()){{
 		//	quantumSetter.get(this);
@@ -194,12 +194,12 @@ public class NHBlocks{
 		//	emitLight = true;
 		//}};
 		
-		armorLight = new ArmorFloor("armor-light", 3, armorClear.asFloor()){{
-			useDynamicLight = true;
-			lightRadius = 7f;
-			quantumSetter.get(this);
-			emitLight = true;
-		}};
+		//armorLight = new ArmorFloor("armor-light", 3, armorClear.asFloor()){{
+		//	useDynamicLight = true;
+		//	lightRadius = 7f;
+		//	quantumSetter.get(this);
+		//	emitLight = true;
+		//}};
 		
 		conglomerateWall = new StaticWall("conglomerate-wall"){{
 			variants = 4;

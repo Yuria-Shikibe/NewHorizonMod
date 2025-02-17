@@ -1,13 +1,11 @@
 package newhorizon.expand.map.planet;
 
-import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.*;
 import arc.struct.GridBits;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Structs;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -88,8 +86,7 @@ public class MidanthaPlanet extends Planet {
             r.dropZoneRadius = 64;
 
             r.bannedBlocks.addAll(Vars.content.blocks().copy().select(b -> {
-                if(b instanceof SolidPump){
-                    SolidPump pump = (SolidPump)b;
+                if(b instanceof SolidPump pump){
                     return pump.result == Liquids.water && pump.attribute == Attribute.water;
                 }else return false;
             }));
@@ -129,7 +126,7 @@ public class MidanthaPlanet extends Planet {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class MidanthaPlanetGenerator extends PlanetGenerator {
         public float heightScl = 0.9f, octaves = 8, persistence = 0.7f, heightPow = 3f, heightMult = 1.6f;
-        public float airThresh = 0.13f, airScl = 14;
+        public float airThresh = 0.045f, airScl = 14;
 
         public final Seq<Rect> tmpRects = new Seq<>();
 
@@ -137,7 +134,7 @@ public class MidanthaPlanet extends Planet {
 
         {
             baseSeed = 5;
-            defaultLoadout = NHContent.nhBaseLoadout;
+            defaultLoadout = Loadouts.basicBastion;
         }
 
         public boolean allowLanding(Sector sector){
@@ -190,68 +187,17 @@ public class MidanthaPlanet extends Planet {
         public void genTile(Vec3 position, TileGen tile){
             tile.floor = getBlock(position);
 
-            if(tile.floor == NHBlocks.metalGround && rand.chance(0.01)){
-                tile.floor = NHBlocks.metalGroundQuantum;
-            }
-
-            tile.block = tile.floor.asFloor().wall;
-
-            if(Ridged.noise3d(seed + 1, position.x, position.y, position.z, 2, airScl) > airThresh){
-                tile.block = Blocks.air;
-            }
+            tile.block = Blocks.air;
         }
 
         @Override
         protected void generate(){
-            pass((x, y) -> {
-                float noise = noise(x + 782, y, 7, 0.8f, 130f, 1f);
-                if(noise > 0.62f){
-                    floor = Blocks.darksand;
-                    ore = Blocks.air;
-                }
-            });
+            distort(10f, 12f);
+            distort(5f, 7f);
 
-            //distort(10f, 12f);
-            //distort(5f, 7f);
-
-            Pool<Rect> rectPool = Pools.get(Rect.class, Rect::new);
             rand.setSeed(seed);
 
             float difficulty = sector == null ? rand.random(0.4f, 1f) : sector.threat;
-
-            for(int i = 0; i < 24; i++){
-                int w = rand.random(10, width / 10);
-                int h = rand.random(10, height / 10);
-                int x2 = rand.random(width - w);
-                int y2 = rand.random(height - h);
-                tmpRects.add(rectPool.obtain().set(x2, y2, w, h));
-            }
-
-            for(int k = 0; k < tmpRects.size; k++){
-                Rect r = tmpRects.get(k);
-                for(int i = 0; i < r.width; i++){
-                    for(int j = 0; j < r.height; j++){
-                        Tile tile = tiles.get((int)(i + r.x), (int)(j + r.y));
-                        if(tile == null || tile.floor().isLiquid)continue;
-                        tile.setBlock(Blocks.air);
-                        if(i == 0 || i == (int)r.width - 1 || j == 0 || j == (int)r.height - 1){
-                            tile.setFloor(Blocks.darkPanel3.asFloor());
-                        }else{
-                            if(k % 3 == 0){
-                                tile.setFloor(Blocks.coreZone.asFloor());
-                            }else if(Mathf.chance(0.1)){
-                                if(k % 3 == 1){
-                                    //tile.setFloor(NHBlocks.armorQuantum.asFloor());
-                                }else{
-                                    tile.setFloor(NHBlocks.armorLight.asFloor());
-                                }
-                            }else tile.setFloor(NHBlocks.armorClear.asFloor());
-                        }
-                    }
-                }
-            }
-
-            tmpRects.clear();
 
             Block oW = Blocks.coreZone.asFloor().wall;
             Blocks.coreZone.asFloor().wall = NHBlocks.metalWall;
@@ -265,7 +211,7 @@ public class MidanthaPlanet extends Planet {
             int
                     spawnX = (int)(trns.x + width/2f), spawnY = (int)(trns.y + height/2f),
                     endX = (int)(-trns.x + width/2f), endY = (int)(-trns.y + height/2f);
-            float maxd = Mathf.dst(width/2f, height/2f);
+            float maxd = Mathf.dst(width, height);
 
             erase(spawnX, spawnY, 22);
 
@@ -274,11 +220,9 @@ public class MidanthaPlanet extends Planet {
             brush(path, 8);
             erase(endX, endY, 15);
 
-            median(12, 0.6, NHBlocks.quantumField);
+            //median(12, 0.6, NHBlocks.quantumField);
 
             blend(NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 7);
-
-            scatter(NHBlocks.metalGround, NHBlocks.metalGroundQuantum, 0.075f);
 
             pass((x, y) -> {
                 if(floor.asFloor().isDeep()){
@@ -293,82 +237,6 @@ public class MidanthaPlanet extends Planet {
 
             erase(endX, endY, 6);
 
-
-            pass((x, y) -> {
-                if(block != Blocks.air){
-                    if(nearAir(x, y)){
-                        if(block == NHBlocks.metalWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
-                            ore = Blocks.wallOreBeryllium;
-                        }/*else if(block != NHBlocks.metalWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
-							ore = Blocks.wallOreBeryllium;
-						}*/
-                    }
-                }else if(!nearWall(x, y)){
-                    if(noise(x + 150, y + x*2 + 100, 4, 3.8f, 55f, 1f) > 0.816f){
-                        ore = Blocks.oreTitanium;
-                    }
-
-                    if(noise(x + 134, y - 134, 5, 4f, 45f, 1f) > 0.73f){
-                        ore = Blocks.oreLead;
-                    }
-
-                    if(noise(x + 644, y - 538, 5.1, 2f, 125f, 1f) > 0.737f){
-                        ore = Blocks.oreCopper;
-                    }
-
-                    if(noise(x + 344 + y*0.35f, y - 538, 5, 6f, 45f, 1f) > 0.75f){
-                        ore = Blocks.oreCoal;
-                    }
-
-                    if(noise(x + 244, y - 138, 6, 3f, 35f, 1f) > 0.8f){
-                        ore = Blocks.oreBeryllium;
-                    }
-
-                    if(noise(x + 578, y - 238, 4, 2.08f, 85f, 1f) > 0.793f){
-                        ore = Blocks.oreTungsten;
-                    }
-
-                    if(noise(y - 1234, x - 938, 6, 2.28f, 15f, 1f) > 0.880383f){
-                        ore = NHBlocks.oreZeta;
-                    }
-
-                    if(noise(x + 999, y + 600, 4, 5.63f, 45f, 1f) > 0.8422f){
-                        ore = Blocks.oreThorium;
-                    }
-                }
-            });
-
-//			ores(Seq.with(Blocks.oreCopper, Blocks.oreLead, Blocks.oreTitanium, Blocks.oreCoal, Blocks.oreCrystalThorium, Blocks.oreTungsten, NHBlocks.oreZeta));
-
-            pass((x, y) -> {
-                int x1 = x - x % 3 + 30;
-                int y1 = y - y % 3 + 30;
-
-                if((x1 % 70 == 0 || y1 % 70 == 0) && !floor.asFloor().isLiquid){
-                    if(noise(x + 30, y + 30, 4, 0.66f, 75f, 2f) > 0.85f || Mathf.chance(0.035)){
-                        floor = Blocks.metalFloor2;
-                    }
-                }
-
-                if((x % 85 == 0 || y % 85 == 0) && !floor.asFloor().isLiquid){
-                    if(difficulty > 0.815f){
-                        //floor = NHBlocks.armorAncient;
-                    }else if(noise(x, y, 7, 0.67f, 55f, 3f) > 0.835f || Mathf.chance(0.175)){
-                        floor = Blocks.metalFloor5;
-                    }
-                }
-
-                if((x % 50 == 0 || y % 50 == 0) && !floor.asFloor().isLiquid){
-                    if(noise(x, y, 5, 0.7f, 75f, 3f) > 0.8125f || Mathf.chance(0.075)){
-                        floor = NHBlocks.quantumFieldDisturbing;
-                    }
-                }
-
-                if((nearWall(x, y) || floor == Blocks.metalFloor2) && Mathf.chance(0.015)){
-                    block = NHBlocks.metalTower;
-                }
-            });
-
             //remove props near ores, they're too annoying
             pass((x, y) -> {
                 if(ore.asFloor().wallOre || block.itemDrop != null || (block == Blocks.air && ore != Blocks.air)){
@@ -376,13 +244,7 @@ public class MidanthaPlanet extends Planet {
                 }
             });
 
-            for(Tile tile : tiles){
-                if(tile.overlay().needsSurface && !tile.floor().hasSurface()){
-                    tile.setOverlay(Blocks.air);
-                }
-            }
-
-            blend(NHBlocks.quantumFieldDisturbing, Blocks.darkPanel3, 1);
+            blend(NHBlocks.quantumFieldDisturbing, EnvironmentBlock.metalFloorGroove, 1);
 
             path = pathfind(spawnX, spawnY, endX, endY, tile -> (tile.solid() ? 50f : 0f), Astar.manhattan);
 
@@ -419,7 +281,7 @@ public class MidanthaPlanet extends Planet {
 
             tiles.getn(endX, endY).setOverlay(Blocks.spawn);
 
-            median(5, 0.46, NHBlocks.quantumField);
+            //median(5, 0.46, NHBlocks.quantumField);
 
             decoration(0.017f);
 
@@ -427,6 +289,119 @@ public class MidanthaPlanet extends Planet {
 
             int minVents = rand.random(22, 33);
             int ventCount = 0;
+
+            pass((x, y) -> {
+                int x1 = x - x % 3 + 30;
+                int y1 = y - y % 3 + 30;
+
+                if((x1 % 70 == 0 || y1 % 70 == 0) && !floor.asFloor().isLiquid){
+                    if(noise(x + 30, y + 30, 4, 0.66f, 75f, 2f) > 0.85f || Mathf.chance(0.035)){
+                        floor = Blocks.metalFloor2;
+                    }
+                }
+
+                if((x % 85 == 0 || y % 85 == 0) && !floor.asFloor().isLiquid){
+                    if(noise(x, y, 7, 0.67f, 55f, 3f) > 0.835f || Mathf.chance(0.175)){
+                        floor = Blocks.metalFloor5;
+                    }
+                }
+
+                if((x % 50 == 0 || y % 50 == 0) && !floor.asFloor().isLiquid){
+                    if(noise(x, y, 5, 0.7f, 75f, 3f) > 0.8125f || Mathf.chance(0.075)){
+                        floor = NHBlocks.quantumFieldDisturbing;
+                    }
+                }
+            });
+
+            while (tmpRects.size < 64){
+                int rx = rand.random(20, width - 20);
+                int ry = rand.random(20, height - 20);
+                int w = rand.random(9, 21);
+                int h = rand.random(9, 21);
+                if (!tiles.get(rx, ry).solid() || !tiles.get(rx, ry).floor().isLiquid){
+                    tmpRects.add(new Rect().setCentered(rx, ry, w, h));
+                }
+            }
+
+            Rect coreRect = new Rect().setCentered(spawnX, spawnY, 45);
+
+            for (int k = 0; k < 8; k++) {
+                int idx = rand.random(tmpRects.size - 2);
+                Rect r1 = tmpRects.get(idx);
+                Rect r2 = tmpRects.get(idx + 1);
+
+                r1.getCenter(Tmp.v1);
+                r2.getCenter(Tmp.v2);
+
+                path.clear();
+                path = pathfind((int) Tmp.v1.x, (int) Tmp.v1.y, (int) Tmp.v2.x, (int) Tmp.v2.y, tile -> maxd - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
+
+                continualDraw(path, Blocks.air, 7, (x, y) -> true, true);
+                continualDraw(path, Blocks.metalFloor.asFloor(), 2, (x, y) -> rand.chance(0.95f));
+            }
+
+            for (int k = 0; k < 18; k++) {
+                int idx = rand.random(tmpRects.size - 2);
+                Rect r1 = tmpRects.get(idx);
+                Rect r2 = tmpRects.get(idx + 1);
+
+                r1.getCenter(Tmp.v1);
+                r2.getCenter(Tmp.v2);
+
+                path.clear();
+                path = pathfind((int) Tmp.v1.x, (int) Tmp.v1.y, (int) Tmp.v2.x, (int) Tmp.v2.y, tile -> maxd - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
+
+                continualDraw(path, NHBlocks.metalWall, 3, (x, y) -> {
+                    if (rand.chance(0.002f)) {
+                        erase(x, y, 7);
+                        return false;
+                    }else {
+                        return true;
+                    }
+                });
+            }
+
+            for (int k = 0; k < 4; k++) {
+                int idx = rand.random(tmpRects.size - 1);
+                Rect r1 = tmpRects.get(idx);
+
+                r1.getCenter(Tmp.v1);
+                coreRect.getCenter(Tmp.v2);
+
+                path.clear();
+                path = pathfind((int) Tmp.v1.x, (int) Tmp.v1.y, (int) Tmp.v2.x, (int) Tmp.v2.y, tile -> maxd - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
+
+                continualDraw(path, Blocks.air, 9, (x, y) -> true, true);
+                continualDraw(path, Blocks.metalFloor.asFloor(), 3, (x, y) -> rand.chance(0.95f));
+            }
+
+            tmpRects.add(coreRect);
+
+            for(int k = 0; k < tmpRects.size; k++){
+                if (Mathf.chance(0.4f)) continue;
+                Rect r = tmpRects.get(k);
+                Tmp.r1.set(r).grow(1);
+                if (tiles.get((int)(Tmp.r1.x), (int)(Tmp.r1.y)).solid()) continue;
+                for(int i = 0; i < Tmp.r1.width; i++){
+                    for(int j = 0; j < Tmp.r1.height; j++){
+                        Tile tile = tiles.get((int)(i + Tmp.r1.x), (int)(j + Tmp.r1.y));
+                        if(tile == null)continue;
+                        if(i == 0 || i == (int)Tmp.r1.width - 1 || j == 0 || j == (int)Tmp.r1.height - 1){
+                            if (rand.chance(0.75f)){
+                                tile.setFloor(NHBlocks.metalGround.asFloor());
+                            }
+                            if (rand.chance(0.6f) && !tile.solid()){
+                                tile.setBlock(Blocks.scrapWall);
+                            }
+                        }else {
+                            tile.setBlock(Blocks.air);
+                            tile.setFloor(EnvironmentBlock.metalFloorPlain);
+                        }
+                    }
+                }
+            }
+
+            tmpRects.clear();
 
             //vents
             over: while(ventCount < minVents){
@@ -455,6 +430,12 @@ public class MidanthaPlanet extends Planet {
                 }
             }
 
+            for(Tile tile : tiles){
+                if (tile.floor() == NHBlocks.metalGround) {
+                    tile.setFloor(NHBlocks.conglomerateRock.asFloor());
+                }
+            }
+
             state.rules.env = sector.planet.defaultEnv;
 
             Schematics.placeLoadout(NHContent.nhBaseLoadout, spawnX, spawnY);
@@ -476,13 +457,12 @@ public class MidanthaPlanet extends Planet {
             state.rules.weather.clear();
             state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
             state.rules.spawns = NHOverride.generate(difficulty, new Rand(sector.id), false, false, false);
-            //state.rules.tags.put(NHInbuiltEvents.APPLY_KEY, "true");
             if(rawTemp(sector.tile.v) < 0.65f){
                 state.rules.bannedBlocks.addAll(Vars.content.blocks().copy().retainAll(b -> b instanceof LaunchPad));
             }
         }
 
-        public void continualDraw(Seq<Tile> path, Block block, int rad, DrawBoolf b){
+        public void continualDraw(Seq<Tile> path, Block block, int rad, DrawBoolf b, boolean isBlock){
             GridBits used = new GridBits(tiles.width, tiles.height);
 
             for(Tile t : path){
@@ -493,13 +473,18 @@ public class MidanthaPlanet extends Planet {
                             used.set(wx, wy);
                             if(b.get(wx, wy)){
                                 Tile other = tiles.getn(wx, wy);
-                                if(block instanceof Floor)other.setFloor(block.asFloor());
+                                if (isBlock) other.setBlock(block);
+                                else if(block instanceof Floor)other.setFloor(block.asFloor());
                                 else other.setBlock(block);
                             }
                         }
                     }
                 }
             }
+        }
+
+        public void continualDraw(Seq<Tile> path, Block block, int rad, DrawBoolf b){
+            continualDraw(path, block, rad, b, false);
         }
 
         public void draw(int cx, int cy, Block block, int rad, DrawBoolf b){

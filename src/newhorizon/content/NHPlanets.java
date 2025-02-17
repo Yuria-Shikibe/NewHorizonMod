@@ -263,21 +263,12 @@ public class NHPlanets{
 	
 	public static class NHPlanetGenerator extends PlanetGenerator{
 		public float heightScl = 0.9f, octaves = 8, persistence = 0.7f, heightPow = 3f, heightMult = 1.6f;
-		
-		//TODO inline/remove
-		public static float arkThresh = 0.28f, arkScl = 0.83f;
-		public static int arkSeed = 7, arkOct = 2;
-		public static float liqThresh = 0.64f, liqScl = 87f, redThresh = 3.1f, noArkThresh = 0.3f;
-		public static int crystalSeed = 8, crystalOct = 2;
-		public static float crystalScl = 0.9f, crystalMag = 0.3f;
-		public static float airThresh = 0.13f, airScl = 14;
-		
-		public static final Seq<Rect> tmpRects = new Seq<>();
+		public float airThresh = 0.13f, airScl = 14;
+
+		public final Seq<Rect> tmpRects = new Seq<>();
 		
 		Block[] terrain1 = {NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGroundQuantum, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.quantumFieldDeep, NHBlocks.metalGround, NHBlocks.conglomerateRock, NHBlocks.quantumFieldDeep};
-		Block[] terrain2 = {NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.conglomerateRock, Blocks.stone, NHBlocks.metalGround};
-		
-		
+
 		{
 			baseSeed = 5;
 			defaultLoadout = Loadouts.basicBastion;
@@ -353,15 +344,15 @@ public class NHPlanets{
 					ore = Blocks.air;
 				}
 			});
-			
+
 			distort(10f, 12f);
 			distort(5f, 7f);
-			
+
 			Pool<Rect> rectPool = Pools.get(Rect.class, Rect::new);
 			rand.setSeed(seed);
-			
+
 			float difficulty = sector == null ? rand.random(0.4f, 1f) : sector.threat;
-			
+
 			for(int i = 0; i < 24; i++){
 				int w = rand.random(10, width / 10);
 				int h = rand.random(10, height / 10);
@@ -369,7 +360,7 @@ public class NHPlanets{
 				int y2 = rand.random(height - h);
 				tmpRects.add(rectPool.obtain().set(x2, y2, w, h));
 			}
-			
+
 			for(int k = 0; k < tmpRects.size; k++){
 				Rect r = tmpRects.get(k);
 				for(int i = 0; i < r.width; i++){
@@ -382,47 +373,41 @@ public class NHPlanets{
 						}else{
 							if(k % 3 == 0){
 								tile.setFloor(Blocks.coreZone.asFloor());
-							}else if(Mathf.chance(0.1)){
-								if(k % 3 == 1){
-									//tile.setFloor(NHBlocks.armorQuantum.asFloor());
-								}else{
-									tile.setFloor(NHBlocks.armorLight.asFloor());
-								}
-							}else tile.setFloor(NHBlocks.armorClear.asFloor());
+							}
 						}
 					}
 				}
 			}
-			
+
 			tmpRects.clear();
-			
+
 			Block oW = Blocks.coreZone.asFloor().wall;
 			Blocks.coreZone.asFloor().wall = NHBlocks.metalWall;
-			
+
 			cells(4);
-			
+
 			Blocks.coreZone.asFloor().wall = oW;
-			
+
 			float length = width/2.6f;
 			Vec2 trns = Tmp.v1.trns(rand.random(360f), length);
 			int
 					spawnX = (int)(trns.x + width/2f), spawnY = (int)(trns.y + height/2f),
 					endX = (int)(-trns.x + width/2f), endY = (int)(-trns.y + height/2f);
 			float maxd = Mathf.dst(width/2f, height/2f);
-			
+
 			erase(spawnX, spawnY, 22);
-			
+
 			Seq<Tile> path = pathfind(spawnX, spawnY, endX, endY, tile -> (tile.solid() ? 70f : 0f) + maxd - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
-			
+
 			brush(path, 8);
 			erase(endX, endY, 15);
-			
+
 			median(12, 0.6, NHBlocks.quantumField);
-			
+
 			blend(NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 7);
-			
+
 			scatter(NHBlocks.metalGround, NHBlocks.metalGroundQuantum, 0.075f);
-			
+
 			pass((x, y) -> {
 				if(floor.asFloor().isDeep()){
 					float noise = noise(x + 342, y + 541, 7, 0.8f, 120f, 1.5f);
@@ -431,12 +416,12 @@ public class NHPlanets{
 					}
 				}
 			});
-			
+
 			inverseFloodFill(tiles.getn(spawnX, spawnY));
-			
+
 			erase(endX, endY, 6);
-			
-			
+
+
 			pass((x, y) -> {
 				if(block != Blocks.air){
 					if(nearAir(x, y)){
@@ -450,49 +435,49 @@ public class NHPlanets{
 					if(noise(x + 150, y + x*2 + 100, 4, 3.8f, 55f, 1f) > 0.816f){
 						ore = Blocks.oreTitanium;
 					}
-					
+
 					if(noise(x + 134, y - 134, 5, 4f, 45f, 1f) > 0.73f){
 						ore = Blocks.oreLead;
 					}
-					
+
 					if(noise(x + 644, y - 538, 5.1, 2f, 125f, 1f) > 0.737f){
 						ore = Blocks.oreCopper;
 					}
-					
+
 					if(noise(x + 344 + y*0.35f, y - 538, 5, 6f, 45f, 1f) > 0.75f){
 						ore = Blocks.oreCoal;
 					}
-					
+
 					if(noise(x + 244, y - 138, 6, 3f, 35f, 1f) > 0.8f){
 						ore = Blocks.oreBeryllium;
 					}
-					
+
 					if(noise(x + 578, y - 238, 4, 2.08f, 85f, 1f) > 0.793f){
 						ore = Blocks.oreTungsten;
 					}
-					
+
 					if(noise(y - 1234, x - 938, 6, 2.28f, 15f, 1f) > 0.880383f){
 						ore = NHBlocks.oreZeta;
 					}
-					
+
 					if(noise(x + 999, y + 600, 4, 5.63f, 45f, 1f) > 0.8422f){
 						ore = Blocks.oreThorium;
 					}
 				}
 			});
-			
+
 //			ores(Seq.with(Blocks.oreCopper, Blocks.oreLead, Blocks.oreTitanium, Blocks.oreCoal, Blocks.oreCrystalThorium, Blocks.oreTungsten, NHBlocks.oreZeta));
-			
+
 			pass((x, y) -> {
 				int x1 = x - x % 3 + 30;
 				int y1 = y - y % 3 + 30;
-				
+
 				if((x1 % 70 == 0 || y1 % 70 == 0) && !floor.asFloor().isLiquid){
 					if(noise(x + 30, y + 30, 4, 0.66f, 75f, 2f) > 0.85f || Mathf.chance(0.035)){
 						floor = Blocks.metalFloor2;
 					}
 				}
-				
+
 				if((x % 85 == 0 || y % 85 == 0) && !floor.asFloor().isLiquid){
 					if(difficulty > 0.815f){
 						//floor = NHBlocks.armorAncient;
@@ -500,42 +485,42 @@ public class NHPlanets{
 						floor = Blocks.metalFloor5;
 					}
 				}
-				
+
 				if((x % 50 == 0 || y % 50 == 0) && !floor.asFloor().isLiquid){
 					if(noise(x, y, 5, 0.7f, 75f, 3f) > 0.8125f || Mathf.chance(0.075)){
 						floor = NHBlocks.quantumFieldDisturbing;
 					}
 				}
-				
+
 				if((nearWall(x, y) || floor == Blocks.metalFloor2) && Mathf.chance(0.015)){
 					block = NHBlocks.metalTower;
 				}
 			});
-			
+
 			//remove props near ores, they're too annoying
 			pass((x, y) -> {
 				if(ore.asFloor().wallOre || block.itemDrop != null || (block == Blocks.air && ore != Blocks.air)){
 					removeWall(x, y, 3, b -> b instanceof TallBlock);
 				}
 			});
-			
+
 			for(Tile tile : tiles){
 				if(tile.overlay().needsSurface && !tile.floor().hasSurface()){
 					tile.setOverlay(Blocks.air);
 				}
 			}
-			
+
 			blend(NHBlocks.quantumFieldDisturbing, Blocks.darkPanel3, 1);
-			
+
 			path = pathfind(spawnX, spawnY, endX, endY, tile -> (tile.solid() ? 50f : 0f), Astar.manhattan);
-			
+
 			Geometry.circle(endX, endY, 12, ((x, y) -> {
 				Tile tile = tiles.get(x, y);
 				if(tile != null && tile.floor().isLiquid){
 					tile.setFloor(NHBlocks.quantumField.asFloor());
 				}
 			}));
-			
+
 			continualDraw(path, NHBlocks.quantumField, 4, ((x0, y0) -> {
 				Floor f = tiles.getn(x0, y0).floor();
 				boolean b = f.isDeep();
@@ -550,27 +535,27 @@ public class NHPlanets{
 						return f1.isDeep();
 					}));
 				}
-				
+
 				else if(f == NHBlocks.quantumFieldDisturbing){
 					draw(x0, y0, NHBlocks.metalGround, 4, ((x1, y1) -> {
 						return tiles.getn(x1, y1).floor() == NHBlocks.quantumFieldDisturbing;
 					}));
 				}
-				
+
 				return b;
 			}));
-			
+
 			tiles.getn(endX, endY).setOverlay(Blocks.spawn);
-			
+
 			median(5, 0.46, NHBlocks.quantumField);
-			
+
 			decoration(0.017f);
-			
+
 			trimDark();
-			
+
 			int minVents = rand.random(22, 33);
 			int ventCount = 0;
-			
+
 			//vents
 			over: while(ventCount < minVents){
 				outer:
@@ -586,7 +571,7 @@ public class NHPlanets{
 								}
 							}
 						}
-						
+
 						ventCount++;
 						for(Point2 pos : SteamVent.offsets){
 							Tile other = tiles.get(pos.x + tile.x + 1, pos.y + tile.y + 1);
@@ -597,24 +582,24 @@ public class NHPlanets{
 					}
 				}
 			}
-			
+
 			state.rules.env = sector.planet.defaultEnv;
-			
+
 			Schematics.placeLoadout(NHContent.nhBaseLoadout, spawnX, spawnY);
 			for(Point2 p : Geometry.d8){
 				Tile other = tiles.getn(spawnX + p.x, spawnY + p.y);
 				other.setFloor(Blocks.coreZone.asFloor());
 			}
-			
+
 			tiles.getn(spawnX, spawnY).setFloor(Blocks.coreZone.asFloor());
-			
+
 			state.rules.waves = true;
 			state.rules.showSpawns = true;
 			state.rules.onlyDepositCore = false;
 			state.rules.fog = false;
-			
+
 			if(state.rules.sector.preset != null)return;
-			
+
 			state.rules.winWave = Mathf.round(150 * difficulty, 5);
 			state.rules.weather.clear();
 			state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
