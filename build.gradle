@@ -123,6 +123,18 @@ tasks.register('debugDesktop', JavaExec) {
 
 }
 
+tasks.register('debugBE', JavaExec) {
+    dependsOn classes
+    dependsOn 'copyTo'
+
+    main = "-jar"
+    args = [
+            "E:/project/MindustryModDevLib/Mindustry-BE.jar",
+            "-debug",
+    ]
+
+}
+
 tasks.register('deploy', Jar) {
     dependsOn jarAndroid
     dependsOn jar
