@@ -3,28 +3,27 @@ package newhorizon.expand.block.env;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.math.geom.Point2;
 import mindustry.Vars;
-import mindustry.gen.Building;
+import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.StaticWall;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static newhorizon.util.graphic.SpriteUtil.*;
 
-public class Atlas_4_12_Floor extends Floor {
+public class Atlas_4_12_Wall extends StaticWall {
     public TextureRegion[] splitRegions;
-    public Floor baseFloor;
+    public Block baseBlock;
 
-    public Atlas_4_12_Floor(String name) {
-        super(name, 0);
+    public Atlas_4_12_Wall(String name) {
+        super(name);
     }
 
     @Override
     public void load(){
         super.load();
-        splitRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, SpriteUtil.ATLAS_INDEX_4_12);
+        splitRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, ATLAS_INDEX_4_12);
     }
 
     private void drawTile(Tile tile){
@@ -57,14 +56,13 @@ public class Atlas_4_12_Floor extends Floor {
     }
 
     public boolean checkTile(Tile tile){
-        return tile != null && tile.floor() == this;
+        return tile != null && tile.block() == this;
     }
 
     @Override
     public void drawBase(Tile tile) {
-        if (baseFloor != null) baseFloor.drawBase(tile);
+        if (baseBlock != null) baseBlock.drawBase(tile);
         drawTile(tile);
         Draw.alpha(1f);
-        drawOverlay(tile);
     }
 }

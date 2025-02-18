@@ -2,12 +2,15 @@ package newhorizon.content.blocks;
 
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
+import newhorizon.content.NHBlocks;
 import newhorizon.content.NHColor;
 import newhorizon.expand.block.env.*;
 
 public class EnvironmentBlock {
     public static Atlas_4_12_Floor metalFloorGroove, metalFloorGrooveDeep, metalFloorRidge, metalFloorRidgeHigh;
     public static Atlas_4_4_Floor armorAncient, armorAncientSub, armorQuantum;
+
+    public static Atlas_4_12_Wall armorWall;
     public static TiledFloor metalFloorPlain, labFloorLight, labFloorDark;
     public static DataFloor
         lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
@@ -17,6 +20,8 @@ public class EnvironmentBlock {
         metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove");
         metalFloorRidge = new Atlas_4_12_Floor("metal-floor-ridge");
         metalFloorRidgeHigh = new Atlas_4_12_Floor("metal-floor-high-ridge");
+
+        armorWall = new Atlas_4_12_Wall("armor-wall");
 
         armorAncient = new Atlas_4_4_Floor("armor-ancient"){{
             lightColor = NHColor.ancient.cpy().a(0.7f);
@@ -53,5 +58,7 @@ public class EnvironmentBlock {
 
         armorAncient.blendFloors.add(armorAncientSub);
         armorAncientSub.blendFloors.add(armorAncient);
+
+        armorWall.baseBlock = NHBlocks.metalWall;
     }
 }

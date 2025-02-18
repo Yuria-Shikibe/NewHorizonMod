@@ -44,7 +44,6 @@ public class Atlas_4_4_Floor extends Floor {
         return tile != null && (tile.floor() == this || blendFloors.contains(tile.floor()) || tile.floor().isLiquid);
     }
 
-
     @Override
     public void drawBase(Tile tile) {
         //if (baseFloor != null) baseFloor.drawBase(tile);

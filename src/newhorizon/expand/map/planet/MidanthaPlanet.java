@@ -436,16 +436,37 @@ public class MidanthaPlanet extends Planet {
                 }
             }
 
-            state.rules.env = sector.planet.defaultEnv;
-
-            Schematics.placeLoadout(NHContent.nhBaseLoadout, spawnX, spawnY);
-            for(Point2 p : Geometry.d8){
-                Tile other = tiles.getn(spawnX + p.x, spawnY + p.y);
-                other.setFloor(Blocks.coreZone.asFloor());
-            }
+            setSpawn(spawnX, spawnY);
 
             tiles.getn(spawnX, spawnY).setFloor(Blocks.coreZone.asFloor());
 
+            setRule(difficulty);
+        }
+
+        private void setSpawn(int spawnX, int spawnY){
+            Schematics.placeLoadout(NHContent.nhBaseLoadout, spawnX, spawnY);
+            for (int x = -9; x <= 9; x++){
+                for (int y = -9; y <= 9; y++){
+                    Tile other = tiles.getn(spawnX + x, spawnY + y);
+                    other.setFloor(EnvironmentBlock.metalFloorPlain);
+                }
+            }
+            for (int x = -4; x <= 4; x++){
+                for (int y = -4; y <= 4; y++){
+                    Tile other = tiles.getn(spawnX + x, spawnY + y);
+                    other.setFloor(EnvironmentBlock.metalFloorRidge);
+                }
+            }
+            for (int x = -3; x <= 3; x++){
+                for (int y = -3; y <= 3; y++){
+                    Tile other = tiles.getn(spawnX + x, spawnY + y);
+                    other.setFloor(Blocks.coreZone.asFloor());
+                }
+            }
+        }
+
+        private void setRule(float difficulty){
+            state.rules.env = sector.planet.defaultEnv;
             state.rules.waves = true;
             state.rules.showSpawns = true;
             state.rules.onlyDepositCore = false;
@@ -457,9 +478,6 @@ public class MidanthaPlanet extends Planet {
             state.rules.weather.clear();
             state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
             state.rules.spawns = NHOverride.generate(difficulty, new Rand(sector.id), false, false, false);
-            if(rawTemp(sector.tile.v) < 0.65f){
-                state.rules.bannedBlocks.addAll(Vars.content.blocks().copy().retainAll(b -> b instanceof LaunchPad));
-            }
         }
 
         public void continualDraw(Seq<Tile> path, Block block, int rad, DrawBoolf b, boolean isBlock){
