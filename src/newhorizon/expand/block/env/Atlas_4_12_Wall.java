@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Point2;
 import mindustry.Vars;
+import mindustry.graphics.Pal;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.StaticWall;
@@ -19,6 +20,7 @@ public class Atlas_4_12_Wall extends StaticWall {
     public Atlas_4_12_Wall(String name) {
         super(name);
         variants = 0;
+        mapColor = Pal.darkestMetal;
     }
 
     @Override

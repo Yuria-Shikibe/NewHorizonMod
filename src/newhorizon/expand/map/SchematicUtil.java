@@ -7,12 +7,15 @@ import arc.util.io.Reads;
 import arc.util.io.Streams;
 import arc.util.io.Writes;
 import arc.util.serialization.Base64Coder;
+import mindustry.content.Blocks;
 import mindustry.game.Schematic;
 import mindustry.game.Schematic.Stile;
 import mindustry.game.Team;
 import mindustry.io.TypeIO;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.StaticWall;
 import newhorizon.expand.map.TerrainSchematic.SData;
 
 import java.io.*;
@@ -150,8 +153,14 @@ public class SchematicUtil {
 
     public static void placeBuildLB(Schematic schem, int startX, int startY, Team team){
         schem.tiles.each(st -> {
+            if (st.block == Blocks.stone) return;
             Tile tile = world.tile(st.x + startX, st.y + startY);
             if(tile == null) return;
+
+            if (st.block instanceof Floor){
+                tile.setFloor(st.block.asFloor());
+                return;
+            }
 
             tile.setBlock(st.block, team, st.rotation);
 

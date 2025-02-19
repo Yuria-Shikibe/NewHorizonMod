@@ -5,7 +5,9 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.*;
 import arc.struct.GridBits;
+import arc.struct.IntSeq;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Structs;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -21,6 +23,7 @@ import mindustry.content.Loadouts;
 import mindustry.game.Rules;
 import mindustry.game.Schematics;
 import mindustry.game.Team;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.HexSkyMesh;
 import mindustry.graphics.g3d.MultiMesh;
@@ -40,8 +43,10 @@ import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
 import newhorizon.content.*;
 import newhorizon.content.blocks.EnvironmentBlock;
+import newhorizon.expand.map.SchematicUtil;
 
 import static mindustry.Vars.state;
+import static mindustry.Vars.world;
 import static newhorizon.content.NHPlanets.ceito;
 
 public class MidanthaPlanet extends Planet {
@@ -65,7 +70,9 @@ public class MidanthaPlanet extends Planet {
             Pal.darkestGray.cpy().mul(0.95f),
             Pal.darkestGray.cpy().lerp(Color.white, 0.105f),
             Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
-            Pal.darkestGray
+            Pal.darkestGray,
+            Pal.stoneGray.cpy().lerp(Pal.darkestGray, 0.5f),
+            Pal.stoneGray.cpy().lerp(Pal.darkestGray, 0.6f)
         );
 
         clearSectorOnLose = true;
@@ -114,8 +121,8 @@ public class MidanthaPlanet extends Planet {
 
         defaultEnv = Env.terrestrial | Env.groundWater | Env.oxygen | MidanthaEnv;
 
-        icon = "midantha";
-        iconColor = Color.white;
+        icon = "planet";
+        iconColor = NHColor.darkEnrColor;
 
         landCloudColor = atmosphereColor = Color.valueOf("3c1b8f");
         atmosphereRadIn = 0.02f;
@@ -125,36 +132,38 @@ public class MidanthaPlanet extends Planet {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class MidanthaPlanetGenerator extends PlanetGenerator {
-        public float heightScl = 0.9f, octaves = 8, persistence = 0.7f, heightPow = 3f, heightMult = 1.6f;
-        public float airThresh = 0.045f, airScl = 14;
+        private final Block[] terrain = {NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGroundQuantum, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.quantumFieldDeep, NHBlocks.metalGround, NHBlocks.conglomerateRock, NHBlocks.quantumFieldDeep};
+        private final Seq<Rect> tmpRects = new Seq<>();
+        private final IntSeq chunks = new IntSeq();
 
-        public final Seq<Rect> tmpRects = new Seq<>();
+        private int coreX, coreY, spawnX, spawnY;
+        private float maxDst;
 
-        Block[] terrain1 = {NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGroundQuantum, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.metalGround, NHBlocks.quantumFieldDeep, NHBlocks.metalGround, NHBlocks.conglomerateRock, NHBlocks.quantumFieldDeep};
+        private static final int
+                DISABLED = -1,
+                NO_GENERATION = 0,
+                PREPARE_TO_GENERATE = 1,
+                REGULAR_GENERATION = 2,
+                INDUSTRY_GENERATION = 3,
+                GENERATED = 4;
 
-        {
-            baseSeed = 5;
-            defaultLoadout = Loadouts.basicBastion;
-        }
-
+        @Override
         public boolean allowLanding(Sector sector){
-            return (sector.hasBase() || sector.near().contains(s -> s.hasBase() && s.isCaptured()))/* && NHPlanets.midantha.unlocked()*/;
+            //i guess this can be replaced with some much more interesting rules
+            return (sector.hasBase() || sector.near().contains(s -> s.hasBase() && s.isCaptured()));
         }
 
         @Override
-        public void generateSector(Sector sector){
-            //no bases right now
-        }
+        //no bases right now
+        public void generateSector(Sector sector){}
 
         @Override
         public float getHeight(Vec3 position){
-            return Mathf.pow(rawHeight(position), heightPow) * heightMult;
+            return Mathf.pow(rawHeight(position), 3f) * 1.6f;
         }
 
         @Override
         public Color getColor(Vec3 position){
-            Block block = getBlock(position);
-
             return Pal.gray;
         }
 
@@ -164,30 +173,31 @@ public class MidanthaPlanet extends Planet {
         }
 
         float rawHeight(Vec3 position){
-            return Simplex.noise3d(seed, octaves, persistence, 1f/heightScl, 10f + position.x, 10f + position.y, 10f + position.z);
-        }
-
-        float rawTemp(Vec3 position){
-            return position.dst(0, 0, 1)*2.2f - Simplex.noise3d(seed, 8, 0.54f, 1.4f, 10f + position.x, 10f + position.y, 10f + position.z) * 2.9f;
+            return Simplex.noise3d(seed, 8, 0.7f, 1f/ 0.9f, 10f + position.x, 10f + position.y, 10f + position.z);
         }
 
         Block getBlock(Vec3 position){
-            float ice = rawTemp(position);
-            Tmp.v32.set(position);
-
             float height = rawHeight(position);
-            Tmp.v31.set(position);
+
             height *= 1.2f;
             height = Mathf.clamp(height);
 
-            return terrain1[Mathf.clamp((int)(height * terrain1.length), 0, terrain1.length - 1)];
+            return terrain[Mathf.clamp((int)(height * terrain.length), 0, terrain.length - 1)];
         }
 
         @Override
         public void genTile(Vec3 position, TileGen tile){
             tile.floor = getBlock(position);
-
             tile.block = Blocks.air;
+            if(Ridged.noise3d(seed + 1, position.x, position.y, position.z, 2, 14) > 0.5f){
+                tile.floor = Blocks.basalt;
+            }
+            if(Ridged.noise3d(seed + 2, position.x, position.y, position.z, 2, 14) > 0.4f){
+                tile.floor = Blocks.basalt;
+            }
+            if(Ridged.noise3d(seed + 3, position.x, position.y, position.z, 2, 14) > 0.6f){
+                tile.floor = Blocks.basalt;
+            }
         }
 
         @Override
@@ -199,30 +209,24 @@ public class MidanthaPlanet extends Planet {
 
             float difficulty = sector == null ? rand.random(0.4f, 1f) : sector.threat;
 
-            Block oW = Blocks.coreZone.asFloor().wall;
-            Blocks.coreZone.asFloor().wall = NHBlocks.metalWall;
-
             cells(4);
-
-            Blocks.coreZone.asFloor().wall = oW;
 
             float length = width/2.6f;
             Vec2 trns = Tmp.v1.trns(rand.random(360f), length);
-            int
-                    spawnX = (int)(trns.x + width/2f), spawnY = (int)(trns.y + height/2f),
-                    endX = (int)(-trns.x + width/2f), endY = (int)(-trns.y + height/2f);
-            float maxd = Mathf.dst(width, height);
 
-            erase(spawnX, spawnY, 22);
+            coreX = (int)(trns.x + width/2f);
+            coreY = (int)(trns.y + height/2f);
+            spawnX = (int)(-trns.x + width/2f);
+            spawnY = (int)(-trns.y + height/2f);
 
-            Seq<Tile> path = pathfind(spawnX, spawnY, endX, endY, tile -> (tile.solid() ? 70f : 0f) + maxd - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
+            maxDst = Mathf.dst(width, height);
 
-            brush(path, 8);
-            erase(endX, endY, 15);
+            erase(coreX, coreY, 22);
+            erase(spawnX, spawnY, 15);
 
             //median(12, 0.6, NHBlocks.quantumField);
 
-            blend(NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 7);
+            blend(NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 6);
 
             pass((x, y) -> {
                 if(floor.asFloor().isDeep()){
@@ -233,9 +237,9 @@ public class MidanthaPlanet extends Planet {
                 }
             });
 
-            inverseFloodFill(tiles.getn(spawnX, spawnY));
+            inverseFloodFill(tiles.getn(coreX, coreY));
 
-            erase(endX, endY, 6);
+            erase(spawnX, spawnY, 6);
 
             //remove props near ores, they're too annoying
             pass((x, y) -> {
@@ -246,9 +250,9 @@ public class MidanthaPlanet extends Planet {
 
             blend(NHBlocks.quantumFieldDisturbing, EnvironmentBlock.metalFloorGroove, 1);
 
-            path = pathfind(spawnX, spawnY, endX, endY, tile -> (tile.solid() ? 50f : 0f), Astar.manhattan);
+            Seq<Tile> path = pathfind(coreX, coreY, spawnX, spawnY, tile -> (tile.solid() ? 50f : 0f), Astar.manhattan);
 
-            Geometry.circle(endX, endY, 12, ((x, y) -> {
+            Geometry.circle(spawnX, spawnY, 12, ((x, y) -> {
                 Tile tile = tiles.get(x, y);
                 if(tile != null && tile.floor().isLiquid){
                     tile.setFloor(NHBlocks.quantumField.asFloor());
@@ -277,20 +281,38 @@ public class MidanthaPlanet extends Planet {
                 return b;
             }));
 
-            tiles.getn(endX, endY).setOverlay(Blocks.spawn);
-
-            //median(5, 0.46, NHBlocks.quantumField);
-
             decoration(0.017f);
-
-            trimDark();
 
             setOrthogonalLine();
 
-            setRectsOld(spawnX, spawnY, path, maxd);
+            setRectsOld(path, maxDst);
 
-            setVent();
+            setChunks();
 
+            setDarkness();
+
+            //setVent();
+
+            pass((x, y) -> {
+                boolean any = false;
+                for (int rx = -1; rx <= 1; rx++) {
+                    for (int ry = -1; ry <= 1; ry++) {
+                        if (!(tiles.get(x+rx, y+ry) != null && tiles.get(x+rx, y+ry).block() == EnvironmentBlock.armorWall)) {
+                            any = true;
+                        }
+                    }
+                }
+                if (!any && rand.chance(0.01f)){
+                    for(int cx = -4; cx <= 4; cx++){
+                        for(int cy = -4; cy <= 4; cy++){
+                            int wx = cx + x, wy = cy + y;
+                            if (tiles.getn(wx, wy) != null && rand.chance(0.75f) && tiles.getn(wx, wy).block() == EnvironmentBlock.armorWall) {
+                                tiles.getn(wx, wy).setBlock(EnvironmentBlock.scarpWallSmall);
+                            }
+                        }
+                    }
+                }
+            });
 
             for(Tile tile : tiles){
                 if (tile.floor() == NHBlocks.metalGround) {
@@ -298,11 +320,164 @@ public class MidanthaPlanet extends Planet {
                 }
             }
 
-            setSpawn(spawnX, spawnY);
+            path = pathfind(coreX, coreY, spawnX, spawnY, tile -> (tile.solid() ? 150f : 0f) + maxDst - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
 
-            tiles.getn(spawnX, spawnY).setFloor(Blocks.coreZone.asFloor());
+            brush(path, 8);
+
+            setSpawn();
+
+            tiles.getn(spawnX, spawnY).setOverlay(Blocks.spawn);
+
+            tiles.getn(coreX, coreY).setFloor(Blocks.coreZone.asFloor());
 
             setRule(difficulty);
+        }
+
+        private void setDarkness(){
+            for(Tile tile : tiles){
+                boolean any = world.getDarkness(tile.x, tile.y) > 0;
+                for(int i = 0; i < 4 && !any; i++){
+                    any = world.getDarkness(tile.x + Geometry.d4[i].x, tile.y + Geometry.d4[i].y) > 0;
+                }
+
+                if(any){
+                    tile.setBlock(Blocks.stoneWall);
+                }
+            }
+        }
+
+        private void setChunks(){
+            int cw = (width-1) / 24;
+            int ch = (height-1) / 24;
+            chunks.clear();
+            chunks.setSize(cw * ch);
+            for (int x = 0; x < cw; x++) {
+                for (int y = 0; y < ch; y++) {
+                    int count = 0;
+                    if (checkSolid(x * 24, y * 24)) count++;
+                    if (checkSolid(x * 24 + 23, y * 24)) count++;
+                    if (checkSolid(x * 24, y * 24 + 23)) count++;
+                    if (checkSolid(x * 24 + 23, y * 24 + 23)) count++;
+
+                    if (count > 2) {
+                        setChunk(x, y, NO_GENERATION);
+                    }else {
+                        setChunk(x, y, DISABLED);
+                    }
+                }
+            }
+            int validChunk = chunks.count(NO_GENERATION);
+            int count = rand.random(validChunk / 5, validChunk / 3);
+            int generateChunk = 0;
+            while (generateChunk < count) {
+                int x = rand.random(0, cw);
+                int y = rand.random(0, ch);
+
+                if (getChunk(x, y) == DISABLED) continue;
+                if (getChunk(x, y) == NO_GENERATION){
+                    float chance = 0.01f;
+                    if (getChunk(x, y + 1) == PREPARE_TO_GENERATE) chance += 0.45f;
+                    if (getChunk(x, y - 1) == PREPARE_TO_GENERATE) chance += 0.45f;
+                    if (getChunk(x + 1, y) == PREPARE_TO_GENERATE) chance += 0.45f;
+                    if (getChunk(x - 1, y) == PREPARE_TO_GENERATE) chance += 0.45f;
+
+                    if (Mathf.chance(chance)){
+                        setChunk(x, y, PREPARE_TO_GENERATE);
+                        generateChunk ++;
+                    }
+                }
+            }
+
+
+            for (int x = 0; x < cw - 1; x++) {
+                for (int y = 0; y < ch - 1; y++) {
+                    if (rand.chance(0.2f) && getChunk(x, y) == PREPARE_TO_GENERATE && getChunk(x + 1, y) == PREPARE_TO_GENERATE && getChunk(x, y + 1) == PREPARE_TO_GENERATE && getChunk(x + 1, y + 1) == PREPARE_TO_GENERATE) {
+                        int tx = x * 24;
+                        int ty = y * 24;
+                        for (int ctx = 0; ctx < 48; ctx++) {
+                            for (int cty = 0; cty < 48; cty++) {
+                                tiles.get(ctx + tx, cty + ty).setBlock(Blocks.air);
+                            }
+                        }
+                        setChunk(x, y, GENERATED);
+                        setChunk(x + 1, y, GENERATED);
+                        setChunk(x, y + 1, GENERATED);
+                        setChunk(x + 1, y + 1, GENERATED);
+
+                        SchematicUtil.placeBuildLB(NHSchematic.ruin_2x2, tx, ty, Team.derelict);
+                    }
+                }
+            }
+
+            for (int x = 0; x < cw - 1; x++) {
+                for (int y = 0; y < ch; y++) {
+                    if (rand.chance(0.2f) && getChunk(x, y) == PREPARE_TO_GENERATE && getChunk(x + 1, y) == PREPARE_TO_GENERATE) {
+                        int tx = x * 24;
+                        int ty = y * 24;
+                        for (int ctx = 0; ctx < 48; ctx++) {
+                            for (int cty = 0; cty < 24; cty++) {
+                                tiles.get(ctx + tx, cty + ty).setBlock(Blocks.air);
+                            }
+                        }
+                        setChunk(x, y, GENERATED);
+                        setChunk(x + 1, y, GENERATED);
+
+                        SchematicUtil.placeBuildLB(NHSchematic.ruin_2x1, tx, ty, Team.derelict);
+                    }
+                }
+            }
+
+            for (int x = 0; x < cw; x++) {
+                for (int y = 0; y < ch - 1; y++) {
+                    if (rand.chance(0.67f) && getChunk(x, y) == PREPARE_TO_GENERATE && getChunk(x, y + 1) == PREPARE_TO_GENERATE) {
+                        int tx = x * 24;
+                        int ty = y * 24;
+                        for (int ctx = 0; ctx < 24; ctx++) {
+                            for (int cty = 0; cty < 48; cty++) {
+                                tiles.get(ctx + tx, cty + ty).setBlock(Blocks.air);
+                            }
+                        }
+                        setChunk(x, y, GENERATED);
+                        setChunk(x, y + 1, GENERATED);
+
+                        SchematicUtil.placeBuildLB(NHSchematic.ruin_1x2, tx, ty, Team.derelict);
+                    }
+                }
+            }
+
+            for (int x = 0; x < cw; x++) {
+                for (int y = 0; y < ch; y++) {
+                    if (getChunk(x, y) == PREPARE_TO_GENERATE) {
+                        int tx = x * 24;
+                        int ty = y * 24;
+                        for (int ctx = 0; ctx < 24; ctx++) {
+                            for (int cty = 0; cty < 24; cty++) {
+                                tiles.get(ctx + tx, cty + ty).setBlock(Blocks.air);
+                            }
+                        }
+                        setChunk(x, y, GENERATED);
+
+                        SchematicUtil.placeBuildLB(NHSchematic.ruin_1x1, tx, ty, Team.derelict);
+                    }
+                }
+            }
+        }
+
+        private boolean inChunks(int x, int y){
+            return x >= 0 && x < (width-1) / 24 && y >= 0 && y < (height-1) / 24;
+        }
+
+        private int getChunk(int x, int y){
+            if (inChunks(x, y)) return chunks.get(x + y * ((width-1) / 24));
+            return DISABLED;
+        }
+
+        private void setChunk(int x, int y, int val){
+            if (inChunks(x, y)) chunks.set(x + y * ((width-1) / 24), val);
+        }
+
+        private boolean checkSolid(int x, int y){
+            return tiles.get(x, y) != null;
         }
 
         private void setVent(){
@@ -361,7 +536,7 @@ public class MidanthaPlanet extends Planet {
             });
         }
 
-        private void setRectsOld(int spawnX, int spawnY, Seq<Tile> path, float maxd){
+        private void setRectsOld(Seq<Tile> path, float maxd){
             while (tmpRects.size < 64){
                 int rx = rand.random(20, width - 20);
                 int ry = rand.random(20, height - 20);
@@ -372,9 +547,9 @@ public class MidanthaPlanet extends Planet {
                 }
             }
 
-            Rect coreRect = new Rect().setCentered(spawnX, spawnY, 45);
+            Rect coreRect = new Rect().setCentered(coreX, coreY, 45);
 
-            for (int k = 0; k < 8; k++) {
+            for (int k = 0; k < 20; k++) {
                 int idx = rand.random(tmpRects.size - 2);
                 Rect r1 = tmpRects.get(idx);
                 Rect r2 = tmpRects.get(idx + 1);
@@ -389,7 +564,7 @@ public class MidanthaPlanet extends Planet {
                 continualDraw(path, Blocks.metalFloor.asFloor(), 2, (x, y) -> rand.chance(0.95f));
             }
 
-            for (int k = 0; k < 18; k++) {
+            for (int k = 0; k < 20; k++) {
                 int idx = rand.random(tmpRects.size - 2);
                 Rect r1 = tmpRects.get(idx);
                 Rect r2 = tmpRects.get(idx + 1);
@@ -400,17 +575,10 @@ public class MidanthaPlanet extends Planet {
                 path.clear();
                 path = pathfind((int) Tmp.v1.x, (int) Tmp.v1.y, (int) Tmp.v2.x, (int) Tmp.v2.y, tile -> maxd - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
 
-                continualDraw(path, NHBlocks.metalWall, 3, (x, y) -> {
-                    if (rand.chance(0.002f)) {
-                        erase(x, y, 7);
-                        return false;
-                    }else {
-                        return true;
-                    }
-                });
+                continualDraw(path, EnvironmentBlock.armorWall, 3, (x, y) -> true);
             }
 
-            for (int k = 0; k < 4; k++) {
+            for (int k = 0; k < 5; k++) {
                 int idx = rand.random(tmpRects.size - 1);
                 Rect r1 = tmpRects.get(idx);
 
@@ -426,6 +594,7 @@ public class MidanthaPlanet extends Planet {
 
             tmpRects.add(coreRect);
 
+            /*
             for(int k = 0; k < tmpRects.size; k++){
                 if (Mathf.chance(0.4f)) continue;
                 Rect r = tmpRects.get(k);
@@ -449,27 +618,34 @@ public class MidanthaPlanet extends Planet {
                     }
                 }
             }
+             */
 
             tmpRects.clear();
         }
 
-        private void setSpawn(int spawnX, int spawnY){
-            Schematics.placeLoadout(NHContent.nhBaseLoadout, spawnX, spawnY);
-            for (int x = -9; x <= 9; x++){
-                for (int y = -9; y <= 9; y++){
-                    Tile other = tiles.getn(spawnX + x, spawnY + y);
+        private void setSpawn(){
+            for (int x = -25; x <= 25; x++){
+                for (int y = -25; y <= 25; y++){
+                    Tile other = tiles.getn(coreX + x, coreY + y);
+                    other.remove();
+                }
+            }
+            Schematics.placeLoadout(NHContent.nhBaseLoadout, coreX, coreY);
+            for (int x = -15; x <= 15; x++){
+                for (int y = -15; y <= 15; y++){
+                    Tile other = tiles.getn(coreX + x, coreY + y);
                     other.setFloor(EnvironmentBlock.metalFloorPlain);
                 }
             }
             for (int x = -4; x <= 4; x++){
                 for (int y = -4; y <= 4; y++){
-                    Tile other = tiles.getn(spawnX + x, spawnY + y);
+                    Tile other = tiles.getn(coreX + x, coreY + y);
                     other.setFloor(EnvironmentBlock.metalFloorRidge);
                 }
             }
             for (int x = -3; x <= 3; x++){
                 for (int y = -3; y <= 3; y++){
-                    Tile other = tiles.getn(spawnX + x, spawnY + y);
+                    Tile other = tiles.getn(coreX + x, coreY + y);
                     other.setFloor(Blocks.coreZone.asFloor());
                 }
             }
