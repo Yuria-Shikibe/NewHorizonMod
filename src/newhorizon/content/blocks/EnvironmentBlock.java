@@ -1,9 +1,12 @@
 package newhorizon.content.blocks;
 
+import mindustry.type.Category;
+import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHColor;
+import newhorizon.expand.block.decoration.ScarpWall;
 import newhorizon.expand.block.env.*;
 
 public class EnvironmentBlock {
@@ -15,9 +18,11 @@ public class EnvironmentBlock {
     public static DataFloor
         lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
     public static Block dataFloorPlacer;
+
+    public static ScarpWall scarpWallSmall, scarpWallLarge;
     public static void load(){
-        metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove");
-        metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove");
+        metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
+        metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove", true);
         metalFloorRidge = new Atlas_4_12_Floor("metal-floor-ridge");
         metalFloorRidgeHigh = new Atlas_4_12_Floor("metal-floor-high-ridge");
 
@@ -51,6 +56,17 @@ public class EnvironmentBlock {
 
         dataFloorPlacer = new DataFloorPlacer("data-floor-placer");
 
+        scarpWallSmall = new ScarpWall("ruin-small"){{
+            requirements(Category.defense, ItemStack.with());
+            variants = 8;
+            size = 1;
+        }};
+        scarpWallLarge = new ScarpWall("ruin-large"){{
+            requirements(Category.defense, ItemStack.with());
+            variants = 4;
+            size = 2;
+        }};
+
         metalFloorGroove.baseFloor = metalFloorPlain;
         metalFloorGrooveDeep.baseFloor = metalFloorPlain;
         metalFloorRidge.baseFloor = metalFloorPlain;
@@ -59,6 +75,6 @@ public class EnvironmentBlock {
         armorAncient.blendFloors.add(armorAncientSub);
         armorAncientSub.blendFloors.add(armorAncient);
 
-        armorWall.baseBlock = NHBlocks.metalWall;
+        armorWall.baseBlock = NHBlocks.metalWallQuantum;
     }
 }

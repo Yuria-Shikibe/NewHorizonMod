@@ -22,6 +22,8 @@ public class PlaceholderBlock extends Block {
         solid = true;
         rebuildable = false;
 
+        inEditor = false;
+
         buildVisibility = BuildVisibility.hidden;
     }
 

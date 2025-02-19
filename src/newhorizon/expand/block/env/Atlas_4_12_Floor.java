@@ -3,10 +3,8 @@ package newhorizon.expand.block.env;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.math.geom.Point2;
 import mindustry.Vars;
-import mindustry.gen.Building;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.util.graphic.SpriteUtil;
@@ -16,9 +14,15 @@ import static newhorizon.util.graphic.SpriteUtil.*;
 public class Atlas_4_12_Floor extends Floor {
     public TextureRegion[] splitRegions;
     public Floor baseFloor;
+    public boolean blendWater = false;
 
     public Atlas_4_12_Floor(String name) {
         super(name, 0);
+    }
+
+    public Atlas_4_12_Floor(String name, boolean blendWater) {
+        super(name, 0);
+        this.blendWater = blendWater;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class Atlas_4_12_Floor extends Floor {
     }
 
     public boolean checkTile(Tile tile){
-        return tile != null && tile.floor() == this;
+        return tile != null && (tile.floor() == this || (blendWater && tile.floor().isLiquid));
     }
 
     @Override

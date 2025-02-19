@@ -18,6 +18,7 @@ public class Atlas_4_12_Wall extends StaticWall {
 
     public Atlas_4_12_Wall(String name) {
         super(name);
+        variants = 0;
     }
 
     @Override

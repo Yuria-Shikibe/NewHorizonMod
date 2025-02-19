@@ -182,10 +182,10 @@ public class NHBlocks{
 			f.decoration = metalScarp;
 		};
 		
-		//armorClear = new ArmorFloor("armor-clear", 0){{
-		//	quantumSetter.get(this);
-		//	blendGroup = this;
-		//}};
+		armorClear = new ArmorFloor("armor-clear", 0){{
+			quantumSetter.get(this);
+			blendGroup = this;
+		}};
 		
 		//armorQuantum = new ArmorFloor("armor-quantum", 2, armorClear.asFloor()){{
 		//	quantumSetter.get(this);

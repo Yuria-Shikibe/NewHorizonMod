@@ -18,15 +18,9 @@ import static mindustry.Vars.world;
 
 public class ArmorFloor extends Floor{
 	public Floor solidReact;
-	public boolean useDynamicLight = false;
-	public Color[] colors;
 	
 	public TextureRegion large;
 	public TextureRegion[][] split;
-	
-	protected static final int scanStep = 5;
-	protected static final Color tmpColor = new Color();
-	protected static final Seq<Color> collectedColors = new Seq<>();
 	
 	public ArmorFloor(String name, int variants, Floor solidReact){
 		super(name, variants);
@@ -36,11 +30,7 @@ public class ArmorFloor extends Floor{
 		oreDefault = false;
 		needsSurface = false;
 	}
-	
-	public ArmorFloor(String name){
-		this(name, 0, null);
-	}
-	
+
 	public ArmorFloor(String name, int variants){
 		this(name, variants, null);
 	}
@@ -54,31 +44,6 @@ public class ArmorFloor extends Floor{
 		if(solidReact != null)blendGroup = solidReact;
 		
 		super.init();
-		
-		if(drawLiquidLight && !Vars.headless){
-			colors = new Color[variants];
-			
-			for(int i = 0; i < variants; i++){
-				collectedColors.clear();
-				
-				PixmapRegion image = Core.atlas.getPixmap(variantRegions[i]);
-				for(int x = 1; x < image.width; x += scanStep){
-					for(int y = 1; y < image.height; y += scanStep){
-						tmpColor.set(image.get(x, y));
-						float bright = 0.2126f * tmpColor.r + 0.7152f * tmpColor.g + 0.0722f * tmpColor.b;
-						if(bright < 0.6f)continue;
-						collectedColors.add(tmpColor.cpy().a(bright));
-					}
-				}
-				
-				colors[i] = new Color(
-						collectedColors.sumf(c -> c.r),
-						collectedColors.sumf(c -> c.g),
-						collectedColors.sumf(c -> c.b),
-						collectedColors.sumf(c -> Mathf.curve(c.a, 0.2f, 1.23f))
-				);
-			}
-		}
 	}
 	
 	@Override
@@ -98,19 +63,6 @@ public class ArmorFloor extends Floor{
 		Draw.alpha(1f);
 		drawEdges(tile);
 		drawOverlay(tile);
-	}
-	
-	@Override
-	public void drawEnvironmentLight(Tile tile){
-		if(!useDynamicLight)super.drawEnvironmentLight(tile);
-		else{
-			Color color = lightColor(tile);
-			Drawf.light(tile.worldx(), tile.worldy(), lightRadius, color, color.a);
-		}
-	}
-	
-	public Color lightColor(Tile tile){
-		return colors[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))];
 	}
 	
 	@Override

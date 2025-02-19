@@ -45,6 +45,7 @@ public class LinkBlock extends Block {
         hasPower = false;
 
         buildVisibility = BuildVisibility.hidden;
+        inEditor = false;
 
         drawCracks = false;
         drawArrow = false;

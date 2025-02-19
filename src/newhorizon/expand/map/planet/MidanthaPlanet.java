@@ -192,10 +192,10 @@ public class MidanthaPlanet extends Planet {
 
         @Override
         protected void generate(){
+            rand.setSeed(seed);
+
             distort(10f, 12f);
             distort(5f, 7f);
-
-            rand.setSeed(seed);
 
             float difficulty = sector == null ? rand.random(0.4f, 1f) : sector.threat;
 
@@ -271,9 +271,7 @@ public class MidanthaPlanet extends Planet {
                 }
 
                 else if(f == NHBlocks.quantumFieldDisturbing){
-                    draw(x0, y0, NHBlocks.metalGround, 4, ((x1, y1) -> {
-                        return tiles.getn(x1, y1).floor() == NHBlocks.quantumFieldDisturbing;
-                    }));
+                    draw(x0, y0, NHBlocks.metalGround, 4, ((x1, y1) -> tiles.getn(x1, y1).floor() == NHBlocks.quantumFieldDisturbing));
                 }
 
                 return b;
@@ -287,9 +285,58 @@ public class MidanthaPlanet extends Planet {
 
             trimDark();
 
+            setOrthogonalLine();
+
+            setRectsOld(spawnX, spawnY, path, maxd);
+
+            setVent();
+
+
+            for(Tile tile : tiles){
+                if (tile.floor() == NHBlocks.metalGround) {
+                    tile.setFloor(NHBlocks.conglomerateRock.asFloor());
+                }
+            }
+
+            setSpawn(spawnX, spawnY);
+
+            tiles.getn(spawnX, spawnY).setFloor(Blocks.coreZone.asFloor());
+
+            setRule(difficulty);
+        }
+
+        private void setVent(){
             int minVents = rand.random(22, 33);
             int ventCount = 0;
 
+            over: while(ventCount < minVents){
+                outer:
+                for(Tile tile : tiles){
+                    Floor floor = tile.floor();
+                    if((floor == NHBlocks.metalGround) && rand.chance(0.002)){
+                        int radius = 2;
+                        for(int x = -radius; x <= radius; x++){
+                            for(int y = -radius; y <= radius; y++){
+                                Tile other = tiles.get(x + tile.x, y + tile.y);
+                                if(other == null || (other.floor() != NHBlocks.metalGround) || other.block().solid){
+                                    continue outer;
+                                }
+                            }
+                        }
+
+                        ventCount++;
+                        for(Point2 pos : SteamVent.offsets){
+                            Tile other = tiles.get(pos.x + tile.x + 1, pos.y + tile.y + 1);
+                            other.setOverlay(Blocks.air);
+                            other.setFloor(NHBlocks.metalVent.asFloor());
+                        }
+                        if(ventCount >= minVents)break over;
+                    }
+                }
+            }
+        }
+
+        private void setOrthogonalLine(){
             pass((x, y) -> {
                 int x1 = x - x % 3 + 30;
                 int y1 = y - y % 3 + 30;
@@ -312,7 +359,9 @@ public class MidanthaPlanet extends Planet {
                     }
                 }
             });
+        }
 
+        private void setRectsOld(int spawnX, int spawnY, Seq<Tile> path, float maxd){
             while (tmpRects.size < 64){
                 int rx = rand.random(20, width - 20);
                 int ry = rand.random(20, height - 20);
@@ -402,45 +451,6 @@ public class MidanthaPlanet extends Planet {
             }
 
             tmpRects.clear();
-
-            //vents
-            over: while(ventCount < minVents){
-                outer:
-                for(Tile tile : tiles){
-                    Floor floor = tile.floor();
-                    if((floor == NHBlocks.metalGround) && rand.chance(0.002)){
-                        int radius = 2;
-                        for(int x = -radius; x <= radius; x++){
-                            for(int y = -radius; y <= radius; y++){
-                                Tile other = tiles.get(x + tile.x, y + tile.y);
-                                if(other == null || (other.floor() != NHBlocks.metalGround) || other.block().solid){
-                                    continue outer;
-                                }
-                            }
-                        }
-
-                        ventCount++;
-                        for(Point2 pos : SteamVent.offsets){
-                            Tile other = tiles.get(pos.x + tile.x + 1, pos.y + tile.y + 1);
-                            other.setOverlay(Blocks.air);
-                            other.setFloor(NHBlocks.metalVent.asFloor());
-                        }
-                        if(ventCount >= minVents)break over;
-                    }
-                }
-            }
-
-            for(Tile tile : tiles){
-                if (tile.floor() == NHBlocks.metalGround) {
-                    tile.setFloor(NHBlocks.conglomerateRock.asFloor());
-                }
-            }
-
-            setSpawn(spawnX, spawnY);
-
-            tiles.getn(spawnX, spawnY).setFloor(Blocks.coreZone.asFloor());
-
-            setRule(difficulty);
         }
 
         private void setSpawn(int spawnX, int spawnY){
