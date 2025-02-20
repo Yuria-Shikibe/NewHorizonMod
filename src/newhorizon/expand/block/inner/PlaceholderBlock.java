@@ -36,6 +36,17 @@ public class PlaceholderBlock extends Block {
         return true;
     }
 
+    @Override
+    public void load() {
+        super.load();
+        region = Core.atlas.find("status-blasted");
+    }
+
+    @Override
+    public void loadIcon() {
+        fullIcon = uiIcon = Core.atlas.find("status-blasted");
+    }
+
     @SuppressWarnings("InnerClassMayBeStatic")
     public class PlaceholderBuild extends Building{
         //check for next tick

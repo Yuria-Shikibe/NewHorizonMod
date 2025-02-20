@@ -7,16 +7,14 @@ import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
 import mindustry.Vars;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Sounds;
-import mindustry.gen.Teamc;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.Payload;
+import mindustry.world.consumers.Consume;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;
 
@@ -56,6 +54,10 @@ public class LinkBlock extends Block {
         destroySound = Sounds.none;
         loopSound = Sounds.none;
         placeSound = Sounds.none;
+
+        localizedName = Core.bundle.get(getContentType() + ".new-horizon-inner-entity.name", this.name);
+        description = Core.bundle.getOrNull(getContentType() + ".new-horizon-inner-entity.description");
+        details = Core.bundle.getOrNull(getContentType() + ".new-horizon-inner-entity.details");
     }
 
     public boolean canBreak(Tile tile){
@@ -65,6 +67,17 @@ public class LinkBlock extends Block {
     @Override
     public boolean isHidden(){
         return true;
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        region = Core.atlas.find("status-blasted");
+    }
+
+    @Override
+    public void loadIcon() {
+        fullIcon = uiIcon = Core.atlas.find("status-blasted");
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
@@ -122,6 +135,17 @@ public class LinkBlock extends Block {
                         table.add(result).growX();
                         table.row();
                     }
+                }
+            }
+        }
+
+        @Override
+        public void displayConsumption(Table table) {
+            if (linkBuild != null){
+                table.left();
+                for (Consume cons : linkBuild.block.consumers) {
+                    if (cons.optional && cons.booster) continue;
+                    cons.build(linkBuild, table);
                 }
             }
         }

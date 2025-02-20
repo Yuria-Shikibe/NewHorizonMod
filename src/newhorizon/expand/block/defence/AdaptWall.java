@@ -187,7 +187,7 @@ public class AdaptWall extends Wall {
 			if(other.type.absorbable)other.absorb();
 			return super.collision(other);
 		}
-		
+
 		@Override
 		public float handleDamage(float amount){
 			findLinkWalls();
@@ -209,7 +209,9 @@ public class AdaptWall extends Wall {
 			if (!net.client()) {
 				building.health -= damage;
 			}
-			healthChanged();
+			if (damaged()){
+				healthChanged();
+			}
 			if (building.health <= 0) {
 				Call.buildDestroyed(building);
 			}

@@ -11,12 +11,13 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.input.Placement;
 import mindustry.type.Item;
+import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
 
-import static mindustry.Vars.content;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
+import static mindustry.Vars.state;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public Seq<Point2> linkPos = new Seq<>();
@@ -85,7 +86,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             if(isPayload()) return;
 
             if (!linkCreated){
-                linkEntities = setLinkBuild(this, tile, team, size, rotation);
+                linkEntities = setLinkBuild(this, block, tile, team, size, rotation);
                 linkCreated = true;
                 updateLinkProximity();
             }
@@ -130,6 +131,27 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 incrementDumpIndex(linkProximityMap.size);
             }
             return false;
+        }
+
+        @Override
+        public void dumpLiquid(Liquid liquid, float scaling, int outputDir) {
+            int dump = this.cdump;
+            if (liquids.get(liquid) <= 0.0001f) return;
+            if (!net.client() && state.isCampaign() && team == state.rules.defaultTeam) liquid.unlock();
+            for (int i = 0; i < linkProximityMap.size; i++) {
+                incrementDumpIndex(linkProximityMap.size);
+                int idx = (i + dump) % linkProximityMap.size;
+                Building[] pair = linkProximityMap.get(idx);
+                Building target = pair[0];
+                Building source = pair[1];
+                if (outputDir != -1 && (outputDir + rotation) % 4 != relativeTo(target)) continue;
+                target = target.getLiquidDestination(this, liquid);
+                if (target != null && target.block.hasLiquids && canDumpLiquid(target, liquid) && target.liquids != null) {
+                    float ofract = target.liquids.get(liquid) / target.block.liquidCapacity;
+                    float fract = liquids.get(liquid) / block.liquidCapacity;
+                    if (ofract < fract) transferLiquid(target, (fract - ofract) * block.liquidCapacity / scaling, liquid);
+                }
+            }
         }
 
         @Override

@@ -5,6 +5,7 @@ import arc.struct.IntSeq;
 import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
 import newhorizon.content.blocks.InnerBlock;
@@ -35,24 +36,24 @@ public interface MultiBlock {
         int shift = (blockSize + 1) % 2;
         int offset = (linkSize + 1) % 2;
         int px = pos.x, py = pos.y;
-        switch(rotation){
-            case 1: return -py + shift - offset;
-            case 2: return -px + shift - offset;
-            case 3: return py;
-            default: return 0;
-        }
+        return switch (rotation) {
+            case 1 -> -py + shift - offset;
+            case 2 -> -px + shift - offset;
+            case 3 -> py;
+            default -> 0;
+        };
     }
 
     default int linkRotY(Point2 pos, int blockSize, int linkSize, int rotation){
         int shift = (blockSize + 1) % 2;
         int offset = (linkSize + 1) % 2;
         int px = pos.x, py = pos.y;
-        switch(rotation){
-            case 1: return px;
-            case 2: return -py + shift - offset;
-            case 3: return -px + shift - offset;
-            default: return 0;
-        }
+        return switch (rotation) {
+            case 1 -> px;
+            case 2 -> -py + shift - offset;
+            case 3 -> -px + shift - offset;
+            default -> 0;
+        };
     }
 
     default Tile linkTile(int idx, Building building){
@@ -76,11 +77,21 @@ public interface MultiBlock {
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
-            switch(rotation){
-                case 1: xr = -p.y + shift - offset; yr = p.x; break;
-                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
-                case 3: xr = p.y; yr = -p.x + shift - offset; break;
-            }
+            yr = switch (rotation) {
+                case 1 -> {
+                    xr = -p.y + shift - offset;
+                    yield p.x;
+                }
+                case 2 -> {
+                    xr = -p.x + shift - offset;
+                    yield -p.y + shift - offset;
+                }
+                case 3 -> {
+                    xr = p.y;
+                    yield -p.x + shift - offset;
+                }
+                default -> yr;
+            };
 
             if (!Build.validPlace(InnerBlock.linkEntity[s - 1], team, tile.x + xr, tile.y + yr, 0, false)) return false;
         }
@@ -97,11 +108,21 @@ public interface MultiBlock {
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
-            switch(tile.build.rotation){
-                case 1: xr = -p.y + shift - offset; yr = p.x; break;
-                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
-                case 3: xr = p.y; yr = -p.x + shift - offset; break;
-            }
+            yr = switch (tile.build.rotation) {
+                case 1 -> {
+                    xr = -p.y + shift - offset;
+                    yield p.x;
+                }
+                case 2 -> {
+                    xr = -p.x + shift - offset;
+                    yield -p.y + shift - offset;
+                }
+                case 3 -> {
+                    xr = p.y;
+                    yield -p.x + shift - offset;
+                }
+                default -> yr;
+            };
 
             Tile t = world.tile(tile.x + xr, tile.y + yr);
             t.setBlock(InnerBlock.placeholderEntity[s - 1], tile.team(), 0);
@@ -110,7 +131,7 @@ public interface MultiBlock {
         }
     }
 
-    default Seq<Building> setLinkBuild(Building building, Tile tile, Team team, int size, int rotation){
+    default Seq<Building> setLinkBuild(Building building, Block block, Tile tile, Team team, int size, int rotation){
         Seq<Building> out = new Seq<>();
         for (int i = 0; i < linkBlockPos().size; i++){
             Point2 p = linkBlockPos().get(i);
@@ -119,14 +140,28 @@ public interface MultiBlock {
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
-            switch(rotation){
-                case 1: xr = -p.y + shift - offset; yr = p.x; break;
-                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
-                case 3: xr = p.y; yr = -p.x + shift - offset; break;
-            }
+            yr = switch (rotation) {
+                case 1 -> {
+                    xr = -p.y + shift - offset;
+                    yield p.x;
+                }
+                case 2 -> {
+                    xr = -p.x + shift - offset;
+                    yield -p.y + shift - offset;
+                }
+                case 3 -> {
+                    xr = p.y;
+                    yield -p.x + shift - offset;
+                }
+                default -> yr;
+            };
 
             Tile t = world.tile(tile.x + xr, tile.y + yr);
-            t.setBlock(InnerBlock.linkEntity[s - 1], team, 0);
+            if (!block.outputsLiquid){
+                t.setBlock(InnerBlock.linkEntity[s - 1], team, 0);
+            }else {
+                t.setBlock(InnerBlock.linkEntityLiquid[s - 1], team, 0);
+            }
             LinkBlock.LinkBuild b = (LinkBlock.LinkBuild)t.build;
             b.updateLink(building);
             out.add(b);
@@ -151,11 +186,21 @@ public interface MultiBlock {
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
-            switch(rotation){
-                case 1: xr = -p.y + shift - offset; yr = p.x; break;
-                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
-                case 3: xr = p.y; yr = -p.x + shift - offset; break;
-            }
+            yr = switch (rotation) {
+                case 1 -> {
+                    xr = -p.y + shift - offset;
+                    yield p.x;
+                }
+                case 2 -> {
+                    xr = -p.x + shift - offset;
+                    yield -p.y + shift - offset;
+                }
+                case 3 -> {
+                    xr = p.y;
+                    yield -p.x + shift - offset;
+                }
+                default -> yr;
+            };
 
             if ((xr + yr) < (value + value)) out.set(xr, yr);
         }
@@ -174,11 +219,21 @@ public interface MultiBlock {
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
-            switch(rotation){
-                case 1: xr = -p.y + shift - offset; yr = p.x; break;
-                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
-                case 3: xr = p.y; yr = -p.x + shift - offset; break;
-            }
+            yr = switch (rotation) {
+                case 1 -> {
+                    xr = -p.y + shift - offset;
+                    yield p.x;
+                }
+                case 2 -> {
+                    xr = -p.x + shift - offset;
+                    yield -p.y + shift - offset;
+                }
+                case 3 -> {
+                    xr = p.y;
+                    yield -p.x + shift - offset;
+                }
+                default -> yr;
+            };
 
             if ((xr - yr) > (value1 - value2)) out.set(xr, yr);
         }
@@ -197,11 +252,21 @@ public interface MultiBlock {
             int offset = (s + 1) % 2;
             int xr = p.x, yr = p.y;
 
-            switch(rotation){
-                case 1: xr = -p.y + shift - offset; yr = p.x; break;
-                case 2: xr = -p.x + shift - offset; yr = -p.y + shift - offset; break;
-                case 3: xr = p.y; yr = -p.x + shift - offset; break;
-            }
+            yr = switch (rotation) {
+                case 1 -> {
+                    xr = -p.y + shift - offset;
+                    yield p.x;
+                }
+                case 2 -> {
+                    xr = -p.x + shift - offset;
+                    yield -p.y + shift - offset;
+                }
+                case 3 -> {
+                    xr = p.y;
+                    yield -p.x + shift - offset;
+                }
+                default -> yr;
+            };
 
             if (xr < left) left = xr;
             if (xr > right) right = xr;
