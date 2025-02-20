@@ -72,6 +72,7 @@ public class NHUI{
 		}
 		
 
+		/*
 		Table table = new Table(Tex.buttonEdge4,  t -> {
 
 			t.row();
@@ -137,6 +138,7 @@ public class NHUI{
 		}catch(Exception e){
 			Log.info(e);
 		}
+		 */
 	}
 	
 	public static void clear(){
