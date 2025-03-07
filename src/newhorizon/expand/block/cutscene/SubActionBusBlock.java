@@ -5,6 +5,7 @@ import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Icon;
+import mindustry.logic.LAccess;
 import mindustry.type.Category;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.logic.MessageBlock;
@@ -70,6 +71,12 @@ public class SubActionBusBlock extends MessageBlock {
         @Override
         public void deactivate() {
             active = false;
+        }
+
+        @Override
+        public double sense(LAccess sensor) {
+            if(sensor == LAccess.enabled) return active ? 1 : 0;
+            return super.sense(sensor);
         }
 
         @Override

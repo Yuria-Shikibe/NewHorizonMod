@@ -1,13 +1,5 @@
 package newhorizon.expand.block.production.factory;
 
-import arc.struct.Seq;
-import mindustry.gen.Building;
-import mindustry.gen.Buildingc;
-
-public interface MultiBlockEntity extends Buildingc {
+public interface MultiBlockEntity{
     void updateLinkProximity();
-
-    void invalidateEntity();
-
-    Seq<Building> linkEntities();
 }

@@ -15,6 +15,7 @@ import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.meta.Stat;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
@@ -33,6 +34,13 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         rotateDraw = true;
         quickRotate = false;
         allowDiagonal = false;
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.remove(Stat.size);
+        stats.add(Stat.size, "@x@", getMaxSize(size, 0).x, getMaxSize(size, 0).y);
     }
 
     @Override
@@ -200,16 +208,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                     }
                 }
             }
-        }
-
-        @Override
-        public void invalidateEntity() {
-            linkValid = false;
-        }
-
-        @Override
-        public Seq<Building> linkEntities() {
-            return linkEntities;
         }
 
         public boolean checkValidPair(Building target, Building source){
