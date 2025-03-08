@@ -19,6 +19,7 @@ public class WorldEventController extends Block {
         solid = true;
 
         update = true;
+        noUpdateDisabled = false;
 
         category = Category.logic;
         buildVisibility = BuildVisibility.sandboxOnly;

@@ -28,6 +28,7 @@ public class SubActionBusBlock extends MessageBlock {
         solid = true;
 
         update = true;
+        noUpdateDisabled = false;
 
         category = Category.logic;
         buildVisibility = BuildVisibility.sandboxOnly;
@@ -35,8 +36,6 @@ public class SubActionBusBlock extends MessageBlock {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class SubActionBusControllerBuild extends MessageBuild implements CutsceneTrigger{
-        public boolean active = false;
-
         @Override
         public void drawSelect() {}
 
@@ -47,10 +46,16 @@ public class SubActionBusBlock extends MessageBlock {
         }
 
         @Override
+        public void created() {
+            deactivate();
+        }
+
+        @Override
         public void updateTile() {
-            if (active) {
+            super.updateTile();
+            if (enabled) {
                 playCutscene();
-                active = false;
+                enabled = false;
             }
         }
 
@@ -65,18 +70,12 @@ public class SubActionBusBlock extends MessageBlock {
 
         @Override
         public void activate() {
-            active = true;
+            enabled = true;
         }
 
         @Override
         public void deactivate() {
-            active = false;
-        }
-
-        @Override
-        public double sense(LAccess sensor) {
-            if(sensor == LAccess.enabled) return active ? 1 : 0;
-            return super.sense(sensor);
+            enabled = false;
         }
 
         @Override

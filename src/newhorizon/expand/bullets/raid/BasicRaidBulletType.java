@@ -4,9 +4,12 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.util.Tmp;
+import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
@@ -23,6 +26,7 @@ import static arc.math.Angles.randLenVectors;
 import static newhorizon.content.NHFx.EFFECT_BOTTOM;
 import static newhorizon.content.NHFx.EFFECT_MASK;
 
+//change every single effect which are color related and change the color to bullet's team color
 public class BasicRaidBulletType extends BasicBulletType {
     public BasicRaidBulletType() {
         speed = 8f;
@@ -53,17 +57,8 @@ public class BasicRaidBulletType extends BasicBulletType {
 
         sprite = NHBullets.STRIKE;
         hitSound = Sounds.explosionbig;
-
-        trailEffect = new Effect(25f, e -> {
-            color(e.color, Pal.gray, e.fin());
-            randLenVectors(e.id, 4, 46f * e.fin(), (x, y) -> {
-                Fill.poly(e.x + x, e.y + y, 6, e.rotation * e.fslope() * e.fout());
-                Drawf.light(e.x + x, e.y + y, e.fout() * e.rotation * 1.15f, e.color, 0.7f);
-            });
-        });
     }
 
-    //change every single effect which are color related and change the color to bullet's team color
     @Override
     public void updateTrailEffects(Bullet b){
         if(trailChance > 0){
@@ -97,10 +92,15 @@ public class BasicRaidBulletType extends BasicBulletType {
 
     @Override
     public void despawned(Bullet b){
-        if(despawnHit) hit(b);
+        if(despawnHit){
+            hit(b);
+        }else{
+            createUnits(b, b.x, b.y);
+        }
+
+        if(!fragOnHit) createFrags(b, b.x, b.y);
         
-        NHFx.instHit(b.team.color, 4, 180f).at(b.x, b.y, b.rotation());
-        
+        despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
         despawnSound.at(b);
 
         Effect.shake(despawnShake, despawnShake, b);
@@ -109,53 +109,39 @@ public class BasicRaidBulletType extends BasicBulletType {
     @Override
     //only splash damage
     public void hit(Bullet b, float x, float y){
-        new OptionalMultiEffect(
-                new Effect(50f, e -> {
-                    color(b.team.color);
-                    Fill.circle(e.x, e.y, e.fout() * 44);
-                    stroke(e.fout() * 3.2f);
-                    circle(e.x, e.y, e.fin() * 80);
-                    stroke(e.fout() * 2.5f);
-                    circle(e.x, e.y, e.fin() * 50);
-                    stroke(e.fout() * 3.2f);
-                    randLenVectors(e.id, 30, 18 + 80 * e.fin(), (ex, ey) -> {
-                        lineAngle(e.x + ex, e.y + ey, Mathf.angle(ex, ey), e.fslope() * 14 + 5);
-                    });
-
-                    Draw.z(EFFECT_MASK);
-                    color(b.team.color, Color.black, 0.85f);
-                    Fill.circle(e.x, e.y, e.fout() * 30);
-                    Drawf.light(e.x, e.y, e.fout() * 80f, b.team.color, 0.7f);
-
-                    Draw.z(EFFECT_BOTTOM);
-                    Fill.circle(e.x, e.y, e.fout() * 31);
-                    Draw.z(Layer.effect - 0.0001f);
-                }).layer(Layer.effect - 0.0001f), 
-                NHFx.square(b.team.color, 100f, 3, 80f, 8f),
-                new Effect(20f, e -> {
-                    color(b.team.color);
-                    Fill.circle(e.x, e.y, e.fout() * 44);
-                    randLenVectors(e.id, 5, 60f * e.fin(), (ex,ey) -> Fill.circle(e.x + ex, e.y + ey, e.fout() * 8));
-                    color(b.team.color, Color.black, 0.85f);
-                    Fill.circle(e.x, e.y, e.fout() * 30);
-                    Drawf.light(e.x, e.y, e.fout() * 55f, b.team.color, 0.7f);
-                }))
-                .at(x, y, b.rotation(), b.team.color);
+        hitEffect.at(x, y, b.rotation(), b.team.color);
         hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
         Effect.shake(hitShake, hitShake, b);
+
+        if(fragOnHit){
+            createFrags(b, x, y);
+        }
+        createPuddles(b, x, y);
+        createIncend(b, x, y);
+        createUnits(b, x, y);
+
+        if(suppressionRange > 0){
+            //bullets are pooled, require separate Vec2 instance
+            Damage.applySuppression(b.team, b.x, b.y, suppressionRange, suppressionDuration, 0f, suppressionEffectChance, new Vec2(b.x, b.y));
+        }
+
         createSplashDamage(b, x, y);
+
+        for(int i = 0; i < lightning; i++){
+            Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+        }
     }
 
-    @Override
-    public void createSplashDamage(Bullet b, float x, float y){
-        if(splashDamageRadius > 0 && !b.absorbed){
-            Damage.damage(b.team, x, y, splashDamageRadius, damage * b.damageMultiplier(), splashDamagePierce, collidesAir, collidesGround, scaledSplashDamage, b);
+    public void removed(Bullet b){
+        if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
+            Fx.trailFade.at(b.x, b.y, trailWidth, b.team.color, b.trail.copy());
         }
     }
 
     @Override
     public void draw(Bullet b){
         drawTrail(b);
+        drawParts(b);
 
         float shrink = shrinkInterp.apply(b.fout());
         float height = this.height * ((1f - shrinkY) + shrinkY * shrink);

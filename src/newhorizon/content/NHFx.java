@@ -1259,13 +1259,6 @@ public class NHFx{
 			circle(e.x, e.y, e.rotation * e.finpow());
 		}),
 	
-		 unitLandSize = (new Effect(30.0F, e -> {
-			 Draw.color(Pal.lightishGray);
-			 Angles.randLenVectors(e.id, 9, 3.0F + 20.0F * e.finpow(), (x, y) -> {
-				 Fill.circle(e.x + x, e.y + y, e.fout() * e.rotation + 0.4F);
-			 });
-		})).layer(20.0F),
-	
 		spawn = new Effect(100f, e -> {
 			TextureRegion pointerRegion = NHContent.pointerRegion;
 
@@ -1343,13 +1336,6 @@ public class NHFx{
 				randLenVectors(e.id + index, 42, 2330, e.rotation + ang - 90, 0f, (x, y) -> lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
 			}
 		}),
-	
-//		fellowTrail = new Effect(90f, 5000, e -> {
-//			if(!(e.data instanceof Vec2))return;
-//			Vec2 data = e.data();
-//
-//			color(e.color);
-//		}),
 	
 		dataTransport = new Effect(60f, 100f, e -> {
 			rand.setSeed(e.id);

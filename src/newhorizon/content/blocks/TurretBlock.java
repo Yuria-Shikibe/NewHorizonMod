@@ -16,6 +16,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.draw.DrawTurret;
 import newhorizon.content.*;
+import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
@@ -169,18 +170,7 @@ public class TurretBlock {
             limitRange(-5f);
         }};
 
-        /*
-        ancientRailgun = new ItemTurret("ancient-railgun"){{
-            requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));
-            canOverdrive = false;
-
-            health = 3200;
-            outlineColor = Pal.darkOutline;
-
-            size = 8;
-        }};
-
-         */
+        loadTest();
     }
 
     public static void loadTest(){
@@ -191,6 +181,8 @@ public class TurretBlock {
             health = 3200;
             range = 200f;
             reload = 120f;
+
+            ammo(NHItems.presstanium, RaidBullets.raidBullet_1);
         }};
     }
 }

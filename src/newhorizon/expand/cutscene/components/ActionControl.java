@@ -2,13 +2,16 @@ package newhorizon.expand.cutscene.components;
 
 import arc.struct.Seq;
 import arc.util.Log;
+import mindustry.content.UnitTypes;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.type.UnitType;
 import newhorizon.expand.cutscene.action.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static mindustry.Vars.content;
 import static mindustry.Vars.ui;
 
 public class ActionControl {
@@ -56,6 +59,21 @@ public class ActionControl {
         }
     }
 
+    public static UnitType phaseUnitType(String token){
+        if (content.unit(token) != null){
+            return content.unit(token);
+        }
+        try {
+            int id = Integer.parseInt(token);
+            if (content.unit(id) != null){
+                return content.unit(id);
+            }
+        }catch (NumberFormatException e){
+            Log.err(e);
+        }
+        return UnitTypes.alpha;
+    }
+
     public static Action phaseAction (String tokens, Building source){
         Seq<String> tokensArray = parseString(tokens);
         String actionName = tokensArray.remove(0);
@@ -79,7 +97,11 @@ public class ActionControl {
                 case "input_lock" -> new InputLockAction();
                 case "input_unlock" -> new InputUnlockAction();
 
+                case "jump_in" -> new JumpInAction(args);
+
                 case "mark_world" -> new MarkWorldAction(args);
+
+                case "raid" -> new RaidAction(args);
 
                 case "signal_cut_in" -> new SignalCutInAction();
                 case "signal_cut_out" -> new SignalCutOutAction();

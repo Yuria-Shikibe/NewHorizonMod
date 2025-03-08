@@ -29,6 +29,7 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
+import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
@@ -240,7 +241,7 @@ public class NHBullets{
 		}};
 	}
 	
-	public static void load(){
+	public static void load() {
 		CIRCLE_BOLT = NewHorizon.name("circle-bolt");
 		STRIKE = NewHorizon.name("strike");
 		
@@ -2577,5 +2578,7 @@ public class NHBullets{
 				}));
 			}
 		};
+
+		RaidBullets.load();
 	}
 }
