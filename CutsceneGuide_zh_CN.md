@@ -12,7 +12,7 @@
   可用变量:
     * [1] (second)时间: 等候的时间。
 ### 相机操作
-* `camera-control`: 移动相机至指定位置。
+* `camera_control`: 移动相机至指定位置。
 
   可用变量:
     * [1] (second)时间: 相机移动时间
@@ -20,48 +20,48 @@
     * [3] (WU)y: 相机移动的 y 坐标
 
 
-* `camera-reset`: 复位相机至玩家
+* `camera_reset`: 复位相机至玩家
 
   可用变量:
     * [1] (second)时间: 相机复位时间
 
-* `camera-set`: 将相机直接移动到指定坐标
+* `camera_set`: 将相机直接移动到指定坐标
 
   可用变量:
     * [1] (WU)x: 相机移动的 x 坐标
     * [2] (WU)y: 相机移动的 y 坐标
 ### 幕布/背景
-* `curtain-draw`: 拉下帷幕。固定1.5秒
+* `curtain_draw`: 拉下帷幕。固定1.5秒
 
-* `curtain-raise`: 拉开帷幕。固定1.5秒
+* `curtain_raise`: 拉开帷幕。固定1.5秒
 
-* `curtain-fade-in`: 屏幕淡入。固定2秒
+* `curtain_fade_in`: 屏幕淡入。固定2秒
 
-* `curtain-fade-out`: 屏幕淡出。固定2秒
+* `curtain_fade_out`: 屏幕淡出。固定2秒
 ### COD样式信息显示
-* `info-fade-in`: 信息淡入。固定0.25秒
+* `info_fade_in`: 信息淡入。固定0.25秒
 
-* `info-fade-out`: 信息淡出。固定0.25秒。清空信息文本。
+* `info_fade_out`: 信息淡出。固定0.25秒。清空信息文本。
 
-* `info-text`: 信息文本。
+* `info_text`: 信息文本。
 
   可用变量:
     * [1] (Text)文本: COD样式的文本.
 ### 信号切入式对话框
-* `signal-cut-in`: 信号切入。固定0.5秒
+* `signal_cut_in`: 信号切入。固定0.5秒
 
-* `signal-cut-out`: 信号切出。固定0.5秒
+* `signal_cut_out`: 信号切出。固定0.5秒
 
-* `signal-text`: 信号文本
+* `signal_text`: 信号文本
 
   可用变量:
     * [1] (Text)text: 文本内容
 ### 输入
-* `input-lock`: 锁定输入
+* `input_lock`: 锁定输入
 
-* `input-unlock`: 解锁输入
+* `input_unlock`: 解锁输入
 ### 世界事件
-* `jump-in`: 召唤一个单位跃迁入场
+* `jump_in`: 召唤一个单位跃迁入场
 
   可用变量:
     * [1] (UnitType)单位: 入场单位
@@ -73,7 +73,7 @@
     * [7] (WU)范围: 入场范围
 
 
-* `mark-world`: 在地图上创建标记
+* `mark_world`: 在地图上创建标记
 
   可用变量:
     * [1] (WU)x: 标记 x 坐标
@@ -99,7 +99,7 @@
     * [7] (WU)范围: 空袭创建坐标随机范围
 
 ### 警报
-* `warning-icon`: 警报HUD
+* `warning_icon`: 警报HUD
 
   可用变量:
     * [1] (Integer)icon: 警告icon
@@ -110,7 +110,7 @@
     * [2] (Team)队伍: 用于hud的队伍颜色
     * [3] (Text)文本: 警报文本
 
-* `warning-sound`: 警报声
+* `warning_sound`: 警报声
 
   可用变量:
     * [1] (Integer)友方警报: 用于友方玩家的警报

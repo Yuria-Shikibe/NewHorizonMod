@@ -6,13 +6,13 @@
 
 ***
 # Available Action
-### special - Special Actions
+### special _ Special Actions
 * `wait`: Wait a specific time.
 
   available args:
     * [1] (second)time: how long the wait lasts.
-### camera - Camera Action
-* `camera-control`: Move camera to a specific position.
+### camera _ Camera Action
+* `camera_control`: Move camera to a specific position.
  
   available args: 
     * [1] (second)time: how long it takes to move the camera.
@@ -20,48 +20,48 @@
     * [3] (WU)y: camara's target y coordinate.
   
 
-* `camera-reset`: Reset camera to player.
+* `camera_reset`: Reset camera to player.
 
   available args:
     * [1] (second)time: how long it takes to move the camera.
 
-* `camera-set`: Move camera to a specific position immediately.
+* `camera_set`: Move camera to a specific position immediately.
 
   available args:
     * [1] (WU)x: camara's target X coordinate.
     * [2] (WU)y: camara's target y coordinate.
 ### curtain - Curtain & Background Action
-* `curtain-draw`: Draw the curtain. Hide the ui. hard-coded with 1.5s duration.
+* `curtain_draw`: Draw the curtain. Hide the ui. hard-coded with 1.5s duration.
 
-* `curtain-raise`: Raise the curtain. Show the ui. hard-coded with 1.5s duration.
+* `curtain_raise`: Raise the curtain. Show the ui. hard-coded with 1.5s duration.
 
-* `curtain-fade-in`: Turn the screen to dark. Hide the ui. hard-coded with 2s duration.
+* `curtain_fade_in`: Turn the screen to dark. Hide the ui. hard-coded with 2s duration.
 
-* `curtain-fade-out`: Reveal the screen. Show the ui. hard-coded with 2s duration.
+* `curtain_fade_out`: Reveal the screen. Show the ui. hard-coded with 2s duration.
 ### info - COD style Info Text
-* `info-fade-in`: Info text fade in. hard-coded with 0.25s duration.
+* `info_fade_in`: Info text fade in. hard-coded with 0.25s duration.
 
-* `info-fade-out`: Info text fade out. hard-coded with 0.25s duration. Remove the info text.
+* `info_fade_out`: Info text fade out. hard-coded with 0.25s duration. Remove the info text.
 
-* `info-text`: the text of the info.
+* `info_text`: the text of the info.
 
   available args:
   * [1] (Text)text: The info text. COD style.
 ### signal - Signal Dialog
-* `signal-cut-in`: Signal dialog fade in. hard-coded with 0.5s duration.
+* `signal_cut_in`: Signal dialog fade in. hard-coded with 0.5s duration.
 
-* `signal-cut-out`: Signal dialog fade out. hard-coded with 0.5s duration. Remove the signal text.
+* `signal_cut_out`: Signal dialog fade out. hard-coded with 0.5s duration. Remove the signal text.
 
-* `signal-text`: the text of the signal.
+* `signal_text`: the text of the signal.
 
   available args:
   * [1] (Text)text: The signal text.
 ### input - Input Lock/Unlock
-* `input-lock`: Lock the input. Hide the ui. Camera can only move with cutscene control.
+* `input_lock`: Lock the input. Hide the ui. Camera can only move with cutscene control.
 
-* `input-unlock`: Unlock the input. resume player's control.
+* `input_unlock`: Unlock the input. resume player's control.
 ### event - Special World Event
-* `jump-in`: Summon a unit to jump in.
+* `jump_in`: Summon a unit to jump in.
 
   available args:
   * [1] (UnitType)unit: the unit that jump in.
@@ -73,7 +73,7 @@
   * [7] (WU)inaccuracy: the inaccuracy range of the jump in.
 
 
-* `mark-world`: Create a marker on the map.
+* `mark_world`: Create a marker on the map.
 
   available args:
   * [1] (WU)x: the X coordinate of the marker.
@@ -99,7 +99,7 @@
   * [7] (WU)inaccuracy: the inaccuracy range of the bullet.
 
 ### warning: Warning Control.
-* `warning-icon`: Create a warning hud.
+* `warning_icon`: Create a warning hud.
 
   available args:
   * [1] (Integer)icon: the icon of the warning.
@@ -110,7 +110,7 @@
   * [2] (Team)team: the warning hud's team. used for color.
   * [3] (Text)text: The warning text.
 
-* `warning-sound`: Broadcast a warning sound.
+* `warning_sound`: Broadcast a warning sound.
 
   available args:
   * [1] (Integer)allySound: warning sound for friendly.
