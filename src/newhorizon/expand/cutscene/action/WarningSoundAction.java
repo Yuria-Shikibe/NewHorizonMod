@@ -23,7 +23,7 @@ public class WarningSoundAction extends Action {
         super(0);
         allySound = Integer.parseInt(args[0]);
         enemySound = Integer.parseInt(args[1]);
-        team = ActionControl.phaseTeam(args[2]);
+        team = ActionControl.parseTeam(args[2]);
     }
 
     public Sound warningSound(int soundID) {

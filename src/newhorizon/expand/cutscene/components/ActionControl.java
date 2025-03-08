@@ -6,27 +6,27 @@ import mindustry.content.UnitTypes;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.type.UnitType;
+import mindustry.world.blocks.logic.MemoryBlock;
 import newhorizon.expand.cutscene.action.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static mindustry.Vars.content;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 
 public class ActionControl {
-    public static ActionBus phaseCode(String code, Building source){
+    public static ActionBus parseCode(String code, Building source){
         ActionBus bus = new ActionBus();
-        phaseLine(code).each(line -> bus.add(phaseAction(line, source)));
+        parseLine(code, source).each(line -> bus.add(parseAction(line, source)));
         return bus;
     }
 
-    public static Seq<String> phaseLine(String code){
+    public static Seq<String> parseLine(String code, Building source){
         String[] lines = code.split("\\R");
         return Seq.with(lines);
     }
 
-    public static Seq<String> parseString(String line) {
+    public static Seq<String> parseToken(String line, Building source) {
         Seq<String> result = new Seq<>();
         Matcher matcher = Pattern.compile("<([^>]*)>|\\S+").matcher(line);
         while (matcher.find()) {
@@ -35,11 +35,22 @@ public class ActionControl {
         return result;
     }
 
-    public static String phaseString(String token) {
+    public static String parseString(String token, Building source) {
+        return parseString(token);
+    }
+
+    public static String parseString(String token) {
         return token.replace("[n]", "\n");
     }
 
-    public static Team phaseTeam(String token){
+    public static float parseFloat(String token, Building source) {
+        if (token.startsWith("@") && source != null && world.build(source.tileX(), source.tileY() - 1).block instanceof MemoryBlock){
+            MemoryBlock.MemoryBuild memory = (MemoryBlock.MemoryBuild)world.build(source.tileX(), source.tileY() - 1);
+            return (float) memory.memory[Integer.parseInt(token.replace("@", ""))];
+        }else return Float.parseFloat(token);
+    }
+
+    public static Team parseTeam(String token){
         switch (token){
             case "derelict": return Team.derelict;
             case "sharded": return Team.sharded;
@@ -59,7 +70,7 @@ public class ActionControl {
         }
     }
 
-    public static UnitType phaseUnitType(String token){
+    public static UnitType parseUnitType(String token){
         if (content.unit(token) != null){
             return content.unit(token);
         }
@@ -74,16 +85,16 @@ public class ActionControl {
         return UnitTypes.alpha;
     }
 
-    public static Action phaseAction (String tokens, Building source){
-        Seq<String> tokensArray = parseString(tokens);
+    public static Action parseAction (String tokens, Building source){
+        Seq<String> tokensArray = parseToken(tokens, source);
         String actionName = tokensArray.remove(0);
         String[] args = tokensArray.toArray(String.class);
         try{
             return switch (actionName) {
                 case "camera_control" -> new CameraControlAction(args);
-                case "camera_pan" -> new CameraPanAction(args);
+                case "camera_pan" -> new CameraPanAction(args, source);
                 case "camera_reset" -> new CameraResetAction(args);
-                case "camera_set" -> new CameraSetAction(args);
+                case "camera_set" -> new CameraSetAction(args, source);
 
                 case "curtain_draw" -> new CurtainDrawAction();
                 case "curtain_raise" -> new CurtainRaiseAction();
@@ -97,11 +108,11 @@ public class ActionControl {
                 case "input_lock" -> new InputLockAction();
                 case "input_unlock" -> new InputUnlockAction();
 
-                case "jump_in" -> new JumpInAction(args);
+                case "jump_in" -> new JumpInAction(args, source);
 
-                case "mark_world" -> new MarkWorldAction(args);
+                case "mark_world" -> new MarkWorldAction(args, source);
 
-                case "raid" -> new RaidAction(args);
+                case "raid" -> new RaidAction(args, source);
 
                 case "signal_cut_in" -> new SignalCutInAction();
                 case "signal_cut_out" -> new SignalCutOutAction();

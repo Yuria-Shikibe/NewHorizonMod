@@ -26,8 +26,8 @@ public class WarningIconAction extends Action {
     public WarningIconAction(String[] args) {
         super(0);
         icon = Integer.parseInt(args[0]);
-        team = ActionControl.phaseTeam(args[1]);
-        message = ActionControl.phaseString(args[2]);
+        team = ActionControl.parseTeam(args[1]);
+        message = ActionControl.parseString(args[2]);
     }
 
     public TextureRegion warningIcon(){

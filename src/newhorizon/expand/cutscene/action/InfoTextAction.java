@@ -16,7 +16,7 @@ public class InfoTextAction extends Action {
 
     public InfoTextAction(String[] args) {
         super(0f);
-        this.text = ActionControl.phaseString(args[0]);
+        this.text = ActionControl.parseString(args[0]);
     }
 
     @Override

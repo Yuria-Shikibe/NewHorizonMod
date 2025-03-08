@@ -4,7 +4,9 @@ import arc.Core;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.gen.Building;
 import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.cutscene.components.ActionControl;
 
 public class CameraPanAction extends Action {
     public Vec2 target;
@@ -17,6 +19,11 @@ public class CameraPanAction extends Action {
     public CameraPanAction(String[] args) {
         super(Float.parseFloat(args[0]) * Time.toSeconds);
         target = new Vec2(Float.parseFloat(args[1]), Float.parseFloat(args[2]));
+    }
+
+    public CameraPanAction(String[] tokens, Building source) {
+        super(ActionControl.parseFloat(tokens[0], source) * Time.toSeconds);
+        target = new Vec2(ActionControl.parseFloat(tokens[1], source), ActionControl.parseFloat(tokens[2], source));
     }
 
     @Override

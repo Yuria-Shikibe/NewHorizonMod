@@ -16,7 +16,7 @@ public class SignalTextAction extends Action {
 
     public SignalTextAction(String[] args) {
         super(0f);
-        this.text = ActionControl.phaseString(args[0]);
+        this.text = ActionControl.parseString(args[0]);
     }
 
     @Override

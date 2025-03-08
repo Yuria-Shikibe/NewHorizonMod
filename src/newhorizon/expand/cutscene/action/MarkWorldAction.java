@@ -1,8 +1,10 @@
 package newhorizon.expand.cutscene.action;
 
 import arc.util.Time;
+import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import newhorizon.expand.cutscene.components.Action;
+import newhorizon.expand.cutscene.components.ActionControl;
 import newhorizon.expand.cutscene.components.ui.MarkStyle;
 
 import static newhorizon.NHVars.cutsceneUI;
@@ -26,6 +28,15 @@ public class MarkWorldAction extends Action {
         radius = Float.parseFloat(args[2]);
         time = Float.parseFloat(args[3]);
         style = Integer.parseInt(args[4]);
+    }
+
+    public MarkWorldAction(String[] tokens, Building source) {
+        super(0);
+        x = ActionControl.parseFloat(tokens[0], source);
+        y = ActionControl.parseFloat(tokens[1], source);
+        radius = ActionControl.parseFloat(tokens[2], source);
+        time = ActionControl.parseFloat(tokens[3], source);
+        style = Integer.parseInt(tokens[4]);
     }
 
     public MarkStyle getMarkStyle() {

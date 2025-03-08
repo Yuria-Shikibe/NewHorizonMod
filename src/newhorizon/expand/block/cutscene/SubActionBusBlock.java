@@ -61,7 +61,7 @@ public class SubActionBusBlock extends MessageBlock {
 
         public void playCutscene() {
             try{
-                cutscene.addSubActionBus(ActionControl.phaseCode(message.toString(), this));
+                cutscene.addSubActionBus(ActionControl.parseCode(message.toString(), this));
             }catch (Exception e){
                 Log.err(e);
                 ui.announce("Failed to create cutscene in block: " + tileX() + " " + tileY());

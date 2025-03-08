@@ -28,7 +28,7 @@ import static mindustry.Vars.*;
 import static newhorizon.util.graphic.SpriteUtil.*;
 
 public class AdaptWall extends Wall {
-	public TextureRegion[] atlasRegion, topRegion;
+	public TextureRegion[] atlasRegion;
 
 	public float damageReduction = 0.1f;
 	public float maxShareStep = 3;
@@ -50,10 +50,6 @@ public class AdaptWall extends Wall {
 	public void load(){
 		super.load();
 		atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, ATLAS_INDEX_4_12);
-		topRegion = new TextureRegion[3];
-		for (int i = 0; i < 3; i++){
-			topRegion[i] = Core.atlas.find(name + "-top-" + i);
-		}
 	}
 
 	@Override
@@ -71,7 +67,6 @@ public class AdaptWall extends Wall {
 	public class AdaptWallBuild extends Building{
 		public Seq<AdaptWallBuild> connectedWalls = new Seq<>();
 		public int drawIndex = 0;
-		public int topIdx = 0;
 
 		public void updateDrawRegion(){
 			drawIndex = 0;
@@ -100,24 +95,6 @@ public class AdaptWall extends Wall {
 			}
 
 			drawIndex = ATLAS_INDEX_4_12_MAP.get(drawIndex);
-			updateTopIndex();
-		}
-
-		public void updateTopIndex(){
-			topIdx = 0;
-			if (tileX() % 2 == 0 && tileY() % 2 == 0 && validTile(1, 0) && validTile(1, 1) && validTile(0, 1)){topIdx = 1; return;}
-			if (tileX() % 2 == 1 && tileY() % 2 == 0 && validTile(-1, 0) && validTile(0, 1) && validTile(-1, 1)){topIdx = 0; return;}
-			if (tileX() % 2 == 1 && tileY() % 2 == 1 && validTile(-1, 0) && validTile(-1, -1) && validTile(0, -1)){topIdx = 0; return;}
-			if (tileX() % 2 == 0 && tileY() % 2 == 1 && validTile(1, 0) && validTile(1, -1) && validTile(0, -1)){topIdx = 0; return;}
-
-			topIdx = (tileX() + tileY()) % 2 == 0? 3: 4;
-		}
-
-		public void drawTop(){
-			if (topIdx == 0) return;
-			if (topIdx == 1) {Draw.rect(topRegion[0], x + tilesize/2f, y + tilesize/2f);}
-			if (topIdx == 3) {Draw.rect(topRegion[1], x, y);}
-			if (topIdx == 4) {Draw.rect(topRegion[2], x, y);}
 		}
 
 		public boolean validTile(int x, int y){
@@ -220,7 +197,6 @@ public class AdaptWall extends Wall {
 		
 		@Override
 		public void draw(){
-			drawTop();
 			Draw.z(Layer.block + 1f);
 			Draw.rect(atlasRegion[drawIndex], x, y);
 		}
