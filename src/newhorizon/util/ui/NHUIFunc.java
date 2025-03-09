@@ -162,22 +162,6 @@ public class NHUIFunc{
 		}
 	}
 
-	public static void ammo(Table table, String name, BulletType type, TextureRegion icon){
-		table.row();
-		
-		table.table().padTop(OFFSET);
-		table.image(icon).size(3 * 8).padRight(4).right().top();
-		if(!name.isEmpty())table.add(name).padRight(10).left().top();
-		
-		table.table(bt -> {
-			bt.left().defaults().padRight(3).left();
-			
-			StatValues.ammo(ObjectMap.of(UnitTypes.block, type), 0, false).display(bt);
-		}).padTop(-9).left().get().background(Tex.underline);
-		
-		table.row();
-	}
-
 	public static class LinkTable extends Table{
 		protected static float h = Core.graphics.isPortrait() ? 90f : 80f;
 		protected static float w = Core.graphics.isPortrait() ? 330f : 600f;

@@ -207,8 +207,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
 
     public void drawExtraDrawer(){
         for (Ability ability: unitType.abilities){
-            if (ability instanceof ShieldArcAbility){
-                ShieldArcAbility sa = (ShieldArcAbility) ability;
+            if (ability instanceof ShieldArcAbility sa){
 
                 float progress = Mathf.clamp((warpTimer - 100) / 320f);
 
@@ -313,6 +312,14 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     @Override
     public void updateSpacing(long updateSpacing) {
 
+    }
+
+    //@Override
+    //public void afterAllRead() {}
+
+    @Override
+    public boolean isNull() {
+        return false;
     }
 
     @Override

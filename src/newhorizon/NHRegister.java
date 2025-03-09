@@ -99,21 +99,6 @@ public class NHRegister{
 				}
 			});
 			
-			//Fuck erekir on the server
-			if(Vars.headless){
-				if(Vars.state.rules.hiddenBuildItems.equals(ObjectSet.with(Planets.erekir.hiddenItems))){
-					Groups.player.each(p -> p.sendMessage("No Pure Erekir On The Server!!!"));
-					
-					Groups.build.each(b -> Time.run(Mathf.random(60, 600), b::kill));
-					Groups.unit.each(b -> Time.run(Mathf.random(60, 600), b::kill));
-					Time.run(600f, () -> {
-						Logic.updateGameOver(Team.derelict);
-					});
-					
-					Vars.maps.removeMap(Vars.state.map);
-				}
-			}
-			
 			afterLoad.clear();
 			
 			if(!Vars.headless && Vars.net.active() && !NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)){
@@ -130,8 +115,6 @@ public class NHRegister{
 				});
 			}
 
-
-			
 			Core.app.post(() -> {
 				if(Vars.state.isPlaying()){
 				}

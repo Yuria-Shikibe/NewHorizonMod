@@ -73,7 +73,15 @@ public class WorldEvent extends NHBaseEntity implements Posc, Drawc, Syncc, Team
 	
 	@Override
 	public void afterSync(){}
-	
+
+	//@Override
+	//public void afterAllRead() {}
+
+	@Override
+	public boolean isNull() {
+		return false;
+	}
+
 	@Override
 	public boolean serialize(){
 		return true;

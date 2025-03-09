@@ -4,7 +4,6 @@ import arc.scene.ui.layout.Table;
 import arc.util.Strings;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
-import mindustry.ui.ItemImage;
 import mindustry.ui.Styles;
 import mindustry.world.meta.StatUnit;
 
@@ -17,7 +16,7 @@ public class ItemDisplay extends Table{
     }
 
     public ItemDisplay(Item item, int amount, boolean showName){
-        add(new mindustry.ui.ItemImage(new ItemStack(item, amount)));
+        add(new ItemImage(new ItemStack(item, amount)));
         if(showName) add(item.localizedName).padLeft(4 + amount > 99 ? 4 : 0);
 
         this.item = item;

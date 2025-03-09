@@ -271,6 +271,12 @@ public abstract class CommandableBlock extends Block{
 		@Override public boolean isLocal(){
 			return this instanceof Unitc && ((Unitc)this).controller() == player;
 		}
+
+		@Override
+		public boolean isNull() {
+			return false;
+		}
+
 		@Override public boolean isRemote(){
 			return this instanceof Unitc && ((Unitc)this).isPlayer() && !isLocal();
 		}
@@ -279,7 +285,10 @@ public abstract class CommandableBlock extends Block{
 		@Override public void time(float time){this.time = time;}
 		@Override public float lifetime(){return lifetime;}
 		@Override public void lifetime(float lifetime){this.lifetime = lifetime;}
-		@Override public boolean isNull(){ return false; }
+
+		//@Override
+		//public void afterAllRead() {}
+
 		@Override public <T extends Entityc> T self(){ return (T)this; }
 		@Override public <T> T as(){ return (T)this; }
 		@Override public void set(float x, float y){

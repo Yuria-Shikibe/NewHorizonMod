@@ -45,7 +45,6 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
-import mindustry.ui.ItemDisplay;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
@@ -66,6 +65,7 @@ import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.ui.ItemImageDynamic;
 import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
+import newhorizon.util.ui.display.ItemDisplay;
 
 import java.util.Arrays;
 import java.util.Objects;

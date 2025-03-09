@@ -98,7 +98,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 		}
 		
 		if(!onMove && team != null) Drawf.light(this, drawSize * fslope(), team.color, 0.8f);
-		if(!onMove && unit != null && !unit.isNull()){
+		if(!onMove && unit != null){
 			float height = Mathf.curve(fslope() * fslope(), 0f, 0.3f) * 1.1f;
 			float width = Mathf.curve(fslope() * fslope(), 0.35f, 0.75f) * 1.1f;
 			
@@ -218,7 +218,15 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 		
 		if(!Vars.headless)trail.update(x, y, 1);
 	}
-	
+
+	//@Override
+	//public void afterAllRead() {}
+
+	@Override
+	public boolean isNull() {
+		return false;
+	}
+
 	@Override
 	public int classId(){
 		return EntityRegister.getID(getClass());
@@ -263,7 +271,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 	
 	@Override
 	public void afterRead(){
-		if(contained && toCarry != null && toCarry.unit != null && !toCarry.unit.isNull()){
+		if(contained && toCarry != null && toCarry.unit != null){
 			init(toCarry.unit, to, finalRot);
 			add();
 		}else{

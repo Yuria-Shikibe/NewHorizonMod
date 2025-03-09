@@ -275,7 +275,15 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		
 		afterRead();
 	}
-	
+
+	//@Override
+	//public void afterAllRead() {}
+
+	@Override
+	public boolean isNull() {
+		return false;
+	}
+
 	@Override
 	public boolean serialize(){return true;}
 	

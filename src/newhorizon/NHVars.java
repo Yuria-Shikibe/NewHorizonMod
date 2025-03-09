@@ -2,6 +2,12 @@ package newhorizon;
 
 import arc.Core;
 import mindustry.Vars;
+import mindustry.gen.LogicIO;
+import mindustry.graphics.Pal;
+import mindustry.logic.LAssembler;
+import mindustry.logic.LCategory;
+import newhorizon.content.NHContent;
+import newhorizon.content.NHLStatements;
 import newhorizon.expand.cutscene.components.CutsceneControl;
 import newhorizon.expand.cutscene.components.CutsceneUI;
 import newhorizon.expand.game.NHWorldData;
@@ -31,7 +37,6 @@ public class NHVars{
 
 		core = new NHModCore();
 		Core.app.addListener(core);
-
 
 		if(Vars.headless)return;
 		//GridUtil.init();

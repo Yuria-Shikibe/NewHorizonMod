@@ -3,6 +3,8 @@ package newhorizon.content;
 import arc.Core;
 import arc.files.Fi;
 import arc.func.Cons;
+import arc.func.Func;
+import arc.func.Prov;
 import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
@@ -14,8 +16,13 @@ import mindustry.ctype.ContentType;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;
 import mindustry.gen.Icon;
+import mindustry.gen.LogicIO;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.logic.LAssembler;
+import mindustry.logic.LCategory;
+import mindustry.logic.LStatement;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.transport.LogisticsBlock;
@@ -48,6 +55,8 @@ public class NHContent extends Content{
 		raid, objective, fleet, capture;
 	
 	public static Attribute quantum;
+
+	public static LCategory NH_CSS;
 	
 	public static void loadPriority(){
 		new NHContent().load();
@@ -80,7 +89,10 @@ public class NHContent extends Content{
 	}
 	
 	public static void loadLast(){
-	
+		NH_CSS = new LCategory("nhcss", Pal.techBlue);
+
+		LAssembler.customParsers.put("randtarget", NHLStatements.RandomTarget::new);
+		LogicIO.allStatements.addUnique(NHLStatements.RandomTarget::new);
 	}
 	
 	@Override
@@ -154,7 +166,6 @@ public class NHContent extends Content{
 			t.setFilter(Texture.TextureFilter.nearest);
 			t.setWrap(Texture.TextureWrap.repeat);
 		});
-
 	}
 	
 	Texture loadTex(String name, Cons<Texture> modifier){
