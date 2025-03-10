@@ -26,7 +26,6 @@ public class MarkBox extends Table{
     public Interp popUpInterp = NHInterp.bounce5Out;
     public Position markPoint;
     public MarkStyle style = MarkStyle.defaultStyle;
-    public Boolp removeCheck = () -> false;
     public int id = lastID++;
 
     protected static int lastID = 0;
@@ -46,7 +45,8 @@ public class MarkBox extends Table{
     }
 
     public void addSelf() {
-        cutsceneUI.overlay.addChild(this);
+        cutsceneUI.root.addChild(this);
+        setZIndex(0);
     }
 
     public MarkBox init(float radius, Color markColor, Position markPoint, MarkStyle style) {
@@ -72,17 +72,13 @@ public class MarkBox extends Table{
     public void act(float delta) {
         super.act(delta);
 
-        if (lifetime > 0) {
-            if (totalProgress > lifetime) {
-                removeFromHUD();
-            }
+        if (totalProgress > lifetime) {
+            removeFromHUD();
         }
-
-        if (removeCheck.get()) removeFromHUD();
     }
 
     public void removeFromHUD() {
-        actions(Actions.fadeOut(0.7f), Actions.remove());
+        actions(Actions.fadeOut(0.5f), Actions.remove());
     }
 
     @Override
@@ -92,18 +88,18 @@ public class MarkBox extends Table{
         if (Vars.headless) return;
 
         Vec2 screenVec = tmpVec.set(Core.camera.project(markPoint.getX(), markPoint.getY()));
+        Vec2 originVec = screenVec.cpy();
+
 
         boolean outer = screenVec.x < width * 0.05f || screenVec.y < height * 0.05f || screenVec.x > width * 0.95f || screenVec.y > height * 0.95f;
-
 
         if (outer) {
             screenVec.x = Mathf.clamp(screenVec.x, width * 0.05f, width * 0.95f);
             screenVec.y = Mathf.clamp(screenVec.y, height * 0.05f, height * 0.95f);
         }
 
-        tmpColor.set(markColor).lerp(Color.white, Mathf.absin(totalProgress, 5f, 0.4f)).a(color.a);
+        tmpColor.set(markColor).lerp(Color.white, Mathf.absin(totalProgress, 5f, 0.2f)).a(color.a);
 
-        style.drawer.draw(id, totalProgress, radius, screenVec, tmpColor, outer);
+        style.drawer.draw(id, totalProgress / lifetime, radius, screenVec, originVec, tmpColor, outer);
     }
-
 }

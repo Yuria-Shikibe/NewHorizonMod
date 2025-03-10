@@ -73,7 +73,6 @@ public class TrailFadeBulletType extends AccelBulletType{
 	@Override
 	public void hitEntity(Bullet b, Hitboxc entity, float health){
 		super.hitEntity(b, entity, health);
-		
 		hit(b);
 	}
 	
@@ -135,7 +134,6 @@ public class TrailFadeBulletType extends AccelBulletType{
 				if(points.size() < 2)return;
 				Draw.color(hitColor);
 				for(int i = 1; i < points.size(); i++){
-//					Draw.alpha(((float)(i + fadeOffset) / points.size));
 					Lines.stroke(Mathf.clamp((i + tracerFadeOffset / 2f) / points.size() * (tracerStrokeOffset - (points.size() - i)) / tracerStrokeOffset) * tracerStroke);
 					Vec2 from = points.setVec2(i - 1, Tmp.v1);
 					Vec2 to = points.setVec2(i, Tmp.v2);

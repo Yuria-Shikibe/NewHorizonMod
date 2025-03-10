@@ -3,7 +3,6 @@ package newhorizon.expand.cutscene.components;
 import arc.Core;
 import arc.Events;
 import arc.flabel.FLabel;
-import arc.func.Boolp;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -91,7 +90,7 @@ public class CutsceneUI {
 	private void buildRoot(){
 		root = new WidgetGroup(){{
 			setFillParent(true);
-			touchable = Touchable.childrenOnly;
+			touchable = Touchable.disabled;
 		}};
 	}
 
@@ -130,11 +129,7 @@ public class CutsceneUI {
 
 	private void buildTextTable(){
 		textTable = new Table(Tex.buttonEdge3){{
-			touchable(() -> {
-				if(color.a > 0.1f){
-					return Touchable.childrenOnly;
-				}else return Touchable.disabled;
-			});
+			touchable(() -> Touchable.disabled);
 			visible(() -> Vars.state.isGame());
 			color.a = 0;
 
@@ -240,29 +235,23 @@ public class CutsceneUI {
 	public void clear(){
 		overlay.clear();
 	}
-	
-	public void withdrawCurtain(){
-
-	}
 
 	public Interval signalInterval = new Interval();
 	
 	@HeadlessDisabled
-	public void mark(float x, float y, float radius, float lifetime, Color color, Boolp removeCheck){
+	public void mark(float x, float y, float radius, float lifetime, Color color){
 		if(Vars.headless)return;
 		MarkBox box = new MarkBox();
 		box.init(radius, color, new Vec2(x, y), MarkStyle.defaultStyle);
-		box.removeCheck = removeCheck;
 		if(lifetime > 0)box.lifetime = lifetime;
 		box.addSelf();
 	}
 	
 	@HeadlessDisabled
-	public void mark(float x, float y, float radius, float lifetime, Color color, MarkStyle style, Boolp removeCheck){
+	public void mark(float x, float y, float radius, float lifetime, Color color, MarkStyle style){
 		if(Vars.headless)return;
 		MarkBox box = new MarkBox();
 		box.init(radius, color, new Vec2(x, y), style);
-		box.removeCheck = removeCheck;
 		if(lifetime > 0)box.lifetime = lifetime;
 		box.addSelf();
 	}
@@ -280,7 +269,7 @@ public class CutsceneUI {
 		
 		MarkBox box = new MarkBox();
 		Tmp.v1.setToRandomDirection().scl(scl * offset + 40);
-		box.init(9, color, new Vec2(x, y).add(Tmp.v1), MarkStyle.shake);
+		box.init(9, color, new Vec2(x, y).add(Tmp.v1), MarkStyle.signalShake);
 		box.setLife(45f);
 		box.addSelf();
 	}

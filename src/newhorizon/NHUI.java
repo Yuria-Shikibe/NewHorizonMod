@@ -36,9 +36,7 @@ public class NHUI{
 	public static Table eventSimplePane = new Table();
 	
 	public static NHWorldSettingDialog nhWorldSettingDialog;
-	
-	public static Group root;
-	
+
 	public static float getWidth(){
 		return Core.graphics.getWidth();
 	}
@@ -48,15 +46,8 @@ public class NHUI{
 	}
 	
 	public static void init(){
-		root = new WidgetGroup(){{
-			setFillParent(true);
-			touchable = Touchable.childrenOnly;
-		}};
-		
 		nhWorldSettingDialog = new NHWorldSettingDialog();
-		
-		Core.scene.root.addChildAt(0, root);
-		
+
 		try{
 			HudFragment_overlaymarker = Vars.ui.hudGroup.find("overlaymarker");
 			HUD_waves_editor = HudFragment_overlaymarker.find("waves/editor");
@@ -139,9 +130,5 @@ public class NHUI{
 			Log.info(e);
 		}
 		 */
-	}
-	
-	public static void clear(){
-		root.clear();
 	}
 }

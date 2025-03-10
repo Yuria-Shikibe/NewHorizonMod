@@ -2,8 +2,10 @@ package newhorizon.expand.cutscene.action;
 
 import arc.flabel.FLabel;
 import arc.graphics.g2d.TextureRegion;
+import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.ui.Styles;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import newhorizon.content.NHContent;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;

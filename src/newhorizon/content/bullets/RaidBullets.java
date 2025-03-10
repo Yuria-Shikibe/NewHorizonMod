@@ -14,6 +14,7 @@ import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.turrets.BaseTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.ReloadTurret;
@@ -21,6 +22,8 @@ import newhorizon.content.*;
 import newhorizon.content.blocks.TurretBlock;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
+import newhorizon.expand.bullets.raid.TracerRaidBulletType;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static arc.graphics.g2d.Draw.color;
@@ -75,7 +78,56 @@ public class RaidBullets {
             );
         }};
 
-        raidBullet_2 = NHBullets.saviourBullet;
+        raidBullet_2 = new TracerRaidBulletType(){{
+            speed = 3.5f;
+            lifetime = 120f;
+
+            damage = 500;
+
+            splashDamageRadius = 60f;
+            splashDamage = 500f;
+
+            splashDamagePierce = true;
+            scaledSplashDamage = true;
+            collides = false;
+            collidesGround = true;
+            collideFloor = true;
+            collidesAir = true;
+
+            hittable = true;
+            reflectable = false;
+            absorbable = true;
+            despawnHit = true;
+
+            trailLength = 30;
+            trailChance = 0.8f;
+            trailParam = 3;
+            drawSize = 120f;
+            hitShake = despawnShake = 16f;
+
+            tracers = 2;
+            tracerFadeOffset = 15;
+            tracerStrokeOffset = 15;
+            tracerStroke = 3f;
+            tracerSpacing = 8f;
+            tracerRandX = 6f;
+            tracerUpdateSpacing = 2f;
+
+            shrinkX = shrinkY = 0;
+            height = 22f;
+            width = 22f;
+
+            sprite = "large-orb";
+            hitSound = Sounds.explosionbig;
+
+            trailEffect = triSpark(45, 15);
+
+            despawnEffect = new OptionalMultiEffect(
+                    spark(90, 90), spark(40, 60), spark(60, 85),
+                    circle(35, 25), circle(25, 40), circle(25, 65),
+                    crossBlast(45, 80, 0)
+            );
+        }};
         raidBullet_3 = NHBullets.railGun1;
         raidBullet_4 = NHBullets.railGun2;
         raidBullet_5 = NHBullets.railGun3;
@@ -142,6 +194,32 @@ public class RaidBullets {
 
             rand.setSeed(e.id);
             randLenVectors(e.id, (int)(radius / 6f), e.finpow() * radius, (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * rand.random(2f, 4f) * radius / 10f + 1f));
+        });
+    }
+
+    public static Effect triSpark(float lifetime, float radius){
+        return new Effect(lifetime, e -> {
+            rand.setSeed(e.id);
+            Draw.color(e.color, Color.white, e.fin());
+            randLenVectors(e.id, (int)(radius / 8), 3f + radius * e.fin(), 5f, (x, y) -> {
+                float randN = rand.random(120f);
+                Fill.poly(e.x + x, e.y + y, 3, e.fout() * (radius / 3f) * rand.random(0.8f, 1.2f), e.rotation + randN * e.fin());
+            });
+        });
+    }
+
+    public static Effect crossBlast(float lifetime, float size, float rotate){
+        return new Effect(lifetime, size * 2, e -> {
+            color(e.color, Color.white, e.fout() * 0.55f);
+            Drawf.light(e.x, e.y, e.fout() * size, e.color, 0.7f);
+
+            rand.setSeed(e.id);
+            float sizeDiv = size / 1.5f;
+            float randL = rand.random(sizeDiv);
+
+            for(int i = 0; i < 4; i++){
+                DrawFunc.tri(e.x, e.y, size / 20 * (e.fout() * 3f + 1) / 4 * (e.fout(Interp.pow3In) + 0.5f) / 1.5f, (sizeDiv + randL) * Mathf.curve(e.fin(), 0, 0.05f) * e.fout(Interp.pow3), i * 90 + rotate);
+            }
         });
     }
 }

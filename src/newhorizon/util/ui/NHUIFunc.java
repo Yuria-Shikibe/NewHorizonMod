@@ -27,6 +27,7 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.world.meta.*;
 import newhorizon.NHUI;
+import newhorizon.NHVars;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
@@ -34,6 +35,7 @@ import newhorizon.util.ui.display.ItemImage;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;
+import static newhorizon.NHVars.cutsceneUI;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
@@ -140,7 +142,7 @@ public class NHUIFunc{
 			table.pack();
 			table.act(0f);
 			
-			NHUI.root.addChild(table);
+			cutsceneUI.overlay.addChild(table);
 		});
 	}
 	

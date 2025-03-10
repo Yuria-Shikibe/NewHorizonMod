@@ -1,6 +1,7 @@
 package newhorizon.expand.cutscene.action;
 
 import arc.util.Time;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import newhorizon.expand.cutscene.components.Action;
@@ -12,13 +13,15 @@ import static newhorizon.NHVars.cutsceneUI;
 public class MarkWorldAction extends Action {
     public int style;
     public float x, y, radius, time;
-    public MarkWorldAction(float x, float y, float radius, float time, int style) {
+    public Team team;
+    public MarkWorldAction(float x, float y, float radius, float time, int style, Team team) {
         super(0);
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.time = time;
         this.style = style;
+        this.team = team;
     }
 
     public MarkWorldAction(String[] args) {
@@ -28,6 +31,7 @@ public class MarkWorldAction extends Action {
         radius = Float.parseFloat(args[2]);
         time = Float.parseFloat(args[3]);
         style = Integer.parseInt(args[4]);
+        team = ActionControl.parseTeam(args[5]);
     }
 
     public MarkWorldAction(String[] tokens, Building source) {
@@ -37,20 +41,22 @@ public class MarkWorldAction extends Action {
         radius = ActionControl.parseFloat(tokens[2], source);
         time = ActionControl.parseFloat(tokens[3], source);
         style = Integer.parseInt(tokens[4]);
+        team = ActionControl.parseTeam(tokens[5]);
     }
 
     public MarkStyle getMarkStyle() {
         return switch (style) {
             case 1 -> MarkStyle.defaultNoLines;
-            case 2 -> MarkStyle.fixed;
-            case 3 -> MarkStyle.shake;
+            case 2 -> MarkStyle.defaultFixed;
+            case 3 -> MarkStyle.signalShake;
+            case 4 -> MarkStyle.iconRaid;
             default -> MarkStyle.defaultStyle;
         };
     }
 
     @Override
     public void end() {
-        cutsceneUI.mark(x, y, radius, time * Time.toSeconds, Pal.accent, getMarkStyle(), () -> false);
+        cutsceneUI.mark(x, y, radius, time * Time.toSeconds, team.color, getMarkStyle());
     }
 
     @Override

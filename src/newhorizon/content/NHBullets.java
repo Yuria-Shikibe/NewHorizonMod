@@ -1236,12 +1236,6 @@ public class NHBullets{
 			trailWidth = 4.7f;
 			trailLength = 60;
 			
-			//				velocityBegin = 12f;
-			//				velocityIncrease = 22f;
-			//				accelInterp = Interp.pow3Out;
-			//				accelerateBegin = 0f;
-			//				accelerateEnd = 0.8f;
-			
 			maxRange = 740;
 			pierce = pierceBuilding = false;
 			collideTerrain = collideFloor = collidesGround = collidesTiles = false;
