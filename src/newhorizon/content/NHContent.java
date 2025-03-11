@@ -4,7 +4,6 @@ import arc.Core;
 import arc.files.Fi;
 import arc.func.Cons;
 import arc.func.Func;
-import arc.func.Prov;
 import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
@@ -27,6 +26,10 @@ import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 import newhorizon.expand.entities.UltFire;
+import newhorizon.expand.logic.ThreatLevel;
+import newhorizon.expand.logic.statements.RandomSpawn;
+import newhorizon.expand.logic.statements.RandomTarget;
+import newhorizon.expand.logic.statements.TeamThreat;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 
@@ -89,10 +92,17 @@ public class NHContent extends Content{
 	}
 	
 	public static void loadLast(){
-		NH_CSS = new LCategory("nhcss", Pal.techBlue);
+		NH_CSS = new LCategory("nhcss", Pal.heal);
 
-		LAssembler.customParsers.put("randtarget", NHLStatements.RandomTarget::new);
-		LogicIO.allStatements.addUnique(NHLStatements.RandomTarget::new);
+		ThreatLevel.init();
+
+		LAssembler.customParsers.put("randspawn", RandomSpawn::new);
+		LAssembler.customParsers.put("randtarget", RandomTarget::new);
+		LAssembler.customParsers.put("teamthreat", TeamThreat::new);
+
+		LogicIO.allStatements.addUnique(RandomSpawn::new);
+		LogicIO.allStatements.addUnique(RandomTarget::new);
+		LogicIO.allStatements.addUnique(TeamThreat::new);
 	}
 	
 	@Override

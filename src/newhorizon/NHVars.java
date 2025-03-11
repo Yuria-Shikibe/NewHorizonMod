@@ -2,17 +2,9 @@ package newhorizon;
 
 import arc.Core;
 import mindustry.Vars;
-import mindustry.gen.LogicIO;
-import mindustry.graphics.Pal;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import newhorizon.content.NHContent;
-import newhorizon.content.NHLStatements;
 import newhorizon.expand.cutscene.components.CutsceneControl;
 import newhorizon.expand.cutscene.components.CutsceneUI;
 import newhorizon.expand.game.NHWorldData;
-import newhorizon.util.feature.RectSpiller;
-import newhorizon.util.func.GridUtil;
 import newhorizon.util.ui.TableFunc;
 
 public class NHVars{
@@ -25,7 +17,6 @@ public class NHVars{
 
 	public static CutsceneControl cutscene;
 	public static CutsceneUI cutsceneUI;
-
 
 	public static void init(){
 		worldData = new NHWorldData();
