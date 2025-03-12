@@ -27,6 +27,7 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.logic.ThreatLevel;
+import newhorizon.expand.logic.statements.GravityWell;
 import newhorizon.expand.logic.statements.RandomSpawn;
 import newhorizon.expand.logic.statements.RandomTarget;
 import newhorizon.expand.logic.statements.TeamThreat;
@@ -96,10 +97,12 @@ public class NHContent extends Content{
 
 		ThreatLevel.init();
 
+		LAssembler.customParsers.put("gravitywell", GravityWell::new);
 		LAssembler.customParsers.put("randspawn", RandomSpawn::new);
 		LAssembler.customParsers.put("randtarget", RandomTarget::new);
 		LAssembler.customParsers.put("teamthreat", TeamThreat::new);
 
+		LogicIO.allStatements.addUnique(GravityWell::new);
 		LogicIO.allStatements.addUnique(RandomSpawn::new);
 		LogicIO.allStatements.addUnique(RandomTarget::new);
 		LogicIO.allStatements.addUnique(TeamThreat::new);

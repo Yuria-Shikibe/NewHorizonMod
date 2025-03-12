@@ -1,11 +1,9 @@
 package newhorizon.expand.cutscene.components.ui;
 
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec2;
@@ -18,6 +16,7 @@ import newhorizon.util.func.MathUtil;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
 
+import static mindustry.Vars.tilesize;
 import static newhorizon.NHRenderer.height;
 import static newhorizon.NHRenderer.width;
 
@@ -25,7 +24,7 @@ public enum MarkStyle {
     defaultStyle((id, time, radius, pos, origin, color, beyond) -> {
         Tmp.c2.set(Pal.gray).a(color.a);
 
-        float size = radius * Vars.renderer.getDisplayScale();
+        float size = radius * Mathf.clamp(Vars.renderer.getDisplayScale(), 0.5f, 2f);
 
         float rotationS = 45 + 90 * NHInterp.pow10.apply((Time.time / 120) % 1);
         float angle = beyond ? Angles.angle(width / 2, height / 2, pos.x, pos.y) - 90 : 0;
@@ -51,7 +50,7 @@ public enum MarkStyle {
     defaultNoLines((id, time, radius, pos, origin, color, beyond) -> {
         Tmp.c2.set(Pal.gray).a(color.a);
 
-        float size = radius * Vars.renderer.getDisplayScale();
+        float size = radius * Mathf.clamp(Vars.renderer.getDisplayScale(), 0.5f, 2f);
 
         float rotationS = 45 + 90 * NHInterp.pow10.apply((Time.time / 120) % 1);
         float angle = beyond ? Angles.angle(width / 2, height / 2, pos.x, pos.y) - 90 : 0;
@@ -65,7 +64,7 @@ public enum MarkStyle {
     defaultFixed((id, time, radius, pos, origin, color, beyond) -> {
         Tmp.c2.set(Pal.gray).a(color.a);
 
-        float size = radius * Vars.renderer.getDisplayScale();
+        float size = radius * Mathf.clamp(Vars.renderer.getDisplayScale(), 0.5f, 2f);
 
         float rotationS = 45;
         float angle = beyond ? Angles.angle(width / 2, height / 2, pos.x, pos.y) - 90 : 0;
@@ -90,26 +89,25 @@ public enum MarkStyle {
 
     iconRaid((id, time, radius, pos, origin, color, beyond) -> {
 
-        float size = Mathf.clamp(radius * Vars.renderer.getDisplayScale(), radius * 0.5f, radius * 2f);
+        float scaleTileSize = Vars.renderer.getDisplayScale() / tilesize * 4;
+        float scaledRadius = radius * Vars.renderer.getDisplayScale();
+        float scaledClamp = Mathf.clamp(Vars.renderer.getDisplayScale(), 0.5f, 2f) / tilesize * 4;
+        float size = radius * scaledClamp;
         float angle = beyond ? Angles.angle(width / 2, height / 2, pos.x, pos.y) - 90 : 0;
         float progress = Mathf.clamp(time);
 
-        Draw.color(Tmp.c2);
-        Lines.stroke(9f);
-        Lines.arc(origin.x, origin.y, size * 1.1f, progress);
-        Lines.circle(origin.x, origin.y, size * 1.4f * MathUtil.timeValue(0.95f, 1.05f, 1f));
-
         Draw.color(color);
-        Lines.stroke(3f);
-        Lines.arc(origin.x, origin.y, size * 1.1f, progress);
-        Lines.circle(origin.x, origin.y, size * 1.4f * MathUtil.timeValue(0.95f, 1.05f, 1f));
+        Lines.stroke(3f * Vars.renderer.getDisplayScale());
 
-        Draw.rect(NHContent.raid, origin, size, size);
-
-        if (beyond) {
-            Draw.rect(NHContent.pointerRegion, pos, size, size, angle);
+        for (int i = 0; i < (int) (progress * 18); i++) {
+            Lines.arc(origin.x, origin.y, scaledRadius * 1.1f, 1/20f, i * (360f/18f));
         }
 
+        Lines.circle(origin.x, origin.y, scaledRadius * 1.4f * MathUtil.timeValue(0.95f, 1.05f, 2f));
+        Draw.rect(NHContent.raid, origin.x, origin.y, NHContent.raid.width * scaleTileSize, NHContent.raid.height * scaleTileSize);
+        if (beyond) Draw.rect(NHContent.pointerRegion, pos, size, size, angle);
+
+        Draw.reset();
     }),
 
     signalShake((id, time, radius, pos, origin, color, beyond) -> {

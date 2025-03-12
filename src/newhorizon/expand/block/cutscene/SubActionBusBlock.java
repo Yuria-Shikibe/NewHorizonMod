@@ -8,6 +8,7 @@ import mindustry.gen.Icon;
 import mindustry.logic.LAccess;
 import mindustry.type.Category;
 import mindustry.ui.Styles;
+import mindustry.world.Tile;
 import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.expand.cutscene.components.ActionControl;
@@ -32,7 +33,10 @@ public class SubActionBusBlock extends MessageBlock {
 
         category = Category.logic;
         buildVisibility = BuildVisibility.sandboxOnly;
+
+        privileged = true;
     }
+
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class SubActionBusControllerBuild extends MessageBuild implements CutsceneTrigger{

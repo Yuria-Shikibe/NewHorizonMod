@@ -567,7 +567,7 @@ public class MidanthaPlanet extends Planet {
             }
 
             for (int k = 0; k < 3; k++) {
-                int idx = rand.random(tmpPoints.size - 1);
+                int idx = rand.random(tmpPoints.size - 2);
                 Point2 p1 = tmpPoints.get(idx);
                 Point2 p2 = tmpPoints.get(idx + 1);
 

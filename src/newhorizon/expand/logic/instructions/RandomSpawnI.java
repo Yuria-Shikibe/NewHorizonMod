@@ -1,17 +1,9 @@
 package newhorizon.expand.logic.instructions;
 
 import arc.math.Rand;
-import arc.math.geom.Geometry;
 import arc.struct.Seq;
-import mindustry.game.Team;
-import mindustry.gen.Building;
 import mindustry.logic.LExecutor;
 import mindustry.world.Tile;
-import mindustry.world.meta.BlockFlag;
-import newhorizon.util.func.WeightedRandom;
-import newhorizon.util.struct.WeightedOption;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 import static mindustry.Vars.*;
 

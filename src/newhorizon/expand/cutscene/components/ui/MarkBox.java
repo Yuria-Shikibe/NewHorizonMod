@@ -13,6 +13,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.pooling.Pool;
 import mindustry.Vars;
+import newhorizon.util.func.MathUtil;
 import newhorizon.util.func.NHInterp;
 
 import static newhorizon.NHVars.cutsceneUI;
@@ -37,7 +38,8 @@ public class MarkBox extends Table{
         fillParent = true;
 
         update(() -> {
-            totalProgress += Time.delta;
+            if (!Vars.state.isPaused()) totalProgress += Time.delta;
+            //todo add save here
             if (Vars.state.isMenu()) remove();
         });
 
@@ -98,7 +100,7 @@ public class MarkBox extends Table{
             screenVec.y = Mathf.clamp(screenVec.y, height * 0.05f, height * 0.95f);
         }
 
-        tmpColor.set(markColor).lerp(Color.white, Mathf.absin(totalProgress, 5f, 0.2f)).a(color.a);
+        tmpColor.set(markColor).lerp(Color.white, MathUtil.timeValue(0.0f, 0.2f, 1)).a(color.a);
 
         style.drawer.draw(id, totalProgress / lifetime, radius, screenVec, originVec, tmpColor, outer);
     }

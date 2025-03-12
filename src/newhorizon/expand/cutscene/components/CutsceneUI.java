@@ -236,41 +236,12 @@ public class CutsceneUI {
 		overlay.clear();
 	}
 
-	public Interval signalInterval = new Interval();
-	
-	@HeadlessDisabled
-	public void mark(float x, float y, float radius, float lifetime, Color color){
-		if(Vars.headless)return;
-		MarkBox box = new MarkBox();
-		box.init(radius, color, new Vec2(x, y), MarkStyle.defaultStyle);
-		if(lifetime > 0)box.lifetime = lifetime;
-		box.addSelf();
-	}
-	
 	@HeadlessDisabled
 	public void mark(float x, float y, float radius, float lifetime, Color color, MarkStyle style){
 		if(Vars.headless)return;
 		MarkBox box = new MarkBox();
 		box.init(radius, color, new Vec2(x, y), style);
 		if(lifetime > 0)box.lifetime = lifetime;
-		box.addSelf();
-	}
-	
-	@HeadlessDisabled
-	public void markSignal(float x, float y, float maxDst, Color color){
-		if(Vars.headless || !signalInterval.get(60f))return;
-		float dst = Core.camera.position.dst(x, y);
-		
-		if(dst > maxDst)return;
-		
-		float offset = 320;
-		float scl = dst / maxDst;
-		NHSounds.signal.at(x, y, 1, 0.55f);
-		
-		MarkBox box = new MarkBox();
-		Tmp.v1.setToRandomDirection().scl(scl * offset + 40);
-		box.init(9, color, new Vec2(x, y).add(Tmp.v1), MarkStyle.signalShake);
-		box.setLife(45f);
 		box.addSelf();
 	}
 }
