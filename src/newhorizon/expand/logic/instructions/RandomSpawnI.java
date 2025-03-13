@@ -28,7 +28,7 @@ public class RandomSpawnI implements LExecutor.LInstruction {
 
         Tile t = spawns.random(r);
 
-        exec.setnum(x, t.x);
-        exec.setnum(y, t.y);
+        exec.setnum(x, t.x * 8);
+        exec.setnum(y, t.y * 8);
     }
 }

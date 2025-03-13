@@ -6,7 +6,6 @@ import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
 import newhorizon.content.NHContent;
-import newhorizon.expand.logic.instructions.RandomTargetI;
 import newhorizon.expand.logic.instructions.TeamThreatI;
 
 public class TeamThreat extends LStatement {
@@ -41,7 +40,7 @@ public class TeamThreat extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.NH_CSS;
+        return NHContent.nhwproc;
     }
 
     public void write(StringBuilder builder) {

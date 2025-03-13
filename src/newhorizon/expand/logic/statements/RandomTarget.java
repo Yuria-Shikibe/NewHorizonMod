@@ -73,7 +73,7 @@ public class RandomTarget extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.NH_CSS;
+        return NHContent.nhwproc;
     }
 
     public void write(StringBuilder builder) {

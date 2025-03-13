@@ -7,7 +7,6 @@ import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
 import newhorizon.content.NHContent;
 import newhorizon.expand.logic.instructions.GravityWellI;
-import newhorizon.expand.logic.instructions.RandomSpawnI;
 
 public class GravityWell extends LStatement {
     public String x = "0", y = "0", out = "0";
@@ -46,7 +45,7 @@ public class GravityWell extends LStatement {
 
     @Override
     public LCategory category() {
-        return NHContent.NH_CSS;
+        return NHContent.nhwproc;
     }
 
     public void write(StringBuilder builder) {

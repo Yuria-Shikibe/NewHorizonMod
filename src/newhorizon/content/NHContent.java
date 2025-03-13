@@ -3,7 +3,6 @@ package newhorizon.content;
 import arc.Core;
 import arc.files.Fi;
 import arc.func.Cons;
-import arc.func.Func;
 import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
@@ -21,16 +20,12 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
-import mindustry.logic.LStatement;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.logic.ThreatLevel;
-import newhorizon.expand.logic.statements.GravityWell;
-import newhorizon.expand.logic.statements.RandomSpawn;
-import newhorizon.expand.logic.statements.RandomTarget;
-import newhorizon.expand.logic.statements.TeamThreat;
+import newhorizon.expand.logic.statements.*;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 
@@ -60,7 +55,7 @@ public class NHContent extends Content{
 	
 	public static Attribute quantum;
 
-	public static LCategory NH_CSS;
+	public static LCategory nhwproc, nhcutscene;
 	
 	public static void loadPriority(){
 		new NHContent().load();
@@ -93,19 +88,26 @@ public class NHContent extends Content{
 	}
 	
 	public static void loadLast(){
-		NH_CSS = new LCategory("nhcss", Pal.heal);
+		nhwproc = new LCategory("nh-wproc", Pal.heal.cpy().lerp(Pal.gray, 0.2f));
+		nhcutscene = new LCategory("nh-cutscene", Pal.remove.cpy().lerp(Pal.gray, 0.2f));
 
 		ThreatLevel.init();
 
 		LAssembler.customParsers.put("gravitywell", GravityWell::new);
+		LAssembler.customParsers.put("linetarget", LineTarget::new);
 		LAssembler.customParsers.put("randspawn", RandomSpawn::new);
 		LAssembler.customParsers.put("randtarget", RandomTarget::new);
 		LAssembler.customParsers.put("teamthreat", TeamThreat::new);
 
+		LAssembler.customParsers.put("raid", Raid::new);
+
 		LogicIO.allStatements.addUnique(GravityWell::new);
+		LogicIO.allStatements.addUnique(LineTarget::new);
 		LogicIO.allStatements.addUnique(RandomSpawn::new);
 		LogicIO.allStatements.addUnique(RandomTarget::new);
 		LogicIO.allStatements.addUnique(TeamThreat::new);
+
+		LogicIO.allStatements.addUnique(Raid::new);
 	}
 	
 	@Override
