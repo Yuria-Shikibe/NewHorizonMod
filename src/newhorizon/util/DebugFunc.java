@@ -15,6 +15,7 @@ import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
+import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.DrawFunc;
 
@@ -65,6 +66,29 @@ public class DebugFunc {
                 }
             }
         }
+    }
+
+    public static void writeBlockList(){
+        StringBuilder sb = new StringBuilder();
+        for (Block block: content.blocks()){
+            if (block.isModded() && block.name.startsWith("new-horizon")){
+                sb.append(writeBlock(block));
+            }
+        }
+        Core.app.setClipboardText(sb.toString());
+    }
+
+    public static String writeBlock(Block block) {
+        return block.name +
+                " " +
+                (block.synthetic() ? "1" : "0") +
+                " " +
+                (block.solid ? "1" : "0") +
+                " " +
+                block.size +
+                " " +
+                block.mapColor.rgb888() +
+                "\n";
     }
 
     public static void renderSectorId(){

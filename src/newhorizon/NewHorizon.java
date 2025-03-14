@@ -150,6 +150,7 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
+				//DebugFunc.writeBlockList();
 				//DebugFunc.outputAtlas();
 			});
 		});

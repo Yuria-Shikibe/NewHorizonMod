@@ -279,7 +279,7 @@ public class MidanthaPlanet extends Planet {
 
             setChunks();
 
-            setDarkness();
+            //setDarkness();
 
             //setVent();
 
@@ -292,27 +292,6 @@ public class MidanthaPlanet extends Planet {
             path = pathfind(coreX, coreY, spawnX, spawnY, tile -> (tile.solid() ? 150f : 0f) + maxDst - tile.dst(width/2f, height/2f)/10f, Astar.manhattan);
 
             brushPath(path, 8);
-
-            pass((x, y) -> {
-                boolean any = false;
-                for (int rx = -1; rx <= 1; rx++) {
-                    for (int ry = -1; ry <= 1; ry++) {
-                        if (!(tiles.get(x+rx, y+ry) != null && tiles.get(x+rx, y+ry).block() == EnvironmentBlock.armorWall)) {
-                            any = true;
-                        }
-                    }
-                }
-                if (!any && rand.chance(0.01f)){
-                    for(int cx = -4; cx <= 4; cx++){
-                        for(int cy = -4; cy <= 4; cy++){
-                            int wx = cx + x, wy = cy + y;
-                            if (tiles.getn(wx, wy) != null && rand.chance(0.75f) && tiles.getn(wx, wy).block() == EnvironmentBlock.armorWall) {
-                                tiles.getn(wx, wy).setBlock(EnvironmentBlock.scarpWallSmall);
-                            }
-                        }
-                    }
-                }
-            });
 
             setSpawn();
 

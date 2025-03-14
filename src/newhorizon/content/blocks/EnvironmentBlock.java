@@ -57,18 +57,18 @@ public class EnvironmentBlock {
 
         dataFloorPlacer = new DataFloorPlacer("data-floor-placer");
 
-        scarpWallSmall = new ScarpWall("ruin-small"){{
-            requirements(Category.defense, ItemStack.with());
-            buildVisibility = BuildVisibility.sandboxOnly;
-            variants = 8;
-            size = 1;
-        }};
-        scarpWallLarge = new ScarpWall("ruin-large"){{
-            requirements(Category.defense, ItemStack.with());
-            buildVisibility = BuildVisibility.sandboxOnly;
-            variants = 4;
-            size = 2;
-        }};
+        //scarpWallSmall = new ScarpWall("ruin-small"){{
+        //    requirements(Category.defense, ItemStack.with());
+        //    buildVisibility = BuildVisibility.sandboxOnly;
+        //    variants = 8;
+        //    size = 1;
+        //}};
+        //scarpWallLarge = new ScarpWall("ruin-large"){{
+        //    requirements(Category.defense, ItemStack.with());
+        //    buildVisibility = BuildVisibility.sandboxOnly;
+        //    variants = 4;
+        //    size = 2;
+        //}};
 
         metalFloorGroove.baseFloor = metalFloorPlain;
         metalFloorGrooveDeep.baseFloor = metalFloorPlain;
