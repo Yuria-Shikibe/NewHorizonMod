@@ -27,6 +27,7 @@ import newhorizon.expand.cutscene.components.ui.MarkBox;
 import newhorizon.expand.cutscene.components.ui.MarkStyle;
 import newhorizon.util.annotation.HeadlessDisabled;
 
+import static mindustry.Vars.headless;
 import static newhorizon.NHRenderer.height;
 import static newhorizon.NHRenderer.width;
 import static newhorizon.NHVars.cutscene;
@@ -50,7 +51,7 @@ public class CutsceneUI {
 	public final ObjectMap<String, MarkBox> markers = new ObjectMap<>();
 
 	public CutsceneUI() {
-		if (Vars.headless) return;
+		if (headless) return;
 		init();
 		Events.on(EventType.WorldLoadEvent.class, e -> resetSave());
 	}
@@ -132,7 +133,7 @@ public class CutsceneUI {
 			visible(() -> Vars.state.isGame());
 			color.a = 0;
 
-			if(Vars.headless){
+			if(headless){
 				textArea = new Table();
 			}else {
 				pane(Styles.smallPane, t -> {
@@ -191,7 +192,7 @@ public class CutsceneUI {
 	}
 
 	private void buildCutsceneUI(){
-		if(!Vars.headless){
+		if(!headless){
 			Vars.control.input.addLock(() -> controlOverride);
 			Core.scene.root.addChildAt(0, root);
 			root.addChild(overlay);
@@ -207,6 +208,7 @@ public class CutsceneUI {
 	}
 	
 	public void reset(){
+		if (headless) return;
 		controlOverride = false;
 		curtainProgress = 0;
 		targetOverlayAlpha = 0;
@@ -223,21 +225,18 @@ public class CutsceneUI {
 	}
 
 	public void update(){
-		if(Vars.headless){
-			reset();
-			return;
-		}
-
+		if(headless) return;
 		curtain.color.a = Mathf.approachDelta(curtain.color.a, targetOverlayAlpha, overlayAlphaShiftSpeed);
 	}
 
 	public void clear(){
+		if (headless) return;
 		overlay.clear();
 	}
 
 	@HeadlessDisabled
 	public void mark(float x, float y, float radius, float lifetime, Color color, MarkStyle style){
-		if(Vars.headless)return;
+		if(headless)return;
 		MarkBox box = new MarkBox();
 		box.init(radius, color, new Vec2(x, y), style);
 		if(lifetime > 0)box.lifetime = lifetime;
