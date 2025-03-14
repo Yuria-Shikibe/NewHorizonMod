@@ -74,6 +74,16 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         return linkSize;
     }
 
+    @Override
+    public Block mirrorBlock() {
+        return this;
+    }
+
+    @Override
+    public boolean isMirror() {
+        return false;
+    }
+
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
 
         public boolean linkCreated = false, linkValid = true;
