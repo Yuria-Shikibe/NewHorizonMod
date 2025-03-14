@@ -51,7 +51,7 @@ public class LineTargetI implements LExecutor.LInstruction {
             }
         }
 
-        exec.setnum(outX, ox);
-        exec.setnum(outY, oy);
+        exec.setnum(outX, ox * 8);
+        exec.setnum(outY, oy * 8);
     }
 }

@@ -19,9 +19,14 @@ import static mindustry.Vars.world;
 
 public interface MultiBlock {
 
+
     Seq<Point2> linkBlockPos();
 
     IntSeq linkBlockSize();
+
+    Block mirrorBlock();
+
+    boolean isMirror();
 
     default Point2 calculateRotatedPosition(Point2 pos, int blockSize, int linkSize, int rotation) {
         int shift = (blockSize + 1) % 2;
@@ -64,7 +69,7 @@ public interface MultiBlock {
             Point2 rotated = calculateRotatedPosition(p, size, s, tile.build.rotation);
             Tile t = world.tile(tile.x + rotated.x, tile.y + rotated.y);
             t.setBlock(InnerBlock.placeholderEntity[s - 1], tile.team(), 0);
-            PlaceholderBlock.PlaceholderBuild b = (PlaceholderBlock.PlaceholderBuild)t.build;
+            PlaceholderBlock.PlaceholderBuild b = (PlaceholderBlock.PlaceholderBuild) t.build;
             b.updateLink(tile);
         }
     }
@@ -82,43 +87,76 @@ public interface MultiBlock {
             } else {
                 t.setBlock(InnerBlock.linkEntityLiquid[s - 1], team, 0);
             }
-            LinkBlock.LinkBuild b = (LinkBlock.LinkBuild)t.build;
+            LinkBlock.LinkBuild b = (LinkBlock.LinkBuild) t.build;
             b.updateLink(building);
             out.add(b);
         }
         return out;
     }
 
-    default Point2 teamOverlayPos(int size, int rotation){
-        int shift = (size + 1) % 2;
-        int value = -size/2 + shift;
-
-        Point2 out = new Point2(value, value);
+    default Seq<Tile> linkTiles(int x, int y, int size, int rotation){
+        Seq<Tile> tiles = new Seq<>();
+        Point2 lb = leftBottomPos(size);
+        for (int tx = 0; tx < size; tx++) {
+            for (int ty = 0; ty < size; ty++) {
+                Tile other = world.tile(x + tx + lb.x, y + ty + lb.y);
+                if(other != null) tiles.add(other);
+            }
+        }
 
         for (int i = 0; i < linkBlockPos().size; i++){
             Point2 p = linkBlockPos().get(i);
             int s = linkBlockSize().get(i);
             Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
+            Point2 lb2 = leftBottomPos(s).add(rotated);
 
-            if ((rotated.x + rotated.y) < (value + value)) out.set(rotated.x, rotated.y);
+            for (int tx = 0; tx < s; tx++) {
+                for (int ty = 0; ty < s; ty++) {
+                    Tile other = world.tile(x + tx + lb2.x, y + ty + lb2.y);
+                    if(other != null) tiles.add(other);
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+    default Point2 teamOverlayPos(int size, int rotation){
+        Point2 out = leftBottomPos(size);
+
+        for (int i = 0; i < linkBlockPos().size; i++){
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
+            Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
+            Point2 lb = leftBottomPos(s).add(rotated);
+
+            if ((lb.x + lb.y) < (out.x + out.y)) out.set(lb.x, lb.y);
         }
         return out;
     }
 
     default Point2 statusOverlayPos(int size, int rotation){
-        int shift = (size + 1) % 2;
-        int value1 = size/2, value2 = -size/2 + shift;
-
-        Point2 out = new Point2(value1, value2);
+        Point2 out = rightBottomPos(size);
 
         for (int i = 0; i < linkBlockPos().size; i++){
             Point2 p = linkBlockPos().get(i);
             int s = linkBlockSize().get(i);
             Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
+            Point2 rb = rightBottomPos(s).add(rotated);
 
-            if ((rotated.x + rotated.y) > (value1 - value2)) out.set(rotated.x, rotated.y);
+            if ((rb.x - rb.y) > (out.x - out.y)) out.set(rb.x, rb.y);
         }
         return out;
+    }
+
+    default Point2 leftBottomPos(int size){
+        int shift = (size + 1) % 2;
+        return new Point2(-size/2 + shift, -size/2 + shift);
+    }
+
+    default Point2 rightBottomPos(int size){
+        int shift = (size + 1) % 2;
+        return new Point2(size/2, -size/2 + shift);
     }
 
     default Point2 getMaxSize(int size, int rotation) {

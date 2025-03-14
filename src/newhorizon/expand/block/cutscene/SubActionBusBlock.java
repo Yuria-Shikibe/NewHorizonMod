@@ -32,7 +32,7 @@ public class SubActionBusBlock extends MessageBlock {
         noUpdateDisabled = false;
 
         category = Category.logic;
-        buildVisibility = BuildVisibility.sandboxOnly;
+        buildVisibility = BuildVisibility.editorOnly;
 
         privileged = true;
     }
