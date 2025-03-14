@@ -5,6 +5,7 @@ import mindustry.gen.Sounds;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 
+import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class SignalTextAction extends Action {
@@ -21,6 +22,7 @@ public class SignalTextAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         Sounds.chatMessage.play();
         cutsceneUI.textLabel = new FLabel(text);
         cutsceneUI.textArea.clear();

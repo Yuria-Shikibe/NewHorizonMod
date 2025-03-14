@@ -3,6 +3,7 @@ package newhorizon.expand.cutscene.action;
 import arc.math.Interp;
 import newhorizon.expand.cutscene.components.Action;
 
+import static mindustry.Vars.headless;
 import static mindustry.Vars.ui;
 import static newhorizon.NHVars.cutsceneUI;
 
@@ -13,17 +14,20 @@ public class CurtainRaiseAction extends Action {
 
     @Override
     public void act() {
+        if (headless) return;
         cutsceneUI.curtainProgress = Interp.linear.apply(Interp.reverse.apply(progress()));
     }
 
     @Override
     public void end() {
+        if (headless) return;
         ui.hudfrag.shown = true;
         cutsceneUI.controlOverride = false;
     }
 
     @Override
     public void skip() {
+        if (headless) return;
         cutsceneUI.curtainProgress = 0f;
         end();
     }

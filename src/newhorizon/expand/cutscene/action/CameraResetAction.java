@@ -5,6 +5,8 @@ import arc.util.Time;
 import mindustry.Vars;
 import newhorizon.expand.cutscene.components.Action;
 
+import static mindustry.Vars.headless;
+
 public class CameraResetAction extends Action {
     public CameraResetAction(float duration) {
         super(duration * Time.toSeconds);
@@ -16,6 +18,7 @@ public class CameraResetAction extends Action {
 
     @Override
     public void act() {
+        if (headless) return;
         Core.camera.position.lerpDelta(Vars.player, progress());
     }
 

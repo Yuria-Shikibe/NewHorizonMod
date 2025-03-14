@@ -5,6 +5,7 @@ import arc.util.Time;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.util.func.NHInterp;
 
+import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class InfoFadeInAction extends Action {
@@ -15,6 +16,7 @@ public class InfoFadeInAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         cutsceneUI.infoTable.actions(Actions.fadeIn(maxTimer / Time.toSeconds, NHInterp.bounce5Out));
     }
 

@@ -8,6 +8,7 @@ import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 import newhorizon.expand.cutscene.components.ui.MarkStyle;
 
+import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class MarkWorldAction extends Action {
@@ -56,6 +57,7 @@ public class MarkWorldAction extends Action {
 
     @Override
     public void end() {
+        if (headless) return;
         cutsceneUI.mark(x, y, radius, time * Time.toSeconds, team.color, getMarkStyle());
     }
 

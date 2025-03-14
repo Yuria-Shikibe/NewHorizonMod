@@ -3,8 +3,7 @@ package newhorizon.expand.cutscene.action;
 import mindustry.Vars;
 import newhorizon.expand.cutscene.components.Action;
 
-import static mindustry.Vars.control;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class InputLockAction extends Action {
@@ -14,6 +13,7 @@ public class InputLockAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         cutsceneUI.controlOverride = true;
         ui.hudfrag.shown = false;
         control.input.config.forceHide();

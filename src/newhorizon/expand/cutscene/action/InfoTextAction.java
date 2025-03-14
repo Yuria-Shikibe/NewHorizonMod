@@ -5,6 +5,7 @@ import mindustry.ui.Styles;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 
+import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class InfoTextAction extends Action {
@@ -21,6 +22,7 @@ public class InfoTextAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         cutsceneUI.infoLabel = new FLabel(text);
         cutsceneUI.infoLabel.setStyle(Styles.techLabel);
         cutsceneUI.infoTable.clear();

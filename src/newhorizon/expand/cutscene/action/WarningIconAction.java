@@ -11,6 +11,7 @@ import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 import newhorizon.util.ui.NHUIFunc;
 
+import static mindustry.Vars.headless;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class WarningIconAction extends Action {
@@ -43,6 +44,7 @@ public class WarningIconAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         NHUIFunc.showLabel(2.5f, t -> {
             t.background(Styles.black5);
             t.table(t2 -> {

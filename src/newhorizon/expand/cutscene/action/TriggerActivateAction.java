@@ -4,8 +4,7 @@ import mindustry.gen.Building;
 import newhorizon.expand.block.cutscene.CutsceneTrigger;
 import newhorizon.expand.cutscene.components.Action;
 
-import static mindustry.Vars.ui;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class TriggerActivateAction extends Action {
     public int x, y;
@@ -29,6 +28,7 @@ public class TriggerActivateAction extends Action {
 
     @Override
     public void end() {
+        if (headless) return;
         if (source != null){
             int px = relative? source.tileX() + x: x;
             int py = relative? source.tileY() + y: y;
@@ -43,6 +43,7 @@ public class TriggerActivateAction extends Action {
 
     @Override
     public void skip() {
+        if (headless) return;
         end();
     }
 }

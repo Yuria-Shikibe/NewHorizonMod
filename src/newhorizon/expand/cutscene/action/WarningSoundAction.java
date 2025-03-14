@@ -7,6 +7,7 @@ import newhorizon.content.NHSounds;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 
+import static mindustry.Vars.headless;
 import static mindustry.Vars.player;
 
 public class WarningSoundAction extends Action {
@@ -38,6 +39,7 @@ public class WarningSoundAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         if (player.team() == team) {
             warningSound(allySound).play();
         }else {

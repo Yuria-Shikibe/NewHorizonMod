@@ -13,11 +13,13 @@ public class CurtainDrawAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         ui.hudfrag.shown = false;
     }
 
     @Override
     public void act() {
+        if (headless) return;
         cutsceneUI.curtainProgress = Interp.linear.apply(progress());
     }
 

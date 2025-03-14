@@ -8,6 +8,8 @@ import mindustry.gen.Building;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 
+import static mindustry.Vars.headless;
+
 public class CameraPanAction extends Action {
     public Vec2 target;
     public Vec2 begin;
@@ -28,11 +30,13 @@ public class CameraPanAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         begin = Core.camera.position;
     }
 
     @Override
     public void act() {
+        if (headless) return;
         Tmp.v1.set(target.x - begin.x, target.y - begin.y);
         Core.camera.position.set(begin).add(Tmp.v1, progress());
     }

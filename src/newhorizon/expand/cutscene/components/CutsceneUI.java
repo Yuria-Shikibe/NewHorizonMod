@@ -50,6 +50,7 @@ public class CutsceneUI {
 	public final ObjectMap<String, MarkBox> markers = new ObjectMap<>();
 
 	public CutsceneUI() {
+		if (Vars.headless) return;
 		init();
 		Events.on(EventType.WorldLoadEvent.class, e -> resetSave());
 	}
@@ -79,10 +80,8 @@ public class CutsceneUI {
 		buildInfoTable();
 		//skip button for skip current cutscene
 		buildSkip();
-
 		//update the text table position according to the layout
 		updatePosition();
-
 		//build all cutscene ui, add the elements to root.
 		buildCutsceneUI();
 	}

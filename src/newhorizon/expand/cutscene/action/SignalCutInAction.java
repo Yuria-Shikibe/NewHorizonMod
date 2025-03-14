@@ -6,6 +6,7 @@ import arc.util.Time;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.util.func.NHInterp;
 
+import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class SignalCutInAction extends Action {
@@ -16,6 +17,7 @@ public class SignalCutInAction extends Action {
 
     @Override
     public void begin() {
+        if (headless) return;
         cutsceneUI.textTable.actions(Actions.fadeIn(maxTimer / Time.toSeconds, NHInterp.bounce5Out));
     }
 
