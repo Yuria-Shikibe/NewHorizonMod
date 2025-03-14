@@ -113,7 +113,7 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
         private void drawIO() {
             Building front = front(), back = back();
 
-            if (unloadItem != null && front != null && back != null && back.items.has(unloadItem.id)) {
+            if (unloadItem != null && front != null && front.items != null && back != null && back.items != null && back.items.has(unloadItem.id)) {
                 float alpha = Math.abs(100f - (Time.time * 2f) % 100f) / 100f;
 
                 float ix = front.x;
