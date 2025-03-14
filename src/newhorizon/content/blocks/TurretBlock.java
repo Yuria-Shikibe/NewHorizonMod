@@ -170,7 +170,7 @@ public class TurretBlock {
             limitRange(-5f);
         }};
 
-        loadTest();
+        //loadTest();
     }
 
     public static void loadTest(){
