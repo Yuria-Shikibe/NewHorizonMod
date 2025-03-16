@@ -74,6 +74,7 @@ public class LineTarget extends LStatement {
         return NHContent.nhwproc;
     }
 
+    @Override
     public void write(StringBuilder builder) {
         builder.append("linetarget");
         builder.append(" ");

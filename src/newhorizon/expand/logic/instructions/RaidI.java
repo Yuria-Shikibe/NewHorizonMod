@@ -28,6 +28,7 @@ public class RaidI implements LExecutor.LInstruction {
 
     @Override
     public void run(LExecutor exec) {
+        if (!exec.privileged) return;
         Team t = exec.team(team);
         if (t == null) return;
         int s = exec.numi(seed);

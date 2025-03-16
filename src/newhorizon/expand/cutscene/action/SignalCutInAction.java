@@ -20,9 +20,4 @@ public class SignalCutInAction extends Action {
         if (headless) return;
         cutsceneUI.textTable.actions(Actions.fadeIn(maxTimer / Time.toSeconds, NHInterp.bounce5Out));
     }
-
-    @Override
-    public String phaseToString() {
-        return "signal_cut_in";
-    }
 }

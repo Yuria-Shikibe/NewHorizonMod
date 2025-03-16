@@ -26,6 +26,13 @@ import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.statements.*;
+import newhorizon.expand.logic.statements.cutscene.AddMainCssBus;
+import newhorizon.expand.logic.statements.cutscene.AddSubActionBus;
+import newhorizon.expand.logic.statements.cutscene.BeginCutscene;
+import newhorizon.expand.logic.statements.cutscene.action.SignalCutIn;
+import newhorizon.expand.logic.statements.cutscene.action.SignalCutOut;
+import newhorizon.expand.logic.statements.cutscene.action.SignalText;
+import newhorizon.expand.logic.statements.cutscene.action.Wait;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 
@@ -55,7 +62,7 @@ public class NHContent extends Content{
 	
 	public static Attribute quantum;
 
-	public static LCategory nhwproc, nhcutscene;
+	public static LCategory nhwproc, nhcutscene, nhaction;
 	
 	public static void loadPriority(){
 		new NHContent().load();
@@ -89,7 +96,8 @@ public class NHContent extends Content{
 	
 	public static void loadLast(){
 		nhwproc = new LCategory("nh-wproc", Pal.heal.cpy().lerp(Pal.gray, 0.2f));
-		nhcutscene = new LCategory("nh-cutscene", Pal.remove.cpy().lerp(Pal.gray, 0.2f));
+		nhcutscene = new LCategory("nh-cutscene", Pal.remove.cpy().lerp(Pal.gray, 0.3f));
+		nhaction = new LCategory("nh-action", Pal.surge.cpy().lerp(Pal.gray, 0.3f));
 
 		ThreatLevel.init();
 
@@ -101,6 +109,15 @@ public class NHContent extends Content{
 
 		LAssembler.customParsers.put("raid", Raid::new);
 
+		LAssembler.customParsers.put("begincutscene", BeginCutscene::new);
+		LAssembler.customParsers.put("addmainbus", AddMainCssBus::new);
+		LAssembler.customParsers.put("addsubbus", AddSubActionBus::new);
+		LAssembler.customParsers.put("signalcutin", SignalCutIn::new);
+		LAssembler.customParsers.put("signalcutout", SignalCutOut::new);
+		LAssembler.customParsers.put("signaltext", SignalText::new);
+		LAssembler.customParsers.put("waitaction", Wait::new);
+
+
 		LogicIO.allStatements.addUnique(GravityWell::new);
 		LogicIO.allStatements.addUnique(LineTarget::new);
 		LogicIO.allStatements.addUnique(RandomSpawn::new);
@@ -108,6 +125,14 @@ public class NHContent extends Content{
 		LogicIO.allStatements.addUnique(TeamThreat::new);
 
 		LogicIO.allStatements.addUnique(Raid::new);
+
+		LogicIO.allStatements.addUnique(BeginCutscene::new);
+		LogicIO.allStatements.addUnique(AddMainCssBus::new);
+		LogicIO.allStatements.addUnique(AddSubActionBus::new);
+		LogicIO.allStatements.addUnique(SignalCutIn::new);
+		LogicIO.allStatements.addUnique(SignalCutOut::new);
+		LogicIO.allStatements.addUnique(SignalText::new);
+		LogicIO.allStatements.addUnique(Wait::new);
 	}
 	
 	@Override

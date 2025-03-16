@@ -20,6 +20,8 @@ public class EnvironmentBlock {
         lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
     public static Block dataFloorPlacer;
 
+    public static Floor patternPlate0, patternPlate1;
+
     public static ScarpWall scarpWallSmall, scarpWallLarge;
     public static void load(){
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
@@ -56,6 +58,10 @@ public class EnvironmentBlock {
         lineMarkingFloorAncientDark = new DataFloor("line-marking-floor-ancient-dark");
 
         dataFloorPlacer = new DataFloorPlacer("data-floor-placer");
+
+        patternPlate0 = new MaskFloor("pattern-plate-0");
+        patternPlate1 = new MaskFloor("pattern-plate-1");
+
 
         //scarpWallSmall = new ScarpWall("ruin-small"){{
         //    requirements(Category.defense, ItemStack.with());
