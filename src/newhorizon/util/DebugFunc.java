@@ -13,6 +13,7 @@ import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
+import mindustry.entities.bullet.BulletType;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.Block;
@@ -66,6 +67,19 @@ public class DebugFunc {
                 }
             }
         }
+    }
+
+    public static void writeBulletTypeList(){
+        StringBuilder sb = new StringBuilder();
+        for (BulletType type: content.bullets()){
+            String id = type.id + "";
+            String name = type.getClass().getName();
+            sb.append(id);
+            sb.append(" ");
+            sb.append(name);
+            sb.append("\n");
+        }
+        Core.app.setClipboardText(sb.toString());
     }
 
     public static void writeBlockList(){
