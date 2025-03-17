@@ -9,6 +9,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
@@ -16,6 +17,7 @@ import arc.scene.ui.layout.WidgetGroup;
 import arc.struct.ObjectMap;
 import arc.util.Align;
 import arc.util.Interval;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.game.EventType;
@@ -32,6 +34,7 @@ import static mindustry.Vars.headless;
 import static newhorizon.NHRenderer.height;
 import static newhorizon.NHRenderer.width;
 import static newhorizon.NHVars.cutscene;
+import static newhorizon.NHVars.cutsceneUI;
 
 @HeadlessDisabled
 public class CutsceneUI {
@@ -217,7 +220,17 @@ public class CutsceneUI {
 		overlayAlphaShiftSpeed = OVERLAY_SPEED;
 		
 		overlay.clear();
+
+		infoLabel = new FLabel("");
+		infoTable.clear();
+		infoTable.add(cutsceneUI.infoLabel);
+		infoTable.actions(Actions.alpha(0));
+
+		textLabel = new FLabel("");
 		textArea.clear();
+		textArea.add(cutsceneUI.textLabel).pad(4f, 32f, 4f, 32f);
+		textTable.actions(Actions.alpha(0));
+
 		markers.clear();
 	}
 
