@@ -25,6 +25,7 @@ import mindustry.ui.Styles;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.cutscene.components.ui.MarkBox;
 import newhorizon.expand.cutscene.components.ui.MarkStyle;
+import newhorizon.util.annotation.ClientOnly;
 import newhorizon.util.annotation.HeadlessDisabled;
 
 import static mindustry.Vars.headless;
@@ -90,7 +91,7 @@ public class CutsceneUI {
 	private void buildRoot(){
 		root = new WidgetGroup(){{
 			setFillParent(true);
-			touchable = Touchable.disabled;
+			touchable = Touchable.childrenOnly;
 		}};
 	}
 
@@ -159,7 +160,7 @@ public class CutsceneUI {
 			margin(12f);
 			visible(() -> !Vars.net.client() && isPlayingMainCutscene());
 			setFillParent(true);
-			touchable = Touchable.childrenOnly;
+			touchable = Touchable.enabled;
 			align(Align.topLeft);
 			button("Skip Cutscene", Icon.play, () -> {
 				cutscene.mainBus.skip();
@@ -197,16 +198,17 @@ public class CutsceneUI {
 			Core.scene.root.addChildAt(0, root);
 			root.addChild(overlay);
 			root.addChild(curtain);
-			root.addChild(skip);
 			root.addChild(textTable);
 			root.addChild(infoTable);
+			root.addChild(skip);
 		}
 	}
 	
 	public boolean isPlayingMainCutscene(){
 		return cutscene.mainBus != null && !cutscene.mainBus.complete();
 	}
-	
+
+	@ClientOnly
 	public void reset(){
 		if (headless) return;
 		controlOverride = false;

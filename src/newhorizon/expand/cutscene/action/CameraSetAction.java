@@ -6,6 +6,7 @@ import mindustry.gen.Building;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 
+import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
 public class CameraSetAction extends Action {
@@ -28,6 +29,7 @@ public class CameraSetAction extends Action {
     @Override
     public void begin() {
         if (headless) return;
-        Core.camera.position.lerp(target, 1);
+        control.input.logicCamSpeed = 100f;
+        control.input.logicCamPan = target;
     }
 }

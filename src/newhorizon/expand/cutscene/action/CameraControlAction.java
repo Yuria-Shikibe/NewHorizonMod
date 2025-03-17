@@ -5,6 +5,7 @@ import arc.math.geom.Vec2;
 import arc.util.Time;
 import newhorizon.expand.cutscene.components.Action;
 
+import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
 public class CameraControlAction extends Action {
@@ -22,6 +23,7 @@ public class CameraControlAction extends Action {
     @Override
     public void act() {
         if (headless) return;
-        Core.camera.position.lerpDelta(target, progress());
+        control.input.logicCamSpeed = 10f;
+        control.input.logicCamPan = target;
     }
 }

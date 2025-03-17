@@ -5,20 +5,15 @@ import newhorizon.expand.cutscene.components.Action;
 import static mindustry.Vars.*;
 import static newhorizon.NHVars.cutsceneUI;
 
-public class InputUnlockAction extends Action {
-    public InputUnlockAction() {
+public class UIHideAction extends Action {
+    public UIHideAction() {
         super(0f);
     }
 
     @Override
-    public void end() {
+    public void begin() {
         if (headless) return;
-        cutsceneUI.controlOverride = false;
-    }
-
-    @Override
-    public void skip(){
-        if (headless) return;
-        end();
+        ui.hudfrag.shown = false;
+        control.input.config.forceHide();
     }
 }

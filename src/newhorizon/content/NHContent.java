@@ -26,13 +26,10 @@ import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.statements.*;
-import newhorizon.expand.logic.statements.cutscene.AddMainCssBus;
+import newhorizon.expand.logic.statements.cutscene.AddMainActionBus;
 import newhorizon.expand.logic.statements.cutscene.AddSubActionBus;
 import newhorizon.expand.logic.statements.cutscene.BeginCutscene;
-import newhorizon.expand.logic.statements.cutscene.action.SignalCutIn;
-import newhorizon.expand.logic.statements.cutscene.action.SignalCutOut;
-import newhorizon.expand.logic.statements.cutscene.action.SignalText;
-import newhorizon.expand.logic.statements.cutscene.action.Wait;
+import newhorizon.expand.logic.statements.cutscene.action.*;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 
@@ -62,7 +59,7 @@ public class NHContent extends Content{
 	
 	public static Attribute quantum;
 
-	public static LCategory nhwproc, nhcutscene, nhaction;
+	public static LCategory nhwproc, nhwprocevent, nhcutscene, nhaction, nhcamera, nhcurtain, nhinfo, nhevent, nhsignal, nhui, nhalert;
 	
 	public static void loadPriority(){
 		new NHContent().load();
@@ -110,11 +107,19 @@ public class NHContent extends Content{
 		LAssembler.customParsers.put("raid", Raid::new);
 
 		LAssembler.customParsers.put("begincutscene", BeginCutscene::new);
-		LAssembler.customParsers.put("addmainbus", AddMainCssBus::new);
+		LAssembler.customParsers.put("addmainbus", AddMainActionBus::new);
 		LAssembler.customParsers.put("addsubbus", AddSubActionBus::new);
+
 		LAssembler.customParsers.put("signalcutin", SignalCutIn::new);
 		LAssembler.customParsers.put("signalcutout", SignalCutOut::new);
 		LAssembler.customParsers.put("signaltext", SignalText::new);
+
+		LAssembler.customParsers.put("inputlock", InputLock::new);
+		LAssembler.customParsers.put("inputunlock", InputUnlock::new);
+
+		LAssembler.customParsers.put("uihide", UiHide::new);
+		LAssembler.customParsers.put("uishow", UiShow::new);
+
 		LAssembler.customParsers.put("waitaction", Wait::new);
 
 
@@ -127,11 +132,19 @@ public class NHContent extends Content{
 		LogicIO.allStatements.addUnique(Raid::new);
 
 		LogicIO.allStatements.addUnique(BeginCutscene::new);
-		LogicIO.allStatements.addUnique(AddMainCssBus::new);
+		LogicIO.allStatements.addUnique(AddMainActionBus::new);
 		LogicIO.allStatements.addUnique(AddSubActionBus::new);
+
 		LogicIO.allStatements.addUnique(SignalCutIn::new);
 		LogicIO.allStatements.addUnique(SignalCutOut::new);
 		LogicIO.allStatements.addUnique(SignalText::new);
+
+		LogicIO.allStatements.addUnique(UiHide::new);
+		LogicIO.allStatements.addUnique(UiShow::new);
+
+		LogicIO.allStatements.addUnique(InputLock::new);
+		LogicIO.allStatements.addUnique(InputUnlock::new);
+
 		LogicIO.allStatements.addUnique(Wait::new);
 	}
 	

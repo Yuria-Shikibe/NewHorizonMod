@@ -1,5 +1,6 @@
 package newhorizon.expand.cutscene.action;
 
+import arc.Core;
 import mindustry.Vars;
 import newhorizon.expand.cutscene.components.Action;
 
@@ -15,7 +16,8 @@ public class InputLockAction extends Action {
     public void begin() {
         if (headless) return;
         cutsceneUI.controlOverride = true;
-        ui.hudfrag.shown = false;
+        control.input.logicCamPan = Core.camera.position;
+        control.input.logicCutscene = true;
         control.input.config.forceHide();
     }
 

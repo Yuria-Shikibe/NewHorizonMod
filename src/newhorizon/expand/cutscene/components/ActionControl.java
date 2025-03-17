@@ -92,9 +92,9 @@ public class ActionControl {
         try{
             return switch (actionName) {
                 case "camera_control" -> new CameraControlAction(args);
-                case "camera_pan" -> new CameraPanAction(args, source);
                 case "camera_reset" -> new CameraResetAction(args);
                 case "camera_set" -> new CameraSetAction(args, source);
+                case "camera_zoom" -> new CameraZoomAction(args);
 
                 case "curtain_draw" -> new CurtainDrawAction();
                 case "curtain_raise" -> new CurtainRaiseAction();
@@ -118,7 +118,8 @@ public class ActionControl {
                 case "signal_cut_out" -> new SignalCutOutAction();
                 case "signal_text" -> new SignalTextAction(args);
 
-                case "trigger_activate" -> new TriggerActivateAction(args, source);
+                case "ui_hide"-> new UIHideAction();
+                case "ui_show"-> new UIShowAction();
 
                 case "wait" -> new WaitAction(args);
 

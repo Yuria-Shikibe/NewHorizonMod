@@ -19,17 +19,9 @@ public class CurtainRaiseAction extends Action {
     }
 
     @Override
-    public void end() {
-        if (headless) return;
-        ui.hudfrag.shown = true;
-        cutsceneUI.controlOverride = false;
-    }
-
-    @Override
     public void skip() {
         if (headless) return;
         cutsceneUI.curtainProgress = 0f;
-        end();
     }
 
     @Override

@@ -17,16 +17,6 @@ public class CurtainFadeOutAction extends Action {
         cutsceneUI.targetOverlayAlpha = 0f;
     }
 
-    public void end() {
-        //ui.hudfrag.shown = true;
-    }
-
-    @Override
-    public void skip() {
-        if (headless) return;
-        end();
-    }
-
     @Override
     public String phaseToString() {
         return "curtain_fade_out";

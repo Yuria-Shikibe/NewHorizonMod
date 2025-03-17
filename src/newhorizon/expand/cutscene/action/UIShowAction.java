@@ -1,25 +1,25 @@
 package newhorizon.expand.cutscene.action;
 
-import arc.math.Interp;
 import newhorizon.expand.cutscene.components.Action;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.ui;
 import static newhorizon.NHVars.cutsceneUI;
 
-public class CurtainFadeInAction extends Action {
-    public CurtainFadeInAction() {
-        super(120);
+public class UIShowAction extends Action {
+    public UIShowAction() {
+        super(0f);
     }
 
     @Override
-    public void begin() {
+    public void end() {
         if (headless) return;
-        cutsceneUI.targetOverlayAlpha = 1f;
+        ui.hudfrag.shown = true;
     }
 
     @Override
-    public String phaseToString() {
-        return "curtain_fade_in";
+    public void skip(){
+        if (headless) return;
+        end();
     }
 }
