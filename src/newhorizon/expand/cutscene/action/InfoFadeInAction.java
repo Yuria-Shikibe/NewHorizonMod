@@ -19,9 +19,4 @@ public class InfoFadeInAction extends Action {
         if (headless) return;
         cutsceneUI.infoTable.actions(Actions.fadeIn(maxTimer / Time.toSeconds, NHInterp.bounce5Out));
     }
-
-    @Override
-    public String phaseToString() {
-        return "info_fade_in";
-    }
 }

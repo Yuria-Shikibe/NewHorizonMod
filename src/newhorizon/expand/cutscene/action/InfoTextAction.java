@@ -28,9 +28,4 @@ public class InfoTextAction extends Action {
         cutsceneUI.infoTable.clear();
         cutsceneUI.infoTable.add(cutsceneUI.infoLabel);
     }
-
-    @Override
-    public String phaseToString() {
-        return "info_text" + " " + "<" + text + ">";
-    }
 }

@@ -111,9 +111,20 @@ public class NHContent extends Content{
 		LAssembler.customParsers.put("addsubbus", AddSubActionBus::new);
 		LAssembler.customParsers.put("cameracontrol", CameraControl::new);
 		LAssembler.customParsers.put("camerazoom", CameraZoom::new);
+
+		LAssembler.customParsers.put("curtaindraw", CurtainDraw::new);
+		LAssembler.customParsers.put("curtainraise", CurtainRaise::new);
+		LAssembler.customParsers.put("curtainfadein", CurtainFadeIn::new);
+		LAssembler.customParsers.put("curtainfadeout", CurtainFadeOut::new);
+
+		LAssembler.customParsers.put("infofadein", InfoFadeIn::new);
+		LAssembler.customParsers.put("infofadeout", InfoFadeOut::new);
+		LAssembler.customParsers.put("infotext", InfoText::new);
+
 		LAssembler.customParsers.put("signalcutin", SignalCutIn::new);
 		LAssembler.customParsers.put("signalcutout", SignalCutOut::new);
 		LAssembler.customParsers.put("signaltext", SignalText::new);
+
 		LAssembler.customParsers.put("inputlock", InputLock::new);
 		LAssembler.customParsers.put("inputunlock", InputUnlock::new);
 		LAssembler.customParsers.put("uihide", UiHide::new);
@@ -132,6 +143,16 @@ public class NHContent extends Content{
 		LogicIO.allStatements.addUnique(BeginCutscene::new);
 		LogicIO.allStatements.addUnique(AddMainActionBus::new);
 		LogicIO.allStatements.addUnique(AddSubActionBus::new);
+
+		LogicIO.allStatements.addUnique(CurtainDraw::new);
+		LogicIO.allStatements.addUnique(CurtainRaise::new);
+		LogicIO.allStatements.addUnique(CurtainFadeIn::new);
+		LogicIO.allStatements.addUnique(CurtainFadeOut::new);
+
+		LogicIO.allStatements.addUnique(InfoFadeIn::new);
+		LogicIO.allStatements.addUnique(InfoFadeOut::new);
+		LogicIO.allStatements.addUnique(InfoText::new);
+
 		LogicIO.allStatements.addUnique(CameraControl::new);
 		LogicIO.allStatements.addUnique(CameraZoom::new);
 		LogicIO.allStatements.addUnique(SignalCutIn::new);

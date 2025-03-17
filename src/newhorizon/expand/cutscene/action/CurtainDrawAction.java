@@ -16,9 +16,4 @@ public class CurtainDrawAction extends Action {
         if (headless) return;
         cutsceneUI.curtainProgress = Interp.linear.apply(progress());
     }
-
-    @Override
-    public String phaseToString() {
-        return "curtain_draw";
-    }
 }

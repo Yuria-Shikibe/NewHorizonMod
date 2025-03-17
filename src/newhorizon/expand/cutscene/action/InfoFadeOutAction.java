@@ -33,9 +33,4 @@ public class InfoFadeOutAction extends Action {
         end();
         cutsceneUI.infoTable.actions(Actions.fadeOut(maxTimer / Time.toSeconds, Interp.pow2In));
     }
-
-    @Override
-    public String phaseToString() {
-        return "info_fade_out";
-    }
 }

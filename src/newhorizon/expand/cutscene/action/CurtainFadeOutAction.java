@@ -16,9 +16,4 @@ public class CurtainFadeOutAction extends Action {
         if (headless) return;
         cutsceneUI.targetOverlayAlpha = 0f;
     }
-
-    @Override
-    public String phaseToString() {
-        return "curtain_fade_out";
-    }
 }

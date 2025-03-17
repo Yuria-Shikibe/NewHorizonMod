@@ -23,9 +23,4 @@ public class CurtainRaiseAction extends Action {
         if (headless) return;
         cutsceneUI.curtainProgress = 0f;
     }
-
-    @Override
-    public String phaseToString() {
-        return "curtain_raise";
-    }
 }
