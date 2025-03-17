@@ -11,7 +11,7 @@ public class CameraZoomAction extends Action {
     public float zoom = 1f;
     public CameraZoomAction(String[] tokens) {
         super(60);
-        zoom = Float.parseFloat(tokens[1]);
+        zoom = Float.parseFloat(tokens[0]);
     }
 
     public CameraZoomAction() {

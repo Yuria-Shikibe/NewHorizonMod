@@ -2,9 +2,11 @@ package newhorizon.expand.cutscene.action;
 
 import arc.Core;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.Vars;
 import newhorizon.expand.cutscene.components.Action;
 
+import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 
 public class CameraResetAction extends Action {
@@ -19,7 +21,9 @@ public class CameraResetAction extends Action {
     @Override
     public void act() {
         if (headless) return;
-        Core.camera.position.lerpDelta(Vars.player, progress());
+        Tmp.v1.set(Core.camera.position).lerpDelta(Vars.player, progress());
+        control.input.logicCamSpeed = 1000f;
+        control.input.logicCamPan = Tmp.v1;
     }
 
     @Override

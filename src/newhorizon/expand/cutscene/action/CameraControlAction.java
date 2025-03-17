@@ -3,6 +3,7 @@ package newhorizon.expand.cutscene.action;
 import arc.Core;
 import arc.math.geom.Vec2;
 import arc.util.Time;
+import arc.util.Tmp;
 import newhorizon.expand.cutscene.components.Action;
 
 import static mindustry.Vars.control;
@@ -23,7 +24,8 @@ public class CameraControlAction extends Action {
     @Override
     public void act() {
         if (headless) return;
+        Tmp.v1.set(Core.camera.position).lerpDelta(target, progress());
         control.input.logicCamSpeed = 10f;
-        control.input.logicCamPan = target;
+        control.input.logicCamPan = Tmp.v1;
     }
 }

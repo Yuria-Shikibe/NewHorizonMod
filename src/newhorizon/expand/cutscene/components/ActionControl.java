@@ -93,7 +93,6 @@ public class ActionControl {
             return switch (actionName) {
                 case "camera_control" -> new CameraControlAction(args);
                 case "camera_reset" -> new CameraResetAction(args);
-                case "camera_set" -> new CameraSetAction(args, source);
                 case "camera_zoom" -> new CameraZoomAction(args);
 
                 case "curtain_draw" -> new CurtainDrawAction();
