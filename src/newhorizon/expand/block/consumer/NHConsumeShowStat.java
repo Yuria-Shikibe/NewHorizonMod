@@ -26,28 +26,6 @@ public class NHConsumeShowStat extends Consume {
 
     @Override
     public void build(Building build, Table table) {
-        /*
-        if (items != null && items.get(build) != null) {
-
-        }
-
-        if (liquids != null && liquids.get(build) != null) {
-            LiquidStack[][] currentLiquid = {liquids.get(build)};
-
-            table.table(cont -> {
-                table.update(() -> {
-                    if (currentLiquid[0] != liquids.get(build)) {
-                        rebuild(build, cont);
-                        currentLiquid[0] = liquids.get(build);
-                    }
-                });
-
-                rebuild(build, cont);
-            });
-        }
-
-         */
-
         ItemStack[][] currentItem = {items.get(build)};
         LiquidStack[][] currentLiquid = {liquids.get(build)};
 

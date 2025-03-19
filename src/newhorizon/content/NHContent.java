@@ -104,7 +104,7 @@ public class NHContent extends Content{
 		LAssembler.customParsers.put("randtarget", RandomTarget::new);
 		LAssembler.customParsers.put("teamthreat", TeamThreat::new);
 
-		LAssembler.customParsers.put("raid", Raid::new);
+		LAssembler.customParsers.put("raid", SpawnBullet::new);
 
 		LAssembler.customParsers.put("begincutscene", BeginCutscene::new);
 		LAssembler.customParsers.put("addmainbus", AddMainActionBus::new);
@@ -138,7 +138,7 @@ public class NHContent extends Content{
 		LogicIO.allStatements.addUnique(RandomTarget::new);
 		LogicIO.allStatements.addUnique(TeamThreat::new);
 
-		LogicIO.allStatements.addUnique(Raid::new);
+		LogicIO.allStatements.addUnique(SpawnBullet::new);
 
 		LogicIO.allStatements.addUnique(BeginCutscene::new);
 		LogicIO.allStatements.addUnique(AddMainActionBus::new);

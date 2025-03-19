@@ -76,7 +76,7 @@ public class NHConsumeLiquidDynamic extends Consume {
             }
             return min;
         } else {
-            return 1f;
+            return 0f;
         }
     }
 }

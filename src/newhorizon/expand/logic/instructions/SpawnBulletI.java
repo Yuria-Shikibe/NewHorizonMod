@@ -13,10 +13,10 @@ import newhorizon.content.bullets.RaidBullets;
 
 import static mindustry.Vars.content;
 
-public class RaidI implements LExecutor.LInstruction {
+public class SpawnBulletI implements LExecutor.LInstruction {
     public int team , type, seed, count, sourceX, sourceY, targetX, targetY, inaccuracy;
 
-    public RaidI(int team, int type, int seed, int count, int sourceX, int sourceY, int targetX, int targetY, int inaccuracy) {
+    public SpawnBulletI(int team, int type, int seed, int count, int sourceX, int sourceY, int targetX, int targetY, int inaccuracy) {
         this.team = team;
         this.type = type;
         this.seed = seed;
@@ -55,18 +55,20 @@ public class RaidI implements LExecutor.LInstruction {
     }
 
     public BulletType bulletType(int type) {
-        if (content.bullet(type) != null) return content.bullet(type);
+        if (type < 10000){
+            return switch (type) {
+                case 1 -> RaidBullets.raidBullet_1;
+                case 2 -> RaidBullets.raidBullet_2;
+                case 3 -> RaidBullets.raidBullet_3;
+                case 4 -> RaidBullets.raidBullet_4;
+                case 5 -> RaidBullets.raidBullet_5;
+                case 6 -> RaidBullets.raidBullet_6;
+                case 7 -> RaidBullets.raidBullet_7;
+                case 8 -> RaidBullets.raidBullet_8;
+                default -> NHBullets.railGun1;
+            };
+        }
+        if (content.bullet(type - 10000) != null) return content.bullet(type - 10000);
         return content.bullet(0);
-        //return switch (type) {
-        //    case 1 -> RaidBullets.raidBullet_1;
-        //    case 2 -> RaidBullets.raidBullet_2;
-        //    case 3 -> RaidBullets.raidBullet_3;
-        //    case 4 -> RaidBullets.raidBullet_4;
-        //    case 5 -> RaidBullets.raidBullet_5;
-        //    case 6 -> RaidBullets.raidBullet_6;
-        //    case 7 -> RaidBullets.raidBullet_7;
-        //    case 8 -> RaidBullets.raidBullet_8;
-        //    default -> NHBullets.railGun1;
-        //};
     }
 }

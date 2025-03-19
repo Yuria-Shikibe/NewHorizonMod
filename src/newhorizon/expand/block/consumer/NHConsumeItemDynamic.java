@@ -36,7 +36,7 @@ public class NHConsumeItemDynamic extends Consume {
         if (items != null && items.get(build) != null) {
             return build.consumeTriggerValid() || build.items.has(items.get(build), multiplier.get(build)) ? 1f : 0f;
         } else {
-            return 1f;
+            return 0f;
         }
     }
 }

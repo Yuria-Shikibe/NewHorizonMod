@@ -6,13 +6,12 @@ import mindustry.logic.LCategory;
 import mindustry.logic.LExecutor;
 import mindustry.logic.LStatement;
 import newhorizon.content.NHContent;
-import newhorizon.expand.logic.instructions.LineTargetI;
-import newhorizon.expand.logic.instructions.RaidI;
+import newhorizon.expand.logic.instructions.SpawnBulletI;
 
-public class Raid extends LStatement {
+public class SpawnBullet extends LStatement {
     public String team = "@sharded", type = "0", seed = "0", count = "0", sourceX = "0", sourceY = "0", targetX = "0", targetY = "0", inaccuracy = "0";
 
-    public Raid(String[] tokens) {
+    public SpawnBullet(String[] tokens) {
         team = tokens[1];
         type = tokens[2];
         seed = tokens[3];
@@ -24,7 +23,7 @@ public class Raid extends LStatement {
         inaccuracy = tokens[9];
     }
 
-    public Raid() {}
+    public SpawnBullet() {}
 
     @Override
     public void build(Table table) {
@@ -72,7 +71,7 @@ public class Raid extends LStatement {
 
     @Override
     public LExecutor.LInstruction build(LAssembler builder) {
-        return new RaidI(builder.var(team), builder.var(type), builder.var(seed), builder.var(count), builder.var(sourceX), builder.var(sourceY), builder.var(targetX), builder.var(targetY), builder.var(inaccuracy));
+        return new SpawnBulletI(builder.var(team), builder.var(type), builder.var(seed), builder.var(count), builder.var(sourceX), builder.var(sourceY), builder.var(targetX), builder.var(targetY), builder.var(inaccuracy));
     }
 
     @Override
