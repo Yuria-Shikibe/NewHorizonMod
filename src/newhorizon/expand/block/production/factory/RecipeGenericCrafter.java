@@ -1,5 +1,6 @@
 package newhorizon.expand.block.production.factory;
 
+import arc.Core;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Time;
@@ -43,20 +44,37 @@ public class RecipeGenericCrafter extends AdaptCrafter{
             table.table(cont -> {
                 for (int r = 0; r < alterRecipe; r++){
                     int idx = r;
-                    cont.table(t -> {
-                        t.label(() -> "Recipe " + (idx+1) + ": ");
-                        if (recipeItemInput.get(idx) != null){
-                            for (ItemStack stack : recipeItemInput.get(idx)){
-                                t.add(new ItemDisplay(stack.item, stack.amount, craftTime, true)).padRight(5);
+                    if(r == 0){
+                        cont.label(() -> Core.bundle.get("nh.primary"));
+                        cont.table(t -> {
+                            if (recipeItemInput.get(idx) != null){
+                                for (ItemStack stack : recipeItemInput.get(idx)){
+                                    t.add(new ItemDisplay(stack.item, stack.amount, craftTime, true)).padLeft(5);
+                                }
                             }
-                        }
-                        if (recipeItemInput.get(idx) != null){
-                            for (LiquidStack stack : recipeLiquidInput.get(idx)){
-                                t.add(new LiquidDisplay(stack.liquid, (stack.amount * 60f) * (60f / craftTime), true)).padRight(5);
+                            if (recipeItemInput.get(idx) != null){
+                                for (LiquidStack stack : recipeLiquidInput.get(idx)){
+                                    t.add(new LiquidDisplay(stack.liquid, (stack.amount * 60f) * (60f / craftTime), true)).padLeft(5);
+                                }
                             }
-                        }
-                        t.left();
-                    }).fillX();
+                            t.left();
+                        }).fillX();
+                    }else {
+                        cont.label(() -> Core.bundle.get("nh.alternative"));
+                        cont.table(t -> {
+                            if (recipeItemInput.get(idx) != null){
+                                for (ItemStack stack : recipeItemInput.get(idx)){
+                                    t.add(new ItemDisplay(stack.item, stack.amount, craftTime, true)).padLeft(5);
+                                }
+                            }
+                            if (recipeItemInput.get(idx) != null){
+                                for (LiquidStack stack : recipeLiquidInput.get(idx)){
+                                    t.add(new LiquidDisplay(stack.liquid, (stack.amount * 60f) * (60f / craftTime), true)).padLeft(5);
+                                }
+                            }
+                            t.left();
+                        }).fillX();
+                    }
                     cont.row();
                 }
             });
