@@ -54,7 +54,7 @@ public class RecipeGenericCrafter extends AdaptCrafter{
                             }
                             if (recipeItemInput.get(idx) != null){
                                 for (LiquidStack stack : recipeLiquidInput.get(idx)){
-                                    t.add(new LiquidDisplay(stack.liquid, (stack.amount * 60f) * (60f / craftTime), true)).padLeft(5);
+                                    t.add(new LiquidDisplay(stack.liquid, stack.amount * 60f, true)).padLeft(5);
                                 }
                             }
                             t.left();
@@ -69,7 +69,7 @@ public class RecipeGenericCrafter extends AdaptCrafter{
                             }
                             if (recipeItemInput.get(idx) != null){
                                 for (LiquidStack stack : recipeLiquidInput.get(idx)){
-                                    t.add(new LiquidDisplay(stack.liquid, (stack.amount * 60f) * (60f / craftTime), true)).padLeft(5);
+                                    t.add(new LiquidDisplay(stack.liquid, stack.amount * 60f, true)).padLeft(5);
                                 }
                             }
                             t.left();
