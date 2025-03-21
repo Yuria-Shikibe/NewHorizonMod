@@ -1,6 +1,7 @@
 package newhorizon.content.blocks;
 
 import arc.graphics.Color;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.type.Category;
@@ -8,9 +9,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawArcSmelt;
-import mindustry.world.draw.DrawLiquidRegion;
 import mindustry.world.draw.DrawMulti;
-import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHItems;
@@ -24,7 +23,7 @@ import newhorizon.expand.block.production.factory.content.HyperZetaFactory;
 import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
-    public static Block stampingFacility, processorPrinter, crucibleFoundry, fluxPhaser, hyperZetaFactory, glassQuantifier;
+    public static Block stampingFacility, processorPrinter, crucibleFoundry, crystallizer, fluxPhaser, hyperZetaFactory, glassQuantifier;
 
     public static void load(){
         stampingFacility = new RecipeGenericCrafter("stamping-facility"){{
@@ -79,34 +78,26 @@ public class CraftingBlock {
             outputItems = with(NHItems.juniorProcessor, 2);
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
+                    new DrawRegionRotated(){{
                         suffix = "-rot";
-                    }},
-                    new DrawFlameRotated(NHItems.fusionEnergy.color){{
-                        suffix = "-flame-0";
-                        flameX = -8;
-                    }},
-                    new DrawFlameRotated(NHItems.fusionEnergy.color){{
-                        suffix = "-flame-1";
-                        flameX = 8;
                     }}
             );
         }};
         crucibleFoundry = new RecipeGenericCrafter("crucible-foundry"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.presstanium, 30, NHItems.seniorProcessor, 50, Items.tungsten, 40));
+                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40));
 
             size = 3;
 
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
-            craftTime = 120f;
+            craftTime = 60f;
             consumePower(300 / 60f);
 
             addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.with(NHLiquids.xenAlpha, 6 / 60f));
-            addInput(ItemStack.with(Items.tungsten, 2, Items.graphite, 3), LiquidStack.with(Liquids.ozone, 6 / 60f));
             addInput(ItemStack.with(Items.tungsten, 2, Items.pyratite, 1), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 2, Items.graphite, 3), LiquidStack.with(Liquids.ozone, 6 / 60f));
 
             outputItems = with(Items.carbide, 1);
 
@@ -134,6 +125,79 @@ public class CraftingBlock {
                     }},
                     new DrawRegionRotated(){{
                         suffix = "-top";
+                    }}
+            );
+        }};
+        crystallizer = new RecipeGenericCrafter("crystallizer"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 45, Items.carbide, 30));
+
+            size = 2;
+
+            addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
+                    0, 2, 1, /**/1, 2, 1 /**/);
+
+            craftTime = 60f;
+            consumePower(480 / 60f);
+            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenAlpha, 4 / 60f, NHLiquids.quantumEntity, 3 / 60f));
+            addInput(ItemStack.with(Items.lead, 2), LiquidStack.with(Liquids.water, 6 / 60f));
+            addInput(ItemStack.with(Items.oxide, 2), LiquidStack.with(Liquids.water, 6 / 60f));
+
+            outputItems = with(NHItems.metalOxhydrigen, 2);
+
+            itemCapacity = 30;
+            health = 1600;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawMulti(
+                    new DrawRegionRotated(){{
+                        suffix = "-rot";
+                        x = 4;
+                        y = 4;
+                    }},
+                    new DrawLiquidRegionRotated(){{
+                        suffix = "-liquid";
+                        drawLiquid = Liquids.water;
+                        x = 4;
+                        y = 4;
+                    }},
+                    new DrawLiquidRegionRotated(){{
+                        suffix = "-liquid";
+                        drawLiquid = NHLiquids.quantumEntity;
+                        x = 4;
+                        y = 4;
+                    }},
+                    new DrawFlameRotated(){{
+                        drawFlame = false;
+                        flameX = 1;
+                        flameY = 1;
+                        flameColor = NHLiquids.quantumEntity.color;
+                        flameRadius *= 0.8f;
+                        flameRadiusIn *= 0.8f;
+                    }},
+                    new DrawFlameRotated(){{
+                        drawFlame = false;
+                        flameX = 8;
+                        flameY = 0;
+                        flameColor = NHLiquids.quantumEntity.color;
+                        flameRadius *= 0.5f;
+                        flameRadiusIn *= 0.5f;
+                    }},
+                    new DrawFlameRotated(){{
+                        drawFlame = false;
+                        flameX = 0;
+                        flameY = 8;
+                        flameColor = NHLiquids.quantumEntity.color;
+                        flameRadius *= 0.5f;
+                        flameRadiusIn *= 0.5f;
+                    }},
+                    new DrawRegionRotated(){{
+                        oneSprite = true;
+                        suffix = "-edge";
+                        x = 4;
+                        y = 4;
                     }}
             );
         }};

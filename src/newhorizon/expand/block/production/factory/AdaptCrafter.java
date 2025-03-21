@@ -1,5 +1,6 @@
 package newhorizon.expand.block.production.factory;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.geom.Point2;
@@ -84,6 +85,12 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     @Override
     public boolean isMirror() {
         return false;
+    }
+
+    @Override
+    public void loadIcon() {
+        super.loadIcon();
+        uiIcon = Core.atlas.find(name + "-icon", name);
     }
 
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{

@@ -13,6 +13,7 @@ import mindustry.world.Block;
 import mindustry.world.draw.DrawFlame;
 
 public class DrawFlameRotated extends DrawFlame {
+    public boolean drawFlame = true;
     public String suffix = "";
     public float x, y;
     public float flameX, flameY;
@@ -48,7 +49,7 @@ public class DrawFlameRotated extends DrawFlame {
             Draw.z(Layer.block + 0.01f);
 
             Draw.alpha(build.warmup());
-            Draw.rect(top, build.x + Tmp.v1.x, build.y + Tmp.v1.y, build.rotdeg());
+            if (drawFlame) Draw.rect(top, build.x + Tmp.v1.x, build.y + Tmp.v1.y, build.rotdeg());
 
             Draw.alpha(((1f - g) + Mathf.absin(Time.time, 8f, g) + Mathf.random(r) - r) * build.warmup());
 

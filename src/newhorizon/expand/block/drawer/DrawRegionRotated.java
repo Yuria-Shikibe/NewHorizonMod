@@ -14,7 +14,7 @@ public class DrawRegionRotated extends DrawBlock {
     public TextureRegion[] region;
     public boolean oneSprite = false;
     public String suffix = "";
-    public int x = 0, y = 0;
+    public float x = 0, y = 0;
     /**
      * Any number <=0 disables layer changes.
      */
