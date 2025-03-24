@@ -9,6 +9,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawArcSmelt;
+import mindustry.world.draw.DrawGlowRegion;
 import mindustry.world.draw.DrawMulti;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHColor;
@@ -23,7 +24,7 @@ import newhorizon.expand.block.production.factory.content.HyperZetaFactory;
 import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
-    public static Block stampingFacility, processorPrinter, crucibleFoundry, crystallizer, fluxPhaser, hyperZetaFactory, glassQuantifier;
+    public static Block stampingFacility, processorPrinter, crucibleFoundry, crystallizer, surgeRefactor, fluxPhaser, hyperZetaFactory, glassQuantifier;
 
     public static void load(){
         stampingFacility = new RecipeGenericCrafter("stamping-facility"){{
@@ -79,6 +80,21 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawRegionRotated(){{
+                        oneSprite = true;
+                        suffix = "-base";
+                    }},
+                    new DrawGlowRegionRotated(){{
+                        oneSprite = true;
+                        suffix = "-glow";
+                    }},
+                    new DrawParticleFlow(){{
+                       startX = -14f;
+                       startY = 0;
+                       endX = 14f;
+                       endY = 0;
+                       ignoreRot2_3 = true;
+                    }},
+                    new DrawRegionCenterSymmetry(){{
                         suffix = "-rot";
                     }}
             );
@@ -198,6 +214,33 @@ public class CraftingBlock {
                         suffix = "-edge";
                         x = 4;
                         y = 4;
+                    }}
+            );
+        }};
+        surgeRefactor = new RecipeGenericCrafter("surge-refactor"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
+
+            size = 4;
+
+            addLink(3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            craftTime = 60f;
+            consumePower(480 / 60f);
+            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenAlpha, 4 / 60f, NHLiquids.quantumEntity, 3 / 60f));
+
+            outputItems = with(Items.surgeAlloy, 3);
+
+            itemCapacity = 30;
+            health = 1600;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawMulti(
+                    new DrawRegionRotated(){{
+                        suffix = "-rot";
+                        x = 4;
                     }}
             );
         }};

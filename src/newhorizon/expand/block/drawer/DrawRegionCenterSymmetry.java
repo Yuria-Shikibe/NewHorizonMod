@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
+import arc.util.Tmp;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.world.Block;
@@ -13,6 +14,8 @@ public class DrawRegionCenterSymmetry extends DrawBlock {
     public TextureRegion[] region;
     public String suffix = "";
     public float layer = -1;
+    public float x = 0, y = 0;
+
 
     public DrawRegionCenterSymmetry(String suffix) {
         this.suffix = suffix;
@@ -24,6 +27,7 @@ public class DrawRegionCenterSymmetry extends DrawBlock {
     public void draw(Building build) {
         float z = Draw.z();
         if (layer > 0) Draw.z(layer);
+        Tmp.v1.set(x, y).rotate(build.rotdeg() % 180);
         Draw.rect(region[build.rotation % 2], build.x, build.y);
         Draw.z(z);
     }
