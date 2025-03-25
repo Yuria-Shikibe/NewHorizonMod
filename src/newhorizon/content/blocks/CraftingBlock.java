@@ -24,7 +24,7 @@ import newhorizon.expand.block.production.factory.content.HyperZetaFactory;
 import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
-    public static Block stampingFacility, processorPrinter, crucibleFoundry, crystallizer, surgeRefactor, fluxPhaser, hyperZetaFactory, glassQuantifier;
+    public static Block stampingFacility, processorPrinter, crucibleFoundry, crystallizer, surgeRefactor, fabricSynthesizer, fluxPhaser, hyperZetaFactory, glassQuantifier;
 
     public static void load(){
         stampingFacility = new RecipeGenericCrafter("stamping-facility"){{
@@ -84,8 +84,7 @@ public class CraftingBlock {
                         suffix = "-base";
                     }},
                     new DrawGlowRegionRotated(){{
-                        oneSprite = true;
-                        suffix = "-glow";
+                        suffix = "-glow-rot";
                     }},
                     new DrawParticleFlow(){{
                        startX = -14f;
@@ -93,6 +92,26 @@ public class CraftingBlock {
                        endX = 14f;
                        endY = 0;
                        ignoreRot2_3 = true;
+                       particleLife = 75;
+                       particles = 15;
+                    }},
+                    new DrawParticleFlow(){{
+                        startX = -14f;
+                        startY = 0;
+                        endX = 14f;
+                        endY = 0;
+                        ignoreRot2_3 = true;
+                        particleLife = 90;
+                        particles = 15;
+                    }},
+                    new DrawParticleFlow(){{
+                        startX = -14f;
+                        startY = 0;
+                        endX = 14f;
+                        endY = 0;
+                        ignoreRot2_3 = true;
+                        particleLife = 60;
+                        particles = 15;
                     }},
                     new DrawRegionCenterSymmetry(){{
                         suffix = "-rot";
@@ -238,9 +257,8 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated(){{
+                    new DrawRegionCenterSymmetry(){{
                         suffix = "-rot";
-                        x = 4;
                     }}
             );
         }};

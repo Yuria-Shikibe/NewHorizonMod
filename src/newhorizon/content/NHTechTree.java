@@ -311,7 +311,7 @@ public class NHTechTree{
 				});
 				nodeProduce(NHItems.metalOxhydrigen, () -> {
 					nodeProduce(NHItems.multipleSteel, () -> {
-						nodeProduce(NHLiquids.irdryonFluid, () -> {
+						nodeProduce(NHLiquids.irayrondFluid, () -> {
 							nodeProduce(NHItems.irayrondPanel, () -> {
 								nodeProduce(NHItems.setonAlloy, () -> {
 									nodeProduce(NHItems.upgradeSort, () -> {});

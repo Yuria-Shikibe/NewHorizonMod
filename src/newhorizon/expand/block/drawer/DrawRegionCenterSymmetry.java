@@ -27,8 +27,8 @@ public class DrawRegionCenterSymmetry extends DrawBlock {
     public void draw(Building build) {
         float z = Draw.z();
         if (layer > 0) Draw.z(layer);
-        Tmp.v1.set(x, y).rotate(build.rotdeg() % 180);
-        Draw.rect(region[build.rotation % 2], build.x, build.y);
+        Tmp.v1.set(x, y).rotate(build.rotdeg() % 180).add(build);
+        Draw.rect(region[build.rotation % 2], Tmp.v1.x, Tmp.v1.y);
         Draw.z(z);
     }
 

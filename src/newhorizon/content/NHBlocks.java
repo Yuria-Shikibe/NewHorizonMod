@@ -2597,7 +2597,7 @@ public class NHBlocks{
 			hasItems = hasPower = hasLiquids = true;
 			
 			consumePower(25);
-			consumeLiquid(NHLiquids.irdryonFluid, 15 / 60f);
+			consumeLiquid(NHLiquids.irayrondFluid, 15 / 60f);
 			consumeItem(Items.silicon, 6);
 			
 			outputItems = ItemStack.with(NHItems.juniorProcessor, 30, NHItems.seniorProcessor, 8);
@@ -2686,7 +2686,7 @@ public class NHBlocks{
 						phaseOffset = Mathf.random() * 5f;
 					}},
 					
-					new DrawRegion("-mid"), new DrawLiquidTile(NHLiquids.irdryonFluid, 54 / 4f), new DrawDefault(),
+					new DrawRegion("-mid"), new DrawLiquidTile(NHLiquids.irayrondFluid, 54 / 4f), new DrawDefault(),
 					new DrawGlowRegion("-glow1"){{
 						color = junior;
 //						alpha = 1;
@@ -3156,10 +3156,10 @@ public class NHBlocks{
 			{
 				requirements(Category.crafting, with(Items.surgeAlloy, 20, NHItems.seniorProcessor, 50, NHItems.presstanium, 80, NHItems.irayrondPanel, 65));
 				craftEffect = Fx.smeltsmoke;
-				outputLiquid = new LiquidStack(NHLiquids.irdryonFluid, 8f / 60f);
+				outputLiquid = new LiquidStack(NHLiquids.irayrondFluid, 8f / 60f);
 				craftTime = 60;
 				size = 2;
-				drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion(NHLiquids.irdryonFluid), new DrawFrames(){{
+				drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion(NHLiquids.irayrondFluid), new DrawFrames(){{
 					frames = 5;
 					sine = true;
 				}}, new DrawRegion("-top"));
@@ -3390,7 +3390,7 @@ public class NHBlocks{
 		setonAlloyFactory = new GenericCrafter("seton-alloy-factory"){{
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, NHItems.presstanium, 100, Items.surgeAlloy, 40));
 			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 4f + e.finpow() * 14f, (x, y) -> {
-				Draw.color(NHLiquids.irdryonFluid.color);
+				Draw.color(NHLiquids.irayrondFluid.color);
 				Fill.square(e.x + x, e.y + y, e.fout() * 3f);
 			}));
 			outputItem = new ItemStack(NHItems.setonAlloy, 2);
@@ -3407,9 +3407,9 @@ public class NHBlocks{
 						sinMag = 3.9f;
 						lenOffset = -1.785f;
 						angleOffset = 45;
-					}}, new DrawRegion("-shade"), new DrawDefault(), new DrawLiquidTile(NHLiquids.irdryonFluid, 39 / 4f), new DrawRegion("-top"));
+					}}, new DrawRegion("-shade"), new DrawDefault(), new DrawLiquidTile(NHLiquids.irayrondFluid, 39 / 4f), new DrawRegion("-top"));
 		
-			consumeLiquid(NHLiquids.irdryonFluid, 0.12f);
+			consumeLiquid(NHLiquids.irayrondFluid, 0.12f);
 			consumeItems(new ItemStack(Items.plastanium, 4), new ItemStack(Items.graphite, 6));
 			consumePower(12f);
 		}};

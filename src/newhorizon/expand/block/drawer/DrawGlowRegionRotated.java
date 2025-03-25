@@ -11,16 +11,16 @@ import mindustry.world.Block;
 import mindustry.world.draw.DrawRegion;
 import newhorizon.util.func.MathUtil;
 
-public class DrawGlowRegionRotated extends DrawRegionRotated {
+public class DrawGlowRegionRotated extends DrawRegionCenterSymmetry {
 
     @Override
     public void draw(Building build) {
         if (build.warmup() > 0){
-            Tmp.v1.set(x, y).rotate(build.rotdeg()).add(build);
+            Tmp.v1.set(x, y).rotate(build.rotdeg() % 180).add(build);
 
             Draw.color(Pal.techBlue);
             Draw.alpha(MathUtil.timeValue(0.75f, 0.9f, 0.8f) * build.warmup());
-            Draw.rect(region[build.rotation], Tmp.v1.x, Tmp.v1.y, build.rotdeg());
+            Draw.rect(region[build.rotation % 2], Tmp.v1.x, Tmp.v1.y);
             Draw.reset();
         }
     }
