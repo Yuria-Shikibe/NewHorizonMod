@@ -240,15 +240,20 @@ public class CraftingBlock {
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
 
-            size = 4;
+            size = 3;
 
-            addLink(3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+            addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
+                    -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
-            craftTime = 60f;
+            craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenAlpha, 4 / 60f, NHLiquids.quantumEntity, 3 / 60f));
+            addInput(ItemStack.with(Items.titanium, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f));
+            addInput(ItemStack.with(Items.copper, 3, Items.lead, 4), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
+            addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(Liquids.slag, 20 / 60f, Liquids.nitrogen, 3 / 60f));
 
-            outputItems = with(Items.surgeAlloy, 3);
+
+            outputItems = with(Items.surgeAlloy, 2);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3 / 60f);
 
             itemCapacity = 30;
             health = 1600;
@@ -262,6 +267,37 @@ public class CraftingBlock {
                     }}
             );
         }};
+        fabricSynthesizer = new RecipeGenericCrafter("fabric-synthesizer"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
+
+            size = 3;
+
+            addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
+                    -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
+
+            craftTime = 120f;
+            consumePower(480 / 60f);
+            addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f));
+            addInput(ItemStack.with(Items.thorium, 2, Items.sand, 6), LiquidStack.empty);
+            addInput(ItemStack.with(Items.thorium, 4), LiquidStack.with(Liquids.ozone, 6 / 60f));
+
+            outputItems = with(Items.phaseFabric, 2);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.5f / 60f);
+
+            itemCapacity = 30;
+            health = 1600;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawMulti(
+                    new DrawRegionCenterSymmetry(){{
+                        suffix = "-rot";
+                    }}
+            );
+        }};
+
         fluxPhaser = new FluxPhaser();
         hyperZetaFactory = new HyperZetaFactory();
         glassQuantifier = new GlassQuantifier();
