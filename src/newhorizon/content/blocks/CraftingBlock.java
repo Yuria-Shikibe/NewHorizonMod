@@ -8,9 +8,7 @@ import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.draw.DrawArcSmelt;
-import mindustry.world.draw.DrawGlowRegion;
-import mindustry.world.draw.DrawMulti;
+import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHItems;
@@ -24,7 +22,10 @@ import newhorizon.expand.block.production.factory.content.HyperZetaFactory;
 import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
-    public static Block stampingFacility, processorPrinter, crucibleFoundry, crystallizer, surgeRefactor, fabricSynthesizer, fluxPhaser, hyperZetaFactory, glassQuantifier;
+    public static Block
+            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
+            fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
+            fluxPhaser, hyperZetaFactory, glassQuantifier;
 
     public static void load(){
         stampingFacility = new RecipeGenericCrafter("stamping-facility"){{
@@ -236,6 +237,32 @@ public class CraftingBlock {
                     }}
             );
         }};
+        zetaDissociator = new RecipeGenericCrafter("zeta-dissociator"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40));
+
+            size = 3;
+
+            craftTime = 60f;
+            itemCapacity = 30;
+            consumePower(450 / 60f);
+
+            addInput(ItemStack.with(NHItems.zeta, 6), LiquidStack.with(NHLiquids.quantumEntity, 4 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 6), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 6), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
+
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 2 / 60f, NHLiquids.zetaFluidNegative, 2 / 60f);
+            liquidOutputDirections = new int[]{1, 3};
+
+            drawer = new DrawMulti(
+                    new DrawRegion(){{
+                        suffix = "-base";
+                    }},
+                    new DrawRegionRotated(){{
+                        suffix = "-top-rot";
+                    }}
+            );
+        }};
         surgeRefactor = new RecipeGenericCrafter("surge-refactor"){{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
@@ -248,9 +275,6 @@ public class CraftingBlock {
             craftTime = 120f;
             consumePower(480 / 60f);
             addInput(ItemStack.with(Items.titanium, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f));
-            addInput(ItemStack.with(Items.copper, 3, Items.lead, 4), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
-            addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(Liquids.slag, 20 / 60f, Liquids.nitrogen, 3 / 60f));
-
 
             outputItems = with(Items.surgeAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3 / 60f);
@@ -279,8 +303,6 @@ public class CraftingBlock {
             craftTime = 120f;
             consumePower(480 / 60f);
             addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f));
-            addInput(ItemStack.with(Items.thorium, 2, Items.sand, 6), LiquidStack.empty);
-            addInput(ItemStack.with(Items.thorium, 4), LiquidStack.with(Liquids.ozone, 6 / 60f));
 
             outputItems = with(Items.phaseFabric, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.5f / 60f);
@@ -297,9 +319,146 @@ public class CraftingBlock {
                     }}
             );
         }};
+        processorEncoder = new RecipeGenericCrafter("processor-encoder"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.titanium, 30, Items.silicon, 45, Items.tungsten, 30));
 
-        fluxPhaser = new FluxPhaser();
-        hyperZetaFactory = new HyperZetaFactory();
-        glassQuantifier = new GlassQuantifier();
+            size = 2;
+
+            addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
+                    -1, 0, 1, /**/-1, 1, 1 /**/);
+
+            craftTime = 120f;
+
+            addInput(ItemStack.with(Items.surgeAlloy, 4, NHItems.juniorProcessor, 4), LiquidStack.empty);
+
+            consumePower(240f / 60f);
+            outputItems = with(NHItems.seniorProcessor, 2);
+
+            drawer = new DrawMulti(
+                    new DrawRegionRotated(){{
+                        oneSprite = true;
+                        suffix = "-base";
+                    }},
+                    new DrawGlowRegionRotated(){{
+                        suffix = "-glow-rot";
+                    }},
+                    new DrawParticleFlow(){{
+                        startX = -14f;
+                        startY = 0;
+                        endX = 14f;
+                        endY = 0;
+                        ignoreRot2_3 = true;
+                        particleLife = 75;
+                        particles = 15;
+                    }},
+                    new DrawParticleFlow(){{
+                        startX = -14f;
+                        startY = 0;
+                        endX = 14f;
+                        endY = 0;
+                        ignoreRot2_3 = true;
+                        particleLife = 90;
+                        particles = 15;
+                    }},
+                    new DrawParticleFlow(){{
+                        startX = -14f;
+                        startY = 0;
+                        endX = 14f;
+                        endY = 0;
+                        ignoreRot2_3 = true;
+                        particleLife = 60;
+                        particles = 15;
+                    }},
+                    new DrawRegionCenterSymmetry(){{
+                        suffix = "-rot";
+                    }}
+            );
+        }};
+        irdryonMixer = new RecipeGenericCrafter("irdryon-mixer"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40));
+
+            size = 3;
+
+            craftTime = 60f;
+            itemCapacity = 30;
+            consumePower(300 / 60f);
+
+            addInput(ItemStack.with(Items.phaseFabric, 1), LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
+
+            outputLiquids = LiquidStack.with(NHLiquids.irayrondFluid, 3 / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawDefault()
+            );
+        }};
+        irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
+
+            size = 3;
+
+            addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
+                    -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
+
+            craftTime = 120f;
+            consumePower(480 / 60f);
+            addInput(ItemStack.with(Items.surgeAlloy, 2, Items.carbide, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f));
+
+            outputItems = with(NHItems.irayrondPanel, 2);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.5f / 60f);
+
+            itemCapacity = 30;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawMulti(
+                    new DrawRegionCenterSymmetry(){{
+                        suffix = "-rot";
+                    }}
+            );
+        }};
+        setonFactory = new RecipeGenericCrafter("seton-factory"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
+
+            size = 3;
+
+            addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
+                    -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
+
+            craftTime = 120f;
+            consumePower(480 / 60f);
+            addInput(ItemStack.with(Items.carbide, 6), LiquidStack.with(NHLiquids.irayrondFluid, 6 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
+
+            outputItems = with(NHItems.setonAlloy, 2);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3f / 60f);
+
+            itemCapacity = 30;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawMulti(
+                    new DrawRegionCenterSymmetry(){{
+                        suffix = "-rot";
+                    }}
+            );
+        }};
+
+        fluxPhaser = new FluxPhaser(){{
+            buildVisibility = BuildVisibility.debugOnly;
+
+        }};
+        hyperZetaFactory = new HyperZetaFactory(){{
+            buildVisibility = BuildVisibility.debugOnly;
+
+        }};
+        glassQuantifier = new GlassQuantifier(){{
+            buildVisibility = BuildVisibility.debugOnly;
+
+        }};
     }
 }

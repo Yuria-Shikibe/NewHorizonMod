@@ -100,8 +100,7 @@ public class NHBlocks{
 		
 		reinForcedItemSource, reinForcedLiquidSource,
 		//delivery,
-		oreZeta, xenMelter, hyperGenerator, fusionCollapser,
-		chargeWall, chargeWallLarge,
+		oreZeta, xenMelter, hyperGenerator, chargeWall, chargeWallLarge,
 		
 		jumpGate, jumpGateJunior, jumpGatePrimary,
 	
@@ -117,9 +116,9 @@ public class NHBlocks{
 	
 		//Turrets
 		dendrite, interferon, prism, hive, concentration,
-		shockWaveTurret, usualUpgrader, bloodStar, pulseShotgun, beamLaserTurret,
-		blaster, endOfEra, thurmix, argmot, thermoTurret, railGun, divlusion, executor, empTurret, gravity, multipleLauncher, antibody, multipleArtillery,
-		antiMatterTurret, atomSeparator, eternity, synchro,
+		bloodStar, pulseShotgun, beamLaserTurret,
+		blaster, endOfEra, argmot, thermoTurret, railGun, executor, gravity, multipleLauncher, antibody, multipleArtillery,
+		atomSeparator, eternity, synchro,
 
 		//Liquids
 		irdryonTank,
@@ -128,10 +127,10 @@ public class NHBlocks{
 		//walls
 		insulatedWall, setonWall, setonWallLarge, heavyDefenceWall, heavyDefenceWallLarge, heavyDefenceDoor, heavyDefenceDoorLarge, laserWall, ancientLaserWall,
 		//Distributions
-		towardGate, rapidUnloader, liquidAndItemBridge, remoteRouter, multiArmorConveyor, multiConveyor, multiEfficientConveyor,
+		rapidUnloader, multiArmorConveyor, multiConveyor, multiEfficientConveyor,
 		multiJunction, multiRouter, multiConduit, multiSteelItemBridge, multiSteelLiquidBridge,
 		//Drills
-		largeWaterExtractor, //beamDrill,
+		largeWaterExtractor,
 		//Powers
 		hydroFuelCell, ancientPowerNode,
 		armorPowerNode, armorBatteryLarge, zetaGenerator, hugeBattery, heavyPowerNode,
@@ -2590,6 +2589,7 @@ public class NHBlocks{
 	private static void loadFactories(){
 		processorCompactor = new GenericCrafter("processor-compactor"){{
 			requirements(Category.crafting, with(NHItems.zeta, 120, NHItems.irayrondPanel, 80, NHItems.presstanium, 60, NHItems.seniorProcessor, 40));
+			buildVisibility = BuildVisibility.debugOnly;
 			health = 1500;
 			armor = 4;
 			size = 4;
@@ -2703,6 +2703,8 @@ public class NHBlocks{
 		
 		ventExtractor = new AttributeCrafter("vent-extractor"){{
 			requirements(Category.production, with(Items.graphite, 40, Items.beryllium, 60, NHItems.presstanium, 30, NHItems.juniorProcessor, 20));
+			buildVisibility = BuildVisibility.debugOnly;
+
 			attribute = NHContent.quantum;
 			group = BlockGroup.liquids;
 			minEfficiency = 1f - 0.0001f;
@@ -2728,6 +2730,7 @@ public class NHBlocks{
 		}};
 		
 		arkyciteCompactor = new AttributeCrafter("arkycite-compactor"){{
+
 			baseEfficiency = 1f;
 			attribute = NHContent.quantum;
 			boostScale = 0.25f;
@@ -2739,6 +2742,8 @@ public class NHBlocks{
 			health = 560;
 			
 			requirements(Category.crafting, ItemStack.with(Items.beryllium, 120, Items.silicon, 60, NHItems.presstanium, 40, Items.metaglass, 60));
+
+			buildVisibility = BuildVisibility.debugOnly;
 			hasPower = hasLiquids = true;
 			
 			consumeLiquids(LiquidStack.with(NHLiquids.quantumEntity, 0.15f, Liquids.oil, 0.2f));
@@ -2762,15 +2767,11 @@ public class NHBlocks{
 			}});
 		}};
 		
-		ancimembraneConcentrator = new AttributeCrafter("ancimembrane-concentrator"){{
+		ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator"){{
 			size = 3;
-			
-			baseEfficiency = 0;
-			minEfficiency = 1f;
-			boostScale = 1f / 9f;
+
 			lightRadius /= 2f;
 			
-			attribute = NHContent.quantum;
 			requirements(Category.crafting, ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
 			
 			craftTime = 120f;
@@ -2844,15 +2845,16 @@ public class NHBlocks{
 			liquidCapacity = 60f;
 			
 			consumePower(12);
-			consumeItems(with(NHItems.setonAlloy, 2, Items.tungsten, 6));
-			consumeLiquid(NHLiquids.quantumEntity, 0.2f);
-			outputItems = with(NHItems.ancimembrane, 3);
+			consumeItems(with(NHItems.irayrondPanel, 6));
+			consumeLiquid(NHLiquids.irayrondFluid, 6 / 60f);
+			outputItems = with(NHItems.ancimembrane, 2);
 //			outputLiquid = new LiquidStack(Liquids.water, 0.5f);
 		}};
 		
 		sandCracker = new MultiCrafter("sand-cracker"){{
 			size = 2;
 			requirements(Category.crafting, ItemStack.with(Items.lead, 40, Items.copper, 60, Items.graphite, 45));
+			buildVisibility = BuildVisibility.debugOnly;
 			health = 320;
 			craftTime = 45f;
 			itemCapacity = 20;
@@ -2872,9 +2874,12 @@ public class NHBlocks{
 		}};
 		
 		multiplePresstaniumFactory = new GenericCrafter("multiple-presstanium-factory"){{
+
 			size = 3;
 			health = 540;
 			requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 80, NHItems.juniorProcessor, 60, Items.thorium, 80));
+			buildVisibility = BuildVisibility.debugOnly;
+
 			craftTime = 60f;
 			consumePower(5);
 			consumeItems(with(Items.titanium, 6, Items.graphite, 2));
@@ -2895,9 +2900,11 @@ public class NHBlocks{
 		}};
 		
 		oilRefiner = new GenericCrafter("oil-refiner"){{
+
 			size = 2;
 			requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
-			//NHTechTree.add(Blocks.oilExtractor, this);
+
+			buildVisibility = BuildVisibility.debugOnly;
 			health = 200;
 			craftTime = 90f;
 			liquidCapacity = 60f;
@@ -2910,6 +2917,7 @@ public class NHBlocks{
 		}};
 		
 		waterInstancer = new GenericCrafter("water-instancer"){{
+
 			size = 1;
 			updateEffect = new Effect(15, e -> {
 				randLenVectors(e.id, 6, 4f + e.fin() * 5f, (x, y) -> {
@@ -2922,10 +2930,12 @@ public class NHBlocks{
 			outputLiquid = new LiquidStack(Liquids.water, 12f / 60f);
 			craftTime = 30f;
 			requirements(Category.crafting, BuildVisibility.shown, with(Items.metaglass, 15, Items.copper, 30, NHItems.presstanium, 20));
-			//NHTechTree.add(Blocks.mechanicalPump, this);
+
+			buildVisibility = BuildVisibility.debugOnly;
 		}};
 		
 		xenMelter = new GenericCrafter("xen-melter"){{
+
 			size = 2;
 			hasPower = hasLiquids = hasItems = true;
 			itemCapacity = 12;
@@ -2938,6 +2948,8 @@ public class NHBlocks{
 			requirements(Category.crafting, BuildVisibility.shown, with(NHItems.juniorProcessor, 35, NHItems.metalOxhydrigen, 50, Items.thorium, 30, NHItems.presstanium, 25));
 			consumePower(3f);
 			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 4), new ItemStack(NHItems.zeta, 4));
+
+			buildVisibility = BuildVisibility.debugOnly;
 			outputLiquid = new LiquidStack(NHLiquids.xenAlpha, 12f / 60f);
 		}};
 		
@@ -2951,10 +2963,10 @@ public class NHBlocks{
 			mapColor.set(itemDrop.color);
 			useColor = true;
 		}};
-		
-		
+
 		presstaniumFactory = new GenericCrafter("presstanium-factory") {
 			{
+
 				Color color = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f);
 				
 				drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(){{
@@ -2972,7 +2984,8 @@ public class NHBlocks{
 				health = 320;
 				updateEffect = Fx.smeltsmoke;
 				craftEffect = NHFx.square(color, 32f, 5, 22f, 4);
-				
+				buildVisibility = BuildVisibility.debugOnly;
+
 				consumePower(3f);
 				consumeItems(new ItemStack(Items.titanium, 2), new ItemStack(Items.graphite, 1));
 			}
@@ -2980,6 +2993,7 @@ public class NHBlocks{
 		
 		zetaFactorySmall = new GenericCrafter("small-zeta-crystal-factory") {
 			{
+
 				requirements(Category.crafting, with(Items.silicon, 15, Items.lead, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
 				craftTime = 75f;
@@ -2992,7 +3006,8 @@ public class NHBlocks{
 						Fill.square(e.x + x, e.y + y, 0.5f + e.fout() * 2f, 45);
 					});
 				});
-				
+				buildVisibility = BuildVisibility.debugOnly;
+
 				drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.zeta.color){{
 					flameRadius = 1.7f;
 					flameRadiusMag = 0.2f;
@@ -3007,6 +3022,7 @@ public class NHBlocks{
 		
 		thermoCorePositiveFactory = new GenericCrafter("thermo-core-positive-factory") {
 			{
+
 				requirements(Category.crafting, with(NHItems.seniorProcessor, 15, NHItems.presstanium, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
 				craftTime = 60f;
@@ -3015,12 +3031,15 @@ public class NHBlocks{
 				health = 60;
 				craftEffect = Fx.formsmoke;
 				consumePower(3f);
+				buildVisibility = BuildVisibility.debugOnly;
+
 				consumeItem(NHItems.thermoCoreNegative, 1);
 			}
 		};
 		
 		thermoCoreNegativeFactory = new GenericCrafter("thermo-core-negative-factory") {
 			{
+
 				requirements(Category.crafting, with(NHItems.seniorProcessor, 15, NHItems.presstanium, 30, Items.titanium, 40));
 				hasItems = hasPower = true;
 				craftTime = 60f;
@@ -3030,11 +3049,14 @@ public class NHBlocks{
 				craftEffect = Fx.formsmoke;
 				consumePower(3f);
 				consumeItem(NHItems.thermoCorePositive, 1);
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
 		darkEnergyFactory = new GenericCrafter("dark-energy-factory") {
 			{
+
 				requirements(Category.crafting, with(NHItems.irayrondPanel, 60, NHItems.setonAlloy, 30, NHItems.seniorProcessor, 60));
 				craftEffect = Fx.smeltsmoke;
 				outputItem = new ItemStack(NHItems.darkEnergy, 2);
@@ -3054,7 +3076,8 @@ public class NHBlocks{
 						}},
 						new DrawDefault()
 				);
-				
+				buildVisibility = BuildVisibility.debugOnly;
+
 				updateEffectChance = 0.1f;
 				lightColor = NHColor.darkEnrColor;
 				updateEffect = NHFx.squareRand(lightColor, 4f, 8f);
@@ -3071,6 +3094,7 @@ public class NHBlocks{
 		
 		fusionEnergyFactory = new GenericCrafter("fusion-core-energy-factory") {
 			{
+
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.thorium, 60, Items.graphite, 30));
 				craftEffect = Fx.smeltsmoke;
 				outputItem = new ItemStack(NHItems.fusionEnergy, 3);
@@ -3081,6 +3105,8 @@ public class NHBlocks{
 				hasPower = hasLiquids = hasItems = true;
 				loopSound = Sounds.laserbeam;
 				loopSoundVolume /= 3f;
+				buildVisibility = BuildVisibility.debugOnly;
+
 				drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
 					new DrawCrucibleFlame(){{
@@ -3106,6 +3132,7 @@ public class NHBlocks{
 		
 		irayrondPanelFactory = new GenericCrafter("irayrond-panel-factory") {
 			{
+
 				itemCapacity = 40;
 				requirements(Category.crafting, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 50, Items.plastanium, 60, Items.surgeAlloy, 75, Items.graphite, 30));
 				craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 7, 4f + e.fin() * 18f, (x, y) -> {
@@ -3121,11 +3148,14 @@ public class NHBlocks{
 				consumeLiquid(NHLiquids.xenAlpha, 0.1f);
 				consumeItems(new ItemStack(NHItems.presstanium, 4), new ItemStack(Items.surgeAlloy, 2));
 				consumePower(2f);
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
 		juniorProcessorFactory = new GenericCrafter("processor-junior-factory") {
 			{
+
 				requirements(Category.crafting, with(Items.silicon, 40, NHItems.presstanium, 30, Items.copper, 25, Items.lead, 25));
 				craftEffect = Fx.none;
 				outputItem = new ItemStack(NHItems.juniorProcessor, 3);
@@ -3135,11 +3165,14 @@ public class NHBlocks{
 				drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.fusionEnergy.color));
 				consumeItems(new ItemStack(Items.silicon, 2), new ItemStack(Items.copper, 4));
 				consumePower(3f);
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
 		seniorProcessorFactory = new GenericCrafter("processor-senior-factory") {
 			{
+
 				requirements(Category.crafting, with(Items.surgeAlloy, 75, NHItems.juniorProcessor, 50, NHItems.presstanium, 25, Items.plastanium, 45));
 				craftEffect = Fx.none;
 				outputItem = new ItemStack(NHItems.seniorProcessor, 2);
@@ -3149,11 +3182,14 @@ public class NHBlocks{
 				drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.fusionEnergy.color));
 				consumeItems(new ItemStack(Items.surgeAlloy, 2), new ItemStack(NHItems.juniorProcessor, 4));
 				consumePower(6f);
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
 		irdryonFluidFactory = new GenericCrafter("irdryon-fluid-factory") {
 			{
+
 				requirements(Category.crafting, with(Items.surgeAlloy, 20, NHItems.seniorProcessor, 50, NHItems.presstanium, 80, NHItems.irayrondPanel, 65));
 				craftEffect = Fx.smeltsmoke;
 				outputLiquid = new LiquidStack(NHLiquids.irayrondFluid, 8f / 60f);
@@ -3168,6 +3204,8 @@ public class NHBlocks{
 				consumeLiquid(NHLiquids.xenBeta, 3/60f);
 				consumeItems(new ItemStack(NHItems.irayrondPanel, 2));
 				consumePower(4f);
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
@@ -3191,11 +3229,15 @@ public class NHBlocks{
 				consumeLiquid(Liquids.water, 0.1f);
 				consumeItem(NHItems.zeta, 2);
 				consumePower(8f);
+
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
 		metalOxhydrigenFactory = new GenericCrafter("metal-oxhydrigen-factory") {
 			{
+
 				requirements(Category.crafting, with(Items.copper, 60, NHItems.juniorProcessor, 30, NHItems.presstanium, 25, Items.thorium, 25));
 				craftEffect = NHFx.square(NHColor.lightSkyFront, 38, 3, 24, 3.2f);
 				outputItem = new ItemStack(NHItems.metalOxhydrigen, 4);
@@ -3212,10 +3254,13 @@ public class NHBlocks{
 				consumeLiquid(Liquids.water, 0.1f);
 				consumeItem(Items.lead, 2);
 				consumePower(2f);
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
 		metalOxhydrigenFactoryLarge = new GenericCrafter("metal-oxhydrigen-factory-large"){{
+
 			health = 450;
 			size = 3;
 			
@@ -3243,10 +3288,13 @@ public class NHBlocks{
 			consumeLiquid(Liquids.water, 0.25f);
 			consumeItem(Items.lead, 3);
 			consumePower(5f);
+			buildVisibility = BuildVisibility.debugOnly;
+
 		}};
 		
 		thermoCoreFactory = new GenericCrafter("thermo-core-factory") {
 			{
+
 				requirements(Category.crafting, with(NHItems.irayrondPanel, 150, NHItems.seniorProcessor, 80, NHItems.presstanium, 250, Items.plastanium, 80));
 				craftEffect = Fx.plasticExplosionFlak;
 				outputItem = new ItemStack(NHItems.thermoCorePositive, 4);
@@ -3266,6 +3314,8 @@ public class NHBlocks{
 				consumeLiquid(NHLiquids.zetaFluid, 0.2f);
 				consumeItems(new ItemStack(NHItems.irayrondPanel, 2), new ItemStack(NHItems.fusionEnergy, 4), new ItemStack(NHItems.metalOxhydrigen, 2));
 				consumePower(5f);
+				buildVisibility = BuildVisibility.debugOnly;
+
 			}
 		};
 		
@@ -3280,8 +3330,8 @@ public class NHBlocks{
 				});
 				
 			});
-			outputItem = new ItemStack(NHItems.upgradeSort, 3);
-			craftTime = 150f;
+			outputItem = new ItemStack(NHItems.upgradeSort, 2);
+			craftTime = 120f;
 			size = 3;
 			hasPower = hasItems = true;
 			drawer = new DrawPrinter(outputItem.item) {{
@@ -3296,6 +3346,7 @@ public class NHBlocks{
 		}};
 		
 		zetaFactoryLarge = new GenericCrafter("large-zeta-factory") {{
+
 			itemCapacity = 40;
 			requirements(Category.crafting, with(Items.plastanium, 25, NHItems.juniorProcessor, 50, NHItems.presstanium, 25));
 			outputItem = new ItemStack(NHItems.zeta, 6);
@@ -3313,6 +3364,8 @@ public class NHBlocks{
 			consumeItem(Items.thorium, 6);
 			consumePower(7f);
 			consumeLiquid(Liquids.water, 0.075f);
+			buildVisibility = BuildVisibility.debugOnly;
+
 		}};
 		
 		multipleSteelFactory = new GenericCrafter("multiple-steel-factory") {
@@ -3321,7 +3374,7 @@ public class NHBlocks{
 				lightColor = NHItems.multipleSteel.color;
 				updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
 				craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
-				outputItem = new ItemStack(NHItems.multipleSteel, 4);
+				outputItem = new ItemStack(NHItems.multipleSteel, 2);
 				craftTime = 60f;
 				itemCapacity = 20;
 				health = 600;
@@ -3334,8 +3387,7 @@ public class NHBlocks{
 						pressorSet = new float[] {(craftTime / 4f), 3.8f, 0, 90};
 					}
 				};
-				consumeLiquid(NHLiquids.xenAlpha, 0.2f);
-				consumeItems(new ItemStack(Items.metaglass, 4), new ItemStack(Items.titanium, 2));
+				consumeItems(new ItemStack(Items.tungsten, 3), new ItemStack(NHItems.presstanium, 3), new ItemStack(NHItems.metalOxhydrigen, 4));
 				consumePower(3f);
 			}
 		};
@@ -3366,9 +3418,13 @@ public class NHBlocks{
 			consumeLiquid(NHLiquids.zetaFluid, 0.05f);
 			consumeItems(new ItemStack(NHItems.presstanium, 2), new ItemStack(Items.beryllium, 5));
 			consumePower(10f);
+
+			buildVisibility = BuildVisibility.debugOnly;
+
 		}};
 		
 		multipleSurgeAlloyFactory = new GenericCrafter("multiple-surge-alloy-factory"){{
+
 			requirements(Category.crafting, BuildVisibility.shown, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, Items.plastanium, 40, NHItems.presstanium, 100, Items.surgeAlloy, 40));
 			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
 				Draw.color(Items.surgeAlloy.color);
@@ -3385,9 +3441,13 @@ public class NHBlocks{
 			consumeLiquid(NHLiquids.zetaFluid, 0.1f);
 			consumeItems(new ItemStack(Items.thorium, 6), new ItemStack(NHItems.fusionEnergy, 1));
 			consumePower(20f);
+
+			buildVisibility = BuildVisibility.debugOnly;
+
 		}};
 		
 		setonAlloyFactory = new GenericCrafter("seton-alloy-factory"){{
+
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 80, NHItems.seniorProcessor, 60, NHItems.presstanium, 100, Items.surgeAlloy, 40));
 			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 4f + e.finpow() * 14f, (x, y) -> {
 				Draw.color(NHLiquids.irayrondFluid.color);
@@ -3412,9 +3472,12 @@ public class NHBlocks{
 			consumeLiquid(NHLiquids.irayrondFluid, 0.12f);
 			consumeItems(new ItemStack(Items.plastanium, 4), new ItemStack(Items.graphite, 6));
 			consumePower(12f);
+			buildVisibility = BuildVisibility.debugOnly;
+
 		}};
 		
 		xenBetaFactory = new GenericCrafter("xen-beta-factory"){{
+
 			requirements(Category.crafting, with(NHItems.metalOxhydrigen, 35, NHItems.juniorProcessor, 60, Items.plastanium, 20, NHItems.presstanium, 80, Items.metaglass, 40));
 			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
 				Draw.color(NHLiquids.xenBeta.color);
@@ -3431,14 +3494,20 @@ public class NHBlocks{
 			consumeLiquid(NHLiquids.xenAlpha, 0.1f);
 			consumeItem(NHItems.zeta, 2);
 			consumePower(3f);
+
+			buildVisibility = BuildVisibility.debugOnly;
+
 		}};
 		
 		xenGammaFactory = new GenericCrafter("xen-gamma-factory"){{
+
 			requirements(Category.crafting, with(NHItems.irayrondPanel, 70, NHItems.seniorProcessor, 60, Items.surgeAlloy, 20, Items.metaglass, 40));
 			craftEffect = new Effect(30f, e -> Angles.randLenVectors(e.id, 6, 3f + e.fin() * 7f, (x, y) -> {
 				Draw.color(NHLiquids.xenGamma.color);
 				Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
 			}));
+			buildVisibility = BuildVisibility.debugOnly;
+
 			outputLiquid = new LiquidStack(NHLiquids.xenGamma, 12f / 60f);
 			craftTime = 60f;
 			itemCapacity = 12;
