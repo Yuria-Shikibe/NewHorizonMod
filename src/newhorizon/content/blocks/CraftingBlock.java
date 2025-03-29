@@ -241,6 +241,8 @@ public class CraftingBlock {
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40));
 
+            quickRotate = true;
+
             size = 3;
 
             craftTime = 60f;

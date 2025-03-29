@@ -3380,13 +3380,7 @@ public class NHBlocks{
 				health = 600;
 				size = 3;
 				hasPower = hasItems = true;
-				drawer = new DrawFactories() {
-					{
-						liquidColor = NHLiquids.xenAlpha.color;
-						drawTop = false;
-						pressorSet = new float[] {(craftTime / 4f), 3.8f, 0, 90};
-					}
-				};
+				drawer = new DrawDefault();
 				consumeItems(new ItemStack(Items.tungsten, 3), new ItemStack(NHItems.presstanium, 3), new ItemStack(NHItems.metalOxhydrigen, 4));
 				consumePower(3f);
 			}
