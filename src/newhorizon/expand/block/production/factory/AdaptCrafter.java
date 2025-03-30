@@ -19,6 +19,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.meta.Stat;
+import newhorizon.expand.block.inner.LinkBlock;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
@@ -95,7 +96,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
 
-        public boolean linkCreated = false, linkValid = true;
+        public boolean linkCreated = false;
         public Seq<Building> linkEntities;
         //ordered seq, target-source pair
         public Seq<Building[]> linkProximityMap;
@@ -118,9 +119,19 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 updateLinkProximity();
             }
 
-            if (!linkValid){
-                linkEntities.each(Building::kill);
-                kill();
+            //uh so period check to avoid invalid link entity
+            if (timer(0, 300)){
+                boolean linkValid = true;
+                for (Tile t: getLinkTiles(tile, size, rotation)){
+                    if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this)){
+                        linkValid = false;
+                        break;
+                    }
+                }
+                if (!linkValid){
+                    linkEntities.each(Building::kill);
+                    kill();
+                }
             }
 
             super.updateTile();

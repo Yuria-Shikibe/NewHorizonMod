@@ -19,10 +19,11 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
-            //buildCost = 2f;
             speed = 0.115f;
             displayedSpeed = 15f;
             framePeriod = 9.2f;
+
+            saveConfig = false;
         }};
 
         conveyorJunction = new AdaptJunction("logistics-junction", (AdaptConveyor) conveyor){{

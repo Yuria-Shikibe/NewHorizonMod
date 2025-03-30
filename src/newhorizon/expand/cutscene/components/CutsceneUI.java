@@ -6,24 +6,24 @@ import arc.flabel.FLabel;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
+import arc.scene.ui.Image;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
 import arc.struct.ObjectMap;
-import arc.util.Align;
-import arc.util.Interval;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.cutscene.components.ui.MarkBox;
 import newhorizon.expand.cutscene.components.ui.MarkStyle;
@@ -31,6 +31,7 @@ import newhorizon.util.annotation.ClientOnly;
 import newhorizon.util.annotation.HeadlessDisabled;
 
 import static mindustry.Vars.headless;
+import static mindustry.Vars.player;
 import static newhorizon.NHRenderer.height;
 import static newhorizon.NHRenderer.width;
 import static newhorizon.NHVars.cutscene;
@@ -42,7 +43,6 @@ public class CutsceneUI {
 	public Table textTable, textArea, infoTable, skip;
 	public FLabel textLabel, infoLabel;
 
-	public float zoomLock = 1f;
 	public boolean controlOverride = false;
 
 	public Interp curtainInterp = Interp.pow2Out;
@@ -51,6 +51,12 @@ public class CutsceneUI {
 	public final float OVERLAY_SPEED = 0.0065f;
 	public float targetOverlayAlpha;
 	public float overlayAlphaShiftSpeed = OVERLAY_SPEED;
+
+	public Image killStreak;
+	public Vec2 killStreakShake = new Vec2();
+	public float killStreakShakeTimer = 0f;
+	public float killStreakCountTimer = 0f;
+	public int killStreakCount = 0;
 
 	public final ObjectMap<String, MarkBox> markers = new ObjectMap<>();
 
@@ -85,6 +91,8 @@ public class CutsceneUI {
 		buildInfoTable();
 		//skip button for skip current cutscene
 		buildSkip();
+		//lmao
+		buildKillStreak();
 		//update the text table position according to the layout
 		updatePosition();
 		//build all cutscene ui, add the elements to root.
@@ -158,6 +166,106 @@ public class CutsceneUI {
 		}};
 	}
 
+	private void buildKillStreak(){
+		Events.on(EventType.UnitBulletDestroyEvent.class, e -> {
+			//if (e.bullet.owner != player) return;
+			killStreakCountTimer = 180f;
+			killStreakShakeTimer = 60f;
+			killStreakCount++;
+			killStreakCount = Mathf.clamp(killStreakCount, 0, 8);
+			killStreakShake.setToRandomDirection().scl(10f);
+			killStreak.setDrawable(getKillStreak());
+			killStreak.clearActions();
+			killStreak.color.a = 0;
+			killStreak.actions(Actions.fadeIn(0.1f), Actions.delay(2f), Actions.fadeOut(0.3f));
+		});
+
+		killStreak = new Image(NHContent.khs1){{
+			touchable(() -> Touchable.disabled);
+			visible(() -> Vars.state.isGame());
+			color.a = 0;
+		}};
+
+		killStreak.update(() -> {
+			if (killStreakCountTimer <= 0) {
+				killStreakCount = 0;
+				killStreakShakeTimer = 0;
+			}else {
+				killStreakCountTimer -= Time.delta;
+				if (killStreakShakeTimer > 0) {
+					killStreakShakeTimer -= Time.delta;
+				}
+				killStreakShake.setToRandomDirection().scl(killStreakShakeTimer / 9f);
+			}
+
+			killStreak.setSize(224, 224);
+			killStreak.setPosition((width - killStreak.getWidth()) / 2 + killStreakShake.x, height * 0.15f + killStreakShake.y);
+		});
+	}
+
+	private TextureRegion getKillStreak(){
+		boolean chance = player.team().id % 2 == 0;
+		if (killStreakCount == 1 && Mathf.randomBoolean(0.05f)) {
+			if (chance) NHSounds.ksah.play();
+			else NHSounds.ksbh.play();
+			return NHContent.khs1;
+		}
+		if (killStreakCount == 1 && Mathf.randomBoolean(0.2f)) {
+			if (chance) NHSounds.ksah.play();
+			else NHSounds.ksbh.play();
+			return NHContent.khs0;
+		}
+
+        switch (killStreakCount) {
+            case 1 -> {
+				if (chance) NHSounds.ksa1.play();
+				else NHSounds.ksb1.play();
+				return NHContent.ks1;
+			}
+            case 2 -> {
+				if (chance) NHSounds.ksa2.play();
+				else NHSounds.ksb2.play();
+				return NHContent.ks2;
+			}
+            case 3 -> {
+				if (chance) NHSounds.ksa3.play();
+				else NHSounds.ksb3.play();
+				return NHContent.ks3;
+			}
+            case 4 -> {
+				if (chance) NHSounds.ksa4.play();
+				else NHSounds.ksb4.play();
+				return NHContent.ks4;
+			}
+            case 5 -> {
+				if (chance) NHSounds.ksa5.play();
+				else NHSounds.ksb5.play();
+				return NHContent.ks5;
+			}
+            case 6 -> {
+				if (chance) NHSounds.ksa6.play();
+				else NHSounds.ksb6.play();
+				return NHContent.ks6;
+			}
+            case 7 -> {
+				if (chance) NHSounds.ksa7.play();
+				else NHSounds.ksb7.play();
+				return NHContent.ks7;
+			}
+            case 8 -> {
+				if (chance) NHSounds.ksa8.play();
+				else NHSounds.ksb8.play();
+				return NHContent.ks8;
+			}
+            default -> {
+				if (chance) NHSounds.ksah.play();
+				else NHSounds.ksbh.play();
+				return NHContent.khs1;
+			}
+        }
+
+    }
+
 	private void buildSkip(){
 		skip = new Table(){{
 			margin(12f);
@@ -192,7 +300,7 @@ public class CutsceneUI {
 				infoTable.setSize(Scl.scl(width * 0.25f), Scl.scl(height * 0.1f));
 				infoTable.setPosition(width * 0.05f, height * 0.1f);
 			});
-		};
+		}
 	}
 
 	private void buildCutsceneUI(){
@@ -204,6 +312,7 @@ public class CutsceneUI {
 			root.addChild(textTable);
 			root.addChild(infoTable);
 			root.addChild(skip);
+			root.addChild(killStreak);
 		}
 	}
 	

@@ -17,7 +17,10 @@ public class NHSounds {
 			flak2, alert2, shock, alarm, hyperspace, launch,
 			rapidLaser, railGunCharge, blaster, flak, gauss, scatter,
 			thermoShoot, jumpIn, metalWalk, hugeShoot, hugeBlast,
-			signal, synchro, railGunBlast, largeBeam, coil1, coil2;
+			signal, synchro, railGunBlast, largeBeam, coil1, coil2,
+			ksa1, ksa2, ksa3, ksa4, ksa5, ksa6, ksa7, ksa8, ksah,
+			ksb1, ksb2, ksb3, ksb4, ksb5, ksb6, ksb7, ksb8, ksbh
+	;
 
 	public static void alertLoop() {
 		if (!Vars.headless) {

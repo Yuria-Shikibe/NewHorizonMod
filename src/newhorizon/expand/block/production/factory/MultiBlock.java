@@ -94,6 +94,18 @@ public interface MultiBlock {
         return out;
     }
 
+    default Seq<Tile> getLinkTiles(Tile tile, int size, int rotation) {
+        Seq<Tile> out = new Seq<>();
+        for (int i = 0; i < linkBlockPos().size; i++) {
+            Point2 p = linkBlockPos().get(i);
+            int s = linkBlockSize().get(i);
+            Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
+            Tile t = world.tile(tile.x + rotated.x, tile.y + rotated.y);
+            out.add(t);
+        }
+        return out;
+    }
+
     default Seq<Tile> linkTiles(int x, int y, int size, int rotation){
         Seq<Tile> tiles = new Seq<>();
         Point2 lb = leftBottomPos(size);
