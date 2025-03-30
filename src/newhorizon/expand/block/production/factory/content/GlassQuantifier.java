@@ -9,11 +9,9 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
-import mindustry.type.LiquidStack;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
@@ -40,7 +38,7 @@ public class GlassQuantifier extends AdaptCrafter {
         craftTime = 60f;
         consumePower(480 / 60f);
         consumeItems(with(Items.sand, 4));
-        consumeLiquid(NHLiquids.quantumEntity, 0.1f);
+        consumeLiquid(NHLiquids.quantumLiquid, 0.1f);
         outputItems = with(Items.metaglass, 6f);
 
         itemCapacity = 45;
@@ -73,7 +71,7 @@ public class GlassQuantifier extends AdaptCrafter {
     public class GlassQuantifierBuild extends AdaptCrafterBuild {
         public void draw() {
             Draw.rect(rotRegion[rotation], x, y);
-            Draw.color(NHLiquids.quantumEntity.color, liquids.get(NHLiquids.quantumEntity) / block.liquidCapacity);
+            Draw.color(NHLiquids.quantumLiquid.color, liquids.get(NHLiquids.quantumLiquid) / block.liquidCapacity);
             Draw.rect(liquidRegion, x, y, rotdeg());
             Draw.color();
 
@@ -94,7 +92,7 @@ public class GlassQuantifier extends AdaptCrafter {
 
                 Draw.alpha(((1f - g) + Mathf.absin(Time.time, 8f, g) + Mathf.random(r) - r) * warmup());
 
-                Draw.tint(NHLiquids.quantumEntity.color);
+                Draw.tint(NHLiquids.quantumLiquid.color);
 
                 Tmp.v1.set(sx, sy).rotate(rotdeg()).add(this);
                 Fill.circle(Tmp.v1.x, Tmp.v1.y, scl * (flameRadius + Mathf.absin(Time.time, flameRadiusScl, flameRadiusMag) + cr));

@@ -1,6 +1,7 @@
 package newhorizon.expand.block.turrets;
 
 import arc.math.Mathf;
+import arc.struct.ObjectMap;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -13,6 +14,7 @@ import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHColor;
+import newhorizon.content.NHStatValues;
 
 public class SpeedupTurret extends PowerTurret{
 	
@@ -57,6 +59,9 @@ public class SpeedupTurret extends PowerTurret{
 		super.setStats();
 		stats.add(Stat.inaccuracy, inaccuracyUp, StatUnit.degrees);
 		stats.add(Stat.heatCapacity, overheatTime / Time.toSeconds, StatUnit.seconds);
+
+		stats.remove(Stat.ammo);
+		stats.add(Stat.ammo, NHStatValues.ammo(ObjectMap.of(this, shootType), 0, false));
 	}
 	
 	@Override

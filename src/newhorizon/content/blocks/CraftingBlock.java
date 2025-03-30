@@ -24,9 +24,6 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
-import newhorizon.expand.block.production.factory.content.FluxPhaser;
-import newhorizon.expand.block.production.factory.content.GlassQuantifier;
-import newhorizon.expand.block.production.factory.content.HyperZetaFactory;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
@@ -51,7 +48,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
 
-            addInput(ItemStack.with(Items.titanium, 2), LiquidStack.with(NHLiquids.quantumEntity, 6 / 60f));
+            addInput(ItemStack.with(Items.titanium, 2), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
             addInput(ItemStack.with(Items.titanium, 2, Items.graphite, 1), LiquidStack.empty);
 
             consumePower(180f / 60f);
@@ -84,7 +81,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
 
-            addInput(ItemStack.with(Items.silicon, 2), LiquidStack.with(NHLiquids.quantumEntity, 4 / 60f));
+            addInput(ItemStack.with(Items.silicon, 2), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
             addInput(ItemStack.with(Items.silicon, 2, Items.copper, 3), LiquidStack.empty);
             addInput(ItemStack.with(Items.silicon, 2, Items.beryllium, 3), LiquidStack.empty);
 
@@ -143,7 +140,7 @@ public class CraftingBlock {
             craftTime = 60f;
             consumePower(300 / 60f);
 
-            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.with(NHLiquids.xenAlpha, 6 / 60f));
+            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
             addInput(ItemStack.with(Items.tungsten, 2, Items.pyratite, 1), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 2, Items.graphite, 3), LiquidStack.with(Liquids.ozone, 6 / 60f));
 
@@ -161,7 +158,7 @@ public class CraftingBlock {
                     }},
                     new DrawLiquidRegionRotated(){{
                         suffix = "-liquid-xen";
-                        drawLiquid = NHLiquids.xenAlpha;
+                        drawLiquid = NHLiquids.xenFluid;
                         alpha = 0.2f;
                     }},
                     new DrawArcSmeltRotated(){{
@@ -187,7 +184,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenAlpha, 4 / 60f, NHLiquids.quantumEntity, 3 / 60f));
+            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 3 / 60f));
             addInput(ItemStack.with(Items.lead, 2), LiquidStack.with(Liquids.water, 6 / 60f));
             addInput(ItemStack.with(Items.oxide, 2), LiquidStack.with(Liquids.water, 6 / 60f));
 
@@ -213,7 +210,7 @@ public class CraftingBlock {
                     }},
                     new DrawLiquidRegionRotated(){{
                         suffix = "-liquid";
-                        drawLiquid = NHLiquids.quantumEntity;
+                        drawLiquid = NHLiquids.quantumLiquid;
                         x = 4;
                         y = 4;
                     }},
@@ -221,7 +218,7 @@ public class CraftingBlock {
                         drawFlame = false;
                         flameX = 1;
                         flameY = 1;
-                        flameColor = NHLiquids.quantumEntity.color;
+                        flameColor = NHLiquids.quantumLiquid.color;
                         flameRadius *= 0.8f;
                         flameRadiusIn *= 0.8f;
                     }},
@@ -229,7 +226,7 @@ public class CraftingBlock {
                         drawFlame = false;
                         flameX = 8;
                         flameY = 0;
-                        flameColor = NHLiquids.quantumEntity.color;
+                        flameColor = NHLiquids.quantumLiquid.color;
                         flameRadius *= 0.5f;
                         flameRadiusIn *= 0.5f;
                     }},
@@ -237,7 +234,7 @@ public class CraftingBlock {
                         drawFlame = false;
                         flameX = 0;
                         flameY = 8;
-                        flameColor = NHLiquids.quantumEntity.color;
+                        flameColor = NHLiquids.quantumLiquid.color;
                         flameRadius *= 0.5f;
                         flameRadiusIn *= 0.5f;
                     }},
@@ -251,7 +248,7 @@ public class CraftingBlock {
         }};
         zetaDissociator = new RecipeGenericCrafter("zeta-dissociator"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40));
+                    NHItems.presstanium, 30, NHItems.juniorProcessor, 40, Items.carbide, 60, NHItems.metalOxhydrigen, 45, NHItems.zeta, 60));
 
             quickRotate = true;
 
@@ -261,13 +258,12 @@ public class CraftingBlock {
             itemCapacity = 30;
             consumePower(450 / 60f);
 
-            addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(NHLiquids.quantumEntity, 4 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
 
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f, NHLiquids.zetaFluidNegative, 4 / 60f);
             liquidOutputDirections = new int[]{1, 3};
-            ignoreLiquidFullness = true;
 
             drawer = new DrawMulti(
                     new DrawRegion(){{
@@ -280,7 +276,7 @@ public class CraftingBlock {
         }};
         surgeRefactor = new RecipeGenericCrafter("surge-refactor"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
+                    ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 90, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
 
             size = 3;
 
@@ -321,7 +317,7 @@ public class CraftingBlock {
             addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f));
 
             outputItems = with(Items.phaseFabric, 2);
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.5f / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
             ignoreLiquidFullness = true;
 
             itemCapacity = 30;
@@ -338,7 +334,7 @@ public class CraftingBlock {
         }};
         processorEncoder = new RecipeGenericCrafter("processor-encoder"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.titanium, 30, Items.silicon, 45, Items.tungsten, 30));
+                    ItemStack.with(Items.surgeAlloy, 90, Items.phaseFabric, 90, Items.carbide, 120, NHItems.zeta, 80));
 
             size = 2;
 
@@ -393,8 +389,8 @@ public class CraftingBlock {
             );
         }};
         irdryonMixer = new RecipeGenericCrafter("irdryon-mixer"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40));
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.surgeAlloy, 90, Items.phaseFabric, 60, NHItems.metalOxhydrigen, 120, NHItems.zeta, 80));
 
             size = 3;
 
@@ -404,14 +400,15 @@ public class CraftingBlock {
 
             addInput(ItemStack.with(Items.phaseFabric, 1), LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
 
-            outputLiquids = LiquidStack.with(NHLiquids.irayrondFluid, 3 / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.irdryonFluid, 3 / 60f);
 
             drawer = new DrawMulti(
                     new DrawDefault()
             );
         }};
         multipleSteelFactory = new GenericCrafter("multiple-steel-factory") {{
-            requirements(Category.crafting, with(Items.graphite, 65, NHItems.juniorProcessor, 65, NHItems.presstanium, 100, Items.metaglass, 30));
+            requirements(Category.crafting,
+                    with(NHItems.presstanium, 120, NHItems.seniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
             lightColor = NHItems.multipleSteel.color;
             updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
             craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
@@ -427,7 +424,7 @@ public class CraftingBlock {
         }};
         irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.seniorProcessor, 60, Items.phaseFabric, 120, NHItems.metalOxhydrigen, 45, NHItems.multipleSteel, 85));
 
             size = 3;
 
@@ -455,7 +452,7 @@ public class CraftingBlock {
         }};
         setonFactory = new RecipeGenericCrafter("seton-factory"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.carbide, 60, NHItems.metalOxhydrigen, 45));
+                    ItemStack.with(NHItems.juniorProcessor, 90, NHItems.zeta, 150, Items.surgeAlloy, 90, NHItems.metalOxhydrigen, 80, NHItems.multipleSteel, 65));
 
             size = 3;
 
@@ -464,7 +461,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.carbide, 6), LiquidStack.with(NHLiquids.irayrondFluid, 6 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
+            addInput(ItemStack.with(Items.carbide, 6), LiquidStack.with(NHLiquids.irdryonFluid, 6 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
 
             outputItems = with(NHItems.setonAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3f / 60f);
@@ -486,7 +483,8 @@ public class CraftingBlock {
 
             lightRadius /= 2f;
 
-            requirements(Category.crafting, ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
+            requirements(Category.crafting,
+                    ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
 
             craftTime = 120f;
 
@@ -497,7 +495,7 @@ public class CraftingBlock {
             updateEffect = NHFx.squareRand(NHColor.ancient, 5f, 15f);
             hasPower = hasItems = hasLiquids = true;
 
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.quantumEntity), new DrawRegion("-bottom-2"),
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.quantumLiquid), new DrawRegion("-bottom-2"),
                     new DrawCrucibleFlame(){
                         {
                             flameColor = NHColor.ancient;
@@ -560,12 +558,13 @@ public class CraftingBlock {
 
             consumePower(12);
             consumeItems(with(NHItems.irayrondPanel, 6));
-            consumeLiquid(NHLiquids.irayrondFluid, 6 / 60f);
+            consumeLiquid(NHLiquids.irdryonFluid, 6 / 60f);
             outputItems = with(NHItems.ancimembrane, 2);
 //			outputLiquid = new LiquidStack(Liquids.water, 0.5f);
         }};
         upgradeSortFactory = new GenericCrafter("upgradeSort-factory") {{
-            requirements(Category.crafting, with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, Items.thorium, 200));
+            requirements(Category.crafting,
+                    with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
             updateEffect = NHStatusEffects.quantization.effect;
             craftEffect = new Effect(25f, e -> {
                 Draw.color(NHColor.darkEnrColor);

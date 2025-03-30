@@ -40,7 +40,7 @@ public class HyperZetaFactory extends AdaptCrafter {
         craftTime = 60f;
         consumePower(300 / 60f);
         consumeItems(with(Items.thorium, 6));
-        consumeLiquid(NHLiquids.zetaFluid, 5 / 60f);
+        consumeLiquid(NHLiquids.zetaFluidPositive, 5 / 60f);
         outputItems = with(NHItems.zeta, 10);
 
         itemCapacity = 60;
@@ -72,7 +72,7 @@ public class HyperZetaFactory extends AdaptCrafter {
     public class HyperZetaFactoryBuild extends AdaptCrafterBuild {
         public void draw() {
             Draw.rect(baseRegion, x, y, rotdeg());
-            LiquidBlock.drawTiledFrames(size, x, y, 2, 2, 2, 2, NHLiquids.zetaFluid, liquids.get(NHLiquids.zetaFluid) / block.liquidCapacity);
+            LiquidBlock.drawTiledFrames(size, x, y, 2, 2, 2, 2, NHLiquids.zetaFluidPositive, liquids.get(NHLiquids.zetaFluidPositive) / block.liquidCapacity);
             Draw.rect(rotRegion[rotation], x, y);
             drawFlame(0, 0, 1f);
         }
@@ -87,7 +87,7 @@ public class HyperZetaFactory extends AdaptCrafter {
 
                 Draw.alpha(((1f - g) + Mathf.absin(Time.time, 8f, g) + Mathf.random(r) - r) * warmup());
 
-                Draw.tint(NHLiquids.zetaFluid.color);
+                Draw.tint(NHLiquids.zetaFluidPositive.color);
 
                 Tmp.v1.set(sx, sy).rotate(rotdeg()).add(this);
                 Fill.circle(Tmp.v1.x, Tmp.v1.y, scl * (flameRadius + Mathf.absin(Time.time, flameRadiusScl, flameRadiusMag) + cr));

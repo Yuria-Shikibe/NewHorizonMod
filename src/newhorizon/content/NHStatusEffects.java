@@ -26,7 +26,8 @@ public class NHStatusEffects{
             reinforcements,
             entangled,
             ultFireBurn, stronghold, overphased,
-            staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted;
+            staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted,
+            shieldFlag;
     
     public static void load(){
         boost = new BoostStatusEffect("boost"){{
@@ -362,6 +363,11 @@ public class NHStatusEffects{
             affinity(StatusEffects.shocked, (unit, status, time) -> {
                 if(Mathf.chance(0.155))NHFunc.randFadeLightningEffect(unit.x + Mathf.range(unit.hitSize), unit.y + Mathf.range(unit.hitSize), unit.hitSize * Mathf.random(1.4f, 2.2f) + 28f, 8f, Tmp.c1.set(Pal.powerLight).mul(Mathf.random(0.16f) + 1f), false);
             });
+        }};
+
+        shieldFlag = new NHStatusEffect("shield-flag") {{
+            permanent = true;
+            show = false;
         }};
     }
 	

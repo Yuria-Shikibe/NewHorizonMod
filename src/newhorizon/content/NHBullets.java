@@ -1474,8 +1474,9 @@ public class NHBullets{
 			}});
 		}};
 		
-		synchroZeta = new BasicBulletType(8f, 65f){{
-			lifetime = 48f;
+		synchroZeta = new AdaptBulletType(50f, 25f){{
+			speed = 8f;
+			lifetime = 35f;
 			
 			width = 8f;
 			height = 42f;
@@ -1493,8 +1494,38 @@ public class NHBullets{
 			
 			despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
 			hitEffect = NHFx.hitSparkLarge;
-			
+
+			pierceCap = 2;
+
 			ammoMultiplier = 4;
+		}};
+
+		synchroPhase = new AdaptBulletType(80f, 40f){{
+			speed = 8f;
+			lifetime = 35f;
+
+			width = 8f;
+			height = 42f;
+
+			shrinkX = 0;
+
+			trailWidth = 1.7f;
+			trailLength = 9;
+
+			trailColor = backColor = hitColor = lightColor = lightningColor = Items.phaseFabric.color;
+			frontColor = Color.white;
+
+			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
+			frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+
+			despawnEffect = hitEffect = NHFx.square(backColor, 85f, 5, 52, 5);
+
+			status = NHStatusEffects.emp2;
+			statusDuration = 180f;
+
+			pierceCap = 3;
+
+			ammoMultiplier = 6;
 		}};
 		
 		synchroFusion = new BasicBulletType(8f, 65f){{
@@ -1528,35 +1559,6 @@ public class NHBullets{
 			
 			status = StatusEffects.melting;
 			statusDuration = 120f;
-		}};
-		
-		synchroPhase = new BasicBulletType(8f, 65f){{
-			lifetime = 48f;
-			
-			width = 8f;
-			height = 42f;
-			
-			shrinkX = 0;
-			
-			trailWidth = 1.7f;
-			trailLength = 9;
-			
-			trailColor = backColor = hitColor = lightColor = lightningColor = Items.phaseFabric.color;
-			frontColor = Color.white;
-			
-			shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
-			frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-			
-			despawnEffect = hitEffect = NHFx.square(backColor, 85f, 5, 52, 5);
-			
-			status = NHStatusEffects.emp2;
-			statusDuration = 180f;
-			
-			pierceCap = 4;
-			
-			reloadMultiplier = 1.15f;
-			
-			ammoMultiplier = 6;
 		}};
 		
 		synchroThermoPst = new BasicBulletType(8f, 80f){{

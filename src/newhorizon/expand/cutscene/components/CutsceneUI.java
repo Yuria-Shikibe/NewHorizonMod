@@ -195,7 +195,7 @@ public class CutsceneUI {
 				if (killStreakShakeTimer > 0) {
 					killStreakShakeTimer -= Time.delta;
 				}
-				killStreakShake.setToRandomDirection().scl(killStreakShakeTimer / 9f);
+				killStreakShake.setToRandomDirection().scl(killStreakShakeTimer / 5f);
 			}
 
 			killStreak.setSize(224, 224);
@@ -205,12 +205,12 @@ public class CutsceneUI {
 
 	private TextureRegion getKillStreak(){
 		boolean chance = player.team().id % 2 == 0;
-		if (killStreakCount == 1 && Mathf.randomBoolean(0.05f)) {
+		if (Mathf.randomBoolean(0.02f)) {
 			if (chance) NHSounds.ksah.play();
 			else NHSounds.ksbh.play();
 			return NHContent.khs1;
 		}
-		if (killStreakCount == 1 && Mathf.randomBoolean(0.2f)) {
+		if (Mathf.randomBoolean(0.08f)) {
 			if (chance) NHSounds.ksah.play();
 			else NHSounds.ksbh.play();
 			return NHContent.khs0;

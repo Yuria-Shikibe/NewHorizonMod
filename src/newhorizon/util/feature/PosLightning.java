@@ -142,25 +142,18 @@ public class PosLightning {
 		if(!Mathf.chance(trueHitChance))return;
 		Position sureTarget = findInterceptedPoint(from, target, team);
 		hitPointMovement.get(sureTarget);
-		
-		if(createSubLightning){
-			if(owner instanceof Bullet){
-				Bullet b = (Bullet)owner;
-				for(int i = 0; i < b.type.lightning; i++)Lightning.create(b, color, b.type.lightningDamage < 0.0F ? b.damage : b.type.lightningDamage, sureTarget.getX(), sureTarget.getY(), b.rotation() + Mathf.range(b.type.lightningCone / 2.0F) + b.type.lightningAngle, b.type.lightningLength + Mathf.random(b.type.lightningLengthRand));
+
+		if (damage > 0){
+			if(createSubLightning){
+				if(owner instanceof Bullet){
+					Bullet b = (Bullet)owner;
+					for(int i = 0; i < b.type.lightning; i++)Lightning.create(b, color, b.type.lightningDamage < 0.0F ? b.damage : b.type.lightningDamage, sureTarget.getX(), sureTarget.getY(), b.rotation() + Mathf.range(b.type.lightningCone / 2.0F) + b.type.lightningAngle, b.type.lightningLength + Mathf.random(b.type.lightningLengthRand));
+				}
+				else for(int i = 0; i < 3; i++)Lightning.create(team, color, damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360f), subLightningLength);
 			}
-			else for(int i = 0; i < 3; i++)Lightning.create(team, color, damage <= 0 ? 1f : damage, sureTarget.getX(), sureTarget.getY(), Mathf.random(360f), subLightningLength);
+
+            hitter.create(owner, team, sureTarget.getX(), sureTarget.getY(), 1).damage(damage);
 		}
-	
-		float realDamage = damage;
-		
-		if(realDamage <= 0){
-			if(owner instanceof Bullet){
-				Bullet b = (Bullet)owner;
-				realDamage = b.damage > 0 ? b.damage : 1;
-			}else realDamage = 1;
-		}
-		
-		hitter.create(owner, team, sureTarget.getX(), sureTarget.getY(), 1).damage(realDamage);
 		
 		createEffect(from, sureTarget, color, lightningNum, lightningWidth);
 	}

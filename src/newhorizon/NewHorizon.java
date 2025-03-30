@@ -21,6 +21,7 @@ import mindustry.ui.dialogs.PlanetDialog;
 import newhorizon.content.*;
 import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.expand.entities.EntityRegister;
+import newhorizon.expand.game.ContentOverride;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
@@ -61,13 +62,6 @@ public class NewHorizon extends Mod{
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
 				new FeatureLog(DistributionBlock.conveyor),
-				new FeatureLog(DistributionBlock.conveyorJunction),
-				new FeatureLog(DistributionBlock.conveyorRouter),
-				new FeatureLog(DistributionBlock.conveyorGate),
-				new FeatureLog(DistributionBlock.conveyorBridge),
-				new FeatureLog(DistributionBlock.conveyorUnloader),
-				new FeatureLog(DistributionBlock.liquidBridge),
-				new FeatureLog(DistributionBlock.liquidUnloader),
 		};
 	}
 	
@@ -143,6 +137,7 @@ public class NewHorizon extends Mod{
 		debugFunctions();
 
 		registerModBinding();
+		Events.on(EventType.ClientLoadEvent.class, e -> ContentOverride.override());
 		Events.on(ClientLoadEvent.class, e -> {
 			Core.app.post(NHUI::init);
 			updateServer();

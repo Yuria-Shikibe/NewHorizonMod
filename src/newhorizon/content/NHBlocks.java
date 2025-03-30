@@ -2,7 +2,6 @@ package newhorizon.content;
 
 import arc.Core;
 import arc.func.Cons;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -45,7 +44,6 @@ import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.PowerNode;
-import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.sandbox.ItemSource;
 import mindustry.world.blocks.sandbox.LiquidSource;
@@ -122,7 +120,6 @@ public class NHBlocks{
 	public static Block beamLaserTurret;
 	public static Block blaster;
 	public static Block endOfEra;
-	public static Block argmot;
 	public static Block thermoTurret;
 	public static Block railGun;
 	public static Block executor;
@@ -132,7 +129,6 @@ public class NHBlocks{
 	public static Block multipleArtillery;
 	public static Block atomSeparator;
 	public static Block eternity;
-	public static Block synchro;
 
 	public static Block//Liquids
 		irdryonTank;
@@ -272,7 +268,7 @@ public class NHBlocks{
 			speedMultiplier = 1.25f;
 			
 			liquidMultiplier = 0.8f;
-			liquidDrop = NHLiquids.quantumEntity;
+			liquidDrop = NHLiquids.quantumLiquid;
 			lightColor = NHColor.darkEnrColor;
 			emitLight = true;
 			lightRadius = 35f;
@@ -284,7 +280,7 @@ public class NHBlocks{
 			status = NHStatusEffects.quantization;
 			statusDuration = 60f;
 			speedMultiplier = 1.15f;
-			liquidDrop = NHLiquids.quantumEntity;
+			liquidDrop = NHLiquids.quantumLiquid;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			attributes.set(Attribute.light, 2f);
@@ -306,7 +302,7 @@ public class NHBlocks{
 			status = NHStatusEffects.quantization;
 			statusDuration = 240f;
 			speedMultiplier = 1.3f;
-			liquidDrop = NHLiquids.quantumEntity;
+			liquidDrop = NHLiquids.quantumLiquid;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			attributes.set(Attribute.light, 3f);
@@ -329,7 +325,7 @@ public class NHBlocks{
 			status = NHStatusEffects.quantization;
 			statusDuration = 240f;
 			speedMultiplier = 1.3f;
-			liquidDrop = NHLiquids.quantumEntity;
+			liquidDrop = NHLiquids.quantumLiquid;
 			isLiquid = true;
 			attributes.set(Attribute.light, 3f);
 			emitLight = true;
@@ -640,7 +636,7 @@ public class NHBlocks{
 			unitSort = NHUnitSorts.slowest;
 			
 			consumePower(16);
-			consumeLiquid(NHLiquids.xenBeta, 12f / 60f);
+			consumeLiquid(NHLiquids.xenFluid, 12f / 60f);
 		}};
 
 		multipleArtillery = new ShootMatchTurret("multiple-artillery"){{
@@ -1487,7 +1483,7 @@ public class NHBlocks{
 			}});
 			
 			rotateSpeed = 3f;
-			coolant = consume(new ConsumeLiquid(NHLiquids.quantumEntity, 10f / 60f));
+			coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 10f / 60f));
 			coolantMultiplier = 2f;
 			
 			inaccuracy = 3f;
@@ -1600,58 +1596,7 @@ public class NHBlocks{
 			consumePowerCond(6.0F, (MultTractorBeamBuild e) -> e.target != null);
 		}};
 		
-		argmot = new SpeedupTurret("argmot"){{
-			shoot = new ShootAlternate(){{
-				spread = 7f;
-			}};
-			
-			drawer = new DrawTurret(){{
-				parts.add(new RegionPart(){{
-					drawRegion = false;
-					mirror = true;
-					moveY = -2.75f;
-					progress = PartProgress.recoil;
-					children.add(new RegionPart("-shooter"){{
-						heatLayerOffset = 0.001f;
-						heatColor = NHColor.thurmixRed.cpy().a(0.85f);
-						progress = PartProgress.warmup;
-						mirror = outline = true;
-						moveX = 2f;
-						moveY = 2f;
-						moveRot = 11.25f;
-					}});
-				}}, new RegionPart("-up"){{
-					layerOffset = 0.3f;
-					
-					turretHeatLayer += layerOffset + 0.1f;
-					
-					heatColor = NHColor.thurmixRed.cpy().a(0.85f);
-					outline = false;
-				}});
-			}};
-			
-			warmupMaintainTime = 120f;
-			
-			rotateSpeed = 3f;
-			health = 960;
-			requirements(Category.turret, with(Items.phaseFabric, 150, NHItems.multipleSteel, 120, NHItems.juniorProcessor, 80, Items.plastanium, 120));
-			maxSpeedupScl = 9f;
-			speedupPerShoot = 0.3f;
-			hasLiquids = true;
-			coolant = new ConsumeCoolant(0.15f);
-			consumePowerCond(35f, TurretBuild::isActive);
-			size = 3;
-			range = 200;
-			reload = 60f;
-			shootCone = 24f;
-			shootSound = NHSounds.laser3;
-			shootType = new PosLightningType(50f){{
-				lightningColor = hitColor = NHColor.lightSkyBack;
-				maxRange = rangeOverride = 250f;
-				hitEffect = NHFx.hitSpark;
-				smokeEffect = Fx.shootBigSmoke2;
-			}};
-		}};
+
 		
 		eternity = new ItemTurret("eternity"){{
 			armor = 30;
@@ -1661,7 +1606,7 @@ public class NHBlocks{
 			heatColor = NHColor.darkEnrColor;
 			unitSort = NHUnitSorts.regionalHPMaximum_All;
 			
-			coolant = consume(new ConsumeLiquid(NHLiquids.quantumEntity, 1));
+			coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 1));
 			liquidCapacity = 120;
 			coolantMultiplier = 2.5f;
 			
@@ -1803,53 +1748,6 @@ public class NHBlocks{
 			ammo(NHItems.darkEnergy, NHBullets.eternity);
 			
 			requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 5000, NHItems.darkEnergy, 2000));
-		}};
-		
-		synchro = new ItemTurret("synchro"){{
-			size = 3;
-			health = 1420;
-			reload = 12f;
-			inaccuracy = 0.75f;
-			
-			recoil = 0.5f;
-			
-			coolant = consumeCoolant(0.2F);
-			
-			drawer = new DrawTurret(){{
-				parts.add(new RegionPart("-shooter"){{
-					under = true;
-					outline = true;
-					moveY = -3f;
-					progress = PartProgress.recoil;
-				}});
-			}};
-			
-			coolantMultiplier = 2f;
-			
-			velocityRnd = 0.075f;
-			unitSort = UnitSorts.weakest;
-			
-			range = 360f;
-			
-			shootSound = NHSounds.synchro;
-			
-			shoot = new ShootMulti(new ShootPattern(), new ShootBarrel(){{
-				barrels = new float[]{-6.5f, 3f, 0f};
-			}}, new ShootBarrel(){{
-				barrels = new float[]{6.5f, 3f, 0f};
-			}});
-			
-			ammo(
-					NHItems.zeta, NHBullets.synchroZeta,
-					NHItems.fusionEnergy, NHBullets.synchroFusion,
-					NHItems.thermoCorePositive, NHBullets.synchroThermoPst,
-					Items.phaseFabric, NHBullets.synchroPhase
-			);
-			
-			ammoPerShot = 1;
-			maxAmmo = 80;
-			
-			requirements(Category.turret, BuildVisibility.shown, with(Items.phaseFabric, 20, NHItems.metalOxhydrigen, 90, NHItems.juniorProcessor, 60, NHItems.zeta, 120, Items.plastanium, 80));
 		}};
 		
 		antiBulletTurret = new PointDefenseTurret("anti-bullet-turret"){{
@@ -2167,7 +2065,7 @@ public class NHBlocks{
 			
 			outlineColor = Pal.darkOutline;
 			canOverdrive = false;
-			coolant = consume(new ConsumeLiquid(NHLiquids.quantumEntity, 15f / 60f));
+			coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 15f / 60f));
 			coolantMultiplier = 2f;
 			consumePowerCond(12f, TurretBuild::isActive);
 			unitSort = UnitSorts.weakest;
@@ -2492,7 +2390,7 @@ public class NHBlocks{
 			unitSort = UnitSorts.strongest;
 			
 			warmupMaintainTime = 50f;
-			coolant = consume(new ConsumeLiquid(NHLiquids.quantumEntity, 20f / 60f));
+			coolant = consume(new ConsumeLiquid(NHLiquids.quantumLiquid, 20f / 60f));
 			coolantMultiplier = 2.5f;
 			
 			moveWhileCharging = false;
@@ -2763,9 +2661,8 @@ public class NHBlocks{
 			consumePower(100.0F);
 			consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 4)).optional(true, true);
 			consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
-			consumeLiquid(NHLiquids.zetaFluid, 0.25F);
+			consumeLiquid(NHLiquids.zetaFluidNegative, 0.25F);
 			requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
-			//			//NHTechTree.add(fusionCollapser, this);
 		}};
 	}
 	
@@ -3274,7 +3171,7 @@ public class NHBlocks{
 			liquidCapacity = 120;
 			consumeItem(NHItems.fusionEnergy, 5);
 			consumePower(12f);
-			consumeLiquid(NHLiquids.quantumEntity, 0.5f);
+			consumeLiquid(NHLiquids.quantumLiquid, 0.5f);
 			
 			requirements(Category.units, BuildVisibility.shown, with(NHItems.ancimembrane, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
 		}};
@@ -3322,7 +3219,7 @@ public class NHBlocks{
 			strokeClamp = 0.06f;
 			schematicPriority = -20;
 			consumeItem(Items.phaseFabric).boost();
-			consumeLiquid(NHLiquids.xenBeta, 0.1f);
+			consumeLiquid(NHLiquids.xenFluid, 0.1f);
 		}};
 		
 		largeMendProjector = new MendProjector("large-mend-projector"){{

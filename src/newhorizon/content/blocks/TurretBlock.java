@@ -6,28 +6,140 @@ import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.entities.UnitSorts;
 import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.part.RegionPart;
+import mindustry.entities.pattern.ShootAlternate;
+import mindustry.entities.pattern.ShootBarrel;
+import mindustry.entities.pattern.ShootMulti;
+import mindustry.entities.pattern.ShootPattern;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.DrawTurret;
+import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.content.bullets.RaidBullets;
+import newhorizon.expand.block.turrets.AdaptItemTurret;
+import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.DOTBulletType;
+import newhorizon.expand.bullets.PosLightningType;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {
-    public static Block electro, ancientRailgun;
+    public static Block electro;
+
+    public static Block argmot;
+    public static Block synchro;
 
     public static Block testShooter;
 
     public static void load(){
+        synchro = new AdaptItemTurret("synchro"){{
+            requirements(Category.turret, BuildVisibility.shown, with(Items.phaseFabric, 20, NHItems.metalOxhydrigen, 90, NHItems.juniorProcessor, 60, NHItems.zeta, 120, Items.plastanium, 80));
+
+            size = 3;
+            health = 1420;
+            reload = 12f;
+            inaccuracy = 0.75f;
+
+            recoil = 0.5f;
+
+            drawer = new DrawTurret(){{
+                parts.add(new RegionPart("-shooter"){{
+                    under = true;
+                    outline = true;
+                    moveY = -3f;
+                    progress = PartProgress.recoil;
+                }});
+            }};
+
+            coolant = consumeCoolant(0.2F);
+            coolantMultiplier = 2.5f;
+
+            velocityRnd = 0.075f;
+            unitSort = UnitSorts.weakest;
+
+            range = 250f;
+
+            shootSound = NHSounds.synchro;
+
+            shoot = new ShootMulti(
+                    new ShootPattern(),
+                    new ShootBarrel(){{
+                        barrels = new float[]{-6.5f, 3f, 0f};
+                    }},
+                    new ShootBarrel(){{
+                        barrels = new float[]{6.5f, 3f, 0f};
+                    }}
+            );
+
+            ammo(
+                    NHItems.zeta, NHBullets.synchroZeta,
+                    Items.phaseFabric, NHBullets.synchroPhase
+            );
+
+            ammoPerShot = 1;
+            maxAmmo = 40;
+        }};
+        argmot = new SpeedupTurret("argmot"){{
+            shoot = new ShootAlternate(){{
+                spread = 7f;
+            }};
+
+            drawer = new DrawTurret(){{
+                parts.add(new RegionPart(){{
+                    drawRegion = false;
+                    mirror = true;
+                    moveY = -2.75f;
+                    progress = PartProgress.recoil;
+                    children.add(new RegionPart("-shooter"){{
+                        heatLayerOffset = 0.001f;
+                        heatColor = NHColor.thurmixRed.cpy().a(0.85f);
+                        progress = PartProgress.warmup;
+                        mirror = outline = true;
+                        moveX = 2f;
+                        moveY = 2f;
+                        moveRot = 11.25f;
+                    }});
+                }}, new RegionPart("-up"){{
+                    layerOffset = 0.3f;
+
+                    turretHeatLayer += layerOffset + 0.1f;
+
+                    heatColor = NHColor.thurmixRed.cpy().a(0.85f);
+                    outline = false;
+                }});
+            }};
+
+            warmupMaintainTime = 120f;
+
+            rotateSpeed = 3f;
+            health = 960;
+            requirements(Category.turret, with(Items.phaseFabric, 150, NHItems.multipleSteel, 120, NHItems.juniorProcessor, 80, Items.plastanium, 120));
+            maxSpeedupScl = 9f;
+            speedupPerShoot = 0.3f;
+            hasLiquids = true;
+            coolant = new ConsumeCoolant(0.15f);
+            consumePowerCond(35f, TurretBuild::isActive);
+            size = 3;
+            range = 200;
+            reload = 60f;
+            shootCone = 24f;
+            shootSound = NHSounds.laser3;
+            shootType = new PosLightningType(30f, 120f){{
+                lightningColor = hitColor = NHColor.lightSkyBack;
+                maxRange = rangeOverride = 250f;
+                hitEffect = NHFx.hitSpark;
+                smokeEffect = Fx.shootBigSmoke2;
+            }};
+        }};
         electro = new ItemTurret("electro"){{
             requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));
             canOverdrive = false;
