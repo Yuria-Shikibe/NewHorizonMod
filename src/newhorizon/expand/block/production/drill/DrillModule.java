@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.EnumSet;
 import arc.struct.ObjectFloatMap;
@@ -24,11 +25,12 @@ import mindustry.world.meta.BlockGroup;
 import newhorizon.content.NHStats;
 import newhorizon.util.graphic.SpriteUtil;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 public class DrillModule extends Block {
-    public TextureRegion topFullRegions;
-    public TextureRegion[] topRotRegions;
+    public TextureRegion[] topRegion;
+    public TextureRegion baseRegion;
     public Seq<Item[]> convertList = new Seq<>();
     public ObjectFloatMap<Item> convertMul = new ObjectFloatMap<>();
     public float boostSpeed = 0f;
@@ -65,8 +67,8 @@ public class DrillModule extends Block {
     @Override
     public void load() {
         super.load();
-        topFullRegions = Core.atlas.find(name + "-top-full");
-        topRotRegions = SpriteUtil.splitRegionArray(topFullRegions, 80, 80);
+        baseRegion = Core.atlas.find(name + "-base");
+        topRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-top"), 64, 64, 1);
     }
 
     @Override
@@ -91,7 +93,8 @@ public class DrillModule extends Block {
     @Override
     public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
         Draw.rect(region, plan.drawx(), plan.drawy());
-        Draw.rect(topRotRegions[plan.rotation], plan.drawx(), plan.drawy());
+        Draw.rect(topRegion[plan.rotation + 8], plan.drawx(), plan.drawy());
+
         drawPlanConfig(plan, list);
     }
 
@@ -100,10 +103,15 @@ public class DrillModule extends Block {
         public float smoothWarmup, targetWarmup;
         @Override
         public void draw() {
-            Draw.rect(region, x, y);
+            Draw.rect(baseRegion, x, y);
             Draw.z(Layer.blockOver);
             drawTeamTop();
-            Draw.rect(topRotRegions[rotation], x, y);
+            if (drillBuild != null) {
+                Draw.rect(topRegion[rotation], x, y);
+                Draw.rect(topRegion[rotation + 4], Geometry.d4x(rotation) * size * tilesize + x, Geometry.d4y(rotation) * size * tilesize + y);
+            }else {
+                Draw.rect(topRegion[rotation + 8], x, y);
+            }
 
             targetWarmup = (drillBuild != null && drillBuild.modules.contains(this))?drillBuild.warmup : 0;
             smoothWarmup = Mathf.lerp(smoothWarmup, targetWarmup, 0.02f);
@@ -150,6 +158,7 @@ public class DrillModule extends Block {
             for (Item[] convert: convertList){
                 if (drill.dominantItem == convert[0]){
                     drill.convertItem = convert[1];
+                    drill.items.set(convert[0], 0);
                     drill.boostFinalMul += convertMul.get(convert[0], boostFinalMul);
                 }
             }
