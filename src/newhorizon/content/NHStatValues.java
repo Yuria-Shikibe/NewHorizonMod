@@ -1,6 +1,8 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.func.Boolf;
+import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Collapser;
@@ -8,10 +10,12 @@ import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.util.Scaling;
 import arc.util.Strings;
+import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
+import mindustry.type.Liquid;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.turrets.Turret;
@@ -19,6 +23,7 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
 import newhorizon.expand.bullets.AdaptBulletType;
 
+import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
 public class NHStatValues {
@@ -174,6 +179,35 @@ public class NHStatValues {
         };
     }
 
+    public static StatValue boosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter){
+        return table -> {
+            table.row();
+            table.table(c -> {
+                for(Liquid liquid : content.liquids()){
+                    if(!filter.get(liquid)) continue;
+
+                    c.table(Styles.grayPanel, b -> {
+                        b.image(liquid.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                        b.table(info -> {
+                            info.add(liquid.localizedName).left().row();
+                            info.add(Strings.autoFixed(maxUsed * 60f, 2) + StatUnit.perSecond.localized()).left().color(Color.lightGray);
+                        });
+
+                        b.table(bt -> {
+
+                            bt.right().defaults().padRight(3).left();
+                            float reloadRate = (baseReload ? 1f : 0f) + maxUsed * multiplier * liquid.heatCapacity;
+                            float standardReload = baseReload ? reload : reload / (maxUsed * multiplier * 0.4f);
+                            float result = standardReload / (reload / reloadRate);
+                            bt.add(Core.bundle.format("bullet.reload", Strings.autoFixed(result * 100, 2))).pad(5).right().row();
+                            bt.add(Core.bundle.format("nh.stat.speed-up-turret-coolant", Strings.autoFixed((liquid.heatCapacity + 1) * 100, 2), Strings.autoFixed((1 / (liquid.heatCapacity + 1)) * 100, 0))).pad(5);
+                        }).right().grow().pad(10f).padRight(15f);
+                    }).growX().pad(5).row();
+                }
+            }).growX().colspan(table.getColumns());
+            table.row();
+        };
+    }
     //for AmmoListValue
     private static void sep(Table table, String text){
         table.row();

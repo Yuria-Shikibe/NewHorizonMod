@@ -1781,6 +1781,15 @@ public class NHFx{
 			}
 		}),
 
+		triSpark = new Effect(30, e -> {
+			rand.setSeed(e.id);
+			Draw.color(e.color, Color.white, e.fin());
+			randLenVectors(e.id, 2, 1f + 8f * e.fin(), 4f, (x, y) -> {
+				float randN = rand.random(120f);
+				Fill.poly(e.x + x, e.y + y, 3, e.fout() * 4f * rand.random(0.8f, 1.2f), e.rotation + randN * e.fin());
+			});
+		}),
+
 	    triSpark1 = new Effect(26, e -> {
 			rand.setSeed(e.id);
 	    	Draw.color(Pal.techBlue, Color.white, e.fin());

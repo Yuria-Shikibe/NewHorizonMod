@@ -10,7 +10,10 @@ public class NHUnitSorts{
 	
 	public static final Sortf slowest = (u, x, y) -> u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
 	public static final Sortf fastest = (u, x, y) -> -u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
-	
+	public static final Sortf hasShield = (u, x, y) -> u.shield + Mathf.dst2(u.x, u.y, x, y) / 6400f;
+	public static final Sortf noShield = (u, x, y) -> -u.shield + Mathf.dst2(u.x, u.y, x, y) / 6400f;
+
+
 	public static final Sortf regionalHPMaximum_Unit = (u, x, y) -> {
 		dcr = 0;
 		Vars.state.teams.get(u.team).tree().intersect(u.x - 68, u.y - 68, 128, 128, t -> {
@@ -19,7 +22,6 @@ public class NHUnitSorts{
 		
 		return dcr;
 	};
-	
 	public static final Sortf regionalHPMaximum_Building = (u, x, y) -> {
 		dcr = 0;
 		
@@ -29,7 +31,6 @@ public class NHUnitSorts{
 		
 		return dcr;
 	};
-	
 	public static final Sortf regionalHPMaximum_All = (u, x, y) -> {
 		dcr = 0;
 		Vars.state.teams.get(u.team).tree().intersect(u.x - 68, u.y - 68, 128, 128, t -> {

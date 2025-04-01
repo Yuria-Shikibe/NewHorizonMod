@@ -32,11 +32,79 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
+            //vanilla adapt build
+            convertorTungsten, convertorTitanium, xenRefinery,
             stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
             fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
             multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator;
 
     public static void load(){
+        convertorTungsten = new RecipeGenericCrafter("convertor-tungsten"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.titanium, 45, Items.graphite, 30));
+
+            size = 2;
+            craftTime = 30f;
+
+            rotate = false;
+
+            addInput(ItemStack.with(Items.titanium, 3), LiquidStack.empty);
+            addInput(ItemStack.with(Items.copper, 5), LiquidStack.empty);
+            addInput(ItemStack.with(Items.lead, 5), LiquidStack.empty);
+
+            craftEffect = updateEffect = NHFx.square(NHColor.thurmixRed, 60, 6, 16, 3);
+
+            consumePower(90f / 60f);
+            outputItems = with(Items.tungsten, 2);
+
+            drawer = new DrawMulti(new DrawDefault());
+        }};
+        convertorTitanium = new RecipeGenericCrafter("convertor-titanium"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.tungsten, 45, Items.graphite, 60));
+
+            size = 2;
+            craftTime = 30f;
+
+            rotate = false;
+
+            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.empty);
+            addInput(ItemStack.with(Items.beryllium, 3), LiquidStack.empty);
+
+            craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
+
+            consumePower(90f / 60f);
+            outputItems = with(Items.titanium, 3);
+
+            drawer = new DrawMulti(new DrawDefault());
+        }};
+        xenRefinery = new RecipeGenericCrafter("xen-refinery"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45, Items.carbide, 30));
+
+            size = 2;
+            craftTime = 60f;
+
+            rotate = false;
+
+            addInput(ItemStack.empty, LiquidStack.with(Liquids.oil, 24 / 60f));
+            addInput(ItemStack.empty, LiquidStack.with(Liquids.arkycite, 20 / 60f));
+
+            consumePower(120f / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.xenFluid, 6 / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawRegion(){{
+                        suffix = "-base";
+                    }},
+                    new DrawLiquidTile(){{
+                        drawLiquid = NHLiquids.xenFluid;
+                    }},
+                    new DrawRegion(){{
+                        suffix = "-top";
+                    }}
+            );
+        }};
         stampingFacility = new RecipeGenericCrafter("stamping-facility"){{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.titanium, 45, Items.silicon, 60));
@@ -314,7 +382,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f));
+            addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
 
             outputItems = with(Items.phaseFabric, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);

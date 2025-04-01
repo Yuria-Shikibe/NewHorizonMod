@@ -1,7 +1,9 @@
 package newhorizon.expand.block.turrets;
 
+import arc.Core;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
+import arc.util.Strings;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -13,8 +15,10 @@ import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHStatValues;
+import newhorizon.content.NHStats;
 
 public class SpeedupTurret extends PowerTurret{
 	
@@ -39,7 +43,7 @@ public class SpeedupTurret extends PowerTurret{
 		super.setBars();
 		addBar("liquid",
 			(SpeedupTurretBuild entity) -> new Bar(
-				() -> "Speed Up:",
+				() -> Core.bundle.format("nh.bar.speed-up", Strings.autoFixed((entity.speedupScl) * 100, 0)),
 				() -> NHColor.lightSkyBack,
 				() -> entity.speedupScl / maxSpeedupScl
 			)
@@ -47,7 +51,7 @@ public class SpeedupTurret extends PowerTurret{
 		
 		addBar("overheat",
 			(SpeedupTurretBuild entity) -> new Bar(
-				() -> "Overheat:",
+				() -> Core.bundle.format("nh.bar.overheat", Strings.autoFixed(Mathf.clamp(entity.overheat / overheatTime, 0, overheatTime) * 100, 0)),
 				() -> entity.requireCompleteCooling ? Pal.redderDust : Pal.powerLight,
 				() -> entity.overheat / overheatTime
 			)
@@ -57,11 +61,16 @@ public class SpeedupTurret extends PowerTurret{
 	@Override
 	public void setStats(){
 		super.setStats();
-		stats.add(Stat.inaccuracy, inaccuracyUp, StatUnit.degrees);
-		stats.add(Stat.heatCapacity, overheatTime / Time.toSeconds, StatUnit.seconds);
+		stats.add(NHStats.fireRateMax, Strings.autoFixed((1 + maxSpeedupScl) * 100, 0) + "%");
+		stats.add(NHStats.overheatCooldown, overheatTime / overheatCoolAmount / Time.toSeconds, StatUnit.seconds);
 
 		stats.remove(Stat.ammo);
 		stats.add(Stat.ammo, NHStatValues.ammo(ObjectMap.of(this, shootType), 0, false));
+
+		if(coolant != null){
+			stats.remove(Stat.booster);
+			stats.add(Stat.booster, NHStatValues.boosters(reload, coolant.amount, coolantMultiplier, true, l -> l.coolant && consumesLiquid(l)));
+		}
 	}
 	
 	@Override
@@ -112,7 +121,7 @@ public class SpeedupTurret extends PowerTurret{
 					logicControlTime -= Time.delta;
 				}
 				
-				if(overheat < 1){
+				if(overheat <= 0){
 					overheat = 0;
 					requireCompleteCooling = false;
 				}
@@ -120,7 +129,13 @@ public class SpeedupTurret extends PowerTurret{
 		}
 		
 		public void coolDown(){
-			overheat = Mathf.approachDelta(overheat, 0, overheatCoolAmount * (1 + (liquids().current() == null ? 0 : liquids().current().heatCapacity)));
+			if (overheat > 0){
+				overheat -= overheatCoolAmount * (1 + coolantEfficiency()) * Time.delta;
+			}
+		}
+
+		public float coolantEfficiency(){
+			return liquids().current() == null ? 0 : liquids().current().heatCapacity;
 		}
 		
 		@Override

@@ -1,5 +1,6 @@
 package newhorizon.content.blocks;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -26,26 +27,26 @@ import newhorizon.content.*;
 import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.block.turrets.AdaptItemTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
+import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.expand.bullets.PosLightningType;
+import newhorizon.expand.game.NHUnitSorts;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {
-    public static Block electro;
-
-    public static Block argmot;
-    public static Block synchro;
+    public static Block electro, argmot, synchro, slavio;
 
     public static Block testShooter;
 
     public static void load(){
         synchro = new AdaptItemTurret("synchro"){{
-            requirements(Category.turret, BuildVisibility.shown, with(Items.phaseFabric, 20, NHItems.metalOxhydrigen, 90, NHItems.juniorProcessor, 60, NHItems.zeta, 120, Items.plastanium, 80));
+            requirements(Category.turret, BuildVisibility.shown, with(
+                    NHItems.juniorProcessor, 60, NHItems.presstanium, 80, Items.tungsten, 50));
 
             size = 3;
-            health = 1420;
+            health = 240 * size * size;
             reload = 12f;
             inaccuracy = 0.75f;
 
@@ -64,7 +65,7 @@ public class TurretBlock {
             coolantMultiplier = 2.5f;
 
             velocityRnd = 0.075f;
-            unitSort = UnitSorts.weakest;
+            unitSort = NHUnitSorts.noShield;
 
             range = 250f;
 
@@ -89,6 +90,8 @@ public class TurretBlock {
             maxAmmo = 40;
         }};
         argmot = new SpeedupTurret("argmot"){{
+            requirements(Category.turret, with(NHItems.juniorProcessor, 80, NHItems.presstanium, 120, Items.tungsten, 80));
+
             shoot = new ShootAlternate(){{
                 spread = 7f;
             }};
@@ -122,24 +125,151 @@ public class TurretBlock {
 
             rotateSpeed = 3f;
             health = 960;
-            requirements(Category.turret, with(Items.phaseFabric, 150, NHItems.multipleSteel, 120, NHItems.juniorProcessor, 80, Items.plastanium, 120));
-            maxSpeedupScl = 9f;
-            speedupPerShoot = 0.3f;
+            maxSpeedupScl = 4f;
+            speedupPerShoot = 0.2f;
+            overheatTime = 600f;
+            overheatCoolAmount = 2f;
             hasLiquids = true;
-            coolant = new ConsumeCoolant(0.15f);
-            consumePowerCond(35f, TurretBuild::isActive);
+            coolant = new ConsumeCoolant(0.15f){{
+                booster = false;
+            }};
             size = 3;
             range = 200;
             reload = 60f;
             shootCone = 24f;
             shootSound = NHSounds.laser3;
-            shootType = new PosLightningType(30f, 120f){{
+            shootType = new PosLightningType(20f, 100f){{
                 lightningColor = hitColor = NHColor.lightSkyBack;
                 maxRange = rangeOverride = 250f;
                 hitEffect = NHFx.hitSpark;
                 smokeEffect = Fx.shootBigSmoke2;
             }};
+
+            consumePowerCond(35f, TurretBuild::isActive);
         }};
+        slavio = new AdaptItemTurret("slavio"){{
+            requirements(Category.turret, with(Items.copper, 10));
+
+            ammo(
+                    NHItems.zeta, new AdaptBulletType(120f, 20f){{
+                        backSprite = "missile-large-back";
+                        sprite = "mine-bullet";
+
+                        height = 9f;
+                        width = 5.6f;
+
+                        frontColor = NHItems.zeta.color;
+                        backColor = trailColor = hitColor = Pal.bulletYellowBack;
+
+                        trailChance = 0.44f;
+                        trailLength = 12;
+                        trailWidth = 2f;
+                        trailEffect = NHFx.triSpark;
+                        trailRotation = true;
+
+                        shootEffect = Fx.shootBig2;
+                        smokeEffect = Fx.shootSmokeDisperse;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+
+                        despawnShake = 7f;
+
+                        speed = 5.2f;
+                        shrinkY = 0.3f;
+
+                        homingDelay = 0f;
+                        homingRange = 40f;
+                        homingPower = 0.05f;
+
+                        ammoMultiplier = 3f;
+                        lifetime = 80f;
+                    }},
+                    NHItems.metalOxhydrigen, new AdaptBulletType(180f, 30f){{
+                        backSprite = "missile-large-back";
+                        sprite = "mine-bullet";
+
+                        height = 11f;
+                        width = 6f;
+
+                        frontColor = NHColor.lightSky;
+                        backColor = trailColor = hitColor = NHColor.lightSkyBack;
+
+                        trailChance = 0.44f;
+                        trailLength = 12;
+                        trailWidth = 2f;
+                        trailEffect = NHFx.triSpark;
+                        trailRotation = true;
+
+                        shootEffect = Fx.shootBig2;
+                        smokeEffect = Fx.shootSmokeDisperse;
+                        hitEffect = despawnEffect = NHFx.hitSpark;
+
+                        despawnShake = 7f;
+
+                        speed = 7f;
+                        shrinkY = 0.3f;
+
+                        homingDelay = 20f;
+                        homingRange = 100f;
+                        homingPower = 0.05f;
+
+                        ammoMultiplier = 4f;
+                        reloadMultiplier = 1.35f;
+                        lifetime = 60f;
+                    }}
+            );
+            shoot = new ShootAlternate(){{
+                spread = 4.8f;
+                shotDelay = 4;
+                shots = 4;
+                barrels = 4;
+            }};
+
+            reload = 40f;
+            shootY = 12f;
+            rotateSpeed = 5f;
+            shootCone = 15f;
+            consumeAmmoOnce = true;
+            shootSound = NHSounds.scatter;
+
+            drawer = new DrawTurret(){{
+                parts.addAll(
+                        new RegionPart("-barrel"){{
+                            moveY = -2f;
+                            progress = PartProgress.recoil;
+                        }},
+                        new RegionPart("-bottom"){{
+                            mirror = true;
+                            under = true;
+                            moveX = -0.5f;
+                            moveY = -2f;
+                            moveRot = 45f;
+                        }},
+                        new RegionPart("-bottom"){{
+                            mirror = true;
+                            under = true;
+                            moveX = -2f;
+                            moveY = 0.5f;
+                        }},
+                        new RegionPart("-front"){{
+                            mirror = true;
+                            under = true;
+                            moveY = -1f;
+                            moveX = -1f;
+                        }});
+            }};
+
+            shootWarmupSpeed = 0.08f;
+
+            minWarmup = 0.8f;
+
+            scaledHealth = 300;
+            range = 400f;
+            size = 3;
+
+            limitRange(-5f);
+        }};
+
+
         electro = new ItemTurret("electro"){{
             requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));
             canOverdrive = false;

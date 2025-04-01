@@ -44,15 +44,15 @@ public class LogisticsBlock {
     }
 
     public static void draw(Building building, AdaptConveyor cBlock, int upperIndex, int overlayIndex, Item item){
-        Draw.blend(Blending.additive);
-        Draw.color(building.team.color, Pal.gray, 0.35f);
-        Draw.z(Layer.block - 0.25f);
-        Draw.rect(cBlock.pulseRegions[3 + cBlock.pulseFrame() * 5], building.x, building.y);
-        Draw.blend();
+        //Draw.blend(Blending.additive);
+        //Draw.color(building.team.color, Pal.gray, 0.35f);
+        //Draw.z(Layer.block - 0.25f);
+        //Draw.rect(cBlock.pulseRegions[3 + cBlock.pulseFrame() * 5], building.x, building.y);
+        //Draw.blend();
 
         for (int i = 0; i < 4; i++){
             Building b = world.build(building.tileX() + Geometry.d4x(i), building.tileY() + Geometry.d4y(i));
-            if (b instanceof AdaptConveyor.AdaptConveyorBuild &&
+            if (false && b instanceof AdaptConveyor.AdaptConveyorBuild &&
                     (!((AdaptConveyor.AdaptConveyorBuild)b).armored || (((AdaptConveyor.AdaptConveyorBuild)b).armored && (b.rotation == i || b.rotation == (i + 2) % 4)))){
                 Draw.color(building.team.color, Color.white, 0.65f);
                 Draw.z(Layer.block - 0.2f);
@@ -72,8 +72,8 @@ public class LogisticsBlock {
             }
         }
 
-        Draw.z(Layer.block - 0.1f);
-        Drawf.shadow(building.x, building.y, 12, 1.5f);
+        //Draw.z(Layer.block - 0.1f);
+        //Drawf.shadow(building.x, building.y, 12, 1.5f);
 
         Draw.color();
         Draw.z(Layer.block);
@@ -99,11 +99,11 @@ public class LogisticsBlock {
     }
 
     public static boolean check(Building building, int x, int y){
-        Building other = Vars.world.build(x, y);
-        if (building instanceof LogisticBuild && other instanceof LogisticBuild){
-            return true;
-            //return ((LogisticBuild)building).canSend(other) || ((LogisticBuild)other).canReceive(building);
-        }
+        //Building other = Vars.world.build(x, y);
+        //if (building instanceof LogisticBuild && other instanceof LogisticBuild){
+        //    return true;
+        //    //return ((LogisticBuild)building).canSend(other) || ((LogisticBuild)other).canReceive(building);
+        //}
         return false;
     }
 }
