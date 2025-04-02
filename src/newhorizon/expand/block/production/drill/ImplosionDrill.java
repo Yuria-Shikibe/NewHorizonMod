@@ -37,7 +37,7 @@ public class ImplosionDrill extends AdaptDrill{
 
         itemCapacity = 120;
 
-        maxBoost = 2f;
+        maxModules = 8;
 
         powerConsBase = 480f;
 

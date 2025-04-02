@@ -3535,10 +3535,6 @@ public class NHBlocks{
 		SpecialBlock.load();
 		CraftingBlock.load();
 		CutsceneBlock.load();
-		if(NHSetting.getBool(NHSetting.EXPERIMENTAL)){
-			//FloodContentBlock.load();
-			TestBlock.load();
-		}
 
 		DistributionBlock.load();
 		//EndFieldBlock.load();

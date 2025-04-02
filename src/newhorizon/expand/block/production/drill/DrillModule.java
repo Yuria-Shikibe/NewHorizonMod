@@ -1,6 +1,8 @@
 package newhorizon.expand.block.production.drill;
 
 import arc.Core;
+import arc.func.Cons;
+import arc.func.Cons2;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -31,6 +33,7 @@ import static mindustry.Vars.world;
 public class DrillModule extends Block {
     public TextureRegion[] topRegion;
     public TextureRegion baseRegion;
+
     public Seq<Item[]> convertList = new Seq<>();
     public ObjectFloatMap<Item> convertMul = new ObjectFloatMap<>();
     public float boostSpeed = 0f;
@@ -38,7 +41,8 @@ public class DrillModule extends Block {
     public float powerMul = 0f;
     public float powerExtra = 0f;
     public boolean coreSend = false;
-    public boolean stackable = false;
+
+    public Cons<DrillModuleBuild> drawer = module -> {};
     public DrillModule(String name) {
         super(name);
         size = 2;
@@ -113,13 +117,10 @@ public class DrillModule extends Block {
                 Draw.rect(topRegion[rotation + 8], x, y);
             }
 
+            drawer.get(this);
+
             targetWarmup = (drillBuild != null && drillBuild.modules.contains(this))?drillBuild.warmup : 0;
             smoothWarmup = Mathf.lerp(smoothWarmup, targetWarmup, 0.02f);
-        }
-
-        @Override
-        public void onProximityUpdate() {
-            super.onProximityUpdate();
         }
 
         public boolean canApply(AdaptDrill.AdaptDrillBuild drill){
@@ -130,25 +131,7 @@ public class DrillModule extends Block {
                     return false;
                 }
             }
-            return (drill.boostMul + boostSpeed <= drill.maxBoost() + 1) && checkConvert(drill) && checkSameModule(drill);
-        }
-
-        public boolean checkConvert(AdaptDrill.AdaptDrillBuild drill){
-            if (convertList.size == 0) return true;
-            for (Item[] convert: convertList){
-                if (drill.dominantItem == convert[0]){
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public boolean checkSameModule(AdaptDrill.AdaptDrillBuild drill){
-            if (stackable) return true;
-            for (DrillModuleBuild module: drill.modules){
-                if (module.block == this.block) return false;
-            }
-            return true;
+            return drill.modules.size < drill.maxModules();
         }
 
         public void apply(AdaptDrill.AdaptDrillBuild drill){

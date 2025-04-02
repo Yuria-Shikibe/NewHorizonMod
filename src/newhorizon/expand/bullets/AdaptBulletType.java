@@ -15,6 +15,7 @@ import mindustry.gen.Unit;
 public class AdaptBulletType extends BasicBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
     public float kineticDamage = 30f, energyDamage = 30f;
+    public float splashMultiplier = 1f;
     public AdaptBulletType(float kineticDamage, float energyDamage) {
         this.kineticDamage = kineticDamage;
         this.energyDamage = energyDamage;
@@ -65,5 +66,10 @@ public class AdaptBulletType extends BasicBulletType {
         }
 
         handlePierce(b, health, entity.x(), entity.y());
+    }
+
+    @Override
+    public void createSplashDamage(Bullet b, float x, float y) {
+        super.createSplashDamage(b, x, y);
     }
 }

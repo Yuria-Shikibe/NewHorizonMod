@@ -1,7 +1,9 @@
 package newhorizon.expand.block.production.drill;
 
 import arc.Core;
+import arc.func.Cons;
 import arc.func.Floatf;
+import arc.func.Func;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -24,6 +26,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
+import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
@@ -44,7 +47,6 @@ public class AdaptDrill extends Block {
     //output count once
     public int mineCount = 2;
 
-    //yeah i want to make whitelist
     public int mineTier;
     public Seq<Item> mineOres = new Seq<>();
 
@@ -61,7 +63,9 @@ public class AdaptDrill extends Block {
     public float updateEffectChance = 0.02f;
     public Effect updateEffect = Fx.none;
 
-    public float maxBoost = 0f;
+    public int maxModules = 1;
+
+    public Cons<AdaptDrillBuild> drawer = d -> {};
 
     public AdaptDrill(String name) {
         super(name);
@@ -112,19 +116,8 @@ public class AdaptDrill extends Block {
 
     @Override
     public void setBars(){
-        barMap.clear();
-        addBar("health", e -> new BarExtend(Core.bundle.format("nh.bar.health", e.health(), health, Strings.autoFixed(e.healthf() * 100, 0)), Pal.health, e::healthf, Iconc.add + "").blink(Color.white));
-        addBar("power", (AdaptDrillBuild e) -> new BarExtend(
-            Core.bundle.format("nh.bar.power-detail", Strings.autoFixed(e.getPowerCons() * 60f, 0), Strings.autoFixed((e.powerConsMul), 1), e.powerConsExtra),
-            Pal.powerBar,
-            () -> (Mathf.zero(consPower.requestedPower(e)) && e.power.graph.getPowerProduced() + e.power.graph.getBatteryStored() > 0f) ? 1f : e.power.status,
-            Iconc.power + ""));
-        addBar("outputOre", (AdaptDrillBuild e) -> new BarExtend(e::getMineInfo, e::getMineColor, () -> 1f, Iconc.settings + ""));
-        addBar("drillSpeed", (AdaptDrillBuild e) -> new BarExtend(
-            () -> Core.bundle.format("nh.bar.drill-speed", Strings.autoFixed(e.getMineSpeed(), 2), Strings.autoFixed((e.boostMul - 1) * 100, 1), e.boostFinalMul),
-            () -> Pal.ammo,
-            () -> e.warmup,
-            Iconc.production + ""));
+        super.setBars();
+        addBar("outputOre", (AdaptDrillBuild e) -> new Bar(e::getMineInfo, e::getMineColor, () -> 1f));
     }
 
     public float mineInterval(){
@@ -160,7 +153,7 @@ public class AdaptDrill extends Block {
                 }
             }).growX().colspan(table.getColumns());
         });
-        stats.add(NHStats.maxBoostPercent, Core.bundle.get("nh.stat.percent"), Strings.autoFixed(maxBoost * 100, 0));
+        stats.add(NHStats.maxModules, maxModules);
     }
 
     @Override
@@ -280,8 +273,8 @@ public class AdaptDrill extends Block {
         public float powerConsExtra = 0f;
         public Seq<DrillModule.DrillModuleBuild> modules = new Seq<>();
 
-        public float maxBoost(){
-            return maxBoost;
+        public float maxModules(){
+            return maxModules;
         }
 
         @Override
@@ -345,7 +338,7 @@ public class AdaptDrill extends Block {
         public void draw() {
             Draw.rect(baseRegion, x, y);
 
-            if (warmup > 0f){drawMining();}
+            if (warmup > 0f){drawer.get(this);}
             Draw.z(Layer.blockOver - 4f);
             Draw.rect(topRegion, x, y);
             if(outputItem() != null){
@@ -357,7 +350,9 @@ public class AdaptDrill extends Block {
             drawTeamTop();
         }
 
-        public void drawMining(){}
+        public void drawMining(){
+            drawer.get(this);
+        }
 
         private void tryDump(){
             if(timer(timerDump, dumpTime)){

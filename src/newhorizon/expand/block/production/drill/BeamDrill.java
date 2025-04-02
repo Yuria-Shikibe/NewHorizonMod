@@ -57,7 +57,7 @@ public class BeamDrill extends AdaptDrill {
         powerConsBase = 300f;
         itemCapacity = 75;
 
-        maxBoost = 1f;
+        maxModules = 4;
 
         updateEffect = new Effect(30f, e -> {
             Rand rand = rand(e.id);

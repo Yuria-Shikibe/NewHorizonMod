@@ -5,40 +5,48 @@ import arc.func.Intc;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.struct.ObjectSet;
+import arc.scene.style.TextureRegionDrawable;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Structs;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.bullet.*;
-import mindustry.entities.effect.ParticleEffect;
+import mindustry.ctype.Content;
+import mindustry.ctype.UnlockableContent;
+import mindustry.entities.bullet.BasicBulletType;
 import mindustry.game.SpawnGroup;
+import mindustry.game.Team;
 import mindustry.game.Waves;
-import mindustry.gen.Bullet;
-import mindustry.graphics.Pal;
+import mindustry.gen.Icon;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.LaserTurret;
-import mindustry.world.blocks.logic.CanvasBlock;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.blocks.production.Drill;
 import mindustry.world.meta.BuildVisibility;
+import mindustry.world.meta.Env;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatCat;
 import newhorizon.NHSetting;
-import newhorizon.NewHorizon;
-import newhorizon.expand.bullets.AdaptedLightningBulletType;
+import newhorizon.expand.ability.passive.PassiveShield;
+import newhorizon.expand.bullets.AdaptBulletType;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Objects;
 
+import static mindustry.Vars.content;
 import static mindustry.content.UnitTypes.*;
 
 public class NHOverride{
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
 	public static final Seq<Color> validColor = new Seq<>();
-	
+
+	private static final Seq<TechTree.TechNode> tmpVanillaNode = new Seq<>();
+	private static final Seq<TechTree.TechNode> tmpCreatedNode = new Seq<>();
+
 	public static void load(){
 		{
 			modSpawnGroup.addAll(
@@ -301,380 +309,37 @@ public class NHOverride{
 						shieldScaling = 5000f;
 					}}
 			);
-		}//Apply Mod Units
-		
-//		Seq<UnitType> coreUnits = new Seq<>();
-//		Vars.content.blocks().each(b -> {
-//			if(b instanceof CoreBlock){
-//				CoreBlock c = (CoreBlock)b;
-//				coreUnits.add(c.unitType);
-//				c.unitType.immunities.add(NHStatusEffects.scannerDown);
-//			}
-//		});
+		}
 	}
-	
-	public static void coreUnits(Cons<UnitType> modifier){
-		Vars.content.blocks().each(b -> {
-			if(b instanceof CoreBlock){
-				CoreBlock c = (CoreBlock)b;
-				modifier.get(c.unitType);
-			}
-		});
-	}
-	
+
 	public static void loadOptional(){
-		//overrideCanvas();
 		overrideVanillaMain();
 	}
-	
-	public static void overrideCanvas(){
-		if(Blocks.canvas instanceof CanvasBlock){
-			CanvasBlock canvas = (CanvasBlock)Blocks.canvas;
-			
-			for(int i : canvas.palette){
-				validColor.add(Color.valueOf(Integer.toHexString(i)));
-			}
-			
-			validColor.addAll(Color.white, Color.lightGray, Color.gray, Pal.accent);
-			
-			canvas.palette = validColor.mapInt(Color::rgba).toArray();
-		}
+
+	public static void contentOverride(){
+		overrideUnitTypeAbility();
+		hideVanillaContent();
+		adjustVanillaContent();
+		overrideStats();
 	}
-	
+
 	public static void overrideVanillaMain(){
-		if(NHSetting.enableDetails())Fx.trailFade.clip = 2000;
-		
-		try{
-			Field field;
-			field = Waves.class.getDeclaredField("spawns");
-			field.setAccessible(true);
-			Vars.waves.get();
-			Seq<SpawnGroup> spawns = (Seq<SpawnGroup>)field.get(Vars.waves);
-			spawns.addAll(modSpawnGroup);
-		}catch(NoSuchFieldException | IllegalAccessException e){
-			e.printStackTrace();
-		}
-		
-		
-		ObjectSet<UnitType> Unit_T1 = ObjectSet.with(
-			UnitTypes.dagger, UnitTypes.nova, UnitTypes.crawler, UnitTypes.flare, UnitTypes.mono,
-			UnitTypes.risso, UnitTypes.retusa, NHUnitTypes.origin, NHUnitTypes.sharp, NHUnitTypes.assaulter
-		);
-		
-		ObjectSet<UnitType> Unit_T2 = ObjectSet.with(
-			UnitTypes.mace, UnitTypes.pulsar, UnitTypes.atrax, UnitTypes.horizon, UnitTypes.poly,
-			UnitTypes.minke, UnitTypes.oxynoe, NHUnitTypes.thynomo, NHUnitTypes.branch/*, NHUnitTypes.relay*/
-		);
-		
-		ObjectSet<UnitType> Unit_T3 = ObjectSet.with(
-			UnitTypes.fortress, UnitTypes.quasar, UnitTypes.spiroct, UnitTypes.zenith, UnitTypes.mega,
-			UnitTypes.bryde, UnitTypes.cyerce, NHUnitTypes.aliotiat, NHUnitTypes.warper, NHUnitTypes.ghost,
-			NHUnitTypes.rhino, NHUnitTypes.gather
-		);
-		
-		ObjectSet<UnitType> Unit_T4 = ObjectSet.with(
-			UnitTypes.scepter, UnitTypes.vela, UnitTypes.arkyid, UnitTypes.antumbra, UnitTypes.quad,
-			UnitTypes.sei, UnitTypes.aegires, NHUnitTypes.tarlidor, NHUnitTypes.naxos/*, NHUnitTypes.striker*/, NHUnitTypes.zarkov
-		);
-		
-		ObjectSet<UnitType> Unit_T5 = ObjectSet.with(
-			conquer,
-			UnitTypes.reign, UnitTypes.toxopid, UnitTypes.eclipse, UnitTypes.oct,
-			UnitTypes.omura, UnitTypes.navanax, NHUnitTypes.annihilation, NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.declining, NHUnitTypes.saviour
-		);
-		
-		ObjectSet<UnitType> Unit_T6 = ObjectSet.with(
-			NHUnitTypes.hurricane, NHUnitTypes.guardian, NHUnitTypes.anvil, NHUnitTypes.sin
-		);
-		
-		Unit_T3.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
-		Unit_T4.each(u -> u.immunities.addAll(NHStatusEffects.emp1));
-		Unit_T5.each(u -> u.immunities.addAll(NHStatusEffects.emp1, NHStatusEffects.ultFireBurn));
-		Unit_T6.each(u -> u.immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.scrambler));
-		
-		new Seq<UnitType>().addAll(Unit_T4.toSeq()).addAll(Unit_T5.toSeq()).retainAll(u -> u != null && !u.name.startsWith(NewHorizon.MOD_NAME)).each(u -> {
-			u.armor += 3;
-			u.health *= 1.1f;
-		});
-		
+		replaceVanillaVisualContent();
+		replaceVanillaSpawnGroup();
 		
 		Blocks.coreShard.buildVisibility = BuildVisibility.shown;
-		Blocks.coreFoundation.health *= 5;
-		Blocks.coreNucleus.health *= 5;
 		Blocks.coreShard.health *= 5;
-		
 		Blocks.coreShard.armor = 5;
-		Blocks.coreNucleus.armor = 15f;
+		Blocks.coreFoundation.health *= 5;
 		Blocks.coreFoundation.armor = 10f;
-		
-		Fx.lightning.layer(Fx.lightning.layer - 0.1f);
-		
-//		Team.purple.name = "Luminari";
-		
-		addReq(Blocks.blastDrill,
-				new ItemStack(NHItems.presstanium, 50),
-				new ItemStack(NHItems.juniorProcessor, 40)
-		);
-		removeReq(Blocks.blastDrill, Items.silicon);
+		Blocks.coreNucleus.health *= 5;
+		Blocks.coreNucleus.armor = 15f;
 
-		addReq(Blocks.coreFoundation,
-				new ItemStack(NHItems.presstanium, 1500),
-				new ItemStack(NHItems.metalOxhydrigen, 800),
-				new ItemStack(NHItems.juniorProcessor, 600)
-		);
-		addReq(Blocks.plastaniumCompressor,
-				new ItemStack(NHItems.presstanium, 50),
-				new ItemStack(NHItems.juniorProcessor, 30)
-		);
-		removeReq(Blocks.plastaniumCompressor, Items.silicon);
-
-		removeReq(Blocks.ripple, Items.titanium);
-		addReq(Blocks.ripple,
-			new ItemStack(NHItems.presstanium, 50)
-		);
-
-		addReq(Blocks.fuse,
-				new ItemStack(NHItems.zeta, 80)
-		);
-		
-		addReq(Blocks.coreNucleus,
-				new ItemStack(NHItems.irayrondPanel, 600),
-				new ItemStack(NHItems.multipleSteel, 800),
-				new ItemStack(NHItems.seniorProcessor, 600)
-		);
-		addReq(Blocks.surgeSmelter,
-				new ItemStack(NHItems.multipleSteel, 35),
-				new ItemStack(NHItems.presstanium, 65),
-				new ItemStack(NHItems.juniorProcessor, 30),
-				new ItemStack(NHItems.metalOxhydrigen, 45)
-		);
-
-		((GenericCrafter)Blocks.surgeSmelter).craftTime += 30f;
-		removeReq(Blocks.surgeSmelter, Items.silicon);
-		addReq(Blocks.swarmer,
-				new ItemStack(NHItems.juniorProcessor, 25),
-				new ItemStack(NHItems.presstanium, 35)
-		);
-		removeReq(Blocks.swarmer, Items.silicon);
-		addReq(Blocks.blastMixer, new ItemStack(NHItems.juniorProcessor, 10));
-		addReq(Blocks.cyclone, new ItemStack(NHItems.metalOxhydrigen, 55));
-		addReq(Blocks.disassembler, new ItemStack(NHItems.multipleSteel, 65), new ItemStack(NHItems.juniorProcessor, 30));
-		removeReq(Blocks.disassembler, Items.silicon);
-
-		spectre: {
-			if(!(Blocks.spectre instanceof ItemTurret))break spectre;
-			ItemTurret block = (ItemTurret)Blocks.spectre;
-			block.range += 80;
-			block.health *= 1.5f;
-			addReq(Blocks.spectre,
-				new ItemStack(NHItems.zeta, 220),
-				new ItemStack(NHItems.seniorProcessor, 100)
-			);
-			removeReq(Blocks.spectre, Items.silicon, Items.surgeAlloy, Items.graphite);
-			for(Item item : block.ammoTypes.keys()){
-				BulletType type = block.ammoTypes.get(item);
-				type.damage *= 2f;
-				type.pierceCap *= 1.5f;
-				type.lifetime += 8f;
-			}
-			
-			block.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
-				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
-				frontColor = Color.white;
-				speed= 10;
-				lifetime= 30;
-				knockback= 1.8f;
-				width= 18;
-				height= 20;
-				damage= 175;
-				splashDamageRadius= 38;
-				reloadMultiplier = 1.2f;
-				splashDamage= 35;
-				shootEffect= Fx.shootBig;
-				hitEffect= NHFx.hitSpark;
-				ammoMultiplier= 2;
-				lightningDamage= 50;
-				lightning= 1;
-				lightningLengthRand = 3;
-				lightningLength = 3;
-			}});
-		}
-
-		meltdown: {
-			if(!(Blocks.meltdown instanceof LaserTurret))break meltdown;
-			LaserTurret block = (LaserTurret)Blocks.meltdown;
-			addReq(Blocks.meltdown, new ItemStack(NHItems.presstanium, 350), new ItemStack(NHItems.metalOxhydrigen, 175), new ItemStack(NHItems.seniorProcessor, 120));
-			removeReq(Blocks.meltdown, Items.surgeAlloy, Items.lead);
-			ContinuousLaserBulletType meltDownType = ((ContinuousLaserBulletType)block.shootType);
-			meltDownType.length += 120;
-			meltDownType.damage += 60f;
-			meltDownType.splashDamage += 10f;
-			meltDownType.splashDamageRadius += 14f;
-			block.range += 120;
-			block.shootDuration += 60;
-		}
-		
-		salvo: {
-			if(!(Blocks.salvo instanceof ItemTurret))break salvo;
-			ItemTurret block = (ItemTurret)Blocks.salvo;
-			
-			block.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
-				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
-				frontColor = Color.white;
-				speed = 6.5f;
-				damage= 20;
-				lightningDamage= 10;
-				lightning = 1;
-				lightningLengthRand = 3;
-				reloadMultiplier= 1.5f;
-				lifetime= 30.76f;
-				width= 7;
-				height= 10;
-				ammoMultiplier= 4;
-				shootEffect= Fx.shootBig;
-				hitEffect = despawnEffect = Fx.none;
-			}});
-		}
-		
-		fuse: {
-			if(!(Blocks.fuse instanceof ItemTurret))break fuse;
-			ItemTurret block = (ItemTurret)Blocks.fuse;
-			
-			block.ammoTypes.put(NHItems.zeta, new ShrapnelBulletType(){{
-				reloadMultiplier = 1.5f;
-				rangeChange = 40;
-				length = 140;
-				damage = 150;
-				width = 20;
-				lightningColor = trailColor = hitColor = lightColor = fromColor = NHItems.zeta.color;
-				toColor = Color.valueOf("ffafaf");
-				ammoMultiplier = 2;
-				pierce = true;
-				shootEffect = new ParticleEffect(){{
-					particles= 5;
-					line= true;
-					length = 55;
-					baseLength = 0;
-					lifetime = 15;
-					colorFrom = fromColor;
-					colorTo = toColor;
-					cone= 60;
-				}};
-				
-				smokeEffect = shootEffect;
-				
-				fragRandomSpread = 90;
-				fragBullets= 2;
-				fragBullet = new AdaptedLightningBulletType(){{
-					damage = 30;
-					lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
-					lightningLength = 5;
-					lightningLengthRand = 15;
-					collidesAir = true;
-				}};
-				
-				fragOnHit = false;
-			}
-				
-				@Override
-				public void despawned(Bullet b){}
-				
-				@Override
-				public void init(Bullet b){
-					super.init(b);
-					
-					createFrags(b, b.x, b.y);
-				}
-			});
-		}
-		
-		swarmer:{
-			if(!(Blocks.swarmer instanceof ItemTurret)) break swarmer;
-			ItemTurret block = (ItemTurret)Blocks.swarmer;
-			
-			block.ammoTypes.put(NHItems.zeta, new MissileBulletType(){{
-				damage= 60;
-				rangeChange=40;
-				lightningDamage= 15;
-				lightning= 3;
-				lightningLength = 1;
-				lightningLengthRand = 4;
-				speed= 3;
-				lifetime= 120;
-				width= 8;
-				height= 8;
-				ammoMultiplier= 2;
-				lightningColor = hitColor = lightColor = backColor = NHItems.zeta.color;
-				frontColor = Color.white;
-				trailColor = Color.gray;
-				trailParam = 1.8f;
-				hitEffect= Fx.blastExplosion;
-				shootEffect= Fx.shootSmallFlame;
-				splashDamageRadius= 5;
-				splashDamage= 25;
-				reloadMultiplier = 0.85f;
-			}});
-		}
-		
-		ripple:{
-			if(!(Blocks.ripple instanceof ItemTurret)) break ripple;
-			ItemTurret block = (ItemTurret)Blocks.ripple;
-			
-			block.ammoTypes.put(NHItems.zeta, new ArtilleryBulletType(){{
-				damage= 60;
-				rangeChange=40;
-				lightningDamage= 15;
-				lightning= 3;
-				lightningLength= 6;
-				speed= 3;
-				lifetime= 180;
-				width= 10;
-				height= 20;
-				ammoMultiplier= 2;
-				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
-				trailParam = 2.3f;
-				frontColor = Color.white;
-				hitEffect= Fx.flakExplosionBig;
-				shootEffect= Fx.shootSmallFlame;
-				splashDamageRadius= 45;
-				splashDamage= 75;
-			}});
-			
-		}
-		
-		removeReq(Blocks.meltdown, Items.silicon);
-
-		addReq(Blocks.foreshadow,
-			new ItemStack(NHItems.seniorProcessor, 80)
-		);
-		removeReq(Blocks.foreshadow, Items.silicon);
-
-		addReq(Blocks.rtgGenerator,
-				new ItemStack(NHItems.juniorProcessor, 65),
-				new ItemStack(NHItems.multipleSteel, 45)
-		);
-		removeReq(Blocks.rtgGenerator, Items.silicon);
-
-		addReq(Blocks.logicProcessor, ItemStack.with(NHItems.juniorProcessor, 80));
-		removeReq(Blocks.logicProcessor, Items.silicon);
-
-		addReq(Blocks.hyperProcessor, ItemStack.with(NHItems.seniorProcessor, 80));
-		removeReq(Blocks.hyperProcessor, Items.silicon);
+		Icon.icons.put("nhIcon0", new TextureRegionDrawable(NHContent.icon));
+		//todo set the icon
+		Team.blue.name = "ancient";
 	}
-	
-	public static Seq<SpawnGroup> generate(float difficulty){
-		//apply power curve to make starting sectors easier
-		return generate(Mathf.pow(difficulty, 1.12f), new Rand(), false);
-	}
-	
-	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack){
-		return generate(difficulty, rand, attack, false);
-	}
-	
-	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly){
-		return generate(difficulty, rand, attack, airOnly, false);
-	}
-	
+
 	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval){
 		UnitType[][] species = {
 				{NHUnitTypes.origin, NHUnitTypes.thynomo, NHUnitTypes.aliotiat, NHUnitTypes.tarlidor, NHUnitTypes.annihilation, NHUnitTypes.sin},
@@ -869,7 +534,111 @@ public class NHOverride{
 		
 		return out;
 	}
-	
+
+	public static void overrideStats(){
+		for (Block block: content.blocks()){
+			if (block instanceof ItemTurret itemTurret){
+				block.checkStats();
+				var map = block.stats.toMap();
+				if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
+					block.stats.remove(Stat.ammo);
+					block.stats.add(Stat.ammo, NHStatValues.ammo(itemTurret.ammoTypes, 0, false));
+				}
+			}
+		}
+
+		for (UnitType unitType: content.units()){
+			unitType.checkStats();
+			var map = unitType.stats.toMap();
+			if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
+				//unitType.stats.remove(Stat.ammo);
+				//unitType.stats.add(Stat.ammo, NHStatValues.ammo(unitType.weapons));
+			}
+		}
+	}
+
+	private static void replaceVanillaVisualContent(){
+		if(NHSetting.enableDetails())Fx.trailFade.clip = 2000;
+		Fx.lightning.layer(Fx.lightning.layer - 0.1f);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void replaceVanillaSpawnGroup(){
+		try{
+			Field field;
+			field = Waves.class.getDeclaredField("spawns");
+			field.setAccessible(true);
+			Vars.waves.get();
+			Seq<SpawnGroup> spawns = (Seq<SpawnGroup>)field.get(Vars.waves);
+			spawns.addAll(modSpawnGroup);
+		}catch(NoSuchFieldException | IllegalAccessException e){
+			Log.info(e);
+		}
+	}
+
+	private static void hideVanillaContent(){
+		hideContent(Blocks.mechanicalDrill);
+		hideContent(Blocks.laserDrill);
+		hideContent(Blocks.blastDrill);
+		hideContent(Blocks.mechanicalPump);
+		hideContent(Blocks.impulsePump);
+	}
+
+	private static void adjustVanillaContent(){
+		adjustContent(Blocks.pneumaticDrill, content -> {
+			Drill drill = (Drill)content;
+			drill.requirements = ItemStack.with(Items.copper, 15, Items.lead, 20);
+			drill.hardnessDrillMultiplier = 0;
+			drill.consumeLiquid(Liquids.water, 3f / 60f);
+			drill.liquidBoostIntensity = Mathf.sqrt(1.5f);
+			drill.tier = 3;
+			drill.drillTime = 40f * drill.size * drill.size;
+			drill.drillMultipliers.put(Items.copper, 1.2f / 1.5f);
+			drill.drillMultipliers.put(Items.lead, 1.2f / 1.5f);
+			drill.drillMultipliers.put(Items.coal, 1f / 1.5f);
+			drill.drillMultipliers.put(Items.titanium, 0.8f / 1.5f);
+			drill.drillMultipliers.put(Items.beryllium, 0.8f / 1.5f);
+		});
+
+		adjustContent(UnitTypes.alpha, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 8f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
+				weapon.reload = 15f;
+				weapon.bullet.damage = 20f;
+			});
+		});
+	}
+
+	private static void overrideUnitTypeAbility(){
+		for (UnitType type: content.units()){
+			if (type.abilities.contains(ability -> ability instanceof PassiveShield)) continue;
+			type.abilities.add(new PassiveShield(type.health));
+		}
+	}
+
+	private static ItemStack[] hugeItemReq(){
+		ItemStack[] out = new ItemStack[content.items().size];
+		for (int i = 0; i < out.length; i++){
+			out[i] = new ItemStack(content.item(i), 114514);
+		}
+		return out;
+	}
+
+	private static void hideContent(UnlockableContent content){
+		if (content instanceof Block block){
+			block.buildVisibility = BuildVisibility.hidden;
+			block.envRequired = Env.any;
+			block.requirements = hugeItemReq();
+			//todo change the tech tree
+		}
+	}
+
+	private static void adjustContent(Content content, Cons<Content> modifier){
+		modifier.get(content);
+	}
+
+
 	private static void addReq(Block target, ItemStack... items){
 		ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];
 		

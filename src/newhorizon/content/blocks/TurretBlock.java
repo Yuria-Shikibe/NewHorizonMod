@@ -41,7 +41,7 @@ public class TurretBlock {
     public static Block testShooter;
 
     public static void load(){
-        synchro = new AdaptItemTurret("synchro"){{
+        synchro = new ItemTurret("synchro"){{
             requirements(Category.turret, BuildVisibility.shown, with(
                     NHItems.juniorProcessor, 60, NHItems.presstanium, 80, Items.tungsten, 50));
 
@@ -147,8 +147,8 @@ public class TurretBlock {
 
             consumePowerCond(35f, TurretBuild::isActive);
         }};
-        slavio = new AdaptItemTurret("slavio"){{
-            requirements(Category.turret, with(Items.copper, 10));
+        slavio = new ItemTurret("slavio"){{
+            requirements(Category.turret, with(NHItems.juniorProcessor, 120, NHItems.presstanium, 150, Items.carbide, 150, NHItems.metalOxhydrigen, 80));
 
             ammo(
                     NHItems.zeta, new AdaptBulletType(120f, 20f){{
@@ -182,8 +182,10 @@ public class TurretBlock {
 
                         ammoMultiplier = 3f;
                         lifetime = 80f;
+
+                        pierceCap = 3;
                     }},
-                    NHItems.metalOxhydrigen, new AdaptBulletType(180f, 30f){{
+                    NHItems.metalOxhydrigen, new AdaptBulletType(150f, 25f){{
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
@@ -215,6 +217,8 @@ public class TurretBlock {
                         ammoMultiplier = 4f;
                         reloadMultiplier = 1.35f;
                         lifetime = 60f;
+
+                        pierceCap = 3;
                     }}
             );
             shoot = new ShootAlternate(){{
@@ -230,6 +234,8 @@ public class TurretBlock {
             shootCone = 15f;
             consumeAmmoOnce = true;
             shootSound = NHSounds.scatter;
+
+            unitSort = NHUnitSorts.noShield;
 
             drawer = new DrawTurret(){{
                 parts.addAll(
@@ -263,13 +269,14 @@ public class TurretBlock {
             minWarmup = 0.8f;
 
             scaledHealth = 300;
-            range = 400f;
+            range = 320f;
             size = 3;
 
             limitRange(-5f);
+
+            coolant = consumeCoolant(0.25f);
+            coolantMultiplier = 2.5f;
         }};
-
-
         electro = new ItemTurret("electro"){{
             requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));
             canOverdrive = false;
@@ -411,8 +418,6 @@ public class TurretBlock {
 
             limitRange(-5f);
         }};
-
-        //loadTest();
     }
 
     public static void loadTest(){

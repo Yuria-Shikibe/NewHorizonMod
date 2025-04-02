@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
+import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
@@ -28,6 +29,7 @@ import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
+import static mindustry.Vars.content;
 import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -145,6 +147,12 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
+				NHOverride.contentOverride();
+				content.each(c -> {
+					if (c instanceof UnlockableContent uc){
+						uc.quietUnlock();
+					}
+				});
 				//DebugFunc.writeBulletTypeList();
 				//DebugFunc.outputAtlas();
 			});
@@ -191,7 +199,6 @@ public class NewHorizon extends Mod{
 			NHLiquids.load();
 			NHBullets.load();
 			NHUnitTypes.load();
-			Recipes.load();
 			NHBlocks.load();
 			NHWeathers.load();
 			NHPlanets.load();
