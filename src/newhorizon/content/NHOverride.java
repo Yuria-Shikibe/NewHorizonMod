@@ -30,6 +30,7 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatCat;
 import newhorizon.NHSetting;
+import newhorizon.content.bullets.VanillaOverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptBulletType;
 
@@ -320,20 +321,14 @@ public class NHOverride{
 		overrideUnitTypeAbility();
 		hideVanillaContent();
 		adjustVanillaContent();
+		buffCoreUnits();
+
 		overrideStats();
 	}
 
 	public static void overrideVanillaMain(){
 		replaceVanillaVisualContent();
 		replaceVanillaSpawnGroup();
-		
-		Blocks.coreShard.buildVisibility = BuildVisibility.shown;
-		Blocks.coreShard.health *= 5;
-		Blocks.coreShard.armor = 5;
-		Blocks.coreFoundation.health *= 5;
-		Blocks.coreFoundation.armor = 10f;
-		Blocks.coreNucleus.health *= 5;
-		Blocks.coreNucleus.armor = 15f;
 
 		Icon.icons.put("nhIcon0", new TextureRegionDrawable(NHContent.icon));
 		//todo set the icon
@@ -550,9 +545,9 @@ public class NHOverride{
 		for (UnitType unitType: content.units()){
 			unitType.checkStats();
 			var map = unitType.stats.toMap();
-			if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
-				//unitType.stats.remove(Stat.ammo);
-				//unitType.stats.add(Stat.ammo, NHStatValues.ammo(unitType.weapons));
+			if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.weapons) != null){
+				unitType.stats.remove(Stat.weapons);
+				unitType.stats.add(Stat.weapons, NHStatValues.weapons(unitType, unitType.weapons));
 			}
 		}
 	}
@@ -600,14 +595,29 @@ public class NHOverride{
 			drill.drillMultipliers.put(Items.beryllium, 0.8f / 1.5f);
 		});
 
+
+	}
+
+	public static void buffCoreUnits(){
+		Blocks.coreShard.buildVisibility = BuildVisibility.shown;
+
+		Blocks.coreShard.health *= 5;
+		Blocks.coreShard.armor = 5;
+
 		adjustContent(UnitTypes.alpha, content -> {
 			UnitType unitType = (UnitType)content;
 			unitType.mineSpeed = 8f;
 			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
 				weapon.reload = 15f;
-				weapon.bullet.damage = 20f;
+				weapon.bullet = VanillaOverrideBullets.alpha0;
 			});
 		});
+
+		Blocks.coreFoundation.health *= 5;
+		Blocks.coreFoundation.armor = 10f;
+
+		Blocks.coreNucleus.health *= 5;
+		Blocks.coreNucleus.armor = 15f;
 	}
 
 	private static void overrideUnitTypeAbility(){

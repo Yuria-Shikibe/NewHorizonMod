@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.Scaling;
 import arc.util.Strings;
 import mindustry.content.Items;
@@ -17,10 +18,13 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
 import mindustry.type.Liquid;
 import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
+import mindustry.world.meta.StatValues;
 import newhorizon.expand.bullets.AdaptBulletType;
 
 import static mindustry.Vars.content;
@@ -59,12 +63,10 @@ public class NHStatValues {
                     if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
                         if (type instanceof AdaptBulletType b){
                             if(b.continuousDamage() > 0){
-                                bt.add(Core.bundle.format("nh.kinetic-damage", b.continuousKineticDamage()) + StatUnit.perSecond.localized());
-                                bt.add("/");
+                                bt.add(Core.bundle.format("nh.kinetic-damage", b.continuousKineticDamage()) + StatUnit.perSecond.localized()).row();
                                 bt.add(Core.bundle.format("nh.energy-damage", b.continuousEnergyDamage()) + StatUnit.perSecond.localized());
                             }else{
-                                bt.add(Core.bundle.format("nh.kinetic-damage", b.kineticDamage));
-                                bt.add("/");
+                                bt.add(Core.bundle.format("nh.kinetic-damage", b.kineticDamage)).row();
                                 bt.add(Core.bundle.format("nh.energy-damage", b.energyDamage));
                             }
                         }else {
@@ -206,6 +208,41 @@ public class NHStatValues {
                 }
             }).growX().colspan(table.getColumns());
             table.row();
+        };
+    }
+
+    public static StatValue weapons(UnitType unit, Seq<Weapon> weapons){
+        return table -> {
+            table.row();
+            for(int i = 0; i < weapons.size; i++){
+                Weapon weapon = weapons.get(i);
+
+                if(weapon.flipSprite || !weapon.hasStats(unit)){
+                    //flipped weapons are not given stats
+                    continue;
+                }
+
+                TextureRegion region = !weapon.name.isEmpty() ? Core.atlas.find(weapon.name + "-preview", weapon.region) : null;
+
+                table.table(Styles.grayPanel, w -> {
+                    w.left().top().defaults().padRight(3).left();
+                    if(region != null && region.found() && weapon.showStatSprite) w.image(region).size(60).scaling(Scaling.bounded).left().top();
+                    w.row();
+
+                    if(weapon.inaccuracy > 0){
+                        w.row();
+                        w.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + (int)weapon.inaccuracy + " " + StatUnit.degrees.localized());
+                    }
+                    if(!weapon.alwaysContinuous && weapon.reload > 0){
+                        w.row();
+                        w.add("[lightgray]" + Stat.reload.localized() + ": " + (weapon.mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / weapon.reload * weapon.shoot.shots, 2) + " " + StatUnit.perSecond.localized());
+                    }
+
+                    ammo(ObjectMap.of(unit, weapon.bullet), 0, false).display(w);
+
+                }).growX().pad(5).margin(10);
+                table.row();
+            }
         };
     }
     //for AmmoListValue
