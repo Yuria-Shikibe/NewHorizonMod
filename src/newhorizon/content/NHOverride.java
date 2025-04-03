@@ -339,7 +339,7 @@ public class NHOverride{
 		replaceVanillaVisualContent();
 		replaceVanillaSpawnGroup();
 
-		Icon.icons.put("nhIcon0", new TextureRegionDrawable(NHContent.icon));
+		//Icon.icons.put("nhIcon0", new TextureRegionDrawable(NHContent.icon));
 		//todo set the icon
 		Team.blue.name = "ancient";
 	}
