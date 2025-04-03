@@ -8,7 +8,6 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
-import mindustry.world.draw.DrawRegion;
 import newhorizon.util.func.MathUtil;
 
 public class DrawGlowRegionRotated extends DrawRegionCenterSymmetry {

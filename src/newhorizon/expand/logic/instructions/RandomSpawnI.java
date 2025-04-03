@@ -5,7 +5,7 @@ import arc.struct.Seq;
 import mindustry.logic.LExecutor;
 import mindustry.world.Tile;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.spawner;
 
 public class RandomSpawnI implements LExecutor.LInstruction {
     public int seed, x, y;

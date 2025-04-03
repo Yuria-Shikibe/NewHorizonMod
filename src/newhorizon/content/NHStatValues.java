@@ -11,7 +11,6 @@ import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Scaling;
 import arc.util.Strings;
-import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
@@ -24,7 +23,6 @@ import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
-import mindustry.world.meta.StatValues;
 import newhorizon.expand.bullets.AdaptBulletType;
 
 import static mindustry.Vars.content;

@@ -12,17 +12,14 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.input.Placement;
 import mindustry.type.Item;
-import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.meta.Stat;
 import newhorizon.expand.block.inner.LinkBlock;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.state;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public Seq<Point2> linkPos = new Seq<>();

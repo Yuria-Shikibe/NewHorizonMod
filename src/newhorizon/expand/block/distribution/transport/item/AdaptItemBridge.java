@@ -30,7 +30,8 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.util.func.MathUtil;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class AdaptItemBridge extends ItemBridge {
     public AdaptConveyor cBlock;

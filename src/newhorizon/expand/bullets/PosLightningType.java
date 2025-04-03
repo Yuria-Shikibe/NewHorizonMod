@@ -3,7 +3,6 @@ package newhorizon.expand.bullets;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.BulletType;
 import mindustry.gen.*;
 import newhorizon.content.NHFx;
 import newhorizon.util.feature.PosLightning;

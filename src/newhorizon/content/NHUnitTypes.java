@@ -53,8 +53,6 @@ import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
-import newhorizon.expand.ability.active.RepulsionWaveAbility;
-import newhorizon.expand.ability.active.StatusEffectAbility;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedTimedKillUnit;

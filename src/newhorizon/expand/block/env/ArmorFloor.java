@@ -1,15 +1,10 @@
 package newhorizon.expand.block.env;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.PixmapRegion;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import arc.struct.Seq;
-import mindustry.Vars;
-import mindustry.graphics.Drawf;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHContent;

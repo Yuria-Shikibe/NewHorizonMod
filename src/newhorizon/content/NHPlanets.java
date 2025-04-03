@@ -41,7 +41,6 @@ import mindustry.world.blocks.environment.TallBlock;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
-import newhorizon.NHSetting;
 import newhorizon.expand.map.planet.CeitoPlanet;
 import newhorizon.expand.map.planet.MidanthaPlanet;
 

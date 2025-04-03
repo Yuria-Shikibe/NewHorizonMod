@@ -1,18 +1,14 @@
 package newhorizon.expand.block.distribution.transport;
 
 import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
 import arc.util.Eachable;
-import mindustry.Vars;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.distribution.transport.item.AdaptConveyor;

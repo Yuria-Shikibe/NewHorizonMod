@@ -10,7 +10,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.util.graphic.SpriteUtil;
 
-import static newhorizon.util.graphic.SpriteUtil.*;
+import static newhorizon.util.graphic.SpriteUtil.orthogonalPos;
 
 public class Atlas_4_4_Floor extends Floor {
     public TextureRegion[] splitRegions;

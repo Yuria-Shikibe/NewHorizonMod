@@ -2,8 +2,6 @@ package newhorizon.expand.net;
 
 import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
-import mindustry.gen.AdminRequestCallPacket;
-import mindustry.gen.Groups;
 import mindustry.gen.Unit;
 import mindustry.net.NetConnection;
 import newhorizon.expand.ability.active.ActiveAbility;

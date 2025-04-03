@@ -1,9 +1,9 @@
 package newhorizon.expand.cutscene.action;
 
-import arc.Core;
 import newhorizon.expand.cutscene.components.Action;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.control;
+import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class InputUnlockAction extends Action {

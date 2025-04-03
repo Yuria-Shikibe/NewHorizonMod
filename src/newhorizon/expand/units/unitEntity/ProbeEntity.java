@@ -1,6 +1,5 @@
 package newhorizon.expand.units.unitEntity;
 
-import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -9,7 +8,6 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectSet;
-import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -31,7 +29,6 @@ import mindustry.logic.LAccess;
 import mindustry.type.UnitType;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.entities.EntityRegister;
-import newhorizon.util.func.BuildingConcentration;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHMath;
 import newhorizon.util.graphic.DrawFunc;

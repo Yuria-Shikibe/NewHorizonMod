@@ -28,7 +28,6 @@ import mindustry.world.blocks.distribution.Conveyor;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.itemSize;
 
 public class AdaptConveyor extends Conveyor {
     public TextureRegion[] edgeRegions, armorRegions, arrowRegions, pulseRegions;

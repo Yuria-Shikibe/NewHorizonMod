@@ -1,6 +1,5 @@
 package newhorizon.expand.block.production.factory;
 
-import arc.func.Boolf2;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
@@ -8,7 +7,6 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.Build;
-import mindustry.world.Edges;
 import mindustry.world.Tile;
 import newhorizon.content.blocks.InnerBlock;
 import newhorizon.expand.block.inner.LinkBlock;

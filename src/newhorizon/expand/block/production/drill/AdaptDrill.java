@@ -3,7 +3,6 @@ package newhorizon.expand.block.production.drill;
 import arc.Core;
 import arc.func.Cons;
 import arc.func.Floatf;
-import arc.func.Func;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -36,7 +35,6 @@ import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.meta.*;
 import newhorizon.content.NHStats;
 import newhorizon.expand.block.consumer.PowerConsumer;
-import newhorizon.util.ui.BarExtend;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.func.NHFunc.globalEffectRand;

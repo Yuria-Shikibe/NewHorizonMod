@@ -1,11 +1,7 @@
 package newhorizon.content;
 
-import arc.files.Fi;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;
-import newhorizon.NewHorizon;
-import newhorizon.expand.map.SchematicUtil;
-import newhorizon.expand.map.TerrainSchematic;
 
 import java.io.IOException;
 

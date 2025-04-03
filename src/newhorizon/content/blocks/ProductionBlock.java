@@ -22,10 +22,13 @@ import mindustry.type.Category;
 import mindustry.type.Item;
 import mindustry.type.LiquidStack;
 import mindustry.world.blocks.power.ThermalGenerator;
-import mindustry.world.draw.*;
+import mindustry.world.draw.DrawLiquidTile;
+import mindustry.world.draw.DrawMulti;
+import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.*;
-import newhorizon.expand.block.production.drill.*;
+import newhorizon.expand.block.production.drill.AdaptDrill;
+import newhorizon.expand.block.production.drill.DrillModule;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 

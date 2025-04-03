@@ -3,18 +3,12 @@ package newhorizon.expand.block.env;
 import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.util.Log;
 import mindustry.Vars;
-import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.environment.Floor;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.SpriteUtil;
 
-import static mindustry.Vars.tilesize;
 import static newhorizon.util.graphic.SpriteUtil.*;
 
 public class MaskFloor extends Atlas_4_12_Floor {

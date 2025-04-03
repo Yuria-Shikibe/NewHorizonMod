@@ -1,7 +1,5 @@
 package newhorizon.expand.cutscene.action;
 
-import arc.Core;
-import arc.util.Tmp;
 import newhorizon.expand.cutscene.components.Action;
 
 import static mindustry.Vars.control;

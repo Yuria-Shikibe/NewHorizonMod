@@ -1,6 +1,5 @@
 package newhorizon.content;
 
-import mindustry.type.Planet;
 import mindustry.type.SectorPreset;
 
 public class NHSectorPresents{

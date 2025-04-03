@@ -3,7 +3,6 @@ package newhorizon.expand.cutscene.action;
 import newhorizon.expand.cutscene.components.Action;
 
 import static mindustry.Vars.*;
-import static newhorizon.NHVars.cutsceneUI;
 
 public class UIHideAction extends Action {
     public UIHideAction() {

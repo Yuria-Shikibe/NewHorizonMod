@@ -2,20 +2,16 @@ package newhorizon.expand.cutscene.event;
 
 import arc.Core;
 import arc.flabel.FLabel;
-import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.ui.Styles;
-import mindustry.world.meta.BlockFlag;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
-import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.cutscene.components.WorldActionEvent;
 import newhorizon.util.ui.NHUIFunc;
 

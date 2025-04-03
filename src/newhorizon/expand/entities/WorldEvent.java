@@ -1,13 +1,8 @@
 package newhorizon.expand.entities;
 
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.scene.Element;
-import arc.scene.actions.Actions;
-import arc.scene.ui.layout.Table;
-import arc.util.Interval;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -17,7 +12,6 @@ import mindustry.gen.*;
 import mindustry.io.TypeIO;
 import mindustry.world.blocks.storage.CoreBlock;
 import newhorizon.NHGroups;
-import newhorizon.util.annotation.HeadlessDisabled;
 
 import java.nio.FloatBuffer;
 

@@ -12,10 +12,8 @@ import mindustry.game.Schematic;
 import mindustry.game.Schematic.Stile;
 import mindustry.game.Team;
 import mindustry.io.TypeIO;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.StaticWall;
 import newhorizon.expand.map.TerrainSchematic.SData;
 
 import java.io.*;

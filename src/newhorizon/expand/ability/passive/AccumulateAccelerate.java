@@ -2,16 +2,12 @@ package newhorizon.expand.ability.passive;
 
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Time;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
-import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHStats;
-
-import static mindustry.Vars.tilesize;
 
 public class AccumulateAccelerate extends Ability {
     public float reloadMultiplier = 1f;

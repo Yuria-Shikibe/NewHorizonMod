@@ -15,8 +15,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.world.blocks.distribution.DirectionalUnloader;
-import mindustry.world.blocks.storage.CoreBlock;
-import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 

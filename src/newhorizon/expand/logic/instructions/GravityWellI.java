@@ -1,12 +1,7 @@
 package newhorizon.expand.logic.instructions;
 
-import arc.math.Rand;
-import arc.struct.Seq;
 import mindustry.logic.LExecutor;
-import mindustry.world.Tile;
 import newhorizon.NHGroups;
-
-import static mindustry.Vars.spawner;
 
 public class GravityWellI implements LExecutor.LInstruction {
     public int x, y, out;

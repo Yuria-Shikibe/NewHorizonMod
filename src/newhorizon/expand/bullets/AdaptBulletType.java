@@ -1,12 +1,13 @@
 package newhorizon.expand.bullets;
 
 import arc.Events;
-import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.game.EventType;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Healthc;
+import mindustry.gen.Hitboxc;
+import mindustry.gen.Unit;
 
 /**Bullet with kinetic damage and energy damage*/
 public class AdaptBulletType extends BasicBulletType {

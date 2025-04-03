@@ -1,8 +1,6 @@
 package newhorizon.util.struct;
 
 import arc.struct.Queue;
-import arc.util.Log;
-import mindustry.graphics.Layer;
 
 /** A series of elements that run in sequence. */
 public class TimeQueue<T extends TimeQueue.Timed>{

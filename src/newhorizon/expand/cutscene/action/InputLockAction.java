@@ -1,10 +1,10 @@
 package newhorizon.expand.cutscene.action;
 
 import arc.Core;
-import mindustry.Vars;
 import newhorizon.expand.cutscene.components.Action;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.control;
+import static mindustry.Vars.headless;
 import static newhorizon.NHVars.cutsceneUI;
 
 public class InputLockAction extends Action {

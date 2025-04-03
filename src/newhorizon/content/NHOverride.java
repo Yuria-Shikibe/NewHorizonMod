@@ -1,6 +1,5 @@
 package newhorizon.content;
 
-import arc.Events;
 import arc.func.Cons;
 import arc.func.Intc;
 import arc.graphics.Color;
@@ -14,8 +13,6 @@ import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.game.EventType;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Team;
 import mindustry.game.Waves;
@@ -23,7 +20,6 @@ import mindustry.gen.Icon;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
-import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.BurstDrill;
@@ -36,14 +32,12 @@ import mindustry.world.meta.StatCat;
 import newhorizon.NHSetting;
 import newhorizon.content.bullets.VanillaOverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
-import newhorizon.expand.bullets.AdaptBulletType;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 
 import static mindustry.Vars.content;
-import static mindustry.Vars.state;
 import static mindustry.content.UnitTypes.*;
 
 public class NHOverride{

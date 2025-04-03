@@ -15,7 +15,6 @@ import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.StatValues;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHStatValues;
 import newhorizon.content.NHStats;

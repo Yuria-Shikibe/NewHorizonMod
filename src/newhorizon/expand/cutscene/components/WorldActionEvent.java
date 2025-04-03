@@ -1,7 +1,6 @@
 package newhorizon.expand.cutscene.components;
 
 import mindustry.game.Team;
-import newhorizon.content.NHBullets;
 
 public class WorldActionEvent {
     public Team team = Team.derelict;

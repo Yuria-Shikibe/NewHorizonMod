@@ -14,12 +14,10 @@ import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
-import mindustry.world.blocks.defense.turrets.BaseTurret;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.ReloadTurret;
-import newhorizon.content.*;
-import newhorizon.content.blocks.TurretBlock;
+import newhorizon.content.NHBullets;
+import newhorizon.content.NHColor;
+import newhorizon.content.NHFx;
+import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.bullets.raid.TracerRaidBulletType;
@@ -27,8 +25,8 @@ import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.*;
-import static arc.graphics.g2d.Lines.circle;
+import static arc.graphics.g2d.Lines.lineAngle;
+import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 
 public class RaidBullets {

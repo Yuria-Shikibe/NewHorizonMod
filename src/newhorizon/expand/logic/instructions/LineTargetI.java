@@ -5,7 +5,6 @@ import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.logic.LExecutor;
 import mindustry.world.Tile;
-import mindustry.world.Tiles;
 
 import static mindustry.Vars.world;
 

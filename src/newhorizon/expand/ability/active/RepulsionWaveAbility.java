@@ -1,21 +1,14 @@
 package newhorizon.expand.ability.active;
 
-import arc.scene.ui.layout.Table;
-import arc.util.Strings;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.util.graphic.OptionalMultiEffect;
-
-import static mindustry.Vars.tilesize;
 
 public class RepulsionWaveAbility extends ActiveAbility{
     public float radius = 300;

@@ -3,7 +3,6 @@ package newhorizon.expand.cutscene.action;
 import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.gen.Building;
-import mindustry.graphics.Pal;
 import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 import newhorizon.expand.cutscene.components.ui.MarkStyle;

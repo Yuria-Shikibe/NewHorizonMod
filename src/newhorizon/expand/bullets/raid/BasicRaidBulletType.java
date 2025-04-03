@@ -2,7 +2,6 @@ package newhorizon.expand.bullets.raid;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Tmp;
@@ -14,17 +13,7 @@ import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import newhorizon.content.NHBullets;
-import newhorizon.content.NHFx;
-import newhorizon.util.graphic.OptionalMultiEffect;
-
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.randLenVectors;
-import static newhorizon.content.NHFx.EFFECT_BOTTOM;
-import static newhorizon.content.NHFx.EFFECT_MASK;
 
 //change every single effect which are color related and change the color to bullet's team color
 public class BasicRaidBulletType extends BasicBulletType {

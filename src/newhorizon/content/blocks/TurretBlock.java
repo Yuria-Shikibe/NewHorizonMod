@@ -1,13 +1,11 @@
 package newhorizon.content.blocks;
 
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.entities.UnitSorts;
 import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
@@ -25,7 +23,6 @@ import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.content.bullets.RaidBullets;
-import newhorizon.expand.block.turrets.AdaptItemTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.expand.bullets.DOTBulletType;

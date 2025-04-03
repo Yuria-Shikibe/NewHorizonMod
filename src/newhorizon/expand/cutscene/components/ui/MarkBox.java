@@ -1,7 +1,6 @@
 package newhorizon.expand.cutscene.components.ui;
 
 import arc.Core;
-import arc.func.Boolp;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -11,7 +10,6 @@ import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
-import arc.util.pooling.Pool;
 import mindustry.Vars;
 import newhorizon.util.func.MathUtil;
 import newhorizon.util.func.NHInterp;

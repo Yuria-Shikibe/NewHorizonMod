@@ -10,8 +10,6 @@ import newhorizon.expand.cutscene.components.Action;
 import newhorizon.expand.cutscene.components.ActionControl;
 import newhorizon.expand.entities.Spawner;
 
-import static mindustry.Vars.headless;
-
 public class JumpInAction extends Action {
     public UnitType unitType;
     public Team team;

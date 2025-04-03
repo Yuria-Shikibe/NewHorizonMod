@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import mindustry.gen.Building;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 

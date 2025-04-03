@@ -4,7 +4,6 @@ import newhorizon.expand.cutscene.components.Action;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.ui;
-import static newhorizon.NHVars.cutsceneUI;
 
 public class UIShowAction extends Action {
     public UIShowAction() {

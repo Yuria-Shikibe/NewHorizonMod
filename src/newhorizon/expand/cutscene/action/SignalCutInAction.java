@@ -1,6 +1,5 @@
 package newhorizon.expand.cutscene.action;
 
-import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.util.Time;
 import newhorizon.expand.cutscene.components.Action;

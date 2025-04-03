@@ -15,7 +15,7 @@ import mindustry.world.blocks.distribution.OverflowDuct;
 import newhorizon.expand.block.distribution.transport.LogisticBuild;
 import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.player;
 
 public class AdaptDirectionalGate extends OverflowDuct {
     public AdaptConveyor cBlock;
