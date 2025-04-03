@@ -92,7 +92,7 @@ public class CutsceneUI {
 		//skip button for skip current cutscene
 		buildSkip();
 		//lmao
-		buildKillStreak();
+		//buildKillStreak();
 		//update the text table position according to the layout
 		updatePosition();
 		//build all cutscene ui, add the elements to root.
@@ -312,7 +312,7 @@ public class CutsceneUI {
 			root.addChild(textTable);
 			root.addChild(infoTable);
 			root.addChild(skip);
-			root.addChild(killStreak);
+			//root.addChild(killStreak);
 		}
 	}
 	
