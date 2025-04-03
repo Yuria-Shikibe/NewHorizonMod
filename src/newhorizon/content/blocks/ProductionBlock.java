@@ -1,5 +1,6 @@
 package newhorizon.content.blocks;
 
+import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -13,32 +14,74 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
+import mindustry.gen.Sounds;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.Item;
-import newhorizon.NewHorizon;
-import newhorizon.content.NHItems;
+import mindustry.type.LiquidStack;
+import mindustry.world.blocks.power.ThermalGenerator;
+import mindustry.world.draw.*;
+import mindustry.world.meta.BlockGroup;
+import newhorizon.content.*;
 import newhorizon.expand.block.production.drill.*;
 import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.graphic.OptionalMultiEffect;
 
+import static arc.graphics.g2d.Lines.circleVertices;
 import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
+    public static ThermalGenerator xenExtractor;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
 
-    public static DrillModule speedModule, refineModule, deliveryModule;
+    public static DrillModule speedModule, speedModuleMk2, refineModule, deliveryModule;
 
     public static void load(){
+        xenExtractor = new ThermalGenerator("xen-extractor"){{
+            requirements(Category.production, with(Items.graphite, 20, Items.beryllium, 60));
+            attribute = NHContent.quantum;
+            group = BlockGroup.liquids;
+            displayEfficiencyScale = 1f / 9f;
+            minEfficiency = 9f - 0.0001f;
+            powerProduction = 450f / 60f / 9f;
+            displayEfficiency = false;
+            effectChance = 0.2f;
+            generateEffect = new OptionalMultiEffect(
+                    NHFx.square(NHColor.lightSkyFront, 60, 6, 32, 3),
+                    new Effect(40f, 80f, e -> {
+                        Draw.color(NHColor.lightSkyFront, NHColor.lightSkyBack, e.fin() * 0.8f);
+                        Lines.stroke(2f * e.fout());
+                        Lines.spikes(e.x, e.y, 12 * e.finpow(), 1.5f * e.fout() + 4 * e.fslope(), 4, 45);
+                    })
+            );
+            effectChance = 0.04f;
+            size = 3;
+            ambientSound = Sounds.hum;
+            ambientSoundVolume = 0.06f;
+
+            squareSprite = false;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-base"),
+                    new DrawLiquidTile(NHLiquids.xenFluid, 2f),
+                    new DrawRegion("-top")
+            );
+
+            hasLiquids = true;
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 1f / 60f);
+            liquidCapacity = 60f;
+        }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility"){{
             requirements(Category.production, with(Items.copper, 60, Items.lead, 45, Items.titanium, 40, Items.graphite, 20, Items.silicon, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 960;
 
-            mineSpeed = 3f;
-            mineCount = 3;
+            mineSpeed = 6f;
+            mineCount = 15;
             mineTier = 5;
 
             powerConsBase = 150f;
@@ -55,6 +98,8 @@ public class ProductionBlock {
                 });
             });
 
+            updateEffectChance = 0.1f;
+
             drawer = b -> {
                 float rad = 9.2f + Mathf.absin(8, 1);
                 float base = (Time.time / 30f);
@@ -62,7 +107,7 @@ public class ProductionBlock {
                 Draw.color(Tmp.c1);
                 Lines.stroke(1.2f);
                 for(int i = 0; i < 32; i++){
-                    rand.setSeed(id + hashCode() + i);
+                    rand.setSeed(b.id + i);
                     float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                     float angle = rand.random(360f);
                     float len = 12.5f * Interp.pow2.apply(fout);
@@ -73,7 +118,6 @@ public class ProductionBlock {
                     );
                 }
 
-
                 Tmp.c1.set(Pal.techBlue).lerp(Color.white, 0.2f).a(b.warmup/1.1f);
                 Draw.color(Tmp.c1);
                 Lines.stroke(1.32f);
@@ -82,8 +126,135 @@ public class ProductionBlock {
                 Draw.reset();
             };
         }};
-        //beamMiningFacility = new BeamDrill();
-        //implosionMiningFacility = new ImplosionDrill();
+        beamMiningFacility = new AdaptDrill("beam-mining-facility"){{
+            requirements(Category.production, with(NHItems.juniorProcessor, 50, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, NHItems.metalOxhydrigen, 40));
+            mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
+
+            health = 1200;
+
+            mineSpeed = 10f;
+            mineCount = 20;
+            mineTier = 5;
+
+            powerConsBase = 300f;
+            itemCapacity = 75;
+
+            maxModules = 4;
+
+            updateEffect = new Effect(30f, e -> {
+                Rand rand = rand(e.id);
+                Draw.color(e.color, Color.white, e.fout() * 0.66f);
+                Draw.alpha(0.55f * e.fout() + 0.5f);
+                Angles.randLenVectors(e.id, 2, 4f + e.finpow() * 17f, (x, y) -> {
+                    Fill.square(e.x + x, e.y + y, e.fout() * rand.random(2.5f, 4), 45);
+                });
+            });
+            updateEffectChance = 0.06f;
+
+            drawer = b -> {
+                float shooterOffset = 12f;
+                float shooterExtendOffset = 1.8f;
+                float shooterMoveRange = 5.2f;
+                float shootY = 1.55f;
+                float moveScale = 60f;
+                float moveScaleRand = 20f;
+                float laserScl = 0.2f;
+                Color laserColor = Color.valueOf("f58349");
+                float laserAlpha = 0.75f;
+                float laserAlphaSine = 0.2f;
+                int particles = 25;
+                float particleLife = 40f, particleRad = 9.75f, particleLen = 4f;
+
+                float timeDrilled = Time.time / 2.5f;
+                float
+                        moveX = Mathf.sin(timeDrilled, moveScale + Mathf.randomSeed(b.id, -moveScaleRand, moveScaleRand), shooterMoveRange) + b.x,
+                        moveY = Mathf.sin(timeDrilled + Mathf.randomSeed(b.id >> 1, moveScale), moveScale + Mathf.randomSeed(b.id >> 2, -moveScaleRand, moveScaleRand), shooterMoveRange) + b.y;
+
+                float stroke = laserScl * b.warmup;
+                Draw.mixcol(laserColor, Mathf.absin(4f, 0.6f));
+                Draw.alpha(laserAlpha + Mathf.absin(8f, laserAlphaSine));
+                Draw.blend(Blending.additive);
+                Drawf.laser(Core.atlas.find("minelaser"), Core.atlas.find("minelaser-end"), b.x + (-shooterOffset + b.warmup * shooterExtendOffset + shootY), moveY, b.x - (-shooterOffset + b.warmup * shooterExtendOffset + shootY), moveY, stroke);
+                Drawf.laser(Core.atlas.find("minelaser"), Core.atlas.find("minelaser-end"), moveX, b.y + (-shooterOffset + b.warmup * shooterExtendOffset + shootY), moveX, b.y - (-shooterOffset + b.warmup * shooterExtendOffset + shootY), stroke);
+
+                Draw.color(b.dominantItem.color);
+
+                float sine = 1f + Mathf.sin(6f, 0.1f);
+
+                Lines.stroke(stroke / laserScl / 2f);
+                Lines.circle(moveX, moveY, stroke * 12f * sine);
+                Fill.circle(moveX, moveY, stroke * 8f * sine);
+
+                rand.setSeed(id);
+                float base = (Time.time / particleLife);
+                for(int i = 0; i < particles; i++){
+                    float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
+                    float angle = rand.random(360f);
+                    float len = Mathf.randomSeed(rand.nextLong(), particleRad * 0.8f, particleRad * 1.1f) * Interp.pow2Out.apply(fin);
+                    Lines.lineAngle(moveX + Angles.trnsx(angle, len), moveY + Angles.trnsy(angle, len), angle, particleLen * fout * stroke / laserScl);
+                }
+
+                Draw.blend();
+                Draw.reset();
+            };
+        }};
+        implosionMiningFacility = new AdaptDrill("implosion-mining-facility"){{
+            requirements(Category.production, with(NHItems.multipleSteel, 60, NHItems.seniorProcessor, 50, NHItems.irayrondPanel, 25, NHItems.presstanium, 50, NHItems.zeta, 100));
+            mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
+            size = 4;
+
+            health = 1560;
+
+            mineSpeed = 12f;
+            mineCount = 30;
+            mineTier = 100;
+
+            itemCapacity = 120;
+
+            maxModules = 8;
+
+            powerConsBase = 480f;
+
+            updateEffectChance = 0.04f;
+
+            updateEffect = new Effect(30f, e -> {
+                Rand rand = rand(e.id);
+                Draw.color(e.color, Color.white, e.fout() * 0.66f);
+                Draw.alpha(0.55f * e.fout() + 0.5f);
+                Angles.randLenVectors(e.id, 4, 4f + e.finpow() * 17f, (x, y) -> {
+                    Fill.poly(e.x + x, e.y + y, 3, e.fout() * rand.random(2.5f, 4), rand.random(360));
+                });
+            });
+
+            drawer = b -> {
+                rand.setSeed(b.id);
+
+                float base = (Time.time / 25);
+                Tmp.c1.set(b.dominantItem.color).lerp(Color.white, 0.2f).a(b.warmup);
+                Draw.color(Tmp.c1);
+                Lines.stroke(1.2f);
+                for(int i = 0; i < 32; i++){
+                    rand.setSeed(id + hashCode() + i);
+                    float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
+                    float angle = rand.random(360f);
+                    float len = 13.5f * Interp.pow2.apply(fout);
+                    Lines.lineAngle(
+                            b.x + Angles.trnsx(angle, len),
+                            b.y + Angles.trnsy(angle, len),
+                            angle, 6 * fin
+                    );
+                }
+
+                Tmp.c1.set(b.team.color).lerp(Color.white, 0.4f).a(b.warmup/1.1f);
+                Draw.color(Tmp.c1);
+                Fill.circle(b.x, b.y, 3 + Mathf.sinDeg(Time.time * 1.2f));
+                Lines.stroke(1.3f);
+                Lines.circle(b.x, b.y, 6 + Mathf.sinDeg(Time.time * 1.2f));
+                Fill.light(b.x, b.y, circleVertices(15f), 15f, Color.clear, Tmp.c1);
+
+                Draw.color();
+            };
+        }};
 
         speedModule = new DrillModule("speed-module"){{
             requirements(Category.production, with(NHItems.juniorProcessor, 30, NHItems.presstanium, 25, Items.phaseFabric, 10, NHItems.multipleSteel, 20));
@@ -92,6 +263,22 @@ public class ProductionBlock {
             boostSpeed = 0.5f;
             powerMul = 0.4f;
             powerExtra = 80f;
+
+            drawer = module -> {
+                for (int i = 0; i < 3; i++){
+                    float scl = (Mathf.sinDeg(-Time.time * 3 + 120 * i) * 1.2f + (Mathf.sinDeg(-Time.time * 3 + 120 * i + 120)) * 0.6f) * module.smoothWarmup;
+                    Draw.alpha(scl);
+                    Draw.rect(name + "-arrow-" + i, module.x, module.y, module.rotdeg());
+                }
+            };
+        }};
+        speedModuleMk2 = new DrillModule("speed-module-mk2"){{
+            requirements(Category.production, with(NHItems.juniorProcessor, 30, NHItems.presstanium, 25, Items.phaseFabric, 10, NHItems.multipleSteel, 20));
+            health = 760;
+            size = 2;
+            boostSpeed = 1f;
+            powerMul = 0.8f;
+            powerExtra = 150f;
 
             drawer = module -> {
                 for (int i = 0; i < 3; i++){

@@ -35,7 +35,7 @@ public class NHItems{
 		seniorProcessor = new Item("processor-senior", Color.valueOf("FFFACD"));
 		juniorProcessor = new Item("processor-junior", Color.valueOf("808080"));
 		zeta = new Item("zeta", Color.valueOf("#FFAE87")){{
-			hardness = 4;
+			hardness = 8;
 			radioactivity = 1.5f;
 			charge = 1f;
 		}};

@@ -100,10 +100,9 @@ public class AdaptDrill extends Block {
 
     public float getMineSpeedHardnessMul(Item item){
         if (item == null) return 0f;
-        if (item.hardness == 0) return 2;
-        if (item.hardness <= 2) return 1.5f;
-        if (item.hardness <= 4) return 1f;
-        return 0.8f;
+        if (item.hardness <= 2) return 1f;
+        if (item.hardness <= 5) return 0.75f;
+        return 0.5f;
     }
 
     @Override

@@ -22,7 +22,6 @@ import mindustry.ui.dialogs.PlanetDialog;
 import newhorizon.content.*;
 import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.expand.entities.EntityRegister;
-import newhorizon.expand.game.ContentOverride;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
@@ -139,7 +138,6 @@ public class NewHorizon extends Mod{
 		debugFunctions();
 
 		registerModBinding();
-		Events.on(EventType.ClientLoadEvent.class, e -> ContentOverride.override());
 		Events.on(ClientLoadEvent.class, e -> {
 			Core.app.post(NHUI::init);
 			updateServer();

@@ -106,6 +106,11 @@ public class RecipeGenericCrafter extends AdaptCrafter{
     public class RecipeGenericCrafterBuild extends AdaptCrafterBuild{
         public int recipeIdx = -1;
 
+        @Override
+        public float getPowerProduction(){
+            return super.getPowerProduction();
+        }
+
         public void updateRecipeIdx(){
             for (int i = 0; i < alterRecipe; i++) {
                 boolean validItemInput = true;

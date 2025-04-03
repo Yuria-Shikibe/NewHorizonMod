@@ -24,7 +24,9 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.production.BurstDrill;
 import mindustry.world.blocks.production.Drill;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
@@ -319,8 +321,7 @@ public class NHOverride{
 
 	public static void contentOverride(){
 		overrideUnitTypeAbility();
-		hideVanillaContent();
-		adjustVanillaContent();
+		balanceDrill();
 		buffCoreUnits();
 
 		overrideStats();
@@ -579,30 +580,54 @@ public class NHOverride{
 		hideContent(Blocks.impulsePump);
 	}
 
-	private static void adjustVanillaContent(){
+	public static void balanceDrill(){
+		hideContent(Blocks.mechanicalDrill);
+		hideContent(Blocks.laserDrill);
+		hideContent(Blocks.blastDrill);
+		hideContent(Blocks.eruptionDrill);
+
 		adjustContent(Blocks.pneumaticDrill, content -> {
 			Drill drill = (Drill)content;
 			drill.requirements = ItemStack.with(Items.copper, 15, Items.lead, 20);
 			drill.hardnessDrillMultiplier = 0;
 			drill.consumeLiquid(Liquids.water, 3f / 60f);
 			drill.liquidBoostIntensity = Mathf.sqrt(1.5f);
-			drill.tier = 3;
-			drill.drillTime = 40f * drill.size * drill.size;
-			drill.drillMultipliers.put(Items.copper, 1.2f / 1.5f);
-			drill.drillMultipliers.put(Items.lead, 1.2f / 1.5f);
-			drill.drillMultipliers.put(Items.coal, 1f / 1.5f);
-			drill.drillMultipliers.put(Items.titanium, 0.8f / 1.5f);
-			drill.drillMultipliers.put(Items.beryllium, 0.8f / 1.5f);
+			drill.drillTime = 60f * drill.size * drill.size;
+			drill.drillMultipliers.put(Items.sand, 1f);
+			drill.drillMultipliers.put(Items.scrap, 1f);
+			drill.drillMultipliers.put(Items.copper, 1f);
+			drill.drillMultipliers.put(Items.lead, 1f);
+			drill.drillMultipliers.put(Items.coal, 1f);
+			drill.drillMultipliers.put(Items.titanium, 0.75f);
+			drill.drillMultipliers.put(Items.beryllium, 0.75f);
 		});
 
+		adjustContent(Blocks.impactDrill, content -> {
+			BurstDrill drill = (BurstDrill)content;
+			drill.requirements = ItemStack.with(Items.beryllium, 60, Items.graphite, 45);
+			drill.hardnessDrillMultiplier = 0;
+			drill.consumeLiquid(Liquids.water, 3f / 60f);
+			drill.drillTime = 60f * drill.size * drill.size / 6;
+			drill.drillMultipliers.put(Items.sand, 1f);
+			drill.drillMultipliers.put(Items.scrap, 1f);
+			drill.drillMultipliers.put(Items.copper, 1f);
+			drill.drillMultipliers.put(Items.lead, 1f);
+			drill.drillMultipliers.put(Items.coal, 1f);
+			drill.drillMultipliers.put(Items.titanium, 0.75f);
+			drill.drillMultipliers.put(Items.beryllium, 0.75f);
+			drill.drillMultipliers.put(Items.tungsten, 0.5f);
+		});
 
 	}
 
 	public static void buffCoreUnits(){
-		Blocks.coreShard.buildVisibility = BuildVisibility.shown;
 
-		Blocks.coreShard.health *= 5;
-		Blocks.coreShard.armor = 5;
+		adjustContent(Blocks.coreShard, content -> {
+			CoreBlock core = (CoreBlock)content;
+			core.buildVisibility = BuildVisibility.shown;
+			core.health *= 5;
+			core.armor = 5;
+		});
 
 		adjustContent(UnitTypes.alpha, content -> {
 			UnitType unitType = (UnitType)content;
@@ -613,11 +638,35 @@ public class NHOverride{
 			});
 		});
 
-		Blocks.coreFoundation.health *= 5;
-		Blocks.coreFoundation.armor = 10f;
+		adjustContent(Blocks.coreFoundation, content -> {
+			CoreBlock core = (CoreBlock)content;
+			core.health *= 5;
+			core.armor = 10;
+		});
 
-		Blocks.coreNucleus.health *= 5;
-		Blocks.coreNucleus.armor = 15f;
+		adjustContent(UnitTypes.beta, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 10f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
+				weapon.reload = 20f;
+				weapon.bullet = VanillaOverrideBullets.beta0;
+			});
+		});
+
+		adjustContent(Blocks.coreNucleus, content -> {
+			CoreBlock core = (CoreBlock)content;
+			core.health *= 5;
+			core.armor = 15;
+		});
+
+		adjustContent(UnitTypes.gamma, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 12.5f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
+				weapon.reload = 16f;
+				weapon.bullet = VanillaOverrideBullets.gamma0;
+			});
+		});
 	}
 
 	private static void overrideUnitTypeAbility(){

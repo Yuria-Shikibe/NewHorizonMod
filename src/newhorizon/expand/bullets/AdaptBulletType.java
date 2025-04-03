@@ -6,14 +6,12 @@ import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.game.EventType;
-import mindustry.gen.Bullet;
-import mindustry.gen.Healthc;
-import mindustry.gen.Hitboxc;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 
 /**Bullet with kinetic damage and energy damage*/
 public class AdaptBulletType extends BasicBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
+    //this will move to shield multiplier when comes to v8
     public float kineticDamage = 30f, energyDamage = 30f;
     public float splashMultiplier = 1f;
     public AdaptBulletType(float kineticDamage, float energyDamage) {
@@ -37,6 +35,7 @@ public class AdaptBulletType extends BasicBulletType {
         boolean wasDead = entity instanceof Unit u && u.dead;
 
         if(entity instanceof Healthc h){
+
             if(pierceArmor){
                 if (entity instanceof Unit u && u.shield() > 0){
                     h.damagePierce(energyDamage * b.damageMultiplier());

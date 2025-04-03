@@ -87,9 +87,6 @@ import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
 
 public class NHBlocks{
-
-	//Load Mod Factories
-
 	public static Block
 		tagger;
 
