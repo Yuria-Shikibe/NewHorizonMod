@@ -1,6 +1,8 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
+import mindustry.content.Items;
+import mindustry.content.Planets;
 import mindustry.type.Item;
 
 public class NHItems{
@@ -62,8 +64,17 @@ public class NHItems{
 			cost = 3f;
 		}};
 		metalOxhydrigen = new Item("metal-oxhydrigen", Color.valueOf("#BFF3FF"));
+
+		Items.serpuloItems.add(Items.tungsten, Items.carbide);
+		Items.erekirItems.add(Items.titanium);
+		Items.erekirOnlyItems.clear().addAll(Items.erekirItems).removeAll(Items.serpuloItems);
+
+		Planets.erekir.hiddenItems.addAll(Items.serpuloItems).removeAll(Items.erekirItems);
+		Planets.serpulo.hiddenItems.addAll(Items.erekirItems).removeAll(Items.serpuloItems);
+
+
+
 	}
-	
 }
 
 

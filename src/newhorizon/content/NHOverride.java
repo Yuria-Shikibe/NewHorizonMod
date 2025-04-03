@@ -1,5 +1,6 @@
 package newhorizon.content;
 
+import arc.Events;
 import arc.func.Cons;
 import arc.func.Intc;
 import arc.graphics.Color;
@@ -14,6 +15,7 @@ import mindustry.content.*;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.game.EventType;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Team;
 import mindustry.game.Waves;
@@ -41,6 +43,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static mindustry.Vars.content;
+import static mindustry.Vars.state;
 import static mindustry.content.UnitTypes.*;
 
 public class NHOverride{
@@ -320,11 +323,22 @@ public class NHOverride{
 	}
 
 	public static void contentOverride(){
+		setModContentEnv();
 		overrideUnitTypeAbility();
 		balanceDrill();
 		buffCoreUnits();
 
 		overrideStats();
+	}
+
+	public static void setModContentEnv(){
+		//Events.on(EventType.WorldLoadEvent.class, e -> {
+		//	state.rules.bannedBlocks.each(b -> {
+		//		if (b.name.startsWith("new-horizon")) {
+		//			state.rules.bannedBlocks.remove(b);
+		//		}
+		//	});
+		//});
 	}
 
 	public static void overrideVanillaMain(){
