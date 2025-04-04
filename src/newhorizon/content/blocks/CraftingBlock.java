@@ -87,11 +87,11 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(ItemStack.empty, LiquidStack.with(Liquids.oil, 24 / 60f));
+            addInput(ItemStack.empty, LiquidStack.with(Liquids.oil, 18 / 60f));
             addInput(ItemStack.empty, LiquidStack.with(Liquids.arkycite, 20 / 60f));
 
             consumePower(120f / 60f);
-            outputLiquids = LiquidStack.with(NHLiquids.xenFluid, 6 / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.xenFluid, 12 / 60f);
 
             drawer = new DrawMulti(
                     new DrawRegion(){{
@@ -114,7 +114,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
-            craftTime = 60f;
+            craftTime = 40f;
 
             addInput(ItemStack.with(Items.titanium, 2), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
             addInput(ItemStack.with(Items.titanium, 2, Items.graphite, 1), LiquidStack.empty);
@@ -147,7 +147,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
-            craftTime = 60f;
+            craftTime = 40f;
 
             addInput(ItemStack.with(Items.silicon, 2), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
             addInput(ItemStack.with(Items.silicon, 2, Items.copper, 3), LiquidStack.empty);
@@ -351,7 +351,7 @@ public class CraftingBlock {
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
-            craftTime = 120f;
+            craftTime = 60f;
             consumePower(480 / 60f);
             addInput(ItemStack.with(Items.titanium, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f));
 
@@ -380,7 +380,7 @@ public class CraftingBlock {
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
-            craftTime = 120f;
+            craftTime = 60f;
             consumePower(480 / 60f);
             addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
 
@@ -468,10 +468,12 @@ public class CraftingBlock {
 
             addInput(ItemStack.with(Items.phaseFabric, 1), LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
 
-            outputLiquids = LiquidStack.with(NHLiquids.irdryonFluid, 3 / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.irdryonFluid, 8 / 60f);
 
             drawer = new DrawMulti(
-                    new DrawDefault()
+                    new DrawRegionRotated(){{
+                        oneSprite = true;
+                    }}
             );
         }};
         multipleSteelFactory = new GenericCrafter("multiple-steel-factory") {{
@@ -501,10 +503,10 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.surgeAlloy, 2, Items.carbide, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f));
+            addInput(ItemStack.with(Items.surgeAlloy, 2, Items.carbide, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
 
-            outputItems = with(NHItems.irayrondPanel, 2);
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.5f / 60f);
+            outputItems = with(NHItems.irayrondPanel, 4);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
             ignoreLiquidFullness = true;
 
             itemCapacity = 30;
@@ -529,7 +531,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.carbide, 6), LiquidStack.with(NHLiquids.irdryonFluid, 6 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
+            addInput(ItemStack.with(Items.carbide, 4), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
 
             outputItems = with(NHItems.setonAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3f / 60f);

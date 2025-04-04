@@ -633,7 +633,7 @@ public class NHOverride{
 		adjustContent(Blocks.coreShard, content -> {
 			CoreBlock core = (CoreBlock)content;
 			core.buildVisibility = BuildVisibility.shown;
-			core.health *= 5;
+			//core.health *= 5;
 			core.armor = 5;
 		});
 
@@ -648,7 +648,7 @@ public class NHOverride{
 
 		adjustContent(Blocks.coreFoundation, content -> {
 			CoreBlock core = (CoreBlock)content;
-			core.health *= 5;
+			//core.health *= 5;
 			core.armor = 10;
 		});
 
@@ -663,7 +663,7 @@ public class NHOverride{
 
 		adjustContent(Blocks.coreNucleus, content -> {
 			CoreBlock core = (CoreBlock)content;
-			core.health *= 5;
+			//core.health *= 5;
 			core.armor = 15;
 		});
 
