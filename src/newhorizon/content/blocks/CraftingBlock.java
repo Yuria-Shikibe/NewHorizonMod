@@ -471,8 +471,8 @@ public class CraftingBlock {
             outputLiquids = LiquidStack.with(NHLiquids.irdryonFluid, 8 / 60f);
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated(){{
-                        oneSprite = true;
+                    new DrawRegion(){{
+                        buildingRotate = false;
                     }}
             );
         }};

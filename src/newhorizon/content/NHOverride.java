@@ -310,6 +310,8 @@ public class NHOverride{
 					}}
 			);
 		}
+
+		contentOverride();
 	}
 
 	public static void loadOptional(){
