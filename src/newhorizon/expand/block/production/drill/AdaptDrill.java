@@ -32,6 +32,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.production.Drill;
 import mindustry.world.meta.*;
 import newhorizon.content.NHStats;
 import newhorizon.expand.block.consumer.PowerConsumer;
@@ -115,6 +116,9 @@ public class AdaptDrill extends Block {
     public void setBars(){
         super.setBars();
         addBar("outputOre", (AdaptDrillBuild e) -> new Bar(e::getMineInfo, e::getMineColor, () -> 1f));
+        addBar("drillspeed", (AdaptDrillBuild e) ->
+                new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.getMineSpeed(), 2)), () -> Pal.ammo, () -> e.warmup));
+
     }
 
     public float mineInterval(){
@@ -190,7 +194,7 @@ public class AdaptDrill extends Block {
         countOre(tile);
 
         if(returnItem != null){
-            String oreCountText = (returnCount < maxOreTileReq? "[sky](": "[heal](") + returnCount + "/" +  maxOreTileReq + ")[] " + Strings.autoFixed(mineSpeed * Mathf.clamp((float) returnCount /maxOreTileReq) * getMineSpeedHardnessMul(returnItem), 1) + "/s";
+            String oreCountText = (returnCount < maxOreTileReq? "[sky](": "[heal](") + returnCount + "/" +  maxOreTileReq + ")[] " + Strings.autoFixed(mineSpeed * Mathf.clamp((float) returnCount /maxOreTileReq) * getMineSpeedHardnessMul(returnItem), 1) + StatUnit.perSecond.localized();
             float width = drawPlaceText(oreCountText, x, y, valid);
             float dx = x * tilesize + offset - width/2f - 4f, dy = y * tilesize + offset + size * tilesize / 2f + 5, s = iconSmall / 4f;
             Draw.mixcol(Color.darkGray, 1f);
@@ -203,7 +207,7 @@ public class AdaptDrill extends Block {
             if(item != null){
                 drawPlaceText(Core.bundle.get("bar.drilltierreq"), x, y, valid);
             }else {
-                drawPlaceText("No Ores", x, y, valid);
+                drawPlaceText(Core.bundle.get("nh.no-available-ore"), x, y, valid);
             }
         }
     }

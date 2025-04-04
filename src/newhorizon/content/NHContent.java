@@ -40,6 +40,8 @@ import static mindustry.Vars.renderer;
 public class NHContent extends Content{
 	public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
 	public static final float XEN_LAYER = Layer.block - 0.003f;
+	public static final float POWER_AREA = Layer.power + 0.114f;
+	public static final float POWER_DYNAMIC = Layer.power + 0.514f;
 
 	public static Fi scheDir;
 	
@@ -47,7 +49,7 @@ public class NHContent extends Content{
 	
 	public static Texture smoothNoise, particleNoise, darkerNoise, armorTex/*, platingNoise*/;
 	
-	public static CacheLayer quantumLayer, armorLayer/*, platingLayer*/;
+	public static CacheLayer quantumLayer, armorLayer;
 	
 	public static TextureRegion
 			crossRegion, sourceCenter, timeIcon, xenIcon,
@@ -170,10 +172,6 @@ public class NHContent extends Content{
 	@Override
 	public ContentType getContentType(){
 		return ContentType.error;
-	}
-	
-	public void process(){
-		NHPixmap.outLineAndAdd("ann-missile" + NHPixmap.PCD_SUFFIX, Core.atlas.find(NewHorizon.name("ann-missile")), NHPixmap.OUTLINE_COLOR, 4);
 	}
 	
 	public void load(){

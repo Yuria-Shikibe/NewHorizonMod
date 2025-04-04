@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.content.Fx;
@@ -14,6 +15,7 @@ import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
@@ -22,6 +24,7 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
+import newhorizon.expand.block.adapt.MultiCrafter;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.DrawFunc;
@@ -33,12 +36,54 @@ import static mindustry.type.ItemStack.with;
 public class CraftingBlock {
     public static Block
             //vanilla adapt build
+            sandCracker, oilRefiner,
             convertorTungsten, convertorTitanium, xenRefinery,
             stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
             fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
             multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator;
 
     public static void load(){
+        sandCracker = new RecipeGenericCrafter("sand-cracker"){{
+            size = 2;
+            requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
+            health = 320;
+            craftTime = 45f;
+            itemCapacity = 20;
+            hasPower = hasItems = true;
+            craftEffect = NHFx.hugeSmokeGray;
+            updateEffect = new Effect(80f, e -> {
+                Fx.rand.setSeed(e.id);
+                Draw.color(Color.lightGray, Color.gray, e.fin());
+                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> {
+                    Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
+                });
+            }).layer(Layer.blockOver + 1);
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
+            consumePower(1.5f);
+
+            addInput(ItemStack.with(Items.scrap, 3), LiquidStack.empty);
+            addInput(ItemStack.with(Items.copper, 8), LiquidStack.empty);
+            addInput(ItemStack.with(Items.lead, 8), LiquidStack.empty);
+            addInput(ItemStack.with(Items.beryllium, 5), LiquidStack.empty);
+            addInput(ItemStack.with(Items.titanium, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 4), LiquidStack.empty);
+
+            outputItem = new ItemStack(Items.sand, 8);
+        }};
+        oilRefiner = new GenericCrafter("oil-refiner"){{
+
+            size = 2;
+            requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
+            health = 200;
+            craftTime = 90f;
+            liquidCapacity = 60f;
+            itemCapacity = 20;
+            hasPower = hasLiquids = hasItems = true;
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
+            consumePower(5f);
+            consumeItems(new ItemStack(Items.sand, 5));
+            outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
+        }};
         convertorTungsten = new RecipeGenericCrafter("convertor-tungsten"){{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.titanium, 45, Items.graphite, 30));
@@ -212,7 +257,7 @@ public class CraftingBlock {
             addInput(ItemStack.with(Items.tungsten, 2, Items.pyratite, 1), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 2, Items.graphite, 3), LiquidStack.with(Liquids.ozone, 6 / 60f));
 
-            outputItems = with(Items.carbide, 1);
+            outputItems = with(Items.carbide, 2);
 
             itemCapacity = 15;
 
@@ -247,6 +292,9 @@ public class CraftingBlock {
 
             size = 2;
 
+            canMirror = true;
+            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
+
             addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
                     0, 2, 1, /**/1, 2, 1 /**/);
 
@@ -254,7 +302,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
             addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 3 / 60f));
             addInput(ItemStack.with(Items.lead, 2), LiquidStack.with(Liquids.water, 6 / 60f));
-            addInput(ItemStack.with(Items.oxide, 2), LiquidStack.with(Liquids.water, 6 / 60f));
+            addInput(ItemStack.with(Items.oxide, 1), LiquidStack.with(Liquids.water, 6 / 60f));
 
             outputItems = with(NHItems.metalOxhydrigen, 2);
 
@@ -319,6 +367,7 @@ public class CraftingBlock {
                     NHItems.presstanium, 30, NHItems.juniorProcessor, 40, Items.carbide, 60, NHItems.metalOxhydrigen, 45, NHItems.zeta, 60));
 
             quickRotate = true;
+            invertFlip = true;
 
             size = 3;
 
@@ -411,7 +460,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
 
-            addInput(ItemStack.with(Items.surgeAlloy, 4, NHItems.juniorProcessor, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.surgeAlloy, 2, NHItems.juniorProcessor, 4), LiquidStack.empty);
 
             consumePower(240f / 60f);
             outputItems = with(NHItems.seniorProcessor, 2);
@@ -476,7 +525,7 @@ public class CraftingBlock {
                     }}
             );
         }};
-        multipleSteelFactory = new GenericCrafter("multiple-steel-factory") {{
+        multipleSteelFactory = new RecipeGenericCrafter("multiple-steel-factory") {{
             requirements(Category.crafting,
                     with(NHItems.presstanium, 120, NHItems.seniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
             lightColor = NHItems.multipleSteel.color;
@@ -489,7 +538,10 @@ public class CraftingBlock {
             size = 3;
             hasPower = hasItems = true;
             drawer = new DrawDefault();
-            consumeItems(new ItemStack(Items.tungsten, 3), new ItemStack(NHItems.presstanium, 3), new ItemStack(NHItems.metalOxhydrigen, 4));
+            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 3, NHItems.metalOxhydrigen, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 2, Items.plastanium, 2), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3), LiquidStack.empty);
+
             consumePower(3f);
         }};
         irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{

@@ -679,6 +679,10 @@ public class NHOverride{
 		});
 	}
 
+	public static void balanceVanillaTurret(){
+
+	}
+
 	private static void overrideUnitTypeAbility(){
 		for (UnitType type: content.units()){
 			if (type.abilities.contains(ability -> ability instanceof PassiveShield)) continue;

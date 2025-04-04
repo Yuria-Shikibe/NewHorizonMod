@@ -6,6 +6,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
+import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
@@ -24,6 +25,9 @@ import static mindustry.Vars.*;
 public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public Seq<Point2> linkPos = new Seq<>();
     public IntSeq linkSize = new IntSeq();
+
+    public boolean canMirror = true;
+    public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
 
     public AdaptCrafter(String name) {
         super(name);
@@ -89,6 +93,17 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public void loadIcon() {
         super.loadIcon();
         uiIcon = Core.atlas.find(name + "-icon", name);
+    }
+
+    @Override
+    public void flipRotation(BuildPlan req, boolean x){
+        if (canMirror) {
+            if (mirrorBlock() != null){
+                req.rotation = rotations[req.rotation + (x?0:4)];
+            }
+        }else {
+            super.flipRotation(req, x);
+        }
     }
 
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
@@ -180,7 +195,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 Building target = pair[0];
                 Building source = pair[1];
                 if (outputDir != -1 && (outputDir + rotation) % 4 != relativeTo(target)) continue;
-                target = target.getLiquidDestination(this, liquid);
+                target = target.getLiquidDestination(source, liquid);
                 if (target != null && target.block.hasLiquids && canDumpLiquid(target, liquid) && target.liquids != null) {
                     float ofract = target.liquids.get(liquid) / target.block.liquidCapacity;
                     float fract = liquids.get(liquid) / block.liquidCapacity;

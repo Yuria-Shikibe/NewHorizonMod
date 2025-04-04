@@ -30,8 +30,7 @@ import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class GravityWell extends Block{
-	private static Tile tmpTile;
-	
+
 	public int range = 35;
 	
 	public GravityWell(String name){

@@ -26,6 +26,7 @@ public class NHColor{
 		darkEnrFront = darkEnrColor.cpy().lerp(Color.white, 0.45f),
 		trail = Color.lightGray.cpy().lerp(Color.gray, 0.65f),
 		thermoPst = Color.valueOf("CFFF87").lerp(Color.white, 0.15f),
+		powerArea = Pal.power.cpy().a(0.5f),
 
 		xenEmpty = Color.valueOf("a3a9ad"),
 		xenAlpha = Color.valueOf("abc8dc"),

@@ -1,8 +1,6 @@
 package newhorizon.expand.entities;
 
-import arc.func.Boolf2;
-import arc.func.Boolp;
-import arc.func.Prov;
+import arc.func.*;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.geom.Intersector;
@@ -11,6 +9,7 @@ import arc.math.geom.QuadTree;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.game.Team;
+import mindustry.gen.Building;
 import mindustry.gen.Hitboxc;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
@@ -148,6 +147,13 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 		activated = build::isValid;
 		team = () -> build.team;
 		range = build.range();
+	}
+
+	public GravityTrapField(Building build, Boolp active, float rad){
+		setPosition(build);
+		activated = active;
+		team = () -> build.team;
+		range = rad;
 	}
 	
 	public Team team(){

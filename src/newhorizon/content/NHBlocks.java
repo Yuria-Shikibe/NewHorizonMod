@@ -59,6 +59,7 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
+import newhorizon.expand.GravityWallSubstation;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.ancient.CaptureableTurret;
@@ -3176,29 +3177,25 @@ public class NHBlocks{
 			
 			requirements(Category.units, BuildVisibility.shown, with(NHItems.ancimembrane, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
 		}};
-		
-		gravityTrapSmall = new GravityWell("gravity-trap-small"){{
+
+		gravityTrapSmall = new GravityWallSubstation("gravity-trap-small"){{
 			size = 2;
 			health = 640;
-			range = 16;
-			
-			consumePower(5f);
-			requirements(Category.units, BuildVisibility.shown, with(Items.titanium, 60, NHItems.metalOxhydrigen, 80, NHItems.juniorProcessor, 50, Items.copper, 200, NHItems.zeta, 50));
-			//NHTechTree.add(hyperspaceWarper, this);
+			laserRange = 12;
+
+			requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 		}};
-		
-		gravityTrap = new GravityWell("gravity-gully"){{
+
+		gravityTrap = new GravityWallSubstation("gravity-gully"){{
 			size = 3;
 			health = 1250;
-			
-			consumePower(8f);
-			requirements(Category.units, BuildVisibility.shown, with(Items.plastanium, 80, NHItems.multipleSteel, 80, NHItems.juniorProcessor, 80, Items.copper, 200));
-			//NHTechTree.add(gravityTrapSmall, this);
+			laserRange = 18;
+
+			requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
 		}};
 		
 		irdryonTank = new LiquidRouter("irdryon-tank"){{
 			requirements(Category.liquid, with(NHItems.metalOxhydrigen, 25, NHItems.multipleSteel, 40, Items.metaglass, 25));
-//			//NHTechTree.add(Blocks.liquidTank, this);
 			size = 3;
 			underBullets = true;
 			liquidCapacity = 4500;

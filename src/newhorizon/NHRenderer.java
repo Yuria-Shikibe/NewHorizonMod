@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.gl.FrameBuffer;
+import arc.graphics.gl.Shader;
 import arc.math.geom.Rect;
 import arc.util.Disposable;
 import mindustry.Vars;
@@ -56,6 +57,18 @@ public class NHRenderer implements Disposable{
 				renderer.effectBuffer.blit(NHShaders.quantum);
 			});
 		}
+
+		drawShader(NHShaders.powerArea, NHContent.POWER_AREA);
+		drawShader(NHShaders.powerDynamicArea, NHContent.POWER_DYNAMIC);
+	}
+
+	public void drawShader(Shader shader, float layer){
+		if (shader != null){
+			Draw.drawRange(layer, 0.0001f, () -> renderer.effectBuffer.begin(Color.clear), () -> {
+				renderer.effectBuffer.end();
+				renderer.effectBuffer.blit(shader);
+			});
+		}
 	}
 	
 	public void drawGravityTrapField(){
@@ -69,6 +82,15 @@ public class NHRenderer implements Disposable{
 				mask.blit(NHShaders.gravityTrapShader);
 			});
 		}
+	}
+
+	public void drawGravityTrap(){
+		Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
+			mask.begin(Color.clear);
+			GravityTrapField.drawAll();
+			mask.end();
+			mask.blit(NHShaders.gravityTrapShader);
+		});
 	}
 
 	/** Releases all resources of this object. */

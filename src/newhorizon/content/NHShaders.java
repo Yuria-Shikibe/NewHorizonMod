@@ -5,6 +5,7 @@ import arc.files.Fi;
 import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.gl.Shader;
+import arc.math.Interp;
 import arc.math.Mat;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Scl;
@@ -17,31 +18,26 @@ import static mindustry.Vars.renderer;
 
 public class NHShaders{
 	public static MatterStormShader matterStorm;
-	public static HyperspaceShader hyperspace;
 	public static Tiler tiler;
 	
 	public static Shader gravityTrapShader, scannerDown;
 
-	public static ShadowShader shadowShader;
 	public static ModSurfaceShader quantum;
 	public static StatusEffectShader statusAlpha, statusXWave;
+
+	public static OutlineShader powerArea, powerDynamicArea;
 
 	//public static DistortShader distort;
 
 	public static void init(){
 		statusAlpha = new StatusEffectShader("screenspace", "overphased");
-		statusXWave = new StatusEffectShader("screenspace", "statusXWave");
 
-		//distort = new DistortShader();
+		statusXWave = new StatusEffectShader("screenspace", "statusXWave");
 
 		tiler = new Tiler();
 
 		scannerDown = new ModShader("screenspace", "scannerDown");
-		
-		hyperspace = new HyperspaceShader();
-		
-		shadowShader = new ShadowShader();
-		
+
 		matterStorm = new MatterStormShader("storm");
 		
 		gravityTrapShader = new ModShader("screenspace", "gravityTrap"){
@@ -77,7 +73,18 @@ public class NHShaders{
 			}
 		};
 
-		//platingSurface = new PlatingSurfaceShader();
+		powerArea = new OutlineShader(){
+			@Override
+			public float thick() {
+				return 2f;
+			}
+		};
+
+		powerDynamicArea = new OutlineShader(){
+			public float thick() {
+				return 2f * Interp.slope.apply(Time.time / 240f % 1f);
+			}
+		};
 	}
 	
 	public static class Tiler extends ModShader{
@@ -102,27 +109,29 @@ public class NHShaders{
 			setUniformi("u_tiletex", 1);
 		}
 	}
-	
+
 	public static class OutlineShader extends ModShader{
 		public OutlineShader(){
 			super("screenspace", "outliner");
 		}
-		
-		public Color color = Color.lightGray;
-		
+
 		@Override
 		public void apply(){
 			setUniformf("u_offset",
 					Core.camera.position.x - Core.camera.width / 2,
 					Core.camera.position.y - Core.camera.height / 2);
 			setUniformf("u_dp", Scl.scl(1f));
+			setUniformf("u_thick", thick());
 			setUniformf("u_time", Time.time / Scl.scl(1f));
-			setUniformf("u_color", color);
 			setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
 			setUniformf("u_texsize", Core.camera.width, Core.camera.height);
 		}
+
+		public float thick(){
+			return 1f;
+		}
 	}
-	
+
 	public static class HyperspaceShader extends ModShader{
 		public Color color = Color.white;
 		public float progress = 0;
@@ -262,66 +271,6 @@ public class NHShaders{
 				renderer.effectBuffer.getTexture().bind(0);
 				
 				setUniformi("u_noise_2", 1);
-			}
-		}
-	}
-
-	public static class DistortShader extends ModShader{
-		protected Texture noiseTex1;
-
-		public DistortShader(){
-			super("screenspace", "distort");
-			loadNoise();
-		}
-
-		public Texture getTexture(){
-			return null;
-		}
-
-		public String textureName(){
-			return "noise";
-		}
-
-		public void loadNoise(){
-			Core.assets.load("sprites/" + textureName() + ".png", Texture.class).loaded = t -> {
-				t.setFilter(Texture.TextureFilter.linear);
-				t.setWrap(Texture.TextureWrap.repeat);
-			};
-		}
-
-		@Override
-		public void apply(){
-			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
-			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-			setUniformf("u_time", Time.time);
-			//setUniformf("u_distort", 0.05f, 0,05f);
-
-			//float[] centers = {
-			//	0.5f, 0.5f,
-			//	0.3f, 0.7f,
-			//	0.8f, 0.2f,
-			//	0.2f, 0.4f,
-			//	0.6f, 0.8f
-			//};
-			//float[] ranges = {
-			//	0.25f,
-			//	0.15f,
-			//	0.35f,
-			//	0.20f,
-			//	0.40f
-			//};
-			//setUniform2fv("u_centers", centers, 0, centers.length);
-			//setUniform1fv("u_ranges", ranges, 0, ranges.length);
-
-			if(hasUniform("u_grayMap")){
-				if(noiseTex1 == null){
-					noiseTex1 = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
-				}
-
-				noiseTex1.bind(1);
-				renderer.effectBuffer.getTexture().bind(0);
-
-				setUniformi("u_grayMap", 1);
 			}
 		}
 	}

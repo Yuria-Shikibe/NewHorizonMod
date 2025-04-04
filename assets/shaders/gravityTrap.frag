@@ -25,8 +25,6 @@ void main(){
     vec2 coords = (T * u_texsize) + u_offset;
     vec4 color = texture2D(u_texture, v_texCoords);
     vec2 v = u_invsize;
-//
-
 
     vec4 maxed =
         max(
