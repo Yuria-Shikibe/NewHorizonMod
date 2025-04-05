@@ -15,6 +15,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
 import newhorizon.expand.game.NHWorldData;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
+import newhorizon.expand.net.packet.ConfigGravityWallNodePacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 
@@ -35,6 +36,7 @@ public class NHRegister{
 	static{
 		Net.registerPacket(LongInfoMessageCallPacket::new);
 		Net.registerPacket(ActiveAbilityTriggerPacket::new);
+		Net.registerPacket(ConfigGravityWallNodePacket::new);
 	}
 	
 	public static void addTaskOnSave(Runnable runnable){
