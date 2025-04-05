@@ -5,6 +5,9 @@ import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.type.Item;
 
+import static mindustry.Vars.content;
+import static mindustry.Vars.state;
+
 public class NHItems{
 	
 	//Load Mod Items
@@ -67,13 +70,11 @@ public class NHItems{
 
 		Items.serpuloItems.add(Items.tungsten, Items.carbide);
 		Items.erekirItems.add(Items.titanium);
-		Items.erekirOnlyItems.clear().addAll(Items.erekirItems).removeAll(Items.serpuloItems);
+		Items.erekirOnlyItems.clear();
 
-		Planets.erekir.hiddenItems.addAll(Items.serpuloItems).removeAll(Items.erekirItems);
-		Planets.serpulo.hiddenItems.addAll(Items.erekirItems).removeAll(Items.serpuloItems);
-
-
-
+		Planets.serpulo.hiddenItems.remove(Items.tungsten);
+		Planets.serpulo.hiddenItems.remove(Items.carbide);
+		Planets.erekir.hiddenItems.remove(Items.titanium);
 	}
 }
 

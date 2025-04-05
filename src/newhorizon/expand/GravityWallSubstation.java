@@ -203,6 +203,7 @@ public class GravityWallSubstation extends PowerNode {
             Fx.placeBlock.at(this, laserRange * 2);
             Sounds.click.at(this);
             configLink();
+            cooldown += 600f;
         }
 
         @Override
