@@ -30,7 +30,6 @@ public class NHVars{
 		Core.app.addListener(core);
 
 		if(Vars.headless)return;
-		//GridUtil.init();
 		renderer = new NHRenderer();
 		NHSetting.loadUI();
 		if(NHSetting.getBool(NHSetting.DEBUG_PANEL)) TableFunc.tableMain();

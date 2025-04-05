@@ -3,6 +3,6 @@ author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "[sky]THE HORIZON HAS EXPANDED."
-version: "2.0-alpha-4"
+version: "2.0-alpha-5"
 
 minGameVersion: 146

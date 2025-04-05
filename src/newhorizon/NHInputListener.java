@@ -61,9 +61,8 @@ public class NHInputListener{
 	}
 	
 	protected void updateActiveAbility(){
-		if(currentUnit instanceof EnergyUnit){
-			EnergyUnit u = (EnergyUnit)currentUnit;
-			if(u.teleportValid() && Core.input.keyTap(NHKeyBinding.teleport)){
+		if(currentUnit instanceof EnergyUnit u){
+            if(u.teleportValid() && Core.input.keyTap(NHKeyBinding.teleport)){
 				Tmp.v1.set(Core.camera.unproject(Core.input.mouse())).sub(u).clampLength(0, u.teleportRange).add(u);
 				
 				u.teleport(Tmp.v1.x, Tmp.v1.y);

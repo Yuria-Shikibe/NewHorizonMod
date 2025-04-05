@@ -57,6 +57,11 @@ public class GravityWallSubstation extends PowerNode {
     }
 
     @Override
+    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
+        return indexer.findTile(team, tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.8f, b -> b instanceof GravityWallSubstationBuild) == null;
+    }
+
+    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         Tile tile = world.tile(x, y);
 
@@ -64,6 +69,7 @@ public class GravityWallSubstation extends PowerNode {
 
         Lines.stroke(1f);
         drawRangeRect(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize);
+        drawRangeRectInner(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize * 0.8f);
 
         getPotentialLinks(tile, player.team(), other -> {
             if (!(other instanceof PowerNodeBuild)) return;
@@ -87,6 +93,14 @@ public class GravityWallSubstation extends PowerNode {
         Lines.square(x, y, range + 1);
 
         Lines.stroke(1, Vars.player.team().color);
+        Lines.square(x, y, range);
+    }
+
+    public void drawRangeRectInner(float x, float y, float range){
+        Lines.stroke(3, Pal.gray);
+        Lines.square(x, y, range + 1);
+
+        Lines.stroke(1, Pal.techBlue);
         Lines.square(x, y, range);
     }
 
@@ -177,10 +191,12 @@ public class GravityWallSubstation extends PowerNode {
 
     public class GravityWallSubstationBuild extends PowerNodeBuild {
         public transient GravityTrapField field;
+        public float cooldown;
 
         @Override
         public void tapped() {
             super.tapped();
+            if (cooldown > 0) return;
             Fx.placeBlock.at(this, laserRange * 2);
             Sounds.click.at(this);
             Seq<Point2> points = new Seq<>();
@@ -196,7 +212,9 @@ public class GravityWallSubstation extends PowerNode {
 
         @Override
         public void updateTile() {
+            if (cooldown > 0) cooldown -= Time.delta;
             if (timer(0, 3000f + Mathf.randomSeed(id, 3000))){
+                indexer.eachBlock(team, Tmp.r1.setCentered(x, y, range() * 0.8f), b -> b instanceof GravityWallSubstationBuild, b -> kill());
                 Seq<Point2> points = new Seq<>();
                 getPotentialLinks(tile, team, link -> points.add(new Point2(link.tileX() - tile.x, link.tileY() - tile.y)));
                 configure(points.toArray(Point2.class));
@@ -233,7 +251,8 @@ public class GravityWallSubstation extends PowerNode {
 
         @Override
         public void drawSelect(){
-            drawRangeRect(x, y, range());
+            drawRangeRect(x, y, range() * 0.8f);
+            drawRangeRectInner(x, y, range());
             for(int i = 0; i < power.links.size; i++){
                 Building link = world.build(power.links.get(i));
                 if (link != null) Drawf.selected(link, Pal.power);

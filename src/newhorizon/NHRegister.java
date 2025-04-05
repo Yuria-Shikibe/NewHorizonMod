@@ -108,9 +108,8 @@ public class NHRegister{
 			}
 
 			Core.app.post(() -> {
-				if(Vars.state.isPlaying()){
-				}
-				Core.app.post(() -> Core.app.post(() -> Core.app.post(() ->
+                Vars.state.isPlaying();
+                Core.app.post(() -> Core.app.post(() -> Core.app.post(() ->
 					worldLoaded = true
 				)));
 			});
