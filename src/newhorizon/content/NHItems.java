@@ -1,8 +1,11 @@
 package newhorizon.content;
 
+import arc.Events;
 import arc.graphics.Color;
+import arc.util.Log;
 import mindustry.content.Items;
 import mindustry.content.Planets;
+import mindustry.game.EventType;
 import mindustry.type.Item;
 
 import static mindustry.Vars.content;
@@ -75,6 +78,12 @@ public class NHItems{
 		Planets.serpulo.hiddenItems.remove(Items.tungsten);
 		Planets.serpulo.hiddenItems.remove(Items.carbide);
 		Planets.erekir.hiddenItems.remove(Items.titanium);
+
+		Events.on(EventType.PlayEvent.class, e -> {
+			if (state.rules.planet == Planets.erekir){
+				state.rules.hiddenBuildItems = Planets.erekir.hiddenItems.asSet();
+			}
+		});
 	}
 }
 
