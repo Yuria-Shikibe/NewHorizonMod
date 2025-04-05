@@ -206,6 +206,7 @@ public class GravityWallSubstation extends PowerNode {
             Sounds.click.at(this);
             configLink();
             cooldown += 600f;
+            NHCall.reconnectGravityWallNode(this);
         }
 
         @Override
@@ -228,7 +229,6 @@ public class GravityWallSubstation extends PowerNode {
 
         public void configure(Object value) {
             block.lastConfig = value;
-            NHCall.reconnectGravityWallNode(this);
         }
 
         public void configLink(){
