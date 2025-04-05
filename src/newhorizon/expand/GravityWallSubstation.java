@@ -39,6 +39,7 @@ import newhorizon.content.NHContent;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.net.NHCall;
 
+import static arc.Core.input;
 import static mindustry.Vars.*;
 import static mindustry.Vars.tilesize;
 
@@ -227,9 +228,7 @@ public class GravityWallSubstation extends PowerNode {
             }
         }
 
-        public void configure(Object value) {
-            block.lastConfig = value;
-        }
+        public void configure(Object value) {}
 
         public void configLink(){
             prevLinks.clear();
@@ -242,7 +241,7 @@ public class GravityWallSubstation extends PowerNode {
                     points.addUnique(p);
                 }
             }
-            configure(points.toArray(Point2.class));
+            configured(null, points.toArray(Point2.class));
         }
 
         @Override
@@ -275,8 +274,8 @@ public class GravityWallSubstation extends PowerNode {
 
         @Override
         public void drawSelect(){
-            drawRangeRect(x, y, range() * 0.8f);
-            drawRangeRectInner(x, y, range());
+            drawRangeRect(x, y, range());
+            drawRangeRectInner(x, y, range() * 0.8f);
             for(int i = 0; i < power.links.size; i++){
                 Building link = world.build(power.links.get(i));
                 if (link != null) Drawf.selected(link, Pal.power);
