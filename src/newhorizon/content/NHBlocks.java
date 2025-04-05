@@ -161,7 +161,6 @@ public class NHBlocks{
 	public static Block ancientPowerNode;
 	public static Block armorPowerNode;
 	public static Block armorBatteryLarge;
-	public static Block zetaGenerator;
 	public static Block hugeBattery;
 	public static Block heavyPowerNode;
 	public static Block//Defence
@@ -3313,9 +3312,8 @@ public class NHBlocks{
 			consumePowerCond(8, JumpGateBuild::isCalling);
 			
 			requirements(Category.units, BuildVisibility.shown, with(
-					Items.copper, 250,
-					Items.lead, 200,
 					Items.titanium, 80,
+					Items.tungsten, 80,
 					Items.silicon, 80
 			));
 			
@@ -3378,9 +3376,7 @@ public class NHBlocks{
 					NHItems.presstanium, 800,
 					NHItems.metalOxhydrigen, 300,
 					NHItems.juniorProcessor, 600,
-					Items.plastanium, 350,
-					Items.metaglass, 300,
-					Items.thorium, 1000
+					NHItems.zeta, 1000
 			));
 			
 			armor = 10f;
@@ -3440,9 +3436,6 @@ public class NHBlocks{
 				NHItems.metalOxhydrigen, 800,
 				NHItems.seniorProcessor, 800,
 				NHItems.multipleSteel, 1000,
-				Items.thorium, 2000,
-				Items.titanium, 1500,
-				Items.phaseFabric, 600,
 				NHItems.irayrondPanel, 400
 			));
 			

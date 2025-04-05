@@ -13,15 +13,16 @@ import mindustry.world.draw.*;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
+import newhorizon.expand.block.drawer.DrawRegionCenterSymmetry;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.block.special.JumpGate;
 
 public class PowerBlock {
-    public static Block zetaGenerator;
+    public static Block zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor;
 
     public static void load(){
         zetaGenerator = new RecipeGenericCrafter("zeta-generator"){{
-            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 120,NHItems.juniorProcessor, 80,Items.plastanium, 80,NHItems.zeta,100,Items.copper, 150,Items.metaglass, 60));
+            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 120,NHItems.juniorProcessor, 80 ,NHItems.zeta,100, Items.carbide, 150));
 
             size = 3;
 
@@ -53,6 +54,97 @@ public class PowerBlock {
                         color = NHItems.zeta.color;
                     }}
             );
+
+            consumePower(0f);
+            lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
+            updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
+        }};
+        anodeFusionReactor = new RecipeGenericCrafter("anode-fusion-reactor"){{
+            requirements(Category.power, ItemStack.with(Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
+
+            size = 4;
+
+            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            loopSound = Sounds.electricHum;
+            loopSoundVolume = 0.24F;
+            itemCapacity = 45;
+            liquidCapacity = 45;
+
+            powerProduction = 12000/60f;
+            craftTime = 120f;
+
+            addInput(ItemStack.with(NHItems.fusionEnergy, 2, Items.surgeAlloy, 4), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
+
+            outputItem = new ItemStack(NHItems.thermoCorePositive, 1);
+
+            outputsPower = true;
+            hasLiquids = hasItems = hasPower = true;
+
+            drawer = new DrawRegionCenterSymmetry(){{suffix = "-rot";}};
+
+            consumePower(0f);
+            lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
+            updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
+        }};
+        cathodeFusionReactor = new RecipeGenericCrafter("cathode-fusion-reactor"){{
+            requirements(Category.power, ItemStack.with(Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
+
+            size = 4;
+
+            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            loopSound = Sounds.electricHum;
+            loopSoundVolume = 0.24F;
+            itemCapacity = 45;
+            liquidCapacity = 45;
+
+            powerProduction = 12000/60f;
+            craftTime = 120f;
+
+            addInput(ItemStack.with(NHItems.fusionEnergy, 2, Items.phaseFabric, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f));
+
+            outputItem = new ItemStack(NHItems.thermoCoreNegative, 1);
+
+            outputsPower = true;
+            hasLiquids = hasItems = hasPower = true;
+
+            drawer = new DrawRegionCenterSymmetry(){{suffix = "-rot";}};
+
+            consumePower(0f);
+            lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
+            updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
+        }};
+        thermoReactor = new RecipeGenericCrafter("thermo-reactor"){{
+            requirements(Category.power, ItemStack.with(Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
+
+            size = 5;
+
+            rotate = false;
+
+            addLink(
+                    -1, 3, 2, 1, 3, 1, 1 ,4, 1,
+                    3, 0, 2, 3, -1, 1, 4, -1, 1,
+                    -1, -4, 2, 1, -4, 1, 1, -3, 1,
+                    -4, -1, 2, -4, 1, 1, -3, 1, 1
+            );
+
+            loopSound = Sounds.electricHum;
+            loopSoundVolume = 0.24F;
+            itemCapacity = 45;
+            liquidCapacity = 45;
+
+            powerProduction = 90000/60f;
+            craftTime = 120f;
+
+            addInput(ItemStack.with(NHItems.thermoCorePositive, 2, NHItems.thermoCoreNegative, 2, NHItems.upgradeSort, 4, NHItems.ancimembrane, 4), LiquidStack.empty);
+
+            outputItem = new ItemStack(NHItems.darkEnergy, 2);
+
+            outputsPower = true;
+            hasLiquids = hasItems = hasPower = true;
+
+            drawer = new DrawDefault();
 
             consumePower(0f);
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
