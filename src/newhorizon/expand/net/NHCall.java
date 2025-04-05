@@ -4,8 +4,10 @@ import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.net.NetConnection;
+import newhorizon.expand.GravityWallSubstation;
 import newhorizon.expand.ability.active.ActiveAbility;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
+import newhorizon.expand.net.packet.ConfigGravityWallNodePacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
 
 public class NHCall{
@@ -14,6 +16,17 @@ public class NHCall{
 			LongInfoMessageCallPacket packet = new LongInfoMessageCallPacket();
 			packet.message = s;
 			c.send(packet, true);
+		}
+	}
+
+	public static void reconnectGravityWallNode(GravityWallSubstation.GravityWallSubstationBuild build){
+		if(Vars.net.server() || !Vars.net.active()) {
+			build.configLink();
+		}
+		if (Vars.net.server() ||Vars.net.client()) {
+			ConfigGravityWallNodePacket packet = new ConfigGravityWallNodePacket();
+			packet.building = build;
+			Vars.net.send(packet, true);
 		}
 	}
 

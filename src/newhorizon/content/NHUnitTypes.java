@@ -4100,7 +4100,7 @@ public class NHUnitTypes{
 			trailLength = 70;
 			buildSpeed = 10f;
 			crashDamageMultiplier = Mathf.clamp(hitSize / 10f, 1, 10);
-			payloadCapacity = 5f * 5f * tilesize * tilesize;
+			payloadCapacity = -1;
 			buildBeamOffset = 0;
 			
 			weapons.add(new Weapon(){{

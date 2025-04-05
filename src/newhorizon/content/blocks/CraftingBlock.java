@@ -278,7 +278,6 @@ public class CraftingBlock {
                     }},
                     new DrawArcSmeltRotated(){{
                         flameX = 11.25f;
-                        //flameY = 4.5f;
                     }},
                     new DrawRegionRotated(){{
                         suffix = "-rot";
@@ -300,13 +299,13 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
                     0, 2, 1, /**/1, 2, 1 /**/);
 
-            craftTime = 60f;
+            craftTime = 90f;
             consumePower(480 / 60f);
-            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 3 / 60f));
-            addInput(ItemStack.with(Items.lead, 2), LiquidStack.with(Liquids.water, 6 / 60f));
-            addInput(ItemStack.with(Items.oxide, 1), LiquidStack.with(Liquids.water, 6 / 60f));
+            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenFluid, 6 / 60f, NHLiquids.quantumLiquid, 4.5 / 60f));
+            addInput(ItemStack.with(Items.lead, 3), LiquidStack.with(Liquids.water, 9 / 60f));
+            addInput(ItemStack.with(Items.oxide, 1), LiquidStack.with(Liquids.water, 9 / 60f));
 
-            outputItems = with(NHItems.metalOxhydrigen, 2);
+            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             itemCapacity = 30;
             health = 1600;
@@ -370,6 +369,8 @@ public class CraftingBlock {
 
             quickRotate = true;
             invertFlip = true;
+            canMirror = true;
+            rotations = new int[]{0, 3, 2, 1, 2, 1, 0, 3};
 
             size = 3;
 
@@ -381,7 +382,7 @@ public class CraftingBlock {
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
 
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f, NHLiquids.zetaFluidNegative, 4 / 60f);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.25 / 60f, NHLiquids.zetaFluidNegative, 4.25 / 60f);
             liquidOutputDirections = new int[]{1, 3};
 
             drawer = new DrawMulti(
@@ -404,7 +405,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.titanium, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f));
+            addInput(ItemStack.with(Items.titanium, 3), LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f));
 
             outputItems = with(Items.surgeAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3 / 60f);
@@ -433,7 +434,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.silicon, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
+            addInput(ItemStack.with(Items.silicon, 3), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
 
             outputItems = with(Items.phaseFabric, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);

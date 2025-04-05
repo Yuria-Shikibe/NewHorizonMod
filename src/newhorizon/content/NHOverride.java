@@ -343,7 +343,7 @@ public class NHOverride{
 
 		//Icon.icons.put("nhIcon0", new TextureRegionDrawable(NHContent.icon));
 		//todo set the icon
-		Team.blue.name = "ancient";
+		//Team.blue.name = "ancient";
 	}
 
 	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval){

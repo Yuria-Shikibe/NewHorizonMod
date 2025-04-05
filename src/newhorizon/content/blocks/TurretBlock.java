@@ -142,13 +142,13 @@ public class TurretBlock {
                 smokeEffect = Fx.shootBigSmoke2;
             }};
 
-            consumePowerCond(35f, TurretBuild::isActive);
+            consumePowerCond(5f, TurretBuild::isActive);
         }};
         slavio = new ItemTurret("slavio"){{
             requirements(Category.turret, with(NHItems.juniorProcessor, 120, NHItems.presstanium, 150, Items.carbide, 150, NHItems.metalOxhydrigen, 80));
 
             ammo(
-                    NHItems.zeta, new AdaptBulletType(120f, 20f){{
+                    NHItems.zeta, new AdaptBulletType(80f, 20f){{
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
@@ -182,7 +182,7 @@ public class TurretBlock {
 
                         pierceCap = 3;
                     }},
-                    NHItems.metalOxhydrigen, new AdaptBulletType(150f, 25f){{
+                    NHItems.metalOxhydrigen, new AdaptBulletType(100f, 25f){{
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 

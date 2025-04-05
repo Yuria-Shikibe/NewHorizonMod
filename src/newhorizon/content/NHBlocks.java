@@ -2595,31 +2595,6 @@ public class NHBlocks{
 			}});
 		}};
 		
-		zetaGenerator = new ConsumeGenerator("zeta-generator"){{
-			requirements(Category.power,ItemStack.with(NHItems.metalOxhydrigen, 120, NHItems.juniorProcessor, 80, Items.plastanium, 80, NHItems.zeta,100, Items.copper, 150, Items.metaglass, 60));
-			
-			size = 3;
-			
-			powerProduction = 70f;
-			loopSound = Sounds.electricHum;
-			loopSoundVolume = 0.24F;
-			itemCapacity = 30;
-			liquidCapacity = 30;
-			itemDuration = 2.55f * 60f;
-			consumeItem(NHItems.zeta, 3);
-			consumeLiquid(Liquids.cryofluid, 5.9f/60f);
-			
-			hasLiquids = hasItems = true;
-			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.cryofluid), new DrawDefault(), new DrawGlowRegion(){{
-				color = NHItems.zeta.color;
-			}});
-			
-			lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
-			generateEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
-			//			explodeEffect = NHFx.lightningHitLarge(heatColor);
-		}};
-		
 		hugeBattery = new Battery("huge-battery"){{
 			size = 5;
 			health = 1600;
@@ -3532,10 +3507,10 @@ public class NHBlocks{
 		EnvironmentBlock.load();
 		SpecialBlock.load();
 		CraftingBlock.load();
+		PowerBlock.load();
 		CutsceneBlock.load();
 
 		DistributionBlock.load();
-		//EndFieldBlock.load();
 
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

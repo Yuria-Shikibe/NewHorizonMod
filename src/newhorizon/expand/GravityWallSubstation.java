@@ -21,6 +21,7 @@ import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
@@ -36,6 +37,7 @@ import newhorizon.NHVars;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHContent;
 import newhorizon.expand.entities.GravityTrapField;
+import newhorizon.expand.net.NHCall;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.tilesize;
@@ -222,6 +224,11 @@ public class GravityWallSubstation extends PowerNode {
             if (timer(0, 3000f + Mathf.randomSeed(id, 3000))){
                 configLink();
             }
+        }
+
+        public void configure(Object value) {
+            block.lastConfig = value;
+            NHCall.reconnectGravityWallNode(this);
         }
 
         public void configLink(){

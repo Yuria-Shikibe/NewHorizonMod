@@ -1,11 +1,14 @@
 package newhorizon.expand.block.production.factory;
 
 import arc.Core;
+import arc.func.Floatc;
+import arc.func.Floatf;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
+import arc.util.Strings;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -14,10 +17,13 @@ import mindustry.graphics.Pal;
 import mindustry.input.Placement;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
+import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
+import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import newhorizon.expand.block.inner.LinkBlock;
 
 import static mindustry.Vars.*;
@@ -28,6 +34,9 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
     public boolean canMirror = true;
     public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
+
+    public float powerProduction = 0f;
+    //public Floatf<AdaptCrafterBuild> powerProduction = b -> 0f;
 
     public AdaptCrafter(String name) {
         super(name);
@@ -42,10 +51,27 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     }
 
     @Override
+    public void setBars() {
+        super.setBars();
+        if(hasPower && outputsPower && powerProduction > 0f){
+            removeBar("power");
+            addBar("power", (AdaptCrafterBuild entity) -> new Bar(() ->
+                    Core.bundle.format("bar.poweroutput",
+                            Strings.fixed(entity.getPowerProduction() * 60 * entity.timeScale(), 1)),
+                    () -> Pal.powerBar,
+                    () -> entity.warmup));
+        }
+    }
+
+    @Override
     public void setStats() {
         super.setStats();
         stats.remove(Stat.size);
         stats.add(Stat.size, "@x@", getMaxSize(size, 0).x, getMaxSize(size, 0).y);
+        if (powerProduction > 0) {
+            stats.remove(Stat.powerUse);
+            stats.add(Stat.basePowerGeneration, powerProduction * 60f, StatUnit.powerSecond);
+        }
     }
 
     @Override
@@ -107,7 +133,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     }
 
     public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
-
         public boolean linkCreated = false;
         public Seq<Building> linkEntities;
         //ordered seq, target-source pair
@@ -119,6 +144,11 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public void created() {
             super.created();
             linkProximityMap = new Seq<>();
+        }
+
+        @Override
+        public float getPowerProduction() {
+            return powerProduction * (warmup + 0.000001f);
         }
 
         @Override
