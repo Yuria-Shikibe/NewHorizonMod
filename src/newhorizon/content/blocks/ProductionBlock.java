@@ -365,8 +365,8 @@ public class ProductionBlock {
             convertMul.put(Items.titanium, -0.33f);
             convertMul.put(Items.copper, -0.6f);
             convertMul.put(Items.lead, -0.6f);
-            convertMul.put(Items.tungsten, 0f);
-            convertMul.put(Items.beryllium, 1.5f);
+            convertMul.put(Items.tungsten, 0.5f);
+            convertMul.put(Items.beryllium, 0f);
 
 
             Color flameColor = NHColor.darkEnrFront, midColor = NHColor.darkEnr;

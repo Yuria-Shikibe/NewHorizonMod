@@ -113,8 +113,8 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.beryllium, 2), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.empty);
+            addInput(ItemStack.with(Items.beryllium, 3), LiquidStack.empty);
 
             craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
 
