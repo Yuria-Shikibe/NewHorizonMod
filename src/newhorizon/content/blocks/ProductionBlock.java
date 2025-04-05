@@ -78,7 +78,7 @@ public class ProductionBlock {
             liquidCapacity = 300f;
         }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility"){{
-            requirements(Category.production, with(NHItems.presstanium, 80, NHItems.juniorProcessor, 120, Items.tungsten, 40));
+            requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 960;
