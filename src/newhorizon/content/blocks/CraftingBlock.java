@@ -58,6 +58,8 @@ public class CraftingBlock {
                     Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
                 });
             }).layer(Layer.blockOver + 1);
+
+            rotate = false;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
             consumePower(1.5f);
 
@@ -543,6 +545,9 @@ public class CraftingBlock {
             addInput(ItemStack.with(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3), LiquidStack.empty);
 
             consumePower(3f);
+
+            rotate = false;
+            drawer = new DrawRegion(){{buildingRotate = false;}};
         }};
         irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
             requirements(Category.crafting, BuildVisibility.shown,

@@ -53,12 +53,14 @@ public class GravityWallSubstation extends PowerNode {
     @Override
     public void init() {
         super.init();
-        maxNodes = 9999;
+        saveConfig = false;
+        copyConfig = false;
+        maxNodes = 999;
     }
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        return indexer.findTile(team, tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.8f, b -> b instanceof GravityWallSubstationBuild) == null;
+        return !indexer.eachBlock(team, Tmp.r1.setCentered(tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.8f * 2), b -> b instanceof GravityWallSubstationBuild, b -> {});
     }
 
     @Override
@@ -120,8 +122,6 @@ public class GravityWallSubstation extends PowerNode {
                 });
 
                 if(otherReq == null || otherReq.block == null) continue;
-
-                Drawf.selected(otherReq.x, otherReq.y, otherReq.block, Pal.place);
             }
             Draw.color();
         }
@@ -133,7 +133,7 @@ public class GravityWallSubstation extends PowerNode {
 
     public boolean overlaps(@Nullable Tile src, @Nullable Tile other){
         if(src == null || other == null) return true;
-        return Intersector.overlaps(Tmp.r1.setCentered(src.worldx() + offset, src.worldy() + offset, laserRange * tilesize), Tmp.r2.setSize(size * tilesize).setCenter(other.worldx() + offset, other.worldy() + offset));
+        return Intersector.overlaps(Tmp.r1.setCentered(src.worldx() + offset, src.worldy() + offset, laserRange * tilesize * 2), Tmp.r2.setSize(size * tilesize).setCenter(other.worldx() + offset, other.worldy() + offset));
     }
 
     @Override
@@ -190,8 +190,11 @@ public class GravityWallSubstation extends PowerNode {
     }
 
     public class GravityWallSubstationBuild extends PowerNodeBuild {
+        public Seq<Point2> prevLinks = new Seq<>();
+        public Seq<Point2> points = new Seq<>();
         public transient GravityTrapField field;
         public float cooldown;
+        public boolean linkCreated;
 
         @Override
         public void tapped() {
@@ -199,9 +202,7 @@ public class GravityWallSubstation extends PowerNode {
             if (cooldown > 0) return;
             Fx.placeBlock.at(this, laserRange * 2);
             Sounds.click.at(this);
-            Seq<Point2> points = new Seq<>();
-            getPotentialLinks(tile, team, link -> points.add(new Point2(link.tileX() - tile.x, link.tileY() - tile.y)));
-            configure(points.toArray(Point2.class));
+            configLink();
         }
 
         @Override
@@ -212,13 +213,28 @@ public class GravityWallSubstation extends PowerNode {
 
         @Override
         public void updateTile() {
+            if (!linkCreated){
+                configLink();
+                linkCreated = true;
+            }
             if (cooldown > 0) cooldown -= Time.delta;
             if (timer(0, 3000f + Mathf.randomSeed(id, 3000))){
-                indexer.eachBlock(team, Tmp.r1.setCentered(x, y, range() * 0.8f), b -> b instanceof GravityWallSubstationBuild, b -> kill());
-                Seq<Point2> points = new Seq<>();
-                getPotentialLinks(tile, team, link -> points.add(new Point2(link.tileX() - tile.x, link.tileY() - tile.y)));
-                configure(points.toArray(Point2.class));
+                configLink();
             }
+        }
+
+        public void configLink(){
+            prevLinks.clear();
+            points.clear();
+
+            prevLinks.add(config());
+            getPotentialLinks(tile, team, link -> points.add(new Point2(link.tileX() - tile.x, link.tileY() - tile.y)));
+            for (Point2 p : prevLinks){
+                if (world.build(p.x + tileX(), p.y + tileY()) instanceof GravityWallSubstationBuild){
+                    points.addUnique(p);
+                }
+            }
+            configure(points.toArray(Point2.class));
         }
 
         @Override

@@ -600,7 +600,6 @@ public class NHOverride{
 			Drill drill = (Drill)content;
 			drill.requirements = ItemStack.with(Items.copper, 15, Items.lead, 20);
 			drill.hardnessDrillMultiplier = 0;
-			drill.consumeLiquid(Liquids.water, 3f / 60f);
 			drill.liquidBoostIntensity = Mathf.sqrt(1.5f);
 			drill.drillTime = 60f * drill.size * drill.size;
 			drill.drillMultipliers.put(Items.sand, 1f);
@@ -616,7 +615,6 @@ public class NHOverride{
 			BurstDrill drill = (BurstDrill)content;
 			drill.requirements = ItemStack.with(Items.beryllium, 60, Items.graphite, 45);
 			drill.hardnessDrillMultiplier = 0;
-			drill.consumeLiquid(Liquids.water, 3f / 60f);
 			drill.drillTime = 60f * drill.size * drill.size / 6;
 			drill.drillMultipliers.put(Items.sand, 1f);
 			drill.drillMultipliers.put(Items.scrap, 1f);
