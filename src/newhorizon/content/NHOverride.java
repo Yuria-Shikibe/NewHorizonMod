@@ -701,6 +701,7 @@ public class NHOverride{
 			block.buildVisibility = BuildVisibility.hidden;
 			block.envRequired = Env.any;
 			block.requirements = hugeItemReq();
+			block.instantDeconstruct = true;
 			//todo change the tech tree
 		}
 	}

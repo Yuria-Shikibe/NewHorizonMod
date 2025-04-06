@@ -3501,7 +3501,7 @@ public class NHBlocks{
 		SpecialBlock.load();
 		CraftingBlock.load();
 		PowerBlock.load();
-		CutsceneBlock.load();
+		LogicBlock.load();
 
 		DistributionBlock.load();
 

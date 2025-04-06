@@ -60,7 +60,7 @@ public class PowerBlock {
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
         anodeFusionReactor = new RecipeGenericCrafter("anode-fusion-reactor"){{
-            requirements(Category.power, ItemStack.with(Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
+            requirements(Category.power, ItemStack.with(NHItems.seniorProcessor, 300, Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
 
             size = 4;
 
@@ -88,7 +88,7 @@ public class PowerBlock {
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
         cathodeFusionReactor = new RecipeGenericCrafter("cathode-fusion-reactor"){{
-            requirements(Category.power, ItemStack.with(Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
+            requirements(Category.power, ItemStack.with(NHItems.seniorProcessor, 300, Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
 
             size = 4;
 

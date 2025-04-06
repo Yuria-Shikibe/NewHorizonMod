@@ -245,7 +245,7 @@ public class CraftingBlock {
         }};
         crucibleFoundry = new RecipeGenericCrafter("crucible-foundry"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40));
+                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40, NHItems.zeta, 40));
 
             size = 3;
 
@@ -452,6 +452,28 @@ public class CraftingBlock {
                     }}
             );
         }};
+        multipleSteelFactory = new RecipeGenericCrafter("multiple-steel-factory") {{
+            requirements(Category.crafting,
+                    with(NHItems.presstanium, 120, NHItems.juniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
+            lightColor = NHItems.multipleSteel.color;
+            updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
+            craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
+            outputItem = new ItemStack(NHItems.multipleSteel, 3);
+            craftTime = 60f;
+            itemCapacity = 20;
+            health = 600;
+            size = 3;
+            hasPower = hasItems = true;
+            drawer = new DrawDefault();
+            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 3, NHItems.metalOxhydrigen, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 2, Items.plastanium, 2), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3), LiquidStack.empty);
+
+            consumePower(3f);
+
+            rotate = false;
+            drawer = new DrawRegion(){{buildingRotate = false;}};
+        }};
         processorEncoder = new RecipeGenericCrafter("processor-encoder"){{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.surgeAlloy, 90, Items.phaseFabric, 90, Items.carbide, 120, NHItems.zeta, 80));
@@ -527,28 +549,6 @@ public class CraftingBlock {
                         buildingRotate = false;
                     }}
             );
-        }};
-        multipleSteelFactory = new RecipeGenericCrafter("multiple-steel-factory") {{
-            requirements(Category.crafting,
-                    with(NHItems.presstanium, 120, NHItems.seniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
-            lightColor = NHItems.multipleSteel.color;
-            updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
-            craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
-            outputItem = new ItemStack(NHItems.multipleSteel, 3);
-            craftTime = 60f;
-            itemCapacity = 20;
-            health = 600;
-            size = 3;
-            hasPower = hasItems = true;
-            drawer = new DrawDefault();
-            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 3, NHItems.metalOxhydrigen, 4), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 2, Items.plastanium, 2), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3), LiquidStack.empty);
-
-            consumePower(3f);
-
-            rotate = false;
-            drawer = new DrawRegion(){{buildingRotate = false;}};
         }};
         irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
             requirements(Category.crafting, BuildVisibility.shown,
