@@ -23,7 +23,7 @@ public class DefenseBlock {
             maxShareStep = 1;
             damageReduction = 0.1f;
 
-            requirements(Category.defense, with(NHItems.presstanium, 4, Items.copper, 10));
+            requirements(Category.defense, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 6));
         }};
 
         refactoringMultiWall = new AdaptWall("refactoring-multi-wall"){{
@@ -32,7 +32,7 @@ public class DefenseBlock {
             maxShareStep = 2;
             damageReduction = 0.2f;
 
-            requirements(Category.defense, with(NHItems.multipleSteel, 4, Items.thorium, 12));
+            requirements(Category.defense, with(NHItems.metalOxhydrigen, 8, Items.carbide, 12));
         }};
 
         setonPhasedWall = new AdaptWall("seton-phased-wall"){{
@@ -41,7 +41,7 @@ public class DefenseBlock {
             maxShareStep = 2;
             damageReduction = 0.3f;
 
-            requirements(Category.defense, with(NHItems.setonAlloy, 6, Items.phaseFabric, 8, NHItems.zeta, 6));
+            requirements(Category.defense, with(NHItems.setonAlloy, 6, NHItems.irayrondPanel, 8));
         }};
 
         shapedWall = new AdaptWall("shaped-wall"){{
@@ -51,7 +51,7 @@ public class DefenseBlock {
 
             crushDamageMultiplier = 0.5f;
 
-            requirements(Category.defense, with(NHItems.upgradeSort, 4, NHItems.juniorProcessor, 2, NHItems.ancimembrane, 10));
+            requirements(Category.defense, with(NHItems.upgradeSort, 8, NHItems.ancimembrane, 8));
         }};
     }
 }

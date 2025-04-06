@@ -289,7 +289,7 @@ public class CraftingBlock {
         }};
         crystallizer = new RecipeGenericCrafter("crystallizer"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 45, Items.carbide, 30));
+                    ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 45, Items.tungsten, 30));
 
             size = 2;
 

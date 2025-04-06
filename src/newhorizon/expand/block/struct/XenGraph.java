@@ -10,15 +10,6 @@ import newhorizon.expand.block.AdaptBuilding;
 import static newhorizon.expand.block.struct.GraphUpdater.xenGraphAll;
 
 public class XenGraph {
-    /** <p>concept:</p>
-     * this is a graph model:
-     * a container which has a certain amount of water with area and height, and some pipe in different height with different rate.
-     * when add xen-energy to it through pipe, the water altitude rises until the altitude is higher than the pipe,
-     * when consume xen-energy, the altitude must be higher than the pipe for output.
-     * <p>detail:</p>
-     * xen wave frequency: internal float 0-500, 50-200 for alpha (300-450 GHz), 200-350 for beta(450-600 GHz), 350-500 for gamma(600-750 GHz)
-     * xen energy density: internal float 100 for a XED unit. for example, 100 area(10 conduit) with 450 GHz have 100 * 200 / 100 = 200XED.
-     */
     private static final Queue<AdaptBuilding> queue = new Queue<>();
     public static int lastID = 0;
     //do not modify any of these unless you know what you're doing!
