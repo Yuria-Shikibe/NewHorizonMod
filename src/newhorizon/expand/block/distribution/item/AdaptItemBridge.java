@@ -17,6 +17,8 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Gamemode;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -28,10 +30,12 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.ItemBridge;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import newhorizon.NHGroups;
+import newhorizon.NHVars;
+import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.func.MathUtil;
 
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class AdaptItemBridge extends ItemBridge {
     public AdaptConveyor cBlock;
@@ -93,6 +97,8 @@ public class AdaptItemBridge extends ItemBridge {
             Draw.rect("bridge-arrow", (x * tilesize + link.x * tilesize)/2f, (y * tilesize + link.y * tilesize)/2f, Angles.angle(link.x, link.y, x, y));
         }
         Draw.reset();
+
+        NHVars.renderer.drawGravityTrap();
     }
 
     public boolean linkValid(Tile tile, Tile other, boolean checkDouble){
@@ -119,6 +125,20 @@ public class AdaptItemBridge extends ItemBridge {
         stats.add(Stat.range, range, StatUnit.blocks);
         stats.add(Stat.speed, 15, StatUnit.itemsSecond);
     }
+
+    @Override
+    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
+        if (state.rules.mode() == Gamemode.sandbox) return true;
+
+        Seq<GravityTrapField> fields = new Seq<>();
+        NHGroups.gravityTraps.intersect(tile.worldx(), tile.worldy(), tilesize, tilesize, fields);
+        if (fields.isEmpty()) return false;
+        for (GravityTrapField field : fields) {
+            if (field.team() != team) return false;
+        }
+        return true;
+    }
+
 
     public class AdaptItemBridgeBuild extends ItemBridgeBuild {
 

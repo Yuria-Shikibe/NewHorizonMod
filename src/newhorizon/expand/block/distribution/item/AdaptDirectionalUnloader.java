@@ -10,16 +10,22 @@ import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Gamemode;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
+import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.DirectionalUnloader;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import newhorizon.NHGroups;
+import newhorizon.NHVars;
 import newhorizon.NewHorizon;
+import newhorizon.expand.entities.GravityTrapField;
 
-import static mindustry.Vars.content;
+import static mindustry.Vars.*;
 
 public class AdaptDirectionalUnloader extends DirectionalUnloader {
     public TextureRegion[] topRegions = new TextureRegion[4];
@@ -55,6 +61,25 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
         super.setStats();
         stats.remove(Stat.speed);
         stats.add(Stat.speed, 15, StatUnit.itemsSecond);
+    }
+
+    @Override
+    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
+        if (state.rules.mode() == Gamemode.sandbox) return true;
+
+        Seq<GravityTrapField> fields = new Seq<>();
+        NHGroups.gravityTraps.intersect(tile.worldx(), tile.worldy(), tilesize, tilesize, fields);
+        if (fields.isEmpty()) return false;
+        for (GravityTrapField field : fields) {
+            if (field.team() != team) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        super.drawPlace(x, y, rotation, valid);
+        NHVars.renderer.drawGravityTrap();
     }
 
     public class AdaptDirectionalUnloaderBuild extends DirectionalUnloaderBuild{

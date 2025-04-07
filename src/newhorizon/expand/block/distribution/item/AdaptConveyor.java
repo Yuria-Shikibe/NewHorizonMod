@@ -17,6 +17,7 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Gamemode;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
@@ -88,6 +89,8 @@ public class AdaptConveyor extends Conveyor {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
+        if (state.rules.mode() == Gamemode.sandbox) return true;
+
         Seq<GravityTrapField> fields = new Seq<>();
         NHGroups.gravityTraps.intersect(tile.worldx(), tile.worldy(), tilesize, tilesize, fields);
         if (fields.isEmpty()) return false;

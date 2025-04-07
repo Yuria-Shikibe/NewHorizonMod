@@ -26,7 +26,6 @@ public class AdaptPump extends Pump {
     public void load() {
         super.load();
         splits = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32);
-        Log.info(splits.length + "asdasdsadsadsadas");
         topRegion = Core.atlas.find(name + "-top");
     }
 

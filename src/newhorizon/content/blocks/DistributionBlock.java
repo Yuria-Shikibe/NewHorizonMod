@@ -10,7 +10,7 @@ import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloade
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {
-    public static Block conveyor, conveyorJunction, conveyorRouter, conveyorMerger, conveyorGate, conveyorBridge, conveyorUnloader;
+    public static Block conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger, logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker, conveyorBridge, conveyorUnloader;
     public static Block liquidBridge, liquidUnloader;
 
     public static void load(){
@@ -26,7 +26,7 @@ public class DistributionBlock {
             saveConfig = false;
         }};
 
-        conveyorJunction = new AdaptJunction("logistics-junction"){{
+        logisticsJunction = new AdaptJunction("logistics-junction"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
@@ -35,7 +35,7 @@ public class DistributionBlock {
             capacity = 1;
         }};
 
-        conveyorRouter = new AdaptDirectionalRouter("logistics-router"){{
+        logisticsDirectionalRouter = new AdaptDirectionalRouter("logistics-directional-router"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
@@ -43,7 +43,7 @@ public class DistributionBlock {
             speed = 4f;
         }};
 
-        conveyorMerger = new AdaptDirectionalMerger("logistics-merger"){{
+        logisticsDirectionalMerger = new AdaptDirectionalMerger("logistics-directional-merger"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
@@ -51,12 +51,34 @@ public class DistributionBlock {
             speed = 4f;
         }};
 
-        conveyorGate = new AdaptDirectionalGate("logistics-gate"){{
+        logisticsDirectionalGate = new AdaptDirectionalGate("logistics-directional-gate"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             speed = 4f;
+        }};
+
+        logisticsOmniGate = new AdaptGate("logistics-omni-gate"){{
+            requirements(Category.distribution, with());
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+        }};
+
+        logisticsOmniSorter = new AdaptSorter("logistics-omni-sorter"){{
+            requirements(Category.distribution, with());
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+
+            invert = false;
+        }};
+
+        logisticsOmniBlocker = new AdaptSorter("logistics-omni-blocker"){{
+            requirements(Category.distribution, with());
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+
+            invert = true;
         }};
 
         conveyorBridge = new AdaptItemBridge("logistics-bridge", (AdaptConveyor) conveyor){{
@@ -96,7 +118,7 @@ public class DistributionBlock {
             conductivePower = true;
         }};
 
-        ((AdaptConveyor) conveyor).junctionReplacement = conveyorJunction;
+        ((AdaptConveyor) conveyor).junctionReplacement = logisticsJunction;
         ((AdaptConveyor) conveyor).bridgeReplacement = conveyorBridge;
     }
 }

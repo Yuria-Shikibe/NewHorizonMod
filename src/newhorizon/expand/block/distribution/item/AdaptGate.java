@@ -16,34 +16,26 @@ import mindustry.game.Gamemode;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
+import mindustry.type.Item;
 import mindustry.world.Tile;
-import mindustry.world.blocks.distribution.OverflowDuct;
+import mindustry.world.blocks.distribution.OverflowGate;
 import newhorizon.NHGroups;
 import newhorizon.NHVars;
-import newhorizon.NewHorizon;
 import newhorizon.expand.entities.GravityTrapField;
 
 import static mindustry.Vars.*;
 
-public class AdaptDirectionalGate extends OverflowDuct {
-    public TextureRegion baseRegion, overlayRegion, invertRegion;
+public class AdaptGate extends OverflowGate {
+    public TextureRegion invertRegion;
 
-    public AdaptDirectionalGate(String name) {
+    public AdaptGate(String name) {
         super(name);
 
         saveConfig = true;
         placeableLiquid = true;
         drawTeamOverlay = false;
 
-        config(Boolean.class, (AdaptDirectionalGateBuild build, Boolean invert) -> build.invert = invert);
-    }
-
-    @Override
-    public void load() {
-        super.load();
-        baseRegion = Core.atlas.find(NewHorizon.name("logistics-base"));
-        overlayRegion = Core.atlas.find(name + "-overlay");
-        invertRegion = Core.atlas.find(name + "-invert");
+        config(Boolean.class, (AdaptGateBuild build, Boolean invert) -> build.invert = invert);
     }
 
     public TextureRegion[] icons(){
@@ -52,8 +44,13 @@ public class AdaptDirectionalGate extends OverflowDuct {
 
     @Override
     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
-        Draw.rect(baseRegion, plan.drawx(), plan.drawy());
-        Draw.rect(overlayRegion, plan.drawx(), plan.drawy(), plan.rotation * 90);
+        Draw.rect(region, plan.drawx(), plan.drawy(), plan.rotation * 90);
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        invertRegion = Core.atlas.find(name + "-invert");
     }
 
     @Override
@@ -75,17 +72,12 @@ public class AdaptDirectionalGate extends OverflowDuct {
         NHVars.renderer.drawGravityTrap();
     }
 
-    public class AdaptDirectionalGateBuild extends OverflowDuctBuild{
+    public class AdaptGateBuild extends OverflowGateBuild {
         public boolean invert;
-
-        public boolean invert(){
-            return invert;
-        }
 
         @Override
         public void draw() {
-            Draw.rect(baseRegion, x, y);
-            Draw.rect(invert ? invertRegion : overlayRegion, x, y, rotation);
+            Draw.rect(invert ? invertRegion : region, x, y);
         }
 
         @Override
@@ -106,41 +98,36 @@ public class AdaptDirectionalGate extends OverflowDuct {
             return invert;
         }
 
-        @Nullable
-        public Building target(){
-            if(current == null) return null;
+        public @Nullable Building getTileTarget(Item item, Building src, boolean flip){
+            int from = relativeToEdge(src.tile);
+            if(from == -1) return null;
+            Building to = nearby((from + 2) % 4);
+            boolean
+                    fromInst = src.block.instantTransfer,
+                    canForward = to != null && to.team == team && !(fromInst && to.block.instantTransfer) && to.acceptItem(this, item),
+                    inv = invert == enabled;
 
-            if(invert()){ //Lots of extra code. Make separate UnderflowDuct class?
-                Building l = left(), r = right();
-                boolean lc = l != null && l.team == team && l.acceptItem(this, current),
-                        rc = r != null && r.team == team && r.acceptItem(this, current);
+            if(!canForward || inv){
+                Building a = nearby(Mathf.mod(from - 1, 4));
+                Building b = nearby(Mathf.mod(from + 1, 4));
+                boolean ac = a != null && !(fromInst && a.block.instantTransfer) && a.team == team && a.acceptItem(this, item);
+                boolean bc = b != null && !(fromInst && b.block.instantTransfer) && b.team == team && b.acceptItem(this, item);
 
-                if(lc && !rc){
-                    return l;
-                }else if(rc && !lc){
-                    return r;
-                }else if(lc){
-                    return cdump == 0 ? l : r;
+                if(!ac && !bc){
+                    return inv && canForward ? to : null;
+                }
+
+                if(ac && !bc){
+                    to = a;
+                }else if(bc && !ac){
+                    to = b;
+                }else{
+                    to = (rotation & (1 << from)) == 0 ? a : b;
+                    if(flip) rotation ^= (1 << from);
                 }
             }
 
-            Building front = front();
-            if(front != null && front.team == team && front.acceptItem(this, current)){
-                return front;
-            }
-
-            if(invert()) return null;
-
-            for(int i = -1; i <= 1; i++){
-                int dir = Mathf.mod(rotation + (((i + cdump + 1) % 3) - 1), 4);
-                if(dir == rotation) continue;
-                Building other = nearby(dir);
-                if(other != null && other.team == team && other.acceptItem(this, current)){
-                    return other;
-                }
-            }
-
-            return null;
+            return to;
         }
 
         @Override
