@@ -11,7 +11,6 @@ import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Hitboxc;
-import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import newhorizon.NHGroups;
 import newhorizon.expand.block.defence.GravityWell;
@@ -38,44 +37,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
 	
 		return false;
 	};
-	
-	public static final Boolf2<Teamc, Rect> IntersectedAllyRect = (team, rect) -> {
-		tmpSeq.clear();
-		NHGroups.gravityTraps.intersect(rect, tmpSeq);
-		for(GravityTrapField f : tmpSeq){
-			if(team.team() == f.team() && f.active()){
-				return true;
-			}
-		}
-		
-		return false;
-	};
-	
-	public static final Boolf2<Teamc, Rect> IntersectedHostileRect = (team, rect) -> {
-		tmpSeq.clear();
-		NHGroups.gravityTraps.intersect(rect, tmpSeq);
-		for(GravityTrapField f : tmpSeq){
-			if(team.team() != f.team() && f.active()){
-				return true;
-			}
-		}
-		
-		return false;
-	};
-	
-	public static final Boolf2<Team, Hitboxc> IntersectedHostile = (team, entity) -> {
-		entity.hitbox(tmpRect);
-		tmpSeq.clear();
-		NHGroups.gravityTraps.intersect(tmpRect, tmpSeq);
-		for(GravityTrapField f : tmpSeq){
-			if(team != f.team() && f.active()){
-				return true;
-			}
-		}
-		
-		return false;
-	};
-	
+
 	public float x = 0, y = 0;
 	public float range = 120;
 	public Boolp activated = () -> true;

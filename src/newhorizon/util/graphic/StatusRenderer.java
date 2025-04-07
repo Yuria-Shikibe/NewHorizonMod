@@ -163,8 +163,7 @@ public class StatusRenderer{
 					}
 				}
 			}
-
-
+			Draw.reset();
 		});
 		register(NHStatusEffects.scannerDown, 100, (warmup, unit, status) -> {
 			Color from = Pal.heal, to = NHColor.lightSkyBack;
@@ -205,12 +204,6 @@ public class StatusRenderer{
 				}
 			}
 		});
-		//register(NHStatusEffects.overphased, 20, NHShaders.distort, (warmup, unit, status) -> {
-		//	Draw.color(unit.team.color);
-		//	Fill.circle(centerX(), centerY(), 120);
-		//	Draw.color(Color.black);
-		//	Fill.circle(centerX(), centerY(), 100);
-		//});
 	}
 	
 	public void register(StatusEffect effect, int priority, Cons3<Float, Unit, StatusEffect> statusRenderer){
@@ -254,7 +247,8 @@ public class StatusRenderer{
 		drawTask.clear();
 		lastSeq.clear();
 	}
-	
+
+	@SuppressWarnings("InnerClassMayBeStatic")
 	public class StatusDrawer {
 		public StatusEffect status;
 		public int priority;

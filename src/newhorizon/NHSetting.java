@@ -39,7 +39,6 @@ public class NHSetting{
 		all.addAll(
 			new BoolSetting(EFFECT_DETAIL, true, true),
 			new BoolSetting(VANILLA_COST_OVERRIDE, false, true),
-			//todo debugging need remake
 			new BoolSetting(DEBUGGING, false, true),
 			new BoolSetting(START_LOG, false, false),
 			new BoolSetting(EXPERIMENTAL, false, true),

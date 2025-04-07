@@ -8,12 +8,8 @@ public class NHMath{
 	public static final float PI = 3.1415927f, pi = PI, halfPi = PI/2;
 	
 	public static final float radiansToDegrees = 180f / PI;
-	public static final float radDeg = radiansToDegrees;
 	public static final float degreesToRadians = PI / 180;
-	public static final float degRad = degreesToRadians;
-	public static final double doubleDegRad = 0.017453292519943295;
-	public static final double doubleRadDeg = 57.29577951308232;
-	
+
 	private static final int asinBits = 14; // 16KB. Adjust for accuracy.
 	private static final int asinMask = ~(-1 << asinBits);
 	private static final int asinCount = asinMask + 1;
@@ -36,20 +32,11 @@ public class NHMath{
 		return (int)((sin + 1) * sinToIndex) & asinMask;
 	}
 	
-	public static float cosToSin(float x) {
-		// Taylor
-		return x - (x * x * x) / 6 + (x * x * x * x * x) / 120;
-	}
-	
 	public static float acosRad(float cos){
 		return asinTable[index((float)Math.sqrt(1 - cos * cos))];
 	}
 	
 	public static float asinDeg(float sin){
 		return asinTable[index(sin)] * radiansToDegrees;
-	}
-	
-	public static float asinRad(float sin){
-		return asinTable[index(sin)];
 	}
 }

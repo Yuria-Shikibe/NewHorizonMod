@@ -5,6 +5,7 @@ import arc.scene.ui.CheckBox;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.ui.dialogs.BaseDialog;
@@ -18,9 +19,7 @@ public class NHWorldSettingDialog extends BaseDialog{
 	public static NHWorldData data(){
 		return NHVars.worldData;
 	}
-	
-	public Table settings;
-	
+
 	public static Seq<SettingEntry> allSettings = new Seq<>();
 	
 	public static Jval settingsJson;
@@ -36,22 +35,12 @@ public class NHWorldSettingDialog extends BaseDialog{
 				new BoolSetting(dataClass.getField("applyEventTriggers"), false)
 			);
 		}catch(NoSuchFieldException e){
-			e.printStackTrace();
+			Log.err(e);
 		}
 	}
 	
 	public NHWorldSettingDialog(){
 		super("New Horizon World Settings");
-		
-//		settings = new Table();
-//		settings.left();
-//		settings.defaults().growX().fillY();
-//
-//		Log.info(allSettings.size);
-//
-//		settings.add("213").row();
-//
-//		settings.add("213").row();
 		
 		cont.pane(new Table(t -> {
 			allSettings.each(e -> e.buildTable(t));

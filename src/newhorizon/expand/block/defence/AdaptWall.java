@@ -1,7 +1,6 @@
 package newhorizon.expand.block.defence;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
@@ -9,20 +8,16 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Call;
-import mindustry.gen.Iconc;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHStats;
 import newhorizon.util.graphic.SpriteUtil;
-import newhorizon.util.ui.BarExtend;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.graphic.SpriteUtil.*;
@@ -50,12 +45,6 @@ public class AdaptWall extends Wall {
 	public void load(){
 		super.load();
 		atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, ATLAS_INDEX_4_12);
-	}
-
-	@Override
-	public void setBars() {
-		barMap.clear();
-		addBar("health", e -> new BarExtend(Core.bundle.format("nh.bar.health", Strings.autoFixed(e.health(), 0), health, Strings.autoFixed(e.healthf() * 100, 0)), Pal.health, e::healthf, Iconc.add + "").blink(Color.white));
 	}
 
 	@Override

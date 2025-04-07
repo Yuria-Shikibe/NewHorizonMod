@@ -27,8 +27,6 @@ public class BoostAbility extends Ability{
 	public int trailLength = 8;
 	
 	public float angleCone = 5f;
-//	public float accelUp = 0.045f;
-//	public float accelDown = 0.07f;
 	
 	
 	public BoostAbility(boolean drawAirFlow, float velocityMultiple, float angleCone){

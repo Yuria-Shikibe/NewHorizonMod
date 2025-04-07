@@ -29,7 +29,6 @@ import newhorizon.expand.logic.statements.cutscene.AddMainActionBus;
 import newhorizon.expand.logic.statements.cutscene.AddSubActionBus;
 import newhorizon.expand.logic.statements.cutscene.BeginCutscene;
 import newhorizon.expand.logic.statements.cutscene.action.*;
-import newhorizon.util.graphic.FloatPlatformDrawer;
 
 import java.io.IOException;
 

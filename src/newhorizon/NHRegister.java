@@ -38,26 +38,13 @@ public class NHRegister{
 		Net.registerPacket(ActiveAbilityTriggerPacket::new);
 		Net.registerPacket(ConfigGravityWallNodePacket::new);
 	}
-	
-	public static void addTaskOnSave(Runnable runnable){
-		taskOnSave.add(runnable);
-	}
-	public static final Seq<Runnable> taskOnSave = new Seq<>();
-	
-	public static boolean worldLoaded(){
-		return worldLoaded;
-	}
-	
+
 	public static void load(){
 		Events.on(EventType.ResetEvent.class, e -> {
 
 			NHGroups.clear();
 			worldLoaded = false;
 			afterLoad.clear();
-
-			while(taskOnSave.any()){
-				taskOnSave.pop().run();
-			}
 		});
 
 		Events.on(EventType.WorldLoadBeginEvent.class, e -> {

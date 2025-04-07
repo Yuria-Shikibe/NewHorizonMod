@@ -37,7 +37,6 @@ public class EntityRegister {
 		put(NucleoidEntity.class, NucleoidEntity::new);
 		put(ProbeEntity.class, ProbeEntity::new);
 
-		put(WorldEvent.class, WorldEvent::new);
 		put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 
 		put(Spawner.class, Spawner::new);
