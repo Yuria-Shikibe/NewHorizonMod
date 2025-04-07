@@ -218,12 +218,7 @@ public class AssignOverdrive extends OverdriveProjector{
 		public IntSeq linkGroup(){
 			return targets;
 		}
-		
-		@Override
-		public void linkGroup(IntSeq seq){
-			targets = seq;
-		}
-		
+
 		@Override
 		public boolean linkValid(){
 			for(Building b : linkBuilds()){

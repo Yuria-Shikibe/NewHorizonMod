@@ -24,7 +24,6 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
-import newhorizon.expand.block.adapt.MultiCrafter;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.DrawFunc;

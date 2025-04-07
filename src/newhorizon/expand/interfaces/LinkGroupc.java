@@ -17,8 +17,7 @@ public interface LinkGroupc extends Linkablec{
 	}
 	
 	IntSeq linkGroup();
-	void linkGroup(IntSeq seq);
-	
+
 	@Override
 	default void drawLink(){
 		drawLink(linkBuilds());

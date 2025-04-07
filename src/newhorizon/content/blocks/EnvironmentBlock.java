@@ -4,7 +4,6 @@ import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHColor;
-import newhorizon.expand.block.decoration.ScarpWall;
 import newhorizon.expand.block.env.*;
 
 public class EnvironmentBlock {
@@ -19,7 +18,6 @@ public class EnvironmentBlock {
 
     public static Floor patternPlate0, patternPlate1;
 
-    public static ScarpWall scarpWallSmall, scarpWallLarge;
     public static void load(){
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
         metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove", true);
