@@ -23,6 +23,8 @@ public class DistributionBlock {
             displayedSpeed = 15f;
             framePeriod = 9.2f;
 
+            buildCost = 1f;
+
             saveConfig = false;
         }};
 
