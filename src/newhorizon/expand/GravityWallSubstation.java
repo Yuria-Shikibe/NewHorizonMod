@@ -21,7 +21,6 @@ import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
-import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
@@ -32,16 +31,12 @@ import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.power.PowerNode;
 import newhorizon.NHGroups;
-import newhorizon.NHRenderer;
 import newhorizon.NHVars;
-import newhorizon.content.NHColor;
 import newhorizon.content.NHContent;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.net.NHCall;
 
-import static arc.Core.input;
 import static mindustry.Vars.*;
-import static mindustry.Vars.tilesize;
 
 public class GravityWallSubstation extends PowerNode {
     public Color fromColor = Pal.powerLight.cpy().lerp(Pal.gray, 0.5f),  toColor = Pal.powerLight;

@@ -3,7 +3,6 @@ package newhorizon.content.blocks;
 import mindustry.content.Items;
 import mindustry.content.UnitTypes;
 import mindustry.type.Category;
-import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;

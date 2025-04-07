@@ -5,7 +5,6 @@ import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.gen.Sounds;
 import mindustry.type.Category;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
@@ -17,7 +16,6 @@ import newhorizon.content.NHLiquids;
 import newhorizon.expand.GravityWallSubstation;
 import newhorizon.expand.block.drawer.DrawRegionCenterSymmetry;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
-import newhorizon.expand.block.special.JumpGate;
 
 import static mindustry.type.ItemStack.with;
 

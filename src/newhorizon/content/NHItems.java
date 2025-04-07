@@ -2,13 +2,11 @@ package newhorizon.content;
 
 import arc.Events;
 import arc.graphics.Color;
-import arc.util.Log;
 import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.game.EventType;
 import mindustry.type.Item;
 
-import static mindustry.Vars.content;
 import static mindustry.Vars.state;
 
 public class NHItems{

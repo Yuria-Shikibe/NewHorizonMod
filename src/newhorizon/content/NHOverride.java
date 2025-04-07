@@ -5,7 +5,6 @@ import arc.func.Intc;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.scene.style.TextureRegionDrawable;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Structs;
@@ -14,9 +13,7 @@ import mindustry.content.*;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.SpawnGroup;
-import mindustry.game.Team;
 import mindustry.game.Waves;
-import mindustry.gen.Icon;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
@@ -38,7 +35,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static mindustry.Vars.content;
-import static mindustry.Vars.defaultEnv;
 import static mindustry.content.UnitTypes.*;
 
 public class NHOverride{

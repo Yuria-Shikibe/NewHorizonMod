@@ -2,14 +2,11 @@ package newhorizon.expand.net.packet;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.entities.abilities.Ability;
 import mindustry.gen.Building;
-import mindustry.gen.Unit;
 import mindustry.io.TypeIO;
 import mindustry.net.NetConnection;
 import mindustry.net.Packet;
 import newhorizon.expand.GravityWallSubstation;
-import newhorizon.expand.ability.active.ActiveAbility;
 import newhorizon.expand.net.NHCall;
 
 public class ConfigGravityWallNodePacket extends Packet {

@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
-import mindustry.gen.Building;
 import mindustry.world.blocks.distribution.DuctRouter;
 import newhorizon.NewHorizon;
 

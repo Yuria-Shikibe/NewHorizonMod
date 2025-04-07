@@ -1,6 +1,8 @@
 package newhorizon.expand.entities;
 
-import arc.func.*;
+import arc.func.Boolf2;
+import arc.func.Boolp;
+import arc.func.Prov;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.geom.Intersector;

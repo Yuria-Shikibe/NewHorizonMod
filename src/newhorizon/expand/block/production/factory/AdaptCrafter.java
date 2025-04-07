@@ -1,8 +1,6 @@
 package newhorizon.expand.block.production.factory;
 
 import arc.Core;
-import arc.func.Floatc;
-import arc.func.Floatf;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.geom.Point2;
@@ -20,7 +18,6 @@ import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
