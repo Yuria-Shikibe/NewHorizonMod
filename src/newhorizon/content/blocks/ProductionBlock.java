@@ -130,7 +130,7 @@ public class ProductionBlock {
             };
         }};
         beamMiningFacility = new AdaptDrill("beam-mining-facility"){{
-            requirements(Category.production, with(NHItems.metalOxhydrigen, 60, Items.carbide, 90, Items.surgeAlloy, 80, Items.phaseFabric, 60, NHItems.zeta, 60));
+            requirements(Category.production, with(NHItems.metalOxhydrigen, 60, Items.tungsten, 90, Items.surgeAlloy, 80, Items.phaseFabric, 60, NHItems.zeta, 60));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 1200;

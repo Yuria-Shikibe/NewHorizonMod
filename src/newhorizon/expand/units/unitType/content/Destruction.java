@@ -28,7 +28,7 @@ import static arc.graphics.g2d.Lines.stroke;
 
 public class Destruction extends NHUnitType {
     public BulletType gauss = new RailBulletType(){{
-        length = 600f;
+        length = 360f;
         damage = 300f;
 
         hitColor = Pal.techBlue;

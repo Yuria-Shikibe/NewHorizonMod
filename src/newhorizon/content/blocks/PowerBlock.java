@@ -10,17 +10,54 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
+import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
+import newhorizon.expand.GravityWallSubstation;
 import newhorizon.expand.block.drawer.DrawRegionCenterSymmetry;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.block.special.JumpGate;
 
+import static mindustry.type.ItemStack.with;
+
 public class PowerBlock {
     public static Block zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor;
+    public static Block gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load(){
+        gravityTrapSerpulo = new GravityWallSubstation("gravity-node-serpulo"){{
+            requirements(Category.power, BuildVisibility.shown, with(Items.copper, 10, Items.lead, 8));
+
+            size = 1;
+            health = 400;
+            laserRange = 7;
+        }};
+
+        gravityTrapErekir = new GravityWallSubstation("gravity-node-erekir"){{
+            requirements(Category.power, BuildVisibility.shown, with(Items.beryllium, 15));
+
+            size = 1;
+            health = 400;
+            laserRange = 7;
+        }};
+
+        gravityTrapSmall = new GravityWallSubstation("gravity-trap-small"){{
+            requirements(Category.power, BuildVisibility.shown, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 8));
+
+            size = 2;
+            health = 640;
+            laserRange = 12;
+        }};
+
+        gravityTrap = new GravityWallSubstation("gravity-gully"){{
+            requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
+
+            size = 3;
+            health = 1250;
+            laserRange = 17;
+        }};
+
         zetaGenerator = new RecipeGenericCrafter("zeta-generator"){{
             requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 120,NHItems.juniorProcessor, 80 ,NHItems.zeta,100, Items.carbide, 150));
 

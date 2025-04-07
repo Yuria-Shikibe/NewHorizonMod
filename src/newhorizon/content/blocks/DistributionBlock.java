@@ -3,9 +3,9 @@ package newhorizon.content.blocks;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
-import newhorizon.expand.block.distribution.transport.item.*;
-import newhorizon.expand.block.distribution.transport.liquid.AdaptLiquidBridge;
-import newhorizon.expand.block.distribution.transport.liquid.AdaptLiquidDirectionalUnloader;
+import newhorizon.expand.block.distribution.item.*;
+import newhorizon.expand.block.distribution.liquid.AdaptLiquidBridge;
+import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloader;
 
 import static mindustry.type.ItemStack.with;
 
@@ -26,7 +26,7 @@ public class DistributionBlock {
             saveConfig = false;
         }};
 
-        conveyorJunction = new AdaptJunction("logistics-junction", (AdaptConveyor) conveyor){{
+        conveyorJunction = new AdaptJunction("logistics-junction"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
@@ -35,7 +35,7 @@ public class DistributionBlock {
             capacity = 1;
         }};
 
-        conveyorRouter = new AdaptDirectionalRouter("logistics-router", (AdaptConveyor) conveyor){{
+        conveyorRouter = new AdaptDirectionalRouter("logistics-router"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
@@ -43,7 +43,7 @@ public class DistributionBlock {
             speed = 4f;
         }};
 
-        conveyorMerger = new AdaptDirectionalMerger("logistics-merger", (AdaptConveyor) conveyor){{
+        conveyorMerger = new AdaptDirectionalMerger("logistics-merger"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
@@ -51,7 +51,7 @@ public class DistributionBlock {
             speed = 4f;
         }};
 
-        conveyorGate = new AdaptDirectionalGate("logistics-gate", (AdaptConveyor) conveyor){{
+        conveyorGate = new AdaptDirectionalGate("logistics-gate"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;

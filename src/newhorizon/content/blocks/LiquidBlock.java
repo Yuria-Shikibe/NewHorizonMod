@@ -8,25 +8,18 @@ import newhorizon.expand.block.liquid.AdaptPump;
 import static mindustry.type.ItemStack.with;
 
 public class LiquidBlock {
-    public static Block hydroPump, turboPump;
+    public static Block turboPump;
 
     public static void load(){
-        hydroPump = new AdaptPump("hydro-pump"){{
+        turboPump = new AdaptPump("turbo-pump"){{
             requirements(Category.liquid, with(Items.copper, 70, Items.metaglass, 50, Items.silicon, 20, Items.titanium, 35));
-            pumpAmount = 0.2f;
-            consumePower(0.3f);
+            consumePower(0.5f);
+
+            pumpAmount = 0.25f;
+            conductivePower = true;
             liquidCapacity = 120f;
             hasPower = true;
             size = 2;
-        }};
-
-        turboPump = new AdaptPump("turbo-pump"){{
-            requirements(Category.liquid, with(Items.copper, 70, Items.metaglass, 50, Items.silicon, 20, Items.titanium, 35));
-            pumpAmount = 0.2f;
-            consumePower(0.3f);
-            liquidCapacity = 120f;
-            hasPower = true;
-            size = 4;
         }};
     }
 }

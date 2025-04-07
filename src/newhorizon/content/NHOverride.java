@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static mindustry.Vars.content;
+import static mindustry.Vars.defaultEnv;
 import static mindustry.content.UnitTypes.*;
 
 public class NHOverride{
@@ -323,6 +324,7 @@ public class NHOverride{
 		overrideUnitTypeAbility();
 		balanceDrill();
 		buffCoreUnits();
+		adjustUnit();
 
 		overrideStats();
 	}
@@ -686,6 +688,33 @@ public class NHOverride{
 			if (type.abilities.contains(ability -> ability instanceof PassiveShield)) continue;
 			type.abilities.add(new PassiveShield(type.health));
 		}
+	}
+
+	private static void adjustUnit(){
+		for (UnitType type: content.units()){
+			type.envRequired = Env.none;
+			type.envDisabled = Env.none;
+			type.envEnabled = Env.any;
+		}
+
+		hideContent(Blocks.groundFactory);
+		hideContent(Blocks.airFactory);
+		hideContent(Blocks.navalFactory);
+		hideContent(Blocks.additiveReconstructor);
+		hideContent(Blocks.multiplicativeReconstructor);
+		hideContent(Blocks.exponentialReconstructor);
+		hideContent(Blocks.tetrativeReconstructor);
+		hideContent(Blocks.tankFabricator);
+		hideContent(Blocks.tankRefabricator);
+		hideContent(Blocks.tankAssembler);
+		hideContent(Blocks.mechFabricator);
+		hideContent(Blocks.mechRefabricator);
+		hideContent(Blocks.mechAssembler);
+		hideContent(Blocks.shipFabricator);
+		hideContent(Blocks.shipRefabricator);
+		hideContent(Blocks.shipAssembler);
+		hideContent(Blocks.primeRefabricator);
+		hideContent(Blocks.basicAssemblerModule);
 	}
 
 	private static ItemStack[] hugeItemReq(){

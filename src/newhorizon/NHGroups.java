@@ -14,9 +14,9 @@ import newhorizon.expand.entities.WorldEvent;
 import static mindustry.Vars.world;
 
 public class NHGroups{
+	public static QuadTree<GravityTrapField> gravityTraps = new QuadTree<>(world.getQuadBounds(new Rect()));
 	public static final EntityGroup<WorldEvent> events = new EntityGroup<>(WorldEvent.class, false, true, (u, i) -> {});
 	public static final ObjectSet<RemoteCoreStorage.RemoteCoreStorageBuild>[] placedRemoteCore = new ObjectSet[Team.all.length];
-	public static QuadTree<GravityTrapField> gravityTraps = new QuadTree<>(world.getQuadBounds(new Rect()));
 	public static final Seq<GravityTrapField> gravityTrapsDraw = new Seq<>();
 	public static final Seq<CommandableBlock.CommandableBlockBuild> commandableBuilds = new Seq<>();
 

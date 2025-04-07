@@ -22,7 +22,6 @@ import mindustry.logic.LAssembler;
 import mindustry.logic.LCategory;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
-import newhorizon.expand.block.distribution.transport.LogisticsBlock;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.statements.*;
@@ -30,7 +29,6 @@ import newhorizon.expand.logic.statements.cutscene.AddMainActionBus;
 import newhorizon.expand.logic.statements.cutscene.AddSubActionBus;
 import newhorizon.expand.logic.statements.cutscene.BeginCutscene;
 import newhorizon.expand.logic.statements.cutscene.action.*;
-import newhorizon.util.func.NHPixmap;
 import newhorizon.util.graphic.FloatPlatformDrawer;
 
 import java.io.IOException;
@@ -225,9 +223,6 @@ public class NHContent extends Content{
 		ks7 = Core.atlas.find(NewHorizon.name("kill-streak-7"));
 		ks8 = Core.atlas.find(NewHorizon.name("kill-streak-8"));
 
-		LogisticsBlock.load();
-		FloatPlatformDrawer.load();
-		
 		smoothNoise = loadTex("smooth-noise", t -> {
 			t.setFilter(Texture.TextureFilter.linear);
 			t.setWrap(Texture.TextureWrap.repeat);

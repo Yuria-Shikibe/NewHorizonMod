@@ -485,7 +485,7 @@ public class NHUnitTypes{
 			heatColor = NHColor.lightSkyBack;
 			bullet = new PosLightningType(20f){{
 				lightningColor = NHColor.lightSkyBack;
-				maxRange = 250f;
+				maxRange = 180f;
 				hitEffect = NHFx.lightningHitSmall(lightningColor);
 				lightningLength = 1;
 				lightningLengthRand = 4;

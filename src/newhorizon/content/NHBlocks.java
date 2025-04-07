@@ -59,14 +59,12 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
-import newhorizon.expand.GravityWallSubstation;
 import newhorizon.expand.block.adapt.AdaptUnloader;
 import newhorizon.expand.block.adapt.AssignOverdrive;
 import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.*;
-import newhorizon.expand.block.distribution.*;
 import newhorizon.expand.block.drawer.ArcCharge;
 import newhorizon.expand.block.drawer.DrawArrowSequence;
 import newhorizon.expand.block.drawer.FlipRegionPart;
@@ -166,15 +164,12 @@ public class NHBlocks{
 	public static Block largeShieldGenerator;
 	public static Block fireExtinguisher;
 	public static Block webber;
-	public static Block//Special
-		gravityTrap;
 	public static Block hyperspaceWarper;
 	public static Block bombLauncher;
 	public static Block airRaider;
 	public static Block unitIniter;
 	public static Block remoteStorage;
 	public static Block disposePowerVoid;
-	public static Block gravityTrapSmall;
 	public static Block lableSpawner;
 
 	public static Block//Env
@@ -278,6 +273,7 @@ public class NHBlocks{
 			statusDuration = 60f;
 			speedMultiplier = 1.15f;
 			liquidDrop = NHLiquids.quantumLiquid;
+			liquidMultiplier = 0.25f;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			attributes.set(Attribute.light, 2f);
@@ -305,7 +301,7 @@ public class NHBlocks{
 			attributes.set(Attribute.light, 3f);
 			emitLight = true;
 			lightRadius = 40f;
-			liquidMultiplier = 2f;
+			liquidMultiplier = 0.5f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
 			blendGroup = this;
 			
@@ -313,8 +309,6 @@ public class NHBlocks{
 			attributes.set(Attribute.water, -1f);
 			attributes.set(Attribute.oil, -1f);
 			attributes.set(Attribute.spores, -1f);
-			
-//			cacheLayer = NHContent.quantum;
 		}};
 		
 		quantumFieldDisturbing = new Floor("quantum-field-disturbing", 0){{
@@ -327,7 +321,7 @@ public class NHBlocks{
 			attributes.set(Attribute.light, 3f);
 			emitLight = true;
 			lightRadius = 40f;
-			liquidMultiplier = 2f;
+			liquidMultiplier = 0.5f;
 			lightColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.2f);
 			blendGroup = this;
 			
@@ -2962,28 +2956,6 @@ public class NHBlocks{
 			}
 		};
 		
-		multiSteelItemBridge = new FloatItemBridge("multi-steel-item-bridge"){{
-			health = 560;
-			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.zeta, 5, Items.graphite, 10));
-			
-			fadeIn = moveArrows = true;
-			hasPower = false;
-			range = 8;
-			arrowSpacing = 8f;
-			speed = 40;
-			bufferCapacity = 20;
-		}};
-		
-		multiSteelLiquidBridge = new FloatLiquidBridge("multi-steel-liquid-bridge"){{
-			health = 560;
-			requirements(Category.liquid, with(NHItems.multipleSteel, 5, NHItems.zeta, 5, Items.metaglass, 10));
-
-			fadeIn = moveArrows = true;
-			arrowSpacing = 8;
-			range = 8;
-			hasPower = false;
-		}};
-		
 		fireExtinguisher = new FireExtinguisher("fire-extinguisher"){{
 			size = 3;
 			health = 920;
@@ -2993,59 +2965,8 @@ public class NHBlocks{
 			consumePowerCond(3f, FireExtinguisherBuild::isActive);
 			
 			requirements(Category.defense, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 120, Items.copper, 80, Items.graphite, 60));
-//			//NHTechTree.add(Blocks.tsunami, this);
-		}};
-		
-		multiConduit = new FloatConduit("multi-conduit"){{
-			size = 1;
-			health = 560;
-			liquidCapacity = 20.0F;
-			liquidPressure = 1.1f;
-			leaks = false;
-
-			junctionReplacement = multiJunction;
-			bridgeReplacement = rotBridgeReplacement = multiSteelLiquidBridge;
-
-			
-			requirements(Category.liquid, with(NHItems.multipleSteel, 1, Items.copper, 2, Items.metaglass, 1));
-//			//NHTechTree.add(Blocks.pulseConduit, this);
-		}};
-		
-		multiRouter = new FloatMultiRouter("multi-router"){{
-			size = 1;
-			health = 560;
-			speed = 2f;
-			
-			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.lead, 5));
-//			//NHTechTree.add(Blocks.router, this);
-		}};
-		
-		multiJunction = new FloatMultiJunction("multi-junction"){{
-			size = 1;
-			health = 560;
-			speed = 12f;
-			capacity = 12;
-			
-			requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
-//			//NHTechTree.add(Blocks.junction, this);
 		}};
 
-		/*
-		beamDrill = new LaserBeamDrill("beam-drill"){{
-			size = 4;
-			health = 960;
-			tier = 6;
-			drillTime = 150f;
-			liquidBoostIntensity = 1.65f;
-			warmupSpeed = 0.001f;
-			consumePower(6);
-			consumeLiquid(Liquids.water, 0.1f).optional(true, true);
-			requirements(Category.production, BuildVisibility.shown, with(NHItems.juniorProcessor, 60, NHItems.multipleSteel, 45, NHItems.zeta, 60, NHItems.presstanium, 40, Items.lead, 80));
-			//NHTechTree.add(Blocks.blastDrill, this);
-		}};
-
-		 */
-		
 		airRaider = new AirRaider("air-raider"){{
 			requirements(Category.defense, with(NHItems.upgradeSort, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
 			
@@ -3147,22 +3068,6 @@ public class NHBlocks{
 			
 			requirements(Category.units, BuildVisibility.shown, with(NHItems.ancimembrane, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
 		}};
-
-		gravityTrapSmall = new GravityWallSubstation("gravity-trap-small"){{
-			size = 2;
-			health = 640;
-			laserRange = 12;
-
-			requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
-		}};
-
-		gravityTrap = new GravityWallSubstation("gravity-gully"){{
-			size = 3;
-			health = 1250;
-			laserRange = 18;
-
-			requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
-		}};
 		
 		irdryonTank = new LiquidRouter("irdryon-tank"){{
 			requirements(Category.liquid, with(NHItems.metalOxhydrigen, 25, NHItems.multipleSteel, 40, Items.metaglass, 25));
@@ -3230,43 +3135,6 @@ public class NHBlocks{
 		rapidUnloader = new AdaptUnloader("rapid-unloader"){{
 			speed = 0.5f;
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.presstanium, 20, Items.lead, 15, NHItems.juniorProcessor, 25));
-//			//NHTechTree.add(Blocks.unloader, this);
-		}};
-		
-		multiEfficientConveyor = new FloatConveyor("multi-efficient-conveyor"){{
-			requirements(Category.distribution,with(NHItems.zeta, 2,NHItems.multipleSteel, 1));
-//			//NHTechTree.add(Blocks.titaniumConveyor, this);
-			speed = 0.12f;
-			displayedSpeed = 18f;
-			health = 560;
-			armor = 3;
-			junctionReplacement = multiJunction;
-			bridgeReplacement = multiSteelItemBridge;
-		}};
-		
-		multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor"){{
-			requirements(Category.distribution,with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));
-//			//NHTechTree.add(Blocks.armoredConveyor, this);
-			speed = 0.12f;
-			displayedSpeed = 18f;
-			health = 800;
-			armor = 5;
-			junctionReplacement = multiJunction;
-		}};
-
-		multiConveyor = new FloatStackConveyor("multi-conveyor"){{
-			requirements(Category.distribution,with(NHItems.zeta, 2,NHItems.irayrondPanel, 2, NHItems.juniorProcessor, 1));
-//			//NHTechTree.add(Blocks.plastaniumConveyor, this);
-			speed = 0.125f;
-			health = 720;
-			armor = 6;
-			itemCapacity = 20;
-			recharge = 1f;
-			
-			loadEffect = unloadEffect = new Effect(30f, e -> {
-				Lines.stroke(1.5f * e.fout(Interp.pow2Out), NHItems.multipleSteel.color);
-				Lines.square(e.x, e.y, tilesize / 8f * Mathf.sqrt2 * (e.fin(Interp.pow2Out) * 3 + 1f), 45f);
-			});
 		}};
 		
 		largeShieldGenerator = new ForceProjector("large-shield-generator") {{
@@ -3306,7 +3174,7 @@ public class NHBlocks{
 		PowerBlock.load();
 		LogicBlock.load();
 		LiquidBlock.load();
-
+		UnitBlock.load();
 		DistributionBlock.load();
 
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
