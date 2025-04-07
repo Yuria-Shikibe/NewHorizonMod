@@ -41,7 +41,7 @@ public class PowerBlock {
         }};
 
         gravityTrapSmall = new GravityWallSubstation("gravity-trap-small"){{
-            requirements(Category.power, BuildVisibility.shown, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 8));
+            requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 
             size = 2;
             health = 640;
