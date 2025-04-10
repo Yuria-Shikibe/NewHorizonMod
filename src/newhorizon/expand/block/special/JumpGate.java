@@ -377,7 +377,7 @@ public class JumpGate extends Block {
     
         @Override
         public boolean acceptItem(Building source, Item item){
-            return !NHVars.worldData.jumpGateUsesCoreItems && realItems().get(item) < getMaximumAccepted(item);
+            return !NHVars.worldData.worldData.jumpGateUsesCoreItems && realItems().get(item) < getMaximumAccepted(item);
         }
     
         @Override
@@ -465,7 +465,7 @@ public class JumpGate extends Block {
             DrawFunc.posSquareLink(color, 1.5f, 3.5f, true, this, target);
             Draw.color();
             
-            if(core() != null && NHVars.worldData.jumpGateUsesCoreItems)DrawFunc.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
+            if(core() != null && NHVars.worldData.worldData.jumpGateUsesCoreItems)DrawFunc.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
             
             if(jammed) DrawFunc.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
             
@@ -478,7 +478,7 @@ public class JumpGate extends Block {
         
         @Override
         public void updateTableAlign(Table table){
-            if(NHVars.worldData.jumpGateUsesCoreItems)super.updateTableAlign(table);
+            if(NHVars.worldData.worldData.jumpGateUsesCoreItems)super.updateTableAlign(table);
             else{
                 Vec2 pos = Core.input.mouseScreen(x - block.size * 4f - 1.0F, y);
                 table.setPosition(pos.x, pos.y, Align.right);
@@ -734,7 +734,7 @@ public class JumpGate extends Block {
             if(!calls.keys().toArray().contains(set)){
                 if(isCalling()){
                     if(getSet() != null){
-                        Building target = NHVars.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core() : self();
+                        Building target = NHVars.worldData.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core() : self();
                         
                         for(ItemStack stack : ItemStack.mult(getSet().dynamicRequirements(team), buildingSpawnNum * (costTime(getSet(), true) - buildProgress) / costTime(getSet(), true))){
                             realItems().add(stack.item, Math.min(stack.amount, target.getMaximumAccepted(stack.item) - realItems().get(stack.item)));
@@ -865,7 +865,7 @@ public class JumpGate extends Block {
         }
         
         public ItemModule realItems(){
-            return NHVars.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core().items() : items;
+            return NHVars.worldData.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core().items() : items;
         }
     }
     

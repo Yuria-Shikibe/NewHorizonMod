@@ -145,12 +145,9 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
-				NHOverride.contentOverride();
-				content.each(c -> {
-					if (c instanceof UnlockableContent uc){
-						uc.quietUnlock();
-					}
-				});
+				DebugFunc.updateBlockList();
+				//DebugFunc.outputSettings();
+
 				//DebugFunc.writeBulletTypeList();
 				//DebugFunc.outputAtlas();
 			});

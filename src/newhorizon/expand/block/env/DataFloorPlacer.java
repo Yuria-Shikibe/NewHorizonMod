@@ -22,6 +22,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.NHUI;
+import newhorizon.NHVars;
 import newhorizon.expand.game.NHWorldData;
 
 import static mindustry.Vars.content;
@@ -192,7 +193,7 @@ public class DataFloorPlacer extends Block {
                     if (terrainBlock != null){
                         tile.setOverlay(terrainBlock);
                     }
-                    NHWorldData.worldTileData.addTileData(tile.x, tile.y, tile.data);
+                    NHVars.worldData.worldTileData.addTileData(tile.x, tile.y, tile.data);
                 }
                 placed = true;
                 kill();

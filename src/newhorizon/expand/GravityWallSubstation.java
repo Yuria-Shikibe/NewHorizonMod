@@ -43,6 +43,8 @@ public class GravityWallSubstation extends PowerNode {
     public GravityWallSubstation(String name) {
         super(name);
 
+        schematicPriority = 20;
+
         configurable = false;
         autolink = true;
         update = true;

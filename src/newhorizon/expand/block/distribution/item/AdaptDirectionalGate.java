@@ -85,7 +85,7 @@ public class AdaptDirectionalGate extends OverflowDuct {
         @Override
         public void draw() {
             Draw.rect(baseRegion, x, y);
-            Draw.rect(invert ? invertRegion : overlayRegion, x, y, rotation);
+            Draw.rect(invert ? invertRegion : overlayRegion, x, y, rotdeg());
         }
 
         @Override
