@@ -219,13 +219,6 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 		if(!Vars.headless)trail.update(x, y, 1);
 	}
 
-	//@Override
-	//public void afterAllRead() {}
-
-	@Override
-	public boolean isNull() {
-		return false;
-	}
 
 	@Override
 	public int classId(){
@@ -278,7 +271,17 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled{
 			remove();
 		}
 	}
-	
+
+	@Override
+	public void afterReadAll() {
+
+	}
+
+	@Override
+	public void beforeWrite() {
+
+	}
+
 	public boolean inFogTo(Team viewer) {
 		return false;
 //		if (this.team != viewer && Vars.state.rules.fog) {

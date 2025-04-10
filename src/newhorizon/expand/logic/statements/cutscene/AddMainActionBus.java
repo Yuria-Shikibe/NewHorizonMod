@@ -2,10 +2,7 @@ package newhorizon.expand.logic.statements.cutscene;
 
 import arc.Core;
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.NHVars;
 import newhorizon.content.NHContent;
 import newhorizon.expand.cutscene.components.ActionControl;
@@ -49,14 +46,14 @@ public class AddMainActionBus extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class AddMainCssBusI implements LExecutor.LInstruction {
-        public int cutscene;
-        public AddMainCssBusI(int cutscene){
+        public LVar cutscene;
+        public AddMainCssBusI(LVar cutscene){
             this.cutscene = cutscene;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
+            String css = (String) cutscene.obj();
             Core.app.setClipboardText(css);
             NHVars.cutscene.addMainActionBus(ActionControl.parseCode(css, null));
         }

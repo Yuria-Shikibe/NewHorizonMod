@@ -101,7 +101,7 @@ public class RemoteCoreStorage extends StorageBlock{
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0 && core() != null && NHGroups.placedRemoteCore[team.id].size <= maxPlaceNum(team)){
+			if(efficiency > 0 && core() != null && NHGroups.placedRemoteCore[team.id].size <= maxPlaceNum(team)){
 				if(Mathf.equal(warmup, 1, 0.015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{
@@ -109,7 +109,7 @@ public class RemoteCoreStorage extends StorageBlock{
 				else warmup = Mathf.lerpDelta(warmup, 0, 0.03f);
 			}
 			
-			progress += warmup * efficiency() * Time.delta;
+			progress += warmup * efficiency * Time.delta;
 			
 			if(Mathf.equal(warmup, 1, 0.015F)){
 				if(linkedCore == null || !linkedCore.isValid() && core() != null){

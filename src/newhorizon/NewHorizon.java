@@ -10,6 +10,7 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
+import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
@@ -145,12 +146,9 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
-				NHOverride.contentOverride();
-				content.each(c -> {
-					if (c instanceof UnlockableContent uc){
-						uc.quietUnlock();
-					}
-				});
+				DebugFunc.updateBlockList();
+				//DebugFunc.outputSettings();
+
 				//DebugFunc.writeBulletTypeList();
 				//DebugFunc.outputAtlas();
 			});

@@ -55,7 +55,6 @@ public class LinkBlock extends Block {
         ambientSound = Sounds.none;
         breakSound = Sounds.none;
         destroySound = Sounds.none;
-        loopSound = Sounds.none;
         placeSound = Sounds.none;
 
         localizedName = Core.bundle.get(getContentType() + ".new-horizon-inner-entity.name", this.name);

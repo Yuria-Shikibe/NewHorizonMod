@@ -216,7 +216,7 @@ public class PosLightning {
 			World.toTile(from.getY()),
 			World.toTile(target.getX()),
 			World.toTile(target.getY()),
-			(x, y) -> (furthest = Vars.world.build(x, y)) != null && furthest.team() != fromTeam && furthest.block().insulated
+			(x, y) -> (furthest = Vars.world.build(x, y)) != null && furthest.team() != fromTeam && furthest.block.insulated
 		) && furthest != null ? furthest : target;
 	}
 	

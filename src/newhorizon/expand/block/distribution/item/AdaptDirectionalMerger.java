@@ -23,7 +23,7 @@ public class AdaptDirectionalMerger extends AdaptDirectionalRouter{
         @Override
         public boolean acceptItem(Building source, Item item){
             return current == null && items.total() == 0 && (sortItem == null || item == sortItem) &&
-                    (Edges.getFacingEdge(source.tile(), tile).relativeTo(tile) != (rotation + 2) % 4);
+                    (Edges.getFacingEdge(source.tile, tile).relativeTo(tile) != (rotation + 2) % 4);
         }
 
         @Override

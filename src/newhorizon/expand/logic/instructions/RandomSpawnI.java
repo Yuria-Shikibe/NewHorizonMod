@@ -3,14 +3,15 @@ package newhorizon.expand.logic.instructions;
 import arc.math.Rand;
 import arc.struct.Seq;
 import mindustry.logic.LExecutor;
+import mindustry.logic.LVar;
 import mindustry.world.Tile;
 
 import static mindustry.Vars.spawner;
 
 public class RandomSpawnI implements LExecutor.LInstruction {
-    public int seed, x, y;
+    public LVar seed, x, y;
 
-    public RandomSpawnI(int seed, int x, int y) {
+    public RandomSpawnI(LVar seed, LVar x, LVar y) {
         this.seed = seed;
         this.x = x;
         this.y = y;
@@ -23,12 +24,12 @@ public class RandomSpawnI implements LExecutor.LInstruction {
         Seq<Tile> spawns = spawner.getSpawns();
         if (spawns.isEmpty()) return;
 
-        int s = exec.numi(seed);
+        int s = seed.numi();
         Rand r = new Rand(s);
 
         Tile t = spawns.random(r);
 
-        exec.setnum(x, t.x * 8);
-        exec.setnum(y, t.y * 8);
+        x.setnum(t.x * 8);
+        y.setnum(t.y * 8);
     }
 }

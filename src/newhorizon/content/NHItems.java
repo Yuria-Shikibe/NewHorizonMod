@@ -72,16 +72,6 @@ public class NHItems{
 		Items.serpuloItems.add(Items.tungsten, Items.carbide);
 		Items.erekirItems.add(Items.titanium);
 		Items.erekirOnlyItems.clear();
-
-		Planets.serpulo.hiddenItems.remove(Items.tungsten);
-		Planets.serpulo.hiddenItems.remove(Items.carbide);
-		Planets.erekir.hiddenItems.remove(Items.titanium);
-
-		Events.on(EventType.PlayEvent.class, e -> {
-			if (state.rules.planet == Planets.erekir){
-				state.rules.hiddenBuildItems = Planets.erekir.hiddenItems.asSet();
-			}
-		});
 	}
 }
 

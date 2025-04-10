@@ -87,7 +87,7 @@ public class AdaptWall extends Wall {
 		}
 
 		public boolean validTile(int x, int y){
-			return world.build(tileX() + x, tileY() + y) != null && world.build(tileX() + x, tileY() + y).block == block();
+			return world.build(tileX() + x, tileY() + y) != null && world.build(tileX() + x, tileY() + y).block == block;
 		}
 
 		public void findLinkWalls(){

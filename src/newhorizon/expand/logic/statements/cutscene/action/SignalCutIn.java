@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class SignalCutIn extends LStatement {
@@ -47,15 +44,15 @@ public class SignalCutIn extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class SignalCutInI implements LExecutor.LInstruction {
-        public int cutscene;
-        public SignalCutInI(int cutscene){
+        public LVar cutscene;
+        public SignalCutInI(LVar cutscene){
             this.cutscene = cutscene;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "signal_cut_in" + "\n");
+            String css = (String) cutscene.obj();
+            cutscene.setobj(css + "signal_cut_in" + "\n");
         }
     }
 }

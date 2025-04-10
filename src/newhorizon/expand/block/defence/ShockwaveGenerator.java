@@ -142,7 +142,7 @@ public class ShockwaveGenerator extends Block {
 
 		protected void updateCharging() {
 			if(reload < reloadTime){
-				reload += Time.delta * efficiency();
+				reload += Time.delta * efficiency;
 			}
 		}
 		

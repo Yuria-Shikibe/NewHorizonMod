@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class InputUnlock extends LStatement {
@@ -46,15 +43,15 @@ public class InputUnlock extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class InputUnlockI implements LExecutor.LInstruction {
-        public int cutscene;
-        public InputUnlockI(int cutscene){
+        public LVar cutscene;
+        public InputUnlockI(LVar cutscene){
             this.cutscene = cutscene;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "input_unlock" + "\n");
+            String css = (String) cutscene.obj();
+            cutscene.setobj(css + "input_unlock" + "\n");
         }
     }
 }

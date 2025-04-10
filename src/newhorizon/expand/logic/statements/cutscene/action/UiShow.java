@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class UiShow extends LStatement {
@@ -46,15 +43,15 @@ public class UiShow extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class UIShowI implements LExecutor.LInstruction {
-        public int cutscene;
-        public UIShowI(int cutscene){
+        public LVar cutscene;
+        public UIShowI(LVar cutscene){
             this.cutscene = cutscene;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "ui_show" + "\n");
+            String css = (String) cutscene.obj();
+            cutscene.setobj(css + "ui_show" + "\n");
         }
     }
 }

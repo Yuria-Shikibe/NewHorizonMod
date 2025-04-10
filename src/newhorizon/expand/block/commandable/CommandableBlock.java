@@ -272,11 +272,6 @@ public abstract class CommandableBlock extends Block{
 			return this instanceof Unitc && ((Unitc)this).controller() == player;
 		}
 
-		@Override
-		public boolean isNull() {
-			return false;
-		}
-
 		@Override public boolean isRemote(){
 			return this instanceof Unitc && ((Unitc)this).isPlayer() && !isLocal();
 		}
@@ -322,6 +317,17 @@ public abstract class CommandableBlock extends Block{
 		@Override public void read(Reads read){ }
 		@Override public void write(Writes write){ }
 		@Override public void afterRead(){ }
+
+		@Override
+		public void afterReadAll() {
+
+		}
+
+		@Override
+		public void beforeWrite() {
+
+		}
+
 		@Override public int id(){return id; }
 		@Override public void id(int id){ this.id = id; }
 		@Override public String toString(){

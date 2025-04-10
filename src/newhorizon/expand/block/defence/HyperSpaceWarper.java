@@ -173,16 +173,16 @@ public class HyperSpaceWarper extends Block{
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0){
+			if(efficiency > 0){
 				totalProgress += edelta();
 				if(!chargeValid()){
-					reload += efficiency() * delta();
+					reload += efficiency * delta();
 				}else if(Mathf.chanceDelta(completeEffectChance)){
 					completeEffect.at(x + Mathf.range(tilesize * size / 2), y + Mathf.range(tilesize * size / 2), team.color);
 				}
 			}
 			
-			if(efficiency() > 0 && chargeValid()){
+			if(efficiency > 0 && chargeValid()){
 				if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{

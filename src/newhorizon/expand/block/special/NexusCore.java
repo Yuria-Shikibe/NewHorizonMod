@@ -118,8 +118,7 @@ public class NexusCore extends CoreBlock {
                 trails.clear().add(Seq.with(new Trail(30), new Trail(40), new Trail(50), new Trail(60), new Trail(70), new Trail(80), new Trail(90)));
             });
         }
-        float fout = renderer.getLandTime() / coreLandDuration;
-        float fin = 1f - fout;
+        float fout = renderer.getLandTime() / landDuration;
         for (int i = 0; i < trails.size; i++){
             rand.setSeed(build.id + i);
             float ang = rand.random(360f) + 360 * rand.random(2f, 6f) * interp.apply(fout);
@@ -141,7 +140,6 @@ public class NexusCore extends CoreBlock {
 
     public class NexusCoreBuild extends CoreBuild{
         public transient GravityTrapField field;
-        public void updateLandParticles(){}
 
         @Override
         public void created() {

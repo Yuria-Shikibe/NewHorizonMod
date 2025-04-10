@@ -8,15 +8,16 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.logic.LExecutor;
+import mindustry.logic.LVar;
 import newhorizon.content.NHBullets;
 import newhorizon.content.bullets.RaidBullets;
 
 import static mindustry.Vars.content;
 
 public class SpawnBulletI implements LExecutor.LInstruction {
-    public int team , type, seed, count, sourceX, sourceY, targetX, targetY, inaccuracy;
+    public LVar team , type, seed, count, sourceX, sourceY, targetX, targetY, inaccuracy;
 
-    public SpawnBulletI(int team, int type, int seed, int count, int sourceX, int sourceY, int targetX, int targetY, int inaccuracy) {
+    public SpawnBulletI(LVar team, LVar type, LVar seed, LVar count, LVar sourceX, LVar sourceY, LVar targetX, LVar targetY, LVar inaccuracy) {
         this.team = team;
         this.type = type;
         this.seed = seed;
@@ -31,17 +32,17 @@ public class SpawnBulletI implements LExecutor.LInstruction {
     @Override
     public void run(LExecutor exec) {
         if (!exec.privileged) return;
-        Team t = exec.team(team);
+        Team t = team.team();
         if (t == null) return;
-        int s = exec.numi(seed);
-        int tp = exec.numi(type);
+        int s = seed.numi();
+        int tp = type.numi();
 
-        int ct = exec.numi(count);
-        int sx = exec.numi(sourceX);
-        int sy = exec.numi(sourceY);
-        int tx = exec.numi(targetX);
-        int ty = exec.numi(targetY);
-        int inacc = exec.numi(inaccuracy);
+        int ct = count.numi();
+        int sx = sourceX.numi();
+        int sy = sourceY.numi();
+        int tx = targetX.numi();
+        int ty = targetY.numi();
+        int inacc = inaccuracy.numi();
 
         Rand r = new Rand(s);
         for (int i = 0; i < ct; i++) {

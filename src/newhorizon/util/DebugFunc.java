@@ -10,7 +10,9 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.struct.StringMap;
 import arc.util.Log;
+import arc.util.OS;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
@@ -45,6 +47,45 @@ public class DebugFunc {
             Fi fi = createPNGFile("atlas-" + i);
             PixmapIO.writePng(fi, texture.getTextureData().consumePixmap());
         }
+    }
+
+    public static void updateBlockList(){
+        //only run debug for me
+        if (OS.username.equals("LaoHuaJi")){
+            StringMap map = new StringMap();
+            String prev = readBlockList();
+            String[] lists = prev.split("\n");
+            for (String list: lists){
+                map.put(list.split(" ")[0], list);
+            }
+            for (Block block: content.blocks()){
+                if (block.isModded() && block.name.startsWith("new-horizon")){
+                    String blockData = writeBlockNoLine(block);
+                    map.put(blockData.split(" ")[0], blockData);
+                }
+            }
+            Seq<String> ordered = new Seq<>(map.size);
+            map.each((ignored, data) -> ordered.add(data));
+            ordered.sort(String::compareTo);
+
+            StringBuilder sb = new StringBuilder();
+            ordered.each((data) -> sb.append(data).append("\n"));
+            Fi.get(NH_ROOT_PATH).child("blocklist.txt").writeString(sb.toString());
+        }
+    }
+
+    public static String readBlockList(){
+        Fi fi = Fi.get(NH_ROOT_PATH).child("blocklist.txt");
+        if (fi.exists()) return fi.readString();
+        return "";
+    }
+
+    public static void outputSettings(){
+        StringBuilder sb = new StringBuilder();
+        for (String string: Core.settings.keys()){
+            sb.append(string).append("\n");
+        }
+        Core.app.setClipboardText(sb.toString());
     }
 
     public static void outputContentSprites(){
@@ -90,6 +131,18 @@ public class DebugFunc {
             }
         }
         Core.app.setClipboardText(sb.toString());
+    }
+
+    public static String writeBlockNoLine(Block block) {
+        return block.name +
+                " " +
+                (block.synthetic() ? "1" : "0") +
+                " " +
+                (block.solid ? "1" : "0") +
+                " " +
+                block.size +
+                " " +
+                block.mapColor.rgb888();
     }
 
     public static String writeBlock(Block block) {

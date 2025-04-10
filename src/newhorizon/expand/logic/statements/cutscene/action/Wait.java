@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class Wait extends LStatement {
@@ -51,16 +48,16 @@ public class Wait extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class WaitI implements LExecutor.LInstruction {
-        public int cutscene, time;
-        public WaitI(int cutscene, int time){
+        public LVar cutscene, time;
+        public WaitI(LVar cutscene, LVar time){
             this.cutscene = cutscene;
             this.time = time;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "wait" + " " + exec.numf(time) + "\n");
+            String css = (String) cutscene.obj();
+            cutscene.setobj(css + "wait" + " " + time.numf() + "\n");
         }
     }
 }

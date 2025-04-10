@@ -4367,19 +4367,7 @@ public class NHUnitTypes{
 			@Override
 			public void drawCell(Unit unit){
 			}
-			
-			@Override
-			public void drawControl(Unit unit){
-				Draw.z(Layer.effect + 0.001f);
-				Draw.color(unit.team.color, Color.white, Mathf.absin(4f, 0.3f) +  Mathf.clamp(unit.hitTime) / 5f);
-				for(int i = 0; i < 4; i++){
-					float rotation = Time.time * 1.5f + i * 90;
-					Tmp.v1.trns(rotation, bodySize * 1.5f).add(unit);
-					Draw.rect(NHContent.arrowRegion, Tmp.v1.x, Tmp.v1.y, rotation + 90);
-				}
-				Draw.reset();
-			}
-			
+
 			@Override
 			public void drawItems(Unit unit){
 				super.drawItems(unit);

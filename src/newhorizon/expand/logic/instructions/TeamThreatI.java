@@ -2,12 +2,13 @@ package newhorizon.expand.logic.instructions;
 
 import mindustry.game.Team;
 import mindustry.logic.LExecutor;
+import mindustry.logic.LVar;
 import newhorizon.expand.logic.ThreatLevel;
 
 public class TeamThreatI implements LExecutor.LInstruction {
-    public int team, threat;
+    public LVar team, threat;
 
-    public TeamThreatI(int team, int threat) {
+    public TeamThreatI(LVar team, LVar threat) {
         this.team = team;
         this.threat = threat;
     }
@@ -16,9 +17,9 @@ public class TeamThreatI implements LExecutor.LInstruction {
 
     @Override
     public void run(LExecutor exec) {
-        Team t = exec.team(team);
+        Team t = team.team();
         if (t == null) return;
 
-        exec.setnum(threat, ThreatLevel.getTeamThreat(t));
+        threat.setnum(ThreatLevel.getTeamThreat(t));
     }
 }

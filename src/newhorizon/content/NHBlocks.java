@@ -59,8 +59,7 @@ import mindustry.world.meta.StatUnit;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
-import newhorizon.expand.block.adapt.AdaptUnloader;
-import newhorizon.expand.block.adapt.AssignOverdrive;
+import newhorizon.expand.block.distribution.item.AdaptUnloader;
 import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
@@ -2571,8 +2570,6 @@ public class NHBlocks{
 			});
 			//			//NHTechTree.add(Blocks.thoriumReactor,this);
 			powerProduction = 1720f / 60f;
-			loopSound = Sounds.flux;
-			loopSoundVolume = 0.14F;
 			itemCapacity = 40;
 			liquidCapacity = 30;
 			itemDuration = 240f;
@@ -2637,51 +2634,6 @@ public class NHBlocks{
 	
 	private static void loadWalls(){
 		final int healthMult2 = 4, healthMult3 = 9;
-		
-		ancientLaserWall = new LaserWallBlock("ancient-laser-wall"){{
-			size = 2;
-			consumePowerCond(80f, LaserWallBuild::canActivate);
-			health = 8000;
-			range = 800;
-			
-			armor = 20f;
-			crushDamageMultiplier = 0.025f;
-			
-			generateType = new Shooter(300){{
-				Color c = NHColor.ancient;
-				colors = new Color[]{c.cpy().mul(0.9f, 0.9f, 0.9f, 0.3f), c.cpy().mul(1f, 1f, 1f, 0.6f), c, Color.white};
-				hitColor = lightColor = lightningColor = c;
-				width = 4.5f;
-				oscMag = 0.5f;
-				
-				status = NHStatusEffects.entangled;
-				statusDuration = 60f;
-				lightningDamage = 200;
-			}
-				
-				@Override
-				public void hit(Bullet b, float x, float y){
-					super.hit(b, x, y);
-					
-					for(int i = 0; i < 2; i++){
-						Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, x, y, Mathf.range(180), lightningLength + Mathf.random(lightningLengthRand));
-					}
-				}
-			};
-			
-			requirements(Category.defense, with(NHItems.seniorProcessor, 120, NHItems.ancimembrane, 200, NHItems.zeta, 800));
-		}};
-		
-		laserWall = new LaserWallBlock("laser-wall"){{
-			size = 3;
-			consumePowerCond(30f, LaserWallBuild::canActivate);
-			health = 4000;
-			
-			armor = 10f;
-			
-			requirements(Category.defense, with(NHItems.juniorProcessor, 120, Items.copper, 350, NHItems.multipleSteel, 80, NHItems.zeta, 180, Items.graphite, 80));
-			//			NHTechTree.add(Blocks.forceProjector, this);
-		}};
 		
 		setonWall = new Wall("seton-wall"){{
 			armor = 15f;
@@ -3081,23 +3033,6 @@ public class NHBlocks{
 			health = 3200;
 		}};
 		
-		assignOverdrive = new AssignOverdrive("assign-overdrive"){{
-			requirements(Category.effect, with(NHItems.irayrondPanel, 120, NHItems.presstanium, 160, NHItems.juniorProcessor, 100, Items.plastanium, 80, Items.surgeAlloy, 75));
-			//NHTechTree.add(Blocks.overdriveProjector, this);
-			consumePower(14.0F);
-			size = 3;
-			range = 240.0F;
-			speedBoost = 4f;
-			useTime = 300.0F;
-			hasBoost = true;
-			squareSprite = false;
-			strokeOffset = -0.05f;
-			strokeClamp = 0.06f;
-			schematicPriority = -20;
-			consumeItem(Items.phaseFabric).boost();
-			consumeLiquid(NHLiquids.xenFluid, 0.1f);
-		}};
-		
 		largeMendProjector = new MendProjector("large-mend-projector"){{
 			size = 3;
 			reload = 180f;
@@ -3179,6 +3114,7 @@ public class NHBlocks{
 		LiquidBlock.load();
 		UnitBlock.load();
 		DistributionBlock.load();
+		PayloadBlock.load();
 
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

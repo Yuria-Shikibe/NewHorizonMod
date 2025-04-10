@@ -71,7 +71,6 @@ public class NHContent extends Content{
 		CacheLayer.add(armorLayer = new CacheLayer.ShaderLayer(NHShaders.tiler){
 			@Override
 			public void begin(){
-				renderer.blocks.floor.endc();
 				renderer.effectBuffer.begin();
 				Core.graphics.clear(Color.clear);
 				renderer.blocks.floor.beginc();
@@ -79,7 +78,6 @@ public class NHContent extends Content{
 			
 			@Override
 			public void end(){
-				renderer.blocks.floor.endc();
 				renderer.effectBuffer.end();
 				
 				NHShaders.tiler.texture = armorTex;

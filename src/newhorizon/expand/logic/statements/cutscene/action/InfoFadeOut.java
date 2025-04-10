@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class InfoFadeOut extends LStatement {
@@ -47,15 +44,15 @@ public class InfoFadeOut extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class InfoFadeOutI implements LExecutor.LInstruction {
-        public int cutscene;
-        public InfoFadeOutI(int cutscene){
+        public LVar cutscene;
+        public InfoFadeOutI(LVar cutscene){
             this.cutscene = cutscene;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "info_fade_out" + "\n");
+            String css = (String) cutscene.obj();
+            cutscene.setobj(css + "info_fade_out" + "\n");
         }
     }
 }

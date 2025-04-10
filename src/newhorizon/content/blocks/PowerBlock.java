@@ -63,8 +63,6 @@ public class PowerBlock {
 
             rotate = false;
 
-            loopSound = Sounds.electricHum;
-            loopSoundVolume = 0.24F;
             itemCapacity = 30;
             liquidCapacity = 30;
 
@@ -101,8 +99,6 @@ public class PowerBlock {
 
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
 
-            loopSound = Sounds.electricHum;
-            loopSoundVolume = 0.24F;
             itemCapacity = 45;
             liquidCapacity = 45;
 
@@ -129,8 +125,6 @@ public class PowerBlock {
 
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
 
-            loopSound = Sounds.electricHum;
-            loopSoundVolume = 0.24F;
             itemCapacity = 45;
             liquidCapacity = 45;
 
@@ -164,8 +158,6 @@ public class PowerBlock {
                     -4, -1, 2, -4, 1, 1, -3, 1, 1
             );
 
-            loopSound = Sounds.electricHum;
-            loopSoundVolume = 0.24F;
             itemCapacity = 45;
             liquidCapacity = 45;
 

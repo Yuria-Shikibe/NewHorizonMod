@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class CameraControl extends LStatement {
@@ -62,8 +59,8 @@ public class CameraControl extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class CameraControlI implements LExecutor.LInstruction {
-        public int cutscene, duration, camX, camY;
-        public CameraControlI(int cutscene, int duration, int camX, int camY) {
+        public LVar cutscene, duration, camX, camY;
+        public CameraControlI(LVar cutscene, LVar duration, LVar camX, LVar camY) {
             this.cutscene = cutscene;
             this.duration = duration;
             this.camX = camX;
@@ -72,8 +69,9 @@ public class CameraControl extends LStatement {
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "camera_control" + " " + exec.numf(duration) + " " + exec.numf(camX) + " " + exec.numf(camY) + "\n");
+            String css = (String) cutscene.obj();
+
+            cutscene.setobj(css + "camera_control" + " " + duration.numf() + " " + camX.numf() + " " + camY.numf() + "\n");
         }
     }
 }

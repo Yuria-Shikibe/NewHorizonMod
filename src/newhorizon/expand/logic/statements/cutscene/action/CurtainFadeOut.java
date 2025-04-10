@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class CurtainFadeOut extends LStatement {
@@ -46,15 +43,15 @@ public class CurtainFadeOut extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class CurtainFadeOutI implements LExecutor.LInstruction {
-        public int cutscene;
-        public CurtainFadeOutI(int cutscene){
+        public LVar cutscene;
+        public CurtainFadeOutI(LVar cutscene){
             this.cutscene = cutscene;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "curtain_fade_out" + "\n");
+            String css = (String) cutscene.obj();
+            cutscene.setobj(css + "curtain_fade_out" + "\n");
         }
     }
 }

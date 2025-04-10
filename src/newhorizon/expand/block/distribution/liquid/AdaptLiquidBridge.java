@@ -37,25 +37,6 @@ public class AdaptLiquidBridge extends AdaptItemBridge {
         group = BlockGroup.liquids;
         envEnabled = Env.any;
     }
-
-    @Override
-    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        if (state.rules.mode() == Gamemode.sandbox) return true;
-
-        Seq<GravityTrapField> fields = new Seq<>();
-        NHGroups.gravityTraps.intersect(tile.worldx(), tile.worldy(), tilesize, tilesize, fields);
-        if (fields.isEmpty()) return false;
-        for (GravityTrapField field : fields) {
-            if (field.team() != team) return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        NHVars.renderer.drawGravityTrap();
-    }
     
     public class AdaptLiquidBridgeBuild extends AdaptItemBridgeBuild {
         @Override

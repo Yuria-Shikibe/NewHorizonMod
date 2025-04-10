@@ -110,7 +110,17 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		
 		NHFx.spawnWave.at(x, y, drawSize * 1.1f, team.color);
 	}
-	
+
+	@Override
+	public void afterReadAll() {
+
+	}
+
+	@Override
+	public void beforeWrite() {
+
+	}
+
 	@Override
 	public void remove(){
 		super.remove();
@@ -274,14 +284,6 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		commandPos = TypeIO.readVec2(read);
 		
 		afterRead();
-	}
-
-	//@Override
-	//public void afterAllRead() {}
-
-	@Override
-	public boolean isNull() {
-		return false;
 	}
 
 	@Override

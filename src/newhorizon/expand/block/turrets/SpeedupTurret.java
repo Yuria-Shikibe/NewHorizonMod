@@ -134,7 +134,7 @@ public class SpeedupTurret extends PowerTurret{
 		}
 
 		public float coolantEfficiency(){
-			return liquids().current() == null ? 0 : liquids().current().heatCapacity;
+			return liquids.current() == null ? 0 : liquids.current().heatCapacity;
 		}
 		
 		@Override
@@ -147,7 +147,7 @@ public class SpeedupTurret extends PowerTurret{
 	            reloadCounter = 0f;
             }else{
 	            reloadCounter += (1 + speedupScl) * delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
-	            overheat = Mathf.approachDelta(overheat, overheatTime + 0.05f, efficiency * timeScale * ((speedupScl / maxSpeedupScl) * 1) / (1 + (liquids().current() == null ? 0 : liquids().current().heatCapacity)));
+	            overheat = Mathf.approachDelta(overheat, overheatTime + 0.05f, efficiency * timeScale * ((speedupScl / maxSpeedupScl) * 1) / (1 + (liquids.current() == null ? 0 : liquids.current().heatCapacity)));
 	            if(overheat > overheatTime)requireCompleteCooling = true;
             }
         }

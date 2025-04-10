@@ -21,7 +21,7 @@ public class ArmorFloor extends Floor{
 		super(name, variants);
 		this.solidReact = solidReact;
 		
-		cacheLayer = NHContent.armorLayer;
+		//cacheLayer = NHContent.armorLayer;
 		oreDefault = false;
 		needsSurface = false;
 	}
@@ -31,7 +31,7 @@ public class ArmorFloor extends Floor{
 	}
 	
 	protected boolean doEdge(Tile tile, Tile otherTile, Floor other){
-		return (solidReact == null || other.blendGroup != solidReact) && (other.realBlendId(otherTile) > realBlendId(tile) || edges() == null);
+		return (solidReact == null || other.blendGroup != solidReact) && (other.realBlendId(otherTile) > realBlendId(tile) || edges == null);
 	}
 	
 	@Override

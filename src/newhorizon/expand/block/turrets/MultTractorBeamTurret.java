@@ -75,7 +75,7 @@ public class MultTractorBeamTurret extends TractorBeamTurret{
 					targets.get(unit).y = unit.y;
 					targets.get(unit).z = Mathf.lerpDelta(targets.get(unit).z, 1f, 0.1f);
 					if(unit != target){
-						if(damage > 0)unit.damageContinuous(damage * efficiency());
+						if(damage > 0)unit.damageContinuous(damage * efficiency);
 						if(status != StatusEffects.none)unit.apply(status, statusDuration);
 						unit.impulseNet(Tmp.v1.set(this).sub(unit).limit((force + (1f - unit.dst(this) / range) * scaledForce) * edelta() * timeScale));
 					}
@@ -87,7 +87,7 @@ public class MultTractorBeamTurret extends TractorBeamTurret{
 				}
 			}
 			
-			if(target != null && target.within(this, range + target.hitSize / 2f) && target.team() != team && target.checkTarget(targetAir, targetGround) && efficiency() > 0.02f){
+			if(target != null && target.within(this, range + target.hitSize / 2f) && target.team() != team && target.checkTarget(targetAir, targetGround) && efficiency > 0.02f){
 				Units.nearbyEnemies(team, Tmp.r1.setSize((range + target.hitSize / 2f) * 2).setCenter(x, y), unit -> {
 					if(targets.size < maxAttract && !targets.keys().toSeq().contains(unit) && Angles.within(rotation, angleTo(unit), shootCone)){
 						targets.put(unit, new Vec3(unit.x, unit.y, 0f));
@@ -111,7 +111,7 @@ public class MultTractorBeamTurret extends TractorBeamTurret{
 				Tmp.v1.trns(rotation, shootLength).add(x, y);
 				Drawf.laser(
 						laser, laserEnd, Tmp.v1.x, Tmp.v1.y,
-						targets.get(unit).x, targets.get(unit).y, targets.get(unit).z * efficiency() * laserWidth
+						targets.get(unit).x, targets.get(unit).y, targets.get(unit).z * efficiency * laserWidth
 				);
 			}
 		}

@@ -377,7 +377,7 @@ public class JumpGate extends Block {
     
         @Override
         public boolean acceptItem(Building source, Item item){
-            return !NHVars.worldData.jumpGateUsesCoreItems && realItems().get(item) < getMaximumAccepted(item);
+            return !NHVars.worldData.worldData.jumpGateUsesCoreItems && realItems().get(item) < getMaximumAccepted(item);
         }
     
         @Override
@@ -395,9 +395,9 @@ public class JumpGate extends Block {
         
         @Override
         public void updateTile(){
-            totalProgress += (efficiency() + warmup) * delta() * Mathf.curve(Time.delta, 0f, 0.5f);
+            totalProgress += (efficiency + warmup) * delta() * Mathf.curve(Time.delta, 0f, 0.5f);
             if(!cooling && isCalling() && Units.canCreate(team, getType())){
-                buildProgress += efficiency() * state.rules.unitBuildSpeedMultiplier * delta() * warmup * state.rules.unitBuildSpeed(team);
+                buildProgress += efficiency * state.rules.unitBuildSpeedMultiplier * delta() * warmup * state.rules.unitBuildSpeed(team);
                 if(buildProgress >= costTime(getSet(), true) && !jammed){
                     spawn(getSet());
                 }
@@ -416,7 +416,7 @@ public class JumpGate extends Block {
                 }
             }
             
-            if(efficiency() > 0 && power.status > 0.5f){
+            if(efficiency > 0 && power.status > 0.5f){
                 if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
                 else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
             }else{
@@ -453,7 +453,7 @@ public class JumpGate extends Block {
             Color color = getColor(getSet());
             Drawf.dashCircle(x, y, range(), color);
             Draw.color(color);
-            Lines.square(x, y, block().size * tilesize / 2f + 1.0f);
+            Lines.square(x, y, block.size * tilesize / 2f + 1.0f);
    
             Vec2 target = link();
             Draw.alpha(1f);
@@ -465,7 +465,7 @@ public class JumpGate extends Block {
             DrawFunc.posSquareLink(color, 1.5f, 3.5f, true, this, target);
             Draw.color();
             
-            if(core() != null && NHVars.worldData.jumpGateUsesCoreItems)DrawFunc.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
+            if(core() != null && NHVars.worldData.worldData.jumpGateUsesCoreItems)DrawFunc.posSquareLinkArr(color, 1.5f, 3.5f, true, false, this, core());
             
             if(jammed) DrawFunc.overlayText(Core.bundle.get("spawn-error"), x, y, size * tilesize / 2.0F, color, true);
             
@@ -478,7 +478,7 @@ public class JumpGate extends Block {
         
         @Override
         public void updateTableAlign(Table table){
-            if(NHVars.worldData.jumpGateUsesCoreItems)super.updateTableAlign(table);
+            if(NHVars.worldData.worldData.jumpGateUsesCoreItems)super.updateTableAlign(table);
             else{
                 Vec2 pos = Core.input.mouseScreen(x - block.size * 4f - 1.0F, y);
                 table.setPosition(pos.x, pos.y, Align.right);
@@ -672,11 +672,11 @@ public class JumpGate extends Block {
             Lines.square(x, y, block.size * tilesize / 2.5f, -rot);
             Lines.square(x, y, block.size * tilesize / 2f, rot);
             for(int i = 0; i < 4; i++){
-                float length = tilesize * block().size / 2f + 8f;
+                float length = tilesize * block.size / 2f + 8f;
                 Tmp.v1.trns(i * 90 + rot, -length);
                 Draw.rect(arrowRegion,x + Tmp.v1.x,y + Tmp.v1.y, arrowRegion.width * Draw.scl * scl, arrowRegion.height * Draw.scl * scl, i * 90 + 90 + rot);
                 float sin = Mathf.absin(totalProgress, 16f, tilesize);
-                length = tilesize * block().size / 2f + 3 + sin;
+                length = tilesize * block.size / 2f + 3 + sin;
                 float signSize = 0.75f + Mathf.absin(totalProgress + 8f, 8f, 0.15f);
                 Tmp.v1.trns(i * 90, -length);
                 Draw.rect(pointerRegion, x + Tmp.v1.x,y + Tmp.v1.y, pointerRegion.width * Draw.scl * signSize * scl, pointerRegion.height * Draw.scl * signSize * scl, i * 90 + 90);
@@ -734,7 +734,7 @@ public class JumpGate extends Block {
             if(!calls.keys().toArray().contains(set)){
                 if(isCalling()){
                     if(getSet() != null){
-                        Building target = NHVars.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core() : self();
+                        Building target = NHVars.worldData.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core() : self();
                         
                         for(ItemStack stack : ItemStack.mult(getSet().dynamicRequirements(team), buildingSpawnNum * (costTime(getSet(), true) - buildProgress) / costTime(getSet(), true))){
                             realItems().add(stack.item, Math.min(stack.amount, target.getMaximumAccepted(stack.item) - realItems().get(stack.item)));
@@ -865,7 +865,7 @@ public class JumpGate extends Block {
         }
         
         public ItemModule realItems(){
-            return NHVars.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core().items() : items;
+            return NHVars.worldData.worldData.jumpGateUsesCoreItems && team.data().hasCore() ? team.core().items : items;
         }
     }
     
@@ -896,8 +896,7 @@ public class JumpGate extends Block {
         @Override
         public boolean equals(Object o){
             if(this == o) return true;
-            if(!(o instanceof UnitSet)) return false;
-            UnitSet set = (UnitSet)o;
+            if(!(o instanceof UnitSet set)) return false;
             return type.equals(set.type) && Arrays.equals(sortIndex, set.sortIndex);
         }
     

@@ -18,9 +18,11 @@ import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
+import newhorizon.NHVars;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.content;
+import static newhorizon.NHVars.worldData;
 
 public class IconDisplay extends Block {
     public IconDisplay(String name){
@@ -67,6 +69,19 @@ public class IconDisplay extends Block {
 
         @Override
         public void buildConfiguration(Table table){
+            table.table(t -> {
+                t.button("ADD", () -> {
+                    if (displayContent == null) return;
+                    worldData.teamPayloadData.addPayload(team, displayContent, 1);
+                });
+                t.button("REMOVE", () -> {
+                    if (displayContent == null) return;
+                    worldData.teamPayloadData.removePayload(team, displayContent, 1);
+                });
+                t.button("DISPLAY", () -> {
+                    worldData.teamPayloadData.display();
+                });
+            }).row();
             ItemSelection.buildTable(IconDisplay.this, table, displayContents(),
                     this::config, this::configure, selectionRows, selectionColumns);
         }

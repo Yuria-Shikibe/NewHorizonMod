@@ -189,7 +189,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			
 			Seq<CommandableBlockBuild> builds = new Seq<>();
 			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
-				if(build != this && build != null && build.team == team && sameGroup(build.block()) && build.canCommand(targetVec)){
+				if(build != this && build != null && build.team == team && sameGroup(build.block) && build.canCommand(targetVec)){
 					builds.add(build);
 					DrawFunc.posSquareLink(Pal.gray, 3, 4, false, build.x, build.y, targetVec.x, targetVec.y);
 				}
@@ -212,10 +212,10 @@ public abstract class CommandableAttackerBlock extends CommandableBlock{
 			participantsTmp.clear();
 			
 			for(CommandableBlockBuild build : NHGroups.commandableBuilds){
-				if(build.team == team && sameGroup(build.block()) && build.canCommand(pos)){
+				if(build.team == team && sameGroup(build.block) && build.canCommand(pos)){
 					build.command(pos);
 					participantsTmp.add(build);
-					build.lastAccessed(Iconc.modeAttack + "");
+					build.lastAccessed = Iconc.modeAttack + "";
 				}
 			}
 

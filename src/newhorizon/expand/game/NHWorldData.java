@@ -8,54 +8,16 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class NHWorldData implements SaveFileReader.CustomChunk{
+public class NHWorldData{
 	public static short CURRENT_VER = 1;
-	
-	public static WorldTileData worldTileData;
+
+	public WorldData worldData = new WorldData();
+	public WorldTileData worldTileData = new WorldTileData();
+	public TeamPayloadData teamPayloadData = new TeamPayloadData();
 	
 	public NHWorldData(){
-		worldTileData = new WorldTileData();
-
-		//todo
-		SaveVersion.addCustomChunk("nh-world-data", this);
+		SaveVersion.addCustomChunk("nh-world-data", worldData);
 		SaveVersion.addCustomChunk("nh-world-tile-data", worldTileData);
-	}
-	
-	public short version = 0;
-	public float eventReloadSpeed = -1;
-	public boolean jumpGateUsesCoreItems = true;
-	public boolean applyEventTriggers = false;
-
-	@Override
-	public void write(DataOutput stream) throws IOException{
-		stream.writeShort(CURRENT_VER);
-		
-		stream.writeFloat(eventReloadSpeed);
-		stream.writeBoolean(jumpGateUsesCoreItems);
-		stream.writeBoolean(applyEventTriggers);
-		
-
-	}
-	
-	@Override
-	public void read(DataInput stream) throws IOException{
-		version = stream.readShort();
-		
-		eventReloadSpeed = stream.readFloat();
-
-		if(version > 0){
-			jumpGateUsesCoreItems = stream.readBoolean();
-			applyEventTriggers = stream.readBoolean();
-		}
-		
-		version = CURRENT_VER;
-		
-		afterRead();
-	}
-	
-	public void afterRead(){
-		if(Vars.headless && (Float.isNaN(eventReloadSpeed) || eventReloadSpeed > 5.55f)){
-			eventReloadSpeed = -1;
-		}
+		SaveVersion.addCustomChunk("nh-team-payload-data", teamPayloadData);
 	}
 }

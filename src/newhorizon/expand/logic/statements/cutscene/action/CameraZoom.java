@@ -1,10 +1,7 @@
 package newhorizon.expand.logic.statements.cutscene.action;
 
 import arc.scene.ui.layout.Table;
-import mindustry.logic.LAssembler;
-import mindustry.logic.LCategory;
-import mindustry.logic.LExecutor;
-import mindustry.logic.LStatement;
+import mindustry.logic.*;
 import newhorizon.content.NHContent;
 
 public class CameraZoom extends LStatement {
@@ -52,16 +49,16 @@ public class CameraZoom extends LStatement {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class CameraZoomI implements LExecutor.LInstruction {
-        public int cutscene, zoom;
-        public CameraZoomI(int cutscene, int zoom) {
+        public LVar cutscene, zoom;
+        public CameraZoomI(LVar cutscene, LVar zoom) {
             this.cutscene = cutscene;
             this.zoom = zoom;
         }
 
         @Override
         public void run(LExecutor exec) {
-            String css = (String) exec.obj(cutscene);
-            exec.setobj(cutscene, css + "camera_zoom" + " " + exec.numf(zoom) + "\n");
+            String css = (String) cutscene.obj();
+            cutscene.setobj(css + "camera_zoom" + " " + zoom.numf() + "\n");
         }
     }
 }

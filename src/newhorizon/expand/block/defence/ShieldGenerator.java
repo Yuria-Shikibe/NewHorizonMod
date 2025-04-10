@@ -27,10 +27,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.EventType;
-import mindustry.gen.BlockUnitc;
-import mindustry.gen.Bullet;
-import mindustry.gen.Groups;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -154,7 +151,7 @@ public class ShieldGenerator extends BaseTurret {
         public void created() {
             super.created();
 
-            backCenter = new Vec2(x - Geometry.d4x(rotation()) * size * tilesize, y - Geometry.d4y(rotation()) * size * tilesize);
+            backCenter = new Vec2(x - Geometry.d4x(tile.build.rotation) * size * tilesize, y - Geometry.d4y(tile.build.rotation) * size * tilesize);
             rightCenter = backCenter.cpy().add(Angles.trnsx(rotation - shieldArc/2, 250), Angles.trnsy(rotation - shieldArc/2, 250));
             leftCenter = backCenter.cpy().add(Angles.trnsx(rotation + shieldArc/2, 250), Angles.trnsy(rotation + shieldArc/2, 250));
         }

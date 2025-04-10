@@ -84,7 +84,7 @@ public class AdaptConveyor extends Conveyor {
 
     public boolean blends(Building self, Building other){
         if (other == null) return false;
-        return blends(self.tile(), self.rotation, other.tileX(), other.tileY(), other.rotation, other.block);
+        return blends(self.tile, self.rotation, other.tileX(), other.tileY(), other.rotation, other.block);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class AdaptConveyor extends Conveyor {
         @Override
         public boolean acceptItem(Building source, Item item){
             if (!armored) return super.acceptItem(source, item);
-            else return super.acceptItem(source, item) && (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile(), tile).relativeTo(tile) == rotation);
+            else return super.acceptItem(source, item) && (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation);
         }
 
         @Override

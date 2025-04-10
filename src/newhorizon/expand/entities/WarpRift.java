@@ -237,6 +237,16 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     }
 
     @Override
+    public void afterReadAll() {
+
+    }
+
+    @Override
+    public void beforeWrite() {
+
+    }
+
+    @Override
     public void remove(){
         super.remove();
         Groups.sync.remove(this);
@@ -312,14 +322,6 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     @Override
     public void updateSpacing(long updateSpacing) {
 
-    }
-
-    //@Override
-    //public void afterAllRead() {}
-
-    @Override
-    public boolean isNull() {
-        return false;
     }
 
     @Override

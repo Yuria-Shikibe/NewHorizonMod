@@ -107,7 +107,7 @@ public class GravityWell extends Block{
 		
 		@Override
 		public void updateTile(){
-			if(efficiency() > 0){
+			if(efficiency > 0){
 				if(Mathf.equal(warmup, 1, 0.0015F))warmup = 1f;
 				else warmup = Mathf.lerpDelta(warmup, 1, 0.01f);
 			}else{
