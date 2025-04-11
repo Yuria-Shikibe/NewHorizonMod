@@ -18,6 +18,7 @@ import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
+import newhorizon.NHVars;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.content;
