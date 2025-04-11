@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 
 
 public class NHWorldSettingDialog extends BaseDialog{
+	//due to changes this is a todo
 	public static NHWorldData data(){
 		return NHVars.worldData;
 	}

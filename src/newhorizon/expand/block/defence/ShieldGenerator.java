@@ -154,7 +154,7 @@ public class ShieldGenerator extends BaseTurret {
         public void created() {
             super.created();
 
-            backCenter = new Vec2(x - Geometry.d4x(tile.build.rotation) * size * tilesize, y - Geometry.d4y(tile.build.rotation) * size * tilesize);
+            backCenter = new Vec2(x - Angles.trnsx(rotation - 180, 16), y - Angles.trnsy(rotation - 180, 16));
             rightCenter = backCenter.cpy().add(Angles.trnsx(rotation - shieldArc/2, 250), Angles.trnsy(rotation - shieldArc/2, 250));
             leftCenter = backCenter.cpy().add(Angles.trnsx(rotation + shieldArc/2, 250), Angles.trnsy(rotation + shieldArc/2, 250));
         }
