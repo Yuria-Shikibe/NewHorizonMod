@@ -6,25 +6,20 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.struct.Seq;
 import arc.util.Tmp;
 import mindustry.content.Liquids;
 import mindustry.core.Renderer;
-import mindustry.game.Gamemode;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import newhorizon.NHGroups;
-import newhorizon.NHVars;
 import newhorizon.expand.block.distribution.item.AdaptConveyor;
 import newhorizon.expand.block.distribution.item.AdaptItemBridge;
-import newhorizon.expand.entities.GravityTrapField;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class AdaptLiquidBridge extends AdaptItemBridge {
     public AdaptLiquidBridge(String name, AdaptConveyor cBlock) {

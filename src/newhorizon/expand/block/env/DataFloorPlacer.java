@@ -23,7 +23,6 @@ import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.NHUI;
 import newhorizon.NHVars;
-import newhorizon.expand.game.NHWorldData;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;

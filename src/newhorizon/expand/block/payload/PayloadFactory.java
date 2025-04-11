@@ -1,6 +1,5 @@
 package newhorizon.expand.block.payload;
 
-import arc.math.Mathf;
 import arc.struct.Seq;
 import mindustry.type.ItemStack;
 import mindustry.type.PayloadSeq;
@@ -11,8 +10,6 @@ import mindustry.world.consumers.Consume;
 import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.consumers.ConsumePayloadDynamic;
 import newhorizon.content.Modules;
-
-import static mindustry.Vars.state;
 
 public class PayloadFactory extends Constructor {
     public PayloadFactory(String name) {

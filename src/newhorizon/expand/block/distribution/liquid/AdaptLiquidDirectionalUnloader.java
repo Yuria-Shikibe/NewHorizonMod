@@ -33,7 +33,6 @@ import newhorizon.NewHorizon;
 import newhorizon.expand.entities.GravityTrapField;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.tilesize;
 
 public class AdaptLiquidDirectionalUnloader extends Block {
     public TextureRegion[] topRegions = new TextureRegion[4];

@@ -3,7 +3,6 @@ package newhorizon.content.blocks;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.payload.AdaptPayloadConveyor;

@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.geom.Geometry;
-import arc.util.Log;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;

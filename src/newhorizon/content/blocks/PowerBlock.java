@@ -3,7 +3,6 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
-import mindustry.gen.Sounds;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;

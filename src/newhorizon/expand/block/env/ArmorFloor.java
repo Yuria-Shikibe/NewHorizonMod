@@ -7,7 +7,6 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
-import newhorizon.content.NHContent;
 
 import static mindustry.Vars.world;
 

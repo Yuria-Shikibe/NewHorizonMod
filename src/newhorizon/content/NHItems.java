@@ -1,13 +1,8 @@
 package newhorizon.content;
 
-import arc.Events;
 import arc.graphics.Color;
 import mindustry.content.Items;
-import mindustry.content.Planets;
-import mindustry.game.EventType;
 import mindustry.type.Item;
-
-import static mindustry.Vars.state;
 
 public class NHItems{
 	
