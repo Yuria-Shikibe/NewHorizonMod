@@ -27,18 +27,18 @@ public class NHWorldSettingDialog extends BaseDialog{
 	
 	public static final String SETTINGS_KEY = "nh-world-settings"; 
 	
-	static{
-		Class<NHWorldData> dataClass = NHWorldData.class;
-		
-		try{
-			allSettings.addAll(
-				new BoolSetting(dataClass.getField("jumpGateUsesCoreItems"), true),
-				new BoolSetting(dataClass.getField("applyEventTriggers"), false)
-			);
-		}catch(NoSuchFieldException e){
-			Log.err(e);
-		}
-	}
+	//static{
+	//	Class<NHWorldData> dataClass = NHWorldData.class;
+	//
+	//	try{
+	//		allSettings.addAll(
+	//			new BoolSetting(dataClass.getField("jumpGateUsesCoreItems"), true),
+	//			new BoolSetting(dataClass.getField("applyEventTriggers"), false)
+	//		);
+	//	}catch(NoSuchFieldException e){
+	//		Log.err(e);
+	//	}
+	//}
 	
 	public NHWorldSettingDialog(){
 		super("New Horizon World Settings");
@@ -98,7 +98,7 @@ public class NHWorldSettingDialog extends BaseDialog{
 			try{
 				dataField.set(data(), jval.getBool(dataField.getName(), def));
 			}catch(IllegalAccessException e){
-				e.printStackTrace();
+				Log.err(e);
 			}
 		}
 		

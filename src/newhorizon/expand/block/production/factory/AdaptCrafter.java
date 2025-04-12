@@ -33,7 +33,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
 
     public float powerProduction = 0f;
-    //public Floatf<AdaptCrafterBuild> powerProduction = b -> 0f;
 
     public AdaptCrafter(String name) {
         super(name);
@@ -138,14 +137,43 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public Tile teamPos, statusPos;
 
         @Override
-        public void created() {
-            super.created();
-            linkProximityMap = new Seq<>();
+        public boolean shouldConsume(){
+            if(outputItems != null){
+                for(var output : outputItems){
+                    if(items.get(output.item) + output.amount > itemCapacity){
+                        return powerProduction > 0;
+                    }
+                }
+            }
+            if(outputLiquids != null && !ignoreLiquidFullness){
+                boolean allFull = true;
+                for(var output : outputLiquids){
+                    if(liquids.get(output.liquid) >= liquidCapacity - 0.001f){
+                        if(!dumpExtraLiquid){
+                            return false;
+                        }
+                    }else{
+                        //if there's still space left, it's not full for all liquids
+                        allFull = false;
+                    }
+                }
+                //if there is no space left for any liquid, it can't reproduce
+                if(allFull){
+                    return false;
+                }
+            }
+            return enabled;
         }
 
         @Override
         public float getPowerProduction() {
             return powerProduction * (warmup + 0.000001f);
+        }
+
+        @Override
+        public void created() {
+            super.created();
+            linkProximityMap = new Seq<>();
         }
 
         @Override
@@ -162,7 +190,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             if (timer(0, 300)){
                 boolean linkValid = true;
                 for (Tile t: getLinkTiles(tile, size, rotation)){
-                    if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this)){
+                    if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this && lb.isValid())){
                         linkValid = false;
                         break;
                     }

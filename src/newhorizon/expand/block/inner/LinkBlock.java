@@ -5,6 +5,7 @@ import arc.func.Cons;
 import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -13,6 +14,7 @@ import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
+import mindustry.type.PayloadSeq;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -56,6 +58,10 @@ public class LinkBlock extends Block {
         breakSound = Sounds.none;
         destroySound = Sounds.none;
         placeSound = Sounds.none;
+
+        acceptsItems = true;
+        acceptsPayload = true;
+        acceptsUnitPayloads = true;
 
         localizedName = Core.bundle.get(getContentType() + ".new-horizon-inner-entity.name", this.name);
         description = Core.bundle.getOrNull(getContentType() + ".new-horizon-inner-entity.description");
@@ -154,11 +160,7 @@ public class LinkBlock extends Block {
 
         @Override
         public boolean acceptItem(Building source, Item item) {
-            if (linkBuild != null){
-                return linkBuild.acceptItem(source, item);
-            }else {
-                return false;
-            }
+            return linkBuild != null &&linkBuild.acceptItem(source, item);
         }
 
         @Override
@@ -172,17 +174,12 @@ public class LinkBlock extends Block {
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid) {
-            if (linkBuild != null){
-                return linkBuild.acceptLiquid(source, liquid);
-            }else {
-                return false;
-            }
+            return linkBuild != null && linkBuild.acceptLiquid(source, liquid);
         }
 
         @Override
         public boolean acceptPayload(Building source, Payload payload) {
-            //todo
-            return super.acceptPayload(source, payload);
+            return linkBuild != null && linkBuild.acceptPayload(source, payload);
         }
 
         @Override
@@ -234,6 +231,21 @@ public class LinkBlock extends Block {
             if (linkBuild != null) {
                 linkBuild.handleString(value);
             }
+        }
+
+        @Override
+        public Payload getPayload() {
+            return linkBuild == null? null: linkBuild.getPayload();
+        }
+
+        @Override
+        public Payload takePayload() {
+            return linkBuild == null? null: linkBuild.takePayload();
+        }
+
+        @Override
+        public PayloadSeq getPayloads() {
+            return linkBuild == null? null: linkBuild.getPayloads();
         }
 
         @Override

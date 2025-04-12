@@ -3118,6 +3118,7 @@ public class NHBlocks{
 		UnitBlock.load();
 		DistributionBlock.load();
 		PayloadBlock.load();
+		ModuleBlock.load();
 
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

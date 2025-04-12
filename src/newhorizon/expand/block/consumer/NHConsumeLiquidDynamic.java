@@ -20,40 +20,6 @@ public class NHConsumeLiquidDynamic extends Consume {
             block.hasLiquids = true;
         }
     }
-    /*
-
-    @Override
-    public void build(Building build, Table table) {
-        if (liquids != null && liquids.get(build) != null) {
-            LiquidStack[][] current = {liquids.get(build)};
-
-            table.table(cont -> {
-                table.update(() -> {
-                    if (current[0] != liquids.get(build)) {
-                        rebuild(build, cont);
-                        current[0] = liquids.get(build);
-                    }
-                });
-
-                rebuild(build, cont);
-            });
-        }
-    }
-
-    private void rebuild(Building build, Table table) {
-        if (liquids != null && liquids.get(build) != null) {
-            table.clear();
-            int i = 0;
-
-            for (LiquidStack stack : liquids.get(build)) {
-                table.add(new ReqImage(new LiquidDisplay(stack.liquid, 0f, false),
-                    () -> build.liquids != null && build.liquids.get(stack.liquid) > 0)).size(Vars.iconMed).padRight(8);
-                if (++i % 4 == 0) table.row();
-            }
-        }
-    }
-
-     */
 
     @Override
     public void update(Building build) {

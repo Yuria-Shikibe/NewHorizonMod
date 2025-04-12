@@ -24,7 +24,7 @@ public class RecipeGenericCrafter extends AdaptCrafter{
 
         consume(new NHConsumeItemDynamic(RecipeGenericCrafterBuild::getInputItems));
         consume(new NHConsumeLiquidDynamic(RecipeGenericCrafterBuild::getInputLiquids));
-        consume(new NHConsumeShowStat(RecipeGenericCrafterBuild::getDisplayInputItems, RecipeGenericCrafterBuild::getDisplayInputLiquids));
+        consume(new NHConsumeShowStat(RecipeGenericCrafterBuild::getDisplayInputItems, RecipeGenericCrafterBuild::getDisplayInputLiquids, e -> null));
     }
 
     @Override

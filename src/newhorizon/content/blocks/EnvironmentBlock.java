@@ -14,7 +14,6 @@ public class EnvironmentBlock {
     public static TiledFloor metalFloorPlain, labFloorLight, labFloorDark;
     public static DataFloor
         lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
-    public static Block dataFloorPlacer;
 
     public static Floor patternPlate0, patternPlate1;
 
@@ -51,8 +50,6 @@ public class EnvironmentBlock {
         lineMarkingFloorQuantumDark = new DataFloor("line-marking-floor-quantum-dark");
         lineMarkingFloorAncient = new DataFloor("line-marking-floor-ancient");
         lineMarkingFloorAncientDark = new DataFloor("line-marking-floor-ancient-dark");
-
-        dataFloorPlacer = new DataFloorPlacer("data-floor-placer");
 
         patternPlate0 = new MaskFloor("pattern-plate-0");
         patternPlate1 = new MaskFloor("pattern-plate-1");
