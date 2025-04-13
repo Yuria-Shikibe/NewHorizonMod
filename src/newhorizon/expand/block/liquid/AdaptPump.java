@@ -55,7 +55,9 @@ public class AdaptPump extends Pump {
             Draw.rect(splits[drawIdx[3] + 12], x + 4, y - 4);
 
             Draw.rect(topRegion, x, y);
-            Drawf.liquid(liquidRegion, x, y, liquids.get(liquidDrop) / liquidCapacity, liquidDrop.color);
+            if (liquids != null && liquidDrop != null) {
+                Drawf.liquid(liquidRegion, x, y, liquids.get(liquidDrop) / liquidCapacity, liquidDrop.color);
+            }
         }
 
         @Override

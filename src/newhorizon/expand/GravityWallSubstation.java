@@ -60,7 +60,8 @@ public class GravityWallSubstation extends PowerNode {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        return !indexer.eachBlock(team, Tmp.r1.setCentered(tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.8f * 2), b -> b instanceof GravityWallSubstationBuild, b -> {});
+        super.canPlaceOn(tile, team, rotation);
+        return !indexer.eachBlock(team, Tmp.r1.setCentered(tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.2f * 2), b -> b instanceof GravityWallSubstationBuild, b -> {});
     }
 
     @Override
@@ -71,7 +72,7 @@ public class GravityWallSubstation extends PowerNode {
 
         Lines.stroke(1f);
         drawRangeRect(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize);
-        drawRangeRectInner(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize * 0.8f);
+        drawRangeRectInner(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize * 0.2f);
 
         getPotentialLinks(tile, player.team(), other -> {
             if (!(other instanceof PowerNodeBuild)) return;
@@ -272,7 +273,7 @@ public class GravityWallSubstation extends PowerNode {
         @Override
         public void drawSelect(){
             drawRangeRect(x, y, range());
-            drawRangeRectInner(x, y, range() * 0.8f);
+            drawRangeRectInner(x, y, range() * 0.2f);
             for(int i = 0; i < power.links.size; i++){
                 Building link = world.build(power.links.get(i));
                 if (link != null) Drawf.selected(link, Pal.power);

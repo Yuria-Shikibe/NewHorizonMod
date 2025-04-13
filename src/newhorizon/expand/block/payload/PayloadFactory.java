@@ -1,5 +1,6 @@
 package newhorizon.expand.block.payload;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
@@ -60,6 +61,8 @@ public class PayloadFactory extends Constructor implements MultiBlock {
     public Seq<Point2> acceptPos = new Seq<>();
     public Seq<Point2> targetPos = new Seq<>();
 
+    public TextureRegion rotRegion;
+
     public PayloadFactory(String name) {
         super(name);
 
@@ -98,6 +101,12 @@ public class PayloadFactory extends Constructor implements MultiBlock {
                     return PayloadStack.with();
                 }
         ));
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        rotRegion = Core.atlas.find(name + "-rot");
     }
 
     @Override
@@ -195,8 +204,9 @@ public class PayloadFactory extends Constructor implements MultiBlock {
 
             drawPayload();
 
-            //Draw.z(Layer.blockBuilding + 1.1f);
-            //Draw.rect(topRegion, x, y);
+            Draw.z(Layer.blockBuilding + 1.1f);
+            Draw.rect(topRegion, x, y);
+            Draw.rect(rotRegion, x, y, rotdeg());
         }
 
         @Override
@@ -238,7 +248,6 @@ public class PayloadFactory extends Constructor implements MultiBlock {
         public void yeetPayload(Payload payload){
             payloads.add(payload.content(), 1);
             float rot = payload.angleTo(this);
-            Fx.shootPayloadDriver.at(payload.x(), payload.y(), rot);
             Fx.payloadDeposit.at(payload.x(), payload.y(), rot, new UnitAssembler.YeetData(new Vec2(x, y), payload.content()));
         }
 
@@ -286,7 +295,7 @@ public class PayloadFactory extends Constructor implements MultiBlock {
             Building source = validFrontAccepter()[1];
 
             if (target != null && target.team == this.team && target.acceptPayload(source, todump)) {
-                target.handlePayload(source, todump);
+                target.handlePayload(this, todump);
                 incrementDumpPayloadIndex();
                 return true;
             } else {
@@ -514,6 +523,14 @@ public class PayloadFactory extends Constructor implements MultiBlock {
             if (validFrontAccepter() != null){
                 Drawf.selected(validFrontAccepter()[0], Pal.accent);
                 Drawf.selected(validFrontAccepter()[1], Pal.regen);
+            }
+
+            for (Point2 p: acceptPos){
+                Point2 realPos = calculateRotatedPosition(p, size, 1, rotation);
+                Tile receive = world.tile(tileX() + realPos.x, tileY() + realPos.y);
+                if (receive != null){
+                    Drawf.selected(tileX() + realPos.x, tileY() + realPos.y, Blocks.copperWall, Pal.remove);
+                }
             }
         }
 

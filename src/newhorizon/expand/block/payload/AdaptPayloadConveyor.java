@@ -29,16 +29,19 @@ public class AdaptPayloadConveyor extends PayloadConveyor {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        return super.canPlaceOn(tile, team, rotation) && tile.x % 2 == 0 && tile.y % 2 == 0;
+
+        return super.canPlaceOn(tile, team, rotation)
+                //&& tile.x % 2 == 0 && tile.y % 2 == 0
+                ;
     }
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
 
-        if (!valid) {
-            drawPlaceText("Need align to world grid", x, y, false);
-        }
+        //if (!valid) {
+        //    drawPlaceText("Need align to world grid", x, y, false);
+        //}
 
         drawWorldGrid();
 
@@ -53,7 +56,6 @@ public class AdaptPayloadConveyor extends PayloadConveyor {
     @Override
     public void setBars() {
         super.setBars();
-        //addBar("block", (PayloadConveyorBuild e) -> new Bar(() -> e.blocked + "", () -> Pal.accent, () -> Mathf.num(e.blocked)));
     }
 
     public void drawWorldGrid(){
@@ -91,14 +93,29 @@ public class AdaptPayloadConveyor extends PayloadConveyor {
             super.onProximityUpdate();
 
             if (next != null) return;
-            Building accept = nearby(Geometry.d4(rotation).x * (size/2+1), Geometry.d4(rotation).y * (size/2+1));
-            if (accept instanceof LinkBlock.LinkBuild lb && lb.linkBuild != null && lb.linkBuild.block.acceptsPayload){
-                next = accept;
+            checkLinkTile();
+        }
+
+        public void checkLinkTile(){
+            Building next1 = nearby(getEdges()[rotation * 2].x, getEdges()[rotation * 2].y);
+            Building next2 = nearby(getEdges()[rotation * 2 + 1].x, getEdges()[rotation * 2 + 1].y);
+
+            if (next1 instanceof LinkBlock.LinkBuild lb1 && lb1.linkBuild != null && lb1.linkBuild.block.acceptsPayload){
+                if (next2 instanceof LinkBlock.LinkBuild lb2 && lb2.linkBuild != null && lb2.linkBuild.block.acceptsPayload){
+                    if (lb1.linkBuild == lb2.linkBuild) next = lb1.linkBuild;
+                }
             }
 
             int ntrns = 1 + size/2;
             Tile next = tile.nearby(Geometry.d4(rotation).x * ntrns, Geometry.d4(rotation).y * ntrns);
             blocked = (next != null && next.solid() && !(next.block().outputsPayload || next.block().acceptsPayload)) || (this.next != null && this.next.payloadCheck(rotation));
+        }
+
+        //sometimes sandbox cause proximity issues and i dont know why
+        @Override
+        public void moveFailed() {
+            checkLinkTile();
+
         }
 
         @Override
@@ -124,11 +141,6 @@ public class AdaptPayloadConveyor extends PayloadConveyor {
             super.drawSelect();
             if (next != null) {
                 Drawf.selected(next, Pal.regen);
-            }
-            for (int i = 0; i < 4; i++){
-                if (blends(i)) {
-                    Drawf.selected(tileX() + Geometry.d4x(i) * 2, tileY() + Geometry.d4y(i) * 2, this.block, Pal.regen);
-                };
             }
         }
     }

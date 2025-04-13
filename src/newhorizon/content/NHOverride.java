@@ -1,5 +1,6 @@
 package newhorizon.content;
 
+import arc.Events;
 import arc.func.Cons;
 import arc.func.Intc;
 import arc.graphics.Color;
@@ -328,13 +329,12 @@ public class NHOverride{
 	}
 
 	public static void setModContentEnv(){
-		//Events.on(EventType.WorldLoadEvent.class, e -> {
-		//	state.rules.bannedBlocks.each(b -> {
-		//		if (b.name.startsWith("new-horizon")) {
-		//			state.rules.bannedBlocks.remove(b);
-		//		}
-		//	});
-		//});
+		for(Block block: content.blocks()){
+			if (block.name.startsWith("new-horizon")){
+				block.shownPlanets.clear();
+				block.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha);
+			}
+		}
 	}
 
 	public static void overrideVanillaMain(){

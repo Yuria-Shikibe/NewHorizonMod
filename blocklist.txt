@@ -36,6 +36,7 @@ new-horizon-convertor-module 1 1 2 0
 new-horizon-convertor-titanium 1 1 2 0
 new-horizon-convertor-tungsten 1 1 2 0
 new-horizon-core-t1 1 1 1 0
+new-horizon-cpu-factory 1 1 2 0
 new-horizon-crucible-foundry 1 1 3 0
 new-horizon-crystallizer 1 1 2 0
 new-horizon-dark-energy-factory 1 1 2 0

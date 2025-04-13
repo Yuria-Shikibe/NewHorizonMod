@@ -61,13 +61,13 @@ public class ModuleBlock {
 
         unitCosts.put(UnitTypes.poly, unitCost(processorT1, 2, armorT1, 1));
 
-        moduleWorkshop = new PayloadFactory("module-workshop"){{
+        moduleWorkshop = new PayloadFactory("cpu-factory"){{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with());
 
-            size = 4;
-            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
-            acceptPos = Seq.with(new Point2(-3, 2), new Point2(-3, 1), new Point2(-3, 0), new Point2(-3, -1));
-            targetPos = Seq.with(new Point2(4, 2), new Point2(4, 1), new Point2(4, 0), new Point2(4, -1));
+            size = 2;
+            addLink(-1, 0, 1, -1, 1, 1, 0, -1, 1, 1, -1, 1, 0, 2, 1, 1, 2, 1, 2, 0, 1, 2, 1, 1);
+            acceptPos = Seq.with(new Point2(-2, 0), new Point2(-2, 1));
+            targetPos = Seq.with(new Point2(3, 0), new Point2(3, 1));
 
             filter = Seq.with(processorT1, processorT2, processorT3, processorT4);
         }};

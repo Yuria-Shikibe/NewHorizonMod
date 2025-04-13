@@ -341,17 +341,13 @@ public class AdaptDrill extends Block {
             if (warmup > 0f){drawer.get(this);}
             Draw.z(Layer.blockOver - 4f);
             Draw.rect(topRegion, x, y);
-            if(outputItem() != null){
+            if(outputItem() != null && dominantItem != null){
                 Draw.color(dominantItem.color);
                 Draw.rect(oreRegion, x, y);
                 Draw.color();
             }
 
             drawTeamTop();
-        }
-
-        public void drawMining(){
-            drawer.get(this);
         }
 
         private void tryDump(){
