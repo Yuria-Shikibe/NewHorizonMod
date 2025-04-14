@@ -19,6 +19,7 @@ import mindustry.logic.LAccess;
 import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
 import newhorizon.NHVars;
+import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.content;
@@ -57,13 +58,13 @@ public class IconDisplay extends Block {
 
         public Seq<UnlockableContent> displayContents(){
             tmpSeq.clear();
-            tmpSeq.add(content.items().select(item -> !item.isHidden()));
-            tmpSeq.add(content.liquids().select(item -> !item.isHidden()));
-            tmpSeq.add(content.units().select(item -> !item.isHidden()));
-            tmpSeq.add(content.blocks().select(item -> !item.isHidden()));
-            tmpSeq.add(content.planets().select(item -> !item.accessible));
-            tmpSeq.add(content.statusEffects().select(item -> !item.isHidden()));
-            tmpSeq.add(content.sectors().select(item -> !item.isHidden()));
+            tmpSeq.add(content.items().select(i -> !i.isHidden()));
+            tmpSeq.add(content.liquids().select(l -> !l.isHidden()));
+            tmpSeq.add(content.units().select(u -> !u.isHidden()));
+            tmpSeq.add(content.blocks().select(b -> !b.isHidden()));
+            tmpSeq.add(content.planets().select(p -> !p.accessible));
+            tmpSeq.add(content.statusEffects().select(e -> !e.isHidden()));
+            tmpSeq.add(content.sectors().select(s -> !s.isHidden()));
             return tmpSeq.as();
         }
 

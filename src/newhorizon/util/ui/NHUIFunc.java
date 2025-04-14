@@ -37,11 +37,8 @@ import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class NHUIFunc{
 	private static long lastToast, waiting;
-	
-	public static Table coreInfo;
-	
+
 	public static void init(){
-		coreInfo = ui.hudGroup.find("coreinfo");
 	}
 	
 	public static void show(Table p, UnlockableContent content){

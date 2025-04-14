@@ -10,6 +10,7 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
+import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -31,8 +32,10 @@ import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
+import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.Constructor;
 import mindustry.world.blocks.payloads.Payload;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.consumers.Consume;
 import mindustry.world.consumers.ConsumeItemDynamic;
@@ -45,8 +48,10 @@ import newhorizon.expand.block.consumer.NHConsumeLiquidDynamic;
 import newhorizon.expand.block.consumer.NHConsumePayloadDynamic;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.expand.block.inner.LinkBlock;
+import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.expand.block.production.factory.MultiBlock;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;
+import newhorizon.util.ui.ContentSelectionTable;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.state;
@@ -101,6 +106,11 @@ public class PayloadFactory extends Constructor implements MultiBlock {
                     return PayloadStack.with();
                 }
         ));
+    }
+
+    @Override
+    public boolean canProduce(Block b){
+        return b instanceof ModulePayload;
     }
 
     @Override
@@ -171,6 +181,11 @@ public class PayloadFactory extends Constructor implements MultiBlock {
         public ModuleBlock.ModuleCost recipeCost(){
             if(recipe() != null && ModuleBlock.moduleCosts.get(recipe()) != null) return ModuleBlock.moduleCosts.get(recipe());
             return null;
+        }
+
+        @Override
+        public void buildConfiguration(Table table) {
+            ContentSelectionTable.buildModuleTable(PayloadFactory.this, table, filter, () -> recipe, this::configure);
         }
 
         @Override

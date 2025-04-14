@@ -3,28 +3,36 @@ package newhorizon.expand.block.payload;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
-import arc.math.Mathf;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Interp;
 import arc.math.geom.Geometry;
-import arc.math.geom.Point2;
+import arc.math.geom.Intersector;
+import arc.math.geom.Rect;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
-import mindustry.world.Edges;
 import mindustry.world.Tile;
+import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.PayloadBlock;
 import mindustry.world.blocks.payloads.PayloadConveyor;
+import newhorizon.NewHorizon;
 import newhorizon.expand.block.inner.LinkBlock;
+import newhorizon.expand.block.inner.ModulePayload;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
-public class AdaptPayloadConveyor extends PayloadConveyor {
-    public AdaptPayloadConveyor(String name) {
+public class ModuleConveyor extends PayloadConveyor {
+    public TextureRegion edgeRegion1, edgeRegion2;
+    public static TextureRegion arrowRegion;
+    public ModuleConveyor(String name) {
         super(name);
         size = 2;
+        moveTime = 30;
     }
 
     @Override
@@ -51,6 +59,78 @@ public class AdaptPayloadConveyor extends PayloadConveyor {
                 Drawf.selected(other.tileX(), other.tileY(), other.block, other.team.color);
             }
         }
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        edgeRegion1 = Core.atlas.find(name + "-edge-1");
+        edgeRegion2 = Core.atlas.find(name + "-edge-2");
+
+        arrowRegion = Core.atlas.find(NewHorizon.name("payload-arrow"));
+    }
+
+    public static void prepareColor(Team team){
+        float dst = 0.8f;
+        float fract = Interp.pow5.apply((Time.time % 30) / 30);
+        float glow = Math.max((dst - (Math.abs(fract - 0.5f) * 2)) / dst, 0);
+        Draw.mixcol(team.color, glow);
+    }
+
+    public static void prepareAlpha(){
+        float fract = Interp.pow5.apply((Time.time % 30) / 30);
+        Draw.alpha(1f - Interp.pow5In.apply(fract));
+    }
+
+    public static void drawArrowOut(float x, float y, float rotation){
+        float fract = Interp.pow5.apply((Time.time % 30) / 30);
+        float s = tilesize * 2;
+        float trnext = s * fract;
+
+        //next
+        TextureRegion clipped = clipRegion(Tmp.r1.set(x, y, 16, 16), Tmp.r2.set(x, y, 16, 16).move(trnext, 0), arrowRegion);
+        float widthNext = (s - clipped.width * clipped.scl()) * 0.5f;
+        float heightNext = (s - clipped.height * clipped.scl()) * 0.5f;
+        Tmp.v1.set(widthNext, heightNext).rotate(rotation);
+        Draw.rect(clipped, x + Tmp.v1.x, y + Tmp.v1.y, rotation);
+    }
+
+    public static void drawArrowIn(float x, float y, float rotation){
+        float fract = Interp.pow5.apply((Time.time % 30) / 30);
+        float s = tilesize * 2;
+        float trprev = s * (fract - 1);
+
+        //next
+        TextureRegion clipped = clipRegion(Tmp.r1.set(x, y, 16, 16), Tmp.r2.set(x, y, 16, 16).move(trprev, 0), arrowRegion);
+        float widthPrev = (clipped.width * clipped.scl() - s) * 0.5f;
+        float heightPrev = (clipped.height * clipped.scl() - s) * 0.5f;
+        Tmp.v1.set(widthPrev, heightPrev).rotate(rotation);
+        Draw.rect(clipped, x + Tmp.v1.x, y + Tmp.v1.y, rotation);
+    }
+
+    protected static TextureRegion clipRegion(Rect bounds, Rect sprite, TextureRegion region){
+        Rect over = Tmp.r3;
+
+        boolean overlaps = Intersector.intersectRectangles(bounds, sprite, over);
+
+        TextureRegion out = Tmp.tr1;
+        out.set(region.texture);
+        out.scale = region.scale;
+
+        if(overlaps){
+            float w = region.u2 - region.u;
+            float h = region.v2 - region.v;
+            float x = region.u, y = region.v;
+            float newX = (over.x - sprite.x) / sprite.width * w + x;
+            float newY = (over.y - sprite.y) / sprite.height * h + y;
+            float newW = (over.width / sprite.width) * w, newH = (over.height / sprite.height) * h;
+
+            out.set(newX, newY, newX + newW, newY + newH);
+        }else{
+            out.set(0f, 0f, 0f, 0f);
+        }
+
+        return out;
     }
 
     @Override
@@ -96,6 +176,40 @@ public class AdaptPayloadConveyor extends PayloadConveyor {
             checkLinkTile();
         }
 
+        @Override
+        public void draw(){
+            Draw.rect(region, x, y);
+
+            prepareColor(team);
+            drawArrowOut(x, y, rotdeg());
+            drawArrowIn(x, y, rotdeg());
+
+            for(int i = 0; i < 4; i++){
+                if(blends(i) && i != rotation){
+                    prepareAlpha();
+                    drawArrowIn(x, y, i * 90 + 180);
+                }
+            }
+
+            Draw.reset();
+
+            if(!blends(0)) Draw.rect(edgeRegion1, x, y, 0);
+            if(!blends(1)) Draw.rect(edgeRegion1, x, y, 90);
+            if(!blends(2)) Draw.rect(edgeRegion2, x, y, 180);
+            if(!blends(3)) Draw.rect(edgeRegion2, x, y, 270);
+
+            Draw.z(Layer.blockOver);
+
+            if(item != null){
+                item.draw();
+            }
+        }
+
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            return super.acceptPayload(source, payload) && payload.content() instanceof ModulePayload;
+        }
+
         public void checkLinkTile(){
             Building next1 = nearby(getEdges()[rotation * 2].x, getEdges()[rotation * 2].y);
             Building next2 = nearby(getEdges()[rotation * 2 + 1].x, getEdges()[rotation * 2 + 1].y);
@@ -115,7 +229,6 @@ public class AdaptPayloadConveyor extends PayloadConveyor {
         @Override
         public void moveFailed() {
             checkLinkTile();
-
         }
 
         @Override

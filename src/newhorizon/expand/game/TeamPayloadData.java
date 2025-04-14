@@ -24,12 +24,11 @@ public class TeamPayloadData implements SaveFileReader.CustomChunk{
         teamPayloadData.put(team, payload);
     }
 
-    public boolean removePayload(Team team, UnlockableContent content, int count) {
+    public void removePayload(Team team, UnlockableContent content, int count) {
         PayloadSeq payload = getPayload(team);
-        if (payload.get(content) < count) return false;
+        if (payload.get(content) < count) return;
         payload.remove(content, count);
         teamPayloadData.remove(team);
-        return true;
     }
 
     public PayloadSeq getPayload(Team team) {

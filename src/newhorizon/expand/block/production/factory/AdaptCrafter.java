@@ -84,9 +84,9 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public void changePlacementPath(Seq<Point2> points, int rotation){
         Placement.calculateNodes(points, this, rotation, (point, other) -> {
             if (rotation % 2 == 0) {
-                return Math.abs(point.x - other.x) <= getMaxSize(size, rotation).x;
+                return Math.abs(point.x - other.x) == getMaxSize(size, rotation).x;
             }else{
-                return Math.abs(point.y - other.y) <= getMaxSize(size, rotation).y;
+                return Math.abs(point.y - other.y) == getMaxSize(size, rotation).y;
             }
         });
     }
@@ -174,6 +174,12 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public void created() {
             super.created();
             linkProximityMap = new Seq<>();
+
+            if (instantBuild || (!state.rules.editor && state.rules.instantBuild && state.rules.infiniteResources)){
+                linkEntities = setLinkBuild(this, block, tile, team, size, rotation);
+                linkCreated = true;
+                updateLinkProximity();
+            }
         }
 
         @Override
@@ -200,7 +206,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                     kill();
                 }
             }
-
             super.updateTile();
         }
 

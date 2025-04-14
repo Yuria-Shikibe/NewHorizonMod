@@ -16,6 +16,7 @@ import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
@@ -197,6 +198,8 @@ public class GravityWallSubstation extends PowerNode {
         public float cooldown;
         public boolean linkCreated;
 
+        public int linkCheck;
+
         @Override
         public void tapped() {
             super.tapped();
@@ -221,8 +224,17 @@ public class GravityWallSubstation extends PowerNode {
                 linkCreated = true;
             }
             if (cooldown > 0) cooldown -= Time.delta;
-            if (timer(0, 3000f + Mathf.randomSeed(id, 3000))){
-                configLink();
+
+            if (timer(0, 30)){
+                float side = laserRange * 2;
+                int x = (int)(linkCheck % side - laserRange);
+                int y = (int)(linkCheck / side - laserRange);
+                if (linkValid(this, nearby(x, y)) && !linked(nearby(x, y))) {
+                    configured(null, nearby(x, y).pos());
+                }
+
+                linkCheck++;
+                linkCheck %= (int) (side * side);
             }
         }
 
@@ -274,10 +286,14 @@ public class GravityWallSubstation extends PowerNode {
         public void drawSelect(){
             drawRangeRect(x, y, range());
             drawRangeRectInner(x, y, range() * 0.2f);
-            for(int i = 0; i < power.links.size; i++){
-                Building link = world.build(power.links.get(i));
-                if (link != null) Drawf.selected(link, Pal.power);
-            }
+            //for(int i = 0; i < power.links.size; i++){
+            //    Building link = world.build(power.links.get(i));
+            //    if (link != null) Drawf.selected(link, Pal.power);
+            //}
+            //float side = laserRange * 2;
+            //int x = Mathf.round(linkCheck % side - laserRange);
+            //int y = Mathf.round(linkCheck / side - laserRange);
+            //Drawf.selected(tileX() + x, tileY() + y, Blocks.copperWall, Pal.regen);
         }
 
         @Override
@@ -294,12 +310,11 @@ public class GravityWallSubstation extends PowerNode {
         }
 
         public float range(){
-            return laserRange * tilesize;
+            return laserRange * tilesize * 1.5f;
         }
 
         public void remove(){
             if(added) NHGroups.gravityTraps.remove(field);
-
             super.remove();
         }
     }
