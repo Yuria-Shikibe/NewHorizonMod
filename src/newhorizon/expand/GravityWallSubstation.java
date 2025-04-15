@@ -275,17 +275,17 @@ public class GravityWallSubstation extends PowerNode {
 
             Draw.z(NHContent.POWER_AREA);
             Draw.color(toColor, fromColor, (1f - power.graph.getSatisfaction()) * 0.86f + Mathf.absin(3f, 0.1f));
-            Fill.square(x, y, range());
+            Fill.square(x, y, laserRange * tilesize);
 
             Draw.z(NHContent.POWER_DYNAMIC);
             Draw.color(toColor, fromColor, (1f - power.graph.getSatisfaction()) * 0.86f + Mathf.absin(3f, 0.1f));
-            Fill.square(x, y, range() * 0.8f + range() * 0.2f * Interp.exp5Out.apply(Time.time / 240f % 1f));
+            Fill.square(x, y, laserRange * tilesize * 0.8f + laserRange * tilesize * 0.2f * Interp.exp5Out.apply(Time.time / 240f % 1f));
         }
 
         @Override
         public void drawSelect(){
-            drawRangeRect(x, y, range());
-            drawRangeRectInner(x, y, range() * 0.2f);
+            drawRangeRect(x, y, laserRange * tilesize);
+            drawRangeRectInner(x, y, laserRange * tilesize * 0.2f);
             //for(int i = 0; i < power.links.size; i++){
             //    Building link = world.build(power.links.get(i));
             //    if (link != null) Drawf.selected(link, Pal.power);

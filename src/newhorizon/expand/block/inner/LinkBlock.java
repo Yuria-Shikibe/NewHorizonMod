@@ -62,6 +62,7 @@ public class LinkBlock extends Block {
         acceptsItems = true;
         acceptsPayload = true;
         acceptsUnitPayloads = true;
+        outputsPayload = false;
 
         localizedName = Core.bundle.get(getContentType() + ".new-horizon-inner-entity.name", this.name);
         description = Core.bundle.getOrNull(getContentType() + ".new-horizon-inner-entity.description");

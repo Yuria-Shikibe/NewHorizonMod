@@ -29,6 +29,7 @@ new-horizon-bomb-launcher 1 1 3 0
 new-horizon-cathode-fusion-reactor 1 1 4 0
 new-horizon-charge-wall 1 1 1 0
 new-horizon-charge-wall-large 1 1 2 0
+new-horizon-chip-assembly 1 1 2 0
 new-horizon-concentration 1 1 5 0
 new-horizon-conglomerate-rock 0 0 1 4868429
 new-horizon-conglomerate-wall 0 1 1 7631477

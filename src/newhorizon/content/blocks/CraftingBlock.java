@@ -8,6 +8,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.content.Items;
@@ -25,6 +26,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
+import newhorizon.expand.block.production.factory.PayloadCrafter;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
@@ -39,7 +41,10 @@ public class CraftingBlock {
             convertorTungsten, convertorTitanium, xenRefinery,
             stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
             fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
-            multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator;
+            multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
+
+            chipAssembly//
+    ;
 
     public static void load(){
         sandCracker = new RecipeGenericCrafter("sand-cracker"){{
@@ -693,7 +698,7 @@ public class CraftingBlock {
             outputItems = with(NHItems.ancimembrane, 2);
 //			outputLiquid = new LiquidStack(Liquids.water, 0.5f);
         }};
-        upgradeSortFactory = new GenericCrafter("upgradeSort-factory") {{
+        upgradeSortFactory = new GenericCrafter("upgradeSort-factory"){{
             requirements(Category.crafting,
                     with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
             updateEffect = NHStatusEffects.quantization.effect;
@@ -718,6 +723,28 @@ public class CraftingBlock {
             clipSize = size * tilesize * 2f;
             consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
             consumePower(10f);
+        }};
+
+        chipAssembly = new PayloadCrafter("chip-assembly"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.titanium, 45, Items.silicon, 60));
+
+            size = 2;
+
+            addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
+                    -1, 0, 1, /**/-1, 1, 1 /**/);
+
+            craftTime = 40f;
+
+            consumePower(180f / 60f);
+
+            filter = Seq.with(ModuleBlock.processorT1, ModuleBlock.processorT2);
+
+            drawer = new DrawMulti(
+                    new DrawRegionCenterSymmetry(){{
+                        suffix = "-rot";
+                    }}
+            );
         }};
     }
 }

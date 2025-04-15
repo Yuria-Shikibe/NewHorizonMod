@@ -19,10 +19,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Links;
 import mindustry.ui.Styles;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatCat;
-import mindustry.world.meta.StatValue;
-import mindustry.world.meta.Stats;
+import mindustry.world.meta.*;
 import newhorizon.NHUI;
 import newhorizon.expand.block.special.JumpGate;
 import newhorizon.util.annotation.HeadlessDisabled;
@@ -234,7 +231,7 @@ public class NHUIFunc{
 					t2.pane(items -> {
 						items.right();
 						for(ItemStack stack : set.baseRequirements()){
-							items.add(new ItemImage(stack.item.fullIcon, stack.amount)).padRight(OFFSET / 2).left();
+							items.add(StatValues.stack(stack.item, stack.amount)).padRight(OFFSET / 2).left();
 						}
 					}).growX().height(LEN).center();
 					

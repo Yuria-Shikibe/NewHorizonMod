@@ -3106,6 +3106,7 @@ public class NHBlocks{
 		loadPowers();
 
 		InnerBlock.load();
+		ModuleBlock.load();
 		ProductionBlock.load();
 		TurretBlock.load();
 		DefenseBlock.load();
@@ -3118,7 +3119,6 @@ public class NHBlocks{
 		UnitBlock.load();
 		DistributionBlock.load();
 		PayloadBlock.load();
-		ModuleBlock.load();
 
 		disposePowerVoid = new PowerVoid("dispose-power-void"){{
 			size = 1;

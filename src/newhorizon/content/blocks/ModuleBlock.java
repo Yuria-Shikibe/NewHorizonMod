@@ -27,6 +27,7 @@ public class ModuleBlock {
     public static ObjectMap<UnitType, PayloadSeq> unitCosts = new ObjectMap<>();
 
     public static Block moduleWorkshop;
+    public static Seq<ModulePayload> modules = new Seq<>();
 
     public static void load(){
         processorT1 = new ModulePayload("processor-t1");
@@ -133,17 +134,6 @@ public class ModuleBlock {
         public Seq<ItemStack> itemReq = new Seq<>();
         public Seq<LiquidStack> liquidReq = new Seq<>();
         public Seq<PayloadStack> payloadReq = new Seq<>();
-
-        public void addItemReq(ItemStack item){
-            itemReq.add(item);
-        }
-
-        public void addLiquidReq(LiquidStack liquid){
-            liquidReq.add(liquid);
-        }
-
-        public void addPayloadReq(PayloadStack payload){
-            payloadReq.add(payload);
-        }
+        public float craftTime = 240f;
     }
 }

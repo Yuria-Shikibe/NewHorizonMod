@@ -14,6 +14,7 @@ import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.PayloadVoid;
 import mindustry.world.blocks.units.UnitAssembler;
 import newhorizon.expand.block.inner.ModulePayload;
+import newhorizon.expand.block.production.factory.PayloadCrafter;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static newhorizon.NHVars.worldData;

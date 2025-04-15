@@ -17,11 +17,11 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.Payload;
-import mindustry.world.blocks.payloads.PayloadBlock;
 import mindustry.world.blocks.payloads.PayloadConveyor;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.inner.LinkBlock;
 import newhorizon.expand.block.inner.ModulePayload;
+import newhorizon.expand.block.production.factory.MultiBlockEntity;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
@@ -207,7 +207,14 @@ public class ModuleConveyor extends PayloadConveyor {
 
         @Override
         public boolean acceptPayload(Building source, Payload payload) {
-            return super.acceptPayload(source, payload) && payload.content() instanceof ModulePayload;
+            int idx = (rotation + 2) % 4 * 2;
+            Building prev1 = nearby(getEdges()[idx].x, getEdges()[idx].y);
+            Building prev2 = nearby(getEdges()[idx + 1].x, getEdges()[idx + 1].y);
+
+            Building link1 = prev1 instanceof MultiBlockEntity? prev1: prev1 instanceof LinkBlock.LinkBuild lb && lb.linkBuild != null? lb.linkBuild: null;
+            Building link2 = prev2 instanceof MultiBlockEntity? prev2: prev2 instanceof LinkBlock.LinkBuild lb && lb.linkBuild != null? lb.linkBuild: null;
+
+            return super.acceptPayload(source, payload) && (prev1 == prev2 || link1 == link2) && payload.content() instanceof ModulePayload;
         }
 
         public void checkLinkTile(){
@@ -229,32 +236,6 @@ public class ModuleConveyor extends PayloadConveyor {
         @Override
         public void moveFailed() {
             checkLinkTile();
-        }
-
-        @Override
-        protected boolean blends(int direction){
-            if(direction == rotation){
-                return !blocked || next != null;
-            }else {
-                int idx = (direction * 2) % 8;
-                Building check1 = world.build(tileX() + getEdges()[idx].x, tileY() + getEdges()[idx].y);
-                Building check2 = world.build(tileX() + getEdges()[idx + 1].x, tileY() + getEdges()[idx + 1].y);
-                if (checkLinkBlock(check1) && checkLinkBlock(check2)) return true;
-            }
-
-            return PayloadBlock.blends(this, direction);
-        }
-
-        public boolean checkLinkBlock(Building link){
-            return link instanceof LinkBlock.LinkBuild lb1 && lb1.linkBuild != null && lb1.linkBuild.block.acceptsPayload;
-        }
-
-        @Override
-        public void drawSelect() {
-            super.drawSelect();
-            if (next != null) {
-                Drawf.selected(next, Pal.regen);
-            }
         }
     }
 }
