@@ -12,7 +12,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.expand.GravityWallSubstation;
+import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.block.drawer.DrawRegionCenterSymmetry;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 

@@ -4,6 +4,7 @@ import mindustry.game.Team;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BuildVisibility;
+import mindustry.world.meta.Stat;
 import newhorizon.content.blocks.ModuleBlock;
 
 public class ModulePayload extends Block {
@@ -23,6 +24,13 @@ public class ModulePayload extends Block {
     public void init() {
         super.init();
         ModuleBlock.modules.add(this);
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.remove(Stat.health);
+        stats.remove(Stat.size);
     }
 
     @Override

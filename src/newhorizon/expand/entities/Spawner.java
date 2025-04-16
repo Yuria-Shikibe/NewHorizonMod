@@ -86,23 +86,11 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		return this;
 	}
 	
-	public Spawner setStatus(StatusEffect status, float statusDuration){
+	public void setStatus(StatusEffect status, float statusDuration){
 		statusEntry.effect = status;
 		statusEntry.time = statusDuration;
-		
-		return this;
 	}
-	
-	public Spawner setFlagToApply(double flagToApply){
-		this.flagToApply = flagToApply;
-		return this;
-	}
-	
-	public Spawner setFlagToApply(long flagToApply){
-		this.flagToApply = Double.longBitsToDouble(flagToApply);
-		return this;
-	}
-	
+
 	@Override
 	public void add(){
 		super.add();
@@ -112,24 +100,17 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	}
 
 	@Override
-	public void afterReadAll() {
-
-	}
+	public void afterReadAll() {}
 
 	@Override
-	public void beforeWrite() {
-
-	}
+	public void beforeWrite() {}
 
 	@Override
 	public void remove(){
 		super.remove();
 		Groups.sync.remove(this);
 		
-		if(Vars.net.client()){
-			Vars.netClient.addRemovedEntity(id());
-		}
-		
+		if(Vars.net.client()){Vars.netClient.addRemovedEntity(id());}
 		if(soundLoop != null)soundLoop.update(x, y, false);
 	}
 	
@@ -197,8 +178,6 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		toSpawn.apply(statusEntry.effect, statusEntry.time);
 		if(commandPos != null && !commandPos.isNaN()){
 			if(toSpawn.isCommandable()){
-				toSpawn.command().commandPosition(commandPos);
-			}else{
 				CommandAI ai = new CommandAI();
 				ai.commandPosition(commandPos);
 				toSpawn.controller(ai);
@@ -214,17 +193,13 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	
 	@Override
 	public void draw(){
-		if(type.health > 8000 && team != Vars.player.team())NHSounds.alertLoop();
-		
-		TextureRegion pointerRegion = NHContent.pointerRegion, arrowRegion = NHContent.arrowRegion;
+		TextureRegion arrowRegion = NHContent.arrowRegion;
 		
 		Drawf.light(x, y, clipSize() * fout(), team.color, 0.7f);
 		Draw.z(Layer.effect - 1f);
-		
-		boolean can = canCreate();
-		
+
 		float regSize = NHFunc.regSize(type);
-		Draw.color(can ? team.color : Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(Time.time * DrawFunc.sinScl, 8f, 0.3f) + 0.1f));
+		Draw.color(canCreate() ? team.color : Tmp.c1.set(team.color).lerp(Pal.ammo, Mathf.absin(Time.time * DrawFunc.sinScl, 8f, 0.3f) + 0.1f));
 		
 		for(int i = -4; i <= 4; i++){
 			if(i == 0) continue;
@@ -232,17 +207,14 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 			float f = (100 - (Time.time - 12.5f * i) % 100) / 100;
 			Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, arrowRegion.width * (regSize / 2f + Draw.scl) * f, arrowRegion.height * (regSize / 2f + Draw.scl) * f, rotation() - 90);
 		}
-		
-		if(can && NHSetting.enableDetails()){
+
+		if(canCreate()){
 			trails.each(t -> {
 				t.drawCap(team.color, trailWidth);
 				t.draw(team.color, trailWidth);
 			});
-		}
-		
-		if(can)
 			DrawFunc.overlayText(Fonts.tech, String.valueOf(Mathf.ceil((lifetime - time) / 60f)), x, y, 0, 0, 0.25f, team.color, false, true);
-		else{
+		}else{
 			Draw.z(Layer.effect);
 			Draw.color(Pal.ammo);
 			
@@ -264,7 +236,6 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		TypeIO.writeUnitType(write, type);
 		TypeIO.writeTeam(write, team);
 		TypeIO.writeStatus(write, statusEntry);
-		
 		TypeIO.writeVec2(write, commandPos);
 	}
 	
@@ -280,7 +251,6 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 		type = TypeIO.readUnitType(read);
 		team = TypeIO.readTeam(read);
 		statusEntry = TypeIO.readStatus(read);
-		
 		commandPos = TypeIO.readVec2(read);
 		
 		afterRead();
@@ -342,19 +312,13 @@ public class Spawner extends NHBaseEntity implements Syncc, Timedc, Rotc{
 	}
 	
 	@Override
-	public void afterSync(){
-	
-	}
+	public void afterSync(){}
 	
 	@Override
-	public void handleSyncHidden(){
-	
-	}
+	public void handleSyncHidden(){}
 	
 	@Override
-	public void interpolate(){
-	
-	}
+	public void interpolate(){}
 	
 	@Override
 	public boolean isSyncHidden(Player player){

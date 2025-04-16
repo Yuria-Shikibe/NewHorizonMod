@@ -16,15 +16,11 @@ import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
-import mindustry.type.ItemStack;
 import mindustry.ui.Links;
-import mindustry.ui.Styles;
 import mindustry.world.meta.*;
 import newhorizon.NHUI;
-import newhorizon.expand.block.special.JumpGate;
 import newhorizon.util.annotation.HeadlessDisabled;
 import newhorizon.util.func.NHInterp;
-import newhorizon.util.ui.display.ItemImage;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;
@@ -189,55 +185,6 @@ public class NHUIFunc{
 					Core.app.setClipboardText(link.link);
 				}
 			}).size(h);
-		}
-	}
-	
-	public static class UnitSetTable extends Table{
-		public UnitSetTable(JumpGate.UnitSet set, Cons<Table> stat){
-			super();
-			if(state.rules.bannedUnits.contains(set.type)){
-				table(Styles.grayPanel, t2 -> {
-					t2.margin(6f);
-					t2.defaults().left().padRight(OFFSET);
-					t2.table(Tex.clear, table2 -> {
-						TableFunc.tableImageShrink(set.type.fullIcon, LEN, table2, i -> i.color.set(Pal.gray));
-						table2.image(Icon.cancel).size(LEN + OFFSET * 1.5f).color(Color.scarlet).padLeft(OFFSET / 2f);
-					}).left().padLeft(OFFSET * 2f);
-					
-					t2.pane(table2 -> table2.add(Core.bundle.get("banned")));
-				}).growX().fillY().padBottom(OFFSET / 2).row();
-			}else if(set.type.locked() && !state.rules.infiniteResources && state.isCampaign()){
-				table(Styles.grayPanel, t2 -> {
-					t2.margin(6f);
-					t2.defaults().left().padRight(OFFSET);
-					t2.table(Tex.clear, table2 -> table2.image(Icon.lock).size(LEN + OFFSET * 1.5f)).left().padLeft(OFFSET / 2f);
-					
-					t2.pane(table2 -> table2.add("[gray]Need to be researched.").left().row()).grow();
-				}).growX().fillY().padBottom(OFFSET / 2).row();
-			}else{
-				table(Styles.grayPanel, t2 -> {
-					t2.margin(6f);
-					t2.defaults().left().padRight(OFFSET);
-					t2.image(set.type.fullIcon).size(LEN + OFFSET).scaling(Scaling.fit).left().padLeft(OFFSET / 2f);
-					
-					t2.pane(table2 -> {
-						table2.left().marginLeft(12f);
-						table2.add("[lightgray]" + Core.bundle.get("editor.spawn") + ": [accent]" + set.type.localizedName + "[lightgray] | Tier: [accent]" + set.sortIndex[1]).left().row();
-						table2.add("[lightgray]" + Core.bundle.get("stat.buildtime") + ": [accent]" + TableFunc.format(set.costTimeVar() / 60) + "[lightgray] " + Core.bundle.get("unit.seconds")).row();
-					}).growX().height(LEN).center();
-					
-					t2.pack();
-					
-					t2.pane(items -> {
-						items.right();
-						for(ItemStack stack : set.baseRequirements()){
-							items.add(StatValues.stack(stack.item, stack.amount)).padRight(OFFSET / 2).left();
-						}
-					}).growX().height(LEN).center();
-					
-					t2.table(stat).fillX().height(LEN + OFFSET).right();
-				}).growX().fillY().padBottom(OFFSET / 2).row();
-			}
 		}
 	}
 }

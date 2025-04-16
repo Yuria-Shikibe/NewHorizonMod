@@ -4,7 +4,7 @@ import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.net.NetConnection;
-import newhorizon.expand.GravityWallSubstation;
+import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.ability.active.ActiveAbility;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
 import newhorizon.expand.net.packet.ConfigGravityWallNodePacket;

@@ -6,7 +6,7 @@ import mindustry.gen.Building;
 import mindustry.io.TypeIO;
 import mindustry.net.NetConnection;
 import mindustry.net.Packet;
-import newhorizon.expand.GravityWallSubstation;
+import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.net.NHCall;
 
 public class ConfigGravityWallNodePacket extends Packet {

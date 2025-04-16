@@ -1,18 +1,14 @@
 package newhorizon.content.blocks;
 
-import arc.math.geom.Point2;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import mindustry.content.Items;
 import mindustry.content.UnitTypes;
 import mindustry.type.*;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.Wall;
-import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.inner.ModulePayload;
-import newhorizon.expand.block.payload.PayloadFactory;
 
 public class ModuleBlock {
     public static Block
@@ -24,7 +20,7 @@ public class ModuleBlock {
             productivityModule1, productivityModule2, productivityModule3;
 
     public static ObjectMap<Block, ModuleCost> moduleCosts = new ObjectMap<>();
-    public static ObjectMap<UnitType, PayloadSeq> unitCosts = new ObjectMap<>();
+    public static ObjectMap<UnitType, UnitCost> unitCosts = new ObjectMap<>();
 
     public static Seq<ModulePayload> modules = new Seq<>();
 
@@ -184,17 +180,19 @@ public class ModuleBlock {
             payloadReq = PayloadStack.list(productivityModule2, 2, processorT3, 2, processorT4, 2);
         }});
 
-        unitCosts.put(UnitTypes.poly, unitCost(processorT1, 2, armorT1, 1));
-        unitCosts.put(UnitTypes.poly, unitCost(processorT1, 2, armorT1, 2));
+        unitCosts.put(UnitTypes.poly, unitCost(60 * 10f, processorT1, 2, armorT1, 1));
+
     }
 
-    public static PayloadSeq unitCost(Object... objects){
-        PayloadSeq payloadSeq = new PayloadSeq();
-        PayloadStack[] payloadStacks = PayloadStack.with(objects);
-        for(PayloadStack ps : payloadStacks){
-            payloadSeq.add(ps.item, ps.amount);
-        }
-        return payloadSeq;
+    public static UnitCost unitCost(float time, Object... objects){
+        UnitCost uc = new UnitCost();
+        uc.payloadSeq = PayloadStack.list(objects);
+        uc.craftTime = time;
+        return uc;
+    }
+    public static class UnitCost{
+        public Seq<PayloadStack> payloadSeq = new Seq<>();
+        public float craftTime = 60 * 10f;
     }
 
     public static class ModuleCost{

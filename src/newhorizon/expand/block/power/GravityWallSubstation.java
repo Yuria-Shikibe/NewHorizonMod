@@ -1,4 +1,4 @@
-package newhorizon.expand;
+package newhorizon.expand.block.power;
 
 import arc.func.Boolf;
 import arc.func.Cons;
@@ -16,7 +16,6 @@ import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
