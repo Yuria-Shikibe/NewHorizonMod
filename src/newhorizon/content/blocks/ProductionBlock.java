@@ -263,7 +263,7 @@ public class ProductionBlock {
             requirements(Category.production, with(NHItems.juniorProcessor, 30, NHItems.presstanium, 25, NHItems.metalOxhydrigen, 20));
             health = 760;
             size = 2;
-            boostSpeed = 0.5f;
+            boostSpeed = 1f;
             powerMul = 0.4f;
             powerExtra = 80f;
 
@@ -279,7 +279,7 @@ public class ProductionBlock {
             requirements(Category.production, with(NHItems.seniorProcessor, 30, Items.phaseFabric, 25, NHItems.zeta, 40));
             health = 760;
             size = 2;
-            boostSpeed = 1f;
+            boostSpeed = 2f;
             powerMul = 0.8f;
             powerExtra = 150f;
 

@@ -6,13 +6,14 @@ import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.payload.ModuleConveyor;
+import newhorizon.expand.block.payload.ModuleDeposit;
 import newhorizon.expand.block.payload.ModuleSource;
 import newhorizon.expand.block.payload.ModuleVoid;
 
 import static mindustry.type.ItemStack.with;
 
 public class PayloadBlock {
-    public static Block payloadRail, moduleSource, moduleVoid;
+    public static Block payloadRail, moduleSource, moduleVoid, payloadDeposit;
 
     public static void load(){
         moduleSource = new ModuleSource("module-source"){{
@@ -28,6 +29,10 @@ public class PayloadBlock {
         }};
 
         payloadRail = new ModuleConveyor("module-rail"){{
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+        }};
+
+        payloadDeposit = new ModuleDeposit("module-deposit"){{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
         }};
     }

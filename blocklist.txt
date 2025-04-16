@@ -15,6 +15,10 @@ new-horizon-armor-light 0 0 1 16763541
 new-horizon-armor-power-node 1 1 2 0
 new-horizon-armor-quantum 0 0 1 4145225
 new-horizon-armor-t1 1 1 1 0
+new-horizon-armor-t2 1 1 1 0
+new-horizon-armor-t3 1 1 1 0
+new-horizon-armor-t4 1 1 1 0
+new-horizon-armor-t5 1 1 1 0
 new-horizon-armor-wall 0 1 1 6777206
 new-horizon-assign-overdrive 1 1 3 0
 new-horizon-atom-separator 1 1 5 0
@@ -37,6 +41,10 @@ new-horizon-convertor-module 1 1 2 0
 new-horizon-convertor-titanium 1 1 2 0
 new-horizon-convertor-tungsten 1 1 2 0
 new-horizon-core-t1 1 1 1 0
+new-horizon-core-t2 1 1 1 0
+new-horizon-core-t3 1 1 1 0
+new-horizon-core-t4 1 1 1 0
+new-horizon-core-t5 1 1 1 0
 new-horizon-cpu-factory 1 1 2 0
 new-horizon-crucible-foundry 1 1 3 0
 new-horizon-crystallizer 1 1 2 0
@@ -52,6 +60,9 @@ new-horizon-efficiency-module1 1 1 1 0
 new-horizon-efficiency-module2 1 1 1 0
 new-horizon-efficiency-module3 1 1 1 0
 new-horizon-electro 1 1 4 0
+new-horizon-electronic-assembly-mk1 1 1 2 0
+new-horizon-electronic-assembly-mk2 1 1 4 0
+new-horizon-electronic-assembly-mk3 1 1 4 0
 new-horizon-end-of-era 1 1 8 0
 new-horizon-eternity 1 1 16 0
 new-horizon-executor 1 1 6 0
@@ -130,6 +141,9 @@ new-horizon-logistics-omni-gate 1 0 1 0
 new-horizon-logistics-omni-sorter 1 0 1 0
 new-horizon-logistics-router 1 0 1 0
 new-horizon-logistics-unloader 1 1 1 0
+new-horizon-mechanic-assembly-mk1 1 1 3 0
+new-horizon-mechanic-assembly-mk2 1 1 3 0
+new-horizon-mechanic-assembly-mk3 1 1 5 0
 new-horizon-metal-floor-deep-groove 0 0 1 4145225
 new-horizon-metal-floor-groove 0 0 1 4145225
 new-horizon-metal-floor-high-ridge 0 0 1 4145225
@@ -144,6 +158,7 @@ new-horizon-metal-tower 0 1 1 10198442
 new-horizon-metal-unit 0 1 1 10198442
 new-horizon-metal-unit-quantum 0 1 1 10198442
 new-horizon-metal-vent 0 0 1 921367
+new-horizon-module-deposit 1 0 2 0
 new-horizon-module-rail 1 0 2 0
 new-horizon-module-source 1 0 2 0
 new-horizon-module-void 1 0 2 0
@@ -188,6 +203,7 @@ new-horizon-processor-t1 1 1 1 0
 new-horizon-processor-t2 1 1 1 0
 new-horizon-processor-t3 1 1 1 0
 new-horizon-processor-t4 1 1 1 0
+new-horizon-processor-t5 1 1 1 0
 new-horizon-productivity-module-1 1 1 1 0
 new-horizon-productivity-module-2 1 1 1 0
 new-horizon-productivity-module-3 1 1 1 0

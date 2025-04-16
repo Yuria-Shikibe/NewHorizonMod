@@ -64,9 +64,8 @@ public class NHConsumeShowStat extends Consume {
                     rebuild(build, cont);
                     currentPayload[0] = payloads.get(build);
                 }
+                if (!payloadInventory.get(build).isEmpty()) rebuild(build, cont);
             });
-
-            rebuild(build, cont);
         });
     }
 

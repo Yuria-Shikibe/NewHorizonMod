@@ -1,6 +1,8 @@
 package newhorizon.expand.block.special;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -26,6 +28,7 @@ import static mindustry.Vars.content;
 import static newhorizon.NHVars.worldData;
 
 public class IconDisplay extends Block {
+    public TextureRegion maskRegion;
     public IconDisplay(String name){
         super(name);
         size = 2;
@@ -42,6 +45,12 @@ public class IconDisplay extends Block {
         config(UnlockableContent.class, (IconDisplayBuild build, UnlockableContent content) -> build.displayContent = content);
 
         configClear((IconDisplayBuild build) -> build.displayContent = null);
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        maskRegion = Core.atlas.find(name + "-mask");
     }
 
     @Override
@@ -70,19 +79,6 @@ public class IconDisplay extends Block {
 
         @Override
         public void buildConfiguration(Table table){
-            table.table(t -> {
-                t.button("ADD", () -> {
-                    if (displayContent == null) return;
-                    worldData.teamPayloadData.addPayload(team, displayContent, 1);
-                });
-                t.button("REMOVE", () -> {
-                    if (displayContent == null) return;
-                    worldData.teamPayloadData.removePayload(team, displayContent, 1);
-                });
-                t.button("DISPLAY", () -> {
-                    worldData.teamPayloadData.display();
-                });
-            }).row();
             ItemSelection.buildTable(IconDisplay.this, table, displayContents(),
                     this::config, this::configure, selectionRows, selectionColumns);
         }
@@ -134,6 +130,7 @@ public class IconDisplay extends Block {
 
             if (displayContent != null){
                 Draw.z(Layer.blockOver);
+                Draw.rect(maskRegion, x, y);
                 Tmp.v1.set(Scaling.bounded.apply(displayContent.uiIcon.width, displayContent.uiIcon.height, 12f, 12f));
                 Draw.rect(displayContent.uiIcon, x, y, Tmp.v1.x, Tmp.v1.y);
                 DrawFunc.drawText(displayContent.localizedName, x, y + 8);

@@ -36,14 +36,15 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
-            //vanilla adapt build
-            sandCracker, oilRefiner,
-            convertorTungsten, convertorTitanium, xenRefinery,
-            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
-            fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
-            multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
+        //vanilla adapt build
+        sandCracker, oilRefiner,
+        convertorTungsten, convertorTitanium, xenRefinery,
+        stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
+        fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
+        multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
 
-            chipAssembly//
+        electronicAssemblyMk1, electronicAssemblyMk2, electronicAssemblyMk3,
+        mechanicAssemblyMk1, mechanicAssemblyMk2, mechanicAssemblyMk3
     ;
 
     public static void load(){
@@ -609,9 +610,9 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
-                        suffix = "-rot";
-                    }}
+                new DrawRegionCenterSymmetry(){{
+                    suffix = "-rot";
+                }}
             );
         }};
         ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator"){{
@@ -696,7 +697,6 @@ public class CraftingBlock {
             consumeItems(with(NHItems.irayrondPanel, 6));
             consumeLiquid(NHLiquids.irdryonFluid, 6 / 60f);
             outputItems = with(NHItems.ancimembrane, 2);
-//			outputLiquid = new LiquidStack(Liquids.water, 0.5f);
         }};
         upgradeSortFactory = new GenericCrafter("upgradeSort-factory"){{
             requirements(Category.crafting,
@@ -708,7 +708,6 @@ public class CraftingBlock {
                     Lines.stroke(e.fout() * 1.7f);
                     Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
                 });
-
             });
             outputItem = new ItemStack(NHItems.upgradeSort, 2);
             craftTime = 120f;
@@ -725,25 +724,132 @@ public class CraftingBlock {
             consumePower(10f);
         }};
 
-        chipAssembly = new PayloadCrafter("chip-assembly"){{
+        electronicAssemblyMk1 = new PayloadCrafter("electronic-assembly-mk1"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.titanium, 45, Items.silicon, 60));
+                    ItemStack.with(NHItems.juniorProcessor, 10));
 
             size = 2;
 
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
-            craftTime = 40f;
+            itemCapacity = 50;
+            liquidCapacity = 50;
+            payloadCapacity = 8;
 
             consumePower(180f / 60f);
 
-            filter = Seq.with(ModuleBlock.processorT1, ModuleBlock.processorT2);
+            filter = Seq.with(ModuleBlock.processorT1, ModuleBlock.processorT2, ModuleBlock.speedModule1, ModuleBlock.productivityModule1, ModuleBlock.efficiencyModule1);
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
-                        suffix = "-rot";
+                new DrawRegionCenterSymmetry(){{
+                    suffix = "-rot";
+                }}
+            );
+        }};
+        electronicAssemblyMk2 = new PayloadCrafter("electronic-assembly-mk2"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.phaseFabric, 10));
+
+            size = 4;
+
+            itemCapacity = 150;
+            liquidCapacity = 150;
+            payloadCapacity = 12;
+
+            consumePower(180f / 60f);
+
+            filter = Seq.with(ModuleBlock.processorT3, ModuleBlock.processorT4, ModuleBlock.speedModule2, ModuleBlock.productivityModule2, ModuleBlock.efficiencyModule2);
+
+            drawer = new DrawMulti(
+                    new DrawRegion(){{
+                        suffix = "-base";
                     }}
+            );
+        }};
+        electronicAssemblyMk3 = new PayloadCrafter("electronic-assembly-mk3"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.irayrondPanel, 10));
+
+            size = 4;
+
+            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+
+            itemCapacity = 300;
+            liquidCapacity = 300;
+            payloadCapacity = 20;
+
+            consumePower(180f / 60f);
+
+            filter = Seq.with(ModuleBlock.processorT5, ModuleBlock.speedModule3, ModuleBlock.productivityModule3, ModuleBlock.efficiencyModule3);
+
+            drawer = new DrawMulti(
+                new DrawRegionCenterSymmetry(){{
+                    suffix = "-rot";
+                }}
+            );
+        }};
+        mechanicAssemblyMk1 = new PayloadCrafter("mechanic-assembly-mk1"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 10));
+
+            size = 3;
+
+            consumePower(180f / 60f);
+
+            itemCapacity = 50;
+            liquidCapacity = 50;
+            payloadCapacity = 8;
+
+            filter = Seq.with(ModuleBlock.armorT1, ModuleBlock.armorT2, ModuleBlock.coreT1, ModuleBlock.coreT2);
+
+            drawer = new DrawMulti(
+                new DrawRegion(){{
+                    suffix = "-base";
+                }}
+            );
+        }};
+        mechanicAssemblyMk2 = new PayloadCrafter("mechanic-assembly-mk2"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.surgeAlloy, 10));
+
+            size = 3;
+
+            addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
+                    -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
+
+            itemCapacity = 150;
+            liquidCapacity = 150;
+            payloadCapacity = 12;
+
+            consumePower(180f / 60f);
+
+            filter = Seq.with(ModuleBlock.armorT3, ModuleBlock.coreT3, ModuleBlock.coreT4);
+
+            drawer = new DrawMulti(
+                new DrawRegionCenterSymmetry(){{
+                    suffix = "-rot";
+                }}
+            );
+        }};
+        mechanicAssemblyMk3 = new PayloadCrafter("mechanic-assembly-mk3"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.setonAlloy, 10));
+
+            size = 5;
+
+            itemCapacity = 300;
+            liquidCapacity = 300;
+            payloadCapacity = 20;
+
+            consumePower(180f / 60f);
+
+            filter = Seq.with(ModuleBlock.armorT4, ModuleBlock.armorT5, ModuleBlock.coreT5);
+
+            drawer = new DrawMulti(
+                new DrawRegion(){{
+                    suffix = "-base";
+                }}
             );
         }};
     }

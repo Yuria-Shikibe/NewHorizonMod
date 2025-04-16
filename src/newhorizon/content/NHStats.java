@@ -18,6 +18,8 @@ public class NHStats {
         decreaseNotShooting = new Stat("decrease-not-shooting", StatCat.function),
 
         fireRateMax = new Stat("fire-rate-max", StatCat.function),
-        overheatCooldown = new Stat("overheat-cooldown", StatCat.function)
+        overheatCooldown = new Stat("overheat-cooldown", StatCat.function),
+
+        payloadCapacity = new Stat("payload-capacity", StatCat.general)
     ;
 }
