@@ -7,10 +7,14 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Nullable;
 import arc.util.Strings;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
+import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
+import mindustry.io.TypeIO;
 import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
@@ -255,6 +259,22 @@ public class PayloadCrafter extends AdaptCrafter {
 
             }
             return false;
+        }
+
+        @Override
+        public void write(Writes write) {
+            super.write(write);
+            payloads.write(write);
+            TypeIO.writeBlock(write, block == null? Blocks.air: block);
+        }
+
+        @Override
+        public void read(Reads read, byte revision) {
+            super.read(read, revision);
+            Block b = TypeIO.readBlock(read);
+            payloads = new PayloadSeq();
+            payloads.read(read);
+            block = b == Blocks.air ? null : b;
         }
     }
 }

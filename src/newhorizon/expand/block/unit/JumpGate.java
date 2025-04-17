@@ -285,6 +285,7 @@ public class JumpGate extends Block {
 
         public void spawnUnit(){
             if (unitType == null) return;
+            //todo add a Call method
             Spawner spawner = new Spawner();
             float rot = core() == null? Angles.angle(x, y, spawn.x, spawn.y): Angles.angle(core().x, core().y, x, y);
             spawner.init(unitType, team, spawn, rot, unitTime(unitType) / maxWarmupSpeed);
