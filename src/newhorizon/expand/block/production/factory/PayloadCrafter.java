@@ -265,7 +265,7 @@ public class PayloadCrafter extends AdaptCrafter {
         public void write(Writes write) {
             super.write(write);
             payloads.write(write);
-            TypeIO.writeBlock(write, block == null? Blocks.air: block);
+            TypeIO.writeBlock(write, recipe == null? Blocks.air: recipe);
         }
 
         @Override
@@ -274,7 +274,7 @@ public class PayloadCrafter extends AdaptCrafter {
             Block b = TypeIO.readBlock(read);
             payloads = new PayloadSeq();
             payloads.read(read);
-            block = b == Blocks.air ? null : b;
+            recipe = b == Blocks.air ? null : b;
         }
     }
 }
