@@ -275,6 +275,7 @@ public class JumpGate extends Block {
             lastUnitType = unitType;
             unitType = spawnList.get(idx);
             progress = 0f;
+            speedMultiplier = 1f;
         }
 
         public UnitType getUnitType(int idx){
