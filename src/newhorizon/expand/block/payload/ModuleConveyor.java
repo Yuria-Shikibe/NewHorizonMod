@@ -18,13 +18,13 @@ import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.PayloadConveyor;
+import mindustry.world.meta.Stat;
 import newhorizon.NewHorizon;
 import newhorizon.expand.block.inner.LinkBlock;
 import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;
 
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class ModuleConveyor extends PayloadConveyor {
     public TextureRegion edgeRegion1, edgeRegion2;
@@ -59,6 +59,12 @@ public class ModuleConveyor extends PayloadConveyor {
                 Drawf.selected(other.tileX(), other.tileY(), other.block, other.team.color);
             }
         }
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.remove(Stat.payloadCapacity);
     }
 
     @Override

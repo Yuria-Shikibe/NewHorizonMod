@@ -8,6 +8,7 @@ import mindustry.type.*;
 import mindustry.world.Block;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
+import newhorizon.content.NHUnitTypes;
 import newhorizon.expand.block.inner.ModulePayload;
 
 public class ModuleBlock {
@@ -180,7 +181,34 @@ public class ModuleBlock {
             payloadReq = PayloadStack.list(productivityModule2, 2, processorT3, 2, processorT4, 2);
         }});
 
-        unitCosts.put(UnitTypes.poly, unitCost(60 * 10f, processorT1, 2, armorT1, 1));
+        unitCosts.put(UnitTypes.poly, unitCost(60 * 10f, processorT1, 1, armorT1, 1));
+        unitCosts.put(UnitTypes.cleroi, unitCost(60 * 15f, processorT1, 2, armorT1, 2));
+        unitCosts.put(UnitTypes.quasar, unitCost(60 * 20f, processorT1, 2, armorT1, 3, coreT1, 2));
+        unitCosts.put(UnitTypes.zenith, unitCost(60 * 20f, processorT1, 3, armorT1, 2, coreT1, 2));
+        unitCosts.put(UnitTypes.cyerce, unitCost(60 * 20f, processorT1, 3, armorT1, 3, coreT1, 2));
+        unitCosts.put(NHUnitTypes.ghost, unitCost(60 * 30f, processorT2, 3, armorT2, 5, coreT1, 3, productivityModule1, 1));
+        unitCosts.put(NHUnitTypes.warper, unitCost(60 * 30f, processorT2, 5, armorT2, 3, coreT1, 3, speedModule1, 1));
+        unitCosts.put(NHUnitTypes.aliotiat, unitCost(60 * 30f, processorT2, 4, armorT2, 4, coreT1, 3, efficiencyModule1, 1));
+        unitCosts.put(NHUnitTypes.rhino, unitCost(60 * 45f, processorT2, 8, armorT1, 8, coreT2, 4, speedModule1, 2));
+        unitCosts.put(NHUnitTypes.gather, unitCost(60 * 45f, processorT2, 8, armorT1, 8, coreT2, 4, efficiencyModule1, 2));
+
+        unitCosts.put(NHUnitTypes.naxos, unitCost(60 * 45f, processorT3, 12, armorT2, 8, coreT2, 8, speedModule2, 2));
+        unitCosts.put(NHUnitTypes.tarlidor, unitCost(60 * 45f, processorT3, 10, armorT2, 10, coreT2, 8, efficiencyModule2, 2));
+        unitCosts.put(NHUnitTypes.zarkov, unitCost(60 * 45f, processorT3, 8, armorT2, 12, coreT2, 8, productivityModule1, 4));
+        unitCosts.put(UnitTypes.eclipse, unitCost(60 * 60f, processorT3, 25, armorT3, 15, coreT2, 15, productivityModule2, 3));
+        unitCosts.put(UnitTypes.disrupt, unitCost(60 * 60f, processorT3, 20, armorT3, 20, coreT2, 15, productivityModule2, 3));
+        unitCosts.put(UnitTypes.corvus, unitCost(60 * 75f, processorT4, 30, armorT3, 40, coreT2, 25, speedModule2, 8));
+        unitCosts.put(UnitTypes.navanax, unitCost(60 * 75f, processorT4, 40, armorT3, 60, coreT2, 30, efficiencyModule2, 12));
+        unitCosts.put(UnitTypes.collaris, unitCost(60 * 75f, processorT4, 35, armorT3, 50, coreT2, 30, productivityModule2, 10));
+
+        unitCosts.put(NHUnitTypes.destruction, unitCost(60 * 90f, processorT4, 60, armorT3, 80, coreT3, 40, speedModule3, 10));
+        unitCosts.put(NHUnitTypes.longinus, unitCost(60 * 90f, processorT4, 80, armorT3, 60, coreT4, 40, efficiencyModule3, 10));
+        unitCosts.put(NHUnitTypes.annihilation, unitCost(60 * 120f, processorT4, 80, armorT4, 100, coreT3, 50, speedModule3, 15));
+        unitCosts.put(NHUnitTypes.saviour, unitCost(60 * 120f, processorT4, 90, armorT4, 60, coreT3, 40, coreT4, 40, efficiencyModule3, 15));
+        unitCosts.put(NHUnitTypes.declining, unitCost(60 * 120f, processorT4, 120, armorT4, 80, coreT4, 40, productivityModule3, 15));
+        unitCosts.put(NHUnitTypes.anvil, unitCost(60 * 150f, processorT5, 120, armorT5, 80, coreT3, 100, speedModule3, 30, productivityModule3, 20));
+        unitCosts.put(NHUnitTypes.sin, unitCost(60 * 150f, processorT5, 80, armorT5, 120, coreT4, 100, efficiencyModule3, 30, productivityModule3, 20));
+        unitCosts.put(NHUnitTypes.collapser, unitCost(60 * 180f, processorT5, 200, armorT5, 300, coreT5, 100, productivityModule3, 50, speedModule3, 30, efficiencyModule3, 30));
 
     }
 

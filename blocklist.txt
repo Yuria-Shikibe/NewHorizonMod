@@ -100,6 +100,9 @@ new-horizon-irdryon-tank 1 1 3 0
 new-horizon-irdryon-vault 1 1 3 0
 new-horizon-jump-gate 1 1 8 0
 new-horizon-jump-gate-junior 1 1 5 0
+new-horizon-jump-gate-mk1 1 1 3 0
+new-horizon-jump-gate-mk2 1 1 5 0
+new-horizon-jump-gate-mk3 1 1 8 0
 new-horizon-jump-gate-primary 1 1 3 0
 new-horizon-lab-floor-dark 0 0 1 3618881
 new-horizon-lab-floor-light 0 0 1 3618881

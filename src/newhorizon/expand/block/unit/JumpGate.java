@@ -310,7 +310,7 @@ public class JumpGate extends Block {
             super.updateTile();
             warmup = Mathf.lerp(warmup, efficiency, 0.01f);
             spawnWarmup = Mathf.lerp(spawnWarmup, efficiency, 0.01f);
-            if (unitType == null || vec2 == null) {
+            if (unitType == null || spawn == null) {
                 progress = 0f;
                 return;
             }
@@ -318,6 +318,10 @@ public class JumpGate extends Block {
                 progress += getProgressIncrease(unitTime(unitType)) * speedMultiplier;
             }
             if (progress >= 1) spawnUnit();
+        }
+
+        public boolean canConsume(){
+            return !(unitType == null || spawn == null) && canSpawn() && Units.canCreate(team, unitType);
         }
 
         public float unitTime(UnitType unitType){

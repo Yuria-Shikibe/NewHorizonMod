@@ -5,15 +5,12 @@ import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
-import newhorizon.expand.block.payload.ModuleConveyor;
-import newhorizon.expand.block.payload.ModuleDeposit;
-import newhorizon.expand.block.payload.ModuleSource;
-import newhorizon.expand.block.payload.ModuleVoid;
+import newhorizon.expand.block.payload.*;
 
 import static mindustry.type.ItemStack.with;
 
 public class PayloadBlock {
-    public static Block payloadRail, moduleSource, moduleVoid, payloadDeposit;
+    public static Block payloadRail, moduleSource, moduleVoid, payloadDeposit, payloadWithdraw;
 
     public static void load(){
         moduleSource = new ModuleSource("module-source"){{
@@ -33,6 +30,10 @@ public class PayloadBlock {
         }};
 
         payloadDeposit = new ModuleDeposit("module-deposit"){{
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+        }};
+
+        payloadWithdraw = new ModuleWithdraw("module-withdraw"){{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
         }};
     }
