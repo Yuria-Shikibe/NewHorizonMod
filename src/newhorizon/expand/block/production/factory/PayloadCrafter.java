@@ -271,9 +271,9 @@ public class PayloadCrafter extends AdaptCrafter {
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            Block b = TypeIO.readBlock(read);
             payloads = new PayloadSeq();
             payloads.read(read);
+            Block b = TypeIO.readBlock(read);
             recipe = b == Blocks.air ? null : b;
         }
     }
