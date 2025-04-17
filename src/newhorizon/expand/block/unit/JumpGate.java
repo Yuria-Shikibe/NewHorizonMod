@@ -10,6 +10,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -28,6 +29,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
+import mindustry.logic.LAccess;
 import mindustry.type.*;
 import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
@@ -127,14 +129,17 @@ public class JumpGate extends Block {
     public JumpGate(String name) {
         super(name);
         solid = true;
+        sync = true;
         breakable = true;
         update = true;
         commandable = true;
         configurable = true;
         saveConfig = true;
         canOverdrive = false;
+        logicConfigurable = true;
 
         config(Integer.class, JumpGateBuild::changePlan);
+        config(UnitType.class, (JumpGateBuild e, UnitType unitType) -> e.changePlan(e.getPlanId(unitType)));
         consume(new NHConsumeShowStat(e -> null, e -> null, e -> null, b -> worldData.teamPayloadData.getPayload(b.team)));
     }
 
@@ -345,7 +350,7 @@ public class JumpGate extends Block {
         }
 
         @Override
-        public Object config() {
+        public UnitType config() {
             return unitType;
         }
 

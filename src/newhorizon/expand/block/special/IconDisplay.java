@@ -40,7 +40,6 @@ public class IconDisplay extends Block {
         logicConfigurable = true;
         selectionRows = selectionColumns = 8;
         clipSize = 200;
-        commandable = true;
 
         config(UnlockableContent.class, (IconDisplayBuild build, UnlockableContent content) -> build.displayContent = content);
 
