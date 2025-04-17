@@ -289,8 +289,8 @@ public class JumpGate extends Block {
             spawner.init(unitType, team, spawn, rot, unitTime(unitType) / maxWarmupSpeed);
             if (vec2 != null) {
                 spawner.commandPos.set(vec2.cpy());
-                spawner.add();
             }
+            spawner.add();
 
             progress = 0f;
             spawnWarmup = 0f;
