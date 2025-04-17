@@ -287,8 +287,10 @@ public class JumpGate extends Block {
             Spawner spawner = new Spawner();
             float rot = core() == null? Angles.angle(x, y, spawn.x, spawn.y): Angles.angle(core().x, core().y, x, y);
             spawner.init(unitType, team, spawn, rot, unitTime(unitType) / maxWarmupSpeed);
-            spawner.commandPos.set(vec2.cpy());
-            spawner.add();
+            if (vec2 != null) {
+                spawner.commandPos.set(vec2.cpy());
+                spawner.add();
+            }
 
             progress = 0f;
             spawnWarmup = 0f;

@@ -165,6 +165,7 @@ new-horizon-module-deposit 1 0 2 0
 new-horizon-module-rail 1 0 2 0
 new-horizon-module-source 1 0 2 0
 new-horizon-module-void 1 0 2 0
+new-horizon-module-withdraw 1 0 2 0
 new-horizon-module-workshop 1 1 4 0
 new-horizon-multi-armor-conveyor 1 0 1 0
 new-horizon-multi-conduit 1 0 1 0
