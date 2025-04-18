@@ -1,10 +1,12 @@
 package newhorizon.expand.game;
 
+import arc.Events;
 import arc.struct.ObjectMap;
 import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.ctype.UnlockableContent;
+import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.io.SaveFileReader;
 import mindustry.type.PayloadSeq;
@@ -17,6 +19,10 @@ import static mindustry.Vars.content;
 
 public class TeamPayloadData implements SaveFileReader.CustomChunk{
     public ObjectMap<Team, PayloadSeq> teamPayloadData = new ObjectMap<>();
+
+    public TeamPayloadData() {
+        Events.on(EventType.ResetEvent.class, event -> {teamPayloadData.clear();});
+    }
 
     public void addPayload(Team team, UnlockableContent content, int count) {
         PayloadSeq payload = getPayload(team);
