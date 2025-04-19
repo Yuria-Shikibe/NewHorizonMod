@@ -340,7 +340,6 @@ public class JumpGate extends Block {
 
         @Override
         public void buildConfiguration(Table table) {
-            super.buildConfiguration(table);
             ItemSelection.buildTable(block, table, spawnList, () -> unitType, (UnitType u) -> configure(getPlanId(u)), 4, 4);
         }
 
