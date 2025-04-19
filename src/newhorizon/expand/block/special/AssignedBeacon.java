@@ -305,7 +305,7 @@ public class AssignedBeacon extends Block {
             }
             powerMul = Mathf.clamp(powerMul, 1f, 100f);
             speedMul = Mathf.clamp(speedMul, 0.2f, 100f);
-            craftMul = Mathf.clamp(craftMul, 0f, 100f);
+            craftMul = Mathf.clamp(craftMul, 0f, 512f);
         }
 
         @Override
