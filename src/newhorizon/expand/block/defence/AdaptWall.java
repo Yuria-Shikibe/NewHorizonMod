@@ -9,6 +9,7 @@ import arc.math.geom.Point2;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import mindustry.Vars;
+import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Call;
@@ -86,10 +87,6 @@ public class AdaptWall extends Wall {
 			drawIndex = ATLAS_INDEX_4_12_MAP.get(drawIndex);
 		}
 
-		public boolean validTile(int x, int y){
-			return world.build(tileX() + x, tileY() + y) != null && world.build(tileX() + x, tileY() + y).block == block;
-		}
-
 		public void findLinkWalls(){
 			toDamage.clear();
 			queue.clear();
@@ -155,6 +152,11 @@ public class AdaptWall extends Wall {
 		}
 
 		@Override
+		public void damage(Bullet bullet, Team source, float damage) {
+			super.damage(bullet, source, damage);
+		}
+
+		@Override
 		public float handleDamage(float amount){
 			findLinkWalls();
 			float shareDamage = (amount / toDamage.size) * (1 - damageReduction);
@@ -164,6 +166,7 @@ public class AdaptWall extends Wall {
 			return shareDamage;
 		}
 
+		//todo healthChanged sometimes not trigger properly
 		public void damageShared(Building building, float damage) {
 			if (building.dead()) return;
 			float dm = state.rules.blockHealth(team);

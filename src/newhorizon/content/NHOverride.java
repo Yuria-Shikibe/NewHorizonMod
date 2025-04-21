@@ -21,6 +21,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.BurstDrill;
 import mindustry.world.blocks.production.Drill;
+import mindustry.world.blocks.production.Pump;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
@@ -320,7 +321,10 @@ public class NHOverride{
 		overrideUnitTypeAbility();
 		balanceDrill();
 		buffCoreUnits();
-		adjustUnit();
+
+		adjustVanillaUnit();
+		adjustVanillaLogistic();
+		adjustVanillaLogic();
 
 		overrideStats();
 	}
@@ -579,12 +583,64 @@ public class NHOverride{
 		}
 	}
 
-	private static void hideVanillaContent(){
-		hideContent(Blocks.mechanicalDrill);
-		hideContent(Blocks.laserDrill);
-		hideContent(Blocks.blastDrill);
+	private static void adjustVanillaLogic(){
+		adjustContent(Blocks.message, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 5));
+		adjustContent(Blocks.reinforcedMessage, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 5));
+		adjustContent(Blocks.switchBlock, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 5));
+		adjustContent(Blocks.microProcessor, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 50, Items.titanium, 50));
+		adjustContent(Blocks.logicProcessor, content -> ((Block) content).requirements = ItemStack.with(NHItems.juniorProcessor, 50, NHItems.presstanium, 50));
+		adjustContent(Blocks.hyperProcessor, content -> ((Block) content).requirements = ItemStack.with(NHItems.juniorProcessor, 100, NHItems.zeta, 200, Items.surgeAlloy, 150));
+		adjustContent(Blocks.memoryCell, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 30));
+		adjustContent(Blocks.memoryBank, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 80, Items.phaseFabric, 40));
+		adjustContent(Blocks.logicDisplay, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 50));
+		adjustContent(Blocks.largeLogicDisplay, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 150, Items.phaseFabric, 75));
+	}
+
+	private static void adjustVanillaLogistic(){
+		adjustContent(Blocks.rotaryPump, content -> {
+			Pump pump = (Pump) content;
+			pump.requirements = ItemStack.with(Items.graphite, 80, Items.metaglass, 50);
+		});
+
+		hideContent(Blocks.conveyor);
+		hideContent(Blocks.titaniumConveyor);
+		hideContent(Blocks.armoredConveyor);
+		hideContent(Blocks.plastaniumConveyor);
+		hideContent(Blocks.junction);
+		hideContent(Blocks.itemBridge);
+		hideContent(Blocks.phaseConveyor);
+		hideContent(Blocks.sorter);
+		hideContent(Blocks.invertedSorter);
+		hideContent(Blocks.overflowGate);
+		hideContent(Blocks.underflowGate);
+		hideContent(Blocks.massDriver);
+
+		hideContent(Blocks.duct);
+		hideContent(Blocks.armoredDuct);
+		hideContent(Blocks.ductRouter);
+		hideContent(Blocks.overflowDuct);
+		hideContent(Blocks.underflowDuct);
+		hideContent(Blocks.ductBridge);
+		hideContent(Blocks.ductUnloader);
+		hideContent(Blocks.surgeConveyor);
+		hideContent(Blocks.surgeRouter);
+		hideContent(Blocks.unitCargoLoader);
+		hideContent(Blocks.unitCargoUnloadPoint);
+
 		hideContent(Blocks.mechanicalPump);
 		hideContent(Blocks.impulsePump);
+		hideContent(Blocks.pulseConduit);
+		hideContent(Blocks.platedConduit);
+		hideContent(Blocks.liquidRouter);
+		hideContent(Blocks.liquidJunction);
+		hideContent(Blocks.bridgeConduit);
+		hideContent(Blocks.phaseConduit);
+		hideContent(Blocks.reinforcedConduit);
+		hideContent(Blocks.reinforcedLiquidJunction);
+		hideContent(Blocks.reinforcedBridgeConduit);
+		hideContent(Blocks.reinforcedLiquidRouter);
+
+
 	}
 
 	public static void balanceDrill(){
@@ -685,12 +741,25 @@ public class NHOverride{
 		}
 	}
 
-	private static void adjustUnit(){
+	private static void adjustVanillaUnit(){
 		for (UnitType type: content.units()){
 			type.envRequired = Env.none;
 			type.envDisabled = Env.none;
 			type.envEnabled = Env.any;
 		}
+
+		hideContent(Blocks.payloadConveyor);
+		hideContent(Blocks.payloadRouter);
+		hideContent(Blocks.reinforcedPayloadConveyor);
+		hideContent(Blocks.reinforcedPayloadRouter);
+		hideContent(Blocks.payloadMassDriver);
+		hideContent(Blocks.largePayloadMassDriver);
+		hideContent(Blocks.deconstructor);
+		hideContent(Blocks.smallDeconstructor);
+		hideContent(Blocks.constructor);
+		hideContent(Blocks.largeConstructor);
+		hideContent(Blocks.payloadLoader);
+		hideContent(Blocks.payloadUnloader);
 
 		hideContent(Blocks.groundFactory);
 		hideContent(Blocks.airFactory);
