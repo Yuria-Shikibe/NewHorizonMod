@@ -36,6 +36,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 import newhorizon.NHGroups;
 import newhorizon.content.NHFx;
 import newhorizon.content.blocks.ModuleBlock;
@@ -48,6 +49,21 @@ import static newhorizon.NHVars.worldData;
 
 public class AssignedBeacon extends Block {
     //public static final Seq<Building> likedBuildings = Seq.with();
+
+    public float[][] boosts = new float[][]{
+            {1.5f, 0.5f, 0f},
+            {2.0f, 1.0f, 0f},
+            {2.5f, 1.5f, 0f},
+
+            {1.6f, -0.5f, 0.25f},
+            {2.5f, -1.0f, 0.5f},
+            {3.0f, -1.5f, 1f},
+
+            {0.5f, 0f, 0f},
+            {0.3f, 0f, 0f},
+            {0.2f, 0f, 0f},
+    };
+
     public float range = 60f;
     public float powerCons = 600 / 60f;
     public int maxLink = 4;
@@ -67,7 +83,7 @@ public class AssignedBeacon extends Block {
 
         size = 3;
 
-        config(Block.class, (AssignedBeaconBuild entity, Block block) -> entity.addModulePlan(entity.getModuleId(block)));
+        config(Block.class, (AssignedBeaconBuild entity, Block block) -> entity.addModulePlan(getModuleId(block)));
         config(Integer.class, AssignedBeaconBuild::addLink);
         config(Integer[].class, (AssignedBeaconBuild entity, Integer[] data) -> {
             if (data.length != maxLink + moduleSlot) {
@@ -85,6 +101,36 @@ public class AssignedBeacon extends Block {
         configClear((AssignedBeaconBuild entity) -> Arrays.fill(entity.targets, -1));
 
         consumePowerDynamic((AssignedBeaconBuild entity) -> entity.powerMul * powerCons);
+    }
+
+    //ye this is hardcoded here so this is a todo
+    public @Nullable Block getModule(int num){
+        return switch(num){
+            case 0 -> ModuleBlock.speedModule1;
+            case 1 -> ModuleBlock.speedModule2;
+            case 2 -> ModuleBlock.speedModule3;
+            case 3 -> ModuleBlock.productivityModule1;
+            case 4 -> ModuleBlock.productivityModule2;
+            case 5 -> ModuleBlock.productivityModule3;
+            case 6 -> ModuleBlock.efficiencyModule1;
+            case 7 -> ModuleBlock.efficiencyModule2;
+            case 8 -> ModuleBlock.efficiencyModule3;
+            default -> null;
+        };
+    }
+
+    //uhhhh
+    public @Nullable int getModuleId(Block module){
+        if (module == ModuleBlock.speedModule1) return 0;
+        if (module == ModuleBlock.speedModule2) return 1;
+        if (module == ModuleBlock.speedModule3) return 2;
+        if (module == ModuleBlock.productivityModule1) return 3;
+        if (module == ModuleBlock.productivityModule2) return 4;
+        if (module == ModuleBlock.productivityModule3) return 5;
+        if (module == ModuleBlock.efficiencyModule1) return 6;
+        if (module == ModuleBlock.efficiencyModule2) return 7;
+        if (module == ModuleBlock.efficiencyModule3) return 8;
+        return -1;
     }
 
     @Override
@@ -111,6 +157,26 @@ public class AssignedBeacon extends Block {
     public void setStats(){
         super.setStats();
         stats.add(Stat.powerConnections, maxLink, StatUnit.none);
+        stats.add(Stat.booster, table -> {
+            for (int i = 0; i < 9; i++){
+                table.row();
+                int finalI = i;
+                table.table(c -> c.table(Styles.grayPanel, b -> {
+                    b.table(it -> it.table(t -> {
+                        t.image(getModule(finalI).uiIcon).size(iconXLarge).padRight(3);
+                        t.add(getModule(finalI).localizedName).padRight(3);
+                    }).pad(10f).padLeft(15f).left()).left();
+
+                    b.table(bt -> {
+                        bt.right().defaults().padRight(3).left();
+                        if(boosts[finalI][0] != 0) bt.add(Core.bundle.format("nh.stat.cons-extra", (boosts[finalI][0] > 1? "[red]": "") + Strings.autoFixed(boosts[finalI][0], 1))).row();
+                        if(boosts[finalI][1] != 0) bt.add(Core.bundle.format("nh.stat.speed-bonus", (boosts[finalI][1] > 0? "+": "[red]") + Strings.autoFixed(boosts[finalI][1] * 100, 1))).row();
+                        if(boosts[finalI][2] != 0) bt.add(Core.bundle.format("nh.stat.productivity-bonus", Strings.autoFixed(boosts[finalI][2] * 100, 1))).row();
+                    }).right().top().grow().pad(10f).padRight(15f);
+                }).growX().pad(5).padBottom(5).row()).growX().colspan(table.getColumns());
+                table.row();
+            }
+        });
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
@@ -172,6 +238,7 @@ public class AssignedBeacon extends Block {
                             }else {
                                 gcb.applySlowdown(speedMul, 90f);
                             }
+                            progress %= 60f;
                         }
                     }
                 }
@@ -181,6 +248,22 @@ public class AssignedBeacon extends Block {
         @Override
         public float progress() {
             return progress;
+        }
+
+        //asdsadasdasdasdasdasdasdasd
+        public void applyModule(int num){
+            switch(num){
+                case 0 -> apply(boosts[0][0], boosts[0][1], boosts[0][2]);
+                case 1 -> apply(boosts[1][0], boosts[1][1], boosts[1][2]);
+                case 2 -> apply(boosts[2][0], boosts[2][1], boosts[2][2]);
+                case 3 -> apply(boosts[3][0], boosts[3][1], boosts[3][2]);
+                case 4 -> apply(boosts[4][0], boosts[4][1], boosts[4][2]);
+                case 5 -> apply(boosts[5][0], boosts[5][1], boosts[5][2]);
+                case 6 -> apply(boosts[6][0], boosts[6][1], boosts[6][2]);
+                case 7 -> apply(boosts[7][0], boosts[7][1], boosts[7][2]);
+                case 8 -> apply(boosts[8][0], boosts[8][1], boosts[8][2]);
+                default -> {}
+            }
         }
 
         @Override
@@ -244,52 +327,6 @@ public class AssignedBeacon extends Block {
             }
         }
 
-        //ye this is hardcoded here so this is a todo
-        public @Nullable Block getModule(int num){
-            return switch(num){
-                case 0 -> ModuleBlock.speedModule1;
-                case 1 -> ModuleBlock.speedModule2;
-                case 2 -> ModuleBlock.speedModule3;
-                case 3 -> ModuleBlock.productivityModule1;
-                case 4 -> ModuleBlock.productivityModule2;
-                case 5 -> ModuleBlock.productivityModule3;
-                case 6 -> ModuleBlock.efficiencyModule1;
-                case 7 -> ModuleBlock.efficiencyModule2;
-                case 8 -> ModuleBlock.efficiencyModule3;
-                default -> null;
-            };
-        }
-
-        //uhhhh
-        public @Nullable int getModuleId(Block module){
-            if (module == ModuleBlock.speedModule1) return 0;
-            if (module == ModuleBlock.speedModule2) return 1;
-            if (module == ModuleBlock.speedModule3) return 2;
-            if (module == ModuleBlock.productivityModule1) return 3;
-            if (module == ModuleBlock.productivityModule2) return 4;
-            if (module == ModuleBlock.productivityModule3) return 5;
-            if (module == ModuleBlock.efficiencyModule1) return 6;
-            if (module == ModuleBlock.efficiencyModule2) return 7;
-            if (module == ModuleBlock.efficiencyModule3) return 8;
-            return -1;
-        }
-
-        //asdsadasdasdasdasdasdasdasd
-        public void applyModule(int num){
-            switch(num){
-                case 0 -> apply(2f, 1f, 0f);
-                case 1 -> apply(4f, 3f, 0f);
-                case 2 -> apply(6f, 5f, 0f);
-                case 3 -> apply(2f, -0.2f, 0.25f);
-                case 4 -> apply(4f, -0.33f, 0.5f);
-                case 5 -> apply(8f, -0.5f, 1f);
-                case 6 -> apply(0.25f, 0f, 0f);
-                case 7 -> apply(0.125f, 0f, 0f);
-                case 8 -> apply(0.0625f, 0f, 0f);
-                default -> {}
-            }
-        }
-
         public void apply(float powerMul, float speedMul, float craftMul){
             this.powerMul *= powerMul;
             this.speedMul += speedMul;
@@ -303,9 +340,9 @@ public class AssignedBeacon extends Block {
             for (int module: modules){
                 applyModule(module);
             }
-            powerMul = Mathf.clamp(powerMul, 1f, 100f);
-            speedMul = Mathf.clamp(speedMul, 0.2f, 100f);
-            craftMul = Mathf.clamp(craftMul, 0f, 512f);
+            powerMul = Math.max(powerMul, 1f);
+            speedMul = Math.max(speedMul, 0f);
+            craftMul = Math.max(craftMul, 0f);
         }
 
         @Override

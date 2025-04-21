@@ -59,9 +59,15 @@ public class GravityWallSubstation extends PowerNode {
     }
 
     @Override
+    public void setBars() {
+        super.setBars();
+        removeBar("connections");
+    }
+
+    @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
         super.canPlaceOn(tile, team, rotation);
-        return !indexer.eachBlock(team, Tmp.r1.setCentered(tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.2f * 2), b -> b instanceof GravityWallSubstationBuild, b -> {});
+        return !indexer.eachBlock(team, Tmp.r1.setCentered(tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.5f * 2), b -> b instanceof GravityWallSubstationBuild, b -> {});
     }
 
     @Override
@@ -72,7 +78,7 @@ public class GravityWallSubstation extends PowerNode {
 
         Lines.stroke(1f);
         drawRangeRect(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize);
-        drawRangeRectInner(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize * 0.2f);
+        drawRangeRectInner(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize * 0.5f);
 
         getPotentialLinks(tile, player.team(), other -> {
             if (!(other instanceof PowerNodeBuild)) return;
@@ -146,7 +152,7 @@ public class GravityWallSubstation extends PowerNode {
     protected void getPotentialLinks(Tile tile, Team team, Cons<Building> others){
         Boolf<Building> valid =
                 other -> other != null && other.tile != tile && other.block.connectedPower && other.power != null &&
-                (other.block.outputsPower || other.block.consumesPower || other.block instanceof PowerNode) &&
+                (other.block.outputsPower || other.block.consumesPower || other.block instanceof PowerNode) && !graphs.contains(other.power.graph) &&
                 overlaps(tile.x * tilesize + offset, tile.y * tilesize + offset, other.tile, laserRange * tilesize) && other.team == team;
 
         tempBuilds.clear();
@@ -284,15 +290,7 @@ public class GravityWallSubstation extends PowerNode {
         @Override
         public void drawSelect(){
             drawRangeRect(x, y, laserRange * tilesize);
-            drawRangeRectInner(x, y, laserRange * tilesize * 0.2f);
-            //for(int i = 0; i < power.links.size; i++){
-            //    Building link = world.build(power.links.get(i));
-            //    if (link != null) Drawf.selected(link, Pal.power);
-            //}
-            //float side = laserRange * 2;
-            //int x = Mathf.round(linkCheck % side - laserRange);
-            //int y = Mathf.round(linkCheck / side - laserRange);
-            //Drawf.selected(tileX() + x, tileY() + y, Blocks.copperWall, Pal.regen);
+            drawRangeRectInner(x, y, laserRange * tilesize * 0.5f);
         }
 
         @Override

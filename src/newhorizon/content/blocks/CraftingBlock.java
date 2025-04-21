@@ -726,7 +726,7 @@ public class CraftingBlock {
 
         electronicAssemblyMk1 = new PayloadCrafter("electronic-assembly-mk1"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.juniorProcessor, 10));
+                    ItemStack.with(NHItems.juniorProcessor, 80, NHItems.presstanium, 60, Items.tungsten, 80));
 
             size = 2;
 
@@ -749,7 +749,7 @@ public class CraftingBlock {
         }};
         electronicAssemblyMk2 = new PayloadCrafter("electronic-assembly-mk2"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.phaseFabric, 10));
+                    ItemStack.with(Items.phaseFabric, 120, Items.surgeAlloy, 80, Items.carbide, 60, NHItems.metalOxhydrigen, 120));
 
             size = 4;
 
@@ -769,7 +769,7 @@ public class CraftingBlock {
         }};
         electronicAssemblyMk3 = new PayloadCrafter("electronic-assembly-mk3"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.irayrondPanel, 10));
+                    ItemStack.with(NHItems.irayrondPanel, 250, NHItems.setonAlloy, 200, NHItems.seniorProcessor, 300));
 
             size = 4;
 
@@ -791,7 +791,7 @@ public class CraftingBlock {
         }};
         mechanicAssemblyMk1 = new PayloadCrafter("mechanic-assembly-mk1"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 10));
+                    ItemStack.with(NHItems.juniorProcessor, 60, NHItems.presstanium, 80, Items.tungsten, 80));
 
             size = 3;
 
@@ -811,7 +811,7 @@ public class CraftingBlock {
         }};
         mechanicAssemblyMk2 = new PayloadCrafter("mechanic-assembly-mk2"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.surgeAlloy, 10));
+                    ItemStack.with(Items.phaseFabric, 80, Items.surgeAlloy, 120, Items.carbide, 100, NHItems.metalOxhydrigen, 80));
 
             size = 3;
 
@@ -834,7 +834,7 @@ public class CraftingBlock {
         }};
         mechanicAssemblyMk3 = new PayloadCrafter("mechanic-assembly-mk3"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.setonAlloy, 10));
+                    ItemStack.with(NHItems.irayrondPanel, 200, NHItems.setonAlloy, 250, NHItems.seniorProcessor, 300));
 
             size = 5;
 

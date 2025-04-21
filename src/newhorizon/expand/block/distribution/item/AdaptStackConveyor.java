@@ -24,6 +24,9 @@ public class AdaptStackConveyor extends StackConveyor {
     public TextureRegion edge2Region;
     public AdaptStackConveyor(String name) {
         super(name);
+
+        canOverdrive = false;
+        placeableLiquid = true;
     }
 
     @Override
@@ -118,7 +121,6 @@ public class AdaptStackConveyor extends StackConveyor {
 
         @Override
         public void updateTile() {
-            if (!onlyCarry) cooldown = 0f;
             super.updateTile();
         }
     }

@@ -36,6 +36,7 @@ public class AdaptItemBridge extends ItemBridge {
         range = 6;
         placeableLiquid = true;
         drawTeamOverlay = false;
+        allowDiagonal = true;
     }
 
     @Override

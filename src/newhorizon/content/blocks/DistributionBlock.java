@@ -4,10 +4,13 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.liquid.Conduit;
+import mindustry.world.blocks.liquid.LiquidJunction;
+import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.distribution.item.*;
 import newhorizon.expand.block.distribution.item.logistics.*;
+import newhorizon.expand.block.distribution.liquid.AdaptConduit;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidBridge;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloader;
 
@@ -21,7 +24,7 @@ public class DistributionBlock {
 
             stackRail, lightStackLoader, heavyStackLoader,
 
-            conduit, liquidBridge, liquidBridgeExtend, liquidUnloader;
+            conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load(){
         conveyor = new AdaptConveyor("hard-light-rail"){{
@@ -45,6 +48,22 @@ public class DistributionBlock {
             canOverdrive = false;
         }};
 
+        lightStackLoader = new AdaptStackConveyor("light-stack-loader"){{
+            requirements(Category.distribution, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 10));
+            speed = 6f / 60f;
+            itemCapacity = 15;
+            onlyCarry = false;
+            canOverdrive = false;
+        }};
+
+        heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader"){{
+            requirements(Category.distribution, with(NHItems.multipleSteel, 10, NHItems.seniorProcessor, 10));
+            speed = 6f / 60f;
+            itemCapacity = 60;
+            onlyCarry = false;
+            canOverdrive = false;
+        }};
+
         conveyorBridge = new AdaptItemBridge("logistics-bridge"){{
             requirements(Category.distribution, with(Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
@@ -61,22 +80,6 @@ public class DistributionBlock {
 
             hasPower = false;
             range = 12;
-        }};
-
-        lightStackLoader = new AdaptStackConveyor("light-stack-loader"){{
-            requirements(Category.distribution, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 10));
-            speed = 6f / 60f;
-            itemCapacity = 15;
-            onlyCarry = false;
-            canOverdrive = false;
-        }};
-
-        heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader"){{
-            requirements(Category.distribution, with(NHItems.multipleSteel, 10, NHItems.seniorProcessor, 10));
-            speed = 6f / 60f;
-            itemCapacity = 60;
-            onlyCarry = false;
-            canOverdrive = false;
         }};
 
         logisticsJunction = new AdaptJunction("logistics-junction"){{
@@ -144,10 +147,18 @@ public class DistributionBlock {
             conductivePower = true;
         }};
 
-        conduit = new Conduit("conduit"){{
-            requirements(Category.liquid, with(Items.silicon, 4));
+        conduit = new AdaptConduit("conduit"){{
+            requirements(Category.liquid, with(Items.silicon, 1));
             liquidCapacity = 40f;
             liquidPressure = 1.2f;
+        }};
+
+        conduitJunction = new LiquidJunction("logistics-liquid-junction"){{
+            requirements(Category.liquid, with(Items.silicon, 4));
+        }};
+
+        conduitRouter = new LiquidRouter("logistics-liquid-router"){{
+            requirements(Category.liquid, with(Items.silicon, 4));
         }};
 
         liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge"){{

@@ -42,7 +42,7 @@ public class AdaptConveyor extends Conveyor {
     public AdaptConveyor(String name) {
         super(name);
 
-        canOverdrive = true;
+        canOverdrive = false;
         placeableLiquid = true;
         drawTeamOverlay = false;
 
