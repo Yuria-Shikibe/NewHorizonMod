@@ -135,6 +135,8 @@ new-horizon-logistics-bridge 1 1 1 0
 new-horizon-logistics-directional-gate 1 0 1 0
 new-horizon-logistics-directional-merger 1 0 1 0
 new-horizon-logistics-directional-router 1 0 1 0
+new-horizon-logistics-extend-bridge 1 1 1 0
+new-horizon-logistics-extend-liquid-bridge 1 1 1 0
 new-horizon-logistics-gate 1 0 1 0
 new-horizon-logistics-junction 1 0 1 0
 new-horizon-logistics-liquid-bridge 1 1 1 0
@@ -250,6 +252,10 @@ new-horizon-speed-module-mk2 1 1 2 0
 new-horizon-speed-module1 1 1 1 0
 new-horizon-speed-module2 1 1 1 0
 new-horizon-speed-module3 1 1 1 0
+new-horizon-stack-loader-mk1 1 0 1 0
+new-horizon-stack-loader-mk2 1 0 1 0
+new-horizon-stack-loader-mk3 1 0 1 0
+new-horizon-stack-rail 1 0 1 0
 new-horizon-stamping-facility 1 1 2 0
 new-horizon-sub 1 1 1 0
 new-horizon-surge-refactor 1 1 3 0
@@ -260,6 +266,7 @@ new-horizon-thermo-core-negative-factory 1 1 1 0
 new-horizon-thermo-core-positive-factory 1 1 1 0
 new-horizon-thermo-reactor 1 1 5 0
 new-horizon-thermo-turret 1 1 1 0
+new-horizon-track-rail 1 0 1 0
 new-horizon-turbo-pump 1 1 2 0
 new-horizon-unit-initer 1 0 1 0
 new-horizon-upgradeSort-factory 1 1 3 0

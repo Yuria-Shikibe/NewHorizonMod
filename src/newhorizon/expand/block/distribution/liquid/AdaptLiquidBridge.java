@@ -13,17 +13,18 @@ import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Tile;
+import mindustry.world.blocks.distribution.ItemBridge;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import newhorizon.expand.block.distribution.item.AdaptConveyor;
-import newhorizon.expand.block.distribution.item.AdaptItemBridge;
+import newhorizon.expand.block.distribution.item.logistics.AdaptItemBridge;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 public class AdaptLiquidBridge extends AdaptItemBridge {
-    public AdaptLiquidBridge(String name, AdaptConveyor cBlock) {
-        super(name, cBlock);
+    public AdaptLiquidBridge(String name) {
+        super(name);
 
         hasItems = false;
         hasLiquids = true;
@@ -58,16 +59,8 @@ public class AdaptLiquidBridge extends AdaptItemBridge {
             if(!linkValid(tile, other)) return;
             if(Mathf.zero(Renderer.bridgeOpacity)) return;
 
-            Lines.stroke(4.5f);
-            Draw.blend(Blending.additive);
-            Draw.color(Liquids.water.color, Pal.gray, 0.45f);
-            Draw.alpha(Renderer.bridgeOpacity * 0.75f);
-            Lines.line(cBlock.pulseRegions[cBlock.pulseFrame() * 5], x, y, other.worldx(), other.worldy(), false);
-            Draw.blend(Blending.normal);
-
-            Draw.color(Liquids.water.color, Color.white, 0.4f);
-            Draw.alpha(Renderer.bridgeOpacity * 0.75f);
-            Lines.line(cBlock.edgeRegions[0], x, y, other.worldx(), other.worldy(), false);
+            Lines.stroke(bridgeWidth);
+            Lines.line(bridgeRegion, x, y, other.worldx(), other.worldy(), false);
 
             float dst = Mathf.dst(x, y, other.worldx(), other.worldy()) - tilesize/4f;
             float ang = Angles.angle(x, y, other.worldx(), other.worldy());
@@ -76,15 +69,10 @@ public class AdaptLiquidBridge extends AdaptItemBridge {
             if (seg == 0) return;
             for (int i = 0; i < seg; i++) {
                 Tmp.v1.trns(ang, (dst/seg) * i + tilesize/8f).add(this);
-                Tmp.v2.trns(ang, dst/seg).add(Tmp.v1);
-                Draw.color(Liquids.water.color, Color.white, 0.7f);
-                Draw.alpha(Renderer.bridgeOpacity * 0.75f);
-                Lines.stroke(6f);
-                Lines.line(cBlock.arrowRegions[cBlock.conveyorFrame()], Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
-                Lines.line(cBlock.arrowRegions[cBlock.conveyorFrame() + 16], Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
+                Draw.alpha(Mathf.absin(i - time / arrowTimeScl, arrowPeriod, 1f) * warmup * Renderer.bridgeOpacity);
+                Draw.rect(arrowRegion, Tmp.v1.x, Tmp.v1.y, ang);
             }
             Draw.color();
-
             Draw.reset();
         }
     }

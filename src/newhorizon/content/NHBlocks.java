@@ -66,7 +66,7 @@ import newhorizon.expand.block.defence.ChargeWall;
 import newhorizon.expand.block.defence.FireExtinguisher;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShockwaveGenerator;
-import newhorizon.expand.block.distribution.item.AdaptUnloader;
+import newhorizon.expand.block.distribution.item.logistics.AdaptUnloader;
 import newhorizon.expand.block.drawer.ArcCharge;
 import newhorizon.expand.block.drawer.DrawArrowSequence;
 import newhorizon.expand.block.drawer.FlipRegionPart;
@@ -141,18 +141,8 @@ public class NHBlocks{
 	public static Block heavyDefenceWallLarge;
 	public static Block heavyDefenceDoor;
 	public static Block heavyDefenceDoorLarge;
-	public static Block laserWall;
-	public static Block ancientLaserWall;
 	public static Block//Distributions
 		rapidUnloader;
-	public static Block multiArmorConveyor;
-	public static Block multiConveyor;
-	public static Block multiEfficientConveyor;
-	public static Block multiJunction;
-	public static Block multiRouter;
-	public static Block multiConduit;
-	public static Block multiSteelItemBridge;
-	public static Block multiSteelLiquidBridge;
 	public static Block//Drills
 		largeWaterExtractor;
 	public static Block//Powers

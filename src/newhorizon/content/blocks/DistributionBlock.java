@@ -1,17 +1,27 @@
 package newhorizon.content.blocks;
 
+import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
+import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.content.NHItems;
 import newhorizon.expand.block.distribution.item.*;
+import newhorizon.expand.block.distribution.item.logistics.*;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidBridge;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloader;
 
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {
-    public static Block conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger, logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker, conveyorBridge, conveyorUnloader;
-    public static Block liquidBridge, liquidUnloader;
+    public static Block
+            conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger,
+            logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
+            conveyorBridge, conveyorBridgeExtend, conveyorUnloader,
+
+            stackRail, lightStackLoader, heavyStackLoader,
+
+            conduit, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load(){
         conveyor = new AdaptConveyor("hard-light-rail"){{
@@ -26,6 +36,47 @@ public class DistributionBlock {
             buildTime = 1f;
 
             saveConfig = false;
+            canOverdrive = false;
+        }};
+
+        stackRail = new AdaptStackConveyor("stack-rail"){{
+            requirements(Category.distribution, with(NHItems.presstanium, 1, NHItems.juniorProcessor, 1));
+            speed = 6f / 60f;
+            canOverdrive = false;
+        }};
+
+        conveyorBridge = new AdaptItemBridge("logistics-bridge"){{
+            requirements(Category.distribution, with(Items.silicon, 4));
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+
+            hasPower = false;
+            range = 6;
+        }};
+
+        conveyorBridgeExtend = new AdaptItemBridge("logistics-extend-bridge"){{
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5));
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+
+            hasPower = false;
+            range = 12;
+        }};
+
+        lightStackLoader = new AdaptStackConveyor("light-stack-loader"){{
+            requirements(Category.distribution, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 10));
+            speed = 6f / 60f;
+            itemCapacity = 15;
+            onlyCarry = false;
+            canOverdrive = false;
+        }};
+
+        heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader"){{
+            requirements(Category.distribution, with(NHItems.multipleSteel, 10, NHItems.seniorProcessor, 10));
+            speed = 6f / 60f;
+            itemCapacity = 60;
+            onlyCarry = false;
+            canOverdrive = false;
         }};
 
         logisticsJunction = new AdaptJunction("logistics-junction"){{
@@ -83,17 +134,6 @@ public class DistributionBlock {
             invert = true;
         }};
 
-        conveyorBridge = new AdaptItemBridge("logistics-bridge", (AdaptConveyor) conveyor){{
-            requirements(Category.distribution, with());
-            buildVisibility = BuildVisibility.shown;
-            alwaysUnlocked = true;
-
-            hasPower = false;
-            range = 6;
-            speed = 40;
-            bufferCapacity = 20;
-        }};
-
         conveyorUnloader = new AdaptDirectionalUnloader("logistics-unloader"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
@@ -104,11 +144,26 @@ public class DistributionBlock {
             conductivePower = true;
         }};
 
-        liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge", (AdaptConveyor) conveyor){{
-            requirements(Category.liquid, with());
+        conduit = new Conduit("conduit"){{
+            requirements(Category.liquid, with(Items.silicon, 4));
+            liquidCapacity = 40f;
+            liquidPressure = 1.2f;
+        }};
+
+        liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge"){{
+            requirements(Category.liquid, with(Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
             hasPower = false;
+            range = 6;
+        }};
+
+        liquidBridgeExtend = new AdaptLiquidBridge("logistics-extend-liquid-bridge"){{
+            requirements(Category.liquid, with(NHItems.multipleSteel, 5));
+            buildVisibility = BuildVisibility.shown;
+            alwaysUnlocked = true;
+            hasPower = false;
+            range = 12;
         }};
 
         liquidUnloader = new AdaptLiquidDirectionalUnloader("logistics-liquid-unloader"){{

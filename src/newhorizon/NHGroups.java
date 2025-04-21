@@ -16,6 +16,7 @@ import static mindustry.Vars.world;
 
 public class NHGroups{
 	public static QuadTree<GravityTrapField> gravityTraps = new QuadTree<>(world.getQuadBounds(new Rect()));
+	public static final ObjectMap<Building, Building> bridgeLinks = new ObjectMap<>();
 	public static final ObjectMap<Building, Seq<Building>> beaconBoostLinks = new ObjectMap<>();
 	public static final Seq<GravityTrapField> gravityTrapsDraw = new Seq<>();
 	public static final ObjectSet<RemoteCoreStorage.RemoteCoreStorageBuild>[] placedRemoteCore = new ObjectSet[Team.all.length];
@@ -36,6 +37,7 @@ public class NHGroups{
 	
 	public static void clear(){
 		beaconBoostLinks.clear();
+		bridgeLinks.clear();
 		gravityTraps.clear();
 		gravityTrapsDraw.clear();
 		commandableBuilds.clear();
