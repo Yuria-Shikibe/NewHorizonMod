@@ -1,22 +1,16 @@
 package newhorizon.expand.block.distribution.liquid;
 
-import arc.graphics.Blending;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Tmp;
-import mindustry.content.Liquids;
 import mindustry.core.Renderer;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.world.Tile;
-import mindustry.world.blocks.distribution.ItemBridge;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import newhorizon.expand.block.distribution.item.AdaptConveyor;
 import newhorizon.expand.block.distribution.item.logistics.AdaptItemBridge;
 
 import static mindustry.Vars.tilesize;

@@ -3,20 +3,10 @@ package newhorizon.expand.block.distribution.item.logistics;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.struct.Seq;
 import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
-import mindustry.game.Gamemode;
-import mindustry.game.Team;
-import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.DuctRouter;
-import newhorizon.NHGroups;
-import newhorizon.NHVars;
 import newhorizon.NewHorizon;
-import newhorizon.expand.entities.GravityTrapField;
-
-import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
 
 public class AdaptDirectionalRouter extends DuctRouter {
     public TextureRegion baseRegion, itemRegion;

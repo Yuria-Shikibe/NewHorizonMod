@@ -1,12 +1,9 @@
 package newhorizon.expand.block.consumer;
 
 import arc.func.Func;
-import arc.graphics.Color;
 import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Building;
-import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadSeq;
@@ -16,8 +13,6 @@ import mindustry.world.consumers.Consume;
 import mindustry.world.meta.StatValues;
 import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.expand.block.inner.ModulePayload;
-import newhorizon.util.ui.display.ItemImage;
-import newhorizon.util.ui.display.LiquidDisplay;
 
 
 //This is just for show stats for annoying ConsumeDynamics

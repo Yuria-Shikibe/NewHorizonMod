@@ -8,7 +8,6 @@ import arc.util.Eachable;
 import mindustry.entities.units.BuildPlan;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
-import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.payloads.PayloadSource;
 import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.util.graphic.SpriteUtil;

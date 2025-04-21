@@ -1,16 +1,8 @@
 package newhorizon;
 
 import arc.Core;
-import arc.scene.Group;
-import arc.scene.ui.Image;
-import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
-import arc.scene.ui.layout.WidgetGroup;
-import arc.util.ArcRuntimeException;
 import arc.util.Log;
-import mindustry.Vars;
-import mindustry.graphics.Pal;
-import mindustry.ui.CoreItemsDisplay;
 import newhorizon.util.ui.TeamPayloadDisplay;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 

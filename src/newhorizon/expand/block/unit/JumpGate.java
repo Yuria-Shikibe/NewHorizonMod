@@ -10,7 +10,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -29,8 +28,9 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
-import mindustry.logic.LAccess;
-import mindustry.type.*;
+import mindustry.type.PayloadSeq;
+import mindustry.type.PayloadStack;
+import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
 import mindustry.ui.Styles;
@@ -44,7 +44,8 @@ import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.expand.entities.Spawner;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
+import static mindustry.Vars.tilesize;
 import static newhorizon.NHVars.worldData;
 
 public class JumpGate extends Block {

@@ -7,13 +7,10 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import arc.math.geom.QuadTree;
-import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Tmp;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
-import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -24,7 +21,8 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.util.func.MathUtil;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class AdaptItemBridge extends ItemBridge {
     public TextureRegion topRegion;

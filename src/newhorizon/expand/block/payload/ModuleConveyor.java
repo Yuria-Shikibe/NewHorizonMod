@@ -24,7 +24,8 @@ import newhorizon.expand.block.inner.LinkBlock;
 import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class ModuleConveyor extends PayloadConveyor {
     public TextureRegion edgeRegion1, edgeRegion2;

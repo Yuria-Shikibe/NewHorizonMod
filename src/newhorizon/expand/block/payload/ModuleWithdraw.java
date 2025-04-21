@@ -1,12 +1,8 @@
 package newhorizon.expand.block.payload;
 
-import arc.Events;
 import arc.math.Mathf;
-import mindustry.game.EventType;
-import mindustry.gen.Unit;
 import mindustry.type.PayloadSeq;
 import mindustry.world.blocks.payloads.BuildPayload;
-import mindustry.world.blocks.payloads.UnitPayload;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 
 import static newhorizon.NHVars.worldData;

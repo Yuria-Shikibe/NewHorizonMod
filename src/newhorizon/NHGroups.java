@@ -8,7 +8,6 @@ import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import newhorizon.expand.block.commandable.CommandableBlock;
-import newhorizon.expand.block.special.AssignedBeacon;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.entities.GravityTrapField;
 

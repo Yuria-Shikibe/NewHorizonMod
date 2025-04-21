@@ -1,6 +1,5 @@
 package newhorizon.content.blocks;
 
-import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHColor;

@@ -1,23 +1,15 @@
 package newhorizon.util.ui;
 
 import arc.scene.ui.layout.Table;
-import arc.struct.ObjectSet;
 import arc.struct.Seq;
-import mindustry.Vars;
 import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
-import mindustry.type.Item;
-import mindustry.type.PayloadSeq;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import mindustry.world.blocks.storage.CoreBlock;
-import newhorizon.NHVars;
 import newhorizon.expand.block.inner.ModulePayload;
-import newhorizon.expand.game.WorldData;
 
 import static mindustry.Vars.*;
-import static newhorizon.NHVars.core;
 import static newhorizon.NHVars.worldData;
 
 /**

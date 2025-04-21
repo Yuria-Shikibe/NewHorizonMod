@@ -11,7 +11,6 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
-import arc.math.geom.Geometry;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
@@ -48,7 +47,6 @@ import newhorizon.util.feature.PosLightning;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
 
 public class ShieldGenerator extends BaseTurret {
     public final int timerUse = timers++;

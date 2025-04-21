@@ -10,22 +10,16 @@ import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
 import mindustry.entities.units.BuildPlan;
-import mindustry.game.Gamemode;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
-import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.DirectionalUnloader;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.NHGroups;
-import newhorizon.NHVars;
 import newhorizon.NewHorizon;
-import newhorizon.expand.entities.GravityTrapField;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.content;
 
 public class AdaptDirectionalUnloader extends DirectionalUnloader {
     public TextureRegion[] topRegions = new TextureRegion[4];

@@ -20,7 +20,8 @@ import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.liquid.LiquidJunction;
 import newhorizon.util.graphic.SpriteUtil;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.player;
+import static mindustry.Vars.renderer;
 
 public class AdaptConduit extends Conduit {
     public TextureRegion[] topRegions;

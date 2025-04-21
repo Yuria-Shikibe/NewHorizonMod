@@ -5,25 +5,18 @@ import arc.Graphics;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.units.BuildPlan;
-import mindustry.game.Gamemode;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
-import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.OverflowDuct;
-import newhorizon.NHGroups;
-import newhorizon.NHVars;
 import newhorizon.NewHorizon;
-import newhorizon.expand.entities.GravityTrapField;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.player;
 
 public class AdaptDirectionalGate extends OverflowDuct {
     public TextureRegion baseRegion, overlayRegion, invertRegion;

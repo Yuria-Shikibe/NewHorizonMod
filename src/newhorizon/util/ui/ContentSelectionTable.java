@@ -3,20 +3,18 @@ package newhorizon.util.ui;
 import arc.Core;
 import arc.func.Cons;
 import arc.func.Prov;
-import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.*;
+import arc.scene.ui.ButtonGroup;
+import arc.scene.ui.ImageButton;
+import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Nullable;
-import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import newhorizon.expand.block.inner.ModulePayload;
 
 import static mindustry.Vars.control;
-import static mindustry.Vars.state;
 
 public class ContentSelectionTable {
     public static void buildModuleTable(@Nullable Block block, Table table, Seq<Block> items, Prov<Block> holder, Cons<Block> consumer){

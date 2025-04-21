@@ -2,8 +2,6 @@ package newhorizon.expand.block.payload;
 
 import arc.graphics.g2d.Draw;
 import mindustry.gen.Building;
-import mindustry.graphics.Layer;
-import mindustry.type.PayloadSeq;
 import mindustry.world.blocks.payloads.Payload;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 

@@ -4,7 +4,6 @@ import arc.struct.Seq;
 import mindustry.content.Items;
 import mindustry.content.UnitTypes;
 import mindustry.type.Category;
-import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
