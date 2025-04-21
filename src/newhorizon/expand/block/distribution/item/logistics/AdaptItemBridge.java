@@ -28,7 +28,7 @@ import static mindustry.Vars.*;
 
 public class AdaptItemBridge extends ItemBridge {
     public TextureRegion topRegion;
-    public static final int maxLinks = 2;
+    public static final int maxLinks = 3;
 
     public AdaptItemBridge(String name) {
         super(name);
