@@ -221,7 +221,7 @@ public class ModuleConveyor extends PayloadConveyor {
             Building link1 = prev1 instanceof MultiBlockEntity? prev1: prev1 instanceof LinkBlock.LinkBuild lb && lb.linkBuild != null? lb.linkBuild: null;
             Building link2 = prev2 instanceof MultiBlockEntity? prev2: prev2 instanceof LinkBlock.LinkBuild lb && lb.linkBuild != null? lb.linkBuild: null;
 
-            return super.acceptPayload(source, payload) && (prev1 == prev2 || link1 == link2) && payload.content() instanceof ModulePayload;
+            return super.acceptPayload(source, payload) && ((prev1 == prev2 && prev1 == back())|| link1 == link2) && payload.content() instanceof ModulePayload;
         }
 
         public void checkLinkTile(){
