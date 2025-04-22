@@ -62,7 +62,6 @@ import newhorizon.content.blocks.*;
 import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
-import newhorizon.expand.block.defence.ChargeWall;
 import newhorizon.expand.block.defence.FireExtinguisher;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShockwaveGenerator;
@@ -95,66 +94,22 @@ import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
 
 public class NHBlocks{
-	public static Block
-		tagger;
-
 	public static Block reinForcedItemSource;
 	public static Block reinForcedLiquidSource;
-	public static Block//delivery,
-		oreZeta;
+	public static Block oreZeta;
 	public static Block hyperGenerator;
-	public static Block chargeWall;
-	public static Block chargeWallLarge;
 
 	public static Block irdryonVault;
 
-	public static Block ancientArtillery;
+	public static Block ancientArtillery, dendrite, interferon, prism, hive, concentration, bloodStar, pulseShotgun, beamLaserTurret, blaster, endOfEra,
+			thermoTurret, railGun, executor, gravity, multipleLauncher, antibody, multipleArtillery, atomSeparator, eternity;
 
-	public static Block//Turrets
-		dendrite;
-	public static Block interferon;
-	public static Block prism;
-	public static Block hive;
-	public static Block concentration;
-	public static Block bloodStar;
-	public static Block pulseShotgun;
-	public static Block beamLaserTurret;
-	public static Block blaster;
-	public static Block endOfEra;
-	public static Block thermoTurret;
-	public static Block railGun;
-	public static Block executor;
-	public static Block gravity;
-	public static Block multipleLauncher;
-	public static Block antibody;
-	public static Block multipleArtillery;
-	public static Block atomSeparator;
-	public static Block eternity;
-
-	public static Block//Liquids
-		irdryonTank;
-	public static Block//walls
-		insulatedWall;
-	public static Block setonWall;
-	public static Block setonWallLarge;
-	public static Block heavyDefenceWall;
-	public static Block heavyDefenceWallLarge;
-	public static Block heavyDefenceDoor;
-	public static Block heavyDefenceDoorLarge;
-	public static Block//Distributions
-		rapidUnloader;
-	public static Block//Drills
-		largeWaterExtractor;
-	public static Block//Powers
-		hydroFuelCell;
-	public static Block ancientPowerNode;
-	public static Block armorPowerNode;
+	public static Block irdryonTank, rapidUnloader;
+	public static Block largeWaterExtractor;
+	public static Block hydroFuelCell;
 	public static Block armorBatteryLarge;
 	public static Block hugeBattery;
-	public static Block heavyPowerNode;
-	public static Block//Defence
-		largeMendProjector;
-	public static Block assignOverdrive;
+	public static Block largeMendProjector;
 	public static Block antiBulletTurret;
 	public static Block largeShieldGenerator;
 	public static Block fireExtinguisher;
@@ -164,11 +119,8 @@ public class NHBlocks{
 	public static Block airRaider;
 	public static Block unitIniter;
 	public static Block remoteStorage;
-	public static Block disposePowerVoid;
-	public static Block lableSpawner;
 
-	public static Block//Env
-		armorClear;
+	public static Block armorClear;
 	public static Block quantumField;
 	public static Block quantumFieldDeep;
 	public static Block quantumFieldDisturbing;
@@ -181,8 +133,7 @@ public class NHBlocks{
 	public static Block metalVent;
 	public static Block metalGroundHeat;
 	public static Block conglomerateRock;
-	public static Block conglomerateWall
-		;
+	public static Block conglomerateWall;
 	
 	private static void loadEnv(){
 		oreZeta = new OreBlock("ore-zeta"){{
@@ -2520,36 +2471,6 @@ public class NHBlocks{
 	}
 	
 	private static void loadPowers(){
-		ancientPowerNode = new PowerNode("ancient-power-node"){{
-			size = 1;
-			health = 3000;
-			armor = 30;
-			absorbLasers = true;
-			autolink = false;
-			
-			maxNodes = 20;
-			laserRange = 120;
-			timers++;
-			
-			lightColor = laserColor1 = NHColor.ancientLight;
-			laserColor2 = NHColor.ancient;
-			update = true; //Worth it?
-			
-			buildType = () -> new PowerNodeBuild(){
-				@Override
-				public void updateTile(){
-					if(damaged() && power.graph.getSatisfaction() > 0.5f){
-						if(timer.get(90f)){
-							Fx.healBlockFull.at(x, y, 0, NHColor.ancientLightMid, this.block);
-							healFract(5 * power.graph.getSatisfaction());
-						}
-					}
-				}
-			};
-			
-			requirements(Category.power,ItemStack.with(NHItems.ancimembrane, 50, NHItems.seniorProcessor, 15));
-		}};
-		
 		hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell"){{
 			size = 2;
 			requirements(Category.power,ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, Items.copper, 200, Items.graphite, 80, Items.metaglass, 60));
@@ -2593,18 +2514,6 @@ public class NHBlocks{
 			consumePowerBuffered(45000.0F);
 		}};
 		
-		heavyPowerNode = new PowerNode("heavy-power-node"){{
-			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 25, NHItems.juniorProcessor, 15, NHItems.zeta, 45, NHItems.presstanium, 40));
-			//			//NHTechTree.add(Blocks.powerNodeLarge, this);
-			size = 3;
-			maxNodes = 30;
-			laserRange = 20F;
-			health = 1200;
-			armor = 3;
-			
-			//			consumePowerBuffered(30000f);
-		}};
-		
 		hyperGenerator = new HyperGenerator("hyper-generator"){{
 			size = 8;
 			health = 12500;
@@ -2623,178 +2532,6 @@ public class NHBlocks{
 			consumeLiquid(NHLiquids.zetaFluidNegative, 0.25F);
 			requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
 		}};
-	}
-	
-	private static void loadWalls(){
-		final int healthMult2 = 4, healthMult3 = 9;
-		
-		setonWall = new Wall("seton-wall"){{
-			armor = 15f;
-			
-			insulated = true;
-			crushDamageMultiplier = 0.15f;
-			
-			size = 1;
-			health = 1250;
-			chanceDeflect = 15.0F;
-			flashHit = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 5, NHItems.irayrondPanel, 10, Items.silicon, 15, NHItems.presstanium, 15));
-
-			buildVisibility = BuildVisibility.editorOnly;
-		}};
-		
-		setonWallLarge = new Wall("seton-wall-large"){{
-			armor = 15f;
-			
-			insulated = true;
-			crushDamageMultiplier = 0.15f;
-			
-			size = 2;
-			health = 1250 * healthMult2;
-			chanceDeflect = 15.0F;
-			flashHit = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 5 * healthMult2, NHItems.irayrondPanel, 10 * healthMult2, Items.silicon, 15 * healthMult2, NHItems.presstanium, 15 * healthMult2));
-
-			buildVisibility = BuildVisibility.editorOnly;
-		}};
-
-		
-		heavyDefenceWall = new ShieldWall("heavy-defence-wall"){{
-			shieldHealth = 1000f;
-			breakCooldown = 30f * 10f;
-			regenSpeed = 5f;
-			glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
-			consumePower(8f / 60f);
-			crushDamageMultiplier = 0.05f;
-			
-			outputsPower = false;
-			hasPower = true;
-			consumesPower = true;
-			conductivePower = true;
-			
-			armor = 30f;
-			
-			size = 1;
-			health = 1750;
-			absorbLasers = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20));
-			buildVisibility = BuildVisibility.editorOnly;
-
-			buildType = () -> new ShieldWallBuild(){
-				@Override
-				public void draw(){
-					Draw.rect(block.region, x, y);
-					
-					if(shieldRadius > 0){
-						float radius = shieldRadius * tilesize / 2;
-						
-						Draw.z(Layer.shields);
-						
-						Draw.color(team.color, Color.white, Mathf.clamp(hit));
-						
-						if(renderer.animateShields){
-							Fill.square(x, y, radius);
-						}else{
-							Lines.stroke(1.5f);
-							Draw.alpha(0.09f + Mathf.clamp(0.08f * hit));
-							Fill.square(x, y, radius);
-							Draw.alpha(1f);
-							Lines.poly(x, y, 4, radius, 45f);
-							Draw.reset();
-						}
-						
-						Draw.reset();
-						
-						Drawf.additive(glowRegion, glowColor, (1f - glowMag + Mathf.absin(glowScl, glowMag)) * shieldRadius, x, y, 0f, Layer.blockAdditive);
-					}
-				}
-			};
-		}};
-		
-		heavyDefenceWallLarge = new ShieldWall("heavy-defence-wall-large"){{
-			shieldHealth = 1200f * healthMult2;
-			breakCooldown = 30f * 10f;
-			regenSpeed = 5f * healthMult2;
-			glowColor = NHColor.darkEnrColor.cpy().lerp(NHColor.lightSkyFront, 0.3f).a(0.5f);
-			consumePower(8f / 60f * healthMult2);
-			
-			armor = 30f;
-			crushDamageMultiplier = 0.05f;
-			
-			outputsPower = false;
-			hasPower = true;
-			consumesPower = true;
-			conductivePower = true;
-			
-			size = 2;
-			health = 1750 * healthMult2;
-			absorbLasers = true;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2));
-
-			buildVisibility = BuildVisibility.editorOnly;
-
-		}};
-		
-		heavyDefenceDoor = new AutoDoor("heavy-defence-door"){{
-			size = 1;
-			health = 1750;
-			armor = 30;
-			crushDamageMultiplier = 0.05f;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10, NHItems.presstanium, 20, NHItems.juniorProcessor, 5));
-			buildVisibility = BuildVisibility.editorOnly;
-		}};
-		
-		heavyDefenceDoorLarge = new AutoDoor("heavy-defence-door-large"){{
-			size = 2;
-			health = 1750 * healthMult2;
-			armor = 30;
-			openfx = Fx.dooropenlarge;
-			closefx = Fx.doorcloselarge;
-			crushDamageMultiplier = 0.05f;
-			requirements(Category.defense, with(NHItems.setonAlloy, 10 * healthMult2, NHItems.presstanium, 20 * healthMult2, NHItems.juniorProcessor, 5 * healthMult2));
-
-			buildVisibility = BuildVisibility.editorOnly;
-		}};
-		
-		
-		chargeWall = new ChargeWall("charge-wall"){{
-			requirements(Category.defense, with(NHItems.seniorProcessor, 5, NHItems.upgradeSort, 5));
-			size = 1;
-			absorbLasers = true;
-			range = 120;
-			health = 2000;
-			effectColor = NHColor.lightSkyBack;
-			crushDamageMultiplier = 0.025f;
-
-			armor = 32f;
-			buildVisibility = BuildVisibility.editorOnly;
-		}};
-		
-		chargeWallLarge = new ChargeWall("charge-wall-large"){{
-			requirements(Category.defense, ItemStack.mult(chargeWall.requirements, healthMult2));
-			size = 2;
-			absorbLasers = true;
-			range = 200;
-			health = 2000 * healthMult2;
-			effectColor = NHColor.lightSkyBack;
-			crushDamageMultiplier = 0.025f;
-
-
-			armor = 32f;
-			buildVisibility = BuildVisibility.editorOnly;
-		}};
-		
-		insulatedWall = new Wall("insulated-wall"){{
-			size = 1;
-			health = 300;
-			buildCostMultiplier = 0.4f;
-			requirements(Category.defense, with(Items.titanium, 10, Items.copper, 5));
-			insulated = true;
-			absorbLasers = true;
-
-			buildVisibility = BuildVisibility.editorOnly;
-		}};
-		
 	}
 	
 	public static void load() {
@@ -2992,9 +2729,7 @@ public class NHBlocks{
 			itemCapacity = 16;
 			health = 1200;
 		}};
-		
-		lableSpawner = new LabelSpawner("label-spawner");
-		
+
 		hyperspaceWarper = new HyperSpaceWarper("hyper-space-warper"){{
 			size = 4;
 			health = 2250;
@@ -3041,16 +2776,6 @@ public class NHBlocks{
 			consumeItem(NHItems.juniorProcessor).boost();
 		}};
 		
-		armorPowerNode = new PowerNode("armor-power-node"){{
-			requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 25, NHItems.juniorProcessor, 5, Items.lead, 25));
-//			//NHTechTree.add(Blocks.powerNodeLarge, this);
-			size = 2;
-			maxNodes = 12;
-			laserRange = 8.5F;
-			health = 1650;
-			armor = 5;
-		}};
-		
 		largeWaterExtractor = new SolidPump("large-water-extractor"){{
 			size = 3;
 			pumpAmount = 0.3f;
@@ -3092,7 +2817,6 @@ public class NHBlocks{
 
 		loadTurrets();
 		loadEnv();
-		loadWalls();
 		loadPowers();
 
 		InnerBlock.load();
@@ -3109,21 +2833,5 @@ public class NHBlocks{
 		UnitBlock.load();
 		DistributionBlock.load();
 		PayloadBlock.load();
-
-		disposePowerVoid = new PowerVoid("dispose-power-void"){{
-			size = 1;
-			rebuildable = false;
-			requirements(Category.power, BuildVisibility.sandboxOnly, with());
-			alwaysUnlocked = true;
-		}};
-		
-		tagger = new MessageBlock("tagger"){{
-			forceDark = true;
-			maxTextLength = 100000;
-			requirements(Category.logic, BuildVisibility.editorOnly, with());
-			
-			targetable = false;
-			privileged = true;
-		}};
 	}
 }

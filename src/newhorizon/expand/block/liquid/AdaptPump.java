@@ -16,7 +16,6 @@ import static mindustry.Vars.world;
 
 public class AdaptPump extends Pump {
     public TextureRegion[] splits;
-    public TextureRegion topRegion;
     public AdaptPump(String name) {
         super(name);
     }
@@ -24,8 +23,7 @@ public class AdaptPump extends Pump {
     @Override
     public void load() {
         super.load();
-        splits = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32);
-        topRegion = Core.atlas.find(name + "-top");
+        splits = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1);
     }
 
     public class AdaptPumpBuild extends PumpBuild{
@@ -49,12 +47,15 @@ public class AdaptPump extends Pump {
 
         @Override
         public void draw() {
-            Draw.rect(splits[drawIdx[0]], x + 4, y + 4);
-            Draw.rect(splits[drawIdx[1] + 4], x - 4, y + 4);
-            Draw.rect(splits[drawIdx[2] + 8], x - 4, y - 4);
-            Draw.rect(splits[drawIdx[3] + 12], x + 4, y - 4);
+            if (isPayload()){
+                Draw.rect(region, x, y);
+            }else {
+                Draw.rect(splits[drawIdx[0]], x + 4, y + 4);
+                Draw.rect(splits[drawIdx[1] + 4], x - 4, y + 4);
+                Draw.rect(splits[drawIdx[2] + 8], x - 4, y - 4);
+                Draw.rect(splits[drawIdx[3] + 12], x + 4, y - 4);
+            }
 
-            Draw.rect(topRegion, x, y);
             if (liquids != null && liquidDrop != null) {
                 Drawf.liquid(liquidRegion, x, y, liquids.get(liquidDrop) / liquidCapacity, liquidDrop.color);
             }

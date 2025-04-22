@@ -40,6 +40,7 @@ public class AdaptWall extends Wall {
 		placeableLiquid = true;
 		crushDamageMultiplier = 1f;
 		clipSize = tilesize * 2 + 2;
+		teamPassable = true;
 	}
 	
 	@Override

@@ -792,7 +792,7 @@ public class NHOverride{
 	private static void hideContent(UnlockableContent content){
 		if (content instanceof Block block){
 			block.buildVisibility = BuildVisibility.hidden;
-			block.envRequired = Env.any;
+			block.envRequired = Env.none;
 			block.requirements = hugeItemReq();
 			block.instantDeconstruct = true;
 			//todo change the tech tree
@@ -801,25 +801,5 @@ public class NHOverride{
 
 	private static void adjustContent(Content content, Cons<Content> modifier){
 		modifier.get(content);
-	}
-
-
-	private static void addReq(Block target, ItemStack... items){
-		ItemStack[] newReq = new ItemStack[items.length + target.requirements.length];
-		
-		System.arraycopy(target.requirements, 0, newReq, 0, target.requirements.length);
-		System.arraycopy(items, 0, newReq, target.requirements.length, items.length);
-		
-		target.requirements = newReq;
-		Arrays.sort(target.requirements, Structs.comparingInt((j) -> j.item.id));
-	}
-	
-	private static void removeReq(Block target, Item... items){
-		Seq<ItemStack> req = new Seq<>(ItemStack.class);
-		req.addAll(target.requirements);
-		
-		for(Item item : items)req.each(itemReq -> itemReq.item == item, req::remove);
-		
-		target.requirements = req.shrink();
 	}
 }

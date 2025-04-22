@@ -16,6 +16,7 @@ import newhorizon.expand.block.drawer.DrawRegionCenterSymmetry;
 import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
@@ -28,7 +29,11 @@ public class PowerBlock {
 
             size = 1;
             health = 400;
-            laserRange = 7;
+            laserRange = 8;
+            maxNodes = 10;
+            gravityRange = laserRange * tilesize * 1.5f;
+
+            consumePowerBuffered(5000f);
         }};
 
         gravityTrapErekir = new GravityWallSubstation("gravity-node-erekir"){{
@@ -36,23 +41,32 @@ public class PowerBlock {
 
             size = 1;
             health = 400;
-            laserRange = 7;
+            laserRange = 8;
+            maxNodes = 10;
+            clipSize = gravityRange = laserRange * tilesize * 1.5f;
+            consumePowerBuffered(5000f);
         }};
 
-        gravityTrapSmall = new GravityWallSubstation("gravity-trap-small"){{
+        gravityTrapSmall = new GravityWallSubstation("gravity-trap"){{
             requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 
             size = 2;
             health = 640;
             laserRange = 12;
+            maxNodes = 20;
+            clipSize = gravityRange = laserRange * tilesize * 1.5f;
+            consumePowerBuffered(20000f);
         }};
 
-        gravityTrap = new GravityWallSubstation("gravity-gully"){{
+        gravityTrap = new GravityWallSubstation("gravity-trap-heavy"){{
             requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
 
             size = 3;
             health = 1250;
-            laserRange = 17;
+            laserRange = 30;
+            maxNodes = 6;
+            clipSize = gravityRange = laserRange * tilesize * 1.2f;
+            consumePowerBuffered(100000f);
         }};
 
         zetaGenerator = new RecipeGenericCrafter("zeta-generator"){{
@@ -91,6 +105,7 @@ public class PowerBlock {
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
+
         anodeFusionReactor = new RecipeGenericCrafter("anode-fusion-reactor"){{
             requirements(Category.power, ItemStack.with(NHItems.seniorProcessor, 300, Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
 
@@ -117,6 +132,7 @@ public class PowerBlock {
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
+
         cathodeFusionReactor = new RecipeGenericCrafter("cathode-fusion-reactor"){{
             requirements(Category.power, ItemStack.with(NHItems.seniorProcessor, 300, Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
 
@@ -143,6 +159,7 @@ public class PowerBlock {
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
+
         thermoReactor = new RecipeGenericCrafter("thermo-reactor"){{
             requirements(Category.power, ItemStack.with(Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
 

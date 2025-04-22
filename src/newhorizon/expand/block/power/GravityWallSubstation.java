@@ -1,315 +1,92 @@
 package newhorizon.expand.block.power;
 
-import arc.func.Boolf;
-import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
-import arc.math.Mathf;
-import arc.math.geom.Intersector;
-import arc.math.geom.Point2;
-import arc.struct.Seq;
-import arc.util.Eachable;
-import arc.util.Nullable;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.Vars;
-import mindustry.content.Fx;
-import mindustry.core.Renderer;
-import mindustry.entities.units.BuildPlan;
-import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Groups;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.input.Placement;
-import mindustry.world.Edges;
-import mindustry.world.Tile;
 import mindustry.world.blocks.power.PowerNode;
+import mindustry.world.meta.StatUnit;
 import newhorizon.NHGroups;
 import newhorizon.NHVars;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHStats;
 import newhorizon.expand.entities.GravityTrapField;
-import newhorizon.expand.net.NHCall;
 
 import static mindustry.Vars.*;
 
 public class GravityWallSubstation extends PowerNode {
-    public Color fromColor = Pal.powerLight.cpy().lerp(Pal.gray, 0.5f),  toColor = Pal.powerLight;
+    public float gravityRange = 120f;
+
     public GravityWallSubstation(String name) {
         super(name);
-
-        schematicPriority = 20;
-
-        configurable = false;
-        autolink = true;
         update = true;
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        saveConfig = false;
-        copyConfig = false;
-        maxNodes = 999;
-    }
-
-    @Override
-    public void setBars() {
-        super.setBars();
-        removeBar("connections");
-    }
-
-    @Override
-    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        super.canPlaceOn(tile, team, rotation);
-        return !indexer.eachBlock(team, Tmp.r1.setCentered(tile.worldx() + offset, tile.worldy() + offset, laserRange * tilesize * 0.5f * 2), b -> b instanceof GravityWallSubstationBuild, b -> {});
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
-        Tile tile = world.tile(x, y);
-
-        if(tile == null || !autolink) return;
-
-        Lines.stroke(1f);
-        drawRangeRect(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize);
-        drawRangeRectInner(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize * 0.5f);
-
-        getPotentialLinks(tile, player.team(), other -> {
-            if (!(other instanceof PowerNodeBuild)) return;
-            Draw.color(laserColor1, Renderer.laserOpacity * 0.5f);
-            drawLaser(x * tilesize + offset, y * tilesize + offset, other.x, other.y, size, other.block.size);
-
-            Drawf.square(other.x, other.y, other.block.size * tilesize / 2f + 2f, Pal.place);
-        });
-
-        getPotentialLinks(tile, player.team(), other -> {
-            Drawf.selected(other, Pal.place);
-        });
-
-        Draw.reset();
-
-        NHVars.renderer.drawGravityTrap();
     }
 
     public void drawRangeRect(float x, float y, float range){
         Lines.stroke(3, Pal.gray);
         Lines.square(x, y, range + 1);
 
-        Lines.stroke(1, Vars.player.team().color);
+        Color color = player == null? Pal.techBlue :Vars.player.team().color;
+        Lines.stroke(1, color);
         Lines.square(x, y, range);
-    }
 
-    public void drawRangeRectInner(float x, float y, float range){
-        Lines.stroke(3, Pal.gray);
-        Lines.square(x, y, range + 1);
-
-        Lines.stroke(1, Pal.techBlue);
-        Lines.square(x, y, range);
+        Draw.reset();
     }
 
     @Override
-    public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list){
-        if(plan.config instanceof Point2[] ps){
-            setupColor(1f);
-            for(Point2 point : ps){
-                int px = plan.x + point.x, py = plan.y + point.y;
-                otherReq = null;
-                list.each(other -> {
-                    if(other.block != null
-                            && (px >= other.x - ((other.block.size-1)/2) && py >= other.y - ((other.block.size-1)/2) && px <= other.x + other.block.size/2 && py <= other.y + other.block.size/2)
-                            && other != plan && other.block.hasPower){
-                        otherReq = other;
-                    }
-                });
-
-                if(otherReq == null || otherReq.block == null) continue;
-            }
-            Draw.color();
-        }
-    }
-
-    protected boolean overlaps(float srcx, float srcy, Tile other, float range){
-        return Intersector.overlaps(Tmp.r1.setCentered(srcx, srcy, range), other.getHitbox(Tmp.r1));
-    }
-
-    public boolean overlaps(@Nullable Tile src, @Nullable Tile other){
-        if(src == null || other == null) return true;
-        return Intersector.overlaps(Tmp.r1.setCentered(src.worldx() + offset, src.worldy() + offset, laserRange * tilesize * 2), Tmp.r2.setSize(size * tilesize).setCenter(other.worldx() + offset, other.worldy() + offset));
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        super.drawPlace(x, y, rotation, valid);
+        drawRangeRect(x * tilesize, y * tilesize, gravityRange);
+        NHVars.renderer.drawGravityTrap();
     }
 
     @Override
-    public void changePlacementPath(Seq<Point2> points, int rotation){
-        Placement.calculateNodes(points, this, rotation, (point, other) -> overlaps(world.tile(point.x, point.y), world.tile(other.x, other.y)));
-    }
-
-    @Override
-    protected void getPotentialLinks(Tile tile, Team team, Cons<Building> others){
-        Boolf<Building> valid =
-                other -> other != null && other.tile != tile && other.block.connectedPower && other.power != null &&
-                (other.block.outputsPower || other.block.consumesPower || other.block instanceof PowerNode) && !graphs.contains(other.power.graph) &&
-                overlaps(tile.x * tilesize + offset, tile.y * tilesize + offset, other.tile, laserRange * tilesize) && other.team == team;
-
-        tempBuilds.clear();
-        graphs.clear();
-
-        //add conducting graphs to prevent double link
-        for(var p : Edges.getEdges(size)){
-            Tile other = tile.nearby(p);
-            if(other != null && other.team() == team && other.build != null && other.build.power != null){
-                graphs.add(other.build.power.graph);
-            }
-        }
-
-        if(tile.build != null && tile.build.power != null){
-            graphs.add(tile.build.power.graph);
-        }
-
-        var worldRange = laserRange * tilesize;
-        var tree = team.data().buildingTree;
-        if(tree != null){
-            tree.intersect(tile.worldx() - worldRange, tile.worldy() - worldRange, worldRange * 2, worldRange * 2, build -> {
-                if(valid.get(build) && !tempBuilds.contains(build)){
-                    tempBuilds.add(build);
-                }
-            });
-        }
-
-        tempBuilds.sort((a, b) -> {
-            int type = -Boolean.compare(a.block instanceof PowerNode, b.block instanceof PowerNode);
-            if(type != 0) return type;
-            return Float.compare(a.dst2(tile), b.dst2(tile));
-        });
-
-        returnInt = 0;
-
-        tempBuilds.each(valid, t -> {
-            if(returnInt ++ < maxNodes){
-                graphs.add(t.power.graph);
-                others.get(t);
-            }
-        });
+    public void setStats() {
+        super.setStats();
+        stats.add(NHStats.gravityRange, gravityRange / tilesize, StatUnit.blocks);
     }
 
     public class GravityWallSubstationBuild extends PowerNodeBuild {
-        public Seq<Point2> prevLinks = new Seq<>();
-        public Seq<Point2> points = new Seq<>();
         public transient GravityTrapField field;
-        public float cooldown;
-        public boolean linkCreated;
-
-        public int linkCheck;
-
-        @Override
-        public void tapped() {
-            super.tapped();
-            if (cooldown > 0) return;
-            Fx.placeBlock.at(this, laserRange * 2);
-            Sounds.click.at(this);
-            configLink();
-            cooldown += 600f;
-            NHCall.reconnectGravityWallNode(this);
-        }
 
         @Override
         public void created() {
             super.created();
-            if(field != null)field.setPosition(self());
-        }
-
-        @Override
-        public void updateTile() {
-            if (!linkCreated){
-                configLink();
-                linkCreated = true;
-            }
-            if (cooldown > 0) cooldown -= Time.delta;
-
-            if (timer(0, 30)){
-                float side = laserRange * 2;
-                int x = (int)(linkCheck % side - laserRange);
-                int y = (int)(linkCheck / side - laserRange);
-                if (linkValid(this, nearby(x, y)) && !linked(nearby(x, y))) {
-                    configured(null, nearby(x, y).pos());
-                }
-
-                linkCheck++;
-                linkCheck %= (int) (side * side);
-            }
-        }
-
-        public void configure(Object value) {}
-
-        public void configLink(){
-            prevLinks.clear();
-            points.clear();
-
-            prevLinks.add(config());
-            getPotentialLinks(tile, team, link -> points.add(new Point2(link.tileX() - tile.x, link.tileY() - tile.y)));
-            for (Point2 p : prevLinks){
-                if (world.build(p.x + tileX(), p.y + tileY()) instanceof GravityWallSubstationBuild){
-                    points.addUnique(p);
-                }
-            }
-            configured(null, points.toArray(Point2.class));
+            if (field != null) field.setPosition(this);
         }
 
         @Override
         public void draw(){
-            Draw.rect(block.region, x, y);
-            if(Mathf.zero(Renderer.laserOpacity) || isPayload()) return;
-
-            Draw.z(Layer.power);
-            setupColor(power.graph.getSatisfaction());
-
-            for(int i = 0; i < power.links.size; i++){
-                Building link = world.build(power.links.get(i));
-
-                if(!linkValid(this, link)) continue;
-
-                if(link.block instanceof PowerNode && link.id < id) {
-                    drawLaser(x, y, link.x, link.y, size, link.block.size);
-                }
-            }
-            Draw.reset();
+            super.draw();
+            if (player == null || team != player.team()) return;
 
             Draw.z(NHContent.POWER_AREA);
-            Draw.color(toColor, fromColor, (1f - power.graph.getSatisfaction()) * 0.86f + Mathf.absin(3f, 0.1f));
-            Fill.square(x, y, laserRange * tilesize);
+            Draw.color(team.color);
+            Fill.square(x, y, gravityRange);
 
             Draw.z(NHContent.POWER_DYNAMIC);
-            Draw.color(toColor, fromColor, (1f - power.graph.getSatisfaction()) * 0.86f + Mathf.absin(3f, 0.1f));
-            Fill.square(x, y, laserRange * tilesize * 0.8f + laserRange * tilesize * 0.2f * Interp.exp5Out.apply(Time.time / 240f % 1f));
+            Draw.color(team.color);
+            Fill.square(x, y, gravityRange * 0.8f + gravityRange * 0.2f * Interp.exp5Out.apply(Time.time / 240f % 1f));
         }
 
         @Override
         public void drawSelect(){
-            drawRangeRect(x, y, laserRange * tilesize);
-            drawRangeRectInner(x, y, laserRange * tilesize * 0.5f);
+            super.drawSelect();
+            drawRangeRect(x, y, gravityRange);
         }
 
         @Override
         public void add(){
-            if(added)return;
-
-            Groups.all.add(this);
-            Groups.build.add(this);
-            this.added = true;
-
-            if(field == null)field = new GravityTrapField(this, this::isValid, range());
-
+            super.add();
+            if(field == null)field = new GravityTrapField(this, this::isValid, gravityRange);
             field.add();
         }
 
-        public float range(){
-            return laserRange * tilesize * 1.5f;
-        }
-
+        @Override
         public void remove(){
             if(added) NHGroups.gravityTraps.remove(field);
             super.remove();

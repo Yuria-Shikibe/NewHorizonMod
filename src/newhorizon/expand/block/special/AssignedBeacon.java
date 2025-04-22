@@ -37,6 +37,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NHGroups;
 import newhorizon.content.NHFx;
+import newhorizon.content.NHStats;
 import newhorizon.content.blocks.ModuleBlock;
 
 import java.util.Arrays;
@@ -46,8 +47,6 @@ import static mindustry.Vars.*;
 import static newhorizon.NHVars.worldData;
 
 public class AssignedBeacon extends Block {
-    //public static final Seq<Building> likedBuildings = Seq.with();
-
     public float[][] boosts = new float[][]{
             {1.5f, 0.5f, 0f},
             {2.0f, 1.0f, 0f},
@@ -64,8 +63,9 @@ public class AssignedBeacon extends Block {
 
     public float range = 60f;
     public float powerCons = 600 / 60f;
+
     public int maxLink = 4;
-    public int moduleSlot = 2;
+    public int maxSlot = 2;
 
     public Color overdriveColor = Color.valueOf("feb380");
 
@@ -84,15 +84,15 @@ public class AssignedBeacon extends Block {
         config(Block.class, (AssignedBeaconBuild entity, Block block) -> entity.addModulePlan(getModuleId(block)));
         config(Integer.class, AssignedBeaconBuild::addLink);
         config(Integer[].class, (AssignedBeaconBuild entity, Integer[] data) -> {
-            if (data.length != maxLink + moduleSlot) {
+            if (data.length != maxLink + maxSlot) {
                 Log.info("[AssignedBeacon] Invalid config: " + Arrays.toString(data));
                 return;
             }
-            for (int i = 0; i < moduleSlot; i++){
+            for (int i = 0; i < maxSlot; i++){
                 entity.modulePlans[i] = data[i];
             }
             for(int i = 0; i < maxLink; i++){
-                Point2 p = Point2.unpack(data[i + moduleSlot]);
+                Point2 p = Point2.unpack(data[i + maxSlot]);
                 entity.addLink(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
             }
         });
@@ -154,7 +154,6 @@ public class AssignedBeacon extends Block {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.powerConnections, maxLink, StatUnit.none);
         stats.add(Stat.booster, table -> {
             for (int i = 0; i < 9; i++){
                 table.row();
@@ -175,6 +174,9 @@ public class AssignedBeacon extends Block {
                 table.row();
             }
         });
+        stats.add(Stat.powerUse, powerCons, StatUnit.powerSecond);
+        stats.add(NHStats.maxModules, maxSlot, StatUnit.none);
+        stats.add(NHStats.maxLinks, maxLink, StatUnit.none);
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
@@ -185,8 +187,8 @@ public class AssignedBeacon extends Block {
         public float craftMul = 0f;
         public int[] targets = new int[maxLink];
         public float[] targetProgress = new float[maxLink];
-        public int[] modulePlans = new int[moduleSlot];
-        public int[] modules = new int[moduleSlot];
+        public int[] modulePlans = new int[maxSlot];
+        public int[] modules = new int[maxSlot];
 
         @Override
         public void updateTile() {
@@ -194,7 +196,7 @@ public class AssignedBeacon extends Block {
             checkLinks();
             NHGroups.beaconBoostLinks.put(this, linkBuilds());
 
-            for (int i = 0; i < moduleSlot; i++) {
+            for (int i = 0; i < maxSlot; i++) {
                 PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
                 //has plans, skip check if sandbox
                 if (modulePlans[i] != -1 && modules[i] == -1 && (state.rules.infiniteResources || (getModule(modulePlans[i]) != null && teamPayload.get(getModule(modulePlans[i])) > 0))) {
@@ -203,13 +205,14 @@ public class AssignedBeacon extends Block {
                 }
                 //has plans but wrong module or no plans but has module
                 if ((modulePlans[i] != -1 && modules[i] != modulePlans[i]) || (modulePlans[i] == -1 && modules[i] != -1)) {
-                    if (!state.rules.infiniteResources) teamPayload.add(getModule(modules[i]), 1);
                     //tag as removed
                     modules[i] = -1;
                 }
             }
 
             applyAllModules();
+
+            if (efficiency < 0.8f) return;
 
             progress += edelta();
             for(int i = 0; i < targets.length; i++){
@@ -281,7 +284,7 @@ public class AssignedBeacon extends Block {
                 t.table(module -> {
                     module.table(c -> {
                         c.fill();
-                        for(int i = 0; i < moduleSlot; i++){
+                        for(int i = 0; i < maxSlot; i++){
                             int finalI = i;
                             Image icon = new Image();
                             Label label = new Label("");
@@ -307,7 +310,7 @@ public class AssignedBeacon extends Block {
             if (module == -1){
                 clearModulePlans();
             }else {
-                for(int i = 0; i < moduleSlot; i++){
+                for(int i = 0; i < maxSlot; i++){
                     if (modulePlans[i] == -1){
                         modulePlans[i] = module;
                         return;
@@ -318,10 +321,11 @@ public class AssignedBeacon extends Block {
 
         public void clearModulePlans(){
             PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
-            for(int i = 0; i < moduleSlot; i++){
+            for(int i = 0; i < maxSlot; i++){
                 Block b = getModule(modulePlans[i]);
-                if (b != null) teamPayload.add(b, 1);
+                if (b != null || modules[i] != -1) teamPayload.add(b, 1);
                 modulePlans[i] = -1;
+                modules[i] = -1;
             }
         }
 
@@ -335,9 +339,11 @@ public class AssignedBeacon extends Block {
             powerMul = 1f;
             speedMul = 1f;
             craftMul = 0f;
+
             for (int module: modules){
                 applyModule(module);
             }
+
             powerMul = Math.max(powerMul, 1f);
             speedMul = Math.max(speedMul, 0f);
             craftMul = Math.max(craftMul, 0f);
@@ -346,13 +352,13 @@ public class AssignedBeacon extends Block {
         @Override
         //compressed for config use
         public Integer[] config(){
-            Integer[] out = new Integer[moduleSlot + maxLink];
-            for (int i = 0; i < moduleSlot; i++){
+            Integer[] out = new Integer[maxSlot + maxLink];
+            for (int i = 0; i < maxSlot; i++){
                 out[i] = modulePlans[i];
             }
             for(int i = 0; i < maxLink; i++){
                 Point2 p = Point2.unpack(targets[i]).sub(tile.x, tile.y);
-                out[i + moduleSlot] = Point2.pack(p.x, p.y);
+                out[i + maxSlot] = Point2.pack(p.x, p.y);
             }
             return out;
         }
@@ -466,6 +472,7 @@ public class AssignedBeacon extends Block {
         @Override
         public void remove() {
             super.remove();
+            clearModulePlans();
             NHGroups.beaconBoostLinks.remove(this);
         }
 
