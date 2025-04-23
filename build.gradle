@@ -19,7 +19,7 @@ java{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v147'
+    mindustryVersion = 'v147.1'
     jabelVersion = "93fde537c7"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
@@ -37,19 +37,19 @@ allprojects{
 
 dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:753262d436"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
 //force arc version
-//configurations.configureEach {
-//    resolutionStrategy.eachDependency { details ->
-//        if(details.requested.group == 'com.github.Anuken.Arc'){
-//            details.useVersion "$mindustryVersion"
-//        }
-//    }
-//}
+configurations.configureEach {
+    resolutionStrategy.eachDependency { details ->
+        if(details.requested.group == 'com.github.Anuken.Arc'){
+            details.useVersion "$mindustryVersion"
+        }
+    }
+}
 
 tasks.register('jarAndroid') {
     dependsOn "jar"
