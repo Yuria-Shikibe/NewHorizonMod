@@ -295,6 +295,7 @@ new-horizon-xen-extractor 1 1 3 0
 new-horizon-xen-gamma-factory 1 1 2 0
 new-horizon-xen-melter 1 1 2 0
 new-horizon-xen-refinery 1 1 2 0
+new-horizon-zeta-crafter 1 1 2 0
 new-horizon-zeta-dissociator 1 1 3 0
 new-horizon-zeta-fluid-factory 1 1 3 0
 new-horizon-zeta-generator 1 1 3 0

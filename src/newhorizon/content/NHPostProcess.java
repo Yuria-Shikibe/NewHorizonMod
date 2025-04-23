@@ -21,6 +21,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.ConsumeItems;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
@@ -665,7 +666,7 @@ public class NHPostProcess {
 			BurstDrill drill = (BurstDrill)content;
 			drill.requirements = ItemStack.with(Items.beryllium, 60, Items.graphite, 45);
 			drill.hardnessDrillMultiplier = 0;
-			drill.drillTime = 60f * drill.size * drill.size / 6;
+			drill.drillTime = 90f * drill.size * drill.size / 6;
 			drill.drillMultipliers.put(Items.sand, 1f);
 			drill.drillMultipliers.put(Items.scrap, 1f);
 			drill.drillMultipliers.put(Items.copper, 1f);
@@ -674,6 +675,9 @@ public class NHPostProcess {
 			drill.drillMultipliers.put(Items.titanium, 0.75f);
 			drill.drillMultipliers.put(Items.beryllium, 0.75f);
 			drill.drillMultipliers.put(Items.tungsten, 0.5f);
+			drill.removeConsumers(consume -> consume instanceof ConsumeLiquid);
+			drill.consume(new ConsumeLiquid(Liquids.water, 10 / 60f).boost());
+			drill.liquidBoostIntensity = 1.5f;
 		});
 		adjustContent(Blocks.plasmaBore, content -> {
 			BeamDrill drill = (BeamDrill)content;
@@ -759,15 +763,15 @@ public class NHPostProcess {
 		adjustContent(Blocks.graphitePress, content -> {
 			GenericCrafter crafter = (GenericCrafter)content;
 			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-			crafter.consume(new ConsumeItems(with(Items.graphite, 3)));
-			crafter.outputItems = with(Items.coal, 2);
+			crafter.consume(new ConsumeItems(with(Items.coal, 2)));
+			crafter.outputItems = with(Items.graphite, 3);
 			crafter.craftTime = 60f;
 		});
 		adjustContent(Blocks.multiPress, content -> {
 			GenericCrafter crafter = (GenericCrafter)content;
 			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
-			crafter.consume(new ConsumeItems(with(Items.graphite, 5)));
-			crafter.outputItems = with(Items.coal, 2);
+			crafter.consume(new ConsumeItems(with(Items.coal, 2)));
+			crafter.outputItems = with(Items.graphite, 5);
 			crafter.craftTime = 40f;
 		});
 		adjustContent(Blocks.siliconSmelter, content -> {

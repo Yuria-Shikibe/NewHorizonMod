@@ -5,6 +5,7 @@ import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.liquid.AdaptPump;
 
 import static mindustry.type.ItemStack.with;
@@ -14,7 +15,7 @@ public class LiquidBlock {
 
     public static void load(){
         turboPump = new AdaptPump("turbo-pump"){{
-            requirements(Category.liquid, with(Items.copper, 70, Items.metaglass, 50, Items.silicon, 20, Items.titanium, 35));
+            requirements(Category.liquid, with(Items.titanium, 40, Items.tungsten, 30));
             consumePower(0.5f);
 
             pumpAmount = 0.25f;

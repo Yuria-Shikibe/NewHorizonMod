@@ -38,7 +38,7 @@ public class CraftingBlock {
     public static Block
         //vanilla adapt build
         sandCracker, oilRefiner,
-        convertorTungsten, convertorTitanium, xenRefinery,
+        convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
         stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
         fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
         multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
@@ -73,6 +73,7 @@ public class CraftingBlock {
             addInput(ItemStack.with(Items.lead, 8), LiquidStack.empty);
             addInput(ItemStack.with(Items.beryllium, 5), LiquidStack.empty);
             addInput(ItemStack.with(Items.titanium, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.thorium, 3), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 4), LiquidStack.empty);
 
             outputItem = new ItemStack(Items.sand, 8);
@@ -156,6 +157,22 @@ public class CraftingBlock {
                         suffix = "-top";
                     }}
             );
+        }};
+        zetaCrafter = new RecipeGenericCrafter("zeta-crafter"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45));
+
+            size = 2;
+            craftTime = 60f;
+
+            rotate = false;
+
+            addInput(with(Items.thorium, 5), LiquidStack.with(Liquids.water, 6 / 60f));
+
+            consumePower(120f / 60f);
+            outputItem = new ItemStack(NHItems.zeta, 3);
+
+            drawer = new DrawDefault();
         }};
         stampingFacility = new RecipeGenericCrafter("stamping-facility"){{
             requirements(Category.crafting, BuildVisibility.shown,
