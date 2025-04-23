@@ -1,13 +1,20 @@
 package newhorizon.expand.net;
 
+import arc.math.geom.Vec2;
 import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
+import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.net.NetConnection;
+import mindustry.type.UnitType;
 import newhorizon.expand.ability.active.ActiveAbility;
 import newhorizon.expand.block.power.GravityWallSubstation;
+import newhorizon.expand.entities.Carrier;
+import newhorizon.expand.entities.Spawner;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
+
+import static mindustry.Vars.net;
 
 public class NHCall{
 	public static void infoDialog(String s, NetConnection c){
@@ -15,6 +22,15 @@ public class NHCall{
 			LongInfoMessageCallPacket packet = new LongInfoMessageCallPacket();
 			packet.message = s;
 			c.send(packet, true);
+		}
+	}
+
+	public static void unitJumpIn(UnitType unitType, Team team, Vec2 spawn, Vec2 command, float rotation, float time){
+		if(!net.client()) {
+			Spawner spawner = new Spawner();
+			spawner.init(unitType, team, spawn, rotation, time);
+			if (command != null) spawner.commandPos.set(command.cpy());
+			spawner.add();
 		}
 	}
 

@@ -210,6 +210,7 @@ public class ModuleBlock {
         unitCosts.put(NHUnitTypes.saviour, unitCost(60 * 120f, processorT4, 25, armorT4, 25, coreT3, 10, coreT4, 10, efficiencyModule3, 4));
         unitCosts.put(NHUnitTypes.declining, unitCost(60 * 120f, processorT4, 30, armorT4, 20, coreT4, 15, productivityModule3, 6));
         unitCosts.put(NHUnitTypes.anvil, unitCost(60 * 150f, processorT5, 40, armorT5, 30, coreT3, 25, speedModule3, 8, productivityModule3, 5));
+        unitCosts.put(NHUnitTypes.hurricane, unitCost(60 * 150f, processorT5, 35, armorT5, 35, coreT3, 15, coreT4, 15, efficiencyModule3, 12));
         unitCosts.put(NHUnitTypes.sin, unitCost(60 * 150f, processorT5, 30, armorT5, 40, coreT4, 25, efficiencyModule3, 8, productivityModule3, 5));
         unitCosts.put(NHUnitTypes.collapser, unitCost(60 * 180f, processorT5, 50, armorT5, 75, coreT5, 25, productivityModule3, 15, speedModule3, 8, efficiencyModule3, 8));
 

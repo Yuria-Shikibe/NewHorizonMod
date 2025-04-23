@@ -202,8 +202,8 @@ public class NewHorizon extends Mod{
 		
 		NHSetting.load();
 		
-		NHOverride.load();
-		if(Vars.headless || NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE))NHOverride.loadOptional();
+		NHPostProcess.load();
+		if(Vars.headless || NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)) NHPostProcess.loadOptional();
 		
 		NHContent.loadLast();
 		

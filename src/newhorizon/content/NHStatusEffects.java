@@ -366,6 +366,7 @@ public class NHStatusEffects{
         }};
 
         shieldFlag = new NHStatusEffect("shield-flag") {{
+            color = Pal.techBlue;
             permanent = true;
             show = false;
         }};

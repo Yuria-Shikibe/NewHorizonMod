@@ -622,7 +622,7 @@ public class MidanthaPlanet extends Planet {
             state.rules.winWave = Mathf.round(150 * difficulty, 5);
             state.rules.weather.clear();
             state.rules.weather.add(new Weather.WeatherEntry(NHWeathers.quantumStorm, 3 * Time.toMinutes, 8 * Time.toMinutes, 0.25f * Time.toMinutes, 0.75f * Time.toMinutes));
-            state.rules.spawns = NHOverride.generate(difficulty, new Rand(sector.id), false, false, false);
+            state.rules.spawns = NHPostProcess.generate(difficulty, new Rand(sector.id), false, false, false);
         }
 
         public void continualDraw(Seq<Tile> path, Block block, int rad, DrawBoolf b, boolean isBlock){

@@ -13,7 +13,7 @@ import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.logic.CanvasBlock;
-import newhorizon.content.NHOverride;
+import newhorizon.content.NHPostProcess;
 
 public class PixelArtGenerator{
 	static ObjectIntMap<Color> cache = new ObjectIntMap<>();
@@ -107,8 +107,8 @@ public class PixelArtGenerator{
 		float diff = Float.POSITIVE_INFINITY;
 		int tgtColor = 0;
 		
-		for(int i = 0; i < NHOverride.validColor.size; i++){
-			Color c = NHOverride.validColor.get(i);
+		for(int i = 0; i < NHPostProcess.validColor.size; i++){
+			Color c = NHPostProcess.validColor.get(i);
 			
 			float d = colorDst(color, c);
 			if(d < diff){
@@ -123,7 +123,7 @@ public class PixelArtGenerator{
 	}
 	
 	public static int color8888(int index){
-		return NHOverride.validColor.get(index).rgba8888();
+		return NHPostProcess.validColor.get(index).rgba8888();
 	}
 	
 	public static float colorDst(Color color1, Color color2){

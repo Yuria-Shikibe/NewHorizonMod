@@ -14,15 +14,13 @@ import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.production.BurstDrill;
-import mindustry.world.blocks.production.Drill;
-import mindustry.world.blocks.production.Pump;
+import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
@@ -32,13 +30,13 @@ import newhorizon.content.bullets.VanillaOverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static mindustry.Vars.content;
 import static mindustry.content.UnitTypes.*;
+import static mindustry.type.ItemStack.with;
 
-public class NHOverride{
+public class NHPostProcess {
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
 	public static final Seq<Color> validColor = new Seq<>();
 
@@ -319,11 +317,12 @@ public class NHOverride{
 	public static void contentOverride(){
 		setModContentEnv();
 		overrideUnitTypeAbility();
-		balanceDrill();
 		buffCoreUnits();
 
-		adjustVanillaUnit();
 		adjustVanillaLogistic();
+		adjustVanillaDrill();
+		adjustVanillaFactories();
+		adjustVanillaUnit();
 		adjustVanillaLogic();
 
 		overrideStats();
@@ -521,7 +520,7 @@ public class NHOverride{
 			group.end -= shift;
 		}
 		
-		out.add(NHOverride.modSpawnGroup);
+		out.add(NHPostProcess.modSpawnGroup);
 		
 		if(difficulty > 0.9){
 			out.add(new SpawnGroup(NHUnitTypes.pester){{
@@ -607,7 +606,7 @@ public class NHOverride{
 		hideContent(Blocks.armoredConveyor);
 		hideContent(Blocks.plastaniumConveyor);
 		hideContent(Blocks.junction);
-		hideContent(Blocks.itemBridge);
+		//hideContent(Blocks.itemBridge);
 		hideContent(Blocks.phaseConveyor);
 		hideContent(Blocks.sorter);
 		hideContent(Blocks.invertedSorter);
@@ -620,7 +619,7 @@ public class NHOverride{
 		hideContent(Blocks.ductRouter);
 		hideContent(Blocks.overflowDuct);
 		hideContent(Blocks.underflowDuct);
-		hideContent(Blocks.ductBridge);
+		//hideContent(Blocks.ductBridge);
 		hideContent(Blocks.ductUnloader);
 		hideContent(Blocks.surgeConveyor);
 		hideContent(Blocks.surgeRouter);
@@ -639,11 +638,9 @@ public class NHOverride{
 		hideContent(Blocks.reinforcedLiquidJunction);
 		hideContent(Blocks.reinforcedBridgeConduit);
 		hideContent(Blocks.reinforcedLiquidRouter);
-
-
 	}
 
-	public static void balanceDrill(){
+	public static void adjustVanillaDrill(){
 		hideContent(Blocks.mechanicalDrill);
 		hideContent(Blocks.laserDrill);
 		hideContent(Blocks.blastDrill);
@@ -663,7 +660,6 @@ public class NHOverride{
 			drill.drillMultipliers.put(Items.titanium, 0.75f);
 			drill.drillMultipliers.put(Items.beryllium, 0.75f);
 		});
-
 		adjustContent(Blocks.impactDrill, content -> {
 			BurstDrill drill = (BurstDrill)content;
 			drill.requirements = ItemStack.with(Items.beryllium, 60, Items.graphite, 45);
@@ -678,7 +674,26 @@ public class NHOverride{
 			drill.drillMultipliers.put(Items.beryllium, 0.75f);
 			drill.drillMultipliers.put(Items.tungsten, 0.5f);
 		});
-
+		adjustContent(Blocks.plasmaBore, content -> {
+			BeamDrill drill = (BeamDrill)content;
+			drill.drillTime = 60f;
+			drill.optionalBoostIntensity = 2.5f;
+		});
+		adjustContent(Blocks.largePlasmaBore, content -> {
+			BeamDrill drill = (BeamDrill)content;
+			drill.drillTime = 30f;
+			drill.optionalBoostIntensity = 2.5f;
+		});
+		adjustContent(Blocks.cliffCrusher, content -> {
+			WallCrafter wallCrafter = (WallCrafter)content;
+			wallCrafter.drillTime = 60f;
+		});
+		adjustContent(Blocks.largeCliffCrusher, content -> {
+			WallCrafter wallCrafter = (WallCrafter)content;
+			wallCrafter.drillTime = 30f;
+			wallCrafter.itemBoostIntensity = 2.5f;
+			wallCrafter.itemConsumer = wallCrafter.consumeItem(Items.graphite).boost();
+		});
 	}
 
 	public static void buffCoreUnits(){
@@ -730,15 +745,49 @@ public class NHOverride{
 		});
 	}
 
-	public static void balanceVanillaTurret(){
-
-	}
-
-	private static void overrideUnitTypeAbility(){
-		for (UnitType type: content.units()){
-			if (type.abilities.contains(ability -> ability instanceof PassiveShield)) continue;
-			type.abilities.add(new PassiveShield(type.health));
-		}
+	private static void adjustVanillaFactories(){
+		adjustContent(Blocks.graphitePress, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.consume(new ConsumeItems(with(Items.graphite, 3)));
+			crafter.outputItems = with(Items.coal, 2);
+			crafter.craftTime = 60f;
+		});
+		adjustContent(Blocks.multiPress, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.consume(new ConsumeItems(with(Items.graphite, 5)));
+			crafter.outputItems = with(Items.coal, 2);
+			crafter.craftTime = 40f;
+		});
+		adjustContent(Blocks.siliconSmelter, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.consume(new ConsumeItems(with(Items.sand, 3)));
+			crafter.outputItems = with(Items.silicon, 2);
+			crafter.craftTime = 60f;
+		});
+		adjustContent(Blocks.siliconCrucible, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.requirements = with(Items.titanium, 120, Items.metaglass, 80, Items.silicon, 60);
+			crafter.consumeItems(with(Items.sand, 6, Items.pyratite, 1));
+			crafter.outputItem = new ItemStack(Items.silicon, 9);
+		});
+		adjustContent(Blocks.pyratiteMixer, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.consumeItems(with(Items.coal, 1, Items.sand, 2));
+			crafter.outputItem = new ItemStack(Items.pyratite, 2);
+			crafter.craftTime = 60f;
+		});
+		adjustContent(Blocks.siliconArcFurnace, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.consume(new ConsumeItems(with(Items.sand, 5)));
+			crafter.outputItems = with(Items.silicon, 5);
+			crafter.craftTime = 60f;
+		});
 	}
 
 	private static void adjustVanillaUnit(){
@@ -779,6 +828,13 @@ public class NHOverride{
 		hideContent(Blocks.shipAssembler);
 		hideContent(Blocks.primeRefabricator);
 		hideContent(Blocks.basicAssemblerModule);
+	}
+
+	private static void overrideUnitTypeAbility(){
+		for (UnitType type: content.units()){
+			if (type.abilities.contains(ability -> ability instanceof PassiveShield)) continue;
+			type.abilities.add(new PassiveShield(type.health));
+		}
 	}
 
 	private static ItemStack[] hugeItemReq(){

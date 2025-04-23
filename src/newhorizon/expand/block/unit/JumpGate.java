@@ -44,8 +44,7 @@ import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.expand.entities.Spawner;
 
-import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 import static newhorizon.NHVars.worldData;
 
 public class JumpGate extends Block {
@@ -66,7 +65,8 @@ public class JumpGate extends Block {
         float scl = building.warmup() * 0.125f;
         float rot = building.totalProgress();
 
-        Lines.stroke(8f * scl, NHColor.lightSky);
+        Draw.color(building.team.color);
+        Lines.stroke(8f * scl);
         Lines.square(building.x, building.y, building.block.size * tilesize / 2.5f, -rot);
         Lines.square(building.x, building.y, building.block.size * tilesize / 2f, rot);
         for(int i = 0; i < 4; i++){
@@ -291,14 +291,17 @@ public class JumpGate extends Block {
 
         public void spawnUnit(){
             if (unitType == null) return;
-            //todo add a Call method
-            Spawner spawner = new Spawner();
-            float rot = core() == null? Angles.angle(x, y, spawn.x, spawn.y): Angles.angle(core().x, core().y, x, y);
-            spawner.init(unitType, team, spawn, rot, unitTime(unitType) / maxWarmupSpeed);
-            if (vec2 != null) {
-                spawner.commandPos.set(vec2.cpy());
+
+            if(!net.client()){
+                float rot = core() == null? Angles.angle(x, y, spawn.x, spawn.y): Angles.angle(core().x, core().y, x, y);
+                Spawner spawner = new Spawner();
+                Tmp.v1.setToRandomDirection().add(spawn);
+                spawner.init(unitType, team, Tmp.v1, rot, Mathf.clamp(unitTime(unitType) / maxWarmupSpeed, 5f * 60, 15f * 60));
+                if (vec2 != null) {
+                    spawner.commandPos.set(vec2.cpy());
+                }
+                spawner.add();
             }
-            spawner.add();
 
             progress = 0f;
             spawnWarmup = 0f;
