@@ -56,7 +56,6 @@ public class NHRegister{
 		
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			NHGroups.worldInit();
-			NHVars.core.worldInit();
 			if(!Vars.state.isEditor()){
 				afterLoad.each(Runnable::run);
 			}

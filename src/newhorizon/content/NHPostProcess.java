@@ -322,6 +322,7 @@ public class NHPostProcess {
 		adjustVanillaLogistic();
 		adjustVanillaDrill();
 		adjustVanillaFactories();
+		adjustVanillaPower();
 		adjustVanillaUnit();
 		adjustVanillaLogic();
 
@@ -640,7 +641,7 @@ public class NHPostProcess {
 		hideContent(Blocks.reinforcedLiquidRouter);
 	}
 
-	public static void adjustVanillaDrill(){
+	private static void adjustVanillaDrill(){
 		hideContent(Blocks.mechanicalDrill);
 		hideContent(Blocks.laserDrill);
 		hideContent(Blocks.blastDrill);
@@ -696,7 +697,16 @@ public class NHPostProcess {
 		});
 	}
 
-	public static void buffCoreUnits(){
+	private static void adjustVanillaPower(){
+		hideContent(Blocks.powerNode);
+		hideContent(Blocks.powerNodeLarge);
+		hideContent(Blocks.surgeTower);
+		hideContent(Blocks.beamLink);
+		hideContent(Blocks.beamNode);
+		hideContent(Blocks.beamTower);
+	}
+
+	private static void buffCoreUnits(){
 
 		adjustContent(Blocks.coreShard, content -> {
 			CoreBlock core = (CoreBlock)content;

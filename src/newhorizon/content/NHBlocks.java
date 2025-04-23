@@ -99,19 +99,16 @@ public class NHBlocks{
 	public static Block oreZeta;
 	public static Block hyperGenerator;
 
-	public static Block irdryonVault;
 
 	public static Block ancientArtillery, dendrite, interferon, prism, hive, concentration, bloodStar, pulseShotgun, beamLaserTurret, blaster, endOfEra,
 			thermoTurret, railGun, executor, gravity, multipleLauncher, antibody, multipleArtillery, atomSeparator, eternity;
 
-	public static Block irdryonTank, rapidUnloader;
 	public static Block largeWaterExtractor;
 	public static Block hydroFuelCell;
 	public static Block armorBatteryLarge;
 	public static Block hugeBattery;
 	public static Block largeMendProjector;
 	public static Block antiBulletTurret;
-	public static Block largeShieldGenerator;
 	public static Block fireExtinguisher;
 	public static Block webber;
 	public static Block hyperspaceWarper;
@@ -2777,11 +2774,6 @@ public class NHBlocks{
 			rotateSpeed = 1.4F;
 			attribute = Attribute.water;
 			consumePower(4f);
-		}};
-		
-		rapidUnloader = new AdaptUnloader("rapid-unloader"){{
-			speed = 0.5f;
-			requirements(Category.effect, BuildVisibility.shown, with(NHItems.presstanium, 20, Items.lead, 15, NHItems.juniorProcessor, 25));
 		}};
 
 		loadTurrets();

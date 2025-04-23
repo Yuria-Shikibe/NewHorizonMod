@@ -20,7 +20,7 @@ public class DistributionBlock {
     public static Block
             conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger,
             logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
-            conveyorBridge, conveyorBridgeExtend, conveyorUnloader,
+            conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
 
             stackRail, lightStackLoader, heavyStackLoader,
 
@@ -145,6 +145,11 @@ public class DistributionBlock {
             speed = 60f/16.5f;
             hasPower = true;
             conductivePower = true;
+        }};
+
+        rapidUnloader = new AdaptUnloader("rapid-unloader"){{
+            speed = 0.5f;
+            requirements(Category.distribution, BuildVisibility.shown, with(Items.silicon, 4));
         }};
 
         conduit = new AdaptConduit("conduit"){{

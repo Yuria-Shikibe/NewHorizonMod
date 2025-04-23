@@ -30,10 +30,4 @@ public class NHModCore implements ApplicationListener{
 	public void init() {
         ApplicationListener.super.init();
     }
-
-	public void worldInit(){
-		if(!Vars.headless){
-			renderer.init();
-		}
-	}
 }

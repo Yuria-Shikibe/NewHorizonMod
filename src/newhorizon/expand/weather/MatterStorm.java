@@ -102,8 +102,6 @@ public class MatterStorm extends Weather{
 	public float bulletDamage = 120f;
 	public float bulletVelocityMin = 0.6f, bulletVelocityMax = 1.4f, bulletLifeMin = 0.8f, bulletLifeMax = 2f;
 	public float bulletSpawnChance = 0.075f;
-	public float bulletSpawnNum = 2;
-	public float empScale = 0.75f;
 	public BulletType bulletType = null;
 	
 	public MatterStorm(String name){
