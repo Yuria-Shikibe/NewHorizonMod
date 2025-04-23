@@ -3,6 +3,8 @@ package newhorizon.content.blocks;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.consumers.ConsumeCoolant;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.expand.block.defence.ShieldGenerator;
@@ -10,13 +12,10 @@ import newhorizon.expand.block.defence.ShieldGenerator;
 import static mindustry.type.ItemStack.with;
 
 public class DefenseBlock {
-    public static Block riftShield;
-    public static AdaptWall presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall;
+    public static Block
+            presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall,
+            standardForceProjector, largeShieldGenerator, riftShield;
     public static void load(){
-        riftShield = new ShieldGenerator("rift-shield"){{
-            requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.upgradeSort, 300));
-        }};
-
         presstaniumWall = new AdaptWall("presstanium-wall"){{
             health = 1200;
             armor = 2f;
@@ -53,5 +52,40 @@ public class DefenseBlock {
 
             requirements(Category.defense, with(NHItems.upgradeSort, 8, NHItems.ancimembrane, 8));
         }};
+
+        standardForceProjector = new ForceProjector("standard-shield-generator") {{
+            requirements(Category.effect, with(NHItems.seniorProcessor, 80, NHItems.presstanium, 80, Items.carbide, 50));
+
+            size = 2;
+            sides = 4;
+            shieldRotation = 45f;
+            radius = 160f;
+            shieldHealth = 4000f;
+            cooldownNormal = 15f;
+            cooldownBrokenBase = shieldHealth / (5f * 60);
+            consumeCoolant = false;
+            removeConsumers(consume -> consume instanceof ConsumeCoolant);
+            consumePower(4f);
+        }};
+
+        largeShieldGenerator = new ForceProjector("large-shield-generator") {{
+            requirements(Category.effect, with(NHItems.seniorProcessor, 150, NHItems.presstanium, 150, Items.phaseFabric, 100, NHItems.multipleSteel, 50));
+
+            size = 4;
+            sides = 4;
+            shieldRotation = 45f;
+            radius = 240f;
+            shieldHealth = 20000f;
+            cooldownNormal = 12f;
+            cooldownBrokenBase = shieldHealth / (20f * 60);
+            consumeCoolant = false;
+            removeConsumers(consume -> consume instanceof ConsumeCoolant);
+            consumePower(20f);
+        }};
+
+        riftShield = new ShieldGenerator("rift-shield"){{
+            requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.upgradeSort, 300));
+        }};
+
     }
 }

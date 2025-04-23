@@ -2752,15 +2752,6 @@ public class NHBlocks{
 			requirements(Category.units, BuildVisibility.shown, with(NHItems.ancimembrane, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
 		}};
 		
-		irdryonTank = new LiquidRouter("irdryon-tank"){{
-			requirements(Category.liquid, with(NHItems.metalOxhydrigen, 25, NHItems.multipleSteel, 40, Items.metaglass, 25));
-			size = 3;
-			underBullets = true;
-			liquidCapacity = 4500;
-			armor = 12f;
-			health = 3200;
-		}};
-		
 		largeMendProjector = new MendProjector("large-mend-projector"){{
 			size = 3;
 			reload = 180f;
@@ -2792,28 +2783,6 @@ public class NHBlocks{
 			speed = 0.5f;
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.presstanium, 20, Items.lead, 15, NHItems.juniorProcessor, 25));
 		}};
-		
-		largeShieldGenerator = new ForceProjector("large-shield-generator") {{
-			size = 4;
-			radius = 220f;
-			shieldHealth = 20000f;
-			cooldownNormal = 12f;
-			cooldownLiquid = 6f;
-			cooldownBrokenBase = 9f;
-			itemConsumer = consumeItem(NHItems.fusionEnergy).boost();
-			phaseUseTime = 5 * 60f;
-			phaseRadiusBoost = 15 * 8f;
-			phaseShieldBoost = 20000f;
-			consumePower(15F);
-			requirements(Category.effect, with(NHItems.seniorProcessor, 120, Items.lead, 250, Items.graphite, 180, NHItems.presstanium, 150, Items.phaseFabric, 120, NHItems.multipleSteel, 50));
-		}};
-		
-		irdryonVault = new StorageBlock("irdryon-vault"){{
-            requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.metalOxhydrigen, 50, NHItems.irayrondPanel, 75));
-            size = 3;
-            health = 3500;
-            itemCapacity = 2500;
-        }};
 
 		loadTurrets();
 		loadEnv();
