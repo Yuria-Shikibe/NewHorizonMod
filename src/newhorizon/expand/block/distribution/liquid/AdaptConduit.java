@@ -4,10 +4,12 @@ import arc.Core;
 import arc.Graphics;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.Eachable;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
@@ -24,7 +26,7 @@ import static mindustry.Vars.player;
 import static mindustry.Vars.renderer;
 
 public class AdaptConduit extends Conduit {
-    public TextureRegion[] topRegions;
+    public TextureRegion[] topMaskRegions;
     public AdaptConduit(String name) {
         super(name);
         canOverdrive = false;
@@ -35,7 +37,7 @@ public class AdaptConduit extends Conduit {
     @Override
     public void load() {
         super.load();
-        topRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-top"), 32, 32, 1);
+        topMaskRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-top"), 32, 32, 1);
     }
 
     @Override
@@ -43,6 +45,21 @@ public class AdaptConduit extends Conduit {
         if (tile.build instanceof AdaptConduitBuild && ((AdaptConduitBuild) tile.build).armored) return (otherblock.outputsLiquid && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) ||
                 (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasLiquids) || otherblock instanceof LiquidJunction;
         return super.blends(tile, rotation, otherx, othery, otherrot, otherblock);
+    }
+
+    @Override
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        int[] bits = getTiling(plan, list);
+
+        if(bits == null) return;
+
+        Draw.scl(bits[1], bits[2]);
+        Draw.color(botColor);
+        Draw.alpha(0.5f);
+        Draw.rect(botRegions[bits[0]], plan.drawx(), plan.drawy(), plan.rotation * 90);
+        Draw.color();
+        Draw.rect(topMaskRegions[bits[0]], plan.drawx(), plan.drawy(), plan.rotation * 90);
+        Draw.scl();
     }
 
     public class AdaptConduitBuild extends ConduitBuild{
@@ -73,7 +90,7 @@ public class AdaptConduit extends Conduit {
             Drawf.liquid(sliced(liquidr, slice), x + ox, y + oy, smoothLiquid, liquids.current().color.write(Tmp.c1).a(1f));
             Draw.scl(xscl, yscl);
 
-            Draw.rect(sliced(topRegions[bits + (armored? 5:0)], slice), x, y, angle);
+            Draw.rect(sliced(topMaskRegions[bits + (armored? 5:0)], slice), x, y, angle);
         }
 
         @Override

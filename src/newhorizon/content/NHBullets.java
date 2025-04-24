@@ -66,7 +66,7 @@ public class NHBullets{
 			warperBullet, airRaidBomb,
 			hyperBlastLinker, hyperBlast,
 			arc_9000, eternity, arc_9000_frag,
-			synchroZeta, synchroThermoPst, synchroFusion, synchroPhase,
+			synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,
 			missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
 			ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid;
 	
@@ -1474,8 +1474,8 @@ public class NHBullets{
 				}};
 			}});
 		}};
-		
-		synchroZeta = new AdaptBulletType(50f, 25f){{
+
+		synchroTitanium = new AdaptBulletType(50f, 25f){{
 			speed = 8f;
 			lifetime = 35f;
 			
@@ -1501,7 +1501,7 @@ public class NHBullets{
 			ammoMultiplier = 4;
 		}};
 
-		synchroPhase = new AdaptBulletType(80f, 40f){{
+		synchroZeta = new AdaptBulletType(80f, 40f){{
 			speed = 8f;
 			lifetime = 35f;
 

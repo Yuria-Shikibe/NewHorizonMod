@@ -18,6 +18,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.ConsumeItems;
@@ -327,6 +328,10 @@ public class NHPostProcess {
 		adjustVanillaUnit();
 		adjustVanillaLogic();
 
+		//overrideStats();
+	}
+
+	public static void postProcessOverride(){
 		overrideStats();
 	}
 
@@ -702,61 +707,16 @@ public class NHPostProcess {
 	}
 
 	private static void adjustVanillaPower(){
+		adjustContent(Blocks.turbineCondenser, content -> {
+			ThermalGenerator generator = (ThermalGenerator)content;
+			generator.powerProduction = 300 / 60f;
+		});
 		hideContent(Blocks.powerNode);
 		hideContent(Blocks.powerNodeLarge);
 		hideContent(Blocks.surgeTower);
 		hideContent(Blocks.beamLink);
 		hideContent(Blocks.beamNode);
 		hideContent(Blocks.beamTower);
-	}
-
-	private static void buffCoreUnits(){
-
-		adjustContent(Blocks.coreShard, content -> {
-			CoreBlock core = (CoreBlock)content;
-			core.buildVisibility = BuildVisibility.shown;
-			//core.health *= 5;
-			core.armor = 5;
-		});
-
-		adjustContent(UnitTypes.alpha, content -> {
-			UnitType unitType = (UnitType)content;
-			unitType.mineSpeed = 8f;
-			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
-				weapon.reload = 15f;
-				weapon.bullet = VanillaOverrideBullets.alpha0;
-			});
-		});
-
-		adjustContent(Blocks.coreFoundation, content -> {
-			CoreBlock core = (CoreBlock)content;
-			//core.health *= 5;
-			core.armor = 10;
-		});
-
-		adjustContent(UnitTypes.beta, content -> {
-			UnitType unitType = (UnitType)content;
-			unitType.mineSpeed = 10f;
-			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
-				weapon.reload = 20f;
-				weapon.bullet = VanillaOverrideBullets.beta0;
-			});
-		});
-
-		adjustContent(Blocks.coreNucleus, content -> {
-			CoreBlock core = (CoreBlock)content;
-			//core.health *= 5;
-			core.armor = 15;
-		});
-
-		adjustContent(UnitTypes.gamma, content -> {
-			UnitType unitType = (UnitType)content;
-			unitType.mineSpeed = 12.5f;
-			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
-				weapon.reload = 16f;
-				weapon.bullet = VanillaOverrideBullets.gamma0;
-			});
-		});
 	}
 
 	private static void adjustVanillaFactories(){
@@ -842,6 +802,55 @@ public class NHPostProcess {
 		hideContent(Blocks.shipAssembler);
 		hideContent(Blocks.primeRefabricator);
 		hideContent(Blocks.basicAssemblerModule);
+	}
+
+	private static void buffCoreUnits(){
+
+		adjustContent(Blocks.coreShard, content -> {
+			CoreBlock core = (CoreBlock)content;
+			core.buildVisibility = BuildVisibility.shown;
+			//core.health *= 5;
+			core.armor = 5;
+		});
+
+		adjustContent(UnitTypes.alpha, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 8f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
+				weapon.reload = 15f;
+				weapon.bullet = VanillaOverrideBullets.alpha0;
+			});
+		});
+
+		adjustContent(Blocks.coreFoundation, content -> {
+			CoreBlock core = (CoreBlock)content;
+			//core.health *= 5;
+			core.armor = 10;
+		});
+
+		adjustContent(UnitTypes.beta, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 10f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
+				weapon.reload = 20f;
+				weapon.bullet = VanillaOverrideBullets.beta0;
+			});
+		});
+
+		adjustContent(Blocks.coreNucleus, content -> {
+			CoreBlock core = (CoreBlock)content;
+			//core.health *= 5;
+			core.armor = 15;
+		});
+
+		adjustContent(UnitTypes.gamma, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 12.5f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
+				weapon.reload = 16f;
+				weapon.bullet = VanillaOverrideBullets.gamma0;
+			});
+		});
 	}
 
 	private static void overrideUnitTypeAbility(){

@@ -1,7 +1,9 @@
 package newhorizon.expand.block.payload;
 
 import arc.graphics.g2d.Draw;
+import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.type.PayloadSeq;
 import mindustry.world.blocks.payloads.Payload;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 
@@ -15,6 +17,14 @@ public class ModuleDeposit extends ModuleVoid{
     }
 
     public class ModuleDepositBuild extends ModuleVoidBuild{
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
+            if (team.core() == null) return false;
+            if (teamPayload.get(payload.content()) >= team.core().storageCapacity / 10f) return false;
+            return super.acceptPayload(source, payload);
+        }
+
         @Override
         public void handlePayload(Building source, Payload payload) {
             super.handlePayload(source, payload);

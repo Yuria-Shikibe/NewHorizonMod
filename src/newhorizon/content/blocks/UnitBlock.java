@@ -68,34 +68,6 @@ public class UnitBlock {
             spawnList = Seq.with(NHUnitTypes.naxos, NHUnitTypes.tarlidor, NHUnitTypes.zarkov, UnitTypes.eclipse, UnitTypes.disrupt, UnitTypes.corvus, UnitTypes.navanax, UnitTypes.collaris);
 
             consumePowerCond(30, JumpGateBuild::canConsume);
-
-            blockDrawer = (building, valid) -> {
-                TextureRegion arrowRegion = NHContent.arrowRegion;
-                TextureRegion pointerRegion = NHContent.pointerRegion;
-
-                Draw.z(Layer.bullet);
-
-                float scl = building.warmup() * 0.125f;
-                float rot = building.totalProgress();
-
-                Draw.color(building.canConsume()? building.team.color: Pal.techBlue);
-                Lines.stroke(8f * scl);
-                Lines.square(building.x, building.y, building.block.size * tilesize / 2.5f, -rot);
-                Lines.square(building.x, building.y, building.block.size * tilesize / 2f, rot);
-                for(int i = 0; i < 4; i++){
-                    float length = tilesize * building.block.size / 2f + 8f;
-                    float rotation = i * 90;
-                    float sin = Mathf.absin(building.totalProgress(), 16f, tilesize);
-                    float signSize = 0.75f + Mathf.absin(building.totalProgress() + 8f, 8f, 0.15f);
-
-                    Tmp.v1.trns(rotation + rot, -length);
-                    Draw.rect(arrowRegion, building.x + Tmp.v1.x, building.y + Tmp.v1.y, arrowRegion.width * scl, arrowRegion.height * scl, rotation + 90 + rot);
-                    length = tilesize * building.block.size / 2f + 3 + sin;
-                    Tmp.v1.trns(rotation, -length);
-                    Draw.rect(pointerRegion, building.x + Tmp.v1.x, building.y + Tmp.v1.y, pointerRegion.width * signSize * scl, pointerRegion.height * signSize * scl, rotation + 90);
-                }
-                Draw.color();
-            };
         }};
 
         jumpGateMk3 = new JumpGate("hyper-jump-gate"){{

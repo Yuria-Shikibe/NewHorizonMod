@@ -39,8 +39,6 @@ public class NewHorizon extends Mod{
 	public static void debugLog(Object obj){
 		if(DEBUGGING)Log.info(obj);
 	}
-	
-	protected static boolean contentLoadComplete = false;
 
 	public static final String MOD_RELEASES = "https://github.com/Yuria-Shikibe/NewHorizonMod/releases";
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
@@ -60,16 +58,16 @@ public class NewHorizon extends Mod{
 	
 	public static FeatureLog[] getUpdateContent(){
 		return new FeatureLog[]{
-				new FeatureLog(DistributionBlock.conveyor),
+				new FeatureLog(0, FeatureLog.featureType.CONTENT, NHContent.icon),
 		};
 	}
 	
 	private static void showAbout(){
 		if(links == null)links = new Links.LinkEntry[]{
-			new Links.LinkEntry("mod.ccs", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide", Icon.settings, Pal.heal),
+			//new Links.LinkEntry("mod.ccs", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide", Icon.settings, Pal.heal),
 			new Links.LinkEntry("mod.discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
 			new Links.LinkEntry("mod.github", MOD_GITHUB_URL, Icon.github, Color.valueOf("24292e")),
-			new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent),
+			//new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent),
 			new Links.LinkEntry("yuria.plugin", "https://github.com/Yuria-Shikibe/RangeImager", Icon.export, NHColor.thurmixRed)
 		};
 
@@ -136,6 +134,7 @@ public class NewHorizon extends Mod{
 		debugFunctions();
 
 		registerModBinding();
+		Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
 		Events.on(ClientLoadEvent.class, e -> {
 			Core.app.post(NHUI::init);
 			updateServer();
@@ -160,63 +159,49 @@ public class NewHorizon extends Mod{
 	}
 
 	@Override
-	public void registerClientCommands(CommandHandler handler) {}
+	public void registerClientCommands(CommandHandler handler) {
+		super.registerClientCommands(handler);
+	}
 
 	@Override
     public void loadContent(){
-		contentLoadComplete = false;
-		
-		Log.info("Debug Mode: " + DEBUGGING);
-		Log.info("Process Texture Mode: " + NHPixmap.isDebugging());
-		
 		Time.mark();
 		
 		MOD = Vars.mods.getMod(getClass());
 		
 		EntityRegister.load();
 		NHRegister.load();
-		
 		NHContent.loadPriority();
-		
 		NHSounds.load();
 		
-		if(!Vars.headless){
-			NHShaders.init();
-		}
-		
+		if(!Vars.headless) NHShaders.init();
+
 		NHContent.loadBeforeContentLoad();
-		
-		{
-			NHStatusEffects.load();
-			NHItems.load();
-			NHLiquids.load();
-			NHBullets.load();
-			NHUnitTypes.load();
-			NHBlocks.load();
-			NHWeathers.load();
-			NHPlanets.load();
-			NHSectorPresents.load();
-			NHTechTree.load();
-			//NHInbuiltEvents.load();
-		}
-		
+
+		NHStatusEffects.load();
+		NHItems.load();
+		NHLiquids.load();
+		NHBullets.load();
+		NHUnitTypes.load();
+		NHBlocks.load();
+		NHWeathers.load();
+		NHPlanets.load();
+		NHSectorPresents.load();
+		NHTechTree.load();
+
 		NHSetting.load();
-		
 		NHPostProcess.load();
-		if(Vars.headless || NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)) NHPostProcess.loadOptional();
-		
+		NHPostProcess.loadOptional();
 		NHContent.loadLast();
-		
-		contentLoadComplete = true;
-		
+
 		Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }
 
 	private void debugFunctions(){
-		if (true){
-			PlanetDialog.debugSelect = true;
-			Events.run(EventType.Trigger.universeDrawEnd, DebugFunc::renderSectorId);
-		}
+		//if (true){
+		//	PlanetDialog.debugSelect = true;
+		//	Events.run(EventType.Trigger.universeDrawEnd, DebugFunc::renderSectorId);
+		//}
 	}
 
 	private void updateServer(){

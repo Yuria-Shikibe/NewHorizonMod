@@ -14,6 +14,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.input.Placement;
 import mindustry.type.Item;
+import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
@@ -204,6 +205,12 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 if (!linkValid){
                     linkEntities.each(Building::kill);
                     kill();
+                }
+            }
+
+            for (ItemStack stack: outputItems){
+                if (items.get(stack.item) >= itemCapacity){
+                    items.set(stack.item, itemCapacity);
                 }
             }
             super.updateTile();

@@ -39,6 +39,7 @@ import newhorizon.NHGroups;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHStats;
 import newhorizon.content.blocks.ModuleBlock;
+import newhorizon.expand.block.production.factory.PayloadCrafter;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -181,6 +182,7 @@ public class AssignedBeacon extends Block {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class AssignedBeaconBuild extends Building implements Ranged {
+        public Seq<Building> buildings = new Seq<>();
         public float progress;
         public float powerMul = 1f;
         public float speedMul = 1f;
@@ -216,8 +218,7 @@ public class AssignedBeacon extends Block {
 
             progress += edelta();
             for(int i = 0; i < targets.length; i++){
-                int pos = targets[i];
-                Building b = Vars.world.build(pos);
+                Building b = Vars.world.build(targets[i]);
                 if (b instanceof GenericCrafter.GenericCrafterBuild gcb) {
                     if (gcb.block instanceof GenericCrafter gc && gc.canOverdrive){
                         if (craftMul > 0f){
@@ -227,22 +228,33 @@ public class AssignedBeacon extends Block {
                                     for (ItemStack stack: gc.outputItems){
                                         gcb.items.add(stack.item, stack.amount);
                                     }
-                                    targetProgress[i] %= gc.craftTime;
-                                    NHFx.darkEnergySmoke.at(gcb);
                                 }
+                                if (gcb instanceof PayloadCrafter.PayloadCrafterBuild pc){
+                                    Block plan = pc.recipe;
+                                    if (plan != null && pc.recipeCost() != null){
+                                        pc.payloads.add(plan, pc.recipeCost().outputMultiplier);
+                                    }
+                                }
+                                targetProgress[i] %= gc.craftTime;
+                                NHFx.activeEffectSky.at(gcb);
                             }
-                        }
-
-                        if (progress >= 60){
-                            if (speedMul > 1f){
-                                gcb.applyBoost(speedMul, 90f);
-                            }else {
-                                gcb.applySlowdown(speedMul, 90f);
-                            }
-                            progress %= 60f;
                         }
                     }
                 }
+            }
+
+            if (progress >= 60){
+                for (int target : targets) {
+                    Building b = Vars.world.build(target);
+                    if (b != null){
+                        if (speedMul > 1f) {
+                            b.applyBoost(speedMul, 90f);
+                        } else {
+                            b.applySlowdown(speedMul, 90f);
+                        }
+                    }
+                }
+                progress %= 60f;
             }
         }
 
@@ -323,7 +335,7 @@ public class AssignedBeacon extends Block {
             PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
             for(int i = 0; i < maxSlot; i++){
                 Block b = getModule(modulePlans[i]);
-                if (b != null || modules[i] != -1) teamPayload.add(b, 1);
+                if (b != null && modules[i] >= 0) teamPayload.add(b, 1);
                 modulePlans[i] = -1;
                 modules[i] = -1;
             }
@@ -389,7 +401,7 @@ public class AssignedBeacon extends Block {
 
         /** return all buildings from target IntSeq */
         public Seq<Building> linkBuilds(){
-            Seq<Building> buildings = new Seq<>();
+            buildings.clear();
             for(int pos : targets){
                 Building b = Vars.world.build(pos);
                 if(b != null) buildings.add(b);

@@ -138,9 +138,11 @@ public class JumpGate extends Block {
         saveConfig = true;
         canOverdrive = false;
         logicConfigurable = true;
+        clearOnDoubleTap = true;
 
         config(Integer.class, JumpGateBuild::changePlan);
         config(UnitType.class, (JumpGateBuild e, UnitType unitType) -> e.changePlan(e.getPlanId(unitType)));
+        configClear((JumpGateBuild e) -> e.unitType = null);
         consume(new NHConsumeShowStat(e -> null, e -> null, e -> null, b -> worldData.teamPayloadData.getPayload(b.team)));
     }
 
@@ -278,8 +280,13 @@ public class JumpGate extends Block {
         public void changePlan(int idx){
             if (idx == -1) return;
             idx = Mathf.clamp(idx, 0, spawnList.size - 1);
-            lastUnitType = unitType;
-            unitType = spawnList.get(idx);
+            if (unitType == spawnList.get(idx)){
+                lastUnitType = unitType;
+                unitType = null;
+            }else {
+                lastUnitType = unitType;
+                unitType = spawnList.get(idx);
+            }
             progress = 0f;
             speedMultiplier = 1f;
         }

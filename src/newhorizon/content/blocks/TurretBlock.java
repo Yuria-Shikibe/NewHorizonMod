@@ -79,8 +79,8 @@ public class TurretBlock {
             );
 
             ammo(
-                    NHItems.zeta, NHBullets.synchroZeta,
-                    Items.phaseFabric, NHBullets.synchroPhase
+                    Items.titanium, NHBullets.synchroTitanium,
+                    NHItems.zeta, NHBullets.synchroZeta
             );
 
             ammoPerShot = 1;
@@ -148,7 +148,7 @@ public class TurretBlock {
             requirements(Category.turret, with(NHItems.juniorProcessor, 120, NHItems.presstanium, 150, Items.carbide, 150, NHItems.metalOxhydrigen, 80));
 
             ammo(
-                    NHItems.zeta, new AdaptBulletType(80f, 20f){{
+                    NHItems.zeta, new AdaptBulletType(60f, 20f){{
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
@@ -182,7 +182,7 @@ public class TurretBlock {
 
                         pierceCap = 3;
                     }},
-                    NHItems.metalOxhydrigen, new AdaptBulletType(100f, 25f){{
+                    NHItems.metalOxhydrigen, new AdaptBulletType(75f, 25f){{
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
