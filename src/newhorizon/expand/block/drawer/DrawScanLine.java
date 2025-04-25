@@ -1,6 +1,5 @@
 package newhorizon.expand.block.drawer;
 
-import arc.func.Cons;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -49,13 +48,7 @@ public class DrawScanLine extends DrawBlock implements Cloneable{
 		Draw.reset();
 		Draw.blend();
 	}
-	
-	public DrawScanLine copyAnd(Cons<DrawScanLine> modifier){
-		DrawScanLine n = copy();
-		modifier.get(n);
-		return n;
-	}
-	
+
 	public DrawScanLine copy(){
 		try{
 			return (DrawScanLine)super.clone();

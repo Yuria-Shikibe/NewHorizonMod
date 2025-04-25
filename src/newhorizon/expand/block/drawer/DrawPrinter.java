@@ -8,7 +8,6 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import mindustry.Vars;
-import mindustry.content.Items;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -17,21 +16,17 @@ import mindustry.world.Block;
 import mindustry.world.draw.DrawDefault;
 
 public class DrawPrinter extends DrawDefault{
-	public DrawPrinter(Item item){
-		this.toPrint = item;
-	}
-	
-	public DrawPrinter(){
-		this.toPrint = Items.copper;
-	}
-	
 	public Color printColor;
 	public Color lightColor;
 	public float moveLength = 8f;
 	public Item toPrint;
 	public float time;
 	public TextureRegion bottom, lightRegion;
-	
+
+	public DrawPrinter(Item item){
+		this.toPrint = item;
+	}
+
 	public void draw(Building entity) {
 		Draw.rect(bottom, entity.x, entity.y);
 		Draw.color(printColor);
@@ -45,9 +40,7 @@ public class DrawPrinter extends DrawDefault{
 
 		Draw.rect(entity.block.region, entity.x, entity.y);
 		
-		Draw.draw(Layer.blockOver, () -> {
-			Drawf.construct(entity.x, entity.y, toPrint.fullIcon, printColor, 0, entity.progress(), entity.progress(), entity.totalProgress() * 3f);
-		});
+		Draw.draw(Layer.blockOver, () -> Drawf.construct(entity.x, entity.y, toPrint.fullIcon, printColor, 0, entity.progress(), entity.progress(), entity.totalProgress() * 3f));
 		
 		if (lightColor.a > 0.001f) {
 			Draw.color(lightColor, entity.warmup());
@@ -68,7 +61,6 @@ public class DrawPrinter extends DrawDefault{
 	public void load(Block block) {
 		bottom = Core.atlas.find(block.name + "-bottom");
 		lightRegion = Core.atlas.find(block.name + "-light");
-		//toPrintObj = Core.atlas.find(toPrint.name);
 	}
 
 	@Override

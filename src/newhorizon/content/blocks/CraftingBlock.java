@@ -17,6 +17,7 @@ import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
@@ -31,6 +32,7 @@ import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
+import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
@@ -820,10 +822,28 @@ public class CraftingBlock {
 
             filter = Seq.with(ModuleBlock.armorT1, ModuleBlock.armorT2, ModuleBlock.coreT1, ModuleBlock.coreT2);
 
+            updateEffect = new Effect(25f, e-> {
+                Draw.color(Pal.techBlue, Color.white, e.fout() * 0.6f);
+                randLenVectors(e.id, 5, 12f * e.finpow(), (x, y) -> {
+                    Fill.square(e.x + x, e.y + y, 2f * e.fout(), 45);
+                    Drawf.light(e.x + x, e.y + y, e.fout() * 12f, e.color, 0.7f);
+                });
+            });
+
+            craftEffect = new Effect(25f, e-> {
+                Draw.color(Pal.techBlue, Color.white, e.fout() * 0.6f);
+                randLenVectors(e.id, 12, 26f * e.finpow(), (x, y) -> {
+                    Fill.square(e.x + x, e.y + y, 2f * e.fout());
+                    Drawf.light(e.x + x, e.y + y, e.fout() * 12f, e.color, 0.7f);
+                });
+            });
+
             drawer = new DrawMulti(
-                new DrawRegion(){{
-                    suffix = "-base";
-                }}
+                new DrawRegion("-bottom"),
+                new DrawPrintPayload(),
+                new DrawScanLine(),
+                new DrawRegion("-base"),
+                new DrawGlowRegion("-light"){{color = Pal.techBlue;}}
             );
         }};
         mechanicAssemblyMk2 = new PayloadCrafter("mechanic-assembly-mk2"){{

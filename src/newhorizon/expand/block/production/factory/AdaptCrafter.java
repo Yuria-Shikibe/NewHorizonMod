@@ -208,7 +208,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 }
             }
 
-            if (items != null){
+            if (items != null && outputItems != null){
                 for (ItemStack stack: outputItems){
                     if (items.get(stack.item) >= itemCapacity){
                         items.set(stack.item, itemCapacity);

@@ -221,6 +221,14 @@ public class PayloadCrafter extends AdaptCrafter {
         }
 
         @Override
+        public void drawSelect() {
+            super.drawSelect();
+            if (recipe != null) {
+                drawItemSelection(recipe);
+            }
+        }
+
+        @Override
         public void dumpOutputs() {
             super.dumpOutputs();
             if (recipe != null) {
