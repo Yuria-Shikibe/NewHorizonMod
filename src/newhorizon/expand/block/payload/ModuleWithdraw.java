@@ -2,6 +2,7 @@ package newhorizon.expand.block.payload;
 
 import arc.math.Mathf;
 import mindustry.type.PayloadSeq;
+import mindustry.world.Block;
 import mindustry.world.blocks.payloads.BuildPayload;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 
@@ -11,6 +12,18 @@ public class ModuleWithdraw extends ModuleSource{
     public ModuleWithdraw(String name) {
         super(name);
         enableDrawStatus = false;
+        config(Block.class, (ModuleWithdrawBuild build, Block block) -> {
+            if(canProduce(block) && build.configBlock != block){
+                build.configBlock = block;
+                build.unit = null;
+                if (build.payload != null){
+                    PayloadSeq storage = worldData.teamPayloadData.getPayload(build.team);
+                    storage.add(block, 1);
+                }
+                build.payload = null;
+                build.scl = 0f;
+            }
+        });
         consume(new NHConsumeShowStat(e -> null, e -> null, e -> null, b -> worldData.teamPayloadData.getPayload(b.team)));
     }
 

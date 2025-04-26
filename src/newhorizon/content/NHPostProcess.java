@@ -12,10 +12,12 @@ import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.power.ThermalGenerator;
@@ -30,6 +32,8 @@ import mindustry.world.meta.StatCat;
 import newhorizon.NHSetting;
 import newhorizon.content.bullets.VanillaOverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
+import newhorizon.expand.bullets.AdaptBulletType;
+import newhorizon.util.func.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -333,6 +337,19 @@ public class NHPostProcess {
 
 	public static void postProcessOverride(){
 		overrideStats();
+		setupAdaptBulletType();
+	}
+
+	public static void setupAdaptBulletType(){
+		replaceUnitTypeWeaponBullet(alpha.weapons.get(0), VanillaOverrideBullets.alpha0, (AdaptBulletType b) -> b.setDamage(15, 15));
+		replaceUnitTypeWeaponBullet(beta.weapons.get(0), VanillaOverrideBullets.beta0, (AdaptBulletType b) -> b.setDamage(20, 20));
+		replaceUnitTypeWeaponBullet(gamma.weapons.get(0), VanillaOverrideBullets.gamma0, (AdaptBulletType b) -> b.setDamage(25, 25));
+	}
+
+	public static void replaceUnitTypeWeaponBullet(Weapon weapon, AdaptBulletType replacement, Cons<AdaptBulletType> modifier){
+		ReflectionUtil.copyProperties(weapon.bullet, replacement);
+		modifier.get(replacement);
+		weapon.bullet = replacement;
 	}
 
 	public static void setModContentEnv(){
@@ -813,28 +830,10 @@ public class NHPostProcess {
 			core.armor = 5;
 		});
 
-		adjustContent(UnitTypes.alpha, content -> {
-			UnitType unitType = (UnitType)content;
-			unitType.mineSpeed = 8f;
-			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
-				weapon.reload = 15f;
-				weapon.bullet = VanillaOverrideBullets.alpha0;
-			});
-		});
-
 		adjustContent(Blocks.coreFoundation, content -> {
 			CoreBlock core = (CoreBlock)content;
 			//core.health *= 5;
 			core.armor = 10;
-		});
-
-		adjustContent(UnitTypes.beta, content -> {
-			UnitType unitType = (UnitType)content;
-			unitType.mineSpeed = 10f;
-			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
-				weapon.reload = 20f;
-				weapon.bullet = VanillaOverrideBullets.beta0;
-			});
 		});
 
 		adjustContent(Blocks.coreNucleus, content -> {
@@ -843,13 +842,22 @@ public class NHPostProcess {
 			core.armor = 15;
 		});
 
+		adjustContent(UnitTypes.alpha, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 8f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {weapon.reload = 15f;});
+		});
+
+		adjustContent(UnitTypes.beta, content -> {
+			UnitType unitType = (UnitType)content;
+			unitType.mineSpeed = 10f;
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {weapon.reload = 20f;});
+		});
+
 		adjustContent(UnitTypes.gamma, content -> {
 			UnitType unitType = (UnitType)content;
 			unitType.mineSpeed = 12.5f;
-			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
-				weapon.reload = 16f;
-				weapon.bullet = VanillaOverrideBullets.gamma0;
-			});
+			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
 		});
 	}
 

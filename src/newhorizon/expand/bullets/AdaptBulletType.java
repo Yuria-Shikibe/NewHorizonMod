@@ -23,6 +23,13 @@ public class AdaptBulletType extends BasicBulletType {
         damage = (kineticDamage + energyDamage)/2f;
     }
 
+    public void setDamage(float kineticDamage, float energyDamage) {
+        this.kineticDamage = kineticDamage;
+        this.energyDamage = energyDamage;
+
+        damage = (kineticDamage + energyDamage)/2f;
+    }
+
     public float continuousKineticDamage() {
         return super.continuousDamage();
     }
