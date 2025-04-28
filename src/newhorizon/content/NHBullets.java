@@ -30,7 +30,7 @@ import mindustry.type.Weapon;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.bullets.RaidBullets;
-import newhorizon.content.bullets.VanillaOverrideBullets;
+import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.bullets.*;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
@@ -2577,6 +2577,6 @@ public class NHBullets{
 		};
 
 		RaidBullets.load();
-		VanillaOverrideBullets.load();
+		OverrideBullets.load();
 	}
 }

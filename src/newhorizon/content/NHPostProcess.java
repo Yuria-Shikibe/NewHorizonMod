@@ -30,7 +30,7 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatCat;
 import newhorizon.NHSetting;
-import newhorizon.content.bullets.VanillaOverrideBullets;
+import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.util.func.ReflectionUtil;
@@ -341,15 +341,26 @@ public class NHPostProcess {
 	}
 
 	public static void setupAdaptBulletType(){
-		replaceUnitTypeWeaponBullet(alpha.weapons.get(0), VanillaOverrideBullets.alpha0, (AdaptBulletType b) -> b.setDamage(15, 15));
-		replaceUnitTypeWeaponBullet(beta.weapons.get(0), VanillaOverrideBullets.beta0, (AdaptBulletType b) -> b.setDamage(20, 20));
-		replaceUnitTypeWeaponBullet(gamma.weapons.get(0), VanillaOverrideBullets.gamma0, (AdaptBulletType b) -> b.setDamage(25, 25));
+		replaceUnitTypeBullets(alpha, alpha.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(15, 15));
+		replaceUnitTypeBullets(beta, beta.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(20, 20));
+		replaceUnitTypeBullets(gamma, gamma.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(25, 25));
 	}
 
-	public static void replaceUnitTypeWeaponBullet(Weapon weapon, AdaptBulletType replacement, Cons<AdaptBulletType> modifier){
-		ReflectionUtil.copyProperties(weapon.bullet, replacement);
-		modifier.get(replacement);
-		weapon.bullet = replacement;
+	public static void replaceUnitTypeBullets(UnitType unitType, BulletType bulletType, Cons<AdaptBulletType> modifier){
+		BulletType replacement = replaceBullet(bulletType, modifier);
+		for (Weapon weapon: unitType.weapons){
+			if (weapon.bullet == bulletType){
+				weapon.bullet = replacement;
+			}
+		}
+	}
+	public static BulletType replaceBullet(BulletType bullet, Cons<AdaptBulletType> modifier){
+		BulletType bulletType = OverrideBullets.getReplacement(bullet);
+		if(bulletType instanceof AdaptBulletType replacement){
+			ReflectionUtil.copyProperties(bullet, replacement);
+			modifier.get(replacement);
+		}
+		return bulletType;
 	}
 
 	public static void setModContentEnv(){

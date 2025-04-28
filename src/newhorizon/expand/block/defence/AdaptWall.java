@@ -147,6 +147,11 @@ public class AdaptWall extends Wall {
 		}
 
 		@Override
+		public boolean checkSolid(){
+			return false;
+		}
+
+		@Override
 		public boolean collision(Bullet other){
 			if(other.type.absorbable)other.absorb();
 			return super.collision(other);

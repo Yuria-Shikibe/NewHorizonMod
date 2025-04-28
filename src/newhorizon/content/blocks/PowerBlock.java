@@ -32,8 +32,6 @@ public class PowerBlock {
             laserRange = 8;
             maxNodes = 10;
             gravityRange = laserRange * tilesize * 1.5f;
-
-            consumePowerBuffered(5000f);
         }};
 
         gravityTrapErekir = new GravityWallSubstation("gravity-node-erekir"){{
@@ -43,8 +41,8 @@ public class PowerBlock {
             health = 400;
             laserRange = 8;
             maxNodes = 10;
-            clipSize = gravityRange = laserRange * tilesize * 1.5f;
-            consumePowerBuffered(5000f);
+            gravityRange = laserRange * tilesize * 1.5f;
+            clipSize = gravityRange * 2f;
         }};
 
         gravityTrapSmall = new GravityWallSubstation("gravity-trap"){{
@@ -54,8 +52,8 @@ public class PowerBlock {
             health = 640;
             laserRange = 12;
             maxNodes = 20;
-            clipSize = gravityRange = laserRange * tilesize * 1.5f;
-            consumePowerBuffered(20000f);
+            gravityRange = laserRange * tilesize * 1.5f;
+            clipSize = gravityRange * 2f;
         }};
 
         gravityTrap = new GravityWallSubstation("gravity-trap-heavy"){{
@@ -65,8 +63,8 @@ public class PowerBlock {
             health = 1250;
             laserRange = 30;
             maxNodes = 6;
-            clipSize = gravityRange = laserRange * tilesize * 1.2f;
-            consumePowerBuffered(100000f);
+            gravityRange = laserRange * tilesize * 1.2f;
+            clipSize = gravityRange * 2f;
         }};
 
         zetaGenerator = new RecipeGenericCrafter("zeta-generator"){{

@@ -1,18 +1,17 @@
 package newhorizon.util.func;
 
 import arc.struct.ObjectMap;
-import arc.util.Log;
-import mindustry.entities.bullet.BulletType;
-import newhorizon.expand.bullets.AdaptBulletType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class ReflectionUtil {
+    public static ObjectMap<String, Field> targetFieldMap = new ObjectMap<>();
+
     //copy the old bullet as a AdaptBulletType
     public static void copyProperties(Object source, Object target) {
         try {
-            ObjectMap<String, Field> targetFieldMap = new ObjectMap<>();
+            targetFieldMap.clear();
 
             Class<?> targetClass = target.getClass();
             while (targetClass != null) {
