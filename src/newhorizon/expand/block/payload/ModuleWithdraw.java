@@ -16,11 +16,6 @@ public class ModuleWithdraw extends ModuleSource{
             if(canProduce(block) && build.configBlock != block){
                 build.configBlock = block;
                 build.unit = null;
-                if (build.payload != null){
-                    PayloadSeq storage = worldData.teamPayloadData.getPayload(build.team);
-                    storage.add(block, 1);
-                }
-                build.payload = null;
                 build.scl = 0f;
             }
         });

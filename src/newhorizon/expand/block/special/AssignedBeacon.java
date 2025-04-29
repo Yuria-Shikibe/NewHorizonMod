@@ -426,6 +426,11 @@ public class AssignedBeacon extends Block {
                         targets[i] = value;
                         targetProgress[i] = 0;
                         if (other.block instanceof GenericCrafter gc) targetProgress[i] = -gc.craftTime * craftMul;
+                        if (other instanceof PayloadCrafter.PayloadCrafterBuild pcb){
+                            if (pcb.recipe != null && pcb.recipeCost() != null){
+                                targetProgress[i] = -pcb.recipeCost().craftTime * craftMul;
+                            }
+                        }
                         return;
                     }
                 }
