@@ -122,6 +122,7 @@ public class AdaptWall extends Wall {
 				Draw.alpha(0.5f);
 				Fill.square(wall.x, wall.y, 2);
 			}
+			Draw.reset();
 		}
 
 		public void updateProximityWall(){

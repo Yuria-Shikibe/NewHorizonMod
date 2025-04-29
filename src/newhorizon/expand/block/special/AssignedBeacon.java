@@ -425,6 +425,7 @@ public class AssignedBeacon extends Block {
                     if (targets[i] == -1){
                         targets[i] = value;
                         targetProgress[i] = 0;
+                        if (other.block instanceof GenericCrafter gc) targetProgress[i] = -gc.craftTime * craftMul;
                         return;
                     }
                 }
