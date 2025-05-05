@@ -48,7 +48,7 @@ public class NewHorizon extends Mod{
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
-	public static final String SERVER = "203.135.99.51:10094", SERVER_ADDRESS = "175.178.22.6", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
+	public static final String SERVER = "203.135.99.51:10094", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
 	public static final String EU_NH_SERVER = "Emphasize.cn:12510";
 	
 	private static boolean showed = false;
@@ -152,7 +152,7 @@ public class NewHorizon extends Mod{
 				for (Seq<Content> contents: content.getContentMap()){
 					for (Content content: contents){
 						if (content instanceof UnlockableContent unlockableContent){
-							unlockableContent.quietUnlock();
+							if (unlockableContent.name.startsWith("new-horizon")) unlockableContent.quietUnlock();
 						}
 					}
 				}
@@ -204,7 +204,7 @@ public class NewHorizon extends Mod{
 
 		NHSetting.load();
 		NHPostProcess.load();
-		NHPostProcess.loadOptional();
+		if (NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE))NHPostProcess.loadOptional();
 		NHContent.loadLast();
 
 		Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");

@@ -317,9 +317,7 @@ public class NHPostProcess {
 
 	public static void loadOptional(){
 		overrideVanillaMain();
-	}
 
-	public static void contentOverride(){
 		setModContentEnv();
 		overrideUnitTypeAbility();
 		buffCoreUnits();
@@ -330,6 +328,10 @@ public class NHPostProcess {
 		adjustVanillaPower();
 		adjustVanillaUnit();
 		adjustVanillaLogic();
+	}
+
+	public static void contentOverride(){
+
 
 		//overrideStats();
 	}
@@ -374,10 +376,6 @@ public class NHPostProcess {
 	public static void overrideVanillaMain(){
 		replaceVanillaVisualContent();
 		replaceVanillaSpawnGroup();
-
-		//Icon.icons.put("nhIcon0", new TextureRegionDrawable(NHContent.icon));
-		//todo set the icon
-		//Team.blue.name = "ancient";
 	}
 
 	public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval){

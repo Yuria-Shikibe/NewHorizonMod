@@ -86,13 +86,6 @@ public class NHRegister{
 				});
 			}
 
-			if(!Vars.headless && Vars.net.active() && NHSetting.getBool(NHSetting.EXPERIMENTAL)){
-				Core.app.post(() -> {
-					Vars.ui.showConfirm("need disable experimental content", NHSetting::showDialog);
-					Vars.net.disconnect();
-				});
-			}
-
 			Core.app.post(() -> {
                 Vars.state.isPlaying();
                 Core.app.post(() -> Core.app.post(() -> Core.app.post(() ->
