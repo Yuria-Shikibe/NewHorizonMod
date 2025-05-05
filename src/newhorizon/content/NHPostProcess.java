@@ -5,6 +5,7 @@ import arc.func.Intc;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Structs;
@@ -19,16 +20,14 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.ContinuousTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.consumers.ConsumeLiquid;
-import mindustry.world.meta.BuildVisibility;
-import mindustry.world.meta.Env;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatCat;
+import mindustry.world.meta.*;
 import newhorizon.NHSetting;
 import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
@@ -584,6 +583,17 @@ public class NHPostProcess {
 				if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
 					block.stats.remove(Stat.ammo);
 					block.stats.add(Stat.ammo, NHStatValues.ammo(itemTurret.ammoTypes, 0, false));
+				}
+			}
+
+			if (block instanceof ContinuousTurret continuousTurret){
+				block.checkStats();
+				var map = block.stats.toMap();
+				if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
+					block.stats.remove(Stat.ammo);
+					ObjectMap<UnlockableContent, BulletType> ammo = new ObjectMap<>();
+					ammo.put(continuousTurret, continuousTurret.shootType);
+					block.stats.add(Stat.ammo, NHStatValues.ammo(ammo, 0, false));
 				}
 			}
 		}

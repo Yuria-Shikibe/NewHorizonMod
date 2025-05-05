@@ -25,7 +25,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
 import mindustry.world.meta.StatValues;
-import newhorizon.expand.bullets.AdaptBulletType;
+import newhorizon.expand.bullets.TypeDamageBulletType;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
@@ -60,8 +60,8 @@ public class NHStatValues {
                         bt.row();
                     }
 
-                    if (type instanceof AdaptBulletType adaptBulletType){
-                        adaptBulletType.buildStat(t, bt, compact);
+                    if (type instanceof TypeDamageBulletType typeDamageBulletType){
+                        typeDamageBulletType.buildStat(t, bt, compact);
                     }else {
                         if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
                             if(type.continuousDamage() > 0){
@@ -196,7 +196,7 @@ public class NHStatValues {
         }
     }
 
-    public static StatValue boosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter){
+    public static StatValue boosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter, boolean noReloadBoost){
         return table -> {
             table.row();
             table.table(c -> {
@@ -216,7 +216,7 @@ public class NHStatValues {
                             float reloadRate = (baseReload ? 1f : 0f) + maxUsed * multiplier * liquid.heatCapacity;
                             float standardReload = baseReload ? reload : reload / (maxUsed * multiplier * 0.4f);
                             float result = standardReload / (reload / reloadRate);
-                            bt.add(Core.bundle.format("bullet.reload", Strings.autoFixed(result * 100, 2))).pad(5).right().row();
+                            if (!noReloadBoost) bt.add(Core.bundle.format("bullet.reload", Strings.autoFixed(result * 100, 2))).pad(5).right().row();
                             bt.add(Core.bundle.format("nh.stat.speed-up-turret-coolant", Strings.autoFixed((liquid.heatCapacity + 1) * 100, 2), Strings.autoFixed((1 / (liquid.heatCapacity + 1)) * 100, 0))).pad(5);
                         }).right().grow().pad(10f).padRight(15f);
                     }).growX().pad(5).row();

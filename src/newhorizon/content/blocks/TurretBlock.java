@@ -1,39 +1,59 @@
 package newhorizon.content.blocks;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
+import arc.util.OS;
+import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
+import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
+import mindustry.entities.Sized;
 import mindustry.entities.bullet.ArtilleryBulletType;
+import mindustry.entities.bullet.PointLaserBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.entities.pattern.ShootBarrel;
 import mindustry.entities.pattern.ShootMulti;
 import mindustry.entities.pattern.ShootPattern;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.ContinuousTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.consumers.ConsumeCoolant;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BuildVisibility;
+import newhorizon.NHSetting;
 import newhorizon.content.*;
 import newhorizon.content.bullets.RaidBullets;
+import newhorizon.expand.block.turrets.ContinuousOverheatTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.expand.bullets.PosLightningType;
+import newhorizon.expand.bullets.UpgradePointLaserBulletType;
 import newhorizon.expand.game.NHUnitSorts;
+import newhorizon.util.feature.PosLightning;
+import newhorizon.util.func.NHFunc;
+import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {
-    public static Block electro, argmot, synchro, slavio;
+    public static Block electro, argmot, synchro, slavio, concentration;
 
     public static Block testShooter;
 
@@ -129,6 +149,7 @@ public class TurretBlock {
             hasLiquids = true;
             coolant = new ConsumeCoolant(0.15f){{
                 booster = false;
+                optional = false;
             }};
             size = 3;
             range = 200;
@@ -166,7 +187,7 @@ public class TurretBlock {
 
                         shootEffect = Fx.shootBig2;
                         smokeEffect = Fx.shootSmokeDisperse;
-                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitEffect = despawnEffect = NHFx.hitSpark;
 
                         despawnShake = 7f;
 
@@ -275,6 +296,75 @@ public class TurretBlock {
 
             coolant = consumeCoolant(0.25f);
             coolantMultiplier = 2.5f;
+        }};
+        concentration = new ContinuousOverheatTurret("concentration"){{
+            requirements(Category.turret, with(Items.carbide, 150, NHItems.setonAlloy, 80, NHItems.seniorProcessor, 75));
+
+            shootType = new UpgradePointLaserBulletType(){{
+                hitEffect = NHFx.hitSpark;
+                buildingDamageMultiplier = 0.5f;
+                damageInterval = 6;
+                sprite = "laser-white";
+                status = NHStatusEffects.emp3;
+                statusDuration = 60;
+                oscScl /= 1.77f;
+                oscMag /= 1.33f;
+                hitShake = 2;
+                range = 75 * 8;
+
+                trailLength = 8;
+
+                setDamage(400, 200);
+            }};
+
+            drawer = new DrawTurret(){{
+                parts.add(new RegionPart("-charger"){{
+                    mirror = true;
+                    under = true;
+                    moveRot = 10;
+                    moveX = 4.677f;
+                    moveY = 6.8f;
+                }});
+                parts.add(new RegionPart("-side"){{
+                    mirror = true;
+                    under = true;
+                    moveRot = 10;
+                    moveX = 2.75f;
+                    moveY = 2;
+                }});
+                parts.add(new RegionPart("-barrel"){{
+                    moveY = -7.5f;
+                    progress = progress.curve(Interp.pow2Out);
+                }});
+            }};
+
+            shootSound = Sounds.none;
+            loopSoundVolume = 1f;
+            loopSound = NHSounds.largeBeam;
+
+            shootWarmupSpeed = 0.08f;
+            shootCone = 360f;
+
+            aimChangeSpeed = 1.75f;
+            rotateSpeed = 1.45f;
+            canOverdrive = false;
+
+            shootY = 16f;
+            minWarmup = 0.8f;
+            warmupMaintainTime = 45;
+            shootWarmupSpeed /= 2;
+            outlineColor = Pal.darkOutline;
+            size = 5;
+            range = 75 * 8f;
+            scaledHealth = 300;
+            armor = 10;
+
+            unitSort = NHUnitSorts.slowest;
+
+            consumePower(16);
+            consumeLiquid(NHLiquids.xenFluid, 12f / 60f);
+
+            //coolant = consume(new ConsumeLiquid(NHLiquids.irdryonFluid, 6f / 60f));
         }};
         electro = new ItemTurret("electro"){{
             requirements(Category.turret, with(Items.lead, 200, Items.plastanium, 80, NHItems.juniorProcessor, 100, NHItems.multipleSteel, 150, Items.graphite, 100));

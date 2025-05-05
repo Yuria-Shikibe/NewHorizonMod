@@ -41,7 +41,7 @@ public class CraftingBlock {
         //vanilla adapt build
         sandCracker, oilRefiner,
         convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
-        stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
+        stampingFacility, processorPrinter, crucibleFoundry, crucibleCaster, crystallizer, zetaDissociator, surgeRefactor,
         fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
         multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
 
@@ -310,6 +310,32 @@ public class CraftingBlock {
                         suffix = "-top";
                     }}
             );
+        }};
+        crucibleCaster = new RecipeGenericCrafter("crucible-caster"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.carbide, 40, Items.phaseFabric, 60));
+
+            rotate = false;
+            size = 3;
+
+            addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
+                    -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/,
+                    -1, 2, 1, 0, 2, 1, 1, 2, 1,
+                    -1, -2, 1, 0, -2, 1, 1, -2, 1
+            );
+
+            craftTime = 60f;
+            consumePower(600 / 60f);
+
+            addInput(ItemStack.with(Items.tungsten, 2, Items.phaseFabric, 1), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 2, Items.blastCompound, 2), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.with(Liquids.cyanogen, 6 / 60f));
+
+            outputItems = with(Items.carbide, 5);
+
+            itemCapacity = 15;
+
+            drawer = new DrawDefault();
         }};
         crystallizer = new RecipeGenericCrafter("crystallizer"){{
             requirements(Category.crafting, BuildVisibility.shown,

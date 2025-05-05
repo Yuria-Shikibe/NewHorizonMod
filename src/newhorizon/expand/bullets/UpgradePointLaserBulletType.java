@@ -1,19 +1,28 @@
 package newhorizon.expand.bullets;
 
+import arc.Core;
+import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
+import arc.scene.ui.layout.Table;
+import arc.util.Log;
+import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
+import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Damage;
+import mindustry.entities.bullet.PointLaserBulletType;
+import mindustry.game.EventType;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
+import mindustry.world.meta.StatUnit;
 import newhorizon.NHSetting;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHFx;
@@ -22,12 +31,14 @@ import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.headless;
+import static mindustry.Vars.tilesize;
+import static newhorizon.content.NHStatValues.buildSharedBulletTypeStat;
 
-public class UpgradePointLaserBulletType extends AdaptBulletType {
-    public Color from = frontColor, to = NHColor.darkEnrColor;
+public class UpgradePointLaserBulletType extends PointLaserBulletType implements TypeDamageBulletType{
+    public Color from = NHColor.lightSky, to = NHColor.darkEnrColor;
     public float oscScl = 2f, oscMag = 0.3f;
 
-    public float chargeReload = 90f;
+    public float chargeReload = 300f;
     public float lerpReload = 10f;
     public float maxDamageMultiplier = 5f;
 
@@ -35,8 +46,11 @@ public class UpgradePointLaserBulletType extends AdaptBulletType {
 
     private final Color tmpColor = new Color();
 
-    public UpgradePointLaserBulletType(float kineticDamage, float energyDamage) {
-        super(kineticDamage, energyDamage);
+    public String bundleName = "nh.bullet.desc";
+    public float kineticDamage, energyDamage;
+
+    public UpgradePointLaserBulletType() {
+        damage = 0;
     }
 
     public boolean charged(Bullet b){
@@ -58,43 +72,11 @@ public class UpgradePointLaserBulletType extends AdaptBulletType {
 
     @Override
     public float estimateDPS(){
-        return damage / damageInterval * 60f * maxDamageMultiplier;
+        return kineticDamage / damageInterval * 60f * maxDamageMultiplier;
     }
 
-    @Override
-    public void updateTrailEffects(Bullet b){
-        if(trailChance > 0){
-            if(Mathf.chanceDelta(trailChance)){
-                trailEffect.at(b.aimX, b.aimY, trailRotation ? b.angleTo(b.aimX, b.aimY) : (trailParam * b.fslope()), trailColor);
-            }
-        }
-
-        if(trailInterval > 0f){
-            if(b.timer(0, trailInterval)){
-                trailEffect.at(b.aimX, b.aimY, trailRotation ? b.angleTo(b.aimX, b.aimY) : (trailParam * b.fslope()), trailColor);
-            }
-        }
-    }
-
-    @Override
-    public void updateTrail(Bullet b){
-        if(!headless && trailLength > 0){
-            if(b.trail == null){
-                b.trail = new Trail(trailLength);
-            }
-            b.trail.length = trailLength;
-            b.trail.update(b.aimX, b.aimY, b.fslope() * (1f - (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)));
-        }
-    }
-
-    @Override
-    public void updateBulletInterval(Bullet b){
-        if(intervalBullet != null && b.time >= intervalDelay && b.timer.get(2, bulletInterval)){
-            float ang = b.rotation();
-            for(int i = 0; i < intervalBullets; i++){
-                intervalBullet.create(b, b.aimX, b.aimY, ang + Mathf.range(intervalRandomSpread) + intervalAngle + ((i - (intervalBullets - 1f)/2f) * intervalSpread));
-            }
-        }
+    public float damageMultiplier(Bullet b){
+        return 1 + warmup(b) * maxDamageMultiplier;
     }
 
     @Override
@@ -105,8 +87,6 @@ public class UpgradePointLaserBulletType extends AdaptBulletType {
 
         if(b.timer.get(0, damageInterval)) Damage.collidePoint(b, b.team, hitEffect, b.aimX, b.aimY);
 
-        b.damage = damage * (1 + warmup(b) * maxDamageMultiplier);
-        b.fdata += Time.delta;
         b.fdata = Math.min(b.fdata, chargeReload + lerpReload / 2f);
 
         if(charged(b)){
@@ -118,9 +98,40 @@ public class UpgradePointLaserBulletType extends AdaptBulletType {
     }
 
     @Override
+    public void hit(Bullet b, float x, float y) {
+        super.hit(b, x, y);
+    }
+
+    @Override
+    public void hitEntity(Bullet b, Hitboxc entity, float health) {
+        boolean wasDead = entity instanceof Unit u && u.dead;
+        if(entity instanceof Healthc h){
+            float shield = entity instanceof Shieldc s ? Math.max(s.shield(), 0f) : 0f;
+            float damage = shield > 0? Math.min(energyDamage * damageMultiplier(b), shield): kineticDamage * damageMultiplier(b);
+            if(pierceArmor) h.damagePierce(damage);
+            else h.damage(damage);
+        }
+
+        if(entity instanceof Unit unit){
+            Tmp.v3.set(unit).sub(b).nor().scl(knockback * 80f);
+            if(impact) Tmp.v3.setAngle(b.rotation() + (knockback < 0 ? 180f : 0f));
+            unit.impulse(Tmp.v3);
+            unit.apply(status, statusDuration);
+
+            Events.fire(bulletDamageEvent.set(unit, b));
+        }
+
+        if(!wasDead && entity instanceof Unit unit && unit.dead){
+            Events.fire(new EventType.UnitBulletDestroyEvent(unit, b));
+        }
+
+        handlePierce(b, health, entity.x(), entity.y());
+    }
+
+    @Override
     public void draw(Bullet b){
         float darkenPartWarmup = warmup(b);
-        float stroke =  b.fslope() * (1f - oscMag + Mathf.absin(Time.time, oscScl, oscMag)) * (darkenPartWarmup + 1) * 5;
+        float stroke = b.fslope() * (1f - oscMag + Mathf.absin(Time.time, oscScl, oscMag)) * (darkenPartWarmup + 1) * 5;
 
         if(trailLength > 0 && b.trail != null){
             float z = Draw.z();
@@ -184,5 +195,47 @@ public class UpgradePointLaserBulletType extends AdaptBulletType {
         }
 
         Draw.reset();
+    }
+
+
+    @Override
+    public void setDamage(float kineticDamage, float energyDamage) {
+        this.kineticDamage = kineticDamage;
+        this.energyDamage = energyDamage;
+
+        damage = (kineticDamage + energyDamage)/2f;
+    }
+
+    @Override
+    public void setSplash(float kineticDamage, float energyDamage, float splashRadius, int maxTarget) {}
+
+    @Override
+    public void setDescription(String key) {
+        bundleName = "nh.bullet." + key;
+    }
+
+    @Override
+    public float continuousKineticDamage() {
+        return kineticDamage * (60f / damageInterval);
+    }
+
+    @Override
+    public float continuousEnergyDamage() {
+        return energyDamage * (60f / damageInterval);
+    }
+
+    @Override
+    public void buildStat(UnlockableContent t, Table bt, boolean compact){
+        if (Core.bundle.getOrNull(bundleName) != null) {
+            bt.add(Core.bundle.get(bundleName)).wrap().fillX().padTop(8).padBottom(8).width(500);
+            bt.row();
+        }
+
+        bt.add(Core.bundle.format("nh.damage-detail", continuousKineticDamage(), continuousEnergyDamage()) + StatUnit.perSecond.localized());
+        bt.row();
+        bt.add(Core.bundle.format("nh.bullet-charge", "1", Strings.autoFixed(maxDamageMultiplier, 1)));
+        bt.row();
+
+        buildSharedBulletTypeStat(this, t, bt, compact);
     }
 }

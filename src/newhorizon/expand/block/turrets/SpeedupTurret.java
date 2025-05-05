@@ -42,7 +42,7 @@ public class SpeedupTurret extends PowerTurret{
 	@Override
 	public void setBars(){
 		super.setBars();
-		addBar("liquid",
+		addBar("speedboost",
 			(SpeedupTurretBuild entity) -> new Bar(
 				() -> Core.bundle.format("nh.bar.speed-up", Strings.autoFixed((entity.speedupScl) * 100, 0)),
 				() -> NHColor.lightSkyBack,
@@ -70,7 +70,7 @@ public class SpeedupTurret extends PowerTurret{
 
 		if(coolant != null){
 			stats.remove(Stat.booster);
-			stats.add(Stat.booster, NHStatValues.boosters(reload, coolant.amount, coolantMultiplier, true, l -> l.coolant && consumesLiquid(l)));
+			stats.add(Stat.booster, NHStatValues.boosters(reload, coolant.amount, coolantMultiplier, true, l -> l.coolant && consumesLiquid(l), false));
 		}
 	}
 	
