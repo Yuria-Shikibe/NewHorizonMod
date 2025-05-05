@@ -3,9 +3,12 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.struct.Seq;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
+import mindustry.ctype.Content;
+import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
@@ -27,6 +30,7 @@ import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
+import static mindustry.Vars.content;
 import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -143,6 +147,15 @@ public class NewHorizon extends Mod{
 			showStartLog();
 			Time.run(10f, () -> {
 				DebugFunc.updateBlockList();
+				//DebugFunc.replaceAllSpriteColor("E:/project/MindustryModDevLib/Exoprosopa-main/sprites/blocks", DebugFunc.EXOPROSOPA_SPRITE_PALETTE);
+				//DebugFunc.replaceAllSpriteColor("E:/project/MindustryModDevLib/Asthosus-main/sprites/blocks", DebugFunc.ASTHOSUS_SPRITE_PALETTE);
+				for (Seq<Content> contents: content.getContentMap()){
+					for (Content content: contents){
+						if (content instanceof UnlockableContent unlockableContent){
+							unlockableContent.quietUnlock();
+						}
+					}
+				}
 				//DebugFunc.outputSettings();
 
 				//DebugFunc.writeBulletTypeList();

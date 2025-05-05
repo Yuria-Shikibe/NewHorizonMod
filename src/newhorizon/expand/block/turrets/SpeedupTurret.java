@@ -5,6 +5,8 @@ import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.util.Strings;
 import arc.util.Time;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -20,10 +22,10 @@ import newhorizon.content.NHStatValues;
 import newhorizon.content.NHStats;
 
 public class SpeedupTurret extends PowerTurret{
-	
+
 	public float overheatTime = 360f;
 	public float overheatCoolAmount = 1.25f;
-	
+
 	public float maxSpeedupScl = 0.5f;
 	public float speedupPerShoot = 0.075f;
 	
@@ -72,58 +74,59 @@ public class SpeedupTurret extends PowerTurret{
 		}
 	}
 	
-	@Override
-	public void init(){
-		super.init();
-	}
-	
 	public class SpeedupTurretBuild extends PowerTurretBuild{
 		public float speedupScl = 0f;
 		public float slowDownReload = 0f;
 		public float overheat = 0;
 		public boolean requireCompleteCooling = false;
-		
-		
+
 		@Override
 		public void updateTile(){
-			if(slowDownReload >= 1f){
+			updateCooldown();
+			if(overheat < overheatTime && !requireCompleteCooling){
+				super.updateTile();
+			}else{
+				forceCoolDown();
+			}
+		}
+
+		public void updateCooldown(){
+			if(slowDownReload > 0f){
 				slowDownReload -= Time.delta;
 			}else{
 				speedupScl = Mathf.lerpDelta(speedupScl, 0f, 0.05f);
 				if(!requireCompleteCooling)coolDown();
 			}
-			
+
 			if(overheat > overheatTime * 0.3f){
 				if(Mathf.chanceDelta(maxHeatEffectChance * (requireCompleteCooling ? 1 : overheat / overheatTime))){
 					heatEffect.at(x + Mathf.range(Vars.tilesize * size / 2), y + Mathf.range(Vars.tilesize * size / 2), rotation, heatColor);
 				}
 			}
-			
-			if(overheat < overheatTime && !requireCompleteCooling){
-				super.updateTile();
+		}
+
+		public void forceCoolDown(){
+			slowDownReload = 0;
+			coolDown();
+			if(linearWarmup){
+				shootWarmup = Mathf.approachDelta(shootWarmup, 0, shootWarmupSpeed);
 			}else{
-				slowDownReload = 0;
-				coolDown();
-				if(linearWarmup){
-					shootWarmup = Mathf.approachDelta(shootWarmup, 0, shootWarmupSpeed);
-				}else{
-					shootWarmup = Mathf.lerpDelta(shootWarmup, 0, shootWarmupSpeed);
-				}
-				
-				unit.tile(this);
-				unit.rotation(rotation);
-				unit.team(team);
-				curRecoil = Mathf.approachDelta(curRecoil, 0, 1 / recoilTime);
-				recoilOffset.trns(rotation, -Mathf.pow(curRecoil, recoilPow) * recoil);
-				
-				if(logicControlTime > 0){
-					logicControlTime -= Time.delta;
-				}
-				
-				if(overheat <= 0){
-					overheat = 0;
-					requireCompleteCooling = false;
-				}
+				shootWarmup = Mathf.lerpDelta(shootWarmup, 0, shootWarmupSpeed);
+			}
+
+			unit.tile(this);
+			unit.rotation(rotation);
+			unit.team(team);
+			curRecoil = Mathf.approachDelta(curRecoil, 0, 1 / recoilTime);
+			recoilOffset.trns(rotation, -Mathf.pow(curRecoil, recoilPow) * recoil);
+
+			if(logicControlTime > 0){
+				logicControlTime -= Time.delta;
+			}
+
+			if(overheat <= 0){
+				overheat = 0;
+				requireCompleteCooling = false;
 			}
 		}
 		
@@ -165,6 +168,32 @@ public class SpeedupTurret extends PowerTurret{
 		@Override
 		protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
 			super.bullet(type, xOffset, yOffset, angleOffset + Mathf.range(speedupScl * inaccuracyUp), mover);
+		}
+
+		@Override
+		public byte version() {
+			return 2;
+		}
+
+		@Override
+		public void write(Writes write) {
+			super.write(write);
+
+			write.f(overheat);
+			write.f(slowDownReload);
+			write.f(speedupScl);
+			write.bool(requireCompleteCooling);
+		}
+
+		@Override
+		public void read(Reads read, byte revision) {
+			super.read(read, revision);
+			if (revision == 2){
+				overheat = read.f();
+				slowDownReload = read.f();
+				speedupScl = read.f();
+				requireCompleteCooling = read.bool();
+			}
 		}
 	}
 }

@@ -1499,6 +1499,8 @@ public class NHBullets{
 			pierceCap = 2;
 
 			ammoMultiplier = 4;
+
+			setDescription("synchro-titanium");
 		}};
 
 		synchroZeta = new AdaptBulletType(80f, 40f){{
@@ -1524,9 +1526,11 @@ public class NHBullets{
 			status = NHStatusEffects.emp2;
 			statusDuration = 180f;
 
-			pierceCap = 3;
+			pierceCap = 2;
 
 			ammoMultiplier = 6;
+
+			setDescription("synchro-zeta");
 		}};
 		
 		synchroFusion = new BasicBulletType(8f, 65f){{

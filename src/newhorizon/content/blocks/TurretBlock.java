@@ -148,7 +148,7 @@ public class TurretBlock {
             requirements(Category.turret, with(NHItems.juniorProcessor, 120, NHItems.presstanium, 150, Items.carbide, 150, NHItems.metalOxhydrigen, 80));
 
             ammo(
-                    NHItems.zeta, new AdaptBulletType(60f, 20f){{
+                    NHItems.zeta, new AdaptBulletType(){{
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
@@ -180,9 +180,10 @@ public class TurretBlock {
                         ammoMultiplier = 3f;
                         lifetime = 80f;
 
-                        pierceCap = 3;
+                        setSplash(90, 30, 16, 5);
+                        setDescription("slavio-zeta");
                     }},
-                    NHItems.metalOxhydrigen, new AdaptBulletType(75f, 25f){{
+                    NHItems.metalOxhydrigen, new AdaptBulletType(){{
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
@@ -215,7 +216,8 @@ public class TurretBlock {
                         reloadMultiplier = 1.35f;
                         lifetime = 60f;
 
-                        pierceCap = 3;
+                        setSplash(120, 40, 20, 5);
+                        setDescription("slavio-metaloxhydrigen");
                     }}
             );
             shoot = new ShootAlternate(){{

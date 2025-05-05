@@ -38,6 +38,7 @@ public class NHColor{
 		Colors.put("heal", Pal.heal);
 		Colors.put("ancient", ancient);
 		Colors.put("reddust", Pal.redderDust);
+		Colors.put("ammo", Pal.ammo);
 	}
 }
 

@@ -7,6 +7,7 @@ import arc.graphics.Pixmap;
 import arc.graphics.PixmapIO;
 import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
@@ -22,6 +23,8 @@ import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.DrawFunc;
 
+import java.util.Objects;
+
 import static mindustry.Vars.*;
 
 public class DebugFunc {
@@ -29,6 +32,28 @@ public class DebugFunc {
     public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
     public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
+
+    public static final Color[] NH_SPRITE_PALETTE = {
+            Color.valueOf("abb1bf"), //light
+            Color.valueOf("8e909c"), //mid
+            Color.valueOf("5a5d70"), //dark
+            Color.valueOf("2e3039")  //black
+    };
+
+    public static final Color[] EXOPROSOPA_SPRITE_PALETTE = {
+            Color.valueOf("6b6881"),
+            Color.valueOf("4b495a"),
+            Color.valueOf("32303c"),
+            Color.valueOf("26262f"),
+    };
+
+    public static final Color[] ASTHOSUS_SPRITE_PALETTE = {
+            Color.valueOf("8f8a77"),
+            Color.valueOf("7a7564"),
+            Color.valueOf("5b574e"),
+            Color.valueOf("44413a"),
+    };
+
 
     public static Fi createPNGFile(String fileName){
         return new Fi(NH_DEBUG_GRAPHIC_FOLDER + fileName + ".png");
@@ -73,6 +98,38 @@ public class DebugFunc {
             Fi.get(NH_ROOT_PATH).child("blocklist.txt").writeString(sb.toString());
         }
     }
+
+    public static void replaceAllSpriteColor(String path, Color[] palette){
+        Fi fi = new Fi(path);
+        fi.walk(file -> replaceSpriteColor(path, file, palette));
+    }
+
+    public static void replaceSpriteColor(String parentPath, Fi sprite, Color[] palette){
+        if (!Objects.equals(sprite.extension(), "png")) return;
+        Fi parent = sprite.parent();
+        Fi out = new Fi(NH_DEBUG_GRAPHIC_FOLDER + parent.name().replace(parentPath, "") + "/" + sprite.name());
+        Pixmap pixmap = new Pixmap(sprite);
+        pixmap.each((x, y) -> {
+            if (pixmap.get(x, y) == palette[0].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[0]);
+            if (pixmap.get(x, y) == palette[1].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[1]);
+            if (pixmap.get(x, y) == palette[2].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[2]);
+            if (pixmap.get(x, y) == palette[3].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[3]);
+        });
+        PixmapIO.writePng(out, pixmap);
+        pixmap.dispose();
+    }
+
+    //public static void replaceAtlas(Color[] palette){
+    //    for (TextureAtlas.AtlasRegion region: Core.atlas.getRegions()){
+    //        Pixmap pixmap = region.pixmapRegion.pixmap;
+    //        pixmap.each((x, y) -> {
+    //            if (pixmap.get(x, y) == palette[0].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[0]);
+    //            if (pixmap.get(x, y) == palette[1].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[1]);
+    //            if (pixmap.get(x, y) == palette[2].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[2]);
+    //            if (pixmap.get(x, y) == palette[3].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[3]);
+    //        });
+    //    };
+    //}
 
     public static String readBlockList(){
         Fi fi = Fi.get(NH_ROOT_PATH).child("blocklist.txt");
