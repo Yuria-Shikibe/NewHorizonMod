@@ -11,10 +11,12 @@ import arc.struct.Seq;
 import arc.util.Tmp;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.input.Placement;
+import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.ItemBridge;
 import mindustry.world.meta.Stat;
@@ -105,6 +107,21 @@ public class AdaptItemBridge extends ItemBridge {
     }
 
     public class AdaptItemBridgeBuild extends ItemBridgeBuild {
+        @Override
+        public void updateTransport(Building other) {
+            if (timer(0, 1)){
+                Item item = items.take();
+                if(item != null && other.acceptItem(this, item)){
+                    other.handleItem(this, item);
+                    moved = true;
+                }else if(item != null){
+                    items.add(item, 1);
+                    items.undoFlow(item);
+                }
+                transportCounter -= transportTime;
+            }
+        }
+
         @Override
         public void drawConfigure(){
             Drawf.dashCircle(x, y, range * tilesize, Pal.placing);
