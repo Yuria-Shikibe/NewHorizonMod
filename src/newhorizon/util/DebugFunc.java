@@ -2,6 +2,8 @@ package newhorizon.util;
 
 import arc.Core;
 import arc.files.Fi;
+import arc.func.Boolf;
+import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.Pixmap;
 import arc.graphics.PixmapIO;
@@ -15,8 +17,11 @@ import arc.struct.StringMap;
 import arc.util.Log;
 import arc.util.OS;
 import mindustry.ctype.Content;
+import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
+import mindustry.type.Category;
+import mindustry.type.Item;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.Block;
@@ -26,11 +31,14 @@ import newhorizon.util.graphic.DrawFunc;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
+import static mindustry.Vars.content;
+import static newhorizon.NewHorizon.MOD;
 
 public class DebugFunc {
     public static final String NH_ROOT_PATH = "E:/project/MindustryModDevLib/NewHorizonMod";
-    public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
+    public static final String NH_BUNDLE_PATH = NH_ROOT_PATH + "/assets/bundles/blank/";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
+    public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
     public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
 
     public static final Color[] NH_SPRITE_PALETTE = {
@@ -54,6 +62,86 @@ public class DebugFunc {
             Color.valueOf("44413a"),
     };
 
+    public static void generateBlankBundle(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(
+                """
+                #TO TRANSLATORS:
+                #The following parts are mainly New Horizon's content translations (items, blocks, etc.)
+                #For some content's name, they are random created word if you couldnt find the word root.
+                #In this case, its ok for you to create your own translation in your own language
+                #For the content details, its ok to add content for your self, for example lore or even memes.
+                #The .detail is ok for that, just keep the .description accurate.
+                #If you want to make the .detail, remove the '#' mark in the line.
+                #Its ok to add credit with your name inside the translate bundle.
+                
+                #THANK YOU FOR HELP TRANSLATING THIS MOD!
+                """);
+        sb.append("\n\n#[[REGION ITEM]]\n\n\n");
+        contentIterator(ContentType.item, content -> sb.append(contentBlankBundle(content)));
+        sb.append("\n\n#[[REGION LIQUID]]\n\n\n");
+        contentIterator(ContentType.liquid,content -> sb.append(contentBlankBundle(content)));
+
+        Boolf<UnlockableContent> modFilter = content -> content instanceof Block block && block.minfo.mod == MOD;
+        sb.append("\n\n#[[REGION BLOCK]]\n\n\n");
+        sb.append("#TURRET PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.turret, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#PRODUCTION PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.production, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#DISTRIBUTION PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.distribution, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#LIQUID PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.liquid, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#POWER PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.power, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#DEFENSE PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.defense, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#CRAFTING PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.crafting, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#UNIT PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.units, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#SPECIAL PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.effect, content -> sb.append(contentBlankBundle(content)));
+        sb.append("#LOGIC PART\n");
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.logic, content -> sb.append(contentBlankBundle(content)));
+
+        sb.append("\n\n#[[REGION UNIT]]\n\n\n");
+        contentIterator(ContentType.unit, content -> sb.append(contentBlankBundle(content)));
+
+        sb.append("\n\n#[[REGION STATUS]]\n\n\n");
+        contentIterator(ContentType.status, content -> sb.append(contentBlankBundle(content)));
+
+        sb.append("\n\n#[[REGION PLANET]]\n\n\n");
+        contentIterator(ContentType.planet, content -> sb.append(contentBlankBundle(content)));
+
+        sb.append("\n\n#[[REGION SECTOR]]\n\n\n");
+        contentIterator(ContentType.sector, content -> sb.append(contentBlankBundle(content)));
+
+        sb.append("\n\n#[[REGION WEATHER]]\n\n\n");
+        contentIterator(ContentType.weather, content -> sb.append(contentBlankBundle(content)));
+
+        Fi blankBundle = new Fi(NH_BUNDLE_PATH + "bundle.blank-content.txt");
+        blankBundle.writeString(sb.toString());
+    }
+
+    public static String contentBlankBundle(UnlockableContent content){
+        String prefix = content.getContentType().name() + ".";
+        return prefix + content.name + ".name = \n" + prefix + content.name + ".description = \n#" + prefix + content.name + ".detail = \n";
+    }
+
+    public static void contentIterator(ContentType type, Boolf<UnlockableContent> filter, Cons<UnlockableContent> iterator){
+        for (Content content: content.getBy(type)){
+            if (content instanceof UnlockableContent unlockableContent){
+                if (filter.get(unlockableContent)){
+                    iterator.get(unlockableContent);
+                }
+            }
+        }
+    }
+
+    public static void contentIterator(ContentType type, Cons<UnlockableContent> iterator){
+        contentIterator(type, c -> c.minfo.mod == MOD, iterator);
+    }
 
     public static Fi createPNGFile(String fileName){
         return new Fi(NH_DEBUG_GRAPHIC_FOLDER + fileName + ".png");
@@ -74,9 +162,17 @@ public class DebugFunc {
         }
     }
 
+    public static void unlockModContent(){
+        for (Seq<Content> contents: content.getContentMap()){
+            for (Content content: contents){
+                if (content instanceof UnlockableContent unlockableContent){
+                    if (unlockableContent.minfo.mod == MOD) unlockableContent.quietUnlock();
+                }
+            }
+        }
+    }
+
     public static void updateBlockList(){
-        //only run debug for me
-        if (OS.username.equals("LaoHuaJi")){
             StringMap map = new StringMap();
             String prev = readBlockList();
             String[] lists = prev.split("\n");
@@ -96,7 +192,6 @@ public class DebugFunc {
             StringBuilder sb = new StringBuilder();
             ordered.each((data) -> sb.append(data).append("\n"));
             Fi.get(NH_ROOT_PATH).child("blocklist.txt").writeString(sb.toString());
-        }
     }
 
     public static void replaceAllSpriteColor(String path, Color[] palette){
@@ -148,7 +243,7 @@ public class DebugFunc {
     public static void outputContentSprites(){
         for (Seq<Content> contents: content.getContentMap()){
             for (Content content: contents){
-                if (content.minfo.mod == NewHorizon.MOD){
+                if (content.minfo.mod == MOD){
                     String name = "content";
                     TextureRegion icon = null;
                     if (content instanceof UnlockableContent) {

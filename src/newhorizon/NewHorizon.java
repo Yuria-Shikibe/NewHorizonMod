@@ -20,12 +20,9 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
-import mindustry.ui.dialogs.PlanetDialog;
 import newhorizon.content.*;
-import newhorizon.content.blocks.DistributionBlock;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.DebugFunc;
-import newhorizon.util.func.NHPixmap;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
@@ -48,9 +45,8 @@ public class NewHorizon extends Mod{
 	public static final String MOD_REPO = "Yuria-Shikibe/NewHorizonMod";
 	public static final String MOD_GITHUB_URL = "https://github.com/Yuria-Shikibe/NewHorizonMod.git";
 	public static final String MOD_NAME = "new-horizon";
-	public static final String SERVER = "203.135.99.51:10094", SERVER_AUZ_NAME = "NEWHORIZON AUZ SERVER";
-	public static final String EU_NH_SERVER = "Emphasize.cn:12510";
-	
+	public static final String SERVER = "203.135.99.51:10094";
+
 	private static boolean showed = false;
 	public static Mods.LoadedMod MOD;
 	
@@ -146,21 +142,19 @@ public class NewHorizon extends Mod{
 			showNewDialog();
 			showStartLog();
 			Time.run(10f, () -> {
-				DebugFunc.updateBlockList();
+				if (OS.username.equals("LaoHuaJi")){
+					DebugFunc.updateBlockList();
+					DebugFunc.generateBlankBundle();
+				}
+
+				DebugFunc.unlockModContent();
+
 				//DebugFunc.replaceAllSpriteColor("E:/project/MindustryModDevLib/Exoprosopa-main/sprites/blocks", DebugFunc.EXOPROSOPA_SPRITE_PALETTE);
 				//DebugFunc.replaceAllSpriteColor("E:/project/MindustryModDevLib/Asthosus-main/sprites/blocks", DebugFunc.ASTHOSUS_SPRITE_PALETTE);
-				for (Seq<Content> contents: content.getContentMap()){
-					for (Content content: contents){
-						if (content instanceof UnlockableContent unlockableContent){
-							if (unlockableContent.name.startsWith("new-horizon")) unlockableContent.quietUnlock();
-						}
-					}
-				}
 				//DebugFunc.outputSettings();
-
-				//DebugFunc.writeBulletTypeList();
 				//DebugFunc.outputAtlas();
 			});
+			DebugFunc.generateBlankBundle();
 		});
 	}
 

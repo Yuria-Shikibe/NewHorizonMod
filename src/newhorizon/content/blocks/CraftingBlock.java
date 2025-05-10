@@ -313,7 +313,7 @@ public class CraftingBlock {
         }};
         crucibleCaster = new RecipeGenericCrafter("crucible-caster"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.carbide, 40, Items.phaseFabric, 60));
+                    NHItems.presstanium, 30, NHItems.seniorProcessor, 50, Items.carbide, 40, Items.phaseFabric, 60));
 
             rotate = false;
             size = 3;
@@ -327,13 +327,13 @@ public class CraftingBlock {
             craftTime = 60f;
             consumePower(600 / 60f);
 
-            addInput(ItemStack.with(Items.tungsten, 2, Items.phaseFabric, 1), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 2, Items.blastCompound, 2), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.with(Liquids.cyanogen, 6 / 60f));
+            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(NHLiquids.irdryonFluid, 6 / 60f));
+            addInput(ItemStack.with(Items.tungsten, 3, Items.blastCompound, 3), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
 
-            outputItems = with(Items.carbide, 5);
+            outputItems = with(Items.carbide, 8);
 
-            itemCapacity = 15;
+            itemCapacity = 30;
 
             drawer = new DrawDefault();
         }};

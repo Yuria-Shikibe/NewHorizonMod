@@ -223,7 +223,13 @@ public class AssignedBeacon extends Block {
                     if (gcb.block instanceof GenericCrafter gc && gc.canOverdrive){
                         if (craftMul > 0f){
                             targetProgress[i] += gcb.edelta() * craftMul;
-                            if (targetProgress[i] > gc.craftTime) {
+                            float craftTime = gc.craftTime;
+                            if (gcb instanceof PayloadCrafter.PayloadCrafterBuild pc){
+                                if (pc.recipe != null && pc.recipeCost() != null){
+                                    craftTime = pc.recipeCost().craftTime;
+                                }
+                            }
+                            if (targetProgress[i] > craftTime) {
                                 if (gcb.items != null && gc.outputItems != null) {
                                     for (ItemStack stack: gc.outputItems){
                                         gcb.items.add(stack.item, stack.amount);
@@ -235,7 +241,7 @@ public class AssignedBeacon extends Block {
                                         pc.payloads.add(plan, pc.recipeCost().outputMultiplier);
                                     }
                                 }
-                                targetProgress[i] %= gc.craftTime;
+                                targetProgress[i] %= craftTime;
                                 NHFx.activeEffectSky.at(gcb);
                             }
                         }
@@ -425,14 +431,18 @@ public class AssignedBeacon extends Block {
                     if (targets[i] == -1){
                         targets[i] = value;
                         targetProgress[i] = 0;
-                        if (other.block instanceof GenericCrafter gc) targetProgress[i] = -gc.craftTime * craftMul;
-                        if (other instanceof PayloadCrafter.PayloadCrafterBuild pcb){
-                            if (pcb.recipe != null && pcb.recipeCost() != null){
-                                targetProgress[i] = -pcb.recipeCost().craftTime * craftMul;
-                            }
-                        }
+                        resetTargetProgress(other, i);
                         return;
                     }
+                }
+            }
+        }
+
+        public void resetTargetProgress(Building other, int i){
+            if (other.block instanceof GenericCrafter gc) targetProgress[i] = -gc.craftTime * craftMul;
+            if (other instanceof PayloadCrafter.PayloadCrafterBuild pcb){
+                if (pcb.recipe != null && pcb.recipeCost() != null){
+                    targetProgress[i] = -pcb.recipeCost().craftTime * craftMul;
                 }
             }
         }

@@ -1,0 +1,161 @@
+#[[CHANGELOG PART]]
+
+
+nh.new-feature.title = NEW UPDATE!
+nh.new-feature.fix = [lightgray]FIX[]:
+nh.new-feature.adjust = [lightgray]ADJUSTMENT[]:
+nh.new-feature.improve = [lightgray]IMPROVEMENT[]:
+nh.new-feature.balance = [lightgray]BALANCE[]:
+nh.new-feature.feature = [lightgray]FEATURE[]:
+nh.new-feature.content = [lightgray]CONTENT[]:
+nh.new-feature.important = [royal]Important Update[]:
+nh.new-feature.description = [accent]Description: []
+
+
+#[[LOGIC PART]]
+
+
+lcategory.nh-wproc = New Horizon
+lcategory.nh-cutscene = New Horizon Cutscene
+lcategory.nh-action = Cutscene Action
+
+
+#[[BULLET PART]]
+
+
+nh.bullet.synchro-titanium = Titanium Bullet with balanced damage and high fire-rate.
+nh.bullet.synchro-zeta = Zeta Bullet with improved kinetic damage.
+
+
+#[[DISPLAY PART]]
+
+
+nh.primary = Primary:
+nh.alternative = Alter:
+nh.damage-detail = [accent]{0} [ammo]Kinetic[lightgray] Damage | [accent]{1} [sky]Energy[lightgray] Damage[]
+nh.splash-detail = [accent]{0} [ammo]Kinetic[lightgray] Splash | [accent]{1} [sky]Energy[lightgray] Splash[lightgray] ~ [accent]{2}[lightgray] Tiles[lightgray]
+nh.bullet-charge = Charge - [sky]{0}x[lightgray] ~ [#bf92f9]{1}x
+nh.no-available-ore = No Available Ore
+
+nh.bar.health = {0}/{1} ({2}%)
+nh.bar.power = {0}/s
+nh.bar.power-detail = {0}/s (x{1} + {2})
+nh.bar.drill-speed = {0}/s (+{1}% x{2})
+nh.bar.charge = Charge: {0}%
+nh.bar.speed-up = Speed Up: +{0}%
+nh.bar.overheat = Overheat: {0}%
+nh.bar.speed-boost = Speed Boost: {0}%
+nh.bar.productivity-boost = Craft Bonus: {0}%
+nh.bar.power-multiplier = Power Multiplier: x{0}
+
+nh.stat.power-cons-modifier = +@% Base Power Consumption\n+@ Extra Power Consumption
+nh.stat.miner-boost-modifier = +@% Mining Speed\n@% Final Mining Speed
+nh.stat.percent = +@% Max Boost Cap
+nh.stat.increase-when-shooting = +@%/s
+nh.stat.decrease-not-shooting = -@%/s
+nh.stat.speed-up-turret-coolant = [accent]{0}% [lightgray]Overheat Time | [accent]{1}% [lightgray]Overheat Cooldown[]
+nh.stat.speed-bonus = [accent]{0}%[lightgray] Speed Bonus
+nh.stat.productivity-bonus = [accent]+{0}%[lightgray] Productivity Bonus
+nh.stat.cons-extra = [accent]{0}x[lightgray] Power Consumption
+
+stat.damage-reduction = Damage Reduction
+stat.power-cons-modifier = Power Consumption
+stat.miner-boost-modifier = Miner Boost
+stat.item-convert-list = Convert List
+stat.max-boost-percent = Max Boost
+stat.max-modules = Max Modules
+stat.increase-when-shooting = Acceleration
+stat.decrease-not-shooting = Deceleration
+stat.fire-rate-max = Max Fire Rate
+stat.overheat-cooldown = Overheat Cooldown
+stat.payload-capacity = Payload Capacity
+stat.gravity-gully-range = Gravity Gully
+stat.max-build-links = Max Build Links
+
+ability.shockwave = Shock Wave Generator
+ability.gravity-trap = Gravity Field: [accent]{0}[] blocks
+ability.towardshield = Forward Shield
+ability.phase = Phase Ability
+ability.boost = Boost Ability
+ability.healfield = Block Healer
+ability.adaptedheal = Advanced Repair System Field
+ability.turretshield = Turreted Shield
+ability.accumulateaccelerate = Accumulate Acceleration
+
+
+#[[MISCELLANEOUS PART]]
+
+
+new-horizon = NEW HORIZON
+techtree.new-horizon = New Horizon
+category.new-horizon.name = New Horizon
+
+mod.ui.has-new-update = Detected NewHorizon Mod's New Release
+
+mod.ui.select-target = Select Destination
+mod.ui.select-unit = Apply Selected
+mod.ui.transport-unit = Transport Units
+
+mod.ui.require.reload = Requires Reload
+mod.ui.requite.need-override = Need [Setting:Override] Activated.
+
+mod.ui.gravity-trap-field-friendly = [sky]Friendly Well Field
+mod.ui.gravity-trap-field-hostile = [red]Hostile Well Field
+
+mod.ui.update-log = See the update content at the bottom (click the icon for more details)
+
+mod.ui.nh-extra-menu = [sky]New Horizon[] Settin
+
+yuria.plugin.ad = Yuria's other artifacts: A shader based plugin, has smooth and clear texture. (WIP)
+link.yuria.plugin.title = Yuria's Plugin
+
+nh.setting.nh_debugging.name = Enable Debugging Mode
+nh.setting.nh_debugging.desc = Enable offline cheat
+#nh.setting.nh_debugging.warn = Disable it is recommended when the performance is bad.
+
+nh.setting.nh_effectdetail.name = Enable Effect Detail
+nh.setting.nh_effectdetail.desc = Show effects in a more complex style.
+nh.setting.nh_effectdetail.warn = Disable it is recommended when the performance is bad.
+
+nh.setting.nh_overridecost.name = Vanilla Override
+nh.setting.nh_overridecost.desc = Override Vanilla Contents
+nh.setting.nh_overridecost.warn = Disable it is recommended when conflicts with other mods happen. \n\n[heal]Multiple Player Mode Required.
+
+nh.setting.nh_hide_starting_log.name = Hide Start Log
+nh.setting.nh_hide_starting_log.desc = Hide the mod's log when start the game
+
+nh.setting.nh_experimental.name = Enable Experiment Content
+nh.setting.nh_experimental.desc = Enable to have access to experimental content. \n[scarlet]THIS MIGHT CRASH CURRENT SAVES! remember to backup your saves before enable it.  \n\n[heal]Need disables when playing server.
+
+nh.setting.nh_terrain_mode.name = Enable Terrain Place Mode
+nh.setting.nh_terrain_mode.desc = Enable Terrain Place Mode
+
+nh.setting.nh_debug_panel.name = Enable Debug Panel
+nh.setting.nh_debug_panel.desc = Enable Debug Panel
+
+nh.dialog-event = Event Info
+
+link.mod.ccs.title = Custom Cutscene Guide
+link.mod.ccs.description = Cutscene Basic Coding Guide
+link.mod.discord.title = Discord
+link.mod.discord.description = New Horizon Community
+link.mod.github.title = Github
+link.mod.github.description = Mod Source Code
+link.mod.guide.title = Mod Guide
+link.mod.guide.description = Guides and Help
+
+hide-setting = Hide Mod Start Dialog
+boost = Boost
+move = Move
+links = Links
+info = Info
+consume = Consume
+release = Release
+switch = Switch
+log = Log
+spawn = Spawn
+
+nh-setting = New Horizon Mod Settings
+nh-need-base = Need Primary Base
+
+content.weather.name = Weather
