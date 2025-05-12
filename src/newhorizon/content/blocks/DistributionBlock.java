@@ -40,12 +40,16 @@ public class DistributionBlock {
 
             saveConfig = false;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
         stackRail = new AdaptStackConveyor("stack-rail"){{
             requirements(Category.distribution, with(NHItems.presstanium, 1, NHItems.juniorProcessor, 1));
             speed = 6f / 60f;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
         lightStackLoader = new AdaptStackConveyor("light-stack-loader"){{
@@ -54,6 +58,8 @@ public class DistributionBlock {
             itemCapacity = 15;
             onlyCarry = false;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
         heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader"){{
@@ -62,6 +68,8 @@ public class DistributionBlock {
             itemCapacity = 60;
             onlyCarry = false;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
         conveyorBridge = new AdaptItemBridge("logistics-bridge"){{
@@ -71,6 +79,9 @@ public class DistributionBlock {
 
             hasPower = false;
             range = 6;
+
+            placeableLiquid = true;
+
         }};
 
         conveyorBridgeExtend = new AdaptItemBridge("logistics-extend-bridge"){{
@@ -80,6 +91,9 @@ public class DistributionBlock {
 
             hasPower = false;
             range = 12;
+
+            placeableLiquid = true;
+
         }};
 
         logisticsJunction = new AdaptJunction("logistics-junction"){{
@@ -89,6 +103,9 @@ public class DistributionBlock {
 
             speed = 3;
             capacity = 1;
+
+            placeableLiquid = true;
+
         }};
 
         logisticsDirectionalRouter = new AdaptDirectionalRouter("logistics-directional-router"){{
@@ -97,6 +114,9 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             speed = 4f;
+
+            placeableLiquid = true;
+
         }};
 
         logisticsDirectionalMerger = new AdaptDirectionalMerger("logistics-directional-merger"){{
@@ -105,6 +125,9 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             speed = 4f;
+
+            placeableLiquid = true;
+
         }};
 
         logisticsDirectionalGate = new AdaptDirectionalGate("logistics-directional-gate"){{
@@ -113,12 +136,18 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             speed = 4f;
+
+            placeableLiquid = true;
+
         }};
 
         logisticsOmniGate = new AdaptGate("logistics-omni-gate"){{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
+
+            placeableLiquid = true;
+
         }};
 
         logisticsOmniSorter = new AdaptSorter("logistics-omni-sorter"){{
@@ -127,6 +156,8 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             invert = false;
+            placeableLiquid = true;
+
         }};
 
         logisticsOmniBlocker = new AdaptSorter("logistics-omni-blocker"){{
@@ -135,6 +166,8 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             invert = true;
+            placeableLiquid = true;
+
         }};
 
         conveyorUnloader = new AdaptDirectionalUnloader("logistics-unloader"){{
@@ -145,25 +178,38 @@ public class DistributionBlock {
             speed = 60f/16.5f;
             hasPower = true;
             conductivePower = true;
+            placeableLiquid = true;
+
         }};
 
         rapidUnloader = new AdaptUnloader("rapid-unloader"){{
             speed = 0.5f;
             requirements(Category.distribution, BuildVisibility.shown, with(Items.silicon, 4));
+
+            placeableLiquid = true;
+
         }};
 
         conduit = new AdaptConduit("conduit"){{
             requirements(Category.liquid, with(Items.silicon, 1));
             liquidCapacity = 40f;
             liquidPressure = 1.2f;
+
+            leaks = false;
+            placeableLiquid = true;
+
         }};
 
         conduitJunction = new LiquidJunction("logistics-liquid-junction"){{
             requirements(Category.liquid, with(Items.silicon, 4));
+            placeableLiquid = true;
+
         }};
 
         conduitRouter = new LiquidRouter("logistics-liquid-router"){{
             requirements(Category.liquid, with(Items.silicon, 4));
+            placeableLiquid = true;
+
         }};
 
         liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge"){{
@@ -172,6 +218,9 @@ public class DistributionBlock {
             alwaysUnlocked = true;
             hasPower = false;
             range = 6;
+
+            placeableLiquid = true;
+
         }};
 
         liquidBridgeExtend = new AdaptLiquidBridge("logistics-extend-liquid-bridge"){{
@@ -180,7 +229,13 @@ public class DistributionBlock {
             alwaysUnlocked = true;
             hasPower = false;
             range = 12;
+
+            placeableLiquid = true;
+
         }};
+
+        ((AdaptConduit)conduit).junctionReplacement = conduitJunction;
+        ((AdaptConduit)conduit).bridgeReplacement = liquidBridge;
 
         liquidUnloader = new AdaptLiquidDirectionalUnloader("logistics-liquid-unloader"){{
             requirements(Category.liquid, with());
@@ -189,6 +244,8 @@ public class DistributionBlock {
 
             hasPower = true;
             conductivePower = true;
+            placeableLiquid = true;
+
         }};
 
         ((AdaptConveyor) conveyor).junctionReplacement = logisticsJunction;

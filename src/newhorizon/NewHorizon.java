@@ -154,7 +154,6 @@ public class NewHorizon extends Mod{
 				//DebugFunc.outputSettings();
 				//DebugFunc.outputAtlas();
 			});
-			DebugFunc.generateBlankBundle();
 		});
 	}
 

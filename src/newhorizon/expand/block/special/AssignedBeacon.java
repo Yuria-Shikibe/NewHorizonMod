@@ -100,6 +100,7 @@ public class AssignedBeacon extends Block {
         configClear((AssignedBeaconBuild entity) -> Arrays.fill(entity.targets, -1));
 
         consumePowerDynamic((AssignedBeaconBuild entity) -> entity.powerMul * powerCons);
+        canOverdrive = false;
     }
 
     //ye this is hardcoded here so this is a todo
@@ -449,8 +450,6 @@ public class AssignedBeacon extends Block {
 
         @Override
         public void drawSelect() {
-            Drawf.dashSquare(Pal.accent, x, y, range() * 2);
-
             Draw.z(Layer.blockOver);
             Draw.color(overdriveColor);
             Draw.alpha(0.3f);
@@ -481,6 +480,8 @@ public class AssignedBeacon extends Block {
 
         @Override
         public void drawConfigure() {
+            Drawf.dashSquare(Pal.accent, x, y, range() * 2);
+
             NHGroups.beaconBoostLinks.keys().toSeq().each(b -> {
                 if (b == null) return;
                 b.drawSelect();
