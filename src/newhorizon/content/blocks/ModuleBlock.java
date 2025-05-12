@@ -148,44 +148,53 @@ public class ModuleBlock {
         moduleCosts.put(speedModule1, new ModuleCost(){{
             itemReq = ItemStack.list(NHItems.zeta, 40);
             payloadReq = PayloadStack.list(processorT1, 2);
+            craftTime = 60 * 10f;
         }});
         moduleCosts.put(speedModule2, new ModuleCost(){{
             itemReq = ItemStack.list(Items.surgeAlloy, 80);
-            payloadReq = PayloadStack.list(speedModule1, 4, processorT2, 2);
+            payloadReq = PayloadStack.list(speedModule1, 2, processorT2, 2);
+            craftTime = 60 * 20f;
         }});
         moduleCosts.put(speedModule3, new ModuleCost(){{
             itemReq = ItemStack.list(NHItems.thermoCorePositive, 100);
-            payloadReq = PayloadStack.list(speedModule2, 4, processorT3, 2, processorT4, 2);
+            payloadReq = PayloadStack.list(speedModule2, 2, processorT3, 2, processorT4, 2);
+            craftTime = 60 * 40f;
         }});
 
         moduleCosts.put(efficiencyModule1, new ModuleCost(){{
             itemReq = ItemStack.list(NHItems.metalOxhydrigen, 40);
             payloadReq = PayloadStack.list(processorT1, 2);
+            craftTime = 60 * 10f;
         }});
         moduleCosts.put(efficiencyModule2, new ModuleCost(){{
             itemReq = ItemStack.list(Items.phaseFabric, 80);
-            payloadReq = PayloadStack.list(efficiencyModule1, 4, processorT2, 2);
+            payloadReq = PayloadStack.list(efficiencyModule1, 2, processorT2, 2);
+            craftTime = 60 * 20f;
         }});
         moduleCosts.put(efficiencyModule3, new ModuleCost(){{
             itemReq = ItemStack.list(NHItems.thermoCoreNegative, 100);
-            payloadReq = PayloadStack.list(efficiencyModule2, 4, processorT3, 2, processorT4, 2);
+            payloadReq = PayloadStack.list(efficiencyModule2, 2, processorT3, 2, processorT4, 2);
+            craftTime = 60 * 40f;
         }});
 
         moduleCosts.put(productivityModule1, new ModuleCost(){{
             itemReq = ItemStack.list(Items.carbide, 40);
             payloadReq = PayloadStack.list(processorT1, 2);
+            craftTime = 60 * 10f;
         }});
         moduleCosts.put(productivityModule2, new ModuleCost(){{
             itemReq = ItemStack.list(NHItems.multipleSteel, 80);
-            payloadReq = PayloadStack.list(productivityModule1, 4, processorT2, 2);
+            payloadReq = PayloadStack.list(productivityModule1, 2, processorT2, 2);
+            craftTime = 60 * 20f;
         }});
         moduleCosts.put(productivityModule3, new ModuleCost(){{
             itemReq = ItemStack.list(NHItems.irayrondPanel, 100);
-            payloadReq = PayloadStack.list(productivityModule2, 4, processorT3, 2, processorT4, 2);
+            payloadReq = PayloadStack.list(productivityModule2, 2, processorT3, 2, processorT4, 2);
+            craftTime = 60 * 40f;
         }});
 
         unitCosts.put(UnitTypes.poly, unitCost(60 * 10f, processorT1, 1, armorT1, 1));
-        unitCosts.put(UnitTypes.cleroi, unitCost(60 * 15f, processorT1, 2, armorT1, 2));
+        unitCosts.put(UnitTypes.cleroi, unitCost(60 * 15f, processorT1, 3, armorT1, 3));
         unitCosts.put(UnitTypes.quasar, unitCost(60 * 20f, processorT1, 2, armorT1, 3, coreT1, 1));
         unitCosts.put(UnitTypes.zenith, unitCost(60 * 20f, processorT1, 3, armorT1, 2, coreT1, 1));
         unitCosts.put(UnitTypes.cyerce, unitCost(60 * 20f, processorT1, 3, armorT1, 3, coreT1, 1));

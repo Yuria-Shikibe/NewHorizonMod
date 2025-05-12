@@ -192,6 +192,7 @@ new-horizon-multi-router 1 0 1 0
 new-horizon-multi-steel-item-bridge 1 1 1 0
 new-horizon-multi-steel-liquid-bridge 1 1 1 0
 new-horizon-multiple-artillery 1 1 4 0
+new-horizon-multiple-foundry 1 1 4 0
 new-horizon-multiple-launcher 1 1 3 0
 new-horizon-multiple-presstanium-factory 1 1 3 0
 new-horizon-multiple-steel-factory 1 1 3 0

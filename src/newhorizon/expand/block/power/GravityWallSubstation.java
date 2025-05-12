@@ -64,6 +64,7 @@ public class GravityWallSubstation extends PowerNode {
             super.draw();
             if (player == null || team != player.team()) return;
 
+            if (isPayload()) return;
             Draw.z(NHContent.POWER_AREA);
             Draw.color(team.color);
             Fill.square(x, y, gravityRange);

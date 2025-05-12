@@ -42,7 +42,7 @@ public class CraftingBlock {
         sandCracker, oilRefiner,
         convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
         stampingFacility, processorPrinter, crucibleFoundry, crucibleCaster, crystallizer, zetaDissociator, surgeRefactor,
-        fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
+        fabricSynthesizer, processorEncoder, irdryonMixer, multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
         multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
 
         electronicAssemblyMk1, electronicAssemblyMk2, electronicAssemblyMk3,
@@ -600,6 +600,44 @@ public class CraftingBlock {
                         buildingRotate = false;
                     }}
             );
+        }};
+        multipleFoundry = new RecipeGenericCrafter("multiple-foundry"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.surgeAlloy, 120, Items.phaseFabric, 80, NHItems.seniorProcessor, 80, NHItems.zeta, 80));
+
+            size = 4;
+            rotate = false;
+
+            craftTime = 120f;
+            itemCapacity = 40;
+            consumePower(900 / 60f);
+
+            addInput(ItemStack.with(Items.titanium, 12), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
+            addInput(ItemStack.with(Items.titanium, 10, Items.thorium, 8), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f));
+
+            outputItems = with(Items.surgeAlloy, 8, NHItems.presstanium, 15);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 6 / 60f);
+
+            drawer = new DrawDefault();
+        }};
+        processorCompactor = new RecipeGenericCrafter("processor-compactor"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(Items.surgeAlloy, 120, Items.phaseFabric, 80, NHItems.seniorProcessor, 80, NHItems.zeta, 80));
+
+            size = 4;
+            rotate = false;
+
+            craftTime = 150f;
+            itemCapacity = 40;
+            consumePower(900 / 60f);
+
+            addInput(ItemStack.with(Items.silicon, 15), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
+            addInput(ItemStack.with(Items.silicon, 12, Items.thorium, 8), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
+
+            outputItems = with(NHItems.juniorProcessor, 20, NHItems.seniorProcessor, 10);
+            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f);
+
+            drawer = new DrawDefault();
         }};
         irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
             requirements(Category.crafting, BuildVisibility.shown,
