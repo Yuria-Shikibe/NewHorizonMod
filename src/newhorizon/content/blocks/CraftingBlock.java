@@ -54,7 +54,7 @@ public class CraftingBlock {
             size = 2;
             requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
             health = 320;
-            craftTime = 45f;
+            craftTime = 60f;
             itemCapacity = 20;
             hasPower = hasItems = true;
             craftEffect = NHFx.hugeSmokeGray;
@@ -78,20 +78,20 @@ public class CraftingBlock {
             addInput(ItemStack.with(Items.thorium, 3), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 4), LiquidStack.empty);
 
-            outputItem = new ItemStack(Items.sand, 8);
+            outputItem = new ItemStack(Items.sand, 10);
         }};
         oilRefiner = new GenericCrafter("oil-refiner"){{
 
             size = 2;
             requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
             health = 200;
-            craftTime = 90f;
+            craftTime = 60f;
             liquidCapacity = 60f;
             itemCapacity = 20;
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
             consumePower(5f);
-            consumeItems(new ItemStack(Items.sand, 5));
+            consumeItems(new ItemStack(Items.sand, 3));
             outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
         }};
         convertorTungsten = new RecipeGenericCrafter("convertor-tungsten"){{
@@ -327,7 +327,7 @@ public class CraftingBlock {
             craftTime = 60f;
             consumePower(600 / 60f);
 
-            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(NHLiquids.irdryonFluid, 6 / 60f));
+            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f));
             addInput(ItemStack.with(Items.tungsten, 3, Items.blastCompound, 3), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
 
