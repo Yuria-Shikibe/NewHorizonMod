@@ -91,7 +91,7 @@ public class CraftingBlock {
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
             consumePower(5f);
-            consumeItems(new ItemStack(Items.sand, 3));
+            consumeItems(new ItemStack(Items.sand, 3.33));
             outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
         }};
         convertorTungsten = new RecipeGenericCrafter("convertor-tungsten"){{
