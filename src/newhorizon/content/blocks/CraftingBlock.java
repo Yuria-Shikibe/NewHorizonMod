@@ -85,8 +85,8 @@ public class CraftingBlock {
             size = 2;
             requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
             health = 200;
-            craftTime = 60f;
-            liquidCapacity = 90f;
+            craftTime = 90f;
+            liquidCapacity = 60f;
             itemCapacity = 20;
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
