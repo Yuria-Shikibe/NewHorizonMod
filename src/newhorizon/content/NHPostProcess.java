@@ -41,7 +41,7 @@ import static mindustry.Vars.content;
 import static mindustry.content.UnitTypes.*;
 import static mindustry.type.ItemStack.with;
 
-
+import mindustry.world.consumers.*;
 
 public class NHPostProcess {
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
