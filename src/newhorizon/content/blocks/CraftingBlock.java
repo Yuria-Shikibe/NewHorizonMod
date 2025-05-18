@@ -613,7 +613,7 @@ public class CraftingBlock {
             consumePower(900 / 60f);
 
             addInput(ItemStack.with(Items.titanium, 12), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
-            addInput(ItemStack.with(Items.titanium, 10, NHItems.fusionEnergy, 2), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f));
+            addInput(ItemStack.with(Items.titanium, 6, NHItems.fusionEnergy, 2), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f));
 
             outputItems = with(Items.surgeAlloy, 8, NHItems.presstanium, 15);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 6 / 60f);
@@ -632,7 +632,7 @@ public class CraftingBlock {
             consumePower(900 / 60f);
 
             addInput(ItemStack.with(Items.silicon, 15, NHItems.metalOxhydrigen, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
-            addInput(ItemStack.with(Items.silicon, 12, Items.plastanium, 8), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
+            addInput(ItemStack.with(Items.silicon, 12, Items.plastanium, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
 
             outputItems = with(NHItems.juniorProcessor, 20, NHItems.seniorProcessor, 10);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f);
