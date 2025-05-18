@@ -798,6 +798,13 @@ public class NHPostProcess {
 			crafter.outputItems = with(Items.silicon, 5);
 			crafter.craftTime = 60f;
 		});
+		adjustContent(Blocks.cultivator, content -> {
+        	        AttributeCrafter crafter = (AttributeCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeLiquid);
+        		crafter.consume(new ConsumeLiquid(with(Liquids.water, 18f / 60f )));
+        		crafter.outputItems = with(Items.sporePod, 2);
+   			crafter.craftTime = 60f;
+        });
 	}
 
 	private static void adjustVanillaUnit(){
