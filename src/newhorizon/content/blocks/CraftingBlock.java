@@ -54,7 +54,7 @@ public class CraftingBlock {
             size = 2;
             requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
             health = 320;
-            craftTime = 45f;
+            craftTime = 60f;
             itemCapacity = 20;
             hasPower = hasItems = true;
             craftEffect = NHFx.hugeSmokeGray;
@@ -78,7 +78,7 @@ public class CraftingBlock {
             addInput(ItemStack.with(Items.thorium, 3), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 4), LiquidStack.empty);
 
-            outputItem = new ItemStack(Items.sand, 8);
+            outputItem = new ItemStack(Items.sand, 10);
         }};
         oilRefiner = new GenericCrafter("oil-refiner"){{
 
@@ -142,7 +142,7 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(ItemStack.empty, LiquidStack.with(Liquids.oil, 18 / 60f));
+            addInput(ItemStack.empty, LiquidStack.with(Liquids.oil, 15 / 60f));
             addInput(ItemStack.empty, LiquidStack.with(Liquids.arkycite, 20 / 60f));
 
             consumePower(120f / 60f);
@@ -327,7 +327,7 @@ public class CraftingBlock {
             craftTime = 60f;
             consumePower(600 / 60f);
 
-            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(NHLiquids.irdryonFluid, 6 / 60f));
+            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f));
             addInput(ItemStack.with(Items.tungsten, 3, Items.blastCompound, 3), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
 
