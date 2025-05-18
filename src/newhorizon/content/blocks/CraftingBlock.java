@@ -632,7 +632,7 @@ public class CraftingBlock {
             consumePower(900 / 60f);
 
             addInput(ItemStack.with(Items.silicon, 15, NHItems.metalOxhydrigen, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
-            addInput(ItemStack.with(Items.silicon, 12, Items.plastanium, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
+            addInput(ItemStack.with(Items.silicon, 10, Items.plastanium, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
 
             outputItems = with(NHItems.juniorProcessor, 20, NHItems.seniorProcessor, 10);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f);
