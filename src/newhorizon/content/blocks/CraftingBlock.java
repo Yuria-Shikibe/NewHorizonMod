@@ -100,6 +100,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
+            itemCapacity = 20;
 
             rotate = false;
 
@@ -120,6 +121,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
+            itemCapacity = 20;
 
             rotate = false;
 
@@ -139,6 +141,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 60f;
+            itemCapacity = 20;
 
             rotate = false;
 
@@ -166,6 +169,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 60f;
+            itemCapacity = 30;
 
             rotate = false;
 
@@ -186,6 +190,7 @@ public class CraftingBlock {
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
             craftTime = 40f;
+            itemCapacity = 20;
 
             addInput(ItemStack.with(Items.titanium, 2), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
             addInput(ItemStack.with(Items.titanium, 2, Items.graphite, 1), LiquidStack.empty);
@@ -219,6 +224,7 @@ public class CraftingBlock {
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
             craftTime = 40f;
+            itemCapacity = 20;
 
             addInput(ItemStack.with(Items.silicon, 2), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
             addInput(ItemStack.with(Items.silicon, 2, Items.copper, 3), LiquidStack.empty);
@@ -285,7 +291,7 @@ public class CraftingBlock {
 
             outputItems = with(Items.carbide, 2);
 
-            itemCapacity = 15;
+            itemCapacity = 20;
 
             drawer = new DrawMulti(
                     new DrawRegionRotated(){{
