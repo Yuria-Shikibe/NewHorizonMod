@@ -806,9 +806,16 @@ public class NHPostProcess {
         		crafter.consume(new ConsumeLiquid(Liquids.water, 18f / 60f));
         		crafter.outputItems = with(Items.sporePod, 2);
    			crafter.craftTime = 60f;
-        		crafter.consume(new ConsumePower(6f, 600f, false));
+        		crafter.consume(new ConsumePower(6f, 0f, false));
 
-        });
+       		});
+		adjustContent(Blocks.blastMixer, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.consume(new ConsumeItems(with(Items.sporePod, 3, Items.pyratite, 3)));
+			crafter.outputItems = with(Items.blastCompound, 3);
+			crafter.craftTime = 90f;
+		});
 	}
 
 	private static void adjustVanillaUnit(){
