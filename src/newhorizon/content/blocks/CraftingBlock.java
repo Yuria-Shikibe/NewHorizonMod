@@ -541,6 +541,7 @@ public class CraftingBlock {
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
             craftTime = 120f;
+            itemCapacity = 20;
 
             addInput(ItemStack.with(Items.surgeAlloy, 2, NHItems.juniorProcessor, 4), LiquidStack.empty);
 
@@ -800,6 +801,7 @@ public class CraftingBlock {
             });
             outputItem = new ItemStack(NHItems.upgradeSort, 2);
             craftTime = 120f;
+            itemCapacity = 20;
             size = 3;
             hasPower = hasItems = true;
             drawer = new DrawPrinter(outputItem.item) {{
