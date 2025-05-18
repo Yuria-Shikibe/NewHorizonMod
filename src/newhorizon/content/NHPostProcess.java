@@ -41,6 +41,8 @@ import static mindustry.Vars.content;
 import static mindustry.content.UnitTypes.*;
 import static mindustry.type.ItemStack.with;
 
+import mindustry.world.consumers.ConsumePower;
+
 public class NHPostProcess {
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
 	public static final Seq<Color> validColor = new Seq<>();
