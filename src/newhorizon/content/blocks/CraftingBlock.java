@@ -141,6 +141,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 60f;
+            liquidCapacity = 40f;
             itemCapacity = 20;
 
             rotate = false;
@@ -169,6 +170,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 60f;
+            liquidCapacity = 12f;
             itemCapacity = 30;
 
             rotate = false;
@@ -292,6 +294,7 @@ public class CraftingBlock {
             outputItems = with(Items.carbide, 2);
 
             itemCapacity = 20;
+            liquidCapacity = 12f;
 
             drawer = new DrawMulti(
                     new DrawRegionRotated(){{
@@ -365,6 +368,7 @@ public class CraftingBlock {
             outputItems = with(NHItems.metalOxhydrigen, 3);
 
             itemCapacity = 30;
+            liquidCapacity = 20f;
             health = 1600;
 
             craftEffect = Fx.smeltsmoke;
@@ -433,6 +437,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             itemCapacity = 30;
+            liquidCapacity = 30f;
             consumePower(450 / 60f);
 
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
@@ -595,6 +600,7 @@ public class CraftingBlock {
             size = 3;
 
             craftTime = 60f;
+            liquidCapacity = 30f;
             itemCapacity = 30;
             consumePower(300 / 60f);
 
@@ -616,6 +622,7 @@ public class CraftingBlock {
             rotate = false;
 
             craftTime = 120f;
+            liquidCapacity = 24f;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
@@ -635,6 +642,7 @@ public class CraftingBlock {
             rotate = false;
 
             craftTime = 150f;
+            liquidCapacity = 20f;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
