@@ -70,13 +70,13 @@ public class CraftingBlock {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
             consumePower(1.5f);
 
-            addInput(ItemStack.with(Items.scrap, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.copper, 8), LiquidStack.empty);
-            addInput(ItemStack.with(Items.lead, 8), LiquidStack.empty);
-            addInput(ItemStack.with(Items.beryllium, 5), LiquidStack.empty);
-            addInput(ItemStack.with(Items.titanium, 4), LiquidStack.empty);
-            addInput(ItemStack.with(Items.thorium, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.scrap, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.copper, 10), LiquidStack.empty);
+            addInput(ItemStack.with(Items.lead, 10), LiquidStack.empty);
+            addInput(ItemStack.with(Items.beryllium, 6), LiquidStack.empty);
+            addInput(ItemStack.with(Items.titanium, 5), LiquidStack.empty);
+            addInput(ItemStack.with(Items.thorium, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 5), LiquidStack.empty);
 
             outputItem = new ItemStack(Items.sand, 10);
         }};
