@@ -807,6 +807,7 @@ public class NHPostProcess {
         		crafter.outputItems = with(Items.sporePod, 2);
    			crafter.craftTime = 60f;
         		crafter.consume(new ConsumePower(6f, 0f, false));
+			crafter.craftEffect = Fx.greenBomb;
 
        		});
 		adjustContent(Blocks.blastMixer, content -> {
