@@ -804,7 +804,8 @@ public class NHPostProcess {
         		crafter.consume(new ConsumeLiquid(Liquids.water, 18f / 60f));
         		crafter.outputItems = with(Items.sporePod, 2);
    			crafter.craftTime = 60f;
-        		crafter.ConsumePower(6f);
+        		crafter.consume(new ConsumePower(6f));
+
         });
 	}
 
