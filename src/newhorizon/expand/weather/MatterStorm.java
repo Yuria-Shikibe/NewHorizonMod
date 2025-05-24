@@ -290,11 +290,6 @@ public class MatterStorm extends Weather{
 			noise.at(randX, randY, Mathf.random(0.9f, 1.1f), Mathf.sqrt(state.intensity) + 1f);
 		}
 	}
-	
-	@Override
-	public void drawUnder(WeatherState state){
-
-	}
 
 	//Tmp!
 	public Color getColor(){
@@ -327,11 +322,6 @@ public class MatterStorm extends Weather{
 		NHShaders.matterStorm.secondaryColor.set(Tmp.c1.set(secondaryColor).lerp(Color.white, Mathf.absin(8f, 0.4f)).a(state.opacity * a));
 
 		Vars.renderer.effectBuffer.blit(NHShaders.matterStorm);
-	}
-	
-	@Override
-	public WeatherState create(float intensity, float duration){
-		return super.create(intensity, duration);
 	}
 	
 	public static class AdaptedWeatherState extends WeatherState{

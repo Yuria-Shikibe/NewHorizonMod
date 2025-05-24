@@ -4,28 +4,27 @@ import arc.Core;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.func.Cons;
-import arc.graphics.Color;
-import arc.graphics.Pixmap;
-import arc.graphics.PixmapIO;
-import arc.graphics.Texture;
+import arc.graphics.*;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
+import arc.graphics.gl.FrameBuffer;
+import arc.math.Interp;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.struct.StringMap;
 import arc.util.Log;
-import arc.util.OS;
+import arc.util.ScreenUtils;
+import arc.util.Tmp;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
+import mindustry.gen.Icon;
+import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.type.Item;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.Block;
-import newhorizon.NewHorizon;
 import newhorizon.util.graphic.DrawFunc;
 
 import java.util.Objects;
@@ -149,6 +148,118 @@ public class DebugFunc {
 
     public static Fi createIconPNGFile(String fileName){
         return new Fi(NH_SPRITE_ICON_PATH + fileName + ".png");
+    }
+
+    public static void outputIcon(){
+        Icon.icons.each((name, drawable) -> {
+            TextureRegion region = drawable.getRegion();
+            outputTextureRegion(name, region);
+        });
+    }
+
+    public static void outlineIcon(){
+        Fi folder = new Fi(NH_DEBUG_GRAPHIC_FOLDER);
+        folder.findAll().each(sprite -> outlineSprite(sprite, Pal.gray, 4, true, false));
+    }
+
+    public static void outlineSprite(Fi sprite, Color color, int stroke, boolean expand, boolean smooth){
+        int pad = expand? stroke * 2: 0;
+        Pixmap process = PixmapIO.readPNG(sprite);
+        Pixmap result = new Pixmap(process.width + pad, process.height + pad);
+        result.fill(Color.clear);
+        result.draw(process, stroke, stroke);
+        Pixmap out = smooth? outlineSmooth(result, color, stroke): result.outline(color, stroke);
+        Fi fi = new Fi(NH_DEBUG_GRAPHIC_FOLDER + "/outline/" + sprite.nameWithoutExtension() + "-outline.png");
+        PixmapIO.writePng(fi, out);
+        process.dispose();
+        result.dispose();
+        out.dispose();
+    }
+
+    public static Pixmap outlineSmooth(Pixmap pixmap, Color color, int radius){
+        final int alphaThreshold = 10;
+
+        Pixmap result = pixmap.copy();
+
+        float[][] distance = new float[pixmap.width][pixmap.height];
+
+        for (int y = 0; y < pixmap.height; y++) {
+            for (int x = 0; x < pixmap.width; x++) {
+                if (pixmap.getA(x, y) >= alphaThreshold) {
+                    distance[x][y] = 0f;
+                } else {
+                    distance[x][y] = Float.POSITIVE_INFINITY;
+                }
+            }
+        }
+
+        for (int y = 0; y < pixmap.height; y++) {
+            for (int x = 0; x < pixmap.width; x++) {
+                if (distance[x][y] == 0f) continue;
+
+                for (int yy = Math.max(0, y - radius); yy <= Math.min(pixmap.height - 1, y + radius); yy++) {
+                    for (int xx = Math.max(0, x - radius); xx <= Math.min(pixmap.width - 1, x + radius); xx++) {
+                        if (distance[xx][yy] == 0f) {
+                            float dx = x - xx;
+                            float dy = y - yy;
+                            float distSq = dx * dx + dy * dy;
+                            if (distSq < distance[x][y] * distance[x][y]) {
+                                distance[x][y] = (float) Math.sqrt(distSq);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int y = 0; y < pixmap.height; y++) {
+            for (int x = 0; x < pixmap.width; x++) {
+                float d = distance[x][y];
+                if (d > 0 && d <= radius) {
+                    float alpha = Interp.pow10Out.apply(1f - d / radius);
+                    int rgba = Tmp.c1.set(color).a(alpha).rgba8888();
+                    result.setRaw(x, y, rgba);
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    public static void outputTextureRegion(String name, TextureRegion region){
+        Draw.blend();
+        Draw.reset();
+
+        Tmp.m1.set(Draw.proj());
+        Tmp.m2.set(Draw.trans());
+
+        FrameBuffer buffer = new FrameBuffer(region.width, region.height);
+
+        buffer.begin(Color.clear);
+
+        Draw.proj().setOrtho(0, buffer.getHeight(), buffer.getWidth(), -buffer.getHeight());
+        Draw.flush();
+
+        Draw.rect(region, region.width/2f, region.height/2f, region.width, region.height);
+
+        Draw.flush();
+        Draw.trans().idt();
+
+        buffer.end();
+
+        Draw.proj(Tmp.m1);
+        Draw.trans(Tmp.m2);
+
+        Draw.flush();
+
+        buffer.begin();
+        Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, buffer.getWidth(), buffer.getHeight());
+        Fi fi = createPNGFile(name);
+        fi.writePng(pixmap);
+        buffer.end();
+
+        buffer.dispose();
     }
 
     public static void outputAtlas(){

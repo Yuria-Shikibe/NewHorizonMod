@@ -63,10 +63,8 @@ public class TrailFadeBulletType extends AccelBulletType{
 					NHFx.lightningFade.at(b.x, b.y, tracerStrokeOffset, hitColor, points);
 				}
 			}
-			
 			b.data = null;
 		}
-		
 		super.despawned(b);
 	}
 	

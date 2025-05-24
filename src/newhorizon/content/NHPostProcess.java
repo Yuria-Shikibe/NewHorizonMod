@@ -2,6 +2,7 @@ package newhorizon.content;
 
 import arc.func.Cons;
 import arc.func.Intc;
+import arc.func.Prov;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
@@ -16,12 +17,14 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
+import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ContinuousTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -878,6 +881,10 @@ public class NHPostProcess {
 			unitType.mineSpeed = 12.5f;
 			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
 		});
+
+		adjustContent(Blocks.lancer, content -> {
+			PowerTurret powerTurret = (PowerTurret)content;
+        });
 	}
 
 	private static void overrideUnitTypeAbility(){
