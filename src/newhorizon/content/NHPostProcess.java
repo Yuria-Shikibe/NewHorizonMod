@@ -44,6 +44,8 @@ import static mindustry.Vars.content;
 import static mindustry.content.UnitTypes.*;
 import static mindustry.type.ItemStack.with;
 
+import mindustry.world.consumers.*;
+
 public class NHPostProcess {
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
 	public static final Seq<Color> validColor = new Seq<>();
@@ -800,6 +802,22 @@ public class NHPostProcess {
 			crafter.consume(new ConsumeItems(with(Items.sand, 5)));
 			crafter.outputItems = with(Items.silicon, 5);
 			crafter.craftTime = 60f;
+		});
+		adjustContent(Blocks.cultivator, content -> {
+        	        AttributeCrafter crafter = (AttributeCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeLiquid);
+        		crafter.consume(new ConsumeLiquid(Liquids.water, 18f / 60f));
+        		crafter.outputItems = with(Items.sporePod, 2);
+   			crafter.craftTime = 60f;
+        		crafter.consume(new ConsumePower(6f, 0f, false));
+
+       		});
+		adjustContent(Blocks.blastMixer, content -> {
+			GenericCrafter crafter = (GenericCrafter)content;
+			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
+			crafter.consume(new ConsumeItems(with(Items.sporePod, 3, Items.pyratite, 3)));
+			crafter.outputItems = with(Items.blastCompound, 3);
+			crafter.craftTime = 90f;
 		});
 	}
 
