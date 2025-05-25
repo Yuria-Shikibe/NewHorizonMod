@@ -657,7 +657,7 @@ public class NHPostProcess {
 		hideContent(Blocks.invertedSorter);
 		hideContent(Blocks.overflowGate);
 		hideContent(Blocks.underflowGate);
-		hideContent(Blocks.massDriver);
+		//hideContent(Blocks.massDriver);
 
 		hideContent(Blocks.duct);
 		hideContent(Blocks.armoredDuct);
