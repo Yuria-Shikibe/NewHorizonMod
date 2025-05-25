@@ -18,6 +18,8 @@ public class NHStats {
         overheatCooldown = new Stat("overheat-cooldown", StatCat.function),
         payloadCapacity = new Stat("payload-capacity", StatCat.general),
         gravityRange = new Stat("gravity-gully-range", StatCat.general),
-        maxLinks = new Stat("max-build-links", StatCat.function)
+        maxLinks = new Stat("max-build-links", StatCat.function),
+        installableBlocks = new Stat("installable-blocks", StatCat.function),
+        compatibleBlocks = new Stat("compatible-blocks", StatCat.function)
     ;
 }

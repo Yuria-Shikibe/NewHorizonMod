@@ -8,13 +8,14 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.special.AssignedBeacon;
+import newhorizon.expand.block.special.DeviceBase;
 import newhorizon.expand.block.special.NexusCore;
 
 import static mindustry.type.ItemStack.with;
 
 public class SpecialBlock {
     public static Block
-            standardStorage, heavyStorage, nexusCore, juniorModuleBeacon, seniorModuleBeacon;
+            standardStorage, heavyStorage, nexusCore, juniorModuleBeacon, seniorModuleBeacon, deviceTest;
 
     public static void load(){
         nexusCore = new NexusCore();
@@ -47,6 +48,10 @@ public class SpecialBlock {
             maxSlot = 4;
             range = 80f;
             powerCons = 1000 / 60f;
+        }};
+
+        deviceTest = new DeviceBase("device-test"){{
+            requirements(Category.effect, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 100, Items.surgeAlloy, 200, Items.phaseFabric, 150));
         }};
     }
 }

@@ -2,7 +2,6 @@ package newhorizon.content;
 
 import arc.func.Cons;
 import arc.func.Intc;
-import arc.func.Prov;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.Rand;
@@ -22,6 +21,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
+import mindustry.world.Build;
 import mindustry.world.blocks.defense.turrets.ContinuousTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
@@ -34,10 +34,13 @@ import mindustry.world.meta.*;
 import newhorizon.NHSetting;
 import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
+import newhorizon.expand.block.turrets.AdaptPowerTurret;
 import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.util.func.ReflectionUtil;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 import static mindustry.Vars.content;
@@ -899,10 +902,6 @@ public class NHPostProcess {
 			unitType.mineSpeed = 12.5f;
 			unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
 		});
-
-		adjustContent(Blocks.lancer, content -> {
-			PowerTurret powerTurret = (PowerTurret)content;
-        });
 	}
 
 	private static void overrideUnitTypeAbility(){

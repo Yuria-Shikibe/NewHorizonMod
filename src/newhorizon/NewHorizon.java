@@ -196,6 +196,7 @@ public class NewHorizon extends Mod{
 		NHPlanets.load();
 		NHSectorPresents.load();
 		NHTechTree.load();
+		NHDevices.load();
 
 		NHSetting.load();
 		NHPostProcess.load();
