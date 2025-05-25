@@ -78,20 +78,20 @@ public class CraftingBlock {
             addInput(ItemStack.with(Items.thorium, 4), LiquidStack.empty);
             addInput(ItemStack.with(Items.tungsten, 5), LiquidStack.empty);
 
-            outputItem = new ItemStack(Items.sand, 10);
+            outputItem = new ItemStack(Items.sand, 12);
         }};
         oilRefiner = new GenericCrafter("oil-refiner"){{
 
             size = 2;
             requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
             health = 200;
-            craftTime = 90f;
+            craftTime = 60f;
             liquidCapacity = 60f;
             itemCapacity = 20;
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
             consumePower(5f);
-            consumeItems(new ItemStack(Items.sand, 5));
+            consumeItems(new ItemStack(Items.sand, 3));
             outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
         }};
         convertorTungsten = new RecipeGenericCrafter("convertor-tungsten"){{
