@@ -350,9 +350,9 @@ public class NHPostProcess {
 	}
 
 	public static void setupAdaptBulletType(){
-		replaceUnitTypeBullets(alpha, alpha.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(15, 15));
-		replaceUnitTypeBullets(beta, beta.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(20, 20));
-		replaceUnitTypeBullets(gamma, gamma.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(25, 25));
+		//replaceUnitTypeBullets(alpha, alpha.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(15, 15));
+		//replaceUnitTypeBullets(beta, beta.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(20, 20));
+		//replaceUnitTypeBullets(gamma, gamma.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(25, 25));
 	}
 
 	public static void replaceUnitTypeBullets(UnitType unitType, BulletType bulletType, Cons<AdaptBulletType> modifier){

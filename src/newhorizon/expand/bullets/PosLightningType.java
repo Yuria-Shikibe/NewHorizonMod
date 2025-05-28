@@ -11,8 +11,7 @@ public class PosLightningType extends AdaptBulletType{
 	public int boltNum = 2;
 	public float hitEffectRotation = 12f;
 
-	public PosLightningType(float kineticDamage, float energyDamage){
-		super(kineticDamage, energyDamage);
+	public PosLightningType(){
 		speed = 0f;
 		scaleLife = true;
 		hitShake = 2f;
@@ -26,7 +25,8 @@ public class PosLightningType extends AdaptBulletType{
 	}
 	
 	public PosLightningType(float damage){
-		super(damage, damage);
+		this.damage = damage;
+
 		speed = 0f;
 		scaleLife = true;
 		hitShake = 2f;

@@ -1,27 +1,25 @@
 package newhorizon.expand.type;
 
 import arc.Core;
-import arc.graphics.Color;
+import arc.func.Cons3;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Scaling;
-import arc.util.Strings;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
-import mindustry.type.Liquid;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.turrets.Turret;
-import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHStats;
-import newhorizon.content.blocks.TurretBlock;
 
-import static mindustry.Vars.content;
 import static mindustry.ctype.ContentType.loadout_UNUSED;
 
 public class Device extends UnlockableContent {
     public Seq<Block> installableBlocks = new Seq<>();
     public Seq<Block> compatibleBlocks = new Seq<>();
+
+    public Cons3<Building, DeviceData, Float> modifier = (source, target, intensity) -> {};
+
     public Device(String name) {
         super(name);
 
@@ -78,9 +76,9 @@ public class Device extends UnlockableContent {
         });
     }
 
-    public void applyBuilding(Building source, Building target) {
-        if (target instanceof Turret.TurretBuild turretBuild){
-            turretBuild.applyBoost(10f, 30f);
+    public void applyBuilding(Building source, DeviceData target, float intensity) {
+        if (installableBlocks.contains(source.block) && compatibleBlocks.contains(target.building.block)) {
+            modifier.get(source, target, intensity);
         }
     }
 }

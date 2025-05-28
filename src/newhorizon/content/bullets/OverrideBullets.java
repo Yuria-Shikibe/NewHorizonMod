@@ -14,7 +14,7 @@ public class OverrideBullets {
         int lastSize = Vars.content.getBy(ContentType.bullet).size;
         for(int i = 0; i < lastSize; i++){
             if (Vars.content.getBy(ContentType.bullet).get(i).isModded()) break;
-            bulletReplacement.put(i, new AdaptBulletType(0, 0));
+            bulletReplacement.put(i, new AdaptBulletType());
         }
     }
 

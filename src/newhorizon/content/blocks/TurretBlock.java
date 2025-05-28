@@ -38,6 +38,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.NHSetting;
 import newhorizon.content.*;
 import newhorizon.content.bullets.RaidBullets;
+import newhorizon.expand.block.turrets.AdaptItemTurret;
 import newhorizon.expand.block.turrets.ContinuousOverheatTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
 import newhorizon.expand.bullets.AdaptBulletType;
@@ -58,7 +59,7 @@ public class TurretBlock {
     public static Block testShooter;
 
     public static void load(){
-        synchro = new ItemTurret("synchro"){{
+        synchro = new AdaptItemTurret("synchro"){{
             requirements(Category.turret, BuildVisibility.shown, with(
                     NHItems.juniorProcessor, 60, NHItems.presstanium, 80, Items.tungsten, 50));
 
@@ -156,7 +157,9 @@ public class TurretBlock {
             reload = 60f;
             shootCone = 24f;
             shootSound = NHSounds.laser3;
-            shootType = new PosLightningType(20f, 100f){{
+            shootType = new PosLightningType(){{
+                damage = 1f;
+                shieldDamageMultiplier = 0.2f;
                 lightningColor = hitColor = NHColor.lightSkyBack;
                 maxRange = rangeOverride = 250f;
                 hitEffect = NHFx.hitSpark;
@@ -170,6 +173,10 @@ public class TurretBlock {
 
             ammo(
                     NHItems.zeta, new AdaptBulletType(){{
+                        splashDamage = 60f;
+                        splashDamageRadius = 16f;
+                        shieldDamageMultiplier = 0.5f;
+
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
@@ -200,11 +207,12 @@ public class TurretBlock {
 
                         ammoMultiplier = 3f;
                         lifetime = 80f;
-
-                        setSplash(90, 30, 16, 5);
-                        setDescription("slavio-zeta");
                     }},
                     NHItems.metalOxhydrigen, new AdaptBulletType(){{
+                        splashDamage = 60f;
+                        splashDamageRadius = 20f;
+                        shieldDamageMultiplier = 0.5f;
+
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
@@ -236,9 +244,6 @@ public class TurretBlock {
                         ammoMultiplier = 4f;
                         reloadMultiplier = 1.35f;
                         lifetime = 60f;
-
-                        setSplash(120, 40, 20, 5);
-                        setDescription("slavio-metaloxhydrigen");
                     }}
             );
             shoot = new ShootAlternate(){{
@@ -301,6 +306,9 @@ public class TurretBlock {
             requirements(Category.turret, with(Items.carbide, 150, NHItems.setonAlloy, 80, NHItems.seniorProcessor, 75));
 
             shootType = new UpgradePointLaserBulletType(){{
+                damage = 200;
+                shieldDamageMultiplier = 2f;
+
                 hitEffect = NHFx.hitSpark;
                 buildingDamageMultiplier = 0.5f;
                 damageInterval = 6;
@@ -313,8 +321,6 @@ public class TurretBlock {
                 range = 75 * 8;
 
                 trailLength = 8;
-
-                setDamage(400, 200);
             }};
 
             drawer = new DrawTurret(){{
