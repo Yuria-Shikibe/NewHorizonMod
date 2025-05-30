@@ -78,12 +78,13 @@ public class PowerBlock {
             liquidCapacity = 30;
 
             powerProduction = 50f;
+            craftTime = 120f;
 
-            addInput(ItemStack.with(NHItems.zeta, 2, Items.carbide, 1), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 2, Items.carbide, 1), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 2, Items.carbide, 1), LiquidStack.with(Liquids.nitrogen, 6 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(Liquids.nitrogen, 6 / 60f));
 
-            outputItem = new ItemStack(NHItems.fusionEnergy, 1);
+            outputItem = new ItemStack(NHItems.fusionEnergy, 2);
 
             outputsPower = true;
             hasLiquids = hasItems = hasPower = true;
