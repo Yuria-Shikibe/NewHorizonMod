@@ -3,6 +3,7 @@ package newhorizon.expand.block.special;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.geom.Geometry;
+import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Tmp;
 import mindustry.gen.Building;
@@ -33,12 +34,15 @@ public class DeviceBase extends Block {
 
         canOverdrive = false;
         drawDisabled = false;
+
+        configurable = true;
+        saveConfig = true;
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class DeviceBaseBuild extends Building {
         public Seq<DeviceData> targets = new Seq<>();
-        public Seq<Device> devices = Seq.with(NHDevices.burstShoot);
+        public Seq<Device> devices = Seq.with();
 
         @Override
         public void updateTile() {
@@ -52,6 +56,11 @@ public class DeviceBase extends Block {
         public void updateTargets() {
             targets.clear();
             if (front() != null) targets.add(new DeviceData(front(), 0f));
+        }
+
+        @Override
+        public void buildConfiguration(Table table) {
+
         }
 
         @Override

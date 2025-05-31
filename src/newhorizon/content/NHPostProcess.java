@@ -22,9 +22,7 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.Build;
-import mindustry.world.blocks.defense.turrets.ContinuousTurret;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -583,25 +581,13 @@ public class NHPostProcess {
 
 	public static void overrideStats(){
 		for (Block block: content.blocks()){
-			if (block instanceof ItemTurret itemTurret){
-				block.checkStats();
-				var map = block.stats.toMap();
-				if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
-					block.stats.remove(Stat.ammo);
-					block.stats.add(Stat.ammo, NHStatValues.ammo(itemTurret.ammoTypes, 0, false));
-				}
-			}
-
-			if (block instanceof ContinuousTurret continuousTurret){
-				block.checkStats();
-				var map = block.stats.toMap();
-				if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
-					block.stats.remove(Stat.ammo);
-					ObjectMap<UnlockableContent, BulletType> ammo = new ObjectMap<>();
-					ammo.put(continuousTurret, continuousTurret.shootType);
-					block.stats.add(Stat.ammo, NHStatValues.ammo(ammo, 0, false));
-				}
-			}
+			//uhh so eg compatibility, better way come later
+			if (block.minfo != null && block.minfo.mod != null && Objects.equals(block.minfo.mod.name, "exogenesis")) continue;
+			if (block instanceof ItemTurret itemTurret) processAmmoStat(block, itemTurret.ammoTypes);
+			if (block instanceof LiquidTurret liquidTurret) processAmmoStat(block, liquidTurret.ammoTypes);
+			if (block instanceof PowerTurret powerTurret) processAmmoStat(block, ObjectMap.of(powerTurret, powerTurret.shootType));
+			if (block instanceof ContinuousTurret continuousTurret) processAmmoStat(block, ObjectMap.of(continuousTurret, continuousTurret.shootType));
+			if (block instanceof ContinuousLiquidTurret continuousLiquidTurret) processAmmoStat(block, continuousLiquidTurret.ammoTypes);
 		}
 
 		for (UnitType unitType: content.units()){
@@ -611,6 +597,21 @@ public class NHPostProcess {
 				unitType.stats.remove(Stat.weapons);
 				unitType.stats.add(Stat.weapons, NHStatValues.weapons(unitType, unitType.weapons));
 			}
+		}
+	}
+
+	private static void processAmmoStat(Block block, ObjectMap<? extends UnlockableContent, BulletType> ammo){
+		block.checkStats();
+		var map = block.stats.toMap();
+		if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
+			block.stats.remove(Stat.ammo);
+			if (block instanceof ContinuousLiquidTurret continuousLiquidTurret){
+				block.stats.add(Stat.ammo, table -> {
+					table.row();
+					StatValues.number(continuousLiquidTurret.liquidConsumed * 60f, StatUnit.perSecond, true).display(table);
+				});
+			}
+			block.stats.add(Stat.ammo, NHStatValues.ammo(ammo, 0, false));
 		}
 	}
 

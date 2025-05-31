@@ -9,7 +9,7 @@ import newhorizon.expand.block.turrets.AdaptItemTurret;
 import newhorizon.expand.type.Device;
 
 public class NHDevices {
-    public static Device rapidLoaderLight, burstShoot;
+    public static Device rapidLoaderLight, burstShoot, device2;
 
     public static void load(){
         rapidLoaderLight = new Device("rapid-loader-light"){{
@@ -50,6 +50,11 @@ public class NHDevices {
                     turret.updateEnergyModifier(1.5f);
                 }
             };
+        }};
+
+        device2 = new Device("device-2"){{
+            installableBlocks.add(SpecialBlock.deviceTest);
+            compatibleBlocks.add(TurretBlock.synchro, TurretBlock.argmot, TurretBlock.slavio);
         }};
     }
 }

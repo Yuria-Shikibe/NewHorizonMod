@@ -11,12 +11,11 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.ui.Image;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Scaling;
-import arc.util.Strings;
-import arc.util.Tmp;
+import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.UnitTypes;
@@ -24,6 +23,7 @@ import mindustry.entities.Units;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
+import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -40,9 +40,11 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHStatusEffects;
 import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.expand.entities.Spawner;
+import newhorizon.util.ui.DelaySlideBar;
 
 import static mindustry.Vars.*;
 import static newhorizon.NHVars.worldData;
@@ -351,7 +353,31 @@ public class JumpGate extends Block {
 
         @Override
         public void buildConfiguration(Table table) {
-            ItemSelection.buildTable(block, table, spawnList, () -> unitType, (UnitType u) -> configure(getPlanId(u)), 4, 4);
+            table.table(inner -> {
+                inner.background(Tex.paneSolid);
+                inner.pane(selectionTable -> {
+                    for (UnitType type: spawnList){
+                        selectionTable.button(button -> {
+                            button.table(selection -> {
+                                selection.stack(
+                                        new DelaySlideBar(
+                                                () -> Pal.techBlue,
+                                                () -> "          " + Core.bundle.format("bar.unitcap",
+                                                        type.localizedName,
+                                                        team.data().countType(type),
+                                                        type.useUnitCap ? Units.getStringCap(team) : "∞"),
+                                                () -> type.useUnitCap ? (float)team.data().countType(type) / Units.getCap(team) : 1f),
+                                        new Table(image -> image.image(type.uiIcon).scaling(Scaling.fit).size(48, 48).padTop(6f).padBottom(6f).padLeft(8f)).left()
+                                ).expandX().fillX();
+                            }).growX();
+                            button.update(() -> {
+                                button.setChecked(unitType == type);
+                            });
+                        }, Styles.underlineb, () -> configure(getPlanId(type))).expandX().fillX().margin(0).pad(4);
+                        selectionTable.row();
+                    }
+                }).width(342).maxHeight(400).padRight(2);
+            }).width(360).maxHeight(364);
         }
 
         public int getPlanId(UnitType unitType){
