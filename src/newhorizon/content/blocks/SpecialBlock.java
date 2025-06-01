@@ -50,8 +50,8 @@ public class SpecialBlock {
             powerCons = 1000 / 60f;
         }};
 
-        //deviceTest = new DeviceBase("device-test"){{
-        //    requirements(Category.effect, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 100, Items.surgeAlloy, 200, Items.phaseFabric, 150));
-        //}};
+        deviceTest = new DeviceBase("device-test"){{
+            requirements(Category.effect, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 100, Items.surgeAlloy, 200, Items.phaseFabric, 150));
+        }};
     }
 }
