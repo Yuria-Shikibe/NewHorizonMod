@@ -689,9 +689,6 @@ block.new-horizon-junior-module-beacon.description =
 block.new-horizon-senior-module-beacon.name = 
 block.new-horizon-senior-module-beacon.description = 
 #block.new-horizon-senior-module-beacon.detail = 
-block.new-horizon-device-test.name = 
-block.new-horizon-device-test.description = 
-#block.new-horizon-device-test.detail = 
 #LOGIC PART
 block.new-horizon-icon-display.name = 
 block.new-horizon-icon-display.description = 
