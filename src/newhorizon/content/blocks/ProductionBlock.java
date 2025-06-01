@@ -74,7 +74,7 @@ public class ProductionBlock {
             );
 
             hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 3f / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 4f / 60f);
             liquidCapacity = 300f;
         }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility"){{
