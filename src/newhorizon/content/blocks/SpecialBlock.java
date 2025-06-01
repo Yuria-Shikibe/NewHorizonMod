@@ -31,7 +31,7 @@ public class SpecialBlock {
             requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.juniorProcessor, 120, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
             size = 3;
             health = 4000;
-            itemCapacity = 2500;
+            itemCapacity = 5000;
         }};
 
         juniorModuleBeacon = new AssignedBeacon("junior-module-beacon"){{
