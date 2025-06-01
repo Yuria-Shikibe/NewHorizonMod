@@ -44,7 +44,7 @@ public class ProductionBlock {
 
     public static void load(){
         xenExtractor = new ThermalGenerator("xen-extractor"){{
-            requirements(Category.production, with(Items.graphite, 20, Items.beryllium, 60));
+            requirements(Category.production, with(Items.tungsten, 50, NHItems.presstanium, 20, NHItems.juniorProcessor, 20));
             attribute = NHContent.quantum;
             group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
@@ -74,7 +74,7 @@ public class ProductionBlock {
             );
 
             hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 3f / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 4f / 60f);
             liquidCapacity = 300f;
         }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility"){{
