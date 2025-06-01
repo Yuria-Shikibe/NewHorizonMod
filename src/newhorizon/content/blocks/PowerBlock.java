@@ -120,7 +120,7 @@ public class PowerBlock {
 
             addInput(ItemStack.with(NHItems.fusionEnergy, 2, Items.surgeAlloy, 4), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
 
-            outputItem = new ItemStack(NHItems.thermoCorePositive, 1);
+            outputItem = new ItemStack(NHItems.thermoCorePositive, 2);
 
             outputsPower = true;
             hasLiquids = hasItems = hasPower = true;
@@ -147,7 +147,7 @@ public class PowerBlock {
 
             addInput(ItemStack.with(NHItems.fusionEnergy, 2, Items.phaseFabric, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f));
 
-            outputItem = new ItemStack(NHItems.thermoCoreNegative, 1);
+            outputItem = new ItemStack(NHItems.thermoCoreNegative, 2);
 
             outputsPower = true;
             hasLiquids = hasItems = hasPower = true;
