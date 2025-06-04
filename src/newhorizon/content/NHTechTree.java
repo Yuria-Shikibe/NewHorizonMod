@@ -17,11 +17,11 @@ public class NHTechTree{
 			}
 		});
 		
-		TechNode root = nodeRoot("new-horizon", NHPlanets.midantha, () -> {
-			node(NHSectorPresents.abandonedOutpost, ItemStack.with(), () -> {});
-		});
-		
-		root.planet = NHPlanets.midantha;
-		root.children.each(c -> c.planet = NHPlanets.midantha);
+		//TechNode root = nodeRoot("new-horizon", NHPlanets.midantha, () -> {
+		//	node(NHSectorPresents.abandonedOutpost, ItemStack.with(), () -> {});
+		//});
+		//
+		//root.planet = NHPlanets.midantha;
+		//root.children.each(c -> c.planet = NHPlanets.midantha);
 	}
 }

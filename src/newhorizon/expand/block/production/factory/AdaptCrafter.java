@@ -3,6 +3,7 @@ package newhorizon.expand.block.production.factory;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
@@ -116,6 +117,11 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     public void loadIcon() {
         super.loadIcon();
         uiIcon = Core.atlas.find(name + "-icon", name);
+    }
+
+    @Override
+    public TextureRegion[] getGeneratedIcons() {
+        return super.getGeneratedIcons();
     }
 
     @Override

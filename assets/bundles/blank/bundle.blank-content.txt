@@ -275,78 +275,6 @@ block.new-horizon-link-entity-liquid-4.description =
 block.new-horizon-placeholder-entity-4.name = 
 block.new-horizon-placeholder-entity-4.description = 
 #block.new-horizon-placeholder-entity-4.detail = 
-block.new-horizon-processor-t1.name = 
-block.new-horizon-processor-t1.description = 
-#block.new-horizon-processor-t1.detail = 
-block.new-horizon-processor-t2.name = 
-block.new-horizon-processor-t2.description = 
-#block.new-horizon-processor-t2.detail = 
-block.new-horizon-processor-t3.name = 
-block.new-horizon-processor-t3.description = 
-#block.new-horizon-processor-t3.detail = 
-block.new-horizon-processor-t4.name = 
-block.new-horizon-processor-t4.description = 
-#block.new-horizon-processor-t4.detail = 
-block.new-horizon-processor-t5.name = 
-block.new-horizon-processor-t5.description = 
-#block.new-horizon-processor-t5.detail = 
-block.new-horizon-armor-t1.name = 
-block.new-horizon-armor-t1.description = 
-#block.new-horizon-armor-t1.detail = 
-block.new-horizon-armor-t2.name = 
-block.new-horizon-armor-t2.description = 
-#block.new-horizon-armor-t2.detail = 
-block.new-horizon-armor-t3.name = 
-block.new-horizon-armor-t3.description = 
-#block.new-horizon-armor-t3.detail = 
-block.new-horizon-armor-t4.name = 
-block.new-horizon-armor-t4.description = 
-#block.new-horizon-armor-t4.detail = 
-block.new-horizon-armor-t5.name = 
-block.new-horizon-armor-t5.description = 
-#block.new-horizon-armor-t5.detail = 
-block.new-horizon-core-t1.name = 
-block.new-horizon-core-t1.description = 
-#block.new-horizon-core-t1.detail = 
-block.new-horizon-core-t2.name = 
-block.new-horizon-core-t2.description = 
-#block.new-horizon-core-t2.detail = 
-block.new-horizon-core-t3.name = 
-block.new-horizon-core-t3.description = 
-#block.new-horizon-core-t3.detail = 
-block.new-horizon-core-t4.name = 
-block.new-horizon-core-t4.description = 
-#block.new-horizon-core-t4.detail = 
-block.new-horizon-core-t5.name = 
-block.new-horizon-core-t5.description = 
-#block.new-horizon-core-t5.detail = 
-block.new-horizon-speed-module-1.name = 
-block.new-horizon-speed-module-1.description = 
-#block.new-horizon-speed-module-1.detail = 
-block.new-horizon-speed-module-2.name = 
-block.new-horizon-speed-module-2.description = 
-#block.new-horizon-speed-module-2.detail = 
-block.new-horizon-speed-module-3.name = 
-block.new-horizon-speed-module-3.description = 
-#block.new-horizon-speed-module-3.detail = 
-block.new-horizon-efficiency-module-1.name = 
-block.new-horizon-efficiency-module-1.description = 
-#block.new-horizon-efficiency-module-1.detail = 
-block.new-horizon-efficiency-module-2.name = 
-block.new-horizon-efficiency-module-2.description = 
-#block.new-horizon-efficiency-module-2.detail = 
-block.new-horizon-efficiency-module-3.name = 
-block.new-horizon-efficiency-module-3.description = 
-#block.new-horizon-efficiency-module-3.detail = 
-block.new-horizon-productivity-module-1.name = 
-block.new-horizon-productivity-module-1.description = 
-#block.new-horizon-productivity-module-1.detail = 
-block.new-horizon-productivity-module-2.name = 
-block.new-horizon-productivity-module-2.description = 
-#block.new-horizon-productivity-module-2.detail = 
-block.new-horizon-productivity-module-3.name = 
-block.new-horizon-productivity-module-3.description = 
-#block.new-horizon-productivity-module-3.detail = 
 block.new-horizon-metal-floor-groove.name = 
 block.new-horizon-metal-floor-groove.description = 
 #block.new-horizon-metal-floor-groove.detail = 
@@ -873,26 +801,11 @@ status.new-horizon-shield-flag.description =
 #[[REGION PLANET]]
 
 
-planet.new-horizon-ceito.name = 
-planet.new-horizon-ceito.description = 
-#planet.new-horizon-ceito.detail = 
-planet.new-horizon-midantha-test.name = 
-planet.new-horizon-midantha-test.description = 
-#planet.new-horizon-midantha-test.detail = 
-planet.new-horizon-midantha.name = 
-planet.new-horizon-midantha.description = 
-#planet.new-horizon-midantha.detail = 
-planet.new-horizon-sentourt.name = 
-planet.new-horizon-sentourt.description = 
-#planet.new-horizon-sentourt.detail = 
 
 
 #[[REGION SECTOR]]
 
 
-sector.new-horizon-abandoned-outpost.name = 
-sector.new-horizon-abandoned-outpost.description = 
-#sector.new-horizon-abandoned-outpost.detail = 
 
 
 #[[REGION WEATHER]]

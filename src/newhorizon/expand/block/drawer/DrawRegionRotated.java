@@ -12,6 +12,7 @@ import mindustry.world.draw.DrawBlock;
 
 public class DrawRegionRotated extends DrawBlock {
     public TextureRegion[] region;
+    public TextureRegion iconRegion;
     public boolean oneSprite = false;
     public String suffix = "";
     public float x = 0, y = 0;
@@ -52,7 +53,7 @@ public class DrawRegionRotated extends DrawBlock {
 
     @Override
     public TextureRegion[] icons(Block block) {
-        return super.icons(block);
+        return new TextureRegion[]{iconRegion};
     }
 
     @Override
@@ -67,5 +68,6 @@ public class DrawRegionRotated extends DrawBlock {
                 region[i] = Core.atlas.find(block.name + suffix + "-" + i);
             }
         }
+        iconRegion = Core.atlas.find(block.name + suffix + "-icon", region[0]);
     }
 }

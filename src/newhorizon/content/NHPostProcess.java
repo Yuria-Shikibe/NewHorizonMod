@@ -374,7 +374,9 @@ public class NHPostProcess {
 		for(Block block: content.blocks()){
 			if (block.name.startsWith("new-horizon")){
 				block.shownPlanets.clear();
-				block.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha);
+				block.shownPlanets.addAll(Planets.serpulo, Planets.erekir
+						//, NHPlanets.midantha
+				);
 			}
 		}
 	}
