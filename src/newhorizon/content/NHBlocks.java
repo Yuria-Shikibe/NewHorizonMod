@@ -2533,7 +2533,7 @@ public class NHBlocks{
 		
 		largeWaterExtractor = new SolidPump("large-water-extractor"){{
 			size = 3;
-			pumpAmount = 0.3f;
+			pumpAmount = 0.31f;
 			requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.thorium, 60, Items.metaglass, 30));
 //			//NHTechTree.add(Blocks.waterExtractor, this);
 			result = Liquids.water;
