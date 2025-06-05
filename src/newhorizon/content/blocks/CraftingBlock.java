@@ -516,7 +516,7 @@ public class CraftingBlock {
         }};
         multipleSteelFactory = new RecipeGenericCrafter("multiple-steel-factory") {{
             requirements(Category.crafting,
-                    with(NHItems.presstanium, 120, NHItems.juniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy));
+                    with(NHItems.presstanium, 120, NHItems.juniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
             lightColor = NHItems.multipleSteel.color;
             updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
             craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
