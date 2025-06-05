@@ -677,11 +677,7 @@ public class CraftingBlock {
             craftEffect = Fx.smeltsmoke;
             updateEffect = Fx.smeltsmoke;
 
-            drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
-                        suffix = "-rot";
-                    }}
-            );
+            drawer = new DrawDefault();
         }};
         hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter"){{
             requirements(Category.crafting, BuildVisibility.shown,
@@ -689,8 +685,7 @@ public class CraftingBlock {
 
             size = 3;
 
-            //addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
-            //       -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
+            rotate = false;
 
             craftTime = 90f;
             consumePower(640 / 60f);
