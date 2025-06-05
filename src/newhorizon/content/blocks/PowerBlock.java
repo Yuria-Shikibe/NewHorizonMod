@@ -82,7 +82,7 @@ public class PowerBlock {
 
             addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
             addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(Liquids.nitrogen, 6 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(Liquids.nitrogen, 4 / 60f));
 
             outputItem = new ItemStack(NHItems.fusionEnergy, 2);
 
