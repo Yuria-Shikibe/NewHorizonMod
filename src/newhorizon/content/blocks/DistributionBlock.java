@@ -112,7 +112,7 @@ public class DistributionBlock {
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-            solid = false;
+            
             speed = 4f;
 
             placeableLiquid = true;
