@@ -42,7 +42,7 @@ public class CraftingBlock {
         sandCracker, oilRefiner,
         convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
         stampingFacility, processorPrinter, crucibleFoundry, crucibleCaster, crystallizer, zetaDissociator, surgeRefactor,
-        fabricSynthesizer, processorEncoder, irdryonMixer, multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
+        fabricSynthesizer, processorEncoder, irdryonMixer,hugeplastaniumFactory,multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
         multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
 
         electronicAssemblyMk1, electronicAssemblyMk2, electronicAssemblyMk3,
