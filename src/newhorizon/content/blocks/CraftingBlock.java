@@ -685,10 +685,9 @@ public class CraftingBlock {
         }};
         hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 90, NHItems.seniorProcessor, 60, Items.phaseFabric, 120, NHItems.metalOxhydrigen, 45, NHItems.multipleSteel, 85));
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 120, Items.surgeAlloy, 80, NHItems.metalOxhydrigen, 40, NHItems.multipleSteel, 60));
 
             size = 3;
-
             rotate = false;
 
             craftTime = 90f;
