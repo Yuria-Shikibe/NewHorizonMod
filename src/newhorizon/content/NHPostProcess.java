@@ -792,7 +792,7 @@ public class NHPostProcess {
 			GenericCrafter crafter = (GenericCrafter)content;
 			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
 			crafter.requirements = with(Items.titanium, 120, Items.metaglass, 80, Items.silicon, 60);
-			crafter.consumeItems(with(Items.sand, 8, Items.pyratite, 1));
+			crafter.consumeItems(with(Items.sand, 8, Items.pyratite, 2));
 			crafter.outputItem = new ItemStack(Items.silicon, 14);
 			crafter.craftTime = 120f;
 		});
