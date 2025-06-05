@@ -206,7 +206,7 @@ public class ModuleBlock {
 
         unitCosts.put(NHUnitTypes.naxos, unitCost(60 * 45f, processorT3, 6, armorT2, 4, coreT2, 3, speedModule2, 2));
         unitCosts.put(NHUnitTypes.tarlidor, unitCost(60 * 45f, processorT3, 5, armorT2, 5, coreT2, 3, efficiencyModule2, 2));
-        unitCosts.put(NHUnitTypes.zarkov, unitCost(60 * 45f, processorT3, 4, armorT2, 6, coreT2, 3, productivityModule1, 2));
+        unitCosts.put(NHUnitTypes.zarkov, unitCost(60 * 45f, processorT3, 4, armorT2, 6, coreT2, 3, productivityModule2, 2));
         unitCosts.put(UnitTypes.eclipse, unitCost(60 * 60f, processorT3, 6, armorT3, 10, coreT2, 5, productivityModule2, 3));
         unitCosts.put(UnitTypes.disrupt, unitCost(60 * 60f, processorT3, 10, armorT3, 6, coreT2, 5, productivityModule2, 3));
         unitCosts.put(UnitTypes.corvus, unitCost(60 * 75f, processorT4, 20, armorT3, 10, coreT2, 10, speedModule2, 3));
