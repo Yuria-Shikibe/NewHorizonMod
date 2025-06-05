@@ -516,7 +516,7 @@ public class CraftingBlock {
         }};
         multipleSteelFactory = new RecipeGenericCrafter("multiple-steel-factory") {{
             requirements(Category.crafting,
-                    with(NHItems.presstanium, 120, NHItems.juniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
+                    with(NHItems.presstanium, 120, NHItems.juniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy));
             lightColor = NHItems.multipleSteel.color;
             updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
             craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
@@ -616,7 +616,7 @@ public class CraftingBlock {
         }};
         multipleFoundry = new RecipeGenericCrafter("multiple-foundry"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.surgeAlloy, 120, Items.phaseFabric, 80, NHItems.seniorProcessor, 80, NHItems.zeta, 80));
+                    ItemStack.with(Items.surgeAlloy, 100, Items.phaseFabric, 80, NHItems.seniorProcessor, 60, NHItems.zeta, 80, NHItems.irayrondPanel, 80));
 
             size = 4;
             rotate = false;
@@ -636,7 +636,7 @@ public class CraftingBlock {
         }};
         processorCompactor = new RecipeGenericCrafter("processor-compactor"){{
             requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.surgeAlloy, 120, Items.phaseFabric, 80, NHItems.seniorProcessor, 80, NHItems.zeta, 80));
+                    ItemStack.with(Items.surgeAlloy, 100, Items.phaseFabric, 80, NHItems.seniorProcessor, 60, NHItems.zeta, 80, NHItems.irayrondPanel, 80));
 
             size = 4;
             rotate = false;
@@ -793,8 +793,8 @@ public class CraftingBlock {
 
             consumePower(12);
             consumeItems(with(NHItems.irayrondPanel, 6));
-            consumeLiquid(NHLiquids.irdryonFluid, 6 / 60f);
-            outputItems = with(NHItems.ancimembrane, 2);
+            consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
+            outputItems = with(NHItems.ancimembrane, 3);
         }};
         upgradeSortFactory = new GenericCrafter("upgradeSort-factory"){{
             requirements(Category.crafting,
