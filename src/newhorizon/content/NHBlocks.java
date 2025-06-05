@@ -2451,7 +2451,7 @@ public class NHBlocks{
 		remoteStorage = new RemoteCoreStorage("remote-vault"){{
 			size = 3;
 			health = 960;
-			consumePower(10);
+			consumePower(20);
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 150, NHItems.multipleSteel, 120));
 		}};
 		
