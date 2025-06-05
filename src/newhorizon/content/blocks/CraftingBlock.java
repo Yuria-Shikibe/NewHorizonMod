@@ -702,6 +702,7 @@ public class CraftingBlock {
             ignoreLiquidFullness = true;
 
             itemCapacity = 30;
+            liquidCapacity = 90f;
 
             craftEffect = Fx.smeltsmoke;
             updateEffect = Fx.smeltsmoke;
