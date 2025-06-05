@@ -2247,12 +2247,12 @@ public class NHBlocks{
 				Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
 			});
 			//			//NHTechTree.add(Blocks.thoriumReactor,this);
-			powerProduction = 1720f / 60f;
+			powerProduction = 2000f / 60f;
 			itemCapacity = 40;
 			liquidCapacity = 30;
 			itemDuration = 240f;
 			consumeItem(NHItems.metalOxhydrigen, 4);
-			consumeLiquid(Liquids.nitrogen,2 / 60f);
+			consumeLiquid(Liquids.nitrogen,1 / 60f);
 			
 			squareSprite = false;
 			hasLiquids = hasItems = true;
