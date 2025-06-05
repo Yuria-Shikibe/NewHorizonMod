@@ -61,7 +61,7 @@ public class NHStatValues {
                     }
 
                     if (type instanceof TypeDamageBulletType typeDamageBulletType){
-                        typeDamageBulletType.buildStat(t, bt, compact);
+                        typeDamageBulletType.buildStat(type, t, bt, compact);
                     }else {
                         if(type.damage > 0 && (type.collides || type.splashDamage <= 0)){
                             if(type.continuousDamage() > 0){
@@ -123,10 +123,6 @@ public class NHStatValues {
 
         if(type.rangeChange != 0 && !compact){
             sep(bt, Core.bundle.format("bullet.range", ammoStat(type.rangeChange / tilesize)));
-        }
-
-        if(type.shieldDamageMultiplier != 1){
-            sep(bt, Core.bundle.format("bullet.shielddamage", ammoStat((int)(type.shieldDamageMultiplier * 100 - 100))));
         }
 
         if(type.splashDamage > 0){

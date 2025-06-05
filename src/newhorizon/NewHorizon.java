@@ -148,6 +148,8 @@ public class NewHorizon extends Mod{
 				}
 
 				DebugFunc.unlockModContent();
+				//DebugFunc.outputIcon();
+				//DebugFunc.outlineIcon();
 
 				//DebugFunc.replaceAllSpriteColor("E:/project/MindustryModDevLib/Exoprosopa-main/sprites/blocks", DebugFunc.EXOPROSOPA_SPRITE_PALETTE);
 				//DebugFunc.replaceAllSpriteColor("E:/project/MindustryModDevLib/Asthosus-main/sprites/blocks", DebugFunc.ASTHOSUS_SPRITE_PALETTE);
@@ -194,6 +196,7 @@ public class NewHorizon extends Mod{
 		NHPlanets.load();
 		NHSectorPresents.load();
 		NHTechTree.load();
+		NHDevices.load();
 
 		NHSetting.load();
 		NHPostProcess.load();

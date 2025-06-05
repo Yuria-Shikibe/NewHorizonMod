@@ -70,28 +70,28 @@ public class CraftingBlock {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
             consumePower(1.5f);
 
-            addInput(ItemStack.with(Items.scrap, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.copper, 8), LiquidStack.empty);
-            addInput(ItemStack.with(Items.lead, 8), LiquidStack.empty);
-            addInput(ItemStack.with(Items.beryllium, 5), LiquidStack.empty);
-            addInput(ItemStack.with(Items.titanium, 4), LiquidStack.empty);
-            addInput(ItemStack.with(Items.thorium, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.scrap, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.copper, 10), LiquidStack.empty);
+            addInput(ItemStack.with(Items.lead, 10), LiquidStack.empty);
+            addInput(ItemStack.with(Items.beryllium, 6), LiquidStack.empty);
+            addInput(ItemStack.with(Items.titanium, 5), LiquidStack.empty);
+            addInput(ItemStack.with(Items.thorium, 4), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 5), LiquidStack.empty);
 
-            outputItem = new ItemStack(Items.sand, 10);
+            outputItem = new ItemStack(Items.sand, 12);
         }};
         oilRefiner = new GenericCrafter("oil-refiner"){{
 
             size = 2;
             requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
             health = 200;
-            craftTime = 90f;
+            craftTime = 60f;
             liquidCapacity = 60f;
             itemCapacity = 20;
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
             consumePower(5f);
-            consumeItems(new ItemStack(Items.sand, 5));
+            consumeItems(new ItemStack(Items.sand, 3));
             outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
         }};
         convertorTungsten = new RecipeGenericCrafter("convertor-tungsten"){{
@@ -100,6 +100,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
+            itemCapacity = 20;
 
             rotate = false;
 
@@ -120,6 +121,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
+            itemCapacity = 20;
 
             rotate = false;
 
@@ -139,6 +141,8 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 60f;
+            liquidCapacity = 40f;
+            itemCapacity = 20;
 
             rotate = false;
 
@@ -166,6 +170,8 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 60f;
+            liquidCapacity = 12f;
+            itemCapacity = 30;
 
             rotate = false;
 
@@ -186,6 +192,7 @@ public class CraftingBlock {
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
             craftTime = 40f;
+            itemCapacity = 20;
 
             addInput(ItemStack.with(Items.titanium, 2), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
             addInput(ItemStack.with(Items.titanium, 2, Items.graphite, 1), LiquidStack.empty);
@@ -219,6 +226,7 @@ public class CraftingBlock {
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
             craftTime = 40f;
+            itemCapacity = 20;
 
             addInput(ItemStack.with(Items.silicon, 2), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
             addInput(ItemStack.with(Items.silicon, 2, Items.copper, 3), LiquidStack.empty);
@@ -285,7 +293,8 @@ public class CraftingBlock {
 
             outputItems = with(Items.carbide, 2);
 
-            itemCapacity = 15;
+            itemCapacity = 20;
+            liquidCapacity = 12f;
 
             drawer = new DrawMulti(
                     new DrawRegionRotated(){{
@@ -351,7 +360,7 @@ public class CraftingBlock {
 
             craftTime = 90f;
             consumePower(480 / 60f);
-            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenFluid, 6 / 60f, NHLiquids.quantumLiquid, 4.5 / 60f));
+            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 4.5 / 60f));
             addInput(ItemStack.with(Items.lead, 3), LiquidStack.with(Liquids.water, 9 / 60f));
             addInput(ItemStack.with(Items.metaglass, 1), LiquidStack.with(Liquids.water, 6 / 60f));
             addInput(ItemStack.with(Items.oxide, 1), LiquidStack.with(Liquids.water, 9 / 60f));
@@ -359,6 +368,7 @@ public class CraftingBlock {
             outputItems = with(NHItems.metalOxhydrigen, 3);
 
             itemCapacity = 30;
+            liquidCapacity = 20f;
             health = 1600;
 
             craftEffect = Fx.smeltsmoke;
@@ -427,6 +437,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             itemCapacity = 30;
+            liquidCapacity = 30f;
             consumePower(450 / 60f);
 
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
@@ -535,6 +546,7 @@ public class CraftingBlock {
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
             craftTime = 120f;
+            itemCapacity = 20;
 
             addInput(ItemStack.with(Items.surgeAlloy, 2, NHItems.juniorProcessor, 4), LiquidStack.empty);
 
@@ -588,6 +600,7 @@ public class CraftingBlock {
             size = 3;
 
             craftTime = 60f;
+            liquidCapacity = 30f;
             itemCapacity = 30;
             consumePower(300 / 60f);
 
@@ -609,6 +622,7 @@ public class CraftingBlock {
             rotate = false;
 
             craftTime = 120f;
+            liquidCapacity = 24f;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
@@ -628,6 +642,7 @@ public class CraftingBlock {
             rotate = false;
 
             craftTime = 150f;
+            liquidCapacity = 20f;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
@@ -794,6 +809,7 @@ public class CraftingBlock {
             });
             outputItem = new ItemStack(NHItems.upgradeSort, 2);
             craftTime = 120f;
+            itemCapacity = 20;
             size = 3;
             hasPower = hasItems = true;
             drawer = new DrawPrinter(outputItem.item) {{

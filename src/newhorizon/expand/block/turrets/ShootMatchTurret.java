@@ -1,5 +1,7 @@
 package newhorizon.expand.block.turrets;
 
+import arc.func.Cons;
+import arc.func.Prov;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.struct.IntMap;
@@ -9,7 +11,9 @@ import mindustry.entities.Effect;
 import mindustry.entities.Mover;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.pattern.ShootPattern;
+import mindustry.gen.Bullet;
 import mindustry.type.Item;
+import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 
 public class ShootMatchTurret extends ItemTurret{
@@ -82,7 +86,7 @@ public class ShootMatchTurret extends ItemTurret{
 			
 			//TODO aimX / aimY for multi shot turrets?
 			handleBullet(type.create(this, team, bulletX, bulletY, shootAngle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, targetPos.x, targetPos.y), xOffset, yOffset, shootAngle - rotation);
-			
+
 			(shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
 			(smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
 			shootSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));

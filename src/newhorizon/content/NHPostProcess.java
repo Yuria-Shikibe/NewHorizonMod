@@ -16,12 +16,13 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
+import mindustry.gen.Building;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.turrets.ContinuousTurret;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.Build;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -31,10 +32,13 @@ import mindustry.world.meta.*;
 import newhorizon.NHSetting;
 import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
+import newhorizon.expand.block.turrets.AdaptPowerTurret;
 import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.util.func.ReflectionUtil;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 import static mindustry.Vars.content;
@@ -344,9 +348,9 @@ public class NHPostProcess {
 	}
 
 	public static void setupAdaptBulletType(){
-		replaceUnitTypeBullets(alpha, alpha.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(15, 15));
-		replaceUnitTypeBullets(beta, beta.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(20, 20));
-		replaceUnitTypeBullets(gamma, gamma.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(25, 25));
+		//replaceUnitTypeBullets(alpha, alpha.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(15, 15));
+		//replaceUnitTypeBullets(beta, beta.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(20, 20));
+		//replaceUnitTypeBullets(gamma, gamma.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(25, 25));
 	}
 
 	public static void replaceUnitTypeBullets(UnitType unitType, BulletType bulletType, Cons<AdaptBulletType> modifier){
@@ -370,7 +374,9 @@ public class NHPostProcess {
 		for(Block block: content.blocks()){
 			if (block.name.startsWith("new-horizon")){
 				block.shownPlanets.clear();
-				block.shownPlanets.addAll(Planets.serpulo, Planets.erekir, NHPlanets.midantha);
+				block.shownPlanets.addAll(Planets.serpulo, Planets.erekir
+						//, NHPlanets.midantha
+				);
 			}
 		}
 	}
@@ -577,25 +583,13 @@ public class NHPostProcess {
 
 	public static void overrideStats(){
 		for (Block block: content.blocks()){
-			if (block instanceof ItemTurret itemTurret){
-				block.checkStats();
-				var map = block.stats.toMap();
-				if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
-					block.stats.remove(Stat.ammo);
-					block.stats.add(Stat.ammo, NHStatValues.ammo(itemTurret.ammoTypes, 0, false));
-				}
-			}
-
-			if (block instanceof ContinuousTurret continuousTurret){
-				block.checkStats();
-				var map = block.stats.toMap();
-				if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
-					block.stats.remove(Stat.ammo);
-					ObjectMap<UnlockableContent, BulletType> ammo = new ObjectMap<>();
-					ammo.put(continuousTurret, continuousTurret.shootType);
-					block.stats.add(Stat.ammo, NHStatValues.ammo(ammo, 0, false));
-				}
-			}
+			//uhh so eg compatibility, better way come later
+			if (block.minfo != null && block.minfo.mod != null && Objects.equals(block.minfo.mod.name, "exogenesis")) continue;
+			if (block instanceof ItemTurret itemTurret) processAmmoStat(block, itemTurret.ammoTypes);
+			if (block instanceof LiquidTurret liquidTurret) processAmmoStat(block, liquidTurret.ammoTypes);
+			if (block instanceof PowerTurret powerTurret) processAmmoStat(block, ObjectMap.of(powerTurret, powerTurret.shootType));
+			if (block instanceof ContinuousTurret continuousTurret) processAmmoStat(block, ObjectMap.of(continuousTurret, continuousTurret.shootType));
+			if (block instanceof ContinuousLiquidTurret continuousLiquidTurret) processAmmoStat(block, continuousLiquidTurret.ammoTypes);
 		}
 
 		for (UnitType unitType: content.units()){
@@ -605,6 +599,21 @@ public class NHPostProcess {
 				unitType.stats.remove(Stat.weapons);
 				unitType.stats.add(Stat.weapons, NHStatValues.weapons(unitType, unitType.weapons));
 			}
+		}
+	}
+
+	private static void processAmmoStat(Block block, ObjectMap<? extends UnlockableContent, BulletType> ammo){
+		block.checkStats();
+		var map = block.stats.toMap();
+		if (map.get(StatCat.function) != null && map.get(StatCat.function).get(Stat.ammo) != null){
+			block.stats.remove(Stat.ammo);
+			if (block instanceof ContinuousLiquidTurret continuousLiquidTurret){
+				block.stats.add(Stat.ammo, table -> {
+					table.row();
+					StatValues.number(continuousLiquidTurret.liquidConsumed * 60f, StatUnit.perSecond, true).display(table);
+				});
+			}
+			block.stats.add(Stat.ammo, NHStatValues.ammo(ammo, 0, false));
 		}
 	}
 
@@ -783,8 +792,9 @@ public class NHPostProcess {
 			GenericCrafter crafter = (GenericCrafter)content;
 			crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
 			crafter.requirements = with(Items.titanium, 120, Items.metaglass, 80, Items.silicon, 60);
-			crafter.consumeItems(with(Items.sand, 6, Items.pyratite, 1));
-			crafter.outputItem = new ItemStack(Items.silicon, 9);
+			crafter.consumeItems(with(Items.sand, 8, Items.pyratite, 2));
+			crafter.outputItem = new ItemStack(Items.silicon, 15);
+			crafter.craftTime = 120f;
 		});
 		adjustContent(Blocks.pyratiteMixer, content -> {
 			GenericCrafter crafter = (GenericCrafter)content;

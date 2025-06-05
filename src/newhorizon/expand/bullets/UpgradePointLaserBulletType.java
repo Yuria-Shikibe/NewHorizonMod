@@ -16,6 +16,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Damage;
+import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.PointLaserBulletType;
 import mindustry.game.EventType;
 import mindustry.gen.*;
@@ -47,7 +48,6 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
     private final Color tmpColor = new Color();
 
     public String bundleName = "nh.bullet.desc";
-    public float kineticDamage, energyDamage;
 
     public UpgradePointLaserBulletType() {
         damage = 0;
@@ -68,11 +68,6 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
     @Override
     public float continuousDamage(){
         return damage / damageInterval * 60f;
-    }
-
-    @Override
-    public float estimateDPS(){
-        return kineticDamage / damageInterval * 60f * maxDamageMultiplier;
     }
 
     public float damageMultiplier(Bullet b){
@@ -98,34 +93,13 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
     }
 
     @Override
-    public void hit(Bullet b, float x, float y) {
-        super.hit(b, x, y);
+    public void hitEntity(Bullet b, Hitboxc entity, float health) {
+        typedHitEntity(this, b, entity, health);
     }
 
     @Override
-    public void hitEntity(Bullet b, Hitboxc entity, float health) {
-        boolean wasDead = entity instanceof Unit u && u.dead;
-        if(entity instanceof Healthc h){
-            float shield = entity instanceof Shieldc s ? Math.max(s.shield(), 0f) : 0f;
-            float damage = shield > 0? Math.min(energyDamage * damageMultiplier(b), shield): kineticDamage * damageMultiplier(b);
-            if(pierceArmor) h.damagePierce(damage);
-            else h.damage(damage);
-        }
-
-        if(entity instanceof Unit unit){
-            Tmp.v3.set(unit).sub(b).nor().scl(knockback * 80f);
-            if(impact) Tmp.v3.setAngle(b.rotation() + (knockback < 0 ? 180f : 0f));
-            unit.impulse(Tmp.v3);
-            unit.apply(status, statusDuration);
-
-            Events.fire(bulletDamageEvent.set(unit, b));
-        }
-
-        if(!wasDead && entity instanceof Unit unit && unit.dead){
-            Events.fire(new EventType.UnitBulletDestroyEvent(unit, b));
-        }
-
-        handlePierce(b, health, entity.x(), entity.y());
+    public void createSplashDamage(Bullet b, float x, float y) {
+        typedCreateSplash(this, b, x, y);
     }
 
     @Override
@@ -197,41 +171,19 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
         Draw.reset();
     }
 
-
     @Override
-    public void setDamage(float kineticDamage, float energyDamage) {
-        this.kineticDamage = kineticDamage;
-        this.energyDamage = energyDamage;
-
-        damage = (kineticDamage + energyDamage)/2f;
+    public String bundleName() {
+        return "bundleName";
     }
 
     @Override
-    public void setSplash(float kineticDamage, float energyDamage, float splashRadius, int maxTarget) {}
-
-    @Override
-    public void setDescription(String key) {
-        bundleName = "nh.bullet." + key;
-    }
-
-    @Override
-    public float continuousKineticDamage() {
-        return kineticDamage * (60f / damageInterval);
-    }
-
-    @Override
-    public float continuousEnergyDamage() {
-        return energyDamage * (60f / damageInterval);
-    }
-
-    @Override
-    public void buildStat(UnlockableContent t, Table bt, boolean compact){
+    public void buildStat(BulletType type, UnlockableContent t, Table bt, boolean compact){
         if (Core.bundle.getOrNull(bundleName) != null) {
             bt.add(Core.bundle.get(bundleName)).wrap().fillX().padTop(8).padBottom(8).width(500);
             bt.row();
         }
 
-        bt.add(Core.bundle.format("nh.damage-detail", continuousKineticDamage(), continuousEnergyDamage()) + StatUnit.perSecond.localized());
+        bt.add(Core.bundle.format("nh.damage-detail", getContinuousKineticDamage(this), getContinuousEnergyDamage(this)) + StatUnit.perSecond.localized());
         bt.row();
         bt.add(Core.bundle.format("nh.bullet-charge", "1", Strings.autoFixed(maxDamageMultiplier, 1)));
         bt.row();

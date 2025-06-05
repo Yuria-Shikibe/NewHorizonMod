@@ -1,231 +1,12 @@
 package newhorizon.content;
 
-import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.math.Rand;
-import arc.math.geom.*;
-import arc.struct.GridBits;
-import arc.struct.Seq;
-import arc.util.Structs;
-import arc.util.Time;
-import arc.util.Tmp;
-import arc.util.noise.Ridged;
-import arc.util.noise.Simplex;
-import arc.util.pooling.Pool;
-import arc.util.pooling.Pools;
-import mindustry.Vars;
-import mindustry.ai.Astar;
-import mindustry.content.Blocks;
-import mindustry.content.Liquids;
-import mindustry.content.Loadouts;
-import mindustry.game.Rules;
-import mindustry.game.Schematics;
-import mindustry.game.Team;
-import mindustry.graphics.Pal;
-import mindustry.graphics.Shaders;
-import mindustry.graphics.g3d.HexMesh;
-import mindustry.graphics.g3d.HexMesher;
-import mindustry.graphics.g3d.HexSkyMesh;
-import mindustry.graphics.g3d.MultiMesh;
-import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Planet;
-import mindustry.type.Sector;
-import mindustry.type.Weather;
-import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.TileGen;
-import mindustry.world.blocks.campaign.LaunchPad;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.SteamVent;
-import mindustry.world.blocks.environment.TallBlock;
-import mindustry.world.blocks.production.SolidPump;
-import mindustry.world.meta.Attribute;
-import mindustry.world.meta.Env;
-import newhorizon.expand.map.planet.CeitoPlanet;
-import newhorizon.expand.map.planet.MidanthaPlanet;
-
-import static mindustry.Vars.state;
 
 public class NHPlanets{
 	public static Planet midantha, sentourt, danthami, ceito;
 	
 	public static void load(){
-		ceito = new CeitoPlanet();
 
-		danthami = new MidanthaPlanet();
-
-		midantha = new NHPlanet("midantha", ceito, 1, 3){{
-			bloom = true;
-			visible = true;
-			accessible = true;
-			hasAtmosphere = true;
-			alwaysUnlocked = true;
-			iconColor = NHColor.darkEnrColor;
-			meshLoader = () -> new NHModMesh(
-					this, 5,
-					5, 0.3, 1.7, 1.2, 1.4,
-					1.1f,
-					NHColor.darkEnrFront.cpy().lerp(Color.white, 0.2f),
-					NHColor.darkEnrFront,
-					NHColor.darkEnrColor,
-					NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f).mul(1.05f),
-					Pal.darkestGray.cpy().mul(0.95f),
-					Pal.darkestGray.cpy().lerp(Color.white, 0.105f),
-					Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
-					Pal.darkestGray
-			);
-			
-			clearSectorOnLose = true;
-			allowWaveSimulation = true;
-			allowLaunchSchematics = false;
-			allowLaunchLoadout = false;
-			
-			ruleSetter = r -> {
-				r.waveTeam = Team.malis;
-				r.placeRangeCheck = false;
-				r.showSpawns = true;
-				r.waveSpacing = 80 * Time.toSeconds;
-				r.initialWaveSpacing = 8f * Time.toMinutes;
-				if(r.sector != null && r.sector.preset == null)r.winWave = 150;
-				r.bannedUnits.add(NHUnitTypes.guardian);
-				r.coreDestroyClear = true;
-				r.hideBannedBlocks = true;
-				r.dropZoneRadius = 64;
-				
-				r.bannedBlocks.addAll(Vars.content.blocks().copy().retainAll(b -> {
-					if(b instanceof SolidPump){
-						SolidPump pump = (SolidPump)b;
-						return pump.result == Liquids.water && pump.attribute == Attribute.water;
-					}else return false;
-				}));
-				
-				Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
-				teamRule.rtsAi = false;
-				teamRule.unitBuildSpeedMultiplier = 5f;
-				teamRule.blockDamageMultiplier = 1.25f;
-				teamRule.buildSpeedMultiplier = 3f;
-				teamRule.blockHealthMultiplier = 1.25f;
-				
-				
-				teamRule = r.teams.get(r.waveTeam);
-				teamRule.infiniteAmmo = teamRule.infiniteResources = true;
-			};
-			
-			generator = new NHPlanetGenerator();
-			
-			cloudMeshLoader = () -> {
-				return new MultiMesh(
-					new HexSkyMesh(this, 2, 0.15F, 0.14F, 5, Pal.darkerMetal.cpy().lerp(NHColor.darkEnrColor, 0.35f).a(0.55F), 2, 0.42F, 1.0F, 0.43F),
-					new HexSkyMesh(this, 3, 1.26F, 0.155F, 4, Pal.darkestGray.cpy().lerp(NHColor.darkEnrColor, 0.105f).a(0.75F), 6, 0.42F, 1.32F, 0.4F));
-			};
-			
-			defaultEnv = Env.terrestrial | Env.groundWater | Env.oxygen;
-			
-			icon = "midantha";
-			iconColor = Color.white;
-			
-			landCloudColor = atmosphereColor = Color.valueOf("3c1b8f");
-			atmosphereRadIn = 0.02f;
-			atmosphereRadOut = 0.3f;
-			startSector = 15;
-		}
-			public void updateBaseCoverage(){
-				for(Sector sector : sectors){
-					float sum = 1.25f;
-					for(Sector other : sector.near()){
-						if(other.generateEnemyBase){
-							sum += 0.9f;
-						}
-					}
-					
-					if(sector.hasEnemyBase()){
-						sum += 0.88f;
-					}
-					
-					Rand rand = new Rand();
-					rand.setSeed(sector.id);
-					sector.threat = sector.preset == null ? rand.random(0.55f, 1.1f) : Mathf.clamp(sector.preset.difficulty / 10f);
-				}
-			}
-		};
-
-
-		sentourt = new NHPlanet("sentourt", midantha, 0.22f, 1){{
-			bloom = true;
-			visible = false;
-			accessible = false;
-			hasAtmosphere = false;
-			alwaysUnlocked = false;
-			meshLoader = () -> new NHModMesh(
-					this, 5,
-					5, 0.3, 1.7, 1.2, 1.4,
-					1.1f,
-					Pal.accent.cpy(),
-					Pal.accent.cpy().mul(1.25f),
-					//					Pal.gray.cpy().lerp(Pal.metalGrayDark, 0.25f).lerp(NHColor.darkEnr, 0.02f),
-					//					Pal.gray,
-					Pal.darkerGray,
-					Pal.darkerMetal,
-					Pal.darkestMetal,
-					Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
-					Pal.darkestGray
-			);
-			
-			
-			clearSectorOnLose = true;
-			allowWaveSimulation = true;
-			allowLaunchSchematics = false;
-			allowLaunchLoadout = true;
-			
-			ruleSetter = r -> {
-				r.waveTeam = Team.malis;
-				r.placeRangeCheck = false;
-				r.showSpawns = true;
-				r.waveSpacing = 80 * Time.toSeconds;
-				r.initialWaveSpacing = 8f * Time.toMinutes;
-				if(r.sector.preset == null)r.winWave = 150;
-				r.bannedUnits.add(NHUnitTypes.guardian);
-				r.coreDestroyClear = true;
-				
-				Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
-				teamRule.rtsAi = false;
-				teamRule.unitBuildSpeedMultiplier = 5f;
-				teamRule.blockDamageMultiplier = 1.25f;
-				teamRule.buildSpeedMultiplier = 3f;
-				teamRule.blockHealthMultiplier = 1.25f;
-				
-				teamRule = r.teams.get(r.waveTeam);
-				teamRule.infiniteAmmo = teamRule.infiniteResources = true;
-			};
-			
-			defaultEnv = Env.terrestrial;
-			
-			iconColor = NHColor.darkEnrColor.cpy().lerp(Color.white, 0.23f);
-			
-			landCloudColor = Color.valueOf("3c1b8f");
-			startSector = 0;
-		}
-			
-			
-			public void updateBaseCoverage(){
-				for(Sector sector : sectors){
-					float sum = 1.25f;
-					for(Sector other : sector.near()){
-						if(other.generateEnemyBase){
-							sum += 0.9f;
-						}
-					}
-					
-					if(sector.hasEnemyBase()){
-						sum += 0.88f;
-					}
-					
-					Rand rand = new Rand();
-					rand.setSeed(sector.id);
-					sector.threat = sector.preset == null ? rand.random(0.55f, 1f) : Mathf.clamp(sector.preset.difficulty / 10f);
-				}
-			}
-		};
 	}
 	
 	public static class NHPlanet extends Planet{
@@ -237,7 +18,8 @@ public class NHPlanets{
 			super(name, parent, radius);
 		}
 	}
-	
+
+	/*
 	public static class NHModMesh extends HexMesh{
 		public static float waterOffset = 0.05f;
 		
@@ -274,7 +56,7 @@ public class NHPlanets{
 		}
 		
 		public boolean allowLanding(Sector sector){
-			return (sector.hasBase() || sector.near().contains(s -> s.hasBase() && s.isCaptured()))/* && NHPlanets.midantha.unlocked()*/;
+			return (sector.hasBase() || sector.near().contains(s -> s.hasBase() && s.isCaptured()));
 		}
 		
 		@Override
@@ -426,9 +208,7 @@ public class NHPlanets{
 					if(nearAir(x, y)){
 						if(block == NHBlocks.metalWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
 							ore = Blocks.wallOreBeryllium;
-						}/*else if(block != NHBlocks.metalWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
-							ore = Blocks.wallOreBeryllium;
-						}*/
+						}
 					}
 				}else if(!nearWall(x, y)){
 					if(noise(x + 150, y + x*2 + 100, 4, 3.8f, 55f, 1f) > 0.816f){
@@ -642,6 +422,7 @@ public class NHPlanets{
 			}
 		}
 	}
+	*/
 	
 	public interface DrawBoolf{
 		boolean get(int x, int y);

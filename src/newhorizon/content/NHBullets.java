@@ -1475,7 +1475,11 @@ public class NHBullets{
 			}});
 		}};
 
-		synchroTitanium = new AdaptBulletType(50f, 25f){{
+		synchroTitanium = new AdaptBulletType(){{
+			damage = 50f;
+			buildingDamageMultiplier = 1f;
+			shieldDamageMultiplier = 0.5f;
+
 			speed = 8f;
 			lifetime = 35f;
 			
@@ -1500,10 +1504,14 @@ public class NHBullets{
 
 			ammoMultiplier = 4;
 
-			setDescription("synchro-titanium");
+			bundleName = "synchro-titanium";
 		}};
 
-		synchroZeta = new AdaptBulletType(80f, 40f){{
+		synchroZeta = new AdaptBulletType(){{
+			damage = 80f;
+			buildingDamageMultiplier = 1f;
+			shieldDamageMultiplier = 0.5f;
+
 			speed = 8f;
 			lifetime = 35f;
 
@@ -1530,7 +1538,7 @@ public class NHBullets{
 
 			ammoMultiplier = 6;
 
-			setDescription("synchro-zeta");
+			bundleName = "synchro-zeta";
 		}};
 		
 		synchroFusion = new BasicBulletType(8f, 65f){{

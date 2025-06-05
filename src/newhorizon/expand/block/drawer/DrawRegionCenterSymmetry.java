@@ -39,7 +39,7 @@ public class DrawRegionCenterSymmetry extends DrawBlock {
 
     @Override
     public TextureRegion[] icons(Block block) {
-        return super.icons(block);
+        return new TextureRegion[]{region[0]};
     }
 
     @Override

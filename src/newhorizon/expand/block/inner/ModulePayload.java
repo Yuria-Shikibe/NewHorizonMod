@@ -1,5 +1,6 @@
 package newhorizon.expand.block.inner;
 
+import mindustry.ctype.ContentType;
 import mindustry.game.Team;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -31,6 +32,11 @@ public class ModulePayload extends Block {
         super.setStats();
         stats.remove(Stat.health);
         stats.remove(Stat.size);
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return ContentType.mech_UNUSED;
     }
 
     @Override

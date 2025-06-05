@@ -56,6 +56,7 @@ new-horizon-dark-energy-factory 1 1 2 0
 new-horizon-data-floor-placer 1 0 1 0
 new-horizon-delivery-module 1 1 2 0
 new-horizon-dendrite 1 1 4 0
+new-horizon-device-test 1 1 2 0
 new-horizon-dispose-power-void 1 1 1 0
 new-horizon-efficiency-module-1 1 1 1 0
 new-horizon-efficiency-module-2 1 1 1 0
