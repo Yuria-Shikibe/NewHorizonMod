@@ -794,7 +794,7 @@ public class NHPostProcess {
 			crafter.requirements = with(Items.titanium, 120, Items.metaglass, 80, Items.silicon, 60);
 			crafter.consumeItems(with(Items.sand, 8, Items.pyratite, 1));
 			crafter.outputItem = new ItemStack(Items.silicon, 14);
-			crafter.craftTime = 60f;
+			crafter.craftTime = 120f;
 		});
 		adjustContent(Blocks.pyratiteMixer, content -> {
 			GenericCrafter crafter = (GenericCrafter)content;
