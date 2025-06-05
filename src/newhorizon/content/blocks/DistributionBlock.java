@@ -112,7 +112,7 @@ public class DistributionBlock {
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-
+            solid = false;
             speed = 4f;
 
             placeableLiquid = true;
@@ -203,13 +203,15 @@ public class DistributionBlock {
         conduitJunction = new LiquidJunction("logistics-liquid-junction"){{
             requirements(Category.liquid, with(Items.silicon, 4));
             placeableLiquid = true;
-
+            solid = false;
+            underBullets = true;
         }};
 
         conduitRouter = new LiquidRouter("logistics-liquid-router"){{
             requirements(Category.liquid, with(Items.silicon, 4));
             placeableLiquid = true;
-
+            solid = false;
+            underBullets = true;
         }};
 
         liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge"){{
