@@ -690,14 +690,14 @@ public class CraftingBlock {
             size = 3;
             rotate = false;
 
-            craftTime = 90f;
+            craftTime = 60f;
             consumePower(640 / 60f);
-            addInput(ItemStack.with(NHItems.metalOxhydrigen, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 2 / 60f));
-            addInput(ItemStack.with(Items.tungsten, 6), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
-            addInput(ItemStack.with(NHItems.multipleSteel, 3), LiquidStack.with(Liquids.oil, 48 / 60f));
+            addInput(ItemStack.with(NHItems.metalOxhydrigen, 4), LiquidStack.with(NHLiquids.zetaFluidPositive, 1 / 60f));
+            addInput(ItemStack.with(Items.tungsten, 4), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
+            addInput(ItemStack.with(NHItems.multipleSteel, 3), LiquidStack.with(Liquids.oil, 30 / 60f));
 
 
-            outputItems = with(Items.plastanium, 9);
+            outputItems = with(Items.plastanium, 6);
             outputLiquids = null;
             ignoreLiquidFullness = true;
 
