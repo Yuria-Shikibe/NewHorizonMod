@@ -677,7 +677,11 @@ public class CraftingBlock {
             craftEffect = Fx.smeltsmoke;
             updateEffect = Fx.smeltsmoke;
 
-            drawer = new DrawDefault();
+            drawer = new DrawMulti(
+                    new DrawRegionCenterSymmetry(){{
+                        suffix = "-rot";
+                    }}
+            );
         }};
         hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter"){{
             requirements(Category.crafting, BuildVisibility.shown,
@@ -703,11 +707,7 @@ public class CraftingBlock {
             craftEffect = Fx.smeltsmoke;
             updateEffect = Fx.smeltsmoke;
 
-            drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
-                        suffix = "-rot";
-                    }}
-            );
+            drawer = new DrawDefault();
         }};
         setonFactory = new RecipeGenericCrafter("seton-factory"){{
             requirements(Category.crafting, BuildVisibility.shown,
