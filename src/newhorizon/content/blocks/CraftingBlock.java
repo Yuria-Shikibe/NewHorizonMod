@@ -519,7 +519,7 @@ public class CraftingBlock {
                     with(NHItems.presstanium, 120, NHItems.juniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
             lightColor = NHItems.multipleSteel.color;
             updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
-            craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
+            craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);
             outputItem = new ItemStack(NHItems.multipleSteel, 3);
             craftTime = 60f;
             itemCapacity = 20;
