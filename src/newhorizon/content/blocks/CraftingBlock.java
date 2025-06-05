@@ -68,7 +68,7 @@ public class CraftingBlock {
 
             rotate = false;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
-            consumePower(1.5f);
+            consumePower(5f);
 
             addInput(ItemStack.with(Items.scrap, 4), LiquidStack.empty);
             addInput(ItemStack.with(Items.copper, 10), LiquidStack.empty);
