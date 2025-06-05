@@ -623,6 +623,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             liquidCapacity = 24f;
+            ignoreLiquidFullness = true;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
@@ -643,6 +644,7 @@ public class CraftingBlock {
 
             craftTime = 150f;
             liquidCapacity = 20f;
+            ignoreLiquidFullness = true;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
