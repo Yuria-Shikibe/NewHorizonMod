@@ -42,7 +42,7 @@ public class CraftingBlock {
         sandCracker, oilRefiner,
         convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
         stampingFacility, processorPrinter, crucibleFoundry, crucibleCaster, crystallizer, zetaDissociator, surgeRefactor,
-        fabricSynthesizer, processorEncoder, irdryonMixer, multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
+        fabricSynthesizer, processorEncoder, irdryonMixer,hugeplastaniumFactory,multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
         multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
 
         electronicAssemblyMk1, electronicAssemblyMk2, electronicAssemblyMk3,
@@ -519,7 +519,7 @@ public class CraftingBlock {
                     with(NHItems.presstanium, 120, NHItems.juniorProcessor, 65, NHItems.metalOxhydrigen, 80, Items.surgeAlloy, 60));
             lightColor = NHItems.multipleSteel.color;
             updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
-            craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);;
+            craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);
             outputItem = new ItemStack(NHItems.multipleSteel, 3);
             craftTime = 60f;
             itemCapacity = 20;
@@ -623,6 +623,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             liquidCapacity = 24f;
+            ignoreLiquidFullness = true;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
@@ -643,6 +644,7 @@ public class CraftingBlock {
 
             craftTime = 150f;
             liquidCapacity = 20f;
+            ignoreLiquidFullness = true;
             itemCapacity = 40;
             consumePower(900 / 60f);
 
@@ -682,6 +684,32 @@ public class CraftingBlock {
                         suffix = "-rot";
                     }}
             );
+        }};
+        hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 120, Items.surgeAlloy, 80, NHItems.metalOxhydrigen, 40, NHItems.multipleSteel, 60));
+
+            size = 3;
+            rotate = false;
+
+            craftTime = 90f;
+            consumePower(640 / 60f);
+            addInput(ItemStack.with(NHItems.metalOxhydrigen, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 1 / 60f));
+            addInput(ItemStack.with(Items.tungsten, 6), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
+            addInput(ItemStack.with(NHItems.multipleSteel, 3), LiquidStack.with(Liquids.oil, 30 / 60f));
+
+
+            outputItems = with(Items.plastanium, 9);
+            outputLiquids = null;
+            ignoreLiquidFullness = true;
+
+            itemCapacity = 30;
+            liquidCapacity = 60f;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawDefault();
         }};
         setonFactory = new RecipeGenericCrafter("seton-factory"){{
             requirements(Category.crafting, BuildVisibility.shown,
