@@ -826,21 +826,6 @@ public class NHPostProcess {
 			crafter.outputItems = with(Items.blastCompound, 3);
 			crafter.craftTime = 90f;
 		});
-		adjustContent(Blocks.coreBastion, content -> {
-			CoreBlock core = (CoreBlock)content;
-			crafter.incinerateNonBuildable = false;
-			crafter.requiresCoreZone = false;
-		});
-		adjustContent(Blocks.coreCitadel, content -> {
-			CoreBlock core = (CoreBlock)content;
-			crafter.incinerateNonBuildable = false;
-			crafter.requiresCoreZone = false;
-		});
-		adjustContent(Blocks.coreAcropolis, content -> {
-			CoreBlock core = (CoreBlock)content;
-			crafter.incinerateNonBuildable = false;
-			crafter.requiresCoreZone = false;
-		});
 	}
 
 	private static void adjustVanillaUnit(){
@@ -904,6 +889,24 @@ public class NHPostProcess {
 			core.armor = 15;
 		});
 
+		
+		adjustContent(Blocks.coreBastion, content -> {
+			CoreBlock core = (CoreBlock)content;
+			crafter.incinerateNonBuildable = false;
+			crafter.requiresCoreZone = false;
+		});
+		adjustContent(Blocks.coreCitadel, content -> {
+			CoreBlock core = (CoreBlock)content;
+			crafter.incinerateNonBuildable = false;
+			crafter.requiresCoreZone = false;
+		});
+		adjustContent(Blocks.coreAcropolis, content -> {
+			CoreBlock core = (CoreBlock)content;
+			crafter.incinerateNonBuildable = false;
+			crafter.requiresCoreZone = false;
+		});
+
+		
 		adjustContent(UnitTypes.alpha, content -> {
 			UnitType unitType = (UnitType)content;
 			unitType.mineSpeed = 8f;
