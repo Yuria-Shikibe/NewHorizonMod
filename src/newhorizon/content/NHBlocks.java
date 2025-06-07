@@ -383,6 +383,7 @@ public class NHBlocks{
 			}};
 			
 			range = 640;
+			trackingRange = range * 1.4f;
 			
 			minWarmup = 0.9f;
 			shootWarmupSpeed /= 2;
@@ -441,7 +442,7 @@ public class NHBlocks{
 			targetGround = false;
 			
 			range = 8 * 70;
-			
+			trackingRange = range * 1.4f;
 			xRand = 6f;
 			velocityRnd = 0.105f;
 			
@@ -1093,6 +1094,7 @@ public class NHBlocks{
 			coolant = new ConsumeCoolant(0.15f);
 			consumePowerCond(12f, TurretBuild::isActive);
 			range = 160f;
+			trackingRange = range * 1.4f;
 			inaccuracy = 1.25f;
 		}};
 		
@@ -1150,6 +1152,7 @@ public class NHBlocks{
 			armor = 10f;
 			
 			range = 200f;
+			trackingRange = range * 1.4f;
 			
 			warmupMaintainTime = 22f;
 			shootWarmupSpeed /= 2f;
@@ -2038,6 +2041,7 @@ public class NHBlocks{
 			recoil = 1f;
 			shake = 8f;
 			range = 620.0F;
+			trackingRange = range * 1.4f;
 			minRange = 160f;
 			rotateSpeed = 1.5f;
 			
@@ -2194,6 +2198,7 @@ public class NHBlocks{
 			consumePower(30f);
 			reload = 420f;
 			range = 800f;
+			trackingRange = range * 1.4f;
 			inaccuracy = 0f;
 			shootSound = Sounds.laserbig;
 		}};
