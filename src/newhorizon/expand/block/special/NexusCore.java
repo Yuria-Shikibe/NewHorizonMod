@@ -57,7 +57,7 @@ public class NexusCore extends CoreBlock {
         armor = 20f;
         incinerateNonBuildable = false;
         buildCostMultiplier = 2f;
-        requiresCoreZone = true;
+        requiresCoreZone = false;
 
         unitCapModifier = 10;
 
