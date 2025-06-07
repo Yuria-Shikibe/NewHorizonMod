@@ -49,7 +49,7 @@ public class ProductionBlock {
             group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
             minEfficiency = 9f - 0.0001f;
-            powerProduction = 450f / 60f / 9f;
+            powerProduction = 300f / 60f / 9f;
             displayEfficiency = false;
             effectChance = 0.2f;
             generateEffect = new OptionalMultiEffect(

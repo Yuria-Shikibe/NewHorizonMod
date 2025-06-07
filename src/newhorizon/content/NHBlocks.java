@@ -2252,12 +2252,12 @@ public class NHBlocks{
 				Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
 			});
 			//			//NHTechTree.add(Blocks.thoriumReactor,this);
-			powerProduction = 1720f / 60f;
+			powerProduction = 2000f / 60f;
 			itemCapacity = 40;
 			liquidCapacity = 30;
 			itemDuration = 240f;
 			consumeItem(NHItems.metalOxhydrigen, 4);
-			consumeLiquid(Liquids.nitrogen,2 / 60f);
+			consumeLiquid(Liquids.nitrogen,1 / 60f);
 			
 			squareSprite = false;
 			hasLiquids = hasItems = true;
@@ -2456,7 +2456,7 @@ public class NHBlocks{
 		remoteStorage = new RemoteCoreStorage("remote-vault"){{
 			size = 3;
 			health = 960;
-			consumePower(10);
+			consumePower(20);
 			requirements(Category.effect, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 150, NHItems.multipleSteel, 120));
 		}};
 		
@@ -2538,7 +2538,7 @@ public class NHBlocks{
 		
 		largeWaterExtractor = new SolidPump("large-water-extractor"){{
 			size = 3;
-			pumpAmount = 0.3f;
+			pumpAmount = 0.31f;
 			requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.thorium, 60, Items.metaglass, 30));
 //			//NHTechTree.add(Blocks.waterExtractor, this);
 			result = Liquids.water;
