@@ -892,18 +892,18 @@ public class NHPostProcess {
 		
 		adjustContent(Blocks.coreBastion, content -> {
 			CoreBlock core = (CoreBlock)content;
-			crafter.incinerateNonBuildable = false;
-			crafter.requiresCoreZone = false;
+			core.incinerateNonBuildable = false;
+			core.requiresCoreZone = false;
 		});
 		adjustContent(Blocks.coreCitadel, content -> {
 			CoreBlock core = (CoreBlock)content;
-			crafter.incinerateNonBuildable = false;
-			crafter.requiresCoreZone = false;
+			core.incinerateNonBuildable = false;
+			core.requiresCoreZone = false;
 		});
 		adjustContent(Blocks.coreAcropolis, content -> {
 			CoreBlock core = (CoreBlock)content;
-			crafter.incinerateNonBuildable = false;
-			crafter.requiresCoreZone = false;
+			core.incinerateNonBuildable = false;
+			core.requiresCoreZone = false;
 		});
 
 		
