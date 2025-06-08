@@ -9,6 +9,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.special.AssignedBeacon;
 import newhorizon.expand.block.special.DeviceBase;
+import newhorizon.expand.block.special.EnderChestStorage;
 import newhorizon.expand.block.special.NexusCore;
 
 import static mindustry.type.ItemStack.with;
@@ -20,18 +21,18 @@ public class SpecialBlock {
     public static void load(){
         nexusCore = new NexusCore();
 
-        standardStorage = new StorageBlock("standard-storage"){{
+        standardStorage = new EnderChestStorage("standard-storage"){{
             requirements(Category.effect, with(NHItems.presstanium, 80, NHItems.juniorProcessor, 40));
             size = 2;
             health = 1200;
-            itemCapacity = 1000;
+            itemCapacity = 300;
         }};
 
-        heavyStorage = new StorageBlock("heavy-storage"){{
+        heavyStorage = new EnderChestStorage("heavy-storage"){{
             requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.juniorProcessor, 120, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
             size = 3;
             health = 4000;
-            itemCapacity = 5000;
+            itemCapacity = 1000;
         }};
 
         juniorModuleBeacon = new AssignedBeacon("junior-module-beacon"){{
