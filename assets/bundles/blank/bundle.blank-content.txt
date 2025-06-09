@@ -804,6 +804,9 @@ status.new-horizon-shield-flag.description =
 #[[REGION PLANET]]
 
 
+planet.new-horizon-midantha.name = 
+planet.new-horizon-midantha.description = 
+#planet.new-horizon-midantha.detail = 
 
 
 #[[REGION SECTOR]]

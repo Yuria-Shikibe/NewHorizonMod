@@ -156,6 +156,11 @@ public class EnderChestStorage extends StorageBlock {
         }
 
         @Override
+        public int getMaximumAccepted(Item item) {
+            return super.getMaximumAccepted(item);
+        }
+
+        @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
             table.setBackground(Tex.paneSolid);
@@ -197,7 +202,7 @@ public class EnderChestStorage extends StorageBlock {
 
         @Override
         public boolean acceptItem(Building source, Item item) {
-            return super.acceptItem(source, item) && !receiver();
+            return super.acceptItem(source, item) && !receiver() && item == selected;
         }
     }
 }

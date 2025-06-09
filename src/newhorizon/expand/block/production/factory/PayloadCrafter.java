@@ -180,7 +180,8 @@ public class PayloadCrafter extends AdaptCrafter {
 
         @Override
         public float getProgressIncrease(float baseTime){
-            baseTime = recipe == null ? baseTime : recipeCost().craftTime * 0.99f;
+            if (recipeCost() == null) return 0f;
+            baseTime = recipe == null ? baseTime : recipeCost() != null? recipeCost().craftTime * 0.99f: 0f;
             if(ignoreLiquidFullness){
                 return super.getProgressIncrease(baseTime);
             }
