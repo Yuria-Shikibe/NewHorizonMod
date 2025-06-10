@@ -9,29 +9,27 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.scene.Action;
 import arc.scene.Element;
 import arc.scene.event.Touchable;
 import arc.scene.ui.*;
-import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
-import arc.util.Align;
-import arc.util.Log;
-import arc.util.Nullable;
-import arc.util.Scaling;
+import arc.util.*;
 import mindustry.Vars;
 import mindustry.core.UI;
-import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.game.MapObjectives;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
+import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.underline;
@@ -100,18 +98,22 @@ public class NHUI{
 			Table infoT = new Table();
 			infoT.touchable = Touchable.childrenOnly;
 
-			ImageButton b = new ImageButton(Icon.downOpen, Styles.clearNoneTogglei);
+			ImageButton b = new ImageButton(Icon.downOpen, Styles.clearNonei);
 			b.clicked(() -> {
 				if(b.isChecked()){
 					infoT.clear();
 					infoT.table().padTop(4);
 					ScrollPane pane = infoT.pane(Styles.smallPane, i -> {
-						i.align(Align.topLeft).margin(5f).defaults().growX().fillY().row();
+						i.align(Align.topLeft).defaults().growX().fillY().row();
 						state.rules.objectives.each(mapObjective -> {
-							i.collapser(getObjectiveTable(mapObjective), true, mapObjective::qualified).row();
+							Boolp shown = mapObjective::qualified;
+							DelayCollapser col = new DelayCollapser(getObjectiveTable(mapObjective), !shown.get());
+							col.setCollapsed(true, () -> !shown.get());
+							i.add(col).row();
 						});
 					}).grow().maxHeight(NHUI.getHeight() / 2f).get();
-					pane.setFadeScrollBars(false);
+					pane.name = "pane";
+					pane.setFadeScrollBars(true);
 					pane.setForceScroll(false, true);
 					infoT.exited(() -> Core.scene.unfocus(infoT));
 				}else{
@@ -123,9 +125,15 @@ public class NHUI{
 			});
 
 			t.table(bl -> {
-				bl.table(table -> table.add("Objective")).growX().height(50).marginLeft(10f);
+				bl.table(table -> table.label(() -> {
+					AtomicInteger activeCount = new AtomicInteger();
+					state.rules.objectives.each(obj -> {
+						if (obj.qualified()) activeCount.getAndIncrement();
+					});
+					return activeCount.get() == 0? "[lightgray]No Objective[]": activeCount.get() + " Objective(s)";
+				}).maxWidth(maxWidth - 40).pad(8, 16, 8, 0).row()).growX().height(50).marginLeft(10f);
 				bl.add(b).size(50).padLeft(10f);
-			}).growX().fillY().margin(4f);
+			}).growX().fillY().margin(4f).padBottom(4f);
 
 			t.row().collapser(infoT, true, b::isChecked).growX().get().setDuration(0.1f);
 		})).left().margin(10f).growX().row();
@@ -196,11 +204,13 @@ public class NHUI{
 			}
 
 			if (e instanceof MapObjectives.TimerObjective obj){
+				Floatp countup = () -> Reflect.get(obj, "countup");
+				Floatp realTime = () -> obj.duration * state.rules.objectiveTimerMultiplier;
 				t.add(objectiveTable(
 						Icon.refresh.getRegion(),
-						() -> (int) obj.duration,
-						() -> (int) obj.duration,
-                        () -> UI.formatTime(obj.duration),
+						() -> (int) countup.get(),
+						() -> (int) realTime.get(),
+                        () -> UI.formatTime(countup.get()) + "/" + UI.formatTime(realTime.get()),
 						obj::isCompleted,
 						false
 				));
