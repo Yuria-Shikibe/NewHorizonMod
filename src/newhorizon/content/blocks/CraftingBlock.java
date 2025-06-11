@@ -55,7 +55,7 @@ public class CraftingBlock {
             requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
             health = 320;
             craftTime = 60f;
-            itemCapacity = 20;
+            itemCapacity = 60;
             hasPower = hasItems = true;
             craftEffect = NHFx.hugeSmokeGray;
             updateEffect = new Effect(80f, e -> {
