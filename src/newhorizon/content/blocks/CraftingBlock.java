@@ -100,7 +100,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
-            itemCapacity = 20;
+            itemCapacity = 12;
 
             rotate = false;
 
@@ -121,7 +121,7 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
-            itemCapacity = 20;
+            itemCapacity = 12;
 
             rotate = false;
 
