@@ -17,6 +17,7 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Building;
+import mindustry.gen.Sounds;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
@@ -34,6 +35,7 @@ import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.block.turrets.AdaptPowerTurret;
 import newhorizon.expand.bullets.AdaptBulletType;
+import newhorizon.expand.bullets.AdaptedLightningBulletType;
 import newhorizon.util.func.ReflectionUtil;
 
 import java.lang.reflect.Constructor;
@@ -46,6 +48,12 @@ import static mindustry.content.UnitTypes.*;
 import static mindustry.type.ItemStack.with;
 
 import mindustry.world.consumers.*;
+import mindustry.world.blocks.power.*;
+import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
+
+
+
 
 public class NHPostProcess {
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
@@ -334,6 +342,7 @@ public class NHPostProcess {
 		adjustVanillaPower();
 		adjustVanillaUnit();
 		adjustVanillaLogic();
+		adjustVanillaTurret();
 	}
 
 	public static void contentOverride(){
@@ -756,14 +765,325 @@ public class NHPostProcess {
 	private static void adjustVanillaPower(){
 		adjustContent(Blocks.turbineCondenser, content -> {
 			ThermalGenerator generator = (ThermalGenerator)content;
-			generator.powerProduction = 300 / 60f;
+			generator.powerProduction = 30 / 60f;
 		});
+		adjustContent(Blocks.differentialGenerator, content -> {
+			ConsumeGenerator generator = (ConsumeGenerator) content;
+			generator.itemDuration = 240f;
+		});
+
 		hideContent(Blocks.powerNode);
 		hideContent(Blocks.powerNodeLarge);
 		hideContent(Blocks.surgeTower);
 		hideContent(Blocks.beamLink);
 		hideContent(Blocks.beamNode);
 		hideContent(Blocks.beamTower);
+	}
+	private static void adjustVanillaTurret(){
+		adjustContent(Blocks.swarmer, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new MissileBulletType(){{
+				damage= 40;
+				rangeChange=40;
+				lightningDamage= 10;
+				lightning= 3;
+				lightningLength = 1;
+				lightningLengthRand = 4;
+				speed= 3;
+				lifetime= 120;
+				width= 8;
+				height= 8;
+				ammoMultiplier= 2;
+				lightningColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				trailColor = Color.gray;
+				trailParam = 1.8f;
+				hitEffect= Fx.blastExplosion;
+				shootEffect= Fx.shootSmallFlame;
+				splashDamageRadius= 4;
+				splashDamage= 15;
+				reloadMultiplier = 0.85f;
+			}});
+		});
+		adjustContent(Blocks.salvo, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				speed = 6.5f;
+				damage= 20;
+				rangeChange=40;
+				lightningDamage= 10;
+				lightning = 1;
+				lightningLengthRand = 3;
+				reloadMultiplier= 1.5f;
+				lifetime= 30f;
+				width= 7;
+				height= 10;
+				ammoMultiplier= 4;
+				shootEffect= Fx.shootBig;
+				hitEffect = despawnEffect = Fx.none;
+			}});
+		});
+		adjustContent(Blocks.fuse, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new ShrapnelBulletType(){{
+				reloadMultiplier = 1.5f;
+				rangeChange = 40;
+				length = 140;
+				damage = 150;
+				width = 20;
+				lightningColor = trailColor = hitColor = lightColor = fromColor = NHItems.zeta.color;
+				toColor = Color.valueOf("ffafaf");
+				ammoMultiplier = 2;
+				pierce = true;
+				shootEffect = new ParticleEffect(){{
+					particles= 5;
+					line= true;
+					length = 55;
+					baseLength = 0;
+					lifetime = 15;
+					colorFrom = fromColor;
+					colorTo = toColor;
+					cone= 60;
+				}};
+
+				smokeEffect = shootEffect;
+
+				fragRandomSpread = 90;
+				fragBullets= 2;
+				fragBullet = new AdaptedLightningBulletType(){{
+					damage = 30;
+					lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
+					lightningLength = 10;
+					lightningLengthRand = 15;
+					collidesAir = true;
+				}};
+
+				fragOnHit = false;
+			}});
+		});
+		adjustContent(Blocks.ripple, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new ArtilleryBulletType(){{
+				damage= 40;
+				rangeChange=60;
+				lightningDamage= 10;
+				lightning= 3;
+				lightningLength= 10;
+				speed= 3;
+				lifetime= 180;
+				width= 10;
+				height= 20;
+				ammoMultiplier= 2;
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				trailParam = 2.3f;
+				frontColor = Color.white;
+				hitEffect= Fx.flakExplosionBig;
+				shootEffect= Fx.shootSmallFlame;
+				splashDamageRadius= 45;
+				splashDamage= 60;
+			}});
+		});
+		adjustContent(Blocks.cyclone, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				ammoMultiplier = 2f;
+				speed = 6f;
+				splashDamage = 40f * 1.5f;
+				splashDamageRadius = 38f;
+				width= 20;
+				height= 20;
+				backSprite = "large-bomb-back";
+				sprite = "mine-bullet";
+				rangeChange=24;
+				lightning = 1;
+				lightningLength = 10;
+				shootEffect = Fx.shootBig;
+				collidesGround = true;
+				backColor = hitColor = trailColor= lightningColor =NHItems.zeta.color;
+				frontColor = Color.white;
+				despawnEffect = Fx.hitBulletColor;
+			}});
+		});
+		adjustContent(Blocks.spectre, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				speed= 10;
+				lifetime= 30;
+				rangeChange=40;
+				knockback= 1.8f;
+				width= 18;
+				height= 20;
+				damage= 100;
+				splashDamageRadius= 20;
+				reloadMultiplier = 1.2f;
+				splashDamage= 35;
+				shootEffect= Fx.shootBig;
+				hitEffect= NHFx.hitSpark;
+				ammoMultiplier= 2;
+				lightningDamage= 30;
+				lightning= 1;
+				lightningLengthRand = 3;
+				lightningLength = 4;
+			}});
+		});
+		adjustContent(Blocks.meltdown, content -> {
+			LaserTurret turret = (LaserTurret) content;
+			ContinuousLaserBulletType meltDownType = (ContinuousLaserBulletType) turret.shootType;
+
+			meltDownType.length += 80f;
+			meltDownType.damage += 20f;
+			meltDownType.splashDamage += 10f;
+			meltDownType.splashDamageRadius += 10f;
+
+			turret.range += 80f;
+			turret.shootDuration += 60f;
+		});
+		adjustContent(Blocks.breach, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				width = 13f;
+				height = 19f;
+				hitSize = 7f;
+				damage= 100;
+				lifetime= 32;
+				speed= 8;
+				shootEffect = Fx.shootSmallFlame;
+				smokeEffect = Fx.shootBigSmoke;
+				ammoMultiplier = 1;
+				reloadMultiplier = 1f;
+				pierceCap = 3;
+				pierce = true;
+				pierceBuilding = true;
+				hitColor = backColor = trailColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				trailWidth = 2.2f;
+				trailLength = 20;
+				hitEffect = despawnEffect = Fx.hitBulletColor;
+				rangeChange = 56f;
+				buildingDamageMultiplier = 0.3f;
+				lightningDamage= 30;
+				lightning= 1;
+				lightningLengthRand = 3;
+				lightningLength = 4;
+			}});
+		});
+		adjustContent(Blocks.titan, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new ArtilleryBulletType(2.5f, 500, "shell"){{
+				hitEffect = new MultiEffect(Fx.titanExplosionLarge, Fx.titanSmokeLarge, Fx.smokeAoeCloud);
+				despawnEffect = Fx.none;
+				knockback = 2f;
+				lifetime = 190f;
+				height = 19f;
+				width = 17f;
+				reloadMultiplier = 0.65f;
+				splashDamageRadius = 110f;
+				rangeChange = 8f;
+				splashDamage = 300f;
+				scaledSplashDamage = true;
+				hitColor = backColor = trailColor = lightningColor =NHItems.zeta.color;
+				frontColor = NHItems.zeta.color;
+				ammoMultiplier = 1f;
+				hitSound = Sounds.titanExplosion;
+
+				status = StatusEffects.blasted;
+
+				trailLength = 32;
+				trailWidth = 3.35f;
+				trailSinScl = 2.5f;
+				trailSinMag = 0.5f;
+				trailEffect = Fx.vapor;
+				trailInterval = 3f;
+				despawnShake = 7f;
+
+				shootEffect = Fx.shootTitan;
+				smokeEffect = Fx.shootSmokeTitan;
+
+				trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
+				shrinkX = 0.2f;
+				shrinkY = 0.1f;
+				buildingDamageMultiplier = 0.25f;
+
+				lightningDamage= 30;
+				lightning= 4;
+				lightningLengthRand = 3;
+				lightningLength = 15;
+
+				fragBullets = 4;
+				fragBullet = new EmptyBulletType(){{
+					lifetime = 60f * 3f;
+					speed = 0.3f;
+					bulletInterval = 20f;
+					intervalBullet = new EmptyBulletType(){{
+						splashDamage = 60f;
+						collidesGround = true;
+						collidesAir = false;
+						collides = false;
+						hitEffect = Fx.none;
+						pierce = true;
+						instantDisappear = true;
+						splashDamageRadius = 90f;
+						buildingDamageMultiplier = 0.2f;
+						lightningDamage= 10;
+						lightning= 2;
+						lightningLengthRand = 3;
+						lightningLength = 5;
+					}};
+				}};
+			}});
+		});
+		adjustContent(Blocks.disperse, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				reloadMultiplier = 0.59f;
+				damage = 80;
+				rangeChange = 8f * 3f;
+				lightning = 4;
+				lightningLength = 6;
+				lightningDamage = 24f;
+				lightningLengthRand = 3;
+				speed = 10f;
+				width = height = 16;
+				shrinkY = 0.3f;
+				backSprite = "large-bomb-back";
+				sprite = "mine-bullet";
+				collidesGround = false;
+				collidesTiles = false;
+				shootEffect = Fx.shootBig2;
+				smokeEffect = Fx.shootSmokeDisperse;
+				frontColor = Color.white;
+				backColor = trailColor = hitColor= lightningColor = NHItems.zeta.color;
+				trailChance = 0.44f;
+				ammoMultiplier = 3f;
+
+				lifetime = 34f;
+				rotationOffset = 90f;
+				trailRotation = true;
+				trailEffect = Fx.disperseTrail;
+
+				hitEffect = despawnEffect = Fx.hitBulletColor;
+
+				bulletInterval = 3f;
+
+				intervalBullet = new BulletType(){{
+					collidesGround = false;
+					collidesTiles = false;
+					lightningLengthRand = 2;
+					lightningLength = 2;
+					lightningCone = 30f;
+					lightningDamage = 10f;
+					lightning = 1;
+					hittable = collides = false;
+					instantDisappear = true;
+					hitEffect = despawnEffect = Fx.none;
+				}};
+			}});
+		});
+
 	}
 
 	private static void adjustVanillaFactories(){

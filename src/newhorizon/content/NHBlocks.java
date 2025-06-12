@@ -655,6 +655,7 @@ public class NHBlocks{
 			maxAmmo = 180;
 			
 			range = 1200;
+			trackingRange = range * 1.2f;
 			reload = 120;
 			
 			unitSort = NHUnitSorts.slowest;
@@ -995,6 +996,7 @@ public class NHBlocks{
 			coolant = new ConsumeCoolant(0.5f);
 			coolantMultiplier = 2.25f;
 			range = 520f;
+			trackingRange = range * 1.4f;
 		}};
 		
 		interferon = new PowerTurret("interferon"){{
@@ -1595,6 +1597,7 @@ public class NHBlocks{
 			health = 6000;
 			armor = 15;
 			range = 360f;
+			trackingRange = range * 1.4f;
 			
 			recoil = 6.0F;
 			size = 4;
