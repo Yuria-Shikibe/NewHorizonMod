@@ -295,6 +295,7 @@ public class TurretBlock {
 
             scaledHealth = 300;
             range = 320f;
+            trackingRange = range * 1.4f;
             size = 3;
 
             limitRange(-5f);

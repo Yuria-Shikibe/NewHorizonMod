@@ -897,7 +897,7 @@ public class NHPostProcess {
 				lightningLength = 10;
 				shootEffect = Fx.shootBig;
 				collidesGround = true;
-				backColor = hitColor = trailColor= frontColor = NHItems.zeta.color;
+				backColor = hitColor = trailColor= frontColor = lightningColor =NHItems.zeta.color;
 				despawnEffect = Fx.hitBulletColor;
 			}});
 		});
@@ -980,7 +980,7 @@ public class NHPostProcess {
 				rangeChange = 8f;
 				splashDamage = 300f;
 				scaledSplashDamage = true;
-				hitColor = backColor = trailColor = NHItems.zeta.color;
+				hitColor = backColor = trailColor = lightningColor =NHItems.zeta.color;
 				frontColor = NHItems.zeta.color;
 				ammoMultiplier = 1f;
 				hitSound = Sounds.titanExplosion;
