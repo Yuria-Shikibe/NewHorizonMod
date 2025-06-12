@@ -897,7 +897,8 @@ public class NHPostProcess {
 				lightningLength = 10;
 				shootEffect = Fx.shootBig;
 				collidesGround = true;
-				backColor = hitColor = trailColor= frontColor = lightningColor =NHItems.zeta.color;
+				backColor = hitColor = trailColor= lightningColor =NHItems.zeta.color;
+				frontColor = Color.white;
 				despawnEffect = Fx.hitBulletColor;
 			}});
 		});
@@ -1041,7 +1042,7 @@ public class NHPostProcess {
 				lightningLength = 6;
 				lightningDamage = 24f;
 				lightningLengthRand = 3;
-				speed = 8f;
+				speed = 10f;
 				width = height = 16;
 				shrinkY = 0.3f;
 				backSprite = "large-bomb-back";
@@ -1051,7 +1052,7 @@ public class NHPostProcess {
 				shootEffect = Fx.shootBig2;
 				smokeEffect = Fx.shootSmokeDisperse;
 				frontColor = Color.white;
-				backColor = trailColor = hitColor = NHItems.zeta.color;
+				backColor = trailColor = hitColor= lightningColor = NHItems.zeta.color;
 				trailChance = 0.44f;
 				ammoMultiplier = 3f;
 
