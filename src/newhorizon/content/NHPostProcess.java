@@ -47,6 +47,7 @@ import static mindustry.type.ItemStack.with;
 
 import mindustry.world.consumers.*;
 import mindustry.world.blocks.power.*;
+import mindustry.entities.bullet.*;
 
 
 
@@ -337,6 +338,7 @@ public class NHPostProcess {
 		adjustVanillaPower();
 		adjustVanillaUnit();
 		adjustVanillaLogic();
+		adjustVanillaTurret();
 	}
 
 	public static void contentOverride(){
@@ -772,6 +774,32 @@ public class NHPostProcess {
 		hideContent(Blocks.beamLink);
 		hideContent(Blocks.beamNode);
 		hideContent(Blocks.beamTower);
+	}
+	private static void adjustVanillaTurret(){
+		adjustContent(Blocks.swarmer, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				speed= 10;
+				lifetime= 30;
+				knockback= 1.8f;
+				width= 18;
+				height= 20;
+				damage= 175;
+				splashDamageRadius= 38;
+				reloadMultiplier = 1.2f;
+				splashDamage= 35;
+				shootEffect= Fx.shootBig;
+				hitEffect= NHFx.hitSpark;
+				ammoMultiplier= 2;
+				lightningDamage= 50;
+				lightning= 1;
+				lightningLengthRand = 3;
+				lightningLength = 3;
+			}});
+		});
+
 	}
 
 	private static void adjustVanillaFactories(){
