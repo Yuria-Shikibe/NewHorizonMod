@@ -890,11 +890,11 @@ public class NHPostProcess {
 				ammoMultiplier = 2f;
 				splashDamage = 40f * 1.5f;
 				splashDamageRadius = 38f;
+				rangeChange=24;
 				lightning = 1;
 				lightningLength = 10;
 				shootEffect = Fx.shootBig;
 				collidesGround = true;
-
 				backColor = hitColor = trailColor= frontColor = NHItems.zeta.color;
 				despawnEffect = Fx.hitBulletColor;
 			}});
@@ -934,6 +934,35 @@ public class NHPostProcess {
 
 			turret.range += 80f;
 			turret.shootDuration += 60f;
+		});
+		adjustContent(Blocks.breach, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				width = 13f;
+				height = 19f;
+				hitSize = 7f;
+				damage= 100;
+				lifetime= 40;
+				speed= 8;
+				shootEffect = Fx.shootSmallFlame;
+				smokeEffect = Fx.shootBigSmoke;
+				ammoMultiplier = 2;
+				reloadMultiplier = 1f;
+				pierceCap = 1;
+				pierce = true;
+				pierceBuilding = true;
+				hitColor = backColor = trailColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				trailWidth = 2.2f;
+				trailLength = 20;
+				hitEffect = despawnEffect = Fx.hitBulletColor;
+				rangeChange = 40f;
+				buildingDamageMultiplier = 0.3f;
+				lightningDamage= 30;
+				lightning= 1;
+				lightningLengthRand = 3;
+				lightningLength = 4;
+			}});
 		});
 
 	}
