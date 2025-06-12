@@ -889,6 +889,7 @@ public class NHPostProcess {
 			ItemTurret turret = (ItemTurret) content;
 			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
 				ammoMultiplier = 2f;
+				speed = 6f;
 				splashDamage = 40f * 1.5f;
 				splashDamageRadius = 38f;
 				rangeChange=24;
