@@ -17,6 +17,7 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Building;
+import mindustry.gen.Sounds;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
@@ -942,13 +943,13 @@ public class NHPostProcess {
 				height = 19f;
 				hitSize = 7f;
 				damage= 100;
-				lifetime= 40;
+				lifetime= 32;
 				speed= 8;
 				shootEffect = Fx.shootSmallFlame;
 				smokeEffect = Fx.shootBigSmoke;
-				ammoMultiplier = 2;
+				ammoMultiplier = 1;
 				reloadMultiplier = 1f;
-				pierceCap = 1;
+				pierceCap = 3;
 				pierce = true;
 				pierceBuilding = true;
 				hitColor = backColor = trailColor = NHItems.zeta.color;
@@ -956,12 +957,77 @@ public class NHPostProcess {
 				trailWidth = 2.2f;
 				trailLength = 20;
 				hitEffect = despawnEffect = Fx.hitBulletColor;
-				rangeChange = 40f;
+				rangeChange = 56f;
 				buildingDamageMultiplier = 0.3f;
 				lightningDamage= 30;
 				lightning= 1;
 				lightningLengthRand = 3;
 				lightningLength = 4;
+			}});
+		});
+		adjustContent(Blocks.titan, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new ArtilleryBulletType(2.5f, 500, "shell"){{
+				hitEffect = new MultiEffect(Fx.titanExplosionLarge, Fx.titanSmokeLarge, Fx.smokeAoeCloud);
+				despawnEffect = Fx.none;
+				knockback = 2f;
+				lifetime = 190f;
+				height = 19f;
+				width = 17f;
+				reloadMultiplier = 0.65f;
+				splashDamageRadius = 110f;
+				rangeChange = 8f;
+				splashDamage = 300f;
+				scaledSplashDamage = true;
+				hitColor = backColor = trailColor = NHItems.zeta.color;
+				frontColor = NHItems.zeta.color;
+				ammoMultiplier = 1f;
+				hitSound = Sounds.titanExplosion;
+
+				status = StatusEffects.blasted;
+
+				trailLength = 32;
+				trailWidth = 3.35f;
+				trailSinScl = 2.5f;
+				trailSinMag = 0.5f;
+				trailEffect = Fx.vapor;
+				trailInterval = 3f;
+				despawnShake = 7f;
+
+				shootEffect = Fx.shootTitan;
+				smokeEffect = Fx.shootSmokeTitan;
+
+				trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
+				shrinkX = 0.2f;
+				shrinkY = 0.1f;
+				buildingDamageMultiplier = 0.25f;
+
+				lightningDamage= 30;
+				lightning= 4;
+				lightningLengthRand = 3;
+				lightningLength = 15;
+
+				fragBullets = 4;
+				fragBullet = new EmptyBulletType(){{
+					lifetime = 60f * 5f;
+					speed = 0.3f;
+					bulletInterval = 20f;
+					intervalBullet = new EmptyBulletType(){{
+						splashDamage = 60f;
+						collidesGround = true;
+						collidesAir = false;
+						collides = false;
+						hitEffect = Fx.none;
+						pierce = true;
+						instantDisappear = true;
+						splashDamageRadius = 90f;
+						buildingDamageMultiplier = 0.2f;
+						lightningDamage= 10;
+						lightning= 2;
+						lightningLengthRand = 3;
+						lightningLength = 5;
+					}};
+				}};
 			}});
 		});
 
