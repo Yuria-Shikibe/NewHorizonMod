@@ -1045,8 +1045,6 @@ public class NHPostProcess {
 				shrinkY = 0.3f;
 				backSprite = "large-bomb-back";
 				sprite = "mine-bullet";
-				velocityScaleRandMax = 0.11f;
-				velocityScaleRandMin = 0.11f;
 				collidesGround = false;
 				collidesTiles = false;
 				shootEffect = Fx.shootBig2;
