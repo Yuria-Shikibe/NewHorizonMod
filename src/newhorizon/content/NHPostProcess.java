@@ -765,7 +765,7 @@ public class NHPostProcess {
 	private static void adjustVanillaPower(){
 		adjustContent(Blocks.turbineCondenser, content -> {
 			ThermalGenerator generator = (ThermalGenerator)content;
-			generator.powerProduction = 300 / 60f;
+			generator.powerProduction = 30 / 60f;
 		});
 		adjustContent(Blocks.differentialGenerator, content -> {
 			ConsumeGenerator generator = (ConsumeGenerator) content;
