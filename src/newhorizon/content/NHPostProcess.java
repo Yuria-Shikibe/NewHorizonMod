@@ -892,6 +892,10 @@ public class NHPostProcess {
 				speed = 6f;
 				splashDamage = 40f * 1.5f;
 				splashDamageRadius = 38f;
+				width= 20;
+				height= 20;
+				backSprite = "large-bomb-back";
+				sprite = "mine-bullet";
 				rangeChange=24;
 				lightning = 1;
 				lightningLength = 10;
