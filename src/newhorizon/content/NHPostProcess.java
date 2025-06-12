@@ -1009,7 +1009,7 @@ public class NHPostProcess {
 
 				fragBullets = 4;
 				fragBullet = new EmptyBulletType(){{
-					lifetime = 60f * 5f;
+					lifetime = 60f * 3f;
 					speed = 0.3f;
 					bulletInterval = 20f;
 					intervalBullet = new EmptyBulletType(){{
@@ -1027,6 +1027,55 @@ public class NHPostProcess {
 						lightningLengthRand = 3;
 						lightningLength = 5;
 					}};
+				}};
+			}});
+		});
+		adjustContent(Blocks.disperse, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				reloadMultiplier = 0.6f;
+				damage = 80;
+				rangeChange = 8f * 3f;
+				lightning = 4;
+				lightningLength = 6;
+				lightningDamage = 24f;
+				lightningLengthRand = 3;
+				speed = 6f;
+				width = height = 16;
+				shrinkY = 0.3f;
+				backSprite = "large-bomb-back";
+				sprite = "mine-bullet";
+				velocityScaleRandMax = 0.11f;
+				velocityScaleRandMin = 0.11f;
+				collidesGround = false;
+				collidesTiles = false;
+				shootEffect = Fx.shootBig2;
+				smokeEffect = Fx.shootSmokeDisperse;
+				frontColor = Color.white;
+				backColor = trailColor = hitColor = NHItems.zeta.color;
+				trailChance = 0.44f;
+				ammoMultiplier = 3f;
+
+				lifetime = 34f;
+				rotationOffset = 90f;
+				trailRotation = true;
+				trailEffect = Fx.disperseTrail;
+
+				hitEffect = despawnEffect = Fx.hitBulletColor;
+
+				bulletInterval = 3f;
+
+				intervalBullet = new BulletType(){{
+					collidesGround = false;
+					collidesTiles = false;
+					lightningLengthRand = 2;
+					lightningLength = 2;
+					lightningCone = 30f;
+					lightningDamage = 10f;
+					lightning = 1;
+					hittable = collides = false;
+					instantDisappear = true;
+					hitEffect = despawnEffect = Fx.none;
 				}};
 			}});
 		});
