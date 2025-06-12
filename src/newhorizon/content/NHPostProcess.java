@@ -763,7 +763,7 @@ public class NHPostProcess {
 		});
 		adjustContent(Blocks.differentialGenerator, content -> {
 			ConsumeGenerator generator = (ConsumeGenerator) content;
-			generator.itemDuration = 240f;
+			generator.itemDuration = 300f;
 		});
 
 		hideContent(Blocks.powerNode);
