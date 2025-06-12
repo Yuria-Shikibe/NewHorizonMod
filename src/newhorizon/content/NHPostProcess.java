@@ -1041,7 +1041,7 @@ public class NHPostProcess {
 				lightningLength = 6;
 				lightningDamage = 24f;
 				lightningLengthRand = 3;
-				speed = 6f;
+				speed = 8f;
 				width = height = 16;
 				shrinkY = 0.3f;
 				backSprite = "large-bomb-back";
