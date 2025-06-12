@@ -1033,7 +1033,7 @@ public class NHPostProcess {
 		adjustContent(Blocks.disperse, content -> {
 			ItemTurret turret = (ItemTurret) content;
 			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
-				reloadMultiplier = 0.6f;
+				reloadMultiplier = 0.59f;
 				damage = 80;
 				rangeChange = 8f * 3f;
 				lightning = 4;
