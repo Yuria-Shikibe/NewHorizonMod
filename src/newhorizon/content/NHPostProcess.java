@@ -34,6 +34,7 @@ import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.block.turrets.AdaptPowerTurret;
 import newhorizon.expand.bullets.AdaptBulletType;
+import newhorizon.expand.bullets.AdaptedLightningBulletType;
 import newhorizon.util.func.ReflectionUtil;
 
 import java.lang.reflect.Constructor;
@@ -48,6 +49,8 @@ import static mindustry.type.ItemStack.with;
 import mindustry.world.consumers.*;
 import mindustry.world.blocks.power.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
+
 
 
 
@@ -778,11 +781,127 @@ public class NHPostProcess {
 	private static void adjustVanillaTurret(){
 		adjustContent(Blocks.swarmer, content -> {
 			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new MissileBulletType(){{
+				damage= 60;
+				rangeChange=40;
+				lightningDamage= 15;
+				lightning= 3;
+				lightningLength = 1;
+				lightningLengthRand = 4;
+				speed= 3;
+				lifetime= 120;
+				width= 8;
+				height= 8;
+				ammoMultiplier= 2;
+				lightningColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				trailColor = Color.gray;
+				trailParam = 1.8f;
+				hitEffect= Fx.blastExplosion;
+				shootEffect= Fx.shootSmallFlame;
+				splashDamageRadius= 5;
+				splashDamage= 25;
+				reloadMultiplier = 0.85f;
+			}});
+		});
+		adjustContent(Blocks.salvo, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				frontColor = Color.white;
+				speed = 6.5f;
+				damage= 30;
+				lightningDamage= 10;
+				lightning = 1;
+				lightningLengthRand = 3;
+				reloadMultiplier= 1.5f;
+				lifetime= 30f;
+				width= 7;
+				height= 10;
+				ammoMultiplier= 4;
+				shootEffect= Fx.shootBig;
+				hitEffect = despawnEffect = Fx.none;
+			}});
+		});
+		adjustContent(Blocks.fuse, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new ShrapnelBulletType(){{
+				reloadMultiplier = 1.5f;
+				rangeChange = 40;
+				length = 140;
+				damage = 150;
+				width = 20;
+				lightningColor = trailColor = hitColor = lightColor = fromColor = NHItems.zeta.color;
+				toColor = Color.valueOf("ffafaf");
+				ammoMultiplier = 2;
+				pierce = true;
+				shootEffect = new ParticleEffect(){{
+					particles= 5;
+					line= true;
+					length = 55;
+					baseLength = 0;
+					lifetime = 15;
+					colorFrom = fromColor;
+					colorTo = toColor;
+					cone= 60;
+				}};
+
+				smokeEffect = shootEffect;
+
+				fragRandomSpread = 90;
+				fragBullets= 2;
+				fragBullet = new AdaptedLightningBulletType(){{
+					damage = 30;
+					lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
+					lightningLength = 5;
+					lightningLengthRand = 15;
+					collidesAir = true;
+				}};
+
+				fragOnHit = false;
+			}
+
+				//@Override
+				//public void despawned(Bullet b){}
+
+				//@Override
+				//public void init(Bullet b){
+				//	super.init(b);
+
+				//	createFrags(b, b.x, b.y);
+				//}
+			});
+		});
+		adjustContent(Blocks.ripple, content -> {
+			ItemTurret turret = (ItemTurret) content;
+			turret.ammoTypes.put(NHItems.zeta, new ArtilleryBulletType(){{
+				damage= 60;
+				rangeChange=60;
+				lightningDamage= 15;
+				lightning= 3;
+				lightningLength= 10;
+				speed= 3;
+				lifetime= 180;
+				width= 10;
+				height= 20;
+				ammoMultiplier= 2;
+				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
+				trailParam = 2.3f;
+				frontColor = Color.white;
+				hitEffect= Fx.flakExplosionBig;
+				shootEffect= Fx.shootSmallFlame;
+				splashDamageRadius= 45;
+				splashDamage= 75;
+			}});
+		});
+		adjustContent(Blocks.spectre, content -> {
+			ItemTurret turret = (ItemTurret) content;
 			turret.ammoTypes.put(NHItems.zeta, new BasicBulletType(){{
 				lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
 				frontColor = Color.white;
 				speed= 10;
 				lifetime= 30;
+				rangeChange=20;
 				knockback= 1.8f;
 				width= 18;
 				height= 20;
@@ -796,8 +915,20 @@ public class NHPostProcess {
 				lightningDamage= 50;
 				lightning= 1;
 				lightningLengthRand = 3;
-				lightningLength = 3;
+				lightningLength = 4;
 			}});
+		});
+		adjustContent(Blocks.meltdown, content -> {
+			LaserTurret turret = (LaserTurret) content;
+			ContinuousLaserBulletType meltDownType = (ContinuousLaserBulletType) turret.shootType;
+
+			meltDownType.length += 120f;
+			meltDownType.damage += 60f;
+			meltDownType.splashDamage += 10f;
+			meltDownType.splashDamageRadius += 14f;
+
+			turret.range += 120f;
+			turret.shootDuration += 60f;
 		});
 
 	}
