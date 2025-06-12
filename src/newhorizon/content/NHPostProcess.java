@@ -758,6 +758,10 @@ public class NHPostProcess {
 			ThermalGenerator generator = (ThermalGenerator)content;
 			generator.powerProduction = 300 / 60f;
 		});
+		adjustContent(Blocks.differentialGenerator, content -> {
+			DifferentialGenerator generator = (DifferentialGenerator)content;
+			generator.itemDuration = 240f;
+		});
 		hideContent(Blocks.powerNode);
 		hideContent(Blocks.powerNodeLarge);
 		hideContent(Blocks.surgeTower);
