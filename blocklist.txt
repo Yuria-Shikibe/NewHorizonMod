@@ -152,8 +152,8 @@ new-horizon-logistics-extend-liquid-bridge 1 1 1 0
 new-horizon-logistics-gate 1 0 1 0
 new-horizon-logistics-junction 1 0 1 0
 new-horizon-logistics-liquid-bridge 1 1 1 0
-new-horizon-logistics-liquid-junction 1 1 1 0
-new-horizon-logistics-liquid-router 1 1 1 0
+new-horizon-logistics-liquid-junction 1 0 1 0
+new-horizon-logistics-liquid-router 1 0 1 0
 new-horizon-logistics-liquid-unloader 1 1 1 0
 new-horizon-logistics-merger 1 0 1 0
 new-horizon-logistics-omni-blocker 1 0 1 0
@@ -212,6 +212,7 @@ new-horizon-placeholder-entity-5 1 1 5 0
 new-horizon-placeholder-entity-6 1 1 6 0
 new-horizon-placeholder-entity-7 1 1 7 0
 new-horizon-placeholder-entity-8 1 1 8 0
+new-horizon-plastanium-crafter 1 1 3 0
 new-horizon-plating-metal-floor 0 0 1 3618881
 new-horizon-presstanium-factory 1 1 2 0
 new-horizon-presstanium-wall 1 1 1 0

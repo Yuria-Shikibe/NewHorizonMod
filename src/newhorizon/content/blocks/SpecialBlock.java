@@ -9,6 +9,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.special.AssignedBeacon;
 import newhorizon.expand.block.special.DeviceBase;
+import newhorizon.expand.block.special.EnderChestStorage;
 import newhorizon.expand.block.special.NexusCore;
 
 import static mindustry.type.ItemStack.with;

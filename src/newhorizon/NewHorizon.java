@@ -20,6 +20,8 @@ import mindustry.ui.Links;
 import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.blocks.environment.Floor;
+import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.DebugFunc;
@@ -64,10 +66,8 @@ public class NewHorizon extends Mod{
 	
 	private static void showAbout(){
 		if(links == null)links = new Links.LinkEntry[]{
-			//new Links.LinkEntry("mod.ccs", "https://github.com/Yuria-Shikibe/NewHorizonMod/wiki/Cutscene-Script-Custom-Guide", Icon.settings, Pal.heal),
 			new Links.LinkEntry("mod.discord", "https://discord.gg/yNmbMcuwyW", Icon.discord, Color.valueOf("7289da")),
 			new Links.LinkEntry("mod.github", MOD_GITHUB_URL, Icon.github, Color.valueOf("24292e")),
-			//new Links.LinkEntry("mod.guide", "https://github.com/Yuria-Shikibe/NewHorizonMod#mod-guide", Icon.bookOpen, Pal.accent),
 			new Links.LinkEntry("yuria.plugin", "https://github.com/Yuria-Shikibe/RangeImager", Icon.export, NHColor.thurmixRed)
 		};
 
@@ -145,6 +145,13 @@ public class NewHorizon extends Mod{
 				if (OS.username.equals("LaoHuaJi")){
 					DebugFunc.updateBlockList();
 					DebugFunc.generateBlankBundle();
+
+					//content.blocks().each(block -> {
+					//	block.buildVisibility = BuildVisibility.shown;
+					//	if (block.minfo.mod == MOD && block instanceof Floor){
+					//		block.fullIcon = block.region;
+					//	}
+					//});
 				}
 
 				DebugFunc.unlockModContent();
@@ -157,6 +164,7 @@ public class NewHorizon extends Mod{
 				//DebugFunc.outputAtlas();
 			});
 		});
+		Events.run(EventType.Trigger.draw, () -> NHVars.control.terrainSelect());
 	}
 
 	@Override
