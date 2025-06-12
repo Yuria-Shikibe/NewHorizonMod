@@ -46,6 +46,9 @@ import static mindustry.content.UnitTypes.*;
 import static mindustry.type.ItemStack.with;
 
 import mindustry.world.consumers.*;
+import mindustry.world.blocks.power.*;
+
+
 
 public class NHPostProcess {
 	public static final Seq<SpawnGroup> modSpawnGroup = new Seq<>();
@@ -758,6 +761,11 @@ public class NHPostProcess {
 			ThermalGenerator generator = (ThermalGenerator)content;
 			generator.powerProduction = 300 / 60f;
 		});
+		adjustContent(Blocks.differentialGenerator, content -> {
+			ConsumeGenerator generator = (ConsumeGenerator) content;
+			generator.itemDuration = 240f;
+		});
+
 		hideContent(Blocks.powerNode);
 		hideContent(Blocks.powerNodeLarge);
 		hideContent(Blocks.surgeTower);
