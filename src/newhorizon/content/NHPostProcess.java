@@ -1090,6 +1090,24 @@ public class NHPostProcess {
 			core.armor = 15;
 		});
 
+		
+		adjustContent(Blocks.coreBastion, content -> {
+			CoreBlock core = (CoreBlock)content;
+			core.incinerateNonBuildable = false;
+			core.requiresCoreZone = false;
+		});
+		adjustContent(Blocks.coreCitadel, content -> {
+			CoreBlock core = (CoreBlock)content;
+			core.incinerateNonBuildable = false;
+			core.requiresCoreZone = false;
+		});
+		adjustContent(Blocks.coreAcropolis, content -> {
+			CoreBlock core = (CoreBlock)content;
+			core.incinerateNonBuildable = false;
+			core.requiresCoreZone = false;
+		});
+
+		
 		adjustContent(UnitTypes.alpha, content -> {
 			UnitType unitType = (UnitType)content;
 			unitType.mineSpeed = 8f;

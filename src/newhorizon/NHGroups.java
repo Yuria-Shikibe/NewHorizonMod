@@ -8,6 +8,7 @@ import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import newhorizon.expand.block.commandable.CommandableBlock;
+import newhorizon.expand.block.special.EnderChestStorage;
 import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.entities.GravityTrapField;
 
@@ -41,6 +42,7 @@ public class NHGroups{
 		gravityTrapsDraw.clear();
 		commandableBuilds.clear();
 		RemoteCoreStorage.clear();
+		EnderChestStorage.storage.clear();
 	}
 
 	public static void worldReset(){
