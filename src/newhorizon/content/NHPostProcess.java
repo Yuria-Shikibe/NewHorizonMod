@@ -33,7 +33,6 @@ import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
-import newhorizon.content.bullets.OverrideBullets;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
@@ -345,31 +344,6 @@ public class NHPostProcess {
 
     public static void postProcessOverride() {
         overrideStats();
-        setupAdaptBulletType();
-    }
-
-    public static void setupAdaptBulletType() {
-        //replaceUnitTypeBullets(alpha, alpha.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(15, 15));
-        //replaceUnitTypeBullets(beta, beta.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(20, 20));
-        //replaceUnitTypeBullets(gamma, gamma.weapons.get(0).bullet, (AdaptBulletType b) -> b.setDamage(25, 25));
-    }
-
-    public static void replaceUnitTypeBullets(UnitType unitType, BulletType bulletType, Cons<AdaptBulletType> modifier) {
-        BulletType replacement = replaceBullet(bulletType, modifier);
-        for (Weapon weapon : unitType.weapons) {
-            if (weapon.bullet == bulletType) {
-                weapon.bullet = replacement;
-            }
-        }
-    }
-
-    public static BulletType replaceBullet(BulletType bullet, Cons<AdaptBulletType> modifier) {
-        BulletType bulletType = OverrideBullets.getReplacement(bullet);
-        if (bulletType instanceof AdaptBulletType replacement) {
-            ReflectionUtil.copyProperties(bullet, replacement);
-            modifier.get(replacement);
-        }
-        return bulletType;
     }
 
     public static void setModContentEnv() {

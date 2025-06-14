@@ -6,13 +6,6 @@ import mindustry.content.Items;
 import mindustry.graphics.Pal;
 
 public class NHColor {
-    static {
-        Colors.put("heal", Pal.heal);
-        Colors.put("ancient", ancient);
-        Colors.put("reddust", Pal.redderDust);
-        Colors.put("ammo", Pal.ammo);
-    }
-
     public static Color
             ancient = Items.surgeAlloy.color.cpy().lerp(Pal.accent, 0.115f),
             ancientLight = ancient.cpy().lerp(Color.white, 0.7f),
@@ -34,11 +27,17 @@ public class NHColor {
             trail = Color.lightGray.cpy().lerp(Color.gray, 0.65f),
             thermoPst = Color.valueOf("CFFF87").lerp(Color.white, 0.15f),
             powerArea = Pal.power.cpy().a(0.5f),
-
-    xenEmpty = Color.valueOf("a3a9ad"),
+            xenEmpty = Color.valueOf("a3a9ad"),
             xenAlpha = Color.valueOf("abc8dc"),
             xenBeta = Color.valueOf("94caed"),
             xenGamma = Color.valueOf("78c9ff");
+
+    static {
+        Colors.put("heal", Pal.heal);
+        Colors.put("ancient", ancient);
+        Colors.put("reddust", Pal.redderDust);
+        Colors.put("ammo", Pal.ammo);
+    }
 
 
 }
