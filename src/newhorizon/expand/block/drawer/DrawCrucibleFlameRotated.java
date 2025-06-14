@@ -13,10 +13,11 @@ import mindustry.world.draw.DrawCrucibleFlame;
 
 public class DrawCrucibleFlameRotated extends DrawCrucibleFlame {
     public float flameX, flameY;
-    @Override
-    public void draw(Building build){
 
-        if(build.warmup() > 0f && flameColor.a > 0.001f){
+    @Override
+    public void draw(Building build) {
+
+        if (build.warmup() > 0f && flameColor.a > 0.001f) {
             Tmp.v1.set(flameX, flameY).rotate(build.rotdeg()).add(build.x, build.y);
 
             Lines.stroke(circleStroke * build.warmup());
@@ -33,7 +34,7 @@ public class DrawCrucibleFlameRotated extends DrawCrucibleFlame {
 
             float base = (Time.time / particleLife);
             rand.setSeed(build.id);
-            for(int i = 0; i < particles; i++){
+            for (int i = 0; i < particles; i++) {
                 float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                 float angle = rand.random(360f) + (Time.time / rotateScl) % 360f;
                 float len = particleRad * particleInterp.apply(fout);

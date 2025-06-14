@@ -24,18 +24,18 @@ public class NHConsumeShowStat extends Consume {
 
     @SuppressWarnings("unchecked")
     public <T extends Building> NHConsumeShowStat(Func<T, ItemStack[]> items, Func<T, LiquidStack[]> liquids, Func<T, PayloadStack[]> payloads, Func<T, PayloadSeq> payloadInventory) {
-        this.items = items == null? e -> new ItemStack[]{}: (Func<Building, ItemStack[]>) items;
-        this.liquids = liquids == null? e -> new LiquidStack[]{}: (Func<Building, LiquidStack[]>) liquids;
-        this.payloads = payloads == null? e -> new PayloadStack[]{}: (Func<Building, PayloadStack[]>) payloads;
-        this.payloadInventory = payloadInventory == null? e -> new PayloadSeq(): (Func<Building, PayloadSeq>) payloadInventory;
+        this.items = items == null ? e -> new ItemStack[]{} : (Func<Building, ItemStack[]>) items;
+        this.liquids = liquids == null ? e -> new LiquidStack[]{} : (Func<Building, LiquidStack[]>) liquids;
+        this.payloads = payloads == null ? e -> new PayloadStack[]{} : (Func<Building, PayloadStack[]>) payloads;
+        this.payloadInventory = payloadInventory == null ? e -> new PayloadSeq() : (Func<Building, PayloadSeq>) payloadInventory;
     }
 
 
     @SuppressWarnings("unchecked")
     public <T extends Building> NHConsumeShowStat(Func<T, ItemStack[]> items, Func<T, LiquidStack[]> liquids, Func<T, PayloadStack[]> payloads) {
-        this.items = items == null? e -> new ItemStack[]{}: (Func<Building, ItemStack[]>) items;
-        this.liquids = liquids == null? e -> new LiquidStack[]{}: (Func<Building, LiquidStack[]>) liquids;
-        this.payloads = payloads == null? e -> new PayloadStack[]{}: (Func<Building, PayloadStack[]>) payloads;
+        this.items = items == null ? e -> new ItemStack[]{} : (Func<Building, ItemStack[]>) items;
+        this.liquids = liquids == null ? e -> new LiquidStack[]{} : (Func<Building, LiquidStack[]>) liquids;
+        this.payloads = payloads == null ? e -> new PayloadStack[]{} : (Func<Building, PayloadStack[]>) payloads;
         this.payloadInventory = e -> new PayloadSeq();
     }
 
@@ -55,7 +55,7 @@ public class NHConsumeShowStat extends Consume {
                     rebuild(build, cont);
                     currentLiquid[0] = liquids.get(build);
                 }
-                if(currentPayload[0] != payloads.get(build)){
+                if (currentPayload[0] != payloads.get(build)) {
                     rebuild(build, cont);
                     currentPayload[0] = payloads.get(build);
                 }
@@ -83,7 +83,7 @@ public class NHConsumeShowStat extends Consume {
         if (items.get(build) != null) {
             for (ItemStack stack : items.get(build)) {
                 table.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
-                    () -> build.items != null && build.items.has(stack.item, Math.round(stack.amount * multiplier.get(build))))).padRight(8).left();
+                        () -> build.items != null && build.items.has(stack.item, Math.round(stack.amount * multiplier.get(build))))).padRight(8).left();
                 if (++i % 4 == 0) table.row();
             }
         }
@@ -91,16 +91,16 @@ public class NHConsumeShowStat extends Consume {
         if (liquids.get(build) != null) {
             for (LiquidStack stack : liquids.get(build)) {
                 table.add(new ReqImage(stack.liquid.uiIcon,
-                    () -> build.liquids != null && build.liquids.get(stack.liquid) > 0)).size(Vars.iconMed).padRight(8);
+                        () -> build.liquids != null && build.liquids.get(stack.liquid) > 0)).size(Vars.iconMed).padRight(8);
                 if (++i % 4 == 0) table.row();
             }
         }
 
         if (payloads.get(build) != null) {
-            for(PayloadStack stack : payloads.get(build)){
+            for (PayloadStack stack : payloads.get(build)) {
                 table.add(new ReqImage(StatValues.stack(stack.item, Math.round(stack.amount * multiplier.get(build))),
                         () -> build.getPayloads() != null && build.getPayloads().contains(stack.item, Math.round(stack.amount * multiplier.get(build))))).padRight(8);
-                if(++i % 4 == 0) table.row();
+                if (++i % 4 == 0) table.row();
             }
         }
     }

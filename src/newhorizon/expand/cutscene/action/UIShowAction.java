@@ -17,7 +17,7 @@ public class UIShowAction extends Action {
     }
 
     @Override
-    public void skip(){
+    public void skip() {
         if (headless) return;
         end();
     }

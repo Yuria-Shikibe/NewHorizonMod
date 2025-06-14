@@ -7,14 +7,15 @@ import newhorizon.content.NHContent;
 public class CameraControl extends LStatement {
     public String cutscene = "css", duration = "5", camX = "camX", camY = "camY";
 
-    public CameraControl(String[] token){
+    public CameraControl(String[] token) {
         cutscene = token[1];
         duration = token[2];
         camX = token[3];
         camY = token[4];
     }
 
-    public CameraControl() {}
+    public CameraControl() {
+    }
 
     @Override
     public void build(Table table) {
@@ -60,6 +61,7 @@ public class CameraControl extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class CameraControlI implements LExecutor.LInstruction {
         public LVar cutscene, duration, camX, camY;
+
         public CameraControlI(LVar cutscene, LVar duration, LVar camX, LVar camY) {
             this.cutscene = cutscene;
             this.duration = duration;

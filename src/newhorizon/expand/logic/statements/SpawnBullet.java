@@ -23,7 +23,8 @@ public class SpawnBullet extends LStatement {
         inaccuracy = tokens[9];
     }
 
-    public SpawnBullet() {}
+    public SpawnBullet() {
+    }
 
     @Override
     public void build(Table table) {

@@ -26,7 +26,7 @@ import newhorizon.expand.block.production.factory.MultiBlockEntity;
  * Inner building that are linked to a specific building.
  * Handle items, liquids, damage and so on a passed to the main building to handle.
  * NEVER SUPPOSED TO USE OUTSIDE MULTI BLOCK!
- * */
+ */
 public class LinkBlock extends Block {
     public LinkBlock(String name) {
         super(name);
@@ -68,12 +68,12 @@ public class LinkBlock extends Block {
         details = Core.bundle.getOrNull(getContentType() + ".new-horizon-inner-entity.details");
     }
 
-    public boolean canBreak(Tile tile){
+    public boolean canBreak(Tile tile) {
         return false;
     }
 
     @Override
-    public boolean isHidden(){
+    public boolean isHidden() {
         return true;
     }
 
@@ -92,14 +92,14 @@ public class LinkBlock extends Block {
     public class LinkBuild extends Building {
         public Building linkBuild;
 
-        public void updateLink(Building link){
-            if (link instanceof MultiBlockEntity){
+        public void updateLink(Building link) {
+            if (link instanceof MultiBlockEntity) {
                 linkBuild = link;
                 items = link.items;
                 liquids = link.liquids;
                 //might not a good idea if do so
                 //block = link.block;
-            }else {
+            } else {
                 linkBuild = null;
                 tile.remove();
             }
@@ -107,14 +107,15 @@ public class LinkBlock extends Block {
 
         @Override
         public void updateTile() {
-            if (linkBuild == null || !linkBuild.isValid()){
+            if (linkBuild == null || !linkBuild.isValid()) {
                 kill();
             }
         }
 
         //skip draw
         @Override
-        public void draw() {}
+        public void draw() {
+        }
 
         @Override
         public void drawSelect() {
@@ -125,18 +126,18 @@ public class LinkBlock extends Block {
 
         @Override
         public TextureRegion getDisplayIcon() {
-            return linkBuild == null? this.block.uiIcon: linkBuild.getDisplayIcon();
+            return linkBuild == null ? this.block.uiIcon : linkBuild.getDisplayIcon();
         }
 
         @Override
         public String getDisplayName() {
-            String name = linkBuild == null? this.block.localizedName: linkBuild.block.localizedName;
+            String name = linkBuild == null ? this.block.localizedName : linkBuild.block.localizedName;
             return this.team == Team.derelict ? name + "\n" + Core.bundle.get("block.derelict") : name + (this.team != Vars.player.team() && !this.team.emoji.isEmpty() ? " " + this.team.emoji : "");
         }
 
         @Override
         public void displayBars(Table table) {
-            if (linkBuild != null){
+            if (linkBuild != null) {
                 for (Func<Building, Bar> buildingBarFunc : linkBuild.block.listBars()) {
                     Bar result = buildingBarFunc.get(linkBuild);
                     if (result != null) {
@@ -149,7 +150,7 @@ public class LinkBlock extends Block {
 
         @Override
         public void displayConsumption(Table table) {
-            if (linkBuild != null){
+            if (linkBuild != null) {
                 table.left();
                 for (Consume cons : linkBuild.block.consumers) {
                     if (cons.optional && cons.booster) continue;
@@ -160,14 +161,14 @@ public class LinkBlock extends Block {
 
         @Override
         public boolean acceptItem(Building source, Item item) {
-            return linkBuild != null &&linkBuild.acceptItem(source, item);
+            return linkBuild != null && linkBuild.acceptItem(source, item);
         }
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source) {
-            if (linkBuild != null){
+            if (linkBuild != null) {
                 return linkBuild.acceptStack(item, amount, source);
-            }else {
+            } else {
                 return 0;
             }
         }
@@ -184,23 +185,23 @@ public class LinkBlock extends Block {
 
         @Override
         public float handleDamage(float amount) {
-            if (linkBuild != null){
+            if (linkBuild != null) {
                 return linkBuild.handleDamage(amount);
-            }else {
+            } else {
                 return 0;
             }
         }
 
         @Override
         public void damage(float damage) {
-            if (linkBuild != null){
+            if (linkBuild != null) {
                 linkBuild.damage(damage);
             }
         }
 
         @Override
         public void handleItem(Building source, Item item) {
-            if (linkBuild != null){
+            if (linkBuild != null) {
                 linkBuild.handleItem(source, item);
             }
         }
@@ -235,17 +236,17 @@ public class LinkBlock extends Block {
 
         @Override
         public Payload getPayload() {
-            return linkBuild == null? null: linkBuild.getPayload();
+            return linkBuild == null ? null : linkBuild.getPayload();
         }
 
         @Override
         public Payload takePayload() {
-            return linkBuild == null? null: linkBuild.takePayload();
+            return linkBuild == null ? null : linkBuild.takePayload();
         }
 
         @Override
         public PayloadSeq getPayloads() {
-            return linkBuild == null? null: linkBuild.getPayloads();
+            return linkBuild == null ? null : linkBuild.getPayloads();
         }
 
         @Override
@@ -257,12 +258,13 @@ public class LinkBlock extends Block {
 
         @Override
         public void onProximityUpdate() {
-            if (linkBuild != null) ((MultiBlockEntity)linkBuild).updateLinkProximity();
+            if (linkBuild != null) ((MultiBlockEntity) linkBuild).updateLinkProximity();
             super.onProximityUpdate();
         }
 
         @Override
-        public void onDestroyed(){}
+        public void onDestroyed() {
+        }
 
         @Override
         public void remove() {

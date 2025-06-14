@@ -1,3 +1,4 @@
 package newhorizon.util.annotation;
 
-public @interface CacheBanned{}
+public @interface CacheBanned {
+}

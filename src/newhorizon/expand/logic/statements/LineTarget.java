@@ -21,7 +21,8 @@ public class LineTarget extends LStatement {
         outY = tokens[7];
     }
 
-    public LineTarget() {}
+    public LineTarget() {
+    }
 
     @Override
     public void build(Table table) {

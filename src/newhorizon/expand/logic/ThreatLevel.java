@@ -11,7 +11,7 @@ public class ThreatLevel {
     //a threat map for automatic threat.
     public static IntMap<Seq<Item>> threatMap = new IntMap<>();
 
-    public static void init(){
+    public static void init() {
         threatMap.clear();
         threatMap.put(0, Seq.with(Items.sand, Items.scrap, Items.sporePod));
         threatMap.put(1, Seq.with(Items.copper, Items.lead, Items.coal));
@@ -26,11 +26,11 @@ public class ThreatLevel {
         threatMap.put(10, Seq.with(NHItems.ancimembrane, NHItems.upgradeSort));
     }
 
-    public static int getTeamThreat(Team team){
+    public static int getTeamThreat(Team team) {
         int threat = 0;
-        for (IntMap.Entry<Seq<Item>> entry: threatMap) {
-            for (Item item: entry.value){
-                if (team.items().has(item)){
+        for (IntMap.Entry<Seq<Item>> entry : threatMap) {
+            for (Item item : entry.value) {
+                if (team.items().has(item)) {
                     threat = Math.max(entry.key, threat);
                 }
             }

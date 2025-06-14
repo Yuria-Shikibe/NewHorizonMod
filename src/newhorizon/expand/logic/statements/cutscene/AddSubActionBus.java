@@ -9,11 +9,12 @@ import newhorizon.expand.cutscene.components.ActionControl;
 public class AddSubActionBus extends LStatement {
     public String cutscene = "css";
 
-    public AddSubActionBus(String[] tokens){
+    public AddSubActionBus(String[] tokens) {
         cutscene = tokens[1];
     }
 
-    public AddSubActionBus() {}
+    public AddSubActionBus() {
+    }
 
     @Override
     public void build(Table table) {
@@ -46,7 +47,8 @@ public class AddSubActionBus extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class AddSubActionBusI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public AddSubActionBusI(LVar cutscene){
+
+        public AddSubActionBusI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

@@ -11,11 +11,12 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.scene.ui.Image;
-import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Nullable;
+import arc.util.Scaling;
+import arc.util.Strings;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.UnitTypes;
@@ -35,12 +36,9 @@ import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
-import newhorizon.content.NHColor;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHStatusEffects;
 import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.expand.entities.Spawner;
@@ -71,7 +69,7 @@ public class JumpGate extends Block {
         Lines.stroke(8f * scl);
         Lines.square(building.x, building.y, building.block.size * tilesize / 2.5f, -rot);
         Lines.square(building.x, building.y, building.block.size * tilesize / 2f, rot);
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             float length = tilesize * building.block.size / 2f + 8f;
             float rotation = i * 90;
             float sin = Mathf.absin(building.totalProgress(), 16f, tilesize);
@@ -113,7 +111,7 @@ public class JumpGate extends Block {
 
         Draw.color(Pal.techBlue, building.team.color, lerp);
         Draw.alpha(alphaLerp);
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             float rotation = i * 90;
             float sin = Mathf.absin(building.totalProgress(), 16f, 8f);
             float len1 = (size / 2f + 8f) * reverse;
@@ -167,7 +165,7 @@ public class JumpGate extends Block {
                                 e.unitType == null ? Units.getStringCap(e.team) : (e.unitType.useUnitCap ? Units.getStringCap(e.team) : "∞")
                         ),
                 () -> Pal.power,
-                () -> e.unitType == null ? 0f : (e.unitType.useUnitCap ? (float)e.team.data().countType(e.unitType) / Units.getCap(e.team) : 1f)
+                () -> e.unitType == null ? 0f : (e.unitType.useUnitCap ? (float) e.team.data().countType(e.unitType) / Units.getCap(e.team) : 1f)
         ));
     }
 
@@ -178,17 +176,17 @@ public class JumpGate extends Block {
         stats.add(Stat.output, table -> {
             table.row();
 
-            for(UnitType plan : spawnList){
+            for (UnitType plan : spawnList) {
                 ModuleBlock.UnitCost cost = ModuleBlock.unitCosts.get(plan);
                 if (cost == null) continue;
                 table.table(Styles.grayPanel, t -> {
 
-                    if(plan.isBanned()){
+                    if (plan.isBanned()) {
                         t.image(Icon.cancel).color(Pal.remove).size(40);
                         return;
                     }
 
-                    if(plan.unlockedNow()){
+                    if (plan.unlockedNow()) {
                         t.image(plan.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit).with(i -> StatValues.withTooltip(i, plan));
                         t.table(info -> {
                             info.add(plan.localizedName).left();
@@ -198,8 +196,8 @@ public class JumpGate extends Block {
 
                         t.table(req -> {
                             req.right();
-                            for(int i = 0; i < cost.payloadSeq.size; i++){
-                                if(i % 6 == 0){
+                            for (int i = 0; i < cost.payloadSeq.size; i++) {
+                                if (i % 6 == 0) {
                                     req.row();
                                 }
 
@@ -207,7 +205,7 @@ public class JumpGate extends Block {
                                 req.add(StatValues.stack(stack.item, stack.amount, true)).pad(5);
                             }
                         }).right().grow().pad(10f);
-                    }else{
+                    } else {
                         t.image(Icon.lock).color(Pal.darkerGray).size(40);
                     }
                 }).growX().pad(5);
@@ -217,7 +215,7 @@ public class JumpGate extends Block {
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class JumpGateBuild extends Building{
+    public class JumpGateBuild extends Building {
         public float speedMultiplier = 1f;
         public float progress;
         public float warmup;
@@ -252,14 +250,14 @@ public class JumpGate extends Block {
             getRealSpawnPosition();
         }
 
-        public ModuleBlock.UnitCost cost(){
+        public ModuleBlock.UnitCost cost() {
             if (ModuleBlock.unitCosts.get(unitType) == null) return new ModuleBlock.UnitCost();
             return ModuleBlock.unitCosts.get(unitType);
         }
 
-        public boolean canSpawn(){
+        public boolean canSpawn() {
             PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
-            for (PayloadStack stack: cost().payloadSeq){
+            for (PayloadStack stack : cost().payloadSeq) {
                 if (teamPayload.get(stack.item) < stack.amount * state.rules.unitCost(team)) return false;
             }
             return true;
@@ -279,13 +277,13 @@ public class JumpGate extends Block {
             Draw.reset();
         }
 
-        public void changePlan(int idx){
+        public void changePlan(int idx) {
             if (idx == -1) return;
             idx = Mathf.clamp(idx, 0, spawnList.size - 1);
-            if (unitType == spawnList.get(idx)){
+            if (unitType == spawnList.get(idx)) {
                 lastUnitType = unitType;
                 unitType = null;
-            }else {
+            } else {
                 lastUnitType = unitType;
                 unitType = spawnList.get(idx);
             }
@@ -293,16 +291,16 @@ public class JumpGate extends Block {
             speedMultiplier = 1f;
         }
 
-        public UnitType getUnitType(int idx){
+        public UnitType getUnitType(int idx) {
             if (idx < 0 || idx > spawnList.size - 1) return null;
             return spawnList.get(idx);
         }
 
-        public void spawnUnit(){
+        public void spawnUnit() {
             if (unitType == null) return;
 
-            if(!net.client()){
-                float rot = core() == null? Angles.angle(x, y, spawn.x, spawn.y): Angles.angle(core().x, core().y, x, y);
+            if (!net.client()) {
+                float rot = core() == null ? Angles.angle(x, y, spawn.x, spawn.y) : Angles.angle(core().x, core().y, x, y);
                 Spawner spawner = new Spawner();
                 Tmp.v1.setToRandomDirection().add(spawn);
                 spawner.init(unitType, team, Tmp.v1, rot, Mathf.clamp(unitTime(unitType) / maxWarmupSpeed, 5f * 60, 15f * 60));
@@ -314,15 +312,15 @@ public class JumpGate extends Block {
 
             progress = 0f;
             spawnWarmup = 0f;
-            if (unitType == lastUnitType){
+            if (unitType == lastUnitType) {
                 speedMultiplier = Mathf.clamp(speedMultiplier + warmupPerSpawn, 1, maxWarmupSpeed);
-            }else {
+            } else {
                 speedMultiplier = 1f;
             }
             lastUnitType = unitType;
 
             PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
-            for (PayloadStack stack: cost().payloadSeq){
+            for (PayloadStack stack : cost().payloadSeq) {
                 teamPayload.remove(stack.item, (int) (stack.amount * state.rules.unitCost(team)));
             }
         }
@@ -336,17 +334,17 @@ public class JumpGate extends Block {
                 progress = 0f;
                 return;
             }
-            if (canSpawn() && Units.canCreate(team, unitType)){
+            if (canSpawn() && Units.canCreate(team, unitType)) {
                 progress += getProgressIncrease(unitTime(unitType)) * speedMultiplier;
             }
             if (progress >= 1) spawnUnit();
         }
 
-        public boolean canConsume(){
+        public boolean canConsume() {
             return !(unitType == null || spawn == null) && canSpawn() && Units.canCreate(team, unitType);
         }
 
-        public float unitTime(UnitType unitType){
+        public float unitTime(UnitType unitType) {
             if (ModuleBlock.unitCosts.get(unitType) == null) return unitType.health / 100;
             return ModuleBlock.unitCosts.get(unitType).craftTime;
         }
@@ -356,7 +354,7 @@ public class JumpGate extends Block {
             table.table(inner -> {
                 inner.background(Tex.paneSolid);
                 inner.pane(selectionTable -> {
-                    for (UnitType type: spawnList){
+                    for (UnitType type : spawnList) {
                         selectionTable.button(button -> {
                             button.table(selection -> {
                                 selection.stack(
@@ -366,7 +364,7 @@ public class JumpGate extends Block {
                                                         type.localizedName,
                                                         team.data().countType(type),
                                                         type.useUnitCap ? Units.getStringCap(team) : "∞"),
-                                                () -> type.useUnitCap ? (float)team.data().countType(type) / Units.getCap(team) : 1f),
+                                                () -> type.useUnitCap ? (float) team.data().countType(type) / Units.getCap(team) : 1f),
                                         new Table(image -> image.image(type.uiIcon).scaling(Scaling.fit).size(48, 48).padTop(6f).padBottom(6f).padLeft(8f)).left()
                                 ).expandX().fillX();
                             }).growX();
@@ -380,7 +378,7 @@ public class JumpGate extends Block {
             }).width(360).maxHeight(364);
         }
 
-        public int getPlanId(UnitType unitType){
+        public int getPlanId(UnitType unitType) {
             if (unitType == null) return -1;
             return spawnList.indexOf(unitType);
         }

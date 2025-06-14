@@ -104,17 +104,17 @@ public interface MultiBlock {
         return out;
     }
 
-    default Seq<Tile> linkTiles(int x, int y, int size, int rotation){
+    default Seq<Tile> linkTiles(int x, int y, int size, int rotation) {
         Seq<Tile> tiles = new Seq<>();
         Point2 lb = leftBottomPos(size);
         for (int tx = 0; tx < size; tx++) {
             for (int ty = 0; ty < size; ty++) {
                 Tile other = world.tile(x + tx + lb.x, y + ty + lb.y);
-                if(other != null) tiles.add(other);
+                if (other != null) tiles.add(other);
             }
         }
 
-        for (int i = 0; i < linkBlockPos().size; i++){
+        for (int i = 0; i < linkBlockPos().size; i++) {
             Point2 p = linkBlockPos().get(i);
             int s = linkBlockSize().get(i);
             Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
@@ -123,7 +123,7 @@ public interface MultiBlock {
             for (int tx = 0; tx < s; tx++) {
                 for (int ty = 0; ty < s; ty++) {
                     Tile other = world.tile(x + tx + lb2.x, y + ty + lb2.y);
-                    if(other != null) tiles.add(other);
+                    if (other != null) tiles.add(other);
                 }
             }
         }
@@ -131,10 +131,10 @@ public interface MultiBlock {
         return tiles;
     }
 
-    default Point2 teamOverlayPos(int size, int rotation){
+    default Point2 teamOverlayPos(int size, int rotation) {
         Point2 out = leftBottomPos(size);
 
-        for (int i = 0; i < linkBlockPos().size; i++){
+        for (int i = 0; i < linkBlockPos().size; i++) {
             Point2 p = linkBlockPos().get(i);
             int s = linkBlockSize().get(i);
             Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
@@ -145,10 +145,10 @@ public interface MultiBlock {
         return out;
     }
 
-    default Point2 statusOverlayPos(int size, int rotation){
+    default Point2 statusOverlayPos(int size, int rotation) {
         Point2 out = rightBottomPos(size);
 
-        for (int i = 0; i < linkBlockPos().size; i++){
+        for (int i = 0; i < linkBlockPos().size; i++) {
             Point2 p = linkBlockPos().get(i);
             int s = linkBlockSize().get(i);
             Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
@@ -159,14 +159,14 @@ public interface MultiBlock {
         return out;
     }
 
-    default Point2 leftBottomPos(int size){
+    default Point2 leftBottomPos(int size) {
         int shift = (size + 1) % 2;
-        return new Point2(-size/2 + shift, -size/2 + shift);
+        return new Point2(-size / 2 + shift, -size / 2 + shift);
     }
 
-    default Point2 rightBottomPos(int size){
+    default Point2 rightBottomPos(int size) {
         int shift = (size + 1) % 2;
-        return new Point2(size/2, -size/2 + shift);
+        return new Point2(size / 2, -size / 2 + shift);
     }
 
     default Point2 getMaxSize(int size, int rotation) {

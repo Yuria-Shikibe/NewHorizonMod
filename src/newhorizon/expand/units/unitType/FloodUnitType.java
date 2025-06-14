@@ -2,7 +2,7 @@ package newhorizon.expand.units.unitType;
 
 import mindustry.graphics.Layer;
 
-public class FloodUnitType extends NHUnitType{
+public class FloodUnitType extends NHUnitType {
     public FloodUnitType(String name) {
         super(name);
 

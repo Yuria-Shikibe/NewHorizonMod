@@ -35,14 +35,14 @@ import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
 
 public class NexusCore extends CoreBlock {
+    public static Rand rand = new Rand();
     public final Seq<Trail> trails = Seq.with(new Trail(30), new Trail(40), new Trail(50), new Trail(60), new Trail(70), new Trail(80), new Trail(90));
     public final Interp interp = Interp.pow2Out;
     public float coreDelay = -1;
-    public static Rand rand = new Rand();
-
     public int range = 40;
 
     public TextureRegion base;
+
     public NexusCore() {
         super("nexus-core");
 
@@ -71,7 +71,7 @@ public class NexusCore extends CoreBlock {
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
         stats.add(Stat.range, range, StatUnit.blocks);
         stats.add(Stat.output, (t) -> {
@@ -97,8 +97,8 @@ public class NexusCore extends CoreBlock {
         });
     }
 
-    public void drawLanding(CoreBuild build, float x, float y){
-        if (coreDelay == -1){
+    public void drawLanding(CoreBuild build, float x, float y) {
+        if (coreDelay == -1) {
             coreDelay = renderer.getLandTime();
             Time.run(coreDelay, () -> {
                 coreDelay = -1;
@@ -120,7 +120,7 @@ public class NexusCore extends CoreBlock {
             });
         }
         float fout = renderer.getLandTime() / landDuration;
-        for (int i = 0; i < trails.size; i++){
+        for (int i = 0; i < trails.size; i++) {
             rand.setSeed(build.id + i);
             float ang = rand.random(360f) + 360 * rand.random(2f, 6f) * interp.apply(fout);
             float dst = rand.random(40, 220) * interp.apply(fout);
@@ -139,42 +139,42 @@ public class NexusCore extends CoreBlock {
 
     }
 
-    public class NexusCoreBuild extends CoreBuild{
+    public class NexusCoreBuild extends CoreBuild {
         public transient GravityTrapField field;
 
         @Override
         public void created() {
             super.created();
-            if(field != null)field.setPosition(self());
+            if (field != null) field.setPosition(self());
         }
 
         @Override
-        public void draw(){
-            if(!(renderer.getLandTime() > 0)){
+        public void draw() {
+            if (!(renderer.getLandTime() > 0)) {
                 Draw.rect(base, x, y);
                 drawTeamTop();
             }
         }
 
         @Override
-        public void add(){
-            if(added)return;
+        public void add() {
+            if (added) return;
 
             Groups.all.add(this);
             Groups.build.add(this);
             this.added = true;
 
-            if(field == null)field = new GravityTrapField(this);
+            if (field == null) field = new GravityTrapField(this);
 
             field.add();
         }
 
-        public float range(){
+        public float range() {
             return range * tilesize;
         }
 
-        public void remove(){
-            if(added) NHGroups.gravityTraps.remove(field);
+        public void remove() {
+            if (added) NHGroups.gravityTraps.remove(field);
 
             super.remove();
         }

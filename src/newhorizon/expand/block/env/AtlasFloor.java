@@ -14,20 +14,20 @@ public class AtlasFloor extends Floor {
     public TextureRegion full;
     public TextureRegion[] splitRegion;
     public int maxSize;
+
     public AtlasFloor(String name) {
         super(name);
         variants = 1;
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         full = Core.atlas.find(name + "-full");
         splitRegion = splitRegionArray(full, 32, 32);
         if (splitRegion != null) maxSize = splitRegion.length;
         if (maxSize > 256) throw new ArcRuntimeException("Max Size for " + name + " > 256!");
     }
-
 
 
     @Override

@@ -8,12 +8,12 @@ import newhorizon.expand.block.consumer.NHConsumeShowStat;
 
 import static newhorizon.NHVars.worldData;
 
-public class ModuleWithdraw extends ModuleSource{
+public class ModuleWithdraw extends ModuleSource {
     public ModuleWithdraw(String name) {
         super(name);
         enableDrawStatus = false;
         config(Block.class, (ModuleWithdrawBuild build, Block block) -> {
-            if(canProduce(block) && build.configBlock != block){
+            if (canProduce(block) && build.configBlock != block) {
                 build.configBlock = block;
                 build.unit = null;
                 build.scl = 0f;
@@ -22,15 +22,15 @@ public class ModuleWithdraw extends ModuleSource{
         consume(new NHConsumeShowStat(e -> null, e -> null, e -> null, b -> worldData.teamPayloadData.getPayload(b.team)));
     }
 
-    public class ModuleWithdrawBuild extends ModuleSourceBuild{
+    public class ModuleWithdrawBuild extends ModuleSourceBuild {
         @Override
         public void updateTile() {
-            if(payload != null){
+            if (payload != null) {
                 payload.update(null, this);
             }
-            if(payload == null){
+            if (payload == null) {
                 PayloadSeq storage = worldData.teamPayloadData.getPayload(team);
-                if(configBlock != null && storage.get(configBlock) > 0){
+                if (configBlock != null && storage.get(configBlock) > 0) {
                     payload = new BuildPayload(configBlock, team);
                     storage.remove(configBlock, 1);
                 }

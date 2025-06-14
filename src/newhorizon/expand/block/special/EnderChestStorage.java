@@ -8,12 +8,9 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.IntMap;
 import arc.struct.Seq;
-import arc.util.Tmp;
-import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.ui.Bar;
@@ -24,16 +21,13 @@ import mindustry.world.meta.Stat;
 import newhorizon.content.NHColor;
 import newhorizon.util.graphic.DrawFunc;
 
-import java.util.Arrays;
-
 import static mindustry.Vars.content;
-import static mindustry.Vars.tilesize;
 
 public class EnderChestStorage extends StorageBlock {
-    public static IntMap<Seq<EnderChestStorageBuild>> storage = new IntMap<>();
     public static final float updateTime = 60f;
-
+    public static IntMap<Seq<EnderChestStorageBuild>> storage = new IntMap<>();
     public int itemPerSecond = 15;
+
     public EnderChestStorage(String name) {
         super(name);
 
@@ -58,7 +52,7 @@ public class EnderChestStorage extends StorageBlock {
         super.setBars();
         addBar("channel", (EnderChestStorageBuild e) -> new Bar(
                 () -> "Channel: " + e.channel(),
-                () -> e.receiver()? Pal.techBlue: NHColor.thurmixRed,
+                () -> e.receiver() ? Pal.techBlue : NHColor.thurmixRed,
                 () -> 1f
         ));
     }
@@ -89,19 +83,19 @@ public class EnderChestStorage extends StorageBlock {
             return out;
         }
 
-        public void removeChannel(){
+        public void removeChannel() {
             storage.get(channel(), new Seq<>()).remove(this);
         }
 
-        public void addChannel(){
+        public void addChannel() {
             storage.put(channel(), storage.get(channel(), new Seq<>()).add(this));
         }
 
-        public Seq<EnderChestStorageBuild> getChannel(){
+        public Seq<EnderChestStorageBuild> getChannel() {
             return storage.get(channel(), new Seq<>());
         }
 
-        public boolean receiver(){
+        public boolean receiver() {
             return flags[8];
         }
 
@@ -128,7 +122,7 @@ public class EnderChestStorage extends StorageBlock {
                     }
                 }
                 progress %= updateTime;
-            }else {
+            } else {
                 progress += edelta();
             }
         }
@@ -136,7 +130,7 @@ public class EnderChestStorage extends StorageBlock {
         @Override
         public void draw() {
             super.draw();
-            Color color = receiver()? Pal.techBlue: NHColor.thurmixRed;
+            Color color = receiver() ? Pal.techBlue : NHColor.thurmixRed;
 
             Draw.color(Pal.gray);
             Fill.square(x, y, 6.5f);
@@ -150,7 +144,7 @@ public class EnderChestStorage extends StorageBlock {
             if (selected != null) drawItemSelection(selected);
 
             Draw.color(color);
-            Draw.rect((receiver()? Icon.download.getRegion() : Icon.upload.getRegion()), x, y);
+            Draw.rect((receiver() ? Icon.download.getRegion() : Icon.upload.getRegion()), x, y);
             DrawFunc.drawText(channel() + "", x + 4, y + 5);
             Draw.reset();
         }
@@ -185,9 +179,9 @@ public class EnderChestStorage extends StorageBlock {
         private void buildButton(Table table, int idx) {
             table.button(button -> {
                 button.image().expand().fill().update(image -> {
-                    if (idx == 8){
+                    if (idx == 8) {
                         image.setDrawable(flags[idx] ? Icon.download : Icon.upload);
-                    }else {
+                    } else {
                         image.setDrawable(flags[idx] ? Icon.effect : Icon.none);
                     }
                 }).size(64).expand().fill();

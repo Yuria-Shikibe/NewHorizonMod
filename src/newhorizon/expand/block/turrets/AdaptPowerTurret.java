@@ -10,7 +10,8 @@ public class AdaptPowerTurret extends PowerTurret {
     }
 
     public class AdaptPowerTurretBuild extends PowerTurretBuild {
-        public Cons<Bullet> modifier = bullet -> {};
+        public Cons<Bullet> modifier = bullet -> {
+        };
 
         @Override
         protected void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset) {

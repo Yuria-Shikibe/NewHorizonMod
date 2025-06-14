@@ -27,8 +27,8 @@ import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
 public class AdaptItemBridge extends ItemBridge {
-    public TextureRegion topRegion;
     public static final int maxLinks = 3;
+    public TextureRegion topRegion;
 
     public AdaptItemBridge(String name) {
         super(name);
@@ -45,13 +45,13 @@ public class AdaptItemBridge extends ItemBridge {
         topRegion = Core.atlas.find(name + "-top");
     }
 
-    public void drawBridge(BuildPlan req, float ox, float oy, float flip){
-        if(Mathf.zero(Renderer.bridgeOpacity)) return;
+    public void drawBridge(BuildPlan req, float ox, float oy, float flip) {
+        if (Mathf.zero(Renderer.bridgeOpacity)) return;
         Draw.alpha(Renderer.bridgeOpacity);
 
         Lines.stroke(bridgeWidth);
 
-        Tmp.v1.set(ox, oy).sub(req.drawx(), req.drawy()).setLength(tilesize/4f);
+        Tmp.v1.set(ox, oy).sub(req.drawx(), req.drawy()).setLength(tilesize / 4f);
 
         Lines.line(
                 bridgeRegion,
@@ -68,7 +68,7 @@ public class AdaptItemBridge extends ItemBridge {
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
         Tile link = findLink(x, y);
 
         Drawf.dashCircle(x * tilesize, y * tilesize, range * tilesize, Pal.placing);
@@ -76,27 +76,28 @@ public class AdaptItemBridge extends ItemBridge {
         Draw.reset();
         Draw.color(Pal.placing);
         Lines.stroke(1f);
-        if(link != null && Math.abs(link.x - x) + Math.abs(link.y - y) > 1){
+        if (link != null && Math.abs(link.x - x) + Math.abs(link.y - y) > 1) {
             Lines.line(x * tilesize, y * tilesize, link.x * tilesize, link.y * tilesize);
-            Draw.rect("bridge-arrow", (x * tilesize + link.x * tilesize)/2f, (y * tilesize + link.y * tilesize)/2f, Angles.angle(link.x, link.y, x, y));
+            Draw.rect("bridge-arrow", (x * tilesize + link.x * tilesize) / 2f, (y * tilesize + link.y * tilesize) / 2f, Angles.angle(link.x, link.y, x, y));
         }
-        Draw.reset();}
+        Draw.reset();
+    }
 
-    public boolean linkValid(Tile tile, Tile other, boolean checkDouble){
-        if(other == null || tile == null || !positionsValid(tile.x, tile.y, other.x, other.y)) return false;
+    public boolean linkValid(Tile tile, Tile other, boolean checkDouble) {
+        if (other == null || tile == null || !positionsValid(tile.x, tile.y, other.x, other.y)) return false;
 
         return ((other.block() == tile.block() && tile.block() == this) || (!(tile.block() instanceof ItemBridge) && other.block() == this))
                 && (other.team() == tile.team() || tile.block() != this)
-                && (!checkDouble || ((ItemBridgeBuild)other.build).link != tile.pos());
+                && (!checkDouble || ((ItemBridgeBuild) other.build).link != tile.pos());
     }
 
     @Override
-    public void changePlacementPath(Seq<Point2> points, int rotation){
+    public void changePlacementPath(Seq<Point2> points, int rotation) {
         Placement.calculateNodes(points, this, rotation, (point, other) -> MathUtil.dst(point, other) <= range);
     }
 
     @Override
-    public boolean positionsValid(int x1, int y1, int x2, int y2){
+    public boolean positionsValid(int x1, int y1, int x2, int y2) {
         return Mathf.dst(x1, y1, x2, y2) <= range;
     }
 
@@ -109,12 +110,12 @@ public class AdaptItemBridge extends ItemBridge {
     public class AdaptItemBridgeBuild extends ItemBridgeBuild {
         @Override
         public void updateTransport(Building other) {
-            if (timer(0, 1)){
+            if (timer(0, 1)) {
                 Item item = items.take();
-                if(item != null && other.acceptItem(this, item)){
+                if (item != null && other.acceptItem(this, item)) {
                     other.handleItem(this, item);
                     moved = true;
-                }else if(item != null){
+                } else if (item != null) {
                     items.add(item, 1);
                     items.undoFlow(item);
                 }
@@ -123,7 +124,7 @@ public class AdaptItemBridge extends ItemBridge {
         }
 
         @Override
-        public void drawConfigure(){
+        public void drawConfigure() {
             Drawf.dashCircle(x, y, range * tilesize, Pal.placing);
             Drawf.select(x, y, tile.block().size * tilesize / 2f + 2f, Pal.accent);
         }
@@ -132,20 +133,20 @@ public class AdaptItemBridge extends ItemBridge {
         public void checkIncoming() {
             super.checkIncoming();
             int idx = 0;
-            while(idx < incoming.size){
+            while (idx < incoming.size) {
                 int i = incoming.items[idx];
                 Tile other = world.tile(i);
-                if(idx > maxLinks - 1){
+                if (idx > maxLinks - 1) {
                     other.build.configure(-1);
                     incoming.removeIndex(idx);
-                    idx --;
+                    idx--;
                 }
-                idx ++;
+                idx++;
             }
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(region, x, y);
             Draw.z(Layer.power + 0.1f);
             Draw.rect(topRegion, x, y);
@@ -153,19 +154,19 @@ public class AdaptItemBridge extends ItemBridge {
             Draw.z(Layer.power);
 
             Tile other = world.tile(link);
-            if(!linkValid(tile, other)) return;
-            if(Mathf.zero(Renderer.bridgeOpacity)) return;
+            if (!linkValid(tile, other)) return;
+            if (Mathf.zero(Renderer.bridgeOpacity)) return;
 
             Lines.stroke(bridgeWidth);
             Lines.line(bridgeRegion, x, y, other.worldx(), other.worldy(), false);
 
-            float dst = Mathf.dst(x, y, other.worldx(), other.worldy()) - tilesize/4f;
+            float dst = Mathf.dst(x, y, other.worldx(), other.worldy()) - tilesize / 4f;
             float ang = Angles.angle(x, y, other.worldx(), other.worldy());
             int seg = Mathf.round(dst / tilesize);
 
             if (seg == 0) return;
             for (int i = 0; i < seg; i++) {
-                Tmp.v1.trns(ang, (dst/seg) * i + tilesize/8f).add(this);
+                Tmp.v1.trns(ang, (dst / seg) * i + tilesize / 8f).add(this);
                 Draw.alpha(Mathf.absin(i - time / arrowTimeScl, arrowPeriod, 1f) * warmup * Renderer.bridgeOpacity);
                 Draw.rect(arrowRegion, Tmp.v1.x, Tmp.v1.y, ang);
             }

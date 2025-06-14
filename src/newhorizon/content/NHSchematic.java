@@ -1,11 +1,8 @@
 package newhorizon.content;
 
 import mindustry.game.Schematic;
-import mindustry.game.Schematics;
 
 import java.io.IOException;
-
-import static newhorizon.content.NHContent.scheDir;
 
 public class NHSchematic {
     public static Schematic ruin_1x1, ruin_1x2, ruin_2x1, ruin_2x2, ruin_2x2_L;

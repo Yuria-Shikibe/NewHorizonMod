@@ -17,7 +17,8 @@ public class GravityWell extends LStatement {
         out = tokens[3];
     }
 
-    public GravityWell() {}
+    public GravityWell() {
+    }
 
     @Override
     public void build(Table table) {

@@ -17,11 +17,13 @@ import java.io.IOException;
 
 import static mindustry.Vars.content;
 
-public class TeamPayloadData implements SaveFileReader.CustomChunk{
+public class TeamPayloadData implements SaveFileReader.CustomChunk {
     public ObjectMap<Team, PayloadSeq> teamPayloadData = new ObjectMap<>();
 
     public TeamPayloadData() {
-        Events.on(EventType.ResetEvent.class, event -> {teamPayloadData.clear();});
+        Events.on(EventType.ResetEvent.class, event -> {
+            teamPayloadData.clear();
+        });
     }
 
     public void addPayload(Team team, UnlockableContent content, int count) {
@@ -46,14 +48,14 @@ public class TeamPayloadData implements SaveFileReader.CustomChunk{
         return payload;
     }
 
-    public void display(){
+    public void display() {
         StringBuilder sb = new StringBuilder();
         sb.append("Team Payload Data\n");
         teamPayloadData.each((team, payload) -> {
             sb.append("-----").append(team.name).append("-----").append("\n");
             content.each(content -> {
                 if (content instanceof UnlockableContent uc) {
-                    if (payload.get(uc) != 0){
+                    if (payload.get(uc) != 0) {
                         sb.append(uc.name).append(" ").append(payload.get(uc)).append(" ").append("\n");
                     }
                 }
@@ -64,7 +66,7 @@ public class TeamPayloadData implements SaveFileReader.CustomChunk{
 
     @Override
     public void write(DataOutput stream) throws IOException {
-        try(Writes write = new Writes(stream)){
+        try (Writes write = new Writes(stream)) {
             write.b(teamPayloadData.size);
             teamPayloadData.each((team, payloadSeq) -> {
                 write.b(team.id);
@@ -76,7 +78,7 @@ public class TeamPayloadData implements SaveFileReader.CustomChunk{
     @Override
     public void read(DataInput stream) throws IOException {
         teamPayloadData.clear();
-        try (Reads read = new Reads(stream)){
+        try (Reads read = new Reads(stream)) {
             int size = read.b();
             for (int i = 0; i < size; i++) {
                 Team team = Team.get(read.b());

@@ -13,7 +13,8 @@ public class TeamThreatI implements LExecutor.LInstruction {
         this.threat = threat;
     }
 
-    public TeamThreatI() {}
+    public TeamThreatI() {
+    }
 
     @Override
     public void run(LExecutor exec) {

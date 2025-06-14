@@ -5,7 +5,6 @@ import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import newhorizon.content.NHItems;
-import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.liquid.AdaptPump;
 
 import static mindustry.type.ItemStack.with;
@@ -13,8 +12,8 @@ import static mindustry.type.ItemStack.with;
 public class LiquidBlock {
     public static Block turboPumpSmall, turboPump, standardLiquidStorage, heavyLiquidStorage;
 
-    public static void load(){
-        turboPumpSmall = new AdaptPump("turbo-pump-small"){{
+    public static void load() {
+        turboPumpSmall = new AdaptPump("turbo-pump-small") {{
             requirements(Category.liquid, with(Items.silicon, 10));
             consumePower(0.1f);
 
@@ -27,7 +26,7 @@ public class LiquidBlock {
             enableDrawStatus = false;
         }};
 
-        turboPump = new AdaptPump("turbo-pump"){{
+        turboPump = new AdaptPump("turbo-pump") {{
             requirements(Category.liquid, with(Items.titanium, 40, Items.tungsten, 30));
             consumePower(0.5f);
 
@@ -38,7 +37,7 @@ public class LiquidBlock {
             size = 2;
         }};
 
-        standardLiquidStorage = new LiquidRouter("standard-liquid-storage"){{
+        standardLiquidStorage = new LiquidRouter("standard-liquid-storage") {{
             requirements(Category.liquid, with(NHItems.metalOxhydrigen, 10, NHItems.presstanium, 15));
             health = 3200;
             size = 2;
@@ -47,7 +46,7 @@ public class LiquidBlock {
             armor = 20f;
         }};
 
-        heavyLiquidStorage = new LiquidRouter("heavy-liquid-storage"){{
+        heavyLiquidStorage = new LiquidRouter("heavy-liquid-storage") {{
             requirements(Category.liquid, with(NHItems.metalOxhydrigen, 40, NHItems.presstanium, 60));
             health = 3200;
             size = 3;

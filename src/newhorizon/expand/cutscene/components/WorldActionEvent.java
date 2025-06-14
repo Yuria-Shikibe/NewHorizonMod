@@ -20,9 +20,12 @@ public class WorldActionEvent {
         this.waitDuration = waitDuration;
     }
 
-    public void draw(float progress){}
+    public void draw(float progress) {
+    }
 
-    public void activate(){}
+    public void activate() {
+    }
 
-    public void trigger(){}
+    public void trigger() {
+    }
 }

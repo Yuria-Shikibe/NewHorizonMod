@@ -38,19 +38,18 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
-        //vanilla adapt build
-        sandCracker, oilRefiner,
-        convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
-        stampingFacility, processorPrinter, crucibleFoundry, crucibleCaster, crystallizer, zetaDissociator, surgeRefactor,
-        fabricSynthesizer, processorEncoder, irdryonMixer,hugeplastaniumFactory,multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
-        multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
+            //vanilla adapt build
+            sandCracker, oilRefiner,
+            convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
+            stampingFacility, processorPrinter, crucibleFoundry, crucibleCaster, crystallizer, zetaDissociator, surgeRefactor,
+            fabricSynthesizer, processorEncoder, irdryonMixer, hugeplastaniumFactory, multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
+            multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator,
 
-        electronicAssemblyMk1, electronicAssemblyMk2, electronicAssemblyMk3,
-        mechanicAssemblyMk1, mechanicAssemblyMk2, mechanicAssemblyMk3
-    ;
+    electronicAssemblyMk1, electronicAssemblyMk2, electronicAssemblyMk3,
+            mechanicAssemblyMk1, mechanicAssemblyMk2, mechanicAssemblyMk3;
 
-    public static void load(){
-        sandCracker = new RecipeGenericCrafter("sand-cracker"){{
+    public static void load() {
+        sandCracker = new RecipeGenericCrafter("sand-cracker") {{
             size = 2;
             requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
             health = 320;
@@ -80,7 +79,7 @@ public class CraftingBlock {
 
             outputItem = new ItemStack(Items.sand, 12);
         }};
-        oilRefiner = new GenericCrafter("oil-refiner"){{
+        oilRefiner = new GenericCrafter("oil-refiner") {{
 
             size = 2;
             requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
@@ -94,7 +93,7 @@ public class CraftingBlock {
             consumeItems(new ItemStack(Items.sand, 3));
             outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
         }};
-        convertorTungsten = new RecipeGenericCrafter("convertor-tungsten"){{
+        convertorTungsten = new RecipeGenericCrafter("convertor-tungsten") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.titanium, 45, Items.graphite, 30));
 
@@ -115,7 +114,7 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(new DrawDefault());
         }};
-        convertorTitanium = new RecipeGenericCrafter("convertor-titanium"){{
+        convertorTitanium = new RecipeGenericCrafter("convertor-titanium") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.tungsten, 45, Items.graphite, 60));
 
@@ -135,7 +134,7 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(new DrawDefault());
         }};
-        xenRefinery = new RecipeGenericCrafter("xen-refinery"){{
+        xenRefinery = new RecipeGenericCrafter("xen-refinery") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45, Items.carbide, 30));
 
@@ -153,18 +152,18 @@ public class CraftingBlock {
             outputLiquids = LiquidStack.with(NHLiquids.xenFluid, 12 / 60f);
 
             drawer = new DrawMulti(
-                    new DrawRegion(){{
+                    new DrawRegion() {{
                         suffix = "-base";
                     }},
-                    new DrawLiquidTile(){{
+                    new DrawLiquidTile() {{
                         drawLiquid = NHLiquids.xenFluid;
                     }},
-                    new DrawRegion(){{
+                    new DrawRegion() {{
                         suffix = "-top";
                     }}
             );
         }};
-        zetaCrafter = new RecipeGenericCrafter("zeta-crafter"){{
+        zetaCrafter = new RecipeGenericCrafter("zeta-crafter") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45));
 
@@ -182,7 +181,7 @@ public class CraftingBlock {
 
             drawer = new DrawDefault();
         }};
-        stampingFacility = new RecipeGenericCrafter("stamping-facility"){{
+        stampingFacility = new RecipeGenericCrafter("stamping-facility") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.titanium, 45, Items.silicon, 60));
 
@@ -201,22 +200,22 @@ public class CraftingBlock {
             outputItems = with(NHItems.presstanium, 2);
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         oneSprite = true;
                         suffix = "-base";
                     }},
-                    new DrawArcSmelt(){{
+                    new DrawArcSmelt() {{
                         midColor = flameColor = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f);
                         flameRad /= 1.585f;
                         particleStroke /= 1.35f;
                         particleLen /= 1.25f;
                     }},
-                    new DrawRegionCenterSymmetry(){{
+                    new DrawRegionCenterSymmetry() {{
                         suffix = "-rot";
                     }}
             );
         }};
-        processorPrinter = new RecipeGenericCrafter("processor-printer"){{
+        processorPrinter = new RecipeGenericCrafter("processor-printer") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.titanium, 30, Items.silicon, 45, Items.tungsten, 30));
 
@@ -236,23 +235,23 @@ public class CraftingBlock {
             outputItems = with(NHItems.juniorProcessor, 2);
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         oneSprite = true;
                         suffix = "-base";
                     }},
-                    new DrawGlowRegionRotated(){{
+                    new DrawGlowRegionRotated() {{
                         suffix = "-glow-rot";
                     }},
-                    new DrawParticleFlow(){{
-                       startX = -14f;
-                       startY = 0;
-                       endX = 14f;
-                       endY = 0;
-                       ignoreRot2_3 = true;
-                       particleLife = 75;
-                       particles = 15;
+                    new DrawParticleFlow() {{
+                        startX = -14f;
+                        startY = 0;
+                        endX = 14f;
+                        endY = 0;
+                        ignoreRot2_3 = true;
+                        particleLife = 75;
+                        particles = 15;
                     }},
-                    new DrawParticleFlow(){{
+                    new DrawParticleFlow() {{
                         startX = -14f;
                         startY = 0;
                         endX = 14f;
@@ -261,7 +260,7 @@ public class CraftingBlock {
                         particleLife = 90;
                         particles = 15;
                     }},
-                    new DrawParticleFlow(){{
+                    new DrawParticleFlow() {{
                         startX = -14f;
                         startY = 0;
                         endX = 14f;
@@ -270,12 +269,12 @@ public class CraftingBlock {
                         particleLife = 60;
                         particles = 15;
                     }},
-                    new DrawRegionCenterSymmetry(){{
+                    new DrawRegionCenterSymmetry() {{
                         suffix = "-rot";
                     }}
             );
         }};
-        crucibleFoundry = new RecipeGenericCrafter("crucible-foundry"){{
+        crucibleFoundry = new RecipeGenericCrafter("crucible-foundry") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40, NHItems.zeta, 40));
 
@@ -297,30 +296,30 @@ public class CraftingBlock {
             liquidCapacity = 12f;
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         oneSprite = true;
                         suffix = "-base";
                     }},
-                    new DrawCrucibleFlameRotated(){{
+                    new DrawCrucibleFlameRotated() {{
                         flameX = -6.25f;
                     }},
-                    new DrawLiquidRegionRotated(){{
+                    new DrawLiquidRegionRotated() {{
                         suffix = "-liquid-xen";
                         drawLiquid = NHLiquids.xenFluid;
                         alpha = 0.2f;
                     }},
-                    new DrawArcSmeltRotated(){{
+                    new DrawArcSmeltRotated() {{
                         flameX = 11.25f;
                     }},
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         suffix = "-rot";
                     }},
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         suffix = "-top";
                     }}
             );
         }};
-        crucibleCaster = new RecipeGenericCrafter("crucible-caster"){{
+        crucibleCaster = new RecipeGenericCrafter("crucible-caster") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 30, NHItems.seniorProcessor, 50, Items.carbide, 40, Items.phaseFabric, 60));
 
@@ -346,7 +345,7 @@ public class CraftingBlock {
 
             drawer = new DrawDefault();
         }};
-        crystallizer = new RecipeGenericCrafter("crystallizer"){{
+        crystallizer = new RecipeGenericCrafter("crystallizer") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 45, Items.tungsten, 30));
 
@@ -375,24 +374,24 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         suffix = "-rot";
                         x = 4;
                         y = 4;
                     }},
-                    new DrawLiquidRegionRotated(){{
+                    new DrawLiquidRegionRotated() {{
                         suffix = "-liquid";
                         drawLiquid = Liquids.water;
                         x = 4;
                         y = 4;
                     }},
-                    new DrawLiquidRegionRotated(){{
+                    new DrawLiquidRegionRotated() {{
                         suffix = "-liquid";
                         drawLiquid = NHLiquids.quantumLiquid;
                         x = 4;
                         y = 4;
                     }},
-                    new DrawFlameRotated(){{
+                    new DrawFlameRotated() {{
                         drawFlame = false;
                         flameX = 1;
                         flameY = 1;
@@ -400,7 +399,7 @@ public class CraftingBlock {
                         flameRadius *= 0.8f;
                         flameRadiusIn *= 0.8f;
                     }},
-                    new DrawFlameRotated(){{
+                    new DrawFlameRotated() {{
                         drawFlame = false;
                         flameX = 8;
                         flameY = 0;
@@ -408,7 +407,7 @@ public class CraftingBlock {
                         flameRadius *= 0.5f;
                         flameRadiusIn *= 0.5f;
                     }},
-                    new DrawFlameRotated(){{
+                    new DrawFlameRotated() {{
                         drawFlame = false;
                         flameX = 0;
                         flameY = 8;
@@ -416,7 +415,7 @@ public class CraftingBlock {
                         flameRadius *= 0.5f;
                         flameRadiusIn *= 0.5f;
                     }},
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         oneSprite = true;
                         suffix = "-edge";
                         x = 4;
@@ -424,7 +423,7 @@ public class CraftingBlock {
                     }}
             );
         }};
-        zetaDissociator = new RecipeGenericCrafter("zeta-dissociator"){{
+        zetaDissociator = new RecipeGenericCrafter("zeta-dissociator") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 30, NHItems.juniorProcessor, 40, Items.carbide, 60, NHItems.metalOxhydrigen, 45, NHItems.zeta, 60));
 
@@ -448,15 +447,15 @@ public class CraftingBlock {
             liquidOutputDirections = new int[]{1, 3};
 
             drawer = new DrawMulti(
-                    new DrawRegion(){{
+                    new DrawRegion() {{
                         suffix = "-base";
                     }},
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         suffix = "-top-rot";
                     }}
             );
         }};
-        surgeRefactor = new RecipeGenericCrafter("surge-refactor"){{
+        surgeRefactor = new RecipeGenericCrafter("surge-refactor") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 90, Items.tungsten, 60, NHItems.metalOxhydrigen, 45));
 
@@ -480,12 +479,12 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
+                    new DrawRegionCenterSymmetry() {{
                         suffix = "-rot";
                     }}
             );
         }};
-        fabricSynthesizer = new RecipeGenericCrafter("fabric-synthesizer"){{
+        fabricSynthesizer = new RecipeGenericCrafter("fabric-synthesizer") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 60, Items.tungsten, 60, NHItems.metalOxhydrigen, 45));
 
@@ -509,7 +508,7 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
+                    new DrawRegionCenterSymmetry() {{
                         suffix = "-rot";
                     }}
             );
@@ -534,9 +533,11 @@ public class CraftingBlock {
             consumePower(3f);
 
             rotate = false;
-            drawer = new DrawRegion(){{buildingRotate = false;}};
+            drawer = new DrawRegion() {{
+                buildingRotate = false;
+            }};
         }};
-        processorEncoder = new RecipeGenericCrafter("processor-encoder"){{
+        processorEncoder = new RecipeGenericCrafter("processor-encoder") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.surgeAlloy, 90, Items.phaseFabric, 90, Items.carbide, 120, NHItems.zeta, 80));
 
@@ -554,14 +555,14 @@ public class CraftingBlock {
             outputItems = with(NHItems.seniorProcessor, 2);
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated(){{
+                    new DrawRegionRotated() {{
                         oneSprite = true;
                         suffix = "-base";
                     }},
-                    new DrawGlowRegionRotated(){{
+                    new DrawGlowRegionRotated() {{
                         suffix = "-glow-rot";
                     }},
-                    new DrawParticleFlow(){{
+                    new DrawParticleFlow() {{
                         startX = -14f;
                         startY = 0;
                         endX = 14f;
@@ -570,7 +571,7 @@ public class CraftingBlock {
                         particleLife = 75;
                         particles = 15;
                     }},
-                    new DrawParticleFlow(){{
+                    new DrawParticleFlow() {{
                         startX = -14f;
                         startY = 0;
                         endX = 14f;
@@ -579,7 +580,7 @@ public class CraftingBlock {
                         particleLife = 90;
                         particles = 15;
                     }},
-                    new DrawParticleFlow(){{
+                    new DrawParticleFlow() {{
                         startX = -14f;
                         startY = 0;
                         endX = 14f;
@@ -588,12 +589,12 @@ public class CraftingBlock {
                         particleLife = 60;
                         particles = 15;
                     }},
-                    new DrawRegionCenterSymmetry(){{
+                    new DrawRegionCenterSymmetry() {{
                         suffix = "-rot";
                     }}
             );
         }};
-        irdryonMixer = new RecipeGenericCrafter("irdryon-mixer"){{
+        irdryonMixer = new RecipeGenericCrafter("irdryon-mixer") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.surgeAlloy, 90, Items.phaseFabric, 60, NHItems.metalOxhydrigen, 120, NHItems.zeta, 80));
 
@@ -609,12 +610,12 @@ public class CraftingBlock {
             outputLiquids = LiquidStack.with(NHLiquids.irdryonFluid, 8 / 60f);
 
             drawer = new DrawMulti(
-                    new DrawRegion(){{
+                    new DrawRegion() {{
                         buildingRotate = false;
                     }}
             );
         }};
-        multipleFoundry = new RecipeGenericCrafter("multiple-foundry"){{
+        multipleFoundry = new RecipeGenericCrafter("multiple-foundry") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.surgeAlloy, 100, Items.phaseFabric, 80, NHItems.seniorProcessor, 60, NHItems.zeta, 80, NHItems.irayrondPanel, 80));
 
@@ -635,7 +636,7 @@ public class CraftingBlock {
 
             drawer = new DrawDefault();
         }};
-        processorCompactor = new RecipeGenericCrafter("processor-compactor"){{
+        processorCompactor = new RecipeGenericCrafter("processor-compactor") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.surgeAlloy, 100, Items.phaseFabric, 80, NHItems.seniorProcessor, 60, NHItems.zeta, 80, NHItems.irayrondPanel, 80));
 
@@ -656,7 +657,7 @@ public class CraftingBlock {
 
             drawer = new DrawDefault();
         }};
-        irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
+        irayrondFactory = new RecipeGenericCrafter("irayrond-factory") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 90, NHItems.seniorProcessor, 60, Items.phaseFabric, 120, NHItems.metalOxhydrigen, 45, NHItems.multipleSteel, 85));
 
@@ -680,12 +681,12 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry(){{
+                    new DrawRegionCenterSymmetry() {{
                         suffix = "-rot";
                     }}
             );
         }};
-        hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter"){{
+        hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 120, Items.surgeAlloy, 80, NHItems.metalOxhydrigen, 40, NHItems.multipleSteel, 60));
 
@@ -711,7 +712,7 @@ public class CraftingBlock {
 
             drawer = new DrawDefault();
         }};
-        setonFactory = new RecipeGenericCrafter("seton-factory"){{
+        setonFactory = new RecipeGenericCrafter("seton-factory") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.juniorProcessor, 90, NHItems.zeta, 150, Items.surgeAlloy, 90, NHItems.metalOxhydrigen, 80, NHItems.multipleSteel, 65));
 
@@ -736,12 +737,12 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                new DrawRegionCenterSymmetry(){{
-                    suffix = "-rot";
-                }}
+                    new DrawRegionCenterSymmetry() {{
+                        suffix = "-rot";
+                    }}
             );
         }};
-        ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator"){{
+        ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
             size = 3;
 
             lightRadius /= 2f;
@@ -759,7 +760,7 @@ public class CraftingBlock {
             hasPower = hasItems = hasLiquids = true;
 
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.quantumLiquid), new DrawRegion("-bottom-2"),
-                    new DrawCrucibleFlame(){
+                    new DrawCrucibleFlame() {
                         {
                             flameColor = NHColor.ancient;
                             midColor = Color.valueOf("2e2f34");
@@ -768,8 +769,8 @@ public class CraftingBlock {
                         }
 
                         @Override
-                        public void draw(Building build){
-                            if(build.warmup() > 0f && flameColor.a > 0.001f){
+                        public void draw(Building build) {
+                            if (build.warmup() > 0f && flameColor.a > 0.001f) {
                                 Lines.stroke(circleStroke * build.warmup());
 
                                 float si = Mathf.absin(flameRadiusScl, flameRadiusMag);
@@ -780,7 +781,7 @@ public class CraftingBlock {
 
                                 float base = (Time.time / particleLife);
                                 rand.setSeed(build.id);
-                                for(int i = 0; i < particles; i++){
+                                for (int i = 0; i < particles; i++) {
                                     float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                                     float angle = rand.random(360f) + (Time.time / rotateScl) % 360f;
                                     float len = particleRad * particleInterp.apply(fout);
@@ -802,15 +803,15 @@ public class CraftingBlock {
                         }
                     },
                     new DrawDefault(),
-                    new DrawGlowRegion(){{
+                    new DrawGlowRegion() {{
                         color = NHColor.ancient;
                         layer = -1;
                         glowIntensity = 1.1f;
                         alpha = 1.1f;
                     }},
-                    new DrawRotator(1f, "-top"){
+                    new DrawRotator(1f, "-top") {
                         @Override
-                        public void draw(Building build){
+                        public void draw(Building build) {
                             Drawf.spinSprite(rotator, build.x + x, build.y + y, DrawFunc.rotator_90(DrawFunc.cycle(build.totalProgress() * rotateSpeed, 0, craftTime), 0.15f));
                         }
                     }
@@ -824,7 +825,7 @@ public class CraftingBlock {
             consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
             outputItems = with(NHItems.ancimembrane, 3);
         }};
-        upgradeSortFactory = new GenericCrafter("upgradeSort-factory"){{
+        upgradeSortFactory = new GenericCrafter("upgradeSort-factory") {{
             requirements(Category.crafting,
                     with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
             updateEffect = NHStatusEffects.quantization.effect;
@@ -851,7 +852,7 @@ public class CraftingBlock {
             consumePower(10f);
         }};
 
-        electronicAssemblyMk1 = new PayloadCrafter("electronic-assembly-mk1"){{
+        electronicAssemblyMk1 = new PayloadCrafter("electronic-assembly-mk1") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.juniorProcessor, 80, NHItems.presstanium, 60, Items.tungsten, 80));
 
@@ -869,12 +870,12 @@ public class CraftingBlock {
             filter = Seq.with(ModuleBlock.processorT1, ModuleBlock.processorT2, ModuleBlock.speedModule1, ModuleBlock.productivityModule1, ModuleBlock.efficiencyModule1);
 
             drawer = new DrawMulti(
-                new DrawRegionCenterSymmetry(){{
-                    suffix = "-rot";
-                }}
+                    new DrawRegionCenterSymmetry() {{
+                        suffix = "-rot";
+                    }}
             );
         }};
-        electronicAssemblyMk2 = new PayloadCrafter("electronic-assembly-mk2"){{
+        electronicAssemblyMk2 = new PayloadCrafter("electronic-assembly-mk2") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.phaseFabric, 120, Items.surgeAlloy, 80, Items.carbide, 60, NHItems.metalOxhydrigen, 120));
 
@@ -889,12 +890,12 @@ public class CraftingBlock {
             filter = Seq.with(ModuleBlock.processorT3, ModuleBlock.processorT4, ModuleBlock.speedModule2, ModuleBlock.productivityModule2, ModuleBlock.efficiencyModule2);
 
             drawer = new DrawMulti(
-                    new DrawRegion(){{
+                    new DrawRegion() {{
                         suffix = "-base";
                     }}
             );
         }};
-        electronicAssemblyMk3 = new PayloadCrafter("electronic-assembly-mk3"){{
+        electronicAssemblyMk3 = new PayloadCrafter("electronic-assembly-mk3") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.irayrondPanel, 250, NHItems.setonAlloy, 200, NHItems.seniorProcessor, 300));
 
@@ -911,12 +912,12 @@ public class CraftingBlock {
             filter = Seq.with(ModuleBlock.processorT5, ModuleBlock.speedModule3, ModuleBlock.productivityModule3, ModuleBlock.efficiencyModule3);
 
             drawer = new DrawMulti(
-                new DrawRegionCenterSymmetry(){{
-                    suffix = "-rot";
-                }}
+                    new DrawRegionCenterSymmetry() {{
+                        suffix = "-rot";
+                    }}
             );
         }};
-        mechanicAssemblyMk1 = new PayloadCrafter("mechanic-assembly-mk1"){{
+        mechanicAssemblyMk1 = new PayloadCrafter("mechanic-assembly-mk1") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.juniorProcessor, 60, NHItems.presstanium, 80, Items.tungsten, 80));
 
@@ -930,7 +931,7 @@ public class CraftingBlock {
 
             filter = Seq.with(ModuleBlock.armorT1, ModuleBlock.armorT2, ModuleBlock.coreT1, ModuleBlock.coreT2);
 
-            updateEffect = new Effect(25f, e-> {
+            updateEffect = new Effect(25f, e -> {
                 Draw.color(Pal.techBlue, Color.white, e.fout() * 0.6f);
                 randLenVectors(e.id, 5, 12f * e.finpow(), (x, y) -> {
                     Fill.square(e.x + x, e.y + y, 2f * e.fout(), 45);
@@ -938,7 +939,7 @@ public class CraftingBlock {
                 });
             });
 
-            craftEffect = new Effect(25f, e-> {
+            craftEffect = new Effect(25f, e -> {
                 Draw.color(Pal.techBlue, Color.white, e.fout() * 0.6f);
                 randLenVectors(e.id, 12, 26f * e.finpow(), (x, y) -> {
                     Fill.square(e.x + x, e.y + y, 2f * e.fout());
@@ -947,14 +948,16 @@ public class CraftingBlock {
             });
 
             drawer = new DrawMulti(
-                new DrawRegion("-bottom"),
-                new DrawPrintPayload(),
-                new DrawScanLine(),
-                new DrawRegion("-base"),
-                new DrawGlowRegion("-light"){{color = Pal.techBlue;}}
+                    new DrawRegion("-bottom"),
+                    new DrawPrintPayload(),
+                    new DrawScanLine(),
+                    new DrawRegion("-base"),
+                    new DrawGlowRegion("-light") {{
+                        color = Pal.techBlue;
+                    }}
             );
         }};
-        mechanicAssemblyMk2 = new PayloadCrafter("mechanic-assembly-mk2"){{
+        mechanicAssemblyMk2 = new PayloadCrafter("mechanic-assembly-mk2") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(Items.phaseFabric, 80, Items.surgeAlloy, 120, Items.carbide, 100, NHItems.metalOxhydrigen, 80));
 
@@ -972,12 +975,12 @@ public class CraftingBlock {
             filter = Seq.with(ModuleBlock.armorT3, ModuleBlock.coreT3, ModuleBlock.coreT4);
 
             drawer = new DrawMulti(
-                new DrawRegionCenterSymmetry(){{
-                    suffix = "-rot";
-                }}
+                    new DrawRegionCenterSymmetry() {{
+                        suffix = "-rot";
+                    }}
             );
         }};
-        mechanicAssemblyMk3 = new PayloadCrafter("mechanic-assembly-mk3"){{
+        mechanicAssemblyMk3 = new PayloadCrafter("mechanic-assembly-mk3") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.irayrondPanel, 200, NHItems.setonAlloy, 250, NHItems.seniorProcessor, 300));
 
@@ -992,9 +995,9 @@ public class CraftingBlock {
             filter = Seq.with(ModuleBlock.armorT4, ModuleBlock.armorT5, ModuleBlock.coreT5);
 
             drawer = new DrawMulti(
-                new DrawRegion(){{
-                    suffix = "-base";
-                }}
+                    new DrawRegion() {{
+                        suffix = "-base";
+                    }}
             );
         }};
     }

@@ -17,23 +17,24 @@ import static newhorizon.NHVars.worldData;
  */
 public class TeamPayloadDisplay extends Table {
     public Seq<Block> payloadBlocks;
-    public TeamPayloadDisplay(){
+
+    public TeamPayloadDisplay() {
         payloadBlocks = content.blocks().select(b -> b instanceof ModulePayload);
         rebuild();
         update(this::rebuild);
     }
 
-    void rebuild(){
+    void rebuild() {
         clear();
         margin(0);
-        Team team = player == null? Team.derelict: player.team();
+        Team team = player == null ? Team.derelict : player.team();
         int i = 0;
-        for(UnlockableContent content: payloadBlocks){
-            if(worldData.teamPayloadData.getPayload(team).get(content) > 0){
+        for (UnlockableContent content : payloadBlocks) {
+            if (worldData.teamPayloadData.getPayload(team).get(content) > 0) {
                 image(content.uiIcon).size(iconSmall).padRight(3).tooltip(t -> t.background(Styles.black6).margin(4f).add(content.localizedName).style(Styles.outlineLabel));
                 //TODO leaks garbage
                 label(() -> UI.formatAmount(worldData.teamPayloadData.getPayload(team).get(content))).padRight(3).minWidth(52f).left().style(Styles.outlineLabel);
-                if(++i % 4 == 0) row();
+                if (++i % 4 == 0) row();
             }
         }
     }

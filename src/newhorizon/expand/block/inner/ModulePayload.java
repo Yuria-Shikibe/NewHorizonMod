@@ -43,7 +43,7 @@ public class ModulePayload extends Block {
     public boolean canBeBuilt() {
         return false;
     }
-    
+
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
         return false;

@@ -7,12 +7,13 @@ import newhorizon.content.NHContent;
 public class CameraZoom extends LStatement {
     public String cutscene = "css", zoom = "1";
 
-    public CameraZoom(String[] token){
+    public CameraZoom(String[] token) {
         cutscene = token[1];
         zoom = token[2];
     }
 
-    public CameraZoom() {}
+    public CameraZoom() {
+    }
 
     @Override
     public void build(Table table) {
@@ -50,6 +51,7 @@ public class CameraZoom extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class CameraZoomI implements LExecutor.LInstruction {
         public LVar cutscene, zoom;
+
         public CameraZoomI(LVar cutscene, LVar zoom) {
             this.cutscene = cutscene;
             this.zoom = zoom;

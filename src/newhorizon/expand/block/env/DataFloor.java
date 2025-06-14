@@ -13,7 +13,7 @@ public class DataFloor extends AtlasFloor {
     }
 
     @Override
-    protected boolean doEdge(Tile tile, Tile otherTile, Floor other){
+    protected boolean doEdge(Tile tile, Tile otherTile, Floor other) {
         return false;
     }
 

@@ -16,7 +16,8 @@ public class TeamThreat extends LStatement {
         threat = tokens[2];
     }
 
-    public TeamThreat() {}
+    public TeamThreat() {
+    }
 
     @Override
     public void build(Table table) {
@@ -25,7 +26,6 @@ public class TeamThreat extends LStatement {
         table.add(" Out Threat: ");
         fields(table, threat, str -> threat = str);
     }
-
 
 
     @Override

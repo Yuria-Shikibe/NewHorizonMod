@@ -43,31 +43,22 @@ import static newhorizon.util.func.GridUtil.PX_LEN;
 
 
 public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
+    public static final Rand rand = new Rand();
     public Team team = Team.derelict;
     public UnitType unitType = NHUnitTypes.guardian;
-
     public float warpChargeTime = 120f, warpBeginTime = 120f, warpTime = 160f, warpEndTime = 120f;
-
     public float warpTimer = 0f;
     public boolean created;
-
     public double flagToApply = Double.NaN;
-
     public StatusEntry statusEntry = new StatusEntry().set(StatusEffects.none, 0);
-
     public Unit toSpawn = null;
-
     public Vec2 commandPos = new Vec2(Float.NaN, Float.NaN);
-
     public float range = 0;
-
-    public static final Rand rand = new Rand();
-
     public float timer;
 
     public float rotation = -90f;
 
-    public WarpRift create(Team team, UnitType unitType, float x, float y, float rotation){
+    public WarpRift create(Team team, UnitType unitType, float x, float y, float rotation) {
         this.team = team;
         this.unitType = unitType;
         this.x = x;
@@ -93,7 +84,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
 
         float rad = range * portalProgress();
         int count = (int) (rad / 5f);
-        if (timer >= 1f){
+        if (timer >= 1f) {
             //marginEffect.at(x, y, 0);
             //Angles.randVectors((long) (id + Mathf.random()), count, rad, (ex, ey) -> {
             //    marginEffect.at(ex + x, ey + y, Angles.angle(ex, ey));
@@ -101,34 +92,35 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
             timer %= 1f;
         }
 
-        if (warpTimer >= spawnTime() && !created){
+        if (warpTimer >= spawnTime() && !created) {
             dump();
             remove();
         }
     }
 
-    public float portalProgress(){
+    public float portalProgress() {
         if (warpTimer < warpChargeTime) return 0f;
         if (warpTimer < warpBeginTime + warpChargeTime) return (warpTimer - warpChargeTime) / warpBeginTime;
         if (warpTimer < warpTime + warpBeginTime + warpChargeTime) return 1f;
-        if (warpTimer < warpEndTime + warpTime + warpBeginTime + warpChargeTime) return 1 -  (warpTimer - (warpTime + warpBeginTime + warpChargeTime)) / warpEndTime;
+        if (warpTimer < warpEndTime + warpTime + warpBeginTime + warpChargeTime)
+            return 1 - (warpTimer - (warpTime + warpBeginTime + warpChargeTime)) / warpEndTime;
         return 0f;
     }
 
-    public void dump(){
+    public void dump() {
         toSpawn = unitType.create(team);
         toSpawn.set(x, y);
         toSpawn.rotation = rotation();
-        if(!Double.isNaN(flagToApply)){
+        if (!Double.isNaN(flagToApply)) {
             toSpawn.flag(flagToApply);
         }
-        if(!Vars.net.client()) toSpawn.add();
+        if (!Vars.net.client()) toSpawn.add();
         toSpawn.apply(StatusEffects.unmoving, Fx.unitSpawn.lifetime);
         toSpawn.apply(statusEntry.effect, statusEntry.time);
-        if(commandPos != null && !commandPos.isNaN()){
-            if(toSpawn.isCommandable()){
+        if (commandPos != null && !commandPos.isNaN()) {
+            if (toSpawn.isCommandable()) {
                 toSpawn.command().commandPosition(commandPos);
-            }else{
+            } else {
                 CommandAI ai = new CommandAI();
                 ai.commandPosition(commandPos);
                 toSpawn.controller(ai);
@@ -139,13 +131,13 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
         Events.fire(new EventType.UnitCreateEvent(toSpawn, null));
     }
 
-    public void effect(){
+    public void effect() {
         if (headless) return;
         GridData grid = GridUtil.unitGridsMap.get(unitType.name);
 
-        for (int gy = grid.height - 1; gy > 0; gy--){
-            for (int gx = 0; gx < grid.width; gx++){
-                if (grid.getGrid(grid.width - gx - 1, gy) > 0){
+        for (int gy = grid.height - 1; gy > 0; gy--) {
+            for (int gx = 0; gx < grid.width; gx++) {
+                if (grid.getGrid(grid.width - gx - 1, gy) > 0) {
                     float sx = grid.xShift / tilesize + gx * PX_LEN - (float) unitType.fullIcon.width / tilesize;
                     float sy = grid.yShift / tilesize + gy * PX_LEN - (float) unitType.fullIcon.height / tilesize;
                     float delay = gy * (285f / grid.height);
@@ -159,7 +151,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
         createdSpark();
     }
 
-    private void gridSpark(float x, float y, float delay){
+    private void gridSpark(float x, float y, float delay) {
         Effect gridSpark = new Effect(120, e -> {
             rand.setSeed(e.id);
             Tmp.v1.trns(rotation + 180, range * rand.random(1f, 5f) * e.fout(Interp.pow3In));
@@ -172,7 +164,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
         gridSpark.at(x, y, rotation);
     }
 
-    private void createdSpark(){
+    private void createdSpark() {
         Effect spawn = new Effect(65, e -> {
             Draw.mixcol(team.color, Color.white, e.fout());
             Draw.alpha(1.2f * e.fout(Interp.pow2Out));
@@ -184,7 +176,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
         spawn.at(x, y, rotation);
     }
 
-    public void drawUnit(){
+    public void drawUnit() {
         if (warpTimer > 420) return;
         drawExtraDrawer();
         if (warpTimer > 400) return;
@@ -193,21 +185,21 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
         Tmp.tr1.set(unitType.fullIcon, 0, 0, unitType.fullIcon.width, height);
         Tmp.v1.trns(rotation, (float) (unitType.fullIcon.height - height) / tilesize).add(x, y);
         Draw.z(Layer.flyingUnitLow);
-        Draw.rect(Tmp.tr1, Tmp.v1.x , Tmp.v1.y, rotation - 90);
+        Draw.rect(Tmp.tr1, Tmp.v1.x, Tmp.v1.y, rotation - 90);
 
-        if (unitType.flying){
+        if (unitType.flying) {
             Draw.z(Layer.flyingUnitLow - 0.5f);
             float e = unitType.shadowElevation * unitType.shadowElevationScl;
             Drawf.shadow(Tmp.tr1, Tmp.v1.x - shadowTX * e, Tmp.v1.y - shadowTY * e, rotDeg());
         }
 
         Draw.z(Layer.flyingUnitLow - 1f);
-        unitType.drawSoftShadow(Tmp.v1.x , Tmp.v1.y, rotation, progress);
+        unitType.drawSoftShadow(Tmp.v1.x, Tmp.v1.y, rotation, progress);
     }
 
-    public void drawExtraDrawer(){
-        for (Ability ability: unitType.abilities){
-            if (ability instanceof ShieldArcAbility sa){
+    public void drawExtraDrawer() {
+        for (Ability ability : unitType.abilities) {
+            if (ability instanceof ShieldArcAbility sa) {
 
                 float progress = Mathf.clamp((warpTimer - 100) / 320f);
 
@@ -215,20 +207,21 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
 
                 Draw.color(team.color);
 
-                if(!Vars.renderer.animateShields){
+                if (!Vars.renderer.animateShields) {
                     Draw.alpha(0.4f);
                 }
 
-                if(sa.drawArc){
+                if (sa.drawArc) {
                     Lines.stroke(sa.width * progress);
                     Lines.arc(x, y, sa.radius, sa.angle / 360f, rotation + sa.angleOffset - sa.angle / 2f);
                 }
-                Draw.reset();            }
+                Draw.reset();
+            }
         }
     }
 
     @Override
-    public void add(){
+    public void add() {
         super.add();
         Groups.sync.add(this);
 
@@ -247,20 +240,20 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     }
 
     @Override
-    public void remove(){
+    public void remove() {
         super.remove();
         Groups.sync.remove(this);
 
-        if(Vars.net.client()){
+        if (Vars.net.client()) {
             Vars.netClient.addRemovedEntity(id());
         }
     }
 
-    public float spawnTime(){
+    public float spawnTime() {
         return warpChargeTime + warpBeginTime + warpTime;
     }
 
-    public float rotDeg(){
+    public float rotDeg() {
         return rotation - 90;
     }
 
@@ -325,16 +318,18 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     }
 
     @Override
-    public boolean serialize(){return true;}
+    public boolean serialize() {
+        return true;
+    }
 
     @Override
-    public int classId(){
+    public int classId() {
         return EntityRegister.getID(getClass());
     }
-    
+
 
     @Override
-    public void write(Writes write){
+    public void write(Writes write) {
         super.write(write);
         write.f(warpTimer);
         write.f(rotation);
@@ -347,7 +342,7 @@ public class WarpRift extends NHBaseEntity implements Rotc, Teamc, Syncc {
     }
 
     @Override
-    public void read(Reads read){
+    public void read(Reads read) {
         super.read(read);
         warpTimer = read.f();
         rotation = read.f();

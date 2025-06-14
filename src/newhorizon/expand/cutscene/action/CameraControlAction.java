@@ -11,6 +11,7 @@ import static mindustry.Vars.headless;
 
 public class CameraControlAction extends Action {
     public Vec2 target;
+
     public CameraControlAction(float duration, float x, float y) {
         super(duration * Time.toSeconds);
         target = new Vec2(x, y);

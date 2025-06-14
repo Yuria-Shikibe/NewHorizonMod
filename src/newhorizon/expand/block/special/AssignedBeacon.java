@@ -89,10 +89,10 @@ public class AssignedBeacon extends Block {
                 Log.info("[AssignedBeacon] Invalid config: " + Arrays.toString(data));
                 return;
             }
-            for (int i = 0; i < maxSlot; i++){
+            for (int i = 0; i < maxSlot; i++) {
                 entity.modulePlans[i] = data[i];
             }
-            for(int i = 0; i < maxLink; i++){
+            for (int i = 0; i < maxLink; i++) {
                 Point2 p = Point2.unpack(data[i + maxSlot]);
                 entity.addLink(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
             }
@@ -104,8 +104,8 @@ public class AssignedBeacon extends Block {
     }
 
     //ye this is hardcoded here so this is a todo
-    public @Nullable Block getModule(int num){
-        return switch(num){
+    public @Nullable Block getModule(int num) {
+        return switch (num) {
             case 0 -> ModuleBlock.speedModule1;
             case 1 -> ModuleBlock.speedModule2;
             case 2 -> ModuleBlock.speedModule3;
@@ -120,7 +120,7 @@ public class AssignedBeacon extends Block {
     }
 
     //uhhhh
-    public @Nullable int getModuleId(Block module){
+    public @Nullable int getModuleId(Block module) {
         if (module == ModuleBlock.speedModule1) return 0;
         if (module == ModuleBlock.speedModule2) return 1;
         if (module == ModuleBlock.speedModule3) return 2;
@@ -154,10 +154,10 @@ public class AssignedBeacon extends Block {
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
         stats.add(Stat.booster, table -> {
-            for (int i = 0; i < 9; i++){
+            for (int i = 0; i < 9; i++) {
                 table.row();
                 int finalI = i;
                 table.table(c -> c.table(Styles.grayPanel, b -> {
@@ -168,9 +168,12 @@ public class AssignedBeacon extends Block {
 
                     b.table(bt -> {
                         bt.right().defaults().padRight(3).left();
-                        if(boosts[finalI][0] != 0) bt.add(Core.bundle.format("nh.stat.cons-extra", (boosts[finalI][0] > 1? "[red]": "") + Strings.autoFixed(boosts[finalI][0], 1))).row();
-                        if(boosts[finalI][1] != 0) bt.add(Core.bundle.format("nh.stat.speed-bonus", (boosts[finalI][1] > 0? "+": "[red]") + Strings.autoFixed(boosts[finalI][1] * 100, 1))).row();
-                        if(boosts[finalI][2] != 0) bt.add(Core.bundle.format("nh.stat.productivity-bonus", Strings.autoFixed(boosts[finalI][2] * 100, 1))).row();
+                        if (boosts[finalI][0] != 0)
+                            bt.add(Core.bundle.format("nh.stat.cons-extra", (boosts[finalI][0] > 1 ? "[red]" : "") + Strings.autoFixed(boosts[finalI][0], 1))).row();
+                        if (boosts[finalI][1] != 0)
+                            bt.add(Core.bundle.format("nh.stat.speed-bonus", (boosts[finalI][1] > 0 ? "+" : "[red]") + Strings.autoFixed(boosts[finalI][1] * 100, 1))).row();
+                        if (boosts[finalI][2] != 0)
+                            bt.add(Core.bundle.format("nh.stat.productivity-bonus", Strings.autoFixed(boosts[finalI][2] * 100, 1))).row();
                     }).right().top().grow().pad(10f).padRight(15f);
                 }).growX().pad(5).padBottom(5).row()).growX().colspan(table.getColumns());
                 table.row();
@@ -218,27 +221,27 @@ public class AssignedBeacon extends Block {
             if (efficiency < 0.8f) return;
 
             progress += edelta();
-            for(int i = 0; i < targets.length; i++){
+            for (int i = 0; i < targets.length; i++) {
                 Building b = Vars.world.build(targets[i]);
                 if (b instanceof GenericCrafter.GenericCrafterBuild gcb) {
-                    if (gcb.block instanceof GenericCrafter gc && gc.canOverdrive){
-                        if (craftMul > 0f){
+                    if (gcb.block instanceof GenericCrafter gc && gc.canOverdrive) {
+                        if (craftMul > 0f) {
                             targetProgress[i] += gcb.edelta() * craftMul;
                             float craftTime = gc.craftTime;
-                            if (gcb instanceof PayloadCrafter.PayloadCrafterBuild pc){
-                                if (pc.recipe != null && pc.recipeCost() != null){
+                            if (gcb instanceof PayloadCrafter.PayloadCrafterBuild pc) {
+                                if (pc.recipe != null && pc.recipeCost() != null) {
                                     craftTime = pc.recipeCost().craftTime;
                                 }
                             }
                             if (targetProgress[i] > craftTime) {
                                 if (gcb.items != null && gc.outputItems != null) {
-                                    for (ItemStack stack: gc.outputItems){
+                                    for (ItemStack stack : gc.outputItems) {
                                         gcb.items.add(stack.item, stack.amount);
                                     }
                                 }
-                                if (gcb instanceof PayloadCrafter.PayloadCrafterBuild pc){
+                                if (gcb instanceof PayloadCrafter.PayloadCrafterBuild pc) {
                                     Block plan = pc.recipe;
-                                    if (plan != null && pc.recipeCost() != null){
+                                    if (plan != null && pc.recipeCost() != null) {
                                         pc.payloads.add(plan, pc.recipeCost().outputMultiplier);
                                     }
                                 }
@@ -250,10 +253,10 @@ public class AssignedBeacon extends Block {
                 }
             }
 
-            if (progress >= 60){
+            if (progress >= 60) {
                 for (int target : targets) {
                     Building b = Vars.world.build(target);
-                    if (b != null){
+                    if (b != null) {
                         if (speedMul > 1f) {
                             b.applyBoost(speedMul, 90f);
                         } else {
@@ -271,8 +274,8 @@ public class AssignedBeacon extends Block {
         }
 
         //asdsadasdasdasdasdasdasdasd
-        public void applyModule(int num){
-            switch(num){
+        public void applyModule(int num) {
+            switch (num) {
                 case 0 -> apply(boosts[0][0], boosts[0][1], boosts[0][2]);
                 case 1 -> apply(boosts[1][0], boosts[1][1], boosts[1][2]);
                 case 2 -> apply(boosts[2][0], boosts[2][1], boosts[2][2]);
@@ -282,7 +285,8 @@ public class AssignedBeacon extends Block {
                 case 6 -> apply(boosts[6][0], boosts[6][1], boosts[6][2]);
                 case 7 -> apply(boosts[7][0], boosts[7][1], boosts[7][2]);
                 case 8 -> apply(boosts[8][0], boosts[8][1], boosts[8][2]);
-                default -> {}
+                default -> {
+                }
             }
         }
 
@@ -303,13 +307,13 @@ public class AssignedBeacon extends Block {
                 t.table(module -> {
                     module.table(c -> {
                         c.fill();
-                        for(int i = 0; i < maxSlot; i++){
+                        for (int i = 0; i < maxSlot; i++) {
                             int finalI = i;
                             Image icon = new Image();
                             Label label = new Label("");
-                            icon.update(() -> icon.setDrawable(getModule(modulePlans[finalI]) == null? Icon.cancel.getRegion(): getModule(modulePlans[finalI]).region));
+                            icon.update(() -> icon.setDrawable(getModule(modulePlans[finalI]) == null ? Icon.cancel.getRegion() : getModule(modulePlans[finalI]).region));
                             icon.setScaling(Scaling.bounded);
-                            label.update(() -> label.setText(() -> modulePlans[finalI] == -1? "": modules[finalI] == -1? Iconc.cancel + "": Iconc.ok + ""));
+                            label.update(() -> label.setText(() -> modulePlans[finalI] == -1 ? "" : modules[finalI] == -1 ? Iconc.cancel + "" : Iconc.ok + ""));
                             c.stack(icon, label).size(48, 48);
                         }
                     }).expandX().fillX();
@@ -325,12 +329,12 @@ public class AssignedBeacon extends Block {
             });
         }
 
-        public void addModulePlan(int module){
-            if (module == -1){
+        public void addModulePlan(int module) {
+            if (module == -1) {
                 clearModulePlans();
-            }else {
-                for(int i = 0; i < maxSlot; i++){
-                    if (modulePlans[i] == -1){
+            } else {
+                for (int i = 0; i < maxSlot; i++) {
+                    if (modulePlans[i] == -1) {
                         modulePlans[i] = module;
                         return;
                     }
@@ -338,9 +342,9 @@ public class AssignedBeacon extends Block {
             }
         }
 
-        public void clearModulePlans(){
+        public void clearModulePlans() {
             PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
-            for(int i = 0; i < maxSlot; i++){
+            for (int i = 0; i < maxSlot; i++) {
                 Block b = getModule(modulePlans[i]);
                 if (b != null && modules[i] >= 0) teamPayload.add(b, 1);
                 modulePlans[i] = -1;
@@ -348,18 +352,18 @@ public class AssignedBeacon extends Block {
             }
         }
 
-        public void apply(float powerMul, float speedMul, float craftMul){
+        public void apply(float powerMul, float speedMul, float craftMul) {
             this.powerMul *= powerMul;
             this.speedMul += speedMul;
             this.craftMul += craftMul;
         }
 
-        public void applyAllModules(){
+        public void applyAllModules() {
             powerMul = 1f;
             speedMul = 1f;
             craftMul = 0f;
 
-            for (int module: modules){
+            for (int module : modules) {
                 applyModule(module);
             }
 
@@ -370,12 +374,12 @@ public class AssignedBeacon extends Block {
 
         @Override
         //compressed for config use
-        public Integer[] config(){
+        public Integer[] config() {
             Integer[] out = new Integer[maxSlot + maxLink];
-            for (int i = 0; i < maxSlot; i++){
+            for (int i = 0; i < maxSlot; i++) {
                 out[i] = modulePlans[i];
             }
-            for(int i = 0; i < maxLink; i++){
+            for (int i = 0; i < maxLink; i++) {
                 Point2 p = Point2.unpack(targets[i]).sub(tile.x, tile.y);
                 out[i + maxSlot] = Point2.pack(p.x, p.y);
             }
@@ -383,45 +387,47 @@ public class AssignedBeacon extends Block {
         }
 
         @Override
-        public boolean onConfigureBuildTapped(Building other){
-            if(other != null && linkValid(other) && containBuild(other)){
+        public boolean onConfigureBuildTapped(Building other) {
+            if (other != null && linkValid(other) && containBuild(other)) {
                 configure(other.pos());
                 return false;
             }
             return true;
         }
 
-        public boolean linkValid(Building b){
+        public boolean linkValid(Building b) {
             return b != null && Math.abs(b.x - x) <= range() && Math.abs(b.y - y) <= range()
                     && b.team == team && b.block.canOverdrive && b instanceof GenericCrafter.GenericCrafterBuild;
         }
 
-        public boolean containBuild(Building b){
+        public boolean containBuild(Building b) {
             AtomicBoolean contains = new AtomicBoolean(false);
             NHGroups.beaconBoostLinks.each((source, targets) -> {
-                if (source != this && targets.contains(target -> target == b)){
+                if (source != this && targets.contains(target -> target == b)) {
                     contains.set(true);
                 }
             });
             return !contains.get();
         }
 
-        /** return all buildings from target IntSeq */
-        public Seq<Building> linkBuilds(){
+        /**
+         * return all buildings from target IntSeq
+         */
+        public Seq<Building> linkBuilds() {
             buildings.clear();
-            for(int pos : targets){
+            for (int pos : targets) {
                 Building b = Vars.world.build(pos);
-                if(b != null) buildings.add(b);
+                if (b != null) buildings.add(b);
             }
             return buildings;
         }
 
-        public void addLink(int value){
+        public void addLink(int value) {
             Building other = Vars.world.build(value);
-            if(other != null && linkValid(other) && containBuild(other)) {
+            if (other != null && linkValid(other) && containBuild(other)) {
                 //first check for duplicated position
                 for (int i = 0; i < targets.length; i++) {
-                    if (targets[i] == value){
+                    if (targets[i] == value) {
                         targets[i] = -1;
                         targetProgress[i] = -1;
                         return;
@@ -429,7 +435,7 @@ public class AssignedBeacon extends Block {
                 }
                 //-1 means empty slot, replace it
                 for (int i = 0; i < targets.length; i++) {
-                    if (targets[i] == -1){
+                    if (targets[i] == -1) {
                         targets[i] = value;
                         targetProgress[i] = 0;
                         resetTargetProgress(other, i);
@@ -439,10 +445,10 @@ public class AssignedBeacon extends Block {
             }
         }
 
-        public void resetTargetProgress(Building other, int i){
+        public void resetTargetProgress(Building other, int i) {
             if (other.block instanceof GenericCrafter gc) targetProgress[i] = -gc.craftTime * craftMul;
-            if (other instanceof PayloadCrafter.PayloadCrafterBuild pcb){
-                if (pcb.recipe != null && pcb.recipeCost() != null){
+            if (other instanceof PayloadCrafter.PayloadCrafterBuild pcb) {
+                if (pcb.recipe != null && pcb.recipeCost() != null) {
                     targetProgress[i] = -pcb.recipeCost().craftTime * craftMul;
                 }
             }
@@ -460,7 +466,7 @@ public class AssignedBeacon extends Block {
             Lines.stroke(1.5f);
             Lines.square(x, y, size * tilesize / 2f + 0.5f);
 
-            for (Building b: linkBuilds()){
+            for (Building b : linkBuilds()) {
                 if (b == null) continue;
                 Tmp.v1.set(Geometry.raycastRect(b.x, b.y, x, y, Tmp.r1.setCentered(x, y, size * tilesize)));
                 Tmp.v2.set(Geometry.raycastRect(x, y, b.x, b.y, Tmp.r1.setCentered(b.x, b.y, b.block.size * tilesize)));
@@ -489,7 +495,7 @@ public class AssignedBeacon extends Block {
         }
 
         //check all links and remove invalid one
-        public void checkLinks(){
+        public void checkLinks() {
             for (int i = 0; i < targets.length; i++) {
                 if (!linkValid(Vars.world.build(targets[i]))) {
                     targets[i] = -1;

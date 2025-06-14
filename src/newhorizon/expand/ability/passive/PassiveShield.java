@@ -15,7 +15,7 @@ public class PassiveShield extends Ability {
 
     @Override
     public void update(Unit unit) {
-        if (!unit.hasEffect(NHStatusEffects.shieldFlag)){
+        if (!unit.hasEffect(NHStatusEffects.shieldFlag)) {
             unit.shield(shieldAmount);
             unit.apply(NHStatusEffects.shieldFlag);
         }

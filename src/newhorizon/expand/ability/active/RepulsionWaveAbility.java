@@ -10,14 +10,14 @@ import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.bullets.DOTBulletType;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
-public class RepulsionWaveAbility extends ActiveAbility{
+public class RepulsionWaveAbility extends ActiveAbility {
     public float radius = 300;
     public float damage = 10;
 
     public float time = 30;
     public float cooldown = 300;
 
-    public BulletType b = new DOTBulletType(){{
+    public BulletType b = new DOTBulletType() {{
         DOTDamage = damage = 40f;
         DOTRadius = 30f;
         radIncrease = 0.25f;

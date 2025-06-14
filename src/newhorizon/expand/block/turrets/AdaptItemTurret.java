@@ -2,11 +2,9 @@ package newhorizon.expand.block.turrets;
 
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.pattern.ShootPattern;
-import mindustry.gen.Building;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import newhorizon.expand.block.special.DeviceBase;
 
@@ -17,7 +15,7 @@ public class AdaptItemTurret extends ItemTurret {
         super(name);
     }
 
-    public class AdaptItemTurretBuild extends ItemTurretBuild implements AdaptTurret{
+    public class AdaptItemTurretBuild extends ItemTurretBuild implements AdaptTurret {
         public ShootPattern pattern = new ShootPattern();
         public float reloadModifier = 1f;
         public float kineticModifier = 1f;
@@ -32,7 +30,7 @@ public class AdaptItemTurret extends ItemTurret {
             resetModifier();
         }
 
-        public void resetModifier(){
+        public void resetModifier() {
             pattern = shoot;
             reloadModifier = 1f;
             kineticModifier = 1f;
@@ -40,26 +38,26 @@ public class AdaptItemTurret extends ItemTurret {
             rangeModifier = 1f;
         }
 
-        public void updatePattern(ShootPattern pattern){
+        public void updatePattern(ShootPattern pattern) {
             if (pattern == this.pattern) return;
             this.pattern = pattern;
             barrelCounter = 0;
         }
 
-        public void updateReloadModifier(float reloadModifier){
+        public void updateReloadModifier(float reloadModifier) {
             this.reloadModifier = reloadModifier;
         }
 
-        public void updateKineticModifier(float kineticModifier){
+        public void updateKineticModifier(float kineticModifier) {
             this.kineticModifier = kineticModifier;
         }
 
-        public void updateEnergyModifier(float energyModifier){
+        public void updateEnergyModifier(float energyModifier) {
             this.energyModifier = energyModifier;
         }
 
 
-        protected void updateReload(){
+        protected void updateReload() {
             reloadCounter += delta() * ammoReloadMultiplier() * baseReloadSpeed() * reloadModifier;
 
             //cap reload for visual reasons
@@ -73,12 +71,12 @@ public class AdaptItemTurret extends ItemTurret {
             if (!(world.build(lastDeviceBasePos) instanceof DeviceBase.DeviceBaseBuild)) resetModifier();
         }
 
-        protected void shoot(BulletType type){
+        protected void shoot(BulletType type) {
             float
                     bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
                     bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
 
-            if(pattern.firstShotDelay > 0){
+            if (pattern.firstShotDelay > 0) {
                 chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
                 type.chargeEffect.at(bulletX, bulletY, rotation);
             }
@@ -87,7 +85,7 @@ public class AdaptItemTurret extends ItemTurret {
                 queuedBullets++;
                 int barrel = barrelCounter;
 
-                if(delay > 0f){
+                if (delay > 0f) {
                     Time.run(delay, () -> {
                         //hack: make sure the barrel is the same as what it was when the bullet was queued to fire
                         int prev = barrelCounter;
@@ -95,12 +93,12 @@ public class AdaptItemTurret extends ItemTurret {
                         bullet(type, xOffset, yOffset, angle, mover);
                         barrelCounter = prev;
                     });
-                }else{
+                } else {
                     bullet(type, xOffset, yOffset, angle, mover);
                 }
             }, () -> barrelCounter++);
 
-            if(consumeAmmoOnce){
+            if (consumeAmmoOnce) {
                 useAmmo();
             }
         }

@@ -10,7 +10,6 @@ import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
-import newhorizon.content.NHDevices;
 import newhorizon.expand.type.Device;
 import newhorizon.expand.type.DeviceData;
 import newhorizon.util.func.MathUtil;
@@ -72,7 +71,7 @@ public class DeviceBase extends Block {
             Lines.stroke(3f);
             Lines.square(x, y, size * tilesize / 2f - 1.5f);
 
-            for (DeviceData target: targets){
+            for (DeviceData target : targets) {
                 Building b = target.building;
 
                 if (b == null) continue;

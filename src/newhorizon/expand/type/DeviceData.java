@@ -2,7 +2,7 @@ package newhorizon.expand.type;
 
 import mindustry.gen.Building;
 
-public class DeviceData{
+public class DeviceData {
     public Building building;
     public float data;
 

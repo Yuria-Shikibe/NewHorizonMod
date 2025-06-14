@@ -1,85 +1,75 @@
 package newhorizon;
 
-import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.gl.FrameBuffer;
 import arc.graphics.gl.Shader;
-import arc.math.geom.Rect;
 import arc.util.Disposable;
-import mindustry.Vars;
-import mindustry.gen.Building;
-import mindustry.graphics.Shaders;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
-import newhorizon.expand.block.defence.GravityWell;
-import newhorizon.expand.block.defence.HyperSpaceWarper;
-import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.graphic.StatusRenderer;
 
 import static arc.Core.graphics;
-import static mindustry.Vars.control;
-import static mindustry.Vars.renderer;
 
-public class NHRenderer implements Disposable{
-	public static float width, height;
-	public FrameBuffer mask;
-	public StatusRenderer statusRenderer;
+public class NHRenderer implements Disposable {
+    public static float width, height;
+    public FrameBuffer mask;
+    public StatusRenderer statusRenderer;
 
-	public NHRenderer(){
-		mask = new FrameBuffer();
-		statusRenderer = new StatusRenderer();
-	}
-	
-	public void draw(){
-		width = graphics.getWidth();
-		height = graphics.getHeight();
+    public NHRenderer() {
+        mask = new FrameBuffer();
+        statusRenderer = new StatusRenderer();
+    }
 
-		drawGravityTrapField();
+    public void draw() {
+        width = graphics.getWidth();
+        height = graphics.getHeight();
 
-		statusRenderer.draw();
+        drawGravityTrapField();
 
-		mask.resize(graphics.getWidth(), graphics.getHeight());
+        statusRenderer.draw();
 
-		drawShader(NHShaders.powerArea, NHContent.POWER_AREA);
-		drawShader(NHShaders.powerDynamicArea, NHContent.POWER_DYNAMIC);
-	}
+        mask.resize(graphics.getWidth(), graphics.getHeight());
 
-	public void drawShader(Shader shader, float layer){
-		if (shader != null){
-			Draw.drawRange(layer, 0.0001f, () -> mask.begin(Color.clear), () -> {
-				mask.end();
-				mask.blit(shader);
-			});
-		}
-	}
+        drawShader(NHShaders.powerArea, NHContent.POWER_AREA);
+        drawShader(NHShaders.powerDynamicArea, NHContent.POWER_DYNAMIC);
+    }
 
-	//todo
-	public void drawGravityTrapField(){
-		//mask.resize(graphics.getWidth(), graphics.getHeight());
-		//Building building = Vars.control.input.config.getSelected();
-		//if(control.input.block instanceof GravityWallSubstation || (building != null && (building.block instanceof GravityWell || building.block instanceof HyperSpaceWarper))){
-		//	Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
-		//		mask.begin(Color.clear);
-		//		GravityTrapField.drawAll();
-		//		mask.end();
-		//		mask.blit(NHShaders.gravityTrapShader);
-		//	});
-		//}
-	}
+    public void drawShader(Shader shader, float layer) {
+        if (shader != null) {
+            Draw.drawRange(layer, 0.0001f, () -> mask.begin(Color.clear), () -> {
+                mask.end();
+                mask.blit(shader);
+            });
+        }
+    }
 
-	public void drawGravityTrap(){
-		Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
-			mask.begin(Color.clear);
-			GravityTrapField.drawAll();
-			mask.end();
-			mask.blit(NHShaders.gravityTrapShader);
-		});
-	}
+    //todo
+    public void drawGravityTrapField() {
+        //mask.resize(graphics.getWidth(), graphics.getHeight());
+        //Building building = Vars.control.input.config.getSelected();
+        //if(control.input.block instanceof GravityWallSubstation || (building != null && (building.block instanceof GravityWell || building.block instanceof HyperSpaceWarper))){
+        //	Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
+        //		mask.begin(Color.clear);
+        //		GravityTrapField.drawAll();
+        //		mask.end();
+        //		mask.blit(NHShaders.gravityTrapShader);
+        //	});
+        //}
+    }
 
-	@Override
-	public void dispose(){
-		mask.dispose();
-	}
+    public void drawGravityTrap() {
+        Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
+            mask.begin(Color.clear);
+            GravityTrapField.drawAll();
+            mask.end();
+            mask.blit(NHShaders.gravityTrapShader);
+        });
+    }
+
+    @Override
+    public void dispose() {
+        mask.dispose();
+    }
 }

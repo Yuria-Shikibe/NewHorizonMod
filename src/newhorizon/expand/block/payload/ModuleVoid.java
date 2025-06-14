@@ -31,23 +31,23 @@ public class ModuleVoid extends PayloadVoid {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         Draw.rect(region, plan.drawx(), plan.drawy());
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
     public class ModuleVoidBuild extends PayloadVoidBuild {
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(region, x, y);
 
-            for(int i = 0; i < 4; i++){
-                if(blends(i)){
+            for (int i = 0; i < 4; i++) {
+                if (blends(i)) {
                     Draw.reset();
                     Draw.rect(rotRegions[i], x, y);
                     ModuleConveyor.prepareAlpha();
@@ -72,7 +72,7 @@ public class ModuleVoid extends PayloadVoid {
         }
 
         @Override
-        public boolean acceptUnitPayload(Unit unit){
+        public boolean acceptUnitPayload(Unit unit) {
             return false;
         }
     }

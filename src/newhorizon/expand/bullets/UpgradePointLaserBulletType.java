@@ -1,7 +1,6 @@
 package newhorizon.expand.bullets;
 
 import arc.Core;
-import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -9,7 +8,6 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -18,11 +16,10 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Damage;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.PointLaserBulletType;
-import mindustry.game.EventType;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Trail;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NHSetting;
 import newhorizon.content.NHColor;
@@ -31,63 +28,57 @@ import newhorizon.util.feature.PosLightning;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.DrawFunc;
 
-import static mindustry.Vars.headless;
-import static mindustry.Vars.tilesize;
 import static newhorizon.content.NHStatValues.buildSharedBulletTypeStat;
 
-public class UpgradePointLaserBulletType extends PointLaserBulletType implements TypeDamageBulletType{
+public class UpgradePointLaserBulletType extends PointLaserBulletType implements TypeDamageBulletType {
+    private final Color tmpColor = new Color();
     public Color from = NHColor.lightSky, to = NHColor.darkEnrColor;
     public float oscScl = 2f, oscMag = 0.3f;
-
     public float chargeReload = 300f;
     public float lerpReload = 10f;
     public float maxDamageMultiplier = 5f;
-
     public float damageInterval = 5f;
-
-    private final Color tmpColor = new Color();
-
     public String bundleName = "nh.bullet.desc";
 
     public UpgradePointLaserBulletType() {
         damage = 0;
     }
 
-    public boolean charged(Bullet b){
+    public boolean charged(Bullet b) {
         return b.fdata > chargeReload;
     }
 
-    public Color getColor(Bullet b){
+    public Color getColor(Bullet b) {
         return tmpColor.set(from).lerp(to, warmup(b));
     }
 
-    public float warmup(Bullet b){
+    public float warmup(Bullet b) {
         return Mathf.curve(b.fdata, chargeReload - lerpReload / 2f, chargeReload + lerpReload / 2f);
     }
 
     @Override
-    public float continuousDamage(){
+    public float continuousDamage() {
         return damage / damageInterval * 60f;
     }
 
-    public float damageMultiplier(Bullet b){
+    public float damageMultiplier(Bullet b) {
         return 1 + warmup(b) * maxDamageMultiplier;
     }
 
     @Override
-    public void update(Bullet b){
+    public void update(Bullet b) {
         updateTrail(b);
         updateTrailEffects(b);
         updateBulletInterval(b);
 
-        if(b.timer.get(0, damageInterval)) Damage.collidePoint(b, b.team, hitEffect, b.aimX, b.aimY);
+        if (b.timer.get(0, damageInterval)) Damage.collidePoint(b, b.team, hitEffect, b.aimX, b.aimY);
 
         b.fdata = Math.min(b.fdata, chargeReload + lerpReload / 2f);
 
-        if(charged(b)){
-            if(!Vars.headless && b.timer(3, 3)){
+        if (charged(b)) {
+            if (!Vars.headless && b.timer(3, 3)) {
                 PosLightning.createEffect(b, Tmp.v1.set(b.aimX, b.aimY), getColor(b), 1, 2);
-                if(Mathf.chance(0.25)) NHFx.hitSparkLarge.at(b.x, b.y, tmpColor);
+                if (Mathf.chance(0.25)) NHFx.hitSparkLarge.at(b.x, b.y, tmpColor);
             }
         }
     }
@@ -103,11 +94,11 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
     }
 
     @Override
-    public void draw(Bullet b){
+    public void draw(Bullet b) {
         float darkenPartWarmup = warmup(b);
         float stroke = b.fslope() * (1f - oscMag + Mathf.absin(Time.time, oscScl, oscMag)) * (darkenPartWarmup + 1) * 5;
 
-        if(trailLength > 0 && b.trail != null){
+        if (trailLength > 0 && b.trail != null) {
             float z = Draw.z();
             Draw.z(z - 0.0001f);
             b.trail.draw(getColor(b), stroke);
@@ -124,26 +115,26 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
         Drawf.light(b.aimX, b.aimY, stroke * 3, tmpColor, 0.76f);
 
         Draw.color(tmpColor);
-        if(charged(b)){
+        if (charged(b)) {
             float qW = Mathf.curve(warmup(b), 0.5f, 0.7f);
 
-            for(int s : Mathf.signs){
+            for (int s : Mathf.signs) {
                 Drawf.tri(b.x, b.y, 6, 21 * qW, 90 * s + Time.time * 1.8f);
             }
 
-            for(int s : Mathf.signs){
+            for (int s : Mathf.signs) {
                 Drawf.tri(b.x, b.y, 7.2f, 25 * qW, 90 * s + Time.time * -1.1f);
             }
         }
 
-        if(NHSetting.enableDetails()){
+        if (NHSetting.enableDetails()) {
             int particles = 44;
             float particleLife = 74f;
             float particleLen = 7.5f;
             Rand rand = NHFunc.rand(b.id);
 
             float base = (Time.time / particleLife);
-            for(int i = 0; i < particles; i++){
+            for (int i = 0; i < particles; i++) {
                 float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin, fslope = NHFx.fslope(fin);
                 float len = rand.random(particleLen * 0.7f, particleLen * 1.3f) * Mathf.curve(fin, 0.2f, 0.9f) * (darkenPartWarmup / 2.5f + 1);
                 float centerDeg = rand.random(Mathf.pi);
@@ -159,7 +150,7 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
             }
         }
 
-        if(darkenPartWarmup > 0.005f){
+        if (darkenPartWarmup > 0.005f) {
             tmpColor.lerp(Color.black, 0.86f);
             Draw.color(tmpColor);
             DrawFunc.basicLaser(b.x, b.y, b.aimX, b.aimY, stroke * 0.55f * darkenPartWarmup);
@@ -177,7 +168,7 @@ public class UpgradePointLaserBulletType extends PointLaserBulletType implements
     }
 
     @Override
-    public void buildStat(BulletType type, UnlockableContent t, Table bt, boolean compact){
+    public void buildStat(BulletType type, UnlockableContent t, Table bt, boolean compact) {
         if (Core.bundle.getOrNull(bundleName) != null) {
             bt.add(Core.bundle.get(bundleName)).wrap().fillX().padTop(8).padBottom(8).width(500);
             bt.row();

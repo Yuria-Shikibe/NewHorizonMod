@@ -11,27 +11,28 @@ import mindustry.gen.Sounds;
 import newhorizon.content.NHFx;
 
 
-public class ShieldBreakerType extends BasicBulletType{
-    public float fragSpawnSpacing = 5;
-    public float maxShieldDamage;
-    
-    protected static BulletType breakType = new EffectBulletType(3f){{
-        this.absorbable = true;
-        collides = false;
-        lifetime = 8f;
-        drawSize = 0;
-        this.damage = 1;
-    }
+public class ShieldBreakerType extends BasicBulletType {
+    protected static BulletType breakType = new EffectBulletType(3f) {
+        {
+            this.absorbable = true;
+            collides = false;
+            lifetime = 8f;
+            drawSize = 0;
+            this.damage = 1;
+        }
+
         @Override
-        public void despawned(Bullet b){
-            if(b.absorbed && b.data instanceof Color){
-                NHFx.shuttle.at(b.x, b.y, Mathf.random(360f), (Color)b.data, b.damage / Vars.tilesize / 2f);
+        public void despawned(Bullet b) {
+            if (b.absorbed && b.data instanceof Color) {
+                NHFx.shuttle.at(b.x, b.y, Mathf.random(360f), (Color) b.data, b.damage / Vars.tilesize / 2f);
                 Effect.shake(b.damage / 100, b.damage / 100, b);
                 Sounds.plasmaboom.at(b);
             }
         }
     };
-    
+    public float fragSpawnSpacing = 5;
+    public float maxShieldDamage;
+
     public ShieldBreakerType(float speed, float damage, String bulletSprite, float shieldDamage) {
         super(speed, damage, bulletSprite);
         this.splashDamage = this.splashDamageRadius = -1f;
@@ -48,13 +49,13 @@ public class ShieldBreakerType extends BasicBulletType{
     }
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
     }
 
     @Override
     public void update(Bullet b) {
         super.update(b);
-        if(b.timer(5, fragSpawnSpacing))breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
+        if (b.timer(5, fragSpawnSpacing)) breakType.create(b, b.team, b.x, b.y, 0, maxShieldDamage, 0, 1, backColor);
     }
 }

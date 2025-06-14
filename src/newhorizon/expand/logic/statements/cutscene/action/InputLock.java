@@ -7,11 +7,12 @@ import newhorizon.content.NHContent;
 public class InputLock extends LStatement {
     public String cutscene = "css";
 
-    public InputLock(String[] token){
+    public InputLock(String[] token) {
         cutscene = token[1];
     }
 
-    public InputLock() {}
+    public InputLock() {
+    }
 
     @Override
     public void build(Table table) {
@@ -44,7 +45,8 @@ public class InputLock extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class InputLockI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public InputLockI(LVar cutscene){
+
+        public InputLockI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

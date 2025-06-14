@@ -10,6 +10,7 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class InfoTextAction extends Action {
     public String text;
+
     public InfoTextAction(String text) {
         super(0f);
         this.text = text;

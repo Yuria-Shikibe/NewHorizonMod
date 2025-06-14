@@ -2,7 +2,6 @@ package newhorizon.expand.block.turrets;
 
 import arc.Core;
 import arc.math.Mathf;
-import arc.struct.ObjectMap;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -11,7 +10,6 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.BulletType;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.ContinuousTurret;
@@ -42,14 +40,14 @@ public class ContinuousOverheatTurret extends ContinuousTurret {
         super.setStats();
         stats.add(NHStats.overheatCooldown, overheatTime / overheatCoolAmount / Time.toSeconds, StatUnit.seconds);
 
-        if(coolant != null){
+        if (coolant != null) {
             stats.remove(Stat.booster);
             stats.add(Stat.booster, NHStatValues.boosters(reload, coolant.amount, coolantMultiplier, true, l -> l.coolant && consumesLiquid(l), true));
         }
     }
 
     @Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
         addBar("charge",
                 (ContinuousOverheatTurretBuild entity) -> new Bar(
@@ -75,41 +73,41 @@ public class ContinuousOverheatTurret extends ContinuousTurret {
         public boolean requireCompleteCooling = false;
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             updateCooldown();
-            if(overheat < overheatTime && !requireCompleteCooling){
+            if (overheat < overheatTime && !requireCompleteCooling) {
                 super.updateTile();
                 chargeProgress += edelta();
-            }else{
+            } else {
                 forceCoolDown();
             }
         }
 
-        public void updateCooldown(){
-            if(slowDownReload >= 1f){
+        public void updateCooldown() {
+            if (slowDownReload >= 1f) {
                 slowDownReload -= Time.delta;
-            }else {
+            } else {
                 chargeProgress = Mathf.lerpDelta(chargeProgress, 0f, 0.2f);
-                if (!requireCompleteCooling){
+                if (!requireCompleteCooling) {
                     coolDown();
                 }
             }
 
-            if(overheat > overheatTime * 0.3f){
-                if(Mathf.chanceDelta(maxHeatEffectChance * (requireCompleteCooling ? 1 : overheat / overheatTime))){
+            if (overheat > overheatTime * 0.3f) {
+                if (Mathf.chanceDelta(maxHeatEffectChance * (requireCompleteCooling ? 1 : overheat / overheatTime))) {
                     heatEffect.at(x + Mathf.range(Vars.tilesize * size / 2), y + Mathf.range(Vars.tilesize * size / 2), rotation, heatColor);
                 }
             }
         }
 
-        public void forceCoolDown(){
+        public void forceCoolDown() {
             coolDown();
 
             if (soundLoop != null) soundLoop.update(x, y, shouldActiveSound(), activeSoundVolume());
 
             slowDownReload = 0;
             chargeProgress = 0;
-            shootWarmup = linearWarmup? Mathf.approachDelta(shootWarmup, 0, shootWarmupSpeed): Mathf.lerpDelta(shootWarmup, 0, shootWarmupSpeed);
+            shootWarmup = linearWarmup ? Mathf.approachDelta(shootWarmup, 0, shootWarmupSpeed) : Mathf.lerpDelta(shootWarmup, 0, shootWarmupSpeed);
 
             unit.tile(this);
             unit.rotation(rotation);
@@ -118,23 +116,23 @@ public class ContinuousOverheatTurret extends ContinuousTurret {
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1 / recoilTime);
             recoilOffset.trns(rotation, -Mathf.pow(curRecoil, recoilPow) * recoil);
 
-            if(logicControlTime > 0){
+            if (logicControlTime > 0) {
                 logicControlTime -= Time.delta;
             }
 
-            if(overheat <= 0){
+            if (overheat <= 0) {
                 overheat = 0;
                 requireCompleteCooling = false;
             }
         }
 
         @Override
-        public float activeSoundVolume(){
+        public float activeSoundVolume() {
             return shootWarmup;
         }
 
-        public void coolDown(){
-            if (overheat > 0){
+        public void coolDown() {
+            if (overheat > 0) {
                 overheat -= overheatCoolAmount * (1 + coolantEfficiency()) * Time.delta;
             }
         }
@@ -146,10 +144,10 @@ public class ContinuousOverheatTurret extends ContinuousTurret {
 
             slowDownReload = slowDownReloadTime;
             overheat = Mathf.approachDelta(overheat, overheatTime + 0.05f, efficiency * timeScale / (1 + (liquids.current() == null ? 0 : liquids.current().heatCapacity)));
-            if(overheat > overheatTime)requireCompleteCooling = true;
+            if (overheat > overheatTime) requireCompleteCooling = true;
         }
 
-        public float coolantEfficiency(){
+        public float coolantEfficiency() {
             return liquids.current() == null ? 0 : liquids.current().heatCapacity;
         }
 

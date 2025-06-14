@@ -5,13 +5,11 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
-import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.type.Liquid;
 import mindustry.world.Edges;
 import mindustry.world.blocks.production.Pump;
-import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.world;
@@ -20,6 +18,7 @@ import static newhorizon.util.graphic.SpriteUtil.orthogonalPos;
 
 public class AdaptPump extends Pump {
     public TextureRegion[] splits;
+
     public AdaptPump(String name) {
         super(name);
     }
@@ -27,14 +26,14 @@ public class AdaptPump extends Pump {
     @Override
     public void load() {
         super.load();
-        if (size == 1){
+        if (size == 1) {
             splits = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, ATLAS_INDEX_4_4);
-        }else {
+        } else {
             splits = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1);
         }
     }
 
-    public class AdaptPumpBuild extends PumpBuild{
+    public class AdaptPumpBuild extends PumpBuild {
         public boolean[] drawLink = new boolean[8];
         public int[] drawIdx = new int[4];
         public int drawIndex = 0;
@@ -42,15 +41,15 @@ public class AdaptPump extends Pump {
         @Override
         public void onProximityUpdate() {
             super.onProximityUpdate();
-            if (size == 1){
+            if (size == 1) {
                 drawIndex = 0;
-                for(int i = 0; i < orthogonalPos.length; i++){
+                for (int i = 0; i < orthogonalPos.length; i++) {
                     Point2 p = orthogonalPos[i];
-                    if (world.build(tileX() + p.x, tileY() + p.y)instanceof AdaptPumpBuild){
+                    if (world.build(tileX() + p.x, tileY() + p.y) instanceof AdaptPumpBuild) {
                         drawIndex += 1 << i;
                     }
                 }
-            }else {
+            } else {
                 for (int i = 0; i < Edges.getEdges(2).length; i++) {
                     Point2 p = Edges.getEdges(2)[i];
                     Building b = world.build(tileX() + p.x, tileY() + p.y);
@@ -66,12 +65,12 @@ public class AdaptPump extends Pump {
 
         @Override
         public void draw() {
-            if (isPayload()){
+            if (isPayload()) {
                 Draw.rect(region, x, y);
-            }else {
-                if (size == 1){
+            } else {
+                if (size == 1) {
                     Draw.rect(splits[drawIndex], x, y);
-                }else if (size == 2){
+                } else if (size == 2) {
                     Draw.rect(splits[drawIdx[0]], x + 4, y + 4);
                     Draw.rect(splits[drawIdx[1] + 4], x - 4, y + 4);
                     Draw.rect(splits[drawIdx[2] + 8], x - 4, y - 4);

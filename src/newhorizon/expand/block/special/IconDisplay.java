@@ -26,7 +26,8 @@ import static mindustry.Vars.content;
 
 public class IconDisplay extends Block {
     public TextureRegion maskRegion;
-    public IconDisplay(String name){
+
+    public IconDisplay(String name) {
         super(name);
         size = 2;
         sync = true;
@@ -50,18 +51,18 @@ public class IconDisplay extends Block {
     }
 
     @Override
-    public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list){
-        if (plan.config instanceof UnlockableContent content){
+    public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list) {
+        if (plan.config instanceof UnlockableContent content) {
             Tmp.v1.set(Scaling.bounded.apply(content.uiIcon.width, content.uiIcon.height, 12f, 12f));
             Draw.rect(content.uiIcon, plan.drawx(), plan.drawy(), Tmp.v1.x, Tmp.v1.y);
         }
     }
 
-    public class IconDisplayBuild extends Building{
+    public class IconDisplayBuild extends Building {
         public UnlockableContent displayContent;
         public Seq<UnlockableContent> tmpSeq = new Seq<>();
 
-        public Seq<UnlockableContent> displayContents(){
+        public Seq<UnlockableContent> displayContents() {
             tmpSeq.clear();
             tmpSeq.add(content.items().select(i -> !i.isHidden()));
             tmpSeq.add(content.liquids().select(l -> !l.isHidden()));
@@ -74,13 +75,13 @@ public class IconDisplay extends Block {
         }
 
         @Override
-        public void buildConfiguration(Table table){
+        public void buildConfiguration(Table table) {
             ItemSelection.buildTable(IconDisplay.this, table, displayContents(),
                     this::config, this::configure, selectionRows, selectionColumns);
         }
 
         @Override
-        public UnlockableContent config(){
+        public UnlockableContent config() {
             return displayContent;
         }
 
@@ -116,15 +117,16 @@ public class IconDisplay extends Block {
 
         @Override
         public double sense(LAccess sensor) {
-            if (sensor == LAccess.config && displayContent != null) return Point2.pack(displayContent.getContentType().ordinal(), displayContent.id);
+            if (sensor == LAccess.config && displayContent != null)
+                return Point2.pack(displayContent.getContentType().ordinal(), displayContent.id);
             else return super.sense(sensor);
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(region, x, y);
 
-            if (displayContent != null){
+            if (displayContent != null) {
                 Draw.z(Layer.blockOver);
                 Draw.rect(maskRegion, x, y);
                 Tmp.v1.set(Scaling.bounded.apply(displayContent.uiIcon.width, displayContent.uiIcon.height, 12f, 12f));
@@ -134,7 +136,7 @@ public class IconDisplay extends Block {
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.bool(displayContent != null);
             if (displayContent != null) TypeIO.writeContent(write, displayContent);
@@ -142,7 +144,7 @@ public class IconDisplay extends Block {
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             if (read.bool()) displayContent = (UnlockableContent) TypeIO.readContent(read);
         }

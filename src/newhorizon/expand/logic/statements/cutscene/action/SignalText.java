@@ -7,12 +7,13 @@ import newhorizon.content.NHContent;
 public class SignalText extends LStatement {
     public String cutscene = "css", text = "\"<anuke likes frog>\"";
 
-    public SignalText(String[] token){
+    public SignalText(String[] token) {
         cutscene = token[1];
         text = token[2];
     }
 
-    public SignalText() {}
+    public SignalText() {
+    }
 
     @Override
     public void build(Table table) {
@@ -56,7 +57,8 @@ public class SignalText extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class SignalTextI implements LExecutor.LInstruction {
         public LVar cutscene, text;
-        public SignalTextI(LVar cutscene, LVar text){
+
+        public SignalTextI(LVar cutscene, LVar text) {
             this.cutscene = cutscene;
             this.text = text;
         }

@@ -44,31 +44,31 @@ public class PayloadCrafter extends AdaptCrafter {
         configurable = true;
 
         consume(new NHConsumeItemDynamic((PayloadCrafterBuild e) -> {
-            if(e.recipeCost() != null) return e.recipeCost().itemReq.copy().toArray(ItemStack.class);
+            if (e.recipeCost() != null) return e.recipeCost().itemReq.copy().toArray(ItemStack.class);
             return ItemStack.empty;
         }));
         consume(new NHConsumeLiquidDynamic((PayloadCrafterBuild e) -> {
-            if(e.recipeCost() != null) return e.recipeCost().liquidReq.copy().toArray(LiquidStack.class);
+            if (e.recipeCost() != null) return e.recipeCost().liquidReq.copy().toArray(LiquidStack.class);
             return LiquidStack.empty;
         }));
         consume(new NHConsumePayloadDynamic((PayloadCrafterBuild e) -> {
-            if(e.recipeCost() != null) return e.recipeCost().payloadReq;
+            if (e.recipeCost() != null) return e.recipeCost().payloadReq;
             return PayloadStack.list();
         }));
         consume(new NHConsumeShowStat(
-            (PayloadCrafterBuild e) -> {
-                if(e.recipeCost() != null) return e.recipeCost().itemReq.copy().toArray(ItemStack.class);
-                return ItemStack.empty;
-            },
-            (PayloadCrafterBuild e) -> {
-                if(e.recipeCost() != null) return e.recipeCost().liquidReq.copy().toArray(LiquidStack.class);
-                return LiquidStack.empty;
-            },
-            (PayloadCrafterBuild e) -> {
-                if(e.recipeCost() != null) return e.recipeCost().payloadReq.copy().toArray(PayloadStack.class);
-                return PayloadStack.with();
-            },
-            PayloadCrafterBuild::getPayloads
+                (PayloadCrafterBuild e) -> {
+                    if (e.recipeCost() != null) return e.recipeCost().itemReq.copy().toArray(ItemStack.class);
+                    return ItemStack.empty;
+                },
+                (PayloadCrafterBuild e) -> {
+                    if (e.recipeCost() != null) return e.recipeCost().liquidReq.copy().toArray(LiquidStack.class);
+                    return LiquidStack.empty;
+                },
+                (PayloadCrafterBuild e) -> {
+                    if (e.recipeCost() != null) return e.recipeCost().payloadReq.copy().toArray(PayloadStack.class);
+                    return PayloadStack.with();
+                },
+                PayloadCrafterBuild::getPayloads
         ));
 
         configClear((PayloadCrafterBuild tile) -> tile.recipe = null);
@@ -90,11 +90,11 @@ public class PayloadCrafter extends AdaptCrafter {
         stats.add(Stat.output, table -> {
             table.row();
 
-            for(Block plan : filter){
+            for (Block plan : filter) {
                 ModuleBlock.ModuleCost cost = ModuleBlock.moduleCosts.get(plan);
-                if(cost != null){
+                if (cost != null) {
                     table.table(Styles.grayPanel, t -> {
-                        if(plan.unlockedNow()){
+                        if (plan.unlockedNow()) {
                             t.add(StatValues.stack(plan, cost.outputMultiplier)).size(40).pad(10f).left();
                             t.table(info -> {
                                 info.add(plan.localizedName).left();
@@ -105,20 +105,20 @@ public class PayloadCrafter extends AdaptCrafter {
                             t.table(req -> {
                                 req.right();
                                 int i = 0;
-                                for (ItemStack stack: cost.itemReq){
+                                for (ItemStack stack : cost.itemReq) {
                                     req.add(StatValues.stack(stack.item, stack.amount)).pad(5);
-                                    if(++i % 6 == 0) req.row();
+                                    if (++i % 6 == 0) req.row();
                                 }
-                                for (LiquidStack stack: cost.liquidReq){
+                                for (LiquidStack stack : cost.liquidReq) {
                                     StatValues.liquid(stack.liquid, stack.amount * 60, true).display(req);
-                                    if(++i % 6 == 0) req.row();
+                                    if (++i % 6 == 0) req.row();
                                 }
-                                for (PayloadStack stack: cost.payloadReq){
+                                for (PayloadStack stack : cost.payloadReq) {
                                     req.add(StatValues.stack(stack.item, stack.amount)).pad(5);
-                                    if(++i % 6 == 0) req.row();
+                                    if (++i % 6 == 0) req.row();
                                 }
                             }).right().grow().pad(10f);
-                        }else{
+                        } else {
                             t.image(Icon.lock).color(Pal.darkerGray).size(40);
                         }
                     }).growX().pad(5);
@@ -133,7 +133,7 @@ public class PayloadCrafter extends AdaptCrafter {
         public PayloadSeq payloads = new PayloadSeq();
 
         @Override
-        public Object config(){
+        public Object config() {
             return recipe;
         }
 
@@ -142,8 +142,9 @@ public class PayloadCrafter extends AdaptCrafter {
             return payloads;
         }
 
-        public ModuleBlock.ModuleCost recipeCost(){
-            if(recipe != null && ModuleBlock.moduleCosts.get(recipe) != null) return ModuleBlock.moduleCosts.get(recipe);
+        public ModuleBlock.ModuleCost recipeCost() {
+            if (recipe != null && ModuleBlock.moduleCosts.get(recipe) != null)
+                return ModuleBlock.moduleCosts.get(recipe);
             return null;
         }
 
@@ -153,7 +154,7 @@ public class PayloadCrafter extends AdaptCrafter {
         }
 
         @Override
-        public boolean acceptItem(Building source, Item item){
+        public boolean acceptItem(Building source, Item item) {
             return recipeCost() != null
                     && recipeCost().itemReq.contains(stack -> stack.item == item)
                     && items.get(item) < recipeCost().itemReq.find(stack -> stack.item == item).amount * 2;
@@ -179,18 +180,18 @@ public class PayloadCrafter extends AdaptCrafter {
         }
 
         @Override
-        public float getProgressIncrease(float baseTime){
+        public float getProgressIncrease(float baseTime) {
             if (recipeCost() == null) return 0f;
-            baseTime = recipe == null ? baseTime : recipeCost() != null? recipeCost().craftTime * 0.99f: 0f;
-            if(ignoreLiquidFullness){
+            baseTime = recipe == null ? baseTime : recipeCost() != null ? recipeCost().craftTime * 0.99f : 0f;
+            if (ignoreLiquidFullness) {
                 return super.getProgressIncrease(baseTime);
             }
 
             //limit progress increase by maximum amount of liquid it can produce
             float scaling = 1f, max = 1f;
-            if(outputLiquids != null){
+            if (outputLiquids != null) {
                 max = 0f;
-                for(var s : outputLiquids){
+                for (var s : outputLiquids) {
                     float value = (liquidCapacity - liquids.get(s.liquid)) / (s.amount * edelta());
                     scaling = Math.min(scaling, value);
                     max = Math.max(max, value);
@@ -202,18 +203,18 @@ public class PayloadCrafter extends AdaptCrafter {
         }
 
         @Override
-        public void craft(){
+        public void craft() {
             consume();
 
-            if(outputItems != null){
-                for(var output : outputItems){
-                    for(int i = 0; i < output.amount; i++){
+            if (outputItems != null) {
+                for (var output : outputItems) {
+                    for (int i = 0; i < output.amount; i++) {
                         offload(output.item);
                     }
                 }
             }
 
-            if(wasVisible){
+            if (wasVisible) {
                 craftEffect.at(x, y);
             }
 
@@ -257,7 +258,7 @@ public class PayloadCrafter extends AdaptCrafter {
                     if (todump != null && payloads.get(todump.content()) > 0 && target.acceptPayload(source, todump)) {
                         target.handlePayload(this, todump);
                         payloads.remove(todump.content(), 1);
-                        if (target instanceof PayloadConveyor.PayloadConveyorBuild){
+                        if (target instanceof PayloadConveyor.PayloadConveyorBuild) {
                             Fx.payloadDeposit.at(x, y, this.angleTo(target), new UnitAssembler.YeetData(new Vec2(target.x, target.y), todump.content()));
                         }
                         incrementDumpIndex(linkProximityMap.size);
@@ -274,7 +275,7 @@ public class PayloadCrafter extends AdaptCrafter {
         public void write(Writes write) {
             super.write(write);
             payloads.write(write);
-            TypeIO.writeBlock(write, recipe == null? Blocks.air: recipe);
+            TypeIO.writeBlock(write, recipe == null ? Blocks.air : recipe);
         }
 
         @Override

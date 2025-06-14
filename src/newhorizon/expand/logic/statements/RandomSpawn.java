@@ -9,7 +9,7 @@ import newhorizon.content.NHContent;
 import newhorizon.expand.logic.instructions.RandomSpawnI;
 
 public class RandomSpawn extends LStatement {
-    public String seed = "0", x = "0", y = "0";
+    public String seed = "0", x = "sx", y = "sy";
 
     public RandomSpawn(String[] tokens) {
         seed = tokens[1];
@@ -17,7 +17,8 @@ public class RandomSpawn extends LStatement {
         y = tokens[3];
     }
 
-    public RandomSpawn() {}
+    public RandomSpawn() {
+    }
 
     @Override
     public void build(Table table) {

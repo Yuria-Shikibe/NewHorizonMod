@@ -41,23 +41,23 @@ public class HelixTrailBulletType extends BasicBulletType {
     }
 
     @Override
-    public void init(Bullet b){
+    public void init(Bullet b) {
         Trail[] sideTrails = new Trail[sideTrailNum];
-        for (int i = 0; i < sideTrailNum; i++){
+        for (int i = 0; i < sideTrailNum; i++) {
             sideTrails[i] = new Trail(sideTrailLength);
         }
         b.data = sideTrails;
     }
 
     @Override
-    public void removed(Bullet b){
+    public void removed(Bullet b) {
         super.removed(b);
-        if (!(b.data() instanceof Trail[]))return;
+        if (!(b.data() instanceof Trail[])) return;
         Trail[] sideTrails = (Trail[]) b.data;
 
-        if(sideTrailLength > 0){
-            for (Trail trail: sideTrails){
-                if (trail != null && trail.size() > 0){
+        if (sideTrailLength > 0) {
+            for (Trail trail : sideTrails) {
+                if (trail != null && trail.size() > 0) {
                     Fx.trailFade.at(b.x, b.y, sideTrailWidth, trailColor, trail.copy());
                 }
             }
@@ -79,19 +79,19 @@ public class HelixTrailBulletType extends BasicBulletType {
     }
 
     @Override
-    public void update(Bullet b){
+    public void update(Bullet b) {
         super.update(b);
         updateSideTrail(b);
     }
 
-    public void drawSideTrail(Bullet b){
-        if (!(b.data() instanceof Trail[]))return;
+    public void drawSideTrail(Bullet b) {
+        if (!(b.data() instanceof Trail[])) return;
         Trail[] sideTrails = (Trail[]) b.data;
         float z = Draw.z();
         Draw.z(z - 0.0001f);
-        for (Trail trail: sideTrails){
-            if(sideTrailLength > 0){
-                if(trail != null){
+        for (Trail trail : sideTrails) {
+            if (sideTrailLength > 0) {
+                if (trail != null) {
                     trail.draw(trailColor, sideTrailWidth);
                 }
             }
@@ -99,19 +99,19 @@ public class HelixTrailBulletType extends BasicBulletType {
         Draw.z(z);
     }
 
-    public void updateSideTrail(Bullet b){
-        if (!(b.data() instanceof Trail[]))return;
+    public void updateSideTrail(Bullet b) {
+        if (!(b.data() instanceof Trail[])) return;
         Trail[] sideTrails = (Trail[]) b.data;
-        if(!headless && sideTrailLength > 0){
-            for (int i = 0; i < sideTrailNum; i++){
-                if(sideTrails[i] == null){
+        if (!headless && sideTrailLength > 0) {
+            for (int i = 0; i < sideTrailNum; i++) {
+                if (sideTrails[i] == null) {
                     sideTrails[i] = new Trail(sideTrailLength);
                 }
                 sideTrails[i].length = sideTrailLength;
                 sideTrails[i].update(
-                    b.x + Mathf.sinDeg(Time.time * sideTrailTime + i * (360f / sideTrailNum)) * sideTrailSpace,
-                    b.y + Mathf.cosDeg(Time.time * sideTrailTime + i * (360f / sideTrailNum)) * sideTrailSpace,
-                    trailInterp.apply(b.fin()));
+                        b.x + Mathf.sinDeg(Time.time * sideTrailTime + i * (360f / sideTrailNum)) * sideTrailSpace,
+                        b.y + Mathf.cosDeg(Time.time * sideTrailTime + i * (360f / sideTrailNum)) * sideTrailSpace,
+                        trailInterp.apply(b.fin()));
             }
         }
     }

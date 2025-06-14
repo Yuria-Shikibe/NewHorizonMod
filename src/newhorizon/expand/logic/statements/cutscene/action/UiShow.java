@@ -7,11 +7,12 @@ import newhorizon.content.NHContent;
 public class UiShow extends LStatement {
     public String cutscene = "css";
 
-    public UiShow(String[] token){
+    public UiShow(String[] token) {
         cutscene = token[1];
     }
 
-    public UiShow() {}
+    public UiShow() {
+    }
 
     @Override
     public void build(Table table) {
@@ -44,7 +45,8 @@ public class UiShow extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class UIShowI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public UIShowI(LVar cutscene){
+
+        public UIShowI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

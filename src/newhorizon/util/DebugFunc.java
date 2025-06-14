@@ -4,7 +4,10 @@ import arc.Core;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.func.Cons;
-import arc.graphics.*;
+import arc.graphics.Color;
+import arc.graphics.Pixmap;
+import arc.graphics.PixmapIO;
+import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.graphics.gl.FrameBuffer;
@@ -30,16 +33,14 @@ import newhorizon.util.graphic.DrawFunc;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.content;
 import static newhorizon.NewHorizon.MOD;
 
 public class DebugFunc {
     public static final String NH_ROOT_PATH = "E:/project/MindustryModDevLib/NewHorizonMod";
     public static final String NH_BUNDLE_PATH = NH_ROOT_PATH + "/assets/bundles/blank/";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
-    public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
     public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
-
+    public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
     public static final Color[] NH_SPRITE_PALETTE = {
             Color.valueOf("abb1bf"), //light
             Color.valueOf("8e909c"), //mid
@@ -61,48 +62,48 @@ public class DebugFunc {
             Color.valueOf("44413a"),
     };
 
-    public static void generateBlankBundle(){
+    public static void generateBlankBundle() {
         StringBuilder sb = new StringBuilder();
         sb.append(
                 """
-                #TO TRANSLATORS:
-                #The following parts are mainly New Horizon's content translations (items, blocks, etc.)
-                #For some content's name, they are random created word if you couldnt find the word root.
-                #In this case, its ok for you to create your own translation in your own language
-                #For the content details, its ok to add content for your self, for example lore or even memes.
-                #The .detail is ok for that, just keep the .description accurate.
-                #If you want to make the .detail, remove the '#' mark in the line.
-                #Its ok to add credit with your name inside the translate bundle.
-                
-                #THANK YOU FOR HELP TRANSLATING THIS MOD!
-                """);
+                        #TO TRANSLATORS:
+                        #The following parts are mainly New Horizon's content translations (items, blocks, etc.)
+                        #For some content's name, they are random created word if you couldnt find the word root.
+                        #In this case, its ok for you to create your own translation in your own language
+                        #For the content details, its ok to add content for your self, for example lore or even memes.
+                        #The .detail is ok for that, just keep the .description accurate.
+                        #If you want to make the .detail, remove the '#' mark in the line.
+                        #Its ok to add credit with your name inside the translate bundle.
+                        
+                        #THANK YOU FOR HELP TRANSLATING THIS MOD!
+                        """);
         sb.append("\n\n#[[REGION ITEM]]\n\n\n");
         contentIterator(ContentType.item, content -> sb.append(contentBlankBundle(content)));
         sb.append("\n\n#[[REGION LIQUID]]\n\n\n");
-        contentIterator(ContentType.liquid,content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.liquid, content -> sb.append(contentBlankBundle(content)));
 
         Boolf<UnlockableContent> modFilter = content -> content instanceof Block block && block.minfo.mod == MOD;
         sb.append("\n\n#[[REGION BLOCK]]\n\n\n");
         sb.append("#TURRET PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.turret, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.turret, content -> sb.append(contentBlankBundle(content)));
         sb.append("#PRODUCTION PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.production, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.production, content -> sb.append(contentBlankBundle(content)));
         sb.append("#DISTRIBUTION PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.distribution, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.distribution, content -> sb.append(contentBlankBundle(content)));
         sb.append("#LIQUID PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.liquid, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.liquid, content -> sb.append(contentBlankBundle(content)));
         sb.append("#POWER PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.power, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.power, content -> sb.append(contentBlankBundle(content)));
         sb.append("#DEFENSE PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.defense, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.defense, content -> sb.append(contentBlankBundle(content)));
         sb.append("#CRAFTING PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.crafting, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.crafting, content -> sb.append(contentBlankBundle(content)));
         sb.append("#UNIT PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.units, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.units, content -> sb.append(contentBlankBundle(content)));
         sb.append("#SPECIAL PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.effect, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.effect, content -> sb.append(contentBlankBundle(content)));
         sb.append("#LOGIC PART\n");
-        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block)content).category == Category.logic, content -> sb.append(contentBlankBundle(content)));
+        contentIterator(ContentType.block, content -> modFilter.get(content) && ((Block) content).category == Category.logic, content -> sb.append(contentBlankBundle(content)));
 
         sb.append("\n\n#[[REGION UNIT]]\n\n\n");
         contentIterator(ContentType.unit, content -> sb.append(contentBlankBundle(content)));
@@ -123,52 +124,52 @@ public class DebugFunc {
         blankBundle.writeString(sb.toString());
     }
 
-    public static String contentBlankBundle(UnlockableContent content){
+    public static String contentBlankBundle(UnlockableContent content) {
         String prefix = content.getContentType().name() + ".";
         return prefix + content.name + ".name = \n" + prefix + content.name + ".description = \n#" + prefix + content.name + ".detail = \n";
     }
 
-    public static void contentIterator(ContentType type, Boolf<UnlockableContent> filter, Cons<UnlockableContent> iterator){
-        for (Content content: content.getBy(type)){
-            if (content instanceof UnlockableContent unlockableContent){
-                if (filter.get(unlockableContent)){
+    public static void contentIterator(ContentType type, Boolf<UnlockableContent> filter, Cons<UnlockableContent> iterator) {
+        for (Content content : content.getBy(type)) {
+            if (content instanceof UnlockableContent unlockableContent) {
+                if (filter.get(unlockableContent)) {
                     iterator.get(unlockableContent);
                 }
             }
         }
     }
 
-    public static void contentIterator(ContentType type, Cons<UnlockableContent> iterator){
+    public static void contentIterator(ContentType type, Cons<UnlockableContent> iterator) {
         contentIterator(type, c -> c.minfo.mod == MOD, iterator);
     }
 
-    public static Fi createPNGFile(String fileName){
+    public static Fi createPNGFile(String fileName) {
         return new Fi(NH_DEBUG_GRAPHIC_FOLDER + fileName + ".png");
     }
 
-    public static Fi createIconPNGFile(String fileName){
+    public static Fi createIconPNGFile(String fileName) {
         return new Fi(NH_SPRITE_ICON_PATH + fileName + ".png");
     }
 
-    public static void outputIcon(){
+    public static void outputIcon() {
         Icon.icons.each((name, drawable) -> {
             TextureRegion region = drawable.getRegion();
             outputTextureRegion(name, region);
         });
     }
 
-    public static void outlineIcon(){
+    public static void outlineIcon() {
         Fi folder = new Fi(NH_DEBUG_GRAPHIC_FOLDER);
         folder.findAll().each(sprite -> outlineSprite(sprite, Pal.gray, 4, true, false));
     }
 
-    public static void outlineSprite(Fi sprite, Color color, int stroke, boolean expand, boolean smooth){
-        int pad = expand? stroke * 2: 0;
+    public static void outlineSprite(Fi sprite, Color color, int stroke, boolean expand, boolean smooth) {
+        int pad = expand ? stroke * 2 : 0;
         Pixmap process = PixmapIO.readPNG(sprite);
         Pixmap result = new Pixmap(process.width + pad, process.height + pad);
         result.fill(Color.clear);
         result.draw(process, stroke, stroke);
-        Pixmap out = smooth? outlineSmooth(result, color, stroke): result.outline(color, stroke);
+        Pixmap out = smooth ? outlineSmooth(result, color, stroke) : result.outline(color, stroke);
         Fi fi = new Fi(NH_DEBUG_GRAPHIC_FOLDER + "/outline/" + sprite.nameWithoutExtension() + "-outline.png");
         PixmapIO.writePng(fi, out);
         process.dispose();
@@ -176,7 +177,7 @@ public class DebugFunc {
         out.dispose();
     }
 
-    public static Pixmap outlineSmooth(Pixmap pixmap, Color color, int radius){
+    public static Pixmap outlineSmooth(Pixmap pixmap, Color color, int radius) {
         final int alphaThreshold = 10;
 
         Pixmap result = pixmap.copy();
@@ -227,7 +228,7 @@ public class DebugFunc {
     }
 
 
-    public static void outputTextureRegion(String name, TextureRegion region){
+    public static void outputTextureRegion(String name, TextureRegion region) {
         Draw.blend();
         Draw.reset();
 
@@ -241,7 +242,7 @@ public class DebugFunc {
         Draw.proj().setOrtho(0, buffer.getHeight(), buffer.getWidth(), -buffer.getHeight());
         Draw.flush();
 
-        Draw.rect(region, region.width/2f, region.height/2f, region.width, region.height);
+        Draw.rect(region, region.width / 2f, region.height / 2f, region.width, region.height);
 
         Draw.flush();
         Draw.trans().idt();
@@ -262,55 +263,55 @@ public class DebugFunc {
         buffer.dispose();
     }
 
-    public static void outputAtlas(){
+    public static void outputAtlas() {
         ObjectSet<Texture> atlasAll = Core.atlas.getTextures();
         Log.info(atlasAll.size);
         int i = 0;
-        for (Texture texture: atlasAll){
+        for (Texture texture : atlasAll) {
             i++;
             Fi fi = createPNGFile("atlas-" + i);
             PixmapIO.writePng(fi, texture.getTextureData().consumePixmap());
         }
     }
 
-    public static void unlockModContent(){
-        for (Seq<Content> contents: content.getContentMap()){
-            for (Content content: contents){
-                if (content instanceof UnlockableContent unlockableContent){
+    public static void unlockModContent() {
+        for (Seq<Content> contents : content.getContentMap()) {
+            for (Content content : contents) {
+                if (content instanceof UnlockableContent unlockableContent) {
                     if (unlockableContent.minfo.mod == MOD) unlockableContent.quietUnlock();
                 }
             }
         }
     }
 
-    public static void updateBlockList(){
-            StringMap map = new StringMap();
-            String prev = readBlockList();
-            String[] lists = prev.split("\n");
-            for (String list: lists){
-                map.put(list.split(" ")[0], list);
+    public static void updateBlockList() {
+        StringMap map = new StringMap();
+        String prev = readBlockList();
+        String[] lists = prev.split("\n");
+        for (String list : lists) {
+            map.put(list.split(" ")[0], list);
+        }
+        for (Block block : content.blocks()) {
+            if (block.isModded() && block.name.startsWith("new-horizon")) {
+                String blockData = writeBlockNoLine(block);
+                map.put(blockData.split(" ")[0], blockData);
             }
-            for (Block block: content.blocks()){
-                if (block.isModded() && block.name.startsWith("new-horizon")){
-                    String blockData = writeBlockNoLine(block);
-                    map.put(blockData.split(" ")[0], blockData);
-                }
-            }
-            Seq<String> ordered = new Seq<>(map.size);
-            map.each((ignored, data) -> ordered.add(data));
-            ordered.sort(String::compareTo);
+        }
+        Seq<String> ordered = new Seq<>(map.size);
+        map.each((ignored, data) -> ordered.add(data));
+        ordered.sort(String::compareTo);
 
-            StringBuilder sb = new StringBuilder();
-            ordered.each((data) -> sb.append(data).append("\n"));
-            Fi.get(NH_ROOT_PATH).child("blocklist.txt").writeString(sb.toString());
+        StringBuilder sb = new StringBuilder();
+        ordered.each((data) -> sb.append(data).append("\n"));
+        Fi.get(NH_ROOT_PATH).child("blocklist.txt").writeString(sb.toString());
     }
 
-    public static void replaceAllSpriteColor(String path, Color[] palette){
+    public static void replaceAllSpriteColor(String path, Color[] palette) {
         Fi fi = new Fi(path);
         fi.walk(file -> replaceSpriteColor(path, file, palette));
     }
 
-    public static void replaceSpriteColor(String parentPath, Fi sprite, Color[] palette){
+    public static void replaceSpriteColor(String parentPath, Fi sprite, Color[] palette) {
         if (!Objects.equals(sprite.extension(), "png")) return;
         Fi parent = sprite.parent();
         Fi out = new Fi(NH_DEBUG_GRAPHIC_FOLDER + parent.name().replace(parentPath, "") + "/" + sprite.name());
@@ -337,24 +338,24 @@ public class DebugFunc {
     //    };
     //}
 
-    public static String readBlockList(){
+    public static String readBlockList() {
         Fi fi = Fi.get(NH_ROOT_PATH).child("blocklist.txt");
         if (fi.exists()) return fi.readString();
         return "";
     }
 
-    public static void outputSettings(){
+    public static void outputSettings() {
         StringBuilder sb = new StringBuilder();
-        for (String string: Core.settings.keys()){
+        for (String string : Core.settings.keys()) {
             sb.append(string).append("\n");
         }
         Core.app.setClipboardText(sb.toString());
     }
 
-    public static void outputContentSprites(){
-        for (Seq<Content> contents: content.getContentMap()){
-            for (Content content: contents){
-                if (content.minfo.mod == MOD){
+    public static void outputContentSprites() {
+        for (Seq<Content> contents : content.getContentMap()) {
+            for (Content content : contents) {
+                if (content.minfo.mod == MOD) {
                     String name = "content";
                     TextureRegion icon = null;
                     if (content instanceof UnlockableContent) {
@@ -373,9 +374,9 @@ public class DebugFunc {
         }
     }
 
-    public static void writeBulletTypeList(){
+    public static void writeBulletTypeList() {
         StringBuilder sb = new StringBuilder();
-        for (BulletType type: content.bullets()){
+        for (BulletType type : content.bullets()) {
             String id = type.id + "";
             String name = type.getClass().getName();
             sb.append(id);
@@ -386,10 +387,10 @@ public class DebugFunc {
         Core.app.setClipboardText(sb.toString());
     }
 
-    public static void writeBlockList(){
+    public static void writeBlockList() {
         StringBuilder sb = new StringBuilder();
-        for (Block block: content.blocks()){
-            if (block.isModded() && block.name.startsWith("new-horizon")){
+        for (Block block : content.blocks()) {
+            if (block.isModded() && block.name.startsWith("new-horizon")) {
                 sb.append(writeBlock(block));
             }
         }
@@ -421,11 +422,11 @@ public class DebugFunc {
                 "\n";
     }
 
-    public static void renderSectorId(){
+    public static void renderSectorId() {
         Planet planet = ui.planet.state.planet;
         Draw.color(Color.white);
-        for(Sector sec : planet.sectors){
-            if(sec != null){
+        for (Sector sec : planet.sectors) {
+            if (sec != null) {
                 String secText = "[" + sec.id + "]";
                 renderer.planets.drawPlane(sec, () -> DrawFunc.drawText(secText, 0, 15, 1.8f));
             }

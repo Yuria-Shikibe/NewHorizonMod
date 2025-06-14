@@ -9,7 +9,7 @@ public class GridData {
     public float xShift, yShift;
     public int width, height;
 
-    public GridData(IntSeq grids, int width, int height, float xShift, float yShift){
+    public GridData(IntSeq grids, int width, int height, float xShift, float yShift) {
         this.grids = grids;
 
         this.width = width;
@@ -19,12 +19,12 @@ public class GridData {
         this.yShift = yShift;
     }
 
-    public int getGrid(int x, int y){
+    public int getGrid(int x, int y) {
         if (x < 0 || y < 0 || x >= width || y >= height) return 0;
         return grids.get(y * width + x);
     }
 
-    public int getGridBottomLeft(int x, int y){
+    public int getGridBottomLeft(int x, int y) {
         if (x < 0 || y < 0 || x >= width || y >= height) return 0;
         int ry = height - y - 1;
         return grids.get(ry * width + x);

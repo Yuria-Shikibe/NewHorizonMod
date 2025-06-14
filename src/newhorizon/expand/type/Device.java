@@ -3,7 +3,6 @@ package newhorizon.expand.type;
 import arc.Core;
 import arc.func.Cons3;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Scaling;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
@@ -18,7 +17,8 @@ public class Device extends UnlockableContent {
     public Seq<Block> installableBlocks = new Seq<>();
     public Seq<Block> compatibleBlocks = new Seq<>();
 
-    public Cons3<Building, DeviceData, Float> modifier = (source, target, intensity) -> {};
+    public Cons3<Building, DeviceData, Float> modifier = (source, target, intensity) -> {
+    };
 
     public Device(String name) {
         super(name);
@@ -52,7 +52,7 @@ public class Device extends UnlockableContent {
         stats.add(NHStats.installableBlocks, table -> {
             table.row();
             table.table(c -> {
-                for(Block block : installableBlocks){
+                for (Block block : installableBlocks) {
                     c.table(Styles.grayPanel, b -> {
                         b.image(block.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
                         b.table(info -> info.add(block.localizedName).right()).right().grow().pad(10f).padRight(15f);
@@ -65,7 +65,7 @@ public class Device extends UnlockableContent {
         stats.add(NHStats.compatibleBlocks, table -> {
             table.row();
             table.table(c -> {
-                for(Block block : compatibleBlocks){
+                for (Block block : compatibleBlocks) {
                     c.table(Styles.grayPanel, b -> {
                         b.image(block.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
                         b.table(info -> info.add(block.localizedName).right()).right().grow().pad(10f).padRight(15f);

@@ -11,7 +11,7 @@ import newhorizon.expand.block.production.factory.PayloadCrafter;
 public class DrawPrintPayload extends DrawDefault {
     @Override
     public void draw(Building build) {
-        if (build instanceof PayloadCrafter.PayloadCrafterBuild pc){
+        if (build instanceof PayloadCrafter.PayloadCrafterBuild pc) {
             if (pc.recipe == null) return;
             Draw.draw(Layer.blockOver, () -> Drawf.construct(build.x, build.y, pc.recipe.fullIcon, build.team.color, 0, build.progress(), Interp.pow2Out.apply(build.progress()), build.totalProgress() * 2));
         }

@@ -21,7 +21,8 @@ public class DrawRegionCenterSymmetry extends DrawBlock {
         this.suffix = suffix;
     }
 
-    public DrawRegionCenterSymmetry() {}
+    public DrawRegionCenterSymmetry() {
+    }
 
     @Override
     public void draw(Building build) {

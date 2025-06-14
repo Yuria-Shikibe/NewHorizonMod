@@ -14,7 +14,7 @@ import newhorizon.expand.block.consumer.NHConsumeShowStat;
 import newhorizon.util.ui.display.ItemDisplay;
 import newhorizon.util.ui.display.LiquidDisplay;
 
-public class RecipeGenericCrafter extends AdaptCrafter{
+public class RecipeGenericCrafter extends AdaptCrafter {
     public int alterRecipe = 0;
     public Seq<ItemStack[]> recipeItemInput = new Seq<>();
     public Seq<LiquidStack[]> recipeLiquidInput = new Seq<>();
@@ -33,42 +33,42 @@ public class RecipeGenericCrafter extends AdaptCrafter{
         stats.add(Stat.input, display());
     }
 
-    public void addInput(ItemStack[] itemStacks, LiquidStack[] liquidStacks){
+    public void addInput(ItemStack[] itemStacks, LiquidStack[] liquidStacks) {
         recipeItemInput.add(itemStacks);
         recipeLiquidInput.add(liquidStacks);
         alterRecipe++;
     }
 
-    public StatValue display(){
+    public StatValue display() {
         return table -> {
             table.table(cont -> {
-                for (int r = 0; r < alterRecipe; r++){
+                for (int r = 0; r < alterRecipe; r++) {
                     int idx = r;
-                    if(r == 0){
+                    if (r == 0) {
                         cont.label(() -> Core.bundle.get("nh.primary"));
                         cont.table(t -> {
-                            if (recipeItemInput.get(idx) != null){
-                                for (ItemStack stack : recipeItemInput.get(idx)){
+                            if (recipeItemInput.get(idx) != null) {
+                                for (ItemStack stack : recipeItemInput.get(idx)) {
                                     t.add(new ItemDisplay(stack.item, stack.amount, craftTime, true)).padLeft(5);
                                 }
                             }
-                            if (recipeItemInput.get(idx) != null){
-                                for (LiquidStack stack : recipeLiquidInput.get(idx)){
+                            if (recipeItemInput.get(idx) != null) {
+                                for (LiquidStack stack : recipeLiquidInput.get(idx)) {
                                     t.add(new LiquidDisplay(stack.liquid, stack.amount * 60f, true)).padLeft(5);
                                 }
                             }
                             t.left();
                         }).fillX();
-                    }else {
+                    } else {
                         cont.label(() -> Core.bundle.get("nh.alternative"));
                         cont.table(t -> {
-                            if (recipeItemInput.get(idx) != null){
-                                for (ItemStack stack : recipeItemInput.get(idx)){
+                            if (recipeItemInput.get(idx) != null) {
+                                for (ItemStack stack : recipeItemInput.get(idx)) {
                                     t.add(new ItemDisplay(stack.item, stack.amount, craftTime, true)).padLeft(5);
                                 }
                             }
-                            if (recipeItemInput.get(idx) != null){
-                                for (LiquidStack stack : recipeLiquidInput.get(idx)){
+                            if (recipeItemInput.get(idx) != null) {
+                                for (LiquidStack stack : recipeLiquidInput.get(idx)) {
                                     t.add(new LiquidDisplay(stack.liquid, stack.amount * 60f, true)).padLeft(5);
                                 }
                             }
@@ -94,35 +94,35 @@ public class RecipeGenericCrafter extends AdaptCrafter{
         recipeLiquidInput.setSize(alterRecipe);
 
         for (int i = 0; i < alterRecipe; i++) {
-            for (ItemStack input: recipeItemInput.get(i)) {
+            for (ItemStack input : recipeItemInput.get(i)) {
                 itemFilter[input.item.id] = true;
             }
-            for (LiquidStack input: recipeLiquidInput.get(i)) {
+            for (LiquidStack input : recipeLiquidInput.get(i)) {
                 liquidFilter[input.liquid.id] = true;
             }
         }
     }
 
-    public class RecipeGenericCrafterBuild extends AdaptCrafterBuild{
+    public class RecipeGenericCrafterBuild extends AdaptCrafterBuild {
         public int recipeIdx = -1;
 
         @Override
-        public float getPowerProduction(){
+        public float getPowerProduction() {
             return super.getPowerProduction();
         }
 
-        public void updateRecipeIdx(){
+        public void updateRecipeIdx() {
             for (int i = 0; i < alterRecipe; i++) {
                 boolean validItemInput = true;
                 boolean validLiquidInput = true;
-                for (ItemStack input: recipeItemInput.get(i)) {
-                    if (items.get(input.item) < input.amount){
+                for (ItemStack input : recipeItemInput.get(i)) {
+                    if (items.get(input.item) < input.amount) {
                         validItemInput = false;
                         break;
                     }
                 }
-                for (LiquidStack input: recipeLiquidInput.get(i)) {
-                    if (liquids.get(input.liquid) < input.amount * Time.delta){
+                for (LiquidStack input : recipeLiquidInput.get(i)) {
+                    if (liquids.get(input.liquid) < input.amount * Time.delta) {
                         validLiquidInput = false;
                         break;
                     }
@@ -135,15 +135,15 @@ public class RecipeGenericCrafter extends AdaptCrafter{
             recipeIdx = -1;
         }
 
-        public boolean validRecipeIdx(){
+        public boolean validRecipeIdx() {
             if (recipeIdx < 0) return false;
-            for (ItemStack input: recipeItemInput.get(recipeIdx)) {
-                if (items.get(input.item) < input.amount){
+            for (ItemStack input : recipeItemInput.get(recipeIdx)) {
+                if (items.get(input.item) < input.amount) {
                     return false;
                 }
             }
-            for (LiquidStack input: recipeLiquidInput.get(recipeIdx)) {
-                if (liquids.get(input.liquid) < input.amount * Time.delta){
+            for (LiquidStack input : recipeLiquidInput.get(recipeIdx)) {
+                if (liquids.get(input.liquid) < input.amount * Time.delta) {
                     return false;
                 }
             }
@@ -162,24 +162,24 @@ public class RecipeGenericCrafter extends AdaptCrafter{
             updateRecipeIdx();
         }
 
-        public ItemStack[] getDisplayInputItems(){
+        public ItemStack[] getDisplayInputItems() {
             if (recipeIdx < 0 && recipeItemInput.get(0) != null) return recipeItemInput.get(0);
             if (recipeIdx < 0) return null;
             return recipeItemInput.get(recipeIdx);
         }
 
-        public LiquidStack[] getDisplayInputLiquids(){
+        public LiquidStack[] getDisplayInputLiquids() {
             if (recipeIdx < 0 && recipeLiquidInput.get(0) != null) return recipeLiquidInput.get(0);
             if (recipeIdx < 0) return null;
             return recipeLiquidInput.get(recipeIdx);
         }
 
-        public @Nullable ItemStack[] getInputItems(){
+        public @Nullable ItemStack[] getInputItems() {
             if (recipeIdx < 0) return null;
             return recipeItemInput.get(recipeIdx);
         }
 
-        public @Nullable LiquidStack[] getInputLiquids(){
+        public @Nullable LiquidStack[] getInputLiquids() {
             if (recipeIdx < 0) return null;
             return recipeLiquidInput.get(recipeIdx);
         }

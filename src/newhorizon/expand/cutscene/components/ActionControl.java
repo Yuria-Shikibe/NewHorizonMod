@@ -15,13 +15,13 @@ import java.util.regex.Pattern;
 import static mindustry.Vars.*;
 
 public class ActionControl {
-    public static ActionBus parseCode(String code, Building source){
+    public static ActionBus parseCode(String code, Building source) {
         ActionBus bus = new ActionBus();
         parseLine(code, source).each(line -> bus.add(parseAction(line, source)));
         return bus;
     }
 
-    public static Seq<String> parseLine(String code, Building source){
+    public static Seq<String> parseLine(String code, Building source) {
         String[] lines = code.split("\\R");
         return Seq.with(lines);
     }
@@ -44,52 +44,59 @@ public class ActionControl {
     }
 
     public static float parseFloat(String token, Building source) {
-        if (token.startsWith("@") && source != null && world.build(source.tileX(), source.tileY() - 1).block instanceof MemoryBlock){
-            MemoryBlock.MemoryBuild memory = (MemoryBlock.MemoryBuild)world.build(source.tileX(), source.tileY() - 1);
+        if (token.startsWith("@") && source != null && world.build(source.tileX(), source.tileY() - 1).block instanceof MemoryBlock) {
+            MemoryBlock.MemoryBuild memory = (MemoryBlock.MemoryBuild) world.build(source.tileX(), source.tileY() - 1);
             return (float) memory.memory[Integer.parseInt(token.replace("@", ""))];
-        }else return Float.parseFloat(token);
+        } else return Float.parseFloat(token);
     }
 
-    public static Team parseTeam(String token){
-        switch (token){
-            case "derelict": return Team.derelict;
-            case "sharded": return Team.sharded;
-            case "crux": return Team.crux;
-            case "malis": return Team.malis;
-            case "green": return Team.green;
-            case "blue": return Team.blue;
-            case "neoplastic": return Team.neoplastic;
+    public static Team parseTeam(String token) {
+        switch (token) {
+            case "derelict":
+                return Team.derelict;
+            case "sharded":
+                return Team.sharded;
+            case "crux":
+                return Team.crux;
+            case "malis":
+                return Team.malis;
+            case "green":
+                return Team.green;
+            case "blue":
+                return Team.blue;
+            case "neoplastic":
+                return Team.neoplastic;
         }
 
         try {
             int teamID = Integer.parseInt(token);
             return Team.get(teamID);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             Log.err(e);
             return Team.derelict;
         }
     }
 
-    public static UnitType parseUnitType(String token){
-        if (content.unit(token) != null){
+    public static UnitType parseUnitType(String token) {
+        if (content.unit(token) != null) {
             return content.unit(token);
         }
         try {
             int id = Integer.parseInt(token);
-            if (content.unit(id) != null){
+            if (content.unit(id) != null) {
                 return content.unit(id);
             }
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             Log.err(e);
         }
         return UnitTypes.alpha;
     }
 
-    public static Action parseAction (String tokens, Building source){
+    public static Action parseAction(String tokens, Building source) {
         Seq<String> tokensArray = parseToken(tokens, source);
         String actionName = tokensArray.remove(0);
         String[] args = tokensArray.toArray(String.class);
-        try{
+        try {
             return switch (actionName) {
                 case "camera_control" -> new CameraControlAction(args);
                 case "camera_reset" -> new CameraResetAction(args);
@@ -117,8 +124,8 @@ public class ActionControl {
                 case "signal_cut_out" -> new SignalCutOutAction();
                 case "signal_text" -> new SignalTextAction(args);
 
-                case "ui_hide"-> new UIHideAction();
-                case "ui_show"-> new UIShowAction();
+                case "ui_hide" -> new UIHideAction();
+                case "ui_show" -> new UIShowAction();
 
                 case "wait" -> new WaitAction(args);
 
@@ -127,7 +134,7 @@ public class ActionControl {
 
                 default -> new NullAction();
             };
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.err(e);
             ui.announce("Failed to parse action: " + tokens);
             return new NullAction();

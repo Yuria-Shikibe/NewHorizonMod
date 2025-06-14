@@ -18,51 +18,40 @@ import arc.util.pooling.Pools;
 import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
 
-public class DelaySlideBar extends Table{
+public class DelaySlideBar extends Table {
     public static final Interp parabola4Reversed = x -> -4 * (x - 0.5f) * (x - 0.5f) + 1;
     public static final Color back = Color.black.cpy().lerp(Color.darkGray, 0.35f).a(0.5f);
-
-    protected float currentValue, lastValue, stableValue;
-    protected float equalizedTime;
-
-    protected float stableThreshold = 0.4f;
-
-    protected float blink = 0;
-    protected boolean blinked = false;
     public boolean blinkable = false;
-
-    protected float fontAlpha = 1;
-
     public boolean drawBackground = true;
     public boolean drawShadow = false;
-
     public float approachSpeedScl_Stable = 0.025f;
     public float approachSpeedScl_Real = 0.125f;
-
     public float barMargin = 0;
     public float realStableMargin = 0f;
-
     public boolean snapWhileIncrease = true;
     public float allowedDeviation = Mathf.FLOAT_ROUNDING_ERROR;
-
     public Color rootColor = Color.black;
-
     public Color backgroundColor = back;
     public Color blinkColor = Color.white;
     public Prov<Color> colorStable = () -> Color.lightGray;
     public Prov<Color> colorReal = () -> Pal.accent;
-
-    public Boolf<DelaySlideBar> stable = b -> b.equalizedTime >= b.stableThreshold;
     public Prov<CharSequence> info = () -> "null";
     public Floatp valueGetter = () -> 0;
     public Floatp maxValue = () -> 1;
     public Floatf<DelaySlideBar> fontScale = b -> 1;
+    protected float currentValue, lastValue, stableValue;
+    protected float equalizedTime;
+    protected float stableThreshold = 0.4f;
+    public Boolf<DelaySlideBar> stable = b -> b.equalizedTime >= b.stableThreshold;
+    protected float blink = 0;
+    protected boolean blinked = false;
+    protected float fontAlpha = 1;
 
-    public DelaySlideBar(){
+    public DelaySlideBar() {
         color.set(1f, 1f, 1f, 1f);
     }
 
-    public DelaySlideBar(Prov<Color> colorReal, Prov<CharSequence> info, Floatp valueGetter, Floatp maxValue){
+    public DelaySlideBar(Prov<Color> colorReal, Prov<CharSequence> info, Floatp valueGetter, Floatp maxValue) {
         this();
 
         this.info = info;
@@ -73,7 +62,7 @@ public class DelaySlideBar extends Table{
         snap();
     }
 
-    public DelaySlideBar(Prov<Color> colorReal, Prov<CharSequence> info, Floatp valueGetter){
+    public DelaySlideBar(Prov<Color> colorReal, Prov<CharSequence> info, Floatp valueGetter) {
         this();
 
         this.colorReal = colorReal;
@@ -83,56 +72,56 @@ public class DelaySlideBar extends Table{
         snap();
     }
 
-    public boolean isStable(){
+    public boolean isStable() {
         return stable.get(this);
     }
 
-    public void snap(){
+    public void snap() {
         lastValue = currentValue = stableValue = valueGetter.get();
     }
 
-    public float getFraction(){
+    public float getFraction() {
         return lastValue / maxValue.get();
     }
 
-    public float getStableFraction(){
+    public float getStableFraction() {
         return stableValue / maxValue.get();
     }
 
     @Override
-    public void act(float delta){
+    public void act(float delta) {
         super.act(delta);
 
         currentValue = Mathf.clamp(valueGetter.get(), 0 + Mathf.FLOAT_ROUNDING_ERROR, maxValue.get());
 
-        if(snapWhileIncrease && lastValue < currentValue && stableValue < lastValue)stableValue = lastValue;
+        if (snapWhileIncrease && lastValue < currentValue && stableValue < lastValue) stableValue = lastValue;
 
-        if(lastValue - currentValue < allowedDeviation)equalizedTime += delta;
+        if (lastValue - currentValue < allowedDeviation) equalizedTime += delta;
         else equalizedTime = 0;
 
-        if(blinkable && Mathf.equal(currentValue, Mathf.FLOAT_ROUNDING_ERROR) && !blinked)blink();
+        if (blinkable && Mathf.equal(currentValue, Mathf.FLOAT_ROUNDING_ERROR) && !blinked) blink();
 
-        if(isStable()){
+        if (isStable()) {
             stableValue = Mathf.lerpDelta(stableValue, lastValue, approachSpeedScl_Stable);
         }
 
         lastValue = Mathf.lerp(lastValue, currentValue, approachSpeedScl_Real);
 
         blink = Mathf.lerp(blink, 0f, 0.075f);
-        if(!blinkable || (blink < 0.01f && lastValue > 0.1f && currentValue > 0.01f))blinked = false;
+        if (!blinkable || (blink < 0.01f && lastValue > 0.1f && currentValue > 0.01f)) blinked = false;
     }
 
-    public void blink(){
-        if(!blinkable)return;
+    public void blink() {
+        if (!blinkable) return;
         blink = 1;
         blinked = true;
     }
 
     @Override
-    public void draw(){
+    public void draw() {
         super.draw();
 
-        if(drawBackground){
+        if (drawBackground) {
             Draw.color(backgroundColor);
             Draw.alpha(parentAlpha * color.a * backgroundColor.a);
             Fill.quad(
@@ -163,7 +152,7 @@ public class DelaySlideBar extends Table{
                 x + (barMargin + realStableMargin), y - (barMargin + realStableMargin) + height, c2
         );
 
-        if(blink > 0.001f){
+        if (blink > 0.001f) {
             Draw.color(blinkColor);
             Draw.blend(Blending.additive);
             Draw.alpha(blink * parentAlpha * color.a);
@@ -191,7 +180,7 @@ public class DelaySlideBar extends Table{
 
         font.getCache().addText(info.get(), x + width * 0.035f, y + height * 0.8125f);
 
-        if(lay.width > width / scaleX || scl < 0.325f)fontAlpha = Mathf.lerp(fontAlpha, 0, 0.2f);
+        if (lay.width > width / scaleX || scl < 0.325f) fontAlpha = Mathf.lerp(fontAlpha, 0, 0.2f);
         else fontAlpha = Mathf.lerp(fontAlpha, 1, 0.05f);
 
         font.getCache().draw(parentAlpha * color.a * fontAlpha);

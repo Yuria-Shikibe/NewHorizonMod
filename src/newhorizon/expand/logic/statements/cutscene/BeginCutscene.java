@@ -7,11 +7,12 @@ import newhorizon.content.NHContent;
 public class BeginCutscene extends LStatement {
     public String cutscene = "css";
 
-    public BeginCutscene(String[] tokens){
+    public BeginCutscene(String[] tokens) {
         cutscene = tokens[1];
     }
 
-    public BeginCutscene() {}
+    public BeginCutscene() {
+    }
 
     @Override
     public void build(Table table) {
@@ -44,7 +45,8 @@ public class BeginCutscene extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class BeginCutsceneI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public BeginCutsceneI(LVar cutscene){
+
+        public BeginCutsceneI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

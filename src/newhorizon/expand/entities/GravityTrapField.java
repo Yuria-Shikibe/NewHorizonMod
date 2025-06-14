@@ -19,132 +19,128 @@ import newhorizon.expand.block.defence.GravityWell;
 import newhorizon.expand.block.special.NexusCore;
 import newhorizon.util.graphic.DrawFunc;
 
-public class GravityTrapField implements Position, QuadTree.QuadTreeObject{
-	protected static final Seq<GravityTrapField> tmpSeq = new Seq<>();
-	protected static final Rect tmpRect = new Rect();
-	
-	public static void drawAll(){
-		for(GravityTrapField i : NHGroups.gravityTrapsDraw)i.draw();
-	}
+public class GravityTrapField implements Position, QuadTree.QuadTreeObject {
+    protected static final Seq<GravityTrapField> tmpSeq = new Seq<>();
+    protected static final Rect tmpRect = new Rect();
+    public static final Boolf2<Team, Hitboxc> IntersectedAlly = (team, entity) -> {
+        entity.hitbox(tmpRect);
+        tmpSeq.clear();
+        NHGroups.gravityTraps.intersect(tmpRect, tmpSeq);
+        for (GravityTrapField f : tmpSeq) {
+            if (team == f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y())) {
+                return true;
+            }
+        }
 
-	public static final Boolf2<Team, Hitboxc> IntersectedAlly = (team, entity) -> {
-		entity.hitbox(tmpRect);
-		tmpSeq.clear();
-		NHGroups.gravityTraps.intersect(tmpRect, tmpSeq);
-		for(GravityTrapField f : tmpSeq){
-			if(team == f.team() && f.active() && Intersector.isInsideHexagon(f.x, f.y, f.range * 2f, entity.x(), entity.y())){
-				return true;
-			}
-		}
-	
-		return false;
-	};
-
-	public float x = 0, y = 0;
-	public float range = 120;
-	public Boolp activated = () -> true;
-	public Prov<Team> team = () -> Team.derelict;
-	public Runnable drawer = () -> {
-		if(!active()) return;
-		Draw.color(DrawFunc.markColor(team()));
-		Fill.square(x, y, range);
-	};
-	
-	public float getRange(){
-		return range;
-	}
-	
-	public void setRange(float range){
-		this.range = range;
-	}
-	
-	public boolean active(){return activated.get();}
-	
-	public void setPosition(Position position){
-		x = position.getX();
-		y = position.getY();
-	}
-	
-	public GravityTrapField add(){
-		NHGroups.gravityTraps.insert(this);
-		NHGroups.gravityTrapsDraw.add(this);
-		
-		
-		return this;
-	}
-	
-	
-	public void remove(){
-		NHGroups.gravityTraps.remove(this);
-		NHGroups.gravityTrapsDraw.remove(this);
-	}
-	
-	/**
-	 * Do Changes here if the field is not a rect.
-	 *
-	 * */
+        return false;
+    };
+    public float x = 0, y = 0;
+    public float range = 120;
+    public Boolp activated = () -> true;
+    public Prov<Team> team = () -> Team.derelict;
+    public Runnable drawer = () -> {
+        if (!active()) return;
+        Draw.color(DrawFunc.markColor(team()));
+        Fill.square(x, y, range);
+    };
+    /**
+     * Do Changes here if the field is not a rect.
+     */
 	/*
 	public <T extends TeamHealthc> boolean checkExactHitbox(T t){
 		return true;
 	}*/
-	
-	public GravityTrapField(Unit unit, float range){
-		this.range = range;
-		team = unit::team;
-		activated = unit::isValid;
-		setPosition(unit);
-	}
-	
-	public GravityTrapField(){
-	
-	}
-	
-	public GravityTrapField(GravityWell.GravityTrapBuild build){
-		setPosition(build);
-		activated = () -> build.active() && build.isValid();
-		team = () -> build.team;
-		range = build.range();
-	}
+    public GravityTrapField(Unit unit, float range) {
+        this.range = range;
+        team = unit::team;
+        activated = unit::isValid;
+        setPosition(unit);
+    }
 
-	public GravityTrapField(NexusCore.NexusCoreBuild build){
-		setPosition(build);
-		activated = build::isValid;
-		team = () -> build.team;
-		range = build.range();
-	}
+    public GravityTrapField() {
 
-	public GravityTrapField(Building build, Boolp active, float rad){
-		setPosition(build);
-		activated = active;
-		team = () -> build.team;
-		range = rad;
-	}
-	
-	public Team team(){
-		return team.get();
-	}
-	
-	public void draw(){
-		drawer.run();
-	}
-	
-	@Override
-	public float getX(){
-		return x;
-	}
-	
-	@Override
-	public float getY(){
-		return y;
-	}
-	
-	@Override
-	public void hitbox(Rect out){
-		out.setSize(range * 2).setCenter(x, y);
-	}
-	
-	@Override
-	public String toString(){
-		return "GravityTrapField{" + "pos(" + x + ", " + y + ")}";
-	}
+    }
+
+    public GravityTrapField(GravityWell.GravityTrapBuild build) {
+        setPosition(build);
+        activated = () -> build.active() && build.isValid();
+        team = () -> build.team;
+        range = build.range();
+    }
+
+    public GravityTrapField(NexusCore.NexusCoreBuild build) {
+        setPosition(build);
+        activated = build::isValid;
+        team = () -> build.team;
+        range = build.range();
+    }
+
+    public GravityTrapField(Building build, Boolp active, float rad) {
+        setPosition(build);
+        activated = active;
+        team = () -> build.team;
+        range = rad;
+    }
+
+    public static void drawAll() {
+        for (GravityTrapField i : NHGroups.gravityTrapsDraw) i.draw();
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public void setRange(float range) {
+        this.range = range;
+    }
+
+    public boolean active() {
+        return activated.get();
+    }
+
+    public void setPosition(Position position) {
+        x = position.getX();
+        y = position.getY();
+    }
+
+    public GravityTrapField add() {
+        NHGroups.gravityTraps.insert(this);
+        NHGroups.gravityTrapsDraw.add(this);
+
+
+        return this;
+    }
+
+    public void remove() {
+        NHGroups.gravityTraps.remove(this);
+        NHGroups.gravityTrapsDraw.remove(this);
+    }
+
+    public Team team() {
+        return team.get();
+    }
+
+    public void draw() {
+        drawer.run();
+    }
+
+    @Override
+    public float getX() {
+        return x;
+    }
+
+    @Override
+    public float getY() {
+        return y;
+    }
+
+    @Override
+    public void hitbox(Rect out) {
+        out.setSize(range * 2).setCenter(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return "GravityTrapField{" + "pos(" + x + ", " + y + ")}";
+    }
 }

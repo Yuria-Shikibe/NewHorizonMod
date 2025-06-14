@@ -31,7 +31,7 @@ public class WarningIconAction extends Action {
         message = ActionControl.parseString(args[2]);
     }
 
-    public TextureRegion warningIcon(){
+    public TextureRegion warningIcon() {
         return switch (icon) {
             case 0 -> NHContent.raid;
             case 1 -> NHContent.fleet;

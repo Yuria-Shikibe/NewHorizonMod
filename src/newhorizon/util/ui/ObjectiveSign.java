@@ -1,7 +1,5 @@
 package newhorizon.util.ui;
 
-import arc.scene.Element;
-
 import arc.func.Boolp;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -9,6 +7,7 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.scene.Element;
 import arc.scene.actions.Actions;
 import mindustry.graphics.Pal;
 
@@ -24,11 +23,11 @@ public class ObjectiveSign extends Element {
     protected float lerpAlpha = 1;
     protected float outerSize = 12, innerSize = 6;
 
-    public ObjectiveSign(){
+    public ObjectiveSign() {
 
     }
 
-    public ObjectiveSign(Color outerColor, Color innerColor, float margin, float outerStroke, float pad, Boolp trigger){
+    public ObjectiveSign(Color outerColor, Color innerColor, float margin, float outerStroke, float pad, Boolp trigger) {
         this.outerColor = outerColor;
         this.innerColor = innerColor;
         this.margin = margin;
@@ -37,21 +36,21 @@ public class ObjectiveSign extends Element {
         this.trigger = trigger;
     }
 
-    public Element setTrigger(Boolp boolp){
+    public Element setTrigger(Boolp boolp) {
         this.trigger = boolp;
         return this;
     }
 
-    public void setFinished(boolean b){
+    public void setFinished(boolean b) {
         finished = b;
     }
 
-    public void setMargin(float margin){
+    public void setMargin(float margin) {
         this.margin = margin;
     }
 
     @Override
-    public void draw(){
+    public void draw() {
         super.draw();
 
         Draw.color(innerColor);
@@ -71,21 +70,21 @@ public class ObjectiveSign extends Element {
     }
 
     @Override
-    public void act(float delta){
+    public void act(float delta) {
         super.act(delta);
 
-        if(!finished)finished = trigger.get();
-        else{
+        if (!finished) finished = trigger.get();
+        else {
             lerpAlpha = Mathf.approachDelta(lerpAlpha, 0, 0.075f);
         }
 
-        if(hasParent())color.a(parent.color.a);
+        if (hasParent()) color.a(parent.color.a);
 
         outerSize = Math.max(Math.min(width, height) - margin * 2, 0) / 2 * Mathf.sqrt2;
         innerSize = Math.max(outerSize - pad * 2, 0) / 2 * Mathf.sqrt2;
     }
 
-    public void fadeOut(){
+    public void fadeOut() {
         actions(Actions.delay(1.5f), Actions.alpha(0, 0.45f, Interp.fade), Actions.remove());
     }
 }

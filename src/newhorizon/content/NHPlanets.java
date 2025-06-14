@@ -9,38 +9,38 @@ import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.meta.Env;
 
-public class NHPlanets{
-	public static Planet midantha;
-	
-	public static void load(){
-		midantha = new Planet("midantha", Planets.sun, 2){{
-			sectors.add(new Sector(this, PlanetGrid.Ptile.empty));
+public class NHPlanets {
+    public static Planet midantha;
 
-			sectorApproxRadius = 1;
+    public static void load() {
+        midantha = new Planet("midantha", Planets.sun, 2) {{
+            sectors.add(new Sector(this, PlanetGrid.Ptile.empty));
 
-			visible = true;
-			accessible = true;
-			alwaysUnlocked = true;
+            sectorApproxRadius = 1;
 
-			generator = new NHPlanetGenerator();
-			meshLoader = () -> new HexMesh(this, 4);
+            visible = true;
+            accessible = true;
+            alwaysUnlocked = true;
 
-			defaultEnv = Env.terrestrial;
+            generator = new NHPlanetGenerator();
+            meshLoader = () -> new HexMesh(this, 4);
 
-			iconColor = NHColor.darkEnrColor;
-		}};
-	}
+            defaultEnv = Env.terrestrial;
 
-	public static class NHPlanetGenerator extends BlankPlanetGenerator {
-		@Override
-		public int getSectorSize(Sector sector){
-			return 512;
-		}
+            iconColor = NHColor.darkEnrColor;
+        }};
+    }
 
-		@Override
-		protected void generate() {
-			int sx = width/2, sy = height/2;
-			Schematics.placeLaunchLoadout(sx, sy);
-		}
-	}
+    public static class NHPlanetGenerator extends BlankPlanetGenerator {
+        @Override
+        public int getSectorSize(Sector sector) {
+            return 512;
+        }
+
+        @Override
+        protected void generate() {
+            int sx = width / 2, sy = height / 2;
+            Schematics.placeLaunchLoadout(sx, sy);
+        }
+    }
 }

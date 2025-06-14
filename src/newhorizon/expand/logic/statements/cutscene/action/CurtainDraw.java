@@ -7,11 +7,12 @@ import newhorizon.content.NHContent;
 public class CurtainDraw extends LStatement {
     public String cutscene = "css";
 
-    public CurtainDraw(String[] token){
+    public CurtainDraw(String[] token) {
         cutscene = token[1];
     }
 
-    public CurtainDraw() {}
+    public CurtainDraw() {
+    }
 
     @Override
     public void build(Table table) {
@@ -44,7 +45,8 @@ public class CurtainDraw extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class CurtainDrawI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public CurtainDrawI(LVar cutscene){
+
+        public CurtainDrawI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

@@ -41,7 +41,7 @@ public class NewFeatureDialog extends BaseDialog {
         cont.button("@back", Icon.left, Styles.cleart, this::hide).growX().height(LEN).bottom().growX().height(LEN).padTop(OFFSET).padLeft(LEN).padRight(LEN);
     }
 
-    private void buildMainChangelog(Table main){
+    private void buildMainChangelog(Table main) {
         main.pane(table -> {
             table.align(Align.topLeft);
             table.add(MOD.meta.version + ": ").row();
@@ -51,9 +51,9 @@ public class NewFeatureDialog extends BaseDialog {
         main.image().growX().height(4).pad(6).color(Color.lightGray).row();
     }
 
-    private void buildFeatureLog(Table main){
+    private void buildFeatureLog(Table main) {
         main.pane(t -> {
-            for (FeatureLog feature: getUpdateContent()) {
+            for (FeatureLog feature : getUpdateContent()) {
                 Table importantLabel = new Table(table -> {
                     Label label = new Label("[ancient]<<IMPORTANT UPDATE>>");
                     label.setStyle(Styles.techLabel);

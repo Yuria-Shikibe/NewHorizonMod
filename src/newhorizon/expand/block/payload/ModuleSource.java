@@ -32,29 +32,29 @@ public class ModuleSource extends PayloadSource {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         Draw.rect(region, plan.drawx(), plan.drawy());
     }
 
     @Override
-    public boolean canProduce(Block b){
+    public boolean canProduce(Block b) {
         return b instanceof ModulePayload;
     }
 
     @Override
-    public boolean canProduce(UnitType t){
+    public boolean canProduce(UnitType t) {
         return false;
     }
 
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
-    public class ModuleSourceBuild extends PayloadSourceBuild{
+    public class ModuleSourceBuild extends PayloadSourceBuild {
         @Override
-        public void buildConfiguration(Table table){
+        public void buildConfiguration(Table table) {
             ContentSelectionTable.buildModuleTable(ModuleSource.this, table,
                     content.blocks().select(b -> b instanceof ModulePayload),
                     () -> (Block) config(), this::configure);

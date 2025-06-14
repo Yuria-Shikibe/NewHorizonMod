@@ -44,7 +44,7 @@ public class LineTargetI implements LExecutor.LInstruction {
         int ox = -1, oy = -1;
 
         for (Tile tile : tiles) {
-            if (tile.team() == t){
+            if (tile.team() == t) {
                 ox = tile.x;
                 oy = tile.y;
                 break;

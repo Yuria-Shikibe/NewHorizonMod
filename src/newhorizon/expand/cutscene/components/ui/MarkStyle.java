@@ -100,7 +100,7 @@ public enum MarkStyle {
         Lines.stroke(3f * Vars.renderer.getDisplayScale());
 
         for (int i = 0; i < (int) (progress * 18); i++) {
-            Lines.arc(origin.x, origin.y, scaledRadius * 1.1f, 1/20f, i * (360f/18f));
+            Lines.arc(origin.x, origin.y, scaledRadius * 1.1f, 1 / 20f, i * (360f / 18f));
         }
 
         Lines.circle(origin.x, origin.y, scaledRadius * 1.4f * MathUtil.timeValue(0.95f, 1.05f, 2f));

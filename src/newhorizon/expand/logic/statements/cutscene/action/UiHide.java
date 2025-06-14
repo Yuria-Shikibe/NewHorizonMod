@@ -7,11 +7,12 @@ import newhorizon.content.NHContent;
 public class UiHide extends LStatement {
     public String cutscene = "css";
 
-    public UiHide(String[] token){
+    public UiHide(String[] token) {
         cutscene = token[1];
     }
 
-    public UiHide() {}
+    public UiHide() {
+    }
 
     @Override
     public void build(Table table) {
@@ -44,7 +45,8 @@ public class UiHide extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class UIHideI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public UIHideI(LVar cutscene){
+
+        public UIHideI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

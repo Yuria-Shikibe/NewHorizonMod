@@ -27,12 +27,12 @@ public class PlaceholderBlock extends Block {
         buildVisibility = BuildVisibility.hidden;
     }
 
-    public boolean canBreak(Tile tile){
+    public boolean canBreak(Tile tile) {
         return false;
     }
 
     @Override
-    public boolean isHidden(){
+    public boolean isHidden() {
         return true;
     }
 
@@ -48,52 +48,53 @@ public class PlaceholderBlock extends Block {
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class PlaceholderBuild extends Building{
+    public class PlaceholderBuild extends Building {
         //check for next tick
         public boolean checkTile = false;
         public Tile linkTile;
         public ConstructBlock.ConstructBuild linkBuild;
 
-        public void updateLink(Tile tile){
+        public void updateLink(Tile tile) {
             linkTile = tile;
-            if (tile.build instanceof ConstructBlock.ConstructBuild){
+            if (tile.build instanceof ConstructBlock.ConstructBuild) {
                 linkBuild = (ConstructBlock.ConstructBuild) tile.build;
             }
         }
 
         @Override
-        public void draw() {}
+        public void draw() {
+        }
 
         @Override
         public void updateTile() {
             super.updateTile();
-            if (!checkTile && linkBuild == null){
-                if (linkTile != null){
+            if (!checkTile && linkBuild == null) {
+                if (linkTile != null) {
                     updateLink(linkTile);
                     checkTile = true;
                 }
             }
-            if (linkBuild == null || !linkBuild.isAdded()){
+            if (linkBuild == null || !linkBuild.isAdded()) {
                 tile.removeNet();
             }
         }
 
         @Override
         public TextureRegion getDisplayIcon() {
-            return linkBuild == null? this.block.uiIcon: linkBuild.getDisplayIcon();
+            return linkBuild == null ? this.block.uiIcon : linkBuild.getDisplayIcon();
         }
 
         @Override
         public String getDisplayName() {
-            String name = linkBuild == null? this.block.localizedName: linkBuild.block.localizedName;
+            String name = linkBuild == null ? this.block.localizedName : linkBuild.block.localizedName;
             return this.team == Team.derelict ? name + "\n" + Core.bundle.get("block.derelict") : name + (this.team != Vars.player.team() && !this.team.emoji.isEmpty() ? " " + this.team.emoji : "");
         }
 
         @Override
         public float handleDamage(float amount) {
-            if (linkBuild != null){
+            if (linkBuild != null) {
                 return linkBuild.handleDamage(amount);
-            }else {
+            } else {
                 return 0;
             }
         }

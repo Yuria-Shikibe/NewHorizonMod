@@ -5,16 +5,15 @@ public class BulletGen {
     public static StringBuilder code = new StringBuilder();
 
 
-
-    public static void forward(){
+    public static void forward() {
         indentation++;
     }
 
-    public static void backward(){
+    public static void backward() {
         indentation--;
     }
 
-    public static void lineBreak(){
+    public static void lineBreak() {
         code.append('\n');
     }
 }

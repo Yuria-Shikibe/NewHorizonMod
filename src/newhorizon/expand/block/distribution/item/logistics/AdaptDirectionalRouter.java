@@ -27,20 +27,20 @@ public class AdaptDirectionalRouter extends DuctRouter {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         Draw.rect(baseRegion, plan.drawx(), plan.drawy());
         Draw.rect(topRegion, plan.drawx(), plan.drawy(), plan.rotation * 90);
     }
 
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
-    public class AdaptDirectionalRouterBuild extends DuctRouterBuild{
+    public class AdaptDirectionalRouterBuild extends DuctRouterBuild {
         @Override
         public void draw() {
             Draw.rect(baseRegion, x, y);
-            if(sortItem != null){
+            if (sortItem != null) {
                 Draw.color(sortItem.color);
                 Draw.rect(itemRegion, x, y);
                 Draw.color();

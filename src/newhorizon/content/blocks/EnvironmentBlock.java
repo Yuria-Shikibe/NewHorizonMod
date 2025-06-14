@@ -12,11 +12,11 @@ public class EnvironmentBlock {
     public static Atlas_4_12_Wall armorWall;
     public static TiledFloor metalFloorPlain, labFloorLight, labFloorDark;
     public static DataFloor
-        lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
+            lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
 
     public static Floor patternPlate0, patternPlate1;
 
-    public static void load(){
+    public static void load() {
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
         metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove", true);
         metalFloorRidge = new Atlas_4_12_Floor("metal-floor-ridge");
@@ -24,17 +24,17 @@ public class EnvironmentBlock {
 
         armorWall = new Atlas_4_12_Wall("armor-wall");
 
-        armorAncient = new Atlas_4_4_Floor("armor-ancient"){{
+        armorAncient = new Atlas_4_4_Floor("armor-ancient") {{
             lightColor = NHColor.ancient.cpy().a(0.7f);
             lightRadius = 15f;
             emitLight = true;
         }};
-        armorAncientSub = new Atlas_4_4_Floor("armor-ancient-sub"){{
+        armorAncientSub = new Atlas_4_4_Floor("armor-ancient-sub") {{
             lightColor = NHColor.ancient.cpy().a(0.7f);
             lightRadius = 15f;
             emitLight = true;
         }};
-        armorQuantum = new Atlas_4_4_Floor("armor-quantum"){{
+        armorQuantum = new Atlas_4_4_Floor("armor-quantum") {{
             lightColor = NHColor.darkEnrColor.cpy().a(0.7f);
             lightRadius = 15f;
             emitLight = true;

@@ -10,6 +10,7 @@ import static newhorizon.NHVars.cutsceneUI;
 
 public class SignalTextAction extends Action {
     public String text;
+
     public SignalTextAction(String text) {
         super(0f);
         this.text = text;

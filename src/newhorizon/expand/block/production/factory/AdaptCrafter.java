@@ -27,7 +27,7 @@ import newhorizon.expand.block.inner.LinkBlock;
 
 import static mindustry.Vars.*;
 
-public class AdaptCrafter extends GenericCrafter implements MultiBlock{
+public class AdaptCrafter extends GenericCrafter implements MultiBlock {
     public Seq<Point2> linkPos = new Seq<>();
     public IntSeq linkSize = new IntSeq();
 
@@ -51,7 +51,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     @Override
     public void setBars() {
         super.setBars();
-        if(hasPower && outputsPower && powerProduction > 0f){
+        if (hasPower && outputsPower && powerProduction > 0f) {
             removeBar("power");
             addBar("power", (AdaptCrafterBuild entity) -> new Bar(() ->
                     Core.bundle.format("bar.poweroutput",
@@ -83,11 +83,11 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     }
 
     @Override
-    public void changePlacementPath(Seq<Point2> points, int rotation){
+    public void changePlacementPath(Seq<Point2> points, int rotation) {
         Placement.calculateNodes(points, this, rotation, (point, other) -> {
             if (rotation % 2 == 0) {
                 return Math.abs(point.x - other.x) == getMaxSize(size, rotation).x;
-            }else{
+            } else {
                 return Math.abs(point.y - other.y) == getMaxSize(size, rotation).y;
             }
         });
@@ -125,17 +125,17 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
     }
 
     @Override
-    public void flipRotation(BuildPlan req, boolean x){
+    public void flipRotation(BuildPlan req, boolean x) {
         if (canMirror) {
-            if (mirrorBlock() != null){
-                req.rotation = rotations[req.rotation + (x?0:4)];
+            if (mirrorBlock() != null) {
+                req.rotation = rotations[req.rotation + (x ? 0 : 4)];
             }
-        }else {
+        } else {
             super.flipRotation(req, x);
         }
     }
 
-    public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity{
+    public class AdaptCrafterBuild extends GenericCrafterBuild implements MultiBlockEntity {
         public boolean linkCreated = false;
         public Seq<Building> linkEntities;
         //ordered seq, target-source pair
@@ -144,28 +144,28 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         public Tile teamPos, statusPos;
 
         @Override
-        public boolean shouldConsume(){
-            if(outputItems != null){
-                for(var output : outputItems){
-                    if(items.get(output.item) + output.amount > itemCapacity){
+        public boolean shouldConsume() {
+            if (outputItems != null) {
+                for (var output : outputItems) {
+                    if (items.get(output.item) + output.amount > itemCapacity) {
                         return powerProduction > 0;
                     }
                 }
             }
-            if(outputLiquids != null && !ignoreLiquidFullness){
+            if (outputLiquids != null && !ignoreLiquidFullness) {
                 boolean allFull = true;
-                for(var output : outputLiquids){
-                    if(liquids.get(output.liquid) >= liquidCapacity - 0.001f){
-                        if(!dumpExtraLiquid){
+                for (var output : outputLiquids) {
+                    if (liquids.get(output.liquid) >= liquidCapacity - 0.001f) {
+                        if (!dumpExtraLiquid) {
                             return false;
                         }
-                    }else{
+                    } else {
                         //if there's still space left, it's not full for all liquids
                         allFull = false;
                     }
                 }
                 //if there is no space left for any liquid, it can't reproduce
-                if(allFull){
+                if (allFull) {
                     return false;
                 }
             }
@@ -182,7 +182,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             super.created();
             linkProximityMap = new Seq<>();
 
-            if (instantBuild || (!state.rules.editor && state.rules.instantBuild && state.rules.infiniteResources)){
+            if (instantBuild || (!state.rules.editor && state.rules.instantBuild && state.rules.infiniteResources)) {
                 linkEntities = setLinkBuild(this, block, tile, team, size, rotation);
                 linkCreated = true;
                 updateLinkProximity();
@@ -191,32 +191,32 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public void updateTile() {
-            if(isPayload()) return;
+            if (isPayload()) return;
 
-            if (!linkCreated){
+            if (!linkCreated) {
                 linkEntities = setLinkBuild(this, block, tile, team, size, rotation);
                 linkCreated = true;
                 updateLinkProximity();
             }
 
             //uh so period check to avoid invalid link entity
-            if (timer(0, 300)){
+            if (timer(0, 300)) {
                 boolean linkValid = true;
-                for (Tile t: getLinkTiles(tile, size, rotation)){
-                    if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this && lb.isValid())){
+                for (Tile t : getLinkTiles(tile, size, rotation)) {
+                    if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this && lb.isValid())) {
                         linkValid = false;
                         break;
                     }
                 }
-                if (!linkValid){
+                if (!linkValid) {
                     linkEntities.each(Building::kill);
                     kill();
                 }
             }
 
-            if (items != null && outputItems != null){
-                for (ItemStack stack: outputItems){
-                    if (items.get(stack.item) >= itemCapacity){
+            if (items != null && outputItems != null) {
+                for (ItemStack stack : outputItems) {
+                    if (items.get(stack.item) >= itemCapacity) {
                         items.set(stack.item, itemCapacity);
                     }
                 }
@@ -227,7 +227,8 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
 
         @Override
         public boolean dump(Item todump) {
-            if (!block.hasItems || items.total() == 0 || linkProximityMap.size == 0 || (todump != null && !items.has(todump))) return false;
+            if (!block.hasItems || items.total() == 0 || linkProximityMap.size == 0 || (todump != null && !items.has(todump)))
+                return false;
             int dump = dumpIndex;
             for (int i = 0; i < linkProximityMap.size; i++) {
                 int idx = (i + dump) % linkProximityMap.size;
@@ -275,7 +276,8 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 if (target != null && target.block.hasLiquids && canDumpLiquid(target, liquid) && target.liquids != null) {
                     float ofract = target.liquids.get(liquid) / target.block.liquidCapacity;
                     float fract = liquids.get(liquid) / block.liquidCapacity;
-                    if (ofract < fract) transferLiquid(target, (fract - ofract) * block.liquidCapacity / scaling, liquid);
+                    if (ofract < fract)
+                        transferLiquid(target, (fract - ofract) * block.liquidCapacity / scaling, liquid);
                 }
             }
         }
@@ -303,14 +305,14 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         }
 
         @Override
-        public void updateLinkProximity(){
+        public void updateLinkProximity() {
             if (linkEntities != null) {
                 linkProximityMap.clear();
                 //add link entity's proximity
-                for (Building link : linkEntities){
-                    for (Building linkProx : link.proximity){
-                        if (linkProx != this && !linkEntities.contains(linkProx)){
-                            if (checkValidPair(linkProx, link)){
+                for (Building link : linkEntities) {
+                    for (Building linkProx : link.proximity) {
+                        if (linkProx != this && !linkEntities.contains(linkProx)) {
+                            if (checkValidPair(linkProx, link)) {
                                 linkProximityMap.add(new Building[]{linkProx, link});
                             }
                         }
@@ -318,8 +320,8 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
                 }
 
                 //add self entity's proximity
-                for (Building prox : proximity){
-                    if (!linkEntities.contains(prox)){
+                for (Building prox : proximity) {
+                    if (!linkEntities.contains(prox)) {
                         if (checkValidPair(prox, this)) {
                             linkProximityMap.add(new Building[]{prox, this});
                         }
@@ -328,13 +330,13 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
             }
         }
 
-        public boolean checkValidPair(Building target, Building source){
-            for (Building[] pair : linkProximityMap){
+        public boolean checkValidPair(Building target, Building source) {
+            for (Building[] pair : linkProximityMap) {
                 Building pairTarget = pair[0];
                 Building pairSource = pair[1];
 
-                if (target == pairTarget){
-                    if (target.relativeTo(pairSource) == target.relativeTo(source)){
+                if (target == pairTarget) {
+                    if (target.relativeTo(pairSource) == target.relativeTo(source)) {
                         return false;
                     }
                 }
@@ -366,7 +368,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock{
         @Override
         public void drawTeam() {
             teamPos = world.tile(tileX() + teamOverlayPos(size, rotation).x, tileY() + teamOverlayPos(size, rotation).y);
-            if (teamPos != null){
+            if (teamPos != null) {
                 Draw.color(team.color);
                 Draw.rect("block-border", teamPos.worldx(), teamPos.worldy());
                 Draw.color();
