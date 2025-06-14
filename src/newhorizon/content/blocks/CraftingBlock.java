@@ -54,7 +54,7 @@ public class CraftingBlock {
             requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
             health = 320;
             craftTime = 60f;
-            itemCapacity = 20;
+            itemCapacity = 60;
             hasPower = hasItems = true;
             craftEffect = NHFx.hugeSmokeGray;
             updateEffect = new Effect(80f, e -> {
@@ -99,13 +99,13 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
-            itemCapacity = 20;
+            itemCapacity = 12;
 
             rotate = false;
 
-            addInput(ItemStack.with(Items.titanium, 3), LiquidStack.empty);
             addInput(ItemStack.with(Items.copper, 5), LiquidStack.empty);
             addInput(ItemStack.with(Items.lead, 5), LiquidStack.empty);
+            addInput(ItemStack.with(Items.titanium, 3), LiquidStack.empty);
 
             craftEffect = updateEffect = NHFx.square(NHColor.thurmixRed, 60, 6, 16, 3);
 
@@ -120,12 +120,12 @@ public class CraftingBlock {
 
             size = 2;
             craftTime = 30f;
-            itemCapacity = 20;
+            itemCapacity = 12;
 
             rotate = false;
 
-            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.empty);
             addInput(ItemStack.with(Items.beryllium, 3), LiquidStack.empty);
+            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.empty);
 
             craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
 
