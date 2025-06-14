@@ -40,10 +40,12 @@ public class BoostAbility extends Ability {
     public BoostAbility() {
         this(3);
     }
+
     public BoostAbility(float velocityMultiple, float angleCone) {
         this.velocityMultiple = velocityMultiple;
         this.angleCone = angleCone;
     }
+
     public BoostAbility(float velocityMultiple) {
         this.velocityMultiple = velocityMultiple;
     }

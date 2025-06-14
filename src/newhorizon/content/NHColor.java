@@ -11,7 +11,9 @@ public class NHColor {
         Colors.put("ancient", ancient);
         Colors.put("reddust", Pal.redderDust);
         Colors.put("ammo", Pal.ammo);
-    }    public static Color
+    }
+
+    public static Color
             ancient = Items.surgeAlloy.color.cpy().lerp(Pal.accent, 0.115f),
             ancientLight = ancient.cpy().lerp(Color.white, 0.7f),
             ancientLightMid = ancient.cpy().lerp(Color.white, 0.4f),
@@ -37,7 +39,6 @@ public class NHColor {
             xenAlpha = Color.valueOf("abc8dc"),
             xenBeta = Color.valueOf("94caed"),
             xenGamma = Color.valueOf("78c9ff");
-
 
 
 }

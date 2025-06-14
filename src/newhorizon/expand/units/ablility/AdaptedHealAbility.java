@@ -17,6 +17,7 @@ public class AdaptedHealAbility extends RepairFieldAbility {
     public float selfHealReloadTime = -1;
     protected float lastHealth = 0;
     protected float selfHealReload = 0;
+
     public AdaptedHealAbility(float amount, float reload, float range, Color applyColor) {
         this(amount, reload, range);
         this.applyColor = applyColor;

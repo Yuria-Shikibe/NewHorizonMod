@@ -5,11 +5,14 @@ package newhorizon.util.func;
  * {@link arc.math.Mathf}
  */
 public class NHMath {
+    public static final float radiansToDegrees = 180f / PI;
+    public static final float degreesToRadians = PI / 180;
     private static final int asinBits = 14; // 16KB. Adjust for accuracy.    public static final float PI = 3.1415927f, pi = PI, halfPi = PI / 2;
-    private static final int asinMask = ~(-1 << asinBits);    public static final float radiansToDegrees = 180f / PI;
-    private static final int asinCount = asinMask + 1;    public static final float degreesToRadians = PI / 180;
+    private static final int asinMask = ~(-1 << asinBits);
+    private static final int asinCount = asinMask + 1;
     private static final float[] asinTable = new float[asinCount];
     private static final float sinToIndex = asinCount / 2f;
+    private static final float radFull = PI * 2;
 
     //[-1, 1] - +1 -> [0, 2]
     static {
@@ -28,17 +31,11 @@ public class NHMath {
 
     public static float acosRad(float cos) {
         return asinTable[index((float) Math.sqrt(1 - cos * cos))];
-    }    private static final float radFull = PI * 2;
+    }
 
     public static float asinDeg(float sin) {
         return asinTable[index(sin)] * radiansToDegrees;
     }
-
-
-
-
-
-
 
 
 }

@@ -22,13 +22,16 @@ public class AncientEngine extends UnitType.UnitEngine {
     public float sizeSclPlus = 0.4f;
     public float sizeSclMin = 0.95f;
     public float alphaSclMin = 0.88f;
+
     public AncientEngine(float x, float y, float radius, float rotation) {
         super(x, y, radius, rotation);
     }
+
     public AncientEngine(float x, float y, float radius, float rotation, float phaseOffset) {
         this(x, y, radius, rotation);
         this.phaseOffset = phaseOffset;
     }
+
     public AncientEngine(float x, float y, float radius, float rotation, float alphaBase, float sizeSclPlus, float sizeSclMin) {
         this(x, y, radius, rotation);
         this.alphaBase = alphaBase;

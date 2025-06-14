@@ -94,6 +94,7 @@ public class NHSetting {
     public static abstract class SettingKey<T> {
         public final String key;
         public boolean requireReload = false;
+
         public SettingKey(String key) {
             this.key = key;
         }

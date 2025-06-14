@@ -43,6 +43,7 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject {
         Draw.color(DrawFunc.markColor(team()));
         Fill.square(x, y, range);
     };
+
     /**
      * Do Changes here if the field is not a rect.
      */

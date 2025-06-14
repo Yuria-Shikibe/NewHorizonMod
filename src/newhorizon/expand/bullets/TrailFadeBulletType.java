@@ -41,6 +41,7 @@ public class TrailFadeBulletType extends AccelBulletType {
 
         impact = true;
     }
+
     public TrailFadeBulletType(float speed, float damage) {
         this(speed, damage, "bullet");
     }
