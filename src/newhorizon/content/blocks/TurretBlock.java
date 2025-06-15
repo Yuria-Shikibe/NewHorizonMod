@@ -140,7 +140,7 @@ public class TurretBlock {
             shootCone = 24f;
             shootSound = NHSounds.laser3;
             shootType = new PosLightningType() {{
-                damage = 500f;
+                damage = 150f;
                 shieldDamageMultiplier = 0.2f;
                 lightningColor = hitColor = NHColor.lightSkyBack;
                 maxRange = rangeOverride = 250f;

@@ -50,7 +50,7 @@ public class PowerBlock {
 
             size = 2;
             health = 640;
-            laserRange = 12;
+            laserRange = 16;
             maxNodes = 20;
             gravityRange = laserRange * tilesize * 1.5f;
             clipSize = gravityRange * 2f;
@@ -61,7 +61,7 @@ public class PowerBlock {
 
             size = 3;
             health = 1250;
-            laserRange = 30;
+            laserRange = 40;
             maxNodes = 6;
             gravityRange = laserRange * tilesize * 1.2f;
             clipSize = gravityRange * 2f;
