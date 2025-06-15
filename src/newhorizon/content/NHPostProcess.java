@@ -25,6 +25,7 @@ import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.power.ConsumeGenerator;
+import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -617,16 +618,56 @@ public class NHPostProcess {
     }
 
     private static void adjustVanillaLogic() {
-        adjustContent(Blocks.message, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 5));
-        adjustContent(Blocks.reinforcedMessage, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 5));
-        adjustContent(Blocks.switchBlock, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 5));
-        adjustContent(Blocks.microProcessor, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 50, Items.titanium, 50));
-        adjustContent(Blocks.logicProcessor, content -> ((Block) content).requirements = ItemStack.with(NHItems.juniorProcessor, 50, NHItems.presstanium, 50));
-        adjustContent(Blocks.hyperProcessor, content -> ((Block) content).requirements = ItemStack.with(NHItems.juniorProcessor, 100, NHItems.zeta, 200, Items.surgeAlloy, 150));
-        adjustContent(Blocks.memoryCell, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 30));
-        adjustContent(Blocks.memoryBank, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 80, Items.phaseFabric, 40));
-        adjustContent(Blocks.logicDisplay, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 50));
-        adjustContent(Blocks.largeLogicDisplay, content -> ((Block) content).requirements = ItemStack.with(Items.silicon, 150, Items.phaseFabric, 75));
+        adjustContent(Blocks.message, content -> {
+			MessageBlock logicBlock = (MessageBlock) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.reinforcedMessage, content -> {
+			MessageBlock logicBlock = (MessageBlock) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.switchBlock, content -> {
+			SwitchBlock logicBlock = (SwitchBlock) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.microProcessor, content -> {
+			LogicBlock logicBlock = (LogicBlock) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 50, Items.titanium, 50);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.logicProcessor, content -> {
+			LogicBlock logicBlock = (LogicBlock) content;
+			logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 50, NHItems.presstanium, 50);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.hyperProcessor, content -> {
+			LogicBlock logicBlock = (LogicBlock) content;
+			logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 100, NHItems.zeta, 200, Items.surgeAlloy, 150);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.memoryCell, content -> {
+			MemoryBlock logicBlock = (MemoryBlock) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 30);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.memoryBank, content -> {
+			MemoryBlock logicBlock = (MemoryBlock) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 80, Items.phaseFabric, 40);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.logicDisplay, content -> {
+			LogicDisplay logicBlock = (LogicDisplay) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 50);
+			logicBlock.alwaysUnlocked = true;
+		});
+		adjustContent(Blocks.largeLogicDisplay, content -> {
+			LogicDisplay logicBlock = (LogicDisplay) content;
+			logicBlock.requirements = ItemStack.with(Items.silicon, 150, Items.phaseFabric, 75);
+			logicBlock.alwaysUnlocked = true;
+		});
     }
 
     private static void adjustVanillaLogistic() {
@@ -1131,8 +1172,8 @@ public class NHPostProcess {
         hideContent(Blocks.payloadRouter);
         hideContent(Blocks.reinforcedPayloadConveyor);
         hideContent(Blocks.reinforcedPayloadRouter);
-        hideContent(Blocks.payloadMassDriver);
-        hideContent(Blocks.largePayloadMassDriver);
+        //hideContent(Blocks.payloadMassDriver);
+        //hideContent(Blocks.largePayloadMassDriver);
         hideContent(Blocks.deconstructor);
         hideContent(Blocks.smallDeconstructor);
         hideContent(Blocks.constructor);
