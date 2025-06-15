@@ -108,7 +108,7 @@ public class NewHorizon extends Mod {
 
     public static FeatureLog[] getUpdateContent() {
         return new FeatureLog[]{
-                new FeatureLog(0, FeatureLog.featureType.CONTENT, NHContent.icon),
+                new FeatureLog(0, FeatureLog.featureType.CONTENT, NHContent.raid),
         };
     }
 

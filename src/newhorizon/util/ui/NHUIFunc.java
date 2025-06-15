@@ -171,6 +171,7 @@ public class NHUIFunc {
 
     public static void showToast(Drawable icon, String text, Sound sound) {
         if (state.isMenu()) return;
+        if (headless) return;
 
         scheduleToast(() -> {
             sound.play();
