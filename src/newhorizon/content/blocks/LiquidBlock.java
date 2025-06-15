@@ -24,6 +24,7 @@ public class LiquidBlock {
             size = 1;
 
             enableDrawStatus = false;
+            placeableLiquid = true;
         }};
 
         turboPump = new AdaptPump("turbo-pump") {{
@@ -35,6 +36,7 @@ public class LiquidBlock {
             liquidCapacity = 120f;
             hasPower = true;
             size = 2;
+            placeableLiquid = true;
         }};
 
         standardLiquidStorage = new LiquidRouter("standard-liquid-storage") {{
@@ -44,6 +46,7 @@ public class LiquidBlock {
             underBullets = true;
             liquidCapacity = 2000;
             armor = 20f;
+            placeableLiquid = true;
         }};
 
         heavyLiquidStorage = new LiquidRouter("heavy-liquid-storage") {{
@@ -53,6 +56,7 @@ public class LiquidBlock {
             underBullets = true;
             liquidCapacity = 6000;
             armor = 20f;
+            placeableLiquid = true;
         }};
     }
 }
