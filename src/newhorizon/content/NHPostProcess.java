@@ -621,7 +621,7 @@ public class NHPostProcess {
         adjustContent(Blocks.message, content -> {
 			MessageBlock logicBlock = (MessageBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-			logicBlock.alwaysUnlocked = true;
+			alwaysUnlocked = true;
 		});
 		adjustContent(Blocks.reinforcedMessage, content -> {
 			MessageBlock logicBlock = (MessageBlock) content;
