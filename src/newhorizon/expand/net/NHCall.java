@@ -16,6 +16,8 @@ import newhorizon.expand.net.packet.AlertToastPacket;
 import newhorizon.expand.net.packet.WarnHUDPacket;
 import newhorizon.util.ui.NHUIFunc;
 
+import static mindustry.Vars.headless;
+
 public class NHCall {
     public static void triggerActiveAbility(Unit unit, int abilityId) {
         if (Vars.net.server() || !Vars.net.active()) {
@@ -54,6 +56,7 @@ public class NHCall {
 
     public static void alertToastTable(int iconID, int soundID, String text) {
         if (Vars.net.server() || !Vars.net.active()) {
+            if (headless) return;
             NHUIFunc.showToast(getDrawable(iconID), text, getSound(soundID));
         }
 
