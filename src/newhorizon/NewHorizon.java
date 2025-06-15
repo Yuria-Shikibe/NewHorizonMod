@@ -27,6 +27,7 @@ import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
+import static mindustry.Vars.mods;
 import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -187,13 +188,33 @@ public class NewHorizon extends Mod {
     @Override
     public void registerClientCommands(CommandHandler handler) {
         super.registerClientCommands(handler);
+
+        //from JSEval
+        handler.<Player>register("js", "<code...>", "Execute JavaScript code.", (args, player) -> {
+            if (player.admin) {
+                String output = mods.getScripts().runConsole(args[0]);
+                player.sendMessage("> " + (isError(output) ? "[#ff341c]" + output : output));
+            } else {
+                player.sendMessage("[scarlet]You must be admin to use this command.");
+            }
+        });
+    }
+
+    private boolean isError(String output) {
+        try {
+            String errorName = output.substring(0, output.indexOf(' ') - 1);
+            Class.forName("org.mozilla.javascript." + errorName);
+            return true;
+        } catch (Throwable e) {
+            return false;
+        }
     }
 
     @Override
     public void loadContent() {
         Time.mark();
 
-        MOD = Vars.mods.getMod(getClass());
+        MOD = mods.getMod(getClass());
 
         EntityRegister.load();
         NHRegister.load();
