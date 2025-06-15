@@ -154,7 +154,7 @@ public interface TypeDamageBulletType {
     default void typedCreateSplash(BulletType type, Bullet b, float x, float y) {
         if (type.splashDamageRadius > 0 && !b.absorbed) {
             //do seperated damage
-            Damage.tileDamage(b.team, World.toTile(x), World.toTile(y), type.splashDamageRadius, type.splashDamage * b.type.buildingDamageMultiplier, b);
+            Damage.tileDamage(b.team, World.toTile(x), World.toTile(y), type.splashDamageRadius / tilesize, type.splashDamage * b.type.buildingDamageMultiplier, b);
 
             Damage.damageUnits(
                     b.team, x, y, type.splashDamageRadius, 0,

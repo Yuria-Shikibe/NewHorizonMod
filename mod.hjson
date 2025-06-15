@@ -3,6 +3,6 @@ author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "[sky]ALPHA RELEASE FOR V8!!!"
-version: "2.0-alpha-41"
+version: "2.0-alpha-42"
 
 minGameVersion: 147

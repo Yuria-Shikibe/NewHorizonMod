@@ -6,6 +6,7 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -13,6 +14,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.game.MapObjectives;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
@@ -22,10 +24,12 @@ import mindustry.logic.*;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockFlag;
+import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
+import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.func.WeightedRandom;
 import newhorizon.util.graphic.EffectWrapper;
@@ -42,54 +46,13 @@ public class DefaultRaid extends LStatement {
     public String
             //objective flag this statement using
             flag = "event-executor", timer = "event-timer",
-    //alert time - objective timer
-    //raid time - the time raid lasts
-    alertTime = "10", raidTime = "5",
-            bulletDamage = "1000", bulletSpeed = "1", bulletCount = "10", inaccuracy = "0";
+            //alert time - objective timer
+            //raid time - the time raid lasts
+            alertTime = "10", raidTime = "5",
+            bulletDamage = "1000", bulletSpeed = "1", bulletCount = "10", inaccuracy = "30";
 
-    public BulletType bulletType = new BasicRaidBulletType() {{
-        speed = 7f;
-        damage = 1000f;
-        lifetime = 200f;
-
-        trailEffect = NHFx.hugeTrail;
-        trailParam = 6f;
-        trailChance = 0.2f;
-        trailInterval = 3;
-        trailWidth = 5f;
-        trailLength = 55;
-        trailInterp = Interp.slope;
-
-
-        splashDamage = damage;
-        splashDamageRadius = 120;
-        scaledSplashDamage = true;
-
-        despawnHit = true;
-        collides = false;
-
-        shrinkY = shrinkX = 0.33f;
-        width = 17f;
-        height = 55f;
-
-        despawnShake = hitShake = 12f;
-        hitEffect = new MultiEffect(
-                NHFx.square(hitColor, 200, 20, splashDamageRadius + 80, 10),
-                NHFx.lightningHitLarge,
-                NHFx.hitSpark(hitColor, 130, 85, splashDamageRadius * 1.5f, 2.2f, 10f),
-                NHFx.subEffect(140, splashDamageRadius + 12, 33, 34f, Interp.pow2Out, ((i, x, y, rot, fin) -> {
-                    float fout = Interp.pow2Out.apply(1 - fin);
-                    for (int s : Mathf.signs) {
-                        Drawf.tri(x, y, 12 * fout, 45 * Mathf.curve(fin, 0, 0.1f) * NHFx.fout(fin, 0.25f), rot + s * 90);
-                    }
-                })));
-        despawnEffect = NHFx.circleOut(145f, splashDamageRadius + 15f, 3f);
-        shootEffect = EffectWrapper.wrap(NHFx.missileShoot, hitColor);
-        smokeEffect = NHFx.instShoot(hitColor, frontColor);
-
-        despawnSound = hitSound = Sounds.largeExplosion;
-    }};
-
+    public Vec2 source = new Vec2(), target = new Vec2();
+    
     public DefaultRaid(String[] tokens) {
         try {
             flag = tokens[1];
@@ -248,32 +211,17 @@ public class DefaultRaid extends LStatement {
                 }
             }
         }
-
-        public void reset() {
-            curTime = 0f;
-            iconShown = false;
-            state.rules.objectiveFlags.remove(flag.name);
-        }
-
-        public void createBullet() {
-            Team player = state.rules.defaultTeam;
-            Team wave = state.rules.waveTeam;
-
+        
+        public void updatePosition(){
             float wx = Mathf.random(0, world.unitWidth());
             float wy = Mathf.random(0, world.unitHeight());
-
-            float dmg = damage.numf();
-            float spd = speed.numf();
-            if (spd <= 0f) spd = 1f;
-
-            Tmp.v1.trns(Mathf.random(360f), Mathf.random(inaccuracy.numf() * tilesize));
 
             Seq<Tile> spawns = spawner.getSpawns();
             if (!spawns.isEmpty()) {
                 Tile t = spawns.random();
-                Tmp.v2.set(t.worldx(), t.worldy());
+                source.set(t.worldx(), t.worldy());
             } else {
-                Tmp.v2.setZero();
+                source.setZero();
             }
 
             AtomicReference<BlockFlag> flag = new AtomicReference<>(BlockFlag.core);
@@ -283,22 +231,40 @@ public class DefaultRaid extends LStatement {
                     new WeightedOption(2f, () -> flag.set(BlockFlag.factory)),
                     new WeightedOption(1f, () -> flag.set(BlockFlag.core))
             );
-            Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(player, flag.get()));
+            Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(state.rules.waveTeam, flag.get()));
+            if (b == null) b = state.rules.defaultTeam.core();
             if (b != null) {
-                Tmp.v3.set(b.x, b.y);
+                target.set(b.x, b.y);
             } else {
-                Tmp.v3.setZero();
+                target.setZero();
             }
+        }
 
-            float sx = Tmp.v2.x, sy = Tmp.v2.y, tx = Tmp.v3.x, ty = Tmp.v3.y;
+        public void reset() {
+            curTime = 0f;
+            iconShown = false;
+            state.rules.objectiveFlags.remove(flag.name);
+        }
+
+        public void createBullet() {
+            BulletType bulletType = NHBullets.raidBulletType;
+            
+            float dmg = damage.numf();
+            float spd = speed.numf();
+            if (spd <= 0f) spd = 1f;
+
+            Tmp.v1.trns(Mathf.random(360f), Mathf.random(inaccuracy.numf() * tilesize));
+            
+            float sx = source.x, sy = source.y, tx = target.x, ty = target.y;
             float dst = Mathf.dst(sx, sy, tx, ty);
             float ang = Angles.angle(sx, sy, tx, ty);
             float lifetimeScl = dst / (bulletType.speed * bulletType.lifetime * spd);
-            Call.createBullet(bulletType, wave, sx + Tmp.v1.x, sy + Tmp.v1.y, ang, dmg, spd, lifetimeScl);
+            Call.createBullet(bulletType, state.rules.waveTeam, sx + Tmp.v1.x, sy + Tmp.v1.y, ang, dmg, spd, lifetimeScl);
         }
 
         public void showAlert() {
             Team wave = state.rules.waveTeam;
+            updatePosition();
 
             Call.sendMessage("/hud_raid " + wave.id);
 
@@ -318,6 +284,11 @@ public class DefaultRaid extends LStatement {
             state.rules.objectives.each(mapObjective -> {
                 if (mapObjective instanceof TriggerObjective obj && Objects.equals(obj.timer, timer.name)) {
                     obj.trigger((alertTime.numf()) * Time.toSeconds);
+                    for (MapObjectives.ObjectiveMarker marker: obj.markers) {
+                        if (marker instanceof RaidIndicator idc){
+                            idc.init(wave.id, 1, inaccuracy.numf() * tilesize, timer.name).setPosition(source, target);
+                        }
+                    }
                 }
             });
 

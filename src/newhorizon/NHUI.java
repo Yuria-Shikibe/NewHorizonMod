@@ -274,19 +274,13 @@ public class NHUI {
             if (e instanceof ReuseObjective obj) {
                 Floatp countup = obj::getCountup;
                 Floatp realTime = () -> obj.duration * state.rules.objectiveTimerMultiplier;
-                TextureRegion region = Icon.refresh.getRegion();
-                if (obj.executor.contains("event-0")) region = NHContent.raid;
-                if (obj.executor.contains("event-1")) region = NHContent.fleet;
-                if (obj.executor.contains("event-2")) region = NHContent.objective;
-
-                TextureRegion finalRegion = region;
-                t.add(new Stack(
-                        new Table(table -> table.add(new DelaySlideBar(
-                                () -> Pal.accent,
-                                () -> "     " + UI.formatTime(countup.get()) + "/" + UI.formatTime(realTime.get()),
-                                () -> Mathf.clamp(countup.get() / realTime.get())
-                        )).padLeft(20f).height(40).expandX().fillX()),
-                        new Table(table -> table.image(finalRegion).size(56).pad(-8).expandX().left())
+                t.add(objectiveTable(
+                        Icon.refresh.getRegion(),
+                        () -> (int) countup.get(),
+                        () -> (int) realTime.get(),
+                        () -> UI.formatTime(countup.get()) + "/" + UI.formatTime(realTime.get()),
+                        obj::isCompleted,
+                        false
                 ));
             }
 
@@ -319,7 +313,7 @@ public class NHUI {
                         () -> Mathf.clamp((float) value.get() / target.get())
                 )).padLeft(20f).height(40).expandX().fillX()),
                 new Table(image -> image.image(region).scaling(Scaling.fit).size(32).padTop(4f).padBottom(4f).padLeft(56f).padRight(8)).left(),
-                new Table(table -> table.add(new ObjectiveSign(Color.white, Pal.accent, 2, 4, 5, checked)).size(40).expandX().left())
+                new Table(table -> table.add(new ObjectiveSign(Pal.gray, Pal.accent, 2, 4, 5, checked)).size(40).expandX().left())
         );
     }
 

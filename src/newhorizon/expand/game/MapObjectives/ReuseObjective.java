@@ -12,6 +12,14 @@ public class ReuseObjective extends MapObjectives.MapObjective {
 
     protected float countup;
 
+    public ReuseObjective(float duration, String trigger, String executor) {
+        this.duration = duration;
+        this.trigger = trigger;
+        this.executor = executor;
+    }
+
+    public ReuseObjective() {}
+
     //always update in loop if executor not exist
     @Override
     public boolean update() {

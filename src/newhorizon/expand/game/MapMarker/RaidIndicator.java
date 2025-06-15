@@ -8,6 +8,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.game.MapObjectives;
@@ -21,6 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static mindustry.Vars.state;
+import static mindustry.Vars.tilesize;
 
 public class RaidIndicator extends MapObjectives.PosMarker {
     public Vec2 source = new Vec2();
@@ -48,8 +50,8 @@ public class RaidIndicator extends MapObjectives.PosMarker {
     }
 
     public RaidIndicator setPosition(Vec2 source, Vec2 target) {
-        this.source = source;
-        this.target = target;
+        this.source.set(source);
+        this.target.set(target);
         return this;
     }
 
@@ -87,10 +89,12 @@ public class RaidIndicator extends MapObjectives.PosMarker {
         Draw.color(Team.get(teamID).color, Color.white, 0.075f);
         Draw.blend(Blending.additive);
 
-        for (int i = 0; i < 4; i++) {
+        float size = NHContent.arrowRegion.height;
+
+        for (int i = 0; i < radius / size * tilesize; i++) {
             float s = (1 - ((Time.time + 25 * i) % 100) / 100) * scale() * Draw.scl * 1.75f;
             Tmp.v1.trns(ang + 180, 36 + 12 * i).add(target);
-            Draw.rect(NHContent.arrowRegion, Tmp.v1, NHContent.arrowRegion.width * s, NHContent.arrowRegion.height * s, ang - 90);
+            Draw.rect(NHContent.arrowRegion, Tmp.v1, size * s, size * s, ang - 90);
         }
 
         Draw.blend();

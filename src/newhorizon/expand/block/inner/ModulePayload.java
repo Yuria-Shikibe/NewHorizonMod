@@ -35,11 +35,6 @@ public class ModulePayload extends Block {
     }
 
     @Override
-    public ContentType getContentType() {
-        return ContentType.mech_UNUSED;
-    }
-
-    @Override
     public boolean canBeBuilt() {
         return false;
     }

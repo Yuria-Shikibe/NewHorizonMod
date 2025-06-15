@@ -52,11 +52,8 @@ public class NHBullets {
     public static UnitType airRaidMissile, skyMissile;
 
     public static BulletType
-            lightningAir,
-
-    artilleryHydro, artilleryMulti, artilleryNgt, artilleryFusion, artilleryPhase,
-
-    shieldDestroyer, ancientArtilleryProjectile,
+            lightningAir, artilleryHydro, artilleryMulti, artilleryNgt, artilleryFusion, artilleryPhase,
+            shieldDestroyer, ancientArtilleryProjectile,
             ancientBall, ancientStd,
             pesterBlackHole, nuBlackHole, laugraBullet,
             collapserBullet,
@@ -67,7 +64,9 @@ public class NHBullets {
             arc_9000, eternity, arc_9000_frag,
             synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,
             missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
-            ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid;
+            ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid,
+            raidBulletType
+    ;
 
     private static void loadPriority() {
         arc_9000_frag = new FlakBulletType(3.75f, 200) {
@@ -246,6 +245,49 @@ public class NHBullets {
         STRIKE = NewHorizon.name("strike");
 
         loadPriority();
+
+        raidBulletType = new BasicRaidBulletType() {{
+            speed = 7f;
+            damage = 1000f;
+            lifetime = 200f;
+
+            trailEffect = NHFx.hugeTrail;
+            trailParam = 6f;
+            trailChance = 0.2f;
+            trailInterval = 3;
+            trailWidth = 5f;
+            trailLength = 55;
+            trailInterp = Interp.slope;
+
+            splashDamage = damage;
+            splashDamageRadius = 120;
+            splashDamagePierce = false;
+            scaledSplashDamage = true;
+
+            despawnHit = true;
+            collides = false;
+
+            shrinkY = shrinkX = 0.33f;
+            width = 17f;
+            height = 55f;
+
+            despawnShake = hitShake = 12f;
+            hitEffect = new MultiEffect(
+                    NHFx.square(hitColor, 200, 20, splashDamageRadius + 80, 10),
+                    NHFx.lightningHitLarge,
+                    NHFx.hitSpark(hitColor, 130, 85, splashDamageRadius * 1.5f, 2.2f, 10f),
+                    NHFx.subEffect(140, splashDamageRadius + 12, 33, 34f, Interp.pow2Out, ((i, x, y, rot, fin) -> {
+                        float fout = Interp.pow2Out.apply(1 - fin);
+                        for (int s : Mathf.signs) {
+                            Drawf.tri(x, y, 12 * fout, 45 * Mathf.curve(fin, 0, 0.1f) * NHFx.fout(fin, 0.25f), rot + s * 90);
+                        }
+                    })));
+            despawnEffect = NHFx.circleOut(145f, splashDamageRadius + 15f, 3f);
+            shootEffect = EffectWrapper.wrap(NHFx.missileShoot, hitColor);
+            smokeEffect = NHFx.instShoot(hitColor, frontColor);
+
+            despawnSound = hitSound = Sounds.largeExplosion;
+        }};
 
         basicRaid = new BasicRaidBulletType();
 
