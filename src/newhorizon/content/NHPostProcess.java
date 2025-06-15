@@ -621,53 +621,52 @@ public class NHPostProcess {
         	adjustContent(Blocks.message, content -> {
 			MessageBlock logicBlock = (MessageBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-			logicBlock.alwaysUnlocked = true;
 			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.reinforcedMessage, content -> {
 			MessageBlock logicBlock = (MessageBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.switchBlock, content -> {
 			SwitchBlock logicBlock = (SwitchBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.microProcessor, content -> {
 			LogicBlock logicBlock = (LogicBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 50, Items.titanium, 50);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.logicProcessor, content -> {
 			LogicBlock logicBlock = (LogicBlock) content;
 			logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 50, NHItems.presstanium, 50);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.hyperProcessor, content -> {
 			LogicBlock logicBlock = (LogicBlock) content;
 			logicBlock.requirements = ItemStack.with(NHItems.juniorProcessor, 100, NHItems.zeta, 200, Items.surgeAlloy, 150);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.memoryCell, content -> {
 			MemoryBlock logicBlock = (MemoryBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 30);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.memoryBank, content -> {
 			MemoryBlock logicBlock = (MemoryBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 80, Items.phaseFabric, 40);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.logicDisplay, content -> {
 			LogicDisplay logicBlock = (LogicDisplay) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 50);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.largeLogicDisplay, content -> {
 			LogicDisplay logicBlock = (LogicDisplay) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 150, Items.phaseFabric, 75);
-			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
     }
 
