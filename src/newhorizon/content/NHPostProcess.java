@@ -823,7 +823,7 @@ public class NHPostProcess {
             turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
                 lightningColor = trailColor = hitColor = lightColor = backColor = NHItems.zeta.color;
                 frontColor = Color.white;
-                speed = 6.5f;
+                speed = 7f;
                 damage = 20;
                 rangeChange = 40;
                 lightningDamage = 10;
