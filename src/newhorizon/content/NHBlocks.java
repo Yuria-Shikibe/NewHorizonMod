@@ -2249,7 +2249,7 @@ public class NHBlocks {
     private static void loadPowers() {
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
-            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, Items.copper, 200, Items.graphite, 80, Items.metaglass, 60));
+            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, Items.graphite, 80, NHItems.presstanium, 60));
 
             lightColor = Pal.techBlue;
             consumeEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Liquids.hydrogen.color.cpy().lerp(Liquids.nitrogen.color, 0.4f).a(0.56f));
@@ -2259,7 +2259,7 @@ public class NHBlocks {
                 Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
             });
             //			//NHTechTree.add(Blocks.thoriumReactor,this);
-            powerProduction = 2000f / 60f;
+            powerProduction = 1800f / 60f;
             itemCapacity = 40;
             liquidCapacity = 30;
             itemDuration = 240f;
