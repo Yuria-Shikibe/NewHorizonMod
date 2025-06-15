@@ -622,6 +622,7 @@ public class NHPostProcess {
 			MessageBlock logicBlock = (MessageBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
 			logicBlock.alwaysUnlocked = true;
+			logicBlock.shownPlanets.addAll(Planets.erekir);
 		});
 		adjustContent(Blocks.reinforcedMessage, content -> {
 			MessageBlock logicBlock = (MessageBlock) content;
