@@ -3,7 +3,6 @@ package newhorizon.expand.logic;
 import arc.Core;
 import arc.flabel.FLabel;
 import arc.math.Angles;
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
@@ -13,26 +12,21 @@ import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.bullet.BulletType;
-import mindustry.entities.effect.MultiEffect;
 import mindustry.game.MapObjectives;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Drawf;
 import mindustry.logic.*;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockFlag;
 import newhorizon.content.NHBullets;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
-import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
+import newhorizon.expand.net.NHCall;
 import newhorizon.util.func.WeightedRandom;
-import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.struct.WeightedOption;
 import newhorizon.util.ui.NHUIFunc;
 
@@ -48,11 +42,11 @@ public class DefaultRaid extends LStatement {
             flag = "event-executor", timer = "event-timer",
             //alert time - objective timer
             //raid time - the time raid lasts
-            alertTime = "10", raidTime = "5",
-            bulletDamage = "1000", bulletSpeed = "1", bulletCount = "10", inaccuracy = "30";
+            alertTime = "30", raidTime = "5",
+            bulletDamage = "500", bulletSpeed = "1", bulletCount = "10", inaccuracy = "30";
 
     public Vec2 source = new Vec2(), target = new Vec2();
-    
+
     public DefaultRaid(String[] tokens) {
         try {
             flag = tokens[1];
@@ -167,6 +161,9 @@ public class DefaultRaid extends LStatement {
         public int raidCounter = 0;
         public float curTime;
         public boolean iconShown = false;
+        public boolean labelShown = false;
+        public int threatLevel = 0;
+
 
         public DefaultRaidInstruction(LVar flag, LVar timer, LVar alertTime, LVar raidTime, LVar damage, LVar speed, LVar count, LVar inaccuracy) {
             this.flag = flag;
@@ -180,8 +177,7 @@ public class DefaultRaid extends LStatement {
             this.inaccuracy = inaccuracy;
         }
 
-        public DefaultRaidInstruction() {
-        }
+        public DefaultRaidInstruction() {}
 
         @Override
         public void run(LExecutor exec) {
@@ -200,8 +196,10 @@ public class DefaultRaid extends LStatement {
                 curTime += Time.delta / 60f;
                 if (!iconShown) showAlert();
                 if (curTime > alertTime.numf()) {
+                    if (!labelShown) showLabel();
+
                     float raidTimer = curTime - alertTime.numf();
-                    int raidCount = Mathf.round((raidTimer / raidTime.numf()) * count.numi());
+                    int raidCount = Mathf.round((raidTimer / raidTime.numf()) * count.numi() * threatScl());
                     int raid = raidCount - raidCounter;
                     raidCounter = raidCount;
 
@@ -226,9 +224,9 @@ public class DefaultRaid extends LStatement {
 
             AtomicReference<BlockFlag> flag = new AtomicReference<>(BlockFlag.core);
             WeightedRandom.random(
-                    new WeightedOption(1f, () -> flag.set(BlockFlag.turret)),
-                    new WeightedOption(2f, () -> flag.set(BlockFlag.generator)),
-                    new WeightedOption(2f, () -> flag.set(BlockFlag.factory)),
+                    new WeightedOption(3f, () -> flag.set(BlockFlag.turret)),
+                    new WeightedOption(3f, () -> flag.set(BlockFlag.generator)),
+                    new WeightedOption(3f, () -> flag.set(BlockFlag.factory)),
                     new WeightedOption(1f, () -> flag.set(BlockFlag.core))
             );
             Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(state.rules.waveTeam, flag.get()));
@@ -238,18 +236,25 @@ public class DefaultRaid extends LStatement {
             } else {
                 target.setZero();
             }
+
+            threatLevel = Math.max(ThreatLevel.getTeamThreat(state.rules.defaultTeam), 1);
         }
 
         public void reset() {
             curTime = 0f;
             iconShown = false;
+            labelShown = false;
             state.rules.objectiveFlags.remove(flag.name);
+        }
+
+        public float threatScl(){
+            return Mathf.sqrt(threatLevel);
         }
 
         public void createBullet() {
             BulletType bulletType = NHBullets.raidBulletType;
             
-            float dmg = damage.numf();
+            float dmg = damage.numf() * threatScl();
             float spd = speed.numf();
             if (spd <= 0f) spd = 1f;
 
@@ -262,38 +267,48 @@ public class DefaultRaid extends LStatement {
             Call.createBullet(bulletType, state.rules.waveTeam, sx + Tmp.v1.x, sy + Tmp.v1.y, ang, dmg, spd, lifetimeScl);
         }
 
+        public void showLabel(){
+            NHCall.alertToastTable(1, 1, "[#ff7b69]Raid: []" + "<" + (int)(target.x / tilesize) + "," + (int)(target.y / tilesize) + ">");
+
+            labelShown = true;
+        }
+
         public void showAlert() {
-            Team wave = state.rules.waveTeam;
             updatePosition();
-
-            Call.sendMessage("/hud_raid " + wave.id);
-
-            NHUIFunc.showLabel(2.5f, t -> {
-                t.background(Styles.black5);
-                t.table(t2 -> {
-                    t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(wave.color);
-                    t2.image(NHContent.raid).fill().color(wave.color);
-                    t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(wave.color);
-                }).growX().pad(OFFSET / 2).fillY().row();
-
-                t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("nh.cutscene.event.raid-alert") + " >>")).color(wave.color).padBottom(4).row()).growX().fillY();
-            });
-
-            NHSounds.alert2.play();
-
-            state.rules.objectives.each(mapObjective -> {
-                if (mapObjective instanceof TriggerObjective obj && Objects.equals(obj.timer, timer.name)) {
-                    obj.trigger((alertTime.numf()) * Time.toSeconds);
-                    for (MapObjectives.ObjectiveMarker marker: obj.markers) {
-                        if (marker instanceof RaidIndicator idc){
-                            idc.init(wave.id, 1, inaccuracy.numf() * tilesize, timer.name).setPosition(source, target);
-                        }
-                    }
-                }
-            });
 
             iconShown = true;
             raidCounter = 0;
+
+            NHCall.warnHudPacket(timer.name, alertTime.numf(), inaccuracy.numf(), source.x, source.y, target.x, target.y);
         }
+    }
+
+    public static void clientAlertHud(String timerName, float time, float range, float sx, float sy, float tx, float ty) {
+        Team wave = state.rules.waveTeam;
+
+        NHUIFunc.showLabel(2.5f, t -> {
+            t.background(Styles.black5);
+            t.table(t2 -> {
+                t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padRight(-9).color(wave.color);
+                t2.image(NHContent.raid).fill().color(wave.color);
+                t2.image().growX().height(OFFSET / 2).pad(OFFSET / 3).padLeft(-9).color(wave.color);
+            }).growX().pad(OFFSET / 2).fillY().row();
+
+            t.table(l -> l.add(new FLabel("<< " + Core.bundle.get("nh.cutscene.event.raid-alert") + " >>")).color(wave.color).padBottom(4).row()).growX().fillY();
+        });
+
+        NHSounds.alert2.play();
+
+        state.rules.objectives.each(mapObjective -> {
+            if (mapObjective instanceof TriggerObjective obj && Objects.equals(obj.timer, timerName)) {
+                obj.trigger(time * Time.toSeconds);
+                for (MapObjectives.ObjectiveMarker marker: obj.markers) {
+                    if (marker instanceof RaidIndicator idc){
+                        idc.init(wave.id, 1, range * tilesize, timerName)
+                                .setPosition(Tmp.v2.set(sx, sy), Tmp.v3.set(tx, ty));
+                    }
+                }
+            }
+        });
     }
 }

@@ -1,14 +1,18 @@
 package newhorizon.util.ui;
 
 import arc.Core;
+import arc.audio.Sound;
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.math.Interp;
 import arc.scene.actions.Actions;
 import arc.scene.event.Touchable;
+import arc.scene.style.Drawable;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
+import arc.util.Align;
 import arc.util.Scaling;
 import arc.util.Time;
 import mindustry.ctype.UnlockableContent;
@@ -151,6 +155,47 @@ public class NHUIFunc {
             });
             lastToast += duration;
         }
+    }
+
+    private static void scheduleToast(Runnable run) {
+        long duration = (int) (3.5 * 1000);
+        long since = Time.timeSinceMillis(lastToast);
+        if (since > duration) {
+            lastToast = Time.millis();
+            run.run();
+        } else {
+            Time.runTask((duration - since) / 1000f * 60f, run);
+            lastToast += duration;
+        }
+    }
+
+    public static void showToast(Drawable icon, String text, Sound sound) {
+        if (state.isMenu()) return;
+
+        scheduleToast(() -> {
+            sound.play();
+
+            Table table = new Table(Tex.pane2);
+            table.update(() -> {
+                if (state.isMenu() || !ui.hudfrag.shown) {
+                    table.remove();
+                }
+            });
+            table.margin(12);
+            table.image(icon).size(48).scaling(Scaling.fit).pad(-4).padLeft(12);
+            table.add(text).wrap().width(280f).get().setAlignment(Align.center, Align.center);
+            table.pack();
+
+            //create container table which will align and move
+            Table container = Core.scene.table();
+            container.top().add(table);
+            container.setTranslation(0, table.getPrefHeight());
+            container.actions(
+                    Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
+                    //nesting actions() calls is necessary so the right prefHeight() is used
+                    Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove()))
+            );
+        });
     }
 
     public static class LinkTable extends Table {

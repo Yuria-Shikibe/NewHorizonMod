@@ -1,7 +1,6 @@
 package newhorizon.util.ui;
 
 import arc.Core;
-import arc.audio.Sound;
 import arc.func.Boolp;
 import arc.func.Cons;
 import arc.func.Floatp;
@@ -23,7 +22,6 @@ import arc.scene.actions.Actions;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
 import arc.scene.event.Touchable;
-import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
@@ -293,18 +291,6 @@ public class TableFunc {
         Core.scene.root.addChildAt(Math.max(parentT.getZIndex() - 2, 0), floatTable);
     }
 
-    private static void scheduleToast(Runnable run) {
-        long duration = (int) (3.5 * 1000);
-        long since = Time.timeSinceMillis(lastToast);
-        if (since > duration) {
-            lastToast = Time.millis();
-            run.run();
-        } else {
-            Time.runTask((duration - since) / 1000f * 60f, run);
-            lastToast += duration;
-        }
-    }
-
     public static void countdown(Element e, Floatp remainTime) {
         e.addListener(new Tooltip(t2 -> {
             t2.background(Tex.bar);
@@ -315,35 +301,6 @@ public class TableFunc {
                 l.setText("[gray]Remain Time: " + ((remain / Time.toSeconds > 15) ? "[]" : "[accent]") + Mathf.floor(remain / Time.toMinutes) + ":" + Mathf.floor((remain % Time.toMinutes) / Time.toSeconds));
             }).left().fillY().growX().row();
         }));
-    }
-
-    public static void showToast(Drawable icon, String text, Sound sound) {
-        if (state.isMenu()) return;
-
-        scheduleToast(() -> {
-            sound.play();
-
-            Table table = new Table(Tex.button);
-            table.update(() -> {
-                if (state.isMenu() || !ui.hudfrag.shown) {
-                    table.remove();
-                }
-            });
-            table.margin(12);
-            table.image(icon).pad(3);
-            table.add(text).wrap().width(280f).get().setAlignment(Align.center, Align.center);
-            table.pack();
-
-            //create container table which will align and move
-            Table container = Core.scene.table();
-            container.top().add(table);
-            container.setTranslation(0, table.getPrefHeight());
-            container.actions(
-                    Actions.translateBy(0, -table.getPrefHeight(), 1f, Interp.fade), Actions.delay(2.5f),
-                    //nesting actions() calls is necessary so the right prefHeight() is used
-                    Actions.run(() -> container.actions(Actions.translateBy(0, table.getPrefHeight(), 1f, Interp.fade), Actions.remove()))
-            );
-        });
     }
 
     public static void link(Table parent, Links.LinkEntry link) {

@@ -2,6 +2,7 @@ package newhorizon.expand.game.MapObjectives;
 
 import arc.util.Time;
 import mindustry.game.MapObjectives;
+import newhorizon.expand.game.MapMarker.RaidIndicator;
 
 public class TriggerObjective extends MapObjectives.MapObjective {
     public @MapObjectives.Second float duration = 60f * 10f;
@@ -9,6 +10,14 @@ public class TriggerObjective extends MapObjectives.MapObjective {
 
     protected boolean triggered = false;
     protected float countup;
+
+    public TriggerObjective(String timer) {
+        this.timer = timer;
+
+        markers = new MapObjectives.ObjectiveMarker[]{new RaidIndicator(timer)};
+    }
+
+    public TriggerObjective() {}
 
     @Override
     public boolean update() {

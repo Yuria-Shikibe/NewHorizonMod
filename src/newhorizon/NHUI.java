@@ -288,9 +288,8 @@ public class NHUI {
                 Floatp countup = obj::getCountup;
                 Floatp realTime = () -> obj.duration;
                 TextureRegion region = NHContent.objective;
-                if (obj.timer.contains("event-0")) region = NHContent.raid;
-                if (obj.timer.contains("event-1")) region = NHContent.fleet;
-                if (obj.timer.contains("event-2")) region = NHContent.objective;
+                if (obj.timer.contains("event-0") || obj.timer.contains("raid")) region = NHContent.raid;
+                if (obj.timer.contains("event-1") || obj.timer.contains("fleet")) region = NHContent.fleet;
 
                 TextureRegion finalRegion = region;
                 t.add(new Stack(

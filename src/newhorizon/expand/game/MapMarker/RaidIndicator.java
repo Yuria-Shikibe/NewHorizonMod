@@ -32,6 +32,12 @@ public class RaidIndicator extends MapObjectives.PosMarker {
     public float radius = 50;
     public String timerName = "event-timer";
 
+    public RaidIndicator(String name){
+        timerName = name;
+    }
+
+    public RaidIndicator() {}
+
     public TextureRegion icon() {
         return switch (icon) {
             case 1 -> NHContent.raid;

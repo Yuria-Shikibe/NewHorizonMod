@@ -8,7 +8,9 @@ import mindustry.core.GameState;
 import mindustry.game.EventType;
 import mindustry.net.Net;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
+import newhorizon.expand.net.packet.AlertToastPacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
+import newhorizon.expand.net.packet.WarnHUDPacket;
 
 import static newhorizon.NHVars.renderer;
 
@@ -20,6 +22,8 @@ public class NHRegister {
     static {
         Net.registerPacket(LongInfoMessageCallPacket::new);
         Net.registerPacket(ActiveAbilityTriggerPacket::new);
+        Net.registerPacket(WarnHUDPacket::new);
+        Net.registerPacket(AlertToastPacket::new);
     }
 
     public static void postAfterLoad(Runnable runnable) {

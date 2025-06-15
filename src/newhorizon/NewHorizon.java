@@ -3,12 +3,14 @@ package newhorizon;
 import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
+import arc.math.Mathf;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
+import mindustry.gen.Player;
 import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
@@ -19,6 +21,7 @@ import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
 import newhorizon.expand.entities.EntityRegister;
+import newhorizon.expand.logic.DefaultRaid;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
@@ -217,6 +220,7 @@ public class NewHorizon extends Mod {
         NHPostProcess.load();
         if (NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)) NHPostProcess.loadOptional();
         NHContent.loadLast();
+        NHLogic.load();
 
         Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }

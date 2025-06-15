@@ -31,6 +31,7 @@ import newhorizon.NHGroups;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHSounds;
 import newhorizon.util.graphic.DrawFunc;
+import newhorizon.util.ui.NHUIFunc;
 import newhorizon.util.ui.TableFunc;
 
 import static mindustry.Vars.tilesize;
@@ -220,7 +221,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock {
 
             if (!Vars.headless && participantsTmp.any()) {
                 if (team != Vars.player.team())
-                    TableFunc.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " + (int) (pos.x / 8) + ", " + (int) (pos.y / 8), NHSounds.alert2);
+                    NHUIFunc.showToast(Icon.warning, "[#ff7b69]Caution: []Attack " + (int) (pos.x / 8) + ", " + (int) (pos.y / 8), NHSounds.alert2);
                 NHFx.attackWarningRange.at(pos.x, pos.y, 80, team.color);
             }
         }
