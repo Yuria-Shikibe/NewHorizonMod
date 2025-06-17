@@ -1205,7 +1205,7 @@ public class NHPostProcess {
             unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
                 weapon.reload = 15f;
             });
-            unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
+            
         });
 
         adjustContent(UnitTypes.beta, content -> {
@@ -1214,14 +1214,14 @@ public class NHPostProcess {
             unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
                 weapon.reload = 20f;
             });
-            unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
+            
         });
 
         adjustContent(UnitTypes.gamma, content -> {
             	UnitType unitType = (UnitType) content;
         	unitType.mineSpeed = 12.5f;
            	unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
-           	unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
+           	
         });
 
     }
