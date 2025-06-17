@@ -441,7 +441,7 @@ public class CraftingBlock {
 
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
             addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
+            addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.nitrogen, 8 / 60f));
 
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.25 / 60f, NHLiquids.zetaFluidNegative, 4.25 / 60f);
             liquidOutputDirections = new int[]{1, 3};
