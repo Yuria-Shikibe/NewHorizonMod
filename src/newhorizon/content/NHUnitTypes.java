@@ -991,6 +991,8 @@ public class NHUnitTypes {
             itemCapacity = 150;
             payloadCapacity = (2 * 2) * tilePayload;
 
+            unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
+            
             aiController = BuilderAI::new;
             fogRadius = 40f;
             outlineRadius = 4;
