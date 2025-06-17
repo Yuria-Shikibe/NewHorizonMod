@@ -1224,20 +1224,6 @@ public class NHPostProcess {
            	unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
         });
 
-        /*
-	adjustContent(UnitTypes.evoke, content -> {
-		UnitType unitType = (UnitType) content;
-		unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
-	});
-	adjustContent(UnitTypes.incite, content -> {
-		UnitType unitType = (UnitType) content;
-		unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
-	});
-	adjustContent(UnitTypes.emanate, content -> {
-		UnitType unitType = (UnitType) content;
-		unitType.immunities = ObjectSet.with(NHStatusEffects.scannerDown);
-	});
- 	*/
     }
 
     private static void overrideUnitTypeAbility() {
