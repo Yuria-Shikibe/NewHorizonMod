@@ -1246,6 +1246,7 @@ public class NHPostProcess {
             unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-basic-weapon"), weapon -> {
                 weapon.reload = 15f;
             });
+            
         });
 
         adjustContent(UnitTypes.beta, content -> {
@@ -1254,13 +1255,16 @@ public class NHPostProcess {
             unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> {
                 weapon.reload = 20f;
             });
+            
         });
 
         adjustContent(UnitTypes.gamma, content -> {
-            UnitType unitType = (UnitType) content;
-            unitType.mineSpeed = 12.5f;
-            unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
+            	UnitType unitType = (UnitType) content;
+        	unitType.mineSpeed = 12.5f;
+           	unitType.weapons.each(weapon -> Objects.equals(weapon.name, "small-mount-weapon"), weapon -> weapon.reload = 16f);
+           	
         });
+
     }
 
     private static void overrideUnitTypeAbility() {
