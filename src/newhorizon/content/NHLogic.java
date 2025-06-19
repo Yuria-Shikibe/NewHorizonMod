@@ -20,24 +20,27 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static mindustry.Vars.state;
+import static mindustry.Vars.ui;
 
 public class NHLogic {
     public static Seq<LogicBlock.LogicBuild> processors = new Seq<>();
 
     public static void load(){
         Events.on(EventType.PlayEvent.class, event -> {
-            if (state.rules.mode() == Gamemode.sandbox) return;
+            if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
             updateWprocList();
             registerDefaultRaid();
 
-            registerReuseTimer(300f * Time.toSeconds, "raid-trigger", "raid-executor");
-            registerTriggerTimer("raid-timer");
+
         });
     }
 
     public static void registerDefaultRaid(){
         registerWproc("wait 300\n" + "setflag \"raid-trigger\" true", "raid protection period");
-        registerWproc("defaultraid raid-executor raid-timer 30 5 400 1 5 30", "raid event");
+        registerWproc("defaultraid raid-executor raid-timer 30 5 200 1 5 30", "raid event");
+
+        registerReuseTimer(300f * Time.toSeconds, "raid-trigger", "raid-executor");
+        registerTriggerTimer("raid-timer");
     }
 
     public static void registerWproc(String code, String tag){
@@ -68,6 +71,9 @@ public class NHLogic {
                     if (tile.build instanceof LogicBlock.LogicBuild wproc){
                         wproc.updateCode(code);
                         wproc.tag = tag;
+                    }
+                    if(ui.editor.isShown()){
+                        Vars.editor.renderer.updatePoint(x, y);
                     }
                     Log.info("Registered wproc: " + tag);
                     break outer;

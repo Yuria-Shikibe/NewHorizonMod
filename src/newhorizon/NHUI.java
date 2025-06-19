@@ -11,6 +11,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.Element;
 import arc.scene.event.Touchable;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Stack;
@@ -22,19 +23,23 @@ import arc.util.Reflect;
 import arc.util.Scaling;
 import mindustry.Vars;
 import mindustry.core.UI;
+import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
 import mindustry.game.MapObjectives;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
+import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
 import newhorizon.expand.game.MapObjectives.ReuseObjective;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
+import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.*;
@@ -46,9 +51,13 @@ public class NHUI {
     public static WidgetGroup HUD_waves_editor;
     public static Element infoTable;
 
+    public static NHWorldSettingDialog nhWorldSettingDialog;
+
     public static void init() {
 
         Events.run(EventType.Trigger.update, () -> ui.hudfrag.toggleHudText(false));
+
+        nhWorldSettingDialog = new NHWorldSettingDialog();
 
         try {
             getReferences();
@@ -57,6 +66,14 @@ public class NHUI {
             buildObjectiveTable();
             postProcess();
         } catch (Exception e) {
+            Log.err(e);
+        }
+
+        try{
+            BaseDialog menu = Reflect.get(MapEditorDialog.class, ui.editor, "menu");
+            menu.cont.row().button("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), 30,
+                    () -> nhWorldSettingDialog.show()).padTop(1f).size(180f * 2 + 10f, 60f);
+        }catch(Exception e){
             Log.err(e);
         }
     }
@@ -86,7 +103,6 @@ public class NHUI {
             touchable = Touchable.disabled;
             setSize(skip.getWidth(), skip.getHeight());
         }}.visible(() -> !(state.rules.waves && state.rules.waveSending && ((net.server() || player.admin) || !net.active()) && state.enemies == 0 && !spawner.isSpawning())));
-
     }
 
     public static void preProcess() {

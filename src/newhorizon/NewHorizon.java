@@ -7,8 +7,10 @@ import arc.math.Mathf;
 import arc.util.*;
 import arc.util.serialization.Jval;
 import mindustry.Vars;
+import mindustry.content.UnitTypes;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
 import mindustry.graphics.Pal;
@@ -27,6 +29,7 @@ import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
+import static mindustry.Vars.controlPath;
 import static mindustry.Vars.mods;
 import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;

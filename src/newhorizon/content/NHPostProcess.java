@@ -319,12 +319,12 @@ public class NHPostProcess {
         }
 
         contentOverride();
+        setModContentEnv();
     }
 
     public static void loadOptional() {
         overrideVanillaMain();
 
-        setModContentEnv();
         overrideUnitTypeAbility();
         buffCoreUnits();
 
