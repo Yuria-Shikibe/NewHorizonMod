@@ -22,6 +22,7 @@ import mindustry.entities.UnitSorts;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.bullet.FlakBulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
@@ -56,6 +57,7 @@ import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
 import newhorizon.expand.block.ancient.CaptureableTurret;
@@ -2475,30 +2477,108 @@ public class NHBlocks {
             requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 260, NHItems.juniorProcessor, 120, Items.thorium, 500, Items.surgeAlloy, 75));
             //NHTechTree.add(Blocks.massDriver, this);
             size = 3;
-            storage = 1;
+            storage = 2;
 
-            bullet = new EffectBulletType(15f) {{
-                trailChance = 0.25f;
-                trailEffect = NHFx.trailToGray;
-                trailParam = 1.5f;
+            bullet = new LightningLinkerBulletType(0f, 200) {
+                {
+                    trailWidth = 4.5f;
+                    trailLength = 66;
 
-                smokeEffect = NHFx.hugeSmoke;
-                shootEffect = NHFx.boolSelector;
+                    spreadEffect = slopeEffect = Fx.none;
+                    trailEffect = NHFx.hitSparkHuge;
+                    trailInterval = 5;
 
-                scaledSplashDamage = true;
-                collidesTiles = collidesGround = collides = true;
-                damage = 100;
-                splashDamage = 800f;
-                lightningDamage = 400f;
-                lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
-                lightning = 3;
-                lightningLength = 8;
-                lightningLengthRand = 16;
-                splashDamageRadius = 120f;
-                hitShake = despawnShake = 20f;
-                hitSound = despawnSound = Sounds.explosionbig;
-                hitEffect = despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f), NHFx.blast(hitColor, splashDamageRadius * 1.5f));
-            }};
+                    backColor = trailColor = hitColor = lightColor = lightningColor = NHColor.thurmixRed;
+                    frontColor = NHColor.thurmixRed;
+                    randomGenerateRange = 240f;
+                    randomLightningNum = 1;
+                    linkRange = 120f;
+                    range = 200f;
+
+                    drawSize = 20f;
+
+                    drag = 0.0035f;
+                    fragLifeMin = 0.3f;
+                    fragLifeMax = 1f;
+                    fragVelocityMin = 0.3f;
+                    fragVelocityMax = 1.25f;
+                    fragBullets = 3;
+                    fragBullet = new FlakBulletType(3.75f, 50) {
+                        {
+                            trailColor = lightColor = lightningColor = NHColor.thurmixRed;
+                            backColor = NHColor.thurmixRed;
+                            frontColor = NHColor.thurmixRed;
+
+                            trailLength = 14;
+                            trailWidth = 2.7f;
+                            trailRotation = true;
+                            trailInterval = 3;
+
+                            trailEffect = NHFx.polyTrail(backColor, frontColor, 4.65f, 22f);
+                            trailChance = 0f;
+                            knockback = 12f;
+                            lifetime = 40f;
+                            width = 17f;
+                            height = 42f;
+                            collidesTiles = false;
+                            splashDamageRadius = 60f;
+                            splashDamage = damage * 0.6f;
+                            lightning = 3;
+                            lightningLength = 8;
+                            smokeEffect = Fx.shootBigSmoke2;
+                            hitShake = 8f;
+                            hitSound = Sounds.plasmaboom;
+                            status = StatusEffects.sapped;
+
+                            statusDuration = 60f * 10;
+                        }
+                    };
+                    hitSound = Sounds.explosionbig;
+                    splashDamageRadius = 120f;
+                    splashDamage = 200;
+                    lightningDamage = 40f;
+
+                    collidesTiles = true;
+                    pierce = false;
+                    collides = false;
+                    lifetime = 10;
+                    despawnEffect = new OptionalMultiEffect(
+                            NHFx.crossBlast(hitColor, splashDamageRadius * 0.8f),
+                            NHFx.blast(hitColor, splashDamageRadius * 0.8f),
+                            NHFx.circleOut(hitColor, splashDamageRadius * 0.8f)
+                    );
+                }
+
+                @Override
+                public void update(Bullet b) {
+                    super.update(b);
+
+                    if (NHSetting.enableDetails() && b.timer(1, 6)) for (int j = 0; j < 2; j++) {
+                        NHFunc.randFadeLightningEffect(b.x, b.y, Mathf.random(360), Mathf.random(7, 12), backColor, Mathf.chance(0.5));
+                    }
+                }
+
+                @Override
+                public void draw(Bullet b) {
+                    Draw.color(backColor);
+                    DrawFunc.surround(b.id, b.x, b.y, size * 1.45f, 14, 7, 11, (b.fin(NHInterp.parabola4Reversed) + 1f) / 2 * b.fout(0.1f));
+
+                    drawTrail(b);
+
+                    color(backColor);
+                    Fill.circle(b.x, b.y, size);
+
+                    Draw.z(NHFx.EFFECT_MASK);
+                    color(frontColor);
+                    Fill.circle(b.x, b.y, size * 0.62f);
+                    Draw.z(NHFx.EFFECT_BOTTOM);
+                    color(frontColor);
+                    Fill.circle(b.x, b.y, size * 0.66f);
+                    Draw.z(Layer.bullet);
+
+                    Drawf.light(b.x, b.y, size * 1.85f, backColor, 0.7f);
+                }
+            };
 
             reloadTime = 300f;
 
