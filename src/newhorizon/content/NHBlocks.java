@@ -2477,7 +2477,7 @@ public class NHBlocks {
             requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 260, NHItems.juniorProcessor, 120, Items.thorium, 500, Items.surgeAlloy, 75));
             //NHTechTree.add(Blocks.massDriver, this);
             size = 3;
-            storage = 4;
+            storage = 2;
 
             bullet = new LightningLinkerBulletType(0f, 200) {
                 {
@@ -2535,7 +2535,7 @@ public class NHBlocks {
                     };
                     hitSound = Sounds.explosionbig;
                     splashDamageRadius = 120f;
-                    splashDamage = 100;
+                    splashDamage = 200;
                     lightningDamage = 40f;
 
                     collidesTiles = true;

@@ -1288,7 +1288,7 @@ public class NHBullets {
 
                 maxRange = 740;
                 pierce = pierceBuilding = false;
-                collideTerrain = collideFloor = collidesGround = collidesTiles = false;
+                collideTerrain = collideFloor = collidesTiles = false;
                 scaleLife = true;
 
                 lightning = 6;
