@@ -22,7 +22,7 @@ public class DistributionBlock {
             logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
 
-    stackRail, stackRailT2,lightStackLoader, heavyStackLoader,
+    stackRail, steadystackRail,lightStackLoader, heavyStackLoader,
 
     conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
@@ -52,7 +52,7 @@ public class DistributionBlock {
 
         }};
 
-        stackRailT2 = new AdaptStackConveyor("stack-rail-t2") {{
+        steadystackRail = new AdaptStackConveyor("steady-stack-rail") {{
             requirements(Category.distribution, with(NHItems.multipleSteel, 1, NHItems.seniorProcessor, 1));
             speed = 18f / 60f;
             canOverdrive = false;
