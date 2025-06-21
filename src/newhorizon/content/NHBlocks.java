@@ -2513,6 +2513,21 @@ public class NHBlocks {
                     lightningLength = 8;
                     lightningLengthRand = 16;
                     splashDamageRadius = 120f;
+                    fragBullets = 1;
+                    fragBullet = new BasicBulletType(){{
+                        damage = 1;
+                        absorbable=true;
+                        scaledSplashDamage = true;
+                        collidesTiles = collidesGround = collides = true;
+                        lifetime = 1f;
+                        splashDamage = 800f;
+                        lightningDamage = 4f;
+                        lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
+                        lightning = 3;
+                        lightningLength = 8;
+                        lightningLengthRand = 16;
+                        splashDamageRadius = 120f;
+                    }};
                 }};
             }};
 
