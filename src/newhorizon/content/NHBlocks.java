@@ -2487,6 +2487,7 @@ public class NHBlocks {
 
                 scaledSplashDamage = true;
                 collidesTiles = collidesGround = collides = true;
+                absorbable=true;
                 damage = 100;
                 splashDamage = 800f;
                 lightningDamage = 400f;
