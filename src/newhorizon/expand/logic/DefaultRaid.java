@@ -43,7 +43,7 @@ public class DefaultRaid extends LStatement {
             //alert time - objective timer
             //raid time - the time raid lasts
             alertTime = "30", raidTime = "5",
-            bulletDamage = "500", bulletSpeed = "1", bulletCount = "10", inaccuracy = "30";
+            bulletDamage = "200", bulletSpeed = "1", bulletCount = "10", inaccuracy = "30";
 
     public Vec2 source = new Vec2(), target = new Vec2();
 
@@ -177,8 +177,6 @@ public class DefaultRaid extends LStatement {
             this.inaccuracy = inaccuracy;
         }
 
-        public DefaultRaidInstruction() {}
-
         @Override
         public void run(LExecutor exec) {
             if (!state.rules.objectiveFlags.contains(flag.name)) {
@@ -254,7 +252,7 @@ public class DefaultRaid extends LStatement {
         public void createBullet() {
             BulletType bulletType = NHBullets.raidBulletType;
             
-            float dmg = damage.numf() * threatScl();
+            float dmg = damage.numf();
             float spd = speed.numf();
             if (spd <= 0f) spd = 1f;
 

@@ -120,7 +120,6 @@ tasks.register('debugDesktop', JavaExec) {
             "E:/project/MindustryModDevLib/Mindustry8.0.jar",
             "-debug",
     ]
-
 }
 
 tasks.register('debugBE', JavaExec) {
