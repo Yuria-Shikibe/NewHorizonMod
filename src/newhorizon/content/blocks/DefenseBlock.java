@@ -55,7 +55,7 @@ public class DefenseBlock {
         }};
 
         standardForceProjector = new ForceProjector("standard-shield-generator") {{
-            requirements(Category.effect, with(NHItems.seniorProcessor, 80, NHItems.presstanium, 80, Items.carbide, 50));
+            requirements(Category.effect, with(NHItems.juniorProcessor, 80, NHItems.presstanium, 80, Items.carbide, 50));
 
             size = 2;
             sides = 4;
