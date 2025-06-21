@@ -2477,10 +2477,11 @@ public class NHBlocks {
             size = 3;
             storage = 1;
 
-            bullet = new EffectBulletType(15f) {{
+            bullet = new BasicBulletType() {{
                 trailChance = 0.25f;
                 trailEffect = NHFx.trailToGray;
                 trailParam = 1.5f;
+                lifetime = 15f;
 
                 smokeEffect = NHFx.hugeSmoke;
                 shootEffect = NHFx.boolSelector;
