@@ -2488,6 +2488,13 @@ public class NHBlocks {
                 scaledSplashDamage = true;
                 collidesTiles = collidesGround = collides = true;
                 absorbable=true;
+                splashDamage = 1f;
+                lightningDamage = 1f;
+                lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
+                lightning = 3;
+                lightningLength = 8;
+                lightningLengthRand = 16;
+                splashDamageRadius = 8f;
                 hitShake = despawnShake = 20f;
                 hitSound = despawnSound = Sounds.explosionbig;
                 hitEffect = despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f), NHFx.blast(hitColor, splashDamageRadius * 1.5f));
