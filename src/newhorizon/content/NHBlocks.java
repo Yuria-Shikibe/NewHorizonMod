@@ -2475,13 +2475,12 @@ public class NHBlocks {
             requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 260, NHItems.juniorProcessor, 120, Items.thorium, 500, Items.surgeAlloy, 75));
             //NHTechTree.add(Blocks.massDriver, this);
             size = 3;
-            storage = 1;
+            storage = 4;
 
-            bullet = new BasicBulletType() {{
+            bullet = new EffectBulletType(15f) {{
                 trailChance = 0.25f;
                 trailEffect = NHFx.trailToGray;
                 trailParam = 1.5f;
-                lifetime = 15f;
 
                 smokeEffect = NHFx.hugeSmoke;
                 shootEffect = NHFx.boolSelector;
@@ -2489,17 +2488,24 @@ public class NHBlocks {
                 scaledSplashDamage = true;
                 collidesTiles = collidesGround = collides = true;
                 absorbable=true;
-                damage = 100;
-                splashDamage = 800f;
-                lightningDamage = 400f;
-                lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
-                lightning = 3;
-                lightningLength = 8;
-                lightningLengthRand = 16;
-                splashDamageRadius = 120f;
                 hitShake = despawnShake = 20f;
                 hitSound = despawnSound = Sounds.explosionbig;
                 hitEffect = despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f), NHFx.blast(hitColor, splashDamageRadius * 1.5f));
+                fragBullets = 1;
+                fragBullet = new BasicBulletType(){{
+                    damage = 100;
+                    absorbable=true;
+                    scaledSplashDamage = true;
+                    collidesTiles = collidesGround = collides = true;
+                    lifetime = 1f;
+                    splashDamage = 800f;
+                    lightningDamage = 400f;
+                    lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
+                    lightning = 3;
+                    lightningLength = 8;
+                    lightningLengthRand = 16;
+                    splashDamageRadius = 120f;
+                }};
             }};
 
             reloadTime = 300f;
