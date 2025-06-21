@@ -2488,6 +2488,7 @@ public class NHBlocks {
                 scaledSplashDamage = true;
                 collidesTiles = collidesGround = collides = true;
                 absorbable=true;
+                damage = 0f;
                 splashDamage = 1f;
                 lightningDamage = 1f;
                 lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
@@ -2505,7 +2506,7 @@ public class NHBlocks {
                     scaledSplashDamage = true;
                     collidesTiles = collidesGround = collides = true;
                     lifetime = 1f;
-                    splashDamage = 800f;
+                    //splashDamage = 800f;
                     lightningDamage = 400f;
                     lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
                     lightning = 3;
