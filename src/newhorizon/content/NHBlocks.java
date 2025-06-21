@@ -2501,12 +2501,12 @@ public class NHBlocks {
                 hitEffect = despawnEffect = new OptionalMultiEffect(NHFx.crossBlast(hitColor, splashDamageRadius * 1.25f), NHFx.blast(hitColor, splashDamageRadius * 1.5f));
                 fragBullets = 1;
                 fragBullet = new BasicBulletType(){{
-                    damage = 100;
+                    damage = 1;
                     absorbable=true;
                     scaledSplashDamage = true;
                     collidesTiles = collidesGround = collides = true;
                     lifetime = 1f;
-                    splashDamage = 800f;
+                    splashDamage = 8f;
                     lightningDamage = 4f;
                     lightColor = lightningColor = trailColor = hitColor = NHColor.thurmixRed;
                     lightning = 3;
