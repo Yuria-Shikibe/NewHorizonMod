@@ -32,6 +32,7 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 0.115f;
             displayedSpeed = 15f;
             framePeriod = 9.2f;
@@ -46,6 +47,7 @@ public class DistributionBlock {
 
         stackRail = new AdaptStackConveyor("stack-rail") {{
             requirements(Category.distribution, with(NHItems.presstanium, 1, NHItems.juniorProcessor, 1));
+            health = 320;
             speed = 6f / 60f;
             canOverdrive = false;
             placeableLiquid = true;
@@ -54,6 +56,7 @@ public class DistributionBlock {
 
         steadystackRail = new AdaptStackConveyor("steady-stack-rail") {{
             requirements(Category.distribution, with(NHItems.multipleSteel, 1, NHItems.seniorProcessor, 1));
+            health = 640;
             speed = 18f / 60f;
             canOverdrive = false;
             placeableLiquid = true;
@@ -62,6 +65,7 @@ public class DistributionBlock {
 
         lightStackLoader = new AdaptStackConveyor("light-stack-loader") {{
             requirements(Category.distribution, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 10));
+            health = 320;
             speed = 6f / 60f;
             itemCapacity = 15;
             onlyCarry = false;
@@ -72,6 +76,7 @@ public class DistributionBlock {
 
         heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader") {{
             requirements(Category.distribution, with(NHItems.multipleSteel, 10, NHItems.seniorProcessor, 10));
+            health = 640;
             speed = 6f / 60f;
             itemCapacity = 60;
             onlyCarry = false;
@@ -87,6 +92,7 @@ public class DistributionBlock {
 
             hasPower = false;
             range = 6;
+            health = 320;
 
             placeableLiquid = true;
 
@@ -99,6 +105,7 @@ public class DistributionBlock {
 
             hasPower = false;
             range = 12;
+            health = 640;
 
             placeableLiquid = true;
 
@@ -109,6 +116,7 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 3;
             capacity = 1;
 
@@ -121,6 +129,7 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 4f;
 
             placeableLiquid = true;
@@ -132,6 +141,7 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 4f;
 
             placeableLiquid = true;
@@ -143,6 +153,7 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 4f;
 
             placeableLiquid = true;
@@ -155,6 +166,7 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             placeableLiquid = true;
+            health = 320;
 
         }};
 
@@ -165,6 +177,7 @@ public class DistributionBlock {
 
             invert = false;
             placeableLiquid = true;
+            health = 320;
 
         }};
 
@@ -175,6 +188,7 @@ public class DistributionBlock {
 
             invert = true;
             placeableLiquid = true;
+            health = 320;
 
         }};
 
@@ -183,6 +197,7 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 60f / 16.5f;
             hasPower = true;
             conductivePower = true;
@@ -191,6 +206,7 @@ public class DistributionBlock {
         }};
 
         rapidUnloader = new AdaptUnloader("rapid-unloader") {{
+            health = 320;
             speed = 0.5f;
             requirements(Category.distribution, BuildVisibility.shown, with(Items.silicon, 4));
 
