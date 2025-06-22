@@ -19,8 +19,7 @@ import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static mindustry.Vars.state;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 
 public class NHLogic {
     public static Seq<LogicBlock.LogicBuild> processors = new Seq<>();
@@ -30,8 +29,6 @@ public class NHLogic {
             if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
             updateWprocList();
             registerDefaultRaid();
-
-
         });
     }
 
@@ -72,8 +69,10 @@ public class NHLogic {
                         wproc.updateCode(code);
                         wproc.tag = tag;
                     }
-                    if(ui.editor.isShown()){
-                        Vars.editor.renderer.updatePoint(x, y);
+                    if (!headless){
+                        if(ui.editor.isShown()){
+                            Vars.editor.renderer.updatePoint(x, y);
+                        }
                     }
                     Log.info("Registered wproc: " + tag);
                     break outer;
