@@ -37,7 +37,7 @@ public class NHLogic {
 
     public static void registerDefaultRaid(){
         registerWproc("wait 300\n" + "setflag \"raid-trigger\" true", "raid protection period");
-        registerWproc("defaultraid raid-executor raid-timer 30 5 200 1 5 30", "raid event");
+        registerWproc("defaultraid raid-executor raid-timer 30 5 200 1 5 20", "raid event");
 
         registerReuseTimer(300f * Time.toSeconds, "raid-trigger", "raid-executor");
         registerTriggerTimer("raid-timer");

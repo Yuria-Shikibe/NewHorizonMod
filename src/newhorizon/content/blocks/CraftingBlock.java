@@ -447,12 +447,14 @@ public class CraftingBlock {
             liquidOutputDirections = new int[]{1, 3};
 
             drawer = new DrawMulti(
-                    new DrawRegion() {{
-                        suffix = "-base";
+                    new DrawRegion("-bottom"),
+                    new DrawCrucibleFlame(){{
+                        flameColor = NHItems.zeta.color;
+                        midColor = NHItems.zeta.color;
                     }},
-                    new DrawRegionRotated() {{
-                        suffix = "-top-rot";
-                    }}
+                    new DrawRegion("-base"),
+                    new DrawRegionRotated() {{suffix = "-top-rot";}},
+                    new DrawGlowRegion("-glow") {{color = Pal.techBlue;}}
             );
         }};
         surgeRefactor = new RecipeGenericCrafter("surge-refactor") {{
@@ -634,7 +636,10 @@ public class CraftingBlock {
             outputItems = with(Items.surgeAlloy, 8, NHItems.presstanium, 15);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 6 / 60f);
 
-            drawer = new DrawDefault();
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawFlame()
+            );
         }};
         processorCompactor = new RecipeGenericCrafter("processor-compactor") {{
             requirements(Category.crafting, BuildVisibility.shown,

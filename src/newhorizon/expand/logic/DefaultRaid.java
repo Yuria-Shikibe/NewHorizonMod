@@ -43,7 +43,7 @@ public class DefaultRaid extends LStatement {
             //alert time - objective timer
             //raid time - the time raid lasts
             alertTime = "30", raidTime = "5",
-            bulletDamage = "200", bulletSpeed = "1", bulletCount = "10", inaccuracy = "30";
+            bulletDamage = "200", bulletSpeed = "1", bulletCount = "5", inaccuracy = "10";
 
     public Vec2 source = new Vec2(), target = new Vec2();
 
@@ -252,7 +252,7 @@ public class DefaultRaid extends LStatement {
         public void createBullet() {
             BulletType bulletType = NHBullets.raidBulletType;
             
-            float dmg = damage.numf();
+            float dmg = damage.numf() * threatLevel;
             float spd = speed.numf();
             if (spd <= 0f) spd = 1f;
 

@@ -277,6 +277,7 @@ new-horizon-standard-jump-gate 1 1 5 0
 new-horizon-standard-liquid-storage 1 1 2 0
 new-horizon-standard-shield-generator 1 1 2 0
 new-horizon-standard-storage 1 1 2 0
+new-horizon-steady-stack-rail 1 0 1 0
 new-horizon-sub 1 1 1 0
 new-horizon-surge-refactor 1 1 3 0
 new-horizon-synchro 1 1 3 0
