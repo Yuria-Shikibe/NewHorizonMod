@@ -1178,8 +1178,6 @@ public class NHPostProcess {
         hideContent(Blocks.smallDeconstructor);
         hideContent(Blocks.constructor);
         hideContent(Blocks.largeConstructor);
-        hideContent(Blocks.payloadLoader);
-        hideContent(Blocks.payloadUnloader);
 
         hideContent(Blocks.groundFactory);
         hideContent(Blocks.airFactory);
