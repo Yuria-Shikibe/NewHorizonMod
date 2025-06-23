@@ -2316,7 +2316,7 @@ public class NHBlocks {
             consumePower(100.0F);
             consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 2)).optional(true, true);
             consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
-            consumeLiquid(NHLiquids.zetaFluidPositive, 0.13F, NHLiquids.zetaFluidNegative, 0.13F);
+            consumeLiquid(NHLiquids.zetaFluidPositive, 0.13F);
             requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
         }};
     }
