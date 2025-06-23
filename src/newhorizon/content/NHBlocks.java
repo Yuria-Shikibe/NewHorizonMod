@@ -2295,8 +2295,8 @@ public class NHBlocks {
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
             size = 8;
-            health = 12500;
-            armor = 20f;
+            health = 40000;
+            armor = 50f;
             powerProduction = 4000f;
             updateLightning = updateLightningRand = 3;
             effectColor = NHColor.thermoPst;
