@@ -2251,7 +2251,7 @@ public class NHBlocks {
     private static void loadPowers() {
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
-            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, Items.graphite, 80, NHItems.presstanium, 60));
+            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
 
             lightColor = Pal.techBlue;
             consumeEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Liquids.hydrogen.color.cpy().lerp(Liquids.nitrogen.color, 0.4f).a(0.56f));
@@ -2322,7 +2322,7 @@ public class NHBlocks {
 
     public static void load() {
         blaster = new ShockwaveGenerator("blaster") {{
-            requirements(Category.defense, with(NHItems.presstanium, 80, Items.graphite, 100, Items.thorium, 100, NHItems.juniorProcessor, 60, NHItems.multipleSteel, 30));
+            requirements(Category.defense, with(NHItems.presstanium, 120, NHItems.juniorProcessor, 120, NHItems.multipleSteel, 30));
 
             squareSprite = false;
             size = 3;
@@ -2437,7 +2437,7 @@ public class NHBlocks {
             consumeItem(NHItems.metalOxhydrigen, 2);
             consumePowerCond(3f, FireExtinguisherBuild::isActive);
 
-            requirements(Category.defense, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 120, Items.copper, 80, Items.graphite, 60));
+            requirements(Category.defense, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 120));
         }};
 
         airRaider = new AirRaider("air-raider") {{
@@ -2482,7 +2482,7 @@ public class NHBlocks {
         unitIniter = new UnitSpawner("unit-initer");
 
         bombLauncher = new BombLauncher("bomb-launcher") {{
-            requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 260, NHItems.juniorProcessor, 120, Items.thorium, 500, Items.surgeAlloy, 75));
+            requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 300, NHItems.juniorProcessor, 200, Items.surgeAlloy, 75));
             //NHTechTree.add(Blocks.massDriver, this);
             size = 3;
             storage = 2;
@@ -2623,7 +2623,7 @@ public class NHBlocks {
             reload = 180f;
             useTime = 600f;
             healPercent = 15;
-            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
+            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, NHItems.multiplesteel, 257));
 //			//NHTechTree.add(Blocks.mendProjector, this);
             consumePower(2F);
             range = 160.0F;
