@@ -82,7 +82,7 @@ public class CraftingBlock {
         oilRefiner = new GenericCrafter("oil-refiner") {{
 
             size = 2;
-            requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
+            requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, NHItems.metalOxhydrigen, 45));
             health = 320;
             craftTime = 60f;
             liquidCapacity = 60f;
