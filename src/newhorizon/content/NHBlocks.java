@@ -2304,7 +2304,7 @@ public class NHBlocks {
             itemDuration = 180f;
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
-            toApplyStatus.add(NHStatusEffects.phased, NHStatusEffects.invincible, NHStatusEffects.quantization, StatusEffects.overclock, StatusEffects.overdrive, StatusEffects.shielded);
+            toApplyStatus.add(NHStatusEffects.phased, StatusEffects.overclock);
 
             consumePower(100.0F);
             consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f)).optional(true, true);
