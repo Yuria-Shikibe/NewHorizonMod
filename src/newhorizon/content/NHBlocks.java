@@ -2294,7 +2294,6 @@ public class NHBlocks {
         }};
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
-            import mindustry.type.*;
             size = 8;
             health = 40000;
             armor = 50f;
@@ -2317,6 +2316,7 @@ public class NHBlocks {
             consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 2)).optional(true, true);
             consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
             consumeLiquid(NHLiquids.zetaFluidNegative, 0.25F);
+            import mindustry.type.LiquidStack;
             consumeLiquids(new LiquidStack(NHLiquids.zetaFluidPositive, 0.25F)).optional(true, true);
             requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250));
         }};
