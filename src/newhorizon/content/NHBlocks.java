@@ -2286,7 +2286,7 @@ public class NHBlocks {
         }};
 
         armorBatteryLarge = new Battery("large-armor-battery") {{
-            requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10, Items.lead, 40));
+            requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10));
             size = 3;
             health = 3000;
             armor = 15;
@@ -2316,7 +2316,7 @@ public class NHBlocks {
             consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 2)).optional(true, true);
             consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
             consumeLiquid(NHLiquids.zetaFluidNegative, 0.14F);
-            requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
+            requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250));
         }};
     }
 
@@ -2636,7 +2636,7 @@ public class NHBlocks {
         largeWaterExtractor = new SolidPump("large-water-extractor") {{
             size = 3;
             pumpAmount = 0.31f;
-            requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.thorium, 60, Items.metaglass, 30));
+            requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.tungsten, 30, Items.titanium, 30));
 //			//NHTechTree.add(Blocks.waterExtractor, this);
             result = Liquids.water;
             liquidCapacity = 60.0F;
