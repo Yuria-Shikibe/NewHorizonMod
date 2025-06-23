@@ -49,7 +49,7 @@ public class ProductionBlock {
             group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
             minEfficiency = 9f - 0.0001f;
-            powerProduction = 300f / 60f / 9f;
+            powerProduction = 360f / 60f / 9f;
             displayEfficiency = false;
             effectChance = 0.2f;
             generateEffect = new OptionalMultiEffect(
@@ -82,6 +82,7 @@ public class ProductionBlock {
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 960;
+            armor = 2f;
 
             mineSpeed = 6f;
             mineCount = 15;
@@ -134,6 +135,7 @@ public class ProductionBlock {
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 1200;
+            armor = 4f;
 
             mineSpeed = 10f;
             mineCount = 20;
@@ -207,6 +209,7 @@ public class ProductionBlock {
             size = 4;
 
             health = 1560;
+            armor = 6f;
 
             mineSpeed = 12f;
             mineCount = 30;
