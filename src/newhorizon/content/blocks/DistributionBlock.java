@@ -280,6 +280,7 @@ public class DistributionBlock {
             conductivePower = true;
             placeableLiquid = true;
             health = 320;
+            liquidCapacity = 200f
 
         }};
 
