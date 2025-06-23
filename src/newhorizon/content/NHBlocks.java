@@ -2623,7 +2623,7 @@ public class NHBlocks {
             reload = 180f;
             useTime = 600f;
             healPercent = 15;
-            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, NHItems.multiplesteel, 257));
+            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, NHItems.multipleSteel, 50));
 //			//NHTechTree.add(Blocks.mendProjector, this);
             consumePower(2F);
             range = 160.0F;
