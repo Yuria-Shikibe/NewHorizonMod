@@ -2262,6 +2262,7 @@ public class NHBlocks {
             });
             //			//NHTechTree.add(Blocks.thoriumReactor,this);
             powerProduction = 1800f / 60f;
+            health = 320;
             itemCapacity = 40;
             liquidCapacity = 30;
             itemDuration = 240f;
@@ -2295,20 +2296,21 @@ public class NHBlocks {
         hyperGenerator = new HyperGenerator("hyper-generator") {{
             size = 8;
             health = 12500;
-            powerProduction = 2000f;
+            armor = 20f;
+            powerProduction = 4000f;
             updateLightning = updateLightningRand = 3;
             effectColor = NHColor.thermoPst;
             itemCapacity = 40;
             itemDuration = 180f;
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
-            toApplyStatus.add(NHStatusEffects.phased, StatusEffects.overclock);
+            toApplyStatus.add(NHStatusEffects.phased, NHStatusEffects.invincible, NHStatusEffects.quantization, StatusEffects.overclock, StatusEffects.overdrive, StatusEffects.shielded);
 
             consumePower(100.0F);
-            consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 4)).optional(true, true);
+            consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f)).optional(true, true);
             consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
-            consumeLiquid(NHLiquids.zetaFluidNegative, 0.25F);
-            requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
+            consumeLiquid(NHLiquids.zetaFluidPositive, 0.13F);
+            requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
         }};
     }
 
