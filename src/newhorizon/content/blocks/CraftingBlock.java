@@ -83,7 +83,7 @@ public class CraftingBlock {
 
             size = 2;
             requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
-            health = 200;
+            health = 320;
             craftTime = 60f;
             liquidCapacity = 60f;
             itemCapacity = 20;
@@ -98,6 +98,7 @@ public class CraftingBlock {
                     ItemStack.with(Items.titanium, 45, Items.graphite, 30));
 
             size = 2;
+            health = 320;
             craftTime = 30f;
             itemCapacity = 12;
 
@@ -119,6 +120,7 @@ public class CraftingBlock {
                     ItemStack.with(Items.tungsten, 45, Items.graphite, 60));
 
             size = 2;
+            health = 320;
             craftTime = 30f;
             itemCapacity = 12;
 
@@ -139,6 +141,7 @@ public class CraftingBlock {
                     ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45, Items.carbide, 30));
 
             size = 2;
+            health = 380;
             craftTime = 60f;
             liquidCapacity = 40f;
             itemCapacity = 20;
@@ -168,6 +171,7 @@ public class CraftingBlock {
                     ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45));
 
             size = 2;
+            health = 320;
             craftTime = 60f;
             liquidCapacity = 12f;
             itemCapacity = 30;
@@ -186,6 +190,7 @@ public class CraftingBlock {
                     ItemStack.with(Items.titanium, 45, Items.silicon, 60));
 
             size = 2;
+            health = 320;
 
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
@@ -220,6 +225,7 @@ public class CraftingBlock {
                     ItemStack.with(Items.titanium, 30, Items.silicon, 45, Items.tungsten, 30));
 
             size = 2;
+            health = 320;
 
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
@@ -279,6 +285,7 @@ public class CraftingBlock {
                     NHItems.presstanium, 30, NHItems.juniorProcessor, 50, Items.tungsten, 40, NHItems.zeta, 40));
 
             size = 3;
+            health = 1280;
 
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
@@ -325,6 +332,7 @@ public class CraftingBlock {
 
             rotate = false;
             size = 3;
+            health = 1280;
 
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/,
