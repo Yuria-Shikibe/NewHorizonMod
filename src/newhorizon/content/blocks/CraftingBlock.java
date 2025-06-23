@@ -843,7 +843,7 @@ public class CraftingBlock {
             itemCapacity = 60;
             liquidCapacity = 60f;
 
-            consumePower(12);
+            consumePower(40f);
             consumeItems(with(NHItems.irayrondPanel, 6));
             consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
             outputItems = with(NHItems.ancimembrane, 3);
@@ -874,7 +874,7 @@ public class CraftingBlock {
             }};
             clipSize = size * tilesize * 2f;
             consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
-            consumePower(10f);
+            consumePower(40f);
         }};
 
         electronicAssemblyMk1 = new PayloadCrafter("electronic-assembly-mk1") {{
