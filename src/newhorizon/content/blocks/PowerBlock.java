@@ -184,7 +184,7 @@ public class PowerBlock {
             );
 
             health = 10000;
-            armor = 40f;
+            armor = 20f;
             itemCapacity = 45;
             liquidCapacity = 45;
 
