@@ -2294,6 +2294,7 @@ public class NHBlocks {
         }};
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
+            import mindustry.type.*;
             size = 8;
             health = 40000;
             armor = 50f;
