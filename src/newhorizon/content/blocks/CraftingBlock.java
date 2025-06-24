@@ -67,7 +67,7 @@ public class CraftingBlock {
 
             rotate = false;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
-            consumePower(5f);
+            consumePower(6f);
 
             addInput(ItemStack.with(Items.scrap, 4), LiquidStack.empty);
             addInput(ItemStack.with(Items.copper, 10), LiquidStack.empty);
@@ -86,10 +86,10 @@ public class CraftingBlock {
             health = 320;
             craftTime = 60f;
             liquidCapacity = 60f;
-            itemCapacity = 20;
+            itemCapacity = 30;
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
-            consumePower(5f);
+            consumePower(6f);
             consumeItems(new ItemStack(Items.sand, 3));
             outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
         }};
@@ -100,7 +100,7 @@ public class CraftingBlock {
             size = 2;
             health = 320;
             craftTime = 30f;
-            itemCapacity = 12;
+            itemCapacity = 30;
 
             rotate = false;
 
@@ -122,7 +122,7 @@ public class CraftingBlock {
             size = 2;
             health = 320;
             craftTime = 30f;
-            itemCapacity = 12;
+            itemCapacity = 30;
 
             rotate = false;
 
@@ -640,7 +640,7 @@ public class CraftingBlock {
             craftTime = 120f;
             liquidCapacity = 24f;
             ignoreLiquidFullness = true;
-            itemCapacity = 40;
+            itemCapacity = 60;
             consumePower(900 / 60f);
 
             addInput(ItemStack.with(Items.titanium, 12), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
@@ -666,7 +666,7 @@ public class CraftingBlock {
             craftTime = 150f;
             liquidCapacity = 20f;
             ignoreLiquidFullness = true;
-            itemCapacity = 40;
+            itemCapacity = 60;
             consumePower(900 / 60f);
 
             addInput(ItemStack.with(Items.silicon, 15, NHItems.metalOxhydrigen, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
