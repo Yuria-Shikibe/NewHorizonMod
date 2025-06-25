@@ -67,7 +67,7 @@ public class CraftingBlock {
 
             rotate = false;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
-            consumePower(5f);
+            consumePower(6f);
 
             addInput(ItemStack.with(Items.scrap, 4), LiquidStack.empty);
             addInput(ItemStack.with(Items.copper, 10), LiquidStack.empty);
@@ -82,14 +82,14 @@ public class CraftingBlock {
         oilRefiner = new GenericCrafter("oil-refiner") {{
 
             size = 2;
-            requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
-            health = 200;
+            requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, NHItems.metalOxhydrigen, 45));
+            health = 320;
             craftTime = 60f;
             liquidCapacity = 60f;
-            itemCapacity = 20;
+            itemCapacity = 30;
             hasPower = hasLiquids = hasItems = true;
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
-            consumePower(5f);
+            consumePower(6f);
             consumeItems(new ItemStack(Items.sand, 3));
             outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
         }};
@@ -98,8 +98,9 @@ public class CraftingBlock {
                     ItemStack.with(Items.titanium, 45, Items.graphite, 30));
 
             size = 2;
+            health = 320;
             craftTime = 30f;
-            itemCapacity = 12;
+            itemCapacity = 30;
 
             rotate = false;
 
@@ -119,8 +120,9 @@ public class CraftingBlock {
                     ItemStack.with(Items.tungsten, 45, Items.graphite, 60));
 
             size = 2;
+            health = 320;
             craftTime = 30f;
-            itemCapacity = 12;
+            itemCapacity = 30;
 
             rotate = false;
 
@@ -139,6 +141,7 @@ public class CraftingBlock {
                     ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45, Items.carbide, 30));
 
             size = 2;
+            health = 380;
             craftTime = 60f;
             liquidCapacity = 40f;
             itemCapacity = 20;
@@ -168,6 +171,7 @@ public class CraftingBlock {
                     ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45));
 
             size = 2;
+            health = 320;
             craftTime = 60f;
             liquidCapacity = 12f;
             itemCapacity = 30;
@@ -190,6 +194,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
+            health = 320;
             craftTime = 40f;
             itemCapacity = 20;
 
@@ -224,6 +229,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
+            health = 800;
             craftTime = 40f;
             itemCapacity = 20;
 
@@ -283,6 +289,7 @@ public class CraftingBlock {
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
+            health = 1600;
             craftTime = 60f;
             consumePower(300 / 60f);
 
@@ -332,6 +339,7 @@ public class CraftingBlock {
                     -1, -2, 1, 0, -2, 1, 1, -2, 1
             );
 
+            health = 1600;
             craftTime = 60f;
             consumePower(600 / 60f);
 
@@ -434,6 +442,7 @@ public class CraftingBlock {
 
             size = 3;
 
+            health = 800;
             craftTime = 60f;
             itemCapacity = 30;
             liquidCapacity = 30f;
@@ -524,7 +533,7 @@ public class CraftingBlock {
             outputItem = new ItemStack(NHItems.multipleSteel, 3);
             craftTime = 60f;
             itemCapacity = 20;
-            health = 600;
+            health = 800;
             size = 3;
             hasPower = hasItems = true;
             drawer = new DrawDefault();
@@ -548,6 +557,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
+            health = 800;
             craftTime = 120f;
             itemCapacity = 20;
 
@@ -602,6 +612,7 @@ public class CraftingBlock {
 
             size = 3;
 
+            health = 800;
             craftTime = 60f;
             liquidCapacity = 30f;
             itemCapacity = 30;
@@ -624,10 +635,12 @@ public class CraftingBlock {
             size = 4;
             rotate = false;
 
+            health = 1600;
+            armor = 4f;
             craftTime = 120f;
             liquidCapacity = 24f;
             ignoreLiquidFullness = true;
-            itemCapacity = 40;
+            itemCapacity = 60;
             consumePower(900 / 60f);
 
             addInput(ItemStack.with(Items.titanium, 12), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
@@ -648,10 +661,12 @@ public class CraftingBlock {
             size = 4;
             rotate = false;
 
+            health = 1600;
+            armor = 4f;
             craftTime = 150f;
             liquidCapacity = 20f;
             ignoreLiquidFullness = true;
-            itemCapacity = 40;
+            itemCapacity = 60;
             consumePower(900 / 60f);
 
             addInput(ItemStack.with(Items.silicon, 15, NHItems.metalOxhydrigen, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
@@ -671,6 +686,7 @@ public class CraftingBlock {
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
+            health = 1600;
             craftTime = 120f;
             consumePower(480 / 60f);
             addInput(ItemStack.with(Items.surgeAlloy, 2, Items.carbide, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
@@ -698,6 +714,7 @@ public class CraftingBlock {
             size = 3;
             rotate = false;
 
+            health = 1600;
             craftTime = 90f;
             consumePower(640 / 60f);
             addInput(ItemStack.with(NHItems.metalOxhydrigen, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 1 / 60f));
@@ -726,6 +743,7 @@ public class CraftingBlock {
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
+            health = 1600;
             craftTime = 120f;
             consumePower(480 / 60f);
             addInput(ItemStack.with(Items.carbide, 4), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
@@ -825,7 +843,7 @@ public class CraftingBlock {
             itemCapacity = 60;
             liquidCapacity = 60f;
 
-            consumePower(12);
+            consumePower(40f);
             consumeItems(with(NHItems.irayrondPanel, 6));
             consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
             outputItems = with(NHItems.ancimembrane, 3);
@@ -842,6 +860,8 @@ public class CraftingBlock {
                 });
             });
             outputItem = new ItemStack(NHItems.upgradeSort, 2);
+            health = 2200;
+            armor = 12f;
             craftTime = 120f;
             itemCapacity = 20;
             size = 3;
@@ -854,7 +874,7 @@ public class CraftingBlock {
             }};
             clipSize = size * tilesize * 2f;
             consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
-            consumePower(10f);
+            consumePower(40f);
         }};
 
         electronicAssemblyMk1 = new PayloadCrafter("electronic-assembly-mk1") {{
@@ -866,6 +886,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
+            health = 600;
             itemCapacity = 50;
             liquidCapacity = 50;
             payloadCapacity = 8;
@@ -886,6 +907,8 @@ public class CraftingBlock {
 
             size = 4;
 
+            health = 1600;
+            armor = 4f;
             itemCapacity = 150;
             liquidCapacity = 150;
             payloadCapacity = 12;
@@ -908,6 +931,8 @@ public class CraftingBlock {
 
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
 
+            health = 2200;
+            armor = 12f;
             itemCapacity = 300;
             liquidCapacity = 300;
             payloadCapacity = 20;
@@ -930,6 +955,7 @@ public class CraftingBlock {
 
             consumePower(180f / 60f);
 
+            health = 600;
             itemCapacity = 50;
             liquidCapacity = 50;
             payloadCapacity = 8;
@@ -971,6 +997,8 @@ public class CraftingBlock {
             addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
                     -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
 
+            health = 1600;
+            armor = 4f;
             itemCapacity = 150;
             liquidCapacity = 150;
             payloadCapacity = 12;
@@ -991,6 +1019,8 @@ public class CraftingBlock {
 
             size = 5;
 
+            health = 2200;
+            armor = 12f;
             itemCapacity = 300;
             liquidCapacity = 300;
             payloadCapacity = 20;

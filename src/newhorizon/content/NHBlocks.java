@@ -84,6 +84,7 @@ import newhorizon.util.func.NHInterp;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
+import mindustry.type.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -2251,7 +2252,7 @@ public class NHBlocks {
     private static void loadPowers() {
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
-            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, Items.graphite, 80, NHItems.presstanium, 60));
+            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
 
             lightColor = Pal.techBlue;
             consumeEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Liquids.hydrogen.color.cpy().lerp(Liquids.nitrogen.color, 0.4f).a(0.56f));
@@ -2262,6 +2263,7 @@ public class NHBlocks {
             });
             //			//NHTechTree.add(Blocks.thoriumReactor,this);
             powerProduction = 1800f / 60f;
+            health = 320;
             itemCapacity = 40;
             liquidCapacity = 30;
             itemDuration = 240f;
@@ -2285,7 +2287,7 @@ public class NHBlocks {
         }};
 
         armorBatteryLarge = new Battery("large-armor-battery") {{
-            requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10, Items.lead, 40));
+            requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10));
             size = 3;
             health = 3000;
             armor = 15;
@@ -2294,27 +2296,35 @@ public class NHBlocks {
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
             size = 8;
-            health = 12500;
-            powerProduction = 2000f;
+            health = 40000;
+            armor = 50f;
+            powerProduction = 4000f;
             updateLightning = updateLightningRand = 3;
             effectColor = NHColor.thermoPst;
             itemCapacity = 40;
             itemDuration = 180f;
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
-            toApplyStatus.add(NHStatusEffects.phased, StatusEffects.overclock);
+            toApplyStatus.addAll(
+                    NHStatusEffects.phased,
+                    NHStatusEffects.quantization,
+                    StatusEffects.overclock,
+                    StatusEffects.overdrive,
+                    StatusEffects.shielded
+            );
 
             consumePower(100.0F);
-            consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 4)).optional(true, true);
+            consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 2, Items.phaseFabric, 2)).optional(true, true);
             consumeItems(new ItemStack(NHItems.metalOxhydrigen, 8), new ItemStack(NHItems.thermoCorePositive, 4));
-            consumeLiquid(NHLiquids.zetaFluidNegative, 0.25F);
-            requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 1000, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250, Items.metaglass, 250));
+            consumeLiquid(NHLiquids.zetaFluidNegative, 8/60f);
+            consumeLiquids(new LiquidStack(NHLiquids.zetaFluidPositive, 8/60f)).optional(true, true);
+            requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250));
         }};
     }
 
     public static void load() {
         blaster = new ShockwaveGenerator("blaster") {{
-            requirements(Category.defense, with(NHItems.presstanium, 80, Items.graphite, 100, Items.thorium, 100, NHItems.juniorProcessor, 60, NHItems.multipleSteel, 30));
+            requirements(Category.defense, with(NHItems.presstanium, 120, NHItems.juniorProcessor, 120, NHItems.multipleSteel, 30));
 
             squareSprite = false;
             size = 3;
@@ -2429,7 +2439,7 @@ public class NHBlocks {
             consumeItem(NHItems.metalOxhydrigen, 2);
             consumePowerCond(3f, FireExtinguisherBuild::isActive);
 
-            requirements(Category.defense, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 120, Items.copper, 80, Items.graphite, 60));
+            requirements(Category.defense, with(NHItems.juniorProcessor, 60, NHItems.presstanium, 120));
         }};
 
         airRaider = new AirRaider("air-raider") {{
@@ -2474,7 +2484,7 @@ public class NHBlocks {
         unitIniter = new UnitSpawner("unit-initer");
 
         bombLauncher = new BombLauncher("bomb-launcher") {{
-            requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 260, NHItems.juniorProcessor, 120, Items.thorium, 500, Items.surgeAlloy, 75));
+            requirements(Category.defense, with(NHItems.multipleSteel, 100, NHItems.presstanium, 300, NHItems.juniorProcessor, 200, Items.surgeAlloy, 75));
             //NHTechTree.add(Blocks.massDriver, this);
             size = 3;
             storage = 2;
@@ -2615,7 +2625,7 @@ public class NHBlocks {
             reload = 180f;
             useTime = 600f;
             healPercent = 15;
-            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, Items.plastanium, 40, Items.thorium, 80));
+            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, NHItems.multipleSteel, 50));
 //			//NHTechTree.add(Blocks.mendProjector, this);
             consumePower(2F);
             range = 160.0F;
@@ -2628,7 +2638,7 @@ public class NHBlocks {
         largeWaterExtractor = new SolidPump("large-water-extractor") {{
             size = 3;
             pumpAmount = 0.31f;
-            requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.thorium, 60, Items.metaglass, 30));
+            requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.tungsten, 30, Items.titanium, 30));
 //			//NHTechTree.add(Blocks.waterExtractor, this);
             result = Liquids.water;
             liquidCapacity = 60.0F;

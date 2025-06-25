@@ -698,8 +698,6 @@ public class NHPostProcess {
         hideContent(Blocks.ductUnloader);
         hideContent(Blocks.surgeConveyor);
         hideContent(Blocks.surgeRouter);
-        hideContent(Blocks.unitCargoLoader);
-        hideContent(Blocks.unitCargoUnloadPoint);
 
         hideContent(Blocks.mechanicalPump);
         hideContent(Blocks.impulsePump);
@@ -1178,8 +1176,6 @@ public class NHPostProcess {
         hideContent(Blocks.smallDeconstructor);
         hideContent(Blocks.constructor);
         hideContent(Blocks.largeConstructor);
-        hideContent(Blocks.payloadLoader);
-        hideContent(Blocks.payloadUnloader);
 
         hideContent(Blocks.groundFactory);
         hideContent(Blocks.airFactory);
