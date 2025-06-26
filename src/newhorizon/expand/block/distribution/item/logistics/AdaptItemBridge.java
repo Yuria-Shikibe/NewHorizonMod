@@ -117,7 +117,7 @@ public class AdaptItemBridge extends ItemBridge {
                     other.handleItem(this, item);
                     moved = true;
                 } else if (item != null) {
-                    items.add(item, itemOnce);
+                    items.add(item, 1);
                     items.undoFlow(item);
                 }
                 transportCounter -= transportTime;
