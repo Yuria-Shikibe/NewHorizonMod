@@ -29,7 +29,7 @@ import static mindustry.Vars.world;
 public class AdaptItemBridge extends ItemBridge {
     public static final int maxLinks = 3;
     public TextureRegion topRegion;
-    public float itemOnce;
+    public int itemOnce;
 
     public AdaptItemBridge(String name) {
         super(name);
