@@ -90,7 +90,6 @@ public class DistributionBlock {
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
             transportTime = 10;
-            speed = 10;
 
             hasPower = false;
             range = 6;
