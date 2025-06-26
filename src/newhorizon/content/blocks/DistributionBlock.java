@@ -103,7 +103,7 @@ public class DistributionBlock {
             requirements(Category.distribution, with(NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-            transportTime = 1
+            transportTime = 1;
             hasPower = false;
             range = 12;
             health = 640;
