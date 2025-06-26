@@ -89,8 +89,8 @@ public class DistributionBlock {
             requirements(Category.distribution, with(Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-            transportTime = 10;
-
+            itemOnce = 1;
+            itemCapacity = 20;
             hasPower = false;
             range = 6;
             health = 320;
@@ -103,7 +103,8 @@ public class DistributionBlock {
             requirements(Category.distribution, with(NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-            transportTime = 1;
+            itemOnce = 2;
+            itemCapacity = 40;
             hasPower = false;
             range = 12;
             health = 640;
