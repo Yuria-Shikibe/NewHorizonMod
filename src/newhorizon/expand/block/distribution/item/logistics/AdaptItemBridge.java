@@ -29,7 +29,7 @@ import static mindustry.Vars.world;
 public class AdaptItemBridge extends ItemBridge {
     public static final int maxLinks = 3;
     public TextureRegion topRegion;
-    public float pftest;
+    public float transportTime;
 
     public AdaptItemBridge(String name) {
         super(name);
@@ -111,12 +111,24 @@ public class AdaptItemBridge extends ItemBridge {
     public class AdaptItemBridgeBuild extends ItemBridgeBuild {
         @Override
         public void updateTransport(Building other) {
-            if (timer(0, pftest)) {
+            /*if (timer(0, pftest)) {
                 Item item = items.take();
                 if (item != null && other.acceptItem(this, item)) {
                     other.handleItem(this, item);
                     moved = true;
                 } else if (item != null) {
+                    items.add(item, 1);
+                    items.undoFlow(item);
+                }
+                transportCounter -= transportTime;
+            }*/
+            transportCounter += edelta();
+            while(transportCounter >= transportTime){
+                Item item = items.take();
+                if(item != null && other.acceptItem(this, item)){
+                    other.handleItem(this, item);
+                    moved = true;
+                }else if(item != null){
                     items.add(item, 1);
                     items.undoFlow(item);
                 }
