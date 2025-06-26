@@ -89,7 +89,8 @@ public class DistributionBlock {
             requirements(Category.distribution, with(Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-            transportTime = 3;
+            transportTime = 10;
+            speed = 10;
 
             hasPower = false;
             range = 6;
