@@ -89,7 +89,7 @@ public class DistributionBlock {
             requirements(Category.distribution, with(Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-            itemOnce = 1;
+            pftest = 0.5;
             itemCapacity = 20;
             hasPower = false;
             range = 6;
@@ -103,7 +103,7 @@ public class DistributionBlock {
             requirements(Category.distribution, with(NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
-            itemOnce = 2;
+            pftest = 2;
             itemCapacity = 40;
             hasPower = false;
             range = 12;
