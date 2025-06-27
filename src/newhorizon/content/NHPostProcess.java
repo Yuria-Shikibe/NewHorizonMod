@@ -1172,6 +1172,10 @@ public class NHPostProcess {
             Item item =(Item) content;
             item.shownPlanets.addAll(Planets.erekir);
         });
+        adjustContent(Items.titanium, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.erekir);
+        });
     }
 
     private static void adjustVanillaUnit() {
