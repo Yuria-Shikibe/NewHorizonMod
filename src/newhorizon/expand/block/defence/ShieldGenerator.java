@@ -85,6 +85,7 @@ public class ShieldGenerator extends BaseTurret {
 
         health = 20000;
         armor = 32f;
+        itemCapacity = 50;
 
         consumePower(powerCons);
         consumeItem(NHItems.ancimembrane, 2);
