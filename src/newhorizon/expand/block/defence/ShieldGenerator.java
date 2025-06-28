@@ -54,7 +54,7 @@ public class ShieldGenerator extends BaseTurret {
     public float shieldArc = 70f;
     public float shieldRange = 250f;
 
-    public float shieldHealth = 200000f;
+    public float shieldHealth = 150000f;
     public float recoverSpeed = 10000f / 60f;
 
     public float powerCons = 20000 / 60f;
