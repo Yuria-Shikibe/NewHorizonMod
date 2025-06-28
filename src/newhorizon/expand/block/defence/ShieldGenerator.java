@@ -83,7 +83,7 @@ public class ShieldGenerator extends BaseTurret {
         size = 5;
         clipSize = 600f;
 
-        health = 12000;
+        health = 20000;
         armor = 32f;
 
         consumePower(powerCons);
@@ -129,7 +129,7 @@ public class ShieldGenerator extends BaseTurret {
     public void setStats() {
         super.setStats();
         stats.add(Stat.shieldHealth, shieldHealth);
-        stats.add(Stat.cooldownTime, "10s");
+        stats.add(Stat.cooldownTime, "5s");
     }
 
     public class ShieldGeneratorBuild extends BaseTurretBuild implements ControlBlock {
