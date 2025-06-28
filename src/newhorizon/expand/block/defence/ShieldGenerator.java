@@ -77,7 +77,7 @@ public class ShieldGenerator extends BaseTurret {
         ambientSoundVolume = 0.08f;
         canOverdrive = false;
 
-        rotateSpeed = 0.1f;
+        rotateSpeed = 0.15f;
         range = 265f;
 
         size = 5;
