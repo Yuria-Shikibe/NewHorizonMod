@@ -1824,7 +1824,7 @@ public class NHUnitTypes {
                     hitEffect = NHFx.hitSpark;
                 }};
 
-                abilities.add(new GravityTrapAbility(360f), new AdaptedHealAbility(200, 2000, hitSize * 2f, healColor).modify(a -> {
+                abilities.add(new GravityTrapAbility(250f), new AdaptedHealAbility(800, 1200, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 640;
                     a.selfHealAmount /= 12;
                 }));
