@@ -55,7 +55,7 @@ public class ShieldGenerator extends BaseTurret {
     public float shieldRange = 250f;
 
     public float shieldHealth = 150000f;
-    public float recoverSpeed = 5000f / 60f;
+    public float recoverSpeed = 10000f / 60f;
 
     public float powerCons = 20000 / 60f;
 
@@ -77,14 +77,15 @@ public class ShieldGenerator extends BaseTurret {
         ambientSoundVolume = 0.08f;
         canOverdrive = false;
 
-        rotateSpeed = 0.1f;
+        rotateSpeed = 0.15f;
         range = 265f;
 
         size = 5;
         clipSize = 600f;
 
-        health = 12000;
+        health = 20000;
         armor = 32f;
+        itemCapacity = 50;
 
         consumePower(powerCons);
         consumeItem(NHItems.ancimembrane, 2);
@@ -129,7 +130,7 @@ public class ShieldGenerator extends BaseTurret {
     public void setStats() {
         super.setStats();
         stats.add(Stat.shieldHealth, shieldHealth);
-        stats.add(Stat.cooldownTime, "10s");
+        stats.add(Stat.cooldownTime, "5s");
     }
 
     public class ShieldGeneratorBuild extends BaseTurretBuild implements ControlBlock {
