@@ -13,7 +13,7 @@ public class AdaptedHealAbility extends RepairFieldAbility {
     public Color applyColor = Pal.heal;
     public boolean ignoreHealthMultiplier = true;
     //Percent per tick
-    public float selfHealAmount = 0.0005f;
+    public float selfHealAmount = 0.001f;
     public float selfHealReloadTime = -1;
     protected float lastHealth = 0;
     protected float selfHealReload = 0;
