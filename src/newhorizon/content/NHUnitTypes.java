@@ -2267,6 +2267,7 @@ public class NHUnitTypes {
                             bullet = NHBullets.atomSeparator.copy();
                             bullet.lifetime = 300f;
                             bullet.damage = 200f;
+                            status = NHStatusEffects.ultfireburn;
                             bullet.shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
                             ((ContinuousFlameBulletType) bullet).lengthInterp = NHInterp.laser;
                             shootSound = Sounds.beam;
