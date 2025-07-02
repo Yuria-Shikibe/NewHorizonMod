@@ -2323,7 +2323,7 @@ public class NHUnitTypes {
                                     hitSound = Sounds.explosionbig;
                                     drawSize = 40;
                                     splashDamageRadius = 240;
-                                    splashDamage = 250;
+                                    splashDamage = 200;
                                     status = NHStatusEffects.ultFireBurn;
                                     lifetime = 300;
                                     despawnEffect = Fx.none;
@@ -2383,7 +2383,7 @@ public class NHUnitTypes {
                             recoil = 1.7f;
                             shootSound = Sounds.plasmaboom;
 
-                            bullet = new ChainBulletType(600f) {{
+                            bullet = new ChainBulletType(500f) {{
                                 length = 360f;
                                 status = StatusEffects.shocked;
                                 hitColor = lightColor = lightningColor = NHColor.lightSkyBack;
