@@ -1787,7 +1787,7 @@ public class NHUnitTypes {
                 health = 22000;
                 armor = 45;
                 rotateSpeed = 3f;
-                speed = 1.5f;
+                speed = 1.75f;
 
                 squareShape = true;
                 omniMovement = false;
@@ -1816,7 +1816,7 @@ public class NHUnitTypes {
                     trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
                     frontColor = Color.white;
 
-                    damage = 40f;
+                    damage = 60f;
 
                     smokeEffect = Fx.shootSmallSmoke;
                     shootEffect = NHFx.shootCircleSmall(backColor);
@@ -1824,7 +1824,7 @@ public class NHUnitTypes {
                     hitEffect = NHFx.hitSpark;
                 }};
 
-                abilities.add(new GravityTrapAbility(180f), new AdaptedHealAbility(200, 1200, hitSize * 2f, healColor).modify(a -> {
+                abilities.add(new GravityTrapAbility(180f), new AdaptedHealAbility(200, 2000, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 640;
                     a.selfHealAmount /= 12;
                 }));
