@@ -787,7 +787,7 @@ public class NHUnitTypes {
             mirror = alternate = false;
             layerOffset = 0.15f;
 
-            shootWarmupSpeed /= 2f;
+            shootWarmupSpeed /= 4f;
             minWarmup = 1.8f;
 
             recoil = 2.25f;
