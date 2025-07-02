@@ -174,7 +174,9 @@ public class NHStatusEffects {
             damage = 1.5f;
 
             color = textureColor = NHColor.lightSkyBack;
-            speedMultiplier = 1.2f;
+            damageMultiplier = 0.90f;
+            speedMultiplier = 0.8f;
+            reloadMultiplier = 0.95f;
             effect = NHFx.ultFireBurn;
         }};
 
