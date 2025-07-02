@@ -2308,6 +2308,7 @@ public class NHUnitTypes {
                                     linkRange = 280f;
 
                                     scaleLife = true;
+                                    hittable = false;
 
                                     hitModifier = UltFire::create;
 
@@ -2322,7 +2323,7 @@ public class NHUnitTypes {
                                     hitSound = Sounds.explosionbig;
                                     drawSize = 40;
                                     splashDamageRadius = 240;
-                                    splashDamage = 1000;
+                                    splashDamage = 200;
                                     lifetime = 300;
                                     despawnEffect = Fx.none;
                                     hitEffect = new Effect(50, e -> {
