@@ -792,7 +792,7 @@ public class NHUnitTypes {
 
             recoil = 2.25f;
             shake = 8f;
-            reload = 120f;
+            reload = 240f;
 
             shootY = 25;
 
