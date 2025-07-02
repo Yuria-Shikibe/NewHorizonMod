@@ -2383,7 +2383,7 @@ public class NHUnitTypes {
                             recoil = 1.7f;
                             shootSound = Sounds.plasmaboom;
 
-                            bullet = new ChainBulletType(500f) {{
+                            bullet = new ChainBulletType(400f) {{
                                 length = 360f;
                                 status = StatusEffects.shocked;
                                 hitColor = lightColor = lightningColor = NHColor.lightSkyBack;
@@ -2403,7 +2403,7 @@ public class NHUnitTypes {
                     engines.add(new UnitEngine(i * 44.25f, -49f, 7, -90 + 8 * i));
                 }
 
-                abilities.add(new RepairFieldAbility(8000f, 160f, 240f) {{
+                abilities.add(new RepairFieldAbility(4000f, 160f, 240f) {{
                     healEffect = NHFx.healEffectSky;
                     activeEffect = NHFx.activeEffectSky;
                 }});
