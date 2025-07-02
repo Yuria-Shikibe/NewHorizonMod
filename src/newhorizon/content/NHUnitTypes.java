@@ -2324,7 +2324,8 @@ public class NHUnitTypes {
                                     hitSound = Sounds.explosionbig;
                                     drawSize = 40;
                                     splashDamageRadius = 240;
-                                    splashDamage = 200;
+                                    splashDamage = 250;
+                                    status = NHStatusEffects.ultFireBurn;
                                     lifetime = 300;
                                     despawnEffect = Fx.none;
                                     hitEffect = new Effect(50, e -> {
