@@ -2408,6 +2408,8 @@ public class NHUnitTypes {
                     activeEffect = NHFx.activeEffectSky;
                 }});
 
+                immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
+                
                 lowAltitude = true;
                 itemCapacity = 500;
                 health = 72000.0F;
@@ -3864,7 +3866,8 @@ public class NHUnitTypes {
                     whenShooting = false;
                 }});
 
-                immunities.addAll(StatusEffects.blasted, StatusEffects.tarred, StatusEffects.burning, StatusEffects.freezing, StatusEffects.melting, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1);
+                immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
+                
                 targetFlags = new BlockFlag[]{BlockFlag.unitAssembler, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
 
                 health = 55000;
@@ -4029,7 +4032,7 @@ public class NHUnitTypes {
                 weapons.add(copyAndMove(pointDefenceWeaponC, 22, 18f));
                 weapons.add(copyAndMove(pointDefenceWeaponC, 25, 2));
 
-                immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
+                immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
 
                 groundLayer = Layer.legUnit + 0.1f;
 
@@ -4070,8 +4073,8 @@ public class NHUnitTypes {
 
                 abilities.add(ability);
 
-                immunities.addAll(NHStatusEffects.scannerDown, StatusEffects.slow, StatusEffects.electrified, StatusEffects.muddy, StatusEffects.blasted, StatusEffects.shocked, StatusEffects.sapped, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.weak);
-
+                immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
+                
                 hitSize = 70f;
                 armor = 52;
                 health = 78000.0F;
