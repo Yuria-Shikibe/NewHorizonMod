@@ -788,7 +788,7 @@ public class NHUnitTypes {
             layerOffset = 0.15f;
 
             shootWarmupSpeed /= 2f;
-            minWarmup = 0.9f;
+            minWarmup = 1.8f;
 
             recoil = 2.25f;
             shake = 8f;
