@@ -67,6 +67,7 @@ public class HyperGenerator extends PowerGenerator {
     public float lightningRange = 160f;
     public int lightningLen = 4;
     public int lightningLenRand = 8;
+    public float lightningDamage = 120f;
     public int subNum = 1;
     public int subNumRand = 1;
 
