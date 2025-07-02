@@ -2322,7 +2322,7 @@ public class NHUnitTypes {
                                     hitSound = Sounds.explosionbig;
                                     drawSize = 40;
                                     splashDamageRadius = 240;
-                                    splashDamage = 80;
+                                    splashDamage = 1000;
                                     lifetime = 300;
                                     despawnEffect = Fx.none;
                                     hitEffect = new Effect(50, e -> {
