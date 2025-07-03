@@ -2827,7 +2827,7 @@ public class NHUnitTypes {
                             shootSound = NHSounds.launch;
                         }}
                 );
-                abilities.add(new ForceFieldAbility(64.0F, 2F, 5000.0F, 1200.0F));
+                abilities.add(new ForceFieldAbility(128.0F, 2F, 5000.0F, 1200.0F));
                 engineOffset = 15.0F;
                 engineSize = 6.5F;
                 speed = 0.275f;
