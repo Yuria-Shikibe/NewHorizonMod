@@ -2794,7 +2794,7 @@ public class NHUnitTypes {
                                 width -= 2;
                                 hitLarge = true;
                                 length = 280;
-                                damage = 220.0F;
+                                damage = 300.0F;
                                 status = NHStatusEffects.ultFireBurn;
                                 statusDuration = 120f;
                                 fromColor = NHColor.lightSkyFront;
@@ -2827,7 +2827,7 @@ public class NHUnitTypes {
                             shootSound = NHSounds.launch;
                         }}
                 );
-                abilities.add(new ForceFieldAbility(64.0F, 1.25F, 3000.0F, 1200.0F));
+                abilities.add(new ForceFieldAbility(64.0F, 2F, 5000.0F, 1200.0F));
                 engineOffset = 15.0F;
                 engineSize = 6.5F;
                 speed = 0.275f;
