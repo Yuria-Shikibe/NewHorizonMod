@@ -19,6 +19,7 @@ import mindustry.entities.effect.ParticleEffect;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Sounds;
+import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
@@ -334,7 +335,7 @@ public class NHPostProcess {
         adjustVanillaPower();
         adjustVanillaUnit();
         adjustVanillaLogic();
-        adjustVanillaTurret();
+        adjustVanillaItem();
     }
 
     public static void contentOverride() {
@@ -1156,6 +1157,24 @@ public class NHPostProcess {
             crafter.consume(new ConsumeItems(with(Items.sporePod, 3, Items.pyratite, 3)));
             crafter.outputItems = with(Items.blastCompound, 3);
             crafter.craftTime = 90f;
+        });
+    }
+    private static void adjustVanillaItem() {
+        adjustContent(Items.tungsten, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.serpulo);
+        });
+        adjustContent(Items.carbide, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.serpulo);
+        });
+        adjustContent(Items.plastanium, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.erekir);
+        });
+        adjustContent(Items.titanium, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.erekir);
         });
     }
 
