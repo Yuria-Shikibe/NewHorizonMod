@@ -3896,7 +3896,7 @@ public class NHUnitTypes {
         sin = new NHUnitType("sin") {
             {
                 outlineColor = OColor;
-                abilities.add(new ForceFieldAbility(88.0F, 20F, 30000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f) {{
+                abilities.add(new ForceFieldAbility(128.0F, 25F, 30000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f) {{
                     activeEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 60f, 240f, 4f, 45);
                     applyEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 30f, 45f, 1f, 45);
                 }});
