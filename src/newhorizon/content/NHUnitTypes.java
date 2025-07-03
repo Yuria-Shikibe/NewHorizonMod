@@ -792,7 +792,7 @@ public class NHUnitTypes {
 
             recoil = 2.25f;
             shake = 8f;
-            reload = 120f;
+            reload = 180f;
 
             shootY = 25;
 
@@ -1787,7 +1787,7 @@ public class NHUnitTypes {
                 health = 22000;
                 armor = 45;
                 rotateSpeed = 3f;
-                speed = 1.5f;
+                speed = 1.75f;
 
                 squareShape = true;
                 omniMovement = false;
@@ -1816,7 +1816,7 @@ public class NHUnitTypes {
                     trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
                     frontColor = Color.white;
 
-                    damage = 40f;
+                    damage = 60f;
 
                     smokeEffect = Fx.shootSmallSmoke;
                     shootEffect = NHFx.shootCircleSmall(backColor);
@@ -1824,7 +1824,7 @@ public class NHUnitTypes {
                     hitEffect = NHFx.hitSpark;
                 }};
 
-                abilities.add(new GravityTrapAbility(180f), new AdaptedHealAbility(200, 1200, hitSize * 2f, healColor).modify(a -> {
+                abilities.add(new GravityTrapAbility(250f), new AdaptedHealAbility(800, 1200, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 640;
                     a.selfHealAmount /= 12;
                 }));
@@ -2308,6 +2308,7 @@ public class NHUnitTypes {
                                     linkRange = 280f;
 
                                     scaleLife = true;
+                                    hittable = false;
 
                                     hitModifier = UltFire::create;
 
@@ -2322,7 +2323,8 @@ public class NHUnitTypes {
                                     hitSound = Sounds.explosionbig;
                                     drawSize = 40;
                                     splashDamageRadius = 240;
-                                    splashDamage = 80;
+                                    splashDamage = 200;
+                                    status = NHStatusEffects.ultFireBurn;
                                     lifetime = 300;
                                     despawnEffect = Fx.none;
                                     hitEffect = new Effect(50, e -> {
@@ -2381,8 +2383,9 @@ public class NHUnitTypes {
                             recoil = 1.7f;
                             shootSound = Sounds.plasmaboom;
 
-                            bullet = new ChainBulletType(300f) {{
+                            bullet = new ChainBulletType(400f) {{
                                 length = 360f;
+                                status = StatusEffects.shocked;
                                 hitColor = lightColor = lightningColor = NHColor.lightSkyBack;
                                 shootEffect = NHFx.hitSparkLarge;
                                 hitEffect = NHFx.lightningHitSmall;
@@ -2400,11 +2403,13 @@ public class NHUnitTypes {
                     engines.add(new UnitEngine(i * 44.25f, -49f, 7, -90 + 8 * i));
                 }
 
-                abilities.add(new RepairFieldAbility(800f, 160f, 240f) {{
+                abilities.add(new RepairFieldAbility(4000f, 160f, 240f) {{
                     healEffect = NHFx.healEffectSky;
                     activeEffect = NHFx.activeEffectSky;
                 }});
 
+                immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
+                
                 lowAltitude = true;
                 itemCapacity = 500;
                 health = 72000.0F;
@@ -2789,7 +2794,7 @@ public class NHUnitTypes {
                                 width -= 2;
                                 hitLarge = true;
                                 length = 280;
-                                damage = 220.0F;
+                                damage = 300.0F;
                                 status = NHStatusEffects.ultFireBurn;
                                 statusDuration = 120f;
                                 fromColor = NHColor.lightSkyFront;
@@ -2822,7 +2827,7 @@ public class NHUnitTypes {
                             shootSound = NHSounds.launch;
                         }}
                 );
-                abilities.add(new ForceFieldAbility(64.0F, 1.25F, 3000.0F, 1200.0F));
+                abilities.add(new ForceFieldAbility(88.0F, 2F, 5000.0F, 1200.0F));
                 engineOffset = 15.0F;
                 engineSize = 6.5F;
                 speed = 0.275f;
@@ -3861,7 +3866,8 @@ public class NHUnitTypes {
                     whenShooting = false;
                 }});
 
-                immunities.addAll(StatusEffects.blasted, StatusEffects.tarred, StatusEffects.burning, StatusEffects.freezing, StatusEffects.melting, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1);
+                immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
+
                 targetFlags = new BlockFlag[]{BlockFlag.unitAssembler, BlockFlag.turret, BlockFlag.reactor, BlockFlag.generator, null};
 
                 health = 55000;
@@ -3890,7 +3896,7 @@ public class NHUnitTypes {
         sin = new NHUnitType("sin") {
             {
                 outlineColor = OColor;
-                abilities.add(new ForceFieldAbility(88.0F, 20F, 30000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f) {{
+                abilities.add(new ForceFieldAbility(128.0F, 25F, 30000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f) {{
                     activeEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 60f, 240f, 4f, 45);
                     applyEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 30f, 45f, 1f, 45);
                 }});
@@ -4026,7 +4032,7 @@ public class NHUnitTypes {
                 weapons.add(copyAndMove(pointDefenceWeaponC, 22, 18f));
                 weapons.add(copyAndMove(pointDefenceWeaponC, 25, 2));
 
-                immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
+                immunities.addAll(NHStatusEffects.scannerDown, NHStatusEffects.weak, NHStatusEffects.ultFireBurn, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.scrambler, StatusEffects.disarmed, StatusEffects.melting, StatusEffects.burning, StatusEffects.wet, StatusEffects.shocked, StatusEffects.tarred, StatusEffects.muddy, StatusEffects.slow, StatusEffects.disarmed);
 
                 groundLayer = Layer.legUnit + 0.1f;
 
@@ -4067,8 +4073,8 @@ public class NHUnitTypes {
 
                 abilities.add(ability);
 
-                immunities.addAll(NHStatusEffects.scannerDown, StatusEffects.slow, StatusEffects.electrified, StatusEffects.muddy, StatusEffects.blasted, StatusEffects.shocked, StatusEffects.sapped, NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.weak);
-
+                immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
+                
                 hitSize = 70f;
                 armor = 52;
                 health = 78000.0F;
