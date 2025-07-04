@@ -1558,7 +1558,7 @@ public class NHBullets {
         }};
 
         synchroTungsten = new AdaptBulletType() {{
-            damage = 55f;
+            damage = 50f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
