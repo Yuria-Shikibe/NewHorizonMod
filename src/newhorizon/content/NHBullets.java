@@ -1557,7 +1557,7 @@ public class NHBullets {
             bundleName = "synchro-titanium";
         }};
 
-        synchroTungsten = new AdaptBulletType() {{
+        synchrotungsten = new AdaptBulletType() {{
             damage = 50f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
