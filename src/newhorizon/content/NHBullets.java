@@ -1558,7 +1558,7 @@ public class NHBullets {
         }};
 
         synchroTungsten = new AdaptBulletType() {{
-            damage = 50f;
+            damage = 55f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
@@ -1573,7 +1573,7 @@ public class NHBullets {
             trailWidth = 1.7f;
             trailLength = 9;
 
-            trailColor = backColor = hitColor = lightColor = lightningColor = Pal.tungstenShot.cpy().lerp(Color.royal, 0.45f);
+            trailColor = backColor = hitColor = lightColor = lightningColor = Items.tungsten.color;
             frontColor = backColor.cpy().lerp(Color.white, 0.35f);
 
             shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
@@ -1582,7 +1582,7 @@ public class NHBullets {
             despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
             hitEffect = NHFx.hitSparkLarge;
 
-            pierceCap = 3;
+            pierceCap = 4;
 
             ammoMultiplier = 4;
 
