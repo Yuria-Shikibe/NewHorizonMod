@@ -1694,7 +1694,6 @@ public class NHBullets {
                 statusDuration = 320f;
 
                 lightOpacity = 0.7f;
-                healPercent = 100f;
 
                 reflectable = false;
                 knockback = 3f;
