@@ -1526,7 +1526,7 @@ public class NHBullets {
         }};
 
         synchroTitanium = new AdaptBulletType() {{
-            damage = 50f;
+            damage = 60f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
@@ -1557,8 +1557,40 @@ public class NHBullets {
             bundleName = "synchro-titanium";
         }};
 
+        synchroTungsten = new AdaptBulletType() {{
+            damage = 50f;
+            buildingDamageMultiplier = 1f;
+            shieldDamageMultiplier = 0.5f;
+
+            speed = 8f;
+            lifetime = 35f;
+
+            width = 8f;
+            height = 42f;
+
+            shrinkX = 0;
+
+            trailWidth = 1.7f;
+            trailLength = 9;
+
+            trailColor = backColor = hitColor = lightColor = lightningColor = Pal.tungstenShot.cpy().lerp(Color.royal, 0.45f);
+            frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+
+            shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
+            smokeEffect = Fx.shootBigSmoke;
+
+            despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
+            hitEffect = NHFx.hitSparkLarge;
+
+            pierceCap = 3;
+
+            ammoMultiplier = 4;
+
+            bundleName = "synchro-Tungsten";
+        }};
+
         synchroZeta = new AdaptBulletType() {{
-            damage = 80f;
+            damage = 90f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
@@ -1584,7 +1616,7 @@ public class NHBullets {
             status = NHStatusEffects.emp2;
             statusDuration = 180f;
 
-            pierceCap = 2;
+            pierceCap = 4;
 
             ammoMultiplier = 6;
 
