@@ -62,7 +62,7 @@ public class NHBullets {
             warperBullet, airRaidBomb,
             hyperBlastLinker, hyperBlast,
             arc_9000, eternity, arc_9000_frag,
-            synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,
+            synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,synchroTungsten,
             missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
             ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid,
             raidBulletType
