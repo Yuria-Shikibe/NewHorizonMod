@@ -59,6 +59,7 @@ public class DefenseBlock {
 
             size = 2;
             sides = 4;
+            health = 1000;
             shieldRotation = 45f;
             radius = 160f;
             shieldHealth = 4000f;
@@ -74,6 +75,7 @@ public class DefenseBlock {
 
             size = 4;
             sides = 4;
+            health = 2000;
             shieldRotation = 45f;
             radius = 240f;
             shieldHealth = 20000f;

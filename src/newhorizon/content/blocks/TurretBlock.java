@@ -83,6 +83,7 @@ public class TurretBlock {
 
             ammo(
                     Items.titanium, NHBullets.synchroTitanium,
+                    Items.tungsten, NHBullets.synchroTungsten,
                     NHItems.zeta, NHBullets.synchroZeta
             );
 
