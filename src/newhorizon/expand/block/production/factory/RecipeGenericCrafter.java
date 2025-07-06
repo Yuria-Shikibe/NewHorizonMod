@@ -1,5 +1,6 @@
 package newhorizon.expand.block.production.factory;
 
+import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
@@ -71,17 +72,17 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                                 row.image(Icon.right).size(32f).padLeft(8f).padRight(12f);
                                 if (outputItems != null) {
                                     for (var stack: outputItems){
-                                        row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl));
+                                        row.add(display(stack.item, Mathf.round(stack.amount * recipe.craftScl), craftTime / recipe.boostScl));
                                     }
                                 }
                                 if (outputLiquids != null) {
                                     for (var stack: outputLiquids){
-                                        row.add(display(stack.liquid, stack.amount * craftTime, craftTime / recipe.boostScl));
+                                        row.add(display(stack.liquid, stack.amount * craftTime * recipe.craftScl, craftTime / recipe.boostScl));
                                     }
                                 }
                                 if (outputPayloads != null) {
                                     for (var stack: outputPayloads){
-                                        row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl));
+                                        row.add(display(stack.item, Mathf.round(stack.amount * recipe.craftScl), craftTime / recipe.boostScl));
                                     }
                                 }
                             }).growX();
@@ -217,7 +218,28 @@ public class RecipeGenericCrafter extends AdaptCrafter {
 
         @Override
         public void craft() {
-            super.craft();
+            consume();
+
+            if(outputItems != null){
+                for(var output : outputItems){
+                    for(int i = 0; i < Mathf.round(output.amount * getRecipe().craftScl); i++){
+                        offload(output.item);
+                    }
+                }
+            }
+
+            if(outputPayloads != null){
+                for(PayloadStack output : outputPayloads){
+                    payloads.add(output.item, Mathf.round(output.amount * getRecipe().craftScl));
+                }
+            }
+
+            if(wasVisible){
+                craftEffect.at(x, y);
+            }
+
+            progress %= 1f;
+
             updateRecipe();
         }
 

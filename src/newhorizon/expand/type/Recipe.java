@@ -12,7 +12,7 @@ public class Recipe{
     public Seq<PayloadStack> inputPayload = new Seq<>();
 
     public float boostScl = 1f;
-    public int craftScl = 1;
+    public float craftScl = 1f;
 
     public Recipe(Object...objects){
         for (int i = 0; i < objects.length / 2; i++){
