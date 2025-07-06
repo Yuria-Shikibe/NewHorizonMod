@@ -848,6 +848,7 @@ public class NHPostProcess {
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
                     damage = 10;
+		    layer = Layer.bullet - 2f;
 	    }});
         });
         adjustContent(Blocks.fuse, content -> {
