@@ -839,7 +839,8 @@ public class NHPostProcess {
 	adjustContent(Blocks.tsunami, content -> {
             LiquidTurret turret = (LiquidTurret) content;
             turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
-		 lifetime = 49f;
+		    liquid = NHLiquids.xenFluid;
+		    lifetime = 49f;
                     speed = 4f;
                     knockback = 1.7f;
                     puddleSize = 8f;
@@ -848,7 +849,8 @@ public class NHPostProcess {
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
                     damage = 10;
-		    layer = Layer.bullet - 2f;
+		    status = StatusEffects.ultFireburn;
+		    statusDuration = 60f * 4f;
 	    }});
         });
         adjustContent(Blocks.fuse, content -> {
