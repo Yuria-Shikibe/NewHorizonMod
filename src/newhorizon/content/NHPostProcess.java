@@ -865,8 +865,8 @@ public class NHPostProcess {
                     damage = 5;
 		    status = NHStatusEffects.scannerdown;
 		    statusDuration = 60f * 4f;
-	    }});
-	.   turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
+	    }});	
+	    turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
 		    liquid = NHLiquids.zetaFluidNegative;
 		    lifetime = 49f;
                     speed = 4f;
