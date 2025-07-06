@@ -22,11 +22,12 @@ public class ModuleBlock {
             speedModule1, speedModule2, speedModule3,
             efficiencyModule1, efficiencyModule2, efficiencyModule3,
             productivityModule1, productivityModule2, productivityModule3,
-            armorCast, bionicsProcessor, chargeCompensator, coolingUnit, crystalDiode,
-            echoCanceller, fissionCell, fusionReactor, gaussReceptor, hadronBuffers,
-            heatDetector, memoryRecalibrator, multiphasePropellant, neutronMembrane, particleModulator,
-            powerCell, powerUnit, protonCapacitor, pulseMutator, quantumConductor,
-            resistoArray, signalCirculator, supraGel, tachyonEmitter, wiringKit
+
+            wiringKit, powerUnit, bionicsProcessor, memoryRecalibrator, resistoArray,
+            crystalDiode, protonCapacitor, hadronBuffers, tachyonEmitter, neutronMembrane,
+            armorCast, heatDetector, gaussReceptor, echoCanceller, pulseMutator,
+            powerCell, fissionCell, chargeCompensator, fusionReactor, multiphasePropellant,
+            supraGel, coolingUnit, signalCirculator, particleModulator, quantumConductor
     ;
 
     public static ObjectMap<Block, ModuleCost> moduleCosts = new ObjectMap<>();
@@ -65,31 +66,36 @@ public class ModuleBlock {
         productivityModule2 = new ModulePayload("productivity-module-2");
         productivityModule3 = new ModulePayload("productivity-module-3");
 
-        armorCast = new ModulePayload("armor-cast");
-        bionicsProcessor = new ModulePayload("bionics-processor");
-        chargeCompensator = new ModulePayload("charge-compensator");
-        coolingUnit = new ModulePayload("cooling-unit");
-        crystalDiode = new ModulePayload("crystal-diode");
-        echoCanceller = new ModulePayload("echo-canceller");
-        fissionCell = new ModulePayload("fission-cell");
-        fusionReactor = new ModulePayload("fusion-reactor");
-        gaussReceptor = new ModulePayload("gauss-receptor");
-        hadronBuffers = new ModulePayload("hadron-buffers");
-        heatDetector = new ModulePayload("heat-detector");
-        memoryRecalibrator = new ModulePayload("memory-recalibrator");
-        multiphasePropellant = new ModulePayload("multiphase-propellant");
-        neutronMembrane = new ModulePayload("neutron-membrane");
-        particleModulator = new ModulePayload("particle-modulator");
-        powerCell = new ModulePayload("power-cell");
-        powerUnit = new ModulePayload("power-unit");
-        protonCapacitor = new ModulePayload("proton-capacitor");
-        pulseMutator = new ModulePayload("pulse-mutator");
-        quantumConductor = new ModulePayload("quantum-conductor");
-        resistoArray = new ModulePayload("resisto-array");
-        signalCirculator = new ModulePayload("signal-circulator");
-        supraGel = new ModulePayload("supra-gel");
-        tachyonEmitter = new ModulePayload("tachyon-emitter");
         wiringKit = new ModulePayload("wiring-kit");
+        powerUnit = new ModulePayload("power-unit");
+        bionicsProcessor = new ModulePayload("bionics-processor");
+        memoryRecalibrator = new ModulePayload("memory-recalibrator");
+        resistoArray = new ModulePayload("resisto-array");
+
+        crystalDiode = new ModulePayload("crystal-diode");
+        protonCapacitor = new ModulePayload("proton-capacitor");
+        hadronBuffers = new ModulePayload("hadron-buffers");
+        tachyonEmitter = new ModulePayload("tachyon-emitter");
+        neutronMembrane = new ModulePayload("neutron-membrane");
+
+        armorCast = new ModulePayload("armor-cast");
+        heatDetector = new ModulePayload("heat-detector");
+        gaussReceptor = new ModulePayload("gauss-receptor");
+        echoCanceller = new ModulePayload("echo-canceller");
+        pulseMutator = new ModulePayload("pulse-mutator");
+
+        powerCell = new ModulePayload("power-cell");
+        fissionCell = new ModulePayload("fission-cell");
+        chargeCompensator = new ModulePayload("charge-compensator");
+        fusionReactor = new ModulePayload("fusion-reactor");
+        multiphasePropellant = new ModulePayload("multiphase-propellant");
+
+        supraGel = new ModulePayload("supra-gel");
+        coolingUnit = new ModulePayload("cooling-unit");
+        signalCirculator = new ModulePayload("signal-circulator");
+        particleModulator = new ModulePayload("particle-modulator");
+        quantumConductor = new ModulePayload("quantum-conductor");
+
 
 
         moduleCosts.put(processorT1, new ModuleCost() {{

@@ -107,6 +107,7 @@ new-horizon-gravity-node-serpulo 1 1 1 0
 new-horizon-gravity-trap 1 1 2 0
 new-horizon-gravity-trap-heavy 1 1 3 0
 new-horizon-gravity-trap-small 1 1 2 0
+new-horizon-hadr-buffers 1 1 1 0
 new-horizon-hadron-buffers 1 1 1 0
 new-horizon-hard-light-rail 1 0 1 0
 new-horizon-heat-detector 1 1 1 0
