@@ -851,8 +851,9 @@ public class NHPostProcess {
                     damage = 10;
 		    status = NHStatusEffects.ultFireBurn;
 		    statusDuration = 60f * 4f;
+		    hitModifier = UltFire::create;
             }});
-            turret.ammoTypes.put(NHLiquids.zetaFluidpositive, new LiquidBulletType() {{
+            turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
 		    liquid = NHLiquids.zetaFluidpositive;
 		    lifetime = 49f;
                     speed = 4f;
@@ -863,7 +864,7 @@ public class NHPostProcess {
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
                     damage = 5;
-		    status = NHStatusEffects.scannerdown;
+		    status = NHStatusEffects.scannerDown;
 		    statusDuration = 60f * 4f;
 	    }});	
 	    turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
@@ -877,7 +878,7 @@ public class NHPostProcess {
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
                     damage = 5;
-		    status = NHStatusEffects.scannerdown;
+		    status = NHStatusEffects.scannerDown;
 		    statusDuration = 60f * 4f;
 	    }});
         });
