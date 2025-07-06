@@ -102,7 +102,6 @@ public class PowerBlock {
                     }}
             );
 
-            consumePower(0f);
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
@@ -133,7 +132,6 @@ public class PowerBlock {
                 suffix = "-rot";
             }};
 
-            consumePower(0f);
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
@@ -164,7 +162,6 @@ public class PowerBlock {
                 suffix = "-rot";
             }};
 
-            consumePower(0f);
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
@@ -200,7 +197,6 @@ public class PowerBlock {
 
             drawer = new DrawDefault();
 
-            consumePower(0f);
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};

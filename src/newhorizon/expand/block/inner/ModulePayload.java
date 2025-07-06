@@ -16,7 +16,7 @@ public class ModulePayload extends Block {
         rebuildable = false;
 
         placeablePlayer = false;
-        hideDatabase = true;
+        //hideDatabase = true;
 
         buildVisibility = BuildVisibility.shown;
     }

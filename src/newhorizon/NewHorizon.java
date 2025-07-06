@@ -22,6 +22,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.WarningBar;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.*;
+import newhorizon.content.register.RecipeRegister;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.logic.DefaultRaid;
 import newhorizon.util.DebugFunc;
@@ -245,6 +246,8 @@ public class NewHorizon extends Mod {
         if (NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)) NHPostProcess.loadOptional();
         NHContent.loadLast();
         NHLogic.load();
+
+        RecipeRegister.load();
 
         Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }
