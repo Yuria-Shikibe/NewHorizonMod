@@ -838,7 +838,7 @@ public class NHPostProcess {
         });
 	adjustContent(Blocks.tsunami, content -> {
             LiquidTurret turret = (LiquidTurret) content;
-            turret.ammoTypes.put(NHliquids.xenFluid, new LiquidBulletType() {{
+            turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
 		 lifetime = 49f;
                     speed = 4f;
                     knockback = 1.7f;
