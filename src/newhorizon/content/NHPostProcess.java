@@ -849,7 +849,7 @@ public class NHPostProcess {
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
                     damage = 10;
-		    status = StatusEffects.ultFireBurn;
+		    status = NHStatusEffects.ultFireBurn;
 		    statusDuration = 60f * 4f;
 	    }});
         });
