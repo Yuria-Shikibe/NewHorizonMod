@@ -842,7 +842,7 @@ public class NHPostProcess {
 		    liquid = NHLiquids.xenFluid;
 		    lifetime = 49f;
                     speed = 4f;
-                    knockback = 1.7f;
+                    knockback = 1.3f;
                     puddleSize = 8f;
                     orbSize = 4f;
                     drag = 0.001f;
@@ -850,6 +850,34 @@ public class NHPostProcess {
                     statusDuration = 60f * 4f;
                     damage = 10;
 		    status = NHStatusEffects.ultFireBurn;
+		    statusDuration = 60f * 4f;
+            }});
+            turret.ammoTypes.put(NHLiquids.zetaFluidpositive, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidpositive;
+		    lifetime = 49f;
+                    speed = 4f;
+                    knockback = 1.3f;
+                    puddleSize = 8f;
+                    orbSize = 4f;
+                    drag = 0.001f;
+                    ammoMultiplier = 0.4f;
+                    statusDuration = 60f * 4f;
+                    damage = 5;
+		    status = NHStatusEffects.scannerdown;
+		    statusDuration = 60f * 4f;
+	    }});
+	.   turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidNegative;
+		    lifetime = 49f;
+                    speed = 4f;
+                    knockback = 1.3f;
+                    puddleSize = 8f;
+                    orbSize = 4f;
+                    drag = 0.001f;
+                    ammoMultiplier = 0.4f;
+                    statusDuration = 60f * 4f;
+                    damage = 5;
+		    status = NHStatusEffects.scannerdown;
 		    statusDuration = 60f * 4f;
 	    }});
         });
