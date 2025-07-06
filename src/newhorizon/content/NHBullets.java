@@ -62,7 +62,7 @@ public class NHBullets {
             warperBullet, airRaidBomb,
             hyperBlastLinker, hyperBlast,
             arc_9000, eternity, arc_9000_frag,
-            synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,
+            synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,synchroTungsten,
             missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
             ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid,
             raidBulletType
@@ -1526,7 +1526,7 @@ public class NHBullets {
         }};
 
         synchroTitanium = new AdaptBulletType() {{
-            damage = 50f;
+            damage = 60f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
@@ -1557,8 +1557,40 @@ public class NHBullets {
             bundleName = "synchro-titanium";
         }};
 
+        synchroTungsten = new AdaptBulletType() {{
+            damage = 50f;
+            buildingDamageMultiplier = 1f;
+            shieldDamageMultiplier = 0.5f;
+
+            speed = 8f;
+            lifetime = 35f;
+
+            width = 8f;
+            height = 42f;
+
+            shrinkX = 0;
+
+            trailWidth = 1.7f;
+            trailLength = 9;
+
+            trailColor = backColor = hitColor = lightColor = lightningColor = Items.tungsten.color;
+            frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+
+            shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
+            smokeEffect = Fx.shootBigSmoke;
+
+            despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
+            hitEffect = NHFx.hitSparkLarge;
+
+            pierceCap = 4;
+
+            ammoMultiplier = 4;
+
+            bundleName = "synchro-Tungsten";
+        }};
+
         synchroZeta = new AdaptBulletType() {{
-            damage = 80f;
+            damage = 90f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
@@ -1584,7 +1616,7 @@ public class NHBullets {
             status = NHStatusEffects.emp2;
             statusDuration = 180f;
 
-            pierceCap = 2;
+            pierceCap = 4;
 
             ammoMultiplier = 6;
 
@@ -1656,13 +1688,12 @@ public class NHBullets {
             statusDuration = 120f;
         }};
 
-        laugraBullet = new AccelBulletType(200, STRIKE) {
+        laugraBullet = new AccelBulletType(1000, STRIKE) {
             {
                 status = NHStatusEffects.entangled;
                 statusDuration = 320f;
 
                 lightOpacity = 0.7f;
-                healPercent = 20f;
 
                 reflectable = false;
                 knockback = 3f;
@@ -1674,7 +1705,7 @@ public class NHBullets {
                 accelerateEnd = 0.55f;
 
                 pierce = pierceBuilding = true;
-                pierceCap = 5;
+                pierceCap = 7;
 
                 lightningColor = backColor = trailColor = hitColor = lightColor = NHColor.ancient;
                 lightRadius = 70f;
@@ -1694,7 +1725,7 @@ public class NHBullets {
 
                 width = 13f;
                 height = 35f;
-                speed = 8f;
+                speed = 7f;
                 trailLength = 20;
                 trailWidth = 2.3f;
                 trailInterval = 1.76f;

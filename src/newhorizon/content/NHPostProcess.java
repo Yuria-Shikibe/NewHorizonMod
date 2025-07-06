@@ -19,6 +19,7 @@ import mindustry.entities.effect.ParticleEffect;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Sounds;
+import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
@@ -334,7 +335,7 @@ public class NHPostProcess {
         adjustVanillaPower();
         adjustVanillaUnit();
         adjustVanillaLogic();
-        adjustVanillaTurret();
+        adjustVanillaItem();
     }
 
     public static void contentOverride() {
@@ -696,8 +697,6 @@ public class NHPostProcess {
         hideContent(Blocks.ductUnloader);
         hideContent(Blocks.surgeConveyor);
         hideContent(Blocks.surgeRouter);
-        hideContent(Blocks.unitCargoLoader);
-        hideContent(Blocks.unitCargoUnloadPoint);
 
         hideContent(Blocks.mechanicalPump);
         hideContent(Blocks.impulsePump);
@@ -1158,6 +1157,24 @@ public class NHPostProcess {
             crafter.craftTime = 90f;
         });
     }
+    private static void adjustVanillaItem() {
+        adjustContent(Items.tungsten, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.serpulo);
+        });
+        adjustContent(Items.carbide, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.serpulo);
+        });
+        adjustContent(Items.plastanium, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.erekir);
+        });
+        adjustContent(Items.titanium, content -> {
+            Item item =(Item) content;
+            item.shownPlanets.addAll(Planets.erekir);
+        });
+    }
 
     private static void adjustVanillaUnit() {
         for (UnitType type : content.units()) {
@@ -1176,8 +1193,6 @@ public class NHPostProcess {
         hideContent(Blocks.smallDeconstructor);
         hideContent(Blocks.constructor);
         hideContent(Blocks.largeConstructor);
-        hideContent(Blocks.payloadLoader);
-        hideContent(Blocks.payloadUnloader);
 
         hideContent(Blocks.groundFactory);
         hideContent(Blocks.airFactory);
