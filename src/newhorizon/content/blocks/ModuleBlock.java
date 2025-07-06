@@ -21,7 +21,13 @@ public class ModuleBlock {
             coreT1, coreT2, coreT3, coreT4, coreT5,
             speedModule1, speedModule2, speedModule3,
             efficiencyModule1, efficiencyModule2, efficiencyModule3,
-            productivityModule1, productivityModule2, productivityModule3;
+            productivityModule1, productivityModule2, productivityModule3,
+            armorCast, bionicsProcessor, chargeCompensator, coolingUnit, crystalDiode,
+            echoCanceller, fissionCell, fusionReactor, gaussReceptor, hadronBuffers,
+            heatDetector, memoryRecalibrator, multiphasePropellant, neutronMembrane, particleModulator,
+            powerCell, powerUnit, protonCapacitor, pulseMutator, quantumConductor,
+            resistoArray, signalCirculator, supraGel, tachyonEmitter, wiringKit
+    ;
 
     public static ObjectMap<Block, ModuleCost> moduleCosts = new ObjectMap<>();
     public static ObjectMap<UnitType, UnitCost> unitCosts = new ObjectMap<>();
@@ -58,6 +64,33 @@ public class ModuleBlock {
         productivityModule1 = new ModulePayload("productivity-module-1");
         productivityModule2 = new ModulePayload("productivity-module-2");
         productivityModule3 = new ModulePayload("productivity-module-3");
+
+        armorCast = new ModulePayload("armor-cast");
+        bionicsProcessor = new ModulePayload("bionics-processor");
+        chargeCompensator = new ModulePayload("charge-compensator");
+        coolingUnit = new ModulePayload("cooling-unit");
+        crystalDiode = new ModulePayload("crystal-diode");
+        echoCanceller = new ModulePayload("echo-canceller");
+        fissionCell = new ModulePayload("fission-cell");
+        fusionReactor = new ModulePayload("fusion-reactor");
+        gaussReceptor = new ModulePayload("gauss-receptor");
+        hadronBuffers = new ModulePayload("hadron-buffers");
+        heatDetector = new ModulePayload("heat-detector");
+        memoryRecalibrator = new ModulePayload("memory-recalibrator");
+        multiphasePropellant = new ModulePayload("multiphase-propellant");
+        neutronMembrane = new ModulePayload("neutron-membrane");
+        particleModulator = new ModulePayload("particle-modulator");
+        powerCell = new ModulePayload("power-cell");
+        powerUnit = new ModulePayload("power-unit");
+        protonCapacitor = new ModulePayload("proton-capacitor");
+        pulseMutator = new ModulePayload("pulse-mutator");
+        quantumConductor = new ModulePayload("quantum-conductor");
+        resistoArray = new ModulePayload("resisto-array");
+        signalCirculator = new ModulePayload("signal-circulator");
+        supraGel = new ModulePayload("supra-gel");
+        tachyonEmitter = new ModulePayload("tachyon-emitter");
+        wiringKit = new ModulePayload("wiring-kit");
+
 
         moduleCosts.put(processorT1, new ModuleCost() {{
             itemReq = ItemStack.list(Items.silicon, 10, Items.titanium, 10);

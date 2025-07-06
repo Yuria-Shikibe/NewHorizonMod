@@ -1,149 +1,201 @@
 package newhorizon.expand.block.production.factory;
 
-import arc.Core;
+import arc.scene.ui.Image;
+import arc.scene.ui.layout.Stack;
+import arc.scene.ui.layout.Table;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Time;
+import arc.util.*;
+import mindustry.core.UI;
+import mindustry.ctype.UnlockableContent;
+import mindustry.gen.Building;
+import mindustry.gen.Icon;
+import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import mindustry.type.PayloadStack;
+import mindustry.ui.Styles;
+import mindustry.world.Block;
+import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
-import newhorizon.expand.block.consumer.NHConsumeItemDynamic;
-import newhorizon.expand.block.consumer.NHConsumeLiquidDynamic;
-import newhorizon.expand.block.consumer.NHConsumeShowStat;
-import newhorizon.util.ui.display.ItemDisplay;
-import newhorizon.util.ui.display.LiquidDisplay;
+import mindustry.world.meta.StatValues;
+import newhorizon.expand.block.consumer.*;
+import newhorizon.expand.type.Recipe;
+
+import static mindustry.world.meta.StatValues.stack;
+import static mindustry.world.meta.StatValues.withTooltip;
 
 public class RecipeGenericCrafter extends AdaptCrafter {
-    public int alterRecipe = 0;
-    public Seq<ItemStack[]> recipeItemInput = new Seq<>();
-    public Seq<LiquidStack[]> recipeLiquidInput = new Seq<>();
+    public Seq<Recipe> recipes = new Seq<>();
+    public ObjectSet<UnlockableContent> payloadFilter = new ObjectSet<>();
 
     public RecipeGenericCrafter(String name) {
         super(name);
 
-        consume(new NHConsumeItemDynamic(RecipeGenericCrafterBuild::getInputItems));
-        consume(new NHConsumeLiquidDynamic(RecipeGenericCrafterBuild::getInputLiquids));
-        consume(new NHConsumeShowStat(RecipeGenericCrafterBuild::getDisplayInputItems, RecipeGenericCrafterBuild::getDisplayInputLiquids, e -> null));
+        consume(new ConsumeRecipe(RecipeGenericCrafterBuild::getRecipe, RecipeGenericCrafterBuild::getDisplayRecipe));
     }
 
     @Override
     public void setStats() {
         super.setStats();
         stats.add(Stat.input, display());
+        stats.remove(Stat.output);
     }
 
-    public void addInput(ItemStack[] itemStacks, LiquidStack[] liquidStacks) {
-        recipeItemInput.add(itemStacks);
-        recipeLiquidInput.add(liquidStacks);
-        alterRecipe++;
+    public void addInput(Object...objects) {
+        Recipe recipe = new Recipe(objects);
+        recipes.add(recipe);
     }
 
     public StatValue display() {
         return table -> {
+            table.row();
             table.table(cont -> {
-                for (int r = 0; r < alterRecipe; r++) {
-                    int idx = r;
-                    if (r == 0) {
-                        cont.label(() -> Core.bundle.get("nh.primary"));
-                        cont.table(t -> {
-                            if (recipeItemInput.get(idx) != null) {
-                                for (ItemStack stack : recipeItemInput.get(idx)) {
-                                    t.add(new ItemDisplay(stack.item, stack.amount, craftTime, true)).padLeft(5);
+                for (int i = 0; i < recipes.size; i++){
+                    Recipe recipe = recipes.get(i);
+                    int finalI = i;
+                    cont.table(t -> {
+                        t.left().marginLeft(12f).add("[accent][" + (finalI + 1) + "]:[]").width(48f);
+                        t.table(inner -> {
+                            inner.table(row -> {
+                                row.left();
+                                recipe.inputItem.each(stack -> row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl)));
+                                recipe.inputLiquid.each(stack -> row.add(display(stack.liquid, stack.amount * craftTime, craftTime / recipe.boostScl)));
+                                recipe.inputPayload.each(stack -> row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl)));
+                            }).growX();
+                            if (inner.getPrefWidth() > 320f) inner.row();
+                            inner.table(row -> {
+                                row.left();
+                                row.image(Icon.right).size(32f).padLeft(8f).padRight(12f);
+                                if (outputItems != null) {
+                                    for (var stack: outputItems){
+                                        row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl));
+                                    }
                                 }
-                            }
-                            if (recipeItemInput.get(idx) != null) {
-                                for (LiquidStack stack : recipeLiquidInput.get(idx)) {
-                                    t.add(new LiquidDisplay(stack.liquid, stack.amount * 60f, true)).padLeft(5);
+                                if (outputLiquids != null) {
+                                    for (var stack: outputLiquids){
+                                        row.add(display(stack.liquid, stack.amount * craftTime, craftTime / recipe.boostScl));
+                                    }
                                 }
-                            }
-                            t.left();
-                        }).fillX();
-                    } else {
-                        cont.label(() -> Core.bundle.get("nh.alternative"));
-                        cont.table(t -> {
-                            if (recipeItemInput.get(idx) != null) {
-                                for (ItemStack stack : recipeItemInput.get(idx)) {
-                                    t.add(new ItemDisplay(stack.item, stack.amount, craftTime, true)).padLeft(5);
+                                if (outputPayloads != null) {
+                                    for (var stack: outputPayloads){
+                                        row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl));
+                                    }
                                 }
-                            }
-                            if (recipeItemInput.get(idx) != null) {
-                                for (LiquidStack stack : recipeLiquidInput.get(idx)) {
-                                    t.add(new LiquidDisplay(stack.liquid, stack.amount * 60f, true)).padLeft(5);
-                                }
-                            }
-                            t.left();
-                        }).fillX();
-                    }
+                            }).growX();
+                        });
+                    }).fillX();
                     cont.row();
                 }
             });
         };
     }
 
+    public static Table display(UnlockableContent content, float amount, float timePeriod){
+        Table table = new Table();
+        Stack stack = new Stack();
+
+        stack.add(new Table(o -> {
+            o.left();
+            o.add(new Image(content.uiIcon)).size(32f).scaling(Scaling.fit);
+        }));
+
+        if(amount != 0){
+            stack.add(new Table(t -> {
+                t.left().bottom();
+                t.add(amount >= 1000 ? UI.formatAmount((int)amount) : Strings.autoFixed(amount, 2)).style(Styles.outlineLabel);
+                t.pack();
+            }));
+        }
+
+        withTooltip(stack, content);
+
+        table.add(stack);
+        table.add((content.localizedName + "\n") + "[lightgray]" + Strings.autoFixed(amount / (timePeriod / 60f), 2) + StatUnit.perSecond.localized()).padLeft(2).padRight(5).style(Styles.outlineLabel);
+        return table;
+    }
+
     @Override
     public void init() {
         super.init();
-
-        //i suggest set those true to avoid some problems
-        hasItems = true;
-        hasLiquids = true;
-        hasPower = true;
-
-        recipeItemInput.setSize(alterRecipe);
-        recipeLiquidInput.setSize(alterRecipe);
-
-        for (int i = 0; i < alterRecipe; i++) {
-            for (ItemStack input : recipeItemInput.get(i)) {
-                itemFilter[input.item.id] = true;
-            }
-            for (LiquidStack input : recipeLiquidInput.get(i)) {
-                liquidFilter[input.liquid.id] = true;
-            }
-        }
+        recipes.each(recipe -> {
+            recipe.inputItem.each(stack -> itemFilter[stack.item.id] = true);
+            recipe.inputLiquid.each(stack -> liquidFilter[stack.liquid.id] = true);
+            recipe.inputPayload.each(stack -> payloadFilter.add(stack.item));
+        });
     }
 
     public class RecipeGenericCrafterBuild extends AdaptCrafterBuild {
-        public int recipeIdx = -1;
+        public int recipeIndex = -1;
+
+        public Recipe getRecipe() {
+            if (recipeIndex < 0 || recipeIndex >= recipes.size) return Recipe.empty;
+            return recipes.get(recipeIndex);
+        }
+
+        public Recipe getDisplayRecipe() {
+            if (recipeIndex < 0 && recipes.size > 0) {
+                return recipes.first();
+            }
+            return getRecipe();
+        }
 
         @Override
         public float getPowerProduction() {
             return super.getPowerProduction();
         }
 
-        public void updateRecipeIdx() {
-            for (int i = 0; i < alterRecipe; i++) {
-                boolean validItemInput = true;
-                boolean validLiquidInput = true;
-                for (ItemStack input : recipeItemInput.get(i)) {
+        public void updateRecipe() {
+            for (int i = 0; i < recipes.size; i++) {
+                boolean valid = true;
+
+                for (ItemStack input : recipes.get(i).inputItem) {
                     if (items.get(input.item) < input.amount) {
-                        validItemInput = false;
+                        valid = false;
                         break;
                     }
                 }
-                for (LiquidStack input : recipeLiquidInput.get(i)) {
+
+                for (LiquidStack input : recipes.get(i).inputLiquid) {
                     if (liquids.get(input.liquid) < input.amount * Time.delta) {
-                        validLiquidInput = false;
+                        valid = false;
                         break;
                     }
                 }
-                if (validItemInput && validLiquidInput) {
-                    recipeIdx = i;
+
+                for (PayloadStack input : recipes.get(i).inputPayload) {
+                    if (getPayloads().get(input.item) < input.amount) {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (valid) {
+                    recipeIndex = i;
                     return;
                 }
             }
-            recipeIdx = -1;
+            recipeIndex = -1;
         }
 
-        public boolean validRecipeIdx() {
-            if (recipeIdx < 0) return false;
-            for (ItemStack input : recipeItemInput.get(recipeIdx)) {
+        public boolean validRecipe() {
+            if (recipeIndex < 0) return false;
+            for (ItemStack input : recipes.get(recipeIndex).inputItem) {
                 if (items.get(input.item) < input.amount) {
                     return false;
                 }
             }
-            for (LiquidStack input : recipeLiquidInput.get(recipeIdx)) {
+
+            for (LiquidStack input : recipes.get(recipeIndex).inputLiquid) {
                 if (liquids.get(input.liquid) < input.amount * Time.delta) {
+                    return false;
+                }
+            }
+
+            for (PayloadStack input : recipes.get(recipeIndex).inputPayload) {
+                if (getPayloads().get(input.item) < input.amount) {
                     return false;
                 }
             }
@@ -152,36 +204,26 @@ public class RecipeGenericCrafter extends AdaptCrafter {
 
         @Override
         public void updateTile() {
-            if (!validRecipeIdx()) updateRecipeIdx();
+            if (!validRecipe()) updateRecipe();
             super.updateTile();
+        }
+
+        @Override
+        public float getProgressIncrease(float baseTime) {
+            float scl = 0f;
+            if (!(recipeIndex < 0 || recipeIndex >= recipes.size)) scl = recipes.get(recipeIndex).boostScl;
+            return super.getProgressIncrease(baseTime) * scl;
         }
 
         @Override
         public void craft() {
             super.craft();
-            updateRecipeIdx();
+            updateRecipe();
         }
 
-        public ItemStack[] getDisplayInputItems() {
-            if (recipeIdx < 0 && recipeItemInput.get(0) != null) return recipeItemInput.get(0);
-            if (recipeIdx < 0) return null;
-            return recipeItemInput.get(recipeIdx);
-        }
-
-        public LiquidStack[] getDisplayInputLiquids() {
-            if (recipeIdx < 0 && recipeLiquidInput.get(0) != null) return recipeLiquidInput.get(0);
-            if (recipeIdx < 0) return null;
-            return recipeLiquidInput.get(recipeIdx);
-        }
-
-        public @Nullable ItemStack[] getInputItems() {
-            if (recipeIdx < 0) return null;
-            return recipeItemInput.get(recipeIdx);
-        }
-
-        public @Nullable LiquidStack[] getInputLiquids() {
-            if (recipeIdx < 0) return null;
-            return recipeLiquidInput.get(recipeIdx);
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            return payloadFilter.contains(payload.content()) && getPayloads().get(payload.content()) < itemCapacity;
         }
     }
 }

@@ -163,7 +163,7 @@ public class ShieldGenerator extends BaseTurret {
             if (state.isEditor()) {
                 table.slider(0, 360, 45, rotation, f -> rotation = targetAngel = f).growX().row();
             } else {
-                table.slider(0, 360, 45, targetAngel, f -> targetAngel = f).growX().row();
+                table.slider(0, 360, 45, targetAngel, this::configure).growX().row();
             }
         }
 
