@@ -336,6 +336,7 @@ public class NHPostProcess {
         adjustVanillaUnit();
         adjustVanillaLogic();
         adjustVanillaItem();
+	adjustVanillaTurret();
     }
 
     public static void contentOverride() {
