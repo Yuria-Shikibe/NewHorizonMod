@@ -64,10 +64,6 @@ public class RecipeRegister {
         });
 
         input(CraftingBlock.electronicFacilityRare, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.presstanium, 10);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
-        });
-        input(CraftingBlock.electronicFacilityRare, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.presstanium, 20, NHItems.metalOxhydrigen, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });  
@@ -81,29 +77,40 @@ public class RecipeRegister {
         });  
         output(CraftingBlock.electronicFacilityRare, block -> {
             block.craftTime = 120f;
-            block.outputPayloads = PayloadStack.with(ModuleBlock.powerUnit, 1);
+            block.outputPayloads = PayloadStack.with(ModuleBlock.powerUnit, 2);
         });
 
-        input(CraftingBlock.electronicFacilityRare, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.phaseFabric, 20);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 12 / 60f);
+        input(CraftingBlock.electronicFacilityUncommon, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 20, NHItems.multiplesteel, 10);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
+        });
+        input(CraftingBlock.electronicFacilityUncommon, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 15, Items.phasefabric, 15);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
+        });
+        output(CraftingBlock.electronicFacilityUncommon, block -> {
+            block.craftTime = 120f;
+            block.outputPayloads = PayloadStack.with(ModuleBlock.bionicsProcessor, 2);
+        });
+
+        input(CraftingBlock.electronicFacilityEpic, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.phaseFabric, 20, NHItems.seniorProcessor, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 2);
         });
-        input(CraftingBlock.electronicFacilityRare, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 10);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 12 / 60f);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 2);
+        output(CraftingBlock.electronicFacilityEpic, block -> {
+            block.craftTime = 120f;
+            block.outputPayloads = PayloadStack.with(ModuleBlock.memoryRecalibrator, 2);
         });
 
         input(CraftingBlock.electronicFacilityLegendary, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 30);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.memoryRecalibrator, 2);
+            recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 10);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 2, ModuleBlock.memoryRecalibrator, 2);
         });
-        input(CraftingBlock.electronicFacilityLegendary, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 20);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.memoryRecalibrator, 2);
+        output(CraftingBlock.electronicFacilityLegendary, block -> {
+            block.craftTime = 120f;
+            block.outputPayloads = PayloadStack.with(ModuleBlock.neutronMembrane, 2);
         });
-    }
+}
 
     @SafeVarargs
     public static void registerBlockRecipe(Block block, Cons<AdaptCrafter> output, Cons<Recipe>...recipe){
