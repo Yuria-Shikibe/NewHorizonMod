@@ -886,9 +886,6 @@ public class CraftingBlock {
 
             craftTime = 90f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         electronicFacilityUncommon = new RecipeGenericCrafter("electronic-facility-uncommon") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
