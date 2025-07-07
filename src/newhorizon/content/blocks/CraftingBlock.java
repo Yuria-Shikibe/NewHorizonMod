@@ -874,7 +874,7 @@ public class CraftingBlock {
             craftTime = 90f;
             consumePower(480 / 60f);
 
-            addInput(Items.titanium, 60, Items.tungsten, 60);
+            addInput(Items.titanium, 30, Items.tungsten, 30, ModuleBlock.resistoArray, 0.1);
         }};
         electronicFacilityRare = new RecipeGenericCrafter("electronic-facility-rare") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
