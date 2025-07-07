@@ -72,7 +72,7 @@ public class RecipeRegister {
         input(CraftingBlock.electronicFacilityRare, recipe -> {
             recipe.inputItem = ItemStack.list(Items.thorium, 20, Items.carbide, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
-            output(CraftingBlock.electronicFacilityRare, block -> {
+        output(CraftingBlock.electronicFacilityRare, block -> {
             block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.powerUnit, 1);
         });
