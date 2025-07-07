@@ -147,6 +147,7 @@ public class RecipeRegister {
 
         input(CraftingBlock.foundryBasic, recipe -> {
             recipe.inputItem = ItemStack.list(Items.tungsten, 20, NHItems.presstanium, 10);
+        });
         output(CraftingBlock.foundryBasic, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.armorCast, 2);
         });
