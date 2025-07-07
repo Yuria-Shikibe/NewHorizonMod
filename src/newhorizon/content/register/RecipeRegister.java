@@ -55,9 +55,9 @@ public class RecipeRegister {
      */
     public static void load(){
         //va你按这个来就好
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 10, Items.tungsten, 10));
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 10, Items.copper, 20));
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 10, Items.beryllium, 15));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 30, Items.metaglass, 30));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 30, Items.oxide, 15));
         output(CraftingBlock.electronicFacilityBasic, block -> {
             block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.wiringKit, 1);
