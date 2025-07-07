@@ -55,50 +55,44 @@ public class RecipeRegister {
      */
     public static void load(){
         //va你按这个来就好
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 10, Items.tungsten, 10));
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 10, Items.copper, 20));
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 10, Items.beryllium, 15));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 30, Items.metaglass, 30));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 30, Items.oxide, 15));
         output(CraftingBlock.electronicFacilityBasic, block -> {
             block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.wiringKit, 1);
         });
 
         input(CraftingBlock.electronicFacilityRare, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.presstanium, 10);
+            recipe.inputItem = ItemStack.list(NHItems.presstanium, 20, NHItems.metalOxhydrigen, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });
         input(CraftingBlock.electronicFacilityRare, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 20);
+            recipe.inputItem = ItemStack.list(Items.thorium, 20, Items.plastanium, 10);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
+        });
+        input(CraftingBlock.electronicFacilityRare, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.thorium, 20, Items.carbide, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });
 
         input(CraftingBlock.electronicFacilityUncommon, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 25);
+            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 20, NHItems.multiplesteel, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });
         input(CraftingBlock.electronicFacilityUncommon, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 15);
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 15, Items.phasefabric, 15);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });
 
-        input(CraftingBlock.electronicFacilityRare, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.phaseFabric, 20);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 12 / 60f);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 2);
-        });
-        input(CraftingBlock.electronicFacilityRare, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 10);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 12 / 60f);
+        input(CraftingBlock.electronicFacilityEpic, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.phaseFabric, 20, NHItems.seniorProcessor, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 2);
         });
 
         input(CraftingBlock.electronicFacilityLegendary, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 30);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.memoryRecalibrator, 2);
-        });
-        input(CraftingBlock.electronicFacilityLegendary, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 20);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.memoryRecalibrator, 2);
+            recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 10);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 2, ModuleBlock.memoryRecalibrator, 2);
         });
     }
 
