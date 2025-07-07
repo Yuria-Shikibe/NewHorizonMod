@@ -81,7 +81,7 @@ public class RecipeRegister {
         });
 
         input(CraftingBlock.electronicFacilityUncommon, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 20, NHItems.multiPlesteel, 10);
+            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 20, NHItems.multipleSteel, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });
         input(CraftingBlock.electronicFacilityUncommon, recipe -> {
