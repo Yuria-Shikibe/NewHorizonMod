@@ -182,7 +182,6 @@ public class RecipeRegister {
         output(CraftingBlock.particleProcessorLegendary, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.pulseMutator, 2);
         });
-
 }
 
     @SafeVarargs
