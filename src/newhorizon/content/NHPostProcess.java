@@ -791,6 +791,31 @@ public class NHPostProcess {
     }
 
     private static void adjustVanillaTurret() {
+	adjustContent(Blocks.wave, content -> {
+            LiquidTurret turret = (LiquidTurret) content;
+            turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
+		    liquid = NHLiquids.xenFluid;
+                    damage = 5;
+		    status = NHStatusEffects.ultFireBurn;
+		    statusDuration = 60f * 2f;
+            }});
+            turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidPositive;
+		    status = NHStatusEffects.scannerDown;
+		    statusDuration = 60f * 2f;
+	    }});	
+	    turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidNegative;
+                    damage = 0.2f;
+		    status = NHStatusEffects.scannerDown;
+		    statusDuration = 60f * 2f;
+	    }});
+	     turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
+		    liquid = NHLiquids.irdryonFluid;
+		    status = NHStatusEffects.emp2;
+		    statusDuration = 60f * 2f;
+	    }});
+        });
         adjustContent(Blocks.swarmer, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new MissileBulletType() {{
@@ -851,8 +876,6 @@ public class NHPostProcess {
                     damage = 10;
 		    status = NHStatusEffects.ultFireBurn;
 		    statusDuration = 60f * 4;
-		    shootEffect = Fx.shootBig;
-                    hitEffect = despawnEffect = Fx.none;
             }});
             turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
 		    liquid = NHLiquids.zetaFluidPositive;
@@ -893,7 +916,7 @@ public class NHPostProcess {
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
                     damage = 0.2f;
-		    status = StatusEffects.fast;
+		    status = NHStatusEffects.emp2;
 		    statusDuration = 60f * 4f;
 	    }});
         });
