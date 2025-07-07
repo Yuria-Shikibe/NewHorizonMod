@@ -176,11 +176,11 @@ public class RecipeRegister {
             block.outputPayloads = PayloadStack.with(ModuleBlock.echoCanceller, 2);
         });
 
-        input(CraftingBlock.particleProcessorLegendary, recipe -> {
+        input(CraftingBlock.foundryLegendary, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 10);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.gaussReceptor, 2, ModuleBlock.echoCanceller, 2);
         });
-        output(CraftingBlock.particleProcessorLegendary, block -> {
+        output(CraftingBlock.foundryLegendary, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.pulseMutator, 2);
         });
 }
