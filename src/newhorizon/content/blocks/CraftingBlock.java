@@ -871,7 +871,8 @@ public class CraftingBlock {
 
             clipSize = 32f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
         }};
         electronicFacilityRare = new RecipeGenericCrafter("electronic-facility-rare") {{
@@ -884,7 +885,8 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
         }};
         electronicFacilityUncommon = new RecipeGenericCrafter("electronic-facility-uncommon") {{
@@ -897,7 +899,8 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
         }};
         electronicFacilityEpic = new RecipeGenericCrafter("electronic-facility-epic") {{
@@ -910,7 +913,8 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
         }};
         electronicFacilityLegendary = new RecipeGenericCrafter("electronic-facility-legendary") {{
@@ -923,7 +927,8 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            craftTime = 1200f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
         }};
 
@@ -939,11 +944,9 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -963,11 +966,9 @@ public class CraftingBlock {
 
             clipSize = 72f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -987,11 +988,9 @@ public class CraftingBlock {
 
             clipSize = 72f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -1011,11 +1010,9 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -1039,11 +1036,7 @@ public class CraftingBlock {
             craftTime = 90f;
             consumePower(480 / 60f);
 
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-
-            outputItems = with(NHItems.metalOxhydrigen, 3);
-
-            itemCapacity = 30;
+            itemCapacity = 60;
             liquidCapacity = 20f;
             health = 1600;
 
@@ -1063,13 +1056,11 @@ public class CraftingBlock {
             size = 2;
             addLink(-2, 0, 2, 2, 0, 2);
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
 
             clipSize = 48f;
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1083,11 +1074,9 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1101,11 +1090,9 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1124,11 +1111,9 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1149,11 +1134,9 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
 
         powerBasic = new RecipeGenericCrafter("power-basic") {{
@@ -1166,11 +1149,9 @@ public class CraftingBlock {
 
             clipSize = 32f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1185,11 +1166,9 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1204,11 +1183,9 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1226,11 +1203,9 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1242,13 +1217,11 @@ public class CraftingBlock {
             size = 4;
             addLink(-3, 4, 3, 4, -3, 3, -5, -5, 2, -5, -3, 2, -3, -5, 2, 5, 5, 2, 5, 3, 2, 3, 5, 2);
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
 
             clipSize = 96f;
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1264,11 +1237,9 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1283,7 +1254,8 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
 
             addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
@@ -1304,11 +1276,9 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         componentEpic = new RecipeGenericCrafter("component-epic") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
@@ -1321,11 +1291,9 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         componentLegendary = new RecipeGenericCrafter("component-legendary") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
@@ -1339,11 +1307,9 @@ public class CraftingBlock {
 
             clipSize = 112f;
 
-            craftTime = 90f;
+            craftTime = 120f;
+            itemCapacity = 60;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
     }
 }
