@@ -107,10 +107,42 @@ public class RecipeRegister {
         });
 
       
-        input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));  
-        input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));
-        input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));
+        input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(NHItems.presstanium, 15, NHItems.juniorProcessor, 15));
+        output(CraftingBlock.particleProcessorBasic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.crystalDiode, 2);
+        });
 
+        input(CraftingBlock.particleProcessorRare, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.carbide, 15, NHItems.juniorProcessor, 15);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 2);
+        });
+        output(CraftingBlock.particleProcessorRare, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.protonCapacitor, 2);
+        });
+
+        input(CraftingBlock.particleProcessorUncommon, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 15, NHItems.seniorProcessor, 15);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 2);
+        });
+        output(CraftingBlock.particleProcessorUncommon, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.hadronBuffers, 2);
+        });
+
+        input(CraftingBlock.particleProcessorEpic, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 15, NHItems.irayrondPanel, 15);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.protonCapacitor, 2);
+        });
+        output(CraftingBlock.particleProcessorEpic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.tachyonEmitter, 2);
+        });
+
+        input(CraftingBlock.particleProcessorLegendary, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.ancimembrane, 10);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.hadronBuffers, 2, ModuleBlock.tachyonEmitter, 2);
+        });
+        output(CraftingBlock.particleProcessorLegendary, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.neutronMembrane, 2);
+        });
 
 }
 
