@@ -144,6 +144,45 @@ public class RecipeRegister {
             block.outputPayloads = PayloadStack.with(ModuleBlock.neutronMembrane, 2);
         });
 
+
+        input(CraftingBlock.foundryBasic, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 20, NHItems.presstanium, 10);
+        output(CraftingBlock.foundryBasic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.armorCast, 2);
+        });
+
+        input(CraftingBlock.foundryRare, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.carbide, 30);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 2);
+        });
+        output(CraftingBlock.foundryRare, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.heatDetector, 2);
+        });
+
+        input(CraftingBlock.foundryUncommon, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 30);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 2);
+        });
+        output(CraftingBlock.foundryUncommon, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.gaussReceptor, 2);
+        });
+
+        input(CraftingBlock.foundryEpic, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 15);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 2);
+        });
+        output(CraftingBlock.foundryEpic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.echoCanceller, 2);
+        });
+
+        input(CraftingBlock.particleProcessorLegendary, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 10);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.gaussReceptor, 2, ModuleBlock.echoCanceller, 2);
+        });
+        output(CraftingBlock.particleProcessorLegendary, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.pulseMutator, 2);
+        });
+
 }
 
     @SafeVarargs
