@@ -97,7 +97,7 @@ public class RecipeRegister {
         });
     }
 
-        @SafeVarargs
+    @SafeVarargs
     public static void registerBlockRecipe(Block block, Cons<AdaptCrafter> output, Cons<Recipe>...recipe){
         output(block, output);
         for(Cons<Recipe> r : recipe){
