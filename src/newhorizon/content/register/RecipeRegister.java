@@ -108,6 +108,7 @@ public class RecipeRegister {
 
       
         input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(NHItems.presstanium, 15, NHItems.juniorProcessor, 15));
+        });
         output(CraftingBlock.particleProcessorBasic, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.crystalDiode, 2);
         });
