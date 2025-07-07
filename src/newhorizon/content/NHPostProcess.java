@@ -812,7 +812,7 @@ public class NHPostProcess {
 	    }});
 	     turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
 		    liquid = NHLiquids.irdryonFluid;
-		    status = NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3;
+		    status = NHStatusEffects.emp3;
 		    statusDuration = 60f * 2f;
 	    }});
         });
@@ -916,7 +916,7 @@ public class NHPostProcess {
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
                     damage = 0.2f;
-		    status = NHStatusEffects.emp1, NHStatusEffects.emp2, NHStatusEffects.emp3;
+		    status = NHStatusEffects.emp3;
 		    statusDuration = 60f * 4f;
 	    }});
         });
