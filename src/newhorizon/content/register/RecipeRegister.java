@@ -59,7 +59,6 @@ public class RecipeRegister {
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 30, Items.metaglass, 30));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 30, Items.oxide, 15));
         output(CraftingBlock.electronicFacilityBasic, block -> {
-            block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.wiringKit, 2);
         });
 
@@ -76,7 +75,6 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });  
         output(CraftingBlock.electronicFacilityRare, block -> {
-            block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.powerUnit, 2);
         });
 
@@ -89,7 +87,6 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
         });
         output(CraftingBlock.electronicFacilityUncommon, block -> {
-            block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.bionicsProcessor, 2);
         });
 
@@ -98,7 +95,6 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 2);
         });
         output(CraftingBlock.electronicFacilityEpic, block -> {
-            block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.memoryRecalibrator, 2);
         });
 
@@ -107,9 +103,15 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 2, ModuleBlock.memoryRecalibrator, 2);
         });
         output(CraftingBlock.electronicFacilityLegendary, block -> {
-            block.craftTime = 120f;
             block.outputPayloads = PayloadStack.with(ModuleBlock.neutronMembrane, 2);
         });
+
+      
+        input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));  
+        input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));
+        input(CraftingBlock.particleProcessorBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));
+
+
 }
 
     @SafeVarargs
