@@ -864,7 +864,7 @@ public class NHPostProcess {
                     drag = 0.001f;
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
-                    damage = 5;
+                    damage = 0.2f;
 		    status = NHStatusEffects.scannerDown;
 		    statusDuration = 60f * 4f;
 	    }});	
@@ -878,8 +878,22 @@ public class NHPostProcess {
                     drag = 0.001f;
                     ammoMultiplier = 0.4f;
                     statusDuration = 60f * 4f;
-                    damage = 5;
+                    damage = 0.2f;
 		    status = NHStatusEffects.scannerDown;
+		    statusDuration = 60f * 4f;
+	    }});
+	     turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
+		    liquid = NHLiquids.irdryonFluid;
+		    lifetime = 49f;
+                    speed = 4f;
+                    knockback = 1.3f;
+                    puddleSize = 8f;
+                    orbSize = 4f;
+                    drag = 0.001f;
+                    ammoMultiplier = 0.4f;
+                    statusDuration = 60f * 4f;
+                    damage = 0.2f;
+		    status = StatusEffects.fast;
 		    statusDuration = 60f * 4f;
 	    }});
         });
