@@ -230,7 +230,7 @@ public class CraftingBlock {
             craftTime = 40f;
             itemCapacity = 20;
 
-            addInput(Items.silicon, 2, NHLiquids.quantumLiquid, 4 / 60f));
+            addInput(Items.silicon, 2, NHLiquids.quantumLiquid, 4 / 60f);
             addInput(Items.silicon, 2, Items.copper, 3, LiquidStack.empty);
             addInput(Items.silicon, 2, Items.beryllium, 3, LiquidStack.empty);
 
@@ -500,7 +500,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(Items.silicon, 3, NHLiquids.zetaFluidNegative, 4 / 60f));
+            addInput(Items.silicon, 3, NHLiquids.zetaFluidNegative, 4 / 60f);
 
             outputItems = with(Items.phaseFabric, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
