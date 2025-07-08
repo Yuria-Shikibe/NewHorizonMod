@@ -55,9 +55,9 @@ public class RecipeRegister {
      */
     public static void load(){
         //va你按这个来就好
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 30, Items.tungsten, 30));
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 30, Items.metaglass, 30));
-        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 30, Items.oxide, 15));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 15, Items.tungsten, 15));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 15, Items.metaglass, 15));
+        input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 15, Items.oxide, 15));
         output(CraftingBlock.electronicFacilityBasic, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.wiringKit, 2);
         });
@@ -180,6 +180,46 @@ public class RecipeRegister {
         });
         output(CraftingBlock.foundryLegendary, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.pulseMutator, 2);
+        });
+
+
+        input(CraftingBlock.powerBasic, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 20, NHItems.zeta, 10));
+        input(CraftingBlock.powerBasic, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 20, Items.thorium, 20));
+        input(CraftingBlock.powerBasic, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 20, Items.thorium, 20));
+        output(CraftingBlock.powerBasic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.powerCell, 2);
+        });
+
+        input(CraftingBlock.powerRare, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 20);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerCell, 2);
+        });
+        output(CraftingBlock.powerRare, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.fissionCell, 2);
+        });
+
+        input(CraftingBlock.powerUncommon, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.phaseFabric, 20);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerCell, 2);
+        });
+        output(CraftingBlock.powerUncommon, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.chargeCompensator, 2);
+        });
+
+        input(CraftingBlock.powerEpic, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.fusionEnergy, 20);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.fissionCell, 2);
+        });
+        output(CraftingBlock.powerEpic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.fusionReactor, 2);
+        });
+
+        input(CraftingBlock.powerLegendary, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.thermoCorePositive, 15, NHItems.thermoCoreNegative, 15);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.chargeCompensator, 2, ModuleBlock.fusionReactor, 2);
+        });
+        output(CraftingBlock.powerLegendary, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.multiphasePropellant, 2);
         });
 }
 
