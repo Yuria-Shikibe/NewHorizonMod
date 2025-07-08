@@ -238,6 +238,7 @@ public class RecipeRegister {
 
         input(CraftingBlock.componentRare, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 30);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 2);
         });
         output(CraftingBlock.componentRare, block -> {
@@ -245,7 +246,8 @@ public class RecipeRegister {
         });
 
         input(CraftingBlock.componentUncommon, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel);
+            recipe.inputItem = ItemStack.list(NHItems.multipleSteel， 20);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidPositive, 8 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 2);
         });
         output(CraftingBlock.componentUncommon, block -> {
@@ -253,7 +255,8 @@ public class RecipeRegister {
         });
 
         input(CraftingBlock.componentEpic, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 15);
+            recipe.inputItem = ItemStack.list(NHItems.multipleSteel, 20);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 12 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 2);
         });
         output(CraftingBlock.componentEpic, block -> {
@@ -261,7 +264,8 @@ public class RecipeRegister {
         });
 
         input(CraftingBlock.componentLegendary, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 10);
+            recipe.inputItem = ItemStack.list(NHItems.ancimembrane, 10);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 2, ModuleBlock.particleModulator, 2);
         });
         output(CraftingBlock.componentLegendary, block -> {
