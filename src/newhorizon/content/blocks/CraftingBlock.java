@@ -874,6 +874,7 @@ public class CraftingBlock {
             health = 320;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
         electronicFacilityRare = new RecipeGenericCrafter("electronic-facility-rare") {{
@@ -889,6 +890,7 @@ public class CraftingBlock {
             health = 640;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
         electronicFacilityUncommon = new RecipeGenericCrafter("electronic-facility-uncommon") {{
@@ -904,10 +906,11 @@ public class CraftingBlock {
             health = 960;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
         electronicFacilityEpic = new RecipeGenericCrafter("electronic-facility-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 6;
             addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2);
@@ -920,6 +923,7 @@ public class CraftingBlock {
             armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
         electronicFacilityLegendary = new RecipeGenericCrafter("electronic-facility-legendary") {{
@@ -936,6 +940,7 @@ public class CraftingBlock {
             armor = 6;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
 
@@ -954,6 +959,7 @@ public class CraftingBlock {
             health = 320;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionRotated() {{
@@ -977,6 +983,7 @@ public class CraftingBlock {
             health = 640;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionRotated() {{
@@ -1000,6 +1007,7 @@ public class CraftingBlock {
             health = 960;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionRotated() {{
@@ -1009,7 +1017,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorEpic = new RecipeGenericCrafter("particle-processor-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
 
@@ -1024,6 +1032,7 @@ public class CraftingBlock {
             armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionRotated() {{
@@ -1051,7 +1060,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
 
             itemCapacity = 60;
-            liquidCapacity = 20f;
+            liquidCapacity = 40f;
             health = 1600;
 
             craftEffect = Fx.smeltsmoke;
@@ -1073,6 +1082,7 @@ public class CraftingBlock {
             health = 320;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             clipSize = 48f;
@@ -1092,6 +1102,7 @@ public class CraftingBlock {
             health = 640;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1109,6 +1120,7 @@ public class CraftingBlock {
             health = 960;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1116,7 +1128,7 @@ public class CraftingBlock {
             }};
         }};
         foundryEpic = new RecipeGenericCrafter("foundry-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
             addLink(
@@ -1132,6 +1144,7 @@ public class CraftingBlock {
             armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1157,6 +1170,7 @@ public class CraftingBlock {
             armor = 6;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
 
@@ -1173,6 +1187,7 @@ public class CraftingBlock {
             health = 320;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1191,6 +1206,7 @@ public class CraftingBlock {
             health = 640;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1209,6 +1225,7 @@ public class CraftingBlock {
             health = 960;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1216,7 +1233,7 @@ public class CraftingBlock {
             }};
         }};
         powerEpic = new RecipeGenericCrafter("power-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
@@ -1231,6 +1248,7 @@ public class CraftingBlock {
             armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1247,6 +1265,7 @@ public class CraftingBlock {
             armor = 6;
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             clipSize = 96f;
@@ -1312,7 +1331,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         componentEpic = new RecipeGenericCrafter("component-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
 
