@@ -212,7 +212,7 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 2);
         });
         output(CraftingBlock.componentUncommon, block -> {
-            block.outputLiquids = LiquidStack.list(NHLiquids.zetaFluidNegative, 6 / 60f);
+            block.outputLiquids =  new LiquidStack.list(NHLiquids.zetaFluidNegative, 6 / 60f);
             block.outputPayloads = PayloadStack.with(ModuleBlock.signalCirculator, 2);
         });
 
@@ -222,7 +222,7 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 2);
         });
         output(CraftingBlock.componentEpic, block -> {
-            block.outputLiquids = LiquidStack.list(NHLiquids.zetaFluidPositive, 6 / 60f);
+            block.outputLiquids = new LiquidStack.list(NHLiquids.zetaFluidPositive, 6 / 60f);
             block.outputPayloads = PayloadStack.with(ModuleBlock.particleModulator, 2);
         });
 
