@@ -16,46 +16,7 @@ import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.type.Recipe;
 
 public class RecipeRegister {
-    /*
-    to va:你把下面这对配方，120，80，60这种需求的都改到20左右
-    贵点输入的15物品，10物品，便宜输入的30物品这种逻辑
-
-    工厂顺序参见CraftingBlocks.java
-    物品你对照ModuleBlocks.java找
-    纯脏活累活，va你干活吧，干完活了帮我吧这段注释删了
-
-    线路工具:10硅 10钨
-    动力模块:2线路工具 20羟金 20重混合钢
-    仿生处理器:2线路工具 20高清钢 20芯片
-    记忆调整器:2动力模块 40相织布 40量子芯片
-    电阻阵列:2仿生处理器 2记忆调整器 120自塑合金
-
-    晶体二极管:10芯片 10重混合钢
-    质子电容器:2晶体二极管 20碳化物 20芯片
-    强子缓冲器:2晶体二极管 20巨浪合金 20量子芯片
-    快子发射器:2质子电容器 40铱板 40量子芯片
-    中子膜层:2强子缓冲器 2快子发射器 120幽膜
-
-    装甲铸件:20重混合钢 20钨
-    热能探测器:2装甲铸件 40碳化物
-    高斯接收器:2装甲铸件 40铱板
-    回声消除器:2热能探测器 80致密合金
-    脉冲变异器:2高斯接收器 2回声消除器 120自塑合金
-
-    能量电池:20硅 20zeta
-    裂变电池:2能量电池 40巨浪合金
-    充能补偿器:2能量电池 40相织布
-    聚变反应堆:2裂变电池 40聚变能
-    多相推进剂:2充能补偿器 2聚变反应堆 60零位能 60反零能
-
-    超凝胶体:12量子体 20钨
-    冷却单元:2超凝胶体 12xen 40羟金
-    信号环流器:2超凝胶体 8正zeta流体 8负zeta流体
-    粒子调整器:2冷却单元 4化工液 80致密合金
-    量子导体:2信号环流器 2粒子调整器 120幽膜
-     */
     public static void load(){
-        //va你按这个来就好
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 15, Items.tungsten, 15));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 15, Items.metaglass, 15));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 15, Items.oxide, 15));
@@ -251,7 +212,7 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 2);
         });
         output(CraftingBlock.componentUncommon, block -> {
-            liquid.outputLiquids = LiquidStack.list(NHLiquids.zetaFluidNegative, 6 / 60f)
+            liquid.outputLiquids = LiquidStack.list(NHLiquids.zetaFluidNegative, 6 / 60f);
             block.outputPayloads = PayloadStack.with(ModuleBlock.signalCirculator, 2);
         });
 
@@ -261,7 +222,7 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 2);
         });
         output(CraftingBlock.componentEpic, block -> {
-            liquid.outputLiquids = LiquidStack.list(NHLiquids.zetaFluidPositive, 6 / 60f)
+            liquid.outputLiquids = LiquidStack.list(NHLiquids.zetaFluidPositive, 6 / 60f);
             block.outputPayloads = PayloadStack.with(ModuleBlock.particleModulator, 2);
         });
 
