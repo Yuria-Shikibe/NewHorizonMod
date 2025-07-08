@@ -1239,6 +1239,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             drawer = new DrawRegionCenterSymmetry() {{
@@ -1256,10 +1257,8 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1278,6 +1277,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
         componentEpic = new RecipeGenericCrafter("component-epic") {{
@@ -1293,6 +1293,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
         componentLegendary = new RecipeGenericCrafter("component-legendary") {{
@@ -1309,6 +1310,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
         }};
     }
