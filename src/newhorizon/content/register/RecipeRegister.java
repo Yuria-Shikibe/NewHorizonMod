@@ -221,6 +221,46 @@ public class RecipeRegister {
         output(CraftingBlock.powerLegendary, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.multiphasePropellant, 2);
         });
+
+
+        input(CraftingBlock.componentBasic, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 20, NHLiquids.quantumLiquid, 12 / 60f);
+                                                                         LiquidStack.list(NHLiquids.quantumLiquid, 12 / 60f));
+        input(CraftingBlock.componentBasic, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 20));
+        output(CraftingBlock.componentBasic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.supraGel, 2);
+        });
+
+        input(CraftingBlock.componentRare, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 30);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 2);
+        });
+        output(CraftingBlock.componentRare, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.coolingUnit, 2);
+        });
+
+        input(CraftingBlock.componentUncommon, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 2);
+        });
+        output(CraftingBlock.componentUncommon, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.signalCirculator, 2);
+        });
+
+        input(CraftingBlock.componentEpic, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 15);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 2);
+        });
+        output(CraftingBlock.componentEpic, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.particleModulator, 2);
+        });
+
+        input(CraftingBlock.componentLegendary, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 10);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 2, ModuleBlock.particleModulator, 2);
+        });
+        output(CraftingBlock.componentLegendary, block -> {
+            block.outputPayloads = PayloadStack.with(ModuleBlock.quantumConductor, 2);
+        });
 }
 
     @SafeVarargs
