@@ -862,7 +862,7 @@ public class CraftingBlock {
         }};
 
         electronicFacilityBasic = new RecipeGenericCrafter("electronic-facility-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
             addLink(-1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 2, 0, 1, 2, 1, 1, 0, -1, 1, 1, -1, 1);
@@ -877,7 +877,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         electronicFacilityRare = new RecipeGenericCrafter("electronic-facility-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 2;
             addLink(-2, 0, 2, 0, 2, 2, 2, 0, 2, 0, -2, 2);
@@ -940,7 +940,7 @@ public class CraftingBlock {
         }};
 
         particleProcessorBasic = new RecipeGenericCrafter("particle-processor-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
 
@@ -963,7 +963,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorRare = new RecipeGenericCrafter("particle-processor-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 3;
 
@@ -1065,7 +1065,7 @@ public class CraftingBlock {
         }};
 
         foundryBasic = new RecipeGenericCrafter("foundry-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
             addLink(-2, 0, 2, 2, 0, 2);
@@ -1082,7 +1082,7 @@ public class CraftingBlock {
             }};
         }};
         foundryRare = new RecipeGenericCrafter("foundry-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 4;
             addLink(-3, 0, 2, 3, 0, 2);
@@ -1161,7 +1161,7 @@ public class CraftingBlock {
         }};
 
         powerBasic = new RecipeGenericCrafter("power-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
             addLink(-1, 0, 1, -1, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1,
@@ -1180,7 +1180,7 @@ public class CraftingBlock {
             }};
         }};
         powerRare = new RecipeGenericCrafter("power-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 4;
             addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1,
@@ -1257,7 +1257,7 @@ public class CraftingBlock {
         }};
 
         componentBasic = new RecipeGenericCrafter("component-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
 
@@ -1276,7 +1276,7 @@ public class CraftingBlock {
             }};
         }};
         componentRare = new RecipeGenericCrafter("component-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 4;
 
