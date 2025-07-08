@@ -148,8 +148,8 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(ItemStack.empty, Liquids.oil, 15 / 60f);
-            addInput(ItemStack.empty, Liquids.arkycite, 20 / 60f);
+            addInput(Liquids.oil, 15 / 60f);
+            addInput(Liquids.arkycite, 20 / 60f);
 
             consumePower(120f / 60f);
             outputLiquids = LiquidStack.with(NHLiquids.xenFluid, 12 / 60f);
