@@ -82,9 +82,9 @@ public class PowerBlock {
             powerProduction = 50f;
             craftTime = 120f;
 
-            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 3, Items.carbide, 1), LiquidStack.with(Liquids.nitrogen, 4 / 60f));
+            addInput(NHItems.zeta, 3, Items.carbide, 1, NHLiquids.quantumLiquid, 6 / 60f);
+            addInput(NHItems.zeta, 3, Items.carbide, 1, Liquids.cryofluid, 6 / 60f);
+            addInput(NHItems.zeta, 3, Items.carbide, 1, Liquids.nitrogen, 4 / 60f);
 
             outputItem = new ItemStack(NHItems.fusionEnergy, 2);
 
@@ -121,7 +121,7 @@ public class PowerBlock {
             powerProduction = 12000 / 60f;
             craftTime = 120f;
 
-            addInput(ItemStack.with(NHItems.fusionEnergy, 2, Items.surgeAlloy, 4), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
+            addInput(NHItems.fusionEnergy, 2, Items.surgeAlloy, 4, NHLiquids.zetaFluidPositive, 8 / 60f);
 
             outputItem = new ItemStack(NHItems.thermoCorePositive, 2);
 
@@ -151,7 +151,7 @@ public class PowerBlock {
             powerProduction = 12000 / 60f;
             craftTime = 120f;
 
-            addInput(ItemStack.with(NHItems.fusionEnergy, 2, Items.phaseFabric, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f));
+            addInput(NHItems.fusionEnergy, 2, Items.phaseFabric, 4, NHLiquids.zetaFluidNegative, 8 / 60f));
 
             outputItem = new ItemStack(NHItems.thermoCoreNegative, 2);
 
@@ -188,7 +188,7 @@ public class PowerBlock {
             powerProduction = 90000 / 60f;
             craftTime = 120f;
 
-            addInput(ItemStack.with(NHItems.thermoCorePositive, 2, NHItems.thermoCoreNegative, 2, NHItems.upgradeSort, 4, NHItems.ancimembrane, 4), LiquidStack.empty);
+            addInput(NHItems.thermoCorePositive, 2, NHItems.thermoCoreNegative, 2, NHItems.upgradeSort, 4, NHItems.ancimembrane, 4, LiquidStack.empty);
 
             outputItem = new ItemStack(NHItems.darkEnergy, 2);
 
