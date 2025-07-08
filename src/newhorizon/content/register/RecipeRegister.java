@@ -223,8 +223,14 @@ public class RecipeRegister {
         });
 
 
-        input(CraftingBlock.componentBasic, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 20));
-        input(CraftingBlock.componentBasic, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 20));
+        input(CraftingBlock.componentBasic, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 20);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 12 / 60f);
+        });
+        input(CraftingBlock.componentBasic, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 20);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 12 / 60f);
+        });  
         output(CraftingBlock.componentBasic, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.supraGel, 2);
         });
