@@ -1,6 +1,7 @@
 package newhorizon.content.register;
 
 import arc.func.Cons;
+import mindustry.type.Liquids;
 import mindustry.content.Items;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
