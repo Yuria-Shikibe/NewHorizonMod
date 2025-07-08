@@ -871,6 +871,7 @@ public class CraftingBlock {
 
             clipSize = 32f;
 
+            health = 320;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -885,6 +886,7 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
+            health = 640;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -899,6 +901,7 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
+            health = 960;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -913,6 +916,8 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
+            health = 1280;
+            armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -927,7 +932,9 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 1200f;
+            health = 1600;
+            armor = 6;
+            craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
         }};
@@ -944,6 +951,7 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
+            health = 320;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -966,6 +974,7 @@ public class CraftingBlock {
 
             clipSize = 72f;
 
+            health = 640;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -988,6 +997,7 @@ public class CraftingBlock {
 
             clipSize = 72f;
 
+            health = 960;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1010,6 +1020,8 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
+            health = 1280;
+            armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1033,6 +1045,8 @@ public class CraftingBlock {
 
             clipSize = 128f;
 
+            health = 1600;
+            armor = 6;
             craftTime = 90f;
             consumePower(480 / 60f);
 
@@ -1056,6 +1070,7 @@ public class CraftingBlock {
             size = 2;
             addLink(-2, 0, 2, 2, 0, 2);
 
+            health = 320;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1074,6 +1089,7 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
+            health = 640;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1090,6 +1106,7 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
+            health = 960;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1111,6 +1128,8 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
+            health = 1280;
+            armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1134,6 +1153,8 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
+            health = 1600;
+            armor = 6;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1149,6 +1170,7 @@ public class CraftingBlock {
 
             clipSize = 32f;
 
+            health = 320;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1166,6 +1188,7 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
+            health = 640;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1183,6 +1206,7 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
+            health = 960;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1203,6 +1227,8 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
+            health = 1280;
+            armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1217,6 +1243,8 @@ public class CraftingBlock {
             size = 4;
             addLink(-3, 4, 3, 4, -3, 3, -5, -5, 2, -5, -3, 2, -3, -5, 2, 5, 5, 2, 5, 3, 2, 3, 5, 2);
 
+            health = 1600;
+            armor = 6;
             craftTime = 120f;
             itemCapacity = 60;
             consumePower(480 / 60f);
@@ -1237,6 +1265,7 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
+            health = 320;
             craftTime = 120f;
             itemCapacity = 60;
             liquidCapacity = 40f;
@@ -1255,6 +1284,7 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
+            health = 640;
             craftTime = 120f;
             itemCapacity = 60;
             liquidCapacity = 40f;
@@ -1275,6 +1305,7 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
+            health = 960;
             craftTime = 120f;
             itemCapacity = 60;
             liquidCapacity = 40f;
@@ -1291,6 +1322,8 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
+            health = 1280;
+            armor = 3;
             craftTime = 120f;
             itemCapacity = 60;
             liquidCapacity = 40f;
@@ -1308,6 +1341,8 @@ public class CraftingBlock {
 
             clipSize = 112f;
 
+            health = 1600;
+            armor = 6;
             craftTime = 120f;
             itemCapacity = 60;
             liquidCapacity = 40f;
