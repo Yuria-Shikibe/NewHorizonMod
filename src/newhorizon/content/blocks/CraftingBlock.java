@@ -892,7 +892,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         electronicFacilityUncommon = new RecipeGenericCrafter("electronic-facility-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
             addLink(-3, 0, 2, 0, 3, 2, 3, 0, 2, 0, -3, 2);
@@ -907,7 +907,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         electronicFacilityEpic = new RecipeGenericCrafter("electronic-facility-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 6;
             addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2);
@@ -923,7 +923,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         electronicFacilityLegendary = new RecipeGenericCrafter("electronic-facility-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 6;
             addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2, -4, 4, 2, -4, -4, 2, 4, 4, 2, 4, -4, 2);
@@ -986,7 +986,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorUncommon = new RecipeGenericCrafter("particle-processor-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
 
@@ -1009,7 +1009,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorEpic = new RecipeGenericCrafter("particle-processor-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
 
@@ -1033,7 +1033,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorLegendary = new RecipeGenericCrafter("particle-processor-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
 
@@ -1099,7 +1099,7 @@ public class CraftingBlock {
             }};
         }};
         foundryUncommon = new RecipeGenericCrafter("foundry-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
             addLink(-4, -1, 2, -4, 1, 2, 4, -1, 2, 4, 1, 2);
@@ -1116,7 +1116,7 @@ public class CraftingBlock {
             }};
         }};
         foundryEpic = new RecipeGenericCrafter("foundry-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
             addLink(
@@ -1139,7 +1139,7 @@ public class CraftingBlock {
             }};
         }};
         foundryLegendary = new RecipeGenericCrafter("foundry-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
             addLink(
@@ -1198,7 +1198,7 @@ public class CraftingBlock {
             }};
         }};
         powerUncommon = new RecipeGenericCrafter("power-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
@@ -1216,7 +1216,7 @@ public class CraftingBlock {
             }};
         }};
         powerEpic = new RecipeGenericCrafter("power-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
@@ -1238,7 +1238,7 @@ public class CraftingBlock {
             }};
         }};
         powerLegendary = new RecipeGenericCrafter("power-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
             addLink(-3, 4, 3, 4, -3, 3, -5, -5, 2, -5, -3, 2, -3, -5, 2, 5, 5, 2, 5, 3, 2, 3, 5, 2);
@@ -1295,7 +1295,7 @@ public class CraftingBlock {
             }};
         }};
         componentUncommon = new RecipeGenericCrafter("component-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
 
@@ -1312,7 +1312,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         componentEpic = new RecipeGenericCrafter("component-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
 
@@ -1330,7 +1330,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         componentLegendary = new RecipeGenericCrafter("component-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
 
