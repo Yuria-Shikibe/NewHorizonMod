@@ -151,7 +151,7 @@ public class PowerBlock {
             powerProduction = 12000 / 60f;
             craftTime = 120f;
 
-            addInput(NHItems.fusionEnergy, 2, Items.phaseFabric, 4, NHLiquids.zetaFluidNegative, 8 / 60f));
+            addInput(NHItems.fusionEnergy, 2, Items.phaseFabric, 4, NHLiquids.zetaFluidNegative, 8 / 60f);
 
             outputItem = new ItemStack(NHItems.thermoCoreNegative, 2);
 
