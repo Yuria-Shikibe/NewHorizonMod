@@ -65,7 +65,7 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 2, ModuleBlock.memoryRecalibrator, 2);
         });
         output(CraftingBlock.electronicFacilityLegendary, block -> {
-            block.outputPayloads = PayloadStack.with(ModuleBlock.neutronMembrane, 2);
+            block.outputPayloads = PayloadStack.with(ModuleBlock.resistoArray, 2);
         });
 
       
