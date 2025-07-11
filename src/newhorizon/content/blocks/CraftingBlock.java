@@ -861,7 +861,7 @@ public class CraftingBlock {
         }};
 
         electronicFacilityBasic = new RecipeGenericCrafter("electronic-facility-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
 
             size = 2;
             addLink(-1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 2, 0, 1, 2, 1, 1, 0, -1, 1, 1, -1, 1);
@@ -909,7 +909,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         electronicFacilityEpic = new RecipeGenericCrafter("electronic-facility-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
 
             size = 6;
             addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2);
@@ -944,7 +944,7 @@ public class CraftingBlock {
         }};
 
         particleProcessorBasic = new RecipeGenericCrafter("particle-processor-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
 
             size = 2;
 
@@ -1016,7 +1016,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorEpic = new RecipeGenericCrafter("particle-processor-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
 
             size = 4;
 
@@ -1073,7 +1073,7 @@ public class CraftingBlock {
         }};
 
         foundryBasic = new RecipeGenericCrafter("foundry-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
 
             size = 2;
             addLink(-2, 0, 2, 2, 0, 2);
@@ -1127,7 +1127,7 @@ public class CraftingBlock {
             }};
         }};
         foundryEpic = new RecipeGenericCrafter("foundry-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
 
             size = 4;
             addLink(
@@ -1174,7 +1174,7 @@ public class CraftingBlock {
         }};
 
         powerBasic = new RecipeGenericCrafter("power-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
 
             size = 2;
             addLink(-1, 0, 1, -1, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1,
@@ -1232,7 +1232,7 @@ public class CraftingBlock {
             }};
         }};
         powerEpic = new RecipeGenericCrafter("power-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
 
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
@@ -1275,7 +1275,7 @@ public class CraftingBlock {
         }};
 
         componentBasic = new RecipeGenericCrafter("component-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
 
             size = 2;
 
@@ -1330,7 +1330,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         componentEpic = new RecipeGenericCrafter("component-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
 
             size = 4;
 
