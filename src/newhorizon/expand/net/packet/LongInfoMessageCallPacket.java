@@ -6,9 +6,9 @@ import mindustry.io.TypeIO;
 import mindustry.net.Packet;
 import mindustry.ui.dialogs.BaseDialog;
 
-public class LongInfoMessageCallPacket extends Packet{
-    private byte[] DATA;
+public class LongInfoMessageCallPacket extends Packet {
     public String message;
+    private byte[] DATA;
 
     public LongInfoMessageCallPacket() {
         this.DATA = NODATA;
@@ -28,12 +28,12 @@ public class LongInfoMessageCallPacket extends Packet{
     }
 
     public void handleClient() {
-        new BaseDialog("@message"){{
-           addCloseButton();
-           cont.margin(6f);
-           cont.pane(t -> {
-               t.add(message).expandX().fillY();
-           }).grow();
+        new BaseDialog("@message") {{
+            addCloseButton();
+            cont.margin(6f);
+            cont.pane(t -> {
+                t.add(message).expandX().fillY();
+            }).grow();
         }}.show();
     }
 }

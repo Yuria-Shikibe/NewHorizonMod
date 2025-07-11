@@ -15,7 +15,7 @@ import newhorizon.content.bullets.RaidBullets;
 import static mindustry.Vars.content;
 
 public class SpawnBulletI implements LExecutor.LInstruction {
-    public LVar team , type, seed, count, sourceX, sourceY, targetX, targetY, inaccuracy;
+    public LVar team, type, seed, count, sourceX, sourceY, targetX, targetY, inaccuracy;
 
     public SpawnBulletI(LVar team, LVar type, LVar seed, LVar count, LVar sourceX, LVar sourceY, LVar targetX, LVar targetY, LVar inaccuracy) {
         this.team = team;
@@ -56,7 +56,7 @@ public class SpawnBulletI implements LExecutor.LInstruction {
     }
 
     public BulletType bulletType(int type) {
-        if (type < 10000){
+        if (type < 10000) {
             return switch (type) {
                 case 1 -> RaidBullets.raidBullet_1;
                 case 2 -> RaidBullets.raidBullet_2;

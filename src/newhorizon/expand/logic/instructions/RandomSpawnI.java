@@ -17,7 +17,8 @@ public class RandomSpawnI implements LExecutor.LInstruction {
         this.y = y;
     }
 
-    public RandomSpawnI() {}
+    public RandomSpawnI() {
+    }
 
     @Override
     public void run(LExecutor exec) {
@@ -29,7 +30,7 @@ public class RandomSpawnI implements LExecutor.LInstruction {
 
         Tile t = spawns.random(r);
 
-        x.setnum(t.x * 8);
-        y.setnum(t.y * 8);
+        x.setnum(t.x);
+        y.setnum(t.y);
     }
 }

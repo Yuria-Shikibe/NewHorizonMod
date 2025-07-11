@@ -22,16 +22,17 @@ public class DistributionBlock {
             logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
 
-            stackRail, lightStackLoader, heavyStackLoader,
+    stackRail, steadystackRail,lightStackLoader, heavyStackLoader,
 
-            conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
+    conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
-    public static void load(){
-        conveyor = new AdaptConveyor("hard-light-rail"){{
+    public static void load() {
+        conveyor = new AdaptConveyor("hard-light-rail") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 0.115f;
             displayedSpeed = 15f;
             framePeriod = 9.2f;
@@ -40,155 +41,247 @@ public class DistributionBlock {
 
             saveConfig = false;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
-        stackRail = new AdaptStackConveyor("stack-rail"){{
+        stackRail = new AdaptStackConveyor("stack-rail") {{
             requirements(Category.distribution, with(NHItems.presstanium, 1, NHItems.juniorProcessor, 1));
+            health = 320;
             speed = 6f / 60f;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
-        lightStackLoader = new AdaptStackConveyor("light-stack-loader"){{
+        steadystackRail = new AdaptStackConveyor("steady-stack-rail") {{
+            requirements(Category.distribution, with(NHItems.multipleSteel, 1, NHItems.seniorProcessor, 1));
+            health = 640;
+            speed = 18f / 60f;
+            canOverdrive = false;
+            placeableLiquid = true;
+
+        }};
+
+        lightStackLoader = new AdaptStackConveyor("light-stack-loader") {{
             requirements(Category.distribution, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 10));
+            health = 320;
             speed = 6f / 60f;
             itemCapacity = 15;
             onlyCarry = false;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
-        heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader"){{
+        heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader") {{
             requirements(Category.distribution, with(NHItems.multipleSteel, 10, NHItems.seniorProcessor, 10));
+            health = 640;
             speed = 6f / 60f;
             itemCapacity = 60;
             onlyCarry = false;
             canOverdrive = false;
+            placeableLiquid = true;
+
         }};
 
-        conveyorBridge = new AdaptItemBridge("logistics-bridge"){{
+        conveyorBridge = new AdaptItemBridge("logistics-bridge") {{
             requirements(Category.distribution, with(Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             hasPower = false;
             range = 6;
+            health = 320;
+
+            placeableLiquid = true;
+
         }};
 
-        conveyorBridgeExtend = new AdaptItemBridge("logistics-extend-bridge"){{
+        conveyorBridgeExtend = new AdaptItemBridge("logistics-extend-bridge") {{
             requirements(Category.distribution, with(NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             hasPower = false;
             range = 12;
+            health = 640;
+
+            placeableLiquid = true;
+
         }};
 
-        logisticsJunction = new AdaptJunction("logistics-junction"){{
+        logisticsJunction = new AdaptJunction("logistics-junction") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 3;
             capacity = 1;
+
+            placeableLiquid = true;
+
         }};
 
-        logisticsDirectionalRouter = new AdaptDirectionalRouter("logistics-directional-router"){{
+        logisticsDirectionalRouter = new AdaptDirectionalRouter("logistics-directional-router") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 4f;
+
+            placeableLiquid = true;
+
         }};
 
-        logisticsDirectionalMerger = new AdaptDirectionalMerger("logistics-directional-merger"){{
+        logisticsDirectionalMerger = new AdaptDirectionalMerger("logistics-directional-merger") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 4f;
+
+            placeableLiquid = true;
+
         }};
 
-        logisticsDirectionalGate = new AdaptDirectionalGate("logistics-directional-gate"){{
+        logisticsDirectionalGate = new AdaptDirectionalGate("logistics-directional-gate") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
+            health = 320;
             speed = 4f;
+
+            placeableLiquid = true;
+
         }};
 
-        logisticsOmniGate = new AdaptGate("logistics-omni-gate"){{
+        logisticsOmniGate = new AdaptGate("logistics-omni-gate") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
+
+            placeableLiquid = true;
+            health = 320;
+
         }};
 
-        logisticsOmniSorter = new AdaptSorter("logistics-omni-sorter"){{
+        logisticsOmniSorter = new AdaptSorter("logistics-omni-sorter") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             invert = false;
+            placeableLiquid = true;
+            health = 320;
+
         }};
 
-        logisticsOmniBlocker = new AdaptSorter("logistics-omni-blocker"){{
+        logisticsOmniBlocker = new AdaptSorter("logistics-omni-blocker") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             invert = true;
+            placeableLiquid = true;
+            health = 320;
+
         }};
 
-        conveyorUnloader = new AdaptDirectionalUnloader("logistics-unloader"){{
+        conveyorUnloader = new AdaptDirectionalUnloader("logistics-unloader") {{
             requirements(Category.distribution, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
-            speed = 60f/16.5f;
+            health = 320;
+            speed = 60f / 16.5f;
             hasPower = true;
             conductivePower = true;
+            placeableLiquid = true;
+
         }};
 
-        rapidUnloader = new AdaptUnloader("rapid-unloader"){{
+        rapidUnloader = new AdaptUnloader("rapid-unloader") {{
+            health = 320;
             speed = 0.5f;
             requirements(Category.distribution, BuildVisibility.shown, with(Items.silicon, 4));
+
+            placeableLiquid = true;
+
         }};
 
-        conduit = new AdaptConduit("conduit"){{
+        conduit = new AdaptConduit("conduit") {{
             requirements(Category.liquid, with(Items.silicon, 1));
-            liquidCapacity = 40f;
+            health = 320;
+            liquidCapacity = 100f;
             liquidPressure = 1.2f;
+
+            leaks = false;
+            placeableLiquid = true;
+
         }};
 
-        conduitJunction = new LiquidJunction("logistics-liquid-junction"){{
+        conduitJunction = new LiquidJunction("logistics-liquid-junction") {{
             requirements(Category.liquid, with(Items.silicon, 4));
+            placeableLiquid = true;
+            solid = false;
+            underBullets = true;
+            health = 320;
         }};
 
-        conduitRouter = new LiquidRouter("logistics-liquid-router"){{
+        conduitRouter = new LiquidRouter("logistics-liquid-router") {{
             requirements(Category.liquid, with(Items.silicon, 4));
+            placeableLiquid = true;
+            solid = false;
+            underBullets = true;
+            health = 320;
+            liquidCapacity = 200f;
         }};
 
-        liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge"){{
+        liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge") {{
             requirements(Category.liquid, with(Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
             hasPower = false;
             range = 6;
+            health = 320;
+            liquidCapacity = 200f;
+
+            placeableLiquid = true;
+
         }};
 
-        liquidBridgeExtend = new AdaptLiquidBridge("logistics-extend-liquid-bridge"){{
+        liquidBridgeExtend = new AdaptLiquidBridge("logistics-extend-liquid-bridge") {{
             requirements(Category.liquid, with(NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
             hasPower = false;
             range = 12;
+            health = 640;
+            liquidCapacity = 200f;
+
+            placeableLiquid = true;
+
         }};
 
-        liquidUnloader = new AdaptLiquidDirectionalUnloader("logistics-liquid-unloader"){{
+        ((AdaptConduit) conduit).junctionReplacement = conduitJunction;
+        ((AdaptConduit) conduit).bridgeReplacement = liquidBridge;
+
+        liquidUnloader = new AdaptLiquidDirectionalUnloader("logistics-liquid-unloader") {{
             requirements(Category.liquid, with());
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             hasPower = true;
             conductivePower = true;
+            placeableLiquid = true;
+            health = 320;
+            liquidCapacity = 200f;
+
         }};
 
         ((AdaptConveyor) conveyor).junctionReplacement = logisticsJunction;

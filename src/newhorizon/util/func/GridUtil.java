@@ -21,7 +21,7 @@ public class GridUtil {
     //key: unit inner name, value: unit grid
     public static ObjectMap<String, GridData> unitGridsMap;
 
-    public static void init(){
+    public static void init() {
 
         if (headless) return;
         unitGridsMap = new ObjectMap<>(content.units().size);
@@ -31,7 +31,7 @@ public class GridUtil {
     }
 
 
-    public static GridData getGridData(TextureRegion region){
+    public static GridData getGridData(TextureRegion region) {
 
         int widthStep = Mathf.ceil((float) region.width / GRID_LEN);
         int heightStep = Mathf.ceil((float) region.height / GRID_LEN);
@@ -47,19 +47,23 @@ public class GridUtil {
         IntSeq tmpPoints = new IntSeq();
         tmpPoints.setSize(width * height);
 
-        for (int x = 0; x < widthStep; x++){
-            for (int y = 0; y < heightStep; y++){
+        for (int x = 0; x < widthStep; x++) {
+            for (int y = 0; y < heightStep; y++) {
                 int xCoord = startLeft + x * GRID_LEN;
                 int yCoord = startBot + y * GRID_LEN;
 
                 int sampleCount = 0;
-                for (Point2 point2: samplingPixels){
+                for (Point2 point2 : samplingPixels) {
                     int pixel = pixmap.get(xCoord + point2.x, yCoord + point2.y);
                     //check for empty pixels, +1 if true
                     if ((pixel & 0x000000ff) == 0) sampleCount++;
                 }
 
-                if (sampleCount == 4){tmpPoints.set(y * widthStep + x, 0);}else {tmpPoints.set(y * widthStep + x, 1);}
+                if (sampleCount == 4) {
+                    tmpPoints.set(y * widthStep + x, 0);
+                } else {
+                    tmpPoints.set(y * widthStep + x, 1);
+                }
             }
         }
         pixmap.dispose();

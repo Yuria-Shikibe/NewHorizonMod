@@ -4,9 +4,10 @@ public class WeightedOption {
     public float weight;
     public Runnable option;
 
-    public WeightedOption(){
+    public WeightedOption() {
         weight = 0;
-        option = () -> {};
+        option = () -> {
+        };
     }
 
     public WeightedOption(float weight, Runnable option) {
@@ -14,7 +15,7 @@ public class WeightedOption {
         this.option = option;
     }
 
-    public WeightedOption set(float weight, Runnable option){
+    public WeightedOption set(float weight, Runnable option) {
         this.weight = weight;
         this.option = option;
 

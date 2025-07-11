@@ -8,6 +8,7 @@ import newhorizon.NewHorizon;
 
 public class AdaptSorter extends Sorter {
     public TextureRegion itemRegion;
+
     public AdaptSorter(String name) {
         super(name);
 
@@ -23,10 +24,10 @@ public class AdaptSorter extends Sorter {
 
     public class AdaptSorterBuild extends SorterBuild {
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(region, x, y);
 
-            if(sortItem != null){
+            if (sortItem != null) {
                 Draw.color(sortItem.color);
                 Draw.rect(itemRegion, x, y);
                 Draw.color();

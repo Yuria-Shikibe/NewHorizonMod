@@ -5,7 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
-import arc.util.*;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.graphics.Pal;
 import mindustry.world.blocks.power.PowerNode;
@@ -16,7 +16,8 @@ import newhorizon.content.NHContent;
 import newhorizon.content.NHStats;
 import newhorizon.expand.entities.GravityTrapField;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.player;
+import static mindustry.Vars.tilesize;
 
 public class GravityWallSubstation extends PowerNode {
     public float gravityRange = 120f;
@@ -26,11 +27,11 @@ public class GravityWallSubstation extends PowerNode {
         update = true;
     }
 
-    public void drawRangeRect(float x, float y, float range){
+    public void drawRangeRect(float x, float y, float range) {
         Lines.stroke(3, Pal.gray);
         Lines.square(x, y, range + 1);
 
-        Color color = player == null? Pal.techBlue :Vars.player.team().color;
+        Color color = player == null ? Pal.techBlue : Vars.player.team().color;
         Lines.stroke(1, color);
         Lines.square(x, y, range);
 
@@ -60,10 +61,11 @@ public class GravityWallSubstation extends PowerNode {
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             super.draw();
             if (player == null || team != player.team()) return;
 
+            if (isPayload()) return;
             Draw.z(NHContent.POWER_AREA);
             Draw.color(team.color);
             Fill.square(x, y, gravityRange);
@@ -74,21 +76,21 @@ public class GravityWallSubstation extends PowerNode {
         }
 
         @Override
-        public void drawSelect(){
+        public void drawSelect() {
             super.drawSelect();
             drawRangeRect(x, y, gravityRange);
         }
 
         @Override
-        public void add(){
+        public void add() {
             super.add();
-            if(field == null)field = new GravityTrapField(this, this::isValid, gravityRange);
+            if (field == null) field = new GravityTrapField(this, this::isValid, gravityRange);
             field.add();
         }
 
         @Override
-        public void remove(){
-            if(added) NHGroups.gravityTraps.remove(field);
+        public void remove() {
+            if (added) NHGroups.gravityTraps.remove(field);
             super.remove();
         }
     }

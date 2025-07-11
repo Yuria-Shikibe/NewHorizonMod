@@ -59,31 +59,33 @@ public class AdaptConveyor extends Conveyor {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         int[] bits = getTiling(plan, list);
 
-        if(bits == null) return;
+        if (bits == null) return;
         Draw.rect(region, plan.drawx(), plan.drawy(), plan.rotation * 90);
     }
 
     @Override
-    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock) {
         boolean armored = (tile.build instanceof AdaptConveyorBuild && ((AdaptConveyorBuild) tile.build).armored);
-        if (!armored) return (otherblock.outputsItems() || (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems))
-                && lookingAtEither(tile, rotation, otherx, othery, otherrot, otherblock);
-        else return (otherblock.outputsItems() && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) ||
-                (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems);
+        if (!armored)
+            return (otherblock.outputsItems() || (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems))
+                    && lookingAtEither(tile, rotation, otherx, othery, otherrot, otherblock);
+        else
+            return (otherblock.outputsItems() && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) ||
+                    (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems);
     }
 
     @Override
-    public boolean blendsArmored(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+    public boolean blendsArmored(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock) {
         return Point2.equals(tile.x + Geometry.d4(rotation).x, tile.y + Geometry.d4(rotation).y, otherx, othery)
                 || ((!otherblock.rotatedOutput(otherx, othery) && Edges.getFacingEdge(otherblock, otherx, othery, tile) != null &&
                 Edges.getFacingEdge(otherblock, otherx, othery, tile).relativeTo(tile) == rotation) ||
                 (otherblock instanceof Conveyor && otherblock.rotatedOutput(otherx, othery) && Point2.equals(otherx + Geometry.d4(otherrot).x, othery + Geometry.d4(otherrot).y, tile.x, tile.y)));
     }
 
-    public boolean blends(Building self, Building other){
+    public boolean blends(Building self, Building other) {
         if (other == null) return false;
         return blends(self.tile, self.rotation, other.tileX(), other.tileY(), other.rotation, other.block);
     }
@@ -112,10 +114,12 @@ public class AdaptConveyor extends Conveyor {
         return new TextureRegion[]{region};
     }
 
-    public int conveyorFrame(){return (int)((((Time.time) % framePeriod) / framePeriod) * 16);}
+    public int conveyorFrame() {
+        return (int) ((((Time.time) % framePeriod) / framePeriod) * 16);
+    }
 
-    public int pulseFrame(){
-        int value = (int) ((Time.time/4f) % 4f);
+    public int pulseFrame() {
+        int value = (int) ((Time.time / 4f) % 4f);
         if (value == 0) return 0;
         if (value == 1) return 1;
         if (value == 2) return 2;
@@ -138,7 +142,7 @@ public class AdaptConveyor extends Conveyor {
         }
 
         @Override
-        public Graphics.Cursor getCursor(){
+        public Graphics.Cursor getCursor() {
             return interactable(player.team()) ? Graphics.Cursor.SystemCursor.hand : Graphics.Cursor.SystemCursor.arrow;
         }
 
@@ -157,13 +161,13 @@ public class AdaptConveyor extends Conveyor {
             if (check(tile.x - 1, tile.y)) drawIndex += 8;
         }
 
-        public boolean check(int x, int y){
+        public boolean check(int x, int y) {
             Building other = Vars.world.build(x, y);
             return blends(this, other);
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.blend(Blending.additive);
             Draw.color(team.color, Pal.gray, 0.35f);
             Draw.z(Layer.block - 0.25f);
@@ -175,21 +179,33 @@ public class AdaptConveyor extends Conveyor {
             Draw.rect(arrowRegions[conveyorFrame()], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
 
             boolean backDraw = true;
-            if (blends(this, right())) {Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg() + 90);backDraw = false;}
-            if (blends(this, back())) {Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg());backDraw = false;}
-            if (blends(this, left())) {Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg() - 90);backDraw = false;}
-            if (backDraw){Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg());}
+            if (blends(this, right())) {
+                Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg() + 90);
+                backDraw = false;
+            }
+            if (blends(this, back())) {
+                Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg());
+                backDraw = false;
+            }
+            if (blends(this, left())) {
+                Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg() - 90);
+                backDraw = false;
+            }
+            if (backDraw) {
+                Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg());
+            }
 
             Draw.z(Layer.block - 0.15f);
             Draw.color(team.color, Color.white, 0.3f);
-            if (!armored) Draw.rect(edgeRegions[blendbits], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
+            if (!armored)
+                Draw.rect(edgeRegions[blendbits], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
             else Draw.rect(armorRegions[blendbits], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
             Draw.color();
 
             Draw.z(Layer.block - 0.1f);
             float layer = Layer.block - 0.1f, wwidth = world.unitWidth(), wheight = world.unitHeight(), scaling = 0.01f;
 
-            for(int i = 0; i < len; i++){
+            for (int i = 0; i < len; i++) {
                 Item item = ids[i];
                 Tmp.v1.trns(rotation * 90, tilesize, 0);
                 Tmp.v2.trns(rotation * 90, -tilesize / 2f, xs[i] * tilesize / 2f);
@@ -205,19 +221,20 @@ public class AdaptConveyor extends Conveyor {
         }
 
         @Override
-        public boolean acceptItem(Building source, Item item){
+        public boolean acceptItem(Building source, Item item) {
             if (!armored) return super.acceptItem(source, item);
-            else return super.acceptItem(source, item) && (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation);
+            else
+                return super.acceptItem(source, item) && (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation);
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.bool(armored);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             armored = read.bool();
         }

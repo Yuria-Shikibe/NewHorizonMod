@@ -24,6 +24,7 @@ import static mindustry.Vars.content;
 public class AdaptDirectionalUnloader extends DirectionalUnloader {
     public TextureRegion[] topRegions = new TextureRegion[4];
     public TextureRegion baseRegion, itemRegion;
+
     public AdaptDirectionalUnloader(String name) {
         super(name);
     }
@@ -39,14 +40,14 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         Draw.rect(baseRegion, plan.drawx(), plan.drawy());
         Draw.rect(topRegions[plan.rotation], plan.drawx(), plan.drawy());
         drawPlanConfig(plan, list);
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
@@ -57,29 +58,29 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
         stats.add(Stat.speed, 15, StatUnit.itemsSecond);
     }
 
-    public class AdaptDirectionalUnloaderBuild extends DirectionalUnloaderBuild{
+    public class AdaptDirectionalUnloaderBuild extends DirectionalUnloaderBuild {
         @Override
-        public void updateTile(){
-            float inc = unloadItem == null? edelta(): (edelta()/16.5f * 30f);
-            if((unloadTimer += inc) >= speed){
+        public void updateTile() {
+            float inc = unloadItem == null ? edelta() : (edelta() / 16.5f * 30f);
+            if ((unloadTimer += inc) >= speed) {
                 Building front = front(), back = back();
 
-                if(front != null && back != null && back.items != null && front.team == team && back.team == team && back.canUnload()){
-                    if(unloadItem == null){
+                if (front != null && back != null && back.items != null && front.team == team && back.team == team && back.canUnload()) {
+                    if (unloadItem == null) {
                         Seq<Item> itemseq = content.items();
                         int itemc = itemseq.size;
-                        for(int i = 0; i < itemc; i++){
+                        for (int i = 0; i < itemc; i++) {
                             Item item = itemseq.get((i + offset) % itemc);
-                            if(back.items.has(item) && front.acceptItem(this, item)){
+                            if (back.items.has(item) && front.acceptItem(this, item)) {
                                 front.handleItem(this, item);
                                 back.items.remove(item, 1);
                                 back.itemTaken(item);
-                                offset ++;
+                                offset++;
                                 offset %= itemc;
                                 break;
                             }
                         }
-                    }else if(back.items.has(unloadItem) && front.acceptItem(this, unloadItem)){
+                    } else if (back.items.has(unloadItem) && front.acceptItem(this, unloadItem)) {
                         front.handleItem(this, unloadItem);
                         back.items.remove(unloadItem, 1);
                         back.itemTaken(unloadItem);
@@ -89,11 +90,12 @@ public class AdaptDirectionalUnloader extends DirectionalUnloader {
                 unloadTimer %= speed;
             }
         }
+
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(baseRegion, x, y);
 
-            if(unloadItem != null) {
+            if (unloadItem != null) {
                 Draw.color(unloadItem.color);
                 Draw.rect(itemRegion, x, y);
                 Draw.color();

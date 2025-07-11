@@ -22,17 +22,17 @@ public class Atlas_4_4_Floor extends Floor {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         splitRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 0, SpriteUtil.ATLAS_INDEX_4_4);
     }
 
-    private void drawTile(Tile tile){
+    private void drawTile(Tile tile) {
         int drawIndex = 0;
 
-        for(int i = 0; i < orthogonalPos.length; i++){
+        for (int i = 0; i < orthogonalPos.length; i++) {
             Point2 pos = orthogonalPos[i];
-            if (checkTile(Vars.world.tile(tile.x + pos.x, tile.y + pos.y))){
+            if (checkTile(Vars.world.tile(tile.x + pos.x, tile.y + pos.y))) {
                 drawIndex += 1 << i;
             }
         }
@@ -40,7 +40,7 @@ public class Atlas_4_4_Floor extends Floor {
         Draw.rect(splitRegions[drawIndex], tile.worldx(), tile.worldy());
     }
 
-    public boolean checkTile(Tile tile){
+    public boolean checkTile(Tile tile) {
         return tile != null && (tile.floor() == this || blendFloors.contains(tile.floor()) || tile.floor().isLiquid);
     }
 

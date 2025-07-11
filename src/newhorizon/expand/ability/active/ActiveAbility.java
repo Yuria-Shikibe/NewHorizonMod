@@ -16,22 +16,22 @@ public abstract class ActiveAbility extends Ability {
 
     protected float timer, stack, cooldown;
 
-    public void trigger(Unit unit){
+    public void trigger(Unit unit) {
 
     }
 
     @Override
     public void update(Unit unit) {
-        if (stack <= chargeCount){
+        if (stack <= chargeCount) {
             timer += Time.delta;
         }
 
-        if (timer > reloadTimer){
+        if (timer > reloadTimer) {
             stack++;
             timer %= reloadTimer;
         }
 
-        if (cooldown > 0){
+        if (cooldown > 0) {
             cooldown -= Time.delta;
         }
     }

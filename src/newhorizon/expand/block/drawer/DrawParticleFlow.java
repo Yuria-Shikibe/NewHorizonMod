@@ -20,15 +20,15 @@ public class DrawParticleFlow extends DrawBlock {
     public boolean ignoreRot2_3 = false;
 
     @Override
-    public void draw(Building build){
+    public void draw(Building build) {
 
-        if(build.warmup() > 0f && color.a > 0.001f){
+        if (build.warmup() > 0f && color.a > 0.001f) {
             Lines.stroke(stroke * build.warmup());
             float ang = Angles.angle(startX, startY, endX, endY);
             float realAng = ang + getRot(build);
             float base = (Time.time / particleLife);
             rand.setSeed(build.id);
-            for(int i = 0; i < particles; i++){
+            for (int i = 0; i < particles; i++) {
                 float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                 float shift = rand.random(-range, range);
                 float shiftAng = rand.nextBoolean() ? realAng + 90 : realAng - 90;
@@ -42,8 +42,8 @@ public class DrawParticleFlow extends DrawBlock {
         }
     }
 
-    public float getRot(Building build){
-        int rot = ignoreRot2_3? build.rotation % 2: build.rotation;
+    public float getRot(Building build) {
+        int rot = ignoreRot2_3 ? build.rotation % 2 : build.rotation;
         return rot * 90;
     }
 }

@@ -14,7 +14,8 @@ public class GrooveFloor extends Floor {
     public GrooveFloor(String name) {
         super(name);
     }
-    public GrooveFloor(String name, int variants){
+
+    public GrooveFloor(String name, int variants) {
         super(name);
         this.variants = variants;
 
@@ -27,18 +28,18 @@ public class GrooveFloor extends Floor {
     }
 
     @Override
-    public TextureRegion[] editorVariantRegions(){
-        if(editorVariantRegions == null){
+    public TextureRegion[] editorVariantRegions() {
+        if (editorVariantRegions == null) {
             variantRegions();
             editorVariantRegions = new TextureRegion[1];
-            TextureAtlas.AtlasRegion region = (TextureAtlas.AtlasRegion)variantRegions[0];
+            TextureAtlas.AtlasRegion region = (TextureAtlas.AtlasRegion) variantRegions[0];
             editorVariantRegions[0] = Core.atlas.find("editor-" + region.name);
         }
         return editorVariantRegions;
     }
 
     @Override
-    protected boolean doEdge(Tile tile, Tile otherTile, Floor other){
+    protected boolean doEdge(Tile tile, Tile otherTile, Floor other) {
         return false;
     }
 
@@ -50,7 +51,7 @@ public class GrooveFloor extends Floor {
         drawOverlay(tile);
     }
 
-    private byte getTileIndex(Tile tile){
+    private byte getTileIndex(Tile tile) {
         byte index = 0;
         if (world.floor(tile.x, tile.y + 1) == this) index += 1;
         if (world.floor(tile.x + 1, tile.y) == this) index += 2;

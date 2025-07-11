@@ -13,5 +13,5 @@ public class NHConsumePayloadDynamic extends ConsumePayloadDynamic {
     }
 
     @Override
-    public void build(Building build, Table table){}
+    public void build(Building build, Table table) {}
 }

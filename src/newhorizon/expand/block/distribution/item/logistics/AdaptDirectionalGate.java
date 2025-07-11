@@ -39,20 +39,20 @@ public class AdaptDirectionalGate extends OverflowDuct {
         invertRegion = Core.atlas.find(name + "-invert");
     }
 
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         Draw.rect(baseRegion, plan.drawx(), plan.drawy());
         Draw.rect(overlayRegion, plan.drawx(), plan.drawy(), plan.rotation * 90);
     }
 
-    public class AdaptDirectionalGateBuild extends OverflowDuctBuild{
+    public class AdaptDirectionalGateBuild extends OverflowDuctBuild {
         public boolean invert;
 
-        public boolean invert(){
+        public boolean invert() {
             return invert;
         }
 
@@ -71,7 +71,7 @@ public class AdaptDirectionalGate extends OverflowDuct {
         }
 
         @Override
-        public Graphics.Cursor getCursor(){
+        public Graphics.Cursor getCursor() {
             return interactable(player.team()) ? Graphics.Cursor.SystemCursor.hand : Graphics.Cursor.SystemCursor.arrow;
         }
 
@@ -81,35 +81,35 @@ public class AdaptDirectionalGate extends OverflowDuct {
         }
 
         @Nullable
-        public Building target(){
-            if(current == null) return null;
+        public Building target() {
+            if (current == null) return null;
 
-            if(invert()){ //Lots of extra code. Make separate UnderflowDuct class?
+            if (invert()) { //Lots of extra code. Make separate UnderflowDuct class?
                 Building l = left(), r = right();
                 boolean lc = l != null && l.team == team && l.acceptItem(this, current),
                         rc = r != null && r.team == team && r.acceptItem(this, current);
 
-                if(lc && !rc){
+                if (lc && !rc) {
                     return l;
-                }else if(rc && !lc){
+                } else if (rc && !lc) {
                     return r;
-                }else if(lc){
+                } else if (lc) {
                     return cdump == 0 ? l : r;
                 }
             }
 
             Building front = front();
-            if(front != null && front.team == team && front.acceptItem(this, current)){
+            if (front != null && front.team == team && front.acceptItem(this, current)) {
                 return front;
             }
 
-            if(invert()) return null;
+            if (invert()) return null;
 
-            for(int i = -1; i <= 1; i++){
+            for (int i = -1; i <= 1; i++) {
                 int dir = Mathf.mod(rotation + (((i + cdump + 1) % 3) - 1), 4);
-                if(dir == rotation) continue;
+                if (dir == rotation) continue;
                 Building other = nearby(dir);
-                if(other != null && other.team == team && other.acceptItem(this, current)){
+                if (other != null && other.team == team && other.acceptItem(this, current)) {
                     return other;
                 }
             }
@@ -118,13 +118,13 @@ public class AdaptDirectionalGate extends OverflowDuct {
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.bool(invert);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             invert = read.bool();
         }

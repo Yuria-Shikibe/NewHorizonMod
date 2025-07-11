@@ -17,7 +17,7 @@ import mindustry.world.Block;
 import static mindustry.Vars.control;
 
 public class ContentSelectionTable {
-    public static void buildModuleTable(@Nullable Block block, Table table, Seq<Block> items, Prov<Block> holder, Cons<Block> consumer){
+    public static void buildModuleTable(@Nullable Block block, Table table, Seq<Block> items, Prov<Block> holder, Cons<Block> consumer) {
         ButtonGroup<ImageButton> group = new ButtonGroup<>();
         group.setMinCheckCount(0);
 
@@ -28,8 +28,8 @@ public class ContentSelectionTable {
             group.clear();
             cont.clearChildren();
 
-            for(Block item : items){
-                if(!item.unlockedNow()) continue;
+            for (Block item : items) {
+                if (!item.unlockedNow()) continue;
 
                 ImageButton button = cont.button(Tex.whiteui, Styles.clearNoneTogglei, 48f, () -> control.input.config.hideConfig()).group(group).get();
                 button.table(t -> t.label(() -> item.localizedName).size(180, 0)).padLeft(6).padRight(6);
@@ -49,12 +49,12 @@ public class ContentSelectionTable {
         ScrollPane pane = new ScrollPane(cont, Styles.smallPane);
         pane.setScrollingDisabled(true, false);
         pane.exited(() -> {
-            if(pane.hasScroll()){
+            if (pane.hasScroll()) {
                 Core.scene.setScrollFocus(null);
             }
         });
 
-        if(block != null){
+        if (block != null) {
             pane.setScrollYForce(block.selectScroll);
             pane.update(() -> block.selectScroll = pane.getScrollY());
         }

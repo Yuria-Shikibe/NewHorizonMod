@@ -15,8 +15,9 @@ public class DefenseBlock {
     public static Block
             presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall,
             standardForceProjector, largeShieldGenerator, riftShield;
-    public static void load(){
-        presstaniumWall = new AdaptWall("presstanium-wall"){{
+
+    public static void load() {
+        presstaniumWall = new AdaptWall("presstanium-wall") {{
             health = 1200;
             armor = 2f;
             maxShareStep = 1;
@@ -25,7 +26,7 @@ public class DefenseBlock {
             requirements(Category.defense, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 6));
         }};
 
-        refactoringMultiWall = new AdaptWall("refactoring-multi-wall"){{
+        refactoringMultiWall = new AdaptWall("refactoring-multi-wall") {{
             health = 1800;
             armor = 4f;
             maxShareStep = 2;
@@ -34,7 +35,7 @@ public class DefenseBlock {
             requirements(Category.defense, with(NHItems.metalOxhydrigen, 8, Items.carbide, 12));
         }};
 
-        setonPhasedWall = new AdaptWall("seton-phased-wall"){{
+        setonPhasedWall = new AdaptWall("seton-phased-wall") {{
             health = 2400;
             armor = 8f;
             maxShareStep = 2;
@@ -43,7 +44,7 @@ public class DefenseBlock {
             requirements(Category.defense, with(NHItems.setonAlloy, 6, NHItems.irayrondPanel, 8));
         }};
 
-        shapedWall = new AdaptWall("shaped-wall"){{
+        shapedWall = new AdaptWall("shaped-wall") {{
             health = 3000;
             armor = 10f;
             damageReduction = 0.5f;
@@ -54,10 +55,11 @@ public class DefenseBlock {
         }};
 
         standardForceProjector = new ForceProjector("standard-shield-generator") {{
-            requirements(Category.effect, with(NHItems.seniorProcessor, 80, NHItems.presstanium, 80, Items.carbide, 50));
+            requirements(Category.effect, with(NHItems.juniorProcessor, 100, NHItems.presstanium, 100, Items.carbide, 50));
 
             size = 2;
             sides = 4;
+            health = 1000;
             shieldRotation = 45f;
             radius = 160f;
             shieldHealth = 4000f;
@@ -73,6 +75,7 @@ public class DefenseBlock {
 
             size = 4;
             sides = 4;
+            health = 2000;
             shieldRotation = 45f;
             radius = 240f;
             shieldHealth = 20000f;
@@ -83,7 +86,7 @@ public class DefenseBlock {
             consumePower(20f);
         }};
 
-        riftShield = new ShieldGenerator("rift-shield"){{
+        riftShield = new ShieldGenerator("rift-shield") {{
             requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.upgradeSort, 300));
         }};
 

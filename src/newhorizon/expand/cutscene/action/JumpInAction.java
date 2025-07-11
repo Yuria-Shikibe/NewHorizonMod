@@ -14,6 +14,7 @@ public class JumpInAction extends Action {
     public UnitType unitType;
     public Team team;
     public float worldX = 0, worldY = 0, angle = 0, delay = 5, inaccuracyRadius = 0;
+
     public JumpInAction(float duration) {
         super(0);
     }

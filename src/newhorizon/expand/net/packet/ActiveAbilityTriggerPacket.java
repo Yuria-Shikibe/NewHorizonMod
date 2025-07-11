@@ -11,11 +11,9 @@ import newhorizon.expand.ability.active.ActiveAbility;
 import newhorizon.expand.net.NHCall;
 
 public class ActiveAbilityTriggerPacket extends Packet {
-    private byte[] DATA = NODATA;
-
     public Unit unit;
     public int abilityId;
-
+    private byte[] DATA = NODATA;
 
     @Override
     public void write(Writes WRITE) {
@@ -36,10 +34,10 @@ public class ActiveAbilityTriggerPacket extends Packet {
     }
 
     @Override
-    public void handleClient(){
+    public void handleClient() {
         if (unit != null && unit.abilities.length > abilityId) {
             Ability ability = unit.abilities[abilityId];
-            if (ability instanceof ActiveAbility){
+            if (ability instanceof ActiveAbility) {
                 ((ActiveAbility) ability).trigger(unit);
             }
         }
@@ -47,7 +45,9 @@ public class ActiveAbilityTriggerPacket extends Packet {
 
     @Override
     public void handleServer(NetConnection con) {
-        if(con.player == null || con.kicked) {return;}
+        if (con.player == null || con.kicked) {
+            return;
+        }
         NHCall.triggerActiveAbility(unit, abilityId);
     }
 }

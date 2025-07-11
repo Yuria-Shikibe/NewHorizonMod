@@ -9,14 +9,14 @@ import java.io.IOException;
 
 import static newhorizon.expand.game.NHWorldData.CURRENT_VER;
 
-public class WorldData implements SaveFileReader.CustomChunk{
+public class WorldData implements SaveFileReader.CustomChunk {
     public short version = 0;
     public float eventReloadSpeed = -1;
     public boolean jumpGateUsesCoreItems = true;
     public boolean applyEventTriggers = false;
 
     @Override
-    public void write(DataOutput stream) throws IOException{
+    public void write(DataOutput stream) throws IOException {
         stream.writeShort(CURRENT_VER);
 
         stream.writeFloat(eventReloadSpeed);
@@ -25,12 +25,12 @@ public class WorldData implements SaveFileReader.CustomChunk{
     }
 
     @Override
-    public void read(DataInput stream) throws IOException{
+    public void read(DataInput stream) throws IOException {
         version = stream.readShort();
 
         eventReloadSpeed = stream.readFloat();
 
-        if(version > 0){
+        if (version > 0) {
             jumpGateUsesCoreItems = stream.readBoolean();
             applyEventTriggers = stream.readBoolean();
         }
@@ -40,8 +40,8 @@ public class WorldData implements SaveFileReader.CustomChunk{
         afterRead();
     }
 
-    public void afterRead(){
-        if(Vars.headless && (Float.isNaN(eventReloadSpeed) || eventReloadSpeed > 5.55f)){
+    public void afterRead() {
+        if (Vars.headless && (Float.isNaN(eventReloadSpeed) || eventReloadSpeed > 5.55f)) {
             eventReloadSpeed = -1;
         }
     }

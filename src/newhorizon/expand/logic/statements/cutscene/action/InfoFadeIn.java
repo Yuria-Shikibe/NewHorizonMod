@@ -7,11 +7,12 @@ import newhorizon.content.NHContent;
 public class InfoFadeIn extends LStatement {
     public String cutscene = "css";
 
-    public InfoFadeIn(String[] token){
+    public InfoFadeIn(String[] token) {
         cutscene = token[1];
     }
 
-    public InfoFadeIn() {}
+    public InfoFadeIn() {
+    }
 
     @Override
     public void build(Table table) {
@@ -45,7 +46,8 @@ public class InfoFadeIn extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class InfoFadeInI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public InfoFadeInI(LVar cutscene){
+
+        public InfoFadeInI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

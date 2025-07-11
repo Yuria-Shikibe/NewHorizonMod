@@ -4,7 +4,7 @@ import mindustry.content.StatusEffects;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 
-public class StatusEffectAbility extends ActiveAbility{
+public class StatusEffectAbility extends ActiveAbility {
     public StatusEffect statusEffect = StatusEffects.none;
     public float statusDuration = 15f;
 

@@ -7,11 +7,12 @@ import newhorizon.content.NHContent;
 public class SignalCutOut extends LStatement {
     public String cutscene = "css";
 
-    public SignalCutOut(String[] token){
+    public SignalCutOut(String[] token) {
         cutscene = token[1];
     }
 
-    public SignalCutOut() {}
+    public SignalCutOut() {
+    }
 
     @Override
     public void build(Table table) {
@@ -45,7 +46,8 @@ public class SignalCutOut extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class SignalCutOutI implements LExecutor.LInstruction {
         public LVar cutscene;
-        public SignalCutOutI(LVar cutscene){
+
+        public SignalCutOutI(LVar cutscene) {
             this.cutscene = cutscene;
         }
 

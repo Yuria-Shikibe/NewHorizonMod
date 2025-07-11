@@ -13,6 +13,7 @@ import static mindustry.Vars.player;
 public class WarningSoundAction extends Action {
     public int allySound, enemySound;
     public Team team;
+
     public WarningSoundAction(int allySound, int enemySound, Team team) {
         super(0);
         this.allySound = allySound;
@@ -28,7 +29,7 @@ public class WarningSoundAction extends Action {
     }
 
     public Sound warningSound(int soundID) {
-        return switch (soundID){
+        return switch (soundID) {
             case 0 -> NHSounds.alert2;
             case 1 -> NHSounds.alarm;
             case 2 -> Sounds.unlock;
@@ -42,7 +43,7 @@ public class WarningSoundAction extends Action {
         if (headless) return;
         if (player.team() == team) {
             warningSound(allySound).play();
-        }else {
+        } else {
             warningSound(enemySound).play();
         }
     }

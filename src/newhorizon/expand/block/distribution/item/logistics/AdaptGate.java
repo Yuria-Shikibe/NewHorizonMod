@@ -31,12 +31,12 @@ public class AdaptGate extends OverflowGate {
         config(Boolean.class, (AdaptGateBuild build, Boolean invert) -> build.invert = invert);
     }
 
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         Draw.rect(region, plan.drawx(), plan.drawy(), plan.rotation * 90);
     }
 
@@ -63,7 +63,7 @@ public class AdaptGate extends OverflowGate {
         }
 
         @Override
-        public Graphics.Cursor getCursor(){
+        public Graphics.Cursor getCursor() {
             return interactable(player.team()) ? Graphics.Cursor.SystemCursor.hand : Graphics.Cursor.SystemCursor.arrow;
         }
 
@@ -72,32 +72,32 @@ public class AdaptGate extends OverflowGate {
             return invert;
         }
 
-        public @Nullable Building getTileTarget(Item item, Building src, boolean flip){
+        public @Nullable Building getTileTarget(Item item, Building src, boolean flip) {
             int from = relativeToEdge(src.tile);
-            if(from == -1) return null;
+            if (from == -1) return null;
             Building to = nearby((from + 2) % 4);
             boolean
                     fromInst = src.block.instantTransfer,
                     canForward = to != null && to.team == team && !(fromInst && to.block.instantTransfer) && to.acceptItem(this, item),
                     inv = invert == enabled;
 
-            if(!canForward || inv){
+            if (!canForward || inv) {
                 Building a = nearby(Mathf.mod(from - 1, 4));
                 Building b = nearby(Mathf.mod(from + 1, 4));
                 boolean ac = a != null && !(fromInst && a.block.instantTransfer) && a.team == team && a.acceptItem(this, item);
                 boolean bc = b != null && !(fromInst && b.block.instantTransfer) && b.team == team && b.acceptItem(this, item);
 
-                if(!ac && !bc){
+                if (!ac && !bc) {
                     return inv && canForward ? to : null;
                 }
 
-                if(ac && !bc){
+                if (ac && !bc) {
                     to = a;
-                }else if(bc && !ac){
+                } else if (bc && !ac) {
                     to = b;
-                }else{
+                } else {
                     to = (rotation & (1 << from)) == 0 ? a : b;
-                    if(flip) rotation ^= (1 << from);
+                    if (flip) rotation ^= (1 << from);
                 }
             }
 
@@ -105,13 +105,13 @@ public class AdaptGate extends OverflowGate {
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.bool(invert);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             invert = read.bool();
         }

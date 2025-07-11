@@ -6,6 +6,7 @@ import newhorizon.util.struct.WeightedOption;
 
 public class WeightedRandom {
     private static final Rand rand = new Rand();
+
     /**
      * Selects and executes one option based on weight.
      *
@@ -33,7 +34,7 @@ public class WeightedRandom {
         }
     }
 
-    public static void random(Seq<WeightedOption> options){
+    public static void random(Seq<WeightedOption> options) {
         float totalWeight = 0;
 
         // Calculate total weight
@@ -60,10 +61,10 @@ public class WeightedRandom {
      *
      * @param objects Array of WeightedOption to choose from.
      */
-    public static void random(Object... objects){
+    public static void random(Object... objects) {
         WeightedOption[] options = new WeightedOption[objects.length % 2];
-        for(int i = 0; i < objects.length; i += 2){
-            options[i / 2] = new WeightedOption((float)objects[i], (Runnable)objects[i + 1]);
+        for (int i = 0; i < objects.length; i += 2) {
+            options[i / 2] = new WeightedOption((float) objects[i], (Runnable) objects[i + 1]);
         }
         random(options);
     }

@@ -109,14 +109,14 @@ public class AdaptLiquidDirectionalUnloader extends Block {
     }
 
     @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
         Draw.rect(baseRegion, plan.drawx(), plan.drawy());
         Draw.rect(topRegions[plan.rotation], plan.drawx(), plan.drawy());
         drawPlanConfig(plan, list);
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region};
     }
 
@@ -147,7 +147,7 @@ public class AdaptLiquidDirectionalUnloader extends Block {
                 unloadTimer %= speed;
             }
 
-            if(liquids.currentAmount() > 0.01f){
+            if (liquids.currentAmount() > 0.01f) {
                 dumpLiquid(liquids.current(), 2f, 0);
             }
         }
@@ -178,10 +178,10 @@ public class AdaptLiquidDirectionalUnloader extends Block {
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(baseRegion, x, y);
 
-            if(unloadLiquid != null) {
+            if (unloadLiquid != null) {
                 Draw.color(unloadLiquid.color);
                 Draw.rect(liquidRegion, x, y);
                 Draw.color();

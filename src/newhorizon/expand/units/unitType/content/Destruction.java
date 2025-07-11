@@ -27,62 +27,63 @@ import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 
 public class Destruction extends NHUnitType {
-    public BulletType gauss = new RailBulletType(){{
-        length = 360f;
-        damage = 300f;
+    public BulletType gauss = new RailBulletType() {
+        {
+            length = 360f;
+            damage = 300f;
 
-        hitColor = Pal.techBlue;
-        hitEffect = endEffect = Fx.hitBulletColor;
-        pierceDamageFactor = 0.4f;
+            hitColor = Pal.techBlue;
+            hitEffect = endEffect = Fx.hitBulletColor;
+            pierceDamageFactor = 0.4f;
 
-        status = NHStatusEffects.emp1;
-        statusDuration = 180f;
+            status = NHStatusEffects.emp1;
+            statusDuration = 180f;
 
-        smokeEffect = Fx.colorSpark;
+            smokeEffect = Fx.colorSpark;
 
-        endEffect = new Effect(16f, e -> {
-            color(e.color);
-            Drawf.tri(e.x, e.y, e.fout() * 1.5f, 6f, e.rotation);
-        });
-
-        shootEffect = new Effect(16f, e -> {
-            color(e.color);
-            float w = 1.2f + 4 * e.fout();
-
-            Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
-            color(e.color);
-
-            for(int i : Mathf.signs){
-                Drawf.tri(e.x, e.y, w * 0.9f, 22f * e.fout(), e.rotation + i * 60f);
-            }
-
-            Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
-        });
-
-        lineEffect = new Effect(25f, 1200,e -> {
-            if(!(e.data instanceof Vec2)) return;
-
-            Vec2 v = (Vec2)e.data;
-
-            color(e.color);
-            stroke((e.fout() + 0.5f) * 2f);
-
-            Fx.rand.setSeed(e.id);
-            for(int i = 0; i < 40; i++){
-                Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
-                Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
-            }
-
-            e.scaled(16f, b -> {
-                stroke(b.fout() * 3f);
+            endEffect = new Effect(16f, e -> {
                 color(e.color);
-                Lines.line(e.x, e.y, v.x, v.y);
+                Drawf.tri(e.x, e.y, e.fout() * 1.5f, 6f, e.rotation);
             });
-        });
-    }
+
+            shootEffect = new Effect(16f, e -> {
+                color(e.color);
+                float w = 1.2f + 4 * e.fout();
+
+                Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+                color(e.color);
+
+                for (int i : Mathf.signs) {
+                    Drawf.tri(e.x, e.y, w * 0.9f, 22f * e.fout(), e.rotation + i * 60f);
+                }
+
+                Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+            });
+
+            lineEffect = new Effect(25f, 1200, e -> {
+                if (!(e.data instanceof Vec2)) return;
+
+                Vec2 v = (Vec2) e.data;
+
+                color(e.color);
+                stroke((e.fout() + 0.5f) * 2f);
+
+                Fx.rand.setSeed(e.id);
+                for (int i = 0; i < 40; i++) {
+                    Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                    Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                }
+
+                e.scaled(16f, b -> {
+                    stroke(b.fout() * 3f);
+                    color(e.color);
+                    Lines.line(e.x, e.y, v.x, v.y);
+                });
+            });
+        }
 
         @Override
-        public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+        public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct) {
             super.hitTile(b, build, x, y, initialHealth, direct);
 
             build.applySlowdown(0.25f, 180f);
@@ -97,7 +98,7 @@ public class Destruction extends NHUnitType {
         aiController = SniperAI::new;
 
         weapons.addAll(
-                new Weapon(NewHorizon.name("gauss-cannon")){{
+                new Weapon(NewHorizon.name("gauss-cannon")) {{
                     alternate = mirror = top = rotate = true;
                     rotationLimit = 10f;
 
@@ -116,7 +117,7 @@ public class Destruction extends NHUnitType {
 
                     shootSound = NHSounds.coil1;
                 }},
-                new Weapon(NewHorizon.name("gauss-cannon")){{
+                new Weapon(NewHorizon.name("gauss-cannon")) {{
                     alternate = mirror = top = rotate = true;
                     rotationLimit = 30f;
 
@@ -154,12 +155,12 @@ public class Destruction extends NHUnitType {
         singleTarget = false;
 
         abilities.add(
-            new RepairFieldAbility(500f, 160f, 240f){{
-                healEffect = NHFx.healEffectSky;
-                activeEffect = NHFx.activeEffectSky;
-            }},
-            //new RepulsionWaveAbility()
-            new AccumulateAccelerate()
+                new RepairFieldAbility(500f, 160f, 240f) {{
+                    healEffect = NHFx.healEffectSky;
+                    activeEffect = NHFx.activeEffectSky;
+                }},
+                //new RepulsionWaveAbility()
+                new AccumulateAccelerate()
         );
 
         trailLength = 30;

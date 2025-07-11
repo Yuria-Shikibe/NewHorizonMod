@@ -16,20 +16,22 @@ import newhorizon.util.func.NHInterp;
 
 import static newhorizon.NHVars.cutsceneUI;
 
-public class MarkBox extends Table{
+public class MarkBox extends Table {
     protected static final Vec2 tmpVec = new Vec2();
     protected static final Color tmpColor = new Color();
-
+    protected static int lastID = 0;
     public float radius = 24f;
     public Color markColor = Color.white;
     public Interp popUpInterp = NHInterp.bounce5Out;
     public Position markPoint;
     public MarkStyle style = MarkStyle.defaultStyle;
     public int id = lastID++;
-
-    protected static int lastID = 0;
-
     public float lifetime = -1;
+    protected float totalProgress = 0;
+
+    {
+        actions(Actions.alpha(1, 0.45f, popUpInterp));
+    }
 
     public MarkBox() {
         touchable = Touchable.childrenOnly;
@@ -60,12 +62,6 @@ public class MarkBox extends Table{
 
     public void setLife(float lifetime) {
         this.lifetime = lifetime;
-    }
-
-    protected float totalProgress = 0;
-
-    {
-        actions(Actions.alpha(1, 0.45f, popUpInterp));
     }
 
     @Override

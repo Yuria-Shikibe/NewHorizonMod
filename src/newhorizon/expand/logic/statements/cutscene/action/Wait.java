@@ -7,12 +7,13 @@ import newhorizon.content.NHContent;
 public class Wait extends LStatement {
     public String cutscene = "css", time = "5";
 
-    public Wait(String[] token){
+    public Wait(String[] token) {
         cutscene = token[1];
         time = token[2];
     }
 
-    public Wait() {}
+    public Wait() {
+    }
 
     @Override
     public void build(Table table) {
@@ -49,7 +50,8 @@ public class Wait extends LStatement {
     @SuppressWarnings("InnerClassMayBeStatic")
     public class WaitI implements LExecutor.LInstruction {
         public LVar cutscene, time;
-        public WaitI(LVar cutscene, LVar time){
+
+        public WaitI(LVar cutscene, LVar time) {
             this.cutscene = cutscene;
             this.time = time;
         }

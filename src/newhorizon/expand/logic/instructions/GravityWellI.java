@@ -13,7 +13,8 @@ public class GravityWellI implements LExecutor.LInstruction {
         this.out = out;
     }
 
-    public GravityWellI() {}
+    public GravityWellI() {
+    }
 
     @Override
     public void run(LExecutor exec) {

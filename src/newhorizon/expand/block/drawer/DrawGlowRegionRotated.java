@@ -14,7 +14,7 @@ public class DrawGlowRegionRotated extends DrawRegionCenterSymmetry {
 
     @Override
     public void draw(Building build) {
-        if (build.warmup() > 0){
+        if (build.warmup() > 0) {
             Tmp.v1.set(x, y).rotate(build.rotdeg() % 180).add(build);
 
             Draw.color(Pal.techBlue);
@@ -25,7 +25,8 @@ public class DrawGlowRegionRotated extends DrawRegionCenterSymmetry {
     }
 
     @Override
-    public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {}
+    public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {
+    }
 
     @Override
     public TextureRegion[] icons(Block block) {

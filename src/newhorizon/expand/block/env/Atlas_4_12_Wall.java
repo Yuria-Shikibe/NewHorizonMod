@@ -24,22 +24,22 @@ public class Atlas_4_12_Wall extends StaticWall {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         splitRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, ATLAS_INDEX_4_12);
     }
 
-    private void drawTile(Tile tile){
+    private void drawTile(Tile tile) {
         int drawIndex = 0;
 
-        for(int i = 0; i < orthogonalPos.length; i++){
+        for (int i = 0; i < orthogonalPos.length; i++) {
             Point2 pos = orthogonalPos[i];
-            if (checkTile(Vars.world.tile(tile.x + pos.x, tile.y + pos.y))){
+            if (checkTile(Vars.world.tile(tile.x + pos.x, tile.y + pos.y))) {
                 drawIndex += 1 << i;
             }
         }
 
-        for(int i = 0; i < diagonalPos.length; i++){
+        for (int i = 0; i < diagonalPos.length; i++) {
             Point2[] posArray = diagonalPos[i];
             boolean out = true;
             for (Point2 pos : posArray) {
@@ -48,7 +48,7 @@ public class Atlas_4_12_Wall extends StaticWall {
                     break;
                 }
             }
-            if (out){
+            if (out) {
                 drawIndex += 1 << i + 4;
             }
         }
@@ -58,7 +58,7 @@ public class Atlas_4_12_Wall extends StaticWall {
         Draw.rect(splitRegions[drawIndex], tile.worldx(), tile.worldy());
     }
 
-    public boolean checkTile(Tile tile){
+    public boolean checkTile(Tile tile) {
         return tile != null && tile.block() == this;
     }
 

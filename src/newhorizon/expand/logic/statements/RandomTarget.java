@@ -9,7 +9,7 @@ import newhorizon.content.NHContent;
 import newhorizon.expand.logic.instructions.RandomTargetI;
 
 public class RandomTarget extends LStatement {
-    public String team = "@sharded", seed = "0", x = "0", y = "0", turretW = "0", generatorW = "0", factoryW = "0", coreW = "1";
+    public String team = "@sharded", seed = "0", x = "tx", y = "ty", turretW = "0", generatorW = "0", factoryW = "0", coreW = "1";
 
     public RandomTarget(String[] tokens) {
         team = tokens[1];

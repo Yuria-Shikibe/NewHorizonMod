@@ -17,23 +17,23 @@ public class MaskFloor extends Atlas_4_12_Floor {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         splitRegions = SpriteUtil.splitRegionArray(Core.atlas.find(NewHorizon.name("mask-atlas")), 32, 32, 1, SpriteUtil.ATLAS_INDEX_4_12);
     }
 
     @Override
-    public void drawTile(Tile tile){
+    public void drawTile(Tile tile) {
         int drawIndex = 0;
 
-        for(int i = 0; i < orthogonalPos.length; i++){
+        for (int i = 0; i < orthogonalPos.length; i++) {
             Point2 pos = orthogonalPos[i];
-            if (checkTile(Vars.world.tile(tile.x + pos.x, tile.y + pos.y))){
+            if (checkTile(Vars.world.tile(tile.x + pos.x, tile.y + pos.y))) {
                 drawIndex += 1 << i;
             }
         }
 
-        for(int i = 0; i < diagonalPos.length; i++){
+        for (int i = 0; i < diagonalPos.length; i++) {
             Point2[] posArray = diagonalPos[i];
             boolean out = true;
             for (Point2 pos : posArray) {
@@ -42,7 +42,7 @@ public class MaskFloor extends Atlas_4_12_Floor {
                     break;
                 }
             }
-            if (out){
+            if (out) {
                 drawIndex += 1 << i + 4;
             }
         }
@@ -55,7 +55,7 @@ public class MaskFloor extends Atlas_4_12_Floor {
         Draw.blend();
     }
 
-    public boolean checkTile(Tile tile){
+    public boolean checkTile(Tile tile) {
         return tile != null && tile.floor() instanceof MaskFloor;
     }
 }

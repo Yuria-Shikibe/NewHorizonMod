@@ -1,5 +1,6 @@
 package newhorizon.expand.block.inner;
 
+import mindustry.ctype.ContentType;
 import mindustry.game.Team;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -15,7 +16,7 @@ public class ModulePayload extends Block {
         rebuildable = false;
 
         placeablePlayer = false;
-        hideDatabase = true;
+        //hideDatabase = true;
 
         buildVisibility = BuildVisibility.shown;
     }
@@ -37,7 +38,7 @@ public class ModulePayload extends Block {
     public boolean canBeBuilt() {
         return false;
     }
-    
+
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
         return false;

@@ -27,22 +27,22 @@ public class AdaptLiquidBridge extends AdaptItemBridge {
         group = BlockGroup.liquids;
         envEnabled = Env.any;
     }
-    
+
     public class AdaptLiquidBridgeBuild extends AdaptItemBridgeBuild {
         @Override
-        public void updateTransport(Building other){
-            if(warmup >= 0.25f){
+        public void updateTransport(Building other) {
+            if (warmup >= 0.25f) {
                 moved |= moveLiquid(other, liquids.current()) > 0.05f;
             }
         }
 
         @Override
-        public void doDump(){
+        public void doDump() {
             dumpLiquid(liquids.current(), 1f);
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(region, x, y);
             Draw.z(Layer.power + 0.1f);
             Draw.rect(topRegion, x, y);
@@ -50,19 +50,19 @@ public class AdaptLiquidBridge extends AdaptItemBridge {
             Draw.z(Layer.power);
 
             Tile other = world.tile(link);
-            if(!linkValid(tile, other)) return;
-            if(Mathf.zero(Renderer.bridgeOpacity)) return;
+            if (!linkValid(tile, other)) return;
+            if (Mathf.zero(Renderer.bridgeOpacity)) return;
 
             Lines.stroke(bridgeWidth);
             Lines.line(bridgeRegion, x, y, other.worldx(), other.worldy(), false);
 
-            float dst = Mathf.dst(x, y, other.worldx(), other.worldy()) - tilesize/4f;
+            float dst = Mathf.dst(x, y, other.worldx(), other.worldy()) - tilesize / 4f;
             float ang = Angles.angle(x, y, other.worldx(), other.worldy());
             int seg = Mathf.round(dst / tilesize);
 
             if (seg == 0) return;
             for (int i = 0; i < seg; i++) {
-                Tmp.v1.trns(ang, (dst/seg) * i + tilesize/8f).add(this);
+                Tmp.v1.trns(ang, (dst / seg) * i + tilesize / 8f).add(this);
                 Draw.alpha(Mathf.absin(i - time / arrowTimeScl, arrowPeriod, 1f) * warmup * Renderer.bridgeOpacity);
                 Draw.rect(arrowRegion, Tmp.v1.x, Tmp.v1.y, ang);
             }

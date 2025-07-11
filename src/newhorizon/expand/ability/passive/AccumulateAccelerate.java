@@ -18,17 +18,17 @@ public class AccumulateAccelerate extends Ability {
     @Override
     public void update(Unit unit) {
         super.update(unit);
-        float increment = (unit.isShooting? increasePerTick: -decreasePerTick) * Time.delta;
+        float increment = (unit.isShooting ? increasePerTick : -decreasePerTick) * Time.delta;
         reloadMultiplier = Mathf.clamp(reloadMultiplier + increment, 1, maxMultiplier);
         unit.reloadMultiplier *= reloadMultiplier;
     }
 
     @Override
-    public void addStats(Table t){
+    public void addStats(Table t) {
         t.add("[lightgray]" + NHStats.increaseWhenShooting.localized() + ": [white]+" + Strings.autoFixed(increasePerTick * 60 * 100, 0) + "%" + StatUnit.perSecond.localized());
         t.row();
-        t.add("[lightgray]" + NHStats.decreaseNotShooting.localized() + ": [white]-" +  Strings.autoFixed(decreasePerTick * 60 * 100, 0) + "%" + StatUnit.perSecond.localized());
+        t.add("[lightgray]" + NHStats.decreaseNotShooting.localized() + ": [white]-" + Strings.autoFixed(decreasePerTick * 60 * 100, 0) + "%" + StatUnit.perSecond.localized());
         t.row();
-        t.add("[lightgray]" + NHStats.maxBoostPercent.localized() + ": [white]" +  Strings.autoFixed(maxMultiplier * 100, 0) + "%");
+        t.add("[lightgray]" + NHStats.maxBoostPercent.localized() + ": [white]" + Strings.autoFixed(maxMultiplier * 100, 0) + "%");
     }
 }

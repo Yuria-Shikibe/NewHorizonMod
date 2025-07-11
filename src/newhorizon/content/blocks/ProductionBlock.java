@@ -42,14 +42,14 @@ public class ProductionBlock {
 
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
-    public static void load(){
-        xenExtractor = new ThermalGenerator("xen-extractor"){{
-            requirements(Category.production, with(Items.graphite, 20, Items.beryllium, 60));
+    public static void load() {
+        xenExtractor = new ThermalGenerator("xen-extractor") {{
+            requirements(Category.production, with(Items.tungsten, 50, NHItems.presstanium, 20, NHItems.juniorProcessor, 20));
             attribute = NHContent.quantum;
             group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
             minEfficiency = 9f - 0.0001f;
-            powerProduction = 450f / 60f / 9f;
+            powerProduction = 360f / 60f / 9f;
             displayEfficiency = false;
             effectChance = 0.2f;
             generateEffect = new OptionalMultiEffect(
@@ -74,14 +74,15 @@ public class ProductionBlock {
             );
 
             hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 3f / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 4f / 60f);
             liquidCapacity = 300f;
         }};
-        resonanceMiningFacility = new AdaptDrill("resonance-mining-facility"){{
+        resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 960;
+            armor = 2f;
 
             mineSpeed = 6f;
             mineCount = 15;
@@ -109,7 +110,7 @@ public class ProductionBlock {
                 Tmp.c1.set(b.dominantItem.color).lerp(Color.white, 0.2f).a(b.warmup);
                 Draw.color(Tmp.c1);
                 Lines.stroke(1.2f);
-                for(int i = 0; i < 32; i++){
+                for (int i = 0; i < 32; i++) {
                     rand.setSeed(b.id + i);
                     float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                     float angle = rand.random(360f);
@@ -121,7 +122,7 @@ public class ProductionBlock {
                     );
                 }
 
-                Tmp.c1.set(Pal.techBlue).lerp(Color.white, 0.2f).a(b.warmup/1.1f);
+                Tmp.c1.set(Pal.techBlue).lerp(Color.white, 0.2f).a(b.warmup / 1.1f);
                 Draw.color(Tmp.c1);
                 Lines.stroke(1.32f);
                 Lines.circle(b.x, b.y, rad);
@@ -129,11 +130,12 @@ public class ProductionBlock {
                 Draw.reset();
             };
         }};
-        beamMiningFacility = new AdaptDrill("beam-mining-facility"){{
+        beamMiningFacility = new AdaptDrill("beam-mining-facility") {{
             requirements(Category.production, with(NHItems.metalOxhydrigen, 60, Items.tungsten, 90, Items.surgeAlloy, 80, Items.phaseFabric, 60, NHItems.zeta, 60));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 1200;
+            armor = 4f;
 
             mineSpeed = 10f;
             mineCount = 20;
@@ -190,7 +192,7 @@ public class ProductionBlock {
 
                 rand.setSeed(id);
                 float base = (Time.time / particleLife);
-                for(int i = 0; i < particles; i++){
+                for (int i = 0; i < particles; i++) {
                     float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                     float angle = rand.random(360f);
                     float len = Mathf.randomSeed(rand.nextLong(), particleRad * 0.8f, particleRad * 1.1f) * Interp.pow2Out.apply(fin);
@@ -201,12 +203,13 @@ public class ProductionBlock {
                 Draw.reset();
             };
         }};
-        implosionMiningFacility = new AdaptDrill("implosion-mining-facility"){{
+        implosionMiningFacility = new AdaptDrill("implosion-mining-facility") {{
             requirements(Category.production, with(NHItems.multipleSteel, 60, NHItems.setonAlloy, 80, NHItems.irayrondPanel, 60, NHItems.zeta, 150));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
             size = 4;
 
             health = 1560;
+            armor = 6f;
 
             mineSpeed = 12f;
             mineCount = 30;
@@ -236,7 +239,7 @@ public class ProductionBlock {
                 Tmp.c1.set(b.dominantItem.color).lerp(Color.white, 0.2f).a(b.warmup);
                 Draw.color(Tmp.c1);
                 Lines.stroke(1.2f);
-                for(int i = 0; i < 32; i++){
+                for (int i = 0; i < 32; i++) {
                     rand.setSeed(id + hashCode() + i);
                     float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                     float angle = rand.random(360f);
@@ -248,7 +251,7 @@ public class ProductionBlock {
                     );
                 }
 
-                Tmp.c1.set(b.team.color).lerp(Color.white, 0.4f).a(b.warmup/1.1f);
+                Tmp.c1.set(b.team.color).lerp(Color.white, 0.4f).a(b.warmup / 1.1f);
                 Draw.color(Tmp.c1);
                 Fill.circle(b.x, b.y, 3 + Mathf.sinDeg(Time.time * 1.2f));
                 Lines.stroke(1.3f);
@@ -259,7 +262,7 @@ public class ProductionBlock {
             };
         }};
 
-        speedModule = new DrillModule("speed-module"){{
+        speedModule = new DrillModule("speed-module") {{
             requirements(Category.production, with(NHItems.juniorProcessor, 30, NHItems.presstanium, 25, NHItems.metalOxhydrigen, 20));
             health = 760;
             size = 2;
@@ -268,14 +271,14 @@ public class ProductionBlock {
             powerExtra = 80f;
 
             drawer = module -> {
-                for (int i = 0; i < 3; i++){
+                for (int i = 0; i < 3; i++) {
                     float scl = (Mathf.sinDeg(-Time.time * 3 + 120 * i) * 1.2f + (Mathf.sinDeg(-Time.time * 3 + 120 * i + 120)) * 0.6f) * module.smoothWarmup;
                     Draw.alpha(scl);
                     Draw.rect(name + "-arrow-" + i, module.x, module.y, module.rotdeg());
                 }
             };
         }};
-        speedModuleMk2 = new DrillModule("speed-module-mk2"){{
+        speedModuleMk2 = new DrillModule("speed-module-mk2") {{
             requirements(Category.production, with(NHItems.seniorProcessor, 30, Items.phaseFabric, 25, NHItems.zeta, 40));
             health = 760;
             size = 2;
@@ -284,14 +287,14 @@ public class ProductionBlock {
             powerExtra = 150f;
 
             drawer = module -> {
-                for (int i = 0; i < 3; i++){
+                for (int i = 0; i < 3; i++) {
                     float scl = (Mathf.sinDeg(-Time.time * 3 + 120 * i) * 1.2f + (Mathf.sinDeg(-Time.time * 3 + 120 * i + 120)) * 0.6f) * module.smoothWarmup;
                     Draw.alpha(scl);
                     Draw.rect(name + "-arrow-" + i, module.x, module.y, module.rotdeg());
                 }
             };
         }};
-        refineModule = new DrillModule("refine-module"){{
+        refineModule = new DrillModule("refine-module") {{
             requirements(Category.production, with(Items.titanium, 35, Items.tungsten, 40));
             health = 720;
             size = 2;
@@ -333,7 +336,7 @@ public class ProductionBlock {
 
                 rand.setSeed(id);
                 float base = (Time.time / particleLife);
-                for(int i = 0; i < particles; i++){
+                for (int i = 0; i < particles; i++) {
                     float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                     float angle = rand.random(360f) + (Time.time / rotateScl) % 360f;
                     float len = particleRad * particleInterp.apply(fout);
@@ -349,7 +352,7 @@ public class ProductionBlock {
                 Draw.reset();
             };
         }};
-        convertorModule = new DrillModule("convertor-module"){{
+        convertorModule = new DrillModule("convertor-module") {{
             requirements(Category.production, with(Items.carbide, 25, NHItems.juniorProcessor, 30, NHItems.presstanium, 20));
             health = 750;
             size = 2;
@@ -392,7 +395,7 @@ public class ProductionBlock {
 
                 rand.setSeed(id);
                 float base = (Time.time / particleLife);
-                for(int i = 0; i < particles; i++){
+                for (int i = 0; i < particles; i++) {
                     float fin = (rand.random(1f) + base) % 1f, fout = 1f - fin;
                     float angle = rand.random(360f) - (Time.time / rotateScl) % 360f;
                     float len = particleRad * particleInterp.apply(fout);
@@ -408,7 +411,7 @@ public class ProductionBlock {
                 Draw.reset();
             };
         }};
-        deliveryModule = new DrillModule("delivery-module"){{
+        deliveryModule = new DrillModule("delivery-module") {{
             requirements(Category.production, with(NHItems.irayrondPanel, 25, NHItems.seniorProcessor, 50, NHItems.multipleSteel, 50, NHItems.setonAlloy, 10));
             health = 800;
             size = 2;

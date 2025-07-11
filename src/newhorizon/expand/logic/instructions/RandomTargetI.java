@@ -29,7 +29,8 @@ public class RandomTargetI implements LExecutor.LInstruction {
         this.w4 = w4;
     }
 
-    public RandomTargetI() {}
+    public RandomTargetI() {
+    }
 
     @Override
     public void run(LExecutor exec) {
@@ -51,7 +52,7 @@ public class RandomTargetI implements LExecutor.LInstruction {
         Building b = Geometry.findClosest(wx, wy, indexer.getEnemy(t, flag.get()));
         if (b == null) b = t.core();
         if (b == null) return;
-        x.setnum(b.x);
-        y.setnum(b.y);
+        x.setnum(b.tileX());
+        y.setnum(b.tileY());
     }
 }

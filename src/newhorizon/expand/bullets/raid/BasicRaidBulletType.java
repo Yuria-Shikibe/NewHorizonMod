@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;
@@ -49,15 +50,15 @@ public class BasicRaidBulletType extends BasicBulletType {
     }
 
     @Override
-    public void updateTrailEffects(Bullet b){
-        if(trailChance > 0){
-            if(Mathf.chanceDelta(trailChance)){
+    public void updateTrailEffects(Bullet b) {
+        if (trailChance > 0) {
+            if (Mathf.chanceDelta(trailChance)) {
                 trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, b.team.color);
             }
         }
 
-        if(trailInterval > 0f){
-            if(b.timer(0, trailInterval)){
+        if (trailInterval > 0f) {
+            if (b.timer(0, trailInterval)) {
                 trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam, b.team.color);
             }
         }
@@ -65,7 +66,7 @@ public class BasicRaidBulletType extends BasicBulletType {
 
     @Override
     public void drawTrail(Bullet b) {
-        if(trailLength > 0 && b.trail != null){
+        if (trailLength > 0 && b.trail != null) {
             float z = Draw.z();
             Draw.z(z - 0.0001f);
             b.trail.draw(b.team.color, trailWidth);
@@ -74,21 +75,21 @@ public class BasicRaidBulletType extends BasicBulletType {
     }
 
     @Override
-    public void drawLight(Bullet b){
-        if(lightOpacity <= 0f || lightRadius <= 0f) return;
+    public void drawLight(Bullet b) {
+        if (lightOpacity <= 0f || lightRadius <= 0f) return;
         Drawf.light(b, lightRadius, b.team.color, lightOpacity);
     }
 
     @Override
-    public void despawned(Bullet b){
-        if(despawnHit){
+    public void despawned(Bullet b) {
+        if (despawnHit) {
             hit(b);
-        }else{
+        } else {
             createUnits(b, b.x, b.y);
         }
 
-        if(!fragOnHit) createFrags(b, b.x, b.y);
-        
+        if (!fragOnHit) createFrags(b, b.x, b.y);
+
         despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
         despawnSound.at(b);
 
@@ -96,39 +97,45 @@ public class BasicRaidBulletType extends BasicBulletType {
     }
 
     @Override
-    //only splash damage
-    public void hit(Bullet b, float x, float y){
+    public void hit(Bullet b, float x, float y) {
         hitEffect.at(x, y, b.rotation(), b.team.color);
         hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
         Effect.shake(hitShake, hitShake, b);
 
-        if(fragOnHit){
+        if (fragOnHit) {
             createFrags(b, x, y);
         }
         createPuddles(b, x, y);
         createIncend(b, x, y);
         createUnits(b, x, y);
 
-        if(suppressionRange > 0){
+        if (suppressionRange > 0) {
             //bullets are pooled, require separate Vec2 instance
             Damage.applySuppression(b.team, b.x, b.y, suppressionRange, suppressionDuration, 0f, suppressionEffectChance, new Vec2(b.x, b.y));
         }
 
         createSplashDamage(b, x, y);
 
-        for(int i = 0; i < lightning; i++){
-            Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone/2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+        for (int i = 0; i < lightning; i++) {
+            Lightning.create(b, lightningColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
         }
     }
 
-    public void removed(Bullet b){
-        if(trailLength > 0 && b.trail != null && b.trail.size() > 0){
+    @Override
+    public void createSplashDamage(Bullet b, float x, float y) {
+        if (splashDamageRadius > 0 && !b.absorbed) {
+            Damage.damage(b.team, x, y, splashDamageRadius, b.damage() * b.damageMultiplier(), splashDamagePierce, collidesAir, collidesGround, scaledSplashDamage, b);
+        }
+    }
+
+    public void removed(Bullet b) {
+        if (trailLength > 0 && b.trail != null && b.trail.size() > 0) {
             Fx.trailFade.at(b.x, b.y, trailWidth, b.team.color, b.trail.copy());
         }
     }
 
     @Override
-    public void draw(Bullet b){
+    public void draw(Bullet b) {
         drawTrail(b);
         drawParts(b);
 
@@ -141,7 +148,7 @@ public class BasicRaidBulletType extends BasicBulletType {
 
         Draw.mixcol(mix, mix.a);
 
-        if(backRegion.found()){
+        if (backRegion.found()) {
             Draw.color(b.team.color);
             Draw.rect(backRegion, b.x, b.y, width, height, b.rotation() + offset);
         }
