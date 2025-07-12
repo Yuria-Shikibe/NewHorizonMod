@@ -72,13 +72,13 @@ public class CraftingBlock {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
             consumePower(5f);
 
-            addInput(ItemStack.with(Items.scrap, 4), LiquidStack.empty);
-            addInput(ItemStack.with(Items.copper, 10), LiquidStack.empty);
-            addInput(ItemStack.with(Items.lead, 10), LiquidStack.empty);
-            addInput(ItemStack.with(Items.beryllium, 6), LiquidStack.empty);
-            addInput(ItemStack.with(Items.titanium, 5), LiquidStack.empty);
-            addInput(ItemStack.with(Items.thorium, 4), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 5), LiquidStack.empty);
+            addInput(Items.scrap, 4, LiquidStack.empty);
+            addInput(Items.copper, 10, LiquidStack.empty);
+            addInput(Items.lead, 10, LiquidStack.empty);
+            addInput(Items.beryllium, 6, LiquidStack.empty);
+            addInput(Items.titanium, 5, LiquidStack.empty);
+            addInput(Items.thorium, 4, LiquidStack.empty);
+            addInput(Items.tungsten, 5, LiquidStack.empty);
 
             outputItem = new ItemStack(Items.sand, 12);
         }};
@@ -106,9 +106,9 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(ItemStack.with(Items.copper, 5), LiquidStack.empty);
-            addInput(ItemStack.with(Items.lead, 5), LiquidStack.empty);
-            addInput(ItemStack.with(Items.titanium, 3), LiquidStack.empty);
+            addInput(Items.copper, 5, LiquidStack.empty);
+            addInput(Items.lead, 5, LiquidStack.empty);
+            addInput(Items.titanium, 3, LiquidStack.empty);
 
             craftEffect = updateEffect = NHFx.square(NHColor.thurmixRed, 60, 6, 16, 3);
 
@@ -127,8 +127,8 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(ItemStack.with(Items.beryllium, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.empty);
+            addInput(Items.beryllium, 3, LiquidStack.empty);
+            addInput(Items.tungsten, 2, LiquidStack.empty);
 
             craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
 
@@ -148,8 +148,8 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(ItemStack.empty, LiquidStack.with(Liquids.oil, 15 / 60f));
-            addInput(ItemStack.empty, LiquidStack.with(Liquids.arkycite, 20 / 60f));
+            addInput(Liquids.oil, 15 / 60f);
+            addInput(Liquids.arkycite, 20 / 60f);
 
             consumePower(120f / 60f);
             outputLiquids = LiquidStack.with(NHLiquids.xenFluid, 12 / 60f);
@@ -177,7 +177,7 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(with(Items.thorium, 5), LiquidStack.with(Liquids.water, 6 / 60f));
+            addInput(Items.thorium, 5, Liquids.water, 6 / 60f);
 
             consumePower(120f / 60f);
             outputItem = new ItemStack(NHItems.zeta, 3);
@@ -201,7 +201,6 @@ public class CraftingBlock {
 
             consumePower(180f / 60f);
             outputItems = with(NHItems.presstanium, 2);
-            outputPayloads = PayloadStack.with(ModuleBlock.armorT1, 1);
 
             drawer = new DrawMulti(
                     new DrawRegionRotated() {{
@@ -231,9 +230,9 @@ public class CraftingBlock {
             craftTime = 40f;
             itemCapacity = 20;
 
-            addInput(ItemStack.with(Items.silicon, 2), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
-            addInput(ItemStack.with(Items.silicon, 2, Items.copper, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.silicon, 2, Items.beryllium, 3), LiquidStack.empty);
+            addInput(Items.silicon, 2, NHLiquids.quantumLiquid, 4 / 60f);
+            addInput(Items.silicon, 2, Items.copper, 3, LiquidStack.empty);
+            addInput(Items.silicon, 2, Items.beryllium, 3, LiquidStack.empty);
 
             consumePower(240f / 60f);
             outputItems = with(NHItems.juniorProcessor, 2);
@@ -290,9 +289,9 @@ public class CraftingBlock {
             craftTime = 60f;
             consumePower(300 / 60f);
 
-            addInput(ItemStack.with(Items.tungsten, 2), LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
-            addInput(ItemStack.with(Items.tungsten, 2, Items.pyratite, 1), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 2, Items.graphite, 3), LiquidStack.with(Liquids.ozone, 6 / 60f));
+            addInput(Items.tungsten, 2, NHLiquids.xenFluid, 6 / 60f);
+            addInput(Items.tungsten, 2, Items.pyratite, 1, LiquidStack.empty);
+            addInput(Items.tungsten, 2, Items.graphite, 3, Liquids.ozone, 6 / 60f);
 
             outputItems = with(Items.carbide, 2);
 
@@ -339,9 +338,9 @@ public class CraftingBlock {
             craftTime = 60f;
             consumePower(600 / 60f);
 
-            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f));
-            addInput(ItemStack.with(Items.tungsten, 3, Items.blastCompound, 3), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 3), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
+            addInput(Items.tungsten, 3, NHLiquids.irdryonFluid, 4 / 60f);
+            addInput(Items.tungsten, 3, Items.blastCompound, 3, LiquidStack.empty);
+            addInput(Items.tungsten, 3, Liquids.cyanogen, 3 / 60f);
 
             outputItems = with(Items.carbide, 8);
 
@@ -363,10 +362,10 @@ public class CraftingBlock {
 
             craftTime = 90f;
             consumePower(480 / 60f);
-            addInput(ItemStack.empty, LiquidStack.with(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 4.5 / 60f));
-            addInput(ItemStack.with(Items.lead, 3), LiquidStack.with(Liquids.water, 9 / 60f));
-            addInput(ItemStack.with(Items.metaglass, 1), LiquidStack.with(Liquids.water, 6 / 60f));
-            addInput(ItemStack.with(Items.oxide, 1), LiquidStack.with(Liquids.water, 9 / 60f));
+            addInput(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 4.5 / 60f);
+            addInput(Items.lead, 3, Liquids.water, 9 / 60f);
+            addInput(Items.metaglass, 1, Liquids.water, 6 / 60f);
+            addInput(Items.oxide, 1, Liquids.water, 9 / 60f);
 
             outputItems = with(NHItems.metalOxhydrigen, 3);
 
@@ -443,9 +442,9 @@ public class CraftingBlock {
             liquidCapacity = 30f;
             consumePower(450 / 60f);
 
-            addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(NHLiquids.quantumLiquid, 4 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.cryofluid, 6 / 60f));
-            addInput(ItemStack.with(NHItems.zeta, 4), LiquidStack.with(Liquids.nitrogen, 8 / 60f));
+            addInput(NHItems.zeta, 4, NHLiquids.quantumLiquid, 4 / 60f);
+            addInput(NHItems.zeta, 4, Liquids.cryofluid, 6 / 60f);
+            addInput(NHItems.zeta, 4, Liquids.nitrogen, 8 / 60f);
 
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 4.25 / 60f, NHLiquids.zetaFluidNegative, 4.25 / 60f);
             liquidOutputDirections = new int[]{1, 3};
@@ -472,7 +471,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.titanium, 3), LiquidStack.with(NHLiquids.zetaFluidPositive, 4 / 60f));
+            addInput(Items.titanium, 3, NHLiquids.zetaFluidPositive, 4 / 60f);
 
             outputItems = with(Items.surgeAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3 / 60f);
@@ -501,7 +500,7 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.silicon, 3), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
+            addInput(Items.silicon, 3, NHLiquids.zetaFluidNegative, 4 / 60f);
 
             outputItems = with(Items.phaseFabric, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
@@ -532,9 +531,9 @@ public class CraftingBlock {
             size = 3;
             hasPower = hasItems = true;
             drawer = new DrawDefault();
-            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 3, NHItems.metalOxhydrigen, 4), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 3, NHItems.presstanium, 2, Items.metaglass, 2), LiquidStack.empty);
-            addInput(ItemStack.with(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3), LiquidStack.empty);
+            addInput(Items.tungsten, 3, NHItems.presstanium, 3, NHItems.metalOxhydrigen, 4, LiquidStack.empty);
+            addInput(Items.tungsten, 3, NHItems.presstanium, 2, Items.metaglass, 2, LiquidStack.empty);
+            addInput(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3, LiquidStack.empty);
 
             consumePower(3f);
 
@@ -555,7 +554,7 @@ public class CraftingBlock {
             craftTime = 120f;
             itemCapacity = 20;
 
-            addInput(ItemStack.with(Items.surgeAlloy, 2, NHItems.juniorProcessor, 4), LiquidStack.empty);
+            addInput(Items.surgeAlloy, 2, NHItems.juniorProcessor, 4, LiquidStack.empty);
 
             consumePower(240f / 60f);
             outputItems = with(NHItems.seniorProcessor, 2);
@@ -611,7 +610,7 @@ public class CraftingBlock {
             itemCapacity = 30;
             consumePower(300 / 60f);
 
-            addInput(ItemStack.with(Items.phaseFabric, 1), LiquidStack.with(NHLiquids.xenFluid, 6 / 60f));
+            addInput(Items.phaseFabric, 1, NHLiquids.xenFluid, 6 / 60f);
 
             outputLiquids = LiquidStack.with(NHLiquids.irdryonFluid, 8 / 60f);
 
@@ -634,8 +633,8 @@ public class CraftingBlock {
             itemCapacity = 40;
             consumePower(900 / 60f);
 
-            addInput(ItemStack.with(Items.titanium, 12), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f));
-            addInput(ItemStack.with(Items.titanium, 6, NHItems.fusionEnergy, 2), LiquidStack.with(NHLiquids.zetaFluidNegative, 8 / 60f));
+            addInput(Items.titanium, 12, NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f);
+            addInput(Items.titanium, 6, NHItems.fusionEnergy, 2, NHLiquids.zetaFluidNegative, 8 / 60f);
 
             outputItems = with(Items.surgeAlloy, 8, NHItems.presstanium, 15);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 6 / 60f);
@@ -658,8 +657,8 @@ public class CraftingBlock {
             itemCapacity = 40;
             consumePower(900 / 60f);
 
-            addInput(ItemStack.with(Items.silicon, 15, NHItems.metalOxhydrigen, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
-            addInput(ItemStack.with(Items.silicon, 10, Items.plastanium, 10), LiquidStack.with(NHLiquids.zetaFluidPositive, 8 / 60f));
+            addInput(Items.silicon, 15, NHItems.metalOxhydrigen, 10, NHLiquids.zetaFluidPositive, 8 / 60f);
+            addInput(Items.silicon, 10, Items.plastanium, 10, NHLiquids.zetaFluidPositive, 8 / 60f);
 
             outputItems = with(NHItems.juniorProcessor, 20, NHItems.seniorProcessor, 10);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f);
@@ -677,8 +676,8 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.surgeAlloy, 2, Items.carbide, 4), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
-            addInput(ItemStack.with(Items.surgeAlloy, 2, Items.plastanium, 3), LiquidStack.with(NHLiquids.zetaFluidNegative, 4 / 60f));
+            addInput(Items.surgeAlloy, 2, Items.carbide, 4, NHLiquids.zetaFluidNegative, 4 / 60f);
+            addInput(Items.surgeAlloy, 2, Items.plastanium, 3, NHLiquids.zetaFluidNegative, 4 / 60f);
 
             outputItems = with(NHItems.irayrondPanel, 4);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
@@ -704,9 +703,9 @@ public class CraftingBlock {
 
             craftTime = 90f;
             consumePower(640 / 60f);
-            addInput(ItemStack.with(NHItems.metalOxhydrigen, 6), LiquidStack.with(NHLiquids.zetaFluidPositive, 1 / 60f));
-            addInput(ItemStack.with(Items.tungsten, 6), LiquidStack.with(Liquids.cyanogen, 3 / 60f));
-            addInput(ItemStack.with(NHItems.multipleSteel, 3), LiquidStack.with(Liquids.oil, 30 / 60f));
+            addInput(NHItems.metalOxhydrigen, 6, NHLiquids.zetaFluidPositive, 1 / 60f);
+            addInput(Items.tungsten, 6, Liquids.cyanogen, 3 / 60f);
+            addInput(NHItems.multipleSteel, 3, Liquids.oil, 30 / 60f);
 
 
             outputItems = with(Items.plastanium, 9);
@@ -732,9 +731,9 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(ItemStack.with(Items.carbide, 4), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
-            addInput(ItemStack.with(Items.plastanium, 4), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
-            addInput(ItemStack.with(Items.metaglass, 2, NHItems.presstanium, 2), LiquidStack.with(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f));
+            addInput(Items.carbide, 4, NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
+            addInput(Items.plastanium, 4, NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
+            addInput(Items.metaglass, 2, NHItems.presstanium, 2, NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
 
             outputItems = with(NHItems.setonAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3f / 60f);
@@ -862,7 +861,7 @@ public class CraftingBlock {
         }};
 
         electronicFacilityBasic = new RecipeGenericCrafter("electronic-facility-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
             addLink(-1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 2, 0, 1, 2, 1, 1, 0, -1, 1, 1, -1, 1);
@@ -871,14 +870,14 @@ public class CraftingBlock {
 
             clipSize = 32f;
 
-            craftTime = 90f;
+            health = 320;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         electronicFacilityRare = new RecipeGenericCrafter("electronic-facility-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 2;
             addLink(-2, 0, 2, 0, 2, 2, 2, 0, 2, 0, -2, 2);
@@ -887,14 +886,14 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            health = 640;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         electronicFacilityUncommon = new RecipeGenericCrafter("electronic-facility-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
             addLink(-3, 0, 2, 0, 3, 2, 3, 0, 2, 0, -3, 2);
@@ -903,14 +902,14 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            health = 960;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         electronicFacilityEpic = new RecipeGenericCrafter("electronic-facility-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 6;
             addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2);
@@ -919,14 +918,15 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            health = 1280;
+            armor = 3;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         electronicFacilityLegendary = new RecipeGenericCrafter("electronic-facility-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 6;
             addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2, -4, 4, 2, -4, -4, 2, 4, 4, 2, 4, -4, 2);
@@ -935,15 +935,16 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            health = 1600;
+            armor = 6;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
 
         particleProcessorBasic = new RecipeGenericCrafter("particle-processor-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
 
@@ -954,11 +955,11 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            health = 320;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -967,7 +968,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorRare = new RecipeGenericCrafter("particle-processor-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 3;
 
@@ -978,11 +979,11 @@ public class CraftingBlock {
 
             clipSize = 72f;
 
-            craftTime = 90f;
+            health = 640;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -991,7 +992,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorUncommon = new RecipeGenericCrafter("particle-processor-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
 
@@ -1002,11 +1003,11 @@ public class CraftingBlock {
 
             clipSize = 72f;
 
-            craftTime = 90f;
+            health = 960;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -1015,7 +1016,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorEpic = new RecipeGenericCrafter("particle-processor-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
 
@@ -1026,11 +1027,12 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
-            craftTime = 90f;
+            health = 1280;
+            armor = 3;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionRotated() {{
                 suffix = "-rot";
@@ -1039,7 +1041,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorLegendary = new RecipeGenericCrafter("particle-processor-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
 
@@ -1051,15 +1053,13 @@ public class CraftingBlock {
 
             clipSize = 128f;
 
+            health = 1600;
+            armor = 6;
             craftTime = 90f;
             consumePower(480 / 60f);
 
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-
-            outputItems = with(NHItems.metalOxhydrigen, 3);
-
-            itemCapacity = 30;
-            liquidCapacity = 20f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             health = 1600;
 
             craftEffect = Fx.smeltsmoke;
@@ -1073,61 +1073,61 @@ public class CraftingBlock {
         }};
 
         foundryBasic = new RecipeGenericCrafter("foundry-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
             addLink(-2, 0, 2, 2, 0, 2);
 
-            craftTime = 90f;
+            health = 320;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             clipSize = 48f;
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         foundryRare = new RecipeGenericCrafter("foundry-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 4;
             addLink(-3, 0, 2, 3, 0, 2);
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            health = 640;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         foundryUncommon = new RecipeGenericCrafter("foundry-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
             addLink(-4, -1, 2, -4, 1, 2, 4, -1, 2, 4, 1, 2);
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            health = 960;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         foundryEpic = new RecipeGenericCrafter("foundry-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
             addLink(
@@ -1139,18 +1139,19 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
-            craftTime = 90f;
+            health = 1280;
+            armor = 3;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         foundryLegendary = new RecipeGenericCrafter("foundry-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
             addLink(
@@ -1164,15 +1165,16 @@ public class CraftingBlock {
 
             clipSize = 96f;
 
-            craftTime = 90f;
+            health = 1600;
+            armor = 6;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
 
         powerBasic = new RecipeGenericCrafter("power-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
             addLink(-1, 0, 1, -1, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1,
@@ -1181,18 +1183,18 @@ public class CraftingBlock {
 
             clipSize = 32f;
 
-            craftTime = 90f;
+            health = 320;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         powerRare = new RecipeGenericCrafter("power-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 4;
             addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1,
@@ -1200,18 +1202,18 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            health = 640;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         powerUncommon = new RecipeGenericCrafter("power-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
@@ -1219,18 +1221,18 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            health = 960;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         powerEpic = new RecipeGenericCrafter("power-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
@@ -1241,29 +1243,31 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            health = 1280;
+            armor = 3;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         powerLegendary = new RecipeGenericCrafter("power-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
             addLink(-3, 4, 3, 4, -3, 3, -5, -5, 2, -5, -3, 2, -3, -5, 2, 5, 5, 2, 5, 3, 2, 3, 5, 2);
 
-            craftTime = 90f;
+            health = 1600;
+            armor = 6;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
 
             clipSize = 96f;
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
@@ -1271,7 +1275,7 @@ public class CraftingBlock {
         }};
 
         componentBasic = new RecipeGenericCrafter("component-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.seniorProcessor, 100));
 
             size = 2;
 
@@ -1279,18 +1283,18 @@ public class CraftingBlock {
 
             clipSize = 48f;
 
-            craftTime = 90f;
+            health = 320;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         componentRare = new RecipeGenericCrafter("component-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
             size = 4;
 
@@ -1298,18 +1302,18 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            health = 640;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
 
             drawer = new DrawRegionCenterSymmetry() {{
                 suffix = "-rot";
             }};
         }};
         componentUncommon = new RecipeGenericCrafter("component-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
             size = 4;
 
@@ -1319,14 +1323,14 @@ public class CraftingBlock {
 
             clipSize = 64f;
 
-            craftTime = 90f;
+            health = 960;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         componentEpic = new RecipeGenericCrafter("component-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.juniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.irayrondPanel, 100));
 
             size = 4;
 
@@ -1336,14 +1340,15 @@ public class CraftingBlock {
 
             clipSize = 80f;
 
-            craftTime = 90f;
+            health = 1280;
+            armor = 3;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
         componentLegendary = new RecipeGenericCrafter("component-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 10));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
             size = 4;
 
@@ -1354,11 +1359,12 @@ public class CraftingBlock {
 
             clipSize = 112f;
 
-            craftTime = 90f;
+            health = 1600;
+            armor = 6;
+            craftTime = 120f;
+            itemCapacity = 60;
+            liquidCapacity = 40f;
             consumePower(480 / 60f);
-
-            addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            outputItems = with(NHItems.metalOxhydrigen, 3);
         }};
     }
 }

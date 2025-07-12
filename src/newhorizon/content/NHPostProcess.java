@@ -336,7 +336,7 @@ public class NHPostProcess {
         adjustVanillaUnit();
         adjustVanillaLogic();
         adjustVanillaItem();
-        adjustVanillaTurret();
+	adjustVanillaTurret();
     }
 
     public static void contentOverride() {
@@ -791,6 +791,31 @@ public class NHPostProcess {
     }
 
     private static void adjustVanillaTurret() {
+	adjustContent(Blocks.wave, content -> {
+            LiquidTurret turret = (LiquidTurret) content;
+            turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
+		    liquid = NHLiquids.xenFluid;
+                    damage = 5;
+		    status = NHStatusEffects.ultFireBurn;
+		    statusDuration = 60f * 2f;
+            }});
+            turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidPositive;
+		    status = NHStatusEffects.scannerDown;
+		    statusDuration = 60f * 2f;
+	    }});	
+	    turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidNegative;
+                    damage = 0.2f;
+		    status = NHStatusEffects.scannerDown;
+		    statusDuration = 60f * 2f;
+	    }});
+	     turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
+		    liquid = NHLiquids.irdryonFluid;
+		    status = NHStatusEffects.emp3;
+		    statusDuration = 60f * 2f;
+	    }});
+        });
         adjustContent(Blocks.swarmer, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new MissileBulletType() {{
@@ -835,6 +860,65 @@ public class NHPostProcess {
                 shootEffect = Fx.shootBig;
                 hitEffect = despawnEffect = Fx.none;
             }});
+        });
+	adjustContent(Blocks.tsunami, content -> {
+            LiquidTurret turret = (LiquidTurret) content;
+            turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
+		    liquid = NHLiquids.xenFluid;
+		    lifetime = 49f;
+                    speed = 4f;
+                    knockback = 1.3f;
+                    puddleSize = 8f;
+                    orbSize = 4f;
+                    drag = 0.001f;
+                    ammoMultiplier = 0.4f;
+                    statusDuration = 60f * 4f;
+                    damage = 10;
+		    status = NHStatusEffects.ultFireBurn;
+		    statusDuration = 60f * 4;
+            }});
+            turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidPositive;
+		    lifetime = 49f;
+                    speed = 4f;
+                    knockback = 1.3f;
+                    puddleSize = 8f;
+                    orbSize = 4f;
+                    drag = 0.001f;
+                    ammoMultiplier = 0.4f;
+                    statusDuration = 60f * 4f;
+                    damage = 0.2f;
+		    status = NHStatusEffects.scannerDown;
+		    statusDuration = 60f * 4f;
+	    }});	
+	    turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
+		    liquid = NHLiquids.zetaFluidNegative;
+		    lifetime = 49f;
+                    speed = 4f;
+                    knockback = 1.3f;
+                    puddleSize = 8f;
+                    orbSize = 4f;
+                    drag = 0.001f;
+                    ammoMultiplier = 0.4f;
+                    statusDuration = 60f * 4f;
+                    damage = 0.2f;
+		    status = NHStatusEffects.scannerDown;
+		    statusDuration = 60f * 4f;
+	    }});
+	     turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
+		    liquid = NHLiquids.irdryonFluid;
+		    lifetime = 49f;
+                    speed = 4f;
+                    knockback = 1.3f;
+                    puddleSize = 8f;
+                    orbSize = 4f;
+                    drag = 0.001f;
+                    ammoMultiplier = 0.4f;
+                    statusDuration = 60f * 4f;
+                    damage = 0.2f;
+		    status = NHStatusEffects.emp3;
+		    statusDuration = 60f * 4f;
+	    }});
         });
         adjustContent(Blocks.fuse, content -> {
             ItemTurret turret = (ItemTurret) content;
