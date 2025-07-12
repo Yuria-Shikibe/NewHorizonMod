@@ -1688,10 +1688,12 @@ public class NHBullets {
             statusDuration = 120f;
         }};
 
-        laugraBullet = new AccelBulletType(1000, STRIKE) {
+        laugraBullet = new AccelBulletType(2000, 500) {
             {
                 status = NHStatusEffects.entangled;
                 statusDuration = 320f;
+
+                pierceArmor = true;
 
                 lightOpacity = 0.7f;
 
