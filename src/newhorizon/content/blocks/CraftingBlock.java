@@ -1055,7 +1055,7 @@ public class CraftingBlock {
 
             health = 1600;
             armor = 6;
-            craftTime = 90f;
+            craftTime = 120f;
             consumePower(480 / 60f);
 
             itemCapacity = 60;
