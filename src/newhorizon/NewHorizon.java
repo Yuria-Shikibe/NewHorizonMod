@@ -99,10 +99,10 @@ public class NewHorizon extends Mod {
                 //DebugFunc.outputSettings();
                 //DebugFunc.outputAtlas();
             });
-            Time.run(20f, () -> {
-                AscensionRuleDialog dialog = new AscensionRuleDialog();
-                dialog.show();
-            });
+            //Time.run(20f, () -> {
+            //    AscensionRuleDialog dialog = new AscensionRuleDialog();
+            //    dialog.show();
+            //});
         });
         Events.run(EventType.Trigger.draw, () -> NHVars.control.terrainSelect());
     }
