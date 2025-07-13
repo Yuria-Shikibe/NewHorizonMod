@@ -374,6 +374,20 @@ public class NHPlanets {
 
         distort(tiles, 3f, 2f);
 
+        tiles.each((x, y) -> {
+            if (!voronoi.getPointInThreshold(x, y, 70f)){
+                tiles.get(x, y).setFloor(Blocks.metalFloor.asFloor());
+            }
+        });
+
+
+        //check for paths, remove
+        tiles.each((x, y) -> {
+            if (voronoi.getPointInThreshold(x, y, 72f)){
+                tiles.get(x, y).setAir();
+            }
+        });
+
         //some connections
         for (Point2 p : points){
             Point2 closestPoint = p;
@@ -387,19 +401,35 @@ public class NHPlanets {
             }
             if (p == closestPoint) continue;
             path.clear();
-            Bresenham2.line(p.x, p.y, closestPoint.x, closestPoint.y, (x, y) -> {
-                if (Structs.inBounds(x, y, chunkSize, chunkSize)){
-                    path.add(tiles.get(x, y));
-                }
-            });
-            continualDraw(tiles, path, Blocks.stoneWall, 7, (x, y) -> !(tiles.get(x, y).floor() == EnvironmentBlock.metalFloorPlain));
-        }
-
-        tiles.each((x, y) -> {
-            if (!voronoi.getPointInThreshold(x, y, 70f)){
-                tiles.get(x, y).setFloor(Blocks.metalFloor.asFloor());
+            if ((p.x - closestPoint.x) > (p.y - closestPoint.y)){
+                Bresenham2.line(p.x, p.y, p.x, closestPoint.y, (x, y) -> {
+                    if (Structs.inBounds(x, y, chunkSize, chunkSize)){
+                        path.add(tiles.get(x, y));
+                    }
+                });
+                Bresenham2.line(closestPoint.x, closestPoint.y, p.x, closestPoint.y, (x, y) -> {
+                    if (Structs.inBounds(x, y, chunkSize, chunkSize)){
+                        path.add(tiles.get(x, y));
+                    }
+                });
+            }else {
+                Bresenham2.line(p.x, p.y, closestPoint.x, p.y, (x, y) -> {
+                    if (Structs.inBounds(x, y, chunkSize, chunkSize)){
+                        path.add(tiles.get(x, y));
+                    }
+                });
+                Bresenham2.line(closestPoint.x, closestPoint.y, closestPoint.x, p.y, (x, y) -> {
+                    if (Structs.inBounds(x, y, chunkSize, chunkSize)){
+                        path.add(tiles.get(x, y));
+                    }
+                });
             }
-        });
+            continualDraw(tiles, path, EnvironmentBlock.metalFloorPlain, 9, (x, y) -> true);
+            continualDraw(tiles, path, NHBlocks.metalWall, 9, (x, y) -> true);
+            for (Tile t : path){
+                erase(tiles, t.x, t.y, 5);
+            }
+        }
 
         tiles.each((x, y) -> {
             if (!voronoi.getPointInThreshold(x, y, 85f)){
@@ -408,17 +438,9 @@ public class NHPlanets {
             }
         });
 
-        //check for paths, remove
-        tiles.each((x, y) -> {
-            if (voronoi.getPointInThreshold(x, y, 72f)){
-                tiles.get(x, y).setAir();
-            }
-        });
-
         tiles.each((x, y) -> {
             if (tiles.get(x, y).floor() == EnvironmentBlock.metalFloorPlain){
-                if ((x + y) % 25 <= 1 || (x + y) % 25 == 24) tiles.get(x, y).setFloor(EnvironmentBlock.metalFloorRidge);
-                if (Math.abs(x - y) % 25 <= 1) tiles.get(x, y).setFloor(EnvironmentBlock.metalFloorRidge);
+                if (x % 15 == 0 || y % 15 == 0) tiles.get(x, y).setFloor(EnvironmentBlock.metalFloorGroove);
             }
 
             if (tiles.get(x, y).floor() == Blocks.metalFloor){
