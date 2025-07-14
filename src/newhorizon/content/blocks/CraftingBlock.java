@@ -362,7 +362,7 @@ public class CraftingBlock {
 
             craftTime = 90f;
             consumePower(480 / 60f);
-            addInput(ItemStack.empty, NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 4.5 / 60f);
+            addInput(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 12 / 60f);
             addInput(Items.lead, 3, Liquids.water, 9 / 60f);
             addInput(Items.metaglass, 1, Liquids.water, 6 / 60f);
             addInput(Items.oxide, 1, Liquids.water, 9 / 60f);
