@@ -15,6 +15,7 @@ import arc.util.*;
 import arc.util.noise.Simplex;
 import arc.util.pooling.Pool;
 import mindustry.Vars;
+import mindustry.ai.Astar;
 import mindustry.content.Blocks;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
@@ -122,108 +123,31 @@ public class NHPlanets {
         public static final Seq<Point2> points = new Seq<>();
         public static final Seq<Tile> path = new Seq<>();
 
-        public static final Rand pointRand = new Rand();
+        public static final int chunkSize = 150;
+        public static final int size = 3;
+        public static int startX = 1;
+        public static int startY = 2;
 
-        public static final int size = 350;
         @Override
         public int getSectorSize(Sector sector) {
-            return 300 * 3;
+            return chunkSize * size;
         }
 
         @Override
         protected void generate() {
-            /*
-            int chunkX = Core.settings.getInt("midantha-chunk-x", 0);
-            int chunkY = Core.settings.getInt("midantha-chunk-y", 0);
-            int seed = Point2.pack(chunkX, chunkY);
-            rand.setSeed(seed);
-            points.clear();
-
-            tiles.eachTile(tile -> tile.setFloor(NHBlocks.conglomerateRock.asFloor()));
-            //generate basalt (darker stone floor)
             pass((x, y) -> {
-                if (noise(x + chunkX * size, y + chunkY * size, 7, 0.8f, 130f, 1f) > 0.52f) {
-                    floor = Blocks.basalt;
-                }
-            });
-
-            distort(10f, 12f);
-
-            ManhattanVoronoi voronoi = new ManhattanVoronoi(width, height);
-            for (float px = -0.25f; px <= 1.25f; px += 0.25f ) {
-                for (float py = -0.25f; py <= 1.25f; py += 0.25f ) {
-                    int sx = Mathf.round((px + chunkX) * 4);
-                    int sy = Mathf.round((py + chunkY) * 4);
-                    pointRand.setSeed(Point2.pack(sx, sy));
-                    float rx = px + pointRand.random(-0.125f, 0.125f);
-                    float ry = py + pointRand.random(-0.125f, 0.125f);
-                    voronoi.points.add(rx, ry);
-
-                    int rpx = (int) (rx * width);
-                    int rpy = (int) (ry * height);
-                    points.add(new Point2(rpx, rpy));
-                }
-            }
-
-            for (Point2 p : points){
-                Point2 closestPoint = p;
-                int closest = size;
-                for (Point2 p2 : points){
-                    if (p == p2) continue;
-                    if (Mathf.dstm(p.x, p.y, p2.x, p2.y) < closest){
-                        closestPoint = p2;
-                        closest = (int) Mathf.dstm(p.x, p.y, p2.x, p2.y);
-                    }
-                }
-                if (p == closestPoint) continue;
-                path.clear();
-                Bresenham2.line(p.x, p.y, closestPoint.x, closestPoint.y, (x, y) -> {
-                    if (Structs.inBounds(x, y, width, height)){
-                        path.add(new Tile(x, y));
-                    }
-                });
-                continualDraw(path, EnvironmentBlock.armorWall, 9, (x, y) -> !(tiles.get(x, y).floor() == EnvironmentBlock.metalFloorPlain));
-            }
-
-            pass((x, y) -> {
-                if (!voronoi.getPointInThreshold(x, y, 50)){
-                    floor = EnvironmentBlock.metalFloorPlain;
+                if (x < 5f || y < 5f || x > chunkSize * size - 6f || y > chunkSize * size - 6f) {
                     block = EnvironmentBlock.armorWall;
                 }
             });
 
-
-            grow(EnvironmentBlock.armorWall, Blocks.stone);
-
-            pass((x, y) -> {
-                if (block == Blocks.stone){
-                    block = EnvironmentBlock.armorWall;
-                }
-            });
-
-            pass((x, y) -> {
-                int x1 = x - x % 3 + 30;
-                int y1 = y - y % 3 + 30;
-
-                if((x1 % 70 == 0 || y1 % 70 == 0) && !floor.asFloor().isLiquid){
-                    if(noise(x + 30, y + 30, 4, 0.66f, 75f, 2f) > 0.85f || Mathf.chance(0.035)){
-                        floor = Blocks.metalFloor2;
-                    }
-                }
-
-                //if((x % 50 == 0 || y % 50 == 0) && !floor.asFloor().isLiquid){
-                //    if(noise(x, y, 5, 0.7f, 75f, 3f) > 0.8125f || Mathf.chance(0.075)){
-                //        floor = NHBlocks.quantumFieldDisturbing;
-                //    }
-                //}
-            });
+            distort(12, 6);
+            median(5);
 
 
-             */
-
-            for (int x = 0; x < 6; x++) {
-                for (int y = 0; y < 6; y++) {
-                    Tiles ts = generateChunk(x - 6, y);
+            for (int x = 0; x < size; x++) {
+                for (int y = 0; y < size; y++) {
+                    Tiles ts = generateChunk(x + startX, y + startY);
                     int finalX = x;
                     int finalY = y;
                     ts.each((tx, ty) -> {
@@ -235,7 +159,55 @@ public class NHPlanets {
                 }
             }
 
+            rand.setSeed(Point2.pack(startX, startY));
+            Vec2 trns = Tmp.v1.trns(rand.random(360f), width/2.6f);
+            int spawnX = (int)(trns.x + width/2f), spawnY = (int)(trns.y + height/2f),
+                    coreX = (int)(-trns.x + width/2f), coreY = (int)(-trns.y + height/2f);
+
+            erase(spawnX, spawnY, 12);
+            erase(coreX, coreY, 12);
+
+            path.clear();
+            path.add(pathfind(spawnX, spawnY, coreX, coreY, tile -> (tile.solid() ? 50f : 0f), Astar.manhattan));
+
+            continualDraw(tiles, path, NHBlocks.quantumField, 4, ((x0, y0) -> {
+                Floor f = tiles.getn(x0, y0).floor();
+                boolean b = f.isDeep();
+                if(b && noise(x0, y0 * x0, 6, 0.7f, 25f, 3f) > 0.4125f){
+                    rand.setSeed((long)x0 + y0 << 8);
+                    if(rand.chance(0.22f))draw(x0, y0, NHBlocks.quantumField, 4, ((x1, y1) -> {
+                        Floor f1 = tiles.getn(x1, y1).floor();
+                        if(f1 == NHBlocks.quantumFieldDisturbing){
+                            tiles.getn(x1, y1).setFloor(NHBlocks.metalGround.asFloor());
+                            return false;
+                        }
+                        return f1.isDeep();
+                    }));
+                }
+
+                else if(f == NHBlocks.quantumFieldDisturbing){
+                    draw(x0, y0, NHBlocks.metalGround, 4, ((x1, y1) -> tiles.getn(x1, y1).floor() == NHBlocks.quantumFieldDisturbing));
+                }
+
+                return b;
+            }));
+
+            tiles.eachTile(tile -> {
+                if(tile.floor() == Blocks.carbonStone){
+                    float noise = noise(tile.x + 150, tile.y + 100 + tile.x / 0.8f, 4, 0.5f, 65f, 1.5f);
+                    if(noise > 0.9f) tile.setOverlay(Blocks.oreTitanium);
+                    if(noise < 0.5f) tile.setOverlay(Blocks.oreTungsten);
+                }
+            });
+
+            removeOreNear(tiles, NHBlocks.quantumField, 4);
+            removeOreNear(tiles, NHBlocks.quantumFieldDeep, 4);
+            removeOreNear(tiles, NHBlocks.conglomerateRock, 5);
+            removeOreNear(tiles, Blocks.metalFloor, 4);
+            removeOreNear(tiles, Blocks.basalt, 5);
+
             pass((x, y) -> {
+                if (floor == Blocks.shale || floor == Blocks.carbonStone) return;
                 int x1 = x - x % 3 + 30;
                 int y1 = y - y % 3 + 30;
 
@@ -260,15 +232,6 @@ public class NHPlanets {
                 }
             });
 
-            Schematics.placeLaunchLoadout(122, 122);
-
-            pass((x, y) -> {
-                if(!nearWall(x, y) && (floor == Blocks.basalt || floor == NHBlocks.conglomerateRock)){
-                    if(noise(x + 150, y + x * 1.25f + 100, 6, 0.5f, 125f, 1.5f) > 1.1f) ore = Blocks.oreTitanium;
-                    if(noise(x + 999, y + 600 - x, 6, 0.5f, 95f, 1.5f) > 1.09f) ore = Blocks.oreTungsten;
-                }
-            });
-
             pass((x, y) -> {
                 if(floor == Blocks.darkPanel3 && rand.chance(0.8f)){
                     ore = NHBlocks.oreZeta;
@@ -280,6 +243,10 @@ public class NHPlanets {
                     floor = NHBlocks.metalVent;
                 }
             });
+
+            tiles.get(spawnX, spawnY).setOverlay(Blocks.spawn);
+            Schematics.placeLaunchLoadout(coreX, coreY);
+
         }
 
         public void draw(int cx, int cy, Block block, int rad, DrawBoolf b){
@@ -355,17 +322,29 @@ public class NHPlanets {
         });
         //deep liquid
         tiles.eachTile(tile -> {
-            if (voronoi.getPointInThreshold(tile.x, tile.y, 45f)) {
-                if(noise(tile.x + 342 + chunkX * chunkSize, tile.y + 541 + chunkY * chunkSize, 4, 0.62f, 120f, 1.6f) > 0.96f){
+            if (voronoi.getPointInThreshold(tile.x, tile.y, 38f)) {
+                if(noise(tile.x + 342 + chunkX * chunkSize, tile.y + 541 + chunkY * chunkSize, 3, 0.62f, 320f, 1.6f) > 1f){
                     tile.setFloor(NHBlocks.quantumFieldDeep.asFloor());
                 }
             }
         });
 
-        distort(tiles, 3, 2f);
+        tiles.eachTile(tile -> {
+            if(tile.floor() == Blocks.basalt || tile.floor() == NHBlocks.conglomerateRock){
+                float noise = noise(tile.x + 150 + chunkX * chunkSize, tile.y + 100 + chunkY * chunkSize, 4, 0.5f, 125f, 1.5f);
+                if(noise > 0.98f) tile.setFloor(Blocks.carbonStone.asFloor());
+                if(noise < 0.52f) tile.setFloor(Blocks.carbonStone.asFloor());
+            }
+        });
+
+        median(tiles, 5, 4, NHBlocks.quantumFieldDeep);
+
+        distort(tiles, 12, 2f);
+
+        //removeOreNear(tiles, NHBlocks.quantumField, 5);
 
         //liquid margin
-        blend(tiles, NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 3);
+        blend(tiles, NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 7);
 
         //use percent for distance, not actual manhattan but this do look cool
         tiles.each((x, y) -> {
@@ -373,9 +352,6 @@ public class NHPlanets {
                 tiles.get(x, y).setBlock(NHBlocks.metalWall);
             }
         });
-
-        //randomize
-        distort(tiles, 3f, 2f);
 
         //check for paths, remove
         tiles.each((x, y) -> {
@@ -616,6 +592,29 @@ public class NHPlanets {
 
                             if(other != null && other.floor() != floor){
                                 other.setFloor(dest);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void removeOreNear(Tiles tiles, Block floor, float radius){
+        float r2 = radius * radius;
+        int cap = Mathf.ceil(radius);
+        int max = tiles.width * tiles.height;
+
+        for(int i = 0; i < max; i++){
+            Tile tile = tiles.geti(i);
+            if(tile.floor() == floor || tile.block() == floor){
+                for(int cx = -cap; cx <= cap; cx++){
+                    for(int cy = -cap; cy <= cap; cy++){
+                        if(cx*cx + cy*cy <= r2){
+                            Tile other = tiles.get(tile.x + cx, tile.y + cy);
+
+                            if(other != null && other.floor() != floor){
+                                other.setOverlay(Blocks.air);
                             }
                         }
                     }
