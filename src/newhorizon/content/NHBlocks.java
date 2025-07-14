@@ -189,6 +189,7 @@ public class NHBlocks {
 
         conglomerateRock = new Floor("conglomerate-rock", 3) {{
             blendGroup = Blocks.stone;
+            wall = conglomerateWall;
         }};
 
         metalGroundHeat = new Floor("metal-ground-heat", 3) {{
