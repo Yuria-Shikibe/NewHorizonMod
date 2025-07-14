@@ -1,6 +1,7 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.Pixmap;
 import arc.math.Mathf;
@@ -222,7 +223,7 @@ public class NHPlanets {
 
             for (int x = 0; x < 6; x++) {
                 for (int y = 0; y < 6; y++) {
-                    Tiles ts = generateChunk(x, y);
+                    Tiles ts = generateChunk(x - 6, y);
                     int finalX = x;
                     int finalY = y;
                     ts.each((tx, ty) -> {
@@ -269,11 +270,16 @@ public class NHPlanets {
             });
 
             pass((x, y) -> {
-                if(!nearWall(x, y) && (floor == EnvironmentBlock.metalFloorPlain || floor == EnvironmentBlock.metalFloorRidge)){
-                    if(noise(x - (x % 4) - 1234, y - (y % 4) - 938, 6, 0.58f, 55f, 1.5f) > 1.06f) ore = NHBlocks.oreZeta;
+                if(floor == Blocks.darkPanel3 && rand.chance(0.8f)){
+                    ore = NHBlocks.oreZeta;
                 }
             });
 
+            pass((x, y) -> {
+                if(floor == Blocks.metalFloor3){
+                    floor = NHBlocks.metalVent;
+                }
+            });
         }
 
         public void draw(int cx, int cy, Block block, int rad, DrawBoolf b){
@@ -320,22 +326,7 @@ public class NHPlanets {
         tiles.fill();
 
         ManhattanVoronoi voronoi = new ManhattanVoronoi(chunkSize, chunkSize);
-
         points.clear();
-        tiles.eachTile(tile -> tile.setFloor(NHBlocks.conglomerateRock.asFloor()));
-        tiles.eachTile(tile -> {
-            if (noise(tile.x + chunkX * chunkSize, tile.y + chunkY * chunkSize, 7, 0.8f, 130f, 1f) > 0.52f) {
-                tile.setFloor(Blocks.basalt.asFloor());
-            }
-        });
-
-        tiles.eachTile(tile -> {
-            if(noise(tile.x + 342 + chunkX * chunkSize, tile.y + 541 + chunkY * chunkSize, 4, 0.62f, 120f, 1.6f) > 0.96f){
-                tile.setFloor(NHBlocks.quantumFieldDeep.asFloor());
-            }
-        });
-
-        blend(tiles, NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 3);
 
         //6*6 grid, center 2x2 as actual map, others for voronoi use\
         float shift = 0.4f;
@@ -354,16 +345,27 @@ public class NHPlanets {
             }
         }
 
-        //continualDraw(tiles, path, Blocks.air, 3, (x, y) -> true);
+        //base terrain
+        tiles.eachTile(tile -> tile.setFloor(NHBlocks.conglomerateRock.asFloor()));
+        //darker terrain
+        tiles.eachTile(tile -> {
+            if (noise(tile.x + chunkX * chunkSize, tile.y + chunkY * chunkSize, 7, 0.8f, 130f, 1f) > 0.52f) {
+                tile.setFloor(Blocks.basalt.asFloor());
+            }
+        });
+        //deep liquid
+        tiles.eachTile(tile -> {
+            if (voronoi.getPointInThreshold(tile.x, tile.y, 45f)) {
+                if(noise(tile.x + 342 + chunkX * chunkSize, tile.y + 541 + chunkY * chunkSize, 4, 0.62f, 120f, 1.6f) > 0.96f){
+                    tile.setFloor(NHBlocks.quantumFieldDeep.asFloor());
+                }
+            }
+        });
 
+        distort(tiles, 3, 2f);
 
-        //pointRand.setSeed(Point2.pack(chunkX + 1, chunkY));
-        //tmp1.set((int) ((1 + pointRand.random(-shift, shift)) * chunkSize), (int) ((pointRand.random(-shift, shift)) * chunkSize));
-        //pointRand.setSeed(Point2.pack(chunkX + 1, chunkY + 1));
-        //tmp2.set((int) ((1 + pointRand.random(-shift, shift)) * chunkSize), (int) ((1 + pointRand.random(-shift, shift)) * chunkSize));
-        //pointRand.setSeed(Point2.pack(chunkX, chunkY + 1));
-        //tmp3.set((int) ((pointRand.random(-shift, shift)) * chunkSize), (int) ((1 + pointRand.random(-shift, shift)) * chunkSize));
-
+        //liquid margin
+        blend(tiles, NHBlocks.quantumFieldDeep, NHBlocks.quantumField, 3);
 
         //use percent for distance, not actual manhattan but this do look cool
         tiles.each((x, y) -> {
@@ -372,14 +374,8 @@ public class NHPlanets {
             }
         });
 
+        //randomize
         distort(tiles, 3f, 2f);
-
-        tiles.each((x, y) -> {
-            if (!voronoi.getPointInThreshold(x, y, 70f)){
-                tiles.get(x, y).setFloor(Blocks.metalFloor.asFloor());
-            }
-        });
-
 
         //check for paths, remove
         tiles.each((x, y) -> {
@@ -388,10 +384,141 @@ public class NHPlanets {
             }
         });
 
+        //margin
+        tiles.each((x, y) -> {
+            if (!voronoi.getPointInThreshold(x, y, 70f)){
+                tiles.get(x, y).setFloor(Blocks.metalFloor.asFloor());
+            }
+        });
+
         //some connections
+        getPath(tiles);
+        continualDraw(tiles, path, Blocks.metalFloor, 13, (x, y) -> noise(x + 321, y + 151, 5, 0.7f, 75f, 3f) > 1.23f || Mathf.chance(0.025));
+        continualDraw(tiles, path, NHBlocks.metalWall, 9, (x, y) -> noise(x + 321, y + 151, 5, 0.7f, 75f, 3f) > 1.23f || Mathf.chance(0.025));
+        continualDraw(tiles, path, EnvironmentBlock.metalFloorRidge, 7, (x, y) -> noise(x + 321, y + 151, 5, 0.7f, 75f, 3f) > 1.23f || Mathf.chance(0.025));
+        continualDraw(tiles, path, EnvironmentBlock.metalFloorGroove, 5, (x, y) -> noise(x + 321, y + 151, 5, 0.7f, 75f, 3f) > 1.23f || Mathf.chance(0.025));
+        continualDraw(tiles, path, EnvironmentBlock.metalFloorRidge, 2, (x, y) -> noise(x + 321, y + 151, 5, 0.7f, 75f, 3f) > 1.23f || Mathf.chance(0.025));
+        path.each(t -> erase(tiles, t.x, t.y, 6));
+
+        //inner cleanup
+        tiles.each((x, y) -> {
+            if (!voronoi.getPointInThreshold(x, y, 85f)){
+                tiles.get(x, y).setAir();
+                tiles.get(x, y).setFloor(EnvironmentBlock.metalFloorPlain.asFloor());
+            }
+        });
+
+        //vents, zeta ores
+        tiles.each((x, y) -> {
+            if (!voronoi.getPointInThreshold(x, y, 85f)){
+                if (x % 15 == 0 && y % 15 == 0){
+                    if (voronoi.getPointInThreshold(x + 15, y, 85f)) return;
+                    if (voronoi.getPointInThreshold(x + 15, y + 15, 85f)) return;
+                    if (voronoi.getPointInThreshold(x, y + 15, 85f)) return;
+                    if (noise(x - 1234, y - 938, 6, 0.58f, 15f, 1.5f) > 0.75f){
+                        pointRand.setSeed(Point2.pack(x + chunkX * chunkSize, y + chunkX * chunkSize));
+                        boolean ore = pointRand.chance(0.5f);
+                        boolean o1 = pointRand.chance(0.75f), o2 = pointRand.chance(0.75f), o3 = pointRand.chance(0.75f), o4 = pointRand.chance(0.75f);
+                        boolean f1 = pointRand.chance(0.5f), f2 = pointRand.chance(0.5f), f3 = pointRand.chance(0.5f), f4 = pointRand.chance(0.5f);
+
+                        if (ore){
+                            for (int tx = 0; tx < 6; tx++){
+                                for (int ty = 0; ty < 6; ty++){
+                                    int rx = x + tx, ry = y + ty;
+                                    setFloor(tiles, rx + 1, ry + 1, EnvironmentBlock.metalFloorGrooveDeep);
+                                    setFloor(tiles, rx + 9, ry + 1, EnvironmentBlock.metalFloorGrooveDeep);
+                                    setFloor(tiles, rx + 1, ry + 9, EnvironmentBlock.metalFloorGrooveDeep);
+                                    setFloor(tiles, rx + 9, ry + 9, EnvironmentBlock.metalFloorGrooveDeep);
+                                }
+                            }
+
+                            for (int tx = 0; tx < 4; tx++){
+                                for (int ty = 0; ty < 4; ty++){
+                                    int rx = x + tx, ry = y + ty;
+                                    if (o1) setFloor(tiles, rx + 2, ry + 2, Blocks.darkPanel3);
+                                    if (o2) setFloor(tiles, rx + 2, ry + 10, Blocks.darkPanel3);
+                                    if (o3) setFloor(tiles, rx + 10, ry + 2, Blocks.darkPanel3);
+                                    if (o4) setFloor(tiles, rx + 10, ry + 10, Blocks.darkPanel3);
+                                }
+                            }
+                        }else {
+                            for (int tx = 0; tx < 5; tx++){
+                                for (int ty = 0; ty < 5; ty++){
+                                    int rx = x + tx, ry = y + ty;
+                                    setFloor(tiles, rx + 2, ry + 2, EnvironmentBlock.metalFloorRidgeHigh);
+                                    setFloor(tiles, rx + 9, ry + 2, EnvironmentBlock.metalFloorRidgeHigh);
+                                    setFloor(tiles, rx + 2, ry + 9, EnvironmentBlock.metalFloorRidgeHigh);
+                                    setFloor(tiles, rx + 9, ry + 9, EnvironmentBlock.metalFloorRidgeHigh);
+                                }
+                            }
+
+                            for (int tx = 0; tx < 3; tx++){
+                                for (int ty = 0; ty < 3; ty++){
+                                    int rx = x + tx, ry = y + ty;
+                                    if (f1) setFloor(tiles, rx + 3, ry + 3, Blocks.metalFloor3);
+                                    if (f2) setFloor(tiles, rx + 3, ry + 10, Blocks.metalFloor3);
+                                    if (f3) setFloor(tiles, rx + 10, ry + 3, Blocks.metalFloor3);
+                                    if (f4) setFloor(tiles, rx + 10, ry + 10, Blocks.metalFloor3);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        tiles.each((x, y) -> {
+            if (tiles.get(x, y).floor() == EnvironmentBlock.metalFloorPlain){
+                if (x % 15 == 0 || y % 15 == 0) tiles.get(x, y).setFloor(EnvironmentBlock.metalFloorGroove);
+            }
+
+            if (tiles.get(x, y).floor() == Blocks.metalFloor){
+                if ((x + y) % 50 <= 3 || (x + y) % 50 >= 47) tiles.get(x, y).setAir();
+                if (Math.abs(x - y) % 50 <= 3) tiles.get(x, y).setAir();
+            }
+        });
+
+        return tiles;
+    }
+
+    public static void setFloor(Tiles tiles, int x, int y, Block block){
+        if (Structs.inBounds(x, y, tiles.width, tiles.height)){
+            tiles.get(x, y).setFloor(block.asFloor());
+        }
+    }
+
+    public static void setOverlay(Tiles tiles, int x, int y, Block block){
+        if (Structs.inBounds(x, y, tiles.width, tiles.height)){
+            tiles.get(x, y).setOverlay(block);
+        }
+    }
+
+    public static void erase(Tiles tiles, int cx, int cy, int rad){
+        for(int x = -rad; x <= rad; x++){
+            for(int y = -rad; y <= rad; y++){
+                int wx = cx + x, wy = cy + y;
+                if(Structs.inBounds(wx, wy, tiles.width, tiles.height) && Mathf.within(x, y, rad)){
+                    Tile other = tiles.getn(wx, wy);
+                    other.setBlock(Blocks.air);
+                }
+            }
+        }
+    }
+
+    protected static float noise(float x, float y, double octaves, double falloff, double scl, double mag){
+        return Simplex.noise2d(0, octaves, falloff, 1f / scl, x, y) * (float)mag;
+    }
+
+    protected static float noise(float x, float y, double scl, double mag){
+        return noise(x, y, 1, 1, scl, mag);
+    }
+
+    public static void getPath(Tiles tiles){
+        //some connections
+        path.clear();
         for (Point2 p : points){
             Point2 closestPoint = p;
-            int closest = chunkSize;
+            int closest = chunkSize * 2;
             for (Point2 p2 : points){
                 if (p == p2) continue;
                 if (Mathf.dstm(p.x, p.y, p2.x, p2.y) < closest){
@@ -400,7 +527,6 @@ public class NHPlanets {
                 }
             }
             if (p == closestPoint) continue;
-            path.clear();
             if ((p.x - closestPoint.x) > (p.y - closestPoint.y)){
                 Bresenham2.line(p.x, p.y, p.x, closestPoint.y, (x, y) -> {
                     if (Structs.inBounds(x, y, chunkSize, chunkSize)){
@@ -424,52 +550,7 @@ public class NHPlanets {
                     }
                 });
             }
-            continualDraw(tiles, path, EnvironmentBlock.metalFloorPlain, 9, (x, y) -> true);
-            continualDraw(tiles, path, NHBlocks.metalWall, 9, (x, y) -> true);
-            for (Tile t : path){
-                erase(tiles, t.x, t.y, 5);
-            }
         }
-
-        tiles.each((x, y) -> {
-            if (!voronoi.getPointInThreshold(x, y, 85f)){
-                tiles.get(x, y).setAir();
-                tiles.get(x, y).setFloor(EnvironmentBlock.metalFloorPlain.asFloor());
-            }
-        });
-
-        tiles.each((x, y) -> {
-            if (tiles.get(x, y).floor() == EnvironmentBlock.metalFloorPlain){
-                if (x % 15 == 0 || y % 15 == 0) tiles.get(x, y).setFloor(EnvironmentBlock.metalFloorGroove);
-            }
-
-            if (tiles.get(x, y).floor() == Blocks.metalFloor){
-                if ((x + y) % 50 <= 3 || (x + y) % 50 >= 47) tiles.get(x, y).setAir();
-                if (Math.abs(x - y) % 50 <= 3) tiles.get(x, y).setAir();
-            }
-        });
-
-        return tiles;
-    }
-
-    public static void erase(Tiles tiles, int cx, int cy, int rad){
-        for(int x = -rad; x <= rad; x++){
-            for(int y = -rad; y <= rad; y++){
-                int wx = cx + x, wy = cy + y;
-                if(Structs.inBounds(wx, wy, tiles.width, tiles.height) && Mathf.within(x, y, rad)){
-                    Tile other = tiles.getn(wx, wy);
-                    other.setBlock(Blocks.air);
-                }
-            }
-        }
-    }
-
-    protected static float noise(float x, float y, double octaves, double falloff, double scl, double mag){
-        return Simplex.noise2d(0, octaves, falloff, 1f / scl, x, y) * (float)mag;
-    }
-
-    protected static float noise(float x, float y, double scl, double mag){
-        return noise(x, y, 1, 1, scl, mag);
     }
 
     public static void distort(Tiles tiles, float scl, float mag){
