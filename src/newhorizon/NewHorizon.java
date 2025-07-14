@@ -25,6 +25,7 @@ import newhorizon.content.*;
 import newhorizon.content.register.RecipeRegister;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.expand.logic.DefaultRaid;
+import newhorizon.expand.rules.AscensionRuleDialog;
 import newhorizon.util.DebugFunc;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
@@ -65,6 +66,8 @@ public class NewHorizon extends Mod {
                 if (OS.username.equals("LaoHuaJi")) {
                     DebugFunc.updateBlockList();
                     DebugFunc.generateBlankBundle();
+                    DebugFunc.writeVanillaBlockList();
+                    DebugFunc.writeTeamList();
                     //for (int y = 0; y < 64; y++){
                     //	StringBuilder stringBuilder = new StringBuilder();
 //
@@ -96,6 +99,10 @@ public class NewHorizon extends Mod {
                 //DebugFunc.outputSettings();
                 //DebugFunc.outputAtlas();
             });
+            //Time.run(20f, () -> {
+            //    AscensionRuleDialog dialog = new AscensionRuleDialog();
+            //    dialog.show();
+            //});
         });
         Events.run(EventType.Trigger.draw, () -> NHVars.control.terrainSelect());
     }

@@ -9,6 +9,7 @@ import arc.graphics.Pixmap;
 import arc.graphics.PixmapIO;
 import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.graphics.gl.FrameBuffer;
 import arc.math.Interp;
@@ -18,18 +19,25 @@ import arc.struct.StringMap;
 import arc.util.Log;
 import arc.util.ScreenUtils;
 import arc.util.Tmp;
+import arc.util.serialization.Json;
+import arc.util.serialization.JsonReader;
+import arc.util.serialization.JsonValue;
+import arc.util.serialization.JsonWriter;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
+import mindustry.mod.Mods;
 import mindustry.type.Category;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.Block;
 import newhorizon.util.graphic.DrawFunc;
 
+import java.io.StringWriter;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
@@ -40,6 +48,7 @@ public class DebugFunc {
     public static final String NH_BUNDLE_PATH = NH_ROOT_PATH + "/assets/bundles/blank/";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
     public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
+    public static final String NH_DEBUG_JSON_DATA_FOLDER = NH_ROOT_PATH + "/data/";
     public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
     public static final Color[] NH_SPRITE_PALETTE = {
             Color.valueOf("abb1bf"), //light
@@ -151,6 +160,10 @@ public class DebugFunc {
         return new Fi(NH_SPRITE_ICON_PATH + fileName + ".png");
     }
 
+    public static Fi createJsonFile(String fileName) {
+        return new Fi(NH_DEBUG_JSON_DATA_FOLDER + fileName + ".json");
+    }
+
     public static void outputIcon() {
         Icon.icons.each((name, drawable) -> {
             TextureRegion region = drawable.getRegion();
@@ -227,7 +240,6 @@ public class DebugFunc {
         return result;
     }
 
-
     public static void outputTextureRegion(String name, TextureRegion region) {
         Draw.blend();
         Draw.reset();
@@ -284,28 +296,6 @@ public class DebugFunc {
         }
     }
 
-    public static void updateBlockList() {
-        StringMap map = new StringMap();
-        String prev = readBlockList();
-        String[] lists = prev.split("\n");
-        for (String list : lists) {
-            map.put(list.split(" ")[0], list);
-        }
-        for (Block block : content.blocks()) {
-            if (block.isModded() && block.name.startsWith("new-horizon")) {
-                String blockData = writeBlockNoLine(block);
-                map.put(blockData.split(" ")[0], blockData);
-            }
-        }
-        Seq<String> ordered = new Seq<>(map.size);
-        map.each((ignored, data) -> ordered.add(data));
-        ordered.sort(String::compareTo);
-
-        StringBuilder sb = new StringBuilder();
-        ordered.each((data) -> sb.append(data).append("\n"));
-        Fi.get(NH_ROOT_PATH).child("blocklist.txt").writeString(sb.toString());
-    }
-
     public static void replaceAllSpriteColor(String path, Color[] palette) {
         Fi fi = new Fi(path);
         fi.walk(file -> replaceSpriteColor(path, file, palette));
@@ -326,22 +316,16 @@ public class DebugFunc {
         pixmap.dispose();
     }
 
-    //public static void replaceAtlas(Color[] palette){
-    //    for (TextureAtlas.AtlasRegion region: Core.atlas.getRegions()){
-    //        Pixmap pixmap = region.pixmapRegion.pixmap;
-    //        pixmap.each((x, y) -> {
-    //            if (pixmap.get(x, y) == palette[0].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[0]);
-    //            if (pixmap.get(x, y) == palette[1].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[1]);
-    //            if (pixmap.get(x, y) == palette[2].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[2]);
-    //            if (pixmap.get(x, y) == palette[3].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[3]);
-    //        });
-    //    };
-    //}
-
-    public static String readBlockList() {
-        Fi fi = Fi.get(NH_ROOT_PATH).child("blocklist.txt");
-        if (fi.exists()) return fi.readString();
-        return "";
+    public static void replaceAtlas(Color[] palette){
+        for (TextureAtlas.AtlasRegion region: Core.atlas.getRegions()){
+            Pixmap pixmap = region.pixmapRegion.pixmap;
+            pixmap.each((x, y) -> {
+                if (pixmap.get(x, y) == palette[0].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[0]);
+                if (pixmap.get(x, y) == palette[1].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[1]);
+                if (pixmap.get(x, y) == palette[2].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[2]);
+                if (pixmap.get(x, y) == palette[3].rgba()) pixmap.set(x, y, NH_SPRITE_PALETTE[3]);
+            });
+        };
     }
 
     public static void outputSettings() {
@@ -397,6 +381,34 @@ public class DebugFunc {
         Core.app.setClipboardText(sb.toString());
     }
 
+    public static void updateBlockList() {
+        StringMap map = new StringMap();
+        String prev = readBlockList();
+        String[] lists = prev.split("\n");
+        for (String list : lists) {
+            map.put(list.split(" ")[0], list);
+        }
+        for (Block block : content.blocks()) {
+            if (block.isModded() && block.name.startsWith("new-horizon")) {
+                String blockData = writeBlockNoLine(block);
+                map.put(blockData.split(" ")[0], blockData);
+            }
+        }
+        Seq<String> ordered = new Seq<>(map.size);
+        map.each((ignored, data) -> ordered.add(data));
+        ordered.sort(String::compareTo);
+
+        StringBuilder sb = new StringBuilder();
+        ordered.each((data) -> sb.append(data).append("\n"));
+        Fi.get(NH_ROOT_PATH).child("blocklist.txt").writeString(sb.toString());
+    }
+
+    public static String readBlockList() {
+        Fi fi = Fi.get(NH_ROOT_PATH).child("blocklist.txt");
+        if (fi.exists()) return fi.readString();
+        return "";
+    }
+
     public static String writeBlockNoLine(Block block) {
         return block.name +
                 " " +
@@ -420,6 +432,39 @@ public class DebugFunc {
                 " " +
                 block.mapColor.rgb888() +
                 "\n";
+    }
+
+    public static void writeTeamList(){
+        JsonValue json = new JsonValue(JsonValue.ValueType.object);
+        for (Team team: Team.all){
+            json.addChild(String.valueOf(team.id), new JsonValue(team.color.rgba8888()));
+        }
+        createJsonFile("teamlist").writeString(json.prettyPrint(JsonWriter.OutputType.json, 2));
+    }
+
+    public static void writeVanillaBlockList() {
+        JsonValue json = new JsonValue(JsonValue.ValueType.object);
+        contentIterator(ContentType.block, Content::isVanilla, content -> writeBlockJsonValue(content, json));
+        createJsonFile("blocklist-vanilla").writeString(json.prettyPrint(JsonWriter.OutputType.json, 2));
+        mods.list().each(mod -> {
+            if (mod.meta.hidden || !mod.enabled()) return;
+            JsonValue modJson = new JsonValue(JsonValue.ValueType.object);
+            contentIterator(ContentType.block, content -> content.minfo != null && content.minfo.mod == mod, content -> writeBlockJsonValue(content, modJson));
+            createJsonFile("blocklist-" + mod.name).writeString(modJson.prettyPrint(JsonWriter.OutputType.json, 2));
+        });
+    }
+
+    public static void writeBlockJsonValue(UnlockableContent content, JsonValue json) {
+        if (content instanceof Block block) {
+            JsonValue data = new JsonValue(JsonValue.ValueType.object);
+
+            data.addChild("synthetic", new JsonValue(block.synthetic()));
+            data.addChild("solid", new JsonValue(block.solid));
+            data.addChild("size", new JsonValue(block.size));
+            data.addChild("color", new JsonValue(block.mapColor.rgba8888()));
+
+            json.addChild(block.name, data);
+        }
     }
 
     public static void renderSectorId() {

@@ -1,0 +1,2534 @@
+{
+"air": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"spawn": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1456134145
+},
+"remove-wall": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -10470145
+},
+"remove-ore": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1002231041
+},
+"cliff": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 2139062271
+},
+"build1": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"build2": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": 255
+},
+"build3": {
+	"synthetic": true,
+	"solid": false,
+	"size": 3,
+	"color": 255
+},
+"build4": {
+	"synthetic": true,
+	"solid": false,
+	"size": 4,
+	"color": 255
+},
+"build5": {
+	"synthetic": true,
+	"solid": false,
+	"size": 5,
+	"color": 255
+},
+"build6": {
+	"synthetic": true,
+	"solid": false,
+	"size": 6,
+	"color": 255
+},
+"build7": {
+	"synthetic": true,
+	"solid": false,
+	"size": 7,
+	"color": 255
+},
+"build8": {
+	"synthetic": true,
+	"solid": false,
+	"size": 8,
+	"color": 255
+},
+"build9": {
+	"synthetic": true,
+	"solid": false,
+	"size": 9,
+	"color": 255
+},
+"build10": {
+	"synthetic": true,
+	"solid": false,
+	"size": 10,
+	"color": 255
+},
+"build11": {
+	"synthetic": true,
+	"solid": false,
+	"size": 11,
+	"color": 255
+},
+"build12": {
+	"synthetic": true,
+	"solid": false,
+	"size": 12,
+	"color": 255
+},
+"build13": {
+	"synthetic": true,
+	"solid": false,
+	"size": 13,
+	"color": 255
+},
+"build14": {
+	"synthetic": true,
+	"solid": false,
+	"size": 14,
+	"color": 255
+},
+"build15": {
+	"synthetic": true,
+	"solid": false,
+	"size": 15,
+	"color": 255
+},
+"build16": {
+	"synthetic": true,
+	"solid": false,
+	"size": 16,
+	"color": 255
+},
+"deep-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1028227327
+},
+"shallow-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1196724223
+},
+"tainted-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1245278975
+},
+"deep-tainted-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 891900927
+},
+"darksand-tainted-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 959597311
+},
+"sand-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1953004287
+},
+"darksand-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 892817919
+},
+"tar": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 370677759
+},
+"pooled-cryofluid": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1419621887
+},
+"molten-slag": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1000131841
+},
+"space": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 83890943
+},
+"empty": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1111640063
+},
+"crater-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1128482815
+},
+"char": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1010582271
+},
+"basalt": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 825176063
+},
+"hotrock": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1127756287
+},
+"magmarock": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1749693951
+},
+"sand-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1484165121
+},
+"darksand": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 808333055
+},
+"dirt": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1328622335
+},
+"mud": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 689444351
+},
+"dacite": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 2021230335
+},
+"rhyolite": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1530474239
+},
+"rhyolite-crater": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1496788223
+},
+"rough-rhyolite": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1362242559
+},
+"regolith": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1917531903
+},
+"yellow-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1951217407
+},
+"carbon-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 572926975
+},
+"ferric-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 942813695
+},
+"ferric-craters": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1010119679
+},
+"beryllic-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 691022847
+},
+"crystalline-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 757542911
+},
+"crystal-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 976176127
+},
+"yellow-stone-plates": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -2124596993
+},
+"red-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1958919681
+},
+"dense-red-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1840823041
+},
+"red-ice": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1045518081
+},
+"arkycite-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1433418751
+},
+"arkyic-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 944321279
+},
+"rhyolite-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1109597951
+},
+"carbon-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 387522559
+},
+"arkyic-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 674638335
+},
+"yellow-stone-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1547183871
+},
+"red-stone-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1814968319
+},
+"crystalline-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 521937663
+},
+"stone-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 858863871
+},
+"basalt-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 639837439
+},
+"redmat": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1160456959
+},
+"bluemat": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 757547263
+},
+"grass": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1417955839
+},
+"salt": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1128415233
+},
+"snow": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1279804417
+},
+"ice": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1566391553
+},
+"ice-snow": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1667318785
+},
+"shale": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1246127615
+},
+"moss": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1446403327
+},
+"core-zone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1801145343
+},
+"spore-moss": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1446537471
+},
+"stone-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 2054848511
+},
+"spore-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1957259777
+},
+"dirt-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1883652351
+},
+"dacite-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1600014081
+},
+"ice-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -741212161
+},
+"snow-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -268959745
+},
+"dune-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1515805183
+},
+"regolith-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -895853825
+},
+"yellow-stone-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1536210689
+},
+"rhyolite-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1967471103
+},
+"carbon-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1145852415
+},
+"ferric-stone-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1835228415
+},
+"beryllic-stone-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1314738431
+},
+"arkyic-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1736726271
+},
+"crystalline-stone-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1784310271
+},
+"red-ice-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -69409793
+},
+"red-stone-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1152165377
+},
+"red-diamond-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -478058753
+},
+"sand-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -2114305
+},
+"salt-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -185008129
+},
+"shrubs": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1891330047
+},
+"shale-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1920246015
+},
+"spore-pine": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1840343809
+},
+"snow-pine": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -285736961
+},
+"pine": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1520393471
+},
+"white-tree-dead": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -504693505
+},
+"white-tree": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -690226689
+},
+"spore-cluster": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -994903297
+},
+"redweed": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -579907841
+},
+"pur-bush": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1549313279
+},
+"yellowcoral": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -427669249
+},
+"boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 2088534527
+},
+"snow-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -268959745
+},
+"shale-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 2004527615
+},
+"sand-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -2246145
+},
+"dacite-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1448427777
+},
+"basalt-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1532648191
+},
+"carbon-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1196381439
+},
+"ferric-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1902534655
+},
+"beryllic-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1365332991
+},
+"yellow-stone-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1603516929
+},
+"arkyic-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1702974975
+},
+"crystal-cluster": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -2073197825
+},
+"vibrant-crystal-cluster": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1182878721
+},
+"crystal-blocks": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -811508993
+},
+"crystal-orbs": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 2090623743
+},
+"crystalline-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1733715711
+},
+"red-ice-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -19078657
+},
+"rhyolite-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1771811841
+},
+"red-stone-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1135257089
+},
+"metal-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1431789823
+},
+"metal-floor-damaged": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1398038271
+},
+"metal-floor-2": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1347508991
+},
+"metal-floor-3": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1515939327
+},
+"metal-floor-4": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1566534399
+},
+"metal-floor-5": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1817726207
+},
+"dark-panel-1": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1010714623
+},
+"dark-panel-2": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1094600191
+},
+"dark-panel-3": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 993805823
+},
+"dark-panel-4": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1128615935
+},
+"dark-panel-5": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1178815487
+},
+"dark-panel-6": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1313164543
+},
+"dark-metal": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 2122354687
+},
+"pebbles": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1212632063
+},
+"tendrils": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1379162623
+},
+"ore-copper": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -643992577
+},
+"ore-lead": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1937790465
+},
+"ore-scrap": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 2004318207
+},
+"ore-coal": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 656877567
+},
+"ore-titanium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1918770177
+},
+"ore-thorium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -106706945
+},
+"ore-beryllium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 982476031
+},
+"ore-tungsten": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1988795135
+},
+"ore-crystal-thorium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -106706945
+},
+"ore-wall-thorium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -106706945
+},
+"ore-wall-beryllium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 982476031
+},
+"graphitic-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1348103167
+},
+"ore-wall-tungsten": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1988795135
+},
+"graphite-press": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1818779137
+},
+"multi-press": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1902994433
+},
+"silicon-smelter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1987275521
+},
+"silicon-crucible": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1970432513
+},
+"kiln": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1550148353
+},
+"plastanium-compressor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1363760385
+},
+"phase-weaver": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -961503745
+},
+"surge-smelter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1264150273
+},
+"cryofluid-mixer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1683899649
+},
+"pyratite-mixer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1163024129
+},
+"blast-mixer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1163417601
+},
+"melter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1147562497
+},
+"separator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1331912705
+},
+"disassembler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1264935937
+},
+"spore-press": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1616922369
+},
+"pulverizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -2105175553
+},
+"coal-centrifuge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1313167361
+},
+"incinerator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1922011393
+},
+"silicon-arc-furnace": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1936618495
+},
+"electrolyzer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1938063103
+},
+"atmospheric-concentrator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2121686017
+},
+"oxidation-chamber": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1904639743
+},
+"electric-heater": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -2004908033
+},
+"slag-heater": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1803780353
+},
+"phase-heater": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1802925825
+},
+"heat-redirector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2004908033
+},
+"small-heat-redirector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1971353857
+},
+"heat-router": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2055304961
+},
+"slag-incinerator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1601928193
+},
+"carbide-crucible": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1602257665
+},
+"slag-centrifuge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1770226433
+},
+"surge-crucible": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1887076097
+},
+"cyanogen-synthesizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2054379777
+},
+"phase-synthesizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1618181889
+},
+"heat-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2005171457
+},
+"copper-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -962887169
+},
+"copper-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -946109953
+},
+"titanium-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 2140139007
+},
+"titanium-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 2123361535
+},
+"plastanium-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -487483393
+},
+"plastanium-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -605318913
+},
+"thorium-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1904101889
+},
+"thorium-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1904101889
+},
+"phase-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1984769
+},
+"phase-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -2379777
+},
+"surge-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -35815681
+},
+"surge-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -35881217
+},
+"door": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1616200961
+},
+"door-large": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": -1666926849
+},
+"scrap-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1515207681
+},
+"scrap-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1447769857
+},
+"scrap-wall-huge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1481456129
+},
+"scrap-wall-gigantic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1481390337
+},
+"thruster": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1616331521
+},
+"beryllium-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 1722252031
+},
+"beryllium-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 1587180287
+},
+"tungsten-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -2105241089
+},
+"tungsten-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 2105511167
+},
+"blast-door": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": 2038663679
+},
+"reinforced-surge-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1538561
+},
+"reinforced-surge-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1932289
+},
+"carbide-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1534413313
+},
+"carbide-wall-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1669025537
+},
+"shielded-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -2379521
+},
+"mender": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1783191041
+},
+"mend-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1766413825
+},
+"overdrive-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1214144001
+},
+"overdrive-dome": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1163944193
+},
+"force-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1331058433
+},
+"shock-mine": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1499162111
+},
+"radar": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1853588225
+},
+"build-tower": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2106166017
+},
+"regen-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2138595841
+},
+"shockwave-tower": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1803450881
+},
+"shield-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1819768833
+},
+"large-shield-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1836546049
+},
+"conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1869708543
+},
+"titanium-conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1735299839
+},
+"plastanium-conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1954179583
+},
+"armored-conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1751417855
+},
+"junction": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -2122083841
+},
+"bridge-conveyor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 2088602367
+},
+"phase-conveyor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1129602305
+},
+"sorter": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1852865791
+},
+"inverted-sorter": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 2004056831
+},
+"router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 2021296383
+},
+"distributor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": 2105511167
+},
+"overflow-gate": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1886551807
+},
+"underflow-gate": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 2037743103
+},
+"mass-driver": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1617059329
+},
+"duct": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1970700799
+},
+"armored-duct": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -2037473281
+},
+"duct-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -2122084609
+},
+"overflow-duct": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 2105511167
+},
+"underflow-duct": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -2054910721
+},
+"duct-bridge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 1937015295
+},
+"duct-unloader": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1936811521
+},
+"surge-conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1938330369
+},
+"surge-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1163749889
+},
+"unit-cargo-loader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1567784193
+},
+"unit-cargo-unload-point": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1752463361
+},
+"mechanical-pump": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1533173249
+},
+"rotary-pump": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1801664769
+},
+"impulse-pump": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1885745153
+},
+"conduit": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1734498817
+},
+"pulse-conduit": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1952988673
+},
+"plated-conduit": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1970952193
+},
+"liquid-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1768249345
+},
+"liquid-container": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1717517313
+},
+"liquid-tank": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1767980033
+},
+"liquid-junction": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1380663553
+},
+"bridge-conduit": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1515538945
+},
+"phase-conduit": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1818442241
+},
+"reinforced-pump": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 2106032895
+},
+"reinforced-conduit": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -2052356609
+},
+"reinforced-liquid-junction": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1918594561
+},
+"reinforced-bridge-conduit": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 1921874431
+},
+"reinforced-liquid-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 1938127871
+},
+"reinforced-liquid-container": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 1904705279
+},
+"reinforced-liquid-tank": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1954709759
+},
+"power-node": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -994336513
+},
+"power-node-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -926965249
+},
+"surge-tower": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -776366081
+},
+"diode": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1583374593
+},
+"battery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -927490049
+},
+"battery-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -978149889
+},
+"combustion-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1113025281
+},
+"thermal-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1113612545
+},
+"steam-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1213225729
+},
+"differential-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1045192705
+},
+"rtg-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -2055298561
+},
+"solar-panel": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1936547329
+},
+"solar-panel-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2138859777
+},
+"thorium-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2105632001
+},
+"impact-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1315464705
+},
+"beam-node": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 1989181183
+},
+"beam-tower": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1954972671
+},
+"beam-link": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1938653439
+},
+"turbine-condenser": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1870822913
+},
+"chemical-combustion-chamber": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1971815167
+},
+"pyrolysis-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1938259967
+},
+"flux-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -1903853057
+},
+"neoplasia-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -1803582465
+},
+"mechanical-drill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1618048769
+},
+"pneumatic-drill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1768184065
+},
+"laser-drill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1718045953
+},
+"blast-drill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1432838913
+},
+"water-extractor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1852263681
+},
+"cultivator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1835817217
+},
+"oil-extractor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1549098241
+},
+"vent-condenser": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1854175999
+},
+"cliff-crusher": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1803188993
+},
+"large-cliff-crusher": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1971355393
+},
+"plasma-bore": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1383168513
+},
+"large-plasma-bore": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1618509057
+},
+"impact-drill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1820359937
+},
+"eruption-drill": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -2138661377
+},
+"core-shard": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -944330753
+},
+"core-foundation": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -843734785
+},
+"core-nucleus": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -776626689
+},
+"core-bastion": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1517123585
+},
+"core-citadel": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -1281849601
+},
+"core-acropolis": {
+	"synthetic": true,
+	"solid": true,
+	"size": 6,
+	"color": -1365866753
+},
+"container": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1196446465
+},
+"vault": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1145983745
+},
+"unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1432115969
+},
+"reinforced-container": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1617983489
+},
+"reinforced-vault": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1701999617
+},
+"duo": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1870494977
+},
+"scatter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 2139196159
+},
+"scorch": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1802727169
+},
+"hail": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1769173249
+},
+"wave": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1701536257
+},
+"lancer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1767915265
+},
+"arc": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1785090561
+},
+"parallax": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1481851649
+},
+"swarmer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1787267329
+},
+"salvo": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1835815425
+},
+"segment": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1398164993
+},
+"tsunami": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2088198913
+},
+"fuse": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 2088934399
+},
+"ripple": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1954445825
+},
+"cyclone": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1852929281
+},
+"foreshadow": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1987673345
+},
+"spectre": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1920826113
+},
+"meltdown": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -2021818369
+},
+"breach": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1701999615
+},
+"diffuse": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 2003596031
+},
+"sublimate": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1986887935
+},
+"titan": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 2003727615
+},
+"disperse": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 1953989887
+},
+"afflict": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 2037806847
+},
+"lustre": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 1920303871
+},
+"scathe": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 2138076415
+},
+"smite": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -2106099969
+},
+"malign": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -2139911937
+},
+"ground-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1853255425
+},
+"air-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2104257537
+},
+"naval-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -2121818113
+},
+"additive-reconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1987539201
+},
+"multiplicative-reconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -2004315905
+},
+"exponential-reconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 7,
+	"color": -1987538945
+},
+"tetrative-reconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 9,
+	"color": -1970894081
+},
+"repair-point": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 2106428927
+},
+"repair-turret": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -2036689153
+},
+"tank-fabricator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1986621183
+},
+"ship-fabricator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1785232895
+},
+"mech-fabricator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1802469631
+},
+"tank-refabricator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1919314431
+},
+"ship-refabricator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1734637823
+},
+"mech-refabricator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1751940351
+},
+"prime-refabricator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 1953328895
+},
+"tank-assembler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -2123006977
+},
+"ship-assembler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 1987283455
+},
+"mech-assembler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 2004585727
+},
+"basic-assembler-module": {
+	"synthetic": true,
+	"solid": false,
+	"size": 5,
+	"color": 2020436735
+},
+"unit-repair-tower": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 1921614335
+},
+"payload-conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 3,
+	"color": 1836088063
+},
+"payload-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 3,
+	"color": 1987675647
+},
+"reinforced-payload-conveyor": {
+	"synthetic": true,
+	"solid": false,
+	"size": 3,
+	"color": 1297045503
+},
+"reinforced-payload-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 3,
+	"color": 1515938815
+},
+"payload-mass-driver": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 2054255615
+},
+"large-payload-mass-driver": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -2105967873
+},
+"small-deconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 2070902015
+},
+"deconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": -2123600385
+},
+"constructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1970106367
+},
+"large-constructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 1953263615
+},
+"payload-loader": {
+	"synthetic": true,
+	"solid": false,
+	"size": 3,
+	"color": 1482057727
+},
+"payload-unloader": {
+	"synthetic": true,
+	"solid": false,
+	"size": 3,
+	"color": 1650220543
+},
+"power-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -994926337
+},
+"power-void": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1365538305
+},
+"item-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1870761473
+},
+"item-void": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1854049537
+},
+"liquid-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1247438849
+},
+"liquid-void": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1146512129
+},
+"payload-source": {
+	"synthetic": true,
+	"solid": false,
+	"size": 5,
+	"color": -1937604609
+},
+"payload-void": {
+	"synthetic": true,
+	"solid": false,
+	"size": 5,
+	"color": -1887403009
+},
+"heat-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1836611329
+},
+"illuminator": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -1380794881
+},
+"legacy-mech-pad": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"legacy-unit-factory": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"legacy-unit-factory-air": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"legacy-unit-factory-ground": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"command-center": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": 255
+},
+"launch-pad": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1247371265
+},
+"advanced-launch-pad": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1465603841
+},
+"landing-pad": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": -1415207169
+},
+"interplanetary-accelerator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 7,
+	"color": -1331058177
+},
+"message": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -2071750913
+},
+"switch": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 2071564543
+},
+"micro-processor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1600731649
+},
+"logic-processor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -1600470785
+},
+"hyper-processor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": -1600731905
+},
+"memory-cell": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -2072142337
+},
+"memory-bank": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": -2072338689
+},
+"logic-display": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 1903265535
+},
+"large-logic-display": {
+	"synthetic": true,
+	"solid": true,
+	"size": 6,
+	"color": 1751677951
+},
+"tile-logic-display": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -2071422977
+},
+"canvas": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 1548899839
+},
+"reinforced-message": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -2088990977
+},
+"world-processor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -911303425
+},
+"world-cell": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1802927361
+},
+"world-message": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1970697473
+},
+"world-switch": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": -2055241217
+}
+}

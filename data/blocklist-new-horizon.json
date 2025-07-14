@@ -1,0 +1,1466 @@
+{
+"new-horizon-blaster": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-reinforced-liquid-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-reinforced-item-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-fire-extinguisher": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-air-raider": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-remote-vault": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-unit-initer": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-bomb-launcher": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-hyper-space-warper": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-large-mend-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-large-water-extractor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-multiple-artillery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-hive": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-ancient-artillery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 8,
+	"color": 255
+},
+"new-horizon-prism": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-interferon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-beam-laser-turret": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-antibody": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-webber": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-gravity": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-eternity": {
+	"synthetic": true,
+	"solid": true,
+	"size": 16,
+	"color": 255
+},
+"new-horizon-anti-bullet-turret": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-pulse-shotgun": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-dendrite": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-atom-separator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-blood-star": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-multiple-launcher": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-thermo-turret": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-rail-gun": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-end-of-era": {
+	"synthetic": true,
+	"solid": true,
+	"size": 8,
+	"color": 255
+},
+"new-horizon-executor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 6,
+	"color": 255
+},
+"new-horizon-ore-zeta": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -5339137
+},
+"new-horizon-metal-scrap": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1751874559
+},
+"new-horizon-metal-unit-quantum": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1684165889
+},
+"new-horizon-metal-unit": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1684165889
+},
+"new-horizon-armor-clear": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-conglomerate-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1953658367
+},
+"new-horizon-conglomerate-rock": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1246318079
+},
+"new-horizon-metal-ground-heat": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1384125441
+},
+"new-horizon-quantum-field": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1384125441
+},
+"new-horizon-quantum-field-deep": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1856253953
+},
+"new-horizon-quantum-field-disturbing": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1586436865
+},
+"new-horizon-metal-tower": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1684165889
+},
+"new-horizon-metal-ground": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-metal-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 235870207
+},
+"new-horizon-metal-ground-quantum": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-hydro-fuel-cell": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-huge-battery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-large-armor-battery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-hyper-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 8,
+	"color": 255
+},
+"new-horizon-link-entity-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-link-entity-liquid-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-placeholder-entity-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-link-entity-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-link-entity-liquid-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-placeholder-entity-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-link-entity-3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-link-entity-liquid-3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-placeholder-entity-3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-link-entity-4": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-link-entity-liquid-4": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-placeholder-entity-4": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-processor-t1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-processor-t2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-processor-t3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-processor-t4": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-processor-t5": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-armor-t1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-armor-t2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-armor-t3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-armor-t4": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-armor-t5": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-core-t1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-core-t2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-core-t3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-core-t4": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-core-t5": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-speed-module-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-speed-module-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-speed-module-3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-efficiency-module-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-efficiency-module-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-efficiency-module-3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-productivity-module-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-productivity-module-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-productivity-module-3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-wiring-kit": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-power-unit": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-bionics-processor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-memory-recalibrator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-resisto-array": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-crystal-diode": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-proton-capacitor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-hadron-buffers": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-tachyon-emitter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-neutron-membrane": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-armor-cast": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-heat-detector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-gauss-receptor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-echo-canceller": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-pulse-mutator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-power-cell": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-fission-cell": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-charge-compensator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-fusion-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-multiphase-propellant": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-supra-gel": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-cooling-unit": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-signal-circulator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-particle-modulator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-quantum-conductor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-xen-extractor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-resonance-mining-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-beam-mining-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-implosion-mining-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-speed-module": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-speed-module-mk2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-refine-module": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-convertor-module": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-delivery-module": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-synchro": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-argmot": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-slavio": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-concentration": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-electro": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-presstanium-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-refactoring-multi-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-seton-phased-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-shaped-wall": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-standard-shield-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-large-shield-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-rift-shield": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-metal-floor-groove": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-metal-floor-deep-groove": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-metal-floor-ridge": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-metal-floor-high-ridge": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-armor-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1734964991
+},
+"new-horizon-armor-ancient": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -660640769
+},
+"new-horizon-armor-ancient-sub": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -219645697
+},
+"new-horizon-armor-quantum": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
+"new-horizon-plating-metal-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 926433791
+},
+"new-horizon-lab-floor-light": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 926433791
+},
+"new-horizon-lab-floor-dark": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 926433791
+},
+"new-horizon-line-marking-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 0
+},
+"new-horizon-line-marking-floor-quantum": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 0
+},
+"new-horizon-line-marking-floor-quantum-dark": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 0
+},
+"new-horizon-line-marking-floor-ancient": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 0
+},
+"new-horizon-line-marking-floor-ancient-dark": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 0
+},
+"new-horizon-pattern-plate-0": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1935021825
+},
+"new-horizon-pattern-plate-1": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1935021825
+},
+"new-horizon-nexus-core": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-standard-storage": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-heavy-storage": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-junior-module-beacon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-senior-module-beacon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-device-test": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-sand-cracker": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-oil-refiner": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-convertor-tungsten": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-convertor-titanium": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-xen-refinery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-zeta-crafter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-stamping-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-processor-printer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-crucible-foundry": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-crucible-caster": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-crystallizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-zeta-dissociator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-surge-refactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-fabric-synthesizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-multiple-steel-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-processor-encoder": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-irdryon-mixer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-multiple-foundry": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-processor-compactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-irayrond-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-plastanium-crafter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-seton-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-ancimembrane-concentrator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-upgradeSort-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-electronic-facility-basic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-electronic-facility-rare": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-electronic-facility-uncommon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-electronic-facility-epic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 6,
+	"color": 255
+},
+"new-horizon-electronic-facility-legendary": {
+	"synthetic": true,
+	"solid": true,
+	"size": 6,
+	"color": 255
+},
+"new-horizon-particle-processor-basic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-particle-processor-rare": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-particle-processor-uncommon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-particle-processor-epic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-particle-processor-legendary": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-foundry-basic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-foundry-rare": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-foundry-uncommon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-foundry-epic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-foundry-legendary": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-power-basic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-power-rare": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-power-uncommon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-power-epic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-power-legendary": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-component-basic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-component-rare": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-component-uncommon": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-component-epic": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-component-legendary": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-gravity-node-serpulo": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-gravity-node-erekir": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-gravity-trap": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-gravity-trap-heavy": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-zeta-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-anode-fusion-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-cathode-fusion-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-thermo-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-icon-display": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-turbo-pump-small": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-turbo-pump": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-standard-liquid-storage": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-heavy-liquid-storage": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-primary-jump-gate": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-standard-jump-gate": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
+"new-horizon-hyper-jump-gate": {
+	"synthetic": true,
+	"solid": true,
+	"size": 8,
+	"color": 255
+},
+"new-horizon-hard-light-rail": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-stack-rail": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-steady-stack-rail": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-light-stack-loader": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-heavy-stack-loader": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-bridge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-extend-bridge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-junction": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-directional-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-directional-merger": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-directional-gate": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-omni-gate": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-omni-sorter": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-omni-blocker": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-rapid-unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-conduit": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-liquid-junction": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-liquid-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-liquid-bridge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-extend-liquid-bridge": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-logistics-liquid-unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-module-rail": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+}
+}

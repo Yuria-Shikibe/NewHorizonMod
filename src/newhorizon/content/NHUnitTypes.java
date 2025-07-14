@@ -2107,14 +2107,13 @@ public class NHUnitTypes {
 
                             if (!Vars.headless && Mathf.chanceDelta(0.1))
                                 PosLightning.createEffect(b, Tmp.v1.set(x, y), b.team.color, 1, 2.2f);
-                            if (b.owner instanceof Healthc) {
-                                Healthc h = (Healthc) b.owner;
+                            if (b.owner instanceof Healthc h) {
                                 h.heal(80);
                             }
                         }
 
                         public void applyDamage(Bullet b) {
-                            Damage.collideLine(b, b.team, Fx.none, b.x, b.y, b.rotation(), currentLength(b), largeHit, laserAbsorb, pierceCap);
+                            Damage.collideLine(b, b.team, b.x, b.y, b.rotation(), currentLength(b), largeHit, laserAbsorb, pierceCap);
                         }
 
                         @Override
@@ -2722,7 +2721,7 @@ public class NHUnitTypes {
 
                                     //damage every 5 ticks
                                     if (b.timer(1, 5f)) {
-                                        Damage.collideLine(b, b.team, hitEffect, b.x, b.y, b.rotation(), maxRange, true, false);
+                                        Damage.collideLine(b, b.team, b.x, b.y, b.rotation(), maxRange, true, false);
                                     }
 
                                     if (shake > 0) {
