@@ -1688,7 +1688,7 @@ public class NHBullets {
             statusDuration = 120f;
         }};
 
-        laugraBullet = new AccelBulletType(2000, 500) {
+        laugraBullet = new AccelBulletType(2000, STRIKE) {
             {
                 status = NHStatusEffects.entangled;
                 statusDuration = 320f;
@@ -1723,7 +1723,7 @@ public class NHBullets {
                 lightningLengthRand = 16;
 
                 splashDamageRadius = 36f;
-                splashDamage = damage / 2f;
+                splashDamage = damage / 4f;
 
                 width = 13f;
                 height = 35f;
