@@ -55,7 +55,7 @@ public class UnitRecipeRegister {
         });
         
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cyerce, 10 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.titanium, 180, NHItems.zetas, 80);
+            recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.titanium, 180, NHItems.zeta, 80);
         });
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cyerce, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 4, ModuleBlock.armorCast, 4, ModuleBlock.powerCell, 2);
