@@ -93,7 +93,7 @@ public class UnitRecipeRegister {
         });
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.gather, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 4, ModuleBlock.heatDetector, 4, ModuleBlock.fissionCelll, 2, ModuleBlock.supraGel, 2);
-        })
+        });
 
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.naxos, 10 * 60f, recipe -> {
             recipe.inputItem = ItemStack.list(Items.silicon, 10, Items.titanium, 15);
