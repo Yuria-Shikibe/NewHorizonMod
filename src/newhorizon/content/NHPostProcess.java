@@ -1031,9 +1031,7 @@ public class NHPostProcess {
 
             meltDownType.length += 80f;
             meltDownType.damage += 20f;
-            meltDownType.splashDamage += 10f;
-            meltDownType.splashDamageRadius += 10f;
-
+		
             turret.range += 80f;
             turret.shootDuration += 60f;
         });
