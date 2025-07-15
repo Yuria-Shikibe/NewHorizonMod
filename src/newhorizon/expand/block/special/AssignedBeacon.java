@@ -5,22 +5,19 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Image;
-import arc.scene.ui.ImageButton;
-import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
+import arc.struct.IntFloatMap;
+import arc.struct.ObjectFloatMap;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.content.Blocks;
 import mindustry.gen.Building;
-import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -28,44 +25,29 @@ import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
 import mindustry.logic.Ranged;
 import mindustry.type.ItemStack;
-import mindustry.type.PayloadSeq;
+import mindustry.type.PayloadStack;
 import mindustry.ui.Bar;
-import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NHGroups;
-import newhorizon.content.NHFx;
 import newhorizon.content.NHStats;
-import newhorizon.content.blocks.ModuleBlock;
+import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
+import newhorizon.util.graphic.DrawFunc;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static mindustry.Vars.*;
-import static newhorizon.NHVars.worldData;
 
 public class AssignedBeacon extends Block {
-    public float[][] boosts = new float[][]{
-            {1.5f, 0.5f, 0f},
-            {2.0f, 1.0f, 0f},
-            {2.5f, 1.5f, 0f},
-
-            {1.6f, -0.5f, 0.25f},
-            {2.5f, -1.0f, 0.5f},
-            {3.0f, -1.5f, 1f},
-
-            {0.5f, 0f, 0f},
-            {0.3f, 0f, 0f},
-            {0.2f, 0f, 0f},
-    };
-
     public float range = 60f;
-    public float powerCons = 600 / 60f;
+
+    public float maxBoostScl = 2f;
+    public float maxProductivity = 0.5f;
 
     public int maxLink = 4;
-    public int maxSlot = 2;
 
     public Color overdriveColor = Color.valueOf("feb380");
 
@@ -77,57 +59,35 @@ public class AssignedBeacon extends Block {
         saveConfig = true;
         copyConfig = true;
 
-        schematicPriority = 30;
+        canOverdrive = false;
+        schematicPriority = -30;
 
         size = 3;
 
-        config(Block.class, (AssignedBeaconBuild entity, Block block) -> entity.addModulePlan(getModuleId(block)));
-        config(Integer.class, AssignedBeaconBuild::addLink);
-        config(Integer[].class, (AssignedBeaconBuild entity, Integer[] data) -> {
-            if (data.length != maxLink + maxSlot) {
-                Log.info("[AssignedBeacon] Invalid config: " + Arrays.toString(data));
-                return;
+        config(Integer.class, AssignedBeaconBuild::handleLink);
+        config(Point2[].class, (AssignedBeaconBuild entity, Point2[] data) -> {
+            for (int i = 0; i < data.length - 1; i++) {
+                Point2 p = data[i];
+                entity.handleLink(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
             }
-            for (int i = 0; i < maxSlot; i++) {
-                entity.modulePlans[i] = data[i];
-            }
-            for (int i = 0; i < maxLink; i++) {
-                Point2 p = Point2.unpack(data[i + maxSlot]);
-                entity.addLink(Point2.pack(p.x + entity.tileX(), p.y + entity.tileY()));
-            }
+            entity.handleScale(data[data.length - 1].x / 10f);
         });
-        configClear((AssignedBeaconBuild entity) -> Arrays.fill(entity.targets, -1));
+        config(Float.class, AssignedBeaconBuild::handleScale);
 
-        consumePowerDynamic((AssignedBeaconBuild entity) -> entity.powerMul * powerCons);
-        canOverdrive = false;
-    }
-
-    //ye this is hardcoded here so this is a todo
-    public @Nullable Block getModule(int num) {
-        return null;
-    }
-
-    //uhhhh
-    public @Nullable int getModuleId(Block module) {
-        return -1;
+        configClear((AssignedBeaconBuild entity) -> entity.linkBuilds.clear());
     }
 
     @Override
     public void setBars() {
         super.setBars();
         addBar("speedMul", (AssignedBeaconBuild e) -> new Bar(
-                () -> Core.bundle.format("nh.bar.speed-boost", Strings.autoFixed((e.speedMul - 1f) * 100, 0)),
+                () -> Core.bundle.format("nh.bar.speed-boost", "+" + Strings.autoFixed(((1 - e.balance) * maxBoostScl) * 100, 0)),
                 () -> Pal.techBlue,
                 () -> 1f
         ));
         addBar("productivityMul", (AssignedBeaconBuild e) -> new Bar(
-                () -> Core.bundle.format("nh.bar.productivity-boost", Strings.autoFixed((e.craftMul) * 100, 0)),
+                () -> Core.bundle.format("nh.bar.productivity-boost", Strings.autoFixed((e.balance * maxProductivity) * 100, 0)),
                 () -> Pal.ammo,
-                () -> 1f
-        ));
-        addBar("powerMul", (AssignedBeaconBuild e) -> new Bar(
-                () -> Core.bundle.format("nh.bar.power-multiplier", Strings.autoFixed(e.powerMul, 1)),
-                () -> Pal.heal,
                 () -> 1f
         ));
     }
@@ -135,230 +95,95 @@ public class AssignedBeacon extends Block {
     @Override
     public void setStats() {
         super.setStats();
-        stats.add(Stat.booster, table -> {
-            for (int i = 0; i < 9; i++) {
-                table.row();
-                int finalI = i;
-                table.table(c -> c.table(Styles.grayPanel, b -> {
-                    b.table(it -> it.table(t -> {
-                        t.image(getModule(finalI).uiIcon).size(iconXLarge).padRight(3);
-                        t.add(getModule(finalI).localizedName).padRight(3);
-                    }).pad(10f).padLeft(15f).left()).left();
-
-                    b.table(bt -> {
-                        bt.right().defaults().padRight(3).left();
-                        if (boosts[finalI][0] != 0)
-                            bt.add(Core.bundle.format("nh.stat.cons-extra", (boosts[finalI][0] > 1 ? "[red]" : "") + Strings.autoFixed(boosts[finalI][0], 1))).row();
-                        if (boosts[finalI][1] != 0)
-                            bt.add(Core.bundle.format("nh.stat.speed-bonus", (boosts[finalI][1] > 0 ? "+" : "[red]") + Strings.autoFixed(boosts[finalI][1] * 100, 1))).row();
-                        if (boosts[finalI][2] != 0)
-                            bt.add(Core.bundle.format("nh.stat.productivity-bonus", Strings.autoFixed(boosts[finalI][2] * 100, 1))).row();
-                    }).right().top().grow().pad(10f).padRight(15f);
-                }).growX().pad(5).padBottom(5).row()).growX().colspan(table.getColumns());
-                table.row();
-            }
-        });
-        stats.add(Stat.powerUse, powerCons, StatUnit.powerSecond);
-        stats.add(NHStats.maxModules, maxSlot, StatUnit.none);
         stats.add(NHStats.maxLinks, maxLink, StatUnit.none);
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
     public class AssignedBeaconBuild extends Building implements Ranged {
-        public Seq<Building> buildings = new Seq<>();
-        public float progress;
-        public float powerMul = 1f;
-        public float speedMul = 1f;
-        public float craftMul = 0f;
-        public int[] targets = new int[maxLink];
-        public float[] targetProgress = new float[maxLink];
-        public int[] modulePlans = new int[maxSlot];
-        public int[] modules = new int[maxSlot];
+        public ObjectFloatMap<Building> linkBuilds = new ObjectFloatMap<>();
+        public IntFloatMap buffer;
+        public float balance = 0f;
 
         @Override
         public void updateTile() {
+            if (buffer != null) {
+                buffer.forEach(buffer -> {
+                    Building b = world.build(buffer.key);
+                    if (b != null) {
+                        linkBuilds.put(b, buffer.value);
+                    }
+                });
+                buffer = null;
+            }
             super.updateTile();
             checkLinks();
             NHGroups.beaconBoostLinks.put(this, linkBuilds());
+            updateLink();
+        }
 
-            for (int i = 0; i < maxSlot; i++) {
-                PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
-                //has plans, skip check if sandbox
-                if (modulePlans[i] != -1 && modules[i] == -1 && (state.rules.infiniteResources || (getModule(modulePlans[i]) != null && teamPayload.get(getModule(modulePlans[i])) > 0))) {
-                    if (!state.rules.infiniteResources) teamPayload.remove(getModule(modulePlans[i]), 1);
-                    modules[i] = modulePlans[i];
-                }
-                //has plans but wrong module or no plans but has module
-                if ((modulePlans[i] != -1 && modules[i] != modulePlans[i]) || (modulePlans[i] == -1 && modules[i] != -1)) {
-                    //tag as removed
-                    modules[i] = -1;
-                }
-            }
+        public Seq<Building> linkBuilds() {
+            return linkBuilds.keys().toArray();
+        }
 
-            applyAllModules();
-
-            if (efficiency < 0.8f) return;
-
-            progress += edelta();
-            for (int i = 0; i < targets.length; i++) {
-                Building b = Vars.world.build(targets[i]);
-                if (b instanceof GenericCrafter.GenericCrafterBuild gcb) {
-                    if (gcb.block instanceof GenericCrafter gc && gc.canOverdrive) {
-                        if (craftMul > 0f) {
-                            targetProgress[i] += gcb.edelta() * craftMul;
-                            float craftTime = gc.craftTime;
-
-                            if (targetProgress[i] > craftTime) {
-                                if (gcb.items != null && gc.outputItems != null) {
-                                    for (ItemStack stack : gc.outputItems) {
-                                        gcb.items.add(stack.item, stack.amount);
+        public void updateLink(){
+            float boost = (1 - balance) * maxBoostScl;
+            float prod = balance * maxProductivity;
+            linkBuilds().each(b -> {
+                b.applyBoost(boost * efficiency + 1, 10f);
+                if (prod == 0f) return;
+                float progress = linkBuilds.get(b, 0f);
+                if (b.block instanceof GenericCrafter crafter && b instanceof GenericCrafter.GenericCrafterBuild build){
+                    progress += getProgressIncrease(crafter.craftTime / prod / efficiency) * build.efficiency;
+                    if (progress >= 1f){
+                        if (b.block instanceof RecipeGenericCrafter crafter1 && b instanceof RecipeGenericCrafter.RecipeGenericCrafterBuild build1){
+                            if (build1.getRecipe() != null){
+                                if (crafter1.outputItems != null){
+                                    for (ItemStack stack : crafter1.outputItems) {
+                                        build.items.add(stack.item, (int) (stack.amount * build1.getRecipe().craftScl));
                                     }
                                 }
-
-                                targetProgress[i] %= craftTime;
-                                NHFx.activeEffectSky.at(gcb);
+                                if (crafter1.outputPayloads != null){
+                                    for (PayloadStack stack : crafter1.outputPayloads) {
+                                        build.getPayloads().add(stack.item, (int) (stack.amount * build1.getRecipe().craftScl));
+                                    }
+                                }
+                            }
+                        }else {
+                            for (ItemStack stack : crafter.outputItems) {
+                                build.items.add(stack.item, stack.amount);
                             }
                         }
+                        progress %= 1f;
                     }
+                    linkBuilds.put(b, progress);
                 }
-            }
-
-            if (progress >= 60) {
-                for (int target : targets) {
-                    Building b = Vars.world.build(target);
-                    if (b != null) {
-                        if (speedMul > 1f) {
-                            b.applyBoost(speedMul, 90f);
-                        } else {
-                            b.applySlowdown(speedMul, 90f);
-                        }
-                    }
-                }
-                progress %= 60f;
-            }
-        }
-
-        @Override
-        public float progress() {
-            return progress;
-        }
-
-        //asdsadasdasdasdasdasdasdasd
-        public void applyModule(int num) {
-            switch (num) {
-                case 0 -> apply(boosts[0][0], boosts[0][1], boosts[0][2]);
-                case 1 -> apply(boosts[1][0], boosts[1][1], boosts[1][2]);
-                case 2 -> apply(boosts[2][0], boosts[2][1], boosts[2][2]);
-                case 3 -> apply(boosts[3][0], boosts[3][1], boosts[3][2]);
-                case 4 -> apply(boosts[4][0], boosts[4][1], boosts[4][2]);
-                case 5 -> apply(boosts[5][0], boosts[5][1], boosts[5][2]);
-                case 6 -> apply(boosts[6][0], boosts[6][1], boosts[6][2]);
-                case 7 -> apply(boosts[7][0], boosts[7][1], boosts[7][2]);
-                case 8 -> apply(boosts[8][0], boosts[8][1], boosts[8][2]);
-                default -> {
-                }
-            }
-        }
-
-        @Override
-        public void created() {
-            super.created();
-            Arrays.fill(targets, -1);
-            Arrays.fill(targetProgress, -1);
-            Arrays.fill(modulePlans, -1);
-            Arrays.fill(modules, -1);
-        }
-
-        @Override
-        public void buildConfiguration(Table table) {
-            table.table(t -> {
-                t.background(Styles.black6);
-                //t.label(() -> Arrays.toString(modulePlans) + Arrays.toString(modules)).row();
-                t.table(module -> {
-                    module.table(c -> {
-                        c.fill();
-                        for (int i = 0; i < maxSlot; i++) {
-                            int finalI = i;
-                            Image icon = new Image();
-                            Label label = new Label("");
-                            icon.update(() -> icon.setDrawable(getModule(modulePlans[finalI]) == null ? Icon.cancel.getRegion() : getModule(modulePlans[finalI]).region));
-                            icon.setScaling(Scaling.bounded);
-                            label.update(() -> label.setText(() -> modulePlans[finalI] == -1 ? "" : modules[finalI] == -1 ? Iconc.cancel + "" : Iconc.ok + ""));
-                            c.stack(icon, label).size(48, 48);
-                        }
-                    }).expandX().fillX();
-                    module.button("@clear", Styles.grayt, () -> configure(Blocks.air)).size(60, 0).expandY().fillY();
-                }).row();
-                t.table(select -> {
-                    for (int i = 0; i < 9; i++) {
-                        Block modulePlan = getModule(i);
-                        ImageButton button = select.button(Tex.whiteui, Styles.clearNonei, 48f, () -> configure(modulePlan)).get();
-                        button.getStyle().imageUp = new TextureRegionDrawable(getModule(i).uiIcon);
-                    }
-                });
             });
         }
 
-        public void addModulePlan(int module) {
-            if (module == -1) {
-                clearModulePlans();
-            } else {
-                for (int i = 0; i < maxSlot; i++) {
-                    if (modulePlans[i] == -1) {
-                        modulePlans[i] = module;
-                        return;
-                    }
-                }
-            }
-        }
-
-        public void clearModulePlans() {
-            PayloadSeq teamPayload = worldData.teamPayloadData.getPayload(team);
-            for (int i = 0; i < maxSlot; i++) {
-                Block b = getModule(modulePlans[i]);
-                if (b != null && modules[i] >= 0) teamPayload.add(b, 1);
-                modulePlans[i] = -1;
-                modules[i] = -1;
-            }
-        }
-
-        public void apply(float powerMul, float speedMul, float craftMul) {
-            this.powerMul *= powerMul;
-            this.speedMul += speedMul;
-            this.craftMul += craftMul;
-        }
-
-        public void applyAllModules() {
-            powerMul = 1f;
-            speedMul = 1f;
-            craftMul = 0f;
-
-            for (int module : modules) {
-                applyModule(module);
-            }
-
-            powerMul = Math.max(powerMul, 1f);
-            speedMul = Math.max(speedMul, 0f);
-            craftMul = Math.max(craftMul, 0f);
-        }
-
         @Override
-        //compressed for config use
-        public Integer[] config() {
-            Integer[] out = new Integer[maxSlot + maxLink];
-            for (int i = 0; i < maxSlot; i++) {
-                out[i] = modulePlans[i];
+        public Point2[] config() {
+            Point2[] out = new Point2[linkBuilds.size + 1];
+            for (int i = 0; i < linkBuilds.size; i++){
+                out[i] = new Point2(linkBuilds().get(i).tileX() - tileX(), linkBuilds().get(i).tileY() - tileY());
             }
-            for (int i = 0; i < maxLink; i++) {
-                Point2 p = Point2.unpack(targets[i]).sub(tile.x, tile.y);
-                out[i + maxSlot] = Point2.pack(p.x, p.y);
-            }
+            out[linkBuilds.size] = new Point2((int)(balance * 10), 0);
             return out;
         }
 
         @Override
+        public void buildConfiguration(Table table) {
+            table.table(inner -> {
+                inner.background(Tex.paneSolid);
+                inner.label(() -> "Boost Scale:+" + Strings.autoFixed(((1 - balance) * maxBoostScl) * 100, 0) + "%").left().growX().row();
+                inner.label(() -> "Productivity:" + Strings.autoFixed(balance * maxProductivity * 100, 0) + "%").left().growX().row();
+                inner.slider(0f, 1f, 0.1f, balance, this::configure).growX();
+            }).width(320f);
+
+        }
+
+        @Override
         public boolean onConfigureBuildTapped(Building other) {
-            if (other != null && linkValid(other) && containBuild(other)) {
+            if (other != null && linkValid(other) && !containBuild(other)) {
                 configure(other.pos());
                 return false;
             }
@@ -366,10 +191,10 @@ public class AssignedBeacon extends Block {
         }
 
         public boolean linkValid(Building b) {
-            return b != null && Math.abs(b.x - x) <= range() && Math.abs(b.y - y) <= range()
-                    && b.team == team && b.block.canOverdrive && b instanceof GenericCrafter.GenericCrafterBuild;
+            return b != null && b.isValid() && Math.abs(b.x - x) <= range() && Math.abs(b.y - y) <= range() && b.team == team && b.block.canOverdrive;
         }
 
+        @SuppressWarnings("all")
         public boolean containBuild(Building b) {
             AtomicBoolean contains = new AtomicBoolean(false);
             NHGroups.beaconBoostLinks.each((source, targets) -> {
@@ -377,50 +202,59 @@ public class AssignedBeacon extends Block {
                     contains.set(true);
                 }
             });
-            return !contains.get();
+            return contains.get();
         }
 
-        /**
-         * return all buildings from target IntSeq
-         */
-        public Seq<Building> linkBuilds() {
-            buildings.clear();
-            for (int pos : targets) {
-                Building b = Vars.world.build(pos);
-                if (b != null) buildings.add(b);
-            }
-            return buildings;
-        }
-
-        public void addLink(int value) {
+        public void handleLink(int value) {
             Building other = Vars.world.build(value);
-            if (other != null && linkValid(other) && containBuild(other)) {
-                //first check for duplicated position
-                for (int i = 0; i < targets.length; i++) {
-                    if (targets[i] == value) {
-                        targets[i] = -1;
-                        targetProgress[i] = -1;
-                        return;
-                    }
-                }
-                //-1 means empty slot, replace it
-                for (int i = 0; i < targets.length; i++) {
-                    if (targets[i] == -1) {
-                        targets[i] = value;
-                        targetProgress[i] = 0;
-                        resetTargetProgress(other, i);
-                        return;
-                    }
+            if (other != null && linkValid(other) && !containBuild(other)) {
+                if (linkBuilds().contains(other)) {
+                    linkBuilds.remove(other, 0f);
+                }else {
+                    if (linkBuilds.size >= maxLink) return;
+                    linkBuilds.put(other, 0f);
                 }
             }
         }
 
-        public void resetTargetProgress(Building other, int i) {
-            if (other.block instanceof GenericCrafter gc) targetProgress[i] = -gc.craftTime * craftMul;
+        public void handleScale(float value) {
+            balance = Mathf.clamp(value);
         }
 
         @Override
-        public void drawSelect() {
+        public void draw() {
+            super.draw();
+
+            float f = 1f - (Time.time / 100f) % 1f;
+
+            Draw.color(overdriveColor);
+            Draw.alpha(efficiency * Mathf.absin(Time.time, 50f / Mathf.PI2, 1f) * 0.5f);
+            Draw.alpha(1f);
+            Lines.stroke((2f * f + 0.1f) * efficiency);
+
+            float r = Math.max(0f, Mathf.clamp(2f - f * 2f) * size * tilesize / 2f - f - 0.2f), w = Mathf.clamp(0.5f - f) * size * tilesize;
+            Lines.beginLine();
+            for(int i = 0; i < 4; i++){
+                Lines.linePoint(x + Geometry.d4(i).x * r + Geometry.d4(i).y * w, y + Geometry.d4(i).y * r - Geometry.d4(i).x * w);
+                if(f < 0.5f) Lines.linePoint(x + Geometry.d4(i).x * r - Geometry.d4(i).y * w, y + Geometry.d4(i).y * r + Geometry.d4(i).x * w);
+            }
+            Lines.endLine(true);
+
+            Draw.reset();
+        }
+
+        @Override
+        public void drawConfigure() {
+            Drawf.dashSquare(Pal.accent, x, y, range() * 2);
+
+            NHGroups.beaconBoostLinks.keys().toSeq().each(b -> {
+                if (b instanceof AssignedBeaconBuild build) {
+                    build.drawConnect();
+                }
+            });
+        }
+
+        public void drawConnect(){
             Draw.z(Layer.blockOver);
             Draw.color(overdriveColor);
             Draw.alpha(0.3f);
@@ -446,25 +280,22 @@ public class AssignedBeacon extends Block {
                 Lines.stroke(1f);
                 Lines.square(b.x, b.y, b.block.size * tilesize / 2f + 0.5f);
                 Lines.line(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y);
+
+                float progress = linkBuilds.get(b, 0f);
+                if (progress > 0.001f){
+                    DrawFunc.circlePercent(b.x, b.y, b.block.size * tilesize * 0.375f, linkBuilds.get(b, 0f), 0);
+                }
             }
-        }
-
-        @Override
-        public void drawConfigure() {
-            Drawf.dashSquare(Pal.accent, x, y, range() * 2);
-
-            NHGroups.beaconBoostLinks.keys().toSeq().each(b -> {
-                if (b == null) return;
-                b.drawSelect();
-            });
         }
 
         //check all links and remove invalid one
         public void checkLinks() {
-            for (int i = 0; i < targets.length; i++) {
-                if (!linkValid(Vars.world.build(targets[i]))) {
-                    targets[i] = -1;
-                    targetProgress[i] = -1;
+            while (linkBuilds.size > maxLink) {
+                linkBuilds.remove(linkBuilds().pop(), 0f);
+            }
+            for (Building b : linkBuilds()) {
+                if (!linkValid(b)) {
+                    linkBuilds.remove(b, 0f);
                 }
             }
         }
@@ -472,7 +303,6 @@ public class AssignedBeacon extends Block {
         @Override
         public void remove() {
             super.remove();
-            clearModulePlans();
             NHGroups.beaconBoostLinks.remove(this);
         }
 
@@ -482,34 +312,33 @@ public class AssignedBeacon extends Block {
         }
 
         @Override
+        public byte version() {
+            return 2;
+        }
+
+        @Override
         public void write(Writes write) {
             super.write(write);
-            write.f(progress);
-            write.f(powerMul);
-            write.f(speedMul);
-            write.f(craftMul);
-            TypeIO.writeInts(write, targets);
-            TypeIO.writeInts(write, modulePlans);
-            TypeIO.writeInts(write, modules);
-            write.i(targetProgress.length);
-            for (float v : targetProgress) {
-                write.f(v);
-            }
+            write.f(balance);
+            write.i(linkBuilds.size);
+            linkBuilds.each(buildingEntry -> {
+                write.i(buildingEntry.key.pos());
+                write.f(buildingEntry.value);
+            });
         }
 
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            progress = read.f();
-            powerMul = read.f();
-            speedMul = read.f();
-            craftMul = read.f();
-            targets = TypeIO.readInts(read);
-            modulePlans = TypeIO.readInts(read);
-            modules = TypeIO.readInts(read);
-            int length = read.i();
-            for (int i = 0; i < length; i++) {
-                targetProgress[i] = read.f();
+            if (revision == 2){
+                balance = read.f();
+                int size = read.i();
+                buffer = new IntFloatMap(size);
+                for (int i = 0; i < size; i++) {
+                    int pos = read.i();
+                    float value = read.f();
+                    buffer.put(pos, value);
+                }
             }
         }
     }
