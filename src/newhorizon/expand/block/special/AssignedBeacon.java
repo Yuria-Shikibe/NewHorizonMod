@@ -104,31 +104,11 @@ public class AssignedBeacon extends Block {
 
     //ye this is hardcoded here so this is a todo
     public @Nullable Block getModule(int num) {
-        return switch (num) {
-            case 0 -> ModuleBlock.speedModule1;
-            case 1 -> ModuleBlock.speedModule2;
-            case 2 -> ModuleBlock.speedModule3;
-            case 3 -> ModuleBlock.productivityModule1;
-            case 4 -> ModuleBlock.productivityModule2;
-            case 5 -> ModuleBlock.productivityModule3;
-            case 6 -> ModuleBlock.efficiencyModule1;
-            case 7 -> ModuleBlock.efficiencyModule2;
-            case 8 -> ModuleBlock.efficiencyModule3;
-            default -> null;
-        };
+        return null;
     }
 
     //uhhhh
     public @Nullable int getModuleId(Block module) {
-        if (module == ModuleBlock.speedModule1) return 0;
-        if (module == ModuleBlock.speedModule2) return 1;
-        if (module == ModuleBlock.speedModule3) return 2;
-        if (module == ModuleBlock.productivityModule1) return 3;
-        if (module == ModuleBlock.productivityModule2) return 4;
-        if (module == ModuleBlock.productivityModule3) return 5;
-        if (module == ModuleBlock.efficiencyModule1) return 6;
-        if (module == ModuleBlock.efficiencyModule2) return 7;
-        if (module == ModuleBlock.efficiencyModule3) return 8;
         return -1;
     }
 

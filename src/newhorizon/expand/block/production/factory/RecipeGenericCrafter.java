@@ -63,7 +63,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                             inner.table(row -> {
                                 row.left();
                                 recipe.inputItem.each(stack -> row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl)));
-                                recipe.inputLiquid.each(stack -> row.add(display(stack.liquid, stack.amount * craftTime, craftTime / recipe.boostScl)));
+                                recipe.inputLiquid.each(stack -> row.add(StatValues.displayLiquid(stack.liquid, stack.amount * Time.toSeconds, true)));
                                 recipe.inputPayload.each(stack -> row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl)));
                             }).growX();
                             if (inner.getPrefWidth() > 320f) inner.row();

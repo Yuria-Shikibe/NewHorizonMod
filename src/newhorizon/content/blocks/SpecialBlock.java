@@ -10,6 +10,7 @@ import newhorizon.content.NHItems;
 import newhorizon.expand.block.special.AssignedBeacon;
 import newhorizon.expand.block.special.DeviceBase;
 import newhorizon.expand.block.special.NexusCore;
+import newhorizon.expand.block.special.RemoteStorage;
 
 import static mindustry.type.ItemStack.with;
 
@@ -20,18 +21,20 @@ public class SpecialBlock {
     public static void load() {
         nexusCore = new NexusCore();
 
-        standardStorage = new StorageBlock("standard-storage") {{
+        standardStorage = new RemoteStorage("standard-storage") {{
             requirements(Category.effect, with(NHItems.presstanium, 80, NHItems.juniorProcessor, 40));
             size = 2;
             health = 1200;
-            itemCapacity = 1000;
+
+            unloaderEfficiency = 0.25f;
         }};
 
-        heavyStorage = new StorageBlock("heavy-storage") {{
-            requirements(Category.effect, with(NHItems.presstanium, 150, NHItems.juniorProcessor, 120, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
+        heavyStorage = new RemoteStorage("heavy-storage") {{
+            requirements(Category.effect, with(NHItems.seniorProcessor, 120, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
             size = 3;
             health = 4000;
-            itemCapacity = 5000;
+
+            unloaderEfficiency = 0.5f;
         }};
 
         juniorModuleBeacon = new AssignedBeacon("junior-module-beacon") {{

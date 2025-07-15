@@ -236,14 +236,6 @@ public class RecipeRegister {
         });
 }
 
-    @SafeVarargs
-    public static void registerBlockRecipe(Block block, Cons<AdaptCrafter> output, Cons<Recipe>...recipe){
-        output(block, output);
-        for(Cons<Recipe> r : recipe){
-            input(block, r);
-        }
-    }
-
     public static void input(Block block, Cons<Recipe> recipe) {
         if (block instanceof RecipeGenericCrafter crafter) {
             Recipe r = new Recipe();

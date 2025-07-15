@@ -25,6 +25,12 @@ public class ConsumeRecipe extends Consume {
         this.display = (Func<Building, Recipe>) display;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Building> ConsumeRecipe(Func<T, Recipe> recipe) {
+        this.recipe = (Func<Building, Recipe>) recipe;
+        this.display = (Func<Building, Recipe>) recipe;
+    }
+
     @Override
     public void apply(Block block) {
         block.hasItems = true;
@@ -80,6 +86,7 @@ public class ConsumeRecipe extends Consume {
 
     @Override
     public void build(Building build, Table table) {
+        if (display.get(build) == null) return;
         table.update(() -> {
             table.clear();
             table.left();

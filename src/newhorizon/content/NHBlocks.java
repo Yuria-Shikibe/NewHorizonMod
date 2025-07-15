@@ -71,7 +71,6 @@ import newhorizon.expand.block.drawer.DrawArrowSequence;
 import newhorizon.expand.block.drawer.FlipRegionPart;
 import newhorizon.expand.block.env.ArmorFloor;
 import newhorizon.expand.block.special.HyperGenerator;
-import newhorizon.expand.block.special.RemoteCoreStorage;
 import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
@@ -115,7 +114,6 @@ public class NHBlocks {
     public static Block bombLauncher;
     public static Block airRaider;
     public static Block unitIniter;
-    public static Block remoteStorage;
 
     public static Block armorClear;
     public static Block quantumField;
@@ -2475,12 +2473,6 @@ public class NHBlocks {
             bullet = NHBullets.airRaidBomb;
         }};
 
-        remoteStorage = new RemoteCoreStorage("remote-vault") {{
-            size = 3;
-            health = 960;
-            consumePower(20);
-            requirements(Category.effect, BuildVisibility.shown, with(NHItems.irayrondPanel, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 150, NHItems.multipleSteel, 120));
-        }};
 
         unitIniter = new UnitSpawner("unit-initer");
 

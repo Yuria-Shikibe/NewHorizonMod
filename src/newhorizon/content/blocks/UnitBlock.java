@@ -1,22 +1,19 @@
 package newhorizon.content.blocks;
 
-import arc.struct.Seq;
 import mindustry.content.Items;
-import mindustry.content.UnitTypes;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
-import newhorizon.content.NHUnitTypes;
-import newhorizon.expand.block.unit.JumpGate;
+import newhorizon.expand.block.special.JumpGate;
 
 import static mindustry.type.ItemStack.with;
 
 public class UnitBlock {
-    public static Block jumpGateMK1, jumpGateMK2, jumpGateMk3;
+    public static Block jumpGatePrimary, jumpGateStandard, jumpGateHyper;
 
     public static void load() {
-        jumpGateMK1 = new JumpGate("primary-jump-gate") {{
+        jumpGatePrimary = new JumpGate("primary-jump-gate") {{
             requirements(Category.units, BuildVisibility.shown, with(
                     NHItems.presstanium, 80,
                     NHItems.juniorProcessor, 80,
@@ -33,12 +30,11 @@ public class UnitBlock {
             maxRadius = 180f;
             minRadius = 40f;
 
-            spawnList = Seq.with(UnitTypes.poly, UnitTypes.cleroi, UnitTypes.quasar, UnitTypes.zenith, UnitTypes.cyerce, NHUnitTypes.ghost, NHUnitTypes.warper, NHUnitTypes.aliotiat, NHUnitTypes.rhino, NHUnitTypes.gather);
 
             consumePowerCond(8, JumpGateBuild::canConsume);
         }};
 
-        jumpGateMK2 = new JumpGate("standard-jump-gate") {{
+        jumpGateStandard = new JumpGate("standard-jump-gate") {{
             requirements(Category.units, BuildVisibility.shown, with(
                     NHItems.presstanium, 800,
                     NHItems.metalOxhydrigen, 300,
@@ -56,12 +52,12 @@ public class UnitBlock {
             maxRadius = 240f;
             minRadius = 60f;
 
-            spawnList = Seq.with(NHUnitTypes.naxos, NHUnitTypes.tarlidor, NHUnitTypes.zarkov, UnitTypes.eclipse, UnitTypes.disrupt, UnitTypes.corvus, UnitTypes.navanax, UnitTypes.collaris);
+
 
             consumePowerCond(30, JumpGateBuild::canConsume);
         }};
 
-        jumpGateMk3 = new JumpGate("hyper-jump-gate") {{
+        jumpGateHyper = new JumpGate("hyper-jump-gate") {{
             requirements(Category.units, BuildVisibility.shown, with(
                     NHItems.presstanium, 1800,
                     NHItems.metalOxhydrigen, 800,
@@ -79,8 +75,6 @@ public class UnitBlock {
 
             maxRadius = 320f;
             minRadius = 80f;
-
-            spawnList = Seq.with(NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.annihilation, NHUnitTypes.saviour, NHUnitTypes.declining, NHUnitTypes.hurricane, NHUnitTypes.anvil, NHUnitTypes.sin, NHUnitTypes.collapser);
 
             consumePowerCond(60, JumpGateBuild::canConsume);
         }};

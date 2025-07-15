@@ -32,9 +32,9 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.meta.*;
 import newhorizon.content.NHStats;
-import newhorizon.expand.block.consumer.PowerConsumer;
 
 import static mindustry.Vars.*;
 import static newhorizon.util.func.NHFunc.globalEffectRand;
@@ -88,7 +88,7 @@ public class AdaptDrill extends Block {
 
     @SuppressWarnings("unchecked")
     public <T extends Building> void consumePower(Floatf<T> usage) {
-        consume(new PowerConsumer((Floatf<Building>) usage));
+        consume(new ConsumePowerDynamic((Floatf<Building>) usage));
     }
 
     public float getMineSpeedHardnessMul(Item item) {
