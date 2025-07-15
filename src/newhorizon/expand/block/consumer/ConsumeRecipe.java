@@ -2,6 +2,8 @@ package newhorizon.expand.block.consumer;
 
 import arc.func.Func;
 import arc.scene.ui.layout.Table;
+import arc.util.Log;
+import arc.util.Nullable;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.type.ItemStack;
@@ -14,7 +16,7 @@ import mindustry.world.meta.StatValues;
 import newhorizon.expand.type.Recipe;
 
 public class ConsumeRecipe extends Consume {
-    public final Func<Building, Recipe> recipe;
+    public final @Nullable Func<Building, Recipe> recipe;
     public final Func<Building, Recipe> display;
 
     @SuppressWarnings("unchecked")
@@ -34,6 +36,7 @@ public class ConsumeRecipe extends Consume {
 
     @Override
     public void update(Building build) {
+        if (recipe.get(build) == null) return;
         for (LiquidStack stack : recipe.get(build).inputLiquid) {
             build.liquids.remove(stack.liquid, stack.amount * build.edelta() * multiplier.get(build));
         }
@@ -41,6 +44,7 @@ public class ConsumeRecipe extends Consume {
 
     @Override
     public void trigger(Building build) {
+        if (recipe.get(build) == null) return;
         for (ItemStack stack : recipe.get(build).inputItem) {
             build.items.remove(stack.item, Math.round(stack.amount * multiplier.get(build)));
         }
@@ -53,17 +57,24 @@ public class ConsumeRecipe extends Consume {
     public float efficiency(Building build) {
         float ed = build.edelta();
         if (ed <= 0.00000001f) return 0f;
+        if (recipe.get(build) == null) return 0f;
         float min = 1f;
+
         for (LiquidStack stack : recipe.get(build).inputLiquid) {
             min = Math.min(build.liquids.get(stack.liquid) / (stack.amount * ed * multiplier.get(build)), min);
         }
         for(PayloadStack stack : recipe.get(build).inputPayload){
             if(!build.getPayloads().contains(stack.item, Math.round(stack.amount * multiplier.get(build)))){
-                min = Math.min(min, 0f);
+                min = 0f;
+                break;
             }
         }
-        min = Math.min(build.consumeTriggerValid() || build.items.has(recipe.get(build).inputItem.toArray(ItemStack.class), multiplier.get(build)) ? 1f : 0f, min);
-
+        for(ItemStack stack : recipe.get(build).inputItem){
+            if(!build.items.has(stack.item, Math.round(stack.amount * multiplier.get(build)))){
+                min = 0f;
+                break;
+            }
+        }
         return min;
     }
 

@@ -132,7 +132,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         public int recipeIndex = -1;
 
         public Recipe getRecipe() {
-            if (recipeIndex < 0 || recipeIndex >= recipes.size) return Recipe.empty;
+            if (recipeIndex < 0 || recipeIndex >= recipes.size) return null;
             return recipes.get(recipeIndex);
         }
 

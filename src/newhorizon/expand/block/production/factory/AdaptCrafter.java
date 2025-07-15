@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.struct.IntSeq;
@@ -64,6 +65,14 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
     }
 
     @Override
+    public void init() {
+        super.init();
+        if (powerProduction > 0f){
+            consumesPower = false;
+        }
+    }
+
+    @Override
     public void setBars() {
         super.setBars();
         if (hasPower && outputsPower && powerProduction > 0f) {
@@ -71,6 +80,12 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
             addBar("power", (AdaptCrafterBuild entity) -> new Bar(() ->
                     Core.bundle.format("bar.poweroutput",
                             Strings.fixed(entity.getPowerProduction() * 60 * entity.timeScale(), 1)),
+                    () -> Pal.powerBar,
+                    () -> entity.warmup));
+
+            addBar("asd", (AdaptCrafterBuild entity) -> new Bar(() ->
+                    Core.bundle.format("bar.poweroutput",
+                            Strings.fixed(entity.efficiency, 1)),
                     () -> Pal.powerBar,
                     () -> entity.warmup));
         }
@@ -195,7 +210,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
 
         @Override
         public float getPowerProduction() {
-            return powerProduction * (warmup + 0.000001f);
+            return powerProduction * warmup * efficiency;
         }
 
         @Override
