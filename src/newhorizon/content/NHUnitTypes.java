@@ -2782,9 +2782,10 @@ public class NHUnitTypes {
                             shootCone = 30f;
                             reload = 40f;
                             shoot = new ShootSpread() {{
-                                spread = 1f;
-                                shots = 3;
-                                shotDelay = 5f;
+                                spread = 10f;
+                                shots = 4;
+                                //shotDelay = 5f;
+                                shootCone = 30f;
                             }};
 
                             inaccuracy = 4.0F;
@@ -2792,7 +2793,7 @@ public class NHUnitTypes {
                             bullet = new ShrapnelBulletType() {{
                                 width -= 2;
                                 hitLarge = true;
-                                length = 280;
+                                length = 200;
                                 damage = 300.0F;
                                 status = NHStatusEffects.ultFireBurn;
                                 statusDuration = 120f;
@@ -2805,7 +2806,46 @@ public class NHUnitTypes {
                                 }));
                             }};
                             shootSound = Sounds.shotgun;
-                        }}, new Weapon() {{
+                        }},
+                        new Weapon(NewHorizon.name("large-launcher")) {{
+                            top = false;
+                            rotate = false;
+                            alternate = true;
+                            shake = 3.5f;
+                            shootY = 16f;
+                            x = 20f;
+                            recoil = 5.4f;
+                            predictTarget = false;
+                            shootCone = 30f;
+                            reload = 40f;
+                            shoot = new ShootSpread() {{
+                                spread = 60f;
+                                shots = 2;
+                                //shotDelay = 10f;
+                                shootCone = 60f;
+                                firstShotDelay =10f;
+                            }};
+
+                            inaccuracy = 4.0F;
+                            ejectEffect = Fx.none;
+                            bullet = new ShrapnelBulletType() {{
+                                width -= 2;
+                                hitLarge = true;
+                                length = 80;
+                                damage = 100.0F;
+                                status = NHStatusEffects.ultFireBurn;
+                                statusDuration = 120f;
+                                fromColor = NHColor.lightSkyFront;
+                                toColor = NHColor.lightSkyBack;
+                                shootEffect = NHFx.lightningHitSmall(NHColor.lightSkyBack);
+                                smokeEffect = new MultiEffect(NHFx.lightSkyCircleSplash, new Effect(lifetime + 10f, b -> {
+                                    Draw.color(fromColor, toColor, b.fin());
+                                    Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
+                                }));
+                            }};
+                            shootSound = Sounds.shotgun;
+                        }},
+                        new Weapon() {{
                             mirror = false;
                             rotate = true;
                             alternate = true;
@@ -2826,14 +2866,14 @@ public class NHUnitTypes {
                             shootSound = NHSounds.launch;
                         }}
                 );
-                abilities.add(new ForceFieldAbility(88.0F, 2F, 5000.0F, 1200.0F));
+                abilities.add(new ForceFieldAbility(120.0F, 2F, 10000.0F, 800.0F));
                 engineOffset = 15.0F;
                 engineSize = 6.5F;
                 speed = 0.275f;
                 hitSize = 33f;
                 health = 22000f;
                 buildSpeed = 2.8f;
-                armor = 18f;
+                armor = 25f;
                 rotateSpeed = 1.8f;
                 singleTarget = false;
                 fallSpeed = 0.016f;
