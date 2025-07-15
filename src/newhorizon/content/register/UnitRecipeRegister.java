@@ -61,35 +61,35 @@ public class UnitRecipeRegister {
         });
         
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 10 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.carbide, 120, NHItems.juniorProcessor, 200, NHItems.zeta, 120, NHItems, metalOxhydrigen, 80);
+            recipe.inputItem = ItemStack.list(Items.carbide, 120, NHItems.juniorProcessor, 200, NHItems.zeta, 120, NHItems,metalOxhydrigen, 80);
         });
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 3, ModuleBlock.heatDetector, 4, ModuleBlock.powerCell, 2, ModuleBlock.supraGel, 1);
         });
         
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 10 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.carbide, 120, NHItems.juniorProcessor, 200, NHItems.zeta, 120, NHItems, metalOxhydrigen, 80);
+            recipe.inputItem = ItemStack.list(Items.carbide, 120, NHItems.juniorProcessor, 200, NHItems.zeta, 120, NHItems,metalOxhydrigen, 80);
         });
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 3, ModuleBlock.heatDetector, 4, ModuleBlock.powerCell, 2, ModuleBlock.supraGel, 1);
         });
         
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.aliotiat, 10 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.carbide, 120, NHItems.juniorProcessor, 200, NHItems.zeta, 120, NHItems, metalOxhydrigen, 80);
+            recipe.inputItem = ItemStack.list(Items.carbide, 120, NHItems.juniorProcessor, 200, NHItems.zeta, 120, NHItems,metalOxhydrigen, 80);
         });
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.aliotiat, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 3, ModuleBlock.heatDetector, 4, ModuleBlock.powerCell, 2, ModuleBlock.supraGel, 1);
         });
         
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.rhino, 10 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.carbide, 200, NHItems.juniorProcessor, 200, NHItems, metalOxhydrigen, 100, Items.surgeAlloy, 180);
+            recipe.inputItem = ItemStack.list(Items.carbide, 200, NHItems.juniorProcessor, 200, NHItems,metalOxhydrigen, 100, Items.surgeAlloy, 180);
         });
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.rhino, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 4, ModuleBlock.heatDetector, 4, ModuleBlock.fissionCelll, 2, ModuleBlock.supraGel, 2);
         });
         
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.gather, 10 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.carbide, 200, NHItems.juniorProcessor, 200, NHItems, metalOxhydrigen, 100, Items.surgeAlloy, 180);
+            recipe.inputItem = ItemStack.list(Items.carbide, 200, NHItems.juniorProcessor, 200, NHItems,metalOxhydrigen, 100, Items.surgeAlloy, 180);
         });
         unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.gather, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 4, ModuleBlock.heatDetector, 4, ModuleBlock.fissionCelll, 2, ModuleBlock.supraGel, 2);
