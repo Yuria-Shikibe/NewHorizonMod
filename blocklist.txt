@@ -339,6 +339,7 @@ new-horizon-thermo-core-negative-factory 1 1 1 0
 new-horizon-thermo-core-positive-factory 1 1 1 0
 new-horizon-thermo-reactor 1 1 5 0
 new-horizon-thermo-turret 1 1 1 0
+new-horizon-thermobaric-chamber 1 1 2 0
 new-horizon-track-rail 1 0 1 0
 new-horizon-turbo-pump 1 1 2 0
 new-horizon-turbo-pump-small 1 1 1 0

@@ -257,7 +257,9 @@ public class JumpGate extends Block {
             Drawf.dashCircle(x, y, maxRadius, team.color);
             Drawf.dashCircle(x, y, minRadius, team.color);
 
-            if (unitType() != null) drawItemSelection(unitType());
+            if (unitType() != null) {
+                drawItemSelection(unitType());
+            }
 
             if (Float.isNaN(command.x) || Float.isNaN(command.y)) return;
             Lines.stroke(3f, Pal.gray);
@@ -266,6 +268,12 @@ public class JumpGate extends Block {
             Lines.square(command.x, command.y, 8f, 45f);
             Draw.reset();
         }
+
+        @Override
+        public void drawConfigure() {
+            drawPlaceText(unitType() == null? "@empty": unitType().localizedName + " x" + spawnCount, tileX(), tileY(), true);
+        }
+
 
         public void changePlan(int idx) {
             if (idx == -1) return;
@@ -334,7 +342,6 @@ public class JumpGate extends Block {
             table.table(inner -> {
                 inner.background(Tex.paneSolid);
 
-                inner.label(() -> unitType() == null? "@empty": (unitType().localizedName + " x" + spawnCount)).growX().left().row();
                 inner.slider(1, maxSpawnCount, 1, 1, this::configure).growX().row();
                 inner.image().size(320, 4).color(Pal.accent).padTop(12f).padBottom(8f).growX().row();
                 inner.pane(selectionTable -> {

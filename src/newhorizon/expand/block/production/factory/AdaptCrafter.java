@@ -318,25 +318,22 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
 
         @Override
         public boolean dumpPayload(Payload todump) {
-            if (this.proximity.size != 0) {
-                int dump = dumpIndex;
-                for (int i = 0; i < linkProximityMap.size; ++i) {
-                    int idx = (i + dump) % linkProximityMap.size;
-                    Building[] pair = linkProximityMap.get(idx);
-                    Building target = pair[0];
-                    Building source = pair[1];
-                    if (todump != null && getPayloads().get(todump.content()) > 0 && target.acceptPayload(source, todump)) {
-                        target.handlePayload(this, todump);
-                        getPayloads().remove(todump.content(), 1);
-                        if (target instanceof PayloadConveyor.PayloadConveyorBuild) {
-                            Fx.payloadDeposit.at(x, y, this.angleTo(target), new UnitAssembler.YeetData(new Vec2(target.x, target.y), todump.content()));
-                        }
-                        incrementDumpIndex(linkProximityMap.size);
-                        return true;
+            int dump = dumpIndex;
+            for (int i = 0; i < linkProximityMap.size; ++i) {
+                int idx = (i + dump) % linkProximityMap.size;
+                Building[] pair = linkProximityMap.get(idx);
+                Building target = pair[0];
+                Building source = pair[1];
+                if (todump != null && getPayloads().get(todump.content()) > 0 && target.acceptPayload(source, todump)) {
+                    target.handlePayload(this, todump);
+                    getPayloads().remove(todump.content(), 1);
+                    if (target instanceof PayloadConveyor.PayloadConveyorBuild) {
+                        Fx.payloadDeposit.at(x, y, this.angleTo(target), new UnitAssembler.YeetData(new Vec2(target.x, target.y), todump.content()));
                     }
                     incrementDumpIndex(linkProximityMap.size);
+                    return true;
                 }
-
+                incrementDumpIndex(linkProximityMap.size);
             }
             return false;
         }

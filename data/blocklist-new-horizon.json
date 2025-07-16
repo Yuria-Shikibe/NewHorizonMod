@@ -1103,6 +1103,12 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-thermobaric-chamber": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-zeta-generator": {
 	"synthetic": true,
 	"solid": true,
