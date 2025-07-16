@@ -219,6 +219,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         @Override
         public void craft() {
             consume();
+            if (getRecipe() == null) return;
 
             if(outputItems != null){
                 for(var output : outputItems){

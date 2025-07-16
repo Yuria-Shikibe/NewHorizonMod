@@ -117,7 +117,7 @@ public class DistributionBlock {
             alwaysUnlocked = true;
 
             health = 320;
-            speed = 3;
+            speed = 4f;
             capacity = 1;
 
             placeableLiquid = true;
