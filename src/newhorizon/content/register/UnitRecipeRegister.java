@@ -122,14 +122,14 @@ public class UnitRecipeRegister {
             recipe.inputItem = ItemStack.list(Items.phaseFabric, 300, NHItems.presstanium, 200, NHItems.juniorProcessor, 200, NHItems.multipleSteel, 200);
         });
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.eclipse, 10 * 60f, recipe -> {
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 3, ModuleBlock.protonCapacitor, 2,  ModuleBlock.gaussReceptor, 3, ModuleBlock.fissionCell, 4, ModuleBlock.signalCirculator, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 3, ModuleBlock.protonCapacitor, 4,  ModuleBlock.gaussReceptor, 3, ModuleBlock.fissionCell, 4, ModuleBlock.signalCirculator, 3);
         });
 
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.disrupt, 10 * 60f, recipe -> {
             recipe.inputItem = ItemStack.list(Items.phaseFabric, 300, Items.carbide, 150, NHItems.zeta, 200, NHItems.multipleSteel, 200);
         });
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.disrupt, 10 * 60f, recipe -> {
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 3, ModuleBlock.coolingUnit, 2,  ModuleBlock.gaussReceptor, 3, ModuleBlock.chargeCompensator, 3, ModuleBlock.coolingUnit, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 3, ModuleBlock.protonCapacitor, 4,  ModuleBlock.gaussReceptor, 3, ModuleBlock.chargeCompensator, 3, ModuleBlock.coolingUnit, 4);
         });
 
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.corvus, 10 * 60f, recipe -> {
@@ -176,7 +176,7 @@ public class UnitRecipeRegister {
         });
 
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.saviour, 10 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 250, Items.surgeAlloy, 400, NHItems.seniorProcessor, 350, NHItems.thermoCoreNegative, 150, Items.plastanium, 400, NHItems.zeta, 500);
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 250, Items.surgeAlloy, 400, NHItems.seniorProcessor, 350, NHItems.thermoCoreNegative, 150, NHItems.zeta, 500);
         });
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.saviour, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.memoryRecalibrator, 3, ModuleBlock.tachyonEmitter, 3,  ModuleBlock.echoCanceller, 3, ModuleBlock.fusionReactor, 3, ModuleBlock.particleModulator, 3);
