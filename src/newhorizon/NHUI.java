@@ -26,6 +26,7 @@ import mindustry.core.UI;
 import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
 import mindustry.game.MapObjectives;
+import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
@@ -38,6 +39,7 @@ import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
+import newhorizon.util.ui.frag.PayloadInventoryFragment;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,14 +50,14 @@ import static mindustry.gen.Tex.underline;
 public class NHUI {
     public static final float maxWidth = 65f * 5f + 4f;
     public static Table HUD_overlay, HUD_waves, HUD_statustable, HUD_status;
-    public static WidgetGroup HUD_waves_editor;
+    public static Table itemInv;
+    public static WidgetGroup HUD_waves_editor, inputGroup;
     public static Element infoTable;
 
     public static NHWorldSettingDialog nhWorldSettingDialog;
+    public static PayloadInventoryFragment payloadInventoryFragment;
 
     public static void init() {
-
-        Events.run(EventType.Trigger.update, () -> ui.hudfrag.toggleHudText(false));
 
         nhWorldSettingDialog = new NHWorldSettingDialog();
 
@@ -69,6 +71,16 @@ public class NHUI {
             Log.err(e);
         }
 
+        payloadInventoryFragment = new PayloadInventoryFragment();
+        payloadInventoryFragment.build(itemInv.parent);
+
+        Events.run(EventType.Trigger.update, () -> {
+            payloadInventoryFragment.table.visible = itemInv.visible && !state.isMenu();
+            payloadInventoryFragment.rebuild();
+            //Log.info(NHUI.itemInv.visible + " " + NHUI.itemInv.x + " "  + NHUI.itemInv.y);
+        });
+
+
         try{
             BaseDialog menu = Reflect.get(MapEditorDialog.class, ui.editor, "menu");
             menu.cont.row().button("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), 30,
@@ -79,11 +91,13 @@ public class NHUI {
     }
 
     public static void getReferences() {
-        HUD_overlay = Vars.ui.hudGroup.find("overlaymarker");
+        HUD_overlay = ui.hudGroup.find("overlaymarker");
         HUD_waves_editor = HUD_overlay.find("waves/editor");
         HUD_waves = HUD_waves_editor.find("waves");
         HUD_statustable = HUD_waves.find("statustable");
         HUD_status = HUD_statustable.find("status");
+
+        itemInv = ui.hudGroup.find("inventory");
     }
 
     public static void rebuildSkipButton() {

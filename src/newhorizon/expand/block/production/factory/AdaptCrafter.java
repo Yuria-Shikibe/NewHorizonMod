@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.struct.IntSeq;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Strings;
@@ -15,6 +16,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
+import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -38,6 +40,7 @@ import newhorizon.expand.block.inner.LinkBlock;
 import static mindustry.Vars.*;
 
 public class AdaptCrafter extends GenericCrafter implements MultiBlock {
+    public ObjectSet<UnlockableContent> payloadFilter = new ObjectSet<>();
     public Seq<Point2> linkPos = new Seq<>();
     public IntSeq linkSize = new IntSeq();
 
@@ -45,6 +48,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
     public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
 
     public float powerProduction = 0f;
+    public int payloadCapacity = 10;
 
     public PayloadStack[] outputPayloads;
 
@@ -188,6 +192,13 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
                     }
                 }
             }
+            if (outputPayloads != null) {
+                for (var output : outputPayloads) {
+                    if (getPayloads().get(output.item) + output.amount > payloadCapacity) {
+                        return powerProduction > 0;
+                    }
+                }
+            }
             if (outputLiquids != null && !ignoreLiquidFullness) {
                 boolean allFull = true;
                 for (var output : outputLiquids) {
@@ -318,27 +329,29 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
 
         @Override
         public boolean dumpPayload(Payload todump) {
-            if (this.proximity.size != 0) {
-                int dump = dumpIndex;
-                for (int i = 0; i < linkProximityMap.size; ++i) {
-                    int idx = (i + dump) % linkProximityMap.size;
-                    Building[] pair = linkProximityMap.get(idx);
-                    Building target = pair[0];
-                    Building source = pair[1];
-                    if (todump != null && getPayloads().get(todump.content()) > 0 && target.acceptPayload(source, todump)) {
-                        target.handlePayload(this, todump);
-                        getPayloads().remove(todump.content(), 1);
-                        if (target instanceof PayloadConveyor.PayloadConveyorBuild) {
-                            Fx.payloadDeposit.at(x, y, this.angleTo(target), new UnitAssembler.YeetData(new Vec2(target.x, target.y), todump.content()));
-                        }
-                        incrementDumpIndex(linkProximityMap.size);
-                        return true;
+            int dump = dumpIndex;
+            for (int i = 0; i < linkProximityMap.size; ++i) {
+                int idx = (i + dump) % linkProximityMap.size;
+                Building[] pair = linkProximityMap.get(idx);
+                Building target = pair[0];
+                Building source = pair[1];
+                if (todump != null && getPayloads().get(todump.content()) > 0 && target.acceptPayload(source, todump)) {
+                    target.handlePayload(this, todump);
+                    getPayloads().remove(todump.content(), 1);
+                    if (target instanceof PayloadConveyor.PayloadConveyorBuild) {
+                        Fx.payloadDeposit.at(x, y, this.angleTo(target), new UnitAssembler.YeetData(new Vec2(target.x, target.y), todump.content()));
                     }
                     incrementDumpIndex(linkProximityMap.size);
+                    return true;
                 }
-
+                incrementDumpIndex(linkProximityMap.size);
             }
             return false;
+        }
+
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            return payloadFilter.contains(payload.content()) && getPayloads().get(payload.content()) < payloadCapacity;
         }
 
         @Override
