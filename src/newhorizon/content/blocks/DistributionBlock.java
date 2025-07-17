@@ -217,7 +217,7 @@ public class DistributionBlock {
         conduit = new AdaptConduit("conduit") {{
             requirements(Category.liquid, with(Items.silicon, 1));
             health = 320;
-            liquidCapacity = 100f;
+            liquidCapacity = 150f;
             liquidPressure = 1.2f;
 
             leaks = false;
@@ -239,7 +239,7 @@ public class DistributionBlock {
             solid = false;
             underBullets = true;
             health = 320;
-            liquidCapacity = 200f;
+            liquidCapacity = 250f;
         }};
 
         liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge") {{
@@ -249,7 +249,7 @@ public class DistributionBlock {
             hasPower = false;
             range = 6;
             health = 320;
-            liquidCapacity = 200f;
+            liquidCapacity = 250f;
 
             placeableLiquid = true;
 
@@ -262,7 +262,7 @@ public class DistributionBlock {
             hasPower = false;
             range = 12;
             health = 640;
-            liquidCapacity = 200f;
+            liquidCapacity = 250f;
 
             placeableLiquid = true;
 
@@ -280,7 +280,7 @@ public class DistributionBlock {
             conductivePower = true;
             placeableLiquid = true;
             health = 320;
-            liquidCapacity = 200f;
+            liquidCapacity = 250f;
 
         }};
 
