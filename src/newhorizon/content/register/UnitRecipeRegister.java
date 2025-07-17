@@ -68,10 +68,10 @@ public class UnitRecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 3, ModuleBlock.heatDetector, 4, ModuleBlock.powerCell, 2, ModuleBlock.supraGel, 1);
         });
         
-        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 10 * 60f, recipe -> {
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.warper, 10 * 60f, recipe -> {
             recipe.inputItem = ItemStack.list(Items.carbide, 120, NHItems.juniorProcessor, 200, NHItems.zeta, 120, NHItems.metalOxhydrigen, 80);
         });
-        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 10 * 60f, recipe -> {
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.warper, 10 * 60f, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 3, ModuleBlock.heatDetector, 4, ModuleBlock.powerCell, 2, ModuleBlock.supraGel, 1);
         });
         
