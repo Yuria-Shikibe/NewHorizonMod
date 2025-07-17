@@ -30,7 +30,6 @@ import static mindustry.world.meta.StatValues.withTooltip;
 
 public class RecipeGenericCrafter extends AdaptCrafter {
     public Seq<Recipe> recipes = new Seq<>();
-    public ObjectSet<UnlockableContent> payloadFilter = new ObjectSet<>();
 
     public RecipeGenericCrafter(String name) {
         super(name);
@@ -242,11 +241,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
             progress %= 1f;
 
             updateRecipe();
-        }
-
-        @Override
-        public boolean acceptPayload(Building source, Payload payload) {
-            return payloadFilter.contains(payload.content()) && getPayloads().get(payload.content()) < itemCapacity;
         }
     }
 }
