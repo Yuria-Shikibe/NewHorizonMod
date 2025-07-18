@@ -779,12 +779,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-device-test": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-sand-cracker": {
 	"synthetic": true,
 	"solid": true,

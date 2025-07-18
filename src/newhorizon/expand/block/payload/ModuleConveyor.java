@@ -26,6 +26,7 @@ public class ModuleConveyor extends PayloadConveyor {
     public class AdaptPayloadConveyorBuild extends PayloadConveyorBuild {
         @Override
         public boolean acceptPayload(Building source, Payload payload) {
+            if (front() == source) return false;
             return super.acceptPayload(source, payload) && payload.content() instanceof ModulePayload;
         }
 

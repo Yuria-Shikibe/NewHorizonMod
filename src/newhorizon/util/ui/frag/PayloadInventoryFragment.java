@@ -50,6 +50,8 @@ public class PayloadInventoryFragment {
                 table.add(image);
                 if(row++ % cols == cols - 1) table.row();
             }
+        }else {
+            table.visible = false;
         }
         updateTablePosition();
     }
@@ -78,7 +80,6 @@ public class PayloadInventoryFragment {
         table.pack();
         Table t = NHUI.itemInv;
         table.setPosition(t.x, t.y + t.getPrefHeight() - 4, Align.bottomLeft);
-
     }
 
     private Element itemImage(TextureRegion region, Prov<CharSequence> text){
