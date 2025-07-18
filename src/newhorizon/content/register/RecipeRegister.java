@@ -17,6 +17,13 @@ import newhorizon.expand.type.Recipe;
 
 public class RecipeRegister {
     public static void load(){
+        input(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 8, Items.tungsten, 8));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 8, Items.metaglass, 8));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 8, Items.oxide, 8));
