@@ -9,6 +9,11 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.Element;
+import arc.scene.ui.Label;
+import arc.scene.ui.Slider;
+import arc.scene.ui.layout.Scl;
+import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Nullable;
@@ -17,7 +22,9 @@ import arc.util.Strings;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
+import mindustry.core.UI;
 import mindustry.entities.Units;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
@@ -33,16 +40,23 @@ import mindustry.type.PayloadStack;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
+import mindustry.ui.ReqImage;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
+import mindustry.world.Tile;
+import mindustry.world.blocks.payloads.Payload;
+import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NHVars;
 import newhorizon.content.NHContent;
+import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.expand.block.consumer.ConsumeRecipe;
+import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.expand.entities.Spawner;
 import newhorizon.expand.type.Recipe;
+import newhorizon.util.func.NHFunc;
 import newhorizon.util.ui.DelaySlideBar;
 
 import static mindustry.Vars.*;
@@ -53,7 +67,6 @@ public class JumpGate extends Block {
     public float maxWarmupSpeed = 3f;
 
     public float maxRadius = 180f;
-    public float minRadius = 40f;
 
     public int maxSpawnCount = 16;
 
@@ -99,6 +112,7 @@ public class JumpGate extends Block {
         logicConfigurable = true;
         clearOnDoubleTap = true;
         allowConfigInventory = false;
+        unloadable = false;
 
         config(Integer.class, JumpGateBuild::changePlan);
         config(Float.class, JumpGateBuild::changeSpawnCount);
@@ -207,6 +221,7 @@ public class JumpGate extends Block {
         public @Nullable Vec2 command = new Vec2(Float.NaN, Float.NaN);
 
         public ItemModule tmpItem = new ItemModule();
+        public Seq<Tile> tiles = new Seq<>();
 
         @Override
         public Vec2 getCommandPosition() {
@@ -221,6 +236,17 @@ public class JumpGate extends Block {
         @Override
         public PayloadSeq getPayloads() {
             return NHVars.worldData.teamPayloadData.getPayload(team);
+        }
+
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            return payload.content() instanceof ModulePayload && getPayloads().get(payload.content()) < 1000;
+        }
+
+        @Override
+        public void handlePayload(Building source, Payload payload) {
+            getPayloads().add(payload.content(), 1);
+            Fx.payloadDeposit.at(payload.x(), payload.y(), payload.angleTo(this), new UnitAssembler.YeetData(new Vec2(x, y), payload.content()));
         }
 
         public UnitRecipe unitRecipe() {
@@ -255,7 +281,6 @@ public class JumpGate extends Block {
         public void drawSelect() {
             super.drawSelect();
             Drawf.dashCircle(x, y, maxRadius, team.color);
-            Drawf.dashCircle(x, y, minRadius, team.color);
 
             if (unitType() != null) {
                 drawItemSelection(unitType());
@@ -274,7 +299,6 @@ public class JumpGate extends Block {
             drawPlaceText(unitType() == null? "@empty": unitType().localizedName + " x" + spawnCount, tileX(), tileY(), true);
         }
 
-
         public void changePlan(int idx) {
             if (idx == -1) return;
             idx = Mathf.clamp(idx, 0, recipeList.size - 1);
@@ -290,6 +314,10 @@ public class JumpGate extends Block {
             speedMultiplier = 1f;
         }
 
+        public void findTiles(){
+            tiles = NHFunc.ableToSpawn(unitType(), x, y, maxRadius);
+        }
+
         public void spawnUnit() {
             if (unitRecipe() == null) return;
             if (unitType() == null) return;
@@ -297,7 +325,8 @@ public class JumpGate extends Block {
             if (!net.client()) {
                 float rot = core() == null ? Angles.angle(x, y, command.x, command.y) : Angles.angle(core().x, core().y, x, y);
                 Spawner spawner = new Spawner();
-                Tmp.v1.setToRandomDirection().setLength(Mathf.random(minRadius, maxRadius)).add(this);
+                Tile t = tiles.random();
+                Tmp.v1.set(t.worldx(), t.worldy());
                 spawner.init(unitType(), team, Tmp.v1, rot, Mathf.clamp(unitRecipe().craftTime / maxWarmupSpeed, 5f * 60, 15f * 60));
                 if (command != null) spawner.commandPos.set(command.cpy());
                 spawner.add();
@@ -320,6 +349,7 @@ public class JumpGate extends Block {
                 progress += getProgressIncrease(craftTime() * Mathf.sqrt(spawnCount));
             }
             if (progress >= 1) {
+                findTiles();
                 for (int i = 0; i < spawnCount; i++){
                     spawnUnit();
                 }
@@ -341,7 +371,6 @@ public class JumpGate extends Block {
         public void buildConfiguration(Table table) {
             table.table(inner -> {
                 inner.background(Tex.paneSolid);
-
                 inner.slider(1, maxSpawnCount, 1, 1, this::configure).growX().row();
                 inner.image().size(320, 4).color(Pal.accent).padTop(12f).padBottom(8f).growX().row();
                 inner.pane(selectionTable -> {
@@ -366,11 +395,37 @@ public class JumpGate extends Block {
                                             int j = 0;
                                             for (ItemStack stack: unitRecipe.recipe.inputItem) {
                                                 if (++j % 6 == 0) req.row();
-                                                req.add(StatValues.stack(stack.item, stack.amount * spawnCount, false)).pad(5);
+                                                req.add(new Stack(
+                                                        StatValues.stack(stack.item, stack.amount * spawnCount, false),
+                                                        new Element(){
+                                                            @Override
+                                                            public void draw(){
+                                                                if (items.has(stack.item, stack.amount * spawnCount)) return;
+                                                                Lines.stroke(Scl.scl(2f), Pal.removeBack);
+                                                                Lines.line(x, y - 2f + height, x + width, y - 2f);
+                                                                Draw.color(Pal.remove);
+                                                                Lines.line(x, y + height, x + width, y);
+                                                                Draw.reset();
+                                                            }
+                                                        }
+                                                )).pad(5);
                                             }
                                             for (PayloadStack stack: unitRecipe.recipe.inputPayload) {
                                                 if (++j % 6 == 0) req.row();
-                                                req.add(StatValues.stack(stack.item, stack.amount * spawnCount, false)).pad(5);
+                                                req.add(new Stack(
+                                                        StatValues.stack(stack.item, stack.amount * spawnCount, false),
+                                                        new Element(){
+                                                            @Override
+                                                            public void draw(){
+                                                                if (getPayloads().get(stack.item) >= stack.amount * spawnCount) return;
+                                                                Lines.stroke(Scl.scl(2f), Pal.removeBack);
+                                                                Lines.line(x, y - 2f + height, x + width, y - 2f);
+                                                                Draw.color(Pal.remove);
+                                                                Lines.line(x, y + height, x + width, y);
+                                                                Draw.reset();
+                                                            }
+                                                        }
+                                                )).pad(5);
                                             }
                                         });
                                     }).marginLeft(60).marginTop(32f).left()
@@ -385,8 +440,18 @@ public class JumpGate extends Block {
                         }, Styles.underlineb, () -> configure(finalI)).expandX().fillX().margin(0).pad(4);
                         selectionTable.row();
                     }
-                }).width(342).maxHeight(400).padRight(2);
-            }).width(360).maxHeight(364);
+                }).scrollX(false).width(342).maxHeight(600).padRight(2).row();
+                inner.image().size(320, 4).color(Pal.accent).padTop(12f).padBottom(8f).growX().row();
+                inner.table(inv -> inv.update(() -> {
+                    inv.clear();
+                    inv.marginLeft(25f);
+                    for (int i = 0; i < ModuleBlock.modules.size; i++){
+                        Block b = ModuleBlock.modules.get(i);
+                        inv.add(StatValues.stack(b, getPayloads().get(b), true)).pad(2).width(63f);
+                        if (i%5 == 4) inv.row();
+                    }
+                })).row();
+            }).width(360);
         }
 
         @Override

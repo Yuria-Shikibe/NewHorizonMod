@@ -28,8 +28,6 @@ public class UnitBlock {
             maxWarmupSpeed = 8f;
 
             maxRadius = 180f;
-            minRadius = 40f;
-
 
             consumePowerCond(8, JumpGateBuild::canConsume);
         }};
@@ -50,9 +48,6 @@ public class UnitBlock {
             size = 5;
 
             maxRadius = 240f;
-            minRadius = 60f;
-
-
 
             consumePowerCond(30, JumpGateBuild::canConsume);
         }};
@@ -74,7 +69,6 @@ public class UnitBlock {
             size = 8;
 
             maxRadius = 320f;
-            minRadius = 80f;
 
             consumePowerCond(60, JumpGateBuild::canConsume);
         }};

@@ -16,7 +16,6 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
 import mindustry.gen.Tex;
 import mindustry.type.PayloadSeq;
-import mindustry.ui.fragments.BlockInventoryFragment;
 import newhorizon.NHUI;
 import newhorizon.content.blocks.ModuleBlock;
 

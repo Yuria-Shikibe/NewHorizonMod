@@ -38,6 +38,7 @@ import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
+import newhorizon.util.ui.TeamPayloadDisplay;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.frag.PayloadInventoryFragment;
 
@@ -51,11 +52,12 @@ public class NHUI {
     public static final float maxWidth = 65f * 5f + 4f;
     public static Table HUD_overlay, HUD_waves, HUD_statustable, HUD_status;
     public static Table itemInv;
-    public static WidgetGroup HUD_waves_editor, inputGroup;
+    public static WidgetGroup HUD_waves_editor;
     public static Element infoTable;
 
     public static NHWorldSettingDialog nhWorldSettingDialog;
     public static PayloadInventoryFragment payloadInventoryFragment;
+    public static TeamPayloadDisplay teamPayloadDisplay;
 
     public static void init() {
 
@@ -77,8 +79,8 @@ public class NHUI {
         Events.run(EventType.Trigger.update, () -> {
             payloadInventoryFragment.table.visible = itemInv.visible && !state.isMenu();
             payloadInventoryFragment.rebuild();
-            //Log.info(NHUI.itemInv.visible + " " + NHUI.itemInv.x + " "  + NHUI.itemInv.y);
         });
+
 
 
         try{
