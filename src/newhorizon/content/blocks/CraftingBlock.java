@@ -197,7 +197,7 @@ public class CraftingBlock {
             itemCapacity = 20;
 
             addInput(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
-            addInput(Items.titanium, 2, Items.graphite, 1, 1.5f);
+            addInput(Items.titanium, 2, Items.graphite, 1);
 
             consumePower(180f / 60f);
             outputItems = with(NHItems.presstanium, 2);
