@@ -18,11 +18,31 @@ import newhorizon.expand.type.Recipe;
 public class RecipeRegister {
     public static void load(){
         input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 4);
+            recipe.inputItem = ItemStack.list(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 2, Items.graphite, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
+        input(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 2, Items.graphite, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.stampingFacility, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 2, NHLiquids.quantumLiquid, 6 / 60f));
+        input(CraftingBlock.stampingFacility, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 2, Items.graphite, 1));
 
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 8, Items.tungsten, 8));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 8, Items.metaglass, 8));
