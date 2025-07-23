@@ -18,46 +18,44 @@ import newhorizon.expand.type.Recipe;
 public class RecipeRegister {
     public static void load(){
         input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 2);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 1);
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 0.2);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 2);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 1);
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 0.2);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 2);
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
         });
-        input(CraftingBlock.stampingFacility, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 2, Items.graphite, 1));
+        input(CraftingBlock.stampingFacility, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 3, Items.graphite, 1.5));
 
         input(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 2);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 1);
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 0.2);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 2);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 1);
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 0.2);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 2);
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 4 / 60f);
         });
         input(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.copper, 3);
-            recipe.inputLiquid = LiquidStack.list(LiquidStack.empty);
+            recipe.inputItem = ItemStack.list(Items.silicon, 3, Items.copper, 3);
         });
         input(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.beryllium, 3);
-            recipe.inputLiquid = LiquidStack.list(LiquidStack.empty);
+            recipe.inputItem = ItemStack.list(Items.silicon, 3, Items.beryllium, 3);
         });
 
         
