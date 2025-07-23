@@ -47,15 +47,15 @@ public class RecipeRegister {
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
-        input(CraftingBlock.stampingFacility, recipe -> {
+        input(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(Items.silicon, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 4 / 60f);
         });
-        input(CraftingBlock.stampingFacility, recipe -> {
+        input(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.copper, 3);
             recipe.inputLiquid = LiquidStack.list(LiquidStack.empty);
         });
-        input(CraftingBlock.stampingFacility, recipe -> {
+        input(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.beryllium, 3);
             recipe.inputLiquid = LiquidStack.list(LiquidStack.empty);
         });
