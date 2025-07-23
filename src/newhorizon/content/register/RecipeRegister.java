@@ -19,13 +19,13 @@ public class RecipeRegister {
     public static void load(){
         input(CraftingBlock.stampingFacility, recipe -> {
             recipe.inputItem = ItemStack.list(Items.titanium, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 1);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.stampingFacility, recipe -> {
             recipe.inputItem = ItemStack.list(Items.titanium, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 1);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
@@ -37,13 +37,13 @@ public class RecipeRegister {
 
         input(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(Items.silicon, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 1);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(Items.silicon, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 1);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
@@ -60,13 +60,13 @@ public class RecipeRegister {
 
         input(CraftingBlock.crucibleFoundry, recipe -> {
             recipe.inputItem = ItemStack.list(Items.tungsten, 2);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.protonCapacitor, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.protonCapacitor, 1);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.crucibleFoundry, recipe -> {
             recipe.inputItem = ItemStack.list(Items.tungsten, 2);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 1);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
@@ -84,19 +84,19 @@ public class RecipeRegister {
 
         input(CraftingBlock.crystallizer, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 4 / 60f);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.crystallizer, recipe -> {
             recipe.inputItem = ItemStack.list(Items.metaglass, 1);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.crystallizer, recipe -> {
             recipe.inputItem = ItemStack.list(Items.oxide, 1);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
             recipe.craftScl = 8f;
             recipe.boostScl = 0.5f;
         });
@@ -108,13 +108,13 @@ public class RecipeRegister {
         });
         input(CraftingBlock.crystallizer, recipe -> {
             recipe.inputItem = ItemStack.list(Items.metaglass, 1);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
         input(CraftingBlock.crystallizer, recipe -> {
             recipe.inputItem = ItemStack.list(Items.oxide, 1);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 0.8);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
