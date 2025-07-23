@@ -58,6 +58,29 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(Items.silicon, 3, Items.beryllium, 3);
         });
 
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.protonCapacitor, 0.2);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 0.2);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.pyratite, 1);
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.graphite, 3);
+            recipe.inputLiquid = LiquidStack.list(Liquids.ozone, 6 / 60f);
+        });
         
 
         
