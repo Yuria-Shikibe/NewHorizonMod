@@ -349,7 +349,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1, /**/
                     0, 2, 1, /**/1, 2, 1 /**/);
 
-            craftTime = 90f;
+            craftTime = 120f;
             consumePower(480 / 60f);
 
             outputItems = with(NHItems.metalOxhydrigen, 3);
