@@ -282,10 +282,6 @@ public class CraftingBlock {
             craftTime = 60f;
             consumePower(300 / 60f);
 
-            addInput(Items.tungsten, 2, NHLiquids.xenFluid, 6 / 60f);
-            addInput(Items.tungsten, 2, Items.pyratite, 1, LiquidStack.empty);
-            addInput(Items.tungsten, 2, Items.graphite, 3, Liquids.ozone, 6 / 60f);
-
             outputItems = with(Items.carbide, 2);
 
             itemCapacity = 20;
@@ -355,10 +351,6 @@ public class CraftingBlock {
 
             craftTime = 90f;
             consumePower(480 / 60f);
-            addInput(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 6 / 60f);
-            addInput(Items.lead, 3, Liquids.water, 9 / 60f);
-            addInput(Items.metaglass, 1, Liquids.water, 6 / 60f);
-            addInput(Items.oxide, 1, Liquids.water, 9 / 60f);
 
             outputItems = with(NHItems.metalOxhydrigen, 3);
 
