@@ -193,7 +193,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
-            craftTime = 40f;
+            craftTime = 60f;
             itemCapacity = 20;
 
             consumePower(180f / 60f);
@@ -224,7 +224,7 @@ public class CraftingBlock {
             addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
                     -1, 0, 1, /**/-1, 1, 1 /**/);
 
-            craftTime = 40f;
+            craftTime = 60f;
             itemCapacity = 20;
 
             consumePower(240f / 60f);
