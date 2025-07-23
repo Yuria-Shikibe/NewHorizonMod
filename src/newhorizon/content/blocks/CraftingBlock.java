@@ -227,10 +227,6 @@ public class CraftingBlock {
             craftTime = 40f;
             itemCapacity = 20;
 
-            addInput(Items.silicon, 2, NHLiquids.quantumLiquid, 4 / 60f);
-            addInput(Items.silicon, 2, Items.copper, 3, LiquidStack.empty);
-            addInput(Items.silicon, 2, Items.beryllium, 3, LiquidStack.empty);
-
             consumePower(240f / 60f);
             outputItems = with(NHItems.juniorProcessor, 2);
 
