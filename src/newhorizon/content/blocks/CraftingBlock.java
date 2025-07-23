@@ -197,7 +197,7 @@ public class CraftingBlock {
             itemCapacity = 20;
 
             consumePower(180f / 60f);
-            outputItems = with(NHItems.presstanium, 2);
+            outputItems = with(NHItems.presstanium, 3);
 
             drawer = new DrawMulti(
                     new DrawRegionRotated() {{
@@ -228,7 +228,7 @@ public class CraftingBlock {
             itemCapacity = 20;
 
             consumePower(240f / 60f);
-            outputItems = with(NHItems.juniorProcessor, 2);
+            outputItems = with(NHItems.juniorProcessor, 3);
 
             drawer = new DrawMulti(
                     new DrawRegionRotated() {{
@@ -352,7 +352,7 @@ public class CraftingBlock {
             craftTime = 120f;
             consumePower(480 / 60f);
 
-            outputItems = with(NHItems.metalOxhydrigen, 3);
+            outputItems = with(NHItems.metalOxhydrigen, 4);
 
             itemCapacity = 30;
             liquidCapacity = 20f;
