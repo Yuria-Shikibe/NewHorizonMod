@@ -81,6 +81,58 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.graphite, 3);
             recipe.inputLiquid = LiquidStack.list(Liquids.ozone, 6 / 60f);
         });
+
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 0.2);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.metaglass, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 0.2);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.oxide, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 0.2);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 0.2);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.metaglass, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 0.2);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.oxide, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 0.2);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 6 / 60f);
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.metaglass, 1);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 6 / 60f);
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.lead, 3);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 9 / 60f);
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.oxide, 1);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 9 / 60f);
+        });
         
 
         
