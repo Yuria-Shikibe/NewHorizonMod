@@ -101,7 +101,7 @@ public class UnitRecipeRegister {
             recipe.inputItem = ItemStack.list(Items.phaseFabric, 600, NHItems.presstanium, 300, NHItems.metalOxhydrigen, 600, NHItems.seniorProcessor, 100, NHItems.multipleSteel, 300);
         });
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.naxos, 10 * 60f, recipe -> {
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 4, ModuleBlock.protonCapacitor, 3,  ModuleBlock.heatDetector, 4, ModuleBlock.chargeCompensator, 3, ModuleBlock.signalCirculator, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 4, ModuleBlock.hadronBuffers, 3,  ModuleBlock.heatDetector, 4, ModuleBlock.chargeCompensator, 3, ModuleBlock.signalCirculator, 3);
         });
 
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.tarlidor, 10 * 60f, recipe -> {

@@ -17,13 +17,277 @@ import newhorizon.expand.type.Recipe;
 
 public class RecipeRegister {
     public static void load(){
+        //tier1
         input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 4);
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
+        });
+        input(CraftingBlock.stampingFacility, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 3, Items.graphite, 1.5));
+
+        input(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 4 / 60f);
+        });
+        input(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3, Items.copper, 3);
+        });
+        input(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3, Items.beryllium, 3);
+        });
+
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.protonCapacitor, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.pyratite, 1);
+        });
+        input(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.graphite, 3);
+            recipe.inputLiquid = LiquidStack.list(Liquids.ozone, 6 / 60f);
+        });
+
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.metaglass, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.oxide, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 0.8);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.metaglass, 1);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
             recipe.craftScl = 4f;
             recipe.boostScl = 0.5f;
         });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.oxide, 1);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 4 / 60f, NHLiquids.quantumLiquid, 6 / 60f);
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.metaglass, 1);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 6 / 60f);
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.lead, 3);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 9 / 60f);
+        });
+        input(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.oxide, 1);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 9 / 60f);
+        });
+        
+        //tier2
+        input(CraftingBlock.surgeRefactor, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.surgeRefactor, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.surgeRefactor, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidPositive, 4 / 60f);
+        });
 
+        input(CraftingBlock.fabricSynthesizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.fabricSynthesizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.fabricSynthesizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 3);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 4 / 60f);
+        });
+
+        input(CraftingBlock.multipleSteelFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 3, NHItems.presstanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.echoCanceller, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.multipleSteelFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 3, NHItems.presstanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.gaussReceptor, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.multipleSteelFactory, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 3, NHItems.presstanium, 3, NHItems.metalOxhydrigen, 4));
+        input(CraftingBlock.multipleSteelFactory, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 3, NHItems.presstanium, 2, Items.metaglass, 2));
+        input(CraftingBlock.multipleSteelFactory, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3));
+
+        input(CraftingBlock.processorEncoder, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.memoryRecalibrator, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.processorEncoder, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.processorEncoder, recipe -> recipe.inputItem = ItemStack.list(Items.surgeAlloy, 2, NHItems.juniorProcessor, 4));
+
+        input(CraftingBlock.irayrondFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.irayrondFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.irayrondFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 2, Items.carbide, 4);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 4 / 60f);
+        });
+        input(CraftingBlock.irayrondFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.surgeAlloy, 2, Items.plastanium, 3);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 4 / 60f);
+        });
+
+        input(CraftingBlock.setonFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.carbide, 4);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.setonFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.carbide, 4);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 1);
+            recipe.craftScl = 4f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.setonFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.carbide, 4);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
+        });
+        input(CraftingBlock.setonFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.plastanium, 4);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
+        });
+        input(CraftingBlock.setonFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.metaglass, 2, NHItems.presstanium, 2);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
+        });
+
+        //tier3
+        input(CraftingBlock.processorCompactor, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 15);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.resistoArray, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.processorCompactor, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 15, NHItems.metalOxhydrigen, 10);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidPositive, 8 / 60f);;
+        });
+        input(CraftingBlock.processorCompactor, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 10, Items.plastanium, 10);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidPositive, 8 / 60f);;
+        });
+
+        input(CraftingBlock.multipleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 12);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.neutronMembrane, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.multipleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 6, NHItems.fusionEnergy, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.neutronMembrane, 1);
+            recipe.craftScl = 8f;
+            recipe.boostScl = 0.5f;
+        });
+        input(CraftingBlock.multipleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 12);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f);;
+        });
+            input(CraftingBlock.multipleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 6, NHItems.fusionEnergy, 2);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 8 / 60f);
+        });
+
+      
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 8, Items.tungsten, 8));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 8, Items.metaglass, 8));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 8, Items.oxide, 8));
