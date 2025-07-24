@@ -247,8 +247,10 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(Items.metaglass, 2, NHItems.presstanium, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
         });
+
+        //tier3
         input(CraftingBlock.processorCompactor, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 15, NHItems.metalOxhydrigen, 10);
+            recipe.inputItem = ItemStack.list(Items.silicon, 15);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.resistoArray, 1);
             recipe.craftScl = 8f;
