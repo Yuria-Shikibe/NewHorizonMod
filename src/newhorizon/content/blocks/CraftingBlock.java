@@ -456,7 +456,6 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(Items.titanium, 3, NHLiquids.zetaFluidPositive, 4 / 60f);
 
             outputItems = with(Items.surgeAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3 / 60f);
@@ -516,9 +515,6 @@ public class CraftingBlock {
             size = 3;
             hasPower = hasItems = true;
             drawer = new DrawDefault();
-            addInput(Items.tungsten, 3, NHItems.presstanium, 3, NHItems.metalOxhydrigen, 4, LiquidStack.empty);
-            addInput(Items.tungsten, 3, NHItems.presstanium, 2, Items.metaglass, 2, LiquidStack.empty);
-            addInput(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3, LiquidStack.empty);
 
             consumePower(3f);
 
@@ -538,8 +534,6 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 20;
-
-            addInput(Items.surgeAlloy, 2, NHItems.juniorProcessor, 4, LiquidStack.empty);
 
             consumePower(240f / 60f);
             outputItems = with(NHItems.seniorProcessor, 2);
