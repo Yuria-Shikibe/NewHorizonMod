@@ -282,13 +282,10 @@ public class RecipeRegister {
         });
             input(CraftingBlock.multipleFoundry, recipe -> {
             recipe.inputItem = ItemStack.list(Items.titanium, 6, NHItems.fusionEnergy, 2);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 8 / 60f);;
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidNegative, 8 / 60f);
         });
 
-
-
-
-            
+      
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 8, Items.tungsten, 8));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.graphite, 8, Items.metaglass, 8));
         input(CraftingBlock.electronicFacilityBasic, recipe -> recipe.inputItem = ItemStack.list(Items.beryllium, 8, Items.oxide, 8));
