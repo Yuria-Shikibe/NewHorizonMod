@@ -612,9 +612,6 @@ public class CraftingBlock {
             itemCapacity = 40;
             consumePower(900 / 60f);
 
-            addInput(Items.titanium, 12, NHLiquids.zetaFluidNegative, 8 / 60f, NHLiquids.irdryonFluid, 12 / 60f);
-            addInput(Items.titanium, 6, NHItems.fusionEnergy, 2, NHLiquids.zetaFluidNegative, 8 / 60f);
-
             outputItems = with(Items.surgeAlloy, 8, NHItems.presstanium, 15);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 6 / 60f);
 
@@ -636,9 +633,6 @@ public class CraftingBlock {
             itemCapacity = 40;
             consumePower(900 / 60f);
 
-            addInput(Items.silicon, 15, NHItems.metalOxhydrigen, 10, NHLiquids.zetaFluidPositive, 8 / 60f);
-            addInput(Items.silicon, 10, Items.plastanium, 10, NHLiquids.zetaFluidPositive, 8 / 60f);
-
             outputItems = with(NHItems.juniorProcessor, 20, NHItems.seniorProcessor, 10);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f);
 
@@ -655,8 +649,6 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(Items.surgeAlloy, 2, Items.carbide, 4, NHLiquids.zetaFluidNegative, 4 / 60f);
-            addInput(Items.surgeAlloy, 2, Items.plastanium, 3, NHLiquids.zetaFluidNegative, 4 / 60f);
 
             outputItems = with(NHItems.irayrondPanel, 4);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
@@ -710,9 +702,6 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(480 / 60f);
-            addInput(Items.carbide, 4, NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
-            addInput(Items.plastanium, 4, NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
-            addInput(Items.metaglass, 2, NHItems.presstanium, 2, NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
 
             outputItems = with(NHItems.setonAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3f / 60f);
