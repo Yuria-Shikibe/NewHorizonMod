@@ -40,7 +40,6 @@ import static mindustry.Vars.renderer;
 
 public class NHContent extends Content {
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
-    public static final float XEN_LAYER = Layer.block - 0.003f;
     public static final float POWER_AREA = Layer.power + 0.114f;
     public static final float POWER_DYNAMIC = Layer.power + 0.514f;
 
@@ -71,27 +70,7 @@ public class NHContent extends Content {
     }
 
     public static void loadBeforeContentLoad() {
-        CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum) {
-        });
-        CacheLayer.add(armorLayer = new CacheLayer.ShaderLayer(NHShaders.tiler) {
-            @Override
-            public void begin() {
-                renderer.effectBuffer.begin();
-                Core.graphics.clear(Color.clear);
-                renderer.blocks.floor.beginc();
-            }
-
-            @Override
-            public void end() {
-                renderer.effectBuffer.end();
-
-                NHShaders.tiler.texture = armorTex;
-                renderer.effectBuffer.blit(shader);
-
-                renderer.blocks.floor.beginc();
-            }
-        });
-
+        CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum));
         quantum = Attribute.add("quantum");
     }
 
@@ -199,11 +178,6 @@ public class NHContent extends Content {
 
         darkerNoise = loadTex("darker-noise", t -> {
             t.setFilter(Texture.TextureFilter.linear);
-            t.setWrap(Texture.TextureWrap.repeat);
-        });
-
-        armorTex = loadTex("armor", t -> {
-            t.setFilter(Texture.TextureFilter.nearest);
             t.setWrap(Texture.TextureWrap.repeat);
         });
     }

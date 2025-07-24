@@ -1,6 +1,8 @@
 package newhorizon.content.register;
 
 import arc.func.Cons;
+import arc.util.Log;
+import arc.util.Structs;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.type.ItemStack;
@@ -14,6 +16,8 @@ import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.type.Recipe;
+
+import static mindustry.Vars.content;
 
 public class RecipeRegister {
     public static void load(){
@@ -505,12 +509,13 @@ public class RecipeRegister {
         output(CraftingBlock.componentLegendary, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.quantumConductor, 2);
         });
-}
+    }
 
     public static void input(Block block, Cons<Recipe> recipe) {
         if (block instanceof RecipeGenericCrafter crafter) {
             Recipe r = new Recipe();
             recipe.get(r);
+            //auto ignore zeta fluid
             crafter.recipes.add(r);
         }
     }
@@ -520,4 +525,6 @@ public class RecipeRegister {
             output.get(crafter);
         }
     }
+
+    public static void recipePostProcess() {}
 }

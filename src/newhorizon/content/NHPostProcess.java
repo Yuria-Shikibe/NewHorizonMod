@@ -35,6 +35,7 @@ import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
+import newhorizon.content.register.RecipeRegister;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
@@ -339,11 +340,10 @@ public class NHPostProcess {
 	adjustVanillaTurret();
     }
 
-    public static void contentOverride() {
-        //overrideStats();
-    }
+    public static void contentOverride() {}
 
     public static void postProcessOverride() {
+        RecipeRegister.recipePostProcess();
         overrideStats();
     }
 

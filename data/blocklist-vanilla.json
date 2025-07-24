@@ -857,6 +857,102 @@
 	"size": 1,
 	"color": 2122354687
 },
+"metal-tiles-1": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 976896511
+},
+"metal-tiles-2": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 741094399
+},
+"metal-tiles-3": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1565080831
+},
+"metal-tiles-4": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1664761855
+},
+"metal-tiles-5": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 791623423
+},
+"metal-tiles-6": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -2042083841
+},
+"metal-tiles-7": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 976896511
+},
+"metal-tiles-8": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 757871615
+},
+"metal-tiles-9": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 825375231
+},
+"metal-tiles-10": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 943210495
+},
+"metal-tiles-11": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 875838463
+},
+"metal-tiles-12": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 2017082879
+},
+"colored-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1314080513
+},
+"colored-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"character-overlay": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1414947583
+},
+"character-overlay-white": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -993737473
+},
 "pebbles": {
 	"synthetic": false,
 	"solid": false,

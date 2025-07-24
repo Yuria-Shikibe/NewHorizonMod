@@ -176,11 +176,6 @@ public class NHBlocks {
             f.decoration = metalScarp;
         };
 
-        armorClear = new ArmorFloor("armor-clear", 0) {{
-            quantumSetter.get(this);
-            blendGroup = this;
-        }};
-
         conglomerateWall = new StaticWall("conglomerate-wall") {{
             variants = 4;
         }};
@@ -284,7 +279,7 @@ public class NHBlocks {
             public void load() {
                 super.load();
 
-                editorIcon = fullIcon = uiIcon = region = Core.atlas.find(NewHorizon.name("quantum-field-disturbing-icon"));
+                fullIcon = uiIcon = region = Core.atlas.find(NewHorizon.name("quantum-field-disturbing-icon"));
             }
         };
 

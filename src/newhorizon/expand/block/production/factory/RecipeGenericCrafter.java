@@ -11,10 +11,7 @@ import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
-import mindustry.type.Item;
-import mindustry.type.ItemStack;
-import mindustry.type.LiquidStack;
-import mindustry.type.PayloadStack;
+import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.payloads.Payload;
@@ -65,7 +62,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                                 recipe.inputLiquid.each(stack -> row.add(StatValues.displayLiquid(stack.liquid, stack.amount * Time.toSeconds, true)));
                                 recipe.inputPayload.each(stack -> row.add(display(stack.item, stack.amount, craftTime / recipe.boostScl)));
                             }).growX();
-                            if (inner.getPrefWidth() > 320f) inner.row();
                             inner.table(row -> {
                                 row.left();
                                 row.image(Icon.right).size(32f).padLeft(8f).padRight(12f);
@@ -76,7 +72,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                                 }
                                 if (outputLiquids != null) {
                                     for (var stack: outputLiquids){
-                                        row.add(display(stack.liquid, stack.amount * craftTime * recipe.craftScl, craftTime / recipe.boostScl));
+                                        row.add(display(stack.liquid, stack.amount * craftTime, craftTime / recipe.boostScl));
                                     }
                                 }
                                 if (outputPayloads != null) {
@@ -206,6 +202,12 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         public void updateTile() {
             if (!validRecipe()) updateRecipe();
             super.updateTile();
+        }
+
+        @Override
+        public void handleLiquid(Building source, Liquid liquid, float amount) {
+            if (getRecipe().ignoreLiquidOutput) return;
+            super.handleLiquid(source, liquid, amount);
         }
 
         @Override

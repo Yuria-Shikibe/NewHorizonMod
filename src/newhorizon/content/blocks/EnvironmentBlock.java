@@ -11,10 +11,10 @@ public class EnvironmentBlock {
 
     public static Atlas_4_12_Wall armorWall;
     public static TiledFloor metalFloorPlain, labFloorLight, labFloorDark;
-    public static DataFloor
-            lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
+    public static DataFloor lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
 
     public static Floor patternPlate0, patternPlate1;
+    public static Floor armorClear;
 
     public static void load() {
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
@@ -53,18 +53,8 @@ public class EnvironmentBlock {
         patternPlate0 = new MaskFloor("pattern-plate-0");
         patternPlate1 = new MaskFloor("pattern-plate-1");
 
-
-        //scarpWallSmall = new ScarpWall("ruin-small"){{
-        //    requirements(Category.defense, ItemStack.with());
-        //    buildVisibility = BuildVisibility.sandboxOnly;
-        //    variants = 8;
-        //    size = 1;
-        //}};
-        //scarpWallLarge = new ScarpWall("ruin-large"){{
-        //    requirements(Category.defense, ItemStack.with());
-        //    buildVisibility = BuildVisibility.sandboxOnly;
-        //    variants = 4;
-        //    size = 2;
+        //armorClear = new Floor("armor-clear", 0) {{
+        //    tilingVariants = 512 / 32;
         //}};
 
         metalFloorGroove.baseFloor = metalFloorPlain;

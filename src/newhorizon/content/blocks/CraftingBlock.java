@@ -1144,6 +1144,9 @@ public class CraftingBlock {
         powerBasic = new RecipeGenericCrafter("power-basic") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
 
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
+
             size = 2;
             addLink(-1, 0, 1, -1, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1,
                     0, -1, 1, 1, -1, 1, 2, -1, 1, 2, 0, 1, 2, 1, 1
@@ -1164,6 +1167,9 @@ public class CraftingBlock {
         powerRare = new RecipeGenericCrafter("power-rare") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
 
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
+
             size = 4;
             addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1,
                     1, -2, 1, 2, -2, 1, 3, -2, 1, 3, -1, 1, 3, 0, 1);
@@ -1183,6 +1189,9 @@ public class CraftingBlock {
         powerUncommon = new RecipeGenericCrafter("power-uncommon") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
 
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
+
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
                     2, -2, 1, 2, -3, 1, 3, -3, 2, 3, -1, 1, 4, -1, 1);
@@ -1201,6 +1210,9 @@ public class CraftingBlock {
         }};
         powerEpic = new RecipeGenericCrafter("power-epic") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
+
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 4;
             addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
@@ -1225,6 +1237,9 @@ public class CraftingBlock {
         powerLegendary = new RecipeGenericCrafter("power-legendary") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
 
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
+
             size = 4;
             addLink(-3, 4, 3, 4, -3, 3, -5, -5, 2, -5, -3, 2, -3, -5, 2, 5, 5, 2, 5, 3, 2, 3, 5, 2);
 
@@ -1245,8 +1260,10 @@ public class CraftingBlock {
         componentBasic = new RecipeGenericCrafter("component-basic") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
 
-            size = 2;
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
+            size = 2;
             addLink(-2, 2, 2, 2, -2, 2);
 
             clipSize = 48f;
@@ -1263,9 +1280,11 @@ public class CraftingBlock {
         }};
         componentRare = new RecipeGenericCrafter("component-rare") {{
             requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
+            
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 4;
-
             addLink(-3, 3, 2, 3, -3, 2);
 
             clipSize = 64f;

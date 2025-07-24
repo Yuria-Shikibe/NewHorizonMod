@@ -69,11 +69,8 @@ public class NHLogic {
                         wproc.updateCode(code);
                         wproc.tag = tag;
                     }
-                    if (!headless){
-                        if(ui.editor.isShown()){
-                            Vars.editor.renderer.updatePoint(x, y);
-                        }
-                    }
+                    if (!headless && ui.editor.isShown()) updateStatic(x, y);
+
                     Log.info("Registered wproc: " + tag);
                     break outer;
                 }
@@ -83,6 +80,14 @@ public class NHLogic {
         if(!foundAny){
             Log.info("Failed to registered wproc: " + tag + ", no space available.");
         }
+    }
+
+    public static void updateStatic(int x, int y){
+        renderer.blocks.floor.recacheTile(x, y);
+        if(x > 0) renderer.blocks.floor.recacheTile(x - 1, y);
+        if(y > 0) renderer.blocks.floor.recacheTile(x, y - 1);
+        if(x < world.width() - 1) renderer.blocks.floor.recacheTile(x + 1, y);
+        if(y < world.height() - 1) renderer.blocks.floor.recacheTile(x, y + 1);
     }
 
     public static void updateWprocList(){

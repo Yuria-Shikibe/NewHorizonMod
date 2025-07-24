@@ -13,6 +13,7 @@ public class Recipe{
 
     public float boostScl = 1f;
     public float craftScl = 1f;
+    public boolean ignoreLiquidOutput = false;
 
     public Recipe(Object...objects){
         for (int i = 0; i < objects.length / 2; i++){
