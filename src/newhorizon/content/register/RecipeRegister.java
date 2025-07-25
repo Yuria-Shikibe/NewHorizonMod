@@ -1,8 +1,6 @@
 package newhorizon.content.register;
 
 import arc.func.Cons;
-import arc.util.Log;
-import arc.util.Structs;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.type.ItemStack;
@@ -13,11 +11,8 @@ import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.content.blocks.CraftingBlock;
 import newhorizon.content.blocks.ModuleBlock;
-import newhorizon.expand.block.production.factory.AdaptCrafter;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.type.Recipe;
-
-import static mindustry.Vars.content;
 
 public class RecipeRegister {
     public static void load(){
@@ -62,30 +57,7 @@ public class RecipeRegister {
             recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 10);
             recipe.craftTime = 120f;
         });
-        /*
-        recipe(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 1);
-            recipe.craftScl = 8f;
-            recipe.boostScl = 0.5f;
-        });
-        recipe(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 1);
-            recipe.craftScl = 4f;
-            recipe.boostScl = 0.5f;
-        });
-        recipe(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 3);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 4 / 60f);
-        });
-        recipe(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 3, Items.copper, 3);
-        });
-        recipe(CraftingBlock.processorPrinter, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 3, Items.beryllium, 3);
-        });
-        */
+
         recipe(CraftingBlock.crucibleFoundry, recipe -> {
             recipe.inputItem = ItemStack.list(Items.tungsten, 9);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.protonCapacitor, 1);
@@ -393,7 +365,7 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.electronicFacilityLegendary, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 4);
+            recipe.inputItem = ItemStack.list(NHItems.nodexPlate, 4);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 2, ModuleBlock.memoryRecalibrator, 2);
             recipe.outputPayload = PayloadStack.list(ModuleBlock.resistoArray, 2);
         });
@@ -452,7 +424,7 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.foundryLegendary, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.upgradeSort, 4);
+            recipe.inputItem = ItemStack.list(NHItems.nodexPlate, 4);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.gaussReceptor, 2, ModuleBlock.echoCanceller, 2);
             recipe.outputPayload = PayloadStack.list(ModuleBlock.pulseMutator, 2);
         });

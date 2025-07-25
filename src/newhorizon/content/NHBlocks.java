@@ -69,7 +69,6 @@ import newhorizon.expand.block.defence.ShockwaveGenerator;
 import newhorizon.expand.block.drawer.ArcCharge;
 import newhorizon.expand.block.drawer.DrawArrowSequence;
 import newhorizon.expand.block.drawer.FlipRegionPart;
-import newhorizon.expand.block.env.ArmorFloor;
 import newhorizon.expand.block.special.HyperGenerator;
 import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
@@ -1452,7 +1451,7 @@ public class NHBlocks {
 
             ammo(NHItems.darkEnergy, NHBullets.eternity);
 
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 5000, NHItems.darkEnergy, 2000));
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.nodexPlate, 5000, NHItems.darkEnergy, 2000));
         }};
 
         antiBulletTurret = new PointDefenseTurret("anti-bullet-turret") {{
@@ -2025,7 +2024,7 @@ public class NHBlocks {
                 ammo(
                         NHItems.irayrondPanel, NHBullets.railGun1,
                         NHItems.setonAlloy, NHBullets.railGun2,
-                        NHItems.upgradeSort, NHBullets.railGun3
+                        NHItems.nodexPlate, NHBullets.railGun3
                 );
 
                 consumePowerCond(12f, TurretBuild::isActive);
@@ -2149,8 +2148,8 @@ public class NHBlocks {
 
             chargeSound = NHSounds.railGunCharge;
 
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.upgradeSort, 1500));
-            ammo(NHItems.darkEnergy, NHBullets.arc_9000, NHItems.upgradeSort, new BulletType() {{
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.nodexPlate, 1500));
+            ammo(NHItems.darkEnergy, NHBullets.arc_9000, NHItems.nodexPlate, new BulletType() {{
                 hittable = false;
                 hitColor = lightColor = trailColor = NHColor.darkEnrFront;
                 ammoMultiplier = 1f;
@@ -2179,7 +2178,7 @@ public class NHBlocks {
                     }
                 });
             }});
-            shooter(NHItems.upgradeSort, new ShootBarrel() {{
+            shooter(NHItems.nodexPlate, new ShootBarrel() {{
                 barrels = new float[]{
                         22, -12, 25,
                         -22, -12, -25,
@@ -2312,7 +2311,7 @@ public class NHBlocks {
             consumeItems(new ItemStack(NHItems.thermoCorePositive, 6), new ItemStack(NHItems.metalOxhydrigen, 6));
             consumeLiquid(NHLiquids.zetaFluidNegative, 8/60f);
             consumeLiquids(new LiquidStack(NHLiquids.zetaFluidPositive, 8/60f)).optional(true, true);
-            requirements(Category.power, BuildVisibility.shown, with(NHItems.upgradeSort, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250));
+            requirements(Category.power, BuildVisibility.shown, with(NHItems.nodexPlate, 800, NHItems.setonAlloy, 600, NHItems.irayrondPanel, 400, NHItems.presstanium, 1500, Items.surgeAlloy, 250));
         }};
     }
 
@@ -2437,7 +2436,7 @@ public class NHBlocks {
         }};
 
         airRaider = new AirRaider("air-raider") {{
-            requirements(Category.defense, with(NHItems.upgradeSort, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
+            requirements(Category.defense, with(NHItems.nodexPlate, 160, NHItems.presstanium, 260, NHItems.seniorProcessor, 120, NHItems.juniorProcessor, 100, Items.phaseFabric, 150));
 
             shoot = new ShootSummon(0, 0, 120, 0) {{
                 shots = 4;

@@ -51,7 +51,7 @@ public class DefenseBlock {
 
             crushDamageMultiplier = 0.5f;
 
-            requirements(Category.defense, with(NHItems.upgradeSort, 8, NHItems.ancimembrane, 8));
+            requirements(Category.defense, with(NHItems.nodexPlate, 8, NHItems.ancimembrane, 8));
         }};
 
         standardForceProjector = new ForceProjector("standard-shield-generator") {{
@@ -87,7 +87,7 @@ public class DefenseBlock {
         }};
 
         riftShield = new ShieldGenerator("rift-shield") {{
-            requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.upgradeSort, 300));
+            requirements(Category.effect, with(NHItems.setonAlloy, 300, NHItems.ancimembrane, 350, NHItems.seniorProcessor, 400, NHItems.nodexPlate, 300));
         }};
 
     }

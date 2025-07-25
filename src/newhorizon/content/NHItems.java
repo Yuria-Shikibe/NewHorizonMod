@@ -9,7 +9,7 @@ public class NHItems {
     //Modded Item
     public static Item
             presstanium, juniorProcessor, metalOxhydrigen, zeta, multipleSteel, seniorProcessor,
-            irayrondPanel, setonAlloy, upgradeSort, ancimembrane, hadronicomp, hyperProcessor,
+            irayrondPanel, setonAlloy, nodexPlate, ancimembrane, hadronicomp, hyperProcessor,
             fusionEnergy, thermoCorePositive, thermoCoreNegative, darkEnergy;
 
     //Vanilla Item, for namespace use
@@ -41,7 +41,7 @@ public class NHItems {
         setonAlloy = new Item("seton-alloy", Color.valueOf("919dab")) {{
             cost = 2.5f;
         }};
-        upgradeSort = new Item("upgradeSort", Color.valueOf("6e7080")) {{
+        nodexPlate = new Item("nodex-plate", Color.valueOf("6e7080")) {{
             cost = 3f;
         }};
         ancimembrane = new Item("ancimembrane", Color.valueOf("e3ae6f")) {{

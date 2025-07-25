@@ -22,7 +22,7 @@ public class ThreatLevel {
         threatMap.put(7, Seq.with(NHItems.multipleSteel, Items.phaseFabric, Items.surgeAlloy));
         threatMap.put(8, Seq.with(NHItems.seniorProcessor));
         threatMap.put(9, Seq.with(NHItems.irayrondPanel, NHItems.setonAlloy));
-        threatMap.put(10, Seq.with(NHItems.ancimembrane, NHItems.upgradeSort));
+        threatMap.put(10, Seq.with(NHItems.ancimembrane, NHItems.nodexPlate));
     }
 
     public static int getTeamThreat(Team team) {

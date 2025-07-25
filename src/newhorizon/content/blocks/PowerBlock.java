@@ -218,7 +218,7 @@ public class PowerBlock {
             powerProduction = 90000 / 60f;
             craftTime = 120f;
 
-            addInput(NHItems.thermoCorePositive, 2, NHItems.thermoCoreNegative, 2, NHItems.upgradeSort, 4, NHItems.ancimembrane, 4, LiquidStack.empty);
+            addInput(NHItems.thermoCorePositive, 2, NHItems.thermoCoreNegative, 2, NHItems.nodexPlate, 4, NHItems.ancimembrane, 4, LiquidStack.empty);
 
             outputItem = new ItemStack(NHItems.darkEnergy, 2);
 

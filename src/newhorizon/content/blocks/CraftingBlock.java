@@ -1,6 +1,5 @@
 package newhorizon.content.blocks;
 
-import arc.Events;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -14,7 +13,6 @@ import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.entities.Effect;
-import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -22,7 +20,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
-import mindustry.type.PayloadStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
@@ -813,7 +810,7 @@ public class CraftingBlock {
                     Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
                 });
             });
-            outputItem = new ItemStack(NHItems.upgradeSort, 2);
+            outputItem = new ItemStack(NHItems.nodexPlate, 2);
             craftTime = 120f;
             itemCapacity = 20;
             size = 3;
@@ -895,7 +892,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         electronicFacilityLegendary = new RecipeGenericCrafter("electronic-facility-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
 
             size = 6;
             addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2, -4, 4, 2, -4, -4, 2, 4, 4, 2, 4, -4, 2);
@@ -1010,7 +1007,7 @@ public class CraftingBlock {
             }};
         }};
         particleProcessorLegendary = new RecipeGenericCrafter("particle-processor-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
 
             size = 4;
 
@@ -1120,7 +1117,7 @@ public class CraftingBlock {
             }};
         }};
         foundryLegendary = new RecipeGenericCrafter("foundry-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
 
             size = 4;
             addLink(
@@ -1236,7 +1233,7 @@ public class CraftingBlock {
             }};
         }};
         powerLegendary = new RecipeGenericCrafter("power-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
 
             canMirror = true;
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
@@ -1336,7 +1333,7 @@ public class CraftingBlock {
             consumePower(480 / 60f);
         }};
         componentLegendary = new RecipeGenericCrafter("component-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.upgradeSort, 100));
+            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
 
             size = 4;
 

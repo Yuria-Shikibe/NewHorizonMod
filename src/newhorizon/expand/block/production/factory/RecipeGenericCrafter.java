@@ -37,19 +37,32 @@ public class RecipeGenericCrafter extends AdaptCrafter {
 
     @Override
     public void init() {
-        outputItem = null;
-        outputLiquid = null;
-
-        outputItems = null;
-        outputLiquids = null;
-        outputPayloads = null;
-
         super.init();
         recipes.each(recipe -> {
             recipe.inputItem.each(stack -> itemFilter[stack.item.id] = true);
             recipe.inputLiquid.each(stack -> liquidFilter[stack.liquid.id] = true);
             recipe.inputPayload.each(stack -> payloadFilter.add(stack.item));
         });
+
+        recipes.each(recipe -> {
+            if (recipe.outputItem.isEmpty() && outputItems != null){
+                for (var stack: outputItems){
+                    recipe.outputItem.add(new ItemStack(stack.item, Mathf.round(stack.amount * (recipe.craftTime / craftTime))));
+                }
+            }
+            if (recipe.outputLiquid.isEmpty() && outputLiquids != null){
+                for (var stack: outputLiquids){
+                    recipe.outputLiquid.add(new LiquidStack(stack.liquid, stack.amount));
+                }
+            }
+        });
+
+        outputItem = null;
+        outputLiquid = null;
+
+        outputItems = null;
+        outputLiquids = null;
+        outputPayloads = null;
     }
 
     @Override
