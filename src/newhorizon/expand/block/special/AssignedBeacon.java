@@ -139,12 +139,12 @@ public class AssignedBeacon extends Block {
                             if (build1.getRecipe() != null){
                                 if (crafter1.outputItems != null){
                                     for (ItemStack stack : crafter1.outputItems) {
-                                        build.items.add(stack.item, (int) (stack.amount * build1.getRecipe().craftScl));
+                                        build.items.add(stack.item, stack.amount);
                                     }
                                 }
                                 if (crafter1.outputPayloads != null){
                                     for (PayloadStack stack : crafter1.outputPayloads) {
-                                        build.getPayloads().add(stack.item, (int) (stack.amount * build1.getRecipe().craftScl));
+                                        build.getPayloads().add(stack.item, stack.amount);
                                     }
                                 }
                             }

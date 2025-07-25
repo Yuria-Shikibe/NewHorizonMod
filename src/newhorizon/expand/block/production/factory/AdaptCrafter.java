@@ -260,15 +260,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
                     kill();
                 }
             }
-
-            if (items != null && outputItems != null) {
-                for (ItemStack stack : outputItems) {
-                    if (items.get(stack.item) >= itemCapacity) {
-                        items.set(stack.item, itemCapacity);
-                    }
-                }
-            }
-
             super.updateTile();
         }
 
@@ -400,7 +391,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
                     dumpLiquid(outputLiquids[i].liquid, 2f, dir);
                 }
             }
-
         }
 
         @Override

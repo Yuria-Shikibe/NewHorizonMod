@@ -6,64 +6,93 @@ import mindustry.type.Item;
 
 public class NHItems {
 
-    //Load Mod Items
-
+    //Modded Item
     public static Item
-            ancimembrane,
-            presstanium, seniorProcessor, juniorProcessor,
-            zeta, fusionEnergy, multipleSteel, irayrondPanel,
-            setonAlloy, darkEnergy, upgradeSort, metalOxhydrigen,
-            thermoCorePositive, thermoCoreNegative;
+            presstanium, juniorProcessor, metalOxhydrigen, zeta, multipleSteel, seniorProcessor,
+            irayrondPanel, setonAlloy, upgradeSort, ancimembrane, hadronicomp, hyperProcessor,
+            fusionEnergy, thermoCorePositive, thermoCoreNegative, darkEnergy;
+
+    //Vanilla Item, for namespace use
+    public static Item
+            scrap, copper, lead, graphite, coal, titanium, thorium, silicon, plastanium,
+            phaseFabric, surgeAlloy, sporePod, sand, blastCompound, pyratite, metaglass,
+            beryllium, tungsten, oxide, carbide, fissileMatter, dormantCyst;
+
 
     public static void load() {
-        ancimembrane = new Item("ancimembrane") {{
-            cost = 5;
-            color = NHColor.ancient;
-            charge = 5;
-        }};
-
-        thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("CFFF87")) {{
-            radioactivity = 2.5f;
-            explosiveness = 3f;
-            charge = 15f;
-        }};
-        thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("#7D95B2").lerp(Color.white, 0.095f)) {{
-            explosiveness = 1f;
-        }};
-        presstanium = new Item("presstanium", Color.valueOf("6495ED")) {{
-            flammability = 0.35f;
+        presstanium = new Item("presstanium", Color.valueOf("90a0e4")) {{
             cost = 1.5f;
         }};
-        seniorProcessor = new Item("processor-senior", Color.valueOf("FFFACD"));
-        juniorProcessor = new Item("processor-junior", Color.valueOf("808080"));
-        zeta = new Item("zeta", Color.valueOf("#FFAE87")) {{
+        juniorProcessor = new Item("processor-junior", Color.valueOf("a8bdff"));
+        metalOxhydrigen = new Item("metal-oxhydrigen", Color.valueOf("cbc2f1"));
+        zeta = new Item("zeta", Color.valueOf("ffb380")) {{
             hardness = 8;
             radioactivity = 1.5f;
             charge = 1f;
         }};
-        fusionEnergy = new Item("fusion-core-energy", Color.valueOf("ffe4b5")) {{
-            explosiveness = 0.7f;
-            charge = 1.25f;
-            radioactivity = 1f;
-        }};
-        multipleSteel = new Item("multiple-steel", Color.valueOf("cedbe3")) {{
-            cost = 1.75f;
-        }};
-        irayrondPanel = new Item("irayrond-panel", Color.valueOf("E4F0FF")) {{
+        multipleSteel = new Item("multiple-steel", Color.valueOf("ccd3dc")) {{
             cost = 2f;
         }};
-        setonAlloy = new Item("seton-alloy", Color.valueOf("#151C23")) {{
+        seniorProcessor = new Item("processor-senior", Color.valueOf("f3d259"));
+
+        irayrondPanel = new Item("irayrond-panel", Color.valueOf("afc1e8")) {{
             cost = 2.5f;
         }};
-        darkEnergy = new Item("dark-energy", Color.valueOf("#BE91FF")) {{
+        setonAlloy = new Item("seton-alloy", Color.valueOf("919dab")) {{
+            cost = 2.5f;
+        }};
+        upgradeSort = new Item("upgradeSort", Color.valueOf("6e7080")) {{
+            cost = 3f;
+        }};
+        ancimembrane = new Item("ancimembrane", Color.valueOf("e3ae6f")) {{
+            cost = 3;
+        }};
+        hadronicomp = new Item("hadronicomp", Color.valueOf("dfb5b3"));
+        hyperProcessor = new Item("processor-hyper", Color.valueOf("ffb380"));
+
+        fusionEnergy = new Item("fusion-core-energy", Color.valueOf("fff3e6")) {{
+            explosiveness = 0.7f;
+            radioactivity = 1f;
+            charge = 5f;
+        }};
+        thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("f9ffc9")) {{
+            explosiveness = 1f;
+            radioactivity = 2.5f;
+            charge = 15f;
+        }};
+        thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("deedff")) {{
+            explosiveness = 1f;
+            radioactivity = 2.5f;
+            charge = 15f;
+        }};
+        darkEnergy = new Item("dark-energy", Color.valueOf("cba3ff")) {{
             radioactivity = 5f;
             explosiveness = 5f;
             charge = 25f;
         }};
-        upgradeSort = new Item("upgradeSort", Color.valueOf("1D1E23")) {{
-            cost = 3f;
-        }};
-        metalOxhydrigen = new Item("metal-oxhydrigen", Color.valueOf("#BFF3FF"));
+
+        scrap = Items.scrap;
+        copper = Items.copper;
+        lead = Items.lead;
+        graphite = Items.graphite;
+        coal = Items.coal;
+        titanium = Items.titanium;
+        thorium = Items.thorium;
+        silicon = Items.silicon;
+        plastanium = Items.plastanium;
+        phaseFabric = Items.phaseFabric;
+        surgeAlloy = Items.surgeAlloy;
+        sporePod = Items.sporePod;
+        sand = Items.sand;
+        blastCompound = Items.blastCompound;
+        pyratite = Items.pyratite;
+        metaglass = Items.metaglass;
+        beryllium = Items.beryllium;
+        tungsten = Items.tungsten;
+        oxide = Items.oxide;
+        carbide = Items.carbide;
+        fissileMatter = Items.fissileMatter;
+        dormantCyst = Items.dormantCyst;
 
         Items.serpuloItems.add(Items.tungsten, Items.carbide);
         Items.erekirItems.add(Items.titanium);

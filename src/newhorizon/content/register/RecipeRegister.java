@@ -22,24 +22,48 @@ import static mindustry.Vars.content;
 public class RecipeRegister {
     public static void load(){
         //tier1
-        input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 1);
-            recipe.craftScl = 8f;
-            recipe.boostScl = 0.5f;
-        });
-        input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 1);
-            recipe.craftScl = 4f;
-            recipe.boostScl = 0.5f;
-        });
-        input(CraftingBlock.stampingFacility, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.titanium, 3);
+        recipe(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.titanium, 3);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.presstanium, 3);
+            recipe.craftTime = 60f;
         });
-        input(CraftingBlock.stampingFacility, recipe -> recipe.inputItem = ItemStack.list(Items.titanium, 3, Items.graphite, 1.5));
+        recipe(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.titanium, 3, NHItems.graphite, 2);
+            recipe.outputItem = ItemStack.list(NHItems.presstanium, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.titanium, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.heatDetector, 1);
+            recipe.outputItem = ItemStack.list(NHItems.presstanium, 9);
+            recipe.craftTime = 90f;
+        });
+        recipe(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 1);
+            recipe.outputItem = ItemStack.list(NHItems.presstanium, 6);
+            recipe.craftTime = 60f;
+        });
 
+        recipe(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.silicon, 3);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 3);
+            recipe.craftTime = 90f;
+        });
+        recipe(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.wiringKit, 2);
+            recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 15);
+            recipe.craftTime = 120f;
+        });
+        recipe(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.silicon, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 1);
+            recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 10);
+            recipe.craftTime = 120f;
+        });
+
+        /*
         input(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(Items.silicon, 3);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerUnit, 1);
@@ -509,20 +533,16 @@ public class RecipeRegister {
         output(CraftingBlock.componentLegendary, block -> {
             block.outputPayloads = PayloadStack.with(ModuleBlock.quantumConductor, 2);
         });
+
+         */
     }
 
-    public static void input(Block block, Cons<Recipe> recipe) {
+    public static void recipe(Block block, Cons<Recipe> recipe) {
         if (block instanceof RecipeGenericCrafter crafter) {
             Recipe r = new Recipe();
             recipe.get(r);
             //auto ignore zeta fluid
             crafter.recipes.add(r);
-        }
-    }
-
-    public static void output(Block block, Cons<AdaptCrafter> output) {
-        if (block instanceof AdaptCrafter crafter) {
-            output.get(crafter);
         }
     }
 

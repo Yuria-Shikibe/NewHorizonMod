@@ -232,7 +232,7 @@ new-horizon-multiple-surge-alloy-factory 1 1 3 0
 new-horizon-neutron-membrane 1 1 1 0
 new-horizon-nexus-core 1 1 5 0
 new-horizon-oil-refiner 1 1 2 0
-new-horizon-ore-zeta 0 0 1 16756359
+new-horizon-ore-zeta 0 0 1 16757632
 new-horizon-particle-modulator 1 1 1 0
 new-horizon-particle-processor-basic 1 1 2 0
 new-horizon-particle-processor-epic 1 1 4 0
