@@ -510,10 +510,11 @@ public class CraftingBlock {
             craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);
             outputItem = new ItemStack(NHItems.multipleSteel, 3);
             craftTime = 60f;
-            itemCapacity = 20;
+            itemCapacity = 30;
+            liquidCapacity = 100;
             health = 600;
             size = 3;
-            hasPower = hasItems = true;
+            hasPower = hasItems =hasLiquids =true;
             drawer = new DrawDefault();
 
             consumePower(3f);
@@ -609,7 +610,7 @@ public class CraftingBlock {
             craftTime = 120f;
             liquidCapacity = 24f;
             ignoreLiquidFullness = true;
-            itemCapacity = 40;
+            itemCapacity = 100;
             consumePower(900 / 60f);
 
             outputItems = with(Items.surgeAlloy, 8, NHItems.presstanium, 15);
@@ -630,7 +631,7 @@ public class CraftingBlock {
             craftTime = 150f;
             liquidCapacity = 20f;
             ignoreLiquidFullness = true;
-            itemCapacity = 40;
+            itemCapacity = 100;
             consumePower(900 / 60f);
 
             outputItems = with(NHItems.juniorProcessor, 20, NHItems.seniorProcessor, 10);
