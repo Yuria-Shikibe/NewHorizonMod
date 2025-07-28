@@ -10,6 +10,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
@@ -18,6 +19,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
 
+import static arc.Core.app;
 import static arc.Core.settings;
 import static newhorizon.util.ui.TableFunc.LEN;
 
@@ -77,6 +79,13 @@ public class NHSetting {
         ));
 
         allSettings.each((name, seq) -> seq.each(SettingKey::setDefault));
+
+        if (Vars.headless){
+            for (var setting: NHSetting.allSettings.get("override")){
+                settings.put(setting.key, true);
+                Log.info(setting.key + ": " + getBool(setting.key));
+            }
+        }
 
         enableEffectDetail = getBool(EFFECT_DETAIL);
     }

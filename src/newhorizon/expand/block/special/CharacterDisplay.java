@@ -13,6 +13,7 @@ import arc.util.Strings;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -71,6 +72,7 @@ public class CharacterDisplay extends Block {
 
     @Override
     public void placeEnded(Tile tile, Unit builder, int rotation, Object config) {
+        if (net.active()) return;
         if (tile.build != null){
             if (queueText.isEmpty()) return;
             tile.build.configure(CharacterOverlay.charToData(queueText.charAt(0)));

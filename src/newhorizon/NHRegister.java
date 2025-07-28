@@ -45,7 +45,6 @@ public class NHRegister {
                         break;
                     }
                 }
-
             }
 
             if (!Vars.headless) {
