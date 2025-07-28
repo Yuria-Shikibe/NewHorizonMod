@@ -72,10 +72,17 @@ public class CharacterDisplay extends Block {
 
     @Override
     public void placeEnded(Tile tile, Unit builder, int rotation, Object config) {
-        if (net.active()) return;
         if (tile.build != null){
             if (queueText.isEmpty()) return;
-            tile.build.configure(CharacterOverlay.charToData(queueText.charAt(0)));
+            if (config instanceof String conf){
+                try {
+                    String[] split = conf.split("@");
+                    split[1] = CharacterOverlay.charToData(queueText.charAt(0)) + "";
+                    tile.build.configure(split[0] + "@" + split[1]);
+                }catch (Exception e){
+                    Log.err(e);
+                }
+            }
             queueText = queueText.substring(1);
         }
     }
