@@ -251,7 +251,7 @@ public class NewHorizon extends Mod {
 
         NHSetting.load();
         NHPostProcess.load();
-        if (NHSetting.getBool(NHSetting.VANILLA_COST_OVERRIDE)) NHPostProcess.loadOptional();
+        NHPostProcess.loadOptional();
         NHContent.loadLast();
         NHLogic.load();
 

@@ -179,12 +179,6 @@
 	"size": 6,
 	"color": 255
 },
-"new-horizon-ore-zeta": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -5013249
-},
 "new-horizon-metal-scrap": {
 	"synthetic": false,
 	"solid": false,
@@ -634,6 +628,18 @@
 	"solid": true,
 	"size": 5,
 	"color": 255
+},
+"new-horizon-ore-zeta": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -5013249
+},
+"new-horizon-ore-silicon": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1398168831
 },
 "new-horizon-metal-floor-groove": {
 	"synthetic": false,
@@ -1125,6 +1131,24 @@
 	"synthetic": true,
 	"solid": false,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-icon-display-small": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-character-display": {
+	"synthetic": true,
+	"solid": false,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-character-display-small": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
 	"color": 255
 },
 "new-horizon-turbo-pump-small": {

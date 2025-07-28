@@ -1,19 +1,14 @@
 package newhorizon.content;
 
-import arc.Core;
-import arc.func.Cons;
 import arc.graphics.Color;
-import arc.graphics.Pixmap;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.*;
-import arc.struct.FloatSeq;
 import arc.struct.GridBits;
 import arc.struct.Seq;
 import arc.struct.ShortSeq;
 import arc.util.*;
 import arc.util.noise.Simplex;
-import arc.util.pooling.Pool;
 import mindustry.Vars;
 import mindustry.ai.Astar;
 import mindustry.content.Blocks;
@@ -31,7 +26,6 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.Tiles;
 import mindustry.world.blocks.environment.Floor;
-import mindustry.world.meta.Env;
 import newhorizon.content.blocks.EnvironmentBlock;
 import newhorizon.util.feature.ManhattanVoronoi;
 
@@ -234,7 +228,7 @@ public class NHPlanets {
 
             pass((x, y) -> {
                 if(floor == Blocks.darkPanel3 && rand.chance(0.8f)){
-                    ore = NHBlocks.oreZeta;
+                    ore = EnvironmentBlock.oreZeta;
                 }
             });
 

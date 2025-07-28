@@ -33,6 +33,8 @@ new-horizon-block3 1 1 1 0
 new-horizon-blood-star 1 1 5 0
 new-horizon-bomb-launcher 1 1 3 0
 new-horizon-cathode-fusion-reactor 1 1 4 0
+new-horizon-character-display 1 0 2 0
+new-horizon-character-display-small 1 0 1 0
 new-horizon-charge-compensator 1 1 1 0
 new-horizon-charge-wall 1 1 1 0
 new-horizon-charge-wall-large 1 1 2 0
@@ -127,6 +129,7 @@ new-horizon-hyper-jump-gate 1 1 8 0
 new-horizon-hyper-space-warper 1 1 4 0
 new-horizon-hyper-zeta-factory 1 1 2 0
 new-horizon-icon-display 1 0 2 0
+new-horizon-icon-display-small 1 0 1 0
 new-horizon-implosion-mining-facility 1 1 4 0
 new-horizon-insulated-wall 1 1 1 0
 new-horizon-interferon 1 1 3 0
@@ -232,6 +235,7 @@ new-horizon-multiple-surge-alloy-factory 1 1 3 0
 new-horizon-neutron-membrane 1 1 1 0
 new-horizon-nexus-core 1 1 5 0
 new-horizon-oil-refiner 1 1 2 0
+new-horizon-ore-silicon 0 0 1 5461596
 new-horizon-ore-zeta 0 0 1 16757632
 new-horizon-particle-modulator 1 1 1 0
 new-horizon-particle-processor-basic 1 1 2 0

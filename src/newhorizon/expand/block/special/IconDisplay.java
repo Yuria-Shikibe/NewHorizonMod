@@ -26,6 +26,7 @@ import static mindustry.Vars.content;
 import static mindustry.Vars.renderer;
 
 public class IconDisplay extends Block {
+    public static boolean drawIconDisplayText = true;
     public TextureRegion maskRegion;
 
     public IconDisplay(String name) {
@@ -54,7 +55,7 @@ public class IconDisplay extends Block {
     @Override
     public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list) {
         if (plan.config instanceof UnlockableContent content) {
-            Tmp.v1.set(Scaling.bounded.apply(content.uiIcon.width, content.uiIcon.height, 12f, 12f));
+            Tmp.v1.set(Scaling.bounded.apply(content.uiIcon.width, content.uiIcon.height, 6f * size, 6f * size));
             Draw.rect(content.uiIcon, plan.drawx(), plan.drawy(), Tmp.v1.x, Tmp.v1.y);
         }
     }
@@ -130,9 +131,9 @@ public class IconDisplay extends Block {
             if (displayContent != null) {
                 Draw.z(Layer.blockOver);
                 Draw.rect(maskRegion, x, y);
-                Tmp.v1.set(Scaling.bounded.apply(displayContent.uiIcon.width, displayContent.uiIcon.height, 12f, 12f));
+                Tmp.v1.set(Scaling.bounded.apply(displayContent.uiIcon.width, displayContent.uiIcon.height, 6f * size, 6f * size));
                 Draw.rect(displayContent.uiIcon, x, y, Tmp.v1.x, Tmp.v1.y);
-                DrawFunc.drawText(displayContent.localizedName, x, y + 8);
+                if (size == 2) DrawFunc.drawText(displayContent.localizedName, x, y + 8);
             }
         }
 

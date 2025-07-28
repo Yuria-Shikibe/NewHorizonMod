@@ -94,7 +94,6 @@ import static mindustry.type.ItemStack.with;
 public class NHBlocks {
     public static Block reinForcedItemSource;
     public static Block reinForcedLiquidSource;
-    public static Block oreZeta;
     public static Block hyperGenerator;
 
 
@@ -130,16 +129,6 @@ public class NHBlocks {
     public static Block conglomerateWall;
 
     private static void loadEnv() {
-        oreZeta = new OreBlock("ore-zeta") {{
-            oreDefault = true;
-            variants = 3;
-            oreThreshold = 0.95F;
-            oreScale = 20.380953F;
-            itemDrop = NHItems.zeta;
-            localizedName = itemDrop.localizedName;
-            mapColor.set(itemDrop.color);
-            useColor = true;
-        }};
 
         metalScarp = new Prop("metal-scrap") {{
             variants = 3;

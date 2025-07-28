@@ -22,7 +22,6 @@ import mindustry.gen.Sounds;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
-import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.power.ConsumeGenerator;
@@ -37,9 +36,7 @@ import mindustry.world.meta.*;
 import newhorizon.NHSetting;
 import newhorizon.content.register.RecipeRegister;
 import newhorizon.expand.ability.passive.PassiveShield;
-import newhorizon.expand.bullets.AdaptBulletType;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
-import newhorizon.util.func.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -325,25 +322,24 @@ public class NHPostProcess {
     }
 
     public static void loadOptional() {
-        overrideVanillaMain();
+        //replaceVanillaVisualContent();
+        //replaceVanillaSpawnGroup();
 
-        overrideUnitTypeAbility();
-        buffCoreUnits();
-
-        adjustVanillaLogistic();
-        adjustVanillaDrill();
-        adjustVanillaFactories();
-        adjustVanillaPower();
-        adjustVanillaUnit();
-        adjustVanillaLogic();
-        adjustVanillaItem();
-	adjustVanillaTurret();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_UNIT_SHIELD)) overrideUnitShield();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_CORE_UNIT)) overrideCoreUnit();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_LOGISTIC)) overrideLogistic();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_DRILL)) overrideDrill();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_FACTORIES)) overrideFactories();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_POWER)) overridePower();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_UNIT)) overrideUnit();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_LOGIC)) overrideLogic();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_ITEM)) overrideItem();
+        if (NHSetting.getBool(NHSetting.OVERRIDE_TURRET)) overrideTurret();
     }
 
     public static void contentOverride() {}
 
     public static void postProcessOverride() {
-        RecipeRegister.recipePostProcess();
         overrideStats();
     }
 
@@ -358,10 +354,6 @@ public class NHPostProcess {
         }
     }
 
-    public static void overrideVanillaMain() {
-        replaceVanillaVisualContent();
-        replaceVanillaSpawnGroup();
-    }
 
     public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval) {
         UnitType[][] species = {
@@ -617,7 +609,7 @@ public class NHPostProcess {
         }
     }
 
-    private static void adjustVanillaLogic() {
+    private static void overrideLogic() {
         	adjustContent(Blocks.message, content -> {
 			MessageBlock logicBlock = (MessageBlock) content;
 			logicBlock.requirements = ItemStack.with(Items.silicon, 5);
@@ -670,7 +662,7 @@ public class NHPostProcess {
 		});
     }
 
-    private static void adjustVanillaLogistic() {
+    private static void overrideLogistic() {
         adjustContent(Blocks.rotaryPump, content -> {
             Pump pump = (Pump) content;
             pump.requirements = ItemStack.with(Items.graphite, 80, Items.metaglass, 50);
@@ -713,7 +705,7 @@ public class NHPostProcess {
         hideContent(Blocks.reinforcedLiquidRouter);
     }
 
-    private static void adjustVanillaDrill() {
+    private static void overrideDrill() {
         hideContent(Blocks.mechanicalDrill);
         hideContent(Blocks.laserDrill);
         hideContent(Blocks.blastDrill);
@@ -772,7 +764,7 @@ public class NHPostProcess {
         });
     }
 
-    private static void adjustVanillaPower() {
+    private static void overridePower() {
         adjustContent(Blocks.turbineCondenser, content -> {
             ThermalGenerator generator = (ThermalGenerator) content;
             generator.powerProduction = 30 / 60f;
@@ -790,31 +782,31 @@ public class NHPostProcess {
         hideContent(Blocks.beamTower);
     }
 
-    private static void adjustVanillaTurret() {
-	adjustContent(Blocks.wave, content -> {
+    private static void overrideTurret() {
+        adjustContent(Blocks.wave, content -> {
             LiquidTurret turret = (LiquidTurret) content;
             turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
-		    liquid = NHLiquids.xenFluid;
-                    damage = 5;
-		    status = NHStatusEffects.ultFireBurn;
-		    statusDuration = 60f * 2f;
+                liquid = NHLiquids.xenFluid;
+                damage = 5;
+                status = NHStatusEffects.ultFireBurn;
+                statusDuration = 60f * 2f;
             }});
             turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
-		    liquid = NHLiquids.zetaFluidPositive;
-		    status = NHStatusEffects.scannerDown;
-		    statusDuration = 60f * 2f;
-	    }});	
-	    turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
-		    liquid = NHLiquids.zetaFluidNegative;
-                    damage = 0.2f;
-		    status = NHStatusEffects.scannerDown;
-		    statusDuration = 60f * 2f;
-	    }});
-	     turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
-		    liquid = NHLiquids.irdryonFluid;
-		    status = NHStatusEffects.emp3;
-		    statusDuration = 60f * 2f;
-	    }});
+                liquid = NHLiquids.zetaFluidPositive;
+                status = NHStatusEffects.scannerDown;
+                statusDuration = 60f * 2f;
+            }});
+            turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
+                liquid = NHLiquids.zetaFluidNegative;
+                damage = 0.2f;
+                status = NHStatusEffects.scannerDown;
+                statusDuration = 60f * 2f;
+            }});
+            turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
+                liquid = NHLiquids.irdryonFluid;
+                status = NHStatusEffects.emp3;
+                statusDuration = 60f * 2f;
+            }});
         });
         adjustContent(Blocks.swarmer, content -> {
             ItemTurret turret = (ItemTurret) content;
@@ -861,64 +853,60 @@ public class NHPostProcess {
                 hitEffect = despawnEffect = Fx.none;
             }});
         });
-	adjustContent(Blocks.tsunami, content -> {
+        adjustContent(Blocks.tsunami, content -> {
             LiquidTurret turret = (LiquidTurret) content;
             turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
-		    liquid = NHLiquids.xenFluid;
-		    lifetime = 49f;
-                    speed = 4f;
-                    knockback = 1.3f;
-                    puddleSize = 8f;
-                    orbSize = 4f;
-                    drag = 0.001f;
-                    ammoMultiplier = 0.4f;
-                    statusDuration = 60f * 4f;
-                    damage = 10;
-		    status = NHStatusEffects.ultFireBurn;
-		    statusDuration = 60f * 4;
+                liquid = NHLiquids.xenFluid;
+                lifetime = 49f;
+                speed = 4f;
+                knockback = 1.3f;
+                puddleSize = 8f;
+                orbSize = 4f;
+                drag = 0.001f;
+                ammoMultiplier = 0.4f;
+                statusDuration = 60f * 4f;
+                damage = 10;
+                status = NHStatusEffects.ultFireBurn;
             }});
             turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
-		    liquid = NHLiquids.zetaFluidPositive;
-		    lifetime = 49f;
-                    speed = 4f;
-                    knockback = 1.3f;
-                    puddleSize = 8f;
-                    orbSize = 4f;
-                    drag = 0.001f;
-                    ammoMultiplier = 0.4f;
-                    statusDuration = 60f * 4f;
-                    damage = 0.2f;
-		    status = NHStatusEffects.scannerDown;
-		    statusDuration = 60f * 4f;
-	    }});	
-	    turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
-		    liquid = NHLiquids.zetaFluidNegative;
-		    lifetime = 49f;
-                    speed = 4f;
-                    knockback = 1.3f;
-                    puddleSize = 8f;
-                    orbSize = 4f;
-                    drag = 0.001f;
-                    ammoMultiplier = 0.4f;
-                    statusDuration = 60f * 4f;
-                    damage = 0.2f;
-		    status = NHStatusEffects.scannerDown;
-		    statusDuration = 60f * 4f;
-	    }});
-	     turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
-		    liquid = NHLiquids.irdryonFluid;
-		    lifetime = 49f;
-                    speed = 4f;
-                    knockback = 1.3f;
-                    puddleSize = 8f;
-                    orbSize = 4f;
-                    drag = 0.001f;
-                    ammoMultiplier = 0.4f;
-                    statusDuration = 60f * 4f;
-                    damage = 0.2f;
-		    status = NHStatusEffects.emp3;
-		    statusDuration = 60f * 4f;
-	    }});
+                liquid = NHLiquids.zetaFluidPositive;
+                lifetime = 49f;
+                speed = 4f;
+                knockback = 1.3f;
+                puddleSize = 8f;
+                orbSize = 4f;
+                drag = 0.001f;
+                ammoMultiplier = 0.4f;
+                statusDuration = 60f * 4f;
+                damage = 0.2f;
+                status = NHStatusEffects.scannerDown;
+            }});
+            turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
+                liquid = NHLiquids.zetaFluidNegative;
+                lifetime = 49f;
+                speed = 4f;
+                knockback = 1.3f;
+                puddleSize = 8f;
+                orbSize = 4f;
+                drag = 0.001f;
+                ammoMultiplier = 0.4f;
+                statusDuration = 60f * 4f;
+                damage = 0.2f;
+                status = NHStatusEffects.scannerDown;
+            }});
+            turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
+                liquid = NHLiquids.irdryonFluid;
+                lifetime = 49f;
+                speed = 4f;
+                knockback = 1.3f;
+                puddleSize = 8f;
+                orbSize = 4f;
+                drag = 0.001f;
+                ammoMultiplier = 0.4f;
+                statusDuration = 60f * 4f;
+                damage = 0.2f;
+                status = NHStatusEffects.emp3;
+            }});
         });
         adjustContent(Blocks.fuse, content -> {
             ItemTurret turret = (ItemTurret) content;
@@ -1031,7 +1019,7 @@ public class NHPostProcess {
 
             meltDownType.length += 80f;
             meltDownType.damage += 20f;
-		
+
             turret.range += 80f;
             turret.shootDuration += 60f;
         });
@@ -1176,10 +1164,9 @@ public class NHPostProcess {
                 }};
             }});
         });
-
     }
 
-    private static void adjustVanillaFactories() {
+    private static void overrideFactories() {
         adjustContent(Blocks.graphitePress, content -> {
             GenericCrafter crafter = (GenericCrafter) content;
             crafter.removeConsumers(consume -> consume instanceof ConsumeItems);
@@ -1240,7 +1227,8 @@ public class NHPostProcess {
             crafter.craftTime = 90f;
         });
     }
-    private static void adjustVanillaItem() {
+
+    private static void overrideItem() {
         adjustContent(Items.tungsten, content -> {
             Item item =(Item) content;
             item.shownPlanets.addAll(Planets.serpulo);
@@ -1259,7 +1247,7 @@ public class NHPostProcess {
         });
     }
 
-    private static void adjustVanillaUnit() {
+    private static void overrideUnit() {
         for (UnitType type : content.units()) {
             type.envRequired = Env.none;
             type.envDisabled = Env.none;
@@ -1297,7 +1285,7 @@ public class NHPostProcess {
         hideContent(Blocks.basicAssemblerModule);
     }
 
-    private static void buffCoreUnits() {
+    private static void overrideCoreUnit() {
 
         adjustContent(Blocks.coreShard, content -> {
             CoreBlock core = (CoreBlock) content;
@@ -1363,7 +1351,7 @@ public class NHPostProcess {
 
     }
 
-    private static void overrideUnitTypeAbility() {
+    private static void overrideUnitShield() {
         for (UnitType type : content.units()) {
             if (type.abilities.contains(ability -> ability instanceof PassiveShield)) continue;
             type.abilities.add(new PassiveShield(type.health));

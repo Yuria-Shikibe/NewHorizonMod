@@ -1,8 +1,11 @@
 package newhorizon.content.blocks;
 
+import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.OreBlock;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHColor;
+import newhorizon.content.NHItems;
 import newhorizon.expand.block.env.*;
 
 public class EnvironmentBlock {
@@ -15,8 +18,31 @@ public class EnvironmentBlock {
 
     public static Floor patternPlate0, patternPlate1;
     public static Floor armorClear;
+    public static OreBlock oreZeta, oreSilicon;
 
     public static void load() {
+        oreZeta = new OreBlock("ore-zeta") {{
+            oreDefault = true;
+            variants = 3;
+            oreThreshold = 0.95F;
+            oreScale = 20.380953F;
+            itemDrop = NHItems.zeta;
+            localizedName = itemDrop.localizedName;
+            mapColor.set(itemDrop.color);
+            useColor = true;
+        }};
+
+        oreSilicon = new OreBlock("ore-silicon") {{
+            oreDefault = true;
+            variants = 3;
+            oreThreshold = 0.95F;
+            oreScale = 20.380953F;
+            itemDrop = NHItems.silicon;
+            localizedName = itemDrop.localizedName;
+            mapColor.set(itemDrop.color);
+            useColor = true;
+        }};
+
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
         metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove", true);
         metalFloorRidge = new Atlas_4_12_Floor("metal-floor-ridge");

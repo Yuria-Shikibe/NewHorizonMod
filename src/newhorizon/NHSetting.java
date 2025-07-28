@@ -7,6 +7,8 @@ import arc.scene.ui.Button;
 import arc.scene.ui.CheckBox;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
+import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.gen.Icon;
@@ -21,30 +23,60 @@ import static newhorizon.util.ui.TableFunc.LEN;
 
 public class NHSetting {
     public static final String
-            EFFECT_DETAIL = "nh_effectdetail",
-            VANILLA_COST_OVERRIDE = "nh_overridecost",
+            START_LOG = "nh-hide-starting-log",
+            EFFECT_DETAIL = "nh-effect-detail",
+
+            OVERRIDE_UNIT_SHIELD = "nh-override-unit-shield",
+            OVERRIDE_CORE_UNIT = "nh-override-core-unit",
+            OVERRIDE_LOGISTIC = "nh-override-logistic",
+            OVERRIDE_DRILL = "nh-override-drill",
+            OVERRIDE_FACTORIES = "nh-override-factories",
+            OVERRIDE_POWER = "nh-override-power",
+            OVERRIDE_UNIT = "nh-override-unit",
+            OVERRIDE_LOGIC = "nh-override-logic",
+            OVERRIDE_ITEM = "nh-override-item",
+            OVERRIDE_TURRET = "nh-override-turret",
+
+            EVENT_RAID = "nh-event-raid",
+
             DEBUGGING = "nh_debugging",
-            START_LOG = "nh_hide_starting_log",
-            TERRAIN_MODE = "nh_terrain_mode",
             DEBUG_PANEL = "nh_debug_panel";
 
     public static boolean enableEffectDetail = true;
 
     public static boolean changed = false;
 
-    public static Seq<SettingKey<?>> all = new Seq<>();
+    public static OrderedMap<String, Seq<SettingKey<?>>> allSettings = new OrderedMap<>();
 
     public static void load() {
-        all.addAll(
-                new BoolSetting(EFFECT_DETAIL, true, true),
-                new BoolSetting(VANILLA_COST_OVERRIDE, false, true),
-                new BoolSetting(DEBUGGING, false, true),
+        allSettings.put("graphic", Seq.with(
                 new BoolSetting(START_LOG, false, false),
-                new BoolSetting(TERRAIN_MODE, false, true),
-                new BoolSetting(DEBUG_PANEL, false, true)
-        );
+                new BoolSetting(EFFECT_DETAIL, true, true)
+        ));
 
-        all.each(SettingKey::setDefault);
+        allSettings.put("override", Seq.with(
+                new BoolSetting(OVERRIDE_UNIT_SHIELD, false, true),
+                new BoolSetting(OVERRIDE_CORE_UNIT, false, true),
+                new BoolSetting(OVERRIDE_LOGISTIC, false, true),
+                new BoolSetting(OVERRIDE_DRILL, false, true),
+                new BoolSetting(OVERRIDE_FACTORIES, false, true),
+                new BoolSetting(OVERRIDE_POWER, false, true),
+                new BoolSetting(OVERRIDE_UNIT, false, true),
+                new BoolSetting(OVERRIDE_LOGIC, false, true),
+                new BoolSetting(OVERRIDE_ITEM, false, true),
+                new BoolSetting(OVERRIDE_TURRET, false, true)
+        ));
+
+        //allSettings.put("event", Seq.with(
+        //        new BoolSetting(EVENT_RAID, false, true)
+        //));
+
+        allSettings.put("debug", Seq.with(
+                new BoolSetting(DEBUGGING, false, true),
+                new BoolSetting(DEBUG_PANEL, false, true)
+        ));
+
+        allSettings.each((name, seq) -> seq.each(SettingKey::setDefault));
 
         enableEffectDetail = getBool(EFFECT_DETAIL);
     }
@@ -53,34 +85,29 @@ public class NHSetting {
         Vars.ui.settings.addCategory("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), NHSetting::buildTable);
     }
 
-    static void update() {
+    public static void update() {
         enableEffectDetail = getBool(EFFECT_DETAIL);
     }
 
     public static void buildTable(Table table) {
-        table.pane(t -> {
-            all.each(s -> s.buildTable(t));
-        }).margin(LEN).get().setForceScroll(false, true);
+        table.pane(t -> allSettings.each((category, settings) -> {
+            t.label(() -> Core.bundle.get("nh.setting." + category)).row();
+            t.image().color(Pal.accent).size(0, 4).growX().pad(4f).row();
+            settings.each(settingKey -> settingKey.buildTable(t));
+        })).margin(LEN).get().setForceScroll(false, true);
     }
 
     public static void showDialog() {
-        new BaseDialog("@nh.setting") {
-            {
-                buildTable(cont);
-                addCloseButton();
-            }
-
+        BaseDialog dialog = new BaseDialog("@nh.setting"){
             @Override
             public void hide() {
                 super.hide();
-
-                if (changed) {
-                    Vars.ui.showConfirm("@mod.reloadrequired", () -> {
-                        Core.app.exit();
-                    });
-                }
+                if (changed) Vars.ui.showConfirm("@mods.reloadexit", () -> Core.app.exit());
             }
-        }.show();
+        };
+        buildTable(dialog.cont);
+        dialog.addCloseButton();
+        dialog.show();
     }
 
     public static boolean enableDetails() {
@@ -99,22 +126,6 @@ public class NHSetting {
             this.key = key;
         }
 
-        public String name() {
-            return Core.bundle.get("nh.setting." + key + ".name");
-        }
-
-        public String desc() {
-            return Core.bundle.get("nh.setting." + key + ".desc");
-        }
-
-        public String warn() {
-            return Core.bundle.getOrNull("nh.setting." + key + ".warn");
-        }
-
-        public boolean hasWarn() {
-            return warn() != null;
-        }
-
         public abstract T getValue();
 
         public abstract void setDefault();
@@ -123,16 +134,7 @@ public class NHSetting {
     }
 
     public static class BoolSetting extends SettingKey<Boolean> {
-        public boolean def = false;
-
-        public BoolSetting(String key) {
-            super(key);
-        }
-
-        public BoolSetting(String key, boolean def) {
-            super(key);
-            this.def = def;
-        }
+        public boolean def;
 
         public BoolSetting(String key, boolean def, boolean requireReload) {
             super(key);
@@ -152,45 +154,28 @@ public class NHSetting {
 
         @Override
         public void buildTable(Table table) {
-            table.table(Tex.pane, t -> {
-                CheckBox box;
-                t.add(box = new CheckBox(name())).padRight(6f).left();
-                Button b = t.button(Icon.info, Styles.cleari, () -> {
-
-                }).right().get();
-
-                t.row().collapser(i -> {
+            table.table(t -> {
+                t.add(new CheckBox(Core.bundle.get("nh.setting." + key + ".name")){{
+                    changed(() -> {
+                        settings.put(key, isChecked());
+                        if (requireReload) {
+                            if (!changed) {
+                                Dialog.setHideAction(() -> new RunnableAction() {{
+                                    setRunnable(() -> Vars.ui.showConfirm("@mods.reloadexit", () -> Core.app.exit()));
+                                }});
+                            }
+                            changed = true;
+                        }
+                    });
+                    update(() -> setChecked(settings.getBool(key)));
+                }}).padRight(6f).left();
+                t.row().table(i -> {
                     i.left();
                     i.defaults().left();
-                    i.add("@info.title").row();
-                    i.add(desc()).row();
-
-                    if (hasWarn()) {
-                        i.add("@warning").color(Pal.redderDust).row();
-                        i.add(warn());
-                    }
-                }, true, b::isChecked).growX();
-
-                box.changed(() -> {
-                    settings.put(key, box.isChecked());
-                    if (requireReload) {
-                        if (!changed) {
-                            Dialog.setHideAction(() -> new RunnableAction() {{
-                                setRunnable(() -> {
-                                    Vars.ui.showConfirm("@mod.reloadrequired", () -> {
-                                        Core.app.exit();
-                                    });
-                                });
-                            }});
-                        }
-                        changed = true;
-                    }
-                });
-
-                box.left();
-
-                box.update(() -> box.setChecked(settings.getBool(key)));
-            }).tooltip(desc()).growX().fillY().margin(8f).left().row();
+                    i.add("[lightgray]" + Core.bundle.get("nh.setting." + key + ".desc") + "[]").padLeft(6f).wrap()
+                            .width(Math.min(Core.graphics.getWidth() / 1.2f, 420f)).row();
+                }).growX();
+            }).growX().fillY().margin(8f).left().width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).row();
         }
     }
 }
