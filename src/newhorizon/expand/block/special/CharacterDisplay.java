@@ -46,12 +46,19 @@ public class CharacterDisplay extends Block {
         selectionRows = selectionColumns = 8;
 
         config(Integer.class, (SpriteDisplayBuild build, Integer color) -> build.displayColor = color);
-        config(Byte.class, (SpriteDisplayBuild build, Byte character) -> build.displayCharacter = character);
+        config(Integer[].class, (SpriteDisplayBuild build, Integer[] character) -> {
+            try {
+                build.displayColor = character[0];
+                build.displayCharacter = character[1];
+            } catch (Exception e) {
+                Log.err(e);
+            }
+        });
         config(String.class, (SpriteDisplayBuild build, String packed) ->{
             String[] split = packed.split("@");
             try {
                 build.displayColor = Strings.parseInt(split[0]);
-                build.displayCharacter = (byte) Strings.parseInt(split[1]);
+                build.displayCharacter = Strings.parseInt(split[1]);
             } catch (Exception e) {
                 Log.err(e);
             }
@@ -89,7 +96,7 @@ public class CharacterDisplay extends Block {
     }
 
     public class SpriteDisplayBuild extends Building {
-        public byte displayCharacter;
+        public int displayCharacter;
         public int displayColor = Color.white.rgba();
 
         @Override
@@ -103,7 +110,7 @@ public class CharacterDisplay extends Block {
                 text.update(() -> queueText = text.getText());
                 input.add(text).growX();
                 input.button(Icon.pick, Styles.clearNonei, () -> ui.picker.show(
-                        Tmp.c1.set(displayColor), c -> configure(c.rgba())));
+                        Tmp.c1.set(displayColor), c -> configure(c.rgba() + "@" + displayCharacter)));
             }).growX().row();
 
             Table cont = new Table().top();
@@ -153,14 +160,14 @@ public class CharacterDisplay extends Block {
         @Override
         public void write(Writes write) {
             super.write(write);
-            write.b(displayCharacter);
+            write.i(displayCharacter);
             write.i(displayColor);
         }
 
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            displayCharacter = read.b();
+            displayCharacter = read.i();
             displayColor = read.i();
         }
     }
