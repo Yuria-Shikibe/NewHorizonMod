@@ -149,8 +149,10 @@ public class AssignedBeacon extends Block {
                                 }
                             }
                         }else {
-                            for (ItemStack stack : crafter.outputItems) {
-                                build.items.add(stack.item, stack.amount);
+                            if (crafter.outputItems != null){
+                                for (ItemStack stack : crafter.outputItems) {
+                                    build.items.add(stack.item, stack.amount);
+                                }
                             }
                         }
                         progress %= 1f;
