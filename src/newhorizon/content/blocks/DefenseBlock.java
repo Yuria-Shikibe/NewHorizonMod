@@ -65,8 +65,8 @@ public class DefenseBlock {
             shieldHealth = 4000f;
             cooldownNormal = 15f;
             cooldownBrokenBase = shieldHealth / (5f * 60);
-            consumeCoolant = false;
-            removeConsumers(consume -> consume instanceof ConsumeCoolant);
+            phaseRadiusBoost = 80f;
+            itemConsumer = consumeItem(NHItems.juniorProcessor).boost();(consume -> consume instanceof ConsumeCoolant);
             consumePower(4f);
         }};
 
@@ -81,8 +81,8 @@ public class DefenseBlock {
             shieldHealth = 20000f;
             cooldownNormal = 12f;
             cooldownBrokenBase = shieldHealth / (20f * 60);
-            consumeCoolant = false;
-            removeConsumers(consume -> consume instanceof ConsumeCoolant);
+            phaseRadiusBoost = 80f;
+            itemConsumer = consumeItem(NHItems.fusionEnergy).boost();(consume -> consume instanceof ConsumeCoolant);(consume -> consume instanceof ConsumeCoolant);
             consumePower(20f);
         }};
 
