@@ -3477,7 +3477,7 @@ public class NHUnitTypes {
                 engineOffset = 9.2F;
                 range = 80.0F;
                 isEnemy = false;
-                mineTier = 6;
+                mineTier = 8;
                 mineSpeed = 10F;
                 lowAltitude = true;
 
