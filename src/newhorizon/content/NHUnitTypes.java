@@ -4635,7 +4635,7 @@ public class NHUnitTypes {
         collapser = new NHUnitType("collapser") {
             {
                 outlineColor = OColor;
-                abilities.add(new ForceFieldAbility(180f, 60, 80000, 900));
+                abilities.add(new ForceFieldAbility(180f, 60, 80000, 900, 10));
                 constructor = EntityMapping.map(3);
 
                 fallSpeed = 0.008f;
