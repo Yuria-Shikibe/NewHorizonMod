@@ -1,6 +1,15 @@
 package newhorizon.content.blocks;
 
+import arc.func.Prov;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.entities.Effect;
+import mindustry.entities.abilities.ForceFieldAbility;
+import mindustry.gen.Building;
+import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ForceProjector;
@@ -9,6 +18,9 @@ import newhorizon.content.NHItems;
 import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.expand.block.defence.ShieldGenerator;
 
+import static arc.graphics.g2d.Draw.color;
+import static arc.graphics.g2d.Lines.stroke;
+import static mindustry.Vars.renderer;
 import static mindustry.type.ItemStack.with;
 
 public class DefenseBlock {
@@ -54,6 +66,19 @@ public class DefenseBlock {
             requirements(Category.defense, with(NHItems.nodexPlate, 8, NHItems.ancimembrane, 8));
         }};
 
+        Effect forceShrink = new Effect(20, e -> {
+            color(e.color, e.fout());
+            if(renderer.animateShields){
+                Fill.poly(e.x, e.y, 4, e.rotation * e.fout(), 45f);
+            }else{
+                stroke(1.5f);
+                Draw.alpha(0.09f);
+                Fill.poly(e.x, e.y, 4, e.rotation * e.fout(), 45f);
+                Draw.alpha(1f);
+                Lines.poly(e.x, e.y, 4, e.rotation * e.fout(), 45f);
+            }
+        }).layer(Layer.shields);
+
         standardForceProjector = new ForceProjector("standard-shield-generator") {{
             requirements(Category.effect, with(NHItems.juniorProcessor, 100, NHItems.presstanium, 100, Items.carbide, 50));
 
@@ -68,6 +93,20 @@ public class DefenseBlock {
             consumeCoolant = false;
             removeConsumers(consume -> consume instanceof ConsumeCoolant);
             consumePower(4f);
+
+            shieldBreakEffect = new Effect(40, e -> {
+                color(e.color);
+                stroke(3f * e.fout());
+                Lines.poly(e.x, e.y, 4, e.rotation + e.fin(), 45f);
+            }).followParent(true);
+
+            buildType = () -> new ForceBuild(){
+                @Override
+                public void onRemoved(){
+                    float radius = realRadius();
+                    if(!broken && radius > 1f) forceShrink.at(x, y, radius, team.color);
+                }
+            };
         }};
 
         largeShieldGenerator = new ForceProjector("large-shield-generator") {{
@@ -84,6 +123,20 @@ public class DefenseBlock {
             consumeCoolant = false;
             removeConsumers(consume -> consume instanceof ConsumeCoolant);
             consumePower(20f);
+
+            shieldBreakEffect = new Effect(40, e -> {
+                color(e.color);
+                stroke(3f * e.fout());
+                Lines.poly(e.x, e.y, 4, e.rotation + e.fin(), 45f);
+            }).followParent(true);
+
+            buildType = () -> new ForceBuild(){
+                @Override
+                public void onRemoved(){
+                    float radius = realRadius();
+                    if(!broken && radius > 1f) forceShrink.at(x, y, radius, team.color);
+                }
+            };
         }};
 
         riftShield = new ShieldGenerator("rift-shield") {{
