@@ -63,7 +63,7 @@ public class DefenseBlock {
             armor = 5;
             itemCapacity = 20;
             shieldRotation = 45f;
-            radius = 160f;
+            radius = 140f;
             shieldHealth = 3000f;
             cooldownNormal = 15f;
             cooldownBrokenBase = shieldHealth / (5f * 60);
@@ -86,7 +86,7 @@ public class DefenseBlock {
             shieldHealth = 20000f;
             cooldownNormal = 12f;
             cooldownBrokenBase = shieldHealth / (20f * 60);
-            phaseRadiusBoost = 80f;
+            phaseRadiusBoost = 100f;
             phaseShieldBoost = 20000f;
             itemConsumer = consumeItem(NHItems.fusionEnergy).boost();
             consumePower(20f);
