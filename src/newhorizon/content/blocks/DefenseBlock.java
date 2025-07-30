@@ -60,14 +60,17 @@ public class DefenseBlock {
             size = 2;
             sides = 4;
             health = 1000;
+            armor = 5;
+            itemCapacity = 20;
             shieldRotation = 45f;
             radius = 160f;
-            shieldHealth = 4000f;
+            shieldHealth = 3000f;
             cooldownNormal = 15f;
             cooldownBrokenBase = shieldHealth / (5f * 60);
             phaseRadiusBoost = 80f;
-            itemConsumer = consumeItem(NHItems.juniorProcessor).boost();
-            consumePower(4f);
+            phaseShieldBoost = 3000f;
+            itemConsumer = consumeItem(NHItems.zeta).boost();
+            consumePower(5f);
         }};
 
         largeShieldGenerator = new ForceProjector("large-shield-generator") {{
@@ -75,13 +78,16 @@ public class DefenseBlock {
 
             size = 4;
             sides = 4;
-            health = 2000;
+            health = 2000
+            armor = 10;
+            itemCapacity = 20;
             shieldRotation = 45f;
             radius = 240f;
             shieldHealth = 20000f;
             cooldownNormal = 12f;
             cooldownBrokenBase = shieldHealth / (20f * 60);
             phaseRadiusBoost = 80f;
+            phaseShieldBoost = 20000f;
             itemConsumer = consumeItem(NHItems.fusionEnergy).boost();
             consumePower(20f);
         }};
