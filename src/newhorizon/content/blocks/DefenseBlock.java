@@ -59,7 +59,7 @@ public class DefenseBlock {
 
             size = 2;
             sides = 4;
-            health = 1000;
+            health = 1500;
             armor = 5;
             itemCapacity = 20;
             shieldRotation = 45f;
@@ -78,7 +78,7 @@ public class DefenseBlock {
 
             size = 4;
             sides = 4;
-            health = 2000
+            health = 2500;
             armor = 10;
             itemCapacity = 20;
             shieldRotation = 45f;
