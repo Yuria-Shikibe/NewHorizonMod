@@ -64,11 +64,11 @@ public class DefenseBlock {
             itemCapacity = 20;
             shieldRotation = 45f;
             radius = 140f;
-            shieldHealth = 3000f;
-            cooldownNormal = 15f;
+            shieldHealth = 2500f;
+            cooldownNormal = 10f;
             cooldownBrokenBase = shieldHealth / (5f * 60);
             phaseRadiusBoost = 80f;
-            phaseShieldBoost = 3000f;
+            phaseShieldBoost = 2500f;
             itemConsumer = consumeItem(NHItems.zeta).boost();
             consumePower(5f);
         }};
@@ -84,7 +84,7 @@ public class DefenseBlock {
             shieldRotation = 45f;
             radius = 240f;
             shieldHealth = 20000f;
-            cooldownNormal = 12f;
+            cooldownNormal = 25f;
             cooldownBrokenBase = shieldHealth / (20f * 60);
             phaseRadiusBoost = 100f;
             phaseShieldBoost = 20000f;
