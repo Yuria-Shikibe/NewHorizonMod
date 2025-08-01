@@ -2605,7 +2605,7 @@ public class NHBlocks {
 //			//NHTechTree.add(Blocks.mendProjector, this);
             consumePower(2F);
             range = 160.0F;
-            phaseBoost = 12f;
+            phaseBoost = 15f;
             phaseRangeBoost = 60.0F;
             health = 980;
             consumeItem(NHItems.juniorProcessor).boost();

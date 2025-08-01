@@ -80,19 +80,23 @@ public class DefenseBlock {
         }).layer(Layer.shields);
 
         standardForceProjector = new ForceProjector("standard-shield-generator") {{
-            requirements(Category.effect, with(NHItems.juniorProcessor, 100, NHItems.presstanium, 100, Items.carbide, 50));
+            requirements(Category.effect, with(NHItems.juniorProcessor, 150, NHItems.presstanium, 150, Items.carbide, 50));
 
             size = 2;
             sides = 4;
-            health = 1000;
+            health = 1500;
+            armor = 5;
+            itemCapacity = 20;
+            liquidCapacity = 25f;
             shieldRotation = 45f;
-            radius = 160f;
-            shieldHealth = 4000f;
-            cooldownNormal = 15f;
+            radius = 140f;
+            shieldHealth = 2500f;
+            cooldownNormal = 10f;
             cooldownBrokenBase = shieldHealth / (5f * 60);
-            consumeCoolant = false;
-            removeConsumers(consume -> consume instanceof ConsumeCoolant);
-            consumePower(4f);
+            phaseRadiusBoost = 80f;
+            phaseShieldBoost = 2500f;
+            itemConsumer = consumeItem(NHItems.zeta).boost();
+            consumePower(5f);
 
             shieldBreakEffect = new Effect(40, e -> {
                 color(e.color);
@@ -110,19 +114,23 @@ public class DefenseBlock {
         }};
 
         largeShieldGenerator = new ForceProjector("large-shield-generator") {{
-            requirements(Category.effect, with(NHItems.seniorProcessor, 150, NHItems.presstanium, 150, Items.phaseFabric, 100, NHItems.multipleSteel, 50));
+            requirements(Category.effect, with(NHItems.seniorProcessor, 200, NHItems.presstanium, 200, Items.phaseFabric, 150, NHItems.multipleSteel, 100));
 
             size = 4;
             sides = 4;
-            health = 2000;
+            health = 2500;
+            armor = 10;
+            itemCapacity = 20;
+            liquidCapacity = 50f;
             shieldRotation = 45f;
             radius = 240f;
-            shieldHealth = 20000f;
-            cooldownNormal = 12f;
+            shieldHealth = 25000f;
+            cooldownNormal = 25f;
             cooldownBrokenBase = shieldHealth / (20f * 60);
-            consumeCoolant = false;
-            removeConsumers(consume -> consume instanceof ConsumeCoolant);
-            consumePower(20f);
+            phaseRadiusBoost = 120f;
+            phaseShieldBoost = 25000f;
+            itemConsumer = consumeItem(NHItems.fusionEnergy).boost();
+            consumePower(25f);
 
             shieldBreakEffect = new Effect(40, e -> {
                 color(e.color);
