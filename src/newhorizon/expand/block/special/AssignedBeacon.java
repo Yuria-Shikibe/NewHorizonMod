@@ -107,12 +107,12 @@ public class AssignedBeacon extends Block {
         @Override
         public void updateTile() {
             if (buffer != null) {
-                buffer.forEach(buffer -> {
-                    Building b = world.build(buffer.key);
+                for (var entry: buffer.entries()){
+                    Building b = world.build(entry.key);
                     if (b != null) {
-                        linkBuilds.put(b, buffer.value);
+                        linkBuilds.put(b, entry.value);
                     }
-                });
+                }
                 buffer = null;
             }
             super.updateTile();
