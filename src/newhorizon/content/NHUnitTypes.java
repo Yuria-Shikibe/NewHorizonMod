@@ -2866,7 +2866,7 @@ public class NHUnitTypes {
                             shootSound = NHSounds.launch;
                         }}
                 );
-                abilities.add(new ForceFieldAbility(120.0F, 2F, 10000.0F, 800.0F));
+                abilities.add(new ForceFieldAbility(120F, 2F, 10000F, 800F, 4, 0f));
                 engineOffset = 15.0F;
                 engineSize = 6.5F;
                 speed = 0.275f;
@@ -3477,7 +3477,7 @@ public class NHUnitTypes {
                 engineOffset = 9.2F;
                 range = 80.0F;
                 isEnemy = false;
-                mineTier = 6;
+                mineTier = 8;
                 mineSpeed = 10F;
                 lowAltitude = true;
 
@@ -3622,7 +3622,7 @@ public class NHUnitTypes {
                         }}
                 );
 
-                abilities.add(new ForceFieldAbility(160f, 60f, 12000f, 900f), new RepairFieldAbility(1500, 180f, 400f), new HealFieldAbility(Pal.heal, 360f, 0, 22f, 400f, 0.15f) {{
+                abilities.add(new ForceFieldAbility(160f, 60f, 15000f, 900f, 8, 0f), new RepairFieldAbility(1500, 180f, 400f), new HealFieldAbility(Pal.heal, 360f, 0, 22f, 400f, 0.15f) {{
                     effectRadius = 6f;
                     sectors = 6;
                     sectorRad = 0.065f;
@@ -3935,7 +3935,7 @@ public class NHUnitTypes {
         sin = new NHUnitType("sin") {
             {
                 outlineColor = OColor;
-                abilities.add(new ForceFieldAbility(128.0F, 25F, 30000.0F, 900.0F), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f) {{
+                abilities.add(new ForceFieldAbility(128.0F, 25F, 30000.0F, 900.0F, 4, 0f), new StatusFieldAbility(NHStatusEffects.phased, 245f, 240f, 240f) {{
                     activeEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 60f, 240f, 4f, 45);
                     applyEffect = NHFx.lineSquareOut(NHColor.lightSkyBack, 30f, 45f, 1f, 45);
                 }});
@@ -4635,7 +4635,7 @@ public class NHUnitTypes {
         collapser = new NHUnitType("collapser") {
             {
                 outlineColor = OColor;
-                abilities.add(new ForceFieldAbility(180f, 60, 80000, 900));
+                abilities.add(new ForceFieldAbility(180f, 60, 80000, 900, 10, 0f));
                 constructor = EntityMapping.map(3);
 
                 fallSpeed = 0.008f;

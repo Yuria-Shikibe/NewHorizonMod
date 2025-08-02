@@ -481,7 +481,6 @@ public class CraftingBlock {
 
             craftTime = 60f;
             consumePower(480 / 60f);
-            addInput(Items.silicon, 3, NHLiquids.zetaFluidNegative, 4 / 60f);
 
             outputItems = with(Items.phaseFabric, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
