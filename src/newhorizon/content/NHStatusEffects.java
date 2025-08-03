@@ -25,7 +25,7 @@ public class NHStatusEffects {
             quiet, marker, healthLocker, forceWeak,
             reinforcements,
             entangled,
-            ultFireBurn, stronghold, overphased,
+            ultFireBurn, stronghold, overphased, test,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted,
             shieldFlag;
 
@@ -151,6 +151,19 @@ public class NHStatusEffects {
                 }
             }
         };
+
+        testbuff = new NHStatusEffect("testbuff") {{
+            damage = -5f;
+            speedMultiplier = 1.5f;
+            damageMultiplier = 2f;
+            healthMultiplier = 2f;
+            buildSpeedMultiplier = 3f;
+
+            textureColor = color = Color.lightGray;
+
+            effectChance = 0.15f;
+            effect = NHFx.squareRand(color, 6f, 14f);
+        }};
 
         stronghold = new NHStatusEffect("stronghold") {{
             color = textureColor = Color.lightGray;
