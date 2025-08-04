@@ -135,7 +135,7 @@ public class HyperGenerator extends PowerGenerator {
 
         stats.add(Stat.abilities, StatValues.statusEffects(toApplyStatus));
         stats.add(Stat.abilities, statusRange / tilesize, StatUnit.blocks);
-        stats.add(Stat.abilities, statusDuration / 2f, StatUnit.seconds);
+        stats.add(Stat.abilities, statusDuration / 6f, StatUnit.seconds);
     }
 
     @Override
