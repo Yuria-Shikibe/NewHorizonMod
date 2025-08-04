@@ -155,12 +155,10 @@ public class NHStatusEffects {
         stableOverdrive = new NHStatusEffect("stable-overdrive") {{
             damage = -5f;
             speedMultiplier = 1.25f;
-            damageMultiplier = 1.75f;
+            damageMultiplier = 1.5f;
             healthMultiplier = 2f;
             reloadMultiplier = 1.5f;
             buildSpeedMultiplier = 3f;
-
-            permanent = true;
 
             textureColor = color = NHColor.thermoPst;
 
