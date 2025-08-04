@@ -160,6 +160,8 @@ public class NHStatusEffects {
             reloadMultiplier = 2f;
             buildSpeedMultiplier = 3f;
 
+            reactive = ture;
+
             textureColor = color = NHColor.thermoPst;
 
             effectChance = 0.35f;
