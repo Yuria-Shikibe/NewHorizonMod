@@ -157,11 +157,12 @@ public class NHStatusEffects {
             speedMultiplier = 1.5f;
             damageMultiplier = 2f;
             healthMultiplier = 2f;
+            reloadMultiplier = 2f;
             buildSpeedMultiplier = 3f;
 
-            textureColor = color = Color.lightGray;
+            textureColor = color = NHColor.thermoPst;
 
-            effectChance = 0.15f;
+            effectChance = 0.35f;
             effect = NHFx.squareRand(color, 6f, 14f);
         }};
 
