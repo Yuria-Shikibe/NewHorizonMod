@@ -25,7 +25,7 @@ public class NHStatusEffects {
             quiet, marker, healthLocker, forceWeak,
             reinforcements,
             entangled,
-            ultFireBurn, stronghold, overphased, testbuff,
+            ultFireBurn, stronghold, overphased, stableOverdrive,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted,
             shieldFlag;
 
@@ -152,12 +152,12 @@ public class NHStatusEffects {
             }
         };
 
-        testbuff = new NHStatusEffect("testbuff") {{
+        stableOverdrive = new NHStatusEffect("stable-overdrive") {{
             damage = -5f;
-            speedMultiplier = 1.5f;
-            damageMultiplier = 2f;
+            speedMultiplier = 1.25f;
+            damageMultiplier = 1.75f;
             healthMultiplier = 2f;
-            reloadMultiplier = 2f;
+            reloadMultiplier = 1.5f;
             buildSpeedMultiplier = 3f;
 
             permanent = true;
