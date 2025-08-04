@@ -2288,11 +2288,7 @@ public class NHBlocks {
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
             toApplyStatus.addAll(
-                    NHStatusEffects.phased,
-                    NHStatusEffects.quantization,
-                    StatusEffects.overclock,
-                    StatusEffects.overdrive,
-                    StatusEffects.shielded
+                    NHStatusEffects.stableOverdrive
             );
 
             consumePower(100.0F);
