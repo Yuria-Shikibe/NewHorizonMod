@@ -25,7 +25,7 @@ public class NHStatusEffects {
             quiet, marker, healthLocker, forceWeak,
             reinforcements,
             entangled,
-            ultFireBurn, stronghold, overphased, test,
+            ultFireBurn, stronghold, overphased, testbuff,
             staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted,
             shieldFlag;
 
