@@ -10,20 +10,19 @@ import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.world.draw.DrawBlock;
 
-public class DrawScanLine extends DrawBlock implements Cloneable {
-    public float lineLength = 12;
+public class DrawScanLine extends DrawBlock{
     public float lineStroke = 0.786f;
     public float scanLength = 16f;
     public float scanAngle = 0;
     public float phaseOffset = 0;
 
     public float strokeScl = 4;
+    public float strokeRange = 8;
     public float strokePlusScl = 0.25f;
 
     public float totalProgressMultiplier = 1;
 
     public float scanScl = 6;
-    public Blending blending = Blending.additive;
 
     public float alpha = 0.67f;
     public Color colorFrom = Pal.accent, colorTo = Color.white;
@@ -34,7 +33,7 @@ public class DrawScanLine extends DrawBlock implements Cloneable {
 
     @Override
     public void draw(Building build) {
-        Draw.blend(blending);
+        Draw.blend(Blending.additive);
         Draw.color(colorFrom, colorTo, Mathf.absin(build.totalProgress() * totalProgressMultiplier + phaseOffset, colorLerpScl, colorLerpRatio));
         Draw.alpha(alpha * build.warmup());
 
@@ -42,18 +41,10 @@ public class DrawScanLine extends DrawBlock implements Cloneable {
 
         Lines.stroke(stroke);
 
-        Tmp.v1.trns(scanAngle, Mathf.sin(build.totalProgress() * totalProgressMultiplier + phaseOffset, scanScl, (scanLength - stroke / 2f) / 2f)).add(x, y).add(build.x, build.y);
-        Lines.lineAngleCenter(Tmp.v1.x, Tmp.v1.y, scanAngle + 90, scanLength * build.warmup() - stroke);
+        Tmp.v1.trns(scanAngle + build.rotdeg(), Mathf.sin(build.totalProgress() * totalProgressMultiplier + phaseOffset, scanScl, strokeRange)).add(x, y).add(build.x, build.y);
+        Lines.lineAngleCenter(Tmp.v1.x, Tmp.v1.y, scanAngle + 90 + build.rotdeg(), scanLength * build.warmup() - stroke);
 
         Draw.reset();
         Draw.blend();
-    }
-
-    public DrawScanLine copy() {
-        try {
-            return (DrawScanLine) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 }

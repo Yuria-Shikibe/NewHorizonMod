@@ -247,7 +247,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
             }
 
             //uh so period check to avoid invalid link entity
-            if (timer(0, 300)) {
+            if (timer(0, 600)) {
                 boolean linkValid = true;
                 for (Tile t : getLinkTiles(tile, size, rotation)) {
                     if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this && lb.isValid())) {
