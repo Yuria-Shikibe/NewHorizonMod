@@ -1719,7 +1719,7 @@ public class NHBullets {
                 frontColor = Color.white;
 
                 lightning = 2;
-                lightningDamage = 200
+                lightningDamage = 200f;
                 lightningLength = 7;
                 lightningLengthRand = 16;
 
