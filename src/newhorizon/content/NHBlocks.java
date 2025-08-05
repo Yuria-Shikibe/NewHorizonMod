@@ -2287,10 +2287,8 @@ public class NHBlocks {
             itemDuration = 180f;
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
-            toApplyStatus.addAll(
-                    NHStatusEffects.stableOverdrive
-            );
-
+            toApplyStatus.add(NHStatusEffects.stableOverdrive);
+            
             consumePower(100.0F);
             consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 6, Items.phaseFabric, 6)).optional(true, true);
             consumeItems(new ItemStack(NHItems.thermoCorePositive, 6), new ItemStack(NHItems.metalOxhydrigen, 6));
