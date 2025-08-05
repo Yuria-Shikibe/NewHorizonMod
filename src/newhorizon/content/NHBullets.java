@@ -1688,7 +1688,7 @@ public class NHBullets {
             statusDuration = 120f;
         }};
 
-        laugraBullet = new AccelBulletType(2000, STRIKE) {
+        laugraBullet = new AccelBulletType(1000, STRIKE) {
             {
                 status = NHStatusEffects.entangled;
                 statusDuration = 320f;
@@ -1707,6 +1707,7 @@ public class NHBullets {
                 accelerateEnd = 0.55f;
 
                 pierce = pierceBuilding = true;
+                buildingDamageMultiplier = 3f;
                 pierceCap = 7;
 
                 lightningColor = backColor = trailColor = hitColor = lightColor = NHColor.ancient;
@@ -1718,12 +1719,12 @@ public class NHBullets {
                 frontColor = Color.white;
 
                 lightning = 2;
-                lightningDamage = damage / 4f + 10f;
+                lightningDamage = 200
                 lightningLength = 7;
                 lightningLengthRand = 16;
 
                 splashDamageRadius = 36f;
-                splashDamage = damage / 4f;
+                splashDamage = damage / 2f;
 
                 width = 13f;
                 height = 35f;
