@@ -1626,7 +1626,7 @@ public class NHBullets {
         }};
 
         synchroFusionEnergy = new AdaptBulletType() {{
-            damage = 180f;
+            damage = 150f;
             shieldDamageMultiplier = 0.5f;
 
             speed = 7f;
@@ -1655,7 +1655,6 @@ public class NHBullets {
 
             reloadMultiplier = 0.75f;
             rangeChange = 40f;
-            pierceCap = 3;
 
             status = StatusEffects.melting;
             statusDuration = 180f;
