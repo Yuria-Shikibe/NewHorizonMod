@@ -242,8 +242,8 @@ public class TurretBlock {
                         width = 6f;
 
                         lightningDamage = 25;
-                        lightning = 3;
-                        lightningLength = 10;
+                        lightning = 4;
+                        lightningLength = 6;
 
                         frontColor = Pal.surgeAmmoBack;
                         backColor = trailColor = hitColor = Pal.surgeAmmoBack;
