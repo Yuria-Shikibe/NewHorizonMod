@@ -1582,7 +1582,7 @@ public class NHBullets {
             despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
             hitEffect = NHFx.hitSparkLarge;
 
-            reloadMultiplier = 0.8f;
+            reloadMultiplier = 0.75f;
             rangeChange = 40f;
             pierceCap = 4;
 
@@ -1653,7 +1653,7 @@ public class NHBullets {
 
             ammoMultiplier = 4;
 
-            reloadMultiplier = 0.8f;
+            reloadMultiplier = 0.75f;
             rangeChange = 40f;
             pierceCap = 3;
 
