@@ -233,12 +233,17 @@ public class TurretBlock {
                         splashDamage = 120f;
                         splashDamageRadius = 20f;
                         shieldDamageMultiplier = 0.5f;
+                        status = StatusEffects.shocked;
 
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
                         height = 11f;
                         width = 6f;
+
+                        lightningDamage = 25;
+                        lightning = 3;
+                        lightningLength = 10;
 
                         frontColor = Pal.surgeAmmoBack;
                         backColor = trailColor = hitColor = Pal.surgeAmmoBack;
@@ -262,8 +267,8 @@ public class TurretBlock {
                         homingRange = 100f;
                         homingPower = 0.05f;
 
-                        ammoMultiplier = 4f;
-                        reloadMultiplier = 1.35f;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 1.5f;
                         lifetime = 60f;
                     }}
             );
