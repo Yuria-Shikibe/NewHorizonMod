@@ -62,7 +62,7 @@ public class NHBullets {
             warperBullet, airRaidBomb,
             hyperBlastLinker, hyperBlast,
             arc_9000, eternity, arc_9000_frag,
-            synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,synchroTungsten,
+            synchroZeta, synchroThermoPst, synchroFusionEnergy, synchroTitanium,synchroTungsten,
             missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
             ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid,
             raidBulletType
@@ -1550,7 +1550,7 @@ public class NHBullets {
             despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
             hitEffect = NHFx.hitSparkLarge;
 
-            pierceCap = 2;
+            pierceCap = 3;
 
             ammoMultiplier = 4;
 
@@ -1558,12 +1558,12 @@ public class NHBullets {
         }};
 
         synchroTungsten = new AdaptBulletType() {{
-            damage = 50f;
+            damage = 80f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
-            speed = 8f;
-            lifetime = 35f;
+            speed = 7f;
+            lifetime = 48f;
 
             width = 8f;
             height = 42f;
@@ -1582,15 +1582,17 @@ public class NHBullets {
             despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
             hitEffect = NHFx.hitSparkLarge;
 
+            reloadMultiplier = 0.75f;
+            rangeChange = 40f;
             pierceCap = 4;
 
-            ammoMultiplier = 4;
+            ammoMultiplier = 6;
 
             bundleName = "synchro-Tungsten";
         }};
 
         synchroZeta = new AdaptBulletType() {{
-            damage = 90f;
+            damage = 100f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
@@ -1616,14 +1618,18 @@ public class NHBullets {
             status = NHStatusEffects.emp2;
             statusDuration = 180f;
 
-            pierceCap = 4;
+            pierceCap = 6;
 
             ammoMultiplier = 6;
 
             bundleName = "synchro-zeta";
         }};
 
-        synchroFusion = new BasicBulletType(8f, 65f) {{
+        synchroFusionEnergy = new AdaptBulletType() {{
+            damage = 150f;
+            shieldDamageMultiplier = 0.5f;
+
+            speed = 7f;
             lifetime = 48f;
 
             width = 8f;
@@ -1640,20 +1646,20 @@ public class NHBullets {
             shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
             smokeEffect = Fx.shootBigSmoke;
 
-            splashDamage = damage;
+            splashDamage = 75f;
             splashDamageRadius = 32f;
-            incendAmount = 6;
-            incendChance = 0.25f;
-            incendSpread = splashDamageRadius * 0.75f;
 
             despawnEffect = hitEffect = new OptionalMultiEffect(NHFx.circleOut(backColor, splashDamageRadius * 1.25f), NHFx.hitSparkLarge);
 
-            ammoMultiplier = 6;
+            ammoMultiplier = 4;
 
-            reloadMultiplier = 0.9f;
+            reloadMultiplier = 0.75f;
+            rangeChange = 40f;
 
             status = StatusEffects.melting;
-            statusDuration = 120f;
+            statusDuration = 180f;
+
+            bundleName = "synchro-fusionEnergy";
         }};
 
         synchroThermoPst = new BasicBulletType(8f, 80f) {{
@@ -1688,7 +1694,7 @@ public class NHBullets {
             statusDuration = 120f;
         }};
 
-        laugraBullet = new AccelBulletType(2000, STRIKE) {
+        laugraBullet = new AccelBulletType(1000, STRIKE) {
             {
                 status = NHStatusEffects.entangled;
                 statusDuration = 320f;
@@ -1707,6 +1713,7 @@ public class NHBullets {
                 accelerateEnd = 0.55f;
 
                 pierce = pierceBuilding = true;
+                buildingDamageMultiplier = 3f;
                 pierceCap = 7;
 
                 lightningColor = backColor = trailColor = hitColor = lightColor = NHColor.ancient;
@@ -1718,12 +1725,12 @@ public class NHBullets {
                 frontColor = Color.white;
 
                 lightning = 2;
-                lightningDamage = damage / 4f + 10f;
+                lightningDamage = 200f;
                 lightningLength = 7;
                 lightningLengthRand = 16;
 
                 splashDamageRadius = 36f;
-                splashDamage = damage / 4f;
+                splashDamage = damage / 2f;
 
                 width = 13f;
                 height = 35f;
