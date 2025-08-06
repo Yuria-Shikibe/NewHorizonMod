@@ -233,8 +233,7 @@ public class TurretBlock {
                         splashDamage = 120f;
                         splashDamageRadius = 20f;
                         shieldDamageMultiplier = 0.5f;
-                        status = StatusEffects.shocked;
-
+                        effect = StatusEffects.shocked;
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
