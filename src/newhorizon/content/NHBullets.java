@@ -1654,8 +1654,6 @@ public class NHBullets {
 
             status = StatusEffects.melting;
             statusDuration = 120f;
-
-            bundleName = "synchro-fusionEnergy";
         }};
 
         synchroThermoPst = new BasicBulletType(8f, 80f) {{
