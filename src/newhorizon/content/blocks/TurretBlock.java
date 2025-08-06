@@ -158,6 +158,7 @@ public class TurretBlock {
 
             ammo(
                     NHItems.zeta, new AdaptBulletType() {{
+                        damage = 10;
                         splashDamage = 60f;
                         splashDamageRadius = 16f;
                         shieldDamageMultiplier = 0.5f;
@@ -194,6 +195,7 @@ public class TurretBlock {
                         lifetime = 80f;
                     }},
                     NHItems.metalOxhydrigen, new AdaptBulletType() {{
+                        damage = 10;
                         splashDamage = 60f;
                         splashDamageRadius = 20f;
                         shieldDamageMultiplier = 0.5f;
@@ -231,6 +233,7 @@ public class TurretBlock {
                         lifetime = 60f;
                     }},
                     Items.surgeAlloy, new AdaptBulletType() {{
+                        damage = 10;
                         splashDamage = 120f;
                         splashDamageRadius = 20f;
                         shieldDamageMultiplier = 0.5f;
