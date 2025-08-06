@@ -26,8 +26,6 @@ public class ArcCharge extends DrawPart {
     public float size = 13.75f;
     public Color color;
     public PartProgress progress;
-    public int particles = 25;
-    public float particleLife = 40f, particleRad = 7f, particleStroke = 1.1f, particleLen = 3f;
     public float chargeCircleFrontRad = 18;
     public float chargeCircleBackRad = 8;
     public Interp curve = Interp.pow3;
@@ -96,10 +94,5 @@ public class ArcCharge extends DrawPart {
         DrawFunc.circlePercentFlip(x + tr.x, y + tr.y, fin * (chargeCircleFrontRad + 5), Time.time, 20f);
         Draw.color(Color.white);
         Fill.circle(x + tr.x, y + tr.y, fin * chargeCircleFrontRad * 0.7f);
-    }
-
-    @Override
-    public void load(String name) {
-
     }
 }

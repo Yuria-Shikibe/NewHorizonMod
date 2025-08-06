@@ -1,11 +1,14 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
+import mindustry.content.Liquids;
 import mindustry.type.Liquid;
 
 public class NHLiquids {
 
     public static Liquid quantumLiquid, xenFluid, zetaFluidPositive, zetaFluidNegative, irdryonFluid;
+
+    public static Liquid water, slag, oil, cryofluid, arkycite, gallium, neoplasm, ozone, hydrogen, nitrogen, cyanogen;
 
     public static void load() {
         quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor) {
@@ -53,5 +56,17 @@ public class NHLiquids {
             temperature = 0.2f;
             heatCapacity = 1.6f;
         }};
+
+        water = Liquids.water;
+        slag = Liquids.slag;
+        oil = Liquids.oil;
+        cryofluid = Liquids.cryofluid;
+        arkycite = Liquids.arkycite;
+        gallium = Liquids.gallium;
+        neoplasm = Liquids.neoplasm;
+        ozone = Liquids.ozone;
+        hydrogen = Liquids.hydrogen;
+        nitrogen = Liquids.nitrogen;
+        cyanogen = Liquids.cyanogen;
     }
 }
