@@ -62,7 +62,7 @@ public class NHBullets {
             warperBullet, airRaidBomb,
             hyperBlastLinker, hyperBlast,
             arc_9000, eternity, arc_9000_frag,
-            synchroZeta, synchroThermoPst, synchroFusion, synchroTitanium,synchroTungsten,
+            synchroZeta, synchroThermoPst, synchroFusionEnergy, synchroTitanium,synchroTungsten,
             missileTitanium, missileThorium, missileZeta, missileNormal, missileStrike,
             ultFireball, basicSkyFrag, annMissile, guardianBullet, guardianBulletLightningBall, saviourBullet, basicRaid,
             raidBulletType
@@ -1623,7 +1623,10 @@ public class NHBullets {
             bundleName = "synchro-zeta";
         }};
 
-        synchroFusion = new BasicBulletType(8f, 65f) {{
+        synchroFusionEnergy = new BasicBulletType() {{
+            damage = 260f;
+            buildingDamageMultiplier = 1f;
+            shieldDamageMultiplier = 0.5f;
             lifetime = 48f;
 
             width = 8f;
@@ -1640,11 +1643,8 @@ public class NHBullets {
             shootEffect = NHFx.square(backColor, 45f, 5, 38, 4);
             smokeEffect = Fx.shootBigSmoke;
 
-            splashDamage = damage;
+            splashDamage = 75f;
             splashDamageRadius = 32f;
-            incendAmount = 6;
-            incendChance = 0.25f;
-            incendSpread = splashDamageRadius * 0.75f;
 
             despawnEffect = hitEffect = new OptionalMultiEffect(NHFx.circleOut(backColor, splashDamageRadius * 1.25f), NHFx.hitSparkLarge);
 
@@ -1654,6 +1654,8 @@ public class NHBullets {
 
             status = StatusEffects.melting;
             statusDuration = 120f;
+
+            bundleName = "synchro-fusionEnergy";
         }};
 
         synchroThermoPst = new BasicBulletType(8f, 80f) {{
