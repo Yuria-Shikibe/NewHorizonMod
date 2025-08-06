@@ -12,6 +12,7 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.gen.Sounds;
@@ -20,15 +21,17 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.Item;
+import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
+import mindustry.world.Block;
 import mindustry.world.blocks.power.ThermalGenerator;
-import mindustry.world.draw.DrawLiquidTile;
-import mindustry.world.draw.DrawMulti;
-import mindustry.world.draw.DrawRegion;
+import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.*;
+import newhorizon.expand.block.drawer.DrawRotator;
 import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
+import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
@@ -37,12 +40,75 @@ import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
-    public static ThermalGenerator xenExtractor;
+    public static Block sandCracker, resourceConvertor, liquidConvertor, xenExtractor;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
-
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
+        sandCracker = new RecipeGenericCrafter("sand-cracker") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40
+            ));
+
+            size = 2;
+            health = 400;
+            itemCapacity = 30;
+            rotate = false;
+
+            drawer = new DrawMulti(new DrawRegion("-base"), new DrawRotator(), new DrawRegion("-top"));
+            craftEffect = NHFx.hugeSmokeGray;
+            updateEffect = new Effect(80f, e -> {
+                Fx.rand.setSeed(e.id);
+                Draw.color(Color.lightGray, Color.gray, e.fin());
+                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> {
+                    Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
+                });
+            }).layer(Layer.blockOver + 1);
+
+            consumePower(5f);
+        }};
+        resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40
+            ));
+
+            size = 2;
+            health = 400;
+            itemCapacity = 30;
+            rotate = false;
+
+            drawer = new DrawMulti(new DrawRegion("-base"), new DrawArcSmelt() {{
+                midColor = flameColor = Pal.accent;
+                flameRad /= 1.585f;
+                particleStroke /= 1.35f;
+                particleLen /= 1.25f;
+            }}, new DrawRegion("-top"));
+            craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 16, 3);
+            consumePower(5f);
+        }};
+        liquidConvertor = new RecipeGenericCrafter("liquid-convertor") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40
+            ));
+
+            size = 2;
+            health = 400;
+            itemCapacity = 30;
+            liquidCapacity = 90f;
+            rotate = false;
+
+            drawer = new DrawMulti(new DrawRegion("-base"), new DrawCrucibleFlame() {{
+                midColor = flameColor = Pal.accent;
+                flameRad /= 1.585f;
+                particleRad /= 1.5f;
+            }}, new DrawRegion("-top"));
+            craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 16, 3);
+            consumePower(5f);
+        }};
+
         xenExtractor = new ThermalGenerator("xen-extractor") {{
             requirements(Category.production, with(Items.tungsten, 50, NHItems.presstanium, 20, NHItems.juniorProcessor, 20));
             attribute = NHContent.quantum;

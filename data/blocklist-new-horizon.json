@@ -503,6 +503,24 @@
 	"size": 1,
 	"color": 255
 },
+"new-horizon-sand-cracker": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-resource-convertor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-liquid-convertor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-xen-extractor": {
 	"synthetic": true,
 	"solid": true,
@@ -779,42 +797,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-sand-cracker": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-oil-refiner": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-convertor-tungsten": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-convertor-titanium": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-xen-refinery": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-zeta-crafter": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-stamping-facility": {
 	"synthetic": true,
 	"solid": true,
@@ -887,13 +869,13 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-ancimembrane-concentrator": {
+"new-horizon-nodex-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
 	"color": 255
 },
-"new-horizon-upgradeSort-factory": {
+"new-horizon-ancimembrane-concentrator": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,

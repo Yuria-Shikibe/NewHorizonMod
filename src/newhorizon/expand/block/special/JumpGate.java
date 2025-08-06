@@ -1,7 +1,10 @@
 package newhorizon.expand.block.special;
 
 import arc.Core;
+import arc.func.Boolf;
+import arc.func.Boolp;
 import arc.func.Cons2;
+import arc.func.Prov;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -10,6 +13,7 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.Element;
+import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.Slider;
 import arc.scene.ui.layout.Scl;
@@ -25,6 +29,7 @@ import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.core.UI;
+import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Units;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
@@ -210,6 +215,17 @@ public class JumpGate extends Block {
         public Recipe recipe = Recipe.empty;
     }
 
+    public Stack getReqStack(UnlockableContent content, Prov<CharSequence> display, Boolp valid){
+        return new Stack(
+                new Table(o -> o.left().add(new Image(content.fullIcon)).size(32f).scaling(Scaling.fit)),
+                new Table(t -> {
+                    t.left().bottom();
+                    t.label(() -> (valid.get()? "[accent]": "[negstat]") + display.get()).style(Styles.outlineLabel);
+                    t.pack();
+                })
+        );
+    }
+
     @SuppressWarnings("InnerClassMayBeStatic")
     public class JumpGateBuild extends Building {
         public float speedMultiplier = 1f;
@@ -390,45 +406,20 @@ public class JumpGate extends Block {
                                     new Table(image -> image.image(type.uiIcon).scaling(Scaling.fit).size(48, 48).padTop(6f).padBottom(6f).padLeft(8f)).left(),
                                     new Table(req -> {
                                         req.right();
-                                        req.update(() -> {
-                                            req.clear();
-                                            int j = 0;
-                                            for (ItemStack stack: unitRecipe.recipe.inputItem) {
-                                                if (++j % 6 == 0) req.row();
-                                                req.add(new Stack(
-                                                        StatValues.stack(stack.item, stack.amount * spawnCount, false),
-                                                        new Element(){
-                                                            @Override
-                                                            public void draw(){
-                                                                if (items.has(stack.item, stack.amount * spawnCount)) return;
-                                                                Lines.stroke(Scl.scl(2f), Pal.removeBack);
-                                                                Lines.line(x, y - 2f + height, x + width, y - 2f);
-                                                                Draw.color(Pal.remove);
-                                                                Lines.line(x, y + height, x + width, y);
-                                                                Draw.reset();
-                                                            }
-                                                        }
-                                                )).pad(5);
-                                            }
-                                            for (PayloadStack stack: unitRecipe.recipe.inputPayload) {
-                                                if (++j % 6 == 0) req.row();
-                                                req.add(new Stack(
-                                                        StatValues.stack(stack.item, stack.amount * spawnCount, false),
-                                                        new Element(){
-                                                            @Override
-                                                            public void draw(){
-                                                                if (getPayloads().get(stack.item) >= stack.amount * spawnCount) return;
-                                                                Lines.stroke(Scl.scl(2f), Pal.removeBack);
-                                                                Lines.line(x, y - 2f + height, x + width, y - 2f);
-                                                                Draw.color(Pal.remove);
-                                                                Lines.line(x, y + height, x + width, y);
-                                                                Draw.reset();
-                                                            }
-                                                        }
-                                                )).pad(5);
-                                            }
-                                        });
-                                    }).marginLeft(60).marginTop(32f).left()
+                                        int j = 0;
+                                        for (ItemStack stack: unitRecipe.recipe.inputItem) {
+                                            if (++j % 3 == 0) req.row();
+                                            req.add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(items.get(stack.item))),
+                                                    () -> items.has(stack.item, stack.amount * spawnCount))).pad(5);
+                                        }
+                                        req.row();
+                                        int k = 0;
+                                        for (PayloadStack stack: unitRecipe.recipe.inputPayload) {
+                                            if (++k % 4 == 0) req.row();
+                                            req.add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(getPayloads().get(stack.item))),
+                                                    () -> getPayloads().get(stack.item) >= stack.amount * spawnCount)).pad(5);
+                                        }
+                                    }).marginLeft(60).marginTop(36f).marginBottom(4f).left()
                             ).expandX().fillX()).growX();
                             button.update(() -> {
                                 if (unitRecipe() == null) {
@@ -440,17 +431,7 @@ public class JumpGate extends Block {
                         }, Styles.underlineb, () -> configure(finalI)).expandX().fillX().margin(0).pad(4);
                         selectionTable.row();
                     }
-                }).scrollX(false).width(342).maxHeight(600).padRight(2).row();
-                inner.image().size(320, 4).color(Pal.accent).padTop(12f).padBottom(8f).growX().row();
-                inner.table(inv -> inv.update(() -> {
-                    inv.clear();
-                    inv.marginLeft(25f);
-                    for (int i = 0; i < ModuleBlock.modules.size; i++){
-                        Block b = ModuleBlock.modules.get(i);
-                        inv.add(StatValues.stack(b, getPayloads().get(b), true)).pad(2).width(63f);
-                        if (i%5 == 4) inv.row();
-                    }
-                })).row();
+                }).scrollX(false).width(342).maxHeight(400).padRight(2).row();
             }).width(360);
         }
 

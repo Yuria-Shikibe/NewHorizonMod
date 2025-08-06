@@ -38,145 +38,11 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
-            sandCracker, oilRefiner, convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
-            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
-            fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
-            multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator;
+            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator,
+            surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, multipleSteelFactory,
+            irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
     public static void load() {
-        sandCracker = new RecipeGenericCrafter("sand-cracker") {{
-            size = 2;
-            requirements(Category.crafting, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 40));
-            health = 320;
-            craftTime = 60f;
-            itemCapacity = 60;
-            hasPower = hasItems = true;
-            craftEffect = NHFx.hugeSmokeGray;
-            updateEffect = new Effect(80f, e -> {
-                Fx.rand.setSeed(e.id);
-                Draw.color(Color.lightGray, Color.gray, e.fin());
-                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> {
-                    Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
-                });
-            }).layer(Layer.blockOver + 1);
-
-            rotate = false;
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawFrames(), new DrawArcSmelt(), new DrawDefault());
-            consumePower(5f);
-
-            addInput(Items.scrap, 4, LiquidStack.empty);
-            addInput(Items.copper, 10, LiquidStack.empty);
-            addInput(Items.lead, 10, LiquidStack.empty);
-            addInput(Items.beryllium, 6, LiquidStack.empty);
-            addInput(Items.titanium, 5, LiquidStack.empty);
-            addInput(Items.thorium, 4, LiquidStack.empty);
-            addInput(Items.tungsten, 5, LiquidStack.empty);
-
-            outputItem = new ItemStack(Items.sand, 12);
-        }};
-        oilRefiner = new GenericCrafter("oil-refiner") {{
-
-            size = 2;
-            requirements(Category.production, ItemStack.with(Items.metaglass, 30, NHItems.juniorProcessor, 20, Items.copper, 60, NHItems.metalOxhydrigen, 45));
-            health = 200;
-            craftTime = 60f;
-            liquidCapacity = 60f;
-            itemCapacity = 20;
-            hasPower = hasLiquids = hasItems = true;
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.oil), new DrawDefault());
-            consumePower(5f);
-            consumeItems(new ItemStack(Items.sand, 3));
-            outputLiquid = new LiquidStack(Liquids.oil, 15f / 60f);
-        }};
-        convertorTungsten = new RecipeGenericCrafter("convertor-tungsten") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.titanium, 45, Items.graphite, 30));
-
-            size = 2;
-            craftTime = 30f;
-            itemCapacity = 12;
-
-            rotate = false;
-
-            addInput(Items.copper, 5, LiquidStack.empty);
-            addInput(Items.lead, 5, LiquidStack.empty);
-            addInput(Items.titanium, 3, LiquidStack.empty);
-
-            craftEffect = updateEffect = NHFx.square(NHColor.thurmixRed, 60, 6, 16, 3);
-
-            consumePower(90f / 60f);
-            outputItems = with(Items.tungsten, 2);
-
-            drawer = new DrawMulti(new DrawDefault());
-        }};
-        convertorTitanium = new RecipeGenericCrafter("convertor-titanium") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.tungsten, 45, Items.graphite, 60));
-
-            size = 2;
-            craftTime = 30f;
-            itemCapacity = 12;
-
-            rotate = false;
-
-            addInput(Items.beryllium, 3, LiquidStack.empty);
-            addInput(Items.tungsten, 2, LiquidStack.empty);
-
-            craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
-
-            consumePower(90f / 60f);
-            outputItems = with(Items.titanium, 3);
-
-            drawer = new DrawMulti(new DrawDefault());
-        }};
-        xenRefinery = new RecipeGenericCrafter("xen-refinery") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45, Items.carbide, 30));
-
-            size = 2;
-            craftTime = 60f;
-            liquidCapacity = 40f;
-            itemCapacity = 20;
-
-            rotate = false;
-
-            addInput(Liquids.oil, 15 / 60f);
-            addInput(Liquids.arkycite, 20 / 60f);
-
-            consumePower(120f / 60f);
-            outputLiquids = LiquidStack.with(NHLiquids.xenFluid, 12 / 60f);
-
-            drawer = new DrawMulti(
-                    new DrawRegion() {{
-                        suffix = "-base";
-                    }},
-                    new DrawLiquidTile() {{
-                        drawLiquid = NHLiquids.xenFluid;
-                    }},
-                    new DrawRegion() {{
-                        suffix = "-top";
-                    }}
-            );
-        }};
-        zetaCrafter = new RecipeGenericCrafter("zeta-crafter") {{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.presstanium, 30,
-                    NHItems.juniorProcessor, 45
-            ));
-
-            size = 2;
-            craftTime = 60f;
-            liquidCapacity = 12f;
-            itemCapacity = 30;
-
-            rotate = false;
-
-            consumePower(120f / 60f);
-            outputItem = new ItemStack(NHItems.zeta, 3);
-
-            drawer = new DrawDefault();
-        }};
-
         stampingFacility = new RecipeGenericCrafter("stamping-facility") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.titanium, 45,
@@ -626,6 +492,32 @@ public class CraftingBlock {
                     }}
             );
         }};
+        upgradeSortFactory = new GenericCrafter("nodex-factory") {{
+            requirements(Category.crafting,
+                    with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
+            updateEffect = NHStatusEffects.quantization.effect;
+            craftEffect = new Effect(25f, e -> {
+                Draw.color(NHColor.darkEnrColor);
+                Angles.randLenVectors(e.id, 4, 24 * e.fout() * e.fout(), (x, y) -> {
+                    Lines.stroke(e.fout() * 1.7f);
+                    Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
+                });
+            });
+            outputItem = new ItemStack(NHItems.nodexPlate, 2);
+            craftTime = 120f;
+            itemCapacity = 20;
+            size = 3;
+            hasPower = hasItems = true;
+            drawer = new DrawPrinter(outputItem.item) {{
+                printColor = NHColor.darkEnrColor;
+                lightColor = Color.valueOf("#E1BAFF");
+                moveLength = 4.2f;
+                time = 25f;
+            }};
+            clipSize = size * tilesize * 2f;
+            consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
+            consumePower(10f);
+        }};
         ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
             size = 3;
 
@@ -708,32 +600,6 @@ public class CraftingBlock {
             consumeItems(with(NHItems.irayrondPanel, 6));
             consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
             outputItems = with(NHItems.ancimembrane, 3);
-        }};
-        upgradeSortFactory = new GenericCrafter("upgradeSort-factory") {{
-            requirements(Category.crafting,
-                    with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
-            updateEffect = NHStatusEffects.quantization.effect;
-            craftEffect = new Effect(25f, e -> {
-                Draw.color(NHColor.darkEnrColor);
-                Angles.randLenVectors(e.id, 4, 24 * e.fout() * e.fout(), (x, y) -> {
-                    Lines.stroke(e.fout() * 1.7f);
-                    Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
-                });
-            });
-            outputItem = new ItemStack(NHItems.nodexPlate, 2);
-            craftTime = 120f;
-            itemCapacity = 20;
-            size = 3;
-            hasPower = hasItems = true;
-            drawer = new DrawPrinter(outputItem.item) {{
-                printColor = NHColor.darkEnrColor;
-                lightColor = Color.valueOf("#E1BAFF");
-                moveLength = 4.2f;
-                time = 25f;
-            }};
-            clipSize = size * tilesize * 2f;
-            consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
-            consumePower(10f);
         }};
     }
 }
