@@ -1582,6 +1582,7 @@ public class NHBullets {
             despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
             hitEffect = NHFx.hitSparkLarge;
 
+            rangeChange = 20f;
             pierceCap = 4;
 
             ammoMultiplier = 4;
@@ -1625,7 +1626,6 @@ public class NHBullets {
 
         synchroFusionEnergy = new BasicBulletType() {{
             damage = 260f;
-            buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
             lifetime = 48f;
 
@@ -1648,12 +1648,16 @@ public class NHBullets {
 
             despawnEffect = hitEffect = new OptionalMultiEffect(NHFx.circleOut(backColor, splashDamageRadius * 1.25f), NHFx.hitSparkLarge);
 
-            ammoMultiplier = 6;
+            ammoMultiplier = 4;
 
-            reloadMultiplier = 0.9f;
+            reloadMultiplier = 0.8f;
+            rangeChange = 20f;
+            pierceCap = 4;
 
             status = StatusEffects.melting;
-            statusDuration = 120f;
+            statusDuration = 180f;
+
+            bundleName = "synchro-fusionEnergy";
         }};
 
         synchroThermoPst = new BasicBulletType(8f, 80f) {{
