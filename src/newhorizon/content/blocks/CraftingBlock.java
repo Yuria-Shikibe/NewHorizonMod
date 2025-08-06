@@ -38,18 +38,10 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
-            sandCracker, oilRefiner,
-            convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
-            stampingFacility, processorPrinter, crucibleFoundry, crucibleCaster, crystallizer, zetaDissociator, surgeRefactor,
-            fabricSynthesizer, processorEncoder, irdryonMixer, hugePlastaniumFactory, multipleFoundry, processorCompactor, irayrondFactory, setonFactory,
+            sandCracker, oilRefiner, convertorTungsten, convertorTitanium, xenRefinery, zetaCrafter,
+            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator, surgeRefactor,
+            fabricSynthesizer, processorEncoder, irdryonMixer, irayrondFactory, setonFactory,
             multipleSteelFactory, upgradeSortFactory, ancimembraneConcentrator;
-
-    public static Block
-            electronicFacilityBasic, electronicFacilityRare, electronicFacilityUncommon, electronicFacilityEpic, electronicFacilityLegendary,
-            particleProcessorBasic, particleProcessorRare, particleProcessorUncommon, particleProcessorEpic, particleProcessorLegendary,
-            foundryBasic, foundryRare, foundryUncommon, foundryEpic, foundryLegendary,
-            powerBasic, powerRare, powerUncommon, powerEpic, powerLegendary,
-            componentBasic, componentRare, componentUncommon, componentEpic, componentLegendary;
 
     public static void load() {
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{
@@ -167,8 +159,10 @@ public class CraftingBlock {
             );
         }};
         zetaCrafter = new RecipeGenericCrafter("zeta-crafter") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 30, NHItems.juniorProcessor, 45));
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.presstanium, 30,
+                    NHItems.juniorProcessor, 45
+            ));
 
             size = 2;
             craftTime = 60f;
@@ -177,13 +171,12 @@ public class CraftingBlock {
 
             rotate = false;
 
-            addInput(Items.thorium, 5, Liquids.water, 6 / 60f);
-
             consumePower(120f / 60f);
             outputItem = new ItemStack(NHItems.zeta, 3);
 
             drawer = new DrawDefault();
         }};
+
         stampingFacility = new RecipeGenericCrafter("stamping-facility") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.titanium, 45,
@@ -205,9 +198,7 @@ public class CraftingBlock {
                         particleStroke /= 1.35f;
                         particleLen /= 1.25f;
                     }},
-                    new DrawRegionCenterSymmetry() {{
-                        suffix = "-rot";
-                    }}
+                    new DrawRegionCenterSymmetry("-rot")
             );
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
 
@@ -281,13 +272,7 @@ public class CraftingBlock {
             liquidCapacity = 15f;
 
             drawer = new DrawMulti(
-                    new DrawRegionRotated() {{
-                        oneSprite = true;
-                        suffix = "-base";
-                    }},
-                    new DrawRegionRotated() {{
-                        suffix = "-rot";
-                    }},
+                    new DrawRegionCenterSymmetry("-rot"),
                     new DrawFlameRotated() {{
                         suffix = "-flame";
                     }}
@@ -587,45 +572,6 @@ public class CraftingBlock {
                     }}
             );
         }};
-        multipleFoundry = new RecipeGenericCrafter("multiple-foundry") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.surgeAlloy, 100, Items.phaseFabric, 80, NHItems.seniorProcessor, 60, NHItems.zeta, 80, NHItems.irayrondPanel, 80));
-
-            size = 4;
-            rotate = false;
-
-            craftTime = 120f;
-            liquidCapacity = 24f;
-            ignoreLiquidFullness = true;
-            itemCapacity = 100;
-            consumePower(900 / 60f);
-
-            outputItems = with(Items.surgeAlloy, 8, NHItems.presstanium, 15);
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 6 / 60f);
-
-            drawer = new DrawMulti(
-                    new DrawDefault(),
-                    new DrawFlame()
-            );
-        }};
-        processorCompactor = new RecipeGenericCrafter("processor-compactor") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(Items.surgeAlloy, 100, Items.phaseFabric, 80, NHItems.seniorProcessor, 60, NHItems.zeta, 80, NHItems.irayrondPanel, 80));
-
-            size = 4;
-            rotate = false;
-
-            craftTime = 150f;
-            liquidCapacity = 20f;
-            ignoreLiquidFullness = true;
-            itemCapacity = 100;
-            consumePower(900 / 60f);
-
-            outputItems = with(NHItems.juniorProcessor, 20, NHItems.seniorProcessor, 10);
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 6 / 60f);
-
-            drawer = new DrawDefault();
-        }};
         irayrondFactory = new RecipeGenericCrafter("irayrond-factory") {{
             requirements(Category.crafting, BuildVisibility.shown,
                     ItemStack.with(NHItems.presstanium, 90, NHItems.seniorProcessor, 60, Items.phaseFabric, 120, NHItems.metalOxhydrigen, 45, NHItems.multipleSteel, 85));
@@ -652,32 +598,6 @@ public class CraftingBlock {
                         suffix = "-rot";
                     }}
             );
-        }};
-        hugePlastaniumFactory = new RecipeGenericCrafter("plastanium-crafter") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 120, Items.surgeAlloy, 80, NHItems.metalOxhydrigen, 40, NHItems.multipleSteel, 60));
-
-            size = 3;
-            rotate = false;
-
-            craftTime = 90f;
-            consumePower(640 / 60f);
-            addInput(NHItems.metalOxhydrigen, 6, NHLiquids.zetaFluidPositive, 1 / 60f);
-            addInput(Items.tungsten, 6, Liquids.cyanogen, 3 / 60f);
-            addInput(NHItems.multipleSteel, 3, Liquids.oil, 30 / 60f);
-
-
-            outputItems = with(Items.plastanium, 9);
-            outputLiquids = null;
-            ignoreLiquidFullness = true;
-
-            itemCapacity = 30;
-            liquidCapacity = 60f;
-
-            craftEffect = Fx.smeltsmoke;
-            updateEffect = Fx.smeltsmoke;
-
-            drawer = new DrawDefault();
         }};
         setonFactory = new RecipeGenericCrafter("seton-factory") {{
             requirements(Category.crafting, BuildVisibility.shown,
@@ -814,532 +734,6 @@ public class CraftingBlock {
             clipSize = size * tilesize * 2f;
             consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
             consumePower(10f);
-        }};
-
-        electronicFacilityBasic = new RecipeGenericCrafter("electronic-facility-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
-
-            size = 2;
-            addLink(-1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 2, 0, 1, 2, 1, 1, 0, -1, 1, 1, -1, 1);
-
-            rotate = false;
-
-            clipSize = 32f;
-
-            health = 320;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-        electronicFacilityRare = new RecipeGenericCrafter("electronic-facility-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
-
-            size = 2;
-            addLink(-2, 0, 2, 0, 2, 2, 2, 0, 2, 0, -2, 2);
-
-            rotate = false;
-
-            clipSize = 48f;
-
-            health = 640;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-        electronicFacilityUncommon = new RecipeGenericCrafter("electronic-facility-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
-
-            size = 4;
-            addLink(-3, 0, 2, 0, 3, 2, 3, 0, 2, 0, -3, 2);
-
-            rotate = false;
-
-            clipSize = 64f;
-
-            health = 960;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-        electronicFacilityEpic = new RecipeGenericCrafter("electronic-facility-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
-
-            size = 6;
-            addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2);
-
-            rotate = false;
-
-            clipSize = 80f;
-
-            health = 1280;
-            armor = 3;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-        electronicFacilityLegendary = new RecipeGenericCrafter("electronic-facility-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
-
-            size = 6;
-            addLink(-4, 0, 2, 0, 4, 2, 4, 0, 2, 0, -4, 2, -4, 4, 2, -4, -4, 2, 4, 4, 2, 4, -4, 2);
-
-            rotate = false;
-
-            clipSize = 80f;
-
-            health = 1600;
-            armor = 6;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-
-        particleProcessorBasic = new RecipeGenericCrafter("particle-processor-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
-
-            size = 2;
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-
-            addLink(0, 2, 2, 2, 0, 2);
-
-            clipSize = 48f;
-
-            health = 320;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionRotated() {{
-                suffix = "-rot";
-                x = 8;
-                y = 8;
-            }};
-        }};
-        particleProcessorRare = new RecipeGenericCrafter("particle-processor-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
-
-            size = 3;
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-
-            addLink(-4, -4, 2, -4, -2, 2, -2, -4, 2);
-
-            clipSize = 72f;
-
-            health = 640;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionRotated() {{
-                suffix = "-rot";
-                x = -12;
-                y = -12;
-            }};
-        }};
-        particleProcessorUncommon = new RecipeGenericCrafter("particle-processor-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
-
-            size = 4;
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-
-            addLink(-5, -5, 2, -5, -3, 2, -3, -5, 2);
-
-            clipSize = 72f;
-
-            health = 960;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionRotated() {{
-                suffix = "-rot";
-                x = -16;
-                y = -16;
-            }};
-        }};
-        particleProcessorEpic = new RecipeGenericCrafter("particle-processor-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
-
-            size = 4;
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-
-            addLink(-5, -5, 2, -5, -3, 2, -5, -1, 2, -5, 1, 2, -3, -5, 2, -1, -5, 2, 1, -5, 2);
-
-            clipSize = 96f;
-
-            health = 1280;
-            armor = 3;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionRotated() {{
-                suffix = "-rot";
-                x = -16;
-                y = -16;
-            }};
-        }};
-        particleProcessorLegendary = new RecipeGenericCrafter("particle-processor-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
-
-            size = 4;
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
-
-            addLink(-5, 1, 2, -7, 1, 2, -7, -1, 2, -7, -3, 2, -7, -5, 2, -7, -7, 2,
-                    -5, -7, 2, -3, -7, 2, -1, -7, 2, 1, -7, 2, 1, -5, 2);
-
-            clipSize = 128f;
-
-            health = 1600;
-            armor = 6;
-            craftTime = 120f;
-            consumePower(480 / 60f);
-
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            health = 1600;
-
-            craftEffect = Fx.smeltsmoke;
-            updateEffect = Fx.smeltsmoke;
-
-            drawer = new DrawRegionRotated() {{
-                suffix = "-rot";
-                x = -24;
-                y = -24;
-            }};
-        }};
-
-        foundryBasic = new RecipeGenericCrafter("foundry-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
-
-            size = 2;
-            addLink(-2, 0, 2, 2, 0, 2);
-
-            health = 320;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            clipSize = 48f;
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        foundryRare = new RecipeGenericCrafter("foundry-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
-
-            size = 4;
-            addLink(-3, 0, 2, 3, 0, 2);
-
-            clipSize = 64f;
-
-            health = 640;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        foundryUncommon = new RecipeGenericCrafter("foundry-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
-
-            size = 4;
-            addLink(-4, -1, 2, -4, 1, 2, 4, -1, 2, 4, 1, 2);
-
-            clipSize = 80f;
-
-            health = 960;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        foundryEpic = new RecipeGenericCrafter("foundry-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
-
-            size = 4;
-            addLink(
-                    -5, 2, 2, -3, 2, 1, -3, 3, 1,
-                    -5, -2, 2, -3, -2, 1, -3, -1, 1,
-                    4, 2, 2, 6, 2, 1, 6, 3, 1,
-                    4, -2, 2, 6, -2, 1, 6, -1, 1
-            );
-
-            clipSize = 96f;
-
-            health = 1280;
-            armor = 3;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        foundryLegendary = new RecipeGenericCrafter("foundry-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
-
-            size = 4;
-            addLink(
-                    -5, 3, 2, -3, 3, 2, -3, 5, 2,
-                    -5, -3, 2, -3, -3, 2, -3, -5, 2,
-                    3, 3, 2, 3, 5, 2, 5, 3, 2,
-                    3, -3, 2, 3, -5, 2, 5, -3, 2
-            );
-
-            rotate = false;
-
-            clipSize = 96f;
-
-            health = 1600;
-            armor = 6;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-
-        powerBasic = new RecipeGenericCrafter("power-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 2;
-            addLink(-1, 0, 1, -1, 1, 1, -1, 2, 1, 0, 2, 1, 1, 2, 1,
-                    0, -1, 1, 1, -1, 1, 2, -1, 1, 2, 0, 1, 2, 1, 1
-            );
-
-            clipSize = 32f;
-
-            health = 320;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        powerRare = new RecipeGenericCrafter("power-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 4;
-            addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1,
-                    1, -2, 1, 2, -2, 1, 3, -2, 1, 3, -1, 1, 3, 0, 1);
-
-            clipSize = 48f;
-
-            health = 640;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        powerUncommon = new RecipeGenericCrafter("power-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 4;
-            addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
-                    2, -2, 1, 2, -3, 1, 3, -3, 2, 3, -1, 1, 4, -1, 1);
-
-            clipSize = 64f;
-
-            health = 960;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        powerEpic = new RecipeGenericCrafter("power-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 4;
-            addLink(-3, 2, 1, -2, 2, 1, -3, 3, 2, -1, 3, 1, -1, 4, 1,
-                    2, -2, 1, 2, -3, 1, 3, -3, 2, 3, -1, 1, 4, -1, 1,
-                    -4, -4, 2, -4, -2, 1, -3, -2, 1, -2, -4, 1, -2, -3, 1,
-                    4, 4, 2, 3, 4, 1, 3, 5, 1, 4, 3, 1, 5, 3, 1
-            );
-
-            clipSize = 80f;
-
-            health = 1280;
-            armor = 3;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        powerLegendary = new RecipeGenericCrafter("power-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 4;
-            addLink(-3, 4, 3, 4, -3, 3, -5, -5, 2, -5, -3, 2, -3, -5, 2, 5, 5, 2, 5, 3, 2, 3, 5, 2);
-
-            health = 1600;
-            armor = 6;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            clipSize = 96f;
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-
-        componentBasic = new RecipeGenericCrafter("component-basic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(Items.tungsten, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
-
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 2;
-            addLink(-2, 2, 2, 2, -2, 2);
-
-            clipSize = 48f;
-
-            health = 320;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        componentRare = new RecipeGenericCrafter("component-rare") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.zeta, 200, NHItems.metalOxhydrigen, 100, Items.carbide, 100));
-            
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 4;
-            addLink(-3, 3, 2, 3, -3, 2);
-
-            clipSize = 64f;
-
-            health = 640;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
-        }};
-        componentUncommon = new RecipeGenericCrafter("component-uncommon") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.multipleSteel, 200, Items.phaseFabric, 100, Items.surgeAlloy, 100));
-
-            size = 4;
-
-            rotate = false;
-
-            addLink(-3, 3, 2, 3, -3, 2, -3, -3, 2, 3, 3, 2);
-
-            clipSize = 64f;
-
-            health = 960;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-        componentEpic = new RecipeGenericCrafter("component-epic") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 100, NHItems.setonAlloy, 100));
-
-            size = 4;
-
-            rotate = false;
-
-            addLink(-4, -1, 2, -4, 1, 2, -1, -4, 2, 1, -4, 2, 4, -1, 2, 4, 1, 2, -1, 4, 2, 1, 4, 2);
-
-            clipSize = 80f;
-
-            health = 1280;
-            armor = 3;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
-        }};
-        componentLegendary = new RecipeGenericCrafter("component-legendary") {{
-            requirements(Category.units, BuildVisibility.shown, ItemStack.with(NHItems.ancimembrane, 100, NHItems.nodexPlate, 100));
-
-            size = 4;
-
-            rotate = false;
-
-            addLink(-5, -1, 2, -5, 1, 2, -1, -5, 2, 1, -5, 2, 5, -1, 2, 5, 1, 2, -1, 5, 2, 1, 5, 2,
-                    -6, -6, 2, -6, 6, 2, 6, 6, 2, 6, -6, 2);
-
-            clipSize = 112f;
-
-            health = 1600;
-            armor = 6;
-            craftTime = 120f;
-            itemCapacity = 60;
-            liquidCapacity = 40f;
-            consumePower(480 / 60f);
         }};
     }
 }

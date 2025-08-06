@@ -41,7 +41,7 @@ public class PayloadInventoryFragment {
         int row = 0;
         int cols = 3;
         Building b = getBuild();
-        if(b != null && b.getPayloads() != null){
+        if(b != null && b.getPayloads() != null && !b.getPayloads().isEmpty()){
             PayloadSeq inv = b.getPayloads();
             for (UnlockableContent content: ModuleBlock.modules){
                 if (!inv.contains(content)) continue;
