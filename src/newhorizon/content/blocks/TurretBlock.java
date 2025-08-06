@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
@@ -233,7 +234,7 @@ public class TurretBlock {
                         splashDamage = 120f;
                         splashDamageRadius = 20f;
                         shieldDamageMultiplier = 0.5f;
-                        effect = StatusEffects.shocked;
+                        status = StatusEffects.shocked;
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
 
