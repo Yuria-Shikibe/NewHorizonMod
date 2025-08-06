@@ -1583,7 +1583,7 @@ public class NHBullets {
             hitEffect = NHFx.hitSparkLarge;
 
             reloadMultiplier = 0.8f;
-            rangeChange = 20f;
+            rangeChange = 40f;
             pierceCap = 4;
 
             ammoMultiplier = 6;
@@ -1654,7 +1654,7 @@ public class NHBullets {
             ammoMultiplier = 4;
 
             reloadMultiplier = 0.8f;
-            rangeChange = 20f;
+            rangeChange = 40f;
             pierceCap = 3;
 
             status = StatusEffects.melting;
