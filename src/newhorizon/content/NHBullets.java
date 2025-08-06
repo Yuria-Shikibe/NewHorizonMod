@@ -1550,7 +1550,7 @@ public class NHBullets {
             despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
             hitEffect = NHFx.hitSparkLarge;
 
-            pierceCap = 2;
+            pierceCap = 3;
 
             ammoMultiplier = 4;
 
@@ -1558,12 +1558,12 @@ public class NHBullets {
         }};
 
         synchroTungsten = new AdaptBulletType() {{
-            damage = 50f;
+            damage = 80f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
-            speed = 8f;
-            lifetime = 35f;
+            speed = 7f;
+            lifetime = 48f;
 
             width = 8f;
             height = 42f;
@@ -1582,16 +1582,17 @@ public class NHBullets {
             despawnEffect = NHFx.square(backColor, 85f, 5, 52, 5);
             hitEffect = NHFx.hitSparkLarge;
 
+            reloadMultiplier = 0.8f;
             rangeChange = 20f;
             pierceCap = 4;
 
-            ammoMultiplier = 4;
+            ammoMultiplier = 6;
 
             bundleName = "synchro-Tungsten";
         }};
 
         synchroZeta = new AdaptBulletType() {{
-            damage = 90f;
+            damage = 100f;
             buildingDamageMultiplier = 1f;
             shieldDamageMultiplier = 0.5f;
 
@@ -1617,7 +1618,7 @@ public class NHBullets {
             status = NHStatusEffects.emp2;
             statusDuration = 180f;
 
-            pierceCap = 4;
+            pierceCap = 6;
 
             ammoMultiplier = 6;
 
@@ -1625,8 +1626,10 @@ public class NHBullets {
         }};
 
         synchroFusionEnergy = new AdaptBulletType() {{
-            damage = 260f;
+            damage = 180f;
             shieldDamageMultiplier = 0.5f;
+
+            speed = 7f;
             lifetime = 48f;
 
             width = 8f;
@@ -1652,7 +1655,7 @@ public class NHBullets {
 
             reloadMultiplier = 0.8f;
             rangeChange = 20f;
-            pierceCap = 4;
+            pierceCap = 3;
 
             status = StatusEffects.melting;
             statusDuration = 180f;
