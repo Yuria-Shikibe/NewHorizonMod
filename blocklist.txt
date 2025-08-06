@@ -173,6 +173,7 @@ new-horizon-link-entity-liquid-1 1 1 1 0
 new-horizon-link-entity-liquid-2 1 1 2 0
 new-horizon-link-entity-liquid-3 1 1 3 0
 new-horizon-link-entity-liquid-4 1 1 4 0
+new-horizon-liquid-convertor 1 1 2 0
 new-horizon-logistics-bridge 1 1 1 0
 new-horizon-logistics-directional-gate 1 0 1 0
 new-horizon-logistics-directional-merger 1 0 1 0
@@ -234,6 +235,7 @@ new-horizon-multiple-steel-factory 1 1 3 0
 new-horizon-multiple-surge-alloy-factory 1 1 3 0
 new-horizon-neutron-membrane 1 1 1 0
 new-horizon-nexus-core 1 1 5 0
+new-horizon-nodex-factory 1 1 3 0
 new-horizon-oil-refiner 1 1 2 0
 new-horizon-ore-silicon 0 0 1 5461596
 new-horizon-ore-zeta 0 0 1 16757632
@@ -300,6 +302,7 @@ new-horizon-reinforced-liquid-source 1 1 1 0
 new-horizon-remote-vault 1 1 3 0
 new-horizon-resisto-array 1 1 1 0
 new-horizon-resonance-mining-facility 1 1 4 0
+new-horizon-resource-convertor 1 1 2 0
 new-horizon-rift-shield 1 1 5 0
 new-horizon-ruin-large 1 1 2 0
 new-horizon-ruin-small 1 1 1 0
