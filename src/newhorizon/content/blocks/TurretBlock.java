@@ -228,6 +228,43 @@ public class TurretBlock {
                         ammoMultiplier = 4f;
                         reloadMultiplier = 1.35f;
                         lifetime = 60f;
+                    }},
+                    Items.surgeAlloy, new AdaptBulletType() {{
+                        splashDamage = 120f;
+                        splashDamageRadius = 20f;
+                        shieldDamageMultiplier = 0.5f;
+
+                        backSprite = "missile-large-back";
+                        sprite = "mine-bullet";
+
+                        height = 11f;
+                        width = 6f;
+
+                        frontColor = Pal.surgeAmmoBack;
+                        backColor = trailColor = hitColor = Pal.surgeAmmoBack;
+
+                        trailChance = 0.44f;
+                        trailLength = 12;
+                        trailWidth = 2f;
+                        trailEffect = NHFx.triSpark;
+                        trailRotation = true;
+
+                        shootEffect = Fx.shootBig2;
+                        smokeEffect = Fx.shootSmokeDisperse;
+                        hitEffect = despawnEffect = NHFx.hitSpark;
+
+                        despawnShake = 7f;
+
+                        speed = 8f;
+                        shrinkY = 0.3f;
+
+                        homingDelay = 20f;
+                        homingRange = 100f;
+                        homingPower = 0.05f;
+
+                        ammoMultiplier = 4f;
+                        reloadMultiplier = 1.35f;
+                        lifetime = 60f;
                     }}
             );
             shoot = new ShootAlternate() {{
