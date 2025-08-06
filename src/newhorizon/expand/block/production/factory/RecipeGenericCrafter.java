@@ -29,9 +29,12 @@ import static mindustry.world.meta.StatValues.withTooltip;
 public class RecipeGenericCrafter extends AdaptCrafter {
     public Seq<Recipe> recipes = new Seq<>();
 
+    public Seq<Item> itemOutput = new Seq<>();
+    public Seq<Liquid> liquidOutput = new Seq<>();
+    public Seq<UnlockableContent> payloadOutput = new Seq<>();
+
     public RecipeGenericCrafter(String name) {
         super(name);
-
         consume(new ConsumeRecipe(RecipeGenericCrafterBuild::getRecipe, RecipeGenericCrafterBuild::getDisplayRecipe));
     }
 
@@ -42,6 +45,10 @@ public class RecipeGenericCrafter extends AdaptCrafter {
             recipe.inputItem.each(stack -> itemFilter[stack.item.id] = true);
             recipe.inputLiquid.each(stack -> liquidFilter[stack.liquid.id] = true);
             recipe.inputPayload.each(stack -> payloadFilter.add(stack.item));
+
+            recipe.outputItem.each(stack -> itemOutput.add(stack.item));
+            recipe.outputLiquid.each(stack -> liquidOutput.add(stack.liquid));
+            recipe.outputPayload.each(stack -> payloadOutput.add(stack.item));
         });
 
         outputItem = null;
@@ -50,6 +57,8 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         outputItems = null;
         outputLiquids = null;
         outputPayloads = null;
+
+        craftTime = 60f;
     }
 
     @Override
@@ -57,6 +66,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         super.setStats();
         stats.add(Stat.input, display());
         stats.remove(Stat.output);
+        stats.remove(Stat.productionTime);
     }
 
     public void addInput(Object...objects) {
@@ -77,14 +87,14 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                             inner.table(row -> {
                                 row.left();
                                 recipe.inputItem.each(stack -> row.add(display(stack.item, stack.amount, recipe.craftTime)));
-                                recipe.inputLiquid.each(stack -> row.add(display(stack.liquid, stack.amount * Time.toSeconds, recipe.craftTime)));
+                                recipe.inputLiquid.each(stack -> row.add(display(stack.liquid, stack.amount * Time.toSeconds, 60f)));
                                 recipe.inputPayload.each(stack -> row.add(display(stack.item, stack.amount, recipe.craftTime)));
                             }).growX();
                             inner.table(row -> {
                                 row.left();
                                 row.image(Icon.right).size(32f).padLeft(8f).padRight(12f);
                                 recipe.outputItem.each(stack -> row.add(display(stack.item, stack.amount, recipe.craftTime)));
-                                recipe.outputLiquid.each(stack -> row.add(display(stack.liquid, stack.amount * Time.toSeconds, recipe.craftTime)));
+                                recipe.outputLiquid.each(stack -> row.add(display(stack.liquid, stack.amount * Time.toSeconds, 60f)));
                                 recipe.outputPayload.each(stack -> row.add(display(stack.item, stack.amount, recipe.craftTime)));
                             }).growX();
                         });
@@ -216,14 +226,16 @@ public class RecipeGenericCrafter extends AdaptCrafter {
 
         @Override
         public void dumpOutputs() {
-            if (getRecipe() == null) return;
-            getRecipe().outputItem.each(output -> dump(output.item));
-            getRecipe().outputPayload.each(output -> {
-                BuildPayload payload = new BuildPayload((Block) output.item, team);
-                payload.set(x, y, rotdeg());
-                dumpPayload(payload);
-            });
-            getRecipe().outputLiquid.each(output -> dumpLiquid(output.liquid, 2f, -1));
+            boolean timer = timer(timerDump, dumpTime / timeScale);
+            if (timer) {
+                itemOutput.each(this::dump);
+                payloadOutput.each(output -> {
+                    BuildPayload payload = new BuildPayload((Block) output, team);
+                    payload.set(x, y, rotdeg());
+                    dumpPayload(payload);
+                });
+            }
+            liquidOutput.each(output -> dumpLiquid(output, 2f, -1));
         }
 
         @Override
@@ -262,7 +274,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         public float getProgressIncrease(float baseTime) {
             float scl = 0f;
             if (getRecipe() != null) scl = getRecipe().craftTime / craftTime;
-            return super.getProgressIncrease(baseTime) * scl;
+            return super.getProgressIncrease(baseTime) / scl;
         }
 
         @Override
