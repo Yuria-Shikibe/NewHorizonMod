@@ -1624,7 +1624,7 @@ public class NHBullets {
             bundleName = "synchro-zeta";
         }};
 
-        synchroFusionEnergy = new BasicBulletType() {{
+        synchroFusionEnergy = new AdaptBulletType() {{
             damage = 260f;
             shieldDamageMultiplier = 0.5f;
             lifetime = 48f;
