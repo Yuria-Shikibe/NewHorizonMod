@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
@@ -84,7 +85,8 @@ public class TurretBlock {
             ammo(
                     Items.titanium, NHBullets.synchroTitanium,
                     Items.tungsten, NHBullets.synchroTungsten,
-                    NHItems.zeta, NHBullets.synchroZeta
+                    NHItems.zeta, NHBullets.synchroZeta,
+                    NHItems.fusionEnergy, NHBullets.synchroFusionEnergy
             );
 
             ammoPerShot = 1;
@@ -156,6 +158,7 @@ public class TurretBlock {
 
             ammo(
                     NHItems.zeta, new AdaptBulletType() {{
+                        damage = 10;
                         splashDamage = 60f;
                         splashDamageRadius = 16f;
                         shieldDamageMultiplier = 0.5f;
@@ -192,6 +195,7 @@ public class TurretBlock {
                         lifetime = 80f;
                     }},
                     NHItems.metalOxhydrigen, new AdaptBulletType() {{
+                        damage = 10;
                         splashDamage = 60f;
                         splashDamageRadius = 20f;
                         shieldDamageMultiplier = 0.5f;
@@ -226,6 +230,48 @@ public class TurretBlock {
 
                         ammoMultiplier = 4f;
                         reloadMultiplier = 1.35f;
+                        lifetime = 60f;
+                    }},
+                    Items.surgeAlloy, new AdaptBulletType() {{
+                        damage = 10;
+                        splashDamage = 120f;
+                        splashDamageRadius = 20f;
+                        shieldDamageMultiplier = 0.5f;
+                        status = StatusEffects.shocked;
+                        backSprite = "missile-large-back";
+                        sprite = "mine-bullet";
+
+                        height = 11f;
+                        width = 6f;
+
+                        lightningDamage = 25;
+                        lightning = 4;
+                        lightningLength = 6;
+
+                        frontColor = Pal.surgeAmmoBack;
+                        backColor = trailColor = hitColor = Pal.surgeAmmoBack;
+
+                        trailChance = 0.44f;
+                        trailLength = 12;
+                        trailWidth = 2f;
+                        trailEffect = NHFx.triSpark;
+                        trailRotation = true;
+
+                        shootEffect = Fx.shootBig2;
+                        smokeEffect = Fx.shootSmokeDisperse;
+                        hitEffect = despawnEffect = NHFx.hitSpark;
+
+                        despawnShake = 7f;
+
+                        speed = 8f;
+                        shrinkY = 0.3f;
+
+                        homingDelay = 20f;
+                        homingRange = 100f;
+                        homingPower = 0.05f;
+
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 1.5f;
                         lifetime = 60f;
                     }}
             );
