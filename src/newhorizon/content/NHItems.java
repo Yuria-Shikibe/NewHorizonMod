@@ -21,6 +21,7 @@ public class NHItems {
 
     public static void load() {
         presstanium = new Item("presstanium", Color.valueOf("90a0e4")) {{
+            hardness = 8;
             cost = 1.5f;
         }};
         juniorProcessor = new Item("processor-junior", Color.valueOf("a8bdff"));
@@ -31,23 +32,30 @@ public class NHItems {
             charge = 1f;
         }};
         multipleSteel = new Item("multiple-steel", Color.valueOf("ccd3dc")) {{
+            hardness = 10;
             cost = 2f;
         }};
         seniorProcessor = new Item("processor-senior", Color.valueOf("f3d259"));
 
         irayrondPanel = new Item("irayrond-panel", Color.valueOf("afc1e8")) {{
+            hardness = 12;
             cost = 2.5f;
         }};
         setonAlloy = new Item("seton-alloy", Color.valueOf("919dab")) {{
+            hardness = 16;
             cost = 2.5f;
         }};
         nodexPlate = new Item("nodex-plate", Color.valueOf("6e7080")) {{
+            hardness = 20;
             cost = 3f;
         }};
         ancimembrane = new Item("ancimembrane", Color.valueOf("e3ae6f")) {{
             cost = 3;
         }};
-        hadronicomp = new Item("hadronicomp", Color.valueOf("dfb5b3"));
+        hadronicomp = new Item("hadronicomp", Color.valueOf("dfb5b3")) {{
+            hardness = 1000;
+            cost = 5f;
+        }};
         hyperProcessor = new Item("processor-hyper", Color.valueOf("ffb380"));
 
         fusionEnergy = new Item("fusion-core-energy", Color.valueOf("fff3e6")) {{
@@ -66,8 +74,8 @@ public class NHItems {
             charge = 15f;
         }};
         darkEnergy = new Item("dark-energy", Color.valueOf("cba3ff")) {{
-            radioactivity = 5f;
-            explosiveness = 5f;
+            radioactivity = 10f;
+            explosiveness = 10f;
             charge = 25f;
         }};
 
