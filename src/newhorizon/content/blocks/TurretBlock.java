@@ -161,7 +161,7 @@ public class TurretBlock {
                         damage = 10;
                         splashDamage = 60f;
                         splashDamageRadius = 16f;
-                        shieldDamageMultiplier = 0.5f;
+                        shieldDamageMultiplier = 0.6f;
 
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
@@ -236,7 +236,7 @@ public class TurretBlock {
                         damage = 10;
                         splashDamage = 120f;
                         splashDamageRadius = 20f;
-                        shieldDamageMultiplier = 0.5f;
+                        shieldDamageMultiplier = 0.8f;
                         status = StatusEffects.shocked;
                         backSprite = "missile-large-back";
                         sprite = "mine-bullet";
@@ -336,7 +336,7 @@ public class TurretBlock {
             requirements(Category.turret, with(Items.carbide, 150, NHItems.setonAlloy, 80, NHItems.seniorProcessor, 75));
 
             shootType = new UpgradePointLaserBulletType() {{
-                damage = 200;
+                damage = 500;
                 shieldDamageMultiplier = 2f;
 
                 hitEffect = NHFx.hitSpark;
