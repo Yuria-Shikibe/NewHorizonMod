@@ -11,6 +11,7 @@ import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.content.blocks.CraftingBlock;
 import newhorizon.content.blocks.ModuleBlock;
+import newhorizon.content.blocks.PowerBlock;
 import newhorizon.content.blocks.ProductionBlock;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.type.Recipe;
@@ -181,6 +182,13 @@ public class RecipeRegister {
             recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
         });
 
+        recipe(CraftingBlock.irdryonMixer, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.phaseFabric, 2);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 20 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 8 / 60f);
+            recipe.craftTime = 60f;
+        });
+
         recipe(CraftingBlock.processorEncoder, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 4, NHItems.surgeAlloy, 1);
             recipe.outputItem = ItemStack.list(NHItems.seniorProcessor, 2);
@@ -201,10 +209,22 @@ public class RecipeRegister {
             recipe.craftTime = 120f;
         });
 
-
         recipe(CraftingBlock.setonFactory, recipe -> {
             recipe.inputItem = ItemStack.list(Items.carbide, 4);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 4 / 60f, NHLiquids.zetaFluidPositive, 4 / 60f);
+        });
+
+        recipe(PowerBlock.zetaGenerator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.zeta, 4);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.fusionEnergy, 2);
+            recipe.craftTime = 120f;
+        });
+        recipe(PowerBlock.zetaGenerator, recipe -> {
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.powerCell, 1);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.fusionEnergy, 5);
+            recipe.craftTime = 120f;
         });
     }
 
