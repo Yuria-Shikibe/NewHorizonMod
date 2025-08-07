@@ -349,7 +349,7 @@ public class NHStatusEffects {
                 reloadMultiplier = 0.8f;
                 damageMultiplier = 0.8f;
 
-                transitionDamage = 40;
+                transitionDamage = 100;
 
                 affinity(StatusEffects.shocked, (unit, status, time) -> {
                     if (Mathf.chance(0.085))
@@ -368,7 +368,7 @@ public class NHStatusEffects {
             reloadMultiplier = 0.65f;
             damageMultiplier = 0.7f;
 
-            transitionDamage = 80;
+            transitionDamage = 200;
 
             affinity(StatusEffects.shocked, (unit, status, time) -> {
                 if (Mathf.chance(0.125))
@@ -385,7 +385,7 @@ public class NHStatusEffects {
             reloadMultiplier = 0.5f;
             damageMultiplier = 0.6f;
 
-            transitionDamage = 120;
+            transitionDamage = 300;
 
             affinity(StatusEffects.shocked, (unit, status, time) -> {
                 if (Mathf.chance(0.155))
