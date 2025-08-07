@@ -1560,7 +1560,7 @@ public class NHBullets {
         synchroTungsten = new AdaptBulletType() {{
             damage = 80f;
             buildingDamageMultiplier = 1f;
-            shieldDamageMultiplier = 0.7f;
+            shieldDamageMultiplier = 0.5f;
 
             speed = 7f;
             lifetime = 45f;
@@ -1594,7 +1594,7 @@ public class NHBullets {
         synchroZeta = new AdaptBulletType() {{
             damage = 100f;
             buildingDamageMultiplier = 1f;
-            shieldDamageMultiplier = 0.5f;
+            shieldDamageMultiplier = 0.7f;
 
             speed = 8f;
             lifetime = 35f;
