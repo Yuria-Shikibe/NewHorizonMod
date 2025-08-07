@@ -333,7 +333,7 @@ public class TurretBlock {
             coolantMultiplier = 2.5f;
         }};
         concentration = new ContinuousOverheatTurret("concentration") {{
-            requirements(Category.turret, with(Items.carbide, 150, NHItems.setonAlloy, 80, NHItems.seniorProcessor, 75));
+            requirements(Category.turret, with(Items.carbide, 500, NHItems.setonAlloy, 300, NHItems.seniorProcessor, 200));
 
             shootType = new UpgradePointLaserBulletType() {{
                 damage = 500;
