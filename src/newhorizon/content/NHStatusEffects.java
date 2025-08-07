@@ -152,20 +152,6 @@ public class NHStatusEffects {
             }
         };
 
-        stableOverdrive = new NHStatusEffect("stable-overdrive") {{
-            damage = -5f;
-            speedMultiplier = 1.25f;
-            damageMultiplier = 1.5f;
-            healthMultiplier = 2f;
-            reloadMultiplier = 1.5f;
-            buildSpeedMultiplier = 3f;
-
-            textureColor = color = NHColor.thermoPst;
-
-            effectChance = 0.35f;
-            effect = NHFx.squareRand(color, 6f, 14f);
-        }};
-
         stronghold = new NHStatusEffect("stronghold") {{
             color = textureColor = Color.lightGray;
             speedMultiplier = 0.001f;
@@ -254,6 +240,20 @@ public class NHStatusEffects {
 
             effectChance = 0.25f;
             effect = NHFx.squareRand(color, 8f, 16f);
+        }};
+
+        stableOverdrive = new NHStatusEffect("stable-overdrive") {{
+            damage = -5f;
+            speedMultiplier = 1.25f;
+            damageMultiplier = 1.5f;
+            healthMultiplier = 2f;
+            reloadMultiplier = 1.5f;
+            buildSpeedMultiplier = 3f;
+
+            textureColor = color = NHColor.thermoPst;
+
+            effectChance = 0.35f;
+            effect = NHFx.squareRand(color, 6f, 14f);
         }};
 
         end = new NHStatusEffect("end") {
