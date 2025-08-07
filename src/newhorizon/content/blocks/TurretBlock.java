@@ -456,7 +456,7 @@ public class TurretBlock {
                             radIncrease = 0.28f;
                             effect = NHStatusEffects.emp3;
                             fx = NHFx.triSpark2;
-                            lightningColor = NHColor.ancient;
+                            lightningColor = NHItems.seniorProcessor.color;
                         }};
                         fragBullets = 1;
 
@@ -466,19 +466,19 @@ public class TurretBlock {
                         trailChance = 0.8f;
                         trailEffect = NHFx.triSpark2;
 
-                        backColor = lightColor = lightningColor = trailColor = hitColor = NHColor.ancient;
+                        backColor = lightColor = lightningColor = trailColor = hitColor = NHItems.seniorProcessor.color;
                         rangeChange = 45;
 
                         despawnEffect = Fx.none;
                         hitEffect = new OptionalMultiEffect(
-                                NHFx.smoothColorCircle(NHColor.ancient, 100f, 125f, 0.3f),
+                                NHFx.smoothColorCircle(NHItems.seniorProcessor.color, 100f, 125f, 0.3f),
                                 NHFx.circleOut(150f, 100f, 4),
                                 NHFx.circleOut(78f, 75f, 2),
                                 NHFx.subEffect(130f, 85f, 12, 30f, Interp.pow2Out, ((i, x, y, rot, fin) -> {
                                     float fout = Interp.pow2Out.apply(1 - fin);
                                     float finpow = Interp.pow3Out.apply(fin);
                                     Tmp.v1.trns(rot, 25 * finpow);
-                                    Draw.color(NHColor.ancient);
+                                    Draw.color(NHItems.seniorProcessor.color);
                                     for (int s : Mathf.signs) {
                                         Drawf.tri(x, y, 14 * fout, 30 * Mathf.curve(finpow, 0, 0.3f) * NHFx.fout(fin, 0.15f), rot + s * 90);
                                     }
