@@ -21,7 +21,7 @@ import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
-    public static Block zetaGenerator, thermobaricchamber,anodeFusionReactor, cathodeFusionReactor, thermoReactor;
+    public static Block zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor;
     public static Block gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
@@ -67,65 +67,28 @@ public class PowerBlock {
             gravityRange = laserRange * tilesize * 1.2f;
             clipSize = gravityRange * 2f;
         }};
-        thermobaricchamber = new RecipeGenericCrafter("thermobaric-chamber") {{
-            requirements(Category.power, BuildVisibility.shown,
-                    ItemStack.with(Items.silicon, 90, Items.graphite, 80, Items.tungsten, 40));
-
-            size = 2;
-            rotate = false;
-            health = 900;
-
-            craftTime = 60f;
-            //consumePower(640 / 60f);
-            powerProduction=9f;
-            addInput(Items.silicon,1, NHLiquids.quantumLiquid,3/60f);
-            addInput(Items.coal, 2, Liquids.water,12/60f);
-            addInput(Items.sporePod, 2);
-            addInput(Items.pyratite, 1, Liquids.water,3/60f);
-
-            outputItems =null;
-            outputsPower = true;
-            outputLiquids = LiquidStack.with(Liquids.nitrogen, 6f / 60f);
-            ignoreLiquidFullness = true;
-
-            itemCapacity = 20;
-            liquidCapacity = 60f;
-
-            craftEffect = Fx.smeltsmoke;
-            updateEffect = Fx.smeltsmoke;
-
-            drawer = new DrawDefault();
-        }};
 
         zetaGenerator = new RecipeGenericCrafter("zeta-generator") {{
-            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 120, NHItems.juniorProcessor, 80, NHItems.zeta, 100, Items.carbide, 150));
+            requirements(Category.power, ItemStack.with(
+                    NHItems.metalOxhydrigen, 120,
+                    NHItems.juniorProcessor, 80,
+                    NHItems.zeta, 100,
+                    NHItems.carbide, 150
+            ));
 
             size = 3;
-
-            rotate = false;
-
-            health = 1500;
-            armor = 5f;
+            health = 150 * 9;
+            armor = 10f;
             itemCapacity = 30;
             liquidCapacity = 30;
+            rotate = false;
 
             powerProduction = 50f;
-            craftTime = 120f;
-
-            addInput(NHItems.zeta, 3, Items.carbide, 1, NHLiquids.quantumLiquid, 6 / 60f);
-            addInput(NHItems.zeta, 3, Items.carbide, 1, Liquids.cryofluid, 6 / 60f);
-            addInput(NHItems.zeta, 3, Items.carbide, 1, Liquids.nitrogen, 4 / 60f);
-
-            outputItem = new ItemStack(NHItems.fusionEnergy, 2);
-
             outputsPower = true;
-            hasLiquids = hasItems = hasPower = true;
 
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
-                    new DrawLiquidTile(NHLiquids.quantumLiquid),
-                    new DrawLiquidTile(Liquids.cryofluid),
-                    new DrawLiquidTile(Liquids.nitrogen),
+                    new DrawLiquidTile(NHLiquids.xenFluid),
                     new DrawDefault(),
                     new DrawGlowRegion() {{
                         color = NHItems.zeta.color;
