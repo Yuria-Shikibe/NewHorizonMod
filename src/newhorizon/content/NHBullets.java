@@ -1563,7 +1563,7 @@ public class NHBullets {
             shieldDamageMultiplier = 0.5f;
 
             speed = 7f;
-            lifetime = 48f;
+            lifetime = 45f;
 
             width = 8f;
             height = 42f;
@@ -1594,7 +1594,7 @@ public class NHBullets {
         synchroZeta = new AdaptBulletType() {{
             damage = 100f;
             buildingDamageMultiplier = 1f;
-            shieldDamageMultiplier = 0.5f;
+            shieldDamageMultiplier = 0.7f;
 
             speed = 8f;
             lifetime = 35f;
@@ -1627,10 +1627,10 @@ public class NHBullets {
 
         synchroFusionEnergy = new AdaptBulletType() {{
             damage = 150f;
-            shieldDamageMultiplier = 0.5f;
+            shieldDamageMultiplier = 0.8f;
 
             speed = 7f;
-            lifetime = 48f;
+            lifetime = 45f;
 
             width = 8f;
             height = 42f;
