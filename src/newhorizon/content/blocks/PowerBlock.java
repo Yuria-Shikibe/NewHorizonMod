@@ -100,93 +100,70 @@ public class PowerBlock {
         }};
 
         anodeFusionReactor = new RecipeGenericCrafter("anode-fusion-reactor") {{
-            requirements(Category.power, ItemStack.with(NHItems.seniorProcessor, 300, Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
-
-            size = 4;
-
+            requirements(Category.power, ItemStack.with(
+                    NHItems.seniorProcessor, 300,
+                    NHItems.phaseFabric, 300,
+                    NHItems.surgeAlloy, 450,
+                    NHItems.carbide, 600,
+                    NHItems.multipleSteel, 240
+            ));
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
 
+            size = 4;
             health = 3000;
             armor = 10f;
             itemCapacity = 45;
             liquidCapacity = 45;
-
-            powerProduction = 12000 / 60f;
-            craftTime = 120f;
-
-            addInput(NHItems.fusionEnergy, 2, Items.surgeAlloy, 4, NHLiquids.zetaFluidPositive, 8 / 60f);
-
-            outputItem = new ItemStack(NHItems.thermoCorePositive, 2);
-
             outputsPower = true;
-            hasLiquids = hasItems = hasPower = true;
+            powerProduction = 12000 / 60f;
 
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
+            drawer = new DrawRegionCenterSymmetry("-rot");
 
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
 
         cathodeFusionReactor = new RecipeGenericCrafter("cathode-fusion-reactor") {{
-            requirements(Category.power, ItemStack.with(NHItems.seniorProcessor, 300, Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
-
-            size = 4;
-
+            requirements(Category.power, ItemStack.with(
+                    NHItems.seniorProcessor, 300,
+                    NHItems.phaseFabric, 300,
+                    NHItems.surgeAlloy, 450,
+                    NHItems.carbide, 600,
+                    NHItems.multipleSteel, 240
+            ));
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
 
+            size = 4;
             health = 3000;
             armor = 10f;
             itemCapacity = 45;
             liquidCapacity = 45;
-
-            powerProduction = 12000 / 60f;
-            craftTime = 120f;
-
-            addInput(NHItems.fusionEnergy, 2, Items.phaseFabric, 4, NHLiquids.zetaFluidNegative, 8 / 60f);
-
-            outputItem = new ItemStack(NHItems.thermoCoreNegative, 2);
-
             outputsPower = true;
-            hasLiquids = hasItems = hasPower = true;
+            powerProduction = 12000 / 60f;
 
-            drawer = new DrawRegionCenterSymmetry() {{
-                suffix = "-rot";
-            }};
+            drawer = new DrawRegionCenterSymmetry("-rot");
 
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
 
         thermoReactor = new RecipeGenericCrafter("thermo-reactor") {{
-            requirements(Category.power, ItemStack.with(Items.phaseFabric, 300, Items.surgeAlloy, 450, Items.carbide, 600, NHItems.multipleSteel, 240));
+            requirements(Category.power, ItemStack.with(
+                    NHItems.phaseFabric, 300,
+                    NHItems.surgeAlloy, 450,
+                    NHItems.carbide, 600,
+                    NHItems.multipleSteel, 240
+            ));
+            addLink(-1, 3, 2, 1, 3, 1, 1, 4, 1, 3, 0, 2, 3, -1, 1, 4, -1, 1, -1, -4, 2, 1, -4, 1, 1, -3, 1, -4, -1, 2, -4, 1, 1, -3, 1, 1);
 
             size = 5;
-
-            rotate = false;
-
-            addLink(
-                    -1, 3, 2, 1, 3, 1, 1, 4, 1,
-                    3, 0, 2, 3, -1, 1, 4, -1, 1,
-                    -1, -4, 2, 1, -4, 1, 1, -3, 1,
-                    -4, -1, 2, -4, 1, 1, -3, 1, 1
-            );
-
             health = 10000;
+            rotate = false;
             armor = 20f;
             itemCapacity = 45;
             liquidCapacity = 45;
-
             powerProduction = 90000 / 60f;
-            craftTime = 120f;
-
-            addInput(NHItems.thermoCorePositive, 2, NHItems.thermoCoreNegative, 2, NHItems.nodexPlate, 4, NHItems.ancimembrane, 4, LiquidStack.empty);
-
-            outputItem = new ItemStack(NHItems.darkEnergy, 2);
-
             outputsPower = true;
-            hasLiquids = hasItems = hasPower = true;
 
             drawer = new DrawDefault();
 

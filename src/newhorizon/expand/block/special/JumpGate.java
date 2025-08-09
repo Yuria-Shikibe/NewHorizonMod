@@ -388,7 +388,7 @@ public class JumpGate extends Block {
             table.table(inner -> {
                 inner.background(Tex.paneSolid);
                 inner.slider(1, maxSpawnCount, 1, 1, this::configure).growX().row();
-                inner.image().size(320, 4).color(Pal.accent).padTop(12f).padBottom(8f).growX().row();
+                inner.image().size(380, 4).color(Pal.accent).padTop(12f).padBottom(8f).growX().row();
                 inner.pane(selectionTable -> {
                     for (int i = 0; i < recipeList.size; i++) {
                         int finalI = i;
@@ -408,16 +408,16 @@ public class JumpGate extends Block {
                                         req.right();
                                         int j = 0;
                                         for (ItemStack stack: unitRecipe.recipe.inputItem) {
-                                            if (++j % 3 == 0) req.row();
                                             req.add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(items.get(stack.item))),
                                                     () -> items.has(stack.item, stack.amount * spawnCount))).pad(5);
+                                            if (j++ % 3 == 0) req.row();
                                         }
                                         req.row();
                                         int k = 0;
                                         for (PayloadStack stack: unitRecipe.recipe.inputPayload) {
-                                            if (++k % 4 == 0) req.row();
                                             req.add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(getPayloads().get(stack.item))),
                                                     () -> getPayloads().get(stack.item) >= stack.amount * spawnCount)).pad(5);
+                                            if (k++ % 3 == 0) req.row();
                                         }
                                     }).marginLeft(60).marginTop(36f).marginBottom(4f).left()
                             ).expandX().fillX()).growX();
@@ -431,8 +431,8 @@ public class JumpGate extends Block {
                         }, Styles.underlineb, () -> configure(finalI)).expandX().fillX().margin(0).pad(4);
                         selectionTable.row();
                     }
-                }).scrollX(false).width(342).maxHeight(400).padRight(2).row();
-            }).width(360);
+                }).scrollX(false).width(382).maxHeight(400).padRight(2).row();
+            }).width(400);
         }
 
         @Override

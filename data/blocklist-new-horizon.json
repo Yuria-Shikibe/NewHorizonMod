@@ -881,6 +881,48 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-factory-0": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-factory-1": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-factory-2": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-factory-3": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-factory-4": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-factory-5": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-factory-6": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
 "new-horizon-gravity-node-serpulo": {
 	"synthetic": true,
 	"solid": true,

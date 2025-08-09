@@ -43,6 +43,8 @@ public class CraftingBlock {
             surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
+    public static Block factory0, factory1, factory2, factory3, factory4, factory5, factory6;
+
     public static void load() {
         stampingFacility = new RecipeGenericCrafter("stamping-facility") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
@@ -549,8 +551,7 @@ public class CraftingBlock {
 
             size = 3;
 
-            addLink(2, -1, 1,  /**/ 2, 0, 1, /**/2, 1, 1, /**/
-                    -2, -1, 1, /**/-2, 0, 1, /**/-2, 1, 1/**/);
+            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             craftTime = 120f;
             consumePower(480 / 60f);
@@ -719,6 +720,105 @@ public class CraftingBlock {
             consumeItems(with(NHItems.irayrondPanel, 6));
             consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
             outputItems = with(NHItems.ancimembrane, 3);
+        }};
+
+        factory0 = new RecipeGenericCrafter("factory-0"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
+
+            size = 2;
+            health = 1200;
+            itemCapacity = 30;
+            rotate = false;
+            drawer = new DrawDefault();
+
+            consumePower(180f / 60f);
+        }};
+        factory1 = new RecipeGenericCrafter("factory-1"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1, -1, 2, 1, 2, -1, 1);
+
+            size = 2;
+            health = 1200;
+            itemCapacity = 30;
+            drawer = new DrawDefault();
+
+            consumePower(180f / 60f);
+        }};
+        factory2 = new RecipeGenericCrafter("factory-2"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
+
+            size = 3;
+            health = 1500;
+            itemCapacity = 30;
+            drawer = new DrawRegionCenterSymmetry();
+
+            consumePower(180f / 60f);
+        }};
+        factory3 = new RecipeGenericCrafter("factory-3"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+            size = 4;
+            health = 1600;
+            itemCapacity = 30;
+            rotate = false;
+            drawer = new DrawRegionCenterSymmetry();
+
+            consumePower(180f / 60f);
+        }};
+        factory4 = new RecipeGenericCrafter("factory-4"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+            addLink(-2, -2, 1, -2, -1, 1, -2, 0, 1, -1, -2, 1, 0, -2, 1, 2, 2, 1, 2, 1, 1, 2, 0, 1, 1, 2, 1, 0, 2, 1);
+
+            size = 3;
+            health = 1900;
+            itemCapacity = 30;
+            drawer = new DrawRegion(){{buildingRotate = true;}};
+
+            consumePower(180f / 60f);
+        }};
+        factory5 = new RecipeGenericCrafter("factory-5"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+
+            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
+            size = 4;
+            health = 2400;
+            itemCapacity = 30;
+            drawer = new DrawRegionCenterSymmetry();
+
+            consumePower(180f / 60f);
+        }};
+        factory6 = new RecipeGenericCrafter("factory-6"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+
+            addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, -2, 1, 2, -2, 1, 3, -2, 1, 3, -1, 1, 3, 0, 1);
+            size = 4;
+            health = 2600;
+            itemCapacity = 30;
+            drawer = new DrawDefault();
+
+            consumePower(180f / 60f);
         }};
     }
 }
