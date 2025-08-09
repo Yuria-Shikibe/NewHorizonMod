@@ -1,25 +1,20 @@
 package newhorizon.expand.block.production.factory;
 
-import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
-import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.*;
 import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
-import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.payloads.BuildPayload;
-import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
-import mindustry.world.meta.StatValues;
 import newhorizon.expand.block.consumer.*;
 import newhorizon.expand.type.Recipe;
 
@@ -67,11 +62,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         stats.add(Stat.input, display());
         stats.remove(Stat.output);
         stats.remove(Stat.productionTime);
-    }
-
-    public void addInput(Object...objects) {
-        Recipe recipe = new Recipe(objects);
-        recipes.add(recipe);
     }
 
     public StatValue display() {
@@ -202,14 +192,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         @Override
         public void updateTile() {
             if (!validRecipe()) updateRecipe();
-            if (efficiency > 0){
-                if(getRecipe() != null){
-                    float inc = getProgressIncrease(1f);
-                    for(var output : getRecipe().outputLiquid){
-                        handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
-                    }
-                }
-            }
             super.updateTile();
             if (getRecipe() == null) return;
             getRecipe().outputItem.each(stack -> {
@@ -272,7 +254,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
 
         @Override
         public float getProgressIncrease(float baseTime) {
-            float scl = 0f;
+            float scl = 1f;
             if (getRecipe() != null) scl = getRecipe().craftTime / craftTime;
             return super.getProgressIncrease(baseTime) / scl;
         }

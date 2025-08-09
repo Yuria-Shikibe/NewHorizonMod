@@ -508,7 +508,6 @@ public class CraftingBlock {
 
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
-
             size = 3;
             health = 1500;
 
@@ -525,6 +524,7 @@ public class CraftingBlock {
                     new DrawRegionCenterSymmetry("-rot"),
                     new DrawGlowRegion() {{
                         color = NHColor.lightSky;
+                        rotate = true;
                         alpha = 1.1f;
                     }},
                     new DrawFlameRotated() {{
@@ -743,6 +743,8 @@ public class CraftingBlock {
                     NHItems.silicon, 60
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1, -1, 2, 1, 2, -1, 1);
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 2;
             health = 1200;
@@ -784,6 +786,8 @@ public class CraftingBlock {
                     NHItems.silicon, 60
             ));
             addLink(-2, -2, 1, -2, -1, 1, -2, 0, 1, -1, -2, 1, 0, -2, 1, 2, 2, 1, 2, 1, 1, 2, 0, 1, 1, 2, 1, 0, 2, 1);
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 3;
             health = 1900;
@@ -811,8 +815,10 @@ public class CraftingBlock {
                     NHItems.titanium, 45,
                     NHItems.silicon, 60
             ));
-
             addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, -2, 1, 2, -2, 1, 3, -2, 1, 3, -1, 1, 3, 0, 1);
+            canMirror = true;
+            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
+
             size = 4;
             health = 2600;
             itemCapacity = 30;

@@ -408,16 +408,16 @@ public class JumpGate extends Block {
                                         req.right();
                                         int j = 0;
                                         for (ItemStack stack: unitRecipe.recipe.inputItem) {
-                                            req.add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(items.get(stack.item))),
+                                            req.left().add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(items.get(stack.item))),
                                                     () -> items.has(stack.item, stack.amount * spawnCount))).pad(5);
-                                            if (j++ % 3 == 0) req.row();
+                                            if (++j % 2 == 0) req.row();
                                         }
                                         req.row();
                                         int k = 0;
                                         for (PayloadStack stack: unitRecipe.recipe.inputPayload) {
-                                            req.add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(getPayloads().get(stack.item))),
+                                            req.left().add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(getPayloads().get(stack.item))),
                                                     () -> getPayloads().get(stack.item) >= stack.amount * spawnCount)).pad(5);
-                                            if (k++ % 3 == 0) req.row();
+                                            if (++k % 3 == 0) req.row();
                                         }
                                     }).marginLeft(60).marginTop(36f).marginBottom(4f).left()
                             ).expandX().fillX()).growX();
@@ -431,8 +431,8 @@ public class JumpGate extends Block {
                         }, Styles.underlineb, () -> configure(finalI)).expandX().fillX().margin(0).pad(4);
                         selectionTable.row();
                     }
-                }).scrollX(false).width(382).maxHeight(400).padRight(2).row();
-            }).width(400);
+                }).scrollX(false).width(362).maxHeight(400).padRight(2).row();
+            }).width(380);
         }
 
         @Override
