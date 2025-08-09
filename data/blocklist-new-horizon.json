@@ -353,7 +353,7 @@
 	"size": 4,
 	"color": 255
 },
-"new-horizon-wiring-kit": {
+"new-horizon-armor-cast": {
 	"synthetic": true,
 	"solid": true,
 	"size": 1,
@@ -365,79 +365,7 @@
 	"size": 1,
 	"color": 255
 },
-"new-horizon-bionics-processor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-memory-recalibrator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-resisto-array": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-crystal-diode": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-proton-capacitor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-hadron-buffers": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-tachyon-emitter": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-neutron-membrane": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-armor-cast": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-heat-detector": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-gauss-receptor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-echo-canceller": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-pulse-mutator": {
+"new-horizon-supra-gel": {
 	"synthetic": true,
 	"solid": true,
 	"size": 1,
@@ -449,31 +377,7 @@
 	"size": 1,
 	"color": 255
 },
-"new-horizon-fission-cell": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-charge-compensator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-fusion-reactor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-multiphase-propellant": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-supra-gel": {
+"new-horizon-crystal-diode": {
 	"synthetic": true,
 	"solid": true,
 	"size": 1,
@@ -491,6 +395,30 @@
 	"size": 1,
 	"color": 255
 },
+"new-horizon-pulse-mutator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-bionics-processor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-resisto-array": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-fusion-reactor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
 "new-horizon-particle-modulator": {
 	"synthetic": true,
 	"solid": true,
@@ -498,6 +426,18 @@
 	"color": 255
 },
 "new-horizon-quantum-conductor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-tachyon-emitter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-gauss-receptor": {
 	"synthetic": true,
 	"solid": true,
 	"size": 1,
