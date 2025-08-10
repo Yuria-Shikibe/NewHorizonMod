@@ -1583,7 +1583,7 @@ public class NHBullets {
             hitEffect = NHFx.hitSparkLarge;
 
             reloadMultiplier = 0.75f;
-            rangeChange = 40f;
+            rangeChange = 45f;
             pierceCap = 4;
 
             ammoMultiplier = 6;
@@ -1626,11 +1626,11 @@ public class NHBullets {
         }};
 
         synchroFusionEnergy = new AdaptBulletType() {{
-            damage = 150f;
+            damage = 180f;
             shieldDamageMultiplier = 0.8f;
 
             speed = 7f;
-            lifetime = 40f;
+            lifetime = 43f;
 
             width = 8f;
             height = 42f;
