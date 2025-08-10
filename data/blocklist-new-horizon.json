@@ -725,6 +725,12 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-remote-storage": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-junior-module-beacon": {
 	"synthetic": true,
 	"solid": true,

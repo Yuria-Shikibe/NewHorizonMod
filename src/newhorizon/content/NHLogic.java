@@ -13,6 +13,7 @@ import mindustry.game.MapObjectives;
 import mindustry.game.Team;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.LogicBlock;
+import newhorizon.NHSetting;
 import newhorizon.expand.game.MapObjectives.ReuseObjective;
 import newhorizon.expand.game.MapObjectives.TriggerObjective;
 
@@ -25,11 +26,13 @@ public class NHLogic {
     public static Seq<LogicBlock.LogicBuild> processors = new Seq<>();
 
     public static void load(){
-        Events.on(EventType.PlayEvent.class, event -> {
-            if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
-            updateWprocList();
-            registerDefaultRaid();
-        });
+        if (NHSetting.getBool(NHSetting.EVENT_RAID)){
+            Events.on(EventType.PlayEvent.class, event -> {
+                if (state.rules.mode() == Gamemode.sandbox || state.rules.mode() == Gamemode.pvp) return;
+                updateWprocList();
+                registerDefaultRaid();
+            });
+        }
     }
 
     public static void registerDefaultRaid(){

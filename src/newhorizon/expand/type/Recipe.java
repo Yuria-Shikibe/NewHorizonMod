@@ -17,6 +17,7 @@ public class Recipe{
     public Seq<PayloadStack> outputPayload = new Seq<>();
 
     public float craftTime = 60f;
+    public int priority = 0;
 
     public Recipe(Object...objects){
         for (int i = 0; i < objects.length / 2; i++){

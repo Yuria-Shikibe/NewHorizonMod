@@ -21,57 +21,13 @@ import newhorizon.util.graphic.EffectWrapper;
 
 public class NHStatusEffects {
     public static StatusEffect
-            boost,
-            quiet, marker, healthLocker, forceWeak,
-            reinforcements,
-            entangled,
-            ultFireBurn, stronghold, overphased, stableOverdrive,
-            staticVel, emp1, emp2, emp3, invincible, quantization, scrambler, end, phased, weak, scannerDown, intercepted,
-            shieldFlag;
+            emp1, emp2, emp3, phased, overphased, weak,
+            ultFireBurn, stronghold, quantization, scrambler,
+            invincible, intercepted, entangled, end,
+            staticVel, scannerDown, reinforcements, shieldFlag;
 
     public static void load() {
-        boost = new BoostStatusEffect("boost") {{
-            hideDetails = true;
-            show = false;
-        }};
-
-        forceWeak = new NHStatusEffect("force-slow") {{
-            hideDetails = true;
-            show = false;
-            speedMultiplier = 0.855f;
-            reloadMultiplier = 0.75f;
-            damage = 0.45f;
-        }};
-
-        healthLocker = new NHStatusEffect("health-locker") {
-            {
-                hideDetails = true;
-                show = false;
-                permanent = true;
-                healthMultiplier = 8;
-            }
-
-            @Override
-            public void update(Unit unit, float time) {
-                super.update(unit, time);
-
-                if (unit.healthf() < 0.25f) {
-                    unit.health = unit.maxHealth() / 4f;
-                }
-            }
-        };
-
-        quiet = new NHStatusEffect("quiet") {{
-            disarm = true;
-            dragMultiplier = 10;
-            speedMultiplier = 0;
-
-            hideDetails = true;
-            show = false;
-        }};
-
-        reinforcements = new NHStatusEffect("reinforcements") {
-            {
+        reinforcements = new NHStatusEffect("reinforcements") {{
                 show = false;
                 hideDetails = true;
             }
@@ -91,9 +47,8 @@ public class NHStatusEffects {
             }
         };
 
-        entangled = new NHStatusEffect("entangled") {
-            {
-                color = textureColor = Color.lightGray;
+        entangled = new NHStatusEffect("entangled") {{
+                color = Color.lightGray;
                 speedMultiplier = 0.95f;
                 reloadMultiplier = 0.95f;
                 outline = true;
@@ -115,10 +70,9 @@ public class NHStatusEffects {
             }
         };
 
-        overphased = new NHStatusEffect("overphased") {
-            {
+        overphased = new NHStatusEffect("overphased") {{
                 outline = true;
-                color = textureColor = NHColor.deeperBlue;
+                color = NHColor.deeperBlue;
                 speedMultiplier = 1.75f;
                 healthMultiplier = 3f;
                 reloadMultiplier = 2f;
@@ -153,7 +107,7 @@ public class NHStatusEffects {
         };
 
         stronghold = new NHStatusEffect("stronghold") {{
-            color = textureColor = Color.lightGray;
+            color = Color.lightGray;
             speedMultiplier = 0.001f;
             healthMultiplier = 2f;
         }};
@@ -167,23 +121,20 @@ public class NHStatusEffects {
 
             effectChance = 0.05f;
             effect = NHFx.square45_4_45;
-            color = textureColor = Pal.accent;
+            color = Pal.accent;
         }};
 
         ultFireBurn = new NHStatusEffect("ult-fire-burn") {{
             damage = 1.5f;
 
-            color = textureColor = NHColor.lightSkyBack;
+            color = NHColor.lightSkyBack;
             speedMultiplier = 0.75f;
             reloadMultiplier = 0.75f;
             healthMultiplier = 0.75f;
             effect = NHFx.ultFireBurn;
         }};
 
-        scannerDown = new NHStatusEffect("scanner-down") {
-            {
-                damage = 2;
-
+        scannerDown = new NHStatusEffect("scanner-down") {{
                 damageMultiplier = 0.95f;
                 speedMultiplier = 0.9f;
                 reloadMultiplier = 0.6f;
@@ -191,27 +142,7 @@ public class NHStatusEffects {
                 effectChance = 0.2f;
                 color = Pal.heal.cpy().lerp(Pal.lancerLaser, 0.5f);
                 effect = new MultiEffect(NHFx.squareRand(Pal.heal, 8f, 16f), NHFx.squareRand(Pal.lancerLaser, 8f, 16f));
-            }
-
-            @Override
-            public void update(Unit unit, float time) {
-                super.update(unit, time);
-
-//                if(unit.controller() instanceof AIController){
-//                    AIController controller = (AIController)unit.controller();
-//                    unit.mounts[0].weapon.inaccuracy
-//                }
-            }
-
-            //            @Override
-//            public void update(Unit unit, float time){
-//               super.update(unit, time);
-//
-//                if(unit.isLocal()){
-//                    ScreenInterferencer.continueGenerate();
-//                }
-//            }
-        };
+        }};
 
         weak = new NHStatusEffect("weak") {{
             speedMultiplier = 0.75f;
@@ -219,7 +150,7 @@ public class NHStatusEffects {
             reloadMultiplier = 0.9f;
 
 
-            textureColor = color = NHColor.thurmixRed;
+            color = NHColor.thurmixRed;
 
             effectChance = 0.25f;
             effect = new MultiEffect(new Effect(30, e -> {
@@ -236,30 +167,15 @@ public class NHStatusEffects {
             healthMultiplier = 1.5f;
 
 
-            textureColor = color = NHColor.lightSkyBack;
+            color = NHColor.lightSkyBack;
 
             effectChance = 0.25f;
             effect = NHFx.squareRand(color, 8f, 16f);
         }};
-
-        stableOverdrive = new NHStatusEffect("stable-overdrive") {{
-            damage = -5f;
-            speedMultiplier = 1.25f;
-            damageMultiplier = 1.5f;
-            healthMultiplier = 2f;
-            reloadMultiplier = 1.5f;
-            buildSpeedMultiplier = 3f;
-
-            textureColor = color = NHColor.thermoPst;
-
-            effectChance = 0.35f;
-            effect = NHFx.squareRand(color, 6f, 14f);
-        }};
-
         end = new NHStatusEffect("end") {
             {
                 damage = 200;
-                textureColor = color = NHColor.darkEnrColor;
+                color = NHColor.darkEnrColor;
 
                 damageMultiplier = 0.5f;
                 reloadMultiplier = 0.5f;
@@ -288,7 +204,7 @@ public class NHStatusEffects {
             reloadMultiplier = 0.35f;
             damage = 0.35f;
             speedMultiplier = 0.125f;
-            textureColor = color = NHColor.thermoPst;
+            color = NHColor.thermoPst;
             effectChance = 0.1f;
             effect = new MultiEffect(new Effect(30, e -> {
                 Draw.color(color);
@@ -298,7 +214,7 @@ public class NHStatusEffects {
         }};
 
         quantization = new NHStatusEffect("quantization") {{
-            textureColor = color = NHColor.darkEnrColor;
+            color = NHColor.darkEnrColor;
             effectChance = 0.1f;
             damage = -2f;
             effect = NHFx.squareRand(color, 5f, 13f);
@@ -306,8 +222,7 @@ public class NHStatusEffects {
             healthMultiplier = 0.75f;
         }};
 
-        invincible = new NHStatusEffect("invincible") {
-            {
+        invincible = new NHStatusEffect("invincible") {{
                 healthMultiplier = 3;
             }
 
@@ -325,8 +240,7 @@ public class NHStatusEffects {
             }
         };
 
-        staticVel = new NHStatusEffect("static-vel") {
-            {
+        staticVel = new NHStatusEffect("static-vel") {{
                 permanent = true;
                 this.color = Pal.gray;
                 this.speedMultiplier = 0.00001F;
@@ -339,8 +253,7 @@ public class NHStatusEffects {
             }
         };
 
-        emp1 = new NHStatusEffect("emp-1") {
-            {
+        emp1 = new NHStatusEffect("emp-1") {{
                 damage = 0.05f;
                 effect = NHFx.emped;
                 effectChance = 0.1f;
@@ -348,16 +261,7 @@ public class NHStatusEffects {
                 speedMultiplier = 0.8f;
                 reloadMultiplier = 0.8f;
                 damageMultiplier = 0.8f;
-
-                transitionDamage = 100;
-
-                affinity(StatusEffects.shocked, (unit, status, time) -> {
-                    if (Mathf.chance(0.085))
-                        NHFunc.randFadeLightningEffect(unit.x + Mathf.range(unit.hitSize), unit.y + Mathf.range(unit.hitSize), unit.hitSize * Mathf.random(1f, 1.6f) + 14f, 6f, Tmp.c1.set(Pal.powerLight).mul(Mathf.random(0.12f) + 1f), false);
-                });
-            }
-
-        };
+        }};
 
         emp2 = new NHStatusEffect("emp-2") {{
             damage = 0.15f;
@@ -367,13 +271,6 @@ public class NHStatusEffects {
             speedMultiplier = 0.6f;
             reloadMultiplier = 0.65f;
             damageMultiplier = 0.7f;
-
-            transitionDamage = 200;
-
-            affinity(StatusEffects.shocked, (unit, status, time) -> {
-                if (Mathf.chance(0.125))
-                    NHFunc.randFadeLightningEffect(unit.x + Mathf.range(unit.hitSize), unit.y + Mathf.range(unit.hitSize), unit.hitSize * Mathf.random(1.25f, 2f) + 22f, 7f, Tmp.c1.set(Pal.powerLight).mul(Mathf.random(0.16f) + 1f), false);
-            });
         }};
 
         emp3 = new NHStatusEffect("emp-3") {{
@@ -384,13 +281,6 @@ public class NHStatusEffects {
             speedMultiplier = 0.4f;
             reloadMultiplier = 0.5f;
             damageMultiplier = 0.6f;
-
-            transitionDamage = 300;
-
-            affinity(StatusEffects.shocked, (unit, status, time) -> {
-                if (Mathf.chance(0.155))
-                    NHFunc.randFadeLightningEffect(unit.x + Mathf.range(unit.hitSize), unit.y + Mathf.range(unit.hitSize), unit.hitSize * Mathf.random(1.4f, 2.2f) + 28f, 8f, Tmp.c1.set(Pal.powerLight).mul(Mathf.random(0.16f) + 1f), false);
-            });
         }};
 
         shieldFlag = new NHStatusEffect("shield-flag") {{
@@ -401,15 +291,9 @@ public class NHStatusEffects {
     }
 
     public static class NHStatusEffect extends StatusEffect {
-        public Color textureColor = null;
-
         public NHStatusEffect(String name) {
             super(name);
-        }
-
-        @Override
-        public void load() {
-            super.load();
+            outline = false;
         }
     }
 }
