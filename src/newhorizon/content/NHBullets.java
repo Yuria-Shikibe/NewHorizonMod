@@ -1563,7 +1563,7 @@ public class NHBullets {
             shieldDamageMultiplier = 0.5f;
 
             speed = 7f;
-            lifetime = 40f;
+            lifetime = 44f;
 
             width = 8f;
             height = 42f;
@@ -1583,7 +1583,7 @@ public class NHBullets {
             hitEffect = NHFx.hitSparkLarge;
 
             reloadMultiplier = 0.75f;
-            rangeChange = 45f;
+            rangeChange = 40f;
             pierceCap = 4;
 
             ammoMultiplier = 6;
