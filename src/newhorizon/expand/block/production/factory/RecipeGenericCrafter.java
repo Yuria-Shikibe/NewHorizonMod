@@ -1,5 +1,6 @@
 package newhorizon.expand.block.production.factory;
 
+import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
@@ -194,6 +195,12 @@ public class RecipeGenericCrafter extends AdaptCrafter {
             if (!validRecipe()) updateRecipe();
             super.updateTile();
             if (getRecipe() == null) return;
+            if(efficiency > 0){
+                float inc = getProgressIncrease(craftTime / getRecipe().craftTime);
+                getRecipe().outputLiquid.each(stack -> {
+                    handleLiquid(this, stack.liquid, Math.min(stack.amount * inc, liquidCapacity - liquids.get(stack.liquid)));
+                });
+            }
             getRecipe().outputItem.each(stack -> {
                 if (items.get(stack.item) >= itemCapacity) {
                     items.set(stack.item, itemCapacity);

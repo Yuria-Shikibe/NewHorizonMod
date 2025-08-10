@@ -1370,7 +1370,7 @@ public class NHPostProcess {
         if (content instanceof Block block) {
             block.buildVisibility = BuildVisibility.hidden;
             block.envRequired = Env.none;
-            block.requirements = hugeItemReq();
+            //block.requirements = hugeItemReq();
             block.instantDeconstruct = true;
             //todo change the tech tree
         }
