@@ -1,19 +1,16 @@
 package newhorizon.content.blocks;
 
 import arc.graphics.Color;
-import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
-import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.expand.block.drawer.DrawRegionCenterSymmetry;
+import newhorizon.expand.block.drawer.DrawRegionFlip;
 import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
@@ -117,7 +114,7 @@ public class PowerBlock {
             outputsPower = true;
             powerProduction = 12000 / 60f;
 
-            drawer = new DrawRegionCenterSymmetry("-rot");
+            drawer = new DrawRegionFlip("-rot");
 
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
@@ -141,7 +138,7 @@ public class PowerBlock {
             outputsPower = true;
             powerProduction = 12000 / 60f;
 
-            drawer = new DrawRegionCenterSymmetry("-rot");
+            drawer = new DrawRegionFlip("-rot");
 
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);

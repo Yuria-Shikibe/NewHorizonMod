@@ -41,8 +41,8 @@ public class NHSetting {
 
             EVENT_RAID = "nh-event-raid",
 
-            DEBUGGING = "nh_debugging",
-            DEBUG_PANEL = "nh_debug_panel";
+            DEBUGGING = "nh-debugging",
+            DEBUG_PANEL = "nh-debug-panel";
 
     public static boolean enableEffectDetail = true;
 
@@ -69,9 +69,9 @@ public class NHSetting {
                 new BoolSetting(OVERRIDE_TURRET, false, true)
         ));
 
-        //allSettings.put("event", Seq.with(
-        //        new BoolSetting(EVENT_RAID, false, true)
-        //));
+        allSettings.put("event", Seq.with(
+                new BoolSetting(EVENT_RAID, false, true)
+        ));
 
         allSettings.put("debug", Seq.with(
                 new BoolSetting(DEBUGGING, false, true),
@@ -81,10 +81,8 @@ public class NHSetting {
         allSettings.each((name, seq) -> seq.each(SettingKey::setDefault));
 
         if (Vars.headless){
-            for (var setting: NHSetting.allSettings.get("override")){
-                settings.put(setting.key, true);
-                Log.info(setting.key + ": " + getBool(setting.key));
-            }
+            NHSetting.allSettings.get("override").each(setting -> settings.put(setting.key, true));
+            NHSetting.allSettings.get("event").each(setting -> settings.put(setting.key, true));
         }
 
         enableEffectDetail = getBool(EFFECT_DETAIL);

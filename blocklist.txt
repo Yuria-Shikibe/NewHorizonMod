@@ -306,6 +306,7 @@ new-horizon-refactoring-multi-wall 1 1 1 0
 new-horizon-refine-module 1 1 2 0
 new-horizon-reinforced-item-source 1 1 1 0
 new-horizon-reinforced-liquid-source 1 1 1 0
+new-horizon-remote-storage 1 1 3 0
 new-horizon-remote-vault 1 1 3 0
 new-horizon-resisto-array 1 1 1 0
 new-horizon-resonance-mining-facility 1 1 4 0

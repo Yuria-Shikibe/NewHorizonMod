@@ -136,7 +136,7 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         }
 
         public void updateRecipe() {
-            for (int i = 0; i < recipes.size; i++) {
+            for (int i = recipes.size - 1; i >= 0; i--) {
                 boolean valid = true;
 
                 for (ItemStack input : recipes.get(i).inputItem) {

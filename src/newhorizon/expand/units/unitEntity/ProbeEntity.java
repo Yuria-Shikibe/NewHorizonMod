@@ -27,7 +27,6 @@ import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.type.UnitType;
-import newhorizon.content.NHStatusEffects;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHMath;
@@ -114,15 +113,7 @@ public class ProbeEntity extends UnitEntity {
     }
 
     public boolean scanOver() {
-        return hasEffect(NHStatusEffects.reinforcements);
-    }
-
-    public void spawnEvent(float x, float y) {
-        //if(!Vars.net.client()){
-        //	WorldEvent event = NHInbuiltEvents.dynamicRaid(NHInbuiltEvents.dynamicGrowth(targetTeam)).create();
-        //	event.team = team;
-        //	event.set(x, y);
-        //}
+        return false;
     }
 
     public void updateScan() {

@@ -2287,8 +2287,7 @@ public class NHBlocks {
             itemDuration = 180f;
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
-            toApplyStatus.add(NHStatusEffects.stableOverdrive);
-            
+
             consumePower(100.0F);
             consumeItems(ItemStack.with(NHItems.thermoCoreNegative, 6, Items.phaseFabric, 6)).optional(true, true);
             consumeItems(new ItemStack(NHItems.thermoCorePositive, 6), new ItemStack(NHItems.metalOxhydrigen, 6));
@@ -2609,7 +2608,6 @@ public class NHBlocks {
             size = 3;
             pumpAmount = 0.31f;
             requirements(Category.production, ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 45, Items.tungsten, 30, Items.titanium, 30));
-//			//NHTechTree.add(Blocks.waterExtractor, this);
             result = Liquids.water;
             liquidCapacity = 60.0F;
             rotateSpeed = 1.4F;

@@ -5059,8 +5059,6 @@ public class NHUnitTypes {
             statuses.remove(StatusEffects.overdrive);
             statuses.remove(NHStatusEffects.stronghold);
             statuses.remove(NHStatusEffects.quantization);
-            statuses.remove(NHStatusEffects.quiet);
-            statuses.remove(NHStatusEffects.forceWeak);
             statuses.add(StatusEffects.wet);
             statuses.add(StatusEffects.unmoving);
         }

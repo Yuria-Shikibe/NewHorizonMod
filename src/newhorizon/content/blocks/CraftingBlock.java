@@ -6,7 +6,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -16,7 +15,6 @@ import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
@@ -67,7 +65,7 @@ public class CraftingBlock {
                         particleStroke /= 1.35f;
                         particleLen /= 1.25f;
                     }},
-                    new DrawRegionCenterSymmetry("-rot")
+                    new DrawRegionFlip("-rot")
             );
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
 
@@ -119,7 +117,7 @@ public class CraftingBlock {
                         rotate = true;
                         color = Pal.techBlue;
                     }},
-                    new DrawRegionCenterSymmetry() {{
+                    new DrawRegionFlip() {{
                         suffix = "-rot";
                     }}
             );
@@ -141,7 +139,7 @@ public class CraftingBlock {
             liquidCapacity = 15f;
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry("-rot"),
+                    new DrawRegionFlip("-rot"),
                     new DrawFlameRotated() {{
                         suffix = "-flame";
                     }}
@@ -279,7 +277,7 @@ public class CraftingBlock {
 
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry() {{suffix = "-rot";}},
+                    new DrawRegionFlip() {{suffix = "-rot";}},
                     new DrawGlowRegion() {{
                         rotate = true;
                         suffix = "-glow";
@@ -342,7 +340,7 @@ public class CraftingBlock {
                         totalProgressMultiplier = 1.2f;
                         colorFrom = NHItems.phaseFabric.color;
                     }},
-                    new DrawRegionCenterSymmetry() {{suffix = "-rot";}}
+                    new DrawRegionFlip() {{suffix = "-rot";}}
             );
 
             consumePower(480 / 60f);
@@ -464,7 +462,7 @@ public class CraftingBlock {
                         rotate = true;
                         color = drawerColor;
                     }},
-                    new DrawRegionCenterSymmetry() {{
+                    new DrawRegionFlip() {{
                         suffix = "-rot";
                     }}
             );
@@ -521,7 +519,7 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry("-rot"),
+                    new DrawRegionFlip("-rot"),
                     new DrawGlowRegion() {{
                         color = NHColor.lightSky;
                         rotate = true;
@@ -566,50 +564,50 @@ public class CraftingBlock {
             updateEffect = Fx.smeltsmoke;
 
             drawer = new DrawMulti(
-                    new DrawRegionCenterSymmetry("-base"),
+                    new DrawRegionFlip("-base"),
                     new DrawRegion("-piston-1") {
                         @Override
                         public void draw(Building build) {
-                            Tmp.v1.setAngle(90f).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Tmp.v1.setAngle(90f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
                             Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
                         }
                     },
                     new DrawRegion("-piston-1") {
                         @Override
                         public void draw(Building build) {
-                            Tmp.v1.setAngle(270f).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Tmp.v1.setAngle(270f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
                             Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
                         }
                     },
                     new DrawRegion("-piston-2") {
                         @Override
                         public void draw(Building build) {
-                            Tmp.v1.setAngle(135f).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Tmp.v1.setAngle(135f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
                             Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, region.height / 4f);
                         }
                     },
                     new DrawRegion("-piston-2") {
                         @Override
                         public void draw(Building build) {
-                            Tmp.v1.setAngle(45f).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Tmp.v1.setAngle(45f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
                             Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, region.height / 4f);
                         }
                     },
                     new DrawRegion("-piston-2") {
                         @Override
                         public void draw(Building build) {
-                            Tmp.v1.setAngle(225f).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Tmp.v1.setAngle(225f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
                             Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, region.width / 4f, -region.height / 4f);
                         }
                     },
                     new DrawRegion("-piston-2") {
                         @Override
                         public void draw(Building build) {
-                            Tmp.v1.setAngle(315f).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
+                            Tmp.v1.setAngle(315f + build.rotdeg()).setLength(Mathf.absin(build.totalProgress(), 12f, 3));
                             Draw.rect(region, build.x + Tmp.v1.x, build.y + Tmp.v1.y, -region.width / 4f, -region.height / 4f);
                         }
                     },
-                    new DrawRegionCenterSymmetry("-top")
+                    new DrawRegionFlip("-top")
             );
         }};
         upgradeSortFactory = new GenericCrafter("nodex-factory") {{
@@ -749,7 +747,7 @@ public class CraftingBlock {
             size = 2;
             health = 1200;
             itemCapacity = 30;
-            drawer = new DrawDefault();
+            drawer = new DrawRegionRotatedDiagonal("-rot");
 
             consumePower(180f / 60f);
         }};
@@ -763,7 +761,7 @@ public class CraftingBlock {
             size = 3;
             health = 1500;
             itemCapacity = 30;
-            drawer = new DrawRegionCenterSymmetry();
+            drawer = new DrawRegionFlip();
 
             consumePower(180f / 60f);
         }};
@@ -776,7 +774,7 @@ public class CraftingBlock {
             health = 1600;
             itemCapacity = 30;
             rotate = false;
-            drawer = new DrawRegionCenterSymmetry();
+            drawer = new DrawRegionFlip();
 
             consumePower(180f / 60f);
         }};
@@ -792,7 +790,7 @@ public class CraftingBlock {
             size = 3;
             health = 1900;
             itemCapacity = 30;
-            drawer = new DrawRegion(){{buildingRotate = true;}};
+            drawer = new DrawRegionRotatedDiagonal("-rot");
 
             consumePower(180f / 60f);
         }};
@@ -806,7 +804,7 @@ public class CraftingBlock {
             size = 4;
             health = 2400;
             itemCapacity = 30;
-            drawer = new DrawRegionCenterSymmetry();
+            drawer = new DrawRegionFlip();
 
             consumePower(180f / 60f);
         }};
@@ -822,7 +820,7 @@ public class CraftingBlock {
             size = 4;
             health = 2600;
             itemCapacity = 30;
-            drawer = new DrawDefault();
+            drawer = new DrawRegionRotatedDiagonal("-rot");
 
             consumePower(180f / 60f);
         }};
