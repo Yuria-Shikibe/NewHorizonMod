@@ -1563,7 +1563,7 @@ public class NHBullets {
             shieldDamageMultiplier = 0.5f;
 
             speed = 7f;
-            lifetime = 45f;
+            lifetime = 40f;
 
             width = 8f;
             height = 42f;
@@ -1630,7 +1630,7 @@ public class NHBullets {
             shieldDamageMultiplier = 0.8f;
 
             speed = 7f;
-            lifetime = 45f;
+            lifetime = 40f;
 
             width = 8f;
             height = 42f;
