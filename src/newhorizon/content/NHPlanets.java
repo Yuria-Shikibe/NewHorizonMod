@@ -132,6 +132,9 @@ public class NHPlanets {
 
         @Override
         protected void generate() {
+            int startX = Mathf.random(-20, 20);
+            int startY = Mathf.random(-20, 20);
+
             pass((x, y) -> {
                 if (x < 5f || y < 5f || x > chunkSize * size - 6f || y > chunkSize * size - 6f) {
                     block = EnvironmentBlock.armorWall;
@@ -236,13 +239,19 @@ public class NHPlanets {
             });
 
             pass((x, y) -> {
+                if(floor == Blocks.darkPanel1 && rand.chance(0.8f)){
+                    ore = EnvironmentBlock.oreSilicon;
+                }
+            });
+
+            pass((x, y) -> {
                 if(floor == Blocks.metalFloor3){
                     floor = NHBlocks.metalVent;
                 }
             });
 
-            tiles.get(spawnX, spawnY).setOverlay(Blocks.spawn);
-            Schematics.placeLaunchLoadout(coreX, coreY);
+            //tiles.get(spawnX, spawnY).setOverlay(Blocks.spawn);
+            Schematics.placeLaunchLoadout(width/2, height/2);
 
         }
 
@@ -388,10 +397,11 @@ public class NHPlanets {
                     if (voronoi.getPointInThreshold(x + 15, y, 85f)) return;
                     if (voronoi.getPointInThreshold(x + 15, y + 15, 85f)) return;
                     if (voronoi.getPointInThreshold(x, y + 15, 85f)) return;
-                    if (noise(x - 1234, y - 938, 6, 0.58f, 15f, 1.5f) > 0.75f){
+                    if (noise(x - 1234, y - 938, 6, 0.58f, 15f, 1.5f) > 0.55f){
                         pointRand.setSeed(Point2.pack(x + chunkX * chunkSize, y + chunkX * chunkSize));
                         boolean ore = pointRand.chance(0.5f);
                         boolean o1 = pointRand.chance(0.75f), o2 = pointRand.chance(0.75f), o3 = pointRand.chance(0.75f), o4 = pointRand.chance(0.75f);
+                        boolean z1 = pointRand.chance(0.5f), z2 = pointRand.chance(0.5f), z3 = pointRand.chance(0.5f), z4 = pointRand.chance(0.5f);
                         boolean f1 = pointRand.chance(0.5f), f2 = pointRand.chance(0.5f), f3 = pointRand.chance(0.5f), f4 = pointRand.chance(0.5f);
 
                         if (ore){
@@ -408,10 +418,10 @@ public class NHPlanets {
                             for (int tx = 0; tx < 4; tx++){
                                 for (int ty = 0; ty < 4; ty++){
                                     int rx = x + tx, ry = y + ty;
-                                    if (o1) setFloor(tiles, rx + 2, ry + 2, Blocks.darkPanel3);
-                                    if (o2) setFloor(tiles, rx + 2, ry + 10, Blocks.darkPanel3);
-                                    if (o3) setFloor(tiles, rx + 10, ry + 2, Blocks.darkPanel3);
-                                    if (o4) setFloor(tiles, rx + 10, ry + 10, Blocks.darkPanel3);
+                                    if (o1) setFloor(tiles, rx + 2, ry + 2, z1? Blocks.darkPanel1: Blocks.darkPanel3);
+                                    if (o2) setFloor(tiles, rx + 2, ry + 10, z2? Blocks.darkPanel1: Blocks.darkPanel3);
+                                    if (o3) setFloor(tiles, rx + 10, ry + 2, z3? Blocks.darkPanel1: Blocks.darkPanel3);
+                                    if (o4) setFloor(tiles, rx + 10, ry + 10, z4? Blocks.darkPanel1: Blocks.darkPanel3);
                                 }
                             }
                         }else {
