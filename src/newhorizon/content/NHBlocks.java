@@ -1299,6 +1299,8 @@ public class NHBlocks {
             size = 16;
             outlineRadius = 7;
             range = 1200;
+            insulated = true;
+            absorbLasers = true;
             heatColor = NHColor.darkEnrColor;
             unitSort = NHUnitSorts.regionalHPMaximum_All;
 
