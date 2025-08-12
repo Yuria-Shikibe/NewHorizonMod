@@ -15,6 +15,7 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.struct.IntMap;
 import arc.struct.Seq;
+import arc.util.Reflect;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool;
@@ -24,6 +25,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
+import mindustry.world.Tile;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHShaders;
 import newhorizon.content.NHStatusEffects;
@@ -35,11 +37,7 @@ import static mindustry.Vars.renderer;
 
 @HeadlessDisabled
 //render a screen-space effect for StatusEffect.
-//code from https://github.com/MEEPofFaith/hallucinogen/blob/master/src/drunkustry/graphics/DrunkRendering.java
 public class StatusRenderer {
-    private static final FrameBuffer pingPong1 = new FrameBuffer();
-    private static final FrameBuffer pingPong2 = new FrameBuffer();
-
     public static final float FADE_TIME = 90f;
     public static final float STATUS_RENDER_BEGIN = Layer.space + 0.0001f;
     public static final float STATUS_RENDER_STEP = 0.001f;
@@ -220,8 +218,6 @@ public class StatusRenderer {
                             particleLen * (fout * 0.4f + 0.6f) * warmup);
                 }
             }
-        });
-        register(NHStatusEffects.emp1, 120, (warmup, unit, status) -> {
         });
     }
 
