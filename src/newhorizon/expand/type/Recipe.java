@@ -1,9 +1,7 @@
 package newhorizon.expand.type;
 
 import arc.struct.Seq;
-import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
-import mindustry.gen.Building;
 import mindustry.type.*;
 
 public class Recipe{

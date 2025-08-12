@@ -1,11 +1,9 @@
 package newhorizon.content.blocks;
 
-import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.environment.CharacterOverlay;
 import newhorizon.expand.block.special.CharacterDisplay;
 import newhorizon.expand.block.special.IconDisplay;
 

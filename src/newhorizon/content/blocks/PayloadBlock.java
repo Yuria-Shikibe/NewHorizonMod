@@ -5,9 +5,7 @@ import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
-import newhorizon.expand.block.payload.*;
-
-import static mindustry.type.ItemStack.with;
+import newhorizon.expand.block.payload.ModuleConveyor;
 
 public class PayloadBlock {
     public static Block payloadRail;

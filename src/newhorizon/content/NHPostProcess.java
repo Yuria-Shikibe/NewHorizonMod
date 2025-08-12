@@ -24,8 +24,8 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.logic.*;
+import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -34,7 +34,6 @@ import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
-import newhorizon.content.register.RecipeRegister;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
 

@@ -2,9 +2,7 @@ package newhorizon;
 
 import arc.Core;
 import arc.Events;
-import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.core.GameState;
 import mindustry.game.EventType;
 import mindustry.net.Net;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;

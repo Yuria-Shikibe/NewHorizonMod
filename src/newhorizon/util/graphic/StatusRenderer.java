@@ -7,6 +7,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.gl.FrameBuffer;
 import arc.graphics.gl.Shader;
 import arc.math.Angles;
 import arc.math.Interp;
@@ -34,7 +35,11 @@ import static mindustry.Vars.renderer;
 
 @HeadlessDisabled
 //render a screen-space effect for StatusEffect.
+//code from https://github.com/MEEPofFaith/hallucinogen/blob/master/src/drunkustry/graphics/DrunkRendering.java
 public class StatusRenderer {
+    private static final FrameBuffer pingPong1 = new FrameBuffer();
+    private static final FrameBuffer pingPong2 = new FrameBuffer();
+
     public static final float FADE_TIME = 90f;
     public static final float STATUS_RENDER_BEGIN = Layer.space + 0.0001f;
     public static final float STATUS_RENDER_STEP = 0.001f;
@@ -45,7 +50,6 @@ public class StatusRenderer {
     //all status drawers.
     public StatusDrawer[] drawers;
     public Rand rand = new Rand();
-
 
     protected LastSeq lastSeq;
     protected IntMap<Runnable> drawTask = new IntMap<>();
@@ -98,10 +102,6 @@ public class StatusRenderer {
 
     public float top() {
         return centerY() + height() / 2;
-    }
-
-    public float scaledLen() {
-        return renderer.getDisplayScale();
     }
 
     public long statusRandId(StatusEffect status) {
@@ -221,6 +221,8 @@ public class StatusRenderer {
                 }
             }
         });
+        register(NHStatusEffects.emp1, 120, (warmup, unit, status) -> {
+        });
     }
 
     public void register(StatusEffect effect, int priority, Cons3<Float, Unit, StatusEffect> statusRenderer) {
@@ -325,7 +327,6 @@ public class StatusRenderer {
             statusRenderer.get(warmup, unit, status);
             drawShader();
         }
-
     }
 
     protected class LastSeq {

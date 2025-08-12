@@ -1,19 +1,14 @@
 package newhorizon.content.blocks;
 
-import arc.func.Prov;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
-import mindustry.entities.abilities.ForceFieldAbility;
-import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ForceProjector;
-import mindustry.world.consumers.ConsumeCoolant;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.expand.block.defence.ShieldGenerator;

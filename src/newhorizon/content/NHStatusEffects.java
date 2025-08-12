@@ -9,14 +9,12 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import newhorizon.expand.units.status.BoostStatusEffect;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
@@ -300,6 +298,16 @@ public class NHStatusEffects {
         public void update(Unit unit, float time) {
             super.update(unit, time);
             override.each(unit::unapply);
+        }
+
+        @Override
+        public void setStats() {
+            super.setStats();
+            if(!override.isEmpty()) {
+                for(var e : override){
+                    stats.add(NHStats.overrides, e.emoji() + e);
+                }
+            }
         }
     }
 }

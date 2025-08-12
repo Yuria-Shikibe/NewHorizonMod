@@ -2,14 +2,11 @@ package newhorizon.expand.rules;
 
 import arc.Core;
 import arc.math.Mathf;
-import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.util.Strings;
 import mindustry.gen.Icon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-
-import static mindustry.Vars.state;
 
 public class AscensionRuleDialog extends BaseDialog {
     private final Table all = new Table();

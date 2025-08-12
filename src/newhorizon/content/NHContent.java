@@ -5,7 +5,6 @@ import arc.files.Fi;
 import arc.func.Cons;
 import arc.func.Func;
 import arc.func.Prov;
-import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
@@ -36,8 +35,6 @@ import newhorizon.expand.logic.statements.*;
 
 import java.io.IOException;
 
-import static mindustry.Vars.renderer;
-
 public class NHContent extends Content {
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
     public static final float POWER_AREA = Layer.power + 0.114f;
@@ -47,7 +44,7 @@ public class NHContent extends Content {
 
     public static Schematic mLoadout, nhBaseLoadout;
 
-    public static Texture smoothNoise, particleNoise, darkerNoise, armorTex/*, platingNoise*/;
+    public static Texture smoothNoise, particleNoise, darkerNoise, noise;
 
     public static CacheLayer quantumLayer, armorLayer;
 
@@ -177,6 +174,11 @@ public class NHContent extends Content {
         });
 
         darkerNoise = loadTex("darker-noise", t -> {
+            t.setFilter(Texture.TextureFilter.linear);
+            t.setWrap(Texture.TextureWrap.repeat);
+        });
+
+        noise = loadTex("noise", t -> {
             t.setFilter(Texture.TextureFilter.linear);
             t.setWrap(Texture.TextureWrap.repeat);
         });

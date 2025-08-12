@@ -1,13 +1,9 @@
 package newhorizon.util.ui;
 
-import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
-import mindustry.Vars;
 import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
-import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.ui.CoreItemsDisplay;
 import mindustry.ui.Styles;

@@ -19,8 +19,6 @@ import arc.struct.StringMap;
 import arc.util.Log;
 import arc.util.ScreenUtils;
 import arc.util.Tmp;
-import arc.util.serialization.Json;
-import arc.util.serialization.JsonReader;
 import arc.util.serialization.JsonValue;
 import arc.util.serialization.JsonWriter;
 import mindustry.ctype.Content;
@@ -30,14 +28,12 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
-import mindustry.mod.Mods;
 import mindustry.type.Category;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.Block;
 import newhorizon.util.graphic.DrawFunc;
 
-import java.io.StringWriter;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
