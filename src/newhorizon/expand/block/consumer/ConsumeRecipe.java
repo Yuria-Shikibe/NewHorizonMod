@@ -2,7 +2,6 @@ package newhorizon.expand.block.consumer;
 
 import arc.func.Func;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
 import arc.util.Nullable;
 import mindustry.Vars;
 import mindustry.gen.Building;

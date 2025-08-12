@@ -23,7 +23,6 @@ import mindustry.world.blocks.ItemSelection;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.content;
-import static mindustry.Vars.renderer;
 
 public class IconDisplay extends Block {
     public static boolean drawIconDisplayText = true;

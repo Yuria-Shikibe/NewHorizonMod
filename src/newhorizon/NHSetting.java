@@ -3,23 +3,16 @@ package newhorizon;
 import arc.Core;
 import arc.scene.actions.RunnableAction;
 import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Button;
 import arc.scene.ui.CheckBox;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import mindustry.Vars;
-import mindustry.gen.Icon;
-import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
-import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
 
-import static arc.Core.app;
 import static arc.Core.settings;
 import static newhorizon.util.ui.TableFunc.LEN;
 

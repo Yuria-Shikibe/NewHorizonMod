@@ -20,5 +20,7 @@ public class NHStats {
             gravityRange = new Stat("gravity-gully-range", StatCat.general),
             maxLinks = new Stat("max-build-links", StatCat.function),
             installableBlocks = new Stat("installable-blocks", StatCat.function),
-            compatibleBlocks = new Stat("compatible-blocks", StatCat.function);
+            compatibleBlocks = new Stat("compatible-blocks", StatCat.function),
+            overrides = new Stat("overrides", StatCat.optional);
+
 }

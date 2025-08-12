@@ -2,7 +2,6 @@ package newhorizon.content.register;
 
 import arc.func.Cons;
 import mindustry.content.Items;
-import mindustry.mod.Mod;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;

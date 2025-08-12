@@ -5,17 +5,16 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
-import newhorizon.expand.units.status.BoostStatusEffect;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.graphic.EffectWrapper;
 
@@ -31,7 +30,6 @@ public class NHStatusEffects {
                 show = false;
                 hideDetails = true;
             }
-
             @Override
             public void update(Unit unit, float time) {
                 if (time < 60f || unit.healthf() < 0.1f) {
@@ -51,12 +49,10 @@ public class NHStatusEffects {
                 color = Color.lightGray;
                 speedMultiplier = 0.95f;
                 reloadMultiplier = 0.95f;
-                outline = true;
 
                 effectChance = 0.085f;
                 effect = EffectWrapper.wrap(NHFx.hitSparkLarge, NHColor.ancientLightMid);
             }
-
             @Override
             public void update(Unit unit, float time) {
                 super.update(unit, time);
@@ -71,7 +67,7 @@ public class NHStatusEffects {
         };
 
         overphased = new NHStatusEffect("overphased") {{
-                outline = true;
+                
                 color = NHColor.deeperBlue;
                 speedMultiplier = 1.75f;
                 healthMultiplier = 3f;
@@ -254,33 +250,34 @@ public class NHStatusEffects {
         };
 
         emp1 = new NHStatusEffect("emp-1") {{
-                damage = 0.05f;
-                effect = NHFx.emped;
-                effectChance = 0.1f;
-                reactive = false;
-                speedMultiplier = 0.8f;
-                reloadMultiplier = 0.8f;
-                damageMultiplier = 0.8f;
+            effect = NHFx.emped;
+            effectChance = 0.1f;
+            reactive = false;
+            speedMultiplier = 0.8f;
+            reloadMultiplier = 0.8f;
+            damageMultiplier = 0.8f;
         }};
 
         emp2 = new NHStatusEffect("emp-2") {{
-            damage = 0.15f;
             effect = NHFx.emped;
             effectChance = 0.2f;
             reactive = false;
-            speedMultiplier = 0.6f;
-            reloadMultiplier = 0.65f;
-            damageMultiplier = 0.7f;
+            speedMultiplier = 0.5f;
+            reloadMultiplier = 0.5f;
+            damageMultiplier = 0.5f;
+
+            init(() -> override.add(emp1));
         }};
 
         emp3 = new NHStatusEffect("emp-3") {{
-            damage = 0.25f;
             effect = NHFx.emped;
             effectChance = 0.3f;
             reactive = false;
-            speedMultiplier = 0.4f;
-            reloadMultiplier = 0.5f;
-            damageMultiplier = 0.6f;
+            speedMultiplier = 0.2f;
+            reloadMultiplier = 0.2f;
+            damageMultiplier = 0.2f;
+
+            init(() -> override.add(emp1, emp2));
         }};
 
         shieldFlag = new NHStatusEffect("shield-flag") {{
@@ -291,9 +288,26 @@ public class NHStatusEffects {
     }
 
     public static class NHStatusEffect extends StatusEffect {
+        public Seq<StatusEffect> override = new Seq<>();
         public NHStatusEffect(String name) {
             super(name);
             outline = false;
+        }
+
+        @Override
+        public void update(Unit unit, float time) {
+            super.update(unit, time);
+            override.each(unit::unapply);
+        }
+
+        @Override
+        public void setStats() {
+            super.setStats();
+            if(!override.isEmpty()) {
+                for(var e : override){
+                    stats.add(NHStats.overrides, e.emoji() + e);
+                }
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 package newhorizon.expand.block.inner;
 
-import mindustry.ctype.ContentType;
 import mindustry.game.Team;
 import mindustry.world.Block;
 import mindustry.world.Tile;

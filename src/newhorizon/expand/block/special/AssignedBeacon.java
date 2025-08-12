@@ -1,17 +1,16 @@
 package newhorizon.expand.block.special;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.struct.IntFloatMap;
 import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Strings;
+import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -19,11 +18,9 @@ import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.logic.Ranged;
 import mindustry.type.ItemStack;
 import mindustry.type.PayloadStack;
 import mindustry.ui.Bar;
-import mindustry.world.Block;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.StatUnit;
 import newhorizon.NHGroups;
@@ -33,7 +30,8 @@ import newhorizon.util.graphic.DrawFunc;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class AssignedBeacon extends AdaptOverdriveProjector {
     public int maxLink = 4;

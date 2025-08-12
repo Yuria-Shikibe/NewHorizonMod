@@ -1,11 +1,12 @@
 package newhorizon.expand.block.production.factory;
 
-import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Scaling;
+import arc.util.Strings;
+import arc.util.Time;
 import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
@@ -16,10 +17,9 @@ import mindustry.world.blocks.payloads.BuildPayload;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
-import newhorizon.expand.block.consumer.*;
+import newhorizon.expand.block.consumer.ConsumeRecipe;
 import newhorizon.expand.type.Recipe;
 
-import static mindustry.world.meta.StatValues.stack;
 import static mindustry.world.meta.StatValues.withTooltip;
 
 public class RecipeGenericCrafter extends AdaptCrafter {

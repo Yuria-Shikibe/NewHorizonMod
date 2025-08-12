@@ -5,7 +5,9 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.*;
+import arc.scene.ui.ButtonGroup;
+import arc.scene.ui.ImageButton;
+import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import arc.util.Eachable;
 import arc.util.Log;
@@ -13,7 +15,6 @@ import arc.util.Strings;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -26,7 +27,8 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.CharacterOverlay;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.control;
+import static mindustry.Vars.ui;
 
 public class CharacterDisplay extends Block {
     public TextureRegion maskRegion;

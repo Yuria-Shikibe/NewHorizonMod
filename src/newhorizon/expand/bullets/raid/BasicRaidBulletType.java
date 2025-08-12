@@ -4,7 +4,6 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;

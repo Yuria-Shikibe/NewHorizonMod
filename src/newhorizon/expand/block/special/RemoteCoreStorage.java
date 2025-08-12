@@ -16,7 +16,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.modules.ItemModule;
 import newhorizon.NHGroups;
@@ -72,14 +71,13 @@ public class RemoteCoreStorage extends StorageBlock {
                         () -> Core.bundle.format("nh.bar.max-place", NHGroups.placedRemoteCore[entity.team.id].size, shouldLimit(entity.team)? maxPlaceNum(entity.team): "∞"),
                         () -> NHGroups.placedRemoteCore[entity.team.id].size < maxPlaceNum(entity.team) ? Pal.accent : Pal.redderDust,
                         () -> shouldLimit(entity.team)? (float) NHGroups.placedRemoteCore[entity.team.id].size / maxPlaceNum(entity.team): 1f
-                )
-        );
+        ));
         addBar("warmup", (RemoteCoreStorageBuild entity) -> new Bar(() -> Mathf.equal(entity.warmup, 1, 0.015f) ? Core.bundle.get("done") : Core.bundle.get("research.load"), () -> Mathf.equal(entity.warmup, 1, 0.015f) ? Pal.heal : Pal.redderDust, () -> entity.warmup));
         addBar("items", (RemoteCoreStorageBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.items", entity.items.total()),
                 () -> Pal.items,
-                () -> (float) (entity.items.total() / (entity.core() == null ? Integer.MAX_VALUE : entity.core().storageCapacity)))
-        );
+                () -> (float) (entity.items.total() / (entity.core() == null ? Integer.MAX_VALUE : entity.core().storageCapacity))
+        ));
     }
 
     @Override

@@ -21,12 +21,10 @@ import arc.util.Align;
 import arc.util.Log;
 import arc.util.Reflect;
 import arc.util.Scaling;
-import mindustry.Vars;
 import mindustry.core.UI;
 import mindustry.editor.MapEditorDialog;
 import mindustry.game.EventType;
 import mindustry.game.MapObjectives;
-import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Pal;
@@ -38,11 +36,9 @@ import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.util.ui.DelayCollapser;
 import newhorizon.util.ui.DelaySlideBar;
 import newhorizon.util.ui.ObjectiveSign;
-import newhorizon.util.ui.TeamPayloadDisplay;
 import newhorizon.util.ui.dialog.NHWorldSettingDialog;
 import newhorizon.util.ui.frag.PayloadInventoryFragment;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mindustry.Vars.*;
@@ -57,7 +53,6 @@ public class NHUI {
 
     public static NHWorldSettingDialog nhWorldSettingDialog;
     public static PayloadInventoryFragment payloadInventoryFragment;
-    public static TeamPayloadDisplay teamPayloadDisplay;
 
     public static void init() {
 

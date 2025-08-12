@@ -18,23 +18,15 @@ import static mindustry.Vars.renderer;
 
 public class NHShaders {
     public static MatterStormShader matterStorm;
-    public static Tiler tiler;
-
-    public static Shader gravityTrapShader, scannerDown;
-
-    public static ModSurfaceShader quantum;
+    public static ModShader gravityTrapShader, scannerDown, empGlitch;
+    public static ModSurfaceShader quantum, displaceGlitch;
     public static StatusEffectShader statusAlpha, statusXWave;
-
     public static OutlineShader powerArea, powerDynamicArea;
-
-    //public static DistortShader distort;
 
     public static void init() {
         statusAlpha = new StatusEffectShader("screenspace", "overphased");
 
         statusXWave = new StatusEffectShader("screenspace", "statusXWave");
-
-        tiler = new Tiler();
 
         scannerDown = new ModShader("screenspace", "scannerDown");
 
@@ -50,6 +42,16 @@ public class NHShaders {
                         Core.camera.position.y - Core.camera.height / 2);
                 setUniformf("u_texsize", Core.camera.width, Core.camera.height);
                 setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
+            }
+        };
+
+        empGlitch = new ModShader("screenspace", "empGlitch") {
+            @Override
+            public void apply() {
+                setUniformf("u_time", Time.time / Scl.scl(1f));
+                setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+                setUniformf("u_glitchIntensity", 1f);
+                setUniformf("u_mix", 1.2f);
             }
         };
 
@@ -70,6 +72,40 @@ public class NHShaders {
             @Override
             public Texture getTexture() {
                 return NHContent.smoothNoise;
+            }
+        };
+
+        displaceGlitch = new ModSurfaceShader("displaceGlitch") {
+            @Override
+            public void apply() {
+                setUniformf("u_texsize", Core.graphics.getWidth(), Core.graphics.getHeight());
+                setUniformf("u_time", Time.time / Scl.scl(1f));
+
+                if (hasUniform("u_noise")) {
+                    if (noiseTex1 == null) noiseTex1 = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
+
+                    noiseTex1.bind(1);
+                    renderer.effectBuffer.getTexture().bind(0);
+
+                    setUniformi("u_noise", 1);
+                }
+            }
+
+            @Override
+            public String textureName() {
+                return super.textureName();
+            }
+
+            @Override
+            public void loadNoise() {
+                super.loadNoise();
+
+                noiseTex1 = NHContent.noise;
+            }
+
+            @Override
+            public Texture getTexture() {
+                return NHContent.noise;
             }
         };
 
@@ -96,29 +132,6 @@ public class NHShaders {
         }
 
         return Shaders.getShaderFi(file);
-    }
-
-    public static class Tiler extends ModShader {
-        public Texture texture = Core.atlas.white().texture;
-        public float scl = 4F;
-
-        public Tiler() {
-            super("screenspace", "tiler");
-        }
-
-        @Override
-        public void apply() {
-            setUniformf("u_offset",
-                    Core.camera.position.x - Core.camera.width / 2,
-                    Core.camera.position.y - Core.camera.height / 2);
-            setUniformf("u_texsize", Core.camera.width, Core.camera.height);
-            setUniformf("u_tiletexsize", (float) texture.width / scl, (float) texture.height / scl);
-
-            texture.bind(1);
-            renderer.effectBuffer.getTexture().bind(0);
-
-            setUniformi("u_tiletex", 1);
-        }
     }
 
     public static class OutlineShader extends ModShader {
@@ -233,11 +246,6 @@ public class NHShaders {
 
         public ModSurfaceShader(String frag) {
             super("screenspace", frag);
-            loadNoise();
-        }
-
-        public ModSurfaceShader(String vertRaw, String fragRaw) {
-            super(vertRaw, fragRaw);
             loadNoise();
         }
 

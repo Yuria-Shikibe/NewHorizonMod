@@ -7,8 +7,10 @@ import mindustry.world.Block;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
-import newhorizon.content.NHLiquids;
-import newhorizon.expand.block.special.*;
+import newhorizon.expand.block.special.AdaptOverdriveProjector;
+import newhorizon.expand.block.special.AssignedBeacon;
+import newhorizon.expand.block.special.NexusCore;
+import newhorizon.expand.block.special.RemoteCoreStorage;
 
 import static mindustry.type.ItemStack.with;
 
@@ -23,12 +25,14 @@ public class SpecialBlock {
             requirements(Category.effect, with(NHItems.presstanium, 40, NHItems.juniorProcessor, 20));
             size = 2;
             health = 1200;
+            itemCapacity = 1000;
         }};
 
         heavyStorage = new StorageBlock("heavy-storage") {{
             requirements(Category.effect, with(NHItems.presstanium, 80, NHItems.juniorProcessor, 40, Items.carbide, 40));
             size = 3;
             health = 4000;
+            itemCapacity = 4000;
         }};
 
         remoteStorage = new RemoteCoreStorage("remote-storage") {{
@@ -50,7 +54,7 @@ public class SpecialBlock {
                     NHItems.zeta, 120
             ));
             size = 3;
-            range = 200f;
+            range = 320f;
             speedBoost = 2f;
             speedBoostPhase = 1f;
             phaseRangeBoost = 0f;
@@ -67,7 +71,7 @@ public class SpecialBlock {
             ));
             size = 3;
             maxLink = 8;
-            range = 120f;
+            range = 200f;
             speedBoost = 0.25f;
             speedBoostPhase = 0.25f;
             phaseRangeBoost = 0f;
