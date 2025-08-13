@@ -18,7 +18,7 @@ import static mindustry.Vars.renderer;
 
 public class NHShaders {
     public static MatterStormShader matterStorm;
-    public static ModShader gravityTrapShader, scannerDown, empGlitch;
+    public static ModShader gravityTrapShader, scannerDown;
     public static ModSurfaceShader quantum, displaceGlitch;
     public static StatusEffectShader statusAlpha, statusXWave;
     public static OutlineShader powerArea, powerDynamicArea;
@@ -42,16 +42,6 @@ public class NHShaders {
                         Core.camera.position.y - Core.camera.height / 2);
                 setUniformf("u_texsize", Core.camera.width, Core.camera.height);
                 setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
-            }
-        };
-
-        empGlitch = new ModShader("screenspace", "empGlitch") {
-            @Override
-            public void apply() {
-                setUniformf("u_time", Time.time / Scl.scl(1f));
-                setUniformf("u_texsize", Core.camera.width, Core.camera.height);
-                setUniformf("u_glitchIntensity", 1f);
-                setUniformf("u_mix", 1.2f);
             }
         };
 
