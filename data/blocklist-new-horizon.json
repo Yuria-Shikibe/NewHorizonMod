@@ -269,12 +269,6 @@
 	"size": 5,
 	"color": 255
 },
-"new-horizon-large-armor-battery": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
 "new-horizon-hyper-generator": {
 	"synthetic": true,
 	"solid": true,
@@ -462,6 +456,12 @@
 	"color": 255
 },
 "new-horizon-xen-extractor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-xen-iterator": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -888,6 +888,18 @@
 	"color": 255
 },
 "new-horizon-gravity-trap-heavy": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-armor-battery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-large-armor-battery": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,

@@ -5,6 +5,7 @@ import mindustry.content.Items;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.power.Battery;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
@@ -18,8 +19,10 @@ import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
-    public static Block zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor;
-    public static Block gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
+    public static Block
+            zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            armorBattery, armorBatteryLarge,
+            gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
         gravityTrapSerpulo = new GravityWallSubstation("gravity-node-serpulo") {{
@@ -63,6 +66,28 @@ public class PowerBlock {
             maxNodes = 6;
             gravityRange = laserRange * tilesize * 1.2f;
             clipSize = gravityRange * 2f;
+        }};
+
+        armorBattery = new Battery("armor-battery") {{
+            requirements(Category.power, BuildVisibility.shown, ItemStack.with(
+                    NHItems.presstanium, 10,
+                    NHItems.juniorProcessor, 5
+            ));
+            size = 1;
+            health = 600;
+            armor = 20;
+            consumePowerBuffered(10000f);
+        }};
+
+        armorBatteryLarge = new Battery("large-armor-battery") {{
+            requirements(Category.power, BuildVisibility.shown, ItemStack.with(
+                    NHItems.presstanium, 40,
+                    NHItems.juniorProcessor, 10
+            ));
+            size = 3;
+            health = 3000;
+            armor = 30;
+            consumePowerBuffered(100000f);
         }};
 
         zetaGenerator = new RecipeGenericCrafter("zeta-generator") {{

@@ -105,7 +105,6 @@ public class NHBlocks {
 
     public static Block largeWaterExtractor;
     public static Block hydroFuelCell;
-    public static Block armorBatteryLarge;
     public static Block hugeBattery;
     public static Block largeMendProjector;
     public static Block antiBulletTurret;
@@ -2269,14 +2268,6 @@ public class NHBlocks {
             requirements(Category.power, BuildVisibility.shown, ItemStack.with(Items.phaseFabric, 40, NHItems.juniorProcessor, 20, NHItems.zeta, 80, NHItems.presstanium, 35, Items.graphite, 50));
             //			//NHTechTree.add(Blocks.batteryLarge, this);
             consumePowerBuffered(750_000);
-        }};
-
-        armorBatteryLarge = new Battery("large-armor-battery") {{
-            requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.presstanium, 40, NHItems.juniorProcessor, 10));
-            size = 3;
-            health = 3000;
-            armor = 15;
-            consumePowerBuffered(45000.0F);
         }};
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
