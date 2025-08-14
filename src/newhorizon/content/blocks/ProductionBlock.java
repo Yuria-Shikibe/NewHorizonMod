@@ -40,7 +40,7 @@ import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
-    public static Block sandCracker, resourceConvertor, liquidConvertor, xenExtractor;
+    public static Block sandCracker, resourceConvertor, liquidConvertor, xenExtractor, xenIterator;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
@@ -142,7 +142,26 @@ public class ProductionBlock {
             hasLiquids = true;
             outputLiquid = new LiquidStack(NHLiquids.xenFluid, 4f / 60f);
             liquidCapacity = 300f;
+
+            consumePower(5f);
         }};
+
+        xenIterator = new RecipeGenericCrafter("xen-iterator"){{
+            requirements(Category.power, ItemStack.with(
+                    NHItems.metalOxhydrigen, 40,
+                    NHItems.juniorProcessor, 80,
+                    NHItems.zeta, 100
+            ));
+            size = 3;
+            health = 150 * 9;
+            armor = 10f;
+            itemCapacity = 30;
+            rotate = false;
+
+            liquidCapacity = 300f;
+            consumePower(5f);
+        }};
+
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
