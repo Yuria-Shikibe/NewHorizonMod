@@ -108,7 +108,6 @@ public class ProductionBlock {
             craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 16, 3);
             consumePower(5f);
         }};
-
         xenExtractor = new ThermalGenerator("xen-extractor") {{
             requirements(Category.production, with(Items.tungsten, 50, NHItems.presstanium, 20, NHItems.juniorProcessor, 20));
             attribute = NHContent.quantum;
@@ -145,9 +144,8 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
-
         xenIterator = new RecipeGenericCrafter("xen-iterator"){{
-            requirements(Category.power, ItemStack.with(
+            requirements(Category.production, ItemStack.with(
                     NHItems.metalOxhydrigen, 40,
                     NHItems.juniorProcessor, 80,
                     NHItems.zeta, 100

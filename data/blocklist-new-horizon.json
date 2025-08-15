@@ -47,12 +47,6 @@
 	"size": 4,
 	"color": 255
 },
-"new-horizon-large-mend-projector": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
 "new-horizon-large-water-extractor": {
 	"synthetic": true,
 	"solid": true,
@@ -567,6 +561,18 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 1,
+	"color": 255
+},
+"new-horizon-standard-regen-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-heavy-regen-projector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-standard-shield-generator": {

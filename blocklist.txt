@@ -127,6 +127,7 @@ new-horizon-heavy-defence-wall 1 1 1 0
 new-horizon-heavy-defence-wall-large 1 1 2 0
 new-horizon-heavy-liquid-storage 1 1 3 0
 new-horizon-heavy-power-node 1 1 3 0
+new-horizon-heavy-regen-projector 1 1 3 0
 new-horizon-heavy-stack-loader 1 0 1 0
 new-horizon-heavy-storage 1 1 3 0
 new-horizon-hive 1 1 4 0
@@ -341,6 +342,7 @@ new-horizon-stack-rail 1 0 1 0
 new-horizon-stamping-facility 1 1 2 0
 new-horizon-standard-jump-gate 1 1 5 0
 new-horizon-standard-liquid-storage 1 1 2 0
+new-horizon-standard-regen-projector 1 1 2 0
 new-horizon-standard-shield-generator 1 1 2 0
 new-horizon-standard-storage 1 1 2 0
 new-horizon-steady-stack-rail 1 0 1 0
