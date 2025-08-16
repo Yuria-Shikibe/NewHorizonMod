@@ -22,9 +22,19 @@ public class PowerBlock {
     public static Block
             zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
-            gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
+            gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
+        gravityTrapMidantha = new GravityWallSubstation("gravity-node-midantha") {{
+            requirements(Category.power, BuildVisibility.shown, with(Items.silicon, 10));
+
+            size = 1;
+            health = 400;
+            laserRange = 8;
+            maxNodes = 10;
+            gravityRange = laserRange * tilesize * 1.5f;
+        }};
+        
         gravityTrapSerpulo = new GravityWallSubstation("gravity-node-serpulo") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.copper, 10, Items.lead, 8));
 
