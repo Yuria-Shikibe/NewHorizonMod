@@ -722,107 +722,126 @@ public class CraftingBlock {
 
         factory0 = new RecipeGenericCrafter("factory-0"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.tungsten, 80,
+                    NHItems.presstanium, 60，
+                    NHItems.juniorProcessor,40
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
 
             size = 2;
-            health = 1200;
+            health = 745;
             itemCapacity = 30;
             rotate = false;
             drawer = new DrawDefault();
 
-            consumePower(180f / 60f);
+            consumePower(300f / 60f);
         }};
         factory1 = new RecipeGenericCrafter("factory-1"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.presstanium, 10,
+                    NHItems.juniorProcessor, 80,
+                    NHItems.carbide, 40,
+                    NHItems.metalOxhydrigen, 80
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1, -1, 2, 1, 2, -1, 1);
             canMirror = true;
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 2;
-            health = 1200;
+            health = 745;
+            armor = 4;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
 
-            consumePower(180f / 60f);
+            consumePower(360f / 60f);
         }};
         factory2 = new RecipeGenericCrafter("factory-2"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.juniorProcessor, 60,
+                    NHItems.metalOxhydrigen, 120,
+                    NHItems.phaseFabric, 80,
+                    NHItems.surgeAlloy, 80
             ));
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1500;
+            health = 1200;
+            armor = 6;
             itemCapacity = 30;
             drawer = new DrawRegionFlip();
 
-            consumePower(180f / 60f);
+            consumePower(450f / 60f);
         }};
         factory3 = new RecipeGenericCrafter("factory-3"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.zeta, 200,
+                    NHItems.presstanium, 100,
+                    NHItems.multipleSteel, 60,
+                    NHItems.seniorProcessor, 40
             ));
             size = 4;
             health = 1600;
+            armor = 8;
             itemCapacity = 30;
             rotate = false;
             drawer = new DrawRegionFlip();
 
-            consumePower(180f / 60f);
+            consumePower(600f / 60f);
         }};
         factory4 = new RecipeGenericCrafter("factory-4"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.juniorProcessor, 100,
+                    NHItems.carbide, 60,
+                    NHItems.irayrondPanel, 60,
+                    NHItems.setonAlloy, 80
             ));
             addLink(-2, -2, 1, -2, -1, 1, -2, 0, 1, -1, -2, 1, 0, -2, 1, 2, 2, 1, 2, 1, 1, 2, 0, 1, 1, 2, 1, 0, 2, 1);
             canMirror = true;
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 3;
-            health = 1900;
+            health = 1600;
+            armor = 8;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
 
-            consumePower(180f / 60f);
+            consumePower(720f / 60f);
         }};
         factory5 = new RecipeGenericCrafter("factory-5"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.silicon, 150,
+                    NHItems.surgeAlloy, 60,
+                    NHItems.nodexPlate, 30,
+                    NHItems.ancimembrane, 20
             ));
 
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
             size = 4;
-            health = 2400;
+            health = 1845;
+            armor = 10;
             itemCapacity = 30;
             drawer = new DrawRegionFlip();
 
-            consumePower(180f / 60f);
+            consumePower(840f / 60f);
         }};
         factory6 = new RecipeGenericCrafter("factory-6"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.multipleSteel, 150,
+                    NHItems.seniorProcessor, 100,
+                    NHItems.nodexPlate, 55,
+                    NHItems.darkEnergy, 40
             ));
             addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, -2, 1, 2, -2, 1, 3, -2, 1, 3, -1, 1, 3, 0, 1);
             canMirror = true;
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 4;
-            health = 2600;
+            health = 2100;
+            armor = 12;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
 
-            consumePower(180f / 60f);
+            consumePower(1200f / 60f);
         }};
     }
 }
