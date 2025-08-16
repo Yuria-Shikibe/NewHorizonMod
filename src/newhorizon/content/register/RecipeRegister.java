@@ -138,7 +138,7 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.crystallizer, recipe -> {
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
             recipe.outputItem = ItemStack.list(NHItems.metalOxhydrigen, 6);
             recipe.craftTime = 60f;
@@ -323,13 +323,13 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(NHItems.ancimembrane, 4);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.quantumConductor, 2);
             recipe.outputPayload = PayloadStack.list(ModuleBlock.gaussReceptor, 1);
-            recipe.craftTime = 30f;
+            recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.factory6, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.nodexPlate, 4);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.resistoArray, 2);
             recipe.outputPayload = PayloadStack.list(ModuleBlock.tachyonEmitter, 1);
-            recipe.craftTime = 30f;
+            recipe.craftTime = 60f;
         });
 
         recipe(PowerBlock.zetaGenerator, recipe -> {
@@ -342,7 +342,7 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.powerCell, 1);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.fusionEnergy, 5);
-            recipe.craftTime = 120f;
+            recipe.craftTime = 60f;
             recipe.priority = 1;
         });
 
