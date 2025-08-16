@@ -723,8 +723,8 @@ public class CraftingBlock {
         factory0 = new RecipeGenericCrafter("factory-0"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.tungsten, 80,
-                    NHItems.presstanium, 60，
-                    NHItems.juniorProcessor,40
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 40
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
 
