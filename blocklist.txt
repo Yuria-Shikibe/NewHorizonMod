@@ -11,6 +11,8 @@ new-horizon-arkycite-compactor 1 1 3 0
 new-horizon-armor-ancient 0 0 1 14196587
 new-horizon-armor-ancient-sub 0 0 1 15919224
 new-horizon-armor-battery 1 1 1 0
+new-horizon-armor-battery-huge 1 1 5 0
+new-horizon-armor-battery-large 1 1 3 0
 new-horizon-armor-cast 1 1 1 0
 new-horizon-armor-clear 0 0 1 4145225
 new-horizon-armor-light 0 0 1 16763541

@@ -21,7 +21,7 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
-            armorBattery, armorBatteryLarge,
+            armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
@@ -79,15 +79,28 @@ public class PowerBlock {
             consumePowerBuffered(10000f);
         }};
 
-        armorBatteryLarge = new Battery("large-armor-battery") {{
+        armorBatteryLarge = new Battery("armor-battery-large") {{
             requirements(Category.power, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 40,
-                    NHItems.juniorProcessor, 10
+                    NHItems.juniorProcessor, 10,
+                    NHItems.zeta, 50
             ));
             size = 3;
-            health = 3000;
+            health = 2000;
             armor = 30;
             consumePowerBuffered(100000f);
+        }};
+
+        armorBatteryHuge = new Battery("armor-battery-huge") {{
+            requirements(Category.power, BuildVisibility.shown, ItemStack.with(
+                    NHItems.multipleSteel, 60,
+                    NHItems.seniorProcessor, 40,
+                    NHItems.zeta, 200
+            ));
+            size = 5;
+            health = 5000;
+            armor = 50;
+            consumePowerBuffered(1000000f);
         }};
 
         zetaGenerator = new RecipeGenericCrafter("zeta-generator") {{

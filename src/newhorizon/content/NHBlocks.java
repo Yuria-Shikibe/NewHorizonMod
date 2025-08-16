@@ -105,7 +105,6 @@ public class NHBlocks {
 
     public static Block largeWaterExtractor;
     public static Block hydroFuelCell;
-    public static Block hugeBattery;
     public static Block antiBulletTurret;
     public static Block fireExtinguisher;
     public static Block webber;
@@ -2259,14 +2258,6 @@ public class NHBlocks {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.nitrogen, 2f), new DrawDefault(), new DrawGlowRegion() {{
                 color = Liquids.hydrogen.color;
             }});
-        }};
-
-        hugeBattery = new Battery("huge-battery") {{
-            size = 5;
-            health = 1600;
-            requirements(Category.power, BuildVisibility.shown, ItemStack.with(Items.phaseFabric, 40, NHItems.juniorProcessor, 20, NHItems.zeta, 80, NHItems.presstanium, 35, Items.graphite, 50));
-            //			//NHTechTree.add(Blocks.batteryLarge, this);
-            consumePowerBuffered(750_000);
         }};
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
