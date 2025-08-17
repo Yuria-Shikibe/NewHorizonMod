@@ -403,7 +403,7 @@ public class TurretBlock {
             //coolant = consume(new ConsumeLiquid(NHLiquids.irdryonFluid, 6f / 60f));
         }};
         electro = new ItemTurret("electro") {{
-            requirements(Category.turret, with(NHItems.juniorProcessor, 200, Items.carbide, 150, Items.surgeAlloy, 100, NHItems.phasePabric, 100));
+            requirements(Category.turret, with(NHItems.juniorProcessor, 200, Items.carbide, 150, Items.surgeAlloy, 100, NHItems.phaseFabric, 100));
             canOverdrive = false;
 
             health = 3200;
