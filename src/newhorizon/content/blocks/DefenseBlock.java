@@ -79,7 +79,6 @@ public class DefenseBlock {
             consumePower(2f);
             consumeLiquid(NHLiquids.xenFluid, 12f / 60f);
             consumeItem(NHItems.phaseFabric).boost();
-            phaseRadiusBoost = 60f;
         }};
 
         heavyRegenProjector = new AdaptRegenProjector("heavy-regen-projector") {{
@@ -97,7 +96,6 @@ public class DefenseBlock {
             consumePower(5f);
             consumeLiquid(NHLiquids.irdryonFluid, 6f / 60f);
             consumeItem(NHItems.ancimembrane).boost();
-            phaseRadiusBoost = 60f;
         }};
 
 
