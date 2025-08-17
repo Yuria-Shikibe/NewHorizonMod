@@ -1658,6 +1658,7 @@ public class NHBullets {
 
             status = StatusEffects.melting;
             statusDuration = 180f;
+            makeFire = true;
 
             bundleName = "synchro-fusionEnergy";
         }};
