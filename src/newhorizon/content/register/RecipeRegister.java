@@ -90,6 +90,12 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
 
+        recipe(ProductionBlock.xenIterator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.zeta, 4, NHItems.metalOxhydrigen, 2);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 24 / 60f);
+            recipe.craftTime = 60f;
+        });
+
         recipe(CraftingBlock.stampingFacility, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.titanium, 3);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
