@@ -72,6 +72,7 @@ public class DefenseBlock {
             ));
             size = 2;
             health = 1200;
+            armor = 8;
             range = 25;
             healPercent = (100 / 15f) / 60f;
             baseHeal = 50f / 60f;
@@ -88,6 +89,7 @@ public class DefenseBlock {
             ));
             size = 3;
             health = 3000;
+            armor = 20;
             range = 40;
             healPercent = (100 / 6f) / 60f;
             baseHeal = 200f / 60f;
@@ -118,7 +120,7 @@ public class DefenseBlock {
             size = 2;
             sides = 4;
             health = 1500;
-            armor = 5;
+            armor = 10;
             itemCapacity = 20;
             liquidCapacity = 25f;
             shieldRotation = 45f;
@@ -151,8 +153,8 @@ public class DefenseBlock {
 
             size = 4;
             sides = 4;
-            health = 2500;
-            armor = 10;
+            health = 3000;
+            armor = 20;
             itemCapacity = 20;
             liquidCapacity = 50f;
             shieldRotation = 45f;
