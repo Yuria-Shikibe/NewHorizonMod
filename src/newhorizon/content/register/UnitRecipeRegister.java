@@ -18,10 +18,9 @@ public class UnitRecipeRegister {
         //spawnList = Seq.with(NHUnitTypes.naxos, NHUnitTypes.tarlidor, NHUnitTypes.zarkov, UnitTypes.eclipse, UnitTypes.disrupt, UnitTypes.corvus, UnitTypes.navanax, UnitTypes.collaris);
         //spawnList = Seq.with(NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.annihilation, NHUnitTypes.saviour, NHUnitTypes.declining, NHUnitTypes.hurricane, NHUnitTypes.anvil, NHUnitTypes.sin, NHUnitTypes.collapser);
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.poly, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 20, Items.titanium, 25));
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.poly, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(ModuleBlock.armorCast, 3, ModuleBlock.powerUnit, 4));
+        unitCosts.put(UnitTypes.poly, unitCost(20 * 60f, armorCast, 3, powerUnit, 4));
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cleroi, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.titanium, 75, Items.tungsten, 50));
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cleroi, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(ModuleBlock.armorCast, 12, ModuleBlock.powerUnit, 16));
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.mega, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.tungsten, 180, NHItems.zeta, 80));
+        unitCosts.put(UnitTypes.cleroi, unitCost(40 * 60f, armorCast, 12, powerUnit, 16));
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.quasar, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.titanium, 180, NHItems.zeta, 80));
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.zenith, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 150, Items.titanium, 150, NHItems.zeta, 60));
         unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cyerce, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 240, Items.tungsten, 120, NHItems.zeta, 100));
