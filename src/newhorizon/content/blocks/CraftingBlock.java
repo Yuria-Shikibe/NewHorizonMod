@@ -635,13 +635,21 @@ public class CraftingBlock {
                     Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
                 });
             });
+            outputItem = new ItemStack(NHItems.nodexPlate, 2);
             craftTime = 120f;
             itemCapacity = 40;
             health = 2100;
             armor = 14;
             size = 3;
             hasPower = hasItems = true;
+            drawer = new DrawPrinter(outputItem.item) {{
+                printColor = NHColor.darkEnrColor;
+                lightColor = Color.valueOf("#E1BAFF");
+                moveLength = 4.2f;
+                time = 25f;
+            }};
             clipSize = size * tilesize * 2f;
+            consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
             consumePower(1600 / 60f);
         }};
         ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
@@ -720,10 +728,14 @@ public class CraftingBlock {
             );
 
             itemCapacity = 40;
-            liquidCapacity = 60f;
-            consumePower(1600 / 60f);
-        }};
+            liquidCapacity = 40f;
 
+            consumePower(1600 / 60f);
+            consumeItems(with(NHItems.irayrondPanel, 6));
+            consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
+            outputItems = with(NHItems.ancimembrane, 3);
+        }};
+        
         factory0 = new RecipeGenericCrafter("factory-0"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.tungsten, 80,
