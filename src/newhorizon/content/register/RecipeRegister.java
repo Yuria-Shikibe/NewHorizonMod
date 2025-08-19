@@ -246,6 +246,26 @@ public class RecipeRegister {
             recipe.priority = 1;
         });
 
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 4, NHItems.setonAlloy, 4);
+            recipe.outputItem = ItemStack.list(NHItems.nodexPlate, 2);
+            recipe.craftTime = 120f;
+        });
+
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1, ModuleBlock.quantumConductor, 1);
+            recipe.outputItem = ItemStack.list(NHItems.nodexPlate, 5);
+            recipe.craftTime = 120f;
+        });
+
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.thermoCorePositive, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.tachyonEmitter, 1);
+            recipe.outputItem = ItemStack.list(NHItems.hadronicomp, 4);
+            recipe.craftTime = 120f;
+        });
+
         recipe(CraftingBlock.factory0, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.tungsten, 4);
             recipe.outputPayload = PayloadStack.list(ModuleBlock.armorCast, 2);
