@@ -641,12 +641,6 @@ public class CraftingBlock {
             armor = 14;
             size = 3;
             hasPower = hasItems = true;
-            drawer = new DrawPrinter(outputItem.item) {{
-                printColor = NHColor.darkEnrColor;
-                lightColor = Color.valueOf("#E1BAFF");
-                moveLength = 4.2f;
-                time = 25f;
-            }};
             clipSize = size * tilesize * 2f;
             consumePower(1600 / 60f);
         }};
