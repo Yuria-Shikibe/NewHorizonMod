@@ -4,7 +4,7 @@ import arc.func.Cons;
 import mindustry.content.Items;
 import mindustry.content.UnitTypes;
 import mindustry.type.ItemStack;
-import mindustry.type.PayloadStack
+import mindustry.type.PayloadStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import newhorizon.content.NHItems;
