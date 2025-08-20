@@ -19,50 +19,28 @@ public class UnitRecipeRegister {
         //spawnList = Seq.with(UnitTypes.poly, UnitTypes.cleroi, UnitTypes.quasar, UnitTypes.zenith, UnitTypes.cyerce, NHUnitTypes.ghost, NHUnitTypes.warper, NHUnitTypes.aliotiat, NHUnitTypes.rhino, NHUnitTypes.gather);
         //spawnList = Seq.with(NHUnitTypes.naxos, NHUnitTypes.tarlidor, NHUnitTypes.zarkov, UnitTypes.eclipse, UnitTypes.disrupt, UnitTypes.corvus, UnitTypes.navanax, UnitTypes.collaris);
         //spawnList = Seq.with(NHUnitTypes.destruction, NHUnitTypes.longinus, NHUnitTypes.annihilation, NHUnitTypes.saviour, NHUnitTypes.declining, NHUnitTypes.hurricane, NHUnitTypes.anvil, NHUnitTypes.sin, NHUnitTypes.collapser);
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.poly, 20 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 20, Items.titanium, 25);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 3, ModuleBlock.powerUnit, 4);
-        });            
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cleroi, 40 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.titanium, 75, Items.tungsten, 50);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 12, ModuleBlock.powerUnit, 16);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.mega, 60 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.tungsten, 180, NHItems.zeta, 80);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 40, ModuleBlock.crystalDiode, 25, ModuleBlock.supraGel, 12);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.quasar, 60 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.titanium, 180, NHItems.zeta, 80);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 30, ModuleBlock.crystalDiode, 30, ModuleBlock.supraGel, 12);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.zenith, 60 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 150, Items.titanium, 150, NHItems.zeta, 60);   
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 30, ModuleBlock.crystalDiode, 15, ModuleBlock.powerUnit, 18);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cyerce, 60 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 240, Items.tungsten, 120, NHItems.zeta, 100);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 40, ModuleBlock.supraGel, 12, ModuleBlock.supraGel, 30);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 60 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.silicon, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 10, ModuleBlock.supraGel, 12, ModuleBlock.powerUnit, 30);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.warper, 60 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.tungsten, 200, NHItems.presstanium, 50, NHItems.juniorProcessor, 150);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 20, ModuleBlock.supraGel, 12, ModuleBlock.powerUnit, 20);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.aliotiat, 60 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.zeta, 150, NHItems.presstanium, 150, NHItems.juniorProcessor, 50);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 30, ModuleBlock.supraGel, 12, ModuleBlock.powerUnit, 10);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.rhino, 90 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.presstanium, 120, NHItems.juniorProcessor, 60, Items.carbide, 80, NHItems.metalOxhydrigen, 80);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 50, ModuleBlock.supraGel, 36, ModuleBlock.powerUnit, 30);
-        }); 
-        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.gather, 90 * 60f, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 150, Items.carbide, 100, NHItems.metalOxhydrigen, 100, Items.surgeAlloy, 20);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 30, ModuleBlock.supraGel, 36, ModuleBlock.coolingUnit, 15);
-        }); 
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.poly, 20 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 20, Items.titanium, 25));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.poly, 20 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 12, ModuleBlock.powerUnit, 16));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cleroi, 40 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 60, Items.titanium, 75, Items.tungsten, 50));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cleroi, 40 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 12, ModuleBlock.powerUnit, 16));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.mega, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.tungsten, 180, NHItems.zeta, 80));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.mega, 60 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 40, ModuleBlock.crystalDiode, 25, ModuleBlock.supraGel, 12));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.quasar, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 180, Items.titanium, 180, NHItems.zeta, 80));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.quasar, 60 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 30, ModuleBlock.crystalDiode, 30, ModuleBlock.supraGel, 12));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.zenith, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 150, Items.titanium, 150, NHItems.zeta, 60));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.zenith, 60 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 30, ModuleBlock.crystalDiode, 15, ModuleBlock.powerUnit, 18);));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cyerce, 60 * 60f, recipe -> recipe.inputPayload = ItemStack.list(Items.silicon, 240, Items.tungsten, 120, NHItems.zeta, 100));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, UnitTypes.cyerce, 60 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 40, ModuleBlock.supraGel, 12, ModuleBlock.supraGel, 30));        
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.silicon, 200, NHItems.presstanium, 100, NHItems.juniorProcessor, 100));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.ghost, 60 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 10, ModuleBlock.supraGel, 12, ModuleBlock.powerUnit, 30));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.warper, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.tungsten, 200, NHItems.presstanium, 50, NHItems.juniorProcessor, 150));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.warper, 60 * 60f, recipe -> PayloadStack.list(ModuleBlock.crystalDiode, 20, ModuleBlock.supraGel, 12, ModuleBlock.powerUnit, 20));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.aliotiat, 60 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.zeta, 150, NHItems.presstanium, 150, NHItems.juniorProcessor, 50));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.aliotiat, 60 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.crystalDiode, 30, ModuleBlock.supraGel, 12, ModuleBlock.powerUnit, 10);));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.rhino, 90 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.presstanium, 120, NHItems.juniorProcessor, 60, Items.carbide, 80, NHItems.metalOxhydrigen, 80));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.rhino, 90 * 60f, recipe -> recipe.inputItem = recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 50, ModuleBlock.supraGel, 36, ModuleBlock.powerUnit, 30));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.gather, 90 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 150, Items.carbide, 100, NHItems.metalOxhydrigen, 100, Items.surgeAlloy, 20));
+        unitRecipePlan(UnitBlock.jumpGatePrimary, NHUnitTypes.gather, 90 * 60f, recipe -> PayloadStack.list(ModuleBlock.crystalDiode, 30, ModuleBlock.supraGel, 36, ModuleBlock.coolingUnit, 15));
         
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.naxos, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 600, Items.surgeAlloy, 300, NHItems.seniorProcessor, 100, NHItems.multipleSteel, 300));
         unitRecipePlan(UnitBlock.jumpGateStandard, NHUnitTypes.tarlidor, 180 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 500, NHItems.metalOxhydrigen, 600, Items.surgeAlloy, 300, NHItems.multipleSteel, 300));
@@ -83,6 +61,7 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.sin, 480 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 1000, NHItems.seniorProcessor, 400, NHItems.thermoCorePositive, 300, NHItems.nodexPlate, 600, NHItems.ancimembrane, 200));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.collapser, 600 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.thermoCorePositive, 2500, NHItems.thermoCoreNegative, 2500, NHItems.nodexPlate, 3000, NHItems.ancimembrane, 2000));
     }
+
 
     public static void unitRecipePlan(Block block, UnitType unitType, float craftTime, Cons<Recipe> recipe) {
         if (block instanceof JumpGate gate) {
