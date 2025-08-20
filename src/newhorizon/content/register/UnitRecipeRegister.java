@@ -6,6 +6,7 @@ import mindustry.content.UnitTypes;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import mindustry.game.PayloadStack;
 import newhorizon.content.NHItems;
 import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.content.NHUnitTypes;
