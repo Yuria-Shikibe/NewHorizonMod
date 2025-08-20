@@ -225,7 +225,7 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(NHItems.carbide, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 2 / 60f);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 1);
-            recipe.outputItem = ItemStack.list(NHItems.irayrondPanel, 3);
+            recipe.outputItem = ItemStack.list(NHItems.irayrondPanel, 6);
             recipe.craftTime = 60f;
             recipe.priority = 1;
         });
