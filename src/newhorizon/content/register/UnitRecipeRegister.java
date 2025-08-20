@@ -7,6 +7,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import newhorizon.content.NHItems;
+import newhorizon.content.blocks.ModuleBlock;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.content.blocks.UnitBlock;
 import newhorizon.expand.block.special.JumpGate;
