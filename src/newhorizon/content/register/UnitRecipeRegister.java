@@ -72,7 +72,9 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.hurricane, 480 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.seniorProcessor, 600, NHItems.thermoCoreNegative, 300, NHItems.nodexPlate, 600, NHItems.ancimembrane, 300));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.hurricane, 240 * 60f, recipe -> PayloadStack.list(ModuleBlock.fusionReactor, 200, ModuleBlock.quantumConductor, 200, ModuleBlock.particleModulator, 400));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.anvil, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 500, Items.carbide, 400, NHItems.multipleSteel, 800, NHItems.thermoCorePositive, 200, NHItems.nodexPlate, 200));
+        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.anvil, 160 * 60f, recipe -> PayloadStack.list(ModuleBlock.pulseMutator, 200, ModuleBlock.particleModulator, 200));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.sin, 480 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 1000, NHItems.seniorProcessor, 400, NHItems.thermoCorePositive, 300, NHItems.nodexPlate, 600, NHItems.ancimembrane, 200));
+        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.sin, 320 * 60f, recipe -> PayloadStack.list(ModuleBlock.fusionReactor, 200, ModuleBlock.resistoArray, 320, ModuleBlock.pulseMutator, 200));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.collapser, 600 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.thermoCorePositive, 2500, NHItems.thermoCoreNegative, 2500, NHItems.nodexPlate, 3000, NHItems.ancimembrane, 2000));
     }
 
