@@ -55,7 +55,7 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.corvus, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 200, Items.surgeAlloy, 200, Items.phaseFabric, 200, NHItems.multipleSteel, 200));
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.corvus, 180 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 60, ModuleBlock.fusionReactor, 30));
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.navanax, 180 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 200, Items.surgeAlloy, 600, NHItems.metalOxhydrigen, 600, NHItems.multipleSteel, 200));
-        unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.navanax, 135 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 40, ModuleBlock.fusionReactor, 90));
+        unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.navanax, 135 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.signalCirculator, 45, ModuleBlock.fusionReactor, 90));
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.collaris, 240 * 60f, recipe -> recipe.inputItem = ItemStack.list(Items.carbide, 300, Items.surgeAlloy, 400, Items.phaseFabric, 400, NHItems.seniorProcessor, 100));
         unitRecipePlan(UnitBlock.jumpGateStandard, UnitTypes.collaris, 180 * 60f, recipe -> recipe.inputPayload = PayloadStack.list(ModuleBlock.powerCell, 90, ModuleBlock.bionicsProcessor, 30, ModuleBlock.signalCirculator, 30));
 
