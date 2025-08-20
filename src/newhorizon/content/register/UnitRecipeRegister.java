@@ -76,6 +76,10 @@ public class UnitRecipeRegister {
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.sin, 480 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 1000, NHItems.seniorProcessor, 400, NHItems.thermoCorePositive, 300, NHItems.nodexPlate, 600, NHItems.ancimembrane, 200));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.sin, 320 * 60f, recipe -> PayloadStack.list(ModuleBlock.fusionReactor, 200, ModuleBlock.resistoArray, 320, ModuleBlock.pulseMutator, 200));
         unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.collapser, 600 * 60f, recipe -> recipe.inputItem = ItemStack.list(NHItems.thermoCorePositive, 2500, NHItems.thermoCoreNegative, 2500, NHItems.nodexPlate, 3000, NHItems.ancimembrane, 2000));
+        unitRecipePlan(UnitBlock.jumpGateHyper, NHUnitTypes.collapser, 600 * 60f, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.darkEnergy, 800);
+            PayloadStack.list(ModuleBlock.tachyonEmitter, 400, ModuleBlock.gaussReceptor, 400);
+        });
     }
 
 
