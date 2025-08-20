@@ -52,7 +52,8 @@ public class CraftingBlock {
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
 
             size = 2;
-            health = 800;
+            health = 640;
+            armor = 4;
             itemCapacity = 20;
             drawer = new DrawMulti(
                     new DrawRegionRotated() {{
@@ -80,10 +81,11 @@ public class CraftingBlock {
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
 
             size = 2;
-            health = 800;
+            health = 640;
+            armor = 4;
             itemCapacity = 20;
 
-            consumePower(240f / 60f);
+            consumePower(180f / 60f);
             outputItems = with(NHItems.juniorProcessor, 3);
 
             drawer = new DrawMulti(
@@ -134,7 +136,8 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1500;
+            health = 960;
+            armor = 6;
             itemCapacity = 20;
             liquidCapacity = 15f;
 
@@ -158,6 +161,7 @@ public class CraftingBlock {
 
             size = 2;
             health = 800;
+            armor = 5;
 
             canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
@@ -165,7 +169,7 @@ public class CraftingBlock {
             addLink(2, 0, 1, 2, 1, 1, 0, 2, 1, 1, 2, 1);
 
             craftTime = 120f;
-            consumePower(480 / 60f);
+            consumePower(300 / 60f);
 
             outputItems = with(NHItems.metalOxhydrigen, 4);
 
@@ -240,7 +244,8 @@ public class CraftingBlock {
             rotate = true;
 
             size = 3;
-            health = 900;
+            health = 960;
+            armor = 6;
 
             itemCapacity = 30;
             liquidCapacity = 30f;
@@ -256,7 +261,7 @@ public class CraftingBlock {
             );
             craftEffect = updateEffect = NHFx.square(NHItems.zeta.color, 60, 6, 16, 3);
 
-            consumePower(450 / 60f);
+            consumePower(480 / 60f);
             consumeItems(ItemStack.with(NHItems.zeta, 4));
         }};
         surgeRefactor = new RecipeGenericCrafter("surge-refactor") {{
@@ -269,7 +274,8 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1500;
+            health = 1280;
+            armor = 8;
 
             ignoreLiquidFullness = true;
 
@@ -305,7 +311,8 @@ public class CraftingBlock {
             ignoreLiquidFullness = true;
 
             itemCapacity = 30;
-            health = 1600;
+            health = 1280;
+            armor = 8;
 
             craftEffect = updateEffect = NHFx.polyCloud(Pal.accent, 60, 3, 16, 6);
 
@@ -355,7 +362,8 @@ public class CraftingBlock {
 
             size = 3;
             rotate = false;
-            health = 900;
+            health = 1600;
+            armor = 10;
             itemCapacity = 30;
 
 
@@ -383,7 +391,7 @@ public class CraftingBlock {
             updateEffect = EffectWrapper.wrap(Fx.smeltsmoke, lightColor);
             craftEffect = EffectWrapper.wrap(NHFx.square45_6_45, lightColor);
 
-            consumePower(5f);
+            consumePower(240f / 60f);
         }};
         processorEncoder = new RecipeGenericCrafter("processor-encoder") {{
             requirements(Category.crafting, BuildVisibility.shown,
@@ -396,6 +404,8 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 20;
+            health = 1280;
+            armor = 8;       
 
             consumePower(240f / 60f);
             outputItems = with(NHItems.seniorProcessor, 2);
@@ -478,6 +488,8 @@ public class CraftingBlock {
             size = 3;
             liquidCapacity = 30f;
             itemCapacity = 30;
+            health = 1600;
+            armor = 10;
 
             drawer = new DrawMulti(
                     new DrawRegion("-base"),
@@ -507,7 +519,8 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1500;
+            health = 1980;
+            armor = 12;
 
             outputItems = with(NHItems.irayrondPanel, 4);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
@@ -552,13 +565,14 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             craftTime = 120f;
+            itemCapacity = 30;
+            health = 1980;
+            armor = 12;
             consumePower(480 / 60f);
 
             outputItems = with(NHItems.setonAlloy, 2);
             outputLiquids = LiquidStack.with(NHLiquids.zetaFluidNegative, 3f / 60f);
             ignoreLiquidFullness = true;
-
-            itemCapacity = 30;
 
             craftEffect = Fx.smeltsmoke;
             updateEffect = Fx.smeltsmoke;
@@ -624,6 +638,8 @@ public class CraftingBlock {
             outputItem = new ItemStack(NHItems.nodexPlate, 2);
             craftTime = 120f;
             itemCapacity = 20;
+            health = 2240;
+            armor = 14;
             size = 3;
             hasPower = hasItems = true;
             drawer = new DrawPrinter(outputItem.item) {{
@@ -634,7 +650,7 @@ public class CraftingBlock {
             }};
             clipSize = size * tilesize * 2f;
             consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
-            consumePower(10f);
+            consumePower(1600 / 60f);
         }};
         ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
             size = 3;
@@ -646,8 +662,8 @@ public class CraftingBlock {
 
             craftTime = 120f;
 
-            health = 2200;
-            armor = 12;
+            health = 2240;
+            armor = 14;
             craftEffect = NHFx.crossBlast(NHColor.ancient, 45f, 45f);
             craftEffect.lifetime *= 1.5f;
             updateEffect = NHFx.squareRand(NHColor.ancient, 5f, 15f);
@@ -714,7 +730,7 @@ public class CraftingBlock {
             itemCapacity = 60;
             liquidCapacity = 60f;
 
-            consumePower(12);
+            consumePower(1600 / 60f);
             consumeItems(with(NHItems.irayrondPanel, 6));
             consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
             outputItems = with(NHItems.ancimembrane, 3);
@@ -722,107 +738,127 @@ public class CraftingBlock {
 
         factory0 = new RecipeGenericCrafter("factory-0"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.tungsten, 80,
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 40
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
 
             size = 2;
-            health = 1200;
+            health = 800;
+            armor = 5;
             itemCapacity = 30;
             rotate = false;
             drawer = new DrawDefault();
 
-            consumePower(180f / 60f);
+            consumePower(300f / 60f);
         }};
         factory1 = new RecipeGenericCrafter("factory-1"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.presstanium, 10,
+                    NHItems.juniorProcessor, 80,
+                    NHItems.carbide, 40,
+                    NHItems.metalOxhydrigen, 80
             ));
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1, -1, 2, 1, 2, -1, 1);
             canMirror = true;
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 2;
-            health = 1200;
+            health = 1120;
+            armor = 7;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
 
-            consumePower(180f / 60f);
+            consumePower(360f / 60f);
         }};
         factory2 = new RecipeGenericCrafter("factory-2"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.juniorProcessor, 60,
+                    NHItems.metalOxhydrigen, 120,
+                    NHItems.phaseFabric, 80,
+                    NHItems.surgeAlloy, 80
             ));
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1500;
+            health = 1440;
+            armor = 9;
             itemCapacity = 30;
             drawer = new DrawRegionFlip();
 
-            consumePower(180f / 60f);
+            consumePower(450f / 60f);
         }};
         factory3 = new RecipeGenericCrafter("factory-3"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.zeta, 200,
+                    NHItems.presstanium, 100,
+                    NHItems.multipleSteel, 60,
+                    NHItems.seniorProcessor, 40
             ));
             size = 4;
-            health = 1600;
+            health = 1760;
+            armor = 11;
             itemCapacity = 30;
             rotate = false;
             drawer = new DrawRegionFlip();
 
-            consumePower(180f / 60f);
+            consumePower(600f / 60f);
         }};
         factory4 = new RecipeGenericCrafter("factory-4"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.juniorProcessor, 100,
+                    NHItems.carbide, 60,
+                    NHItems.irayrondPanel, 60,
+                    NHItems.setonAlloy, 80
             ));
             addLink(-2, -2, 1, -2, -1, 1, -2, 0, 1, -1, -2, 1, 0, -2, 1, 2, 2, 1, 2, 1, 1, 2, 0, 1, 1, 2, 1, 0, 2, 1);
             canMirror = true;
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 3;
-            health = 1900;
+            health = 2080;
+            armor = 13;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
 
-            consumePower(180f / 60f);
+            consumePower(720f / 60f);
         }};
         factory5 = new RecipeGenericCrafter("factory-5"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.silicon, 150,
+                    NHItems.surgeAlloy, 60,
+                    NHItems.nodexPlate, 30,
+                    NHItems.ancimembrane, 20
             ));
 
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
             size = 4;
             health = 2400;
+            armor = 15;
             itemCapacity = 30;
             drawer = new DrawRegionFlip();
 
-            consumePower(180f / 60f);
+            consumePower(840f / 60f);
         }};
         factory6 = new RecipeGenericCrafter("factory-6"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.titanium, 45,
-                    NHItems.silicon, 60
+                    NHItems.multipleSteel, 150,
+                    NHItems.seniorProcessor, 100,
+                    NHItems.nodexPlate, 55,
+                    NHItems.darkEnergy, 40
             ));
             addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, -2, 1, 2, -2, 1, 3, -2, 1, 3, -1, 1, 3, 0, 1);
             canMirror = true;
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 4;
-            health = 2600;
+            health = 2720;
+            armor = 17;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
 
-            consumePower(180f / 60f);
+            consumePower(1200f / 60f);
         }};
     }
 }

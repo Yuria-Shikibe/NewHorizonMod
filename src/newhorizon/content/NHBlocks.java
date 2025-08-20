@@ -105,8 +105,6 @@ public class NHBlocks {
 
     public static Block largeWaterExtractor;
     public static Block hydroFuelCell;
-    public static Block hugeBattery;
-    public static Block largeMendProjector;
     public static Block antiBulletTurret;
     public static Block fireExtinguisher;
     public static Block webber;
@@ -2262,14 +2260,6 @@ public class NHBlocks {
             }});
         }};
 
-        hugeBattery = new Battery("huge-battery") {{
-            size = 5;
-            health = 1600;
-            requirements(Category.power, BuildVisibility.shown, ItemStack.with(Items.phaseFabric, 40, NHItems.juniorProcessor, 20, NHItems.zeta, 80, NHItems.presstanium, 35, Items.graphite, 50));
-            //			//NHTechTree.add(Blocks.batteryLarge, this);
-            consumePowerBuffered(750_000);
-        }};
-
         hyperGenerator = new HyperGenerator("hyper-generator") {{
             size = 8;
             health = 40000;
@@ -2581,21 +2571,6 @@ public class NHBlocks {
             consumeLiquid(NHLiquids.quantumLiquid, 0.5f);
 
             requirements(Category.units, BuildVisibility.shown, with(NHItems.ancimembrane, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
-        }};
-
-        largeMendProjector = new MendProjector("large-mend-projector") {{
-            size = 3;
-            reload = 180f;
-            useTime = 600f;
-            healPercent = 15;
-            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, NHItems.multipleSteel, 50));
-//			//NHTechTree.add(Blocks.mendProjector, this);
-            consumePower(2F);
-            range = 160.0F;
-            phaseBoost = 15f;
-            phaseRangeBoost = 60.0F;
-            health = 980;
-            consumeItem(NHItems.juniorProcessor).boost();
         }};
 
         largeWaterExtractor = new SolidPump("large-water-extractor") {{

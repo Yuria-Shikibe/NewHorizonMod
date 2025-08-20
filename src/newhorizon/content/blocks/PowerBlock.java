@@ -21,10 +21,20 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
-            armorBattery, armorBatteryLarge,
-            gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
+            armorBattery, armorBatteryLarge, armorBatteryHuge,
+            gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
+        gravityTrapMidantha = new GravityWallSubstation("gravity-node-midantha") {{
+            requirements(Category.power, BuildVisibility.shown, with(Items.silicon, 10));
+
+            size = 1;
+            health = 400;
+            laserRange = 8;
+            maxNodes = 10;
+            gravityRange = laserRange * tilesize * 1.5f;
+        }};
+        
         gravityTrapSerpulo = new GravityWallSubstation("gravity-node-serpulo") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.copper, 10, Items.lead, 8));
 
@@ -79,15 +89,28 @@ public class PowerBlock {
             consumePowerBuffered(10000f);
         }};
 
-        armorBatteryLarge = new Battery("large-armor-battery") {{
+        armorBatteryLarge = new Battery("armor-battery-large") {{
             requirements(Category.power, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 40,
-                    NHItems.juniorProcessor, 10
+                    NHItems.juniorProcessor, 10,
+                    NHItems.zeta, 50
             ));
             size = 3;
-            health = 3000;
+            health = 2000;
             armor = 30;
             consumePowerBuffered(100000f);
+        }};
+
+        armorBatteryHuge = new Battery("armor-battery-huge") {{
+            requirements(Category.power, BuildVisibility.shown, ItemStack.with(
+                    NHItems.multipleSteel, 60,
+                    NHItems.seniorProcessor, 40,
+                    NHItems.zeta, 200
+            ));
+            size = 5;
+            health = 5000;
+            armor = 50;
+            consumePowerBuffered(1000000f);
         }};
 
         zetaGenerator = new RecipeGenericCrafter("zeta-generator") {{
