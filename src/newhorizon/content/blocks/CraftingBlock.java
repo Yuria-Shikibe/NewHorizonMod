@@ -52,7 +52,7 @@ public class CraftingBlock {
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
 
             size = 2;
-            health = 640;
+            health = 600;
             armor = 4;
             itemCapacity = 20;
             drawer = new DrawMulti(
@@ -81,7 +81,7 @@ public class CraftingBlock {
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
 
             size = 2;
-            health = 640;
+            health = 600;
             armor = 4;
             itemCapacity = 20;
 
@@ -136,7 +136,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 960;
+            health = 900;
             armor = 6;
             itemCapacity = 20;
             liquidCapacity = 15f;
@@ -160,8 +160,8 @@ public class CraftingBlock {
                     ItemStack.with(NHItems.presstanium, 60, NHItems.juniorProcessor, 45, Items.tungsten, 30));
 
             size = 2;
-            health = 800;
-            armor = 5;
+            health = 900;
+            armor = 6;
 
             canMirror = true;
             rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
@@ -244,7 +244,7 @@ public class CraftingBlock {
             rotate = true;
 
             size = 3;
-            health = 960;
+            health = 900;
             armor = 6;
 
             itemCapacity = 30;
@@ -274,7 +274,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1280;
+            health = 1200;
             armor = 8;
 
             ignoreLiquidFullness = true;
@@ -311,7 +311,7 @@ public class CraftingBlock {
             ignoreLiquidFullness = true;
 
             itemCapacity = 30;
-            health = 1280;
+            health = 1200;
             armor = 8;
 
             craftEffect = updateEffect = NHFx.polyCloud(Pal.accent, 60, 3, 16, 6);
@@ -362,7 +362,7 @@ public class CraftingBlock {
 
             size = 3;
             rotate = false;
-            health = 1600;
+            health = 1500;
             armor = 10;
             itemCapacity = 30;
 
@@ -404,8 +404,8 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 20;
-            health = 1280;
-            armor = 8;       
+            health = 1500;
+            armor = 10;       
 
             consumePower(240f / 60f);
             outputItems = with(NHItems.seniorProcessor, 2);
@@ -488,7 +488,7 @@ public class CraftingBlock {
             size = 3;
             liquidCapacity = 30f;
             itemCapacity = 30;
-            health = 1600;
+            health = 1500;
             armor = 10;
 
             drawer = new DrawMulti(
@@ -519,7 +519,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1980;
+            health = 1800;
             armor = 12;
 
             outputItems = with(NHItems.irayrondPanel, 4);
@@ -566,7 +566,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
             itemCapacity = 30;
-            health = 1980;
+            health = 1800;
             armor = 12;
             consumePower(480 / 60f);
 
@@ -637,8 +637,8 @@ public class CraftingBlock {
             });
             outputItem = new ItemStack(NHItems.nodexPlate, 2);
             craftTime = 120f;
-            itemCapacity = 20;
-            health = 2240;
+            itemCapacity = 40;
+            health = 2100;
             armor = 14;
             size = 3;
             hasPower = hasItems = true;
@@ -662,7 +662,7 @@ public class CraftingBlock {
 
             craftTime = 120f;
 
-            health = 2240;
+            health = 2100;
             armor = 14;
             craftEffect = NHFx.crossBlast(NHColor.ancient, 45f, 45f);
             craftEffect.lifetime *= 1.5f;
@@ -727,15 +727,15 @@ public class CraftingBlock {
                     }
             );
 
-            itemCapacity = 60;
-            liquidCapacity = 60f;
+            itemCapacity = 40;
+            liquidCapacity = 40f;
 
             consumePower(1600 / 60f);
             consumeItems(with(NHItems.irayrondPanel, 6));
             consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
             outputItems = with(NHItems.ancimembrane, 3);
         }};
-
+        
         factory0 = new RecipeGenericCrafter("factory-0"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.tungsten, 80,
@@ -745,7 +745,7 @@ public class CraftingBlock {
             addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
 
             size = 2;
-            health = 800;
+            health = 750;
             armor = 5;
             itemCapacity = 30;
             rotate = false;
@@ -765,7 +765,7 @@ public class CraftingBlock {
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 2;
-            health = 1120;
+            health = 1050;
             armor = 7;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
@@ -782,7 +782,7 @@ public class CraftingBlock {
             addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
 
             size = 3;
-            health = 1440;
+            health = 1350;
             armor = 9;
             itemCapacity = 30;
             drawer = new DrawRegionFlip();
@@ -797,7 +797,7 @@ public class CraftingBlock {
                     NHItems.seniorProcessor, 40
             ));
             size = 4;
-            health = 1760;
+            health = 1650;
             armor = 11;
             itemCapacity = 30;
             rotate = false;
@@ -817,7 +817,7 @@ public class CraftingBlock {
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 3;
-            health = 2080;
+            health = 1950;
             armor = 13;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
@@ -834,7 +834,7 @@ public class CraftingBlock {
 
             addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
             size = 4;
-            health = 2400;
+            health = 2250;
             armor = 15;
             itemCapacity = 30;
             drawer = new DrawRegionFlip();
@@ -853,7 +853,7 @@ public class CraftingBlock {
             rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
 
             size = 4;
-            health = 2720;
+            health = 2550;
             armor = 17;
             itemCapacity = 30;
             drawer = new DrawRegionRotatedDiagonal("-rot");
