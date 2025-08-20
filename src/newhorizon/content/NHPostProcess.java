@@ -34,6 +34,7 @@ import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
+import newhorizon.NewHorizon;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
 
@@ -339,6 +340,13 @@ public class NHPostProcess {
     public static void contentOverride() {}
 
     public static void postProcessOverride() {
+        content.each(content -> {
+            if (content instanceof UnlockableContent uc){
+                if (uc.isModded() && uc.minfo.mod == NewHorizon.MOD){
+                    uc.shownPlanets.add(NHPlanets.midantha);
+                }
+            }
+        });
         overrideStats();
     }
 
@@ -353,6 +361,9 @@ public class NHPostProcess {
         }
     }
 
+    public static Seq<SpawnGroup> generate(float difficulty, boolean airOnly) {
+        return generate(difficulty, new Rand(), false, airOnly, false);
+    }
 
     public static Seq<SpawnGroup> generate(float difficulty, Rand rand, boolean attack, boolean airOnly, boolean naval) {
         UnitType[][] species = {

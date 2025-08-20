@@ -23,6 +23,7 @@ import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
 import mindustry.graphics.g3d.*;
 import mindustry.maps.generators.BlankPlanetGenerator;
+import mindustry.type.ItemStack;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.Block;
@@ -30,6 +31,7 @@ import mindustry.world.Tile;
 import mindustry.world.Tiles;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.blocks.EnvironmentBlock;
+import newhorizon.content.blocks.SpecialBlock;
 import newhorizon.util.feature.ManhattanVoronoi;
 
 import static mindustry.Vars.content;
@@ -62,12 +64,15 @@ public class NHPlanets {
             );
 
             ruleSetter = r -> {
+                r.waves = true;
                 r.waveTeam = Team.blue;
                 r.placeRangeCheck = false;
                 r.showSpawns = true;
-                r.waveSpacing = 80 * Time.toSeconds;
-                r.initialWaveSpacing = 8f * Time.toMinutes;
+                r.waveSpacing = 60 * Time.toSeconds;
+                r.initialWaveSpacing = 5f * Time.toMinutes;
                 r.hideBannedBlocks = true;
+                r.spawns = NHPostProcess.generate(0.8f, false);
+                r.loadout = ItemStack.list(NHItems.titanium, 1000, NHItems.tungsten, 1000, NHItems.silicon, 1000, NHItems.zeta, 1000);
 
                 Rules.TeamRule teamRule = r.teams.get(r.defaultTeam);
                 teamRule.rtsAi = false;
@@ -170,28 +175,6 @@ public class NHPlanets {
             path.clear();
             path.add(pathfind(spawnX, spawnY, coreX, coreY, tile -> (tile.solid() ? 50f : 0f), Astar.manhattan));
 
-            continualDraw(tiles, path, NHBlocks.quantumField, 4, ((x0, y0) -> {
-                Floor f = tiles.getn(x0, y0).floor();
-                boolean b = f.isDeep();
-                if(b && noise(x0, y0 * x0, 6, 0.7f, 25f, 3f) > 0.4125f){
-                    rand.setSeed((long)x0 + y0 << 8);
-                    if(rand.chance(0.22f))draw(x0, y0, NHBlocks.quantumField, 4, ((x1, y1) -> {
-                        Floor f1 = tiles.getn(x1, y1).floor();
-                        if(f1 == NHBlocks.quantumFieldDisturbing){
-                            tiles.getn(x1, y1).setFloor(NHBlocks.metalGround.asFloor());
-                            return false;
-                        }
-                        return f1.isDeep();
-                    }));
-                }
-
-                else if(f == NHBlocks.quantumFieldDisturbing){
-                    draw(x0, y0, NHBlocks.metalGround, 4, ((x1, y1) -> tiles.getn(x1, y1).floor() == NHBlocks.quantumFieldDisturbing));
-                }
-
-                return b;
-            }));
-
             tiles.eachTile(tile -> {
                 if(tile.floor() == Blocks.carbonStone){
                     float noise = noise(tile.x + 150, tile.y + 100 + tile.x / 0.8f, 4, 0.5f, 65f, 1.5f);
@@ -250,9 +233,10 @@ public class NHPlanets {
                 }
             });
 
-            //tiles.get(spawnX, spawnY).setOverlay(Blocks.spawn);
-            Schematics.placeLaunchLoadout(width/2, height/2);
-
+            erase(coreX, coreY, 15);
+            erase(spawnX, spawnY, 15);
+            tiles.getn(spawnX, spawnY).setOverlay(Blocks.spawn);
+            Schematics.placeLaunchLoadout(coreX, coreY);
         }
 
         public void draw(int cx, int cy, Block block, int rad, DrawBoolf b){

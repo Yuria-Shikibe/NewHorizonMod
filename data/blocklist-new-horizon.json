@@ -869,6 +869,12 @@
 	"size": 4,
 	"color": 255
 },
+"new-horizon-gravity-node-midantha": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
 "new-horizon-gravity-node-serpulo": {
 	"synthetic": true,
 	"solid": true,

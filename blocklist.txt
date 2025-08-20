@@ -1,3 +1,4 @@
+new-horizon- 1 1 3 0
 new-horizon-air-raider 1 1 3 0
 new-horizon-ancient-artillery 1 1 8 0
 new-horizon-ancient-laser-wall 1 1 2 0
@@ -115,6 +116,7 @@ new-horizon-glass-quantifier 1 1 2 0
 new-horizon-gravity 1 1 3 0
 new-horizon-gravity-gully 1 1 3 0
 new-horizon-gravity-node-erekir 1 1 1 0
+new-horizon-gravity-node-midantha 1 1 1 0
 new-horizon-gravity-node-serpulo 1 1 1 0
 new-horizon-gravity-trap 1 1 2 0
 new-horizon-gravity-trap-heavy 1 1 3 0

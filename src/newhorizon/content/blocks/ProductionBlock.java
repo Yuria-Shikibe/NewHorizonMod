@@ -113,7 +113,7 @@ public class ProductionBlock {
             consumePower(5f);
         }};
         xenExtractor = new ThermalGenerator("xen-extractor") {{
-            requirements(Category.production, with(Items.tungsten, 50, NHItems.presstanium, 20, NHItems.juniorProcessor, 20));
+            requirements(Category.production, with(NHItems.titanium, 40, NHItems.silicon, 40));
             attribute = NHContent.quantum;
             group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
