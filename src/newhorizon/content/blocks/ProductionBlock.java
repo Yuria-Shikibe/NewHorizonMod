@@ -163,7 +163,7 @@ public class ProductionBlock {
             rotate = false;
 
             liquidCapacity = 300f;
-            consumePower(5f);
+            //consumePower(5f);
         }};
 
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
