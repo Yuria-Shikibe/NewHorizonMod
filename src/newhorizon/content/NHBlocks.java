@@ -105,8 +105,6 @@ public class NHBlocks {
 
     public static Block largeWaterExtractor;
     public static Block hydroFuelCell;
-    public static Block hugeBattery;
-    public static Block largeMendProjector;
     public static Block antiBulletTurret;
     public static Block fireExtinguisher;
     public static Block webber;
@@ -1797,7 +1795,7 @@ public class NHBlocks {
         bloodStar = new ItemTurret("blood-star") {{
             size = 5;
             coolant = consumeCoolant(0.2F);
-            requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 230, NHItems.zeta, 300, NHItems.seniorProcessor, 200, NHItems.presstanium, 300, Items.thorium, 600));
+            requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 230, NHItems.zeta, 300, NHItems.seniorProcessor, 200, NHItems.presstanium, 300));
             recoil = 5f;
             reload = 150f;
             range = 520f;
@@ -1889,7 +1887,7 @@ public class NHBlocks {
             size = 3;
             health = 1250;
             coolant = consumeCoolant(0.2F);
-            requirements(Category.turret, ItemStack.with(Items.plastanium, 60, NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
+            requirements(Category.turret, ItemStack.with(NHItems.presstanium, 45, NHItems.metalOxhydrigen, 45, NHItems.juniorProcessor, 30));
             canOverdrive = false;
             drawer = new DrawTurret() {{
                 parts.add(new RegionPart("-shooter") {{
@@ -1939,7 +1937,7 @@ public class NHBlocks {
             health = 320;
 
             coolant = consumeCoolant(0.05F);
-            requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.copper, 50, Items.silicon, 25));
+            requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.silicon, 25));
             shootType = new BasicBulletType(6.5f, 28f) {{
                 hitEffect = new Effect(12.0F, (e) -> {
                     Draw.color(Pal.lancerLaser, Color.white, e.fout() * 0.75f);
@@ -2062,7 +2060,7 @@ public class NHBlocks {
                 cooldownTime = 90f;
                 coolant = consumeCoolant(0.3f);
 
-                requirements(Category.turret, with(NHItems.setonAlloy, 150, Items.plastanium, 150, NHItems.seniorProcessor, 200, NHItems.zeta, 500, Items.phaseFabric, 125));
+                requirements(Category.turret, with(NHItems.setonAlloy, 150, NHItems.seniorProcessor, 200, NHItems.zeta, 500, Items.phaseFabric, 125));
             }
 
             @Override
@@ -2260,14 +2258,6 @@ public class NHBlocks {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.nitrogen, 2f), new DrawDefault(), new DrawGlowRegion() {{
                 color = Liquids.hydrogen.color;
             }});
-        }};
-
-        hugeBattery = new Battery("huge-battery") {{
-            size = 5;
-            health = 1600;
-            requirements(Category.power, BuildVisibility.shown, ItemStack.with(Items.phaseFabric, 40, NHItems.juniorProcessor, 20, NHItems.zeta, 80, NHItems.presstanium, 35, Items.graphite, 50));
-            //			//NHTechTree.add(Blocks.batteryLarge, this);
-            consumePowerBuffered(750_000);
         }};
 
         hyperGenerator = new HyperGenerator("hyper-generator") {{
@@ -2581,21 +2571,6 @@ public class NHBlocks {
             consumeLiquid(NHLiquids.quantumLiquid, 0.5f);
 
             requirements(Category.units, BuildVisibility.shown, with(NHItems.ancimembrane, 200, NHItems.seniorProcessor, 200, NHItems.presstanium, 450, NHItems.zeta, 200));
-        }};
-
-        largeMendProjector = new MendProjector("large-mend-projector") {{
-            size = 3;
-            reload = 180f;
-            useTime = 600f;
-            healPercent = 15;
-            requirements(Category.effect, with(NHItems.presstanium, 60, NHItems.juniorProcessor, 50, NHItems.multipleSteel, 50));
-//			//NHTechTree.add(Blocks.mendProjector, this);
-            consumePower(2F);
-            range = 160.0F;
-            phaseBoost = 15f;
-            phaseRangeBoost = 60.0F;
-            health = 980;
-            consumeItem(NHItems.juniorProcessor).boost();
         }};
 
         largeWaterExtractor = new SolidPump("large-water-extractor") {{

@@ -21,6 +21,7 @@ public class NHStats {
             maxLinks = new Stat("max-build-links", StatCat.function),
             installableBlocks = new Stat("installable-blocks", StatCat.function),
             compatibleBlocks = new Stat("compatible-blocks", StatCat.function),
-            overrides = new Stat("overrides", StatCat.optional);
+            overrides = new Stat("overrides", StatCat.optional),
+            baseRepairAmount = new Stat("base-repair-amount", StatCat.function);
 
 }

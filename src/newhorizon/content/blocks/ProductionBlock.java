@@ -52,7 +52,8 @@ public class ProductionBlock {
             ));
 
             size = 2;
-            health = 400;
+            health = 300;
+            armor = 2;
             itemCapacity = 30;
             rotate = false;
 
@@ -75,7 +76,9 @@ public class ProductionBlock {
             ));
 
             size = 2;
-            health = 400;
+            health = 300;
+            armor = 2;
+            
             itemCapacity = 30;
             rotate = false;
 
@@ -95,7 +98,8 @@ public class ProductionBlock {
             ));
 
             size = 2;
-            health = 400;
+            health = 300;
+            armor = 2;
             itemCapacity = 30;
             liquidCapacity = 90f;
             rotate = false;
@@ -108,14 +112,13 @@ public class ProductionBlock {
             craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 16, 3);
             consumePower(5f);
         }};
-
         xenExtractor = new ThermalGenerator("xen-extractor") {{
-            requirements(Category.production, with(Items.tungsten, 50, NHItems.presstanium, 20, NHItems.juniorProcessor, 20));
+            requirements(Category.production, with(NHItems.titanium, 40, NHItems.silicon, 40));
             attribute = NHContent.quantum;
             group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
             minEfficiency = 9f - 0.0001f;
-            powerProduction = 360f / 60f / 9f;
+            powerProduction = 1500f / 60f / 9f;
             displayEfficiency = false;
             effectChance = 0.2f;
             generateEffect = new OptionalMultiEffect(
@@ -140,14 +143,13 @@ public class ProductionBlock {
             );
 
             hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 4f / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 30f / 60f);
             liquidCapacity = 300f;
-
-            consumePower(5f);
+            health = 1200;
+            armor = 8;
         }};
-
         xenIterator = new RecipeGenericCrafter("xen-iterator"){{
-            requirements(Category.power, ItemStack.with(
+            requirements(Category.production, ItemStack.with(
                     NHItems.metalOxhydrigen, 40,
                     NHItems.juniorProcessor, 80,
                     NHItems.zeta, 100
@@ -159,15 +161,15 @@ public class ProductionBlock {
             rotate = false;
 
             liquidCapacity = 300f;
-            consumePower(5f);
+            //consumePower(5f);
         }};
 
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
-            health = 960;
-            armor = 2f;
+            health = 900;
+            armor = 6f;
 
             mineSpeed = 6f;
             mineCount = 15;
@@ -220,7 +222,7 @@ public class ProductionBlock {
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
 
             health = 1200;
-            armor = 4f;
+            armor = 8f;
 
             mineSpeed = 10f;
             mineCount = 20;
@@ -293,8 +295,8 @@ public class ProductionBlock {
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
             size = 4;
 
-            health = 1560;
-            armor = 6f;
+            health = 1500;
+            armor = 10f;
 
             mineSpeed = 12f;
             mineCount = 30;
@@ -349,7 +351,8 @@ public class ProductionBlock {
 
         speedModule = new DrillModule("speed-module") {{
             requirements(Category.production, with(NHItems.juniorProcessor, 30, NHItems.presstanium, 25, NHItems.metalOxhydrigen, 20));
-            health = 760;
+            health = 600;
+            armor = 4;
             size = 2;
             boostSpeed = 1f;
             powerMul = 0.4f;
@@ -365,7 +368,8 @@ public class ProductionBlock {
         }};
         speedModuleMk2 = new DrillModule("speed-module-mk2") {{
             requirements(Category.production, with(NHItems.seniorProcessor, 30, Items.phaseFabric, 25, NHItems.zeta, 40));
-            health = 760;
+            health = 900;
+            armor = 6;
             size = 2;
             boostSpeed = 2f;
             powerMul = 0.8f;
@@ -381,7 +385,8 @@ public class ProductionBlock {
         }};
         refineModule = new DrillModule("refine-module") {{
             requirements(Category.production, with(Items.titanium, 35, Items.tungsten, 40));
-            health = 720;
+            health = 600;
+            armor = 4;
             size = 2;
             boostFinalMul = -0.25f;
             powerMul = 1f;
@@ -439,7 +444,8 @@ public class ProductionBlock {
         }};
         convertorModule = new DrillModule("convertor-module") {{
             requirements(Category.production, with(Items.carbide, 25, NHItems.juniorProcessor, 30, NHItems.presstanium, 20));
-            health = 750;
+            health = 600;
+            armor = 4;
             size = 2;
             convertList.add(
                     new Item[]{Items.titanium, Items.tungsten},
@@ -498,7 +504,8 @@ public class ProductionBlock {
         }};
         deliveryModule = new DrillModule("delivery-module") {{
             requirements(Category.production, with(NHItems.irayrondPanel, 25, NHItems.seniorProcessor, 50, NHItems.multipleSteel, 50, NHItems.setonAlloy, 10));
-            health = 800;
+            health = 900;
+            armor = 6;
             size = 2;
             powerMul = 1.2f;
             powerExtra = 300f;

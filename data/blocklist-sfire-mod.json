@@ -17,6 +17,12 @@
 	"size": 1,
 	"color": -590828289
 },
+"sfire-mod-rare-mound": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1
+},
 "sfire-mod-rare-earth-floor": {
 	"synthetic": false,
 	"solid": false,
@@ -40,90 +46,6 @@
 	"solid": true,
 	"size": 1,
 	"color": -421145089
-},
-"sfire-mod-magstone-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1161642751
-},
-"sfire-mod-magbasalt-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1245530879
-},
-"sfire-mod-magshale-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1716943615
-},
-"sfire-mod-calcite-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -1431588097
-},
-"sfire-mod-celestite-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1738520831
-},
-"sfire-mod-celestite-vent": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 236401663
-},
-"sfire-mod-crackrock-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1228357119
-},
-"sfire-mod-combination-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -1670484737
-},
-"sfire-mod-combination-vent": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 857809151
-},
-"sfire-mod-radiquartz-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -522993153
-},
-"sfire-mod-radiamphibole-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 657597695
-},
-"sfire-mod-radigabbro-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1111374591
-},
-"sfire-mod-radimacadam1-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -2777345
-},
-"sfire-mod-radimacadam2-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -2777345
 },
 "sfire-mod-magstone-wall": {
 	"synthetic": false,
@@ -245,6 +167,102 @@
 	"size": 1,
 	"color": 1684102655
 },
+"sfire-mod-magstone-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1161642751
+},
+"sfire-mod-magbasalt-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1245530879
+},
+"sfire-mod-magshale-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1716943615
+},
+"sfire-mod-calcite-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1431588097
+},
+"sfire-mod-celestite-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1738520831
+},
+"sfire-mod-celestite-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 236401663
+},
+"sfire-mod-crackrock-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1228357119
+},
+"sfire-mod-combination-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1670484737
+},
+"sfire-mod-combination-vent": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 857809151
+},
+"sfire-mod-radiquartz-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -522993153
+},
+"sfire-mod-radiamphibole-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 657597695
+},
+"sfire-mod-radigabbro-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1111374591
+},
+"sfire-mod-radimacadam1-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -2777345
+},
+"sfire-mod-radimacadam2-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -2777345
+},
+"sfire-mod-industry-floor-cover": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 2004318207
+},
+"sfire-mod-industry-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -2777345
+},
 "sfire-mod-industry-floor": {
 	"synthetic": false,
 	"solid": false,
@@ -275,29 +293,17 @@
 	"size": 1,
 	"color": 1010714111
 },
-"sfire-mod-industry-floor-cover": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 2004318207
-},
-"sfire-mod-industry-wall": {
+"sfire-mod-industry-nanowall": {
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
-	"color": -2777345
+	"color": 2096335359
 },
 "sfire-mod-nano-panel": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
 	"color": 2144635391
-},
-"sfire-mod-industry-nanowall": {
-	"synthetic": false,
-	"solid": true,
-	"size": 1,
-	"color": 2096335359
 },
 "sfire-mod-light-red": {
 	"synthetic": false,
@@ -323,12 +329,6 @@
 	"size": 1,
 	"color": -2051570177
 },
-"sfire-mod-reforced-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1010714111
-},
 "sfire-mod-reforced-floor-1": {
 	"synthetic": false,
 	"solid": false,
@@ -340,12 +340,6 @@
 	"solid": false,
 	"size": 1,
 	"color": 1010714111
-},
-"sfire-mod-reforced-floor-3": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 0
 },
 "sfire-mod-perimeter": {
 	"synthetic": false,
@@ -383,6 +377,12 @@
 	"size": 3,
 	"color": 255
 },
+"sfire-mod-radar-station": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
+	"color": 255
+},
 "sfire-mod-ore-sfire-mod-strontium": {
 	"synthetic": false,
 	"solid": false,
@@ -406,6 +406,30 @@
 	"solid": false,
 	"size": 1,
 	"color": 1717863679
+},
+"sfire-mod-dark-scrap": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 2004318207
+},
+"sfire-mod-dark-coal": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 656877567
+},
+"sfire-mod-dark-titanium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1918770177
+},
+"sfire-mod-dark-thorium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -106706945
 },
 "sfire-mod-crusher": {
 	"synthetic": true,
@@ -465,6 +489,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 4,
+	"color": 255
+},
+"sfire-mod-phase-activer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "sfire-mod-silistell-smelter": {
@@ -659,6 +689,18 @@
 	"size": 2,
 	"color": 255
 },
+"sfire-mod-explosive-armor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"sfire-mod-explosive-armor-large": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "sfire-mod-discfabric-wall": {
 	"synthetic": true,
 	"solid": true,
@@ -794,6 +836,12 @@
 "sfire-mod-complex-armored-conduit": {
 	"synthetic": true,
 	"solid": false,
+	"size": 1,
+	"color": 255
+},
+"sfire-mod-silisteel-bridge-conduit": {
+	"synthetic": true,
+	"solid": true,
 	"size": 1,
 	"color": 255
 },

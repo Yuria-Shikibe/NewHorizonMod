@@ -4,12 +4,15 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ForceProjector;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHLiquids;
+import newhorizon.expand.block.defence.AdaptRegenProjector;
 import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.expand.block.defence.ShieldGenerator;
 
@@ -21,7 +24,7 @@ import static mindustry.type.ItemStack.with;
 public class DefenseBlock {
     public static Block
             presstaniumWall, refactoringMultiWall, setonPhasedWall, shapedWall,
-            standardForceProjector, largeShieldGenerator, riftShield;
+            standardRegenProjector, heavyRegenProjector, standardForceProjector, largeShieldGenerator, riftShield;
 
     public static void load() {
         presstaniumWall = new AdaptWall("presstanium-wall") {{
@@ -61,6 +64,43 @@ public class DefenseBlock {
             requirements(Category.defense, with(NHItems.nodexPlate, 8, NHItems.ancimembrane, 8));
         }};
 
+        standardRegenProjector = new AdaptRegenProjector("standard-regen-projector") {{
+            requirements(Category.effect, with(
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 50
+
+            ));
+            size = 2;
+            health = 1200;
+            armor = 8;
+            range = 25;
+            healPercent = (100 / 15f) / 60f;
+            baseHeal = 50f / 60f;
+
+            consumePower(2f);
+            consumeLiquid(NHLiquids.xenFluid, 12f / 60f);
+            consumeItem(NHItems.phaseFabric).boost();
+        }};
+
+        heavyRegenProjector = new AdaptRegenProjector("heavy-regen-projector") {{
+            requirements(Category.effect, with(
+                    NHItems.multipleSteel, 60,
+                    NHItems.seniorProcessor, 50
+            ));
+            size = 3;
+            health = 3000;
+            armor = 20;
+            range = 40;
+            healPercent = (100 / 6f) / 60f;
+            baseHeal = 200f / 60f;
+            optionalMultiplier = 4f;
+
+            consumePower(5f);
+            consumeLiquid(NHLiquids.irdryonFluid, 6f / 60f);
+            consumeItem(NHItems.ancimembrane).boost();
+        }};
+
+
         Effect forceShrink = new Effect(20, e -> {
             color(e.color, e.fout());
             if(renderer.animateShields){
@@ -80,7 +120,7 @@ public class DefenseBlock {
             size = 2;
             sides = 4;
             health = 1500;
-            armor = 5;
+            armor = 10;
             itemCapacity = 20;
             liquidCapacity = 25f;
             shieldRotation = 45f;
@@ -113,8 +153,8 @@ public class DefenseBlock {
 
             size = 4;
             sides = 4;
-            health = 2500;
-            armor = 10;
+            health = 3000;
+            armor = 20;
             itemCapacity = 20;
             liquidCapacity = 50f;
             shieldRotation = 45f;

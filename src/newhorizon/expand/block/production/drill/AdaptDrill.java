@@ -32,6 +32,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.production.Drill;
 import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.meta.*;
 import newhorizon.content.NHStats;
@@ -55,8 +56,7 @@ public class AdaptDrill extends Block {
     public float updateEffectChance = 0.02f;
     public Effect updateEffect = Fx.none;
     public int maxModules = 1;
-    public Cons<AdaptDrillBuild> drawer = d -> {
-    };
+    public Cons<AdaptDrillBuild> drawer = d -> {};
     protected @Nullable Item returnItem;
     protected int returnCount;
 
@@ -163,6 +163,12 @@ public class AdaptDrill extends Block {
         } else {
             return canMine(tile);
         }
+    }
+
+    public boolean canReplace(Block other){
+        if(other.alwaysReplace) return true;
+        if(other.privileged) return false;
+        return other.replaceable && (other != this || (rotate && quickRotate)) && ((this.group != BlockGroup.none && other.group == this.group) || other == this) && (size >= other.size);
     }
 
     @Override
