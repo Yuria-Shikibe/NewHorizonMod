@@ -82,12 +82,6 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
                             Strings.fixed(entity.getPowerProduction() * 60 * entity.timeScale(), 1)),
                     () -> Pal.powerBar,
                     () -> entity.warmup));
-
-            addBar("asd", (AdaptCrafterBuild entity) -> new Bar(() ->
-                    Core.bundle.format("bar.poweroutput",
-                            Strings.fixed(entity.efficiency, 1)),
-                    () -> Pal.powerBar,
-                    () -> entity.warmup));
         }
     }
 

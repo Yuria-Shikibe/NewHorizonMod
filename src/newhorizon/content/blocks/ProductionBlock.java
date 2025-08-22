@@ -118,7 +118,7 @@ public class ProductionBlock {
             group = BlockGroup.liquids;
             displayEfficiencyScale = 1f / 9f;
             minEfficiency = 9f - 0.0001f;
-            powerProduction = 360f / 60f / 9f;
+            powerProduction = 1500f / 60f / 9f;
             displayEfficiency = false;
             effectChance = 0.2f;
             generateEffect = new OptionalMultiEffect(
@@ -143,12 +143,10 @@ public class ProductionBlock {
             );
 
             hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 4f / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 30f / 60f);
             liquidCapacity = 300f;
             health = 1200;
             armor = 8;
-
-            consumePower(5f);
         }};
         xenIterator = new RecipeGenericCrafter("xen-iterator"){{
             requirements(Category.production, ItemStack.with(

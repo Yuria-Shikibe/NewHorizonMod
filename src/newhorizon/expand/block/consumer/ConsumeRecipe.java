@@ -60,25 +60,24 @@ public class ConsumeRecipe extends Consume {
 
     @Override
     public float efficiency(Building build) {
-        float ed = build.edelta();
+        float ed = build.edelta() * build.efficiencyScale();
         if (ed <= 0.00000001f) return 0f;
         if (recipe.get(build) == null) return 0f;
         float min = 1f;
-
-        for (LiquidStack stack : recipe.get(build).inputLiquid) {
-            min = Math.min(build.liquids.get(stack.liquid) / (stack.amount * ed * multiplier.get(build)), min);
-        }
-        for(PayloadStack stack : recipe.get(build).inputPayload){
+        for (PayloadStack stack : recipe.get(build).inputPayload){
             if(!build.getPayloads().contains(stack.item, Math.round(stack.amount * multiplier.get(build)))){
                 min = 0f;
                 break;
             }
         }
-        for(ItemStack stack : recipe.get(build).inputItem){
+        for (ItemStack stack : recipe.get(build).inputItem){
             if(!build.items.has(stack.item, Math.round(stack.amount * multiplier.get(build)))){
                 min = 0f;
                 break;
             }
+        }
+        for (LiquidStack stack : recipe.get(build).inputLiquid) {
+            min = Math.min(build.liquids.get(stack.liquid) / (stack.amount * ed * multiplier.get(build)), min);
         }
         return min;
     }

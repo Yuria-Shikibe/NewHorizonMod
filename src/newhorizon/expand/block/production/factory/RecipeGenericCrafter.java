@@ -20,6 +20,7 @@ import mindustry.world.meta.StatValue;
 import newhorizon.expand.block.consumer.ConsumeRecipe;
 import newhorizon.expand.type.Recipe;
 
+import static mindustry.Vars.content;
 import static mindustry.world.meta.StatValues.withTooltip;
 
 public class RecipeGenericCrafter extends AdaptCrafter {
@@ -55,6 +56,13 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         outputPayloads = null;
 
         craftTime = 60f;
+
+        if (!liquidOutput.isEmpty()) outputsLiquid = true;
+    }
+
+    @Override
+    public boolean outputsItems(){
+        return !itemOutput.isEmpty();
     }
 
     @Override
@@ -94,6 +102,17 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                 }
             });
         };
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+        removeBar("liquid");
+
+        recipes.each(recipe -> {
+            recipe.inputLiquid.each(stack -> addLiquidBar(stack.liquid));
+            recipe.outputLiquid.each(stack -> addLiquidBar(stack.liquid));
+        });
     }
 
     public static Table display(UnlockableContent content, float amount, float timePeriod){
