@@ -143,7 +143,7 @@ public class ProductionBlock {
             );
 
             hasLiquids = true;
-            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 30f / 60f);
+            outputLiquid = new LiquidStack(NHLiquids.xenFluid, 30f / 60f / 9f);
             liquidCapacity = 300f;
             health = 1200;
             armor = 8;
