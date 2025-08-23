@@ -622,6 +622,9 @@ block.new-horizon-hyper-jump-gate.description =
 block.new-horizon-module-rail.name = 
 block.new-horizon-module-rail.description = 
 #block.new-horizon-module-rail.detail = 
+block.new-horizon-module-router.name = 
+block.new-horizon-module-router.description = 
+#block.new-horizon-module-router.detail = 
 #SPECIAL PART
 block.new-horizon-standard-regen-projector.name = 
 block.new-horizon-standard-regen-projector.description = 

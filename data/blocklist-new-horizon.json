@@ -1144,5 +1144,11 @@
 	"solid": false,
 	"size": 1,
 	"color": 255
+},
+"new-horizon-module-router": {
+	"synthetic": true,
+	"solid": false,
+	"size": 1,
+	"color": 255
 }
 }
