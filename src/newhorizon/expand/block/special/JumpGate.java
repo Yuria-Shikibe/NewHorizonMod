@@ -405,12 +405,10 @@ public class JumpGate extends Block {
                                                     () -> items.has(stack.item, stack.amount * spawnCount))).pad(5);
                                             if (++j % 2 == 0) req.row();
                                         }
-                                        req.row();
-                                        int k = 0;
                                         for (PayloadStack stack: unitRecipe.recipe.inputPayload) {
                                             req.left().add(getReqStack(stack.item, () -> Strings.format("@/@", UI.formatAmount((long) stack.amount * spawnCount), UI.formatAmount(getPayloads().get(stack.item))),
                                                     () -> getPayloads().get(stack.item) >= stack.amount * spawnCount)).pad(5);
-                                            if (++k % 3 == 0) req.row();
+                                            if (++j % 2 == 0) req.row();
                                         }
                                     }).marginLeft(60).marginTop(36f).marginBottom(4f).left()
                             ).expandX().fillX()).growX();

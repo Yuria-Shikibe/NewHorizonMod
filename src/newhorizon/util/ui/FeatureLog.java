@@ -46,16 +46,16 @@ public class FeatureLog {
     }
 
     public FeatureLog(int index, featureType type, TextureRegion icon) {
-        this.title = type.name + index;
-        this.description = type.name + index + "-desc";
+        this.title = type.name + "-" + index;
+        this.description = type.name + "-" + index + "-desc";
         this.type = type;
         this.icon = icon;
     }
 
     public FeatureLog(int index, featureType type, UnlockableContent content) {
         this.content = content;
-        this.title = type.name + index;
-        this.description = type.name + index + "-desc";
+        this.title = type.name + "-" + index;
+        this.description = type.name + "-" + index + "-desc";
         this.type = type;
         this.icon = content.fullIcon;
     }

@@ -2,7 +2,7 @@ displayName: "New Horizon"
 author: "Yuria"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
-description: "[sky]ALPHA RELEASE FOR V8!!!"
-version: "2.0-alpha-102"
+description: "Beta Release. Campaign Not Included.\n\nCurrently contains stable content and optional vanilla override. \n\nMod is playable as extension for both Serpulo and Erekir. \n\nCampaign still WIP."
+version: "2.0-beta-1"
 
-minGameVersion: 147
+minGameVersion: 150

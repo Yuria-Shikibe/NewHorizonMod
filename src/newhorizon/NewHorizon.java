@@ -47,7 +47,6 @@ public class NewHorizon extends Mod {
 
     public NewHorizon() {
         DEBUGGING = NHSetting.getBool(NHSetting.DEBUGGING);
-        debugFunctions();
 
         registerModBinding();
         Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
@@ -63,26 +62,7 @@ public class NewHorizon extends Mod {
                     DebugFunc.generateBlankBundle();
                     DebugFunc.writeVanillaBlockList();
                     DebugFunc.writeTeamList();
-                    //for (int y = 0; y < 64; y++){
-                    //	StringBuilder stringBuilder = new StringBuilder();
-//
-                    //	for (int x = 0; x < 64; x++){
-                    //		if (Simplex.noise2d(1, 2f, 0.8f, 1f / 7f, x, y) > 0.41f && Simplex.noise2d(3, 2f, 0.8f, 1f / 7f, x, y) > 0.35f){
-                    //			stringBuilder.append(" ■ ");
-                    //		}else {
-                    //			stringBuilder.append(" □ ");
-                    //		}
-                    //	}
-//
-                    //	Log.info(stringBuilder.toString());
-                    //}
-
-                    //content.blocks().each(block -> {
-                    //	block.buildVisibility = BuildVisibility.shown;
-                    //	if (block.minfo.mod == MOD && block instanceof Floor){
-                    //		block.fullIcon = block.region;
-                    //	}
-                    //});
+                    showNew();
                 }
 
                 DebugFunc.unlockModContent();
@@ -94,10 +74,6 @@ public class NewHorizon extends Mod {
                 //DebugFunc.outputSettings();
                 //DebugFunc.outputAtlas();
             });
-            //Time.run(20f, () -> {
-            //    AscensionRuleDialog dialog = new AscensionRuleDialog();
-            //    dialog.show();
-            //});
         });
         Events.run(EventType.Trigger.draw, () -> NHVars.control.terrainSelect());
     }
@@ -111,12 +87,6 @@ public class NewHorizon extends Mod {
      */
     public static String name(String name) {
         return MOD_NAME + "-" + name;
-    }
-
-    public static FeatureLog[] getUpdateContent() {
-        return new FeatureLog[]{
-                new FeatureLog(0, FeatureLog.featureType.CONTENT, NHContent.raid),
-        };
     }
 
     private static void showAbout() {
@@ -253,13 +223,6 @@ public class NewHorizon extends Mod {
         UnitRecipeRegister.load();
 
         Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
-    }
-
-    private void debugFunctions() {
-        //if (true){
-        //	PlanetDialog.debugSelect = true;
-        //	Events.run(EventType.Trigger.universeDrawEnd, DebugFunc::renderSectorId);
-        //}
     }
 
     private void updateServer() {
