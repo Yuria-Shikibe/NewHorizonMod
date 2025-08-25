@@ -10,7 +10,6 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
-import arc.util.pooling.Pools;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Mover;
@@ -64,7 +63,6 @@ public class DelayedPointBulletType extends BulletType {
         collides = false;
         reflectable = false;
         keepVelocity = false;
-        backMove = false;
         hittable = absorbable = false;
         despawnHit = false;
         setDefaults = false;
@@ -185,14 +183,9 @@ public class DelayedPointBulletType extends BulletType {
         bullet.aimX = aimX;
         bullet.aimY = aimY;
         bullet.initVel(angle, speed * velocityScl);
-        if (backMove) {
-            bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
-        } else {
-            bullet.set(x, y);
-        }
+        bullet.set(x - bullet.vel.x * Time.delta, y - bullet.vel.y * Time.delta);
         bullet.lifetime = lifetime * lifetimeScl;
         bullet.data = data;
-        bullet.drag = drag;
         bullet.hitSize = hitSize;
         bullet.mover = mover;
         bullet.damage = (damage < 0 ? this.damage : damage) * bullet.damageMultiplier();
@@ -206,18 +199,5 @@ public class DelayedPointBulletType extends BulletType {
     }
 
     @Override
-    public void handlePierce(Bullet b, float initialHealth, float x, float y) {
-    }
-
-    public static class AdaptedBullet extends Bullet {
-        static {
-            Pools.get(AdaptedBullet.class, AdaptedBullet::new, 1000);
-        }
-
-        @Override
-        public void update() {
-            //WHY???
-            super.update();
-        }
-    }
+    public void handlePierce(Bullet b, float initialHealth, float x, float y) {}
 }

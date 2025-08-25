@@ -929,6 +929,30 @@
 	"size": 1,
 	"color": 2017082879
 },
+"metal-tiles-13": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 909590271
+},
+"metal-wall-1": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"metal-wall-2": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"metal-wall-3": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
 "colored-floor": {
 	"synthetic": false,
 	"solid": false,
@@ -952,6 +976,18 @@
 	"solid": false,
 	"size": 1,
 	"color": -993737473
+},
+"rune-overlay": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1414947583
+},
+"rune-overlay-crux": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1001041409
 },
 "pebbles": {
 	"synthetic": false,

@@ -53,7 +53,7 @@ public class NucleoidEntity extends UnitEntity {
             for (int i : Mathf.signs) {
                 Tmp.v1.trns(rotation + 60 * i, -hitSize * 1.85f).add(x, y);
 
-                NHFunc.spawnUnit(team, Tmp.v1.x, Tmp.v1.y, rotation, 8f, 120, 0, NHUnitTypes.pester, 1, NHStatusEffects.reinforcements, Time.toMinutes);
+                NHFunc.spawnUnit(team, Tmp.v1.x, Tmp.v1.y, rotation, 8f, 120, 0, NHUnitTypes.pester, 1);
             }
         }
     }

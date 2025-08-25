@@ -778,9 +778,6 @@ unit.new-horizon-collapser.description =
 #[[REGION STATUS]]
 
 
-status.new-horizon-reinforcements.name = 
-status.new-horizon-reinforcements.description = 
-#status.new-horizon-reinforcements.detail = 
 status.new-horizon-entangled.name = 
 status.new-horizon-entangled.description = 
 #status.new-horizon-entangled.detail = 

@@ -11,6 +11,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.units.StatusEntry;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -23,28 +24,9 @@ public class NHStatusEffects {
             emp1, emp2, emp3, phased, overphased, weak,
             ultFireBurn, stronghold, quantization, scrambler,
             invincible, intercepted, entangled, end,
-            staticVel, scannerDown, reinforcements, shieldFlag;
+            staticVel, scannerDown, shieldFlag;
 
     public static void load() {
-        reinforcements = new NHStatusEffect("reinforcements") {{
-                show = false;
-                hideDetails = true;
-            }
-            @Override
-            public void update(Unit unit, float time) {
-                if (time < 60f || unit.healthf() < 0.1f) {
-                    unit.clearStatuses();
-                    Effect.shake(unit.hitSize / 10f, unit.hitSize / 8f, unit.x, unit.y);
-                    NHFx.circleOut.at(unit.x, unit.y, unit.hitSize, unit.team.color);
-                    NHFx.jumpTrailOut.at(unit.x, unit.y, unit.rotation, unit.team.color, unit.type);
-                    NHSounds.jumpIn.at(unit.x, unit.y, 1, 3);
-
-                    unit.remove();
-                    if (Vars.net.client()) Vars.netClient.clearRemovedEntity(unit.id);
-                }
-            }
-        };
-
         entangled = new NHStatusEffect("entangled") {{
                 color = Color.lightGray;
                 speedMultiplier = 0.95f;
@@ -54,8 +36,8 @@ public class NHStatusEffects {
                 effect = EffectWrapper.wrap(NHFx.hitSparkLarge, NHColor.ancientLightMid);
             }
             @Override
-            public void update(Unit unit, float time) {
-                super.update(unit, time);
+            public void update(Unit unit, StatusEntry entry) {
+                super.update(unit, entry);
 
                 unit.shield *= 0.985f;
 
@@ -86,7 +68,8 @@ public class NHStatusEffects {
             }
 
             @Override
-            public void update(Unit unit, float time) {
+            public void update(Unit unit, StatusEntry entry) {
+                super.update(unit, entry);
                 if (damage > 0) {
                     unit.damageContinuousPierce(damage);
                 } else if (damage < 0) { //heal unit
@@ -186,7 +169,8 @@ public class NHStatusEffects {
             }
 
             @Override
-            public void update(Unit unit, float time) {
+            public void update(Unit unit, StatusEntry entry) {
+                super.update(unit, entry);
                 unit.damage(120, true);
 
                 if (!Vars.headless && Mathf.chanceDelta(0.1)) {
@@ -243,8 +227,8 @@ public class NHStatusEffects {
             }
 
             @Override
-            public void update(Unit unit, float time) {
-                super.update(unit, time);
+            public void update(Unit unit, StatusEntry entry) {
+                super.update(unit, entry);
                 unit.vel = unit.vel.scl(0.05f);
             }
         };
@@ -295,8 +279,8 @@ public class NHStatusEffects {
         }
 
         @Override
-        public void update(Unit unit, float time) {
-            super.update(unit, time);
+        public void update(Unit unit, StatusEntry entry) {
+            super.update(unit, entry);
             override.each(unit::unapply);
         }
 
