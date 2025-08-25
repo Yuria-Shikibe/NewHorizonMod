@@ -2,6 +2,10 @@ package newhorizon.util.ui.dialog;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.gl.Shader;
+import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -14,6 +18,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import newhorizon.content.NHContent;
+import newhorizon.content.NHShaders;
 import newhorizon.content.blocks.*;
 import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.NHUIFunc;
@@ -72,35 +77,18 @@ public class NewFeatureDialog extends BaseDialog {
         updates.add(new FeatureLog(CraftingBlock.factory5));
         updates.add(new FeatureLog(CraftingBlock.factory6));
 
-        updates.add(new FeatureLog(DistributionBlock.conveyor));
-        updates.add(new FeatureLog(DistributionBlock.logisticsJunction));
-        updates.add(new FeatureLog(DistributionBlock.logisticsDirectionalRouter));
-        updates.add(new FeatureLog(DistributionBlock.logisticsDirectionalMerger));
-        updates.add(new FeatureLog(DistributionBlock.logisticsDirectionalGate));
-        updates.add(new FeatureLog(DistributionBlock.logisticsOmniGate));
-        updates.add(new FeatureLog(DistributionBlock.logisticsOmniSorter));
-        updates.add(new FeatureLog(DistributionBlock.logisticsOmniBlocker));
-        updates.add(new FeatureLog(DistributionBlock.conveyorBridge));
-        updates.add(new FeatureLog(DistributionBlock.conveyorBridgeExtend));
-        updates.add(new FeatureLog(DistributionBlock.conveyorUnloader));
-        updates.add(new FeatureLog(DistributionBlock.rapidUnloader));
-
         updates.add(new FeatureLog(LiquidBlock.turboPumpSmall));
         updates.add(new FeatureLog(LiquidBlock.turboPump));
         updates.add(new FeatureLog(LiquidBlock.standardLiquidStorage));
         updates.add(new FeatureLog(LiquidBlock.heavyLiquidStorage));
 
-        updates.add(new FeatureLog(LogicBlock.iconDisplaySmall));
         updates.add(new FeatureLog(LogicBlock.iconDisplay));
-        updates.add(new FeatureLog(LogicBlock.characterDisplaySmall));
         updates.add(new FeatureLog(LogicBlock.characterDisplay));
 
         updates.add(new FeatureLog(PayloadBlock.payloadRail));
         updates.add(new FeatureLog(PayloadBlock.payloadRouter));
 
         updates.add(new FeatureLog(PowerBlock.gravityTrapMidantha));
-        updates.add(new FeatureLog(PowerBlock.gravityTrapSerpulo));
-        updates.add(new FeatureLog(PowerBlock.gravityTrapErekir));
         updates.add(new FeatureLog(PowerBlock.gravityTrapSmall));
         updates.add(new FeatureLog(PowerBlock.gravityTrap));
         updates.add(new FeatureLog(PowerBlock.armorBattery));
@@ -111,8 +99,6 @@ public class NewFeatureDialog extends BaseDialog {
         updates.add(new FeatureLog(PowerBlock.cathodeFusionReactor));
         updates.add(new FeatureLog(PowerBlock.thermoReactor));
 
-        updates.add(new FeatureLog(SpecialBlock.standardStorage));
-        updates.add(new FeatureLog(SpecialBlock.heavyStorage));
         updates.add(new FeatureLog(SpecialBlock.juniorModuleBeacon));
         updates.add(new FeatureLog(SpecialBlock.seniorModuleBeacon));
 
@@ -128,6 +114,7 @@ public class NewFeatureDialog extends BaseDialog {
     public void build() {
         cont.clear();
         cont.pane(main -> {
+            main.background(Styles.black9);
             main.top();
             buildMainChangelog(main);
             buildFeatureLog(main);
