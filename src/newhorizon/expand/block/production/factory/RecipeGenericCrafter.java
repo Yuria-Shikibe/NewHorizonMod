@@ -14,6 +14,7 @@ import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.payloads.BuildPayload;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
@@ -302,6 +303,12 @@ public class RecipeGenericCrafter extends AdaptCrafter {
 
             if(wasVisible) craftEffect.at(x, y);
             updateRecipe();
+        }
+
+        @Override
+        public BlockStatus status() {
+            if (enabled && getRecipe() == null) return BlockStatus.noInput;
+            return super.status();
         }
     }
 }

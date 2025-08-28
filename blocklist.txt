@@ -300,6 +300,7 @@ new-horizon-productivity-module1 1 1 1 0
 new-horizon-productivity-module2 1 1 1 0
 new-horizon-productivity-module3 1 1 1 0
 new-horizon-proton-capacitor 1 1 1 0
+new-horizon-pulse 1 1 2 0
 new-horizon-pulse-mutator 1 1 1 0
 new-horizon-pulse-shotgun 1 1 2 0
 new-horizon-quantum-conductor 1 1 1 0

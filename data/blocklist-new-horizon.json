@@ -119,12 +119,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-pulse-shotgun": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-dendrite": {
 	"synthetic": true,
 	"solid": true,
@@ -147,12 +141,6 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
-	"color": 255
-},
-"new-horizon-thermo-turret": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
 	"color": 255
 },
 "new-horizon-rail-gun": {
@@ -498,6 +486,18 @@
 	"color": 255
 },
 "new-horizon-delivery-module": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-thermo-turret": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-pulse": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,

@@ -8,11 +8,11 @@ import mindustry.gen.Hitboxc;
  * Bullet with kinetic damage and energy damage
  */
 public class AdaptBulletType extends BasicBulletType implements TypeDamageBulletType {
-    public String bundleName = "nh.bullet.desc";
+    public String bundleName = "bullet-name";
 
     @Override
     public String bundleName() {
-        return bundleName;
+        return "nh.bullet." + bundleName + ".desc";
     }
 
     @Override

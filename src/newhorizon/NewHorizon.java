@@ -191,6 +191,10 @@ public class NewHorizon extends Mod {
         Time.mark();
 
         MOD = mods.getMod(getClass());
+        MOD.meta.displayName = Core.bundle.get("mod.new-horizon.name");
+        MOD.meta.author = Core.bundle.get("mod.new-horizon.author");
+        MOD.meta.description = Core.bundle.get("mod.new-horizon.description");
+        MOD.meta.subtitle = Core.bundle.get("mod.new-horizon.subtitle");
 
         EntityRegister.load();
         NHRegister.load();
@@ -222,7 +226,7 @@ public class NewHorizon extends Mod {
         RecipeRegister.load();
         UnitRecipeRegister.load();
 
-        Log.info(MOD.meta.displayName + " Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
+        Log.info("New Horizon Loaded Complete: " + MOD.meta.version + " | Cost Time: " + (Time.elapsed() / Time.toSeconds) + " sec.");
     }
 
     private void updateServer() {

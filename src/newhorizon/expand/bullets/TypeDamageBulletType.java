@@ -26,6 +26,11 @@ public interface TypeDamageBulletType {
 
     String bundleName();
 
+    default void setDamage(BulletType type, float kinetic, float energy){
+        type.damage = kinetic;
+        type.shieldDamageMultiplier = energy / kinetic;
+    }
+
     default float getKineticMultiplier(BulletType type) {
         return 1f;
     }
@@ -93,7 +98,7 @@ public interface TypeDamageBulletType {
     default void buildStat(BulletType type, UnlockableContent t, Table bt, boolean compact) {
         bt.row();
         if (Core.bundle.getOrNull(bundleName()) != null) {
-            bt.add(Core.bundle.get(bundleName())).wrap().fillX().padTop(8).padBottom(8).width(500);
+            bt.add("[accent]" + Core.bundle.get(bundleName()) + "[]").wrap().fillX().padTop(4).padBottom(8).width(500);
             bt.row();
         }
         if ((getKineticMultiplier(type) > 0 || getEnergyMultiplier(type) > 0) && type.collides) {
