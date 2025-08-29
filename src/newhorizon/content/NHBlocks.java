@@ -1101,6 +1101,7 @@ public class NHBlocks {
             squareSprite = false;
             drawer = new DrawTurret("reinforced-");
 
+            outlineColor = Pal.darkOutline;
             heatColor = Pal.turretHeat.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f);
             cooldownTime *= 2f;
             shootSound = NHSounds.laser5;

@@ -237,6 +237,7 @@ public class TurretBlock {
             ammoPerShot = 1;
             maxAmmo = 40;
         }};
+
         argmot = new SpeedupTurret("argmot") {{
             requirements(Category.turret, with(NHItems.juniorProcessor, 80, NHItems.presstanium, 120, Items.tungsten, 80));
 

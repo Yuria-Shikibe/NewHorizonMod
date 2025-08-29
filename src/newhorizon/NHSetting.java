@@ -14,6 +14,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import newhorizon.content.NHContent;
 
 import static arc.Core.settings;
+import static mindustry.Vars.ui;
 import static newhorizon.util.ui.TableFunc.LEN;
 
 public class NHSetting {
@@ -42,6 +43,12 @@ public class NHSetting {
     public static boolean changed = false;
 
     public static OrderedMap<String, Seq<SettingKey<?>>> allSettings = new OrderedMap<>();
+
+    public static String overrideStatus(){
+        StringBuilder overrideStatus = new StringBuilder();
+        allSettings.get("override").each(setting -> overrideStatus.append(setting.key).append(":").append(getBool(setting.key)).append("|"));
+        return overrideStatus.toString();
+    }
 
     public static void load() {
         allSettings.put("graphic", Seq.with(
@@ -82,7 +89,7 @@ public class NHSetting {
     }
 
     public static void loadUI() {
-        Vars.ui.settings.addCategory("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), NHSetting::buildTable);
+        ui.settings.addCategory("@mod.ui.nh-extra-menu", new TextureRegionDrawable(NHContent.icon), NHSetting::buildTable);
     }
 
     public static void update() {
@@ -102,7 +109,7 @@ public class NHSetting {
             @Override
             public void hide() {
                 super.hide();
-                if (changed) Vars.ui.showConfirm("@mods.reloadexit", () -> Core.app.exit());
+                if (changed) ui.showConfirm("@mods.reloadexit", () -> Core.app.exit());
             }
         };
         buildTable(dialog.cont);
@@ -161,7 +168,7 @@ public class NHSetting {
                         if (requireReload) {
                             if (!changed) {
                                 Dialog.setHideAction(() -> new RunnableAction() {{
-                                    setRunnable(() -> Vars.ui.showConfirm("@mods.reloadexit", () -> Core.app.exit()));
+                                    setRunnable(() -> ui.showConfirm("@mods.reloadexit", () -> Core.app.exit()));
                                 }});
                             }
                             changed = true;

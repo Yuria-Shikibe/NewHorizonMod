@@ -8,6 +8,7 @@ import arc.util.serialization.Jval;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.gen.Call;
 import mindustry.gen.Icon;
 import mindustry.gen.Player;
 import mindustry.graphics.Pal;
@@ -27,7 +28,7 @@ import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
-import static mindustry.Vars.mods;
+import static mindustry.Vars.*;
 import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -50,6 +51,7 @@ public class NewHorizon extends Mod {
 
         registerModBinding();
         Events.on(EventType.ContentInitEvent.class, e -> NHPostProcess.postProcessOverride());
+        Events.on(EventType.PlayerConnect.class, e -> Call.clientPacketReliable("override_check", NHSetting.overrideStatus()));
         Events.on(ClientLoadEvent.class, e -> {
             Core.app.post(NHUI::init);
             updateServer();
@@ -62,7 +64,7 @@ public class NewHorizon extends Mod {
                     DebugFunc.generateBlankBundle();
                     DebugFunc.writeVanillaBlockList();
                     DebugFunc.writeTeamList();
-                    showNew();
+                    //showNew();
                 }
 
                 DebugFunc.unlockModContent();
@@ -75,7 +77,34 @@ public class NewHorizon extends Mod {
                 //DebugFunc.outputAtlas();
             });
         });
-        Events.run(EventType.Trigger.draw, () -> NHVars.control.terrainSelect());
+        netClient.addPacketHandler("override_check", string -> {
+            try {
+                String[] status = string.split("\\|");
+                boolean canConnect = true;
+                for (String s : status) {
+                    String[] setting = s.split(":");
+                    if (NHSetting.getBool(setting[0]) != Boolean.parseBoolean(setting[1])) {
+                        canConnect = false;
+                        break;
+                    }
+                }
+                if (!canConnect) {
+                    StringBuilder str = new StringBuilder();
+                    for (String s : status) {
+                        String[] setting = s.split(":");
+                        boolean enabled = Boolean.parseBoolean(setting[1]);
+                        if (NHSetting.getBool(setting[0]) != enabled) {
+                            str.append(Core.bundle.get("nh.setting." + setting[0] + ".name")).append("\n");
+                        }
+                    }
+                    ui.showConfirm(Core.bundle.format("mod.ui.require.need-override", str.toString()), NHSetting::showDialog);
+                    net.disconnect();
+                }
+            } catch (Exception e) {
+                Log.err(e);
+                net.disconnect();
+            }
+        });
     }
 
     public static void debugLog(Object obj) {

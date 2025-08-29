@@ -2,9 +2,12 @@ package newhorizon;
 
 import arc.Core;
 import arc.Events;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.game.EventType;
+import mindustry.gen.Call;
 import mindustry.net.Net;
+import mindustry.net.Streamable;
 import newhorizon.expand.net.packet.ActiveAbilityTriggerPacket;
 import newhorizon.expand.net.packet.AlertToastPacket;
 import newhorizon.expand.net.packet.LongInfoMessageCallPacket;
@@ -32,22 +35,7 @@ public class NHRegister {
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             NHGroups.worldInit();
-
-            if (!Vars.headless && Vars.net.active()) {
-                for (var setting: NHSetting.allSettings.get("override")){
-                    if (!NHSetting.getBool(setting.key)){
-                        Core.app.post(() -> {
-                            Vars.ui.showConfirm("@mod.ui.requite.need-override", NHSetting::showDialog);
-                            Vars.net.disconnect();
-                        });
-                        break;
-                    }
-                }
-            }
-
-            if (!Vars.headless) {
-                renderer.statusRenderer.clear();
-            }
+            if (!Vars.headless) renderer.statusRenderer.clear();
         });
     }
 }
