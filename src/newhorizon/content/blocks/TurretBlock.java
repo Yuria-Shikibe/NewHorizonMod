@@ -112,7 +112,7 @@ public class TurretBlock {
             size = 2;
             health = 960;
             range = 160;
-            reload = 90f;
+            reload = 120f;
             recoil = 3f;
             shake = 3f;
             shootCone = 30f;
@@ -125,49 +125,45 @@ public class TurretBlock {
             smokeEffect = Fx.shootBigSmoke;
             shootSound = Sounds.shootSnap;
 
-            ammo(Items.titanium, new BasicBulletType(5, 24) {{
+            ammo(Items.titanium, new AdaptBulletType() {{
+                setDamage(this, 45, 20);
+                bundleName = "pulse-bullet-titanium";
+
                 width = 8f;
                 height = 25f;
+                speed = 5f;
+                ammoMultiplier = 4;
+
                 hitColor = backColor = lightColor = trailColor = Items.titanium.color.cpy().lerp(Color.white, 0.1f);
                 frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+
                 hitEffect = NHFx.crossBlast(hitColor, height + width);
                 shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 12f, 2f);
-                ammoMultiplier = 8;
-                pierceArmor = true;
-            }}, Items.plastanium, new BasicBulletType(5, 26) {{
+            }}, Items.plastanium, new AdaptBulletType() {{
+                setDamage(this, 20, 30, 45, 15);
+                bundleName = "pulse-bullet-plastanium";
+
                 width = 8f;
                 height = 25f;
-                fragBullets = 4;
-                fragBullet = new BasicBulletType(2, 26) {{
-                    width = 3f;
-                    lifetime = 10f;
-                    height = 12f;
-                    ammoMultiplier = 12;
-                    hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
-                    frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                    hitEffect = NHFx.lightningHitSmall(backColor);
-                    shootEffect = despawnEffect = NHFx.square45_4_45;
-                }};
-                fragAngle = 130f;
-                fragVelocityMax = 1.1f;
-                fragVelocityMin = 0.5f;
-                fragLifeMax = 1.25f;
-                fragLifeMin = 0.25f;
-                ammoMultiplier = 12;
+                speed = 5f;
+                ammoMultiplier = 4;
+
                 hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
                 frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                hitEffect = NHFx.crossBlast(hitColor, height + width);
+                hitEffect = NHFx.hitSpark(hitColor, 30, 6, 32, 1.4f, 7f);
                 shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
-            }}, NHItems.zeta, new BasicBulletType(5, 18) {{
+            }}, NHItems.zeta, new AdaptBulletType() {{
+                setDamage(this, 32, 80, 60);
+                bundleName = "pulse-bullet-zeta";
+
+                speed = 5f;
                 width = 8f;
                 height = 25f;
-                lightning = 2;
-                lightningLength = 2;
-                lightningLengthRand = 6;
-                lightningDamage = damage;
+                ammoMultiplier = 4;
+
                 status = StatusEffects.shocked;
-                statusDuration = 15f;
-                ammoMultiplier = 12;
+                statusDuration = 60f;
+
                 lightningColor = hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
                 frontColor = backColor.cpy().lerp(Color.white, 0.35f);
                 hitEffect = NHFx.crossBlast(hitColor, height + width);

@@ -31,6 +31,20 @@ public interface TypeDamageBulletType {
         type.shieldDamageMultiplier = energy / kinetic;
     }
 
+    default void setDamage(BulletType type, float range, float splash, float kinetic, float energy){
+        type.damage = kinetic;
+        type.splashDamage = splash;
+        type.splashDamageRadius = range;
+        type.shieldDamageMultiplier = energy / kinetic;
+    }
+
+    default void setDamage(BulletType type, float range, float kinetic, float energy){
+        type.damage = 0f;
+        type.splashDamage = kinetic;
+        type.splashDamageRadius = range;
+        type.shieldDamageMultiplier = energy / kinetic;
+    }
+
     default float getKineticMultiplier(BulletType type) {
         return 1f;
     }
@@ -104,7 +118,9 @@ public interface TypeDamageBulletType {
         if ((getKineticMultiplier(type) > 0 || getEnergyMultiplier(type) > 0) && type.collides) {
             if (type.continuousDamage() > 0) {
                 bt.add(Core.bundle.format("nh.damage-detail", getContinuousKineticDamage(type), getContinuousEnergyDamage(type)) + StatUnit.perSecond.localized());
-            } else bt.add(Core.bundle.format("nh.damage-detail", getKineticDamage(type), getEnergyDamage(type)));
+            } else if (type.damage > 0) {
+                bt.add(Core.bundle.format("nh.damage-detail", getKineticDamage(type), getEnergyDamage(type)));
+            }
             bt.row();
         }
 
