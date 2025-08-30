@@ -1071,7 +1071,7 @@ public class NHUnitTypes {
                     shootEffect = NHFx.shootLineSmall(backColor);
                     smokeEffect = Fx.shootBigSmoke2;
 
-                    buildingDamageMultiplier = 0.4f;
+                    buildingDamageMultiplier = 0.2f;
                 }};
             }});
 
