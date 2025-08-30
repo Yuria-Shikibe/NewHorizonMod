@@ -64,7 +64,7 @@ public class TurretBlock {
             shootSound = NHSounds.thermoShoot;
 
             shootType = new AdaptBulletType() {{
-                setDamage(this, 20, 30);
+                setDamage(this, 15, 25);
                 bundleName = "basic-thermo-bullet";
 
                 speed = 6.5f;
@@ -95,12 +95,12 @@ public class TurretBlock {
                 });
             }};
             shoot = new ShootPattern() {{
-                shots = 5;
+                shots = 6;
                 shotDelay = 6f;
             }};
 
             consumeLiquid(NHLiquids.xenFluid, 5 / 60f);
-            consumePower(250.0001f / 60f);
+            consumePower(100f / 60f);
         }};
 
         pulse = new ItemTurret("pulse") {{
