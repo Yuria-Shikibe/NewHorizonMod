@@ -53,7 +53,7 @@ public class TurretBlock {
 
             size = 1;
             health = 300;
-            range = 120f;
+            range = 160f;
             reload = 90f;
             inaccuracy = 3f;
             shootCone = 50f;
@@ -68,7 +68,7 @@ public class TurretBlock {
                 bundleName = "basic-thermo-bullet";
 
                 speed = 6.5f;
-                lifetime = 40f;
+                lifetime = 27f;
                 knockback = 0.5f;
 
                 width = 5f;
