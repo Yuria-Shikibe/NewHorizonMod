@@ -83,12 +83,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-beam-laser-turret": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-antibody": {
 	"synthetic": true,
 	"solid": true,
@@ -498,6 +492,12 @@
 	"color": 255
 },
 "new-horizon-pulse": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-beam": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,

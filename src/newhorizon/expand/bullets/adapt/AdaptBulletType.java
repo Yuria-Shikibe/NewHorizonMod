@@ -1,8 +1,9 @@
-package newhorizon.expand.bullets;
+package newhorizon.expand.bullets.adapt;
 
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;
+import newhorizon.expand.bullets.TypeDamageBulletType;
 
 /**
  * Bullet with kinetic damage and energy damage
@@ -12,7 +13,7 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
 
     @Override
     public String bundleName() {
-        return "nh.bullet." + bundleName + ".desc";
+        return bundleName;
     }
 
     @Override

@@ -27,6 +27,7 @@ new-horizon-armor-t5 1 1 1 0
 new-horizon-armor-wall 0 1 1 6777206
 new-horizon-assign-overdrive 1 1 3 0
 new-horizon-atom-separator 1 1 5 0
+new-horizon-beam 1 1 2 0
 new-horizon-beam-laser-turret 1 1 2 0
 new-horizon-beam-mining-facility 1 1 4 0
 new-horizon-bionics-processor 1 1 1 0

@@ -100,7 +100,7 @@ public class NHBlocks {
     public static Block hyperGenerator;
 
 
-    public static Block ancientArtillery, dendrite, interferon, prism, hive, bloodStar, beamLaserTurret, blaster, endOfEra,
+    public static Block ancientArtillery, dendrite, interferon, prism, hive, bloodStar, blaster, endOfEra,
             railGun, executor, gravity, multipleLauncher, antibody, multipleArtillery, atomSeparator, eternity;
 
     public static Block largeWaterExtractor;
@@ -1084,53 +1084,6 @@ public class NHBlocks {
             range = 160f;
             trackingRange = range * 1.4f;
             inaccuracy = 1.25f;
-        }};
-
-        beamLaserTurret = new ItemTurret("beam-laser-turret") {{
-            size = 2;
-            requirements(Category.turret, BuildVisibility.shown, with(Items.copper, 60, NHItems.juniorProcessor, 60, NHItems.presstanium, 60));
-            recoil = 1f;
-            reload = 60f;
-
-            shoot = new ShootPattern() {{
-                shots = 3;
-                shotDelay = 1.75f;
-            }};
-
-            canOverdrive = false;
-            squareSprite = false;
-            drawer = new DrawTurret("reinforced-");
-
-            outlineColor = Pal.darkOutline;
-            heatColor = Pal.turretHeat.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f);
-            cooldownTime *= 2f;
-            shootSound = NHSounds.laser5;
-            range = 144f;
-            shootCone = 30f;
-            inaccuracy = 6f;
-            maxAmmo = 80;
-            ammoPerShot = 5;
-            shootY += 5f;
-            health = 600;
-            smokeEffect = Fx.shootBigSmoke2;
-            consumePowerCond(2f, TurretBuild::isActive);
-            ammo(
-                    Items.silicon, new AdaptedLaserBulletType(100) {{
-                        colors = new Color[]{Pal.bulletYellowBack.cpy().mul(1f, 1f, 1f, 0.35f), Pal.bulletYellowBack, Color.white};
-                        hitColor = Pal.bulletYellow;
-                        length = 150f;
-                        lifetime = 30f;
-                        drawLine = false;
-                        width = 8f;
-                        lengthFalloff = 0.8f;
-                        sideLength = 25f;
-                        sideWidth = 0.7f;
-                        sideAngle = 30f;
-                        largeHit = false;
-                        ammoMultiplier = 1;
-                        shootEffect = NHFx.square(hitColor, 15f, 2, 8f, 2f);
-                    }}
-            );
         }};
 
         antibody = new ItemTurret("antibody") {{
