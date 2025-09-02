@@ -34,6 +34,7 @@ import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.game.NHUnitSorts;
+import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.type.ItemStack.with;
@@ -362,6 +363,7 @@ public class TurretBlock {
 
             consumePowerCond(5f, TurretBuild::isActive);
         }};
+
         slavio = new ItemTurret("slavio") {{
             requirements(Category.turret, with(NHItems.juniorProcessor, 120, NHItems.presstanium, 150, Items.carbide, 150, NHItems.metalOxhydrigen, 80));
 

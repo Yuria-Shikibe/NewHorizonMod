@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.entities.bullet.LaserBulletType;
 import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
 import mindustry.graphics.Drawf;
 import newhorizon.expand.bullets.TypeDamageBulletType;
 import newhorizon.util.feature.PosLightning;
@@ -25,8 +26,19 @@ public class AdaptLaserBulletType extends LaserBulletType implements TypeDamageB
     }
 
     @Override
+    public void hitEntity(Bullet b, Hitboxc entity, float health) {
+        typedHitEntity(this, b, entity, health);
+    }
+
+    @Override
+    public void createSplashDamage(Bullet b, float x, float y) {
+        typedCreateSplash(this, b, x, y);
+    }
+
+    @Override
     public void init(Bullet b) {
         super.init(b);
+        applyExtraMultiplier(b);
         if (drawLightning) PosLightning.createEffect(b, b.fdata * 0.95f, b.rotation(), hitColor, boltNum, liWidth);
     }
 
