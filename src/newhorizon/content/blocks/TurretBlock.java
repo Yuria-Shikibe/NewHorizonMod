@@ -52,7 +52,7 @@ public class TurretBlock {
             ));
 
             size = 1;
-            health = 300;
+            health = 500;
             range = 160f;
             reload = 90f;
             inaccuracy = 3f;
@@ -99,7 +99,7 @@ public class TurretBlock {
                 shotDelay = 6f;
             }};
 
-            consumeLiquid(NHLiquids.xenFluid, 5 / 60f);
+            consumeLiquid(NHLiquids.xenFluid, 4 / 60f);
             consumePower(100f / 60f);
         }};
 
