@@ -45,7 +45,7 @@ public class NHLiquids {
         irdryonFluid = new Liquid("irdryon-fluid", Color.valueOf("#F7C6B5")) {{
             viscosity = 0.8f;
             temperature = 0.2f;
-            heatCapacity = 1.6f;
+            heatCapacity = 2f;
         }};
 
         water = Liquids.water;
