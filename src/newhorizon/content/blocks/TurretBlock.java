@@ -68,7 +68,7 @@ public class TurretBlock {
                 bundleName = "basic-thermo-bullet";
 
                 speed = 6.5f;
-                lifetime = 27f;
+                lifetime = 30f;
                 knockback = 0.5f;
 
                 width = 5f;
