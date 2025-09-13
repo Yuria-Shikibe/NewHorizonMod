@@ -117,8 +117,8 @@ public class TurretBlock {
             shake = 3f;
             shootCone = 30f;
             inaccuracy = 4f;
-            maxAmmo = 120;
-            ammoPerShot = 12;
+            maxAmmo = 150;
+            ammoPerShot = 10;
             minWarmup = 0.8f;
 
             outlineColor = Pal.darkOutline;
