@@ -242,8 +242,8 @@ public class TurretBlock {
                 }});
             }};
             consumePowerCond(2.5f, TurretBuild::isActive);
-            coolant = consumeCoolant(0.75F);
-            coolantMultiplier = 2.5f;
+            coolant = consumeCoolant(0.2F);
+            coolantMultiplier = 3f;
 
             buildType = () -> new ItemTurretBuild(){
                 @Override
