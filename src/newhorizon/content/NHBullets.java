@@ -31,6 +31,7 @@ import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.bullets.raid.BasicRaidBulletType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedMissileUnitType;

@@ -12,7 +12,6 @@ import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.ArtilleryBulletType;
-import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.gen.Sounds;
@@ -30,17 +29,18 @@ import newhorizon.content.bullets.RaidBullets;
 import newhorizon.expand.block.turrets.AdaptItemTurret;
 import newhorizon.expand.block.turrets.ContinuousOverheatTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
-import newhorizon.expand.bullets.AdaptBulletType;
-import newhorizon.expand.bullets.DOTBulletType;
-import newhorizon.expand.bullets.PosLightningType;
-import newhorizon.expand.bullets.UpgradePointLaserBulletType;
+import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.adapt.AdaptBulletType;
+import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
+import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.game.NHUnitSorts;
+import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {
-    public static Block thermo, pulse, electro, argmot, synchro, slavio, concentration;
+    public static Block thermo, pulse, beam, electro, argmot, synchro, slavio, concentration;
 
     public static Block testShooter;
 
@@ -110,10 +110,10 @@ public class TurretBlock {
             ));
 
             size = 2;
-            health = 960;
+            health = 1200;
             range = 160;
             reload = 120f;
-            recoil = 3f;
+            recoil = 1.5f;
             shake = 3f;
             shootCone = 30f;
             inaccuracy = 4f;
@@ -185,6 +185,70 @@ public class TurretBlock {
             coolant = consumeCoolant(0.1f);
 
             limitRange();
+        }};
+
+        beam = new ItemTurret("beam") {{
+            requirements(Category.turret, BuildVisibility.shown, with(
+                    NHItems.titanium, 60,
+                    NHItems.juniorProcessor, 60
+            ));
+
+            size = 2;
+            health = 1200;
+            reload = 60f;
+            range = 120f;
+            recoil = 0.5f;
+            rotateSpeed = 2.5f;
+            cooldownTime = 40f;
+            shootCone = 30f;
+            inaccuracy = 6f;
+            shootY = 5f;
+            maxAmmo = 30;
+            ammoPerShot = 3;
+
+            smokeEffect = Fx.shootBigSmoke2;
+            shootSound = NHSounds.laser5;
+            outlineColor = Pal.darkOutline;
+            heatColor = Pal.turretHeat.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f);
+
+            ammo(Items.silicon, new AdaptLaserBulletType() {{
+                setDamage(this, 60, 150);
+
+                length = 150f;
+                lifetime = 30f;
+                width = 8f;
+                lengthFalloff = 0.8f;
+                sideLength = 25f;
+                sideWidth = 0.7f;
+                sideAngle = 30f;
+                pierceCap = 3;
+
+                drawLightning = true;
+
+                hitColor = Pal.bulletYellow;
+                shootEffect = NHFx.square(hitColor, 15f, 2, 8f, 2f);
+                colors = new Color[]{Pal.bulletYellowBack.cpy().mul(1f, 1f, 1f, 0.35f), Pal.bulletYellowBack, Color.white};
+            }});
+            shoot = new ShootPattern() {{
+                shots = 3;
+                shotDelay = 3f;
+            }};
+            drawer = new DrawTurret() {{
+                parts.add(new RegionPart("-barrel") {{
+                    under = true;
+                    outline = true;
+                    moveY = -1.25f;
+                    progress = PartProgress.recoil;
+                }});
+            }};
+            consumePowerCond(2.5f, TurretBuild::isActive);
+
+            buildType = () -> new ItemTurretBuild(){
+                @Override
+                protected void turnToTarget(float targetRot){
+                    rotation = Angles.moveToward(rotation, targetRot, rotateSpeed * delta() * potentialEfficiency * Interp.pow3Out.apply(Interp.reverse.apply(curRecoil)));
+                }
+            };
         }};
 
         synchro = new AdaptItemTurret("synchro") {{
@@ -299,6 +363,7 @@ public class TurretBlock {
 
             consumePowerCond(5f, TurretBuild::isActive);
         }};
+
         slavio = new ItemTurret("slavio") {{
             requirements(Category.turret, with(NHItems.juniorProcessor, 120, NHItems.presstanium, 150, Items.carbide, 150, NHItems.metalOxhydrigen, 80));
 

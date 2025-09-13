@@ -112,10 +112,10 @@ public interface TypeDamageBulletType {
     default void buildStat(BulletType type, UnlockableContent t, Table bt, boolean compact) {
         bt.row();
         if (Core.bundle.getOrNull(bundleName()) != null) {
-            bt.add("[accent]" + Core.bundle.get(bundleName()) + "[]").wrap().fillX().padTop(4).padBottom(8).width(500);
+            bt.add("[accent]" + Core.bundle.get("nh.bullet." + bundleName() + ".desc") + "[]").wrap().fillX().padTop(4).padBottom(8).width(500);
             bt.row();
         }
-        if ((getKineticMultiplier(type) > 0 || getEnergyMultiplier(type) > 0) && type.collides) {
+        if ((getKineticMultiplier(type) > 0 || getEnergyMultiplier(type) > 0)) {
             if (type.continuousDamage() > 0) {
                 bt.add(Core.bundle.format("nh.damage-detail", getContinuousKineticDamage(type), getContinuousEnergyDamage(type)) + StatUnit.perSecond.localized());
             } else if (type.damage > 0) {

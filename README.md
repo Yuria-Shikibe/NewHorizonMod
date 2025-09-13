@@ -1,8 +1,10 @@
-# NEWHORIZON MOD
+![Logo](github-pictures/logo.png)![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/Yuria-Shikibe/NewHorizonMod/total?style=for-the-badge)
+![GitHub Release](https://img.shields.io/github/v/release/Yuria-Shikibe/NewHorizonMod?include_prereleases&sort=date&style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/Yuria-Shikibe/NewHorizonMod?style=for-the-badge)
 
+![Discord](https://img.shields.io/discord/825801593466388520?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/QQ-763042465-blue?style=for-the-badge&link=https%3A%2F%2Fqm.qq.com%2Fq%2F6lr2QHApzi)
 ---
-
-![Logo](github-pictures/logo.png)
 
 **THE HORIZON HAS EXPANDED.**
 

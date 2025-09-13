@@ -117,7 +117,6 @@ public class ConsumeRecipe extends Consume {
                         if (++i % 4 == 0) cont.row();
                     }
                 }
-
             });
         });
     }
