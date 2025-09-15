@@ -1877,6 +1877,7 @@ public class NHUnitTypes {
                     max = 50000f;
                     width = 15f;
                     whenShooting = false;
+                    chanceDeflect = 1f;
                 }}, new AdaptedHealAbility(1500, 900, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 480;
                     a.selfHealAmount /= 8;
