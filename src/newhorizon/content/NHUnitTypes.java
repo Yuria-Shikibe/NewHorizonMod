@@ -1,7 +1,6 @@
 package newhorizon.content;
 
 import arc.Core;
-import arc.audio.*;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -1878,7 +1877,6 @@ public class NHUnitTypes {
                     max = 50000f;
                     width = 15f;
                     whenShooting = false;
-                    chanceDeflect = 1f;
                 }}, new AdaptedHealAbility(1500, 900, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 480;
                     a.selfHealAmount /= 8;
@@ -3908,7 +3906,6 @@ public class NHUnitTypes {
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = false;
-                    chanceDeflect = 1f;
                 }});
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
