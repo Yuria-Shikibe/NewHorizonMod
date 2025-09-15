@@ -1373,6 +1373,17 @@ public class NHFx {
         }));
     }
 
+    public static Effect shootCircle(float size){
+        return new Effect(45f, e -> {
+            color(e.color, Color.white, e.fout() * 0.75f);
+            rand.setSeed(e.id);
+            randLenVectors(e.id, (int) (size / 7f), 3 + size * 1.5f * e.fin(), e.rotation, 25, (x, y) -> {
+                Fill.circle(e.x + x, e.y + y, e.fout() * rand.random(1.5f, 3.2f) * size / 30f);
+                Drawf.light(e.x + x, e.y + y, e.fout() * 4.5f, e.color, 0.7f);
+            });
+        });
+    }
+
     public static Effect shootCircleSmall(Color color) {
         return get("shootCircleSmall", color, new Effect(30, e -> {
             color(color, Color.white, e.fout() * 0.75f);
@@ -1556,7 +1567,7 @@ public class NHFx {
     }
 
     public static Effect instShoot(Color color, Color colorInner) {
-        return new Effect(24.0F, e -> {
+        return new Effect(24f, e -> {
             e.scaled(10.0F, (b) -> {
                 Draw.color(Color.white, color, b.fin());
                 Lines.stroke(b.fout() * 3.0F + 0.2F);

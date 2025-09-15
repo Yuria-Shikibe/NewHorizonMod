@@ -73,17 +73,3 @@ public class AdaptLaserBulletType extends LaserBulletType implements TypeDamageB
         Drawf.light(b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.4f * b.fout(), colors[0], 0.6f);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
