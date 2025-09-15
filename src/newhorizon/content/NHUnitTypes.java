@@ -3907,6 +3907,7 @@ public class NHUnitTypes {
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = false;
+                    chanceDeflect = 1f;
                 }});
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
