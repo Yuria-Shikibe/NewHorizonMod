@@ -1,6 +1,7 @@
 package newhorizon.content;
 
 import arc.Core;
+import arc.audio.*;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
