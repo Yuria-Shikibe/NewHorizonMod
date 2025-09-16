@@ -39,7 +39,7 @@ public interface TypeDamageBulletType {
     }
 
     default void setDamage(BulletType type, float range, float kinetic, float energy){
-        type.damage = 0f;
+        type.damage = kinetic;
         type.splashDamage = kinetic;
         type.splashDamageRadius = range;
         type.shieldDamageMultiplier = energy / kinetic;
@@ -179,7 +179,7 @@ public interface TypeDamageBulletType {
 
             Damage.damageUnits(
                     b.team, x, y, type.splashDamageRadius, 0,
-                    unit -> unit.within(b, type.splashDamageRadius + unit.hitSize / 2f),
+                    unit -> unit.within(b, type.splashDamageRadius + unit.hitSize / 2f) && ((unit.isGrounded() && type.collidesGround) || (unit.isFlying() && type.collidesAir)),
                     unit -> {
                         unit.damage(getTotalDamageToUnit(type, b, type.splashDamage * b.damageMultiplier(), unit));
                         if (type.status != StatusEffects.none) unit.apply(type.status, type.statusDuration);

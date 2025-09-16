@@ -15,8 +15,11 @@ import newhorizon.expand.bullets.TypeDamageBulletType;
 public class AdaptBulletType extends BasicBulletType implements TypeDamageBulletType {
     public String bundleName = "bullet-name";
 
+    public boolean mineShoot = false;
+    public float mineDeployTime = 60f;
+
     public boolean hasAccel = false;
-    public float velocityBegin = -1;
+    public float velocityBegin = 0.1f;
     public float velocityIncrease = 0;
     public float accelerateBegin = 0.1f;
     public float accelerateEnd = 0.6f;
@@ -34,6 +37,14 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
     public void init(Bullet b) {
         super.init(b);
         applyExtraMultiplier(b);
+
+        if (mineShoot){
+            b.lifetime = b.lifetime * 2;
+            b.fdata = b.lifetime;
+            b.lifetime += mineDeployTime;
+
+            b.data = b.vel.len() / speed;
+        }
     }
 
     @Override
@@ -69,6 +80,7 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
 
     @Override
     public void update(Bullet b){
+        if (mineShoot) b.vel.setLength(Interp.reverse.apply((b.time / b.lifetime)) * b.fdata / b.lifetime * speed * (b.data instanceof Float scl? scl: 1f));
         if (hasAccel) b.vel.setLength((velocityBegin + accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
 
         super.update(b);

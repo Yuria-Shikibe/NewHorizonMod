@@ -13,6 +13,7 @@ import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.ArtilleryBulletType;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.gen.Sounds;
@@ -545,7 +546,7 @@ public class TurretBlock {
             coolant = consumeCoolant(0.25f);
             coolantMultiplier = 2.5f;
         }};
-        bombard = new ItemTurret("bombard") {{
+        bombard = new ShootMatchTurret("bombard") {{
             requirements(Category.turret, with(
                     NHItems.multipleSteel, 300,
                     NHItems.seniorProcessor, 90,
@@ -597,8 +598,9 @@ public class TurretBlock {
             shootSound = Sounds.largeCannon;
             outlineColor = Pal.darkOutline;
 
-            ammo(NHItems.metalOxhydrigen, new AdaptBulletType() {{
-                        setDamage(this, 16f, 200f, 150f);
+            ammo(
+                    NHItems.metalOxhydrigen, new AdaptBulletType() {{
+                        setDamage(this, 24f, 120f, 80f);
                         sprite = "mine-bullet";
 
                         scaleLife = true;
@@ -610,35 +612,202 @@ public class TurretBlock {
 
                         speed = 6f;
                         hitShake = 1f;
-                        inaccuracy = 3;
+                        inaccuracy = 0;
                         lifetime = 80f;
                         trailLength = 22;
                         trailWidth = 2.25f;
                         width = height = 15;
                         shrinkX = shrinkY = 0.3f;
+                        buildingDamageMultiplier = 0.2f;
 
                         trailInterp = Interp.slope;
                         shrinkInterp = Interp.slope;
                         hitSound = Sounds.explosion;
-                        hitEffect = Fx.flakExplosion;
+                        hitEffect = NHFx.hitSparkLarge;
                         trailEffect = Fx.artilleryTrail;
                         shootEffect = NHFx.shootCircle(32);
-                        frontColor = NHColor.lightSkyFront;
-                        backColor = hitColor = lightColor = lightningColor = trailColor = Pal.techBlue;
-                        despawnEffect = hitEffect = NHFx.hitSpark(frontColor, 30, 15, 22, 1.2f, 6);;
+                        despawnEffect = NHFx.square45_6_45;
+                        frontColor = NHItems.metalOxhydrigen.color.cpy().lerp(Color.white, 0.3f);
+                        backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.metalOxhydrigen.color;
                         trailParam = 1.2f;
                     }},
-                    NHItems.multipleSteel, NHBullets.artilleryMulti,
-                    NHItems.thermoCoreNegative, NHBullets.artilleryNgt,
-                    NHItems.fusionEnergy, NHBullets.artilleryFusion
+                    NHItems.carbide, new AdaptBulletType() {{
+                        setDamage(this, 24f, 200f, 120f);
+                        sprite = "mine-bullet";
+
+                        scaleLife = true;
+                        collides = false;
+                        hasTrailFx = true;
+                        collidesAir = false;
+                        collidesTiles = false;
+                        scaledSplashDamage = true;
+
+                        speed = 5f;
+                        hitShake = 1f;
+                        inaccuracy = 0;
+                        lifetime = 96f;
+                        trailLength = 25;
+                        trailParam = 1.2f;
+                        trailWidth = 2.5f;
+                        width = height = 18;
+                        reloadMultiplier = 0.8f;
+                        shrinkX = shrinkY = 0.3f;
+                        buildingDamageMultiplier = 0.2f;
+
+                        trailInterp = Interp.slope;
+                        shrinkInterp = Interp.slope;
+                        hitSound = Sounds.explosion;
+                        hitEffect = NHFx.hitSparkLarge;
+                        trailEffect = Fx.artilleryTrail;
+                        shootEffect = NHFx.shootCircle(32);
+                        despawnEffect = NHFx.square45_6_45;
+                        frontColor = NHItems.carbide.color.cpy().lerp(Color.white, 0.1f);
+                        backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.carbide.color;
+                    }},
+                    /*NHItems.multipleSteel, new AdaptBulletType() {{
+                        setDamage(this, 24f, 200f, 120f);
+
+                        hasAccel = true;
+                        collides = true;
+                        hasTrailFx = true;
+                        collidesAir = false;
+
+                        velocityBegin = 3f;
+                        velocityIncrease = 12f;
+                        accelerateBegin = 0.2f;
+                        accelerateEnd = 1.5f;
+
+                        width = 12;
+                        height = 20;
+                        hitShake = 1f;
+                        shrinkX = 0.3f;
+                        lifetime = 60f;
+                        trailLength = 25;
+                        trailParam = 1.2f;
+                        trailWidth = 2.5f;
+                        reloadMultiplier = 3f;
+                        buildingDamageMultiplier = 0.25f;
+
+                        hitSound = Sounds.explosion;
+                        hitEffect = NHFx.hitSparkLarge;
+                        trailEffect = Fx.artilleryTrail;
+                        shootEffect = NHFx.shootCircle(32);
+                        despawnEffect = NHFx.square45_6_45;
+                        frontColor = NHColor.lightSkyFront;
+                        backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.multipleSteel.color;
+                    }},
+
+                     */
+                    NHItems.fusionEnergy, new AdaptBulletType() {{
+                        setDamage(this, 40f, 300f, 200f);
+                        sprite = "mine-bullet";
+
+                        mineShoot = true;
+                        scaleLife = true;
+                        collides = false;
+                        hasTrailFx = true;
+                        collidesAir = false;
+                        collidesTiles = false;
+                        scaledSplashDamage = true;
+
+                        speed = 6f;
+                        hitShake = 1f;
+                        inaccuracy = 4;
+                        lifetime = 80f;
+                        trailLength = 25;
+                        trailParam = 1.2f;
+                        trailWidth = 2.5f;
+                        width = height = 18;
+                        reloadMultiplier = 0.6f;
+                        shrinkX = shrinkY = 0.3f;
+                        buildingDamageMultiplier = 0.2f;
+
+                        frontColor = Color.white;
+                        trailInterp = Interp.slope;
+                        shrinkInterp = Interp.slope;
+                        hitSound = Sounds.explosion;
+                        hitEffect = NHFx.square45_8_45;
+                        trailEffect = Fx.artilleryTrail;
+                        shootEffect = NHFx.shootCircle(32);
+                        smokeEffect = Fx.shootSmokeDisperse;
+                        backColor = hitColor = lightColor = trailColor = NHItems.fusionEnergy.color;
+                        despawnEffect = NHFx.blast(NHItems.fusionEnergy.color, splashDamageRadius * 0.52f);
+                    }},
+                    NHItems.thermoCoreNegative, new AdaptBulletType() {{
+                        setDamage(this, 60f, 500f, 500f);
+                        sprite = "mine-bullet";
+
+                        mineShoot = true;
+                        scaleLife = true;
+                        collides = false;
+                        hasTrailFx = true;
+                        collidesAir = false;
+                        collidesTiles = false;
+                        scaledSplashDamage = true;
+
+                        speed = 6f;
+                        hitShake = 1f;
+                        inaccuracy = 4;
+                        lifetime = 80f;
+                        trailLength = 25;
+                        trailParam = 1.2f;
+                        trailWidth = 2.5f;
+                        width = height = 18;
+                        reloadMultiplier = 0.6f;
+                        shrinkX = shrinkY = 0.3f;
+                        buildingDamageMultiplier = 0.2f;
+
+                        frontColor = Color.white;
+                        trailInterp = Interp.slope;
+                        shrinkInterp = Interp.slope;
+                        hitSound = Sounds.explosion;
+                        hitEffect = NHFx.hitSparkHuge;
+                        trailEffect = Fx.artilleryTrail;
+                        shootEffect = NHFx.shootCircle(32);
+                        smokeEffect = Fx.shootSmokeDisperse;
+                        backColor = hitColor = lightColor = trailColor = NHItems.thermoCoreNegative.color;
+                        despawnEffect = NHFx.blast(NHItems.thermoCoreNegative.color, splashDamageRadius * 0.65f);
+                    }}
             );
-            shoot = new ShootMulti(new ShootBarrel(){{
+            shooter(
+                    NHItems.metalOxhydrigen, new ShootMulti(new ShootBarrel(){{
+                        barrels = new float[]{5f, -3f, 0, -5f, -3f, 0, 11f, -2f, 0, -11f, -2f, 0,};
+                        shots = 4;
+                    }}, new ShootPattern(){{
+                        shots = 3;
+                        shotDelay = 12f;
+                    }}),
+                    NHItems.carbide, new ShootMulti(new ShootBarrel(){{
+                        barrels = new float[]{5.5f, -3f, 0, -5.5f, -3f, 0, 0, -3, 0, 11f, -2f, 0, -11f, -2f, 0,};
+                        shots = 5;
+                    }}, new ShootPattern(){{
+                        shots = 2;
+                        shotDelay = 20f;
+                    }}),
+                    NHItems.fusionEnergy, new ShootBarrel(){{
+                        barrels = new float[]{
+                                -5f, -2f, 0,
+                                11f, -3f, 0,
+                                -11f, -3f, 0,
+                                5f, -2f, 0,
+                        };
+                        shots = 8;
+                        shotDelay = 5f;
+                    }},
+                    NHItems.thermoCoreNegative, new ShootBarrel(){{
+                        barrels = new float[]{
+                                -8f, -2f, 0,
+                                0f, -3f, 0,
+                                8f, -3f, 0,
+                        };
+                        shots = 6;
+                        shotDelay = 7f;
+                    }}
+            );
+            shoot = new ShootBarrel(){{
                 barrels = new float[]{5f, -3f, 0, -5f, -3f, 0, 11f, -2f, 0, -11f, -2f, 0,};
                 shots = 4;
-            }}, new ShootPattern(){{
-                shots = 3;
-                shotDelay = 12f;
-            }});
+            }};
 
             coolant = new ConsumeCoolant(0.6f);
         }};
