@@ -13,6 +13,7 @@ import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.ArtilleryBulletType;
+import mindustry.entities.bullet.ShrapnelBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
@@ -737,6 +738,7 @@ public class TurretBlock {
                         setDamage(this, 60f, 500f, 500f);
                         sprite = "mine-bullet";
 
+                        hasTracer = true;
                         mineShoot = true;
                         scaleLife = true;
                         collides = false;
@@ -749,16 +751,15 @@ public class TurretBlock {
                         hitShake = 1f;
                         inaccuracy = 4;
                         lifetime = 80f;
-                        trailLength = 25;
+                        trailLength = 15;
                         trailParam = 1.2f;
                         trailWidth = 2.5f;
-                        width = height = 18;
+                        width = height = 22;
                         reloadMultiplier = 0.6f;
                         shrinkX = shrinkY = 0.3f;
                         buildingDamageMultiplier = 0.2f;
 
                         frontColor = Color.white;
-                        trailInterp = Interp.slope;
                         shrinkInterp = Interp.slope;
                         hitSound = Sounds.explosion;
                         hitEffect = NHFx.hitSparkHuge;
@@ -766,7 +767,7 @@ public class TurretBlock {
                         shootEffect = NHFx.shootCircle(32);
                         smokeEffect = Fx.shootSmokeDisperse;
                         backColor = hitColor = lightColor = trailColor = NHItems.thermoCoreNegative.color;
-                        despawnEffect = NHFx.blast(NHItems.thermoCoreNegative.color, splashDamageRadius * 0.65f);
+                        despawnEffect = new OptionalMultiEffect(NHFx.crossBlast_45, NHFx.blast(NHItems.thermoCoreNegative.color, splashDamageRadius * 0.65f));
                     }}
             );
             shooter(
@@ -796,12 +797,13 @@ public class TurretBlock {
                     }},
                     NHItems.thermoCoreNegative, new ShootBarrel(){{
                         barrels = new float[]{
-                                -8f, -2f, 0,
-                                0f, -3f, 0,
-                                8f, -3f, 0,
+                                -5f, -2f, 0,
+                                11f, -3f, 0,
+                                -11f, -3f, 0,
+                                5f, -2f, 0,
                         };
-                        shots = 6;
-                        shotDelay = 7f;
+                        shots = 4;
+                        shotDelay = 9f;
                     }}
             );
             shoot = new ShootBarrel(){{

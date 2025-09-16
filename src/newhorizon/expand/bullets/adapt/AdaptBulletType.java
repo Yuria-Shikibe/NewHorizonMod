@@ -2,11 +2,17 @@ package newhorizon.expand.bullets.adapt;
 
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.Rand;
+import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
+import arc.util.Time;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;
+import mindustry.graphics.Trail;
 import newhorizon.expand.bullets.TypeDamageBulletType;
+
+import static mindustry.Vars.headless;
 
 /**
  * Bullet with kinetic damage and energy damage.
@@ -14,6 +20,10 @@ import newhorizon.expand.bullets.TypeDamageBulletType;
  */
 public class AdaptBulletType extends BasicBulletType implements TypeDamageBulletType {
     public String bundleName = "bullet-name";
+
+    public boolean hasTracer = false;
+    public float tracerRandRange = 8f;
+    public float tracerUpdateInterval = 1f;
 
     public boolean mineShoot = false;
     public float mineDeployTime = 60f;
@@ -87,6 +97,23 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
 
         if(hasTrailFx && b.timer(0, (3 + b.fslope() * 2f) * trailMult)){
             trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : b.fslope() * trailSize, backColor);
+        }
+    }
+
+    @Override
+    public void updateTrail(Bullet b) {
+        if(!headless && trailLength > 0){
+            if(b.trail == null){
+                b.trail = new Trail(trailLength);
+            }
+            b.trail.length = trailLength;
+            if (hasTracer){
+                if (b.timer(1, tracerUpdateInterval)){
+                    b.trail.update(b.x + Mathf.random(-tracerRandRange, tracerRandRange), b.y + Mathf.random(-tracerRandRange, tracerRandRange), trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)));
+                }
+            }else {
+                b.trail.update(b.x, b.y, trailInterp.apply(b.fin()) * (1f + (trailSinMag > 0 ? Mathf.absin(Time.time, trailSinScl, trailSinMag) : 0f)));
+            }
         }
     }
 }
