@@ -6,6 +6,7 @@ import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;
@@ -91,7 +92,7 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
     @Override
     public void update(Bullet b){
         if (mineShoot) b.vel.setLength(Interp.reverse.apply((b.time / b.lifetime)) * b.fdata / b.lifetime * speed * (b.data instanceof Float scl? scl: 1f));
-        if (hasAccel) b.vel.setLength((velocityBegin + accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
+        if (hasAccel) b.vel.setLength(velocityBegin + (accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
 
         super.update(b);
 

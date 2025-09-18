@@ -486,7 +486,7 @@ public class NHBullets {
                 despawnEffect = NHFx.square45_4_45;
 
                 ammoMultiplier = 6;
-                reloadMultiplier = 3f;
+                reloadMultiplier = 0.2f;
                 buildingDamageMultiplier = 0.75f;
 
                 collidesAir = false;
@@ -495,7 +495,7 @@ public class NHBullets {
                 height = 33;
                 trailWidth = 2.6f;
                 trailLength = 10;
-                trailEffect = NHFx.polyTrail;
+                trailEffect = NHFx.instTrail(backColor, 32, false);
                 trailParam = 4;
                 trailInterval = 4;
             }

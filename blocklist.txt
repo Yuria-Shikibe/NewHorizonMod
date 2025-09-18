@@ -372,6 +372,7 @@ new-horizon-turbo-pump-small 1 1 1 0
 new-horizon-unit-initer 1 0 1 0
 new-horizon-upgradeSort-factory 1 1 3 0
 new-horizon-vent-extractor 1 1 3 0
+new-horizon-vortex 1 1 4 0
 new-horizon-warp-portal-initer 1 0 1 0
 new-horizon-water-instancer 1 1 1 0
 new-horizon-webber 1 1 3 0

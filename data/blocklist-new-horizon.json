@@ -521,6 +521,12 @@
 	"size": 4,
 	"color": 255
 },
+"new-horizon-vortex": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
+	"color": 255
+},
 "new-horizon-electro": {
 	"synthetic": true,
 	"solid": true,
