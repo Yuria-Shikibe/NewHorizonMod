@@ -53,12 +53,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-multiple-artillery": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
 "new-horizon-hive": {
 	"synthetic": true,
 	"solid": true,
@@ -521,16 +515,28 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-concentration": {
+"new-horizon-bombard": {
 	"synthetic": true,
 	"solid": true,
-	"size": 5,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-vortex": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
 	"color": 255
 },
 "new-horizon-electro": {
 	"synthetic": true,
 	"solid": true,
 	"size": 4,
+	"color": 255
+},
+"new-horizon-concentration": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
 	"color": 255
 },
 "new-horizon-presstanium-wall": {

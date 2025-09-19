@@ -37,6 +37,7 @@ new-horizon-block2 1 1 1 0
 new-horizon-block3 1 1 1 0
 new-horizon-blood-star 1 1 5 0
 new-horizon-bomb-launcher 1 1 3 0
+new-horizon-bombard 1 1 4 0
 new-horizon-cathode-fusion-reactor 1 1 4 0
 new-horizon-character-display 1 0 2 0
 new-horizon-character-display-small 1 0 1 0
@@ -371,6 +372,7 @@ new-horizon-turbo-pump-small 1 1 1 0
 new-horizon-unit-initer 1 0 1 0
 new-horizon-upgradeSort-factory 1 1 3 0
 new-horizon-vent-extractor 1 1 3 0
+new-horizon-vortex 1 1 4 0
 new-horizon-warp-portal-initer 1 0 1 0
 new-horizon-water-instancer 1 1 1 0
 new-horizon-webber 1 1 3 0
