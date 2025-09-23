@@ -54,6 +54,8 @@ import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
+import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.units.AdaptedTimedKillUnit;
 import newhorizon.expand.units.AncientEngine;
@@ -960,7 +962,8 @@ public class NHUnitTypes {
             rotateSpeed = 2f;
             ejectEffect = NHFx.hugeSmoke;
             shootCone = 20f;
-            bullet = new AdaptedLaserBulletType(800f) {{
+            bullet = new AdaptLaserBulletType() {{
+                damage = 800f;
                 hitColor = NHColor.thurmixRed;
                 colors = new Color[]{hitColor.cpy().mul(1f, 1f, 1f, 0.45f), hitColor, NHColor.thurmixRedLight, Color.white};
                 length = 600f;
@@ -1071,7 +1074,7 @@ public class NHUnitTypes {
                     shootEffect = NHFx.shootLineSmall(backColor);
                     smokeEffect = Fx.shootBigSmoke2;
 
-                    buildingDamageMultiplier = 0.4f;
+                    buildingDamageMultiplier = 0.2f;
                 }};
             }});
 

@@ -1,4 +1,4 @@
-package newhorizon.expand.bullets;
+package newhorizon.expand.bullets.adapt;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -8,28 +8,41 @@ import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.entities.bullet.LaserBulletType;
 import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
 import mindustry.graphics.Drawf;
+import newhorizon.expand.bullets.TypeDamageBulletType;
 import newhorizon.util.feature.PosLightning;
 
-public class AdaptedLaserBulletType extends LaserBulletType {
-    public boolean drawLine = false;
+public class AdaptLaserBulletType extends LaserBulletType implements TypeDamageBulletType {
+    public String bundleName = "bullet-name";
+
+    public boolean drawLightning = false;
     public int boltNum = 2;
     public float liWidth = PosLightning.WIDTH - 1f;
 
-    public AdaptedLaserBulletType(float damage) {
-        super(damage);
+    @Override
+    public String bundleName() {
+        return bundleName;
     }
 
-    public AdaptedLaserBulletType() {
-        this(1f);
+    @Override
+    public void hitEntity(Bullet b, Hitboxc entity, float health) {
+        typedHitEntity(this, b, entity, health);
+    }
+
+    @Override
+    public void createSplashDamage(Bullet b, float x, float y) {
+        typedCreateSplash(this, b, x, y);
     }
 
     @Override
     public void init(Bullet b) {
         super.init(b);
-        PosLightning.createEffect(b, b.fdata * 0.95f, b.rotation(), hitColor, boltNum, liWidth);
+        applyExtraMultiplier(b);
+        if (drawLightning) PosLightning.createEffect(b, b.fdata * 0.95f, b.rotation(), hitColor, boltNum, liWidth);
     }
 
+    //same with LaserBulletType, removed Lines.lineAngle(b.x, b.y, b.rotation(), baseLen);
     @Override
     public void draw(Bullet b) {
         float realLength = b.fdata;
@@ -39,16 +52,16 @@ public class AdaptedLaserBulletType extends LaserBulletType {
         float cwidth = width;
         float compound = 1f;
 
-        if (drawLine) Lines.lineAngle(b.x, b.y, b.rotation(), baseLen);
+        if (!drawLightning) Lines.lineAngle(b.x, b.y, b.rotation(), baseLen);
         for (Color color : colors) {
             Draw.color(color);
             Lines.stroke((cwidth *= lengthFalloff) * b.fout());
             Lines.lineAngle(b.x, b.y, b.rotation(), baseLen, false);
             Tmp.v1.trns(b.rotation(), baseLen);
-            Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Lines.getStroke() * 1.22f, cwidth * 2f + width / 2f, b.rotation());
+            Drawf.tri(b.x + Tmp.v1.x, b.y + Tmp.v1.y, Lines.getStroke(), cwidth * 2f + width / 2f, b.rotation());
 
             Fill.circle(b.x, b.y, 1f * cwidth * b.fout());
-            for (int i : Mathf.signs) {
+            for(int i : Mathf.signs){
                 Drawf.tri(b.x, b.y, sideWidth * b.fout() * cwidth, sideLength * compound, b.rotation() + sideAngle * i);
             }
 
@@ -60,17 +73,3 @@ public class AdaptedLaserBulletType extends LaserBulletType {
         Drawf.light(b.x, b.y, b.x + Tmp.v1.x, b.y + Tmp.v1.y, width * 1.4f * b.fout(), colors[0], 0.6f);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

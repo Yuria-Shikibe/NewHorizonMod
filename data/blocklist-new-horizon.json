@@ -53,12 +53,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-multiple-artillery": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
 "new-horizon-hive": {
 	"synthetic": true,
 	"solid": true,
@@ -81,12 +75,6 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
-	"color": 255
-},
-"new-horizon-beam-laser-turret": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
 	"color": 255
 },
 "new-horizon-antibody": {
@@ -119,12 +107,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-pulse-shotgun": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-dendrite": {
 	"synthetic": true,
 	"solid": true,
@@ -147,12 +129,6 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
-	"color": 255
-},
-"new-horizon-thermo-turret": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
 	"color": 255
 },
 "new-horizon-rail-gun": {
@@ -503,6 +479,24 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-thermo-turret": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-pulse": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-beam": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-synchro": {
 	"synthetic": true,
 	"solid": true,
@@ -521,16 +515,28 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-concentration": {
+"new-horizon-bombard": {
 	"synthetic": true,
 	"solid": true,
-	"size": 5,
+	"size": 4,
+	"color": 255
+},
+"new-horizon-vortex": {
+	"synthetic": true,
+	"solid": true,
+	"size": 4,
 	"color": 255
 },
 "new-horizon-electro": {
 	"synthetic": true,
 	"solid": true,
 	"size": 4,
+	"color": 255
+},
+"new-horizon-concentration": {
+	"synthetic": true,
+	"solid": true,
+	"size": 5,
 	"color": 255
 },
 "new-horizon-presstanium-wall": {

@@ -100,8 +100,8 @@ public class NHBlocks {
     public static Block hyperGenerator;
 
 
-    public static Block ancientArtillery, dendrite, interferon, prism, hive, bloodStar, pulseShotgun, beamLaserTurret, blaster, endOfEra,
-            thermoTurret, railGun, executor, gravity, multipleLauncher, antibody, multipleArtillery, atomSeparator, eternity;
+    public static Block ancientArtillery, dendrite, interferon, prism, hive, bloodStar, blaster, endOfEra,
+            railGun, executor, gravity, multipleLauncher, antibody, atomSeparator, eternity;
 
     public static Block largeWaterExtractor;
     public static Block hydroFuelCell;
@@ -326,92 +326,6 @@ public class NHBlocks {
     }
 
     private static void loadTurrets() {
-        multipleArtillery = new ShootMatchTurret("multiple-artillery") {{
-            drawer = new DrawTurret() {{
-                parts.add(new RegionPart("-mid") {{
-                    moveY = -3;
-
-                    layerOffset = 0.01f;
-
-                    outline = true;
-
-                    progress = PartProgress.recoil;
-                }});
-                parts.add(new RegionPart("-barrel") {{
-                    moveX = 5.5f;
-
-                    layerOffset = 0.01f;
-
-                    mirror = outline = true;
-
-                    moves.add(new PartMove(PartProgress.recoil, 0, -4, 0, 0, 0));
-                }});
-            }};
-
-            recoil = 0.74f;
-            velocityRnd = 0.088f;
-            lifeRnd = 0.088f;
-
-            reload = 72f;
-
-            rotateSpeed = 1.22f;
-            unitSort = NHUnitSorts.slowest;
-
-            shoot = new ShootBarrel() {{
-                barrels = new float[]{
-                        5f, -3f, 0,
-                        -5f, -3f, 0,
-                        11f, -2f, 0,
-                        -11f, -2f, 0,
-                };
-
-                shots = 4;
-            }};
-
-            range = 640;
-            trackingRange = range * 1.4f;
-
-            minWarmup = 0.9f;
-            shootWarmupSpeed /= 2;
-            inaccuracy = 2;
-            shootY -= 5;
-            shootSound = Sounds.largeCannon;
-
-            ammo(
-                    NHItems.metalOxhydrigen, NHBullets.artilleryHydro,
-                    NHItems.multipleSteel, NHBullets.artilleryMulti,
-                    NHItems.thermoCoreNegative, NHBullets.artilleryNgt,
-                    NHItems.fusionEnergy, NHBullets.artilleryFusion,
-                    Items.phaseFabric, NHBullets.artilleryPhase
-            );
-
-            shooter(Items.phaseFabric, new ShootBarrel() {{
-                barrels = new float[]{
-                        5f, -3f, 0,
-                        11f, -2f, 0,
-                        -11f, -2f, 0,
-                        -5f, -3f, 0,
-                };
-
-                barrelOffset = 1;
-                shots = 2;
-            }});
-
-            targetAir = false;
-            maxAmmo = 80;
-
-            size = 4;
-            health = 2600;
-            outlineColor = Pal.darkOutline;
-
-            squareSprite = false;
-
-            coolantMultiplier /= 2;
-            coolant = new ConsumeCoolant(0.6f);
-            liquidCapacity = 90;
-
-            requirements(Category.turret, with(NHItems.multipleSteel, 300, NHItems.seniorProcessor, 90, Items.plastanium, 120, NHItems.presstanium, 200, Items.phaseFabric, 100));
-        }};
 
         hive = new ShootMatchTurret("hive") {{
             size = 4;
@@ -1086,52 +1000,6 @@ public class NHBlocks {
             inaccuracy = 1.25f;
         }};
 
-        beamLaserTurret = new ItemTurret("beam-laser-turret") {{
-            size = 2;
-            requirements(Category.turret, BuildVisibility.shown, with(Items.copper, 60, NHItems.juniorProcessor, 60, NHItems.presstanium, 60));
-            recoil = 1f;
-            reload = 60f;
-
-            shoot = new ShootPattern() {{
-                shots = 3;
-                shotDelay = 1.75f;
-            }};
-
-            canOverdrive = false;
-            squareSprite = false;
-            drawer = new DrawTurret("reinforced-");
-
-            heatColor = Pal.turretHeat.cpy().lerp(Pal.redderDust, 0.5f).mul(1.1f);
-            cooldownTime *= 2f;
-            shootSound = NHSounds.laser5;
-            range = 144f;
-            shootCone = 30f;
-            inaccuracy = 6f;
-            maxAmmo = 80;
-            ammoPerShot = 5;
-            shootY += 5f;
-            health = 600;
-            smokeEffect = Fx.shootBigSmoke2;
-            consumePowerCond(2f, TurretBuild::isActive);
-            ammo(
-                    Items.silicon, new AdaptedLaserBulletType(100) {{
-                        colors = new Color[]{Pal.bulletYellowBack.cpy().mul(1f, 1f, 1f, 0.35f), Pal.bulletYellowBack, Color.white};
-                        hitColor = Pal.bulletYellow;
-                        length = 150f;
-                        lifetime = 30f;
-                        drawLine = false;
-                        width = 8f;
-                        lengthFalloff = 0.8f;
-                        sideLength = 25f;
-                        sideWidth = 0.7f;
-                        sideAngle = 30f;
-                        largeHit = false;
-                        ammoMultiplier = 1;
-                        shootEffect = NHFx.square(hitColor, 15f, 2, 8f, 2f);
-                    }}
-            );
-        }};
-
         antibody = new ItemTurret("antibody") {{
             requirements(Category.turret, with(NHItems.presstanium, 220, Items.tungsten, 150, NHItems.juniorProcessor, 80, Items.phaseFabric, 50));
 
@@ -1289,7 +1157,6 @@ public class NHBlocks {
             rotateSpeed = 6f;
             consumePowerCond(6.0F, (MultTractorBeamBuild e) -> e.target != null);
         }};
-
 
         eternity = new ItemTurret("eternity") {{
             armor = 30;
@@ -1465,119 +1332,6 @@ public class NHBlocks {
             reload = 6f;
 
             requirements(Category.turret, BuildVisibility.shown, with(NHItems.multipleSteel, 90, NHItems.juniorProcessor, 60, NHItems.presstanium, 120, NHItems.zeta, 120, Items.graphite, 80));
-        }};
-
-        pulseShotgun = new ItemTurret("pulse-shotgun") {{
-            health = 960;
-            range = 200;
-            smokeEffect = Fx.shootBigSmoke;
-
-            coolant = consumeCoolant(0.1F);
-
-            shoot = new ShootSpread() {{
-                shots = 12;
-                shotDelay = 2f;
-                spread = 0.55f;
-            }};
-
-            reload = 90f;
-            recoil = 3f;
-            shootCone = 30f;
-            inaccuracy = 4f;
-            size = 2;
-            shootSound = Sounds.shootSnap;
-            shake = 3f;
-            ammo(
-                    Items.titanium, new BasicBulletType(5, 24) {{
-                        width = 8f;
-                        height = 25f;
-                        hitColor = backColor = lightColor = trailColor = Items.titanium.color.cpy().lerp(Color.white, 0.1f);
-                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                        hitEffect = NHFx.crossBlast(hitColor, height + width);
-                        shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 12f, 2f);
-                        ammoMultiplier = 8;
-                        pierceArmor = true;
-                    }},
-
-                    Items.plastanium, new BasicBulletType(5, 26) {{
-                        width = 8f;
-                        height = 25f;
-                        fragBullets = 4;
-                        fragBullet = new BasicBulletType(2, 26) {{
-                            width = 3f;
-                            lifetime = 10f;
-                            height = 12f;
-                            ammoMultiplier = 12;
-                            hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
-                            frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                            hitEffect = NHFx.lightningHitSmall(backColor);
-                            shootEffect = despawnEffect = NHFx.square45_4_45;
-                        }};
-                        fragAngle = 130f;
-                        fragVelocityMax = 1.1f;
-                        fragVelocityMin = 0.5f;
-                        fragLifeMax = 1.25f;
-                        fragLifeMin = 0.25f;
-                        ammoMultiplier = 12;
-                        hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
-                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                        hitEffect = NHFx.crossBlast(hitColor, height + width);
-                        shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
-                    }},
-
-                    NHItems.zeta, new BasicBulletType(5, 18) {{
-                        width = 8f;
-                        height = 25f;
-                        lightning = 2;
-                        lightningLength = 2;
-                        lightningLengthRand = 6;
-                        lightningDamage = damage;
-                        status = StatusEffects.shocked;
-                        statusDuration = 15f;
-                        ammoMultiplier = 12;
-                        lightningColor = hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
-                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                        hitEffect = NHFx.crossBlast(hitColor, height + width);
-                        shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
-                    }},
-
-                    Items.pyratite, new BasicBulletType(5, 18) {{
-                        width = 8f;
-                        height = 25f;
-                        incendAmount = 4;
-                        incendChance = 0.25f;
-                        incendSpread = 12f;
-                        status = StatusEffects.burning;
-                        statusDuration = 15f;
-                        ammoMultiplier = 12;
-                        hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
-                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                        hitEffect = NHFx.crossBlast(hitColor, height + width);
-                        despawnEffect = Fx.blastExplosion;
-                        shootEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
-                    }},
-
-                    Items.blastCompound, new BasicBulletType(5, 22) {{
-                        width = 8f;
-                        height = 25f;
-                        status = StatusEffects.blasted;
-                        statusDuration = 15f;
-                        splashDamageRadius = 12f;
-                        splashDamage = damage;
-                        ammoMultiplier = 8;
-                        hitColor = backColor = lightColor = trailColor = Items.blastCompound.color.cpy().lerp(Color.white, 0.1f);
-                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                        hitEffect = NHFx.crossBlast(hitColor, height + width);
-                        despawnEffect = Fx.blastExplosion;
-                        shootEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
-                    }}
-            );
-
-            limitRange();
-            maxAmmo = 120;
-            ammoPerShot = 12;
-
-            requirements(Category.turret, with(Items.copper, 30, Items.graphite, 40, NHItems.presstanium, 50, Items.lead, 60));
         }};
 
         dendrite = new ShootMatchTurret("dendrite") {{
@@ -1930,58 +1684,6 @@ public class NHBlocks {
             xRand = tilesize * size / 6.5f;
             shootSound = Sounds.missile;
             coolantMultiplier = 0.85f;
-        }};
-
-        thermoTurret = new PowerTurret("thermo-turret") {{
-            size = 1;
-            health = 320;
-
-            coolant = consumeCoolant(0.05F);
-            requirements(Category.turret, BuildVisibility.shown, with(Items.titanium, 50, Items.silicon, 25));
-            shootType = new BasicBulletType(6.5f, 28f) {{
-                hitEffect = new Effect(12.0F, (e) -> {
-                    Draw.color(Pal.lancerLaser, Color.white, e.fout() * 0.75f);
-                    Lines.stroke(e.fout() * 1.5F);
-                    Angles.randLenVectors(e.id, 3, e.finpow() * 17.0F, e.rotation, 360.0F, (x, y) -> {
-                        float ang = Mathf.angle(x, y);
-                        Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 4.0F + 1.0F);
-                    });
-                });
-                trailWidth = 1.25f;
-                trailLength = 15;
-
-                knockback = 0.5f;
-                trailColor = backColor = hitColor = Pal.lancerLaser;
-                frontColor = Color.white;
-                lifetime = 50f;
-                homingDelay = 1f;
-                homingPower = 0.2f;
-                homingRange = 120f;
-                status = StatusEffects.shocked;
-                collidesGround = false;
-                statusDuration = 30f;
-                width = 5f;
-                drawSize = 120f;
-                height = 22f;
-            }};
-            consumePower(3.5f);
-
-            shoot = new ShootPattern() {{
-                shots = 5;
-                shotDelay = 6f;
-            }};
-
-            inaccuracy = 3f;
-            reload = 75f;
-            shootCone = 50.0F;
-            rotateSpeed = 8.0F;
-            targetGround = false;
-            range = 200.0F;
-            shootEffect = Fx.lightningShoot;
-            smokeEffect = Fx.shootSmallSmoke;
-            heatColor = Color.red;
-            recoil = 1.0F;
-            shootSound = NHSounds.thermoShoot;
         }};
 
         railGun = new ItemTurret("rail-gun") {

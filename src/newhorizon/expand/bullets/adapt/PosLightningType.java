@@ -1,4 +1,4 @@
-package newhorizon.expand.bullets;
+package newhorizon.expand.bullets.adapt;
 
 import mindustry.content.Fx;
 import mindustry.entities.Damage;

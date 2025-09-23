@@ -116,6 +116,7 @@ public class NewFeatureDialog extends BaseDialog {
         cont.pane(main -> {
             main.background(Styles.black9);
             main.top();
+
             buildMainChangelog(main);
             buildFeatureLog(main);
         }).grow().padLeft(LEN).padRight(LEN).padTop(LEN).row();

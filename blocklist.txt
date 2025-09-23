@@ -27,6 +27,7 @@ new-horizon-armor-t5 1 1 1 0
 new-horizon-armor-wall 0 1 1 6777206
 new-horizon-assign-overdrive 1 1 3 0
 new-horizon-atom-separator 1 1 5 0
+new-horizon-beam 1 1 2 0
 new-horizon-beam-laser-turret 1 1 2 0
 new-horizon-beam-mining-facility 1 1 4 0
 new-horizon-bionics-processor 1 1 1 0
@@ -36,6 +37,7 @@ new-horizon-block2 1 1 1 0
 new-horizon-block3 1 1 1 0
 new-horizon-blood-star 1 1 5 0
 new-horizon-bomb-launcher 1 1 3 0
+new-horizon-bombard 1 1 4 0
 new-horizon-cathode-fusion-reactor 1 1 4 0
 new-horizon-character-display 1 0 2 0
 new-horizon-character-display-small 1 0 1 0
@@ -300,6 +302,7 @@ new-horizon-productivity-module1 1 1 1 0
 new-horizon-productivity-module2 1 1 1 0
 new-horizon-productivity-module3 1 1 1 0
 new-horizon-proton-capacitor 1 1 1 0
+new-horizon-pulse 1 1 2 0
 new-horizon-pulse-mutator 1 1 1 0
 new-horizon-pulse-shotgun 1 1 2 0
 new-horizon-quantum-conductor 1 1 1 0
@@ -369,6 +372,7 @@ new-horizon-turbo-pump-small 1 1 1 0
 new-horizon-unit-initer 1 0 1 0
 new-horizon-upgradeSort-factory 1 1 3 0
 new-horizon-vent-extractor 1 1 3 0
+new-horizon-vortex 1 1 4 0
 new-horizon-warp-portal-initer 1 0 1 0
 new-horizon-water-instancer 1 1 1 0
 new-horizon-webber 1 1 3 0
