@@ -808,12 +808,12 @@ public class TurretBlock {
             reload = 15f;
             health = 2600;
             recoil = 0.74f;
+            shootCone = 30f;
             range = 45 * 8f;
             minWarmup = 0.9f;
             liquidCapacity = 90;
             rotateSpeed = 1.22f;
             coolantMultiplier = 3f;
-            trackingRange = 60 * 8f;
             shootWarmupSpeed = 0.07f;
 
             shootSound = NHSounds.laser4;
@@ -822,21 +822,17 @@ public class TurretBlock {
             ammo(NHItems.multipleSteel, new AdaptBulletType() {{
                 setDamage(this, 24f, 200f, 120f);
 
-                hasAccel = true;
                 collides = true;
                 hasTrailFx = true;
                 collidesAir = false;
 
-                velocityBegin = 5f;
-                velocityIncrease = 10f;
-                accelerateBegin = 0.2f;
-                accelerateEnd = 1.5f;
-
                 width = 12;
                 height = 20;
+                speed = 7.5f;
                 hitShake = 1f;
+                pierceCap = 3;
                 shrinkX = 0.3f;
-                lifetime = 90f;
+                lifetime = 50f;
                 trailLength = 15;
                 trailParam = 1.2f;
                 trailWidth = 2.5f;
@@ -844,14 +840,85 @@ public class TurretBlock {
                 buildingDamageMultiplier = 0.25f;
 
                 hitSound = Sounds.explosion;
+                trailEffect = NHFx.polyTrail;
                 hitEffect = NHFx.hitSparkLarge;
                 shootEffect = NHFx.shootCircle(32);
                 despawnEffect = NHFx.square45_6_45;
                 frontColor = NHColor.lightSkyFront;
-                backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.multipleSteel.color;
+                backColor = hitColor = lightColor = trailColor = NHItems.multipleSteel.color;
+            }}, NHItems.phaseFabric, new AdaptBulletType() {{
+                setDamage(this, 24f, 200f, 120f);
+
+                collides = true;
+                hasTrailFx = true;
+                collidesAir = false;
+
+                width = 12;
+                height = 20;
+                speed = 8f;
+                hitShake = 1f;
+                pierceCap = 4;
+                shrinkX = 0.3f;
+                lifetime = 45f;
+                trailLength = 15;
+                trailParam = 1.2f;
+                trailWidth = 2.5f;
+                trailInterval = 4f;
+                buildingDamageMultiplier = 0.25f;
+
+                frontColor = Color.white;
+                hitSound = Sounds.explosion;
                 trailEffect = NHFx.polyTrail;
-            }}, NHItems.phaseFabric, NHBullets.artilleryPhase);
+                hitEffect = NHFx.hitSparkLarge;
+                shootEffect = NHFx.shootCircle(32);
+                despawnEffect = NHFx.square45_6_45;
+                smokeEffect = Fx.shootSmokeDisperse;
+                backColor = hitColor = lightColor = trailColor = Items.phaseFabric.color;
+            }}, NHItems.irayrondPanel, new AdaptBulletType() {{
+                setDamage(this, 24f, 200f, 120f);
+
+                collides = true;
+                hasTrailFx = true;
+                collidesAir = false;
+
+                width = 15;
+                height = 22;
+                speed = 10f;
+                hitShake = 1f;
+                pierceCap = 4;
+                shrinkX = 0.3f;
+                lifetime = 40f;
+                trailLength = 15;
+                trailParam = 1.2f;
+                trailWidth = 2.5f;
+                trailInterval = 4f;
+                buildingDamageMultiplier = 0.25f;
+
+                frontColor = Color.white;
+                hitSound = Sounds.explosion;
+                trailEffect = NHFx.polyTrail;
+                hitEffect = NHFx.hitSparkLarge;
+                shootEffect = NHFx.shootCircle(32);
+                despawnEffect = NHFx.square45_6_45;
+                smokeEffect = Fx.shootSmokeDisperse;
+                backColor = hitColor = lightColor = trailColor = NHItems.irayrondPanel.color;
+            }});
             shooter(NHItems.multipleSteel, new ShootHelix(){{
+                mag = 2f;
+                scl = 3f;
+                offset = Mathf.PI / 2f;
+            }
+                @Override
+                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer){
+                    for(int i = 0; i < shots; i++){
+                        for(int sign : Mathf.signs){
+                            handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i);
+                            handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
+                                    b -> b.moveRelative(0f, Mathf.sin(b.time + offset, scl, mag * sign)));
+                        }
+                    }
+                }
+            }, NHItems.phaseFabric, new ShootHelix(){{
                 mag = 2f;
                 scl = 3f;
                 offset = Mathf.PI / 2f;
@@ -862,16 +929,29 @@ public class TurretBlock {
                         for(int sign : Mathf.signs){
                             handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
                                     b -> b.moveRelative(0f, Mathf.sin(b.time + offset, scl, mag * sign)));
+                            handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
+                                    b -> b.moveRelative(0f, Mathf.sin(b.time * 1.5f + offset, scl / 1.5f, mag * sign * 2f)));
                         }
                     }
                 }
-            }, NHItems.phaseFabric, new ShootMulti(new ShootAlternate(){{
-                spread = 12.5f;
-                shots = 2;
-            }}, new ShootPattern(){{
-                shots = 3;
-                shotDelay = 6f;
-            }}));
+            }, NHItems.irayrondPanel, new ShootHelix(){{
+                mag = 2f;
+                scl = 2f;
+                offset = Mathf.PI * 0.75f;
+            }
+                @Override
+                public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer){
+                    for(int i = 0; i < shots; i++){
+                        for(int sign : Mathf.signs){
+                            handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i);
+                            handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
+                                    b -> b.moveRelative(0f, Mathf.sin(b.time + offset, scl, mag * sign)));
+                            handler.shoot(5.5f * sign, 0, 0, firstShotDelay + shotDelay * i,
+                                    b -> b.moveRelative(0f, Mathf.sin(b.time + offset, scl / 1.5f, mag * sign * 2f)));
+                        }
+                    }
+                }
+            });
 
             coolant = new ConsumeCoolant(0.6f);
         }};
