@@ -1,4 +1,3 @@
-new-horizon- 1 1 3 0
 new-horizon-air-raider 1 1 3 0
 new-horizon-ancient-artillery 1 1 8 0
 new-horizon-ancient-laser-wall 1 1 2 0

@@ -88,4 +88,9 @@ public class TeamPayloadData implements SaveFileReader.CustomChunk {
             }
         }
     }
+
+    @Override
+    public void read(DataInput stream, int length) throws IOException {
+        read(stream);
+    }
 }

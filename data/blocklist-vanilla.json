@@ -939,19 +939,19 @@
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
-	"color": 255
+	"color": 1549559807
 },
 "metal-wall-2": {
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
-	"color": 255
+	"color": 1717990143
 },
 "metal-wall-3": {
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
-	"color": 255
+	"color": 1397972991
 },
 "colored-floor": {
 	"synthetic": false,
@@ -963,7 +963,7 @@
 	"synthetic": false,
 	"solid": true,
 	"size": 1,
-	"color": 255
+	"color": -252969473
 },
 "character-overlay": {
 	"synthetic": false,
