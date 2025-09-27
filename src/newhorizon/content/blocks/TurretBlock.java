@@ -822,11 +822,11 @@ public class TurretBlock {
             outlineColor = Pal.darkOutline;
 
             ammo(NHItems.multipleSteel, new AdaptBulletType() {{
-                setDamage(this, 40f, 180f, 120f);
+                setDamage(this, 40f, 160f, 100f);
 
                 collides = true;
                 hasTrailFx = true;
-                collidesAir = false;
+                collidesAir = true;
 
                 width = 12;
                 height = 20;
@@ -849,11 +849,11 @@ public class TurretBlock {
                 frontColor = NHColor.lightSkyFront;
                 backColor = hitColor = lightColor = trailColor = NHItems.multipleSteel.color;
             }}, NHItems.phaseFabric, new AdaptBulletType() {{
-                setDamage(this, 24f, 150f, 90f);
+                setDamage(this, 24f, 150f, 80f);
 
                 collides = true;
                 hasTrailFx = true;
-                collidesAir = false;
+                collidesAir = true;
 
                 width = 12;
                 height = 20;
@@ -877,11 +877,11 @@ public class TurretBlock {
                 smokeEffect = Fx.shootSmokeDisperse;
                 backColor = hitColor = lightColor = trailColor = Items.phaseFabric.color;
             }}, NHItems.irayrondPanel, new AdaptBulletType() {{
-                setDamage(this, 40f, 360f, 200f);
+                setDamage(this, 40f, 200f, 120f);
 
                 collides = true;
                 hasTrailFx = true;
-                collidesAir = false;
+                collidesAir = true;
 
                 width = 15;
                 height = 22;
