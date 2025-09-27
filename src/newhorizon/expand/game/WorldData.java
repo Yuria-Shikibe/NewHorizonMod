@@ -40,6 +40,11 @@ public class WorldData implements SaveFileReader.CustomChunk {
         afterRead();
     }
 
+    @Override
+    public void read(DataInput stream, int length) throws IOException {
+        read(stream);
+    }
+
     public void afterRead() {
         if (Vars.headless && (Float.isNaN(eventReloadSpeed) || eventReloadSpeed > 5.55f)) {
             eventReloadSpeed = -1;
