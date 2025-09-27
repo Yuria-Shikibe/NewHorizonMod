@@ -1872,11 +1872,12 @@ public class NHUnitTypes {
                 abilities.add(new ShieldArcAbility() {{
                     radius = 160f;
                     angle = 270;
-                    regen = 8f;
+                    regen = 50f;
                     cooldown = 60f * 10f;
-                    max = 50000f;
+                    max = 100000f;
                     width = 15f;
                     whenShooting = false;
+                    chanceDeflect = 1f;
                 }}, new AdaptedHealAbility(1500, 900, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 480;
                     a.selfHealAmount /= 8;
@@ -3900,12 +3901,13 @@ public class NHUnitTypes {
                 abilities.add(new TurretShield() {{
                     radius = hitSize + 112f;
                     angle = 130;
-                    regen = 3f;
+                    regen = 15f;
                     cooldown = 60f * 10f;
-                    max = 10000f;
+                    max = 30000f;
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = false;
+                    chanceDeflect = 1f;
                 }});
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
