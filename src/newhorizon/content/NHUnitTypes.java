@@ -1118,7 +1118,7 @@ public class NHUnitTypes {
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = true;
-                    chanceDeflect = 1f;
+                    chanceDeflect = -1f;
                 }});
 
                 addEngine(-1.5f, -22.75f, 0, 5f, true);
@@ -1201,7 +1201,7 @@ public class NHUnitTypes {
                     width = 22f;
                     drawWidth = 11f;
                     whenShooting = true;
-                    chanceDeflect = 1f;
+                    chanceDeflect = -1f;
                 }}, new ShockWaveAbility(150f, 80f, 60f, healColor).modify(a -> {
                     a.status(NHStatusEffects.emp1, 45f);
                     a.maxSpeed = 0.1f;
@@ -1879,7 +1879,7 @@ public class NHUnitTypes {
                     max = 100000f;
                     width = 15f;
                     whenShooting = false;
-                    chanceDeflect = 1f;
+                    chanceDeflect = -1f;
                 }}, new AdaptedHealAbility(1500, 900, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 480;
                     a.selfHealAmount /= 8;
@@ -3909,7 +3909,7 @@ public class NHUnitTypes {
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = false;
-                    chanceDeflect = 1f;
+                    chanceDeflect = -1f;
                 }});
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
