@@ -1112,12 +1112,13 @@ public class NHUnitTypes {
                 }), new TurretShield() {{
                     radius = hitSize + 16f;
                     angle = 130;
-                    regen = 3f;
+                    regen = 7f;
                     cooldown = 60f * 10f;
-                    max = 2000f;
+                    max = 3000f;
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = true;
+                    chanceDeflect = 1f;
                 }});
 
                 addEngine(-1.5f, -22.75f, 0, 5f, true);
@@ -1194,12 +1195,13 @@ public class NHUnitTypes {
                 }), new TurretShield() {{
                     radius = hitSize - 4f;
                     angle = 120;
-                    regen = 1.5f;
+                    regen = 5f;
                     cooldown = 60f * 10f;
-                    max = 1200f;
+                    max = 2000f;
                     width = 22f;
                     drawWidth = 11f;
                     whenShooting = true;
+                    chanceDeflect = 1f;
                 }}, new ShockWaveAbility(150f, 80f, 60f, healColor).modify(a -> {
                     a.status(NHStatusEffects.emp1, 45f);
                     a.maxSpeed = 0.1f;
