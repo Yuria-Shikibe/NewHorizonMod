@@ -7,7 +7,7 @@ import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 
 public class AccelBulletType extends BasicBulletType {
-    public float velocityBegin = -1;
+    public float velocityBegin = 0.1f;
     public float velocityIncrease = 0;
     public float accelerateBegin = 0.1f;
     public float accelerateEnd = 0.6f;
@@ -16,13 +16,6 @@ public class AccelBulletType extends BasicBulletType {
 
     public AccelBulletType() {
         super();
-    }
-
-    public AccelBulletType(float velocityBegin, float velocityIncrease, Interp accelInterp, float damage, String bulletSprite) {
-        super(1, damage, bulletSprite);
-        this.velocityBegin = velocityBegin;
-        this.velocityIncrease = velocityIncrease;
-        this.accelInterp = accelInterp;
     }
 
     public AccelBulletType(float speed, float damage, String bulletSprite) {

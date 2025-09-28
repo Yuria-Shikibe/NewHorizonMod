@@ -101,7 +101,7 @@ public class NHBlocks {
 
 
     public static Block ancientArtillery, dendrite, interferon, prism, hive, bloodStar, blaster, endOfEra,
-            railGun, executor, gravity, multipleLauncher, antibody, multipleArtillery, atomSeparator, eternity;
+            railGun, executor, gravity, multipleLauncher, antibody, atomSeparator, eternity;
 
     public static Block largeWaterExtractor;
     public static Block hydroFuelCell;
@@ -326,92 +326,6 @@ public class NHBlocks {
     }
 
     private static void loadTurrets() {
-        multipleArtillery = new ShootMatchTurret("multiple-artillery") {{
-            drawer = new DrawTurret() {{
-                parts.add(new RegionPart("-mid") {{
-                    moveY = -3;
-
-                    layerOffset = 0.01f;
-
-                    outline = true;
-
-                    progress = PartProgress.recoil;
-                }});
-                parts.add(new RegionPart("-barrel") {{
-                    moveX = 5.5f;
-
-                    layerOffset = 0.01f;
-
-                    mirror = outline = true;
-
-                    moves.add(new PartMove(PartProgress.recoil, 0, -4, 0, 0, 0));
-                }});
-            }};
-
-            recoil = 0.74f;
-            velocityRnd = 0.088f;
-            lifeRnd = 0.088f;
-
-            reload = 72f;
-
-            rotateSpeed = 1.22f;
-            unitSort = NHUnitSorts.slowest;
-
-            shoot = new ShootBarrel() {{
-                barrels = new float[]{
-                        5f, -3f, 0,
-                        -5f, -3f, 0,
-                        11f, -2f, 0,
-                        -11f, -2f, 0,
-                };
-
-                shots = 4;
-            }};
-
-            range = 640;
-            trackingRange = range * 1.4f;
-
-            minWarmup = 0.9f;
-            shootWarmupSpeed /= 2;
-            inaccuracy = 2;
-            shootY -= 5;
-            shootSound = Sounds.largeCannon;
-
-            ammo(
-                    NHItems.metalOxhydrigen, NHBullets.artilleryHydro,
-                    NHItems.multipleSteel, NHBullets.artilleryMulti,
-                    NHItems.thermoCoreNegative, NHBullets.artilleryNgt,
-                    NHItems.fusionEnergy, NHBullets.artilleryFusion,
-                    Items.phaseFabric, NHBullets.artilleryPhase
-            );
-
-            shooter(Items.phaseFabric, new ShootBarrel() {{
-                barrels = new float[]{
-                        5f, -3f, 0,
-                        11f, -2f, 0,
-                        -11f, -2f, 0,
-                        -5f, -3f, 0,
-                };
-
-                barrelOffset = 1;
-                shots = 2;
-            }});
-
-            targetAir = false;
-            maxAmmo = 80;
-
-            size = 4;
-            health = 2600;
-            outlineColor = Pal.darkOutline;
-
-            squareSprite = false;
-
-            coolantMultiplier /= 2;
-            coolant = new ConsumeCoolant(0.6f);
-            liquidCapacity = 90;
-
-            requirements(Category.turret, with(NHItems.multipleSteel, 300, NHItems.seniorProcessor, 90, Items.plastanium, 120, NHItems.presstanium, 200, Items.phaseFabric, 100));
-        }};
 
         hive = new ShootMatchTurret("hive") {{
             size = 4;
@@ -1244,7 +1158,6 @@ public class NHBlocks {
             consumePowerCond(6.0F, (MultTractorBeamBuild e) -> e.target != null);
         }};
 
-
         eternity = new ItemTurret("eternity") {{
             armor = 30;
             size = 16;
@@ -1772,8 +1685,6 @@ public class NHBlocks {
             shootSound = Sounds.missile;
             coolantMultiplier = 0.85f;
         }};
-
-
 
         railGun = new ItemTurret("rail-gun") {
             {

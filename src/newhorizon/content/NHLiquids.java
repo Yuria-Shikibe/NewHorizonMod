@@ -11,20 +11,11 @@ public class NHLiquids {
     public static Liquid water, slag, oil, cryofluid, arkycite, gallium, neoplasm, ozone, hydrogen, nitrogen, cyanogen;
 
     public static void load() {
-        quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor) {
-            {
-                heatCapacity = 0.75f;
+        quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor) {{
+                heatCapacity = 0.5f;
                 lightColor = NHColor.darkEnrColor;
-                gas = true;
                 barColor = gasColor = lightColor;
-            }
-
-            @Override
-            public void init() {
-                super.init();
-                coolant = true;
-            }
-        };
+        }};
 
         xenFluid = new Liquid("xen-fluid", Color.valueOf("#aedfff")) {{
             heatCapacity = 0.3f;
@@ -54,7 +45,7 @@ public class NHLiquids {
         irdryonFluid = new Liquid("irdryon-fluid", Color.valueOf("#F7C6B5")) {{
             viscosity = 0.8f;
             temperature = 0.2f;
-            heatCapacity = 1.6f;
+            heatCapacity = 2f;
         }};
 
         water = Liquids.water;

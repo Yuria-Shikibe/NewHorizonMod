@@ -87,9 +87,6 @@ liquid.new-horizon-irdryon-fluid.description =
 
 
 #TURRET PART
-block.new-horizon-multiple-artillery.name = 
-block.new-horizon-multiple-artillery.description = 
-#block.new-horizon-multiple-artillery.detail = 
 block.new-horizon-hive.name = 
 block.new-horizon-hive.description = 
 #block.new-horizon-hive.detail = 
@@ -156,12 +153,18 @@ block.new-horizon-argmot.description =
 block.new-horizon-slavio.name = 
 block.new-horizon-slavio.description = 
 #block.new-horizon-slavio.detail = 
-block.new-horizon-concentration.name = 
-block.new-horizon-concentration.description = 
-#block.new-horizon-concentration.detail = 
+block.new-horizon-bombard.name = 
+block.new-horizon-bombard.description = 
+#block.new-horizon-bombard.detail = 
+block.new-horizon-vortex.name = 
+block.new-horizon-vortex.description = 
+#block.new-horizon-vortex.detail = 
 block.new-horizon-electro.name = 
 block.new-horizon-electro.description = 
 #block.new-horizon-electro.detail = 
+block.new-horizon-concentration.name = 
+block.new-horizon-concentration.description = 
+#block.new-horizon-concentration.detail = 
 #PRODUCTION PART
 block.new-horizon-large-water-extractor.name = 
 block.new-horizon-large-water-extractor.description = 
