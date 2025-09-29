@@ -1274,8 +1274,9 @@ public class NHPostProcess {
 		adjustContent(UnitTypes.tecta, content -> {
             UnitType unitType = (UnitType) content;
             unitType.abilities.each(ability -> ability instanceof ShieldArcAbility, ability -> {
-            ((ShieldArcAbility) ability).chanceDeflect = -1f});
-});
+            ((ShieldArcAbility) ability).chanceDeflect = -1f;
+	    });
+    });
 
         hideContent(Blocks.payloadConveyor);
         hideContent(Blocks.payloadRouter);
