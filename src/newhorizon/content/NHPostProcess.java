@@ -1275,8 +1275,8 @@ public class NHPostProcess {
             UnitType unitType = (UnitType) content;
             unitType.abilities.each(ability -> ability instanceof ShieldArcAbility, ability -> {
             ((ShieldArcAbility) ability).chanceDeflect = -1f;
-	    });
     });
+});
 
         hideContent(Blocks.payloadConveyor);
         hideContent(Blocks.payloadRouter);
