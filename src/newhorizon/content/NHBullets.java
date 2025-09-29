@@ -2546,6 +2546,151 @@ public class NHBullets {
                 fragLifeMin = 0.5f;
                 fragLifeMax = 0.7f;
 
+                intervalBullet =new AccelBulletType(4f, 2000) {
+                {
+                    width = 44f;
+                    height = 80f;
+
+                    velocityBegin = 2f;
+                    velocityIncrease = 11f;
+                    accelInterp = NHInterp.inOut;
+                    accelerateBegin = 0.045f;
+                    accelerateEnd = 0.675f;
+
+                    pierceCap = 3;
+                    splashDamage = damage / 4;
+                    splashDamageRadius = 24f;
+
+                    trailLength = 30;
+                    trailWidth = 3f;
+
+                    lifetime = 100f;
+
+                    trailEffect = NHFx.trailFromWhite;
+
+                    pierceArmor = true;
+                    trailRotation = false;
+                    trailChance = 0.35f;
+                    trailParam = 4f;
+
+                    homingRange = 640F;
+                    homingPower = 0.12f;
+                    homingDelay = 6;
+
+                    lightning = 3;
+                    lightningLengthRand = 10;
+                    lightningLength = 5;
+                    lightningDamage = damage / 4;
+
+                    shootEffect = smokeEffect = Fx.none;
+                    hitEffect = new OptionalMultiEffect(new Effect(65f, b -> {
+                        Draw.color( NHColor.darkEnrColor);
+
+                        Fill.circle(b.x, b.y, 6f * b.fout(Interp.pow3Out));
+
+                        Angles.randLenVectors(b.id, 6, 35 * b.fin() + 5, (x, y) -> Fill.circle(b.x + x, b.y + y, 4 * b.fout(Interp.pow2Out)));
+                    }), NHFx.hitSparkLarge);
+                    despawnEffect = new OptionalMultiEffect(
+                            NHFx.crossBlast(NHColor.darkEnrColor, 80),
+                            NHFx.circleOut(NHColor.darkEnrColor, 60)
+                    );
+
+                    despawnHit = false;
+
+                    rangeOverride = 480f;
+                }
+
+                @Override
+                public void update(Bullet b) {
+                    super.update(b);
+                }
+
+                public void updateTrailEffects(Bullet b) {
+                    if (trailChance > 0) {
+                        if (Mathf.chanceDelta(trailChance)) {
+                            trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam,  NHColor.darkEnrColor);
+                        }
+                    }
+
+                    if (trailInterval > 0f) {
+                        if (b.timer(0, trailInterval)) {
+                            trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam,  NHColor.darkEnrColor);
+                        }
+                    }
+                }
+
+                @Override
+                public void hit(Bullet b, float x, float y) {
+                    b.hit = true;
+                    hitEffect.at(x, y, b.rotation(), NHColor.darkEnrColor);
+                    hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
+
+                    Effect.shake(hitShake, hitShake, b);
+
+                    if (splashDamageRadius > 0 && !b.absorbed) {
+                        Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
+
+                        if (status != StatusEffects.none) {
+                            Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+                        }
+                    }
+
+                    for (int i = 0; i < lightning; i++)
+                        Lightning.create(b,NHColor.darkEnrColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+
+                    if (!(b.owner instanceof Unit)) return;
+                    Unit from = (Unit) b.owner;
+                    if (from.dead || !from.isAdded() || from.healthf() > 0.99f) return;
+                    NHFx.chainLightningFade.at(b.x, b.y, Mathf.random(12, 20), NHColor.darkEnrColor, from);
+                    from.heal(damage / 8);
+                }
+
+                @Override
+                public void despawned(Bullet b) {
+                    despawnEffect.at(b.x, b.y, b.rotation(), NHColor.darkEnrColor);
+                    Effect.shake(despawnShake, despawnShake, b);
+                }
+
+                @Override
+                public void removed(Bullet b) {
+                    if (trailLength > 0 && b.trail != null && b.trail.size() > 0) {
+                        Fx.trailFade.at(b.x, b.y, trailWidth, NHColor.darkEnrColor, b.trail.copy());
+                    }
+                }
+
+                @Override
+                public void init(Bullet b) {
+                    super.init(b);
+
+                    b.vel.rotate(NHFunc.rand(b.id).random(360));
+                }
+
+
+                @Override
+                public void draw(Bullet b) {
+                    Tmp.c1.set(NHColor.darkEnrColor).lerp(Color.white, Mathf.absin(4f, 0.3f));
+
+                    if (trailLength > 0 && b.trail != null) {
+                        float z = Draw.z();
+                        Draw.z(z - 0.01f);
+                        b.trail.draw(Tmp.c1, trailWidth);
+                        Draw.z(z);
+                    }
+
+                    Draw.color(NHColor.darkEnrColor, Color.white, 0.35f);
+                    DrawFunc.arrow(b.x, b.y, 5, 35, -6, b.rotation());
+                    Draw.color(Tmp.c1);
+                    DrawFunc.arrow(b.x, b.y, 5, 35, 12, b.rotation());
+
+                    Draw.reset();
+                }
+            };
+                bulletInterval = 3f;
+                intervalRandomSpread = 20f;
+                intervalBullets = 2;
+                intervalAngle = 360f;
+                intervalSpread = 360f;
+
                 trailWidth = 12F;
                 trailLength = 120;
                 ammoMultiplier = 1;

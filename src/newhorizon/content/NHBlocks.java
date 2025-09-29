@@ -1228,10 +1228,10 @@ public class NHBlocks {
 //						if(layer > 0) Draw.z(layer);
 //
 //						float prog = progress.getClamp(params);
-//						int i = params.sideOverride == -1 ? 0 : params.sideOverride;
+// 					int i = params.sideOverride == -1 ? 0 : params.sideOverride;
 //
 //						float sign = (i == 0 ? 1 : -1) * params.sideMultiplier;
-//						Tmp.v1.set(x * sign, y).rotate(params.rotation - 90);
+//					Tmp.v1.set(x * sign, y).rotate(params.rotation - 90);
 //
 //						float
 //								rx = params.x + Tmp.v1.x,
@@ -1240,7 +1240,7 @@ public class NHBlocks {
 //								rad = radiusTo < 0 ? radius : Mathf.lerp(radius, radiusTo, prog);
 //
 //						Draw.color(color1);
-//						for(int j = 0; j < sides; j++){
+//					for(int j = 0; j < sides; j++){
 //							Drawf.tri(rx, ry, stroke, rad, j * 360f / sides + rot);
 //						}
 //
@@ -1250,7 +1250,7 @@ public class NHBlocks {
 //						}
 //
 //						Draw.color();
-//						Draw.z(z);
+//					Draw.z(z);
 //					}
 //				});
             }};
