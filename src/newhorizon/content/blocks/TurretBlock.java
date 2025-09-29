@@ -603,7 +603,7 @@ public class TurretBlock {
 
             ammo(
                     NHItems.metalOxhydrigen, new AdaptBulletType() {{
-                        setDamage(this, 24f, 250f, 125f);
+                        setDamage(this, 48f, 250f, 125f);
                         sprite = "mine-bullet";
 
                         scaleLife = true;
@@ -635,7 +635,7 @@ public class TurretBlock {
                         trailParam = 1.2f;
                     }},
                     NHItems.carbide, new AdaptBulletType() {{
-                        setDamage(this, 24f, 360f, 220f);
+                        setDamage(this, 40f, 360f, 220f);
                         sprite = "mine-bullet";
 
                         scaleLife = true;
@@ -668,7 +668,7 @@ public class TurretBlock {
                         backColor = hitColor = lightColor = lightningColor = trailColor = NHItems.carbide.color;
                     }},
                     NHItems.fusionEnergy, new AdaptBulletType() {{
-                        setDamage(this, 40f, 550f, 375f);
+                        setDamage(this, 96f, 550f, 375f);
                         sprite = "mine-bullet";
 
                         mineShoot = true;
@@ -705,7 +705,7 @@ public class TurretBlock {
                         despawnEffect = NHFx.blast(NHItems.fusionEnergy.color, splashDamageRadius * 0.52f);
                     }},
                     NHItems.thermoCoreNegative, new AdaptBulletType() {{
-                        setDamage(this, 60f, 1000f, 800f);
+                        setDamage(this, 80f, 1000f, 800f);
                         sprite = "mine-bullet";
 
                         hasTracer = true;
