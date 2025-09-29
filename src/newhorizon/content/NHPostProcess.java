@@ -16,6 +16,7 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
+import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Sounds;
