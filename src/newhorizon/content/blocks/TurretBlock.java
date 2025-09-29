@@ -603,7 +603,7 @@ public class TurretBlock {
 
             ammo(
                     NHItems.metalOxhydrigen, new AdaptBulletType() {{
-                        setDamage(this, 48f, 250f, 125f);
+                        setDamage(this, 48f, 200f, 150f);
                         sprite = "mine-bullet";
 
                         scaleLife = true;
@@ -635,7 +635,7 @@ public class TurretBlock {
                         trailParam = 1.2f;
                     }},
                     NHItems.carbide, new AdaptBulletType() {{
-                        setDamage(this, 40f, 360f, 220f);
+                        setDamage(this, 40f, 330f, 220f);
                         sprite = "mine-bullet";
 
                         scaleLife = true;
@@ -689,7 +689,7 @@ public class TurretBlock {
                         trailParam = 1.2f;
                         trailWidth = 2.5f;
                         width = height = 18;
-                        reloadMultiplier = 0.6f;
+                        reloadMultiplier = 0.4f;
                         shrinkX = shrinkY = 0.3f;
                         buildingDamageMultiplier = 0.2f;
 
@@ -727,7 +727,7 @@ public class TurretBlock {
                         trailParam = 1.2f;
                         trailWidth = 2.5f;
                         width = height = 22;
-                        reloadMultiplier = 0.6f;
+                        reloadMultiplier = 0.4f;
                         shrinkX = shrinkY = 0.3f;
                         buildingDamageMultiplier = 0.2f;
 
