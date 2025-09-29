@@ -189,6 +189,18 @@ public class TurretShield extends Ability {
     protected WeaponMount turret;
 
     @Override
+    public void addStats(Table t){
+        super.addStats(t);
+        t.add(abilityStat("shield", Strings.autoFixed(max, 2)));
+        t.row();
+        t.add(abilityStat("repairspeed", Strings.autoFixed(regen * 60f, 2)));
+        t.row();
+        t.add(abilityStat("cooldown", Strings.autoFixed(cooldown / 60f, 2)));
+        t.row();
+        t.add(abilityStat("deflectchance", Strings.autoFixed(chanceDeflect *100f, 2)));
+    }
+
+    @Override
     public void update(Unit unit) {
         WeaponMount mount = unit.mounts[weaponIndex];
 
