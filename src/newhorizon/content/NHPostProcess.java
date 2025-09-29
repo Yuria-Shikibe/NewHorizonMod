@@ -1271,6 +1271,11 @@ public class NHPostProcess {
             type.envEnabled = Env.any;
         }
 
+		adjustContent(UnitTypes.tecta, content -> {
+            	UnitType unitType = (UnitType) content;
+        	unitType.chanceDeflect = -1f;
+        });
+
         hideContent(Blocks.payloadConveyor);
         hideContent(Blocks.payloadRouter);
         hideContent(Blocks.reinforcedPayloadConveyor);
