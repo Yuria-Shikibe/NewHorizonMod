@@ -31,9 +31,7 @@ import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
-import mindustry.gen.Bullet;
-import mindustry.gen.Hitboxc;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -43,10 +41,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.MendProjector;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.LaserTurret;
-import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.Prop;
 import mindustry.world.blocks.environment.StaticWall;
@@ -82,6 +77,7 @@ import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.Webber;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.game.NHPartProgress;
 import newhorizon.expand.game.NHUnitSorts;
 import newhorizon.util.func.NHFunc;
@@ -1745,7 +1741,7 @@ public class NHBlocks {
             requirements(Category.turret, with(NHItems.seniorProcessor, 200, NHItems.irayrondPanel, 200, NHItems.zeta, 150, NHItems.presstanium, 250, NHItems.metalOxhydrigen, 150));
         }};
 
-        bloodStar = new ItemTurret("blood-star") {{
+        bloodStar = new ShootMatchTurret("blood-star") {{
             size = 5;
             coolant = consumeCoolant(0.2F);
             requirements(Category.turret, BuildVisibility.shown, with(NHItems.irayrondPanel, 230, NHItems.zeta, 300, NHItems.seniorProcessor, 200, NHItems.presstanium, 300));
@@ -1755,7 +1751,10 @@ public class NHBlocks {
             unitSort = (u, x, y) -> -u.hitSize();
             shootSound = Sounds.laserblast;
             inaccuracy = 0f;
-            shootCone = 15f;
+            //shoot = new ShootPattern() {{
+            //    firstShotDelay = NHFx.darkEnergyChargeBegin.lifetime;
+            //}};
+
             heatColor = Items.surgeAlloy.color.cpy().lerp(Color.white, 0.2f);
             consumePowerCond(12f, TurretBuild::isActive);
             coolantMultiplier = 3f;
@@ -1764,7 +1763,9 @@ public class NHBlocks {
 
             ammo(NHItems.thermoCorePositive,
                     new BasicBulletType(4, 600, "large-bomb") {
+
                         {
+
                             lightning = 6;
                             lightningCone = 360;
                             lightningLengthRand = lightningLength = 12;
@@ -1776,6 +1777,9 @@ public class NHBlocks {
 
                             trailColor = backColor = hitColor = lightColor = lightningColor = heatColor;
                             frontColor = Color.white;
+
+                            homingRange = 100f;
+                            homingPower = 0.08f;
 
                             intervalBullets = 2;
                             bulletInterval = 3f;
@@ -1833,7 +1837,18 @@ public class NHBlocks {
                             }
                         }
                     }
+
             );
+            shooter(
+                    NHItems.thermoCorePositive, new ShootSpread() {{
+                        firstShotDelay = 90f;
+                        shots = 3;
+                        shootCone = 30f;
+                        shotDelay = 15f;
+                    }}
+            );
+
+
         }};
 
         multipleLauncher = new ItemTurret("multiple-launcher") {{
