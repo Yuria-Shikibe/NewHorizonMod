@@ -551,10 +551,11 @@ public class TurretBlock {
         }};
         bombard = new ShootMatchTurret("bombard") {{
             requirements(Category.turret, with(
-                    NHItems.multipleSteel, 300,
-                    NHItems.seniorProcessor, 90,
+                    NHItems.surgeAlloy, 150,
+                    NHItems.phaseFabric, 120,
                     NHItems.presstanium, 200,
-                    NHItems.phaseFabric, 100
+                    NHItems.metalOxhydrigen, 250,
+                    NHItems.juniorProcessor, 80
             ));
 
             drawer = new DrawTurret() {{
@@ -783,10 +784,11 @@ public class TurretBlock {
         }};
         vortex = new ShootMatchTurret("vortex"){{
             requirements(Category.turret, with(
-                    NHItems.multipleSteel, 300,
-                    NHItems.seniorProcessor, 90,
+                    NHItems.multipleSteel, 120,
+                    NHItems.seniorProcessor, 80,
                     NHItems.presstanium, 200,
-                    NHItems.phaseFabric, 100
+                    NHItems.phaseFabric, 100,
+                    NHItems.zeta, 320
             ));
 
             drawer = new DrawTurret() {{
