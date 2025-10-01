@@ -16,6 +16,7 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
+import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Sounds;
@@ -1270,6 +1271,13 @@ public class NHPostProcess {
             type.envDisabled = Env.none;
             type.envEnabled = Env.any;
         }
+
+		adjustContent(UnitTypes.tecta, content -> {
+            UnitType unitType = (UnitType) content;
+            unitType.abilities.each(ability -> ability instanceof ShieldArcAbility, ability -> {
+            ((ShieldArcAbility) ability).chanceDeflect = -1f;
+    });
+});
 
         hideContent(Blocks.payloadConveyor);
         hideContent(Blocks.payloadRouter);
