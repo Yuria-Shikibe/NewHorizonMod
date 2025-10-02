@@ -1149,7 +1149,7 @@ public class NHBullets {
             intervalBullets = 2;
             bulletInterval = 5f;
             intervalBullet = new AdaptedLightningBulletType() {{
-                lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
+                lightningColor = trailColor = hitColor = lightColor = NHColor.darkEnrColor;
                 lightningLength = 4;
                 lightningLengthRand = 15;
                 damage = 200;

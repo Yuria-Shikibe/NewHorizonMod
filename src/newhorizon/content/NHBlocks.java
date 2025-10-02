@@ -1215,7 +1215,7 @@ public class NHBlocks {
                 private final Vec2 energyOrb1 = new Vec2();   // 炮口能量球起点位置
                 private final Vec2 energyOrb2 = new Vec2();   // 炮口能量球终点位置（根据reload进度移动）
                 private float orbMoveProgress = 0f;           // 能量球移动进度 (0~1)
-                private final float orbMaxDist = size * tilesize * 0.95f; // 能量球最大移动距离
+                private final float orbMaxDist = size * tilesize * 0.98f; // 能量球最大移动距离
 
                 // 曲线/能量球相关参数
                 private static final float CURVE_STRENGTH = 8f; // 贝塞尔曲线偏移强度
@@ -1251,7 +1251,7 @@ public class NHBlocks {
                         float f = fin();
                         Vec2 p = pos();
 
-                        Draw.z(Layer.effect - 0.01f); // 设置绘制层级
+                        Draw.z(Layer.effect - 1.01f); // 设置绘制层级
                         float size = baseSize * (1f - f * 0.4f); // 随着时间缩小
                         float glow = size * 2.2f;                // 外发光大小
 
@@ -1324,7 +1324,7 @@ public class NHBlocks {
                         Vec2 end = target.pos().cpy();
                         Vec2 ctrl = getControlPoint();
 
-                        Draw.z(Layer.effect + 0.01f);
+                        Draw.z(Layer.effect - 1.01f);
                         float alpha = Mathf.lerp(1f, 0.18f, lifeProgress());
                         Draw.color(color.cpy().a(alpha));
 
@@ -1431,7 +1431,7 @@ public class NHBlocks {
 
                 // -------------------- 工具方法：绘制能量球 --------------------
                 private void drawEnergyOrb(Vec2 pos, float fin){
-                    Draw.z(Layer.effect);
+                    Draw.z(Layer.effect-1.01f);
 
                     // 外层发光
                     float glowSize = 8f * fin + Mathf.absin(Time.time, 2f, 2f * fin);
