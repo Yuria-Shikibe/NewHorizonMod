@@ -706,7 +706,7 @@ public class TurretBlock {
                         despawnEffect = NHFx.blast(NHItems.fusionEnergy.color, splashDamageRadius * 0.52f);
                     }},
                     NHItems.thermoCoreNegative, new AdaptBulletType() {{
-                        setDamage(this, 80f, 800f, 700f);
+                        setDamage(this, 80f, 1000f, 900f);
                         sprite = "mine-bullet";
 
                         hasTracer = true;
@@ -732,6 +732,12 @@ public class TurretBlock {
                         shrinkX = shrinkY = 0.3f;
                         buildingDamageMultiplier = 0.2f;
 
+                        lightning = 3;
+                        lightningCone = 360;
+                        lightningLengthRand = 12;
+                        lightningLength = 4;
+                        lightningDamage = 50;
+
                         frontColor = Color.white;
                         shrinkInterp = Interp.slope;
                         hitSound = Sounds.explosion;
@@ -739,7 +745,7 @@ public class TurretBlock {
                         trailEffect = Fx.artilleryTrail;
                         shootEffect = NHFx.shootCircle(32);
                         smokeEffect = Fx.shootSmokeDisperse;
-                        backColor = hitColor = lightColor = trailColor = NHItems.thermoCoreNegative.color;
+                        lightningColor = backColor = hitColor = lightColor = trailColor = NHItems.thermoCoreNegative.color;
                         despawnEffect = new OptionalMultiEffect(NHFx.crossBlast_45, NHFx.blast(NHItems.thermoCoreNegative.color, splashDamageRadius * 0.65f));
                     }}
             );

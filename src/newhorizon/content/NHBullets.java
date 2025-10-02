@@ -1149,7 +1149,7 @@ public class NHBullets {
             intervalBullets = 2;
             bulletInterval = 5f;
             intervalBullet = new AdaptedLightningBulletType() {{
-                lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
+                lightningColor = trailColor = hitColor = lightColor = NHColor.darkEnrColor;
                 lightningLength = 4;
                 lightningLengthRand = 15;
                 damage = 200;
@@ -1164,7 +1164,7 @@ public class NHBullets {
             despawnSound = Sounds.explosionbig;
         }};
 
-        blastEnergyPst = new AccelBulletType(0.85f, 140f, CIRCLE_BOLT) {{
+        blastEnergyPst = new AccelBulletType(0.85f, 280f, CIRCLE_BOLT) {{
             frontColor = Color.white;
             backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
             lifetime = 64f;
@@ -1198,10 +1198,10 @@ public class NHBullets {
             drawSize = 300f;
         }};
 
-        blastEnergyNgt = new AccelBulletType(3.85f, 100f) {{
+        blastEnergyNgt = new AccelBulletType(3.85f, 200f) {{
             frontColor = Color.white;
             backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color;
-            lifetime = 44f;
+            lifetime = 60f;
             knockback = 4f;
             rangeChange = 120;
             ammoMultiplier = 8f;
