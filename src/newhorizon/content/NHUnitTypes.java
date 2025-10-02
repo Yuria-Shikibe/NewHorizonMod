@@ -54,6 +54,7 @@ import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.entities.UltFire;
@@ -1496,16 +1497,19 @@ public class NHUnitTypes {
                     inaccuracy = 1.5f;
                     velocityRnd = 0.075f;
 
-                    bullet = new TrailFadeBulletType(19f, 400f) {{
+                    bullet = new AdaptBulletType() {{
                         lifetime = 50f;
                         trailLength = 14;
                         trailWidth = 1.6F;
-                        tracerStroke -= 0.3f;
-                        tracers = 1;
+                        //tracerStroke -= 0.3f;
+                        //tracers = 1;
                         keepVelocity = true;
 
-                        tracerSpacing = 10f;
-                        tracerUpdateSpacing *= 1.25f;
+                        speed = 19f;
+                        damage = 400f;
+
+                        //tracerSpacing = 10f;
+                        //tracerUpdateSpacing *= 1.25f;
 
                         hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
                         trailColor = NHColor.ancientLightMid;
@@ -1618,17 +1622,20 @@ public class NHUnitTypes {
                             barrels = new float[]{-20, 31, 0, 20, 31, 0};
                         }};
 
-                        bullet = new TrailFadeBulletType(28f, 1800f) {
+                        bullet = new AdaptBulletType() {
                             {
                                 lifetime = 40f;
                                 trailLength = 90;
                                 trailWidth = 3.6F;
-                                tracers = 2;
-                                tracerFadeOffset = 20;
+                                //tracers = 2;
+                                //tracerFadeOffset = 20;
                                 keepVelocity = true;
 
-                                tracerSpacing = 10f;
-                                tracerUpdateSpacing *= 1.25f;
+                                speed = 28f;
+                                damage = 1000f;
+
+                                //tracerSpacing = 10f;
+                                //tracerUpdateSpacing *= 1.25f;
                                 removeAfterPierce = false;
 
                                 hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
@@ -2621,17 +2628,21 @@ public class NHUnitTypes {
 
                             shootSound = NHSounds.laser5;
 
-                            bullet = new TrailFadeBulletType(7f, 200f, "missile-large") {{
+                            bullet = new AdaptBulletType() {{
                                 trailLength = 20;
                                 trailWidth = 2.5f;
                                 trailColor = lightColor = lightningColor = backColor = hitColor = NHColor.lightSkyBack;
                                 frontColor = NHColor.lightSkyFront;
 
-                                tracers = 1;
-                                tracerUpdateSpacing *= 2.25f;
-                                tracerRandX *= 0.75f;
+                                speed = 7f;
+                                damage = 200f;
+                                sprite = "missile-large";
 
-                                hitBlinkTrail = false;
+                                //tracers = 1;
+                                //tracerUpdateSpacing *= 2.25f;
+                                //tracerRandX *= 0.75f;
+
+                                //hitBlinkTrail = false;
 
                                 width = 10f;
                                 height = 30f;
@@ -3806,17 +3817,20 @@ public class NHUnitTypes {
 
                             layerOffset = -0.0005f;
 
-                            bullet = new TrailFadeBulletType(25f, 600f) {
+                            bullet = new AdaptBulletType() {
                                 {
                                     recoil = 0.095f;
                                     lifetime = 40f;
+                                    speed = 25f;
+                                    damage = 600f;
+                                    shieldDamageMultiplier = 0.2f;
                                     trailLength = 200;
                                     trailWidth = 2F;
-                                    tracers = 1;
+                                    //tracers = 1;
                                     keepVelocity = false;
 
-                                    tracerSpacing = 10f;
-                                    tracerUpdateSpacing *= 1.25f;
+                                    //tracerSpacing = 10f;
+                                    //tracerUpdateSpacing *= 1.25f;
 
                                     trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack;
                                     frontColor = NHColor.lightSkyFront;
