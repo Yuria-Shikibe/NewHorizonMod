@@ -77,34 +77,36 @@ public class NewHorizon extends Mod {
                 //DebugFunc.outputAtlas();
             });
         });
-        netClient.addPacketHandler("override_check", string -> {
-            try {
-                String[] status = string.split("\\|");
-                boolean canConnect = true;
-                for (String s : status) {
-                    String[] setting = s.split(":");
-                    if (NHSetting.getBool(setting[0]) != Boolean.parseBoolean(setting[1])) {
-                        canConnect = false;
-                        break;
-                    }
-                }
-                if (!canConnect) {
-                    StringBuilder str = new StringBuilder();
+        if (!headless){
+            netClient.addPacketHandler("override_check", string -> {
+                try {
+                    String[] status = string.split("\\|");
+                    boolean canConnect = true;
                     for (String s : status) {
                         String[] setting = s.split(":");
-                        boolean enabled = Boolean.parseBoolean(setting[1]);
-                        if (NHSetting.getBool(setting[0]) != enabled) {
-                            str.append(Core.bundle.get("nh.setting." + setting[0] + ".name")).append("\n");
+                        if (NHSetting.getBool(setting[0]) != Boolean.parseBoolean(setting[1])) {
+                            canConnect = false;
+                            break;
                         }
                     }
-                    ui.showConfirm(Core.bundle.format("mod.ui.require.need-override", str.toString()), NHSetting::showDialog);
+                    if (!canConnect) {
+                        StringBuilder str = new StringBuilder();
+                        for (String s : status) {
+                            String[] setting = s.split(":");
+                            boolean enabled = Boolean.parseBoolean(setting[1]);
+                            if (NHSetting.getBool(setting[0]) != enabled) {
+                                str.append(Core.bundle.get("nh.setting." + setting[0] + ".name")).append("\n");
+                            }
+                        }
+                        ui.showConfirm(Core.bundle.format("mod.ui.require.need-override", str.toString()), NHSetting::showDialog);
+                        net.disconnect();
+                    }
+                } catch (Exception e) {
+                    Log.err(e);
                     net.disconnect();
                 }
-            } catch (Exception e) {
-                Log.err(e);
-                net.disconnect();
-            }
-        });
+            });
+        }
     }
 
     public static void debugLog(Object obj) {

@@ -54,6 +54,7 @@ import mindustry.world.meta.Env;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.entities.UltFire;
@@ -1112,12 +1113,13 @@ public class NHUnitTypes {
                 }), new TurretShield() {{
                     radius = hitSize + 16f;
                     angle = 130;
-                    regen = 3f;
+                    regen = 7f;
                     cooldown = 60f * 10f;
-                    max = 2000f;
+                    max = 3000f;
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = true;
+                    chanceDeflect = -1f;
                 }});
 
                 addEngine(-1.5f, -22.75f, 0, 5f, true);
@@ -1194,12 +1196,13 @@ public class NHUnitTypes {
                 }), new TurretShield() {{
                     radius = hitSize - 4f;
                     angle = 120;
-                    regen = 1.5f;
+                    regen = 5f;
                     cooldown = 60f * 10f;
-                    max = 1200f;
+                    max = 2000f;
                     width = 22f;
                     drawWidth = 11f;
                     whenShooting = true;
+                    chanceDeflect = -1f;
                 }}, new ShockWaveAbility(150f, 80f, 60f, healColor).modify(a -> {
                     a.status(NHStatusEffects.emp1, 45f);
                     a.maxSpeed = 0.1f;
@@ -1494,16 +1497,19 @@ public class NHUnitTypes {
                     inaccuracy = 1.5f;
                     velocityRnd = 0.075f;
 
-                    bullet = new TrailFadeBulletType(19f, 400f) {{
+                    bullet = new AdaptBulletType() {{
                         lifetime = 50f;
                         trailLength = 14;
                         trailWidth = 1.6F;
-                        tracerStroke -= 0.3f;
-                        tracers = 1;
+                        //tracerStroke -= 0.3f;
+                        //tracers = 1;
                         keepVelocity = true;
 
-                        tracerSpacing = 10f;
-                        tracerUpdateSpacing *= 1.25f;
+                        speed = 19f;
+                        damage = 400f;
+
+                        //tracerSpacing = 10f;
+                        //tracerUpdateSpacing *= 1.25f;
 
                         hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
                         trailColor = NHColor.ancientLightMid;
@@ -1616,17 +1622,20 @@ public class NHUnitTypes {
                             barrels = new float[]{-20, 31, 0, 20, 31, 0};
                         }};
 
-                        bullet = new TrailFadeBulletType(28f, 1800f) {
+                        bullet = new AdaptBulletType() {
                             {
                                 lifetime = 40f;
                                 trailLength = 90;
                                 trailWidth = 3.6F;
-                                tracers = 2;
-                                tracerFadeOffset = 20;
+                                //tracers = 2;
+                                //tracerFadeOffset = 20;
                                 keepVelocity = true;
 
-                                tracerSpacing = 10f;
-                                tracerUpdateSpacing *= 1.25f;
+                                speed = 28f;
+                                damage = 1000f;
+
+                                //tracerSpacing = 10f;
+                                //tracerUpdateSpacing *= 1.25f;
                                 removeAfterPierce = false;
 
                                 hitColor = backColor = lightColor = lightningColor = NHColor.ancient;
@@ -1872,11 +1881,12 @@ public class NHUnitTypes {
                 abilities.add(new ShieldArcAbility() {{
                     radius = 160f;
                     angle = 270;
-                    regen = 8f;
+                    regen = 50f;
                     cooldown = 60f * 10f;
-                    max = 50000f;
+                    max = 100000f;
                     width = 15f;
                     whenShooting = false;
+                    chanceDeflect = -1f;
                 }}, new AdaptedHealAbility(1500, 900, hitSize * 2f, healColor).modify(a -> {
                     a.selfHealReloadTime = 480;
                     a.selfHealAmount /= 8;
@@ -2618,17 +2628,21 @@ public class NHUnitTypes {
 
                             shootSound = NHSounds.laser5;
 
-                            bullet = new TrailFadeBulletType(7f, 200f, "missile-large") {{
+                            bullet = new AdaptBulletType() {{
                                 trailLength = 20;
                                 trailWidth = 2.5f;
                                 trailColor = lightColor = lightningColor = backColor = hitColor = NHColor.lightSkyBack;
                                 frontColor = NHColor.lightSkyFront;
 
-                                tracers = 1;
-                                tracerUpdateSpacing *= 2.25f;
-                                tracerRandX *= 0.75f;
+                                speed = 7f;
+                                damage = 200f;
+                                sprite = "missile-large";
 
-                                hitBlinkTrail = false;
+                                //tracers = 1;
+                                //tracerUpdateSpacing *= 2.25f;
+                                //tracerRandX *= 0.75f;
+
+                                //hitBlinkTrail = false;
 
                                 width = 10f;
                                 height = 30f;
@@ -3803,17 +3817,20 @@ public class NHUnitTypes {
 
                             layerOffset = -0.0005f;
 
-                            bullet = new TrailFadeBulletType(25f, 600f) {
+                            bullet = new AdaptBulletType() {
                                 {
                                     recoil = 0.095f;
                                     lifetime = 40f;
+                                    speed = 25f;
+                                    damage = 600f;
+                                    shieldDamageMultiplier = 0.2f;
                                     trailLength = 200;
                                     trailWidth = 2F;
-                                    tracers = 1;
+                                    //tracers = 1;
                                     keepVelocity = false;
 
-                                    tracerSpacing = 10f;
-                                    tracerUpdateSpacing *= 1.25f;
+                                    //tracerSpacing = 10f;
+                                    //tracerUpdateSpacing *= 1.25f;
 
                                     trailColor = hitColor = backColor = lightColor = lightningColor = NHColor.lightSkyBack;
                                     frontColor = NHColor.lightSkyFront;
@@ -3900,12 +3917,13 @@ public class NHUnitTypes {
                 abilities.add(new TurretShield() {{
                     radius = hitSize + 112f;
                     angle = 130;
-                    regen = 3f;
+                    regen = 15f;
                     cooldown = 60f * 10f;
-                    max = 10000f;
+                    max = 30000f;
                     width = 24f;
                     drawWidth = 12f;
                     whenShooting = false;
+                    chanceDeflect = -1f;
                 }});
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);

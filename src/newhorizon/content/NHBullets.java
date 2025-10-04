@@ -1025,7 +1025,7 @@ public class NHBullets {
             smokeEffect = NHFx.hugeSmoke;
         }};
 
-        railGun1 = new TrailFadeBulletType(35f, 1750, STRIKE) {{
+        railGun1 = new AdaptBulletType() {{
             width = 12f;
             height = 36f;
 
@@ -1033,7 +1033,7 @@ public class NHBullets {
             trailWidth = 2;
             trailInterval = 1f;
             trailRotation = true;
-            despawnBlinkTrail = hitBlinkTrail = true;
+            //despawnBlinkTrail = hitBlinkTrail = true;
 
             pierceArmor = pierce = pierceBuilding = true;
             pierceCap = 3;
@@ -1041,8 +1041,13 @@ public class NHBullets {
             ammoMultiplier = 1f;
 
             lifetime = 20f;
+            speed = 35f;
+            damage = 1750f;
+            shieldDamageMultiplier = 0.1f;
+            velocityIncrease = 10f;
+
             lightningColor = hitColor = frontColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color;
-            chargeEffect = new OptionalMultiEffect(NHFx.genericCharge(backColor, 13, 90, 90), EffectWrapper.wrap(NHFx.square45_6_45_Charge, backColor));
+            chargeEffect = NHFx.railShoot(NHItems.irayrondPanel.color, 620+rangeChange+20, 10, 90,25);
             lightning = 4;
             lightningLength = 6;
             lightningLengthRand = 10;
@@ -1060,7 +1065,7 @@ public class NHBullets {
             despawnSound = Sounds.explosionbig;
         }};
 
-        railGun2 = new TrailFadeBulletType(45f, 2500, STRIKE) {{
+        railGun2 = new AdaptBulletType() {{
             width = 16f;
             height = 50f;
 
@@ -1069,7 +1074,7 @@ public class NHBullets {
             trailInterval = 1f;
             trailChance = 0.4f;
             trailRotation = true;
-            despawnBlinkTrail = hitBlinkTrail = true;
+            //despawnBlinkTrail = hitBlinkTrail = true;
 
             pierceArmor = pierce = pierceBuilding = true;
             pierceCap = 6;
@@ -1078,9 +1083,15 @@ public class NHBullets {
             rangeChange = 60f;
 
             lifetime = 16f;
+            speed = 45f;
+            damage = 500f;
+            shieldDamageMultiplier = 0.2f;
+            splashDamage = 2000;
+            splashDamageRadius = 80;
+
             frontColor = NHItems.irayrondPanel.color;
             lightningColor = hitColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color.cpy().lerp(NHColor.deeperBlue, 0.4f);
-            chargeEffect = new OptionalMultiEffect(NHFx.genericCharge(backColor, 18, 120, 90), EffectWrapper.wrap(NHFx.square45_6_45_Charge, backColor));
+            chargeEffect = NHFx.railShoot(NHItems.irayrondPanel.color, 620+rangeChange+20, 10, 90,25);
             lightning = 4;
             lightningLength = 6;
             lightningLengthRand = 10;
@@ -1098,7 +1109,7 @@ public class NHBullets {
             despawnSound = Sounds.explosionbig;
         }};
 
-        railGun3 = new TrailFadeBulletType(60f, 3250, STRIKE) {{
+        railGun3 = new AdaptBulletType() {{
             width = 16f;
             height = 50f;
 
@@ -1107,7 +1118,7 @@ public class NHBullets {
             trailInterval = 1f;
             trailChance = 0.4f;
             trailRotation = true;
-            despawnBlinkTrail = hitBlinkTrail = true;
+            //despawnBlinkTrail = hitBlinkTrail = true;
 
             pierceArmor = pierce = pierceBuilding = true;
             pierceCap = 2;
@@ -1116,9 +1127,13 @@ public class NHBullets {
             rangeChange = 120;
 
             lifetime = 12.8f;
+            speed = 60f;
+            damage = 3250f;
+            shieldDamageMultiplier = 0.5f;
+
             frontColor = NHItems.irayrondPanel.color;
             lightningColor = hitColor = backColor = trailColor = lightColor = NHItems.irayrondPanel.color.cpy().lerp(NHColor.darkEnrColor, 0.6f);
-            chargeEffect = new OptionalMultiEffect(NHFx.genericCharge(backColor, 18, 120, 90), EffectWrapper.wrap(NHFx.square45_6_45_Charge, backColor));
+            chargeEffect = NHFx.railShoot(NHItems.darkEnergy.color, 620+rangeChange+20, 10, 90,25);
             lightning = 6;
             lightningLength = 12;
             lightningLengthRand = 20;
@@ -1134,7 +1149,7 @@ public class NHBullets {
             intervalBullets = 2;
             bulletInterval = 5f;
             intervalBullet = new AdaptedLightningBulletType() {{
-                lightningColor = trailColor = hitColor = lightColor = NHItems.zeta.color;
+                lightningColor = trailColor = hitColor = lightColor = NHColor.darkEnrColor;
                 lightningLength = 4;
                 lightningLengthRand = 15;
                 damage = 200;
@@ -1149,7 +1164,7 @@ public class NHBullets {
             despawnSound = Sounds.explosionbig;
         }};
 
-        blastEnergyPst = new AccelBulletType(0.85f, 140f, CIRCLE_BOLT) {{
+        blastEnergyPst = new AccelBulletType(0.85f, 280f, CIRCLE_BOLT) {{
             frontColor = Color.white;
             backColor = lightningColor = trailColor = lightColor = NHItems.thermoCorePositive.color.cpy().lerp(Color.white, 0.15f);
             lifetime = 64f;
@@ -1183,10 +1198,10 @@ public class NHBullets {
             drawSize = 300f;
         }};
 
-        blastEnergyNgt = new AccelBulletType(3.85f, 100f) {{
+        blastEnergyNgt = new AccelBulletType(3.85f, 200f) {{
             frontColor = Color.white;
             backColor = lightningColor = trailColor = lightColor = NHItems.thermoCoreNegative.color;
-            lifetime = 44f;
+            lifetime = 60f;
             knockback = 4f;
             rangeChange = 120;
             ammoMultiplier = 8f;
@@ -1262,18 +1277,14 @@ public class NHBullets {
             }
         };
 
-        declineProjectile = new TrailFadeBulletType(9.25f, 350f) {
+        declineProjectile = new AdaptBulletType() {
             {
                 lifetime = 122f;
-
-                tracerUpdateSpacing *= 6f;
-                tracerSpacing *= 1.5f;
+                speed = 9.25f;
+                damage = 350f;
 
                 hittable = false;
 
-                tracers = 1;
-                tracerStrokeOffset = tracerFadeOffset = 13;
-                hitBlinkTrail = false;
                 scaledSplashDamage = true;
 
                 trailInterp = NHInterp.artilleryPlus;
@@ -1286,6 +1297,8 @@ public class NHBullets {
 
                 trailWidth = 4.7f;
                 trailLength = 60;
+                trailChance = 0.6f;
+                trailEffect = NHFx.trailToGray;
 
                 maxRange = 740;
                 pierce = pierceBuilding = false;
@@ -1306,11 +1319,13 @@ public class NHBullets {
                 frontColor = NHColor.lightSkyFront;
                 shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
                 smokeEffect = NHFx.hugeSmokeGray;
-                trailChance = 0.6f;
-                trailEffect = NHFx.trailToGray;
                 despawnShake = 22f;
                 hitSound = Sounds.explosionbig;
-                hitEffect = new OptionalMultiEffect(NHFx.blast(backColor, 45f), NHFx.crossBlast(backColor, 120f, 45f), NHFx.hitSpark(backColor, 150f, 45, 170f, 2f, 13));
+                hitEffect = new OptionalMultiEffect(
+                        NHFx.blast(backColor, 45f),
+                        NHFx.crossBlast(backColor, 120f, 45f),
+                        NHFx.hitSpark(backColor, 150f, 45, 170f, 2f, 13)
+                );
 
                 fragBullets = 7;
                 fragBullet = NHBullets.basicSkyFrag;
@@ -1319,7 +1334,7 @@ public class NHBullets {
                 fragVelocityMax = 0.72f;
                 fragVelocityMin = 0.075f;
             }
-
+            @Override
             public void removed(Bullet b) {
                 if (trailLength > 0 && b.trail != null && b.trail.size() > 0) {
                     NHFx.trailFadeFast.at(b.x, b.y, trailWidth, trailColor, b.trail.copy());
@@ -1335,7 +1350,6 @@ public class NHBullets {
             @Override
             public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct) {
                 super.hitTile(b, build, x, y, initialHealth, direct);
-
                 UltFire.createChance(b, splashDamageRadius, 0.1f);
             }
         };
@@ -2545,6 +2559,151 @@ public class NHBullets {
                 fragVelocityMax = 0.6f;
                 fragLifeMin = 0.5f;
                 fragLifeMax = 0.7f;
+
+                intervalBullet =new AccelBulletType(4f, 2000) {
+                {
+                    width = 44f;
+                    height = 80f;
+
+                    velocityBegin = 2f;
+                    velocityIncrease = 11f;
+                    accelInterp = NHInterp.inOut;
+                    accelerateBegin = 0.045f;
+                    accelerateEnd = 0.675f;
+
+                    pierceCap = 3;
+                    splashDamage = damage / 4;
+                    splashDamageRadius = 24f;
+
+                    trailLength = 30;
+                    trailWidth = 3f;
+
+                    lifetime = 100f;
+
+                    trailEffect = NHFx.trailFromWhite;
+
+                    pierceArmor = true;
+                    trailRotation = false;
+                    trailChance = 0.35f;
+                    trailParam = 4f;
+
+                    homingRange = 640F;
+                    homingPower = 0.12f;
+                    homingDelay = 6;
+
+                    lightning = 3;
+                    lightningLengthRand = 10;
+                    lightningLength = 5;
+                    lightningDamage = damage / 4;
+
+                    shootEffect = smokeEffect = Fx.none;
+                    hitEffect = new OptionalMultiEffect(new Effect(65f, b -> {
+                        Draw.color( NHColor.darkEnrColor);
+
+                        Fill.circle(b.x, b.y, 6f * b.fout(Interp.pow3Out));
+
+                        Angles.randLenVectors(b.id, 6, 35 * b.fin() + 5, (x, y) -> Fill.circle(b.x + x, b.y + y, 4 * b.fout(Interp.pow2Out)));
+                    }), NHFx.hitSparkLarge);
+                    despawnEffect = new OptionalMultiEffect(
+                            NHFx.crossBlast(NHColor.darkEnrColor, 80),
+                            NHFx.circleOut(NHColor.darkEnrColor, 60)
+                    );
+
+                    despawnHit = false;
+
+                    rangeOverride = 480f;
+                }
+
+                @Override
+                public void update(Bullet b) {
+                    super.update(b);
+                }
+
+                public void updateTrailEffects(Bullet b) {
+                    if (trailChance > 0) {
+                        if (Mathf.chanceDelta(trailChance)) {
+                            trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam,  NHColor.darkEnrColor);
+                        }
+                    }
+
+                    if (trailInterval > 0f) {
+                        if (b.timer(0, trailInterval)) {
+                            trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : trailParam,  NHColor.darkEnrColor);
+                        }
+                    }
+                }
+
+                @Override
+                public void hit(Bullet b, float x, float y) {
+                    b.hit = true;
+                    hitEffect.at(x, y, b.rotation(), NHColor.darkEnrColor);
+                    hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
+
+                    Effect.shake(hitShake, hitShake, b);
+
+                    if (splashDamageRadius > 0 && !b.absorbed) {
+                        Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround);
+
+                        if (status != StatusEffects.none) {
+                            Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+                        }
+                    }
+
+                    for (int i = 0; i < lightning; i++)
+                        Lightning.create(b,NHColor.darkEnrColor, lightningDamage < 0 ? damage : lightningDamage, b.x, b.y, b.rotation() + Mathf.range(lightningCone / 2) + lightningAngle, lightningLength + Mathf.random(lightningLengthRand));
+
+                    if (!(b.owner instanceof Unit)) return;
+                    Unit from = (Unit) b.owner;
+                    if (from.dead || !from.isAdded() || from.healthf() > 0.99f) return;
+                    NHFx.chainLightningFade.at(b.x, b.y, Mathf.random(12, 20), NHColor.darkEnrColor, from);
+                    from.heal(damage / 8);
+                }
+
+                @Override
+                public void despawned(Bullet b) {
+                    despawnEffect.at(b.x, b.y, b.rotation(), NHColor.darkEnrColor);
+                    Effect.shake(despawnShake, despawnShake, b);
+                }
+
+                @Override
+                public void removed(Bullet b) {
+                    if (trailLength > 0 && b.trail != null && b.trail.size() > 0) {
+                        Fx.trailFade.at(b.x, b.y, trailWidth, NHColor.darkEnrColor, b.trail.copy());
+                    }
+                }
+
+                @Override
+                public void init(Bullet b) {
+                    super.init(b);
+
+                    b.vel.rotate(NHFunc.rand(b.id).random(360));
+                }
+
+
+                @Override
+                public void draw(Bullet b) {
+                    Tmp.c1.set(NHColor.darkEnrColor).lerp(Color.white, Mathf.absin(4f, 0.3f));
+
+                    if (trailLength > 0 && b.trail != null) {
+                        float z = Draw.z();
+                        Draw.z(z - 0.01f);
+                        b.trail.draw(Tmp.c1, trailWidth);
+                        Draw.z(z);
+                    }
+
+                    Draw.color(NHColor.darkEnrColor, Color.white, 0.35f);
+                    DrawFunc.arrow(b.x, b.y, 5, 35, -6, b.rotation());
+                    Draw.color(Tmp.c1);
+                    DrawFunc.arrow(b.x, b.y, 5, 35, 12, b.rotation());
+
+                    Draw.reset();
+                }
+            };
+                bulletInterval = 3f;
+                intervalRandomSpread = 20f;
+                intervalBullets = 2;
+                intervalAngle = 360f;
+                intervalSpread = 360f;
 
                 trailWidth = 12F;
                 trailLength = 120;
