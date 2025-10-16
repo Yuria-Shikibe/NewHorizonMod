@@ -254,7 +254,7 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.upgradeSortFactory, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 4);
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 2);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1, ModuleBlock.quantumConductor, 1);
             recipe.outputItem = ItemStack.list(NHItems.nodexPlate, 6);
             recipe.craftTime = 60f;
