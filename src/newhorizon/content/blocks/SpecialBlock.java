@@ -75,7 +75,6 @@ public class SpecialBlock {
             speedBoost = 0.25f;
             speedBoostPhase = 0.25f;
             phaseRangeBoost = 0f;
-            Color phaseColor = Color.valueOf("f7e97e");
             consumePower(1200 / 60f);
             consumeItem(NHItems.surgeAlloy).boost();
         }};
