@@ -659,7 +659,8 @@ public class CraftingBlock {
 
             lightRadius /= 2f;
 
-            requirements(Category.crafting, ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
+            requirements(Category.crafting,
+                    with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
 
             health = 2100;
             armor = 14;
@@ -669,7 +670,6 @@ public class CraftingBlock {
             hasPower = hasItems = hasLiquids = true;
 
             drawer = new DrawMulti(
-                    new DrawDefault(),
                     new DrawRegion("-bottom"),
                     new DrawLiquidTile(NHLiquids.quantumLiquid),
                     new DrawRegion("-bottom-2"),
@@ -714,6 +714,7 @@ public class CraftingBlock {
                             }
                         }
                     },
+                    new DrawDefault(),
                     new DrawGlowRegion() {{
                         color = NHColor.ancient;
                         layer = -1;
@@ -727,11 +728,10 @@ public class CraftingBlock {
                         }
                     }
             );
-
             itemCapacity = 40;
             liquidCapacity = 40f;
             consumePower(1600 / 60f);
-        }};
+        }}.loadIconFix();
         factory1 = new RecipeGenericCrafter("factory-1"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 10,
