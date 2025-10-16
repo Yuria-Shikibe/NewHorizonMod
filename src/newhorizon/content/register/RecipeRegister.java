@@ -248,6 +248,46 @@ public class RecipeRegister {
             recipe.priority = 1;
         });
         
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.thermoCorePositive, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.tachyonEmitter, 1);
+            recipe.outputItem = ItemStack.list(NHItems.hadronicomp, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 4, NHItems.seniorProcessor, 4);
+            recipe.outputItem = ItemStack.list(NHItems.nodexPlate, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1, quantumConductor, 1);
+            recipe.outputItem = ItemStack.list(NHItems.nodexPlate, 6);
+            recipe.craftTime = 60f;
+            recipe.priority = 1;
+        });
+
+        recipe(CraftingBlock.ancimembraneConcentrator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.thermoCoreNegative, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.gaussReceptor, 1);
+            recipe.outputItem = ItemStack.list(NHItems.hyperProcessor, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.ancimembraneConcentrator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 6);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 8 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.ancimembrane, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.ancimembraneConcentrator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.resistoArray, 1, ModuleBlock.pulseMutator, 1);
+            recipe.outputItem = ItemStack.list(NHItems.ancimembrane, 6);
+            recipe.craftTime = 60f;
+            recipe.priority = 1;
+        });
+
+        
 
         recipe(CraftingBlock.factory0, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.tungsten, 4);
