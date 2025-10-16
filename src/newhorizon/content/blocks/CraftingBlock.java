@@ -660,7 +660,9 @@ public class CraftingBlock {
             lightRadius /= 2f;
 
             requirements(Category.crafting,
-                    with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
+                    ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
+
+            craftTime = 120f;
 
             health = 2100;
             armor = 14;
@@ -669,16 +671,14 @@ public class CraftingBlock {
             updateEffect = NHFx.squareRand(NHColor.ancient, 5f, 15f);
             hasPower = hasItems = hasLiquids = true;
 
-            drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawLiquidTile(NHLiquids.quantumLiquid),
-                    new DrawRegion("-bottom-2"),
-                    new DrawCrucibleFlame() {{
-                        flameColor = NHColor.ancient;
-                        midColor = Color.valueOf("2e2f34");
-                        circleStroke = 1.05f;
-                        circleSpace = 2.65f;
-                    }
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.quantumLiquid), new DrawRegion("-bottom-2"),
+                    new DrawCrucibleFlame() {
+                        {
+                            flameColor = NHColor.ancient;
+                            midColor = Color.valueOf("2e2f34");
+                            circleStroke = 1.05f;
+                            circleSpace = 2.65f;
+                        }
 
                         @Override
                         public void draw(Building build) {
@@ -728,10 +728,12 @@ public class CraftingBlock {
                         }
                     }
             );
+
             itemCapacity = 40;
             liquidCapacity = 40f;
             consumePower(1600 / 60f);
-        }}.loadIconFix();
+        }};
+        
         factory1 = new RecipeGenericCrafter("factory-1"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 10,
