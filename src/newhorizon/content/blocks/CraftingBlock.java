@@ -659,8 +659,7 @@ public class CraftingBlock {
 
             lightRadius /= 2f;
 
-            requirements(Category.crafting,
-                    with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
+            requirements(Category.crafting, ItemStack.with(NHItems.seniorProcessor, 120, NHItems.multipleSteel, 90, NHItems.zeta, 45, NHItems.setonAlloy, 60));
 
             health = 2100;
             armor = 14;
@@ -669,7 +668,11 @@ public class CraftingBlock {
             updateEffect = NHFx.squareRand(NHColor.ancient, 5f, 15f);
             hasPower = hasItems = hasLiquids = true;
 
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(NHLiquids.quantumLiquid), new DrawRegion("-bottom-2"),
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.quantumLiquid),
+                    new DrawRegion("-bottom-2"),
                     new DrawCrucibleFlame() {{
                         flameColor = NHColor.ancient;
                         midColor = Color.valueOf("2e2f34");
@@ -711,7 +714,6 @@ public class CraftingBlock {
                             }
                         }
                     },
-                    new DrawDefault(),
                     new DrawGlowRegion() {{
                         color = NHColor.ancient;
                         layer = -1;
