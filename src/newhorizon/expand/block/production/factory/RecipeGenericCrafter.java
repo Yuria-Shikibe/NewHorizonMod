@@ -310,13 +310,5 @@ public class RecipeGenericCrafter extends AdaptCrafter {
             if (enabled && getRecipe() == null) return BlockStatus.noInput;
             return super.status();
         }
-        
-        @Override
-        public TextureRegion[] icons() {
-            if (uiIcon != null) {
-                return new TextureRegion[]{uiIcon};
-            }
-            return new TextureRegion[]{region == null ? Core.atlas.find(name) : region};
-        }
     }
 }
