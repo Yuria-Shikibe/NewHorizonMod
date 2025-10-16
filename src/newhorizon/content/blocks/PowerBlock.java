@@ -26,7 +26,7 @@ public class PowerBlock {
 
     public static void load() {
         gravityTrapMidantha = new GravityWallSubstation("gravity-node-midantha") {{
-            requirements(Category.power, BuildVisibility.shown, with(Items.silicon, 10));
+            requirements(Category.power, BuildVisibility.shown, with(Items.silicon, 5));
 
             size = 1;
             health = 400;
