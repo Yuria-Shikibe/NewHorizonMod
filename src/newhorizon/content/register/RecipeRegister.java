@@ -101,6 +101,11 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 2, Items.graphite, 1);
+            recipe.outputItem = ItemStack.list(NHItems.presstanium, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.stampingFacility, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.titanium, 3);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.presstanium, 3);
@@ -115,6 +120,16 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.beryllium, 3);
+            recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.copper, 3);
+            recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicon, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 4 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 2);
@@ -128,6 +143,17 @@ public class RecipeRegister {
             recipe.priority = 1;
         });
 
+        recipe(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.graphite, 3);
+            recipe.inputLiquid = LiquidStack.list(Liquids.ozone, 6 / 60f);
+            recipe.outputItem = ItemStack.list(Items.carbide, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.pyratite, 1);
+            recipe.outputItem = ItemStack.list(Items.carbide, 2);
+            recipe.craftTime = 60f;
+        });
         recipe(CraftingBlock.crucibleFoundry, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.tungsten, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
@@ -188,6 +214,16 @@ public class RecipeRegister {
         recipe(CraftingBlock.multipleSteelFactory, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.tungsten, 3, NHItems.presstanium, 2, NHItems.metalOxhydrigen, 4);
             recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
+        });
+        recipe(CraftingBlock.multipleSteelFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 3, NHItems.presstanium, 2, Items.metaglass, 2);
+            recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.multipleSteelFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3);
+            recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
+            recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.multipleSteelFactory, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.presstanium, 4);
