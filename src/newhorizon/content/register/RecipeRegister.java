@@ -5,6 +5,8 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
 import mindustry.world.Block;
+import mindustry.content.Items;
+import mindustry.content.Liquids;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.content.blocks.CraftingBlock;
