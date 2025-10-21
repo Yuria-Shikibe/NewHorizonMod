@@ -5,6 +5,8 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
 import mindustry.world.Block;
+import mindustry.content.Items;
+import mindustry.content.Liquids;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.content.blocks.CraftingBlock;
@@ -101,6 +103,11 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.stampingFacility, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.titanium, 2, Items.graphite, 1);
+            recipe.outputItem = ItemStack.list(NHItems.presstanium, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.stampingFacility, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.titanium, 3);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.presstanium, 3);
@@ -115,6 +122,16 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.beryllium, 3);
+            recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.processorPrinter, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.silicon, 2, Items.copper, 3);
+            recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.processorPrinter, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicon, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 4 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.juniorProcessor, 2);
@@ -128,6 +145,17 @@ public class RecipeRegister {
             recipe.priority = 1;
         });
 
+        recipe(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.graphite, 3);
+            recipe.inputLiquid = LiquidStack.list(Liquids.ozone, 6 / 60f);
+            recipe.outputItem = ItemStack.list(Items.carbide, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.crucibleFoundry, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, Items.pyratite, 1);
+            recipe.outputItem = ItemStack.list(Items.carbide, 2);
+            recipe.craftTime = 60f;
+        });
         recipe(CraftingBlock.crucibleFoundry, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.tungsten, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
@@ -190,6 +218,16 @@ public class RecipeRegister {
             recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
         });
         recipe(CraftingBlock.multipleSteelFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 3, NHItems.presstanium, 2, Items.metaglass, 2);
+            recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.multipleSteelFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3);
+            recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.multipleSteelFactory, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.presstanium, 4);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.armorCast, 2, ModuleBlock.coolingUnit, 1);
             recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 5);
@@ -248,6 +286,45 @@ public class RecipeRegister {
             recipe.priority = 1;
         });
         
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 4, NHItems.seniorProcessor, 4);
+            recipe.outputItem = ItemStack.list(NHItems.nodexPlate, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.setonAlloy, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.particleModulator, 1, ModuleBlock.quantumConductor, 1);
+            recipe.outputItem = ItemStack.list(NHItems.nodexPlate, 6);
+            recipe.craftTime = 60f;
+            recipe.priority = 1;
+        });
+        recipe(CraftingBlock.upgradeSortFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.thermoCorePositive, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.tachyonEmitter, 1);
+            recipe.outputItem = ItemStack.list(NHItems.hadronicomp, 2);
+            recipe.craftTime = 60f;
+        });
+
+        recipe(CraftingBlock.ancimembraneConcentrator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 6);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 8 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.ancimembrane, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.ancimembraneConcentrator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.irayrondPanel, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.resistoArray, 1, ModuleBlock.pulseMutator, 1);
+            recipe.outputItem = ItemStack.list(NHItems.ancimembrane, 6);
+            recipe.craftTime = 60f;
+            recipe.priority = 1;
+        });
+        recipe(CraftingBlock.ancimembraneConcentrator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.thermoCoreNegative, 4);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.gaussReceptor, 1);
+            recipe.outputItem = ItemStack.list(NHItems.hyperProcessor, 2);
+            recipe.craftTime = 60f;
+        });
+       
 
         recipe(CraftingBlock.factory0, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.tungsten, 4);

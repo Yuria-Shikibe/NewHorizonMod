@@ -624,10 +624,25 @@ public class CraftingBlock {
                     new DrawRegionFlip("-top")
             );
         }};
-        upgradeSortFactory = new GenericCrafter("nodex-factory") {{
+        upgradeSortFactory = new RecipeGenericCrafter("nodex-factory") {{
             requirements(Category.crafting,
-                    with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
-            updateEffect = NHStatusEffects.quantization.effect;
+                    ItemStack.with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80,
+                            NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
+
+            size = 3;
+            health = 2100;
+            armor = 14;
+            itemCapacity = 40;
+            hasPower = hasItems = true;
+
+            drawer = new DrawPrinter(NHItems.nodexPlate) {{
+                printColor = NHColor.darkEnrColor;
+                lightColor = Color.valueOf("#E1BAFF");
+                moveLength = 4.2f;
+                time = 25f;
+            }};
+            clipSize = size * tilesize * 2f;
+
             craftEffect = new Effect(25f, e -> {
                 Draw.color(NHColor.darkEnrColor);
                 Angles.randLenVectors(e.id, 4, 24 * e.fout() * e.fout(), (x, y) -> {
@@ -635,24 +650,11 @@ public class CraftingBlock {
                     Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
                 });
             });
-            outputItem = new ItemStack(NHItems.nodexPlate, 2);
-            craftTime = 120f;
-            itemCapacity = 40;
-            health = 2100;
-            armor = 14;
-            size = 3;
-            hasPower = hasItems = true;
-            drawer = new DrawPrinter(outputItem.item) {{
-                printColor = NHColor.darkEnrColor;
-                lightColor = Color.valueOf("#E1BAFF");
-                moveLength = 4.2f;
-                time = 25f;
-            }};
-            clipSize = size * tilesize * 2f;
-            consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
+            updateEffect = NHStatusEffects.quantization.effect;
+
             consumePower(1600 / 60f);
         }};
-        ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
+        ancimembraneConcentrator = new RecipeGenericCrafter("ancimembrane-concentrator") {{
             size = 3;
 
             lightRadius /= 2f;
@@ -729,30 +731,9 @@ public class CraftingBlock {
 
             itemCapacity = 40;
             liquidCapacity = 40f;
-
             consumePower(1600 / 60f);
-            consumeItems(with(NHItems.irayrondPanel, 6));
-            consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
-            outputItems = with(NHItems.ancimembrane, 3);
         }};
         
-        factory0 = new RecipeGenericCrafter("factory-0"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.tungsten, 80,
-                    NHItems.presstanium, 60,
-                    NHItems.juniorProcessor, 40
-            ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
-
-            size = 2;
-            health = 750;
-            armor = 5;
-            itemCapacity = 30;
-            rotate = false;
-            drawer = new DrawDefault();
-
-            consumePower(300f / 60f);
-        }};
         factory1 = new RecipeGenericCrafter("factory-1"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 10,
