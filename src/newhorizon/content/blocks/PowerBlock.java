@@ -125,7 +125,7 @@ public class PowerBlock {
             requirements(Category.power, ItemStack.with(
                     NHItems.presstanium, 50,
                     NHItems.juniorProcessor, 20,
-                    Items.silicon, 100,
+                    Items.silicon, 100
             ));
             health = 300;
             size = 3;
