@@ -104,7 +104,6 @@ public class NHBlocks {
             railGun, executor, gravity, multipleLauncher, antibody, atomSeparator, eternity;
 
     public static Block largeWaterExtractor;
-    public static Block hydroFuelCell;
     public static Block antiBulletTurret;
     public static Block fireExtinguisher;
     public static Block webber;
