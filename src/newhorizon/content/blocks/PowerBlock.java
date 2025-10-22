@@ -129,8 +129,14 @@ public class PowerBlock {
             ));
             health = 300;
             size = 3;
+            rotate = false;
+            itemCapacity = 20;
+            liquidCapacity = 60;
+            outputsPower = true;
+            powerProduction = 300 / 60f;
 
             drawer = new DrawMulti(
+                     new DrawRegion("-bottom"),
                      new DrawLiquidTile(Liquids.nitrogen, 4.1f),
                      new DrawDefault(),
                      new DrawParticles(){{
@@ -141,13 +147,7 @@ public class PowerBlock {
                          particleRad = 12f;
                          particleLife = 140f;
                      }}
-        );
-
-
-            itemCapacity = 20;
-            liquidCapacity = 60;
-            outputsPower = true;
-            powerProduction = 300 / 60f;
+            );
         }};
 
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
