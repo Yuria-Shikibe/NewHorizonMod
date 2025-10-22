@@ -214,8 +214,9 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.multipleSteelFactory, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.tungsten, 3, NHItems.presstanium, 2, NHItems.metalOxhydrigen, 4);
+            recipe.inputItem = ItemStack.list(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3);
             recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
+            recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.multipleSteelFactory, recipe -> {
             recipe.inputItem = ItemStack.list(Items.tungsten, 3, NHItems.presstanium, 2, Items.metaglass, 2);
@@ -223,9 +224,8 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.multipleSteelFactory, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.tungsten, 2, NHItems.presstanium, 3, Items.oxide, 3);
+            recipe.inputItem = ItemStack.list(NHItems.tungsten, 3, NHItems.presstanium, 2, NHItems.metalOxhydrigen, 4);
             recipe.outputItem = ItemStack.list(NHItems.multipleSteel, 3);
-            recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.multipleSteelFactory, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.presstanium, 4);
@@ -418,6 +418,18 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
 
+        recipe(PowerBlock.zetaGenerator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.zeta, 4);
+            recipe.inputLiquid = LiquidStack.list(Liquids.nitrogen, 12 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.fusionEnergy, 2);
+            recipe.craftTime = 120f;
+        });
+        recipe(PowerBlock.zetaGenerator, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.zeta, 4);
+            recipe.inputLiquid = LiquidStack.list(Liquids.cryofluid, 12 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.fusionEnergy, 2);
+            recipe.craftTime = 120f;
+        });
         recipe(PowerBlock.zetaGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.zeta, 4);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
