@@ -121,7 +121,7 @@ public class PowerBlock {
             consumePowerBuffered(1000000f);
         }};
 
-        atmosphericConcentrator = new RecipeGenericCrafter("atmospheric-concentrator"){{
+        nitrogenDissociator = new RecipeGenericCrafter("nitrogen-dissociator"){{
             requirements(Category.power, ItemStack.with(
                     NHItems.presstanium, 50,
                     NHItems.juniorProcessor, 20,
