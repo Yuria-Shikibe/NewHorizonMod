@@ -21,13 +21,15 @@ import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.drawer.DrawRegionFlip;
 import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
+import newhorizon.util.graphic.EffectWrapper;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
     public static Block
-            zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            atmosphericConcentrator,
+            hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
