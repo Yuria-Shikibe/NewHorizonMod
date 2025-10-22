@@ -432,7 +432,7 @@ public class RecipeRegister {
 
         
         recipe(PowerBlock.nitrogenDissociator, recipe -> {
-            recipe.inputLiquid = LiquidStack.list(Liquids.slag, 12 / 60f);
+            recipe.inputLiquid = LiquidStack.list(Liquids.slag, 24 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 12 / 60f);
             recipe.craftTime = 60f;
         });
@@ -442,7 +442,7 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
         recipe(PowerBlock.nitrogenDissociator, recipe -> {
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 24 / 60f);
             recipe.craftTime = 60f;
         });
