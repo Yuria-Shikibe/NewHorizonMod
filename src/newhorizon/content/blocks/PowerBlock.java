@@ -123,10 +123,9 @@ public class PowerBlock {
 
         atmosphericConcentrator = new RecipeGenericCrafter("atmospheric-concentrator"){{
             requirements(Category.power, ItemStack.with(
-                    NHItems.metalOxhydrigen, 120,
-                    NHItems.juniorProcessor, 80,
-                    NHItems.zeta, 100,
-                    NHItems.carbide, 150
+                    NHItems.presstanium, 50,
+                    NHItems.juniorProcessor, 20,
+                    Items.silicon, 100,
             ));
             health = 300;
             size = 3;
@@ -165,7 +164,7 @@ public class PowerBlock {
             liquidCapacity = 30;
             itemDuration = 240f;
             consumeItem(NHItems.metalOxhydrigen, 4);
-            consumeLiquid(Liquids.nitrogen, 1 / 60f);
+            consumeLiquid(Liquids.nitrogen, 2 / 60f);
 
             squareSprite = false;
             hasLiquids = hasItems = true;
