@@ -130,15 +130,19 @@ public class PowerBlock {
             health = 300;
             size = 3;
 
-            drawer = new DrawLiquidTile(Liquids.nitrogen, 4.1f), new DrawDefault(),
-            new DrawParticles(){{
-                color = Color.valueOf("d4f0ff");
-                alpha = 0.6f;
-                particleSize = 4f;
-                particles = 10;
-                particleRad = 12f;
-                particleLife = 140f;
-            }});
+            drawer = new DrawMulti(
+                     new DrawLiquidTile(Liquids.nitrogen, 4.1f),
+                     new DrawDefault(),
+                     new DrawParticles(){{
+                         color = Color.valueOf("d4f0ff");
+                         alpha = 0.6f;
+                         particleSize = 4f;
+                         particles = 10;
+                         particleRad = 12f;
+                         particleLife = 140f;
+                     }}
+        );
+
 
             itemCapacity = 20;
             liquidCapacity = 60;
