@@ -171,6 +171,18 @@ public class RecipeRegister {
         });
 
         recipe(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.oxide, 1);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 9 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.metalOxhydrigen, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.crystallizer, recipe -> {
+            recipe.inputItem = ItemStack.list(Items.lead, 3);
+            recipe.inputLiquid = LiquidStack.list(Liquids.water, 9 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.metalOxhydrigen, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.crystallizer, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 8 / 60f, NHLiquids.quantumLiquid, 6 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.metalOxhydrigen, 2);
             recipe.craftTime = 60f;
