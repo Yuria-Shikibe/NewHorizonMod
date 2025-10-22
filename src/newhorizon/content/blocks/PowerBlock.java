@@ -113,6 +113,34 @@ public class PowerBlock {
             consumePowerBuffered(1000000f);
         }};
 
+        hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
+            size = 2;
+            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
+
+            lightColor = Pal.techBlue;
+            consumeEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Liquids.hydrogen.color.cpy().lerp(Liquids.nitrogen.color, 0.4f).a(0.56f));
+            generateEffect = new Effect(45f, e -> {
+                Draw.color(lightColor, Color.white, e.fin() * 0.66f);
+                Lines.stroke(e.fout() * 1.375f);
+                Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
+            });
+            //			//NHTechTree.add(Blocks.thoriumReactor,this);
+            powerProduction = 1800f / 60f;
+            health = 320;
+            itemCapacity = 40;
+            liquidCapacity = 30;
+            itemDuration = 240f;
+            consumeItem(NHItems.metalOxhydrigen, 4);
+            consumeLiquid(Liquids.nitrogen, 1 / 60f);
+
+            squareSprite = false;
+            hasLiquids = hasItems = true;
+
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.nitrogen, 2f), new DrawDefault(), new DrawGlowRegion() {{
+                color = Liquids.hydrogen.color;
+            }});
+        }};
+        
         zetaGenerator = new RecipeGenericCrafter("zeta-generator") {{
             requirements(Category.power, ItemStack.with(
                     NHItems.metalOxhydrigen, 120,
