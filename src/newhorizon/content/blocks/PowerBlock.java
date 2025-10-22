@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
-import mindustry.content.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.entities.Effect;
 import mindustry.type.Category;
@@ -146,8 +145,6 @@ public class PowerBlock {
             liquidCapacity = 60;
             outputsPower = true;
             powerProduction = 300 / 60f;
-            ambientSound = Sounds.extractLoop;
-            ambientSoundVolume = 0.06f;
         }};
 
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
