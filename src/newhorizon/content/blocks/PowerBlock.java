@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.content.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.entities.Effect;
 import mindustry.type.Category;
@@ -119,7 +120,7 @@ public class PowerBlock {
             consumePowerBuffered(1000000f);
         }};
 
-        atmospheric-concentrator = new RecipeGenericCrafter("atmospheric-concentrator"){{
+        atmosphericConcentrator = new RecipeGenericCrafter("atmospheric-concentrator"){{
             requirements(Category.power, ItemStack.with(
                     NHItems.metalOxhydrigen, 120,
                     NHItems.juniorProcessor, 80,
