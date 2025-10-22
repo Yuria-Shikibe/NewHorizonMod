@@ -27,7 +27,7 @@ import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
     public static Block
-            atmosphericConcentrator,
+            nitrogenDissociator,
             hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
