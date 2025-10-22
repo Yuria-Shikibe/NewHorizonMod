@@ -419,22 +419,22 @@ public class RecipeRegister {
         });
 
         
-        recipe(PowerBlock.atmosphericConcentrator, recipe -> {
+        recipe(PowerBlock.nitrogenDissociator, recipe -> {
             recipe.inputLiquid = LiquidStack.list(Liquids.slag, 12 / 60f);
-            recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 24 / 60f);
+            recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 12 / 60f);
             recipe.craftTime = 60f;
         });
-        recipe(PowerBlock.atmosphericConcentrator, recipe -> {
+        recipe(PowerBlock.nitrogenDissociator, recipe -> {
             recipe.inputItem = ItemStack.list(Items.coal, 2);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 12 / 60f);
             recipe.craftTime = 60f;
         });
-        recipe(PowerBlock.atmosphericConcentrator, recipe -> {
+        recipe(PowerBlock.nitrogenDissociator, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 24 / 60f);
             recipe.craftTime = 60f;
         });
-        recipe(PowerBlock.atmosphericConcentrator, recipe -> {
+        recipe(PowerBlock.nitrogenDissociator, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 48 / 60f);
