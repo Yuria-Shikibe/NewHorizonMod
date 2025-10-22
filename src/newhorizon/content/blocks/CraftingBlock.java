@@ -630,6 +630,7 @@ public class CraftingBlock {
                             NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
 
             size = 3;
+            rotate = false;
             health = 2100;
             armor = 14;
             itemCapacity = 40;
@@ -656,6 +657,7 @@ public class CraftingBlock {
         }};
         ancimembraneConcentrator = new RecipeGenericCrafter("ancimembrane-concentrator") {{
             size = 3;
+            rotate = false;
 
             lightRadius /= 2f;
 
