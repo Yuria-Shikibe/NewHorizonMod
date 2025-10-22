@@ -130,7 +130,7 @@ public class PowerBlock {
             health = 300;
             size = 3;
 
-            drawer = new DrawLiquidTile(Liquids.nitrogen, 4.1f), new DrawDefault(), new DrawHeatInput(),
+            drawer = new DrawLiquidTile(Liquids.nitrogen, 4.1f), new DrawDefault(),
             new DrawParticles(){{
                 color = Color.valueOf("d4f0ff");
                 alpha = 0.6f;
