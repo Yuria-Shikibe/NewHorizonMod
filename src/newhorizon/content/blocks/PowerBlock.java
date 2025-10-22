@@ -1,11 +1,17 @@
 package newhorizon.content.blocks;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import mindustry.content.Items;
+import mindustry.content.Liquids;
+import mindustry.graphics.Pal;
+import mindustry.entities.Effect;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.Battery;
+import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
@@ -111,6 +117,34 @@ public class PowerBlock {
             health = 5000;
             armor = 50;
             consumePowerBuffered(1000000f);
+        }};
+
+        atmospheric-concentrator = new RecipeGenericCrafter("atmospheric-concentrator"){{
+            requirements(Category.power, ItemStack.with(
+                    NHItems.metalOxhydrigen, 120,
+                    NHItems.juniorProcessor, 80,
+                    NHItems.zeta, 100,
+                    NHItems.carbide, 150
+            ));
+            health = 300;
+            size = 3;
+
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.nitrogen, 4.1f), new DrawDefault(), new DrawHeatInput(),
+            new DrawParticles(){{
+                color = Color.valueOf("d4f0ff");
+                alpha = 0.6f;
+                particleSize = 4f;
+                particles = 10;
+                particleRad = 12f;
+                particleLife = 140f;
+            }});
+
+            itemCapacity = 20;
+            liquidCapacity = 60;
+            outputsPower = true;
+            powerProduction = 300 / 60f;
+            ambientSound = Sounds.extractLoop;
+            ambientSoundVolume = 0.06f;
         }};
 
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
