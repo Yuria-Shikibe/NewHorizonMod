@@ -80,6 +80,7 @@ public class ProductionBlock {
             armor = 2;
             
             itemCapacity = 30;
+            liquidCapacity = 100f;
             rotate = false;
 
             drawer = new DrawMulti(new DrawRegion("-base"), new DrawArcSmelt() {{
