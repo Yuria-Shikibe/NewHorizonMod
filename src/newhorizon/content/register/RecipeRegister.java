@@ -108,7 +108,7 @@ public class RecipeRegister {
         });
         recipe(ProductionBlock.xenIterator, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
-            recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 2);
+            recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 36 / 60f);
             recipe.craftTime = 60f;
             recipe.priority = 1;
