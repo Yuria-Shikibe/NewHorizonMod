@@ -95,6 +95,8 @@ import static mindustry.entities.part.DrawPart.PartProgress.smoothReload;
 import static mindustry.type.ItemStack.with;
 
 public class NHBlocks {
+    public static Attribute quantum = Attribute.add("quantum");
+    
     public static Block reinForcedItemSource;
     public static Block reinForcedLiquidSource;
     public static Block hyperGenerator;
@@ -174,6 +176,7 @@ public class NHBlocks {
 
         metalGroundHeat = new Floor("metal-ground-heat", 3) {{
             wall = metalWall;
+            attributes.set(quantum, 1f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
             attributes.set(Attribute.heat, 1.25f);
@@ -206,6 +209,7 @@ public class NHBlocks {
             lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
             blendGroup = this;
 
+            attributes.set(quantum, 0.25f);
             attributes.set(Attribute.heat, 0.05f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
@@ -229,6 +233,7 @@ public class NHBlocks {
             lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
             blendGroup = this;
 
+            attributes.set(quantum, 0.375f);
             attributes.set(Attribute.heat, 0.15f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
@@ -252,6 +257,7 @@ public class NHBlocks {
 
                 wall = NHBlocks.metalWall;
 
+                attributes.set(quantum, 0.5f);
                 attributes.set(Attribute.heat, 0.25f);
                 attributes.set(Attribute.water, -1f);
                 attributes.set(Attribute.oil, -1f);

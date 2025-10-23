@@ -3,6 +3,7 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.graphics.Pal;
@@ -12,12 +13,15 @@ import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
+import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.expand.block.drawer.DrawRegionFlip;
+import newhorizon.content.NHBlocks;
+import newhorizon.content.NHColor;
+import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.EffectWrapper;
@@ -28,7 +32,7 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             nitrogenDissociator,
-            hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            crystalDecompositionThermalGenerator, psiGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
@@ -121,6 +125,37 @@ public class PowerBlock {
             consumePowerBuffered(1000000f);
         }};
 
+        //wip
+        crystalDecompositionThermalGenerator = new RecipeGenericCrafter("crystal-decomposition-thermal-generator") {{
+            requirements(Category.power, ItemStack.with(
+                     NHItems.hardLight, 10,
+                     NHItems.silicar, 30,
+                     NHItems.silicon, 15
+            ));
+            addLink(2, 0, 1, 2, 1, 1);
+            
+            size = 2;
+            health = 300;
+            armor = 2f;
+            itemCapacity = 20;
+            liquidCapacity = 30;
+
+            powerProduction = 400 / 60f;
+            outputsPower = true;
+
+            drawer = new DrawMulti(
+                new DrawRegionRotated() {{
+                        oneSprite = true;
+                        suffix = "-base";
+                        x = 4;
+                 }},
+                new DrawRegionRotated() {{
+                        suffix = "-rot";
+                        x = 4;
+                 }}
+            );
+        }};
+
         nitrogenDissociator = new RecipeGenericCrafter("nitrogen-dissociator"){{
             requirements(Category.power, ItemStack.with(
                     NHItems.presstanium, 50,
@@ -137,20 +172,38 @@ public class PowerBlock {
             ignoreLiquidFullness = true;
 
             drawer = new DrawMulti(
-                     new DrawRegion("-bottom"),
-                     new DrawLiquidTile(Liquids.nitrogen, 4.1f),
-                     new DrawDefault(),
-                     new DrawParticles(){{
-                         color = Color.valueOf("d4f0ff");
-                         alpha = 0.6f;
-                         particleSize = 4f;
-                         particles = 10;
-                         particleRad = 12f;
-                         particleLife = 140f;
-                     }}
+                new DrawRegion("-bottom"),
+                new DrawLiquidTile(Liquids.nitrogen, 4.1f),
+                new DrawDefault(),
+                new DrawParticles(){{
+                    color = Color.valueOf("d4f0ff");
+                    alpha = 0.6f;
+                    particleSize = 4f;
+                    particles = 10;
+                    particleRad = 12f;
+                    particleLife = 140f;
+                }}
             );
         }};
 
+        psiGenerator = new ThermalGenerator("psi-generator") {{
+            requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
+            size = 2;
+            health = 320;
+            floating = true;
+            powerProduction = 300f / 60f;
+            
+            lightColor = NHColor.darkEnrColor;
+
+            attribute = NHBlocks.quantum;
+
+            drawer = new DrawMulti(
+                new DrawDefault(),
+                new DrawGlowRegion() {{
+                    color = NHColor.darkEnrColor;
+                }}
+            );
+        }};
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
             requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
