@@ -469,7 +469,7 @@ public class RecipeRegister {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 48 / 60f);
-            recipe.craftTime = 120f;
+            recipe.craftTime = 60f;
             recipe.priority = 1;
         });
         
