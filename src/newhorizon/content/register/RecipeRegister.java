@@ -79,27 +79,39 @@ public class RecipeRegister {
             recipe.outputLiquid = LiquidStack.list(NHLiquids.oil, 15 / 60f);
             recipe.craftTime = 60f;
         });
+        recipe(ProductionBlock.resourceConvertor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.scrap, 10);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.slag, 40 / 60f);
+            recipe.craftTime = 60f;
+        });
 
         recipe(ProductionBlock.liquidConvertor, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 30 / 60f);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 15 / 60f);
             recipe.craftTime = 90f;
         });
-        recipe(ProductionBlock.liquidConvertor, recipe -> {
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.oil, 15 / 60f);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
-            recipe.craftTime = 60f;
-        });
-        recipe(ProductionBlock.liquidConvertor, recipe -> {
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.arkycite, 20 / 60f);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
-            recipe.craftTime = 60f;
-        });
+        //recipe(ProductionBlock.liquidConvertor, recipe -> {
+            //recipe.inputLiquid = LiquidStack.list(NHLiquids.oil, 15 / 60f);
+            //recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
+            //recipe.craftTime = 60f;
+        //});
+        //recipe(ProductionBlock.liquidConvertor, recipe -> {
+            //recipe.inputLiquid = LiquidStack.list(NHLiquids.arkycite, 20 / 60f);
+            //recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
+            //recipe.craftTime = 60f;
+        //});
 
         recipe(ProductionBlock.xenIterator, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.zeta, 4, NHItems.metalOxhydrigen, 2);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 24 / 60f);
+            recipe.inputItem = ItemStack.list(NHItems.zeta, 2, NHItems.metalOxhydrigen, 1);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
             recipe.craftTime = 60f;
+        });
+        recipe(ProductionBlock.xenIterator, recipe -> {
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.supraGel, 1);
+            recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 2);
+            recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 36 / 60f);
+            recipe.craftTime = 60f;
+            recipe.priority = 1;
         });
 
         recipe(CraftingBlock.stampingFacility, recipe -> {
