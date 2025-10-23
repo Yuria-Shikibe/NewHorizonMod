@@ -134,6 +134,7 @@ public class PowerBlock {
             liquidCapacity = 100;
             outputsPower = true;
             powerProduction = 300 / 60f;
+            ignoreLiquidFullness = true;
 
             drawer = new DrawMulti(
                      new DrawRegion("-bottom"),
