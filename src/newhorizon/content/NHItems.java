@@ -8,7 +8,7 @@ public class NHItems {
 
     //Modded Item
     public static Item
-            presstanium, juniorProcessor, metalOxhydrigen, zeta, multipleSteel, seniorProcessor,
+            hardLight, silicar, presstanium, juniorProcessor, metalOxhydrigen, zeta, multipleSteel, seniorProcessor,
             irayrondPanel, setonAlloy, nodexPlate, ancimembrane, hadronicomp, hyperProcessor,
             fusionEnergy, thermoCorePositive, thermoCoreNegative, darkEnergy;
 
@@ -20,6 +20,10 @@ public class NHItems {
 
 
     public static void load() {
+        hardLight = new Item("hard-light", Color.valueOf("d3ffe8"));
+        silicar = new Item("silicar", Color.valueOf("ff6363")){{
+            hardness = 3;
+        }};
         presstanium = new Item("presstanium", Color.valueOf("90a0e4")) {{
             hardness = 8;
             cost = 1.5f;
