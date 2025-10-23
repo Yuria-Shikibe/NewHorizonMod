@@ -260,14 +260,14 @@ public class RecipeRegister {
 
         recipe(CraftingBlock.irdryonMixer, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.phaseFabric, 2);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 24 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 24 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 8 / 60f);
             recipe.craftTime = 60f;
         });
         recipe(CraftingBlock.irdryonMixer, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.fusionReactor, 1);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 24 / 60f);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 8 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 24 / 60f);
             recipe.craftTime = 60f;
             recipe.priority = 1;
         });
