@@ -735,6 +735,24 @@ public class CraftingBlock {
             liquidCapacity = 40f;
             consumePower(1600 / 60f);
         }};
+
+        factory0 = new RecipeGenericCrafter("factory-0"){{
+            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+                    NHItems.tungsten, 80,
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 40
+            ));
+            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
+
+            size = 2;
+            health = 750;
+            armor = 5;
+            itemCapacity = 30;
+            rotate = false;
+            drawer = new DrawDefault();
+
+            consumePower(300f / 60f);
+        }};
         
         factory1 = new RecipeGenericCrafter("factory-1"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
