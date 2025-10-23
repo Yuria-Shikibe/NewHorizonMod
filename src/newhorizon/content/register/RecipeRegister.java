@@ -260,9 +260,16 @@ public class RecipeRegister {
 
         recipe(CraftingBlock.irdryonMixer, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.phaseFabric, 2);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 24 / 60f);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.irdryonMixer, recipe -> {
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.fusionReactor, 1);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 24 / 60f);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 8 / 60f);
             recipe.craftTime = 60f;
+            recipe.priority = 1;
         });
 
         recipe(CraftingBlock.processorEncoder, recipe -> {
@@ -446,23 +453,23 @@ public class RecipeRegister {
         recipe(PowerBlock.nitrogenDissociator, recipe -> {
             recipe.inputLiquid = LiquidStack.list(Liquids.slag, 40 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 12 / 60f);
-            recipe.craftTime = 60f;
+            recipe.craftTime = 120f;
         });
         recipe(PowerBlock.nitrogenDissociator, recipe -> {
-            recipe.inputItem = ItemStack.list(Items.coal, 2);
+            recipe.inputItem = ItemStack.list(Items.coal, 4);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 12 / 60f);
-            recipe.craftTime = 60f;
+            recipe.craftTime = 120f;
         });
         recipe(PowerBlock.nitrogenDissociator, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 24 / 60f);
-            recipe.craftTime = 60f;
+            recipe.craftTime = 120f;
         });
         recipe(PowerBlock.nitrogenDissociator, recipe -> {
             recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 6 / 60f);
             recipe.outputLiquid = LiquidStack.list(Liquids.nitrogen, 48 / 60f);
-            recipe.craftTime = 60f;
+            recipe.craftTime = 120f;
             recipe.priority = 1;
         });
         
