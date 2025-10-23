@@ -130,8 +130,8 @@ public class PowerBlock {
             health = 300;
             size = 3;
             rotate = false;
-            itemCapacity = 20;
-            liquidCapacity = 60;
+            itemCapacity = 30;
+            liquidCapacity = 100;
             outputsPower = true;
             powerProduction = 300 / 60f;
 
