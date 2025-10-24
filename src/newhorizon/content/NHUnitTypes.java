@@ -4131,7 +4131,16 @@ public class NHUnitTypes {
                 ability.statusDuration = 120f;
                 ability.shootSound = NHSounds.synchro;
 
-                abilities.add(ability);
+                abilities.add(new ShieldArcAbility() {{
+                    radius = 140f;
+                    angle = 200;
+                    regen = 20f;
+                    cooldown = 60f * 10f;
+                    max = 25000f;
+                    width = 15f;
+                    whenShooting = true;
+                    chanceDeflect = -1f;
+                }}
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
                 
