@@ -37,8 +37,8 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
-            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator,
-            surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, multipleSteelFactory,
+            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
+            surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, hugeplastaniumFactory, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
     public static Block factory0, factory1, factory2, factory3, factory4, factory5, factory6;
@@ -252,13 +252,13 @@ public class CraftingBlock {
                     }},
                     new DrawLiquidRegionRotated() {{
                         suffix = "-liquid";
-                        drawLiquid = NHLiquids.zetaFluid;
+                        drawLiquid = NHLiquids.zetaFluidPositive;
                     }},
                     new DrawRegionFlip() {{
                         suffix = "-rot";
                     }},
                     new DrawFlameRotated() {{
-                        flameColor = NHLiquids.zetaFluid.color;
+                        flameColor = NHLiquids.zetaFluidPositive.color;
                         flameRadius = 3f;
                         flameRadiusIn = 1.9f;
                         flameRadiusScl = 5f;
@@ -544,6 +544,27 @@ public class CraftingBlock {
 
             consumePower(300 / 60f);
         }};
+        hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 120, Items.surgeAlloy, 80, NHItems.metalOxhydrigen, 40, NHItems.multipleSteel, 60));
+
+            size = 3;
+            health = 1500;
+            armor = 10;
+            rotate = false;
+
+            craftTime = 90f;
+            consumePower(640 / 60f);
+            ignoreLiquidFullness = true;
+
+            itemCapacity = 30;
+            liquidCapacity = 60f;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawDefault();
+        }};
         irayrondFactory = new RecipeGenericCrafter("irayrond-factory") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 90,
@@ -559,8 +580,6 @@ public class CraftingBlock {
             health = 1800;
             armor = 12;
 
-            outputItems = with(NHItems.irayrondPanel, 4);
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
             ignoreLiquidFullness = true;
 
             itemCapacity = 30;
