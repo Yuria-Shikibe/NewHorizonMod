@@ -47,10 +47,11 @@ public class ProductionBlock {
     public static void load() {
         solidificationShaper = new RecipeGenericCrafter("solidification-shaper") {{
             requirements(Category.production, ItemStack.with(
-                    NHItems.silicon, 40
-            ));       
+                    NHItems.hardLight, 10
+            ));   
+            health = 300;
             size = 2;
-            craftTime = 60f;
+            craftTime = 120f;
             itemCapacity = 30;
 
             rotate = false;
