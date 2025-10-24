@@ -40,7 +40,7 @@ import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
-    public static Block sandCracker, resourceConvertor, liquidConvertor, xenExtractor, xenIterator;
+    public static Block sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
@@ -69,24 +69,6 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
-        titaniumReconstructor = new RecipeGenericCrafter("titanium-reconstructor") {{
-            requirements(Category.production, ItemStack.with(
-                    NHItems.silicon, 40,
-                    NHItems.graphite, 40
-            ));
-            size = 2;
-            craftTime = 30f;
-            itemCapacity = 30;
-            liquidCapacity = 30f;
-
-            rotate = false;
-
-            craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
-
-            consumePower(300f / 60f);
-
-            drawer = new DrawMulti(new DrawDefault());
-        }};
         tungstenReconstructor = new RecipeGenericCrafter("tungsten-reconstructor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
@@ -100,6 +82,24 @@ public class ProductionBlock {
             rotate = false;
 
             craftEffect = updateEffect = NHFx.square(NHColor.thurmixRed, 60, 6, 16, 3);
+
+            consumePower(300f / 60f);
+
+            drawer = new DrawMulti(new DrawDefault());
+        }};
+        titaniumReconstructor = new RecipeGenericCrafter("titanium-reconstructor") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40
+            ));
+            size = 2;
+            craftTime = 30f;
+            itemCapacity = 30;
+            liquidCapacity = 30f;
+
+            rotate = false;
+
+            craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
 
             consumePower(300f / 60f);
 
