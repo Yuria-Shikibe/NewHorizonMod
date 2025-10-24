@@ -86,7 +86,6 @@ public class CraftingBlock {
             itemCapacity = 20;
 
             consumePower(180f / 60f);
-            outputItems = with(NHItems.juniorProcessor, 3);
 
             drawer = new DrawMulti(
                     new DrawRegionRotated() {{
@@ -171,8 +170,6 @@ public class CraftingBlock {
             craftTime = 120f;
             consumePower(300 / 60f);
 
-            outputItems = with(NHItems.metalOxhydrigen, 4);
-
             itemCapacity = 30;
             liquidCapacity = 20f;
             health = 1600;
@@ -227,6 +224,46 @@ public class CraftingBlock {
                         suffix = "-edge";
                         x = 4;
                         y = 4;
+                    }}
+            );
+        }};
+        zetaFactory = new RecipeGenericCrafter("zeta-factory") {{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 30, Items.tungsten, 20));
+
+            size = 2;
+            health = 900;
+            armor = 4;
+            itemCapacity = 30;
+            liquidCapacity = 30f;
+
+            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
+
+            craftTime = 60f;
+            consumePower(300f / 60f);
+
+            craftEffect = Fx.formsmoke;
+            updateEffect = NHFx.trailToGray;
+            
+            drawer = new DrawMulti(
+                    new DrawRegionRotated() {{
+                        oneSprite = true;
+                        suffix = "-base";
+                    }},
+                    new DrawLiquidRegionRotated() {{
+                        suffix = "-liquid";
+                        drawLiquid = NHLiquids.zetaFluid;
+                    }},
+                    new DrawRegionFlip() {{
+                        suffix = "-rot";
+                    }},
+                    new DrawFlameRotated() {{
+                        flameColor = NHLiquids.zetaFluid.color;
+                        flameRadius = 3f;
+                        flameRadiusIn = 1.9f;
+                        flameRadiusScl = 5f;
+                        flameRadiusMag = 2f;
+                        flameRadiusInMag = 1f;
                     }}
             );
         }};
