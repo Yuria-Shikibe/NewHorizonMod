@@ -40,11 +40,28 @@ import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
-    public static Block sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
+    public static Block solidificationShaper, sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
+        solidificationShaper = new RecipeGenericCrafter("solidification-shaper") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.hardLight, 10,
+            ));
+            size = 2;
+            craftTime = 60f;
+            itemCapacity = 30;
+
+            rotate = false;
+
+            craftEffect = Fx.smeltsmoke;
+            
+            powerProduction = 30 / 60f;
+            ignoreLiquidFullness = true;
+
+            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
+        }};
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
@@ -75,7 +92,7 @@ public class ProductionBlock {
                     NHItems.graphite, 40
             ));
             size = 2;
-            craftTime = 30f;
+            craftTime = 60f;
             itemCapacity = 30;
             liquidCapacity = 30f;
 
@@ -93,7 +110,7 @@ public class ProductionBlock {
                     NHItems.graphite, 40
             ));
             size = 2;
-            craftTime = 30f;
+            craftTime = 60f;
             itemCapacity = 30;
             liquidCapacity = 30f;
 
