@@ -16,6 +16,10 @@ import newhorizon.expand.type.Recipe;
 
 public class RecipeRegister {
     public static void load(){
+        recipe(ProductionBlock.solidificationShaper, recipe -> {
+            recipe.outputItem = ItemStack.list(NHItems.hardLight, 4);
+            recipe.craftTime = 60f;
+        });
         recipe(ProductionBlock.sandCracker, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.scrap, 2);
             recipe.outputItem = ItemStack.list(NHItems.sand, 5);
