@@ -51,40 +51,35 @@ public class RecipeRegister {
             recipe.outputItem = ItemStack.list(NHItems.sand, 5);
             recipe.craftTime = 30f;
         });
-
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.copper, 5);
-            recipe.outputItem = ItemStack.list(NHItems.tungsten, 2);
-            recipe.craftTime = 60f;
-        });
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.lead, 5);
-            recipe.outputItem = ItemStack.list(NHItems.tungsten, 2);
-            recipe.craftTime = 60f;
-        });
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.beryllium, 3);
-            recipe.outputItem = ItemStack.list(NHItems.titanium, 3);
-            recipe.craftTime = 60f;
-        });
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
-            recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
-            recipe.craftTime = 60f;
-        });
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
+        recipe(ProductionBlock.sandCracker, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicar, 3);
             recipe.outputItem = ItemStack.list(NHItems.graphite, 2, NHItems.silicon, 2);
             recipe.craftTime = 60f;
         });
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.sand, 3);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.oil, 15 / 60f);
+
+        recipe(ProductionBlock.tungstenReconstructor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.copper, 5);
+            recipe.outputItem = ItemStack.list(NHItems.tungsten, 2);
             recipe.craftTime = 60f;
         });
-        recipe(ProductionBlock.resourceConvertor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.scrap, 10);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.slag, 40 / 60f);
+        recipe(ProductionBlock.tungstenReconstructor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.lead, 5);
+            recipe.outputItem = ItemStack.list(NHItems.tungsten, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(ProductionBlock.tungstenReconstructor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.titanium, 6);
+            recipe.outputItem = ItemStack.list(NHItems.tungsten, 4);
+            recipe.craftTime = 60f;
+        });
+        recipe(ProductionBlock.titaniumReconstructor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.beryllium, 3);
+            recipe.outputItem = ItemStack.list(NHItems.titanium, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(ProductionBlock.titaniumReconstructor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.tungsten, 4);
+            recipe.outputItem = ItemStack.list(NHItems.titanium, 6);
             recipe.craftTime = 60f;
         });
 
@@ -103,6 +98,16 @@ public class RecipeRegister {
             //recipe.outputLiquid = LiquidStack.list(NHLiquids.xenFluid, 12 / 60f);
             //recipe.craftTime = 60f;
         //});
+        recipe(ProductionBlock.liquidConvertor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.sand, 3);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.oil, 15 / 60f);
+            recipe.craftTime = 60f;
+        });
+        recipe(ProductionBlock.liquidConvertor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.scrap, 10);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.slag, 40 / 60f);
+            recipe.craftTime = 60f;
+        });
 
         recipe(ProductionBlock.xenIterator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.zeta, 2, NHItems.metalOxhydrigen, 1);
