@@ -18,7 +18,7 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.content.NHBlocks
+import newhorizon.content.NHBlocks;
 import newhorizon.content.NHColor;
 import newhorizon.expand.block.drawer.DrawRegionFlip;
 import newhorizon.expand.block.power.GravityWallSubstation;
