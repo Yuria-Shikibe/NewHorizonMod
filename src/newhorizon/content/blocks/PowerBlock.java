@@ -3,6 +3,7 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.graphics.Pal;
@@ -17,6 +18,8 @@ import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
+import newhorizon.content.NHBlocks
+import newhorizon.content.NHColor;
 import newhorizon.expand.block.drawer.DrawRegionFlip;
 import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
@@ -152,20 +155,12 @@ public class PowerBlock {
         }};
 
         quantumGenerator = new PowerGenerator("quantum-generator") {{
-            requirements(Category.power, ItemStack.with(NHItems.quantumAlloy, 60, NHItems.presstanium, 45));
+            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
             size = 2;
             powerProduction = 300f / 60f;
             emitLight = true;
             lightColor = NHColor.darkEnrColor;
 
-           drawer = new DrawMulti(
-                    new DrawDefault(),
-                    new DrawGlowRegion() {{
-                        region = "quantum-generator-light";
-                        color = NHColor.darkEnrColor;
-                   }}
-            );     
-            
             update = tile -> {
                 float q = tile.entity.sumAttribute(quantum);
                 tile.entity.productionEfficiency = Mathf.clamp(q);
