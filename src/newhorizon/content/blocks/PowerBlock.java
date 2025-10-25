@@ -28,7 +28,7 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             nitrogenDissociator,
-            hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            quantumGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
@@ -158,24 +158,13 @@ public class PowerBlock {
             emitLight = true;
             lightColor = NHColor.darkEnrColor;
 
-            drawer = new DrawMulti(
-                     new DrawRegion(),
-                     new DrawDefault(),
-                     new DrawRegion("quantum-generator-light") {{
-                         frames = 10;
-                         frameTime = 4f;
-
-                         update = tile -> {
-                         alpha = Mathf.clamp(tile.entity.productionEfficiency);
-                         };
-
-                         draw = (tile, batch) -> {
-                         Draw.color(NHColor.darkEnrColor, alpha);
-                         Draw.rect(region, tile.x, tile.y);
-                         Draw.reset();
-                         };
-                    }}
-            );
+           drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawGlowRegion() {{
+                        region = "quantum-generator-light";
+                        color = NHColor.darkEnrColor;
+                   }}
+            );     
             
             update = tile -> {
                 float q = tile.entity.sumAttribute(quantum);
