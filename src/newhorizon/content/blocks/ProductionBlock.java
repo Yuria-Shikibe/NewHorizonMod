@@ -202,11 +202,13 @@ public class ProductionBlock {
             drillTime = 360;
             size = 3;
             tier = 3;
+            itemCapacity = 20;
+            liquidCapacity = 20f;
             updateEffect = Fx.pulverizeMedium;
             drillEffect = Fx.mineBig;
             
             consumeLiquid(NHLiquids.quantumLiquid, 0.08f).boost();
-            liquidBoostIntensity = 2f;
+            liquidBoostIntensity = 1f;
         }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
