@@ -151,6 +151,37 @@ public class PowerBlock {
             );
         }};
 
+        quantumGenerator = new PowerGenerator("quantum-generator") {{
+            requirements(Category.power, ItemStack.with(NHItems.quantumAlloy, 60, NHItems.presstanium, 45));
+            size = 2;
+            powerProduction = 300f / 60f;
+            emitLight = true;
+            lightColor = NHColor.darkEnrColor;
+
+            drawer = new DrawMulti(
+                     new DrawRegion(),
+                     new DrawDefault(),
+                     new DrawRegion("quantum-generator-light") {{
+                         frames = 10;
+                         frameTime = 4f;
+
+                         update = tile -> {
+                         alpha = Mathf.clamp(tile.entity.productionEfficiency);
+                         };
+
+                         draw = (tile, batch) -> {
+                         Draw.color(NHColor.darkEnrColor, alpha);
+                         Draw.rect(region, tile.x, tile.y);
+                         Draw.reset();
+                         };
+                    }}
+            );
+            
+            update = tile -> {
+                float q = tile.entity.sumAttribute(quantum);
+                tile.entity.productionEfficiency = Mathf.clamp(q);
+            };
+        }};
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
             requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
