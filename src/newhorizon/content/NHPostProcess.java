@@ -1263,6 +1263,10 @@ public class NHPostProcess {
             Item item =(Item) content;
             item.shownPlanets.addAll(Planets.erekir);
         });
+		adjustContent(Items.silicon, content -> {
+			Item item = (Item) content;
+			item.hardness = 3f;
+		});
     }
 
     private static void overrideUnit() {
