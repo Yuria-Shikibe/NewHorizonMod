@@ -31,7 +31,7 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             nitrogenDissociator,
-            quantumGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            psiGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
@@ -154,7 +154,7 @@ public class PowerBlock {
             );
         }};
 
-        quantumGenerator = new ThermalGenerator("quantum-generator") {{
+        psiGenerator = new ThermalGenerator("psi-generator") {{
             requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
             size = 2;
             health = 320;
