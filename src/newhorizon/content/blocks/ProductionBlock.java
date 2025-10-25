@@ -25,6 +25,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.ThermalGenerator;
+import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.*;
