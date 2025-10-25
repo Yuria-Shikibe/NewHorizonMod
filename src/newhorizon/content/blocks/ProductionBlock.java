@@ -199,13 +199,14 @@ public class ProductionBlock {
 
         opticalMediumDrill = new Drill("optical-medium-drill"){{
             requirements(Category.production, with(NHItems.silicon, 20, NHItems.hardLight, 20));
-            drillTime = 300;
+            drillTime = 360;
             size = 3;
-            tier = 4;
+            tier = 3;
             updateEffect = Fx.pulverizeMedium;
             drillEffect = Fx.mineBig;
             
             consumeLiquid(NHLiquids.quantumLiquid, 0.08f).boost();
+            liquidBoostIntensity = 2f;
         }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
