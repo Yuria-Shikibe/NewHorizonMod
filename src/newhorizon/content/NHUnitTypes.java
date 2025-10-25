@@ -4133,12 +4133,12 @@ public class NHUnitTypes {
                     shootSound = NHSounds.synchro;
                 }},
                 new ShieldArcAbility() {{
-                    radius = 140f;
-                    angle = 200;
+                    radius = 120f;
+                    angle = 120;
                     regen = 20f;
                     cooldown = 60f * 10f;
                     max = 25000f;
-                    width = 15f;
+                    width = 20f;
                     whenShooting = true;
                     chanceDeflect = -1f;
                 }}
