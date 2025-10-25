@@ -95,7 +95,7 @@ import static mindustry.entities.part.DrawPart.PartProgress.smoothReload;
 import static mindustry.type.ItemStack.with;
 
 public class NHBlocks {
-    public static Attribute quantum = new Attribute(721, "quantum");
+    public static Attribute quantum = Attribute.add("quantum");
     
     public static Block reinForcedItemSource;
     public static Block reinForcedLiquidSource;
