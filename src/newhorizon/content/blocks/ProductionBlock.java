@@ -42,7 +42,8 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block solidificationShaper, sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
-    public static AdaptDrill opticalMediumDrill, resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
+    public static Drill opticalMediumDrill;
+    public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
