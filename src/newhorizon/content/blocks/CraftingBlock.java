@@ -251,7 +251,7 @@ public class CraftingBlock {
                         suffix = "-base";
                     }},
                     new DrawLiquidRegion() {{
-                        suffix = "-liquid";
+                        suffix = "-top";
                         drawLiquid = NHLiquids.zetaFluidPositive;
                     }},
                     new DrawRegionFlip() {{
