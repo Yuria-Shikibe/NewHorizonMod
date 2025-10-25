@@ -1265,7 +1265,7 @@ public class NHPostProcess {
         });
 		adjustContent(Items.silicon, content -> {
 			Item item = (Item) content;
-			item.hardness = 3f;
+			item.hardness = 3;
 		});
     }
 
