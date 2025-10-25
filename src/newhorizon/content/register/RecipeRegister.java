@@ -218,6 +218,20 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
             recipe.priority = 1;
         });
+
+        recipe(CraftingBlock.zetaFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.hardLight, 4);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 6 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.zeta, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.zetaFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.hardLight, 2);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.irdryonFluid, 8 / 60f);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.fusionReactor, 1);
+            recipe.outputItem = ItemStack.list(NHItems.zeta, 10);
+            recipe.craftTime = 60f;
+        });
         
         recipe(CraftingBlock.surgeRefactor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.titanium, 3);
@@ -270,6 +284,19 @@ public class RecipeRegister {
             recipe.priority = 1;
         });
 
+        recipe(CraftingBlock.processorEncoder, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 4, NHItems.surgeAlloy, 1);
+            recipe.outputItem = ItemStack.list(NHItems.seniorProcessor, 2);
+            recipe.craftTime = 60f;
+        });
+        recipe(CraftingBlock.processorEncoder, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 3);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 1);
+            recipe.outputItem = ItemStack.list(NHItems.seniorProcessor, 5);
+            recipe.craftTime = 60f;
+            recipe.priority = 1;
+        });
+        
         recipe(CraftingBlock.irdryonMixer, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.phaseFabric, 2);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.xenFluid, 24 / 60f);
@@ -283,18 +310,30 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
             recipe.priority = 1;
         });
-
-        recipe(CraftingBlock.processorEncoder, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 4, NHItems.surgeAlloy, 1);
-            recipe.outputItem = ItemStack.list(NHItems.seniorProcessor, 2);
-            recipe.craftTime = 60f;
+        
+        recipe(CraftingBlock.hugeplastaniumFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.tungsten, 6);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.cyanogen, 3 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.plastanium, 9);
+            recipe.craftTime = 90f;
         });
-        recipe(CraftingBlock.processorEncoder, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.juniorProcessor, 3);
-            recipe.inputPayload = PayloadStack.list(ModuleBlock.bionicsProcessor, 1);
-            recipe.outputItem = ItemStack.list(NHItems.seniorProcessor, 5);
-            recipe.craftTime = 60f;
-            recipe.priority = 1;
+        recipe(CraftingBlock.hugeplastaniumFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.multipleSteel, 3);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.oil, 30 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.plastanium, 9);
+            recipe.craftTime = 90f;
+        });
+        recipe(CraftingBlock.hugeplastaniumFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 6);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.zetaFluidPositive, 1 / 60f);
+            recipe.outputItem = ItemStack.list(NHItems.plastanium, 9);
+            recipe.craftTime = 90f;
+        });
+        recipe(CraftingBlock.hugeplastaniumFactory, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 2);
+            recipe.inputPayload = PayloadStack.list(ModuleBlock.resistoArray, 1);
+            recipe.outputItem = ItemStack.list(NHItems.plastanium, 18);
+            recipe.craftTime = 90f;
         });
 
         recipe(CraftingBlock.irayrondFactory, recipe -> {
