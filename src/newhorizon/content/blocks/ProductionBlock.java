@@ -41,7 +41,7 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block solidificationShaper, sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
-    public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
+    public static AdaptDrill opticalMediumDrill, resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
@@ -195,6 +195,16 @@ public class ProductionBlock {
             //consumePower(5f);
         }};
 
+        opticalMediumDrill = new Drill("optical-medium-drill"){{
+            requirements(Category.production, with(NHItems.silicon, 20, NHItems.hardLight, 20));
+            drillTime = 300;
+            size = 3;
+            tier = 4;
+            updateEffect = Fx.pulverizeMedium;
+            drillEffect = Fx.mineBig;
+            
+            consumeLiquid(NHLiquids.quantumLiquid, 0.08f).boost();
+        }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
