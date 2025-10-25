@@ -159,12 +159,17 @@ public class PowerBlock {
             size = 2;
             health = 320;
             powerProduction = 300f / 60f;
-            ;
+            
             lightColor = NHColor.darkEnrColor;
 
             attribute = NHBlocks.quantum;
 
-            drawer = new DrawDefault();
+            drawer = new DrawMulti(
+                     new DrawDefault(),
+                     new DrawGlowRegion() {{
+                         color = NHColor.darkEnrColor;
+                     }}
+            );
         }};
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
