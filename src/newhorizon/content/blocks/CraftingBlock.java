@@ -257,7 +257,7 @@ public class CraftingBlock {
                     new DrawRegionFlip() {{
                         suffix = "-rot";
                     }},
-                    new DrawFlameRotated() {{
+                    new DrawFlame() {{
                         flameColor = NHLiquids.zetaFluidPositive.color;
                         flameRadius = 3f;
                         flameRadiusIn = 1.9f;
