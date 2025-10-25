@@ -250,7 +250,7 @@ public class CraftingBlock {
                         oneSprite = true;
                         suffix = "-base";
                     }},
-                    new DrawLiquidRegionRotated() {{
+                    new DrawLiquidRegion() {{
                         suffix = "-liquid";
                         drawLiquid = NHLiquids.zetaFluidPositive;
                     }},
