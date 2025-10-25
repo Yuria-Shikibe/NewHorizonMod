@@ -158,6 +158,7 @@ public class PowerBlock {
             requirements(Category.power, BuildVisibility.shown, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
             size = 2;
             health = 320;
+            floating = true;
             powerProduction = 300f / 60f;
             
             lightColor = NHColor.darkEnrColor;
