@@ -88,8 +88,8 @@ public class RecipeRegister {
         });
 
         recipe(ProductionBlock.liquidConvertor, recipe -> {
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 30 / 60f);
-            recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 15 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 36 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 18 / 60f);
             recipe.craftTime = 90f;
         });
         //recipe(ProductionBlock.liquidConvertor, recipe -> {
@@ -333,7 +333,7 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(NHItems.metalOxhydrigen, 2);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.resistoArray, 1);
             recipe.outputItem = ItemStack.list(NHItems.plastanium, 18);
-            recipe.craftTime = 90f;
+            recipe.craftTime = 60f;
         });
 
         recipe(CraftingBlock.irayrondFactory, recipe -> {
