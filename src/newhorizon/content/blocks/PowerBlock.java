@@ -142,12 +142,10 @@ public class PowerBlock {
 
             drawer = new DrawMulti(
                      new DrawDefault(),
-                     new DrawGlowRegion("-top") {{
-                         color = NHColor.darkEnrColor;
-                     }},
                      new DrawGlowRegion() {{
                          color = Items.graphite.color;
                      }}
+                     new DrawLiquidTile(NHLiquids.xenFluid),
             );
         }};
 
