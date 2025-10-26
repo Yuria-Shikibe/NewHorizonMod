@@ -152,9 +152,9 @@ public class PowerBlock {
 
         nitrogenDissociator = new RecipeGenericCrafter("nitrogen-dissociator"){{
             requirements(Category.power, ItemStack.with(
-                    NHItems.presstanium, 50,
-                    NHItems.juniorProcessor, 20,
-                    Items.silicon, 100
+                    NHItems.hardLight, 10,
+                    NHItems.silicar, 30,
+                    NHItems.silicon, 15
             ));
             health = 300;
             size = 3;
