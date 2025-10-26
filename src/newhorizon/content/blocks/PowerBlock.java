@@ -145,7 +145,7 @@ public class PowerBlock {
                      new DrawGlowRegion() {{
                          color = Items.graphite.color;
                      }}
-                     new DrawLiquidTile(NHLiquids.xenFluid),
+                     new DrawLiquidTile(NHLiquids.quantumLiquid),
             );
         }};
 
