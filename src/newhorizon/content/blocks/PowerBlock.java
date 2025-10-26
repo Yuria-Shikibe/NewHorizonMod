@@ -130,9 +130,9 @@ public class PowerBlock {
                          NHItems.juniorProcessor, 60,
                          Items.graphite, 120
             ));
-            size = 3;
-            health = 150 * 9;
-            armor = 10f;
+            size = 2;
+            health = 300;
+            armor = 2f;
             itemCapacity = 20;
             liquidCapacity = 30;
             rotate = false;
