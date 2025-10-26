@@ -126,9 +126,9 @@ public class PowerBlock {
 
         crystalDecompositionThermalGenerator = new RecipeGenericCrafter("crystal-decomposition-thermal-generator") {{
             requirements(Category.power, ItemStack.with(
-                         NHItems.metalOxhydrigen, 80,
-                         NHItems.juniorProcessor, 60,
-                         Items.graphite, 120
+                     NHItems.hardLight, 10,
+                     NHItems.silicar, 30,
+                     NHItems.silicon, 15
             ));
             size = 2;
             health = 300;
@@ -152,9 +152,9 @@ public class PowerBlock {
 
         nitrogenDissociator = new RecipeGenericCrafter("nitrogen-dissociator"){{
             requirements(Category.power, ItemStack.with(
-                    NHItems.hardLight, 10,
-                    NHItems.silicar, 30,
-                    NHItems.silicon, 15
+                    NHItems.presstanium, 50,
+                    NHItems.juniorProcessor, 20,
+                    Items.silicon, 100
             ));
             health = 300;
             size = 3;
