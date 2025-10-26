@@ -142,7 +142,7 @@ public class PowerBlock {
 
             drawer = new DrawMulti(
                 new DrawRegion("-bottom"),
-                new DrawLiquidTile(NHLiquids.quantumLiquid, 4.1f),
+                new DrawLiquidTile(NHLiquids.quantumLiquid),
                 new DrawDefault(),
                 new DrawGlowRegion("-glow") {{
                     color = NHColor.darkEnrColor;
