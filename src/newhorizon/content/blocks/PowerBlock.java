@@ -141,11 +141,11 @@ public class PowerBlock {
             outputsPower = true;
 
             drawer = new DrawMulti(
-                     new DrawDefault(),
-                     new DrawGlowRegion() {{
-                         color = Items.graphite.color;
-                     }}
-                     new DrawLiquidTile(NHLiquids.quantumLiquid),
+                new DrawDefault(),
+                new DrawGlowRegion() {{
+                    color = Items.graphite.color;
+                }},
+                new DrawLiquidTile(NHLiquids.quantumLiquid)
             );
         }};
 
@@ -165,17 +165,17 @@ public class PowerBlock {
             ignoreLiquidFullness = true;
 
             drawer = new DrawMulti(
-                     new DrawRegion("-bottom"),
-                     new DrawLiquidTile(Liquids.nitrogen, 4.1f),
-                     new DrawDefault(),
-                     new DrawParticles(){{
-                         color = Color.valueOf("d4f0ff");
-                         alpha = 0.6f;
-                         particleSize = 4f;
-                         particles = 10;
-                         particleRad = 12f;
-                         particleLife = 140f;
-                     }}
+                new DrawRegion("-bottom"),
+                new DrawLiquidTile(Liquids.nitrogen, 4.1f),
+                new DrawDefault(),
+                new DrawParticles(){{
+                    color = Color.valueOf("d4f0ff");
+                    alpha = 0.6f;
+                    particleSize = 4f;
+                    particles = 10;
+                    particleRad = 12f;
+                    particleLife = 140f;
+                }}
             );
         }};
 
@@ -191,10 +191,10 @@ public class PowerBlock {
             attribute = NHBlocks.quantum;
 
             drawer = new DrawMulti(
-                     new DrawDefault(),
-                     new DrawGlowRegion() {{
-                         color = NHColor.darkEnrColor;
-                     }}
+                new DrawDefault(),
+                new DrawGlowRegion() {{
+                    color = NHColor.darkEnrColor;
+                }}
             );
         }};
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
