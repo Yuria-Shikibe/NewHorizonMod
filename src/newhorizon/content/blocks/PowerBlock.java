@@ -141,11 +141,12 @@ public class PowerBlock {
             outputsPower = true;
 
             drawer = new DrawMulti(
+                new DrawLiquidTile(NHLiquids.quantumLiquid),
+                new DrawRegion("-bottom"),
                 new DrawDefault(),
-                new DrawGlowRegion() {{
+                new DrawGlowRegion("-glow") {{
                     color = Items.graphite.color;
-                }},
-                new DrawLiquidTile(NHLiquids.quantumLiquid)
+                }}
             );
         }};
 
