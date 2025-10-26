@@ -31,7 +31,7 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             nitrogenDissociator,
-            psiGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            crystalDecompositionThermalGenerator, psiGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
@@ -122,6 +122,32 @@ public class PowerBlock {
             health = 5000;
             armor = 50;
             consumePowerBuffered(1000000f);
+        }};
+
+        crystalDecompositionThermalGenerator = new RecipeGenericCrafter("crystal-decomposition-thermal-generator") {{
+            requirements(Category.power, ItemStack.with(
+                         NHItems.metalOxhydrigen, 80,
+                         NHItems.juniorProcessor, 60,
+                         Items.graphite, 120
+            ));
+            size = 3;
+            health = 150 * 9;
+            armor = 10f;
+            itemCapacity = 20;
+            liquidCapacity = 30;
+            rotate = false;
+
+            powerProduction = 300 / 60f;
+            outputsPower = true;
+
+            drawer = new DrawMulti(
+                     new DrawRegion("-center"),
+                     new DrawDefault(),
+                     new DrawRegion("-top"),
+                     new DrawGlowRegion() {{
+                         color = Items.graphite.color;
+                     }}
+            );
         }};
 
         nitrogenDissociator = new RecipeGenericCrafter("nitrogen-dissociator"){{
