@@ -141,13 +141,7 @@ public class PowerBlock {
             outputsPower = true;
 
             drawer = new DrawMulti(
-                     new DrawRegion("-center") {{
-                         draw = b -> {
-                         Draw.color(NHColor.darkEnrColor, Color.white, Mathf.absin(Time.time, 5f, 0.3f));
-                         Draw.rect(region, b.x, b.y);
-                         Draw.color();
-                         };
-                     }},
+                     new DrawDefault(),
                      new DrawGlowRegion("-top") {{
                          color = NHColor.darkEnrColor;
                      }},
