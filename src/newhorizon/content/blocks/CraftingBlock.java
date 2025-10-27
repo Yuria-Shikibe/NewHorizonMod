@@ -37,7 +37,7 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
-            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
+            stampingFacility, processorPrinter, condenseFacility, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
             surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, hugeplastaniumFactory, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
@@ -124,6 +124,35 @@ public class CraftingBlock {
             );
 
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
+        }};
+        condenseFacility = new RecipeGenericCrafter("condense-facility"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.presstanium, 50,
+                    NHItems.juniorProcessor, 20,
+                    Items.silicon, 100
+            ));
+            health = 300;
+            size = 3;
+            rotate = false;
+            itemCapacity = 20;
+            liquidCapacity = 100;
+            consumePower(200 / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"), 
+                    new DrawLiquidTile(NHLiquids.quantumLiquid), 
+                    new DrawLiquidTile(Liquids.water), 
+                    new DrawLiquidTile(Liquids.cryofluid), 
+                    new DrawDefault()
+                    new DrawParticles(){{
+                    color = Color.valueOf("6ecdec");
+                    alpha = 0.6f;
+                    particleSize = 4f;
+                    particles = 10;
+                    particleRad = 12f;
+                    particleLife = 140f;
+                    }}
+           );
         }};
         crucibleFoundry = new RecipeGenericCrafter("crucible-foundry") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
