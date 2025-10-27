@@ -174,14 +174,14 @@ public class RecipeRegister {
             recipe.priority = 1;
         });
 
-        recipe(PowerBlock.condenseFacility, recipe -> {
+        recipe(CraftingBlock.condenseFacility, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.titanium, 6);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 36 / 60f);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.cryofluid, 24 / 60f);
             recipe.craftTime = 60f;
             recipe.priority = 1;
         });
-        recipe(PowerBlock.condenseFacility, recipe -> {
+        recipe(CraftingBlock.condenseFacility, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.titanium, 4);
             recipe.inputPayload = PayloadStack.list(ModuleBlock.coolingUnit, 1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.cryofluid, 48 / 60f);
