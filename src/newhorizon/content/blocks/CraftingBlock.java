@@ -139,11 +139,11 @@ public class CraftingBlock {
             consumePower(200 / 60f);
 
             drawer = new DrawMulti(
-                    new DrawRegion("-bottom"), 
-                    new DrawLiquidTile(NHLiquids.quantumLiquid), 
-                    new DrawLiquidTile(Liquids.water), 
-                    new DrawLiquidTile(Liquids.cryofluid), 
-                    new DrawDefault()
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.quantumLiquid),
+                    new DrawLiquidTile(Liquids.water),
+                    new DrawLiquidTile(Liquids.cryofluid),
+                    new DrawDefault(),
                     new DrawParticles(){{
                     color = Color.valueOf("6ecdec");
                     alpha = 0.6f;
