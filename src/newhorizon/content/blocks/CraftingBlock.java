@@ -143,15 +143,7 @@ public class CraftingBlock {
                     new DrawLiquidTile(NHLiquids.quantumLiquid),
                     new DrawLiquidTile(Liquids.water),
                     new DrawLiquidTile(Liquids.cryofluid),
-                    new DrawDefault(),
-                    new DrawParticles(){{
-                    color = Color.valueOf("6ecdec");
-                    alpha = 0.6f;
-                    particleSize = 4f;
-                    particles = 10;
-                    particleRad = 12f;
-                    particleLife = 140f;
-                    }}
+                    new DrawDefault()
            );
         }};
         crucibleFoundry = new RecipeGenericCrafter("crucible-foundry") {{
