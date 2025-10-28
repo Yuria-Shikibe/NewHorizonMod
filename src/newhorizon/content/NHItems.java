@@ -20,13 +20,13 @@ public class NHItems {
 
 
     public static void load() {
-        hardLight = new Item("hard-light", Color.valueOf("d3ffe8")){{
+        hardLight = new Item("hard-light", Color.valueOf("8966ff")){{
             radioactivity = 0.01f;
             frames = 10;
             transitionFrames = 1;
             frameTime = 3f;
         }};
-        silicar = new Item("silicar", Color.valueOf("ff6363")){{
+        silicar = new Item("silicar", Color.valueOf("5e7b9d")){{
             hardness = 3;
         }};
         presstanium = new Item("presstanium", Color.valueOf("90a0e4")) {{
