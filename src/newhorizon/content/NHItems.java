@@ -71,21 +71,33 @@ public class NHItems {
             explosiveness = 0.7f;
             radioactivity = 1f;
             charge = 5f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
         thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("f9ffc9")) {{
             explosiveness = 1f;
             radioactivity = 2.5f;
             charge = 15f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
         thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("deedff")) {{
             explosiveness = 1f;
             radioactivity = 2.5f;
             charge = 15f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
         darkEnergy = new Item("dark-energy", Color.valueOf("cba3ff")) {{
             radioactivity = 10f;
             explosiveness = 10f;
             charge = 25f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
 
         scrap = Items.scrap;
