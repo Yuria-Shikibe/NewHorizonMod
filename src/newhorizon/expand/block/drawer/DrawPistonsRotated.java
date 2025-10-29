@@ -14,24 +14,22 @@ public class DrawPistonsRotated extends DrawBlock {
     public float sinScl = 5f;
     public float sideOffset = 0f;
 
+    public DrawPistonsRotated() {
+    }
+
     public DrawPistonsRotated(TextureRegion region) {
         this.region = region;
     }
 
     @Override
     public void draw(Building build) {
-        if(region == null) return;
+        if (region == null) return;
 
         Vec2 pos = new Vec2(x, y).rotate(build.rotdeg()).add(build.x, build.y);
 
         for (int i = 0; i < sides; i++) {
             float angle = ((float) i / sides) * 360f + sideOffset + build.rotdeg();
             float offset = (float) Math.sin((build.totalProgress() * sinScl) + i) * sinMag;
-
             float dx = pos.x + (float) Math.cos(Math.toRadians(angle)) * offset;
             float dy = pos.y + (float) Math.sin(Math.toRadians(angle)) * offset;
-
             Draw.rect(region, dx, dy, angle);
-        }
-    }
-}
