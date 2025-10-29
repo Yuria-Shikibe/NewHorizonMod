@@ -143,7 +143,11 @@ public class PowerBlock {
             outputsPower = true;
 
             drawer = new DrawMulti(
-                new DrawRegion("-bottom"),
+                new DrawRegionRotated() {{
+                        oneSprite = true;
+                        suffix = "-base";
+                        x = 4f;
+                    }},
                 new DrawPistons() {{
                     sinMag = 1.8f;
                     sinScl = 6f;
