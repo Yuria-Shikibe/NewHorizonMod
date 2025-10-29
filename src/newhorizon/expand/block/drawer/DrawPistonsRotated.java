@@ -13,7 +13,16 @@ public class DrawPistonsRotated {
     public float sinScl = 5f;
     public float sideOffset = 0f;
 
+    public static TextureRegion defaultRegion;
+
     public DrawPistonsRotated() {
+        if(region == null){
+            region = defaultRegion;
+        }
+    }
+
+    public DrawPistonsRotated(TextureRegion defaultRegion) {
+        this.region = defaultRegion;
     }
 
     public void draw(Building build) {
