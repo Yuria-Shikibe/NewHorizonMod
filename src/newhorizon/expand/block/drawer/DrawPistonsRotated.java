@@ -1,11 +1,14 @@
 package newhorizon.expand.block.drawer;
 
-import arc.graphics.g2d.*;
-import arc.math.geom.*;
-import arc.util.*;
-import mindustry.gen.*;
-import mindustry.world.*;
-import mindustry.world.draw.*;
+import arc.Core;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.math.geom.Vec2;
+import arc.util.Tmp;
+import mindustry.gen.Building;
+import mindustry.world.Block;
+import mindustry.world.draw.DrawBlock;
 
 public class DrawPistonsRotated extends DrawBlock {
     public float x = 0f, y = 0f;
