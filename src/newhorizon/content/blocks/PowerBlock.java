@@ -145,7 +145,7 @@ public class PowerBlock {
             drawer = new DrawMulti(
                 new DrawRegion("-bottom"),
                 new DrawLiquidTile(NHLiquids.quantumLiquid) {{
-                    setOffset(4f, 0f);
+                    x = 4f;
                 }},
                 new DrawPistons() {{
                     sinMag = 2.75f;
@@ -159,7 +159,6 @@ public class PowerBlock {
                 new DrawGlowRegion() {{
                     alpha = 0.5f;
                     glowScale = 1.05f;
-                    setOffset(4f, 0f);
                 }}
             );
         }};
