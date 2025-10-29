@@ -138,7 +138,6 @@ public class PowerBlock {
             armor = 2f;
             itemCapacity = 20;
             liquidCapacity = 30;
-            rotate = false;
 
             powerProduction = 300 / 60f;
             outputsPower = true;
@@ -152,7 +151,9 @@ public class PowerBlock {
                     sides = 8;
                     sideOffset = Mathf.PI / 2f;
                 }},
-                new DrawRegionFlip("-rot"),
+                new DrawRegionFlip("-rot") {{
+                    x = 4f;
+                }},
                 new DrawGlowRegion() {{
                     alpha = 0.5f;
                     glowScale = 1.05f;
