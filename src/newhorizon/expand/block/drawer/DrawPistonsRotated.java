@@ -1,19 +1,24 @@
 package newhorizon.expand.block.drawer;
 
-import arc.math.geom.Vec2;
 import arc.graphics.g2d.Draw;
+import arc.math.geom.Vec2;
 import mindustry.gen.Building;
-import mindustry.world.draw.DrawPistons;
+import arc.graphics.g2d.TextureRegion;
 
-public class DrawPistonsRotated extends DrawPistons {
+public class DrawPistonsRotated {
     public float x = 0f, y = 0f;
+    public TextureRegion region;
+    public int sides = 8;
+    public float sinMag = 2.75f;
+    public float sinScl = 5f;
+    public float sideOffset = 0f;
 
     public DrawPistonsRotated() {
-        super();
     }
 
-    @Override
     public void draw(Building build) {
+        if(region == null) return;
+
         Vec2 pos = new Vec2(x, y).rotate(build.rotdeg()).add(build.x, build.y);
 
         for (int i = 0; i < sides; i++) {
@@ -23,9 +28,7 @@ public class DrawPistonsRotated extends DrawPistons {
             float dx = pos.x + (float) Math.cos(Math.toRadians(angle)) * offset;
             float dy = pos.y + (float) Math.sin(Math.toRadians(angle)) * offset;
 
-            if(region != null){
-                Draw.rect(region, dx, dy, angle);
-            }
+            Draw.rect(region, dx, dy, angle);
         }
     }
 }
