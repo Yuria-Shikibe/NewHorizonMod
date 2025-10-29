@@ -154,10 +154,11 @@ public class PowerBlock {
                         x = 4;
                 }},
                 new DrawPistonsRotated() {{
-                    sides = 8;
-                    sinMag = 2.75f;
-                    sinScl = 5f;
-                    x = 4f;
+                    sides = 6;
+                    sinMag = 2.2f;
+                    sinScl = 1.8f;
+                    x = -11f;
+                    sideOffset = 30f;
                 }},
                 new DrawRegionRotated() {{
                         suffix = "-rot";
