@@ -3,10 +3,9 @@ package newhorizon.expand.block.drawer;
 import arc.graphics.g2d.Draw;
 import arc.math.geom.Vec2;
 import mindustry.gen.Building;
-import mindustry.world.blocks.distribution.DrawBlock;
 import arc.graphics.g2d.TextureRegion;
 
-public class DrawPistonsRotated extends DrawBlock {
+public class DrawPistonsRotated {
     public float x = 0f, y = 0f;
     public TextureRegion region;
     public int sides = 8;
@@ -15,10 +14,12 @@ public class DrawPistonsRotated extends DrawBlock {
     public float sideOffset = 0f;
 
     public DrawPistonsRotated(TextureRegion region) {
+        if(region == null){
+            throw new RuntimeException("DrawPistonsRotated requires a TextureRegion!");
+        }
         this.region = region;
     }
 
-    @Override
     public void draw(Building build) {
         if(region == null) return;
 
