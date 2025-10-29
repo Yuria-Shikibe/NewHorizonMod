@@ -146,22 +146,17 @@ public class PowerBlock {
                 new DrawRegionRotated() {{
                         oneSprite = true;
                         suffix = "-base";
-                        x = 4f;
+                        x = 4;
                     }},
-                new DrawPistons() {{
-                    sinMag = 1.8f;
-                    sinScl = 6f;
-                    sides = 6;
-                    sideOffset = Mathf.PI / 2f;
-                }},
+                new DrawLiquidRegionRotated() {{
+                        suffix = "-liquid";
+                        drawLiquid = NHLiquids.quantumLiquid;
+                        x = 4;
+                    }},
                 new DrawRegionRotated() {{
                         suffix = "-rot";
                         x = 4;
-                    }},
-                new DrawGlowRegion() {{
-                    alpha = 0.5f;
-                    glowScale = 1.05f;
-                }}
+                    }}
             );
         }};
 
