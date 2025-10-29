@@ -144,18 +144,16 @@ public class PowerBlock {
 
             drawer = new DrawMulti(
                 new DrawRegion("-bottom"),
-                new DrawLiquidTile(NHLiquids.quantumLiquid) {{
-                    x = 4f;
-                }},
                 new DrawPistons() {{
-                    sinMag = 2.75f;
-                    sinScl = 5f;
-                    sides = 8;
+                    sinMag = 1.8f;
+                    sinScl = 6f;
+                    sides = 6;
                     sideOffset = Mathf.PI / 2f;
                 }},
-                new DrawRegionFlip("-rot") {{
-                    x = 4f;
-                }},
+                new DrawRegionRotated() {{
+                        suffix = "-rot";
+                        x = 4;
+                    }},
                 new DrawGlowRegion() {{
                     alpha = 0.5f;
                     glowScale = 1.05f;
