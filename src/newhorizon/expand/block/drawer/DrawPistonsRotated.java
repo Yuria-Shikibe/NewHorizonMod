@@ -4,9 +4,11 @@ import arc.math.geom.Vec2;
 import arc.graphics.g2d.Draw;
 import mindustry.gen.Building;
 import mindustry.world.draw.DrawPistons;
+import mindustry.graphics.TextureRegion;
 
 public class DrawPistonsRotated extends DrawPistons {
     public float x = 0f, y = 0f;
+    public TextureRegion region;
 
     public DrawPistonsRotated() {
         super();
@@ -23,7 +25,9 @@ public class DrawPistonsRotated extends DrawPistons {
             float dx = pos.x + (float) Math.cos(Math.toRadians(angle)) * offset;
             float dy = pos.y + (float) Math.sin(Math.toRadians(angle)) * offset;
 
-            Draw.rect(region, dx, dy, angle);
+            if(region != null){
+                Draw.rect(region, dx, dy, angle);
+            }
         }
     }
 }
