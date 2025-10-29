@@ -33,3 +33,6 @@ public class DrawPistonsRotated extends DrawBlock {
             float dx = pos.x + (float) Math.cos(Math.toRadians(angle)) * offset;
             float dy = pos.y + (float) Math.sin(Math.toRadians(angle)) * offset;
             Draw.rect(region, dx, dy, angle);
+        }
+    }
+}
