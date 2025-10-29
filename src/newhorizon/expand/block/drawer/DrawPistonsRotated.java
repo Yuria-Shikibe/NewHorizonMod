@@ -4,7 +4,7 @@ import arc.graphics.g2d.Draw;
 import arc.math.geom.Vec2;
 import mindustry.gen.Building;
 import arc.graphics.g2d.TextureRegion;
-import mindustry.world.blocks.distribution.DrawBlock;
+import mindustry.world.draw.DrawBlock;
 
 public class DrawPistonsRotated extends DrawBlock {
     public float x = 0f, y = 0f;
