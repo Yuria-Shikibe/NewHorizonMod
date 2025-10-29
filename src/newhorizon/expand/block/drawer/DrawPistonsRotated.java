@@ -4,8 +4,9 @@ import arc.graphics.g2d.Draw;
 import arc.math.geom.Vec2;
 import mindustry.gen.Building;
 import arc.graphics.g2d.TextureRegion;
+import mindustry.world.blocks.distribution.DrawBlock;
 
-public class DrawPistonsRotated {
+public class DrawPistonsRotated extends DrawBlock {
     public float x = 0f, y = 0f;
     public TextureRegion region;
     public int sides = 8;
@@ -14,12 +15,10 @@ public class DrawPistonsRotated {
     public float sideOffset = 0f;
 
     public DrawPistonsRotated(TextureRegion region) {
-        if(region == null){
-            throw new RuntimeException("DrawPistonsRotated requires a TextureRegion!");
-        }
         this.region = region;
     }
 
+    @Override
     public void draw(Building build) {
         if(region == null) return;
 
