@@ -147,16 +147,22 @@ public class PowerBlock {
                         oneSprite = true;
                         suffix = "-base";
                         x = 4;
-                    }},
+                 }},
                 new DrawLiquidRegionRotated() {{
                         suffix = "-liquid";
                         drawLiquid = NHLiquids.quantumLiquid;
                         x = 4;
-                    }},
+                }},
+                new DrawPistonsRotated() {{
+                    sides = 8;
+                    sinMag = 2.75f;
+                    sinScl = 5f;
+                    x = 4f;
+                }},
                 new DrawRegionRotated() {{
                         suffix = "-rot";
                         x = 4;
-                    }}
+                 }}
             );
         }};
 
