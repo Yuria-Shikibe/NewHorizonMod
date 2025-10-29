@@ -4,11 +4,9 @@ import arc.math.geom.Vec2;
 import arc.graphics.g2d.Draw;
 import mindustry.gen.Building;
 import mindustry.world.draw.DrawPistons;
-import mindustry.graphics.TextureRegion;
 
 public class DrawPistonsRotated extends DrawPistons {
     public float x = 0f, y = 0f;
-    public TextureRegion region;
 
     public DrawPistonsRotated() {
         super();
