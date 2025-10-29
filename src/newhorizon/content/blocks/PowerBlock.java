@@ -130,6 +130,8 @@ public class PowerBlock {
                      NHItems.silicar, 30,
                      NHItems.silicon, 15
             ));
+            addLink(2, 0, 1)
+            
             size = 2;
             health = 300;
             armor = 2f;
@@ -141,11 +143,18 @@ public class PowerBlock {
             outputsPower = true;
 
             drawer = new DrawMulti(
-                new DrawRegion("-bottom"),
+                new DrawRegion("-base"),
                 new DrawLiquidTile(NHLiquids.quantumLiquid),
-                new DrawDefault(),
-                new DrawGlowRegion("-glow") {{
-                    color = NHColor.darkEnrColor;
+                new DrawPistons() {{
+                    sinMag = 2.75f;
+                    sinScl = 5f;
+                    sides = 8;
+                    sideOffset = Mathf.PI / 2f;
+                }},
+                new DrawRegionFlip("-rot"),
+                new DrawGlowRegion() {{
+                    alpha = 0.5f;
+                    glowScale = 1.05f;
                 }}
             );
         }};
