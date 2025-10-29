@@ -1,7 +1,6 @@
 package newhorizon.expand.block.drawer;
 
 import arc.Core;
-import arc.util.Time;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -18,6 +17,10 @@ public class DrawPistonsRotated extends DrawBlock {
     public float sinMag = 4f;
     public float sinScl = 6f;
     public float sideOffset = 0f;
+    public float sinOffset = 50f;
+    public float lenOffset = 0f;
+    public float angleOffset = 0f;
+    public float horiOffset = 0f;
 
     @Override
     public void load(Block block) {
@@ -27,19 +30,13 @@ public class DrawPistonsRotated extends DrawBlock {
     @Override
     public void draw(Building build) {
         if(region == null) return;
-
-        Vec2 pos = Tmp.v1.trns(build.rotdeg(), x, y).add(build.x, build.y);
-
-        float progress = Time.time * sinScl;
-
+        Vec2 pos = Tmp.v1.set(x, y).rotate(build.rotdeg()).add(build.x, build.y);
         for(int i = 0; i < sides; i++){
-            float angle = i * 360f / sides + sideOffset + build.rotdeg();
-            float offset = Mathf.sin(build.totalProgress() * sinScl + i) * sinMag;
-
-            float dx = pos.x + Mathf.cosDeg(angle) * offset;
-            float dy = pos.y + Mathf.sinDeg(angle) * offset;
-
-            Draw.rect(region, dx, dy, angle);
+            float phase = build.totalProgress() + sinOffset + sideOffset * sinScl * i;
+            float offset = Mathf.absin(phase, sinScl, sinMag) + lenOffset;
+            float angle = angleOffset + i * 360f / sides + build.rotdeg();
+            Tmp.v1.trns(angle, offset, -horiOffset);
+            Draw.rect(region, build.x + Tmp.v1.x + x, build.y + Tmp.v1.y + y, angle);
         }
     }
 }
