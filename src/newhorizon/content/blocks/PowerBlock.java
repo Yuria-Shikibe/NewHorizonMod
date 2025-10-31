@@ -139,7 +139,7 @@ public class PowerBlock {
             itemCapacity = 20;
             liquidCapacity = 30;
 
-            powerProduction = 300 / 60f;
+            powerProduction = 500 / 60f;
             outputsPower = true;
 
             drawer = new DrawMulti(
@@ -148,21 +148,6 @@ public class PowerBlock {
                         suffix = "-base";
                         x = 4;
                  }},
-                new DrawPistonsRotated() {{
-                    sides = 1;
-                    sinMag = 8f;
-                    sinScl = 2.5f;
-                    x = 10f;
-                    y = 5f;
-                }},
-                new DrawPistonsRotated() {{
-                    sides = 1;
-                    sinMag = 8f;
-                    sinScl = 2.5f;
-                    x = 10f;
-                    y = -5f;
-                    sideOffset = 180f;
-                }},
                 new DrawRegionRotated() {{
                         suffix = "-rot";
                         x = 4;
