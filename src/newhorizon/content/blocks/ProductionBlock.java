@@ -24,6 +24,7 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.*;
@@ -47,7 +48,8 @@ public class ProductionBlock {
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
-        solidificationShaper = new RecipeGenericCrafter("solidification-shaper") {{
+        //wip
+        solidificationShaper = new GenericCrafter("solidification-shaper") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.hardLight, 10
             ));   
@@ -56,12 +58,11 @@ public class ProductionBlock {
             craftTime = 120f;
             itemCapacity = 30;
 
-            rotate = false;
-
             craftEffect = Fx.smeltsmoke;
-            
+
+            outputItem = new ItemStack(NHItems.hardLihgt, 10);
             powerProduction = 30 / 60f;
-            ignoreLiquidFullness = true;
+            outputsPower = true;
 
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
         }};
