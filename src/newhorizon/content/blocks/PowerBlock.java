@@ -125,6 +125,7 @@ public class PowerBlock {
             consumePowerBuffered(1000000f);
         }};
 
+        //wip
         crystalDecompositionThermalGenerator = new RecipeGenericCrafter("crystal-decomposition-thermal-generator") {{
             requirements(Category.power, ItemStack.with(
                      NHItems.hardLight, 10,
