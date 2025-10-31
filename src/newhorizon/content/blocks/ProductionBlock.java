@@ -60,9 +60,7 @@ public class ProductionBlock {
 
             craftEffect = Fx.smeltsmoke;
 
-            outputItem = new ItemStack(NHItems.hardLihgt, 10);
-            powerProduction = 30 / 60f;
-            outputsPower = true;
+            outputItem = new ItemStack(NHItems.hardLight, 2);
 
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
         }};
