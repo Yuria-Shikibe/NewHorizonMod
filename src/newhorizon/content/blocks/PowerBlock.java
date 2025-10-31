@@ -140,7 +140,7 @@ public class PowerBlock {
             itemCapacity = 20;
             liquidCapacity = 30;
 
-            powerProduction = 500 / 60f;
+            powerProduction = 500.00001 / 60f;
             outputsPower = true;
 
             drawer = new DrawMulti(
