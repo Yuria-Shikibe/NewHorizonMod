@@ -62,6 +62,11 @@ public class RecipeRegister {
         });
 
         recipe(ProductionBlock.tungstenReconstructor, recipe -> {
+            recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
+            recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
+            recipe.craftTime = 60f;
+        });
+        recipe(ProductionBlock.tungstenReconstructor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.copper, 5);
             //recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 1 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.tungsten, 2);
@@ -79,12 +84,12 @@ public class RecipeRegister {
             recipe.outputItem = ItemStack.list(NHItems.tungsten, 4);
             recipe.craftTime = 60f;
         });
-        recipe(ProductionBlock.tungstenReconstructor, recipe -> {
+        
+        recipe(ProductionBlock.titaniumReconstructor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
             recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
             recipe.craftTime = 60f;
         });
-        
         recipe(ProductionBlock.titaniumReconstructor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.beryllium, 3);
             //recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 1 / 60f);
@@ -95,11 +100,6 @@ public class RecipeRegister {
             recipe.inputItem = ItemStack.list(NHItems.tungsten, 4);
             //recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 1 / 60f);
             recipe.outputItem = ItemStack.list(NHItems.titanium, 6);
-            recipe.craftTime = 60f;
-        });
-        recipe(ProductionBlock.titaniumReconstructor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
-            recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
             recipe.craftTime = 60f;
         });
 
@@ -545,7 +545,7 @@ public class RecipeRegister {
         });
         recipe(PowerBlock.crystalDecompositionThermalGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.coal, 1);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 60 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 6 / 60f);
             recipe.craftTime = 90f;
         });
         
