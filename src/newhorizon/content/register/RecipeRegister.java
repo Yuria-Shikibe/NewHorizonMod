@@ -105,7 +105,7 @@ public class RecipeRegister {
 
         recipe(ProductionBlock.liquidConvertor, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 36 / 60f);
-            //recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 18 / 60f);
+            recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 18 / 60f);
             recipe.craftTime = 90f;
         });
         //recipe(ProductionBlock.liquidConvertor, recipe -> {
