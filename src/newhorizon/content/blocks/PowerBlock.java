@@ -132,7 +132,7 @@ public class PowerBlock {
                      NHItems.silicar, 30,
                      NHItems.silicon, 15
             ));
-            addLink(2, 0, 1);
+            addLink(2, 0, 1, 2, 1, 1);
             
             size = 2;
             health = 300;
