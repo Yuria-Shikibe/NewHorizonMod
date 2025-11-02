@@ -187,10 +187,35 @@ public class NewHorizon extends Mod {
 
     @Override
     public void init() {
-        Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
+        Events.on(ClientLoadEvent.class, e -> {
+            if (Vars.netServer != null) {
+                Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
+            }
 
-        NHVars.init();
+            NHVars.init();
+
+            Timer.schedule(() -> {
+                if (Vars.state == null || Vars.state.isPaused() || Vars.state.teams == null) return;
+
+                Vars.state.teams.getActive().each(teamData -> {
+                    if (teamData == null || !teamData.hasCore()) return;
+
+                    int coreCount = 0;
+                    try {
+                        coreCount = Vars.state.teams.cores(teamData.team).size;
+                    } catch (Exception ex) {
+                        coreCount = teamData.core() == null ? 0 : 1;
+                    }
+
+                    if (coreCount > 0 && teamData.core() != null) {
+                        int totalToAdd = coreCount * 2;
+                        teamData.core().items.add(NHItems.hardLight, totalToAdd);
+                    }
+                });
+            }, 1f, 1f);
+        });
     }
+
 
     @Override
     public void registerClientCommands(CommandHandler handler) {

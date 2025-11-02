@@ -586,7 +586,7 @@ public class CraftingBlock {
 
             drawer = new DrawDefault();
         }};
-        irayrondFactory = new RecipeGenericCrafter("irayrond-factory") {{
+        irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 90,
                     NHItems.seniorProcessor, 60,
@@ -610,21 +610,21 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawRegionFlip("-rot"),
-                    new DrawGlowRegion() {{
+                    new DrawGlowRegion(){{
                         color = NHColor.lightSky;
                         rotate = true;
                         alpha = 1.1f;
                     }},
-                    new DrawFlameRotated() {{
+                    new DrawFlameRotated(){{
                         drawFlame = false;
                         flameX = 8;
                         flameColor = NHColor.lightSky;
                     }},
-                    new DrawFlameRotated() {{
+                    new DrawFlameRotated(){{
                         drawFlame = false;
                         flameColor = NHColor.lightSky;
                     }},
-                    new DrawFlameRotated() {{
+                    new DrawFlameRotated(){{
                         drawFlame = false;
                         flameX = -8;
                         flameColor = NHColor.lightSky;
