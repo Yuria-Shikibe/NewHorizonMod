@@ -4116,22 +4116,34 @@ public class NHUnitTypes {
                 outlineColor = OColor;
                 constructor = EntityMapping.map(3);
 
-                EnergyFieldAbility ability = new EnergyFieldAbility(180f, 150f, 300f);
-                ability.color = NHColor.thurmixRed;
-                ability.y = -9f;
-                ability.healEffect = new Effect(11, e -> {
+                abilities.addAll(
+                new EnergyFieldAbility(180f, 150f, 300f) {{
+                    color = NHColor.thurmixRed;
+                     y = -9f;
+                    healEffect = new Effect(11, e -> {
                     Draw.color(NHColor.thurmixRed);
                     Lines.stroke(e.fout() * 2f);
                     Lines.circle(e.x, e.y, 2f + e.finpow() * 7f);
-                });
-                ability.status = NHStatusEffects.emp1;
-                ability.sectors = 4;
-                ability.sectorRad = 0.16f;
-                ability.healPercent = 0.25f;
-                ability.statusDuration = 120f;
-                ability.shootSound = NHSounds.synchro;
+                    });
+                    status = NHStatusEffects.emp1;
+                    sectors = 4;
+                    sectorRad = 0.16f;
+                    healPercent = 0.25f;
+                    statusDuration = 120f;
+                    shootSound = NHSounds.synchro;
+                }},
+                new ShieldArcAbility() {{
+                    radius = 120f;
+                    angle = 120;
+                    regen = 20f;
+                    cooldown = 60f * 10f;
+                    max = 25000f;
+                    width = 20f;
+                    whenShooting = true;
+                    chanceDeflect = -1f;
+                }}
+            );
 
-                abilities.add(ability);
 
                 immunities = ObjectSet.with(NHStatusEffects.weak, NHStatusEffects.emp2, NHStatusEffects.emp3, NHStatusEffects.emp1, NHStatusEffects.scrambler, NHStatusEffects.scannerDown, NHStatusEffects.ultFireBurn, StatusEffects.melting, StatusEffects.burning, StatusEffects.shocked, StatusEffects.electrified);
                 

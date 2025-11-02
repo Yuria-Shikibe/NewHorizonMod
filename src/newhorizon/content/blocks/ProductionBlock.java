@@ -24,7 +24,9 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.power.ThermalGenerator;
+import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.*;
@@ -40,17 +42,33 @@ import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
-    public static Block sandCracker, resourceConvertor, liquidConvertor, xenExtractor, xenIterator;
+    public static Block solidificationShaper, sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
+    public static Drill opticalMediumDrill;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
+        //wip
+        solidificationShaper = new GenericCrafter("solidification-shaper") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.hardLight, 10
+            ));   
+            health = 300;
+            size = 2;
+            craftTime = 120f;
+            itemCapacity = 30;
+
+            craftEffect = Fx.smeltsmoke;
+
+            outputItem = new ItemStack(NHItems.hardLight, 2);
+
+            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
+        }};
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
             ));
-
             size = 2;
             health = 300;
             armor = 2;
@@ -69,35 +87,48 @@ public class ProductionBlock {
 
             consumePower(5f);
         }};
-        resourceConvertor = new RecipeGenericCrafter("resource-convertor") {{
+        tungstenReconstructor = new RecipeGenericCrafter("tungsten-reconstructor") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40
+            ));     
+            size = 2;
+            craftTime = 60f;
+            itemCapacity = 30;
+            liquidCapacity = 30f;
+
+            rotate = false;
+
+            craftEffect = updateEffect = NHFx.square(NHColor.thurmixRed, 60, 6, 16, 3);
+
+            consumePower(300f / 60f);
+
+            drawer = new DrawMulti(new DrawDefault());
+        }};
+        titaniumReconstructor = new RecipeGenericCrafter("titanium-reconstructor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
             ));
-
-            size = 2;
-            health = 300;
-            armor = 2;
             
+            size = 2;
+            craftTime = 60f;
             itemCapacity = 30;
-            liquidCapacity = 100f;
+            liquidCapacity = 30f;
+
             rotate = false;
 
-            drawer = new DrawMulti(new DrawRegion("-base"), new DrawArcSmelt() {{
-                midColor = flameColor = Pal.accent;
-                flameRad /= 1.585f;
-                particleStroke /= 1.35f;
-                particleLen /= 1.25f;
-            }}, new DrawRegion("-top"));
-            craftEffect = updateEffect = NHFx.square(Pal.accent, 60, 6, 16, 3);
-            consumePower(5f);
+            craftEffect = updateEffect = NHFx.square(NHColor.xenGamma, 60, 6, 16, 3);
+
+            consumePower(300f / 60f);
+
+            drawer = new DrawMulti(new DrawDefault());
         }};
         liquidConvertor = new RecipeGenericCrafter("liquid-convertor") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
                     NHItems.graphite, 40
             ));
-
             size = 2;
             health = 300;
             armor = 2;
@@ -165,6 +196,19 @@ public class ProductionBlock {
             //consumePower(5f);
         }};
 
+        opticalMediumDrill = new Drill("optical-medium-drill"){{
+            requirements(Category.production, with(NHItems.silicon, 20, NHItems.hardLight, 20));
+            drillTime = 360;
+            size = 3;
+            tier = 3;
+            itemCapacity = 20;
+            liquidCapacity = 20f;
+            updateEffect = Fx.pulverizeMedium;
+            drillEffect = Fx.mineBig;
+            
+            consumeLiquid(NHLiquids.quantumLiquid, 0.08f).boost();
+            liquidBoostIntensity = 1.5f;
+        }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
