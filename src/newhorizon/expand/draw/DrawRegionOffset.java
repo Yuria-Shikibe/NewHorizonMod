@@ -9,6 +9,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.gen.Building;
 import mindustry.world.draw.DrawBlock;
+import mindustry.graphics.Layer; // 引入 Layer
 
 public class DrawRegionOffset extends DrawBlock {
     public String suffix = "";           // 贴图后缀
@@ -18,6 +19,7 @@ public class DrawRegionOffset extends DrawBlock {
     public boolean followRotation = true; // 是否随方块旋转
     public boolean blink = false;        // 是否闪烁
     public float blinkSpeed = 1f;        // 闪烁速度，数值越大闪烁越快
+    public float layer = Layer.block + 0.05f; // 新增：可控制绘制层
 
     public DrawRegionOffset() {}
 
@@ -50,6 +52,8 @@ public class DrawRegionOffset extends DrawBlock {
             x += offsetX;
             y += offsetY;
         }
+
+        Draw.z(layer); // 设置绘制层
 
         if (blink) {
             // 计算透明度，Mathf.absin 返回 -1~1，映射到 0~1

@@ -146,7 +146,7 @@ public class PowerBlock {
             itemCapacity = 20;
             liquidCapacity = 30;
 
-            powerProduction = 400 / 60f;
+            powerProduction = 480 / 60f;
             outputsPower = true;
 
             drawer = new DrawMulti(
@@ -160,10 +160,11 @@ public class PowerBlock {
                         suffix = "-rot";
                         x = 4;
                  }},
+                new DrawRegionOffset("-glow", 4f, 0f,true,0.1f),
                 new DrawLiquidSmelt(){{
                     x = -1f;
                     y = 0f;
-                    alpha = 0.88F;
+                //    alpha = 0.88F;
                     flameRad = 1f;
                     circleSpace = 1.8f;
                     circleStroke = 1F;
@@ -211,8 +212,7 @@ public class PowerBlock {
                     offsetX = 5.1f;
                     offsetY = 0f;
                     suffix = "-piston1";
-                }} ,
-                new DrawRegionOffset("-glow", 4f, 0f,true,0.1f)
+                }}
             );
         }};
 
