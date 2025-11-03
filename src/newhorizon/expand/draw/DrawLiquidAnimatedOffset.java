@@ -14,6 +14,7 @@ import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.draw.DrawLiquidTile;
 import mindustry.world.Block;
 import mindustry.graphics.Layer;
+import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 
 public class DrawLiquidAnimatedOffset extends DrawLiquidTile {
     public float bubbleChance = 0.05f;      // 每帧生成气泡概率
@@ -42,17 +43,45 @@ public class DrawLiquidAnimatedOffset extends DrawLiquidTile {
 
     @Override
     public void draw(Building build) {
-        Liquid liquidToDraw = drawLiquid != null ? drawLiquid : build.liquids.current();
+        // ====================== 液体识别逻辑 ======================
+        Liquid liquidToDraw = null;
+        float fullness = 0f;
+
+        // 尝试从当前配方中提取 input 液体颜色
+        if (build instanceof RecipeGenericCrafter.RecipeGenericCrafterBuild crafterBuild) {
+            var current = crafterBuild.getRecipe();
+            if (current != null) {
+                // 优先取正在输入的液体
+                if (current.inputLiquid != null && current.inputLiquid.size > 0) {
+                    liquidToDraw = current.inputLiquid.first().liquid;
+                }
+                // 如果没有输入液体，取输出液体作备用（某些发电类配方只有输出）
+                else if (current.outputLiquid != null && current.outputLiquid.size > 0) {
+                    liquidToDraw = current.outputLiquid.first().liquid;
+                }
+            }
+        }
+
+        // 如果配方为空或无液体信息，则使用当前槽液体
+        if (liquidToDraw == null) {
+            liquidToDraw = drawLiquid != null ? drawLiquid : build.liquids.current();
+        }
+
+        // 计算液体占比（不要求必须有液体）
+        if (liquidToDraw != null && build.block.liquidCapacity > 0) {
+            fullness = build.liquids.get(liquidToDraw) / build.block.liquidCapacity;
+            if (fullness < 0f) fullness = 0f;
+            if (fullness > 1f) fullness = 1f;
+        } else {
+            fullness = 0.001f; // 没液体时仍微弱显示颜色
+        }
+
         if (liquidToDraw == null) return;
 
-        float fullness = build.liquids.get(liquidToDraw) / build.block.liquidCapacity;
-        if (fullness <= 0.001f) return;
-
+        // ====================== 坐标与绘制 ======================
         Vec2 offset = Tmp.v1.set(offsetX, offsetY).rotate(build.rotation * 90f);
 
-        // ======= 液体绘制（tile 风格） =======
-        Draw.z(Layer.block-0.1f);
-        // 调整液体层
+        Draw.z(Layer.block - 0.1f);
         LiquidBlock.drawTiledFrames(
                 build.block.size,
                 build.x + offset.x,
@@ -65,19 +94,19 @@ public class DrawLiquidAnimatedOffset extends DrawLiquidTile {
                 fullness * this.alpha
         );
 
-        // ======= 发光 =======
+        // ====================== 发光效果 ======================
         if (glow) {
             mindustry.graphics.Drawf.light(
                     build.x + offset.x,
                     build.y + offset.y,
                     glowRadius,
                     liquidToDraw.lightColor,
-                    glowAlpha * fullness
+                    glowAlpha * Mathf.clamp(fullness, 0.2f, 1f)
             );
         }
 
-        // ======= 冒泡逻辑 =======
-        if (Mathf.chanceDelta(bubbleChance * fullness)) {
+        // ====================== 冒泡特效 ======================
+        if (Mathf.chanceDelta(bubbleChance * (0.5f + fullness * 0.5f))) {
             Color c = (bubbleColor == Color.white) ? liquidToDraw.color : bubbleColor;
             float bx = build.x + Mathf.range(build.block.size * 2f);
             float by = build.y + Mathf.range(build.block.size * 2f);

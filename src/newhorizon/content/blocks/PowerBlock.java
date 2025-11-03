@@ -164,7 +164,7 @@ public class PowerBlock {
                 new DrawLiquidSmelt(){{
                     x = -1f;
                     y = 0f;
-                //    alpha = 0.88F;
+                    alpha = 0.68F;
                     flameRad = 1f;
                     circleSpace = 1.8f;
                     circleStroke = 1F;

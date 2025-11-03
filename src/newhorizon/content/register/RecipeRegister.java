@@ -546,7 +546,7 @@ public class RecipeRegister {
         });
         recipe(PowerBlock.crystalDecompositionThermalGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicon, 1,NHItems.graphite,1);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 6 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.nitrogen,6 / 60f);
             recipe.craftTime = 90f;
         });
         
