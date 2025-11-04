@@ -17,7 +17,7 @@ public class EnvironmentBlock {
 
     public static Floor patternPlate0, patternPlate1;
     public static Floor armorClear;
-    public static OreBlock oreZeta, oreSilicon;
+    public static OreBlock oreZeta, oreSilicon, oreSilicar;
 
     public static void load() {
         oreZeta = new OreBlock("ore-zeta") {{
@@ -41,6 +41,17 @@ public class EnvironmentBlock {
             mapColor.set(itemDrop.color);
             useColor = true;
         }};
+        
+        oreSilicar = new OreBlock("ore-silicar") {{
+            oreDefault = true;
+            variants = 3;
+            oreThreshold = 0.95F;
+            oreScale = 20.380953F;
+            itemDrop = NHItems.silicar;
+            localizedName = itemDrop.localizedName;
+            mapColor.set(itemDrop.color);
+            useColor = true;
+        }};        
 
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
         metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove", true);

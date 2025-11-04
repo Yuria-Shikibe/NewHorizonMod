@@ -37,8 +37,8 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
-            stampingFacility, processorPrinter, crucibleFoundry, crystallizer, zetaDissociator,
-            surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, multipleSteelFactory,
+            stampingFacility, processorPrinter, condenseFacility, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
+            surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, hugeplastaniumFactory, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
     public static Block factory0, factory1, factory2, factory3, factory4, factory5, factory6;
@@ -86,7 +86,6 @@ public class CraftingBlock {
             itemCapacity = 20;
 
             consumePower(180f / 60f);
-            outputItems = with(NHItems.juniorProcessor, 3);
 
             drawer = new DrawMulti(
                     new DrawRegionRotated() {{
@@ -125,6 +124,27 @@ public class CraftingBlock {
             );
 
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
+        }};
+        condenseFacility = new RecipeGenericCrafter("condense-facility"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.presstanium, 50,
+                    NHItems.juniorProcessor, 20,
+                    Items.silicon, 100
+            ));
+            health = 300;
+            size = 3;
+            rotate = false;
+            itemCapacity = 20;
+            liquidCapacity = 100;
+            consumePower(200 / 60f);
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NHLiquids.quantumLiquid),
+                    new DrawLiquidTile(Liquids.water),
+                    new DrawLiquidTile(Liquids.cryofluid),
+                    new DrawDefault()
+           );
         }};
         crucibleFoundry = new RecipeGenericCrafter("crucible-foundry") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
@@ -170,8 +190,6 @@ public class CraftingBlock {
 
             craftTime = 120f;
             consumePower(300 / 60f);
-
-            outputItems = with(NHItems.metalOxhydrigen, 4);
 
             itemCapacity = 30;
             liquidCapacity = 20f;
@@ -227,6 +245,46 @@ public class CraftingBlock {
                         suffix = "-edge";
                         x = 4;
                         y = 4;
+                    }}
+            );
+        }};
+        zetaFactory = new RecipeGenericCrafter("zeta-factory") {{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 30, Items.tungsten, 20));
+
+            size = 2;
+            health = 900;
+            armor = 4;
+            itemCapacity = 30;
+            liquidCapacity = 30f;
+
+            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1);
+
+            craftTime = 60f;
+            consumePower(300f / 60f);
+
+            craftEffect = Fx.formsmoke;
+            updateEffect = NHFx.trailToGray;
+            
+            drawer = new DrawMulti(
+                    new DrawRegionRotated() {{
+                        oneSprite = true;
+                        suffix = "-base";
+                    }},
+                    new DrawLiquidRegion() {{
+                        suffix = "-top";
+                        drawLiquid = NHLiquids.zetaFluidPositive;
+                    }},
+                    new DrawRegionFlip() {{
+                        suffix = "-rot";
+                    }},
+                    new DrawFlame() {{
+                        flameColor = NHLiquids.zetaFluidPositive.color;
+                        flameRadius = 3f;
+                        flameRadiusIn = 1.9f;
+                        flameRadiusScl = 5f;
+                        flameRadiusMag = 2f;
+                        flameRadiusInMag = 1f;
                     }}
             );
         }};
@@ -507,7 +565,28 @@ public class CraftingBlock {
 
             consumePower(300 / 60f);
         }};
-        irayrondFactory = new RecipeGenericCrafter("irayrond-factory") {{
+        hugeplastaniumFactory = new RecipeGenericCrafter("plastanium-crafter"){{
+            requirements(Category.crafting, BuildVisibility.shown,
+                    ItemStack.with(NHItems.presstanium, 90, NHItems.juniorProcessor, 120, Items.surgeAlloy, 80, NHItems.metalOxhydrigen, 40, NHItems.multipleSteel, 60));
+
+            size = 3;
+            health = 1500;
+            armor = 10;
+            rotate = false;
+
+            craftTime = 90f;
+            consumePower(640 / 60f);
+            ignoreLiquidFullness = true;
+
+            itemCapacity = 30;
+            liquidCapacity = 60f;
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawDefault();
+        }};
+        irayrondFactory = new RecipeGenericCrafter("irayrond-factory"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 90,
                     NHItems.seniorProcessor, 60,
@@ -522,8 +601,6 @@ public class CraftingBlock {
             health = 1800;
             armor = 12;
 
-            outputItems = with(NHItems.irayrondPanel, 4);
-            outputLiquids = LiquidStack.with(NHLiquids.zetaFluidPositive, 3f / 60f);
             ignoreLiquidFullness = true;
 
             itemCapacity = 30;
@@ -533,21 +610,21 @@ public class CraftingBlock {
 
             drawer = new DrawMulti(
                     new DrawRegionFlip("-rot"),
-                    new DrawGlowRegion() {{
+                    new DrawGlowRegion(){{
                         color = NHColor.lightSky;
                         rotate = true;
                         alpha = 1.1f;
                     }},
-                    new DrawFlameRotated() {{
+                    new DrawFlameRotated(){{
                         drawFlame = false;
                         flameX = 8;
                         flameColor = NHColor.lightSky;
                     }},
-                    new DrawFlameRotated() {{
+                    new DrawFlameRotated(){{
                         drawFlame = false;
                         flameColor = NHColor.lightSky;
                     }},
-                    new DrawFlameRotated() {{
+                    new DrawFlameRotated(){{
                         drawFlame = false;
                         flameX = -8;
                         flameColor = NHColor.lightSky;
@@ -624,10 +701,26 @@ public class CraftingBlock {
                     new DrawRegionFlip("-top")
             );
         }};
-        upgradeSortFactory = new GenericCrafter("nodex-factory") {{
+        upgradeSortFactory = new RecipeGenericCrafter("nodex-factory") {{
             requirements(Category.crafting,
-                    with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80, NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
-            updateEffect = NHStatusEffects.quantization.effect;
+                    ItemStack.with(NHItems.setonAlloy, 160, NHItems.seniorProcessor, 80,
+                            NHItems.presstanium, 150, NHItems.irayrondPanel, 90));
+
+            size = 3;
+            rotate = false;
+            health = 2100;
+            armor = 14;
+            itemCapacity = 40;
+            hasPower = hasItems = true;
+
+            drawer = new DrawPrinter(NHItems.nodexPlate) {{
+                printColor = NHColor.darkEnrColor;
+                lightColor = Color.valueOf("#E1BAFF");
+                moveLength = 4.2f;
+                time = 25f;
+            }};
+            clipSize = size * tilesize * 2f;
+
             craftEffect = new Effect(25f, e -> {
                 Draw.color(NHColor.darkEnrColor);
                 Angles.randLenVectors(e.id, 4, 24 * e.fout() * e.fout(), (x, y) -> {
@@ -635,25 +728,13 @@ public class CraftingBlock {
                     Lines.square(e.x + x, e.y + y, 2f + e.fout() * 6f);
                 });
             });
-            outputItem = new ItemStack(NHItems.nodexPlate, 2);
-            craftTime = 120f;
-            itemCapacity = 40;
-            health = 2100;
-            armor = 14;
-            size = 3;
-            hasPower = hasItems = true;
-            drawer = new DrawPrinter(outputItem.item) {{
-                printColor = NHColor.darkEnrColor;
-                lightColor = Color.valueOf("#E1BAFF");
-                moveLength = 4.2f;
-                time = 25f;
-            }};
-            clipSize = size * tilesize * 2f;
-            consumeItems(new ItemStack(NHItems.setonAlloy, 4), new ItemStack(NHItems.seniorProcessor, 4));
+            updateEffect = NHStatusEffects.quantization.effect;
+
             consumePower(1600 / 60f);
         }};
-        ancimembraneConcentrator = new GenericCrafter("ancimembrane-concentrator") {{
+        ancimembraneConcentrator = new RecipeGenericCrafter("ancimembrane-concentrator") {{
             size = 3;
+            rotate = false;
 
             lightRadius /= 2f;
 
@@ -729,13 +810,9 @@ public class CraftingBlock {
 
             itemCapacity = 40;
             liquidCapacity = 40f;
-
             consumePower(1600 / 60f);
-            consumeItems(with(NHItems.irayrondPanel, 6));
-            consumeLiquid(NHLiquids.irdryonFluid, 8 / 60f);
-            outputItems = with(NHItems.ancimembrane, 3);
         }};
-        
+
         factory0 = new RecipeGenericCrafter("factory-0"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.tungsten, 80,
@@ -753,6 +830,7 @@ public class CraftingBlock {
 
             consumePower(300f / 60f);
         }};
+        
         factory1 = new RecipeGenericCrafter("factory-1"){{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.presstanium, 10,

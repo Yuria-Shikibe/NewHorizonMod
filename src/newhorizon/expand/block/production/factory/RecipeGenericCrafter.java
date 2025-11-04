@@ -7,6 +7,9 @@ import arc.struct.Seq;
 import arc.util.Scaling;
 import arc.util.Strings;
 import arc.util.Time;
+import mindustry.content.Items;
+import mindustry.content.Liquids;
+import mindustry.content.UnitTypes;
 import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
@@ -52,9 +55,42 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         outputItem = null;
         outputLiquid = null;
 
-        outputItems = null;
-        outputLiquids = null;
-        outputPayloads = null;
+// ------------------------- 安全初始化输出数组 -------------------------
+// 仅用于 Schematics / 蓝图显示，不影响实际生产
+        if (recipes.isEmpty()) {
+            outputItems = new ItemStack[]{ new ItemStack(Items.copper, 0) };
+            outputLiquids = new LiquidStack[]{ new LiquidStack(Liquids.water, 0f) };
+            outputPayloads = new PayloadStack[]{ new PayloadStack(UnitTypes.dagger, 0) };
+        } else {
+            Recipe firstRecipe = recipes.first();
+
+            // 输出 ItemStack（显示用）
+            outputItems = new ItemStack[Math.max(firstRecipe.outputItem.size, 1)];
+            for (int i = 0; i < outputItems.length; i++) {
+                outputItems[i] = i < firstRecipe.outputItem.size
+                        ? firstRecipe.outputItem.get(i)
+                        : new ItemStack(Items.copper, 0);
+            }
+
+            // 输出 LiquidStack（仅显示，不参与实际生产）
+            outputLiquids = new LiquidStack[Math.max(firstRecipe.outputLiquid.size, 1)];
+            for (int i = 0; i < outputLiquids.length; i++) {
+                // **注意：这里仅复制第一个配方的液体产物作为占位**
+                outputLiquids[i] = i < firstRecipe.outputLiquid.size
+                        ? new LiquidStack(firstRecipe.outputLiquid.get(i).liquid, 0f) // 数量设为0，避免生产混乱
+                        : new LiquidStack(Liquids.water, 0f);
+            }
+
+            // 输出 PayloadStack（显示用）
+            outputPayloads = new PayloadStack[Math.max(firstRecipe.outputPayload.size, 1)];
+            for (int i = 0; i < outputPayloads.length; i++) {
+                outputPayloads[i] = i < firstRecipe.outputPayload.size
+                        ? firstRecipe.outputPayload.get(i)
+                        : new PayloadStack(UnitTypes.dagger, 0);
+            }
+        }
+
+
 
         craftTime = 60f;
 
@@ -212,26 +248,40 @@ public class RecipeGenericCrafter extends AdaptCrafter {
 
         @Override
         public void updateTile() {
+            // 更新当前有效 recipe
             if (!validRecipe()) updateRecipe();
+
+            // 调用父类 updateTile 处理基础逻辑
             super.updateTile();
-            if (getRecipe() == null) return;
-            if(efficiency > 0){
-                float inc = getProgressIncrease(craftTime / getRecipe().craftTime);
-                getRecipe().outputLiquid.each(stack -> {
+
+            Recipe current = getRecipe();
+            if (current == null) return;
+
+            // -------------------- 液体生产 --------------------
+            if (efficiency > 0 && !current.outputLiquid.isEmpty()) {
+                // 根据工厂效率计算液体产出增量
+                float inc = getProgressIncrease(craftTime / current.craftTime);
+                current.outputLiquid.each(stack -> {
+                    // 每次只产出当前 recipe 对应的液体，避免混合其他 recipe
                     handleLiquid(this, stack.liquid, Math.min(stack.amount * inc, liquidCapacity - liquids.get(stack.liquid)));
                 });
             }
-            getRecipe().outputItem.each(stack -> {
+
+            // -------------------- 物品生产 --------------------
+            current.outputItem.each(stack -> {
                 if (items.get(stack.item) >= itemCapacity) {
                     items.set(stack.item, itemCapacity);
                 }
             });
-            getRecipe().outputPayload.each(stack -> {
+
+            // -------------------- Payload 生产 --------------------
+            current.outputPayload.each(stack -> {
                 if (getPayloads().get(stack.item) >= payloadCapacity) {
                     getPayloads().remove(stack.item, getPayloads().get(stack.item) - payloadCapacity);
                 }
             });
         }
+
 
         @Override
         public void dumpOutputs() {

@@ -95,6 +95,8 @@ import static mindustry.entities.part.DrawPart.PartProgress.smoothReload;
 import static mindustry.type.ItemStack.with;
 
 public class NHBlocks {
+    public static Attribute quantum = Attribute.add("quantum");
+    
     public static Block reinForcedItemSource;
     public static Block reinForcedLiquidSource;
     public static Block hyperGenerator;
@@ -104,7 +106,6 @@ public class NHBlocks {
             railGun, executor, gravity, multipleLauncher, antibody, atomSeparator, eternity;
 
     public static Block largeWaterExtractor;
-    public static Block hydroFuelCell;
     public static Block antiBulletTurret;
     public static Block fireExtinguisher;
     public static Block webber;
@@ -175,6 +176,7 @@ public class NHBlocks {
 
         metalGroundHeat = new Floor("metal-ground-heat", 3) {{
             wall = metalWall;
+            attributes.set(quantum, 1f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
             attributes.set(Attribute.heat, 1.25f);
@@ -207,6 +209,7 @@ public class NHBlocks {
             lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.1f);
             blendGroup = this;
 
+            attributes.set(quantum, 0.25f);
             attributes.set(Attribute.heat, 0.05f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
@@ -230,6 +233,7 @@ public class NHBlocks {
             lightColor = NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f);
             blendGroup = this;
 
+            attributes.set(quantum, 0.375f);
             attributes.set(Attribute.heat, 0.15f);
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
@@ -253,6 +257,7 @@ public class NHBlocks {
 
                 wall = NHBlocks.metalWall;
 
+                attributes.set(quantum, 0.5f);
                 attributes.set(Attribute.heat, 0.25f);
                 attributes.set(Attribute.water, -1f);
                 attributes.set(Attribute.oil, -1f);
@@ -2148,34 +2153,6 @@ public class NHBlocks {
     }
 
     private static void loadPowers() {
-        hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
-            size = 2;
-            requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
-
-            lightColor = Pal.techBlue;
-            consumeEffect = EffectWrapper.wrap(NHFx.hugeSmokeLong, Liquids.hydrogen.color.cpy().lerp(Liquids.nitrogen.color, 0.4f).a(0.56f));
-            generateEffect = new Effect(45f, e -> {
-                Draw.color(lightColor, Color.white, e.fin() * 0.66f);
-                Lines.stroke(e.fout() * 1.375f);
-                Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
-            });
-            //			//NHTechTree.add(Blocks.thoriumReactor,this);
-            powerProduction = 1800f / 60f;
-            health = 320;
-            itemCapacity = 40;
-            liquidCapacity = 30;
-            itemDuration = 240f;
-            consumeItem(NHItems.metalOxhydrigen, 4);
-            consumeLiquid(Liquids.nitrogen, 1 / 60f);
-
-            squareSprite = false;
-            hasLiquids = hasItems = true;
-
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.nitrogen, 2f), new DrawDefault(), new DrawGlowRegion() {{
-                color = Liquids.hydrogen.color;
-            }});
-        }};
-
         hyperGenerator = new HyperGenerator("hyper-generator") {{
             size = 8;
             health = 40000;

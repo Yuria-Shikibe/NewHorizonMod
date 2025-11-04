@@ -8,7 +8,7 @@ public class NHItems {
 
     //Modded Item
     public static Item
-            presstanium, juniorProcessor, metalOxhydrigen, zeta, multipleSteel, seniorProcessor,
+            hardLight, silicar, presstanium, juniorProcessor, metalOxhydrigen, zeta, multipleSteel, seniorProcessor,
             irayrondPanel, setonAlloy, nodexPlate, ancimembrane, hadronicomp, hyperProcessor,
             fusionEnergy, thermoCorePositive, thermoCoreNegative, darkEnergy;
 
@@ -20,6 +20,15 @@ public class NHItems {
 
 
     public static void load() {
+        hardLight = new Item("hard-light", Color.valueOf("8966ff")){{
+            radioactivity = 0.01f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
+        }};
+        silicar = new Item("silicar", Color.valueOf("5e7b9d")){{
+            hardness = 3;
+        }};
         presstanium = new Item("presstanium", Color.valueOf("90a0e4")) {{
             hardness = 8;
             cost = 1.5f;
@@ -62,21 +71,33 @@ public class NHItems {
             explosiveness = 0.7f;
             radioactivity = 1f;
             charge = 5f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
         thermoCorePositive = new Item("thermo-core-positive", Color.valueOf("f9ffc9")) {{
             explosiveness = 1f;
             radioactivity = 2.5f;
             charge = 15f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
         thermoCoreNegative = new Item("thermo-core-negative", Color.valueOf("deedff")) {{
             explosiveness = 1f;
             radioactivity = 2.5f;
             charge = 15f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
         darkEnergy = new Item("dark-energy", Color.valueOf("cba3ff")) {{
             radioactivity = 10f;
             explosiveness = 10f;
             charge = 25f;
+            frames = 10;
+            transitionFrames = 1;
+            frameTime = 3f;
         }};
 
         scrap = Items.scrap;
