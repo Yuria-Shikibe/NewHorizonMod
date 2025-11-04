@@ -4,8 +4,10 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.entities.Effect;
 import mindustry.type.Category;
@@ -24,6 +26,10 @@ import newhorizon.content.NHColor;
 import newhorizon.expand.block.drawer.*;
 import newhorizon.expand.block.power.GravityWallSubstation;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
+import newhorizon.expand.draw.DrawLiquidAnimatedOffset;
+import newhorizon.expand.draw.DrawLiquidSmelt;
+import newhorizon.expand.draw.DrawPistonsOffset;
+import newhorizon.expand.draw.DrawRegionOffset;
 import newhorizon.util.graphic.EffectWrapper;
 
 import static mindustry.Vars.tilesize;
@@ -46,7 +52,7 @@ public class PowerBlock {
             maxNodes = 10;
             gravityRange = laserRange * tilesize * 1.5f;
         }};
-        
+
         gravityTrapSerpulo = new GravityWallSubstation("gravity-node-serpulo") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.copper, 10, Items.lead, 8));
 
@@ -133,14 +139,14 @@ public class PowerBlock {
                      NHItems.silicon, 15
             ));
             addLink(2, 0, 1, 2, 1, 1);
-            
+
             size = 2;
             health = 300;
             armor = 2f;
             itemCapacity = 20;
             liquidCapacity = 30;
 
-            powerProduction = 400 / 60f;
+            powerProduction = 480 / 60f;
             outputsPower = true;
 
             drawer = new DrawMulti(
@@ -148,11 +154,65 @@ public class PowerBlock {
                         oneSprite = true;
                         suffix = "-base";
                         x = 4;
+                        layer = Layer.block -1f ;
                  }},
                 new DrawRegionRotated() {{
                         suffix = "-rot";
                         x = 4;
-                 }}
+                 }},
+                new DrawRegionOffset("-glow", 4f, 0f,true,0.1f),
+                new DrawLiquidSmelt(){{
+                    x = -1f;
+                    y = 0f;
+                    fixedAlpha = 0.68F;
+                    flameRad = 1f;
+                    circleSpace = 1.8f;
+                    circleStroke = 1F;
+                    colorLerp = 0.08f;
+                    particles = 4;
+                    particleLen = 1.0F;
+                }},
+                new DrawLiquidAnimatedOffset(){{
+                //    suffix = "-liquid";
+                    alpha = 1f;
+                    offsetX = 2f;
+                    offsetY = 0f;
+                //    followRotation = true;
+                    glow = false;
+                //    baseBubbleChance= 0.03f;
+                //    bubbleEffect = Fx.bubble;
+                }},
+                new DrawPistonsOffset(){{
+                    sides = 1;
+                    sinMag = 0f;
+                    sinScl = 0f;
+                    lenOffset = -1f;
+                    angleOffset = 0f;
+                    offsetX = 5f;
+                    offsetY = 0f;
+                    suffix = "-piston-t";
+                    }},
+                new DrawPistonsOffset(){{
+                    sides = 1;         // 只在一侧有活塞
+                    sinMag = 2.5f;       // 活塞往返幅度
+                    sinScl = 6f;       // 速度
+                    lenOffset = -1f;
+                    angleOffset = 0f;  // 0度方向
+                    offsetX = 5.1f;      // 整体向右偏移
+                    offsetY = 0f;      // 不偏移
+                    suffix = "-piston"; // 贴图后缀，与 block.name 拼接
+                }},
+                new DrawPistonsOffset(){{
+                    sides = 1;
+                    sinMag = 2.5f;
+                    sinScl = 6f;
+                    lenOffset = -1f;
+                    angleOffset = 0f;
+                    sinOffset = Mathf.PI / 2f;
+                    offsetX = 5.1f;
+                    offsetY = 0f;
+                    suffix = "-piston1";
+                }}
             );
         }};
 
@@ -192,7 +252,7 @@ public class PowerBlock {
             health = 320;
             floating = true;
             powerProduction = 300f / 60f;
-            
+
             lightColor = NHColor.darkEnrColor;
 
             attribute = NHBlocks.quantum;
@@ -231,7 +291,7 @@ public class PowerBlock {
                 color = Liquids.hydrogen.color;
             }});
         }};
-        
+
         zetaGenerator = new RecipeGenericCrafter("zeta-generator") {{
             requirements(Category.power, ItemStack.with(
                     NHItems.metalOxhydrigen, 120,

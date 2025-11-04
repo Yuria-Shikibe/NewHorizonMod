@@ -61,11 +61,11 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
 
-        recipe(ProductionBlock.tungstenReconstructor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
-            recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
-            recipe.craftTime = 60f;
-        });
+        //recipe(ProductionBlock.tungstenReconstructor, recipe -> {
+        //    recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
+        //    recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
+        //    recipe.craftTime = 60f;
+        //});
         recipe(ProductionBlock.tungstenReconstructor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.copper, 5);
             //recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 1 / 60f);
@@ -85,11 +85,11 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
         });
         
-        recipe(ProductionBlock.titaniumReconstructor, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
-            recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
-            recipe.craftTime = 60f;
-        });
+        //recipe(ProductionBlock.titaniumReconstructor, recipe -> {
+        //    recipe.inputItem = ItemStack.list(NHItems.thorium, 2);
+        //    recipe.outputItem = ItemStack.list(NHItems.zeta, 3);
+        //    recipe.craftTime = 60f;
+        //});
         recipe(ProductionBlock.titaniumReconstructor, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.beryllium, 3);
             //recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 1 / 60f);
@@ -105,6 +105,7 @@ public class RecipeRegister {
 
         recipe(ProductionBlock.liquidConvertor, recipe -> {
             recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 36 / 60f);
+            recipe.inputItem = ItemStack.list(NHItems.hardLight, 1);
             recipe.outputLiquid = LiquidStack.list(NHLiquids.quantumLiquid, 18 / 60f);
             recipe.craftTime = 90f;
         });
@@ -544,8 +545,8 @@ public class RecipeRegister {
             recipe.craftTime = 120f;
         });
         recipe(PowerBlock.crystalDecompositionThermalGenerator, recipe -> {
-            recipe.inputItem = ItemStack.list(NHItems.coal, 1);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.water, 6 / 60f);
+            recipe.inputItem = ItemStack.list(NHItems.silicon, 1,NHItems.graphite,1);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.nitrogen,6 / 60f);
             recipe.craftTime = 90f;
         });
         
@@ -571,7 +572,13 @@ public class RecipeRegister {
             recipe.craftTime = 60f;
             recipe.priority = 1;
         });
-        
+
+        recipe(ProductionBlock.solidificationShaper, recipe -> {
+            recipe.inputItem = ItemStack.list();
+            recipe.outputItem = ItemStack.list(NHItems.hardLight, 2);
+            recipe.craftTime = 120f;
+        });
+
         recipe(PowerBlock.zetaGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.zeta, 4);
             recipe.inputLiquid = LiquidStack.list(NHLiquids.nitrogen, 12 / 60f);

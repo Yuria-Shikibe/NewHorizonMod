@@ -12,6 +12,7 @@ import arc.math.Mathf;
 import arc.math.Rand;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
@@ -49,21 +50,37 @@ public class ProductionBlock {
 
     public static void load() {
         //wip
-        solidificationShaper = new GenericCrafter("solidification-shaper") {{
-            requirements(Category.production, ItemStack.with(
-                    NHItems.hardLight, 10
-            ));   
+        solidificationShaper = new RecipeGenericCrafter("solidification-shaper") {{
+            requirements(Category.production, ItemStack.with(NHItems.hardLight, 10));
             health = 300;
             size = 2;
             craftTime = 120f;
             itemCapacity = 30;
-
             craftEffect = Fx.smeltsmoke;
+            outputsPower = true;
+            rotate = false;
+            powerProduction = 0.1f;
 
             outputItem = new ItemStack(NHItems.hardLight, 2);
-
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
+
+        //    buildType = () -> new RecipeGenericCrafterBuild() {
+        //        @Override
+        //        public void updateTile() {
+        //            super.updateTile();
+        //            if (power != null) {
+        //                float sunlightFactor = Mathf.clamp(
+        //                        (1f - Vars.state.rules.ambientLight.a) * Vars.state.rules.solarMultiplier,
+        //                        0.4f, 4f
+        //                );
+
+        //                powerProduction = sunlightFactor;
+        //            }
+        //    }
+        //    };
+
         }};
+
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{
             requirements(Category.production, ItemStack.with(
                     NHItems.silicon, 40,
