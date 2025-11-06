@@ -28,7 +28,9 @@ public class DistributionBlock {
 
     public static void load() {
         conveyor = new AdaptConveyor("hard-light-rail") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -42,51 +44,46 @@ public class DistributionBlock {
             saveConfig = false;
             canOverdrive = false;
             placeableLiquid = true;
-
         }};
 
         stackRail = new AdaptStackConveyor("stack-rail") {{
-            requirements(Category.distribution, with(NHItems.presstanium, 1, NHItems.juniorProcessor, 1));
+            requirements(Category.distribution, with(NHItems.hardLight, 1, NHItems.presstanium, 1, NHItems.juniorProcessor, 1));
             health = 300;
             speed = 6f / 60f;
             canOverdrive = false;
             placeableLiquid = true;
-
         }};
 
         steadystackRail = new AdaptStackConveyor("steady-stack-rail") {{
-            requirements(Category.distribution, with(NHItems.multipleSteel, 1, NHItems.seniorProcessor, 1));
+            requirements(Category.distribution, with(NHItems.hardLight, 10, NHItems.multipleSteel, 1, NHItems.seniorProcessor, 1));
             health = 600;
             speed = 18f / 60f;
             canOverdrive = false;
             placeableLiquid = true;
-
         }};
 
         lightStackLoader = new AdaptStackConveyor("light-stack-loader") {{
-            requirements(Category.distribution, with(NHItems.presstanium, 10, NHItems.juniorProcessor, 10));
+            requirements(Category.distribution, with(NHItems.hardLight, 5, NHItems.presstanium, 10, NHItems.juniorProcessor, 10));
             health = 300;
             speed = 6f / 60f;
             itemCapacity = 15;
             onlyCarry = false;
             canOverdrive = false;
             placeableLiquid = true;
-
         }};
 
         heavyStackLoader = new AdaptStackConveyor("heavy-stack-loader") {{
-            requirements(Category.distribution, with(NHItems.multipleSteel, 10, NHItems.seniorProcessor, 10));
+            requirements(Category.distribution, with(NHItems.hardLight, 10, NHItems.multipleSteel, 10, NHItems.seniorProcessor, 10));
             health = 600;
             speed = 6f / 60f;
             itemCapacity = 60;
             onlyCarry = false;
             canOverdrive = false;
             placeableLiquid = true;
-
         }};
 
         conveyorBridge = new AdaptItemBridge("logistics-bridge") {{
-            requirements(Category.distribution, with(Items.silicon, 4));
+            requirements(Category.distribution, with(NHItems.hardLight, 5, Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -95,11 +92,10 @@ public class DistributionBlock {
             health = 300;
 
             placeableLiquid = true;
-
         }};
-
+        
         conveyorBridgeExtend = new AdaptItemBridge("logistics-extend-bridge") {{
-            requirements(Category.distribution, with(NHItems.multipleSteel, 5));
+            requirements(Category.distribution, with(NHItems.hardLight, 10, NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -108,24 +104,26 @@ public class DistributionBlock {
             health = 600;
 
             placeableLiquid = true;
-
         }};
 
         logisticsJunction = new AdaptJunction("logistics-junction") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             health = 300;
             speed = 3;
             capacity = 1;
-
+            
             placeableLiquid = true;
-
         }};
 
         logisticsDirectionalRouter = new AdaptDirectionalRouter("logistics-directional-router") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -133,11 +131,12 @@ public class DistributionBlock {
             speed = 4f;
 
             placeableLiquid = true;
-
         }};
 
         logisticsDirectionalMerger = new AdaptDirectionalMerger("logistics-directional-merger") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -145,11 +144,12 @@ public class DistributionBlock {
             speed = 4f;
 
             placeableLiquid = true;
-
         }};
 
         logisticsDirectionalGate = new AdaptDirectionalGate("logistics-directional-gate") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -157,43 +157,47 @@ public class DistributionBlock {
             speed = 4f;
 
             placeableLiquid = true;
-
         }};
 
         logisticsOmniGate = new AdaptGate("logistics-omni-gate") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             placeableLiquid = true;
             health = 300;
-
         }};
 
         logisticsOmniSorter = new AdaptSorter("logistics-omni-sorter") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             invert = false;
             placeableLiquid = true;
             health = 300;
-
         }};
 
         logisticsOmniBlocker = new AdaptSorter("logistics-omni-blocker") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 1
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
             invert = true;
             placeableLiquid = true;
             health = 300;
-
         }};
 
         conveyorUnloader = new AdaptDirectionalUnloader("logistics-unloader") {{
-            requirements(Category.distribution, with());
+            requirements(Category.distribution, with(
+                    NHItems.hardLight, 10
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -202,20 +206,22 @@ public class DistributionBlock {
             hasPower = true;
             conductivePower = true;
             placeableLiquid = true;
-
         }};
 
         rapidUnloader = new AdaptUnloader("rapid-unloader") {{
+            requirements(Category.distribution, BuildVisibility.shown, with(
+                    NHItems.hardLight, 10, 
+                    Items.silicon, 4
+            ));
+
             health = 300;
             speed = 0.5f;
-            requirements(Category.distribution, BuildVisibility.shown, with(Items.silicon, 4));
-
+            
             placeableLiquid = true;
-
         }};
 
         conduit = new AdaptConduit("conduit") {{
-            requirements(Category.liquid, with(Items.silicon, 1));
+            requirements(Category.liquid, with(NHItems.hardLight, 1, Items.silicon, 1));
             health = 300;
             liquidCapacity = 150f;
             liquidPressure = 1.2f;
@@ -226,7 +232,7 @@ public class DistributionBlock {
         }};
 
         conduitJunction = new LiquidJunction("logistics-liquid-junction") {{
-            requirements(Category.liquid, with(Items.silicon, 4));
+            requirements(Category.liquid, with(NHItems.hardLight, 1, Items.silicon, 4));
             placeableLiquid = true;
             solid = false;
             underBullets = true;
@@ -234,7 +240,7 @@ public class DistributionBlock {
         }};
 
         conduitRouter = new LiquidRouter("logistics-liquid-router") {{
-            requirements(Category.liquid, with(Items.silicon, 4));
+            requirements(Category.liquid, with(NHItems.hardLight, 1, Items.silicon, 4));
             placeableLiquid = true;
             solid = false;
             underBullets = true;
@@ -243,7 +249,7 @@ public class DistributionBlock {
         }};
 
         liquidBridge = new AdaptLiquidBridge("logistics-liquid-bridge") {{
-            requirements(Category.liquid, with(Items.silicon, 4));
+            requirements(Category.liquid, with(NHItems.hardLight, 5, Items.silicon, 4));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
             hasPower = false;
@@ -252,11 +258,10 @@ public class DistributionBlock {
             liquidCapacity = 250f;
 
             placeableLiquid = true;
-
         }};
 
         liquidBridgeExtend = new AdaptLiquidBridge("logistics-extend-liquid-bridge") {{
-            requirements(Category.liquid, with(NHItems.multipleSteel, 5));
+            requirements(Category.liquid, with(NHItems.hardLight, 10, NHItems.multipleSteel, 5));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
             hasPower = false;
@@ -265,14 +270,15 @@ public class DistributionBlock {
             liquidCapacity = 250f;
 
             placeableLiquid = true;
-
         }};
 
         ((AdaptConduit) conduit).junctionReplacement = conduitJunction;
         ((AdaptConduit) conduit).bridgeReplacement = liquidBridge;
 
         liquidUnloader = new AdaptLiquidDirectionalUnloader("logistics-liquid-unloader") {{
-            requirements(Category.liquid, with());
+            requirements(Category.liquid, with(
+                    NHItems.hardLight, 5
+            ));
             buildVisibility = BuildVisibility.shown;
             alwaysUnlocked = true;
 
@@ -281,7 +287,6 @@ public class DistributionBlock {
             placeableLiquid = true;
             health = 300;
             liquidCapacity = 250f;
-
         }};
 
         ((AdaptConveyor) conveyor).junctionReplacement = logisticsJunction;

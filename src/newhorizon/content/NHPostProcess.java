@@ -801,23 +801,32 @@ public class NHPostProcess {
     }
 
     private static void overrideTurret() {
+		adjustContent(Blocks.duo, content -> {
+            ItemTurret turret = (ItemTurret) content;
+            turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
+				damage = 30;
+                rangeChange = 40;
+				lightningDamage = 8;
+				lightning = 2;
+                lightningLength = 3;
+				lightningLengthRand = 1;
+				speed = 6;
+                width = 7f;
+                height = 9f;
+                lifetime = 33f;
+                ammoMultiplier = 5;
+				reloadMultiplier = 1.25f;
+				pierceArmor = true;
+                hitEffect = despawnEffect = Fx.hitBulletColor;
+                frontColor = lightningColor = hitColor = backColor = trailColor = NHItems.zeta.color;
+            }});
+        });
         adjustContent(Blocks.wave, content -> {
             LiquidTurret turret = (LiquidTurret) content;
             turret.ammoTypes.put(NHLiquids.xenFluid, new LiquidBulletType() {{
                 liquid = NHLiquids.xenFluid;
                 damage = 5;
                 status = NHStatusEffects.ultFireBurn;
-                statusDuration = 60f * 2f;
-            }});
-            turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
-                liquid = NHLiquids.zetaFluidPositive;
-                status = NHStatusEffects.scannerDown;
-                statusDuration = 60f * 2f;
-            }});
-            turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
-                liquid = NHLiquids.zetaFluidNegative;
-                damage = 0.2f;
-                status = NHStatusEffects.scannerDown;
                 statusDuration = 60f * 2f;
             }});
             turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
@@ -885,32 +894,6 @@ public class NHPostProcess {
                 statusDuration = 60f * 4f;
                 damage = 10;
                 status = NHStatusEffects.ultFireBurn;
-            }});
-            turret.ammoTypes.put(NHLiquids.zetaFluidPositive, new LiquidBulletType() {{
-                liquid = NHLiquids.zetaFluidPositive;
-                lifetime = 49f;
-                speed = 4f;
-                knockback = 1.3f;
-                puddleSize = 8f;
-                orbSize = 4f;
-                drag = 0.001f;
-                ammoMultiplier = 0.4f;
-                statusDuration = 60f * 4f;
-                damage = 0.2f;
-                status = NHStatusEffects.scannerDown;
-            }});
-            turret.ammoTypes.put(NHLiquids.zetaFluidNegative, new LiquidBulletType() {{
-                liquid = NHLiquids.zetaFluidNegative;
-                lifetime = 49f;
-                speed = 4f;
-                knockback = 1.3f;
-                puddleSize = 8f;
-                orbSize = 4f;
-                drag = 0.001f;
-                ammoMultiplier = 0.4f;
-                statusDuration = 60f * 4f;
-                damage = 0.2f;
-                status = NHStatusEffects.scannerDown;
             }});
             turret.ammoTypes.put(NHLiquids.irdryonFluid, new LiquidBulletType() {{
                 liquid = NHLiquids.irdryonFluid;
@@ -989,6 +972,7 @@ public class NHPostProcess {
         adjustContent(Blocks.cyclone, content -> {
             ItemTurret turret = (ItemTurret) content;
             turret.ammoTypes.put(NHItems.zeta, new BasicBulletType() {{
+				damage = 5;
                 ammoMultiplier = 2f;
                 speed = 6f;
                 splashDamage = 40f * 1.5f;
@@ -998,7 +982,8 @@ public class NHPostProcess {
                 backSprite = "large-bomb-back";
                 sprite = "mine-bullet";
                 rangeChange = 24;
-                lightning = 1;
+				lightningDamage = 8;
+                lightning = 2;
                 lightningLength = 10;
                 shootEffect = Fx.shootBig;
                 collidesGround = true;

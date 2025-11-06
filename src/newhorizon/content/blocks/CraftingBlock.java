@@ -127,16 +127,18 @@ public class CraftingBlock {
         }};
         condenseFacility = new RecipeGenericCrafter("condense-facility"){{
             requirements(Category.crafting, ItemStack.with(
+                    NHItems.hardLight, 25,
+                    NHItems.titanium, 100,
                     NHItems.presstanium, 50,
-                    NHItems.juniorProcessor, 20,
-                    Items.silicon, 100
+                    NHItems.juniorProcessor, 25
             ));
-            health = 300;
+            health = 600;
+            armor = 4f;
             size = 3;
             rotate = false;
             itemCapacity = 20;
             liquidCapacity = 100;
-            consumePower(200 / 60f);
+            consumePower(120 / 60f);
 
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
@@ -247,14 +249,18 @@ public class CraftingBlock {
                         y = 4;
                     }}
             );
-        }};
+        }};     
         zetaFactory = new RecipeGenericCrafter("zeta-factory") {{
-            requirements(Category.crafting, BuildVisibility.shown,
-                    ItemStack.with(NHItems.presstanium, 50, NHItems.juniorProcessor, 30, Items.tungsten, 20));
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.hardLight, 50,
+                    NHItems.tungsten, 100, 
+                    NHItems.carbide, 50, 
+                    NHItems.metalOxhydrigen, 50
+            ));
 
             size = 2;
             health = 900;
-            armor = 4;
+            armor = 6;
             itemCapacity = 30;
             liquidCapacity = 30f;
 
