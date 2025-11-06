@@ -187,13 +187,16 @@ public class NewHorizon extends Mod {
 
     @Override
     public void init() {
+        // 仅在有服务器实例时注册聊天过滤
         Events.on(ClientLoadEvent.class, e -> {
             if (Vars.netServer != null) {
                 Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
             }
-
             NHVars.init();
+        });
 
+        // 世界加载完成后再注册定时任务（确保 state 已就绪）
+        Events.on(EventType.WorldLoadEvent.class, e -> {
             Timer.schedule(() -> {
                 if (Vars.state == null || Vars.state.isPaused() || Vars.state.teams == null) return;
 
@@ -215,7 +218,6 @@ public class NewHorizon extends Mod {
             }, 1f, 1f);
         });
     }
-
 
     @Override
     public void registerClientCommands(CommandHandler handler) {
