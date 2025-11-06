@@ -255,7 +255,7 @@ public class CraftingBlock {
                     NHItems.hardLight, 50,
                     NHItems.tungsten, 100, 
                     NHItems.carbide, 50, 
-                    Items.metalOxhydrigen, 50
+                    NHItems.metalOxhydrigen, 50
             ));
 
             size = 2;
