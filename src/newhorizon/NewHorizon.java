@@ -187,7 +187,7 @@ public class NewHorizon extends Mod {
 
     @Override
     public void init() {
-        // 仅在有服务器实例时注册聊天过滤
+        // 我喜欢你
         Events.on(ClientLoadEvent.class, e -> {
             if (Vars.netServer != null) {
                 Vars.netServer.admins.addChatFilter((player, text) -> text.replace("jvav", "java"));
