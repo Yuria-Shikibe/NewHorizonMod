@@ -195,8 +195,12 @@ public class NewHorizon extends Mod {
             NHVars.init();
         });
 
-        // 世界加载完成后再注册定时任务（确保 state 已就绪）
+        // 确保无论是单人还是服务器，世界加载后 NHVars 已初始化
         Events.on(EventType.WorldLoadEvent.class, e -> {
+            if (NHVars.worldData == null) {
+                NHVars.init();
+            }
+
             Timer.schedule(() -> {
                 if (Vars.state == null || Vars.state.isPaused() || Vars.state.teams == null) return;
 
