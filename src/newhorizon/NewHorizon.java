@@ -214,9 +214,13 @@ public class NewHorizon extends Mod {
                         coreCount = teamData.core() == null ? 0 : 1;
                     }
 
-                    if (coreCount > 0 && teamData.core() != null) {
-                        int totalToAdd = coreCount * 2;
-                        teamData.core().items.add(NHItems.hardLight, totalToAdd);
+                    if (coreCount > 0) {
+                        final int count = coreCount;
+                        Vars.state.teams.cores(teamData.team).each(core -> {
+                            if (core != null) {
+                                core.items.add(NHItems.hardLight, 2);
+                            }
+                        });
                     }
                 });
             }, 1f, 1f);
