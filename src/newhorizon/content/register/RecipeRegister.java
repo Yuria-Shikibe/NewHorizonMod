@@ -543,12 +543,12 @@ public class RecipeRegister {
 
         recipe(PowerBlock.crystalDecompositionThermalGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicon, 1,NHItems.graphite,1);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid ,12 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.nitrogen, 6 / 60f);
             recipe.craftTime = 90f;
         });
         recipe(PowerBlock.crystalDecompositionThermalGenerator, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.silicar, 3);
-            recipe.inputLiquid = LiquidStack.list(NHLiquids.nitrogen, 6 / 60f);
+            recipe.inputLiquid = LiquidStack.list(NHLiquids.quantumLiquid ,12 / 60f);
             recipe.craftTime = 120f;
         });
         
