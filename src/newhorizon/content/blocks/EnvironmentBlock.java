@@ -1,5 +1,9 @@
 package newhorizon.content.blocks;
 
+import mindustry.content.Liquids;
+import mindustry.content.StatusEffects;
+import mindustry.graphics.CacheLayer;
+import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
 import newhorizon.content.NHBlocks;
@@ -19,6 +23,14 @@ public class EnvironmentBlock {
     public static Floor armorClear;
     public static OreBlock oreZeta, oreSilicon, oreSilicar;
 
+    public static Block
+            conglomerateSparse, conglomerate, conglomerateDense,
+            cryoniteSparse, cryonite,
+            erodeRock, erodeRockDense,
+            siliceoustone,
+            thoriumStoneSparse, thoriumStone, thoriumStoneDense,
+            ammoniaWater, zetaCrystalFloor;
+
     public static void load() {
         oreZeta = new OreBlock("ore-zeta") {{
             oreDefault = true;
@@ -30,18 +42,6 @@ public class EnvironmentBlock {
             mapColor.set(itemDrop.color);
             useColor = true;
         }};
-
-        oreSilicon = new OreBlock("ore-silicon") {{
-            oreDefault = true;
-            variants = 3;
-            oreThreshold = 0.95F;
-            oreScale = 20.380953F;
-            itemDrop = NHItems.silicon;
-            localizedName = itemDrop.localizedName;
-            mapColor.set(itemDrop.color);
-            useColor = true;
-        }};
-        
         oreSilicar = new OreBlock("ore-silicar") {{
             oreDefault = true;
             variants = 3;
@@ -51,7 +51,56 @@ public class EnvironmentBlock {
             localizedName = itemDrop.localizedName;
             mapColor.set(itemDrop.color);
             useColor = true;
-        }};        
+        }};
+
+        conglomerateSparse = new Floor("conglomerate-sparse") {{
+            variants = 3;
+        }};
+        conglomerate = new Floor("conglomerate") {{
+            variants = 3;
+        }};
+        conglomerateDense = new Floor("conglomerate-dense") {{
+            variants = 3;
+        }};
+
+        cryoniteSparse = new Floor("cryonite-sparse") {{
+            variants = 3;
+        }};
+        cryonite = new Floor("cryonite") {{
+            variants = 3;
+        }};
+
+        erodeRock = new Floor("erode-rock") {{
+            variants = 3;
+        }};
+        erodeRockDense = new Floor("erode-rock-dense") {{
+            variants = 3;
+        }};
+
+        siliceoustone = new Floor("siliceoustone") {{
+            variants = 4;
+        }};
+
+        thoriumStoneSparse = new Floor("thorium-stone-sparse") {{
+            variants = 4;
+        }};
+        thoriumStone = new Floor("thorium-stone") {{
+            variants = 4;
+        }};
+        thoriumStoneDense = new Floor("thorium-stone-dense") {{
+            variants = 4;
+        }};
+
+        zetaCrystalFloor = new Floor("zeta-crystal-floor") {{
+            variants = 3;
+        }};
+        ammoniaWater = new Floor("ammonia-water") {{
+            drownTime = 300f;
+            speedMultiplier = 0.19f;
+            variants = 3;
+            isLiquid = true;
+            cacheLayer = CacheLayer.water;
+        }};
 
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
         metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove", true);

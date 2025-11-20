@@ -227,12 +227,6 @@
 	"size": 1,
 	"color": 1061177855
 },
-"new-horizon-hydro-fuel-cell": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-hyper-generator": {
 	"synthetic": true,
 	"solid": true,
@@ -401,13 +395,25 @@
 	"size": 1,
 	"color": 255
 },
+"new-horizon-solidification-shaper": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-sand-cracker": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
 	"color": 255
 },
-"new-horizon-resource-convertor": {
+"new-horizon-tungsten-reconstructor": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-titanium-reconstructor": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
@@ -426,6 +432,12 @@
 	"color": 255
 },
 "new-horizon-xen-iterator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-optical-medium-drill": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -599,11 +611,89 @@
 	"size": 1,
 	"color": -5013249
 },
-"new-horizon-ore-silicon": {
+"new-horizon-ore-silicar": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 1398168831
+	"color": 1585159679
+},
+"new-horizon-conglomerate-sparse": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 808469759
+},
+"new-horizon-conglomerate": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 808469759
+},
+"new-horizon-conglomerate-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 808469759
+},
+"new-horizon-cryonite-sparse": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -672793857
+},
+"new-horizon-cryonite": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -672793857
+},
+"new-horizon-erode-rock": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 522664447
+},
+"new-horizon-erode-rock-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 893344255
+},
+"new-horizon-siliceoustone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1246450687
+},
+"new-horizon-thorium-stone-sparse": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1922785281
+},
+"new-horizon-thorium-stone": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1922785281
+},
+"new-horizon-thorium-stone-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1922785281
+},
+"new-horizon-zeta-crystal-floor": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -371997441
+},
+"new-horizon-ammonia-water": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 791706111
 },
 "new-horizon-metal-floor-groove": {
 	"synthetic": false,
@@ -675,31 +765,31 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 0
+	"color": -1
 },
 "new-horizon-line-marking-floor-quantum": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 0
+	"color": -1
 },
 "new-horizon-line-marking-floor-quantum-dark": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 0
+	"color": -1
 },
 "new-horizon-line-marking-floor-ancient": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 0
+	"color": -1
 },
 "new-horizon-line-marking-floor-ancient-dark": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 0
+	"color": -1
 },
 "new-horizon-pattern-plate-0": {
 	"synthetic": false,
@@ -761,6 +851,12 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-condense-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
 "new-horizon-crucible-foundry": {
 	"synthetic": true,
 	"solid": true,
@@ -768,6 +864,12 @@
 	"color": 255
 },
 "new-horizon-crystallizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-zeta-factory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
@@ -804,6 +906,12 @@
 	"color": 255
 },
 "new-horizon-irdryon-mixer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-plastanium-crafter": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -921,6 +1029,30 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 5,
+	"color": 255
+},
+"new-horizon-crystal-decomposition-thermal-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-nitrogen-dissociator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-psi-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-hydro-fuel-cell": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
 	"color": 255
 },
 "new-horizon-zeta-generator": {
