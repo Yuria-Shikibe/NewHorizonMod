@@ -194,8 +194,12 @@ public class NewHorizon extends Mod {
             NHVars.init();
         });
 
-        // 世界加载完成后再注册定时任务（确保 state 已就绪）
+        // 确保无论是单人还是服务器，世界加载后 NHVars 已初始化
         Events.on(EventType.WorldLoadEvent.class, e -> {
+            if (NHVars.worldData == null) {
+                NHVars.init();
+            }
+
             Timer.schedule(() -> {
                 if (Vars.state == null || Vars.state.isPaused() || Vars.state.teams == null) return;
 
@@ -209,9 +213,13 @@ public class NewHorizon extends Mod {
                         coreCount = teamData.core() == null ? 0 : 1;
                     }
 
-                    if (coreCount > 0 && teamData.core() != null) {
-                        int totalToAdd = coreCount * 2;
-                        teamData.core().items.add(NHItems.hardLight, totalToAdd);
+                    if (coreCount > 0) {
+                        final int count = coreCount;
+                        Vars.state.teams.cores(teamData.team).each(core -> {
+                            if (core != null) {
+                                core.items.add(NHItems.hardLight, 2);
+                            }
+                        });
                     }
                 });
             }, 1f, 1f);
