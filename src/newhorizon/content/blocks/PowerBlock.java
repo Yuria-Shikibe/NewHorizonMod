@@ -159,9 +159,7 @@ public class PowerBlock {
                         suffix = "-rot";
                         x = 4;
                  }},
-                new DrawRegionOffset("-glow", 4f, 0f,true,0.1f){{
-                    color = Liquids.hydrogen.color;
-                }},
+                new DrawRegionOffset("-glow", 4f, 0f,true,0.1f),
                 new DrawLiquidSmelt(){{
                     x = -1f;
                     y = 0f;
