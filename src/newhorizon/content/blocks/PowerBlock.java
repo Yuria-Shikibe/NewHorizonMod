@@ -256,6 +256,7 @@ public class PowerBlock {
             health = 600;
             armor = 4f;
             powerProduction = 300f / 60f;
+            floating = true;
 
             lightColor = NHColor.darkEnrColor;
 
