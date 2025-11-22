@@ -13,16 +13,13 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.noise.Simplex;
 import mindustry.Vars;
-import mindustry.ai.Astar;
 import mindustry.content.Blocks;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
-import mindustry.game.Schematics;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
 import mindustry.graphics.g3d.*;
-import mindustry.maps.generators.BlankPlanetGenerator;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
@@ -31,7 +28,9 @@ import mindustry.world.Tile;
 import mindustry.world.Tiles;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.blocks.EnvironmentBlock;
-import newhorizon.content.blocks.SpecialBlock;
+import newhorizon.expand.map.DysonRingMesh;
+import newhorizon.expand.map.DysonSphereMesh;
+import newhorizon.expand.map.MidanthaPlanetGenerator;
 import newhorizon.util.feature.ManhattanVoronoi;
 
 import static mindustry.Vars.content;
@@ -42,26 +41,32 @@ public class NHPlanets {
     public static Planet midantha;
 
     public static void load() {
-        midantha = new Planet("midantha", Planets.sun, 2){{
-            sectors.add(new Sector(this, PlanetGrid.Ptile.empty));
-
-            bloom = true;
+        midantha = new Planet("midantha", Planets.sun, 1f, 3){{
             visible = true;
             accessible = true;
-            hasAtmosphere = true;
             alwaysUnlocked = true;
             iconColor = NHColor.darkEnrColor;
-            meshLoader = () -> new NHModMesh(
-                    this, 5, 5, 0.3, 1.7, 1.2, 1.4, 1.1f,
-                    NHColor.darkEnrFront.cpy().lerp(Color.white, 0.2f),
-                    NHColor.darkEnrFront,
-                    NHColor.darkEnrColor,
-                    NHColor.darkEnrColor.cpy().lerp(Color.black, 0.2f).mul(1.05f),
-                    Pal.darkestGray.cpy().mul(0.95f),
-                    Pal.darkestGray.cpy().lerp(Color.white, 0.105f),
-                    Pal.darkestGray.cpy().lerp(Pal.gray, 0.2f),
-                    Pal.darkestGray
-            );
+
+            meshLoader = () -> new HexMesh(this, 7);
+
+            //meshLoader = () -> new NHModMesh(
+            //        this, 6, 5, 0.3, 1.7, 1.2, 1.4, 1.1f,
+            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f).mul(1.05f).lerp(Color.black, 0.2f),
+            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f).mul(1.05f).lerp(Color.black, 0.2f),
+            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f).mul(1.05f).lerp(Color.black, 0.2f),
+            //        NHColor.darkEnrColor.cpy().lerp(ammonia, 0.75f),
+            //        NHColor.darkEnrFront.cpy().lerp(ammonia, 0.75f).lerp(Color.white, 0.2f),
+
+            //        erode.cpy().lerp(Color.black, 0.3f),
+            //        erode.cpy().lerp(Color.black, 0.2f),
+            //        erode.cpy().lerp(Color.black, 0.1f),
+            //        erode.cpy().lerp(Color.white, 0.1f),
+            //        erode.cpy().lerp(Color.white, 0.2f),
+
+            //        snow.cpy().lerp(Color.black, 0.4f),
+            //        snow.cpy().lerp(Color.black, 0.3f),
+            //        snow.cpy().lerp(Color.black, 0.2f)
+            //);
 
             ruleSetter = r -> {
                 r.waves = true;
@@ -78,19 +83,28 @@ public class NHPlanets {
                 teamRule.rtsAi = false;
                 teamRule.unitBuildSpeedMultiplier = 5f;
                 teamRule.buildSpeedMultiplier = 3f;
+
+                atmosphereRadIn = 0.02f;
             };
 
-            generator = new NHPlanetGenerator();
+            generator = new MidanthaPlanetGenerator();
 
             cloudMeshLoader = () -> new MultiMesh(
-                    new HexSkyMesh(this, 2, 0.15F, 0.14F, 5, Pal.darkerMetal.cpy().lerp(NHColor.darkEnrColor, 0.35f).a(0.55F), 2, 0.42F, 1.0F, 0.43F),
-                    new HexSkyMesh(this, 3, 1.26F, 0.155F, 4, Pal.darkestGray.cpy().lerp(NHColor.darkEnrColor, 0.105f).a(0.75F), 6, 0.42F, 1.32F, 0.4F));
+                    //new HexSkyMesh(this, 2, 0.15F, 0.14F, 5, Pal.darkerMetal.cpy().lerp(NHColor.darkEnrColor, 0.35f).a(0.55F), 2, 0.42F, 1.0F, 0.43F),
+                    //new HexSkyMesh(this, 3, 1.26F, 0.155F, 4, Pal.darkestGray.cpy().lerp(NHColor.darkEnrColor, 0.105f).a(0.75F), 6, 0.42F, 1.32F, 0.4F),
+                    //new DysonSphereMesh(this, 0.3f),
+                    new DysonRingMesh(this, 2.500f, 0.2f, 729, Pal.darkMetal, Pal.darkerMetal),
+                    new DysonRingMesh(this, 2.750f, 0.2f, 2941, Pal.darkMetal, Pal.darkerMetal),
+                    new DysonRingMesh(this, 3.000f, 0.2f, 3834, Pal.darkMetal, Pal.darkerMetal),
+                    new DysonRingMesh(this, 2.505f, 0.15f, 729, NHColor.darkEnrFront, NHColor.darkEnrFront),
+                    new DysonRingMesh(this, 2.755f, 0.15f, 2941, NHColor.darkEnrFront, NHColor.darkEnrFront),
+                    new DysonRingMesh(this, 3.005f, 0.15f, 3834, NHColor.darkEnrFront, NHColor.darkEnrFront)
+            );
 
             iconColor = NHColor.darkEnrColor;
 
-            landCloudColor = atmosphereColor = Color.valueOf("3c1b8f");
-            atmosphereRadIn = 0.02f;
-            atmosphereRadOut = 0.3f;
+            //landCloudColor = atmosphereColor = Color.valueOf("1e2538");
+            atmosphereRadIn = 0.01f;
         }};
     }
 
@@ -116,154 +130,7 @@ public class NHPlanets {
                     double height = Math.pow(Simplex.noise3d(1, octaves, persistence, scl, position.x, position.y, position.z), pow) * mag;
                     return Tmp.c1.set(colors[Mathf.clamp((int)(height * colors.length), 0, colors.length - 1)]).mul(colorScale);
                 }
-
             }, divisions, Shaders.unlit);
-        }
-    }
-
-    public static class NHPlanetGenerator extends BlankPlanetGenerator {
-        public static final Seq<Point2> points = new Seq<>();
-        public static final Seq<Tile> path = new Seq<>();
-
-        public static final int chunkSize = 150;
-        public static final int size = 3;
-        public static int startX = 1;
-        public static int startY = 2;
-
-        @Override
-        public int getSectorSize(Sector sector) {
-            return chunkSize * size;
-        }
-
-        @Override
-        protected void generate() {
-            int startX = Mathf.random(-20, 20);
-            int startY = Mathf.random(-20, 20);
-
-            pass((x, y) -> {
-                if (x < 5f || y < 5f || x > chunkSize * size - 6f || y > chunkSize * size - 6f) {
-                    block = EnvironmentBlock.armorWall;
-                }
-            });
-
-            distort(12, 6);
-            median(5);
-
-
-            for (int x = 0; x < size; x++) {
-                for (int y = 0; y < size; y++) {
-                    Tiles ts = generateChunk(x + startX, y + startY);
-                    int finalX = x;
-                    int finalY = y;
-                    ts.each((tx, ty) -> {
-                        tiles.get(finalX * 150 + tx, finalY * 150 + ty).setFloor(ts.get(tx, ty).floor());
-                        if (tiles.get(finalX * 150 + tx, finalY * 150 + ty).block() == Blocks.air){
-                            tiles.get(finalX * 150 + tx, finalY * 150 + ty).setBlock(ts.get(tx, ty).block());
-                        }
-                    });
-                }
-            }
-
-            rand.setSeed(Point2.pack(startX, startY));
-            Vec2 trns = Tmp.v1.trns(rand.random(360f), width/2.6f);
-            int spawnX = (int)(trns.x + width/2f), spawnY = (int)(trns.y + height/2f),
-                    coreX = (int)(-trns.x + width/2f), coreY = (int)(-trns.y + height/2f);
-
-            erase(spawnX, spawnY, 12);
-            erase(coreX, coreY, 12);
-
-            path.clear();
-            path.add(pathfind(spawnX, spawnY, coreX, coreY, tile -> (tile.solid() ? 50f : 0f), Astar.manhattan));
-
-            tiles.eachTile(tile -> {
-                if(tile.floor() == Blocks.carbonStone){
-                    float noise = noise(tile.x + 150, tile.y + 100 + tile.x / 0.8f, 4, 0.5f, 65f, 1.5f);
-                    if(noise > 0.9f) tile.setOverlay(Blocks.oreTitanium);
-                    if(noise < 0.5f) tile.setOverlay(Blocks.oreTungsten);
-                }
-            });
-
-            removeOreNear(tiles, NHBlocks.quantumField, 4);
-            removeOreNear(tiles, NHBlocks.quantumFieldDeep, 4);
-            removeOreNear(tiles, NHBlocks.conglomerateRock, 5);
-            removeOreNear(tiles, Blocks.metalFloor, 4);
-            removeOreNear(tiles, Blocks.basalt, 5);
-
-            pass((x, y) -> {
-                if (floor == Blocks.shale || floor == Blocks.carbonStone) return;
-                int x1 = x - x % 3 + 30;
-                int y1 = y - y % 3 + 30;
-
-                if((x1 % 75 == 0 || y1 % 75 == 0) && !floor.asFloor().isLiquid){
-                    if(noise(x + 30, y + 30, 4, 0.66f, 75f, 2f) > 0.90f || Mathf.chance(0.095)){
-                        if (floor == Blocks.basalt || floor == NHBlocks.conglomerateRock){
-                            floor = Blocks.metalFloor2;
-                        }
-                    }
-                }
-
-                if((x % 100 == 0 || y % 100 == 0) && !floor.asFloor().isLiquid){
-                    if(noise(x, y, 5, 0.7f, 75f, 3f) > 0.88f || Mathf.chance(0.085)){
-                        if (floor == Blocks.basalt || floor == NHBlocks.conglomerateRock){
-                            floor = NHBlocks.quantumFieldDisturbing;
-                        }
-                    }
-                }
-
-                if((x % 300 <= 8 || x % 300 >= 291 ||y % 300 <= 8 || y % 300 >= 291)){
-                    tiles.get(x, y).setBlock(NHBlocks.metalWall);
-                }
-            });
-
-            pass((x, y) -> {
-                if(floor == Blocks.darkPanel3 && rand.chance(0.8f)){
-                    ore = EnvironmentBlock.oreZeta;
-                }
-            });
-
-            pass((x, y) -> {
-                if(floor == Blocks.darkPanel1 && rand.chance(0.8f)){
-                    ore = EnvironmentBlock.oreSilicon;
-                }
-            });
-
-            pass((x, y) -> {
-                if(floor == Blocks.metalFloor3){
-                    floor = NHBlocks.metalVent;
-                }
-            });
-
-            erase(coreX, coreY, 15);
-            erase(spawnX, spawnY, 15);
-            tiles.getn(spawnX, spawnY).setOverlay(Blocks.spawn);
-            Schematics.placeLaunchLoadout(coreX, coreY);
-        }
-
-        public void draw(int cx, int cy, Block block, int rad, DrawBoolf b){
-            for(int x = -rad; x <= rad; x++){
-                for(int y = -rad; y <= rad; y++){
-                    int wx = cx + x, wy = cy + y;
-                    if(Structs.inBounds(wx, wy, width, height) && Mathf.within(x, y, rad) && b.get(wx, wy)){
-                        Tile other = tiles.getn(wx, wy);
-                        if(block instanceof Floor)other.setFloor(block.asFloor());
-                        else other.setBlock(block);
-                    }
-                }
-            }
-        }
-
-        public void grow(Block wall, Block target){
-            pass((x, y) -> {
-                if (block == wall){
-                    for (Point2 p: Geometry.d8){
-                        if (Structs.inBounds(x + p.x, y + p.y, width, height)){
-                            if (tiles.get(x + p.x, y + p.y).block() != wall){
-                                tiles.get(x + p.x, y + p.y).setBlock(target);
-                            }
-                        }
-                    }
-                }
-            });
         }
     }
 

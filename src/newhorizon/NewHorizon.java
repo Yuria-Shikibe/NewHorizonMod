@@ -24,7 +24,6 @@ import newhorizon.content.register.RecipeRegister;
 import newhorizon.content.register.UnitRecipeRegister;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.DebugFunc;
-import newhorizon.util.ui.FeatureLog;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
