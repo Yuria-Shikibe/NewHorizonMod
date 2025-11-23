@@ -6,9 +6,11 @@ import mindustry.graphics.CacheLayer;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.environment.StaticWall;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.NHColor;
 import newhorizon.content.NHItems;
+import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.env.*;
 
 public class EnvironmentBlock {
@@ -24,12 +26,16 @@ public class EnvironmentBlock {
     public static OreBlock oreZeta, oreSilicon, oreSilicar;
 
     public static Block
+            conglomerateWall, darkConglomerateWall, thoriumStoneWall,
+
             conglomerateSparse, conglomerate, conglomerateDense,
+            darkConglomerateSparse, darkConglomerate, darkConglomerateDense,
             cryoniteSparse, cryonite,
             erodeRock, erodeRockDense,
             siliceoustone,
             thoriumStoneSparse, thoriumStone, thoriumStoneDense,
-            ammoniaWater, zetaCrystalFloor;
+            ammoniaWater, ammoniaWaterDeep, ammoniaWaterShallow,
+            zetaCrystalFloor;
 
     public static void load() {
         oreZeta = new OreBlock("ore-zeta") {{
@@ -53,14 +59,41 @@ public class EnvironmentBlock {
             useColor = true;
         }};
 
-        conglomerateSparse = new Floor("conglomerate-sparse") {{
+        conglomerateWall = new StaticWall("conglomerate-wall") {{
             variants = 3;
+        }};
+
+        darkConglomerateWall = new StaticWall("dark-conglomerate-wall") {{
+            variants = 3;
+        }};
+
+        thoriumStoneWall = new StaticWall("thorium-stone-wall") {{
+            variants = 3;
+        }};
+
+        conglomerateSparse = new Floor("conglomerate-sparse") {{
+            variants = 6;
+            wall = conglomerateWall;
         }};
         conglomerate = new Floor("conglomerate") {{
-            variants = 3;
+            variants = 6;
+            wall = conglomerateWall;
         }};
         conglomerateDense = new Floor("conglomerate-dense") {{
-            variants = 3;
+            variants = 6;
+            wall = conglomerateWall;
+        }};
+        darkConglomerateSparse = new Floor("dark-conglomerate-sparse") {{
+            variants = 6;
+            wall = darkConglomerateWall;
+        }};
+        darkConglomerate = new Floor("dark-conglomerate") {{
+            variants = 6;
+            wall = darkConglomerateWall;
+        }};
+        darkConglomerateDense = new Floor("dark-conglomerate-dense") {{
+            variants = 6;
+            wall = darkConglomerateWall;
         }};
 
         cryoniteSparse = new Floor("cryonite-sparse") {{
@@ -83,23 +116,49 @@ public class EnvironmentBlock {
 
         thoriumStoneSparse = new Floor("thorium-stone-sparse") {{
             variants = 4;
+            wall = thoriumStoneWall;
         }};
         thoriumStone = new Floor("thorium-stone") {{
             variants = 4;
+            wall = thoriumStoneWall;
         }};
         thoriumStoneDense = new Floor("thorium-stone-dense") {{
             variants = 4;
+            wall = thoriumStoneWall;
         }};
 
         zetaCrystalFloor = new Floor("zeta-crystal-floor") {{
             variants = 3;
         }};
         ammoniaWater = new Floor("ammonia-water") {{
-            drownTime = 300f;
-            speedMultiplier = 0.19f;
-            variants = 3;
+            variants = 0;
+            albedo = 0.9f;
             isLiquid = true;
+            speedMultiplier = 0.75f;
+            status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
+            liquidDrop = NHLiquids.ammonia;
+        }};
+
+        ammoniaWaterDeep = new Floor("ammonia-water-deep") {{
+            variants = 0;
+            albedo = 0.9f;
+            isLiquid = true;
+            drownTime = 300f;
+            speedMultiplier = 0.6f;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
+            liquidDrop = NHLiquids.ammonia;
+        }};
+
+        ammoniaWaterShallow = new Floor("ammonia-water-shallow") {{
+            variants = 3;
+            albedo = 0.9f;
+            isLiquid = true;
+            speedMultiplier = 0.9f;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
+            liquidDrop = NHLiquids.ammonia;
         }};
 
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);

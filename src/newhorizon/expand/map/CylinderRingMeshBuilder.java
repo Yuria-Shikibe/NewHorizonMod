@@ -46,7 +46,7 @@ public class CylinderRingMeshBuilder {
             Vec3 p3  = new Vec3(Mathf.cos(a2) * radius * 1.0f, -half, Mathf.sin(a2) * radius * 1.0f);
             Vec3 p4  = new Vec3(Mathf.cos(a1) * radius * 1.0f, -half, Mathf.sin(a1) * radius * 1.0f);
 
-            float innerR = radius * 0.98f;
+            float innerR = radius * 0.9675f;
 
             Vec3 p5  = new Vec3(Mathf.cos(a1)*innerR,  half, Mathf.sin(a1)*innerR);
             Vec3 p6  = new Vec3(Mathf.cos(a2)*innerR,  half, Mathf.sin(a2)*innerR);

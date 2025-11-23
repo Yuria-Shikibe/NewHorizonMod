@@ -3,37 +3,80 @@ package newhorizon.expand.map;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
+import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
+import arc.struct.IntSet;
+import arc.util.Tmp;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
+import mindustry.content.Blocks;
+import mindustry.game.Schematics;
 import mindustry.gen.Iconc;
 import mindustry.graphics.g3d.PlanetGrid;
-import mindustry.maps.generators.BlankPlanetGenerator;
+import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Sector;
+import mindustry.ui.dialogs.PlanetDialog;
+import mindustry.world.*;
+import newhorizon.content.NHBlocks;
+import newhorizon.content.blocks.EnvironmentBlock;
 
-public class MidanthaPlanetGenerator extends BlankPlanetGenerator {
-    public static final PlanetGrid grid = PlanetGrid.create(0);
-    public static final Vec3[] corners = new Vec3[grid.tiles.length];
-    public static final int[][] edges = new int[grid.edges.length][2];
+public class MidanthaPlanetGenerator extends PlanetGenerator {
+    public static Interp interp = new Interp.Exp(2, 3);
+    public static IntSet altitudes = new IntSet();
 
     static {
-        for (PlanetGrid.Ptile tile : grid.tiles) {
-            corners[tile.id] = tile.v;
-        }
-        for (PlanetGrid.Edge edge : grid.edges) {
-            edges[edge.id][0] = edge.tiles[0].id;
-            edges[edge.id][1] = edge.tiles[1].id;
-        }
+        PlanetDialog.debugSelect = true;
     }
+    
+    Block 
+            qd = NHBlocks.quantumFieldDeep, qn = NHBlocks.quantumField,
+            cb = EnvironmentBlock.conglomerateSparse, dc = EnvironmentBlock.darkConglomerateSparse,
+            th = EnvironmentBlock.thoriumStoneSparse, ze = EnvironmentBlock.zetaCrystalFloor;
 
-    public Color ammonia = Color.valueOf("1e2538");
+    Block[][] terrains = {
+            {qd, qd, qd ,qd, qd},
+            {qd, qd, qn ,qn, qn},
+            {qn, qn, qn ,qn, qn},
+
+            {cb, cb, qn, qn, qn, qn, cb, qn, cb},
+            {cb, cb, qn, cb, cb, dc, dc, qn, cb},
+            {cb, cb, th, th, cb, cb, cb, dc, cb},
+            {dc, dc, th, th, dc, dc, cb, dc, cb},
+            {cb, cb, dc, cb, cb, dc, dc, dc, cb},
+            {cb, dc, dc, dc, cb, cb, cb, dc, dc},
+            {cb, dc, qn, dc, dc, cb, cb, dc, dc},
+            {dc, dc, qn, qn, dc, cb, cb, dc, dc},
+            {dc, qn, qd, qn, dc, dc, cb, cb, dc},
+            {dc, qn, qd, qn, th, dc, cb, cb, cb},
+            {dc, dc, qn, dc, th, dc, cb, cb, cb},
+            {dc, dc, dc, th, dc, dc, dc, dc, cb},
+            {cb, cb, cb, th, dc, dc, dc, cb, dc},
+            {cb, dc, cb, cb, th, th, dc, cb, dc},
+            {dc, dc, dc, dc, th, th, qn, cb, cb},
+            {cb, cb, dc, dc, th, cb, qn, dc, cb},
+            {cb, cb, cb, dc, cb, cb, cb, cb, cb},
+            {cb, cb, qn, qn, cb, cb, qn, qn, cb},
+
+            {qn, qn, qn ,qn, qn},
+            {qd, qd, qn ,qn, qd},
+            {qd, qd, qd ,qd, qd},
+
+    };
+
+    public Color ammonia = Color.valueOf("262762");
     public Color cryonite = Color.valueOf("c5d7f0");
     public Color conglomerate = Color.valueOf("303044");
 
     public Color zetaFloor = Color.valueOf("e2bcb3");
+    public Color thoriumFloor = Color.valueOf("403649");
+    public Color silicarColor = Color.valueOf("4a4b53");
+
+    public static float waterOffset = 0.81f;
 
     public float seaLevel = 0.42f;
-    public float snowLevel = 0.48f;
+    public float iceSheetLevel = 0.50f;
+    public float snowLevel = 0.535f;
 
     public MidanthaPlanetGenerator() {
 
@@ -53,66 +96,137 @@ public class MidanthaPlanetGenerator extends BlankPlanetGenerator {
 
     public float getLand(Vec3 position) {
         float scl = Interp.reverse.apply(Interp.exp5.apply(Mathf.clamp(getLatitude(position) / 90)));
-        float base = Interp.reverse.apply((getLatitude(position) / 90)) * 0.045f;
-        float height = Simplex.noise3d(seed + 1465, 8, 0.7f, 0.45f, position.x, position.y, position.z) * scl + base;
-        float river = getRiver(position);
-        if (river > -0.2f) height -= river / 2.3f;
+        float base = Interp.reverse.apply((getLatitude(position) / 90)) * 0.025f;
 
-        return Math.max(seaLevel, height);
+        float land = Simplex.noise3d(seed + 1465, 4, 0.32f, 0.45f, position.x, position.y, position.z) * scl + base;
+        if (land > seaLevel) {
+            
+            float mountain = Interp.exp5Out.apply(Ridged.noise3d(seed + 4142, position.x, position.y, position.z, 4, 2.21f)) * 0.75f;
+            float height = Math.max(mountain, land) * scl + base;
+            float river = Ridged.noise3d(seed + 525, position.x + 12, position.y + 42, position.z + 92, 6, 1.22f) * 0.3f;
+            if (river > 0) height -= river / 2f;
+            return Math.max(seaLevel, height);
+        }
+        return seaLevel;
     }
-
-    public float getRiver(Vec3 position) {
-        return Ridged.noise3d(seed + 525, position.x + 12, position.y + 42, position.z + 92, 3, 1.92f);
-    }
-
-    public float getZeta(Vec3 position) {
-        return Ridged.noise3d(seed + 9125, position.x + 12, position.y + 42, position.z + 92, 4, 3.92f);
-    }
-
-    public float getThorium(Vec3 position) {
-        return Ridged.noise3d(seed + 3525, position.x + 12, position.y + 42, position.z + 92, 4, 3.92f);
-    }
-
-
 
     @Override
-    public void getColor(Vec3 position, Color out) {
-        out.set(ammonia);
-        float landLevel = getLand(position);
-        float iceSheet = getIceSheet(position);
-        if (landLevel > seaLevel) {
-            float lerp = Mathf.curve(landLevel, seaLevel, seaLevel + 0.025f);
-            out.lerp(conglomerate, lerp);
-            if (landLevel > snowLevel) {
-                out.lerp(cryonite, Mathf.curve(landLevel, snowLevel, snowLevel + 0.025f) * lerp);
-            }
-            if (getZeta(position) > 0.5) {
-                out.lerp(zetaFloor, Mathf.curve(getZeta(position), 0.5f, 0.5f + 0.1f) * lerp);
+    public float getSizeScl() {
+        return 2200;
+    }
+
+    public int getDensity(Vec3 position) {
+        return Mathf.clamp((int) (Simplex.noise3d(321, 12, 0.42f, 8.7f, position.x, position.y, position.z) * 4f - 1f), 0, 3);
+    }
+
+    public Block getFloor(Vec3 position) {
+        int size = terrains.length;
+        float scl = Mathf.clamp((getRawNoise(position) * size), 0, size - 1) / size;
+        int tSize = terrains[Mathf.round(scl * size)].length;
+        float tScl = Mathf.clamp((getTerrainNoise(position) * tSize), 0, tSize - 1) / tSize;
+        return terrains[Mathf.round(scl * size)][Mathf.round(tScl * tSize)];
+    }
+
+    @Override
+    public void genTile(Vec3 position, TileGen tile) {
+        tile.floor = getFloor(position);
+        tile.block = tile.floor.asFloor().wall;
+
+        int density = getDensity(position);
+        if (tile.floor == EnvironmentBlock.conglomerateSparse){
+            if (density == 1) tile.floor = EnvironmentBlock.conglomerate;
+            if (density == 2) tile.floor = EnvironmentBlock.conglomerateDense;
+        }
+        if (tile.floor == EnvironmentBlock.darkConglomerateSparse){
+            if (density == 1) tile.floor = EnvironmentBlock.darkConglomerate;
+            if (density == 2) tile.floor = EnvironmentBlock.darkConglomerateDense;
+        }
+        if (tile.floor == EnvironmentBlock.thoriumStoneSparse){
+            if (density == 1) tile.floor = EnvironmentBlock.thoriumStone;
+            if (density == 2) tile.floor = EnvironmentBlock.thoriumStoneDense;
+        }
+
+        if(Ridged.noise3d(seed + 124, position.x, position.y, position.z, 4, 12.92f) > -0.25) tile.block = Blocks.air;
+    }
+
+    public float getRawHeight(Vec3 position){
+        return (float) Math.pow(Interp.reverse.apply(Mathf.clamp(Math.abs(getRawNoise(position) - 0.645f) * 1.2f)) * 0.895f, 1.2f) + 0.15f;
+    }
+
+    public float getRawNoise(Vec3 position){
+        return Simplex.noise3d(321, 12, 0.42f, 1.7f, position.x, position.y, position.z) * 1.4f;
+    }
+
+    public float getTerrainNoise(Vec3 position){
+        return Simplex.noise3d(192, 4, 0.85f, 2.8f, position.x, position.y, position.z) * 1.1f;
+    }
+
+    public float getColorNoise(Vec3 position){
+        return 1 + (Simplex.noise3d(1, 6, 0.72f, 0.2f, position.x, position.y, position.z) * 0.3f - 0.15f);
+    }
+
+    public void generate(Tiles tiles, Sector sec, WorldParams params){
+        this.tiles = tiles;
+        this.seed = params.seedOffset + baseSeed;
+        this.sector = sec;
+        this.width = tiles.width;
+        this.height = tiles.height;
+        this.rand.setSeed(sec.id + params.seedOffset + baseSeed);
+
+        TileGen gen = new TileGen();
+
+        //Vec3 lb = sector.rect.project(0, 0);
+        //Vec3 tr = sector.rect.project(1, 1);
+
+        //Vec3 lightDir = lb.sub(tr).nor();
+        //Vec3 planeNormal = sector.tile.v.cpy().nor();
+
+        Vec3 pos = new Vec3();
+
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
+                gen.reset();
+                pos.set(sector.rect.project(x / (float)tiles.width, y / (float)tiles.height));
+                genTile(pos, gen);
+                Tile tile = new Tile(x, y, gen.floor, gen.overlay, gen.block);
+                tiles.set(x, y, tile);
             }
         }
-        if (iceSheet > seaLevel) {
-            float lerp = Mathf.curve(iceSheet, seaLevel, seaLevel + 0.025f);
-            out.lerp(conglomerate, lerp);
-            if (iceSheet > snowLevel) {
-                out.lerp(cryonite, Mathf.curve(iceSheet, snowLevel, snowLevel + 0.025f) * lerp);
-            }
-        }
+
+        generate(tiles, params);
+    }
+
+    //@Override
+    //public void getColor(Vec3 position, Color out) {
+    //    out.set(ammonia);
+    //    float landLevel = getLand(position);
+    //    float iceSheet = getIceSheet(position);
+    //    if (landLevel > seaLevel) {
+    //        out.set(conglomerate);
+    //        //if (landLevel > snowLevel) out.set(cryonite);
+    //        //if (getZeta(position) > 0.6) out.set(zetaFloor);
+    //        //if (getThorium(position) > 0.6) out.set(thoriumFloor);
+    //        //if (getSilicar(position) > 0.6) out.set(silicarColor);
+    //    }
+    //    if (iceSheet > iceSheetLevel) {
+    //        out.set(conglomerate);
+    //        if (iceSheet > snowLevel) out.set(cryonite);
+    //    }
+    //}
+
+    //public Block getScaledSea(){}
+
+    @Override
+    public float getHeight(Vec3 position){
+        //6, 5, 0.3, 1.7, 1.2, 1.4, 1.1f
+        //position = Tmp.v33.set(position).scl(4f);
+        float height = getRawHeight(position);
+        return Math.max(height, waterOffset) - 0.2f;
     }
 
     @Override
-    public float getHeight(Vec3 position) {
-        return Math.max(seaLevel, Math.max(getIceSheet(position), getLand(position)));
-    }
-
-    @Override
-    public void getEmissiveColor(Vec3 position, Color out) {
-        getColor(position, out);
-        out.a(0.25f);
-    }
-
-    @Override
-    public boolean isEmissive() {
-        return true;
+    public void getColor(Vec3 position, Color out){
+        out.set(getFloor(position).mapColor).mul(getColorNoise(position));
     }
 
     @Override
@@ -142,6 +256,26 @@ public class MidanthaPlanetGenerator extends BlankPlanetGenerator {
             if (getHeight(corner.v) > seaLevel) land += 5;
         }
         return land > 5;
+    }
+
+    @Override
+    protected void generate() {
+        distort(6, 12);
+        median(3);
+
+        scatter(EnvironmentBlock.conglomerateDense, EnvironmentBlock.conglomerate, 0.35f);
+        scatter(EnvironmentBlock.conglomerate, EnvironmentBlock.conglomerateSparse, 0.4f);
+        scatter(EnvironmentBlock.darkConglomerateDense, EnvironmentBlock.darkConglomerate, 0.35f);
+        scatter(EnvironmentBlock.darkConglomerate, EnvironmentBlock.darkConglomerateSparse, 0.4f);
+        scatter(EnvironmentBlock.thoriumStoneDense, EnvironmentBlock.thoriumStone, 0.35f);
+        scatter(EnvironmentBlock.thoriumStone, EnvironmentBlock.thoriumStoneSparse, 0.4f);
+
+        distort(4, 4);
+
+        Vec2 trns = Tmp.v1.trns(rand.random(360f), width / 2.6f);
+        int coreX = (int) (-trns.x + width / 2f), coreY = (int) (-trns.y + height / 2f);
+        Schematics.placeLaunchLoadout(coreX, coreY);
+
     }
 
     /*

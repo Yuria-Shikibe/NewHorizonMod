@@ -6,22 +6,36 @@ import mindustry.type.Liquid;
 
 public class NHLiquids {
 
-    public static Liquid quantumLiquid, xenFluid, zetaFluidPositive, zetaFluidNegative, irdryonFluid;
+    public static Liquid ammonia, hydrazine, quantumLiquid, xenFluid, zetaFluidPositive, zetaFluidNegative, irdryonFluid;
 
     public static Liquid water, slag, oil, cryofluid, arkycite, gallium, neoplasm, ozone, hydrogen, nitrogen, cyanogen;
 
     public static void load() {
-        quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor) {{
-                heatCapacity = 0.5f;
-                lightColor = NHColor.darkEnrColor;
-                barColor = gasColor = lightColor;
+        ammonia = new Liquid("ammonia", Color.valueOf("919ff0")){{
+            viscosity = 0.8f;
+            temperature = 0.5f;
+            heatCapacity = 0.5f;
         }};
 
-        xenFluid = new Liquid("xen-fluid", Color.valueOf("#aedfff")) {{
+        hydrazine = new Liquid("hydrazine", Color.valueOf("f3b9ca")){{
             heatCapacity = 0.3f;
             explosiveness = 0.25f;
             viscosity = 0.8f;
             temperature = 2f;
+
+            coolant = false;
+        }};
+
+        quantumLiquid = new Liquid("quantum-liquid", NHColor.darkEnrColor) {{
+            heatCapacity = 0.5f;
+            lightColor = NHColor.darkEnrColor;
+            barColor = gasColor = lightColor;
+        }};
+
+        xenFluid = new Liquid("xen-fluid", Color.valueOf("#aedfff")) {{
+            heatCapacity = 0.5f;
+            explosiveness = 1.5f;
+            viscosity = 0.5f;
 
             coolant = false;
         }};

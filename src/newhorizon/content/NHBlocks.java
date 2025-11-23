@@ -126,8 +126,6 @@ public class NHBlocks {
     public static Block metalScarp;
     public static Block metalVent;
     public static Block metalGroundHeat;
-    public static Block conglomerateRock;
-    public static Block conglomerateWall;
 
     private static void loadEnv() {
 
@@ -164,15 +162,6 @@ public class NHBlocks {
             f.speedMultiplier = 1.25f;
             f.decoration = metalScarp;
         };
-
-        conglomerateWall = new StaticWall("conglomerate-wall") {{
-            variants = 4;
-        }};
-
-        conglomerateRock = new Floor("conglomerate-rock", 3) {{
-            blendGroup = Blocks.stone;
-            wall = conglomerateWall;
-        }};
 
         metalGroundHeat = new Floor("metal-ground-heat", 3) {{
             wall = metalWall;

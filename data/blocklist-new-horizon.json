@@ -167,18 +167,6 @@
 	"size": 1,
 	"color": -1684165889
 },
-"new-horizon-conglomerate-wall": {
-	"synthetic": false,
-	"solid": true,
-	"size": 1,
-	"color": 1953658367
-},
-"new-horizon-conglomerate-rock": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1246318079
-},
 "new-horizon-metal-ground-heat": {
 	"synthetic": false,
 	"solid": false,
@@ -617,6 +605,24 @@
 	"size": 1,
 	"color": 1585159679
 },
+"new-horizon-conglomerate-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 808469759
+},
+"new-horizon-dark-conglomerate-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 623197439
+},
+"new-horizon-thorium-stone-wall": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": 1043219711
+},
 "new-horizon-conglomerate-sparse": {
 	"synthetic": false,
 	"solid": false,
@@ -634,6 +640,24 @@
 	"solid": false,
 	"size": 1,
 	"color": 808469759
+},
+"new-horizon-dark-conglomerate-sparse": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 623197439
+},
+"new-horizon-dark-conglomerate": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 623197439
+},
+"new-horizon-dark-conglomerate-dense": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 623197439
 },
 "new-horizon-cryonite-sparse": {
 	"synthetic": false,
@@ -669,19 +693,19 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": -1922785281
+	"color": 1716285951
 },
 "new-horizon-thorium-stone": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": -1922785281
+	"color": 1716285951
 },
 "new-horizon-thorium-stone-dense": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": -1922785281
+	"color": 1716285951
 },
 "new-horizon-zeta-crystal-floor": {
 	"synthetic": false,
@@ -694,6 +718,18 @@
 	"solid": false,
 	"size": 1,
 	"color": 791706111
+},
+"new-horizon-ammonia-water-deep": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 640115455
+},
+"new-horizon-ammonia-water-shallow": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 808476415
 },
 "new-horizon-metal-floor-groove": {
 	"synthetic": false,
