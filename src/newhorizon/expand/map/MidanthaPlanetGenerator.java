@@ -1,5 +1,6 @@
 package newhorizon.expand.map;
 
+import arc.func.*;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -7,6 +8,8 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
 import arc.struct.IntSet;
+import arc.struct.Seq;
+import arc.util.Structs;
 import arc.util.Tmp;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
@@ -18,6 +21,7 @@ import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Sector;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.*;
+import mindustry.world.blocks.environment.Floor;
 import newhorizon.content.NHBlocks;
 import newhorizon.content.blocks.EnvironmentBlock;
 
@@ -45,8 +49,8 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
             {dc, dc, th, th, dc, dc, cb, dc, cb},
             {cb, cb, dc, cb, cb, dc, dc, dc, cb},
             {cb, dc, dc, dc, cb, cb, cb, dc, dc},
-            {cb, dc, qn, dc, dc, cb, cb, dc, dc},
-            {dc, dc, qn, qn, dc, cb, cb, dc, dc},
+            {cb, dc, dc, dc, dc, cb, cb, dc, dc},
+            {dc, dc, qn, dc, dc, cb, cb, dc, dc},
             {dc, qn, qd, qn, dc, dc, cb, cb, dc},
             {dc, qn, qd, qn, th, dc, cb, cb, cb},
             {dc, dc, qn, dc, th, dc, cb, cb, cb},
@@ -230,15 +234,6 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
     }
 
     @Override
-    public void getLockedText(Sector hovered, StringBuilder out) {
-        if (!isLandSector(hovered)) {
-            out.append("[gray]").append(Iconc.cancel).append(" ").append("LANDLESS");
-        }else {
-            super.getLockedText(hovered, out);
-        }
-    }
-
-    @Override
     public boolean allowAcceleratorLanding(Sector sector) {
         return super.allowAcceleratorLanding(sector) && isLandSector(sector);
     }
@@ -272,10 +267,60 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
 
         distort(4, 4);
 
+        rand.setSeed(seed + sector.id);
+        int shift = rand.random(20, 80);
+        each((x, y) -> {
+            Tile t = tiles.get(x, y);
+            Floor f = tiles.get(x, y).floor().asFloor();
+
+            if (!f.isLiquid){
+                boolean baseChance = Ridged.noise2d(baseSeed + sector.id, x, y, 3, 0.012f) > 0.158f;
+
+                boolean chanceBlock = (noise(x, y, 5, 0.7f, 15f, 3f) > 1.55f || Mathf.chance(0.125)) && baseChance;
+                boolean chanceFloor = (noise(x, y, 5, 0.7f, 15f, 3f) > 1.17f || Mathf.chance(0.175)) && baseChance;
+                boolean chanceLiquid = noise(x, y, 5, 0.7f, 15f, 3f) > 1.52f && baseChance;
+                boolean chanceDeepLiquid = noise(x, y, 5, 0.7f, 15f, 3f) > 1.65f && baseChance;
+
+                if (isOnLine(x, y, shift, 5)){
+                    if (chanceFloor) t.setFloor(Blocks.metalTiles11.asFloor());
+                }
+                if (isOnLine(x, y, shift, 4) || isOnLine(x, y, shift, 3)){
+                    if (chanceBlock) t.setBlock(Blocks.metalWall3);
+                    if (chanceFloor) t.setFloor(Blocks.metalTiles9.asFloor());
+                }
+                if (isOnLine(x, y, shift, 2)){
+                    t.setBlock(Blocks.air);
+                    if (chanceFloor) t.setFloor(Blocks.metalTiles11.asFloor());
+                }
+                if (isOnLine(x, y, shift, 0) || isOnLine(x, y, shift, 1)){
+                    t.setBlock(Blocks.air);
+                    if (chanceLiquid) t.setFloor(NHBlocks.quantumField.asFloor());
+                }
+                if (isOnLine(x, y, shift, 0) || isOnLine(x, y, shift, 1)){
+                    t.setBlock(Blocks.air);
+                    if (chanceDeepLiquid) t.setFloor(NHBlocks.quantumFieldDeep.asFloor());
+                }
+            }
+        });
+
+        distort(5, 2);
+
         Vec2 trns = Tmp.v1.trns(rand.random(360f), width / 2.6f);
         int coreX = (int) (-trns.x + width / 2f), coreY = (int) (-trns.y + height / 2f);
         Schematics.placeLaunchLoadout(coreX, coreY);
 
+    }
+
+    private void drawLine(int rad, Block block) {
+        rand.setSeed(seed + sector.id);
+        int shift = rand.random(20, 80);
+
+        each((x, y) -> {
+            Floor f = tiles.get(x, y).floor().asFloor();
+            if ((Math.abs(x % 100 + 1 - shift) < 2 || Math.abs(y % 100 + 1 - shift) < 2)) {
+                drawPoint(x, y, rad, block);
+            }
+        });
     }
 
     /*
@@ -399,18 +444,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
      */
 
     /*
-    public void draw(int cx, int cy, Block block, int rad, NHPlanets.DrawBoolf b) {
-        for (int x = -rad; x <= rad; x++) {
-            for (int y = -rad; y <= rad; y++) {
-                int wx = cx + x, wy = cy + y;
-                if (Structs.inBounds(wx, wy, width, height) && Mathf.within(x, y, rad) && b.get(wx, wy)) {
-                    Tile other = tiles.getn(wx, wy);
-                    if (block instanceof Floor) other.setFloor(block.asFloor());
-                    else other.setBlock(block);
-                }
-            }
-        }
-    }
+
 
     public void grow(Block wall, Block target) {
         pass((x, y) -> {
@@ -427,4 +461,37 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
     }
 
      */
+
+    public boolean isOnLine(int x, int y, int s, int o){
+        int spacing = 102;
+        int n1 = (spacing + s + o) % spacing;
+        int n2 = (spacing + s - o) % spacing;
+        return x % spacing == n1 || x % spacing == n2 || y % spacing == n1 || y % spacing == n2;
+    }
+
+    public void drawPoint(int cx, int cy, int rad, Block block){
+        drawPoint(cx, cy, rad, tile -> {
+            if (block == Blocks.air) tile.setBlock(Blocks.air);
+            else if (block instanceof Floor) tile.setFloor((Floor) block);
+            else tile.setBlock(block);
+        });
+    }
+
+    public void drawPoint(int cx, int cy, int rad, Cons<Tile> cons) {
+        drawPoint(cx, cy, rad, tile -> true, cons);
+    }
+
+    public void drawPoint(int cx, int cy, int rad, Boolf<Tile> bool, Cons<Tile> cons) {
+        for (int x = -rad; x <= rad; x++) {
+            for (int y = -rad; y <= rad; y++) {
+                int wx = cx + x, wy = cy + y;
+                if (Structs.inBounds(wx, wy, width, height)) {
+                    Tile tile = tiles.get(wx, wy);
+                    if (bool.get(tile)) {
+                        cons.get(tiles.getn(wx, wy));
+                    }
+                }
+            }
+        }
+    }
 }
