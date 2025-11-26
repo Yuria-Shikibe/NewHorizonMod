@@ -57,12 +57,11 @@ public class NewHorizon extends Mod {
             fetchNewRelease();
             showNewDialog();
             showStartLog();
-            Time.run(10f, () -> {
+            Time.run(60f, () -> {
                 if (OS.username.equals("LaoHuaJi")) {
                     DebugFunc.updateBlockList();
                     DebugFunc.generateBlankBundle();
                     DebugFunc.writeVanillaBlockList();
-                    DebugFunc.writeTeamList();
                     //showNew();
                 }
 

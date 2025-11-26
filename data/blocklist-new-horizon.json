@@ -731,30 +731,6 @@
 	"size": 1,
 	"color": 808476415
 },
-"new-horizon-metal-floor-groove": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1061177855
-},
-"new-horizon-metal-floor-deep-groove": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1061177855
-},
-"new-horizon-metal-floor-ridge": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1061177855
-},
-"new-horizon-metal-floor-high-ridge": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1061177855
-},
 "new-horizon-armor-wall": {
 	"synthetic": false,
 	"solid": true,
@@ -783,49 +759,7 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 926433791
-},
-"new-horizon-lab-floor-light": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 926433791
-},
-"new-horizon-lab-floor-dark": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 926433791
-},
-"new-horizon-line-marking-floor": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -1
-},
-"new-horizon-line-marking-floor-quantum": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -1
-},
-"new-horizon-line-marking-floor-quantum-dark": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -1
-},
-"new-horizon-line-marking-floor-ancient": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -1
-},
-"new-horizon-line-marking-floor-ancient-dark": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -1
+	"color": 1061177855
 },
 "new-horizon-pattern-plate-0": {
 	"synthetic": false,

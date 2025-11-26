@@ -9,6 +9,7 @@ import arc.graphics.Pixmap;
 import arc.graphics.PixmapIO;
 import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
 import arc.graphics.gl.FrameBuffer;
@@ -25,6 +26,7 @@ import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
@@ -32,6 +34,7 @@ import mindustry.type.Category;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.world.Block;
+import newhorizon.NewHorizon;
 import newhorizon.util.graphic.DrawFunc;
 
 import java.util.Objects;
@@ -43,7 +46,10 @@ public class DebugFunc {
     public static final String NH_ROOT_PATH = "E:/project/MindustryModDevLib/NewHorizonMod";
     public static final String NH_BUNDLE_PATH = NH_ROOT_PATH + "/assets/bundles/blank/";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
+
+    public static final String NH_ENV_AUTOTILE_PATH = NH_SPRITE_PATH + "/blocks/environment/ancient/autotile/";
     public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
+
     public static final String NH_DEBUG_JSON_DATA_FOLDER = NH_ROOT_PATH + "/data/";
     public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
     public static final Color[] NH_SPRITE_PALETTE = {
@@ -269,17 +275,6 @@ public class DebugFunc {
         buffer.end();
 
         buffer.dispose();
-    }
-
-    public static void outputAtlas() {
-        ObjectSet<Texture> atlasAll = Core.atlas.getTextures();
-        Log.info(atlasAll.size);
-        int i = 0;
-        for (Texture texture : atlasAll) {
-            i++;
-            Fi fi = createPNGFile("atlas-" + i);
-            PixmapIO.writePng(fi, texture.getTextureData().consumePixmap());
-        }
     }
 
     public static void unlockModContent() {

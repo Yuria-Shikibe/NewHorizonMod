@@ -18,7 +18,7 @@ public class EnvironmentBlock {
     public static Atlas_4_4_Floor armorAncient, armorAncientSub, armorQuantum;
 
     public static Atlas_4_12_Wall armorWall;
-    public static TiledFloor metalFloorPlain, labFloorLight, labFloorDark;
+    public static Block metalFloorPlain, labFloorLight, labFloorDark;
     public static DataFloor lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
 
     public static Floor patternPlate0, patternPlate1;
@@ -161,10 +161,13 @@ public class EnvironmentBlock {
             liquidDrop = NHLiquids.ammonia;
         }};
 
+        /*
         metalFloorGroove = new Atlas_4_12_Floor("metal-floor-groove", true);
         metalFloorGrooveDeep = new Atlas_4_12_Floor("metal-floor-deep-groove", true);
         metalFloorRidge = new Atlas_4_12_Floor("metal-floor-ridge");
         metalFloorRidgeHigh = new Atlas_4_12_Floor("metal-floor-high-ridge");
+
+         */
 
         armorWall = new Atlas_4_12_Wall("armor-wall");
 
@@ -184,15 +187,15 @@ public class EnvironmentBlock {
             emitLight = true;
         }};
 
-        metalFloorPlain = new TiledFloor("plating-metal-floor");
-        labFloorLight = new TiledFloor("lab-floor-light", 8, 1);
-        labFloorDark = new TiledFloor("lab-floor-dark", 8, 1);
+        metalFloorPlain = new TiledFloor("plating-metal-floor"){{
+            tileName = "plating-floor";
 
-        lineMarkingFloor = new DataFloor("line-marking-floor");
-        lineMarkingFloorQuantum = new DataFloor("line-marking-floor-quantum");
-        lineMarkingFloorQuantumDark = new DataFloor("line-marking-floor-quantum-dark");
-        lineMarkingFloorAncient = new DataFloor("line-marking-floor-ancient");
-        lineMarkingFloorAncientDark = new DataFloor("line-marking-floor-ancient-dark");
+            autotile = true;
+            drawEdgeOut = false;
+            drawEdgeIn = false;
+        }};
+        //labFloorLight = new TiledFloor("lab-floor-light", 8, 1);
+        //labFloorDark = new TiledFloor("lab-floor-dark", 8, 1);
 
         patternPlate0 = new MaskFloor("pattern-plate-0");
         patternPlate1 = new MaskFloor("pattern-plate-1");
@@ -201,10 +204,10 @@ public class EnvironmentBlock {
         //    tilingVariants = 512 / 32;
         //}};
 
-        metalFloorGroove.baseFloor = metalFloorPlain;
-        metalFloorGrooveDeep.baseFloor = metalFloorPlain;
-        metalFloorRidge.baseFloor = metalFloorPlain;
-        metalFloorRidgeHigh.baseFloor = metalFloorPlain;
+        //metalFloorGroove.baseFloor = metalFloorPlain;
+        //metalFloorGrooveDeep.baseFloor = metalFloorPlain;
+        //metalFloorRidge.baseFloor = metalFloorPlain;
+        //metalFloorRidgeHigh.baseFloor = metalFloorPlain;
 
         armorAncient.blendFloors.add(armorAncientSub);
         armorAncientSub.blendFloors.add(armorAncient);
