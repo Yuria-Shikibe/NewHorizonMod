@@ -5,6 +5,7 @@ import mindustry.Vars;
 import newhorizon.expand.cutscene.components.CutsceneControl;
 import newhorizon.expand.cutscene.components.CutsceneUI;
 import newhorizon.expand.game.NHWorldData;
+import newhorizon.util.graphic.ScreenShaderDrawer;
 import newhorizon.util.ui.TableFunc;
 
 public class NHVars {
@@ -30,8 +31,15 @@ public class NHVars {
         Core.app.addListener(core);
 
         if (Vars.headless) return;
+        initHeadless();
+    }
+
+    public static void initHeadless() {
         renderer = new NHRenderer();
+        ScreenShaderDrawer.init();
+
         NHSetting.loadUI();
         if (NHSetting.getBool(NHSetting.DEBUG_PANEL)) TableFunc.tableMain();
+
     }
 }

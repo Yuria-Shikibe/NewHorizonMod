@@ -20,6 +20,8 @@ public class TiledFloor extends Floor {
     public int splitTileSize = 4;
     public int splitVariants = 12;
 
+    public boolean useTiles = true;
+
     boolean splitLoaded = false;
 
     public TiledFloor(String name) {
@@ -48,6 +50,8 @@ public class TiledFloor extends Floor {
             }
         }
 
+        if (!useTiles) return;
+
         int pw = splitTileSize * splitVariants * 32;
         int ph = splitTileSize * 32;
         if (full.width == pw && full.height == ph) {
@@ -74,7 +78,7 @@ public class TiledFloor extends Floor {
 
     @Override
     public void drawBase(Tile tile) {
-        if (splitLoaded) drawTile(tile);
+        if (useTiles && splitLoaded) drawTile(tile);
         super.drawBase(tile);
     }
 }

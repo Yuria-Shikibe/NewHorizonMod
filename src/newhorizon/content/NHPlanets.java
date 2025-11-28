@@ -23,7 +23,7 @@ public class NHPlanets {
             alwaysUnlocked = true;
             iconColor = NHColor.darkEnrColor;
 
-            meshLoader = () -> new HexMesh(this, 7);
+            meshLoader = () -> new HexMesh(this, 6);
 
             //meshLoader = () -> new NHModMesh(
             //        this, 6, 5, 0.3, 1.7, 1.2, 1.4, 1.1f,

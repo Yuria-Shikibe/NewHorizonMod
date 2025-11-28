@@ -219,6 +219,20 @@ public class StatusRenderer {
                 }
             }
         });
+        register(NHStatusEffects.emp1, 120, (warmup, unit, status) -> {
+            ScreenShaderDrawer.drawDisplaceGlitch = warmup > 0.01f;
+            NHShaders.displaceGlitch.intensity = warmup * 1f;
+        });
+
+        register(NHStatusEffects.emp2, 130, (warmup, unit, status) -> {
+            ScreenShaderDrawer.drawDisplaceGlitch = warmup > 0.01f;
+            NHShaders.displaceGlitch.intensity = warmup * 1.6f;
+        });
+
+        register(NHStatusEffects.emp3, 140, (warmup, unit, status) -> {
+            ScreenShaderDrawer.drawDisplaceGlitch = warmup > 0.01f;
+            NHShaders.displaceGlitch.intensity = warmup * 2.2f;
+        });
     }
 
     public void register(StatusEffect effect, int priority, Cons3<Float, Unit, StatusEffect> statusRenderer) {

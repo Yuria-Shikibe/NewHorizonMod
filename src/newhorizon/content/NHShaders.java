@@ -70,12 +70,13 @@ public class NHShaders {
             public void apply() {
                 setUniformf("u_texsize", Core.graphics.getWidth(), Core.graphics.getHeight());
                 setUniformf("u_time", Time.time / Scl.scl(1f));
+                setUniformf("u_intensity", intensity);
 
                 if (hasUniform("u_noise")) {
                     if (noiseTex1 == null) noiseTex1 = getTexture() == null ? Core.assets.get("sprites/" + textureName() + ".png", Texture.class) : getTexture();
 
                     noiseTex1.bind(1);
-                    renderer.effectBuffer.getTexture().bind(0);
+                    texture.bind(0);
 
                     setUniformi("u_noise", 1);
                 }
@@ -232,6 +233,9 @@ public class NHShaders {
     }
 
     public static class ModSurfaceShader extends ModShader {
+        public float intensity = 0f;
+
+        public Texture texture;
         protected Texture noiseTex1, noiseTex2;
 
         public ModSurfaceShader(String frag) {

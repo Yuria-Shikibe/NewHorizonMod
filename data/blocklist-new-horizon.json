@@ -755,6 +755,12 @@
 	"size": 1,
 	"color": 1061177855
 },
+"new-horizon-plating-floor-1": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1061177855
+},
 "new-horizon-plating-metal-floor": {
 	"synthetic": false,
 	"solid": false,
@@ -765,13 +771,13 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": -1935021825
+	"color": -1
 },
 "new-horizon-pattern-plate-1": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": -1935021825
+	"color": -1
 },
 "new-horizon-nexus-core": {
 	"synthetic": true,

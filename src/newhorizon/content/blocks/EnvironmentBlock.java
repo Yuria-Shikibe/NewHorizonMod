@@ -26,6 +26,7 @@ public class EnvironmentBlock {
     public static OreBlock oreZeta, oreSilicon, oreSilicar;
 
     public static Block
+            platingFloor1,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
 
             conglomerateSparse, conglomerate, conglomerateDense,
@@ -185,6 +186,15 @@ public class EnvironmentBlock {
             lightColor = NHColor.darkEnrColor.cpy().a(0.7f);
             lightRadius = 15f;
             emitLight = true;
+        }};
+
+        platingFloor1 = new TiledFloor("plating-floor-1") {{
+            //useTiles = false;
+            tileName = "plating-floor";
+
+            autotile = true;
+            drawEdgeOut = false;
+            drawEdgeIn = false;
         }};
 
         metalFloorPlain = new TiledFloor("plating-metal-floor"){{
