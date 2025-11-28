@@ -7,10 +7,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.StaticWall;
-import newhorizon.content.NHBlocks;
-import newhorizon.content.NHColor;
-import newhorizon.content.NHItems;
-import newhorizon.content.NHLiquids;
+import newhorizon.content.*;
 import newhorizon.expand.block.env.*;
 
 public class EnvironmentBlock {
@@ -26,7 +23,7 @@ public class EnvironmentBlock {
     public static OreBlock oreZeta, oreSilicon, oreSilicar;
 
     public static Block
-            platingFloor1,
+            platingFloor1, platingFloor2, platingFloor3, platingFloor4,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
 
             conglomerateSparse, conglomerate, conglomerateDense,
@@ -191,6 +188,24 @@ public class EnvironmentBlock {
         platingFloor1 = new TiledFloor("plating-floor-1") {{
             //useTiles = false;
             tileName = "plating-floor";
+
+            autotile = true;
+            drawEdgeOut = false;
+            drawEdgeIn = false;
+        }};
+
+        platingFloor2 = new TiledFloor("plating-floor-2") {{
+            useTiles = false;
+            //tileName = "plating-floor";
+            autotile = true;
+            drawEdgeOut = false;
+            drawEdgeIn = false;
+        }};
+
+        platingFloor3 = new TiledFloor("plating-floor-3") {{
+            useTiles = false;
+
+            cacheLayer = NHContent.quantumLayer;
 
             autotile = true;
             drawEdgeOut = false;

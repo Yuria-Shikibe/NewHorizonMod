@@ -297,6 +297,8 @@ new-horizon-placeholder-entity-7 1 1 7 0
 new-horizon-placeholder-entity-8 1 1 8 0
 new-horizon-plastanium-crafter 1 1 3 0
 new-horizon-plating-floor-1 0 0 1 4145225
+new-horizon-plating-floor-2 0 0 1 16777215
+new-horizon-plating-floor-3 0 0 1 16777215
 new-horizon-plating-metal-floor 0 0 1 4145225
 new-horizon-power-basic 1 1 2 0
 new-horizon-power-cell 1 1 1 0
@@ -333,7 +335,7 @@ new-horizon-pulse-shotgun 1 1 2 0
 new-horizon-quantum-conductor 1 1 1 0
 new-horizon-quantum-field 0 0 1 11370475
 new-horizon-quantum-field-deep 0 0 1 9526223
-new-horizon-quantum-field-disturbing 0 0 1 10580196
+new-horizon-quantum-field-disturbing 0 0 1 11370475
 new-horizon-rail-gun 1 1 4 0
 new-horizon-rapid-unloader 1 1 1 0
 new-horizon-reconstruct-plastanium-factory 1 1 2 0

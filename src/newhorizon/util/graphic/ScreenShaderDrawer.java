@@ -12,6 +12,9 @@ import mindustry.graphics.Shaders;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHShaders;
 
+/**
+ * @see <a href="https://github.com/MEEPofFaith/hallucinogen/blob/master/src/drunkustry/graphics/DrunkRendering.java">MEEP's renderer</a>
+ */
 public class ScreenShaderDrawer {
     private static final FrameBuffer pingPong1 = new FrameBuffer();
     private static final FrameBuffer pingPong2 = new FrameBuffer();

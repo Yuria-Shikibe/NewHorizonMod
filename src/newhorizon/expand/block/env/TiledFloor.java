@@ -41,11 +41,13 @@ public class TiledFloor extends Floor {
         var full = Core.atlas.find(NewHorizon.name(tileName));
 
         if(autotile){
-            autotileRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled"), 32, 32);
+            var tiled = Core.atlas.find(name + "-tiled");
+            if (tiled.height == 128) autotileRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled"), 32, 32);
+            if (tiled.height == 136) autotileRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled"), 32, 32, 1);
             if(autotileVariants > 1){
                 autotileVariantRegions = new TextureRegion[autotileVariants][];
                 for(int i = 0; i < autotileVariants; i++){
-                    autotileVariantRegions[i] = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled-" + i), 32, 32);
+                    autotileVariantRegions[i] = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-" + i + "-tiled"), 32, 32);
                 }
             }
         }

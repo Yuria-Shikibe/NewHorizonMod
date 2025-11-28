@@ -37,6 +37,8 @@ import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.DrawFunc;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
@@ -164,6 +166,27 @@ public class DebugFunc {
 
     public static Fi createJsonFile(String fileName) {
         return new Fi(NH_DEBUG_JSON_DATA_FOLDER + fileName + ".json");
+    }
+
+    public static void processTiles(){
+        Fi folder = new Fi(NH_ROOT_PATH + "/debug");
+        for (Fi image: folder.list()){
+            if (image.name().endsWith(".png")){
+                Pixmap pixmap = PixmapIO.readPNG(image);
+                if ((pixmap.width == 128 && pixmap.height == 128) || (pixmap.width == 136 && pixmap.height == 136)){
+                    ProcessBuilder pb = new ProcessBuilder("tile-gen.exe", "proc", image.name());
+                    pb.directory(new File(NH_ROOT_PATH + "/debug"));
+                    pb.inheritIO();
+                    try {
+                        Process p = pb.start();
+                        p.waitFor();
+                    } catch (InterruptedException | IOException e){
+                        Log.err(e);
+                    }
+                }
+                pixmap.dispose();
+            }
+        }
     }
 
     public static void outputIcon() {

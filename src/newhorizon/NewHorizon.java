@@ -27,6 +27,8 @@ import newhorizon.util.DebugFunc;
 import newhorizon.util.ui.TableFunc;
 import newhorizon.util.ui.dialog.NewFeatureDialog;
 
+import java.io.IOException;
+
 import static mindustry.Vars.*;
 import static newhorizon.NHInputListener.registerModBinding;
 import static newhorizon.util.ui.TableFunc.LEN;
@@ -62,6 +64,7 @@ public class NewHorizon extends Mod {
                     DebugFunc.updateBlockList();
                     DebugFunc.generateBlankBundle();
                     DebugFunc.writeVanillaBlockList();
+                    //DebugFunc.processTiles();
                     //showNew();
                 }
 

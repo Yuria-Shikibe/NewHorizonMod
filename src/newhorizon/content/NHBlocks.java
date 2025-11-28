@@ -203,8 +203,6 @@ public class NHBlocks {
             attributes.set(Attribute.water, -1f);
             attributes.set(Attribute.oil, -1f);
             attributes.set(Attribute.spores, -1f);
-
-//			cacheLayer = NHContent.quantum;
         }};
 
         quantumFieldDeep = new Floor("quantum-field-deep", 0) {{
@@ -231,7 +229,6 @@ public class NHBlocks {
 
         quantumFieldDisturbing = new Floor("quantum-field-disturbing", 0) {
             {
-                drownTime = 180f;
                 status = NHStatusEffects.quantization;
                 statusDuration = 240f;
                 speedMultiplier = 1.3f;

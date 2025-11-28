@@ -150,7 +150,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
             if (density == 2) tile.floor = EnvironmentBlock.thoriumStoneDense;
         }
 
-        if(Ridged.noise3d(seed + 124, position.x, position.y, position.z, 4, 12.92f) > -0.25) tile.block = Blocks.air;
+        if(Ridged.noise3d(seed + 124, position.x, position.y, position.z, 4, 12.92f) > -0.45) tile.block = Blocks.air;
     }
 
     public float getRawHeight(Vec3 position){
@@ -271,21 +271,19 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
         int shift = rand.random(20, 80);
         each((x, y) -> {
             Tile t = tiles.get(x, y);
-            Floor f = tiles.get(x, y).floor().asFloor();
 
-            if (!f.isLiquid){
+            if (!t.solid() && !tiles.get(x, y).floor().asFloor().isLiquid){
                 boolean baseChance = Ridged.noise2d(baseSeed + sector.id, x, y, 3, 0.012f) > 0.158f;
 
                 boolean chanceBlock = (noise(x, y, 5, 0.7f, 15f, 3f) > 1.55f || Mathf.chance(0.125)) && baseChance;
                 boolean chanceFloor = (noise(x, y, 5, 0.7f, 15f, 3f) > 1.17f || Mathf.chance(0.175)) && baseChance;
                 boolean chanceLiquid = noise(x, y, 5, 0.7f, 15f, 3f) > 1.52f && baseChance;
-                boolean chanceDeepLiquid = noise(x, y, 5, 0.7f, 15f, 3f) > 1.65f && baseChance;
 
                 if (isOnLine(x, y, shift, 5)){
                     if (chanceFloor) t.setFloor(Blocks.metalTiles11.asFloor());
                 }
                 if (isOnLine(x, y, shift, 4) || isOnLine(x, y, shift, 3)){
-                    if (chanceBlock) t.setBlock(Blocks.metalWall3);
+                    //if (chanceBlock) t.setBlock(Blocks.metalWall3);
                     if (chanceFloor) t.setFloor(Blocks.metalTiles9.asFloor());
                 }
                 if (isOnLine(x, y, shift, 2)){
@@ -295,10 +293,6 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
                 if (isOnLine(x, y, shift, 0) || isOnLine(x, y, shift, 1)){
                     t.setBlock(Blocks.air);
                     if (chanceLiquid) t.setFloor(NHBlocks.quantumField.asFloor());
-                }
-                if (isOnLine(x, y, shift, 0) || isOnLine(x, y, shift, 1)){
-                    t.setBlock(Blocks.air);
-                    if (chanceDeepLiquid) t.setFloor(NHBlocks.quantumFieldDeep.asFloor());
                 }
             }
         });

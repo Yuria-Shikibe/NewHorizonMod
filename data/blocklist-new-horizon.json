@@ -189,7 +189,7 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": -1586436865
+	"color": -1384125444
 },
 "new-horizon-metal-tower": {
 	"synthetic": false,
@@ -760,6 +760,18 @@
 	"solid": false,
 	"size": 1,
 	"color": 1061177855
+},
+"new-horizon-plating-floor-2": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1
+},
+"new-horizon-plating-floor-3": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1
 },
 "new-horizon-plating-metal-floor": {
 	"synthetic": false,
