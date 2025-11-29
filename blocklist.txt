@@ -299,6 +299,7 @@ new-horizon-plastanium-crafter 1 1 3 0
 new-horizon-plating-floor-1 0 0 1 4145225
 new-horizon-plating-floor-2 0 0 1 16777215
 new-horizon-plating-floor-3 0 0 1 16777215
+new-horizon-plating-floor-4 0 0 1 16777215
 new-horizon-plating-metal-floor 0 0 1 4145225
 new-horizon-power-basic 1 1 2 0
 new-horizon-power-cell 1 1 1 0

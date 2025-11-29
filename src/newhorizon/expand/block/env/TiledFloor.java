@@ -42,12 +42,16 @@ public class TiledFloor extends Floor {
 
         if(autotile){
             var tiled = Core.atlas.find(name + "-tiled");
-            if (tiled.height == 128) autotileRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled"), 32, 32);
-            if (tiled.height == 136) autotileRegions = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled"), 32, 32, 1);
-            if(autotileVariants > 1){
+            if (tiled.height == 128) autotileRegions = SpriteUtil.splitRegionArray(tiled, 32, 32);
+            if (tiled.height == 136) autotileRegions = SpriteUtil.splitRegionArray(tiled, 32, 32, 1);
+
+            if(autotileVariants > 1) {
                 autotileVariantRegions = new TextureRegion[autotileVariants][];
-                for(int i = 0; i < autotileVariants; i++){
-                    autotileVariantRegions[i] = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-" + i + "-tiled"), 32, 32);
+                for (int i = 0; i < autotileVariants; i++) {
+                    var tiledVariant = Core.atlas.find(name + "-tiled-" + (i + 1));
+                    if (tiled.height == 128) autotileVariantRegions[i] = SpriteUtil.splitRegionArray(tiledVariant, 32, 32);
+                    else if (tiled.height == 136) autotileVariantRegions[i] = SpriteUtil.splitRegionArray(tiledVariant, 32, 32, 1);
+                    else Log.err("Failed to load tile " + name + "-tiled-" + (i + 1) + ": " + tiledVariant.width + "x" + tiledVariant.height);
                 }
             }
         }

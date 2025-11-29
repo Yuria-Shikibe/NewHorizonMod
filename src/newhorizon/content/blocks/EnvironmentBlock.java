@@ -204,7 +204,22 @@ public class EnvironmentBlock {
 
         platingFloor3 = new TiledFloor("plating-floor-3") {{
             useTiles = false;
+            autotileVariants = 2;
+            cacheLayer = NHContent.quantumLayer;
 
+            autotile = true;
+            drawEdgeOut = false;
+            drawEdgeIn = false;
+        }
+
+            @Override
+            public int variant(int x, int y, int max) {
+                return (x + y) % 2;
+            }
+        };
+
+        platingFloor4 = new TiledFloor("plating-floor-4") {{
+            useTiles = false;
             cacheLayer = NHContent.quantumLayer;
 
             autotile = true;

@@ -773,6 +773,12 @@
 	"size": 1,
 	"color": -1
 },
+"new-horizon-plating-floor-4": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1
+},
 "new-horizon-plating-metal-floor": {
 	"synthetic": false,
 	"solid": false,
