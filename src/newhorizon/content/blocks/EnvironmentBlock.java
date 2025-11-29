@@ -18,7 +18,6 @@ public class EnvironmentBlock {
     public static Block metalFloorPlain, labFloorLight, labFloorDark;
     public static DataFloor lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
 
-    public static Floor patternPlate0, patternPlate1;
     public static Floor armorClear;
     public static OreBlock oreZeta, oreSilicon, oreSilicar;
 
@@ -194,13 +193,13 @@ public class EnvironmentBlock {
             drawEdgeIn = false;
         }};
 
-        platingFloor2 = new TiledFloor("plating-floor-2") {{
-            useTiles = false;
-            //tileName = "plating-floor";
-            autotile = true;
-            drawEdgeOut = false;
-            drawEdgeIn = false;
-        }};
+        //platingFloor2 = new TiledFloor("plating-floor-2") {{
+        //    useTiles = false;
+        //    //tileName = "plating-floor";
+        //    autotile = true;
+        //    drawEdgeOut = false;
+        //    drawEdgeIn = false;
+        //}};
 
         platingFloor3 = new TiledFloor("plating-floor-3") {{
             useTiles = false;
@@ -236,10 +235,6 @@ public class EnvironmentBlock {
         }};
         //labFloorLight = new TiledFloor("lab-floor-light", 8, 1);
         //labFloorDark = new TiledFloor("lab-floor-dark", 8, 1);
-
-        patternPlate0 = new MaskFloor("pattern-plate-0");
-        patternPlate1 = new MaskFloor("pattern-plate-1");
-
         //armorClear = new Floor("armor-clear", 0) {{
         //    tilingVariants = 512 / 32;
         //}};
