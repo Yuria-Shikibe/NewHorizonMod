@@ -14,7 +14,6 @@ public class NHVars {
     public static NHWorldData worldData;
     public static NHRenderer renderer;
     public static NHInputListener listener;
-    public static NHInputControl control;
 
     public static CutsceneControl cutscene;
     public static CutsceneUI cutsceneUI;
@@ -22,7 +21,6 @@ public class NHVars {
     public static void init() {
         worldData = new NHWorldData();
         listener = new NHInputListener();
-        control = new NHInputControl();
 
         cutscene = new CutsceneControl();
         cutsceneUI = new CutsceneUI();

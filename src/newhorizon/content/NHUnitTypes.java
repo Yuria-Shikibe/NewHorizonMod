@@ -1533,28 +1533,14 @@ public class NHUnitTypes {
                 parts.add(new RegionPart("-backwings") {{
                     outline = true;
                     layerOffset = -1f;
+                    x = -41.5f;
+                    y = -201f;
+                }}, new RegionPart("-backwings") {{
+                    outline = true;
+                    layerOffset = -1f;
+                    x = 27.5f;
+                    y = -201f;
                 }});
-
-//			Weapon pds = new PointDefenseWeapon(NewHorizon.name("pester-secondary-laser")){{
-//				color = NHColor.ancientLightMid;
-//				mirror = false;
-//				rotate = true;
-//				top = true;
-//				reload = 6.0F;
-//				targetInterval = 8.0F;
-//				targetSwitchInterval = 8.0F;
-//				rotateSpeed = 8;
-//				shootCone = 30f;
-//				bullet = new BulletType() {
-//					{
-//						shootEffect = NHFx.shootLineSmall(color);
-//						hitEffect = NHFx.lightningHitSmall;
-//						hitColor = color;
-//						maxRange = 360.0F;
-//						damage = 250f;
-//					}
-//				};
-//			}};
 
                 Weapon pds = copyAnd(ancientPrism, w -> {
                     w.shootStatus = StatusEffects.none;
@@ -1693,8 +1679,6 @@ public class NHUnitTypes {
                     shootY = 75f;
 
                     showStatSprite = false;
-                    x = y = 0;
-
                     layerOffset = 0.002f;
 
                     shoot = new ShootMulti(new ShootBarrel() {{
@@ -1753,8 +1737,7 @@ public class NHUnitTypes {
                         @Override
                         public void updateHoming(Bullet b) {
                             if (b.time >= this.homingDelay) {
-                                if (b.owner instanceof Unit) {
-                                    Unit u = (Unit) b.owner;
+                                if (b.owner instanceof Unit u) {
                                     if (u.isPlayer()) {
                                         Player p = u.getPlayer();
                                         b.vel.setAngle(Angles.moveToward(b.rotation(), b.angleTo(p.mouseX, p.mouseY), homingPower * Time.delta * 50.0F));
@@ -1773,22 +1756,18 @@ public class NHUnitTypes {
                     mirror = rotate = false;
                     parts.add(new RegionPart("-cooler") {{
                         under = outline = true;
-                        //					layerOffset = -0.0005f;
                         rotation = -90;
-                        y = 7f;
+                        y = 49.5f;
+                        x = -69.5f;
                         moveY = -7f;
                         progress = PartProgress.warmup;
                     }}, new RegionPart("-silo") {{
                         under = outline = true;
                         rotation = -90;
+                        y = 62.5f;
+                        x = -78.75f;
                     }});
                 }});
-            }
-
-            @Override
-            public void createIcons(MultiPacker packer) {
-                super.createIcons(packer);
-                NHPixmap.createIcons(packer, this);
             }
         };
 
