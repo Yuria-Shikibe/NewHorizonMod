@@ -623,6 +623,18 @@
 	"size": 1,
 	"color": 1043219711
 },
+"new-horizon-conglomerate-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 1229479935
+},
+"new-horizon-dark-conglomerate-boulder": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": 825314815
+},
 "new-horizon-conglomerate-sparse": {
 	"synthetic": false,
 	"solid": false,

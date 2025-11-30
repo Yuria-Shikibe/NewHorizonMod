@@ -265,6 +265,8 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
         scatter(EnvironmentBlock.thoriumStoneDense, EnvironmentBlock.thoriumStone, 0.35f);
         scatter(EnvironmentBlock.thoriumStone, EnvironmentBlock.thoriumStoneSparse, 0.4f);
 
+        decoration(0.025f);
+
         distort(4, 4);
 
         rand.setSeed(seed + sector.id);
@@ -292,7 +294,7 @@ public class MidanthaPlanetGenerator extends PlanetGenerator {
                 }
                 if (isOnLine(x, y, shift, 0) || isOnLine(x, y, shift, 1)){
                     t.setBlock(Blocks.air);
-                    if (chanceLiquid) t.setFloor(NHBlocks.quantumField.asFloor());
+                    if (chanceLiquid) t.setFloor(NHBlocks.quantumFieldDisturbing.asFloor());
                 }
             }
         });

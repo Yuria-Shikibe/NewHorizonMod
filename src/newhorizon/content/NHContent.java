@@ -40,10 +40,6 @@ public class NHContent extends Content {
     public static final float POWER_AREA = Layer.power + 0.114f;
     public static final float POWER_DYNAMIC = Layer.power + 0.514f;
 
-    public static Fi scheDir;
-
-    public static Schematic mLoadout, nhBaseLoadout;
-
     public static Texture smoothNoise, particleNoise, darkerNoise, noise;
 
     public static CacheLayer quantumLayer, armorLayer;
@@ -118,18 +114,6 @@ public class NHContent extends Content {
         Icon.icons.put("midantha", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("midantha"))));
         Icon.icons.put("nh", new TextureRegionDrawable(Core.atlas.find(NewHorizon.name("icon-2"))));
         UltFire.load();
-
-        scheDir = NewHorizon.MOD.root.child("schematics-bases");
-
-
-        try {
-            NHSchematic.load();
-
-            mLoadout = Schematics.read(scheDir.child("init-loadout" + ".msch"));
-            nhBaseLoadout = Schematics.readBase64("bXNjaAF4nI3QTQuCMBgH8L+VQhlEBnWtD7AYpXePHaIvEB2mPeSgtpiK0afPilCww3bYDs9vzxtm8PsYKHEjTA9U7bSRT632Wpx1WcA/U54aeS+kVgC8q0jomqN3PPWwUFSx7OtZqWTBZH2RwbwdUPQoc5ZqQ/V/H+8zcLBqk4soMjJxHIfRmtdPFPI1/8iRLe3DremyTU0mlW5kuPlKr1s/MUKlWUO3/Ec79f9TB0O4737H9snHtsmBifVwgf1yA9vlvgAW2YvD");
-        } catch (IOException e) {
-            Log.info(e);
-        }
 
         crossRegion = Core.atlas.find("cross");
         sourceCenter = Core.atlas.find(NewHorizon.name("source-center"));

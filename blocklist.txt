@@ -58,6 +58,7 @@ new-horizon-conduit 1 0 1 0
 new-horizon-conduit-junction 1 1 1 0
 new-horizon-conduit-router 1 1 1 0
 new-horizon-conglomerate 0 0 1 3158084
+new-horizon-conglomerate-boulder 0 0 1 4802655
 new-horizon-conglomerate-dense 0 0 1 3158084
 new-horizon-conglomerate-greater 0 0 1 3158084
 new-horizon-conglomerate-lesser 0 0 1 3158084
@@ -83,6 +84,7 @@ new-horizon-crystal-decomposition-thermal-generator 1 1 2 0
 new-horizon-crystal-diode 1 1 1 0
 new-horizon-crystallizer 1 1 2 0
 new-horizon-dark-conglomerate 0 0 1 2434364
+new-horizon-dark-conglomerate-boulder 0 0 1 3223885
 new-horizon-dark-conglomerate-dense 0 0 1 2434364
 new-horizon-dark-conglomerate-sparse 0 0 1 2434364
 new-horizon-dark-conglomerate-wall 0 1 1 2434364

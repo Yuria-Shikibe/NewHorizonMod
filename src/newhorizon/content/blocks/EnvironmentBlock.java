@@ -6,6 +6,7 @@ import mindustry.graphics.CacheLayer;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.environment.Prop;
 import mindustry.world.blocks.environment.StaticWall;
 import newhorizon.content.*;
 import newhorizon.expand.block.env.*;
@@ -24,6 +25,7 @@ public class EnvironmentBlock {
     public static Block
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
+            conglomerateBoulder, darkConglomerateBoulder,
 
             conglomerateSparse, conglomerate, conglomerateDense,
             darkConglomerateSparse, darkConglomerate, darkConglomerateDense,
@@ -68,29 +70,42 @@ public class EnvironmentBlock {
             variants = 3;
         }};
 
+        conglomerateBoulder = new Prop("conglomerate-boulder") {{
+            variants = 4;
+        }};
+        darkConglomerateBoulder = new Prop("dark-conglomerate-boulder") {{
+            variants = 4;
+        }};
+
         conglomerateSparse = new Floor("conglomerate-sparse") {{
             variants = 6;
             wall = conglomerateWall;
+            decoration = conglomerateBoulder;
         }};
         conglomerate = new Floor("conglomerate") {{
             variants = 6;
             wall = conglomerateWall;
+            decoration = conglomerateBoulder;
         }};
         conglomerateDense = new Floor("conglomerate-dense") {{
             variants = 6;
             wall = conglomerateWall;
+            decoration = conglomerateBoulder;
         }};
         darkConglomerateSparse = new Floor("dark-conglomerate-sparse") {{
             variants = 6;
             wall = darkConglomerateWall;
+            decoration = darkConglomerateBoulder;
         }};
         darkConglomerate = new Floor("dark-conglomerate") {{
             variants = 6;
             wall = darkConglomerateWall;
+            decoration = darkConglomerateBoulder;
         }};
         darkConglomerateDense = new Floor("dark-conglomerate-dense") {{
             variants = 6;
             wall = darkConglomerateWall;
+            decoration = darkConglomerateBoulder;
         }};
 
         cryoniteSparse = new Floor("cryonite-sparse") {{
