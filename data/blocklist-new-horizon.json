@@ -59,12 +59,6 @@
 	"size": 4,
 	"color": 255
 },
-"new-horizon-ancient-artillery": {
-	"synthetic": true,
-	"solid": true,
-	"size": 8,
-	"color": 255
-},
 "new-horizon-prism": {
 	"synthetic": true,
 	"solid": true,
@@ -477,6 +471,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
+	"color": 255
+},
+"new-horizon-ancient-artillery": {
+	"synthetic": true,
+	"solid": true,
+	"size": 8,
 	"color": 255
 },
 "new-horizon-thermo-turret": {

@@ -4,10 +4,7 @@ import arc.Core;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.func.Cons;
-import arc.graphics.Color;
-import arc.graphics.Pixmap;
-import arc.graphics.PixmapIO;
-import arc.graphics.Texture;
+import arc.graphics.*;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureAtlas;
@@ -36,9 +33,11 @@ import mindustry.type.Sector;
 import mindustry.world.Block;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.DrawFunc;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
@@ -188,6 +187,44 @@ public class DebugFunc {
             }
         }
     }
+
+    //buggy since v8, sucks
+    public static void outputAtlas() {
+        int i = 0;
+
+        for (Texture tex : Core.atlas.getTextures()) {
+            i++;
+
+            int w = tex.width;
+            int h = tex.height;
+
+            FrameBuffer fb = new FrameBuffer(w, h);
+            fb.begin();
+
+            Draw.reset();
+            Draw.proj().setOrtho(0, 0, w, h);
+            Draw.color();
+            Draw.shader();
+            tex.bind();
+
+            TextureRegion region = new TextureRegion(tex);
+            Draw.rect(region, w / 2f, h / 2f, w, -h);
+
+            Gl.pixelStorei(Gl.packAlignment, 1);
+
+            ByteBuffer buffer = ByteBuffer.allocateDirect(w * h * 4);
+            Gl.readPixels(0, 0, w, h, Gl.rgba, Gl.unsignedByte, buffer);
+            Pixmap pixmap = new Pixmap(buffer, w, h);
+
+            fb.end();
+            fb.dispose();
+
+            PixmapIO.writePng(createPNGFile("atlas_" + i + ".png"), pixmap);
+
+            pixmap.dispose();
+        }
+    }
+
 
     public static void outputIcon() {
         Icon.icons.each((name, drawable) -> {

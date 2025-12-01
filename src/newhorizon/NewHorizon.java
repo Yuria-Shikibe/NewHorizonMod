@@ -64,6 +64,7 @@ public class NewHorizon extends Mod {
                     DebugFunc.updateBlockList();
                     DebugFunc.generateBlankBundle();
                     DebugFunc.writeVanillaBlockList();
+                    //DebugFunc.outputAtlas();
                     //DebugFunc.processTiles();
                     //showNew();
                 }
