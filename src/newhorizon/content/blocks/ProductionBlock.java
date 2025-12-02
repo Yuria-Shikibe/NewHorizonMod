@@ -44,7 +44,6 @@ import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block solidificationShaper, sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
-    public static Drill opticalMediumDrill;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
@@ -213,19 +212,6 @@ public class ProductionBlock {
             //consumePower(5f);
         }};
 
-        opticalMediumDrill = new Drill("optical-medium-drill"){{
-            requirements(Category.production, with(NHItems.silicon, 20, NHItems.hardLight, 20));
-            drillTime = 360;
-            size = 3;
-            tier = 3;
-            itemCapacity = 20;
-            liquidCapacity = 20f;
-            updateEffect = Fx.pulverizeMedium;
-            drillEffect = Fx.mineBig;
-            
-            consumeLiquid(NHLiquids.quantumLiquid, 0.08f).boost();
-            liquidBoostIntensity = 1.5f;
-        }};
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
@@ -236,8 +222,6 @@ public class ProductionBlock {
             mineSpeed = 6f;
             mineCount = 15;
             mineTier = 5;
-
-            powerConsBase = 120f;
 
             itemCapacity = 45;
             maxModules = 2;
@@ -289,8 +273,6 @@ public class ProductionBlock {
             mineSpeed = 10f;
             mineCount = 20;
             mineTier = 5;
-
-            powerConsBase = 180f;
             itemCapacity = 75;
 
             maxModules = 4;
@@ -367,8 +349,6 @@ public class ProductionBlock {
             itemCapacity = 120;
 
             maxModules = 8;
-
-            powerConsBase = 480f;
 
             updateEffectChance = 0.04f;
 

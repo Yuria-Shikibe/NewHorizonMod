@@ -1,4 +1,4 @@
-package newhorizon.expand.block.env;
+package newhorizon.expand.block.environment;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;

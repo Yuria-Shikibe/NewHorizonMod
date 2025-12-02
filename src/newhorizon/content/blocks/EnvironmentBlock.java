@@ -1,6 +1,5 @@
 package newhorizon.content.blocks;
 
-import mindustry.content.Liquids;
 import mindustry.content.StatusEffects;
 import mindustry.graphics.CacheLayer;
 import mindustry.world.Block;
@@ -9,20 +8,16 @@ import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.Prop;
 import mindustry.world.blocks.environment.StaticWall;
 import newhorizon.content.*;
-import newhorizon.expand.block.env.*;
+import newhorizon.expand.block.environment.*;
 
 public class EnvironmentBlock {
-    public static Atlas_4_12_Floor metalFloorGroove, metalFloorGrooveDeep, metalFloorRidge, metalFloorRidgeHigh;
-    public static Atlas_4_4_Floor armorAncient, armorAncientSub, armorQuantum;
-
-    public static Atlas_4_12_Wall armorWall;
     public static Block metalFloorPlain, labFloorLight, labFloorDark;
-    public static DataFloor lineMarkingFloor, lineMarkingFloorQuantum, lineMarkingFloorQuantumDark, lineMarkingFloorAncient, lineMarkingFloorAncientDark;
 
     public static Floor armorClear;
-    public static OreBlock oreZeta, oreSilicon, oreSilicar;
 
     public static Block
+            oreZeta, oreSilicon, oreSilicar,
+            oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
             conglomerateBoulder, darkConglomerateBoulder,
@@ -56,6 +51,22 @@ public class EnvironmentBlock {
             localizedName = itemDrop.localizedName;
             mapColor.set(itemDrop.color);
             useColor = true;
+        }};
+
+        oreSmallTitanium = new OreVein("ore-small-titanium", NHItems.titanium, 0.5f) {{
+            variants = 1;
+        }};
+
+        oreNormalTitanium = new OreVein("ore-normal-titanium", NHItems.titanium, 1f) {{
+            variants = 1;
+        }};
+
+        oreDenseTitanium = new OreVein("ore-dense-titanium", NHItems.titanium, 2f) {{
+            variants = 1;
+        }};
+
+        orePureTitanium = new OreVein("ore-pure-titanium", NHItems.titanium, 4f) {{
+            variants = 1;
         }};
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{
@@ -181,23 +192,6 @@ public class EnvironmentBlock {
 
          */
 
-        armorWall = new Atlas_4_12_Wall("armor-wall");
-
-        armorAncient = new Atlas_4_4_Floor("armor-ancient") {{
-            lightColor = NHColor.ancient.cpy().a(0.7f);
-            lightRadius = 15f;
-            emitLight = true;
-        }};
-        armorAncientSub = new Atlas_4_4_Floor("armor-ancient-sub") {{
-            lightColor = NHColor.ancient.cpy().a(0.7f);
-            lightRadius = 15f;
-            emitLight = true;
-        }};
-        armorQuantum = new Atlas_4_4_Floor("armor-quantum") {{
-            lightColor = NHColor.darkEnrColor.cpy().a(0.7f);
-            lightRadius = 15f;
-            emitLight = true;
-        }};
 
         platingFloor1 = new TiledFloor("plating-floor-1") {{
             //useTiles = false;
@@ -248,20 +242,5 @@ public class EnvironmentBlock {
             drawEdgeOut = false;
             drawEdgeIn = false;
         }};
-        //labFloorLight = new TiledFloor("lab-floor-light", 8, 1);
-        //labFloorDark = new TiledFloor("lab-floor-dark", 8, 1);
-        //armorClear = new Floor("armor-clear", 0) {{
-        //    tilingVariants = 512 / 32;
-        //}};
-
-        //metalFloorGroove.baseFloor = metalFloorPlain;
-        //metalFloorGrooveDeep.baseFloor = metalFloorPlain;
-        //metalFloorRidge.baseFloor = metalFloorPlain;
-        //metalFloorRidgeHigh.baseFloor = metalFloorPlain;
-
-        armorAncient.blendFloors.add(armorAncientSub);
-        armorAncientSub.blendFloors.add(armorAncient);
-
-        armorWall.baseBlock = NHBlocks.metalWallQuantum;
     }
 }

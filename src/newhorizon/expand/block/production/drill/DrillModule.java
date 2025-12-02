@@ -139,19 +139,7 @@ public class DrillModule extends Block {
         }
 
         public void apply(AdaptDrill.AdaptDrillBuild drill) {
-            drill.powerConsMul += powerMul;
-            drill.powerConsExtra += powerExtra;
-            drill.boostMul += boostSpeed;
-            for (Item[] convert : convertList) {
-                if (drill.dominantItem == convert[0]) {
-                    drill.convertItem = convert[1];
-                    drill.items.set(convert[0], 0);
-                    drill.boostFinalMul += convertMul.get(convert[0], boostFinalMul);
-                }
-            }
-            if (coreSend) {
-                drill.coreSend = true;
-            }
+
         }
     }
 }

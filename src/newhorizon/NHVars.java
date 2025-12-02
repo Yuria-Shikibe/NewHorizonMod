@@ -5,6 +5,7 @@ import mindustry.Vars;
 import newhorizon.expand.cutscene.components.CutsceneControl;
 import newhorizon.expand.cutscene.components.CutsceneUI;
 import newhorizon.expand.game.NHWorldData;
+import newhorizon.util.game.UpdateProxy;
 import newhorizon.util.graphic.ScreenShaderDrawer;
 import newhorizon.util.ui.TableFunc;
 
@@ -21,6 +22,8 @@ public class NHVars {
     public static void init() {
         worldData = new NHWorldData();
         listener = new NHInputListener();
+
+        UpdateProxy.init();
 
         cutscene = new CutsceneControl();
         cutsceneUI = new CutsceneUI();

@@ -419,12 +419,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-optical-medium-drill": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
 "new-horizon-resonance-mining-facility": {
 	"synthetic": true,
 	"solid": true,
@@ -605,6 +599,30 @@
 	"size": 1,
 	"color": 1585159679
 },
+"new-horizon-ore-small-titanium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1918770177
+},
+"new-horizon-ore-normal-titanium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1918770177
+},
+"new-horizon-ore-dense-titanium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1918770177
+},
+"new-horizon-ore-pure-titanium": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1918770177
+},
 "new-horizon-conglomerate-wall": {
 	"synthetic": false,
 	"solid": true,
@@ -742,30 +760,6 @@
 	"solid": false,
 	"size": 1,
 	"color": 808476415
-},
-"new-horizon-armor-wall": {
-	"synthetic": false,
-	"solid": true,
-	"size": 1,
-	"color": 1734964991
-},
-"new-horizon-armor-ancient": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -660640769
-},
-"new-horizon-armor-ancient-sub": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": -219645697
-},
-"new-horizon-armor-quantum": {
-	"synthetic": false,
-	"solid": false,
-	"size": 1,
-	"color": 1061177855
 },
 "new-horizon-plating-floor-1": {
 	"synthetic": false,

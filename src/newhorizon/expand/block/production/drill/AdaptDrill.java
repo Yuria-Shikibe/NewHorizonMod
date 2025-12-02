@@ -32,6 +32,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.production.BurstDrill;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.consumers.ConsumePowerDynamic;
 import mindustry.world.meta.*;
@@ -40,238 +41,41 @@ import newhorizon.content.NHStats;
 import static mindustry.Vars.*;
 import static newhorizon.util.func.NHFunc.globalEffectRand;
 
-public class AdaptDrill extends Block {
-    //return variables for countOre
-    protected final int maxOreTileReq = 10;
-    protected final ObjectIntMap<Item> oreCount = new ObjectIntMap<>();
-    protected final Seq<Item> itemArray = new Seq<>();
-    //output speed in items/sec
+public class AdaptDrill extends Drill {
     public float mineSpeed = 5;
-    //output count once
     public int mineCount = 2;
+
     public int mineTier;
+
     public Seq<Item> mineOres = new Seq<>();
     public TextureRegion baseRegion, topRegion, oreRegion;
-    public float powerConsBase;
-    public float updateEffectChance = 0.02f;
-    public Effect updateEffect = Fx.none;
+
     public int maxModules = 1;
     public Cons<AdaptDrillBuild> drawer = d -> {};
-    protected @Nullable Item returnItem;
-    protected int returnCount;
 
     public AdaptDrill(String name) {
         super(name);
         size = 4;
-
-        update = true;
-        solid = true;
-
-        drawCracks = false;
-
-        hasItems = true;
-        hasLiquids = false;
         itemCapacity = 40;
-
         canOverdrive = false;
-
-        ambientSound = Sounds.drill;
-        ambientSoundVolume = 0.018f;
-
-        group = BlockGroup.drills;
-        flags = EnumSet.of(BlockFlag.drill);
-
         drawTeamOverlay = false;
-
-        consumePower(AdaptDrillBuild::getPowerCons);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Building> void consumePower(Floatf<T> usage) {
-        consume(new ConsumePowerDynamic((Floatf<Building>) usage));
-    }
-
-    public float getMineSpeedHardnessMul(Item item) {
-        if (item == null) return 0f;
-        if (item.hardness <= 2) return 1f;
-        if (item.hardness <= 5) return 0.75f;
-        return 0.5f;
-    }
-
-    @Override
-    public void load() {
-        super.load();
-        baseRegion = Core.atlas.find(name + "-bottom");
-        topRegion = Core.atlas.find(name + "-top");
-        oreRegion = Core.atlas.find(name + "-ore");
     }
 
     @Override
     public void setBars() {
         super.setBars();
         addBar("outputOre", (AdaptDrillBuild e) -> new Bar(e::getMineInfo, e::getMineColor, () -> 1f));
-        addBar("drillspeed", (AdaptDrillBuild e) ->
-                new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.getMineSpeed(), 2)), () -> Pal.ammo, () -> e.warmup));
-
-    }
-
-    public float mineInterval() {
-        return (60f / mineSpeed) * mineCount;
     }
 
     @Override
     public void setStats() {
         super.setStats();
-
-        stats.add(Stat.powerUse, powerConsBase, StatUnit.powerSecond);
-        stats.add(Stat.drillSpeed, mineSpeed, StatUnit.itemsSecond);
-        stats.add(Stat.drillTier, table -> {
-            table.row();
-            table.table(c -> {
-                int i = 0;
-                for (Block block : content.blocks()) {
-                    if (block.itemDrop == null) continue;
-                    if (!(mineOres.contains(block.itemDrop) || block.itemDrop.hardness < mineTier)) continue;
-                    if ((block instanceof Floor && ((Floor) block).wallOre) || block instanceof StaticWall) continue;
-
-                    c.table(Styles.grayPanel, b -> {
-                        b.image(block.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                        b.table(info -> {
-                            info.left();
-                            info.add(block.localizedName).left().row();
-                            info.add(block.itemDrop.emoji()).left();
-                        }).grow();
-                        b.add(Strings.autoFixed(mineSpeed * getMineSpeedHardnessMul(block.itemDrop), 1) + StatUnit.perSecond.localized())
-                                .right().pad(10f).padRight(15f).color(Color.lightGray);
-                    }).growX().pad(5);
-                    if (++i % 2 == 0) c.row();
-                }
-            }).growX().colspan(table.getColumns());
-        });
         stats.add(NHStats.maxModules, maxModules);
     }
 
-    @Override
-    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        if (isMultiblock()) {
-            for (Tile other : tile.getLinkedTilesAs(this, tempTiles)) {
-                if (canMine(other)) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            return canMine(tile);
-        }
-    }
-
-    public boolean canReplace(Block other){
-        if(other.alwaysReplace) return true;
-        if(other.privileged) return false;
-        return other.replaceable && (other != this || (rotate && quickRotate)) && ((this.group != BlockGroup.none && other.group == this.group) || other == this) && (size >= other.size);
-    }
-
-    @Override
-    public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
-        if (!plan.worldContext) return;
-        Tile tile = plan.tile();
-        if (tile == null) return;
-
-        countOre(tile);
-        if (returnItem == null) return;
-        Draw.color(returnItem.color);
-        Draw.rect(oreRegion, plan.drawx(), plan.drawy());
-        Draw.color();
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-
-        Tile tile = world.tile(x, y);
-        if (tile == null) return;
-
-        countOre(tile);
-
-        if (returnItem != null) {
-            String oreCountText = (returnCount < maxOreTileReq ? "[sky](" : "[heal](") + returnCount + "/" + maxOreTileReq + ")[] " + Strings.autoFixed(mineSpeed * Mathf.clamp((float) returnCount / maxOreTileReq) * getMineSpeedHardnessMul(returnItem), 1) + StatUnit.perSecond.localized();
-            float width = drawPlaceText(oreCountText, x, y, valid);
-            float dx = x * tilesize + offset - width / 2f - 4f, dy = y * tilesize + offset + size * tilesize / 2f + 5, s = iconSmall / 4f;
-            Draw.mixcol(Color.darkGray, 1f);
-            Draw.rect(returnItem.fullIcon, dx, dy - 1, s, s);
-            Draw.reset();
-            Draw.rect(returnItem.fullIcon, dx, dy, s, s);
-        } else {
-            Tile to = tile.getLinkedTilesAs(this, tempTiles).find(t -> t.drop() != null && !mineOres.contains(t.drop()));
-            Item item = to == null ? null : to.drop();
-            if (item != null) {
-                drawPlaceText(Core.bundle.get("bar.drilltierreq"), x, y, valid);
-            } else {
-                drawPlaceText(Core.bundle.get("nh.no-available-ore"), x, y, valid);
-            }
-        }
-    }
-
-    protected void countOre(Tile tile) {
-        returnItem = null;
-        returnCount = 0;
-
-        oreCount.clear();
-        itemArray.clear();
-
-        for (Tile other : tile.getLinkedTilesAs(this, tempTiles)) {
-            if (canMine(other)) {
-                oreCount.increment(getDrop(other), 0, 1);
-            }
-        }
-
-        for (Item item : oreCount.keys()) {
-            itemArray.add(item);
-        }
-
-        itemArray.sort((item1, item2) -> {
-            int type = Boolean.compare(!item1.lowPriority, !item2.lowPriority);
-            if (type != 0) return type;
-            int amounts = Integer.compare(oreCount.get(item1, 0), oreCount.get(item2, 0));
-            if (amounts != 0) return amounts;
-            return Integer.compare(item1.id, item2.id);
-        });
-
-        if (itemArray.size == 0) {
-            return;
-        }
-
-        returnItem = itemArray.peek();
-        returnCount = Math.min(oreCount.get(itemArray.peek(), 0), maxOreTileReq);
-    }
-
-    protected boolean canMine(Tile tile) {
-        if (tile == null || tile.block().isStatic()) return false;
-        Item drops = tile.drop();
-        return drops != null && (mineOres.contains(drops) || drops.hardness < mineTier);
-    }
-
-    protected Item getDrop(Tile tile) {
-        return tile.drop();
-    }
-
-    public class AdaptDrillBuild extends Building {
-        public float progress;
-
-        //only for visual
-        public float warmup;
-
-        public int dominantItems;
-        public Item dominantItem;
+    public class AdaptDrillBuild extends DrillBuild {
         public Item convertItem;
-
-        public boolean coreSend = false;
-        public float boostMul = 1f;
-        public float boostFinalMul = 1f;
-
-        //(base * multiplier) + extra
-        public float powerConsMul = 1f;
-        public float powerConsExtra = 0f;
+        public float boostScl = 1f;
         public Seq<DrillModule.DrillModuleBuild> modules = new Seq<>();
 
         public float maxModules() {
@@ -281,12 +85,16 @@ public class AdaptDrill extends Block {
         @Override
         public void onProximityUpdate() {
             super.onProximityUpdate();
-
-            countOre(tile);
-            dominantItem = returnItem;
-            dominantItems = returnCount;
-
-            updateDrillModule();
+            modules.clear();
+            proximity.each(building -> {
+                if (building instanceof DrillModule.DrillModuleBuild module) {
+                    if (module.canApply(this)) {
+                        module.drillBuild = this;
+                        modules.add(module);
+                        module.apply(this);
+                    }
+                }
+            });
         }
 
         public Item outputItem() {
@@ -294,92 +102,15 @@ public class AdaptDrill extends Block {
         }
 
         @Override
-        public void updateTile() {
-            tryDump();
-            updateProgress();
-            updateOutput();
-            updateEffect();
-        }
-
-        private void updateOutput() {
-            if (progress > mineInterval()) {
-                int outCount = (int) (progress / mineInterval()) * mineCount;
-                for (int i = 0; i < outCount; i++) {
-                    if (outputItem() != null) {
-                        if (coreSend && core() != null && core().acceptItem(this, outputItem())) {
-                            core().handleItem(this, outputItem());
-                        } else {
-                            offload(outputItem());
-                        }
-                    }
-                }
-                progress %= mineInterval();
-            }
-        }
-
-        @Override
         public void drawSelect() {
             super.drawSelect();
-
-            if (outputItem() != null) {
-                float dx = x - size * tilesize / 2f, dy = y + size * tilesize / 2f, s = iconSmall / 4f;
-                Draw.mixcol(Color.darkGray, 1f);
-                Draw.rect(outputItem().fullIcon, dx, dy - 1, s, s);
-                Draw.reset();
-                Draw.rect(outputItem().fullIcon, dx, dy, s, s);
-            }
-
             Drawf.selected(this, Pal.accent);
             for (DrillModule.DrillModuleBuild module : modules) {
                 Drawf.selected(module, Pal.accent);
             }
         }
 
-        @Override
-        public void draw() {
-            Draw.rect(baseRegion, x, y);
-
-            if (warmup > 0f) {
-                drawer.get(this);
-            }
-            Draw.z(Layer.blockOver - 4f);
-            Draw.rect(topRegion, x, y);
-            if (outputItem() != null && dominantItem != null) {
-                Draw.color(dominantItem.color);
-                Draw.rect(oreRegion, x, y);
-                Draw.color();
-            }
-
-            drawTeamTop();
-        }
-
-        private void tryDump() {
-            if (timer(timerDump, dumpTime)) {
-                if (outputItem() != null) {
-                    if (coreSend && items.has(outputItem()) && core() != null && core().acceptItem(this, outputItem())) {
-                        items.remove(outputItem(), 1);
-                        core().handleItem(this, outputItem());
-                    } else {
-                        dump(items.has(outputItem()) ? outputItem() : null);
-                    }
-                }
-            }
-        }
-
-        private void updateEffect() {
-            if (!headless) {
-                if (warmup > 0.8f && efficiency > 0 && outputItem() != null && globalEffectRand.chance(updateEffectChance * boostScl())) {
-                    updateEffect.at(x + globalEffectRand.range(size * 3.6f), y + globalEffectRand.range(size * 3.6f), outputItem().color);
-                }
-            }
-        }
-
         private void resetModule() {
-            boostMul = 1f;
-            boostFinalMul = 1f;
-            powerConsMul = 1f;
-            powerConsExtra = 0f;
-            coreSend = false;
             convertItem = null;
             modules.clear();
         }
@@ -414,32 +145,6 @@ public class AdaptDrill extends Block {
 
         public Color getMineColor() {
             return outputItem() == null ? Pal.darkishGray : Tmp.c1.set(outputItem().color).lerp(Color.black, 0.2f);
-        }
-
-        //notice in tick
-        public float getPowerCons() {
-            return canOutput() ? (powerConsBase * powerConsMul + powerConsExtra) / 60f : 0f;
-        }
-
-        private void updateProgress() {
-            if (canOutput()) {
-                progress += edelta() * Mathf.clamp((float) dominantItems / maxOreTileReq) * boostScl();
-            }
-            if (!headless) {
-                if (items.total() < itemCapacity && dominantItems > 0 && efficiency > 0) {
-                    warmup = Mathf.approachDelta(warmup, efficiency, 0.01f);
-                } else {
-                    warmup = Mathf.approachDelta(warmup, 0, 0.01f);
-                }
-            }
-        }
-
-        public float boostScl() {
-            return boostMul * boostFinalMul * getMineSpeedHardnessMul(dominantItem);
-        }
-
-        private float getMineSpeed() {
-            return Mathf.clamp((float) dominantItems / maxOreTileReq) * boostScl() * mineSpeed;
         }
 
         @Override

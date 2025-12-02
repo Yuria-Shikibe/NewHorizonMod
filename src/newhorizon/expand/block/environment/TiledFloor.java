@@ -1,4 +1,4 @@
-package newhorizon.expand.block.env;
+package newhorizon.expand.block.environment;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
@@ -7,7 +7,6 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.util.Log;
 import mindustry.world.Tile;
-import mindustry.world.blocks.TileBitmask;
 import mindustry.world.blocks.environment.Floor;
 import newhorizon.NewHorizon;
 import newhorizon.util.graphic.SpriteUtil;

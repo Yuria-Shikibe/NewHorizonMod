@@ -277,8 +277,12 @@ new-horizon-nitrogen-dissociator 1 1 3 0
 new-horizon-nodex-factory 1 1 3 0
 new-horizon-oil-refiner 1 1 2 0
 new-horizon-optical-medium-drill 1 1 3 0
+new-horizon-ore-dense-titanium 0 0 1 9282019
+new-horizon-ore-normal-titanium 0 0 1 9282019
+new-horizon-ore-pure-titanium 0 0 1 9282019
 new-horizon-ore-silicar 0 0 1 6192029
 new-horizon-ore-silicon 0 0 1 5461596
+new-horizon-ore-small-titanium 0 0 1 9282019
 new-horizon-ore-zeta 0 0 1 16757632
 new-horizon-particle-modulator 1 1 1 0
 new-horizon-particle-processor-basic 1 1 2 0
