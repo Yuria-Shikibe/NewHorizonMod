@@ -53,21 +53,10 @@ public class EnvironmentBlock {
             useColor = true;
         }};
 
-        oreSmallTitanium = new OreVein("ore-small-titanium", NHItems.titanium, 0.5f) {{
-            variants = 1;
-        }};
-
-        oreNormalTitanium = new OreVein("ore-normal-titanium", NHItems.titanium, 1f) {{
-            variants = 1;
-        }};
-
-        oreDenseTitanium = new OreVein("ore-dense-titanium", NHItems.titanium, 2f) {{
-            variants = 1;
-        }};
-
-        orePureTitanium = new OreVein("ore-pure-titanium", NHItems.titanium, 4f) {{
-            variants = 1;
-        }};
+        oreSmallTitanium = new OreVein("ore-small-titanium", NHItems.titanium, 0.5f);
+        oreNormalTitanium = new OreVein("ore-normal-titanium", NHItems.titanium, 1f);
+        oreDenseTitanium = new OreVein("ore-dense-titanium", NHItems.titanium, 2f);
+        orePureTitanium = new OreVein("ore-pure-titanium", NHItems.titanium, 4f);
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{
             variants = 3;

@@ -48,7 +48,6 @@ public class ProductionBlock {
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
-        //wip
         solidificationShaper = new RecipeGenericCrafter("solidification-shaper") {{
             requirements(Category.production, ItemStack.with(NHItems.hardLight, 20, NHItems.silicon, 5));
             health = 300;
@@ -62,22 +61,6 @@ public class ProductionBlock {
 
             outputItem = new ItemStack(NHItems.hardLight, 2);
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
-
-        //    buildType = () -> new RecipeGenericCrafterBuild() {
-        //        @Override
-        //        public void updateTile() {
-        //            super.updateTile();
-        //            if (power != null) {
-        //                float sunlightFactor = Mathf.clamp(
-        //                        (1f - Vars.state.rules.ambientLight.a) * Vars.state.rules.solarMultiplier,
-        //                        0.4f, 4f
-        //                );
-
-        //                powerProduction = sunlightFactor;
-        //            }
-        //    }
-        //    };
-
         }};
 
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{
@@ -212,6 +195,7 @@ public class ProductionBlock {
             //consumePower(5f);
         }};
 
+        /*
         resonanceMiningFacility = new AdaptDrill("resonance-mining-facility") {{
             requirements(Category.production, with(Items.titanium, 80, Items.silicon, 120, Items.tungsten, 40));
             mineOres.add(new Item[]{Items.sand, Items.scrap, Items.copper, Items.lead, Items.coal, Items.titanium, Items.beryllium, Items.thorium, Items.tungsten, NHItems.zeta});
@@ -569,5 +553,7 @@ public class ProductionBlock {
                 Lines.square(module.x, module.y, 8, -Time.time / 8f);
             };
         }};
+
+         */
     }
 }

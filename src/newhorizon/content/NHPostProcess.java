@@ -330,7 +330,7 @@ public class NHPostProcess {
         if (NHSetting.getBool(NHSetting.OVERRIDE_UNIT_SHIELD)) overrideUnitShield();
         if (NHSetting.getBool(NHSetting.OVERRIDE_CORE_UNIT)) overrideCoreUnit();
         if (NHSetting.getBool(NHSetting.OVERRIDE_LOGISTIC)) overrideLogistic();
-        if (NHSetting.getBool(NHSetting.OVERRIDE_DRILL)) overrideDrill();
+        //if (NHSetting.getBool(NHSetting.OVERRIDE_DRILL)) overrideDrill();
         if (NHSetting.getBool(NHSetting.OVERRIDE_FACTORIES)) overrideFactories();
         if (NHSetting.getBool(NHSetting.OVERRIDE_POWER)) overridePower();
         if (NHSetting.getBool(NHSetting.OVERRIDE_UNIT)) overrideUnit();

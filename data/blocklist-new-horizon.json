@@ -419,54 +419,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-resonance-mining-facility": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-beam-mining-facility": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-implosion-mining-facility": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-speed-module": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-speed-module-mk2": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-refine-module": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-convertor-module": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-delivery-module": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-ancient-artillery": {
 	"synthetic": true,
 	"solid": true,
