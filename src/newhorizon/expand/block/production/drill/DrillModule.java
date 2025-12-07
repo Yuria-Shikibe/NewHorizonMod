@@ -39,7 +39,6 @@ public class DrillModule extends Block {
     public float boostFinalMul = 0f;
     public float powerMul = 0f;
     public float powerExtra = 0f;
-    public boolean coreSend = false;
 
     public Cons<DrillModuleBuild> drawer = module -> {
     };

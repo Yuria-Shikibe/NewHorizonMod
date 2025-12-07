@@ -42,16 +42,7 @@ import static mindustry.Vars.*;
 import static newhorizon.util.func.NHFunc.globalEffectRand;
 
 public class AdaptDrill extends Drill {
-    public float mineSpeed = 5;
-    public int mineCount = 2;
-
-    public int mineTier;
-
-    public Seq<Item> mineOres = new Seq<>();
-    public TextureRegion baseRegion, topRegion, oreRegion;
-
     public int maxModules = 1;
-    public Cons<AdaptDrillBuild> drawer = d -> {};
 
     public AdaptDrill(String name) {
         super(name);
@@ -62,20 +53,12 @@ public class AdaptDrill extends Drill {
     }
 
     @Override
-    public void setBars() {
-        super.setBars();
-        addBar("outputOre", (AdaptDrillBuild e) -> new Bar(e::getMineInfo, e::getMineColor, () -> 1f));
-    }
-
-    @Override
     public void setStats() {
         super.setStats();
         stats.add(NHStats.maxModules, maxModules);
     }
 
     public class AdaptDrillBuild extends DrillBuild {
-        public Item convertItem;
-        public float boostScl = 1f;
         public Seq<DrillModule.DrillModuleBuild> modules = new Seq<>();
 
         public float maxModules() {
@@ -97,22 +80,11 @@ public class AdaptDrill extends Drill {
             });
         }
 
-        public Item outputItem() {
-            return dominantItem != null ? convertItem != null ? convertItem : dominantItem : null;
-        }
-
         @Override
         public void drawSelect() {
             super.drawSelect();
             Drawf.selected(this, Pal.accent);
-            for (DrillModule.DrillModuleBuild module : modules) {
-                Drawf.selected(module, Pal.accent);
-            }
-        }
-
-        private void resetModule() {
-            convertItem = null;
-            modules.clear();
+            modules.each(building -> Drawf.selected(building, Pal.accent));
         }
 
         @Override
@@ -123,65 +95,10 @@ public class AdaptDrill extends Drill {
             }
         }
 
-        public void updateDrillModule() {
-            resetModule();
-            for (Building building : proximity) {
-                if (building instanceof DrillModule.DrillModuleBuild module) {
-                    if (module.canApply(this)) {
-                        module.drillBuild = this;
-                        modules.add(module);
-                        module.apply(this);
-                    }
-                }
-            }
-        }
-
-        public String getMineInfo() {
-            return outputItem() == null ?
-                    Iconc.cancel + " No Available Resource" : convertItem == null ?
-                    Fonts.getUnicodeStr(outputItem().name) + " " + outputItem().localizedName :
-                    Fonts.getUnicodeStr(dominantItem.name) + " " + dominantItem.localizedName + " -> " + Fonts.getUnicodeStr(outputItem().name) + " " + outputItem().localizedName;
-        }
-
-        public Color getMineColor() {
-            return outputItem() == null ? Pal.darkishGray : Tmp.c1.set(outputItem().color).lerp(Color.black, 0.2f);
-        }
-
         @Override
         public Object senseObject(LAccess sensor) {
             if (sensor == LAccess.firstItem) return dominantItem;
             return super.senseObject(sensor);
-        }
-
-        public boolean canOutput() {
-            return items.total() < itemCapacity;
-        }
-
-        public BlockStatus status() {
-            if (!enabled) {
-                return BlockStatus.logicDisable;
-            }
-            if (!canOutput()) {
-                return BlockStatus.noOutput;
-            }
-            if (efficiency <= 0 || !productionValid()) {
-                return BlockStatus.noInput;
-            }
-            return BlockStatus.active;
-        }
-
-        @Override
-        public void write(Writes write) {
-            super.write(write);
-            write.f(progress);
-            write.f(warmup);
-        }
-
-        @Override
-        public void read(Reads read, byte revision) {
-            super.read(read, revision);
-            progress = read.f();
-            warmup = read.f();
         }
     }
 }

@@ -124,18 +124,12 @@ public class UnitSpawner extends Block {
         }
 
         @Override
-        public void control(LAccess type, double p1, double p2, double p3, double p4) {
-            super.control(type, p1, p2, p3, p4);
-        }
-
-        @Override
         public void updateTile() {
             if (!addUnit) addUnit();
         }
 
         @Override
-        public void drawConfigure() {
-        }
+        public void drawConfigure() {}
 
         @Override
         public void draw() {

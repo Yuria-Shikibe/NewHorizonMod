@@ -34,6 +34,7 @@ import newhorizon.content.*;
 import newhorizon.expand.block.drawer.DrawRotator;
 import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
+import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
@@ -43,24 +44,22 @@ import static mindustry.type.ItemStack.with;
 import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
-    public static Block solidificationShaper, sandCracker, tungstenReconstructor, titaniumReconstructor, liquidConvertor, xenExtractor, xenIterator;
+    public static Block
+            sandCracker, tungstenReconstructor, titaniumReconstructor,
+            liquidConvertor, xenExtractor, xenIterator,
+            scanCollector;
     public static AdaptDrill resonanceMiningFacility, beamMiningFacility, implosionMiningFacility;
     public static DrillModule speedModule, speedModuleMk2, refineModule, convertorModule, deliveryModule;
 
     public static void load() {
-        solidificationShaper = new RecipeGenericCrafter("solidification-shaper") {{
-            requirements(Category.production, ItemStack.with(NHItems.hardLight, 20, NHItems.silicon, 5));
-            health = 300;
-            size = 2;
-            craftTime = 120f;
-            itemCapacity = 30;
-            craftEffect = Fx.smeltsmoke;
-            outputsPower = true;
-            rotate = false;
-            powerProduction = 0.1f;
 
-            outputItem = new ItemStack(NHItems.hardLight, 2);
-            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(NHItems.darkEnergy.color));
+        scanCollector = new OreCollector("scan-collector") {{
+            requirements(Category.production, ItemStack.with(
+                    NHItems.silicon, 40,
+                    NHItems.graphite, 40
+            ));
+            size = 3;
+            addLink(0, 2, 2, 0, -3, 2);
         }};
 
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{

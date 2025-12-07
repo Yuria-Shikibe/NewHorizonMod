@@ -17,7 +17,6 @@ import static mindustry.Vars.world;
 
 public interface MultiBlock {
 
-
     Seq<Point2> linkBlockPos();
 
     IntSeq linkBlockSize();

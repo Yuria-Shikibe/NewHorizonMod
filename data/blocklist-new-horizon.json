@@ -377,10 +377,10 @@
 	"size": 1,
 	"color": 255
 },
-"new-horizon-solidification-shaper": {
+"new-horizon-scan-collector": {
 	"synthetic": true,
 	"solid": true,
-	"size": 2,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-sand-cracker": {
@@ -575,6 +575,12 @@
 	"size": 1,
 	"color": -1918770177
 },
+"new-horizon-ore-cluster-titanium": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-conglomerate-wall": {
 	"synthetic": false,
 	"solid": true,
@@ -615,13 +621,13 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 808469759
+	"color": 842156031
 },
 "new-horizon-conglomerate-dense": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 808469759
+	"color": 875842303
 },
 "new-horizon-dark-conglomerate-sparse": {
 	"synthetic": false,
@@ -633,13 +639,13 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 623197439
+	"color": 640040703
 },
 "new-horizon-dark-conglomerate-dense": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 623197439
+	"color": 673727231
 },
 "new-horizon-cryonite-sparse": {
 	"synthetic": false,
@@ -681,13 +687,13 @@
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 1716285951
+	"color": 1800369919
 },
 "new-horizon-thorium-stone-dense": {
 	"synthetic": false,
 	"solid": false,
 	"size": 1,
-	"color": 1716285951
+	"color": 1884519679
 },
 "new-horizon-zeta-crystal-floor": {
 	"synthetic": false,

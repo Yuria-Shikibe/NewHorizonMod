@@ -86,7 +86,31 @@ public class UpdateProxy {
         });
 
 
-        Events.run(EventType.Trigger.afterGameUpdate.getClass(), () -> {});
+        Events.run(EventType.Trigger.beforeGameUpdate, () -> {
+            Vars.state.teams.getActive().each(teamData -> {
+                registerDrills.each(drill -> {
+                    Seq<Building> buildings = teamData.buildingTypes.get(drill);
+                    if (buildings != null && !buildings.isEmpty()) {
+                        teamData.buildingTypes.get(drill).each(building -> {
+                            building.enabled = false;
+                        });
+                    }
+                });
+            });
+        });
+
+        Events.run(EventType.Trigger.afterGameUpdate, () -> {
+            Vars.state.teams.getActive().each(teamData -> {
+                registerDrills.each(drill -> {
+                    Seq<Building> buildings = teamData.buildingTypes.get(drill);
+                    if (buildings != null && !buildings.isEmpty()) {
+                        teamData.buildingTypes.get(drill).each(building -> {
+                            building.enabled = true;
+                        });
+                    }
+                });
+            });
+        });
 
         thread.setPriority(Thread.NORM_PRIORITY - 1);
         thread.setDaemon(true);

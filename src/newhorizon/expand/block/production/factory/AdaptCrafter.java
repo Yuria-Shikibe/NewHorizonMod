@@ -165,6 +165,7 @@ public class AdaptCrafter extends GenericCrafter implements MultiBlock {
         //ordered seq, target-source pair
         public Seq<Building[]> linkProximityMap;
         public int dumpIndex = 0;
+
         public Tile teamPos, statusPos;
         public PayloadSeq payloads = new PayloadSeq();
 

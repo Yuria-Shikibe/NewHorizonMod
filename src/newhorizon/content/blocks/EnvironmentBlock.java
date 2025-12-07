@@ -2,6 +2,7 @@ package newhorizon.content.blocks;
 
 import mindustry.content.StatusEffects;
 import mindustry.graphics.CacheLayer;
+import mindustry.graphics.MultiPacker;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
@@ -18,6 +19,7 @@ public class EnvironmentBlock {
     public static Block
             oreZeta, oreSilicon, oreSilicar,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
+            oreClusterTitanium,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
             conglomerateBoulder, darkConglomerateBoulder,
@@ -57,15 +59,16 @@ public class EnvironmentBlock {
         oreNormalTitanium = new OreVein("ore-normal-titanium", NHItems.titanium, 1f);
         oreDenseTitanium = new OreVein("ore-dense-titanium", NHItems.titanium, 2f);
         orePureTitanium = new OreVein("ore-pure-titanium", NHItems.titanium, 4f);
+        oreClusterTitanium = new OreCluster("ore-cluster-titanium") {{
+            size = 2;
+        }};
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{
             variants = 3;
         }};
-
         darkConglomerateWall = new StaticWall("dark-conglomerate-wall") {{
             variants = 3;
         }};
-
         thoriumStoneWall = new StaticWall("thorium-stone-wall") {{
             variants = 3;
         }};
@@ -86,12 +89,24 @@ public class EnvironmentBlock {
             variants = 6;
             wall = conglomerateWall;
             decoration = conglomerateBoulder;
-        }};
+        }
+            @Override
+            public void createIcons(MultiPacker packer) {
+                super.createIcons(packer);
+                mapColor.set(conglomerateSparse.mapColor).mul(1.05f);
+            }
+        };
         conglomerateDense = new Floor("conglomerate-dense") {{
             variants = 6;
             wall = conglomerateWall;
             decoration = conglomerateBoulder;
-        }};
+        }
+            @Override
+            public void createIcons(MultiPacker packer) {
+                super.createIcons(packer);
+                mapColor.set(conglomerateSparse.mapColor).mul(1.10f);
+            }
+        };
         darkConglomerateSparse = new Floor("dark-conglomerate-sparse") {{
             variants = 6;
             wall = darkConglomerateWall;
@@ -101,12 +116,24 @@ public class EnvironmentBlock {
             variants = 6;
             wall = darkConglomerateWall;
             decoration = darkConglomerateBoulder;
-        }};
+        }
+            @Override
+            public void createIcons(MultiPacker packer) {
+                super.createIcons(packer);
+                mapColor.set(darkConglomerateSparse.mapColor).mul(1.05f);
+            }
+        };
         darkConglomerateDense = new Floor("dark-conglomerate-dense") {{
             variants = 6;
             wall = darkConglomerateWall;
             decoration = darkConglomerateBoulder;
-        }};
+        }
+            @Override
+            public void createIcons(MultiPacker packer) {
+                super.createIcons(packer);
+                mapColor.set(darkConglomerateSparse.mapColor).mul(1.10f);
+            }
+        };
 
         cryoniteSparse = new Floor("cryonite-sparse") {{
             variants = 3;
@@ -133,11 +160,23 @@ public class EnvironmentBlock {
         thoriumStone = new Floor("thorium-stone") {{
             variants = 4;
             wall = thoriumStoneWall;
-        }};
+        }
+            @Override
+            public void createIcons(MultiPacker packer) {
+                super.createIcons(packer);
+                mapColor.set(thoriumStoneSparse.mapColor).mul(1.05f);
+            }
+        };
         thoriumStoneDense = new Floor("thorium-stone-dense") {{
             variants = 4;
             wall = thoriumStoneWall;
-        }};
+        }
+            @Override
+            public void createIcons(MultiPacker packer) {
+                super.createIcons(packer);
+                mapColor.set(thoriumStoneSparse.mapColor).mul(1.10f);
+            }
+        };
 
         zetaCrystalFloor = new Floor("zeta-crystal-floor") {{
             variants = 3;
