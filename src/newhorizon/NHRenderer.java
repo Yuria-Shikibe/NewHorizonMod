@@ -29,6 +29,7 @@ public class NHRenderer implements Disposable {
         statusRenderer.draw();
 
         mask.resize(graphics.getWidth(), graphics.getHeight());
+        //drawShader(NHShaders.quantum, NHContent.QUANTUM_LAYER);
         drawShader(NHShaders.powerArea, NHContent.POWER_AREA);
         drawShader(NHShaders.powerDynamicArea, NHContent.POWER_DYNAMIC);
     }

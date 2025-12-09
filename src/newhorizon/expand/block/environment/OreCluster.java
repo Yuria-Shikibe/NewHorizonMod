@@ -13,13 +13,14 @@ import mindustry.world.Tile;
 
 public class OreCluster extends Block {
     public float layer = Layer.blockProp;
-    public Item item = Items.copper;
 
     public OreCluster(String name) {
         super(name);
         solid = true;
         destructible = true;
         drawTeamOverlay = false;
+
+        itemDrop = Items.copper;
     }
 
     @Override

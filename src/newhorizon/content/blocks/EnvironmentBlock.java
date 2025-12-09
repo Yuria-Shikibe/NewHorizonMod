@@ -1,13 +1,11 @@
 package newhorizon.content.blocks;
 
+import mindustry.content.Blocks;
 import mindustry.content.StatusEffects;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.MultiPacker;
 import mindustry.world.Block;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.OreBlock;
-import mindustry.world.blocks.environment.Prop;
-import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.environment.*;
 import newhorizon.content.*;
 import newhorizon.expand.block.environment.*;
 
@@ -59,8 +57,9 @@ public class EnvironmentBlock {
         oreNormalTitanium = new OreVein("ore-normal-titanium", NHItems.titanium, 1f);
         oreDenseTitanium = new OreVein("ore-dense-titanium", NHItems.titanium, 2f);
         orePureTitanium = new OreVein("ore-pure-titanium", NHItems.titanium, 4f);
-        oreClusterTitanium = new OreCluster("ore-cluster-titanium") {{
-            size = 2;
+        oreClusterTitanium = new TallBlock("ore-cluster-titanium") {{
+            itemDrop = NHItems.titanium;
+            variants = 1;
         }};
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{
@@ -270,5 +269,11 @@ public class EnvironmentBlock {
             drawEdgeOut = false;
             drawEdgeIn = false;
         }};
+
+        Blocks.vibrantCrystalCluster.itemDrop = NHItems.thorium;
+        Blocks.crystalCluster.itemDrop = NHItems.thorium;
+        Blocks.crystalOrbs.itemDrop = NHItems.beryllium;
+        Blocks.whiteTree.itemDrop = NHItems.sporePod;
+        Blocks.crystalBlocks.itemDrop = NHItems.sand;
     }
 }

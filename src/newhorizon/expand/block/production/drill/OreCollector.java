@@ -4,42 +4,62 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.math.Interp;
+import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Rect;
 import arc.struct.EnumSet;
+import arc.struct.IntFloatMap;
+import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Nullable;
+import arc.util.Strings;
+import arc.util.Time;
 import arc.util.Tmp;
+import arc.util.noise.Noise;
+import arc.util.noise.Simplex;
 import mindustry.Vars;
+import mindustry.core.World;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.graphics.Shaders;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
-import mindustry.world.blocks.units.UnitAssembler;
+import mindustry.world.blocks.environment.TallBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.StatUnit;
+import newhorizon.content.NHContent;
 import newhorizon.expand.BasicMultiBlock;
-import newhorizon.expand.block.environment.OreCluster;
 import newhorizon.util.func.MathUtil;
+import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.indexer;
 import static mindustry.Vars.tilesize;
 
 public class OreCollector extends BasicMultiBlock {
-    public static Seq<Tile> clusters = new Seq<>();
-    public int tier;
-    public float drillTime = 300;
+    public static Seq<Tile> tmpClusters = new Seq<>();
+    public static ObjectFloatMap<Item> returnCount = new ObjectFloatMap<>();
+
+    public int tier = 5;
+    public float mineTime = 60f;
+    public float drillTime = 30;
     public float warmupSpeed = 0.015f;
     public @Nullable Item blockedItem;
     public @Nullable Seq<Item> blockedItems;
-    public float liquidBoostIntensity = 1.6f;
+    public float liquidBoostIntensity = 2f;
+    public float hardnessDrillMultiplier = 10f;
+
+    public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
+
+    public float baseDrillCount = 1f;
 
     public int collectOffset = 5;
     public int collectSize = 7;
@@ -52,6 +72,7 @@ public class OreCollector extends BasicMultiBlock {
         rotate = true;
         hasItems = true;
         hasLiquids = true;
+        itemCapacity = 30;
         liquidCapacity = 20f;
 
         ambientSound = Sounds.drill;
@@ -65,6 +86,16 @@ public class OreCollector extends BasicMultiBlock {
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
 
+        getOreOutput(tmpClusters, x, y, rotation);
+        int i = 0;
+        for (var entry: returnCount.entries()){
+            Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
+            if (rotation == 3) Tmp.v1.set(x, y);
+            drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
+                    Strings.autoFixed(entry.value, 2) + StatUnit.perSecond.localized(), (int) Tmp.v1.x, (int) (Tmp.v1.y) + i, valid);
+            i++;
+        }
+
         x *= tilesize;
         y *= tilesize;
         x += (int) offset;
@@ -73,26 +104,24 @@ public class OreCollector extends BasicMultiBlock {
         Rect rect = getRect(Tmp.r1, x, y, rotation);
         Color c = valid ? Pal.accent : Pal.remove;
         Drawf.dashRect(c, rect);
+        Draw.color(Pal.accent);
+        Draw.alpha(0.5f);
 
-        clusters.each(tile -> {
-            float z = Draw.z();
-            Draw.z(Layer.effect);
-            Draw.color(c);
-            Draw.alpha(0.4f);
+        tmpClusters.each(tile -> Fill.square(tile.worldx(), tile.worldy(), tilesize / 2f));
 
-            Fill.rect(tile.worldx(), tile.worldy(), tilesize, tilesize);
+        Draw.reset();
+    }
 
-            Draw.z(z);
-            Draw.reset();
-        });
+    public float getDrillTime(Item item){
+        return (drillTime + hardnessDrillMultiplier * item.hardness) / drillMultipliers.get(item, 1f);
     }
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation){
         //overlapping construction areas not allowed; grow by a tiny amount so edges can't overlap either.
         Rect rect = getRect(Tmp.r1, tile.worldx() + offset, tile.worldy() + offset, rotation).grow(-0.1f);
-        getOreClusters(clusters, tile.x, tile.y, rotation);
-        boolean hasOre = !clusters.isEmpty();
+        getOreClusters(tmpClusters, tile.x, tile.y, rotation);
+        boolean hasOre = !tmpClusters.isEmpty();
         boolean overlap = indexer.getFlagged(team, BlockFlag.drill).contains(b -> checkOverlap(rect, Tmp.r2, b.block, b));
         boolean planOverlap = team.data().getBuildings(ConstructBlock.get(size)).contains(b -> checkOverlap(rect, Tmp.r2, ((ConstructBlock.ConstructBuild)b).current, b));
         return super.canPlaceOn(tile, team, rotation) && hasOre && !overlap && !planOverlap;
@@ -123,14 +152,27 @@ public class OreCollector extends BasicMultiBlock {
         for (int tx = cx - offset; tx <= cx + offset; tx++) {
             for (int ty = cy - offset; ty <= cy + offset; ty++) {
                 Tile tile = Vars.world.tile(tx, ty);
-                Building building = tile.build;
-                if (building != null && building.block instanceof OreCluster) out.add(tile);
+                if (tile != null && tile.block() != null && tile.block().itemDrop != null) out.add(tile);
             }
         }
     }
 
+    public void getOreOutput(Seq<Tile> out, int x, int y, int rotation){
+        getOreClusters(out, x, y, rotation);
+        returnCount.clear();
+        out.each(tile -> {
+            if (tile.block().itemDrop == null) return;
+            Item drops = tile.block().itemDrop;
+            if (drops != null && drops.hardness <= tier && (blockedItems == null || !blockedItems.contains(drops))){
+                returnCount.increment(drops, 0, 60 / getDrillTime(drops) * baseDrillCount);
+            }
+        });
+    }
+
     public class OreCollectorBuilding extends BasicMultiBuilding {
+        public IntFloatMap oreCount = new IntFloatMap();
         public Seq<Tile> oreClusters = new Seq<>();
+        public float progress;
         public float warmup;
 
         @Override
@@ -142,15 +184,75 @@ public class OreCollector extends BasicMultiBlock {
         @Override
         public void draw() {
             Draw.rect(region, x, y, drawrot());
-            Lines.rect(getRect(Tmp.r1, x, y, rotation));
 
-            float offset1 = collectOffset * tilesize - tilesize / 2f;
-            float offset2 = (collectSize - 1) * tilesize * MathUtil.timeValue(0.5f, -0.5f, 3f);
             float len1 = collectSize * tilesize / 2f;
             float len2 = size * tilesize / 2f;
+            float len3 = tilesize * collectSize;
+
+            float outlineAlpha = warmup * MathUtil.timeValue(0.65f, 0.8f, 3f);
+            float innerAlpha = warmup * MathUtil.timeValue(0.20f, 0.25f, 3f);
+
+            Draw.z(Layer.blockOver);
+
+            Draw.color(team.color);
+            Tmp.c1.set(team.color).lerp(Color.white, 0.8f).a(innerAlpha);
+            float shift1 = 2f;
+            float shift2 = MathUtil.timeValue(6f, 8f, 3f);
+
+            Draw.alpha(innerAlpha);
+            Rect rect = getRect(Tmp.r1, x, y, rotation);
+            Fill.rect(rect);
+
+            Tmp.v1.setZero().add(len2, len1).rotate(rotdeg()).add(x, y);
+            Tmp.v2.setZero().add(len2 + len3, len1).rotate(rotdeg()).add(x, y);
+            Tmp.v3.setZero().add(len2 + len3 - shift1, len1 - shift1).rotate(rotdeg()).add(x, y);
+            Tmp.v4.setZero().add(len2, len1 - shift1).rotate(rotdeg()).add(x, y);
+            Tmp.v5.setZero().add(len2, len1 - shift2).rotate(rotdeg()).add(x, y);
+            Tmp.v6.setZero().add(len2 + len3 - shift2, len1 - shift2).rotate(rotdeg()).add(x, y);
+
+            Draw.alpha(outlineAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
+            Draw.alpha(innerAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(
+                    Tmp.v3.x, Tmp.v3.y, Tmp.c1.toFloatBits(), Tmp.v4.x, Tmp.v4.y, Tmp.c1.toFloatBits(),
+                    Tmp.v5.x, Tmp.v5.y, 0, Tmp.v6.x, Tmp.v6.y, 0
+            );
+
+            Tmp.v1.setZero().add(len2 + len3, -len1).rotate(rotdeg()).add(x, y);
+            Tmp.v4.setZero().add(len2 + len3 - shift1, -len1 + shift1).rotate(rotdeg()).add(x, y);
+            Tmp.v5.setZero().add(len2 + len3 - shift2, -len1 + shift2).rotate(rotdeg()).add(x, y);
+
+            Draw.alpha(outlineAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
+            Draw.alpha(innerAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(
+                    Tmp.v3.x, Tmp.v3.y, Tmp.c1.toFloatBits(), Tmp.v4.x, Tmp.v4.y, Tmp.c1.toFloatBits(),
+                    Tmp.v5.x, Tmp.v5.y, shift1, Tmp.v6.x, Tmp.v6.y, shift1
+            );
+
+            Tmp.v2.setZero().add(len2, -len1).rotate(rotdeg()).add(x, y);
+            Tmp.v3.setZero().add(len2, -len1 + shift1).rotate(rotdeg()).add(x, y);
+            Tmp.v6.setZero().add(len2, -len1 + shift2).rotate(rotdeg()).add(x, y);
+
+            Draw.alpha(outlineAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
+            Draw.alpha(innerAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(
+                    Tmp.v3.x, Tmp.v3.y, Tmp.c1.toFloatBits(), Tmp.v4.x, Tmp.v4.y, Tmp.c1.toFloatBits(),
+                    Tmp.v5.x, Tmp.v5.y, 0, Tmp.v6.x, Tmp.v6.y, 0
+            );
+
+            /*
 
             Draw.z(Layer.buildBeam);
             Draw.color(team.color);
+            Draw.alpha(warmup);
 
             Tmp.v1.setZero().add(offset1, len1).add(offset2, 0).rotate(rotdeg()).add(x, y);
             Tmp.v2.setZero().add(offset1, -len1).add(offset2, 0).rotate(rotdeg()).add(x, y);
@@ -166,12 +268,60 @@ public class OreCollector extends BasicMultiBlock {
 
             Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v5.x, Tmp.v5.y, Tmp.v6.x, Tmp.v6.y);
 
+
+             */
+
+            Draw.z(Layer.buildBeam);
+            Draw.alpha(warmup);
+            Lines.stroke(0.5f);
+
+            oreClusters.each(tile -> {
+                if (tile.block().itemDrop != null) {
+                    float ang = DrawFunc.rotator_90(DrawFunc.cycle(Time.time / 4f, 0, 45), 0.15f);
+                    float scl = MathUtil.timeValue(0.75f, 1.25f, 3f);
+                    Draw.z(Layer.buildBeam);
+                    Fill.rect(tile.worldx(), tile.worldy(), tilesize * scl, tilesize * scl, ang);
+                    Draw.z(Layer.effect);
+
+                    for (int i = 0; i < 4; i++){
+                        Tmp.v1.set(2 * scl, 6 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
+                        Tmp.v2.set(6 * scl, 6 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
+                        Tmp.v3.set(6 * scl, 2 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
+
+                        Lines.beginLine();
+                        Lines.linePoint(Tmp.v1.x, Tmp.v1.y);
+                        Lines.linePoint(Tmp.v2.x, Tmp.v2.y);
+                        Lines.linePoint(Tmp.v3.x, Tmp.v3.y);
+                        Lines.endLine();
+
+                        Tmp.v1.set(2 * scl, 4 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
+                        Tmp.v2.set(4 * scl, 4 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
+                        Tmp.v3.set(4 * scl, 2 * scl).rotate(ang + i * 90).add(tile.worldx(), tile.worldy());
+
+                        Lines.beginLine();
+                        Lines.linePoint(Tmp.v1.x, Tmp.v1.y);
+                        Lines.linePoint(Tmp.v2.x, Tmp.v2.y);
+                        Lines.linePoint(Tmp.v3.x, Tmp.v3.y);
+                        Lines.endLine();
+                    }
+                }
+            });
+
             Draw.z(Layer.effect);
-            Draw.alpha(0.5f);
+            Draw.color(Tmp.c1.set(team.color).lerp(Color.white, 0.5f));
 
-            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v5.x, Tmp.v5.y, Tmp.v6.x, Tmp.v6.y);
-
-            oreClusters.each(tile -> Fill.rect(tile.worldx(), tile.worldy(), tilesize, tilesize));
+            for (int tx = 0; tx < 8; tx++) {
+                for (int ty = 0; ty < 8; ty++) {
+                    float rx = tx * (60f / 8f) + x + collectOffset * tilesize * Geometry.d4x(rotation) - 26f;
+                    float ry = ty * (60f / 8f) + y + collectOffset * tilesize * Geometry.d4y(rotation) - 26f;
+                    float a = warmup * MathUtil.timeValue(0.20f, 0.65f, 3f, Mathf.randomSeed(Point2.pack((int) rx, (int) ry), 0f, 360f));
+                    Draw.alpha(a);
+                    if (tx < 7) Lines.lineAngle(rx, ry, 0, 3);
+                    if (ty < 7) Lines.lineAngle(rx, ry, 90, 3);
+                    if (tx > 0) Lines.lineAngle(rx, ry, 180, 3);
+                    if (ty > 0) Lines.lineAngle(rx, ry, 270, 3);
+                }
+            }
 
             Draw.reset();
         }
@@ -179,7 +329,28 @@ public class OreCollector extends BasicMultiBlock {
         @Override
         public void updateTile() {
             super.updateTile();
-            if (timer(0, 300)) getOreClusters(oreClusters, tileX(), tileY(), rotation);
+
+            if (timer(timerDump, dumpTime / timeScale)) dump();
+
+            if(items.total() < itemCapacity && efficiency > 0){
+                warmup = Mathf.approachDelta(warmup, 1, warmupSpeed);
+                progress += edelta() * warmup;
+            }else{
+                warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+                return;
+            }
+
+            if (progress >= mineTime) {
+                getOreOutput(oreClusters, tileX(), tileY(), rotation);
+                returnCount.each(entry -> addItem(entry.key, entry.value));
+                progress %= mineTime;
+            }
+        }
+
+        public void addItem(Item item, float value){
+            float chance = value % 1f;
+            items.add(item, Math.min(getMaximumAccepted(item) - items.get(item), (int)value));
+            if (getMaximumAccepted(item) > items.get(item) && Mathf.chance(chance)) items.add(item, 1);
         }
     }
 }

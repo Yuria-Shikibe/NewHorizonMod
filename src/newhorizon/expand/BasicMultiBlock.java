@@ -34,6 +34,8 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
     public boolean canMirror = true;
     public int[] rotations = {0, 1, 2, 3, 0, 1, 2, 3};
 
+    public final int checkTimer = timers++;
+
     public BasicMultiBlock(String name) {
         super(name);
     }
@@ -125,7 +127,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
                 updateLinkProximity();
             }
             //uh so period check to avoid invalid link entity, todo need improvement
-            if (timer(0, 600)) {
+            if (timer(checkTimer, 600)) {
                 boolean linkValid = true;
                 for (Tile t : getLinkTiles(tile, size, rotation)) {
                     if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this && lb.isValid())) {
@@ -302,6 +304,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
         public void drawTeam() {
             teamPos = world.tile(tileX() + teamOverlayPos(size, rotation).x, tileY() + teamOverlayPos(size, rotation).y);
             if (teamPos != null) {
+                Draw.z(Layer.blockOver);
                 Draw.color(team.color);
                 Draw.rect("block-border", teamPos.worldx(), teamPos.worldy());
                 Draw.color();

@@ -576,10 +576,10 @@
 	"color": -1918770177
 },
 "new-horizon-ore-cluster-titanium": {
-	"synthetic": true,
+	"synthetic": false,
 	"solid": true,
-	"size": 2,
-	"color": 255
+	"size": 1,
+	"color": 1617672703
 },
 "new-horizon-conglomerate-wall": {
 	"synthetic": false,

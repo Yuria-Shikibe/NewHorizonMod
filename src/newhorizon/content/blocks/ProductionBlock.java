@@ -60,6 +60,8 @@ public class ProductionBlock {
             ));
             size = 3;
             addLink(0, 2, 2, 0, -3, 2);
+
+            consumePower(2.5f);
         }};
 
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{

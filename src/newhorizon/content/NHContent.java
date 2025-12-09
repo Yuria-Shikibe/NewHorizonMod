@@ -37,6 +37,7 @@ import java.io.IOException;
 
 public class NHContent extends Content {
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
+    public static final float QUANTUM_LAYER = Layer.blockOver + 0.1919f;
     public static final float POWER_AREA = Layer.power + 0.114f;
     public static final float POWER_DYNAMIC = Layer.power + 0.514f;
 
