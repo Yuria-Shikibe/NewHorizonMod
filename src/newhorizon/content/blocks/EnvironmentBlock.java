@@ -59,7 +59,8 @@ public class EnvironmentBlock {
         orePureTitanium = new OreVein("ore-pure-titanium", NHItems.titanium, 4f);
         oreClusterTitanium = new TallBlock("ore-cluster-titanium") {{
             itemDrop = NHItems.titanium;
-            variants = 1;
+            shadowOffset = -1f;
+            variants = 2;
         }};
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{

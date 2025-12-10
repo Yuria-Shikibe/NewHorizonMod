@@ -4,7 +4,6 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
@@ -17,26 +16,20 @@ import arc.util.Nullable;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
-import arc.util.noise.Noise;
-import arc.util.noise.Simplex;
 import mindustry.Vars;
-import mindustry.core.World;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.graphics.Shaders;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
-import mindustry.world.blocks.environment.TallBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.StatUnit;
-import newhorizon.content.NHContent;
 import newhorizon.expand.BasicMultiBlock;
 import newhorizon.util.func.MathUtil;
 import newhorizon.util.graphic.DrawFunc;
@@ -312,9 +305,9 @@ public class OreCollector extends BasicMultiBlock {
 
             for (int tx = 0; tx < 8; tx++) {
                 for (int ty = 0; ty < 8; ty++) {
-                    float rx = tx * (60f / 8f) + x + collectOffset * tilesize * Geometry.d4x(rotation) - 26f;
-                    float ry = ty * (60f / 8f) + y + collectOffset * tilesize * Geometry.d4y(rotation) - 26f;
-                    float a = warmup * MathUtil.timeValue(0.20f, 0.65f, 3f, Mathf.randomSeed(Point2.pack((int) rx, (int) ry), 0f, 360f));
+                    float rx = tx * (60f / 8f) + x + collectOffset * tilesize * Geometry.d4x(rotation) - 26.5f;
+                    float ry = ty * (60f / 8f) + y + collectOffset * tilesize * Geometry.d4y(rotation) - 26.5f;
+                    float a = warmup * MathUtil.timeValue(0.20f, 0.65f, 1f, Mathf.randomSeed(Point2.pack((int) rx, (int) ry), 0f, 360f));
                     Draw.alpha(a);
                     if (tx < 7) Lines.lineAngle(rx, ry, 0, 3);
                     if (ty < 7) Lines.lineAngle(rx, ry, 90, 3);
