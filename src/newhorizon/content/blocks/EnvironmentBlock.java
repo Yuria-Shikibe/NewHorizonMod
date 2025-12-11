@@ -61,6 +61,8 @@ public class EnvironmentBlock {
             itemDrop = NHItems.titanium;
             shadowOffset = -1f;
             variants = 3;
+
+            attributes.set(NHContent.density, 1f);
         }};
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{
@@ -276,5 +278,11 @@ public class EnvironmentBlock {
         Blocks.crystalOrbs.itemDrop = NHItems.beryllium;
         Blocks.whiteTree.itemDrop = NHItems.sporePod;
         Blocks.crystalBlocks.itemDrop = NHItems.sand;
+
+        Blocks.vibrantCrystalCluster.attributes.set(NHContent.density, 1f);
+        Blocks.crystalCluster.attributes.set(NHContent.density, 1f);
+        Blocks.crystalOrbs.attributes.set(NHContent.density, 0.75f);
+        Blocks.whiteTree.attributes.set(NHContent.density, 0.25f);
+        Blocks.crystalBlocks.attributes.set(NHContent.density, 0.5f);
     }
 }

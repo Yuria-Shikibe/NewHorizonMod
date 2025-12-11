@@ -30,21 +30,22 @@ import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.StatUnit;
+import newhorizon.content.NHContent;
 import newhorizon.expand.BasicMultiBlock;
 import newhorizon.util.func.MathUtil;
 import newhorizon.util.graphic.DrawFunc;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.player;
 
 public class OreCollector extends BasicMultiBlock {
     public static Seq<Tile> tmpClusters = new Seq<>();
     public static ObjectFloatMap<Item> returnCount = new ObjectFloatMap<>();
 
     public TextureRegion[] innerRegions, outerRegions;
+    public TextureRegion baseRegion;
 
     public int tier = 5;
-    public float mineTime = 60f;
+    public float mineTime = 120f;
     public float drillTime = 30;
     public float warmupSpeed = 0.075f;
     public @Nullable Item blockedItem;
@@ -83,10 +84,17 @@ public class OreCollector extends BasicMultiBlock {
         innerRegions = new TextureRegion[4];
         outerRegions = new TextureRegion[4];
 
+        baseRegion = Core.atlas.find(name + "-base");
+
         for (int i = 0; i < 4; i++){
             innerRegions[i] = Core.atlas.find(name + "-inner-" + i);
             outerRegions[i] = Core.atlas.find(name + "-outer-" + i);
         }
+    }
+
+    @Override
+    public TextureRegion getPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+        return baseRegion;
     }
 
     @Override
@@ -102,53 +110,31 @@ public class OreCollector extends BasicMultiBlock {
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
-        drawRect(x, y, rotation, valid, true);
-    }
 
-    @Override
-    public void drawPlan(BuildPlan plan, Eachable<BuildPlan> list, boolean valid) {
-        super.drawPlan(plan, list, valid);
-        drawRect(plan.x, plan.y, plan.rotation, valid, false);
-    }
-
-    public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
-        drawBlockBase(plan.drawx(), plan.drawy(), plan.rotation);
-
-        if(plan.worldContext && player != null && teamRegion != null && teamRegion.found()){
-            if(teamRegions[player.team().id] == teamRegion) Draw.color(player.team().color);
-            Draw.rect(teamRegions[player.team().id], plan.drawx(), plan.drawy());
-            Draw.color();
-        }
-
-        drawPlanConfig(plan, list);
-    }
-
-    public void drawRect(int x, int y, int rotation, boolean valid, boolean drawText){
         getOreOutput(tmpClusters, x, y, rotation);
 
-        if (drawText){
-            int i = 0;
-            for (var entry: returnCount.entries()){
-                Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
-                if (rotation == 3) Tmp.v1.set(x, y);
-                drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
-                        Strings.autoFixed(entry.value, 2) + StatUnit.perSecond.localized(), (int) Tmp.v1.x, (int) (Tmp.v1.y) + i, valid);
-                i++;
-            }
-        }else {
-            x *= tilesize;
-            y *= tilesize;
-            x += (int) offset;
-            y += (int) offset;
-
-            Rect rect = getRect(Tmp.r1, x, y, rotation);
-            Color c = valid ? Pal.accent : Pal.remove;
-            Drawf.dashRect(c, rect);
-            Draw.color(Pal.accent);
-            Draw.alpha(0.5f);
-
-            tmpClusters.each(tile -> Fill.square(tile.worldx(), tile.worldy(), tilesize / 2f));
+        int i = 0;
+        for (var entry: returnCount.entries()){
+            Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
+            if (rotation == 3) Tmp.v1.set(x, y);
+            drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
+                    Strings.autoFixed(entry.value / (mineTime / Time.toSeconds), 2) + StatUnit.perSecond.localized(), (int) Tmp.v1.x, (int) (Tmp.v1.y) + i, valid);
+            i++;
         }
+
+        x *= tilesize;
+        y *= tilesize;
+        x += (int) offset;
+        y += (int) offset;
+
+        Rect rect = getRect(Tmp.r1, x, y, rotation);
+        Color c = valid ? Pal.accent : Pal.remove;
+        Drawf.dashRect(c, rect);
+        Draw.color(Pal.accent);
+        Draw.alpha(0.5f);
+
+        tmpClusters.each(tile -> Fill.square(tile.worldx(), tile.worldy(), tilesize / 2f));
+
         Draw.reset();
     }
 
@@ -204,7 +190,7 @@ public class OreCollector extends BasicMultiBlock {
             if (tile.block().itemDrop == null) return;
             Item drops = tile.block().itemDrop;
             if (drops != null && drops.hardness <= tier && (blockedItems == null || !blockedItems.contains(drops))){
-                returnCount.increment(drops, 0, 60 / getDrillTime(drops) * baseDrillCount);
+                returnCount.increment(drops, 0, 60 / getDrillTime(drops) * tile.block().attributes.get(NHContent.density));
             }
         });
     }

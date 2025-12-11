@@ -55,7 +55,7 @@ public class NHContent extends Content {
 
     public static TextureRegion khs0, khs1, ks1, ks2, ks3, ks4, ks5, ks6, ks7, ks8;
 
-    public static Attribute quantum;
+    public static Attribute quantum, density;
 
     public static LCategory nhwproc, nhwprocevent, nhcutscene, nhaction, nhcamera, nhcurtain, nhinfo, nhevent, nhsignal, nhui, nhalert;
 
@@ -66,6 +66,7 @@ public class NHContent extends Content {
     public static void loadBeforeContentLoad() {
         CacheLayer.add(quantumLayer = new CacheLayer.ShaderLayer(NHShaders.quantum));
         quantum = Attribute.add("quantum");
+        density = Attribute.add("density");
     }
 
     public static void loadLast() {

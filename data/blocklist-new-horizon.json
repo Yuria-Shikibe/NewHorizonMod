@@ -983,12 +983,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-psi-generator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-hydro-fuel-cell": {
 	"synthetic": true,
 	"solid": true,

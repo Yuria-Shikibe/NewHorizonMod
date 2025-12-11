@@ -245,30 +245,6 @@ public class PowerBlock {
             );
         }};
 
-        psiGenerator = new ThermalGenerator("psi-generator") {{
-            requirements(Category.power, ItemStack.with(
-                    NHItems.hardLight, 25, 
-                    NHItems.juniorProcessor, 50, 
-                    NHItems.carbide, 50, 
-                    NHItems.metalOxhydrigen, 25
-            ));
-            size = 2;
-            health = 600;
-            armor = 4f;
-            powerProduction = 300f / 60f;
-            floating = true;
-
-            lightColor = NHColor.darkEnrColor;
-
-            attribute = NHBlocks.quantum;
-
-            drawer = new DrawMulti(
-                new DrawDefault(),
-                new DrawGlowRegion() {{
-                    color = NHColor.darkEnrColor;
-                }}
-            );
-        }};
         hydroFuelCell = new ConsumeGenerator("hydro-fuel-cell") {{
             size = 2;
             requirements(Category.power, ItemStack.with(NHItems.metalOxhydrigen, 60, NHItems.juniorProcessor, 45, NHItems.presstanium, 60));
@@ -280,7 +256,6 @@ public class PowerBlock {
                 Lines.stroke(e.fout() * 1.375f);
                 Lines.spikes(e.x, e.y, 0.45f + 5 * e.finpow(), 5.5f * e.fout(), 4, 45);
             });
-            //			//NHTechTree.add(Blocks.thoriumReactor,this);
             powerProduction = 1800f / 60f;
             health = 320;
             itemCapacity = 40;
