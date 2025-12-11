@@ -66,6 +66,7 @@ public class UpdateProxy {
                     }
                 }
             });
+
             Events.run(EventType.Trigger.afterGameUpdate, () -> {
                 if (timer.get(0, 60)) {
                     Vars.state.teams.getActive().each(teamData -> {
@@ -86,6 +87,7 @@ public class UpdateProxy {
         });
 
 
+        /*
         Events.run(EventType.Trigger.beforeGameUpdate, () -> {
             Vars.state.teams.getActive().each(teamData -> {
                 registerDrills.each(drill -> {
@@ -111,6 +113,8 @@ public class UpdateProxy {
                 });
             });
         });
+
+         */
 
         thread.setPriority(Thread.NORM_PRIORITY - 1);
         thread.setDaemon(true);
