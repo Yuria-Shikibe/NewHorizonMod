@@ -1,22 +1,22 @@
 package newhorizon.expand.block.production.drill;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Rect;
 import arc.struct.EnumSet;
-import arc.struct.IntFloatMap;
 import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Strings;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.Vars;
+import mindustry.content.Fx;
+import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
@@ -34,20 +34,22 @@ import newhorizon.expand.BasicMultiBlock;
 import newhorizon.util.func.MathUtil;
 import newhorizon.util.graphic.DrawFunc;
 
-import static mindustry.Vars.indexer;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
+import static mindustry.Vars.player;
 
 public class OreCollector extends BasicMultiBlock {
     public static Seq<Tile> tmpClusters = new Seq<>();
     public static ObjectFloatMap<Item> returnCount = new ObjectFloatMap<>();
 
+    public TextureRegion[] innerRegions, outerRegions;
+
     public int tier = 5;
     public float mineTime = 60f;
     public float drillTime = 30;
-    public float warmupSpeed = 0.015f;
+    public float warmupSpeed = 0.075f;
     public @Nullable Item blockedItem;
     public @Nullable Seq<Item> blockedItems;
-    public float liquidBoostIntensity = 2f;
+    public float optionalBoostIntensity = 2f;
     public float hardnessDrillMultiplier = 10f;
 
     public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
@@ -65,8 +67,8 @@ public class OreCollector extends BasicMultiBlock {
         rotate = true;
         hasItems = true;
         hasLiquids = true;
-        itemCapacity = 30;
-        liquidCapacity = 20f;
+
+        clipSize = 288;
 
         ambientSound = Sounds.drill;
         ambientSoundVolume = 0.018f;
@@ -76,32 +78,77 @@ public class OreCollector extends BasicMultiBlock {
     }
 
     @Override
+    public void load() {
+        super.load();
+        innerRegions = new TextureRegion[4];
+        outerRegions = new TextureRegion[4];
+
+        for (int i = 0; i < 4; i++){
+            innerRegions[i] = Core.atlas.find(name + "-inner-" + i);
+            outerRegions[i] = Core.atlas.find(name + "-outer-" + i);
+        }
+    }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+    }
+
+    @Override
+    public boolean outputsItems(){
+        return true;
+    }
+
+    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
+        drawRect(x, y, rotation, valid, true);
+    }
 
-        getOreOutput(tmpClusters, x, y, rotation);
-        int i = 0;
-        for (var entry: returnCount.entries()){
-            Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
-            if (rotation == 3) Tmp.v1.set(x, y);
-            drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
-                    Strings.autoFixed(entry.value, 2) + StatUnit.perSecond.localized(), (int) Tmp.v1.x, (int) (Tmp.v1.y) + i, valid);
-            i++;
+    @Override
+    public void drawPlan(BuildPlan plan, Eachable<BuildPlan> list, boolean valid) {
+        super.drawPlan(plan, list, valid);
+        drawRect(plan.x, plan.y, plan.rotation, valid, false);
+    }
+
+    public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        drawBlockBase(plan.drawx(), plan.drawy(), plan.rotation);
+
+        if(plan.worldContext && player != null && teamRegion != null && teamRegion.found()){
+            if(teamRegions[player.team().id] == teamRegion) Draw.color(player.team().color);
+            Draw.rect(teamRegions[player.team().id], plan.drawx(), plan.drawy());
+            Draw.color();
         }
 
-        x *= tilesize;
-        y *= tilesize;
-        x += (int) offset;
-        y += (int) offset;
+        drawPlanConfig(plan, list);
+    }
 
-        Rect rect = getRect(Tmp.r1, x, y, rotation);
-        Color c = valid ? Pal.accent : Pal.remove;
-        Drawf.dashRect(c, rect);
-        Draw.color(Pal.accent);
-        Draw.alpha(0.5f);
+    public void drawRect(int x, int y, int rotation, boolean valid, boolean drawText){
+        getOreOutput(tmpClusters, x, y, rotation);
 
-        tmpClusters.each(tile -> Fill.square(tile.worldx(), tile.worldy(), tilesize / 2f));
+        if (drawText){
+            int i = 0;
+            for (var entry: returnCount.entries()){
+                Tmp.v1.setZero().add(collectOffset, 0).rotate(rotation * 90).add(0, (float) (collectSize - size) / 2).add(x, y);
+                if (rotation == 3) Tmp.v1.set(x, y);
+                drawPlaceText("[white]" + entry.key.emoji() + "[] " + entry.key.localizedName + " " +
+                        Strings.autoFixed(entry.value, 2) + StatUnit.perSecond.localized(), (int) Tmp.v1.x, (int) (Tmp.v1.y) + i, valid);
+                i++;
+            }
+        }else {
+            x *= tilesize;
+            y *= tilesize;
+            x += (int) offset;
+            y += (int) offset;
 
+            Rect rect = getRect(Tmp.r1, x, y, rotation);
+            Color c = valid ? Pal.accent : Pal.remove;
+            Drawf.dashRect(c, rect);
+            Draw.color(Pal.accent);
+            Draw.alpha(0.5f);
+
+            tmpClusters.each(tile -> Fill.square(tile.worldx(), tile.worldy(), tilesize / 2f));
+        }
         Draw.reset();
     }
 
@@ -162,8 +209,15 @@ public class OreCollector extends BasicMultiBlock {
         });
     }
 
+    public void drawBlockBase(float x, float y, int rotation){
+        Draw.rect(innerRegions[rotation], x, y);
+        Tmp.v1.set(4, 20).rotate(rotation * 90);
+        Tmp.v2.set(4, -20).rotate(rotation * 90);
+        Draw.rect(outerRegions[(rotation + 3) % 4], x + Tmp.v1.x, y + Tmp.v1.y);
+        Draw.rect(outerRegions[(rotation + 1) % 4], x + Tmp.v2.x, y + Tmp.v2.y);
+    }
+
     public class OreCollectorBuilding extends BasicMultiBuilding {
-        public IntFloatMap oreCount = new IntFloatMap();
         public Seq<Tile> oreClusters = new Seq<>();
         public float progress;
         public float warmup;
@@ -176,14 +230,21 @@ public class OreCollector extends BasicMultiBlock {
 
         @Override
         public void draw() {
-            Draw.rect(region, x, y, drawrot());
+            drawBlockBase(x, y, rotation) ;
+            if (warmup > 0.01f) drawScanner();
+        }
 
+        private void drawScanner() {
             float len1 = collectSize * tilesize / 2f;
             float len2 = size * tilesize / 2f;
             float len3 = tilesize * collectSize;
+            float len4 = tilesize;
 
             float outlineAlpha = warmup * MathUtil.timeValue(0.65f, 0.8f, 3f);
             float innerAlpha = warmup * MathUtil.timeValue(0.20f, 0.25f, 3f);
+
+            float ang = DrawFunc.rotator_90(DrawFunc.cycle(Time.time / 4f, 0, 45), 0.15f);
+            float scl = MathUtil.timeValue(0.75f, 1.25f, 3f);
 
             Draw.z(Layer.blockOver);
 
@@ -196,6 +257,41 @@ public class OreCollector extends BasicMultiBlock {
             Rect rect = getRect(Tmp.r1, x, y, rotation);
             Fill.rect(rect);
 
+            Tmp.v1.setZero().add(len2 - 1f, len1 - 1f).rotate(rotdeg()).add(x, y);
+            Tmp.v2.setZero().add(len2 - 1f, -len1 + 1f).rotate(rotdeg()).add(x, y);
+            Tmp.v3.setZero().add(len2 - len4, -len1 + len4).rotate(rotdeg()).add(x, y);
+            Tmp.v4.setZero().add(len2 - len4, len1 - len4).rotate(rotdeg()).add(x, y);
+
+            Lines.stroke(2f);
+
+            Draw.alpha(outlineAlpha);
+            Draw.z(Layer.effect);
+
+            Fill.circle(Tmp.v1.x, Tmp.v1.y, 1.25f);
+            Fill.circle(Tmp.v2.x, Tmp.v2.y, 1.25f);
+
+            Fill.circle(Tmp.v3.x, Tmp.v3.y, 1.25f);
+            Fill.circle(Tmp.v4.x, Tmp.v4.y, 1.25f);
+
+            Tmp.v1.setZero().add(len2 - 1.5f, len1 - 1.5f).rotate(rotdeg()).add(x, y);
+            Tmp.v2.setZero().add(len2 - 1.5f, -len1 + 1.5f).rotate(rotdeg()).add(x, y);
+
+            Lines.line(Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y);
+            Lines.line(Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
+            Lines.line(Tmp.v1.x, Tmp.v1.y, Tmp.v4.x, Tmp.v4.y);
+
+            Tmp.v1.setZero().add(len2, len1 - 2f).rotate(rotdeg()).add(x, y);
+            Tmp.v2.setZero().add(len2, -len1 + 2f).rotate(rotdeg()).add(x, y);
+
+            Lines.line(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y);
+
+            Tmp.v1.setZero().add(len2, len1).rotate(rotdeg()).add(x, y);
+            Tmp.v2.setZero().add(len2, -len1).rotate(rotdeg()).add(x, y);
+
+            Draw.alpha(innerAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
+
             Tmp.v1.setZero().add(len2, len1).rotate(rotdeg()).add(x, y);
             Tmp.v2.setZero().add(len2 + len3, len1).rotate(rotdeg()).add(x, y);
             Tmp.v3.setZero().add(len2 + len3 - shift1, len1 - shift1).rotate(rotdeg()).add(x, y);
@@ -204,7 +300,7 @@ public class OreCollector extends BasicMultiBlock {
             Tmp.v6.setZero().add(len2 + len3 - shift2, len1 - shift2).rotate(rotdeg()).add(x, y);
 
             Draw.alpha(outlineAlpha);
-            Draw.z(Layer.blockOver);
+            Draw.z(Layer.effect);
             Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
             Draw.alpha(innerAlpha);
             Draw.z(Layer.blockOver);
@@ -218,21 +314,7 @@ public class OreCollector extends BasicMultiBlock {
             Tmp.v5.setZero().add(len2 + len3 - shift2, -len1 + shift2).rotate(rotdeg()).add(x, y);
 
             Draw.alpha(outlineAlpha);
-            Draw.z(Layer.blockOver);
-            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
-            Draw.alpha(innerAlpha);
-            Draw.z(Layer.blockOver);
-            Fill.quad(
-                    Tmp.v3.x, Tmp.v3.y, Tmp.c1.toFloatBits(), Tmp.v4.x, Tmp.v4.y, Tmp.c1.toFloatBits(),
-                    Tmp.v5.x, Tmp.v5.y, shift1, Tmp.v6.x, Tmp.v6.y, shift1
-            );
-
-            Tmp.v2.setZero().add(len2, -len1).rotate(rotdeg()).add(x, y);
-            Tmp.v3.setZero().add(len2, -len1 + shift1).rotate(rotdeg()).add(x, y);
-            Tmp.v6.setZero().add(len2, -len1 + shift2).rotate(rotdeg()).add(x, y);
-
-            Draw.alpha(outlineAlpha);
-            Draw.z(Layer.blockOver);
+            Draw.z(Layer.effect);
             Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
             Draw.alpha(innerAlpha);
             Draw.z(Layer.blockOver);
@@ -241,37 +323,25 @@ public class OreCollector extends BasicMultiBlock {
                     Tmp.v5.x, Tmp.v5.y, 0, Tmp.v6.x, Tmp.v6.y, 0
             );
 
-            /*
+            Tmp.v2.setZero().add(len2, -len1).rotate(rotdeg()).add(x, y);
+            Tmp.v3.setZero().add(len2, -len1 + shift1).rotate(rotdeg()).add(x, y);
+            Tmp.v6.setZero().add(len2, -len1 + shift2).rotate(rotdeg()).add(x, y);
 
-            Draw.z(Layer.buildBeam);
-            Draw.color(team.color);
-            Draw.alpha(warmup);
-
-            Tmp.v1.setZero().add(offset1, len1).add(offset2, 0).rotate(rotdeg()).add(x, y);
-            Tmp.v2.setZero().add(offset1, -len1).add(offset2, 0).rotate(rotdeg()).add(x, y);
-            Tmp.v3.setZero().add(len2 - 2f, len2 - 2f).rotate(rotdeg()).add(x, y);
-            Tmp.v4.setZero().add(len2 - 2f, len2 + 2f).rotate(rotdeg()).add(x, y);
+            Draw.alpha(outlineAlpha);
+            Draw.z(Layer.effect);
             Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
-            Tmp.v3.setZero().add(len2 - 2f, -len2 - 2f).rotate(rotdeg()).add(x, y);
-            Tmp.v4.setZero().add(len2 - 2f, -len2 + 2f).rotate(rotdeg()).add(x, y);
-            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y, Tmp.v4.x, Tmp.v4.y);
+            Draw.alpha(innerAlpha);
+            Draw.z(Layer.blockOver);
+            Fill.quad(
+                    Tmp.v3.x, Tmp.v3.y, Tmp.c1.toFloatBits(), Tmp.v4.x, Tmp.v4.y, Tmp.c1.toFloatBits(),
+                    Tmp.v5.x, Tmp.v5.y, 0, Tmp.v6.x, Tmp.v6.y, 0
+            );
 
-            Tmp.v5.setZero().add(offset1, -len1).add(offset2 + tilesize, 0).rotate(rotdeg()).add(x, y);
-            Tmp.v6.setZero().add(offset1, len1).add(offset2 + tilesize, 0).rotate(rotdeg()).add(x, y);
-
-            Fill.quad(Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, Tmp.v5.x, Tmp.v5.y, Tmp.v6.x, Tmp.v6.y);
-
-
-             */
-
-            Draw.z(Layer.buildBeam);
             Draw.alpha(warmup);
             Lines.stroke(0.5f);
 
             oreClusters.each(tile -> {
                 if (tile.block().itemDrop != null) {
-                    float ang = DrawFunc.rotator_90(DrawFunc.cycle(Time.time / 4f, 0, 45), 0.15f);
-                    float scl = MathUtil.timeValue(0.75f, 1.25f, 3f);
                     Draw.z(Layer.buildBeam);
                     Fill.rect(tile.worldx(), tile.worldy(), tilesize * scl, tilesize * scl, ang);
                     Draw.z(Layer.effect);
@@ -315,8 +385,12 @@ public class OreCollector extends BasicMultiBlock {
                     if (ty > 0) Lines.lineAngle(rx, ry, 270, 3);
                 }
             }
-
             Draw.reset();
+        }
+
+        @Override
+        public boolean shouldConsume(){
+            return items.total() < itemCapacity && enabled && !oreClusters.isEmpty();
         }
 
         @Override
@@ -326,8 +400,9 @@ public class OreCollector extends BasicMultiBlock {
             if (timer(timerDump, dumpTime / timeScale)) dump();
 
             if(items.total() < itemCapacity && efficiency > 0){
+                float multiplier = Mathf.lerp(1f, optionalBoostIntensity, optionalEfficiency);
                 warmup = Mathf.approachDelta(warmup, 1, warmupSpeed);
-                progress += edelta() * warmup;
+                progress += edelta() * warmup * multiplier;
             }else{
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
                 return;
@@ -335,6 +410,13 @@ public class OreCollector extends BasicMultiBlock {
 
             if (progress >= mineTime) {
                 getOreOutput(oreClusters, tileX(), tileY(), rotation);
+                oreClusters.each(tile -> {
+                    if (tile.block() != null && tile.block().itemDrop != null) {
+                        Fx.itemTransfer.at(tile.worldx(), tile.worldy(), 0, tile.block().itemDrop.color, this);
+                    }
+                });
+
+
                 returnCount.each(entry -> addItem(entry.key, entry.value));
                 progress %= mineTime;
             }
@@ -344,6 +426,11 @@ public class OreCollector extends BasicMultiBlock {
             float chance = value % 1f;
             items.add(item, Math.min(getMaximumAccepted(item) - items.get(item), (int)value));
             if (getMaximumAccepted(item) > items.get(item) && Mathf.chance(chance)) items.add(item, 1);
+        }
+
+        @Override
+        public void drawStatus() {
+            super.drawStatus();
         }
     }
 }

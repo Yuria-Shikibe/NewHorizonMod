@@ -61,7 +61,10 @@ public class ProductionBlock {
             size = 3;
             addLink(0, 2, 2, 0, -3, 2);
 
+            itemCapacity = 30;
+
             consumePower(2.5f);
+            consumeLiquid(NHLiquids.ammonia, 5f / 60f).boost();
         }};
 
         sandCracker = new RecipeGenericCrafter("sand-cracker") {{

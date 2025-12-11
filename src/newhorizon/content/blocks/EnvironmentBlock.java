@@ -60,7 +60,7 @@ public class EnvironmentBlock {
         oreClusterTitanium = new TallBlock("ore-cluster-titanium") {{
             itemDrop = NHItems.titanium;
             shadowOffset = -1f;
-            variants = 2;
+            variants = 3;
         }};
 
         conglomerateWall = new StaticWall("conglomerate-wall") {{
