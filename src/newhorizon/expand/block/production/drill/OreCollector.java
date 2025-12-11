@@ -342,6 +342,7 @@ public class OreCollector extends BasicMultiBlock {
 
             oreClusters.each(tile -> {
                 if (tile.block().itemDrop != null) {
+                    Draw.color(tile.block().itemDrop.color);
                     Draw.z(Layer.buildBeam);
                     Fill.rect(tile.worldx(), tile.worldy(), tilesize * scl, tilesize * scl, ang);
                     Draw.z(Layer.effect);
@@ -412,6 +413,7 @@ public class OreCollector extends BasicMultiBlock {
                 getOreOutput(oreClusters, tileX(), tileY(), rotation);
                 oreClusters.each(tile -> {
                     if (tile.block() != null && tile.block().itemDrop != null) {
+                        Fx.mineHuge.at(tile.worldx(), tile.worldy(), tile.block().itemDrop.color);
                         Fx.itemTransfer.at(tile.worldx(), tile.worldy(), 0, tile.block().itemDrop.color, this);
                     }
                 });

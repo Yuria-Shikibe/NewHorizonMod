@@ -23,7 +23,7 @@ public class NHVars {
         worldData = new NHWorldData();
         listener = new NHInputListener();
 
-        UpdateProxy.init();
+        //UpdateProxy.init();
 
         cutscene = new CutsceneControl();
         cutsceneUI = new CutsceneUI();
