@@ -4,27 +4,24 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
+import mindustry.entities.Effect;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.entities.Effect;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
-import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
-import newhorizon.content.NHBlocks;
-import newhorizon.content.NHColor;
-import newhorizon.expand.block.drawer.*;
-import newhorizon.expand.block.power.GravityWallSubstation;
+import newhorizon.expand.block.drawer.DrawRegionFlip;
+import newhorizon.expand.block.drawer.DrawRegionRotated;
+import newhorizon.expand.block.power.GravityWell;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.draw.DrawLiquidAnimatedOffset;
 import newhorizon.expand.draw.DrawLiquidSmelt;
@@ -38,62 +35,25 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             nitrogenDissociator,
-            crystalDecompositionThermalGenerator, psiGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
+            crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
-        gravityTrapMidantha = new GravityWallSubstation("gravity-node-midantha") {{
-            requirements(Category.power, BuildVisibility.shown, with(Items.silicon, 5));
-
-            size = 1;
-            health = 400;
-            laserRange = 8;
-            maxNodes = 10;
-            gravityRange = laserRange * tilesize * 1.5f;
-        }};
-
-        gravityTrapSerpulo = new GravityWallSubstation("gravity-node-serpulo") {{
-            requirements(Category.power, BuildVisibility.shown, with(Items.copper, 10, Items.lead, 8));
-
-            size = 1;
-            health = 400;
-            laserRange = 8;
-            maxNodes = 10;
-            gravityRange = laserRange * tilesize * 1.5f;
-        }};
-
-        gravityTrapErekir = new GravityWallSubstation("gravity-node-erekir") {{
-            requirements(Category.power, BuildVisibility.shown, with(Items.beryllium, 15));
-
-            size = 1;
-            health = 400;
-            laserRange = 8;
-            maxNodes = 10;
-            gravityRange = laserRange * tilesize * 1.5f;
-            clipSize = gravityRange * 2f;
-        }};
-
-        gravityTrapSmall = new GravityWallSubstation("gravity-trap") {{
+        gravityTrapSmall = new GravityWell("gravity-trap") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 
             size = 2;
             health = 640;
-            laserRange = 16;
-            maxNodes = 20;
-            gravityRange = laserRange * tilesize * 1.5f;
-            clipSize = gravityRange * 2f;
+            gravityRange = 8 * tilesize;
         }};
 
-        gravityTrap = new GravityWallSubstation("gravity-trap-heavy") {{
+        gravityTrap = new GravityWell("gravity-trap-heavy") {{
             requirements(Category.power, BuildVisibility.shown, with(NHItems.seniorProcessor, 15, NHItems.multipleSteel, 20));
 
             size = 3;
             health = 1250;
-            laserRange = 40;
-            maxNodes = 6;
-            gravityRange = laserRange * tilesize * 1.2f;
-            clipSize = gravityRange * 2f;
+            gravityRange = 15 * tilesize;
         }};
 
         armorBattery = new Battery("armor-battery") {{

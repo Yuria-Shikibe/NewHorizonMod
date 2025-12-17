@@ -14,7 +14,6 @@ import newhorizon.expand.units.EnergyUnitII;
 import newhorizon.expand.units.unitEntity.NucleoidEntity;
 import newhorizon.expand.units.unitEntity.PesterEntity;
 import newhorizon.expand.units.unitEntity.ProbeEntity;
-import newhorizon.expand.weather.MatterStorm;
 
 public class EntityRegister {
 
@@ -37,7 +36,7 @@ public class EntityRegister {
         put(NucleoidEntity.class, NucleoidEntity::new);
         put(ProbeEntity.class, ProbeEntity::new);
 
-        put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
+        //put(MatterStorm.AdaptedWeatherState.class, MatterStorm.AdaptedWeatherState::new);
 
         put(Spawner.class, Spawner::new);
         put(Carrier.class, Carrier::new);

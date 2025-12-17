@@ -61,7 +61,7 @@ public class DrillModule extends Block {
         canOverdrive = false;
         drawDisabled = false;
 
-        ambientSound = Sounds.drill;
+        ambientSound = Sounds.loopDrill;
         ambientSoundVolume = 0.018f;
 
         group = BlockGroup.drills;

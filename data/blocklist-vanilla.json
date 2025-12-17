@@ -1613,6 +1613,12 @@
 	"size": 1,
 	"color": 2037743103
 },
+"unloader": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": -1432115969
+},
 "mass-driver": {
 	"synthetic": true,
 	"solid": true,
@@ -2068,12 +2074,6 @@
 	"solid": true,
 	"size": 3,
 	"color": -1145983745
-},
-"unloader": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": -1432115969
 },
 "reinforced-container": {
 	"synthetic": true,

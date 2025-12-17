@@ -476,7 +476,7 @@ public class NHUnitTypes {
                 trailEffect = NHFx.trailToGray;
 
                 hitShake = 3f;
-                hitSound = Sounds.plasmaboom;
+                hitSound = Sounds.beamPlasma;
             }};
         }};
 
@@ -1208,7 +1208,7 @@ public class NHUnitTypes {
                     a.maxSpeed = 0.1f;
                     a.boltNum = 0;
                     a.boltWidth = 1;
-                    a.shootSound = Sounds.dullExplosion;
+                    a.shootSound = Sounds.explosionDull;
                 }));
 
                 weapons.add(ancientPrism);
@@ -1517,7 +1517,7 @@ public class NHUnitTypes {
                         width = 9f;
                         height = 30f;
 
-                        hitSound = Sounds.plasmaboom;
+                        hitSound = Sounds.beamPlasma;
                         despawnShake = hitShake = 18f;
 
                         pierceArmor = true;
@@ -1634,7 +1634,7 @@ public class NHUnitTypes {
                                 homingRange = 300f;
                                 homingDelay = 5f;
 
-                                hitSound = Sounds.plasmaboom;
+                                hitSound = Sounds.beamPlasma;
                                 despawnShake = hitShake = 18f;
 
                                 status = NHStatusEffects.entangled;
@@ -2026,7 +2026,7 @@ public class NHUnitTypes {
                     y = -engineOffset;
                     x = 0;
 
-                    shootSound = Sounds.beam;
+                    shootSound = Sounds.beamLustre;
                     rotationLimit = 5f;
                     rotateSpeed = 0.75f;
                     rotate = true;
@@ -2069,7 +2069,7 @@ public class NHUnitTypes {
                             super.init(b);
 
                             NHFx.lightningHitLarge.at(b.x, b.y, b.team.color);
-                            Sounds.laserblast.at(b);
+                            Sounds.shootLaser.at(b);
                         }
 
                         @Override
@@ -2260,7 +2260,7 @@ public class NHUnitTypes {
                             bullet.damage = 200f;
                             bullet.shootEffect = NHFx.lightningHitLarge(NHColor.lightSkyBack);
                             ((ContinuousFlameBulletType) bullet).lengthInterp = NHInterp.laser;
-                            shootSound = Sounds.beam;
+                            shootSound = Sounds.beamPlasma;
                             shootStatus = StatusEffects.slow;
                             shootStatusDuration = bullet.lifetime + 40f;
                         }},
@@ -2311,7 +2311,7 @@ public class NHUnitTypes {
                                     fragVelocityMin = 0.25f;
                                     fragBullets = 13;
                                     fragBullet = NHBullets.basicSkyFrag;
-                                    hitSound = Sounds.explosionbig;
+                                    hitSound = Sounds.explosion;
                                     drawSize = 40;
                                     splashDamageRadius = 240;
                                     splashDamage = 200;
@@ -2355,7 +2355,7 @@ public class NHUnitTypes {
                                     UltFire.createChance(b, splashDamageRadius / 2f, 0.5f);
                                 }
                             };
-                            shootSound = Sounds.laserblast;
+                            shootSound = Sounds.shootLaser;
                         }},
                         new Weapon(NewHorizon.name("impulse")) {{
                             heatColor = NHColor.lightSkyBack;
@@ -2372,7 +2372,7 @@ public class NHUnitTypes {
                             alternate = false;
                             ejectEffect = Fx.none;
                             recoil = 1.7f;
-                            shootSound = Sounds.plasmaboom;
+                            shootSound = Sounds.beamPlasma;
 
                             bullet = new ChainBulletType(400f) {{
                                 length = 360f;
@@ -2454,8 +2454,8 @@ public class NHUnitTypes {
                         continuous = parentizeEffects = true;
                         mirror = alternate = false;
                         shootCone = 5.0F;
-                        chargeSound = Sounds.lasercharge;
-                        shootSound = Sounds.laserblast;
+                        chargeSound = Sounds.chargeCorvus;
+                        shootSound = Sounds.shootLaser;
                         bullet = new LaserBulletType(200.0F) {
                             {
                                 chargeEffect = new Effect(120.0F, e -> {
@@ -2648,7 +2648,7 @@ public class NHUnitTypes {
                         }},
                         new Weapon() {{
                             reload = 180f;
-                            shootSound = Sounds.beam;
+                            shootSound = Sounds.beamPlasma;
                             x = 0;
                             continuous = true;
                             top = alternate = rotate = mirror = false;
@@ -2801,7 +2801,7 @@ public class NHUnitTypes {
                                     Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
                                 }));
                             }};
-                            shootSound = Sounds.shotgun;
+                            shootSound = Sounds.shoot;
                         }},
                         new Weapon(NewHorizon.name("large-launcher")) {{
                             top = false;
@@ -2839,7 +2839,7 @@ public class NHUnitTypes {
                                     Fill.circle(b.x, b.y, (width / 1.75f) * b.fout());
                                 }));
                             }};
-                            shootSound = Sounds.shotgun;
+                            shootSound = Sounds.shoot;
                         }},
                         new Weapon() {{
                             mirror = false;
@@ -3002,7 +3002,7 @@ public class NHUnitTypes {
                         hitEffect = NHFx.lightningHitSmall(backColor);
                         despawnEffect = NHFx.shootCircleSmall(backColor);
                     }};
-                    shootSound = Sounds.missileSmall;
+                    shootSound = Sounds.shootMissile;
                 }});
                 engineOffset = 9.0F;
                 engineSize = 3f;
@@ -3135,7 +3135,7 @@ public class NHUnitTypes {
                             shootStatus = StatusEffects.slow;
                             shootStatusDuration = 90f;
                             continuous = true;
-                            shootSound = Sounds.beam;
+                            shootSound = Sounds.beamPlasma;
                             bullet = new ContinuousLaserBulletType(18f) {{
                                 length = 120f;
                                 width = 2.55f;
@@ -3209,7 +3209,7 @@ public class NHUnitTypes {
                             shoot = new ShootPattern();
                             predictTarget = true;
 
-                            shootSound = Sounds.laser;
+                            shootSound = Sounds.shootLaser;
 
                             bullet = new BasicBulletType(2f, 90, "mine-bullet") {{
                                 scaleLife = true;
@@ -3355,7 +3355,7 @@ public class NHUnitTypes {
                                 lightningLengthRand = 10;
                                 smokeEffect = Fx.shootBigSmoke2;
                                 hitShake = 4f;
-                                hitSound = Sounds.plasmaboom;
+                                hitSound = Sounds.beamPlasma;
                                 shrinkX = shrinkY = 0.7f;
                             }};
                             shootSound = NHSounds.laser4;
@@ -3381,7 +3381,7 @@ public class NHUnitTypes {
                             ejectEffect = Fx.none;
                             recoil = 1.7f;
                             bullet = NHBullets.basicSkyFrag;
-                            shootSound = Sounds.plasmaboom;
+                            shootSound = Sounds.beamPlasma;
                         }}
                 );
 
@@ -3534,7 +3534,7 @@ public class NHUnitTypes {
 
                             shake = 5;
 
-                            shootSound = Sounds.plasmadrop;
+                            shootSound = Sounds.beamPlasma;
 
                             bullet = new ShieldBreakerType(6, 30, "mine-bullet", 3000) {{
                                 rangeOverride = 400;
@@ -3816,7 +3816,7 @@ public class NHUnitTypes {
                                     width = 10f;
                                     height = 40f;
 
-                                    hitSound = Sounds.plasmaboom;
+                                    hitSound = Sounds.beamPlasma;
                                     despawnShake = hitShake = 18f;
 
                                     pierceArmor = true;
@@ -4032,7 +4032,7 @@ public class NHUnitTypes {
                                 }
                             };
 
-                            shootSound = Sounds.artillery;
+                            shootSound = Sounds.shootArtillery;
                         }},
                         new Weapon() {{
                             mirror = false;
@@ -4323,7 +4323,7 @@ public class NHUnitTypes {
                 engineOffset = 5f;
 
                 deathExplosionEffect = Fx.none;
-                deathSound = Sounds.plasmaboom;
+                deathSound = Sounds.beamPlasma;
                 trailLength = 40;
                 trailScl = 3f;
 
@@ -4415,7 +4415,7 @@ public class NHUnitTypes {
 
                             public void init(Bullet b) {
                                 super.init(b);
-                                Sounds.laserblast.at(b);
+                                Sounds.beamPlasma.at(b);
                             }
 
                             public void hit(Bullet b, float x, float y) {
@@ -4893,7 +4893,7 @@ public class NHUnitTypes {
                                             for (int i = 0; i < 2; i++) {
                                                 if (Mathf.chanceDelta(0.2 * Mathf.curve(b.fin(), 0, 0.8f))) {
                                                     for (int j : Mathf.signs) {
-                                                        Sounds.spark.at(b.x, b.y, 1f, 0.3f);
+                                                        Sounds.shootArc.at(b.x, b.y, 1f, 0.3f);
                                                         Vec2 v = Tmp.v6.rnd(rad / 2 + Mathf.random(rad * 2) * (1 + Mathf.curve(b.fin(), 0, 0.9f)) / 1.5f).add(b);
                                                         (j > 0 ? NHFx.chainLightningFade : NHFx.chainLightningFadeReversed).at(v.x, v.y, 12f, hitColor, b);
                                                     }

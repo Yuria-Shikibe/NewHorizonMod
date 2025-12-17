@@ -24,7 +24,6 @@ import mindustry.world.meta.StatValue;
 import newhorizon.expand.block.consumer.ConsumeRecipe;
 import newhorizon.expand.type.Recipe;
 
-import static mindustry.Vars.content;
 import static mindustry.world.meta.StatValues.withTooltip;
 
 public class RecipeGenericCrafter extends AdaptCrafter {

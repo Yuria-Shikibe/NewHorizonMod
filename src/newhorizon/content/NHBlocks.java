@@ -17,21 +17,25 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.content.*;
+import mindustry.Vars;
+import mindustry.content.Fx;
+import mindustry.content.Items;
+import mindustry.content.Liquids;
+import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
-import mindustry.entities.Lightning;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.FlakBulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
-import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
+import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -40,14 +44,14 @@ import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.MendProjector;
-import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.LaserTurret;
+import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.Prop;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.environment.SteamVent;
-import mindustry.world.blocks.power.Battery;
-import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.production.SolidPump;
 import mindustry.world.blocks.sandbox.ItemSource;
 import mindustry.world.blocks.sandbox.LiquidSource;
@@ -58,26 +62,21 @@ import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import mindustry.Vars;
 import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.blocks.*;
-import newhorizon.expand.block.ancient.CaptureableTurret;
 import newhorizon.expand.block.commandable.AirRaider;
 import newhorizon.expand.block.commandable.BombLauncher;
 import newhorizon.expand.block.defence.FireExtinguisher;
 import newhorizon.expand.block.defence.HyperSpaceWarper;
 import newhorizon.expand.block.defence.ShockwaveGenerator;
 import newhorizon.expand.block.drawer.ArcCharge;
-import newhorizon.expand.block.drawer.DrawArrowSequence;
-import newhorizon.expand.block.drawer.FlipRegionPart;
 import newhorizon.expand.block.special.HyperGenerator;
 import newhorizon.expand.block.special.UnitSpawner;
 import newhorizon.expand.block.turrets.MultTractorBeamTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.Webber;
 import newhorizon.expand.bullets.*;
-import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.game.NHPartProgress;
 import newhorizon.expand.game.NHUnitSorts;
 import newhorizon.util.func.NHFunc;
@@ -345,7 +344,7 @@ public class NHBlocks {
             heatColor = heatC;
 
             shake = 1.1f;
-            shootSound = Sounds.missileLarge;
+            shootSound = Sounds.shootMissileLarge;
 
             shoot = new AdaptedShootHelix() {{
                 flip = true;
@@ -382,7 +381,7 @@ public class NHBlocks {
                         status = NHStatusEffects.emp2;
                         statusDuration = 180f;
 
-                        hitSound = despawnSound = Sounds.dullExplosion;
+                        hitSound = despawnSound = Sounds.explosionDull;
                         hitSoundVolume = 0.6f;
                         hitSoundPitch -= 0.11f;
                         hitShake = 1.1f;
@@ -442,7 +441,7 @@ public class NHBlocks {
 
                         reloadMultiplier = 0.25f;
 
-                        hitSound = despawnSound = Sounds.largeExplosion;
+                        hitSound = despawnSound = Sounds.explosion;
                         hitShake = despawnShake = 6.1f;
 
                         shootEffect = EffectWrapper.wrap(NHFx.circleSplash, hitColor);
@@ -703,7 +702,7 @@ public class NHBlocks {
                 mag = 8f;
             }};
 
-            shootSound = Sounds.pulseBlast;
+            shootSound = Sounds.explosion;
             outlineColor = Pal.darkOutline;
             warmupMaintainTime = 45f;
             minWarmup = 0.9f;
@@ -737,7 +736,7 @@ public class NHBlocks {
 
                 maxHit = 8;
                 despawnShake = 5f;
-                hitSound = despawnSound = Sounds.plasmaboom;
+                hitSound = despawnSound = Sounds.beamPlasma;
                 statusDuration = 120f;
                 status = NHStatusEffects.emp1;
 
@@ -1285,7 +1284,7 @@ public class NHBlocks {
 
             recoil = 18f;
             shake = 80f;
-            shootSound = Sounds.laserblast;
+            shootSound = Sounds.shootLaser;
             health = 800000;
             shootCone = 5f;
             maxAmmo = 80;
@@ -1418,7 +1417,7 @@ public class NHBlocks {
                 accelerateBegin = 0.1f;
                 accelerateEnd = 0.85f;
 
-                despawnSound = hitSound = Sounds.dullExplosion;
+                despawnSound = hitSound = Sounds.explosionDull;
 
                 velocityBegin = 6f;
                 velocityIncrease = -4f;
@@ -1453,6 +1452,9 @@ public class NHBlocks {
                 trailLength = 15;
                 trailWidth = 2f;
                 drawSize = 300f;
+
+                status = NHStatusEffects.blackWall;
+                statusDuration = 120f;
             }});
 
             shooter(NHItems.ancimembrane, new ShootSpread() {{
@@ -1522,8 +1524,8 @@ public class NHBlocks {
             rotateSpeed = 3f;
             firingMoveFract = 0.15F;
             shootDuration = 200.0F;
-            shootSound = Sounds.laserbig;
-            loopSound = Sounds.beam;
+            //shootSound = Sounds.shootLaser;
+            //loopSound = Sounds.loopBio;
             loopSoundVolume = 2.0F;
             shootType = NHBullets.atomSeparator;
 
@@ -1541,7 +1543,7 @@ public class NHBlocks {
             reload = 150f;
             range = 520f;
             unitSort = (u, x, y) -> -u.hitSize();
-            shootSound = Sounds.laserblast;
+            shootSound = Sounds.shootLaser;
             inaccuracy = 0f;
             //shoot = new ShootPattern() {{
             //    firstShotDelay = NHFx.darkEnergyChargeBegin.lifetime;
@@ -1590,7 +1592,7 @@ public class NHBlocks {
                             trailWidth = 2.5f;
                             lifetime = 140f;
                             shrinkX = shrinkY = 0;
-                            hitSound = Sounds.explosionbig;
+                            //hitSound = Sounds.explosionbig;
                             drawSize = 60f;
                             hitShake = despawnShake = 6f;
                             shootEffect = NHFx.instShoot(backColor, frontColor);
@@ -1688,7 +1690,7 @@ public class NHBlocks {
             inaccuracy = 9f;
 
             xRand = tilesize * size / 6.5f;
-            shootSound = Sounds.missile;
+            //shootSound = Sounds.missile;
             coolantMultiplier = 0.85f;
         }};
 
@@ -1900,7 +1902,7 @@ public class NHBlocks {
             range = 800f;
             trackingRange = range * 1.4f;
             inaccuracy = 0f;
-            shootSound = Sounds.laserbig;
+            //shootSound = Sounds.laserbig;
         }};
 
         executor = new ItemTurret("executor") {{
@@ -1949,7 +1951,7 @@ public class NHBlocks {
             effectColor = NHColor.thermoPst;
             itemCapacity = 40;
             itemDuration = 180f;
-            ambientSound = Sounds.pulse;
+            //ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.1F;
 
             consumePower(100.0F);
@@ -1978,7 +1980,7 @@ public class NHBlocks {
             lightningColor = NHColor.darkEnrColor;
             generateEffect = NHFx.blastgenerate;
             acceptEffect = NHFx.blastAccept;
-            blastSound = Sounds.explosionbig;
+            //blastSound = Sounds.explosionbig;
             status = NHStatusEffects.emp2;
             range = 240;
             health = 1200;
@@ -2170,13 +2172,13 @@ public class NHBlocks {
                             lightningLength = 8;
                             smokeEffect = Fx.shootBigSmoke2;
                             hitShake = 8f;
-                            hitSound = Sounds.plasmaboom;
+                            //hitSound = Sounds.plasmaboom;
                             status = StatusEffects.sapped;
 
                             statusDuration = 60f * 10;
                         }
                     };
-                    hitSound = Sounds.explosionbig;
+                    //hitSound = Sounds.explosionbig;
                     splashDamageRadius = 120f;
                     splashDamage = 200;
                     lightningDamage = 40f;

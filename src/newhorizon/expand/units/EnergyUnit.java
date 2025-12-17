@@ -192,18 +192,18 @@ public class EnergyUnit extends PayloadUnit {
         Seq<GravityTrapField> fields = new Seq<>();
         NHGroups.gravityTraps.intersect(x - hitSize / 4, y - hitSize / 4, hitSize / 2, hitSize / 2, fields);
 
-        if (timer.get(1, 8)) fields.each(f -> f.team() != team && f.active(), f -> {
+        if (timer.get(1, 8)) fields.each(f -> f.owner != team, f -> {
             Vec2 target = new Vec2(x, y);
-            NHFx.slidePoly.at(f.x, f.y, hitSize, f.team().color, target);
-            NHFx.chainLightningFade.at(f.x, f.y, 12, f.team().color, target);
+            NHFx.slidePoly.at(f.x, f.y, hitSize, f.owner.color, target);
+            NHFx.chainLightningFade.at(f.x, f.y, 12, f.owner.color, target);
             impulseNet(Tmp.v1.set(this).sub(f).nor().scl(50 * (f.range * 0.75f - f.dst(this))));
             damage(35f, true);
             apply(NHStatusEffects.intercepted, 60f);
         });
 
         if (!Vars.headless && lastPos.dst(this) > effectTriggerLen) {
-            Sounds.plasmaboom.at(this);
-            Sounds.plasmaboom.at(lastPos);
+            Sounds.shootBeamPlasma.at(this);
+            Sounds.shootBeamPlasma.at(lastPos);
 
             teleport.at(x, y, hitSize / 2, team.color);
             teleport.at(lastPos.x, lastPos.y, hitSize / 2, team.color);

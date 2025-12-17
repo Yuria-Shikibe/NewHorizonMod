@@ -1,20 +1,16 @@
 package newhorizon.content;
 
 import arc.Core;
-import arc.files.Fi;
 import arc.func.Cons;
 import arc.func.Func;
 import arc.func.Prov;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.game.MapObjectives;
-import mindustry.game.Schematic;
-import mindustry.game.Schematics;
 import mindustry.gen.Icon;
 import mindustry.gen.LogicIO;
 import mindustry.graphics.CacheLayer;
@@ -32,8 +28,6 @@ import newhorizon.expand.game.MapObjectives.TriggerObjective;
 import newhorizon.expand.logic.DefaultRaid;
 import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.statements.*;
-
-import java.io.IOException;
 
 public class NHContent extends Content {
     public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried

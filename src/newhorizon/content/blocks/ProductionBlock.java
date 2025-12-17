@@ -1,33 +1,20 @@
 package newhorizon.content.blocks;
 
-import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Interp;
-import arc.math.Mathf;
-import arc.math.Rand;
-import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.entities.Effect;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.power.ThermalGenerator;
-import mindustry.world.blocks.production.Drill;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import newhorizon.content.*;
@@ -36,12 +23,9 @@ import newhorizon.expand.block.production.drill.AdaptDrill;
 import newhorizon.expand.block.production.drill.DrillModule;
 import newhorizon.expand.block.production.drill.OreCollector;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
-import newhorizon.util.graphic.DrawFunc;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
-import static arc.graphics.g2d.Lines.circleVertices;
 import static mindustry.type.ItemStack.with;
-import static newhorizon.util.func.NHFunc.rand;
 
 public class ProductionBlock {
     public static Block
@@ -166,9 +150,6 @@ public class ProductionBlock {
             );
             effectChance = 0.04f;
             size = 3;
-            ambientSound = Sounds.hum;
-            ambientSoundVolume = 0.06f;
-
             squareSprite = false;
 
             drawer = new DrawMulti(

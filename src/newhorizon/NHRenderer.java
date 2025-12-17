@@ -7,7 +7,6 @@ import arc.graphics.gl.Shader;
 import arc.util.Disposable;
 import newhorizon.content.NHContent;
 import newhorizon.content.NHShaders;
-import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.graphic.StatusRenderer;
 
 import static arc.Core.graphics;
@@ -29,9 +28,8 @@ public class NHRenderer implements Disposable {
         statusRenderer.draw();
 
         mask.resize(graphics.getWidth(), graphics.getHeight());
-        //drawShader(NHShaders.quantum, NHContent.QUANTUM_LAYER);
-        drawShader(NHShaders.powerArea, NHContent.POWER_AREA);
-        drawShader(NHShaders.powerDynamicArea, NHContent.POWER_DYNAMIC);
+
+        drawShader(NHShaders.gravityTrap, NHContent.GRAVITY_TRAP_LAYER);
     }
 
     public void drawShader(Shader shader, float layer) {
@@ -42,16 +40,6 @@ public class NHRenderer implements Disposable {
             });
         }
     }
-
-    public void drawGravityTrap() {
-        Draw.draw(NHContent.GRAVITY_TRAP_LAYER, () -> {
-            mask.begin(Color.clear);
-            GravityTrapField.drawAll();
-            mask.end();
-            mask.blit(NHShaders.gravityTrapShader);
-        });
-    }
-
 
     @Override
     public void dispose() {

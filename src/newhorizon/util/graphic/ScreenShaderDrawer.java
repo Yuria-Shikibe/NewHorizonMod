@@ -5,11 +5,9 @@ import arc.Events;
 import arc.graphics.Camera;
 import arc.graphics.g2d.Draw;
 import arc.graphics.gl.FrameBuffer;
-import arc.graphics.gl.Shader;
 import mindustry.game.EventType;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Shaders;
-import newhorizon.NewHorizon;
 import newhorizon.content.NHShaders;
 
 /**

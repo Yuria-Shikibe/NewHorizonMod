@@ -13,10 +13,10 @@ import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
+import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
-import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.game.SpawnGroup;
 import mindustry.game.Waves;
 import mindustry.gen.Sounds;
@@ -36,7 +36,6 @@ import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.*;
 import newhorizon.NHSetting;
-import newhorizon.NewHorizon;
 import newhorizon.expand.ability.passive.PassiveShield;
 import newhorizon.expand.bullets.AdaptedLightningBulletType;
 
@@ -1072,7 +1071,7 @@ public class NHPostProcess {
                 hitColor = backColor = trailColor = lightningColor = NHItems.zeta.color;
                 frontColor = NHItems.zeta.color;
                 ammoMultiplier = 1f;
-                hitSound = Sounds.titanExplosion;
+                hitSound = Sounds.explosionTitan;
 
                 status = StatusEffects.blasted;
 

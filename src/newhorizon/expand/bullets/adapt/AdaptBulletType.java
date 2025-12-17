@@ -2,11 +2,8 @@ package newhorizon.expand.bullets.adapt;
 
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.Rand;
-import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Hitboxc;

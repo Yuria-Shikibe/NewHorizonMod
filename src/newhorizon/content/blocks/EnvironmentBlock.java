@@ -6,8 +6,11 @@ import mindustry.graphics.CacheLayer;
 import mindustry.graphics.MultiPacker;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.*;
-import newhorizon.content.*;
-import newhorizon.expand.block.environment.*;
+import newhorizon.content.NHContent;
+import newhorizon.content.NHItems;
+import newhorizon.content.NHLiquids;
+import newhorizon.expand.block.environment.OreVein;
+import newhorizon.expand.block.environment.TiledFloor;
 
 public class EnvironmentBlock {
     public static Block metalFloorPlain, labFloorLight, labFloorDark;

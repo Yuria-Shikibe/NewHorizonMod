@@ -1,21 +1,19 @@
 package newhorizon.expand.map;
 
-import arc.func.*;
+import arc.func.Boolf;
+import arc.func.Cons;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
 import arc.struct.IntSet;
-import arc.struct.Seq;
 import arc.util.Structs;
 import arc.util.Tmp;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
 import mindustry.content.Blocks;
 import mindustry.game.Schematics;
-import mindustry.gen.Iconc;
 import mindustry.graphics.g3d.PlanetGrid;
 import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Sector;

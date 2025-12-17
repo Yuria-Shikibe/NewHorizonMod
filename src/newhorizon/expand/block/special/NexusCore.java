@@ -1,35 +1,19 @@
 package newhorizon.expand.block.special;
 
 import arc.Core;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Rand;
 import arc.struct.Seq;
-import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.content.Fx;
-import mindustry.entities.Effect;
-import mindustry.gen.Groups;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Trail;
 import mindustry.type.Category;
-import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import newhorizon.NHGroups;
-import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHUnitTypes;
-import newhorizon.expand.entities.GravityTrapField;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.stroke;
-import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.renderer;
-import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 import static newhorizon.util.ui.TableFunc.LEN;
 import static newhorizon.util.ui.TableFunc.OFFSET;
@@ -97,6 +81,7 @@ public class NexusCore extends CoreBlock {
         });
     }
 
+    /*
     public void drawLanding(CoreBuild build, float x, float y) {
         if (coreDelay == -1) {
             coreDelay = renderer.getLandTime();
@@ -130,53 +115,7 @@ public class NexusCore extends CoreBlock {
             Tmp.c1.set(build.team.color).mul(offset);
             Fx.trailFade.at(x, y, 2.5f, Tmp.c1, trails.get(i).copy());
         }
-
     }
 
-    @Override
-    public void drawShadow(Tile tile) {
-        super.drawShadow(tile);
-
-    }
-
-    public class NexusCoreBuild extends CoreBuild {
-        public transient GravityTrapField field;
-
-        @Override
-        public void created() {
-            super.created();
-            if (field != null) field.setPosition(self());
-        }
-
-        @Override
-        public void draw() {
-            if (!(renderer.getLandTime() > 0)) {
-                Draw.rect(base, x, y);
-                drawTeamTop();
-            }
-        }
-
-        @Override
-        public void add() {
-            if (added) return;
-
-            Groups.all.add(this);
-            Groups.build.add(this);
-            this.added = true;
-
-            if (field == null) field = new GravityTrapField(this);
-
-            field.add();
-        }
-
-        public float range() {
-            return range * tilesize;
-        }
-
-        public void remove() {
-            if (added) NHGroups.gravityTraps.remove(field);
-
-            super.remove();
-        }
-    }
+     */
 }

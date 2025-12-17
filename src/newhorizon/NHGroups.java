@@ -14,12 +14,13 @@ import newhorizon.expand.entities.GravityTrapField;
 import static mindustry.Vars.world;
 
 public class NHGroups {
-    public static final ObjectMap<Building, Building> bridgeLinks = new ObjectMap<>();
+    protected static final Seq<GravityTrapField> tmpGravityTraps = new Seq<>();
+    protected static final Rect tmpRect = new Rect();
+
     public static final ObjectMap<Building, Seq<Building>> beaconBoostLinks = new ObjectMap<>();
     public static final ObjectSet<RemoteCoreStorage.RemoteCoreStorageBuild>[] placedRemoteCore = new ObjectSet[Team.all.length];
-    public static final Seq<GravityTrapField> gravityTrapsDraw = new Seq<>();
     public static final Seq<CommandableBlock.CommandableBlockBuild> commandableBuilds = new Seq<>();
-    public static QuadTree<GravityTrapField> gravityTraps = new QuadTree<>(world.getQuadBounds(new Rect()));
+    public static QuadTree<GravityTrapField> gravityTraps = new QuadTree<>(new Rect());
 
     static {
         for (int i = 0; i < Team.all.length; i++) {
@@ -29,16 +30,14 @@ public class NHGroups {
 
     public static void worldInit() {
         gravityTraps = new QuadTree<>(world.getQuadBounds(new Rect()));
-        gravityTrapsDraw.each(g -> gravityTraps.insert(g));
     }
 
     public static void clear() {
-        beaconBoostLinks.clear();
-        bridgeLinks.clear();
-        gravityTraps.clear();
-        gravityTrapsDraw.clear();
-        commandableBuilds.clear();
         RemoteCoreStorage.clear();
+
+        beaconBoostLinks.clear();
+        commandableBuilds.clear();
+        gravityTraps.clear();
     }
 
     public static void worldReset() {}
@@ -46,4 +45,17 @@ public class NHGroups {
     public static void update() {}
 
     public static void draw() {}
+
+    public static boolean inGravityTrap(Building entity, boolean friendly) {
+        tmpGravityTraps.clear();
+        entity.hitbox(tmpRect);
+        gravityTraps.intersect(tmpRect, g -> {
+            if (friendly) {
+                if (g.owner == entity.team) tmpGravityTraps.add(g);
+            }else {
+                if (g.owner != entity.team) tmpGravityTraps.add(g);
+            }
+        });
+        return !tmpGravityTraps.isEmpty();
+    }
 }

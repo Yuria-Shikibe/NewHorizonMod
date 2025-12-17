@@ -2,13 +2,11 @@ package newhorizon.expand.block.distribution.item;
 
 import arc.Core;
 import arc.Graphics;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -17,8 +15,6 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.units.BuildPlan;
-import mindustry.game.Gamemode;
-import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
@@ -28,9 +24,6 @@ import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.Conveyor;
-import newhorizon.NHGroups;
-import newhorizon.NHVars;
-import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static mindustry.Vars.*;
@@ -88,25 +81,6 @@ public class AdaptConveyor extends Conveyor {
     public boolean blends(Building self, Building other) {
         if (other == null) return false;
         return blends(self.tile, self.rotation, other.tileX(), other.tileY(), other.rotation, other.block);
-    }
-
-    @Override
-    public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        if (state.rules.mode() == Gamemode.sandbox) return true;
-
-        Seq<GravityTrapField> fields = new Seq<>();
-        NHGroups.gravityTraps.intersect(tile.worldx(), tile.worldy(), tilesize, tilesize, fields);
-        if (fields.isEmpty()) return false;
-        for (GravityTrapField field : fields) {
-            if (field.team() != team) return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        NHVars.renderer.drawGravityTrap();
     }
 
     @Override
@@ -168,13 +142,13 @@ public class AdaptConveyor extends Conveyor {
 
         @Override
         public void draw() {
-            Draw.blend(Blending.additive);
             Draw.color(team.color, Pal.gray, 0.35f);
+            Draw.alpha(0.5f);
             Draw.z(Layer.block - 0.25f);
             Draw.rect(pulseRegions[blendbits + pulseFrame() * 5], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
-            Draw.blend();
+            Draw.alpha(1f);
 
-            Draw.color(team.color, Color.white, 0.65f);
+            Draw.mixcol(team.color, Color.clear, 0.65f);
             Draw.z(Layer.block - 0.2f);
             Draw.rect(arrowRegions[conveyorFrame()], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
 

@@ -26,25 +26,23 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.*;
-import mindustry.graphics.Drawf;
+import mindustry.gen.Bullet;
+import mindustry.gen.Groups;
+import mindustry.gen.Sounds;
+import mindustry.gen.WeatherState;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
-import mindustry.graphics.Shaders;
 import mindustry.type.Weather;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.ContentInfoDialog;
 import mindustry.world.blocks.Attributes;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Stat;
-import newhorizon.NHSetting;
 import newhorizon.NewHorizon;
 import newhorizon.content.NHFx;
-import newhorizon.content.NHShaders;
 import newhorizon.content.NHSounds;
 import newhorizon.expand.bullets.TrailFadeBulletType;
 import newhorizon.expand.entities.EntityRegister;
-import newhorizon.expand.entities.GravityTrapField;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.util.func.NHFunc;
 import newhorizon.util.func.NHInterp;
@@ -110,7 +108,7 @@ public class MatterStorm extends Weather {
         super(name, AdaptedWeatherState::new);
 
         opacityMultiplier = 3;
-        sound = Sounds.pulse;
+        sound = Sounds.loopPulse;
         duration = 0.4f * Time.toMinutes;
 
         attrs = new Attributes();
@@ -207,8 +205,8 @@ public class MatterStorm extends Weather {
                     addBeginPoint = despawnHit = true;
 
 
-                    hitSound = Sounds.plasmaboom;
-                    despawnSound = Sounds.plasmaboom;
+                    hitSound = Sounds.explosionPlasmaSmall;
+                    despawnSound = Sounds.explosionPlasmaSmall;
                     hitSoundVolume = 0.2f;
                 }
 
@@ -227,7 +225,6 @@ public class MatterStorm extends Weather {
                 public void init(Bullet b) {
                     super.init(b);
                     despawnEffect.at(b.x, b.y, 0, hitColor);
-                    Sounds.spark.at(b);
                 }
             };
         }
@@ -244,6 +241,7 @@ public class MatterStorm extends Weather {
 
                 if (!Vars.headless) Vars.renderer.shake(force / 3, force);
 
+                /*
                 for (Unit entity : Groups.unit) {
                     if (entity.checkTarget(statusAir, statusGround) && !GravityTrapField.IntersectedAlly.get(entity.team, entity)) {
                         if (status != StatusEffects.none) entity.apply(status, statusDuration);
@@ -260,6 +258,8 @@ public class MatterStorm extends Weather {
                         entity.vel().add(Tmp.v1.set(state.windVector).scl(speed / 220));
                     }
                 }
+
+                 */
 
                 if (buildingEmp > 0) {
                     Groups.build.each(b -> b.isValid() && b.block.hasPower, b -> {
@@ -303,6 +303,7 @@ public class MatterStorm extends Weather {
         return Tmp.c1.set(primaryColor).lerp(secondaryColor, Mathf.absin(colorScl, colorMag));
     }
 
+    /*
     @Override
     public void drawOver(WeatherState state) {
         //TODO mobile fix
@@ -330,6 +331,8 @@ public class MatterStorm extends Weather {
 
         Vars.renderer.effectBuffer.blit(NHShaders.matterStorm);
     }
+
+     */
 
     public static class AdaptedWeatherState extends WeatherState {
         public float prepareReload = 450f;

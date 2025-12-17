@@ -22,8 +22,6 @@ import mindustry.world.consumers.Consume;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;
 
-import static mindustry.Vars.state;
-
 /**
  * Inner building that are linked to a specific building.
  * Handle items, liquids, damage and so on a passed to the main building to handle.

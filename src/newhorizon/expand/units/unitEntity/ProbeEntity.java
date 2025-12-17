@@ -57,7 +57,7 @@ public class ProbeEntity extends UnitEntity {
     public float scanSourceX = 0.5f, scanSourceY = 3;
     public float unscanCloakReload = 0;
     public Interval timer = new Interval(2);
-    public SoundLoop scanSound = new SoundLoop(Sounds.bioLoop, 0.9f);
+    public SoundLoop scanSound = new SoundLoop(Sounds.loopBio, 0.9f);
 
     //[0, 1]
     public float scanProgress = 0;

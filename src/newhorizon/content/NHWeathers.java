@@ -1,21 +1,13 @@
 package newhorizon.content;
 
-import arc.graphics.Blending;
-import arc.graphics.g2d.Draw;
-import arc.util.Time;
-import mindustry.gen.Sounds;
-import mindustry.gen.WeatherState;
-import mindustry.graphics.Pal;
 import mindustry.type.Weather;
-import mindustry.type.weather.ParticleWeather;
-import mindustry.world.meta.Attribute;
-import newhorizon.expand.weather.MatterStorm;
 
 public class NHWeathers {
     public static Weather
             quantumField, quantumStorm, solarStorm;
 
     public static void load() {
+        /*
         quantumStorm = new MatterStorm("quantum-storm") {{
             status = NHStatusEffects.ultFireBurn;
             statusDuration = 15f;
@@ -108,5 +100,7 @@ public class NHWeathers {
 //				}
 //			}
         };
+
+         */
     }
 }

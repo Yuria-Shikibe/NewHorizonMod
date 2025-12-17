@@ -9,15 +9,12 @@ import mindustry.world.Block;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.payloads.PayloadRouter;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Stat;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.inner.LinkBlock;
 import newhorizon.expand.block.inner.ModulePayload;
 import newhorizon.expand.block.production.factory.AdaptCrafter;
-
-import static mindustry.Vars.state;
 
 public class PayloadBlock {
     public static Block payloadRail, payloadRouter, payloadTeleport;

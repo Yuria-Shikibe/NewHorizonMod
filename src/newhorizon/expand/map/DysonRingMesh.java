@@ -2,18 +2,15 @@ package newhorizon.expand.map;
 
 import arc.graphics.Color;
 import arc.graphics.Gl;
-import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Mat3D;
 import arc.math.geom.Vec3;
 import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
-import mindustry.graphics.g3d.*;
+import mindustry.graphics.g3d.PlanetMesh;
+import mindustry.graphics.g3d.PlanetParams;
 import mindustry.type.Planet;
-import newhorizon.content.NHColor;
 
 public class DysonRingMesh extends PlanetMesh {
     static Mat3D mat = new Mat3D();

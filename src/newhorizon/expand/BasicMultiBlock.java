@@ -21,7 +21,6 @@ import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
 import newhorizon.expand.block.inner.LinkBlock;
 import newhorizon.expand.block.production.factory.MultiBlock;
 import newhorizon.expand.block.production.factory.MultiBlockEntity;

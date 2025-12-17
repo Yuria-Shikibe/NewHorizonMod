@@ -923,33 +923,15 @@
 	"size": 4,
 	"color": 255
 },
-"new-horizon-gravity-node-midantha": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-gravity-node-serpulo": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
-"new-horizon-gravity-node-erekir": {
-	"synthetic": true,
-	"solid": true,
-	"size": 1,
-	"color": 255
-},
 "new-horizon-gravity-trap": {
 	"synthetic": true,
-	"solid": true,
+	"solid": false,
 	"size": 2,
 	"color": 255
 },
 "new-horizon-gravity-trap-heavy": {
 	"synthetic": true,
-	"solid": true,
+	"solid": false,
 	"size": 3,
 	"color": 255
 },

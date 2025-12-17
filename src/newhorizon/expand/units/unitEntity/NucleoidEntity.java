@@ -14,7 +14,6 @@ import mindustry.content.Fx;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Layer;
 import newhorizon.content.NHContent;
-import newhorizon.content.NHStatusEffects;
 import newhorizon.content.NHUnitTypes;
 import newhorizon.expand.entities.EntityRegister;
 import newhorizon.util.func.NHFunc;

@@ -95,7 +95,7 @@ public class NHBullets {
                 lightningLength = 8;
                 smokeEffect = Fx.shootBigSmoke2;
                 hitShake = 8f;
-                hitSound = Sounds.plasmaboom;
+                //hitSound = Sounds.beamPlasma;
                 status = StatusEffects.sapped;
 
                 statusDuration = 60f * 10;
@@ -202,7 +202,7 @@ public class NHBullets {
 
             maxHit = 8;
             drag = 0.085f;
-            hitSound = Sounds.explosionbig;
+            //hitSound = Sounds.explosionbig;
             splashDamageRadius = 120f;
             splashDamage = lightningDamage = damage / 4f;
             lifetime = 50f;
@@ -237,7 +237,7 @@ public class NHBullets {
             trailChance = 0.6f;
             trailEffect = NHFx.trailToGray;
             hitShake = 3f;
-            hitSound = Sounds.plasmaboom;
+            //hitSound = Sounds.beamPlasma;
         }};
     }
 
@@ -287,7 +287,7 @@ public class NHBullets {
             shootEffect = EffectWrapper.wrap(NHFx.missileShoot, hitColor);
             smokeEffect = NHFx.instShoot(hitColor, frontColor);
 
-            despawnSound = hitSound = Sounds.largeExplosion;
+            despawnSound = hitSound = Sounds.explosion;
         }};
 
         basicRaid = new BasicRaidBulletType();
@@ -550,7 +550,7 @@ public class NHBullets {
             shootEffect = EffectWrapper.wrap(NHFx.missileShoot, hitColor);//NHFx.blast(hitColor, 45f);
             smokeEffect = NHFx.instShoot(hitColor, frontColor);
 
-            despawnSound = hitSound = Sounds.largeExplosion;
+            despawnSound = hitSound = Sounds.explosion;
 
             fragBullets = 22;
             fragBullet = new BasicBulletType(2f, 300, NHBullets.CIRCLE_BOLT) {{
@@ -571,7 +571,7 @@ public class NHBullets {
 
                 hitSoundVolume /= 2.2f;
                 despawnShake = hitShake = 4f;
-                despawnSound = hitSound = Sounds.dullExplosion;
+                despawnSound = hitSound = Sounds.explosionDull;
 
                 trailWidth = 5f;
                 trailLength = 35;
@@ -600,7 +600,7 @@ public class NHBullets {
             status = NHStatusEffects.entangled;
             statusDuration = 30f;
 
-            despawnSound = hitSound = Sounds.dullExplosion;
+            despawnSound = hitSound = Sounds.explosionDull;
             hitSoundVolume /= 4f;
 
             velocityBegin = 8f;
@@ -647,7 +647,7 @@ public class NHBullets {
             accelerateBegin = 0.15f;
             accelerateEnd = 0.95f;
 
-            despawnSound = hitSound = Sounds.titanExplosion;
+            despawnSound = hitSound = Sounds.explosionTitan;
 
             velocityBegin = 8f;
             velocityIncrease = -7.5f;
@@ -1015,7 +1015,7 @@ public class NHBullets {
 
             maxHit = 12;
             drag = 0.0065f;
-            hitSound = Sounds.explosionbig;
+            hitSound = Sounds.explosion;
             splashDamageRadius = 60f;
             splashDamage = lightningDamage = damage / 3f;
             lifetime = 130f;
@@ -1062,7 +1062,7 @@ public class NHBullets {
             knockback = 14f;
 
             hitSound = Sounds.explosion;
-            despawnSound = Sounds.explosionbig;
+            despawnSound = Sounds.explosion;
         }};
 
         railGun2 = new AdaptBulletType() {{
@@ -1106,7 +1106,7 @@ public class NHBullets {
             knockback = 22f;
 
             hitSound = Sounds.explosion;
-            despawnSound = Sounds.explosionbig;
+            despawnSound = Sounds.explosion;
         }};
 
         railGun3 = new AdaptBulletType() {{
@@ -1161,7 +1161,7 @@ public class NHBullets {
             knockback = 32f;
 
             hitSound = Sounds.explosion;
-            despawnSound = Sounds.explosionbig;
+            despawnSound = Sounds.explosion;
         }};
 
         blastEnergyPst = new AccelBulletType(0.85f, 280f, CIRCLE_BOLT) {{
@@ -1320,7 +1320,7 @@ public class NHBullets {
                 shootEffect = despawnEffect = NHFx.square(backColor, 40f, 4, 40f, 6f);
                 smokeEffect = NHFx.hugeSmokeGray;
                 despawnShake = 22f;
-                hitSound = Sounds.explosionbig;
+                hitSound = Sounds.explosion;
                 hitEffect = new OptionalMultiEffect(
                         NHFx.blast(backColor, 45f),
                         NHFx.crossBlast(backColor, 120f, 45f),
@@ -1361,7 +1361,7 @@ public class NHBullets {
             trailColor = backColor = lightColor = lightningColor = NHColor.darkEnrColor;
             frontColor = Color.white;
 
-            hitSound = Sounds.explosionbig;
+            hitSound = Sounds.explosion;
             trailChance = 0.075f;
             trailEffect = NHFx.polyTrail;
             trailParam = 6;
@@ -1422,7 +1422,7 @@ public class NHBullets {
                     reload = 1f;
                     shootOnDeath = true;
 
-                    shootSound = Sounds.plasmaboom;
+                    shootSound = Sounds.beamPlasma;
 
                     bullet = new ExplosionBulletType(40, 180f) {{
                         trailColor = lightColor = lightningColor = hitColor = NHColor.lightSky;
@@ -1493,7 +1493,7 @@ public class NHBullets {
                 reload = 1f;
                 shootOnDeath = true;
 
-                shootSound = Sounds.explosionbig;
+                shootSound = Sounds.explosion;
                 predictTarget = false;
                 shake = 12;
 
@@ -1758,7 +1758,7 @@ public class NHBullets {
                 trailRotation = true;
                 keepVelocity = true;
 
-                hitSound = Sounds.plasmaboom;
+                hitSound = Sounds.beamPlasma;
 
                 trailEffect = new Effect(10f, e -> {
                     color(trailColor, Color.white, e.fout() * 0.66f);
@@ -1816,7 +1816,7 @@ public class NHBullets {
                 hitShake = 4f;
                 trailRotation = true;
                 status = StatusEffects.electrified;
-                hitSound = Sounds.plasmaboom;
+                hitSound = Sounds.beamPlasma;
 
                 trailEffect = new Effect(16f, e -> {
                     color(Pal.heal);
@@ -1926,7 +1926,7 @@ public class NHBullets {
             splashDamageRadius = 8f;
             splashDamage = damage / 2;
             ammoMultiplier = 3f;
-            hitEffect = Fx.flakExplosionBig;
+            hitEffect = Fx.flakExplosion;
             despawnEffect = Fx.flakExplosion;
             lifetime = 58f;
 
@@ -2041,7 +2041,7 @@ public class NHBullets {
                 fragBullets = 14;
                 intervalBullets = 2;
                 intervalBullet = fragBullet = arc_9000_frag;
-                hitSound = Sounds.explosionbig;
+                hitSound = Sounds.explosion;
                 splashDamageRadius = 120f;
                 splashDamage = 1000;
                 lightningDamage = 375f;
@@ -2207,7 +2207,7 @@ public class NHBullets {
 
                 maxHit = 6;
                 hitShake = despawnShake = 5f;
-                hitSound = despawnSound = Sounds.plasmaboom;
+                hitSound = despawnSound = Sounds.beamPlasma;
 
                 size = 7.2f;
                 trailWidth = 3f;
@@ -2540,8 +2540,8 @@ public class NHBullets {
                 accelInterp = Interp.pow2;
                 trailInterp = Interp.pow10Out;
 
-                despawnSound = Sounds.plasmaboom;
-                hitSound = Sounds.explosionbig;
+                despawnSound = Sounds.beamPlasma;
+                hitSound = Sounds.explosion;
                 hitShake = 60;
                 despawnShake = 100;
                 lightning = 12;

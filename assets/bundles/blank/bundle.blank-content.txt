@@ -508,15 +508,6 @@ block.new-horizon-logistics-liquid-unloader.description =
 block.new-horizon-hyper-generator.name = 
 block.new-horizon-hyper-generator.description = 
 #block.new-horizon-hyper-generator.detail = 
-block.new-horizon-gravity-node-midantha.name = 
-block.new-horizon-gravity-node-midantha.description = 
-#block.new-horizon-gravity-node-midantha.detail = 
-block.new-horizon-gravity-node-serpulo.name = 
-block.new-horizon-gravity-node-serpulo.description = 
-#block.new-horizon-gravity-node-serpulo.detail = 
-block.new-horizon-gravity-node-erekir.name = 
-block.new-horizon-gravity-node-erekir.description = 
-#block.new-horizon-gravity-node-erekir.detail = 
 block.new-horizon-gravity-trap.name = 
 block.new-horizon-gravity-trap.description = 
 #block.new-horizon-gravity-trap.detail = 
@@ -874,9 +865,21 @@ status.new-horizon-emp-2.description =
 status.new-horizon-emp-3.name = 
 status.new-horizon-emp-3.description = 
 #status.new-horizon-emp-3.detail = 
+status.new-horizon-immunity-flag.name = 
+status.new-horizon-immunity-flag.description = 
+#status.new-horizon-immunity-flag.detail = 
+status.new-horizon-execution-flag.name = 
+status.new-horizon-execution-flag.description = 
+#status.new-horizon-execution-flag.detail = 
+status.new-horizon-accumulate-flag.name = 
+status.new-horizon-accumulate-flag.description = 
+#status.new-horizon-accumulate-flag.detail = 
 status.new-horizon-shield-flag.name = 
 status.new-horizon-shield-flag.description = 
 #status.new-horizon-shield-flag.detail = 
+status.new-horizon-black-wall.name = 
+status.new-horizon-black-wall.description = 
+#status.new-horizon-black-wall.detail = 
 
 
 #[[REGION PLANET]]
@@ -895,12 +898,3 @@ planet.new-horizon-midantha.description =
 #[[REGION WEATHER]]
 
 
-weather.new-horizon-quantum-storm.name = 
-weather.new-horizon-quantum-storm.description = 
-#weather.new-horizon-quantum-storm.detail = 
-weather.new-horizon-solar-storm.name = 
-weather.new-horizon-solar-storm.description = 
-#weather.new-horizon-solar-storm.detail = 
-weather.new-horizon-quantum-weather.name = 
-weather.new-horizon-quantum-weather.description = 
-#weather.new-horizon-quantum-weather.detail = 

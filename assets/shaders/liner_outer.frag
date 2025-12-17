@@ -11,21 +11,17 @@ uniform float u_thick;
 varying vec2 v_texCoords;
 
 void main(){
-    vec2 T = v_texCoords.xy;
-    vec2 coords = (T * u_texsize) + u_offset;
+    vec2 T = v_texCoords;
     vec2 v = u_invsize;
-    float step = u_thick;
 
+    vec2 coords = (T * u_texsize) + u_offset;
     vec4 center = texture2D(u_texture, T);
 
-    vec4 maxed =
-        max(
-            max(
-                max(texture2D(u_texture, T + vec2(step, step) * v), texture2D(u_texture, T + vec2(step, -step) * v)
-            ),
-            texture2D(u_texture, T + vec2(-step, step) * v)
-        ),
-        texture2D(u_texture, T + vec2(-step, -step) * v)
+    vec4 maxed = max(max(max(
+        texture2D(u_texture, T + vec2( u_thick,  u_thick) * v),
+        texture2D(u_texture, T + vec2( u_thick, -u_thick) * v)),
+        texture2D(u_texture, T + vec2(-u_thick,  u_thick) * v)),
+        texture2D(u_texture, T + vec2(-u_thick, -u_thick) * v)
     );
 
     if (center.a > 0.001) {

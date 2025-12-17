@@ -68,7 +68,7 @@ public class PesterEntity extends UnitEntity {
             lightningLengthRand = 16;
             splashDamageRadius = 60f;
             hitShake = despawnShake = 20f;
-            hitSound = despawnSound = Sounds.explosionbig;
+            hitSound = despawnSound = Sounds.explosion;
             hitEffect = despawnEffect = new OptionalMultiEffect(NHFx.square45_8_45, NHFx.hitSparkHuge, NHFx.crossBlast_45);
         }
 

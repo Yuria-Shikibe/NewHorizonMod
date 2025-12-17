@@ -3,11 +3,9 @@ package newhorizon.expand.block.environment;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import mindustry.content.Items;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
-import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 

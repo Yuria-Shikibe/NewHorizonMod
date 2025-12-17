@@ -13,8 +13,6 @@ import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.ArtilleryBulletType;
-import mindustry.entities.bullet.ShrapnelBulletType;
-import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
@@ -38,12 +36,12 @@ import newhorizon.expand.block.turrets.AdaptItemTurret;
 import newhorizon.expand.block.turrets.ContinuousOverheatTurret;
 import newhorizon.expand.block.turrets.ShootMatchTurret;
 import newhorizon.expand.block.turrets.SpeedupTurret;
-import newhorizon.expand.bullets.*;
+import newhorizon.expand.bullets.DOTBulletType;
+import newhorizon.expand.bullets.UpgradePointLaserBulletType;
 import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
 import newhorizon.expand.game.NHUnitSorts;
-import newhorizon.util.graphic.EffectWrapper;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
 import static mindustry.type.ItemStack.with;
@@ -334,7 +332,7 @@ public class TurretBlock {
 
             outlineColor = Pal.darkOutline;
             smokeEffect = Fx.shootBigSmoke;
-            shootSound = Sounds.shootSnap;
+            shootSound = Sounds.shoot;
 
             ammo(Items.titanium, new AdaptBulletType() {{
                 setDamage(this, 45, 20);
@@ -802,7 +800,7 @@ public class TurretBlock {
             squareSprite = false;
 
             unitSort = NHUnitSorts.slowest;
-            shootSound = Sounds.largeCannon;
+            shootSound = Sounds.shootArtillery;
             outlineColor = Pal.darkOutline;
 
             ammo(

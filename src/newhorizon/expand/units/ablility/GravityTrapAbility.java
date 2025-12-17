@@ -7,26 +7,27 @@ import mindustry.gen.Unit;
 import newhorizon.expand.entities.GravityTrapField;
 
 public class GravityTrapAbility extends Ability {
-    public float range;
-
     protected GravityTrapField field;
+    public float range;
 
     public GravityTrapAbility(float range) {
         this.range = range;
     }
 
     @Override
-    public void update(Unit unit) {
-        if (field == null) {
-            field = new GravityTrapField(unit, range).add();
-        }
+    public void created(Unit unit) {
+        super.created(unit);
+        field = new GravityTrapField(unit.team, range);
+    }
 
-        field.setPosition(unit);
+    @Override
+    public void update(Unit unit) {
+        field.update(unit);
     }
 
     @Override
     public void death(Unit unit) {
-        if (field != null) field.remove();
+        field.remove();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class WarningSoundAction extends Action {
         return switch (soundID) {
             case 0 -> NHSounds.alert2;
             case 1 -> NHSounds.alarm;
-            case 2 -> Sounds.unlock;
+            case 2 -> Sounds.uiUnlock;
             case 3 -> Sounds.wind3;
             default -> Sounds.none;
         };

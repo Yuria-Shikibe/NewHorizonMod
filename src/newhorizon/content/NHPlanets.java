@@ -1,13 +1,13 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
-import arc.struct.ShortSeq;
 import arc.util.Time;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
-import mindustry.graphics.g3d.*;
+import mindustry.graphics.g3d.HexMesh;
+import mindustry.graphics.g3d.MultiMesh;
 import mindustry.type.ItemStack;
 import mindustry.type.Planet;
 import newhorizon.expand.map.DysonRingMesh;

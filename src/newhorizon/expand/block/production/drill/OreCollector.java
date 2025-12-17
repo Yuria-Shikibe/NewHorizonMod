@@ -35,7 +35,8 @@ import newhorizon.expand.BasicMultiBlock;
 import newhorizon.util.func.MathUtil;
 import newhorizon.util.graphic.DrawFunc;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.indexer;
+import static mindustry.Vars.tilesize;
 
 public class OreCollector extends BasicMultiBlock {
     public static Seq<Tile> tmpClusters = new Seq<>();
@@ -71,7 +72,7 @@ public class OreCollector extends BasicMultiBlock {
 
         clipSize = 288;
 
-        ambientSound = Sounds.drill;
+        ambientSound = Sounds.loopDrill;
         ambientSoundVolume = 0.018f;
 
         group = BlockGroup.drills;
