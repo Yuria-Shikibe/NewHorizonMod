@@ -779,6 +779,18 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-sheet-presser": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-manufactory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-stamping-facility": {
 	"synthetic": true,
 	"solid": true,

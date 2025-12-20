@@ -229,6 +229,7 @@ new-horizon-logistics-omni-gate 1 0 1 0
 new-horizon-logistics-omni-sorter 1 0 1 0
 new-horizon-logistics-router 1 0 1 0
 new-horizon-logistics-unloader 1 1 1 0
+new-horizon-manufactory 1 1 2 0
 new-horizon-mechanic-assembly-mk1 1 1 3 0
 new-horizon-mechanic-assembly-mk2 1 1 3 0
 new-horizon-mechanic-assembly-mk3 1 1 5 0
@@ -368,6 +369,7 @@ new-horizon-seton-phased-wall 1 1 1 0
 new-horizon-seton-wall 1 1 1 0
 new-horizon-seton-wall-large 1 1 2 0
 new-horizon-shaped-wall 1 1 1 0
+new-horizon-sheet-presser 1 1 2 0
 new-horizon-signal-circulator 1 1 1 0
 new-horizon-siliceoustone 0 0 1 4868947
 new-horizon-slavio 1 1 3 0
@@ -398,6 +400,7 @@ new-horizon-surge-refactor 1 1 3 0
 new-horizon-synchro 1 1 3 0
 new-horizon-tachyon-emitter 1 1 1 0
 new-horizon-tagger 1 1 1 0
+new-horizon-test-turret 1 1 3 0
 new-horizon-thermo-core-factory 1 1 5 0
 new-horizon-thermo-core-negative-factory 1 1 1 0
 new-horizon-thermo-core-positive-factory 1 1 1 0

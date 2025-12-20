@@ -968,14 +968,14 @@ public class NHBlocks {
                     under = mirror = true;
                     layerOffset = -0.1f;
                     moveX = 6f;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }}, new RegionPart("-side-down") {{
                     mirror = true;
                     layerOffset = -0.5f;
                     moveX = 10f;
                     moveY = 45f;
                     y = 10f;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }}, new RegionPart("-side-down") {{
                     mirror = true;
                     layerOffset = -0.35f;
@@ -983,263 +983,23 @@ public class NHBlocks {
                     moveY = 7f;
                     y = -2f;
                     x = 8;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }}, new RegionPart("-side-down") {{
                     under = mirror = true;
                     layerOffset = -0.2f;
                     moveY = -33f;
                     y = -33f;
                     x = 14;
-                    progress = smoothReload.inv().curve(Interp.pow3Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow3Out);
                 }});
 
                 parts.add(new ArcCharge() {{
-                    progress = smoothReload.inv().curve(Interp.pow5Out);
+                    progress = PartProgress.smoothReload.inv().curve(Interp.pow5Out);
                     color = NHColor.darkEnrColor;
                     chargeY = t -> -35f;
                     shootY = t -> 90 * curve.apply(1 - t.smoothReload);
                 }});
             }};
-            buildType = () -> new ItemTurretBuild(){
-
-                // -------------------- 基础字段 --------------------
-                private final Vec2 energyOrb1 = new Vec2();   // 炮口能量球起点位置
-                private final Vec2 energyOrb2 = new Vec2();   // 炮口能量球终点位置（根据reload进度移动）
-                private float orbMoveProgress = 0f;           // 能量球移动进度 (0~1)
-                private final float orbMaxDist = size * tilesize * 0.98f; // 能量球最大移动距离
-
-                // 曲线/能量球相关参数
-                private static final float CURVE_STRENGTH = 8f; // 贝塞尔曲线偏移强度
-                private static final float ORB_UP_OFFSET = 0f;  // 起点上偏移（一般设为0）
-                private static final float SHRINK_SPEED = 2.4f; // 曲线收缩速度
-
-                // -------------------- 内部类：移动能量球 --------------------
-                private class MovingOrb{
-                    private final Vec2 start;       // 起点位置
-                    private final Vec2 end;         // 终点位置
-                    private final long spawnTime;   // 生成时间
-                    private final float lifespan = 800f; // 存活时长（毫秒）
-                    private final float baseSize;   // 初始半径大小
-
-                    public MovingOrb(Vec2 start, Vec2 end){
-                        this.start = start.cpy().add(0f, -ORB_UP_OFFSET); // 起点可微调高度
-                        this.end = end.cpy();
-                        this.spawnTime = Time.millis();
-                        this.baseSize = 2.5f + Mathf.random() * 2f;       // 初始大小随机化
-                    }
-
-                    // 判断能量球是否过期
-                    public boolean isExpired(){ return Time.timeSinceMillis(spawnTime) > lifespan; }
-
-                    // 返回进度 0~1
-                    public float fin(){ return Mathf.clamp(Time.timeSinceMillis(spawnTime)/lifespan); }
-
-                    // 根据进度插值计算当前位置
-                    public Vec2 pos(){ return start.cpy().lerp(end, fin()); }
-
-                    // 绘制能量球
-                    public void draw(){
-                        float f = fin();
-                        Vec2 p = pos();
-
-                        Draw.z(Layer.effect - 1.01f); // 设置绘制层级
-                        float size = baseSize * (1f - f * 0.4f); // 随着时间缩小
-                        float glow = size * 2.2f;                // 外发光大小
-
-                        // 半透明发光层
-                        Draw.color(heatColor, 0.45f);
-                        Fill.circle(p.x, p.y, glow);
-
-                        // 主体颜色
-                        Draw.color(heatColor);
-                        Fill.circle(p.x, p.y, size);
-
-                        // 中心白点
-                        Draw.color(Color.white, 0.7f * (1f - f));
-                        Fill.circle(p.x, p.y, size * 0.55f);
-                    }
-                }
-
-                // -------------------- 内部类：贝塞尔曲线 --------------------
-                private class BezierCurve{
-                    private final MovingOrb target;  // 曲线目标（移动能量球）
-                    private final long spawnTime;    // 曲线生成时间
-                    private final Color color;       // 曲线颜色
-                    private final Vec2 ctrlOffset;   // 控制点偏移量
-                    private final float baseAmp;     // 偏移基准幅度
-
-                    public BezierCurve(MovingOrb target, Color color){
-                        this.target = target;
-                        this.color = color;
-                        this.spawnTime = Time.millis();
-
-                        // 偏移强度与距离成比例，最低保证 5
-                        float rawAmp = target.start.dst(target.end) * 0.25f + Mathf.random() * 10f;
-                        this.baseAmp = Math.max(rawAmp, 5f) * CURVE_STRENGTH;
-
-                        // 随机生成控制点方向与大小
-                        float angle = Mathf.random(360f);
-                        float mag = Mathf.clamp(Mathf.random() * baseAmp, 5f, baseAmp);
-                        this.ctrlOffset = new Vec2(Angles.trnsx(angle, mag), Angles.trnsy(angle, mag));
-                    }
-
-                    // 曲线是否过期：能量球过期 或 曲线存在时间 > 1600ms
-                    public boolean isExpired(){ return target.isExpired() || (Time.timeSinceMillis(spawnTime) > 1600f); }
-
-                    // 曲线生命周期进度
-                    public float lifeProgress(){ return Mathf.clamp(Time.timeSinceMillis(spawnTime)/1600f); }
-
-                    // 获取当前控制点（随时间收缩）
-                    public Vec2 getControlPoint(){
-                        Vec2 start = energyOrb1.cpy();
-                        Vec2 end = target.pos().cpy();
-                        float lp = lifeProgress();
-
-                        // 收缩公式，速度由 SHRINK_SPEED 控制
-                        float shrinkFactor = Mathf.pow(0.08f, lp * SHRINK_SPEED);
-
-                        Vec2 offset = ctrlOffset.cpy().scl(shrinkFactor);
-
-                        // 限制偏移长度（避免太离谱）
-                        float maxOffset = start.dst(end) * 1.8f;
-                        if(offset.len() > maxOffset) offset.setLength(maxOffset);
-
-                        // 控制点位于中点偏移位置
-                        return start.cpy().lerp(end, 0.5f).add(offset);
-                    }
-
-                    // 绘制曲线
-                    public void draw(){
-                        //  改动点：不再 return，而是保证暂停时也绘制
-                        Vec2 start = energyOrb1.cpy();
-                        Vec2 end = target.pos().cpy();
-                        Vec2 ctrl = getControlPoint();
-
-                        Draw.z(Layer.effect - 1.01f);
-                        float alpha = Mathf.lerp(1f, 0.18f, lifeProgress());
-                        Draw.color(color.cpy().a(alpha));
-
-                        // 贝塞尔曲线绘制
-                        Lines.stroke(2f * (1f - lifeProgress() * 0.5f), color.cpy().a(alpha));
-                        Lines.curve(
-                                start.x, start.y,
-                                ctrl.x, ctrl.y,
-                                ctrl.x, ctrl.y,
-                                end.x, end.y,
-                                20 // 曲线分段数
-                        );
-                    }
-                }
-
-                // -------------------- 容器 --------------------
-                private final Seq<MovingOrb> movingOrbs = new Seq<>();    // 能量球容器
-                private final Seq<BezierCurve> activeCurves = new Seq<>();// 曲线容器
-
-                // 能量球生成几率参数
-                private static final float MOVING_ORB_SPAWN_MIN = 0.01f;
-                private static final float MOVING_ORB_SPAWN_MAX = 0.24f;
-
-                // -------------------- 逻辑更新 --------------------
-                @Override
-                public void update(){
-                    super.update();
-                    if(Vars.state.isPaused()) return; //  update 在暂停时停止，但 draw 仍会绘制已有对象
-
-                    float upAngle = Mathf.mod(rotation, 360f); // 炮塔朝向角度
-                    float baseOffset = 35f;
-
-                    // 计算能量球起点位置（炮口后方）
-                    energyOrb1.set(
-                            x + Angles.trnsx(upAngle + 180f, baseOffset),
-                            y + Angles.trnsy(upAngle + 180f, baseOffset)
-                    );
-
-                    // 计算能量球终点位置（炮口前方，根据装填进度）
-                    orbMoveProgress = Mathf.clamp(reloadCounter / reload, 0f, 1f);
-                    float currentOrbDist = orbMaxDist * orbMoveProgress;
-
-                    energyOrb2.set(
-                            energyOrb1.x + Angles.trnsx(upAngle, currentOrbDist),
-                            energyOrb1.y + Angles.trnsy(upAngle, currentOrbDist)
-                    );
-
-                    // 清理过期能量球与曲线
-                    movingOrbs.removeAll(MovingOrb::isExpired);
-                    activeCurves.removeAll(BezierCurve::isExpired);
-
-                    // 动态生成新能量球与曲线
-                    float fin = reloadCounter / reload;
-                    float spawnChance = Mathf.lerp(MOVING_ORB_SPAWN_MIN, MOVING_ORB_SPAWN_MAX, fin);
-
-                    if(Mathf.chanceDelta(spawnChance)){
-                        Vec2 start = energyOrb1.cpy().add(0f, -ORB_UP_OFFSET);
-                        MovingOrb mo = new MovingOrb(start, energyOrb2.cpy());
-                        movingOrbs.add(mo);
-                        activeCurves.add(new BezierCurve(mo, heatColor));
-                    }
-                }
-
-                // -------------------- 绘制 --------------------
-                @Override
-                public void draw(){
-                    super.draw();
-                    if(Vars.state.isPaused()){
-                        //  保证暂停时仍然绘制已有能量球和曲线
-                        for(MovingOrb mo : movingOrbs) mo.draw();
-                        for(BezierCurve curve : activeCurves) curve.draw();
-                        return;
-                    }
-
-                    float fin = reloadCounter / reload;
-                    if(fin <= 0.01f) return;
-
-                    // 绘制起点和终点能量球
-                    drawEnergyOrb(energyOrb1, fin);
-                    drawEnergyOrb(energyOrb2, fin);
-
-                    // 绘制能量球与曲线
-                    for(MovingOrb mo : movingOrbs) mo.draw();
-                    for(BezierCurve curve : activeCurves) curve.draw();
-
-                    // 半径计算（用于闪电效果）
-                    float innerRadius = size * tilesize * 0.74f * Interp.circleOut.apply(fin);
-                    float outerRadius = size * tilesize * 0.96f * Interp.circleOut.apply(fin);
-
-                    // 内环随机闪电
-                    if(Mathf.chanceDelta(0.12f * fin)){
-                        float ang = Mathf.random(360f);
-                        Vec2 inner = Tmp.v1.trns(ang, innerRadius).add(x, y).cpy();
-                        NHFx.chainLightningFade.at(energyOrb2.x, energyOrb2.y, 12f, heatColor, new Vec2(inner));
-                    }
-
-                    // 外环随机闪电
-                    if(Mathf.chanceDelta(0.08f * fin)){
-                        float ang = Mathf.random(360f);
-                        Vec2 outer = Tmp.v1.trns(ang, outerRadius).add(x, y).cpy();
-                        NHFx.chainLightningFade.at(energyOrb2.x, energyOrb2.y, 18f, heatColor, new Vec2(outer));
-                    }
-                }
-
-                // -------------------- 工具方法：绘制能量球 --------------------
-                private void drawEnergyOrb(Vec2 pos, float fin){
-                    Draw.z(Layer.effect-1.01f);
-
-                    // 外层发光
-                    float glowSize = 8f * fin + Mathf.absin(Time.time, 2f, 2f * fin);
-                    Draw.color(heatColor, 0.3f);
-                    Fill.circle(pos.x, pos.y, glowSize);
-
-                    // 核心层
-                    float coreSize = 4f * fin;
-                    Draw.color(heatColor);
-                    Fill.circle(pos.x, pos.y, coreSize);
-
-                    // 中心高亮
-                    Draw.color(Color.white, 0.6f);
-                    Fill.circle(pos.x, pos.y, coreSize * 0.6f);
-                }
-            };
-
 
             shoot = new ShootPattern();
             inaccuracy = 0;
@@ -1284,7 +1044,7 @@ public class NHBlocks {
 
             recoil = 18f;
             shake = 80f;
-            shootSound = Sounds.shootLaser;
+            //shootSound = Sounds.laserblast;
             health = 800000;
             shootCone = 5f;
             maxAmmo = 80;

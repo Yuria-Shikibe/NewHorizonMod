@@ -23,8 +23,8 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
     public float tracerRandRange = 8f;
     public float tracerUpdateInterval = 1f;
 
-    public boolean mineShoot = false;
-    public float mineDeployTime = 60f;
+    public boolean velocityDecay = false;
+    public float velocityStaticTime = 60f;
 
     public boolean hasAccel = false;
     public float velocityBegin = 0.1f;
@@ -33,7 +33,7 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
     public float accelerateEnd = 0.6f;
     public Interp accelInterp = Interp.linear;
 
-    public boolean hasTrailFx = false;
+    public boolean artilleryTrail = false;
     public float trailMult = 1f, trailSize = 4f;
 
     @Override
@@ -46,10 +46,10 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
         super.init(b);
         applyExtraMultiplier(b);
 
-        if (mineShoot){
+        if (velocityDecay){
             b.lifetime = b.lifetime * 2;
             b.fdata = b.lifetime;
-            b.lifetime += mineDeployTime;
+            b.lifetime += velocityStaticTime;
 
             b.data = b.vel.len() / speed;
         }
@@ -88,12 +88,12 @@ public class AdaptBulletType extends BasicBulletType implements TypeDamageBullet
 
     @Override
     public void update(Bullet b){
-        if (mineShoot) b.vel.setLength(Interp.reverse.apply((b.time / b.lifetime)) * b.fdata / b.lifetime * speed * (b.data instanceof Float scl? scl: 1f));
+        if (velocityDecay) b.vel.setLength(Interp.reverse.apply((b.time / b.lifetime)) * b.fdata / b.lifetime * speed * (b.data instanceof Float scl? scl: 1f));
         if (hasAccel) b.vel.setLength(velocityBegin + (accelInterp.apply(Mathf.curve(b.fin(), accelerateBegin, accelerateEnd)) * velocityIncrease));
 
         super.update(b);
 
-        if(hasTrailFx && b.timer(0, (3 + b.fslope() * 2f) * trailMult)){
+        if(artilleryTrail && b.timer(0, (3 + b.fslope() * 2f) * trailMult)){
             trailEffect.at(b.x, b.y, trailRotation ? b.rotation() : b.fslope() * trailSize, backColor);
         }
     }

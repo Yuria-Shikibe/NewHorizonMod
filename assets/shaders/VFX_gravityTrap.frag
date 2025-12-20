@@ -24,8 +24,6 @@ void main(){
     vec2 coords = (T * u_texsize) + u_offset;
     vec4 color = texture2D(u_texture, T);
 
-    float step = THICK;
-
     vec4 outline = min(min(min(
         texture2D(u_texture, T + vec2( THICK,  THICK) * v),
         texture2D(u_texture, T + vec2( THICK, -THICK) * v)),

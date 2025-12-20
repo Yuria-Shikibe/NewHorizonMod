@@ -570,6 +570,12 @@ block.new-horizon-shaped-wall.name =
 block.new-horizon-shaped-wall.description = 
 #block.new-horizon-shaped-wall.detail = 
 #CRAFTING PART
+block.new-horizon-sheet-presser.name = 
+block.new-horizon-sheet-presser.description = 
+#block.new-horizon-sheet-presser.detail = 
+block.new-horizon-manufactory.name = 
+block.new-horizon-manufactory.description = 
+#block.new-horizon-manufactory.detail = 
 block.new-horizon-stamping-facility.name = 
 block.new-horizon-stamping-facility.description = 
 #block.new-horizon-stamping-facility.detail = 

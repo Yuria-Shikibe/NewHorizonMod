@@ -37,6 +37,7 @@ import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
     public static Block
+            sheetPresser, manufactory,
             stampingFacility, processorPrinter, condenseFacility, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
             surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, hugeplastaniumFactory, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
@@ -44,6 +45,32 @@ public class CraftingBlock {
     public static Block factory0, factory1, factory2, factory3, factory4, factory5, factory6;
 
     public static void load() {
+        /*
+        sheetPresser = new GenericCrafter("sheet-presser"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+
+            size = 2;
+            health = 600;
+            armor = 4;
+            itemCapacity = 20;
+        }};
+
+        manufactory = new GenericCrafter("manufactory"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.titanium, 45,
+                    NHItems.silicon, 60
+            ));
+
+            size = 2;
+            health = 600;
+            armor = 4;
+            itemCapacity = 20;
+        }};
+
+         */
         stampingFacility = new RecipeGenericCrafter("stamping-facility") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.titanium, 45,

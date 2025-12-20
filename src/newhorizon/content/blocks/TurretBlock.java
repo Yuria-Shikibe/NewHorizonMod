@@ -3,6 +3,7 @@ package newhorizon.content.blocks;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -13,9 +14,11 @@ import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.ArtilleryBulletType;
+import mindustry.entities.bullet.PointBulletType;
 import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.*;
+import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -24,6 +27,7 @@ import mindustry.type.Category;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BuildVisibility;
@@ -41,9 +45,11 @@ import newhorizon.expand.bullets.UpgradePointLaserBulletType;
 import newhorizon.expand.bullets.adapt.AdaptBulletType;
 import newhorizon.expand.bullets.adapt.AdaptLaserBulletType;
 import newhorizon.expand.bullets.adapt.PosLightningType;
+import newhorizon.expand.bullets.adapt.TrajectoryBulletType;
 import newhorizon.expand.game.NHUnitSorts;
 import newhorizon.util.graphic.OptionalMultiEffect;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
 public class TurretBlock {
@@ -264,17 +270,18 @@ public class TurretBlock {
             size = 1;
             health = 500;
             range = 160f;
-            reload = 90f;
+            reload = 60f;
             inaccuracy = 3f;
             shootCone = 50f;
             rotateSpeed = 8f;
+            velocityRnd = 0.15f;
 
             shootEffect = Fx.lightningShoot;
             smokeEffect = Fx.shootSmallSmoke;
-            shootSound = NHSounds.thermoShoot;
+            shootSound = NHSounds.shootBlaster3;
 
             shootType = new AdaptBulletType() {{
-                setDamage(this, 15, 25);
+                setDamage(this, 25, 40);
                 bundleName = "basic-thermo-bullet";
 
                 speed = 6.5f;
@@ -286,7 +293,7 @@ public class TurretBlock {
                 drawSize = 120f;
 
                 trailWidth = 1.25f;
-                trailLength = 15;
+                trailLength = 9;
                 trailColor = Pal.lancerLaser;
 
                 homingDelay = 1f;
@@ -304,9 +311,9 @@ public class TurretBlock {
                     });
                 });
             }};
-            shoot = new ShootPattern() {{
-                shots = 6;
-                shotDelay = 6f;
+            shoot = new ShootSpread() {{
+                shots = 4;
+                shotDelay = 0f;
             }};
 
             consumeLiquid(NHLiquids.xenFluid, 4 / 60f);
@@ -321,65 +328,75 @@ public class TurretBlock {
             size = 2;
             health = 1200;
             range = 160;
-            reload = 120f;
+            reload = 75f;
             recoil = 1.5f;
             shake = 3f;
             shootCone = 30f;
             inaccuracy = 4f;
             maxAmmo = 150;
             ammoPerShot = 10;
-            minWarmup = 0.8f;
+            minWarmup = 0.15f;
 
             outlineColor = Pal.darkOutline;
             smokeEffect = Fx.shootBigSmoke;
-            shootSound = Sounds.shoot;
+            shootSound = NHSounds.shootBlaster2;
 
-            ammo(Items.titanium, new AdaptBulletType() {{
-                setDamage(this, 45, 20);
-                bundleName = "pulse-bullet-titanium";
+            ammo(
+                    NHItems.titanium, new AdaptBulletType() {{
+                        setDamage(this, 45, 20);
+                        bundleName = "pulse-bullet-titanium";
 
-                width = 8f;
-                height = 25f;
-                speed = 5f;
-                ammoMultiplier = 4;
+                        width = 8f;
+                        height = 25f;
+                        speed = 5f;
+                        ammoMultiplier = 4;
 
-                hitColor = backColor = lightColor = trailColor = Items.titanium.color.cpy().lerp(Color.white, 0.1f);
-                frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+                        hitColor = backColor = lightColor = trailColor = Items.titanium.color.cpy().lerp(Color.white, 0.1f);
+                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
 
-                hitEffect = NHFx.crossBlast(hitColor, height + width);
-                shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 12f, 2f);
-            }}, Items.plastanium, new AdaptBulletType() {{
-                setDamage(this, 20, 30, 45, 15);
-                bundleName = "pulse-bullet-plastanium";
+                        hitEffect = NHFx.crossBlast(hitColor, height + width);
+                        shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 12f, 2f);
 
-                width = 8f;
-                height = 25f;
-                speed = 5f;
-                ammoMultiplier = 4;
+                        trailLength = 5;
+                    }},
+                    NHItems.plastanium, new AdaptBulletType() {{
+                        setDamage(this, 20, 30, 45, 15);
+                        bundleName = "pulse-bullet-plastanium";
 
-                hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
-                frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                hitEffect = NHFx.hitSpark(hitColor, 30, 6, 32, 1.4f, 7f);
-                shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
-            }}, NHItems.zeta, new AdaptBulletType() {{
-                setDamage(this, 32, 80, 60);
-                bundleName = "pulse-bullet-zeta";
+                        width = 8f;
+                        height = 25f;
+                        speed = 5f;
+                        ammoMultiplier = 4;
 
-                speed = 5f;
-                width = 8f;
-                height = 25f;
-                ammoMultiplier = 4;
+                        hitColor = backColor = lightColor = trailColor = Items.plastanium.color.cpy().lerp(Color.white, 0.1f);
+                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+                        hitEffect = NHFx.hitSpark(hitColor, 30, 6, 32, 1.4f, 7f);
+                        shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
 
-                status = StatusEffects.shocked;
-                statusDuration = 60f;
+                        trailLength = 5;
+                    }},
+                    NHItems.zeta, new AdaptBulletType() {{
+                        setDamage(this, 32, 80, 60);
+                        bundleName = "pulse-bullet-zeta";
 
-                lightningColor = hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
-                frontColor = backColor.cpy().lerp(Color.white, 0.35f);
-                hitEffect = NHFx.crossBlast(hitColor, height + width);
-                shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
-            }});
+                        speed = 5f;
+                        width = 8f;
+                        height = 25f;
+                        ammoMultiplier = 4;
+
+                        status = StatusEffects.shocked;
+                        statusDuration = 60f;
+
+                        lightningColor = hitColor = backColor = lightColor = trailColor = Items.pyratite.color.cpy().lerp(Color.white, 0.1f);
+                        frontColor = backColor.cpy().lerp(Color.white, 0.35f);
+                        hitEffect = NHFx.crossBlast(hitColor, height + width);
+                        shootEffect = despawnEffect = NHFx.square(hitColor, 20f, 3, 20f, 2f);
+
+                        trailLength = 5;
+                    }}
+            );
             shoot = new ShootPattern() {{
-                shots = 8;
+                shots = 6;
                 shotDelay = 3f;
             }};
             drawer = new DrawTurret() {{
@@ -810,7 +827,7 @@ public class TurretBlock {
 
                         scaleLife = true;
                         collides = false;
-                        hasTrailFx = true;
+                        artilleryTrail = true;
                         collidesAir = false;
                         collidesTiles = false;
                         scaledSplashDamage = true;
@@ -842,7 +859,7 @@ public class TurretBlock {
 
                         scaleLife = true;
                         collides = false;
-                        hasTrailFx = true;
+                        artilleryTrail = true;
                         collidesAir = false;
                         collidesTiles = false;
                         scaledSplashDamage = true;
@@ -873,10 +890,10 @@ public class TurretBlock {
                         setDamage(this, 96f, 350f, 500f);
                         sprite = "mine-bullet";
 
-                        mineShoot = true;
+                        velocityDecay = true;
                         scaleLife = true;
                         collides = false;
-                        hasTrailFx = true;
+                        artilleryTrail = true;
                         collidesAir = false;
                         collidesTiles = false;
                         scaledSplashDamage = true;
@@ -911,10 +928,10 @@ public class TurretBlock {
                         sprite = "mine-bullet";
 
                         hasTracer = true;
-                        mineShoot = true;
+                        velocityDecay = true;
                         scaleLife = true;
                         collides = false;
-                        hasTrailFx = true;
+                        artilleryTrail = true;
                         collidesAir = false;
                         collidesTiles = false;
                         scaledSplashDamage = true;
@@ -1038,7 +1055,7 @@ public class TurretBlock {
                 setDamage(this, 40f, 160f, 100f);
 
                 collides = true;
-                hasTrailFx = true;
+                artilleryTrail = true;
                 collidesAir = true;
 
                 width = 12;
@@ -1065,7 +1082,7 @@ public class TurretBlock {
                 setDamage(this, 24f, 80f, 150f);
 
                 collides = true;
-                hasTrailFx = true;
+                artilleryTrail = true;
                 collidesAir = true;
 
                 width = 12;
@@ -1093,7 +1110,7 @@ public class TurretBlock {
                 setDamage(this, 40f, 200f, 120f);
 
                 collides = true;
-                hasTrailFx = true;
+                artilleryTrail = true;
                 collidesAir = true;
 
                 width = 15;
@@ -1379,18 +1396,19 @@ public class TurretBlock {
             consumePower(16);
             consumeLiquid(NHLiquids.xenFluid, 12f / 60f);
         }};
+
+        //loadTest();
     }
 
     public static void loadTest() {
-        testShooter = new ItemTurret("emp-turret") {{
+        testShooter = new PowerTurret("test-turret") {{
             requirements(Category.turret, with(NHItems.presstanium, 10));
-
             size = 3;
             health = 3200;
             range = 200f;
-            reload = 120f;
-
-            ammo(NHItems.presstanium, RaidBullets.raidBullet_1);
+            reload = 10f;
+            shootSound = NHSounds.shootPulse3;
+            //shootType = new TrajectoryBulletType();
         }};
     }
 }
