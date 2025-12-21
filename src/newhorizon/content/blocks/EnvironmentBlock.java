@@ -20,7 +20,7 @@ public class EnvironmentBlock {
     public static Block
             oreZeta, oreSilicon, oreSilicar,
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
-            oreClusterTitanium,
+            oreClusterTitanium, oreClusterZeta,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
             conglomerateBoulder, darkConglomerateBoulder,
@@ -64,6 +64,14 @@ public class EnvironmentBlock {
             itemDrop = NHItems.titanium;
             shadowOffset = -1f;
             variants = 3;
+
+            attributes.set(NHContent.density, 1f);
+        }};
+
+        oreClusterZeta = new TallBlock("ore-cluster-zeta") {{
+            itemDrop = NHItems.zeta;
+            shadowOffset = -1f;
+            variants = 2;
 
             attributes.set(NHContent.density, 1f);
         }};

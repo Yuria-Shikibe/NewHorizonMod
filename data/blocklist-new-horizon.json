@@ -581,6 +581,12 @@
 	"size": 1,
 	"color": 1617672703
 },
+"new-horizon-ore-cluster-zeta": {
+	"synthetic": false,
+	"solid": true,
+	"size": 1,
+	"color": -1121281
+},
 "new-horizon-conglomerate-wall": {
 	"synthetic": false,
 	"solid": true,
@@ -779,18 +785,6 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-sheet-presser": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-manufactory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
 "new-horizon-stamping-facility": {
 	"synthetic": true,
 	"solid": true,
@@ -933,6 +927,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 4,
+	"color": 255
+},
+"new-horizon-photon-panel": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
 	"color": 255
 },
 "new-horizon-gravity-trap": {

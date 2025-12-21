@@ -57,7 +57,7 @@ public class GravityWell extends Block{
         @Override
         public void created() {
             super.created();
-            field = new GravityTrapField(team, gravityRange);
+            field = new GravityTrapField(this, gravityRange);
         }
 
         public void update(){
@@ -70,26 +70,8 @@ public class GravityWell extends Block{
             Draw.z(NHContent.GRAVITY_TRAP_LAYER);
             Draw.color(team.color);
             Draw.alpha(0.25f);
-            Fill.square(x, y, gravityRange);
+            Fill.rect(field.rect);
         }
-
-        /*
-        @Override
-        public void draw() {
-            super.draw();
-            if (player == null || team != player.team()) return;
-
-            if (isPayload()) return;
-            Draw.z(NHContent.POWER_AREA);
-            Draw.color(team.color);
-            Fill.square(x, y, gravityRange);
-
-            Draw.z(NHContent.POWER_DYNAMIC);
-            Draw.color(team.color);
-            Fill.square(x, y, gravityRange * 0.8f + gravityRange * 0.2f * Interp.exp5Out.apply(Time.time / 240f % 1f));
-        }
-
-         */
 
         @Override
         public void drawSelect() {

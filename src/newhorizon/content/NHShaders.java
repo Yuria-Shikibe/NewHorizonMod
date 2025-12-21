@@ -8,6 +8,8 @@ import arc.scene.ui.layout.Scl;
 import arc.util.Time;
 import mindustry.graphics.Shaders;
 import mindustry.mod.Mods;
+import newhorizon.NHSetting;
+import newhorizon.NHVars;
 import newhorizon.NewHorizon;
 
 import static mindustry.Vars.renderer;
@@ -16,7 +18,12 @@ public class NHShaders {
     public static ModShader gravityTrap, quantum, statusXWave;
     public static ModSurfaceShader displaceGlitch;
 
+    public static float alphaInner, alphaOuter;
+
     public static void init() {
+        alphaInner = NHSetting.getFloat(NHSetting.GRAPHIC_GRAVITY_TRAP_ALPHA, 0.20f);
+        alphaOuter = NHSetting.getFloat(NHSetting.GRAPHIC_GRAVITY_TRAP_OUTLINE_ALPHA, 0.60f);
+
         gravityTrap = new ModShader("VFX_gravityTrap") {
             @Override
             public void apply() {
@@ -27,6 +34,9 @@ public class NHShaders {
                         Core.camera.position.y - Core.camera.height / 2);
                 setUniformf("u_texsize", Core.camera.width, Core.camera.height);
                 setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
+
+                setUniformf("u_alphaInner", alphaInner);
+                setUniformf("u_alphaOuter", alphaOuter);
             }
         };
 

@@ -1,8 +1,10 @@
 package newhorizon.content.blocks;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -14,8 +16,11 @@ import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
+import mindustry.world.blocks.power.SolarGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BuildVisibility;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatValues;
 import newhorizon.content.NHFx;
 import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
@@ -34,12 +39,67 @@ import static mindustry.type.ItemStack.with;
 
 public class PowerBlock {
     public static Block
-            nitrogenDissociator,
+            photonPanel, nitrogenDissociator,
             crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
+        photonPanel = new SolarGenerator("photon-panel"){{
+            requirements(Category.power, with(
+                    NHItems.silicar, 20
+            ));
+            size = 3;
+            powerProduction = 0.5f;
+
+            buildType = () -> new SolarGeneratorBuild(){
+                boolean justCreated = true;
+                @Override
+                public void draw() {
+                    Draw.rect(baseRegions[Mathf.randomSeed(id, 0, baseRegions.length - 1)], x, y);
+                    Draw.rect(reflectRegions[Mathf.randomSeed(id + 123, 0, baseRegions.length - 1)], x, y);
+                    Draw.rect(topRegion, x, y);
+                }
+
+                @Override
+                public void updateTile() {
+                    super.updateTile();
+                    if (core() != null && timer(produceTimer, produceTime / productionEfficiency)){
+                        if (!justCreated) {
+                            core().handleItem(this, NHItems.hardLight);
+                        }else {
+                            justCreated = false;
+                        }
+                    }
+                }
+            };
+        }
+            public TextureRegion topRegion;
+            public TextureRegion[] baseRegions, reflectRegions;
+
+            public final float produceTime = 300f;
+            public final int produceTimer = timers++;
+
+            @Override
+            public void load() {
+                super.load();
+
+                baseRegions = new TextureRegion[3];
+                reflectRegions = new TextureRegion[3];
+
+                topRegion = Core.atlas.find(name + "-top");
+                for (int i = 0; i < 3; i++) {
+                    baseRegions[i] = Core.atlas.find(name + "-base" + (i + 1));
+                    reflectRegions[i] = Core.atlas.find(name + "-reflect" + (i + 1));
+                }
+            }
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.add(Stat.output, StatValues.items(produceTime, ItemStack.with(NHItems.hardLight, 1)));
+            }
+        };
         gravityTrapSmall = new GravityWell("gravity-trap") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 

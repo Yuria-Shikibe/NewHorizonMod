@@ -8,51 +8,69 @@ import mindustry.gen.Teamc;
 import newhorizon.NHGroups;
 
 public class GravityTrapField implements Position, QuadTree.QuadTreeObject {
-    public float x, y, range;
-    public boolean active;
+    public float scale;
+    public Rect rect;
     public Team owner;
 
-    public GravityTrapField(Team owner, float range) {
-        this.range = range;
-        this.owner = owner;
+    public GravityTrapField(Teamc entity, float scale, float radius) {
+        rect = new Rect();
+        update(entity, scale, radius);
         add();
     }
 
+    public GravityTrapField(Teamc entity, float radius) {
+        rect = new Rect();
+        update(entity, 1f, radius);
+        add();
+    }
+
+    public void update(Teamc entity, float scale, float radius) {
+        rect.setCentered(entity.getX(), entity.getY(), radius * 2f);
+        owner = entity.team();
+        this.scale = scale;
+    }
+
     public void update(Teamc entity) {
-        x = entity.x();
-        y = entity.y();
+        rect.setCenter(entity.getX(), entity.getY());
         owner = entity.team();
     }
 
-    public void active(boolean active) {
-        this.active = active;
+
+    public boolean isActive(boolean active) {
+        return scale > 0.1f;
+    }
+
+    public float getGravityTrap(){
+        return scale * rect.area();
     }
 
     public void add() {
-        NHGroups.gravityTraps.insert(this);
+        NHGroups.gravityFields.insert(this);
+        NHGroups.gravityFieldSeq.add(this);
     }
 
     public void remove() {
-        NHGroups.gravityTraps.remove(this);
+        NHGroups.gravityFields.remove(this);
+        NHGroups.gravityFieldSeq.remove(this);
     }
 
     @Override
     public float getX() {
-        return x;
+        return rect.getX();
     }
 
     @Override
     public float getY() {
-        return y;
+        return rect.getY();
     }
 
     @Override
     public void hitbox(Rect out) {
-        out.setSize(range * 2).setCenter(x, y);
+        out.set(rect);
     }
 
     @Override
     public String toString() {
-        return "GravityTrapField{" + "pos(" + x + ", " + y + ")}";
+        return "GravityTrapField{" + "pos(" + getX() + ", " + getY() + ")}";
     }
 }

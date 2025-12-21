@@ -190,13 +190,13 @@ public class EnergyUnit extends PayloadUnit {
         super.update();
 
         Seq<GravityTrapField> fields = new Seq<>();
-        NHGroups.gravityTraps.intersect(x - hitSize / 4, y - hitSize / 4, hitSize / 2, hitSize / 2, fields);
+        NHGroups.gravityFields.intersect(x - hitSize / 4, y - hitSize / 4, hitSize / 2, hitSize / 2, fields);
 
         if (timer.get(1, 8)) fields.each(f -> f.owner != team, f -> {
             Vec2 target = new Vec2(x, y);
-            NHFx.slidePoly.at(f.x, f.y, hitSize, f.owner.color, target);
-            NHFx.chainLightningFade.at(f.x, f.y, 12, f.owner.color, target);
-            impulseNet(Tmp.v1.set(this).sub(f).nor().scl(50 * (f.range * 0.75f - f.dst(this))));
+            NHFx.slidePoly.at(f.getX(), f.getY(), hitSize, f.owner.color, target);
+            NHFx.chainLightningFade.at(f.getX(), f.getY(), 12, f.owner.color, target);
+            impulseNet(Tmp.v1.set(this).sub(f).nor().scl(50 * (f.rect.getWidth() * 0.75f - f.dst(this))));
             damage(35f, true);
             apply(NHStatusEffects.intercepted, 60f);
         });

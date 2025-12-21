@@ -205,7 +205,7 @@ public class Carrier extends NHBaseEntity implements Teamc, Rotc, Scaled {
             x += vel.x;
             y += vel.y;
 
-            NHGroups.gravityTraps.intersect(x - drawSize / 2f, y - drawSize / 2f, drawSize, drawSize, b -> {
+            NHGroups.gravityFields.intersect(x - drawSize / 2f, y - drawSize / 2f, drawSize, drawSize, b -> {
                 if (b.owner != team) {
                     intercepted = true;
                     toCarry.unit.damage(toCarry.unit.health * 0.3f);
