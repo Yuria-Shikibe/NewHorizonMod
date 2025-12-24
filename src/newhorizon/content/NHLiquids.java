@@ -1,12 +1,25 @@
 package newhorizon.content;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.math.Mathf;
+import arc.struct.Seq;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.Liquids;
+import mindustry.gen.Puddle;
+import mindustry.graphics.Drawf;
 import mindustry.type.Liquid;
+import mindustry.world.meta.Attribute;
+
+import static mindustry.entities.Puddles.maxLiquid;
 
 public class NHLiquids {
+    public static Seq<Liquid> streams = Seq.with();
 
     public static Liquid ammonia, hydrazine, quantumLiquid, xenFluid, zetaFluidPositive, zetaFluidNegative, irdryonFluid;
+    public static Liquid particle, photon, neutron, zetaPositive, zetaNegative, proton, antiMatter;
 
     public static Liquid water, slag, oil, cryofluid, arkycite, gallium, neoplasm, ozone, hydrogen, nitrogen, cyanogen;
 
@@ -62,6 +75,14 @@ public class NHLiquids {
             heatCapacity = 2f;
         }};
 
+        particle = new Stream("particle-stream", Color.valueOf("ff8787"));
+        photon = new Stream("photon-stream", Color.valueOf("ffb15b"));
+        neutron = new Stream("neutron-stream", Color.valueOf("fff786"));
+        zetaPositive = new Stream("zeta-positive-stream", Color.valueOf("adff93"));
+        zetaNegative = new Stream("zeta-negative-stream", Color.valueOf("abf8ff"));
+        proton = new Stream("proton-stream", Color.valueOf("8b96ff"));
+        antiMatter = new Stream("anti-matter-stream", Color.valueOf("b479ff"));
+
         water = Liquids.water;
         slag = Liquids.slag;
         oil = Liquids.oil;
@@ -73,5 +94,23 @@ public class NHLiquids {
         hydrogen = Liquids.hydrogen;
         nitrogen = Liquids.nitrogen;
         cyanogen = Liquids.cyanogen;
+    }
+
+    public static class Stream extends Liquid {
+        public Stream(String name, Color color) {
+            super(name, color);
+            gas = true;
+            coolant = false;
+
+            streams.add(this);
+        }
+
+        public boolean willBoil(){
+            return false;
+        }
+
+        public boolean canExtinguish(){
+            return false;
+        }
     }
 }

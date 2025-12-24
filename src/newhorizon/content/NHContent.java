@@ -42,12 +42,11 @@ public class NHContent extends Content {
     public static TextureRegion
             crossRegion, sourceCenter, timeIcon, xenIcon,
             iconLevel, ammoInfo, arrowRegion, pointerRegion, icon, icon2, upgrade, upgrade2,
-            linkArrow, activeBoost;
+            linkArrow, activeBoost,
+            beamLaser, beamLaserEnd, beamLaserInner, beamLaserInnerEnd;
 
     public static TextureRegion //UI
             raid, objective, fleet, capture;
-
-    public static TextureRegion khs0, khs1, ks1, ks2, ks3, ks4, ks5, ks6, ks7, ks8;
 
     public static Attribute quantum, density;
 
@@ -132,16 +131,10 @@ public class NHContent extends Content {
         linkArrow = Core.atlas.find(NewHorizon.name("linked-arrow"));
         activeBoost = Core.atlas.find(NewHorizon.name("active-boost"));
 
-        khs0 = Core.atlas.find(NewHorizon.name("kill-streak-hs-0"));
-        khs1 = Core.atlas.find(NewHorizon.name("kill-streak-hs-1"));
-        ks1 = Core.atlas.find(NewHorizon.name("kill-streak-1"));
-        ks2 = Core.atlas.find(NewHorizon.name("kill-streak-2"));
-        ks3 = Core.atlas.find(NewHorizon.name("kill-streak-3"));
-        ks4 = Core.atlas.find(NewHorizon.name("kill-streak-4"));
-        ks5 = Core.atlas.find(NewHorizon.name("kill-streak-5"));
-        ks6 = Core.atlas.find(NewHorizon.name("kill-streak-6"));
-        ks7 = Core.atlas.find(NewHorizon.name("kill-streak-7"));
-        ks8 = Core.atlas.find(NewHorizon.name("kill-streak-8"));
+        beamLaser = Core.atlas.find(NewHorizon.name("stream-beam"));
+        beamLaserEnd = Core.atlas.find(NewHorizon.name("stream-beam-end"));
+        beamLaserInner = Core.atlas.find(NewHorizon.name("stream-beam-inner"));
+        beamLaserInnerEnd = Core.atlas.find(NewHorizon.name("stream-beam-inner-end"));
 
         smoothNoise = loadTex("smooth-noise", t -> {
             t.setFilter(Texture.TextureFilter.linear);

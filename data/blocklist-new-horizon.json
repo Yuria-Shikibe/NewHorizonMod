@@ -1031,6 +1031,30 @@
 	"size": 1,
 	"color": 255
 },
+"new-horizon-stream-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-stream-repeater": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-stream-redirector": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-stream-splitter": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
 "new-horizon-turbo-pump-small": {
 	"synthetic": true,
 	"solid": true,

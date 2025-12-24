@@ -35,7 +35,6 @@ public class GravityTrapField implements Position, QuadTree.QuadTreeObject {
         owner = entity.team();
     }
 
-
     public boolean isActive(boolean active) {
         return scale > 0.1f;
     }
