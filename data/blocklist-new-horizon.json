@@ -785,148 +785,22 @@
 	"size": 3,
 	"color": 255
 },
-"new-horizon-stamping-facility": {
+"new-horizon-silicar-crusher": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
 	"color": 255
 },
-"new-horizon-processor-printer": {
+"new-horizon-processor-manufactory": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
 	"color": 255
 },
-"new-horizon-condense-facility": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-crucible-foundry": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-crystallizer": {
+"new-horizon-stamping-presser": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
-	"color": 255
-},
-"new-horizon-zeta-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-zeta-dissociator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-surge-refactor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-fabric-synthesizer": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-multiple-steel-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-processor-encoder": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-irdryon-mixer": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-plastanium-crafter": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-irayrond-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-seton-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-nodex-factory": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-ancimembrane-concentrator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-factory-0": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-factory-1": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-factory-2": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-factory-3": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-factory-4": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-factory-5": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-factory-6": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
 	"color": 255
 },
 "new-horizon-photon-panel": {
@@ -960,48 +834,6 @@
 	"color": 255
 },
 "new-horizon-armor-battery-huge": {
-	"synthetic": true,
-	"solid": true,
-	"size": 5,
-	"color": 255
-},
-"new-horizon-crystal-decomposition-thermal-generator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-nitrogen-dissociator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-hydro-fuel-cell": {
-	"synthetic": true,
-	"solid": true,
-	"size": 2,
-	"color": 255
-},
-"new-horizon-zeta-generator": {
-	"synthetic": true,
-	"solid": true,
-	"size": 3,
-	"color": 255
-},
-"new-horizon-anode-fusion-reactor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-cathode-fusion-reactor": {
-	"synthetic": true,
-	"solid": true,
-	"size": 4,
-	"color": 255
-},
-"new-horizon-thermo-reactor": {
 	"synthetic": true,
 	"solid": true,
 	"size": 5,

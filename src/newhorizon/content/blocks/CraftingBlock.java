@@ -1,50 +1,147 @@
 package newhorizon.content.blocks;
 
-import arc.graphics.Blending;
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
 import arc.math.Angles;
-import arc.math.Mathf;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.math.Interp;
 import mindustry.content.Fx;
-import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.entities.Effect;
-import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
-import mindustry.type.LiquidStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.draw.*;
-import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.*;
 import newhorizon.expand.block.drawer.*;
-import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
-import newhorizon.util.graphic.DrawFunc;
-import newhorizon.util.graphic.EffectWrapper;
+import newhorizon.expand.block.production.factory.MultiBlockCrafter;
 
-import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.tilesize;
-import static mindustry.type.ItemStack.with;
 
 public class CraftingBlock {
+    public static Color stampingArc, processorBlue;
+
     public static Block
-            sheetPresser, manufactory,
-            stampingFacility, processorPrinter, condenseFacility, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
+            silicarCrusher, stampingPresser, processorManufactory, stampingFacility, manufactory,
+            processorPrinter, condenseFacility, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
             surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, hugeplastaniumFactory, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
-    public static Block factory0, factory1, factory2, factory3, factory4, factory5, factory6;
-
     public static void load() {
+        loadColors();
+        silicarCrusher = new MultiBlockCrafter("silicar-crusher"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.hardLight, 50,
+                    NHItems.silicar, 45
+            ));
+
+            size = 2;
+            itemCapacity = 20;
+            scaledHealth = 100f;
+
+            craftTime = 60f;
+            outputItems = ItemStack.with(NHItems.graphite, 1, NHItems.silicon, 1);
+
+            consumeItems(ItemStack.with(NHItems.silicar, 2));
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawPistons() {{
+                        sinScl = 8f;
+                        sinMag = 2f;
+                        sinOffset = 0;
+                        lenOffset = -1f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            craftEffect = NHFx.hugeSmokeGray;
+            updateEffect = new Effect(80f, e -> {
+                Fx.rand.setSeed(e.id);
+                Draw.color(Color.lightGray, Color.gray, e.fin());
+                Angles.randLenVectors(e.id, 4, 2.0F + 12.0F * e.fin(Interp.pow3Out), (x, y) -> {
+                    Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
+                });
+            }).layer(Layer.blockOver + 1);
+        }};
+        processorManufactory = new MultiBlockCrafter("processor-manufactory"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.hardLight, 60,
+                    NHItems.graphite, 45,
+                    NHItems.silicon, 45
+            ));
+
+            size = 2;
+            scaledHealth = 100f;
+            itemCapacity = 20;
+
+            craftTime = 120f;
+            outputItems = ItemStack.with(NHItems.juniorProcessor, 2);
+
+            consumeItems(ItemStack.with(NHItems.silicon, 3));
+            consumePower(0.5f);
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawRegion("-top"),
+                    new DrawFlame() {{
+                        flameRadius *= 0.75f;
+                        flameRadiusIn *= 0.75f;
+                        flameRadiusScl *= 1.25f;
+                        flameColor = processorBlue;
+                    }
+                        @Override
+                        public void load(Block block) {
+                            super.load(block);
+                            top = Core.atlas.find(block.name + "-flame");
+                        }
+                    },
+                    new DrawGlowRegion(){{
+                        alpha = 0.5f;
+                        suffix = "-glow";
+                        color = processorBlue;
+                    }}
+            );
+
+            craftEffect = NHFx.square(processorBlue, 60, 6, 16, 3);
+            updateEffect = NHFx.square(processorBlue, 60, 2, 12, 3);
+        }};
+        stampingPresser = new MultiBlockCrafter("stamping-presser"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.hardLight, 60,
+                    NHItems.titanium, 45,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 2;
+            scaledHealth = 100f;
+            itemCapacity = 20;
+
+            craftTime = 120f;
+            outputItems = ItemStack.with(NHItems.presstanium, 1);
+
+            consumeItems(ItemStack.with(NHItems.titanium, 2, NHItems.graphite, 1));
+            consumePower(0.5f);
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawArcSmelt() {{
+                        midColor = stampingArc;
+                        flameColor = stampingArc;
+
+                        flameRad /= 1.8f;
+                        particleStroke /= 1.5f;
+                        particleLen /= 1.5f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            craftEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
+            updateEffect = NHFx.square(Pal.techBlue, 60, 2, 12, 3);
+        }};
         /*
         sheetPresser = new GenericCrafter("sheet-presser"){{
             requirements(Category.crafting, ItemStack.with(
@@ -69,8 +166,6 @@ public class CraftingBlock {
             armor = 4;
             itemCapacity = 20;
         }};
-
-         */
         stampingFacility = new RecipeGenericCrafter("stamping-facility") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.titanium, 45,
@@ -490,8 +585,8 @@ public class CraftingBlock {
 
             size = 2;
 
-            addLink(2, 0, 1,  /**/ 2, 1, 1,/**/
-                    -1, 0, 1, /**/-1, 1, 1 /**/);
+            addLink(2, 0, 1,   2, 1, 1,
+                    -1, 0, 1, -1, 1, 1 );
 
             craftTime = 120f;
             itemCapacity = 20;
@@ -846,130 +941,11 @@ public class CraftingBlock {
             consumePower(1600 / 60f);
         }};
 
-        factory0 = new RecipeGenericCrafter("factory-0"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.tungsten, 80,
-                    NHItems.presstanium, 60,
-                    NHItems.juniorProcessor, 40
-            ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1);
+         */
+    }
 
-            size = 2;
-            health = 750;
-            armor = 5;
-            itemCapacity = 30;
-            rotate = false;
-            drawer = new DrawDefault();
-
-            consumePower(300f / 60f);
-        }};
-        
-        factory1 = new RecipeGenericCrafter("factory-1"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.presstanium, 10,
-                    NHItems.juniorProcessor, 80,
-                    NHItems.carbide, 40,
-                    NHItems.metalOxhydrigen, 80
-            ));
-            addLink(2, 0, 1, 2, 1, 1, -1, 0, 1, -1, 1, 1, 0, 2, 1, 1, 2, 1, 0, -1, 1, 1, -1, 1, -1, 2, 1, 2, -1, 1);
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 2;
-            health = 1050;
-            armor = 7;
-            itemCapacity = 30;
-            drawer = new DrawRegionRotatedDiagonal("-rot");
-
-            consumePower(360f / 60f);
-        }};
-        factory2 = new RecipeGenericCrafter("factory-2"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.juniorProcessor, 60,
-                    NHItems.metalOxhydrigen, 120,
-                    NHItems.phaseFabric, 80,
-                    NHItems.surgeAlloy, 80
-            ));
-            addLink(2, -1, 1, 2, 0, 1, 2, 1, 1, -2, -1, 1, -2, 0, 1, -2, 1, 1);
-
-            size = 3;
-            health = 1350;
-            armor = 9;
-            itemCapacity = 30;
-            drawer = new DrawRegionFlip();
-
-            consumePower(450f / 60f);
-        }};
-        factory3 = new RecipeGenericCrafter("factory-3"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.zeta, 200,
-                    NHItems.presstanium, 100,
-                    NHItems.multipleSteel, 60,
-                    NHItems.seniorProcessor, 40
-            ));
-            size = 4;
-            health = 1650;
-            armor = 11;
-            itemCapacity = 30;
-            rotate = false;
-            drawer = new DrawRegionFlip();
-
-            consumePower(600f / 60f);
-        }};
-        factory4 = new RecipeGenericCrafter("factory-4"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.juniorProcessor, 100,
-                    NHItems.carbide, 60,
-                    NHItems.irayrondPanel, 60,
-                    NHItems.setonAlloy, 80
-            ));
-            addLink(-2, -2, 1, -2, -1, 1, -2, 0, 1, -1, -2, 1, 0, -2, 1, 2, 2, 1, 2, 1, 1, 2, 0, 1, 1, 2, 1, 0, 2, 1);
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 3;
-            health = 1950;
-            armor = 13;
-            itemCapacity = 30;
-            drawer = new DrawRegionRotatedDiagonal("-rot");
-
-            consumePower(720f / 60f);
-        }};
-        factory5 = new RecipeGenericCrafter("factory-5"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.silicon, 150,
-                    NHItems.surgeAlloy, 60,
-                    NHItems.nodexPlate, 30,
-                    NHItems.ancimembrane, 20
-            ));
-
-            addLink(-2, -1, 1, -2, 0, 1, -2, 1, 1, -2, 2, 1, 3, -1, 1, 3, 0, 1, 3, 1, 1, 3, 2, 1);
-            size = 4;
-            health = 2250;
-            armor = 15;
-            itemCapacity = 30;
-            drawer = new DrawRegionFlip();
-
-            consumePower(840f / 60f);
-        }};
-        factory6 = new RecipeGenericCrafter("factory-6"){{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
-                    NHItems.multipleSteel, 150,
-                    NHItems.seniorProcessor, 100,
-                    NHItems.nodexPlate, 55,
-                    NHItems.darkEnergy, 40
-            ));
-            addLink(-2, 1, 1, -2, 2, 1, -2, 3, 1, -1, 3, 1, 0, 3, 1, 1, -2, 1, 2, -2, 1, 3, -2, 1, 3, -1, 1, 3, 0, 1);
-            canMirror = true;
-            rotations = new int[]{1, 0, 1, 0, 3, 2, 3, 2};
-
-            size = 4;
-            health = 2550;
-            armor = 17;
-            itemCapacity = 30;
-            drawer = new DrawRegionRotatedDiagonal("-rot");
-
-            consumePower(1200f / 60f);
-        }};
+    public static void loadColors(){
+        stampingArc = NHColor.lightSkyBack.cpy().lerp(Color.lightGray, 0.3f);
+        processorBlue = Color.valueOf("cee5ed");
     }
 }

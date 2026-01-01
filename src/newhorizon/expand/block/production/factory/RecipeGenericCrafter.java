@@ -9,7 +9,6 @@ import arc.util.Strings;
 import arc.util.Time;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
-import mindustry.content.UnitTypes;
 import mindustry.core.UI;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Icon;
@@ -26,7 +25,7 @@ import newhorizon.expand.type.Recipe;
 
 import static mindustry.world.meta.StatValues.withTooltip;
 
-public class RecipeGenericCrafter extends AdaptCrafter {
+public class RecipeGenericCrafter extends MultiBlockCrafter {
     public Seq<Recipe> recipes = new Seq<>();
 
     public Seq<Item> itemOutput = new Seq<>();
@@ -44,7 +43,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         recipes.each(recipe -> {
             recipe.inputItem.each(stack -> itemFilter[stack.item.id] = true);
             recipe.inputLiquid.each(stack -> liquidFilter[stack.liquid.id] = true);
-            recipe.inputPayload.each(stack -> payloadFilter.add(stack.item));
 
             recipe.outputItem.each(stack -> itemOutput.add(stack.item));
             recipe.outputLiquid.each(stack -> liquidOutput.add(stack.liquid));
@@ -54,16 +52,12 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         outputItem = null;
         outputLiquid = null;
 
-// ------------------------- 安全初始化输出数组 -------------------------
-// 仅用于 Schematics / 蓝图显示，不影响实际生产
         if (recipes.isEmpty()) {
             outputItems = new ItemStack[]{ new ItemStack(Items.copper, 0) };
             outputLiquids = new LiquidStack[]{ new LiquidStack(Liquids.water, 0f) };
-            outputPayloads = new PayloadStack[]{ new PayloadStack(UnitTypes.dagger, 0) };
         } else {
             Recipe firstRecipe = recipes.first();
 
-            // 输出 ItemStack（显示用）
             outputItems = new ItemStack[Math.max(firstRecipe.outputItem.size, 1)];
             for (int i = 0; i < outputItems.length; i++) {
                 outputItems[i] = i < firstRecipe.outputItem.size
@@ -71,21 +65,11 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                         : new ItemStack(Items.copper, 0);
             }
 
-            // 输出 LiquidStack（仅显示，不参与实际生产）
             outputLiquids = new LiquidStack[Math.max(firstRecipe.outputLiquid.size, 1)];
             for (int i = 0; i < outputLiquids.length; i++) {
-                // **注意：这里仅复制第一个配方的液体产物作为占位**
                 outputLiquids[i] = i < firstRecipe.outputLiquid.size
-                        ? new LiquidStack(firstRecipe.outputLiquid.get(i).liquid, 0f) // 数量设为0，避免生产混乱
+                        ? new LiquidStack(firstRecipe.outputLiquid.get(i).liquid, 0f)
                         : new LiquidStack(Liquids.water, 0f);
-            }
-
-            // 输出 PayloadStack（显示用）
-            outputPayloads = new PayloadStack[Math.max(firstRecipe.outputPayload.size, 1)];
-            for (int i = 0; i < outputPayloads.length; i++) {
-                outputPayloads[i] = i < firstRecipe.outputPayload.size
-                        ? firstRecipe.outputPayload.get(i)
-                        : new PayloadStack(UnitTypes.dagger, 0);
             }
         }
 
@@ -272,13 +256,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                     items.set(stack.item, itemCapacity);
                 }
             });
-
-            // -------------------- Payload 生产 --------------------
-            current.outputPayload.each(stack -> {
-                if (getPayloads().get(stack.item) >= payloadCapacity) {
-                    getPayloads().remove(stack.item, getPayloads().get(stack.item) - payloadCapacity);
-                }
-            });
         }
 
 
@@ -299,16 +276,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
         @Override
         public boolean shouldConsume() {
             if (getRecipe() == null) return false;
-            for (var output : getRecipe().outputItem) {
-                if (items.get(output.item) + output.amount > itemCapacity) {
-                    return powerProduction > 0;
-                }
-            }
-            for (var output : getRecipe().outputPayload) {
-                if (getPayloads().get(output.item) + output.amount > payloadCapacity) {
-                    return powerProduction > 0;
-                }
-            }
             if (!ignoreLiquidFullness) {
                 if (getRecipe().outputLiquid.isEmpty()) return true;
                 boolean allFull = true;
@@ -346,7 +313,6 @@ public class RecipeGenericCrafter extends AdaptCrafter {
                     offload(stack.item);
                 }
             });
-            getRecipe().outputPayload.each(stack -> payloads.add(stack.item, stack.amount));
 
             progress %= 1f;
 

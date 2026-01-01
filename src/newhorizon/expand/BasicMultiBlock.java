@@ -47,12 +47,32 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
     }
 
     @Override
-    public Seq<Point2> linkBlockPos() {
+    public void init() {
+        super.init();
+
+        if (scaledHealth > 0) {
+            int count = getTileCount();
+            health = (int) (scaledHealth * count);
+            if (armor == 0) armor = count;
+        }
+    }
+
+    public int getTileCount() {
+        int out = 0;
+        out += size * size;
+        for (int i = 0; i < linkSize().size; i++) {
+            out += linkSize().get(i) * linkSize().get(i);
+        }
+        return out;
+    }
+
+    @Override
+    public Seq<Point2> linkPos() {
         return linkPos;
     }
 
     @Override
-    public IntSeq linkBlockSize() {
+    public IntSeq linkSize() {
         return linkSize;
     }
 
@@ -79,11 +99,8 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
     @Override
     public void changePlacementPath(Seq<Point2> points, int rotation) {
         Placement.calculateNodes(points, this, rotation, (point, other) -> {
-            if (rotation % 2 == 0) {
-                return Math.abs(point.x - other.x) == getMaxSize(size, rotation).x;
-            } else {
-                return Math.abs(point.y - other.y) == getMaxSize(size, rotation).y;
-            }
+            if (rotation % 2 == 0) return Math.abs(point.x - other.x) == getMaxSize(size, rotation).x;
+            else return Math.abs(point.y - other.y) == getMaxSize(size, rotation).y;
         });
     }
 
@@ -125,8 +142,8 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
                 linkCreated = true;
                 updateLinkProximity();
             }
-            //uh so period check to avoid invalid link entity, todo need improvement
-            if (timer(checkTimer, 600)) {
+            //period check to avoid invalid link entity, todo need improvement
+            if (timer(checkTimer, 60)) {
                 boolean linkValid = true;
                 for (Tile t : getLinkTiles(tile, size, rotation)) {
                     if (!(t.build instanceof LinkBlock.LinkBuild lb && lb.linkBuild == this && lb.isValid())) {
@@ -314,7 +331,7 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
         public void drawStatus() {
             statusPos = world.tile(tileX() + statusOverlayPos(size, rotation).x, tileY() + statusOverlayPos(size, rotation).y);
             if (block.enableDrawStatus && block.consumers.length > 0) {
-                float multiplier = block.size > 1 ? 1 : 0.64F;
+                float multiplier = block.size > 1 ? 1 : 0.64f;
                 Draw.z(Layer.power + 1);
                 Draw.color(Pal.gray);
                 Fill.square(statusPos.worldx(), statusPos.worldy(), 2.5F * multiplier, 45);

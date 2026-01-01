@@ -151,6 +151,7 @@ public class PowerBlock {
             consumePowerBuffered(1000000f);
         }};
 
+        /*
         crystalDecompositionThermalGenerator = new RecipeGenericCrafter("crystal-decomposition-thermal-generator") {{
             requirements(Category.power, ItemStack.with(
                      NHItems.hardLight, 10,
@@ -394,5 +395,7 @@ public class PowerBlock {
             lightColor = NHItems.zeta.color.cpy().lerp(Color.white, 0.125f);
             updateEffect = craftEffect = NHFx.square(lightColor, 30f, 5, 20f, 4);
         }};
+
+         */
     }
 }

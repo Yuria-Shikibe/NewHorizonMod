@@ -16,6 +16,7 @@ import newhorizon.expand.type.Recipe;
 
 public class RecipeRegister {
     public static void load(){
+        /*
         recipe(ProductionBlock.sandCracker, recipe -> {
             recipe.inputItem = ItemStack.list(NHItems.scrap, 2);
             recipe.outputItem = ItemStack.list(NHItems.sand, 5);
@@ -635,6 +636,8 @@ public class RecipeRegister {
             recipe.craftTime = 120f;
             recipe.priority = 1;
         });
+
+         */
     }
 
     public static void recipe(Block block, Cons<Recipe> recipe) {

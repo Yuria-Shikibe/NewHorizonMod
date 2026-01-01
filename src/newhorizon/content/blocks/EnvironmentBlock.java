@@ -71,7 +71,7 @@ public class EnvironmentBlock {
         oreClusterZeta = new TallBlock("ore-cluster-zeta") {{
             itemDrop = NHItems.zeta;
             shadowOffset = -1f;
-            variants = 2;
+            variants = 3;
 
             attributes.set(NHContent.density, 1f);
         }};

@@ -14,7 +14,7 @@ import mindustry.world.meta.Stat;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.inner.LinkBlock;
 import newhorizon.expand.block.inner.ModulePayload;
-import newhorizon.expand.block.production.factory.AdaptCrafter;
+import newhorizon.expand.block.production.factory.MultiBlockCrafter;
 
 public class PayloadBlock {
     public static Block payloadRail, payloadRouter, payloadTeleport;
@@ -38,7 +38,7 @@ public class PayloadBlock {
                     }
 
                     Building accept = nearby(Geometry.d4(direction).x, Geometry.d4(direction).y);
-                    if (accept instanceof AdaptCrafter.AdaptCrafterBuild) return true;
+                    if (accept instanceof MultiBlockCrafter.AdaptCrafterBuild) return true;
                     if (accept instanceof LinkBlock.LinkBuild) return true;
                     return mindustry.world.blocks.payloads.PayloadBlock.blends(this, direction);
                 }
