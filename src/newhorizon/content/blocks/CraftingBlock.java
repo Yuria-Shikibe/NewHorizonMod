@@ -142,6 +142,64 @@ public class CraftingBlock {
             craftEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
             updateEffect = NHFx.square(Pal.techBlue, 60, 2, 12, 3);
         }};
+        crystallizer = new MultiBlockCrafter("crystallizer"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 2;
+            scaledHealth = 100f;
+            itemCapacity = 20;
+            liquidCapacity = 10f;
+
+            hasLiquids = true;
+            canMirror = true;
+            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
+
+            addLink(2, 0, 1, 2, 1, 1, 0, 2, 1, 1, 2, 1);
+
+            craftTime = 120f;
+            outputItems = ItemStack.with(NHItems.presstanium, 1);
+
+            consumeLiquid(NHLiquids.ammonia, 0.1f);
+            consumePower(2.5f);
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawMulti(
+                    new DrawRotation() {{
+                        suffix = "-inner";
+                        drawType = DrawRotation.DRAW_OBLIQUE;
+                    }},
+                    new DrawRotation() {{
+                        suffix = "-outer";
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                        xOffset = 12f;
+                    }},
+                    new DrawRotation() {{
+                        suffix = "-outer";
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                        xOffset = 12f;
+                        rotOffset = 1;
+                    }},
+                    new DrawRotation() {{
+                        suffix = "-edge";
+                        drawType = DrawRotation.DRAW_NORMAL;
+                        xOffset = yOffset = 8.25f;
+                        layer = Layer.block + 1f;
+                    }},
+                    new DrawLiquidRegionRotated() {{
+                        suffix = "-liquid";
+                        drawLiquid = NHLiquids.ammonia;
+                        x = 4;
+                        y = 4;
+                    }}
+            );
+
+            enableRotate();
+        }};
         /*
         sheetPresser = new GenericCrafter("sheet-presser"){{
             requirements(Category.crafting, ItemStack.with(

@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Eachable;
+import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -26,9 +27,9 @@ public class DrawRotation extends DrawBlock {
     public static final int DRAW_FULL = 4;
 
     public TextureRegion[] rotRegions;
-    public TextureRegion iconRegion;
     public String suffix = "-rot";
     public float xOffset = 0, yOffset = 0, layer = -1;
+    public int rotOffset = 0;
     public int drawType = DRAW_NORMAL;
 
     public DrawRotation() {}
@@ -37,14 +38,20 @@ public class DrawRotation extends DrawBlock {
         if (regions == null || regions.length != 4) return;
         if (rotation < 0 || rotation > 4) return;
 
-        int xSize = regions[rotation].width / tilesize, ySize = regions[rotation].height / tilesize, scl = rotation % 2 == 0? 1: -1;
+        int xSize = regions[rotation].width / tilesize * 2, ySize = regions[rotation].height / tilesize * 2, scl = rotation % 2 == 0? 1: -1;
         float rotDeg = rotation * 90f;
 
         switch (drawType) {
-            case DRAW_NORMAL -> Draw.rect(regions[rotation], x, y, xSize, ySize * scl, rotDeg % 180);
+            case DRAW_NORMAL -> Draw.rect(regions[rotation], x, y, rotDeg);
             case DRAW_X_MIRROR -> Draw.rect(regions[rotation], x, y, xSize * scl, ySize, rotDeg);
             case DRAW_Y_MIRROR -> Draw.rect(regions[rotation], x, y, xSize, ySize * scl, rotDeg);
-            case DRAW_OBLIQUE -> {}
+            case DRAW_OBLIQUE -> {
+                if (rotation == 3){
+                    Draw.rect(regions[rotation], x, y, xSize, ySize * scl);
+                }else {
+                    Draw.rect(regions[rotation], x, y, xSize, ySize, rotDeg);
+                }
+            }
             case DRAW_FULL -> Draw.rect(regions[rotation], x, y, rotDeg);
         }
     }
@@ -53,20 +60,17 @@ public class DrawRotation extends DrawBlock {
     public void draw(Building build) {
         float z = Draw.z();
         if (layer > 0) Draw.z(layer);
-        Tmp.v1.set(xOffset, yOffset).rotate(build.rotdeg()).add(build.x, build.y);
-        drawRotation(Tmp.v1.x, Tmp.v1.y, build.rotation, drawType, rotRegions);
+        int rot = (build.rotation + rotOffset) % 4;
+        Tmp.v1.set(xOffset, yOffset).rotate(rot * 90).add(build.x, build.y);
+        drawRotation(Tmp.v1.x, Tmp.v1.y, rot, drawType, rotRegions);
         Draw.z(z);
     }
 
     @Override
     public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {
-        Tmp.v1.set(xOffset, yOffset).rotate(plan.rotation * 90).add(plan.x, plan.y);
-        drawRotation(Tmp.v1.x, Tmp.v1.y, plan.rotation, drawType, rotRegions);
-    }
-
-    @Override
-    public TextureRegion[] icons(Block block) {
-        return new TextureRegion[]{iconRegion};
+        int rot = (plan.rotation + rotOffset) % 4;
+        Tmp.v1.set(xOffset, yOffset).rotate(rot * 90).add(plan.drawx(), plan.drawy());
+        drawRotation(Tmp.v1.x, Tmp.v1.y, rot, drawType, rotRegions);
     }
 
     @Override
@@ -84,7 +88,7 @@ public class DrawRotation extends DrawBlock {
             }
             case DRAW_Y_MIRROR -> {
                 rotRegions[0] = rotRegions[1] = Core.atlas.find(block.name + suffix + "-0");
-                rotRegions[2] = rotRegions[3] = Core.atlas.find(block.name + suffix + "-0");
+                rotRegions[2] = rotRegions[3] = Core.atlas.find(block.name + suffix + "-1");
             }
             case DRAW_OBLIQUE -> {
                 rotRegions[0] = Core.atlas.find(block.name + suffix + "-0");

@@ -597,6 +597,9 @@ block.new-horizon-processor-manufactory.description =
 block.new-horizon-stamping-presser.name = 
 block.new-horizon-stamping-presser.description = 
 #block.new-horizon-stamping-presser.detail = 
+block.new-horizon-crystallizer.name = 
+block.new-horizon-crystallizer.description = 
+#block.new-horizon-crystallizer.detail = 
 #UNIT PART
 block.new-horizon-unit-initer.name = 
 block.new-horizon-unit-initer.description = 

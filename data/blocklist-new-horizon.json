@@ -803,6 +803,12 @@
 	"size": 2,
 	"color": 255
 },
+"new-horizon-crystallizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-photon-panel": {
 	"synthetic": true,
 	"solid": true,
