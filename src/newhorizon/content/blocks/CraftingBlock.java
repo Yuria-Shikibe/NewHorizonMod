@@ -42,20 +42,29 @@ public class CraftingBlock {
             itemCapacity = 20;
             scaledHealth = 100f;
 
+            addLink(2, 0, 1, 2, 1, 1);
+            addOutputItemDirection(0, -1, NHItems.silicon);
+            addOutputItemDirection(1, -1, NHItems.silicon);
+            addOutputItemDirection(2, -1, NHItems.silicon);
+
+            addOutputItemDirection(0, 2, NHItems.graphite);
+            addOutputItemDirection(1, 2, NHItems.graphite);
+            addOutputItemDirection(2, 2, NHItems.graphite);
+
+
             craftTime = 60f;
             outputItems = ItemStack.with(NHItems.graphite, 1, NHItems.silicon, 1);
 
             consumeItems(ItemStack.with(NHItems.silicar, 2));
 
             drawer = new DrawMulti(
-                    new DrawBaseRegion("-2x2"),
-                    new DrawPistons() {{
-                        sinScl = 8f;
-                        sinMag = 2f;
-                        sinOffset = 0;
-                        lenOffset = -1f;
+                    new DrawBaseRegion("-2x3"){{
+                        x = 4f;
+                        buildingRotate = true;
                     }},
-                    new DrawRegion("-top")
+                    new DrawRotation(){{
+                        xOffset = 4f;
+                    }}
             );
 
             craftEffect = NHFx.hugeSmokeGray;
@@ -66,6 +75,8 @@ public class CraftingBlock {
                     Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
                 });
             }).layer(Layer.blockOver + 1);
+
+            enableRotate();
         }};
         processorManufactory = new MultiBlockCrafter("processor-manufactory"){{
             requirements(Category.crafting, ItemStack.with(
@@ -429,12 +440,12 @@ public class CraftingBlock {
                         y = 4;
                     }}
             );
-        }};     
+        }};
         zetaFactory = new RecipeGenericCrafter("zeta-factory") {{
             requirements(Category.crafting, ItemStack.with(
                     NHItems.hardLight, 50,
-                    NHItems.tungsten, 100, 
-                    NHItems.carbide, 50, 
+                    NHItems.tungsten, 100,
+                    NHItems.carbide, 50,
                     NHItems.metalOxhydrigen, 50
             ));
 
@@ -451,7 +462,7 @@ public class CraftingBlock {
 
             craftEffect = Fx.formsmoke;
             updateEffect = NHFx.trailToGray;
-            
+
             drawer = new DrawMulti(
                     new DrawRegionRotated() {{
                         oneSprite = true;
@@ -649,7 +660,7 @@ public class CraftingBlock {
             craftTime = 120f;
             itemCapacity = 20;
             health = 1500;
-            armor = 10;       
+            armor = 10;
 
             consumePower(240f / 60f);
             outputItems = with(NHItems.seniorProcessor, 2);

@@ -42,7 +42,12 @@ public class DrawRotation extends DrawBlock {
         float rotDeg = rotation * 90f;
 
         switch (drawType) {
-            case DRAW_NORMAL -> Draw.rect(regions[rotation], x, y, rotDeg);
+            case DRAW_NORMAL -> {
+                switch (rotation) {
+                    case 0, 2 -> Draw.rect(regions[rotation], x, y, xSize, ySize);
+                    case 1, 3 -> Draw.rect(regions[rotation], x, y, xSize, ySize * scl, 90);
+                }
+            }
             case DRAW_X_MIRROR -> Draw.rect(regions[rotation], x, y, xSize * scl, ySize, rotDeg);
             case DRAW_Y_MIRROR -> Draw.rect(regions[rotation], x, y, xSize, ySize * scl, rotDeg);
             case DRAW_OBLIQUE -> {

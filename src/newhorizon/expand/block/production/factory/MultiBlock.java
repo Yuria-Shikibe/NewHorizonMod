@@ -25,9 +25,22 @@ public interface MultiBlock {
 
     boolean isMirror();
 
-    default Point2 calculateRotatedPosition(Point2 pos, int blockSize, int linkSize, int rotation) {
+    static void calculateRotatedOffsetPosition(Point2 out, int px, int py, int blockSize, int otherSize, int rotation) {
         int shift = (blockSize + 1) % 2;
-        int offset = (linkSize + 1) % 2;
+        int offset = (otherSize + 1) % 2;
+
+        switch (rotation) {
+            case 1 -> out.set(-py + shift - offset, px);
+            case 2 -> out.set(-px + shift - offset, -py + shift - offset);
+            case 3 -> out.set(py, -px + shift - offset);
+            default -> out.set(px, py); // default rotation 0
+        }
+    }
+
+
+    default Point2 calculateRotatedPosition(Point2 pos, int blockSize, int otherSize, int rotation) {
+        int shift = (blockSize + 1) % 2;
+        int offset = (otherSize + 1) % 2;
         int px = pos.x, py = pos.y;
 
         return switch (rotation) {
