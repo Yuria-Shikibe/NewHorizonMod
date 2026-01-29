@@ -27,6 +27,8 @@ public class CraftingBlock {
     public static Block
             silicarCrusher, stampingPresser, processorManufactory, stampingFacility, manufactory,
             processorPrinter, condenseFacility, crucibleFoundry, crystallizer, zetaFactory, zetaDissociator,
+
+            castingFoundry,
             surgeRefactor, fabricSynthesizer, processorEncoder, irdryonMixer, hugeplastaniumFactory, multipleSteelFactory,
             irayrondFactory, setonFactory, upgradeSortFactory, ancimembraneConcentrator;
 
@@ -206,6 +208,51 @@ public class CraftingBlock {
                         drawLiquid = NHLiquids.ammonia;
                         x = 4;
                         y = 4;
+                    }}
+            );
+
+            enableRotate();
+        }};
+
+        castingFoundry = new MultiBlockCrafter("casting-foundry"){{
+            requirements(Category.crafting, ItemStack.with(
+                    NHItems.presstanium, 60,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 3;
+            scaledHealth = 150f;
+            itemCapacity = 20;
+
+            canMirror = true;
+            rotations = new int[]{1, 0, 3, 2, 3, 2, 1, 0};
+
+            addLink(2, -1, 2, 2, 1, 1, 3, 1, 1, -1, 2, 2, 1, 2, 1, 1, 3, 1);
+
+            craftTime = 120f;
+            outputItems = ItemStack.with(NHItems.presstanium, 1);
+
+            consumeLiquid(NHLiquids.ammonia, 0.1f);
+            consumePower(2.5f);
+
+            craftEffect = Fx.smeltsmoke;
+            updateEffect = Fx.smeltsmoke;
+
+            drawer = new DrawMulti(
+                    new DrawRotation() {{
+                        suffix = "-inner";
+                        drawType = DrawRotation.DRAW_OBLIQUE;
+                    }},
+                    new DrawRotation() {{
+                        suffix = "-outer";
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                        xOffset = 20f;
+                    }},
+                    new DrawRotation() {{
+                        suffix = "-outer";
+                        drawType = DrawRotation.DRAW_Y_MIRROR;
+                        xOffset = 20f;
+                        rotOffset = 1;
                     }}
             );
 
