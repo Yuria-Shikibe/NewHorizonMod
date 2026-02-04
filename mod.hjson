@@ -3,6 +3,6 @@ author: "Yuria & Lao"
 name: "new-horizon"
 main: "newhorizon.NewHorizon"
 description: "Beta Release. Campaign Not Included.\n\nCurrently contains stable content and optional vanilla override. \n\nMod is playable as extension for both Serpulo and Erekir. \n\nCampaign still WIP."
-version: "2.0_v154_2"
+version: "2.0-TEST-VERSION"
 
 minGameVersion: 154

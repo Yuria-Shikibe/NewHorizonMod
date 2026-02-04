@@ -51,7 +51,7 @@ public class StreamExtractor extends StreamRepeater {
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid) {
-            return liquid instanceof NHLiquids.Stream;
+            return true;
         }
     }
 }
