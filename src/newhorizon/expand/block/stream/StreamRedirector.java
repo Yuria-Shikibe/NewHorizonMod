@@ -13,7 +13,8 @@ public class StreamRedirector extends StreamRepeater {
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
+        drawPotentialLinks(x, y);
+        drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
         Drawf.dashLine(Pal.placing,
                 x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
                 y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
