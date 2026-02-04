@@ -797,7 +797,7 @@
 	"size": 2,
 	"color": 255
 },
-"new-horizon-stamping-presser": {
+"new-horizon-processor-printer": {
 	"synthetic": true,
 	"solid": true,
 	"size": 2,
@@ -810,6 +810,78 @@
 	"color": 255
 },
 "new-horizon-casting-foundry": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-stamping-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-heavy-stamping-facility": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-plasticator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-metal-oxhydrigen-synthesizer": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-metal-oxhydrigen-restructuror": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-photocatalyst-factoty": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-fusion-energy-sealing-factory": {
+	"synthetic": true,
+	"solid": true,
+	"size": 3,
+	"color": 255
+},
+"new-horizon-plasma-activator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-subcooler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-ultracooler": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-particle-activator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
+"new-horizon-heavy-rolling-mill": {
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
@@ -876,6 +948,12 @@
 	"color": 255
 },
 "new-horizon-stream-source": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
+},
+"new-horizon-stream-extractor": {
 	"synthetic": true,
 	"solid": true,
 	"size": 1,

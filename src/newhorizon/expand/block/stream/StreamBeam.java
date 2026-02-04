@@ -17,6 +17,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
+import mindustry.world.blocks.liquid.LiquidBlock;
 import newhorizon.content.NHContent;
 import newhorizon.util.func.MathUtil;
 
@@ -54,10 +55,10 @@ public class StreamBeam {
                     source.tileX() + Geometry.d4x(getRotation()) * (i + 1),
                     source.tileY() + Geometry.d4y(getRotation()) * (i + 1)
             );
-            if (building instanceof StreamBeamBuild sbb){
+            if (!(building == null || building.block.underBullets)) {
                 target = building;
                 distance = i;
-                clog = !sbb.acceptStream(this);
+                if (building instanceof StreamBeamBuild sbb) clog = !sbb.acceptStream(this);
                 break;
             }
         }
@@ -105,11 +106,13 @@ public class StreamBeam {
             float cap = amountCap > 0? amountCap * source.edelta(): 5;
             float maxAmount = Math.min(cap, source.liquids.get(currentLiquid));
 
-            if (target != null && target.liquids != null && target instanceof StreamBeamBuild sbb){
+            if (target != null && target.liquids != null){
                 float maxAccept = Math.min(target.block.liquidCapacity - target.liquids.get(currentLiquid), maxAmount);
-                if (sbb.acceptStream(this)) {
+                if (target instanceof StreamBeamBuild sbb && sbb.acceptStream(this)) {
                     target.handleLiquid(source, currentLiquid, maxAccept);
                     sbb.handleStream(this);
+                } else if (!(target.block instanceof LiquidBlock) && target.block.liquidFilter[currentLiquid.id]){
+                    target.handleLiquid(source, currentLiquid, maxAccept);
                 }
             }
             lastOutput = maxAmount;

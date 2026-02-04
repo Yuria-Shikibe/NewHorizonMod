@@ -7,21 +7,24 @@ import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.meta.BuildVisibility;
 import newhorizon.content.NHItems;
 import newhorizon.expand.block.liquid.AdaptPump;
-import newhorizon.expand.block.stream.StreamRedirector;
-import newhorizon.expand.block.stream.StreamRepeater;
-import newhorizon.expand.block.stream.StreamSource;
-import newhorizon.expand.block.stream.StreamSplitter;
+import newhorizon.expand.block.stream.*;
 
 import static mindustry.type.ItemStack.with;
 
 public class LiquidBlock {
     public static Block
-            streamSource, streamRepeater, streamRedirector, streamSplitter,
+            streamSource, streamExtractor, streamRepeater, streamRedirector, streamSplitter,
             turboPumpSmall, turboPump, standardLiquidStorage, heavyLiquidStorage;
 
     public static void load() {
         streamSource = new StreamSource("stream-source"){{
             requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+        }};
+
+        streamExtractor = new StreamExtractor("stream-extractor"){{
+            requirements(Category.liquid, BuildVisibility.sandboxOnly, with());
+
+            rotateDraw = true;
         }};
 
         streamRepeater = new StreamRepeater("stream-repeater"){{

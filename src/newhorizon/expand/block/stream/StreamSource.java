@@ -3,6 +3,7 @@ package newhorizon.expand.block.stream;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Table;
 import arc.util.Eachable;
 import arc.util.Nullable;
@@ -11,6 +12,8 @@ import arc.util.io.Writes;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.blocks.ItemSelection;
@@ -61,6 +64,16 @@ public class StreamSource extends Block {
     public void setBars(){
         super.setBars();
         removeBar("liquid");
+    }
+
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        super.drawPlace(x, y, rotation, valid);
+        Drawf.dashLine(Pal.placing,
+                x * tilesize + Geometry.d4[rotation].x * (tilesize / 2f + 2),
+                y * tilesize + Geometry.d4[rotation].y * (tilesize / 2f + 2),
+                x * tilesize + Geometry.d4[rotation].x * 6 * tilesize,
+                y * tilesize + Geometry.d4[rotation].y * 6 * tilesize);
     }
 
     @Override
