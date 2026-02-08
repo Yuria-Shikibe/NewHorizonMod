@@ -1,4 +1,5 @@
 new-horizon-air-raider 1 1 3 0
+new-horizon-alloy-smelter 1 1 3 0
 new-horizon-ammonia-water 0 0 1 3092601
 new-horizon-ammonia-water-deep 0 0 1 2500450
 new-horizon-ammonia-water-shallow 0 0 1 3158110
@@ -303,6 +304,7 @@ new-horizon-particle-processor-uncommon 1 1 4 0
 new-horizon-pattern-plate-0 0 0 1 16777215
 new-horizon-pattern-plate-1 0 0 1 16777215
 new-horizon-payload-rail 1 0 2 0
+new-horizon-phase-restructuror 1 1 3 0
 new-horizon-photocatalyst-factoty 1 1 2 0
 new-horizon-photon-panel 1 1 3 0
 new-horizon-placeholder-entity-1 1 1 1 0
@@ -334,6 +336,7 @@ new-horizon-primary-jump-gate 1 1 3 0
 new-horizon-prism 1 1 4 0
 new-horizon-processor-compactor 1 1 4 0
 new-horizon-processor-encoder 1 1 2 0
+new-horizon-processor-etching-facility 1 1 2 0
 new-horizon-processor-junior-factory 1 1 2 0
 new-horizon-processor-manufactory 1 1 2 0
 new-horizon-processor-printer 1 1 2 0
@@ -419,6 +422,7 @@ new-horizon-sub 1 1 1 0
 new-horizon-subcooler 1 1 2 0
 new-horizon-supra-gel 1 1 1 0
 new-horizon-surge-refactor 1 1 3 0
+new-horizon-surge-synthesizer 1 1 3 0
 new-horizon-synchro 1 1 3 0
 new-horizon-tachyon-emitter 1 1 1 0
 new-horizon-tagger 1 1 1 0
@@ -453,6 +457,7 @@ new-horizon-xen-gamma-factory 1 1 2 0
 new-horizon-xen-iterator 1 1 3 0
 new-horizon-xen-melter 1 1 2 0
 new-horizon-xen-refinery 1 1 2 0
+new-horizon-xen-separator 1 1 3 0
 new-horizon-zeta-crafter 1 1 2 0
 new-horizon-zeta-crystal-floor 0 0 1 15324100
 new-horizon-zeta-dissociator 1 1 3 0

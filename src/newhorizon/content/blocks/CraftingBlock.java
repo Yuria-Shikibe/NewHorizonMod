@@ -52,8 +52,8 @@ public class CraftingBlock {
 
     public static void load() {
         loadColors();
-        silicarCrusher = new MultiBlockCrafter("silicar-crusher") {{
-            requirements(Category.crafting, with(
+        silicarCrusher = new MultiBlockCrafter("silicar-crusher"){{
+            requirements(Category.crafting, ItemStack.with(
                     NHItems.hardLight, 50,
                     NHItems.silicar, 45
             ));
@@ -62,29 +62,30 @@ public class CraftingBlock {
             itemCapacity = 20;
             scaledHealth = 100f;
 
-            addLink(2, 0, 1, 2, 1, 1);
-            addOutputItemDirection(0, -1, NHItems.silicon);
-            addOutputItemDirection(1, -1, NHItems.silicon);
-            addOutputItemDirection(2, -1, NHItems.silicon);
-
-            addOutputItemDirection(0, 2, NHItems.graphite);
-            addOutputItemDirection(1, 2, NHItems.graphite);
-            addOutputItemDirection(2, 2, NHItems.graphite);
-
-
             craftTime = 60f;
-            outputItems = with(NHItems.graphite, 1, NHItems.silicon, 1);
+            outputItems = ItemStack.with(NHItems.graphite, 1, NHItems.silicon, 1);
 
-            consumeItems(with(NHItems.silicar, 2));
+            consumeItems(ItemStack.with(NHItems.silicar, 2));
+
+            addOutputItemDirection( 2, 0, NHItems.silicon);
+            addOutputItemDirection( 2, 1, NHItems.silicon);
+            addOutputItemDirection(-1, 0, NHItems.silicon);
+            addOutputItemDirection(-1, 1, NHItems.silicon);
+
+            addOutputItemDirection(0,  2, NHItems.graphite);
+            addOutputItemDirection(1,  2, NHItems.graphite);
+            addOutputItemDirection(0, -1, NHItems.graphite);
+            addOutputItemDirection(1, -1, NHItems.graphite);
 
             drawer = new DrawMulti(
-                    new DrawBaseRegion("-2x3") {{
-                        x = 4f;
-                        buildingRotate = true;
+                    new DrawBaseRegion("-2x2"),
+                    new DrawPistons() {{
+                        sinScl = 8f;
+                        sinMag = 2f;
+                        sinOffset = 0;
+                        lenOffset = -1f;
                     }},
-                    new DrawRotation() {{
-                        xOffset = 4f;
-                    }}
+                    new DrawRegion("-top")
             );
 
             craftEffect = NHFx.hugeSmokeGray;
@@ -142,7 +143,8 @@ public class CraftingBlock {
             craftEffect = NHFx.square(processorBlue, 60, 6, 16, 3);
             updateEffect = NHFx.square(processorBlue, 60, 2, 12, 3);
         }};
-      /*  stampingPresser = new MultiBlockCrafter("stamping-presser") {{
+        /*
+        stampingPresser = new MultiBlockCrafter("stamping-presser") {{
             requirements(Category.crafting, with(
                     NHItems.hardLight, 60,
                     NHItems.titanium, 45,
@@ -174,8 +176,8 @@ public class CraftingBlock {
 
             craftEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
             updateEffect = NHFx.square(Pal.techBlue, 60, 2, 12, 3);
-        }};*/
-
+        }};
+        */
         processorPrinter = new MultiBlockCrafter("processor-printer") {{
             requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
                     NHItems.titanium, 30,
@@ -278,7 +280,7 @@ public class CraftingBlock {
                     }},
                     new DrawRotation() {{
                         suffix = "-edge";
-                        drawType = DrawRotation.DRAW_NORMAL;
+                        drawType = DrawRotation.DRAW_ROTATED;
                         xOffset = yOffset = 8.25f;
                         layer = Layer.block + 1f;
                     }},

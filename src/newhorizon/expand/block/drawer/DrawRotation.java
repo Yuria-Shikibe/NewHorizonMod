@@ -17,14 +17,16 @@ public class DrawRotation extends DrawBlock {
     //the type rule is applicable only to patterns, not the shade tones!
     //only one sprite with central symmetry pattern. name-suffix
     public static final int DRAW_NORMAL = 0;
+    //draw only one sprite but rotate with building
+    public static final int DRAW_ROTATED = 1;
     //pattern is symmetrical about the x-axis. name-suffix-0/1
-    public static final int DRAW_X_MIRROR = 1;
+    public static final int DRAW_X_MIRROR = 2;
     //pattern is symmetrical about the y-axis. name-suffix-0/1
-    public static final int DRAW_Y_MIRROR = 2;
+    public static final int DRAW_Y_MIRROR = 3;
     //oblique pattern (L shape for example). name-suffix-0/1/2
-    public static final int DRAW_OBLIQUE = 3;
+    public static final int DRAW_OBLIQUE = 4;
     //sprite with full directions. name-suffix-0/1/2/3
-    public static final int DRAW_FULL = 4;
+    public static final int DRAW_FULL = 5;
 
     public TextureRegion[] rotRegions;
     public String suffix = "-rot";
@@ -48,6 +50,7 @@ public class DrawRotation extends DrawBlock {
                     case 1, 3 -> Draw.rect(regions[rotation], x, y, xSize, ySize * scl, 90);
                 }
             }
+            case DRAW_ROTATED -> Draw.rect(regions[rotation], x, y, xSize, ySize, rotDeg);
             case DRAW_X_MIRROR -> Draw.rect(regions[rotation], x, y, xSize * scl, ySize, rotDeg);
             case DRAW_Y_MIRROR -> Draw.rect(regions[rotation], x, y, xSize, ySize * scl, rotDeg);
             case DRAW_OBLIQUE -> {
@@ -82,7 +85,7 @@ public class DrawRotation extends DrawBlock {
     public void load(Block block) {
         rotRegions = new TextureRegion[4];
         switch (drawType) {
-            case DRAW_NORMAL -> {
+            case DRAW_NORMAL, DRAW_ROTATED -> {
                 for (int i = 0; i < 4; i++) {
                     rotRegions[i] = Core.atlas.find(block.name + suffix);
                 }
