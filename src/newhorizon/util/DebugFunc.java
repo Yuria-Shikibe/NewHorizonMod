@@ -43,8 +43,9 @@ public class DebugFunc {
     public static final String NH_BUNDLE_PATH = NH_ROOT_PATH + "/assets/bundles/blank/";
     public static final String NH_SPRITE_PATH = NH_ROOT_PATH + "/assets/sprites";
 
-    public static final String NH_ENV_AUTOTILE_PATH = NH_SPRITE_PATH + "/blocks/environment/ancient/autotile/";
-    public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_SPRITE_PATH + "/debug/";
+    public static final String NH_DEBUG_GRAPHIC_FOLDER = NH_ROOT_PATH + "/debug/";
+    public static final String NH_DEBUG_GRAPHIC_AUTOTILE_INPUT = NH_ROOT_PATH + "/debug/autotile-input/";
+    public static final String NH_DEBUG_GRAPHIC_AUTOTILE_OUTPUT = NH_ROOT_PATH + "/debug/autotile-output/";
 
     public static final String NH_DEBUG_JSON_DATA_FOLDER = NH_ROOT_PATH + "/data/";
     public static final String NH_SPRITE_ICON_PATH = NH_ROOT_PATH + "/icons/";
@@ -183,6 +184,15 @@ public class DebugFunc {
         }
     }
 
+    public static void processAutotile(String name, int pad){
+        Fi inner = new Fi(NH_DEBUG_GRAPHIC_AUTOTILE_INPUT + name + "-inner.png");
+        Fi outer = new Fi(NH_DEBUG_GRAPHIC_AUTOTILE_INPUT + name + "-outer.png");
+        Pixmap innerPixmap = PixmapIO.readPNG(inner);
+        Pixmap outerPixmap = PixmapIO.readPNG(outer);
+
+
+    }
+
     //buggy since v8, sucks
     public static void outputAtlas() {
         int i = 0;
@@ -219,7 +229,6 @@ public class DebugFunc {
             pixmap.dispose();
         }
     }
-
 
     public static void outputIcon() {
         Icon.icons.each((name, drawable) -> {

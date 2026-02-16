@@ -32,6 +32,7 @@ public class SpriteUtil {
             };
 
     public static final int[] ATLAS_INDEX_4_12 = new int[ATLAS_INDEX_4_12_RAW.length];
+    public static final int[] ATLAS_INDEX_4_12_VANILLA = new int[ATLAS_INDEX_4_12_RAW.length];
     public static final IntIntMap ATLAS_INDEX_4_12_MAP = new IntIntMap();
 
     public static final Point2[] orthogonalPos = {

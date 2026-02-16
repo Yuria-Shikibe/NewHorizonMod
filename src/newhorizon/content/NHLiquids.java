@@ -17,10 +17,15 @@ import static mindustry.entities.Puddles.maxLiquid;
 
 public class NHLiquids {
     public static Seq<Liquid> streams = Seq.with();
+    public static Seq<Liquid> floodLiquid = Seq.with();
 
+    //NH Liquids
     public static Liquid ammonia, hydrazine, quantumLiquid, xenFluid, zetaFluidPositive, zetaFluidNegative, irdryonFluid;
+    //streams, special kind of liquid
     public static Liquid particle, photon, neutron, zetaPositive, zetaNegative, proton, antiMatter;
-
+    //flood liquids
+    public static Liquid ploNaq, choVat, karIon;
+    //vanilla contents, used for better reference
     public static Liquid water, slag, oil, cryofluid, arkycite, gallium, neoplasm, ozone, hydrogen, nitrogen, cyanogen;
 
     public static void load() {
@@ -82,6 +87,15 @@ public class NHLiquids {
         zetaNegative = new Stream("zeta-negative-stream", Color.valueOf("abf8ff"));
         proton = new Stream("proton-stream", Color.valueOf("8b96ff"));
         antiMatter = new Stream("anti-matter-stream", Color.valueOf("b479ff"));
+
+        //Promethium + Naquium (Factorio SE item)
+        ploNaq = new Liquid("plo-naq");
+        //Chromium + Watt
+        choVat = new Liquid("cho-vat");
+        //Kar Ion, Kaion in Everspace2
+        karIon = new Liquid("kar-ion");
+
+        floodLiquid.add(ploNaq, choVat, karIon);
 
         water = Liquids.water;
         slag = Liquids.slag;

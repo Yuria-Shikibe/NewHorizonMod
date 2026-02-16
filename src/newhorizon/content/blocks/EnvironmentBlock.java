@@ -22,6 +22,7 @@ public class EnvironmentBlock {
             oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium,
             oreClusterTitanium, oreClusterZeta,
             platingFloor1, platingFloor2, platingFloor3, platingFloor4,
+            platingBlock1,
             conglomerateWall, darkConglomerateWall, thoriumStoneWall,
             conglomerateBoulder, darkConglomerateBoulder,
 
@@ -243,13 +244,13 @@ public class EnvironmentBlock {
             drawEdgeIn = false;
         }};
 
-        //platingFloor2 = new TiledFloor("plating-floor-2") {{
-        //    useTiles = false;
-        //    //tileName = "plating-floor";
-        //    autotile = true;
-        //    drawEdgeOut = false;
-        //    drawEdgeIn = false;
-        //}};
+        platingFloor2 = new TiledFloor("plating-block") {{
+            useTiles = false;
+            //tileName = "plating-floor";
+            autotile = true;
+            drawEdgeOut = false;
+            drawEdgeIn = false;
+        }};
 
         platingFloor3 = new TiledFloor("plating-floor-3") {{
             useTiles = false;
