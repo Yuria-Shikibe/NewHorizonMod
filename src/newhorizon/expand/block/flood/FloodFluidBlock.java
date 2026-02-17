@@ -14,12 +14,12 @@ import mindustry.world.blocks.TileBitmask;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import newhorizon.content.NHLiquids;
+import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.util.graphic.SpriteUtil;
 
 import static newhorizon.util.graphic.SpriteUtil.*;
 
-public class FloodFluidBlock extends Block implements FloodBlock{
-    public TextureRegion[] atlasRegion;
+public class FloodFluidBlock extends AdaptWall implements FloodBlock{
     public FloodFluidBlock(String name) {
         super(name);
         update = true;
@@ -28,63 +28,12 @@ public class FloodFluidBlock extends Block implements FloodBlock{
         group = BlockGroup.liquids;
         outputsLiquid = true;
         envEnabled |= Env.space | Env.underwater;
+        maxShareStep = 1.5f;
     }
 
-    @Override
-    public void load() {
-        super.load();
-        atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 0, ATLAS_INDEX_4_12);
-    }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    public class FloodFluidBuilding extends Building implements FloodBuilding{
-        public int drawIndex = 0;
-
-        public void updateDrawRegion() {
-            drawIndex = 0;
-
-            for (int i = 0; i < orthogonalPos.length; i++) {
-                Point2 pos = orthogonalPos[i];
-                Building build = Vars.world.build(tileX() + pos.x, tileY() + pos.y);
-                if (checkSame(build)) {
-                    drawIndex += 1 << i;
-                }
-            }
-
-            for (int i = 0; i < diagonalPos.length; i++) {
-                Point2[] posArray = diagonalPos[i];
-                boolean out = true;
-                for (Point2 pos : posArray) {
-                    Building build = Vars.world.build(tileX() + pos.x, tileY() + pos.y);
-                    if (!(checkSame(build))) {
-                        out = false;
-                        break;
-                    }
-                }
-                if (out) {
-                    drawIndex += 1 << i + 4;
-
-                }
-            }
-
-            drawIndex = TileBitmask.values[drawIndex];
-        }
-
-        public boolean checkSame(Building build) {
-            return build != null && build.block == this.block;
-        }
-
-        @Override
-        public void draw() {
-            Draw.rect(atlasRegion[drawIndex], tile.worldx(), tile.worldy());
-        }
-
-        @Override
-        public void onProximityUpdate() {
-            super.onProximityUpdate();
-            updateDrawRegion();
-        }
-
+    public class FloodFluidBuilding extends AdaptWallBuild implements FloodBuilding{
         @Override
         public void updateTile(){
             dumpLiquid(this);
