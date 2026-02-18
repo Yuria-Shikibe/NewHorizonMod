@@ -8,9 +8,9 @@ public interface FloodBuilding{
     FloodBlock getFloodBlock();
 
     default void dumpLiquid(Building building){
-        building.dumpLiquid(NHLiquids.ploNaq, 2.25f);
-        building.dumpLiquid(NHLiquids.choVat, 2.5f);
-        building.dumpLiquid(NHLiquids.karIon, 2f);
+        building.dumpLiquid(NHLiquids.ploNaq, 12f);
+        building.dumpLiquid(NHLiquids.choVat, 8f);
+        building.dumpLiquid(NHLiquids.karIon, 4f);
     }
 
     default float scaledDefense(Building building){
@@ -23,9 +23,8 @@ public interface FloodBuilding{
         return scaledDefense(building) * getFloodBlock().damageReduction();
     }
 
-    default float handleDamage(Building building, float amount) {
+    default void removeLiquidOnDamage(Building building, float amount) {
         if (building.liquids != null) building.liquids.remove(NHLiquids.choVat, amount / getFloodBlock().damageAbsorption());
-        return amount * (1 - getDamageReduction(building));
     }
 
     default void applyHealing(Building building){

@@ -12,6 +12,7 @@ public class FloodBlock {
     public static void load() {
         floodPipe = new FloodFluidBlock("flood-pipe") {{
             requirements(Category.effect, BuildVisibility.shown, ItemStack.with());
+            health = 1000;
         }};
     }
 }

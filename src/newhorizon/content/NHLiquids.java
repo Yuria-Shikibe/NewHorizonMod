@@ -89,11 +89,11 @@ public class NHLiquids {
         antiMatter = new Stream("anti-matter-stream", Color.valueOf("b479ff"));
 
         //Promethium + Naquium (Factorio SE item)
-        ploNaq = new Liquid("plo-naq");
+        ploNaq = new Liquid("plo-naq", Color.valueOf("cba3ff"));
         //Chromium + Watt
-        choVat = new Liquid("cho-vat");
+        choVat = new Liquid("cho-vat", Color.valueOf("aeebdc"));
         //Kar Ion, Kaion in Everspace2
-        karIon = new Liquid("kar-ion");
+        karIon = new Liquid("kar-ion", Color.valueOf("f1e69f"));
 
         floodLiquid.add(ploNaq, choVat, karIon);
 

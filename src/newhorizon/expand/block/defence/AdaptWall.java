@@ -142,17 +142,20 @@ public class AdaptWall extends Wall {
             return false;
         }
 
+        public float getDamageReduction() {
+            return damageReduction;
+        }
+
         @Override
         public float handleDamage(float amount) {
             findLinkWalls();
-            float shareDamage = (amount / toDamage.size) * (1 - damageReduction);
+            float shareDamage = (amount / toDamage.size) * (1 - getDamageReduction());
             for (Building b : toDamage) {
                 damageShared(b, shareDamage);
             }
             return shareDamage;
         }
 
-        //todo healthChanged sometimes not trigger properly
         public void damageShared(Building building, float damage) {
             if (!building.dead()) {
                 float dm = state.rules.blockHealth(team);
