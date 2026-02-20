@@ -33,7 +33,25 @@ public class AdaptWall extends Wall {
     private final Queue<Building> queue = new Queue<>();
     public TextureRegion[] atlasRegion;
     public float damageReduction = 0.1f;
-    public float maxShareStep = 3;
+    public float maxShareStep = 2;
+
+    public static final Point2[] checkPos = {
+            new Point2( 0,  1),
+            new Point2( 1,  0),
+            new Point2( 0, -1),
+            new Point2(-1,  0),
+
+            new Point2( 1,  1),
+            new Point2( 1, -1),
+            new Point2(-1, -1),
+            new Point2(-1,  1),
+
+            new Point2( 0,  2),
+            new Point2( 2,  0),
+            new Point2( 0, -2),
+            new Point2(-2,  0),
+    };
+
 
     public AdaptWall(String name) {
         super(name);
@@ -70,7 +88,6 @@ public class AdaptWall extends Wall {
                     drawIndex |= (1 << i);
                 }
             }
-
             drawIndex = TileBitmask.values[drawIndex];
         }
 
@@ -99,8 +116,16 @@ public class AdaptWall extends Wall {
             return other != null && checkAutotileSame(other.build);
         }
 
+        public boolean checkAutotileInnerSame(Tile other){
+            return other != null && checkAutotileInnerSame(other.build);
+        }
+
         public boolean checkAutotileSame(Building build) {
             return build != null && build.block == this.block;
+        }
+
+        public boolean checkAutotileInnerSame(Building build){
+            return build instanceof AdaptWallBuild wall && build.block == this.block && wall.drawIndex == 13;
         }
 
         @Override
@@ -118,11 +143,14 @@ public class AdaptWall extends Wall {
         public void updateProximityWall() {
             connectedWalls.clear();
 
-            for (Point2 point : proximityPos) {
+            for (Point2 point : checkPos) {
                 Building other = world.build(tile.x + point.x, tile.y + point.y);
                 if (other == null || other.team != team) continue;
-                if (checkAutotileSame(other)) {
-                    connectedWalls.add((AdaptWallBuild) other);
+                if (other instanceof AdaptWallBuild wall) {
+                    wall.updateDrawRegion();
+                    if (checkAutotileSame(other)) {
+                        connectedWalls.add((AdaptWallBuild) other);
+                    }
                 }
             }
 
@@ -142,14 +170,10 @@ public class AdaptWall extends Wall {
             return false;
         }
 
-        public float getDamageReduction() {
-            return damageReduction;
-        }
-
         @Override
         public float handleDamage(float amount) {
             findLinkWalls();
-            float shareDamage = (amount / toDamage.size) * (1 - getDamageReduction());
+            float shareDamage = (amount / toDamage.size) * (1 - damageReduction);
             for (Building b : toDamage) {
                 damageShared(b, shareDamage);
             }

@@ -1,19 +1,25 @@
 package newhorizon.expand.block.flood;
 
 public interface FloodBlock {
-    default float damageReduction() {
-        return 0.5f;
-    }
-
-    default float damageAbsorption() {
-        return 1000f;
-    }
+    float[] packedData();
 
     default float healConsumption() {
-        return 5 / 60f;
+        return packedData()[0];
     }
 
     default float healSpeed() {
-        return 50f;
+        return packedData()[1];
+    }
+
+    default float damageReduction() {
+        return packedData()[2];
+    }
+
+    default float damageAbsorption() {
+        return packedData()[3];
+    }
+
+    default float statMultiplier() {
+        return packedData()[4];
     }
 }
