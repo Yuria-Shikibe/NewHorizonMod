@@ -1,15 +1,7 @@
 package newhorizon.content.blocks;
 
-import arc.Core;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.geom.Geometry;
-import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.content.Items;
-import mindustry.graphics.Layer;
 import mindustry.type.Category;
-import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.liquid.LiquidJunction;
@@ -22,9 +14,7 @@ import newhorizon.expand.block.distribution.item.logistics.*;
 import newhorizon.expand.block.distribution.liquid.AdaptConduit;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidBridge;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloader;
-import newhorizon.util.graphic.SpriteUtil;
 
-import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {

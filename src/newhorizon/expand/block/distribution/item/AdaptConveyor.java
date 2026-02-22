@@ -125,7 +125,7 @@ public class AdaptConveyor extends Conveyor {
             Draw.rect(edgeRegions[drawIndex], x, y);
 
             Draw.color(team.color, Color.white, 0.25f);
-            Draw.alpha(0.75f);
+            Draw.alpha(0.4f);
             Draw.rect(lightRegions[drawIndex], x, y);
             Draw.alpha(1f);
             Draw.color();

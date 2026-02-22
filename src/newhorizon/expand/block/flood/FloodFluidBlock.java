@@ -2,6 +2,7 @@ package newhorizon.expand.block.flood;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
@@ -15,6 +16,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.TileBitmask;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
+import newhorizon.content.NHContent;
 import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.defence.AdaptWall;
 import newhorizon.util.graphic.SpriteUtil;
@@ -107,7 +109,13 @@ public class FloodFluidBlock extends AdaptWall implements FloodBlock{
         public void draw() {
             super.draw();
             if (drawIndex == 13) Draw.rect(innerAtlasRegions[drawInnerIndex], x, y);
-            drawDebug(this);
+            //drawDebug(this);
+
+            Draw.z(NHContent.GRAVITY_TRAP_LAYER);
+            Draw.color(NHLiquids.choVat.color);
+            Draw.alpha((liquids.get(NHLiquids.choVat) / liquidCapacity));
+            Fill.square(x, y, tilesize / 2f);
+            Draw.color();
         }
 
         @Override
