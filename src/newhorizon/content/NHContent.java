@@ -30,7 +30,8 @@ import newhorizon.expand.logic.ThreatLevel;
 import newhorizon.expand.logic.statements.*;
 
 public class NHContent extends Content {
-    public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f; // Making it wried
+    public static final float GRAVITY_TRAP_LAYER = Layer.light + 2.472f;
+    public static final float HEX_SHIELD_LAYER = 56.172f;
     public static final float QUANTUM_LAYER = Layer.blockOver + 0.1919f;
     public static final float POWER_AREA = Layer.power + 0.114f;
     public static final float POWER_DYNAMIC = Layer.power + 0.514f;

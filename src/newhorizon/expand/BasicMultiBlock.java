@@ -39,6 +39,14 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
         super(name);
     }
 
+    public void enableRotate(){
+        rotate = true;
+        rotateDraw = true;
+        drawArrow = false;
+        quickRotate = false;
+        allowDiagonal = false;
+    }
+
     @Override
     public void setStats() {
         super.setStats();
@@ -136,6 +144,11 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
 
         @Override
         public void updateTile() {
+            updateLinkBlock();
+            super.updateTile();
+        }
+
+        public void updateLinkBlock() {
             if (isPayload()) return;
             if (!linkCreated) {
                 linkEntities = setLinkBuild(this, block, tile, team, size, rotation);
@@ -156,7 +169,6 @@ public abstract class BasicMultiBlock extends Block implements MultiBlock {
                     kill();
                 }
             }
-            super.updateTile();
         }
 
         @Override

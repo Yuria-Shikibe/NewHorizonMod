@@ -13,6 +13,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
+import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
@@ -26,7 +27,10 @@ import newhorizon.content.NHItems;
 import newhorizon.content.NHLiquids;
 import newhorizon.expand.block.drawer.DrawRegionFlip;
 import newhorizon.expand.block.drawer.DrawRegionRotated;
+import newhorizon.expand.block.drawer.DrawRotation;
+import newhorizon.expand.block.drawer.DrawScanLine;
 import newhorizon.expand.block.power.GravityWell;
+import newhorizon.expand.block.power.MultiBlockConsumeGenerator;
 import newhorizon.expand.block.production.factory.RecipeGenericCrafter;
 import newhorizon.expand.draw.DrawLiquidAnimatedOffset;
 import newhorizon.expand.draw.DrawLiquidSmelt;
@@ -40,12 +44,13 @@ import static mindustry.type.ItemStack.with;
 public class PowerBlock {
     public static Block
             photonPanel, nitrogenDissociator,
+            neutralizationGenerator,
             crystalDecompositionThermalGenerator, hydroFuelCell, zetaGenerator, anodeFusionReactor, cathodeFusionReactor, thermoReactor,
             armorBattery, armorBatteryLarge, armorBatteryHuge,
             gravityTrapMidantha, gravityTrapSerpulo, gravityTrapErekir, gravityTrapSmall, gravityTrap;
 
     public static void load() {
-        photonPanel = new SolarGenerator("photon-panel"){{
+        photonPanel = new SolarGenerator("photon-panel") {{
             requirements(Category.power, with(
                     NHItems.silicar, 20
             ));
@@ -100,6 +105,58 @@ public class PowerBlock {
                 stats.add(Stat.output, StatValues.items(produceTime, ItemStack.with(NHItems.hardLight, 1)));
             }
         };
+
+        neutralizationGenerator = new MultiBlockConsumeGenerator("neutralization-generator") {{
+            requirements(Category.power, ItemStack.with(
+                    NHItems.titanium, 30,
+                    NHItems.silicon, 45,
+                    NHItems.tungsten, 30
+            ));
+            addLink(
+                    2, 0, 1, 2, 1, 1,
+                    -1, 0, 1, -1, 1, 1,
+                    0, -1, 1, 1, -1, 1
+            );
+
+            canMirror = true;
+            rotations = new int[]{0, 3, 2, 1, 2, 1, 0, 3};
+
+            size = 2;
+            scaledHealth = 100f;
+
+            consumeLiquids(LiquidStack.with(NHLiquids.ammonia, 6 / 60f));
+            outputLiquid = new LiquidStack(NHLiquids.water, 12f / 60f);
+            powerProduction = 10f;
+
+            drawer = new DrawMulti(
+                    new DrawRotation() {{
+                        drawType = DRAW_X_MIRROR;
+                        suffix = "-inner";
+                    }},
+                    new DrawRotation() {{
+                        drawType = DRAW_Y_MIRROR;
+                        suffix = "-outer";
+                        xOffset = 12f;
+                    }},
+                    new DrawRotation() {{
+                        drawType = DRAW_Y_MIRROR;
+                        suffix = "-outer";
+                        xOffset = 12f;
+                        rotOffset = 3;
+                    }},
+                    new DrawRotation() {{
+                        drawType = DRAW_Y_MIRROR;
+                        suffix = "-outer";
+                        xOffset = 12f;
+                        rotOffset = 2;
+                    }}
+            );
+
+            consumeEffect = generateEffect = NHFx.square(Pal.power, 60, 6, 16, 3);
+
+            enableRotate();
+        }};
+
         gravityTrapSmall = new GravityWell("gravity-trap") {{
             requirements(Category.power, BuildVisibility.shown, with(Items.titanium, 10, Items.tungsten, 8));
 

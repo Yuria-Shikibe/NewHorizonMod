@@ -111,7 +111,7 @@ public class FloodFluidBlock extends AdaptWall implements FloodBlock{
             if (drawIndex == 13) Draw.rect(innerAtlasRegions[drawInnerIndex], x, y);
             //drawDebug(this);
 
-            Draw.z(NHContent.GRAVITY_TRAP_LAYER);
+            Draw.z(NHContent.HEX_SHIELD_LAYER);
             Draw.color(NHLiquids.choVat.color);
             Draw.alpha((liquids.get(NHLiquids.choVat) / liquidCapacity));
             Fill.square(x, y, tilesize / 2f);

@@ -947,6 +947,12 @@
 	"size": 3,
 	"color": 255
 },
+"new-horizon-neutralization-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
+	"color": 255
+},
 "new-horizon-gravity-trap": {
 	"synthetic": true,
 	"solid": false,

@@ -282,6 +282,7 @@ new-horizon-multiple-launcher 1 1 3 0
 new-horizon-multiple-presstanium-factory 1 1 3 0
 new-horizon-multiple-steel-factory 1 1 3 0
 new-horizon-multiple-surge-alloy-factory 1 1 3 0
+new-horizon-neutralization-generator 1 1 2 0
 new-horizon-neutron-membrane 1 1 1 0
 new-horizon-nexus-core 1 1 5 0
 new-horizon-nitrogen-dissociator 1 1 3 0

@@ -89,14 +89,6 @@ public class MultiBlockCrafter extends BasicMultiBlock {
         outputLiquidDirection.add(new int[]{xOffset, yOffset, liquid.id});
     }
 
-    public void enableRotate(){
-        rotate = true;
-        rotateDraw = true;
-        drawArrow = false;
-        quickRotate = false;
-        allowDiagonal = false;
-    }
-
     @Override
     public void setStats() {
         stats.timePeriod = craftTime;
