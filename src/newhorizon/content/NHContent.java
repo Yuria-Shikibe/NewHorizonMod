@@ -137,6 +137,8 @@ public class NHContent extends Content {
         beamLaserInner = Core.atlas.find(NewHorizon.name("stream-beam-inner"));
         beamLaserInnerEnd = Core.atlas.find(NewHorizon.name("stream-beam-inner-end"));
 
+        FloatPlatformDrawer.load();
+
         smoothNoise = loadTex("smooth-noise", t -> {
             t.setFilter(Texture.TextureFilter.linear);
             t.setWrap(Texture.TextureWrap.repeat);
