@@ -53,6 +53,12 @@ public class MultiBlockGenerator extends BasicMultiBlock {
     }
 
     @Override
+    public void loadIcon() {
+        super.loadIcon();
+        uiIcon = Core.atlas.find(name + "-icon", name);
+    }
+
+    @Override
     public void setStats(){
         super.setStats();
         stats.add(Stat.basePowerGeneration, powerProduction * 60.0f, StatUnit.powerSecond);
