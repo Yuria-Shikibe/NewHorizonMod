@@ -30,7 +30,7 @@ public class FloatArmoredConveyor extends FloatConveyor {
     public class FloatArmoredConveyorBuild extends ConveyorBuild{
         @Override
         public boolean acceptItem(Building source, Item item){
-            return super.acceptItem(source, item) && (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile(), tile).relativeTo(tile) == rotation);
+            return super.acceptItem(source, item) && (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation);
         }
     }
 }
