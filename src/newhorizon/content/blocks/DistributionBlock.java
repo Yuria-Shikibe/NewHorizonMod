@@ -14,11 +14,15 @@ import newhorizon.expand.block.distribution.item.logistics.*;
 import newhorizon.expand.block.distribution.liquid.AdaptConduit;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidBridge;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloader;
+import newhorizon.expand.block.distribution.platform.FloatArmoredConveyor;
+import newhorizon.expand.block.distribution.platform.FloatMultiJunction;
+import newhorizon.expand.block.distribution.platform.FloatMultiRouter;
 
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {
     public static Block
+            multiRouter, multiJunction, multiArmorConveyor,
             conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger,
             logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
@@ -26,6 +30,30 @@ public class DistributionBlock {
             conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load() {
+        multiRouter = new FloatMultiRouter("multi-router"){{
+            size = 1;
+            health = 560;
+            speed = 2f;
+
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.lead, 5));
+        }};
+
+        multiJunction = new FloatMultiJunction("multi-junction"){{
+            size = 1;
+            health = 560;
+            speed = 12f;
+            capacity = 12;
+
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
+        }};
+        multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor"){{
+            requirements(Category.distribution,with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));
+            speed = 0.12f;
+            displayedSpeed = 18f;
+            health = 800;
+            armor = 5;
+            junctionReplacement = multiJunction;
+        }};
         conveyor = new AdaptConveyor("hard-light-rail") {{
             requirements(Category.distribution, with(
                     NHItems.hardLight, 1

@@ -21,6 +21,7 @@ import mindustry.logic.LCategory;
 import mindustry.logic.LStatement;
 import mindustry.world.meta.Attribute;
 import newhorizon.NewHorizon;
+import newhorizon.expand.block.distribution.platform.FloatPlatformDrawer;
 import newhorizon.expand.entities.UltFire;
 import newhorizon.expand.game.MapMarker.RaidIndicator;
 import newhorizon.expand.game.MapObjectives.ReuseObjective;
@@ -136,6 +137,8 @@ public class NHContent extends Content {
         beamLaserEnd = Core.atlas.find(NewHorizon.name("stream-beam-end"));
         beamLaserInner = Core.atlas.find(NewHorizon.name("stream-beam-inner"));
         beamLaserInnerEnd = Core.atlas.find(NewHorizon.name("stream-beam-inner-end"));
+
+        FloatPlatformDrawer.load();
 
         smoothNoise = loadTex("smooth-noise", t -> {
             t.setFilter(Texture.TextureFilter.linear);
