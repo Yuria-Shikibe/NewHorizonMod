@@ -120,15 +120,18 @@ public class AdaptConveyor extends Conveyor {
                 Draw.rect(arrowRegions[conveyorFrame() + 16], x, y, rotdeg());
             }
 
+            Draw.color();
+            Draw.reset();
             Draw.rect(edgeRegions[drawIndex], x, y);
 
             Draw.color(team.color, Color.white, 0.25f);
-            Draw.alpha(0.75f);
+            Draw.alpha(0.4f);
             Draw.rect(lightRegions[drawIndex], x, y);
             Draw.alpha(1f);
             Draw.color();
 
-            Draw.z(Layer.block - 0.1f);
+            Draw.reset();
+            Draw.z(Layer.block - 0.05f);
             float layer = Layer.block - 0.1f, wwidth = world.unitWidth(), wheight = world.unitHeight(), scaling = 0.01f;
 
             for (int i = 0; i < len; i++) {

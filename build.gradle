@@ -97,7 +97,7 @@ tasks.register('debugMobile', JavaExec) {
     main = "-jar"
     args = [
             "E:/project/MindustryModDevLib/Mindustry8.0.jar",
-            "-debug",
+            //"-debug",
             "-testMobile"
     ]
 }
@@ -109,7 +109,7 @@ tasks.register('debugDesktop', JavaExec) {
     main = "-jar"
     args = [
             "E:/project/MindustryModDevLib/Mindustry8.0.jar",
-            "-debug",
+            //"-debug",
     ]
 }
 
@@ -120,7 +120,7 @@ tasks.register('debugBE', JavaExec) {
     main = "-jar"
     args = [
             "E:/project/MindustryModDevLib/Mindustry-BE.jar",
-            "-debug",
+            //"-debug",
     ]
 
 }

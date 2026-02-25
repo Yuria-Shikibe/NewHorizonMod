@@ -731,6 +731,12 @@
 	"size": 1,
 	"color": 1061177855
 },
+"new-horizon-plating-block": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1
+},
 "new-horizon-plating-floor-3": {
 	"synthetic": false,
 	"solid": false,
@@ -748,6 +754,12 @@
 	"solid": false,
 	"size": 1,
 	"color": 1061177855
+},
+"new-horizon-flood-pipe": {
+	"synthetic": true,
+	"solid": true,
+	"size": 1,
+	"color": 255
 },
 "new-horizon-nexus-core": {
 	"synthetic": true,
@@ -933,6 +945,12 @@
 	"synthetic": true,
 	"solid": true,
 	"size": 3,
+	"color": 255
+},
+"new-horizon-neutralization-generator": {
+	"synthetic": true,
+	"solid": true,
+	"size": 2,
 	"color": 255
 },
 "new-horizon-gravity-trap": {

@@ -15,7 +15,7 @@ import newhorizon.NewHorizon;
 import static mindustry.Vars.renderer;
 
 public class NHShaders {
-    public static ModShader gravityTrap, quantum, statusXWave;
+    public static ModShader gravityTrap, quantum, statusXWave, hexShield;
     public static ModSurfaceShader displaceGlitch;
 
     public static float alphaInner, alphaOuter;
@@ -46,6 +46,19 @@ public class NHShaders {
                 setUniformf("u_texsize", Core.camera.width * renderer.getDisplayScale(), Core.camera.height * renderer.getDisplayScale());
                 setUniformf("u_invsize", 1f / Core.camera.width * renderer.getDisplayScale(), 1f / Core.camera.height * renderer.getDisplayScale());
                 setUniformf("u_time", Time.time);
+            }
+        };
+
+        hexShield = new ModShader("VFX_hexShield"){
+            @Override
+            public void apply() {
+                setUniformf("u_scale", Scl.scl(1f));
+                setUniformf("u_time", Time.time / Scl.scl(1f));
+                setUniformf("u_offset",
+                        Core.camera.position.x - Core.camera.width / 2,
+                        Core.camera.position.y - Core.camera.height / 2);
+                setUniformf("u_texsize", Core.camera.width, Core.camera.height);
+                setUniformf("u_invsize", 1f / Core.camera.width, 1f / Core.camera.height);
             }
         };
 

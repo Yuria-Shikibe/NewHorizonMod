@@ -1073,6 +1073,12 @@
 	"size": 1,
 	"color": 1348103167
 },
+"ore-wall-graphite": {
+	"synthetic": false,
+	"solid": false,
+	"size": 1,
+	"color": -1295592705
+},
 "ore-wall-tungsten": {
 	"synthetic": false,
 	"solid": false,

@@ -2036,6 +2036,7 @@ public class NHBlocks {
         TurretBlock.load();
         DefenseBlock.load();
         EnvironmentBlock.load();
+        FloodBlock.load();
         SpecialBlock.load();
         CraftingBlock.load();
         PowerBlock.load();

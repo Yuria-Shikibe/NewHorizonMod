@@ -1,6 +1,8 @@
 package newhorizon.expand.block.defence;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
@@ -21,6 +23,9 @@ import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.*;
+import newhorizon.content.NHColor;
+import newhorizon.content.NHContent;
+import newhorizon.content.NHLiquids;
 import newhorizon.content.NHStats;
 
 import static mindustry.Vars.*;

@@ -30,6 +30,7 @@ public class NHRenderer implements Disposable {
         mask.resize(graphics.getWidth(), graphics.getHeight());
 
         drawShader(NHShaders.gravityTrap, NHContent.GRAVITY_TRAP_LAYER);
+        drawShader(NHShaders.hexShield, NHContent.HEX_SHIELD_LAYER);
     }
 
     public void drawShader(Shader shader, float layer) {

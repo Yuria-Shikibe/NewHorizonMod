@@ -5,15 +5,20 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Queue;
 import arc.struct.Seq;
+import arc.util.Nullable;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Call;
 import mindustry.graphics.Layer;
+import mindustry.world.Tile;
+import mindustry.world.blocks.TileBitmask;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.StatUnit;
 import newhorizon.content.NHFx;
@@ -28,7 +33,25 @@ public class AdaptWall extends Wall {
     private final Queue<Building> queue = new Queue<>();
     public TextureRegion[] atlasRegion;
     public float damageReduction = 0.1f;
-    public float maxShareStep = 3;
+    public float maxShareStep = 2;
+
+    public static final Point2[] checkPos = {
+            new Point2( 0,  1),
+            new Point2( 1,  0),
+            new Point2( 0, -1),
+            new Point2(-1,  0),
+
+            new Point2( 1,  1),
+            new Point2( 1, -1),
+            new Point2(-1, -1),
+            new Point2(-1,  1),
+
+            new Point2( 0,  2),
+            new Point2( 2,  0),
+            new Point2( 0, -2),
+            new Point2(-2,  0),
+    };
+
 
     public AdaptWall(String name) {
         super(name);
@@ -44,7 +67,7 @@ public class AdaptWall extends Wall {
     @Override
     public void load() {
         super.load();
-        atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-atlas"), 32, 32, 1, ATLAS_INDEX_4_12);
+        atlasRegion = SpriteUtil.splitRegionArray(Core.atlas.find(name + "-tiled"), 32, 32);
     }
 
     @Override
@@ -59,31 +82,13 @@ public class AdaptWall extends Wall {
 
         public void updateDrawRegion() {
             drawIndex = 0;
-
-            for (int i = 0; i < orthogonalPos.length; i++) {
-                Point2 pos = orthogonalPos[i];
-                Building build = Vars.world.build(tileX() + pos.x, tileY() + pos.y);
-                if (checkWall(build)) {
-                    drawIndex += 1 << i;
+            for(int i = 0; i < 8; i++){
+                Tile other = tile.nearby(Geometry.d8[i]);
+                if(checkAutotileSame(other)){
+                    drawIndex |= (1 << i);
                 }
             }
-            for (int i = 0; i < diagonalPos.length; i++) {
-                Point2[] posArray = diagonalPos[i];
-                boolean out = true;
-                for (Point2 pos : posArray) {
-                    Building build = Vars.world.build(tileX() + pos.x, tileY() + pos.y);
-                    if (!(checkWall(build))) {
-                        out = false;
-                        break;
-                    }
-                }
-                if (out) {
-                    drawIndex += 1 << i + 4;
-
-                }
-            }
-
-            drawIndex = ATLAS_INDEX_4_12_MAP.get(drawIndex);
+            drawIndex = TileBitmask.values[drawIndex];
         }
 
         public void findLinkWalls() {
@@ -104,11 +109,23 @@ public class AdaptWall extends Wall {
         }
 
         public boolean linkValid(Building build) {
-            return checkWall(build) && Mathf.dstm(tileX(), tileY(), build.tileX(), build.tileY()) <= maxShareStep;
+            return checkAutotileSame(build) && Mathf.dstm(tileX(), tileY(), build.tileX(), build.tileY()) <= maxShareStep;
         }
 
-        public boolean checkWall(Building build) {
+        public boolean checkAutotileSame(Tile other){
+            return other != null && checkAutotileSame(other.build);
+        }
+
+        public boolean checkAutotileInnerSame(Tile other){
+            return other != null && checkAutotileInnerSame(other.build);
+        }
+
+        public boolean checkAutotileSame(Building build) {
             return build != null && build.block == this.block;
+        }
+
+        public boolean checkAutotileInnerSame(Building build){
+            return build instanceof AdaptWallBuild wall && build.block == this.block && wall.drawIndex == 13;
         }
 
         @Override
@@ -126,11 +143,14 @@ public class AdaptWall extends Wall {
         public void updateProximityWall() {
             connectedWalls.clear();
 
-            for (Point2 point : proximityPos) {
+            for (Point2 point : checkPos) {
                 Building other = world.build(tile.x + point.x, tile.y + point.y);
                 if (other == null || other.team != team) continue;
-                if (checkWall(other)) {
-                    connectedWalls.add((AdaptWallBuild) other);
+                if (other instanceof AdaptWallBuild wall) {
+                    wall.updateDrawRegion();
+                    if (checkAutotileSame(other)) {
+                        connectedWalls.add((AdaptWallBuild) other);
+                    }
                 }
             }
 
@@ -151,17 +171,6 @@ public class AdaptWall extends Wall {
         }
 
         @Override
-        public boolean collision(Bullet other) {
-            if (other.type.absorbable) other.absorb();
-            return super.collision(other);
-        }
-
-        @Override
-        public void damage(Bullet bullet, Team source, float damage) {
-            super.damage(bullet, source, damage);
-        }
-
-        @Override
         public float handleDamage(float amount) {
             findLinkWalls();
             float shareDamage = (amount / toDamage.size) * (1 - damageReduction);
@@ -171,25 +180,16 @@ public class AdaptWall extends Wall {
             return shareDamage;
         }
 
-        //todo healthChanged sometimes not trigger properly
         public void damageShared(Building building, float damage) {
-            if (building.dead()) return;
-            float dm = state.rules.blockHealth(team);
-            if (Mathf.zero(dm)) {
-                damage = building.health + 1;
-            } else {
-                damage /= dm;
+            if (!building.dead()) {
+                float dm = state.rules.blockHealth(team);
+                damage = Mathf.zero(dm)? building.health + 1: damage / dm;
+                if (!net.client()) building.health -= damage;
+                building.healthChanged();
+                if (building.health <= 0) Call.buildDestroyed(building);
+                NHFx.shareDamage.at(building.x, building.y, building.block.size * tilesize / 2f,
+                        team.color, Mathf.clamp(damage / (block.health * 0.1f)));
             }
-            if (!net.client()) {
-                building.health -= damage;
-            }
-            if (damaged()) {
-                healthChanged();
-            }
-            if (building.health <= 0) {
-                Call.buildDestroyed(building);
-            }
-            NHFx.shareDamage.at(building.x, building.y, building.block.size * tilesize / 2f, team.color, Mathf.clamp(damage / (block.health * 0.1f)));
         }
 
         @Override

@@ -1,15 +1,7 @@
 package newhorizon.content.blocks;
 
-import arc.Core;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.geom.Geometry;
-import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.content.Items;
-import mindustry.graphics.Layer;
 import mindustry.type.Category;
-import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.liquid.LiquidJunction;
@@ -22,13 +14,15 @@ import newhorizon.expand.block.distribution.item.logistics.*;
 import newhorizon.expand.block.distribution.liquid.AdaptConduit;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidBridge;
 import newhorizon.expand.block.distribution.liquid.AdaptLiquidDirectionalUnloader;
-import newhorizon.util.graphic.SpriteUtil;
+import newhorizon.expand.block.distribution.platform.FloatArmoredConveyor;
+import newhorizon.expand.block.distribution.platform.FloatMultiJunction;
+import newhorizon.expand.block.distribution.platform.FloatMultiRouter;
 
-import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.with;
 
 public class DistributionBlock {
     public static Block
+            multiRouter, multiJunction, multiArmorConveyor,
             conveyor, logisticsJunction, logisticsDirectionalRouter, logisticsDirectionalMerger,
             logisticsDirectionalGate, logisticsOmniGate, logisticsOmniSorter, logisticsOmniBlocker,
             conveyorBridge, conveyorBridgeExtend, conveyorUnloader, rapidUnloader,
@@ -36,6 +30,30 @@ public class DistributionBlock {
             conduit, conduitJunction, conduitRouter, liquidBridge, liquidBridgeExtend, liquidUnloader;
 
     public static void load() {
+        multiRouter = new FloatMultiRouter("multi-router"){{
+            size = 1;
+            health = 560;
+            speed = 2f;
+
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.lead, 5));
+        }};
+
+        multiJunction = new FloatMultiJunction("multi-junction"){{
+            size = 1;
+            health = 560;
+            speed = 12f;
+            capacity = 12;
+
+            requirements(Category.distribution, with(NHItems.multipleSteel, 5, NHItems.juniorProcessor, 2, Items.copper, 5));
+        }};
+        multiArmorConveyor = new FloatArmoredConveyor("multi-armor-conveyor"){{
+            requirements(Category.distribution,with(NHItems.zeta, 2, NHItems.multipleSteel, 2, Items.thorium, 1));
+            speed = 0.12f;
+            displayedSpeed = 18f;
+            health = 800;
+            armor = 5;
+            junctionReplacement = multiJunction;
+        }};
         conveyor = new AdaptConveyor("hard-light-rail") {{
             requirements(Category.distribution, with(
                     NHItems.hardLight, 1

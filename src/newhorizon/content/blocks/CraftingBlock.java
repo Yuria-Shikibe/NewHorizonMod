@@ -67,6 +67,7 @@ public class CraftingBlock {
 
             consumeItems(ItemStack.with(NHItems.silicar, 2));
 
+            /*
             addOutputItemDirection( 2, 0, NHItems.silicon);
             addOutputItemDirection( 2, 1, NHItems.silicon);
             addOutputItemDirection(-1, 0, NHItems.silicon);
@@ -76,6 +77,8 @@ public class CraftingBlock {
             addOutputItemDirection(1,  2, NHItems.graphite);
             addOutputItemDirection(0, -1, NHItems.graphite);
             addOutputItemDirection(1, -1, NHItems.graphite);
+
+             */
 
             drawer = new DrawMulti(
                     new DrawBaseRegion("-2x2"),
@@ -99,6 +102,7 @@ public class CraftingBlock {
 
             enableRotate();
         }};
+
         processorManufactory = new GenericCrafter("processor-manufactory") {{
             requirements(Category.crafting, with(
                     NHItems.hardLight, 60,
@@ -111,9 +115,9 @@ public class CraftingBlock {
             itemCapacity = 20;
 
             craftTime = 120f;
-            outputItems = with(NHItems.juniorProcessor, 2);
+            outputItems = with(NHItems.juniorProcessor, 1);
 
-            consumeItems(with(NHItems.silicon, 3));
+            consumeItems(with(NHItems.silicon, 2));
             consumePower(0.5f);
 
             drawer = new DrawMulti(
@@ -143,43 +147,9 @@ public class CraftingBlock {
             craftEffect = NHFx.square(processorBlue, 60, 6, 16, 3);
             updateEffect = NHFx.square(processorBlue, 60, 2, 12, 3);
         }};
-        /*
-        stampingPresser = new MultiBlockCrafter("stamping-presser") {{
-            requirements(Category.crafting, with(
-                    NHItems.hardLight, 60,
-                    NHItems.titanium, 45,
-                    NHItems.juniorProcessor, 45
-            ));
 
-            size = 2;
-            scaledHealth = 100f;
-            itemCapacity = 20;
-
-            craftTime = 120f;
-            outputItems = with(NHItems.presstanium, 1);
-
-            consumeItems(with(NHItems.titanium, 2, NHItems.graphite, 1));
-            consumePower(0.5f);
-
-            drawer = new DrawMulti(
-                    new DrawBaseRegion("-2x2"),
-                    new DrawArcSmelt() {{
-                        midColor = stampingArc;
-                        flameColor = stampingArc;
-
-                        flameRad /= 1.8f;
-                        particleStroke /= 1.5f;
-                        particleLen /= 1.5f;
-                    }},
-                    new DrawRegion("-top")
-            );
-
-            craftEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
-            updateEffect = NHFx.square(Pal.techBlue, 60, 2, 12, 3);
-        }};
-        */
         processorPrinter = new MultiBlockCrafter("processor-printer") {{
-            requirements(Category.crafting, BuildVisibility.shown, ItemStack.with(
+            requirements(Category.crafting, ItemStack.with(
                     NHItems.titanium, 30,
                     NHItems.silicon, 45,
                     NHItems.tungsten, 30
@@ -191,7 +161,7 @@ public class CraftingBlock {
             armor = 4;
             itemCapacity = 20;
 
-            craftTime = 120f;
+            craftTime = 60f;
             consumePower(180f / 60f);
             consumeLiquids(LiquidStack.with(NHLiquids.quantumLiquid, 6 / 60f));
             consumeItems(with(NHItems.silicon, 2));
@@ -234,7 +204,44 @@ public class CraftingBlock {
             );
 
             craftEffect = updateEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
+
+            enableRotate();
         }};
+        /*
+        stampingPresser = new MultiBlockCrafter("stamping-presser") {{
+            requirements(Category.crafting, with(
+                    NHItems.hardLight, 60,
+                    NHItems.titanium, 45,
+                    NHItems.juniorProcessor, 45
+            ));
+
+            size = 2;
+            scaledHealth = 100f;
+            itemCapacity = 20;
+
+            craftTime = 120f;
+            outputItems = with(NHItems.presstanium, 1);
+
+            consumeItems(with(NHItems.titanium, 2, NHItems.graphite, 1));
+            consumePower(0.5f);
+
+            drawer = new DrawMulti(
+                    new DrawBaseRegion("-2x2"),
+                    new DrawArcSmelt() {{
+                        midColor = stampingArc;
+                        flameColor = stampingArc;
+
+                        flameRad /= 1.8f;
+                        particleStroke /= 1.5f;
+                        particleLen /= 1.5f;
+                    }},
+                    new DrawRegion("-top")
+            );
+
+            craftEffect = NHFx.square(Pal.techBlue, 60, 6, 16, 3);
+            updateEffect = NHFx.square(Pal.techBlue, 60, 2, 12, 3);
+        }};
+        */
 
         crystallizer = new MultiBlockCrafter("crystallizer") {{
             requirements(Category.crafting, with(
